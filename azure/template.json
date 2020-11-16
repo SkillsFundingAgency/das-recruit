@@ -37,7 +37,7 @@
       "type": "string"
     },
     "Authentication": {
-      "type": "object",
+      "type": "secureObject",
       "defaultValue": {
         "Authority": "",
         "MetaDataAddress": "",
@@ -46,7 +46,7 @@
       }
     },
     "AccountApiConfiguration": {
-      "type": "object",
+      "type": "secureObject",
       "defaultValue": {
         "ApiBaseUrl": "",
         "ClientId": "",
@@ -56,7 +56,7 @@
       }
     },
     "ProviderRelationshipsApiConfiguration": {
-      "type": "object",
+      "type": "secureObject",
       "defaultValue": {
         "ApiBaseUrl": "",
         "ClientId": "",
@@ -66,7 +66,7 @@
       }
     },
     "PasAccountApiConfiguration": {
-      "type": "object",
+      "type": "secureObject",
       "defaultValue": {
         "ApiBaseUrl": "",
         "ClientId": "",
@@ -111,7 +111,7 @@
       "defaultValue": ""
     },
     "GoogleMapsPrivateKey": {
-      "type": "string",
+      "type": "securestring",
       "defaultValue": ""
     },
     "UseTableStorageQueryStore": {
@@ -144,7 +144,7 @@
       }
     },
     "QALegacyAuthorization": {
-      "type": "object",
+      "type": "secureObject",
       "defaultValue": {
         "ClaimType": "",
         "UserClaimValue": "",
@@ -152,7 +152,7 @@
       }
     },
     "QAAuthorization": {
-      "type": "object",
+      "type": "secureObject",
       "defaultValue": {
         "ClaimType": "",
         "UserClaimValue": "",
@@ -167,7 +167,7 @@
       }
     },
     "SlackWebhook": {
-      "type": "string",
+      "type": "securestring",
       "defaultValue": ""
     },
     "FindAnApprenticeshipDetailPrefixUrl": {
@@ -175,24 +175,24 @@
       "defaultValue": ""
     },
     "GeocodePostcodeAnywhereKey": {
-      "type": "string",
+      "type": "securestring",
       "defaultValue": ""
     },
     "PostcodeAnywhereKey": {
-      "type": "string",
+      "type": "securestring",
       "defaultValue": ""
     },
-	  "ZenDesk": {
-			"type": "object",
-			"defaultValue": {
+    "ZenDesk": {
+      "type": "secureObject",
+      "defaultValue": {
         "EmployerSnippetSectionId": "",
         "ProviderSnippetSectionId": "",
-				"SnippetKey": "",
-				"CobrowsingSnippetKey": ""
-			}
-		},
+        "SnippetKey": "",
+        "CobrowsingSnippetKey": ""
+      }
+    },
     "FaaConfiguration": {
-      "type": "object",
+      "type": "secureObject",
       "defaultValue": {
         "StorageConnectionString": ""
       },
@@ -201,7 +201,7 @@
       }
     },
     "VacancyApiConfiguration": {
-      "type": "object",
+      "type": "secureObject",
       "defaultValue": {
         "ApiReadSubscriptionKey": "",
         "ApiSearchBaseUrl": "https://apis.apprenticeships.sfa.bis.gov.uk/vacancies/v1/apprenticeships/search"
@@ -230,13 +230,13 @@
       "type": "string"
     },
     "DasSharedNServiceBusConfiguration": {
-      "type": "object"
+      "type": "secureObject"
     },
     "CommunicationsConfiguration": {
-      "type": "object"
+      "type": "secureObject"
     },
     "NotificationsApiClientConfiguration": {
-      "type": "object"
+      "type": "secureObject"
     },
     "cosmosDbIpRangeFilter": {
       "type": "string",
@@ -506,7 +506,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[concat(variables('deploymentUrlBase'),'app-service.json')]",
+          "uri": "[concat(variables('deploymentUrlBase'),'app-service-v2.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
@@ -520,137 +520,141 @@
             "value": "[parameters('SharedAppServicePlanResourceGroup')]"
           },
           "appServiceAppSettings": {
-            "value": [
-              {
-                "name": "Authentication:Authority",
-                "value": "[parameters('Authentication').Authority]"
-              },
-              {
-                "name": "Authentication:MetaDataAddress",
-                "value": "[parameters('Authentication').MetaDataAddress]"
-              },
-              {
-                "name": "Authentication:ClientId",
-                "value": "[parameters('Authentication').ClientId]"
-              },
-              {
-                "name": "Authentication:ClientSecret",
-                "value": "[parameters('Authentication').ClientSecret]"
-              },
-              {
-                "name": "Slack:WebhookUrl",
-                "value": "[parameters('SlackWebhook')]"
-              },
-              {
-                "name": "Slack:FindAnApprenticeshipDetailPrefixUrl",
-                "value": "[parameters('FindAnApprenticeshipDetailPrefixUrl')]"
-              },
-              {
-                "name": "AccountApiConfiguration:ApiBaseUrl",
-                "value": "[parameters('AccountApiConfiguration').ApiBaseUrl]"
-              },
-              {
-                "name": "AccountApiConfiguration:ClientId",
-                "value": "[parameters('AccountApiConfiguration').ClientId]"
-              },
-              {
-                "name": "AccountApiConfiguration:ClientSecret",
-                "value": "[parameters('AccountApiConfiguration').ClientSecret]"
-              },
-              {
-                "name": "AccountApiConfiguration:IdentifierUri",
-                "value": "[parameters('AccountApiConfiguration').IdentifierUri]"
-              },
-              {
-                "name": "AccountApiConfiguration:Tenant",
-                "value": "[parameters('AccountApiConfiguration').Tenant]"
-              },
-              {
-                "name": "ApplicationInsights:InstrumentationKey",
-                "value": "[reference(variables('EmployerRecruitAppServiceName')).outputs.InstrumentationKey.value]"
-              },
-              {
-                "name": "ExternalLinks:ManageApprenticeshipSiteUrl",
-                "value": "[parameters('ExternalLinks').ManageApprenticeshipSiteUrl]"
-              },
-              {
-                "name": "ExternalLinks:EmployerIdamsSiteUrl",
-                "value": "[parameters('ExternalLinks').EmployerIdamsSiteUrl]"
-              },
-              {
-                "name": "ExternalLinks:CommitmentsSiteUrl",
-                "value": "[parameters('ExternalLinks').CommitmentsSiteUrl]"
-              },
-              {
-                "name": "ExternalLinks:EmployerFavouritesUrl",
-                "value": "[parameters('ExternalLinks').EmployerFavouritesUrl]"
-              },
-              {
-                "name": "Features:SetNotificationPreferences",
-                "value": "[parameters('Features').SetNotificationPreferences]"
-              },
-              {
-                "name": "ASPNETCORE_ENVIRONMENT",
-                "value": "[toUpper(parameters('EnvironmentFullName'))]"
-              },
-              {
-                "name": "GoogleMapsPrivateKey",
-                "value": "[parameters('GoogleMapsPrivateKey')]"
-              },
-              {
-                "name": "PostcodeAnywhere:Key",
-                "value": "[parameters('PostcodeAnywhereKey')]"
-              },
-              {
-                "name": "FaaConfiguration:StorageConnectionString",
-                "value": "[parameters('FaaConfiguration').StorageConnectionString]"
-              },
-              {
-                "name": "UseTableStorageQueryStore",
-                "value": "[parameters('UseTableStorageQueryStore')]"
-              },
-              {
-								"name": "ZenDesk:SnippetSectionId",
-								"value": "[parameters('ZenDesk').EmployerSnippetSectionId]"
-							},
-							{
-								"name": "ZenDesk:SnippetKey",
-								"value": "[parameters('ZenDesk').SnippetKey]"
-							},
-							{
-								"name": "ZenDesk:CobrowsingSnippetKey",
-								"value": "[parameters('ZenDesk').CobrowsingSnippetKey]"
-							}
-            ]
+            "value": {
+              "array": [
+                {
+                  "name": "Authentication:Authority",
+                  "value": "[parameters('Authentication').Authority]"
+                },
+                {
+                  "name": "Authentication:MetaDataAddress",
+                  "value": "[parameters('Authentication').MetaDataAddress]"
+                },
+                {
+                  "name": "Authentication:ClientId",
+                  "value": "[parameters('Authentication').ClientId]"
+                },
+                {
+                  "name": "Authentication:ClientSecret",
+                  "value": "[parameters('Authentication').ClientSecret]"
+                },
+                {
+                  "name": "Slack:WebhookUrl",
+                  "value": "[parameters('SlackWebhook')]"
+                },
+                {
+                  "name": "Slack:FindAnApprenticeshipDetailPrefixUrl",
+                  "value": "[parameters('FindAnApprenticeshipDetailPrefixUrl')]"
+                },
+                {
+                  "name": "AccountApiConfiguration:ApiBaseUrl",
+                  "value": "[parameters('AccountApiConfiguration').ApiBaseUrl]"
+                },
+                {
+                  "name": "AccountApiConfiguration:ClientId",
+                  "value": "[parameters('AccountApiConfiguration').ClientId]"
+                },
+                {
+                  "name": "AccountApiConfiguration:ClientSecret",
+                  "value": "[parameters('AccountApiConfiguration').ClientSecret]"
+                },
+                {
+                  "name": "AccountApiConfiguration:IdentifierUri",
+                  "value": "[parameters('AccountApiConfiguration').IdentifierUri]"
+                },
+                {
+                  "name": "AccountApiConfiguration:Tenant",
+                  "value": "[parameters('AccountApiConfiguration').Tenant]"
+                },
+                {
+                  "name": "ApplicationInsights:InstrumentationKey",
+                  "value": "[reference(variables('EmployerRecruitAppServiceName')).outputs.InstrumentationKey.value]"
+                },
+                {
+                  "name": "ExternalLinks:ManageApprenticeshipSiteUrl",
+                  "value": "[parameters('ExternalLinks').ManageApprenticeshipSiteUrl]"
+                },
+                {
+                  "name": "ExternalLinks:EmployerIdamsSiteUrl",
+                  "value": "[parameters('ExternalLinks').EmployerIdamsSiteUrl]"
+                },
+                {
+                  "name": "ExternalLinks:CommitmentsSiteUrl",
+                  "value": "[parameters('ExternalLinks').CommitmentsSiteUrl]"
+                },
+                {
+                  "name": "ExternalLinks:EmployerFavouritesUrl",
+                  "value": "[parameters('ExternalLinks').EmployerFavouritesUrl]"
+                },
+                {
+                  "name": "Features:SetNotificationPreferences",
+                  "value": "[parameters('Features').SetNotificationPreferences]"
+                },
+                {
+                  "name": "ASPNETCORE_ENVIRONMENT",
+                  "value": "[toUpper(parameters('EnvironmentFullName'))]"
+                },
+                {
+                  "name": "GoogleMapsPrivateKey",
+                  "value": "[parameters('GoogleMapsPrivateKey')]"
+                },
+                {
+                  "name": "PostcodeAnywhere:Key",
+                  "value": "[parameters('PostcodeAnywhereKey')]"
+                },
+                {
+                  "name": "FaaConfiguration:StorageConnectionString",
+                  "value": "[parameters('FaaConfiguration').StorageConnectionString]"
+                },
+                {
+                  "name": "UseTableStorageQueryStore",
+                  "value": "[parameters('UseTableStorageQueryStore')]"
+                },
+                {
+                  "name": "ZenDesk:SnippetSectionId",
+                  "value": "[parameters('ZenDesk').EmployerSnippetSectionId]"
+                },
+                {
+                  "name": "ZenDesk:SnippetKey",
+                  "value": "[parameters('ZenDesk').SnippetKey]"
+                },
+                {
+                  "name": "ZenDesk:CobrowsingSnippetKey",
+                  "value": "[parameters('ZenDesk').CobrowsingSnippetKey]"
+                }
+              ]
+            }
           },
           "appServiceConnectionStrings": {
-            "value": [
-              {
-                "name": "Redis",
-                "connectionString": "[parameters('LoggingRedisConnectionString')]",
-                "type": "Custom"
-              },
-              {
-                "name": "StorageRedis",
-                "connectionString": "[parameters('StorageRedisConnectionString')]",
-                "type": "Custom"
-              },
-              {
-                "name": "MongoDb",
-                "connectionString": "[concat('mongodb://', variables('CosmosDbName'), ':', reference(variables('CosmosDbName')).outputs.PrimaryMasterKey.value,'@', variables('CosmosDbName'), '.documents.azure.com:10255/?ssl=true&replicaSet=globaldb')]",
-                "type": "Custom"
-              },
-              {
-                "name": "QueueStorage",
-                "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('StorageAccountName'),';AccountKey=',reference(variables('StorageAccountName')).outputs.storageKey.value)]",
-                "type": "Custom"
-              },
-              {
-                "name": "TableStorage",
-                "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('StorageAccountName'),';AccountKey=',reference(variables('StorageAccountName')).outputs.storageKey.value)]",
-                "type": "Custom"
-              }
-            ]
+            "value": {
+              "array": [
+                {
+                  "name": "Redis",
+                  "connectionString": "[parameters('LoggingRedisConnectionString')]",
+                  "type": "Custom"
+                },
+                {
+                  "name": "StorageRedis",
+                  "connectionString": "[parameters('StorageRedisConnectionString')]",
+                  "type": "Custom"
+                },
+                {
+                  "name": "MongoDb",
+                  "connectionString": "[concat('mongodb://', variables('CosmosDbName'), ':', reference(variables('CosmosDbName')).outputs.PrimaryMasterKey.value,'@', variables('CosmosDbName'), '.documents.azure.com:10255/?ssl=true&replicaSet=globaldb')]",
+                  "type": "Custom"
+                },
+                {
+                  "name": "QueueStorage",
+                  "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('StorageAccountName'),';AccountKey=',reference(variables('StorageAccountName')).outputs.storageKey.value)]",
+                  "type": "Custom"
+                },
+                {
+                  "name": "TableStorage",
+                  "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('StorageAccountName'),';AccountKey=',reference(variables('StorageAccountName')).outputs.storageKey.value)]",
+                  "type": "Custom"
+                }
+              ]
+            }
           },
           "customHostName": {
             "value": "[parameters('EmployerCustomHostname')]"
@@ -704,7 +708,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[concat(variables('deploymentUrlBase'),'app-service.json')]",
+          "uri": "[concat(variables('deploymentUrlBase'),'app-service-v2.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
@@ -718,110 +722,114 @@
             "value": "[parameters('SharedAppServicePlanResourceGroup')]"
           },
           "appServiceAppSettings": {
-            "value": [
-              {
-                "name": "Authentication:Wtrealm",
-                "value": "[parameters('QAAuthentication').WtRealm]"
-              },
-              {
-                "name": "Authentication:MetaDataAddress",
-                "value": "[parameters('QAAuthentication').MetaDataAddress]"
-              },
-              {
-                "name": "ApplicationInsights:InstrumentationKey",
-                "value": "[reference(variables('QAAppServiceName')).outputs.InstrumentationKey.value]"
-              },
-              {
-                "name": "ASPNETCORE_ENVIRONMENT",
-                "value": "[toUpper(parameters('EnvironmentFullName'))]"
-              },
-              {
-                "name": "GoogleMapsPrivateKey",
-                "value": "[parameters('GoogleMapsPrivateKey')]"
-              },
-              {
-                "name": "LegacyAuthorization:ClaimType",
-                "value": "[parameters('QALegacyAuthorization').ClaimType]"
-              },
-              {
-                "name": "LegacyAuthorization:UserClaimValue",
-                "value": "[parameters('QALegacyAuthorization').UserClaimValue]"
-              },
-              {
-                "name": "LegacyAuthorization:TeamLeadClaimValue",
-                "value": "[parameters('QALegacyAuthorization').TeamLeadClaimValue]"
-              },
-              {
-                "name": "Authorization:ClaimType",
-                "value": "[parameters('QAAuthorization').ClaimType]"
-              },
-              {
-                "name": "Authorization:UserClaimValue",
-                "value": "[parameters('QAAuthorization').UserClaimValue]"
-              },
-              {
-                "name": "Authorization:TeamLeadClaimValue",
-                "value": "[parameters('QAAuthorization').TeamLeadClaimValue]"
-              },
-              {
-                "name": "ExternalLinks:StaffIdamsUrl",
-                "value": "[parameters('ExternalLinks').StaffIdamsUrl]"
-              },
-              {
-                "name": "VacancyReviewAssignationTimeoutMinutes",
-                "value": "[parameters('VacancyReviewAssignationTimeoutMinutes')]"
-              },
-              {
-                "name": "Slack:WebhookUrl",
-                "value": "[parameters('SlackWebhook')]"
-              },
-              {
-                "name": "Slack:FindAnApprenticeshipDetailPrefixUrl",
-                "value": "[parameters('FindAnApprenticeshipDetailPrefixUrl')]"
-              },
-              {
-                "name": "UseTableStorageQueryStore",
-                "value": "[parameters('UseTableStorageQueryStore')]"
-              },
-              {
-                "name": "FaaConfiguration:StorageConnectionString",
-                "value": "[parameters('FaaConfiguration').StorageConnectionString]"
-              }
-            ]
+            "value": {
+              "array": [
+                {
+                  "name": "Authentication:Wtrealm",
+                  "value": "[parameters('QAAuthentication').WtRealm]"
+                },
+                {
+                  "name": "Authentication:MetaDataAddress",
+                  "value": "[parameters('QAAuthentication').MetaDataAddress]"
+                },
+                {
+                  "name": "ApplicationInsights:InstrumentationKey",
+                  "value": "[reference(variables('QAAppServiceName')).outputs.InstrumentationKey.value]"
+                },
+                {
+                  "name": "ASPNETCORE_ENVIRONMENT",
+                  "value": "[toUpper(parameters('EnvironmentFullName'))]"
+                },
+                {
+                  "name": "GoogleMapsPrivateKey",
+                  "value": "[parameters('GoogleMapsPrivateKey')]"
+                },
+                {
+                  "name": "LegacyAuthorization:ClaimType",
+                  "value": "[parameters('QALegacyAuthorization').ClaimType]"
+                },
+                {
+                  "name": "LegacyAuthorization:UserClaimValue",
+                  "value": "[parameters('QALegacyAuthorization').UserClaimValue]"
+                },
+                {
+                  "name": "LegacyAuthorization:TeamLeadClaimValue",
+                  "value": "[parameters('QALegacyAuthorization').TeamLeadClaimValue]"
+                },
+                {
+                  "name": "Authorization:ClaimType",
+                  "value": "[parameters('QAAuthorization').ClaimType]"
+                },
+                {
+                  "name": "Authorization:UserClaimValue",
+                  "value": "[parameters('QAAuthorization').UserClaimValue]"
+                },
+                {
+                  "name": "Authorization:TeamLeadClaimValue",
+                  "value": "[parameters('QAAuthorization').TeamLeadClaimValue]"
+                },
+                {
+                  "name": "ExternalLinks:StaffIdamsUrl",
+                  "value": "[parameters('ExternalLinks').StaffIdamsUrl]"
+                },
+                {
+                  "name": "VacancyReviewAssignationTimeoutMinutes",
+                  "value": "[parameters('VacancyReviewAssignationTimeoutMinutes')]"
+                },
+                {
+                  "name": "Slack:WebhookUrl",
+                  "value": "[parameters('SlackWebhook')]"
+                },
+                {
+                  "name": "Slack:FindAnApprenticeshipDetailPrefixUrl",
+                  "value": "[parameters('FindAnApprenticeshipDetailPrefixUrl')]"
+                },
+                {
+                  "name": "UseTableStorageQueryStore",
+                  "value": "[parameters('UseTableStorageQueryStore')]"
+                },
+                {
+                  "name": "FaaConfiguration:StorageConnectionString",
+                  "value": "[parameters('FaaConfiguration').StorageConnectionString]"
+                }
+              ]
+            }
           },
           "appServiceConnectionStrings": {
-            "value": [
-              {
-                "name": "Redis",
-                "connectionString": "[parameters('LoggingRedisConnectionString')]",
-                "type": "Custom"
-              },
-              {
-                "name": "StorageRedis",
-                "connectionString": "[parameters('StorageRedisConnectionString')]",
-                "type": "Custom"
-              },
-              {
-                "name": "MongoDb",
-                "connectionString": "[concat('mongodb://', variables('CosmosDbName'), ':', reference(variables('CosmosDbName')).outputs.PrimaryMasterKey.value,'@', variables('CosmosDbName'), '.documents.azure.com:10255/?ssl=true&replicaSet=globaldb')]",
-                "type": "Custom"
-              },
-              {
-                "name": "QueueStorage",
-                "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('StorageAccountName'),';AccountKey=',reference(variables('StorageAccountName')).outputs.storageKey.value)]",
-                "type": "Custom"
-              },
-              {
-                "name": "TableStorage",
-                "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('StorageAccountName'),';AccountKey=',reference(variables('StorageAccountName')).outputs.storageKey.value)]",
-                "type": "Custom"
-              },
-              {
-                "name": "CommunicationsStorage",
-                "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('StorageAccountName'),';AccountKey=',reference(variables('StorageAccountName')).outputs.storageKey.value)]",
-                "type": "Custom"
-              }
-            ]
+            "value": {
+              "array": [
+                {
+                  "name": "Redis",
+                  "connectionString": "[parameters('LoggingRedisConnectionString')]",
+                  "type": "Custom"
+                },
+                {
+                  "name": "StorageRedis",
+                  "connectionString": "[parameters('StorageRedisConnectionString')]",
+                  "type": "Custom"
+                },
+                {
+                  "name": "MongoDb",
+                  "connectionString": "[concat('mongodb://', variables('CosmosDbName'), ':', reference(variables('CosmosDbName')).outputs.PrimaryMasterKey.value,'@', variables('CosmosDbName'), '.documents.azure.com:10255/?ssl=true&replicaSet=globaldb')]",
+                  "type": "Custom"
+                },
+                {
+                  "name": "QueueStorage",
+                  "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('StorageAccountName'),';AccountKey=',reference(variables('StorageAccountName')).outputs.storageKey.value)]",
+                  "type": "Custom"
+                },
+                {
+                  "name": "TableStorage",
+                  "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('StorageAccountName'),';AccountKey=',reference(variables('StorageAccountName')).outputs.storageKey.value)]",
+                  "type": "Custom"
+                },
+                {
+                  "name": "CommunicationsStorage",
+                  "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('StorageAccountName'),';AccountKey=',reference(variables('StorageAccountName')).outputs.storageKey.value)]",
+                  "type": "Custom"
+                }
+              ]
+            }
           },
           "customHostName": {
             "value": "[parameters('QAAppCustomHostname')]"
@@ -874,7 +882,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[concat(variables('deploymentUrlBase'),'app-service.json')]",
+          "uri": "[concat(variables('deploymentUrlBase'),'app-service-v2.json')]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
@@ -888,169 +896,173 @@
             "value": "[parameters('SharedAppServicePlanResourceGroup')]"
           },
           "appServiceAppSettings": {
-            "value": [
-              {
-                "name": "Authentication:WtRealm",
-                "value": "[parameters('ProviderAuthentication').WtRealm]"
-              },
-              {
-                "name": "Authentication:MetaDataAddress",
-                "value": "[parameters('ProviderAuthentication').MetaDataAddress]"
-              },
-              {
-                "name": "Slack:WebhookUrl",
-                "value": "[parameters('SlackWebhook')]"
-              },
-              {
-                "name": "ApplicationInsights:InstrumentationKey",
-                "value": "[reference(variables('ProviderRecruitAppServiceName')).outputs.InstrumentationKey.value]"
-              },	              
-              {
-                "name": "Slack:FindAnApprenticeshipDetailPrefixUrl",
-                "value": "[parameters('FindAnApprenticeshipDetailPrefixUrl')]"
-              },
-              {
-                "name": "ExternalLinks:ProviderApprenticeshipSiteUrl",
-                "value": "[parameters('ExternalLinks').ProviderApprenticeshipSiteUrl]"
-              },
-              {
-                "name": "ExternalLinks:CommitmentsSiteUrl",
-                "value": "[parameters('ExternalLinks').ProviderCommitmentsSiteUrl]"
-              },
-              {
-                "name": "ExternalLinks:ReservationsSiteUrl",
-                "value": "[parameters('ExternalLinks').ReservationsSiteUrl]"
-              },
-              {
-                "name": "Features:SetNotificationPreferences",
-                "value": "[parameters('Features').SetNotificationPreferences]"
-              },
-              {
-                "name": "ExternalLinks:SignProviderAgreementUrl",
-                "value": "[parameters('ExternalLinks').SignProviderAgreementUrl]"
-              },
-              {
-                "name": "ASPNETCORE_ENVIRONMENT",
-                "value": "[toUpper(parameters('EnvironmentFullName'))]"
-              },
-              {
-                "name": "GoogleMapsPrivateKey",
-                "value": "[parameters('GoogleMapsPrivateKey')]"
-              },
-              {
-                "name": "PostcodeAnywhere:Key",
-                "value": "[parameters('PostcodeAnywhereKey')]"
-              },
-              {
-								"name": "ZenDesk:SnippetSectionId",
-								"value": "[parameters('ZenDesk').ProviderSnippetSectionId]"
-							},
-							{
-								"name": "ZenDesk:SnippetKey",
-								"value": "[parameters('ZenDesk').SnippetKey]"
-							},
-							{
-								"name": "ZenDesk:CobrowsingSnippetKey",
-								"value": "[parameters('ZenDesk').CobrowsingSnippetKey]"
-							},
-              {
-                "name": "UseTableStorageQueryStore",
-                "value": "[parameters('UseTableStorageQueryStore')]"
-              },
-              {
-                "name": "FaaConfiguration:StorageConnectionString",
-                "value": "[parameters('FaaConfiguration').StorageConnectionString]"
-              },
-              {
-                "name": "AccountApiConfiguration:ApiBaseUrl",
-                "value": "[parameters('AccountApiConfiguration').ApiBaseUrl]"
-              },
-              {
-                "name": "AccountApiConfiguration:ClientId",
-                "value": "[parameters('AccountApiConfiguration').ClientId]"
-              },
-              {
-                "name": "AccountApiConfiguration:ClientSecret",
-                "value": "[parameters('AccountApiConfiguration').ClientSecret]"
-              },
-              {
-                "name": "AccountApiConfiguration:IdentifierUri",
-                "value": "[parameters('AccountApiConfiguration').IdentifierUri]"
-              },
-              {
-                "name": "AccountApiConfiguration:Tenant",
-                "value": "[parameters('AccountApiConfiguration').Tenant]"
-              },
-              {
-                "name": "PasAccountApiConfiguration:ApiBaseUrl",
-                "value": "[parameters('PasAccountApiConfiguration').ApiBaseUrl]"
-              },
-              {
-                "name": "PasAccountApiConfiguration:ClientId",
-                "value": "[parameters('PasAccountApiConfiguration').ClientId]"
-              },
-              {
-                "name": "PasAccountApiConfiguration:ClientSecret",
-                "value": "[parameters('PasAccountApiConfiguration').ClientSecret]"
-              },
-              {
-                "name": "PasAccountApiConfiguration:IdentifierUri",
-                "value": "[parameters('PasAccountApiConfiguration').IdentifierUri]"
-              },
-              {
-                "name": "PasAccountApiConfiguration:Tenant",
-                "value": "[parameters('PasAccountApiConfiguration').Tenant]"
-              },
-              {
-                "name": "ProviderRelationshipsApiConfiguration:ApiBaseUrl",
-                "value": "[parameters('ProviderRelationshipsApiConfiguration').ApiBaseUrl]"
-              },
-              {
-                "name": "ProviderRelationshipsApiConfiguration:ClientId",
-                "value": "[parameters('ProviderRelationshipsApiConfiguration').ClientId]"
-              },
-              {
-                "name": "ProviderRelationshipsApiConfiguration:ClientSecret",
-                "value": "[parameters('ProviderRelationshipsApiConfiguration').ClientSecret]"
-              },
-              {
-                "name": "ProviderRelationshipsApiConfiguration:IdentifierUri",
-                "value": "[parameters('ProviderRelationshipsApiConfiguration').IdentifierUri]"
-              },
-              {
-                "name": "ProviderRelationshipsApiConfiguration:Tenant",
-                "value": "[parameters('ProviderRelationshipsApiConfiguration').Tenant]"
-              }
-            ]
+            "value": {
+              "array": [
+                {
+                  "name": "Authentication:WtRealm",
+                  "value": "[parameters('ProviderAuthentication').WtRealm]"
+                },
+                {
+                  "name": "Authentication:MetaDataAddress",
+                  "value": "[parameters('ProviderAuthentication').MetaDataAddress]"
+                },
+                {
+                  "name": "Slack:WebhookUrl",
+                  "value": "[parameters('SlackWebhook')]"
+                },
+                {
+                  "name": "ApplicationInsights:InstrumentationKey",
+                  "value": "[reference(variables('ProviderRecruitAppServiceName')).outputs.InstrumentationKey.value]"
+                },
+                {
+                  "name": "Slack:FindAnApprenticeshipDetailPrefixUrl",
+                  "value": "[parameters('FindAnApprenticeshipDetailPrefixUrl')]"
+                },
+                {
+                  "name": "ExternalLinks:ProviderApprenticeshipSiteUrl",
+                  "value": "[parameters('ExternalLinks').ProviderApprenticeshipSiteUrl]"
+                },
+                {
+                  "name": "ExternalLinks:CommitmentsSiteUrl",
+                  "value": "[parameters('ExternalLinks').ProviderCommitmentsSiteUrl]"
+                },
+                {
+                  "name": "ExternalLinks:ReservationsSiteUrl",
+                  "value": "[parameters('ExternalLinks').ReservationsSiteUrl]"
+                },
+                {
+                  "name": "Features:SetNotificationPreferences",
+                  "value": "[parameters('Features').SetNotificationPreferences]"
+                },
+                {
+                  "name": "ExternalLinks:SignProviderAgreementUrl",
+                  "value": "[parameters('ExternalLinks').SignProviderAgreementUrl]"
+                },
+                {
+                  "name": "ASPNETCORE_ENVIRONMENT",
+                  "value": "[toUpper(parameters('EnvironmentFullName'))]"
+                },
+                {
+                  "name": "GoogleMapsPrivateKey",
+                  "value": "[parameters('GoogleMapsPrivateKey')]"
+                },
+                {
+                  "name": "PostcodeAnywhere:Key",
+                  "value": "[parameters('PostcodeAnywhereKey')]"
+                },
+                {
+                  "name": "ZenDesk:SnippetSectionId",
+                  "value": "[parameters('ZenDesk').ProviderSnippetSectionId]"
+                },
+                {
+                  "name": "ZenDesk:SnippetKey",
+                  "value": "[parameters('ZenDesk').SnippetKey]"
+                },
+                {
+                  "name": "ZenDesk:CobrowsingSnippetKey",
+                  "value": "[parameters('ZenDesk').CobrowsingSnippetKey]"
+                },
+                {
+                  "name": "UseTableStorageQueryStore",
+                  "value": "[parameters('UseTableStorageQueryStore')]"
+                },
+                {
+                  "name": "FaaConfiguration:StorageConnectionString",
+                  "value": "[parameters('FaaConfiguration').StorageConnectionString]"
+                },
+                {
+                  "name": "AccountApiConfiguration:ApiBaseUrl",
+                  "value": "[parameters('AccountApiConfiguration').ApiBaseUrl]"
+                },
+                {
+                  "name": "AccountApiConfiguration:ClientId",
+                  "value": "[parameters('AccountApiConfiguration').ClientId]"
+                },
+                {
+                  "name": "AccountApiConfiguration:ClientSecret",
+                  "value": "[parameters('AccountApiConfiguration').ClientSecret]"
+                },
+                {
+                  "name": "AccountApiConfiguration:IdentifierUri",
+                  "value": "[parameters('AccountApiConfiguration').IdentifierUri]"
+                },
+                {
+                  "name": "AccountApiConfiguration:Tenant",
+                  "value": "[parameters('AccountApiConfiguration').Tenant]"
+                },
+                {
+                  "name": "PasAccountApiConfiguration:ApiBaseUrl",
+                  "value": "[parameters('PasAccountApiConfiguration').ApiBaseUrl]"
+                },
+                {
+                  "name": "PasAccountApiConfiguration:ClientId",
+                  "value": "[parameters('PasAccountApiConfiguration').ClientId]"
+                },
+                {
+                  "name": "PasAccountApiConfiguration:ClientSecret",
+                  "value": "[parameters('PasAccountApiConfiguration').ClientSecret]"
+                },
+                {
+                  "name": "PasAccountApiConfiguration:IdentifierUri",
+                  "value": "[parameters('PasAccountApiConfiguration').IdentifierUri]"
+                },
+                {
+                  "name": "PasAccountApiConfiguration:Tenant",
+                  "value": "[parameters('PasAccountApiConfiguration').Tenant]"
+                },
+                {
+                  "name": "ProviderRelationshipsApiConfiguration:ApiBaseUrl",
+                  "value": "[parameters('ProviderRelationshipsApiConfiguration').ApiBaseUrl]"
+                },
+                {
+                  "name": "ProviderRelationshipsApiConfiguration:ClientId",
+                  "value": "[parameters('ProviderRelationshipsApiConfiguration').ClientId]"
+                },
+                {
+                  "name": "ProviderRelationshipsApiConfiguration:ClientSecret",
+                  "value": "[parameters('ProviderRelationshipsApiConfiguration').ClientSecret]"
+                },
+                {
+                  "name": "ProviderRelationshipsApiConfiguration:IdentifierUri",
+                  "value": "[parameters('ProviderRelationshipsApiConfiguration').IdentifierUri]"
+                },
+                {
+                  "name": "ProviderRelationshipsApiConfiguration:Tenant",
+                  "value": "[parameters('ProviderRelationshipsApiConfiguration').Tenant]"
+                }
+              ]
+            }
           },
           "appServiceConnectionStrings": {
-            "value": [
-              {
-                "name": "Redis",
-                "connectionString": "[parameters('LoggingRedisConnectionString')]",
-                "type": "Custom"
-              },
-              {
-                "name": "StorageRedis",
-                "connectionString": "[parameters('StorageRedisConnectionString')]",
-                "type": "Custom"
-              },
-              {
-                "name": "MongoDb",
-                "connectionString": "[concat('mongodb://', variables('CosmosDbName'), ':', reference(variables('CosmosDbName')).outputs.PrimaryMasterKey.value,'@', variables('CosmosDbName'), '.documents.azure.com:10255/?ssl=true&replicaSet=globaldb')]",
-                "type": "Custom"
-              },
-              {
-                "name": "QueueStorage",
-                "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('StorageAccountName'),';AccountKey=',reference(variables('StorageAccountName')).outputs.storageKey.value)]",
-                "type": "Custom"
-              },
-              {
-                "name": "TableStorage",
-                "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('StorageAccountName'),';AccountKey=',reference(variables('StorageAccountName')).outputs.storageKey.value)]",
-                "type": "Custom"
-              }
-            ]
+            "value": {
+              "array": [
+                {
+                  "name": "Redis",
+                  "connectionString": "[parameters('LoggingRedisConnectionString')]",
+                  "type": "Custom"
+                },
+                {
+                  "name": "StorageRedis",
+                  "connectionString": "[parameters('StorageRedisConnectionString')]",
+                  "type": "Custom"
+                },
+                {
+                  "name": "MongoDb",
+                  "connectionString": "[concat('mongodb://', variables('CosmosDbName'), ':', reference(variables('CosmosDbName')).outputs.PrimaryMasterKey.value,'@', variables('CosmosDbName'), '.documents.azure.com:10255/?ssl=true&replicaSet=globaldb')]",
+                  "type": "Custom"
+                },
+                {
+                  "name": "QueueStorage",
+                  "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('StorageAccountName'),';AccountKey=',reference(variables('StorageAccountName')).outputs.storageKey.value)]",
+                  "type": "Custom"
+                },
+                {
+                  "name": "TableStorage",
+                  "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('StorageAccountName'),';AccountKey=',reference(variables('StorageAccountName')).outputs.storageKey.value)]",
+                  "type": "Custom"
+                }
+              ]
+            }
           },
           "customHostName": {
             "value": "[parameters('ProviderCustomHostname')]"
@@ -1119,210 +1131,226 @@
       ]
     },
     {
+      "apiVersion": "2017-05-10",
       "name": "[variables('WebJobAppServiceName')]",
-      "type": "Microsoft.Web/sites",
-      "kind": "app",
-      "apiVersion": "2018-11-01",
-      "location": "[resourceGroup().location]",
-      "identity": {
-        "type": "SystemAssigned"
-      },
+      "type": "Microsoft.Resources/deployments",
       "properties": {
-        "serverFarmId": "[resourceId(resourceGroup().name, 'Microsoft.Web/serverfarms', variables('webJobAppServicePlanName'))]",
-        "clientAffinityEnabled": false,
-        "siteConfig": {
-          "alwaysOn": true,
-          "appSettings": [
-            {
-              "name": "ASPNETCORE_ENVIRONMENT",
-              "value": "[toUpper(parameters('EnvironmentFullName'))]"
-            },
-            {
-              "name": "ApprenticeshipProgrammesApiBaseUrl",
-              "value": "[parameters('ApprenticeshipProgrammesApiBaseUrl')]"
-            },
-            {
-              "name": "AccountApiConfiguration:ApiBaseUrl",
-              "value": "[parameters('AccountApiConfiguration').ApiBaseUrl]"
-            },
-            {
-              "name": "AccountApiConfiguration:ClientId",
-              "value": "[parameters('AccountApiConfiguration').ClientId]"
-            },
-            {
-              "name": "AccountApiConfiguration:ClientSecret",
-              "value": "[parameters('AccountApiConfiguration').ClientSecret]"
-            },
-            {
-              "name": "AccountApiConfiguration:IdentifierUri",
-              "value": "[parameters('AccountApiConfiguration').IdentifierUri]"
-            },
-            {
-              "name": "AccountApiConfiguration:Tenant",
-              "value": "[parameters('AccountApiConfiguration').Tenant]"
-            },
-            {
-              "name": "ProviderRelationshipsApiConfiguration:ApiBaseUrl",
-              "value": "[parameters('ProviderRelationshipsApiConfiguration').ApiBaseUrl]"
-            },
-            {
-              "name": "ProviderRelationshipsApiConfiguration:ClientId",
-              "value": "[parameters('ProviderRelationshipsApiConfiguration').ClientId]"
-            },
-            {
-              "name": "ProviderRelationshipsApiConfiguration:ClientSecret",
-              "value": "[parameters('ProviderRelationshipsApiConfiguration').ClientSecret]"
-            },
-            {
-              "name": "ProviderRelationshipsApiConfiguration:IdentifierUri",
-              "value": "[parameters('ProviderRelationshipsApiConfiguration').IdentifierUri]"
-            },
-            {
-              "name": "ProviderRelationshipsApiConfiguration:Tenant",
-              "value": "[parameters('ProviderRelationshipsApiConfiguration').Tenant]"
-            },
-            {
-              "name": "VacancyApiConfiguration:ApiSearchBaseUrl",
-              "value": "[parameters('VacancyApiConfiguration').ApiSearchBaseUrl]"
-            },
-            {
-              "name": "VacancyApiConfiguration:ApiReadSubscriptionKey",
-              "value": "[parameters('VacancyApiConfiguration').ApiReadSubscriptionKey]"
-            },
-            {
-              "name": "Slack:WebhookUrl",
-              "value": "[parameters('SlackWebhook')]"
-            },
-            {
-              "name": "Slack:FindAnApprenticeshipDetailPrefixUrl",
-              "value": "[parameters('FindAnApprenticeshipDetailPrefixUrl')]"
-            },
-            {
-              "name": "FaaConfiguration:StorageConnectionString",
-              "value": "[parameters('FaaConfiguration').StorageConnectionString]"
-            },
-            {
-              "name": "Geocode:PostcodeAnywhereKey",
-              "value": "[parameters('GeocodePostcodeAnywhereKey')]"
-            },
-            {
-              "name": "DasSharedNServiceBusConfiguration:ConnectionString",
-              "value": "[parameters('DasSharedNServiceBusConfiguration').ConnectionString]"
-            },
-            {
-              "name": "DasSharedNServiceBusConfiguration:NServiceBusLicense",
-              "value": "[parameters('DasSharedNServiceBusConfiguration').NServiceBusLicense]"
-            },
-            {
-              "name": "CommunicationsConfiguration:EmployersApprenticeshipServiceUrl",
-              "value": "[parameters('CommunicationsConfiguration').EmployersApprenticeshipServiceUrl]"
-            },
-            {
-              "name": "CommunicationsConfiguration:ProvidersApprenticeshipServiceUrl",
-              "value": "[parameters('CommunicationsConfiguration').ProvidersApprenticeshipServiceUrl]"
-            },
-            {
-              "name": "NotificationsApiClientConfiguration:ApiBaseUrl",
-              "value": "[parameters('NotificationsApiClientConfiguration').ApiBaseUrl]"
-            },
-            {
-              "name": "NotificationsApiClientConfiguration:ClientToken",
-              "value": "[parameters('NotificationsApiClientConfiguration').ClientToken]"
-            },
-            {
-              "name": "PasAccountApiConfiguration:ApiBaseUrl",
-              "value": "[parameters('PasAccountApiConfiguration').ApiBaseUrl]"
-            },
-            {
-              "name": "PasAccountApiConfiguration:ClientId",
-              "value": "[parameters('PasAccountApiConfiguration').ClientId]"
-            },
-            {
-              "name": "PasAccountApiConfiguration:ClientSecret",
-              "value": "[parameters('PasAccountApiConfiguration').ClientSecret]"
-            },
-            {
-              "name": "PasAccountApiConfiguration:IdentifierUri",
-              "value": "[parameters('PasAccountApiConfiguration').IdentifierUri]"
-            },
-            {
-              "name": "PasAccountApiConfiguration:Tenant",
-              "value": "[parameters('PasAccountApiConfiguration').Tenant]"
-            },
-            {
-              "name": "Encodings",
-              "value": "[parameters('DasEncodings')]"
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(variables('deploymentUrlBase'),'app-service-v2.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "appServiceName": {
+            "value": "[variables('WebJobAppServiceName')]"
+          },
+          "appServicePlanName": {
+            "value": "[variables('webJobAppServicePlanName')]"
+          },
+          "appServicePlanResourceGroup": {
+            "value": "[resourceGroup().name]"
+          },
+          "appServiceAppSettings": {
+            "value": {
+              "array": [
+                {
+                  "name": "ASPNETCORE_ENVIRONMENT",
+                  "value": "[toUpper(parameters('EnvironmentFullName'))]"
+                },
+                {
+                  "name": "ApprenticeshipProgrammesApiBaseUrl",
+                  "value": "[parameters('ApprenticeshipProgrammesApiBaseUrl')]"
+                },
+                {
+                  "name": "AccountApiConfiguration:ApiBaseUrl",
+                  "value": "[parameters('AccountApiConfiguration').ApiBaseUrl]"
+                },
+                {
+                  "name": "AccountApiConfiguration:ClientId",
+                  "value": "[parameters('AccountApiConfiguration').ClientId]"
+                },
+                {
+                  "name": "AccountApiConfiguration:ClientSecret",
+                  "value": "[parameters('AccountApiConfiguration').ClientSecret]"
+                },
+                {
+                  "name": "AccountApiConfiguration:IdentifierUri",
+                  "value": "[parameters('AccountApiConfiguration').IdentifierUri]"
+                },
+                {
+                  "name": "AccountApiConfiguration:Tenant",
+                  "value": "[parameters('AccountApiConfiguration').Tenant]"
+                },
+                {
+                  "name": "ProviderRelationshipsApiConfiguration:ApiBaseUrl",
+                  "value": "[parameters('ProviderRelationshipsApiConfiguration').ApiBaseUrl]"
+                },
+                {
+                  "name": "ProviderRelationshipsApiConfiguration:ClientId",
+                  "value": "[parameters('ProviderRelationshipsApiConfiguration').ClientId]"
+                },
+                {
+                  "name": "ProviderRelationshipsApiConfiguration:ClientSecret",
+                  "value": "[parameters('ProviderRelationshipsApiConfiguration').ClientSecret]"
+                },
+                {
+                  "name": "ProviderRelationshipsApiConfiguration:IdentifierUri",
+                  "value": "[parameters('ProviderRelationshipsApiConfiguration').IdentifierUri]"
+                },
+                {
+                  "name": "ProviderRelationshipsApiConfiguration:Tenant",
+                  "value": "[parameters('ProviderRelationshipsApiConfiguration').Tenant]"
+                },
+                {
+                  "name": "VacancyApiConfiguration:ApiSearchBaseUrl",
+                  "value": "[parameters('VacancyApiConfiguration').ApiSearchBaseUrl]"
+                },
+                {
+                  "name": "VacancyApiConfiguration:ApiReadSubscriptionKey",
+                  "value": "[parameters('VacancyApiConfiguration').ApiReadSubscriptionKey]"
+                },
+                {
+                  "name": "Slack:WebhookUrl",
+                  "value": "[parameters('SlackWebhook')]"
+                },
+                {
+                  "name": "Slack:FindAnApprenticeshipDetailPrefixUrl",
+                  "value": "[parameters('FindAnApprenticeshipDetailPrefixUrl')]"
+                },
+                {
+                  "name": "FaaConfiguration:StorageConnectionString",
+                  "value": "[parameters('FaaConfiguration').StorageConnectionString]"
+                },
+                {
+                  "name": "Geocode:PostcodeAnywhereKey",
+                  "value": "[parameters('GeocodePostcodeAnywhereKey')]"
+                },
+                {
+                  "name": "DasSharedNServiceBusConfiguration:ConnectionString",
+                  "value": "[parameters('DasSharedNServiceBusConfiguration').ConnectionString]"
+                },
+                {
+                  "name": "DasSharedNServiceBusConfiguration:NServiceBusLicense",
+                  "value": "[parameters('DasSharedNServiceBusConfiguration').NServiceBusLicense]"
+                },
+                {
+                  "name": "CommunicationsConfiguration:EmployersApprenticeshipServiceUrl",
+                  "value": "[parameters('CommunicationsConfiguration').EmployersApprenticeshipServiceUrl]"
+                },
+                {
+                  "name": "CommunicationsConfiguration:ProvidersApprenticeshipServiceUrl",
+                  "value": "[parameters('CommunicationsConfiguration').ProvidersApprenticeshipServiceUrl]"
+                },
+                {
+                  "name": "NotificationsApiClientConfiguration:ApiBaseUrl",
+                  "value": "[parameters('NotificationsApiClientConfiguration').ApiBaseUrl]"
+                },
+                {
+                  "name": "NotificationsApiClientConfiguration:ClientToken",
+                  "value": "[parameters('NotificationsApiClientConfiguration').ClientToken]"
+                },
+                {
+                  "name": "PasAccountApiConfiguration:ApiBaseUrl",
+                  "value": "[parameters('PasAccountApiConfiguration').ApiBaseUrl]"
+                },
+                {
+                  "name": "PasAccountApiConfiguration:ClientId",
+                  "value": "[parameters('PasAccountApiConfiguration').ClientId]"
+                },
+                {
+                  "name": "PasAccountApiConfiguration:ClientSecret",
+                  "value": "[parameters('PasAccountApiConfiguration').ClientSecret]"
+                },
+                {
+                  "name": "PasAccountApiConfiguration:IdentifierUri",
+                  "value": "[parameters('PasAccountApiConfiguration').IdentifierUri]"
+                },
+                {
+                  "name": "PasAccountApiConfiguration:Tenant",
+                  "value": "[parameters('PasAccountApiConfiguration').Tenant]"
+                },
+                {
+                  "name": "Encodings",
+                  "value": "[parameters('DasEncodings')]"
+                }
+              ]
             }
-          ],
-          "connectionStrings": [
-            {
-              "name": "ConfigurationStorageConnectionString",
-              "connectionString": "[parameters('ConfigurationStorageConnectionString')]",
-              "type": "Custom"
-            },
-            {
-              "name": "Redis",
-              "connectionString": "[parameters('LoggingRedisConnectionString')]",
-              "type": "Custom"
-            },
-            {
-              "name": "MongoDb",
-              "connectionString": "[concat('mongodb://', variables('CosmosDbName'), ':', reference(variables('CosmosDbName')).outputs.PrimaryMasterKey.value,'@', variables('CosmosDbName'), '.documents.azure.com:10255/?ssl=true&replicaSet=globaldb')]",
-              "type": "Custom"
-            },
-            {
-              "name": "QueueStorage",
-              "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('StorageAccountName'),';AccountKey=',reference(variables('StorageAccountName')).outputs.storageKey.value)]",
-              "type": "Custom"
-            },
-            {
-              "name": "CommunicationsStorage",
-              "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('StorageAccountName'),';AccountKey=',reference(variables('StorageAccountName')).outputs.storageKey.value)]",
-              "type": "Custom"
-            },
-            {
-              "name": "AzureWebJobsDashboard",
-              "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('StorageAccountName'),';AccountKey=',reference(variables('StorageAccountName')).outputs.storageKey.value)]",
-              "type": "Custom"
-            },
-            {
-              "name": "AzureWebJobsStorage",
-              "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('StorageAccountName'),';AccountKey=',reference(variables('StorageAccountName')).outputs.storageKey.value)]",
-              "type": "Custom"
-            },
-            {
-              "name": "EmployerAccountsSqlDbConnectionString",
-              "connectionString": "[parameters('EmployerAccountsSqlDbConnectionString')]",
-              "type": "Custom"
-            },
-            {
-              "name": "EmployerFinanceSqlDbConnectionString",
-              "connectionString": "[parameters('EmployerFinanceSqlDbConnectionString')]",
-              "type": "Custom"
-            },
-            {
-              "name": "VacancyAnalyticEventsSqlDbConnectionString",
-              "connectionString": "[parameters('VacancyAnalyticEventsSqlDbConnectionString')]",
-              "type": "Custom"
-            },
-            {
-              "name": "TableStorage",
-              "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('StorageAccountName'),';AccountKey=',reference(variables('StorageAccountName')).outputs.storageKey.value)]",
-              "type": "Custom"
+          },
+          "appServiceConnectionStrings": {
+            "value": {
+              "array": [
+                {
+                  "name": "ConfigurationStorageConnectionString",
+                  "connectionString": "[parameters('ConfigurationStorageConnectionString')]",
+                  "type": "Custom"
+                },
+                {
+                  "name": "Redis",
+                  "connectionString": "[parameters('LoggingRedisConnectionString')]",
+                  "type": "Custom"
+                },
+                {
+                  "name": "MongoDb",
+                  "connectionString": "[concat('mongodb://', variables('CosmosDbName'), ':', reference(variables('CosmosDbName')).outputs.PrimaryMasterKey.value,'@', variables('CosmosDbName'), '.documents.azure.com:10255/?ssl=true&replicaSet=globaldb')]",
+                  "type": "Custom"
+                },
+                {
+                  "name": "QueueStorage",
+                  "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('StorageAccountName'),';AccountKey=',reference(variables('StorageAccountName')).outputs.storageKey.value)]",
+                  "type": "Custom"
+                },
+                {
+                  "name": "CommunicationsStorage",
+                  "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('StorageAccountName'),';AccountKey=',reference(variables('StorageAccountName')).outputs.storageKey.value)]",
+                  "type": "Custom"
+                },
+                {
+                  "name": "AzureWebJobsDashboard",
+                  "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('StorageAccountName'),';AccountKey=',reference(variables('StorageAccountName')).outputs.storageKey.value)]",
+                  "type": "Custom"
+                },
+                {
+                  "name": "AzureWebJobsStorage",
+                  "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('StorageAccountName'),';AccountKey=',reference(variables('StorageAccountName')).outputs.storageKey.value)]",
+                  "type": "Custom"
+                },
+                {
+                  "name": "EmployerAccountsSqlDbConnectionString",
+                  "connectionString": "[parameters('EmployerAccountsSqlDbConnectionString')]",
+                  "type": "Custom"
+                },
+                {
+                  "name": "EmployerFinanceSqlDbConnectionString",
+                  "connectionString": "[parameters('EmployerFinanceSqlDbConnectionString')]",
+                  "type": "Custom"
+                },
+                {
+                  "name": "VacancyAnalyticEventsSqlDbConnectionString",
+                  "connectionString": "[parameters('VacancyAnalyticEventsSqlDbConnectionString')]",
+                  "type": "Custom"
+                },
+                {
+                  "name": "TableStorage",
+                  "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('StorageAccountName'),';AccountKey=',reference(variables('StorageAccountName')).outputs.storageKey.value)]",
+                  "type": "Custom"
+                }
+              ]
             }
-          ],
-          "virtualApplications": [
+          },
+          "deployStagingSlot": false,
+          "appServiceVirtualApplications": [
             {
               "virtualPath": "/",
-              "physicalPath": "site\\wwwroot"
+              "physicalPath": "site\\wwwroot",
+              "preloadEnabled": true
             },
             {
               "virtualPath": "/Recruit.Vacancies.Jobs",
-              "physicalPath": "site\\wwwroot\\app_data\\jobs\\continuous\\Recruit.Vacancies.Jobs"
+              "physicalPath": "site\\wwwroot\\app_data\\jobs\\continuous\\Recruit.Vacancies.Jobs",
+              "preloadEnabled": false
             }
           ]
-        },
-        "httpsOnly": true
+        }
       },
       "dependsOn": [
         "[variables('StorageAccountName')]",
