@@ -6,6 +6,7 @@ using AutoFixture;
 using Esfa.Recruit.Vacancies.Client.Application.Commands;
 using Esfa.Recruit.Vacancies.Client.Application.Queues;
 using Esfa.Recruit.Vacancies.Client.Application.Queues.Messages;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount;
 using Esfa.Recruit.Vacancies.Jobs.Configuration;
@@ -142,6 +143,40 @@ namespace Recruit.Vacancies.Jobs.UnitTests.ExternalSystemEventHandlers
             _mockEmployerAccountProvider.Verify(x => x.GetLegalEntitiesConnectedToAccountAsync(EmployerAccountIdEncoded), Times.Once);
             _mockRecruitQueueService.Verify(x => x.AddMessageAsync(It.IsAny<TransferVacanciesFromProviderQueueMessage>()), Times.Once);
             _mockMessaging.Verify(x => x.SendCommandAsync(It.Is<SetupProviderCommand>(c => c.Ukprn == Ukprn)), Times.Once);
+        }
+
+        [Fact]
+        public async Task GivenMatchingExistingLegalEntityId_ThenQueuedMessageIsMappedCorrectly()
+        {
+            var matchingLegalEntityViewModel = _autoFixture.Build<LegalEntityViewModel>()
+                                                            .With(l => l.DasAccountId, EmployerAccountIdEncoded)
+                                                            .With(l => l.AccountLegalEntityId, AccountLegalEntityId)
+                                                            .With(l => l.LegalEntityId, RecruitLegalEntityId)
+                                                            .Create();
+
+            var grantedOperations = new HashSet<Operation> { Operation.CreateCohort };
+            _mockEncoder.Setup(x => x.Encode(EmployerAccountId, EncodingType.AccountId)).Returns(EmployerAccountIdEncoded);
+            _mockEmployerAccountProvider.Setup(x => x.GetLegalEntitiesConnectedToAccountAsync(EmployerAccountIdEncoded))
+                                        .ReturnsAsync(_dummyLegalEntities.Append(matchingLegalEntityViewModel));
+
+            var userRef = Guid.NewGuid();
+
+            TransferVacanciesFromProviderQueueMessage queuedMessage = null;
+            _mockRecruitQueueService.Setup(mock => mock.AddMessageAsync(It.IsAny<TransferVacanciesFromProviderQueueMessage>())).Callback((TransferVacanciesFromProviderQueueMessage message) =>
+            {
+                queuedMessage = message;
+            });
+
+            await _sut.Handle(new UpdatedPermissionsEvent(EmployerAccountId, AccountLegalEntityId, AccountProviderId, AccountProviderLegalEntityId, Ukprn, userRef, UserEmailAddress, UserFirstName, UserLastName, grantedOperations, DateTime.UtcNow), null);          
+
+            Assert.NotNull(queuedMessage);
+            Assert.Equal(Ukprn, queuedMessage.Ukprn);
+            Assert.Equal(EmployerAccountIdEncoded, queuedMessage.EmployerAccountId);
+            Assert.Equal(matchingLegalEntityViewModel.AccountLegalEntityPublicHashedId, queuedMessage.AccountLegalEntityPublicHashedId);
+            Assert.Equal(userRef, queuedMessage.UserRef);
+            Assert.Equal(UserEmailAddress, queuedMessage.UserEmailAddress);
+            Assert.Equal($"{UserFirstName} {UserLastName}", queuedMessage.UserName);
+            Assert.Equal(TransferReason.EmployerRevokedPermission, queuedMessage.TransferReason);
         }
     }
 }
