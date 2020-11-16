@@ -1337,19 +1337,23 @@
               ]
             }
           },
-          "deployStagingSlot": false,
-          "appServiceVirtualApplications": [
-            {
-              "virtualPath": "/",
-              "physicalPath": "site\\wwwroot",
-              "preloadEnabled": true
-            },
-            {
-              "virtualPath": "/Recruit.Vacancies.Jobs",
-              "physicalPath": "site\\wwwroot\\app_data\\jobs\\continuous\\Recruit.Vacancies.Jobs",
-              "preloadEnabled": false
-            }
-          ]
+          "deployStagingSlot": {
+            "value": false
+          },
+          "appServiceVirtualApplications": {
+            "value": [
+              {
+                "virtualPath": "/",
+                "physicalPath": "site\\wwwroot",
+                "preloadEnabled": true
+              },
+              {
+                "virtualPath": "/Recruit.Vacancies.Jobs",
+                "physicalPath": "site\\wwwroot\\app_data\\jobs\\continuous\\Recruit.Vacancies.Jobs",
+                "preloadEnabled": false
+              }
+            ]
+          }
         }
       },
       "dependsOn": [
