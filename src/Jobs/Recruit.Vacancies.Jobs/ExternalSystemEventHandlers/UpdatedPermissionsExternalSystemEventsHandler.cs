@@ -74,6 +74,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.ExternalSystemEventHandlers
                 {
                     Ukprn = message.Ukprn,
                     EmployerAccountId = employerAccountId,
+                    AccountLegalEntityPublicHashedId = legalEntity.AccountLegalEntityPublicHashedId,
                     UserRef = message.UserRef.Value,
                     UserEmailAddress = message.UserEmailAddress,
                     UserName = $"{message.UserFirstName} {message.UserLastName}",
