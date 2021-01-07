@@ -42,9 +42,6 @@
     <PackageReference Include="WindowsAzure.Storage" Version="9.3.3" />
     <PackageReference Include="FluentValidation" Version="7.5.2" />
     <PackageReference Include="Polly" Version="6.0.1" />
-    <PackageReference Include="SFA.DAS.Apprenticeships.Api.Client" Version="0.11.98" />
-    <PackageReference Include="SFA.DAS.Apprenticeships.Api.Types" Version="0.11.98" />
-    <PackageReference Include="SFA.DAS.Providers.Api.Client" Version="0.11.98" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="2.1.1" />
     <PackageReference Include="TimeZoneConverter" Version="3.2.0" />
     <PackageReference Include="Humanizer.Core.uk" Version="2.6.2" />
