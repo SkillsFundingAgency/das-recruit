@@ -2,12 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Application.Services.ReferenceData;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Exceptions;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Requests;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Responses;
 using Microsoft.Extensions.Logging;
 using Polly;
-using SFA.DAS.Apprenticeships.Api.Client;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.ApprenticeshipProgrammes
 {
@@ -15,62 +17,52 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Apprentices
     {
         private const int AcceptablePercentage = 10;
         private readonly ILogger<ApprenticeshipProgrammesUpdateService> _logger;
-        private readonly IStandardApiClient _standardsClient;
-        private readonly IFrameworkApiClient _frameworksClient;
+        private readonly IOuterApiClient _outerApiClient;
         private readonly IReferenceDataWriter _referenceDataWriter;
         private readonly IReferenceDataReader _referenceDataReader;
 
         public ApprenticeshipProgrammesUpdateService(
-            ILogger<ApprenticeshipProgrammesUpdateService> logger, 
-            IStandardApiClient standardsClient,
-            IFrameworkApiClient frameworksClient,
+            ILogger<ApprenticeshipProgrammesUpdateService> logger,
             IReferenceDataWriter referenceDataWriter,
-            IReferenceDataReader referenceDataReader)
+            IReferenceDataReader referenceDataReader,
+            IOuterApiClient outerApiClient)
         {
             _logger = logger;
-            _standardsClient = standardsClient;
-            _frameworksClient = frameworksClient;
             _referenceDataWriter = referenceDataWriter;
             _referenceDataReader = referenceDataReader;
+            _outerApiClient = outerApiClient;
         }
 
         public async Task UpdateApprenticeshipProgrammesAsync()
         {
-            var standardsTask = GetStandards();
-            var frameworksTask = GetFrameworks();
-
+            var trainingProgrammesTask = GetTrainingProgrammes();
+            
             try
             {
-                Task.WaitAll(standardsTask, frameworksTask);
+                Task.WaitAll(trainingProgrammesTask);
 
-                var standardsFromApi = standardsTask.Result.ToList();
-                var frameworksFromApi = frameworksTask.Result.ToList();
+                var trainingProgrammesFromApi = trainingProgrammesTask.Result.ToList();
 
-                if (standardsFromApi.Count == 0)
+                var standardsCount = trainingProgrammesFromApi.Count(c=>c.ApprenticeshipType == TrainingType.Standard);
+                if (standardsCount == 0)
                     throw new InfrastructureException("Retrieved 0 standards from the apprenticeships api.");
-                
-                if (frameworksFromApi.Count == 0)
+
+                var frameworksCount = trainingProgrammesFromApi.Count(c=>c.ApprenticeshipType == TrainingType.Framework);
+                if (frameworksCount == 0)
                     throw new InfrastructureException("Retrieved 0 frameworks from the apprenticeships api.");
 
-                var newList = new List<ApprenticeshipProgramme>();
-                newList.AddRange(standardsFromApi);
-                newList.AddRange(frameworksFromApi);
-                await ValidateList(newList);                
+                
+                await ValidateList(trainingProgrammesFromApi);                
                 await _referenceDataWriter.UpsertReferenceData(new ApprenticeshipProgrammes {
-                        Data = newList.Distinct(new ApprenticeshipProgrammeEqualityComparer()).ToList()
+                        Data = trainingProgrammesFromApi.Distinct(new ApprenticeshipProgrammeEqualityComparer()).ToList()
                     });
-                _logger.LogInformation("Inserted: {standardCount} standards and {frameworkCount} frameworks.", standardsFromApi.Count, frameworksFromApi.Count);                                
+                _logger.LogInformation("Inserted: {standardCount} standards and {frameworkCount} frameworks.", standardsCount, frameworksCount );                                
             }
             catch (AggregateException)
             {
-                if (standardsTask.Exception != null)
+                if (trainingProgrammesTask.Exception != null)
                 {
-                    _logger.LogError(standardsTask.Exception, "Failed to get standards from api");
-                }
-
-                if (frameworksTask.Exception != null)
-                {
-                    _logger.LogError(frameworksTask.Exception, "Failed to get frameworks from api");
+                    _logger.LogError(trainingProgrammesTask.Exception, "Failed to get training programmes from api");
                 }
 
                 throw;
@@ -96,26 +88,16 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Apprentices
             }            
         }
 
-        private async Task<IEnumerable<ApprenticeshipProgramme>> GetStandards()
+        private async Task<IEnumerable<ApprenticeshipProgramme>> GetTrainingProgrammes()
         {
-            _logger.LogTrace("Getting Standards from Apprenticeships Api");
+            _logger.LogTrace("Getting Training Programmes from Outer Api");
 
             var retryPolicy = GetApiRetryPolicy();
 
-            var standards = await retryPolicy.ExecuteAsync(context => _standardsClient.GetAllAsync(), new Dictionary<string, object>() {{ "apiCall", "Standards" }});
+            var result = await retryPolicy.ExecuteAsync(context => _outerApiClient.Get<GetTrainingProgrammesResponse>(new GetTrainingProgrammesRequest()), new Dictionary<string, object>() {{ "apiCall", "Standards" }});
 
-            return standards.FilterAndMapToApprenticeshipProgrammes();
-        }
+            return result.TrainingProgrammes.Select(c=>(ApprenticeshipProgramme)c);
 
-        private async Task<IEnumerable<ApprenticeshipProgramme>> GetFrameworks()
-        {
-            _logger.LogTrace("Getting Frameworks from Apprenticeships Api");
-            
-            var retryPolicy = GetApiRetryPolicy();
-
-            var frameworks = await retryPolicy.ExecuteAsync(context => _frameworksClient.GetAllAsync(), new Dictionary<string, object>() {{ "apiCall", "Frameworks" }});
-            
-            return frameworks.FilterAndMapToApprenticeshipProgrammes();
         }
 
         private Polly.Retry.RetryPolicy GetApiRetryPolicy()
