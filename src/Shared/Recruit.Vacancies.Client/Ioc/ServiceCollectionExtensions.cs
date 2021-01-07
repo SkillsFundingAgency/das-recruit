@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using Esfa.Recruit.Vacancies.Client.Application.Aspects;
 using Esfa.Recruit.Vacancies.Client.Application.Cache;
 using Esfa.Recruit.Vacancies.Client.Application.CommandHandlers;
@@ -23,6 +22,7 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.Configuration;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.EventStore;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Messaging;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.ApprenticeshipProgrammes;
@@ -54,7 +54,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancyTitle;
 using SFA.DAS.EAS.Account.Api.Client;
-using SFA.DAS.Providers.Api.Client;
 using VacancyRuleSet = Esfa.Recruit.Vacancies.Client.Application.Rules.VacancyRules.VacancyRuleSet;
 
 namespace Esfa.Recruit.Vacancies.Client.Ioc
@@ -76,7 +75,6 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
             RegisterClients(services);
             RegisterServiceDeps(services, configuration);
             RegisterAccountApiClientDeps(services);
-            RegisterProviderApiClientDep(services, configuration);
             RegisterTableStorageProviderDeps(services, configuration);
             RegisterRepositories(services, configuration);
             RegisterOutOfProcessEventDelegatorDeps(services, configuration);
@@ -109,6 +107,7 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
             services.Configure<SlackConfiguration>(configuration.GetSection("Slack"));
             services.Configure<NextVacancyReviewServiceConfiguration>(o => o.VacancyReviewAssignationTimeoutMinutes = configuration.GetValue<int>("VacancyReviewAssignationTimeoutMinutes"));
             services.Configure<PasAccountApiConfiguration>(configuration.GetSection("PasAccountApiConfiguration"));
+            services.Configure<OuterApiConfiguration>(configuration.GetSection("OuterApiConfiguration"));
 
             // Domain services
             services.AddTransient<ITimeProvider, CurrentUtcTimeProvider>();
@@ -155,6 +154,7 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
             services.AddTransient<ITrainingProviderSummaryProvider, TrainingProviderSummaryProvider>();
             services.AddTransient<IFaaService, FaaService>();
             services.AddTransient<IPasAccountProvider, PasAccountProvider>();
+            services.AddHttpClient<IOuterApiClient, OuterApiClient>();
 
             // Projection services
             services.AddTransient<IEmployerDashboardProjectionService, EmployerDashboardProjectionService>();
@@ -181,8 +181,6 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
             services.AddTransient<IBankHolidayUpdateService, BankHolidayUpdateService>();
             services.AddTransient<IBankHolidayProvider, BankHolidayProvider>();
 
-            // External client dependencies
-            services.AddApprenticeshipsApi(configuration);
         }
 
         private static void RegisterRepositories(IServiceCollection services, IConfiguration configuration)
@@ -281,10 +279,6 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
                 .AddTransient<IJobsVacancyClient, VacancyClient>();
         }
 
-        private static void RegisterProviderApiClientDep(IServiceCollection services, IConfiguration configuration)
-        {
-            services.AddTransient<IProviderApiClient>(_ => new ProviderApiClient(configuration.GetValue<string>("ProviderApiUrl")));
-        }
 
         private static void RegisterMediatR(IServiceCollection services)
         {
