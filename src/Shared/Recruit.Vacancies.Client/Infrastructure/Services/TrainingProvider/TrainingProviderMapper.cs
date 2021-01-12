@@ -1,30 +1,30 @@
 ﻿using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using SFA.DAS.Apprenticeships.Api.Types.Providers;
-using System.Linq;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Responses;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.TrainingProviders;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider
 {
     public static class TrainingProviderMapper
     {
-        public static Domain.Entities.TrainingProvider MapFromApiProvider(Provider provider)
+        public static Domain.Entities.TrainingProvider MapFromApiProvider(ReferenceData.TrainingProviders.TrainingProvider provider)
         {
             return new Domain.Entities.TrainingProvider
             {
                 Ukprn = provider.Ukprn,
-                Name = provider.ProviderName,
-                Address = GetAddress(provider.Addresses.FirstOrDefault(addr => addr.ContactType.Equals("PRIMARY")) ?? provider.Addresses.First())
+                Name = provider.Name,
+                Address = GetAddress(provider.Address)
             };
         }
         
-        private static Address GetAddress(ContactAddress address)
+        private static Address GetAddress(TrainingProviderAddress address)
         {
             return new Address
             {
-                AddressLine1 = address.Primary,
-                AddressLine2 = address.Secondary,
-                AddressLine3 = address.Street,
-                AddressLine4 = address.Town,
-                Postcode = address.PostCode
+                AddressLine1 = address.AddressLine1,
+                AddressLine2 = address.AddressLine2,
+                AddressLine3 = address.AddressLine3,
+                AddressLine4 = address.AddressLine4,
+                Postcode = address.Postcode
             };
         }
     }

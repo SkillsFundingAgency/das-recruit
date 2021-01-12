@@ -19,7 +19,6 @@ using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using SFA.DAS.Providers.Api.Client;
 
 namespace Esfa.Recruit.Provider.Web.Controllers
 {

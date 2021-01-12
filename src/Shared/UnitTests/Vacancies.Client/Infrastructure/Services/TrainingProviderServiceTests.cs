@@ -1,12 +1,15 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
+using Esfa.Recruit.Vacancies.Client.Application.Cache;
 using Esfa.Recruit.Vacancies.Client.Application.Configuration;
+using Esfa.Recruit.Vacancies.Client.Application.Providers;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.TrainingProviders;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Moq;
-using SFA.DAS.Apprenticeships.Api.Types.Providers;
-using SFA.DAS.Providers.Api.Client;
 using Xunit;
 
 namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructure.Services
@@ -17,9 +20,11 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
         public async Task GetProviderAsync_ShouldReturnEsfaTestTrainingProvider()
         {
             var loggerMock = new Mock<ILogger<TrainingProviderService>>();
-            var providerApiMock = new Mock<IProviderApiClient>();
-
-            var sut = new TrainingProviderService(loggerMock.Object, providerApiMock.Object);
+            var referenceDataReader = new Mock<IReferenceDataReader>();
+            var cache = new Mock<ICache>();
+            var timeProvider = new Mock<ITimeProvider>();
+                
+            var sut = new TrainingProviderService(loggerMock.Object, referenceDataReader.Object, cache.Object, timeProvider.Object);
 
             var provider = await sut.GetProviderAsync(EsfaTestTrainingProvider.Ukprn);
 
@@ -27,7 +32,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
             provider.Name.Should().Be(EsfaTestTrainingProvider.Name);
             provider.Address.Postcode.Should().Be("CV1 2WT");
 
-            providerApiMock.Verify(p => p.GetAsync(It.IsAny<long>()), Times.Never);
+            referenceDataReader.Verify(p => p.GetReferenceData<TrainingProviders>(), Times.Never);
         }
 
         [Fact]
@@ -36,41 +41,38 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
             const long ukprn = 88888888;
 
             var loggerMock = new Mock<ILogger<TrainingProviderService>>();
-            var providerApiMock = new Mock<IProviderApiClient>();
-            providerApiMock.Setup(p => p.GetAsync(ukprn))
-                .ReturnsAsync(new Provider
+            var referenceDataReader = new Mock<IReferenceDataReader>();
+            var cache = new Mock<ICache>();
+            var timeProvider = new Mock<ITimeProvider>();
+            var trainingProvider = new TrainingProvider
+            {
+                Ukprn = ukprn,
+                Name = "name",
+                Address = new TrainingProviderAddress
                 {
-                    Ukprn = ukprn,
-                    ProviderName = "name",
-                    Addresses = new List<ContactAddress>
-                    {
-                        new ContactAddress
-                        {
-                            ContactType = "something else",
-                            Primary = "ignored",
-                            Secondary = "ignored",
-                            Street = "ignored",
-                            Town = "ignored",
-                            PostCode = "ignored"
-                        },
-                        new ContactAddress
-                        {
-                            ContactType = "PRIMARY",
-                            Primary = "address line 1",
-                            Secondary = "address line 2",
-                            Street = "address line 3",
-                            Town = "address line 4",
-                            PostCode = "post code"
-                        },
-                    }
-                }); ;
+                    AddressLine1 = "address line 1",
+                    AddressLine2  = "address line 2",
+                    AddressLine3 = "address line 3",
+                    AddressLine4 = "address line 4",
+                    Postcode = "post code"
+                }
+            };
+            var providers = new TrainingProviders
+            {
+                Data = new List<TrainingProvider>
+                {
+                    trainingProvider
+                }
+            };
+            cache.Setup(x => x.CacheAsideAsync(CacheKeys.TrainingProviders, It.IsAny<DateTime>(),
+                    It.IsAny<Func<Task<TrainingProviders>>>() ))
+                .ReturnsAsync(providers);
 
-            var sut = new TrainingProviderService(loggerMock.Object, providerApiMock.Object);
+            var sut = new TrainingProviderService(loggerMock.Object, referenceDataReader.Object, cache.Object, timeProvider.Object);
 
             var provider = await sut.GetProviderAsync(ukprn);
 
-            providerApiMock.Verify(p => p.GetAsync(ukprn), Times.Once);
-
+            
             provider.Name.Should().Be("name");
             provider.Ukprn.Should().Be(ukprn);
             provider.Address.AddressLine1.Should().Be("address line 1");
