@@ -23,13 +23,11 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
 
         public TrainingProviderUpdateServiceTests ()
         {
-            var mockReferenceDataReader = new Mock<IReferenceDataReader>();
             _mockOuterApiClient = new Mock<IOuterApiClient>();
             _mockReferenceDataWriter = new Mock<IReferenceDataWriter>();
 
             _sut = new TrainingProvidersUpdateService(Mock.Of<ILogger<TrainingProvidersUpdateService>>(),
                 _mockReferenceDataWriter.Object,
-                mockReferenceDataReader.Object,
                 _mockOuterApiClient.Object);
         }
 

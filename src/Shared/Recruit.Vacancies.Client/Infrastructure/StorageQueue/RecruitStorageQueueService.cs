@@ -26,7 +26,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.StorageQueue
             { typeof(UpdateEmployerUserAccountQueueMessage), QueueNames.UpdateEmployerUserAccountQueueName },
             { typeof(DeleteStaleQueryStoreDocumentsQueueMessage), QueueNames.DeleteStaleQueryStoreDocumentsQueueName },
             { typeof(DataMigrationQueueMessage), QueueNames.DataMigrationQueueName },
-            { typeof(CommunicationsHouseKeepingQueueMessage), QueueNames.CommunicationsHouseKeepingQueueName}
+            { typeof(CommunicationsHouseKeepingQueueMessage), QueueNames.CommunicationsHouseKeepingQueueName},
+            { typeof(UpdateProvidersQueueMessage), QueueNames.UpdateProvidersQueueName}
         };
 
         protected override string ConnectionString { get; }

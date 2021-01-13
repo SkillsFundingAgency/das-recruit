@@ -31,6 +31,7 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.BannedPhrases;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Profanities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Qualifications;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Skills;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.TrainingProviders;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Reports;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.SequenceStore;
@@ -178,6 +179,7 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
 
             // Reference Data update services
             services.AddTransient<IApprenticeshipProgrammesUpdateService, ApprenticeshipProgrammesUpdateService>();
+            services.AddTransient<ITrainingProvidersUpdateService, TrainingProvidersUpdateService>();
             services.AddTransient<IBankHolidayUpdateService, BankHolidayUpdateService>();
             services.AddTransient<IBankHolidayProvider, BankHolidayProvider>();
 

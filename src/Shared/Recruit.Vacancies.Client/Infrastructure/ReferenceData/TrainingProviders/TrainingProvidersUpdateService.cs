@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Esfa.Recruit.Vacancies.Client.Application.Services.ReferenceData;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Requests;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Responses;
@@ -11,22 +12,19 @@ using Polly;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.TrainingProviders
 {
-    public class TrainingProvidersUpdateService
+    public class TrainingProvidersUpdateService : ITrainingProvidersUpdateService
     {
         private readonly ILogger<TrainingProvidersUpdateService> _logger;
         private readonly IReferenceDataWriter _referenceDataWriter;
-        private readonly IReferenceDataReader _referenceDataReader;
         private readonly IOuterApiClient _outerApiClient;
 
         public TrainingProvidersUpdateService(
             ILogger<TrainingProvidersUpdateService> logger, 
             IReferenceDataWriter referenceDataWriter, 
-            IReferenceDataReader referenceDataReader, 
             IOuterApiClient outerApiClient)
         {
             _logger = logger;
             _referenceDataWriter = referenceDataWriter;
-            _referenceDataReader = referenceDataReader;
             _outerApiClient = outerApiClient;
         }
         

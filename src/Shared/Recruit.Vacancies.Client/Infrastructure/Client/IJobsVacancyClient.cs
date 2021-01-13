@@ -22,5 +22,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         Task HardDeleteApplicationReviewsForCandidate(Guid candidateId);
         Task RefreshEmployerProfiles(string employerAccountId, IEnumerable<string> accountLegalEntityPublicHashedIds);
         Task UpdateUserAccountAsync(string idamsUserId);
+        Task UpdateProviders();
     }
 }

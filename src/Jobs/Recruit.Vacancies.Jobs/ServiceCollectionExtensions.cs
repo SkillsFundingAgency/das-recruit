@@ -60,6 +60,7 @@ namespace Esfa.Recruit.Vacancies.Jobs
             services.AddScoped<GenerateVacancyAnalyticsSummaryQueueTrigger>();
             services.AddScoped<TransferVacanciesFromProviderQueueTrigger>();
             services.AddScoped<TransferVacancyToLegalEntityQueueTrigger>();
+            services.AddScoped<UpdateProvidersQueueTrigger>();
             services.AddTransient<IFaaService, FaaService>();
 #if DEBUG
             services.AddScoped<SpikeQueueTrigger>();
