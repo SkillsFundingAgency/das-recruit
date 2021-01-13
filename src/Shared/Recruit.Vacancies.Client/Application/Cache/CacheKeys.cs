@@ -8,6 +8,6 @@
         public const string BankHolidays = "bankHolidays";
         public const string Profanities = "profanities";
         public const string BannedPhrases = "bannedPhrases";
-        public const string TrainingProviders = "trainingProviders";
+        public const string TrainingProviders = "providers";
     }
 }

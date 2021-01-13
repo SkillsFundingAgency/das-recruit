@@ -110,7 +110,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Apprentices
                         TimeSpan.FromSeconds(2),
                         TimeSpan.FromSeconds(4)
                     }, (exception, timeSpan, retryCount, context) => {
-                        _logger.LogWarning($"Error connecting to Apprenticeships Api for {context["apiCall"]}. Retrying in {timeSpan.Seconds} secs...attempt: {retryCount}");    
+                        _logger.LogWarning($"Error connecting to Outer Api for {context["apiCall"]}. Retrying in {timeSpan.Seconds} secs...attempt: {retryCount}");    
                     });
         }
     }
