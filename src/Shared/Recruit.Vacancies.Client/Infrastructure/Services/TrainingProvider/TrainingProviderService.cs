@@ -35,9 +35,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider
             try
             {
                 var providers = await GetProviders();
-                _logger.LogInformation($"Returned {providers.Data.Count} providers from cache.");
-                var firstProvider = providers.Data.FirstOrDefault();
-                _logger.LogInformation($"First provider {firstProvider?.Name} {firstProvider?.Ukprn}");
                 var provider = providers.Data.SingleOrDefault(c=>c.Ukprn == ukprn);
                 return TrainingProviderMapper.MapFromApiProvider(provider);
             }
