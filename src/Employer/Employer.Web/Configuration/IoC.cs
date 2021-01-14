@@ -41,6 +41,7 @@ namespace Esfa.Recruit.Employer.Web.Configuration
             services.Configure<PostcodeAnywhereConfiguration>(configuration.GetSection("PostcodeAnywhere"));
             services.Configure<FaaConfiguration>(configuration.GetSection("FaaConfiguration"));
             services.Configure<ZenDeskConfiguration>(configuration.GetSection("ZenDesk"));
+            services.Configure<RedisConnectionSettings>(configuration.GetSection("RedisConnectionSettings"));
 
             services.AddFeatureToggle();
 
