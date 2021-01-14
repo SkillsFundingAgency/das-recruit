@@ -261,6 +261,15 @@
       "type": "array",
       "defaultValue": [
       ]
+    },
+    "sharedApimResourceGroup": {
+      "type": "string"
+    },
+    "sharedApimName": {
+      "type": "string"
+    },
+    "recruitOuterApiConfigurationBaseUrl": {
+      "type": "string"
     }
   },
   "variables": {
@@ -1131,6 +1140,30 @@
       ]
     },
     {
+      "apiVersion": "2020-06-01",
+      "name": "webjob-apim-product-subscription",
+      "resourceGroup": "[parameters('sharedApimResourceGroup')]",
+      "type": "Microsoft.Resources/deployments",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(variables('deploymentUrlBase'),'apim/apim-subscription.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "apimName": {
+            "value": "[parameters('sharedApimName')]"
+          },
+          "subscriptionName": {
+            "value": "[variables('WebJobAppServiceName')]"
+          },
+          "subscriptionScope": {
+            "value": "[concat('/subscriptions/', subscription().subscriptionId, '/resourceGroups/', parameters('sharedApimResourceGroup'), '/providers/Microsoft.ApiManagement/service/', parameters('sharedApimName'), '/products/RecruitOuterApi')]"
+          }
+        }
+      }
+    },
+    {
       "apiVersion": "2017-05-10",
       "name": "[variables('WebJobAppServiceName')]",
       "type": "Microsoft.Resources/deployments",
@@ -1272,6 +1305,14 @@
                 {
                   "name": "Encodings",
                   "value": "[parameters('DasEncodings')]"
+                },
+                {
+                  "name": "OuterApiConfiguration:BaseUrl",
+                  "value": "[parameters('recruitOuterApiConfigurationBaseUrl')]"
+                },
+                {
+                  "name": "OuterApiConfiguration:Key",
+                  "value": "[reference(resourceId(parameters('sharedApimResourceGroup'),'Microsoft.ApiManagement/service/subscriptions', parameters('sharedApimName'), variables('WebJobAppServiceName')), '2019-01-01').primaryKey]"
                 }
               ]
             }
@@ -1359,7 +1400,8 @@
       "dependsOn": [
         "[variables('StorageAccountName')]",
         "[variables('webJobAppServicePlanName')]",
-        "[variables('CosmosDbName')]"
+        "[variables('CosmosDbName')]",
+        "webjob-apim-product-subscription"
       ]
     }
   ],
