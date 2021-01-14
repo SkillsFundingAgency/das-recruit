@@ -268,7 +268,7 @@
     "sharedApimName": {
       "type": "string"
     },
-    "outerApiConfigurationBaseUrl": {
+    "recruitOuterApiConfigurationBaseUrl": {
       "type": "string"
     }
   },
@@ -1308,7 +1308,7 @@
                 },
                 {
                   "name": "OuterApiConfiguration:BaseUrl",
-                  "value": "[parameters('outerApiConfigurationBaseUrl')]"
+                  "value": "[parameters('recruitOuterApiConfigurationBaseUrl')]"
                 },
                 {
                   "name": "OuterApiConfiguration:Key",
