@@ -1,4 +1,5 @@
 using Esfa.Recruit.Provider.Web.Configuration;
+using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Razor;
@@ -43,6 +44,7 @@ namespace Esfa.Recruit.Provider.Web
             });
 
             services.AddMvcService(_hostingEnvironment, _loggerFactory);
+            services.AddDataProtection(_configuration, _hostingEnvironment);
 
             services.AddApplicationInsightsTelemetry(_configuration);
 
