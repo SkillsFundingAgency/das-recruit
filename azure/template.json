@@ -1040,7 +1040,15 @@
                 {
                   "name": "ProviderRelationshipsApiConfiguration:Tenant",
                   "value": "[parameters('ProviderRelationshipsApiConfiguration').Tenant]"
-                }
+                },
+                {
+                  "name": "RedisConnectionSettings:RedisConnectionString",
+                  "value": "[parameters('StorageRedisConnectionString')]"
+                },
+                {
+                  "name": "RedisConnectionSettings:DataProtectionKeysDatabase",
+                  "value": "[parameters('DataProtectionKeysDatabase')]"
+                } 
               ]
             }
           },
@@ -1050,11 +1058,6 @@
                 {
                   "name": "Redis",
                   "connectionString": "[parameters('LoggingRedisConnectionString')]",
-                  "type": "Custom"
-                },
-                {
-                  "name": "StorageRedis",
-                  "connectionString": "[parameters('StorageRedisConnectionString')]",
                   "type": "Custom"
                 },
                 {
