@@ -9,7 +9,7 @@ namespace Esfa.Recruit.Shared.Web.Extensions
 {
     public static class DataProtectionStartupExtensions
     {
-        public static IServiceCollection AddDataProtection(this IServiceCollection services, IConfiguration configuration, IHostingEnvironment environment)
+        public static IServiceCollection AddDataProtection(this IServiceCollection services, IConfiguration configuration, IHostingEnvironment environment, string applicationName)
         {
             if (!environment.IsDevelopment())
             {
@@ -25,7 +25,7 @@ namespace Esfa.Recruit.Shared.Web.Extensions
                         .Connect($"{redisConnectionString},{dataProtectionKeysDatabase}");
 
                     services.AddDataProtection()
-                        .SetApplicationName("das-employer-recruit")
+                        .SetApplicationName(applicationName)
                         .PersistKeysToStackExchangeRedis(redis, "DataProtection-Keys");
                 }
             }

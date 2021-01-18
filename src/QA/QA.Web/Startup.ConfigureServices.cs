@@ -58,7 +58,7 @@ namespace Esfa.Recruit.Qa.Web
             });
 
             services.AddMvcService(_loggerFactory);
-            services.AddDataProtection(_configuration, _hostingEnvironment);
+            services.AddDataProtection(_configuration, _hostingEnvironment, applicationName: "das-qa-recruit-web");
 
             services.AddAntiforgery(
                 options =>

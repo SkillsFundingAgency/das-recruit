@@ -60,7 +60,7 @@ namespace Esfa.Recruit.Employer.Web
                 services.AddAuthorizationService();
             }
 
-            services.AddDataProtection(_configuration, _hostingEnvironment);
+            services.AddDataProtection(_configuration, _hostingEnvironment, applicationName: "das-employer-recruit-web");
         }
     }
 }
