@@ -106,6 +106,10 @@
       "type": "securestring",
       "defaultValue": ""
     },
+    "DataProtectionKeysDatabase": {
+      "type": "string",
+      "defaultValue": ""
+    },
     "ApprenticeshipProgrammesApiBaseUrl": {
       "type": "string",
       "defaultValue": ""
@@ -191,6 +195,7 @@
         "CobrowsingSnippetKey": ""
       }
     },
+    
     "FaaConfiguration": {
       "type": "secureObject",
       "defaultValue": {
@@ -630,7 +635,15 @@
                 {
                   "name": "ZenDesk:CobrowsingSnippetKey",
                   "value": "[parameters('ZenDesk').CobrowsingSnippetKey]"
-                }
+                },
+                {
+                  "name": "RedisConnectionSettings:RedisConnectionString",
+                  "value": "[parameters('StorageRedisConnectionString')]"
+                },
+                {
+                  "name": "RedisConnectionSettings:DataProtectionKeysDatabase",
+                  "value": "[parameters('DataProtectionKeysDatabase')]"
+                }                
               ]
             }
           },
@@ -640,11 +653,6 @@
                 {
                   "name": "Redis",
                   "connectionString": "[parameters('LoggingRedisConnectionString')]",
-                  "type": "Custom"
-                },
-                {
-                  "name": "StorageRedis",
-                  "connectionString": "[parameters('StorageRedisConnectionString')]",
                   "type": "Custom"
                 },
                 {
@@ -800,7 +808,15 @@
                 {
                   "name": "FaaConfiguration:StorageConnectionString",
                   "value": "[parameters('FaaConfiguration').StorageConnectionString]"
-                }
+                },
+                {
+                  "name": "RedisConnectionSettings:RedisConnectionString",
+                  "value": "[parameters('StorageRedisConnectionString')]"
+                },
+                {
+                  "name": "RedisConnectionSettings:DataProtectionKeysDatabase",
+                  "value": "[parameters('DataProtectionKeysDatabase')]"
+                }    
               ]
             }
           },
@@ -810,11 +826,6 @@
                 {
                   "name": "Redis",
                   "connectionString": "[parameters('LoggingRedisConnectionString')]",
-                  "type": "Custom"
-                },
-                {
-                  "name": "StorageRedis",
-                  "connectionString": "[parameters('StorageRedisConnectionString')]",
                   "type": "Custom"
                 },
                 {
@@ -1038,7 +1049,15 @@
                 {
                   "name": "ProviderRelationshipsApiConfiguration:Tenant",
                   "value": "[parameters('ProviderRelationshipsApiConfiguration').Tenant]"
-                }
+                },
+                {
+                  "name": "RedisConnectionSettings:RedisConnectionString",
+                  "value": "[parameters('StorageRedisConnectionString')]"
+                },
+                {
+                  "name": "RedisConnectionSettings:DataProtectionKeysDatabase",
+                  "value": "[parameters('DataProtectionKeysDatabase')]"
+                } 
               ]
             }
           },
@@ -1048,11 +1067,6 @@
                 {
                   "name": "Redis",
                   "connectionString": "[parameters('LoggingRedisConnectionString')]",
-                  "type": "Custom"
-                },
-                {
-                  "name": "StorageRedis",
-                  "connectionString": "[parameters('StorageRedisConnectionString')]",
                   "type": "Custom"
                 },
                 {

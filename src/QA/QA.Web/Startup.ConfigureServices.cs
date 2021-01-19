@@ -7,11 +7,13 @@ using Esfa.Recruit.QA.Web.Configuration;
 using Esfa.Recruit.QA.Web.Filters;
 using Esfa.Recruit.QA.Web.Orchestrators;
 using Esfa.Recruit.Shared.Web.Configuration;
+using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Shared.Web.Mappers;
 using Esfa.Recruit.Shared.Web.RuleTemplates;
 using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Ioc;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.Extensions.Configuration;
@@ -23,15 +25,17 @@ namespace Esfa.Recruit.Qa.Web
     public partial class Startup
     {
         private readonly IConfiguration _configuration;
+        private readonly IHostingEnvironment _hostingEnvironment;
         private readonly AuthenticationConfiguration _authenticationConfig;
         private readonly AuthorizationConfiguration _legacyAuthorizationConfig;
         private readonly AuthorizationConfiguration _authorizationConfig;
         private readonly ExternalLinksConfiguration _externalLinks;
         private readonly ILoggerFactory _loggerFactory;
 
-        public Startup(IConfiguration configuration, ILoggerFactory loggerFactory)
+        public Startup(IConfiguration configuration, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
             _configuration = configuration;
+            _hostingEnvironment = env;
             _authenticationConfig = _configuration.GetSection("Authentication").Get<AuthenticationConfiguration>();
             _legacyAuthorizationConfig = _configuration.GetSection("LegacyAuthorization").Get<AuthorizationConfiguration>();
             _authorizationConfig = _configuration.GetSection("Authorization").Get<AuthorizationConfiguration>();
@@ -54,6 +58,7 @@ namespace Esfa.Recruit.Qa.Web
             });
 
             services.AddMvcService(_loggerFactory);
+            services.AddDataProtection(_configuration, _hostingEnvironment, applicationName: "das-qa-recruit-web");
 
             services.AddAntiforgery(
                 options =>

@@ -11,6 +11,7 @@
     <PackageReference Include="FluentValidation.AspNetCore" Version="7.5.2" />
     <PackageReference Include="Humanizer.Core.uk" Version="2.7.9" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="Microsoft.AspNetCore.DataProtection.StackExchangeRedis" Version="2.2.5" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.10" />
     <PackageReference Include="NWebsec.AspNetCore.Core" Version="2.0.0" />
     <PackageReference Include="NWebsec.AspNetCore.Middleware" Version="2.0.0" />

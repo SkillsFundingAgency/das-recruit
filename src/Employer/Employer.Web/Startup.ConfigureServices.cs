@@ -1,4 +1,5 @@
 using Esfa.Recruit.Employer.Web.Configuration;
+using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Shared.Web.FeatureToggle;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Microsoft.AspNetCore.Hosting;
@@ -57,7 +58,9 @@ namespace Esfa.Recruit.Employer.Web
 
                 services.AddAuthenticationService(_authConfig, sp.GetService<IEmployerVacancyClient>(), sp.GetService<IRecruitVacancyClient>(), sp.GetService<IHostingEnvironment>());
                 services.AddAuthorizationService();
-            }            
+            }
+
+            services.AddDataProtection(_configuration, _hostingEnvironment, applicationName: "das-employer-recruit-web");
         }
     }
 }
