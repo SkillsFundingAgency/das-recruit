@@ -35,13 +35,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Apprentices
 
         public async Task UpdateApprenticeshipProgrammesAsync()
         {
-            var trainingProgrammesTask = GetTrainingProgrammes();
-            
             try
             {
-                Task.WaitAll(trainingProgrammesTask);
+                var trainingProgrammesTask = await GetTrainingProgrammes();
 
-                var trainingProgrammesFromApi = trainingProgrammesTask.Result.ToList();
+                var trainingProgrammesFromApi = trainingProgrammesTask.ToList();
 
                 var standardsCount = trainingProgrammesFromApi.Count(c=>c.ApprenticeshipType == TrainingType.Standard);
                 if (standardsCount == 0)
@@ -58,13 +56,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Apprentices
                     });
                 _logger.LogInformation("Inserted: {standardCount} standards and {frameworkCount} frameworks.", standardsCount, frameworksCount );                                
             }
-            catch (AggregateException)
+            catch (Exception e)
             {
-                if (trainingProgrammesTask.Exception != null)
-                {
-                    _logger.LogError(trainingProgrammesTask.Exception, "Failed to get training programmes from api");
-                }
-
+                
+                _logger.LogError(e, "Failed to get training programmes from api");
+                
                 throw;
             }
         }

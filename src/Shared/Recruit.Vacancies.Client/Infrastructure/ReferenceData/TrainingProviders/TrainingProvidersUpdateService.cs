@@ -30,22 +30,20 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.TrainingPro
         
         public async Task UpdateProviders()
         {
-            var providersTask = GetProviders();
+            
             try
             {
-                Task.WaitAll(providersTask);
+                var providersTask = await GetProviders();
                 
                 await _referenceDataWriter.UpsertReferenceData(new TrainingProviders {
-                    Data = providersTask.Result.ToList()
+                    Data = providersTask.ToList()
                 });
             }
-            catch (AggregateException)
+            catch (Exception e)
             {
-                if (providersTask.Exception != null)
-                {
-                    _logger.LogError(providersTask.Exception, "Failed to get providers from api");
-                }
-
+                
+                _logger.LogError(e, "Failed to get providers from api");
+            
                 throw;
             }
         }
