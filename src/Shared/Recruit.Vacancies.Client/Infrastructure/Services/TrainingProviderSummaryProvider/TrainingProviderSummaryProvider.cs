@@ -5,7 +5,7 @@ using Esfa.Recruit.Vacancies.Client.Application.Cache;
 using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using SFA.DAS.Providers.Api.Client;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProviderSummaryProvider
 {
@@ -14,23 +14,22 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider
     /// </summary>
     public class TrainingProviderSummaryProvider : ITrainingProviderSummaryProvider
     {
-        private readonly IProviderApiClient _providerClient;
-        private readonly ICache _cache;
-        private readonly ITimeProvider _timeProvider;
-
-        public TrainingProviderSummaryProvider(IProviderApiClient providerClient, ICache cache, ITimeProvider timeProvider)
+        private readonly ITrainingProviderService _trainingProviderService;
+        
+        public TrainingProviderSummaryProvider(ITrainingProviderService trainingProviderService)
         {
-            _providerClient = providerClient;
-            _cache = cache;
-            _timeProvider = timeProvider;
+            _trainingProviderService = trainingProviderService;
         }
 
-        public Task<IEnumerable<TrainingProviderSummary>> FindAllAsync()
+        public async Task<IEnumerable<TrainingProviderSummary>> FindAllAsync()
         {
-            return _cache.CacheAsideAsync(
-                CacheKeys.TrainingProviders,
-                _timeProvider.NextDay6am,
-                FindAllInternalAsync);
+            var response = await _trainingProviderService.FindAllAsync();
+
+            return response.Select(r => new TrainingProviderSummary
+            {
+                Ukprn = r.Ukprn.Value,
+                ProviderName = r.Name
+            });
         }
 
         public async Task<TrainingProviderSummary> GetAsync(long ukprn)
@@ -38,18 +37,15 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider
             if (ukprn == EsfaTestTrainingProvider.Ukprn)
                 return new TrainingProviderSummary { Ukprn = EsfaTestTrainingProvider.Ukprn, ProviderName = EsfaTestTrainingProvider.Name };
 
-            return (await FindAllAsync()).SingleOrDefault(p => p.Ukprn == ukprn);
-        }
-
-        private async Task<IEnumerable<TrainingProviderSummary>> FindAllInternalAsync()
-        {
-            var response = await _providerClient.FindAllAsync();
-
-            return response.Select(r => new TrainingProviderSummary
+            var provider = await _trainingProviderService.GetProviderAsync(ukprn);
+            
+            return new TrainingProviderSummary
             {
-                Ukprn = r.Ukprn,
-                ProviderName = r.ProviderName
-            });
+                Ukprn = provider.Ukprn.Value,
+                ProviderName = provider.Name
+            };
         }
+
+        
     }
 }

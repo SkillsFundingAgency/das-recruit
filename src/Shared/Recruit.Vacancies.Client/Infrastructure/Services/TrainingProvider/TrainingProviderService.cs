@@ -1,42 +1,62 @@
 ﻿using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Microsoft.Extensions.Logging;
-using SFA.DAS.Apprenticeships.Api.Types.Providers;
-using SFA.DAS.Providers.Api.Client;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using Esfa.Recruit.Vacancies.Client.Application.Cache;
+using Esfa.Recruit.Vacancies.Client.Application.Providers;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.TrainingProviders;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider
 {
     public class TrainingProviderService : ITrainingProviderService
     {
         private readonly ILogger<TrainingProviderService> _logger;
-        private readonly IProviderApiClient _providerClient;
+        private readonly IReferenceDataReader _referenceDataReader;
+        private readonly ICache _cache;
+        private readonly ITimeProvider _timeProvider;
 
 
-        public TrainingProviderService(ILogger<TrainingProviderService> logger, IProviderApiClient providerClient)
+        public TrainingProviderService(ILogger<TrainingProviderService> logger, IReferenceDataReader referenceDataReader, ICache cache, ITimeProvider timeProvider)
         {
             _logger = logger;
-            _providerClient = providerClient;
+            _referenceDataReader = referenceDataReader;
+            _cache = cache;
+            _timeProvider = timeProvider;
         }
 
         public async Task<Domain.Entities.TrainingProvider> GetProviderAsync(long ukprn)
         {
             if (ukprn == EsfaTestTrainingProvider.Ukprn)
                 return GetEsfaTestTrainingProvider();
-
-            Provider provider;
-
+            
             try
             {
-                provider = await _providerClient.GetAsync(ukprn);
+                var providers = await GetProviders();
+                var provider = providers.Data.SingleOrDefault(c=>c.Ukprn == ukprn);
+                return TrainingProviderMapper.MapFromApiProvider(provider);
             }
             catch (Exception ex)
             {
                 _logger.LogWarning(ex, $"Failed to retrieve provider information for UKPRN: {ukprn}");
                 return null;
             }
+        }
 
-            return TrainingProviderMapper.MapFromApiProvider(provider);
+        public async Task<IEnumerable<Domain.Entities.TrainingProvider>> FindAllAsync()
+        {
+            var providers = await GetProviders();
+            return providers.Data.Select(TrainingProviderMapper.MapFromApiProvider).ToList();
+        }
+        
+        private Task<TrainingProviders> GetProviders()
+        {
+            return _cache.CacheAsideAsync(
+                CacheKeys.TrainingProviders,
+                _timeProvider.NextDay6am,
+                ()=>_referenceDataReader.GetReferenceData<TrainingProviders>());
         }
 
         private Domain.Entities.TrainingProvider GetEsfaTestTrainingProvider()

@@ -1,5 +1,6 @@
 using System;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Responses;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.ApprenticeshipProgrammes
 {
@@ -22,5 +23,21 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Apprentices
         public bool IsActive { get; set; }
 
         public int? EducationLevelNumber { get; set; }
+
+        public static implicit operator ApprenticeshipProgramme(GetTrainingProgrammesResponseItem source)
+        {
+            return new ApprenticeshipProgramme
+            {
+                Id = source.Id,
+                ApprenticeshipType = source.ApprenticeshipType,
+                Title = source.Title,
+                EffectiveFrom = source.EffectiveFrom,
+                EffectiveTo = source.EffectiveTo,
+                ApprenticeshipLevel = source.ApprenticeshipLevel,
+                Duration = source.Duration,
+                IsActive = source.IsActive,
+                EducationLevelNumber = source.EducationLevelNumber
+            };
+        }
     }
 }

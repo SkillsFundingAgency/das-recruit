@@ -327,6 +327,14 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return _messaging.SendCommandAsync(command);
         }
 
+        public Task UpdateProviders()
+        {
+            var command = new UpdateProvidersCommand();
+
+            return _messaging.SendCommandAsync(command);
+        }
+
+
         public Task UpdateBankHolidaysAsync()
         {
             var command = new UpdateBankHolidaysCommand();

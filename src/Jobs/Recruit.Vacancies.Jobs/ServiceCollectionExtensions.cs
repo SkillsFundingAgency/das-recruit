@@ -18,7 +18,6 @@ using Esfa.Recruit.Vacancies.Jobs.Triggers.QueueTriggers;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using SFA.DAS.Apprenticeships.Api.Client;
 using SFA.DAS.Http;
 using SFA.DAS.Http.TokenGenerators;
 using SFA.DAS.Notifications.Api.Client;
@@ -40,7 +39,6 @@ namespace Esfa.Recruit.Vacancies.Jobs
     {
         public static void ConfigureJobServices(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddSingleton<IApprenticeshipProgrammeApiClient, ApprenticeshipProgrammeApiClient>();
             services.AddScoped(x => new AnalyticsEventStore(x.GetService<ILogger<AnalyticsEventStore>>(), configuration.GetConnectionString("VacancyAnalyticEventsSqlDbConnectionString")));
 
             services.AddRecruitStorageClient(configuration);
@@ -62,6 +60,7 @@ namespace Esfa.Recruit.Vacancies.Jobs
             services.AddScoped<GenerateVacancyAnalyticsSummaryQueueTrigger>();
             services.AddScoped<TransferVacanciesFromProviderQueueTrigger>();
             services.AddScoped<TransferVacancyToLegalEntityQueueTrigger>();
+            services.AddScoped<UpdateProvidersQueueTrigger>();
             services.AddTransient<IFaaService, FaaService>();
 #if DEBUG
             services.AddScoped<SpikeQueueTrigger>();
