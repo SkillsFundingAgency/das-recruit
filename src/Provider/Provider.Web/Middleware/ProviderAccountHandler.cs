@@ -5,6 +5,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Esfa.Recruit.Provider.Web.Configuration;
 using Esfa.Recruit.Provider.Web.Configuration.Routing;
+using Esfa.Recruit.Provider.Web.Extensions;
 using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
@@ -40,8 +41,7 @@ namespace Esfa.Recruit.Provider.Web.Middleware
 
         protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context, ProviderAccountRequirement requirement)
         {
-            var hasIdentityServerAuthorization = HasServiceAuthorization(context) &&
-                                                HasUkprnAuthorization(context);
+            var hasIdentityServerAuthorization = HasServiceAuthorization(context) && HasUkprnAuthorization(context);
 
             if (context.User.HasClaim(_ukprnClaimFinderPredicate))
             {
@@ -99,7 +99,7 @@ namespace Esfa.Recruit.Provider.Web.Middleware
             {
                 var serviceClaims = context.User.FindAll(serviceClaimFinderPredicate);
 
-                return serviceClaims.Any(claim => claim.Value.Equals(ProviderRecruitClaims.ServiceClaimValue));
+                return serviceClaims.Any(claim => claim.Value.IsServiceClaim());
             }
 
             return false;
