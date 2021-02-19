@@ -19,7 +19,6 @@ using Microsoft.AspNetCore.Authorization;
 using Esfa.Recruit.Provider.Web.Middleware;
 using System.Threading.Tasks;
 using Esfa.Recruit.Provider.Web.Extensions;
-using Esfa.Recruit.Shared.Web.Configuration;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
 namespace Esfa.Recruit.Provider.Web.Configuration
@@ -116,9 +115,6 @@ namespace Esfa.Recruit.Provider.Web.Configuration
                 options.Wtrealm = authConfig.WtRealm;
                 options.MetadataAddress = authConfig.MetaDataAddress;
                 options.UseTokenLifetime = false;
-                //options.CallbackPath = "/";
-                //options.SkipUnrecognizedRequests = true;
-
                 options.Events.OnSecurityTokenValidated = async (ctx) =>
                 {
                     await HandleUserSignedIn(ctx, vacancyClient);
