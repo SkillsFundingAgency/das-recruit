@@ -28,18 +28,40 @@ namespace Esfa.Recruit.Provider.Web.Configuration
     {
         private const int SessionTimeoutMinutes = 30;
 
-        private const string ProviderPolicyName = "ProviderPolicy";
-
         public static void AddAuthorizationService(this IServiceCollection services)
         {
             services.AddAuthorization(options =>
             {
-                options.AddPolicy(ProviderPolicyName, policy =>
+                options.AddPolicy(PolicyNames.ProviderPolicyName, policy =>
                 {
                     policy.RequireAuthenticatedUser();
                     policy.RequireClaim(ProviderRecruitClaims.IdamsUserUkprnClaimsTypeIdentifier);
                     policy.RequireClaim(ProviderRecruitClaims.IdamsUserServiceTypeClaimTypeIdentifier);
                     policy.Requirements.Add(new ProviderAccountRequirement());
+                });
+
+                options.AddPolicy(PolicyNames.HasContributorOrAbovePermission, policy =>
+                {
+                    policy.RequireAuthenticatedUser();
+                    policy.RequireClaim(ProviderRecruitClaims.IdamsUserUkprnClaimsTypeIdentifier);
+                    policy.RequireClaim(ProviderRecruitClaims.IdamsUserServiceTypeClaimTypeIdentifier);
+                    policy.Requirements.Add(new MinimumServiceClaimRequirement(ServiceClaim.DAC));
+                });
+
+                options.AddPolicy(PolicyNames.HasContributorWithApprovalOrAbovePermission, policy =>
+                {
+                    policy.RequireAuthenticatedUser();
+                    policy.RequireClaim(ProviderRecruitClaims.IdamsUserUkprnClaimsTypeIdentifier);
+                    policy.RequireClaim(ProviderRecruitClaims.IdamsUserServiceTypeClaimTypeIdentifier);
+                    policy.Requirements.Add(new MinimumServiceClaimRequirement(ServiceClaim.DAB));
+                });
+
+                options.AddPolicy(PolicyNames.HasAccountOwnerPermission, policy =>
+                {
+                    policy.RequireAuthenticatedUser();
+                    policy.RequireClaim(ProviderRecruitClaims.IdamsUserUkprnClaimsTypeIdentifier);
+                    policy.RequireClaim(ProviderRecruitClaims.IdamsUserServiceTypeClaimTypeIdentifier);
+                    policy.Requirements.Add(new MinimumServiceClaimRequirement(ServiceClaim.DAA));
                 });
             });
 
@@ -59,7 +81,7 @@ namespace Esfa.Recruit.Provider.Web.Configuration
 
             services.AddMvc(opts =>
             {
-                opts.Filters.Add(new AuthorizeFilter(ProviderPolicyName));
+                opts.Filters.Add(new AuthorizeFilter(PolicyNames.ProviderPolicyName));
 
                 var jsonInputFormatters = opts.InputFormatters.OfType<JsonInputFormatter>();
                 foreach (var formatter in jsonInputFormatters)
