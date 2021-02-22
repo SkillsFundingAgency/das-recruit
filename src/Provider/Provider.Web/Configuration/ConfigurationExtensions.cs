@@ -65,6 +65,7 @@ namespace Esfa.Recruit.Provider.Web.Configuration
             });
 
             services.AddTransient<IAuthorizationHandler, ProviderAccountHandler>();
+            services.AddTransient<IAuthorizationHandler, MinimumServiceClaimRequirementHandler>();
         }
 
         public static void AddMvcService(this IServiceCollection services, IHostingEnvironment hostingEnvironment, ILoggerFactory loggerFactory)
