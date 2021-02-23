@@ -8,6 +8,7 @@ using Esfa.Recruit.Provider.Web.Orchestrators;
 using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Provider.Web.ViewModels.VacancyManage;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using InfoMsg = Esfa.Recruit.Shared.Web.ViewModels.InfoMessages;
@@ -73,6 +74,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
         }
 
         [HttpPost("submit-vacancy-changes", Name = RouteNames.SubmitVacancyChanges_Post)]
+        [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public async Task<IActionResult> UpdatePublishedVacancy(ProposedChangesEditModel m)
         {
             var response = await _orchestrator.UpdatePublishedVacancyAsync(m, User.ToVacancyUser());
