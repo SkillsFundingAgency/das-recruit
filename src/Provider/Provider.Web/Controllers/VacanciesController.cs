@@ -22,8 +22,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
         }
 
         [HttpGet("", Name = RouteNames.Vacancies_Get)]
-        public async Task<IActionResult> Vacancies(
-            [FromQuery] string filter, [FromQuery] int page = 1, [FromQuery] string searchTerm = "")
+        public async Task<IActionResult> Vacancies([FromQuery] string filter, [FromQuery] int page = 1, [FromQuery] string searchTerm = "")
         {
             if (string.IsNullOrWhiteSpace(filter) && string.IsNullOrWhiteSpace(searchTerm))
                 TryGetFiltersFromCookie(out filter, out searchTerm);

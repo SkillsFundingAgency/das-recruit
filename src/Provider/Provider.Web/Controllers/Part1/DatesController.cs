@@ -1,5 +1,6 @@
 using System.Linq;
 using System.Threading.Tasks;
+using Esfa.Recruit.Provider.Web.Configuration;
 using Esfa.Recruit.Provider.Web.Configuration.Routing;
 using Esfa.Recruit.Provider.Web.Extensions;
 using Esfa.Recruit.Provider.Web.Orchestrators.Part1;
@@ -7,11 +8,13 @@ using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Provider.Web.ViewModels.Part1.Dates;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Esfa.Recruit.Provider.Web.Controllers.Part1
 {    
     [Route(RoutePaths.AccountVacancyRoutePath)]
+    [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
     public class DatesController : Controller
     {
         private readonly DatesOrchestrator _orchestrator;

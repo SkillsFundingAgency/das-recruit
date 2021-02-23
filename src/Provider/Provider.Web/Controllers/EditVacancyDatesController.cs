@@ -6,12 +6,15 @@ using Esfa.Recruit.Provider.Web.ViewModels.EditVacancyDates;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Hosting;
 using System;
+using Esfa.Recruit.Provider.Web.Configuration;
 using Esfa.Recruit.Provider.Web.Extensions;
 using Esfa.Recruit.Shared.Web.Extensions;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Esfa.Recruit.Provider.Web.Controllers
 {
     [Route(RoutePaths.AccountVacancyRoutePath)]
+    [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
     public class EditVacancyDatesController : Controller
     {
         private readonly EditVacancyDatesOrchestrator _orchestrator;

@@ -14,6 +14,7 @@ using Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Shared.Web.Mappers;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Esfa.Recruit.Provider.Web.Controllers
@@ -45,6 +46,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
         }
 
         [HttpPost("preview", Name = RouteNames.Preview_Submit_Post)]
+        [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public async Task<IActionResult> Submit(SubmitEditModel m)
         {
             var response = await _orchestrator.SubmitVacancyAsync(m, User.ToVacancyUser());
