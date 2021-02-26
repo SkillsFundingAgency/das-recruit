@@ -63,10 +63,8 @@
     <partial name="@PartialNames.ApplicationInsights" />
     <script src="@Url.Content("/lib/jquery/dist/jquery-3.3.1.min.js")"></script>
     <script src="@Url.Content("/lib/jquery-are-you-sure/jquery.are-you-sure.js")"></script>
-    <environment exclude="@EnvironmentNames.GetTestEnvironmentNamesCommaDelimited()">
-        <partial name="@PartialNames.GoogleAnalyticsInfo" />
-        <partial name="@PartialNames.GoogleTagManagerHead" />
-    </environment>
+    <partial name="@PartialNames.GoogleAnalyticsInfo" />
+    <partial name="@PartialNames.GoogleTagManagerHead" />
     <script nws-csp-add-nonce="true">
         window.EsfaRecruit = {};
     </script>
@@ -75,9 +73,7 @@
     <partial name="@PartialNames.ZenDeskApi" />
 </head>
 <body class="govuk-template__body">
-    <environment exclude="@EnvironmentNames.GetTestEnvironmentNamesCommaDelimited()">
-        <partial name="@PartialNames.GoogleTagManagerBody" />
-    </environment>
+    <partial name="@PartialNames.GoogleTagManagerBody" />
     <script nws-csp-add-nonce="true">document.body.className = ((document.body.className) ? document.body.className + ' js-enabled' : 'js-enabled');</script>
     <a href="#main-content" class="govuk-skip-link">Skip to main content</a>
     <div asp-show="@ViewContext.ViewData[ViewDataKeys.CanShowOutageMessage] as bool?" id="global-outage-message" class="global-message">
