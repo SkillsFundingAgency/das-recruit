@@ -24,19 +24,22 @@ namespace Esfa.Recruit.Provider.Web.Filters
                 {
                     _logger.LogInformation($"Getting  VacancyUser Info");
                     var user = controller.User.ToVacancyUser();
-                    _logger.LogInformation($" UserId : {user.UserId}  Name {user.Name}");
-                    controller.ViewBag.GaData = new GaData
+                    if (user != null)
                     {
-                        UserId = user.UserId,
-                        Acc = user.Ukprn.HasValue ? user.Ukprn.Value.ToString() : string.Empty
-                    };
+                        _logger.LogInformation($" UserId : {user.UserId}  Name {user.Name}");
+                        controller.ViewBag.GaData = new GaData
+                        {
+                            UserId = user.UserId,
+                            Acc = user.Ukprn.HasValue ? user.Ukprn.Value.ToString() : string.Empty
+                        };
+                    }
                 }
 
                 base.OnActionExecuting(filterContext);
             }
             catch(ArgumentNullException ex)
             {
-                _logger.LogError($"GoogleAnalyticsFilter OnActionExecuting ArgumentNullException : {ex.InnerException} StackTrace : {ex.StackTrace}");
+                _logger.LogError($"GoogleAnalyticsFilter OnActionExecuting ArgumentNullException : {ex.InnerException}");
             }
             catch (Exception ex)
             {                
