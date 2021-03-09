@@ -1,25 +1,47 @@
-﻿using Esfa.Recruit.Provider.Web.Extensions;
+﻿using System;
+using Esfa.Recruit.Provider.Web.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Provider.Web.Filters
 {
     public class GoogleAnalyticsFilter : ActionFilterAttribute
     {
+        private readonly ILogger<GoogleAnalyticsFilter> _logger;
+
+        public GoogleAnalyticsFilter(ILogger<GoogleAnalyticsFilter> logger)
+        {
+            _logger = logger;
+        }
+
         public override void OnActionExecuting(ActionExecutingContext filterContext)
         {
-            var controller = filterContext.Controller as Controller;
-            if (controller != null)
+            try
             {
-                var user = controller.User.ToVacancyUser();                
-                controller.ViewBag.GaData = new GaData
+                var controller = filterContext.Controller as Controller;                
+                if (controller != null)
                 {
-                    UserId = user.UserId,
-                    Acc = user.Ukprn.HasValue ? user.Ukprn.Value.ToString() : string.Empty
-                };
-            }
+                    _logger.LogInformation($"Getting  VacancyUser Info");
+                    var user = controller.User.ToVacancyUser();
+                    _logger.LogInformation($" UserId : {user.UserId}  Name {user.Name}");
+                    controller.ViewBag.GaData = new GaData
+                    {
+                        UserId = user.UserId,
+                        Acc = user.Ukprn.HasValue ? user.Ukprn.Value.ToString() : string.Empty
+                    };
+                }
 
-            base.OnActionExecuting(filterContext);
+                base.OnActionExecuting(filterContext);
+            }
+            catch(ArgumentNullException ex)
+            {
+                _logger.LogError($"GoogleAnalyticsFilter OnActionExecuting ArgumentNullException : {ex.InnerException} StackTrace : {ex.StackTrace}");
+            }
+            catch (Exception ex)
+            {                
+                _logger.LogError($"GoogleAnalyticsFilter OnActionExecuting Exception : {ex.InnerException}");
+            }
         }
 
         public class GaData
