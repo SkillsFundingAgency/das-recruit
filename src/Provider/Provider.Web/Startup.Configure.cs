@@ -98,7 +98,7 @@ namespace Esfa.Recruit.Provider.Web
                                     "https://*.rcrsv.io");
 
                     //Google tag manager uses inline scripts when administering tags. This is done on PREPROD only
-                    //if (env.IsEnvironment(EnvironmentNames.PREPROD))
+                        if (env.IsEnvironment(EnvironmentNames.PREPROD))
                         {
                             s.UnsafeInline();
                             s.UnsafeEval();
