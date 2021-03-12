@@ -23,15 +23,15 @@ namespace Esfa.Recruit.Provider.Web.Filters
                 if (controller != null)
                 {
                     _logger.LogInformation($"Getting  VacancyUser Info");
-                    var user = controller.User.ToVacancyUser();
-                    if (user != null)
+                    if (controller.User != null)
                     {
+                        var user = controller.User.ToVacancyUser();                       
                         _logger.LogInformation($" UserId : {user.UserId}  Name {user.Name}");
                         controller.ViewBag.GaData = new GaData
                         {
                             UserId = user.UserId,
                             Acc = user.Ukprn.HasValue ? user.Ukprn.Value.ToString() : string.Empty
-                        };
+                        };                       
                     }
                 }
 
