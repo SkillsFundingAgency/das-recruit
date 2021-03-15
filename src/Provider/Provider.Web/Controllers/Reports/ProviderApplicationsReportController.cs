@@ -1,17 +1,14 @@
 ﻿using System.Threading.Tasks;
-using Esfa.Recruit.Provider.Web.Configuration;
 using Esfa.Recruit.Provider.Web.Configuration.Routing;
 using Esfa.Recruit.Provider.Web.Extensions;
 using Esfa.Recruit.Provider.Web.Orchestrators.Reports;
 using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Provider.Web.ViewModels.Reports.ProviderApplicationsReport;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Esfa.Recruit.Provider.Web.Controllers.Reports
 {
     [Route(RoutePaths.ProviderApplicationsReportRoutePath)]
-    [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
     public class ProviderApplicationsReportController : Controller
     {
         private readonly ProviderApplicationsReportOrchestrator _orchestrator;
