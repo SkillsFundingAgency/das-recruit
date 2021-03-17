@@ -13,7 +13,6 @@ using Newtonsoft.Json;
 namespace Esfa.Recruit.Provider.Web.Controllers
 {
     [Route(RoutePaths.AccountApplicationReviewRoutePath)]
-    [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
     public class ApplicationReviewController : Controller
     {
         private readonly ApplicationReviewOrchestrator _orchestrator;
@@ -32,6 +31,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
         }
 
         [HttpPost("", Name = RouteNames.ApplicationReview_Post)]
+        [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public async Task<IActionResult> ApplicationReview(ApplicationReviewEditModel applicationReviewEditModel)
         {
             if (!ModelState.IsValid)
@@ -56,6 +56,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
         }
 
         [HttpPost("status", Name = RouteNames.ApplicationReviewConfirmation_Post)]
+        [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public async Task<IActionResult> ApplicationStatusConfirmation(ApplicationReviewStatusConfirmationEditModel applicationReviewStatusConfirmationEditModel)
         {
             if (!ModelState.IsValid)
