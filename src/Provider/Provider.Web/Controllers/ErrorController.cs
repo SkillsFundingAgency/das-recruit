@@ -7,6 +7,7 @@ using Esfa.Recruit.Proivder.Web.Exceptions;
 using Esfa.Recruit.Provider.Web.Configuration;
 using Esfa.Recruit.Provider.Web.Configuration.Routing;
 using Esfa.Recruit.Provider.Web.Exceptions;
+using Esfa.Recruit.Provider.Web.Extensions;
 using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Provider.Web.ViewModels;
 using Esfa.Recruit.Provider.Web.ViewModels.Error;
@@ -145,7 +146,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
 
             var serviceClaims = User.FindAll(ProviderRecruitClaims.IdamsUserServiceTypeClaimTypeIdentifier);
 
-            if (serviceClaims.Any(claim => claim.Value.Equals(ProviderRecruitClaims.ServiceClaimValue) == false))
+            if (!serviceClaims.Any(claim => claim.Value.IsServiceClaim()))
             {
                 _logger.LogInformation("User does not have service claim.");
                 return Redirect(_externalLinks.ProviderApprenticeshipSiteUrl);

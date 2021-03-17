@@ -19,7 +19,6 @@ using Microsoft.AspNetCore.Authorization;
 using Esfa.Recruit.Provider.Web.Middleware;
 using System.Threading.Tasks;
 using Esfa.Recruit.Provider.Web.Extensions;
-using Esfa.Recruit.Shared.Web.Configuration;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
 namespace Esfa.Recruit.Provider.Web.Configuration
@@ -28,22 +27,45 @@ namespace Esfa.Recruit.Provider.Web.Configuration
     {
         private const int SessionTimeoutMinutes = 30;
 
-        private const string ProviderPolicyName = "ProviderPolicy";
-
         public static void AddAuthorizationService(this IServiceCollection services)
         {
             services.AddAuthorization(options =>
             {
-                options.AddPolicy(ProviderPolicyName, policy =>
+                options.AddPolicy(PolicyNames.ProviderPolicyName, policy =>
                 {
                     policy.RequireAuthenticatedUser();
                     policy.RequireClaim(ProviderRecruitClaims.IdamsUserUkprnClaimsTypeIdentifier);
                     policy.RequireClaim(ProviderRecruitClaims.IdamsUserServiceTypeClaimTypeIdentifier);
                     policy.Requirements.Add(new ProviderAccountRequirement());
                 });
+
+                options.AddPolicy(PolicyNames.HasContributorOrAbovePermission, policy =>
+                {
+                    policy.RequireAuthenticatedUser();
+                    policy.RequireClaim(ProviderRecruitClaims.IdamsUserUkprnClaimsTypeIdentifier);
+                    policy.RequireClaim(ProviderRecruitClaims.IdamsUserServiceTypeClaimTypeIdentifier);
+                    policy.Requirements.Add(new MinimumServiceClaimRequirement(ServiceClaim.DAC));
+                });
+
+                options.AddPolicy(PolicyNames.HasContributorWithApprovalOrAbovePermission, policy =>
+                {
+                    policy.RequireAuthenticatedUser();
+                    policy.RequireClaim(ProviderRecruitClaims.IdamsUserUkprnClaimsTypeIdentifier);
+                    policy.RequireClaim(ProviderRecruitClaims.IdamsUserServiceTypeClaimTypeIdentifier);
+                    policy.Requirements.Add(new MinimumServiceClaimRequirement(ServiceClaim.DAB));
+                });
+
+                options.AddPolicy(PolicyNames.HasAccountOwnerPermission, policy =>
+                {
+                    policy.RequireAuthenticatedUser();
+                    policy.RequireClaim(ProviderRecruitClaims.IdamsUserUkprnClaimsTypeIdentifier);
+                    policy.RequireClaim(ProviderRecruitClaims.IdamsUserServiceTypeClaimTypeIdentifier);
+                    policy.Requirements.Add(new MinimumServiceClaimRequirement(ServiceClaim.DAA));
+                });
             });
 
             services.AddTransient<IAuthorizationHandler, ProviderAccountHandler>();
+            services.AddTransient<IAuthorizationHandler, MinimumServiceClaimRequirementHandler>();
         }
 
         public static void AddMvcService(this IServiceCollection services, IHostingEnvironment hostingEnvironment, ILoggerFactory loggerFactory)
@@ -59,7 +81,7 @@ namespace Esfa.Recruit.Provider.Web.Configuration
 
             services.AddMvc(opts =>
             {
-                opts.Filters.Add(new AuthorizeFilter(ProviderPolicyName));
+                opts.Filters.Add(new AuthorizeFilter(PolicyNames.ProviderPolicyName));
 
                 var jsonInputFormatters = opts.InputFormatters.OfType<JsonInputFormatter>();
                 foreach (var formatter in jsonInputFormatters)
@@ -94,9 +116,6 @@ namespace Esfa.Recruit.Provider.Web.Configuration
                 options.Wtrealm = authConfig.WtRealm;
                 options.MetadataAddress = authConfig.MetaDataAddress;
                 options.UseTokenLifetime = false;
-                //options.CallbackPath = "/";
-                //options.SkipUnrecognizedRequests = true;
-
                 options.Events.OnSecurityTokenValidated = async (ctx) =>
                 {
                     await HandleUserSignedIn(ctx, vacancyClient);

@@ -6,6 +6,7 @@ using Esfa.Recruit.Provider.Web.Orchestrators;
 using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Provider.Web.ViewModels.ApplicationReview;
 using Esfa.Recruit.Shared.Web.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
@@ -30,6 +31,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
         }
 
         [HttpPost("", Name = RouteNames.ApplicationReview_Post)]
+        [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public async Task<IActionResult> ApplicationReview(ApplicationReviewEditModel applicationReviewEditModel)
         {
             if (!ModelState.IsValid)
@@ -54,6 +56,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
         }
 
         [HttpPost("status", Name = RouteNames.ApplicationReviewConfirmation_Post)]
+        [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public async Task<IActionResult> ApplicationStatusConfirmation(ApplicationReviewStatusConfirmationEditModel applicationReviewStatusConfirmationEditModel)
         {
             if (!ModelState.IsValid)

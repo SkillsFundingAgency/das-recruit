@@ -8,10 +8,12 @@ using Esfa.Recruit.Provider.Web.ViewModels.CloneVacancy;
 using Esfa.Recruit.Provider.Web.Extensions;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Shared.Web.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Esfa.Recruit.Provider.Web.Controllers
 {
     [Route(RoutePaths.AccountVacancyRoutePath)]
+    [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
     public class CloneVacancyController : Controller
     {
         private readonly CloneVacancyOrchestrator _orchestrator;
