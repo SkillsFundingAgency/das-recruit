@@ -94,10 +94,11 @@ namespace Esfa.Recruit.Provider.Web
                                     "https://*.zendesk.com",
                                     "wss://*.zendesk.com",
                                     "wss://*.zopim.com",
+                                    "https://*.zopim.com",
                                     "https://*.rcrsv.io");
 
-                        //Google tag manager uses inline scripts when administering tags. This is done on PREPROD only
-                    if (env.IsEnvironment(EnvironmentNames.PREPROD))
+                    //Google tag manager uses inline scripts when administering tags. This is done on PREPROD only
+                        if (env.IsEnvironment(EnvironmentNames.PREPROD))
                         {
                             s.UnsafeInline();
                             s.UnsafeEval();
@@ -123,6 +124,7 @@ namespace Esfa.Recruit.Provider.Web
                     s.Self()
                     .CustomSources("https://maps.googleapis.com",
                                     "*.google-analytics.com",
+                                    "*.googletagmanager.com/",
                                     "https://ssl.gstatic.com",
                                     "https://www.gstatic.com/",
                                     "https://*.zopim.io",

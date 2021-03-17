@@ -19,6 +19,8 @@ namespace Esfa.Recruit.Provider.Web.Controllers
         [IgnoreAntiforgeryToken]
         public IActionResult Report([FromBody] CspReportRequest request)
         {
+            _logger.LogInformation($" Request Path: {HttpContext.Request.Path} and Query: {HttpContext.Request.Query}");
+            
             _logger.LogWarning("CSP Violation: {cspReport}", request);
 
             return Ok();
