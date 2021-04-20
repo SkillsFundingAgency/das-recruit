@@ -1,25 +1,41 @@
-﻿using Esfa.Recruit.Provider.Web.Extensions;
+﻿using System;
+using Esfa.Recruit.Provider.Web.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Provider.Web.Filters
 {
     public class ZendeskApiFilter : ActionFilterAttribute
     {
+        private readonly ILogger<ZendeskApiFilter> _logger;
+
+        public ZendeskApiFilter(ILogger<ZendeskApiFilter> logger)
+        {
+            _logger = logger;
+        }
+
         public override void OnActionExecuting(ActionExecutingContext filterContext)
         {
-            var controller = filterContext.Controller as Controller;
-            if (controller != null)
+            try
             {
-                var user = controller.User.ToVacancyUser();                
-                controller.ViewBag.ZendeskApiData = new ZendeskApiData
+                var controller = filterContext.Controller as Controller;
+                if (controller?.User != null)
                 {
-                    Name = user.Name,
-                    Email = user.Email,
-                    Organization = user.Ukprn.HasValue ? user.Ukprn.Value.ToString() : string.Empty
-                };
+                    var user = controller.User.ToVacancyUser();
+                    controller.ViewBag.ZendeskApiData = new ZendeskApiData
+                    {
+                        Name = user.Name,
+                        Email = user.Email,
+                        Organization = user.Ukprn.HasValue ? user.Ukprn.Value.ToString() : string.Empty
+                    };
+                }
             }
-
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"ZendeskApiFilter Cannot set ZendeskApiData for Provider");
+            }
+            
             base.OnActionExecuting(filterContext);
         }
 
