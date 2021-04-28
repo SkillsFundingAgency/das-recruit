@@ -195,7 +195,6 @@
         "CobrowsingSnippetKey": ""
       }
     },
-    
     "FaaConfiguration": {
       "type": "secureObject",
       "defaultValue": {
@@ -274,6 +273,9 @@
       "type": "string"
     },
     "recruitOuterApiConfigurationBaseUrl": {
+      "type": "string"
+    },
+    "cosmosDbServerVersion": {
       "type": "string"
     }
   },
@@ -376,6 +378,9 @@
           },
           "ipRangeFilter": {
             "value": "[parameters('cosmosDbIpRangeFilter')]"
+          },
+          "serverVersion": {
+            "value": "[parameters('cosmosDbServerVersion')]"
           }
         }
       },
@@ -643,7 +648,7 @@
                 {
                   "name": "RedisConnectionSettings:DataProtectionKeysDatabase",
                   "value": "[parameters('DataProtectionKeysDatabase')]"
-                }                
+                }
               ]
             }
           },
@@ -816,7 +821,7 @@
                 {
                   "name": "RedisConnectionSettings:DataProtectionKeysDatabase",
                   "value": "[parameters('DataProtectionKeysDatabase')]"
-                }    
+                }
               ]
             }
           },
@@ -1057,7 +1062,7 @@
                 {
                   "name": "RedisConnectionSettings:DataProtectionKeysDatabase",
                   "value": "[parameters('DataProtectionKeysDatabase')]"
-                } 
+                }
               ]
             }
           },
