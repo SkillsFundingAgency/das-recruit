@@ -18,6 +18,14 @@ In order to run this solution locally you will need the following:
 
 ### Environment Setup
 
+Please use [Developer Setup](https://skillsfundingagency.atlassian.net/wiki/spaces/RAAV2/pages/189694526/Developer+Setup) Confluence document to set up the foloowing
+
+* Cosmos DB
+* Employer Website
+* Provider Website
+* QA Website
+* Jobs
+
 The default development environment uses docker containers to host it's dependencies.
 
 * Redis
