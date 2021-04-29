@@ -18,7 +18,7 @@ In order to run this solution locally you will need the following:
 
 ### Environment Setup
 
-Please use [Developer Setup](https://skillsfundingagency.atlassian.net/wiki/spaces/RAAV2/pages/189694526/Developer+Setup) Confluence document to set up the foloowing
+Please use [Developer Setup](https://skillsfundingagency.atlassian.net/wiki/spaces/RAAV2/pages/189694526/Developer+Setup) Confluence document to set up the following
 
 * Cosmos DB
 * Employer Website
