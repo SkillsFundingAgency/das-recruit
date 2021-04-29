@@ -20,7 +20,7 @@ In order to run this solution locally you will need the following:
 
 Please use [Developer Setup](https://skillsfundingagency.atlassian.net/wiki/spaces/RAAV2/pages/189694526/Developer+Setup) Confluence document to set up the following
 
-* Cosmos DB
+* Cosmos DB - Database setup
 * Employer Website
 * Provider Website
 * QA Website
