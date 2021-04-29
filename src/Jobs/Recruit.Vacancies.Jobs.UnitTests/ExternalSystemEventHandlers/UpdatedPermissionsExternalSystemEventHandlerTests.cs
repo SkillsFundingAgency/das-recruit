@@ -75,7 +75,9 @@ namespace Recruit.Vacancies.Jobs.UnitTests.ExternalSystemEventHandlers
         public async Task GivenEventWithDefaultGuidUserRef_ThenVerifyNoDependenciesAreCalled()
         {
             var grantedOperations = new HashSet<Operation> { Operation.Recruitment };
-            await _sut.Handle(new UpdatedPermissionsEvent(EmployerAccountId, AccountLegalEntityId, AccountProviderId, AccountProviderLegalEntityId, Ukprn, Guid.Empty, string.Empty, string.Empty, string.Empty, grantedOperations, DateTime.UtcNow), null);
+            var previousOperations = new HashSet<Operation>();
+
+            await _sut.Handle(new UpdatedPermissionsEvent(EmployerAccountId, AccountLegalEntityId, AccountProviderId, AccountProviderLegalEntityId, Ukprn, Guid.Empty, string.Empty, string.Empty, string.Empty, grantedOperations, previousOperations, DateTime.UtcNow), null);
 
             _mockRecruitQueueService.VerifyNoOtherCalls();
             _mockMessaging.VerifyNoOtherCalls();
@@ -87,7 +89,9 @@ namespace Recruit.Vacancies.Jobs.UnitTests.ExternalSystemEventHandlers
         public async Task GivenEventWithGrantedRecruitmentPermission_ThenVerifyNoDependenciesAreCalled()
         {
             var grantedOperations = new HashSet<Operation> { Operation.Recruitment };
-            await _sut.Handle(new UpdatedPermissionsEvent(EmployerAccountId, AccountLegalEntityId, AccountProviderId, AccountProviderLegalEntityId, Ukprn, Guid.NewGuid(), UserEmailAddress, UserFirstName, UserLastName, grantedOperations, DateTime.UtcNow), null);
+            var previousOperations = new HashSet<Operation>();
+
+            await _sut.Handle(new UpdatedPermissionsEvent(EmployerAccountId, AccountLegalEntityId, AccountProviderId, AccountProviderLegalEntityId, Ukprn, Guid.NewGuid(), UserEmailAddress, UserFirstName, UserLastName, grantedOperations, previousOperations, DateTime.UtcNow), null);
 
             _mockRecruitQueueService.VerifyNoOtherCalls();
             _mockMessaging.VerifyNoOtherCalls();
@@ -99,7 +103,9 @@ namespace Recruit.Vacancies.Jobs.UnitTests.ExternalSystemEventHandlers
         public async Task GivenEventWithGrantedRecruitmentPermissionAndMore_ThenVerifyNoDependenciesAreCalled()
         {
             var grantedOperations = new HashSet<Operation> { Operation.Recruitment, Operation.CreateCohort };
-            await _sut.Handle(new UpdatedPermissionsEvent(EmployerAccountId, AccountLegalEntityId, AccountProviderId, AccountProviderLegalEntityId, Ukprn, Guid.NewGuid(), UserEmailAddress, UserFirstName, UserLastName, grantedOperations, DateTime.UtcNow), null);
+            var previousOperations = new HashSet<Operation>();
+
+            await _sut.Handle(new UpdatedPermissionsEvent(EmployerAccountId, AccountLegalEntityId, AccountProviderId, AccountProviderLegalEntityId, Ukprn, Guid.NewGuid(), UserEmailAddress, UserFirstName, UserLastName, grantedOperations, previousOperations, DateTime.UtcNow), null);
 
             _mockRecruitQueueService.VerifyNoOtherCalls();
             _mockMessaging.VerifyNoOtherCalls();
@@ -111,12 +117,13 @@ namespace Recruit.Vacancies.Jobs.UnitTests.ExternalSystemEventHandlers
         public async Task GivenNotExistingLegalEntityId_ThenExceptionIsThrown()
         {
             var grantedOperations = new HashSet<Operation> { Operation.CreateCohort };
+            var previousOperations = new HashSet<Operation>();
+
             _mockEncoder.Setup(x => x.Encode(EmployerAccountId, EncodingType.AccountId)).Returns(EmployerAccountIdEncoded);
             _mockEmployerAccountProvider.Setup(x => x.GetLegalEntitiesConnectedToAccountAsync(EmployerAccountIdEncoded))
                                         .ReturnsAsync(_dummyLegalEntities);
 
-            var exception = await Assert.ThrowsAsync<Exception>(() =>
-                            _sut.Handle(new UpdatedPermissionsEvent(EmployerAccountId, AccountLegalEntityId, AccountProviderId, AccountProviderLegalEntityId, Ukprn, Guid.NewGuid(), UserEmailAddress, UserFirstName, UserLastName, grantedOperations, DateTime.UtcNow), null));
+            var exception = await Assert.ThrowsAsync<Exception>(() => _sut.Handle(new UpdatedPermissionsEvent(EmployerAccountId, AccountLegalEntityId, AccountProviderId, AccountProviderLegalEntityId, Ukprn, Guid.NewGuid(), UserEmailAddress, UserFirstName, UserLastName, grantedOperations, previousOperations, DateTime.UtcNow), null));
 
             exception.Message.Should().Be($"Could not find matching Account Legal Entity Id {AccountLegalEntityId} for Employer Account {EmployerAccountId}");
             _mockEncoder.Verify(x => x.Encode(EmployerAccountId, EncodingType.AccountId), Times.Once);
@@ -133,11 +140,13 @@ namespace Recruit.Vacancies.Jobs.UnitTests.ExternalSystemEventHandlers
                                                             .Create();
 
             var grantedOperations = new HashSet<Operation> { Operation.CreateCohort };
+            var previousOperations = new HashSet<Operation>();
+
             _mockEncoder.Setup(x => x.Encode(EmployerAccountId, EncodingType.AccountId)).Returns(EmployerAccountIdEncoded);
             _mockEmployerAccountProvider.Setup(x => x.GetLegalEntitiesConnectedToAccountAsync(EmployerAccountIdEncoded))
                                         .ReturnsAsync(_dummyLegalEntities.Append(matchingLegalEntityViewModel));
 
-            await _sut.Handle(new UpdatedPermissionsEvent(EmployerAccountId, AccountLegalEntityId, AccountProviderId, AccountProviderLegalEntityId, Ukprn, Guid.NewGuid(), UserEmailAddress, UserFirstName, UserLastName, grantedOperations, DateTime.UtcNow), null);
+            await _sut.Handle(new UpdatedPermissionsEvent(EmployerAccountId, AccountLegalEntityId, AccountProviderId, AccountProviderLegalEntityId, Ukprn, Guid.NewGuid(), UserEmailAddress, UserFirstName, UserLastName, grantedOperations, previousOperations, DateTime.UtcNow), null);
 
             _mockEncoder.Verify(x => x.Encode(EmployerAccountId, EncodingType.AccountId), Times.Once);
             _mockEmployerAccountProvider.Verify(x => x.GetLegalEntitiesConnectedToAccountAsync(EmployerAccountIdEncoded), Times.Once);
@@ -155,6 +164,7 @@ namespace Recruit.Vacancies.Jobs.UnitTests.ExternalSystemEventHandlers
                                                             .Create();
 
             var grantedOperations = new HashSet<Operation> { Operation.CreateCohort };
+            var previousOperations = new HashSet<Operation> ();
             _mockEncoder.Setup(x => x.Encode(EmployerAccountId, EncodingType.AccountId)).Returns(EmployerAccountIdEncoded);
             _mockEmployerAccountProvider.Setup(x => x.GetLegalEntitiesConnectedToAccountAsync(EmployerAccountIdEncoded))
                                         .ReturnsAsync(_dummyLegalEntities.Append(matchingLegalEntityViewModel));
@@ -167,7 +177,7 @@ namespace Recruit.Vacancies.Jobs.UnitTests.ExternalSystemEventHandlers
                 queuedMessage = message;
             });
 
-            await _sut.Handle(new UpdatedPermissionsEvent(EmployerAccountId, AccountLegalEntityId, AccountProviderId, AccountProviderLegalEntityId, Ukprn, userRef, UserEmailAddress, UserFirstName, UserLastName, grantedOperations, DateTime.UtcNow), null);          
+            await _sut.Handle(new UpdatedPermissionsEvent(EmployerAccountId, AccountLegalEntityId, AccountProviderId, AccountProviderLegalEntityId, Ukprn, userRef, UserEmailAddress, UserFirstName, UserLastName, grantedOperations, previousOperations, DateTime.UtcNow), null);          
 
             Assert.NotNull(queuedMessage);
             Assert.Equal(Ukprn, queuedMessage.Ukprn);
