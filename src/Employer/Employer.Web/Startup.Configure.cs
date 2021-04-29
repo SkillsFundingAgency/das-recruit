@@ -88,13 +88,17 @@ namespace Esfa.Recruit.Employer.Web
                         .CustomSources("https://az416426.vo.msecnd.net/scripts/a/ai.0.js",
                                     "*.google-analytics.com",
                                     "*.googleapis.com",
-                                    "*.googletagmanager.com/",
+                                    "*.googletagmanager.com/",                                    
                                     "*.postcodeanywhere.co.uk/",
+                                    "https://tagmanager.google.com",
                                     "https://www.tagmanager.google.com/",
+                                    "https://www.google-analytics.com",
+                                    "https://ssl.google-analytics.com",
                                     "https://*.zdassets.com",
                                     "https://*.zendesk.com",
                                     "wss://*.zendesk.com",
                                     "wss://*.zopim.com",
+                                    "https://*.zopim.com",
                                     "https://*.rcrsv.io");
 
                     //Google tag manager uses inline scripts when administering tags. This is done on PREPROD only
@@ -107,6 +111,7 @@ namespace Esfa.Recruit.Employer.Web
                 .FontSources(s =>
                     s.Self()
                     .CustomSources("data:",
+                                    "https://fonts.gstatic.com",
                                     "https://fonts.googleapis.com/",
                                     "https://assets-ukdoe.rcrsv.io/")
                 )
@@ -116,6 +121,7 @@ namespace Esfa.Recruit.Employer.Web
                         "https://*.zendesk.com",
                         "https://*.zdassets.com",
                         "https://dc.services.visualstudio.com",
+                        "https://www.google-analytics.com",
                         "wss://*.zendesk.com",
                         "wss://*.zopim.com",
                         "https://*.rcrsv.io")
@@ -124,8 +130,10 @@ namespace Esfa.Recruit.Employer.Web
                     s.Self()
                     .CustomSources("https://maps.googleapis.com",
                                     "*.google-analytics.com",
+                                    "*.googletagmanager.com/",
                                     "https://ssl.gstatic.com",
                                     "https://www.gstatic.com/",
+                                    "https://www.google-analytics.com",
                                     "https://*.zopim.io",
                                     "https://*.zdassets.com",
                                     "https://*.zendesk.com",
