@@ -87,7 +87,7 @@ namespace Esfa.Recruit.Provider.Web
                         .CustomSources("https://az416426.vo.msecnd.net/scripts/a/ai.0.js",
                                     "*.google-analytics.com",
                                     "*.googleapis.com",
-                                    "*.googletagmanager.com/",                                    
+                                    "*.googletagmanager.com/",                    
                                     "*.postcodeanywhere.co.uk/",
                                     "https://tagmanager.google.com",
                                     "https://www.tagmanager.google.com/",
