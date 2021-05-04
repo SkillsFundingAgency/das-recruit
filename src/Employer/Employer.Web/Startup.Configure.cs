@@ -130,7 +130,7 @@ namespace Esfa.Recruit.Employer.Web
                                     "*.google-analytics.com",
                                     "*.googletagmanager.com/",
                                     "https://ssl.gstatic.com",
-                                    "https://www.gstatic.com/",                
+                                    "https://www.gstatic.com/",
                                     "https://*.zopim.io",
                                     "https://*.zdassets.com",
                                     "https://*.zendesk.com",
