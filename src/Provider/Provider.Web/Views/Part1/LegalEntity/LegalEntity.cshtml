@@ -49,17 +49,27 @@
                     <div class="govuk-radios">
                         @foreach (var organisation in Model.Organisations)
                         {
-                            <div class="govuk-radios__item">
-                                <input asp-for="SelectedOrganisationId" type="radio" value="@organisation.Id" class="govuk-radios__input" id="org-@organisation.Id" esfa-automation="selected-organisation-id">
-                                <label for="org-@organisation.Id" class="govuk-label govuk-radios__label">@organisation.Name</label>
-                            </div>
-                        }
+            <div class="govuk-radios__item">
+                <input asp-for="SelectedOrganisationId" type="radio" value="@organisation.Id" class="govuk-radios__input" id="org-@organisation.Id" esfa-automation="selected-organisation-id">
+                <label for="org-@organisation.Id" class="govuk-label govuk-radios__label">@organisation.Name</label>
+            </div>}
                         <input asp-show="@Model.CanOutputHiddenSelectedOrganisationIdField" type="hidden" asp-for="SelectedOrganisationId" />
                     </div>
                 </fieldset>
             </div>
 
             <partial name="@PartialNames.Pager" model="@Model.Pager" />
+
+            <details class="govuk-details" data-module="govuk-details">
+                <summary class="govuk-details__summary">
+                    <span class="govuk-details__summary-text">
+                        My organisation is not listed
+                    </span>
+                </summary>
+                <div class="govuk-details__text">
+                    Your organisation is not listed because you do not have the permission to create a vacancy for them. You'll need to contact them to set this permission.
+                </div>
+            </details>
 
             <button type="submit" class="govuk-button save-button" esfa-automation="continue-button">Continue</button>
 
