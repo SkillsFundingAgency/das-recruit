@@ -1,4 +1,3 @@
-@using Esfa.Recruit.Shared.Web.Configuration;
 @model Esfa.Recruit.Provider.Web.ViewModels.Part1.LegalEntity.LegalEntityViewModel;
 
 @{
@@ -49,10 +48,11 @@
                     <div class="govuk-radios">
                         @foreach (var organisation in Model.Organisations)
                         {
-            <div class="govuk-radios__item">
-                <input asp-for="SelectedOrganisationId" type="radio" value="@organisation.Id" class="govuk-radios__input" id="org-@organisation.Id" esfa-automation="selected-organisation-id">
-                <label for="org-@organisation.Id" class="govuk-label govuk-radios__label">@organisation.Name</label>
-            </div>}
+                            <div class="govuk-radios__item">
+                                <input asp-for="SelectedOrganisationId" type="radio" value="@organisation.Id" class="govuk-radios__input" id="org-@organisation.Id" esfa-automation="selected-organisation-id">
+                                <label for="org-@organisation.Id" class="govuk-label govuk-radios__label">@organisation.Name</label>
+                            </div>
+                        }
                         <input asp-show="@Model.CanOutputHiddenSelectedOrganisationIdField" type="hidden" asp-for="SelectedOrganisationId" />
                     </div>
                 </fieldset>
