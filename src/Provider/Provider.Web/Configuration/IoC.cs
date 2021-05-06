@@ -90,6 +90,7 @@ namespace Esfa.Recruit.Provider.Web.Configuration
             services.AddTransient<ShortDescriptionOrchestrator>();
             services.AddTransient<SkillsOrchestrator>();
             services.AddTransient<SubmittedOrchestrator>();
+            services.AddTransient<ReviewedOrchestrator>();
             services.AddTransient<TitleOrchestrator>();
             services.AddTransient<NumberOfPositionsOrchestrator>();
             services.AddTransient<TrainingOrchestrator>();
