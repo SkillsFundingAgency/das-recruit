@@ -67,8 +67,8 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.CommandHandlers
             await sut.Handle(message, new CancellationToken());
 
             vacancy.Status.Should().Be(VacancyStatus.Review);
-            vacancy.SubmittedDate.Should().Be(now);
-            vacancy.SubmittedByUser.Should().Be(user);
+            vacancy.ReviewDate.Should().Be(now);
+            vacancy.ReviewByUser.Should().Be(user);
             vacancy.LastUpdatedDate.Should().Be(now);
             vacancy.LastUpdatedByUser.Should().Be(user);
             vacancy.EmployerDescription.Should().Be(expectedDescription);
