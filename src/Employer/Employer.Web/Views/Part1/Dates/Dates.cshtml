@@ -54,8 +54,6 @@
                 <fieldset class="govuk-fieldset">
                     <legend class="govuk-fieldset__legend govuk-!-font-weight-bold">When do you expect the apprentice to start?<span class="govuk-visually-hidden"> (in numeric format DD MM YYYY)</span></legend>
 
-                    <span esfa-validation-message-for="StartDate" class="govuk-error-message"></span>
-
                     <p asp-show="@Model.CanShowTrainingHint" class="govuk-hint">
                         The start date must be before the @Model.TrainingDescription closes to new starters on @Model.TrainingEffectiveToDate
                     </p>
@@ -64,6 +62,9 @@
                     </p>
 
                     <span class="govuk-hint">For example, @exampleStartingDate.AsInputHintDisplayDate()</span>
+
+                    <span esfa-validation-message-for="StartDate" class="govuk-error-message"></span>
+
                     <div class="govuk-date-input">
                         <div class="govuk-date-input__item">
                             <div class="govuk-form-group">
