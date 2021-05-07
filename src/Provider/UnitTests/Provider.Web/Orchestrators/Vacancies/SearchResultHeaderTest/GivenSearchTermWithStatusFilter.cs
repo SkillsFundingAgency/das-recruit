@@ -40,7 +40,7 @@ namespace Esfa.Recruit.UnitTests.Provider.Web.Orchestrators.Vacancies.SearchResu
         [InlineData("2 live adverts with 'nurse'", "Live", "nurse", 2, VacancyStatus.Live)]
         [InlineData("1 live advert", "Live", "", 1, VacancyStatus.Live)]
         [InlineData("2 draft adverts with 'nurse'", "Draft", "nurse", 2, VacancyStatus.Draft)]
-        [InlineData("2 adverts pending review with 'nurse'", "Submitted", "nurse", 2, VacancyStatus.Submitted)]
+        [InlineData("2 adverts pending esfa review with 'nurse'", "Submitted", "nurse", 2, VacancyStatus.Submitted)]
         [InlineData("2 rejected adverts", "Referred", "", 2, VacancyStatus.Referred)]
         [InlineData("2 closed adverts", "Closed", "", 2, VacancyStatus.Closed)]
         [InlineData("2 adverts closing soon with 'nurse'", "ClosingSoon", "nurse", 2, VacancyStatus.Live)]
