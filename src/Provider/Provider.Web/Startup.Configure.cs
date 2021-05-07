@@ -89,7 +89,8 @@ namespace Esfa.Recruit.Provider.Web
                                     "*.googleapis.com",
                                     "*.googletagmanager.com/",
                                     "*.postcodeanywhere.co.uk/",
-                                    "https://www.tagmanager.google.com/",
+                                    "https://tagmanager.google.com",
+                                    "https://www.tagmanager.google.com/",                                    
                                     "https://*.zdassets.com",
                                     "https://*.zendesk.com",
                                     "wss://*.zendesk.com",
@@ -107,6 +108,7 @@ namespace Esfa.Recruit.Provider.Web
                 .FontSources(s =>
                     s.Self()
                     .CustomSources("data:",
+                                    "https://fonts.gstatic.com",
                                     "https://fonts.googleapis.com/",
                                     "https://assets-ukdoe.rcrsv.io/")
                 )
@@ -116,6 +118,7 @@ namespace Esfa.Recruit.Provider.Web
                         "https://*.zendesk.com",
                         "https://*.zdassets.com",
                         "https://dc.services.visualstudio.com",
+                        "https://www.google-analytics.com",
                         "wss://*.zendesk.com",
                         "wss://*.zopim.com",
                         "https://*.rcrsv.io")
