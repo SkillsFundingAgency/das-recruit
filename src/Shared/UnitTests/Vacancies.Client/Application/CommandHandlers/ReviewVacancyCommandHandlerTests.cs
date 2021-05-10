@@ -19,7 +19,7 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.CommandHandlers
     public class ReviewVacancyCommandHandlerTests
     {
         [Fact]
-        public async Task GivenEmployerDescription_ThenShouldUpdateVacancyWithThatDescripion()
+        public async Task GivenEmployerDescription_ThenShouldUpdateVacancyWithThatDescription()
         {
             var expectedDescription = "updated description";
             var vacancy = new Vacancy
@@ -33,7 +33,7 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.CommandHandlers
             vacancy.OwnerType = OwnerType.Employer;
             var user = new VacancyUser();
             var now = DateTime.Now;
-            var message = new ReviewVacancyCommand(vacancy.Id, user, expectedDescription, OwnerType.Employer);
+            var message = new ReviewVacancyCommand(vacancy.Id, user, OwnerType.Employer, expectedDescription);
 
             var sut = GetSut(vacancy.Id, vacancy, now);
             await sut.Handle(message, new CancellationToken());

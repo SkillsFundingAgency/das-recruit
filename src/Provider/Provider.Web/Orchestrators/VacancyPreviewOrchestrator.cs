@@ -13,6 +13,7 @@ using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
 using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
+using Esfa.Recruit.Vacancies.Client.Domain.Models;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelationship;
 using Microsoft.Extensions.Logging;
@@ -64,7 +65,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
 
             var vacancy = vacancyTask.Result;
             var programme = programmesTask.Result.SingleOrDefault(p => p.Id == vacancy.ProgrammeId);
-            var hasProviderReviewPermission = await _providerRelationshipsService.HasProviderGotEmployersPermissionAsync(vrm.Ukprn, vacancy.EmployerAccountId, vacancy.AccountLegalEntityPublicHashedId, "RecruitmentRequiresReview");
+            var hasProviderReviewPermission = await _providerRelationshipsService.HasProviderGotEmployersPermissionAsync(vrm.Ukprn, vacancy.EmployerAccountId, vacancy.AccountLegalEntityPublicHashedId, OperationType.RecruitmentRequiresReview);
 
             var vm = new VacancyPreviewViewModel();
             await _vacancyDisplayMapper.MapFromVacancyAsync(vm, vacancy);
@@ -116,7 +117,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
 
             await Task.WhenAll(hasLegalEntityAgreementTask, hasProviderAgreementTask);
 
-            var hasProviderReviewPermission = await _providerRelationshipsService.HasProviderGotEmployersPermissionAsync(vacancy.TrainingProvider.Ukprn.Value, vacancy.EmployerAccountId, vacancy.AccountLegalEntityPublicHashedId, "RecruitmentRequiresReview");
+            var hasProviderReviewPermission = await _providerRelationshipsService.HasProviderGotEmployersPermissionAsync(vacancy.TrainingProvider.Ukprn.Value, vacancy.EmployerAccountId, vacancy.AccountLegalEntityPublicHashedId, OperationType.RecruitmentRequiresReview);
 
             var response = new SubmitVacancyResponse
             {
@@ -131,7 +132,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
                 {
                     var command = new ReviewVacancyCommand(vacancy.Id, user, OwnerType.Provider);
                     await _messaging.SendCommandAsync(command);
-                    response.IsReviewed = true;
+                    response.IsSentForReview = true;
                 }
                 else
                 {

@@ -61,7 +61,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
                 if (response.Data.IsSubmitted)
                     return RedirectToRoute(RouteNames.Submitted_Index_Get);
 
-                if (response.Data.IsReviewed)
+                if (response.Data.IsSentForReview)
                     return RedirectToRoute(RouteNames.Reviewed_Index_Get);
 
                 if (response.Data.HasProviderAgreement == false)

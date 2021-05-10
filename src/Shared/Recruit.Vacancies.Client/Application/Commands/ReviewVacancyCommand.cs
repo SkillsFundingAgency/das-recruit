@@ -7,14 +7,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Commands
 {
     public class ReviewVacancyCommand : ICommand, IRequest
     {
-        public ReviewVacancyCommand(Guid vacancyId, VacancyUser user, OwnerType submissionOwner)
-        {
-            VacancyId = vacancyId;
-            User = user;
-            SubmissionOwner = submissionOwner;
-        }
-
-        public ReviewVacancyCommand(Guid vacancyId, VacancyUser user, string employerDescription, OwnerType submissionOwner)
+        public ReviewVacancyCommand(Guid vacancyId, VacancyUser user, OwnerType submissionOwner, string employerDescription = null)
         {
             VacancyId = vacancyId;
             User = user;

@@ -10,6 +10,7 @@ using Esfa.Recruit.Vacancies.Client.Application.Commands;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
+using Esfa.Recruit.Vacancies.Client.Domain.Models;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelationship;
 using FluentAssertions;
@@ -64,7 +65,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators
             var review = new Mock<IReviewSummaryService>();
 
             var permission = new Mock<IProviderRelationshipsService>();
-            permission.Setup(p => p.HasProviderGotEmployersPermissionAsync(ukprn, employerAccountId, accountLegalEntityPublicHashedId, "RecruitmentRequiresReview"))
+            permission.Setup(p => p.HasProviderGotEmployersPermissionAsync(ukprn, employerAccountId, accountLegalEntityPublicHashedId, OperationType.RecruitmentRequiresReview))
                 .ReturnsAsync(false);
 
             var legalEntityAgreement = new Mock<ILegalEntityAgreementService>();
@@ -139,7 +140,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators
             var review = new Mock<IReviewSummaryService>();
 
             var permission = new Mock<IProviderRelationshipsService>();
-            permission.Setup(p => p.HasProviderGotEmployersPermissionAsync(ukprn, employerAccountId, accountLegalEntityPublicHashedId, "RecruitmentRequiresReview"))
+            permission.Setup(p => p.HasProviderGotEmployersPermissionAsync(ukprn, employerAccountId, accountLegalEntityPublicHashedId, OperationType.RecruitmentRequiresReview))
                 .ReturnsAsync(hasProviderReviewPermission);
 
             var legalEntityAgreement = new Mock<ILegalEntityAgreementService>();
@@ -172,7 +173,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators
             messagingMock.Verify(c => c.SendCommandAsync(It.IsAny<ReviewVacancyCommand>()), reviewedTimes);
 
             actualResponse.Data.IsSubmitted.Should().Be(!hasProviderReviewPermission);
-            actualResponse.Data.IsReviewed.Should().Be(hasProviderReviewPermission);
+            actualResponse.Data.IsSentForReview.Should().Be(hasProviderReviewPermission);
         }
     }
 }

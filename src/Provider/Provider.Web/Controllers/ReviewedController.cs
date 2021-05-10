@@ -19,7 +19,6 @@ namespace Esfa.Recruit.Provider.Web.Controllers
 
         [HttpGet("reviewed", Name = RouteNames.Reviewed_Index_Get)]
         public async Task<IActionResult> Confirmation(VacancyRouteModel vrm)
-        
         {
             var vm = await _orchestrator.GetVacancyReviewedOrchestratorConfirmationViewModelAsync(vrm, User.ToVacancyUser());
             return View(vm);
