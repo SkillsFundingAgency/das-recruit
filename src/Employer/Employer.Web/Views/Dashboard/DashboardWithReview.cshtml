@@ -2,17 +2,15 @@
 
 @model Esfa.Recruit.Employer.Web.ViewModels.Dashboard.DashboardViewModel
 
-@{
-    var vacanciesSearchSuggestionsEndpointUrl = Url.RouteUrl(RouteNames.VacanciesSearchSuggestions_Get, null, Context.Request.Scheme);
-    string GetCardStatus(int count)
-    {
-        return count == 0 ? "das-card--inactive" : string.Empty;
-    }
-    ViewBag.ShowReturnToMaLink = Model.FromMaHome;
-    ViewBag.Vpv = "/recruitment/employer/page-dashboard";
-    ViewBag.ZenDeskLabel = "recruit-recruitment";
-    ViewBag.Title = "Your apprenticeship adverts";
-}
+@{ var vacanciesSearchSuggestionsEndpointUrl = Url.RouteUrl(RouteNames.VacanciesSearchSuggestions_Get, null, Context.Request.Scheme);
+                string GetCardStatus(int count)
+                {
+                    return count == 0 ? "das-card--inactive" : string.Empty;
+                }
+                ViewBag.ShowReturnToMaLink = Model.FromMaHome;
+                ViewBag.Vpv = "/recruitment/employer/page-dashboard";
+                ViewBag.ZenDeskLabel = "recruit-recruitment";
+                ViewBag.Title = "Your apprenticeship adverts"; }
 
 <partial asp-hide="@Model.HasAnyVacancies" name="_NoVacanciesContent" />
 
@@ -65,7 +63,23 @@
                     <p class="govuk-body das-card--description">Adverts that you need to complete and send for review.</p>
                 </div>
             </div>
-        </div>        
+        </div>
+        @*Review Tile Begin*@
+        <div class="govuk-grid-column-one-third">
+            <div class="das-card @GetCardStatus(Model.VacancyCountReview)">
+                <div class="das-card--content">
+                    <h3 class="govuk-heading-m das-card--heading">
+                        <span class="das-card--stat">@Model.VacancyCountReview</span>
+                        <a asp-show="@Model.HasReviewVacancy" asp-route="@RouteNames.Vacancies_Get" asp-route-filter="@FilteringOptions.Review" class="govuk-link">
+                            @FilteringOptions.Review @Model.VacancyTextReview
+                        </a>
+                        <span asp-hide="@Model.HasReviewVacancy">@FilteringOptions.Review @Model.VacancyTextReview</span>
+                    </h3>
+                    <p class="govuk-body das-card--description">Adverts created by training providers that you need to review.</p>
+                </div>
+            </div>
+        </div>
+        @*Review Tile End*@
         <div class="govuk-grid-column-one-third">
             <div class="das-card @GetCardStatus(Model.VacancyCountSubmitted)">
                 <div class="das-card--content">
@@ -79,7 +93,9 @@
                     <p class="govuk-body das-card--description">Adverts that you've sent for review.</p>
                 </div>
             </div>
-        </div>
+        </div>        
+    </div>
+    <div class="govuk-grid-row das-card--row">
         <div class="govuk-grid-column-one-third">
             <div class="das-card @GetCardStatus(Model.VacancyCountReferred)">
                 <div class="das-card--content">
@@ -94,8 +110,6 @@
                 </div>
             </div>
         </div>
-    </div>
-    <div class="govuk-grid-row das-card--row">
         <div class="govuk-grid-column-one-third">
             <div class="das-card @GetCardStatus(Model.VacancyCountLive)">
                 <div class="das-card--content">
@@ -141,7 +155,9 @@
                     </ul>
                 </div>
             </div>
-        </div>
+        </div>       
+    </div>
+    <div class="govuk-grid-row das-card--row">
         <div class="govuk-grid-column-one-third">
             <div class="das-card @GetCardStatus(Model.VacancyCountClosed)">
                 <div class="das-card--content">

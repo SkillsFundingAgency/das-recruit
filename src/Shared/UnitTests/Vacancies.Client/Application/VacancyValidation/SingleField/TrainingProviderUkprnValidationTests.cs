@@ -134,7 +134,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
 
             MockTrainingProviderSummaryProvider.Setup(p => p.GetAsync(ukprn)).ReturnsAsync(new TrainingProviderSummary());
 
-            MockProviderRelationshipsService.Setup(p => p.HasProviderGotEmployersPermissionAsync(ukprn, employerAccountId, accountLegalEntityPublicHashedId))
+            MockProviderRelationshipsService.Setup(p => p.HasProviderGotEmployersPermissionAsync(ukprn, employerAccountId, accountLegalEntityPublicHashedId, "Recruitment"))
                 .ReturnsAsync(false);
 
             var result = Validator.Validate(vacancy, VacancyRuleSet.TrainingProvider);
@@ -163,7 +163,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
 
             MockTrainingProviderSummaryProvider.Setup(p => p.GetAsync(ukprn)).ReturnsAsync(new TrainingProviderSummary());
 
-            MockProviderRelationshipsService.Setup(p => p.HasProviderGotEmployersPermissionAsync(ukprn, employerAccountId, accountLegalEntityPublicHashedId))
+            MockProviderRelationshipsService.Setup(p => p.HasProviderGotEmployersPermissionAsync(ukprn, employerAccountId, accountLegalEntityPublicHashedId, "Recruitment"))
                 .ReturnsAsync(true);
 
             var result = Validator.Validate(vacancy, VacancyRuleSet.TrainingProvider);

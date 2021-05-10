@@ -72,6 +72,12 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
                     await _vacancyDisplayMapper.MapFromVacancyAsync(submittedViewModel, vacancy);
                     submittedViewModel.SubmittedDate = vacancy.SubmittedDate.Value.AsGdsDate();
                     return submittedViewModel;
+                case VacancyStatus.Review:
+                    var reviewViewModel = new ReviewVacancyViewModel();
+                    reviewViewModel.EducationLevelName =
+                        EducationLevelNumberHelper.GetEducationLevelNameOrDefault(programme.EducationLevelNumber, programme.ApprenticeshipLevel);
+                    await _vacancyDisplayMapper.MapFromVacancyAsync(reviewViewModel, vacancy);
+                    return reviewViewModel;
                 default:
                     throw new InvalidStateException(string.Format(ErrorMessages.VacancyCannotBeViewed, vacancy.Title));
             }
@@ -91,6 +97,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
                     return GetDisplayViewModelForClosedVacancy(vacancy);
                 case VacancyStatus.Referred:
                     return await GetDisplayViewModelForReferredVacancy(vacancy);
+                case VacancyStatus.Review:
+                    return GetDisplayViewModelForReviewVacancy(vacancy);
                 default:
                     throw new InvalidStateException(string.Format(ErrorMessages.VacancyCannotBeViewed, vacancy.Title));
             }
@@ -168,6 +176,17 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
                 ViewModel = referredViewModel,
                 ViewName = ViewNames.ManageReferredVacancyView
             };
+        }
+
+        private ViewVacancy GetDisplayViewModelForReviewVacancy(Vacancy vacancy)
+        {
+            var reviewViewModel = new ReviewVacancyViewModel();
+            PopulateViewModelWithApplications(vacancy, reviewViewModel);
+            return new ViewVacancy
+            {
+                ViewModel = reviewViewModel,
+                ViewName = ViewNames.ManageReviewVacancyView
+            };         
         }
     }
 }

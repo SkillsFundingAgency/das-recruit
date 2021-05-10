@@ -10,13 +10,15 @@
                 return "Edit and resubmit";
             case VacancyStatus.Draft:
                 return "Edit and submit";
+            case VacancyStatus.Review:
+                return "Review";
         }
 
         return "Manage";
     }
     ViewBag.Vpv = "/recruitment/employer/page-vacancies";
     ViewBag.Title = "Your adverts";
-}
+        }
 
 <partial name="@PartialNames.Alerts" for="Alerts" />
 
@@ -117,7 +119,7 @@
                 </thead>
                 <tbody class="govuk-table__body">
                     @foreach (var vacancy in Model.Vacancies)
-                    {
+        {
                         <tr class="govuk-table__row">
                             <td class="govuk-table__cell" data-label="Vacancy title">
                                 <div>
@@ -154,7 +156,7 @@
 
 
 @section FooterJS
-{
+    {
     <script src="/lib/jquery-ui/dist/jquery-ui.min.js"></script>
     <script asp-append-version="true" src="/lib/esfa-search-suggestions/searchSuggestionsService.js"></script>
     <script nws-csp-add-nonce="true">
@@ -165,10 +167,10 @@
 
             $(filterId).on("change",
                 function() {
-                    var $filterForm = $(this).parents("form");
+                var $filterForm = $(this).parents("form");
                     $filterForm.areYouSure({ 'silent': true });
                     $filterForm.submit();
-                });
+            });
         });
         searchSuggestions.init("#search-input", "@vacanciesSearchSuggestionsEndpointUrl");
     </script>
