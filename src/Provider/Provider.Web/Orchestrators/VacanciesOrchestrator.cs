@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Esfa.Recruit.Provider.Web.Configuration;
 using Esfa.Recruit.Provider.Web.Configuration.Routing;
 using Esfa.Recruit.Provider.Web.Services;
 using Esfa.Recruit.Provider.Web.ViewModels;
@@ -85,7 +86,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
                 Pager = pager,
                 Filter = filteringOption,
                 SearchTerm = searchTerm,
-                ResultsHeading = VacancyFilterHeadingHelper.GetFilterHeading(filteredVacanciesTotal, filteringOption, searchTerm),
+                ResultsHeading = VacancyFilterHeadingHelper.GetFilterHeading(Constants.VacancyTerm, filteredVacanciesTotal, filteringOption, searchTerm),
                 Alerts = alerts
             };
 
@@ -101,6 +102,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
                 case FilteringOptions.Closed:
                 case FilteringOptions.Referred:
                 case FilteringOptions.Draft:
+                case FilteringOptions.Review:
                 case FilteringOptions.Submitted:
                     filteredVacancies = vacancies.Where(v =>
                         v.Status.ToString() == filterStatus.ToString());
