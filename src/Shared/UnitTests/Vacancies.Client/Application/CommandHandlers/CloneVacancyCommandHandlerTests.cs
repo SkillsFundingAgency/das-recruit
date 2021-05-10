@@ -87,6 +87,8 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.CommandHandlers
                 {nameof(Vacancy.CreatedByUser), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.Ignore)},
                 {nameof(Vacancy.SubmittedDate), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.IsNull)},
                 {nameof(Vacancy.SubmittedByUser), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.IsNull)},
+                {nameof(Vacancy.ReviewDate), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.IsNull)},
+                {nameof(Vacancy.ReviewByUser), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.IsNull)},
                 {nameof(Vacancy.ApprovedDate), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.IsNull)},
                 {nameof(Vacancy.LiveDate), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.IsNull)},
                 {nameof(Vacancy.LastUpdatedDate), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.Ignore)},

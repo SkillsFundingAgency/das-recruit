@@ -134,8 +134,9 @@
                             <td class="govuk-table__cell dashboard-closingdate" data-label="Closing date"><span>@vacancy.ClosingDate?.AsGdsDate()</span></td>
                             <td class="govuk-table__cell dashboard-status" data-label="Status"><span class="tag tag-@vacancy.Status.ToString().ToLower()">@vacancy.Status.GetDisplayName()</span></td>
                             <td class="govuk-table__cell dashboard-action" data-label="Action">
-                                <a asp-show="@vacancy.IsNotSubmittable" asp-route="@RouteNames.VacancyManage_Get" asp-route-vacancyId="@vacancy.Id" class="govuk-link">@GetLinkText(vacancy)</a>
-                                <a asp-show="@vacancy.IsSubmittable" asp-route="@RouteNames.DisplayVacancy_Get" asp-route-vacancyId="@vacancy.Id" class="govuk-link">@GetLinkText(vacancy)</a>
+                                <a asp-show="@(vacancy.IsNotSubmittable && vacancy.Status != VacancyStatus.Review)" asp-route="@RouteNames.VacancyManage_Get" asp-route-vacancyId="@vacancy.Id" class="govuk-link">@GetLinkText(vacancy)</a>
+                                <a asp-show="@(vacancy.IsSubmittable && vacancy.Status != VacancyStatus.Review)" asp-route="@RouteNames.DisplayVacancy_Get" asp-route-vacancyId="@vacancy.Id" class="govuk-link">@GetLinkText(vacancy)</a>
+                                <a asp-show="@vacancy.Status == VacancyStatus.Review" asp-route="@RouteNames.DisplayFullVacancy_Get" asp-route-vacancyId="@vacancy.Id" class="govuk-link">View</a>
                             </td>
                         </tr>
                     }
