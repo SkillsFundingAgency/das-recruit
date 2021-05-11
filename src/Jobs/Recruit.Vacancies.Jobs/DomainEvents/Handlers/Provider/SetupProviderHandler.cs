@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Domain.Events;
+using Esfa.Recruit.Vacancies.Client.Domain.Models;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.PasAccount;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Projections;
@@ -38,7 +39,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Provider
             {
                 _logger.LogInformation($"Processing {nameof(SetupProviderEvent)} for Ukprn: {{Ukprn}}", eventData.Ukprn);
 
-                var employerInfosTask = _providerRelationshipService.GetLegalEntitiesForProviderAsync(eventData.Ukprn, "Recruitment");
+                var employerInfosTask = _providerRelationshipService.GetLegalEntitiesForProviderAsync(eventData.Ukprn, OperationType.Recruitment);
                 var providerAgreementTask = _pasAccountProvider.HasAgreementAsync(eventData.Ukprn);
 
                 await Task.WhenAll(employerInfosTask, providerAgreementTask);

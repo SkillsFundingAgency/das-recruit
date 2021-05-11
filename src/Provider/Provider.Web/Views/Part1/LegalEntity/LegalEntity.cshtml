@@ -1,4 +1,3 @@
-@using Esfa.Recruit.Shared.Web.Configuration;
 @model Esfa.Recruit.Provider.Web.ViewModels.Part1.LegalEntity.LegalEntityViewModel;
 
 @{
@@ -60,6 +59,17 @@
             </div>
 
             <partial name="@PartialNames.Pager" model="@Model.Pager" />
+
+            <details class="govuk-details" data-module="govuk-details">
+                <summary class="govuk-details__summary">
+                    <span class="govuk-details__summary-text">
+                        My organisation is not listed
+                    </span>
+                </summary>
+                <div class="govuk-details__text">
+                    Your organisation is not listed because you do not have the permission to create a vacancy for them. You’ll need to contact them to set this permission.
+                </div>
+            </details>
 
             <button type="submit" class="govuk-button save-button" esfa-automation="continue-button">Continue</button>
 

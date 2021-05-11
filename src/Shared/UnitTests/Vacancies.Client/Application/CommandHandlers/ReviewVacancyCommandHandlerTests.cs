@@ -16,10 +16,10 @@ using Xunit;
 namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.CommandHandlers
 {
     [Trait("Category", "Unit")]
-    public class SubmitVacancyCommandHandlerTests
+    public class ReviewVacancyCommandHandlerTests
     {
         [Fact]
-        public async Task GivenEmployerDescription_ThenShouldUpdateVacancyWithThatDescripion()
+        public async Task GivenEmployerDescription_ThenShouldUpdateVacancyWithThatDescription()
         {
             var expectedDescription = "updated description";
             var vacancy = new Vacancy
@@ -33,14 +33,14 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.CommandHandlers
             vacancy.OwnerType = OwnerType.Employer;
             var user = new VacancyUser();
             var now = DateTime.Now;
-            var message = new SubmitVacancyCommand(vacancy.Id, user, OwnerType.Employer, expectedDescription);
+            var message = new ReviewVacancyCommand(vacancy.Id, user, OwnerType.Employer, expectedDescription);
 
             var sut = GetSut(vacancy.Id, vacancy, now);
             await sut.Handle(message, new CancellationToken());
 
-            vacancy.Status.Should().Be(VacancyStatus.Submitted);
-            vacancy.SubmittedDate.Should().Be(now);
-            vacancy.SubmittedByUser.Should().Be(user);
+            vacancy.Status.Should().Be(VacancyStatus.Review);
+            vacancy.ReviewDate.Should().Be(now);
+            vacancy.ReviewByUser.Should().Be(user);
             vacancy.LastUpdatedDate.Should().Be(now);
             vacancy.LastUpdatedByUser.Should().Be(user);
             vacancy.EmployerDescription.Should().Be(expectedDescription);
@@ -61,14 +61,14 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.CommandHandlers
             vacancy.OwnerType= OwnerType.Provider;
             var user = new VacancyUser();
             var now = DateTime.Now;
-            var message = new SubmitVacancyCommand(vacancy.Id, user, OwnerType.Provider);
+            var message = new ReviewVacancyCommand(vacancy.Id, user, OwnerType.Provider);
 
             var sut = GetSut(vacancy.Id, vacancy, now);
             await sut.Handle(message, new CancellationToken());
 
-            vacancy.Status.Should().Be(VacancyStatus.Submitted);
-            vacancy.SubmittedDate.Should().Be(now);
-            vacancy.SubmittedByUser.Should().Be(user);
+            vacancy.Status.Should().Be(VacancyStatus.Review);
+            vacancy.ReviewDate.Should().Be(now);
+            vacancy.ReviewByUser.Should().Be(user);
             vacancy.LastUpdatedDate.Should().Be(now);
             vacancy.LastUpdatedByUser.Should().Be(user);
             vacancy.EmployerDescription.Should().Be(expectedDescription);
@@ -80,8 +80,8 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.CommandHandlers
             var id = Guid.NewGuid();
             var user = new VacancyUser();
             var now = DateTime.Now;
-            var expectedExceptionMessage = string.Format(SubmitVacancyCommandHandler.VacancyNotFoundExceptionMessageFormat, id);
-            var message = new SubmitVacancyCommand(id, user, OwnerType.Provider);
+            var expectedExceptionMessage = string.Format(ReviewVacancyCommandHandler.VacancyNotFoundExceptionMessageFormat, id);
+            var message = new ReviewVacancyCommand(id, user, OwnerType.Provider);
 
             var sut = GetSut(id, null, now);
             var exception = await Assert.ThrowsAsync<ArgumentException>(async () => await sut.Handle(message, new CancellationToken()));
@@ -103,8 +103,8 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.CommandHandlers
             vacancy.OwnerType = OwnerType.Employer;
             var user = new VacancyUser();
             var now = DateTime.Now;
-            var message = new SubmitVacancyCommand(vacancy.Id, user, OwnerType.Provider);
-            var expectedExceptionMessage = string.Format(SubmitVacancyCommandHandler.InvalidStateExceptionMessageFormat, vacancy.Id, vacancy.Status);
+            var message = new ReviewVacancyCommand(vacancy.Id, user, OwnerType.Provider);
+            var expectedExceptionMessage = string.Format(ReviewVacancyCommandHandler.InvalidStateExceptionMessageFormat, vacancy.Id, vacancy.Status);
 
             var sut = GetSut(vacancy.Id, vacancy, now);
             var exception = await Assert.ThrowsAsync<InvalidOperationException>(async () => await sut.Handle(message, new CancellationToken()));
@@ -126,8 +126,8 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.CommandHandlers
             vacancy.OwnerType = OwnerType.Employer;
             var user = new VacancyUser();
             var now = DateTime.Now;
-            var message = new SubmitVacancyCommand(vacancy.Id, user, OwnerType.Provider);
-            var expectedExceptionMessage = string.Format(SubmitVacancyCommandHandler.MissingReferenceNumberExceptionMessageFormat, vacancy.Id);
+            var message = new ReviewVacancyCommand(vacancy.Id, user, OwnerType.Provider);
+            var expectedExceptionMessage = string.Format(ReviewVacancyCommandHandler.MissingReferenceNumberExceptionMessageFormat, vacancy.Id);
 
             var sut = GetSut(vacancy.Id, vacancy, now);
             var exception = await Assert.ThrowsAsync<InvalidOperationException>(async () => await sut.Handle(message, new CancellationToken()));
@@ -150,8 +150,8 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.CommandHandlers
             vacancy.OwnerType = OwnerType.Employer;
             var user = new VacancyUser();
             var now = DateTime.Now;
-            var message = new SubmitVacancyCommand(vacancy.Id, user, OwnerType.Provider);
-            var expectedExceptionMessage = string.Format(SubmitVacancyCommandHandler.InvalidOwnerExceptionMessageFormat, vacancy.Id, message.SubmissionOwner, vacancy.OwnerType);
+            var message = new ReviewVacancyCommand(vacancy.Id, user, OwnerType.Provider);
+            var expectedExceptionMessage = string.Format(ReviewVacancyCommandHandler.InvalidOwnerExceptionMessageFormat, vacancy.Id, message.SubmissionOwner, vacancy.OwnerType);
 
             var sut = GetSut(vacancy.Id, vacancy, now);
             var exception = await Assert.ThrowsAsync<InvalidOperationException>(async () => await sut.Handle(message, new CancellationToken()));
@@ -159,7 +159,7 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.CommandHandlers
             exception.Message.Should().Be(expectedExceptionMessage);
         }
 
-        public SubmitVacancyCommandHandler GetSut(Guid id, Vacancy vacancy, DateTime now)
+        public ReviewVacancyCommandHandler GetSut(Guid id, Vacancy vacancy, DateTime now)
         {
             var mockLogger = new Mock<ILogger<SubmitVacancyCommandHandler>>();
 
@@ -173,8 +173,7 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.CommandHandlers
 
             var mockEmployerNameService = new Mock<IEmployerService>();
 
-            var handler = new SubmitVacancyCommandHandler(
-                mockLogger.Object, mockRepository.Object, mockMessaging.Object, mockTimeProvider.Object, mockEmployerNameService.Object);
+            var handler = new ReviewVacancyCommandHandler(mockLogger.Object, mockRepository.Object, mockMessaging.Object, mockTimeProvider.Object, mockEmployerNameService.Object);
 
             return handler;
         }

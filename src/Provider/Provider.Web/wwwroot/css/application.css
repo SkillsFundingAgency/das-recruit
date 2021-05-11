@@ -115,8 +115,8 @@ outline-offset: 0
 }
 
 .delete-button, .delete-button:visited, .delete-button:hover {
-background-color: #b10e1e;
-box-shadow: 0 2px 0 #000000;
+    background-color: #d4351c;
+    box-shadow: 0 2px 0 #55150b;
 }
 
 /** Utility classes ***/

@@ -19,6 +19,8 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
         public VacancyUser CreatedByUser { get; set; }
         public DateTime? SubmittedDate { get; set; }
         public VacancyUser SubmittedByUser { get; set; }
+        public DateTime? ReviewDate { get; set; }
+        public VacancyUser ReviewByUser { get; set; }
         public DateTime? ApprovedDate { get; set; }
         public DateTime? LiveDate { get; set; }
 
