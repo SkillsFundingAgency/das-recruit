@@ -12,6 +12,7 @@
         public const string ManageLiveVacancyView = "Live";
         public const string ManageLiveVacancyWithApplicationsView = "LiveWithApplications";
         public const string ManageReferredVacancyView = "Referred";
+        public const string ManageReviewVacancyView = "Review";
         public const string ManageSubmittedVacancyView = "Submitted";
         public const string MissingPermissions = "MissingPermissions";
         public const string PageNotFound = "PageNotFound";
@@ -19,5 +20,7 @@
         public const string CloseVacancyView = "Close";
         public const string Training = "Training";
         public const string ApplicationWithdrawn = "ApplicationWithdrawn";
+        public const string DashboardWithReview = "DashboardWithReview";
+        public const string DashboardNoReview = "DashboardNoReview";
     }
 }
