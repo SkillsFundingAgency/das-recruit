@@ -6,6 +6,7 @@ using Esfa.Recruit.Employer.Web.Services;
 using Esfa.Recruit.Employer.Web.ViewModels;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Vacancies.Client.Domain.Models;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
@@ -82,7 +83,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Dashboard
                 .ReturnsAsync(dashboardProjection);
 
             var permissionServiceMock = new Mock<IProviderRelationshipsService>();
-            permissionServiceMock.Setup(p => p.GetLegalEntitiesForProviderAsync(employerAccountId, "RecruitmentRequiresReview"))
+            permissionServiceMock.Setup(p => p.GetLegalEntitiesForProviderAsync(employerAccountId, OperationType.RecruitmentRequiresReview))
                 .ReturnsAsync(new List<EmployerInfo>());
 
             var userDetails = new User();

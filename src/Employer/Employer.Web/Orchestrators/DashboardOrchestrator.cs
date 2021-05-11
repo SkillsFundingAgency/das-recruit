@@ -5,6 +5,7 @@ using Esfa.Recruit.Employer.Web.Services;
 using Esfa.Recruit.Employer.Web.ViewModels.Dashboard;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Vacancies.Client.Domain.Models;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelationship;
@@ -38,7 +39,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
         {
             var dashboardTask = _vacancyClient.GetDashboardAsync(employerAccountId, createIfNonExistent: true);
             var userDetailsTask = _client.GetUsersDetailsAsync(user.UserId);
-            var providerTask = _providerRelationshipsService.GetLegalEntitiesForProviderAsync(employerAccountId, "RecruitmentRequiresReview");
+            var providerTask = _providerRelationshipsService.GetLegalEntitiesForProviderAsync(employerAccountId, OperationType.RecruitmentRequiresReview);
 
             await Task.WhenAll(dashboardTask, userDetailsTask, providerTask);
 

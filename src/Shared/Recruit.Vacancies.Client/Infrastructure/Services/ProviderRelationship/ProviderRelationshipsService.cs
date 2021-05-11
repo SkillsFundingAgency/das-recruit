@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount;
+using Esfa.Recruit.Vacancies.Client.Domain.Models;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -34,21 +35,21 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelation
             _accountApiClient = accountApiClient;
         }
 
-        public async Task<IEnumerable<EmployerInfo>> GetLegalEntitiesForProviderAsync(long ukprn, string operation)
+        public async Task<IEnumerable<EmployerInfo>> GetLegalEntitiesForProviderAsync(long ukprn, OperationType operation)
         {
             var providerPermissions = await GetProviderPermissionsAsync(ukprn, operation);
 
             return await GetEmployerInfosAsync(providerPermissions);
         }
 
-        public async Task<IEnumerable<EmployerInfo>> GetLegalEntitiesForProviderAsync(string accountHashedId, string operation)
+        public async Task<IEnumerable<EmployerInfo>> GetLegalEntitiesForProviderAsync(string accountHashedId, OperationType operation)
         {
             var providerPermissions = await GetProviderPermissionsAsync(accountHashedId, operation);
             
             return await GetEmployerInfosAsync(providerPermissions);
         }      
 
-        public async Task<bool> HasProviderGotEmployersPermissionAsync(long ukprn, string accountHashedId, string accountLegalEntityPublicHashedId, string operation)
+        public async Task<bool> HasProviderGotEmployersPermissionAsync(long ukprn, string accountHashedId, string accountLegalEntityPublicHashedId, OperationType operation)
         {
             var accountDetails = await _accountApiClient.GetAccount(accountHashedId);
             var permittedLegalEntities = await GetProviderPermissionsforEmployer(ukprn, accountDetails.PublicHashedAccountId, operation);
@@ -68,7 +69,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelation
             return hasPermission;
         }
 
-        private async Task<List<LegalEntityDto>> GetProviderPermissionsforEmployer(long ukprn, string accountPublicHashedId, string operation)
+        private async Task<List<LegalEntityDto>> GetProviderPermissionsforEmployer(long ukprn, string accountPublicHashedId, OperationType operation)
         {
             var providerPermissions = await GetProviderPermissionsAsync(ukprn, operation);
 
@@ -79,11 +80,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelation
             return permittedLegalEntities;
         }
 
-        private async Task<ProviderPermissions> GetProviderPermissionsAsync(long ukprn, string operation)
+        private async Task<ProviderPermissions> GetProviderPermissionsAsync(long ukprn, OperationType operation)
         {
             using (var httpClient = CreateHttpClient(_configuration))
             {
-                var queryData = new { Ukprn = ukprn, Operation = operation };
+                var queryData = new { Ukprn = ukprn, Operation = operation.ToString() };
                 var uri = new Uri(AddQueryString("accountproviderlegalentities", queryData), UriKind.RelativeOrAbsolute);
 
                 try
@@ -111,11 +112,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelation
             }
         }
 
-        private async Task<ProviderPermissions> GetProviderPermissionsAsync(string accountHashedId, string operation)
+        private async Task<ProviderPermissions> GetProviderPermissionsAsync(string accountHashedId, OperationType operation)
         {
             using (var httpClient = CreateHttpClient(_configuration))
             {
-                var queryData = new { AccountHashedId = accountHashedId, Operation = operation };
+                var queryData = new { AccountHashedId = accountHashedId, Operation = operation.ToString() };
                 var uri = new Uri(AddQueryString("accountproviderlegalentities", queryData), UriKind.RelativeOrAbsolute);
 
                 try
