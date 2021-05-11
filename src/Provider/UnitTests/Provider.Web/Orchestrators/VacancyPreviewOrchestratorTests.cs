@@ -135,7 +135,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators
 
             var geocodeImageService = new Mock<IGeocodeImageService>();
             var externalLinks = new Mock<IOptions<ExternalLinksConfiguration>>();
-            var mapper = new DisplayVacancyViewModelMapper(geocodeImageService.Object, externalLinks.Object, vacancyClient.Object);
+            var mapper = new DisplayVacancyViewModelMapper(geocodeImageService.Object, externalLinks.Object, vacancyClient.Object, client.Object);
 
             var review = new Mock<IReviewSummaryService>();
 
