@@ -69,10 +69,11 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
                                   Status == VacancyStatus.Referred)
                                  && IsDeleted == false;
         /// <summary>
-        /// We can only edit draft & referred vacancies that have not been deleted
+        /// We can only edit draft , referred & Review vacancies that have not been deleted
         /// </summary>
         public bool CanEdit => (Status == VacancyStatus.Draft || 
-                                Status == VacancyStatus.Referred ) 
+                                Status == VacancyStatus.Referred ||
+                                Status == VacancyStatus.Review) 
                                && IsDeleted == false;
         /// <summary>
         /// The vacancy is being edited
@@ -99,6 +100,8 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
         /// We can send for review vacancies that are submitted and that have not been deleted
         /// </summary>
         public bool CanSendForReview => Status == VacancyStatus.Submitted && IsDeleted == false;
+        
+        public bool CanReadyForReview => Status == VacancyStatus.Review && IsDeleted == false;
 
         public bool IsDisabilityConfident => DisabilityConfident == DisabilityConfident.Yes;
 

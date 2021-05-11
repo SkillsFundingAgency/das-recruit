@@ -98,7 +98,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
                 case VacancyStatus.Referred:
                     return await GetDisplayViewModelForReferredVacancy(vacancy);
                 case VacancyStatus.Review:
-                    return GetDisplayViewModelForReviewVacancy(vacancy);
+                    return await GetDisplayViewModelForReviewVacancy(vacancy);
                 default:
                     throw new InvalidStateException(string.Format(ErrorMessages.VacancyCannotBeViewed, vacancy.Title));
             }
@@ -176,17 +176,17 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
                 ViewModel = referredViewModel,
                 ViewName = ViewNames.ManageReferredVacancyView
             };
-        }
+        }       
 
-        private ViewVacancy GetDisplayViewModelForReviewVacancy(Vacancy vacancy)
+        private async Task<ViewVacancy> GetDisplayViewModelForReviewVacancy(Vacancy vacancy)
         {
             var reviewViewModel = new ReviewVacancyViewModel();
-            PopulateViewModelWithApplications(vacancy, reviewViewModel);
+            await _vacancyDisplayMapper.MapFromVacancyAsync(reviewViewModel, vacancy);            
             return new ViewVacancy
             {
                 ViewModel = reviewViewModel,
                 ViewName = ViewNames.ManageReviewVacancyView
-            };         
+            };
         }
     }
 }

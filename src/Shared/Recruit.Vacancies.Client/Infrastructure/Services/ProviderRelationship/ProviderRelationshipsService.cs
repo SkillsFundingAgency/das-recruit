@@ -41,7 +41,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelation
             return await GetEmployerInfosAsync(providerPermissions);
         }
 
-        //TODO : check
         public async Task<IEnumerable<EmployerInfo>> GetLegalEntitiesForProviderAsync(string accountHashedId, string operation)
         {
             var providerPermissions = await GetProviderPermissionsAsync(accountHashedId, operation);
@@ -112,7 +111,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelation
             }
         }
 
-        private async Task<ProviderPermissions> GetProviderPermissionsAsync(string accountHashedId, string operation) //TODO : check
+        private async Task<ProviderPermissions> GetProviderPermissionsAsync(string accountHashedId, string operation)
         {
             using (var httpClient = CreateHttpClient(_configuration))
             {

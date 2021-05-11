@@ -19,6 +19,6 @@ namespace Esfa.Recruit.Employer.Web.Configuration.Routing
         public string ManageApprenticeshipSitePrivacyRoute { get; set; }
         public string EmployerFavouritesSiteApprenticeshipListRoute { get; set; }
         public string EmployerFavouritesSiteTrainingProvidersRoute { get; set; }
-        public string YourTrainingProviderPermission { get; set; }
+        public string YourTrainingProviderPermissionRoute { get; set; }
     }
 }

@@ -38,7 +38,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
         {
             var dashboardTask = _vacancyClient.GetDashboardAsync(employerAccountId, createIfNonExistent: true);
             var userDetailsTask = _client.GetUsersDetailsAsync(user.UserId);
-            var providerTask = _providerRelationshipsService.GetLegalEntitiesForProviderAsync(employerAccountId, "RecruitmentRequiresReview"); //TODO : check
+            var providerTask = _providerRelationshipsService.GetLegalEntitiesForProviderAsync(employerAccountId, "RecruitmentRequiresReview");
 
             await Task.WhenAll(dashboardTask, userDetailsTask, providerTask);
 
@@ -61,7 +61,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
                     v.ClosingDate <= _timeProvider.Today.AddDays(ClosingSoonDays) &&
                     v.Status == VacancyStatus.Live),
                 Alerts = _alertsViewModelFactory.Create(vacancies, userDetails),
-                HasEmployerReviewPermission = providerPermissions.Any() //TODO : check
+                HasEmployerReviewPermission = providerPermissions.Any()
             };
             return vm;
         }
