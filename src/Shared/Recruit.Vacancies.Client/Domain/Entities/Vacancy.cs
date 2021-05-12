@@ -109,7 +109,7 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
         /// </summary>
         public bool CanSendForReview => Status == VacancyStatus.Submitted && IsDeleted == false;
         
-        public bool CanReadyForReview => Status == VacancyStatus.Review && IsDeleted == false;
+        public bool CanReview => Status == VacancyStatus.Review && IsDeleted == false;
 
         public bool IsDisabilityConfident => DisabilityConfident == DisabilityConfident.Yes;
 
