@@ -689,17 +689,17 @@
                 },
                 {
                   "name": "MongoDb",
-                  "connectionString": "[concat('mongodb://', variables('cosmosDbName'), ':', reference(variables('cosmosDbName')).outputs.PrimaryMasterKey.value,'@', variables('cosmosDbName'), '.documents.azure.com:10255/?ssl=true&replicaSet=globaldb')]",
+                  "connectionString": "[concat('mongodb://', variables('cosmosDbName'), ':', reference('cosmos-db').outputs.PrimaryMasterKey.value,'@', variables('cosmosDbName'), '.documents.azure.com:10255/?ssl=true&replicaSet=globaldb')]",
                   "type": "Custom"
                 },
                 {
                   "name": "QueueStorage",
-                  "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('storageAccountName'),';AccountKey=',reference(variables('storageAccountName')).outputs.storageKey.value)]",
+                  "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('storageAccountName'),';AccountKey=',reference('storage-account').outputs.storageKey.value)]",
                   "type": "Custom"
                 },
                 {
                   "name": "TableStorage",
-                  "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('storageAccountName'),';AccountKey=',reference(variables('storageAccountName')).outputs.storageKey.value)]",
+                  "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('storageAccountName'),';AccountKey=',reference('storage-account').outputs.storageKey.value)]",
                   "type": "Custom"
                 }
               ]
@@ -858,22 +858,22 @@
                 },
                 {
                   "name": "MongoDb",
-                  "connectionString": "[concat('mongodb://', variables('cosmosDbName'), ':', reference(variables('cosmosDbName')).outputs.PrimaryMasterKey.value,'@', variables('cosmosDbName'), '.documents.azure.com:10255/?ssl=true&replicaSet=globaldb')]",
+                  "connectionString": "[concat('mongodb://', variables('cosmosDbName'), ':', reference('cosmos-db').outputs.PrimaryMasterKey.value,'@', variables('cosmosDbName'), '.documents.azure.com:10255/?ssl=true&replicaSet=globaldb')]",
                   "type": "Custom"
                 },
                 {
                   "name": "QueueStorage",
-                  "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('storageAccountName'),';AccountKey=',reference(variables('storageAccountName')).outputs.storageKey.value)]",
+                  "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('storageAccountName'),';AccountKey=',reference('storage-account').outputs.storageKey.value)]",
                   "type": "Custom"
                 },
                 {
                   "name": "TableStorage",
-                  "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('storageAccountName'),';AccountKey=',reference(variables('storageAccountName')).outputs.storageKey.value)]",
+                  "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('storageAccountName'),';AccountKey=',reference('storage-account').outputs.storageKey.value)]",
                   "type": "Custom"
                 },
                 {
                   "name": "CommunicationsStorage",
-                  "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('storageAccountName'),';AccountKey=',reference(variables('storageAccountName')).outputs.storageKey.value)]",
+                  "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('storageAccountName'),';AccountKey=',reference('storage-account').outputs.storageKey.value)]",
                   "type": "Custom"
                 }
               ]
@@ -1096,17 +1096,17 @@
                 },
                 {
                   "name": "MongoDb",
-                  "connectionString": "[concat('mongodb://', variables('cosmosDbName'), ':', reference(variables('cosmosDbName')).outputs.PrimaryMasterKey.value,'@', variables('cosmosDbName'), '.documents.azure.com:10255/?ssl=true&replicaSet=globaldb')]",
+                  "connectionString": "[concat('mongodb://', variables('cosmosDbName'), ':', reference('cosmos-db').outputs.PrimaryMasterKey.value,'@', variables('cosmosDbName'), '.documents.azure.com:10255/?ssl=true&replicaSet=globaldb')]",
                   "type": "Custom"
                 },
                 {
                   "name": "QueueStorage",
-                  "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('storageAccountName'),';AccountKey=',reference(variables('storageAccountName')).outputs.storageKey.value)]",
+                  "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('storageAccountName'),';AccountKey=',reference('storage-account').outputs.storageKey.value)]",
                   "type": "Custom"
                 },
                 {
                   "name": "TableStorage",
-                  "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('storageAccountName'),';AccountKey=',reference(variables('storageAccountName')).outputs.storageKey.value)]",
+                  "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('storageAccountName'),';AccountKey=',reference('storage-account').outputs.storageKey.value)]",
                   "type": "Custom"
                 }
               ]
@@ -1407,22 +1407,22 @@
                 },
                 {
                   "name": "QueueStorage",
-                  "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('storageAccountName'),';AccountKey=',reference(variables('storageAccountName')).outputs.storageKey.value)]",
+                  "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('storageAccountName'),';AccountKey=',reference('storage-account').outputs.storageKey.value)]",
                   "type": "Custom"
                 },
                 {
                   "name": "CommunicationsStorage",
-                  "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('storageAccountName'),';AccountKey=',reference(variables('storageAccountName')).outputs.storageKey.value)]",
+                  "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('storageAccountName'),';AccountKey=',reference('storage-account').outputs.storageKey.value)]",
                   "type": "Custom"
                 },
                 {
                   "name": "AzureWebJobsDashboard",
-                  "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('storageAccountName'),';AccountKey=',reference(variables('storageAccountName')).outputs.storageKey.value)]",
+                  "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('storageAccountName'),';AccountKey=',reference('storage-account').outputs.storageKey.value)]",
                   "type": "Custom"
                 },
                 {
                   "name": "AzureWebJobsStorage",
-                  "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('storageAccountName'),';AccountKey=',reference(variables('storageAccountName')).outputs.storageKey.value)]",
+                  "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('storageAccountName'),';AccountKey=',reference('storage-account').outputs.storageKey.value)]",
                   "type": "Custom"
                 },
                 {
