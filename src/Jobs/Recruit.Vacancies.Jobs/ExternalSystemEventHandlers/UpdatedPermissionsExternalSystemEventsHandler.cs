@@ -80,9 +80,13 @@ namespace Esfa.Recruit.Vacancies.Jobs.ExternalSystemEventHandlers
                     UserName = $"{message.UserFirstName} {message.UserLastName}",
                     TransferReason = TransferReason.EmployerRevokedPermission
                 });
-
-                await _messaging.SendCommandAsync(new SetupProviderCommand(message.Ukprn));
             }
+            else if (message.GrantedOperations.Contains(Operation.RecruitmentRequiresReview) == false)
+            {
+
+            }
+
+            await _messaging.SendCommandAsync(new SetupProviderCommand(message.Ukprn));
         }
 
         private async Task<LegalEntity> GetAssociatedLegalEntityAsync(UpdatedPermissionsEvent message, string employerAccountId)

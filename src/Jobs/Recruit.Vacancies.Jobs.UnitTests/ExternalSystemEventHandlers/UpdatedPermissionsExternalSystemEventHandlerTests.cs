@@ -80,9 +80,9 @@ namespace Recruit.Vacancies.Jobs.UnitTests.ExternalSystemEventHandlers
             await _sut.Handle(new UpdatedPermissionsEvent(EmployerAccountId, AccountLegalEntityId, AccountProviderId, AccountProviderLegalEntityId, Ukprn, Guid.Empty, string.Empty, string.Empty, string.Empty, grantedOperations, previousOperations, DateTime.UtcNow), null);
 
             _mockRecruitQueueService.VerifyNoOtherCalls();
-            _mockMessaging.VerifyNoOtherCalls();
             _mockEmployerAccountProvider.VerifyNoOtherCalls();
             _mockEncoder.VerifyNoOtherCalls();
+            _mockMessaging.Verify(x => x.SendCommandAsync(It.Is<SetupProviderCommand>(c => c.Ukprn == Ukprn)), Times.Once);
         }
 
         [Fact]
@@ -94,9 +94,9 @@ namespace Recruit.Vacancies.Jobs.UnitTests.ExternalSystemEventHandlers
             await _sut.Handle(new UpdatedPermissionsEvent(EmployerAccountId, AccountLegalEntityId, AccountProviderId, AccountProviderLegalEntityId, Ukprn, Guid.NewGuid(), UserEmailAddress, UserFirstName, UserLastName, grantedOperations, previousOperations, DateTime.UtcNow), null);
 
             _mockRecruitQueueService.VerifyNoOtherCalls();
-            _mockMessaging.VerifyNoOtherCalls();
             _mockEmployerAccountProvider.VerifyNoOtherCalls();
             _mockEncoder.VerifyNoOtherCalls();
+            _mockMessaging.Verify(x => x.SendCommandAsync(It.Is<SetupProviderCommand>(c => c.Ukprn == Ukprn)), Times.Once);
         }
 
         [Fact]
@@ -108,9 +108,9 @@ namespace Recruit.Vacancies.Jobs.UnitTests.ExternalSystemEventHandlers
             await _sut.Handle(new UpdatedPermissionsEvent(EmployerAccountId, AccountLegalEntityId, AccountProviderId, AccountProviderLegalEntityId, Ukprn, Guid.NewGuid(), UserEmailAddress, UserFirstName, UserLastName, grantedOperations, previousOperations, DateTime.UtcNow), null);
 
             _mockRecruitQueueService.VerifyNoOtherCalls();
-            _mockMessaging.VerifyNoOtherCalls();
             _mockEmployerAccountProvider.VerifyNoOtherCalls();
             _mockEncoder.VerifyNoOtherCalls();
+            _mockMessaging.Verify(x => x.SendCommandAsync(It.Is<SetupProviderCommand>(c => c.Ukprn == Ukprn)), Times.Once);
         }
 
         [Fact]
