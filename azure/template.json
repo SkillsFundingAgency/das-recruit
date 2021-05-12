@@ -1382,7 +1382,7 @@
                 },
                 {
                   "name": "OuterApiConfiguration:Key",
-                  "value": "[reference(resourceId(parameters('sharedApimResourceGroup'),'Microsoft.ApiManagement/service/subscriptions', parameters('sharedApimName'), variables('webjobAppServiceName')), '2019-01-01').primaryKey]"
+                  "value": "[reference(concat(subscription().id, '/resourceGroups/', parameters('sharedApimResourceGroup'), '/providers/MicrosoftApiManagement/service/', parameters('sharedApimName'), '/subscriptions/', variables('webjobAppServiceName'))).primaryKey]"
                 }
               ]
             }
