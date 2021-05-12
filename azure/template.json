@@ -268,6 +268,9 @@
     "sharedApimName": {
       "type": "string"
     },
+    "sharedApimRecruitWebjobSubscriptionKey": {
+      "type": "securestring"
+    },
     "recruitOuterApiConfigurationBaseUrl": {
       "type": "string"
     },
@@ -1382,7 +1385,7 @@
                 },
                 {
                   "name": "OuterApiConfiguration:Key",
-                  "value": "[reference(concat('/subscriptions/', subscription().subscriptionId, '/resourceGroups/', parameters('sharedApimResourceGroup'), '/providers/Microsoft.ApiManagement/service/', parameters('sharedApimName'), '/subscriptions/', variables('webjobAppServiceName'))).primaryKey]"
+                  "value": "[parameters('sharedApimRecruitWebjobSubscriptionKey')]"
                 }
               ]
             }
