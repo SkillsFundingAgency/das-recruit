@@ -83,7 +83,25 @@ namespace Esfa.Recruit.Vacancies.Jobs.ExternalSystemEventHandlers
             }
             else if (message.GrantedOperations.Contains(Operation.RecruitmentRequiresReview) == false)
             {
+                var employerAccountId = _encoder.Encode(message.AccountId, EncodingType.AccountId);
 
+                var legalEntity = await GetAssociatedLegalEntityAsync(message, employerAccountId);
+
+                if (legalEntity == null)
+                {
+                    throw new Exception($"Could not find matching Account Legal Entity Id {message.AccountLegalEntityId} for Employer Account {message.AccountId}");
+                }
+
+                await _recruitQueueService.AddMessageAsync(new TransferVacanciesFromEmployerReviewToQAReviewQueueMessage
+                {
+                    Ukprn = message.Ukprn,
+                    EmployerAccountId = employerAccountId,
+                    AccountLegalEntityPublicHashedId = legalEntity.AccountLegalEntityPublicHashedId,
+                    UserRef = message.UserRef.Value,
+                    UserEmailAddress = message.UserEmailAddress,
+                    UserName = $"{message.UserFirstName} {message.UserLastName}",
+                    TransferReason = TransferReason.EmployerRevokedPermission
+                });
             }
 
             await _messaging.SendCommandAsync(new SetupProviderCommand(message.Ukprn));

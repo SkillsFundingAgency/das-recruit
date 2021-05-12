@@ -299,6 +299,26 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
             return result;
         }
 
+        public async Task<IEnumerable<Vacancy>> GetProviderOwnedVacanciesInReviewAsync(long ukprn, string accountLegalEntityPublicHashedId)
+        {
+            var builder = Builders<Vacancy>.Filter;
+            var filter = builder.Eq(v => v.IsDeleted, false) &
+                         builder.Eq(v => v.OwnerType, OwnerType.Provider) &
+                         builder.Eq(v => v.TrainingProvider.Ukprn, ukprn) &
+                         builder.Eq(v => v.AccountLegalEntityPublicHashedId, accountLegalEntityPublicHashedId) &
+                         builder.Eq(v => v.Status, VacancyStatus.Review);
+
+            var collection = GetCollection<Vacancy>();
+
+            var result = await RetryPolicy.ExecuteAsync(_ =>
+                    collection.Aggregate()
+                        .Match(filter)
+                        .ToListAsync(),
+                new Context(nameof(GetProviderOwnedVacanciesInReviewAsync)));
+
+            return result;
+        }
+
         public async Task<IEnumerable<Vacancy>> GetProviderOwnedVacanciesForEmployerWithoutAccountLegalEntityPublicHashedIdAsync(long ukprn, string employerAccountId)
         {
             var builder = Builders<Vacancy>.Filter;
