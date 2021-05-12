@@ -277,7 +277,7 @@
     "sharedEnvVirtualNetworkName": {
       "type": "string"
     },
-    "webJobSubnetObject": {
+    "webjobSubnetObject": {
       "type": "object"
     },
     "subnetServiceEndpointList": {
