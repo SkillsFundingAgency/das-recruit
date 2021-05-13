@@ -6,8 +6,6 @@ using Esfa.Recruit.Vacancies.Client.Application.Queues;
 using Esfa.Recruit.Vacancies.Client.Application.Queues.Messages;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
-using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount;
 using Esfa.Recruit.Vacancies.Jobs.Configuration;
@@ -95,12 +93,10 @@ namespace Esfa.Recruit.Vacancies.Jobs.ExternalSystemEventHandlers
                 await _recruitQueueService.AddMessageAsync(new TransferVacanciesFromEmployerReviewToQAReviewQueueMessage
                 {
                     Ukprn = message.Ukprn,
-                    EmployerAccountId = employerAccountId,
                     AccountLegalEntityPublicHashedId = legalEntity.AccountLegalEntityPublicHashedId,
                     UserRef = message.UserRef.Value,
                     UserEmailAddress = message.UserEmailAddress,
-                    UserName = $"{message.UserFirstName} {message.UserLastName}",
-                    TransferReason = TransferReason.EmployerRevokedPermission
+                    UserName = $"{message.UserFirstName} {message.UserLastName}"
                 });
             }
 
