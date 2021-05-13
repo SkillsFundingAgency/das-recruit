@@ -190,6 +190,9 @@ namespace Esfa.Recruit.Employer.Web
             if (!string.IsNullOrWhiteSpace(linksConfig?.EmployerFavouritesUrl))
                 destinations.Add(linksConfig.EmployerFavouritesUrl);
 
+            if (!string.IsNullOrWhiteSpace(linksConfig?.TrainingProviderPermissionUrl))
+                destinations.Add(linksConfig.TrainingProviderPermissionUrl);
+
             return destinations.ToArray();
         }
     }
