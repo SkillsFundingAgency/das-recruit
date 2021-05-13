@@ -33,5 +33,7 @@ namespace Esfa.Recruit.Employer.Web.Configuration
         public string EmployerFavouritesHome => _externalLinks.EmployerFavouritesUrl;
         public string EmployerFavouritesTrainingProviders => $"{_externalLinks.EmployerFavouritesUrl}{_maRoutes.EmployerFavouritesSiteTrainingProvidersRoute}";
         public string EmployerFavouritesApprenticeshipList => $"{_externalLinks.EmployerFavouritesUrl}{_maRoutes.EmployerFavouritesSiteApprenticeshipListRoute}";
+        public string YourTrainingProviderPermission => $"{_externalLinks.TrainingProviderPermissionUrl}{_maRoutes.YourTrainingProviderPermissionRoute}";
+
     }
 }

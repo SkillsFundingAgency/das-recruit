@@ -188,7 +188,7 @@ namespace Recruit.Vacancies.Jobs.UnitTests.ExternalSystemEventHandlers
                                                             .Create();
 
             var grantedOperations = new HashSet<Operation> { Operation.CreateCohort };
-            var previousOperations = new HashSet<Operation> ();
+            var previousOperations = new HashSet<Operation>();
             _mockEncoder.Setup(x => x.Encode(EmployerAccountId, EncodingType.AccountId)).Returns(EmployerAccountIdEncoded);
             _mockEmployerAccountProvider.Setup(x => x.GetLegalEntitiesConnectedToAccountAsync(EmployerAccountIdEncoded))
                                         .ReturnsAsync(_dummyLegalEntities.Append(matchingLegalEntityViewModel));

@@ -37,7 +37,7 @@ namespace Esfa.Recruit.Employer.Web
 
         private static void CheckCanEdit(Vacancy vacancy)
         {
-            if (!vacancy.CanEdit)
+            if (!vacancy.CanEmployerEdit)
                 throw new InvalidStateException(string.Format(ErrorMessages.VacancyNotAvailableForEditing,
                     vacancy.Title));
         }

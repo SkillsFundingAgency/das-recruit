@@ -147,5 +147,6 @@
         public const string NotificationUnsubscribedAcknowledgement_Get = "NotificationUnsubscribedAcknowledgement_Get";
 
         public const string EmployerFavourites = "EmployerFavourites";
+        public const string YourTrainingProviderPermission = "YourTrainingProviderPermission";
     }
 }

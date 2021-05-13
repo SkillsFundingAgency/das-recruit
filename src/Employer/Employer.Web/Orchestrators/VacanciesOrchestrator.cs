@@ -93,6 +93,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
                 case FilteringOptions.Closed:
                 case FilteringOptions.Referred:
                 case FilteringOptions.Draft:
+                case FilteringOptions.Review:
                 case FilteringOptions.Submitted:
                     filteredVacancies = vacancies.Where(v =>
                         v.Status.ToString() == filterStatus.ToString());

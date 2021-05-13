@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Domain.Models;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount;
+using Esfa.Recruit.Vacancies.Client.Domain.Models;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -41,6 +42,13 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelation
 
             return await GetEmployerInfosAsync(providerPermissions);
         }
+
+        public async Task<IEnumerable<EmployerInfo>> GetLegalEntitiesForProviderAsync(string accountHashedId, OperationType operation)
+        {
+            var providerPermissions = await GetProviderPermissionsAsync(accountHashedId, operation);
+            
+            return await GetEmployerInfosAsync(providerPermissions);
+        }      
 
         public async Task<bool> HasProviderGotEmployersPermissionAsync(long ukprn, string accountHashedId, string accountLegalEntityPublicHashedId, OperationType operation)
         {
@@ -78,6 +86,38 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelation
             using (var httpClient = CreateHttpClient(_configuration))
             {
                 var queryData = new { Ukprn = ukprn, Operation = operation.ToString() };
+                var uri = new Uri(AddQueryString("accountproviderlegalentities", queryData), UriKind.RelativeOrAbsolute);
+
+                try
+                {
+                    var response = await httpClient.GetAsync(uri);
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var content = await response.Content.ReadAsStringAsync();
+                        var providerPermissions = JsonConvert.DeserializeObject<ProviderPermissions>(content);
+                        return providerPermissions;
+                    }
+
+                    _logger.LogError($"An invalid response received when trying to get provider relationships. Status:{response.StatusCode} Reason:{response.ReasonPhrase}");
+                }
+                catch (HttpRequestException ex)
+                {
+                    _logger.LogError(ex, "Error trying to retrieve legal entities.", null);
+                }
+                catch (JsonReaderException ex)
+                {
+                    _logger.LogError(ex, $"Couldn't deserialise {nameof(ProviderPermissions)}.", null);
+                }
+
+                return new ProviderPermissions { AccountProviderLegalEntities = Enumerable.Empty<LegalEntityDto>() };
+            }
+        }
+
+        private async Task<ProviderPermissions> GetProviderPermissionsAsync(string accountHashedId, OperationType operation)
+        {
+            using (var httpClient = CreateHttpClient(_configuration))
+            {
+                var queryData = new { AccountHashedId = accountHashedId, Operation = operation.ToString() };
                 var uri = new Uri(AddQueryString("accountproviderlegalentities", queryData), UriKind.RelativeOrAbsolute);
 
                 try
