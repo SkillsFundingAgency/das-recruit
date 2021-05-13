@@ -1,17 +1,18 @@
 {
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    "EnvironmentName": {
+    "resourceEnvironmentName": {
       "type": "string"
     },
-    "webJobAspLocation": {
-      "type": "string",
-      "allowedValues": [
-        "North Europe",
-        "West Europe"
-      ],
-      "defaultValue": "West Europe"
+    "serviceName": {
+      "type": "string"
+    },
+    "tags": {
+      "type": "object"
+    },
+    "resourceGroupLocation": {
+      "type": "string"
     },
     "webJobAspSize": {
       "type": "string",
@@ -26,12 +27,7 @@
     },
     "webJobNonASETier": {
       "type": "string",
-      "allowedValues": [
-        "Basic",
-        "Standard",
-        "Premium"
-      ],
-      "defaultValue": "Basic"
+      "defaultValue": "Standard"
     },
     "EnvironmentFullName": {
       "type": "string"
@@ -122,10 +118,13 @@
       "type": "bool",
       "defaultValue": false
     },
-    "SharedFrontendAppServicePlanName": {
+    "sharedFrontEndAppServicePlanName": {
       "type": "string"
     },
-    "SharedAppServicePlanResourceGroup": {
+    "sharedFrontEndSubnetResourceId": {
+      "type": "string"
+    },
+    "sharedEnvResourceGroup": {
       "type": "string"
     },
     "EmployerCustomHostname": {
@@ -205,11 +204,7 @@
       }
     },
     "VacancyApiConfiguration": {
-      "type": "secureObject",
-      "defaultValue": {
-        "ApiReadSubscriptionKey": "",
-        "ApiSearchBaseUrl": "https://apis.apprenticeships.sfa.bis.gov.uk/vacancies/v1/apprenticeships/search"
-      }
+      "type": "secureObject"
     },
     "VacancyReviewAssignationTimeoutMinutes": {
       "type": "int",
@@ -258,13 +253,14 @@
     "sharedKeyvaultName": {
       "type": "string"
     },
-    "sharedKeyvaultResourceGroup": {
+    "sharedManagementResourceGroup": {
       "type": "string"
     },
-    "appServiceAllowedIps": {
-      "type": "array",
-      "defaultValue": [
-      ]
+    "frontEndAccessRestrictions": {
+      "type": "array"
+    },
+    "workerAccessRestrictions": {
+      "type": "array"
     },
     "sharedApimResourceGroup": {
       "type": "string"
@@ -272,28 +268,54 @@
     "sharedApimName": {
       "type": "string"
     },
+    "sharedApimRecruitWebjobSubscriptionKey": {
+      "type": "securestring"
+    },
     "recruitOuterApiConfigurationBaseUrl": {
       "type": "string"
     },
     "cosmosDbServerVersion": {
       "type": "string"
+    },
+    "sharedEnvVirtualNetworkName": {
+      "type": "string"
+    },
+    "webjobSubnetObject": {
+      "type": "object"
+    },
+    "subnetServiceEndpointList": {
+      "type": "array"
+    },
+    "subnetDelegations": {
+      "type": "array"
     }
   },
   "variables": {
     "deploymentUrlBase": "https://raw.githubusercontent.com/SkillsFundingAgency/das-platform-building-blocks/master/templates/",
-    "webJobAppServicePlanName": "[concat('das-', toLower(parameters('environmentName')),'-rcrt-webjob-asp')]",
-    "EmployerRecruitAppServiceName": "[concat('das-', toLower(parameters('EnvironmentName')), '-rcrt-as')]",
-    "ProviderRecruitAppServiceName": "[concat('das-', toLower(parameters('EnvironmentName')), '-rcrt-pr-as')]",
-    "QAAppServiceName": "[concat('das-', toLower(parameters('EnvironmentName')), '-rcrt-qa-as')]",
-    "CosmosDbName": "[concat('das-', toLower(parameters('EnvironmentName')),'-rcrt-cdb')]",
-    "WebJobAppServiceName": "[concat('das-', toLower(parameters('EnvironmentName')), '-rcrt-webjob-as')]",
-    "StorageAccountName": "[concat('das', toLower(parameters('EnvironmentName')), 'rcrtstr')]"
+    "resourceNamePrefix": "[toLower(concat('das-', parameters('resourceEnvironmentName'),'-', parameters('serviceName')))]",
+    "resourceGroupName": "[concat(variables('resourceNamePrefix'),'-rg')]",
+    "webJobAppServicePlanName": "[concat(variables('resourceNamePrefix'),'-webjob-asp')]",
+    "employerRecruitAppServiceName": "[concat(variables('resourceNamePrefix'), '-as')]",
+    "providerRecruitAppServiceName": "[concat(variables('resourceNamePrefix'), '-pr-as')]",
+    "qaAppServiceName": "[concat(variables('resourceNamePrefix'), '-qa-as')]",
+    "cosmosDbName": "[concat(variables('resourceNamePrefix'),'-cdb')]",
+    "webjobAppServiceName": "[concat(variables('resourceNamePrefix'), '-webjob-as')]",
+    "storageAccountName": "[toLower(concat('das', parameters('resourceEnvironmentName'), parameters('serviceName'), 'str'))]"
   },
   "resources": [
     {
-      "apiVersion": "2017-05-10",
-      "name": "[variables('EmployerRecruitAppServiceName')]",
+      "apiVersion": "2020-10-01",
+      "name": "[variables('resourceGroupName')]",
+      "type": "Microsoft.Resources/resourceGroups",
+      "location": "[parameters('resourceGroupLocation')]",
+      "tags": "[parameters('tags')]",
+      "properties": {}
+    },
+    {
+      "apiVersion": "2020-10-01",
+      "name": "employer-recruit-app-insights",
       "type": "Microsoft.Resources/deployments",
+      "resourceGroup": "[variables('resourceGroupName')]",
       "properties": {
         "mode": "Incremental",
         "templateLink": {
@@ -302,20 +324,22 @@
         },
         "parameters": {
           "appInsightsName": {
-            "value": "[variables('EmployerRecruitAppServiceName')]"
+            "value": "[variables('employerRecruitAppServiceName')]"
           },
           "attachedService": {
-            "value": "[variables('EmployerRecruitAppServiceName')]"
+            "value": "[variables('employerRecruitAppServiceName')]"
           }
         }
       },
       "dependsOn": [
+        "[variables('resourceGroupName')]"
       ]
     },
     {
-      "apiVersion": "2017-05-10",
-      "name": "[variables('QAAppServiceName')]",
+      "apiVersion": "2020-10-01",
+      "name": "qa-app-insights",
       "type": "Microsoft.Resources/deployments",
+      "resourceGroup": "[variables('resourceGroupName')]",
       "properties": {
         "mode": "Incremental",
         "templateLink": {
@@ -324,20 +348,22 @@
         },
         "parameters": {
           "appInsightsName": {
-            "value": "[variables('QAAppServiceName')]"
+            "value": "[variables('qaAppServiceName')]"
           },
           "attachedService": {
-            "value": "[variables('QAAppServiceName')]"
+            "value": "[variables('qaAppServiceName')]"
           }
         }
       },
       "dependsOn": [
+        "[variables('resourceGroupName')]"
       ]
     },
     {
-      "apiVersion": "2017-05-10",
-      "name": "[variables('ProviderRecruitAppServiceName')]",
+      "apiVersion": "2020-10-01",
+      "name": "provider-recruit-app-insights",
       "type": "Microsoft.Resources/deployments",
+      "resourceGroup": "[variables('resourceGroupName')]",
       "properties": {
         "mode": "Incremental",
         "templateLink": {
@@ -346,20 +372,22 @@
         },
         "parameters": {
           "appInsightsName": {
-            "value": "[variables('ProviderRecruitAppServiceName')]"
+            "value": "[variables('providerRecruitAppServiceName')]"
           },
           "attachedService": {
-            "value": "[variables('ProviderRecruitAppServiceName')]"
+            "value": "[variables('providerRecruitAppServiceName')]"
           }
         }
       },
       "dependsOn": [
+        "[variables('resourceGroupName')]"
       ]
     },
     {
-      "apiVersion": "2017-05-10",
-      "name": "[variables('CosmosDbName')]",
+      "apiVersion": "2020-10-01",
+      "name": "cosmos-db",
       "type": "Microsoft.Resources/deployments",
+      "resourceGroup": "[variables('resourceGroupName')]",
       "properties": {
         "mode": "Incremental",
         "templateLink": {
@@ -368,7 +396,7 @@
         },
         "parameters": {
           "cosmosDbName": {
-            "value": "[variables('CosmosDbName')]"
+            "value": "[variables('cosmosDbName')]"
           },
           "cosmosDbType": {
             "value": "MongoDB"
@@ -385,15 +413,17 @@
         }
       },
       "dependsOn": [
+        "[variables('resourceGroupName')]"
       ]
     },
     {
-      "apiVersion": "2017-05-10",
+      "apiVersion": "2020-10-01",
       "name": "cosmos-db-database-deployment",
       "dependsOn": [
-        "[variables('CosmosDbName')]"
+        "cosmos-db"
       ],
       "type": "Microsoft.Resources/deployments",
+      "resourceGroup": "[variables('resourceGroupName')]",
       "properties": {
         "mode": "Incremental",
         "templateLink": {
@@ -414,13 +444,13 @@
       }
     },
     {
-      "apiVersion": "2017-05-10",
+      "apiVersion": "2020-10-01",
       "name": "[concat('cosmos-db-container-', parameters('containerArray')[copyIndex()].containerName)]",
       "dependsOn": [
-        "[variables('CosmosDbName')]",
         "cosmos-db-database-deployment"
       ],
       "type": "Microsoft.Resources/deployments",
+      "resourceGroup": "[variables('resourceGroupName')]",
       "condition": "[greater(length(parameters('containerArray')), 0)]",
       "properties": {
         "mode": "Incremental",
@@ -452,14 +482,13 @@
       }
     },
     {
-      "apiVersion": "2017-05-10",
+      "apiVersion": "2020-10-01",
       "name": "[concat('cosmos-db-container-settings-', parameters('containerArray')[copyIndex()].containerName)]",
       "dependsOn": [
-        "[variables('CosmosDbName')]",
-        "cosmos-db-database-deployment",
         "[concat('cosmos-db-container-', parameters('containerArray')[copyIndex()].containerName)]"
       ],
       "type": "Microsoft.Resources/deployments",
+      "resourceGroup": "[variables('resourceGroupName')]",
       "condition": "[greater(length(parameters('containerArray')), 0)]",
       "properties": {
         "mode": "Incremental",
@@ -492,9 +521,9 @@
     },
     {
       "condition": "[greater(length(parameters('EmployerCustomHostname')), 0)]",
-      "apiVersion": "2017-05-10",
-      "name": "Employer-Recruit-AppService-Certificate",
-      "resourceGroup": "[parameters('sharedAppServicePlanResourceGroup')]",
+      "apiVersion": "2020-10-01",
+      "name": "employer-recruit-app-service-certificate",
+      "resourceGroup": "[parameters('sharedEnvResourceGroup')]",
       "type": "Microsoft.Resources/deployments",
       "properties": {
         "mode": "Incremental",
@@ -510,18 +539,16 @@
             "value": "[parameters('sharedKeyvaultName')]"
           },
           "keyVaultResourceGroup": {
-            "value": "[parameters('sharedKeyvaultResourceGroup')]"
-          },
-          "serverFarmId": {
-            "value": "[resourceId(parameters('sharedAppServicePlanResourceGroup'), 'Microsoft.Web/serverfarms', parameters('sharedFrontendAppServicePlanName'))]"
+            "value": "[parameters('sharedManagementResourceGroup')]"
           }
         }
       }
     },
     {
-      "apiVersion": "2017-05-10",
-      "name": "Employer-Recruit-AppService",
+      "apiVersion": "2020-10-01",
+      "name": "employer-recruit-app-service",
       "type": "Microsoft.Resources/deployments",
+      "resourceGroup": "[variables('resourceGroupName')]",
       "properties": {
         "mode": "Incremental",
         "templateLink": {
@@ -530,13 +557,16 @@
         },
         "parameters": {
           "appServiceName": {
-            "value": "[variables('EmployerRecruitAppServiceName')]"
+            "value": "[variables('employerRecruitAppServiceName')]"
           },
           "appServicePlanName": {
-            "value": "[parameters('SharedFrontendAppServicePlanName')]"
+            "value": "[parameters('sharedFrontEndAppServicePlanName')]"
           },
           "appServicePlanResourceGroup": {
-            "value": "[parameters('SharedAppServicePlanResourceGroup')]"
+            "value": "[parameters('sharedEnvResourceGroup')]"
+          },
+          "subnetResourceId": {
+            "value": "[parameters('sharedFrontEndSubnetResourceId')]"
           },
           "appServiceAppSettings": {
             "value": {
@@ -587,7 +617,7 @@
                 },
                 {
                   "name": "ApplicationInsights:InstrumentationKey",
-                  "value": "[reference(variables('EmployerRecruitAppServiceName')).outputs.InstrumentationKey.value]"
+                  "value": "[reference('employer-recruit-app-insights').outputs.InstrumentationKey.value]"
                 },
                 {
                   "name": "ExternalLinks:ManageApprenticeshipSiteUrl",
@@ -662,17 +692,17 @@
                 },
                 {
                   "name": "MongoDb",
-                  "connectionString": "[concat('mongodb://', variables('CosmosDbName'), ':', reference(variables('CosmosDbName')).outputs.PrimaryMasterKey.value,'@', variables('CosmosDbName'), '.documents.azure.com:10255/?ssl=true&replicaSet=globaldb')]",
+                  "connectionString": "[concat('mongodb://', variables('cosmosDbName'), ':', reference('cosmos-db').outputs.PrimaryMasterKey.value,'@', variables('cosmosDbName'), '.documents.azure.com:10255/?ssl=true&replicaSet=globaldb')]",
                   "type": "Custom"
                 },
                 {
                   "name": "QueueStorage",
-                  "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('StorageAccountName'),';AccountKey=',reference(variables('StorageAccountName')).outputs.storageKey.value)]",
+                  "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('storageAccountName'),';AccountKey=',reference('storage-account').outputs.storageKey.value)]",
                   "type": "Custom"
                 },
                 {
                   "name": "TableStorage",
-                  "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('StorageAccountName'),';AccountKey=',reference(variables('StorageAccountName')).outputs.storageKey.value)]",
+                  "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('storageAccountName'),';AccountKey=',reference('storage-account').outputs.storageKey.value)]",
                   "type": "Custom"
                 }
               ]
@@ -682,24 +712,19 @@
             "value": "[parameters('EmployerCustomHostname')]"
           },
           "certificateThumbprint": {
-            "value": "[if(greater(length(parameters('EmployerCustomHostname')), 0), reference('Employer-Recruit-AppService-Certificate', '2018-11-01').outputs.certificateThumbprint.value, '')]"
+            "value": "[if(greater(length(parameters('EmployerCustomHostname')), 0), reference('employer-recruit-app-service-certificate', '2018-11-01').outputs.certificateThumbprint.value, '')]"
           },
           "ipSecurityRestrictions": {
-            "value": "[parameters('appServiceAllowedIps')]"
+            "value": "[parameters('frontEndAccessRestrictions')]"
           }
         }
-      },
-      "dependsOn": [
-        "[variables('EmployerRecruitAppServiceName')]",
-        "[variables('CosmosDbName')]",
-        "Employer-Recruit-AppService-Certificate"
-      ]
+      }
     },
     {
       "condition": "[greater(length(parameters('QAAppCustomHostname')), 0)]",
-      "apiVersion": "2017-05-10",
-      "name": "QA-App-AppService-Certificate",
-      "resourceGroup": "[parameters('sharedAppServicePlanResourceGroup')]",
+      "apiVersion": "2020-10-01",
+      "name": "qa-app-service-certificate",
+      "resourceGroup": "[parameters('sharedEnvResourceGroup')]",
       "type": "Microsoft.Resources/deployments",
       "properties": {
         "mode": "Incremental",
@@ -715,18 +740,16 @@
             "value": "[parameters('sharedKeyvaultName')]"
           },
           "keyVaultResourceGroup": {
-            "value": "[parameters('sharedKeyvaultResourceGroup')]"
-          },
-          "serverFarmId": {
-            "value": "[resourceId(parameters('sharedAppServicePlanResourceGroup'), 'Microsoft.Web/serverfarms', parameters('sharedFrontendAppServicePlanName'))]"
+            "value": "[parameters('sharedManagementResourceGroup')]"
           }
         }
       }
     },
     {
-      "apiVersion": "2017-05-10",
-      "name": "QA-App-AppService",
+      "apiVersion": "2020-10-01",
+      "name": "qa-app-service",
       "type": "Microsoft.Resources/deployments",
+      "resourceGroup": "[variables('resourceGroupName')]",
       "properties": {
         "mode": "Incremental",
         "templateLink": {
@@ -735,13 +758,16 @@
         },
         "parameters": {
           "appServiceName": {
-            "value": "[variables('QAAppServiceName')]"
+            "value": "[variables('qaAppServiceName')]"
           },
           "appServicePlanName": {
-            "value": "[parameters('SharedFrontendAppServicePlanName')]"
+            "value": "[parameters('sharedFrontEndAppServicePlanName')]"
           },
           "appServicePlanResourceGroup": {
-            "value": "[parameters('SharedAppServicePlanResourceGroup')]"
+            "value": "[parameters('sharedEnvResourceGroup')]"
+          },
+          "subnetResourceId": {
+            "value": "[parameters('sharedFrontEndSubnetResourceId')]"
           },
           "appServiceAppSettings": {
             "value": {
@@ -756,7 +782,7 @@
                 },
                 {
                   "name": "ApplicationInsights:InstrumentationKey",
-                  "value": "[reference(variables('QAAppServiceName')).outputs.InstrumentationKey.value]"
+                  "value": "[reference('qa-app-insights').outputs.InstrumentationKey.value]"
                 },
                 {
                   "name": "ASPNETCORE_ENVIRONMENT",
@@ -835,22 +861,22 @@
                 },
                 {
                   "name": "MongoDb",
-                  "connectionString": "[concat('mongodb://', variables('CosmosDbName'), ':', reference(variables('CosmosDbName')).outputs.PrimaryMasterKey.value,'@', variables('CosmosDbName'), '.documents.azure.com:10255/?ssl=true&replicaSet=globaldb')]",
+                  "connectionString": "[concat('mongodb://', variables('cosmosDbName'), ':', reference('cosmos-db').outputs.PrimaryMasterKey.value,'@', variables('cosmosDbName'), '.documents.azure.com:10255/?ssl=true&replicaSet=globaldb')]",
                   "type": "Custom"
                 },
                 {
                   "name": "QueueStorage",
-                  "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('StorageAccountName'),';AccountKey=',reference(variables('StorageAccountName')).outputs.storageKey.value)]",
+                  "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('storageAccountName'),';AccountKey=',reference('storage-account').outputs.storageKey.value)]",
                   "type": "Custom"
                 },
                 {
                   "name": "TableStorage",
-                  "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('StorageAccountName'),';AccountKey=',reference(variables('StorageAccountName')).outputs.storageKey.value)]",
+                  "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('storageAccountName'),';AccountKey=',reference('storage-account').outputs.storageKey.value)]",
                   "type": "Custom"
                 },
                 {
                   "name": "CommunicationsStorage",
-                  "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('StorageAccountName'),';AccountKey=',reference(variables('StorageAccountName')).outputs.storageKey.value)]",
+                  "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('storageAccountName'),';AccountKey=',reference('storage-account').outputs.storageKey.value)]",
                   "type": "Custom"
                 }
               ]
@@ -860,23 +886,19 @@
             "value": "[parameters('QAAppCustomHostname')]"
           },
           "certificateThumbprint": {
-            "value": "[if(greater(length(parameters('EmployerCustomHostname')), 0), reference('QA-App-AppService-Certificate', '2018-11-01').outputs.certificateThumbprint.value, '')]"
+            "value": "[if(greater(length(parameters('EmployerCustomHostname')), 0), reference('qa-app-service-certificate', '2018-11-01').outputs.certificateThumbprint.value, '')]"
           },
           "ipSecurityRestrictions": {
-            "value": "[parameters('appServiceAllowedIps')]"
+            "value": "[parameters('frontEndAccessRestrictions')]"
           }
         }
-      },
-      "dependsOn": [
-        "[variables('QAAppServiceName')]",
-        "QA-App-AppService-Certificate"
-      ]
+      }
     },
     {
       "condition": "[greater(length(parameters('ProviderKeyvaultCertificateName')), 0)]",
-      "apiVersion": "2017-05-10",
-      "name": "Provider-Recruit-AppService-Certificate",
-      "resourceGroup": "[parameters('sharedAppServicePlanResourceGroup')]",
+      "apiVersion": "2020-10-01",
+      "name": "provider-recruit-app-service-certificate",
+      "resourceGroup": "[parameters('sharedEnvResourceGroup')]",
       "type": "Microsoft.Resources/deployments",
       "properties": {
         "mode": "Incremental",
@@ -892,18 +914,16 @@
             "value": "[parameters('sharedKeyvaultName')]"
           },
           "keyVaultResourceGroup": {
-            "value": "[parameters('sharedKeyvaultResourceGroup')]"
-          },
-          "serverFarmId": {
-            "value": "[resourceId(parameters('sharedAppServicePlanResourceGroup'), 'Microsoft.Web/serverfarms', parameters('sharedFrontendAppServicePlanName'))]"
+            "value": "[parameters('sharedManagementResourceGroup')]"
           }
         }
       }
     },
     {
-      "apiVersion": "2017-05-10",
-      "name": "Provider-Recruit-AppService",
+      "apiVersion": "2020-10-01",
+      "name": "provider-recruit-app-service",
       "type": "Microsoft.Resources/deployments",
+      "resourceGroup": "[variables('resourceGroupName')]",
       "properties": {
         "mode": "Incremental",
         "templateLink": {
@@ -912,13 +932,16 @@
         },
         "parameters": {
           "appServiceName": {
-            "value": "[variables('ProviderRecruitAppServiceName')]"
+            "value": "[variables('providerRecruitAppServiceName')]"
           },
           "appServicePlanName": {
-            "value": "[parameters('SharedFrontendAppServicePlanName')]"
+            "value": "[parameters('sharedFrontEndAppServicePlanName')]"
           },
           "appServicePlanResourceGroup": {
-            "value": "[parameters('SharedAppServicePlanResourceGroup')]"
+            "value": "[parameters('sharedEnvResourceGroup')]"
+          },
+          "subnetResourceId": {
+            "value": "[parameters('sharedFrontEndSubnetResourceId')]"
           },
           "appServiceAppSettings": {
             "value": {
@@ -937,7 +960,7 @@
                 },
                 {
                   "name": "ApplicationInsights:InstrumentationKey",
-                  "value": "[reference(variables('ProviderRecruitAppServiceName')).outputs.InstrumentationKey.value]"
+                  "value": "[reference('provider-recruit-app-insights').outputs.InstrumentationKey.value]"
                 },
                 {
                   "name": "Slack:FindAnApprenticeshipDetailPrefixUrl",
@@ -1076,17 +1099,17 @@
                 },
                 {
                   "name": "MongoDb",
-                  "connectionString": "[concat('mongodb://', variables('CosmosDbName'), ':', reference(variables('CosmosDbName')).outputs.PrimaryMasterKey.value,'@', variables('CosmosDbName'), '.documents.azure.com:10255/?ssl=true&replicaSet=globaldb')]",
+                  "connectionString": "[concat('mongodb://', variables('cosmosDbName'), ':', reference('cosmos-db').outputs.PrimaryMasterKey.value,'@', variables('cosmosDbName'), '.documents.azure.com:10255/?ssl=true&replicaSet=globaldb')]",
                   "type": "Custom"
                 },
                 {
                   "name": "QueueStorage",
-                  "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('StorageAccountName'),';AccountKey=',reference(variables('StorageAccountName')).outputs.storageKey.value)]",
+                  "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('storageAccountName'),';AccountKey=',reference('storage-account').outputs.storageKey.value)]",
                   "type": "Custom"
                 },
                 {
                   "name": "TableStorage",
-                  "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('StorageAccountName'),';AccountKey=',reference(variables('StorageAccountName')).outputs.storageKey.value)]",
+                  "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('storageAccountName'),';AccountKey=',reference('storage-account').outputs.storageKey.value)]",
                   "type": "Custom"
                 }
               ]
@@ -1096,22 +1119,19 @@
             "value": "[parameters('ProviderCustomHostname')]"
           },
           "certificateThumbprint": {
-            "value": "[if(greater(length(parameters('EmployerCustomHostname')), 0), reference('Provider-Recruit-AppService-Certificate', '2018-11-01').outputs.certificateThumbprint.value, '')]"
+            "value": "[if(greater(length(parameters('EmployerCustomHostname')), 0), reference('provider-recruit-app-service-certificate', '2018-11-01').outputs.certificateThumbprint.value, '')]"
           },
           "ipSecurityRestrictions": {
-            "value": "[parameters('appServiceAllowedIps')]"
+            "value": "[parameters('frontEndAccessRestrictions')]"
           }
         }
-      },
-      "dependsOn": [
-        "[variables('CosmosDbName')]",
-        "Provider-Recruit-AppService-Certificate"
-      ]
+      }
     },
     {
-      "apiVersion": "2017-05-10",
-      "name": "[variables('StorageAccountName')]",
+      "apiVersion": "2020-10-01",
+      "name": "storage-account",
       "type": "Microsoft.Resources/deployments",
+      "resourceGroup": "[variables('resourceGroupName')]",
       "properties": {
         "mode": "Incremental",
         "templateLink": {
@@ -1120,17 +1140,19 @@
         },
         "parameters": {
           "storageAccountName": {
-            "value": "[variables('StorageAccountName')]"
+            "value": "[variables('storageAccountName')]"
           }
         }
       },
       "dependsOn": [
+        "[variables('resourceGroupName')]"
       ]
     },
     {
-      "apiVersion": "2017-05-10",
-      "name": "[variables('webJobAppServicePlanName')]",
+      "apiVersion": "2020-10-01",
+      "name": "webjob-app-service-plan",
       "type": "Microsoft.Resources/deployments",
+      "resourceGroup": "[variables('resourceGroupName')]",
       "properties": {
         "mode": "Incremental",
         "templateLink": {
@@ -1140,9 +1162,6 @@
         "parameters": {
           "appServicePlanName": {
             "value": "[variables('webJobAppServicePlanName')]"
-          },
-          "aspLocation": {
-            "value": "[parameters('webJobAspLocation')]"
           },
           "aspSize": {
             "value": "[parameters('webJobAspSize')]"
@@ -1156,10 +1175,41 @@
         }
       },
       "dependsOn": [
+        "[variables('resourceGroupName')]"
       ]
     },
     {
-      "apiVersion": "2020-06-01",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2020-10-01",
+      "name": "webjob-app-service-subnet",
+      "resourceGroup": "[parameters('sharedEnvResourceGroup')]",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(variables('deploymentUrlBase'),'subnet.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "virtualNetworkName": {
+            "value": "[parameters('sharedEnvVirtualNetworkName')]"
+          },
+          "subnetName": {
+            "value": "[parameters('webjobSubnetObject').name]"
+          },
+          "subnetAddressPrefix": {
+            "value": "[parameters('webjobSubnetObject').addressSpace]"
+          },
+          "serviceEndpointList": {
+            "value": "[parameters('subnetServiceEndpointList')]"
+          },
+          "delegations": {
+            "value": "[parameters('subnetDelegations')]"
+          }
+        }
+      }
+    },
+    {
+      "apiVersion": "2020-10-01",
       "name": "webjob-apim-product-subscription",
       "resourceGroup": "[parameters('sharedApimResourceGroup')]",
       "type": "Microsoft.Resources/deployments",
@@ -1174,7 +1224,7 @@
             "value": "[parameters('sharedApimName')]"
           },
           "subscriptionName": {
-            "value": "[variables('WebJobAppServiceName')]"
+            "value": "[variables('webjobAppServiceName')]"
           },
           "subscriptionScope": {
             "value": "[concat('/subscriptions/', subscription().subscriptionId, '/resourceGroups/', parameters('sharedApimResourceGroup'), '/providers/Microsoft.ApiManagement/service/', parameters('sharedApimName'), '/products/RecruitOuterApi')]"
@@ -1183,9 +1233,10 @@
       }
     },
     {
-      "apiVersion": "2017-05-10",
-      "name": "[variables('WebJobAppServiceName')]",
+      "apiVersion": "2020-10-01",
+      "name": "webjob-app-service",
       "type": "Microsoft.Resources/deployments",
+      "resourceGroup": "[variables('resourceGroupName')]",
       "properties": {
         "mode": "Incremental",
         "templateLink": {
@@ -1194,13 +1245,16 @@
         },
         "parameters": {
           "appServiceName": {
-            "value": "[variables('WebJobAppServiceName')]"
+            "value": "[variables('webjobAppServiceName')]"
           },
           "appServicePlanName": {
             "value": "[variables('webJobAppServicePlanName')]"
           },
           "appServicePlanResourceGroup": {
-            "value": "[resourceGroup().name]"
+            "value": "[variables('resourcegroupName')]"
+          },
+          "subnetResourceId": {
+            "value": "[reference('webjob-app-service-subnet').outputs.subnetResourceId.value]"
           },
           "appServiceAppSettings": {
             "value": {
@@ -1331,7 +1385,7 @@
                 },
                 {
                   "name": "OuterApiConfiguration:Key",
-                  "value": "[reference(resourceId(parameters('sharedApimResourceGroup'),'Microsoft.ApiManagement/service/subscriptions', parameters('sharedApimName'), variables('WebJobAppServiceName')), '2019-01-01').primaryKey]"
+                  "value": "[parameters('sharedApimRecruitWebjobSubscriptionKey')]"
                 }
               ]
             }
@@ -1351,27 +1405,27 @@
                 },
                 {
                   "name": "MongoDb",
-                  "connectionString": "[concat('mongodb://', variables('CosmosDbName'), ':', reference(variables('CosmosDbName')).outputs.PrimaryMasterKey.value,'@', variables('CosmosDbName'), '.documents.azure.com:10255/?ssl=true&replicaSet=globaldb')]",
+                  "connectionString": "[concat('mongodb://', variables('cosmosDbName'), ':', reference('cosmos-db').outputs.PrimaryMasterKey.value,'@', variables('cosmosDbName'), '.documents.azure.com:10255/?ssl=true&replicaSet=globaldb')]",
                   "type": "Custom"
                 },
                 {
                   "name": "QueueStorage",
-                  "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('StorageAccountName'),';AccountKey=',reference(variables('StorageAccountName')).outputs.storageKey.value)]",
+                  "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('storageAccountName'),';AccountKey=',reference('storage-account').outputs.storageKey.value)]",
                   "type": "Custom"
                 },
                 {
                   "name": "CommunicationsStorage",
-                  "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('StorageAccountName'),';AccountKey=',reference(variables('StorageAccountName')).outputs.storageKey.value)]",
+                  "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('storageAccountName'),';AccountKey=',reference('storage-account').outputs.storageKey.value)]",
                   "type": "Custom"
                 },
                 {
                   "name": "AzureWebJobsDashboard",
-                  "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('StorageAccountName'),';AccountKey=',reference(variables('StorageAccountName')).outputs.storageKey.value)]",
+                  "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('storageAccountName'),';AccountKey=',reference('storage-account').outputs.storageKey.value)]",
                   "type": "Custom"
                 },
                 {
                   "name": "AzureWebJobsStorage",
-                  "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('StorageAccountName'),';AccountKey=',reference(variables('StorageAccountName')).outputs.storageKey.value)]",
+                  "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('storageAccountName'),';AccountKey=',reference('storage-account').outputs.storageKey.value)]",
                   "type": "Custom"
                 },
                 {
@@ -1391,7 +1445,7 @@
                 },
                 {
                   "name": "TableStorage",
-                  "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('StorageAccountName'),';AccountKey=',reference(variables('StorageAccountName')).outputs.storageKey.value)]",
+                  "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('storageAccountName'),';AccountKey=',reference('storage-account').outputs.storageKey.value)]",
                   "type": "Custom"
                 }
               ]
@@ -1413,17 +1467,42 @@
                 "preloadEnabled": false
               }
             ]
+          },
+          "ipSecurityRestrictions": {
+            "value": "[parameters('workerAccessRestrictions')]"
           }
         }
       },
       "dependsOn": [
-        "[variables('StorageAccountName')]",
-        "[variables('webJobAppServicePlanName')]",
-        "[variables('CosmosDbName')]",
+        "webjob-app-service-plan",
         "webjob-apim-product-subscription"
       ]
     }
   ],
   "outputs": {
+    "ResourceGroupName": {
+      "type": "string",
+      "value": "[variables('resourceGroupName')]"
+    },
+    "CosmosDbName": {
+      "type": "string",
+      "value": "[variables('cosmosDbName')]"
+    },
+    "EmployerAppServiceName": {
+      "type": "string",
+      "value": "[variables('employerRecruitAppServiceName')]"
+    },
+    "ProviderAppServiceName": {
+      "type": "string",
+      "value": "[variables('providerRecruitAppServiceName')]"
+    },
+    "QAAppServiceName": {
+      "type": "string",
+      "value": "[variables('qaAppServiceName')]"
+    },
+    "StorageAccountName": {
+      "type": "string",
+      "value": "[variables('storageAccountName')]"
+    }
   }
 }
