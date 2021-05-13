@@ -148,5 +148,8 @@
 
         public const string EmployerFavourites = "EmployerFavourites";
         public const string YourTrainingProviderPermission = "YourTrainingProviderPermission";
+
+        public const string ApproveJobAdvertConfirmation_Get = "ApproveJobAdvertConfirmation_Get";
+        public const string ApproveJobAdvertConfirmation_Post = "ApproveJobAdvertConfirmation_Post";
     }
 }
