@@ -74,7 +74,7 @@ namespace Recruit.Vacancies.Jobs.UnitTests.ExternalSystemEventHandlers
         [Fact]
         public async Task GivenEventWithDefaultGuidUserRef_ThenVerifyNoDependenciesAreCalled()
         {
-            var grantedOperations = new HashSet<Operation> { Operation.Recruitment };
+            var grantedOperations = new HashSet<Operation> { Operation.Recruitment, Operation.RecruitmentRequiresReview };
             var previousOperations = new HashSet<Operation>();
 
             await _sut.Handle(new UpdatedPermissionsEvent(EmployerAccountId, AccountLegalEntityId, AccountProviderId, AccountProviderLegalEntityId, Ukprn, Guid.Empty, string.Empty, string.Empty, string.Empty, grantedOperations, previousOperations, DateTime.UtcNow), null);
@@ -86,9 +86,9 @@ namespace Recruit.Vacancies.Jobs.UnitTests.ExternalSystemEventHandlers
         }
 
         [Fact]
-        public async Task GivenEventWithGrantedRecruitmentPermission_ThenVerifyNoDependenciesAreCalled()
+        public async Task GivenEventWithGrantedRecruitmentPermissions_ThenVerifyNoDependenciesAreCalled()
         {
-            var grantedOperations = new HashSet<Operation> { Operation.Recruitment };
+            var grantedOperations = new HashSet<Operation> { Operation.Recruitment, Operation.RecruitmentRequiresReview };
             var previousOperations = new HashSet<Operation>();
 
             await _sut.Handle(new UpdatedPermissionsEvent(EmployerAccountId, AccountLegalEntityId, AccountProviderId, AccountProviderLegalEntityId, Ukprn, Guid.NewGuid(), UserEmailAddress, UserFirstName, UserLastName, grantedOperations, previousOperations, DateTime.UtcNow), null);
@@ -100,9 +100,9 @@ namespace Recruit.Vacancies.Jobs.UnitTests.ExternalSystemEventHandlers
         }
 
         [Fact]
-        public async Task GivenEventWithGrantedRecruitmentPermissionAndMore_ThenVerifyNoDependenciesAreCalled()
+        public async Task GivenEventWithGrantedRecruitmentPermissionsAndMore_ThenVerifyNoDependenciesAreCalled()
         {
-            var grantedOperations = new HashSet<Operation> { Operation.Recruitment, Operation.CreateCohort };
+            var grantedOperations = new HashSet<Operation> { Operation.Recruitment, Operation.RecruitmentRequiresReview, Operation.CreateCohort };
             var previousOperations = new HashSet<Operation>();
 
             await _sut.Handle(new UpdatedPermissionsEvent(EmployerAccountId, AccountLegalEntityId, AccountProviderId, AccountProviderLegalEntityId, Ukprn, Guid.NewGuid(), UserEmailAddress, UserFirstName, UserLastName, grantedOperations, previousOperations, DateTime.UtcNow), null);
