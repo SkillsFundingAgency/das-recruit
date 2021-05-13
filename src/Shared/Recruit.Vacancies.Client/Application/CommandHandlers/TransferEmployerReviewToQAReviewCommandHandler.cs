@@ -22,20 +22,17 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
         private readonly IVacancyRepository _vacancyRepository;
         private readonly IMessaging _messaging;
         private readonly ITimeProvider _timeProvider;
-        private readonly IEmployerService _employerService;
 
         public TransferEmployerReviewToQAReviewCommandHandler(
             ILogger<TransferEmployerReviewToQAReviewCommandHandler> logger,
             IVacancyRepository vacancyRepository, 
             IMessaging messaging, 
-            ITimeProvider timeProvider,
-            IEmployerService employerService)
+            ITimeProvider timeProvider)
         {
             _logger = logger;
             _vacancyRepository = vacancyRepository;
             _messaging = messaging;
             _timeProvider = timeProvider;
-            _employerService = employerService;
         }
 
         public async Task Handle(TransferEmployerReviewToQAReviewCommand message, CancellationToken cancellationToken)
