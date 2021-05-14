@@ -14,6 +14,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
     public class UpdateEmployerDashboardOnChange : INotificationHandler<VacancyCreatedEvent>,
                                             INotificationHandler<DraftVacancyUpdatedEvent>,
                                             INotificationHandler<VacancySubmittedEvent>,
+                                            INotificationHandler<VacancyReviewedEvent>,
                                             INotificationHandler<VacancyDeletedEvent>,
                                             INotificationHandler<VacancyPublishedEvent>,
                                             INotificationHandler<VacancyClosedEvent>,
@@ -48,6 +49,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
         }
 
         public Task Handle(VacancySubmittedEvent notification, CancellationToken cancellationToken)
+        {
+            return Handle(notification);
+        }
+
+        public Task Handle(VacancyReviewedEvent notification, CancellationToken cancellationToken)
         {
             return Handle(notification);
         }

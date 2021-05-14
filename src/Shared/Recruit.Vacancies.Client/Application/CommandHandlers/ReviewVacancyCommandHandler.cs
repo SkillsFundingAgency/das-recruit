@@ -9,6 +9,7 @@ using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Microsoft.Extensions.Logging;
 using Esfa.Recruit.Vacancies.Client.Application.Services;
+using Esfa.Recruit.Vacancies.Client.Domain.Events;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 {
@@ -70,6 +71,13 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             vacancy.LastUpdatedByUser = message.User;
 
             await _vacancyRepository.UpdateAsync(vacancy);
+
+            await _messaging.PublishEvent(new VacancyReviewedEvent
+            {
+                EmployerAccountId = vacancy.EmployerAccountId,
+                VacancyId = vacancy.Id,
+                VacancyReference = vacancy.VacancyReference.Value
+            });
         }
     }
 }
