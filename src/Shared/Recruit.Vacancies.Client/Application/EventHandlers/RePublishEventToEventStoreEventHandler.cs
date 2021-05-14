@@ -11,6 +11,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.EventHandlers
     public class RePublishEventToEventStoreEventHandler :
                                             INotificationHandler<DraftVacancyUpdatedEvent>,
                                             INotificationHandler<VacancySubmittedEvent>,
+                                            INotificationHandler<VacancyReviewedEvent>,
                                             INotificationHandler<VacancyReferredEvent>,
                                             INotificationHandler<VacancyReviewApprovedEvent>,
                                             INotificationHandler<VacancyReviewReferredEvent>,
@@ -31,6 +32,9 @@ namespace Esfa.Recruit.Vacancies.Client.Application.EventHandlers
         }
 
         public Task Handle(VacancySubmittedEvent notification, CancellationToken cancellationToken)
+            => HandleUsingEventStore(notification);
+
+        public Task Handle(VacancyReviewedEvent notification, CancellationToken cancellationToken)
             => HandleUsingEventStore(notification);
 
         public Task Handle(VacancyReferredEvent notification, CancellationToken cancellationToken)
