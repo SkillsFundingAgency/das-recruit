@@ -1,0 +1,37 @@
+﻿@model Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview.RejectJobAdvertViewModel
+
+@{ ViewBag.Vpv = "/recruitment/employer/reject-job-advert";
+ViewBag.Title = "Are you sure you want to reject this job advert?"; }
+
+<a href="#" class="govuk-back-link">Back</a>
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState }' />
+        <div>
+            <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">
+               Are you sure you want to reject this job advert?
+            </h1>          
+        </div>        
+        <p>We'll do a final review and post it on 'Find an apprenticeship'.</p>        
+        <form asp-route="@RouteNames.RejectJobAdvert_Post">           
+            <div esfa-validation-marker-for="RejectJobAdvert" class="govuk-form-group">
+                <fieldset class="govuk-fieldset">
+                    <span esfa-validation-message-for="RejectJobAdvert" class="govuk-error-message"></span>
+                    <div class="govuk-radios">
+                        <div class="govuk-radios__item">
+                            <input asp-for="RejectJobAdvert" class="govuk-radios__input" id="reject-job-advert-yes" type="radio" value="true">
+                            <label for="reject-job-advert-yes" class="govuk-label govuk-radios__label">Yes</label>
+                        </div>
+                        <div class="govuk-radios__item">
+                            <input asp-for="RejectJobAdvert" class="govuk-radios__input" id="reject-job-advert-no" type="radio" value="false">
+                            <label for="reject-job-advert-no" class="govuk-label govuk-radios__label">No</label>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+            <div class="govuk-form-group">
+                <input type="submit" value="Continue" class="govuk-button" />
+            </div>
+        </form> 
+    </div>
+</div>

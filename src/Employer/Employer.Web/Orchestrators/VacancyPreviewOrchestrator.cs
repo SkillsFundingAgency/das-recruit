@@ -102,7 +102,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
                 v => ValidateVacancy(v, SubmitValidationRules),
                 v => SubmitActionAsync(v, user)
                 );
-        }
+        } 
 
         private EntityValidationResult ValidateVacancy(Vacancy vacancy, VacancyRuleSet rules)
         {
@@ -129,6 +129,37 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             response.IsSubmitted = true;
 
             return response;
+        }
+
+        public async Task<OrchestratorResponse<SubmitVacancyResponse>> SubmitVacancyAsync(ApproveJobAdvertViewModel m, VacancyUser user)
+        {
+            var vacancy = await Utility.GetAuthorisedVacancyAsync(_vacancyClient, m, RouteNames.ApproveJobAdvert_Post);
+
+            if (!vacancy.CanSubmit)
+                throw new InvalidStateException(string.Format(ErrMsg.VacancyNotAvailableForEditing, vacancy.Title));
+
+            var employerDescriptionTask = _vacancyClient.GetEmployerDescriptionAsync(vacancy);
+            var employerNameTask = _vacancyClient.GetEmployerNameAsync(vacancy);
+
+            await Task.WhenAll(employerDescriptionTask, employerNameTask);
+
+            vacancy.EmployerDescription = employerDescriptionTask.Result;
+            vacancy.EmployerName = employerNameTask.Result;
+
+            return await ValidateAndExecute(
+                vacancy,
+                v => ValidateVacancy(v, SubmitValidationRules),
+                v => SubmitActionAsync(v, user)
+                );
+        }
+
+        public async Task<Vacancy> GetVacancyAsync(VacancyRouteModel vrm)
+        {
+            var vacancy = await _vacancyClient.GetVacancyAsync(vrm.VacancyId);
+
+            Utility.CheckAuthorisedAccess(vacancy, vrm.EmployerAccountId);
+
+            return vacancy;
         }
 
         private void FlattenErrors(IList<EntityValidationError> errors)

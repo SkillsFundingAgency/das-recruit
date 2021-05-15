@@ -1,7 +1,10 @@
-﻿@model Esfa.Recruit.Employer.Web.ViewModels.VacancyView.ApproveJobAdvertConfirmationViewModel
+﻿@model Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview.ApproveJobAdvertViewModel
 
-@{ ViewBag.Vpv = "/recruitment/employer/approve-job-advert-confirmation";
-ViewBag.Title = "Are you sure you want to approve this job advert"; }
+@{ ViewBag.Vpv = "/recruitment/employer/approve-job-advert";
+ViewBag.Title = "Are you sure you want to approve this job advert?"; }
+
+<a asp-route="@RouteNames.Vacancy_Preview_Get" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
+
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState }' />
@@ -9,14 +12,9 @@ ViewBag.Title = "Are you sure you want to approve this job advert"; }
             <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">
                 Are you sure you want to approve this job advert?
             </h1>          
-        </div>
-        <div class="govuk-inset-text">
-            <p>We'll do a final review and post it on 'Find an apprenticeship'.</p>
-        </div>
-        <form asp-route="@RouteNames.ApproveJobAdvertConfirmation_Post">
-            @*@Html.HiddenFor(model => model.Outcome)
-            @Html.HiddenFor(model => model.CandidateFeedback)
-            @Html.HiddenFor(model => model.Name)*@
+        </div>        
+        <p>We'll do a final review and post it on 'Find an apprenticeship'.</p>        
+        <form asp-route="@RouteNames.ApproveJobAdvert_Post">           
             <div esfa-validation-marker-for="ApproveJobAdvert" class="govuk-form-group">
                 <fieldset class="govuk-fieldset">
                     <span esfa-validation-message-for="ApproveJobAdvert" class="govuk-error-message"></span>

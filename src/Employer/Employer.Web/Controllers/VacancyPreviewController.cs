@@ -14,6 +14,7 @@ using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Shared.Web.Mappers;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
 namespace Esfa.Recruit.Employer.Web.Controllers
 {
@@ -41,8 +42,8 @@ namespace Esfa.Recruit.Employer.Web.Controllers
 
             return View(viewModel);
         }
-
-       [HttpPost("preview", Name = RouteNames.Preview_Submit_Post)]
+        
+        [HttpPost("preview", Name = RouteNames.Preview_Submit_Post)]
         public async Task<IActionResult> Submit(SubmitEditModel m)
         {
             var response = await _orchestrator.SubmitVacancyAsync(m, User.ToVacancyUser());
@@ -68,6 +69,68 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             SetSectionStates(viewModel);
 
             return View(ViewNames.VacancyPreview, viewModel);
+        }
+
+        [HttpGet("approve-advert", Name = RouteNames.ApproveJobAdvert_Get)]
+        public async Task<IActionResult> ApproveJobAdvert(VacancyRouteModel vrm)
+        {          
+            var model = new ApproveJobAdvertViewModel();            
+            return View(model);
+        }
+
+        [HttpPost("approve-advert", Name = RouteNames.ApproveJobAdvert_Post)]
+        public async Task<IActionResult> ApproveJobAdvert(ApproveJobAdvertViewModel vrm)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View("ApproveJobAdvert");
+            }
+
+            if ((bool)vrm.ApproveJobAdvert)
+            {
+                var response = await _orchestrator.SubmitVacancyAsync(vrm, User.ToVacancyUser());
+                if (!response.Success)
+                {
+                    response.AddErrorsToModelState(ModelState);
+                }
+
+                if (ModelState.IsValid)
+                {
+                    if (response.Data.IsSubmitted)
+                        return RedirectToRoute(RouteNames.JobAdvertConfirmation_Get);
+
+                    if (response.Data.HasLegalEntityAgreement == false)
+                        return RedirectToRoute(RouteNames.LegalEntityAgreement_HardStop_Get);
+
+                    throw new Exception("Unknown submit state");
+                }
+            }
+            else
+            {
+                return RedirectToRoute(RouteNames.Vacancy_Preview_Get, new { VacancyId = vrm.VacancyId });
+            }
+
+            var viewModel = await _orchestrator.GetVacancyPreviewViewModelAsync(vrm);
+            viewModel.SoftValidationErrors = null;
+            SetSectionStates(viewModel);
+
+            return View(ViewNames.VacancyPreview, viewModel);
+        }
+
+        [HttpGet("confirmation-advert", Name = RouteNames.JobAdvertConfirmation_Get)]
+        public async Task<IActionResult> ConfirmationJobAdvert(VacancyRouteModel vrm)
+        {
+            var viewModel = await _orchestrator.GetVacancyAsync(vrm);            
+            var vm = new JobAdvertConfirmationViewModel
+            {
+                Title = viewModel.Title,
+                VacancyReference = viewModel.VacancyReference?.ToString(),
+                ApprovedJobAdvert = viewModel.Status == VacancyStatus.Submitted,
+                RejectedJobAdvert = viewModel.Status == VacancyStatus.Referred,
+                TrainingProviderName = viewModel.TrainingProvider.Name
+            };
+
+            return View("ConfirmationJobAdvert", vm);
         }
 
         private void SetSectionStates(VacancyPreviewViewModel viewModel)

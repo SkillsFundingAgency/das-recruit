@@ -149,7 +149,10 @@
         public const string EmployerFavourites = "EmployerFavourites";
         public const string YourTrainingProviderPermission = "YourTrainingProviderPermission";
 
-        public const string ApproveJobAdvertConfirmation_Get = "ApproveJobAdvertConfirmation_Get";
-        public const string ApproveJobAdvertConfirmation_Post = "ApproveJobAdvertConfirmation_Post";
+        public const string ApproveJobAdvert_Get = "ApproveJobAdvert_Get";
+        public const string ApproveJobAdvert_Post = "ApproveJobAdvert_Post";
+        public const string RejectJobAdvert_Get = "RejectJobAdvert_Get";
+        public const string RejectJobAdvert_Post = "RejectJobAdvert_Post";
+        public const string JobAdvertConfirmation_Get = "JobAdvertConfirmation_Get";
     }
 }
