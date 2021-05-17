@@ -23,7 +23,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
 
         public async Task<VacancyReviewedConfirmationViewModel> GetVacancyReviewedOrchestratorConfirmationViewModelAsync(VacancyRouteModel vrm, VacancyUser vacancyUser)
         {
-            var vacancy = await Utility.GetAuthorisedVacancyAsync(_client, _vacancyClient, vrm, RouteNames.Submitted_Index_Get);
+            var vacancy = await Utility.GetAuthorisedVacancyAsync(_client, _vacancyClient, vrm, RouteNames.Reviewed_Index_Get);
             var employer = await _client.GetProviderEmployerVacancyDataAsync(vrm.Ukprn, vacancy.EmployerAccountId);
 
             if (vacancy.Status != VacancyStatus.Review)
