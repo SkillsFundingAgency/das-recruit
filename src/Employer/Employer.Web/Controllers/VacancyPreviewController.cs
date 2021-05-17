@@ -132,15 +132,20 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             }
 
             if ((bool)vm.RejectJobAdvert)
-            {
-                //TODO : update the status of the Vacancy to Rejected                
-            }
-            else
-            {
-                return RedirectToRoute(RouteNames.Vacancy_Preview_Get, new { VacancyId = vm.VacancyId });
+            {                
+                var response =  await _orchestrator.RejectJobAdvertAsync(vm, User.ToVacancyUser());
+                if (!response.Success)
+                {
+                    response.AddErrorsToModelState(ModelState);
+                }
+
+                if (response.Data.IsRejected)
+                {
+                    return RedirectToRoute(RouteNames.JobAdvertConfirmation_Get);
+                }
             }
 
-            return RedirectToRoute(RouteNames.JobAdvertConfirmation_Get);
+            return RedirectToRoute(RouteNames.Vacancy_Preview_Get, new { VacancyId = vm.VacancyId });
         }
 
         [HttpGet("confirmation-advert", Name = RouteNames.JobAdvertConfirmation_Get)]

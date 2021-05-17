@@ -91,5 +91,65 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators
             response.Data.IsSubmitted.Should().Be(shouldBeSubmitted);
             response.Data.HasLegalEntityAgreement.Should().Be(hasLegalEntityAgreement);
         }
+
+        [Theory]
+        [InlineData(true, true)]
+        [InlineData(false, false)]
+        public async Task RejectJobAdvertAsync_ShouldNotRejectAdvertWhenMissingAgreements(
+            bool hasLegalEntityAgreement, bool shouldBeRejected)
+        {
+            //Arrange            
+            var user = new VacancyUser { Email = "advert@advert.com", Name = "advertname", UserId = "advertId" };
+
+            var vacancy = new Vacancy
+            {
+                EmployerAccountId = "ABCDEF",
+                AccountLegalEntityPublicHashedId = "XVYABD",
+                Id = Guid.Parse("84af954e-5baf-4942-897d-d00180a0839e"),
+                Title = "has a value",
+                NumberOfPositions = 1,
+                EmployerLocation = new Address { Postcode = "has a value" },
+                ShortDescription = "has a value",
+                ProgrammeId = "has a value",
+                Wage = new Wage { Duration = 1, WageType = WageType.FixedWage },
+                LegalEntityName = "legal name",
+                EmployerNameOption = EmployerNameOption.RegisteredName,
+                StartDate = DateTime.Now,
+                Status = VacancyStatus.Review,
+                VacancyReference = 123456
+            };
+
+            var rejectJobAdvertViewModel = new RejectJobAdvertViewModel { RejectJobAdvert = true, VacancyId = vacancy.Id, EmployerAccountId = "ABCDEF" };
+
+            _mockRecruitVacancyClient.Setup(x => x.GetVacancyAsync(vacancy.Id)).ReturnsAsync(vacancy);
+            _mockRecruitVacancyClient.Setup(x => x.GetEmployerDescriptionAsync(vacancy)).ReturnsAsync("employer description");
+            _mockRecruitVacancyClient.Setup(x => x.GetEmployerNameAsync(vacancy)).ReturnsAsync("employer name");
+            _mockRecruitVacancyClient.Setup(c => c.Validate(vacancy, It.IsAny<VacancyRuleSet>())).Returns(new EntityValidationResult());
+
+            var geocodeImageService = new Mock<IGeocodeImageService>();
+            var externalLinks = new Mock<IOptions<ExternalLinksConfiguration>>();
+            var mapper = new DisplayVacancyViewModelMapper(geocodeImageService.Object, externalLinks.Object, _mockRecruitVacancyClient.Object);
+
+            var legalEntityAgreement = new Mock<ILegalEntityAgreementService>();
+            legalEntityAgreement.Setup(l => l.HasLegalEntityAgreementAsync(vacancy.EmployerAccountId, vacancy.AccountLegalEntityPublicHashedId))
+                .ReturnsAsync(hasLegalEntityAgreement);
+
+            var sut = new VacancyPreviewOrchestrator(_mockEmployerVacancyClient.Object,
+                                                    _mockRecruitVacancyClient.Object,
+                                                    Mock.Of<ILogger<VacancyPreviewOrchestrator>>(), mapper,
+                                                    _mockReviewSummaryService.Object, legalEntityAgreement.Object,
+                                                    _mockmessaging.Object);
+
+
+            //Act
+            var response = await sut.RejectJobAdvertAsync(rejectJobAdvertViewModel, user);
+
+            //Assert           
+            var rejectedTime = shouldBeRejected ? Times.Once() : Times.Never();
+            _mockmessaging.Verify(c => c.SendCommandAsync(It.IsAny<ICommand>()), rejectedTime);
+            response.Data.IsRejected.Should().Be(shouldBeRejected);
+            //response.Data.HasLegalEntityAgreement.Should().Be(hasLegalEntityAgreement);
+        }
+
     }
 }
