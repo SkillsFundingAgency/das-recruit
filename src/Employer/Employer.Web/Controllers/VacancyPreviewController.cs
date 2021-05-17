@@ -72,23 +72,22 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         }
 
         [HttpGet("approve-advert", Name = RouteNames.ApproveJobAdvert_Get)]
-        public async Task<IActionResult> ApproveJobAdvert(VacancyRouteModel vrm)
-        {          
-            var model = new ApproveJobAdvertViewModel();            
-            return View(model);
+        public IActionResult ApproveJobAdvert(VacancyRouteModel vm)
+        {              
+            return View(new ApproveJobAdvertViewModel());
         }
 
         [HttpPost("approve-advert", Name = RouteNames.ApproveJobAdvert_Post)]
-        public async Task<IActionResult> ApproveJobAdvert(ApproveJobAdvertViewModel vrm)
+        public async Task<IActionResult> ApproveJobAdvert(ApproveJobAdvertViewModel vm)
         {
             if (!ModelState.IsValid)
             {
                 return View("ApproveJobAdvert");
             }
 
-            if ((bool)vrm.ApproveJobAdvert)
+            if ((bool)vm.ApproveJobAdvert)
             {
-                var response = await _orchestrator.SubmitVacancyAsync(vrm, User.ToVacancyUser());
+                var response = await _orchestrator.ApproveJobAdvertAsync(vm, User.ToVacancyUser());
                 if (!response.Success)
                 {
                     response.AddErrorsToModelState(ModelState);
@@ -107,10 +106,10 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             }
             else
             {
-                return RedirectToRoute(RouteNames.Vacancy_Preview_Get, new { VacancyId = vrm.VacancyId });
+                return RedirectToRoute(RouteNames.Vacancy_Preview_Get, new { VacancyId = vm.VacancyId });
             }
 
-            var viewModel = await _orchestrator.GetVacancyPreviewViewModelAsync(vrm);
+            var viewModel = await _orchestrator.GetVacancyPreviewViewModelAsync(vm);
             viewModel.SoftValidationErrors = null;
             SetSectionStates(viewModel);
 
@@ -120,17 +119,9 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         [HttpGet("confirmation-advert", Name = RouteNames.JobAdvertConfirmation_Get)]
         public async Task<IActionResult> ConfirmationJobAdvert(VacancyRouteModel vrm)
         {
-            var viewModel = await _orchestrator.GetVacancyAsync(vrm);            
-            var vm = new JobAdvertConfirmationViewModel
-            {
-                Title = viewModel.Title,
-                VacancyReference = viewModel.VacancyReference?.ToString(),
-                ApprovedJobAdvert = viewModel.Status == VacancyStatus.Submitted,
-                RejectedJobAdvert = viewModel.Status == VacancyStatus.Referred,
-                TrainingProviderName = viewModel.TrainingProvider.Name
-            };
+            var viewModel = await _orchestrator.GetVacancyConfirmationJobAdvertAsync(vrm);
 
-            return View("ConfirmationJobAdvert", vm);
+            return View("ConfirmationJobAdvert", viewModel);
         }
 
         private void SetSectionStates(VacancyPreviewViewModel viewModel)

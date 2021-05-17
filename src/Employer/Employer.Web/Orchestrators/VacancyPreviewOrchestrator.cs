@@ -131,7 +131,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             return response;
         }
 
-        public async Task<OrchestratorResponse<SubmitVacancyResponse>> SubmitVacancyAsync(ApproveJobAdvertViewModel m, VacancyUser user)
+        public async Task<OrchestratorResponse<SubmitVacancyResponse>> ApproveJobAdvertAsync(ApproveJobAdvertViewModel m, VacancyUser user)
         {
             var vacancy = await Utility.GetAuthorisedVacancyAsync(_vacancyClient, m, RouteNames.ApproveJobAdvert_Post);
 
@@ -153,13 +153,22 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
                 );
         }
 
-        public async Task<Vacancy> GetVacancyAsync(VacancyRouteModel vrm)
+        public async Task<JobAdvertConfirmationViewModel> GetVacancyConfirmationJobAdvertAsync(VacancyRouteModel vrm)
         {
             var vacancy = await _vacancyClient.GetVacancyAsync(vrm.VacancyId);
 
             Utility.CheckAuthorisedAccess(vacancy, vrm.EmployerAccountId);
 
-            return vacancy;
+            var vm = new JobAdvertConfirmationViewModel
+            {                 
+                Title = vacancy.Title,
+                VacancyReference = vacancy.VacancyReference?.ToString(),
+                ApprovedJobAdvert = vacancy.Status == VacancyStatus.Submitted,
+                RejectedJobAdvert = vacancy.Status == VacancyStatus.Referred,
+                TrainingProviderName = vacancy.TrainingProvider.Name
+            };        
+
+            return vm;
         }
 
         private void FlattenErrors(IList<EntityValidationError> errors)
