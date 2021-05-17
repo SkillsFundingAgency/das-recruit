@@ -165,7 +165,7 @@
         </div>
         <div asp-hide="@Model.HasOneVacancy" class="govuk-grid-column-full">
             <a asp-route="@RouteNames.Vacancies_Get" asp-route-filter="@FilteringOptions.All" class="govuk-link govuk-!-font-size-24 govuk-!-font-weight-bold govuk-link--no-visited-state" name="button">
-                View all your adverts (@Model.Vacancies.Count)
+                View all your adverts (@Model.DashboardVacancyCount)
             </a>
         </div>
 

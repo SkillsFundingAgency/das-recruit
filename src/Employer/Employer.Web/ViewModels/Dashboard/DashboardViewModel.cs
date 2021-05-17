@@ -45,6 +45,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Dashboard
         public bool ShowNoOfVacanciesClosingSoonWithNoApplications => NoOfVacanciesClosingSoonWithNoApplications > 0;
         public bool HasAnyVacancies => Vacancies.Any();
         public bool FromMaHome { get; set; }
-        public bool HasEmployerReviewPermission { get; set; } 
+        public bool HasEmployerReviewPermission { get; set; }
+        public int DashboardVacancyCount => (Vacancies.Count() - VacancyCountReview);
     }
 }
