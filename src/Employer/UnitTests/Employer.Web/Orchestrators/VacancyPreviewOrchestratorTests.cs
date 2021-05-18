@@ -92,11 +92,8 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators
             response.Data.HasLegalEntityAgreement.Should().Be(hasLegalEntityAgreement);
         }
 
-        [Theory]
-        [InlineData(true, true)]
-        [InlineData(false, false)]
-        public async Task RejectJobAdvertAsync_ShouldNotRejectAdvertWhenMissingAgreements(
-            bool hasLegalEntityAgreement, bool shouldBeRejected)
+        [Fact]
+        public async Task RejectJobAdvertAsync_ShouldSendCommand()
         {
             //Arrange            
             var user = new VacancyUser { Email = "advert@advert.com", Name = "advertname", UserId = "advertId" };
@@ -129,10 +126,8 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators
             var geocodeImageService = new Mock<IGeocodeImageService>();
             var externalLinks = new Mock<IOptions<ExternalLinksConfiguration>>();
             var mapper = new DisplayVacancyViewModelMapper(geocodeImageService.Object, externalLinks.Object, _mockRecruitVacancyClient.Object);
-
-            var legalEntityAgreement = new Mock<ILegalEntityAgreementService>();
-            legalEntityAgreement.Setup(l => l.HasLegalEntityAgreementAsync(vacancy.EmployerAccountId, vacancy.AccountLegalEntityPublicHashedId))
-                .ReturnsAsync(hasLegalEntityAgreement);
+            var shouldBeRejected = true;
+            var legalEntityAgreement = new Mock<ILegalEntityAgreementService>();            
 
             var sut = new VacancyPreviewOrchestrator(_mockEmployerVacancyClient.Object,
                                                     _mockRecruitVacancyClient.Object,
@@ -147,9 +142,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators
             //Assert           
             var rejectedTime = shouldBeRejected ? Times.Once() : Times.Never();
             _mockmessaging.Verify(c => c.SendCommandAsync(It.IsAny<ICommand>()), rejectedTime);
-            response.Data.IsRejected.Should().Be(shouldBeRejected);
-            //response.Data.HasLegalEntityAgreement.Should().Be(hasLegalEntityAgreement);
+            response.Data.IsRejected.Should().Be(shouldBeRejected);            
         }
-
     }
 }

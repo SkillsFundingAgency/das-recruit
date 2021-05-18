@@ -135,15 +135,6 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 
         private async Task<RejectVacancyResponse> RejectActionAsync(Vacancy vacancy, VacancyUser user)
         {
-            var response = new RejectVacancyResponse
-            {
-                HasLegalEntityAgreement = await _legalEntityAgreementService.HasLegalEntityAgreementAsync(vacancy.EmployerAccountId, vacancy.AccountLegalEntityPublicHashedId),
-                IsRejected = false
-            };
-
-            if (response.HasLegalEntityAgreement == false)
-                return response;
-
             var command = new RejectVacancyCommand { VacancyReference = (long)vacancy.VacancyReference };
 
             await _messaging.SendCommandAsync(command);
@@ -198,7 +189,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
                 Title = vacancy.Title,
                 VacancyReference = vacancy.VacancyReference?.ToString(),
                 ApprovedJobAdvert = vacancy.Status == VacancyStatus.Submitted,
-                RejectedJobAdvert = vacancy.Status == VacancyStatus.Referred,
+                RejectedJobAdvert = vacancy.Status == VacancyStatus.Rejected,
                 TrainingProviderName = vacancy.TrainingProvider.Name
             };        
 

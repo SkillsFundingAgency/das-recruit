@@ -131,7 +131,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
                 return View("RejectJobAdvert");
             }
 
-            if ((bool)vm.RejectJobAdvert)
+            if (vm.RejectJobAdvert.GetValueOrDefault())
             {                
                 var response =  await _orchestrator.RejectJobAdvertAsync(vm, User.ToVacancyUser());
                 if (!response.Success)
