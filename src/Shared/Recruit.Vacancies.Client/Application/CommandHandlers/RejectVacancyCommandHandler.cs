@@ -38,12 +38,13 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
                 return;
             }
 
-            vacancy.Status = VacancyStatus.Referred;
+            vacancy.Status = VacancyStatus.Rejected;
 
             await _repository.UpdateAsync(vacancy);
 
-            await _messaging.PublishEvent(new VacancyReferredEvent
+            await _messaging.PublishEvent(new VacancyRejectedEvent
             {
+                EmployerAccountId = vacancy.EmployerAccountId,
                 VacancyReference = vacancy.VacancyReference.Value,
                 VacancyId = vacancy.Id
             });

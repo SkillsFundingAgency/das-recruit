@@ -38,7 +38,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.C
             
             //Assert
             _mockVacancyRepository.Verify(m => m.UpdateAsync(It.IsAny<Vacancy>()), Times.Once);
-            _mockMessaging.Verify(m => m.PublishEvent(It.IsAny<VacancyReferredEvent>()), Times.Once);
+            _mockMessaging.Verify(m => m.PublishEvent(It.IsAny<VacancyRejectedEvent>()), Times.Once);
         }
 
         [Theory]
@@ -63,7 +63,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.C
             
             //Assert
             _mockVacancyRepository.Verify(m => m.UpdateAsync(It.IsAny<Vacancy>()), Times.Never);
-            _mockMessaging.Verify(m => m.PublishEvent(It.IsAny<VacancyReferredEvent>()), Times.Never);
+            _mockMessaging.Verify(m => m.PublishEvent(It.IsAny<VacancyRejectedEvent>()), Times.Never);
         }
     }
 }
