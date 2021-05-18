@@ -4,6 +4,7 @@
     {
         Draft,
         Review,
+        Rejected,
         Submitted,
         Referred,
         Live,
