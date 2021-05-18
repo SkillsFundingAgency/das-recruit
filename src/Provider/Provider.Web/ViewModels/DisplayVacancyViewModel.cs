@@ -6,6 +6,7 @@ namespace Esfa.Recruit.Provider.Web.ViewModels
 {
     public abstract class DisplayVacancyViewModel
     {
+        public VacancyStatus Status { get; set; }
         public string AccountName { get; set; }
         public string ApplicationInstructions { get; internal set; }
         public ApplicationMethod? ApplicationMethod { get; internal set; }
