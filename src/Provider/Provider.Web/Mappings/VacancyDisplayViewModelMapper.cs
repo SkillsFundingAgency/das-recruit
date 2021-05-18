@@ -76,7 +76,7 @@ namespace Esfa.Recruit.Provider.Web.Mappings
             vm.TrainingDescription = vacancy.TrainingDescription;
             vm.VacancyDescription = vacancy.Description;
             vm.VacancyReferenceNumber = vacancy.VacancyReference.HasValue
-                                        ? $"VAC{vacancy.VacancyReference.ToString()}"
+                                        ? $"VAC{vacancy.VacancyReference}"
                                         : string.Empty;
             vm.IsDisabilityConfident = vacancy.IsDisabilityConfident;
 
@@ -89,9 +89,9 @@ namespace Esfa.Recruit.Provider.Web.Mappings
 
             if (vacancy.ProgrammeId != null)
             {
-                vm.TrainingTitle = programme?.Title;
-                vm.TrainingType = programme?.ApprenticeshipType.GetDisplayName();
-                vm.TrainingLevel = programme?.ApprenticeshipLevel.GetDisplayName();
+                vm.TrainingTitle = programme.Title;
+                vm.TrainingType = programme.ApprenticeshipType.GetDisplayName();
+                vm.TrainingLevel = programme.ApprenticeshipLevel.GetDisplayName();
             }
 
             if (vacancy.Wage != null)
