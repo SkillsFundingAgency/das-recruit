@@ -85,7 +85,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
                 return View("ApproveJobAdvert");
             }
 
-            if ((bool)vm.ApproveJobAdvert)
+            if (vm.ApproveJobAdvert.GetValueOrDefault())
             {
                 var response = await _orchestrator.ApproveJobAdvertAsync(vm, User.ToVacancyUser());
                 if (!response.Success)

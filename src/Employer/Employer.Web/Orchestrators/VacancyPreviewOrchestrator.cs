@@ -135,7 +135,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
         {
             var vacancy = await Utility.GetAuthorisedVacancyAsync(_vacancyClient, m, RouteNames.ApproveJobAdvert_Post);
 
-            if (!vacancy.CanSubmit)
+            if (!vacancy.CanReview)
                 throw new InvalidStateException(string.Format(ErrMsg.VacancyNotAvailableForEditing, vacancy.Title));
 
             var employerDescriptionTask = _vacancyClient.GetEmployerDescriptionAsync(vacancy);
