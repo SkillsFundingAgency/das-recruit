@@ -126,7 +126,6 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators
             var geocodeImageService = new Mock<IGeocodeImageService>();
             var externalLinks = new Mock<IOptions<ExternalLinksConfiguration>>();
             var mapper = new DisplayVacancyViewModelMapper(geocodeImageService.Object, externalLinks.Object, _mockRecruitVacancyClient.Object);
-            var shouldBeRejected = true;
             var legalEntityAgreement = new Mock<ILegalEntityAgreementService>();            
 
             var sut = new VacancyPreviewOrchestrator(_mockEmployerVacancyClient.Object,
@@ -135,14 +134,12 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators
                                                     _mockReviewSummaryService.Object, legalEntityAgreement.Object,
                                                     _mockmessaging.Object);
 
-
             //Act
             var response = await sut.RejectJobAdvertAsync(rejectJobAdvertViewModel, user);
 
             //Assert           
-            var rejectedTime = shouldBeRejected ? Times.Once() : Times.Never();
-            _mockmessaging.Verify(c => c.SendCommandAsync(It.IsAny<ICommand>()), rejectedTime);
-            response.Data.IsRejected.Should().Be(shouldBeRejected);            
+            _mockmessaging.Verify(c => c.SendCommandAsync(It.IsAny<ICommand>()), Times.Once());
+            response.Data.IsRejected.Should().Be(true);            
         }
     }
 }
