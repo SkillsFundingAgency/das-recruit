@@ -21,7 +21,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.C
 
         [Theory]
         [InlineData(VacancyStatus.Review)]        
-        public async Task WhenVacancyIsNotInValidState_ShouldSetVacancyReferred(VacancyStatus status)
+        public async Task WhenVacancyIsInValidState_ShouldSetVacancyRejected(VacancyStatus status)
         {
             //Arrange
             var fixture = new Fixture();
@@ -46,7 +46,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.C
         [InlineData(VacancyStatus.Approved)]
         [InlineData(VacancyStatus.Closed)]
         [InlineData(VacancyStatus.Submitted)]
-        public async Task WhenVacancyIsNotInValidState_ShouldNotSetVacancyReferred(VacancyStatus status)
+        public async Task WhenVacancyIsInValidState_ShouldNotSetVacancyRejected(VacancyStatus status)
         {
             //Arrange
             var fixture = new Fixture();
