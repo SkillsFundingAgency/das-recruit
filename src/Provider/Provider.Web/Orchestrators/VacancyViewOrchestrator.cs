@@ -57,6 +57,10 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
                     var closedViewModel = new ClosedVacancyViewModel();
                     await _vacancyDisplayMapper.MapFromVacancyAsync(closedViewModel, vacancy);
                     return closedViewModel;
+                case VacancyStatus.Review:
+                    var reviewViewModel = new ReviewVacancyViewModel();
+                    await _vacancyDisplayMapper.MapFromVacancyAsync(reviewViewModel, vacancy);
+                    return reviewViewModel;
                 case VacancyStatus.Submitted:
                     var submittedViewModel = new SubmittedVacancyViewModel();
                     await _vacancyDisplayMapper.MapFromVacancyAsync(submittedViewModel, vacancy);
@@ -73,6 +77,8 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             {
                 case VacancyStatus.Submitted:
                     return await GetDisplayViewModelForSubmittedVacancy(vacancy);
+                case VacancyStatus.Review:
+                    return await GetDisplayViewModelForReviewVacancy(vacancy);
                 case VacancyStatus.Approved:
                     return await GetDisplayViewModelForApprovedVacancy(vacancy);
                 case VacancyStatus.Live:
@@ -95,6 +101,18 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             {
                 ViewModel = submittedViewModel,
                 ViewName = ViewNames.ManageSubmittedVacancyView
+            };
+        }
+
+        private async Task<ViewVacancy> GetDisplayViewModelForReviewVacancy(Vacancy vacancy)
+        {
+            var reviewViewModel = new ReviewVacancyViewModel();
+            await _vacancyDisplayMapper.MapFromVacancyAsync(reviewViewModel, vacancy);
+            reviewViewModel.ReviewDate = vacancy.ReviewDate.Value.AsGdsDate();
+            return new ViewVacancy
+            {
+                ViewModel = reviewViewModel,
+                ViewName = ViewNames.ManageReviewVacancyView
             };
         }
 

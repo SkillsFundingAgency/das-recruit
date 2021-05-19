@@ -31,14 +31,15 @@ namespace Esfa.Recruit.Shared.Web.Extensions
             { ManualQaOutcome.Referred, "Edits required" },
             { ReviewStatus.UnderReview, "Under review" },
             { VacancyStatus.Referred, "Rejected" },
-            { VacancyStatus.Submitted, "Pending review" },
-            { VacancyStatus.Review, "Ready for review"},
+            { VacancyStatus.Review, "Pending employer review" },
+            { VacancyStatus.Submitted, "Pending ESFA review" },                     
             { ApplicationReviewDisabilityStatus.PreferNotToSay, "Prefer not to say" },
             { FilteringOptions.ClosingSoon, "closing soon" },
             { FilteringOptions.ClosingSoonWithNoApplications, "closing soon without applications" },
             { FilteringOptions.AllApplications, "with applications" },
             { FilteringOptions.NewApplications, "with new applications" },
-            { FilteringOptions.Submitted, "Pending review" },
+            { FilteringOptions.Review, "Pending employer review" },
+            { FilteringOptions.Submitted, "Pending ESFA review" },
             { FilteringOptions.Referred, "Rejected" },
             { FilteringOptions.Transferred, "Transferred from provider" }
         };

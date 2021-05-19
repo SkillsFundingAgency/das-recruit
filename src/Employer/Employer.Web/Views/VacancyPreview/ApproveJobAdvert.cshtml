@@ -1,0 +1,38 @@
+﻿@model Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview.ApproveJobAdvertViewModel
+
+@{ ViewBag.Vpv = "/recruitment/employer/approve-job-advert";
+ViewBag.Title = "Are you sure you want to approve this job advert?"; }
+
+<a asp-route="@RouteNames.Vacancy_Preview_Get" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState }' />
+        <div>
+            <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">
+                Are you sure you want to approve this job advert?
+            </h1>          
+        </div>        
+        <p>We'll do a final review and post it on 'Find an apprenticeship'.</p>        
+        <form asp-route="@RouteNames.ApproveJobAdvert_Post">           
+            <div esfa-validation-marker-for="ApproveJobAdvert" class="govuk-form-group">
+                <fieldset class="govuk-fieldset">
+                    <span esfa-validation-message-for="ApproveJobAdvert" class="govuk-error-message"></span>
+                    <div class="govuk-radios">
+                        <div class="govuk-radios__item">
+                            <input asp-for="ApproveJobAdvert" class="govuk-radios__input" id="approve-job-advert-yes" type="radio" value="true">
+                            <label for="approve-job-advert-yes" class="govuk-label govuk-radios__label">Yes</label>
+                        </div>
+                        <div class="govuk-radios__item">
+                            <input asp-for="ApproveJobAdvert" class="govuk-radios__input" id="approve-job-advert-no" type="radio" value="false">
+                            <label for="approve-job-advert-no" class="govuk-label govuk-radios__label">No</label>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+            <div class="govuk-form-group">
+                <input type="submit" value="Continue" class="govuk-button" />
+            </div>
+        </form> 
+    </div>
+</div>
