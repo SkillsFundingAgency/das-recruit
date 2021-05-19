@@ -487,7 +487,7 @@
         <a asp-show="@Model.CanDelete" asp-route="@RouteNames.DeleteVacancy_Get" class="govuk-button delete-button" esfa-automation="delete-button">Delete advert</a>
     </div>
 </div>
-<div class="govuk-grid-row">
+<div class="govuk-grid-row" asp-show="@Model.CanDelete">
     <div class="govuk-grid-column-full">
         <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
     </div>
@@ -506,7 +506,7 @@
             </form>            
         </div>
         <div class="govuk-body">
-            <a asp-route="@RouteNames.Vacancies_Get" class="govuk-link" esfa-automation="dashboard-link">Save and return to 'Your adverts'</a>
+            <a asp-route="@RouteNames.Vacancies_Get" class="govuk-link" esfa-automation="dashboard-link">Save and return to your adverts</a>
         </div>
     </div>
 </div>
