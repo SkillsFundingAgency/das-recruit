@@ -81,7 +81,7 @@
                     <h3 class="govuk-heading-m das-card--heading">
                         <span class="das-card--stat">@Model.VacancyCountReview</span>
                         <a asp-show="@Model.HasReviewVacancy" asp-route="@RouteNames.Vacancies_Get" asp-route-filter="@FilteringOptions.Review" class="govuk-link">
-                            @FilteringOptions.Review.GetDisplayName()
+                            @FilteringOptions.Review.GetDisplayName(UserType.Provider)
                         </a>
                         <span asp-hide="@Model.HasReviewVacancy">@FilteringOptions.Review.GetDisplayName()</span>
                     </h3>
@@ -95,7 +95,7 @@
                     <h3 class="govuk-heading-m das-card--heading">
                         <span class="das-card--stat">@Model.VacancyCountSubmitted</span>
                         <a asp-show="@Model.HasSubmittedVacancy" asp-route="@RouteNames.Vacancies_Get" asp-route-filter="@FilteringOptions.Submitted" class="govuk-link">
-                            @FilteringOptions.Submitted.GetDisplayName()
+                            @FilteringOptions.Submitted.GetDisplayName(UserType.Provider)
                         </a>
                         <span asp-hide="@Model.HasSubmittedVacancy">@FilteringOptions.Submitted.GetDisplayName()</span>
                     </h3>

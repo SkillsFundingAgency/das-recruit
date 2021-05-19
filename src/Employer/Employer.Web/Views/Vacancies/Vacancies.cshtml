@@ -60,7 +60,7 @@
                         <option value="@FilteringOptions.All">all adverts</option>
                         <option value="@FilteringOptions.Live">live adverts</option>
                         <option value="@FilteringOptions.Referred">rejected adverts</option>
-                        <option value="@FilteringOptions.Review">review adverts</option>
+                        <option value="@FilteringOptions.Review">ready for review</option>
                         <option value="@FilteringOptions.Submitted">adverts pending review</option>
                         <option value="@FilteringOptions.Draft">draft adverts</option>
                         <option value="@FilteringOptions.Closed">closed adverts</option>
@@ -141,7 +141,7 @@
                             </td>
                             <td asp-hide="@vacancy.CanShowVacancyApplicationsCount" class="govuk-table__cell dashboard-applications" data-label="Applications">-</td>
                             <td class="govuk-table__cell dashboard-closingdate" data-label="Closing date"><span>@vacancy.ClosingDate?.AsGdsDate()</span></td>
-                            <td class="govuk-table__cell dashboard-status" data-label="Status"><span class="tag tag-@vacancy.Status.ToString().ToLower()">@vacancy.Status.GetDisplayName()</span></td>
+                            <td class="govuk-table__cell dashboard-status" data-label="Status"><span class="tag tag-@vacancy.Status.ToString().ToLower()">@vacancy.Status.GetDisplayName(UserType.Employer)</span></td>
                             <td class="govuk-table__cell dashboard-action" data-label="Action">
                                 <a asp-show="@vacancy.IsNotSubmittable" asp-route="@RouteNames.VacancyManage_Get" asp-route-vacancyId="@vacancy.Id" class="govuk-link">Manage</a>
                                 <a asp-show="@vacancy.IsSubmittable" asp-route="@RouteNames.DisplayVacancy_Get" asp-route-vacancyId="@vacancy.Id" class="govuk-link">@GetLinkText(vacancy)</a>
