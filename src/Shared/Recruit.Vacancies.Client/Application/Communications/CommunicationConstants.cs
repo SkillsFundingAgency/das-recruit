@@ -79,7 +79,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Communications
             public const string ProviderBlockedProviderNotification = "RecruitV2_ProviderBlocked_ProviderNotification";
             public const string ProviderBlockedEmployerNotificationForTransferredVacancies = "RecruitV2_ProviderBlocked_EmployerNotification_ForTransferredVacancies";
             public const string ProviderBlockedEmployerNotificationForLiveVacancies = "RecruitV2_ProviderBlocked_EmployerNotification_ForLiveVacancies";
-            public const string ProviderBlockedEmployerNotificationForPermissionsOnly = "RecruitV2_ProviderBlocked_EmployerNotification_ForPermissionsOnly";            
+            public const string ProviderBlockedEmployerNotificationForPermissionsOnly = "RecruitV2_ProviderBlocked_EmployerNotification_ForPermissionsOnly";        
         }
     }
 }

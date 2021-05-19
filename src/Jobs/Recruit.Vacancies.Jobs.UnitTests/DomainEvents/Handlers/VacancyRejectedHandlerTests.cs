@@ -35,7 +35,7 @@ namespace Recruit.Vacancies.Jobs.UnitTests.DomainEvents.Handlers
         }
 
         [Fact]
-        public async Task GivenVacancyReviewReferredVacancyEvent_VerifyCommunicationRequestIsSentToCommunicationQueue()
+        public async Task GivenVacancyRejectedEvent_VerifyCommunicationRequestIsSentToCommunicationQueue()
         {
             //Arrange
             var sourceEvent = new VacancyRejectedEvent
@@ -54,7 +54,7 @@ namespace Recruit.Vacancies.Jobs.UnitTests.DomainEvents.Handlers
         }
 
         [Fact]
-        public async Task GivenVacancyReviewReferredVacancyEvent_VerifyCommunicationRequestHasExpectedData()
+        public async Task GivenVacancyRejectedEvent_VerifyCommunicationRequestHasExpectedData()
         {
             //Arrange
             var sourceEvent = new VacancyRejectedEvent
