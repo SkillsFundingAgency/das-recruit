@@ -14,6 +14,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
     public class UpdateEmployerDashboardOnChange : INotificationHandler<VacancyCreatedEvent>,
                                             INotificationHandler<DraftVacancyUpdatedEvent>,
                                             INotificationHandler<VacancySubmittedEvent>,
+                                            INotificationHandler<VacancyReviewedEvent>,
                                             INotificationHandler<VacancyDeletedEvent>,
                                             INotificationHandler<VacancyPublishedEvent>,
                                             INotificationHandler<VacancyClosedEvent>,
@@ -48,6 +49,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
         }
 
         public Task Handle(VacancySubmittedEvent notification, CancellationToken cancellationToken)
+        {
+            return Handle(notification);
+        }
+
+        public Task Handle(VacancyReviewedEvent notification, CancellationToken cancellationToken)
         {
             return Handle(notification);
         }
@@ -129,11 +135,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
 
             var vacancy = await _vacancyRepository.GetVacancyAsync(notification.VacancyReference);
 
-            if (vacancy.OwnerType != OwnerType.Provider)
-            {
-                _logger.LogInformation("Handling {eventType} for accountId: {employerAccountId} and vacancyReference: {vacancyReference}", notification.GetType().Name, vacancy.EmployerAccountId, notification.VacancyReference);
-                await _dashboardService.ReBuildDashboardAsync(vacancy.EmployerAccountId);
-            }
+            _logger.LogInformation("Handling {eventType} for accountId: {employerAccountId} and vacancyReference: {vacancyReference}", notification.GetType().Name, vacancy.EmployerAccountId, notification.VacancyReference);
+            await _dashboardService.ReBuildDashboardAsync(vacancy.EmployerAccountId);
         }
 
         private async Task Handle(IVacancyEvent notification)
@@ -143,11 +146,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
 
             var vacancy = await _vacancyRepository.GetVacancyAsync(notification.VacancyId);
 
-            if (vacancy.OwnerType != OwnerType.Provider)
-            {
-                _logger.LogInformation("Handling {eventType} for accountId: {employerAccountId} and vacancyId: {vacancyId}", notification.GetType().Name, vacancy.EmployerAccountId, notification.VacancyId);
-                await _dashboardService.ReBuildDashboardAsync(vacancy.EmployerAccountId);
-            }
+           _logger.LogInformation("Handling {eventType} for accountId: {employerAccountId} and vacancyId: {vacancyId}", notification.GetType().Name, vacancy.EmployerAccountId, notification.VacancyId);
+           await _dashboardService.ReBuildDashboardAsync(vacancy.EmployerAccountId);
         }
     }
 }

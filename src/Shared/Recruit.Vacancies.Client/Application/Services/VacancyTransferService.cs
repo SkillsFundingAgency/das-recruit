@@ -28,6 +28,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Services
             {
                 case VacancyStatus.Draft:
                 case VacancyStatus.Referred:
+                case VacancyStatus.Review:
                 case VacancyStatus.Closed:
                     break;
                 case VacancyStatus.Submitted:

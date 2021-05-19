@@ -123,7 +123,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             if (response.HasLegalEntityAgreement == false)
                 return response;
 
-            var command = new SubmitVacancyCommand(vacancy.Id, user, vacancy.EmployerDescription, OwnerType.Employer);
+            var command = new SubmitVacancyCommand(vacancy.Id, user,OwnerType.Employer, vacancy.EmployerDescription);
 
             await _messaging.SendCommandAsync(command);
 

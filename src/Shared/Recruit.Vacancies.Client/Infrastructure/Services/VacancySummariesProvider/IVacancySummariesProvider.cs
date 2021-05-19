@@ -7,8 +7,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
 {
     public interface IVacancySummariesProvider
     {
-         Task<IList<VacancySummary>> GetEmployerOwnedVacancySummariesByEmployerAccountAsync(string employerAccountId);
-         Task<IList<VacancySummary>> GetProviderOwnedVacancySummariesByUkprnAsync(long ukprn);
-         Task<IList<TransferInfo>> GetTransferredFromProviderAsync(long ukprn);
+        Task<IList<VacancySummary>> GetEmployerOwnedVacancySummariesByEmployerAccountAsync(string employerAccountId);
+        Task<IList<VacancySummary>> GetProviderOwnedVacancySummariesInReviewByEmployerAccountAsync(string employerAccountId);
+        Task<IList<VacancySummary>> GetProviderOwnedVacancySummariesByUkprnAsync(long ukprn);
+        Task<IList<TransferInfo>> GetTransferredFromProviderAsync(long ukprn);
     }
 }
