@@ -19,14 +19,14 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
         public const string InvalidStateExceptionMessageFormat = "Unable to review vacancy {0} due to vacancy having a status of {1}.";
         public const string InvalidOwnerExceptionMessageFormat = "The vacancy {0} owner has changed from {1} to {2} and hence cannot be reviewed.";
         public const string MissingReferenceNumberExceptionMessageFormat = "Cannot review vacancy {0} without a vacancy reference number";
-        private readonly ILogger<SubmitVacancyCommandHandler> _logger;
+        private readonly ILogger<ReviewVacancyCommandHandler> _logger;
         private readonly IVacancyRepository _vacancyRepository;
         private readonly IMessaging _messaging;
         private readonly ITimeProvider _timeProvider;
         private readonly IEmployerService _employerService;
 
         public ReviewVacancyCommandHandler(
-            ILogger<SubmitVacancyCommandHandler> logger,
+            ILogger<ReviewVacancyCommandHandler> logger,
             IVacancyRepository vacancyRepository, 
             IMessaging messaging, 
             ITimeProvider timeProvider,
@@ -76,7 +76,8 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             {
                 EmployerAccountId = vacancy.EmployerAccountId,
                 VacancyId = vacancy.Id,
-                VacancyReference = vacancy.VacancyReference.Value
+                VacancyReference = vacancy.VacancyReference.Value,
+                ukprn = vacancy.TrainingProvider.Ukprn.GetValueOrDefault()
             });
         }
     }
