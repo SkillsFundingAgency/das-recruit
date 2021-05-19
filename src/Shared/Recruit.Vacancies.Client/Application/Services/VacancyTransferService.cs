@@ -28,7 +28,6 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Services
             {
                 case VacancyStatus.Draft:
                 case VacancyStatus.Referred:
-                case VacancyStatus.Review:
                 case VacancyStatus.Closed:
                     break;
                 case VacancyStatus.Submitted:
@@ -44,6 +43,10 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Services
                 case VacancyStatus.Approved:
                     vacancy.ApprovedDate = null;
                     CloseVacancy(vacancy, initiatingUser);
+                    break;
+                case VacancyStatus.Rejected:
+                case VacancyStatus.Review:
+                    vacancy.Status = VacancyStatus.Draft;
                     break;
                 default:
                     throw new ArgumentException(string.Format(ExceptionMessages.UnrecognisedStatusToTransferVacancyFrom, originalStatus.ToString(), vacancy.VacancyReference));
@@ -62,6 +65,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Services
             vacancy.OwnerType = OwnerType.Employer;
             vacancy.ProviderContact = null;
             vacancy.SubmittedByUser = null;
+            vacancy.ReviewByUser = null;
 
             await _vacancyRepository.UpdateAsync(vacancy);
         }
