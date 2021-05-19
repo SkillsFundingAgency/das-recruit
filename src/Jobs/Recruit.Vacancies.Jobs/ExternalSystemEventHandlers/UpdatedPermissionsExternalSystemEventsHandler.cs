@@ -6,8 +6,6 @@ using Esfa.Recruit.Vacancies.Client.Application.Queues;
 using Esfa.Recruit.Vacancies.Client.Application.Queues.Messages;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
-using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount;
 using Esfa.Recruit.Vacancies.Jobs.Configuration;
@@ -80,9 +78,29 @@ namespace Esfa.Recruit.Vacancies.Jobs.ExternalSystemEventHandlers
                     UserName = $"{message.UserFirstName} {message.UserLastName}",
                     TransferReason = TransferReason.EmployerRevokedPermission
                 });
-
-                await _messaging.SendCommandAsync(new SetupProviderCommand(message.Ukprn));
             }
+            else if (message.GrantedOperations.Contains(Operation.RecruitmentRequiresReview) == false)
+            {
+                var employerAccountId = _encoder.Encode(message.AccountId, EncodingType.AccountId);
+
+                var legalEntity = await GetAssociatedLegalEntityAsync(message, employerAccountId);
+
+                if (legalEntity == null)
+                {
+                    throw new Exception($"Could not find matching Account Legal Entity Id {message.AccountLegalEntityId} for Employer Account {message.AccountId}");
+                }
+
+                await _recruitQueueService.AddMessageAsync(new TransferVacanciesFromEmployerReviewToQAReviewQueueMessage
+                {
+                    Ukprn = message.Ukprn,
+                    AccountLegalEntityPublicHashedId = legalEntity.AccountLegalEntityPublicHashedId,
+                    UserRef = message.UserRef.Value,
+                    UserEmailAddress = message.UserEmailAddress,
+                    UserName = $"{message.UserFirstName} {message.UserLastName}"
+                });
+            }
+
+            await _messaging.SendCommandAsync(new SetupProviderCommand(message.Ukprn));
         }
 
         private async Task<LegalEntity> GetAssociatedLegalEntityAsync(UpdatedPermissionsEvent message, string employerAccountId)
