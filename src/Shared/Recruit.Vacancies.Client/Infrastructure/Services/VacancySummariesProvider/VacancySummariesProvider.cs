@@ -21,7 +21,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
             : base(loggerFactory, MongoDbNames.RecruitDb, MongoDbCollectionNames.Vacancies, details)
         {
         }
-
         public async Task<IList<VacancySummary>> GetEmployerOwnedVacancySummariesByEmployerAccountAsync(string employerAccountId)
         {
             var match = new BsonDocument
@@ -32,6 +31,27 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                     {
                         { "employerAccountId", employerAccountId },
                         { "ownerType", OwnerType.Employer.ToString() },
+                        { "isDeleted", false }
+                    }
+                }
+            };
+
+            var aggPipeline = VacancySummaryAggQueryBuilder.GetAggregateQueryPipeline(match);
+
+            return await RunAggPipelineQuery(aggPipeline);
+        }
+
+        public async Task<IList<VacancySummary>> GetProviderOwnedVacancySummariesInReviewByEmployerAccountAsync(string employerAccountId)
+        {
+            var match = new BsonDocument
+            {
+                {
+                    "$match",
+                    new BsonDocument
+                    {
+                        { "employerAccountId", employerAccountId },
+                        { "ownerType", OwnerType.Provider.ToString() },
+                        { "status", VacancyStatus.Review.ToString() },
                         { "isDeleted", false }
                     }
                 }

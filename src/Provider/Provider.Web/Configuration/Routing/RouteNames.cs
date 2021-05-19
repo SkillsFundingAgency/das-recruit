@@ -70,6 +70,7 @@
         public const string Skills_Get = "Skills_Get";
         public const string Skills_Post = "Skills_Post";
         public const string Submitted_Index_Get = "Submitted_Index_Get";
+        public const string Reviewed_Index_Get = "Reviewed_Index_Get";
         public const string SubmitVacancyChanges_Post = "SubmitVacancyChanges_Post";
         public const string Title_Get = "Title_Get";
         public const string Title_Post = "Title_Post";

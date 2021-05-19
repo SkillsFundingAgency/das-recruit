@@ -7,9 +7,9 @@ namespace Esfa.Recruit.Shared.Web.Helpers
 {
     public static class VacancyFilterHeadingHelper
     {
-        public static string GetFilterHeading(int totalVacancies, FilteringOptions filteringOption, string searchTerm)
+        public static string GetFilterHeading(string vacancyTerm, int totalVacancies, FilteringOptions filteringOption, string searchTerm)
         {
-            var vacancyWord = "advert".ToQuantity(totalVacancies, ShowQuantityAs.None);
+            var vacancyWord = vacancyTerm.ToQuantity(totalVacancies, ShowQuantityAs.None);
 
             var words = new List<string>();
 

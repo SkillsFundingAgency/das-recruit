@@ -482,14 +482,14 @@
 </div>
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
-        <div class="govuk-form-group inline">
-            <div class="govuk-form-group">
-                <form asp-show="@Model.CanSubmit" asp-route="@RouteNames.Preview_Submit_Post" class="form-inline">
-                    <input type="submit" value="@Model.SubmitButtonText" class="govuk-button" esfa-automation="submit-button" />
-                </form>
-                <a asp-route="@RouteNames.Vacancies_Get" class="govuk-link das-button-link" esfa-automation="dashboard-link">Return to dashboard</a>
-                <a asp-show="@Model.CanDelete" asp-route="@RouteNames.DeleteVacancy_Get" class="govuk-button delete-button" esfa-automation="delete-button">Delete</a>
-            </div>
+        <div class="govuk-body govuk-button-group">
+            <form asp-show="@Model.CanSubmit" asp-route="@RouteNames.Preview_Submit_Post" class="form-inline">
+                <input type="submit" value="@Model.SubmitButtonText" class="govuk-button" esfa-automation="submit-button" />
+            </form>
+            <a asp-show="@Model.CanDelete" asp-route="@RouteNames.DeleteVacancy_Get" class="govuk-button delete-button" esfa-automation="delete-button">Delete</a>
+        </div>
+        <div class="govuk-body">
+            <a asp-route="@RouteNames.Vacancies_Get" class="govuk-link das-button-link" esfa-automation="dashboard-link">Return to dashboard</a>
         </div>
     </div>
 </div>
