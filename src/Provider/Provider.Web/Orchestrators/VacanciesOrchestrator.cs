@@ -100,7 +100,6 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             {
                 case FilteringOptions.Live:
                 case FilteringOptions.Closed:
-                case FilteringOptions.Referred:
                 case FilteringOptions.Draft:
                 case FilteringOptions.Review:
                 case FilteringOptions.Submitted:
@@ -127,6 +126,11 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
                         v.Status == VacancyStatus.Live && 
                         v.ApplicationMethod == ApplicationMethod.ThroughFindAnApprenticeship && 
                         v.NoOfApplications == 0);
+                    break;
+                case FilteringOptions.Referred:
+                    filteredVacancies = vacancies.Where(v => 
+                        v.Status.ToString() == VacancyStatus.Referred.ToString() || 
+                        v.Status.ToString() == VacancyStatus.Rejected.ToString());
                     break;
             }
             return filteredVacancies

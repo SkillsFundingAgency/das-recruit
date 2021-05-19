@@ -68,13 +68,15 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
         /// We can only delete draft vacancies that have not been deleted
         /// </summary>
         public bool CanDelete => (Status == VacancyStatus.Draft ||
-                                  Status == VacancyStatus.Referred)
+                                  Status == VacancyStatus.Referred ||
+                                  Status == VacancyStatus.Rejected)
                                  && IsDeleted == false;
         /// <summary>
-        /// We can only edit draft & referred vacancies that have not been deleted
+        /// We can only edit draft & referred & rejected vacancies that have not been deleted
         /// </summary>
         public bool CanEdit => (Status == VacancyStatus.Draft || 
-                                Status == VacancyStatus.Referred)                               
+                                Status == VacancyStatus.Referred ||
+                                Status == VacancyStatus.Rejected)                               
                                 && IsDeleted == false;
 
         /// <summary>
@@ -87,9 +89,9 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
 
         /// <summary>
         /// The vacancy is being edited
-        /// We can only submit draft & referred vacancies that have not been deleted
+        /// We can only submit draft & referred & rejected vacancies that have not been deleted
         /// </summary>
-        public bool CanSubmit => (Status == VacancyStatus.Draft || Status == VacancyStatus.Referred) && IsDeleted == false;
+        public bool CanSubmit => (Status == VacancyStatus.Draft || Status == VacancyStatus.Referred || Status == VacancyStatus.Rejected) && IsDeleted == false;
 
         /// <summary>
         /// We can only approve submitted vacancies that have not been deleted

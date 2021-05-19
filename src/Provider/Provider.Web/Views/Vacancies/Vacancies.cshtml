@@ -10,6 +10,7 @@
                 switch (vacancySummary.Status)
                 {
                     case VacancyStatus.Referred:
+                    case VacancyStatus.Rejected:
                         return "Edit and resubmit";
                     case VacancyStatus.Draft:
                         return "Edit and submit";

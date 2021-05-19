@@ -24,7 +24,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Domain.Entiti
         public void CanSubmit_ShouldNotSubmitVacancyInUnexpectedStatus()
         {
             foreach (var status in Enum.GetValues(typeof(VacancyStatus)).Cast<VacancyStatus>()
-                .Except(new[] {VacancyStatus.Draft, VacancyStatus.Referred, VacancyStatus.Review}))
+                .Except(new[] {VacancyStatus.Draft, VacancyStatus.Referred, VacancyStatus.Rejected, VacancyStatus.Review}))
             {
                 var vacancy = new Vacancy
                 {

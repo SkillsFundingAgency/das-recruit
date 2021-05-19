@@ -1,0 +1,26 @@
+﻿@model Esfa.Recruit.Provider.Web.ViewModels.VacancyView.RejectedVacancyViewModel
+
+@{
+    ViewBag.GaData.Vpv = "/recruitment/provider/page-edit-view-vacancy-rejected";
+}
+
+<div class="warning-summary">
+    <p class="govuk-body"><span class="govuk-!-font-weight-bold">@Model.AccountName</span> has rejected this vacancy. You’ll need to contact them to find out why.</p>
+</div>
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+        <h1 class="govuk-heading-xl" id="vacancy-header">
+            @Model.Title
+            <span class="heading-secondary">@Model.EmployerName</span>
+        </h1>
+    </div>
+</div>
+
+<partial name="@PartialNames.NonEditableVacancyDisplay" model="Model" />
+
+<div class="govuk-form-group inline">
+    <div class="govuk-form-group govuk-!-margin-top-6">
+        <a asp-route="@RouteNames.Vacancies_Get" class="govuk-button">Return to dashboard</a>
+    </div>
+</div>

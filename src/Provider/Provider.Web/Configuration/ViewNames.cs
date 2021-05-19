@@ -12,6 +12,7 @@
         public const string ManageLiveVacancyView = "Live";
         public const string ManageLiveVacancyWithApplicationsView = "LiveWithApplications";
         public const string ManageReferredVacancyView = "Referred";
+        public const string ManageRejectedVacancyView = "Rejected";
         public const string ManageReviewVacancyView = "Review";
         public const string ManageSubmittedVacancyView = "Submitted";
         public const string MissingPermissions = "MissingPermissions";
