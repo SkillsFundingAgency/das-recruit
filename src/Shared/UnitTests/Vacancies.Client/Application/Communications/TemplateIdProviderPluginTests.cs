@@ -9,7 +9,9 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.Communications
 {
     public class TemplateIdProviderPluginTests
     {
+        
         [Theory]
+        [InlineData(RequestType.VacancySubmittedForReviewed, DeliveryFrequency.Default, TemplateIds.VacancySubmittedForReview)]
         [InlineData(RequestType.VacancyRejected, DeliveryFrequency.Default, TemplateIds.VacancyRejected)]
         [InlineData(RequestType.ApplicationSubmitted, DeliveryFrequency.Default, TemplateIds.ApplicationSubmittedImmediate)]
         [InlineData(RequestType.ApplicationSubmitted, DeliveryFrequency.Immediate, TemplateIds.ApplicationSubmittedImmediate)]
