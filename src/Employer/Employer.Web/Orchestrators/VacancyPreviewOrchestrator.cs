@@ -180,9 +180,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 
         public async Task<JobAdvertConfirmationViewModel> GetVacancyConfirmationJobAdvertAsync(VacancyRouteModel vrm)
         {
-            var vacancy = await _vacancyClient.GetVacancyAsync(vrm.VacancyId);
-
-            Utility.CheckAuthorisedAccess(vacancy, vrm.EmployerAccountId);
+            var vacancy = await _vacancyClient.GetVacancyAsync(vrm.VacancyId);            
 
             var vm = new JobAdvertConfirmationViewModel
             {                 
