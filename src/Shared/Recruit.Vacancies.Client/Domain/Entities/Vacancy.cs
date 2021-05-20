@@ -87,6 +87,10 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
                                 Status == VacancyStatus.Review)                                
                                 && IsDeleted == false;
 
+        public bool CanGetEmployerProfileAboutOrganisation => (Status == VacancyStatus.Draft ||
+                                Status == VacancyStatus.Referred)                                
+                                && IsDeleted == false;
+
         /// <summary>
         /// The vacancy is being edited
         /// We can only submit draft & referred & rejected vacancies that have not been deleted
