@@ -1,6 +1,7 @@
 ﻿@using Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview
 @using Microsoft.AspNetCore.Html
 @using Esfa.Recruit.Shared.Web.Mappers
+@using Esfa.Recruit.Vacancies.Client.Domain.Entities
 @model Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview.VacancyPreviewViewModel
 
 @{
@@ -43,6 +44,13 @@
         }
         return VacancyPreviewHelper.ActionLink(Url, "Change", routeName, routeValues, screenReaderText, "govuk-body govuk-link", id);
     }
+}
+
+@if (Model.Status == VacancyStatus.Rejected)
+{
+    <div class="warning-summary">
+        <p class="govuk-body"><span class="govuk-!-font-weight-bold">@Model.AccountName</span> has rejected this vacancy. You'll need to contact them to find out why.</p>
+    </div>
 }
 
 <div class="govuk-grid-row">

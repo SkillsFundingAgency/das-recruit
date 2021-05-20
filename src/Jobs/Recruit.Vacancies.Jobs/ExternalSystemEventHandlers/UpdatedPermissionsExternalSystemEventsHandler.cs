@@ -59,6 +59,8 @@ namespace Esfa.Recruit.Vacancies.Jobs.ExternalSystemEventHandlers
 
             if (message.GrantedOperations.Contains(Operation.Recruitment) == false)
             {
+                _logger.LogInformation($"Transferring vacancies from Provider {message.Ukprn} to Employer {message.AccountId}");
+
                 var employerAccountId = _encoder.Encode(message.AccountId, EncodingType.AccountId);
 
                 var legalEntity = await GetAssociatedLegalEntityAsync(message, employerAccountId);
@@ -81,6 +83,8 @@ namespace Esfa.Recruit.Vacancies.Jobs.ExternalSystemEventHandlers
             }
             else if (message.GrantedOperations.Contains(Operation.RecruitmentRequiresReview) == false)
             {
+                _logger.LogInformation($"Transferring vacancies from Employer Review to QA Review for Provider {message.Ukprn}");
+
                 var employerAccountId = _encoder.Encode(message.AccountId, EncodingType.AccountId);
 
                 var legalEntity = await GetAssociatedLegalEntityAsync(message, employerAccountId);

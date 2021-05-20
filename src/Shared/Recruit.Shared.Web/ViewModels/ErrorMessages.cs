@@ -10,5 +10,6 @@
         public const string VacancyNotReviewedSuccessfully = "The advert '{0}' has not been reviewed successfully.";
         public const string VacancyDatesCannotBeEdited = "The dates of advert '{0}' can't be edited.";
         public const string CannotCloneVacancyWithSameDates = "The advert '{0}' has a closing date or start date that is in the past.";
+        public const string VacancyNotAvailableForReject = "The advert '{0}' cannot be rejected.";
     }
 }

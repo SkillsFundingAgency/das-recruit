@@ -7,7 +7,7 @@ namespace Esfa.Recruit.Shared.Web.Helpers
 {
     public static class VacancyFilterHeadingHelper
     {
-        public static string GetFilterHeading(string vacancyTerm, int totalVacancies, FilteringOptions filteringOption, string searchTerm)
+        public static string GetFilterHeading(string vacancyTerm, int totalVacancies, FilteringOptions filteringOption, string searchTerm, UserType? userType = null)
         {
             var vacancyWord = vacancyTerm.ToQuantity(totalVacancies, ShowQuantityAs.None);
 
@@ -24,12 +24,12 @@ namespace Esfa.Recruit.Shared.Web.Helpers
                 case FilteringOptions.Draft:
                 case FilteringOptions.Live:
                 case FilteringOptions.Referred:                
-                    words.Add(filteringOption.GetDisplayName().ToLowerInvariant());
+                    words.Add(filteringOption.GetDisplayName(userType).ToLowerInvariant());
                     words.Add(vacancyWord);
                     break;
                 default:
                     words.Add(vacancyWord);
-                    words.Add(filteringOption.GetDisplayName().ToLowerInvariant());
+                    words.Add(filteringOption.GetDisplayName(userType).ToLowerInvariant());
                     break;
             }
             

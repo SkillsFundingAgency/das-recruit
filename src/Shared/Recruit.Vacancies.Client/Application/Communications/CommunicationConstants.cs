@@ -29,10 +29,12 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Communications
             public const string VacancyRejected = nameof(VacancyRejected);
             public const string ApplicationSubmitted = nameof(ApplicationSubmitted);
             public const string VacancyWithdrawnByQa = nameof(VacancyWithdrawnByQa);
+            public const string VacancySubmittedForReviewed = nameof(VacancySubmittedForReviewed);
             public const string ProviderBlockedProviderNotification = nameof(ProviderBlockedProviderNotification);
             public const string ProviderBlockedEmployerNotificationForTransferredVacancies = nameof(ProviderBlockedEmployerNotificationForTransferredVacancies);
             public const string ProviderBlockedEmployerNotificationForLiveVacancies = nameof(ProviderBlockedEmployerNotificationForLiveVacancies);
             public const string ProviderBlockedEmployerNotificationForPermissionOnly = nameof(ProviderBlockedEmployerNotificationForPermissionOnly);
+            public const string VacancyRejectedByEmployer = nameof(VacancyRejectedByEmployer);
         }
 
         public static class DataItemKeys
@@ -70,14 +72,16 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Communications
 
         public static class TemplateIds
         {
+            public const string VacancySubmittedForReview = "RecruitV2_VacancySubmittedForReview";
             public const string VacancyRejected = "RecruitV2_VacancyRejected";
+            public const string VacancyRejectedByEmployer = "RecruitV2_Provider_VacancyRejectedByEmployer";
             public const string ApplicationSubmittedImmediate = "RecruitV2_NewApplicationImmediate";
             public const string ApplicationsSubmittedDigest = "RecruitV2_NewApplicationsDigest";
             public const string VacancyWithdrawnByQa = "RecruitV2_VacancyWithdrawnByQa";
             public const string ProviderBlockedProviderNotification = "RecruitV2_ProviderBlocked_ProviderNotification";
             public const string ProviderBlockedEmployerNotificationForTransferredVacancies = "RecruitV2_ProviderBlocked_EmployerNotification_ForTransferredVacancies";
             public const string ProviderBlockedEmployerNotificationForLiveVacancies = "RecruitV2_ProviderBlocked_EmployerNotification_ForLiveVacancies";
-            public const string ProviderBlockedEmployerNotificationForPermissionsOnly = "RecruitV2_ProviderBlocked_EmployerNotification_ForPermissionsOnly";
+            public const string ProviderBlockedEmployerNotificationForPermissionsOnly = "RecruitV2_ProviderBlocked_EmployerNotification_ForPermissionsOnly";        
         }
     }
 }

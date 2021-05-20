@@ -87,6 +87,8 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
                     return GetDisplayViewModelForClosedVacancy(vacancy);
                 case VacancyStatus.Referred:
                     return await GetDisplayViewModelForReferredVacancy(vacancy);
+                case VacancyStatus.Rejected:
+                    return await GetDisplayViewModelForRejectedVacancy(vacancy);
                 default:
                     throw new InvalidStateException(string.Format(ErrorMessages.VacancyCannotBeViewed, vacancy.Title));
             }
@@ -175,6 +177,17 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             {
                 ViewModel = referredViewModel,
                 ViewName = ViewNames.ManageReferredVacancyView
+            };
+        }
+
+        private async Task<ViewVacancy> GetDisplayViewModelForRejectedVacancy(Vacancy vacancy)
+        {
+            var rejectedViewModel = new RejectedVacancyViewModel();
+            await _vacancyDisplayMapper.MapFromVacancyAsync(rejectedViewModel, vacancy);
+            return new ViewVacancy
+            {
+                ViewModel = rejectedViewModel,
+                ViewName = ViewNames.ManageRejectedVacancyView
             };
         }
     }

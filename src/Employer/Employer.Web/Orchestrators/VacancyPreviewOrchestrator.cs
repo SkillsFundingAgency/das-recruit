@@ -24,6 +24,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
     public class VacancyPreviewOrchestrator : EntityValidatingOrchestrator<Vacancy, VacancyPreviewViewModel>
     {
         private const VacancyRuleSet SubmitValidationRules = VacancyRuleSet.All;
+        private const VacancyRuleSet RejectValidationRules = VacancyRuleSet.None;
         private const VacancyRuleSet SoftValidationRules = VacancyRuleSet.MinimumWage | VacancyRuleSet.TrainingExpiryDate;
 
         private readonly IEmployerVacancyClient _client;
@@ -131,6 +132,16 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             return response;
         }
 
+
+        private async Task<RejectVacancyResponse> RejectActionAsync(Vacancy vacancy, VacancyUser user)
+        {
+            var command = new RejectVacancyCommand { VacancyReference = (long)vacancy.VacancyReference };
+
+            await _messaging.SendCommandAsync(command);
+
+            return new  RejectVacancyResponse { IsRejected = true };            
+        }
+
         public async Task<OrchestratorResponse<SubmitVacancyResponse>> ApproveJobAdvertAsync(ApproveJobAdvertViewModel m, VacancyUser user)
         {
             var vacancy = await Utility.GetAuthorisedVacancyAsync(_vacancyClient, m, RouteNames.ApproveJobAdvert_Post);
@@ -153,6 +164,20 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
                 );
         }
 
+        public async Task<OrchestratorResponse<RejectVacancyResponse>> RejectJobAdvertAsync(RejectJobAdvertViewModel vm, VacancyUser user)
+        {
+            var vacancy = await Utility.GetAuthorisedVacancyAsync(_vacancyClient, vm, RouteNames.RejectJobAdvert_Post);
+
+            if (!vacancy.CanReject)
+                throw new InvalidStateException(string.Format(ErrMsg.VacancyNotAvailableForReject, vacancy.Title));
+            
+            return await ValidateAndExecute(
+               vacancy,
+               v => ValidateVacancy(v, RejectValidationRules),
+               v => RejectActionAsync(v, user)
+               );
+        }
+
         public async Task<JobAdvertConfirmationViewModel> GetVacancyConfirmationJobAdvertAsync(VacancyRouteModel vrm)
         {
             var vacancy = await _vacancyClient.GetVacancyAsync(vrm.VacancyId);
@@ -164,7 +189,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
                 Title = vacancy.Title,
                 VacancyReference = vacancy.VacancyReference?.ToString(),
                 ApprovedJobAdvert = vacancy.Status == VacancyStatus.Submitted,
-                RejectedJobAdvert = vacancy.Status == VacancyStatus.Referred,
+                RejectedJobAdvert = vacancy.Status == VacancyStatus.Rejected,
                 TrainingProviderName = vacancy.TrainingProvider.Name
             };        
 

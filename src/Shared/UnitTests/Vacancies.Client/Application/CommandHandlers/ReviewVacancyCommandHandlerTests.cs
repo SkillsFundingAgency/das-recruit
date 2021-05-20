@@ -28,7 +28,11 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.CommandHandlers
                 EmployerDescription = "old description",
                 IsDeleted = false,
                 Status = VacancyStatus.Draft,
-                VacancyReference = 1234567890
+                VacancyReference = 1234567890,
+                TrainingProvider = new TrainingProvider
+                {
+                    Ukprn = 12345678
+                }
             };
             vacancy.OwnerType = OwnerType.Employer;
             var user = new VacancyUser();
@@ -56,7 +60,11 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.CommandHandlers
                 EmployerDescription = expectedDescription,
                 IsDeleted = false,
                 Status = VacancyStatus.Draft,
-                VacancyReference = 1234567890
+                VacancyReference = 1234567890,
+                TrainingProvider = new TrainingProvider
+                {
+                    Ukprn = 12345678
+                }
             };
             vacancy.OwnerType= OwnerType.Provider;
             var user = new VacancyUser();
@@ -161,7 +169,7 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.CommandHandlers
 
         public ReviewVacancyCommandHandler GetSut(Guid id, Vacancy vacancy, DateTime now)
         {
-            var mockLogger = new Mock<ILogger<SubmitVacancyCommandHandler>>();
+            var mockLogger = new Mock<ILogger<ReviewVacancyCommandHandler>>();
 
             var mockRepository = new Mock<IVacancyRepository>();
             mockRepository.Setup(r => r.GetVacancyAsync(id)).ReturnsAsync(vacancy);

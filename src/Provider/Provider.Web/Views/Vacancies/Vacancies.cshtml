@@ -1,4 +1,5 @@
-﻿@using Esfa.Recruit.Vacancies.Client.Domain.Entities
+﻿
+@using Esfa.Recruit.Vacancies.Client.Domain.Entities
 @model VacanciesViewModel
 @{
             ViewBag.GaData.Vpv = "/recruitment/provider/page-vacancies";
@@ -9,6 +10,7 @@
                 switch (vacancySummary.Status)
                 {
                     case VacancyStatus.Referred:
+                    case VacancyStatus.Rejected:
                         return "Edit and resubmit";
                     case VacancyStatus.Draft:
                         return "Edit and submit";
@@ -58,7 +60,7 @@
                         <option value="@FilteringOptions.Live">live vacancies</option>
                         <option value="@FilteringOptions.Referred">rejected vacancies</option>
                         <option value="@FilteringOptions.Review">employer review</option>
-                        <option value="@FilteringOptions.Submitted">vacancies pending review</option>
+                        <option value="@FilteringOptions.Submitted">pending review</option>
                         <option value="@FilteringOptions.Draft">draft vacancies</option>
                         <option value="@FilteringOptions.Closed">closed vacancies</option>
                     </optgroup>
@@ -134,7 +136,7 @@
                             </td>
                             <td asp-hide="@vacancy.CanShowVacancyApplicationsCount" class="govuk-table__cell dashboard-applications" data-label="Applications">-</td>
                             <td class="govuk-table__cell dashboard-closingdate" data-label="Closing date"><span>@vacancy.ClosingDate?.AsGdsDate()</span></td>
-                            <td class="govuk-table__cell dashboard-status" data-label="Status"><span class="tag tag-@vacancy.Status.ToString().ToLower()">@vacancy.Status.GetDisplayName()</span></td>
+                            <td class="govuk-table__cell dashboard-status" data-label="Status"><span class="tag tag-@vacancy.Status.ToString().ToLower()">@vacancy.Status.GetDisplayName(UserType.Provider)</span></td>
                             <td class="govuk-table__cell dashboard-action" data-label="Action">
                             @if(vacancy.Status == VacancyStatus.Review)
                             {

@@ -42,7 +42,7 @@ namespace Esfa.Recruit.Employer.Web.Mappings
             vm.ApplicationInstructions = vacancy.ApplicationInstructions;
             vm.ApplicationUrl = vacancy.ApplicationUrl;
             vm.CanDelete = vacancy.CanDelete;
-            vm.CanSubmit = vacancy.CanSubmit;
+            vm.CanSubmit = vacancy.CanSubmit && vacancy.Status != VacancyStatus.Review;
             vm.CanReview = vacancy.CanReview;
             vm.ClosingDate = (vacancy.ClosedDate ?? vacancy.ClosingDate)?.AsGdsDate();
             vm.EducationLevelName =

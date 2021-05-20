@@ -85,7 +85,7 @@
                     <h3 class="govuk-heading-m das-card--heading">
                         <span class="das-card--stat">@Model.VacancyCountSubmitted</span>
                         <a asp-show="@Model.HasSubmittedVacancy" asp-route="@RouteNames.Vacancies_Get" asp-route-filter="@FilteringOptions.Submitted" class="govuk-link">
-                            @FilteringOptions.Submitted.GetDisplayName()
+                            @FilteringOptions.Submitted.GetDisplayName(UserType.Employer)
                         </a>
                         <span asp-hide="@Model.HasSubmittedVacancy">@FilteringOptions.Submitted.GetDisplayName()</span>
                     </h3>
@@ -101,7 +101,7 @@
                     <h3 class="govuk-heading-m das-card--heading">
                         <span class="das-card--stat">@Model.VacancyCountReferred</span>
                         <a asp-show="@Model.HasReferredVacancy" asp-route="@RouteNames.Vacancies_Get" asp-route-filter="@FilteringOptions.Referred" class="govuk-link">
-                            @FilteringOptions.Referred.GetDisplayName() @Model.VacancyTextReferred
+                            @FilteringOptions.Referred.GetDisplayName(UserType.Employer) @Model.VacancyTextReferred
                         </a>
                         <span asp-hide="@Model.HasReferredVacancy">@FilteringOptions.Referred.GetDisplayName() @Model.VacancyTextReferred</span>
                     </h3>
