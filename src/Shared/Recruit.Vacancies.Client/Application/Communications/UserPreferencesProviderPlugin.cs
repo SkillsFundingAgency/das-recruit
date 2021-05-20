@@ -33,6 +33,9 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Communications
                 case CommunicationConstants.RequestType.ApplicationSubmitted:
                     SetPreferencesForApplicationSubmittedNotification(userPref, userPreference);
                     return userPref;
+                case CommunicationConstants.RequestType.VacancySubmittedForReviewed:
+                    SetPreferencesForVacancySentForReviewNotification(userPref, userPreference);
+                    return userPref;
                 case CommunicationConstants.RequestType.VacancyWithdrawnByQa:
                 case CommunicationConstants.RequestType.ProviderBlockedProviderNotification:
                 case CommunicationConstants.RequestType.ProviderBlockedEmployerNotificationForTransferredVacancies:
@@ -49,6 +52,17 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Communications
         {
             if (userPreference == null) return;
             if (userPreference.NotificationTypes.HasFlag(NotificationTypes.VacancyRejected))
+            {
+                userPref.Channels = DeliveryChannelPreferences.EmailOnly;
+                userPref.Frequency = DeliveryFrequency.Immediate;
+                userPref.Scope = userPreference.NotificationScope.GetValueOrDefault().ConvertToCommunicationScope();
+            }
+        }
+
+        private void SetPreferencesForVacancySentForReviewNotification(CommunicationUserPreference userPref, UserNotificationPreferences userPreference)
+        {
+            if (userPreference == null) return;
+            if (userPreference.NotificationTypes.HasFlag(NotificationTypes.VacancySentForReview))
             {
                 userPref.Channels = DeliveryChannelPreferences.EmailOnly;
                 userPref.Frequency = DeliveryFrequency.Immediate;
