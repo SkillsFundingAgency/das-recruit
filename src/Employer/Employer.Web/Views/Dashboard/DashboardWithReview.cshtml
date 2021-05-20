@@ -101,7 +101,7 @@
                     <h3 class="govuk-heading-m das-card--heading">
                         <span class="das-card--stat">@Model.VacancyCountReferred</span>
                         <a asp-show="@Model.HasReferredVacancy" asp-route="@RouteNames.Vacancies_Get" asp-route-filter="@FilteringOptions.Referred" class="govuk-link">
-                            @FilteringOptions.Referred.GetDisplayName(UserType.Employer) @Model.VacancyTextReferred
+                            @FilteringOptions.Referred.GetDisplayName() @Model.VacancyTextReferred
                         </a>
                         <span asp-hide="@Model.HasReferredVacancy">@FilteringOptions.Referred.GetDisplayName() @Model.VacancyTextReferred</span>
                     </h3>

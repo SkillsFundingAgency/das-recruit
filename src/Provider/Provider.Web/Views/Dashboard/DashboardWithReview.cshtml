@@ -83,7 +83,7 @@
                         <a asp-show="@Model.HasReviewVacancy" asp-route="@RouteNames.Vacancies_Get" asp-route-filter="@FilteringOptions.Review" class="govuk-link">
                             @FilteringOptions.Review.GetDisplayName(UserType.Provider)
                         </a>
-                        <span asp-hide="@Model.HasReviewVacancy">@FilteringOptions.Review.GetDisplayName()</span>
+                        <span asp-hide="@Model.HasReviewVacancy">@FilteringOptions.Review.GetDisplayName(UserType.Provider)</span>
                     </h3>
                     <p class="govuk-body das-card--description">Vacancies that have been sent to the employer for review.</p>
                 </div>
@@ -97,7 +97,7 @@
                         <a asp-show="@Model.HasSubmittedVacancy" asp-route="@RouteNames.Vacancies_Get" asp-route-filter="@FilteringOptions.Submitted" class="govuk-link">
                             @FilteringOptions.Submitted.GetDisplayName(UserType.Provider)
                         </a>
-                        <span asp-hide="@Model.HasSubmittedVacancy">@FilteringOptions.Submitted.GetDisplayName()</span>
+                        <span asp-hide="@Model.HasSubmittedVacancy">@FilteringOptions.Submitted.GetDisplayName(UserType.Provider)</span>
                     </h3>
                     <p class="govuk-body das-card--description">Vacancies that have been sent for review.</p>
                 </div>
