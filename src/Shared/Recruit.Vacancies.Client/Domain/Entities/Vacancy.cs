@@ -91,7 +91,7 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
         /// The vacancy is being edited
         /// We can only submit draft & referred & rejected vacancies that have not been deleted
         /// </summary>
-        public bool CanSubmit => (Status == VacancyStatus.Draft || Status == VacancyStatus.Referred || Status == VacancyStatus.Rejected) && IsDeleted == false;
+        public bool CanSubmit => (Status == VacancyStatus.Draft || Status == VacancyStatus.Referred || Status == VacancyStatus.Rejected || Status == VacancyStatus.Review) && IsDeleted == false;
 
         /// <summary>
         /// We can only approve submitted vacancies that have not been deleted
