@@ -117,9 +117,11 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         }
 
         [HttpGet("reject-advert", Name = RouteNames.RejectJobAdvert_Get)]
-        public IActionResult RejectJobAdvert(VacancyRouteModel vm)
-        {           
-            return View(new RejectJobAdvertViewModel());
+        public async Task<IActionResult> RejectJobAdvert(VacancyRouteModel vm)
+        {
+            var viewModel = await _orchestrator.GetVacancyRejectJobAdvertAsync(vm);          
+
+            return View(viewModel);
         }
 
 
@@ -128,7 +130,8 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return View("RejectJobAdvert");
+                var viewModel = await _orchestrator.GetVacancyRejectJobAdvertAsync(vm);
+                return View("RejectJobAdvert", viewModel);
             }
 
             if (vm.RejectJobAdvert.GetValueOrDefault())

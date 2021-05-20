@@ -194,6 +194,18 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             return vm;
         }
 
+        public async Task<RejectJobAdvertViewModel> GetVacancyRejectJobAdvertAsync(VacancyRouteModel vrm)
+        {
+            var vacancy = await _vacancyClient.GetVacancyAsync(vrm.VacancyId);
+
+            var vm = new RejectJobAdvertViewModel
+            {                             
+                TrainingProviderName = vacancy.TrainingProvider.Name
+            };
+
+            return vm;
+        }
+
         private void FlattenErrors(IList<EntityValidationError> errors)
         {
             //Flatten Qualification errors to its ViewModel parent instead. 'Qualifications[1].Grade' becomes 'Qualifications'
