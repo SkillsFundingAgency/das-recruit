@@ -5,10 +5,11 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.ManageNotifications
     public class ManageNotificationsViewModel
     {
         public bool IsVacancyRejectedSelected { get; set; }
+        public bool IsVacancySentForEmployerReview { get; set; }
         public bool IsVacancyClosingSoonSelected { get; set; }
         public bool IsApplicationSubmittedSelected { get; set; }
         public NotificationFrequency? NotificationFrequency { get; set; }
         public NotificationScope? NotificationScope { get; set; }
-        public bool HasAnySubscription => IsVacancyRejectedSelected || IsVacancyClosingSoonSelected || IsApplicationSubmittedSelected;        
+        public bool HasAnySubscription => IsVacancyRejectedSelected || IsVacancyClosingSoonSelected || IsApplicationSubmittedSelected || IsVacancySentForEmployerReview;        
     }
 }

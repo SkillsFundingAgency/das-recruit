@@ -63,6 +63,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             return new ManageNotificationsAcknowledgementViewModel
             {
                 IsApplicationSubmittedSelected = editModel.IsApplicationSubmittedSelected,
+                IsVacancySentForEmployerReview = editModel.IsVacancySentForEmployerReview,
                 IsVacancyClosingSoonSelected = editModel.IsVacancyClosingSoonSelected,
                 IsVacancyRejectedSelected = editModel.IsVacancyRejectedSelected,
                 IsUserSubmittedVacanciesSelected = editModel.NotificationScope.GetValueOrDefault() == NotificationScope.UserSubmittedVacancies,
@@ -83,7 +84,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             targetModel.NotificationTypes = 
                 (sourceModel.IsApplicationSubmittedSelected ? NotificationTypes.ApplicationSubmitted : NotificationTypes.None) 
                 | (sourceModel.IsVacancyClosingSoonSelected ? NotificationTypes.VacancyClosingSoon : NotificationTypes.None) 
-                | (sourceModel.IsVacancyRejectedSelected ? NotificationTypes.VacancyRejected : NotificationTypes.None);
+                | (sourceModel.IsVacancyRejectedSelected ? NotificationTypes.VacancyRejected : NotificationTypes.None)
+                | (sourceModel.IsVacancySentForEmployerReview ? NotificationTypes.VacancySentForReview : NotificationTypes.None);
                         
             return targetModel;
         }
@@ -95,6 +97,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
                 IsVacancyRejectedSelected = (preferences.NotificationTypes & NotificationTypes.VacancyRejected) == NotificationTypes.VacancyRejected,
                 IsVacancyClosingSoonSelected = (preferences.NotificationTypes & NotificationTypes.VacancyClosingSoon) == NotificationTypes.VacancyClosingSoon,
                 IsApplicationSubmittedSelected = (preferences.NotificationTypes & NotificationTypes.ApplicationSubmitted) == NotificationTypes.ApplicationSubmitted,
+                IsVacancySentForEmployerReview = (preferences.NotificationTypes & NotificationTypes.VacancySentForReview) == NotificationTypes.VacancySentForReview,
                 NotificationFrequency = preferences.NotificationFrequency,
                 NotificationScope = preferences.NotificationScope
             };

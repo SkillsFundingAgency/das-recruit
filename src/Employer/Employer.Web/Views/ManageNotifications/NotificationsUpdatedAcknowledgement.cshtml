@@ -13,24 +13,18 @@
         </div>
 
         <div class="govuk-body">
-
-            @*User submitted and only one option selected*@
-            <p asp-show="(Model.IsUserSubmittedVacanciesSelected && Model.IsVacancyRejectedSelected && !Model.IsApplicationSubmittedSelected)"> We'll email <b>@Model.UserEmail</b> about any adverts you submit. You'll get emails when an advert is rejected after review. </p>
-            <p asp-show="(Model.IsUserSubmittedVacanciesSelected && !Model.IsVacancyRejectedSelected && Model.IsApplicationSubmittedSelected)"> We'll email <b>@Model.UserEmail</b> about any adverts you submit. You'll get emails when you receive new applications (@Model.Frequency). </p>
-
-            @*All organisation and only one option selected*@
-            <p asp-show="(!Model.IsUserSubmittedVacanciesSelected && Model.IsVacancyRejectedSelected && !Model.IsApplicationSubmittedSelected)"> We'll email <b>@Model.UserEmail</b> about all apprenticeship adverts for your organisation. You'll get emails when an advert is rejected after review. </p>
-            <p asp-show="(!Model.IsUserSubmittedVacanciesSelected && !Model.IsVacancyRejectedSelected && Model.IsApplicationSubmittedSelected)"> We'll email <b>@Model.UserEmail</b> about all apprenticeship adverts for your organisation. You'll get emails when you receive new applications (@Model.Frequency). </p>
-
-            <div asp-show="Model.IsVacancyRejectedSelected && Model.IsApplicationSubmittedSelected">
+            <div>
                 <p asp-show="Model.IsUserSubmittedVacanciesSelected"> We'll email <b>@Model.UserEmail</b> about any adverts you submit. You'll get emails when: </p>
                 <p asp-show="!Model.IsUserSubmittedVacanciesSelected"> We'll email <b>@Model.UserEmail</b> about all apprenticeship adverts for your organisation. You'll get emails when: </p>
 
                 <ul class="govuk-list govuk-list--bullet">
-                    <li>
+                    <li asp-show="Model.IsVacancyRejectedSelected">
                         an advert is rejected after review
                     </li>
-                    <li>
+                    <li asp-show="Model.IsVacancySentForEmployerReview">
+                        a provider submits an advert for you to review
+                    </li>
+                    <li asp-show="Model.IsApplicationSubmittedSelected">
                         you receive new applications (@Model.Frequency)
                     </li>
                 </ul>

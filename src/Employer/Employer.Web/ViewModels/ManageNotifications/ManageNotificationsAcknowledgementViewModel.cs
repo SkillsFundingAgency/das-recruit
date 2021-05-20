@@ -4,6 +4,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.ManageNotifications
     {
         public string UserEmail { get; set; }
         public bool IsVacancyRejectedSelected { get; set; }
+        public bool IsVacancySentForEmployerReview { get; set; }
         public bool IsVacancyClosingSoonSelected { get; set; }
         public bool IsApplicationSubmittedSelected { get; set; }
         public string Frequency { get; set; }
