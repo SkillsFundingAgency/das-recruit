@@ -17,6 +17,9 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Communications
             var templateId = string.Empty;
             switch(message.RequestType)
             {
+                case CommunicationConstants.RequestType.VacancySubmittedForReviewed:
+                    templateId = CommunicationConstants.TemplateIds.VacancySubmittedForReview;
+                    break;
                 case CommunicationConstants.RequestType.VacancyRejected:
                     templateId = CommunicationConstants.TemplateIds.VacancyRejected;
                     break;

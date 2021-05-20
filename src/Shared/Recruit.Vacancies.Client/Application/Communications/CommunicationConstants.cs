@@ -29,6 +29,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Communications
             public const string VacancyRejected = nameof(VacancyRejected);
             public const string ApplicationSubmitted = nameof(ApplicationSubmitted);
             public const string VacancyWithdrawnByQa = nameof(VacancyWithdrawnByQa);
+            public const string VacancySubmittedForReviewed = nameof(VacancySubmittedForReviewed);
             public const string ProviderBlockedProviderNotification = nameof(ProviderBlockedProviderNotification);
             public const string ProviderBlockedEmployerNotificationForTransferredVacancies = nameof(ProviderBlockedEmployerNotificationForTransferredVacancies);
             public const string ProviderBlockedEmployerNotificationForLiveVacancies = nameof(ProviderBlockedEmployerNotificationForLiveVacancies);
@@ -71,6 +72,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Communications
 
         public static class TemplateIds
         {
+            public const string VacancySubmittedForReview = "RecruitV2_VacancySubmittedForReview";
             public const string VacancyRejected = "RecruitV2_VacancyRejected";
             public const string VacancyRejectedByEmployer = "RecruitV2_Provider_VacancyRejectedByEmployer";
             public const string ApplicationSubmittedImmediate = "RecruitV2_NewApplicationImmediate";
