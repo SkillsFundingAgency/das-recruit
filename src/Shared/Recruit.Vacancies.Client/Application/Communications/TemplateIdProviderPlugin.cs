@@ -20,6 +20,9 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Communications
                 case CommunicationConstants.RequestType.VacancyRejected:
                     templateId = CommunicationConstants.TemplateIds.VacancyRejected;
                     break;
+                case CommunicationConstants.RequestType.VacancyRejectedByEmployer:
+                    templateId = CommunicationConstants.TemplateIds.VacancyRejectedByEmployer;
+                    break;
                 case CommunicationConstants.RequestType.ApplicationSubmitted:
                     if (_digestDeliveryFrequencies.Contains(message.Frequency))
                         templateId = CommunicationConstants.TemplateIds.ApplicationsSubmittedDigest;
