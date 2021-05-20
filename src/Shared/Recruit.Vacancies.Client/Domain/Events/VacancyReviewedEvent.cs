@@ -10,6 +10,6 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Events
         public string EmployerAccountId { get; set; }
         public Guid VacancyId { get; set; }
         public long VacancyReference { get; set; }
-        public long ukprn { get; set; }
+        public long Ukprn { get; set; }
     }
 }

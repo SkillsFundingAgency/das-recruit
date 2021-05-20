@@ -77,7 +77,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
                 EmployerAccountId = vacancy.EmployerAccountId,
                 VacancyId = vacancy.Id,
                 VacancyReference = vacancy.VacancyReference.Value,
-                ukprn = vacancy.TrainingProvider.Ukprn.GetValueOrDefault()
+                Ukprn = vacancy.TrainingProvider.Ukprn.GetValueOrDefault()
             });
         }
     }

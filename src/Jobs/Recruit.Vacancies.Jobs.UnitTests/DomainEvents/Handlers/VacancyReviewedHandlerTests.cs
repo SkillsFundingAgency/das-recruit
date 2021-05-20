@@ -44,7 +44,7 @@ namespace Recruit.Vacancies.Jobs.UnitTests.DomainEvents.Handlers
                 EmployerAccountId = _employerAccountId,
                 VacancyReference = _vacancyReference,
                 VacancyId = _exampleVacancyId,
-                ukprn = _exampleUkprn
+                Ukprn = _exampleUkprn
             };
 
             var @event = JsonConvert.SerializeObject(sourceEvent);
@@ -65,7 +65,7 @@ namespace Recruit.Vacancies.Jobs.UnitTests.DomainEvents.Handlers
                 EmployerAccountId = _employerAccountId,
                 VacancyReference = _vacancyReference,
                 VacancyId = _exampleVacancyId,
-                ukprn = _exampleUkprn
+                Ukprn = _exampleUkprn
             };
 
             var @event = JsonConvert.SerializeObject(sourceEvent);

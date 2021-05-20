@@ -27,7 +27,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Vacancy
             {
                 _logger.LogInformation($"Processing {nameof(VacancyReviewedEvent)} for vacancy: {{VacancyId}}", @event.VacancyId);
 
-                var communicationRequest = GetReviewedVacancyCommunicationRequest(@event.VacancyReference, @event.ukprn, @event.EmployerAccountId);
+                var communicationRequest = GetReviewedVacancyCommunicationRequest(@event.VacancyReference, @event.Ukprn, @event.EmployerAccountId);
                 await _queue.AddMessageAsync(communicationRequest);
 
                 _logger.LogInformation($"Finished Processing {nameof(VacancyReviewedEvent)} for vacancy: {{VacancyId}}", @event.VacancyId);
