@@ -54,7 +54,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             if(vacancy.CanSubmit == false)
                 throw new InvalidOperationException(string.Format(InvalidStateExceptionMessageFormat, vacancy.Id, vacancy.Status));
 
-            if(vacancy.OwnerType != message.SubmissionOwner)
+            if(vacancy.OwnerType != message.SubmissionOwner && vacancy.Status != VacancyStatus.Review)
                 throw new InvalidOperationException(string.Format(InvalidOwnerExceptionMessageFormat, vacancy.Id, message.SubmissionOwner, vacancy.OwnerType));
 
             var now = _timeProvider.Now;
