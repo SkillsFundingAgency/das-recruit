@@ -42,7 +42,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Vacancy
         private CommunicationRequest GetReviewedVacancyCommunicationRequest(long vacancyReference, long ukprn, string employerAccountId)
         {
             var communicationRequest = new CommunicationRequest(
-                CommunicationConstants.RequestType.VacancySubmittedForReviewed,
+                CommunicationConstants.RequestType.VacancySubmittedForReview,
                 CommunicationConstants.ParticipantResolverNames.VacancyParticipantsResolverName,
                 CommunicationConstants.ServiceName);
             communicationRequest.AddEntity(CommunicationConstants.EntityTypes.Vacancy, vacancyReference);

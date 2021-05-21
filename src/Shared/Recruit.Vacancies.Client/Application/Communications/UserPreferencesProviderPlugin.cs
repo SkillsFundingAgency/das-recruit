@@ -33,7 +33,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Communications
                 case CommunicationConstants.RequestType.ApplicationSubmitted:
                     SetPreferencesForApplicationSubmittedNotification(userPref, userPreference);
                     return userPref;
-                case CommunicationConstants.RequestType.VacancySubmittedForReviewed:
+                case CommunicationConstants.RequestType.VacancySubmittedForReview:
                     SetPreferencesForVacancySentForReviewNotification(userPref, userPreference);
                     return userPref;
                 case CommunicationConstants.RequestType.VacancyWithdrawnByQa:

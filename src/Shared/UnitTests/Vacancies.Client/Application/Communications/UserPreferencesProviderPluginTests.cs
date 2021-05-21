@@ -22,6 +22,7 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.Communications
         [Theory]
         [InlineData(CommunicationConstants.RequestType.VacancyRejected, DeliveryChannelPreferences.None, DeliveryFrequency.Default)]
         [InlineData(CommunicationConstants.RequestType.ApplicationSubmitted, DeliveryChannelPreferences.None, DeliveryFrequency.Default)]
+        [InlineData(CommunicationConstants.RequestType.VacancySubmittedForReview, DeliveryChannelPreferences.None, DeliveryFrequency.Default)]
         [InlineData(CommunicationConstants.RequestType.VacancyWithdrawnByQa, DeliveryChannelPreferences.EmailOnly, DeliveryFrequency.Immediate)]
         [InlineData(CommunicationConstants.RequestType.ProviderBlockedProviderNotification, DeliveryChannelPreferences.EmailOnly, DeliveryFrequency.Immediate)]
         [InlineData(CommunicationConstants.RequestType.ProviderBlockedEmployerNotificationForTransferredVacancies, DeliveryChannelPreferences.EmailOnly, DeliveryFrequency.Immediate)]
@@ -118,7 +119,7 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.Communications
 
             var user = _fixture.Create<CommunicationUser>();
 
-            var pref = await sut.GetUserPreferenceAsync(RequestType.VacancySubmittedForReviewed, user);
+            var pref = await sut.GetUserPreferenceAsync(RequestType.VacancySubmittedForReview, user);
 
             pref.Channels.Should().Be(DeliveryChannelPreferences.EmailOnly);
             pref.Frequency.Should().Be(DeliveryFrequency.Immediate);
