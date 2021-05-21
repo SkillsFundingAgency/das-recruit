@@ -17,28 +17,34 @@
                         </h2>
                     </legend>
                     <span id="when-conditional-hint" class="govuk-hint">
-                        Choose when you’d like emails
+                        Select all that apply
                     </span>
                     <div class="govuk-checkboxes" data-module="checkboxes">
                         <span esfa-validation-message-for="HasAnySubscription" class="govuk-error-message"></span>
                         <div class="govuk-checkboxes__item">
                             <input class="govuk-checkboxes__input" asp-for="IsVacancyRejectedSelected" id="notifications-rejected" type="checkbox">
                             <label class="govuk-label govuk-checkboxes__label" for="notifications-rejected">
-                                <span class="govuk-visually-hidden">Get notifications when </span>Vacancies are rejected after review
+                                <span class="govuk-visually-hidden">Get notifications </span>When vacancies are rejected by ESFA
+                            </label>
+                        </div>
+                        <div class="govuk-checkboxes__item">
+                            <input class="govuk-checkboxes__input" asp-for="IsVacancyRejectedByEmployerSelected" id="notifications-employer-rejected" type="checkbox">
+                            <label class="govuk-label govuk-checkboxes__label" for="notifications-employer-rejected">
+                                <span class="govuk-visually-hidden">Get notifications </span>When vacancies are rejected by employer
                             </label>
                         </div>
                         <div asp-hide="true">
                             <div class="govuk-checkboxes__item">
                                 <input class="govuk-checkboxes__input" asp-for="IsVacancyClosingSoonSelected" id="notifications-closing" type="checkbox">
                                 <label class="govuk-label govuk-checkboxes__label" for="notifications-closing">
-                                    <span class="govuk-visually-hidden">Get notifications when </span>Vacancies are closing soon
+                                    <span class="govuk-visually-hidden">Get notifications </span>When vacancies are closing soon
                                 </label>
                             </div>
                         </div>
                         <div class="govuk-checkboxes__item govuk-checkboxes--conditional">
                             <input class="govuk-checkboxes__input" asp-for="IsApplicationSubmittedSelected" id="notifications-new" type="checkbox" data-aria-controls="conditional-when-conditional">
                             <label class="govuk-label govuk-checkboxes__label" for="notifications-new">
-                                <span class="govuk-visually-hidden">Get notifications when </span>There are new applications
+                                <span class="govuk-visually-hidden">Get notifications </span>When there are new applications
                             </label>
                         </div>
                         <div>
@@ -58,7 +64,7 @@
                                             </label>
                                         </div>
                                         <div class="govuk-radios__item">
-                                            <input class="govuk-radios__input" value="@NotificationFrequency.Daily" asp-for="NotificationFrequency" id="notification-frequency-daily" type="radio" >
+                                            <input class="govuk-radios__input" value="@NotificationFrequency.Daily" asp-for="NotificationFrequency" id="notification-frequency-daily" type="radio">
                                             <label class="govuk-label govuk-radios__label" for="notification-frequency-daily">
                                                 @NotificationFrequency.Daily
                                             </label>
