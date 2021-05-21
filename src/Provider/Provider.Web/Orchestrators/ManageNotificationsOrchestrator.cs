@@ -1,4 +1,3 @@
-using System;
 using System.Threading.Tasks;
 using Esfa.Recruit.Provider.Web.ViewModels.ManageNotifications;
 using Esfa.Recruit.Shared.Web.Orchestrators;
@@ -63,6 +62,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             return new ManageNotificationsAcknowledgementViewModel
             {
                 IsApplicationSubmittedSelected = editModel.IsApplicationSubmittedSelected,
+                IsVacancyRejectedByEmployerSelected = editModel.IsVacancyRejectedByEmployerSelected,
                 IsVacancyClosingSoonSelected = editModel.IsVacancyClosingSoonSelected,
                 IsVacancyRejectedSelected = editModel.IsVacancyRejectedSelected,
                 IsUserSubmittedVacanciesSelected = editModel.NotificationScope.GetValueOrDefault() == NotificationScope.UserSubmittedVacancies,
@@ -83,7 +83,8 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             targetModel.NotificationTypes = 
                 (sourceModel.IsApplicationSubmittedSelected ? NotificationTypes.ApplicationSubmitted : NotificationTypes.None) 
                 | (sourceModel.IsVacancyClosingSoonSelected ? NotificationTypes.VacancyClosingSoon : NotificationTypes.None) 
-                | (sourceModel.IsVacancyRejectedSelected ? NotificationTypes.VacancyRejected : NotificationTypes.None);
+                | (sourceModel.IsVacancyRejectedSelected ? NotificationTypes.VacancyRejected : NotificationTypes.None)
+                | (sourceModel.IsVacancyRejectedByEmployerSelected ? NotificationTypes.VacancyRejectedByEmployer : NotificationTypes.None);
                         
             return targetModel;
         }
@@ -95,6 +96,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
                 IsVacancyRejectedSelected = (preferences.NotificationTypes & NotificationTypes.VacancyRejected) == NotificationTypes.VacancyRejected,
                 IsVacancyClosingSoonSelected = (preferences.NotificationTypes & NotificationTypes.VacancyClosingSoon) == NotificationTypes.VacancyClosingSoon,
                 IsApplicationSubmittedSelected = (preferences.NotificationTypes & NotificationTypes.ApplicationSubmitted) == NotificationTypes.ApplicationSubmitted,
+                IsVacancyRejectedByEmployerSelected = (preferences.NotificationTypes & NotificationTypes.VacancyRejectedByEmployer) == NotificationTypes.VacancyRejectedByEmployer,
                 NotificationFrequency = preferences.NotificationFrequency,
                 NotificationScope = preferences.NotificationScope
             };
