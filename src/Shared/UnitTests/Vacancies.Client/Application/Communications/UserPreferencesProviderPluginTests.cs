@@ -21,6 +21,7 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.Communications
 
         [Theory]
         [InlineData(CommunicationConstants.RequestType.VacancyRejected, DeliveryChannelPreferences.None, DeliveryFrequency.Default)]
+        [InlineData(CommunicationConstants.RequestType.VacancyRejectedByEmployer, DeliveryChannelPreferences.None, DeliveryFrequency.Default)]
         [InlineData(CommunicationConstants.RequestType.ApplicationSubmitted, DeliveryChannelPreferences.None, DeliveryFrequency.Default)]
         [InlineData(CommunicationConstants.RequestType.VacancyWithdrawnByQa, DeliveryChannelPreferences.EmailOnly, DeliveryFrequency.Immediate)]
         [InlineData(CommunicationConstants.RequestType.ProviderBlockedProviderNotification, DeliveryChannelPreferences.EmailOnly, DeliveryFrequency.Immediate)]
@@ -71,6 +72,30 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.Communications
             var user = _fixture.Create<CommunicationUser>();
 
             var pref = await sut.GetUserPreferenceAsync(RequestType.VacancyRejected, user);
+
+            pref.Channels.Should().Be(DeliveryChannelPreferences.EmailOnly);
+            pref.Frequency.Should().Be(DeliveryFrequency.Immediate);
+            pref.Scope.Should().Be(Communication.Types.NotificationScope.Organisation);
+        }
+
+        [Fact]
+        public async Task WhenRequestTypeIsVacancyRejectedByEmployer_ShouldReturnRespectivePreferences()
+        {
+            var userPref = _fixture
+                .Build<UserNotificationPreferences>()
+                .With(p => p.NotificationTypes, NotificationTypes.VacancyRejectedByEmployer)
+                .With(p => p.NotificationScope, Esfa.Recruit.Vacancies.Client.Domain.Entities.NotificationScope.OrganisationVacancies)
+                .Create();
+
+            _repositoryMock
+                .Setup(u => u.GetAsync(It.IsAny<string>()))
+                .ReturnsAsync(userPref);
+
+            var sut = GetSut();
+
+            var user = _fixture.Create<CommunicationUser>();
+
+            var pref = await sut.GetUserPreferenceAsync(RequestType.VacancyRejectedByEmployer, user);
 
             pref.Channels.Should().Be(DeliveryChannelPreferences.EmailOnly);
             pref.Frequency.Should().Be(DeliveryFrequency.Immediate);
