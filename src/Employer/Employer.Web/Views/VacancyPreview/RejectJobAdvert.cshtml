@@ -13,7 +13,7 @@ ViewBag.Title = "Are you sure you want to reject this job advert?"; }
                Are you sure you want to reject this job advert?
             </h1>          
         </div>        
-        <p>We'll do a final review and post it on 'Find an apprenticeship'.</p>        
+        <p class="govuk-body">This job advert will go back to @Model.TrainingProviderName. You may want to tell them why you're rejecting it.</p>        
         <form asp-route="@RouteNames.RejectJobAdvert_Post">           
             <div esfa-validation-marker-for="RejectJobAdvert" class="govuk-form-group">
                 <fieldset class="govuk-fieldset">

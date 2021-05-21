@@ -180,9 +180,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 
         public async Task<JobAdvertConfirmationViewModel> GetVacancyConfirmationJobAdvertAsync(VacancyRouteModel vrm)
         {
-            var vacancy = await _vacancyClient.GetVacancyAsync(vrm.VacancyId);
-
-            Utility.CheckAuthorisedAccess(vacancy, vrm.EmployerAccountId);
+            var vacancy = await _vacancyClient.GetVacancyAsync(vrm.VacancyId);            
 
             var vm = new JobAdvertConfirmationViewModel
             {                 
@@ -192,6 +190,18 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
                 RejectedJobAdvert = vacancy.Status == VacancyStatus.Rejected,
                 TrainingProviderName = vacancy.TrainingProvider.Name
             };        
+
+            return vm;
+        }
+
+        public async Task<RejectJobAdvertViewModel> GetVacancyRejectJobAdvertAsync(VacancyRouteModel vrm)
+        {
+            var vacancy = await _vacancyClient.GetVacancyAsync(vrm.VacancyId);
+
+            var vm = new RejectJobAdvertViewModel
+            {                             
+                TrainingProviderName = vacancy.TrainingProvider.Name
+            };
 
             return vm;
         }

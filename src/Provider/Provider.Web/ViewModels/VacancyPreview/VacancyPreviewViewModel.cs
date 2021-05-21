@@ -89,12 +89,13 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview
 
         public bool ShowIncompleteSections => ((HasIncompleteMandatorySections || HasIncompleteOptionalSections) && !Review.HasBeenReviewed) || HasSoftValidationErrors;
         public ReviewSummaryViewModel Review { get; set; } = new ReviewSummaryViewModel();
-        public string SubmitButtonText => Review.HasBeenReviewed 
-            ? "Resubmit vacancy" 
-            : RequiresEmployerReview 
-                ? Status == VacancyStatus.Rejected
-                    ? "Resubmit vacancy to employer" 
-                    : "Send to employer" 
+
+        public string SubmitButtonText => RequiresEmployerReview
+            ? Status == VacancyStatus.Rejected
+                ? "Resubmit vacancy to employer"
+                : "Send to employer"
+            : Review.HasBeenReviewed
+                ? "Resubmit vacancy"
                 : "Submit vacancy";
         public bool ApplicationInstructionsRequiresEdit => IsEditRequired(FieldIdentifiers.ApplicationInstructions);
         public bool ApplicationMethodRequiresEdit => IsEditRequired(FieldIdentifiers.ApplicationMethod);

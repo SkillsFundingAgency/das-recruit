@@ -32,7 +32,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Services
 
         public async Task<string> GetEmployerDescriptionAsync(Vacancy vacancy)
         {
-            if (!vacancy.CanEmployerEdit)
+            if (!vacancy.CanGetEmployerProfileAboutOrganisation)
                 return vacancy.EmployerDescription;
 
             var profile = await _employerProfileRepository.GetAsync(vacancy.EmployerAccountId, vacancy.AccountLegalEntityPublicHashedId);
