@@ -23,7 +23,7 @@ namespace Esfa.Recruit.UnitTests.Employer.Web.Orchestrators.ManageNotificationsO
             result.IsApplicationSubmittedSelected.Should().BeFalse();
             result.IsVacancyClosingSoonSelected.Should().BeFalse();
             result.IsVacancyRejectedSelected.Should().BeFalse();
-            result.IsVacancySentForEmployerReview.Should().BeFalse();
+            result.IsVacancySentForEmployerReviewSelected.Should().BeFalse();
             result.NotificationFrequency.Should().BeNull();
             result.NotificationScope.Should().BeNull();
         }
@@ -50,7 +50,7 @@ namespace Esfa.Recruit.UnitTests.Employer.Web.Orchestrators.ManageNotificationsO
             result.IsApplicationSubmittedSelected.Should().Be(expectedIsApplicationSubmittedSelected);
             result.IsVacancyClosingSoonSelected.Should().Be(expectedIsVacancyClosingSoonSelected);
             result.IsVacancyRejectedSelected.Should().Be(expectedIsVacancyRejectedSelected);
-            result.IsVacancySentForEmployerReview.Should().Be(expectIsVacancySentForReviewSelected);
+            result.IsVacancySentForEmployerReviewSelected.Should().Be(expectIsVacancySentForReviewSelected);
         }
 
         private ManageNotificationsOrchestrator GetSut()
