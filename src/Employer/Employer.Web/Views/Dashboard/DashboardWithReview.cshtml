@@ -87,7 +87,7 @@
                         <a asp-show="@Model.HasSubmittedVacancy" asp-route="@RouteNames.Vacancies_Get" asp-route-filter="@FilteringOptions.Submitted" class="govuk-link">
                             @FilteringOptions.Submitted.GetDisplayName(UserType.Employer)
                         </a>
-                        <span asp-hide="@Model.HasSubmittedVacancy">@FilteringOptions.Submitted.GetDisplayName()</span>
+                        <span asp-hide="@Model.HasSubmittedVacancy">@FilteringOptions.Submitted.GetDisplayName(UserType.Employer)</span>
                     </h3>
                     <p class="govuk-body das-card--description">Adverts that you've sent for review.</p>
                 </div>
