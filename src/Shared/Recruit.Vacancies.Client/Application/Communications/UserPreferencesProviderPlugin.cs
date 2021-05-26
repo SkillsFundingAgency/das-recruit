@@ -66,7 +66,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Communications
             {
                 userPref.Channels = DeliveryChannelPreferences.EmailOnly;
                 userPref.Frequency = DeliveryFrequency.Immediate;
-                userPref.Scope = userPreference.NotificationScope.GetValueOrDefault().ConvertToCommunicationScope();
+                userPref.Scope = NotificationScope.Organisation;
             }
         }
 
