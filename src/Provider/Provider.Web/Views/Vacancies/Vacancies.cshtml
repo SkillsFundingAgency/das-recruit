@@ -14,8 +14,6 @@
                         return "Edit and resubmit";
                     case VacancyStatus.Draft:
                         return "Edit and submit";
-                    case VacancyStatus.Review:
-                        return "View";
                 }
                 return "Manage";
             }
@@ -59,7 +57,10 @@
                         <option value="@FilteringOptions.All">all vacancies</option>
                         <option value="@FilteringOptions.Live">live vacancies</option>
                         <option value="@FilteringOptions.Referred">rejected vacancies</option>
-                        <option value="@FilteringOptions.Review">employer review</option>
+                        @if (Model.HasEmployerReviewPermission)
+                        {
+                            <option value="@FilteringOptions.Review">employer review</option>   
+                        }
                         <option value="@FilteringOptions.Submitted">pending review</option>
                         <option value="@FilteringOptions.Draft">draft vacancies</option>
                         <option value="@FilteringOptions.Closed">closed vacancies</option>
@@ -138,15 +139,8 @@
                             <td class="govuk-table__cell dashboard-closingdate" data-label="Closing date"><span>@vacancy.ClosingDate?.AsGdsDate()</span></td>
                             <td class="govuk-table__cell dashboard-status" data-label="Status"><span class="tag tag-@vacancy.Status.ToString().ToLower()">@vacancy.Status.GetDisplayName(UserType.Provider)</span></td>
                             <td class="govuk-table__cell dashboard-action" data-label="Action">
-                            @if(vacancy.Status == VacancyStatus.Review)
-                            {
-                                <a asp-show="@vacancy.Status == VacancyStatus.Review" asp-route="@RouteNames.DisplayFullVacancy_Get" asp-route-vacancyId="@vacancy.Id" class="govuk-link">@GetLinkText(vacancy)</a>
-                            }
-                            else
-                            {
                                 <a asp-show="@vacancy.IsNotSubmittable" asp-route="@RouteNames.VacancyManage_Get" asp-route-vacancyId="@vacancy.Id" class="govuk-link">@GetLinkText(vacancy)</a>
                                 <a asp-show="@vacancy.IsSubmittable" asp-route="@RouteNames.DisplayVacancy_Get" asp-route-vacancyId="@vacancy.Id" class="govuk-link">@GetLinkText(vacancy)</a>
-                            }
                             </td>
                         </tr>
                     }
