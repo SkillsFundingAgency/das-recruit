@@ -33,7 +33,8 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             {
                 Title = vacancy.Title,
                 VacancyReference = vacancy.VacancyReference?.ToString(),
-                EmployerName = employer.Name
+                EmployerName = employer.Name,
+                IsResubmit = vacancy.ReviewDate.HasValue
             };
 
             return vm;
