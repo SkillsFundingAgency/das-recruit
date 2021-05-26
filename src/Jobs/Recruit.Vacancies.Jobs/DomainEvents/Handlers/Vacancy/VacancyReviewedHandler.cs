@@ -43,7 +43,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Vacancy
         {
             var communicationRequest = new CommunicationRequest(
                 CommunicationConstants.RequestType.VacancySubmittedForReviewed,
-                CommunicationConstants.ParticipantResolverNames.VacancyParticipantsResolverName,
+                CommunicationConstants.ParticipantResolverNames.EmployerParticipantsResolverName,
                 CommunicationConstants.ServiceName);
             communicationRequest.AddEntity(CommunicationConstants.EntityTypes.Vacancy, vacancyReference);
             communicationRequest.AddEntity(CommunicationConstants.EntityTypes.ApprenticeshipServiceUrl, vacancyReference);
