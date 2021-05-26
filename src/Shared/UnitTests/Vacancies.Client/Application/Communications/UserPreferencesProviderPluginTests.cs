@@ -123,7 +123,7 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.Communications
 
             pref.Channels.Should().Be(DeliveryChannelPreferences.EmailOnly);
             pref.Frequency.Should().Be(DeliveryFrequency.Immediate);
-            pref.Scope.Should().Be(Communication.Types.NotificationScope.Individual);
+            pref.Scope.Should().Be(Communication.Types.NotificationScope.Organisation);
         }
 
         [Theory]
