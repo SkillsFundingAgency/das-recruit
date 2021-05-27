@@ -13,25 +13,19 @@
         </div>
 
         <div class="govuk-body">
-
-            @*User submitted and only one option selected*@
-            <p asp-show="(Model.IsUserSubmittedVacanciesSelected && Model.IsVacancyRejectedSelected && !Model.IsApplicationSubmittedSelected)"> We'll email <b>@Model.UserEmail</b> about any adverts you submit. You'll get emails when an advert is rejected after review. </p>
-            <p asp-show="(Model.IsUserSubmittedVacanciesSelected && !Model.IsVacancyRejectedSelected && Model.IsApplicationSubmittedSelected)"> We'll email <b>@Model.UserEmail</b> about any adverts you submit. You'll get emails when you receive new applications (@Model.Frequency). </p>
-
-            @*All organisation and only one option selected*@
-            <p asp-show="(!Model.IsUserSubmittedVacanciesSelected && Model.IsVacancyRejectedSelected && !Model.IsApplicationSubmittedSelected)"> We'll email <b>@Model.UserEmail</b> about all apprenticeship adverts for your organisation. You'll get emails when an advert is rejected after review. </p>
-            <p asp-show="(!Model.IsUserSubmittedVacanciesSelected && !Model.IsVacancyRejectedSelected && Model.IsApplicationSubmittedSelected)"> We'll email <b>@Model.UserEmail</b> about all apprenticeship adverts for your organisation. You'll get emails when you receive new applications (@Model.Frequency). </p>
-
-            <div asp-show="Model.IsVacancyRejectedSelected && Model.IsApplicationSubmittedSelected">
-                <p asp-show="Model.IsUserSubmittedVacanciesSelected"> We'll email <b>@Model.UserEmail</b> about any adverts you submit. You'll get emails when: </p>
-                <p asp-show="!Model.IsUserSubmittedVacanciesSelected"> We'll email <b>@Model.UserEmail</b> about all apprenticeship adverts for your organisation. You'll get emails when: </p>
+            <div>
+                <p asp-show="Model.IsUserSubmittedVacanciesSelected"> We'll email <b>@Model.UserEmail</b> about any adverts you submit. You'll get emails: </p>
+                <p asp-show="!Model.IsUserSubmittedVacanciesSelected"> We'll email <b>@Model.UserEmail</b> about all apprenticeship adverts for your organisation. You'll get emails: </p>
 
                 <ul class="govuk-list govuk-list--bullet">
-                    <li>
-                        an advert is rejected after review
+                    <li asp-show="Model.IsVacancyRejectedSelected">
+                        when an advert is rejected after review
                     </li>
-                    <li>
-                        you receive new applications (@Model.Frequency)
+                    <li asp-show="Model.IsVacancySentForEmployerReviewSelected">
+                        when a provider sends an advert for review
+                    </li>
+                    <li asp-show="Model.IsApplicationSubmittedSelected">
+                        when there are new applications
                     </li>
                 </ul>
             </div>

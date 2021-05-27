@@ -33,6 +33,12 @@
                                 <span class="govuk-visually-hidden">Get notifications </span>When an advert is rejected after review
                             </label>
                         </div>
+                        <div class="govuk-checkboxes__item">
+                            <input class="govuk-checkboxes__input" asp-for="IsVacancySentForEmployerReviewSelected" id="notifications-review" type="checkbox">
+                            <label class="govuk-label govuk-checkboxes__label" for="notifications-review">
+                                <span class="govuk-visually-hidden">Get notifications </span>When a provider sends an advert for review
+                            </label>
+                        </div>
                         <div asp-hide="true">
                             <div class="govuk-checkboxes__item">
                                 <input class="govuk-checkboxes__input" asp-for="IsVacancyClosingSoonSelected" id="notifications-closing" type="checkbox">
