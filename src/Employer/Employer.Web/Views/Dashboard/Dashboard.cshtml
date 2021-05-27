@@ -2,8 +2,7 @@
 
 @model Esfa.Recruit.Employer.Web.ViewModels.Dashboard.DashboardViewModel
 
-@{
-    var vacanciesSearchSuggestionsEndpointUrl = Url.RouteUrl(RouteNames.VacanciesSearchSuggestions_Get, null, Context.Request.Scheme);
+@{ var vacanciesSearchSuggestionsEndpointUrl = Url.RouteUrl(RouteNames.VacanciesSearchSuggestions_Get, null, Context.Request.Scheme);
     string GetCardStatus(int count)
     {
         return count == 0 ? "das-card--inactive" : string.Empty;
@@ -11,8 +10,7 @@
     ViewBag.ShowReturnToMaLink = Model.FromMaHome;
     ViewBag.Vpv = "/recruitment/employer/page-dashboard";
     ViewBag.ZenDeskLabel = "recruit-recruitment";
-    ViewBag.Title = "Your apprenticeship adverts";
-}
+    ViewBag.Title = "Your apprenticeship adverts"; }
 
 <partial asp-hide="@Model.HasAnyVacancies" name="_NoVacanciesContent" />
 
@@ -51,7 +49,7 @@
             </div>
         </form>
     </div>
-    <div class="govuk-grid-row das-card--row">        
+    <div class="govuk-grid-row das-card--row">
         <div class="govuk-grid-column-one-third">
             <div class="das-card @GetCardStatus(Model.VacancyCountDraft)">
                 <div class="das-card--content">
@@ -63,6 +61,24 @@
                         <span asp-hide="@Model.HasDraftVacancy">@FilteringOptions.Draft @Model.VacancyTextDraft</span>
                     </h3>
                     <p class="govuk-body das-card--description">Adverts that you need to complete and send for review.</p>
+                </div>
+            </div>
+        </div>
+        <div class="govuk-grid-column-one-third">
+            <div class="das-card @GetCardStatus(Model.VacancyCountReview)">
+                <div class="das-card--content">
+                    <h3 class="govuk-heading-m das-card--heading">
+                        <span class="das-card--stat">@Model.VacancyCountReview</span>
+                        <a asp-show="@Model.HasEmployerReviewPermission" asp-route="@RouteNames.Vacancies_Get" asp-route-filter="@FilteringOptions.Review" class="govuk-link">
+                            @FilteringOptions.Review @Model.VacancyTextReview
+                        </a>
+                        <span asp-hide="@Model.HasEmployerReviewPermission">@FilteringOptions.Review @Model.VacancyTextReview</span>
+                    </h3>
+                    <p asp-show="@Model.HasEmployerReviewPermission" class="govuk-body das-card--description">Adverts created by training providers that you need to review.</p>
+                    <p asp-hide="@Model.HasEmployerReviewPermission" class="govuk-body das-card--description">
+                        If you want to review adverts before they are published you need to
+                        <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.YourTrainingProviderPermission">manage your permissions</a>.
+                    </p>
                 </div>
             </div>
         </div>
@@ -80,6 +96,8 @@
                 </div>
             </div>
         </div>
+    </div>
+    <div class="govuk-grid-row das-card--row">
         <div class="govuk-grid-column-one-third">
             <div class="das-card @GetCardStatus(Model.VacancyCountReferred)">
                 <div class="das-card--content">
@@ -94,8 +112,6 @@
                 </div>
             </div>
         </div>
-    </div>
-    <div class="govuk-grid-row das-card--row">
         <div class="govuk-grid-column-one-third">
             <div class="das-card @GetCardStatus(Model.VacancyCountLive)">
                 <div class="das-card--content">
@@ -142,6 +158,8 @@
                 </div>
             </div>
         </div>
+    </div>
+    <div class="govuk-grid-row das-card--row">
         <div class="govuk-grid-column-one-third">
             <div class="das-card @GetCardStatus(Model.VacancyCountClosed)">
                 <div class="das-card--content">
@@ -156,6 +174,8 @@
                 </div>
             </div>
         </div>
+        <div class="govuk-grid-column-one-third"></div>
+        <div class="govuk-grid-column-one-third"></div>
     </div>
     <div class="govuk-grid-row">
         <div asp-show="@Model.HasOneVacancy" class="govuk-grid-column-full">
