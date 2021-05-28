@@ -57,7 +57,7 @@ namespace Recruit.Vacancies.Client.Application.Communications.CompositeDataItemP
             var totalNoOfVacancies = vacancyRefs.Count();
             var totalNoOfApplications = messages.Count();
 
-            var header = $"There has been {totalNoOfApplications} new {"application".ToQuantity(totalNoOfApplications, ShowQuantityAs.None)} for {totalNoOfVacancies} {"vacancy".ToQuantity(totalNoOfVacancies, ShowQuantityAs.None)}";
+            var header = $"There has been {totalNoOfApplications} new {"application".ToQuantity(totalNoOfApplications, ShowQuantityAs.None)} for {totalNoOfVacancies} {"advert".ToQuantity(totalNoOfVacancies, ShowQuantityAs.None)}";
             return header;
         }
 
