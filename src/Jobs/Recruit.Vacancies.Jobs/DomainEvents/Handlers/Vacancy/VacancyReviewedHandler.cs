@@ -42,8 +42,8 @@ namespace Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Vacancy
         private CommunicationRequest GetReviewedVacancyCommunicationRequest(long vacancyReference, long ukprn, string employerAccountId)
         {
             var communicationRequest = new CommunicationRequest(
-                CommunicationConstants.RequestType.VacancySubmittedForReviewed,
-                CommunicationConstants.ParticipantResolverNames.VacancyParticipantsResolverName,
+                CommunicationConstants.RequestType.VacancySubmittedForReview,
+                CommunicationConstants.ParticipantResolverNames.EmployerParticipantsResolverName,
                 CommunicationConstants.ServiceName);
             communicationRequest.AddEntity(CommunicationConstants.EntityTypes.Vacancy, vacancyReference);
             communicationRequest.AddEntity(CommunicationConstants.EntityTypes.ApprenticeshipServiceUrl, vacancyReference);

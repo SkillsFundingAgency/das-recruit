@@ -29,7 +29,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Communications
             public const string VacancyRejected = nameof(VacancyRejected);
             public const string ApplicationSubmitted = nameof(ApplicationSubmitted);
             public const string VacancyWithdrawnByQa = nameof(VacancyWithdrawnByQa);
-            public const string VacancySubmittedForReviewed = nameof(VacancySubmittedForReviewed);
+            public const string VacancySubmittedForReview = nameof(VacancySubmittedForReview);
             public const string ProviderBlockedProviderNotification = nameof(ProviderBlockedProviderNotification);
             public const string ProviderBlockedEmployerNotificationForTransferredVacancies = nameof(ProviderBlockedEmployerNotificationForTransferredVacancies);
             public const string ProviderBlockedEmployerNotificationForLiveVacancies = nameof(ProviderBlockedEmployerNotificationForLiveVacancies);
