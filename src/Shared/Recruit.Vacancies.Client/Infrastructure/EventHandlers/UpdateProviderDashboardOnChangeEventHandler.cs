@@ -141,8 +141,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
 
             var vacancy = await _vacancyRepository.GetVacancyAsync(notification.VacancyReference);
 
-            _logger.LogInformation("Handling {eventType} for ukprn: {ukprn} and vacancyReference: {vacancyReference}", notification.GetType().Name, vacancy.TrainingProvider.Ukprn.Value, notification.VacancyReference);
-            await _dashboardService.ReBuildDashboardAsync(vacancy.TrainingProvider.Ukprn.Value);
+            if (vacancy.TrainingProvider != null)
+            {
+                _logger.LogInformation("Handling {eventType} for ukprn: {ukprn} and vacancyReference: {vacancyReference}", notification.GetType().Name, vacancy.TrainingProvider.Ukprn.Value, notification.VacancyReference);
+                await _dashboardService.ReBuildDashboardAsync(vacancy.TrainingProvider.Ukprn.Value);
+            }
         }
 
         private async Task Handle(IVacancyEvent notification)
