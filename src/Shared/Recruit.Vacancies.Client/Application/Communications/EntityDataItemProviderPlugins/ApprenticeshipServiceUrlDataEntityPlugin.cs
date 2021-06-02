@@ -38,7 +38,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Communications.EntityDataIte
         private CommunicationDataItem GetApplicationUrlDataItem(Vacancy vacancy)
         {
             var url = string.Empty;
-            if (vacancy.OwnerType == OwnerType.Employer)
+            if (vacancy.OwnerType == OwnerType.Employer || vacancy.Status == VacancyStatus.Review)
             {
                 var baseUri = new Uri(_communicationsConfiguration.EmployersApprenticeshipServiceUrl);
                 var uri = new Uri(baseUri, vacancy.EmployerAccountId);
