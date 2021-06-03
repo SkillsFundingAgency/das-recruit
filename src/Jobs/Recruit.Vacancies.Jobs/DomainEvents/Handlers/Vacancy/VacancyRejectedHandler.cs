@@ -22,7 +22,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Vacancy
         public async Task HandleAsync(string eventPayload)
         {
             var @event = DeserializeEvent<VacancyRejectedEvent>(eventPayload);
-            var communicationRequest = GetRejectedVacancyCommunicationRequest(@event.VacancyReference, @event.EmployerAccountId);
+            var communicationRequest = GetRejectedVacancyCommunicationRequest(@event.VacancyReference, @event.ProviderUkprn.GetValueOrDefault().ToString());
 
             try
             {
@@ -39,15 +39,15 @@ namespace Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Vacancy
             }
         }
 
-        private CommunicationRequest GetRejectedVacancyCommunicationRequest(long vacancyReference, string employerAccountId)
+        private CommunicationRequest GetRejectedVacancyCommunicationRequest(long vacancyReference, string providerUkprn)
         {
             var communicationRequest = new CommunicationRequest(
                 CommunicationConstants.RequestType.VacancyRejectedByEmployer,
-                CommunicationConstants.ParticipantResolverNames.ProviderParticipantsResolverName,
+                CommunicationConstants.ParticipantResolverNames.VacancyParticipantsResolverName,
                 CommunicationConstants.ServiceName);
             communicationRequest.AddEntity(CommunicationConstants.EntityTypes.Vacancy, vacancyReference);
             communicationRequest.AddEntity(CommunicationConstants.EntityTypes.ApprenticeshipServiceUrl, vacancyReference);
-            communicationRequest.AddEntity(CommunicationConstants.EntityTypes.Employer, employerAccountId);
+            communicationRequest.AddEntity(CommunicationConstants.EntityTypes.Provider, providerUkprn);
             return communicationRequest;
         }
     }
