@@ -13,7 +13,7 @@
                 <fieldset class="govuk-fieldset" aria-describedby="when-conditional-hint">
                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
                         <h2 class="govuk-fieldset__heading">
-                        When do you want to be sent recruitment emails?
+                            When do you want to be sent recruitment emails?
                         </h2>
                     </legend>
                     <span id="when-conditional-hint" class="govuk-hint">
@@ -85,9 +85,9 @@
             <div class="govuk-form-group">
                 <fieldset class="govuk-fieldset">
                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
-                    <h2 class="govuk-fieldset__heading">
-                        What emails would you like to receive?
-                    </h2>
+                        <h2 class="govuk-fieldset__heading">
+                            What emails would you like to receive?
+                        </h2>
                     </legend>
                     <div class="govuk-radios" data-module="radios">
                         <span esfa-validation-message-for="NotificationScope" class="govuk-error-message"></span>
@@ -106,13 +106,14 @@
                     </div>
                 </fieldset>
             </div>
-            <div class="govuk-form-group">
-                <p asp-show="@Model.HasAnySubscription" class="govuk-body">
-                    <a asp-route="@RouteNames.ConfirmUnsubscribeNotifications_Get" class="govuk-link">Unsubscribe from all recruitment emails</a>
-                </p>
-                <button class="govuk-button submit" type="submit">Save and continue</button>
-                <a asp-route="@RouteNames.Dashboard_Get" class="govuk-link das-button-link">Return to dashboard</a>
-            </div>
+            <p asp-show="@Model.HasAnySubscription" class="govuk-body">
+                <a asp-route="@RouteNames.ConfirmUnsubscribeNotifications_Get" class="govuk-link">Unsubscribe from all recruitment emails</a>
+            </p>
+            <button class="govuk-button submit" type="submit">Save and continue</button>
+
+            <p class="govuk-body govuk-!-margin-bottom-0">
+                <a asp-route="@RouteNames.Dashboard_Get" class="govuk-body govuk-link">Return to dashboard</a>
+            </p>
         </form>
     </div>
 </div>
