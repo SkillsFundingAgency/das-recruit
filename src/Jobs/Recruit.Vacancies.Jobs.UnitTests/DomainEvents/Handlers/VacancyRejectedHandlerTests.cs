@@ -75,5 +75,47 @@ namespace Recruit.Vacancies.Jobs.UnitTests.DomainEvents.Handlers
                 .Should()
                 .BeTrue();
         }
+
+        [Fact]
+        public async Task GivenVacancyRejectedEvent_ProviderResolver_ShouldBeSet()
+        {
+            //Arrange
+            var sourceEvent = new VacancyRejectedEvent
+            {
+                ProviderUkprn = _providerUkprn,
+                VacancyReference = _vacancyReference,
+                VacancyId = _exampleVacancyId
+            };
+            var @event = JsonConvert.SerializeObject(sourceEvent);
+
+            //Act
+            await _sut.HandleAsync(@event);
+
+            //Assert
+            _sentCommRequest.ParticipantsResolverName.Should().Be(CommunicationConstants.ParticipantResolverNames.ProviderParticipantsResolverName);
+        }
+
+        [Fact]
+        public async Task GivenVacancyRejectedEvent_Ukprn_ShouldBeSet()
+        {
+            //Arrange
+            var sourceEvent = new VacancyRejectedEvent
+            {
+                ProviderUkprn = _providerUkprn,
+                VacancyReference = _vacancyReference,
+                VacancyId = _exampleVacancyId
+            };
+            var @event = JsonConvert.SerializeObject(sourceEvent);
+
+            //Act
+            await _sut.HandleAsync(@event);
+
+            //Assert
+            _sentCommRequest
+                .Entities
+                .Any(cr => cr.EntityType.Equals(CommunicationConstants.EntityTypes.Provider) && ((long)cr.EntityId == _providerUkprn))
+                .Should()
+                .BeTrue();
+        }
     }
 }
