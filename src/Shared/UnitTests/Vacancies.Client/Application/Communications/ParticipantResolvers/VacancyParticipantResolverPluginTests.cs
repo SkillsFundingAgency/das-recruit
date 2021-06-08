@@ -101,6 +101,31 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.Communications
             participants.Single(p => p.UserId != PrimaryUserId).Participation.Should().Be(UserParticipation.SecondaryUser);
         }
 
+        [Fact]
+        public async Task ShouldProviderReviewSenderAsPrimaryUser()
+        {
+            var user = _fixture.Build<VacancyUser>().With(v => v.UserId, PrimaryUserId).Create();
+            var vacancy = _fixture
+                .Build<Vacancy>()
+                .With(v => v.OwnerType, OwnerType.Provider)
+                .Without(v => v.SubmittedByUser)
+                .With(v => v.ReviewByUser, user)
+                .Create();
+
+            _mockVacancyRepository.Setup(v => v.GetVacancyAsync(It.IsAny<long>())).ReturnsAsync(vacancy);
+
+            var sut = GetSut();
+
+            var request = new CommunicationRequest(_fixture.Create<string>(), _fixture.Create<string>(), _fixture.Create<string>());
+            request.AddEntity(CommunicationConstants.EntityTypes.Vacancy, _fixture.Create<long>());
+
+            var participants = await sut.GetParticipantsAsync(request);
+
+            participants.Count().Should().Be(2);
+            participants.Single(p => p.UserId == PrimaryUserId).Participation.Should().Be(UserParticipation.PrimaryUser);
+            participants.Single(p => p.UserId != PrimaryUserId).Participation.Should().Be(UserParticipation.SecondaryUser);
+        }
+
         private VacancyParticipantsResolverPlugin GetSut()
         {
             return new VacancyParticipantsResolverPlugin(

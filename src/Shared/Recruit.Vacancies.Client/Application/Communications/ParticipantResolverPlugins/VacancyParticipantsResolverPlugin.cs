@@ -51,7 +51,8 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Communications.ParticipantRe
             {
                 users = await _userRepository.GetProviderUsersAsync(vacancy.TrainingProvider.Ukprn.GetValueOrDefault());
             }
-            return ParticipantResolverPluginHelper.ConvertToCommunicationUsers(users, vacancy.SubmittedByUser.UserId);
+
+            return ParticipantResolverPluginHelper.ConvertToCommunicationUsers(users, vacancy.SubmittedByUser?.UserId ?? vacancy.ReviewByUser?.UserId);
         }
 
         public async Task<IEnumerable<CommunicationMessage>> ValidateParticipantAsync(IEnumerable<CommunicationMessage> messages)
