@@ -77,7 +77,7 @@ namespace Recruit.Vacancies.Jobs.UnitTests.DomainEvents.Handlers
         }
 
         [Fact]
-        public async Task GivenVacancyRejectedEvent_Resolver_ShouldBeSet()
+        public async Task GivenVacancyRejectedEvent_ProviderResolver_ShouldBeSet()
         {
             //Arrange
             var sourceEvent = new VacancyRejectedEvent
@@ -92,7 +92,7 @@ namespace Recruit.Vacancies.Jobs.UnitTests.DomainEvents.Handlers
             await _sut.HandleAsync(@event);
 
             //Assert
-            _sentCommRequest.ParticipantsResolverName.Should().Be(CommunicationConstants.ParticipantResolverNames.VacancyParticipantsResolverName);
+            _sentCommRequest.ParticipantsResolverName.Should().Be(CommunicationConstants.ParticipantResolverNames.ProviderParticipantsResolverName);
         }
 
         [Fact]
