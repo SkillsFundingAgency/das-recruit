@@ -8,6 +8,7 @@ using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Provider;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelationship;
 using FluentAssertions;
 using Moq;
 using Xunit;
@@ -20,6 +21,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Vacancies
         private User _userDetails;
         private Mock<IProviderAlertsViewModelFactory> _providerAlertsViewModelFactoryMock;
         private Mock<IRecruitVacancyClient> _recruitVacancyClientMock;
+        private Mock<IProviderRelationshipsService> _providerRelationshipsServiceMock;
 
         [Fact]
         public async Task WhenHaveOver25Vacancies_ShouldShowPager()
@@ -45,7 +47,8 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Vacancies
                 providerClientMock.Object,
                 _recruitVacancyClientMock.Object,
                 timeProviderMock.Object,
-                _providerAlertsViewModelFactoryMock.Object);
+                _providerAlertsViewModelFactoryMock.Object,
+                _providerRelationshipsServiceMock.Object);
 
             var vm = await orch.GetVacanciesViewModelAsync(_user, "Submitted", 2, string.Empty);
 
@@ -81,7 +84,8 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Vacancies
                 providerClientMock.Object,
                 _recruitVacancyClientMock.Object,
                 timeProviderMock.Object,
-                _providerAlertsViewModelFactoryMock.Object);
+                _providerAlertsViewModelFactoryMock.Object,
+                _providerRelationshipsServiceMock.Object);
 
             var vm = await orch.GetVacanciesViewModelAsync(_user, "Submitted", 2, string.Empty);
 
@@ -116,6 +120,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Vacancies
                 .ReturnsAsync(_userDetails);
 
             _providerAlertsViewModelFactoryMock = new Mock<IProviderAlertsViewModelFactory>();
+            _providerRelationshipsServiceMock = new Mock<IProviderRelationshipsService>();
         }
     }
 }

@@ -11,8 +11,10 @@ using Esfa.Recruit.Shared.Web.Mappers;
 using Esfa.Recruit.Shared.Web.ViewModels;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Vacancies.Client.Domain.Models;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelationship;
 
 namespace Esfa.Recruit.Provider.Web.Orchestrators
 {
@@ -24,17 +26,20 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
         private readonly IRecruitVacancyClient _recruitVacancyClient;
         private readonly ITimeProvider _timeProvider;
         private readonly IProviderAlertsViewModelFactory _providerAlertsViewModelFactory;
+        private readonly IProviderRelationshipsService _providerRelationshipsService;
 
         public VacanciesOrchestrator(
             IProviderVacancyClient providerVacancyClient,
             IRecruitVacancyClient recruitVacancyClient,
             ITimeProvider timeProvider,
-            IProviderAlertsViewModelFactory providerAlertsViewModelFactory)
+            IProviderAlertsViewModelFactory providerAlertsViewModelFactory,
+            IProviderRelationshipsService providerRelationshipsService)
         {
             _providerVacancyClient = providerVacancyClient;
             _recruitVacancyClient = recruitVacancyClient;
             _timeProvider = timeProvider;
             _providerAlertsViewModelFactory = providerAlertsViewModelFactory;
+            _providerRelationshipsService = providerRelationshipsService;
         }
 
         public async Task<VacanciesViewModel> GetVacanciesViewModelAsync(
@@ -42,11 +47,13 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
         {
             var getDashboardTask = _providerVacancyClient.GetDashboardAsync(user.Ukprn.Value, createIfNonExistent: true);
             var getUserDetailsTask = _recruitVacancyClient.GetUsersDetailsAsync(user.UserId);
+            var providerTask = _providerRelationshipsService.GetLegalEntitiesForProviderAsync(user.Ukprn.Value, OperationType.RecruitmentRequiresReview);
 
-            await Task.WhenAll(getDashboardTask, getUserDetailsTask);
+            await Task.WhenAll(getDashboardTask, getUserDetailsTask, providerTask);
 
             var dashboard = getDashboardTask.Result;
             var userDetails = getUserDetailsTask.Result;
+            var providerPermissions = providerTask.Result;
 
             var alerts = _providerAlertsViewModelFactory.Create(dashboard, userDetails);
 
@@ -87,7 +94,8 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
                 Filter = filteringOption,
                 SearchTerm = searchTerm,
                 ResultsHeading = VacancyFilterHeadingHelper.GetFilterHeading(Constants.VacancyTerm, filteredVacanciesTotal, filteringOption, searchTerm, UserType.Provider),
-                Alerts = alerts
+                Alerts = alerts,
+                HasEmployerReviewPermission = providerPermissions.Any()
             };
 
             return vm;
