@@ -19,5 +19,6 @@ namespace Esfa.Recruit.Provider.Web.ViewModels
         public bool ShowResultsTable => Vacancies.Any();
         public FilteringOptions Filter { get; set; }
         public string SearchTerm { get; set; }
+        public bool HasEmployerReviewPermission { get; set; }
     }
 }
