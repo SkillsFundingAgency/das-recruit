@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Mappings;
 using Esfa.Recruit.Employer.Web.Models;
@@ -17,6 +18,7 @@ using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
 using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using ErrMsg = Esfa.Recruit.Shared.Web.ViewModels.ErrorMessages;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators
@@ -33,6 +35,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
         private readonly IReviewSummaryService _reviewSummaryService;
         private readonly ILegalEntityAgreementService _legalEntityAgreementService;
         private readonly IMessaging _messaging;
+        private readonly ExternalLinksConfiguration _externalLinksConfiguration;
 
         public VacancyPreviewOrchestrator(
             IEmployerVacancyClient client,
@@ -41,7 +44,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             DisplayVacancyViewModelMapper vacancyDisplayMapper, 
             IReviewSummaryService reviewSummaryService, 
             ILegalEntityAgreementService legalEntityAgreementService,
-            IMessaging messaging) : base(logger)
+            IMessaging messaging,
+            IOptions<ExternalLinksConfiguration> externalLinksOptions) : base(logger)
         {
             _client = client;
             _vacancyClient = vacancyClient;
@@ -49,6 +53,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             _reviewSummaryService = reviewSummaryService;
             _legalEntityAgreementService = legalEntityAgreementService;
             _messaging = messaging;
+            _externalLinksConfiguration = externalLinksOptions.Value;
         }
 
         public async Task<VacancyPreviewViewModel> GetVacancyPreviewViewModelAsync(VacancyRouteModel vrm)
@@ -188,7 +193,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
                 VacancyReference = vacancy.VacancyReference?.ToString(),
                 ApprovedJobAdvert = vacancy.Status == VacancyStatus.Submitted,
                 RejectedJobAdvert = vacancy.Status == VacancyStatus.Rejected,
-                TrainingProviderName = vacancy.TrainingProvider.Name
+                TrainingProviderName = vacancy.TrainingProvider.Name,
+                FindAnApprenticeshipUrl = _externalLinksConfiguration.FindAnApprenticeshipUrl
             };        
 
             return vm;

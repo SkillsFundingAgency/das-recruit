@@ -13,5 +13,6 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview
         public bool RejectedJobAdvert { get; set; }        
         public string TrainingProviderName { get; set; }
         public bool HasVacancyReference => !string.IsNullOrEmpty(VacancyReference);
+        public string FindAnApprenticeshipUrl { get; set; }
     }
 }

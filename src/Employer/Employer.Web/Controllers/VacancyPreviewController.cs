@@ -15,6 +15,7 @@ using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Shared.Web.Mappers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Microsoft.AspNetCore.Routing;
 
 namespace Esfa.Recruit.Employer.Web.Controllers
 {
@@ -29,20 +30,38 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         }
 
         [HttpGet("preview", Name = RouteNames.Vacancy_Preview_Get)]
-        public async Task<IActionResult> VacancyPreview(VacancyRouteModel vrm)
+        public async Task<IActionResult> VacancyPreview(VacancyRouteModel vrm, string selection = null)
         {
             var viewModel = await _orchestrator.GetVacancyPreviewViewModelAsync(vrm);
             AddSoftValidationErrorsToModelState(viewModel);
             SetSectionStates(viewModel);
 
             viewModel.CanHideValidationSummary = true;
+            ViewBag.Selection = selection;
 
             if (TempData.ContainsKey(TempDataKeys.VacancyClonedInfoMessage))
                 viewModel.VacancyClonedInfoMessage = TempData[TempDataKeys.VacancyClonedInfoMessage].ToString();
 
             return View(viewModel);
         }
-        
+
+        [HttpPost("review", Name = RouteNames.Preview_Review_Post)]
+        public async Task<IActionResult> Review(SubmitReviewModel m)
+        {
+            if (ModelState.IsValid)
+            {
+                return RedirectToRoute(m.SubmitToEsfa.GetValueOrDefault()
+                    ? RouteNames.ApproveJobAdvert_Get
+                    : RouteNames.RejectJobAdvert_Get);
+            }
+
+            var viewModel = await _orchestrator.GetVacancyPreviewViewModelAsync(m);
+            viewModel.SoftValidationErrors = null;
+            SetSectionStates(viewModel);
+
+            return View(ViewNames.VacancyPreview, viewModel);
+        }
+
         [HttpPost("preview", Name = RouteNames.Preview_Submit_Post)]
         public async Task<IActionResult> Submit(SubmitEditModel m)
         {
@@ -106,7 +125,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             }
             else
             {
-                return RedirectToRoute(RouteNames.Vacancy_Preview_Get, new { VacancyId = vm.VacancyId });
+                return RedirectToRoute(RouteNames.Vacancy_Preview_Get, new { VacancyId = vm.VacancyId, Selection = "Approve" });
             }
 
             var viewModel = await _orchestrator.GetVacancyPreviewViewModelAsync(vm);
@@ -148,7 +167,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
                 }
             }
 
-            return RedirectToRoute(RouteNames.Vacancy_Preview_Get, new { VacancyId = vm.VacancyId });
+            return RedirectToRoute(RouteNames.Vacancy_Preview_Get, new { VacancyId = vm.VacancyId, Selection = "Reject" });
         }
 
         [HttpGet("confirmation-advert", Name = RouteNames.JobAdvertConfirmation_Get)]
