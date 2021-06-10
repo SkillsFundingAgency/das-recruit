@@ -77,14 +77,22 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.Communications
             participants.All(p => p.Name == OwnerType.Provider.ToString());
         }
 
-        [Fact]
-        public async Task ShouldReturnVacancyOwnerAsPrimaryUser()
+        [Theory]
+        [InlineData(VacancyStatus.Approved)]
+        [InlineData(VacancyStatus.Live)]
+        [InlineData(VacancyStatus.Referred)]
+        [InlineData(VacancyStatus.Review)]
+        [InlineData(VacancyStatus.Submitted)]
+        [InlineData(VacancyStatus.Draft)]
+        [InlineData(VacancyStatus.Closed)]
+        public async Task ShouldReturnVacancyOwnerAsPrimaryUser_WhenVacancyStatusIsNotReview(VacancyStatus vacancyStatus)
         {
             var user = _fixture.Build<VacancyUser>().With(v => v.UserId, PrimaryUserId).Create();
             var vacancy = _fixture
                 .Build<Vacancy>()
                 .With(v => v.OwnerType,  OwnerType.Provider)
                 .With(v => v.SubmittedByUser, user)
+                .With(v => v.Status, vacancyStatus)
                 .Create();
 
             _mockVacancyRepository.Setup(v => v.GetVacancyAsync(It.IsAny<long>())).ReturnsAsync(vacancy);
@@ -102,13 +110,13 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.Communications
         }
 
         [Fact]
-        public async Task ShouldProviderReviewSenderAsPrimaryUser()
+        public async Task ShouldProviderReviewSenderAsPrimaryUser_WhenInRejectedStatus()
         {
             var user = _fixture.Build<VacancyUser>().With(v => v.UserId, PrimaryUserId).Create();
             var vacancy = _fixture
                 .Build<Vacancy>()
                 .With(v => v.OwnerType, OwnerType.Provider)
-                .Without(v => v.SubmittedByUser)
+                .With(v => v.Status, VacancyStatus.Rejected)
                 .With(v => v.ReviewByUser, user)
                 .Create();
 
