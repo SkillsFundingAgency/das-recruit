@@ -92,7 +92,7 @@ namespace Recruit.Vacancies.Jobs.UnitTests.DomainEvents.Handlers
             await _sut.HandleAsync(@event);
 
             //Assert
-            _sentCommRequest.ParticipantsResolverName.Should().Be(CommunicationConstants.ParticipantResolverNames.ProviderParticipantsResolverName);
+            _sentCommRequest.ParticipantsResolverName.Should().Be(CommunicationConstants.ParticipantResolverNames.VacancyParticipantsResolverName);
         }
 
         [Fact]
