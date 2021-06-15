@@ -77,11 +77,11 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview
         public bool HasIncompleteProviderContactSection => ProviderContactSectionState == VacancyPreviewSectionState.Incomplete || ProviderContactSectionState == VacancyPreviewSectionState.InvalidIncomplete;
         public bool HasIncompleteMandatorySections => HasIncompleteShortDescription
                                                       || HasIncompleteVacancyDescription
-                                                        || HasIncompleteSkillsSection
-                                                        || HasIncompleteQualificationsSection
-                                                        || HasIncompleteEmployerDescriptionSection
-                                                        || HasIncompleteTrainingProviderSection
-                                                        || HasIncompleteApplicationProcessSection;
+                                                      || HasIncompleteSkillsSection
+                                                      || HasIncompleteQualificationsSection
+                                                      || HasIncompleteEmployerDescriptionSection
+                                                      || HasIncompleteTrainingProviderSection
+                                                      || HasIncompleteApplicationProcessSection;
         public bool HasIncompleteOptionalSections => HasIncompleteThingsToConsiderSection
                                                     || HasIncompleteEmployerWebsiteUrlSection
                                                     || HasIncompleteProviderContactSection;
