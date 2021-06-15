@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -42,8 +43,10 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 
             foreach (var accountLegalEntityPublicHashedId in message.AccountLegalEntityPublicHashedIds)
             {
-                var selectedOrganisation =
-                    editVacancyInfo.LegalEntities.Single(l => l.AccountLegalEntityPublicHashedId == accountLegalEntityPublicHashedId);
+                try
+                {
+                    var selectedOrganisation = editVacancyInfo.LegalEntities.Single(l => l.AccountLegalEntityPublicHashedId == accountLegalEntityPublicHashedId);
+
                 if (!profiles.Any(x => x.AccountLegalEntityPublicHashedId == accountLegalEntityPublicHashedId))
                 { 
                     var currentTime = _time.Now;
@@ -59,6 +62,17 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
                     _logger.LogInformation("Adding new profile for employer account: {employerAccountId} and Account LegalEntityPublicHashed id: {accountLegalEntityPublicHashedId}", message.EmployerAccountId, accountLegalEntityPublicHashedId);
                     tasks.Add(_employerProfileRepository.CreateAsync(newProfile));
                 }
+
+
+
+                }
+                catch (Exception e)
+                {
+                    _logger.LogError("Error while processing employer account: {employerAccountId} and Account LegalEntityPublicHashed id: {accountLegalEntityPublicHashedId}", message.EmployerAccountId, accountLegalEntityPublicHashedId);
+                    throw;
+                }
+
+
             }
             await Task.WhenAll(tasks);
             _logger.LogInformation($"Added {tasks.Count} new profile/s for {{employerAccountId}}", message.EmployerAccountId);
