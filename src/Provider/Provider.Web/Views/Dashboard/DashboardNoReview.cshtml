@@ -6,10 +6,6 @@
     ViewBag.GaData.Vpv = "/recruitment/provider/page-dashboard";
 
     var vacanciesSearchSuggestionsEndpointUrl = @Url.RouteUrl(RouteNames.VacanciesSearchSuggestions_Get, null, Context.Request.Scheme);
-    string GetCardStatus(int count)
-    {
-        return count == 0 ? "das-card--inactive" : string.Empty;
-    }
 }
 
 <div asp-hide="@Model.HasAnyVacancies">
@@ -62,42 +58,39 @@
     </div>
     <div class="govuk-grid-row das-card--row">
         <div class="govuk-grid-column-one-third">
-            <div class="das-card @GetCardStatus(Model.VacancyCountDraft)">
+            <div class="das-card">
                 <div class="das-card--content">
                     <h3 class="govuk-heading-m das-card--heading">
                         <span class="das-card--stat">@Model.VacancyCountDraft</span>
-                        <a asp-show="@Model.HasDraftVacancy" asp-route="@RouteNames.Vacancies_Get" asp-route-filter="@FilteringOptions.Draft" class="govuk-link">
+                        <a asp-route="@RouteNames.Vacancies_Get" asp-route-filter="@FilteringOptions.Draft" class="govuk-link">
                             @FilteringOptions.Draft @Model.VacancyTextDraft
                         </a>
-                        <span asp-hide="@Model.HasDraftVacancy">@FilteringOptions.Draft @Model.VacancyTextDraft</span>
                     </h3>
                     <p class="govuk-body das-card--description">Vacancies that need completing and sending for review.</p>
                 </div>
             </div>
         </div>
         <div class="govuk-grid-column-one-third">
-            <div class="das-card @GetCardStatus(Model.VacancyCountSubmitted)">
+            <div class="das-card">
                 <div class="das-card--content">
                     <h3 class="govuk-heading-m das-card--heading">
                         <span class="das-card--stat">@Model.VacancyCountSubmitted</span>
-                        <a asp-show="@Model.HasSubmittedVacancy" asp-route="@RouteNames.Vacancies_Get" asp-route-filter="@FilteringOptions.Submitted" class="govuk-link">
+                        <a asp-route="@RouteNames.Vacancies_Get" asp-route-filter="@FilteringOptions.Submitted" class="govuk-link">
                             @FilteringOptions.Submitted.GetDisplayName(UserType.Provider)
                         </a>
-                        <span asp-hide="@Model.HasSubmittedVacancy">@FilteringOptions.Submitted.GetDisplayName(UserType.Provider)</span>
                     </h3>
                     <p class="govuk-body das-card--description">Vacancies that have been sent for review.</p>
                 </div>
             </div>
         </div>
         <div class="govuk-grid-column-one-third">
-            <div class="das-card @GetCardStatus(Model.VacancyCountReferred)">
+            <div class="das-card">
                 <div class="das-card--content">
                     <h3 class="govuk-heading-m das-card--heading">
                         <span class="das-card--stat">@Model.VacancyCountReferred</span>
-                        <a asp-show="@Model.HasReferredVacancy" asp-route="@RouteNames.Vacancies_Get" asp-route-filter="@FilteringOptions.Referred" class="govuk-link">
+                        <a asp-route="@RouteNames.Vacancies_Get" asp-route-filter="@FilteringOptions.Referred" class="govuk-link">
                             @FilteringOptions.Referred.GetDisplayName() @Model.VacancyTextReferred
                         </a>
-                        <span asp-hide="@Model.HasReferredVacancy">@FilteringOptions.Referred.GetDisplayName() @Model.VacancyTextReferred</span>
                     </h3>
                     <p class="govuk-body das-card--description">Rejected vacancies will need to be edited and resubmitted.</p>
                 </div>
@@ -106,14 +99,13 @@
     </div>
     <div class="govuk-grid-row das-card--row">
         <div class="govuk-grid-column-one-third">
-            <div class="das-card @GetCardStatus(Model.VacancyCountLive)">
+            <div class="das-card">
                 <div class="das-card--content">
                     <h3 class="govuk-heading-m das-card--heading">
                         <span class="das-card--stat">@Model.VacancyCountLive</span>
-                        <a asp-show="@Model.HasLiveVacancy" asp-route="@RouteNames.Vacancies_Get" asp-route-filter="@FilteringOptions.Live" class="govuk-link">
+                        <a asp-route="@RouteNames.Vacancies_Get" asp-route-filter="@FilteringOptions.Live" class="govuk-link">
                             @FilteringOptions.Live @Model.VacancyTextLive
                         </a>
-                        <span asp-hide="@Model.HasLiveVacancy">@FilteringOptions.Live @Model.VacancyTextLive</span>
                     </h3>
                     <span class="govuk-body das-card--description">Vacancies on Find an apprenticeship service.</span>
                     <p class="govuk-body das-card--description"></p>
@@ -131,14 +123,13 @@
             </div>
         </div>
         <div class="govuk-grid-column-one-third">
-            <div class="das-card @GetCardStatus(Model.NoOfNewApplications)">
+            <div class="das-card">
                 <div class="das-card--content">
                     <h3 class="govuk-heading-m das-card--heading">
                         <span class="das-card--stat">@Model.NoOfNewApplications</span>
-                        <a asp-show="@Model.HasNewApplications" asp-route="@RouteNames.Vacancies_Get" asp-route-filter="@FilteringOptions.NewApplications" class="govuk-link">
+                        <a asp-route="@RouteNames.Vacancies_Get" asp-route-filter="@FilteringOptions.NewApplications" class="govuk-link">
                             New @Model.ApplicationTextLive
                         </a>
-                        <span asp-hide="@Model.HasNewApplications">New @Model.ApplicationTextLive</span>
                     </h3>
                     <span class="govuk-body das-card--description">Applications from Find an apprenticeship service.</span>
                     <ul class="das-card--tasks govuk-list" asp-show="@Model.ShowAllApplications">
@@ -152,14 +143,13 @@
             </div>
         </div>
         <div class="govuk-grid-column-one-third">
-            <div class="das-card @GetCardStatus(Model.VacancyCountClosed)">
+            <div class="das-card">
                 <div class="das-card--content">
                     <h3 class="govuk-heading-m das-card--heading">
                         <span class="das-card--stat">@Model.VacancyCountClosed</span>
-                        <a asp-show="@Model.HasClosedVacancy" asp-route="@RouteNames.Vacancies_Get" asp-route-filter="@FilteringOptions.Closed" class="govuk-link">
+                        <a asp-route="@RouteNames.Vacancies_Get" asp-route-filter="@FilteringOptions.Closed" class="govuk-link">
                             @FilteringOptions.Closed @Model.VacancyTextClosed
                         </a>
-                        <span asp-hide="@Model.HasClosedVacancy">@FilteringOptions.Closed @Model.VacancyTextClosed</span>
                     </h3>
                     <span class="govuk-body das-card--description">Vacancies that have passed the closing date. You can clone these vacancies to republish them.</span>
                 </div>
