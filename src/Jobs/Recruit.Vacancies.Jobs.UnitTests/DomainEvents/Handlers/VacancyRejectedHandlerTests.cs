@@ -18,7 +18,7 @@ namespace Recruit.Vacancies.Jobs.UnitTests.DomainEvents.Handlers
     {
         private const long _vacancyReference = 11111111;
         private readonly Guid _exampleVacancyId = Guid.NewGuid();
-        private readonly string _employerAccountId = "VJWCD";
+        private readonly long _providerUkprn = 8888888;
         private readonly VacancyRejectedHandler _sut;
         private readonly Mock<ICommunicationQueueService> _mockCommunicationQueueService;
         private CommunicationRequest _sentCommRequest;
@@ -40,7 +40,7 @@ namespace Recruit.Vacancies.Jobs.UnitTests.DomainEvents.Handlers
             //Arrange
             var sourceEvent = new VacancyRejectedEvent
             {
-                EmployerAccountId = _employerAccountId,
+                ProviderUkprn = _providerUkprn,
                 VacancyReference = _vacancyReference,
                 VacancyId = _exampleVacancyId
             };
@@ -59,7 +59,7 @@ namespace Recruit.Vacancies.Jobs.UnitTests.DomainEvents.Handlers
             //Arrange
             var sourceEvent = new VacancyRejectedEvent
             {
-                EmployerAccountId = _employerAccountId,
+                ProviderUkprn = _providerUkprn,
                 VacancyReference = _vacancyReference,
                 VacancyId = _exampleVacancyId
             };
@@ -72,6 +72,48 @@ namespace Recruit.Vacancies.Jobs.UnitTests.DomainEvents.Handlers
             _sentCommRequest
                 .Entities
                 .Any(cr => cr.EntityType.Equals(CommunicationConstants.EntityTypes.Vacancy) && ((long)cr.EntityId == _vacancyReference))
+                .Should()
+                .BeTrue();
+        }
+
+        [Fact]
+        public async Task GivenVacancyRejectedEvent_ProviderResolver_ShouldBeSet()
+        {
+            //Arrange
+            var sourceEvent = new VacancyRejectedEvent
+            {
+                ProviderUkprn = _providerUkprn,
+                VacancyReference = _vacancyReference,
+                VacancyId = _exampleVacancyId
+            };
+            var @event = JsonConvert.SerializeObject(sourceEvent);
+
+            //Act
+            await _sut.HandleAsync(@event);
+
+            //Assert
+            _sentCommRequest.ParticipantsResolverName.Should().Be(CommunicationConstants.ParticipantResolverNames.VacancyParticipantsResolverName);
+        }
+
+        [Fact]
+        public async Task GivenVacancyRejectedEvent_Ukprn_ShouldBeSet()
+        {
+            //Arrange
+            var sourceEvent = new VacancyRejectedEvent
+            {
+                ProviderUkprn = _providerUkprn,
+                VacancyReference = _vacancyReference,
+                VacancyId = _exampleVacancyId
+            };
+            var @event = JsonConvert.SerializeObject(sourceEvent);
+
+            //Act
+            await _sut.HandleAsync(@event);
+
+            //Assert
+            _sentCommRequest
+                .Entities
+                .Any(cr => cr.EntityType.Equals(CommunicationConstants.EntityTypes.Provider) && ((long)cr.EntityId == _providerUkprn))
                 .Should()
                 .BeTrue();
         }

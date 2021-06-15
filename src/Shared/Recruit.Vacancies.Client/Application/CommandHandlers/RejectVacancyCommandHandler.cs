@@ -44,7 +44,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 
             await _messaging.PublishEvent(new VacancyRejectedEvent
             {
-                EmployerAccountId = vacancy.EmployerAccountId,
+                ProviderUkprn = vacancy.TrainingProvider.Ukprn,
                 VacancyReference = vacancy.VacancyReference.Value,
                 VacancyId = vacancy.Id
             });
