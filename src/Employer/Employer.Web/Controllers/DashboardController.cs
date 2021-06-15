@@ -23,7 +23,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         {
             var vm = await _orchestrator.GetDashboardViewModelAsync(employerAccountId, User.ToVacancyUser());
             vm.FromMaHome = ShowReferredFromMaBackLink();
-            return View(vm.HasEmployerReviewPermission ? ViewNames.DashboardWithReview : ViewNames.DashboardNoReview, vm);
+            return View(vm);
         }
         private bool ShowReferredFromMaBackLink()
         {
