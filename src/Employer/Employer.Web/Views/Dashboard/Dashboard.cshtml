@@ -2,17 +2,15 @@
 
 @model Esfa.Recruit.Employer.Web.ViewModels.Dashboard.DashboardViewModel
 
-@{
-    var vacanciesSearchSuggestionsEndpointUrl = Url.RouteUrl(RouteNames.VacanciesSearchSuggestions_Get, null, Context.Request.Scheme);
-    string GetCardStatus(int count)
+@{ var vacanciesSearchSuggestionsEndpointUrl = Url.RouteUrl(RouteNames.VacanciesSearchSuggestions_Get, null, Context.Request.Scheme);
+    string GetCardStatus(bool hasPermission)
     {
-        return count == 0 ? "das-card--inactive" : string.Empty;
+        return hasPermission ? String.Empty : "das-card--inactive";
     }
     ViewBag.ShowReturnToMaLink = Model.FromMaHome;
     ViewBag.Vpv = "/recruitment/employer/page-dashboard";
     ViewBag.ZenDeskLabel = "recruit-recruitment";
-    ViewBag.Title = "Your apprenticeship adverts";
-}
+    ViewBag.Title = "Your apprenticeship adverts"; }
 
 <partial asp-hide="@Model.HasAnyVacancies" name="_NoVacanciesContent" />
 
@@ -53,58 +51,72 @@
     </div>
     <div class="govuk-grid-row das-card--row">
         <div class="govuk-grid-column-one-third">
-            <div class="das-card @GetCardStatus(Model.VacancyCountDraft)">
+            <div class="das-card">
                 <div class="das-card--content">
                     <h3 class="govuk-heading-m das-card--heading">
                         <span class="das-card--stat">@Model.VacancyCountDraft</span>
-                        <a asp-show="@Model.HasDraftVacancy" asp-route="@RouteNames.Vacancies_Get" asp-route-filter="@FilteringOptions.Draft" class="govuk-link">
+                        <a asp-route="@RouteNames.Vacancies_Get" asp-route-filter="@FilteringOptions.Draft" class="govuk-link">
                             @FilteringOptions.Draft @Model.VacancyTextDraft
                         </a>
-                        <span asp-hide="@Model.HasDraftVacancy">@FilteringOptions.Draft @Model.VacancyTextDraft</span>
                     </h3>
                     <p class="govuk-body das-card--description">Adverts that you need to complete and send for review.</p>
                 </div>
             </div>
         </div>
         <div class="govuk-grid-column-one-third">
-            <div class="das-card @GetCardStatus(Model.VacancyCountSubmitted)">
+            <div class="das-card @GetCardStatus(Model.HasEmployerReviewPermission)">
                 <div class="das-card--content">
                     <h3 class="govuk-heading-m das-card--heading">
-                        <span class="das-card--stat">@Model.VacancyCountSubmitted</span>
-                        <a asp-show="@Model.HasSubmittedVacancy" asp-route="@RouteNames.Vacancies_Get" asp-route-filter="@FilteringOptions.Submitted" class="govuk-link">
-                            @FilteringOptions.Submitted.GetDisplayName()
+                        <span class="das-card--stat">@Model.VacancyCountReview</span>
+                        <a asp-show="@Model.HasEmployerReviewPermission" asp-route="@RouteNames.Vacancies_Get" asp-route-filter="@FilteringOptions.Review" class="govuk-link">
+                            @FilteringOptions.Review @Model.VacancyTextReview
                         </a>
-                        <span asp-hide="@Model.HasSubmittedVacancy">@FilteringOptions.Submitted.GetDisplayName()</span>
+                        <span asp-hide="@Model.HasEmployerReviewPermission">@FilteringOptions.Review @Model.VacancyTextReview</span>
                     </h3>
-                    <p class="govuk-body das-card--description">Adverts that you've sent for review.</p>
+                    <p asp-show="@Model.HasEmployerReviewPermission" class="govuk-body das-card--description">Adverts created by training providers that you need to review.</p>
+                    <p asp-hide="@Model.HasEmployerReviewPermission" class="govuk-body das-card--description">
+                        If you want to review adverts before they are published you need to
+                        <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.YourTrainingProviderPermission">manage your permissions</a>.
+                    </p>
                 </div>
             </div>
         </div>
         <div class="govuk-grid-column-one-third">
-            <div class="das-card @GetCardStatus(Model.VacancyCountReferred)">
+            <div class="das-card">
                 <div class="das-card--content">
                     <h3 class="govuk-heading-m das-card--heading">
-                        <span class="das-card--stat">@Model.VacancyCountReferred</span>
-                        <a asp-show="@Model.HasReferredVacancy" asp-route="@RouteNames.Vacancies_Get" asp-route-filter="@FilteringOptions.Referred" class="govuk-link">
-                            @FilteringOptions.Referred.GetDisplayName() @Model.VacancyTextReferred
+                        <span class="das-card--stat">@Model.VacancyCountSubmitted</span>
+                        <a asp-route="@RouteNames.Vacancies_Get" asp-route-filter="@FilteringOptions.Submitted" class="govuk-link">
+                            @FilteringOptions.Submitted.GetDisplayName(UserType.Employer)
                         </a>
-                        <span asp-hide="@Model.HasReferredVacancy">@FilteringOptions.Referred.GetDisplayName() @Model.VacancyTextReferred</span>
                     </h3>
-                    <p class="govuk-body das-card--description">Adverts that you need to edit and resubmit.</p>
+                    <p class="govuk-body das-card--description">Adverts that you've sent for review.</p>
                 </div>
             </div>
         </div>
     </div>
     <div class="govuk-grid-row das-card--row">
         <div class="govuk-grid-column-one-third">
-            <div class="das-card @GetCardStatus(Model.VacancyCountLive)">
+            <div class="das-card">
+                <div class="das-card--content">
+                    <h3 class="govuk-heading-m das-card--heading">
+                        <span class="das-card--stat">@Model.VacancyCountReferred</span>
+                        <a asp-route="@RouteNames.Vacancies_Get" asp-route-filter="@FilteringOptions.Referred" class="govuk-link">
+                            @FilteringOptions.Referred.GetDisplayName() @Model.VacancyTextReferred
+                        </a>
+                    </h3>
+                    <p class="govuk-body das-card--description">Adverts that you need to edit and resubmit.</p>
+                </div>
+            </div>
+        </div>
+        <div class="govuk-grid-column-one-third">
+            <div class="das-card">
                 <div class="das-card--content">
                     <h3 class="govuk-heading-m das-card--heading">
                         <span class="das-card--stat">@Model.VacancyCountLive</span>
-                        <a asp-show="@Model.HasLiveVacancy" asp-route="@RouteNames.Vacancies_Get" asp-route-filter="@FilteringOptions.Live" class="govuk-link">
+                        <a asp-route="@RouteNames.Vacancies_Get" asp-route-filter="@FilteringOptions.Live" class="govuk-link">
                             @FilteringOptions.Live @Model.VacancyTextLive
                         </a>
-                        <span asp-hide="@Model.HasLiveVacancy">@FilteringOptions.Live @Model.VacancyTextLive</span>
                     </h3>
                     <span class="govuk-body das-card--description">Your adverts on the Find an apprenticeship service.</span>
                     <p class="govuk-body das-card--description"></p>
@@ -122,14 +134,13 @@
             </div>
         </div>
         <div class="govuk-grid-column-one-third">
-            <div class="das-card @GetCardStatus(Model.NoOfNewApplications)">
+            <div class="das-card">
                 <div class="das-card--content">
                     <h3 class="govuk-heading-m das-card--heading">
                         <span class="das-card--stat">@Model.NoOfNewApplications</span>
-                        <a asp-show="@Model.HasNewApplications" asp-route="@RouteNames.Vacancies_Get" asp-route-filter="@FilteringOptions.NewApplications" class="govuk-link">
+                        <a asp-route="@RouteNames.Vacancies_Get" asp-route-filter="@FilteringOptions.NewApplications" class="govuk-link">
                             New @Model.ApplicationTextLive
                         </a>
-                        <span asp-hide="@Model.HasNewApplications">New @Model.ApplicationTextLive</span>
                     </h3>
                     <span class="govuk-body das-card--description">Applications from Find an apprenticeship service.</span>
                     <ul class="das-card--tasks govuk-list" asp-show="@Model.ShowAllApplications">
@@ -142,20 +153,23 @@
                 </div>
             </div>
         </div>
+    </div>
+    <div class="govuk-grid-row das-card--row">
         <div class="govuk-grid-column-one-third">
-            <div class="das-card @GetCardStatus(Model.VacancyCountClosed)">
+            <div class="das-card">
                 <div class="das-card--content">
                     <h3 class="govuk-heading-m das-card--heading">
                         <span class="das-card--stat">@Model.VacancyCountClosed</span>
-                        <a asp-show="@Model.HasClosedVacancy" asp-route="@RouteNames.Vacancies_Get" asp-route-filter="@FilteringOptions.Closed" class="govuk-link">
+                        <a asp-route="@RouteNames.Vacancies_Get" asp-route-filter="@FilteringOptions.Closed" class="govuk-link">
                             @FilteringOptions.Closed @Model.VacancyTextClosed
                         </a>
-                        <span asp-hide="@Model.HasClosedVacancy">@FilteringOptions.Closed @Model.VacancyTextClosed</span>
                     </h3>
                     <span class="govuk-body das-card--description">Adverts that have passed the closing date. You can clone these adverts to republish them.</span>
                 </div>
             </div>
         </div>
+        <div class="govuk-grid-column-one-third"></div>
+        <div class="govuk-grid-column-one-third"></div>
     </div>
     <div class="govuk-grid-row">
         <div asp-show="@Model.HasOneVacancy" class="govuk-grid-column-full">
@@ -171,6 +185,14 @@
 
         <div class="govuk-grid-column-full">
             <hr class="govuk-grid-column-full govuk-section-break govuk-section-break--xl govuk-section-break--visible" />
+        </div>
+
+        <div class="govuk-grid-column-one-third">
+            <h3 class="govuk-heading-s">
+
+                <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.YourTrainingProviderPermission">Set up permission</a>
+            </h3>
+            <p class="govuk-body">Give training providers permission to add apprentice records, recruit apprentices and create job adverts on your behalf.</p>
         </div>
 
         <esfaFeatureEnabled name="@FeatureNames.SetNotificationPreferences">

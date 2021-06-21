@@ -33,7 +33,7 @@ namespace Esfa.Recruit.Shared.Web.ViewModels
         public bool IsLive => Status == VacancyStatus.Live;
         public bool IsNotLive => !IsLive;
 
-        public bool IsSubmittable => Status == VacancyStatus.Draft || Status == VacancyStatus.Referred;
+        public bool IsSubmittable => Status == VacancyStatus.Draft || Status == VacancyStatus.Referred || Status == VacancyStatus.Rejected;
         public bool IsNotSubmittable => !IsSubmittable;
         public int NoOfApplications => NoOfNewApplications + NoOfSuccessfulApplications + NoOfUnsuccessfulApplications;
     }

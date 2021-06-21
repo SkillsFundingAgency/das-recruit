@@ -60,12 +60,14 @@ namespace Esfa.Recruit.Vacancies.Jobs
             services.AddScoped<GenerateVacancyAnalyticsSummaryQueueTrigger>();
             services.AddScoped<TransferVacanciesFromProviderQueueTrigger>();
             services.AddScoped<TransferVacancyToLegalEntityQueueTrigger>();
+            services.AddScoped<TransferVacanciesFromEmployerReviewToQAReviewQueueTrigger>();
             services.AddScoped<UpdateProvidersQueueTrigger>();
             services.AddTransient<IFaaService, FaaService>();
 #if DEBUG
             services.AddScoped<SpikeQueueTrigger>();
 #endif
 
+            services.AddScoped<TransferVacanciesFromEmployerReviewToQAReviewJob>();
             services.AddScoped<TransferVacanciesFromProviderJob>();
             services.AddScoped<TransferVacancyToLegalEntityJob>();
 
@@ -74,7 +76,9 @@ namespace Esfa.Recruit.Vacancies.Jobs
             // Vacancy
             services.AddScoped<IDomainEventHandler<IEvent>, DraftVacancyUpdatedHandler>();
             services.AddScoped<IDomainEventHandler<IEvent>, VacancyReferredDomainEventHandler>();
+            services.AddScoped<IDomainEventHandler<IEvent>, VacancyReviewedHandler>();
             services.AddScoped<IDomainEventHandler<IEvent>, VacancySubmittedHandler>();
+            services.AddScoped<IDomainEventHandler<IEvent>, VacancyRejectedHandler>();
             services.AddScoped<IDomainEventHandler<IEvent>, ProviderBlockedOnVacancyDomainEventHandler>();
 
             // VacancyReview

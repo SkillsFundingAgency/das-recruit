@@ -62,15 +62,18 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Projections
         public async Task ReBuildDashboardAsync(string employerAccountId)
         {
             var vacancySummaries = await _vacancySummariesQuery.GetEmployerOwnedVacancySummariesByEmployerAccountAsync(employerAccountId);
+            var reviewSummaries = await _vacancySummariesQuery.GetProviderOwnedVacancySummariesInReviewByEmployerAccountAsync(employerAccountId);
 
-            foreach (var summary in vacancySummaries)
+            var summaries = vacancySummaries.Concat(reviewSummaries).ToList();
+
+            foreach (var summary in summaries)
             {
                 await UpdateWithTrainingProgrammeInfo(summary);
             }
 
-            await _queryStoreWriter.UpdateEmployerDashboardAsync(employerAccountId, vacancySummaries.OrderBy(v => v.CreatedDate));
+            await _queryStoreWriter.UpdateEmployerDashboardAsync(employerAccountId, summaries.OrderBy(v => v.CreatedDate));
 
-            _logger.LogDebug("Update employer dashboard with {count} summary records for account: {employerAccountId}", vacancySummaries.Count, employerAccountId);
+            _logger.LogDebug("Update employer dashboard with {count} summary records for account: {employerAccountId}", summaries.Count, employerAccountId);
         }
 
         private async Task UpdateWithTrainingProgrammeInfo(VacancySummary summary)

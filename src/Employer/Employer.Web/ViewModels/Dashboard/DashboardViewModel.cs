@@ -18,6 +18,9 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Dashboard
         public int VacancyCountDraft => Vacancies.Count(v => v.Status == VacancyStatus.Draft);
         public string VacancyTextDraft => "advert".ToQuantity(VacancyCountDraft, ShowQuantityAs.None);
         public bool HasDraftVacancy => VacancyCountDraft > 0;
+        public int VacancyCountReview => Vacancies.Count(v => v.Status == VacancyStatus.Review);
+        public string VacancyTextReview => "advert".ToQuantity(VacancyCountReview, ShowQuantityAs.None);
+        public bool HasReviewVacancy => VacancyCountReview > 0;
         public int VacancyCountLive => Vacancies.Count(v => v.Status == VacancyStatus.Live);
         public string VacancyTextLive => "advert".ToQuantity(VacancyCountLive, ShowQuantityAs.None);
         public bool HasLiveVacancy => VacancyCountLive > 0;
@@ -42,5 +45,6 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Dashboard
         public bool ShowNoOfVacanciesClosingSoonWithNoApplications => NoOfVacanciesClosingSoonWithNoApplications > 0;
         public bool HasAnyVacancies => Vacancies.Any();
         public bool FromMaHome { get; set; }
+        public bool HasEmployerReviewPermission { get; set; }        
     }
 }

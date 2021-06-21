@@ -114,6 +114,23 @@
   outline-offset: 0
 }
 
+.govuk-button--secondary:active, 
+.govuk-button--secondary:hover, 
+.govuk-button--secondary:link, 
+.govuk-button--secondary:visited {
+  color: #0b0c0c;
+}
+
+.govuk-button--secondary {
+  background-color: #f3f2f1;
+  -webkit-box-shadow: 0 2px 0 #929191;
+  box-shadow: 0 2px 0 #929191;
+}
+
+.govuk-button--secondary:hover {
+  background-color: #dbdad9;
+}
+
 .delete-button, .delete-button:visited, .delete-button:hover {
     background-color: #b10e1e;
     box-shadow: 0 2px 0 #000000;

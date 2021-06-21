@@ -1,7 +1,4 @@
-@using Microsoft.Extensions.Options;
-@using Esfa.Recruit.Shared.Web.Configuration;
 @using Esfa.Recruit.Provider.Web.ViewModels.Part1.Employer;
-@using Esfa.Recruit.Shared.Web.Mappers
 
 @model EmployersViewModel
 
@@ -13,7 +10,7 @@
     <div class="govuk-grid-column-two-thirds">
         <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState }' />
 
-        <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">Which of your employers do you want to create a vacancy for?</h1>
+        <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">Which employer do you want to create a vacancy for?</h1>
 
         <form asp-route="@RouteNames.Employer_Post">
             <div esfa-validation-marker-for="SelectedEmployerId" class="govuk-form-group">
@@ -31,6 +28,17 @@
                     </div>
                 </fieldset>
             </div>
+            
+            <details class="govuk-details" data-module="govuk-details">
+                <summary class="govuk-details__summary">
+                    <span class="govuk-details__summary-text">
+                        My employer is not listed
+                    </span>
+                </summary>
+                <div class="govuk-details__text">
+                    Your employer is not listed because you do not have the permission to create a vacancy for them. You'll need to contact them to set this permission.
+                </div>
+            </details>
 
             <button type="submit" class="govuk-button save-button">@PartOnePageInfoViewModel.SubmitButtonCaptionForWizard</button>
 

@@ -23,9 +23,11 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.Dashboard
         public int VacancyCountClosed => Vacancies.Count(v => v.Status == VacancyStatus.Closed);
         public string VacancyTextClosed => "vacancy".ToQuantity(VacancyCountClosed, ShowQuantityAs.None);
         public bool HasClosedVacancy => VacancyCountClosed > 0;
-        public int VacancyCountReferred => Vacancies.Count(v => v.Status == VacancyStatus.Referred);
+        public int VacancyCountReferred => Vacancies.Count(v => v.Status == VacancyStatus.Referred || v.Status == VacancyStatus.Rejected);
         public string VacancyTextReferred => "vacancy".ToQuantity(VacancyCountReferred, ShowQuantityAs.None);
         public bool HasReferredVacancy => VacancyCountReferred > 0;
+        public int VacancyCountReview => Vacancies.Count(v => v.Status == VacancyStatus.Review);
+        public bool HasReviewVacancy => VacancyCountReview > 0;
         public int VacancyCountSubmitted => Vacancies.Count(v => v.Status == VacancyStatus.Submitted);
         public bool HasSubmittedVacancy => VacancyCountSubmitted > 0;
         public int NoOfNewApplications => Vacancies.Count(v => v.NoOfNewApplications > 0);
@@ -40,5 +42,6 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.Dashboard
         public bool ShowNoOfVacanciesClosingSoon => NoOfVacanciesClosingSoon > 0;
         public bool ShowNoOfVacanciesClosingSoonWithNoApplications => NoOfVacanciesClosingSoonWithNoApplications > 0;
         public bool HasAnyVacancies => Vacancies.Any();
+        public bool HasEmployerReviewPermission { get; set; }
     }
 }

@@ -13,17 +13,59 @@ using System.Threading;
 using System;
 using System.Collections.Generic;
 using AutoFixture;
+using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
 
 namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.CommandHandlers
 {
     [Trait("Category", "Unit")]
     public class CloneVacancyCommandHandlerTests
     {
+        private readonly Fixture _autoFixture = new Fixture();
+
         private enum CloneAssertType
         {
             Cloned,
             IsNull,
             Ignore
+        }
+
+        [Theory]
+        [InlineData(VacancyStatus.Draft)]
+        [InlineData(VacancyStatus.Rejected)]
+        [InlineData(VacancyStatus.Referred)]
+        [InlineData(VacancyStatus.Approved)]
+        public async Task IfInvalidVacancyStatus_ShouldThrowError(VacancyStatus invalidCloneStatus)
+        {
+            var newVacancyId = Guid.NewGuid();
+            var existingVacancy = _autoFixture.Build<Vacancy>().With(c => c.Status, invalidCloneStatus).Create();
+            var currentTime = DateTime.UtcNow;
+            var startDate = DateTime.Now.AddDays(20);
+            var closingDate = DateTime.Now.AddDays(10);
+
+            var user = new VacancyUser { Name = "Test", Email = "test@test.com", UserId = "123" };
+
+            var command = new CloneVacancyCommand(
+                cloneVacancyId: existingVacancy.Id,
+                newVacancyId: newVacancyId,
+                user: user,
+                sourceOrigin: SourceOrigin.EmployerWeb,
+                startDate: startDate,
+                closingDate: closingDate);
+
+            var mockRepository = new Mock<IVacancyRepository>();
+            var mockTimeProvider = new Mock<ITimeProvider>();
+
+            mockTimeProvider.Setup(x => x.Now).Returns(currentTime);
+            mockRepository.Setup(x => x.GetVacancyAsync(existingVacancy.Id)).ReturnsAsync(existingVacancy);
+
+            var handler = new CloneVacancyCommandHandler(
+                Mock.Of<ILogger<CloneVacancyCommandHandler>>(),
+                mockRepository.Object,
+                Mock.Of<IMessaging>(),
+                mockTimeProvider.Object
+            );
+
+            await Assert.ThrowsAsync<InvalidStateException>(() => handler.Handle(command, new CancellationToken()));
         }
 
         [Fact]
@@ -87,6 +129,8 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.CommandHandlers
                 {nameof(Vacancy.CreatedByUser), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.Ignore)},
                 {nameof(Vacancy.SubmittedDate), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.IsNull)},
                 {nameof(Vacancy.SubmittedByUser), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.IsNull)},
+                {nameof(Vacancy.ReviewDate), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.IsNull)},
+                {nameof(Vacancy.ReviewByUser), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.IsNull)},
                 {nameof(Vacancy.ApprovedDate), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.IsNull)},
                 {nameof(Vacancy.LiveDate), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.IsNull)},
                 {nameof(Vacancy.LastUpdatedDate), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.Ignore)},
@@ -179,10 +223,9 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.CommandHandlers
             clone.ClosingDate.Should().Be(closingDate, "{0} should be updated", nameof(clone.ClosingDate));
         }
 
-        private static Vacancy GetTestVacancy()
+        private Vacancy GetTestVacancy()
         {
-            var fixture = new Fixture();
-            var vacancy = fixture.Create<Vacancy>();
+            var vacancy = _autoFixture.Create<Vacancy>();
 
             // Set enum values to be non zero so not assuming a default value.
             vacancy.DisabilityConfident = DisabilityConfident.Yes;

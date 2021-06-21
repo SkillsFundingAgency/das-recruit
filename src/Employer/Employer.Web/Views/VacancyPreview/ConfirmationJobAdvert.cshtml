@@ -1,0 +1,41 @@
+﻿@model Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview.JobAdvertConfirmationViewModel
+
+@{ ViewBag.GaData.Vpv = "/recruitment/employer/page-advert-submitted-for-approval"; }
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <div class="govuk-panel govuk-panel--confirmation">
+            <div asp-show="@Model.ApprovedJobAdvert">
+                <h1 class="govuk-panel__title">
+                    You've approved this job advert
+                </h1>
+            </div>
+            <div asp-show="@Model.RejectedJobAdvert">
+                <h1 class="govuk-panel__title">
+                    You've rejected this job advert
+                </h1>
+            </div>
+            <div class="govuk-panel__body">
+                <p asp-show="@Model.HasVacancyReference">
+                    Advert reference number <br>
+                    <strong class="govuk-!-font-weight-bold">VAC@(Model.VacancyReference)</strong>
+                </p>
+            </div>
+        </div>
+
+        <div asp-show="@Model.ApprovedJobAdvert">
+            <p class="govuk-body">We'll do a final review and then post it on 'Find an apprenticeship'.</p>
+        </div>
+
+        <div asp-show="@Model.RejectedJobAdvert">
+            <p class="govuk-body">This job advert has gone back to @Model.TrainingProviderName. You may want to tell them why you've rejected it.</p>
+        </div>
+
+        <h2 class="govuk-heading-m">What happens next</h2>
+        <div class="govuk-form-group inline">
+            <div class="govuk-form-group">
+                Go to <a asp-route="@RouteNames.Dashboard_Get">your apprenticeship adverts</a>
+            </div>
+        </div>
+    </div>
+</div>

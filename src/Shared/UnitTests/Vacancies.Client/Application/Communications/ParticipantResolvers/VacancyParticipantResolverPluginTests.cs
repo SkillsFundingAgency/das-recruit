@@ -77,14 +77,47 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.Communications
             participants.All(p => p.Name == OwnerType.Provider.ToString());
         }
 
-        [Fact]
-        public async Task ShouldReturnVacancyOwnerAsPrimaryUser()
+        [Theory]
+        [InlineData(VacancyStatus.Approved)]
+        [InlineData(VacancyStatus.Live)]
+        [InlineData(VacancyStatus.Referred)]
+        [InlineData(VacancyStatus.Review)]
+        [InlineData(VacancyStatus.Submitted)]
+        [InlineData(VacancyStatus.Draft)]
+        [InlineData(VacancyStatus.Closed)]
+        public async Task ShouldReturnVacancyOwnerAsPrimaryUser_WhenVacancyStatusIsNotReview(VacancyStatus vacancyStatus)
         {
             var user = _fixture.Build<VacancyUser>().With(v => v.UserId, PrimaryUserId).Create();
             var vacancy = _fixture
                 .Build<Vacancy>()
                 .With(v => v.OwnerType,  OwnerType.Provider)
                 .With(v => v.SubmittedByUser, user)
+                .With(v => v.Status, vacancyStatus)
+                .Create();
+
+            _mockVacancyRepository.Setup(v => v.GetVacancyAsync(It.IsAny<long>())).ReturnsAsync(vacancy);
+
+            var sut = GetSut();
+
+            var request = new CommunicationRequest(_fixture.Create<string>(), _fixture.Create<string>(), _fixture.Create<string>());
+            request.AddEntity(CommunicationConstants.EntityTypes.Vacancy, _fixture.Create<long>());
+
+            var participants = await sut.GetParticipantsAsync(request);
+
+            participants.Count().Should().Be(2);
+            participants.Single(p => p.UserId == PrimaryUserId).Participation.Should().Be(UserParticipation.PrimaryUser);
+            participants.Single(p => p.UserId != PrimaryUserId).Participation.Should().Be(UserParticipation.SecondaryUser);
+        }
+
+        [Fact]
+        public async Task ShouldProviderReviewSenderAsPrimaryUser_WhenInRejectedStatus()
+        {
+            var user = _fixture.Build<VacancyUser>().With(v => v.UserId, PrimaryUserId).Create();
+            var vacancy = _fixture
+                .Build<Vacancy>()
+                .With(v => v.OwnerType, OwnerType.Provider)
+                .With(v => v.Status, VacancyStatus.Rejected)
+                .With(v => v.ReviewByUser, user)
                 .Create();
 
             _mockVacancyRepository.Setup(v => v.GetVacancyAsync(It.IsAny<long>())).ReturnsAsync(vacancy);

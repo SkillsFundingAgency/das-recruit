@@ -15,7 +15,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Services
 
         public async Task<string> GetEmployerNameAsync(Vacancy vacancy)
         {
-            if (!vacancy.CanEdit)
+            if (!vacancy.CanEmployerEdit)
                 return vacancy.EmployerName;
 
             if (vacancy.IsAnonymous)
@@ -32,7 +32,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Services
 
         public async Task<string> GetEmployerDescriptionAsync(Vacancy vacancy)
         {
-            if (!vacancy.CanEdit)
+            if (!vacancy.CanGetEmployerProfileAboutOrganisation)
                 return vacancy.EmployerDescription;
 
             var profile = await _employerProfileRepository.GetAsync(vacancy.EmployerAccountId, vacancy.AccountLegalEntityPublicHashedId);

@@ -37,7 +37,7 @@ namespace Esfa.Recruit.Employer.Web
 
         private static void CheckCanEdit(Vacancy vacancy)
         {
-            if (!vacancy.CanEdit)
+            if (!vacancy.CanEmployerEdit)
                 throw new InvalidStateException(string.Format(ErrorMessages.VacancyNotAvailableForEditing,
                     vacancy.Title));
         }
@@ -46,7 +46,7 @@ namespace Esfa.Recruit.Employer.Web
         {
             if (!vacancy.EmployerAccountId.Equals(employerAccountId, StringComparison.OrdinalIgnoreCase))
                 throw new AuthorisationException(string.Format(ExceptionMessages.VacancyUnauthorisedAccess, employerAccountId, vacancy.EmployerAccountId, vacancy.Title, vacancy.Id));
-            if (vacancy.OwnerType != OwnerType.Employer)
+            if (!vacancy.CanEmployerAndProviderCollabarate && vacancy.OwnerType != OwnerType.Employer)
                 throw new AuthorisationException(string.Format(ExceptionMessages.UserIsNotTheOwner, OwnerType.Employer));
         }
 

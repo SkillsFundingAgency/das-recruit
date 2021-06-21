@@ -33,7 +33,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
 
             var vacancy = await _orchestrator.GetVacancy(vrm);
 
-            if (vacancy.CanEdit)
+            if (vacancy.CanEmployerEdit)
             {
                 return HandleRedirectOfEditableVacancy(vacancy);
             }
@@ -54,7 +54,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         {
             var vacancy = await _orchestrator.GetVacancy(vrm);
 
-            if (vacancy.CanEdit)
+            if (vacancy.CanEmployerEdit)
             {
                 return HandleRedirectOfEditableVacancy(vacancy);
             }

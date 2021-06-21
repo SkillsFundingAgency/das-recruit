@@ -21,31 +21,37 @@ namespace Esfa.Recruit.Provider.Web.Mappings
         private readonly IGeocodeImageService _mapService;
         private readonly ExternalLinksConfiguration _externalLinksConfiguration;
         private readonly IRecruitVacancyClient _vacancyClient;
+        private readonly IProviderVacancyClient _client;
 
         public DisplayVacancyViewModelMapper(
                 IGeocodeImageService mapService,
                 IOptions<ExternalLinksConfiguration> externalLinksOptions,
-                IRecruitVacancyClient vacancyClient)
+                IRecruitVacancyClient vacancyClient,
+                IProviderVacancyClient client)
         {
             _mapService = mapService;
             _externalLinksConfiguration = externalLinksOptions.Value;
             _vacancyClient = vacancyClient;
+            _client = client;
         }
 
         public async Task MapFromVacancyAsync(DisplayVacancyViewModel vm, Vacancy vacancy)
         {
             var programme = await _vacancyClient.GetApprenticeshipProgrammeAsync(vacancy.ProgrammeId);
+            var employer = await _client.GetProviderEmployerVacancyDataAsync(vacancy.TrainingProvider.Ukprn.Value, vacancy.EmployerAccountId);
 
             var allQualifications = await _vacancyClient.GetCandidateQualificationsAsync();
 
+            vm.Status = vacancy.Status;
+            vm.AccountName = employer.Name;
             vm.ApplicationMethod = vacancy.ApplicationMethod;
             vm.ApplicationInstructions = vacancy.ApplicationInstructions;
             vm.ApplicationUrl = vacancy.ApplicationUrl;
             vm.CanDelete = vacancy.CanDelete;
             vm.CanSubmit = vacancy.CanSubmit;
+            vm.IsSentForReview = vacancy.Status == VacancyStatus.Review;
             vm.ClosingDate = (vacancy.ClosedDate ?? vacancy.ClosingDate)?.AsGdsDate();
-            vm.EducationLevelName =
-                EducationLevelNumberHelper.GetEducationLevelNameOrDefault(programme.EducationLevelNumber, programme.ApprenticeshipLevel);
+            vm.EducationLevelName = EducationLevelNumberHelper.GetEducationLevelNameOrDefault(programme.EducationLevelNumber, programme.ApprenticeshipLevel);
             vm.EmployerDescription = vacancy.EmployerDescription;
             vm.EmployerName = await _vacancyClient.GetEmployerNameAsync(vacancy);
             vm.EmployerWebsiteUrl = vacancy.EmployerWebsiteUrl;
@@ -70,7 +76,7 @@ namespace Esfa.Recruit.Provider.Web.Mappings
             vm.TrainingDescription = vacancy.TrainingDescription;
             vm.VacancyDescription = vacancy.Description;
             vm.VacancyReferenceNumber = vacancy.VacancyReference.HasValue
-                                        ? $"VAC{vacancy.VacancyReference.ToString()}"
+                                        ? $"VAC{vacancy.VacancyReference}"
                                         : string.Empty;
             vm.IsDisabilityConfident = vacancy.IsDisabilityConfident;
 
@@ -83,9 +89,9 @@ namespace Esfa.Recruit.Provider.Web.Mappings
 
             if (vacancy.ProgrammeId != null)
             {
-                vm.TrainingTitle = programme?.Title;
-                vm.TrainingType = programme?.ApprenticeshipType.GetDisplayName();
-                vm.TrainingLevel = programme?.ApprenticeshipLevel.GetDisplayName();
+                vm.TrainingTitle = programme.Title;
+                vm.TrainingType = programme.ApprenticeshipType.GetDisplayName();
+                vm.TrainingLevel = programme.ApprenticeshipLevel.GetDisplayName();
             }
 
             if (vacancy.Wage != null)

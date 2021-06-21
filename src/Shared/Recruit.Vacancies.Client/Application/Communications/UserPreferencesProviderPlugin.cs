@@ -30,8 +30,14 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Communications
                 case CommunicationConstants.RequestType.VacancyRejected:
                     SetPreferencesForVacancyRejectedNotification(userPref, userPreference);
                     return userPref;
+                case CommunicationConstants.RequestType.VacancyRejectedByEmployer:
+                    SetPreferencesForVacancyRejectedByEmployerNotification(userPref, userPreference);
+                    return userPref;
                 case CommunicationConstants.RequestType.ApplicationSubmitted:
                     SetPreferencesForApplicationSubmittedNotification(userPref, userPreference);
+                    return userPref;
+                case CommunicationConstants.RequestType.VacancySubmittedForReview:
+                    SetPreferencesForVacancySentForReviewNotification(userPref, userPreference);
                     return userPref;
                 case CommunicationConstants.RequestType.VacancyWithdrawnByQa:
                 case CommunicationConstants.RequestType.ProviderBlockedProviderNotification:
@@ -53,6 +59,28 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Communications
                 userPref.Channels = DeliveryChannelPreferences.EmailOnly;
                 userPref.Frequency = DeliveryFrequency.Immediate;
                 userPref.Scope = userPreference.NotificationScope.GetValueOrDefault().ConvertToCommunicationScope();
+            }
+        }
+
+        private void SetPreferencesForVacancyRejectedByEmployerNotification(CommunicationUserPreference userPref, UserNotificationPreferences userPreference)
+        {
+            if (userPreference == null) return;
+            if (userPreference.NotificationTypes.HasFlag(NotificationTypes.VacancyRejectedByEmployer))
+            {
+                userPref.Channels = DeliveryChannelPreferences.EmailOnly;
+                userPref.Frequency = DeliveryFrequency.Immediate;
+                userPref.Scope = userPreference.NotificationScope.GetValueOrDefault().ConvertToCommunicationScope();
+            }
+        }
+        
+        private void SetPreferencesForVacancySentForReviewNotification(CommunicationUserPreference userPref, UserNotificationPreferences userPreference)
+        {
+            if (userPreference == null) return;
+            if (userPreference.NotificationTypes.HasFlag(NotificationTypes.VacancySentForReview))
+            {
+                userPref.Channels = DeliveryChannelPreferences.EmailOnly;
+                userPref.Frequency = DeliveryFrequency.Immediate;
+                userPref.Scope = NotificationScope.Organisation;
             }
         }
 

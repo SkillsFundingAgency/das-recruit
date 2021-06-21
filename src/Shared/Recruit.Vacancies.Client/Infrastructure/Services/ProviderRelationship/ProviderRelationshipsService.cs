@@ -4,8 +4,10 @@ using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using Esfa.Recruit.Vacancies.Client.Domain.Models;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount;
+using Esfa.Recruit.Vacancies.Client.Domain.Models;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -34,17 +36,24 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelation
             _accountApiClient = accountApiClient;
         }
 
-        public async Task<IEnumerable<EmployerInfo>> GetLegalEntitiesForProviderAsync(long ukprn)
+        public async Task<IEnumerable<EmployerInfo>> GetLegalEntitiesForProviderAsync(long ukprn, OperationType operation)
         {
-            var providerPermissions = await GetProviderPermissionsAsync(ukprn);
+            var providerPermissions = await GetProviderPermissionsAsync(ukprn, operation);
 
             return await GetEmployerInfosAsync(providerPermissions);
         }
 
-        public async Task<bool> HasProviderGotEmployersPermissionAsync(long ukprn, string accountHashedId, string accountLegalEntityPublicHashedId)
+        public async Task<IEnumerable<EmployerInfo>> GetLegalEntitiesForProviderAsync(string accountHashedId, OperationType operation)
+        {
+            var providerPermissions = await GetProviderPermissionsAsync(accountHashedId, operation);
+            
+            return await GetEmployerInfosAsync(providerPermissions);
+        }      
+
+        public async Task<bool> HasProviderGotEmployersPermissionAsync(long ukprn, string accountHashedId, string accountLegalEntityPublicHashedId, OperationType operation)
         {
             var accountDetails = await _accountApiClient.GetAccount(accountHashedId);
-            var permittedLegalEntities = await GetProviderPermissionsforEmployer(ukprn, accountDetails.PublicHashedAccountId);
+            var permittedLegalEntities = await GetProviderPermissionsforEmployer(ukprn, accountDetails.PublicHashedAccountId, operation);
 
             if (permittedLegalEntities.Any() == false)
                 return false;
@@ -61,9 +70,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelation
             return hasPermission;
         }
 
-        private async Task<List<LegalEntityDto>> GetProviderPermissionsforEmployer(long ukprn, string accountPublicHashedId)
+        private async Task<List<LegalEntityDto>> GetProviderPermissionsforEmployer(long ukprn, string accountPublicHashedId, OperationType operation)
         {
-            var providerPermissions = await GetProviderPermissionsAsync(ukprn);
+            var providerPermissions = await GetProviderPermissionsAsync(ukprn, operation);
 
             var permittedLegalEntities = providerPermissions.AccountProviderLegalEntities
                 .Where(l => l.AccountPublicHashedId == accountPublicHashedId)
@@ -72,11 +81,43 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelation
             return permittedLegalEntities;
         }
 
-        private async Task<ProviderPermissions> GetProviderPermissionsAsync(long ukprn)
+        private async Task<ProviderPermissions> GetProviderPermissionsAsync(long ukprn, OperationType operation)
         {
             using (var httpClient = CreateHttpClient(_configuration))
             {
-                var queryData = new { Ukprn = ukprn, Operation = "Recruitment" };
+                var queryData = new { Ukprn = ukprn, Operation = operation.ToString() };
+                var uri = new Uri(AddQueryString("accountproviderlegalentities", queryData), UriKind.RelativeOrAbsolute);
+
+                try
+                {
+                    var response = await httpClient.GetAsync(uri);
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var content = await response.Content.ReadAsStringAsync();
+                        var providerPermissions = JsonConvert.DeserializeObject<ProviderPermissions>(content);
+                        return providerPermissions;
+                    }
+
+                    _logger.LogError($"An invalid response received when trying to get provider relationships. Status:{response.StatusCode} Reason:{response.ReasonPhrase}");
+                }
+                catch (HttpRequestException ex)
+                {
+                    _logger.LogError(ex, "Error trying to retrieve legal entities.", null);
+                }
+                catch (JsonReaderException ex)
+                {
+                    _logger.LogError(ex, $"Couldn't deserialise {nameof(ProviderPermissions)}.", null);
+                }
+
+                return new ProviderPermissions { AccountProviderLegalEntities = Enumerable.Empty<LegalEntityDto>() };
+            }
+        }
+
+        private async Task<ProviderPermissions> GetProviderPermissionsAsync(string accountHashedId, OperationType operation)
+        {
+            using (var httpClient = CreateHttpClient(_configuration))
+            {
+                var queryData = new { AccountHashedId = accountHashedId, Operation = operation.ToString() };
                 var uri = new Uri(AddQueryString("accountproviderlegalentities", queryData), UriKind.RelativeOrAbsolute);
 
                 try

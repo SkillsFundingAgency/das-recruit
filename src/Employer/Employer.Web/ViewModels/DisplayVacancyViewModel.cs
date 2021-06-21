@@ -12,6 +12,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels
         public bool CanDelete { get; internal set; }
         public bool CanShowVacancyClonedStatusHeader => !string.IsNullOrEmpty(VacancyClonedInfoMessage);
         public bool CanSubmit { get; internal set; }
+        public bool CanReview { get; internal set; }
         public string ClosingDate { get; internal set; }
         public string EducationLevelName { get; internal set; }
         public string EmployerContactName { get; internal set; }

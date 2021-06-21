@@ -14,6 +14,7 @@ using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Shared.Web.Mappers;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
 namespace Esfa.Recruit.Employer.Web.Controllers
 {
@@ -41,8 +42,8 @@ namespace Esfa.Recruit.Employer.Web.Controllers
 
             return View(viewModel);
         }
-
-       [HttpPost("preview", Name = RouteNames.Preview_Submit_Post)]
+        
+        [HttpPost("preview", Name = RouteNames.Preview_Submit_Post)]
         public async Task<IActionResult> Submit(SubmitEditModel m)
         {
             var response = await _orchestrator.SubmitVacancyAsync(m, User.ToVacancyUser());
@@ -68,6 +69,94 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             SetSectionStates(viewModel);
 
             return View(ViewNames.VacancyPreview, viewModel);
+        }
+
+        [HttpGet("approve-advert", Name = RouteNames.ApproveJobAdvert_Get)]
+        public IActionResult ApproveJobAdvert(VacancyRouteModel vm)
+        {              
+            return View(new ApproveJobAdvertViewModel());
+        }
+
+        [HttpPost("approve-advert", Name = RouteNames.ApproveJobAdvert_Post)]
+        public async Task<IActionResult> ApproveJobAdvert(ApproveJobAdvertViewModel vm)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View("ApproveJobAdvert");
+            }
+
+            if (vm.ApproveJobAdvert.GetValueOrDefault())
+            {
+                var response = await _orchestrator.ApproveJobAdvertAsync(vm, User.ToVacancyUser());
+                if (!response.Success)
+                {
+                    response.AddErrorsToModelState(ModelState);
+                }
+
+                if (ModelState.IsValid)
+                {
+                    if (response.Data.IsSubmitted)
+                        return RedirectToRoute(RouteNames.JobAdvertConfirmation_Get);
+
+                    if (response.Data.HasLegalEntityAgreement == false)
+                        return RedirectToRoute(RouteNames.LegalEntityAgreement_HardStop_Get);
+
+                    throw new Exception("Unknown submit state");
+                }
+            }
+            else
+            {
+                return RedirectToRoute(RouteNames.Vacancy_Preview_Get, new { VacancyId = vm.VacancyId });
+            }
+
+            var viewModel = await _orchestrator.GetVacancyPreviewViewModelAsync(vm);
+            viewModel.SoftValidationErrors = null;
+            SetSectionStates(viewModel);
+
+            return View(ViewNames.VacancyPreview, viewModel);
+        }
+
+        [HttpGet("reject-advert", Name = RouteNames.RejectJobAdvert_Get)]
+        public async Task<IActionResult> RejectJobAdvert(VacancyRouteModel vm)
+        {
+            var viewModel = await _orchestrator.GetVacancyRejectJobAdvertAsync(vm);          
+
+            return View(viewModel);
+        }
+
+
+        [HttpPost("reject-advert", Name = RouteNames.RejectJobAdvert_Post)]
+        public async Task<IActionResult> RejectJobAdvert(RejectJobAdvertViewModel vm)
+        {
+            if (!ModelState.IsValid)
+            {
+                var viewModel = await _orchestrator.GetVacancyRejectJobAdvertAsync(vm);
+                return View("RejectJobAdvert", viewModel);
+            }
+
+            if (vm.RejectJobAdvert.GetValueOrDefault())
+            {                
+                var response =  await _orchestrator.RejectJobAdvertAsync(vm, User.ToVacancyUser());
+                if (!response.Success)
+                {
+                    response.AddErrorsToModelState(ModelState);
+                }
+
+                if (response.Data.IsRejected)
+                {
+                    return RedirectToRoute(RouteNames.JobAdvertConfirmation_Get);
+                }
+            }
+
+            return RedirectToRoute(RouteNames.Vacancy_Preview_Get, new { VacancyId = vm.VacancyId });
+        }
+
+        [HttpGet("confirmation-advert", Name = RouteNames.JobAdvertConfirmation_Get)]
+        public async Task<IActionResult> ConfirmationJobAdvert(VacancyRouteModel vrm)
+        {
+            var viewModel = await _orchestrator.GetVacancyConfirmationJobAdvertAsync(vrm);
+
+            return View("ConfirmationJobAdvert", viewModel);
         }
 
         private void SetSectionStates(VacancyPreviewViewModel viewModel)

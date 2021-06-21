@@ -14,6 +14,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
     public class UpdateProviderDashboardOnChangeEventHandler : INotificationHandler<VacancyCreatedEvent>,
                                             INotificationHandler<DraftVacancyUpdatedEvent>,
                                             INotificationHandler<VacancySubmittedEvent>,
+                                            INotificationHandler<VacancyReviewedEvent>,
                                             INotificationHandler<VacancyDeletedEvent>,
                                             INotificationHandler<VacancyPublishedEvent>,
                                             INotificationHandler<VacancyClosedEvent>,
@@ -23,6 +24,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
                                             INotificationHandler<ApplicationReviewedEvent>,
                                             INotificationHandler<SetupProviderEvent>,
                                             INotificationHandler<VacancyReferredEvent>,
+                                            INotificationHandler<VacancyRejectedEvent>,
                                             INotificationHandler<VacancyTransferredEvent>,
                                             INotificationHandler<VacancyReviewWithdrawnEvent>
     {
@@ -48,6 +50,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
         }
 
         public Task Handle(VacancySubmittedEvent notification, CancellationToken cancellationToken)
+        {
+            return Handle(notification);
+        }
+
+        public Task Handle(VacancyReviewedEvent notification, CancellationToken cancellationToken)
         {
             return Handle(notification);
         }
@@ -97,6 +104,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
             return Handle(notification);
         }
 
+        public Task Handle(VacancyRejectedEvent notification, CancellationToken cancellationToken)
+        {
+            return Handle(notification);
+        }
+
         public async Task Handle(VacancyTransferredEvent notification, CancellationToken cancellationToken)
         {
             if (notification == null)
@@ -129,7 +141,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
 
             var vacancy = await _vacancyRepository.GetVacancyAsync(notification.VacancyReference);
 
-            if (vacancy.OwnerType != OwnerType.Employer)
+            if (vacancy.TrainingProvider != null)
             {
                 _logger.LogInformation("Handling {eventType} for ukprn: {ukprn} and vacancyReference: {vacancyReference}", notification.GetType().Name, vacancy.TrainingProvider.Ukprn.Value, notification.VacancyReference);
                 await _dashboardService.ReBuildDashboardAsync(vacancy.TrainingProvider.Ukprn.Value);
@@ -143,7 +155,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
 
             var vacancy = await _vacancyRepository.GetVacancyAsync(notification.VacancyId);
 
-            if (vacancy.OwnerType != OwnerType.Employer)
+            if (vacancy.TrainingProvider != null)
             {
                 _logger.LogInformation("Handling {eventType} for ukprn: {ukprn} and vacancyId: {vacancyId}", notification.GetType().Name, vacancy.TrainingProvider.Ukprn.Value, notification.VacancyId);
                 await _dashboardService.ReBuildDashboardAsync(vacancy.TrainingProvider.Ukprn.Value);

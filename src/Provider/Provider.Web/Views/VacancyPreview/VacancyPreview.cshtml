@@ -1,6 +1,7 @@
 ﻿@using Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview
 @using Microsoft.AspNetCore.Html
 @using Esfa.Recruit.Shared.Web.Mappers
+@using Esfa.Recruit.Vacancies.Client.Domain.Entities
 @model Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview.VacancyPreviewViewModel
 
 @{
@@ -43,6 +44,13 @@
         }
         return VacancyPreviewHelper.ActionLink(Url, "Change", routeName, routeValues, screenReaderText, "govuk-body govuk-link", id);
     }
+}
+
+@if (Model.Status == VacancyStatus.Rejected)
+{
+    <div class="warning-summary">
+        <p class="govuk-body"><span class="govuk-!-font-weight-bold">@Model.AccountName</span> has rejected this vacancy. You'll need to contact them to find out why.</p>
+    </div>
 }
 
 <div class="govuk-grid-row">
@@ -482,14 +490,14 @@
 </div>
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
-        <div class="govuk-form-group inline">
-            <div class="govuk-form-group">
-                <form asp-show="@Model.CanSubmit" asp-route="@RouteNames.Preview_Submit_Post" class="form-inline">
-                    <input type="submit" value="@Model.SubmitButtonText" class="govuk-button" esfa-automation="submit-button" />
-                </form>
-                <a asp-route="@RouteNames.Vacancies_Get" class="govuk-link das-button-link" esfa-automation="dashboard-link">Return to dashboard</a>
-                <a asp-show="@Model.CanDelete" asp-route="@RouteNames.DeleteVacancy_Get" class="govuk-button delete-button" esfa-automation="delete-button">Delete</a>
-            </div>
+        <div class="govuk-body govuk-button-group">
+            <form asp-show="@Model.CanSubmit" asp-route="@RouteNames.Preview_Submit_Post" class="form-inline">
+                <input type="submit" value="@Model.SubmitButtonText" class="govuk-button" esfa-automation="submit-button" />
+            </form>
+            <a asp-show="@Model.CanDelete" asp-route="@RouteNames.DeleteVacancy_Get" class="govuk-button delete-button" esfa-automation="delete-button">Delete</a>
+        </div>
+        <div class="govuk-body">
+            <a asp-route="@RouteNames.Vacancies_Get" class="govuk-link das-button-link" esfa-automation="dashboard-link">Return to dashboard</a>
         </div>
     </div>
 </div>

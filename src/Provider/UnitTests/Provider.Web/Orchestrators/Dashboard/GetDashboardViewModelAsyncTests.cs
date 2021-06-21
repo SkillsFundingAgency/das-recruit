@@ -6,9 +6,12 @@ using Esfa.Recruit.Provider.Web.Services;
 using Esfa.Recruit.Provider.Web.ViewModels;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Vacancies.Client.Domain.Models;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Provider;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelationship;
 using FluentAssertions;
 using Moq;
 using Xunit;
@@ -77,6 +80,10 @@ namespace Esfa.Recruit.Provider.UnitTests.Employer.Web.Orchestrators.Dashboard
             vacancyClientMock.Setup(c => c.GetDashboardAsync(Ukprn, true))
                 .ReturnsAsync(dashboardProjection);
 
+            var permissionServiceMock = new Mock<IProviderRelationshipsService>();
+            permissionServiceMock.Setup(p => p.GetLegalEntitiesForProviderAsync(Ukprn, OperationType.RecruitmentRequiresReview))
+                .ReturnsAsync(new List<EmployerInfo>());
+
             var userDetails = new User();
 
             var clientMock = new Mock<IRecruitVacancyClient>();
@@ -88,7 +95,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Employer.Web.Orchestrators.Dashboard
             alertsFactoryMock.Setup(a => a.Create(dashboardProjection, userDetails))
                 .Returns(alertsViewModel);
 
-            var orch = new DashboardOrchestrator(vacancyClientMock.Object, timeProviderMock.Object, clientMock.Object, alertsFactoryMock.Object);
+            var orch = new DashboardOrchestrator(vacancyClientMock.Object, timeProviderMock.Object, clientMock.Object, alertsFactoryMock.Object, permissionServiceMock.Object);
 
             return orch;
         }
