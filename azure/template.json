@@ -82,7 +82,8 @@
         "ProviderCommitmentsSiteUrl": "",
         "SignProviderAgreementUrl": "",
         "ReservationsSiteUrl": "",
-        "EmployerFavouritesUrl": ""
+        "EmployerFavouritesUrl": "",
+        "TrainingProviderPermissionUrl": ""
       }
     },
     "Features": {
@@ -632,6 +633,10 @@
                   "name": "ExternalLinks:EmployerFavouritesUrl",
                   "value": "[parameters('ExternalLinks').EmployerFavouritesUrl]"
                 },
+                {
+                    "name": "ExternalLinks:TrainingProviderPermissionUrl",
+                    "value": "[parameters('ExternalLinks').TrainingProviderPermissionUrl]"
+				},
                 {
                   "name": "Features:SetNotificationPreferences",
                   "value": "[parameters('Features').SetNotificationPreferences]"
