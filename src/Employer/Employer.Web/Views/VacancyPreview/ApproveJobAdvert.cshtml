@@ -1,7 +1,7 @@
 ﻿@model Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview.ApproveJobAdvertViewModel
 
 @{ ViewBag.Vpv = "/recruitment/employer/approve-job-advert";
-ViewBag.Title = "Are you sure you want to approve this job advert?"; }
+ViewBag.Title = "Are you sure you want to submit this job advert?"; }
 
 <a asp-route="@RouteNames.Vacancy_Preview_Get" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
 
@@ -10,7 +10,7 @@ ViewBag.Title = "Are you sure you want to approve this job advert?"; }
         <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState }' />
         <div>
             <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">
-                Are you sure you want to approve this job advert?
+                Are you sure you want to submit this job advert?
             </h1>          
         </div>        
         <p class="govuk-body">We'll do a final review and post it on 'Find an apprenticeship'.</p>        

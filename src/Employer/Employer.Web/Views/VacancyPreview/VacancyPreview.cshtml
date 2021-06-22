@@ -482,27 +482,55 @@
         <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
     </div>
 </div>
-<div class="govuk-grid-row">
+<div asp-show="@Model.CanDelete" class="govuk-grid-row">
     <div class="govuk-grid-column-full">
-        <a asp-show="@Model.CanDelete" asp-route="@RouteNames.DeleteVacancy_Get" class="govuk-button delete-button" esfa-automation="delete-button">Delete advert</a>
-    </div>
-</div>
-<div class="govuk-grid-row" asp-show="@Model.CanDelete">
-    <div class="govuk-grid-column-full">
+        <a asp-route="@RouteNames.DeleteVacancy_Get" class="govuk-button delete-button" esfa-automation="delete-button">Delete advert</a>
         <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
     </div>
 </div>
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
-        <div class="govuk-body">
-            <form asp-show="@Model.CanSubmit" asp-route="@RouteNames.Preview_Submit_Post" class="form-inline">
+        <div asp-show="@Model.CanSubmit" class="govuk-body">
+            <form asp-route="@RouteNames.Preview_Submit_Post" class="form-inline">
                 <input type="submit" value="@Model.SubmitButtonText" class="govuk-button" esfa-automation="submit-button" />
             </form>
         </div>
-        <div class="govuk-body govuk-button-group">
-            @*con-3307  displays only button, implementation info in con-3314 (approve) and con-3317 (reject) *@
-            <a asp-show="@Model.CanReview" asp-route="@RouteNames.ApproveJobAdvert_Get" class="govuk-button">Approve job advert</a>
-            <a asp-show="@Model.CanReview" asp-route="@RouteNames.RejectJobAdvert_Get" class="govuk-button govuk-button--secondary">Reject job advert</a>            
+        <div asp-show="@Model.CanReview" class="govuk-body">
+            <form asp-route="@RouteNames.Preview_Review_Post">
+                <div class="govuk-form-group @(ViewData.ModelState.ContainsKey("SubmitToEsfa") ? "govuk-form-group--error" : "")">
+                    <fieldset class="govuk-fieldset">
+                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                            <h1 class="govuk-fieldset__heading">
+                                Choose an option
+                            </h1>
+                        </legend>
+                        <span id="error-message-SubmitToEsfa" class="govuk-error-message">
+                            <span class="govuk-visually-hidden">Error:</span> @Html.ValidationMessage("SubmitToEsfa")
+                        </span>
+                        <div class="govuk-radios">
+                            <div class="govuk-radios__item">
+                                <input name="SubmitToEsfa" class="govuk-radios__input" id="submit-advert" type="radio" value="true" @(ViewBag.Selection == "Approve" ? "checked" : "")>
+                                <label class="govuk-label govuk-radios__label" for="submit-advert">
+                                    Submit advert to ESFA for checking and publication
+                                </label>
+                            </div>
+                            <div class="govuk-radios__item">
+                                <input name="SubmitToEsfa" class="govuk-radios__input" id="reject-advert" type="radio" value="false" @(ViewBag.Selection == "Reject" ? "checked" : "")>
+                                <label class="govuk-label govuk-radios__label" for="reject-advert">
+                                    Reject advert and return to training provider
+                                </label>
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+                <button type="submit" class="govuk-button" data-module="govuk-button">
+                    Continue
+                </button>
+            </form>
+            @*
+            <a asp-route="@RouteNames.ApproveJobAdvert_Get" class="govuk-button">Approve job advert</a>
+            <a asp-route="@RouteNames.RejectJobAdvert_Get" class="govuk-button govuk-button--secondary">Reject job advert</a>
+            *@
         </div>
         <div class="govuk-body">
             <a asp-route="@RouteNames.Vacancies_Get" class="govuk-link" esfa-automation="dashboard-link">Save and return to your adverts</a>

@@ -91,7 +91,8 @@
 
         public const string Vacancy_Preview_Get = "Vacancy_Preview_Get";
         public const string Preview_Submit_Post = "Preview_Submit_Post";
-        
+        public const string Preview_Review_Post = "Preview_Review_Post";
+
         public const string CloseVacancy_Get = "CloseVacancy_Get";
         public const string CloseVacancy_Post = "CloseVacancy_Post";
 

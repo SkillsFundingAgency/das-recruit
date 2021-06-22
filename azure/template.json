@@ -689,6 +689,26 @@
                     "value": "[parameters('ProviderRelationshipsApiConfiguration').Tenant]"
                 },
                 {
+                    "name": "ProviderRelationshipsApiConfiguration:ApiBaseUrl",
+                    "value": "[parameters('ProviderRelationshipsApiConfiguration').ApiBaseUrl]"
+                },
+                {
+                    "name": "ProviderRelationshipsApiConfiguration:ClientId",
+                    "value": "[parameters('ProviderRelationshipsApiConfiguration').ClientId]"
+                },
+                {
+                    "name": "ProviderRelationshipsApiConfiguration:ClientSecret",
+                    "value": "[parameters('ProviderRelationshipsApiConfiguration').ClientSecret]"
+                },
+                {
+                    "name": "ProviderRelationshipsApiConfiguration:IdentifierUri",
+                    "value": "[parameters('ProviderRelationshipsApiConfiguration').IdentifierUri]"
+                },
+                {
+                    "name": "ProviderRelationshipsApiConfiguration:Tenant",
+                    "value": "[parameters('ProviderRelationshipsApiConfiguration').Tenant]"
+                },
+                {
                   "name": "RedisConnectionSettings:RedisConnectionString",
                   "value": "[parameters('StorageRedisConnectionString')]"
                 },
