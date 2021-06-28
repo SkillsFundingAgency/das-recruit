@@ -99,10 +99,11 @@ namespace Esfa.Recruit.Employer.Web
                                     "https://*.zopim.com",
                                     "https://*.rcrsv.io");
 
-                    //Google tag manager uses inline scripts when administering tags. This is done on PREPROD only
+                    //Google tag manager uses inline scripts when administering tags
+                    s.UnsafeInline();
+
                     if (env.IsEnvironment(EnvironmentNames.PREPROD))
                     {
-                        s.UnsafeInline();
                         s.UnsafeEval();
                     }
                 })
