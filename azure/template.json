@@ -289,7 +289,7 @@
     }
   },
   "variables": {
-    "deploymentUrlBase": "https://raw.githubusercontent.com/SkillsFundingAgency/das-platform-building-blocks/DASD-8855_Cosmos_Autoscaling/templates/",
+    "deploymentUrlBase": "https://raw.githubusercontent.com/SkillsFundingAgency/das-platform-building-blocks/master/templates/",
     "resourceNamePrefix": "[toLower(concat('das-', parameters('resourceEnvironmentName'),'-', parameters('serviceName')))]",
     "resourceGroupName": "[concat(variables('resourceNamePrefix'),'-rg')]",
     "webJobAppServicePlanName": "[concat(variables('resourceNamePrefix'),'-webjob-asp')]",
@@ -471,8 +471,43 @@
           },
           "partitionKey": {
             "value": "[parameters('containerArray')[copyIndex()].partitionKey]"
+          }
+        }
+      },
+      "copy": {
+        "name": "containercopy",
+        "count": "[length(parameters('containerArray'))]"
+      }
+    },
+    {
+      "apiVersion": "2020-10-01",
+      "name": "[concat('cosmos-db-container-settings-', parameters('containerArray')[copyIndex()].containerName)]",
+      "dependsOn": [
+        "[concat('cosmos-db-container-', parameters('containerArray')[copyIndex()].containerName)]"
+      ],
+      "type": "Microsoft.Resources/deployments",
+      "resourceGroup": "[variables('resourceGroupName')]",
+      "condition": "[greater(length(parameters('containerArray')), 0)]",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(variables('deploymentUrlBase'),'cosmos-db-container-settings.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "cosmosDbAccountName": {
+            "value": "[variables('cosmosDbName')]"
           },
-          "throughtput": {
+          "cosmosDatabase": {
+            "value": "[parameters('cosmosDatabase')]"
+          },
+          "cosmosDBType": {
+            "value": "MongoDB"
+          },
+          "containerName": {
+            "value": "[parameters('containerArray')[copyIndex()].containerName]"
+          },
+          "throughput": {
             "value": "[parameters('containerArray')[copyIndex()].throughput]"
           }
         }
