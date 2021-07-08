@@ -107,10 +107,6 @@
       "type": "string",
       "defaultValue": ""
     },
-    "ApprenticeshipProgrammesApiBaseUrl": {
-      "type": "string",
-      "defaultValue": ""
-    },
     "GoogleMapsPrivateKey": {
       "type": "securestring",
       "defaultValue": ""
@@ -1284,10 +1280,6 @@
                 {
                   "name": "ASPNETCORE_ENVIRONMENT",
                   "value": "[toUpper(parameters('EnvironmentFullName'))]"
-                },
-                {
-                  "name": "ApprenticeshipProgrammesApiBaseUrl",
-                  "value": "[parameters('ApprenticeshipProgrammesApiBaseUrl')]"
                 },
                 {
                   "name": "AccountApiConfiguration:ApiBaseUrl",
