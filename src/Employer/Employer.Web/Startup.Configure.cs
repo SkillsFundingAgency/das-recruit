@@ -91,7 +91,7 @@ namespace Esfa.Recruit.Employer.Web
                                     "*.googletagmanager.com/",
                                     "*.postcodeanywhere.co.uk/",
                                     "https://tagmanager.google.com",
-                                    "https://www.tagmanager.google.com/",                                   
+                                    "https://www.tagmanager.google.com/",
                                     "https://*.zdassets.com",
                                     "https://*.zendesk.com",
                                     "wss://*.zendesk.com",
@@ -101,11 +101,7 @@ namespace Esfa.Recruit.Employer.Web
 
                     //Google tag manager uses inline scripts when administering tags
                     s.UnsafeInline();
-
-                    if (env.IsEnvironment(EnvironmentNames.PREPROD))
-                    {
-                        s.UnsafeEval();
-                    }
+                    s.UnsafeEval();
                 })
                 .FontSources(s =>
                     s.Self()
