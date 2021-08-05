@@ -8,5 +8,6 @@
 
         public bool HasVacancyReference => !string.IsNullOrEmpty(VacancyReference);
         public bool HasNotificationsSet { get; set; }
+        public bool IsVacancyRejectedByESFANotificationSelected { get; set; }
     }
 }
