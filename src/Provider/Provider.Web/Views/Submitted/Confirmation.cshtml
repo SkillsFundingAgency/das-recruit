@@ -22,24 +22,24 @@
         </div>
 
         <h2 class="govuk-heading-m">What happens next</h2>
-        
+
         @if (Model.IsVacancyRejectedByESFANotificationSelected)
         {
             <p class="govuk-body">
-                The <abbr>ESFA</abbr> will check the vacancy and will tell you within one working day, on the Recruitment dashboard within rejected vacancies, if you need to make any edits.
+                The <abbr>ESFA</abbr> will check the vacancy and let you know by email, within one working day, if you need to make and edits.
             </p>
         }
         else
         {
             <p class="govuk-body">
-                The <abbr>ESFA</abbr> will check the vacancy and let you know by email, within one working day, if you need to make and edits.
+                The <abbr>ESFA</abbr> will check the vacancy and will tell you within one working day, on the Recruitment dashboard within rejected vacancies, if you need to make any edits.
             </p>
         }
 
         <p class="govuk-body">
             <a class="govuk-link" asp-route="@RouteNames.ManageNotifications_Get">Manage the frequency of your recruitment emails</a>
         </p>
-        
+
         <p class="govuk-body">
             When the vacancy is approved, it will appear on Find an apprenticeship.
         </p>
