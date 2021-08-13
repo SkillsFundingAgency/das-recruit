@@ -7,6 +7,7 @@ using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Shared.Web.Orchestrators;
 using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
+using Esfa.Recruit.Vacancies.Client.Application.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
@@ -15,7 +16,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 {
-    public class DatesOrchestrator : EntityValidatingOrchestrator<Vacancy, DatesEditModel>
+    public class DatesOrchestrator : VacancyValidatingOrchestrator<DatesEditModel>
     {
         private const VacancyRuleSet ValidationRules = VacancyRuleSet.ClosingDate | VacancyRuleSet.StartDate | VacancyRuleSet.StartDateEndDate | VacancyRuleSet.TrainingExpiryDate;
         private readonly IEmployerVacancyClient _client;
@@ -99,11 +100,33 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
         {
             var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, _vacancyClient, m, RouteNames.Dates_Post);
 
-            vacancy.ClosingDate = m.ClosingDate.AsDateTimeUk()?.ToUniversalTime();
-            vacancy.StartDate = m.StartDate.AsDateTimeUk()?.ToUniversalTime();
-            
-            vacancy.DisabilityConfident = m.IsDisabilityConfident ? DisabilityConfident.Yes : DisabilityConfident.No;
-            
+            SetVacancyWithEmployerReviewFieldIndicators(
+                vacancy.ClosingDate,
+                FieldIdResolver.ToFieldId(v => v.ClosingDate),
+                vacancy,
+                (v) =>
+                {
+                    return v.ClosingDate = m.ClosingDate.AsDateTimeUk()?.ToUniversalTime();
+                });
+
+            SetVacancyWithEmployerReviewFieldIndicators(
+                vacancy.StartDate,
+                FieldIdResolver.ToFieldId(v => v.StartDate),
+                vacancy,
+                (v) =>
+                {
+                    return v.StartDate = m.StartDate.AsDateTimeUk()?.ToUniversalTime();
+                });
+
+            SetVacancyWithEmployerReviewFieldIndicators(
+                vacancy.DisabilityConfident,
+                FieldIdResolver.ToFieldId(v => v.DisabilityConfident),
+                vacancy,
+                (v) =>
+                {
+                    return v.DisabilityConfident = m.IsDisabilityConfident ? DisabilityConfident.Yes : DisabilityConfident.No;
+                });
+
             return await ValidateAndExecute(
                 vacancy, 
                 v => _vacancyClient.Validate(v, ValidationRules),

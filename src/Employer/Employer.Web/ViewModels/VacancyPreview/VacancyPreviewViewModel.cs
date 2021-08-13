@@ -66,6 +66,9 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview
 
         public bool HasSoftValidationErrors => SoftValidationErrors?.HasErrors == true;
 
+        public string RejectedReason { get; set; }
+        public bool? SubmitToEsfa { get; set; }
+
         public bool ShowIncompleteSections => ((HasIncompleteMandatorySections || HasIncompleteOptionalSections) && !Review.HasBeenReviewed) || HasSoftValidationErrors;
         public ReviewSummaryViewModel Review { get; set; } = new ReviewSummaryViewModel();
         public string SubmitButtonText => Review.HasBeenReviewed ? "Resubmit advert" : "Submit advert";

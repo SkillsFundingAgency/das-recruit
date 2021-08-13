@@ -507,18 +507,28 @@
                         <span id="error-message-SubmitToEsfa" class="govuk-error-message">
                             <span class="govuk-visually-hidden">Error:</span> @Html.ValidationMessage("SubmitToEsfa")
                         </span>
-                        <div class="govuk-radios">
+                        <div class="govuk-radios govuk-radios--conditional" data-module="radios">
                             <div class="govuk-radios__item">
-                                <input name="SubmitToEsfa" class="govuk-radios__input" id="submit-advert" type="radio" value="true" @(ViewBag.Selection == "Approve" ? "checked" : "")>
+                                <input asp-for="SubmitToEsfa" class="govuk-radios__input" id="submit-advert" type="radio" value="true">
                                 <label class="govuk-label govuk-radios__label" for="submit-advert">
                                     Submit advert to ESFA for checking and publication
                                 </label>
                             </div>
                             <div class="govuk-radios__item">
-                                <input name="SubmitToEsfa" class="govuk-radios__input" id="reject-advert" type="radio" value="false" @(ViewBag.Selection == "Reject" ? "checked" : "")>
+                                <input asp-for="SubmitToEsfa" class="govuk-radios__input" id="reject-advert" type="radio" value="false" data-aria-controls="reject-advert-conditional">
                                 <label class="govuk-label govuk-radios__label" for="reject-advert">
                                     Reject advert and return to training provider
                                 </label>
+                            </div>
+                            <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="reject-advert-conditional">
+                                <label class="govuk-label">Let @Model.ProviderName know why you're rejecting it. Tell them which fields need changing for example; weeekly wage, hours or expected duration.</label>
+                                <div esfa-validation-marker-for="RejectedReason" class="govuk-form-group">
+                                    <span esfa-validation-message-for="RejectedReason" class="govuk-error-message"></span>
+                                    <textarea asp-for="RejectedReason" class="govuk-textarea character-count" rows="5" data-val-length-max="200"></textarea>
+                                    <span class="govuk-body">You have </span>
+                                    <span class="govuk-body maxchar-count">200</span>
+                                    <span class="govuk-body maxchar-text"> characters remaining</span>
+                                </div>
                             </div>
                         </div>
                     </fieldset>

@@ -68,7 +68,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 
             var vm = new VacancyPreviewViewModel();
             await _vacancyDisplayMapper.MapFromVacancyAsync(vm, vacancy);
-            
+
+            vm.RejectedReason = vacancy.EmployerRejectedReason;
             vm.HasProgramme = vacancy.ProgrammeId != null;
             vm.HasWage = vacancy.Wage != null;
             vm.CanShowReference = vacancy.Status != VacancyStatus.Draft;
@@ -144,7 +145,25 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 
             await _messaging.SendCommandAsync(command);
 
-            return new  RejectVacancyResponse { IsRejected = true };            
+            return new  RejectVacancyResponse { IsRejected = true };
+        }
+
+        public async Task ClearRejectedVacancyReason(SubmitReviewModel m, VacancyUser user)
+        {
+            var vacancy = await Utility.GetAuthorisedVacancyAsync(_vacancyClient, m, RouteNames.ApproveJobAdvert_Post);
+
+            vacancy.EmployerRejectedReason = null;
+
+            await _vacancyClient.UpdateDraftVacancyAsync(vacancy, user);
+        }
+
+        public async Task UpdateRejectedVacancyReason(SubmitReviewModel m, VacancyUser user)
+        {
+            var vacancy = await Utility.GetAuthorisedVacancyAsync(_vacancyClient, m, RouteNames.ApproveJobAdvert_Post);
+
+            vacancy.EmployerRejectedReason = m.RejectedReason;
+
+            await _vacancyClient.UpdateDraftVacancyAsync(vacancy, user);
         }
 
         public async Task<OrchestratorResponse<SubmitVacancyResponse>> ApproveJobAdvertAsync(ApproveJobAdvertViewModel m, VacancyUser user)
@@ -205,7 +224,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             var vacancy = await _vacancyClient.GetVacancyAsync(vrm.VacancyId);
 
             var vm = new RejectJobAdvertViewModel
-            {                             
+            {
+                RejectionReason = vacancy.EmployerRejectedReason,
                 TrainingProviderName = vacancy.TrainingProvider.Name
             };
 

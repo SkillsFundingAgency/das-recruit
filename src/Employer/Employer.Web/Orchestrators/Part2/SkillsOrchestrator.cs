@@ -8,7 +8,7 @@ using Esfa.Recruit.Employer.Web.ViewModels.Part2.Skills;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Shared.Web.Orchestrators;
 using Esfa.Recruit.Shared.Web.Services;
-using Esfa.Recruit.Shared.Web.ViewModels.Skills;
+using Esfa.Recruit.Vacancies.Client.Application.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
@@ -16,7 +16,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
 {
-    public class SkillsOrchestrator : EntityValidatingOrchestrator<Vacancy, SkillsEditModel>
+    public class SkillsOrchestrator : VacancyValidatingOrchestrator<SkillsEditModel>
     {
         private const VacancyRuleSet ValidationRules = VacancyRuleSet.Skills;
         private readonly IEmployerVacancyClient _client;
@@ -79,9 +79,21 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
                 m.Skills = new List<string>();
             }
 
-            _skillsHelper.SetVacancyFromEditModel(vacancy, m);
+            var currentSkills = new List<string>();
+            currentSkills.AddRange(vacancy.Skills);
 
-            //if we are adding/removing a skill then just validate and don't persist
+            SetVacancyWithEmployerReviewFieldIndicators(
+                currentSkills,
+                FieldIdResolver.ToFieldId(v => v.Skills),
+                vacancy,
+                (v) =>
+                {
+                    _skillsHelper.SetVacancyFromEditModel(v, m);
+                    return v.Skills;
+                });
+
+            // when adding a custom skill the vacancy is not saved immediately, the new custom skill is
+            // validated but all the updates are saved later in a single operation
             var validateOnly = m.IsAddingCustomSkill;
 
             return await ValidateAndExecute(vacancy,

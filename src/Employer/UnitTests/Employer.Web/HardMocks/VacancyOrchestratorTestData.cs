@@ -32,5 +32,13 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.HardMocks
                 UserId = "scott"
             };
         }
+
+        internal static EmployerProfile GetEmployerProfile()
+        {
+            return new EmployerProfile
+            {
+                EmployerAccountId = "EMPLOYER ACCOUNT ID"
+            };
+        }
     }
 }

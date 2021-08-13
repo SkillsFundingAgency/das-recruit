@@ -16,10 +16,11 @@ using Address = Esfa.Recruit.Vacancies.Client.Domain.Entities.Address;
 using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Employer.Web.Mappings;
 using Esfa.Recruit.Shared.Web.Models;
+using Esfa.Recruit.Vacancies.Client.Application.Services;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 {
-    public class LocationOrchestrator : EntityValidatingOrchestrator<Vacancy, LocationEditModel>
+    public class LocationOrchestrator : VacancyValidatingOrchestrator<LocationEditModel>
     {
         private const VacancyRuleSet ValidationRules = VacancyRuleSet.EmployerAddress;
         private readonly IEmployerVacancyClient _employerVacancyClient;
@@ -140,9 +141,57 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 
             var matchingAddress = GetMatchingAddress(newLocation, allLocations);
 
-            vacancy.EmployerLocation = matchingAddress != null ? matchingAddress : ConvertToDomainAddress(locationEditModel);
+            var employerLocation = matchingAddress != null ? matchingAddress : ConvertToDomainAddress(locationEditModel);
 
-            //if cookie is found then update legal entity and name option from cookie
+            // this has diverged from the usual pattern because the individual properties are review fields
+            SetVacancyWithEmployerReviewFieldIndicators(
+                vacancy.EmployerLocation?.AddressLine1,
+                FieldIdResolver.ToFieldId(v => v.EmployerLocation.AddressLine1),
+                vacancy,
+                (v) =>
+                {
+                    return employerLocation.AddressLine1;
+                });
+
+            SetVacancyWithEmployerReviewFieldIndicators(
+                vacancy.EmployerLocation?.AddressLine2,
+                FieldIdResolver.ToFieldId(v => v.EmployerLocation.AddressLine2),
+                vacancy,
+                (v) =>
+                {
+                    return employerLocation.AddressLine2;
+                });
+
+            SetVacancyWithEmployerReviewFieldIndicators(
+                vacancy.EmployerLocation?.AddressLine3,
+                FieldIdResolver.ToFieldId(v => v.EmployerLocation.AddressLine3),
+                vacancy,
+                (v) =>
+                {
+                    return employerLocation.AddressLine3;
+                });
+
+            SetVacancyWithEmployerReviewFieldIndicators(
+                vacancy.EmployerLocation?.AddressLine4,
+                FieldIdResolver.ToFieldId(v => v.EmployerLocation.AddressLine4),
+                vacancy,
+                (v) =>
+                {
+                    return employerLocation.AddressLine4;
+                });
+
+            SetVacancyWithEmployerReviewFieldIndicators(
+                vacancy.EmployerLocation?.Postcode,
+                FieldIdResolver.ToFieldId(v => v.EmployerLocation.Postcode),
+                vacancy,
+                (v) =>
+                {
+                    return employerLocation.Postcode;
+                });
+
+            vacancy.EmployerLocation = employerLocation;
+
+            // if cookie is found then update legal entity and name option from cookie
             if (employerInfoModel != null)
             {
                 vacancy.LegalEntityName = selectedOrganisation.Name; 
@@ -161,6 +210,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                     await UpdateEmployerProfile(employerInfoModel, employerProfile, matchingAddress == null ? vacancy.EmployerLocation : null, user);
                 });
         }
+
         private Address GetMatchingAddress(string locationToMatch, IEnumerable<Address> allLocations)
         {
             var matchingLocation =
