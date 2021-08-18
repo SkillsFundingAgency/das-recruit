@@ -229,8 +229,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
                     return qualification;
                 });
 
-            var allQualifications = await _vacancyClient.GetCandidateQualificationsAsync();
-            vacancy.Qualifications = vacancy.Qualifications.SortQualifications(allQualifications).ToList();
+            var qualificationTypes = await _vacancyClient.GetCandidateQualificationsAsync();
+            vacancy.Qualifications = vacancy.Qualifications.SortQualifications(qualificationTypes).ToList();
 
             return await ValidateAndExecute(vacancy,
                 v =>

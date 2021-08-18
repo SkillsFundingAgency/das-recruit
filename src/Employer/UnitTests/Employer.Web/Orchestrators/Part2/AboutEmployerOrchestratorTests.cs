@@ -24,8 +24,11 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part2
             _fixture = new AboutEmployerOrchestratorTestsFixture();
         }
 
-        [Fact]
-        public async Task WhenEmployerDescriptionIsUpdated_ShouldFlagEmployerDescriptionFieldIndicator()
+        [Theory]
+        [InlineData("has a new value", "has a value", new string[] { FieldIdentifiers.EmployerDescription }, new string[] { FieldIdentifiers.EmployerWebsiteUrl})]
+        [InlineData("has a value", "has a new value", new string[] { FieldIdentifiers.EmployerWebsiteUrl }, new string[] { FieldIdentifiers.EmployerDescription })]
+        [InlineData("has a new value", "has a new value", new string[] { FieldIdentifiers.EmployerDescription, FieldIdentifiers.EmployerWebsiteUrl }, new string[] { })]
+        public async Task WhenUpdated_ShouldFlagFieldIndicators(string employerDescription, string employerWebSiteUrl, string[] setFieldIdentifers, string [] unsetFieldIdentifiers)
         {
             _fixture
                 .WithEmployerDescription("has a value")
@@ -36,36 +39,13 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part2
             {
                 EmployerAccountId = _fixture.Vacancy.EmployerAccountId,
                 VacancyId = _fixture.Vacancy.Id,
-                EmployerDescription = "has a new value",
-                EmployerWebsiteUrl = "has a value"
+                EmployerDescription = employerDescription,
+                EmployerWebsiteUrl = employerWebSiteUrl
             };
 
             await _fixture.PostAboutEmployerEditModelAsync(aboutEmployerEditModel);
 
-            _fixture.VerifyEmployerReviewFieldIndicators(FieldIdentifiers.EmployerDescription, true);
-            _fixture.VerifyEmployerReviewFieldIndicators(FieldIdentifiers.EmployerWebsiteUrl, false);
-        }
-
-        [Fact]
-        public async Task WhenEmployerWebsiteUrlIsUpdated_ShouldFlagEmployerWebsiteUrlFieldIndicator()
-        {
-            _fixture
-                .WithEmployerDescription("has a value")
-                .WithEmployerWebsiteUrl("has a value")
-                .Setup();
-
-            var aboutEmployerEditModel = new AboutEmployerEditModel
-            {
-                EmployerAccountId = _fixture.Vacancy.EmployerAccountId,
-                VacancyId = _fixture.Vacancy.Id,
-                EmployerDescription = "has a value",
-                EmployerWebsiteUrl = "has a new value"
-            };
-
-            await _fixture.PostAboutEmployerEditModelAsync(aboutEmployerEditModel);
-
-            _fixture.VerifyEmployerReviewFieldIndicators(FieldIdentifiers.EmployerDescription, false);
-            _fixture.VerifyEmployerReviewFieldIndicators(FieldIdentifiers.EmployerWebsiteUrl, true);
+            _fixture.VerifyEmployerReviewFieldIndicators(setFieldIdentifers, unsetFieldIdentifiers);
         }
 
         public class AboutEmployerOrchestratorTestsFixture
@@ -114,10 +94,23 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part2
                 await Sut.PostAboutEmployerEditModelAsync(model, User);
             }
 
+            public void VerifyEmployerReviewFieldIndicators(string[] setFieldIdentifiers, string[] unsetFieldIdentifiers)
+            {
+                foreach (var fieldIdentifier in setFieldIdentifiers)
+                {
+                    VerifyEmployerReviewFieldIndicators(fieldIdentifier, true);
+                }
+
+                foreach (var fieldIdentifier in unsetFieldIdentifiers)
+                {
+                    VerifyEmployerReviewFieldIndicators(fieldIdentifier, false);
+                }
+            }
+
             public void VerifyEmployerReviewFieldIndicators(string fieldIdentifier, bool value)
             {
                 Vacancy.EmployerReviewFieldIndicators
-                    .Where(p => p.FieldIdentifier == fieldIdentifier).FirstOrDefault()
+                    .Where(p => p.FieldIdentifier == fieldIdentifier).Single()
                     .Should().NotBeNull().And
                     .Match<EmployerReviewFieldIndicator>((x) => x.IsChangeRequested == value);
             }

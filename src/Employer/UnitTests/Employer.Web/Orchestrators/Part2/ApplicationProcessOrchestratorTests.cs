@@ -221,7 +221,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part2
             public void VerifyEmployerReviewFieldIndicators(string fieldIdentifier, bool value)
             {
                 Vacancy.EmployerReviewFieldIndicators
-                    .Where(p => p.FieldIdentifier == fieldIdentifier).FirstOrDefault()
+                    .Where(p => p.FieldIdentifier == fieldIdentifier).Single()
                     .Should().NotBeNull().And
                     .Match<EmployerReviewFieldIndicator>((x) => x.IsChangeRequested == value);
             }

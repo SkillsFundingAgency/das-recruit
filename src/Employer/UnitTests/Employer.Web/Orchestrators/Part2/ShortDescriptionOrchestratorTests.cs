@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Esfa.Recruit.Employer.UnitTests.Employer.Web.HardMocks;
 using Esfa.Recruit.Employer.Web.Orchestrators.Part2;
 using Esfa.Recruit.Employer.Web.ViewModels;
+using Esfa.Recruit.Employer.Web.ViewModels.Part2.ShortDescription;
 using Esfa.Recruit.Shared.Web.Mappers;
 using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
@@ -15,61 +16,61 @@ using Xunit;
 
 namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part2
 {
-    public class ConsiderationsOrchestratorTests
+    public class ShortDescriptionOrchestratorTests
     {
-        private ConsiderationsOrchestratorTestsFixture _fixture;
+        private ShortDescriptionOrchestratorTestsFixture _fixture;
 
-        public ConsiderationsOrchestratorTests()
+        public ShortDescriptionOrchestratorTests()
         {
-            _fixture = new ConsiderationsOrchestratorTestsFixture();
+            _fixture = new ShortDescriptionOrchestratorTestsFixture();
         }
 
         [Fact]
         public async Task WhenUpdated__ShouldCallUpdateDraftVacancy()
         {
             _fixture
-                .WithThingsToConsider("has a value")
+                .WithShortDescription("has a value")
                 .Setup();
 
-            var thingsToConsiderEditModel = new ConsiderationsEditModel
+            var shortDescriptionEditModel = new ShortDescriptionEditModel
             {
                 EmployerAccountId = _fixture.Vacancy.EmployerAccountId,
                 VacancyId = _fixture.Vacancy.Id,
-                ThingsToConsider = "has a new value"
+                ShortDescription = "has a new value"
             };
 
-            await _fixture.PostConsiderationsEditModelAsync(thingsToConsiderEditModel);
+            await _fixture.PostShortDescriptionEditModelAsync(shortDescriptionEditModel);
 
             _fixture.VerifyUpdateDraftVacancyAsyncIsCalled();
         }
 
         [Fact]
-        public async Task WhenThingsToConsiderIsUpdated_ShouldFlagThingsToConsiderFieldIndicator()
+        public async Task WhenShortDescriptionIsUpdated_ShouldFlagThingsToConsiderFieldIndicator()
         {
             _fixture
-                .WithThingsToConsider("has a value")
+                .WithShortDescription("has a value")
                 .Setup();
 
-            var thingsToConsiderEditModel = new ConsiderationsEditModel
+            var shortDescriptionEditModel = new ShortDescriptionEditModel
             {
                 EmployerAccountId = _fixture.Vacancy.EmployerAccountId,
                 VacancyId = _fixture.Vacancy.Id,
-                ThingsToConsider = "has a new value"
+                ShortDescription = "has a new value"
             };
 
-            await _fixture.PostConsiderationsEditModelAsync(thingsToConsiderEditModel);
+            await _fixture.PostShortDescriptionEditModelAsync(shortDescriptionEditModel);
 
-            _fixture.VerifyEmployerReviewFieldIndicators(FieldIdentifiers.ThingsToConsider, true);
+            _fixture.VerifyEmployerReviewFieldIndicators(FieldIdentifiers.ShortDescription, true);
         }
 
-        public class ConsiderationsOrchestratorTestsFixture
+        public class ShortDescriptionOrchestratorTestsFixture
         {
-            private const VacancyRuleSet ValidationRules = VacancyRuleSet.ThingsToConsider;
+            private const VacancyRuleSet ValidationRules = VacancyRuleSet.ShortDescription;
             public VacancyUser User { get; }
             public Vacancy Vacancy { get; }
-            public ConsiderationsOrchestrator Sut {get; private set;}
+            public ShortDescriptionOrchestrator Sut {get; private set;}
 
-            public ConsiderationsOrchestratorTestsFixture()
+            public ShortDescriptionOrchestratorTestsFixture()
             {
                 MockClient = new Mock<IEmployerVacancyClient>();
                 MockRecruitVacancyClient = new Mock<IRecruitVacancyClient>();
@@ -78,9 +79,9 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part2
                 Vacancy = VacancyOrchestratorTestData.GetPart1CompleteVacancy();
             }
 
-            public ConsiderationsOrchestratorTestsFixture WithThingsToConsider(string thingsToConsider)
+            public ShortDescriptionOrchestratorTestsFixture WithShortDescription(string shortDescription)
             {
-                Vacancy.ThingsToConsider = thingsToConsider;
+                Vacancy.ShortDescription = shortDescription;
                 return this;
             }
 
@@ -91,12 +92,12 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part2
                 MockRecruitVacancyClient.Setup(x => x.UpdateDraftVacancyAsync(It.IsAny<Vacancy>(), User));
                 MockRecruitVacancyClient.Setup(x => x.UpdateEmployerProfileAsync(It.IsAny<EmployerProfile>(), User));
 
-                Sut = new ConsiderationsOrchestrator(Mock.Of<ILogger<ConsiderationsOrchestrator>>(), MockClient.Object, MockRecruitVacancyClient.Object, Mock.Of<IReviewSummaryService>());
+                Sut = new ShortDescriptionOrchestrator(MockClient.Object, MockRecruitVacancyClient.Object, Mock.Of<ILogger<ShortDescriptionOrchestrator>>(), Mock.Of<IReviewSummaryService>());
             }
 
-            public async Task PostConsiderationsEditModelAsync(ConsiderationsEditModel model)
+            public async Task PostShortDescriptionEditModelAsync(ShortDescriptionEditModel model)
             {
-                await Sut.PostConsiderationsEditModelAsync(model, User);
+                await Sut.PostShortDescriptionEditModelAsync(model, User);
             }
 
             public void VerifyEmployerReviewFieldIndicators(string fieldIdentifier, bool value)

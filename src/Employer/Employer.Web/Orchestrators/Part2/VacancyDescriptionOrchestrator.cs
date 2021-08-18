@@ -15,7 +15,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
 {
     public class VacancyDescriptionOrchestrator : VacancyValidatingOrchestrator<VacancyDescriptionEditModel>
     {
-        private const VacancyRuleSet ValdationRules = VacancyRuleSet.Description | VacancyRuleSet.TrainingDescription | VacancyRuleSet.OutcomeDescription;
+        private const VacancyRuleSet ValidationRules = VacancyRuleSet.Description | VacancyRuleSet.TrainingDescription | VacancyRuleSet.OutcomeDescription;
         private readonly IEmployerVacancyClient _client;
         private readonly IRecruitVacancyClient _vacancyClient;
         private readonly IReviewSummaryService _reviewSummaryService;
@@ -87,7 +87,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
 
             return await ValidateAndExecute(
                 vacancy,
-                v => _vacancyClient.Validate(v, ValdationRules),
+                v => _vacancyClient.Validate(v, ValidationRules),
                 v => _vacancyClient.UpdateDraftVacancyAsync(vacancy, user)
             );
         }
