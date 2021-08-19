@@ -5,6 +5,7 @@ using Esfa.Recruit.Employer.UnitTests.Employer.Web.HardMocks;
 using Esfa.Recruit.Employer.Web.Orchestrators.Part2;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels.Part2.Skills;
+using Esfa.Recruit.Shared.Web.Mappers;
 using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
@@ -206,9 +207,69 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part2
             fixture.VerifyColumn2CheckboxesItemSelected(skillsViewModel, draftSkill3, 9);
         }
 
+        [Theory]
+        [InlineData(new string[] { }, new string[] { }, false)]
+        [InlineData(new string[] { }, new string[] { "Organisation skills" }, true)]
+        [InlineData(new string[] { "Organisation skills" }, new string[] { "Organisation skills" }, false)]
+        [InlineData(new string[] { "Organisation skills" }, new string[] { }, true)]
+        public async Task WhenSkillsAreUpdated_ShouldFlagSkillsFieldIndicator(string[] currentlySelectedSkills, string[] newSelectedSkills, bool fieldIndicatorSet)
+        {
+            var fixture = new SkillsOrchestratorTestsFixture();
+            fixture
+                .WithSelectedSkills(currentlySelectedSkills)
+                .Setup();
+
+            var vacancyRouteModel = new VacancyRouteModel
+            {
+                EmployerAccountId = fixture.Vacancy.EmployerAccountId,
+                VacancyId = fixture.Vacancy.Id
+            };
+
+            var skillsEditModel = new SkillsEditModel
+            {
+                Skills = newSelectedSkills.ToList(),
+                AddCustomSkillAction = null,
+                AddCustomSkillName = null
+            };
+
+            await fixture.PostSkillsEditModelAsync(vacancyRouteModel, skillsEditModel);
+
+            fixture.VerifyEmployerReviewFieldIndicators(FieldIdentifiers.Skills, fieldIndicatorSet);
+        }
+
+        [Theory]
+        [InlineData(new string[] { }, new string[] { })]
+        [InlineData(new string[] { }, new string[] { "Organisation skills" })]
+        [InlineData(new string[] { "Organisation skills" }, new string[] { "Organisation skills" })]
+        [InlineData(new string[] { "Organisation skills" }, new string[] { })]
+        public async Task WhenSkillsAreUpdated_ShouldCallUpdateDraftVacancyAsync(string[] currentlySelectedSkills, string[] newSelectedSkills)
+        {
+            var fixture = new SkillsOrchestratorTestsFixture();
+            fixture
+                .WithSelectedSkills(currentlySelectedSkills)
+                .Setup();
+
+            var vacancyRouteModel = new VacancyRouteModel
+            {
+                EmployerAccountId = fixture.Vacancy.EmployerAccountId,
+                VacancyId = fixture.Vacancy.Id
+            };
+
+            var skillsEditModel = new SkillsEditModel
+            {
+                Skills = newSelectedSkills.ToList(),
+                AddCustomSkillAction = null,
+                AddCustomSkillName = null
+            };
+
+            await fixture.PostSkillsEditModelAsync(vacancyRouteModel, skillsEditModel);
+
+            fixture.VerifyUpdateDraftVacancyAsyncIsCalled();
+        }
+
         public class SkillsOrchestratorTestsFixture
         {
-            private const VacancyRuleSet ValidationRules = VacancyRuleSet.Description | VacancyRuleSet.TrainingDescription | VacancyRuleSet.OutcomeDescription;
+            private const VacancyRuleSet ValidationRules = VacancyRuleSet.Skills;
             public VacancyUser User { get; }
             public Vacancy Vacancy { get; }
             public SkillsOrchestrator Sut { get; private set; }
@@ -271,19 +332,6 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part2
             {
                 skillsViewModel.Column1Checkboxes.FindIndex(x => x.Name == customSkill && x.Selected).Should().Be(index);
                 return this;
-            }
-
-            public void VerifyEmployerReviewFieldIndicators(string[] setFieldIdentifiers, string[] unsetFieldIdentifiers)
-            {
-                foreach (var fieldIdentifier in setFieldIdentifiers)
-                {
-                    VerifyEmployerReviewFieldIndicators(fieldIdentifier, true);
-                }
-
-                foreach (var fieldIdentifier in unsetFieldIdentifiers)
-                {
-                    VerifyEmployerReviewFieldIndicators(fieldIdentifier, false);
-                }
             }
 
             public void VerifyEmployerReviewFieldIndicators(string fieldIdentifier, bool value)

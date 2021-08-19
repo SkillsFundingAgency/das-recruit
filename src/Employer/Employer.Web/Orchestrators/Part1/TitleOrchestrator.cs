@@ -23,15 +23,13 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
         private readonly IEmployerVacancyClient _client;
         private readonly IRecruitVacancyClient _vacancyClient;
         private readonly IReviewSummaryService _reviewSummaryService;
-        private readonly IEmployerVacancyClient _employerVacancyClient;
         private readonly ITrainingProviderService _trainingProviderService;
 
-        public TitleOrchestrator(IEmployerVacancyClient client, IRecruitVacancyClient vacancyClient, ILogger<TitleOrchestrator> logger, IReviewSummaryService reviewSummaryService, IEmployerVacancyClient employerVacancyClient, ITrainingProviderService trainingProviderService) : base(logger)
+        public TitleOrchestrator(IEmployerVacancyClient client, IRecruitVacancyClient vacancyClient, ILogger<TitleOrchestrator> logger, IReviewSummaryService reviewSummaryService, ITrainingProviderService trainingProviderService) : base(logger)
         {
             _client = client;
             _vacancyClient = vacancyClient;
             _reviewSummaryService = reviewSummaryService;
-            _employerVacancyClient = employerVacancyClient;
             _trainingProviderService = trainingProviderService;
         }
 
@@ -46,7 +44,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 
         public async Task<TitleViewModel> GetTitleViewModelAsync(VacancyRouteModel vrm)
         {
-            var dashboard = await _employerVacancyClient.GetDashboardAsync(vrm.EmployerAccountId);
+            var dashboard = await _client.GetDashboardAsync(vrm.EmployerAccountId);
             
             var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, _vacancyClient, vrm, RouteNames.Title_Get);
             var vm = new TitleViewModel
