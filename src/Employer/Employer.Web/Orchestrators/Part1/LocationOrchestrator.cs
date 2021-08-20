@@ -194,9 +194,38 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             // if cookie is found then update legal entity and name option from cookie
             if (employerInfoModel != null)
             {
-                vacancy.LegalEntityName = selectedOrganisation.Name; 
+                SetVacancyWithEmployerReviewFieldIndicators(
+                    vacancy.LegalEntityName,
+                    FieldIdResolver.ToFieldId(v => v.EmployerName),
+                    vacancy,
+                    (v) =>
+                    {
+                        return v.LegalEntityName = selectedOrganisation.Name;
+                    });
+
+                SetVacancyWithEmployerReviewFieldIndicators(
+                    vacancy.EmployerNameOption,
+                    FieldIdResolver.ToFieldId(v => v.EmployerName),
+                    vacancy,
+                    (v) =>
+                    {
+                        return v.EmployerNameOption = employerInfoModel.EmployerIdentityOption?.ConvertToDomainOption();
+                    });
+
+                if (employerInfoModel.EmployerIdentityOption == EmployerIdentityOption.NewTradingName)
+                {
+                    SetVacancyWithEmployerReviewFieldIndicators(
+                        employerProfile.TradingName,
+                        FieldIdResolver.ToFieldId(v => v.EmployerName),
+                        vacancy,
+                        (e) =>
+                        {
+                            // the indicator will be set for the vacancy when the employer profile will change to the new trading name
+                            return employerInfoModel.NewTradingName;
+                        });
+                }
+
                 vacancy.AccountLegalEntityPublicHashedId = selectedOrganisation.AccountLegalEntityPublicHashedId;
-                vacancy.EmployerNameOption = employerInfoModel.EmployerIdentityOption?.ConvertToDomainOption();
                 vacancy.AnonymousReason = vacancy.IsAnonymous ? employerInfoModel.AnonymousReason : null;
                 vacancy.EmployerName = vacancy.IsAnonymous ? employerInfoModel.AnonymousName : null;
             }
@@ -255,8 +284,6 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                 await _recruitVacancyClient.UpdateEmployerProfileAsync(employerProfile, user);
             }
         }
-
-        
 
         private async Task<List<Address>> GetAllAvailableLocationsAsync(EmployerProfile employerProfile)
         {

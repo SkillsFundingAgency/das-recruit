@@ -62,8 +62,8 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part2
                 MockRecruitVacancyClient = new Mock<IRecruitVacancyClient>();
 
                 User = VacancyOrchestratorTestData.GetVacancyUser();
-                EmployerProfile = VacancyOrchestratorTestData.GetEmployerProfile();
                 Vacancy = VacancyOrchestratorTestData.GetPart1CompleteVacancy();
+                EmployerProfile = VacancyOrchestratorTestData.GetEmployerProfile(Vacancy.AccountLegalEntityPublicHashedId);
             }
 
             public AboutEmployerOrchestratorTestsFixture WithEmployerDescription(string employerDescription)

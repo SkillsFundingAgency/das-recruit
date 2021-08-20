@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.UnitTests.Employer.Web.HardMocks;
 using Esfa.Recruit.Employer.Web.Models;
@@ -7,6 +8,7 @@ using Esfa.Recruit.Employer.Web.ViewModels.Part1.Duration;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.Location;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.Wage;
 using Esfa.Recruit.Shared.Web.Mappers;
+using Esfa.Recruit.Shared.Web.Models;
 using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
@@ -38,7 +40,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part1
         [InlineData("this is a value", "this is a value", "this is a value", "this is a new value", "this is a value", true)]
         [InlineData("this is a value", "this is a value", "this is a value", "this is a value", "this is a new value", true)]
         [InlineData("this is a new value", "this is a new value", "this is a new value", "this is a new value", "this is a new value", true)]
-        public async Task WhenUpdated_ShouldFlagFieldIndicators(string addressLine1, string addressLine2, string addressLine3, string addressLine4, string postcode, bool fieldIndicatorSet)
+        public async Task WhenAddressUpdated_ShouldFlagFieldIndicators(string addressLine1, string addressLine2, string addressLine3, string addressLine4, string postcode, bool fieldIndicatorSet)
         {
             _fixture
                 .WithAddressLine1("this is a value")
@@ -65,13 +67,69 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part1
             _fixture.VerifyEmployerReviewFieldIndicators(FieldIdentifiers.EmployerAddress, fieldIndicatorSet);
         }
 
+        [Fact]
+        public async Task WhenEmployerLegalEntityUpdated_ShouldFlagEmployerNameFieldIndicator()
+        {
+            _fixture
+                .WithEmployerNameOption(EmployerNameOption.RegisteredName)
+                .Setup();
+
+            var locationEditModel = new LocationEditModel
+            {
+                EmployerAccountId = _fixture.Vacancy.EmployerAccountId,
+                VacancyId = _fixture.Vacancy.Id,
+                SelectedLocation = LocationViewModel.UseOtherLocationConst
+            };
+
+            await _fixture.PostLocationEditModelAsync(locationEditModel, new VacancyEmployerInfoModel
+            {
+                EmployerIdentityOption = EmployerIdentityOption.RegisteredName,
+                AccountLegalEntityPublicHashedId = VacancyOrchestratorTestData.AccountLegalEntityPublicHashedId456
+            });
+
+            _fixture.VerifyEmployerReviewFieldIndicators(FieldIdentifiers.EmployerName, true);
+        }
+
+        [Theory]
+        [InlineData(EmployerNameOption.RegisteredName, EmployerIdentityOption.ExistingTradingName, null, true)]
+        [InlineData(EmployerNameOption.RegisteredName, EmployerIdentityOption.NewTradingName, "this is a new value", true)]
+        [InlineData(EmployerNameOption.TradingName, EmployerIdentityOption.NewTradingName, "this is a new value", true)]
+        [InlineData(EmployerNameOption.TradingName, EmployerIdentityOption.ExistingTradingName, null, false)]
+        [InlineData(EmployerNameOption.RegisteredName, EmployerIdentityOption.RegisteredName, null, false)]
+        public async Task WhenEmployerNameOptionUpdated_ShouldFlagEmployerNameFieldIndicator(EmployerNameOption employerNameOption, EmployerIdentityOption employerIdentityOption, string newTradingName, bool shouldFlagIndicator)
+        {
+            _fixture
+                .WithEmployerNameOption(employerNameOption)
+                .WithTradingName(employerNameOption == EmployerNameOption.TradingName
+                    ? "this is a value"
+                    : null)
+                .Setup();
+
+            var locationEditModel = new LocationEditModel
+            {
+                EmployerAccountId = _fixture.Vacancy.EmployerAccountId,
+                VacancyId = _fixture.Vacancy.Id,
+                SelectedLocation = LocationViewModel.UseOtherLocationConst
+            };
+
+            await _fixture.PostLocationEditModelAsync(locationEditModel, new VacancyEmployerInfoModel
+            {
+                EmployerIdentityOption = employerIdentityOption,
+                NewTradingName = newTradingName,
+                AccountLegalEntityPublicHashedId = _fixture.Vacancy.AccountLegalEntityPublicHashedId
+            });
+
+            _fixture.VerifyEmployerReviewFieldIndicators(FieldIdentifiers.EmployerName, shouldFlagIndicator);
+        }
+
         public class LocationOrchestratorTestsFixture
         {
             private const VacancyRuleSet ValidationRules = VacancyRuleSet.EmployerAddress;
             public VacancyUser User { get; }
             public Vacancy Vacancy { get; }
             public EmployerEditVacancyInfo EmployerEditVacancyInfo { get; }
-            public EmployerProfile EmployerProfile { get;  }
+            public EmployerProfile VacancyEmployerProfile { get;  }
+            public EmployerProfile AlternateEmployerProfile { get;  }
             public LocationOrchestrator Sut {get; private set;}
 
             public LocationOrchestratorTestsFixture()
@@ -81,8 +139,9 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part1
 
                 User = VacancyOrchestratorTestData.GetVacancyUser();
                 Vacancy = VacancyOrchestratorTestData.GetPart1CompleteVacancy();
+                VacancyEmployerProfile = VacancyOrchestratorTestData.GetEmployerProfile(Vacancy.AccountLegalEntityPublicHashedId);
+                AlternateEmployerProfile = VacancyOrchestratorTestData.GetEmployerProfile(VacancyOrchestratorTestData.AccountLegalEntityPublicHashedId456);
                 EmployerEditVacancyInfo = VacancyOrchestratorTestData.GetEmployerEditVacancyInfo();
-                EmployerProfile = VacancyOrchestratorTestData.GetEmployerProfile();
             }
 
             public LocationOrchestratorTestsFixture WithAddressLine1(string addressLine1)
@@ -130,12 +189,25 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part1
                 return this;
             }
 
+            public LocationOrchestratorTestsFixture WithEmployerNameOption(EmployerNameOption employerNameOption)
+            {
+                Vacancy.EmployerNameOption = employerNameOption;
+                return this;
+            }
+
+            public LocationOrchestratorTestsFixture WithTradingName(string tradingName)
+            {
+                VacancyEmployerProfile.TradingName = tradingName;
+                return this;
+            }
+
             public void Setup()
             {
                 MockClient.Setup(x => x.GetEditVacancyInfoAsync(Vacancy.EmployerAccountId)).ReturnsAsync(EmployerEditVacancyInfo);
                 
                 MockRecruitVacancyClient.Setup(x => x.GetVacancyAsync(Vacancy.Id)).ReturnsAsync(Vacancy);
-                MockRecruitVacancyClient.Setup(x => x.GetEmployerProfileAsync(Vacancy.EmployerAccountId, Vacancy.AccountLegalEntityPublicHashedId)).ReturnsAsync(EmployerProfile);
+                MockRecruitVacancyClient.Setup(x => x.GetEmployerProfileAsync(Vacancy.EmployerAccountId, Vacancy.AccountLegalEntityPublicHashedId)).ReturnsAsync(VacancyEmployerProfile);
+                MockRecruitVacancyClient.Setup(x => x.GetEmployerProfileAsync(Vacancy.EmployerAccountId, AlternateEmployerProfile.AccountLegalEntityPublicHashedId)).ReturnsAsync(AlternateEmployerProfile);
                 MockRecruitVacancyClient.Setup(x => x.Validate(Vacancy, ValidationRules)).Returns(new EntityValidationResult());
                 MockRecruitVacancyClient.Setup(x => x.UpdateDraftVacancyAsync(It.IsAny<Vacancy>(), User));
                 MockRecruitVacancyClient.Setup(x => x.UpdateEmployerProfileAsync(It.IsAny<EmployerProfile>(), User));
@@ -144,10 +216,10 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part1
                     Mock.Of<IReviewSummaryService>());
             }
 
-            public async Task PostLocationEditModelAsync(LocationEditModel model)
+            public async Task PostLocationEditModelAsync(LocationEditModel model, VacancyEmployerInfoModel vacancyEmployerInfoModel = null)
             {
-                await Sut.PostLocationEditModelAsync(model, 
-                    new VacancyEmployerInfoModel
+                await Sut.PostLocationEditModelAsync(model,
+                    vacancyEmployerInfoModel ?? new VacancyEmployerInfoModel
                     {
                         VacancyId = Vacancy.Id
                     }, 

@@ -8,14 +8,15 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.HardMocks
 {
     internal class VacancyOrchestratorTestData
     {
-        private const string AccountLegalEntityPublicHashedId = "ABC123";
+        public const string AccountLegalEntityPublicHashedId123 = "ABC123";
+        public const string AccountLegalEntityPublicHashedId456 = "ABC456";
 
         internal static Vacancy GetPart1CompleteVacancy()
         {
             return new Vacancy
             {
                 EmployerAccountId = "EMPLOYER ACCOUNT ID",
-                AccountLegalEntityPublicHashedId = AccountLegalEntityPublicHashedId,
+                AccountLegalEntityPublicHashedId = AccountLegalEntityPublicHashedId123,
                 Id = Guid.Parse("84af954e-5baf-4942-897d-d00180a0839e"),
                 Title = "has a value",
                 NumberOfPositions = 1,
@@ -23,7 +24,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.HardMocks
                 ShortDescription = "has a value",
                 ProgrammeId = "has a value",
                 Wage = new Wage {Duration = 1, WageType = WageType.FixedWage },
-                LegalEntityName = "legal name",
+                LegalEntityName = "LEGAL ENTITY NAME 123",
                 EmployerNameOption = EmployerNameOption.RegisteredName,
                 StartDate = DateTime.Now
             };
@@ -39,12 +40,12 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.HardMocks
             };
         }
 
-        internal static EmployerProfile GetEmployerProfile()
+        internal static EmployerProfile GetEmployerProfile(string accountLegalEntityPublicHashedId123)
         {
             return new EmployerProfile
             {
                 EmployerAccountId = "EMPLOYER ACCOUNT ID",
-                AccountLegalEntityPublicHashedId = AccountLegalEntityPublicHashedId
+                AccountLegalEntityPublicHashedId = accountLegalEntityPublicHashedId123
             };
         }
 
@@ -56,7 +57,21 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.HardMocks
                 {
                     new LegalEntity
                     {
-                        AccountLegalEntityPublicHashedId = AccountLegalEntityPublicHashedId,
+                        Name = "LEGAL ENTITY NAME 123",
+                        AccountLegalEntityPublicHashedId = AccountLegalEntityPublicHashedId123,
+                        Address = new Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo.Address
+                        {
+                            AddressLine1 = "this is a value",
+                            AddressLine2 = "this is a value",
+                            AddressLine3 = "this is a value",
+                            AddressLine4 = "this is a value",
+                            Postcode = "this is a value"
+                        }
+                    },
+                    new LegalEntity
+                    {
+                        Name = "LEGAL ENTITY NAME 456",
+                        AccountLegalEntityPublicHashedId = AccountLegalEntityPublicHashedId456,
                         Address = new Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo.Address
                         {
                             AddressLine1 = "this is a value",
