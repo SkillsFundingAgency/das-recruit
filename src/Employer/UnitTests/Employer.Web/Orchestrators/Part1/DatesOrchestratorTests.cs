@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.UnitTests.Employer.Web.HardMocks;
@@ -41,16 +42,19 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part1
                 .WithDisabilityConfident(false)
                 .Setup();
 
+            var closingDateTime = DateTime.ParseExact(closingDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+            var startDateTime = DateTime.ParseExact(startDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+
             var datesEditModel = new DatesEditModel
             {
                 EmployerAccountId = _fixture.Vacancy.EmployerAccountId,
                 VacancyId = _fixture.Vacancy.Id,
-                ClosingDay = DateTime.Parse(closingDate).Day.ToString(),
-                ClosingMonth = DateTime.Parse(closingDate).Month.ToString(),
-                ClosingYear = DateTime.Parse(closingDate).Year.ToString(),
-                StartDay = DateTime.Parse(startDate).Day.ToString(),
-                StartMonth = DateTime.Parse(startDate).Month.ToString(),
-                StartYear = DateTime.Parse(startDate).Year.ToString(),
+                ClosingDay = closingDateTime.Day.ToString(),
+                ClosingMonth = closingDateTime.Month.ToString(),
+                ClosingYear = closingDateTime.Year.ToString(),
+                StartDay = startDateTime.Day.ToString(),
+                StartMonth = startDateTime.Month.ToString(),
+                StartYear = startDateTime.Year.ToString(),
                 IsDisabilityConfident = isDisablityConfident
             };
 
