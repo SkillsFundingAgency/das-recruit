@@ -1230,7 +1230,7 @@ a[rel="external"]:hover:after {
 /***  End of cookie banner ***/
 
 
-/* GDS notification banner */
+/* govuk notification banner */
 
 .govuk-notification-banner {
   font-family: "nta", Arial, sans-serif;
@@ -1343,7 +1343,7 @@ a[rel="external"]:hover:after {
   text-decoration: none;
 }
 
-/* Additional GDS tag colours */
+/* Additional govuk tag colours */
 
 .govuk-tag--purple {
   color: #3d2375;
@@ -1363,4 +1363,9 @@ a[rel="external"]:hover:after {
 .govuk-tag--green {
   color: #005a30;
   background: #cce2d8;
+}
+
+.govuk-tag--orange {
+  color: #6e3619;
+  background: #fcd6c3;
 }
