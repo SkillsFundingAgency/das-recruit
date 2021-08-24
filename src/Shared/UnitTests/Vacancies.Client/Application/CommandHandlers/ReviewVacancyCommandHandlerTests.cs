@@ -45,6 +45,7 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.CommandHandlers
             vacancy.Status.Should().Be(VacancyStatus.Review);
             vacancy.ReviewDate.Should().Be(now);
             vacancy.ReviewByUser.Should().Be(user);
+            vacancy.ReviewCount.Should().Be(1);
             vacancy.LastUpdatedDate.Should().Be(now);
             vacancy.LastUpdatedByUser.Should().Be(user);
             vacancy.EmployerDescription.Should().Be(expectedDescription);
@@ -77,6 +78,7 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.CommandHandlers
             vacancy.Status.Should().Be(VacancyStatus.Review);
             vacancy.ReviewDate.Should().Be(now);
             vacancy.ReviewByUser.Should().Be(user);
+            vacancy.ReviewCount.Should().Be(1);
             vacancy.LastUpdatedDate.Should().Be(now);
             vacancy.LastUpdatedByUser.Should().Be(user);
             vacancy.EmployerDescription.Should().Be(expectedDescription);
