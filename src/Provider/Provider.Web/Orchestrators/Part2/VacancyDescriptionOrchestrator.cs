@@ -6,6 +6,7 @@ using Esfa.Recruit.Provider.Web.ViewModels;
 using Esfa.Recruit.Provider.Web.ViewModels.Part2.VacancyDescription;
 using Esfa.Recruit.Shared.Web.Orchestrators;
 using Esfa.Recruit.Shared.Web.Services;
+using Esfa.Recruit.Vacancies.Client.Application.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
@@ -13,9 +14,9 @@ using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Provider.Web.Orchestrators.Part2
 {
-    public class VacancyDescriptionOrchestrator : EntityValidatingOrchestrator<Vacancy, VacancyDescriptionEditModel>
+    public class VacancyDescriptionOrchestrator : VacancyValidatingOrchestrator<VacancyDescriptionEditModel>
     {
-        private const VacancyRuleSet ValdationRules = VacancyRuleSet.Description | VacancyRuleSet.TrainingDescription | VacancyRuleSet.OutcomeDescription;
+        private const VacancyRuleSet ValidationRules = VacancyRuleSet.Description | VacancyRuleSet.TrainingDescription | VacancyRuleSet.OutcomeDescription;
         private readonly IProviderVacancyClient _client;
         private readonly IRecruitVacancyClient _vacancyClient;
         private readonly IReviewSummaryService _reviewSummaryService;
@@ -66,14 +67,28 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part2
         public async Task<OrchestratorResponse> PostVacancyDescriptionEditModelAsync(VacancyDescriptionEditModel m, VacancyUser user)
         {
             var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, _vacancyClient, m, RouteNames.VacancyDescription_Index_Post);
-            
-            vacancy.Description = m.VacancyDescription;
-            vacancy.TrainingDescription = m.TrainingDescription;
-            vacancy.OutcomeDescription = m.OutcomeDescription;
-            
+
+            SetVacancyWithProviderReviewFieldIndicators(
+                vacancy.Description,
+                FieldIdResolver.ToFieldId(v => v.Description),
+                vacancy,
+                (v) => { return v.Description = m.VacancyDescription; });
+
+            SetVacancyWithProviderReviewFieldIndicators(
+                vacancy.TrainingDescription,
+                FieldIdResolver.ToFieldId(v => v.TrainingDescription),
+                vacancy,
+                (v) => { return v.TrainingDescription = m.TrainingDescription; });
+
+            SetVacancyWithProviderReviewFieldIndicators(
+                vacancy.OutcomeDescription,
+                FieldIdResolver.ToFieldId(v => v.OutcomeDescription),
+                vacancy,
+                (v) => { return v.OutcomeDescription = m.OutcomeDescription; });
+
             return await ValidateAndExecute(
                 vacancy,
-                v => _vacancyClient.Validate(v, ValdationRules),
+                v => _vacancyClient.Validate(v, ValidationRules),
                 v => _vacancyClient.UpdateDraftVacancyAsync(vacancy, user)
             );
         }

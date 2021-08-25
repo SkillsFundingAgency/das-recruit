@@ -10,10 +10,11 @@ using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Microsoft.Extensions.Logging;
 using Esfa.Recruit.Shared.Web.Extensions;
+using Esfa.Recruit.Vacancies.Client.Application.Services;
 
 namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
 {
-    public class DurationOrchestrator : EntityValidatingOrchestrator<Vacancy, DurationEditModel>
+    public class DurationOrchestrator : VacancyValidatingOrchestrator<DurationEditModel>
     {
         private const VacancyRuleSet ValidationRules = VacancyRuleSet.Duration | VacancyRuleSet.WorkingWeekDescription | VacancyRuleSet.WeeklyHours;
         private readonly IProviderVacancyClient _client;
@@ -75,10 +76,41 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
             if(vacancy.Wage == null)
                 vacancy.Wage = new Wage();
 
-            vacancy.Wage.Duration = int.TryParse(m.Duration, out int duration) ? duration : default(int?);
-            vacancy.Wage.DurationUnit = m.DurationUnit;
-            vacancy.Wage.WorkingWeekDescription = m.WorkingWeekDescription;
-            vacancy.Wage.WeeklyHours = m.WeeklyHours.AsDecimal(2);
+            SetVacancyWithProviderReviewFieldIndicators(
+                vacancy.Wage.Duration,
+                FieldIdResolver.ToFieldId(v => v.Wage.Duration),
+                vacancy,
+                (v) =>
+                {
+                    return v.Wage.Duration = int.TryParse(m.Duration, out int duration) ? duration : default(int?);
+                });
+
+            SetVacancyWithProviderReviewFieldIndicators(
+                vacancy.Wage.DurationUnit,
+                FieldIdResolver.ToFieldId(v => v.Wage.DurationUnit),
+                vacancy,
+                (v) =>
+                {
+                    return v.Wage.DurationUnit = m.DurationUnit;
+                });
+
+            SetVacancyWithProviderReviewFieldIndicators(
+                vacancy.Wage.WorkingWeekDescription,
+                FieldIdResolver.ToFieldId(v => v.Wage.WorkingWeekDescription),
+                vacancy,
+                (v) =>
+                {
+                    return v.Wage.WorkingWeekDescription = m.WorkingWeekDescription;
+                });
+
+            SetVacancyWithProviderReviewFieldIndicators(
+                vacancy.Wage.WeeklyHours,
+                FieldIdResolver.ToFieldId(v => v.Wage.WeeklyHours),
+                vacancy,
+                (v) =>
+                {
+                    return v.Wage.WeeklyHours = m.WeeklyHours.AsDecimal(2);
+                });
 
             return await ValidateAndExecute(
                 vacancy, 
