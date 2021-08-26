@@ -76,7 +76,8 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part2
             var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, _vacancyClient, vrm, RouteNames.Skills_Post);
 
             var currentSkills = new List<string>();
-            currentSkills.AddRange(vacancy.Skills);
+            if(vacancy.Skills != null)
+                currentSkills.AddRange(vacancy.Skills);
 
             SetVacancyWithProviderReviewFieldIndicators(
                 currentSkills,

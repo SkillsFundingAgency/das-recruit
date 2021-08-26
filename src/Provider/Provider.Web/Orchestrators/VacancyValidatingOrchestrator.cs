@@ -22,20 +22,21 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             Func<Vacancy, T> setFunc
             )
         {
-            if (vacancy.Status != VacancyStatus.Rejected)
-                return;
-                
-            PopulateProviderReviewFieldIndicators(vacancy);
-
             var newValue = setFunc(vacancy);
-            if (!JsonConvert.SerializeObject(currentValue).Equals(JsonConvert.SerializeObject(newValue)))
+            
+            if (vacancy.Status == VacancyStatus.Rejected)
             {
-                foreach (var fieldIdentifier in ReviewFieldMappingLookups.GetPreviewReviewFieldIndicators().VacancyPropertyMappingsLookup[fieldId])
+                PopulateProviderReviewFieldIndicators(vacancy);
+
+                if (!JsonConvert.SerializeObject(currentValue).Equals(JsonConvert.SerializeObject(newValue)))
                 {
-                    var changedIndicator = vacancy.ProviderReviewFieldIndicators.Where(p => p.FieldIdentifier == fieldIdentifier).FirstOrDefault();
-                    if (changedIndicator != null)
+                    foreach (var fieldIdentifier in ReviewFieldMappingLookups.GetPreviewReviewFieldIndicators().VacancyPropertyMappingsLookup[fieldId])
                     {
-                        changedIndicator.IsChangeRequested = true;
+                        var changedIndicator = vacancy.ProviderReviewFieldIndicators.Where(p => p.FieldIdentifier == fieldIdentifier).FirstOrDefault();
+                        if (changedIndicator != null)
+                        {
+                            changedIndicator.IsChangeRequested = true;
+                        }
                     }
                 }
             }
