@@ -63,6 +63,7 @@ namespace Esfa.Recruit.Employer.Web.Mappings
             vm.OutcomeDescription = vacancy.OutcomeDescription;
             vm.PossibleStartDate = vacancy.StartDate?.AsGdsDate();
             vm.ProviderName = vacancy.TrainingProvider?.Name;
+            vm.ProviderReviewFieldIndicators = vacancy.ProviderReviewFieldIndicators;
             vm.Qualifications = vacancy.Qualifications.SortQualifications(allQualifications).AsText();
             vm.ShortDescription = vacancy.ShortDescription;
             vm.Skills = vacancy.Skills ?? Enumerable.Empty<string>();
