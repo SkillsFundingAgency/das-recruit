@@ -6,6 +6,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels
 {
     public abstract class DisplayVacancyViewModel
     {
+        public VacancyStatus Status { get; set; }
         public string ApplicationInstructions { get; internal set; }
         public ApplicationMethod? ApplicationMethod { get; internal set; }
         public string ApplicationUrl { get; internal set; }

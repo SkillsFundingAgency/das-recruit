@@ -1,6 +1,7 @@
 ﻿@using Microsoft.AspNetCore.Html
 @using Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview
 @using Esfa.Recruit.Shared.Web.Mappers
+@using Esfa.Recruit.Vacancies.Client.Domain.Entities
 @{ 
     ViewBag.Vpv = "/recruitment/employer/page-vacancy-preview";
     ViewBag.Title = "Preview your advert"; 
@@ -10,7 +11,7 @@
 
 
 @functions
-{ 
+{
     const string EmptySectionClass = "preview-empty";
     const string ErrorSectionClass = "preview-error";
     const string ReviewSectionClass = "preview-review";
@@ -46,7 +47,12 @@
 
     public string ProviderReviewClass(VacancyPreviewViewModel model, string[] fieldIdentifiers)
     {
-        return (model.ProviderReviewFieldIndicators?.Any(p => fieldIdentifiers.Contains(p.FieldIdentifier) && p.IsChangeRequested) ?? false) ? "govuk-inset-text" : string.Empty;
+        if (model.Status != VacancyStatus.Review && model.Status != VacancyStatus.Referred)
+            return string.Empty;
+
+        return (model.ProviderReviewFieldIndicators?.Any(p => fieldIdentifiers.Contains(p.FieldIdentifier) && p.IsChangeRequested) ?? false)
+            ? "govuk-inset-text"
+            : string.Empty;
     }
 
     public string ApprenticeshipSummaryProviderReviewClass(VacancyPreviewViewModel model)
@@ -117,6 +123,9 @@
 
     public bool ShowProviderReviewFlag(VacancyPreviewViewModel model, string fieldIdentifier)
     {
+        if (model.Status != VacancyStatus.Review && model.Status != VacancyStatus.Referred)
+            return false;
+
         return model.ProviderReviewFieldIndicators?.Any(p => p.FieldIdentifier == fieldIdentifier && p.IsChangeRequested) ?? false;
     }
 
