@@ -53,7 +53,8 @@ namespace Esfa.Recruit.Employer.Web.Extensions
 
             return new FooterViewModel(new FooterConfiguration
                 {
-                    ManageApprenticeshipsBaseUrl = externalLinks?.ManageApprenticeshipSiteUrl
+                    ManageApprenticeshipsBaseUrl = externalLinks?.ManageApprenticeshipSiteUrl,
+                    AuthenticationAuthorityUrl = externalLinks?.EmployerIdamsSiteUrl
                 },
                 new UserContext
                 {
