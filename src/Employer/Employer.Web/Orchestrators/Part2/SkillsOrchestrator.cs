@@ -80,7 +80,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
             }
 
             var currentSkills = new List<string>();
-            currentSkills.AddRange(vacancy.Skills);
+            if (vacancy.Skills != null)
+                currentSkills.AddRange(vacancy.Skills);
 
             SetVacancyWithEmployerReviewFieldIndicators(
                 currentSkills,
