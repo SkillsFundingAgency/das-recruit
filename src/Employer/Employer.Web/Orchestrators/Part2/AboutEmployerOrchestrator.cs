@@ -7,6 +7,7 @@ using Esfa.Recruit.Employer.Web.ViewModels;
 using Esfa.Recruit.Employer.Web.ViewModels.AboutEmployer;
 using Esfa.Recruit.Shared.Web.Orchestrators;
 using Esfa.Recruit.Shared.Web.Services;
+using Esfa.Recruit.Vacancies.Client.Application.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
@@ -14,7 +15,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
 {
-    public class AboutEmployerOrchestrator : EntityValidatingOrchestrator<Vacancy, AboutEmployerEditModel>
+    public class AboutEmployerOrchestrator : VacancyValidatingOrchestrator<AboutEmployerEditModel>
     {
         private const VacancyRuleSet ValidationRules = VacancyRuleSet.EmployerDescription | VacancyRuleSet.EmployerWebsiteUrl;
         private readonly IEmployerVacancyClient _client;
@@ -64,8 +65,17 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
         {
             var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, _vacancyClient, m, RouteNames.AboutEmployer_Post);
 
-            vacancy.EmployerDescription = m.EmployerDescription;
-            vacancy.EmployerWebsiteUrl = m.EmployerWebsiteUrl;
+            SetVacancyWithEmployerReviewFieldIndicators(
+                vacancy.EmployerDescription,
+                FieldIdResolver.ToFieldId(v => v.EmployerDescription),
+                vacancy,
+                (v) => { return v.EmployerDescription = m.EmployerDescription; });
+
+            SetVacancyWithEmployerReviewFieldIndicators(
+                vacancy.EmployerWebsiteUrl,
+                FieldIdResolver.ToFieldId(v => v.EmployerWebsiteUrl),
+                vacancy,
+                (v) => { return v.EmployerWebsiteUrl = m.EmployerWebsiteUrl; });
 
             return await ValidateAndExecute(
                 vacancy,
