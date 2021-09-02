@@ -8,7 +8,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Preview
     {
         private const int RejectedReasonMaxCharacters = 200;
 
-        [Required(ErrorMessage = "You need to submit or reject the advert")]
+        [Required(ErrorMessage = "Confirm if you want to submit or reject this advert ")]
         public bool? SubmitToEsfa { get; set; }
 
         public string RejectedReason { get; set; }
