@@ -8,6 +8,7 @@ using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Shared.Web.Helpers;
 using Esfa.Recruit.Shared.Web.Orchestrators;
 using Esfa.Recruit.Shared.Web.Services;
+using Esfa.Recruit.Vacancies.Client.Application.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
@@ -16,7 +17,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 {
-    public class TrainingOrchestrator : EntityValidatingOrchestrator<Vacancy, TrainingEditModel>
+    public class TrainingOrchestrator : VacancyValidatingOrchestrator<TrainingEditModel>
     {
         private const VacancyRuleSet ValidationRules = VacancyRuleSet.TrainingProgramme;
         private readonly IEmployerVacancyClient _client;
@@ -104,8 +105,15 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
         public async Task<OrchestratorResponse> PostConfirmTrainingEditModelAsync(ConfirmTrainingEditModel m, VacancyUser user)
         {
             var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, _vacancyClient, m, RouteNames.Training_Confirm_Post);
-            
-            vacancy.ProgrammeId = m.ProgrammeId;
+
+            SetVacancyWithEmployerReviewFieldIndicators(
+                vacancy.ProgrammeId,
+                FieldIdResolver.ToFieldId(v => v.ProgrammeId),
+                vacancy,
+                (v) =>
+                {
+                    return v.ProgrammeId = m.ProgrammeId;
+                });
 
             return await ValidateAndExecute(
                 vacancy, 

@@ -5,6 +5,7 @@ using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels;
 using Esfa.Recruit.Shared.Web.Orchestrators;
 using Esfa.Recruit.Shared.Web.Services;
+using Esfa.Recruit.Vacancies.Client.Application.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
@@ -12,7 +13,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
 {
-    public class EmployerContactDetailsOrchestrator : EntityValidatingOrchestrator<Vacancy, EmployerContactDetailsEditModel>
+    public class EmployerContactDetailsOrchestrator : VacancyValidatingOrchestrator<EmployerContactDetailsEditModel>
     {
         private const VacancyRuleSet ValidationRules = VacancyRuleSet.EmployerContactDetails;
         private readonly IEmployerVacancyClient _client;
@@ -63,12 +64,26 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
         {
             var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, _vacancyClient, m, RouteNames.EmployerContactDetails_Post);
 
-            vacancy.EmployerContact = new ContactDetail
-            {
-                Name = m.EmployerContactName,
-                Email = m.EmployerContactEmail,
-                Phone = m.EmployerContactPhone
-            };
+            if (vacancy.EmployerContact == null)
+                vacancy.EmployerContact = new ContactDetail();
+
+            SetVacancyWithEmployerReviewFieldIndicators(
+                vacancy.EmployerContact.Name,
+                FieldIdResolver.ToFieldId(v => v.EmployerContact.Name),
+                vacancy,
+                (v) => { return v.EmployerContact.Name = m.EmployerContactName; });
+
+            SetVacancyWithEmployerReviewFieldIndicators(
+                vacancy.EmployerContact.Email,
+                FieldIdResolver.ToFieldId(v => v.EmployerContact.Email),
+                vacancy,
+                (v) => { return v.EmployerContact.Email = m.EmployerContactEmail; });
+
+            SetVacancyWithEmployerReviewFieldIndicators(
+                vacancy.EmployerContact.Phone,
+                FieldIdResolver.ToFieldId(v => v.EmployerContact.Phone),
+                vacancy,
+                (v) => { return v.EmployerContact.Phone = m.EmployerContactPhone; });
 
             return await ValidateAndExecute(
                 vacancy,

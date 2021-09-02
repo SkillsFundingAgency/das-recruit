@@ -151,6 +151,8 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.CommandHandlers
                 {nameof(Vacancy.EmployerLocation), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.Cloned)},
                 {nameof(Vacancy.EmployerName), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.Cloned)},
                 {nameof(Vacancy.EmployerNameOption), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.Cloned)},
+                {nameof(Vacancy.EmployerReviewFieldIndicators), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.IsNull)},
+                {nameof(Vacancy.EmployerRejectedReason), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.IsNull)},
                 {nameof(Vacancy.LegalEntityName), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.Cloned)},
                 {nameof(Vacancy.EmployerWebsiteUrl), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.Cloned)},
                 {nameof(Vacancy.GeoCodeMethod), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.Cloned)},

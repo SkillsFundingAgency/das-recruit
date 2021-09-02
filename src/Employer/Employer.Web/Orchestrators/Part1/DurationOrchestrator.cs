@@ -6,6 +6,7 @@ using Esfa.Recruit.Employer.Web.ViewModels.Part1.Duration;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Shared.Web.Orchestrators;
 using Esfa.Recruit.Shared.Web.Services;
+using Esfa.Recruit.Vacancies.Client.Application.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
@@ -13,7 +14,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 {
-    public class DurationOrchestrator : EntityValidatingOrchestrator<Vacancy, DurationEditModel>
+    public class DurationOrchestrator : VacancyValidatingOrchestrator<DurationEditModel>
     {
         private const VacancyRuleSet ValidationRules = VacancyRuleSet.Duration | VacancyRuleSet.WorkingWeekDescription | VacancyRuleSet.WeeklyHours;
         private readonly IEmployerVacancyClient _client;
@@ -72,11 +73,42 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             if(vacancy.Wage == null)
                 vacancy.Wage = new Wage();
 
-            vacancy.Wage.Duration = int.TryParse(m.Duration, out int duration) ? duration : default(int?);
-            vacancy.Wage.DurationUnit = m.DurationUnit;
-            vacancy.Wage.WorkingWeekDescription = m.WorkingWeekDescription;
-            vacancy.Wage.WeeklyHours = m.WeeklyHours.AsDecimal(2);
-            
+            SetVacancyWithEmployerReviewFieldIndicators(
+                vacancy.Wage.Duration,
+                FieldIdResolver.ToFieldId(v => v.Wage.Duration),
+                vacancy,
+                (v) =>
+                {
+                    return v.Wage.Duration = int.TryParse(m.Duration, out int duration) ? duration : default(int?);
+                });
+
+            SetVacancyWithEmployerReviewFieldIndicators(
+                vacancy.Wage.DurationUnit,
+                FieldIdResolver.ToFieldId(v => v.Wage.DurationUnit),
+                vacancy,
+                (v) =>
+                {
+                    return v.Wage.DurationUnit = m.DurationUnit;
+                });
+
+            SetVacancyWithEmployerReviewFieldIndicators(
+                vacancy.Wage.WorkingWeekDescription,
+                FieldIdResolver.ToFieldId(v => v.Wage.WorkingWeekDescription),
+                vacancy,
+                (v) =>
+                {
+                    return v.Wage.WorkingWeekDescription = m.WorkingWeekDescription;
+                });
+
+            SetVacancyWithEmployerReviewFieldIndicators(
+                vacancy.Wage.WeeklyHours,
+                FieldIdResolver.ToFieldId(v => v.Wage.WeeklyHours),
+                vacancy,
+                (v) =>
+                {
+                    return v.Wage.WeeklyHours = m.WeeklyHours.AsDecimal(2);
+                });
+
             return await ValidateAndExecute(
                 vacancy, 
                 v => _vacancyClient.Validate(v, ValidationRules),
