@@ -21,6 +21,7 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
         public VacancyUser SubmittedByUser { get; set; }
         public DateTime? ReviewDate { get; set; }
         public VacancyUser ReviewByUser { get; set; }
+        public int ReviewCount { get; set; }
         public DateTime? ApprovedDate { get; set; }
         public DateTime? LiveDate { get; set; }
 
