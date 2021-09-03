@@ -11,6 +11,7 @@ using Esfa.Recruit.Shared.Web.Orchestrators;
 using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
+using Esfa.Recruit.Vacancies.Client.Application.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
@@ -19,7 +20,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 {
-    public class TrainingProviderOrchestrator : EntityValidatingOrchestrator<Vacancy, ConfirmTrainingProviderEditModel>
+    public class TrainingProviderOrchestrator : VacancyValidatingOrchestrator<ConfirmTrainingProviderEditModel>
     {
         private const VacancyRuleSet ValidationRules = VacancyRuleSet.TrainingProvider;
         private readonly IEmployerVacancyClient _client;
@@ -147,6 +148,16 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 
             var vacancy = vacancyTask.Result;
             var provider = providerTask.Result;
+
+            // this has diverged from the usual pattern because only a single individual property is a review field
+            SetVacancyWithEmployerReviewFieldIndicators(
+                        vacancy.TrainingProvider?.Ukprn,
+                        FieldIdResolver.ToFieldId(v => v.TrainingProvider.Ukprn),
+                        vacancy,
+                        (v) =>
+                        {
+                            return provider.Ukprn;
+                        });
 
             vacancy.TrainingProvider = provider;
 
