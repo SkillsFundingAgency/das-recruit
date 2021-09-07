@@ -5,6 +5,7 @@ using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Provider.Web.ViewModels.Part2.ShortDescription;
 using Esfa.Recruit.Shared.Web.Orchestrators;
 using Esfa.Recruit.Shared.Web.Services;
+using Esfa.Recruit.Vacancies.Client.Application.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
@@ -12,7 +13,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
 {
-    public class ShortDescriptionOrchestrator : EntityValidatingOrchestrator<Vacancy, ShortDescriptionEditModel>
+    public class ShortDescriptionOrchestrator : VacancyValidatingOrchestrator<ShortDescriptionEditModel>
     {
         private const VacancyRuleSet ValidationRules = VacancyRuleSet.ShortDescription;
         private readonly IProviderVacancyClient _providerVacancyClient;
@@ -63,7 +64,14 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
             var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_providerVacancyClient, 
                 _recruitVacancyClient, m, RouteNames.ShortDescription_Post);
 
-            vacancy.ShortDescription = m.ShortDescription;
+            SetVacancyWithProviderReviewFieldIndicators(
+                vacancy.ShortDescription,
+                FieldIdResolver.ToFieldId(v => v.ShortDescription),
+                vacancy,
+                (v) =>
+                {
+                    return v.ShortDescription = m.ShortDescription;
+                });
 
             return await ValidateAndExecute(
                 vacancy, 

@@ -9,6 +9,7 @@ using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Shared.Web.Orchestrators;
 using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Shared.Web.ViewModels.Skills;
+using Esfa.Recruit.Vacancies.Client.Application.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
@@ -16,7 +17,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Provider.Web.Orchestrators.Part2
 {
-    public class SkillsOrchestrator : EntityValidatingOrchestrator<Vacancy, SkillsEditModel>
+    public class SkillsOrchestrator : VacancyValidatingOrchestrator<SkillsEditModel>
     {
         private const VacancyRuleSet ValidationRules = VacancyRuleSet.Skills;
         private readonly IProviderVacancyClient _client;
@@ -74,9 +75,22 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part2
         {
             var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, _vacancyClient, vrm, RouteNames.Skills_Post);
 
-            _skillsHelper.SetVacancyFromEditModel(vacancy, m);
+            var currentSkills = new List<string>();
+            if(vacancy.Skills != null)
+                currentSkills.AddRange(vacancy.Skills);
 
-            //if we are adding a skill then just validate and don't persist
+            SetVacancyWithProviderReviewFieldIndicators(
+                currentSkills,
+                FieldIdResolver.ToFieldId(v => v.Skills),
+                vacancy,
+                (v) =>
+                {
+                    _skillsHelper.SetVacancyFromEditModel(v, m);
+                    return v.Skills;
+                });
+
+            // when adding a custom skill the vacancy is not saved immediately, the new custom skill is
+            // validated but all the updates are saved later in a single operation
             var validateOnly = m.IsAddingCustomSkill;
 
             return await ValidateAndExecute(vacancy,
