@@ -43,7 +43,8 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
                 Title = vacancy.Title,
                 VacancyReference = vacancy.VacancyReference?.ToString(),
                 IsResubmit = isResubmit,
-                HasNotificationsSet = preferences != null && preferences.NotificationTypes > NotificationTypes.None
+                HasNotificationsSet = preferences != null && preferences.NotificationTypes > NotificationTypes.None,
+                IsVacancyRejectedByESFANotificationSelected = preferences.NotificationTypes.HasFlag(NotificationTypes.VacancyRejected) 
             };
 
             return vm;
