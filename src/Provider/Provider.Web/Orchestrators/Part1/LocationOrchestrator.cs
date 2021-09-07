@@ -16,10 +16,11 @@ using System.Collections.Generic;
 using Esfa.Recruit.Provider.Web.Models;
 using Esfa.Recruit.Shared.Web.Models;
 using Address = Esfa.Recruit.Vacancies.Client.Domain.Entities.Address;
+using Esfa.Recruit.Vacancies.Client.Application.Services;
 
 namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
 {
-    public class LocationOrchestrator : EntityValidatingOrchestrator<Vacancy, LocationEditModel>
+    public class LocationOrchestrator : VacancyValidatingOrchestrator<LocationEditModel>
     {
         private const VacancyRuleSet ValidationRules = VacancyRuleSet.EmployerAddress;
         private readonly IProviderVacancyClient _providerVacancyClient;
@@ -130,14 +131,91 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
 
             var matchingAddress = GetMatchingAddress(newLocation, allLocations);
 
-            vacancy.EmployerLocation = matchingAddress ?? ConvertToDomainAddress(locationEditModel);
+            var employerLocation = matchingAddress != null ? matchingAddress : ConvertToDomainAddress(locationEditModel);
 
-            //if cookie is found update legal entity and name option
+            // this has diverged from the usual pattern because the individual properties are review fields
+            SetVacancyWithProviderReviewFieldIndicators(
+                vacancy.EmployerLocation?.AddressLine1,
+                FieldIdResolver.ToFieldId(v => v.EmployerLocation.AddressLine1),
+                vacancy,
+                (v) =>
+                {
+                    return employerLocation.AddressLine1;
+                });
+
+            SetVacancyWithProviderReviewFieldIndicators(
+                vacancy.EmployerLocation?.AddressLine2,
+                FieldIdResolver.ToFieldId(v => v.EmployerLocation.AddressLine2),
+                vacancy,
+                (v) =>
+                {
+                    return employerLocation.AddressLine2;
+                });
+
+            SetVacancyWithProviderReviewFieldIndicators(
+                vacancy.EmployerLocation?.AddressLine3,
+                FieldIdResolver.ToFieldId(v => v.EmployerLocation.AddressLine3),
+                vacancy,
+                (v) =>
+                {
+                    return employerLocation.AddressLine3;
+                });
+
+            SetVacancyWithProviderReviewFieldIndicators(
+                vacancy.EmployerLocation?.AddressLine4,
+                FieldIdResolver.ToFieldId(v => v.EmployerLocation.AddressLine4),
+                vacancy,
+                (v) =>
+                {
+                    return employerLocation.AddressLine4;
+                });
+
+            SetVacancyWithProviderReviewFieldIndicators(
+                vacancy.EmployerLocation?.Postcode,
+                FieldIdResolver.ToFieldId(v => v.EmployerLocation.Postcode),
+                vacancy,
+                (v) =>
+                {
+                    return employerLocation.Postcode;
+                });
+
+            vacancy.EmployerLocation = employerLocation;
+
+            // if cookie is found update legal entity and name option
             if (employerInfoModel != null)
             {
-                vacancy.LegalEntityName = selectedOrganisation.Name;
+                SetVacancyWithProviderReviewFieldIndicators(
+                    vacancy.LegalEntityName,
+                    FieldIdResolver.ToFieldId(v => v.EmployerName),
+                    vacancy,
+                    (v) =>
+                    {
+                        return v.LegalEntityName = selectedOrganisation.Name;
+                    });
+
+                SetVacancyWithProviderReviewFieldIndicators(
+                    vacancy.EmployerNameOption,
+                    FieldIdResolver.ToFieldId(v => v.EmployerName),
+                    vacancy,
+                    (v) =>
+                    {
+                        return v.EmployerNameOption = employerInfoModel.EmployerIdentityOption?.ConvertToDomainOption();
+                    });
+
+                if (employerInfoModel.EmployerIdentityOption == EmployerIdentityOption.NewTradingName)
+                {
+                    SetVacancyWithProviderReviewFieldIndicators(
+                        employerProfile.TradingName,
+                        FieldIdResolver.ToFieldId(v => v.EmployerName),
+                        vacancy,
+                        (e) =>
+                        {
+                            // the indicator will be set for the vacancy when the employer profile will change to the new trading name
+                            return employerInfoModel.NewTradingName;
+                        });
+                }
+
                 vacancy.AccountLegalEntityPublicHashedId = selectedOrganisation.AccountLegalEntityPublicHashedId;
-                vacancy.EmployerNameOption = employerInfoModel.EmployerIdentityOption?.ConvertToDomainOption();
                 vacancy.AnonymousReason = vacancy.IsAnonymous ? employerInfoModel.AnonymousReason : null;
                 vacancy.EmployerName = vacancy.IsAnonymous ? employerInfoModel.AnonymousName : null;
             }
