@@ -66,6 +66,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 
             vacancy.Status = VacancyStatus.Review;
             vacancy.ReviewDate = now;
+            vacancy.ReviewCount += 1;
             vacancy.ReviewByUser = message.User;
             vacancy.LastUpdatedDate = now;
             vacancy.LastUpdatedByUser = message.User;

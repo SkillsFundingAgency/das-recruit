@@ -7,6 +7,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview
     {
         [Required(ErrorMessage = "Select if you want to reject this job advert")]
         public bool? RejectJobAdvert { get; set; }
+        public string RejectionReason { get; set; }
 
         public string TrainingProviderName { get; set; }
     }  

@@ -25,6 +25,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
         {
             var vacancy = await Utility.GetAuthorisedVacancyAsync(_client, _vacancyClient, vrm, RouteNames.Reviewed_Index_Get);
             var employer = await _client.GetProviderEmployerVacancyDataAsync(vrm.Ukprn, vacancy.EmployerAccountId);
+            var preferences = await _vacancyClient.GetUserNotificationPreferencesAsync(vacancyUser.UserId);
 
             if (vacancy.Status != VacancyStatus.Review)
                 throw new InvalidStateException(string.Format(ErrorMessages.VacancyNotReviewedSuccessfully, vacancy.Title));
@@ -34,7 +35,8 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
                 Title = vacancy.Title,
                 VacancyReference = vacancy.VacancyReference?.ToString(),
                 EmployerName = employer.Name,
-                IsResubmit = vacancy.ReviewDate.HasValue
+                IsResubmit = vacancy.ReviewCount > 1,
+                IsVacancyRejectedByEmployerNotificationSelected = preferences.NotificationTypes.HasFlag(NotificationTypes.VacancyRejectedByEmployer)
             };
 
             return vm;

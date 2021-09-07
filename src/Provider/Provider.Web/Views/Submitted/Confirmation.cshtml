@@ -4,42 +4,52 @@
     ViewBag.GaData.Vpv = "/recruitment/provider/page-vacancy-submitted-for-approval";
 }
 
-<h1 class="govuk-heading-l">@Model.Title</h1>
-
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-        <div asp-hide="@Model.IsResubmit" class="govuk-panel govuk-panel--confirmation">
-            <h1 class="govuk-panel__title">
-                Vacancy submitted for approval
+        <div class="govuk-panel govuk-panel--confirmation">
+            <h1 asp-hide="@Model.IsResubmit" class="govuk-panel__title">
+                Vacancy submitted to ESFA
+            </h1>
+            <h1 asp-show="@Model.IsResubmit" class="govuk-panel__title">
+                Vacancy resubmitted to ESFA
             </h1>
             <div class="govuk-panel__body">
                 <p asp-show="@Model.HasVacancyReference">
-                    The vacancy reference number is <br>
+                    Your reference number <br>
                     <strong class="govuk-!-font-weight-bold">VAC@(Model.VacancyReference)</strong>
                 </p>
             </div>
         </div>
-        <div asp-show="@Model.IsResubmit" class="govuk-panel govuk-panel--confirmation">
-            <h1 class="govuk-panel__title">
-                Vacancy resubmitted for approval
-            </h1>
-        </div>
-        <h2 class="govuk-heading-m">Next steps</h2>
 
-        <div asp-show="@Model.HasNotificationsSet">
-            <p class="govuk-body">We’ll check the vacancy and let you know by email within one working day if you need to make any edits. <esfaFeatureEnabled name="@FeatureNames.SetNotificationPreferences"><a asp-route="@RouteNames.ManageNotifications_Get">Manage your recruitment emails</a>.</esfaFeatureEnabled></p>
-            <p class="govuk-body">When the vacancy is approved, it will appear on the Find an apprenticeship service.</p>
-        </div>
-        <div asp-hide="@Model.HasNotificationsSet">
-            <p class="govuk-body">We’ll check the vacancy and tell you within one working day on the dashboard if you need to make any edits. <esfaFeatureEnabled name="@FeatureNames.SetNotificationPreferences">Visit <a asp-route="@RouteNames.ManageNotifications_Get">Manage your recruitment emails</a> if you’d also like to get an email.</esfaFeatureEnabled></p>
-            <p class="govuk-body">When the vacancy is approved, it will appear on the Find an apprenticeship service.</p>
-        </div>
+        <h2 class="govuk-heading-m">What happens next</h2>
 
-        <div class="govuk-form-group inline">
-            <div class="govuk-form-group">
-                <a asp-route="@RouteNames.Vacancies_Get" class="govuk-button">Return to dashboard</a>
-                <a asp-route="@RouteNames.Employer_Get" class="govuk-link das-button-link">Create another vacancy</a>
-            </div>
-        </div>
+        @if (Model.IsVacancyRejectedByESFANotificationSelected)
+        {
+            <p class="govuk-body">
+                The <abbr>ESFA</abbr> will check the vacancy and let you know by email, within one working day, if you need to make any edits.
+            </p>
+        }
+        else
+        {
+            <p class="govuk-body">
+                The <abbr>ESFA</abbr> will check the vacancy and will tell you within one working day, on the Recruitment dashboard within rejected vacancies, if you need to make any edits.
+            </p>
+        }
+
+        <p class="govuk-body">
+            <a class="govuk-link" asp-route="@RouteNames.ManageNotifications_Get">Manage the frequency of your recruitment emails</a>
+        </p>
+
+        <p class="govuk-body">
+            When the vacancy is approved, it will appear on Find an apprenticeship.
+        </p>
+
+        <p class="govuk-body">
+            <a class="govuk-link" asp-route="@RouteNames.Dashboard_Get">Return to recruitment</a>
+        </p>
+
+        <p class="govuk-body">
+            <a class="govuk-link" asp-route="@RouteNames.Employer_Get">Create another vacancy</a>
+        </p>
     </div>
 </div>
