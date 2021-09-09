@@ -296,3 +296,5 @@ internal-nlog.txt
 
 # NuGet config
 /src/nuget.config
+
+src/API/Recruit.Api/appsettings.Development.json

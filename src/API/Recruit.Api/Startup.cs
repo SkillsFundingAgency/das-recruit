@@ -12,21 +12,26 @@ namespace SFA.DAS.Recruit.Api
 
         public Startup(IConfiguration configuration, IWebHostEnvironment env)
         {
-            Configuration = new ConfigurationBuilder()
+            var config = new ConfigurationBuilder()
                 .AddConfiguration(configuration)
                 .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.json")
-                .AddJsonFile("appsettings.Development.json", optional: true)
-                .AddAzureTableStorage(
+                .AddEnvironmentVariables();
+                
+            config
+                .AddJsonFile("appsettings.json", optional:true)
+                .AddJsonFile("appsettings.Development.json", optional: true);
+            
+            config.AddAzureTableStorage(
                     options => {
                         options.ConfigurationKeys = configuration["ConfigNames"].Split(",");
                         options.EnvironmentName = configuration["Environment"];
                         options.StorageConnectionString = configuration["ConfigurationStorageConnectionString"];
                         options.PreFixConfigurationKeys = false;
                     }
-                )
-                .Build();
+                );
 
+            Configuration = config.Build();
+            
             HostingEnvironment = env;
         }
     }
