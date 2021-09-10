@@ -54,7 +54,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.TrainingPro
 
             var retryPolicy = GetApiRetryPolicy();
 
-            var result = await retryPolicy.ExecuteAsync(context => _outerApiClient.Get<GetProvidersResponse>(new GetProvidersRequest()), new Dictionary<string, object>() {{ "apiCall", "Providers" }});
+            var result = await retryPolicy.Execute(context => _outerApiClient.Get<GetProvidersResponse>(new GetProvidersRequest()), new Dictionary<string, object>() {{ "apiCall", "Providers" }});
 
             return result.Providers.Select(c=>(TrainingProvider)c);
 
@@ -64,7 +64,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.TrainingPro
         {
             return Policy
                 .Handle<Exception>()
-                .WaitAndRetryAsync(new[]
+                .WaitAndRetry(new[]
                 {
                     TimeSpan.FromSeconds(1),
                     TimeSpan.FromSeconds(2),

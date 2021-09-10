@@ -89,7 +89,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.Communication
 
             email.Tokens.Add(UserNameTokenKey, request.Recipient.Name);
 
-            await _retryPolicy.ExecuteAsync(context => _dasNotifyClient.SendEmail(email),
+            await _retryPolicy.Execute(context => _dasNotifyClient.SendEmail(email),
                                             new Context(nameof(SendEmail)));
             _logger.LogInformation($"Successfully sent message of type {request.RequestType} to {request.Recipient.UserId}");
         }
@@ -98,7 +98,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.Communication
         {
             return Policy
                     .Handle<HttpRequestException>()
-                    .WaitAndRetryAsync(new[]
+                    .WaitAndRetry(new[]
                     {
                         TimeSpan.FromSeconds(1),
                         TimeSpan.FromSeconds(2),

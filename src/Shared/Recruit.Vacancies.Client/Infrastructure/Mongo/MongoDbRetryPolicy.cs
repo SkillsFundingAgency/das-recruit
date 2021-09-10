@@ -22,7 +22,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo
         private static RetryPolicy AddWaitAndRetry(PolicyBuilder policyBuilder, ILogger logger)
         {
             return policyBuilder
-                .WaitAndRetryAsync(new[]
+                .WaitAndRetry(new[]
                 {
                     TimeSpan.FromSeconds(1),
                     TimeSpan.FromSeconds(2),
