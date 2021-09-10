@@ -103,7 +103,6 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 
             vacancy.EmployerDescription = employerDescriptionTask.Result;
             vacancy.EmployerName = employerNameTask.Result;
-            vacancy.EmployerRejectedReason = null;
 
             return await ValidateAndExecute(
                 vacancy,
