@@ -13,7 +13,7 @@ using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 {
-    public class CloneVacancyCommandHandler: IRequestHandler<CloneVacancyCommand>
+    public class CloneVacancyCommandHandler: IRequestHandler<CloneVacancyCommand, Unit>
     {
         private readonly ILogger<CloneVacancyCommandHandler> _logger;
         private readonly IVacancyRepository _repository;
@@ -32,7 +32,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             _timeProvider = timeProvider;
         }
 
-        public async Task Handle(CloneVacancyCommand message, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(CloneVacancyCommand message, CancellationToken cancellationToken)
         {
             _logger.LogInformation("Cloning new vacancy with id: {vacancyId} from vacancy with id: {clonedVacancyId}", message.IdOfVacancyToClone, message.NewVacancyId);
 
@@ -53,6 +53,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             {
                 VacancyId = clone.Id
             });
+            return Unit.Value;
         }
 
         private Vacancy CreateClone(CloneVacancyCommand message, Vacancy vacancy)

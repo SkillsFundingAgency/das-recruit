@@ -8,7 +8,7 @@ using MediatR;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 {
-    public class UpdateUserAccountCommandHandler : IRequestHandler<UpdateUserAccountCommand>
+    public class UpdateUserAccountCommandHandler : IRequestHandler<UpdateUserAccountCommand, Unit>
     {
         private readonly IRecruitVacancyClient _client;
         private readonly IUserRepository _userRepository;
@@ -18,7 +18,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             _client = client;
         }
 
-        public async Task Handle(UpdateUserAccountCommand message, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(UpdateUserAccountCommand message, CancellationToken cancellationToken)
         {
             var accounts = await _client.GetEmployerIdentifiersAsync(message.IdamsUserId);
 
@@ -27,6 +27,8 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             user.EmployerAccountIds = accounts.ToList();
 
             await _userRepository.UpsertUserAsync(user);
+            
+            return Unit.Value;
         }
     }
 }

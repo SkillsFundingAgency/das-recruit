@@ -6,7 +6,7 @@ using MediatR;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.Commands
 {
-    public class CreateReportCommand : ICommand, IRequest
+    public class CreateReportCommand : ICommand, IRequest<Unit>
     {
         public CreateReportCommand(Guid reportId, ReportOwner owner, ReportType reportType, Dictionary<string, object> parameters, VacancyUser requestedBy, string reportName)
         {

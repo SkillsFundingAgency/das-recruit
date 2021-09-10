@@ -8,7 +8,7 @@ using MediatR;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 {
-    public class UpdateUserNotificationPreferencesCommandHandler : IRequestHandler<UpdateUserNotificationPreferencesCommand>
+    public class UpdateUserNotificationPreferencesCommandHandler : IRequestHandler<UpdateUserNotificationPreferencesCommand, Unit>
     {
         private readonly IUserNotificationPreferencesRepository _userNotificationPreferencesRepository;
         public UpdateUserNotificationPreferencesCommandHandler(
@@ -16,9 +16,11 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
         {
             _userNotificationPreferencesRepository = userNotificationPreferencesRepository;
         }
-        public Task Handle(UpdateUserNotificationPreferencesCommand message, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(UpdateUserNotificationPreferencesCommand message, CancellationToken cancellationToken)
         {
-            return _userNotificationPreferencesRepository.UpsertAsync(message.UserNotificationPreferences);
+            await _userNotificationPreferencesRepository.UpsertAsync(message.UserNotificationPreferences);
+            
+            return Unit.Value;
         }
     }
 }

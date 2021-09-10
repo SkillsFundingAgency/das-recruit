@@ -7,7 +7,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 {
-    public class UpdateProvidersCommandHandler : IRequestHandler<UpdateProvidersCommand>
+    public class UpdateProvidersCommandHandler : IRequestHandler<UpdateProvidersCommand, Unit>
     {
         private readonly ILogger<UpdateProvidersCommandHandler> _logger;
         private readonly ITrainingProvidersUpdateService _updaterService;
@@ -18,13 +18,15 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             _updaterService = updaterService;
         }
 
-        public async Task Handle(UpdateProvidersCommand message, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(UpdateProvidersCommand message, CancellationToken cancellationToken)
         {
             _logger.LogInformation("Updating Providers Reference Data");
 
             await _updaterService.UpdateProviders();
 
             _logger.LogInformation("Updated Providers Reference Data");
+            
+            return Unit.Value;
         }
     }
 }

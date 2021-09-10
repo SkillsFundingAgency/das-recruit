@@ -10,7 +10,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 {
-    public class RejectVacancyCommandHandler : IRequestHandler<RejectVacancyCommand>
+    public class RejectVacancyCommandHandler : IRequestHandler<RejectVacancyCommand, Unit>
     {
         private readonly ILogger<RejectVacancyCommandHandler> _logger;
         private readonly IVacancyRepository _repository;
@@ -26,7 +26,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             _messaging = messaging;
         }
 
-        public async Task Handle(RejectVacancyCommand message, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(RejectVacancyCommand message, CancellationToken cancellationToken)
         {
             _logger.LogInformation("Rejecting vacancy {vacancyReference}.", message.VacancyReference);
 
@@ -35,7 +35,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             if (!vacancy.CanReview)
             {
                 _logger.LogWarning($"Unable to refer vacancy {{vacancyReference}} due to vacancy having a status of {vacancy.Status}.", vacancy.VacancyReference);
-                return;
+                return Unit.Value;
             }
 
             vacancy.Status = VacancyStatus.Rejected;
@@ -48,6 +48,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
                 VacancyReference = vacancy.VacancyReference.Value,
                 VacancyId = vacancy.Id
             });
+            return Unit.Value;
         }
     }
 }

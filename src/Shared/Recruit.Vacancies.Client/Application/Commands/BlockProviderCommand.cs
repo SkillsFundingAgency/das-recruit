@@ -5,7 +5,7 @@ using MediatR;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.Commands
 {
-    public class BlockProviderCommand : ICommand, IRequest
+    public class BlockProviderCommand : ICommand, IRequest<Unit>
     {
         public long Ukprn { get; private set; }
         public VacancyUser QaVacancyUser { get; private set; }

@@ -12,7 +12,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 {
-    public class TransferProviderVacancyToLegalEntityCommandHandler : IRequestHandler<TransferVacancyToLegalEntityCommand>
+    public class TransferProviderVacancyToLegalEntityCommandHandler : IRequestHandler<TransferVacancyToLegalEntityCommand, Unit>
     {
         private readonly ILogger<TransferProviderVacancyToLegalEntityCommandHandler> _logger;
         private readonly IVacancyRepository _vacancyRepository;
@@ -35,7 +35,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             _messaging = messaging;
         }
 
-        public async Task Handle(TransferVacancyToLegalEntityCommand message, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(TransferVacancyToLegalEntityCommand message, CancellationToken cancellationToken)
         {
             var vacancy = await _vacancyRepository.GetVacancyAsync(message.VacancyReference);
 
@@ -50,6 +50,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 
                 await ProcessTransferringVacancy(vacancy, vacancyUser, message.TransferReason);
             }
+            return Unit.Value;
         }
 
         private async Task ProcessTransferringVacancy(Vacancy vacancy, VacancyUser user, TransferReason transferReason)

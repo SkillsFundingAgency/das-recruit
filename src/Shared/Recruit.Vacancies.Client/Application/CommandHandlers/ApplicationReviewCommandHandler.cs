@@ -14,8 +14,8 @@ using Microsoft.Extensions.Logging;
 namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 {
     public class ApplicationReviewCommandHandler : 
-        IRequestHandler<ApplicationReviewSuccessfulCommand>,
-        IRequestHandler<ApplicationReviewUnsuccessfulCommand>
+        IRequestHandler<ApplicationReviewSuccessfulCommand, Unit>,
+        IRequestHandler<ApplicationReviewUnsuccessfulCommand, Unit>
     {
         private readonly ILogger<ApplicationReviewCommandHandler> _logger;        
         private readonly IApplicationReviewRepository _applicationReviewRepository;
@@ -37,16 +37,18 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             _applicationReviewValidator = applicationReviewValidator;
         }
 
-        public Task Handle(ApplicationReviewSuccessfulCommand message, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(ApplicationReviewSuccessfulCommand message, CancellationToken cancellationToken)
         {
             _logger.LogInformation("Setting application review:{applicationReviewId} to successful", message.ApplicationReviewId);
-            return Handle(message.ApplicationReviewId, message.User, ApplicationReviewStatus.Successful);
+            await Handle(message.ApplicationReviewId, message.User, ApplicationReviewStatus.Successful);
+            return Unit.Value; 
         }
 
-        public Task Handle(ApplicationReviewUnsuccessfulCommand message, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(ApplicationReviewUnsuccessfulCommand message, CancellationToken cancellationToken)
         {
             _logger.LogInformation("Setting application review:{applicationReviewId} to unsuccessful", message.ApplicationReviewId);
-            return Handle(message.ApplicationReviewId, message.User, ApplicationReviewStatus.Unsuccessful, message.CandidateFeedback);
+            await Handle(message.ApplicationReviewId, message.User, ApplicationReviewStatus.Unsuccessful, message.CandidateFeedback);
+            return Unit.Value;
         }
 
         private async Task Handle(Guid applicationReviewId, VacancyUser user, ApplicationReviewStatus status, string candidateFeedback = null)

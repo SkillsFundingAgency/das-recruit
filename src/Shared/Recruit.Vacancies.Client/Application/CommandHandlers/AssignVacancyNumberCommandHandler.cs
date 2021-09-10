@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 {
-    public class AssignVacancyNumberCommandHandler: IRequestHandler<AssignVacancyNumberCommand>
+    public class AssignVacancyNumberCommandHandler: IRequestHandler<AssignVacancyNumberCommand, Unit>
     {
         private readonly IVacancyRepository _repository;
         private readonly IMessaging _messaging;
@@ -29,14 +29,14 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             _generator = generator;
         }
 
-        public async Task Handle(AssignVacancyNumberCommand message, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(AssignVacancyNumberCommand message, CancellationToken cancellationToken)
         {
             var vacancy = await _repository.GetVacancyAsync(message.VacancyId);
             
             if (vacancy.VacancyReference.HasValue)
             {
                 _logger.LogInformation("Vacancy: {vacancyId} already has a vacancy number: {vacancyNumber}. Will not be changed.", vacancy.Id, vacancy.VacancyReference);
-                return;
+                return Unit.Value;
             }
 
             _logger.LogInformation("Assigning vacancy number for vacancy {vacancyId}.", message.VacancyId);
@@ -51,6 +51,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             });
 
             _logger.LogInformation("Updated Vacancy: {vacancyId} with vacancy number: {vacancyNumber}", vacancy.Id, vacancy.VacancyReference);
+            return Unit.Value;
         }
     }
 }

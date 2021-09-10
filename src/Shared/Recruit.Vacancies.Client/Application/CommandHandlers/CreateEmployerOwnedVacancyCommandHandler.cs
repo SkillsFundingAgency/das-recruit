@@ -11,7 +11,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 {
-    public class CreateEmployerOwnedVacancyCommandHandler: IRequestHandler<CreateEmployerOwnedVacancyCommand>
+    public class CreateEmployerOwnedVacancyCommandHandler: IRequestHandler<CreateEmployerOwnedVacancyCommand, Unit>
     {
         private readonly ILogger<CreateEmployerOwnedVacancyCommandHandler> _logger;
         private readonly IVacancyRepository _repository;
@@ -30,7 +30,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             _timeProvider = timeProvider;
         }
 
-        public async Task Handle(CreateEmployerOwnedVacancyCommand message, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(CreateEmployerOwnedVacancyCommand message, CancellationToken cancellationToken)
         {
             _logger.LogInformation("Creating vacancy with id {vacancyId}.", message.VacancyId);
 
@@ -60,6 +60,8 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             {
                 VacancyId = vacancy.Id
             });
+            
+            return Unit.Value;
         }
     }
 }

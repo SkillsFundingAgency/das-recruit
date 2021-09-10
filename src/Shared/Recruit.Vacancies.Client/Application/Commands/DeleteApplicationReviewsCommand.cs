@@ -4,7 +4,7 @@ using MediatR;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.Commands
 {
-    public class DeleteApplicationReviewsCommand : ICommand, IRequest
+    public class DeleteApplicationReviewsCommand : ICommand, IRequest<Unit>
     {
         public Guid CandidateId { get; set; }
     }

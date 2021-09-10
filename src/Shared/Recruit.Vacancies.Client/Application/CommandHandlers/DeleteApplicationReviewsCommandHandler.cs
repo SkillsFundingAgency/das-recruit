@@ -10,7 +10,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 {
-    public class DeleteApplicationReviewsCommandHandler : IRequestHandler<DeleteApplicationReviewsCommand>
+    public class DeleteApplicationReviewsCommandHandler : IRequestHandler<DeleteApplicationReviewsCommand, Unit>
     {
         private readonly ILogger<DeleteApplicationReviewsCommandHandler> _logger;
         private readonly IApplicationReviewRepository _applicationReviewRepository;
@@ -29,7 +29,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             _messaging = messaging;
         }
 
-        public async Task Handle(DeleteApplicationReviewsCommand message, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(DeleteApplicationReviewsCommand message, CancellationToken cancellationToken)
         {
             _logger.LogInformation("Deleting all application reviews for candidateId:{candidateId}",message.CandidateId);
 
@@ -48,6 +48,8 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             }
 
             _logger.LogInformation($"Deleted {candidateApplicationReviews.Count} application reviews for candidateId:{{candidateId}}", message.CandidateId);
+            
+            return Unit.Value;
         }
     }
 }

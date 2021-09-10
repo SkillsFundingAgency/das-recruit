@@ -9,7 +9,7 @@ using MediatR;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 {
-    public class UpdateUserAlertCommandHandler : IRequestHandler<UpdateUserAlertCommand>
+    public class UpdateUserAlertCommandHandler : IRequestHandler<UpdateUserAlertCommand, Unit>
     {
         private readonly IRecruitVacancyClient _client;
         private readonly IUserRepository _userRepository;
@@ -19,7 +19,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             _client = client;
         }
 
-        public async Task Handle(UpdateUserAlertCommand message, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(UpdateUserAlertCommand message, CancellationToken cancellationToken)
         {
             var user = await _client.GetUsersDetailsAsync(message.IdamsUserId);
 
@@ -42,6 +42,8 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             }
 
             await _userRepository.UpsertUserAsync(user);
+            
+            return Unit.Value;
         }
     }
 }

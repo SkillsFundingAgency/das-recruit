@@ -13,7 +13,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 {
-    public class RefreshEmployerProfilesCommandHandler : IRequestHandler<RefreshEmployerProfilesCommand>
+    public class RefreshEmployerProfilesCommandHandler : IRequestHandler<RefreshEmployerProfilesCommand, Unit>
     {
         private readonly ILogger<RefreshEmployerProfilesCommandHandler> _logger;
         private readonly IEmployerProfileRepository _employerProfileRepository;
@@ -31,7 +31,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             _employerVacancyClient = employerVacancyClient;
         }
 
-        public async Task Handle(RefreshEmployerProfilesCommand message, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(RefreshEmployerProfilesCommand message, CancellationToken cancellationToken)
         {
             _logger.LogInformation("Refreshing Employer Profiles for {employerAccountId}", message.EmployerAccountId);
             var employerVacancyInfoTask =
@@ -47,23 +47,21 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
                 {
                     var selectedOrganisation = editVacancyInfo.LegalEntities.Single(l => l.AccountLegalEntityPublicHashedId == accountLegalEntityPublicHashedId);
 
-                if (!profiles.Any(x => x.AccountLegalEntityPublicHashedId == accountLegalEntityPublicHashedId))
-                { 
-                    var currentTime = _time.Now;
+                    if (!profiles.Any(x => x.AccountLegalEntityPublicHashedId == accountLegalEntityPublicHashedId))
+                    { 
+                        var currentTime = _time.Now;
 
-                    // Create new profile
-                    var newProfile = new EmployerProfile
-                    {
-                        EmployerAccountId = message.EmployerAccountId,
-                        CreatedDate = currentTime,
-                        AccountLegalEntityPublicHashedId = selectedOrganisation.AccountLegalEntityPublicHashedId
-                    };
+                        // Create new profile
+                        var newProfile = new EmployerProfile
+                        {
+                            EmployerAccountId = message.EmployerAccountId,
+                            CreatedDate = currentTime,
+                            AccountLegalEntityPublicHashedId = selectedOrganisation.AccountLegalEntityPublicHashedId
+                        };
 
-                    _logger.LogInformation("Adding new profile for employer account: {employerAccountId} and Account LegalEntityPublicHashed id: {accountLegalEntityPublicHashedId}", message.EmployerAccountId, accountLegalEntityPublicHashedId);
-                    tasks.Add(_employerProfileRepository.CreateAsync(newProfile));
-                }
-
-
+                        _logger.LogInformation("Adding new profile for employer account: {employerAccountId} and Account LegalEntityPublicHashed id: {accountLegalEntityPublicHashedId}", message.EmployerAccountId, accountLegalEntityPublicHashedId);
+                        tasks.Add(_employerProfileRepository.CreateAsync(newProfile));
+                    }
 
                 }
                 catch (Exception e)
@@ -76,6 +74,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             }
             await Task.WhenAll(tasks);
             _logger.LogInformation($"Added {tasks.Count} new profile/s for {{employerAccountId}}", message.EmployerAccountId);
+            return Unit.Value;
         }
     }
 }
