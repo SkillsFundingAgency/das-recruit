@@ -14,6 +14,7 @@ namespace SFA.DAS.Recruit.Api.Models
     {
         Success,
         InvalidRequest,
-        NotFound
+        NotFound,
+        Created
     }
 }
