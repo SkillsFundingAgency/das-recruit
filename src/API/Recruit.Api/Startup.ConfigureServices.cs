@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using Esfa.Recruit.Vacancies.Client.Application.Commands;
+using Esfa.Recruit.Vacancies.Client.Ioc;
 using MediatR;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -8,6 +10,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
+using Microsoft.OpenApi.Models;
+using SFA.DAS.Api.Common.Infrastructure;
 using SFA.DAS.Recruit.Api.Configuration;
 using SFA.DAS.Recruit.Api.Mappers;
 using SFA.DAS.Recruit.Api.Services;
@@ -34,11 +38,13 @@ namespace SFA.DAS.Recruit.Api
             
             SetupAuthorization(services, azureAdConfig);
 
-            services.AddMediatR(typeof(Startup).Assembly);
+            services.AddMediatR(typeof(Startup).Assembly, typeof(CreateApplicationReviewCommand).Assembly);
 
             services.AddSingleton<IVacancySummaryMapper, VacancySummaryMapper>();
             services.AddSingleton<IQueryStoreReader, QueryStoreClient>();
 
+            services.AddRecruitStorageClient(Configuration);
+            
             MongoDbConventions.RegisterMongoConventions();
 
             services.AddHealthChecks()
@@ -54,6 +60,7 @@ namespace SFA.DAS.Recruit.Api
                     {
                         o.Filters.Add(new AuthorizeFilter("default"));
                     }
+                    o.Conventions.Add(new ApiExplorerGroupPerVersionConvention());
                 })
                 .SetCompatibilityVersion(CompatibilityVersion.Version_3_0)
                 .AddJsonOptions(options =>
@@ -62,6 +69,12 @@ namespace SFA.DAS.Recruit.Api
                 });
 
             services.AddApplicationInsightsTelemetry(Configuration["APPINSIGHTS_INSTRUMENTATIONKEY"]);
+            
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "RecruitAPI", Version = "v1" });
+                
+            });
         }
 
         private void SetupAuthorization(IServiceCollection services, AzureActiveDirectoryConfiguration azureActiveDirectoryConfiguration)
