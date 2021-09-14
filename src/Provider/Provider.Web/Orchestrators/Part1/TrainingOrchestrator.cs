@@ -13,10 +13,11 @@ using Esfa.Recruit.Shared.Web.Extensions;
 using Microsoft.Extensions.Logging;
 using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
 using Esfa.Recruit.Shared.Web.Helpers;
+using Esfa.Recruit.Vacancies.Client.Application.Services;
 
 namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1 
 {
-    public class TrainingOrchestrator : EntityValidatingOrchestrator<Vacancy, TrainingEditModel>
+    public class TrainingOrchestrator : VacancyValidatingOrchestrator<TrainingEditModel>
     {
         private const VacancyRuleSet ValidationRules = VacancyRuleSet.TrainingProgramme;
         private readonly IProviderVacancyClient _client;
@@ -97,7 +98,14 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
         {
             var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, _vacancyClient, m, RouteNames.Training_Confirm_Post);
 
-            vacancy.ProgrammeId = m.ProgrammeId;
+            SetVacancyWithProviderReviewFieldIndicators(
+                vacancy.ProgrammeId,
+                FieldIdResolver.ToFieldId(v => v.ProgrammeId),
+                vacancy,
+                (v) =>
+                {
+                    return v.ProgrammeId = m.ProgrammeId;
+                });
 
             return await ValidateAndExecute(
                 vacancy,

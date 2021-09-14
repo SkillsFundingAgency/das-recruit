@@ -6,6 +6,7 @@ using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Provider.Web.ViewModels.Part1.NumberOfPositions;
 using Esfa.Recruit.Shared.Web.Orchestrators;
 using Esfa.Recruit.Shared.Web.Services;
+using Esfa.Recruit.Vacancies.Client.Application.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
@@ -13,7 +14,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
 {
-    public class NumberOfPositionsOrchestrator : EntityValidatingOrchestrator<Vacancy, NumberOfPositionsEditModel>
+    public class NumberOfPositionsOrchestrator : VacancyValidatingOrchestrator<NumberOfPositionsEditModel>
     {
         private const VacancyRuleSet ValidationRules = VacancyRuleSet.NumberOfPositions;
         private readonly IProviderVacancyClient _providerVacancyClient;
@@ -58,9 +59,17 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
 
         public async Task<OrchestratorResponse<Guid>> PostNumberOfPositionsEditModelAsync(NumberOfPositionsEditModel model, VacancyUser user)
         {
-            var numberOfPositions = int.TryParse(model.NumberOfPositions, out var n) ? n : default(int?);
             var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_providerVacancyClient, _recruitVacancyClient, model, RouteNames.NumberOfPositions_Post);
-            vacancy.NumberOfPositions = numberOfPositions;
+            
+            SetVacancyWithProviderReviewFieldIndicators(
+               vacancy.NumberOfPositions,
+               FieldIdResolver.ToFieldId(v => v.NumberOfPositions),
+               vacancy,
+               (v) =>
+               {
+                   return v.NumberOfPositions = int.TryParse(model.NumberOfPositions, out var n) ? n : default(int?);
+               });
+
             return await ValidateAndExecute(
                     vacancy,
                     v => _recruitVacancyClient.Validate(v, ValidationRules),

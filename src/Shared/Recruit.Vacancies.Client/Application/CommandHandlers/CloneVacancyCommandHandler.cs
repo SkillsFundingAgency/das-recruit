@@ -93,6 +93,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             clone.ReviewCount = 0;
             clone.EmployerReviewFieldIndicators = null;
             clone.EmployerRejectedReason = null;
+            clone.ProviderReviewFieldIndicators = null;
 
             return clone;
         }

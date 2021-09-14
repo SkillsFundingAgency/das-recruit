@@ -18,6 +18,8 @@ namespace Esfa.Recruit.Provider.Web.ViewModels
         public string EducationLevelName { get; internal set; }
         public string EmployerDescription { get; internal set; }
         public string EmployerName { get; internal set; }
+        public string EmployerRejectedReason { get; internal set; }
+        public List<EmployerReviewFieldIndicator> EmployerReviewFieldIndicators { get; internal set; }
         public string EmployerWebsiteUrl { get; internal set; }
         public string ExpectedDuration { get; internal set; }
         public string FindAnApprenticeshipUrl { get; internal set; }
