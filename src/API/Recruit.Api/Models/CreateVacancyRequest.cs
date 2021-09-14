@@ -34,6 +34,8 @@ namespace SFA.DAS.Recruit.Api.Models
         public string ApplicationInstructions { get ; set ; }
         public string ApplicationUrl { get ; set ; }
         public CreateVacancyApplicationMethod ApplicationMethod { get ; set ; }
+        public CreateVacancyDisabilityConfident DisabilityConfident { get ; set ; }
+        public string ThingsToConsider { get ; set ; }
     }
 
     
@@ -97,5 +99,10 @@ namespace SFA.DAS.Recruit.Api.Models
         RegisteredName,
         TradingName,
         Anonymous
+    }
+    public enum CreateVacancyDisabilityConfident
+    {
+        No = 0,
+        Yes
     }
 }

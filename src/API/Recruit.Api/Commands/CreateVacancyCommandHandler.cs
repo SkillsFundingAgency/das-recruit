@@ -97,6 +97,7 @@ namespace SFA.DAS.Recruit.Api.Commands
             draftVacancyFromRequest.CreatedDate = newVacancy.CreatedDate;
             draftVacancyFromRequest.OwnerType = newVacancy.OwnerType;
             draftVacancyFromRequest.SourceOrigin = newVacancy.SourceOrigin;
+            draftVacancyFromRequest.SourceType = newVacancy.SourceType;
             draftVacancyFromRequest.ProgrammeId = newVacancy.ProgrammeId;
             
             var now = _timeProvider.Now;

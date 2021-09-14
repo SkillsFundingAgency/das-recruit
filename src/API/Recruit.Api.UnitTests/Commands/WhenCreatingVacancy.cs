@@ -106,6 +106,7 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Commands
                 && c.CreatedDate == vacancy.CreatedDate
                 && c.OwnerType == vacancy.OwnerType
                 && c.SourceOrigin == vacancy.SourceOrigin
+                && c.SourceType == vacancy.SourceType
                 && c.ProgrammeId == vacancy.ProgrammeId
                 && c.SubmittedByUser == command.CreatedByUser
                 && c.LastUpdatedByUser == command.CreatedByUser
