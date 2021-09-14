@@ -55,9 +55,7 @@ namespace SFA.DAS.Recruit.Api.Commands
 
             request.Vacancy.TrainingProvider = trainingProvider;
             
-            var draftVacancyFromRequest = request.Vacancy;
-            
-            var result = _recruitVacancyClient.Validate(draftVacancyFromRequest, VacancyRuleSet.All);
+            var result = _recruitVacancyClient.Validate(request.Vacancy, VacancyRuleSet.All);
 
             if (result.HasErrors)
             {
@@ -68,10 +66,10 @@ namespace SFA.DAS.Recruit.Api.Commands
                 };    
             }
 
-            await _employerVacancyClient.CreateEmployerApiVacancy(draftVacancyFromRequest.Id, draftVacancyFromRequest.Title, draftVacancyFromRequest.EmployerAccountId,
-                request.CreatedByUser, trainingProvider, draftVacancyFromRequest.ProgrammeId);
+            await _employerVacancyClient.CreateEmployerApiVacancy(request.Vacancy.Id, request.Vacancy.Title, request.Vacancy.EmployerAccountId,
+                request.CreatedByUser, trainingProvider, request.Vacancy.ProgrammeId);
 
-            var newVacancy = await MapDraftVacancyValues(request, draftVacancyFromRequest);
+            var newVacancy = await MapDraftVacancyValues(request, request.Vacancy);
 
             await _vacancyRepository.UpdateAsync(newVacancy);
             
@@ -96,6 +94,10 @@ namespace SFA.DAS.Recruit.Api.Commands
             draftVacancyFromRequest.VacancyReference = newVacancy.VacancyReference;
             draftVacancyFromRequest.TrainingProvider = newVacancy.TrainingProvider;
             draftVacancyFromRequest.CreatedByUser = newVacancy.CreatedByUser;
+            draftVacancyFromRequest.CreatedDate = newVacancy.CreatedDate;
+            draftVacancyFromRequest.OwnerType = newVacancy.OwnerType;
+            draftVacancyFromRequest.SourceOrigin = newVacancy.SourceOrigin;
+            draftVacancyFromRequest.ProgrammeId = newVacancy.ProgrammeId;
             
             var now = _timeProvider.Now;
 

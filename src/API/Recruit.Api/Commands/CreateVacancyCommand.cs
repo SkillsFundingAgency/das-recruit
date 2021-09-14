@@ -1,7 +1,5 @@
-using System;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using MediatR;
-using SFA.DAS.Recruit.Api.Models;
 
 namespace SFA.DAS.Recruit.Api.Commands
 {

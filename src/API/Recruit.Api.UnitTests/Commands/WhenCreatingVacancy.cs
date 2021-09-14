@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
+using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Events;
@@ -72,6 +73,8 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Commands
             CreateVacancyCommand command,
             TrainingProvider provider,
             Vacancy vacancy,
+            DateTime timeNow,
+            [Frozen]Mock<ITimeProvider> timeProvider,
             [Frozen]Mock<IEmployerVacancyClient> employerVacancyClient,
             [Frozen]Mock<IRecruitVacancyClient> recruitVacancyClient,
             [Frozen]Mock<IVacancyRepository> vacancyRepository,
@@ -79,26 +82,35 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Commands
             CreateVacancyCommandHandler handler)
         {
             vacancy.Id = command.Vacancy.Id;
+            vacancy.ProgrammeId = command.Vacancy.ProgrammeId;
             trainingProviderService.Setup(x => x.GetProviderAsync(command.Ukprn))
                 .ReturnsAsync(provider);
             recruitVacancyClient.Setup(x => x.Validate(It.IsAny<Vacancy>(), VacancyRuleSet.All))
                 .Returns(new EntityValidationResult());
             recruitVacancyClient.Setup(x => x.GetVacancyAsync(command.Vacancy.Id)).ReturnsAsync(vacancy);
+            timeProvider.Setup(x => x.Now).Returns(timeNow);
             
             var actual = await handler.Handle(command, CancellationToken.None);
 
-            
             actual.ResultCode.Should().Be(ResponseCode.Created);
             actual.Data.Should().Be(vacancy.VacancyReference);
             employerVacancyClient.Verify(x => x.CreateEmployerApiVacancy(command.Vacancy.Id, command.Vacancy.Title,
-                command.Vacancy.EmployerAccountId, command.CreatedByUser, provider,
-                command.Vacancy.ProgrammeId), Times.Once);
+                command.Vacancy.EmployerAccountId, command.CreatedByUser, provider, command.Vacancy.ProgrammeId), Times.Once);
             vacancyRepository.Verify(x=>x.UpdateAsync(It.Is<Vacancy>(c=>
                 c.Id.Equals(command.Vacancy.Id) 
                 && c.Status == VacancyStatus.Submitted
                 && c.VacancyReference == vacancy.VacancyReference
                 && c.CreatedByUser == vacancy.CreatedByUser
                 && c.Title == command.Vacancy.Title
+                && c.CreatedByUser == vacancy.CreatedByUser
+                && c.CreatedDate == vacancy.CreatedDate
+                && c.OwnerType == vacancy.OwnerType
+                && c.SourceOrigin == vacancy.SourceOrigin
+                && c.ProgrammeId == vacancy.ProgrammeId
+                && c.SubmittedByUser == command.CreatedByUser
+                && c.LastUpdatedByUser == command.CreatedByUser
+                && c.SubmittedDate == timeNow
+                && c.LastUpdatedDate == timeNow
                 )), Times.Once);
         }
 
@@ -122,7 +134,7 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Commands
             await handler.Handle(command, CancellationToken.None);
             
             messaging.Verify(x=>x.PublishEvent(It.Is<VacancySubmittedEvent>(c=>
-                c.VacancyId.Equals(vacancy.Id)
+                c.VacancyId.Equals(command.Vacancy.Id)
                 && c.VacancyReference.Equals(vacancy.VacancyReference)
                 )));
         }
