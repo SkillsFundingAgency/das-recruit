@@ -14,6 +14,8 @@ namespace SFA.DAS.Recruit.Api.Controllers
                     return BadRequest(new { Errors = resp.ValidationErrors });
                 case ResponseCode.NotFound:
                     return NotFound();
+                case ResponseCode.Created:
+                    return Created("", resp.Data);
                 default:
                     return Ok(resp.Data);
             }

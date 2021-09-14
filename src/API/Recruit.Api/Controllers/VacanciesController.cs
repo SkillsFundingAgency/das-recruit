@@ -1,6 +1,11 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using SFA.DAS.Recruit.Api.Commands;
+using SFA.DAS.Recruit.Api.Mappers;
+using SFA.DAS.Recruit.Api.Models;
 using SFA.DAS.Recruit.Api.Queries;
 
 namespace SFA.DAS.Recruit.Api.Controllers
@@ -20,6 +25,24 @@ namespace SFA.DAS.Recruit.Api.Controllers
         public async Task<IActionResult> Get([FromQuery]string employerAccountId, uint? legalEntityId, ulong? ukprn, uint pageSize = 25, uint pageNo = 1)
         {
             var resp = await _mediator.Send(new GetVacanciesQuery(employerAccountId.Trim().ToUpper(), (int?)legalEntityId, (long?)ukprn, (int)pageSize, (int)pageNo));
+            return GetApiResponse(resp);
+        }
+
+        [HttpPost]
+        [Route("{id}")]
+        public async Task<IActionResult> Create([FromRoute]Guid id, CreateVacancyRequest request, [FromQuery]string userEmail)
+        {
+            
+            var resp = await _mediator.Send(new CreateVacancyCommand
+            {
+                Vacancy = request.MapFromCreateVacancyRequest(id),
+                CreatedByUser = new VacancyUser
+                {
+                    Email = userEmail,
+                },
+                Ukprn = request.Ukprn
+            });
+
             return GetApiResponse(resp);
         }
     }
