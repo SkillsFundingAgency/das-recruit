@@ -65,6 +65,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             vacancy.EmployerName = await _employerService.GetEmployerNameAsync(vacancy);
 
             vacancy.Status = VacancyStatus.Review;
+            vacancy.EmployerRejectedReason = null;
             vacancy.ReviewDate = now;
             vacancy.ReviewCount += 1;
             vacancy.ReviewByUser = message.User;
