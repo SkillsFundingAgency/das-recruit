@@ -20,11 +20,21 @@ namespace Esfa.Recruit.Vacancies.Jobs.NServiceBus
                     var serviceBusConfiguration = new DasSharedNServiceBusConfiguration();
                     configuration.GetSection(nameof(DasSharedNServiceBusConfiguration)).Bind(serviceBusConfiguration);
 
-                    var endpointConfiguration = new EndpointConfiguration(RecruitVacanciesJobs)
-                        .UseAzureServiceBusTransport(serviceBusConfiguration.ConnectionString, r => { })
-                        .UseErrorQueue($"{RecruitVacanciesJobs}-errors")
+                    var endpointConfiguration = new EndpointConfiguration(RecruitVacanciesJobs);
+
+                    if (!string.IsNullOrEmpty(serviceBusConfiguration.ConnectionString))
+                    {
+                        endpointConfiguration.UseAzureServiceBusTransport(serviceBusConfiguration.ConnectionString,
+                            r => { });
+                        endpointConfiguration.UseLicense(serviceBusConfiguration.NServiceBusLicense);
+                    }
+                    else
+                    {
+                        endpointConfiguration.UseLearningTransport();
+                    }
+                    
+                    endpointConfiguration.UseErrorQueue($"{RecruitVacanciesJobs}-errors")
                         .UseInstallers()
-                        .UseLicense(serviceBusConfiguration.NServiceBusLicense)
                         .UseMessageConventions()
                         .UseDasMessageConventions()
                         .UseNewtonsoftJsonSerializer()
