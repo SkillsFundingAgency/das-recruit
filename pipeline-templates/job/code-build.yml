@@ -1,5 +1,3 @@
-# parameters:
-#   SolutionBaseName:
 
 jobs:
 - job: CodeBuild
@@ -25,8 +23,10 @@ jobs:
     displayName: Publish
     inputs:
       command: publish
-      publishWebProjects: true
-      # projects: 
+      publishWebProjects: false
+      projects: |
+        **/*.@(Web|Api|Jobs).csproj
+        !**/*.Shared.Web.csproj
       arguments: -o $(build.artifactstagingdirectory)/publish -c release --no-build
 
   - task: CopyFiles@2
