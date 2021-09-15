@@ -31,6 +31,23 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return vacancyId;
         }
 
+        public async Task CreateProviderApiVacancy(Guid id, string title, string employerAccountId, VacancyUser user)
+        {
+            var command = new CreateProviderOwnedVacancyCommand(
+                id, 
+                SourceOrigin.Api,
+                user.Ukprn.Value,
+                employerAccountId,
+                user,
+                UserType.Provider,
+                title
+            );
+            
+            await _messaging.SendCommandAsync(command);
+            
+            await AssignVacancyNumber(id);
+        }
+        
         public async Task<ProviderDashboard> GetDashboardAsync(long ukprn, bool createIfNonExistent = false)
         {
             ProviderDashboard result = await _reader.GetProviderDashboardAsync(ukprn);

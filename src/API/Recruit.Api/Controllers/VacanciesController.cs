@@ -30,17 +30,17 @@ namespace SFA.DAS.Recruit.Api.Controllers
 
         [HttpPost]
         [Route("{id}")]
-        public async Task<IActionResult> Create([FromRoute]Guid id, CreateVacancyRequest request, [FromQuery]string userEmail)
+        public async Task<IActionResult> Create([FromRoute]Guid id, CreateVacancyRequest request, [FromQuery]string userEmail = null, [FromQuery]long? ukprn = null)
         {
             
             var resp = await _mediator.Send(new CreateVacancyCommand
             {
                 Vacancy = request.MapFromCreateVacancyRequest(id),
-                CreatedByUser = new VacancyUser
+                VacancyUserDetails = new VacancyUser
                 {
                     Email = userEmail,
-                },
-                Ukprn = request.Ukprn
+                    Ukprn = ukprn
+                }
             });
 
             return GetApiResponse(resp);

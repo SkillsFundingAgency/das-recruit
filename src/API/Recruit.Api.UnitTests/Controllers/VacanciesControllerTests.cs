@@ -49,6 +49,7 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Controllers
             Guid id,
             long vacancyRef,
             string userEmail,
+            long ukprn,
             CreateVacancyRequest request,
             CreateVacancyCommandResponse response,
             [Frozen] Mock<IMediator> mediator,
@@ -59,11 +60,11 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Controllers
             mediator.Setup(x => x.Send(It.Is<CreateVacancyCommand>(c => 
                     c.Vacancy.Title.Equals(request.Title) 
                     && c.Vacancy.Id.Equals(id)
-                    && c.Ukprn.Equals(request.Ukprn)
-                    && c.CreatedByUser.Email.Equals(userEmail)
+                    && c.VacancyUserDetails.Email.Equals(userEmail)
+                    && c.VacancyUserDetails.Ukprn.Equals(ukprn)
                     ), CancellationToken.None)).ReturnsAsync(response);
 
-            var actual = await controller.Create(id, request, userEmail) as CreatedResult;
+            var actual = await controller.Create(id, request, userEmail, ukprn) as CreatedResult;
 
             Assert.NotNull(actual);
             actual.StatusCode.Should().Be((int) HttpStatusCode.Created);

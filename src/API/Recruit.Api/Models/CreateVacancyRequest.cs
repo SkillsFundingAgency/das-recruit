@@ -11,7 +11,6 @@ namespace SFA.DAS.Recruit.Api.Models
         public string ProgrammeId { get ; set ; }
         public string EmployerAccountId { get ; set ; }
         public VacancyUser User { get ; set ; }
-        public long Ukprn { get ; set ; }
         public string EmployerName { get ; set ; }
         public string ShortDescription { get ; set ; }
         public int NumberOfPositions { get ; set ; }

@@ -23,6 +23,7 @@ namespace SFA.DAS.Recruit.Api.Commands
         private readonly IMessaging _messaging;
         private readonly ITimeProvider _timeProvider;
         private readonly ITrainingProviderService _trainingProviderService;
+        private readonly IProviderVacancyClient _providerVacancyClient;
 
         public CreateVacancyCommandHandler (
             IRecruitVacancyClient recruitVacancyClient, 
@@ -30,7 +31,8 @@ namespace SFA.DAS.Recruit.Api.Commands
             IVacancyRepository vacancyRepository, 
             IMessaging messaging,
             ITimeProvider timeProvider,
-            ITrainingProviderService trainingProviderService)
+            ITrainingProviderService trainingProviderService,
+            IProviderVacancyClient providerVacancyClient)
         {
             _recruitVacancyClient = recruitVacancyClient;
             _employerVacancyClient = employerVacancyClient;
@@ -38,11 +40,11 @@ namespace SFA.DAS.Recruit.Api.Commands
             _messaging = messaging;
             _timeProvider = timeProvider;
             _trainingProviderService = trainingProviderService;
+            _providerVacancyClient = providerVacancyClient;
         }
         public async Task<CreateVacancyCommandResponse> Handle(CreateVacancyCommand request, CancellationToken cancellationToken)
         {
-
-            var trainingProvider = await _trainingProviderService.GetProviderAsync(request.Ukprn);
+            var trainingProvider = await _trainingProviderService.GetProviderAsync(request.VacancyUserDetails.Ukprn.Value);
 
             if (trainingProvider == null)
             {
@@ -54,6 +56,8 @@ namespace SFA.DAS.Recruit.Api.Commands
             }
 
             request.Vacancy.TrainingProvider = trainingProvider;
+            request.Vacancy.OwnerType = string.IsNullOrEmpty(request.VacancyUserDetails.Email) ? OwnerType.Provider : OwnerType.Employer; 
+            
             
             var result = _recruitVacancyClient.Validate(request.Vacancy, VacancyRuleSet.All);
 
@@ -66,8 +70,19 @@ namespace SFA.DAS.Recruit.Api.Commands
                 };    
             }
 
-            await _employerVacancyClient.CreateEmployerApiVacancy(request.Vacancy.Id, request.Vacancy.Title, request.Vacancy.EmployerAccountId,
-                request.CreatedByUser, trainingProvider, request.Vacancy.ProgrammeId);
+            if (!string.IsNullOrEmpty(request.VacancyUserDetails.Email))
+            {
+                request.VacancyUserDetails.Ukprn = null;
+                await _employerVacancyClient.CreateEmployerApiVacancy(request.Vacancy.Id, request.Vacancy.Title, request.Vacancy.EmployerAccountId,
+                    request.VacancyUserDetails, trainingProvider, request.Vacancy.ProgrammeId);    
+            }
+            else
+            {
+                await _providerVacancyClient.CreateProviderApiVacancy(request.Vacancy.Id, request.Vacancy.Title,
+                    request.Vacancy.EmployerAccountId,
+                    request.VacancyUserDetails);
+            }
+            
 
             var newVacancy = await MapDraftVacancyValues(request, request.Vacancy);
 
@@ -92,21 +107,20 @@ namespace SFA.DAS.Recruit.Api.Commands
             var newVacancy = await _recruitVacancyClient.GetVacancyAsync(draftVacancyFromRequest.Id);
 
             draftVacancyFromRequest.VacancyReference = newVacancy.VacancyReference;
-            draftVacancyFromRequest.TrainingProvider = newVacancy.TrainingProvider;
+            draftVacancyFromRequest.TrainingProvider = request.Vacancy.TrainingProvider;
             draftVacancyFromRequest.CreatedByUser = newVacancy.CreatedByUser;
             draftVacancyFromRequest.CreatedDate = newVacancy.CreatedDate;
             draftVacancyFromRequest.OwnerType = newVacancy.OwnerType;
             draftVacancyFromRequest.SourceOrigin = newVacancy.SourceOrigin;
             draftVacancyFromRequest.SourceType = newVacancy.SourceType;
-            draftVacancyFromRequest.ProgrammeId = newVacancy.ProgrammeId;
             
             var now = _timeProvider.Now;
 
             draftVacancyFromRequest.Status = VacancyStatus.Submitted;
             draftVacancyFromRequest.SubmittedDate = now;
-            draftVacancyFromRequest.SubmittedByUser = request.CreatedByUser;
+            draftVacancyFromRequest.SubmittedByUser = request.VacancyUserDetails;
             draftVacancyFromRequest.LastUpdatedDate = now;
-            draftVacancyFromRequest.LastUpdatedByUser = request.CreatedByUser;
+            draftVacancyFromRequest.LastUpdatedByUser = request.VacancyUserDetails;
             return draftVacancyFromRequest;
         }
     }

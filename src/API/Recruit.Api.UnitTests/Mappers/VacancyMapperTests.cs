@@ -21,7 +21,6 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Mappers
             actual.Id.Should().Be(id);
             actual.Should().BeEquivalentTo(request, options => options
                 .Excluding(c => c.User)
-                .Excluding(c => c.Ukprn)
                 .Excluding(c => c.Address)
             );
             actual.EmployerLocation.Should().BeEquivalentTo(request.Address);
