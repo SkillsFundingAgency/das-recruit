@@ -1517,6 +1517,10 @@
       "type": "string",
       "value": "[variables('qaAppServiceName')]"
     },
+    "JobsAppServiceName": {
+      "type": "string",
+      "value": "[variables('webjobAppServiceName')]"
+    },
     "StorageAccountName": {
       "type": "string",
       "value": "[variables('storageAccountName')]"

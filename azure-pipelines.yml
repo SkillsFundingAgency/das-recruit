@@ -5,10 +5,6 @@ trigger:
       - "*"
 
 variables:
-  # - name: WebSolutionBaseName
-  #   value: 
-  # - name: ApiSolutionBaseName
-  #   value: 
   - name: BuildConfiguration
     value: release
   - name: BuildPlatform
