@@ -1,0 +1,43 @@
+# parameters:
+#   SolutionBaseName:
+
+jobs:
+- job: CodeBuild
+  pool:
+    name: DAS - Continuous Integration Agents
+    demands: LATEST_DOTNET_VERSION -equals 3.1
+  variables:
+  - group: BUILD Management Resources
+  workspace:
+    clean: all
+  steps:
+  - template: azure-pipelines-templates/build/step/gitversion.yml@das-platform-building-blocks
+
+  - template: azure-pipelines-templates/build/step/app-build.yml@das-platform-building-blocks
+    parameters:
+      SonarCloud: true
+      SonarCloudProjectKey: SkillsFundingAgency_das-recruit
+
+  - template: azure-pipelines-templates/build/step/dependency-check.yml@das-platform-building-blocks
+
+  - task: DotNetCoreCLI@2
+    displayName: Publish
+    inputs:
+      command: publish
+      publishWebProjects: true
+      # projects: 
+      arguments: -o $(build.artifactstagingdirectory)/publish -c release --no-build
+
+  - task: CopyFiles@2
+    displayName: Copy Files to $(build.artifactstagingdirectory)/publish
+    inputs:
+      Contents: |
+        azure/**
+      TargetFolder: $(build.artifactstagingdirectory)/publish
+      OverWrite: true
+
+  - task: PublishPipelineArtifact@1
+    displayName: Publish Artifact - Recruit
+    inputs:
+      targetPath: $(build.artifactstagingdirectory)/publish
+      artifactName: Recruit
