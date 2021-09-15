@@ -39,8 +39,6 @@ stages:
 - stage: Build
   jobs:
   - template: pipeline-templates/job/code-build.yml
-    # parameters:
-      # SolutionBaseName:
 
 # - stage: Deploy_AT
 #   dependsOn: Build
