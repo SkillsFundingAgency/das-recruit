@@ -241,6 +241,9 @@
     "DasEncodings": {
       "type": "securestring"
     },
+    "cosmosDbConnectionString": {
+      "type": "securestring"
+    },
     "cosmosDatabase": {
       "type": "string"
     },
@@ -630,9 +633,9 @@
                   "value": "[parameters('ExternalLinks').EmployerFavouritesUrl]"
                 },
                 {
-                    "name": "ExternalLinks:TrainingProviderPermissionUrl",
-                    "value": "[parameters('ExternalLinks').TrainingProviderPermissionUrl]"
-				},
+                  "name": "ExternalLinks:TrainingProviderPermissionUrl",
+                  "value": "[parameters('ExternalLinks').TrainingProviderPermissionUrl]"
+                },
                 {
                   "name": "Features:SetNotificationPreferences",
                   "value": "[parameters('Features').SetNotificationPreferences]"
@@ -669,25 +672,25 @@
                   "name": "ZenDesk:CobrowsingSnippetKey",
                   "value": "[parameters('ZenDesk').CobrowsingSnippetKey]"
                 },
-				{
-                    "name": "ProviderRelationshipsApiConfiguration:ApiBaseUrl",
-                    "value": "[parameters('ProviderRelationshipsApiConfiguration').ApiBaseUrl]"
+                {
+                  "name": "ProviderRelationshipsApiConfiguration:ApiBaseUrl",
+                  "value": "[parameters('ProviderRelationshipsApiConfiguration').ApiBaseUrl]"
                 },
                 {
-                    "name": "ProviderRelationshipsApiConfiguration:ClientId",
-                    "value": "[parameters('ProviderRelationshipsApiConfiguration').ClientId]"
+                  "name": "ProviderRelationshipsApiConfiguration:ClientId",
+                  "value": "[parameters('ProviderRelationshipsApiConfiguration').ClientId]"
                 },
                 {
-                    "name": "ProviderRelationshipsApiConfiguration:ClientSecret",
-                    "value": "[parameters('ProviderRelationshipsApiConfiguration').ClientSecret]"
+                  "name": "ProviderRelationshipsApiConfiguration:ClientSecret",
+                  "value": "[parameters('ProviderRelationshipsApiConfiguration').ClientSecret]"
                 },
                 {
-                    "name": "ProviderRelationshipsApiConfiguration:IdentifierUri",
-                    "value": "[parameters('ProviderRelationshipsApiConfiguration').IdentifierUri]"
+                  "name": "ProviderRelationshipsApiConfiguration:IdentifierUri",
+                  "value": "[parameters('ProviderRelationshipsApiConfiguration').IdentifierUri]"
                 },
                 {
-                    "name": "ProviderRelationshipsApiConfiguration:Tenant",
-                    "value": "[parameters('ProviderRelationshipsApiConfiguration').Tenant]"
+                  "name": "ProviderRelationshipsApiConfiguration:Tenant",
+                  "value": "[parameters('ProviderRelationshipsApiConfiguration').Tenant]"
                 },
                 {
                   "name": "RedisConnectionSettings:RedisConnectionString",
@@ -710,7 +713,7 @@
                 },
                 {
                   "name": "MongoDb",
-                  "connectionString": "[concat('mongodb://', variables('cosmosDbName'), ':', reference('cosmos-db').outputs.PrimaryMasterKey.value,'@', variables('cosmosDbName'), '.documents.azure.com:10255/?ssl=true&replicaSet=globaldb')]",
+                  "connectionString": "[parameters('cosmosDbConnectionString')]",
                   "type": "Custom"
                 },
                 {
@@ -879,7 +882,7 @@
                 },
                 {
                   "name": "MongoDb",
-                  "connectionString": "[concat('mongodb://', variables('cosmosDbName'), ':', reference('cosmos-db').outputs.PrimaryMasterKey.value,'@', variables('cosmosDbName'), '.documents.azure.com:10255/?ssl=true&replicaSet=globaldb')]",
+                  "connectionString": "[parameters('cosmosDbConnectionString')]",
                   "type": "Custom"
                 },
                 {
@@ -1117,7 +1120,7 @@
                 },
                 {
                   "name": "MongoDb",
-                  "connectionString": "[concat('mongodb://', variables('cosmosDbName'), ':', reference('cosmos-db').outputs.PrimaryMasterKey.value,'@', variables('cosmosDbName'), '.documents.azure.com:10255/?ssl=true&replicaSet=globaldb')]",
+                  "connectionString": "[parameters('cosmosDbConnectionString')]",
                   "type": "Custom"
                 },
                 {
@@ -1419,7 +1422,7 @@
                 },
                 {
                   "name": "MongoDb",
-                  "connectionString": "[concat('mongodb://', variables('cosmosDbName'), ':', reference('cosmos-db').outputs.PrimaryMasterKey.value,'@', variables('cosmosDbName'), '.documents.azure.com:10255/?ssl=true&replicaSet=globaldb')]",
+                  "connectionString": "[parameters('cosmosDbConnectionString')]",
                   "type": "Custom"
                 },
                 {
