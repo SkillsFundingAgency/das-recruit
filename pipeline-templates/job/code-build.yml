@@ -34,7 +34,7 @@ jobs:
   - template: azure-pipelines-templates/build/step/dependency-check.yml@das-platform-building-blocks
 
   - task: DotNetCoreCLI@2
-    displayName: Publish
+    displayName: Publish Web/Api/Job Apps
     inputs:
       command: publish
       publishWebProjects: false
@@ -42,6 +42,15 @@ jobs:
         **/*.@(Web|Api|Jobs).csproj
         !**/*.Shared.Web.csproj
       arguments: -o $(build.artifactstagingdirectory)/publish -c release --no-build
+
+  - task: DotNetCoreCLI@2
+    displayName: Publish Console.RecruitSeedDataWriter
+    inputs:
+      command: publish
+      publishWebProjects: false
+      projects: src/Data/CosmosDb/Console.RecruitSeedDataWriter/Console.RecruitSeedDataWriter.csproj
+      arguments: -o $(build.artifactstagingdirectory)/publish -c release --no-build
+      zipAfterPublish: false
 
   - task: CopyFiles@2
     displayName: Copy Files to $(build.artifactstagingdirectory)/publish
