@@ -43,7 +43,20 @@ jobs:
             SourcePath: $(Pipeline.Workspace)/das-employer-config/Configuration/das-recruit
             TargetFileName: '*.schema.json'
             TableName: Configuration
-            
+
+            # TODO: Do better
+        # - task: PowerShell@1
+        #   displayName: 'Seed Recruit Database'
+        #   inputs:
+        #     scriptName: $(Pipeline.Workspace)/Recruit/Console.RecruitSeedDataWriter/SeedScript.ps1
+        #     arguments: -dbConnectionString "$(RecruitCosmosDbConnectionString)"
+
+        # - task: PowerShell@1
+        #   displayName: 'Run Mongo API Script'
+        #   inputs:
+        #     scriptName: $(Pipeline.Workspace)/Recruit/Data/Recruit.ChangeScripts/Invoke-CosmosDbScript.ps1'
+        #     arguments: '-CosmosDb $(CosmosDbScript:CosmosDb) -Username $(CosmosDbScript:Username) -Password $(CosmosDbScript:Password) -MongoScript $(CosmosDbScript:MongoScript)'
+
         - template: azure-pipelines-templates/deploy/step/app-deploy.yml@das-platform-building-blocks
           parameters:
             ServiceConnection: ${{ parameters.ServiceConnection }}
