@@ -12,6 +12,20 @@ jobs:
   steps:
   - template: azure-pipelines-templates/build/step/gitversion.yml@das-platform-building-blocks
 
+  - task: Npm@1
+    displayName: 'npm install (Database Deployment Change Scripts)'
+    inputs:
+      workingDir: src/Data/Recruit.ChangeScripts
+      verbose: false
+
+  - task: Npm@1
+    displayName: 'Lint Database Deployment Change Scripts'
+    inputs:
+      command: custom
+      workingDir: src/Data/Recruit.ChangeScripts
+      verbose: false
+      customCommand: 'run lint'
+
   - template: azure-pipelines-templates/build/step/app-build.yml@das-platform-building-blocks
     parameters:
       SonarCloud: true
@@ -34,6 +48,11 @@ jobs:
     inputs:
       Contents: |
         azure/**
+        src/Employer/Esfa.Recruit.Azure.Resources/**/*.json
+        src/Data/CosmosDb/Configuration.json
+        src/Data/Recruit.ChangeScripts/*.js
+        src/Data/Recruit.ChangeScripts/*.ps1
+
       TargetFolder: $(build.artifactstagingdirectory)/publish
       OverWrite: true
 
