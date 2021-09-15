@@ -48,11 +48,9 @@ jobs:
     inputs:
       Contents: |
         azure/**
-        src/Employer/Esfa.Recruit.Azure.Resources/**/*.json
         src/Data/CosmosDb/Configuration.json
         src/Data/Recruit.ChangeScripts/*.js
         src/Data/Recruit.ChangeScripts/*.ps1
-
       TargetFolder: $(build.artifactstagingdirectory)/publish
       OverWrite: true
 
