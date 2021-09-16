@@ -36,17 +36,17 @@ stages:
   jobs:
   - template: pipeline-templates/job/code-build.yml
 
-# - stage: Deploy_AT
-#   dependsOn: Build
-#   displayName: Deploy to AT
-#   variables:
-#   - group: DevTest Management Resources
-#   - group: AT DevTest Shared Resources
-#   jobs:
-#   - template: pipeline-templates/job/deploy.yml
-#     parameters:
-#       Environment: AT
-#       ServiceConnection: SFA-DAS-DevTest-ARM
+- stage: Deploy_AT
+  dependsOn: Build
+  displayName: Deploy to AT
+  variables:
+  - group: DevTest Management Resources
+  - group: AT DevTest Shared Resources
+  jobs:
+  - template: pipeline-templates/job/deploy.yml
+    parameters:
+      Environment: AT
+      ServiceConnection: SFA-DAS-DevTest-ARM
 
 # - stage: Deploy_TEST
 #   dependsOn: Build

@@ -14,7 +14,7 @@
     "resourceGroupLocation": {
       "type": "string"
     },
-    "webJobAspSize": {
+    "jobsAspSize": {
       "type": "string",
       "allowedValues": [
         "1",
@@ -22,31 +22,22 @@
         "3"
       ]
     },
-    "webJobAspInstances": {
+    "jobsAspInstances": {
       "type": "int"
     },
-    "webJobNonASETier": {
+    "jobsAspTier": {
       "type": "string",
       "defaultValue": "Standard"
     },
-    "EnvironmentFullName": {
+    "environmentName": {
       "type": "string"
     },
     "ConfigurationStorageConnectionString": {
       "type": "securestring"
     },
     "LoggingRedisConnectionString": {
-      "type": "securestring",
-      "defaultValue": ""
+      "type": "securestring"
     },
-    "StorageRedisConnectionString": {
-      "type": "securestring",
-      "defaultValue": ""
-    },
-    "DataProtectionKeysDatabase": {
-      "type": "string",
-      "defaultValue": ""
-    },    
     "sharedFrontEndAppServicePlanName": {
       "type": "string"
     },
@@ -56,30 +47,30 @@
     "sharedEnvResourceGroup": {
       "type": "string"
     },
-    "EmployerCustomHostname": {
+    "employerCustomHostname": {
       "type": "string"
     },
-    "EmployerKeyvaultCertificateName": {
+    "employerKeyvaultCertificateName": {
       "type": "string"
     },
-    "QAAppCustomHostname": {
+    "qaAppCustomHostname": {
       "type": "string"
     },
-    "QAAppKeyvaultCertificateName": {
+    "qaAppKeyvaultCertificateName": {
       "type": "string"
     },
-    "ProviderCustomHostname": {
+    "providerCustomHostname": {
       "type": "string"
     },
-    "ProviderKeyvaultCertificateName": {
+    "providerKeyvaultCertificateName": {
       "type": "string"
-    },    
+    },
     "cosmosDbIpRangeFilter": {
       "type": "string",
       "defaultValue": ""
     },
-    "cosmosDbConnectionString": {
-      "type": "securestring"
+    "cosmosDbName": {
+      "type": "string"
     },
     "cosmosDatabase": {
       "type": "string"
@@ -129,7 +120,6 @@
     "employerRecruitAppServiceName": "[concat(variables('resourceNamePrefix'), '-as')]",
     "providerRecruitAppServiceName": "[concat(variables('resourceNamePrefix'), '-pr-as')]",
     "qaAppServiceName": "[concat(variables('resourceNamePrefix'), '-qa-as')]",
-    "cosmosDbName": "[concat(variables('resourceNamePrefix'),'-cdb')]",
     "webjobAppServiceName": "[concat(variables('resourceNamePrefix'), '-webjob-as')]",
     "storageAccountName": "[toLower(concat('das', parameters('resourceEnvironmentName'), parameters('serviceName'), 'str'))]"
   },
@@ -227,7 +217,7 @@
         },
         "parameters": {
           "cosmosDbName": {
-            "value": "[variables('cosmosDbName')]"
+            "value": "[parameters('cosmosDbName')]"
           },
           "cosmosDbType": {
             "value": "MongoDB"
@@ -263,7 +253,7 @@
         },
         "parameters": {
           "cosmosDbAccountName": {
-            "value": "[variables('cosmosDbName')]"
+            "value": "[parameters('cosmosDbName')]"
           },
           "cosmosDatabase": {
             "value": "[parameters('cosmosDatabase')]"
@@ -291,7 +281,7 @@
         },
         "parameters": {
           "cosmosDbAccountName": {
-            "value": "[variables('cosmosDbName')]"
+            "value": "[parameters('cosmosDbName')]"
           },
           "cosmosDatabase": {
             "value": "[parameters('cosmosDatabase')]"
@@ -329,7 +319,7 @@
         },
         "parameters": {
           "cosmosDbAccountName": {
-            "value": "[variables('cosmosDbName')]"
+            "value": "[parameters('cosmosDbName')]"
           },
           "cosmosDatabase": {
             "value": "[parameters('cosmosDatabase')]"
@@ -403,46 +393,20 @@
             "value": {
               "array": [
                 {
-                  "name": "ApplicationInsights:InstrumentationKey",
+                  "name": "ConfigurationStorageConnectionString",
+                  "value": "[parameters('configurationStorageConnectionString')]"
+                },
+                {
+                  "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
                   "value": "[reference('employer-recruit-app-insights').outputs.InstrumentationKey.value]"
                 },
                 {
                   "name": "ASPNETCORE_ENVIRONMENT",
-                  "value": "[toUpper(parameters('EnvironmentFullName'))]"
+                  "value": "[toUpper(parameters('environmentName'))]"
                 },
                 {
-                  "name": "RedisConnectionSettings:RedisConnectionString",
-                  "value": "[parameters('StorageRedisConnectionString')]"
-                },
-                {
-                  "name": "RedisConnectionSettings:DataProtectionKeysDatabase",
-                  "value": "[parameters('DataProtectionKeysDatabase')]"
-                }
-              ]
-            }
-          },
-          "appServiceConnectionStrings": {
-            "value": {
-              "array": [
-                {
-                  "name": "Redis",
-                  "connectionString": "[parameters('LoggingRedisConnectionString')]",
-                  "type": "Custom"
-                },
-                {
-                  "name": "MongoDb",
-                  "connectionString": "[parameters('cosmosDbConnectionString')]",
-                  "type": "Custom"
-                },
-                {
-                  "name": "QueueStorage",
-                  "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('storageAccountName'),';AccountKey=',reference('storage-account').outputs.storageKey.value)]",
-                  "type": "Custom"
-                },
-                {
-                  "name": "TableStorage",
-                  "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('storageAccountName'),';AccountKey=',reference('storage-account').outputs.storageKey.value)]",
-                  "type": "Custom"
+                  "name": "LoggingRedisConnectionString",
+                  "value": "[parameters('loggingRedisConnectionString')]"
                 }
               ]
             }
@@ -510,53 +474,22 @@
           },
           "appServiceAppSettings": {
             "value": {
-              "array": [                
+              "array": [
                 {
-                  "name": "ApplicationInsights:InstrumentationKey",
+                  "name": "ConfigurationStorageConnectionString",
+                  "value": "[parameters('configurationStorageConnectionString')]"
+                },
+                {
+                  "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
                   "value": "[reference('qa-app-insights').outputs.InstrumentationKey.value]"
                 },
                 {
                   "name": "ASPNETCORE_ENVIRONMENT",
-                  "value": "[toUpper(parameters('EnvironmentFullName'))]"
+                  "value": "[toUpper(parameters('environmentName'))]"
                 },
                 {
-                  "name": "RedisConnectionSettings:RedisConnectionString",
-                  "value": "[parameters('StorageRedisConnectionString')]"
-                },
-                {
-                  "name": "RedisConnectionSettings:DataProtectionKeysDatabase",
-                  "value": "[parameters('DataProtectionKeysDatabase')]"
-                }
-              ]
-            }
-          },
-          "appServiceConnectionStrings": {
-            "value": {
-              "array": [
-                {
-                  "name": "Redis",
-                  "connectionString": "[parameters('LoggingRedisConnectionString')]",
-                  "type": "Custom"
-                },
-                {
-                  "name": "MongoDb",
-                  "connectionString": "[parameters('cosmosDbConnectionString')]",
-                  "type": "Custom"
-                },
-                {
-                  "name": "QueueStorage",
-                  "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('storageAccountName'),';AccountKey=',reference('storage-account').outputs.storageKey.value)]",
-                  "type": "Custom"
-                },
-                {
-                  "name": "TableStorage",
-                  "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('storageAccountName'),';AccountKey=',reference('storage-account').outputs.storageKey.value)]",
-                  "type": "Custom"
-                },
-                {
-                  "name": "CommunicationsStorage",
-                  "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('storageAccountName'),';AccountKey=',reference('storage-account').outputs.storageKey.value)]",
-                  "type": "Custom"
+                  "name": "LoggingRedisConnectionString",
+                  "value": "[parameters('loggingRedisConnectionString')]"
                 }
               ]
             }
@@ -624,48 +557,22 @@
           },
           "appServiceAppSettings": {
             "value": {
-              "array": [                
-                {
-                  "name": "ApplicationInsights:InstrumentationKey",
-                  "value": "[reference('provider-recruit-app-insights').outputs.InstrumentationKey.value]"
-                },               
-                {
-                  "name": "ASPNETCORE_ENVIRONMENT",
-                  "value": "[toUpper(parameters('EnvironmentFullName'))]"
-                },
-                {
-                  "name": "RedisConnectionSettings:RedisConnectionString",
-                  "value": "[parameters('StorageRedisConnectionString')]"
-                },
-                {
-                  "name": "RedisConnectionSettings:DataProtectionKeysDatabase",
-                  "value": "[parameters('DataProtectionKeysDatabase')]"
-                }
-              ]
-            }
-          },
-          "appServiceConnectionStrings": {
-            "value": {
               "array": [
                 {
-                  "name": "Redis",
-                  "connectionString": "[parameters('LoggingRedisConnectionString')]",
-                  "type": "Custom"
+                  "name": "ConfigurationStorageConnectionString",
+                  "value": "[parameters('configurationStorageConnectionString')]"
                 },
                 {
-                  "name": "MongoDb",
-                  "connectionString": "[parameters('cosmosDbConnectionString')]",
-                  "type": "Custom"
+                  "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
+                  "value": "[reference('provider-recruit-app-insights').outputs.InstrumentationKey.value]"
                 },
                 {
-                  "name": "QueueStorage",
-                  "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('storageAccountName'),';AccountKey=',reference('storage-account').outputs.storageKey.value)]",
-                  "type": "Custom"
+                  "name": "ASPNETCORE_ENVIRONMENT",
+                  "value": "[toUpper(parameters('environmentName'))]"
                 },
                 {
-                  "name": "TableStorage",
-                  "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('storageAccountName'),';AccountKey=',reference('storage-account').outputs.storageKey.value)]",
-                  "type": "Custom"
+                  "name": "LoggingRedisConnectionString",
+                  "value": "[parameters('loggingRedisConnectionString')]"
                 }
               ]
             }
@@ -719,13 +626,13 @@
             "value": "[variables('webJobAppServicePlanName')]"
           },
           "aspSize": {
-            "value": "[parameters('webJobAspSize')]"
+            "value": "[parameters('jobsAspSize')]"
           },
           "aspInstances": {
-            "value": "[parameters('webJobAspInstances')]"
+            "value": "[parameters('jobsAspInstances')]"
           },
           "nonASETier": {
-            "value": "[parameters('webJobNonASETier')]"
+            "value": "[parameters('jobsAspTier')]"
           }
         }
       },
@@ -815,54 +722,16 @@
             "value": {
               "array": [
                 {
-                  "name": "ASPNETCORE_ENVIRONMENT",
-                  "value": "[toUpper(parameters('EnvironmentFullName'))]"
-                }
-              ]
-            }
-          },
-          "appServiceConnectionStrings": {
-            "value": {
-              "array": [
-                {
                   "name": "ConfigurationStorageConnectionString",
-                  "connectionString": "[parameters('ConfigurationStorageConnectionString')]",
-                  "type": "Custom"
+                  "value": "[parameters('configurationStorageConnectionString')]"
                 },
                 {
-                  "name": "Redis",
-                  "connectionString": "[parameters('LoggingRedisConnectionString')]",
-                  "type": "Custom"
+                  "name": "ASPNETCORE_ENVIRONMENT",
+                  "value": "[toUpper(parameters('environmentName'))]"
                 },
                 {
-                  "name": "MongoDb",
-                  "connectionString": "[parameters('cosmosDbConnectionString')]",
-                  "type": "Custom"
-                },
-                {
-                  "name": "QueueStorage",
-                  "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('storageAccountName'),';AccountKey=',reference('storage-account').outputs.storageKey.value)]",
-                  "type": "Custom"
-                },
-                {
-                  "name": "CommunicationsStorage",
-                  "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('storageAccountName'),';AccountKey=',reference('storage-account').outputs.storageKey.value)]",
-                  "type": "Custom"
-                },
-                {
-                  "name": "AzureWebJobsDashboard",
-                  "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('storageAccountName'),';AccountKey=',reference('storage-account').outputs.storageKey.value)]",
-                  "type": "Custom"
-                },
-                {
-                  "name": "AzureWebJobsStorage",
-                  "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('storageAccountName'),';AccountKey=',reference('storage-account').outputs.storageKey.value)]",
-                  "type": "Custom"
-                },
-                {
-                  "name": "TableStorage",
-                  "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('storageAccountName'),';AccountKey=',reference('storage-account').outputs.storageKey.value)]",
-                  "type": "Custom"
+                  "name": "LoggingRedisConnectionString",
+                  "value": "[parameters('loggingRedisConnectionString')]"
                 }
               ]
             }
@@ -899,10 +768,6 @@
     "ResourceGroupName": {
       "type": "string",
       "value": "[variables('resourceGroupName')]"
-    },
-    "CosmosDbName": {
-      "type": "string",
-      "value": "[variables('cosmosDbName')]"
     },
     "EmployerAppServiceName": {
       "type": "string",
