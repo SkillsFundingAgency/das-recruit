@@ -110,6 +110,9 @@
     },
     "subnetDelegations": {
       "type": "array"
+    },
+    "sharedServiceBusName": {
+      "type": "string"
     }
   },
   "variables": {
@@ -762,6 +765,30 @@
         "webjob-app-service-plan",
         "webjob-apim-product-subscription"
       ]
+    },
+    {
+      "apiVersion": "2020-06-01",
+      "name": "[concat('webjob-servicebus-role-assignments')]",
+      "type": "Microsoft.Resources/deployments",
+      "resourceGroup": "[parameters('sharedEnvResourceGroup')]",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(variables('deploymentUrlBase'),'role-assignments/role-assignment-service-bus.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "principalId": {
+            "value": "[reference('webjob-app-service').outputs.managedServiceIdentityId.value]"
+          },
+          "assignmentType": {
+            "value": "ServiceBusOwner"
+          },
+          "resourceName": {
+            "value": "[parameters('sharedServiceBusName')]"
+          }
+        }
+      }
     }
   ],
   "outputs": {
