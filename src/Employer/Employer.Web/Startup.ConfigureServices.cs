@@ -1,3 +1,4 @@
+using System.IO;
 using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Shared.Web.FeatureToggle;
@@ -7,6 +8,7 @@ using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using SFA.DAS.Configuration.AzureTableStorage;
 
 namespace Esfa.Recruit.Employer.Web
 {
@@ -21,7 +23,25 @@ namespace Esfa.Recruit.Employer.Web
 
         public Startup(IConfiguration config, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
-            _configuration = config;
+            var configBuilder = new ConfigurationBuilder()
+                .AddConfiguration(config)
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddEnvironmentVariables();
+                
+            configBuilder
+                .AddJsonFile("appsettings.json", optional:true)
+                .AddJsonFile("appsettings.Development.json", optional: true);
+            
+            configBuilder.AddAzureTableStorage(
+                options => {
+                    options.ConfigurationKeys = config["ConfigNames"].Split(",");
+                    options.EnvironmentName = config["Environment"];
+                    options.StorageConnectionString = config["ConfigurationStorageConnectionString"];
+                    options.PreFixConfigurationKeys = false;
+                }
+            );
+
+            _configuration =  configBuilder.Build();
             _hostingEnvironment = env;
             _authConfig = _configuration.GetSection("Authentication").Get<AuthenticationConfiguration>();
             _loggerFactory = loggerFactory;
