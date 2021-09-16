@@ -82,7 +82,6 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
                 v => _vacancyClient.Validate(v, ValidationRules),
                 async v =>    
                 {
-                    vacancy.EmployerDescription = null; // We don't want to save the description until submission.
                     await _vacancyClient.UpdateDraftVacancyAsync(vacancy, user);
                     await UpdateEmployerProfileAsync(vacancy, m.EmployerDescription, user);
                 }

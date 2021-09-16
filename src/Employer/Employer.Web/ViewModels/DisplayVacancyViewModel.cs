@@ -6,6 +6,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels
 {
     public abstract class DisplayVacancyViewModel
     {
+        public VacancyStatus Status { get; set; }
         public string ApplicationInstructions { get; internal set; }
         public ApplicationMethod? ApplicationMethod { get; internal set; }
         public string ApplicationUrl { get; internal set; }
@@ -34,6 +35,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels
         public string OutcomeDescription { get; internal set; }
         public string PossibleStartDate { get; internal set; }
         public string ProviderName { get; internal set; }
+        public List<ProviderReviewFieldIndicator> ProviderReviewFieldIndicators { get; internal set; }
         public IEnumerable<string> Qualifications { get; internal set; }
         public string ShortDescription { get; internal set; }
         public IEnumerable<string> Skills { get; internal set; }

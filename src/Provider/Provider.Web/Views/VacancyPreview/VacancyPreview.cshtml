@@ -52,7 +52,12 @@
 
     public string EmployerReviewClass(VacancyPreviewViewModel model, string[] fieldIdentifiers)
     {
-        return (model.EmployerReviewFieldIndicators?.Any(p => fieldIdentifiers.Contains(p.FieldIdentifier) && p.IsChangeRequested) ?? false) ? "govuk-inset-text" : string.Empty;
+        if (model.Status != VacancyStatus.Rejected && model.Status != VacancyStatus.Referred)
+            return string.Empty;
+
+        return (model.EmployerReviewFieldIndicators?.Any(p => fieldIdentifiers.Contains(p.FieldIdentifier) && p.IsChangeRequested) ?? false)
+                ? "govuk-inset-text"
+                : string.Empty;
     }
 
     public string ApprenticeshipSummaryEmployerReviewClass(VacancyPreviewViewModel model)
@@ -123,6 +128,9 @@
 
     public bool ShowEmployerReviewFlag(VacancyPreviewViewModel model, string fieldIdentifier)
     {
+        if (model.Status != VacancyStatus.Rejected && model.Status != VacancyStatus.Referred)
+            return false;
+
         return model.EmployerReviewFieldIndicators?.Any(p => p.FieldIdentifier == fieldIdentifier && p.IsChangeRequested) ?? false;
     }
 

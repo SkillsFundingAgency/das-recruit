@@ -65,6 +65,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             vacancy.EmployerName = await _employerService.GetEmployerNameAsync(vacancy);
 
             vacancy.Status = VacancyStatus.Submitted;
+            vacancy.EmployerRejectedReason = null;
             vacancy.SubmittedDate = now;
             vacancy.SubmittedByUser = message.User;
             vacancy.LastUpdatedDate = now;
