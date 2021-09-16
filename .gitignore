@@ -300,3 +300,7 @@ internal-nlog.txt
 src/API/Recruit.Api/appsettings.Development.json
 
 *.subscription
+
+src/Employer/Employer.Web/appsettings.Development.json
+
+src/Jobs/Recruit.Vacancies.Jobs/appSettings.Development.json
