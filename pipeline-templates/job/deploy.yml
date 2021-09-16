@@ -19,7 +19,7 @@ jobs:
             Environment: ${{ parameters.Environment }}
             TemplatePath: $(Pipeline.Workspace)/Recruit/azure/api.template.json
             ParametersPath: $(Pipeline.Workspace)/Recruit/azure/api.template.parameters.json
-            IsMultiRepoCheckout: true
+            IsMultiRepoCheckout: false # temp
             TemplateSecrets:
               LoggingRedisConnectionString: $(LoggingRedisConnectionString)
               ConfigurationStorageConnectionString: $(ConfigurationStorageConnectionString)
