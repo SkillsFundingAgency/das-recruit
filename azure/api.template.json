@@ -14,7 +14,7 @@
         "resourceGroupLocation": {
             "type": "string"
         },
-        "appServiceAllowedIPs": {
+        "wafOutboundIPAddresses": {
             "type": "array"
         },
         "environmentName": {
@@ -23,16 +23,16 @@
         "configurationStorageConnectionString": {
             "type": "securestring"
         },
-        "customHostname": {
+        "apiCustomHostname": {
             "type": "string"
         },
-        "certificateName": {
+        "apiKeyvaultCertificateName": {
             "type": "string"
         },
-        "keyVaultName": {
+        "sharedKeyVaultName": {
             "type": "string"
         },
-        "keyVaultResourceGroup": {
+        "sharedManagementResourceGroup": {
             "type": "string"
         },
         "loggingRedisConnectionString": {
@@ -44,7 +44,7 @@
         "sharedEnvVirtualNetworkName": {
             "type": "string"
         },
-        "subnetObject": {
+        "apiSubnetObject": {
             "type": "object"
         },
         "subnetServiceEndpointList": {
@@ -56,7 +56,7 @@
     },
     "variables": {
         "deploymentUrlBase": "https://raw.githubusercontent.com/SkillsFundingAgency/das-platform-building-blocks/master/templates/",
-        "resourceNamePrefix": "[toLower(concat('das-', parameters('resourceEnvironmentName'),'-', parameters('serviceName')))]",
+        "resourceNamePrefix": "[toLower(concat('das-', parameters('resourceEnvironmentName'),'-', parameters('serviceName'), 'api'))]", // Move resources into main rcrt resource group after cutover
         "resourceGroupName": "[concat(variables('resourceNamePrefix'), '-rg')]",
         "appServiceName": "[concat(variables('resourceNamePrefix'), '-as')]",
         "appServicePlanName": "[concat(variables('resourceNamePrefix'), '-asp')]"
@@ -113,10 +113,10 @@
                         "value": "[parameters('sharedEnvVirtualNetworkName')]"
                     },
                     "subnetName": {
-                        "value": "[parameters('subnetObject').name]"
+                        "value": "[parameters('apiSubnetObject').name]"
                     },
                     "subnetAddressPrefix": {
-                        "value": "[parameters('subnetObject').addressSpace]"
+                        "value": "[parameters('apiSubnetObject').addressSpace]"
                     },
                     "serviceEndpointList": {
                         "value": "[parameters('subnetServiceEndpointList')]"
@@ -140,13 +140,13 @@
                 },
                 "parameters": {
                     "keyVaultCertificateName": {
-                        "value": "[parameters('certificateName')]"
+                        "value": "[parameters('apiKeyvaultCertificateName')]"
                     },
                     "keyVaultName": {
-                        "value": "[parameters('keyVaultName')]"
+                        "value": "[parameters('sharedKeyVaultName')]"
                     },
                     "keyVaultResourceGroup": {
-                        "value": "[parameters('keyVaultResourceGroup')]"
+                        "value": "[parameters('sharedManagementResourceGroup')]"
                     }
                 }
             },
@@ -216,29 +216,22 @@
                                 {
                                     "name": "ASPNETCORE_ENVIRONMENT",
                                     "value": "[toUpper(parameters('environmentName'))]"
-                                }
-                            ]
-                        }
-                    },
-                    "appServiceConnectionStrings": {
-                        "value": {
-                            "array": [
+                                },
                                 {
-                                    "name": "RedisLogging",
-                                    "connectionString": "[parameters('loggingRedisConnectionString')]",
-                                    "type": "Custom"
+                                    "name": "LoggingRedisConnectionString",
+                                    "value": "[parameters('loggingRedisConnectionString')]"
                                 }
                             ]
                         }
                     },
                     "customHostName": {
-                        "value": "[parameters('customHostname')]"
+                        "value": "[parameters('apiCustomHostname')]"
                     },
                     "certificateThumbprint": {
                         "value": "[reference('app-service-certificate').outputs.certificateThumbprint.value]"
                     },
                     "ipSecurityRestrictions": {
-                        "value": "[parameters('appServiceAllowedIPs')]"
+                        "value": "[parameters('wafOutboundIPAddresses')]"
                     }
                 }
             },
