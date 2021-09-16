@@ -214,7 +214,7 @@
                                     "value": "[reference('application-insights').outputs.InstrumentationKey.value]"
                                 },
                                 {
-                                    "name": "ASPNETCORE_ENVIRONMENT",
+                                    "name": "Environment",
                                     "value": "[toUpper(parameters('environmentName'))]"
                                 },
                                 {

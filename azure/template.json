@@ -404,7 +404,7 @@
                   "value": "[reference('employer-recruit-app-insights').outputs.InstrumentationKey.value]"
                 },
                 {
-                  "name": "ASPNETCORE_ENVIRONMENT",
+                  "name": "Environment",
                   "value": "[toUpper(parameters('environmentName'))]"
                 },
                 {
@@ -487,7 +487,7 @@
                   "value": "[reference('qa-app-insights').outputs.InstrumentationKey.value]"
                 },
                 {
-                  "name": "ASPNETCORE_ENVIRONMENT",
+                  "name": "Environment",
                   "value": "[toUpper(parameters('environmentName'))]"
                 },
                 {
@@ -570,7 +570,7 @@
                   "value": "[reference('provider-recruit-app-insights').outputs.InstrumentationKey.value]"
                 },
                 {
-                  "name": "ASPNETCORE_ENVIRONMENT",
+                  "name": "Environment",
                   "value": "[toUpper(parameters('environmentName'))]"
                 },
                 {
@@ -729,7 +729,7 @@
                   "value": "[parameters('configurationStorageConnectionString')]"
                 },
                 {
-                  "name": "ASPNETCORE_ENVIRONMENT",
+                  "name": "Environment",
                   "value": "[toUpper(parameters('environmentName'))]"
                 },
                 {
