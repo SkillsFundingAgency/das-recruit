@@ -24,13 +24,9 @@ namespace SFA.DAS.Recruit.Api
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddOptions();
+            services.Configure<ConnectionStrings>(Configuration.GetSection("ConnectionStrings"));
             services.Configure<RecruitConfiguration>(Configuration.GetSection("Recruit"));
             services.Configure<AzureActiveDirectoryConfiguration>(Configuration.GetSection("AzureAd"));
-
-            
-            var recruitConfig = Configuration
-                .GetSection("Recruit")
-                .Get<RecruitConfiguration>();
 
             var azureAdConfig = Configuration
                 .GetSection("AzureAd")
@@ -48,7 +44,7 @@ namespace SFA.DAS.Recruit.Api
             MongoDbConventions.RegisterMongoConventions();
 
             services.AddHealthChecks()
-                    .AddMongoDb(recruitConfig.ConnectionString)
+                    .AddMongoDb(Configuration.GetConnectionString("MongoDb"))
                     .AddApplicationInsightsPublisher();
 
             services.AddApplicationInsightsTelemetry();
