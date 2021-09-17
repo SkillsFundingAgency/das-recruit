@@ -54,8 +54,10 @@ namespace Esfa.Recruit.Vacancies.Jobs
                     {  
                         configHost.SetBasePath(Directory.GetCurrentDirectory());  
                         configHost.AddEnvironmentVariables();
+#if DEBUG
                         configHost.AddJsonFile("appSettings.json", optional: false)
-                            .AddJsonFile($"appSettings.Development.json", true);
+                            .AddJsonFile($"appSettings.Development.json", true);               
+#endif
                     })  
                     .ConfigureWebJobs(b =>
                     {

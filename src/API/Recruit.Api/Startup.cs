@@ -16,11 +16,12 @@ namespace SFA.DAS.Recruit.Api
                 .AddConfiguration(configuration)
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddEnvironmentVariables();
-                
+#if DEBUG
             config
                 .AddJsonFile("appsettings.json", optional:true)
-                .AddJsonFile("appsettings.Development.json", optional: true);
-            
+                .AddJsonFile("appsettings.Development.json", optional: true);   
+#endif                
+         
             config.AddAzureTableStorage(
                     options => {
                         options.ConfigurationKeys = configuration["ConfigNames"].Split(",");

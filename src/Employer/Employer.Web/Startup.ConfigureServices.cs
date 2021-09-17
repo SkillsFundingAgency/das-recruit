@@ -28,9 +28,11 @@ namespace Esfa.Recruit.Employer.Web
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddEnvironmentVariables();
                 
+#if DEBUG
             configBuilder
                 .AddJsonFile("appsettings.json", optional:true)
-                .AddJsonFile("appsettings.Development.json", optional: true);
+                .AddJsonFile("appsettings.Development.json", optional: true);   
+#endif   
             
             configBuilder.AddAzureTableStorage(
                 options => {

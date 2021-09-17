@@ -1,12 +1,13 @@
 {
   "$schema": "http://json.schemastore.org/launchsettings.json",
   "profiles": {
-    "Employer.Web": {
+    "Provider.Web": {
       "commandName": "Project",
       "launchBrowser": true,
       "environmentVariables": {
         "ASPNETCORE_Environment": "Development"
-      }
+      },
+      "applicationUrl": "https://localhost:5030/&lt;ukprn>/"
     }
   }
 }
