@@ -17,8 +17,8 @@ jobs:
             SubscriptionId: $(SubscriptionId)
             Location: $(ResourceGroupLocation)
             Environment: ${{ parameters.Environment }}
-            TemplatePath: $(Pipeline.Workspace)/Recruit/azure/web.template.json
-            ParametersPath: $(Pipeline.Workspace)/Recruit/azure/web.template.parameters.json
+            TemplatePath: $(Pipeline.Workspace)/Recruit/azure/template.json
+            ParametersPath: $(Pipeline.Workspace)/Recruit/azure/template.parameters.json
             IsMultiRepoCheckout: false
             TemplateSecrets:
               LoggingRedisConnectionString: $(LoggingRedisConnectionString)
