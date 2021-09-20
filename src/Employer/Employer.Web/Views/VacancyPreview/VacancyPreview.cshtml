@@ -553,24 +553,24 @@
             @EditLink(RouteNames.AboutEmployer_Get, Model.EmployerWebsiteUrlSectionState, "website", "link-website")
         </div>
     </div>
-    <div class="govuk-grid-column-one-third">
-        <div class="@GetSectionClass(Model.EmployerContactSectionState)">
-            <h3 class="govuk-heading-s govuk-!-margin-top-4" id="@Anchors.EmployerContact">
-                <img asp-show="@Model.EmployerContactRequiresEdit" src="/img/red-cross.png" />
-                Contact details (optional)
-            </h3>
-            <span esfa-validation-message-for="EmployerContactName" class="govuk-error-message"></span>
-            <p asp-show="@Model.HasEmployerContactName" class="govuk-body">@Model.EmployerContactName</p>
-            <span esfa-validation-message-for="EmployerContactEmail" class="govuk-error-message"></span>
-            <p asp-show="@Model.HasEmployerContactEmail" class="govuk-body">@Model.EmployerContactEmail</p>
-            <span esfa-validation-message-for="EmployerContactTelephone" class="govuk-error-message"></span>
-            <p asp-show="@Model.HasEmployerContactTelephone" class="govuk-body">@Model.EmployerContactTelephone</p>
-            @if (Model.Status != VacancyStatus.Review)
-            {
+    @if (Model.Status != VacancyStatus.Review)
+    {
+        <div class="govuk-grid-column-one-third">
+            <div class="@GetSectionClass(Model.EmployerContactSectionState)">
+                <h3 class="govuk-heading-s govuk-!-margin-top-4" id="@Anchors.EmployerContact">
+                    <img asp-show="@Model.EmployerContactRequiresEdit" src="/img/red-cross.png"/>
+                    Contact details (optional)
+                </h3>
+                <span esfa-validation-message-for="EmployerContactName" class="govuk-error-message"></span>
+                <p asp-show="@Model.HasEmployerContactName" class="govuk-body">@Model.EmployerContactName</p>
+                <span esfa-validation-message-for="EmployerContactEmail" class="govuk-error-message"></span>
+                <p asp-show="@Model.HasEmployerContactEmail" class="govuk-body">@Model.EmployerContactEmail</p>
+                <span esfa-validation-message-for="EmployerContactTelephone" class="govuk-error-message"></span>
+                <p asp-show="@Model.HasEmployerContactTelephone" class="govuk-body">@Model.EmployerContactTelephone</p>
                 @EditLink(RouteNames.EmployerContactDetails_Get, Model.EmployerContactSectionState, "contact details", "link-employer-contact-details")
-            }
+            </div>
         </div>
-    </div>
+    }
 </div>
 <div class="govuk-grid-row @ProviderReviewClass(Model, FieldIdentifiers.EmployerAddress)">
     <div class="govuk-grid-column-one-half">
