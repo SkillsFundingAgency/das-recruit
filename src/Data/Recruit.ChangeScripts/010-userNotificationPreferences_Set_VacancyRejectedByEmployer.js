@@ -48,7 +48,7 @@
             let updatedNotificationTypes = "VacancyRejectedByEmployer";
 
             if (doc.notificationTypes && doc.notificationTypes.length > 1) {
-                print(`Has existing notificationTypes. Adding VacancyRejectedByEmployer to existing`);
+                print("Has existing notificationTypes. Adding VacancyRejectedByEmployer to existing.");
                 updatedNotificationTypes = doc.notificationTypes + ", VacancyRejectedByEmployer";
             }
 
