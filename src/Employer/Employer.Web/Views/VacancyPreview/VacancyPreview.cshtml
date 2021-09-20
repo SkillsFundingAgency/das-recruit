@@ -605,24 +605,26 @@
     </div>
 </div>
 <div class="govuk-grid-row @TrainingProviderReviewClass(Model)">
-    @if (Model.Status != VacancyStatus.Review)
-    {
-        <div class="govuk-grid-column-two-thirds">
-            <div class="@GetSectionClass(Model.ProviderSectionState)">
-                <div class="govuk-!-margin-bottom-6">
-                    <h3 class="govuk-heading-s govuk-!-margin-top-4" id="@Anchors.Provider">
-                        <img asp-show="@Model.ProviderRequiresEdit" src="/img/red-cross.png"/>
-                        Training provider
-                    </h3>
-                    <span esfa-validation-message-for="ProviderName" class="govuk-error-message"></span>
-                    <p asp-show="@Model.HasProviderName" class="govuk-body">@Model.ProviderName</p>
-                    <div asp-show="@ShowProviderReviewFlag(Model, FieldIdentifiers.Provider)" class="govuk-!-margin-top-4">
-                        @ProviderReviewFlag(Model, FieldIdentifiers.Provider)
-                    </div>
+    <div class="govuk-grid-column-two-thirds">
+        <div class="@GetSectionClass(Model.ProviderSectionState)">
+            <div class="govuk-!-margin-bottom-6">
+                <h3 class="govuk-heading-s govuk-!-margin-top-4" id="@Anchors.Provider">
+                    <img asp-show="@Model.ProviderRequiresEdit" src="/img/red-cross.png" />
+                    Training provider
+                </h3>
+                <span esfa-validation-message-for="ProviderName" class="govuk-error-message"></span>
+                <p asp-show="@Model.HasProviderName" class="govuk-body">@Model.ProviderName</p>
+                @if (Model.Status != VacancyStatus.Review)
+                {
+                    @EditLink(RouteNames.TrainingProvider_Select_Get, Model.ProviderSectionState, "training provider", "link-training-provider", new {wizard = false})
+                }
+                <div asp-show="@ShowProviderReviewFlag(Model, FieldIdentifiers.Provider)" class="govuk-!-margin-top-4">
+                    @ProviderReviewFlag(Model, FieldIdentifiers.Provider)
                 </div>
             </div>
         </div>
-    }
+    </div>
+    
     <div class="govuk-grid-column-one-third">
         <div class="@GetSectionClass(Model.TrainingSectionState)">
             <div class="govuk-!-margin-bottom-6">
