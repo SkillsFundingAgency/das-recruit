@@ -1,0 +1,129 @@
+trigger:
+  batch: true
+  branches:
+    include:
+      - "*"
+
+variables:
+  - name: BuildConfiguration
+    value: release
+  - name: BuildPlatform
+    value: any cpu
+  - group: RELEASE Management Resources
+  - group: RELEASE das-recruit
+
+resources:
+  repositories:
+  - repository: self
+  - repository: das-platform-building-blocks
+    type: github
+    name: SkillsFundingAgency/das-platform-building-blocks
+    ref: refs/tags/0.4.0
+    endpoint: SkillsFundingAgency
+  - repository: das-platform-automation
+    type: github
+    name: SkillsFundingAgency/das-platform-automation
+    ref: refs/tags/4.5.0
+    endpoint: SkillsFundingAgency
+  pipelines:
+  - pipeline: das-employer-config
+    project: Digital Apprenticeship Service
+    source: das-employer-config
+    branch: master
+
+stages:
+- stage: Build
+  jobs:
+  - template: pipeline-templates/job/code-build.yml
+
+- stage: Deploy_AT
+  dependsOn: Build
+  displayName: Deploy to AT
+  variables:
+  - group: DevTest Management Resources
+  - group: AT DevTest Shared Resources
+  - group: AT das-recruit
+  jobs:
+  - template: pipeline-templates/job/deploy.yml
+    parameters:
+      Environment: AT
+      ServiceConnection: SFA-DAS-DevTest-ARM
+
+      #TODO: Setup variable groups
+# - stage: Deploy_TEST
+#   dependsOn: Build
+#   displayName: Deploy to TEST
+#   variables:
+#   - group: DevTest Management Resources
+#   - group: TEST DevTest Shared Resources
+#   - group: TEST das-recruit
+#   jobs:
+#   - template: pipeline-templates/job/deploy.yml
+#     parameters:
+#       Environment: TEST
+#       ServiceConnection: SFA-DAS-DevTest-ARM
+
+# - stage: Deploy_TEST2
+#   dependsOn: Build
+#   displayName: Deploy to TEST2
+#   variables:
+#   - group: DevTest Management Resources
+#   - group: TEST2 DevTest Shared Resources
+#   - group: TEST2 das-recruit
+#   jobs:
+#   - template: pipeline-templates/job/deploy.yml
+#     parameters:
+#       Environment: TEST2
+#       ServiceConnection: SFA-DAS-DevTest-ARM
+
+# - stage: Deploy_PP
+#   dependsOn: Build
+#   displayName: Deploy to PP
+#   variables:
+#   - group: PreProd Management Resources
+#   - group: PreProd Shared Resources
+#   - group: PREPROD das-recruit
+#   jobs:
+#   - template: pipeline-templates/job/deploy.yml
+#     parameters:
+#       Environment: PP
+#       ServiceConnection: SFA-DIG-PreProd-ARM
+
+# - stage: Deploy_PROD
+#   dependsOn: Build
+#   displayName: Deploy to PROD
+#   variables:
+#   - group: Prod Management Resources
+#   - group: Prod Shared Resources
+#   - group: PROD das-recruit
+#   jobs:
+#   - template: pipeline-templates/job/deploy.yml
+#     parameters:
+#       Environment: PROD
+#       ServiceConnection: SFA-DIG-Prod-ARM
+
+# - stage: Deploy_MO
+#   dependsOn: Build
+#   displayName: Deploy to MO
+#   variables:
+#   - group: MO Management Resources
+#   - group: MO Shared Resources
+#   - group: MO das-recruit
+#   jobs:
+#   - template: pipeline-templates/job/deploy.yml
+#     parameters:
+#       Environment: MO
+#       ServiceConnection: SFA-ASM-ModelOffice-ARM
+
+# - stage: Deploy_DEMO
+#   dependsOn: Build
+#   displayName: Deploy to DEMO
+#   variables:
+#   - group: DevTest Management Resources
+#   - group: DEMO DevTest Shared Resources
+#   - group: DEMO das-recruit
+#   jobs:
+#   - template: pipeline-templates/job/deploy.yml
+#     parameters:
+#       Environment: DEMO
+#       ServiceConnection: SFA-DAS-DevTest-ARM

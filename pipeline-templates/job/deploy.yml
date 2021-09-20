@@ -1,0 +1,76 @@
+parameters:  
+  Environment:
+  ServiceConnection:
+
+jobs:
+- deployment: DeployApps
+  pool:
+    name: DAS - Continuous Deployment
+  environment: ${{ parameters.Environment }}
+  strategy:
+    runOnce:
+      deploy:
+        steps:
+        - template: azure-pipelines-templates/deploy/step/arm-deploy.yml@das-platform-building-blocks
+          parameters:
+            ServiceConnection: ${{ parameters.ServiceConnection }}
+            SubscriptionId: $(SubscriptionId)
+            Location: $(ResourceGroupLocation)
+            Environment: ${{ parameters.Environment }}
+            TemplatePath: $(Pipeline.Workspace)/Recruit/azure/template.json
+            ParametersPath: $(Pipeline.Workspace)/Recruit/azure/template.parameters.json
+            IsMultiRepoCheckout: false
+            TemplateSecrets:
+              LoggingRedisConnectionString: $(LoggingRedisConnectionString)
+              ConfigurationStorageConnectionString: $(ConfigurationStorageConnectionString)
+
+        - task: PowerShell@1
+          displayName: 'Seed Recruit Database'
+          inputs:
+            scriptName: $(Pipeline.Workspace)/Recruit/Console.RecruitSeedDataWriter/SeedScript.ps1
+            arguments: -dbConnectionString "$(RecruitCosmosConnectionString)"
+
+        # Requires dotnet and mongo CLIs
+        - task: PowerShell@1
+          displayName: 'Run Mongo API Script'
+          inputs:
+            scriptName: $(Pipeline.Workspace)/Recruit/src/Data/Recruit.ChangeScripts/Invoke-CosmosDbScript.ps1
+            arguments: '-CosmosDb $(CosmosDbName).documents.azure.com:10255 -Username $(CosmosDbName) -Password $(CosmosDbPrimaryReadWriteKey) -MongoScript "$(Pipeline.Workspace)/Recruit/src/Data/Recruit.ChangeScripts/documentMigration.js"'
+
+        - template: azure-pipelines-templates/deploy/step/generate-config.yml@das-platform-building-blocks
+          parameters:
+            ServiceConnection: ${{ parameters.ServiceConnection }}
+            SourcePath: $(Pipeline.Workspace)/das-employer-config/Configuration/das-recruit
+            TargetFileName: '*.schema.json'
+            TableName: Configuration
+
+        - template: azure-pipelines-templates/deploy/step/app-deploy.yml@das-platform-building-blocks
+          parameters:
+            ServiceConnection: ${{ parameters.ServiceConnection }}
+            AppServiceName: $(ApiAppServiceName)
+            DeploymentPackagePath: $(Pipeline.Workspace)/Recruit/Recruit.Api.Zip
+
+        - template: azure-pipelines-templates/deploy/step/app-deploy.yml@das-platform-building-blocks
+          parameters:
+            ServiceConnection: ${{ parameters.ServiceConnection }}
+            AppServiceName: $(EmployerAppServiceName)
+            DeploymentPackagePath: $(Pipeline.Workspace)/Recruit/Employer.Web.Zip
+
+        - template: azure-pipelines-templates/deploy/step/app-deploy.yml@das-platform-building-blocks
+          parameters:
+            ServiceConnection: ${{ parameters.ServiceConnection }}
+            AppServiceName: $(ProviderAppServiceName)
+            DeploymentPackagePath: $(Pipeline.Workspace)/Recruit/Provider.Web.Zip
+
+        - template: azure-pipelines-templates/deploy/step/app-deploy.yml@das-platform-building-blocks
+          parameters:
+            ServiceConnection: ${{ parameters.ServiceConnection }}
+            AppServiceName: $(QAAppServiceName)
+            DeploymentPackagePath: $(Pipeline.Workspace)/Recruit/QA.Web.Zip
+
+        - template: azure-pipelines-templates/deploy/step/webjob-deploy.yml@das-platform-building-blocks
+          parameters:
+            ServiceConnection: ${{ parameters.ServiceConnection }}
+            AppServiceName: $(JobsAppServiceName)
+            DeploymentPackagePath: $(Pipeline.Workspace)/Recruit/Recruit.Vacancies.Jobs.Zip
+            VirtualApplication: 'Recruit.Vacancies.Jobs'
