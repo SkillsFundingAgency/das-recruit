@@ -1006,7 +1006,7 @@
     },
     "ApiAppServiceName": {
       "type": "string",
-      "value": "[variables('webjobAppServiceName')]"
+      "value": "[variables('apiAppServiceName')]"
     },
     "StorageAccountName": {
       "type": "string",
