@@ -24,6 +24,13 @@ jobs:
               LoggingRedisConnectionString: $(LoggingRedisConnectionString)
               ConfigurationStorageConnectionString: $(ConfigurationStorageConnectionString)
 
+        - task: UseDotNet@2
+          displayName: 'Install .NET Core sdk'
+          inputs:
+            packageType: sdk
+            version: 2.1.x
+            installationPath: $(Agent.ToolsDirectory)/dotnet
+
         - task: PowerShell@1
           displayName: 'Seed Recruit Database'
           inputs:
