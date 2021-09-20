@@ -5,7 +5,7 @@ parameters:
 jobs:
 - deployment: DeployApps
   pool:
-    name: DAS - Continuous Deployment Agents
+    name: DAS - Continuous Deployment
   environment: ${{ parameters.Environment }}
   strategy:
     runOnce:
@@ -24,19 +24,13 @@ jobs:
               LoggingRedisConnectionString: $(LoggingRedisConnectionString)
               ConfigurationStorageConnectionString: $(ConfigurationStorageConnectionString)
 
-        - task: UseDotNet@2
-          displayName: 'Install .NET Core sdk'
-          inputs:
-            packageType: sdk
-            version: 2.1.x
-            installationPath: $(Agent.ToolsDirectory)/dotnet
-
         - task: PowerShell@1
           displayName: 'Seed Recruit Database'
           inputs:
             scriptName: $(Pipeline.Workspace)/Recruit/Console.RecruitSeedDataWriter/SeedScript.ps1
             arguments: -dbConnectionString "$(RecruitCosmosConnectionString)"
 
+        # Requires dotnet and mongo CLIs
         - task: PowerShell@1
           displayName: 'Run Mongo API Script'
           inputs:
