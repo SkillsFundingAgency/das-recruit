@@ -63,18 +63,18 @@ stages:
 #       Environment: TEST
 #       ServiceConnection: SFA-DAS-DevTest-ARM
 
-# - stage: Deploy_TEST2
-#   dependsOn: Build
-#   displayName: Deploy to TEST2
-#   variables:
-#   - group: DevTest Management Resources
-#   - group: TEST2 DevTest Shared Resources
-#   - group: TEST2 das-recruit
-#   jobs:
-#   - template: pipeline-templates/job/deploy.yml
-#     parameters:
-#       Environment: TEST2
-#       ServiceConnection: SFA-DAS-DevTest-ARM
+- stage: Deploy_TEST2
+  dependsOn: Build
+  displayName: Deploy to TEST2
+  variables:
+  - group: DevTest Management Resources
+  - group: TEST2 DevTest Shared Resources
+  - group: TEST2 das-recruit
+  jobs:
+  - template: pipeline-templates/job/deploy.yml
+    parameters:
+      Environment: TEST2
+      ServiceConnection: SFA-DAS-DevTest-ARM
 
 # - stage: Deploy_PP
 #   dependsOn: Build
