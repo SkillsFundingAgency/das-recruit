@@ -14,12 +14,12 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Queries
 {
     public class WhenGettingQualificationsReferenceData
     {
-        [Test, MoqAutoData, Ignore("todo")]
+        [Test, MoqAutoData]
         public async Task Then_The_Qualifications_Are_Returned(
-            GetSkillsQuery query,//todo GetQualificationsQuery
+            GetQualificationsQuery query,
             List<string> candidateQualifications,
             [Frozen] Mock<IRecruitVacancyClient> mockRecruitVacancyClient,
-            GetSkillsQueryHandler handler)//todo GetQualificationsQueryHandler
+            GetQualificationsQueryHandler handler) 
         {
             mockRecruitVacancyClient
                 .Setup(x => x.GetCandidateQualificationsAsync())
