@@ -14,6 +14,7 @@ namespace SFA.DAS.Recruit.Api.Controllers
         {
             _mediator = mediator;
         }
+        
         [HttpGet]
         [Route("candidate-skills")]
         public async Task<IActionResult> GetCandidateSkills()

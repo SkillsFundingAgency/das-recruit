@@ -19,11 +19,13 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Controllers
         public async Task Then_The_Query_Is_Made_And_Data_Returned(
             List<string> items,
             GetSkillsQueryResponse response,
-            [Frozen] Mock<IMediator> mediator,
+            [Frozen] Mock<IMediator> mockMediator,
             [Greedy] ReferenceDataController controller)
         {
             response.Data = items;
-            mediator.Setup(x => x.Send(It.IsAny<GetSkillsQuery>(), CancellationToken.None)).ReturnsAsync(response);
+            mockMediator
+                .Setup(x => x.Send(It.IsAny<GetSkillsQuery>(), CancellationToken.None))
+                .ReturnsAsync(response);
             
             var actual = await controller.GetCandidateSkills() as OkObjectResult;
 
@@ -31,5 +33,7 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Controllers
             var actualResult = actual.Value as List<string>;
             actualResult.Should().BeEquivalentTo(items);
         }
+        
+        //todo: test here for quals
     }
 }
