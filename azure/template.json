@@ -141,7 +141,8 @@
     "storageAccountName": "[toLower(concat('das', parameters('resourceEnvironmentName'), parameters('serviceName'), 'str'))]",
     "apiAppServicePlanName": "[concat(variables('resourceNamePrefix'), 'api-asp')]",
     "apiAppServiceName": "[concat(variables('resourceNamePrefix'), 'api-as')]",
-    "apiConfigNames": "SFA.DAS.Recruit.Api"
+    "apiConfigNames": "SFA.DAS.Recruit.Api",
+    "jobsConfigNames": "SFA.DAS.Recruit.Jobs,SFA.DAS.Encoding"
   },
   "resources": [
     {
@@ -752,6 +753,10 @@
                 {
                   "name": "LoggingRedisConnectionString",
                   "value": "[parameters('loggingRedisConnectionString')]"
+                },
+                {
+                  "name": "ConfigNames",
+                  "value": "[variables('jobsConfigNames')]"
                 }
               ]
             }
