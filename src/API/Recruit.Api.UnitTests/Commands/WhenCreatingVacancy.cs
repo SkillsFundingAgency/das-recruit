@@ -84,6 +84,49 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Commands
         }
 
         [Test, MoqAutoData]
+        public async Task Then_If_The_Employer_Vacancy_Has_Already_Been_Created_For_The_Given_Id_Then_Error_Returned(
+            Exception mongoWriteException,
+            CreateVacancyCommand command,
+            [Frozen]Mock<IEmployerVacancyClient> recruitVacancyClient,
+            [Frozen]Mock<IRecruitVacancyClient> vacancyClient,
+            CreateVacancyCommandHandler handler)
+        {
+            vacancyClient.Setup(x => x.Validate(It.IsAny<Vacancy>(), VacancyRuleSet.All))
+                .Returns(new EntityValidationResult());
+            recruitVacancyClient.Setup(x => x.CreateEmployerApiVacancy(It.IsAny<Guid>(), It.IsAny<string>(),
+                    It.IsAny<string>(), It.IsAny<VacancyUser>(), It.IsAny<TrainingProvider>(), It.IsAny<string>()))
+                .ThrowsAsync(mongoWriteException);
+
+            var actual = await handler.Handle(command, CancellationToken.None);
+            
+            actual.ValidationErrors.Should()
+                .BeEquivalentTo(new List<string>{"Unable to create Vacancy. Vacancy already submitted"});
+            actual.ResultCode.Should().Be(ResponseCode.InvalidRequest);
+        }
+        
+        [Test, MoqAutoData]
+        public async Task Then_If_The_Provider_Vacancy_Has_Already_Been_Created_For_The_Given_Id_Then_Error_Returned(
+            Exception mongoWriteException,
+            CreateVacancyCommand command,
+            [Frozen]Mock<IProviderVacancyClient> recruitVacancyClient,
+            [Frozen]Mock<IRecruitVacancyClient> vacancyClient,
+            CreateVacancyCommandHandler handler)
+        {
+            vacancyClient.Setup(x => x.Validate(It.IsAny<Vacancy>(), VacancyRuleSet.All))
+                .Returns(new EntityValidationResult());
+            command.VacancyUserDetails.Email = string.Empty;
+            recruitVacancyClient.Setup(x => x.CreateProviderApiVacancy(It.IsAny<Guid>(), It.IsAny<string>(),
+                    It.IsAny<string>(), It.IsAny<VacancyUser>()))
+                .ThrowsAsync(mongoWriteException);
+
+            var actual = await handler.Handle(command, CancellationToken.None);
+            
+            actual.ValidationErrors.Should()
+                .BeEquivalentTo(new List<string>{"Unable to create Vacancy. Vacancy already submitted"});
+            actual.ResultCode.Should().Be(ResponseCode.InvalidRequest);
+        }
+
+        [Test, MoqAutoData]
         public async Task Then_If_The_Command_Is_Valid_The_Vacancy_Is_Created_And_Submitted_For_Provider(
             CreateVacancyCommand command,
             TrainingProvider provider,

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -70,20 +71,30 @@ namespace SFA.DAS.Recruit.Api.Commands
                 };    
             }
 
-            if (!string.IsNullOrEmpty(request.VacancyUserDetails.Email))
+            try
             {
-                request.VacancyUserDetails.Ukprn = null;
-                await _employerVacancyClient.CreateEmployerApiVacancy(request.Vacancy.Id, request.Vacancy.Title, request.Vacancy.EmployerAccountId,
-                    request.VacancyUserDetails, trainingProvider, request.Vacancy.ProgrammeId);    
+                if (!string.IsNullOrEmpty(request.VacancyUserDetails.Email))
+                {
+                    request.VacancyUserDetails.Ukprn = null;
+                    await _employerVacancyClient.CreateEmployerApiVacancy(request.Vacancy.Id, request.Vacancy.Title, request.Vacancy.EmployerAccountId,
+                        request.VacancyUserDetails, trainingProvider, request.Vacancy.ProgrammeId);    
+                }
+                else
+                {
+                    await _providerVacancyClient.CreateProviderApiVacancy(request.Vacancy.Id, request.Vacancy.Title,
+                        request.Vacancy.EmployerAccountId,
+                        request.VacancyUserDetails);
+                }
             }
-            else
+            catch (Exception)
             {
-                await _providerVacancyClient.CreateProviderApiVacancy(request.Vacancy.Id, request.Vacancy.Title,
-                    request.Vacancy.EmployerAccountId,
-                    request.VacancyUserDetails);
+                return new CreateVacancyCommandResponse
+                {
+                    ResultCode = ResponseCode.InvalidRequest,
+                    ValidationErrors = new List<string>{"Unable to create Vacancy. Vacancy already submitted"}
+                };   
             }
             
-
             var newVacancy = await MapDraftVacancyValues(request, request.Vacancy);
 
             await _vacancyRepository.UpdateAsync(newVacancy);
