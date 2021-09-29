@@ -9,8 +9,10 @@ using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Events;
 using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
+using Esfa.Recruit.Vacancies.Client.Domain.Models;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelationship;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider;
 using FluentAssertions;
 using Moq;
@@ -127,7 +129,7 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Commands
         }
 
         [Test, MoqAutoData]
-        public async Task Then_If_The_Command_Is_Valid_The_Vacancy_Is_Created_And_Submitted_For_Provider(
+        public async Task Then_If_The_Provider_Has_EmployerReview_Permissions_The_Vacancy_Is_Submitted_For_Review(
             CreateVacancyCommand command,
             TrainingProvider provider,
             Vacancy vacancy,
@@ -137,6 +139,7 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Commands
             [Frozen]Mock<IRecruitVacancyClient> recruitVacancyClient,
             [Frozen]Mock<IVacancyRepository> vacancyRepository,
             [Frozen]Mock<ITrainingProviderService> trainingProviderService,
+            [Frozen]Mock<IProviderRelationshipsService> providerRelationshipsService,
             CreateVacancyCommandHandler handler)
         {
             command.VacancyUserDetails.Email = null;
@@ -148,6 +151,52 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Commands
                 .Returns(new EntityValidationResult());
             recruitVacancyClient.Setup(x => x.GetVacancyAsync(command.Vacancy.Id)).ReturnsAsync(vacancy);
             timeProvider.Setup(x => x.Now).Returns(timeNow);
+            providerRelationshipsService.Setup(x => x.HasProviderGotEmployersPermissionAsync(
+                    provider.Ukprn.Value, command.Vacancy.EmployerAccountId,
+                    command.Vacancy.AccountLegalEntityPublicHashedId, OperationType.RecruitmentRequiresReview))
+                .ReturnsAsync(true);
+            
+            var actual = await handler.Handle(command, CancellationToken.None);
+            
+            actual.ResultCode.Should().Be(ResponseCode.Created);
+            actual.Data.Should().Be(vacancy.VacancyReference);
+            providerVacancyClient.Verify(x => x.CreateProviderApiVacancy(command.Vacancy.Id, command.Vacancy.Title,
+                command.Vacancy.EmployerAccountId, command.VacancyUserDetails), Times.Once);
+            vacancyRepository.Verify(x=>x.UpdateAsync(It.Is<Vacancy>(c=>
+                c.Id.Equals(command.Vacancy.Id) 
+                && c.Status == VacancyStatus.Review
+                && c.VacancyReference == vacancy.VacancyReference
+                && c.TrainingProvider == provider
+            )), Times.Once);
+        }
+        
+        [Test, MoqAutoData]
+        public async Task Then_If_The_Command_Is_Valid_The_Vacancy_Is_Created_And_Submitted_For_Provider(
+            CreateVacancyCommand command,
+            TrainingProvider provider,
+            Vacancy vacancy,
+            DateTime timeNow,
+            [Frozen]Mock<ITimeProvider> timeProvider,
+            [Frozen]Mock<IProviderVacancyClient> providerVacancyClient,
+            [Frozen]Mock<IRecruitVacancyClient> recruitVacancyClient,
+            [Frozen]Mock<IVacancyRepository> vacancyRepository,
+            [Frozen]Mock<ITrainingProviderService> trainingProviderService,
+            [Frozen]Mock<IProviderRelationshipsService> providerRelationshipsService,
+            CreateVacancyCommandHandler handler)
+        {
+            command.VacancyUserDetails.Email = null;
+            vacancy.Id = command.Vacancy.Id;
+            vacancy.ProgrammeId = command.Vacancy.ProgrammeId;
+            trainingProviderService.Setup(x => x.GetProviderAsync(command.VacancyUserDetails.Ukprn.Value))
+                .ReturnsAsync(provider);
+            recruitVacancyClient.Setup(x => x.Validate(It.IsAny<Vacancy>(), VacancyRuleSet.All))
+                .Returns(new EntityValidationResult());
+            recruitVacancyClient.Setup(x => x.GetVacancyAsync(command.Vacancy.Id)).ReturnsAsync(vacancy);
+            timeProvider.Setup(x => x.Now).Returns(timeNow);
+            providerRelationshipsService.Setup(x => x.HasProviderGotEmployersPermissionAsync(
+                    provider.Ukprn.Value, command.Vacancy.EmployerAccountId,
+                    command.Vacancy.AccountLegalEntityPublicHashedId, OperationType.RecruitmentRequiresReview))
+                .ReturnsAsync(false);
             
             var actual = await handler.Handle(command, CancellationToken.None);
 
@@ -247,6 +296,38 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Commands
                 c.VacancyId.Equals(command.Vacancy.Id)
                 && c.VacancyReference.Equals(vacancy.VacancyReference)
                 )));
+        }
+
+        [Test, MoqAutoData]
+        public async Task Then_If_Provider_Owned_And_Employer_Has_To_Review_Then_Review_Event_Is_Submitted(
+            Vacancy vacancy,
+            CreateVacancyCommand command,
+            TrainingProvider provider,
+            [Frozen]Mock<IEmployerVacancyClient> employerVacancyClient,
+            [Frozen]Mock<IRecruitVacancyClient> recruitVacancyClient,
+            [Frozen]Mock<IMessaging> messaging,
+            [Frozen]Mock<ITrainingProviderService> trainingProviderService,
+            [Frozen]Mock<IProviderRelationshipsService> providerRelationshipsService,
+            CreateVacancyCommandHandler handler)
+        {
+            providerRelationshipsService.Setup(x => x.HasProviderGotEmployersPermissionAsync(
+                    provider.Ukprn.Value, command.Vacancy.EmployerAccountId,
+                    command.Vacancy.AccountLegalEntityPublicHashedId, OperationType.RecruitmentRequiresReview))
+                .ReturnsAsync(true);
+            command.VacancyUserDetails.Email = string.Empty;
+            trainingProviderService.Setup(x => x.GetProviderAsync(command.VacancyUserDetails.Ukprn.Value))
+                .ReturnsAsync(provider);
+            recruitVacancyClient.Setup(x => x.Validate(It.IsAny<Vacancy>(), VacancyRuleSet.All))
+                .Returns(new EntityValidationResult());
+            recruitVacancyClient.Setup(x => x.GetVacancyAsync(command.Vacancy.Id)).ReturnsAsync(vacancy);
+            
+            await handler.Handle(command, CancellationToken.None);
+            
+            messaging.Verify(x=>x.PublishEvent(It.Is<VacancyReviewedEvent>(c=>
+                c.VacancyId.Equals(command.Vacancy.Id)
+                && c.VacancyReference.Equals(vacancy.VacancyReference)
+                && c.Ukprn.Equals(provider.Ukprn)
+            )));
         }
         
     }
