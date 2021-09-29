@@ -11,6 +11,8 @@ variables:
     value: any cpu
   - group: RELEASE Management Resources
   - group: RELEASE das-recruit
+  - name: Deploy
+    value: $[or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.Reason'], 'Manual'), eq(variables['Build.Reason'], 'PullRequest'))]
 
 resources:
   repositories:
@@ -39,6 +41,7 @@ stages:
 - stage: Deploy_AT
   dependsOn: Build
   displayName: Deploy to AT
+  condition: and(succeeded(), eq(variables.Deploy, 'true'))
   variables:
   - group: DevTest Management Resources
   - group: AT DevTest Shared Resources
@@ -49,23 +52,24 @@ stages:
       Environment: AT
       ServiceConnection: SFA-DAS-DevTest-ARM
 
-      #TODO: Setup variable groups
-# - stage: Deploy_TEST
-#   dependsOn: Build
-#   displayName: Deploy to TEST
-#   variables:
-#   - group: DevTest Management Resources
-#   - group: TEST DevTest Shared Resources
-#   - group: TEST das-recruit
-#   jobs:
-#   - template: pipeline-templates/job/deploy.yml
-#     parameters:
-#       Environment: TEST
-#       ServiceConnection: SFA-DAS-DevTest-ARM
+- stage: Deploy_TEST
+  dependsOn: Build
+  displayName: Deploy to TEST
+  condition: and(succeeded(), eq(variables.Deploy, 'true'))
+  variables:
+  - group: DevTest Management Resources
+  - group: TEST DevTest Shared Resources
+  - group: TEST das-recruit
+  jobs:
+  - template: pipeline-templates/job/deploy.yml
+    parameters:
+      Environment: TEST
+      ServiceConnection: SFA-DAS-DevTest-ARM
 
 - stage: Deploy_TEST2
   dependsOn: Build
   displayName: Deploy to TEST2
+  condition: and(succeeded(), eq(variables.Deploy, 'true'))
   variables:
   - group: DevTest Management Resources
   - group: TEST2 DevTest Shared Resources
@@ -79,6 +83,7 @@ stages:
 - stage: Deploy_PP
   dependsOn: Build
   displayName: Deploy to PP
+  condition: and(succeeded(), eq(variables.Deploy, 'true'))
   variables:
   - group: PreProd Management Resources
   - group: PreProd Shared Resources
@@ -89,9 +94,11 @@ stages:
       Environment: PP
       ServiceConnection: SFA-DIG-PreProd-ARM
 
+      #TODO: Setup variable groups
 # - stage: Deploy_PROD
 #   dependsOn: Build
 #   displayName: Deploy to PROD
+#   condition: and(succeeded(), eq(variables.Deploy, 'true'))
 #   variables:
 #   - group: Prod Management Resources
 #   - group: Prod Shared Resources
@@ -105,6 +112,7 @@ stages:
 # - stage: Deploy_MO
 #   dependsOn: Build
 #   displayName: Deploy to MO
+#   condition: and(succeeded(), eq(variables.Deploy, 'true'))
 #   variables:
 #   - group: MO Management Resources
 #   - group: MO Shared Resources
@@ -118,6 +126,7 @@ stages:
 # - stage: Deploy_DEMO
 #   dependsOn: Build
 #   displayName: Deploy to DEMO
+#   condition: and(succeeded(), eq(variables.Deploy, 'true'))
 #   variables:
 #   - group: DevTest Management Resources
 #   - group: DEMO DevTest Shared Resources
