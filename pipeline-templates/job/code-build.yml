@@ -1,0 +1,70 @@
+
+jobs:
+- job: CodeBuild
+  pool:
+    name: DAS - Continuous Integration
+    demands:
+    - Agent.OS -equals Windows_NT
+  variables:
+  - group: BUILD Management Resources
+  workspace:
+    clean: all
+  steps:
+  - template: azure-pipelines-templates/build/step/gitversion.yml@das-platform-building-blocks
+
+  - task: Npm@1
+    displayName: 'npm install (Database Deployment Change Scripts)'
+    inputs:
+      workingDir: src/Data/Recruit.ChangeScripts
+      verbose: false
+
+  - task: Npm@1
+    displayName: 'Lint Database Deployment Change Scripts'
+    inputs:
+      command: custom
+      workingDir: src/Data/Recruit.ChangeScripts
+      verbose: false
+      customCommand: 'run lint'
+
+  - template: azure-pipelines-templates/build/step/app-build.yml@das-platform-building-blocks
+    parameters:
+      SonarCloud: true
+      SonarCloudProjectKey: SkillsFundingAgency_das-recruit
+
+  - template: azure-pipelines-templates/build/step/dependency-check.yml@das-platform-building-blocks
+
+  - task: DotNetCoreCLI@2
+    displayName: Publish Web/Api/Job Apps
+    inputs:
+      command: publish
+      publishWebProjects: false
+      projects: |
+        **/*.@(Web|Api|Jobs).csproj
+        !**/*.Shared.Web.csproj
+      arguments: -o $(build.artifactstagingdirectory)/publish -c release --no-build
+
+  - task: DotNetCoreCLI@2
+    displayName: Publish Console.RecruitSeedDataWriter
+    inputs:
+      command: publish
+      publishWebProjects: false
+      projects: src/Data/CosmosDb/Console.RecruitSeedDataWriter/Console.RecruitSeedDataWriter.csproj
+      arguments: -o $(build.artifactstagingdirectory)/publish -c release --no-build
+      zipAfterPublish: false
+
+  - task: CopyFiles@2
+    displayName: Copy Files to $(build.artifactstagingdirectory)/publish
+    inputs:
+      Contents: |
+        azure/**
+        src/Data/CosmosDb/Configuration.json
+        src/Data/Recruit.ChangeScripts/*.js
+        src/Data/Recruit.ChangeScripts/*.ps1
+      TargetFolder: $(build.artifactstagingdirectory)/publish
+      OverWrite: true
+
+  - task: PublishPipelineArtifact@1
+    displayName: Publish Artifact - Recruit
+    inputs:
+      targetPath: $(build.artifactstagingdirectory)/publish
+      artifactName: Recruit

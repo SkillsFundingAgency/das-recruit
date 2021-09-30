@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -7,8 +8,10 @@ using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Events;
 using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
+using Esfa.Recruit.Vacancies.Client.Domain.Models;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelationship;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider;
 using MediatR;
 using SFA.DAS.Recruit.Api.Models;
@@ -24,6 +27,7 @@ namespace SFA.DAS.Recruit.Api.Commands
         private readonly ITimeProvider _timeProvider;
         private readonly ITrainingProviderService _trainingProviderService;
         private readonly IProviderVacancyClient _providerVacancyClient;
+        private readonly IProviderRelationshipsService _providerRelationshipsService;
 
         public CreateVacancyCommandHandler (
             IRecruitVacancyClient recruitVacancyClient, 
@@ -32,7 +36,8 @@ namespace SFA.DAS.Recruit.Api.Commands
             IMessaging messaging,
             ITimeProvider timeProvider,
             ITrainingProviderService trainingProviderService,
-            IProviderVacancyClient providerVacancyClient)
+            IProviderVacancyClient providerVacancyClient,
+            IProviderRelationshipsService providerRelationshipsService)
         {
             _recruitVacancyClient = recruitVacancyClient;
             _employerVacancyClient = employerVacancyClient;
@@ -41,6 +46,7 @@ namespace SFA.DAS.Recruit.Api.Commands
             _timeProvider = timeProvider;
             _trainingProviderService = trainingProviderService;
             _providerVacancyClient = providerVacancyClient;
+            _providerRelationshipsService = providerRelationshipsService;
         }
         public async Task<CreateVacancyCommandResponse> Handle(CreateVacancyCommand request, CancellationToken cancellationToken)
         {
@@ -70,30 +76,26 @@ namespace SFA.DAS.Recruit.Api.Commands
                 };    
             }
 
-            if (!string.IsNullOrEmpty(request.VacancyUserDetails.Email))
+            try
             {
-                request.VacancyUserDetails.Ukprn = null;
-                await _employerVacancyClient.CreateEmployerApiVacancy(request.Vacancy.Id, request.Vacancy.Title, request.Vacancy.EmployerAccountId,
-                    request.VacancyUserDetails, trainingProvider, request.Vacancy.ProgrammeId);    
+                await CreateVacancy(request, trainingProvider);
             }
-            else
+            catch (Exception)
             {
-                await _providerVacancyClient.CreateProviderApiVacancy(request.Vacancy.Id, request.Vacancy.Title,
-                    request.Vacancy.EmployerAccountId,
-                    request.VacancyUserDetails);
+                return new CreateVacancyCommandResponse
+                {
+                    ResultCode = ResponseCode.InvalidRequest,
+                    ValidationErrors = new List<string>{"Unable to create Vacancy. Vacancy already submitted"}
+                };   
             }
-            
 
-            var newVacancy = await MapDraftVacancyValues(request, request.Vacancy);
+            var requiresEmployerApproval = await CheckEmployerApprovalNeeded(request);
+
+            var newVacancy = await MapDraftVacancyValues(request, request.Vacancy, requiresEmployerApproval);
 
             await _vacancyRepository.UpdateAsync(newVacancy);
-            
-            await _messaging.PublishEvent(new VacancySubmittedEvent
-            {
-                EmployerAccountId = newVacancy.EmployerAccountId,
-                VacancyId = newVacancy.Id,
-                VacancyReference = newVacancy.VacancyReference.Value
-            });
+
+            await PublishVacancyEvent(requiresEmployerApproval, newVacancy);
             
             return new CreateVacancyCommandResponse
             {
@@ -102,7 +104,36 @@ namespace SFA.DAS.Recruit.Api.Commands
             };
         }
 
-        private async Task<Vacancy> MapDraftVacancyValues(CreateVacancyCommand request, Vacancy draftVacancyFromRequest)
+        private async Task CreateVacancy(CreateVacancyCommand request, TrainingProvider trainingProvider)
+        {
+            if (!string.IsNullOrEmpty(request.VacancyUserDetails.Email))
+            {
+                request.VacancyUserDetails.Ukprn = null;
+                await _employerVacancyClient.CreateEmployerApiVacancy(request.Vacancy.Id, request.Vacancy.Title,
+                    request.Vacancy.EmployerAccountId,
+                    request.VacancyUserDetails, trainingProvider, request.Vacancy.ProgrammeId);
+            }
+            else
+            {
+                await _providerVacancyClient.CreateProviderApiVacancy(request.Vacancy.Id, request.Vacancy.Title,
+                    request.Vacancy.EmployerAccountId,
+                    request.VacancyUserDetails);
+            }
+        }
+
+        private async Task<bool> CheckEmployerApprovalNeeded(CreateVacancyCommand request)
+        {
+            if (request.Vacancy.OwnerType == OwnerType.Provider)
+            {
+                return
+                    await _providerRelationshipsService.HasProviderGotEmployersPermissionAsync(
+                        request.Vacancy.TrainingProvider.Ukprn.Value, request.Vacancy.EmployerAccountId,
+                        request.Vacancy.AccountLegalEntityPublicHashedId, OperationType.RecruitmentRequiresReview );
+            }
+            return false;
+        }
+
+        private async Task<Vacancy> MapDraftVacancyValues(CreateVacancyCommand request, Vacancy draftVacancyFromRequest, bool requiresEmployerReview)
         {
             var newVacancy = await _recruitVacancyClient.GetVacancyAsync(draftVacancyFromRequest.Id);
 
@@ -116,12 +147,47 @@ namespace SFA.DAS.Recruit.Api.Commands
             
             var now = _timeProvider.Now;
 
-            draftVacancyFromRequest.Status = VacancyStatus.Submitted;
-            draftVacancyFromRequest.SubmittedDate = now;
-            draftVacancyFromRequest.SubmittedByUser = request.VacancyUserDetails;
+            if (requiresEmployerReview)
+            {
+                draftVacancyFromRequest.Status = VacancyStatus.Review;
+                draftVacancyFromRequest.ReviewDate = now;
+                draftVacancyFromRequest.ReviewByUser = request.VacancyUserDetails;
+                draftVacancyFromRequest.ReviewByUser = request.VacancyUserDetails;
+                draftVacancyFromRequest.ReviewCount += 1;
+            }
+            else
+            {
+                draftVacancyFromRequest.Status = VacancyStatus.Submitted;
+                draftVacancyFromRequest.SubmittedDate = now;
+                draftVacancyFromRequest.SubmittedByUser = request.VacancyUserDetails;    
+            }
+            
             draftVacancyFromRequest.LastUpdatedDate = now;
             draftVacancyFromRequest.LastUpdatedByUser = request.VacancyUserDetails;
             return draftVacancyFromRequest;
+        }
+
+        private async Task PublishVacancyEvent(bool requiresEmployerApproval, Vacancy newVacancy)
+        {
+            if (requiresEmployerApproval)
+            {
+                await _messaging.PublishEvent(new VacancyReviewedEvent
+                {
+                    EmployerAccountId = newVacancy.EmployerAccountId,
+                    VacancyId = newVacancy.Id,
+                    VacancyReference = newVacancy.VacancyReference.Value,
+                    Ukprn = newVacancy.TrainingProvider.Ukprn.GetValueOrDefault()
+                });
+            }
+            else
+            {
+                await _messaging.PublishEvent(new VacancySubmittedEvent
+                {
+                    EmployerAccountId = newVacancy.EmployerAccountId,
+                    VacancyId = newVacancy.Id,
+                    VacancyReference = newVacancy.VacancyReference.Value
+                });
+            }
         }
     }
 }
