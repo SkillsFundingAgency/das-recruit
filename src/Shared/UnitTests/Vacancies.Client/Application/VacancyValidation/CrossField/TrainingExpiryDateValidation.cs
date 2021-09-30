@@ -15,7 +15,8 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation.
         {
             var vacancy = new Vacancy
             {
-                ProgrammeId = "123"
+                ProgrammeId = "123",
+                StartDate = DateTime.UtcNow
             };
 
             var programmes = new List<IApprenticeshipProgramme>

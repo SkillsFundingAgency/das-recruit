@@ -16,7 +16,7 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.StorageQueue;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 {
-    public class ApproveVacancyReviewCommandHandler: IRequestHandler<ApproveVacancyReviewCommand>
+    public class ApproveVacancyReviewCommandHandler: IRequestHandler<ApproveVacancyReviewCommand, Unit>
     {
         private readonly ILogger<ApproveVacancyReviewCommandHandler> _logger;
         private readonly IVacancyRepository _vacancyRepository;
@@ -49,7 +49,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             _communicationQueueService = communicationQueueService;
         }
 
-        public async Task Handle(ApproveVacancyReviewCommand message, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(ApproveVacancyReviewCommand message, CancellationToken cancellationToken)
         {
             _logger.LogInformation("Approving review {reviewId}.", message.ReviewId);
 
@@ -59,7 +59,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             if (!review.CanApprove)
             {
                 _logger.LogWarning($"Unable to approve review {{reviewId}} due to review having a status of {review.Status}.", message.ReviewId);
-                return;
+                return Unit.Value;
             }
 
             review.ManualOutcome = ManualQaOutcome.Approved;
@@ -85,10 +85,11 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
                 await CloseVacancyAsync(vacancy, closureReason.Value);
                 await SendNotificationToEmployerAsync(vacancy.TrainingProvider.Ukprn.GetValueOrDefault(), vacancy.EmployerAccountId);
                 await _dashboardService.ReBuildDashboardAsync(vacancy.EmployerAccountId);
-                return;
+                return Unit.Value;
             }
 
             await PublishVacancyReviewApprovedEventAsync(message, review);    
+            return Unit.Value;
         }
 
         private Task SendNotificationToEmployerAsync(long ukprn, string employerAccountId)

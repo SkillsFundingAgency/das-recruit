@@ -11,7 +11,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 {
-    public class ApproveVacancyCommandHandler : IRequestHandler<ApproveVacancyCommand>
+    public class ApproveVacancyCommandHandler : IRequestHandler<ApproveVacancyCommand, Unit>
     {
         private readonly ILogger<ApproveVacancyCommandHandler> _logger;
         private readonly IVacancyRepository _repository;
@@ -30,7 +30,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             _timeProvider = timeprovider;
         }
 
-        public async Task Handle(ApproveVacancyCommand message, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(ApproveVacancyCommand message, CancellationToken cancellationToken)
         {
             _logger.LogInformation("Approving vacancy {vacancyReference}.", message.VacancyReference);
             
@@ -39,7 +39,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             if (!vacancy.CanApprove)
             {
                 _logger.LogWarning($"Unable to approve vacancy {{vacancyReference}} due to vacancy having a status of {vacancy.Status}.", vacancy.VacancyReference);
-                return;
+                return Unit.Value;
             }
             
             vacancy.Status = VacancyStatus.Approved;
@@ -52,6 +52,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
                 VacancyReference = vacancy.VacancyReference.Value,
                 VacancyId = vacancy.Id
             });
+            return Unit.Value;
         }
     }
 }

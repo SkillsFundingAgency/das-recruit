@@ -7,7 +7,7 @@ using Esfa.Recruit.Vacancies.Client.Domain.Events;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 {
-    public class SetupProviderCommandHandler : IRequestHandler<SetupProviderCommand>
+    public class SetupProviderCommandHandler : IRequestHandler<SetupProviderCommand, Unit>
     {
         private readonly IMessaging _messaging;
 
@@ -16,9 +16,10 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             _messaging = messaging;
         }
 
-        public async Task Handle(SetupProviderCommand message, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(SetupProviderCommand message, CancellationToken cancellationToken)
         {
             await _messaging.PublishEvent(new SetupProviderEvent(message.Ukprn));
+            return Unit.Value;
         }
     }
 }

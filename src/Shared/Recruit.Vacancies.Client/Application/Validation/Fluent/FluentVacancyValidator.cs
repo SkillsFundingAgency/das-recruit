@@ -98,7 +98,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
             ValidateStartDateClosingDate();
 
             MinimumWageValidation();
-
+            
             TrainingExpiryDateValidation();
         }
 
@@ -676,9 +676,11 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
 
         private void TrainingExpiryDateValidation()
         {
-            When(x => !string.IsNullOrWhiteSpace(x.ProgrammeId) && x.StartDate.HasValue, () =>
+            When(x => !string.IsNullOrWhiteSpace(x.ProgrammeId), () =>
             {
                 RuleFor(x => x)
+                    .Cascade(CascadeMode.StopOnFirstFailure)
+                    .TrainingMustExist(_apprenticeshipProgrammesProvider)
                     .TrainingMustBeActiveForStartDate(_apprenticeshipProgrammesProvider)
                 .RunCondition(VacancyRuleSet.TrainingExpiryDate)
                 .WithRuleId(VacancyRuleSet.TrainingExpiryDate);

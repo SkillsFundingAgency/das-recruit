@@ -102,11 +102,10 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
         {
             // Configuration
             services.Configure<GeocodeConfiguration>(configuration.GetSection("Geocode"));
-            services.Configure<BankHolidayConfiguration>(configuration.GetSection("BankHoliday"));
             services.Configure<FaaConfiguration>(configuration.GetSection("FaaConfiguration"));
             services.Configure<VacancyApiConfiguration>(configuration.GetSection("VacancyApiConfiguration"));
             services.Configure<SlackConfiguration>(configuration.GetSection("Slack"));
-            services.Configure<NextVacancyReviewServiceConfiguration>(o => o.VacancyReviewAssignationTimeoutMinutes = configuration.GetValue<int>("VacancyReviewAssignationTimeoutMinutes"));
+            services.Configure<NextVacancyReviewServiceConfiguration>(o => o.VacancyReviewAssignationTimeoutMinutes = configuration.GetValue<int>("RecruitConfiguration:VacancyReviewAssignationTimeoutMinutes"));
             services.Configure<PasAccountApiConfiguration>(configuration.GetSection("PasAccountApiConfiguration"));
             services.Configure<OuterApiConfiguration>(configuration.GetSection("OuterApiConfiguration"));
 
@@ -238,7 +237,7 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
         private static void RegisterTableStorageProviderDeps(IServiceCollection services, IConfiguration configuration)
         {
             var storageConnectionString = configuration.GetConnectionString("TableStorage");
-            var useTableStorageQueryStore = configuration.GetValue<bool>("UseTableStorageQueryStore");
+            var useTableStorageQueryStore = configuration.GetValue<bool>("RecruitConfiguration:UseTableStorageQueryStore");
             services.AddTransient<QueryStoreTableChecker>();
             services.Configure<TableStorageConnectionsDetails>(options =>
             {

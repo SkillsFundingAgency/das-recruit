@@ -99,7 +99,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.AnalyticsSummaryProcessor
 
                         command.Parameters.Add(inputParam);
 
-                        using (var reader = await RetryPolicy.ExecuteAsync(async context =>
+                        using (var reader = await RetryPolicy.Execute(async context =>
                                             {
                                                 await conn.OpenAsync();
                                                 return await command.ExecuteReaderAsync();
@@ -183,7 +183,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.AnalyticsSummaryProcessor
             return Policy
                     .Handle<SqlException>()
                     .Or<DbException>()
-                    .WaitAndRetryAsync(new[]
+                    .WaitAndRetry(new[]
                     {
                         TimeSpan.FromSeconds(1),
                         TimeSpan.FromSeconds(2),

@@ -13,7 +13,7 @@ using Esfa.Recruit.Vacancies.Client.Application.Services;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 {
-    public class TransferEmployerReviewToQAReviewCommandHandler : IRequestHandler<TransferEmployerReviewToQAReviewCommand>
+    public class TransferEmployerReviewToQAReviewCommandHandler : IRequestHandler<TransferEmployerReviewToQAReviewCommand, Unit>
     {
         public const string VacancyNotFoundExceptionMessageFormat = "Vacancy {0} not found";
         public const string InvalidStateExceptionMessageFormat = "Unable to transfer vacancy {0} due to vacancy having a status of {1}.";
@@ -35,7 +35,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             _timeProvider = timeProvider;
         }
 
-        public async Task Handle(TransferEmployerReviewToQAReviewCommand message, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(TransferEmployerReviewToQAReviewCommand message, CancellationToken cancellationToken)
         {
             _logger.LogInformation("Transferring Employer review Vacancy to QA review {vacancyId}.", message.VacancyId);
 
@@ -73,6 +73,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
                 VacancyId = vacancy.Id,
                 VacancyReference = vacancy.VacancyReference.Value
             });
+            return Unit.Value;
         }
     }
 }

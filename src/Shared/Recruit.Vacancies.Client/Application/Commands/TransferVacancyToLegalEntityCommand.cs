@@ -5,7 +5,7 @@ using MediatR;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.Commands
 {
-    public class TransferVacancyToLegalEntityCommand : ICommand, IRequest
+    public class TransferVacancyToLegalEntityCommand : ICommand, IRequest<Unit>
     {
         public long VacancyReference { get; }
         public Guid UserRef { get; }

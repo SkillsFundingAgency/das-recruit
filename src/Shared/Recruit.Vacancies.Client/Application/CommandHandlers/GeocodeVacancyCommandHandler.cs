@@ -13,7 +13,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 {
-    public class GeoVacancyCommandHandler: IRequestHandler<GeocodeVacancyCommand>
+    public class GeoVacancyCommandHandler: IRequestHandler<GeocodeVacancyCommand,Unit>
     {
         private readonly IVacancyRepository _repository;
         private readonly IGeocodeServiceFactory _geocodeServiceFactory;
@@ -29,7 +29,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             _logger = logger;
         }
 
-        public async Task Handle(GeocodeVacancyCommand message, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(GeocodeVacancyCommand message, CancellationToken cancellationToken)
         {
             _logger.LogInformation("Geocoding vacancy {vacancyId}.", message.VacancyId);
 
@@ -38,7 +38,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             if (string.IsNullOrEmpty(vacancy?.EmployerLocation?.Postcode))
             {
                 _logger.LogWarning("Geocode vacancyId:{vacancyId} cannot geocode as vacancy has no postcode", vacancy.Id);
-                return;
+                return Unit.Value;
             }
 
             var geocode = vacancy.GeocodeUsingOutcode
@@ -46,6 +46,8 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
                 : await GeocodePostcodeAsync(vacancy);
 
             await SetVacancyGeocode(vacancy.Id, geocode);
+            
+            return Unit.Value;
         }
 
         private Task<Geocode> GeocodePostcodeAsync(Vacancy vacancy)

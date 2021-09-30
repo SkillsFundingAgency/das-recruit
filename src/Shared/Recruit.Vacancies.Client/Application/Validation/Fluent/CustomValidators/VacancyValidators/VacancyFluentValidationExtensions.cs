@@ -61,10 +61,45 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomVali
             });
         }
 
+        internal static IRuleBuilderInitial<Vacancy, Vacancy> TrainingMustExist(
+            this IRuleBuilder<Vacancy, Vacancy> ruleBuilder,
+            IApprenticeshipProgrammeProvider apprenticeshipProgrammeProvider)
+        {
+            return ruleBuilder.CustomAsync(async (vacancy, context, cancellationToken) =>
+            {
+                var programme =
+                    await apprenticeshipProgrammeProvider.GetApprenticeshipProgrammeAsync(vacancy.ProgrammeId);
+
+                if (programme == null)
+                {
+                    var message = $"Training programme {vacancy.ProgrammeId} does not exist.";
+                    var failure = new ValidationFailure(string.Empty, message)
+                    {
+                        ErrorCode = ErrorCodes.TrainingNotExist,
+                        CustomState = VacancyRuleSet.TrainingProgramme,
+                        PropertyName = nameof(Vacancy.ProgrammeId)
+                    };
+                    context.AddFailure(failure);
+                }
+            });
+        }
+
         internal static IRuleBuilderInitial<Vacancy, Vacancy> TrainingMustBeActiveForStartDate(this IRuleBuilder<Vacancy, Vacancy> ruleBuilder, IApprenticeshipProgrammeProvider apprenticeshipProgrammesProvider)
         {
             return ruleBuilder.CustomAsync(async (vacancy, context, cancellationToken) =>
             {
+                if (!vacancy.StartDate.HasValue)
+                {
+                    var message = $"The start date must have a value.";
+                    var failure = new ValidationFailure(string.Empty, message)
+                    {
+                        ErrorCode = ErrorCodes.TrainingExpiryDate,
+                        CustomState = VacancyRuleSet.TrainingExpiryDate,
+                        PropertyName = nameof(Vacancy.StartDate)
+                    };
+                    context.AddFailure(failure);
+                }
+                
                 var allProgrammes = await apprenticeshipProgrammesProvider.GetApprenticeshipProgrammesAsync();
 
                 var matchingProgramme = allProgrammes.SingleOrDefault(x => x.Id.Equals(vacancy.ProgrammeId, StringComparison.InvariantCultureIgnoreCase));

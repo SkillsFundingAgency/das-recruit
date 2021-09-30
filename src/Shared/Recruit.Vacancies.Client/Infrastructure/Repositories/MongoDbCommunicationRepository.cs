@@ -21,7 +21,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
         public Task InsertAsync(CommunicationMessage msg)
         {
             var collection = GetCollection<CommunicationMessage>();
-            return RetryPolicy.ExecuteAsync(_ =>
+            return RetryPolicy.Execute(_ =>
                 collection.InsertOneAsync(msg),
                 new Context(nameof(InsertAsync)));
         }
@@ -30,7 +30,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
         {
             var filter = Builders<CommunicationMessage>.Filter.Eq(cm => cm.Id, msgId);
             var collection = GetCollection<CommunicationMessage>();
-            var result = await RetryPolicy.ExecuteAsync(_ =>
+            var result = await RetryPolicy.Execute(_ =>
                 collection.Find(filter)
                 .SingleOrDefaultAsync(),
                 new Context(nameof(GetAsync)));
@@ -41,7 +41,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
         {
             var filter = Builders<CommunicationMessage>.Filter.In(cm => cm.Id, msgIds);
             var collection = GetCollection<CommunicationMessage>();
-            var result = await RetryPolicy.ExecuteAsync(_ =>
+            var result = await RetryPolicy.Execute(_ =>
                 collection.FindAsync(filter),
                 new Context(nameof(GetManyAsync)));
             return await result.ToListAsync();
@@ -51,7 +51,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
         {
             var filter = Builders<CommunicationMessage>.Filter.Eq(cm => cm.Id, commMsg.Id);
             var collection = GetCollection<CommunicationMessage>();
-            return RetryPolicy.ExecuteAsync(_ =>
+            return RetryPolicy.Execute(_ =>
                 collection.ReplaceOneAsync(filter, commMsg),
                 new Context(nameof(UpdateAsync)));
         }
@@ -65,7 +65,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
                         builder.Gte(cm => cm.RequestDateTime, from) &
                         builder.Lte(cm => cm.RequestDateTime, to);
             var collection = GetCollection<CommunicationMessage>();
-            var result = await RetryPolicy.ExecuteAsync(_ =>
+            var result = await RetryPolicy.Execute(_ =>
                 collection.FindAsync(filter),
                 new Context(nameof(GetScheduledMessagesSinceAsync)));
             return await result.ToListAsync();
@@ -82,7 +82,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
                                 .Set(cm => cm.Status, CommunicationMessageStatus.Sent)
                                 .Set(cm => cm.AggregatedMessageId, aggregatedMessageId);
 
-            return RetryPolicy.ExecuteAsync(_ =>
+            return RetryPolicy.Execute(_ =>
                 collection.UpdateManyAsync(filter, updateDef),
                 new Context(nameof(UpdateScheduledMessagesAsSentAsync)));
         }
@@ -95,7 +95,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
                         builder.Lte(cm => cm.DispatchDateTime, dispatchDateTime);
             var collection = GetCollection<CommunicationMessage>();
 
-            return RetryPolicy.ExecuteAsync(_ =>
+            return RetryPolicy.Execute(_ =>
                 collection.DeleteManyAsync(filter),
                 new Context(nameof(HardDelete)));
         }

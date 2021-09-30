@@ -5,7 +5,7 @@ using MediatR;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.Commands
 {
-    public class ApplicationReviewSuccessfulCommand : ICommand, IRequest
+    public class ApplicationReviewSuccessfulCommand : ICommand, IRequest<Unit>
     {
         public Guid ApplicationReviewId { get; set; }
         public VacancyUser User { get; set; }

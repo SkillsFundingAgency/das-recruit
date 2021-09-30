@@ -4,7 +4,7 @@ using MediatR;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.Commands
 {
-    public class ApproveVacancyCommand : ICommand, IRequest
+    public class ApproveVacancyCommand : ICommand, IRequest<Unit>
     {
         public long VacancyReference { get; set; }
     }

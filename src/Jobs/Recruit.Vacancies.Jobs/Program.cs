@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Configuration;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo;
@@ -49,7 +50,15 @@ namespace Esfa.Recruit.Vacancies.Jobs
         {
             return
                 new HostBuilder()
-                    .UseEnvironment(RecruitEnvironment.EnvironmentName)
+                    .ConfigureHostConfiguration(configHost =>  
+                    {  
+                        configHost.SetBasePath(Directory.GetCurrentDirectory());  
+                        configHost.AddEnvironmentVariables();
+#if DEBUG
+                        configHost.AddJsonFile("appSettings.json", optional: false)
+                            .AddJsonFile($"appSettings.Development.json", true);               
+#endif
+                    })  
                     .ConfigureWebJobs(b =>
                     {
                         b.AddAzureStorageCoreServices()
@@ -58,22 +67,17 @@ namespace Esfa.Recruit.Vacancies.Jobs
                     })
                     .ConfigureAppConfiguration((hostBuilderContext, configBuilder)=>
                     {
-                        configBuilder.AddJsonFile("appSettings.json", optional: false)
-                            .AddJsonFile($"appSettings.{RecruitEnvironment.EnvironmentName}.json", true)
-                            .AddEnvironmentVariables()
+                        
+                        configBuilder
                             .AddAzureTableStorage(
-                            options => {
-                                options.ConfigurationKeys = new[] { "SFA.DAS.Encoding" };
-                                options.EnvironmentNameEnvironmentVariableName = "APPSETTING_ASPNETCORE_Environment";
-                                options.StorageConnectionStringEnvironmentVariableName = "CUSTOMCONNSTR_ConfigurationStorageConnectionString";
-                                options.PreFixConfigurationKeys = false;
-                            }
+                                options =>
+                                {
+                                    options.ConfigurationKeys = hostBuilderContext.Configuration["ConfigNames"].Split(",");
+                                    options.EnvironmentName = hostBuilderContext.Configuration["Environment"];
+                                    options.StorageConnectionString = hostBuilderContext.Configuration["ConfigurationStorageConnectionString"];
+                                    options.PreFixConfigurationKeys = false;
+                                }
                         );
-
-                        if (RecruitEnvironment.IsDevelopment)
-                        {
-                            configBuilder.AddUserSecrets<Program>();
-                        }
                     })
                     .ConfigureLogging((context, b) =>
                     {

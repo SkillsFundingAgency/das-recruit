@@ -33,7 +33,6 @@ namespace Esfa.Recruit.Employer.Web.Configuration
             //Configuration
             services.Configure<ApplicationInsightsConfiguration>(configuration.GetSection("ApplicationInsights"));
             services.Configure<ExternalLinksConfiguration>(configuration.GetSection("ExternalLinks"));
-            services.Configure<ManageApprenticeshipsRoutes>(configuration.GetSection("ManageApprenticeshipsRoutes"));
             services.AddSingleton<ManageApprenticeshipsLinkHelper>();
 
             services.Configure<AuthenticationConfiguration>(configuration.GetSection("Authentication"));
@@ -61,7 +60,7 @@ namespace Esfa.Recruit.Employer.Web.Configuration
 
         private static void RegisterServiceDeps(IServiceCollection services, IConfiguration configuration)
         {
-            services.AddTransient<IGeocodeImageService>(_ => new GoogleMapsGeocodeImageService(configuration.GetValue<string>("GoogleMapsPrivateKey")));
+            services.AddTransient<IGeocodeImageService>(_ => new GoogleMapsGeocodeImageService(configuration.GetValue<string>("RecruitConfiguration:GoogleMapsPrivateKey")));
             services.AddTransient<IReviewSummaryService, ReviewSummaryService>();
             services.AddTransient<ILegalEntityAgreementService, LegalEntityAgreementService>();
             services.AddTransient<AlertViewModelService>();

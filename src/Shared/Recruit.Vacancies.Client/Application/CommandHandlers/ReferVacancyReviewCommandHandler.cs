@@ -12,16 +12,16 @@ using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 {
-    public class ReferVacancyReviewCommandHandler : IRequestHandler<ReferVacancyReviewCommand>
+    public class ReferVacancyReviewCommandHandler : IRequestHandler<ReferVacancyReviewCommand, Unit>
     {
-        private readonly ILogger<ReferVacancyCommandHandler> _logger;
+        private readonly ILogger<ReferVacancyReviewCommandHandler> _logger;
         private readonly IVacancyReviewRepository _reviewRepository;
         private readonly IMessaging _messaging;
         private readonly AbstractValidator<VacancyReview> _vacancyReviewValidator;
         private readonly ITimeProvider _timeProvider;
 
         public ReferVacancyReviewCommandHandler(
-            ILogger<ReferVacancyCommandHandler> logger,
+            ILogger<ReferVacancyReviewCommandHandler> logger,
             IVacancyReviewRepository reviewRepository,
             IMessaging messaging,
             AbstractValidator<VacancyReview> vacancyReviewValidator,
@@ -34,7 +34,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             _vacancyReviewValidator = vacancyReviewValidator;
         }
 
-        public async Task Handle(ReferVacancyReviewCommand message, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(ReferVacancyReviewCommand message, CancellationToken cancellationToken)
         {
             _logger.LogInformation("Referring vacancy review {reviewId}.", message.ReviewId);
 
@@ -43,7 +43,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             if (!review.CanRefer)
             {
                 _logger.LogWarning($"Unable to refer review {{reviewId}} for vacancy {{vacancyReference}} due to review having a status of {review.Status}.", message.ReviewId, review.VacancyReference);
-                return;
+                return Unit.Value;
             }
 
             review.ManualOutcome = ManualQaOutcome.Referred;
@@ -67,6 +67,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
                 VacancyReference = review.VacancyReference,
                 ReviewId = review.Id
             });
+            return Unit.Value;
         }
 
         private void Validate(VacancyReview review)
