@@ -34,7 +34,7 @@
     <PackageReference Include="SFA.DAS.Notifications.Api.Types" Version="2.2.1" />
     <PackageReference Include="SFA.DAS.ProviderRelationships.Messages" Version="3.2.354" />
     <PackageReference Include="System.Data.SqlClient" Version="4.7.0" />
-    <PackageReference Include="SFA.DAS.NServiceBus" Version="15.0.25" />
+    <PackageReference Include="SFA.DAS.NServiceBus" Version="16.0.21" />
     <PackageReference Include="SFA.DAS.EmployerAccounts.Messages" Version="1.6.2515" />
     <PackageReference Include="Humanizer.Core.uk" Version="2.7.9" />
 
