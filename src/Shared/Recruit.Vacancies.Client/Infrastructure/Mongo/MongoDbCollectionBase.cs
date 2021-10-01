@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Security.Authentication;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Configuration;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MongoDB.Bson;
@@ -15,6 +16,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo
     {
         private readonly string _dbName;
         private readonly string _collectionName;
+        private readonly IConfiguration _configuration;
         private readonly MongoDbConnectionDetails _config;
         private readonly Lazy<ILogger> _mongoCommandLogger;
         private readonly string[] _excludedCommands = { "isMaster", "buildInfo", "saslStart", "saslContinue", "getLastError" };
@@ -27,6 +29,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo
         {
             _dbName = dbName;
             _collectionName = collectionName;
+            
             _config = config.Value;
 
             Logger = loggerFactory.CreateLogger(this.GetType().FullName);
@@ -40,7 +43,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo
             var settings = MongoClientSettings.FromUrl(new MongoUrl(_config.ConnectionString));
             settings.SslSettings = new SslSettings { EnabledSslProtocols = SslProtocols.Tls12 };
 
-            if (RecruitEnvironment.IsDevelopment)
+            if (_config.ConnectionString.Contains("localhost:27017"))
                 LogMongoCommands(settings);
 
             var client = new MongoClient(settings);

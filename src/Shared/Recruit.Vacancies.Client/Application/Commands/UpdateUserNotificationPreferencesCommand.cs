@@ -4,7 +4,7 @@ using MediatR;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.Commands
 {
-    public class UpdateUserNotificationPreferencesCommand : ICommand, IRequest
+    public class UpdateUserNotificationPreferencesCommand : ICommand, IRequest<Unit>
     {
         public UserNotificationPreferences UserNotificationPreferences { get; set; }
     }

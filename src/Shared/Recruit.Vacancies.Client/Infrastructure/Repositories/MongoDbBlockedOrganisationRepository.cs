@@ -25,7 +25,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
         public Task CreateAsync(BlockedOrganisation organisation)
         {
             var collection = GetCollection<BlockedOrganisation>();
-            return RetryPolicy.ExecuteAsync(_ =>
+            return RetryPolicy.Execute(_ =>
                 collection.InsertOneAsync(organisation),
                 new Context(nameof(CreateAsync)));
         }
@@ -36,7 +36,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
             var filter = builder.Eq(bo => bo.OrganisationId, organisationId);
             var collection = GetCollection<BlockedOrganisation>();
 
-            var result = await RetryPolicy.ExecuteAsync(_ =>
+            var result = await RetryPolicy.Execute(_ =>
                 collection.Find(filter)
                     .SortByDescending(bo => bo.UpdatedDate).FirstOrDefaultAsync(),
             new Context(nameof(GetByOrganisationIdAsync)));
@@ -47,7 +47,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
         public async Task<List<BlockedOrganisationSummary>> GetAllBlockedProvidersAsync()
         {
             var collection = GetCollection<BlockedOrganisation>();
-            var result = await RetryPolicy.ExecuteAsync(async _ =>
+            var result = await RetryPolicy.Execute(async _ =>
                                                         {
                                                             var pipeline = BlockedOrganisationsAggQueryBuilder.GetBlockedProvidersAggregateQueryPipeline();
                                                             var mongoQuery = pipeline.ToJson();
@@ -62,7 +62,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
         public async Task<List<BlockedOrganisationSummary>> GetAllBlockedEmployersAsync()
         {
             var collection = GetCollection<BlockedOrganisation>();
-            var result = await RetryPolicy.ExecuteAsync(async _ =>
+            var result = await RetryPolicy.Execute(async _ =>
                                                         {
                                                             var pipeline = BlockedOrganisationsAggQueryBuilder.GetBlockedEmployersAggregateQueryPipeline();
                                                             var mongoQuery = pipeline.ToJson();

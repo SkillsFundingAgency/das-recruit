@@ -38,6 +38,21 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation.
             result.Errors.Should().HaveCount(0);
         }
 
+        [Fact]
+        public void ErrorWhenDoesNotExist()
+        {
+            var vacancy = new Vacancy
+            {
+                ProgrammeId = "abc"
+            };
+            
+            var result = Validator.Validate(vacancy, VacancyRuleSet.TrainingExpiryDate);
+
+            result.HasErrors.Should().BeTrue();
+            result.Errors.Should().HaveCount(1);
+            result.Errors[0].ErrorCode.Should().Be("260");
+        }
+
         [Theory]
         [InlineData("")]
         [InlineData(null)]

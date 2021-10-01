@@ -10,7 +10,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 {
-    public class WithdrawApplicationCommandHandler : IRequestHandler<WithdrawApplicationCommand>
+    public class WithdrawApplicationCommandHandler : IRequestHandler<WithdrawApplicationCommand, Unit>
     {
         private readonly ILogger<WithdrawApplicationCommandHandler> _logger;
         private readonly IApplicationReviewRepository _applicationReviewRepository;
@@ -29,7 +29,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             _messaging = messaging;
         }
 
-        public async Task Handle(WithdrawApplicationCommand message, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(WithdrawApplicationCommand message, CancellationToken cancellationToken)
         {
             _logger.LogInformation("Withdrawing application for vacancyReference:{vacancyReference} and candidateId:{candidateId}", message.VacancyReference, message.CandidateId);
 
@@ -38,13 +38,13 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             if (applicationReview == null)
             {
                 _logger.LogInformation("Cannot find application to withdraw for vacancyReference:{vacancyReference} and candidateId:{candidateId}", message.VacancyReference, message.CandidateId);
-                return;
+                return Unit.Value;
             }
 
             if (applicationReview.CanWithdraw == false)
             {
                 _logger.LogWarning("Cannot withdraw ApplicationReviewId:{applicationReviewId} as not in correct state", applicationReview.Id);
-                return;
+                return Unit.Value;
             }
 
             applicationReview.IsWithdrawn = true;
@@ -60,6 +60,8 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             });
 
             _logger.LogInformation("Finished withdrawing application for vacancyReference:{vacancyReference} and candidateId:{candidateId}", message.VacancyReference, message.CandidateId);
+            
+            return Unit.Value;
         }
     }
 }

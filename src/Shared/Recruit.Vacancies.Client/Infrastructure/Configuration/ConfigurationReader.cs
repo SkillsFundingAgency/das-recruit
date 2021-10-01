@@ -1,6 +1,7 @@
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
@@ -20,7 +21,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Configuration
             var filter = Builders<T>.Filter.Eq("_id", id);
 
             var collection = GetCollection<T>();
-            var result = await RetryPolicy.ExecuteAsync(context => collection.FindAsync(filter), new Context(nameof(GetAsync)));
+            var result = await RetryPolicy.Execute(context => collection.FindAsync(filter), new Context(nameof(GetAsync)));
 
             return result?.FirstOrDefault();
         }

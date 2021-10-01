@@ -1,7 +1,7 @@
 ﻿namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.BankHolidays
 {
-    public class BankHolidayConfiguration
+    public static class BankHolidayConfiguration
     {
-        public string Url { get; set; }
+        public static string Url => "https://www.gov.uk/bank-holidays.json";
     }
 }

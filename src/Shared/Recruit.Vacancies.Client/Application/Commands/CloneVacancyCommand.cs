@@ -5,7 +5,7 @@ using MediatR;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.Commands
 {
-    public class CloneVacancyCommand : ICommand, IRequest
+    public class CloneVacancyCommand : ICommand, IRequest<Unit>
     {
         public Guid IdOfVacancyToClone { get; private set; }
         public Guid NewVacancyId { get; private set; }

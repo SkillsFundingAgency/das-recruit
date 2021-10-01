@@ -12,7 +12,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.TableStore
         {
             return Policy
                 .Handle<StorageException>()
-                .WaitAndRetryAsync(new[]
+                .WaitAndRetry(new[]
                 {
                     TimeSpan.FromSeconds(1),
                     TimeSpan.FromSeconds(1),

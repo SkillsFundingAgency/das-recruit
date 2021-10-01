@@ -10,7 +10,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 {
-    public class UpdateLiveVacancyCommandHandler : IRequestHandler<UpdateLiveVacancyCommand>
+    public class UpdateLiveVacancyCommandHandler : IRequestHandler<UpdateLiveVacancyCommand, Unit>
     {
         private readonly ILogger<UpdateLiveVacancyCommandHandler> _logger;
         private readonly IVacancyRepository _repository;
@@ -29,7 +29,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             _timeProvider = timeProvider;
         }
 
-        public async Task Handle(UpdateLiveVacancyCommand message, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(UpdateLiveVacancyCommand message, CancellationToken cancellationToken)
         {
             _logger.LogInformation("Updating live vacancy {vacancyId}.", message.Vacancy.Id);
 
@@ -54,6 +54,8 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
                 VacancyReference = message.Vacancy.VacancyReference.Value,
                 UpdateKind = message.UpdateKind
             });
+            
+            return Unit.Value;
         }
 
         private async Task PublishLiveVacancyClosingDateChangedEventAsync(UpdateLiveVacancyCommand message)

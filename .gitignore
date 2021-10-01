@@ -296,3 +296,9 @@ internal-nlog.txt
 
 # NuGet config
 /src/nuget.config
+
+
+*.subscription
+
+src/**/**/appsettings.Development.json
+

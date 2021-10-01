@@ -1,4 +1,5 @@
-﻿using Esfa.Recruit.Qa.Web.Configuration;
+﻿using System.IO;
+using Esfa.Recruit.Qa.Web.Configuration;
 using Esfa.Recruit.Qa.Web.Mappings;
 using Esfa.Recruit.Qa.Web.Orchestrators;
 using Esfa.Recruit.Qa.Web.Orchestrators.Reports;
@@ -19,6 +20,7 @@ using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using SFA.DAS.Configuration.AzureTableStorage;
 
 namespace Esfa.Recruit.Qa.Web
 {
@@ -34,7 +36,27 @@ namespace Esfa.Recruit.Qa.Web
 
         public Startup(IConfiguration configuration, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
-            _configuration = configuration;
+            var configBuilder = new ConfigurationBuilder()
+                .AddConfiguration(configuration)
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddEnvironmentVariables();
+                
+#if DEBUG
+            configBuilder
+                .AddJsonFile("appsettings.json", optional:true)
+                .AddJsonFile("appsettings.Development.json", optional: true);   
+#endif   
+            
+            configBuilder.AddAzureTableStorage(
+                options => {
+                    options.ConfigurationKeys = configuration["ConfigNames"].Split(",");
+                    options.EnvironmentName = configuration["Environment"];
+                    options.StorageConnectionString = configuration["ConfigurationStorageConnectionString"];
+                    options.PreFixConfigurationKeys = false;
+                }
+            );
+
+            _configuration =  configBuilder.Build();
             _hostingEnvironment = env;
             _authenticationConfig = _configuration.GetSection("Authentication").Get<AuthenticationConfiguration>();
             _legacyAuthorizationConfig = _configuration.GetSection("LegacyAuthorization").Get<AuthorizationConfiguration>();
@@ -85,7 +107,7 @@ namespace Esfa.Recruit.Qa.Web
             services.AddScoped<WithdrawVacancyOrchestrator>();
             services.AddTransient<UserAuthorizationService>();
 
-            services.AddTransient<IGeocodeImageService>(_ => new GoogleMapsGeocodeImageService(_configuration.GetValue<string>("GoogleMapsPrivateKey")));
+            services.AddTransient<IGeocodeImageService>(_ => new GoogleMapsGeocodeImageService(_configuration.GetValue<string>("RecruitConfiguration:GoogleMapsPrivateKey")));
             services.AddScoped<ReviewMapper>();
             services.AddTransient<IReviewSummaryService, ReviewSummaryService>();
             services.AddTransient<ReviewFieldIndicatorMapper>();

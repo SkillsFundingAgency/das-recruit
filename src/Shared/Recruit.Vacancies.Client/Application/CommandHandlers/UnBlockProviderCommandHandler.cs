@@ -10,7 +10,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 {
-    public class UnblockProviderCommandHandler : IRequestHandler<UnblockProviderCommand>
+    public class UnblockProviderCommandHandler : IRequestHandler<UnblockProviderCommand, Unit>
     {
         private readonly ILogger<UnblockProviderCommandHandler> _logger;
         private readonly IBlockedOrganisationQuery _blockedOrganisationQuery;
@@ -28,7 +28,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             _messaging = messaging;
         }
         
-        public async Task Handle(UnblockProviderCommand message, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(UnblockProviderCommand message, CancellationToken cancellationToken)
         {
             var blockedOrg = await _blockedOrganisationQuery.GetByOrganisationIdAsync(message.Ukprn.ToString());
             if (blockedOrg?.BlockedStatus == BlockedStatus.Blocked)
@@ -43,6 +43,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
                     QaVacancyUser = message.QaVacancyUser
                 });
             }
+            return Unit.Value;
         }
 
         private static BlockedOrganisation ConvertToBlockedOrganisation(UnblockProviderCommand message)

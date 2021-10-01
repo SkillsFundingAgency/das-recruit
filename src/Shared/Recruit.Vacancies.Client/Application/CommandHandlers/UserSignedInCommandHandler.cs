@@ -11,7 +11,7 @@ using Esfa.Recruit.Vacancies.Client.Application.Queues.Messages;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 {
-    public class UserSignedInCommandHandler : IRequestHandler<UserSignedInCommand>
+    public class UserSignedInCommandHandler : IRequestHandler<UserSignedInCommand, Unit>
     {
         private readonly IUserRepository _userRepository;
         private readonly ITimeProvider _timeProvider;
@@ -25,9 +25,10 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             _queueService = queueService;
         }
 
-        public async Task Handle(UserSignedInCommand message, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(UserSignedInCommand message, CancellationToken cancellationToken)
         {
             await UpsertUserAsync(message.User, message.UserType);
+            return Unit.Value;
         }
 
         private async Task UpsertUserAsync(VacancyUser user, UserType userType)

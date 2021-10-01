@@ -13,7 +13,7 @@ using Esfa.Recruit.Vacancies.Client.Domain.Events;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 {
-    public class ReviewVacancyCommandHandler : IRequestHandler<ReviewVacancyCommand>
+    public class ReviewVacancyCommandHandler : IRequestHandler<ReviewVacancyCommand, Unit>
     {
         public const string VacancyNotFoundExceptionMessageFormat = "Vacancy {0} not found";
         public const string InvalidStateExceptionMessageFormat = "Unable to review vacancy {0} due to vacancy having a status of {1}.";
@@ -39,7 +39,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             _employerService = employerService;
         }
 
-        public async Task Handle(ReviewVacancyCommand message, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(ReviewVacancyCommand message, CancellationToken cancellationToken)
         {
             _logger.LogInformation("Reviewing vacancy {vacancyId}.", message.VacancyId);
 
@@ -81,6 +81,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
                 VacancyReference = vacancy.VacancyReference.Value,
                 Ukprn = vacancy.TrainingProvider.Ukprn.GetValueOrDefault()
             });
+            return Unit.Value;
         }
     }
 }

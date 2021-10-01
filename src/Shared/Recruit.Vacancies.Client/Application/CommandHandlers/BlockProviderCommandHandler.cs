@@ -10,7 +10,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 {
-    public class BlockProviderCommandHandler : IRequestHandler<BlockProviderCommand>
+    public class BlockProviderCommandHandler : IRequestHandler<BlockProviderCommand, Unit>
     {
         private readonly ILogger<BlockProviderCommandHandler> _logger;
         private readonly IBlockedOrganisationQuery _blockedOrganisationQuery;
@@ -28,13 +28,13 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             _messaging = messaging;
         }
         
-        public async Task Handle(BlockProviderCommand message, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(BlockProviderCommand message, CancellationToken cancellationToken)
         {
             var blockedOrg = await _blockedOrganisationQuery.GetByOrganisationIdAsync(message.Ukprn.ToString());
             if (blockedOrg?.BlockedStatus == BlockedStatus.Blocked)
             {
                 _logger.LogWarning($"Ignoring request to block provider with ukprn {message.Ukprn} as the provider is already blocked.");
-                return;
+                return Unit.Value;
             }
 
             await _blockedOrganisationRepository.CreateAsync(ConvertToBlockedOrganisation(message));
@@ -45,6 +45,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
                 BlockedDate = message.BlockedDate,
                 QaVacancyUser = message.QaVacancyUser
             });
+            return Unit.Value;
         }
 
         private static BlockedOrganisation ConvertToBlockedOrganisation(BlockProviderCommand message)

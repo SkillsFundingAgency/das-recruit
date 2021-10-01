@@ -33,7 +33,6 @@ namespace Esfa.Recruit.Provider.Web.Configuration
             //Configuration
             services.Configure<ApplicationInsightsConfiguration>(configuration.GetSection("ApplicationInsights"));
             services.Configure<ExternalLinksConfiguration>(configuration.GetSection("ExternalLinks"));
-            services.Configure<ProviderApprenticeshipsRoutes>(configuration.GetSection(nameof(ProviderApprenticeshipsRoutes)));
             services.Configure<AuthenticationConfiguration>(configuration.GetSection("Authentication"));
             services.Configure<GoogleAnalyticsConfiguration>(configuration.GetSection("GoogleAnalytics"));
             services.Configure<PostcodeAnywhereConfiguration>(configuration.GetSection("PostcodeAnywhere"));
@@ -59,7 +58,7 @@ namespace Esfa.Recruit.Provider.Web.Configuration
 
         private static void RegisterServiceDeps(IServiceCollection services, IConfiguration configuration)
         {
-            services.AddTransient<IGeocodeImageService>(_ => new GoogleMapsGeocodeImageService(configuration.GetValue<string>("GoogleMapsPrivateKey")));
+            services.AddTransient<IGeocodeImageService>(_ => new GoogleMapsGeocodeImageService(configuration.GetValue<string>("RecruitConfiguration:GoogleMapsPrivateKey")));
             services.AddTransient<IReviewSummaryService, ReviewSummaryService>();
             services.AddTransient<ILegalEntityAgreementService, LegalEntityAgreementService>();
             services.AddTransient<AlertViewModelService>();

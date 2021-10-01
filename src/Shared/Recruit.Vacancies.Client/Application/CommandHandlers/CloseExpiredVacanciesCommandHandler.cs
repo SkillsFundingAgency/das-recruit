@@ -11,7 +11,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 {
-    public class CloseExpiredVacanciesCommandHandler : IRequestHandler<CloseExpiredVacanciesCommand>
+    public class CloseExpiredVacanciesCommandHandler : IRequestHandler<CloseExpiredVacanciesCommand, Unit>
     {
         private readonly ILogger<CloseExpiredVacanciesCommandHandler> _logger;
         private readonly IVacancyQuery _query;
@@ -30,7 +30,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             _vacancyService = vacancyService;
         }
 
-        public async Task Handle(CloseExpiredVacanciesCommand message, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(CloseExpiredVacanciesCommand message, CancellationToken cancellationToken)
         {
             var vacancies = (await _query.GetVacanciesByStatusAsync<VacancyIdentifier>(VacancyStatus.Live)).ToList();
             var numberClosed = 0;
@@ -43,6 +43,8 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             }
 
             _logger.LogInformation("Closed {closedCount} from {liveVacancyCount} live vacancies", numberClosed, vacancies.Count);
+            
+            return Unit.Value;
         }
     }
 }
