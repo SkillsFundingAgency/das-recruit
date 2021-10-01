@@ -26,6 +26,7 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Controllers
             mockMediator
                 .Setup(x => x.Send(It.IsAny<GetSkillsQuery>(), CancellationToken.None))
                 .ReturnsAsync(response);
+
             
             var actual = await controller.GetCandidateSkills() as OkObjectResult;
 
