@@ -16,14 +16,17 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Controllers
     public class ReferenceDataControllerTests
     {
         [Test, MoqAutoData]
-        public async Task Then_The_Query_Is_Made_And_Data_Returned(
+        public async Task When_Getting_Skills_Then_The_Query_Is_Made_And_Data_Returned(
             List<string> items,
             GetSkillsQueryResponse response,
-            [Frozen] Mock<IMediator> mediator,
+            [Frozen] Mock<IMediator> mockMediator,
             [Greedy] ReferenceDataController controller)
         {
             response.Data = items;
-            mediator.Setup(x => x.Send(It.IsAny<GetSkillsQuery>(), CancellationToken.None)).ReturnsAsync(response);
+            mockMediator
+                .Setup(x => x.Send(It.IsAny<GetSkillsQuery>(), CancellationToken.None))
+                .ReturnsAsync(response);
+
             
             var actual = await controller.GetCandidateSkills() as OkObjectResult;
 
@@ -31,5 +34,25 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Controllers
             var actualResult = actual.Value as List<string>;
             actualResult.Should().BeEquivalentTo(items);
         }
+
+        [Test, MoqAutoData]
+        public async Task When_Getting_Qualifications_Then_The_Query_Is_Made_And_Data_Returned(
+            List<string> items,
+            GetQualificationsQueryResponse response,
+            [Frozen] Mock<IMediator> mockMediator,
+            [Greedy] ReferenceDataController controller)
+        {
+            response.Data = items;
+            mockMediator
+                .Setup(x => x.Send(It.IsAny<GetQualificationsQuery>(), CancellationToken.None))
+                .ReturnsAsync(response);
+
+            var actual = await controller.GetCandidateQualifications() as OkObjectResult;
+
+            Assert.IsNotNull(actual);
+            var actualResult = actual.Value as List<string>;
+            actualResult.Should().BeEquivalentTo(items);
+        }
+
     }
 }
