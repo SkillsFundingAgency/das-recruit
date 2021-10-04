@@ -12,7 +12,7 @@ variables:
   - group: RELEASE Management Resources
   - group: RELEASE das-recruit
   - name: Deploy
-    value: $[or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.Reason'], 'Manual'), eq(variables['Build.Reason'], 'PullRequest'))]
+    value: $[or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.Reason'], 'Manual'))]
 
 resources:
   repositories:
