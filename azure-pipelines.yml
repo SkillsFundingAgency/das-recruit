@@ -94,34 +94,33 @@ stages:
       Environment: PP
       ServiceConnection: SFA-DIG-PreProd-ARM
 
-      #TODO: Setup variable groups
-# - stage: Deploy_PROD
-#   dependsOn: Build
-#   displayName: Deploy to PROD
-#   condition: and(succeeded(), eq(variables.Deploy, 'true'))
-#   variables:
-#   - group: Prod Management Resources
-#   - group: Prod Shared Resources
-#   - group: PROD das-recruit
-#   jobs:
-#   - template: pipeline-templates/job/deploy.yml
-#     parameters:
-#       Environment: PROD
-#       ServiceConnection: SFA-DIG-Prod-ARM
+- stage: Deploy_PROD
+  dependsOn: Build
+  displayName: Deploy to PROD
+  condition: and(succeeded(), eq(variables.Deploy, 'true'))
+  variables:
+  - group: Prod Management Resources
+  - group: Prod Shared Resources
+  - group: PROD das-recruit
+  jobs:
+  - template: pipeline-templates/job/deploy.yml
+    parameters:
+      Environment: PROD
+      ServiceConnection: SFA-DIG-Prod-ARM
 
-# - stage: Deploy_MO
-#   dependsOn: Build
-#   displayName: Deploy to MO
-#   condition: and(succeeded(), eq(variables.Deploy, 'true'))
-#   variables:
-#   - group: MO Management Resources
-#   - group: MO Shared Resources
-#   - group: MO das-recruit
-#   jobs:
-#   - template: pipeline-templates/job/deploy.yml
-#     parameters:
-#       Environment: MO
-#       ServiceConnection: SFA-ASM-ModelOffice-ARM
+- stage: Deploy_MO
+  dependsOn: Build
+  displayName: Deploy to MO
+  condition: and(succeeded(), eq(variables.Deploy, 'true'))
+  variables:
+  - group: MO Management Resources
+  - group: MO Shared Resources
+  - group: MO das-recruit
+  jobs:
+  - template: pipeline-templates/job/deploy.yml
+    parameters:
+      Environment: MO
+      ServiceConnection: SFA-ASM-ModelOffice-ARM
 
 - stage: Deploy_DEMO
   dependsOn: Build
