@@ -74,7 +74,8 @@ namespace Esfa.Recruit.Employer.Web
                                     "https://*.zendesk.com",
                                     "wss://*.zendesk.com",
                                     "wss://*.zopim.com",
-                                    "https://*.rcrsv.io"
+                                    "https://*.rcrsv.io",
+                                    "https://das-at-frnt-end.azureedge.net"
                                     );
 
                     //Google tag manager uses inline styles when administering tags. This is done on PREPROD only
@@ -97,7 +98,8 @@ namespace Esfa.Recruit.Employer.Web
                                     "wss://*.zendesk.com",
                                     "wss://*.zopim.com",
                                     "https://*.zopim.com",
-                                    "https://*.rcrsv.io");
+                                    "https://*.rcrsv.io",
+                                    "https://das-at-frnt-end.azureedge.net");
 
                     //Google tag manager uses inline scripts when administering tags
                     s.UnsafeInline();
@@ -108,7 +110,8 @@ namespace Esfa.Recruit.Employer.Web
                     .CustomSources("data:",
                                     "https://fonts.gstatic.com",
                                     "https://fonts.googleapis.com/",
-                                    "https://assets-ukdoe.rcrsv.io/")
+                                    "https://assets-ukdoe.rcrsv.io/", 
+                                    "https://das-at-frnt-end.azureedge.net")
                 )
                 .ConnectSources(s =>
                     s.Self()
@@ -133,6 +136,7 @@ namespace Esfa.Recruit.Employer.Web
                                     "https://*.zendesk.com",
                                     "wss://*.zendesk.com",
                                     "wss://*.zopim.com",
+                                    "https://das-at-frnt-end.azureedge.net",
                                     "data:")
                 )
                 .ReportUris(r => r.Uris("/ContentPolicyReport/Report")));
