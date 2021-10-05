@@ -9,8 +9,9 @@ using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
+using SFA.DAS.Api.Common.AppStart;
+using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.Api.Common.Infrastructure;
 using SFA.DAS.Recruit.Api.Configuration;
 using SFA.DAS.Recruit.Api.Mappers;
@@ -32,7 +33,11 @@ namespace SFA.DAS.Recruit.Api
                 .GetSection("AzureAd")
                 .Get<AzureActiveDirectoryConfiguration>();
             
-            SetupAuthorization(services, azureAdConfig);
+            var policies = new Dictionary<string, string>
+            {
+                {PolicyNames.Default, "default"},
+            };
+            services.AddAuthentication(azureAdConfig, policies);
 
             services.AddMediatR(typeof(Startup).Assembly, typeof(CreateApplicationReviewCommand).Assembly);
 
@@ -71,34 +76,6 @@ namespace SFA.DAS.Recruit.Api
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "RecruitAPI", Version = "v1" });
                 
             });
-        }
-
-        private void SetupAuthorization(IServiceCollection services, AzureActiveDirectoryConfiguration azureActiveDirectoryConfiguration)
-        {
-            if (HostingEnvironment.IsDevelopment() == false)
-            {
-                services.AddAuthorization(o =>
-                {
-                    o.AddPolicy("default", policy => { policy.RequireAuthenticatedUser(); });
-                });
-
-                services.AddAuthentication(auth => { auth.DefaultScheme = JwtBearerDefaults.AuthenticationScheme; })
-                    .AddJwtBearer(auth =>
-                    {
-                        auth.Authority =
-                            $"https://login.microsoftonline.com/{azureActiveDirectoryConfiguration.Tenant}";
-                        auth.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
-                        {
-                            ValidAudiences = new List<string>
-                            {
-                                azureActiveDirectoryConfiguration.Identifier,
-                                azureActiveDirectoryConfiguration.Id
-                            }
-                        };
-                    });
-
-                services.AddSingleton<IClaimsTransformation, AzureAdScopeClaimTransformation>();
-            }
         }
     }
 }
