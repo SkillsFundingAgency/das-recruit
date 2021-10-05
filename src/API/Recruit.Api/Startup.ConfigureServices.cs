@@ -59,7 +59,7 @@ namespace SFA.DAS.Recruit.Api
                 {
                     if (HostingEnvironment.IsDevelopment() == false)
                     {
-                        o.Filters.Add(new AuthorizeFilter("default"));
+                        o.Conventions.Add(new AuthorizeControllerModelConvention(new List<string>()));
                     }
                     o.Conventions.Add(new ApiExplorerGroupPerVersionConvention());
                 })
