@@ -3,94 +3,115 @@
 
     // 1. Add VacancyRejectedByEmployer preference to all Providers that already have a userNotificationPreferences.
     do {
-        var providersWithoutVacancyRejectedByEmployer = db.userNotificationPreferences.aggregate([{
-                $lookup: {
-                    from: "users",
-                    "let": {
-                        idamsUserId: {
-                            $toString: "$_id"
-                        }
-                    },
-                    pipeline: [{
-                        $match: {
-                            $expr: {
-                                $and: [{
-                                        $eq: ["$$idamsUserId", "$idamsUserId"]
-                                    },
-                                    {
-                                        $eq: ["$userType", "Provider"]
-                                    }
-                                ]
-                            }
-                        }
-                    }],
-                    as: "User"
-                }
-            },
+        var providersWithoutVacancyRejectedByEmployer = db.userNotificationPreferences.aggregate([
+        {
+            $lookup:
             {
-                $match: {
-                    $and: [{
-                            "User": {
-                                $exists: true,
-                                $not: {
-                                    $size: 0
-                                }
-                            }
-                        },
+                from: "users",
+                "let":
+                {
+                    idamsUserId:
+                    {
+                        $toString: "$_id"
+                    }
+                },
+                pipeline: [
+                {
+                    $match:
+                    {
+                        $expr:
                         {
-                            $or: [{
-                                "notificationTypes": {
-                                    $not: /VacancyRejectedByEmployer/
-                                }
-                            }, {
-                                "notificationTypes": {
-                                    $exists: false
-                                }
+                            $and: [
+                            {
+                                $eq: ["$$idamsUserId", "$idamsUserId"]
+                            },
+                            {
+                                $eq: ["$userType", "Provider"]
                             }]
                         }
-                    ]
-                }
-            },
-            {
-                $limit: batchLimit
-            },
-            {
-                $project: {
-                    _id: 1,
-                    notificationTypes: 1,
-                    user: {
-                        "$arrayElemAt": ["$User", 0]
                     }
+                }],
+                as: "User"
+            }
+        },
+        {
+            $match:
+            {
+                $and: [
+                {
+                    "User":
+                    {
+                        $exists: true,
+                        $not:
+                        {
+                            $size: 0
+                        }
+                    }
+                },
+                {
+                    $or: [
+                    {
+                        "notificationTypes":
+                        {
+                            $not: /VacancyRejectedByEmployer/
+                        }
+                    },
+                    {
+                        "notificationTypes":
+                        {
+                            $exists: false
+                        }
+                    }]
+                }]
+            }
+        },
+        {
+            $limit: batchLimit
+        },
+        {
+            $project:
+            {
+                _id: 1,
+                notificationTypes: 1,
+                user:
+                {
+                    "$arrayElemAt": ["$User", 0]
                 }
             }
-        ]);
+        }]);
 
         print(`Found ${providersWithoutVacancyRejectedByEmployer._batch.length} users without VacancyRejectedByEmployer preference set`);
 
-        while (providersWithoutVacancyRejectedByEmployer.hasNext()) {
+        while (providersWithoutVacancyRejectedByEmployer.hasNext())
+        {
             var doc = providersWithoutVacancyRejectedByEmployer.next();
             var updatedNotificationTypes = "VacancyRejectedByEmployer";
 
             print(`Updating ${doc.user.name}`);
 
-            if (doc.notificationTypes && doc.notificationTypes.length > 1) {
+            if (doc.notificationTypes && doc.notificationTypes.length > 1)
+            {
                 print(`${doc.user.name} has existing notificationTypes. Adding VacancyRejectedByEmployer to existing.`);
                 updatedNotificationTypes = doc.notificationTypes + ", VacancyRejectedByEmployer";
             }
 
             var updateDocument = {
-                $set: {
+                $set:
+                {
                     "notificationTypes": updatedNotificationTypes
                 }
             };
 
-            var writeResult = db.userNotificationPreferences.update({
+            var writeResult = db.userNotificationPreferences.update(
+            {
                 "_id": doc._id
-            }, updateDocument, {
+            }, updateDocument,
+            {
                 upsert: false
             });
 
-            if (writeResult.hasWriteConcernError()) {
+            if (writeResult.hasWriteConcernError())
+            {
                 printjson(writeResult.writeConcernError);
                 quit(14);
             }

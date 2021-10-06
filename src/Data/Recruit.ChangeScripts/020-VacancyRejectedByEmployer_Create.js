@@ -3,33 +3,36 @@
 
     // 2. Add VacancyRejectedByEmployer preference to all Providers that don't have a userNotificationPreferences.
     do {
-        var providersWithoutUserNotificationPreferences = db.users.aggregate([{
-                $lookup: {
-                    from: "userNotificationPreferences",
-                    localField: "idamsUserId",
-                    foreignField: "_id",
-                    as: "Preferences"
-                }
-            },
+        var providersWithoutUserNotificationPreferences = db.users.aggregate([
+        {
+            $lookup:
             {
-                $match: {
-                    $and: [{
-                            "Preferences": []
-                        },
-                        {
-                            "userType": "Provider"
-                        }
-                    ]
-                }
-            },
-            {
-                $limit: batchLimit
+                from: "userNotificationPreferences",
+                localField: "idamsUserId",
+                foreignField: "_id",
+                as: "Preferences"
             }
-        ]);
+        },
+        {
+            $match:
+            {
+                $and: [
+                {
+                    "Preferences": []
+                },
+                {
+                    "userType": "Provider"
+                }]
+            }
+        },
+        {
+            $limit: batchLimit
+        }]);
 
         print(`Found ${providersWithoutUserNotificationPreferences._batch.length} users without UserNotificationPreferences`);
 
-        while (providersWithoutUserNotificationPreferences.hasNext()) {
+        while (providersWithoutUserNotificationPreferences.hasNext())
+        {
             var doc = providersWithoutUserNotificationPreferences.next();
 
             print(`Updating ${doc.name}`);
@@ -41,7 +44,8 @@
 
             var writeResult = db.userNotificationPreferences.insert(userNotificationPreferences);
 
-            if (writeResult.hasWriteConcernError()) {
+            if (writeResult.hasWriteConcernError())
+            {
                 printjson(writeResult.writeConcernError);
                 quit(14);
             }
