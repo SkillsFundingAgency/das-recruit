@@ -35,7 +35,7 @@ namespace SFA.DAS.Recruit.Api
             
             var policies = new Dictionary<string, string>
             {
-                {PolicyNames.Default, "default"},
+                {PolicyNames.Default, "Default"},
             };
             services.AddAuthentication(azureAdConfig, policies);
 
