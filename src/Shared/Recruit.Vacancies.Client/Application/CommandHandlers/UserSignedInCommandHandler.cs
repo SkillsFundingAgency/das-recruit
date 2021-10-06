@@ -14,13 +14,18 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
     public class UserSignedInCommandHandler : IRequestHandler<UserSignedInCommand, Unit>
     {
         private readonly IUserRepository _userRepository;
+        private readonly IUserNotificationPreferencesRepository _userNotificationPreferencesRepository;
         private readonly ITimeProvider _timeProvider;
         private readonly IRecruitQueueService _queueService;
 
         public UserSignedInCommandHandler(
-            IUserRepository userRepository, ITimeProvider timeProvider, IRecruitQueueService queueService)
+            IUserRepository userRepository, 
+            IUserNotificationPreferencesRepository userNotificationPreferencesRepository,
+            ITimeProvider timeProvider, 
+            IRecruitQueueService queueService)
         {
             _userRepository = userRepository;
+            _userNotificationPreferencesRepository = userNotificationPreferencesRepository;
             _timeProvider = timeProvider;
             _queueService = queueService;
         }
@@ -43,6 +48,14 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
                 CreatedDate = now
             };
 
+            var userNotificationPreferences = await _userNotificationPreferencesRepository.GetAsync(userEntity.IdamsUserId) ?? new UserNotificationPreferences
+            {
+                Id = userEntity.IdamsUserId,
+                NotificationTypes = userEntity.UserType == UserType.Provider
+                    ? NotificationTypes.VacancyRejectedByEmployer
+                    : NotificationTypes.VacancySentForReview
+            };
+
             userEntity.Name = user.Name;
             userEntity.LastSignedInDate = now;
             userEntity.Email = user.Email;
@@ -51,6 +64,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
                 userEntity.Ukprn = user.Ukprn;
 
             await _userRepository.UpsertUserAsync(userEntity);
+            await _userNotificationPreferencesRepository.UpsertAsync(userNotificationPreferences);
 
             if (userType == UserType.Employer)
                 await _queueService.AddMessageAsync(new UpdateEmployerUserAccountQueueMessage { IdamsUserId = user.UserId });

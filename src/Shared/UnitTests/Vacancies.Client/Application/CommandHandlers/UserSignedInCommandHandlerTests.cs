@@ -17,6 +17,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.C
     public class UserSignedInCommandHandlerTests
     {
         private readonly Mock<IUserRepository> _mockUserRepository = new Mock<IUserRepository>();
+        private readonly Mock<IUserNotificationPreferencesRepository> _mockUserNotificationPreferencesRepository = new Mock<IUserNotificationPreferencesRepository>();
         private readonly Mock<ITimeProvider> _mockTimeProvider = new Mock<ITimeProvider>();
         private readonly Mock<IRecruitQueueService> _mockQueueService = new Mock<IRecruitQueueService>();
         private readonly Fixture _fixture = new Fixture();
@@ -27,16 +28,17 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.C
             var userType= UserType.Employer;
             var userId = _fixture.Create<Guid>().ToString();
             var user = _fixture.Build<User>().With(u => u.UserType, userType).With(u => u.IdamsUserId, userId).Create();
+            var preference = _fixture.Build<UserNotificationPreferences>().With(p => p.Id, userId).Create();
             var vacancyUser = _fixture.Build<VacancyUser>().With(v => v.UserId, userId).Create();
             _fixture.Register(() => new UserSignedInCommand(vacancyUser, userType));
             var command = _fixture.Create<UserSignedInCommand>();
 
-            var sut = GetSut(user);
+            var sut = GetSut(user, preference);
             await sut.Handle(command, new CancellationToken());
 
             _mockUserRepository.Verify(u => u.UpsertUserAsync(user));
-            _mockQueueService.Verify(q => q.AddMessageAsync(
-                It.Is<UpdateEmployerUserAccountQueueMessage>(u => u.IdamsUserId == user.IdamsUserId)));
+            _mockUserNotificationPreferencesRepository.Verify(u => u.UpsertAsync(preference));
+            _mockQueueService.Verify(q => q.AddMessageAsync(It.Is<UpdateEmployerUserAccountQueueMessage>(u => u.IdamsUserId == user.IdamsUserId)));
         }
 
         [Fact]
@@ -45,28 +47,31 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.C
             var userType= UserType.Provider;
             var userId = _fixture.Create<Guid>().ToString();
             var user = _fixture.Build<User>().With(u => u.UserType, userType).With(u => u.IdamsUserId, userId).Create();
+            var preference = _fixture.Build<UserNotificationPreferences>().With(p => p.Id, userId).Create();
             var vacancyUser = _fixture.Build<VacancyUser>().With(v => v.UserId, userId).Create();
             _fixture.Register(() => new UserSignedInCommand(vacancyUser, userType));
             var command = _fixture.Create<UserSignedInCommand>();
 
-            var sut = GetSut(user);
+            var sut = GetSut(user, preference);
             await sut.Handle(command, new CancellationToken());
 
             _mockUserRepository.Verify(u => u.UpsertUserAsync(user));
-            _mockQueueService.Verify(q => q.AddMessageAsync(
-                It.IsAny<UpdateEmployerUserAccountQueueMessage>()), Times.Never);
+            _mockUserNotificationPreferencesRepository.Verify(u => u.UpsertAsync(preference));
+            _mockQueueService.Verify(q => q.AddMessageAsync(It.IsAny<UpdateEmployerUserAccountQueueMessage>()), Times.Never);
         }
 
         [Fact]
         public async Task GivenProviderUser_ShouldAssignUkprn()
         {
             var userType= UserType.Provider;
+            var userId = _fixture.Create<Guid>().ToString();
             var user = _fixture.Build<User>().With(u => u.UserType, userType).Create();
+            var preference = _fixture.Build<UserNotificationPreferences>().With(p => p.Id, userId).Create();
             var vacancyUser = _fixture.Create<VacancyUser>();
             _fixture.Register(() => new UserSignedInCommand(vacancyUser, userType));
             var command = _fixture.Create<UserSignedInCommand>();
 
-            var sut = GetSut(user);
+            var sut = GetSut(user, preference);
             await sut.Handle(command, new CancellationToken());
 
             _mockUserRepository.Verify(u => u.UpsertUserAsync(It.Is<User>(c=> c.Ukprn == vacancyUser.Ukprn)));
@@ -76,23 +81,27 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.C
         public async Task GivenEmployerUser_ShouldAssignUkprn()
         {
             var userType= UserType.Employer;
+            var userId = _fixture.Create<Guid>().ToString();
             var user = _fixture.Build<User>().With(u => u.UserType, userType).Without(u => u.Ukprn).Create();
+            var preference = _fixture.Build<UserNotificationPreferences>().With(p => p.Id, userId).Create();
             var vacancyUser = _fixture.Create<VacancyUser>();
             _fixture.Register(() => new UserSignedInCommand(vacancyUser, userType));
             var command = _fixture.Create<UserSignedInCommand>();
 
-            var sut = GetSut(user);
+            var sut = GetSut(user, preference);
             await sut.Handle(command, new CancellationToken());
 
             _mockUserRepository.Verify(u => u.UpsertUserAsync(It.Is<User>(c=> c.Ukprn == null)));
         }
 
-        private UserSignedInCommandHandler GetSut(User user)
+        private UserSignedInCommandHandler GetSut(User user, UserNotificationPreferences preference)
         {
             _mockUserRepository.Setup(u => u.GetAsync(It.IsAny<string>())).ReturnsAsync(user);
+            _mockUserNotificationPreferencesRepository.Setup(u => u.GetAsync(It.IsAny<string>())).ReturnsAsync(preference);
 
             return new UserSignedInCommandHandler (
                 _mockUserRepository.Object,
+                _mockUserNotificationPreferencesRepository.Object,
                 _mockTimeProvider.Object,
                 _mockQueueService.Object
             );
