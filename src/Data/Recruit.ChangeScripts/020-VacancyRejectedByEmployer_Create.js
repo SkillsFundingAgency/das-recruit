@@ -4,30 +4,30 @@
     // 2. Add VacancyRejectedByEmployer preference to all Providers that don't have a userNotificationPreferences.
     do {
         var providersWithoutUserNotificationPreferences = db.users.aggregate([
-        {
-            $lookup:
+            {
+                $lookup:
             {
                 from: "userNotificationPreferences",
                 localField: "idamsUserId",
                 foreignField: "_id",
                 as: "Preferences"
             }
-        },
-        {
-            $match:
+            },
+            {
+                $match:
             {
                 $and: [
-                {
-                    "Preferences": []
-                },
-                {
-                    "userType": "Provider"
-                }]
+                    {
+                        "Preferences": []
+                    },
+                    {
+                        "userType": "Provider"
+                    }]
             }
-        },
-        {
-            $limit: batchLimit
-        }]);
+            },
+            {
+                $limit: batchLimit
+            }]);
 
         print(`Found ${providersWithoutUserNotificationPreferences._batch.length} users without UserNotificationPreferences`);
 
@@ -39,7 +39,7 @@
 
             var userNotificationPreferences = {
                 _id: doc.idamsUserId,
-                notificationTypes: 'VacancyRejectedByEmployer'
+                notificationTypes: "VacancyRejectedByEmployer"
             };
 
             var writeResult = db.userNotificationPreferences.insert(userNotificationPreferences);
