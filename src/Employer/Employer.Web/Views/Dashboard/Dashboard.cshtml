@@ -5,7 +5,7 @@
 @{ var vacanciesSearchSuggestionsEndpointUrl = Url.RouteUrl(RouteNames.VacanciesSearchSuggestions_Get, null, Context.Request.Scheme);
     string GetCardStatus(bool hasPermission)
     {
-        return hasPermission ? String.Empty : "app-card__inactive";
+        return hasPermission ? String.Empty : "app-card--inactive";
     }
     ViewBag.ShowReturnToMaLink = Model.FromMaHome;
     ViewBag.Vpv = "/recruitment/employer/page-dashboard";
@@ -120,7 +120,7 @@
                     </h3>
                     <span class="govuk-body app-card__description">Your adverts on the Find an apprenticeship service.</span>
                     <p class="govuk-body app-card__description"></p>
-                    <ul class="app-card__tasks govuk-list">
+                    <ul class="app-card__tasks govuk-list" asp-show="@(Model.ShowNoOfVacanciesClosingSoon || Model.ShowNoOfVacanciesClosingSoonWithNoApplications)">
                         <li asp-show="@Model.ShowNoOfVacanciesClosingSoon">
                             <a class="govuk-link" asp-route="@RouteNames.Vacancies_Get" asp-route-filter="@FilteringOptions.ClosingSoon">@Model.NoOfVacanciesClosingSoon live @Model.VacancyTextClosingSoon closing soon</a>
                         </li>

@@ -4,6 +4,51 @@
     margin-bottom: 20px;
 }
 
+@media (min-width: 40.0625em) {
+    .app-card {
+        margin-bottom: 0;
+    }
+}
+
+.app-card--inactive {
+    background-color: #f8f8f8;
+}
+
+.app-card__heading {
+    margin-bottom: 10px;
+    font-size: 19px;
+    font-size: 1.1875rem;
+    line-height: 1.31579;
+}
+
+@media (min-width: 40.0625em) {
+    .app-card__stat {
+        display: block;
+        font-size: 32px;
+        font-size: 2rem;
+        line-height: 1.25;
+    }
+}
+
 .app-card__content {
     padding: 20px;
+}
+
+.app-card__description {
+    margin-bottom: 0;
+    font-size: 16px;
+    font-size: 1rem;
+    line-height: 1.25;
+}
+
+.app-card__tasks {
+    margin-top: 15px;
+    margin-bottom: 0;
+}
+
+@media (min-width: 40.0625em) {
+    .app-card__row {
+        display: flex;
+        margin-bottom: 30px;
+    }
 }
