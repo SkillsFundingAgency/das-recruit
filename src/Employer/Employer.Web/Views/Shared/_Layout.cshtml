@@ -39,30 +39,22 @@
     <meta charset="utf-8" />
     <title>@GetTitle()</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="theme-color" content="blue" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <link rel="shortcut icon" sizes="16x16 32x32 48x48" href="/lib/govuk-frontend/dist/assets/images/favicon.ico" type="image/x-icon" />
-    <link rel="mask-icon" href="/lib/govuk-frontend/dist/assets/images/govuk-mask-icon.svg" color="blue">
-    <link rel="apple-touch-icon" sizes="180x180" href="/lib/govuk-frontend/dist/assets/images/govuk-apple-touch-icon-180x180.png">
-    <link rel="apple-touch-icon" sizes="167x167" href="/lib/govuk-frontend/dist/assets/images/govuk-apple-touch-icon-167x167.png">
-    <link rel="apple-touch-icon" sizes="152x152" href="/lib/govuk-frontend/dist/assets/images/govuk-apple-touch-icon-152x152.png">
-    <link rel="apple-touch-icon" href="/lib/govuk-frontend/dist/assets/images/govuk-apple-touch-icon.png">
+    <meta name="theme-color" content="#0b0c0c" />
+    <link rel="shortcut icon" href="/assets/images/favicon.ico" type="image/x-icon" />
+    <link rel="mask-icon" href="/assets/images/govuk-mask-icon.svg" color="#0b0c0c" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/assets/images/govuk-apple-touch-icon-180x180.png" />
+    <link rel="apple-touch-icon" sizes="167x167" href="/assets/images/govuk-apple-touch-icon-167x167.png" />
+    <link rel="apple-touch-icon" sizes="152x152" href="/assets/images/govuk-apple-touch-icon-152x152.png" />
+    <link rel="apple-touch-icon" href="/assets/images/govuk-apple-touch-icon.png" />
     <!--[if !IE 8]><!-->
-    <link href="/lib/govuk-frontend/dist/govuk-frontend-2.5.0.min.css" rel="stylesheet" />
+    <link href="/css/main.css" rel="stylesheet" />
+    <link asp-append-version="true" rel="stylesheet" media="screen" href="/css/app.css" no-cdn />
     <!--<![endif]-->
-    <!--[if IE 8]>
-        <link href="/lib/govuk-frontend/dist/govuk-frontend-ie8-2.5.0.min.css" rel="stylesheet" />
-    <![endif]-->
-    <!--[if lt IE 9]>
-        <script src="/lib/html5-shiv/html5shiv.js"></script>
-    <![endif]-->
-    <meta property="og:image" content="/lib/govuk-frontend/dist/assets/images/govuk-opengraph-image.png">
-    <link asp-append-version="true" rel="stylesheet" media="screen" href="/lib/esfa-ma-menu/style.css" />
-    <link asp-append-version="true" rel="stylesheet" media="screen" href="/css/application.css" />
+    <meta property="og:image" content="/assets/images/govuk-opengraph-image.png" />
     @RenderSection(RazorSections.HeadCSS, required: false)
     <partial name="@PartialNames.ApplicationInsights" />
-    <script src="@Url.Content("/lib/jquery/dist/jquery-3.3.1.min.js")"></script>
-    <script src="@Url.Content("/lib/jquery-are-you-sure/jquery.are-you-sure.js")"></script>
+    <script src="/libs/jquery/jquery.min.js"></script>
+    <script src="@Url.Content("/lib/jquery-are-you-sure/jquery.are-you-sure.js")" no-cdn></script>
     <partial name="@PartialNames.GoogleAnalyticsInfo" />
     <partial name="@PartialNames.GoogleTagManagerHead" />
     <script nws-csp-add-nonce="true">
@@ -85,26 +77,21 @@
     </div>
     @Html.Partial("_CookieBanner", Html.GetCookieBannerViewModel())
     @Html.Partial("_Header", Html.GetHeaderViewModel())
-
     <div class="govuk-width-container">
-        <div class="govuk-phase-banner">
-            <p class="govuk-phase-banner__content">
-                <strong class="govuk-tag govuk-phase-banner__content__tag ">beta</strong>
-                <span class="govuk-phase-banner__text">
-                    This is a new service – your <a class="govuk-link" href="https://www.smartsurvey.co.uk/s/DXKAB/" target="_blank">feedback</a> will help us to improve it.
-                </span>
-            </p>
-        </div>
+        @RenderSection("BackLink", required: false)
         <main class="govuk-main-wrapper " id="main-content" role="main">
             @RenderBody()
         </main>
     </div>
     @Html.Partial("_Footer", Html.GetFooterViewModel())
-
-    <script src="/lib/govuk-frontend/dist/govuk-frontend-2.5.0.min.js"></script>
-    <script src="/lib/esfa-stacker/stacker.js"></script>
-    <script asp-append-version="true" src="/javascripts/application.js"></script>
-    <script asp-append-version="true" src="/javascripts/cookiebanner.js"></script>
+    <script src="/libs/govuk-frontend/all.js"></script>
+    <script src="/js/das-all.js"></script>
+    <script src="/js/app.min.js"></script>
+    <script>
+      window.GOVUKFrontend.initAll();
+      window.DASFrontend.initAll();
+    </script>
+    <script asp-append-version="true" src="/javascripts/application.js" no-cdn></script>
     @await RenderSectionAsync(RazorSections.FooterJS, required: false)
 </body>
 </html>
