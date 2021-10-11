@@ -9,6 +9,7 @@ using Esfa.Recruit.Vacancies.Client.Application.Queues;
 using Esfa.Recruit.Vacancies.Client.Application.Queues.Messages;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
+using Microsoft.Extensions.Logging;
 using Moq;
 using Xunit;
 
@@ -100,6 +101,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.C
             _mockUserNotificationPreferencesRepository.Setup(u => u.GetAsync(It.IsAny<string>())).ReturnsAsync(preference);
 
             return new UserSignedInCommandHandler (
+                Mock.Of<ILogger<UserSignedInCommandHandler>>(),
                 _mockUserRepository.Object,
                 _mockUserNotificationPreferencesRepository.Object,
                 _mockTimeProvider.Object,
