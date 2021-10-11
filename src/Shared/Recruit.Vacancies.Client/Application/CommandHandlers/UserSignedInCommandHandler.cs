@@ -53,7 +53,8 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
                 Id = userEntity.IdamsUserId,
                 NotificationTypes = userEntity.UserType == UserType.Provider
                     ? NotificationTypes.VacancyRejectedByEmployer
-                    : NotificationTypes.VacancySentForReview
+                    : NotificationTypes.VacancySentForReview,
+                NotificationScope = NotificationScope.OrganisationVacancies
             };
 
             userEntity.Name = user.Name;

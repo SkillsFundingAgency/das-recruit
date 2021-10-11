@@ -39,7 +39,8 @@
 
             var userNotificationPreferences = {
                 _id: doc.idamsUserId,
-                notificationTypes: "VacancyRejectedByEmployer"
+                notificationTypes: "VacancyRejectedByEmployer",
+                notificationScope: "OrganisationVacancies"
             };
 
             var writeResult = db.userNotificationPreferences.insert(userNotificationPreferences);

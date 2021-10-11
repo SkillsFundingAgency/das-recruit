@@ -1,83 +1,68 @@
 {
     const batchLimit = 100;
 
-    // 3. Add VacancySentForReview preference to all Employers that already have a userNotificationPreferences.
+    // 1. Add VacancySentForReview preference to all Employers that already have a userNotificationPreferences.
     do {
-        var employersWithoutVacancySentForReview = db.userNotificationPreferences.aggregate([
+        var employersWithoutVacancySentForReview = db.users.aggregate([
             {
                 $lookup:
-            {
-                from: "users",
-                "let":
                 {
-                    idamsUserId:
-                    {
-                        $toString: "$_id"
-                    }
-                },
-                pipeline: [
-                    {
-                        $match:
-                    {
-                        $expr:
-                        {
-                            $and: [
-                                {
-                                    $eq: ["$$idamsUserId", "$idamsUserId"]
-                                },
-                                {
-                                    $eq: ["$userType", "Employer"]
-                                }]
-                        }
-                    }
-                    }],
-                as: "User"
-            }
+                    from: "userNotificationPreferences",
+                    localField: "idamsUserId",
+                    foreignField: "_id",
+                    as: "Preferences"
+                }
             },
             {
                 $match:
-            {
-                $and: [
-                    {
-                        "User":
-                    {
-                        $exists: true,
-                        $not:
+                {
+                    $and: [
                         {
-                            $size: 0
-                        }
-                    }
-                    },
-                    {
-                        $or: [
-                            {
-                                "notificationTypes":
+                            "Preferences": { $exists: true , $not:
+                                {
+                                    $size: 0
+                                }}
+                        },
                         {
-                            $not: /VacancySentForReview/
-                        }
-                            },
-                            {
-                                "notificationTypes":
-                        {
-                            $exists: false
-                        }
-                            }]
-                    }]
-            }
-            },
-            {
-                $limit: batchLimit
+                            "userType": "Employer"
+                        }]
+                }
             },
             {
                 $project:
-            {
-                _id: 1,
-                notificationTypes: 1,
-                user:
                 {
-                    "$arrayElemAt": ["$User", 0]
+                    _id: 1,
+                    userType: 1,
+                    idamsUserId: 1,
+                    name: 1,
+                    preference:
+                    {
+                        "$arrayElemAt": ["$Preferences", 0]
+                    }
                 }
-            }
+            },
+            {
+                $match:
+                {
+                    
+                    $or: [
+                        {
+                            "preference.notificationTypes":
+                            {
+                                $not: /VacancySentForReview/
+                            }
+                        },
+                        {
+                            "preference.notificationTypes":
+                            {
+                                $exists: false
+                            }
+                        }]
+                    
+                }
+            },
+            {
+                $limit: batchLimit
             }]);
 
         print(`Found ${employersWithoutVacancySentForReview._batch.length} users without VacancySentForReview preference set`);
@@ -87,12 +72,12 @@
             var doc = employersWithoutVacancySentForReview.next();
             var updatedNotificationTypes = "VacancySentForReview";
 
-            print(`Updating ${doc.user.name}`);
+            print(`Updating ${doc.name}`);
 
-            if (doc.notificationTypes && doc.notificationTypes.length > 1)
+            if (doc.preference.notificationTypes && doc.preference.notificationTypes.length > 1)
             {
-                print(`${doc.user.name} has existing notificationTypes. Adding VacancySentForReview to existing.`);
-                updatedNotificationTypes = doc.notificationTypes + ", VacancySentForReview";
+                print(`${doc.name} has existing notificationTypes. Adding VacancySentForReview to existing.`);
+                updatedNotificationTypes = doc.preference.notificationTypes + ", VacancySentForReview";
             }
 
             var updateDocument = {
@@ -104,7 +89,7 @@
 
             var writeResult = db.userNotificationPreferences.update(
                 {
-                    "_id": doc._id
+                    "_id": doc.preference._id
                 }, updateDocument,
                 {
                     upsert: false
@@ -116,7 +101,7 @@
                 quit(14);
             }
 
-            print(`Updated ${doc.user.name}`);
+            print(`Updated ${doc.name}`);
         }
 
     } while (employersWithoutVacancySentForReview._batch.length >= batchLimit);
