@@ -86,10 +86,11 @@
     @Html.Partial("_Footer", Html.GetFooterViewModel())
     <script src="/libs/govuk-frontend/all.js"></script>
     <script src="/js/das-all.js"></script>
+    <script src="/libs/accessible-autocomplete/accessible-autocomplete.min.js"></script>
     <script src="/js/app.min.js"></script>
     <script>
-      window.GOVUKFrontend.initAll();
-      window.DASFrontend.initAll();
+        window.GOVUKFrontend.initAll();
+        window.DASFrontend.initAll();
     </script>
     <script asp-append-version="true" src="/javascripts/application.js" no-cdn></script>
     @await RenderSectionAsync(RazorSections.FooterJS, required: false)

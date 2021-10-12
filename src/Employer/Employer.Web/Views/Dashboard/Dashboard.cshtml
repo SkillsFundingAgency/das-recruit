@@ -28,27 +28,25 @@
     </div>
 
     <div class="govuk-grid-row">
-        <form asp-route="@RouteNames.Vacancies_Get" method="get" autocomplete="off">
-            <div class="govuk-grid-column-two-thirds">
+        <div class="govuk-grid-column-two-thirds">
+            <form asp-route="@RouteNames.Vacancies_Get" method="get" autocomplete="off">
                 <div class="govuk-form-group">
-                    <fieldset class="govuk-fieldset">
-                        <div class="form-group search-field">
-                            <div class="search-input-with-button">
-                                <label class="govuk-label" for="search">
-                                    Search by advert title or reference number
-                                </label>
-                                <input id="search-input" name="searchTerm" class="govuk-input search-input" maxlength="200">
-                            </div>
-                            <div class="search-submit">
-                                <!-- hide button for no js version -->
-                                <button type="submit" id="search-submit-button">Search</button>
-                            </div>
+                    <label for="search-input" class="govuk-label">
+                        Search by advert title or reference number
+                    </label>
+                    <div class="das-search-form__group">
+                        <input id="search-input" name="searchTerm" title="Search" class="govuk-input das-search-form__input app-vacancy-autocomplete" type="text" maxlength="200">
+                        <div class="das-search-form__button-wrap">
+                            <button class="govuk-button das-search-form__button" type="submit">
+                                Search
+                            </button>
                         </div>
-                    </fieldset>
+                    </div>
                 </div>
-            </div>
-        </form>
+            </form>
+        </div>
     </div>
+
     <div class="govuk-grid-row app-card__row">
         <div class="govuk-grid-column-one-third">
             <div class="app-card">
@@ -203,12 +201,3 @@
         </esfaFeatureEnabled>
     </div>
 </div>
-
-@section FooterJS
-{
-    <script src="/lib/jquery-ui/dist/jquery-ui.min.js" no-cdn></script>
-    <script asp-append-version="true" src="/lib/esfa-search-suggestions/searchSuggestionsService.js" no-cdn></script>
-    <script nws-csp-add-nonce="true">
-        searchSuggestions.init("#search-input", "@vacanciesSearchSuggestionsEndpointUrl");
-    </script>
-}

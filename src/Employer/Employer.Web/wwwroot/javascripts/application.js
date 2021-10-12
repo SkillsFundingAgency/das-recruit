@@ -1,116 +1,57 @@
-var navLinksContainer = document.getElementsByClassName('das-navigation__list');
-var navLinksListItems = document.getElementsByClassName('das-navigation__list-item');
-var availableSpace, currentVisibleLinks, numOfVisibleItems, requiredSpace, currentHiddenLinks;
-var totalSpace = 0;
-var breakWidths = [];
+// Location Autocomplete
 
-var addMenuButton = function () {
-  var priorityLi = $('<li />').addClass('das-navigation__priority-list-item govuk-visually-hidden').attr('id', 'priority-list-menu');
-  var priorityUl = $('<ul />').addClass('das-navigation__priority-list govuk-visually-hidden');
-  var priorityBut = $('<a />')
-    .addClass('das-navigation__priority-button')
-    .attr('href', '#')
-    .text('More')
-    .on('click', function(e) {
-      $(menuLinksContainer).toggleClass('govuk-visually-hidden');
-      $(this).toggleClass('open');
-      e.preventDefault();
-    });
-  priorityLi.append(priorityBut, priorityUl).appendTo($(navLinksContainer).eq(0));
-  return priorityUl;
-};
+var vacancySearchInputs = document.querySelectorAll(".app-vacancy-autocomplete");
+var apiUrl = 'search-suggestions/';
+var i;
 
-var checkSpaceForPriorityLinks = function () {
-  availableSpace = navLinksContainer[0].offsetWidth - 80;
-  currentVisibleLinks = document.querySelectorAll('.das-navigation__list > .das-navigation__list-item');
-  currentHiddenLinks = document.querySelectorAll('.das-navigation__priority-list > .das-navigation__list-item');
-  numOfVisibleItems = currentVisibleLinks.length;
-  requiredSpace = breakWidths[numOfVisibleItems - 1];
+if (vacancySearchInputs.length > 0) {
 
-  if (requiredSpace > availableSpace) {
-    numOfVisibleItems -= 1;
-    var lastVisibleLink = currentVisibleLinks[numOfVisibleItems];
-    menuLinksContainer[0].insertBefore(lastVisibleLink, menuLinksContainer[0].childNodes[0]);
-    $('#priority-list-menu').removeClass('govuk-visually-hidden');
-    checkSpaceForPriorityLinks();
-  } else if (availableSpace > breakWidths[numOfVisibleItems]) {
-    if (currentHiddenLinks.length > 0) {
-      var firstLink = currentHiddenLinks[0];
-      var priorityListItem = document.getElementsByClassName('das-navigation__priority-list-item');
-      navLinksContainer[0].insertBefore(firstLink, priorityListItem[0])
-      if (currentHiddenLinks.length === 1) {
-        $('#priority-list-menu').addClass('govuk-visually-hidden');
+  for (i = 0; i < vacancySearchInputs.length; i++) {
+
+    var input = vacancySearchInputs[i]
+    var container = document.createElement('div');
+
+    container.className = "das-autocomplete-wrap"
+    input.parentNode.replaceChild(container, input);
+
+    var getSuggestions = function (query, updateResults) {
+      var results = [];
+      var xhr = new XMLHttpRequest();
+      xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4) {
+          var jsonResponse = JSON.parse(xhr.responseText);
+          updateResults(jsonResponse);
+        }
       }
-    }
-    numOfVisibleItems += 1;
-  }
-};
+      xhr.open("GET", apiUrl + '?term=' + query, true);
+      xhr.send();
+    };
 
-if (navLinksContainer.length > 0) {
-  var menuLinksContainer  = addMenuButton();
-  for (var i = 0; i < navLinksListItems.length; i++) {
-    var width = navLinksListItems[i].offsetWidth;
-    totalSpace += width;
-    breakWidths.push(totalSpace);
-  }
-  checkSpaceForPriorityLinks();
-}
-
-$(window).resize(function() {
-  if (navLinksContainer.length > 0)
-    checkSpaceForPriorityLinks();
-});
-
-var dasJs = dasJs || {};
-
-dasJs.userNavigation = {
-  elems: {
-    settingsMenu: $('#das-user-navigation > ul')
-  },
-  init: function () {
-    this.setupMenus(this.elems.settingsMenu);
-    this.setupEvents(this.elems.settingsMenu);
-  },
-  setupMenus: function (menu) {
-    menu.find('ul').attr("aria-expanded", "false");
-  },
-  setupEvents: function (menu) {
-    var that = this;
-    var subMenuLi = menu.find('li.das-user-navigation__list-item--has-sub-menu');
-    subMenuLi.find('> a').on('click', function (e) {
-      var $that = $(this);
-      that.toggleMenu($that, $that.next('ul'));
-      e.stopPropagation();
-      e.preventDefault();
+    accessibleAutocomplete({
+      element: container,
+      id: input.id,
+      name: input.name,
+      defaultValue: input.value,
+      displayMenu: 'overlay',
+      showNoOptionsFound: false,
+      minLength: 2,
+      source: getSuggestions,
+      placeholder: "",
+      confirmOnBlur: false,
+      autoselect: true
     });
-  },
-  toggleMenu: function (link, subMenu) {
-    var $li = link.parent();
-    if ($li.hasClass("das-user-navigation__sub-menu--open")) {
-      $li.removeClass("das-user-navigation__sub-menu--open");
-      subMenu.addClass("js-hidden").attr("aria-expanded", "false");
-    } else {
-      this.closeAllOpenMenus();
-      $li.addClass("das-user-navigation__sub-menu--open");
-      subMenu.removeClass("js-hidden").attr("aria-expanded", "true");
+  }
+
+  var autocompleteInputs = document.querySelectorAll(".autocomplete__input");
+  if (autocompleteInputs.length > 0) {
+    for (i = 0; i < autocompleteInputs.length; i++) {
+      var autocompleteInput = autocompleteInputs[i];
+      autocompleteInput.setAttribute("autocomplete", "new-password");
     }
-  },
-  closeAllOpenMenus: function () {
-    $('li.das-user-navigation__list-item--has-sub-menu').each(function () {
-      var listItem = $(this);
-      var subMenu = $(this).children('ul');
-      var openClass = 'das-user-navigation__sub-menu--open';
-      if (listItem.hasClass(openClass)) {
-        listItem.removeClass(openClass);
-        subMenu.addClass("js-hidden").attr("aria-expanded", "false");
-      }
-    });
   }
 }
 
-$(document).click(function() {
-  dasJs.userNavigation.closeAllOpenMenus();
-});
+
 
 /* -----------------------
 Character count behaviour
@@ -268,9 +209,7 @@ function setEditorMaxLength(element, tinyMceEditor) {
 }
 
 $(function () {
-    if ($('#das-user-navigation')) {
-        dasJs.userNavigation.init();
-    }
+
     // Dirty forms handling
     $('form').areYouSure();
     //handle anchor clicks to account for floating menu
