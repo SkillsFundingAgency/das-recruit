@@ -1,3 +1,5 @@
+/* Dashboard */
+
 .app-card {
     border: 1px solid #bfc1c3;
     height: 100%;
@@ -51,4 +53,46 @@
         display: flex;
         margin-bottom: 30px;
     }
+}
+
+
+/* Status Tags */
+
+.app-tag {
+    font-size: inherit;
+}
+
+.app-tag--draft {
+    color: #383f43;
+    background: #eeefef;
+}
+
+.app-tag--submitted {
+    color: #6e3619;
+    background: #fcd6c3;
+}
+
+.app-tag--referred {
+    color: #942514;
+    background: #f6d7d2;
+}
+
+.app-tag--approved {
+    color: #005a30;
+    background: #cce2d8;
+}
+
+.app-tag--live {
+    color: #005a30;
+    background: #cce2d8;
+}
+
+.app-tag--closed {
+    color: #383f43;
+    background: #eeefef;
+}
+
+.app-tag--transferred {
+    color: #144e81;
+    background: #d2e2f1;
 }

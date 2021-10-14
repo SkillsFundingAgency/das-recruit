@@ -1,14 +1,15 @@
 // Location Autocomplete
 
 var vacancySearchInputs = document.querySelectorAll(".app-vacancy-autocomplete");
-var apiUrl = 'search-suggestions/';
-var i;
 
 if (vacancySearchInputs.length > 0) {
+
+  var i;
 
   for (i = 0; i < vacancySearchInputs.length; i++) {
 
     var input = vacancySearchInputs[i]
+    var apiUrl = input.dataset.apiurl
     var container = document.createElement('div');
 
     container.className = "das-autocomplete-wrap"
