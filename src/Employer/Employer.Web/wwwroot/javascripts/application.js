@@ -37,7 +37,7 @@ if (vacancySearchInputs.length > 0) {
       showNoOptionsFound: false,
       minLength: 2,
       source: getSuggestions,
-      placeholder: "",
+      placeholder: input.placeholder,
       confirmOnBlur: false,
       autoselect: true
     });

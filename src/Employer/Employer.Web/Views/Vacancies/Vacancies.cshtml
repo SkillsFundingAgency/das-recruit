@@ -83,7 +83,7 @@
                     Search adverts
                 </label>
                 <div class="das-search-form__group">
-                    <input id="search-input" name="searchTerm" title="Search" placeholder="Search by advert title, reference number or employer" class="govuk-input das-search-form__input app-vacancy-autocomplete" type="text" maxlength="200" data-apiurl="@vacanciesSearchSuggestionsEndpointUrl">
+                    <input id="search-input" asp-for="SearchTerm" title="Search" placeholder="Search by advert title, reference number or employer" class="govuk-input das-search-form__input app-vacancy-autocomplete" type="text" maxlength="200" data-apiurl="@vacanciesSearchSuggestionsEndpointUrl">
                     <div class="das-search-form__button-wrap">
                         <button class="govuk-button das-search-form__button" type="submit">
                             Search
@@ -155,3 +155,20 @@
 </div>
 
 
+
+@section FooterJS
+    {
+    <script nws-csp-add-nonce="true">
+        var filterId = "#@Html.IdFor(m => m.Filter)";
+        $(function() {
+            $("#search-submit-button").removeClass('js-hidden');
+            $("#filter-submit").addClass('js-hidden');
+            $(filterId).on("change",
+                function() {
+                var $filterForm = $(this).parents("form");
+                    $filterForm.areYouSure({ 'silent': true });
+                    $filterForm.submit();
+            });
+        });
+    </script>
+}
