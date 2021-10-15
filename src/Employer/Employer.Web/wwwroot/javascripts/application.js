@@ -220,7 +220,9 @@ $(function () {
 
     // Data Layer Pushes
 
-    var pageTitle = document.querySelector('h1.govuk-heading-xl').innerText;
+    var pageHeading = document.querySelector('h1.govuk-heading-xl') || document.querySelector('h1.govuk-heading-l');
+    var pageTitle = pageHeading.innerText
+
     // Form validation - dataLayer pushes
     var errorSummary = document.querySelector('.govuk-error-summary');
     if (errorSummary !== null) {
