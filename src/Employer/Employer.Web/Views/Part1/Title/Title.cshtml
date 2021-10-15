@@ -18,30 +18,31 @@
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         <form asp-route="@Model.FormPostRouteName" asp-route-wizard="@Model.PageInfo.IsWizard" novalidate>
-            <div esfa-validation-marker-for="Title" class="govuk-form-group">
-                <p asp-hide="Model.ReferredFromSavedFavourites" class="govuk-body">
-                    To make sure your advert appears in search results, use a title that relates to the apprenticeship training.
-                </p>
-                <p asp-show="Model.ReferredFromSavedFavourites" class="govuk-body">
-                    To make sure your advert appears in search results, use a title that relates to the <span class="govuk-!-font-weight-bold">@Model.TrainingTitle</span>.
-                </p>
-                <span class="govuk-hint">You must include the word ‘apprentice’ or ‘apprenticeship’.</span>
-                <span esfa-validation-message-for="Title" class="govuk-error-message"></span>
-                <input asp-for="Title" class="govuk-input character-count" type="text" data-val-length-max="100" />
-                <div>
-                    <span class="govuk-body maxchar-count">100</span>
-                    <span class="govuk-body maxchar-text"> characters remaining</span>
+            <div class="govuk-character-count" data-module="govuk-character-count" data-maxlength="100">
+                <div esfa-validation-marker-for="Title" class="govuk-form-group">
+                    <p asp-hide="Model.ReferredFromSavedFavourites" class="govuk-body">
+                        To make sure your advert appears in search results, use a title that relates to the apprenticeship training.
+                    </p>
+                    <p asp-show="Model.ReferredFromSavedFavourites" class="govuk-body">
+                        To make sure your advert appears in search results, use a title that relates to the <span class="govuk-!-font-weight-bold">@Model.TrainingTitle</span>.
+                    </p>
+                    <span class="govuk-hint">You must include the word ‘apprentice’ or ‘apprenticeship’.</span>
+                    <span esfa-validation-message-for="Title" class="govuk-error-message"></span>
+                    <input asp-for="Title" class="govuk-input govuk-js-character-count govuk-!-margin-bottom-1" type="text" />
+                    <div id="Title-info" class="govuk-hint govuk-character-count__message" aria-live="polite">
+                        You can enter up to 100 characters
+                    </div>
                 </div>
             </div>
-            <button type="submit" class="govuk-button save-button">@Model.PageInfo.SubmitButtonText</button>
-            <div class="govuk-body">
+            <div class="govuk-button-group">
+                <button type="submit" class="govuk-button save-button">@Model.PageInfo.SubmitButtonText</button>
                 <span asp-hide="Model.ReferredFromSavedFavourites">
-                    <a asp-show="@Model.PageInfo.IsWizard" href="@Model.CancelLinkRoute" class="govuk-link">Cancel</a>
-                    <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.Vacancy_Preview_Get" asp-fragment="@Anchors.TitleSection" class="govuk-link">Cancel</a>
+                    <a asp-show="@Model.PageInfo.IsWizard" href="@Model.CancelLinkRoute" class="govuk-link govuk-link--no-visited-state">Cancel</a>
+                    <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.Vacancy_Preview_Get" asp-fragment="@Anchors.TitleSection" class="govuk-link govuk-link--no-visited-state">Cancel</a>
                 </span>
                 <span asp-show="Model.ReferredFromSavedFavourites">
-                    <a asp-show="@Model.PageInfo.IsWizard" href="@Model.CancelLinkRoute" class="govuk-link" esfa-automation="cancel-link">Cancel</a>
-                    <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.Vacancies_Get" class="govuk-link">Cancel</a>
+                    <a asp-show="@Model.PageInfo.IsWizard" href="@Model.CancelLinkRoute" class="govuk-link govuk-link--no-visited-state" esfa-automation="cancel-link">Cancel</a>
+                    <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.Vacancies_Get" class="govuk-link govuk-link--no-visited-state">Cancel</a>
                 </span>
             </div>
         </form>
