@@ -233,8 +233,6 @@ $(function () {
     $('form').areYouSure();
     //handle anchor clicks to account for floating menu
     handleAnchorClicks();
-    window.GOVUKFrontend.initAll()
-
 
     // Data Layer Pushes
 
