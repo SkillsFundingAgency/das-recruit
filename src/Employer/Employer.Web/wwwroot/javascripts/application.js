@@ -1,12 +1,40 @@
+// Select Field Autocomplete 
+
+var selectFields = document.querySelectorAll(".app-autocomplete");
+if (selectFields.length > 0) {
+    for (var s = 0; s < selectFields.length; s++) {
+        accessibleAutocomplete.enhanceSelectElement({
+            selectElement: selectFields[s],
+            minLength: 2,
+            autoselect: true,
+            defaultValue: '',
+            displayMenu: 'overlay',
+            placeholder: '',
+            onConfirm: function (opt) {
+                var txtInput = document.querySelector('#' + this.id);
+                var searchString = opt || txtInput.value;
+                var requestedOption = [].filter.call(this.selectElement.options,
+                function (option) {
+                    return (option.textContent || option.innerText) === searchString
+                }
+                )[0];
+                if (requestedOption) {
+                    requestedOption.selected = true;
+                } else {
+                    this.selectElement.selectedIndex = 0;
+                }
+            }
+        });
+    }
+}
+
 // Location Autocomplete
 
 var vacancySearchInputs = document.querySelectorAll(".app-vacancy-autocomplete");
 
 if (vacancySearchInputs.length > 0) {
 
-  var i;
-
-  for (i = 0; i < vacancySearchInputs.length; i++) {
+  for (var i = 0; i < vacancySearchInputs.length; i++) {
 
     var input = vacancySearchInputs[i]
     var apiUrl = input.dataset.apiurl
