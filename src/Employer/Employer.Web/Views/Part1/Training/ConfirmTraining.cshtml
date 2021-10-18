@@ -4,13 +4,17 @@
     ViewBag.Vpv = "/recruitment/employer/page-part1-confirm-training";
     ViewBag.Title = "Confirm apprenticeship training";
     ViewBag.ZenDeskLabel = "recruit-confirm-apprenticeship-training";
+
+}
+
+@section BackLink {
+    <a asp-route="@RouteNames.Training_Get" asp-route-programmeid="@Model.ProgrammeId" asp-route-wizard="@Model.PageInfo.IsWizard" class="govuk-back-link">Back</a>
 }
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-        <a asp-route="@RouteNames.Training_Get" asp-route-programmeid="@Model.ProgrammeId" asp-route-wizard="@Model.PageInfo.IsWizard" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
         <h1 class="govuk-heading-xl">Confirm apprenticeship training</h1>
-        <div class="verification-summary">
+        <div class="das-highlight">
             <h2 class="govuk-heading-m">
                 @Model.TrainingTitle
                 <span class="govuk-caption-m">
@@ -38,13 +42,13 @@
             </p>
         </div>
         <form asp-route="@RouteNames.Training_Confirm_Post" asp-route-wizard="@Model.PageInfo.IsWizard" novalidate>
-            <div class="govuk-form-group">
+            <div class="govuk-button-group">
                 <input asp-for="ProgrammeId" type="hidden" />
                 <input asp-show="@Model.PageInfo.IsWizard" type="submit" value="Confirm and continue" esfa-automation="btn-continue" class="govuk-button" />
                 <input asp-show="@Model.PageInfo.IsNotWizard" type="submit" value="Confirm and preview" esfa-automation="btn-continue" class="govuk-button" />
                 <div class="govuk-body">
-                    <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Vacancies_Get" class="govuk-link" esfa-automation="cancel-link">Cancel</a>
-                    <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.Vacancy_Preview_Get" asp-fragment="@Anchors.TrainingProviderSection" class="govuk-link" esfa-automation="cancel-link">Cancel</a>
+                    <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Vacancies_Get" class="govuk-link govuk-link--no-visited-state" esfa-automation="cancel-link">Cancel</a>
+                    <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.Vacancy_Preview_Get" asp-fragment="@Anchors.TrainingProviderSection" class="govuk-link govuk-link--no-visited-state" esfa-automation="cancel-link">Cancel</a>
                 </div>
             </div>
         </form>
