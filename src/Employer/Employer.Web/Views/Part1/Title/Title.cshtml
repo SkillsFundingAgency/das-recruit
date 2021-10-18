@@ -11,7 +11,11 @@
         <div class="govuk-grid-column-two-thirds">
             <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames}' />
             <partial name="@PartialNames.ReviewSummary" for="Review" />                       
-            <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">What do you want to call this advert?</h1>
+            <h1 class="govuk-label-wrapper govuk-!-margin-bottom-6">
+                <label class="govuk-label govuk-label--xl" asp-for="Title">
+                    What do you want to call this advert?
+                </label>
+            </h1>
         </div>       
     </div>
 
