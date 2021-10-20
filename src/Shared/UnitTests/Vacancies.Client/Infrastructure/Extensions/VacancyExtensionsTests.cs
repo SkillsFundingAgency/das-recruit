@@ -154,6 +154,9 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
             p.Wage.WageType.Should().Be(v.Wage.WageType.ToString());
             p.Wage.WeeklyHours.Should().Be(v.Wage.WeeklyHours);
             p.Wage.WorkingWeekDescription.Should().Be(v.Wage.WorkingWeekDescription);
+
+            p.AccountPublicHashedId.Should().Be(v.EmployerAccountId);
+            p.AccountLegalEntityPublicHashedId.Should().Be(v.AccountLegalEntityPublicHashedId);
         }
     }
 }
