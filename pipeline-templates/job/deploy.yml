@@ -4,6 +4,8 @@ parameters:
 
 jobs:
 - deployment: DeployApps
+  workspace:
+    clean: all
   pool:
     name: DAS - Continuous Deployment
   environment: ${{ parameters.Environment }}
