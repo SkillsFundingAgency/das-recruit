@@ -7,7 +7,7 @@ jobs:
   workspace:
     clean: all
   pool:
-    name: DAS - Continuous Deployment
+    name: DAS - Continuous Deployment Agents
   environment: ${{ parameters.Environment }}
   strategy:
     runOnce:
