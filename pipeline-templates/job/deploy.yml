@@ -26,17 +26,17 @@ jobs:
               LoggingRedisConnectionString: $(LoggingRedisConnectionString)
               ConfigurationStorageConnectionString: $(ConfigurationStorageConnectionString)
 
-        - task: PowerShell@1
+        - task: PowerShell@2
           displayName: 'Seed Recruit Database'
           inputs:
-            scriptName: $(Pipeline.Workspace)/Recruit/Console.RecruitSeedDataWriter/SeedScript.ps1
+            filePath: $(Pipeline.Workspace)/Recruit/Console.RecruitSeedDataWriter/SeedScript.ps1
             arguments: -dbConnectionString "$(RecruitCosmosConnectionString)"
 
         # Requires dotnet and mongo CLIs
-        - task: PowerShell@1
+        - task: PowerShell@2
           displayName: 'Run Mongo API Script'
           inputs:
-            scriptName: $(Pipeline.Workspace)/Recruit/src/Data/Recruit.ChangeScripts/Invoke-CosmosDbScript.ps1
+            filePath: $(Pipeline.Workspace)/Recruit/src/Data/Recruit.ChangeScripts/Invoke-CosmosDbScript.ps1
             arguments: '-CosmosDb $(CosmosDbName).documents.azure.com:10255 -Username $(CosmosDbName) -Password $(CosmosDbPrimaryReadWriteKey) -MongoScript "$(Pipeline.Workspace)/Recruit/src/Data/Recruit.ChangeScripts/documentMigration.js"'
 
         - template: azure-pipelines-templates/deploy/step/generate-config.yml@das-platform-building-blocks
