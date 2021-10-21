@@ -17,6 +17,7 @@ using Esfa.Recruit.Provider.Web.Models;
 using Esfa.Recruit.Shared.Web.Models;
 using Address = Esfa.Recruit.Vacancies.Client.Domain.Entities.Address;
 using Esfa.Recruit.Vacancies.Client.Application.Services;
+using Esfa.Recruit.Shared.Web.ViewModels;
 
 namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
 {
@@ -26,14 +27,16 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
         private readonly IProviderVacancyClient _providerVacancyClient;
         private readonly IRecruitVacancyClient _recruitVacancyClient;
         private readonly IReviewSummaryService _reviewSummaryService;
+        private readonly IGetAddressesClient _getAddressesClient;
 
         public LocationOrchestrator(IProviderVacancyClient providerVacancyClient,
-            IRecruitVacancyClient recruitVacancyClient, ILogger<LocationOrchestrator> logger, IReviewSummaryService reviewSummaryService)
+            IRecruitVacancyClient recruitVacancyClient, ILogger<LocationOrchestrator> logger, IReviewSummaryService reviewSummaryService, IGetAddressesClient getAddressesClient)
             : base(logger)
         {
             _providerVacancyClient = providerVacancyClient;
             _recruitVacancyClient = recruitVacancyClient;
             _reviewSummaryService = reviewSummaryService;
+            _getAddressesClient = getAddressesClient;
         }
 
         public async Task<VacancyEmployerInfoModel> GetVacancyEmployerInfoModelAsync(VacancyRouteModel vrm)
@@ -64,8 +67,8 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
                 _providerVacancyClient, _recruitVacancyClient, vrm, RouteNames.Location_Get);
 
             var accountLegalEntityPublicHashedId = !string.IsNullOrEmpty(employerInfoModel?.AccountLegalEntityPublicHashedId)
-                ? employerInfoModel.AccountLegalEntityPublicHashedId : vacancy.AccountLegalEntityPublicHashedId; 
-            
+                ? employerInfoModel.AccountLegalEntityPublicHashedId : vacancy.AccountLegalEntityPublicHashedId;
+
             var vm = new LocationViewModel();
             vm.PageInfo = Utility.GetPartOnePageInfo(vacancy);
 
@@ -113,7 +116,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
 
             var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_providerVacancyClient,
                 _recruitVacancyClient, locationEditModel, RouteNames.Location_Post);
-            var accountLegalEntityPublicHashedId = !string.IsNullOrEmpty(employerInfoModel?.AccountLegalEntityPublicHashedId) 
+            var accountLegalEntityPublicHashedId = !string.IsNullOrEmpty(employerInfoModel?.AccountLegalEntityPublicHashedId)
                 ? employerInfoModel.AccountLegalEntityPublicHashedId : vacancy.AccountLegalEntityPublicHashedId;
 
             var employerVacancyInfoTask = _providerVacancyClient.GetProviderEmployerVacancyDataAsync(ukprn, vacancy.EmployerAccountId);
@@ -228,6 +231,11 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
                     await _recruitVacancyClient.UpdateDraftVacancyAsync(vacancy, user);
                     await UpdateEmployerProfileAsync(employerInfoModel, employerProfile, matchingAddress == null ? vacancy.EmployerLocation : null, user);
                 });
+        }
+
+        public async Task<GetAddressesListResponse> GetAddresses(string searchTerm)
+        {
+            return await _getAddressesClient.GetAddresses(searchTerm);
         }
 
         private Address GetMatchingAddress(string locationToMatch, IEnumerable<Address> allLocations)

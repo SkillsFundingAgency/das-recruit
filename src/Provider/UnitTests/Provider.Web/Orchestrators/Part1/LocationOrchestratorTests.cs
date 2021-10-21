@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Provider.UnitTests.Provider.Web.HardMocks;
 using Esfa.Recruit.Provider.Web.Models;
@@ -118,12 +119,28 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part1
             _fixture.VerifyProviderReviewFieldIndicators(FieldIdentifiers.EmployerName, shouldFlagIndicator);
         }
 
+        [Fact]
+        public async Task WhenGettingAddress_ForNewVaccancy()
+        {
+           var addresses =  await _fixture.GetAddresses();
+            _fixture.VerifyAddresses(addresses);
+        }
+
+
+        [Fact]
+        public async Task WhenGettingAddress_GetAdderssesClientIsCalled()
+        {
+            await _fixture.GetAddresses();
+            _fixture.VerifyAddressesClientCalled();
+        }
+
         public class LocationOrchestratorTestsFixture
         {
             private const VacancyRuleSet ValidationRules = VacancyRuleSet.EmployerAddress;
             public VacancyUser User { get; }
             public Vacancy Vacancy { get; }
             public EmployerInfo EmployerInfo { get; }
+            public GetAddressesListResponse AddressesListResponse { get; set; }
             public ProviderEditVacancyInfo ProviderEditVacancyInfo { get; set; }
             public EmployerProfile VacancyEmployerProfile { get;  }
             public EmployerProfile AlternateEmployerProfile { get;  }
@@ -133,12 +150,14 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part1
             {
                 MockClient = new Mock<IProviderVacancyClient>();
                 MockRecruitVacancyClient = new Mock<IRecruitVacancyClient>();
+                MockAddressesClient = new Mock<IGetAddressesClient>();
 
                 User = VacancyOrchestratorTestData.GetVacancyUser();
                 Vacancy = VacancyOrchestratorTestData.GetPart1CompleteVacancy();
                 VacancyEmployerProfile = VacancyOrchestratorTestData.GetEmployerProfile(Vacancy.AccountLegalEntityPublicHashedId);
                 AlternateEmployerProfile = VacancyOrchestratorTestData.GetEmployerProfile(VacancyOrchestratorTestData.AccountLegalEntityPublicHashedId456);
                 EmployerInfo = VacancyOrchestratorTestData.GetEmployerInfo();
+                AddressesListResponse = VacancyOrchestratorTestData.GetAddressesListResponse();
                 ProviderEditVacancyInfo = VacancyOrchestratorTestData.GetProviderEditVacancyInfo();
             }
 
@@ -203,6 +222,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part1
             {
                 MockClient.Setup(x => x.GetProviderEditVacancyInfoAsync(Vacancy.TrainingProvider.Ukprn.Value)).ReturnsAsync(ProviderEditVacancyInfo);
                 MockClient.Setup(x => x.GetProviderEmployerVacancyDataAsync(Vacancy.TrainingProvider.Ukprn.Value, Vacancy.EmployerAccountId)).ReturnsAsync(EmployerInfo);
+                MockAddressesClient.Setup(x => x.GetAddresses(It.IsAny<string>())).ReturnsAsync(AddressesListResponse);
                 
                 MockRecruitVacancyClient.Setup(x => x.GetVacancyAsync(Vacancy.Id)).ReturnsAsync(Vacancy);
                 MockRecruitVacancyClient.Setup(x => x.GetEmployerProfileAsync(Vacancy.EmployerAccountId, Vacancy.AccountLegalEntityPublicHashedId)).ReturnsAsync(VacancyEmployerProfile);
@@ -212,7 +232,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part1
                 MockRecruitVacancyClient.Setup(x => x.UpdateEmployerProfileAsync(It.IsAny<EmployerProfile>(), User));
 
                 Sut = new LocationOrchestrator(MockClient.Object, MockRecruitVacancyClient.Object, Mock.Of<ILogger<LocationOrchestrator>>(), 
-                    Mock.Of<IReviewSummaryService>());
+                    Mock.Of<IReviewSummaryService>(), MockAddressesClient.Object);
             }
 
             public async Task PostLocationEditModelAsync(LocationEditModel model, VacancyEmployerInfoModel vacancyEmployerInfoModel = null)
@@ -224,6 +244,11 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part1
                     });
             }
 
+            public async Task<GetAddressesListResponse> GetAddresses()
+            {
+                return await Sut.GetAddresses("NN1");
+            }
+
             public void VerifyProviderReviewFieldIndicators(string fieldIdentifier, bool value)
             {
                 Vacancy.ProviderReviewFieldIndicators
@@ -232,8 +257,20 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part1
                     .Match<ProviderReviewFieldIndicator>((x) => x.IsChangeRequested == value);
             }
 
+            internal void VerifyAddresses(GetAddressesListResponse addresses)
+            {
+                Assert.Equal(2, addresses.Addresses.Count());
+                Assert.Equal(AddressesListResponse, addresses);
+            }
+
+            internal void VerifyAddressesClientCalled()
+            {
+                MockAddressesClient.Verify(x => x.GetAddresses(It.IsAny<string>()), Times.Once);
+            }
+
             public Mock<IProviderVacancyClient> MockClient { get; set; }
             public Mock<IRecruitVacancyClient> MockRecruitVacancyClient { get; set; }
+            public Mock<IGetAddressesClient> MockAddressesClient { get; set; }
         }
     }
 }

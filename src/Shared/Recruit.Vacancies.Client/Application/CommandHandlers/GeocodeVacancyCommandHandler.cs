@@ -16,16 +16,16 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
     public class GeoVacancyCommandHandler: IRequestHandler<GeocodeVacancyCommand,Unit>
     {
         private readonly IVacancyRepository _repository;
-        private readonly IGeocodeServiceFactory _geocodeServiceFactory;
+        private readonly IOuterApiGeocodeService _geocodeService;
         private readonly ILogger<GeoVacancyCommandHandler> _logger;
 
         public GeoVacancyCommandHandler(
-            IVacancyRepository repository, 
-            IGeocodeServiceFactory geocodeServiceFactory,
+            IVacancyRepository repository,
+            IOuterApiGeocodeService geocodeServiceFactory,
             ILogger<GeoVacancyCommandHandler> logger)
         {
             _repository = repository;
-            _geocodeServiceFactory = geocodeServiceFactory;
+            _geocodeService = geocodeServiceFactory;
             _logger = logger;
         }
 
@@ -54,8 +54,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
         {            
             _logger.LogInformation("Attempting to geocode postcode:'{postcode}' for vacancyId:'{vacancyId}'", vacancy.EmployerLocation.Postcode, vacancy.Id);
 
-            var geocodeService = _geocodeServiceFactory.GetGeocodeService();
-            return geocodeService.Geocode(vacancy.EmployerLocation.Postcode);
+            return _geocodeService.Geocode(vacancy.EmployerLocation.Postcode);
         }
 
         private Task<Geocode> GeocodeOutcodeAsync(Vacancy vacancy)
@@ -64,8 +63,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 
             _logger.LogInformation("Attempting to geocode outcode:'{outcode}' for anonymous vacancyId:'{vacancyId}'", outcode, vacancy.Id);
 
-            var geocodeService = _geocodeServiceFactory.GetGeocodeOutcodeService();
-            return geocodeService.Geocode(outcode);
+            return _geocodeService.Geocode(outcode);
         }
 
         private async Task SetVacancyGeocode(Guid vacancyId, Geocode geocode)

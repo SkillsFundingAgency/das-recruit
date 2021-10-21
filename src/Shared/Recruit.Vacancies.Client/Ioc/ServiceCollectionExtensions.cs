@@ -148,7 +148,7 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
             // Infrastructure Services
             services.AddTransient<IEmployerAccountProvider, EmployerAccountProvider>();
             services.AddTransient<ISlackClient, SlackClient>();
-            services.AddTransient<IGeocodeServiceFactory, GeocodeServiceFactory>();
+            services.AddTransient<IOuterApiGeocodeService, OuterApiGeocodeService>();
             services.AddTransient<IGetVacancyTitlesProvider, VacancyApiTitlesProvider>();
             services.AddTransient<ITrainingProviderService, TrainingProviderService>();
             services.AddTransient<ITrainingProviderSummaryProvider, TrainingProviderSummaryProvider>();
@@ -277,7 +277,8 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
                 .AddTransient<IEmployerVacancyClient, VacancyClient>()
                 .AddTransient<IProviderVacancyClient, VacancyClient>()
                 .AddTransient<IQaVacancyClient, QaVacancyClient>()
-                .AddTransient<IJobsVacancyClient, VacancyClient>();
+                .AddTransient<IJobsVacancyClient, VacancyClient>()
+                .AddTransient<IGetAddressesClient, OuterApiGetAddressesClient>();
         }
 
 
