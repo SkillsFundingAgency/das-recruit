@@ -30,7 +30,7 @@ jobs:
           displayName: 'Install .NET Core sdk'
           inputs:
             packageType: sdk
-            version: 2.1.0
+            version: 2.1.x
             installationPath: $(Agent.ToolsDirectory)/dotnet
 
         - task: PowerShell@2
