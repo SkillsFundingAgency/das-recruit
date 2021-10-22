@@ -235,7 +235,8 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
 
         public async Task<GetAddressesListResponse> GetAddresses(string searchTerm)
         {
-            return await _getAddressesClient.GetAddresses(searchTerm);
+            var addresses = await _getAddressesClient.GetAddresses(searchTerm);
+            return addresses;
         }
 
         private Address GetMatchingAddress(string locationToMatch, IEnumerable<Address> allLocations)
