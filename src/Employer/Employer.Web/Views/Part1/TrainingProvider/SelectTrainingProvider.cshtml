@@ -42,20 +42,20 @@
                         <div class="govuk-!-margin-bottom-2">
                             <noscript>
                                 <div class="govuk-form-group" id="non-js-search">
-                                    <span class="govuk-hint">
+                                    <label class="govuk-label das-!-color-dark-grey" asp-for="Ukprn">
                                         Enter the training provider reference number (UKPRN).
                                         You will be able to get this from your training provider.
                                         The UKPRN must only be 8 numbers (For example, 12345678)
-                                    </span>
+                                    </label>
                                     <span esfa-validation-message-for="Ukprn" class="govuk-error-message"></span>
                                     <input asp-for="Ukprn" type="text" maxlength="8" class="govuk-input govuk-input--width-10" />
                                 </div>
                             </noscript>
-                            <div class="govuk-form-group js-hidden" id="js-search">
-                                <span class="govuk-hint">
+                            <div class="govuk-form-group das-js-show" id="js-search">
+                                <label class="govuk-label  das-!-color-dark-grey" asp-for="TrainingProviderSearch">
                                     Enter the training provider name or reference number (UKPRN).<br>
                                     UKPRN is 8 numbers. For example, 12345678.
-                                </span>
+                                </label>
                                 <span esfa-validation-message-for="TrainingProviderSearch" class="govuk-error-message"></span>
                                 <input asp-for="TrainingProviderSearch" type="text" class="govuk-input search-input" />
                             </div>
@@ -85,17 +85,17 @@
                     </div>
                 </div>
             </div>
-            <div class="govuk-form-group">
+            <div class="govuk-button-group">
                 <input type="hidden" name="@nameof(SelectTrainingProviderEditModel.SelectionType)" id="selection-type" value="@TrainingProviderSelectionType.Ukprn" />
                 <input type="submit" value="Save and continue" esfa-automation="btn-continue" class="govuk-button" />
                 <div class="govuk-body">
                     <span asp-show="@Model.ReferredFromSavedFavourites">
-                        <a href="@_externalLinks.Value.EmployerFavouritesUrl" class="govuk-link" esfa-automation="cancel-link">Cancel</a>
+                        <a href="@_externalLinks.Value.EmployerFavouritesUrl" class="govuk-link govuk-link--no-visited-state" esfa-automation="cancel-link">Cancel</a>
                         @*<a asp-show="@Model.PageInfo.IsNotWizard" href="@_externalLinksHelper.EmployerFavouritesAccounts" asp-fragment="@Anchors.TrainingProviderSection" class="govuk-link" esfa-automation="cancel-link">Cancel</a>*@
                     </span>
                     <span asp-hide="@Model.ReferredFromSavedFavourites">
-                        <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Vacancies_Get" class="govuk-link" esfa-automation="cancel-link">Cancel</a>
-                        <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.Vacancy_Preview_Get" asp-fragment="@Anchors.TrainingProviderSection" class="govuk-link" esfa-automation="cancel-link">Cancel</a>
+                        <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Vacancies_Get" class="govuk-link govuk-link--no-visited-state" esfa-automation="cancel-link">Cancel</a>
+                        <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.Vacancy_Preview_Get" asp-fragment="@Anchors.TrainingProviderSection" class="govuk-link govuk-link--no-visited-state" esfa-automation="cancel-link">Cancel</a>
                     </span>
                 </div>
             </div>
@@ -103,11 +103,6 @@
     </div>
 </div>
 
-
-@section HeadCSS
-    {
-    <link asp-append-version="true" rel="stylesheet" media="screen" href="/lib/accessible-autocomplete/style.css" />
-}
 @section FooterJS
     {
     <script asp-append-version="true" src="/lib/accessible-autocomplete/accessible-autocomplete.min.js"></script>
