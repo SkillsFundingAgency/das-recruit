@@ -5,6 +5,7 @@ namespace Esfa.Recruit.Provider.Web.Configuration
 {
     public class ProviderApprenticeshipsLinkHelper
     {
+        private const string ApprovalsSubdomainPrefix = "approvals";
         private readonly ExternalLinksConfiguration _externalLinks;
 
         public ProviderApprenticeshipsLinkHelper(IOptions<ExternalLinksConfiguration> externalLinks)
@@ -13,8 +14,8 @@ namespace Esfa.Recruit.Provider.Web.Configuration
         }
         public string AccountHome => $"{_externalLinks.ProviderApprenticeshipSiteUrl}{ProviderApprenticeshipsRoutes.ProviderApprenticeshipSiteAccountsHomeRoute}";
         public string Notifications => $"{_externalLinks.ProviderApprenticeshipSiteUrl}{ProviderApprenticeshipsRoutes.ProviderApprenticeshipSiteNotificationSettingsRoute}";
-        public string Apprentices => $"{_externalLinks.CommitmentsSiteUrl}{ProviderApprenticeshipsRoutes.ProviderApprenticeshipSiteManageApprenticesRoute}";
-        public string YourCohorts => $"{_externalLinks.CommitmentsSiteUrl}{ProviderApprenticeshipsRoutes.ProviderApprenticeshipSiteYourCohortsRoute}";
+        public string Apprentices => ApprovalsLink(ProviderApprenticeshipsRoutes.ProviderApprenticeshipSiteManageApprenticesRoute);
+        public string YourCohorts => ApprovalsLink(ProviderApprenticeshipsRoutes.ProviderApprenticeshipSiteYourCohortsRoute);
         public string ManageFunding => $"{_externalLinks.ReservationsSiteUrl}{ProviderApprenticeshipsRoutes.ProviderApprenticeshipSiteManageFundingRoute}";
         public string Agreements => $"{_externalLinks.ProviderApprenticeshipSiteUrl}{ProviderApprenticeshipsRoutes.ProviderApprenticeshipSiteOrganisationAgreementsRoute}";
         public string CookieDetails => $"{_externalLinks.ProviderApprenticeshipSiteUrl}{ProviderApprenticeshipsRoutes.ProviderApprenticeshipSiteCookieDetails}";
@@ -23,5 +24,16 @@ namespace Esfa.Recruit.Provider.Web.Configuration
         public string Feedback => $"{_externalLinks.ProviderApprenticeshipSiteFeedbackUrl}";
         public string Privacy => $"{_externalLinks.ProviderApprenticeshipSiteUrl}{ProviderApprenticeshipsRoutes.ProviderApprenticeshipSitePrivacy}";
         public string TermsAndConditions => $"{_externalLinks.ProviderApprenticeshipSiteUrl}{ProviderApprenticeshipsRoutes.ProviderApprenticeshipSiteTermsAndConditions}";
+
+
+        private string ApprovalsLink(string route) => ApplyPasSubdomain(ApprovalsSubdomainPrefix) + route;
+        private string ApplyPasSubdomain(string subdomain)
+        {
+            var returnUrl = _externalLinks.ProviderApprenticeshipSiteUrl.EndsWith("/")
+                ? _externalLinks.ProviderApprenticeshipSiteUrl
+                : _externalLinks.ProviderApprenticeshipSiteUrl + "/";
+
+            return returnUrl.Replace("https://", $"https://{subdomain}.");
+        }
     }
 }
