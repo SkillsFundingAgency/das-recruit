@@ -61,6 +61,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Extensions
             projectedVacancy.Wage = vacancy.Wage.ToProjection();
             projectedVacancy.EducationLevelNumber = programme.EducationLevelNumber;
 
+            projectedVacancy.AccountPublicHashedId = vacancy.EmployerAccountId;
+            projectedVacancy.AccountLegalEntityPublicHashedId = vacancy.AccountLegalEntityPublicHashedId;
+            
             return projectedVacancy;
         }
 
