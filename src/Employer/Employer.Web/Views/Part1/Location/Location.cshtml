@@ -1,7 +1,6 @@
 @using Esfa.Recruit.Employer.Web.ViewModels.Part1.Location;
 @using Esfa.Recruit.Shared.Web.Configuration
 @using Microsoft.Extensions.Options
-@inject IOptions<PostcodeAnywhereConfiguration> PcaConfig
 @{ 
     ViewBag.Vpv = "/recruitment/employer/page-part1-location";
     ViewBag.Title = "Where will the apprentice work?";
@@ -87,16 +86,6 @@
         </form>
     </div>
 </div>
-@section HeadJS
-    {
-    <script nws-csp-add-nonce="true">
-        window.EsfaRecruit.PcaConfig = {
-            key: '@PcaConfig.Value.Key',
-            findEndpoint: '@PcaConfig.Value.FindEndpoint',
-            retrieveEndpoint: '@PcaConfig.Value.RetrieveEndpoint'
-        };
-    </script>
-}
 @section FooterJS
     {
     <script src="/lib/jquery-ui/dist/jquery-ui.min.js"></script>

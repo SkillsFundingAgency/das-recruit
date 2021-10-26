@@ -89,7 +89,6 @@ namespace Esfa.Recruit.Employer.Web
                                     "*.google-analytics.com",
                                     "*.googleapis.com",
                                     "*.googletagmanager.com/",
-                                    "*.postcodeanywhere.co.uk/",
                                     "https://tagmanager.google.com",
                                     "https://www.tagmanager.google.com/",
                                     "https://*.zdassets.com",

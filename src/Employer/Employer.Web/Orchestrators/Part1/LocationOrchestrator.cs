@@ -26,16 +26,19 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
         private readonly IEmployerVacancyClient _employerVacancyClient;
         private readonly IRecruitVacancyClient _recruitVacancyClient;
         private readonly IReviewSummaryService _reviewSummaryService;
+        private readonly IGetAddressesClient _getAddressesClient;
 
         public LocationOrchestrator(
             IEmployerVacancyClient employerVacancyClient,
             IRecruitVacancyClient recruitVacancyClient,
             ILogger<LocationOrchestrator> logger,
-            IReviewSummaryService reviewSummaryService) : base(logger)
+            IReviewSummaryService reviewSummaryService,
+            IGetAddressesClient getAddressesClient) : base(logger)
         {
             _employerVacancyClient = employerVacancyClient;
             _recruitVacancyClient = recruitVacancyClient;
             _reviewSummaryService = reviewSummaryService;
+            _getAddressesClient = getAddressesClient;
         }
 
         public async Task<VacancyEmployerInfoModel> GetVacancyEmployerInfoModelAsync(VacancyRouteModel vrm)
@@ -104,6 +107,12 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                     ReviewFieldMappingLookups.GetLocationFieldIndicators());
             }
             return vm;
+        }
+
+        public async Task<GetAddressesListResponse> GetAddresses(string searchTerm)
+        {
+            var addresses = await _getAddressesClient.GetAddresses(searchTerm);
+            return addresses;
         }
 
         public async Task<OrchestratorResponse> PostLocationEditModelAsync(

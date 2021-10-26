@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Provider.UnitTests.Provider.Web.HardMocks;
 using Esfa.Recruit.Provider.Web.Models;
@@ -122,7 +121,8 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part1
         [Fact]
         public async Task WhenGettingAddress_ForNewVaccancy()
         {
-           var addresses =  await _fixture.GetAddresses();
+            _fixture.Setup();
+            var addresses = await _fixture.GetAddresses();
             _fixture.VerifyAddresses(addresses);
         }
 
@@ -130,6 +130,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part1
         [Fact]
         public async Task WhenGettingAddress_GetAdderssesClientIsCalled()
         {
+            _fixture.Setup();
             await _fixture.GetAddresses();
             _fixture.VerifyAddressesClientCalled();
         }

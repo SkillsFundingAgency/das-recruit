@@ -1,7 +1,7 @@
 @using Esfa.Recruit.Provider.Web.ViewModels.Part1.Location;
 @using Esfa.Recruit.Shared.Web.Configuration
 @using Microsoft.Extensions.Options
-@inject IOptions<PostcodeAnywhereConfiguration> PcaConfig
+
 @model LocationViewModel;
 
 @{ ViewBag.GaData.Vpv = "/recruitment/provider/page-create-vacancy-location"; }
@@ -49,7 +49,7 @@
                                     <div esfa-validation-marker-for="AddressLine1" class="govuk-form-group-compound address-item govuk-form-group">
                                         <label asp-for="AddressLine1" class="govuk-visually-hidden">Address line 1</label>
                                         <span esfa-validation-message-for="AddressLine1" class="govuk-error-message"></span>
-                                        <input asp-for="AddressLine1" class="govuk-input" maxlength="100" />
+                                        <input asp-for="AddressLine1" class="govuk-input postcode-lookup" maxlength="100" />
                                     </div>
                                     <div esfa-validation-marker-for="AddressLine2" class="govuk-form-group-compound address-item govuk-form-group">
                                         <label asp-for="AddressLine2" class="govuk-visually-hidden">Address line 2</label>
@@ -82,16 +82,7 @@
         </form>
     </div>
 </div>
-@section HeadJS
-    {
-    <script nws-csp-add-nonce="true">
-        window.EsfaRecruit.PcaConfig = {
-            key: '@PcaConfig.Value.Key',
-            findEndpoint: '@PcaConfig.Value.FindEndpoint',
-            retrieveEndpoint: '@PcaConfig.Value.RetrieveEndpoint'
-        };
-    </script>
-}
+
 @section FooterJS
     {
     <script src="/lib/jquery-ui/dist/jquery-ui.min.js"></script>

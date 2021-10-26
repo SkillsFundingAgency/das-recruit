@@ -101,7 +101,6 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
         private static void RegisterServiceDeps(IServiceCollection services, IConfiguration configuration)
         {
             // Configuration
-            services.Configure<GeocodeConfiguration>(configuration.GetSection("Geocode"));
             services.Configure<FaaConfiguration>(configuration.GetSection("FaaConfiguration"));
             services.Configure<VacancyApiConfiguration>(configuration.GetSection("VacancyApiConfiguration"));
             services.Configure<SlackConfiguration>(configuration.GetSection("Slack"));

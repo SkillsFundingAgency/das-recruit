@@ -88,7 +88,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
         }
 
         [HttpGet("location/GetAddresses")]
-        public async Task<IActionResult> GetAddresses(VacancyRouteModel vrm, [FromQuery] bool wizard, [FromQuery] string searchTerm)
+        public async Task<IActionResult> GetAddresses([FromQuery] string searchTerm)
         {
             var result = await _orchestrator.GetAddresses(searchTerm);
             return Ok(result);
