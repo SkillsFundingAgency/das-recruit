@@ -22,17 +22,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         {
             try
             {
-                return await Task.FromResult(new GetAddressesListResponse
-                {
-                    Addresses = new List<GetAddressesListItem> {
-                        new GetAddressesListItem { County = "GB", House = "bb", Latitude = 123, Locality = "11", Longitude = 321, Match = 1, Postcode = "mk42 0uu", PostTown = "Bedford", Street = "Halifax Road", Uprn = "222" },
-                        new GetAddressesListItem { County = "GB", House = "12", Latitude = 123, Locality = "11", Longitude = 321, Match = 1, Postcode = "mk42 0uu", PostTown = "Bedford", Street = "Halifax Road", Uprn = "222" },
-                        new GetAddressesListItem { County = "GB", House = "13", Latitude = 123, Locality = "11", Longitude = 321, Match = 1, Postcode = "mk42 0uu", PostTown = "Bedford", Street = "Halifax Road", Uprn = "222" },
-                         new GetAddressesListItem { County = "GB", House = "45", Latitude = 123, Locality = "11", Longitude = 321, Match = 1, Postcode = "mk42 0uu", PostTown = "Bedford", Street = "Halifax Road", Uprn = "222" }
-
-                    }
-                });
-               // return await _outerApiClient.Get<GetAddressesListResponse>(new GetAddressesRequest(searchTerm));
+               return await _outerApiClient.Get<GetAddressesListResponse>(new GetAddressesRequest(searchTerm));
             }
             catch(Exception e)
             {
