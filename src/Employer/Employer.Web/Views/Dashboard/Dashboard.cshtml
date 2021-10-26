@@ -53,7 +53,7 @@
                 <div class="app-card__content">
                     <h3 class="govuk-heading-m app-card__heading">
                         <span class="app-card__stat">@Model.VacancyCountDraft</span>
-                        <a asp-route="@RouteNames.Vacancies_Get" asp-route-filter="@FilteringOptions.Draft" class="govuk-link">
+                        <a asp-route="@RouteNames.Vacancies_Get" asp-route-filter="@FilteringOptions.Draft" class="govuk-link govuk-link--no-visited-state">
                             @FilteringOptions.Draft @Model.VacancyTextDraft
                         </a>
                     </h3>
@@ -66,7 +66,7 @@
                 <div class="app-card__content">
                     <h3 class="govuk-heading-m app-card__heading">
                         <span class="app-card__stat">@Model.VacancyCountReview</span>
-                        <a asp-show="@Model.HasEmployerReviewPermission" asp-route="@RouteNames.Vacancies_Get" asp-route-filter="@FilteringOptions.Review" class="govuk-link">
+                        <a asp-show="@Model.HasEmployerReviewPermission" asp-route="@RouteNames.Vacancies_Get" asp-route-filter="@FilteringOptions.Review" class="govuk-link govuk-link--no-visited-state">
                             @FilteringOptions.Review @Model.VacancyTextReview
                         </a>
                         <span asp-hide="@Model.HasEmployerReviewPermission">@FilteringOptions.Review @Model.VacancyTextReview</span>
@@ -84,7 +84,7 @@
                 <div class="app-card__content">
                     <h3 class="govuk-heading-m app-card__heading">
                         <span class="app-card__stat">@Model.VacancyCountSubmitted</span>
-                        <a asp-route="@RouteNames.Vacancies_Get" asp-route-filter="@FilteringOptions.Submitted" class="govuk-link">
+                        <a asp-route="@RouteNames.Vacancies_Get" asp-route-filter="@FilteringOptions.Submitted" class="govuk-link govuk-link--no-visited-state">
                             @FilteringOptions.Submitted.GetDisplayName(UserType.Employer)
                         </a>
                     </h3>
@@ -99,7 +99,7 @@
                 <div class="app-card__content">
                     <h3 class="govuk-heading-m app-card__heading">
                         <span class="app-card__stat">@Model.VacancyCountReferred</span>
-                        <a asp-route="@RouteNames.Vacancies_Get" asp-route-filter="@FilteringOptions.Referred" class="govuk-link">
+                        <a asp-route="@RouteNames.Vacancies_Get" asp-route-filter="@FilteringOptions.Referred" class="govuk-link govuk-link--no-visited-state">
                             @FilteringOptions.Referred.GetDisplayName() @Model.VacancyTextReferred
                         </a>
                     </h3>
@@ -112,7 +112,7 @@
                 <div class="app-card__content">
                     <h3 class="govuk-heading-m app-card__heading">
                         <span class="app-card__stat">@Model.VacancyCountLive</span>
-                        <a asp-route="@RouteNames.Vacancies_Get" asp-route-filter="@FilteringOptions.Live" class="govuk-link">
+                        <a asp-route="@RouteNames.Vacancies_Get" asp-route-filter="@FilteringOptions.Live" class="govuk-link govuk-link--no-visited-state">
                             @FilteringOptions.Live @Model.VacancyTextLive
                         </a>
                     </h3>
@@ -136,7 +136,7 @@
                 <div class="app-card__content">
                     <h3 class="govuk-heading-m app-card__heading">
                         <span class="app-card__stat">@Model.NoOfNewApplications</span>
-                        <a asp-route="@RouteNames.Vacancies_Get" asp-route-filter="@FilteringOptions.NewApplications" class="govuk-link">
+                        <a asp-route="@RouteNames.Vacancies_Get" asp-route-filter="@FilteringOptions.NewApplications" class="govuk-link govuk-link--no-visited-state">
                             New @Model.ApplicationTextLive
                         </a>
                     </h3>
@@ -158,7 +158,7 @@
                 <div class="app-card__content">
                     <h3 class="govuk-heading-m app-card__heading">
                         <span class="app-card__stat">@Model.VacancyCountClosed</span>
-                        <a asp-route="@RouteNames.Vacancies_Get" asp-route-filter="@FilteringOptions.Closed" class="govuk-link">
+                        <a asp-route="@RouteNames.Vacancies_Get" asp-route-filter="@FilteringOptions.Closed" class="govuk-link govuk-link--no-visited-state">
                             @FilteringOptions.Closed @Model.VacancyTextClosed
                         </a>
                     </h3>

@@ -95,11 +95,11 @@
 </form>
 
 <h3 class="govuk-heading-m">
-    @Model.ResultsHeading <a asp-show="@Model.IsFiltered" asp-route="@RouteNames.Vacancies_Get" asp-route-filter="All" class="govuk-!-font-weight-regular govuk-component__link govuk-!-font-size-19">Show all adverts</a>
+    @Model.ResultsHeading <a asp-show="@Model.IsFiltered" asp-route="@RouteNames.Vacancies_Get" asp-route-filter="All" class="govuk-!-font-weight-regular govuk-!-font-size-19 govuk-link govuk-link--no-visited-state">Show all adverts</a>
 </h3>
+
 <p asp-hide="@Model.ShowResultsTable" class="govuk-body">No adverts match the criteria</p>
   
-
 <div asp-show="@Model.ShowResultsTable">
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-full">
