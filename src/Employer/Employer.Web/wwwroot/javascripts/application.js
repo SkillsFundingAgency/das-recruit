@@ -1,3 +1,32 @@
+// Training Provider Autocomplete
+
+var providerSearchInputs = document.querySelectorAll(".app-provider-autocomplete");
+
+if (providerSearchInputs.length > 0) {
+  for (var i = 0; i < providerSearchInputs.length; i++) {
+    var input = providerSearchInputs[i]
+    var container = document.createElement('div');
+
+    container.className = "das-autocomplete-wrap"
+    input.parentNode.replaceChild(container, input);
+
+    accessibleAutocomplete({
+      element: container,
+      id: input.id,
+      name: input.name,
+      defaultValue: input.value,
+      displayMenu: 'overlay',
+      showNoOptionsFound: false,
+      minLength: 2,
+      source: providerArray,
+      placeholder: input.placeholder,
+      confirmOnBlur: false,
+      autoselect: true
+    });
+  }
+}
+
+
 // Select Field Autocomplete 
 
 var selectFields = document.querySelectorAll(".app-autocomplete");

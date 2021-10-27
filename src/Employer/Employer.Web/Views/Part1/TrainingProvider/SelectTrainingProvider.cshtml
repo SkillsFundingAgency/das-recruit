@@ -10,9 +10,14 @@
     ViewBag.Title = "Have you found a training provider?";
     ViewBag.ZenDeskLabel = "recruit-have-you-found-a-training-provider";
 }
+
+@section BackLink
+{
+    <a asp-show="@Model.PageInfo.IsWizard" asp-route="@Model.BackLinkRoute" esfa-automation="link-back" class="govuk-back-link">Back</a>
+}
+
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-        <a asp-show="@Model.PageInfo.IsWizard" asp-route="@Model.BackLinkRoute" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
         <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState }' />
         <partial name="@PartialNames.ReviewSummary" for="Review" />
         <h1 class="govuk-heading-xl">
@@ -57,7 +62,7 @@
                                     UKPRN is 8 numbers. For example, 12345678.
                                 </label>
                                 <span esfa-validation-message-for="TrainingProviderSearch" class="govuk-error-message"></span>
-                                <input asp-for="TrainingProviderSearch" type="text" class="govuk-input search-input" />
+                                <input asp-for="TrainingProviderSearch" type="text" class="govuk-input app-provider-autocomplete" />
                             </div>
                         </div>
                         <p class="govuk-body">
@@ -103,18 +108,10 @@
     </div>
 </div>
 
-@section FooterJS
-    {
-    <script asp-append-version="true" src="/lib/accessible-autocomplete/accessible-autocomplete.min.js"></script>
-    <script asp-append-version="true" src="/javascripts/esfa-training-provider-suggestions/searchSuggestionsService.js"></script>
+@section FooterPreJS
+{
     <script nws-csp-add-nonce="true">
-        $(function() {
-            $("#js-search").removeClass("js-hidden");
-            $("#selection-type").val("@TrainingProviderSelectionType.TrainingProviderSearch");
-
-            var providers = @(Html.Raw(JsonConvert.SerializeObject(Model.TrainingProviders)));
-
-            searchSuggestions.init($("#@Html.IdFor(m => m.TrainingProviderSearch)"), providers);
-        })
+        var providerArray = @(Html.Raw(JsonConvert.SerializeObject(Model.TrainingProviders)));
+        document.getElementById('selection-type').value = '@TrainingProviderSelectionType.TrainingProviderSearch'
     </script>
 }

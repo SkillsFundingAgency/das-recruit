@@ -84,6 +84,7 @@
         </main>
     </div>
     @Html.Partial("_Footer", Html.GetFooterViewModel())
+    @RenderSection("FooterPreJS", required: false)
     <script src="/libs/govuk-frontend/all.js"></script>
     <script src="/js/das-all.js"></script>
     <script src="/libs/accessible-autocomplete/accessible-autocomplete.min.js"></script>
