@@ -1,5 +1,5 @@
 {
-    const batchLimit = 100;
+    const batchLimit = 1000;
     var count = 0, limit = Number(db.users.count());
 
     // 2. Add VacancySentForReview preference to all Providers that don't have a userNotificationPreferences.

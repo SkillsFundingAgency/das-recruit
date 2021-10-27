@@ -1,5 +1,5 @@
 {
-    const batchLimit = 100;
+    const batchLimit = 1000;
     var count = 0, limit = Number(db.users.count());
 
     // 1. Add VacancySentForReview preference to all Employers that already have a userNotificationPreferences.
