@@ -16,7 +16,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Geocode.Request
         {
             get
             {
-                return $"locations/geocode/{_postCode}";
+                return $"locations/geocode?={_postCode}";
             }
         }
     }

@@ -15,7 +15,7 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
         {
             get
             {
-                return $"locations/{_query}";
+                return $"locations?={_query}";
             }
         }
     }
