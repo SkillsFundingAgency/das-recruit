@@ -9,20 +9,32 @@
 }
 
 @model LocationViewModel;
+
+@section BackLink
+{
+    <a asp-show="@Model.CanShowBackLink" asp-route="@RouteNames.EmployerName_Get" asp-route-wizard="@Model.PageInfo.IsWizard" esfa-automation="link-back" class="govuk-back-link">Back</a>
+}
+
+
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-        <a asp-show="@Model.CanShowBackLink" asp-route="@RouteNames.EmployerName_Get" asp-route-wizard="@Model.PageInfo.IsWizard" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
         <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }' />
         <partial name="@PartialNames.ReviewSummary" for="Review"/>
-        <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">Where will the apprentice work?</h1>
-        
-        <div asp-show="@Model.IsAnonymousVacancy" class="govuk-inset-text">
-            For anonymous adverts we will not show the address on the advert. We will only show the first half of the postcode.
-        </div>
+
 
         <form asp-route="@RouteNames.Location_Post" asp-route-wizard="@Model.PageInfo.IsWizard">
             <div class="govuk-form-group">
                 <fieldset class="govuk-fieldset">
+                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
+                        <h1 class="govuk-fieldset__heading">
+                            Where will the apprentice work?
+                        </h1>
+                    </legend>
+
+                    <div asp-show="@Model.IsAnonymousVacancy" class="govuk-inset-text">
+                        For anonymous adverts we will not show the address on the advert. We will only show the first half of the postcode.
+                    </div>
+
                     <div class="govuk-radios govuk-radios--conditional" data-module="radios">
                         <span esfa-validation-message-for="SelectedLocation" class="govuk-error-message"></span>
                         <div class="govuk-radios">
@@ -80,9 +92,9 @@
                     </div>
                 </fieldset>
             </div>
-            <button type="submit" class="govuk-button save-button" esfa-automation="continue-button">@Model.PageInfo.SubmitButtonText</button>
-            <div class="govuk-body">
-                <a asp-route="@RouteNames.Location_Cancel" asp-route-wizard="@Model.PageInfo.IsWizard" class="govuk-link">Cancel</a>
+            <div class="govuk-button-group">
+                <button type="submit" class="govuk-button save-button" esfa-automation="continue-button">@Model.PageInfo.SubmitButtonText</button>
+                <a asp-route="@RouteNames.Location_Cancel" asp-route-wizard="@Model.PageInfo.IsWizard" class="govuk-link govuk-link--no-visited-state">Cancel</a>
             </div>
         </form>
     </div>
