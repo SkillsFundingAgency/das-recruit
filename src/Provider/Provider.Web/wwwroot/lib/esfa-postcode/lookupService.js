@@ -1,12 +1,21 @@
 (function ($) {
-        $searchField = $('.postcode-lookup'),
-        findAddressVal = $searchField.val();
+        $addressSearchField = $('.postcode-lookup'),
+        findAddressVal = $addressSearchField.val();
+        $addressSearchField.keyup(function (e) {
+            findAddressVal = $(e.target).val();
+        });
 
-    $searchField.keyup(function (e) {
-        findAddressVal = $(e.target).val();
-    });
+    function populateAddress(address) {
+        $('#AddressLine1').val(address.addressLine1);
+        $('#AddressLine2').val(address.addressLine2);
+        $('#AddressLine3').val(address.postTown);
+        $('#AddressLine4').val(address.county);
+        $('#Postcode').val(address.postcode);
 
-    $searchField
+        $('#ariaAddressEntered').text('Your address has been entered into the fields below.');
+    }
+
+    $addressSearchField
         .autocomplete({
             search: function () {
                 $('#addressLoading').show();
@@ -64,14 +73,4 @@
         .focus(function () {
             searchContext = '';
         });
-
-    function populateAddress(address) {
-        $('#AddressLine1').val(address.addressLine1);
-        $('#AddressLine2').val(address.addressLine2);
-        $('#AddressLine3').val(address.postTown);
-        $('#AddressLine4').val(address.county);
-        $('#Postcode').val(address.postcode);
-
-        $('#ariaAddressEntered').text('Your address has been entered into the fields below.');
-    }
 })(jQuery);
