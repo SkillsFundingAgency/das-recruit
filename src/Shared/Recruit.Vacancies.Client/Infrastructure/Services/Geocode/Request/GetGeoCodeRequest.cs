@@ -12,12 +12,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Geocode.Request
             _postCode = postCode;
         }
 
-        string IGetApiRequest.GetUrl
-        {
-            get
-            {
-                return $"locations/geocode?={_postCode}";
-            }
-        }
+        string IGetApiRequest.GetUrl => $"locations/geocode?={_postCode}";
     }
 }

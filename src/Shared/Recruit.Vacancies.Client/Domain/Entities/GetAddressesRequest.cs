@@ -11,12 +11,7 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
             _query = query;
         }
 
-        string IGetApiRequest.GetUrl
-        {
-            get
-            {
-                return $"locations?={_query}";
-            }
-        }
+        string IGetApiRequest.GetUrl => $"locations?={_query}";
+      
     }
 }
