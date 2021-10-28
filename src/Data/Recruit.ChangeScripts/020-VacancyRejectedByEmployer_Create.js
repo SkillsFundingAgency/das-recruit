@@ -1,9 +1,18 @@
 {
-    const batchLimit = 100;
+    const batchLimit = 1000;
+    var count = 0, limit = Number(db.users.count());
 
     // 2. Add VacancyRejectedByEmployer preference to all Providers that don't have a userNotificationPreferences.
     do {
+        print(`Loading user batch ${count * batchLimit} -> ${(count * batchLimit) + batchLimit} of ${limit}`);
+
         var providersWithoutUserNotificationPreferences = db.users.aggregate([
+            {
+                $skip: count * batchLimit
+            },
+            {
+                $limit: batchLimit
+            },
             {
                 $lookup:
             {
@@ -24,9 +33,6 @@
                         "userType": "Provider"
                     }]
             }
-            },
-            {
-                $limit: batchLimit
             }]);
 
         print(`Found ${providersWithoutUserNotificationPreferences._batch.length} users without UserNotificationPreferences`);
@@ -53,6 +59,7 @@
 
             print(`Updated ${doc.name}`);
         }
-
-    } while (providersWithoutUserNotificationPreferences._batch.length >= batchLimit);
+        
+        count = count + 1;
+    } while (count * batchLimit <= limit);
 }
