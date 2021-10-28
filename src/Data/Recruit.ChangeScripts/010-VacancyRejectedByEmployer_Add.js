@@ -1,5 +1,5 @@
 {
-    const batchLimit = 1000;
+    const batchLimit = 500;
     var count = 0, limit = Number(db.users.count());
 
     // 1. Add VacancyRejectedByEmployer preference to all Providers that already have a userNotificationPreferences.
