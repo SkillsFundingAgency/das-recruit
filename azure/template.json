@@ -351,6 +351,9 @@
           "containerName": {
             "value": "[parameters('containerArray')[copyIndex()].containerName]"
           },
+          "throughput": {
+            "value": "[parameters('containerArray')[copyIndex()].throughput]"
+          },
           "maxThroughput": {
             "value": "[parameters('containerArray')[copyIndex()].maxThroughput]"
           }
