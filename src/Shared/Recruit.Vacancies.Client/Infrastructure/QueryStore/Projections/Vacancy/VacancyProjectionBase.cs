@@ -44,5 +44,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Va
         public long VacancyReference { get; set; }
         public Wage Wage { get; set; }
         public int? EducationLevelNumber { get; set; }
+        public string AccountPublicHashedId { get; set; }
+        public string AccountLegalEntityPublicHashedId { get; set; }
     }
 }
