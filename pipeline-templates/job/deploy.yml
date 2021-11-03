@@ -7,7 +7,7 @@ jobs:
   workspace:
     clean: all
   pool:
-    vmImage: windows-2022
+    name: DAS - Continuous Deployment Agents
   environment: ${{ parameters.Environment }}
   strategy:
     runOnce:
