@@ -27,12 +27,21 @@
             {
                 $and: [
                     {
-                        "Preferences": []
+                        "Preferences": { $exists: false }
                     },
                     {
                         "userType": "Employer"
                     }]
             }
+            },
+            {
+                $project:
+                {
+                    _id: 1,
+                    userType: 1,
+                    idamsUserId: 1,
+                    name: 1                    
+                }
             }]);
 
         print(`Found ${employersWithoutUserNotificationPreferences._batch.length} users without UserNotificationPreferences`);
