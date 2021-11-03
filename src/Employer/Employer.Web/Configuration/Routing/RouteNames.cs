@@ -155,5 +155,6 @@
         public const string RejectJobAdvert_Get = "RejectJobAdvert_Get";
         public const string RejectJobAdvert_Post = "RejectJobAdvert_Post";
         public const string JobAdvertConfirmation_Get = "JobAdvertConfirmation_Get";
+        public const string EmployerRecruitmentApi = "employer-recruitment-api";
     }
 }
