@@ -94,5 +94,12 @@ namespace Esfa.Recruit.Provider.Web.Controllers
         {
             return Redirect(_linkHelper.TermsAndConditions);
         }
+        
+        [HttpGet("{ukprn:length(8)}/provider-recruitment-api", Name = RouteNames.Dashboard_ProviderRecruitmentApi)]
+        public IActionResult ProviderRecruitmentApi([FromRoute]long ukprn)
+        {
+            var url = string.Format(_linkHelper.ProviderRecruitmentApi, ukprn);
+            return Redirect(url);
+        }
     }
 }
