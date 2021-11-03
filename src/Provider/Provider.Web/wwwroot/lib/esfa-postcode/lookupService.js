@@ -65,7 +65,7 @@
 
     function populateAddress(address) {
         $('#AddressLine1').val(address.addressLine1);
-        $('#AddressLine2').val(address.addressLine2);
+        $('#AddressLine2').val(address.addressLine2AndLine3);
         $('#AddressLine3').val(address.postTown);
         $('#AddressLine4').val(address.county);
         $('#Postcode').val(address.postcode);

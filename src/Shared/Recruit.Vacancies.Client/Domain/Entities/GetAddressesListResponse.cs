@@ -29,15 +29,10 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
             }
         }
 
-        public List<string> AddressLines =>
-                new string[]
-                {
-                    string.Join(" ", new string[] { House, Street }.Where(p => !string.IsNullOrEmpty(p))),
-                    Locality
-                }.Where(p => !string.IsNullOrEmpty(p)).ToList();
-            
-       public string AddressLine1 => AddressLines.Count() >= 1 ? AddressLines.ElementAt(0) : string.Empty;
-
-        public string AddressLine2 => AddressLines.Count() >= 2 ? AddressLines.ElementAt(1) : string.Empty;
+        public string Thoroughfare { get; set; }
+        public string AddressLine1 { get; set; }
+        public string AddressLine2AndLine3 => string.Join(", ", new string[] { AddressLine2, AddressLine3 }.Where(p => !string.IsNullOrEmpty(p)));
+        public string AddressLine2 { get; set; }
+        public string AddressLine3 { get; set; }
     }
 }
