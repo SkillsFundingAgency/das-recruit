@@ -73,7 +73,16 @@ namespace SFA.DAS.Recruit.Api.Commands
                 {
                     ResultCode = ResponseCode.InvalidRequest,
                     ValidationErrors = result.Errors.Select(c=>c.ErrorMessage).ToList()
-                };    
+                };
+            }
+
+            if (request.ValidateOnly)
+            {
+                return new CreateVacancyCommandResponse
+                {
+                    ResultCode = ResponseCode.Created,
+                    Data = 1
+                };
             }
 
             try
