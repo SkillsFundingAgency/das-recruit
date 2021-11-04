@@ -62,7 +62,7 @@ jobs:
   pool:
     name: DAS - Continuous Deployment Agents
   variables:
-    JobsAppServiceName: $[ dependencies.DeployInfrastructure.outputs['DeployInfrastructure.ArmOutputs${{ parameters.Environment }}.JobsAppServiceName'] ]
+    JobsAppServiceName: $[ dependencies.DeployInfrastructure.outputs['DeployInfrastructure.ArmOutputs.JobsAppServiceName'] ]
   environment: ${{ parameters.Environment }}
   strategy:
     runOnce:
