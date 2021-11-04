@@ -61,6 +61,8 @@ jobs:
     clean: all
   pool:
     name: DAS - Continuous Deployment Agents
+  variables:
+    JobsAppServiceName: $[ dependencies.DeployInfrastructure.outputs[ArmOutputs${{ parameters.Environment }}.JobsAppServiceName] ]
   environment: ${{ parameters.Environment }}
   strategy:
     runOnce:
@@ -79,6 +81,8 @@ jobs:
     clean: all
   pool:
     name: DAS - Continuous Deployment Agents
+  variables:
+    ApiAppServiceName: $[ dependencies.DeployInfrastructure.outputs[ArmOutputs${{ parameters.Environment }}.ApiAppServiceName] ]    
   environment: ${{ parameters.Environment }}
   strategy:
     runOnce:
@@ -96,6 +100,8 @@ jobs:
     clean: all
   pool:
     name: DAS - Continuous Deployment Agents
+  variables:
+    EmployerAppServiceName: $[ dependencies.DeployInfrastructure.outputs[ArmOutputs${{ parameters.Environment }}.EmployerAppServiceName] ]
   environment: ${{ parameters.Environment }}
   strategy:
     runOnce:
@@ -113,6 +119,8 @@ jobs:
     clean: all
   pool:
     name: DAS - Continuous Deployment Agents
+  variables:
+    ProviderAppServiceName: $[ dependencies.DeployInfrastructure.outputs[ArmOutputs${{ parameters.Environment }}.ProviderAppServiceName] ]
   environment: ${{ parameters.Environment }}
   strategy:
     runOnce:
@@ -130,6 +138,8 @@ jobs:
     clean: all
   pool:
     name: DAS - Continuous Deployment Agents
+  variables:
+    QAppServiceName: $[ dependencies.DeployInfrastructure.outputs[ArmOutputs${{ parameters.Environment }}.QAAppServiceName] ]    
   environment: ${{ parameters.Environment }}
   strategy:
     runOnce:
