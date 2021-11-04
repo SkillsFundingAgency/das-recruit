@@ -62,7 +62,7 @@ jobs:
   pool:
     name: DAS - Continuous Deployment Agents
   variables:
-    JobsAppServiceName: $[ dependencies.DeployInfrastructure.outputs[ArmOutputs${{ parameters.Environment }}.JobsAppServiceName] ]
+    JobsAppServiceName: $[ dependencies.DeployInfrastructure.outputs[DeployInfrastructure.ArmOutputs${{ parameters.Environment }}.JobsAppServiceName] ]
   environment: ${{ parameters.Environment }}
   strategy:
     runOnce:
@@ -82,7 +82,7 @@ jobs:
   pool:
     name: DAS - Continuous Deployment Agents
   variables:
-    ApiAppServiceName: $[ dependencies.DeployInfrastructure.outputs[ArmOutputs${{ parameters.Environment }}.ApiAppServiceName] ]    
+    ApiAppServiceName: $[ dependencies.DeployInfrastructure.outputs[DeployInfrastructure.ArmOutputs${{ parameters.Environment }}.ApiAppServiceName] ]    
   environment: ${{ parameters.Environment }}
   strategy:
     runOnce:
@@ -101,7 +101,7 @@ jobs:
   pool:
     name: DAS - Continuous Deployment Agents
   variables:
-    EmployerAppServiceName: $[ dependencies.DeployInfrastructure.outputs[ArmOutputs${{ parameters.Environment }}.EmployerAppServiceName] ]
+    EmployerAppServiceName: $[ dependencies.DeployInfrastructure.outputs[DeployInfrastructure.ArmOutputs${{ parameters.Environment }}.EmployerAppServiceName] ]
   environment: ${{ parameters.Environment }}
   strategy:
     runOnce:
@@ -120,7 +120,7 @@ jobs:
   pool:
     name: DAS - Continuous Deployment Agents
   variables:
-    ProviderAppServiceName: $[ dependencies.DeployInfrastructure.outputs[ArmOutputs${{ parameters.Environment }}.ProviderAppServiceName] ]
+    ProviderAppServiceName: $[ dependencies.DeployInfrastructure.outputs[DeployInfrastructure.ArmOutputs${{ parameters.Environment }}.ProviderAppServiceName] ]
   environment: ${{ parameters.Environment }}
   strategy:
     runOnce:
@@ -139,7 +139,7 @@ jobs:
   pool:
     name: DAS - Continuous Deployment Agents
   variables:
-    QAppServiceName: $[ dependencies.DeployInfrastructure.outputs[ArmOutputs${{ parameters.Environment }}.QAAppServiceName] ]    
+    QAppServiceName: $[ dependencies.DeployInfrastructure.outputs[DeployInfrastructure.ArmOutputs${{ parameters.Environment }}.QAAppServiceName] ]    
   environment: ${{ parameters.Environment }}
   strategy:
     runOnce:
