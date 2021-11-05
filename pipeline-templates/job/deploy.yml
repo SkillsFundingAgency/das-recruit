@@ -85,6 +85,7 @@ jobs:
     name: DAS - Continuous Deployment Agents
   variables:
     ApiAppServiceName: $[ dependencies.DeployInfrastructure.outputs['DeployInfrastructure.ArmOutputs${{ parameters.Environment }}.ApiAppServiceName'] ]
+    ResourceGroupName: $[ dependencies.DeployInfrastructure.outputs['DeployInfrastructure.ArmOutputs${{ parameters.Environment }}.ResourceGroupName'] ]
   environment: ${{ parameters.Environment }}
   strategy:
     runOnce:
@@ -106,6 +107,7 @@ jobs:
     name: DAS - Continuous Deployment Agents
   variables:
     EmployerAppServiceName: $[ dependencies.DeployInfrastructure.outputs['DeployInfrastructure.ArmOutputs${{ parameters.Environment }}.EmployerAppServiceName'] ]
+    ResourceGroupName: $[ dependencies.DeployInfrastructure.outputs['DeployInfrastructure.ArmOutputs${{ parameters.Environment }}.ResourceGroupName'] ]
   environment: ${{ parameters.Environment }}
   strategy:
     runOnce:
@@ -127,6 +129,7 @@ jobs:
     name: DAS - Continuous Deployment Agents
   variables:
     ProviderAppServiceName: $[ dependencies.DeployInfrastructure.outputs['DeployInfrastructure.ArmOutputs${{ parameters.Environment }}.ProviderAppServiceName'] ]
+    ResourceGroupName: $[ dependencies.DeployInfrastructure.outputs['DeployInfrastructure.ArmOutputs${{ parameters.Environment }}.ResourceGroupName'] ]
   environment: ${{ parameters.Environment }}
   strategy:
     runOnce:
@@ -148,6 +151,7 @@ jobs:
     name: DAS - Continuous Deployment Agents
   variables:
     QAppServiceName: $[ dependencies.DeployInfrastructure.outputs['DeployInfrastructure.ArmOutputs${{ parameters.Environment }}.QAAppServiceName'] ]
+    ResourceGroupName: $[ dependencies.DeployInfrastructure.outputs['DeployInfrastructure.ArmOutputs${{ parameters.Environment }}.ResourceGroupName'] ]
   environment: ${{ parameters.Environment }}
   strategy:
     runOnce:
