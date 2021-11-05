@@ -116,7 +116,7 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Commands
             var actual = await handler.Handle(command, CancellationToken.None);
 
             actual.ResultCode.Should().Be(ResponseCode.Created);
-            actual.Data.Should().Be(1);
+            actual.Data.Should().Be(1000000001);
             providerVacancyClient.Verify(x => x.CreateProviderApiVacancy(
                     It.IsAny<Guid>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<VacancyUser>()), 
                 Times.Never);
@@ -150,7 +150,7 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Commands
             var actual = await handler.Handle(command, CancellationToken.None);
 
             actual.ResultCode.Should().Be(ResponseCode.Created);
-            actual.Data.Should().Be(1);
+            actual.Data.Should().Be(1000000001);
             employerVacancyClient.Verify(x => x.CreateEmployerApiVacancy(
                     It.IsAny<Guid>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<VacancyUser>(), It.IsAny<TrainingProvider>(), It.IsAny<string>()), 
                 Times.Never);

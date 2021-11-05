@@ -81,7 +81,7 @@ namespace SFA.DAS.Recruit.Api.Commands
                 return new CreateVacancyCommandResponse
                 {
                     ResultCode = ResponseCode.Created,
-                    Data = 1
+                    Data = 1000000001
                 };
             }
 
