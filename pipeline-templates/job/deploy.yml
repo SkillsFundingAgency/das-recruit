@@ -150,7 +150,7 @@ jobs:
   pool:
     name: DAS - Continuous Deployment Agents
   variables:
-    QAppServiceName: $[ dependencies.DeployInfrastructure.outputs['DeployInfrastructure.ArmOutputs${{ parameters.Environment }}.QAAppServiceName'] ]
+    QAAppServiceName: $[ dependencies.DeployInfrastructure.outputs['DeployInfrastructure.ArmOutputs${{ parameters.Environment }}.QAAppServiceName'] ]
     ResourceGroupName: $[ dependencies.DeployInfrastructure.outputs['DeployInfrastructure.ArmOutputs${{ parameters.Environment }}.ResourceGroupName'] ]
   environment: ${{ parameters.Environment }}
   strategy:
