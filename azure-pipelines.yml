@@ -41,7 +41,7 @@ stages:
 - stage: Deploy_AT
   dependsOn: Build
   displayName: Deploy to AT
-  condition: and(succeeded(), eq(variables.Deploy, 'true'))
+  #condition: and(succeeded(), eq(variables.Deploy, 'true'))
   variables:
   - group: DevTest Management Resources
   - group: AT DevTest Shared Resources

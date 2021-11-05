@@ -76,7 +76,9 @@ jobs:
             VirtualApplication: 'Recruit.Vacancies.Jobs'
 
 - deployment: DeployApi
-  dependsOn: DeployWorker
+  dependsOn: 
+  - DeployInfrastructure
+  - DeployWorker
   workspace:
     clean: all
   pool:
@@ -95,7 +97,9 @@ jobs:
             DeploymentPackagePath: $(Pipeline.Workspace)/Recruit/Recruit.Api.Zip
 
 - deployment: DeployEmployerWeb
-  dependsOn: DeployApi
+  dependsOn:
+  - DeployInfrastructure
+  - DeployApi
   workspace:
     clean: all
   pool:
@@ -114,7 +118,9 @@ jobs:
             DeploymentPackagePath: $(Pipeline.Workspace)/Recruit/Employer.Web.Zip
 
 - deployment: DeployProviderWeb
-  dependsOn: DeployApi
+  dependsOn:
+  - DeployInfrastructure
+  - DeployApi
   workspace:
     clean: all
   pool:
@@ -133,7 +139,9 @@ jobs:
             DeploymentPackagePath: $(Pipeline.Workspace)/Recruit/Provider.Web.Zip
 
 - deployment: DeployQAWeb
-  dependsOn: DeployApi
+  dependsOn:
+  - DeployInfrastructure
+  - DeployApi
   workspace:
     clean: all
   pool:
