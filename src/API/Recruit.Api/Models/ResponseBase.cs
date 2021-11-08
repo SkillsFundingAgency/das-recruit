@@ -6,6 +6,7 @@ namespace SFA.DAS.Recruit.Api.Models
     {
         public ResponseCode ResultCode { get; set; }
         public List<string> ValidationErrors { get; set; } = new List<string>();
+        public List<DetailedValidationError> DetailedValidationErrors { get; set; } = new List<DetailedValidationError>();
 
         public object Data { get; set; }
     }
@@ -16,5 +17,11 @@ namespace SFA.DAS.Recruit.Api.Models
         InvalidRequest,
         NotFound,
         Created
+    }
+
+    public class DetailedValidationError
+    {
+        public string Field { get; set; }
+        public string Message { get; set; }
     }
 }
