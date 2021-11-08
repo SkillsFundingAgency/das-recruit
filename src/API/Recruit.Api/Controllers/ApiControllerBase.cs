@@ -11,7 +11,11 @@ namespace SFA.DAS.Recruit.Api.Controllers
             switch (resp.ResultCode)
             {
                 case ResponseCode.InvalidRequest:
-                    return BadRequest(new { Errors = resp.ValidationErrors });
+                    return BadRequest(new
+                    {
+                        Errors = resp.ValidationErrors, 
+                        DetailedErrors = resp.DetailedValidationErrors
+                    });
                 case ResponseCode.NotFound:
                     return NotFound();
                 case ResponseCode.Created:
