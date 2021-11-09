@@ -57,14 +57,13 @@ namespace SFA.DAS.Recruit.Api.Commands
                 return new CreateVacancyCommandResponse
                 {
                     ResultCode = ResponseCode.InvalidRequest,
-                    ValidationErrors = new List<string>{"Training Provider UKPRN not valid"},
-                    DetailedValidationErrors = new List<DetailedValidationError>
+                    ValidationErrors = new List<DetailedValidationError>
                     {
                         new DetailedValidationError
                         {
                             Field = nameof(request.VacancyUserDetails.Ukprn), Message = "Training Provider UKPRN not valid"
                         }
-                    }
+                    }.Cast<object>().ToList()
                 };
             }
 
@@ -79,11 +78,10 @@ namespace SFA.DAS.Recruit.Api.Commands
                 return new CreateVacancyCommandResponse
                 {
                     ResultCode = ResponseCode.InvalidRequest,
-                    ValidationErrors = result.Errors.Select(c=>c.ErrorMessage).ToList(),
-                    DetailedValidationErrors = result.Errors.Select(error => new DetailedValidationError
+                    ValidationErrors = result.Errors.Select(error => new DetailedValidationError
                     {
                         Field = error.PropertyName, Message = error.ErrorMessage
-                    }).ToList()
+                    }).Cast<object>().ToList()
                 };
             }
 
@@ -105,11 +103,10 @@ namespace SFA.DAS.Recruit.Api.Commands
                 return new CreateVacancyCommandResponse
                 {
                     ResultCode = ResponseCode.InvalidRequest,
-                    ValidationErrors = new List<string>{"Unable to create Vacancy. Vacancy already submitted"},
-                    DetailedValidationErrors = new List<DetailedValidationError>{new DetailedValidationError
+                    ValidationErrors = new List<DetailedValidationError>{new DetailedValidationError
                     {
                         Field = nameof(request.Vacancy.Id), Message = "Unable to create Vacancy. Vacancy already submitted"
-                    }}
+                    }}.Cast<object>().ToList()
                 };   
             }
 
