@@ -50,7 +50,9 @@
             },
             select: function (event, ui) {
                 var item = ui.item.data;
-                populateAddress(item);
+                window.setTimeout(function () {
+                    populateAddress(item);
+                }, 250);
             },
             focus: function (event, ui) {
                 $('#addressInputWrapper')
