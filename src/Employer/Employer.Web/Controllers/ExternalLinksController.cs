@@ -97,5 +97,12 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             var url = string.Format(_linkHelper.YourTrainingProviderPermission, employerAccountId);
             return Redirect(url);
         }
+
+        [HttpGet(RoutePaths.AccountLevelServices + "/recruitment/api", Name = RouteNames.EmployerRecruitmentApi)]
+        public IActionResult EmployerRecruitmentApi(string employerAccountId)
+        {
+            var url = string.Format(_linkHelper.EmployerRecruitmentApi, employerAccountId);
+            return Redirect(url);
+        }
     }
 }

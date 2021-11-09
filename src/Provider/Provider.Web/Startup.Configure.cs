@@ -186,6 +186,9 @@ namespace Esfa.Recruit.Provider.Web
             if (!string.IsNullOrWhiteSpace(linksConfig?.ReservationsSiteUrl))
                 destinations.Add(linksConfig.ReservationsSiteUrl);
 
+            if (!string.IsNullOrWhiteSpace(linksConfig?.ProviderRecruitmentApiUrl))
+                destinations.Add(linksConfig.ProviderRecruitmentApiUrl);
+            
             return destinations.ToArray();
         }
 
