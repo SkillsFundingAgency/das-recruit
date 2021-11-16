@@ -13,5 +13,6 @@ namespace Esfa.Recruit.Provider.Web.Configuration.Routing
         public static string ProviderApprenticeshipSiteHelp => "/help";
         public static string ProviderApprenticeshipSitePrivacy => "/privacy";
         public static string ProviderApprenticeshipSiteTermsAndConditions => "/terms";
+        public static string ProviderRecruitmentApi => "/{0}/recruitment/api";
     }
 }

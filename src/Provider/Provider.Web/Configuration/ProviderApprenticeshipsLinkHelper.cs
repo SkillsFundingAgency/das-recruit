@@ -23,5 +23,6 @@ namespace Esfa.Recruit.Provider.Web.Configuration
         public string Feedback => $"{_externalLinks.ProviderApprenticeshipSiteFeedbackUrl}";
         public string Privacy => $"{_externalLinks.ProviderApprenticeshipSiteUrl}{ProviderApprenticeshipsRoutes.ProviderApprenticeshipSitePrivacy}";
         public string TermsAndConditions => $"{_externalLinks.ProviderApprenticeshipSiteUrl}{ProviderApprenticeshipsRoutes.ProviderApprenticeshipSiteTermsAndConditions}";
+        public string ProviderRecruitmentApi => $"{_externalLinks.ProviderRecruitmentApiUrl}{ProviderApprenticeshipsRoutes.ProviderRecruitmentApi}";
     }
 }

@@ -20,5 +20,6 @@ namespace Esfa.Recruit.Employer.Web.Configuration.Routing
         public static string EmployerFavouritesSiteApprenticeshipListRoute => "/accounts/{0}/apprenticeships";
         public static string EmployerFavouritesSiteTrainingProvidersRoute => "/accounts/{0}/apprenticeships/{1}/providers";
         public static string YourTrainingProviderPermissionRoute => "/accounts/{0}/providers";
+        public static string EmployerRecruitmentApiRoute => "/accounts/{0}/recruitment/api";
     }
 }
