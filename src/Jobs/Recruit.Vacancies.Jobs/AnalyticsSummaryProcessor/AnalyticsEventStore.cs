@@ -1,10 +1,10 @@
 using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
 using System.Data.SqlClient;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyAnalytics;
+using Microsoft.Azure.Services.AppAuthentication;
 using Microsoft.Extensions.Logging;
 using Polly;
 using Polly.Retry;
@@ -13,6 +13,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.AnalyticsSummaryProcessor
 {
     public class AnalyticsEventStore
     {
+        private const string AzureResource = "https://database.windows.net/";
         private const string GetVacancyAnalyticEventsSqlSproc = "[VACANCY].[Event_GET_EventsSummaryForVacancy]";
         private const int VacancyReferenceColumnIndex = 0;
 
@@ -72,12 +73,15 @@ namespace Esfa.Recruit.Vacancies.Jobs.AnalyticsSummaryProcessor
 
         private readonly ILogger<AnalyticsEventStore> _logger;
         private readonly string _vacancyAnalyticEventsDbConnString;
+        private readonly AzureServiceTokenProvider _azureServiceTokenProvider;
+
         private RetryPolicy RetryPolicy { get; }
 
-        public AnalyticsEventStore(ILogger<AnalyticsEventStore> logger, string vacancyAnalyticEventsDbConnString)
+        public AnalyticsEventStore(ILogger<AnalyticsEventStore> logger, string vacancyAnalyticEventsDbConnString, AzureServiceTokenProvider azureServiceTokenProvider = null)
         {
             _logger = logger;
             _vacancyAnalyticEventsDbConnString = vacancyAnalyticEventsDbConnString;
+            _azureServiceTokenProvider = azureServiceTokenProvider;
             RetryPolicy = GetRetryPolicy();
         }
 
@@ -87,6 +91,11 @@ namespace Esfa.Recruit.Vacancies.Jobs.AnalyticsSummaryProcessor
             {
                 using (var conn = new SqlConnection(_vacancyAnalyticEventsDbConnString))
                 {
+                    if (_azureServiceTokenProvider != null)
+                    {
+                        conn.AccessToken = await _azureServiceTokenProvider.GetAccessTokenAsync(AzureResource);
+                    }
+
                     using (var command = new SqlCommand(GetVacancyAnalyticEventsSqlSproc, conn))
                     {
                         command.CommandType = CommandType.StoredProcedure;
@@ -178,7 +187,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.AnalyticsSummaryProcessor
             }
         }
 
-        private Polly.Retry.RetryPolicy GetRetryPolicy()
+        private RetryPolicy GetRetryPolicy()
         {
             return Policy
                     .Handle<SqlException>()

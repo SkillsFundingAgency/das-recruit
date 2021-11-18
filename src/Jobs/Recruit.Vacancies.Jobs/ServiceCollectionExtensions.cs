@@ -1,3 +1,4 @@
+using System;
 using Communication.Types;
 using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
@@ -32,6 +33,7 @@ using SFA.DAS.Encoding;
 using Esfa.Recruit.Vacancies.Client.Application.Communications.ParticipantResolverPlugins;
 using Recruit.Vacancies.Client.Application.Communications.CompositeDataItemProviderPlugins;
 using Esfa.Recruit.Vacancies.Jobs.Jobs;
+using Microsoft.Azure.Services.AppAuthentication;
 
 namespace Esfa.Recruit.Vacancies.Jobs
 {
@@ -39,15 +41,28 @@ namespace Esfa.Recruit.Vacancies.Jobs
     {
         public static void ConfigureJobServices(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddScoped(x => new AnalyticsEventStore(x.GetService<ILogger<AnalyticsEventStore>>(), configuration.GetConnectionString("VacancyAnalyticEventsSqlDbConnectionString")));
-
+            if (configuration["Environment"].Equals("DEV", StringComparison.CurrentCultureIgnoreCase) ||
+                configuration["Environment"].Equals("LOCAL", StringComparison.CurrentCultureIgnoreCase))
+            {
+                services.AddScoped(x => new AnalyticsEventStore(
+                    x.GetService<ILogger<AnalyticsEventStore>>(),
+                    configuration.GetConnectionString("VacancyAnalyticEventsSqlDbConnectionString")));
+            }
+            else
+            {
+                services.AddScoped(x => new AnalyticsEventStore(
+                    x.GetService<ILogger<AnalyticsEventStore>>(),
+                    configuration.GetConnectionString("VacancyAnalyticEventsSqlDbConnectionString"),
+                    new AzureServiceTokenProvider()));
+            }
+            
             services.AddRecruitStorageClient(configuration);
 
             services.AddSingleton<RecruitWebJobsSystemConfiguration>(x =>
-                                                            {
-                                                                var svc = x.GetService<IConfigurationReader>();
-                                                                return svc.GetAsync<RecruitWebJobsSystemConfiguration>("RecruitWebJobsSystem").Result;
-                                                            });
+            {
+                var svc = x.GetService<IConfigurationReader>();
+                return svc.GetAsync<RecruitWebJobsSystemConfiguration>("RecruitWebJobsSystem").Result;
+            });
 
             // Add Jobs
             services.AddScoped<DomainEventsQueueTrigger>();
