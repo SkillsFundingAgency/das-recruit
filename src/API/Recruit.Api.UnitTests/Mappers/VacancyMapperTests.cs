@@ -25,5 +25,25 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Mappers
             );
             actual.EmployerLocation.Should().BeEquivalentTo(request.Address);
         }
+
+        [Test, AutoData]
+        public void Then_Contact_Details_Are_Ignored_If_Null_For_Employer(CreateVacancyRequest request, Guid id)
+        {
+            request.EmployerContact = null;
+            
+            var actual = request.MapFromCreateVacancyRequest(id);
+
+            actual.EmployerContact.Should().BeNull();
+        }
+        
+        [Test, AutoData]
+        public void Then_Contact_Details_Are_Ignored_If_Null_For_Provider(CreateVacancyRequest request, Guid id)
+        {
+            request.ProviderContact = null;
+            
+            var actual = request.MapFromCreateVacancyRequest(id);
+
+            actual.ProviderContact.Should().BeNull();
+        }
     }
 }

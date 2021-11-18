@@ -5,6 +5,7 @@ using SFA.DAS.Recruit.Api.Models;
 using ApplicationMethod = Esfa.Recruit.Vacancies.Client.Domain.Entities.ApplicationMethod;
 using DurationUnit = Esfa.Recruit.Vacancies.Client.Domain.Entities.DurationUnit;
 using EmployerNameOption = Esfa.Recruit.Vacancies.Client.Domain.Entities.EmployerNameOption;
+using OwnerType = Esfa.Recruit.Vacancies.Client.Domain.Entities.OwnerType;
 using QualificationWeighting = Esfa.Recruit.Vacancies.Client.Domain.Entities.QualificationWeighting;
 using WageType = Esfa.Recruit.Vacancies.Client.Domain.Entities.WageType;
 
@@ -16,6 +17,7 @@ namespace SFA.DAS.Recruit.Api.Mappers
         {
             return new Vacancy
             {
+                OwnerType = (OwnerType)request.OwnerType,
                 EmployerLocation = new Address 
                 {
                   AddressLine1  = request.Address.AddressLine1,
@@ -67,7 +69,21 @@ namespace SFA.DAS.Recruit.Api.Mappers
                 TrainingDescription = request.TrainingDescription,
                 Skills = request.Skills,
                 DisabilityConfident = (DisabilityConfident) request.DisabilityConfident,
-                ThingsToConsider = request.ThingsToConsider
+                ThingsToConsider = request.ThingsToConsider,
+                EmployerContact = request.EmployerContact != null ? new ContactDetail
+                { 
+                    Email = request.EmployerContact.Email,
+                    Phone = request.EmployerContact.Phone,
+                    Name = request.EmployerContact.Name,
+                } : null,
+                ProviderContact = request.ProviderContact != null ? new ContactDetail
+                { 
+                    Email = request.ProviderContact.Email,
+                    Phone = request.ProviderContact.Phone,
+                    Name = request.ProviderContact.Name,
+                } : null,
+                EmployerWebsiteUrl = request.EmployerWebsiteUrl
+                
             };
         }
     }

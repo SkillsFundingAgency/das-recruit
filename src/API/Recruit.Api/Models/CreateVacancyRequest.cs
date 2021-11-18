@@ -35,9 +35,18 @@ namespace SFA.DAS.Recruit.Api.Models
         public CreateVacancyApplicationMethod ApplicationMethod { get ; set ; }
         public CreateVacancyDisabilityConfident DisabilityConfident { get ; set ; }
         public string ThingsToConsider { get ; set ; }
+        public OwnerType OwnerType { get ; set ; }
+        public string EmployerWebsiteUrl { get ; set ; }
+        public ContactDetails EmployerContact { get; set; }
+        public ContactDetails ProviderContact { get; set; }
     }
 
-    
+    public class ContactDetails
+    {
+        public string Name { get; set; }
+        public string Phone { get; set; }
+        public string Email { get; set; }
+    }
     
     public class CreateVacancyAddress
     {
@@ -103,5 +112,11 @@ namespace SFA.DAS.Recruit.Api.Models
     {
         No = 0,
         Yes
+    }
+    public enum OwnerType
+    {
+        Employer,
+        Provider,
+        Joint
     }
 }

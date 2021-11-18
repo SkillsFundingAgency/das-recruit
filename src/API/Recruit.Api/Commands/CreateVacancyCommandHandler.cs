@@ -15,6 +15,7 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelationship
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider;
 using MediatR;
 using SFA.DAS.Recruit.Api.Models;
+using OwnerType = Esfa.Recruit.Vacancies.Client.Domain.Entities.OwnerType;
 
 namespace SFA.DAS.Recruit.Api.Commands
 {
@@ -62,7 +63,7 @@ namespace SFA.DAS.Recruit.Api.Commands
             }
 
             request.Vacancy.TrainingProvider = trainingProvider;
-            request.Vacancy.OwnerType = string.IsNullOrEmpty(request.VacancyUserDetails.Email) ? OwnerType.Provider : OwnerType.Employer; 
+            request.Vacancy.OwnerType = request.Vacancy.OwnerType; 
             
             
             var result = _recruitVacancyClient.Validate(request.Vacancy, VacancyRuleSet.All);

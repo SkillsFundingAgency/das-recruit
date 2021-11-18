@@ -20,6 +20,7 @@ using NUnit.Framework;
 using SFA.DAS.Recruit.Api.Commands;
 using SFA.DAS.Recruit.Api.Models;
 using SFA.DAS.Testing.AutoFixture;
+using OwnerType = Esfa.Recruit.Vacancies.Client.Domain.Entities.OwnerType;
 
 namespace SFA.DAS.Recruit.Api.UnitTests.Commands
 {
@@ -48,6 +49,7 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Commands
             [Frozen]Mock<IRecruitVacancyClient> recruitVacancyClient,
             CreateVacancyCommandHandler handler)
         {
+            command.Vacancy.OwnerType = OwnerType.Provider;
             command.ValidateOnly = false;
             command.VacancyUserDetails.Email = null;
             
@@ -63,6 +65,7 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Commands
             [Frozen]Mock<IRecruitVacancyClient> recruitVacancyClient,
             CreateVacancyCommandHandler handler)
         {   
+            command.Vacancy.OwnerType = OwnerType.Employer;
             command.ValidateOnly = false;
             
             await handler.Handle(command, CancellationToken.None);
@@ -104,6 +107,7 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Commands
             [Frozen]Mock<IProviderRelationshipsService> providerRelationshipsService,
             CreateVacancyCommandHandler handler)
         {
+            command.Vacancy.OwnerType = OwnerType.Provider;
             command.ValidateOnly = true;
             command.VacancyUserDetails.Email = null;
             vacancy.Id = command.Vacancy.Id;
@@ -139,6 +143,7 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Commands
             [Frozen]Mock<IProviderRelationshipsService> providerRelationshipsService,
             CreateVacancyCommandHandler handler)
         {
+            command.Vacancy.OwnerType = OwnerType.Employer;
             command.ValidateOnly = true;
             vacancy.Id = command.Vacancy.Id;
             vacancy.ProgrammeId = command.Vacancy.ProgrammeId;
@@ -166,6 +171,7 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Commands
             [Frozen]Mock<IRecruitVacancyClient> vacancyClient,
             CreateVacancyCommandHandler handler)
         {
+            command.Vacancy.OwnerType = OwnerType.Employer;
             command.ValidateOnly = false;
             vacancyClient.Setup(x => x.Validate(It.IsAny<Vacancy>(), VacancyRuleSet.All))
                 .Returns(new EntityValidationResult());
@@ -188,6 +194,7 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Commands
             [Frozen]Mock<IRecruitVacancyClient> vacancyClient,
             CreateVacancyCommandHandler handler)
         {
+            command.Vacancy.OwnerType = OwnerType.Provider;
             command.ValidateOnly = false;
             vacancyClient.Setup(x => x.Validate(It.IsAny<Vacancy>(), VacancyRuleSet.All))
                 .Returns(new EntityValidationResult());
@@ -217,6 +224,7 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Commands
             [Frozen]Mock<IProviderRelationshipsService> providerRelationshipsService,
             CreateVacancyCommandHandler handler)
         {
+            command.Vacancy.OwnerType = OwnerType.Provider;
             command.ValidateOnly = false;
             command.VacancyUserDetails.Email = null;
             vacancy.Id = command.Vacancy.Id;
@@ -260,6 +268,7 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Commands
             [Frozen]Mock<IProviderRelationshipsService> providerRelationshipsService,
             CreateVacancyCommandHandler handler)
         {
+            command.Vacancy.OwnerType = OwnerType.Provider;
             command.ValidateOnly = false;
             command.VacancyUserDetails.Email = null;
             vacancy.Id = command.Vacancy.Id;
@@ -314,6 +323,7 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Commands
             [Frozen]Mock<ITrainingProviderService> trainingProviderService,
             CreateVacancyCommandHandler handler)
         {
+            command.Vacancy.OwnerType = OwnerType.Employer;
             command.ValidateOnly = false;
             vacancy.Id = command.Vacancy.Id;
             vacancy.ProgrammeId = command.Vacancy.ProgrammeId;
@@ -389,6 +399,7 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Commands
             [Frozen]Mock<IProviderRelationshipsService> providerRelationshipsService,
             CreateVacancyCommandHandler handler)
         {
+            command.Vacancy.OwnerType = OwnerType.Provider;
             command.ValidateOnly = false;
             providerRelationshipsService.Setup(x => x.HasProviderGotEmployersPermissionAsync(
                     provider.Ukprn.Value, command.Vacancy.EmployerAccountId,
