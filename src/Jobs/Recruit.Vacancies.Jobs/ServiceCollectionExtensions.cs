@@ -29,6 +29,7 @@ using Esfa.Recruit.Vacancies.Client.Application.Communications;
 using Esfa.Recruit.Client.Application.Communications;
 using Esfa.Recruit.Vacancies.Client.Application.Communications.EntityDataItemProviderPlugins;
 using System.Collections.Generic;
+using System.Data;
 using SFA.DAS.Encoding;
 using Esfa.Recruit.Vacancies.Client.Application.Communications.ParticipantResolverPlugins;
 using Recruit.Vacancies.Client.Application.Communications.CompositeDataItemProviderPlugins;
@@ -41,21 +42,10 @@ namespace Esfa.Recruit.Vacancies.Jobs
     {
         public static void ConfigureJobServices(this IServiceCollection services, IConfiguration configuration)
         {
-            if (configuration["Environment"].Equals("DEV", StringComparison.CurrentCultureIgnoreCase) ||
-                configuration["Environment"].Equals("LOCAL", StringComparison.CurrentCultureIgnoreCase))
-            {
-                services.AddScoped(x => new AnalyticsEventStore(
-                    x.GetService<ILogger<AnalyticsEventStore>>(),
-                    configuration.GetConnectionString("VacancyAnalyticEventsSqlDbConnectionString")));
-            }
-            else
-            {
-                services.AddScoped(x => new AnalyticsEventStore(
-                    x.GetService<ILogger<AnalyticsEventStore>>(),
-                    configuration.GetConnectionString("VacancyAnalyticEventsSqlDbConnectionString"),
-                    new AzureServiceTokenProvider()));
-            }
-            
+            services.AddDatabaseRegistration(configuration["Environment"], configuration.GetConnectionString("VacancyAnalyticEventsSqlDbConnectionString"));
+
+            services.AddScoped(x => new AnalyticsEventStore(x.GetService<ILogger<AnalyticsEventStore>>(), x.GetService<IDbConnection>()));
+
             services.AddRecruitStorageClient(configuration);
 
             services.AddSingleton<RecruitWebJobsSystemConfiguration>(x =>

@@ -4,7 +4,6 @@ using System.Data.Common;
 using System.Data.SqlClient;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyAnalytics;
-using Microsoft.Azure.Services.AppAuthentication;
 using Microsoft.Extensions.Logging;
 using Polly;
 using Polly.Retry;
@@ -13,7 +12,6 @@ namespace Esfa.Recruit.Vacancies.Jobs.AnalyticsSummaryProcessor
 {
     public class AnalyticsEventStore
     {
-        private const string AzureResource = "https://database.windows.net/";
         private const string GetVacancyAnalyticEventsSqlSproc = "[VACANCY].[Event_GET_EventsSummaryForVacancy]";
         private const int VacancyReferenceColumnIndex = 0;
 
@@ -72,16 +70,14 @@ namespace Esfa.Recruit.Vacancies.Jobs.AnalyticsSummaryProcessor
         private const int NoOfApprenticeshipApplicationsSubmittedOneDayAgoColumnIndex = 48;
 
         private readonly ILogger<AnalyticsEventStore> _logger;
-        private readonly string _vacancyAnalyticEventsDbConnString;
-        private readonly AzureServiceTokenProvider _azureServiceTokenProvider;
+        private readonly IDbConnection _connection;
 
         private RetryPolicy RetryPolicy { get; }
 
-        public AnalyticsEventStore(ILogger<AnalyticsEventStore> logger, string vacancyAnalyticEventsDbConnString, AzureServiceTokenProvider azureServiceTokenProvider = null)
+        public AnalyticsEventStore(ILogger<AnalyticsEventStore> logger, IDbConnection connection)
         {
             _logger = logger;
-            _vacancyAnalyticEventsDbConnString = vacancyAnalyticEventsDbConnString;
-            _azureServiceTokenProvider = azureServiceTokenProvider;
+            _connection = connection;
             RetryPolicy = GetRetryPolicy();
         }
 
@@ -89,94 +85,86 @@ namespace Esfa.Recruit.Vacancies.Jobs.AnalyticsSummaryProcessor
         {
             try
             {
-                using (var conn = new SqlConnection(_vacancyAnalyticEventsDbConnString))
+                using (var command = new SqlCommand(GetVacancyAnalyticEventsSqlSproc, (SqlConnection)_connection))
                 {
-                    if (_azureServiceTokenProvider != null)
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    var inputParam = command.CreateParameter();
+                    inputParam.ParameterName = "@VacancyReference";
+                    inputParam.DbType = DbType.Int64;
+                    inputParam.Value = vacancyReference;
+                    inputParam.Direction = ParameterDirection.Input;
+
+                    command.Parameters.Add(inputParam);
+
+                    using (var reader = await RetryPolicy.Execute(async context =>
+                                        {
+                                            await ((SqlConnection)_connection).OpenAsync();
+                                            return await command.ExecuteReaderAsync();
+                                        }, new Context(nameof(GetVacancyAnalyticEventSummaryAsync))))
                     {
-                        conn.AccessToken = await _azureServiceTokenProvider.GetAccessTokenAsync(AzureResource);
-                    }
+                        await reader.ReadAsync();
 
-                    using (var command = new SqlCommand(GetVacancyAnalyticEventsSqlSproc, conn))
-                    {
-                        command.CommandType = CommandType.StoredProcedure;
-
-                        var inputParam = command.CreateParameter();
-                        inputParam.ParameterName = "@VacancyReference";
-                        inputParam.DbType = DbType.Int64;
-                        inputParam.Value = vacancyReference;
-                        inputParam.Direction = ParameterDirection.Input;
-
-                        command.Parameters.Add(inputParam);
-
-                        using (var reader = await RetryPolicy.Execute(async context =>
-                                            {
-                                                await conn.OpenAsync();
-                                                return await command.ExecuteReaderAsync();
-                                            }, new Context(nameof(GetVacancyAnalyticEventSummaryAsync))))
+                        var summary = new VacancyAnalyticsSummary
                         {
-                            await reader.ReadAsync();
+                            VacancyReference = reader.GetInt64(VacancyReferenceColumnIndex),
 
-                            var summary = new VacancyAnalyticsSummary
-                            {
-                                VacancyReference = reader.GetInt64(VacancyReferenceColumnIndex),
+                            NoOfApprenticeshipSearches = reader.GetInt32(NoOfApprenticeshipSearchesColumnIndex),
+                            NoOfApprenticeshipSearchesSevenDaysAgo = reader.GetInt32(NoOfApprenticeshipSearchesSevenDaysAgoColumnIndex),
+                            NoOfApprenticeshipSearchesSixDaysAgo = reader.GetInt32(NoOfApprenticeshipSearchesSixDaysAgoColumnIndex),
+                            NoOfApprenticeshipSearchesFiveDaysAgo = reader.GetInt32(NoOfApprenticeshipSearchesFiveDaysAgoColumnIndex),
+                            NoOfApprenticeshipSearchesFourDaysAgo = reader.GetInt32(NoOfApprenticeshipSearchesFourDaysAgoColumnIndex),
+                            NoOfApprenticeshipSearchesThreeDaysAgo = reader.GetInt32(NoOfApprenticeshipSearchesThreeDaysAgoColumnIndex),
+                            NoOfApprenticeshipSearchesTwoDaysAgo = reader.GetInt32(NoOfApprenticeshipSearchesTwoDaysAgoColumnIndex),
+                            NoOfApprenticeshipSearchesOneDayAgo = reader.GetInt32(NoOfApprenticeshipSearchesOneDayAgoColumnIndex),
 
-                                NoOfApprenticeshipSearches = reader.GetInt32(NoOfApprenticeshipSearchesColumnIndex),
-                                NoOfApprenticeshipSearchesSevenDaysAgo = reader.GetInt32(NoOfApprenticeshipSearchesSevenDaysAgoColumnIndex),
-                                NoOfApprenticeshipSearchesSixDaysAgo = reader.GetInt32(NoOfApprenticeshipSearchesSixDaysAgoColumnIndex),
-                                NoOfApprenticeshipSearchesFiveDaysAgo = reader.GetInt32(NoOfApprenticeshipSearchesFiveDaysAgoColumnIndex),
-                                NoOfApprenticeshipSearchesFourDaysAgo = reader.GetInt32(NoOfApprenticeshipSearchesFourDaysAgoColumnIndex),
-                                NoOfApprenticeshipSearchesThreeDaysAgo = reader.GetInt32(NoOfApprenticeshipSearchesThreeDaysAgoColumnIndex),
-                                NoOfApprenticeshipSearchesTwoDaysAgo = reader.GetInt32(NoOfApprenticeshipSearchesTwoDaysAgoColumnIndex),
-                                NoOfApprenticeshipSearchesOneDayAgo = reader.GetInt32(NoOfApprenticeshipSearchesOneDayAgoColumnIndex),
+                            NoOfApprenticeshipSavedSearchAlerts = reader.GetInt32(NoOfApprenticeshipSavedSearchAlertsColumnIndex),
+                            NoOfApprenticeshipSavedSearchAlertsSevenDaysAgo = reader.GetInt32(NoOfApprenticeshipSavedSearchAlertsSevenDaysAgoColumnIndex),
+                            NoOfApprenticeshipSavedSearchAlertsSixDaysAgo = reader.GetInt32(NoOfApprenticeshipSavedSearchAlertsSixDaysAgoColumnIndex),
+                            NoOfApprenticeshipSavedSearchAlertsFiveDaysAgo = reader.GetInt32(NoOfApprenticeshipSavedSearchAlertsFiveDaysAgoColumnIndex),
+                            NoOfApprenticeshipSavedSearchAlertsFourDaysAgo = reader.GetInt32(NoOfApprenticeshipSavedSearchAlertsFourDaysAgoColumnIndex),
+                            NoOfApprenticeshipSavedSearchAlertsThreeDaysAgo = reader.GetInt32(NoOfApprenticeshipSavedSearchAlertsThreeDaysAgoColumnIndex),
+                            NoOfApprenticeshipSavedSearchAlertsTwoDaysAgo = reader.GetInt32(NoOfApprenticeshipSavedSearchAlertsTwoDaysAgoColumnIndex),
+                            NoOfApprenticeshipSavedSearchAlertsOneDayAgo = reader.GetInt32(NoOfApprenticeshipSavedSearchAlertsOneDayAgoColumnIndex),
 
-                                NoOfApprenticeshipSavedSearchAlerts = reader.GetInt32(NoOfApprenticeshipSavedSearchAlertsColumnIndex),
-                                NoOfApprenticeshipSavedSearchAlertsSevenDaysAgo = reader.GetInt32(NoOfApprenticeshipSavedSearchAlertsSevenDaysAgoColumnIndex),
-                                NoOfApprenticeshipSavedSearchAlertsSixDaysAgo = reader.GetInt32(NoOfApprenticeshipSavedSearchAlertsSixDaysAgoColumnIndex),
-                                NoOfApprenticeshipSavedSearchAlertsFiveDaysAgo = reader.GetInt32(NoOfApprenticeshipSavedSearchAlertsFiveDaysAgoColumnIndex),
-                                NoOfApprenticeshipSavedSearchAlertsFourDaysAgo = reader.GetInt32(NoOfApprenticeshipSavedSearchAlertsFourDaysAgoColumnIndex),
-                                NoOfApprenticeshipSavedSearchAlertsThreeDaysAgo = reader.GetInt32(NoOfApprenticeshipSavedSearchAlertsThreeDaysAgoColumnIndex),
-                                NoOfApprenticeshipSavedSearchAlertsTwoDaysAgo = reader.GetInt32(NoOfApprenticeshipSavedSearchAlertsTwoDaysAgoColumnIndex),
-                                NoOfApprenticeshipSavedSearchAlertsOneDayAgo = reader.GetInt32(NoOfApprenticeshipSavedSearchAlertsOneDayAgoColumnIndex),
+                            NoOfApprenticeshipSaved = reader.GetInt32(NoOfApprenticeshipSavedColumnIndex),
+                            NoOfApprenticeshipSavedSevenDaysAgo = reader.GetInt32(NoOfApprenticeshipSavedSevenDaysAgoColumnIndex),
+                            NoOfApprenticeshipSavedSixDaysAgo = reader.GetInt32(NoOfApprenticeshipSavedSixDaysAgoColumnIndex),
+                            NoOfApprenticeshipSavedFiveDaysAgo = reader.GetInt32(NoOfApprenticeshipSavedFiveDaysAgoColumnIndex),
+                            NoOfApprenticeshipSavedFourDaysAgo = reader.GetInt32(NoOfApprenticeshipSavedFourDaysAgoColumnIndex),
+                            NoOfApprenticeshipSavedThreeDaysAgo = reader.GetInt32(NoOfApprenticeshipSavedThreeDaysAgoColumnIndex),
+                            NoOfApprenticeshipSavedTwoDaysAgo = reader.GetInt32(NoOfApprenticeshipSavedTwoDaysAgoColumnIndex),
+                            NoOfApprenticeshipSavedOneDayAgo = reader.GetInt32(NoOfApprenticeshipSavedOneDayAgoColumnIndex),
 
-                                NoOfApprenticeshipSaved = reader.GetInt32(NoOfApprenticeshipSavedColumnIndex),
-                                NoOfApprenticeshipSavedSevenDaysAgo = reader.GetInt32(NoOfApprenticeshipSavedSevenDaysAgoColumnIndex),
-                                NoOfApprenticeshipSavedSixDaysAgo = reader.GetInt32(NoOfApprenticeshipSavedSixDaysAgoColumnIndex),
-                                NoOfApprenticeshipSavedFiveDaysAgo = reader.GetInt32(NoOfApprenticeshipSavedFiveDaysAgoColumnIndex),
-                                NoOfApprenticeshipSavedFourDaysAgo = reader.GetInt32(NoOfApprenticeshipSavedFourDaysAgoColumnIndex),
-                                NoOfApprenticeshipSavedThreeDaysAgo = reader.GetInt32(NoOfApprenticeshipSavedThreeDaysAgoColumnIndex),
-                                NoOfApprenticeshipSavedTwoDaysAgo = reader.GetInt32(NoOfApprenticeshipSavedTwoDaysAgoColumnIndex),
-                                NoOfApprenticeshipSavedOneDayAgo = reader.GetInt32(NoOfApprenticeshipSavedOneDayAgoColumnIndex),
+                            NoOfApprenticeshipDetailsViews = reader.GetInt32(NoOfApprenticeshipDetailsViewsColumnIndex),
+                            NoOfApprenticeshipDetailsViewsSevenDaysAgo = reader.GetInt32(NoOfApprenticeshipDetailsViewsSevenDaysAgoColumnIndex),
+                            NoOfApprenticeshipDetailsViewsSixDaysAgo = reader.GetInt32(NoOfApprenticeshipDetailsViewsSixDaysAgoColumnIndex),
+                            NoOfApprenticeshipDetailsViewsFiveDaysAgo = reader.GetInt32(NoOfApprenticeshipDetailsViewsFiveDaysAgoColumnIndex),
+                            NoOfApprenticeshipDetailsViewsFourDaysAgo = reader.GetInt32(NoOfApprenticeshipDetailsViewsFourDaysAgoColumnIndex),
+                            NoOfApprenticeshipDetailsViewsThreeDaysAgo = reader.GetInt32(NoOfApprenticeshipDetailsViewsThreeDaysAgoColumnIndex),
+                            NoOfApprenticeshipDetailsViewsTwoDaysAgo = reader.GetInt32(NoOfApprenticeshipDetailsViewsTwoDaysAgoColumnIndex),
+                            NoOfApprenticeshipDetailsViewsOneDayAgo = reader.GetInt32(NoOfApprenticeshipDetailsViewsOneDayAgoColumnIndex),
 
-                                NoOfApprenticeshipDetailsViews = reader.GetInt32(NoOfApprenticeshipDetailsViewsColumnIndex),
-                                NoOfApprenticeshipDetailsViewsSevenDaysAgo = reader.GetInt32(NoOfApprenticeshipDetailsViewsSevenDaysAgoColumnIndex),
-                                NoOfApprenticeshipDetailsViewsSixDaysAgo = reader.GetInt32(NoOfApprenticeshipDetailsViewsSixDaysAgoColumnIndex),
-                                NoOfApprenticeshipDetailsViewsFiveDaysAgo = reader.GetInt32(NoOfApprenticeshipDetailsViewsFiveDaysAgoColumnIndex),
-                                NoOfApprenticeshipDetailsViewsFourDaysAgo = reader.GetInt32(NoOfApprenticeshipDetailsViewsFourDaysAgoColumnIndex),
-                                NoOfApprenticeshipDetailsViewsThreeDaysAgo = reader.GetInt32(NoOfApprenticeshipDetailsViewsThreeDaysAgoColumnIndex),
-                                NoOfApprenticeshipDetailsViewsTwoDaysAgo = reader.GetInt32(NoOfApprenticeshipDetailsViewsTwoDaysAgoColumnIndex),
-                                NoOfApprenticeshipDetailsViewsOneDayAgo = reader.GetInt32(NoOfApprenticeshipDetailsViewsOneDayAgoColumnIndex),
+                            NoOfApprenticeshipApplicationsCreated = reader.GetInt32(NoOfApprenticeshipApplicationsCreatedColumnIndex),
+                            NoOfApprenticeshipApplicationsCreatedSevenDaysAgo = reader.GetInt32(NoOfApprenticeshipApplicationsCreatedSevenDaysAgoColumnIndex),
+                            NoOfApprenticeshipApplicationsCreatedSixDaysAgo = reader.GetInt32(NoOfApprenticeshipApplicationsCreatedSixDaysAgoColumnIndex),
+                            NoOfApprenticeshipApplicationsCreatedFiveDaysAgo = reader.GetInt32(NoOfApprenticeshipApplicationsCreatedFiveDaysAgoColumnIndex),
+                            NoOfApprenticeshipApplicationsCreatedFourDaysAgo = reader.GetInt32(NoOfApprenticeshipApplicationsCreatedFourDaysAgoColumnIndex),
+                            NoOfApprenticeshipApplicationsCreatedThreeDaysAgo = reader.GetInt32(NoOfApprenticeshipApplicationsCreatedThreeDaysAgoColumnIndex),
+                            NoOfApprenticeshipApplicationsCreatedTwoDaysAgo = reader.GetInt32(NoOfApprenticeshipApplicationsCreatedTwoDaysAgoColumnIndex),
+                            NoOfApprenticeshipApplicationsCreatedOneDayAgo = reader.GetInt32(NoOfApprenticeshipApplicationsCreatedOneDayAgoColumnIndex),
 
-                                NoOfApprenticeshipApplicationsCreated = reader.GetInt32(NoOfApprenticeshipApplicationsCreatedColumnIndex),
-                                NoOfApprenticeshipApplicationsCreatedSevenDaysAgo = reader.GetInt32(NoOfApprenticeshipApplicationsCreatedSevenDaysAgoColumnIndex),
-                                NoOfApprenticeshipApplicationsCreatedSixDaysAgo = reader.GetInt32(NoOfApprenticeshipApplicationsCreatedSixDaysAgoColumnIndex),
-                                NoOfApprenticeshipApplicationsCreatedFiveDaysAgo = reader.GetInt32(NoOfApprenticeshipApplicationsCreatedFiveDaysAgoColumnIndex),
-                                NoOfApprenticeshipApplicationsCreatedFourDaysAgo = reader.GetInt32(NoOfApprenticeshipApplicationsCreatedFourDaysAgoColumnIndex),
-                                NoOfApprenticeshipApplicationsCreatedThreeDaysAgo = reader.GetInt32(NoOfApprenticeshipApplicationsCreatedThreeDaysAgoColumnIndex),
-                                NoOfApprenticeshipApplicationsCreatedTwoDaysAgo = reader.GetInt32(NoOfApprenticeshipApplicationsCreatedTwoDaysAgoColumnIndex),
-                                NoOfApprenticeshipApplicationsCreatedOneDayAgo = reader.GetInt32(NoOfApprenticeshipApplicationsCreatedOneDayAgoColumnIndex),
+                            NoOfApprenticeshipApplicationsSubmitted = reader.GetInt32(NoOfApprenticeshipApplicationsSubmittedColumnIndex),
+                            NoOfApprenticeshipApplicationsSubmittedSevenDaysAgo = reader.GetInt32(NoOfApprenticeshipApplicationsSubmittedSevenDaysAgoColumnIndex),
+                            NoOfApprenticeshipApplicationsSubmittedSixDaysAgo = reader.GetInt32(NoOfApprenticeshipApplicationsSubmittedSixDaysAgoColumnIndex),
+                            NoOfApprenticeshipApplicationsSubmittedFiveDaysAgo = reader.GetInt32(NoOfApprenticeshipApplicationsSubmittedFiveDaysAgoColumnIndex),
+                            NoOfApprenticeshipApplicationsSubmittedFourDaysAgo = reader.GetInt32(NoOfApprenticeshipApplicationsSubmittedFourDaysAgoColumnIndex),
+                            NoOfApprenticeshipApplicationsSubmittedThreeDaysAgo = reader.GetInt32(NoOfApprenticeshipApplicationsSubmittedThreeDaysAgoColumnIndex),
+                            NoOfApprenticeshipApplicationsSubmittedTwoDaysAgo = reader.GetInt32(NoOfApprenticeshipApplicationsSubmittedTwoDaysAgoColumnIndex),
+                            NoOfApprenticeshipApplicationsSubmittedOneDayAgo = reader.GetInt32(NoOfApprenticeshipApplicationsSubmittedOneDayAgoColumnIndex),
+                        };
 
-                                NoOfApprenticeshipApplicationsSubmitted = reader.GetInt32(NoOfApprenticeshipApplicationsSubmittedColumnIndex),
-                                NoOfApprenticeshipApplicationsSubmittedSevenDaysAgo = reader.GetInt32(NoOfApprenticeshipApplicationsSubmittedSevenDaysAgoColumnIndex),
-                                NoOfApprenticeshipApplicationsSubmittedSixDaysAgo = reader.GetInt32(NoOfApprenticeshipApplicationsSubmittedSixDaysAgoColumnIndex),
-                                NoOfApprenticeshipApplicationsSubmittedFiveDaysAgo = reader.GetInt32(NoOfApprenticeshipApplicationsSubmittedFiveDaysAgoColumnIndex),
-                                NoOfApprenticeshipApplicationsSubmittedFourDaysAgo = reader.GetInt32(NoOfApprenticeshipApplicationsSubmittedFourDaysAgoColumnIndex),
-                                NoOfApprenticeshipApplicationsSubmittedThreeDaysAgo = reader.GetInt32(NoOfApprenticeshipApplicationsSubmittedThreeDaysAgoColumnIndex),
-                                NoOfApprenticeshipApplicationsSubmittedTwoDaysAgo = reader.GetInt32(NoOfApprenticeshipApplicationsSubmittedTwoDaysAgoColumnIndex),
-                                NoOfApprenticeshipApplicationsSubmittedOneDayAgo = reader.GetInt32(NoOfApprenticeshipApplicationsSubmittedOneDayAgoColumnIndex),
-                            };
-
-                            return summary;
-                        }
+                        return summary;
                     }
                 }
             }
