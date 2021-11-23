@@ -45,7 +45,7 @@ jobs:
           displayName: 'Run Mongo API Script'
           inputs:
             filePath: $(Pipeline.Workspace)/Recruit/src/Data/Recruit.ChangeScripts/Invoke-CosmosDbScript.ps1
-            arguments: '-CosmosDb $(CosmosDbName).documents.azure.com:10255 -Username $(CosmosDbName) -Password $(CosmosDbPrimaryReadWriteKey) -MongoScript "$(Pipeline.Workspace)/Recruit/src/Data/Recruit.ChangeScripts/documentMigration.js"'
+            arguments: '-CosmosDb $(CosmosDbName).mongo.cosmos.azure.com:10255 -Username $(CosmosDbName) -Password $(CosmosDbPrimaryReadWriteKey) -MongoScript "$(Pipeline.Workspace)/Recruit/src/Data/Recruit.ChangeScripts/documentMigration.js"'
             pwsh: true
 
         - template: azure-pipelines-templates/deploy/step/generate-config.yml@das-platform-building-blocks
@@ -76,7 +76,7 @@ jobs:
             VirtualApplication: 'Recruit.Vacancies.Jobs'
 
 - deployment: DeployApi
-  dependsOn: 
+  dependsOn:
   - DeployInfrastructure
   - DeployWorker
   workspace:

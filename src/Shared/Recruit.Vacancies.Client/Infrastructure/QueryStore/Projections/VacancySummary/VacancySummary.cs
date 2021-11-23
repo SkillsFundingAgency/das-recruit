@@ -16,7 +16,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections
         public VacancyStatus Status { get; set; }
         public DateTime? ClosingDate { get; set; }
         public int? Duration { get; set; }
-        public DurationUnit DurationUnit { get; internal set; }
+        public DurationUnit? DurationUnit { get; internal set; }
         public DateTime? ClosedDate { get; set; }
         public ClosureReason? ClosureReason { get; set; }
         public ApplicationMethod? ApplicationMethod { get; set; }
