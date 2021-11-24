@@ -20,12 +20,14 @@ resources:
   - repository: das-platform-building-blocks
     type: github
     name: SkillsFundingAgency/das-platform-building-blocks
-    ref: refs/tags/0.4.0
+    ##TO DO: revert to latest tag
+    ref: refs/heads/DASD-9249-ImproveWaitAzDevOpsDeploymentScript
     endpoint: SkillsFundingAgency
   - repository: das-platform-automation
     type: github
     name: SkillsFundingAgency/das-platform-automation
-    ref: refs/tags/4.5.0
+    ##TO DO: revert to latest tag
+    ref: refs/heads/DASD-9249-ImproveWaitAzDevOpsDeploymentScript
     endpoint: SkillsFundingAgency
   pipelines:
   - pipeline: das-employer-config
