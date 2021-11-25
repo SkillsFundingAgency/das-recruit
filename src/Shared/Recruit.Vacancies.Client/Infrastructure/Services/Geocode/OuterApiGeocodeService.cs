@@ -22,6 +22,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Geocode
         {
             try
             {
+                _logger.LogInformation($"Getting geo code for postcode {postcode}");
                 var result = await _outerApiClient.Get<GetGeoPointResponse>(new GetGeoCodeRequest(postcode));
 
                 if (result?.GeoPoint?.Latitude != null && result?.GeoPoint?.Longitude != null)
