@@ -14,6 +14,8 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelationship;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider;
 using MediatR;
+using Microsoft.Extensions.Logging;
+using NLog;
 using SFA.DAS.Recruit.Api.Models;
 
 namespace SFA.DAS.Recruit.Api.Commands
@@ -28,6 +30,7 @@ namespace SFA.DAS.Recruit.Api.Commands
         private readonly ITrainingProviderService _trainingProviderService;
         private readonly IProviderVacancyClient _providerVacancyClient;
         private readonly IProviderRelationshipsService _providerRelationshipsService;
+        private readonly ILogger<CreateVacancyCommandHandler> _logger;
 
         public CreateVacancyCommandHandler (
             IRecruitVacancyClient recruitVacancyClient, 
@@ -37,7 +40,8 @@ namespace SFA.DAS.Recruit.Api.Commands
             ITimeProvider timeProvider,
             ITrainingProviderService trainingProviderService,
             IProviderVacancyClient providerVacancyClient,
-            IProviderRelationshipsService providerRelationshipsService)
+            IProviderRelationshipsService providerRelationshipsService,
+            ILogger<CreateVacancyCommandHandler> logger)
         {
             _recruitVacancyClient = recruitVacancyClient;
             _employerVacancyClient = employerVacancyClient;
@@ -47,6 +51,7 @@ namespace SFA.DAS.Recruit.Api.Commands
             _trainingProviderService = trainingProviderService;
             _providerVacancyClient = providerVacancyClient;
             _providerRelationshipsService = providerRelationshipsService;
+            _logger = logger;
         }
         public async Task<CreateVacancyCommandResponse> Handle(CreateVacancyCommand request, CancellationToken cancellationToken)
         {
@@ -89,12 +94,17 @@ namespace SFA.DAS.Recruit.Api.Commands
             {
                 await CreateVacancy(request, trainingProvider);
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                _logger.LogError(e,"Error creating vacancy");
                 return new CreateVacancyCommandResponse
                 {
                     ResultCode = ResponseCode.InvalidRequest,
-                    ValidationErrors = new List<string>{"Unable to create Vacancy. Vacancy already submitted"}
+                    ValidationErrors = new List<string>
+                    {
+                        "Unable to create Vacancy. Vacancy already submitted",
+                        $"exception {e}"
+                    }
                 };   
             }
 
