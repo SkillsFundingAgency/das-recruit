@@ -13,6 +13,12 @@ jobs:
     runOnce:
       deploy:
         steps:
+        - template: azure-pipelines-templates/deploy/step/wait-azure-devops-deployment.yml@das-platform-building-blocks
+          parameters:
+            ServiceConnection: ${{ parameters.ServiceConnection }}
+            EnvironmentId: $(Environment.Id)
+            PipelineName: $(Build.DefinitionName)
+            RunId: $(Build.BuildId)
         - template: azure-pipelines-templates/deploy/step/arm-deploy.yml@das-platform-building-blocks
           parameters:
             ServiceConnection: ${{ parameters.ServiceConnection }}
@@ -21,7 +27,7 @@ jobs:
             Environment: ${{ parameters.Environment }}
             TemplatePath: $(Pipeline.Workspace)/Recruit/azure/template.json
             ParametersPath: $(Pipeline.Workspace)/Recruit/azure/template.parameters.json
-            IsMultiRepoCheckout: false
+            IsMultiRepoCheckout: true
             TemplateSecrets:
               LoggingRedisConnectionString: $(LoggingRedisConnectionString)
               ConfigurationStorageConnectionString: $(ConfigurationStorageConnectionString)
