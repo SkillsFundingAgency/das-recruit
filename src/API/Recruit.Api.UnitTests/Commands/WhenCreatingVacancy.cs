@@ -175,8 +175,8 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Commands
 
             var actual = await handler.Handle(command, CancellationToken.None);
             
-            actual.ValidationErrors.Should()
-                .BeEquivalentTo(new List<string>{"Unable to create Vacancy. Vacancy already submitted"});
+            actual.ValidationErrors.First().Should()
+                .BeEquivalentTo("Unable to create Vacancy. Vacancy already submitted");
             actual.ResultCode.Should().Be(ResponseCode.InvalidRequest);
         }
         

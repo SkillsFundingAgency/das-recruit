@@ -103,7 +103,7 @@ namespace SFA.DAS.Recruit.Api.Commands
                     ValidationErrors = new List<string>
                     {
                         "Unable to create Vacancy. Vacancy already submitted",
-                        $"exception {e}"
+                        $"exception {e.StackTrace}"
                     }
                 };   
             }
