@@ -102,8 +102,7 @@ namespace SFA.DAS.Recruit.Api.Commands
                     ResultCode = ResponseCode.InvalidRequest,
                     ValidationErrors = new List<string>
                     {
-                        "Unable to create Vacancy. Vacancy already submitted",
-                        $"exception {e.StackTrace}"
+                        "Unable to create Vacancy. Vacancy already submitted"
                     }
                 };   
             }
