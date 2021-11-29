@@ -62,7 +62,13 @@ namespace SFA.DAS.Recruit.Api.Commands
                 return new CreateVacancyCommandResponse
                 {
                     ResultCode = ResponseCode.InvalidRequest,
-                    ValidationErrors = new List<string>{"Training Provider UKPRN not valid"}
+                    ValidationErrors = new List<DetailedValidationError>
+                    {
+                        new DetailedValidationError
+                        {
+                            Field = nameof(request.VacancyUserDetails.Ukprn), Message = "Training Provider UKPRN not valid"
+                        }
+                    }.Cast<object>().ToList()
                 };
             }
 
@@ -77,7 +83,10 @@ namespace SFA.DAS.Recruit.Api.Commands
                 return new CreateVacancyCommandResponse
                 {
                     ResultCode = ResponseCode.InvalidRequest,
-                    ValidationErrors = result.Errors.Select(c=>c.ErrorMessage).ToList()
+                    ValidationErrors = result.Errors.Select(error => new DetailedValidationError
+                    {
+                        Field = error.PropertyName, Message = error.ErrorMessage
+                    }).Cast<object>().ToList()
                 };
             }
 
@@ -100,10 +109,10 @@ namespace SFA.DAS.Recruit.Api.Commands
                 return new CreateVacancyCommandResponse
                 {
                     ResultCode = ResponseCode.InvalidRequest,
-                    ValidationErrors = new List<string>
+                    ValidationErrors = new List<DetailedValidationError>{new DetailedValidationError
                     {
-                        "Unable to create Vacancy. Vacancy already submitted"
-                    }
+                        Field = nameof(request.Vacancy.Id), Message = "Unable to create Vacancy. Vacancy already submitted"
+                    }}.Cast<object>().ToList()
                 };   
             }
 

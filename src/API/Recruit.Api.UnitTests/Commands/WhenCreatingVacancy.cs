@@ -39,7 +39,9 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Commands
             var actual = await handler.Handle(command, CancellationToken.None);
             
             actual.ResultCode.Should().Be(ResponseCode.InvalidRequest);
-            actual.ValidationErrors.Contains("Training Provider UKPRN not valid");
+            actual.ValidationErrors.Should().Contain(error => 
+                ((DetailedValidationError)error).Field.Equals(nameof(command.VacancyUserDetails.Ukprn), StringComparison.InvariantCultureIgnoreCase) && 
+                ((DetailedValidationError)error).Message.Equals("Training Provider UKPRN not valid"));
         }
         
         [Test, MoqAutoData]
@@ -85,8 +87,12 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Commands
             
             var actual = await handler.Handle(command, CancellationToken.None);
 
-            actual.ValidationErrors.Should()
-                .BeEquivalentTo(entityValidationResult.Errors.Select(x => x.ErrorMessage).ToList());
+            actual.ValidationErrors.Should().BeEquivalentTo(
+                entityValidationResult.Errors.Select(error => new DetailedValidationError
+                {
+                    Field = error.PropertyName, 
+                    Message = error.ErrorMessage
+                }));
             actual.ResultCode.Should().Be(ResponseCode.InvalidRequest);
         }
         
@@ -175,8 +181,9 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Commands
 
             var actual = await handler.Handle(command, CancellationToken.None);
             
-            actual.ValidationErrors.First().Should()
-                .BeEquivalentTo("Unable to create Vacancy. Vacancy already submitted");
+            actual.ValidationErrors.Should().Contain(error => 
+                ((DetailedValidationError)error).Field.Equals(nameof(command.Vacancy.Id), StringComparison.InvariantCultureIgnoreCase) && 
+                ((DetailedValidationError)error).Message.Equals("Unable to create Vacancy. Vacancy already submitted"));
             actual.ResultCode.Should().Be(ResponseCode.InvalidRequest);
         }
         
@@ -198,8 +205,9 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Commands
 
             var actual = await handler.Handle(command, CancellationToken.None);
             
-            actual.ValidationErrors.First().Should()
-                .BeEquivalentTo("Unable to create Vacancy. Vacancy already submitted");
+            actual.ValidationErrors.Should().Contain(error => 
+                ((DetailedValidationError)error).Field.Equals(nameof(command.Vacancy.Id), StringComparison.InvariantCultureIgnoreCase) && 
+                ((DetailedValidationError)error).Message.Equals("Unable to create Vacancy. Vacancy already submitted"));
             actual.ResultCode.Should().Be(ResponseCode.InvalidRequest);
         }
 

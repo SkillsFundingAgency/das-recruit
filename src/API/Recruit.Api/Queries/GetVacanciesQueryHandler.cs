@@ -31,7 +31,7 @@ namespace SFA.DAS.Recruit.Api.Queries
 
             if (validationErrors.Any())
             {
-                return new GetVacanciesResponse { ResultCode = ResponseCode.InvalidRequest, ValidationErrors = validationErrors };
+                return new GetVacanciesResponse { ResultCode = ResponseCode.InvalidRequest, ValidationErrors = validationErrors.Cast<object>().ToList() };
             }
 
             IList<VacancySummaryProjection> vacancies;
