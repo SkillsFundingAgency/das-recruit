@@ -7,5 +7,6 @@ namespace SFA.DAS.Recruit.Api.Commands
     {
         public Vacancy Vacancy { get ; set ; }
         public VacancyUser VacancyUserDetails { get ; set ; }
+        public bool ValidateOnly { get; set; }
     }
 }
