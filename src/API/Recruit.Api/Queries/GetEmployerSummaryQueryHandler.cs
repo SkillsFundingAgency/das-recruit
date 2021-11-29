@@ -29,7 +29,7 @@ namespace SFA.DAS.Recruit.Api.Queries
 
             if (validationErrors.Any())
             {
-                return new GetEmployerSummaryResponse { ResultCode = ResponseCode.InvalidRequest, ValidationErrors = validationErrors };
+                return new GetEmployerSummaryResponse { ResultCode = ResponseCode.InvalidRequest, ValidationErrors = validationErrors.Cast<object>().ToList() };
             }
 
             var dashboard = await _queryStoreReader.GetEmployerDashboardAsync(request.EmployerAccountId);
