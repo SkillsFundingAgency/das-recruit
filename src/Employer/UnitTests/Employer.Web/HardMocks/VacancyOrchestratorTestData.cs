@@ -84,5 +84,28 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.HardMocks
                 }
             };
         }
+
+        internal static GetAddressesListResponse GetAddressesListResponse()
+        {
+            return new GetAddressesListResponse
+            {
+                Addresses = new List<GetAddressesListItem> {
+                    new GetAddressesListItem {
+                        Postcode = "NN1 4YH",
+                        PostTown = "Northampton",
+                        County = "Northamptionshire",
+                        Street ="North street",
+                        House ="12"
+                    },
+                    new GetAddressesListItem {
+                        Postcode = "MK2 4YH",
+                        PostTown = "Bedford",
+                        County = "Bedfordshire",
+                        Street ="South street",
+                        House ="13"
+                    }
+                }
+            };
+        }
     }
 }

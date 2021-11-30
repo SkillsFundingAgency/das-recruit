@@ -102,7 +102,6 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
         {
             // Configuration
             services.AddSingleton(configuration);
-            services.Configure<GeocodeConfiguration>(configuration.GetSection("Geocode"));
             services.Configure<FaaConfiguration>(configuration.GetSection("FaaConfiguration"));
             services.Configure<VacancyApiConfiguration>(configuration.GetSection("VacancyApiConfiguration"));
             services.Configure<SlackConfiguration>(configuration.GetSection("Slack"));
@@ -149,13 +148,13 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
             // Infrastructure Services
             services.AddTransient<IEmployerAccountProvider, EmployerAccountProvider>();
             services.AddTransient<ISlackClient, SlackClient>();
-            services.AddTransient<IGeocodeServiceFactory, GeocodeServiceFactory>();
             services.AddTransient<IGetVacancyTitlesProvider, VacancyApiTitlesProvider>();
             services.AddTransient<ITrainingProviderService, TrainingProviderService>();
             services.AddTransient<ITrainingProviderSummaryProvider, TrainingProviderSummaryProvider>();
             services.AddTransient<IFaaService, FaaService>();
             services.AddTransient<IPasAccountProvider, PasAccountProvider>();
             services.AddHttpClient<IOuterApiClient, OuterApiClient>();
+            services.AddTransient<IOuterApiGeocodeService, OuterApiGeocodeService>();
 
             // Projection services
             services.AddTransient<IEmployerDashboardProjectionService, EmployerDashboardProjectionService>();
@@ -278,7 +277,8 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
                 .AddTransient<IEmployerVacancyClient, VacancyClient>()
                 .AddTransient<IProviderVacancyClient, VacancyClient>()
                 .AddTransient<IQaVacancyClient, QaVacancyClient>()
-                .AddTransient<IJobsVacancyClient, VacancyClient>();
+                .AddTransient<IJobsVacancyClient, VacancyClient>()
+                .AddTransient<IGetAddressesClient, OuterApiGetAddressesClient>();
         }
 
 

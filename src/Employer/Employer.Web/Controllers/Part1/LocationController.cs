@@ -80,6 +80,13 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
         public IActionResult Cancel(VacancyRouteModel vrm, [FromQuery] bool wizard)
         {
             return CancelAndRedirect(wizard);
-        }  
+        }
+
+        [HttpGet("location/GetAddresses")]
+        public async Task<IActionResult> GetAddresses([FromQuery] string searchTerm)
+        {
+            var result = await _orchestrator.GetAddresses(searchTerm);
+            return Ok(result);
+        }
     }
 }

@@ -35,7 +35,6 @@ namespace Esfa.Recruit.Provider.Web.Configuration
             services.Configure<ExternalLinksConfiguration>(configuration.GetSection("ExternalLinks"));
             services.Configure<AuthenticationConfiguration>(configuration.GetSection("Authentication"));
             services.Configure<GoogleAnalyticsConfiguration>(configuration.GetSection("GoogleAnalytics"));
-            services.Configure<PostcodeAnywhereConfiguration>(configuration.GetSection("PostcodeAnywhere"));
             services.Configure<FaaConfiguration>(configuration.GetSection("FaaConfiguration"));
             services.Configure<ZenDeskConfiguration>(configuration.GetSection("ZenDesk"));
             services.AddSingleton<ProviderApprenticeshipsLinkHelper>();

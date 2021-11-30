@@ -1,7 +1,5 @@
 ﻿using System;
 using Esfa.Recruit.Vacancies.Client.Application.Commands;
-using Esfa.Recruit.Vacancies.Client.Domain.Events;
-using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using MediatR;
 using System.Threading;
@@ -13,19 +11,19 @@ using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 {
-    public class GeoVacancyCommandHandler: IRequestHandler<GeocodeVacancyCommand,Unit>
+    public class GeocodeVacancyCommandHandler: IRequestHandler<GeocodeVacancyCommand,Unit>
     {
         private readonly IVacancyRepository _repository;
-        private readonly IGeocodeServiceFactory _geocodeServiceFactory;
-        private readonly ILogger<GeoVacancyCommandHandler> _logger;
+        private readonly IOuterApiGeocodeService _geocodeService;
+        private readonly ILogger<GeocodeVacancyCommandHandler> _logger;
 
-        public GeoVacancyCommandHandler(
-            IVacancyRepository repository, 
-            IGeocodeServiceFactory geocodeServiceFactory,
-            ILogger<GeoVacancyCommandHandler> logger)
+        public GeocodeVacancyCommandHandler(
+            IVacancyRepository repository,
+            IOuterApiGeocodeService geocodeServiceFactory,
+            ILogger<GeocodeVacancyCommandHandler> logger)
         {
             _repository = repository;
-            _geocodeServiceFactory = geocodeServiceFactory;
+            _geocodeService = geocodeServiceFactory;
             _logger = logger;
         }
 
@@ -41,31 +39,25 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
                 return Unit.Value;
             }
 
-            var geocode = vacancy.GeocodeUsingOutcode
-                ? await GeocodeOutcodeAsync(vacancy)
-                : await GeocodePostcodeAsync(vacancy);
-
+            var geocode = await GetGeocode(vacancy, vacancy.GeocodeUsingOutcode);
+          
             await SetVacancyGeocode(vacancy.Id, geocode);
             
             return Unit.Value;
         }
 
-        private Task<Geocode> GeocodePostcodeAsync(Vacancy vacancy)
-        {            
-            _logger.LogInformation("Attempting to geocode postcode:'{postcode}' for vacancyId:'{vacancyId}'", vacancy.EmployerLocation.Postcode, vacancy.Id);
-
-            var geocodeService = _geocodeServiceFactory.GetGeocodeService();
-            return geocodeService.Geocode(vacancy.EmployerLocation.Postcode);
-        }
-
-        private Task<Geocode> GeocodeOutcodeAsync(Vacancy vacancy)
+        private Task<Geocode> GetGeocode(Vacancy vacancy, bool usingOutCode)
         {
-            var outcode = vacancy.EmployerLocation.PostcodeAsOutcode();
+            if (usingOutCode)
+            {
+                _logger.LogInformation("Attempting to geocode outcode:'{outcode}' for anonymous vacancyId:'{vacancyId}'", vacancy.EmployerLocation.PostcodeAsOutcode(), vacancy.Id);
+            }
+            else
+            {
+                _logger.LogInformation("Attempting to geocode postcode:'{postcode}' for vacancyId:'{vacancyId}'", vacancy.EmployerLocation.Postcode, vacancy.Id);
+            }
 
-            _logger.LogInformation("Attempting to geocode outcode:'{outcode}' for anonymous vacancyId:'{vacancyId}'", outcode, vacancy.Id);
-
-            var geocodeService = _geocodeServiceFactory.GetGeocodeOutcodeService();
-            return geocodeService.Geocode(outcode);
+            return _geocodeService.Geocode(vacancy.EmployerLocation.Postcode);
         }
 
         private async Task SetVacancyGeocode(Guid vacancyId, Geocode geocode)
