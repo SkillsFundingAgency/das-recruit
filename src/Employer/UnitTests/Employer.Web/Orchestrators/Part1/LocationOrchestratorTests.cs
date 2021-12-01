@@ -1,16 +1,12 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.UnitTests.Employer.Web.HardMocks;
 using Esfa.Recruit.Employer.Web.Models;
 using Esfa.Recruit.Employer.Web.Orchestrators.Part1;
-using Esfa.Recruit.Employer.Web.ViewModels.Part1.Duration;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.Location;
-using Esfa.Recruit.Employer.Web.ViewModels.Part1.Wage;
 using Esfa.Recruit.Shared.Web.Mappers;
 using Esfa.Recruit.Shared.Web.Models;
 using Esfa.Recruit.Shared.Web.Services;
-using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
@@ -122,6 +118,23 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part1
             _fixture.VerifyEmployerReviewFieldIndicators(FieldIdentifiers.EmployerName, shouldFlagIndicator);
         }
 
+        [Fact]
+        public async Task WhenGettingAddress_ForNewVaccancy()
+        {
+            _fixture.Setup();
+            var addresses = await _fixture.GetAddresses();
+            _fixture.VerifyAddresses(addresses);
+        }
+
+
+        [Fact]
+        public async Task WhenGettingAddress_GetAdderssesClientIsCalled()
+        {
+            _fixture.Setup();
+            await _fixture.GetAddresses();
+            _fixture.VerifyAddressesClientCalled();
+        }
+
         public class LocationOrchestratorTestsFixture
         {
             private const VacancyRuleSet ValidationRules = VacancyRuleSet.EmployerAddress;
@@ -131,16 +144,19 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part1
             public EmployerProfile VacancyEmployerProfile { get;  }
             public EmployerProfile AlternateEmployerProfile { get;  }
             public LocationOrchestrator Sut {get; private set;}
+            public GetAddressesListResponse AddressesListResponse { get; set; }
 
             public LocationOrchestratorTestsFixture()
             {
                 MockClient = new Mock<IEmployerVacancyClient>();
                 MockRecruitVacancyClient = new Mock<IRecruitVacancyClient>();
+                MockAddressesClient = new Mock<IGetAddressesClient>();
 
                 User = VacancyOrchestratorTestData.GetVacancyUser();
                 Vacancy = VacancyOrchestratorTestData.GetPart1CompleteVacancy();
                 VacancyEmployerProfile = VacancyOrchestratorTestData.GetEmployerProfile(Vacancy.AccountLegalEntityPublicHashedId);
                 AlternateEmployerProfile = VacancyOrchestratorTestData.GetEmployerProfile(VacancyOrchestratorTestData.AccountLegalEntityPublicHashedId456);
+                AddressesListResponse = VacancyOrchestratorTestData.GetAddressesListResponse();
                 EmployerEditVacancyInfo = VacancyOrchestratorTestData.GetEmployerEditVacancyInfo();
             }
 
@@ -211,9 +227,10 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part1
                 MockRecruitVacancyClient.Setup(x => x.Validate(Vacancy, ValidationRules)).Returns(new EntityValidationResult());
                 MockRecruitVacancyClient.Setup(x => x.UpdateDraftVacancyAsync(It.IsAny<Vacancy>(), User));
                 MockRecruitVacancyClient.Setup(x => x.UpdateEmployerProfileAsync(It.IsAny<EmployerProfile>(), User));
+                MockAddressesClient.Setup(x => x.GetAddresses(It.IsAny<string>())).ReturnsAsync(AddressesListResponse);
 
-                Sut = new LocationOrchestrator(MockClient.Object, MockRecruitVacancyClient.Object, Mock.Of<ILogger<LocationOrchestrator>>(), 
-                    Mock.Of<IReviewSummaryService>());
+                Sut = new LocationOrchestrator(MockClient.Object, MockRecruitVacancyClient.Object, Mock.Of<ILogger<LocationOrchestrator>>(),
+                  Mock.Of<IReviewSummaryService>(), MockAddressesClient.Object);
             }
 
             public async Task PostLocationEditModelAsync(LocationEditModel model, VacancyEmployerInfoModel vacancyEmployerInfoModel = null)
@@ -234,8 +251,25 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part1
                     .Match<EmployerReviewFieldIndicator>((x) => x.IsChangeRequested == value);
             }
 
+            public async Task<GetAddressesListResponse> GetAddresses()
+            {
+                return await Sut.GetAddresses("NN1");
+            }
+
+            internal void VerifyAddressesClientCalled()
+            {
+                MockAddressesClient.Verify(x => x.GetAddresses(It.IsAny<string>()), Times.Once);
+            }
+
+            internal void VerifyAddresses(GetAddressesListResponse addresses)
+            {
+                Assert.Equal(2, addresses.Addresses.Count());
+                Assert.Equal(AddressesListResponse, addresses);
+            }
+
             public Mock<IEmployerVacancyClient> MockClient { get; set; }
             public Mock<IRecruitVacancyClient> MockRecruitVacancyClient { get; set; }
+            public Mock<IGetAddressesClient> MockAddressesClient { get; set; }
         }
     }
 }

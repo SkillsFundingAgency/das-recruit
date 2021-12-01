@@ -7,6 +7,8 @@ using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Provider.Web.ViewModels.Part1.Location;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Shared.Web.Mappers;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -83,6 +85,13 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
         public IActionResult Cancel(VacancyRouteModel vrm, [FromQuery] bool wizard)
         {
             return CancelAndRedirect(wizard);
-        }  
+        }
+
+        [HttpGet("location/GetAddresses")]
+        public async Task<IActionResult> GetAddresses([FromQuery] string searchTerm)
+        {
+            var result = await _orchestrator.GetAddresses(searchTerm);
+            return Ok(result);
+        }
     }
 }
