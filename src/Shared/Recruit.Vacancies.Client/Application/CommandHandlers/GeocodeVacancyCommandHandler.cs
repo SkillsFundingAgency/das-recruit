@@ -41,7 +41,14 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 
             var geocode = await GetGeocode(vacancy, vacancy.GeocodeUsingOutcode);
           
-            await SetVacancyGeocode(vacancy.Id, geocode);
+            if(geocode != null)
+            {
+                await SetVacancyGeocode(vacancy.Id, geocode);
+            }
+            else
+            {
+                _logger.LogWarning($"Unable to get geocode information for postcode: {vacancy.EmployerLocation.Postcode}");
+            }
             
             return Unit.Value;
         }
