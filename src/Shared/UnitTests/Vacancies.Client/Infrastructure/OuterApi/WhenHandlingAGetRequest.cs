@@ -5,6 +5,7 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Geocode.Responses;
 using FluentAssertions;
 using Microsoft.Extensions.Options;
 using Moq;
@@ -65,6 +66,32 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
             //Act Assert
             Assert.ThrowsAsync<HttpRequestException>(() => apiClient.Get<List<string>>(getTestRequest));
             
+        }
+
+        [Fact]
+        public async Task Then_If_It_Not_Found_Default_Object_Is_Returned()
+        {
+            //Arrange
+            var key = "123-abc-567";
+            var getTestRequest = new GetTestRequest();
+            var config = new OuterApiConfiguration { BaseUrl = "http://valid-url/", Key = key };
+            var mockConfig = new Mock<IOptions<OuterApiConfiguration>>();
+            mockConfig.Setup(x => x.Value).Returns(config);
+            var response = new HttpResponseMessage
+            {
+                Content = new StringContent(""),
+                StatusCode = HttpStatusCode.NotFound
+            };
+
+            var httpMessageHandler = MessageHandler.SetupMessageHandlerMock(response, $"{config.BaseUrl}{getTestRequest.GetUrl}", config.Key);
+            var client = new HttpClient(httpMessageHandler.Object);
+            var apiClient = new OuterApiClient(client, mockConfig.Object);
+
+            //Act
+            var result = await apiClient.Get<GetGeoPointResponse>(getTestRequest);
+
+            // Assert
+            result.Should().BeNull();
         }
 
         public class GetTestRequest : IGetApiRequest
