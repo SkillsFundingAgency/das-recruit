@@ -1,4 +1,5 @@
 using System;
+using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
@@ -26,9 +27,20 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi
 
             var response = await _httpClient.GetAsync(request.GetUrl).ConfigureAwait(false);
 
+            if (response.StatusCode.Equals(HttpStatusCode.NotFound))
+            {
+                return default;
+            }
+
+            if (response.IsSuccessStatusCode)
+            {
+                var json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                return JsonConvert.DeserializeObject<TResponse>(json);
+            }
+
             response.EnsureSuccessStatusCode();
-            var json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-            return JsonConvert.DeserializeObject<TResponse>(json);
+
+            return default;
         }
 
         private void AddHeaders()
