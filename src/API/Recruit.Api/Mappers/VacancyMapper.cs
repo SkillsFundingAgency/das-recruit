@@ -67,7 +67,8 @@ namespace SFA.DAS.Recruit.Api.Mappers
                 TrainingDescription = request.TrainingDescription,
                 Skills = request.Skills,
                 DisabilityConfident = (DisabilityConfident) request.DisabilityConfident,
-                ThingsToConsider = request.ThingsToConsider
+                ThingsToConsider = request.ThingsToConsider,
+                CreatedByUser = request.User
             };
         }
     }
