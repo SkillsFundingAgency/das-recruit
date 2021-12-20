@@ -17,6 +17,7 @@ using MediatR;
 using Microsoft.Extensions.Logging;
 using NLog;
 using SFA.DAS.Recruit.Api.Models;
+using EmployerNameOption = Esfa.Recruit.Vacancies.Client.Domain.Entities.EmployerNameOption;
 
 namespace SFA.DAS.Recruit.Api.Commands
 {
@@ -171,9 +172,18 @@ namespace SFA.DAS.Recruit.Api.Commands
             draftVacancyFromRequest.OwnerType = newVacancy.OwnerType;
             draftVacancyFromRequest.SourceOrigin = newVacancy.SourceOrigin;
             draftVacancyFromRequest.SourceType = newVacancy.SourceType;
-            
+
             var now = _timeProvider.Now;
 
+            if (draftVacancyFromRequest.EmployerNameOption == EmployerNameOption.TradingName)
+            {
+                var employerProfile = await _recruitVacancyClient.GetEmployerProfileAsync(
+                    draftVacancyFromRequest.EmployerAccountId,
+                    draftVacancyFromRequest.AccountLegalEntityPublicHashedId);
+                employerProfile.TradingName = draftVacancyFromRequest.EmployerName;
+                await _recruitVacancyClient.UpdateEmployerProfileAsync(employerProfile, draftVacancyFromRequest.CreatedByUser);
+            }
+            
             if (requiresEmployerReview)
             {
                 draftVacancyFromRequest.Status = VacancyStatus.Review;

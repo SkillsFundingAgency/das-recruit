@@ -20,6 +20,7 @@ using NUnit.Framework;
 using SFA.DAS.Recruit.Api.Commands;
 using SFA.DAS.Recruit.Api.Models;
 using SFA.DAS.Testing.AutoFixture;
+using EmployerNameOption = Esfa.Recruit.Vacancies.Client.Domain.Entities.EmployerNameOption;
 
 namespace SFA.DAS.Recruit.Api.UnitTests.Commands
 {
@@ -383,6 +384,36 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Commands
                 c.VacancyId.Equals(command.Vacancy.Id)
                 && c.VacancyReference.Equals(vacancy.VacancyReference)
                 )));
+        }
+
+        [Test, MoqAutoData]
+        public async Task Then_If_The_Command_Is_Valid_And_The_RegisteredName_Is_Used_Then_Employer_Profile_Updated(
+            Vacancy vacancy,
+            CreateVacancyCommand command,
+            TrainingProvider provider,
+            EmployerProfile employerProfile,
+            [Frozen]Mock<IEmployerVacancyClient> employerVacancyClient,
+            [Frozen]Mock<IRecruitVacancyClient> recruitVacancyClient,
+            [Frozen]Mock<IMessaging> messaging,
+            [Frozen]Mock<ITrainingProviderService> trainingProviderService,
+            CreateVacancyCommandHandler handler)
+        {
+            command.ValidateOnly = false;
+            command.Vacancy.EmployerNameOption = EmployerNameOption.TradingName;
+            trainingProviderService.Setup(x => x.GetProviderAsync(command.VacancyUserDetails.Ukprn.Value))
+                .ReturnsAsync(provider);
+            recruitVacancyClient.Setup(x => x.Validate(It.IsAny<Vacancy>(), VacancyRuleSet.All))
+                .Returns(new EntityValidationResult());
+            recruitVacancyClient.Setup(x => x.GetVacancyAsync(command.Vacancy.Id)).ReturnsAsync(vacancy);
+            recruitVacancyClient
+                .Setup(x => x.GetEmployerProfileAsync(command.Vacancy.EmployerAccountId,
+                    command.Vacancy.AccountLegalEntityPublicHashedId)).ReturnsAsync(employerProfile);
+            
+            await handler.Handle(command, CancellationToken.None);
+            
+            recruitVacancyClient.Verify(x=>x.UpdateEmployerProfileAsync(It.Is<EmployerProfile>(c=>
+                c.TradingName.Equals(command.Vacancy.EmployerName)
+            ),It.IsAny<VacancyUser>()), Times.Once);
         }
 
         [Test, MoqAutoData]
