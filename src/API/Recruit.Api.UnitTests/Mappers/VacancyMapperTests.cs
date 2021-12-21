@@ -24,6 +24,7 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Mappers
                 .Excluding(c => c.Address)
             );
             actual.EmployerLocation.Should().BeEquivalentTo(request.Address);
+            actual.CreatedByUser.Should().BeEquivalentTo(request.User);
         }
     }
 }
