@@ -127,6 +127,12 @@
     },
     "wafOutboundIPAddresses": {
       "type": "array"
+    },
+    "sharedBackEndAppServicePlanName": {
+      "type": "string"
+    },
+    "sharedBackEndSubnetResourceId": {
+      "type": "string"
     }
   },
   "variables": {
@@ -821,66 +827,9 @@
     /// API Resources
     {
       "apiVersion": "2020-10-01",
-      "name": "api-app-service-plan",
-      "type": "Microsoft.Resources/deployments",
-      "resourceGroup": "[variables('resourceGroupName')]",
-      "properties": {
-        "mode": "Incremental",
-        "templateLink": {
-          "uri": "[concat(variables('deploymentUrlBase'),'app-service-plan.json')]",
-          "contentVersion": "1.0.0.0"
-        },
-        "parameters": {
-          "appServicePlanName": {
-            "value": "[variables('apiAppServicePlanName')]"
-          },
-          "aspSize": {
-            "value": "1"
-          },
-          "aspInstances": {
-            "value": 2
-          }
-        }
-      },
-      "dependsOn": [
-        "[variables('resourceGroupName')]"
-      ]
-    },
-    {
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2020-10-01",
-      "name": "api-app-service-subnet",
-      "resourceGroup": "[parameters('sharedEnvResourceGroup')]",
-      "properties": {
-        "mode": "Incremental",
-        "templateLink": {
-          "uri": "[concat(variables('deploymentUrlBase'),'subnet.json')]",
-          "contentVersion": "1.0.0.0"
-        },
-        "parameters": {
-          "virtualNetworkName": {
-            "value": "[parameters('sharedEnvVirtualNetworkName')]"
-          },
-          "subnetName": {
-            "value": "[parameters('apiSubnetObject').name]"
-          },
-          "subnetAddressPrefix": {
-            "value": "[parameters('apiSubnetObject').addressSpace]"
-          },
-          "serviceEndpointList": {
-            "value": "[parameters('subnetServiceEndpointList')]"
-          },
-          "delegations": {
-            "value": "[parameters('subnetDelegations')]"
-          }
-        }
-      }
-    },
-    {
-      "apiVersion": "2020-10-01",
       "name": "api-app-service-certificate",
       "type": "Microsoft.Resources/deployments",
-      "resourceGroup": "[variables('resourceGroupName')]",
+      "resourceGroup": "[parameters('sharedEnvResourceGroup')]",
       "properties": {
         "mode": "Incremental",
         "templateLink": {
@@ -943,10 +892,10 @@
             "value": "[variables('apiAppServiceName')]"
           },
           "appServicePlanName": {
-            "value": "[variables('apiAppServicePlanName')]"
+            "value": "[parameters('sharedBackEndAppServicePlanName')]"
           },
           "appServicePlanResourceGroup": {
-            "value": "[variables('resourceGroupName')]"
+            "value": "[parameters('sharedBackEndSubnetResourceId')]"
           },
           "subnetResourceId": {
             "value": "[reference('api-app-service-subnet').outputs.subnetResourceId.value]"
