@@ -145,7 +145,6 @@
     "qaAppServiceName": "[concat(variables('resourceNamePrefix'), '-qa-as')]",
     "webjobAppServiceName": "[concat(variables('resourceNamePrefix'), '-webjob-as')]",
     "storageAccountName": "[toLower(concat('das', parameters('resourceEnvironmentName'), parameters('serviceName'), 'str'))]",
-    "apiAppServicePlanName": "[concat(variables('resourceNamePrefix'), 'api-asp')]",
     "apiAppServiceName": "[concat(variables('resourceNamePrefix'), 'api-as')]",
     "apiConfigNames": "SFA.DAS.Recruit.Api",
     "jobsConfigNames": "SFA.DAS.Recruit.Jobs,SFA.DAS.Encoding"
@@ -847,10 +846,7 @@
             "value": "[parameters('sharedManagementResourceGroup')]"
           }
         }
-      },
-      "dependsOn": [
-        "api-app-service-plan"
-      ]
+      }
     },
     {
       "apiVersion": "2020-10-01",
