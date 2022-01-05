@@ -891,10 +891,10 @@
             "value": "[parameters('sharedBackEndAppServicePlanName')]"
           },
           "appServicePlanResourceGroup": {
-            "value": "[parameters('sharedBackEndSubnetResourceId')]"
+            "value": "[parameters('sharedEnvResourceGroup')]"
           },
           "subnetResourceId": {
-            "value": "[reference('api-app-service-subnet').outputs.subnetResourceId.value]"
+            "value": "[parameters('sharedBackEndSubnetResourceId')]"
           },
           "appServiceAppSettings": {
             "value": {
