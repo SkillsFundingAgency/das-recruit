@@ -15,6 +15,5 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.TrainingProvider
         public ApprenticeshipProgrammeViewModel Programme { get; set; }
         public string BackLinkRoute { get; set; }
         public bool ReferredFromSavedFavourites { get; set; }
-        public ApprenticeshipProgrammeViewModel Id { get; set; }
     }
 }
