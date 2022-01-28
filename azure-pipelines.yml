@@ -20,12 +20,12 @@ resources:
   - repository: das-platform-building-blocks
     type: github
     name: SkillsFundingAgency/das-platform-building-blocks
-    ref: refs/tags/0.4.29
+    ref: refs/tags/0.4.34
     endpoint: SkillsFundingAgency
   - repository: das-platform-automation
     type: github
     name: SkillsFundingAgency/das-platform-automation
-    ref: refs/tags/4.5.11
+    ref: refs/tags/4.5.14
     endpoint: SkillsFundingAgency
   pipelines:
   - pipeline: das-employer-config
