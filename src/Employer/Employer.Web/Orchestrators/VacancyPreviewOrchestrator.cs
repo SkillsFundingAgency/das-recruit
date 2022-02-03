@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration;
@@ -230,6 +230,11 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             };
 
             return vm;
+        }
+
+        public async Task<OrchestratorResponse<TaskListViewModel>> GetEmployerTaskList(VacancyRouteModel vrm)
+        {
+            return new OrchestratorResponse<TaskListViewModel>(new TaskListViewModel());
         }
 
         private void FlattenErrors(IList<EntityValidationError> errors)

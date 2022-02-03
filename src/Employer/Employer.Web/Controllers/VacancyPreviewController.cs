@@ -189,6 +189,14 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             return View("ConfirmationJobAdvert", viewModel);
         }
 
+        [HttpGet("task-list", Name = RouteNames.EmployerTaskListGet)]
+        public async Task<IActionResult> EmployerTaskList(VacancyRouteModel vrm)
+        {
+            var viewModel = await _orchestrator.GetEmployerTaskList(vrm);
+            
+            return View();
+        }
+        
         private void SetSectionStates(VacancyPreviewViewModel viewModel)
         {
             viewModel.TitleSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.Title }, true, vm => vm.Title);
