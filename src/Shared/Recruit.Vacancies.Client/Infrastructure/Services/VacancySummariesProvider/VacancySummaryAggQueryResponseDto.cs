@@ -29,7 +29,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
         public ApplicationMethod? ApplicationMethod { get; set; }
         public string ProgrammeId { get; set; }
         public int? Duration { get; set; }
-        public DurationUnit DurationUnit { get; set; }
+        public DurationUnit? DurationUnit { get; set; }
         public string TrainingTitle { get; set; }
         public TrainingType TrainingType { get; set; }
         public ApprenticeshipLevel TrainingLevel { get; set; }

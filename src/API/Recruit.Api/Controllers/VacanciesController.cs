@@ -32,7 +32,6 @@ namespace SFA.DAS.Recruit.Api.Controllers
         [Route("{id}")]
         public async Task<IActionResult> Create([FromRoute]Guid id, CreateVacancyRequest request, [FromQuery]string userEmail = null, [FromQuery]long? ukprn = null)
         {
-            
             var resp = await _mediator.Send(new CreateVacancyCommand
             {
                 Vacancy = request.MapFromCreateVacancyRequest(id),
@@ -41,6 +40,24 @@ namespace SFA.DAS.Recruit.Api.Controllers
                     Email = userEmail,
                     Ukprn = ukprn
                 }
+            });
+
+            return GetApiResponse(resp);
+        }
+        
+        [HttpPost]
+        [Route("{id}/validate")]
+        public async Task<IActionResult> Validate([FromRoute]Guid id, CreateVacancyRequest request, [FromQuery]string userEmail = null, [FromQuery]long? ukprn = null)
+        {
+            var resp = await _mediator.Send(new CreateVacancyCommand
+            {
+                Vacancy = request.MapFromCreateVacancyRequest(id),
+                VacancyUserDetails = new VacancyUser
+                {
+                    Email = userEmail,
+                    Ukprn = ukprn
+                },
+                ValidateOnly = true
             });
 
             return GetApiResponse(resp);

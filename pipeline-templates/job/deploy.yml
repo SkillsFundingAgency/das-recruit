@@ -1,16 +1,26 @@
-parameters:  
+parameters:
   Environment:
   ServiceConnection:
 
 jobs:
-- deployment: DeployApps
+- deployment: DeployInfrastructure
+  workspace:
+    clean: all
   pool:
-    name: DAS - Continuous Deployment
+    name: DAS - Continuous Deployment Agents
   environment: ${{ parameters.Environment }}
   strategy:
     runOnce:
       deploy:
         steps:
+        - template: azure-pipelines-templates/deploy/step/wait-azure-devops-deployment.yml@das-platform-building-blocks
+          parameters:
+            ServiceConnection: ${{ parameters.ServiceConnection }}
+            EnvironmentId: $(Environment.Id)
+            PipelineName: $(Build.DefinitionName)
+            RunId: $(Build.BuildId)
+            SleepTime: 120
+            RetryLimit: 15
         - template: azure-pipelines-templates/deploy/step/arm-deploy.yml@das-platform-building-blocks
           parameters:
             ServiceConnection: ${{ parameters.ServiceConnection }}
@@ -19,23 +29,32 @@ jobs:
             Environment: ${{ parameters.Environment }}
             TemplatePath: $(Pipeline.Workspace)/Recruit/azure/template.json
             ParametersPath: $(Pipeline.Workspace)/Recruit/azure/template.parameters.json
-            IsMultiRepoCheckout: false
+            IsMultiRepoCheckout: true
             TemplateSecrets:
               LoggingRedisConnectionString: $(LoggingRedisConnectionString)
               ConfigurationStorageConnectionString: $(ConfigurationStorageConnectionString)
 
-        - task: PowerShell@1
+        - task: UseDotNet@2
+          displayName: 'Install .NET Core sdk'
+          inputs:
+            packageType: sdk
+            version: 2.1.x
+            installationPath: $(Agent.ToolsDirectory)/dotnet
+
+        - task: PowerShell@2
           displayName: 'Seed Recruit Database'
           inputs:
-            scriptName: $(Pipeline.Workspace)/Recruit/Console.RecruitSeedDataWriter/SeedScript.ps1
+            filePath: $(Pipeline.Workspace)/Recruit/Console.RecruitSeedDataWriter/SeedScript.ps1
             arguments: -dbConnectionString "$(RecruitCosmosConnectionString)"
+            pwsh: true
 
         # Requires dotnet and mongo CLIs
-        - task: PowerShell@1
+        - task: PowerShell@2
           displayName: 'Run Mongo API Script'
           inputs:
-            scriptName: $(Pipeline.Workspace)/Recruit/src/Data/Recruit.ChangeScripts/Invoke-CosmosDbScript.ps1
-            arguments: '-CosmosDb $(CosmosDbName).documents.azure.com:10255 -Username $(CosmosDbName) -Password $(CosmosDbPrimaryReadWriteKey) -MongoScript "$(Pipeline.Workspace)/Recruit/src/Data/Recruit.ChangeScripts/documentMigration.js"'
+            filePath: $(Pipeline.Workspace)/Recruit/src/Data/Recruit.ChangeScripts/Invoke-CosmosDbScript.ps1
+            arguments: '-CosmosDb $(CosmosDbName).mongo.cosmos.azure.com:10255 -Username $(CosmosDbName) -Password $(CosmosDbPrimaryReadWriteKey) -MongoScript "$(Pipeline.Workspace)/Recruit/src/Data/Recruit.ChangeScripts/documentMigration.js"'
+            pwsh: true
 
         - template: azure-pipelines-templates/deploy/step/generate-config.yml@das-platform-building-blocks
           parameters:
@@ -44,33 +63,110 @@ jobs:
             TargetFileName: '*.schema.json'
             TableName: Configuration
 
-        - template: azure-pipelines-templates/deploy/step/app-deploy.yml@das-platform-building-blocks
-          parameters:
-            ServiceConnection: ${{ parameters.ServiceConnection }}
-            AppServiceName: $(ApiAppServiceName)
-            DeploymentPackagePath: $(Pipeline.Workspace)/Recruit/Recruit.Api.Zip
-
-        - template: azure-pipelines-templates/deploy/step/app-deploy.yml@das-platform-building-blocks
-          parameters:
-            ServiceConnection: ${{ parameters.ServiceConnection }}
-            AppServiceName: $(EmployerAppServiceName)
-            DeploymentPackagePath: $(Pipeline.Workspace)/Recruit/Employer.Web.Zip
-
-        - template: azure-pipelines-templates/deploy/step/app-deploy.yml@das-platform-building-blocks
-          parameters:
-            ServiceConnection: ${{ parameters.ServiceConnection }}
-            AppServiceName: $(ProviderAppServiceName)
-            DeploymentPackagePath: $(Pipeline.Workspace)/Recruit/Provider.Web.Zip
-
-        - template: azure-pipelines-templates/deploy/step/app-deploy.yml@das-platform-building-blocks
-          parameters:
-            ServiceConnection: ${{ parameters.ServiceConnection }}
-            AppServiceName: $(QAAppServiceName)
-            DeploymentPackagePath: $(Pipeline.Workspace)/Recruit/QA.Web.Zip
-
+- deployment: DeployWorker
+  dependsOn: DeployInfrastructure
+  workspace:
+    clean: all
+  pool:
+    name: DAS - Continuous Deployment Agents
+  variables:
+    JobsAppServiceName: $[ dependencies.DeployInfrastructure.outputs['DeployInfrastructure.ArmOutputs${{ parameters.Environment }}.JobsAppServiceName'] ]
+  environment: ${{ parameters.Environment }}
+  strategy:
+    runOnce:
+      deploy:
+        steps:
         - template: azure-pipelines-templates/deploy/step/webjob-deploy.yml@das-platform-building-blocks
           parameters:
             ServiceConnection: ${{ parameters.ServiceConnection }}
             AppServiceName: $(JobsAppServiceName)
             DeploymentPackagePath: $(Pipeline.Workspace)/Recruit/Recruit.Vacancies.Jobs.Zip
             VirtualApplication: 'Recruit.Vacancies.Jobs'
+
+- deployment: DeployApi
+  dependsOn:
+  - DeployInfrastructure
+  - DeployWorker
+  workspace:
+    clean: all
+  pool:
+    name: DAS - Continuous Deployment Agents
+  variables:
+    ApiAppServiceName: $[ dependencies.DeployInfrastructure.outputs['DeployInfrastructure.ArmOutputs${{ parameters.Environment }}.ApiAppServiceName'] ]
+    ResourceGroupName: $[ dependencies.DeployInfrastructure.outputs['DeployInfrastructure.ArmOutputs${{ parameters.Environment }}.ResourceGroupName'] ]
+  environment: ${{ parameters.Environment }}
+  strategy:
+    runOnce:
+      deploy:
+        steps:
+        - template: azure-pipelines-templates/deploy/step/app-deploy.yml@das-platform-building-blocks
+          parameters:
+            ServiceConnection: ${{ parameters.ServiceConnection }}
+            AppServiceName: $(ApiAppServiceName)
+            DeploymentPackagePath: $(Pipeline.Workspace)/Recruit/Recruit.Api.Zip
+
+- deployment: DeployEmployerWeb
+  dependsOn:
+  - DeployInfrastructure
+  - DeployApi
+  workspace:
+    clean: all
+  pool:
+    name: DAS - Continuous Deployment Agents
+  variables:
+    EmployerAppServiceName: $[ dependencies.DeployInfrastructure.outputs['DeployInfrastructure.ArmOutputs${{ parameters.Environment }}.EmployerAppServiceName'] ]
+    ResourceGroupName: $[ dependencies.DeployInfrastructure.outputs['DeployInfrastructure.ArmOutputs${{ parameters.Environment }}.ResourceGroupName'] ]
+  environment: ${{ parameters.Environment }}
+  strategy:
+    runOnce:
+      deploy:
+        steps:
+        - template: azure-pipelines-templates/deploy/step/app-deploy.yml@das-platform-building-blocks
+          parameters:
+            ServiceConnection: ${{ parameters.ServiceConnection }}
+            AppServiceName: $(EmployerAppServiceName)
+            DeploymentPackagePath: $(Pipeline.Workspace)/Recruit/Employer.Web.Zip
+
+- deployment: DeployProviderWeb
+  dependsOn:
+  - DeployInfrastructure
+  - DeployApi
+  workspace:
+    clean: all
+  pool:
+    name: DAS - Continuous Deployment Agents
+  variables:
+    ProviderAppServiceName: $[ dependencies.DeployInfrastructure.outputs['DeployInfrastructure.ArmOutputs${{ parameters.Environment }}.ProviderAppServiceName'] ]
+    ResourceGroupName: $[ dependencies.DeployInfrastructure.outputs['DeployInfrastructure.ArmOutputs${{ parameters.Environment }}.ResourceGroupName'] ]
+  environment: ${{ parameters.Environment }}
+  strategy:
+    runOnce:
+      deploy:
+        steps:
+        - template: azure-pipelines-templates/deploy/step/app-deploy.yml@das-platform-building-blocks
+          parameters:
+            ServiceConnection: ${{ parameters.ServiceConnection }}
+            AppServiceName: $(ProviderAppServiceName)
+            DeploymentPackagePath: $(Pipeline.Workspace)/Recruit/Provider.Web.Zip
+
+- deployment: DeployQAWeb
+  dependsOn:
+  - DeployInfrastructure
+  - DeployApi
+  workspace:
+    clean: all
+  pool:
+    name: DAS - Continuous Deployment Agents
+  variables:
+    QAAppServiceName: $[ dependencies.DeployInfrastructure.outputs['DeployInfrastructure.ArmOutputs${{ parameters.Environment }}.QAAppServiceName'] ]
+    ResourceGroupName: $[ dependencies.DeployInfrastructure.outputs['DeployInfrastructure.ArmOutputs${{ parameters.Environment }}.ResourceGroupName'] ]
+  environment: ${{ parameters.Environment }}
+  strategy:
+    runOnce:
+      deploy:
+        steps:
+        - template: azure-pipelines-templates/deploy/step/app-deploy.yml@das-platform-building-blocks
+          parameters:
+            ServiceConnection: ${{ parameters.ServiceConnection }}
+            AppServiceName: $(QAAppServiceName)
+            DeploymentPackagePath: $(Pipeline.Workspace)/Recruit/QA.Web.Zip

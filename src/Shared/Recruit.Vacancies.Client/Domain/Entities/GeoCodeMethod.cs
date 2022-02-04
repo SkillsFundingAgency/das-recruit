@@ -7,6 +7,7 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
         PostcodesIo,
         Loqate,
         PostcodesIoOutcode,
+        OuterApi,
         FailedToGeoCode
     }
 }

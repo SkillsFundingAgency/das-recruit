@@ -95,7 +95,6 @@ namespace Esfa.Recruit.Employer.Web
                                     "*.google-analytics.com",
                                     "*.googleapis.com",
                                     "*.googletagmanager.com/",
-                                    "*.postcodeanywhere.co.uk/",
                                     "https://tagmanager.google.com",
                                     "https://www.tagmanager.google.com/",
                                     "https://*.zdassets.com",
@@ -216,6 +215,9 @@ namespace Esfa.Recruit.Employer.Web
             if (!string.IsNullOrWhiteSpace(linksConfig?.TrainingProviderPermissionUrl))
                 destinations.Add(linksConfig.TrainingProviderPermissionUrl);
 
+            if (!string.IsNullOrWhiteSpace(linksConfig?.EmployerRecruitmentApiUrl))
+                destinations.Add(linksConfig.EmployerRecruitmentApiUrl);
+            
             return destinations.ToArray();
         }
     }

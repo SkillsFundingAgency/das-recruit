@@ -34,7 +34,7 @@ namespace SFA.DAS.Recruit.Api.Queries
 
             if (validationErrors.Any())
             {
-                return new GetApplicantsResponse { ResultCode = ResponseCode.InvalidRequest, ValidationErrors = validationErrors };
+                return new GetApplicantsResponse { ResultCode = ResponseCode.InvalidRequest, ValidationErrors = validationErrors.Cast<object>().ToList() };
             }
 
             var vacancyApplications = await _queryStoreReader.GetVacancyApplicationsAsync(request.VacancyReference.ToString());

@@ -1,12 +1,10 @@
 @using Esfa.Recruit.Provider.Web.ViewModels.Part1.Location;
 @using Esfa.Recruit.Shared.Web.Configuration
 @using Microsoft.Extensions.Options
-@inject IOptions<PostcodeAnywhereConfiguration> PcaConfig
+
 @model LocationViewModel;
 
-@{
-    ViewBag.GaData.Vpv = "/recruitment/provider/page-create-vacancy-location";
-}
+@{ ViewBag.GaData.Vpv = "/recruitment/provider/page-create-vacancy-location"; }
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
@@ -28,20 +26,17 @@
                     <div class="govuk-radios govuk-radios--conditional" data-module="radios">
                         <span esfa-validation-message-for="SelectedLocation" class="govuk-error-message"></span>
                         <div class="govuk-radios">
-                            @{
-                                int selectIndex = 0;
+                            @{ int selectIndex = 0;
                                 foreach (var location in Model.AvailableLocations)
                                 {
                                     selectIndex++;
-                                    <div class="govuk-radios__item">
-                                        <input asp-for="SelectedLocation" value="@location" id="OtherLocation_@selectIndex"
-                                               class="govuk-radios__input" type="radio">
-                                        <label for="OtherLocation_@selectIndex" class="govuk-label govuk-radios__label">
-                                            @location
-                                        </label>
-                                    </div>
-                                }
-                            }
+                    <div class="govuk-radios__item">
+                        <input asp-for="SelectedLocation" value="@location" id="OtherLocation_@selectIndex"
+                               class="govuk-radios__input" type="radio">
+                        <label for="OtherLocation_@selectIndex" class="govuk-label govuk-radios__label">
+                            @location
+                        </label>
+                    </div> } }
                             <div class="govuk-radios__item">
                                 <input asp-for="SelectedLocation" value="@Model.UseOtherLocation" data-aria-controls="other-location-conditional" id="other-location" class="govuk-radios__input" type="radio">
                                 <label for="other-location" class="govuk-label govuk-radios__label">
@@ -87,16 +82,7 @@
         </form>
     </div>
 </div>
-@section HeadJS
-    {
-    <script nws-csp-add-nonce="true">
-        window.EsfaRecruit.PcaConfig = {
-            key: '@PcaConfig.Value.Key',
-            findEndpoint: '@PcaConfig.Value.FindEndpoint',
-            retrieveEndpoint: '@PcaConfig.Value.RetrieveEndpoint'
-        };
-    </script>
-}
+
 @section FooterJS
     {
     <script src="/lib/jquery-ui/dist/jquery-ui.min.js"></script>
