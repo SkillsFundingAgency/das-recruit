@@ -56,9 +56,9 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             _externalLinksConfiguration = externalLinksOptions.Value;
         }
 
-        public async Task<VacancyPreviewViewModel> GetVacancyPreviewViewModelAsync(VacancyRouteModel vrm)
+        public async Task<VacancyPreviewViewModel> GetVacancyPreviewViewModelAsync(VacancyRouteModel vrm, string routeName = RouteNames.Vacancy_Preview_Get)
         {
-            var vacancyTask = Utility.GetAuthorisedVacancyForEditAsync(_client, _vacancyClient, vrm, RouteNames.Vacancy_Preview_Get);
+            var vacancyTask = Utility.GetAuthorisedVacancyForEditAsync(_client, _vacancyClient, vrm, routeName);
             var programmesTask = _vacancyClient.GetActiveApprenticeshipProgrammesAsync();
 
             await Task.WhenAll(vacancyTask, programmesTask);
