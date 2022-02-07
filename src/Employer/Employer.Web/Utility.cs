@@ -78,7 +78,7 @@ namespace Esfa.Recruit.Employer.Web
         {
             var validRoutes = new List<string>();
 
-            validRoutes.AddRange(new [] {RouteNames.Title_Post, RouteNames.Title_Get});
+            validRoutes.AddRange(new [] {RouteNames.Title_Post, RouteNames.Title_Get ,RouteNames.EmployerTaskListGet});
             if (string.IsNullOrWhiteSpace(vacancy.Title))
                 return validRoutes;
 

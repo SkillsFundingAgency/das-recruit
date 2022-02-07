@@ -338,6 +338,18 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.UtilityTests
 
             CheckRouteIsValidForVacancyTest(vacancy, RouteNames.Location_Get, false, null);
         }
+
+        [Fact]
+        public void ShouldShowTaskList()
+        {
+            var vacancy = new Vacancy
+            {
+                EmployerAccountId = "EMPLOYER ACCOUNT ID",
+                Id = Guid.Parse("84af954e-5baf-4942-897d-d00180a0839e")
+            };
+
+            CheckRouteIsValidForVacancyTest(vacancy, RouteNames.EmployerTaskListGet, false, null);
+        }
         
         private void CheckRouteIsValidForVacancyTest(Vacancy vacancy, string route, bool shouldRedirect, string expectedRedirectRoute)
         {
