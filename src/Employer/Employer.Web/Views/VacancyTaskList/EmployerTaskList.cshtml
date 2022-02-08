@@ -33,9 +33,18 @@
                 <ul class="das-task-list__items">
                     <li class="das-task-list__item">
                         <span class="das-task-list__task-name">
-                            <a class="govuk-link" asp-route="@RouteNames.Title_Get">
-                                Advert title
-                            </a>
+                            @if (Model.TaskListSectionOneState == VacancyTaskListSectionState.NotStarted)
+                            {
+                                <a class="govuk-link" asp-route="@RouteNames.CreateVacancy_Get">
+                                    Advert title
+                                </a>
+                            }
+                            else
+                            {
+                                <a class="govuk-link" asp-route="@RouteNames.Title_Get">
+                                    Advert title
+                                </a>    
+                            }
                         </span>
                     </li>
                     <li class="das-task-list__item">
