@@ -1,0 +1,217 @@
+@using Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview
+@model Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview.VacancyPreviewViewModel
+
+@{ ViewBag.GaData.Vpv = "/recruitment/employer/task-list"; }
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">  
+        <a asp-route="@RouteNames.Dashboard_Get" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Return to your applications</a>
+        <h1 class="govuk-heading-xl">
+            Create an apprenticeship advert
+        </h1>
+        <ol class="das-task-list">
+            <li>
+                <h2 class="das-task-list__section">
+                    <span class="das-task-list__section-number">1. </span> 
+                    <span class="das-task-list__section-heading">Advert summary</span>
+                    <span class="das-task-list__section-status">
+                        @if(Model.TaskListSectionOneState == VacancyTaskListSectionState.InProgress)
+                        {
+                            <strong class="govuk-tag govuk-tag--blue das-task-list__section-tag">In progress</strong>
+                        }
+                        else if (Model.TaskListSectionOneState == VacancyTaskListSectionState.Completed)
+                        {
+                            <strong class="govuk-tag das-task-list__section-tag">Completed</strong>    
+                        }
+                        else
+                        {
+                            <strong class="govuk-tag govuk-tag--grey das-task-list__section-tag">Not started</strong>
+                        }
+                        
+                    </span>
+                </h2>
+                <ul class="das-task-list__items">
+                    <li class="das-task-list__item">
+                        <span class="das-task-list__task-name">
+                            <a class="govuk-link" asp-route="@RouteNames.Title_Get">
+                                Advert title
+                            </a>
+                        </span>
+                    </li>
+                    <li class="das-task-list__item">
+                        @if (Model.TitleSectionState == VacancyPreviewSectionState.Incomplete)
+                        {
+                            <span class="das-task-list__task-name">
+                                Training course
+                            </span>    
+                        }
+                        else
+                        {
+                            <a class="govuk-link" asp-route="@RouteNames.Training_Get">
+                                Training course
+                            </a>
+                        }                        
+                    </li>
+                    <li class="das-task-list__item">
+                        @if (Model.TrainingSectionState == VacancyPreviewSectionState.Incomplete)
+                        {
+                            <span class="das-task-list__task-name">
+                                Training provider
+                            </span>
+                        }
+                        else
+                        {
+                            <a class="govuk-link" asp-route="@RouteNames.TrainingProvider_Select_Get">
+                                Training provider
+                            </a>
+                        }
+                    </li>
+                    <li class="das-task-list__item">
+                        @if (Model.ProviderSectionState == VacancyPreviewSectionState.Incomplete)
+                        {
+                            <span class="das-task-list__task-name">
+                                Summary of the apprenticeship
+                            </span>
+                        }
+                        else
+                        {
+                            <a class="govuk-link" asp-route="@RouteNames.ShortDescription_Get">
+                                Summary of the apprenticeship
+                            </a>
+                        }
+                    </li>
+                    <li class="das-task-list__item">
+                        @if (Model.ShortDescriptionSectionState == VacancyPreviewSectionState.Incomplete)
+                        {
+                            <span class="das-task-list__task-name">
+                                About the apprenticeship
+                            </span>
+                        }
+                        else
+                        {
+                            <a class="das-task-list__task-name" asp-route="@RouteNames.VacancyDescription_Index_Get">
+                                About the apprenticeship
+                            </a>
+                        }
+                        
+                        
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <h2 class="das-task-list__section">
+                    <span class="das-task-list__section-number">2. </span> 
+                    <span class="das-task-list__section-heading">Employment details</span>
+                    <span class="das-task-list__section-status">
+                        <strong class="govuk-tag govuk-tag--grey das-task-list__section-tag">Not started</strong>
+                    </span>
+                </h2>
+                <ul class="das-task-list__items">
+                    <li class="das-task-list__item">
+                        <span class="das-task-list__task-name">
+                            Pay rate
+                        </span>
+                    </li>
+                    <li class="das-task-list__item">
+                        <span class="das-task-list__task-name">
+                            Duration and working hours
+                        </span>
+                    </li>
+                    <li class="das-task-list__item">
+                        <span class="das-task-list__task-name">
+                            Important dates
+                        </span>
+                    </li>
+                    <li class="das-task-list__item">
+                        <span class="das-task-list__task-name">
+                            Number of positions
+                        </span>
+                    </li>
+                    <li class="das-task-list__item">
+                        <span class="das-task-list__task-name">
+                            Location
+                        </span>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <h2 class="das-task-list__section">
+                    <span class="das-task-list__section-number">3. </span> 
+                    <span class="das-task-list__section-heading">Skills and qualifications</span>
+                    <span class="das-task-list__section-status">
+                        <strong class="govuk-tag govuk-tag--blue das-task-list__section-tag">In progress</strong>
+                    </span>
+                </h2>
+                <ul class="das-task-list__items">
+                    <li class="das-task-list__item">
+                        <span class="das-task-list__task-name">
+                            Skills
+                        </span>
+                    </li>
+                    <li class="das-task-list__item">
+                        <span class="das-task-list__task-name">
+                            Qualifications
+                        </span>
+                    </li>
+                    <li class="das-task-list__item">
+                        <span class="das-task-list__task-name">
+                            Other things to consider
+                        </span>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <h2 class="das-task-list__section">
+                    <span class="das-task-list__section-number">4. </span> 
+                    <span class="das-task-list__section-heading">About the employer</span>
+                    <span class="das-task-list__section-status">
+                        <strong class="govuk-tag govuk-tag--grey das-task-list__section-tag">Not started</strong>
+                    </span>
+                </h2>
+                <ul class="das-task-list__items">
+                    <li class="das-task-list__item">
+                        <span class="das-task-list__task-name">
+                            Name of organisation
+                        </span>
+                    </li>
+                    <li class="das-task-list__item">
+                        <span class="das-task-list__task-name">
+                            Name of employer on advert
+                        </span>
+                    </li>
+                    <li class="das-task-list__item">
+                        <span class="das-task-list__task-name">
+                            Employer information
+                        </span>
+                    </li>
+                    <li class="das-task-list__item">
+                        <span class="das-task-list__task-name">
+                            Contact details
+                        </span>
+                    </li>
+                    <li class="das-task-list__item">
+                        <span class="das-task-list__task-name">
+                            Website for application
+                        </span>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <h2 class="das-task-list__section">
+                    <span class="das-task-list__section-number">5. </span> 
+                    <span class="das-task-list__section-heading">Check and submit your advert</span>
+                    <span class="das-task-list__section-status">
+                        <strong class="govuk-tag govuk-tag--blue das-task-list__section-tag">In progress</strong>
+                    </span>
+                </h2>
+                <ul class="das-task-list__items">
+                    <li class="das-task-list__item">
+                        <span class="das-task-list__task-name">
+                            Check your answers and submit your advert
+                        </span>
+                    </li>
+                </ul>
+            </li>
+        </ol>
+    </div>
+</div>

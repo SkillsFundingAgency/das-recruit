@@ -26,19 +26,21 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
         private readonly DisplayVacancyViewModelMapper _vacancyDisplayMapper;
         private readonly IRecruitVacancyClient _client;
         private readonly EmployerRecruitSystemConfiguration _systemConfig;
+        private readonly IUtility _utility;
 
-        public VacancyManageOrchestrator(ILogger<VacancyManageOrchestrator> logger, DisplayVacancyViewModelMapper vacancyDisplayMapper, IRecruitVacancyClient vacancyClient, EmployerRecruitSystemConfiguration systemConfig) : base(logger)
+        public VacancyManageOrchestrator(ILogger<VacancyManageOrchestrator> logger, DisplayVacancyViewModelMapper vacancyDisplayMapper, IRecruitVacancyClient vacancyClient, EmployerRecruitSystemConfiguration systemConfig, IUtility utility) : base(logger)
         {
             _vacancyDisplayMapper = vacancyDisplayMapper;
             _client = vacancyClient;
             _systemConfig = systemConfig;
+            _utility = utility;
         }
 
         public async Task<Vacancy> GetVacancy(VacancyRouteModel vrm)
         {
             var vacancy = await _client.GetVacancyAsync(vrm.VacancyId);
 
-            Utility.CheckAuthorisedAccess(vacancy, vrm.EmployerAccountId);
+            _utility.CheckAuthorisedAccess(vacancy, vrm.EmployerAccountId);
 
             return vacancy;
         }

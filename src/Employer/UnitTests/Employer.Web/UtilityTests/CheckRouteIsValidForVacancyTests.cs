@@ -1,9 +1,13 @@
 ﻿using System;
 using Esfa.Recruit.Employer.Web;
+using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Exceptions;
+using Esfa.Recruit.Shared.Web.FeatureToggle;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using FluentAssertions;
+using Moq;
 using Xunit;
 
 namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.UtilityTests
@@ -125,8 +129,12 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.UtilityTests
         [InlineData(RouteNames.TrainingProvider_Confirm_Post, false)]
         [InlineData(RouteNames.NumberOfPositions_Get, false)]
         [InlineData(RouteNames.NumberOfPositions_Post, false)]
+        [InlineData(RouteNames.ShortDescription_Get, false, true)]
+        [InlineData(RouteNames.ShortDescription_Post, false, true)]
+        [InlineData(RouteNames.VacancyDescription_Index_Get, false, true)]
+        [InlineData(RouteNames.VacancyDescription_Index_Post, false, true)]
         [InlineData("any other route", true)]
-        public void ShouldRedirectToNumberOfPositions(string route, bool shouldRedirect)
+        public void ShouldRedirectToNumberOfPositions(string route, bool shouldRedirect, bool enableTaskList = false)
         {
             var vacancy = new Vacancy {
                 EmployerAccountId = "EMPLOYER ACCOUNT ID",
@@ -137,7 +145,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.UtilityTests
                 NumberOfPositions = null,
             };
 
-            CheckRouteIsValidForVacancyTest(vacancy, route, shouldRedirect, RouteNames.NumberOfPositions_Get);
+            CheckRouteIsValidForVacancyTest(vacancy, route, shouldRedirect, RouteNames.NumberOfPositions_Get, enableTaskList);
         }
 
         [Theory]
@@ -338,16 +346,31 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.UtilityTests
 
             CheckRouteIsValidForVacancyTest(vacancy, RouteNames.Location_Get, false, null);
         }
-        
-        private void CheckRouteIsValidForVacancyTest(Vacancy vacancy, string route, bool shouldRedirect, string expectedRedirectRoute)
+
+        [Fact]
+        public void ShouldShowTaskList()
         {
+            var vacancy = new Vacancy
+            {
+                EmployerAccountId = "EMPLOYER ACCOUNT ID",
+                Id = Guid.Parse("84af954e-5baf-4942-897d-d00180a0839e")
+            };
+
+            CheckRouteIsValidForVacancyTest(vacancy, RouteNames.EmployerTaskListGet, false, null, true);
+        }
+        
+        private void CheckRouteIsValidForVacancyTest(Vacancy vacancy, string route, bool shouldRedirect, string expectedRedirectRoute, bool enableTaskList = false)
+        {
+            var featureMock = new Mock<IFeature>();
+            featureMock.Setup(x=>x.IsFeatureEnabled(FeatureNames.EmployerTaskList)).Returns(enableTaskList);
+            var utility = new Utility(Mock.Of<IRecruitVacancyClient>(), featureMock.Object);
             if (!shouldRedirect)
             {
-                Utility.CheckRouteIsValidForVacancy(vacancy, route);
+                utility.CheckRouteIsValidForVacancy(vacancy, route);
                 return;
             }
             
-            var ex = Assert.Throws<InvalidRouteForVacancyException>(() => Utility.CheckRouteIsValidForVacancy(vacancy, route));
+            var ex = Assert.Throws<InvalidRouteForVacancyException>(() => utility.CheckRouteIsValidForVacancy(vacancy, route));
 
             ex.RouteNameToRedirectTo.Should().Be(expectedRedirectRoute);
             ex.RouteValues.EmployerAccountId.Should().Be(vacancy.EmployerAccountId);

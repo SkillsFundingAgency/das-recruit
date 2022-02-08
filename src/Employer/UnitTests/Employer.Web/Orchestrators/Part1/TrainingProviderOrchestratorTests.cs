@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.UnitTests.Employer.Web.HardMocks;
+using Esfa.Recruit.Employer.Web;
 using Esfa.Recruit.Employer.Web.Models;
 using Esfa.Recruit.Employer.Web.Orchestrators.Part1;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.TrainingProvider;
+using Esfa.Recruit.Shared.Web.FeatureToggle;
 using Esfa.Recruit.Shared.Web.Mappers;
 using Esfa.Recruit.Shared.Web.Orchestrators;
 using Esfa.Recruit.Shared.Web.Services;
@@ -234,8 +236,10 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part1
                 MockTrainingProviderService.Setup(t => t.GetProviderAsync(TrainingProviderTwo.Ukprn.Value))
                     .ReturnsAsync(TrainingProviderTwo);
 
-                Sut = new TrainingProviderOrchestrator(MockClient.Object, MockRecruitVacancyClient.Object, Mock.Of<ILogger<TrainingProviderOrchestrator>>(), 
-                    Mock.Of<IReviewSummaryService>(), MockTrainingProviderSummaryProvider.Object, MockTrainingProviderService.Object);
+                var utility = new Utility(MockRecruitVacancyClient.Object, Mock.Of<IFeature>());
+                
+                Sut = new TrainingProviderOrchestrator(MockRecruitVacancyClient.Object, Mock.Of<ILogger<TrainingProviderOrchestrator>>(), 
+                    Mock.Of<IReviewSummaryService>(), MockTrainingProviderSummaryProvider.Object, MockTrainingProviderService.Object, utility);
             }
 
             public async Task<OrchestratorResponse<PostSelectTrainingProviderResult>> PostSelectTrainingProviderAsync(SelectTrainingProviderEditModel model)

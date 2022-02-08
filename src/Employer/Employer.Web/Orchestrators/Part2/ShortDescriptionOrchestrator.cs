@@ -16,20 +16,20 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
     public class ShortDescriptionOrchestrator : VacancyValidatingOrchestrator<ShortDescriptionEditModel>
     {
         private const VacancyRuleSet ValidationRules = VacancyRuleSet.ShortDescription;
-        private readonly IEmployerVacancyClient _client;
         private readonly IRecruitVacancyClient _vacancyClient;
         private readonly IReviewSummaryService _reviewSummaryService;
+        private readonly IUtility _utility;
 
-        public ShortDescriptionOrchestrator(IEmployerVacancyClient client, IRecruitVacancyClient vacancyClient, ILogger<ShortDescriptionOrchestrator> logger, IReviewSummaryService reviewSummaryService) : base(logger)
+        public ShortDescriptionOrchestrator(IRecruitVacancyClient vacancyClient, ILogger<ShortDescriptionOrchestrator> logger, IReviewSummaryService reviewSummaryService, IUtility utility) : base(logger)
         {
-            _client = client;
             _vacancyClient = vacancyClient;
             _reviewSummaryService = reviewSummaryService;
+            _utility = utility;
         }
 
         public async Task<ShortDescriptionViewModel> GetShortDescriptionViewModelAsync(VacancyRouteModel vrm)
         {
-            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, _vacancyClient, vrm, RouteNames.ShortDescription_Get);
+            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.ShortDescription_Get);
 
             var vm = new ShortDescriptionViewModel
             {
@@ -58,7 +58,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
 
         public async Task<OrchestratorResponse> PostShortDescriptionEditModelAsync(ShortDescriptionEditModel m, VacancyUser user)
         {
-            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, _vacancyClient, m, RouteNames.ShortDescription_Post);
+            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(m, RouteNames.ShortDescription_Post);
 
             SetVacancyWithEmployerReviewFieldIndicators(
                 vacancy.ShortDescription,

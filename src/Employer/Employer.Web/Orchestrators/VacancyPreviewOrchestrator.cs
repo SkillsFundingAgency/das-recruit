@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration;
@@ -29,36 +29,36 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
         private const VacancyRuleSet RejectValidationRules = VacancyRuleSet.None;
         private const VacancyRuleSet SoftValidationRules = VacancyRuleSet.MinimumWage | VacancyRuleSet.TrainingExpiryDate;
 
-        private readonly IEmployerVacancyClient _client;
         private readonly IRecruitVacancyClient _vacancyClient;
         private readonly DisplayVacancyViewModelMapper _vacancyDisplayMapper;
         private readonly IReviewSummaryService _reviewSummaryService;
         private readonly ILegalEntityAgreementService _legalEntityAgreementService;
         private readonly IMessaging _messaging;
+        private readonly IUtility _utility;
         private readonly ExternalLinksConfiguration _externalLinksConfiguration;
 
         public VacancyPreviewOrchestrator(
-            IEmployerVacancyClient client,
             IRecruitVacancyClient vacancyClient,
             ILogger<VacancyPreviewOrchestrator> logger,
             DisplayVacancyViewModelMapper vacancyDisplayMapper, 
             IReviewSummaryService reviewSummaryService, 
             ILegalEntityAgreementService legalEntityAgreementService,
             IMessaging messaging,
-            IOptions<ExternalLinksConfiguration> externalLinksOptions) : base(logger)
+            IOptions<ExternalLinksConfiguration> externalLinksOptions,
+            IUtility utility) : base(logger)
         {
-            _client = client;
             _vacancyClient = vacancyClient;
             _vacancyDisplayMapper = vacancyDisplayMapper;
             _reviewSummaryService = reviewSummaryService;
             _legalEntityAgreementService = legalEntityAgreementService;
             _messaging = messaging;
+            _utility = utility;
             _externalLinksConfiguration = externalLinksOptions.Value;
         }
 
-        public async Task<VacancyPreviewViewModel> GetVacancyPreviewViewModelAsync(VacancyRouteModel vrm)
+        public async Task<VacancyPreviewViewModel> GetVacancyPreviewViewModelAsync(VacancyRouteModel vrm, string routeName = RouteNames.Vacancy_Preview_Get)
         {
-            var vacancyTask = Utility.GetAuthorisedVacancyForEditAsync(_client, _vacancyClient, vrm, RouteNames.Vacancy_Preview_Get);
+            var vacancyTask = _utility.GetAuthorisedVacancyForEditAsync(vrm, routeName);
             var programmesTask = _vacancyClient.GetActiveApprenticeshipProgrammesAsync();
 
             await Task.WhenAll(vacancyTask, programmesTask);
@@ -91,7 +91,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
         
         public async Task<OrchestratorResponse<SubmitVacancyResponse>> SubmitVacancyAsync(SubmitEditModel m, VacancyUser user)
         {
-            var vacancy = await Utility.GetAuthorisedVacancyAsync(_vacancyClient, m, RouteNames.Preview_Submit_Post);
+            var vacancy = await _utility.GetAuthorisedVacancyAsync(m, RouteNames.Preview_Submit_Post);
             
             if (!vacancy.CanSubmit)
                 throw new InvalidStateException(string.Format(ErrMsg.VacancyNotAvailableForEditing, vacancy.Title));
@@ -150,7 +150,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 
         public async Task ClearRejectedVacancyReason(SubmitReviewModel m, VacancyUser user)
         {
-            var vacancy = await Utility.GetAuthorisedVacancyAsync(_vacancyClient, m, RouteNames.ApproveJobAdvert_Post);
+            var vacancy = await _utility.GetAuthorisedVacancyAsync(m, RouteNames.ApproveJobAdvert_Post);
 
             vacancy.EmployerRejectedReason = null;
 
@@ -159,7 +159,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 
         public async Task UpdateRejectedVacancyReason(SubmitReviewModel m, VacancyUser user)
         {
-            var vacancy = await Utility.GetAuthorisedVacancyAsync(_vacancyClient, m, RouteNames.ApproveJobAdvert_Post);
+            var vacancy = await _utility.GetAuthorisedVacancyAsync(m, RouteNames.ApproveJobAdvert_Post);
 
             vacancy.EmployerRejectedReason = m.RejectedReason;
 
@@ -168,7 +168,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 
         public async Task<OrchestratorResponse<SubmitVacancyResponse>> ApproveJobAdvertAsync(ApproveJobAdvertViewModel m, VacancyUser user)
         {
-            var vacancy = await Utility.GetAuthorisedVacancyAsync(_vacancyClient, m, RouteNames.ApproveJobAdvert_Post);
+            var vacancy = await _utility.GetAuthorisedVacancyAsync(m, RouteNames.ApproveJobAdvert_Post);
 
             if (!vacancy.CanReview)
                 throw new InvalidStateException(string.Format(ErrMsg.VacancyNotAvailableForEditing, vacancy.Title));
@@ -190,7 +190,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 
         public async Task<OrchestratorResponse<RejectVacancyResponse>> RejectJobAdvertAsync(RejectJobAdvertViewModel vm, VacancyUser user)
         {
-            var vacancy = await Utility.GetAuthorisedVacancyAsync(_vacancyClient, vm, RouteNames.RejectJobAdvert_Post);
+            var vacancy = await _utility.GetAuthorisedVacancyAsync(vm, RouteNames.RejectJobAdvert_Post);
 
             if (!vacancy.CanReject)
                 throw new InvalidStateException(string.Format(ErrMsg.VacancyNotAvailableForReject, vacancy.Title));
@@ -230,6 +230,11 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             };
 
             return vm;
+        }
+
+        public async Task<OrchestratorResponse<TaskListViewModel>> GetEmployerTaskList(VacancyRouteModel vrm)
+        {
+            return new OrchestratorResponse<TaskListViewModel>(new TaskListViewModel());
         }
 
         private void FlattenErrors(IList<EntityValidationError> errors)

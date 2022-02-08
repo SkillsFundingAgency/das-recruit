@@ -15,11 +15,13 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
     {
         private readonly IEmployerVacancyClient _client;
         private readonly IRecruitVacancyClient _vacancyClient;
+        private readonly IUtility _utility;
 
-        public CreateVacancyOptionsOrchestrator(IEmployerVacancyClient client, IRecruitVacancyClient vacancyClient)
+        public CreateVacancyOptionsOrchestrator(IEmployerVacancyClient client, IRecruitVacancyClient vacancyClient, IUtility utility)
         {
             _client = client;
             _vacancyClient = vacancyClient;
+            _utility = utility;
         }
 
         public async Task<CreateVacancyOptionsViewModel> GetCreateOptionsViewModelAsync(
@@ -37,7 +39,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
         {
             var vacancy = await _vacancyClient.GetVacancyAsync(vacancyId);
 
-            Utility.CheckAuthorisedAccess(vacancy, employerAccountId);
+            _utility.CheckAuthorisedAccess(vacancy, employerAccountId);
 
             var clonedVacancyId = await _vacancyClient.CloneVacancyAsync(vacancyId, user, 
                 SourceOrigin.EmployerWeb, vacancy.StartDate.GetValueOrDefault(), vacancy.ClosingDate.GetValueOrDefault());
