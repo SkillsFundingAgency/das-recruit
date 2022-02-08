@@ -5,48 +5,47 @@
     ViewBag.ZenDeskLabel = "recruit-short-description-of-the-apprenticeship";
 }
 
+<span class="govuk-link govuk-back-link">Back</span>
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }' />
         <partial name="@PartialNames.ReviewSummary" for="Review" />
         <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">
             <span class="govuk-caption-xl">@Model.Title</span>
-            Short description of the apprenticeship
+            Summary of the apprenticeship
         </h1>
     </div>
 </div>
 
+
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         <form asp-route="@RouteNames.ShortDescription_Post">
-             <div class="govuk-character-count"> 
-                 <div esfa-validation-marker-for="ShortDescription" class="govuk-form-group">
-                     <label asp-for="ShortDescription" class="govuk-label govuk-!-font-weight-bold">
-                         <p class="govuk-body">Write a few sentences about the apprenticeship to attract applicants. This is an important part of what applicants will see when looking through a list of adverts, so make it stand out.</p>
-                         <p class="govuk-body">
-                             This could be:
-                             <ul class="govuk-list govuk-list--bullet">
-                                 <li>what you are offering</li>
-                                 <li>why the applicant should apply</li>
-                             </ul>
-                         </p>
-                     </label>
-                     <span esfa-validation-message-for="ShortDescription" class="govuk-error-message"></span>
-                     <span class="govuk-hint">
-                         You must enter at least 50 characters.
-                     </span>
-                     <textarea asp-for="ShortDescription" class="govuk-textarea character-count" rows="5" data-val-length-max="350" esfa-automation="short-description"></textarea>
-                     <div>
-                         <div class="govuk-body float-right">
-                             <span class="maxchar-count">350</span>
-                             <span class="maxchar-text"> characters remaining</span>
-                         </div>
-                     </div>
-                     <div class="clear"></div>
-                 </div>
-            </div> 
-            <button type="submit" esfa-automation="btn-continue" class="govuk-button save-button">Save and preview</button>
-            <div class="govuk-body"><a asp-route="@RouteNames.Vacancy_Preview_Get" esfa-automation="link-cancel" class="govuk-link das-button-link">Cancel</a></div>
+            <div class="govuk-character-count">
+                <div esfa-validation-marker-for="ShortDescription" class="govuk-form-group">
+                    <label asp-for="ShortDescription" class="govuk-label govuk-!-font-weight-bold">
+                        <p class="govuk-body">Write a few sentences about the apprenticeship to attract applicants. This information will appear under your advert title when applicants look through a list of adverts - make it stand out.</p>
+                        <p class="govuk-body">
+                            This could be:
+                            <ul class="govuk-list govuk-list--bullet">
+                                <li>what you are offering</li>
+                                <li>why the applicant should apply</li>
+                            </ul>
+                        </p>
+                    </label>
+                    <span esfa-validation-message-for="ShortDescription" class="govuk-error-message"></span>
+                    <span class="govuk-hint">
+                        You must enter at least 50 characters.
+                    </span>
+                    <textarea asp-for="ShortDescription" class="govuk-textarea character-count" rows="5" data-val-length-max="350" esfa-automation="short-description"></textarea>
+                    <span class="govuk-hint">
+                        You can enter up to 350 characters
+                    </span>
+                    <div class="clear"></div>
+                </div>
+            </div>
+            <button type="submit" esfa-automation="btn-continue" class="govuk-button save-button">Save and continue</button>
+            <span class="govuk-link"><a asp-route="@RouteNames.Vacancy_Preview_Get" esfa-automation="link-cancel" class="govuk-link das-button-link">Cancel</a></span>
         </form>
     </div>
 </div>
