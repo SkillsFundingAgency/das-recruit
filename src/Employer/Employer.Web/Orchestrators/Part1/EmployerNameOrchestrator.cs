@@ -24,23 +24,24 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
         private readonly IEmployerVacancyClient _employerVacancyClient;
         private readonly IRecruitVacancyClient _recruitVacancyClient;
         private readonly IReviewSummaryService _reviewSummaryService;
+        private readonly IUtility _utility;
 
         private Expression<Func<EmployerNameEditModel, object>> _vmPropertyToMapEmployerNameTo = null;
 
         public EmployerNameOrchestrator(IEmployerVacancyClient employerVacancyClient, IRecruitVacancyClient recruitVacancyClient, 
-            ILogger<EmployerNameOrchestrator> logger, IReviewSummaryService reviewSummaryService)
+            ILogger<EmployerNameOrchestrator> logger, IReviewSummaryService reviewSummaryService, IUtility utility)
             : base(logger) 
         {
             _employerVacancyClient = employerVacancyClient;
             _recruitVacancyClient = recruitVacancyClient;
             _reviewSummaryService = reviewSummaryService;
+            _utility = utility;
         }
 
         public async Task<EmployerNameViewModel> GetEmployerNameViewModelAsync(
             VacancyRouteModel vrm, VacancyEmployerInfoModel employerInfoModel, VacancyUser user)
         {
-            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(
-                _employerVacancyClient, _recruitVacancyClient, vrm, RouteNames.Employer_Get);
+            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.Employer_Get);
 
             var accountLegalEntityPublicHashedId = employerInfoModel.AccountLegalEntityPublicHashedId;
                 
@@ -57,7 +58,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                 HasOnlyOneOrganisation = editVacancyInfo.LegalEntities.Count() == 1,
                 LegalEntityName = legalEntity.Name,
                 ExistingTradingName = employerProfile.TradingName,
-                PageInfo = Utility.GetPartOnePageInfo(vacancy),
+                PageInfo = _utility.GetPartOnePageInfo(vacancy),
                 SelectedEmployerIdentityOption = employerInfoModel.EmployerIdentityOption,
                 NewTradingName = employerInfoModel.NewTradingName,
                 AnonymousName = employerInfoModel.AnonymousName,
@@ -79,8 +80,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
         {
             var validationRules = VacancyRuleSet.EmployerNameOption;
 
-            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(
-                _employerVacancyClient, _recruitVacancyClient, model, RouteNames.EmployerName_Post);
+            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(model, RouteNames.EmployerName_Post);
             
             vacancy.EmployerNameOption =  model.SelectedEmployerIdentityOption.HasValue 
                 ? model.SelectedEmployerIdentityOption.Value.ConvertToDomainOption()

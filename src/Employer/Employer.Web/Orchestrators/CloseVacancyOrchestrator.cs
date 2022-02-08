@@ -12,20 +12,20 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 {
     public class CloseVacancyOrchestrator
     {
-        private readonly IEmployerVacancyClient _client;
         private readonly IRecruitVacancyClient _vacancyClient;
+        private readonly IUtility _utility;
 
-        public CloseVacancyOrchestrator(IEmployerVacancyClient client, IRecruitVacancyClient vacancyClient)
+        public CloseVacancyOrchestrator(IRecruitVacancyClient vacancyClient, IUtility utility)
         {
-            _client = client;
             _vacancyClient = vacancyClient;
+            _utility = utility;
         }
 
         public async Task<CloseViewModel> GetCloseViewModelAsync(VacancyRouteModel vrm)
         {
             var vacancy = await _vacancyClient.GetVacancyAsync(vrm.VacancyId);
 
-            Utility.CheckAuthorisedAccess(vacancy, vrm.EmployerAccountId);
+            _utility.CheckAuthorisedAccess(vacancy, vrm.EmployerAccountId);
 
             if (!vacancy.CanClose)
                 throw new InvalidStateException(string.Format(ErrorMessages.VacancyNotAvailableForClosing, vacancy.Title));
@@ -43,7 +43,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
         {
             var vacancy = await _vacancyClient.GetVacancyAsync(m.VacancyId);
 
-            Utility.CheckAuthorisedAccess(vacancy, m.EmployerAccountId);
+            _utility.CheckAuthorisedAccess(vacancy, m.EmployerAccountId);
 
             if (!vacancy.CanClose)
                 throw new InvalidStateException(string.Format(ErrorMessages.VacancyNotAvailableForClosing, vacancy.Title));

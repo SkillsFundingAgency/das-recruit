@@ -64,6 +64,7 @@ namespace Esfa.Recruit.Employer.Web.Configuration
             services.AddTransient<ILegalEntityAgreementService, LegalEntityAgreementService>();
             services.AddTransient<AlertViewModelService>();
             services.AddTransient<IEmployerAlertsViewModelFactory, EmployerAlertsViewModelFactory>();
+            services.AddTransient<IUtility, Utility>();
         }
 
         private static void RegisterFluentValidators(IServiceCollection services)

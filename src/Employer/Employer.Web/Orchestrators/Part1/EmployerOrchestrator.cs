@@ -18,19 +18,20 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
     public class EmployerOrchestrator
     {
         private readonly IEmployerVacancyClient _client;
-        private readonly IRecruitVacancyClient _vacancyClient;
         private readonly ILogger<EmployerOrchestrator> _logger;
+        private readonly IUtility _utility;
 
         private const int MaxLegalEntitiesPerPage = 25;
 
         public EmployerOrchestrator(
             IEmployerVacancyClient client,
             IRecruitVacancyClient vacancyClient,
-            ILogger<EmployerOrchestrator> logger)
+            ILogger<EmployerOrchestrator> logger,
+            IUtility utility)
         {
             _client = client;
-            _vacancyClient = vacancyClient;
             _logger = logger;
+            _utility = utility;
         }
 
         public async Task<EmployerViewModel> GetEmployerViewModelAsync(VacancyRouteModel vrm, string searchTerm, int? requestedPageNo, string selectedAccountLegalEntityPublicHashedId)
@@ -39,7 +40,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             var setPage = requestedPageNo.HasValue ? requestedPageNo.Value : 1;
 
             var getEmployerDataTask = _client.GetEditVacancyInfoAsync(vrm.EmployerAccountId);
-            var getVacancyTask = Utility.GetAuthorisedVacancyForEditAsync(_client, _vacancyClient, vrm, RouteNames.Employer_Get);
+            var getVacancyTask = _utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.Employer_Get);
             await Task.WhenAll(getEmployerDataTask, getVacancyTask);
             var employerData = getEmployerDataTask.Result;
             var vacancy = getVacancyTask.Result;
@@ -49,7 +50,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             var vm = new EmployerViewModel
             {
                 TotalNumberOfLegalEntities = legalEntities.Count(),
-                PageInfo = Utility.GetPartOnePageInfo(vacancy),
+                PageInfo = _utility.GetPartOnePageInfo(vacancy),
                 SearchTerm = searchTerm,
                 SelectedOrganisationId = vacancy.AccountLegalEntityPublicHashedId
             };

@@ -1,4 +1,5 @@
-﻿using Esfa.Recruit.Employer.Web.ViewModels.Part1.TrainingProvider;
+﻿using Esfa.Recruit.Employer.Web.ViewModels;
+using Esfa.Recruit.Employer.Web.ViewModels.Part1.TrainingProvider;
 using FluentAssertions;
 using Xunit;
 
@@ -21,7 +22,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.TrainingProvid
             result.IsValid.Should().BeFalse();
             result.Errors.Count.Should().Be(1);
             result.Errors[0].PropertyName.Should().Be(nameof(SelectTrainingProviderEditModel.IsTrainingProviderSelected));
-            result.Errors[0].ErrorMessage.Should().Be("Select yes if you’ve found a training provider");
+            result.Errors[0].ErrorMessage.Should().Be(ValidationMessages.TrainingProviderValidationMessages.IsTrainingProviderSelectedNotNull);
         }
 
         [Theory]

@@ -162,25 +162,6 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview
 
         public VacancyTaskListSectionState TaskListSectionOneState => SetTaskListSectionState();
 
-        private VacancyTaskListSectionState SetTaskListSectionState()
-        {
-            if (TitleSectionState == VacancyPreviewSectionState.Incomplete)
-            {
-                return VacancyTaskListSectionState.NotStarted;
-            }
-
-            if (TitleSectionState == VacancyPreviewSectionState.Valid
-                && TrainingSectionState == VacancyPreviewSectionState.Valid 
-                && ProviderSectionState == VacancyPreviewSectionState.Valid 
-                && ShortDescriptionSectionState == VacancyPreviewSectionState.Valid 
-                && DescriptionsSectionState == VacancyPreviewSectionState.Valid)
-            {
-                return VacancyTaskListSectionState.Completed;    
-            }
-            
-            return VacancyTaskListSectionState.InProgress;
-        }
-
         public void SetSectionStates(VacancyPreviewViewModel viewModel, ModelStateDictionary modelState)
         {
             viewModel.TitleSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.Title }, true, modelState, vm => vm.Title);
@@ -207,6 +188,25 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview
             viewModel.ProviderSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.Provider }, true, modelState,vm => vm.ProviderName);
             viewModel.TrainingSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.Training }, true, modelState,vm => vm.TrainingType, vm => vm.TrainingTitle);
             viewModel.DisabilityConfidentSectionState = GetSectionState(viewModel, new[]{ FieldIdentifiers.DisabilityConfident}, true, modelState,vm => vm.IsDisabilityConfident);
+        }
+
+        private VacancyTaskListSectionState SetTaskListSectionState()
+        {
+            if (TitleSectionState == VacancyPreviewSectionState.Incomplete)
+            {
+                return VacancyTaskListSectionState.NotStarted;
+            }
+
+            if (TitleSectionState == VacancyPreviewSectionState.Valid
+                && TrainingSectionState == VacancyPreviewSectionState.Valid 
+                && ProviderSectionState == VacancyPreviewSectionState.Valid 
+                && ShortDescriptionSectionState == VacancyPreviewSectionState.Valid 
+                && DescriptionsSectionState == VacancyPreviewSectionState.Valid)
+            {
+                return VacancyTaskListSectionState.Completed;    
+            }
+            
+            return VacancyTaskListSectionState.InProgress;
         }
 
         private VacancyPreviewSectionState GetSectionState(VacancyPreviewViewModel vm, IEnumerable<string> reviewFieldIndicators, bool requiresAll, ModelStateDictionary modelState, params Expression<Func<VacancyPreviewViewModel, object>>[] sectionProperties)

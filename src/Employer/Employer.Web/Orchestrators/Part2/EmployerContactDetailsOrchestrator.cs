@@ -16,20 +16,20 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
     public class EmployerContactDetailsOrchestrator : VacancyValidatingOrchestrator<EmployerContactDetailsEditModel>
     {
         private const VacancyRuleSet ValidationRules = VacancyRuleSet.EmployerContactDetails;
-        private readonly IEmployerVacancyClient _client;
         private readonly IRecruitVacancyClient _vacancyClient;
         private readonly IReviewSummaryService _reviewSummaryService;
+        private readonly IUtility _utility;
 
-        public EmployerContactDetailsOrchestrator(IEmployerVacancyClient client, IRecruitVacancyClient vacancyClient, ILogger<EmployerContactDetailsOrchestrator> logger, IReviewSummaryService reviewSummaryService) : base(logger)
+        public EmployerContactDetailsOrchestrator(IRecruitVacancyClient vacancyClient, ILogger<EmployerContactDetailsOrchestrator> logger, IReviewSummaryService reviewSummaryService, IUtility utility) : base(logger)
         {
-            _client = client;
             _vacancyClient = vacancyClient;
             _reviewSummaryService = reviewSummaryService;
+            _utility = utility;
         }
 
         public async Task<EmployerContactDetailsViewModel> GetEmployerContactDetailsViewModelAsync(VacancyRouteModel vrm)
         {
-            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, _vacancyClient, vrm, RouteNames.EmployerContactDetails_Get);
+            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.EmployerContactDetails_Get);
 
             var vm = new EmployerContactDetailsViewModel
             {
@@ -62,7 +62,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
 
         public async Task<OrchestratorResponse> PostEmployerContactDetailsEditModelAsync(EmployerContactDetailsEditModel m, VacancyUser user)
         {
-            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, _vacancyClient, m, RouteNames.EmployerContactDetails_Post);
+            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(m, RouteNames.EmployerContactDetails_Post);
 
             if (vacancy.EmployerContact == null)
                 vacancy.EmployerContact = new ContactDetail();
