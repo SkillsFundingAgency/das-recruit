@@ -2,10 +2,12 @@
 using Esfa.Recruit.Employer.Web.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
+using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Extensions;
 using Esfa.Recruit.Employer.Web.Orchestrators.Part2;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Shared.Web.Extensions;
+using Esfa.Recruit.Shared.Web.FeatureToggle;
 
 namespace Esfa.Recruit.Employer.Web.Controllers.Part2
 {
@@ -13,10 +15,12 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part2
     public class ConsiderationsController : Controller
     {
         private readonly ConsiderationsOrchestrator _orchestrator;
+        private readonly IFeature _feature;
 
-        public ConsiderationsController(ConsiderationsOrchestrator orchestrator)
+        public ConsiderationsController(ConsiderationsOrchestrator orchestrator, IFeature feature)
         {
             _orchestrator = orchestrator;
+            _feature = feature;
         }
 
         [HttpGet("considerations", Name = RouteNames.Considerations_Get)]
@@ -43,6 +47,11 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part2
                 return View(vm);
             }
 
+            if (_feature.IsFeatureEnabled(FeatureNames.EmployerTaskList))
+            {
+                return RedirectToRoute(RouteNames.EmployerName_Get);    
+            }
+            
             return RedirectToRoute(RouteNames.Vacancy_Preview_Get);
         }
     }
