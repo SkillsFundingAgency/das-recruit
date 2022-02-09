@@ -102,8 +102,6 @@
                                 About the apprenticeship
                             </a>
                         }
-                        
-                        
                     </li>
                 </ul>
             </li>
@@ -148,24 +146,63 @@
                     <span class="das-task-list__section-number">3. </span> 
                     <span class="das-task-list__section-heading">Skills and qualifications</span>
                     <span class="das-task-list__section-status">
-                        <strong class="govuk-tag govuk-tag--blue das-task-list__section-tag">In progress</strong>
+                        @if(Model.TaskListSectionThreeState == VacancyTaskListSectionState.InProgress)
+                        {
+                            <strong class="govuk-tag govuk-tag--blue das-task-list__section-tag">In progress</strong>
+                        }
+                        else if (Model.TaskListSectionThreeState == VacancyTaskListSectionState.Completed)
+                        {
+                            <strong class="govuk-tag das-task-list__section-tag">Completed</strong>    
+                        }
+                        else
+                        {
+                            <strong class="govuk-tag govuk-tag--grey das-task-list__section-tag">Not started</strong>
+                        }
+                        
                     </span>
                 </h2>
                 <ul class="das-task-list__items">
                     <li class="das-task-list__item">
-                        <span class="das-task-list__task-name">
-                            Skills
-                        </span>
+                        @if (Model.EmployerAddressSectionState == VacancyPreviewSectionState.Incomplete)
+                        {
+                            <span class="das-task-list__task-name">
+                                Skills
+                            </span>
+                        }
+                        else
+                        {
+                            <a class="das-task-list__task-name" asp-route="@RouteNames.Skills_Get">
+                                Skills
+                            </a>
+                        }
                     </li>
                     <li class="das-task-list__item">
-                        <span class="das-task-list__task-name">
-                            Qualifications
-                        </span>
+                        @if (Model.SkillsSectionState == VacancyPreviewSectionState.Incomplete)
+                        {
+                            <span class="das-task-list__task-name">
+                                Qualifications
+                            </span>
+                        }
+                        else
+                        {
+                            <a class="das-task-list__task-name" asp-route="@RouteNames.Qualifications_Get">
+                                Qualifications
+                            </a>
+                        }
                     </li>
                     <li class="das-task-list__item">
-                        <span class="das-task-list__task-name">
-                            Other things to consider
-                        </span>
+                        @if (Model.QualificationsSectionState == VacancyPreviewSectionState.Incomplete)
+                        {
+                            <span class="das-task-list__task-name">
+                                Other things to consider
+                            </span>
+                        }
+                        else
+                        {
+                            <a class="das-task-list__task-name" asp-route="@RouteNames.Considerations_Get">
+                                Other things to consider
+                            </a>
+                        }
                     </li>
                 </ul>
             </li>
