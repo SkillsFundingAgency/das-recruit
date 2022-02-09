@@ -161,6 +161,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview
         };
 
         public VacancyTaskListSectionState TaskListSectionOneState => SetTaskListSectionState();
+        public VacancyTaskListSectionState TaskListSectionThreeState => SetTaskListSectionThreeState();
 
         public void SetSectionStates(VacancyPreviewViewModel viewModel, ModelStateDictionary modelState)
         {
@@ -204,6 +205,23 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview
                 && DescriptionsSectionState == VacancyPreviewSectionState.Valid)
             {
                 return VacancyTaskListSectionState.Completed;    
+            }
+            
+            return VacancyTaskListSectionState.InProgress;
+        }
+
+        private VacancyTaskListSectionState SetTaskListSectionThreeState()
+        {
+            if (SkillsSectionState == VacancyPreviewSectionState.Incomplete)
+            {
+                return VacancyTaskListSectionState.NotStarted;
+            }
+
+            if (SkillsSectionState == VacancyPreviewSectionState.Valid
+                && QualificationsSectionState == VacancyPreviewSectionState.Valid
+                && ThingsToConsiderSectionState == VacancyPreviewSectionState.Valid)
+            {
+                return VacancyTaskListSectionState.Completed;
             }
             
             return VacancyTaskListSectionState.InProgress;
