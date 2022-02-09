@@ -96,3 +96,23 @@
     color: #144e81;
     background: #d2e2f1;
 }
+
+/* Vacancy preview */
+
+.app-preview-section--empty {
+    border-left: 5px solid #1d70b8;
+    min-height: 80px;
+    padding-left: 15px;
+}
+
+.app-preview-section--error {
+    border-left: 5px solid #d4351c;
+    min-height: 80px;
+    padding-left: 15px;
+}
+
+.app-preview-section--review {
+    border-left: 5px solid #f47738;
+    min-height: 80px;
+    padding-left: 15px;
+}
