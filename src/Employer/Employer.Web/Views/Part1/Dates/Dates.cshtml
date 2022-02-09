@@ -27,7 +27,7 @@
             <div esfa-validation-marker-for="ClosingDate" class="govuk-form-group">
                 <fieldset class="govuk-fieldset">
                     <legend class="govuk-fieldset__legend govuk-!-font-weight-bold">Application closing date<span class="govuk-visually-hidden"> (in numeric format DD MM YYYY)</span></legend>
-                    <span class="govuk-hint">For example, @exampleClosingDate.AsInputHintDisplayDate()</span>
+                    <div class="govuk-hint">For example, @exampleClosingDate.AsInputHintDisplayDate()</div>
 
                     <span esfa-validation-message-for="ClosingDate" class="govuk-error-message"></span>
 
@@ -65,7 +65,7 @@
                         You may want to <a asp-route="@RouteNames.Training_Get" asp-route-wizard="@Model.PageInfo.IsWizard" class="govuk-link">find different apprenticeship training</a>.
                     </p>
 
-                    <span class="govuk-hint">For example, @exampleStartingDate.AsInputHintDisplayDate()</span>
+                    <div class="govuk-hint">For example, @exampleStartingDate.AsInputHintDisplayDate()</div>
 
                     <span esfa-validation-message-for="StartDate" class="govuk-error-message"></span>
 
