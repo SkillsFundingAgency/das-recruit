@@ -164,6 +164,29 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview
         public VacancyTaskListSectionState TaskListSectionThreeState => SetTaskListSectionThreeState();
         public VacancyTaskListSectionState TaskListSectionFourState => SetTaskListSectionFourState();
 
+        
+        public VacancyTaskListSectionState TaskListSectionTwoState => SetTaskListSectionTwoState();
+
+        private VacancyTaskListSectionState SetTaskListSectionTwoState()
+        {
+            if (WageTextSectionState == VacancyPreviewSectionState.Incomplete)
+            {
+                return VacancyTaskListSectionState.NotStarted;
+            }
+
+            if (WageTextSectionState == VacancyPreviewSectionState.Valid
+                && ExpectedDurationSectionState == VacancyPreviewSectionState.Valid 
+                && ClosingDateSectionState == VacancyPreviewSectionState.Valid 
+                && PossibleStartDateSectionState == VacancyPreviewSectionState.Valid 
+                && NumberOfPositionsSectionState == VacancyPreviewSectionState.Valid
+                && EmployerAddressSectionState == VacancyPreviewSectionState.Valid)
+            {
+                return VacancyTaskListSectionState.Completed;    
+            }
+            
+            return VacancyTaskListSectionState.InProgress;
+        }
+
         public void SetSectionStates(VacancyPreviewViewModel viewModel, ModelStateDictionary modelState)
         {
             viewModel.TitleSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.Title }, true, modelState, vm => vm.Title);

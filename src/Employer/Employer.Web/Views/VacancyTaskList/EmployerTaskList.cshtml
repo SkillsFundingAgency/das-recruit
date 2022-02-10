@@ -110,34 +110,90 @@
                     <span class="das-task-list__section-number">2. </span> 
                     <span class="das-task-list__section-heading">Employment details</span>
                     <span class="das-task-list__section-status">
-                        <strong class="govuk-tag govuk-tag--grey das-task-list__section-tag">Not started</strong>
+                        @if(Model.TaskListSectionTwoState == VacancyTaskListSectionState.InProgress)
+                        {
+                            <strong class="govuk-tag govuk-tag--blue das-task-list__section-tag">In progress</strong>
+                        }
+                        else if (Model.TaskListSectionTwoState == VacancyTaskListSectionState.Completed)
+                        {
+                            <strong class="govuk-tag das-task-list__section-tag">Completed</strong>    
+                        }
+                        else
+                        {
+                            <strong class="govuk-tag govuk-tag--grey das-task-list__section-tag">Not started</strong>
+                        }
                     </span>
                 </h2>
                 <ul class="das-task-list__items">
                     <li class="das-task-list__item">
-                        <span class="das-task-list__task-name">
-                            Pay rate
-                        </span>
+                        @if (Model.TaskListSectionOneState != VacancyTaskListSectionState.Completed)
+                        {
+                            <span class="das-task-list__task-name">
+                                Important dates
+                            </span>    
+                        }
+                        else
+                        {
+                            <a class="govuk-link" asp-route="@RouteNames.Training_Get">
+                                Important dates
+                            </a>
+                        }
                     </li>
                     <li class="das-task-list__item">
-                        <span class="das-task-list__task-name">
-                            Duration and working hours
-                        </span>
+                        @if (Model.ClosingDateSectionState == VacancyPreviewSectionState.Incomplete || Model.PossibleStartDateSectionState == VacancyPreviewSectionState.Incomplete)
+                        {
+                            <span class="das-task-list__task-name">
+                                Pay rate
+                            </span>    
+                        }
+                        else
+                        {
+                            <a class="govuk-link" asp-route="@RouteNames.Training_Get">
+                                Pay rate
+                            </a>
+                        }
                     </li>
                     <li class="das-task-list__item">
-                        <span class="das-task-list__task-name">
-                            Important dates
-                        </span>
+                        @if (Model.WageTextSectionState == VacancyPreviewSectionState.Incomplete)
+                        {
+                            <span class="das-task-list__task-name">
+                                Duration and working hours
+                            </span>    
+                        }
+                        else
+                        {
+                            <a class="govuk-link" asp-route="@RouteNames.Training_Get">
+                                Duration and working hours
+                            </a>
+                        }
                     </li>
                     <li class="das-task-list__item">
-                        <span class="das-task-list__task-name">
-                            Number of positions
-                        </span>
+                        @if (Model.ExpectedDurationSectionState == VacancyPreviewSectionState.Incomplete || Model.WorkingWeekSectionState == VacancyPreviewSectionState.Incomplete)
+                        {
+                            <span class="das-task-list__task-name">
+                                Number of positions
+                            </span>    
+                        }
+                        else
+                        {
+                            <a class="govuk-link" asp-route="@RouteNames.Training_Get">
+                                Number of positions
+                            </a>
+                        }
                     </li>
                     <li class="das-task-list__item">
-                        <span class="das-task-list__task-name">
-                            Location
-                        </span>
+                        @if (Model.NumberOfPositionsSectionState == VacancyPreviewSectionState.Incomplete)
+                        {
+                            <span class="das-task-list__task-name">
+                                Location
+                            </span>    
+                        }
+                        else
+                        {
+                            <a class="govuk-link" asp-route="@RouteNames.Training_Get">
+                                Location
+                            </a>
+                        }
                     </li>
                 </ul>
             </li>
