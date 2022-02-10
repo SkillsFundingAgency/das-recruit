@@ -242,8 +242,8 @@
             <div asp-show="@ShowProviderReviewFlag(Model, FieldIdentifiers.ShortDescription)" class="govuk-!-margin-top-4">
                 @ProviderReviewFlag(Model, FieldIdentifiers.ShortDescription)
             </div>
+            @EditLink(RouteNames.ShortDescription_Get, Model.ShortDescriptionSectionState, "brief overview", "link-overview", new { wizard = false })
         </div>
-        @EditLink(RouteNames.ShortDescription_Get, Model.ShortDescriptionSectionState, "brief overview", "link-overview", new { wizard = false })
     </div>
     <div class="govuk-grid-column-one-third">
         <div class="@GetSectionClass(Model.ClosingDateSectionState) govuk-!-margin-bottom-6">
@@ -256,8 +256,8 @@
             <div asp-show="@ShowProviderReviewFlag(Model, FieldIdentifiers.ClosingDate)" class="govuk-!-margin-top-4">
                 @ProviderReviewFlag(Model, FieldIdentifiers.ClosingDate)
             </div>
+            @EditLink(RouteNames.Dates_Get, Model.ClosingDateSectionState, "closing date", "link-closing-date", new { wizard = false })
         </div>
-        @EditLink(RouteNames.Dates_Get, Model.ClosingDateSectionState, "closing date", "link-closing-date", new { wizard = false })
     </div>
 </div>
 <div class="govuk-grid-row" id="@Anchors.ApprenticeshipSummarySection">
@@ -282,8 +282,8 @@
                     <div asp-show="@ShowProviderReviewFlag(Model, FieldIdentifiers.Wage)" class="govuk-!-margin-top-4">
                         @ProviderReviewFlag(Model, FieldIdentifiers.Wage)
                     </div>
+                    @EditLink(RouteNames.Wage_Get, Model.WageTextSectionState, "yearly wage", "link-salary", new { wizard = false })
                 </div>
-                @EditLink(RouteNames.Wage_Get, Model.WageTextSectionState, "yearly wage", "link-salary", new { wizard = false })
             </li>
             <li class="@GetSectionClass(Model.WorkingWeekSectionState)">
                 <div class="govuk-!-margin-bottom-6">
@@ -298,8 +298,8 @@
                     <div asp-show="@ShowProviderReviewFlag(Model, FieldIdentifiers.WorkingWeek)" class="govuk-!-margin-top-4">
                         @ProviderReviewFlag(Model, FieldIdentifiers.WorkingWeek)
                     </div>
+                    @EditLink(RouteNames.Duration_Get, Model.WorkingWeekSectionState, "working week", "link-working-week", new { wizard = false })
                 </div>
-                @EditLink(RouteNames.Duration_Get, Model.WorkingWeekSectionState, "working week", "link-working-week", new { wizard = false })
             </li>
             <li class="@GetSectionClass(Model.ExpectedDurationSectionState)">
 
@@ -313,8 +313,8 @@
                     <div asp-show="@ShowProviderReviewFlag(Model, FieldIdentifiers.ExpectedDuration)" class="govuk-!-margin-top-4">
                         @ProviderReviewFlag(Model, FieldIdentifiers.ExpectedDuration)
                     </div>
+                    @EditLink(RouteNames.Duration_Get, Model.ExpectedDurationSectionState, "expected duration", "link-duration", new { wizard = false })
                 </div>
-                @EditLink(RouteNames.Duration_Get, Model.ExpectedDurationSectionState, "expected duration", "link-duration", new { wizard = false })
             </li>
             <li class="@GetSectionClass(Model.PossibleStartDateSectionState)">
                 <div class="govuk-!-margin-bottom-6">
@@ -327,8 +327,8 @@
                     <div asp-show="@ShowProviderReviewFlag(Model, FieldIdentifiers.PossibleStartDate)" class="govuk-!-margin-top-4">
                         @ProviderReviewFlag(Model, FieldIdentifiers.PossibleStartDate)
                     </div>
+                    @EditLink(RouteNames.Dates_Get, Model.PossibleStartDateSectionState, "possible start date", "link-start-date", new { wizard = false })
                 </div>
-                @EditLink(RouteNames.Dates_Get, Model.PossibleStartDateSectionState, "possible start date", "link-start-date", new { wizard = false })
             </li>
             <li class="@GetSectionClass(Model.TrainingLevelSectionState)">
                 <div class="govuk-!-margin-bottom-6">
@@ -345,8 +345,8 @@
                     <div asp-show="@ShowProviderReviewFlag(Model, FieldIdentifiers.TrainingLevel)" class="govuk-!-margin-top-4">
                         @ProviderReviewFlag(Model, FieldIdentifiers.TrainingLevel)
                     </div>
+                    @EditLink(RouteNames.Training_Get, Model.TrainingLevelSectionState, "apprenticeship level", "link-apprenticeship-level", new { wizard = false })
                 </div>
-                @EditLink(RouteNames.Training_Get, Model.TrainingLevelSectionState, "apprenticeship level", "link-apprenticeship-level", new { wizard = false })
             </li>
             <li asp-show="@Model.CanShowReference">
                 <h3 class="govuk-heading-s govuk-!-margin-top-4">Reference number</h3>
@@ -363,8 +363,8 @@
                     <div asp-show="@ShowProviderReviewFlag(Model, FieldIdentifiers.NumberOfPositions)" class="govuk-!-margin-top-4">
                         @ProviderReviewFlag(Model, FieldIdentifiers.NumberOfPositions)
                     </div>
+                    @EditLink(RouteNames.NumberOfPositions_Get, Model.NumberOfPositionsSectionState, "positions", "link-positions", new { wizard = false })
                 </div>
-                @EditLink(RouteNames.NumberOfPositions_Get, Model.NumberOfPositionsSectionState, "positions", "link-positions", new { wizard = false })
             </li>
         </ul>
     </div>
@@ -484,7 +484,7 @@
         <h2 class="govuk-heading-l govuk-!-margin-top-7">About the employer</h2>
     </div>
 </div>
-<div class="govuk-grid-row @AboutEmployerReviewClass(Model)">
+<div class="@AboutEmployerReviewClass(Model)">
     <div class="govuk-grid-column-full">
         <div class="@GetSectionClass(Model.EmployerDescriptionSectionState)">
             <div class="govuk-!-margin-bottom-6">
