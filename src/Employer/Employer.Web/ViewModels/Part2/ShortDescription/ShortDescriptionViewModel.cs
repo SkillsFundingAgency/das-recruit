@@ -12,6 +12,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Part2.ShortDescription
             nameof(ShortDescription)
         };
 
+        public PartOnePageInfoViewModel PageInfo { get; set; } = new PartOnePageInfoViewModel();
         public string Title { get; internal set; }
     }
 }
