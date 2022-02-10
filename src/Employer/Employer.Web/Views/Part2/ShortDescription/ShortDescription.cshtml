@@ -13,11 +13,7 @@
             <span class="govuk-caption-xl">@Model.Title</span>
             Short description of the apprenticeship
         </h1>
-    </div>
-</div>
 
-<div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
         <form asp-route="@RouteNames.ShortDescription_Post">
              <div class="govuk-character-count"> 
                  <div esfa-validation-marker-for="ShortDescription" class="govuk-form-group">
@@ -25,17 +21,17 @@
                          <p class="govuk-body">Write a few sentences about the apprenticeship to attract applicants. This is an important part of what applicants will see when looking through a list of adverts, so make it stand out.</p>
                          <p class="govuk-body">
                              This could be:
-                             <ul class="govuk-list govuk-list--bullet">
-                                 <li>what you are offering</li>
-                                 <li>why the applicant should apply</li>
-                             </ul>
-                         </p>
+                        </p>
+                        <ul class="govuk-list govuk-list--bullet">
+                            <li>what you are offering</li>
+                            <li>why the applicant should apply</li>
+                        </ul>
                      </label>
                      <span esfa-validation-message-for="ShortDescription" class="govuk-error-message"></span>
-                     <span class="govuk-hint">
+                     <div class="govuk-hint">
                          You must enter at least 50 characters.
-                     </span>
-                     <textarea asp-for="ShortDescription" class="govuk-textarea character-count" rows="5" data-val-length-max="350" esfa-automation="short-description"></textarea>
+                     </div>
+                     <textarea asp-for="ShortDescription" class="govuk-textarea govuk-character-count" rows="5" data-val-length-max="350" esfa-automation="short-description"></textarea>
                      <div>
                          <div class="govuk-body float-right">
                              <span class="maxchar-count">350</span>
