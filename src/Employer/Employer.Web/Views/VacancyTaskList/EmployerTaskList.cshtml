@@ -211,34 +211,90 @@
                     <span class="das-task-list__section-number">4. </span> 
                     <span class="das-task-list__section-heading">About the employer</span>
                     <span class="das-task-list__section-status">
-                        <strong class="govuk-tag govuk-tag--grey das-task-list__section-tag">Not started</strong>
+                        @if(Model.TaskListSectionFourState == VacancyTaskListSectionState.InProgress)
+                        {
+                            <strong class="govuk-tag govuk-tag--blue das-task-list__section-tag">In progress</strong>
+                        }
+                        else if (Model.TaskListSectionFourState == VacancyTaskListSectionState.Completed)
+                        {
+                            <strong class="govuk-tag das-task-list__section-tag">Completed</strong>    
+                        }
+                        else
+                        {
+                            <strong class="govuk-tag govuk-tag--grey das-task-list__section-tag">Not started</strong>
+                        }
                     </span>
                 </h2>
                 <ul class="das-task-list__items">
                     <li class="das-task-list__item">
-                        <span class="das-task-list__task-name">
-                            Name of organisation
-                        </span>
+                        @if (Model.ThingsToConsiderSectionState == VacancyPreviewSectionState.Incomplete)
+                        {
+                            <span class="das-task-list__task-name">
+                                Name of organisation
+                            </span>    
+                        }
+                        else
+                        {
+                            <a class="das-task-list__task-name" asp-route="@RouteNames.Employer_Get">
+                                Name of organisation
+                            </a>    
+                        }
                     </li>
                     <li class="das-task-list__item">
-                        <span class="das-task-list__task-name">
-                            Name of employer on advert
-                        </span>
+                        @if (Model.EmployerNameSectionState == VacancyPreviewSectionState.Incomplete)
+                        {
+                            <span class="das-task-list__task-name">
+                                 Name of employer on advert
+                            </span>    
+                        }
+                        else
+                        {
+                            <a class="das-task-list__task-name" asp-route="@RouteNames.Employer_Get">
+                                 Name of employer on advert
+                            </a>    
+                        }
                     </li>
                     <li class="das-task-list__item">
-                        <span class="das-task-list__task-name">
-                            Employer information
-                        </span>
+                        @if (Model.EmployerNameSectionState == VacancyPreviewSectionState.Incomplete)
+                        {
+                            <span class="das-task-list__task-name">
+                                 Employer information
+                            </span>    
+                        }
+                        else
+                        {
+                            <a class="das-task-list__task-name" asp-route="@RouteNames.AboutEmployer_Get">
+                                 Employer information
+                            </a>    
+                        }
                     </li>
                     <li class="das-task-list__item">
-                        <span class="das-task-list__task-name">
-                            Contact details
-                        </span>
+                        @if (Model.EmployerDescriptionSectionState == VacancyPreviewSectionState.Incomplete)
+                        {
+                            <span class="das-task-list__task-name">
+                                 Contact details
+                            </span>    
+                        }
+                        else
+                        {
+                            <a class="das-task-list__task-name" asp-route="@RouteNames.EmployerContactDetails_Get">
+                                 Contact details
+                            </a>    
+                        }
                     </li>
                     <li class="das-task-list__item">
-                        <span class="das-task-list__task-name">
-                            Website for application
-                        </span>
+                        @if (Model.EmployerContactSectionState == VacancyPreviewSectionState.Incomplete)
+                        {
+                            <span class="das-task-list__task-name">
+                                 Website for application
+                            </span>    
+                        }
+                        else
+                        {
+                            <a class="das-task-list__task-name" asp-route="@RouteNames.ApplicationProcess_Get">
+                                 Website for application
+                            </a>    
+                        }
                     </li>
                 </ul>
             </li>

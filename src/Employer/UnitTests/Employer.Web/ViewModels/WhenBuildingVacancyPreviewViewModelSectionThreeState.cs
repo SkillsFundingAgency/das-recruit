@@ -15,7 +15,64 @@ using SFA.DAS.Testing.AutoFixture;
 
 namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels
 {
-    public class WhenBuildingVacancyPreviewViewModelSectionTwoState
+    public class WhenBuildingVacancyPreviewViewModelSectionFourState
+    {
+        [Test, MoqAutoData]
+        public async Task Then_The_Section_State_Is_Set_To_Not_Started_If_No_Employer_Name(
+            Vacancy vacancy,
+            [Frozen] Mock<IRecruitVacancyClient> recruitVacancyClient,
+            DisplayVacancyViewModelMapper mapper)
+        {
+            recruitVacancyClient.Setup(x => x.GetEmployerNameAsync(vacancy)).ReturnsAsync(string.Empty);
+            vacancy.EmployerContact = null;
+            vacancy.EmployerDescription = null;
+            vacancy.ApplicationMethod = null;
+            
+            var model = new VacancyPreviewViewModel();
+            
+            await mapper.MapFromVacancyAsync(model, vacancy);
+            model.SetSectionStates(model, new ModelStateDictionary());
+
+            model.TaskListSectionFourState.Should().Be(VacancyTaskListSectionState.NotStarted);
+        }
+
+        [Test, MoqAutoData]
+        public async Task Then_Section_State_Is_Set_To_In_Progress_If_Employer_Name_Set(
+            Vacancy vacancy,
+            [Frozen] Mock<IRecruitVacancyClient> recruitVacancyClient,
+            DisplayVacancyViewModelMapper mapper)
+        {
+            vacancy.EmployerContact = null;
+            vacancy.EmployerDescription = null;
+            
+            var model = new VacancyPreviewViewModel();
+            
+            await mapper.MapFromVacancyAsync(model, vacancy);
+            model.SetSectionStates(model, new ModelStateDictionary());
+
+            model.TaskListSectionFourState.Should().Be(VacancyTaskListSectionState.InProgress);
+        }
+        
+        
+        [Test, MoqAutoData]
+        public async Task Then_Section_State_Is_Set_To_In_Progress_If_Employer_Name_And_Description_Set(
+            Vacancy vacancy,
+            [Frozen] Mock<IRecruitVacancyClient> recruitVacancyClient,
+            DisplayVacancyViewModelMapper mapper)
+        {
+            
+            vacancy.EmployerContact = null;
+            
+            var model = new VacancyPreviewViewModel();
+            
+            await mapper.MapFromVacancyAsync(model, vacancy);
+            model.SetSectionStates(model, new ModelStateDictionary());
+
+            model.TaskListSectionFourState.Should().Be(VacancyTaskListSectionState.InProgress);
+        }
+        
+    }
+    public class WhenBuildingVacancyPreviewViewModelSectionThreeState
     {
         [Test, MoqAutoData]
         public async Task Then_The_Section_State_Is_Set_to_Not_Started(

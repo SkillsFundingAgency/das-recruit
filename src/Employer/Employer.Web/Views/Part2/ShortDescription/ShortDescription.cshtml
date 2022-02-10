@@ -49,7 +49,7 @@
                 var buttonText = "Save and preview";
             }
             <esfaFeatureEnabled name="@FeatureNames.EmployerTaskList">
-                @buttonText = "Save and continue";
+                @{ buttonText = "Save and continue"; }
             </esfaFeatureEnabled>
             <button type="submit" esfa-automation="btn-continue" class="govuk-button save-button">@buttonText</button>
             <div class="govuk-body"><a asp-route="@RouteNames.Vacancy_Preview_Get" esfa-automation="link-cancel" class="govuk-link das-button-link">Cancel</a></div>
