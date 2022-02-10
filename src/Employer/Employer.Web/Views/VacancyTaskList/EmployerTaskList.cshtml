@@ -128,30 +128,16 @@
                 </h2>
                 <ul class="das-task-list__items">
                     <li class="das-task-list__item">
-                        @if (Model.WageTextSectionState == VacancyPreviewSectionState.Incomplete)
+                        @if (Model.TaskListSectionOneState != VacancyTaskListSectionState.Completed)
                         {
                             <span class="das-task-list__task-name">
-                                Pay rate
+                                Important dates
                             </span>    
                         }
                         else
                         {
                             <a class="govuk-link" asp-route="@RouteNames.Training_Get">
-                                Pay rate
-                            </a>
-                        }
-                    </li>
-                    <li class="das-task-list__item">
-                        @if (Model.ExpectedDurationSectionState == VacancyPreviewSectionState.Incomplete || Model.WorkingWeekSectionState == VacancyPreviewSectionState.Incomplete)
-                        {
-                            <span class="das-task-list__task-name">
-                                Duration and working hours
-                            </span>    
-                        }
-                        else
-                        {
-                            <a class="govuk-link" asp-route="@RouteNames.Training_Get">
-                                Duration and working hours
+                                Important dates
                             </a>
                         }
                     </li>
@@ -159,18 +145,32 @@
                         @if (Model.ClosingDateSectionState == VacancyPreviewSectionState.Incomplete || Model.PossibleStartDateSectionState == VacancyPreviewSectionState.Incomplete)
                         {
                             <span class="das-task-list__task-name">
-                                Important dates
+                                Pay rate
                             </span>    
                         }
                         else
                         {
                             <a class="govuk-link" asp-route="@RouteNames.Training_Get">
-                                Important dates
+                                Pay rate
                             </a>
                         }
                     </li>
                     <li class="das-task-list__item">
-                        @if (Model.NumberOfPositionsSectionState == VacancyPreviewSectionState.Incomplete)
+                        @if (Model.WageTextSectionState == VacancyPreviewSectionState.Incomplete)
+                        {
+                            <span class="das-task-list__task-name">
+                                Duration and working hours
+                            </span>    
+                        }
+                        else
+                        {
+                            <a class="govuk-link" asp-route="@RouteNames.Training_Get">
+                                Duration and working hours
+                            </a>
+                        }
+                    </li>
+                    <li class="das-task-list__item">
+                        @if (Model.ExpectedDurationSectionState == VacancyPreviewSectionState.Incomplete || Model.WorkingWeekSectionState == VacancyPreviewSectionState.Incomplete)
                         {
                             <span class="das-task-list__task-name">
                                 Number of positions
@@ -184,7 +184,7 @@
                         }
                     </li>
                     <li class="das-task-list__item">
-                        @if (Model.EmployerAddressSectionState == VacancyPreviewSectionState.Incomplete)
+                        @if (Model.NumberOfPositionsSectionState == VacancyPreviewSectionState.Incomplete)
                         {
                             <span class="das-task-list__task-name">
                                 Location
