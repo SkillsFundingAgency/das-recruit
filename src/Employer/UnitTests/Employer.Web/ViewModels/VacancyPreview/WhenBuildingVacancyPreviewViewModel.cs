@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
 using Esfa.Recruit.Employer.Web.Mappings;
@@ -13,220 +12,179 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.Testing.AutoFixture;
 
-namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels
+namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.VacancyPreview
 {
-    public class WhenBuildingVacancyPreviewViewModelSectionFourState
+    public class WhenBuildingVacancyPreviewViewModel
     {
         [Test, MoqAutoData]
-        public async Task Then_The_Section_State_Is_Set_To_Not_Started_If_No_Employer_Name(
-            Vacancy vacancy,
-            [Frozen] Mock<IRecruitVacancyClient> recruitVacancyClient,
+        public async Task Then_The_Section_State_Is_Set(
             DisplayVacancyViewModelMapper mapper)
         {
-            recruitVacancyClient.Setup(x => x.GetEmployerNameAsync(vacancy)).ReturnsAsync(string.Empty);
-            vacancy.EmployerDescription = null;
-            vacancy.ApplicationMethod = null;
-            
+            var vacancy = new Vacancy()
+            {
+                Id = Guid.NewGuid()
+            };
             var model = new VacancyPreviewViewModel();
-            
             await mapper.MapFromVacancyAsync(model, vacancy);
             model.SetSectionStates(model, new ModelStateDictionary());
 
-            model.TaskListSectionFourState.Should().Be(VacancyTaskListSectionState.NotStarted);
+            model.TaskListSectionOneState.Should().Be(VacancyTaskListSectionState.NotStarted);
         }
 
         [Test, MoqAutoData]
-        public async Task Then_Section_State_Is_Set_To_In_Progress_If_Employer_Name_Set(
-            Vacancy vacancy,
-            [Frozen] Mock<IRecruitVacancyClient> recruitVacancyClient,
+        public async Task Then_If_Section_Started_Then_Set_To_In_Progress(
+            string title,
             DisplayVacancyViewModelMapper mapper)
         {
-            vacancy.ApplicationMethod = null;
-            vacancy.EmployerDescription = null;
-            
+            var vacancy = new Vacancy()
+            {
+                Id = Guid.NewGuid(),
+                Title = title
+            };
             var model = new VacancyPreviewViewModel();
-            
             await mapper.MapFromVacancyAsync(model, vacancy);
             model.SetSectionStates(model, new ModelStateDictionary());
 
-            model.TaskListSectionFourState.Should().Be(VacancyTaskListSectionState.InProgress);
-        }
-        
-        
-        [Test, MoqAutoData]
-        public async Task Then_Section_State_Is_Set_To_In_Progress_If_Employer_Name_And_Description_Set(
-            Vacancy vacancy,
-            [Frozen] Mock<IRecruitVacancyClient> recruitVacancyClient,
-            DisplayVacancyViewModelMapper mapper)
-        {
-            
-            vacancy.ApplicationMethod = null;
-            
-            var model = new VacancyPreviewViewModel();
-            
-            await mapper.MapFromVacancyAsync(model, vacancy);
-            model.SetSectionStates(model, new ModelStateDictionary());
-
-            model.TaskListSectionFourState.Should().Be(VacancyTaskListSectionState.InProgress);
+            model.TaskListSectionOneState.Should().Be(VacancyTaskListSectionState.InProgress);
         }
 
         [Test, MoqAutoData]
-        public async Task
-            Then_Section_State_Is_Set_To_Complete_With_Employer_Name_Description_And_ApplicationMethod_Set(
-                Vacancy vacancy,
-                [Frozen] Mock<IRecruitVacancyClient> recruitVacancyClient,
-                DisplayVacancyViewModelMapper mapper)
-        {
-            var model = new VacancyPreviewViewModel();
-            
-            await mapper.MapFromVacancyAsync(model, vacancy);
-            model.SetSectionStates(model, new ModelStateDictionary());
-
-            model.TaskListSectionFourState.Should().Be(VacancyTaskListSectionState.Completed);
-        }
-        
-    }
-    public class WhenBuildingVacancyPreviewViewModelSectionThreeState
-    {
-        [Test, MoqAutoData]
-        public async Task Then_The_Section_State_Is_Set_to_Not_Started(
+        public async Task Then_If_Has_Title_And_Training_Then_In_Progress(
             string title,
             string programmeId,
-            string description,
-            string shortDescription,
-            string trainingDescription,
-            string outcomeDescription,
+            ApprenticeshipProgramme programme,
+            [Frozen] Mock<IRecruitVacancyClient> recruitVacancyClient,
+            DisplayVacancyViewModelMapper mapper)
+        {
+            recruitVacancyClient.Setup(x => x.GetApprenticeshipProgrammeAsync(programmeId)).ReturnsAsync(programme);
+            var vacancy = new Vacancy
+            {
+                Id = Guid.NewGuid(),
+                Title = title,
+                ProgrammeId = programmeId
+            };
+            var model = new VacancyPreviewViewModel();
+            await mapper.MapFromVacancyAsync(model, vacancy);
+            
+            model.SetSectionStates(model, new ModelStateDictionary());
+
+            model.TaskListSectionOneState.Should().Be(VacancyTaskListSectionState.InProgress);
+        }
+        
+        [Test, MoqAutoData]
+        public async Task Then_If_Has_Title_Training_And_Provider_Then_In_Progress(
+            string title,
+            string programmeId,
             Vacancies.Client.Domain.Entities.TrainingProvider provider,
             ApprenticeshipProgramme programme,
             [Frozen] Mock<IRecruitVacancyClient> recruitVacancyClient,
             DisplayVacancyViewModelMapper mapper)
         {
+            recruitVacancyClient.Setup(x => x.GetApprenticeshipProgrammeAsync(programmeId)).ReturnsAsync(programme);
             var vacancy = new Vacancy
             {
                 Id = Guid.NewGuid(),
                 Title = title,
                 ProgrammeId = programmeId,
-                Description = description,
-                TrainingDescription = trainingDescription,
-                ShortDescription = shortDescription,
-                OutcomeDescription = outcomeDescription,
                 TrainingProvider = provider
             };
             var model = new VacancyPreviewViewModel();
-            
             await mapper.MapFromVacancyAsync(model, vacancy);
+            
+            model.SetSectionStates(model, new ModelStateDictionary());
+
+            model.TaskListSectionOneState.Should().Be(VacancyTaskListSectionState.InProgress);
+        }
+        
+        [Test, MoqAutoData]
+        public async Task Then_If_Has_Title_Training_Provider_ShortDescription_Then_In_Progress(
+            string title,
+            string programmeId,
+            string shortDescription,
+            Vacancies.Client.Domain.Entities.TrainingProvider provider,
+            ApprenticeshipProgramme programme,
+            [Frozen] Mock<IRecruitVacancyClient> recruitVacancyClient,
+            DisplayVacancyViewModelMapper mapper)
+        {
+            recruitVacancyClient.Setup(x => x.GetApprenticeshipProgrammeAsync(programmeId)).ReturnsAsync(programme);
+            var vacancy = new Vacancy
+            {
+                Id = Guid.NewGuid(),
+                Title = title,
+                ProgrammeId = programmeId,
+                ShortDescription = shortDescription,
+                TrainingProvider = provider
+            };
+            var model = new VacancyPreviewViewModel();
+            await mapper.MapFromVacancyAsync(model, vacancy);
+            
+            model.SetSectionStates(model, new ModelStateDictionary());
+
+            model.TaskListSectionOneState.Should().Be(VacancyTaskListSectionState.InProgress);
+        }
+        
+        [Test, MoqAutoData]
+        public async Task Then_If_Has_Title_Training_Provider_ShortDescription_Ale_Then_In_Progress(
+            string title,
+            string programmeId,
+            string shortDescription,
+            string accountLegalEntityPublicHashedId,
+            Vacancies.Client.Domain.Entities.TrainingProvider provider,
+            ApprenticeshipProgramme programme,
+            [Frozen] Mock<IRecruitVacancyClient> recruitVacancyClient,
+            DisplayVacancyViewModelMapper mapper)
+        {
+            recruitVacancyClient.Setup(x => x.GetApprenticeshipProgrammeAsync(programmeId)).ReturnsAsync(programme);
+            var vacancy = new Vacancy
+            {
+                Id = Guid.NewGuid(),
+                Title = title,
+                ProgrammeId = programmeId,
+                ShortDescription = shortDescription,
+                TrainingProvider = provider,
+                AccountLegalEntityPublicHashedId = accountLegalEntityPublicHashedId
+            };
+            var model = new VacancyPreviewViewModel();
+            await mapper.MapFromVacancyAsync(model, vacancy);
+            
+            model.SetSectionStates(model, new ModelStateDictionary());
+
+            model.TaskListSectionOneState.Should().Be(VacancyTaskListSectionState.InProgress);
+        }
+        
+        [Test, MoqAutoData]
+        public async Task Then_If_Has_Title_Training_Provider_ShortDescription_And_Descriptions_Then_Completed(
+            string title,
+            string programmeId,
+            string description,
+            string shortDescription,
+            string trainingDescription,
+            string outcomeDescription,
+            string accountLegalEntityPublicHashedId,
+            Vacancies.Client.Domain.Entities.TrainingProvider provider,
+            ApprenticeshipProgramme programme,
+            [Frozen] Mock<IRecruitVacancyClient> recruitVacancyClient,
+            DisplayVacancyViewModelMapper mapper)
+        {
+            recruitVacancyClient.Setup(x => x.GetApprenticeshipProgrammeAsync(programmeId)).ReturnsAsync(programme);
+            var vacancy = new Vacancy
+            {
+                Id = Guid.NewGuid(),
+                Title = title,
+                ProgrammeId = programmeId,
+                Description = description,
+                TrainingDescription = trainingDescription,
+                ShortDescription = shortDescription,
+                OutcomeDescription = outcomeDescription,
+                TrainingProvider = provider,
+                AccountLegalEntityPublicHashedId = accountLegalEntityPublicHashedId 
+            };
+            var model = new VacancyPreviewViewModel();
+            await mapper.MapFromVacancyAsync(model, vacancy);
+            
             model.SetSectionStates(model, new ModelStateDictionary());
 
             model.TaskListSectionOneState.Should().Be(VacancyTaskListSectionState.Completed);
-            model.TaskListSectionThreeState.Should().Be(VacancyTaskListSectionState.NotStarted);
-        }
-
-        [Test, MoqAutoData]
-        public async Task Then_If_There_Are_Skills_Added_Section_Set_To_Incomplete(
-            string title,
-            string programmeId,
-            string description,
-            string shortDescription,
-            string trainingDescription,
-            string outcomeDescription,
-            List<string> skills,
-            Vacancies.Client.Domain.Entities.TrainingProvider provider,
-            ApprenticeshipProgramme programme,
-            [Frozen] Mock<IRecruitVacancyClient> recruitVacancyClient,
-            DisplayVacancyViewModelMapper mapper)
-        {
-            var vacancy = new Vacancy
-            {
-                Id = Guid.NewGuid(),
-                Title = title,
-                ProgrammeId = programmeId,
-                Description = description,
-                TrainingDescription = trainingDescription,
-                ShortDescription = shortDescription,
-                OutcomeDescription = outcomeDescription,
-                TrainingProvider = provider,
-                Skills = skills
-            };
-            var model = new VacancyPreviewViewModel();
-            
-            await mapper.MapFromVacancyAsync(model, vacancy);
-            model.SetSectionStates(model, new ModelStateDictionary());
-
-            model.TaskListSectionThreeState.Should().Be(VacancyTaskListSectionState.InProgress);
-        }
-        
-        [Test, MoqAutoData]
-        public async Task Then_If_There_Are_Skills_And_Qualifications_Added_Section_Set_To_Incomplete(
-            string title,
-            string programmeId,
-            string description,
-            string shortDescription,
-            string trainingDescription,
-            string outcomeDescription,
-            List<string> skills,
-            List<Qualification> qualifications,
-            Vacancies.Client.Domain.Entities.TrainingProvider provider,
-            ApprenticeshipProgramme programme,
-            [Frozen] Mock<IRecruitVacancyClient> recruitVacancyClient,
-            DisplayVacancyViewModelMapper mapper)
-        {
-            var vacancy = new Vacancy
-            {
-                Id = Guid.NewGuid(),
-                Title = title,
-                ProgrammeId = programmeId,
-                Description = description,
-                TrainingDescription = trainingDescription,
-                ShortDescription = shortDescription,
-                OutcomeDescription = outcomeDescription,
-                TrainingProvider = provider,
-                Skills = skills,
-                Qualifications = qualifications
-            };
-            var model = new VacancyPreviewViewModel();
-            
-            await mapper.MapFromVacancyAsync(model, vacancy);
-            model.SetSectionStates(model, new ModelStateDictionary());
-
-            model.TaskListSectionThreeState.Should().Be(VacancyTaskListSectionState.InProgress);
-        }
-        
-        [Test, MoqAutoData]
-        public async Task Then_If_There_Are_Skills_Qualifications_And_Other_Things_To_Consider_Added_Section_Set_To_Complete(
-            string title,
-            string programmeId,
-            string description,
-            string shortDescription,
-            string trainingDescription,
-            string outcomeDescription,
-            List<string> skills,
-            string otherThingsToConsider,
-            List<Qualification> qualifications,
-            Vacancies.Client.Domain.Entities.TrainingProvider provider,
-            ApprenticeshipProgramme programme,
-            [Frozen] Mock<IRecruitVacancyClient> recruitVacancyClient,
-            DisplayVacancyViewModelMapper mapper)
-        {
-            var vacancy = new Vacancy
-            {
-                Id = Guid.NewGuid(),
-                Title = title,
-                ProgrammeId = programmeId,
-                Description = description,
-                TrainingDescription = trainingDescription,
-                ShortDescription = shortDescription,
-                OutcomeDescription = outcomeDescription,
-                TrainingProvider = provider,
-                Skills = skills,
-                Qualifications = qualifications,
-                ThingsToConsider = otherThingsToConsider
-            };
-            var model = new VacancyPreviewViewModel();
-            
-            await mapper.MapFromVacancyAsync(model, vacancy);
-            model.SetSectionStates(model, new ModelStateDictionary());
-
-            model.TaskListSectionThreeState.Should().Be(VacancyTaskListSectionState.Completed);
         }
     }
 }

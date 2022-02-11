@@ -13,13 +13,12 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.VacancyPreview
     public class WhenGettingTaskListSectionTwoState
     {
         [Test, MoqAutoData]
-        public async Task And_No_Values_Then_Not_Started(
+        public async Task And_Section_One_Not_Complete_Then_Not_Started(
             DisplayVacancyViewModelMapper mapper)
         {
-            var vacancy = new Vacancy
-            {
-                Id = Guid.NewGuid()
-            };
+            var vacancy = CreateCompletedSectionOneVacancy();
+            vacancy.OutcomeDescription = null;
+            vacancy.Id = Guid.NewGuid();
             var model = new VacancyPreviewViewModel();
             await mapper.MapFromVacancyAsync(model, vacancy);
             model.SetSectionStates(model, new ModelStateDictionary());
@@ -32,12 +31,10 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.VacancyPreview
             DateTime closingDate,
             DisplayVacancyViewModelMapper mapper)
         {
-            var vacancy = new Vacancy
-            {
-                Id = Guid.NewGuid(),
-                ClosingDate = closingDate,
-                StartDate = closingDate.AddMonths(1)
-            };
+            var vacancy = CreateCompletedSectionOneVacancy();
+            vacancy.Id = Guid.NewGuid();
+            vacancy.ClosingDate = closingDate;
+            vacancy.StartDate = closingDate.AddMonths(1);
             var model = new VacancyPreviewViewModel();
             await mapper.MapFromVacancyAsync(model, vacancy);
             
@@ -52,13 +49,11 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.VacancyPreview
             Wage wage,
             DisplayVacancyViewModelMapper mapper)
         {
-            var vacancy = new Vacancy
-            {
-                Id = Guid.NewGuid(),
-                ClosingDate = closingDate,
-                StartDate = closingDate.AddMonths(1),
-                Wage = wage
-            };
+            var vacancy = CreateCompletedSectionOneVacancy();
+            vacancy.Id = Guid.NewGuid();
+            vacancy.Wage = wage;
+            vacancy.ClosingDate = closingDate;
+            vacancy.StartDate = closingDate.AddMonths(1);
             var model = new VacancyPreviewViewModel();
             await mapper.MapFromVacancyAsync(model, vacancy);
             
@@ -73,13 +68,11 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.VacancyPreview
             DateTime closingDate,
             DisplayVacancyViewModelMapper mapper)
         {
-            var vacancy = new Vacancy
-            {
-                Id = Guid.NewGuid(),
-                Wage = wage,
-                ClosingDate = closingDate,
-                StartDate = closingDate.AddMonths(1)
-            };
+            var vacancy = CreateCompletedSectionOneVacancy();
+            vacancy.Id = Guid.NewGuid();
+            vacancy.Wage = wage;
+            vacancy.ClosingDate = closingDate;
+            vacancy.StartDate = closingDate.AddMonths(1);
             var model = new VacancyPreviewViewModel();
             await mapper.MapFromVacancyAsync(model, vacancy);
             
@@ -95,14 +88,12 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.VacancyPreview
             int numberOfPositions,
             DisplayVacancyViewModelMapper mapper)
         {
-            var vacancy = new Vacancy
-            {
-                Id = Guid.NewGuid(),
-                Wage = wage,
-                ClosingDate = closingDate,
-                StartDate = closingDate.AddMonths(1),
-                NumberOfPositions = numberOfPositions
-            };
+            var vacancy = CreateCompletedSectionOneVacancy();
+            vacancy.Id = Guid.NewGuid();
+            vacancy.Wage = wage;
+            vacancy.ClosingDate = closingDate;
+            vacancy.StartDate = closingDate.AddMonths(1);
+            vacancy.NumberOfPositions = numberOfPositions;
             var model = new VacancyPreviewViewModel();
             await mapper.MapFromVacancyAsync(model, vacancy);
             
@@ -118,14 +109,12 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.VacancyPreview
             Address employerLocation,
             DisplayVacancyViewModelMapper mapper)
         {
-            var vacancy = new Vacancy
-            {
-                Id = Guid.NewGuid(),
-                Wage = wage,
-                ClosingDate = closingDate,
-                StartDate = closingDate.AddMonths(1),
-                EmployerLocation = employerLocation 
-            };
+            var vacancy = CreateCompletedSectionOneVacancy();
+            vacancy.Id = Guid.NewGuid();
+            vacancy.Wage = wage;
+            vacancy.ClosingDate = closingDate;
+            vacancy.StartDate = closingDate.AddMonths(1);
+            vacancy.EmployerLocation = employerLocation;
             var model = new VacancyPreviewViewModel();
             await mapper.MapFromVacancyAsync(model, vacancy);
             
@@ -142,21 +131,40 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.VacancyPreview
             Address employerLocation,
             DisplayVacancyViewModelMapper mapper)
         {
-            var vacancy = new Vacancy
-            {
-                Id = Guid.NewGuid(),
-                Wage = wage,
-                ClosingDate = closingDate,
-                StartDate = closingDate.AddMonths(1),
-                NumberOfPositions = numberOfPositions,
-                EmployerLocation = employerLocation
-            };
+            var vacancy = CreateCompletedSectionOneVacancy();
+            vacancy.Id = Guid.NewGuid();
+            vacancy.Wage = wage;
+            vacancy.ClosingDate = closingDate;
+            vacancy.StartDate = closingDate.AddMonths(1);
+            vacancy.NumberOfPositions = numberOfPositions;
+            vacancy.EmployerLocation = employerLocation;
+        
             var model = new VacancyPreviewViewModel();
             await mapper.MapFromVacancyAsync(model, vacancy);
             
             model.SetSectionStates(model, new ModelStateDictionary());
 
             model.TaskListSectionTwoState.Should().Be(VacancyTaskListSectionState.Completed);
+        }
+
+        private Vacancy CreateCompletedSectionOneVacancy()
+        {
+            return new Vacancy
+            {
+                Title = "title",
+                ProgrammeId = "programmeId",
+                Description = "description",
+                TrainingDescription = "trainingDescription",
+                ShortDescription = "shortDescription",
+                OutcomeDescription = "outcomeDescription",
+                TrainingProvider = new Vacancies.Client.Domain.Entities.TrainingProvider
+                {
+                    Address = new Address(),
+                    Name = "name",
+                    Ukprn = 1231231
+                },
+                AccountLegalEntityPublicHashedId = "accountLegalEntityPublicHashedId"
+            };
         }
     }
 }
