@@ -46,8 +46,8 @@ namespace Esfa.Recruit.Employer.Web.Mappings
             vm.CanSubmit = vacancy.CanSubmit && vacancy.Status != VacancyStatus.Review;
             vm.CanReview = vacancy.CanReview;
             vm.ClosingDate = (vacancy.ClosedDate ?? vacancy.ClosingDate)?.AsGdsDate();
-            vm.EducationLevelName =
-                EducationLevelNumberHelper.GetEducationLevelNameOrDefault(programme.EducationLevelNumber, programme.ApprenticeshipLevel);
+            vm.EducationLevelName = vacancy.ProgrammeId != null ?
+                EducationLevelNumberHelper.GetEducationLevelNameOrDefault(programme.EducationLevelNumber, programme.ApprenticeshipLevel) : null;
             vm.EmployerContactName = vacancy.EmployerContact?.Name;
             vm.EmployerContactEmail = vacancy.EmployerContact?.Email;
             vm.EmployerContactTelephone = vacancy.EmployerContact?.Phone;

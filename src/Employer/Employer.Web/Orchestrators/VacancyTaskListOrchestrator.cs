@@ -46,9 +46,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             vm.HasWage = vacancy.Wage != null;
             vm.CanShowReference = vacancy.Status != VacancyStatus.Draft;
             vm.CanShowDraftHeader = vacancy.Status == VacancyStatus.Draft;
-            vm.EducationLevelName =
-                EducationLevelNumberHelper.GetEducationLevelNameOrDefault(programme.EducationLevelNumber, programme.ApprenticeshipLevel);
-
+            
             if (programme != null)
             {
                 vm.ApprenticeshipLevel = programme.ApprenticeshipLevel;

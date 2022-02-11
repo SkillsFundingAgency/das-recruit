@@ -24,7 +24,6 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels
             DisplayVacancyViewModelMapper mapper)
         {
             recruitVacancyClient.Setup(x => x.GetEmployerNameAsync(vacancy)).ReturnsAsync(string.Empty);
-            vacancy.EmployerContact = null;
             vacancy.EmployerDescription = null;
             vacancy.ApplicationMethod = null;
             
@@ -42,7 +41,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels
             [Frozen] Mock<IRecruitVacancyClient> recruitVacancyClient,
             DisplayVacancyViewModelMapper mapper)
         {
-            vacancy.EmployerContact = null;
+            vacancy.ApplicationMethod = null;
             vacancy.EmployerDescription = null;
             
             var model = new VacancyPreviewViewModel();
@@ -61,7 +60,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels
             DisplayVacancyViewModelMapper mapper)
         {
             
-            vacancy.EmployerContact = null;
+            vacancy.ApplicationMethod = null;
             
             var model = new VacancyPreviewViewModel();
             
@@ -69,6 +68,21 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels
             model.SetSectionStates(model, new ModelStateDictionary());
 
             model.TaskListSectionFourState.Should().Be(VacancyTaskListSectionState.InProgress);
+        }
+
+        [Test, MoqAutoData]
+        public async Task
+            Then_Section_State_Is_Set_To_Complete_With_Employer_Name_Description_And_ApplicationMethod_Set(
+                Vacancy vacancy,
+                [Frozen] Mock<IRecruitVacancyClient> recruitVacancyClient,
+                DisplayVacancyViewModelMapper mapper)
+        {
+            var model = new VacancyPreviewViewModel();
+            
+            await mapper.MapFromVacancyAsync(model, vacancy);
+            model.SetSectionStates(model, new ModelStateDictionary());
+
+            model.TaskListSectionFourState.Should().Be(VacancyTaskListSectionState.Completed);
         }
         
     }
