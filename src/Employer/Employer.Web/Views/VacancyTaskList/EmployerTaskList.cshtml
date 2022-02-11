@@ -34,16 +34,16 @@
                 <ul class="das-task-list__items">
                     
                     <li class="das-task-list__item">
-                        <span class="das-task-list__task-name">
+                        <span>
                             @if (Model.TaskListSectionOneState == VacancyTaskListSectionState.NotStarted)
                             {
-                                <a class="govuk-link" asp-route="@RouteNames.CreateVacancy_Get">
+                                <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.CreateVacancy_Get">
                                     Advert title
                                 </a>
                             }
                             else
                             {
-                                <a class="govuk-link" asp-route="@RouteNames.Title_Get">
+                                <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.Title_Get">
                                     Advert title
                                 </a>
                             }
@@ -58,7 +58,7 @@
                         }
                         else
                         {
-                            <a class="das-task-list__task-name" asp-route="@RouteNames.Employer_Get">
+                            <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.Employer_Get">
                                 Name of organisation
                             </a>    
                         }
@@ -72,7 +72,7 @@
                         }
                         else
                         {
-                            <a class="govuk-link" asp-route="@RouteNames.Training_Get">
+                            <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.Training_Get">
                                 Training course
                             </a>
                         }
@@ -80,13 +80,13 @@
                     <li class="das-task-list__item">
                         @if (Model.TrainingSectionState == VacancyPreviewSectionState.Incomplete)
                         {
-                            <span class="das-task-list__task-name">
+                            <span>
                                 Training provider
                             </span>
                         }
                         else
                         {
-                            <a class="govuk-link" asp-route="@RouteNames.TrainingProvider_Select_Get">
+                            <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.TrainingProvider_Select_Get">
                                 Training provider
                             </a>
                         }
@@ -94,13 +94,13 @@
                     <li class="das-task-list__item">
                         @if (Model.ProviderSectionState == VacancyPreviewSectionState.Incomplete)
                         {
-                            <span class="das-task-list__task-name">
+                            <span>
                                 Summary of the apprenticeship
                             </span>
                         }
                         else
                         {
-                            <a class="govuk-link" asp-route="@RouteNames.ShortDescription_Get">
+                            <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.ShortDescription_Get">
                                 Summary of the apprenticeship
                             </a>
                         }
@@ -108,13 +108,13 @@
                     <li class="das-task-list__item">
                         @if (Model.ShortDescriptionSectionState == VacancyPreviewSectionState.Incomplete)
                         {
-                            <span class="das-task-list__task-name">
+                            <span>
                                 About the apprenticeship
                             </span>
                         }
                         else
                         {
-                            <a class="das-task-list__task-name" asp-route="@RouteNames.VacancyDescription_Index_Get">
+                            <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.VacancyDescription_Index_Get">
                                 About the apprenticeship
                             </a>
                         }
@@ -150,7 +150,7 @@
                         }
                         else
                         {
-                            <a class="govuk-link" asp-route="@RouteNames.Dates_Get">
+                            <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.Dates_Get">
                                 Important dates
                             </a>
                         }
@@ -164,7 +164,7 @@
                         }
                         else
                         {
-                            <a class="govuk-link" asp-route="@RouteNames.Duration_Get">
+                            <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.Duration_Get">
                                 Duration and working hours
                             </a>
                         }
@@ -178,7 +178,7 @@
                         }
                         else
                         {
-                            <a class="govuk-link" asp-route="@RouteNames.Wage_Get">
+                            <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.Wage_Get">
                                 Pay rate
                             </a>
                         }
@@ -193,7 +193,7 @@
                         }
                         else
                         {
-                            <a class="govuk-link" asp-route="@RouteNames.NumberOfPositions_Get">
+                            <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.NumberOfPositions_Get">
                                 Number of positions
                             </a>
                         }
@@ -207,7 +207,7 @@
                         }
                         else
                         {
-                            <a class="govuk-link" asp-route="@RouteNames.Location_Get">
+                            <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.Location_Get">
                                 Location
                             </a>
                         }
@@ -238,13 +238,13 @@
                     <li class="das-task-list__item">
                         @if (Model.EmployerAddressSectionState == VacancyPreviewSectionState.Incomplete)
                         {
-                            <span class="das-task-list__task-name">
+                            <span>
                                 Skills
                             </span>
                         }
                         else
                         {
-                            <a class="das-task-list__task-name" asp-route="@RouteNames.Skills_Get">
+                            <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.Skills_Get">
                                 Skills
                             </a>
                         }
@@ -252,13 +252,13 @@
                     <li class="das-task-list__item">
                         @if (Model.SkillsSectionState == VacancyPreviewSectionState.Incomplete)
                         {
-                            <span class="das-task-list__task-name">
+                            <span>
                                 Qualifications
                             </span>
                         }
                         else
                         {
-                            <a class="das-task-list__task-name" asp-route="@RouteNames.Qualifications_Get">
+                            <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.Qualifications_Get">
                                 Qualifications
                             </a>
                         }
@@ -266,13 +266,13 @@
                     <li class="das-task-list__item">
                         @if (Model.QualificationsSectionState == VacancyPreviewSectionState.Incomplete)
                         {
-                            <span class="das-task-list__task-name">
+                            <span>
                                 Other things to consider
                             </span>
                         }
                         else
                         {
-                            <a class="das-task-list__task-name" asp-route="@RouteNames.Considerations_Get">
+                            <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.Considerations_Get">
                                 Other things to consider
                             </a>
                         }
@@ -308,7 +308,7 @@
                         }
                         else
                         {
-                            <a class="das-task-list__task-name" asp-route="@RouteNames.EmployerName_Get">
+                            <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.EmployerName_Get">
                                  Name of employer on advert
                             </a>    
                         }
@@ -322,7 +322,7 @@
                         }
                         else
                         {
-                            <a class="das-task-list__task-name" asp-route="@RouteNames.AboutEmployer_Get">
+                            <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.AboutEmployer_Get">
                                  Employer information
                             </a>    
                         }
@@ -336,7 +336,7 @@
                         }
                         else
                         {
-                            <a class="das-task-list__task-name" asp-route="@RouteNames.EmployerContactDetails_Get">
+                            <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.EmployerContactDetails_Get">
                                  Contact details
                             </a>    
                         }
@@ -350,7 +350,7 @@
                         }
                         else
                         {
-                            <a class="das-task-list__task-name" asp-route="@RouteNames.ApplicationProcess_Get">
+                            <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.ApplicationProcess_Get">
                                  Website for application
                             </a>    
                         }
@@ -378,7 +378,7 @@
                 </h2>
                 <ul class="das-task-list__items">
                     <li class="das-task-list__item">
-                        <span class="das-task-list__task-name">
+                        <span>
                             Check your answers and submit your advert
                         </span>
                     </li>
