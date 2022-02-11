@@ -26,18 +26,38 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.VacancyPreview
 
             model.TaskListSectionTwoState.Should().Be(VacancyTaskListSectionState.NotStarted);
         }
-
+        
         [Test, MoqAutoData]
-        public async Task And_Has_Wage_Then_In_Progress(
-            Wage wage,
-            DateTime startDate,
+        public async Task And_Has_Important_Dates_Then_In_Progress(
+            DateTime closingDate,
             DisplayVacancyViewModelMapper mapper)
         {
             var vacancy = new Vacancy
             {
                 Id = Guid.NewGuid(),
-                Wage = wage,
-                StartDate = startDate
+                ClosingDate = closingDate,
+                StartDate = closingDate.AddMonths(1)
+            };
+            var model = new VacancyPreviewViewModel();
+            await mapper.MapFromVacancyAsync(model, vacancy);
+            
+            model.SetSectionStates(model, new ModelStateDictionary());
+
+            model.TaskListSectionTwoState.Should().Be(VacancyTaskListSectionState.InProgress);
+        }
+
+        [Test, MoqAutoData]
+        public async Task And_Has_Wage_Then_In_Progress(
+            DateTime closingDate,
+            Wage wage,
+            DisplayVacancyViewModelMapper mapper)
+        {
+            var vacancy = new Vacancy
+            {
+                Id = Guid.NewGuid(),
+                ClosingDate = closingDate,
+                StartDate = closingDate.AddMonths(1),
+                Wage = wage
             };
             var model = new VacancyPreviewViewModel();
             await mapper.MapFromVacancyAsync(model, vacancy);
@@ -49,26 +69,6 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.VacancyPreview
 
         [Test, MoqAutoData]
         public async Task And_Has_Duration_Then_In_Progress(
-            Wage wage,
-            DateTime startDate,
-            DisplayVacancyViewModelMapper mapper)
-        {
-            var vacancy = new Vacancy
-            {
-                Id = Guid.NewGuid(),
-                Wage = wage,
-                StartDate = startDate
-            };
-            var model = new VacancyPreviewViewModel();
-            await mapper.MapFromVacancyAsync(model, vacancy);
-            
-            model.SetSectionStates(model, new ModelStateDictionary());
-
-            model.TaskListSectionTwoState.Should().Be(VacancyTaskListSectionState.InProgress);
-        }
-        
-        [Test, MoqAutoData]
-        public async Task And_Has_Important_Dates_Then_In_Progress(
             Wage wage,
             DateTime closingDate,
             DisplayVacancyViewModelMapper mapper)
@@ -87,7 +87,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.VacancyPreview
 
             model.TaskListSectionTwoState.Should().Be(VacancyTaskListSectionState.InProgress);
         }
-        
+
         [Test, MoqAutoData]
         public async Task And_Has_Number_Of_Positions_Then_In_Progress(
             Wage wage,

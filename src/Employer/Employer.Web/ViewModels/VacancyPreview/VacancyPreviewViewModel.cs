@@ -167,7 +167,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview
 
         private VacancyTaskListSectionState SetTaskListSectionTwoState()
         {
-            if (WageTextSectionState == VacancyPreviewSectionState.Incomplete)
+            if (ClosingDateSectionState == VacancyPreviewSectionState.Incomplete || PossibleStartDateSectionState == VacancyPreviewSectionState.Incomplete)
             {
                 return VacancyTaskListSectionState.NotStarted;
             }
