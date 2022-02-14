@@ -7,23 +7,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.TrainingProvid
 {
     public class SelectTrainingProviderEditModelTests
     {
-        [Fact]
-        public void ShouldErrorIfSelectTrainingProviderNotSpecified()
-        {
-            var vm = new SelectTrainingProviderEditModel
-            {
-                IsTrainingProviderSelected = null,
-            };
-
-            var validator = new SelectTrainingProviderEditModelValidator();
-
-            var result = validator.Validate(vm);
-
-            result.IsValid.Should().BeFalse();
-            result.Errors.Count.Should().Be(1);
-            result.Errors[0].PropertyName.Should().Be(nameof(SelectTrainingProviderEditModel.IsTrainingProviderSelected));
-            result.Errors[0].ErrorMessage.Should().Be(ValidationMessages.TrainingProviderValidationMessages.IsTrainingProviderSelectedNotNull);
-        }
+        
 
         [Theory]
         [InlineData(null)]
@@ -31,7 +15,6 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.TrainingProvid
         public void ShouldErrorIfUkprnIsNotSpecified(string inputUkprn)
         {
             var vm = new SelectTrainingProviderEditModel {
-                IsTrainingProviderSelected = true,
                 Ukprn = inputUkprn,
                 SelectionType = TrainingProviderSelectionType.Ukprn
             };
@@ -50,7 +33,6 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.TrainingProvid
         public void ShouldErrorIfUkprnIsInvalid()
         {
             var vm = new SelectTrainingProviderEditModel {
-                IsTrainingProviderSelected = true,
                 Ukprn = "invalid ukprn",
                 SelectionType = TrainingProviderSelectionType.Ukprn
             };
@@ -69,7 +51,6 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.TrainingProvid
         public void ShouldBeValidIfUkprnSpecified()
         {
             var vm = new SelectTrainingProviderEditModel {
-                IsTrainingProviderSelected = true,
                 Ukprn = "12345678",
                 SelectionType = TrainingProviderSelectionType.Ukprn
             };
@@ -87,7 +68,6 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.TrainingProvid
         public void ShouldErrorIfTrainingProviderSearchIsNotSpecified(string inputUkprn)
         {
             var vm = new SelectTrainingProviderEditModel {
-                IsTrainingProviderSelected = true,
                 TrainingProviderSearch = inputUkprn,
                 SelectionType = TrainingProviderSelectionType.TrainingProviderSearch
             };
@@ -106,7 +86,6 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.TrainingProvid
         public void ShouldBeValidIfTrainingProviderSearchSpecified()
         {
             var vm = new SelectTrainingProviderEditModel {
-                IsTrainingProviderSelected = true,
                 TrainingProviderSearch = "something specified",
                 SelectionType = TrainingProviderSelectionType.TrainingProviderSearch
             };
