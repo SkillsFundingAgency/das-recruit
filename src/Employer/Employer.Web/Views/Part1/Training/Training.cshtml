@@ -9,6 +9,7 @@
 }
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
+        <span class="govuk-link govuk-back-link">Back</span>
         <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Title_Get" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
         <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }' />
         <partial name="@PartialNames.ReviewSummary" for="Review" />
@@ -16,12 +17,12 @@
         <form asp-route="@RouteNames.Training_Post" asp-route-wizard="@Model.PageInfo.IsWizard" novalidate>
 
             <p class="govuk-body">
-                If you have not found training for this apprenticeship, you can ​use the
+                If you have not found a training course for this apprenticeship, you can use the
                 <a class="govuk-link" href="@externalLinks.Value.FindApprenticeshipTrainingUrl" target="_blank">Find apprenticeship training service (opens in new tab or window)</a>.
             </p>
             <div esfa-validation-marker-for="SelectedProgrammeId" class="govuk-form-group">
                 <label asp-for="SelectedProgrammeId" class="govuk-label govuk-!-font-weight-bold">
-                    <span class="govuk-hint">Enter apprenticeship training title</span>
+                    <span class="govuk-hint">Enter apprenticeship training course title </span>
                 </label>
                 <span esfa-validation-message-for="SelectedProgrammeId" class="govuk-error-message"></span>
                 <div class="govuk-!-margin-bottom-2">
@@ -29,8 +30,7 @@
                         <option value="">Please select</option>
                         @foreach (var programme in Model.Programmes)
                         {
-                            <option value="@programme.Id">@programme.Name</option>
-                        }
+            <option value="@programme.Id">@programme.Name</option>}
                     </select>
                 </div>
                 <p class="govuk-body">
@@ -38,10 +38,10 @@
                 </p>
             </div>
             <button type="submit" class="govuk-button save-button" esfa-automation="continue-button">Save and continue</button>
-            <div class="govuk-body">
-                <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Vacancies_Get" class="govuk-link">Cancel</a>
-                <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.Vacancy_Preview_Get" asp-fragment="@Anchors.TrainingProviderSection" class="govuk-link">Cancel</a>
-            </div>
+            <span class="govuk-body">
+                <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Dashboard_Get" esfa-automation="link-cancel" class="govuk-link das-button-link">Cancel</a>
+                @*<a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames." esfa-automation="link-cancel" class="govuk-link das-button-link">Cancel</a>*@
+            </span>
         </form>
     </div>
 </div>
