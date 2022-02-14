@@ -80,7 +80,8 @@ namespace Esfa.Recruit.Employer.Web.Mappings
 
             vm.TransferredProviderName = vacancy.TransferInfo?.ProviderName;
             vm.TransferredOnDate = vacancy.TransferInfo?.TransferredDate.AsGdsDate();
-
+            vm.EmployerNameOption = vacancy.EmployerNameOption;
+            
             if (vacancy.EmployerLocation != null)
             {
                 if (vacancy.EmployerLocation != null)

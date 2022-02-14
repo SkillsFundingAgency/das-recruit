@@ -56,7 +56,6 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             }
 
             vm.AccountLegalEntityCount = getEmployerDataTask.Result.LegalEntities.Count();
-
             return vm;
         }
 
