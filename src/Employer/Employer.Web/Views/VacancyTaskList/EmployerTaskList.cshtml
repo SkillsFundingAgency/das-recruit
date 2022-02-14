@@ -345,17 +345,18 @@
                         }
                     </li>
                     <li class="das-task-list__item">
-                        @if (Model.EmployerDescriptionRequiresEdit)
+                        @if (Model.HasSelectedEmployerNameOption && !Model.EmployerDescriptionRequiresEdit && Model.TaskListSectionThreeState == VacancyTaskListSectionState.Completed)
                         {
-                            <span class="das-task-list__task-name">
-                                 Website for application
-                            </span>    
+                            <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.ApplicationProcess_Get">
+                                Website for application
+                            </a>    
+                               
                         }
                         else
                         {
-                            <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.ApplicationProcess_Get">
-                                 Website for application
-                            </a>    
+                            <span class="das-task-list__task-name">
+                                Website for application
+                            </span> 
                         }
                     </li>
                 </ul>

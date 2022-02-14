@@ -119,6 +119,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels
         public bool IsNotDisabilityConfident => !IsDisabilityConfident;
         public bool IsTransferred => string.IsNullOrWhiteSpace(TransferredProviderName) == false && string.IsNullOrWhiteSpace(TransferredOnDate) == false;
         public bool HasSelectedLegalEntity => !string.IsNullOrEmpty(AccountLegalEntityPublicHashedId);
-        public bool HasSelectedEmployerNameOption => ApplicationMethod != null;
+        
+        public EmployerNameOption? EmployerNameOption { get; set; }
     }
 }
