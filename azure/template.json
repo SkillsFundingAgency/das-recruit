@@ -116,9 +116,6 @@
     "sharedServiceBusName": {
       "type": "string"
     },
-    "apiSubnetObject": {
-      "type": "object"
-    },
     "apiCustomHostname": {
       "type": "string"
     },
