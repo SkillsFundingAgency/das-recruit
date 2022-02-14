@@ -59,6 +59,17 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 
             return vm;
         }
+
+        public async Task<VacancyPreviewViewModel> GetCreateVacancyTaskListModel(VacancyRouteModel vrm)
+        {
+            var getEmployerData = await _employerVacancyClient.GetEditVacancyInfoAsync(vrm.EmployerAccountId);
+            var vm = new VacancyPreviewViewModel
+            {
+                AccountLegalEntityCount = getEmployerData.LegalEntities.Count()
+            };
+
+            return vm;
+        }
         
         protected override EntityToViewModelPropertyMappings<Vacancy, VacancyPreviewViewModel> DefineMappings()
         {

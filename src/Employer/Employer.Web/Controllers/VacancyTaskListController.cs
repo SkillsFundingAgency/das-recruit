@@ -18,9 +18,9 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         }
 
         [HttpGet("vacancies/create/task-list", Name = RouteNames.EmployerTaskListCreateGet)]
-        public async Task<IActionResult> CreateEmployerTaskList()
+        public async Task<IActionResult> CreateEmployerTaskList(VacancyRouteModel vrm)
         {
-            var viewModel = new VacancyPreviewViewModel();
+            var viewModel = await _orchestrator.GetCreateVacancyTaskListModel(vrm);
             viewModel.SetSectionStates(viewModel, ModelState);
             
             return View("EmployerTaskList", viewModel);

@@ -80,5 +80,21 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators
             viewModel.AccountLegalEntityCount.Should().Be(legalEntities.Count);
             viewModel.HasSelectedEmployerNameOption.Should().BeTrue();
         }
+
+        [Test, MoqAutoData]
+        public async Task When_Creating_New_Then_The_Account_Legal_Entity_Count_Is_Populated(
+            VacancyRouteModel routeModel,
+            List<LegalEntity> legalEntities,
+            Vacancy vacancy,
+            [Frozen] Mock<IEmployerVacancyClient> employerVacancyClient,
+            VacancyTaskListOrchestrator orchestrator)
+        {
+            employerVacancyClient.Setup(x => x.GetEmployerLegalEntitiesAsync(routeModel.EmployerAccountId))
+                .ReturnsAsync(legalEntities);
+            
+            var viewModel = await orchestrator.GetVacancyTaskListModel(routeModel);
+
+            viewModel.AccountLegalEntityCount.Should().Be(legalEntities.Count);
+        }
     }
 }
