@@ -826,7 +826,7 @@
     /// API Resources
     {
       "apiVersion": "2020-10-01",
-      "name": "api-app-service-certificate",
+      "name": "recruit-api-app-service-certificate",
       "type": "Microsoft.Resources/deployments",
       "resourceGroup": "[parameters('sharedEnvResourceGroup')]",
       "properties": {
@@ -926,7 +926,7 @@
             "value": "[parameters('apiCustomHostname')]"
           },
           "certificateThumbprint": {
-            "value": "[reference('api-app-service-certificate').outputs.certificateThumbprint.value]"
+            "value": "[reference('recruit-api-app-service-certificate').outputs.certificateThumbprint.value]"
           },
           "ipSecurityRestrictions": {
             "value": "[parameters('wafOutboundIPAddresses')]"
@@ -934,7 +934,7 @@
         }
       },
       "dependsOn": [
-        "api-app-service-certificate"
+        "recruit-api-app-service-certificate"
       ]
     }
     /// End
