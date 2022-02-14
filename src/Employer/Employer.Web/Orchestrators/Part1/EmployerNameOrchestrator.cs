@@ -80,7 +80,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 
 
         public async Task<OrchestratorResponse> PostEmployerNameEditModelAsync(
-            EmployerNameEditModel model)
+            EmployerNameEditModel model, VacancyUser user)
         {
             var validationRules = VacancyRuleSet.EmployerNameOption;
 
@@ -108,7 +108,10 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             return await ValidateAndExecute(
                 vacancy, 
                 v => _recruitVacancyClient.Validate(v, validationRules),
-                v => Task.FromResult(new OrchestratorResponse(true)));
+                async v =>
+                {
+                    await _recruitVacancyClient.UpdateDraftVacancyAsync(vacancy, user);
+                });
         }
 
         protected override EntityToViewModelPropertyMappings<Vacancy, EmployerNameEditModel> DefineMappings()

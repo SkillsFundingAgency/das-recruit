@@ -317,7 +317,7 @@
                         }
                     </li>
                     <li class="das-task-list__item">
-                        @if (Model.TaskListSectionThreeState != VacancyTaskListSectionState.Completed)
+                        @if (!Model.HasSelectedEmployerNameOption)
                         {
                             <span class="das-task-list__task-name">
                                  Employer information
@@ -331,7 +331,7 @@
                         }
                     </li>
                     <li class="das-task-list__item">
-                        @if (Model.TaskListSectionThreeState != VacancyTaskListSectionState.Completed)
+                        @if (!Model.HasSelectedEmployerNameOption)
                         {
                             <span class="das-task-list__task-name">
                                  Contact details
@@ -345,7 +345,7 @@
                         }
                     </li>
                     <li class="das-task-list__item">
-                        @if (Model.TaskListSectionThreeState != VacancyTaskListSectionState.Completed)
+                        @if (Model.EmployerDescriptionRequiresEdit)
                         {
                             <span class="das-task-list__task-name">
                                  Website for application

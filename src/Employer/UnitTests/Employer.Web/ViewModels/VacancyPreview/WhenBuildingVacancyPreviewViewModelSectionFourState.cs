@@ -69,12 +69,12 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.VacancyPreview
         }
 
         [Test, MoqAutoData]
-        public async Task
-            Then_Section_State_Is_Set_To_Complete_With_Employer_Name_Description_And_ApplicationMethod_Set(
+        public async Task Then_Section_State_Is_Set_To_Complete_With_Employer_Name_Description_And_ApplicationMethod_Set(
                 Vacancy vacancy,
                 [Frozen] Mock<IRecruitVacancyClient> recruitVacancyClient,
                 DisplayVacancyViewModelMapper mapper)
         {
+            vacancy.EmployerNameOption = EmployerNameOption.RegisteredName;
             var model = new VacancyPreviewViewModel();
             
             await mapper.MapFromVacancyAsync(model, vacancy);

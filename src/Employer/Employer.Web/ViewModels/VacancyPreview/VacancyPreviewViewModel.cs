@@ -260,7 +260,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview
                 return VacancyTaskListSectionState.NotStarted;
             }
 
-            if (EmployerNameSectionState == VacancyPreviewSectionState.Valid
+            if (HasSelectedEmployerNameOption
                 && ApplicationMethodSectionState == VacancyPreviewSectionState.Valid
                 && EmployerDescriptionSectionState == VacancyPreviewSectionState.Valid)
             {

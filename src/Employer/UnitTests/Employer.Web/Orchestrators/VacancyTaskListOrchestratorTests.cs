@@ -39,6 +39,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators
             VacancyTaskListOrchestrator orchestrator)
         {
             vacancy.EmployerLocation = null;
+            vacancy.EmployerNameOption = EmployerNameOption.RegisteredName;
             programme.Id = vacancy.ProgrammeId;
             programme.EducationLevelNumber = 3;
             programme.ApprenticeshipLevel = ApprenticeshipLevel.Higher;
@@ -73,9 +74,11 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators
                 .Excluding(c=>c.EducationLevelName)
                 .Excluding(c=>c.ApprenticeshipLevel)
                 .Excluding(c=>c.AccountLegalEntityCount)
+                .Excluding(c=>c.HasSelectedEmployerNameOption)
             );
             viewModel.ApprenticeshipLevel.Should().Be(programme.ApprenticeshipLevel);
             viewModel.AccountLegalEntityCount.Should().Be(legalEntities.Count);
+            viewModel.HasSelectedEmployerNameOption.Should().BeTrue();
         }
     }
 }

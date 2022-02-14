@@ -66,7 +66,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
                 };
             }
 
-            var response = await _orchestrator.PostEmployerNameEditModelAsync(model);
+            var response = await _orchestrator.PostEmployerNameEditModelAsync(model, User.ToVacancyUser());
 
             if (!response.Success)
             {
