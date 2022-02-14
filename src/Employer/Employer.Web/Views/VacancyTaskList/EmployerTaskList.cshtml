@@ -49,20 +49,23 @@
                             }
                         </span>
                     </li>
-                    <li class="das-task-list__item">
-                        @if (Model.TitleSectionState == VacancyPreviewSectionState.Incomplete)
-                        {
-                            <span class="das-task-list__task-name">
-                                Name of organisation
-                            </span>    
-                        }
-                        else
-                        {
-                            <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.Employer_Get">
-                                Name of organisation
-                            </a>    
-                        }
-                    </li>
+                    @if (Model.AccountLegalEntityCount > 1)
+                    {
+                        <li class="das-task-list__item">
+                            @if (Model.TitleSectionState == VacancyPreviewSectionState.Incomplete)
+                            {
+                                <span class="das-task-list__task-name">
+                                    Name of organisation
+                                </span>    
+                            }
+                            else
+                            {
+                                <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.Employer_Get">
+                                    Name of organisation
+                                </a>    
+                            }
+                        </li>    
+                    }
                     <li class="das-task-list__item">
                         @if (!Model.HasSelectedLegalEntity)
                         {
