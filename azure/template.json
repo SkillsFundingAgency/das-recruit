@@ -127,6 +127,9 @@
     },
     "wafOutboundIPAddresses": {
       "type": "array"
+    },
+    "sharedSQLServerName": {
+      "type": "string"
     }
   },
   "variables": {
@@ -670,7 +673,7 @@
     {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2020-10-01",
-      "name": "webjob-app-service-subnet",
+      "name": "recruit-worker-subnet",
       "resourceGroup": "[parameters('sharedEnvResourceGroup')]",
       "properties": {
         "mode": "Incremental",
@@ -693,6 +696,27 @@
           },
           "delegations": {
             "value": "[parameters('subnetDelegations')]"
+          }
+        }
+      }
+    },
+    {
+      "apiVersion": "2021-04-01",
+      "name": "recruit-worker-sql-firewall-rule",
+      "resourceGroup": "[parameters('sharedEnvResourceGroup')]",
+      "type": "Microsoft.Resources/deployments",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(variables('deploymentUrlBase'), 'sql-server-firewall-rules.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "serverName": {
+            "value": "[parameters('sharedSQLServerName')]"
+          },
+          "subnetResourceIdList": {
+            "value": "[createArray(reference('recruit-worker-subnet').outputs.SubnetResourceId.value)]"
           }
         }
       }
@@ -743,7 +767,7 @@
             "value": "[variables('resourcegroupName')]"
           },
           "subnetResourceId": {
-            "value": "[reference('webjob-app-service-subnet').outputs.subnetResourceId.value]"
+            "value": "[reference('recruit-worker-subnet').outputs.subnetResourceId.value]"
           },
           "appServiceAppSettings": {
             "value": {
