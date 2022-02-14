@@ -64,7 +64,7 @@
                         }
                     </li>
                     <li class="das-task-list__item">
-                        @if (!Model.HasEmployerName)
+                        @if (!Model.HasSelectedLegalEntity)
                         {
                             <span class="das-task-list__task-name">
                                 Training course
@@ -300,9 +300,9 @@
                 </h2>
                 <ul class="das-task-list__items">
                     <li class="das-task-list__item">
-                        @if (Model.QualificationsSectionState == VacancyPreviewSectionState.Incomplete)
+                        @if (Model.TaskListSectionThreeState != VacancyTaskListSectionState.Completed)
                         {
-                            <span class="das-task-list__task-name">
+                            <span>
                                  Name of employer on advert
                             </span>    
                         }
@@ -314,7 +314,7 @@
                         }
                     </li>
                     <li class="das-task-list__item">
-                        @if (Model.EmployerNameSectionState == VacancyPreviewSectionState.Incomplete)
+                        @if (Model.TaskListSectionThreeState != VacancyTaskListSectionState.Completed)
                         {
                             <span class="das-task-list__task-name">
                                  Employer information
@@ -328,7 +328,7 @@
                         }
                     </li>
                     <li class="das-task-list__item">
-                        @if (Model.EmployerDescriptionSectionState == VacancyPreviewSectionState.Incomplete)
+                        @if (Model.TaskListSectionThreeState != VacancyTaskListSectionState.Completed)
                         {
                             <span class="das-task-list__task-name">
                                  Contact details
@@ -342,7 +342,7 @@
                         }
                     </li>
                     <li class="das-task-list__item">
-                        @if (Model.EmployerDescriptionSectionState == VacancyPreviewSectionState.Incomplete)
+                        @if (Model.TaskListSectionThreeState != VacancyTaskListSectionState.Completed)
                         {
                             <span class="das-task-list__task-name">
                                  Website for application

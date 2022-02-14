@@ -166,8 +166,8 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview
 
         
         public VacancyTaskListSectionState TaskListSectionTwoState => SetTaskListSectionTwoState();
+        public int AccountLegalEntityCount { get ; set ; }
 
-        
 
         public void SetSectionStates(VacancyPreviewViewModel viewModel, ModelStateDictionary modelState)
         {
