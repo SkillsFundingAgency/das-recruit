@@ -9,7 +9,7 @@
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         <a asp-route="@RouteNames.Training_Get" asp-route-programmeid="@Model.ProgrammeId" asp-route-wizard="@Model.PageInfo.IsWizard" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
-        <h1 class="govuk-heading-xl">Confirm apprenticeship training</h1>
+        <h1 class="govuk-heading-xl">Confirm apprenticeship training course</h1>
         <div class="verification-summary">
             <h2 class="govuk-heading-m">
                 @Model.TrainingTitle
@@ -43,7 +43,12 @@
                 <input asp-show="@Model.PageInfo.IsWizard" type="submit" value="Confirm and continue" esfa-automation="btn-continue" class="govuk-button" />
                 <input asp-show="@Model.PageInfo.IsNotWizard" type="submit" value="Confirm and preview" esfa-automation="btn-continue" class="govuk-button" />
                 <div class="govuk-body">
-                    <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Vacancies_Get" class="govuk-link" esfa-automation="cancel-link">Cancel</a>
+                    <esfaFeatureEnabled name="@FeatureNames.EmployerTaskList">
+                        <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Dashboard_Get" class="govuk-link" esfa-automation="cancel-link">Cancel</a>
+                    </esfaFeatureEnabled>
+                    <esfaFeatureDisabled name="@FeatureNames.EmployerTaskList">
+                        <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Vacancies_Get" class="govuk-link" esfa-automation="cancel-link">Cancel</a>
+                    </esfaFeatureDisabled>
                     <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.Vacancy_Preview_Get" asp-fragment="@Anchors.TrainingProviderSection" class="govuk-link" esfa-automation="cancel-link">Cancel</a>
                 </div>
             </div>
