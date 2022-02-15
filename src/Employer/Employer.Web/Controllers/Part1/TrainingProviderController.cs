@@ -7,6 +7,7 @@ using Esfa.Recruit.Employer.Web.Extensions;
 using Esfa.Recruit.Employer.Web.Orchestrators.Part1;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.TrainingProvider;
+using Esfa.Recruit.Shared.Web.FeatureToggle;
 using Esfa.Recruit.Shared.Web.Mappers;
 using Esfa.Recruit.Shared.Web.Orchestrators;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
@@ -20,12 +21,14 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
     public class TrainingProviderController : Controller
     {
         private readonly TrainingProviderOrchestrator _orchestrator;
+        private readonly IFeature _feature;
         private const string InvalidUkprnMessageFormat = "The UKPRN {0} is not valid or the associated provider is not active";
         private const string InvalidSearchTerm = "Please enter a training provider name or UKPRN";
 
-        public TrainingProviderController(TrainingProviderOrchestrator orchestrator)
+        public TrainingProviderController(TrainingProviderOrchestrator orchestrator, IFeature feature)
         {
             _orchestrator = orchestrator;
+            _feature = feature;
         }
 
         [HttpGet("select-training-provider", Name = RouteNames.TrainingProvider_Select_Get)]
@@ -110,6 +113,11 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
         
         private IActionResult GetRedirectToNextPage(bool wizard)
         {
+            if (_feature.IsFeatureEnabled(FeatureNames.EmployerTaskList))
+            {
+                return RedirectToRoute(RouteNames.ShortDescription_Get);    
+            }
+            
             return wizard
                 ? RedirectToRoute(RouteNames.NumberOfPositions_Get)
                 : RedirectToRoute(RouteNames.Vacancy_Preview_Get);

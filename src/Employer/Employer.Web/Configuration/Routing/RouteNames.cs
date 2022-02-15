@@ -156,5 +156,8 @@
         public const string RejectJobAdvert_Post = "RejectJobAdvert_Post";
         public const string JobAdvertConfirmation_Get = "JobAdvertConfirmation_Get";
         public const string EmployerRecruitmentApi = "employer-recruitment-api";
+
+        public const string EmployerTaskListGet = "employer-tasklist-get";
+        public const string EmployerTaskListCreateGet = "employer-tasklist-create-get";
     }
 }

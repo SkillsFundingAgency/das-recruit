@@ -7,6 +7,7 @@ using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels.Part2.Skills;
 using Microsoft.AspNetCore.Mvc;
 using Esfa.Recruit.Shared.Web.Extensions;
+using Esfa.Recruit.Shared.Web.FeatureToggle;
 
 namespace Esfa.Recruit.Employer.Web.Controllers.Part2
 {
@@ -14,10 +15,12 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part2
     public class SkillsController : Controller
     {
         private readonly SkillsOrchestrator _orchestrator;
+        private readonly IFeature _feature;
 
-        public SkillsController(SkillsOrchestrator orchestrator)
+        public SkillsController(SkillsOrchestrator orchestrator, IFeature feature)
         {
             _orchestrator = orchestrator;
+            _feature = feature;
         }
 
         [HttpGet("skills", Name = RouteNames.Skills_Get)]
@@ -52,6 +55,10 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part2
                 return RedirectToRoute(RouteNames.Skills_Get);
             }
 
+            if (_feature.IsFeatureEnabled(FeatureNames.EmployerTaskList))
+            {
+                return RedirectToRoute(RouteNames.Qualifications_Get);
+            }
             return RedirectToRoute(RouteNames.Vacancy_Preview_Get);
         }
     }
