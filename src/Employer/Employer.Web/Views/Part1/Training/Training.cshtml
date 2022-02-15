@@ -4,7 +4,7 @@
 @inject IOptions<ExternalLinksConfiguration> externalLinks;
 @{ 
     ViewBag.Vpv = "/recruitment/employer/page-training";
-    ViewBag.Title = "What training will the apprentice take?";
+    ViewBag.Title = "Training Course";
     ViewBag.ZenDeskLabel = "recruit-what-training-will-the-apprentice-take";
 }
 <div class="govuk-grid-row">
@@ -13,7 +13,7 @@
         <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Title_Get" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
         <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }' />
         <partial name="@PartialNames.ReviewSummary" for="Review" />
-        <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">What training will the apprentice take?</h1>
+        <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">What training course will the apprentice take?</h1>
         <form asp-route="@RouteNames.Training_Post" asp-route-wizard="@Model.PageInfo.IsWizard" novalidate>
 
             <p class="govuk-body">
@@ -38,7 +38,7 @@
                 </p>
             </div>
             <button type="submit" class="govuk-button save-button" esfa-automation="continue-button">Save and continue</button>
-            <span class="govuk-body">
+            <div class="govuk-body">
                 <esfaFeatureEnabled name="@FeatureNames.EmployerTaskList">
                     <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Dashboard_Get" class="govuk-link" esfa-automation="cancel-link">Cancel</a>
                 </esfaFeatureEnabled>
@@ -46,7 +46,7 @@
                     <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Vacancies_Get" class="govuk-link" esfa-automation="cancel-link">Cancel</a>
                 </esfaFeatureDisabled>
                 <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.Vacancy_Preview_Get" asp-fragment="@Anchors.TrainingProviderSection" class="govuk-link" esfa-automation="cancel-link">Cancel</a>
-            </span>
+            </div>
         </form>
     </div>
 </div>
