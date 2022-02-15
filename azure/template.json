@@ -116,9 +116,6 @@
     "sharedServiceBusName": {
       "type": "string"
     },
-    "apiSubnetObject": {
-      "type": "object"
-    },
     "apiCustomHostname": {
       "type": "string"
     },
@@ -128,7 +125,10 @@
     "wafOutboundIPAddresses": {
       "type": "array"
     },
-    "sharedSQLServerName": {
+    "sharedBackEndAppServicePlanName": {
+      "type": "string"
+    },
+    "sharedBackEndSubnetResourceId": {
       "type": "string"
     }
   },
@@ -142,7 +142,6 @@
     "qaAppServiceName": "[concat(variables('resourceNamePrefix'), '-qa-as')]",
     "webjobAppServiceName": "[concat(variables('resourceNamePrefix'), '-webjob-as')]",
     "storageAccountName": "[toLower(concat('das', parameters('resourceEnvironmentName'), parameters('serviceName'), 'str'))]",
-    "apiAppServicePlanName": "[concat(variables('resourceNamePrefix'), 'api-asp')]",
     "apiAppServiceName": "[concat(variables('resourceNamePrefix'), 'api-as')]",
     "apiConfigNames": "SFA.DAS.Recruit.Api",
     "jobsConfigNames": "SFA.DAS.Recruit.Jobs,SFA.DAS.Encoding"
@@ -845,66 +844,9 @@
     /// API Resources
     {
       "apiVersion": "2020-10-01",
-      "name": "api-app-service-plan",
+      "name": "recruit-api-app-service-certificate",
       "type": "Microsoft.Resources/deployments",
-      "resourceGroup": "[variables('resourceGroupName')]",
-      "properties": {
-        "mode": "Incremental",
-        "templateLink": {
-          "uri": "[concat(variables('deploymentUrlBase'),'app-service-plan.json')]",
-          "contentVersion": "1.0.0.0"
-        },
-        "parameters": {
-          "appServicePlanName": {
-            "value": "[variables('apiAppServicePlanName')]"
-          },
-          "aspSize": {
-            "value": "1"
-          },
-          "aspInstances": {
-            "value": 2
-          }
-        }
-      },
-      "dependsOn": [
-        "[variables('resourceGroupName')]"
-      ]
-    },
-    {
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2020-10-01",
-      "name": "api-app-service-subnet",
       "resourceGroup": "[parameters('sharedEnvResourceGroup')]",
-      "properties": {
-        "mode": "Incremental",
-        "templateLink": {
-          "uri": "[concat(variables('deploymentUrlBase'),'subnet.json')]",
-          "contentVersion": "1.0.0.0"
-        },
-        "parameters": {
-          "virtualNetworkName": {
-            "value": "[parameters('sharedEnvVirtualNetworkName')]"
-          },
-          "subnetName": {
-            "value": "[parameters('apiSubnetObject').name]"
-          },
-          "subnetAddressPrefix": {
-            "value": "[parameters('apiSubnetObject').addressSpace]"
-          },
-          "serviceEndpointList": {
-            "value": "[parameters('subnetServiceEndpointList')]"
-          },
-          "delegations": {
-            "value": "[parameters('subnetDelegations')]"
-          }
-        }
-      }
-    },
-    {
-      "apiVersion": "2020-10-01",
-      "name": "api-app-service-certificate",
-      "type": "Microsoft.Resources/deployments",
-      "resourceGroup": "[variables('resourceGroupName')]",
       "properties": {
         "mode": "Incremental",
         "templateLink": {
@@ -922,10 +864,7 @@
             "value": "[parameters('sharedManagementResourceGroup')]"
           }
         }
-      },
-      "dependsOn": [
-        "api-app-service-plan"
-      ]
+      }
     },
     {
       "apiVersion": "2020-10-01",
@@ -967,13 +906,13 @@
             "value": "[variables('apiAppServiceName')]"
           },
           "appServicePlanName": {
-            "value": "[variables('apiAppServicePlanName')]"
+            "value": "[parameters('sharedBackEndAppServicePlanName')]"
           },
           "appServicePlanResourceGroup": {
-            "value": "[variables('resourceGroupName')]"
+            "value": "[parameters('sharedEnvResourceGroup')]"
           },
           "subnetResourceId": {
-            "value": "[reference('api-app-service-subnet').outputs.subnetResourceId.value]"
+            "value": "[parameters('sharedBackEndSubnetResourceId')]"
           },
           "appServiceAppSettings": {
             "value": {
@@ -1005,7 +944,7 @@
             "value": "[parameters('apiCustomHostname')]"
           },
           "certificateThumbprint": {
-            "value": "[reference('api-app-service-certificate').outputs.certificateThumbprint.value]"
+            "value": "[reference('recruit-api-app-service-certificate').outputs.certificateThumbprint.value]"
           },
           "ipSecurityRestrictions": {
             "value": "[parameters('wafOutboundIPAddresses')]"
@@ -1013,7 +952,7 @@
         }
       },
       "dependsOn": [
-        "api-app-service-certificate"
+        "recruit-api-app-service-certificate"
       ]
     }
     /// End
