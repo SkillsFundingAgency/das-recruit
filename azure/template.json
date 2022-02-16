@@ -67,6 +67,10 @@
     "providerKeyvaultCertificateName": {
       "type": "string"
     },
+    "cosmosDbSubnetResourceIdList": {
+      "type": "array",
+      "defaultValue": []
+    },
     "cosmosDbIpRangeFilter": {
       "type": "string",
       "defaultValue": ""
@@ -132,6 +136,9 @@
       "type": "string"
     },
     "sharedSQLServerName": {
+      "type": "string"
+    },
+    "logAnalyticsWorkspaceName": {
       "type": "string"
     }
   },
@@ -251,11 +258,20 @@
           "defaultConsistencyLevel": {
             "value": "Strong"
           },
+          "subnetResourceIdList": {
+            "value": "[parameters('cosmosDbSubnetResourceIdList')]"
+          },
           "ipRangeFilter": {
             "value": "[parameters('cosmosDbIpRangeFilter')]"
           },
           "serverVersion": {
             "value": "[parameters('cosmosDbServerVersion')]"
+          },
+          "logAnalyticsWorkspaceName": {
+            "value": "[parameters('logAnalyticsWorkspaceName')]"
+          },
+          "logAnalyticsWorkspaceResourceGroupName": {
+            "value": "[parameters('sharedManagementResourceGroup')]"
           }
         }
       },
