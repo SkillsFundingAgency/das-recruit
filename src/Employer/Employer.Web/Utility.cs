@@ -122,6 +122,7 @@ namespace Esfa.Recruit.Employer.Web
                 validRoutes.AddRange( new[]
                 {
                     RouteNames.EmployerTaskListGet,
+                    RouteNames.EmployerCheckYourAnswersGet,
                     RouteNames.Employer_Post,
                     RouteNames.Employer_Get,
                     RouteNames.EmployerName_Post,
