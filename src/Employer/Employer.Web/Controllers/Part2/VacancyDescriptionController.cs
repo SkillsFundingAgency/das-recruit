@@ -48,7 +48,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part2
 
             if (_feature.IsFeatureEnabled(FeatureNames.EmployerTaskList))
             {
-                return RedirectToRoute(RouteNames.Dates_Get);
+                return RedirectToRoute(RouteNames.EmployerTaskListGet);
             }
             
             return RedirectToRoute(RouteNames.Vacancy_Preview_Get);

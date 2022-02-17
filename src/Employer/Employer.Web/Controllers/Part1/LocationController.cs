@@ -77,7 +77,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
 
             if (_feature.IsFeatureEnabled(FeatureNames.EmployerTaskList))
             {
-                return RedirectToRoute(RouteNames.Skills_Get);
+                return RedirectToRoute(RouteNames.EmployerTaskListGet);
             }
             
             IActionResult result = wizard
