@@ -24,14 +24,15 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part2
         }
         
         [HttpGet("description", Name = RouteNames.ShortDescription_Get)]
-        public async Task<IActionResult> ShortDescription(VacancyRouteModel vrm)
+        public async Task<IActionResult> ShortDescription(VacancyRouteModel vrm, [FromQuery] string wizard = "true")
         {
             var vm = await _orchestrator.GetShortDescriptionViewModelAsync(vrm);
+            vm.PageInfo.SetWizard(wizard);
             return View(vm);
         }
 
         [HttpPost("description", Name = RouteNames.ShortDescription_Post)]
-        public async Task<IActionResult> ShortDescription(ShortDescriptionEditModel m)
+        public async Task<IActionResult> ShortDescription(ShortDescriptionEditModel m, [FromQuery] bool wizard)
         {
             var response = await _orchestrator.PostShortDescriptionEditModelAsync(m, User.ToVacancyUser());
 
@@ -43,6 +44,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part2
             if (!ModelState.IsValid)
             {
                 var vm = await _orchestrator.GetShortDescriptionViewModelAsync(m);
+                vm.PageInfo.SetWizard(wizard);
                 return View(vm);
             }
 
