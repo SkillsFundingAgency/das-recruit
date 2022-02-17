@@ -3,19 +3,12 @@ using Esfa.Recruit.Employer.Web.Orchestrators;
 using Esfa.Recruit.Employer.Web.ViewModels.Preview;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Extensions;
 using Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Shared.Web.Extensions;
-using Esfa.Recruit.Shared.Web.Mappers;
-using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using Microsoft.AspNetCore.Routing;
 
 namespace Esfa.Recruit.Employer.Web.Controllers
 {
@@ -189,16 +182,6 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             return View("ConfirmationJobAdvert", viewModel);
         }
 
-        [HttpGet("task-list", Name = RouteNames.EmployerTaskListGet)]
-        public async Task<IActionResult> EmployerTaskList(VacancyRouteModel vrm)
-        {
-            var viewModel = await _orchestrator.GetVacancyPreviewViewModelAsync(vrm, RouteNames.EmployerTaskListGet);
-            
-            viewModel.SetSectionStates(viewModel, ModelState);
-            
-            
-            return View(viewModel);
-        }
         
         private void AddSoftValidationErrorsToModelState(VacancyPreviewViewModel viewModel)
         {

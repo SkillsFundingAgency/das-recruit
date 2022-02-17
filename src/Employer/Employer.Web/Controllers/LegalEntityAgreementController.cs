@@ -1,8 +1,10 @@
 ﻿using System.Threading.Tasks;
+using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Controllers.Part1;
 using Esfa.Recruit.Employer.Web.Orchestrators;
 using Esfa.Recruit.Employer.Web.RouteModel;
+using Esfa.Recruit.Shared.Web.FeatureToggle;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,12 +14,14 @@ namespace Esfa.Recruit.Employer.Web.Controllers
     public class LegalEntityAgreementController : EmployerControllerBase
     {
         private readonly LegalEntityAgreementOrchestrator _orchestrator;
+        private readonly IFeature _feature;
 
         public LegalEntityAgreementController(
-            LegalEntityAgreementOrchestrator orchestrator, IHostingEnvironment hostingEnvironment)
+            LegalEntityAgreementOrchestrator orchestrator, IHostingEnvironment hostingEnvironment, IFeature feature)
             : base(hostingEnvironment)
         {
             _orchestrator = orchestrator;
+            _feature = feature;
         }
 
         [HttpGet("legal-entity-agreement", Name = RouteNames.LegalEntityAgreement_SoftStop_Get)]
@@ -30,6 +34,11 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             if (vm.HasLegalEntityAgreement == false)
                 return View(vm);
 
+            if (_feature.IsFeatureEnabled(FeatureNames.EmployerTaskList))
+            {
+                return RedirectToRoute(RouteNames.AboutEmployer_Get, new { Wizard = wizard });
+            }
+            
             return RedirectToRoute(RouteNames.Location_Get, new {Wizard = wizard});
         }
 

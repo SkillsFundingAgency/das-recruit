@@ -56,9 +56,9 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             _externalLinksConfiguration = externalLinksOptions.Value;
         }
 
-        public async Task<VacancyPreviewViewModel> GetVacancyPreviewViewModelAsync(VacancyRouteModel vrm, string routeName = RouteNames.Vacancy_Preview_Get)
+        public async Task<VacancyPreviewViewModel> GetVacancyPreviewViewModelAsync(VacancyRouteModel vrm)
         {
-            var vacancyTask = _utility.GetAuthorisedVacancyForEditAsync(vrm, routeName);
+            var vacancyTask = _utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.Vacancy_Preview_Get);
             var programmesTask = _vacancyClient.GetActiveApprenticeshipProgrammesAsync();
 
             await Task.WhenAll(vacancyTask, programmesTask);
@@ -230,11 +230,6 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             };
 
             return vm;
-        }
-
-        public async Task<OrchestratorResponse<TaskListViewModel>> GetEmployerTaskList(VacancyRouteModel vrm)
-        {
-            return new OrchestratorResponse<TaskListViewModel>(new TaskListViewModel());
         }
 
         private void FlattenErrors(IList<EntityValidationError> errors)

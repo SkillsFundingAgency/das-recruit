@@ -54,7 +54,13 @@
             <a asp-route="@RouteNames.Qualification_Add_Get" class="govuk-button">Add another qualification</a>
 
             <div class="govuk-body">
-                <a asp-route="@RouteNames.Vacancy_Preview_Get" class="govuk-link">Preview advert</a>
+                <esfaFeatureEnabled name="@FeatureNames.EmployerTaskList">
+                    <a asp-route="@RouteNames.Considerations_Get" class="govuk-link">Save and continue</a>
+                </esfaFeatureEnabled>
+                <esfaFeatureDisabled name="@FeatureNames.EmployerTaskList">
+                    <a asp-route="@RouteNames.Vacancy_Preview_Get" class="govuk-link">Preview advert</a>
+                </esfaFeatureDisabled>
+
             </div>
         </div>
 

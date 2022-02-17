@@ -38,12 +38,16 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             _utility = utility;
         }
 
-        public async Task<EmployerNameViewModel> GetEmployerNameViewModelAsync(
-            VacancyRouteModel vrm, VacancyEmployerInfoModel employerInfoModel, VacancyUser user)
+        public async Task<EmployerNameViewModel> GetEmployerNameViewModelAsync(VacancyRouteModel vrm, VacancyEmployerInfoModel employerInfoModel)
         {
             var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.Employer_Get);
 
-            var accountLegalEntityPublicHashedId = employerInfoModel.AccountLegalEntityPublicHashedId;
+            var accountLegalEntityPublicHashedId = employerInfoModel?.AccountLegalEntityPublicHashedId ?? vacancy.AccountLegalEntityPublicHashedId;
+
+            if (string.IsNullOrEmpty(accountLegalEntityPublicHashedId))
+            {
+                return null;
+            }
                 
             var getEmployerDataTask = _employerVacancyClient.GetEditVacancyInfoAsync(vrm.EmployerAccountId);
             var getEmployerProfileTask = _recruitVacancyClient.GetEmployerProfileAsync(vrm.EmployerAccountId, accountLegalEntityPublicHashedId);
@@ -59,10 +63,10 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                 LegalEntityName = legalEntity.Name,
                 ExistingTradingName = employerProfile.TradingName,
                 PageInfo = _utility.GetPartOnePageInfo(vacancy),
-                SelectedEmployerIdentityOption = employerInfoModel.EmployerIdentityOption,
-                NewTradingName = employerInfoModel.NewTradingName,
-                AnonymousName = employerInfoModel.AnonymousName,
-                AnonymousReason = employerInfoModel.AnonymousReason
+                SelectedEmployerIdentityOption = employerInfoModel?.EmployerIdentityOption,
+                NewTradingName = employerInfoModel?.NewTradingName,
+                AnonymousName = employerInfoModel?.AnonymousName,
+                AnonymousReason = employerInfoModel?.AnonymousReason
             };
 
             if (vacancy.Status == VacancyStatus.Referred)
@@ -76,7 +80,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 
 
         public async Task<OrchestratorResponse> PostEmployerNameEditModelAsync(
-            EmployerNameEditModel model, VacancyEmployerInfoModel employerInfoModel, VacancyUser user)
+            EmployerNameEditModel model, VacancyUser user)
         {
             var validationRules = VacancyRuleSet.EmployerNameOption;
 
@@ -104,7 +108,10 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             return await ValidateAndExecute(
                 vacancy, 
                 v => _recruitVacancyClient.Validate(v, validationRules),
-                v => Task.FromResult(new OrchestratorResponse(true)));
+                async v =>
+                {
+                    await _recruitVacancyClient.UpdateDraftVacancyAsync(vacancy, user);
+                });
         }
 
         protected override EntityToViewModelPropertyMappings<Vacancy, EmployerNameEditModel> DefineMappings()
