@@ -161,6 +161,13 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview
         };
 
         public VacancyTaskListSectionState TaskListSectionOneState => SetTaskListSectionState();
+        public VacancyTaskListSectionState TaskListSectionThreeState => SetTaskListSectionThreeState();
+        public VacancyTaskListSectionState TaskListSectionFourState => SetTaskListSectionFourState();
+
+        
+        public VacancyTaskListSectionState TaskListSectionTwoState => SetTaskListSectionTwoState();
+        public int AccountLegalEntityCount { get ; set ; }
+
 
         public void SetSectionStates(VacancyPreviewViewModel viewModel, ModelStateDictionary modelState)
         {
@@ -198,6 +205,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview
             }
 
             if (TitleSectionState == VacancyPreviewSectionState.Valid
+                && HasSelectedLegalEntity
                 && TrainingSectionState == VacancyPreviewSectionState.Valid 
                 && ProviderSectionState == VacancyPreviewSectionState.Valid 
                 && ShortDescriptionSectionState == VacancyPreviewSectionState.Valid 
@@ -208,6 +216,61 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview
             
             return VacancyTaskListSectionState.InProgress;
         }
+
+        private VacancyTaskListSectionState SetTaskListSectionTwoState()
+        {
+            if (TaskListSectionOneState != VacancyTaskListSectionState.Completed)
+            {
+                return VacancyTaskListSectionState.NotStarted;
+            }
+
+            if (WageTextSectionState == VacancyPreviewSectionState.Valid
+                && ExpectedDurationSectionState == VacancyPreviewSectionState.Valid 
+                && ClosingDateSectionState == VacancyPreviewSectionState.Valid 
+                && PossibleStartDateSectionState == VacancyPreviewSectionState.Valid 
+                && NumberOfPositionsSectionState == VacancyPreviewSectionState.Valid
+                && EmployerAddressSectionState == VacancyPreviewSectionState.Valid)
+            {
+                return VacancyTaskListSectionState.Completed;    
+            }
+            
+            return VacancyTaskListSectionState.InProgress;
+        }
+        private VacancyTaskListSectionState SetTaskListSectionThreeState()
+        {
+            if (SkillsSectionState == VacancyPreviewSectionState.Incomplete)
+            {
+                return VacancyTaskListSectionState.NotStarted;
+            }
+
+            if (SkillsSectionState == VacancyPreviewSectionState.Valid
+                && QualificationsSectionState == VacancyPreviewSectionState.Valid
+                && ThingsToConsiderSectionState == VacancyPreviewSectionState.Valid)
+            {
+                return VacancyTaskListSectionState.Completed;
+            }
+            
+            return VacancyTaskListSectionState.InProgress;
+        }
+
+        private VacancyTaskListSectionState SetTaskListSectionFourState()
+        {
+            if (TaskListSectionThreeState != VacancyTaskListSectionState.Completed)
+            {
+                return VacancyTaskListSectionState.NotStarted;
+            }
+
+            if (HasSelectedEmployerNameOption
+                && ApplicationMethodSectionState == VacancyPreviewSectionState.Valid
+                && EmployerDescriptionSectionState == VacancyPreviewSectionState.Valid)
+            {
+                return VacancyTaskListSectionState.Completed;
+            }
+            
+            return VacancyTaskListSectionState.InProgress;
+        }
+
+        public bool HasSelectedEmployerNameOption => EmployerNameOption != null;
 
         private VacancyPreviewSectionState GetSectionState(VacancyPreviewViewModel vm, IEnumerable<string> reviewFieldIndicators, bool requiresAll, ModelStateDictionary modelState, params Expression<Func<VacancyPreviewViewModel, object>>[] sectionProperties)
         {

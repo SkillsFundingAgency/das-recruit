@@ -7,11 +7,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.TrainingProvider
     {
         public SelectTrainingProviderEditModelValidator()
         {
-            RuleFor(m => m.IsTrainingProviderSelected)
-                .NotNull()
-                .WithMessage(ValidationMessages.TrainingProviderValidationMessages.IsTrainingProviderSelectedNotNull);
-
-            When(m => m.IsTrainingProviderSelected == true && 
+            When(m=>
                       m.SelectionType == TrainingProviderSelectionType.Ukprn, () =>
             {
                 RuleFor(m => m.Ukprn)
@@ -22,8 +18,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.TrainingProvider
                     .WithMessage(ValidationMessages.TrainingProviderValidationMessages.UkprnIsValid);
             });
 
-            When(m => m.IsTrainingProviderSelected == true && 
-                      m.SelectionType == TrainingProviderSelectionType.TrainingProviderSearch, () =>
+            When(m => m.SelectionType == TrainingProviderSelectionType.TrainingProviderSearch, () =>
             {
                 RuleFor(m => m.TrainingProviderSearch)
                     .Cascade(CascadeMode.StopOnFirstFailure)

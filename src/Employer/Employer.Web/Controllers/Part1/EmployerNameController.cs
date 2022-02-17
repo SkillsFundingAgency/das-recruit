@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Extensions;
 using Esfa.Recruit.Employer.Web.Models;
@@ -6,6 +7,7 @@ using Esfa.Recruit.Employer.Web.Orchestrators.Part1;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.EmployerName;
 using Esfa.Recruit.Shared.Web.Extensions;
+using Esfa.Recruit.Shared.Web.FeatureToggle;
 using Esfa.Recruit.Shared.Web.Mappers;
 using Esfa.Recruit.Shared.Web.Models;
 using Microsoft.AspNetCore.Hosting;
@@ -17,10 +19,13 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
     public class EmployerNameController : EmployerControllerBase
     {
         private EmployerNameOrchestrator _orchestrator;
+        private readonly IFeature _feature;
+
         public EmployerNameController(EmployerNameOrchestrator orchestrator,
-            IHostingEnvironment hostingEnvironment) : base(hostingEnvironment)
+            IHostingEnvironment hostingEnvironment, IFeature feature) : base(hostingEnvironment)
         {
             _orchestrator = orchestrator;
+            _feature = feature;
         }
 
         [HttpGet("employer-name", Name = RouteNames.EmployerName_Get)]
@@ -30,9 +35,17 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
             //if matching cookie is not found redirect to legal entity selection
             //this could happen if the user navigates straight to employer-name end point
             //by passing employer or location end point
-            if (employerInfoModel == null) 
+            
+            if (employerInfoModel == null && !_feature.IsFeatureEnabled(FeatureNames.EmployerTaskList)) 
                 return RedirectToRoute(RouteNames.Employer_Get);
-            var vm = await _orchestrator.GetEmployerNameViewModelAsync(vrm, employerInfoModel, User.ToVacancyUser());
+            
+            var vm = await _orchestrator.GetEmployerNameViewModelAsync(vrm, employerInfoModel);
+
+            if (vm == null)
+            {
+                return RedirectToRoute(RouteNames.Employer_Get);
+            }
+            
             vm.PageInfo.SetWizard(wizard);
             return View(vm);
         }
@@ -42,10 +55,18 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
         { 
             var employerInfoModel = GetVacancyEmployerInfoCookie(model.VacancyId);
             //respective cookie can go missing if user has opened another vacancy in a different browser tab 
-            if(employerInfoModel == null)
+            if(employerInfoModel == null && !_feature.IsFeatureEnabled(FeatureNames.EmployerTaskList))
                 return RedirectToRoute(RouteNames.Employer_Get);
+            
+            if(_feature.IsFeatureEnabled(FeatureNames.EmployerTaskList))
+            {
+                employerInfoModel = new VacancyEmployerInfoModel
+                {
+                    VacancyId = model.VacancyId
+                };
+            }
 
-            var response = await _orchestrator.PostEmployerNameEditModelAsync(model, employerInfoModel, User.ToVacancyUser());
+            var response = await _orchestrator.PostEmployerNameEditModelAsync(model, User.ToVacancyUser());
 
             if (!response.Success)
             {
@@ -54,7 +75,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
 
             if (!ModelState.IsValid)
             {
-                var vm = await _orchestrator.GetEmployerNameViewModelAsync(model, employerInfoModel, User.ToVacancyUser());
+                var vm = await _orchestrator.GetEmployerNameViewModelAsync(model, employerInfoModel);
                 vm.PageInfo.SetWizard(wizard);
                 vm.NewTradingName = model.NewTradingName;
                 vm.SelectedEmployerIdentityOption = model.SelectedEmployerIdentityOption;

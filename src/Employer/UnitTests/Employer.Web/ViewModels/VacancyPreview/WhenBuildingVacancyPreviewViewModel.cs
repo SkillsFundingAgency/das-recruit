@@ -12,7 +12,7 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.Testing.AutoFixture;
 
-namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels
+namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.VacancyPreview
 {
     public class WhenBuildingVacancyPreviewViewModel
     {
@@ -122,6 +122,36 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels
 
             model.TaskListSectionOneState.Should().Be(VacancyTaskListSectionState.InProgress);
         }
+        
+        [Test, MoqAutoData]
+        public async Task Then_If_Has_Title_Training_Provider_ShortDescription_Ale_Then_In_Progress(
+            string title,
+            string programmeId,
+            string shortDescription,
+            string accountLegalEntityPublicHashedId,
+            Vacancies.Client.Domain.Entities.TrainingProvider provider,
+            ApprenticeshipProgramme programme,
+            [Frozen] Mock<IRecruitVacancyClient> recruitVacancyClient,
+            DisplayVacancyViewModelMapper mapper)
+        {
+            recruitVacancyClient.Setup(x => x.GetApprenticeshipProgrammeAsync(programmeId)).ReturnsAsync(programme);
+            var vacancy = new Vacancy
+            {
+                Id = Guid.NewGuid(),
+                Title = title,
+                ProgrammeId = programmeId,
+                ShortDescription = shortDescription,
+                TrainingProvider = provider,
+                AccountLegalEntityPublicHashedId = accountLegalEntityPublicHashedId
+            };
+            var model = new VacancyPreviewViewModel();
+            await mapper.MapFromVacancyAsync(model, vacancy);
+            
+            model.SetSectionStates(model, new ModelStateDictionary());
+
+            model.TaskListSectionOneState.Should().Be(VacancyTaskListSectionState.InProgress);
+        }
+        
         [Test, MoqAutoData]
         public async Task Then_If_Has_Title_Training_Provider_ShortDescription_And_Descriptions_Then_Completed(
             string title,
@@ -130,6 +160,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels
             string shortDescription,
             string trainingDescription,
             string outcomeDescription,
+            string accountLegalEntityPublicHashedId,
             Vacancies.Client.Domain.Entities.TrainingProvider provider,
             ApprenticeshipProgramme programme,
             [Frozen] Mock<IRecruitVacancyClient> recruitVacancyClient,
@@ -145,7 +176,8 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels
                 TrainingDescription = trainingDescription,
                 ShortDescription = shortDescription,
                 OutcomeDescription = outcomeDescription,
-                TrainingProvider = provider
+                TrainingProvider = provider,
+                AccountLegalEntityPublicHashedId = accountLegalEntityPublicHashedId 
             };
             var model = new VacancyPreviewViewModel();
             await mapper.MapFromVacancyAsync(model, vacancy);

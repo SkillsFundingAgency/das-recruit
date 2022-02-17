@@ -28,7 +28,15 @@
             <div class="govuk-form-group">
                 <input type="submit" value="Save and continue" esfa-automation="btn-continue" class="govuk-button save-button" />
                 <p class="govuk-body">
-                    <a asp-route="@RouteNames.Vacancy_Preview_Get" esfa-automation="link-cancel" class="govuk-link">Cancel</a>
+    
+                    <esfaFeatureEnabled name="@RouteNames.EmployerTaskListGet">
+                        <a asp-route="@RouteNames.Vacancies_Get" esfa-automation="link-cancel" class="govuk-link">Cancel</a>
+                    </esfaFeatureEnabled>
+                    <esfaFeatureDisabled name="@RouteNames.EmployerTaskListGet">
+                        <a asp-route="@RouteNames.Vacancy_Preview_Get" esfa-automation="link-cancel" class="govuk-link">Cancel</a>    
+                    </esfaFeatureDisabled>
+                    
+                    
                 </p>
             </div>
         </form>
