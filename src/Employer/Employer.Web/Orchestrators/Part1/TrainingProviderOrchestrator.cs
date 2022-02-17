@@ -80,17 +80,6 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
         {
             var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(m, RouteNames.TrainingProvider_Select_Post);
 
-            if (m.IsTrainingProviderSelected == false)
-            {
-                if (vacancy.TrainingProvider != null)
-                {
-                    vacancy.TrainingProvider = null;
-                    await _vacancyClient.UpdateDraftVacancyAsync(vacancy, user);
-                }
-
-                return new OrchestratorResponse<PostSelectTrainingProviderResult>(new PostSelectTrainingProviderResult());
-            }
-
             var providerSummary = await GetProviderFromModelAsync(m);
 
             TrainingProvider provider = null;

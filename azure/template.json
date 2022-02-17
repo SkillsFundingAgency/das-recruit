@@ -130,6 +130,9 @@
     },
     "sharedBackEndSubnetResourceId": {
       "type": "string"
+    },
+    "sharedSQLServerName": {
+      "type": "string"
     }
   },
   "variables": {
