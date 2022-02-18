@@ -205,13 +205,13 @@
                         @if (Model.NumberOfPositionsSectionState == VacancyPreviewSectionState.Incomplete)
                         {
                             <span class="das-task-list__task-name">
-                                Location
+                                Address
                             </span>    
                         }
                         else
                         {
                             <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.Location_Get">
-                                Location
+                                Address
                             </a>
                         }
                     </li>
@@ -348,14 +348,14 @@
                         @if (Model.HasSelectedEmployerNameOption && !Model.EmployerDescriptionRequiresEdit && Model.TaskListSectionThreeState == VacancyTaskListSectionState.Completed)
                         {
                             <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.ApplicationProcess_Get">
-                                Website for application
+                                Website for applications
                             </a>    
                                
                         }
                         else
                         {
                             <span class="das-task-list__task-name">
-                                Website for application
+                                Website for applications
                             </span> 
                         }
                     </li>
