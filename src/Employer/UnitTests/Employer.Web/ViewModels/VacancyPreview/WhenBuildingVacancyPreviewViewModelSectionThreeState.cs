@@ -82,18 +82,8 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.VacancyPreview
             [Frozen] Mock<IRecruitVacancyClient> recruitVacancyClient,
             DisplayVacancyViewModelMapper mapper)
         {
-            var vacancy = new Vacancy
-            {
-                Id = Guid.NewGuid(),
-                Title = title,
-                ProgrammeId = programmeId,
-                Description = description,
-                TrainingDescription = trainingDescription,
-                ShortDescription = shortDescription,
-                OutcomeDescription = outcomeDescription,
-                TrainingProvider = provider,
-                Skills = skills
-            };
+            var vacancy = CreateCompletedSectionOneAndSectionTwoVacancy();
+            vacancy.Skills = skills;
             var model = new VacancyPreviewViewModel();
             
             await mapper.MapFromVacancyAsync(model, vacancy);
@@ -117,19 +107,9 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.VacancyPreview
             [Frozen] Mock<IRecruitVacancyClient> recruitVacancyClient,
             DisplayVacancyViewModelMapper mapper)
         {
-            var vacancy = new Vacancy
-            {
-                Id = Guid.NewGuid(),
-                Title = title,
-                ProgrammeId = programmeId,
-                Description = description,
-                TrainingDescription = trainingDescription,
-                ShortDescription = shortDescription,
-                OutcomeDescription = outcomeDescription,
-                TrainingProvider = provider,
-                Skills = skills,
-                Qualifications = qualifications
-            };
+            var vacancy = CreateCompletedSectionOneAndSectionTwoVacancy();
+            vacancy.Skills = skills;
+            vacancy.Qualifications = qualifications;
             var model = new VacancyPreviewViewModel();
             
             await mapper.MapFromVacancyAsync(model, vacancy);
@@ -154,20 +134,10 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.VacancyPreview
             [Frozen] Mock<IRecruitVacancyClient> recruitVacancyClient,
             DisplayVacancyViewModelMapper mapper)
         {
-            var vacancy = new Vacancy
-            {
-                Id = Guid.NewGuid(),
-                Title = title,
-                ProgrammeId = programmeId,
-                Description = description,
-                TrainingDescription = trainingDescription,
-                ShortDescription = shortDescription,
-                OutcomeDescription = outcomeDescription,
-                TrainingProvider = provider,
-                Skills = skills,
-                Qualifications = qualifications,
-                ThingsToConsider = otherThingsToConsider
-            };
+            var vacancy = CreateCompletedSectionOneAndSectionTwoVacancy();
+            vacancy.Skills = skills;
+            vacancy.Qualifications = qualifications;
+            vacancy.ThingsToConsider = otherThingsToConsider;
             var model = new VacancyPreviewViewModel();
             
             await mapper.MapFromVacancyAsync(model, vacancy);

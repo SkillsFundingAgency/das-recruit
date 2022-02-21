@@ -244,10 +244,10 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview
         }
         private VacancyTaskListSectionState SetTaskListSectionThreeState()
         {
-            if (TaskListSectionTwoState == VacancyTaskListSectionState.InProgress)
+            if (TaskListSectionTwoState != VacancyTaskListSectionState.Completed)
             {
                 return VacancyTaskListSectionState.NotStarted;
-            }
+            } 
 
             if (TaskListSectionTwoState == VacancyTaskListSectionState.Completed 
                 && SkillsSectionState == VacancyPreviewSectionState.Incomplete)

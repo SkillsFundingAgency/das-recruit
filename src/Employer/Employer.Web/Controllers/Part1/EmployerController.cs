@@ -2,6 +2,7 @@
 using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Extensions;
+using Esfa.Recruit.Employer.Web.Models;
 using Esfa.Recruit.Employer.Web.Orchestrators.Part1;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.Employer;
@@ -45,6 +46,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
             {
                 if (_feature.IsFeatureEnabled(FeatureNames.EmployerTaskList))
                 {
+                    info = vm.VacancyEmployerInfoModel;
                     await _orchestrator.SetAccountLegalEntityPublicId(vrm,info, User.ToVacancyUser());
                     
                     return  RedirectToRoute(RouteNames.Training_Get, new { Wizard = wizard });
