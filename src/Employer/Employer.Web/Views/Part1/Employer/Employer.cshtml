@@ -60,7 +60,12 @@
 
             <button type="submit" class="govuk-button save-button" esfa-automation="continue-button">Save and continue</button>
             <div class="govuk-body">
-                <a asp-route="@RouteNames.Employer_Cancel" asp-route-wizard="@Model.PageInfo.IsWizard" class="govuk-link">Cancel</a>
+                <esfaFeatureEnabled name="@FeatureNames.EmployerTaskList">
+                    <a asp-route="@RouteNames.Dashboard_Get" class="govuk-link">Cancel</a>
+                </esfaFeatureEnabled>
+                <esfaFeatureDisabled name="@FeatureNames.EmployerTaskList">
+                    <a asp-route="@RouteNames.EmployerName_Cancel" asp-route-wizard="@Model.PageInfo.IsWizard" class="govuk-link">Cancel</a>    
+                </esfaFeatureDisabled>
             </div>
         </form>
     </div>

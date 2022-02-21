@@ -382,9 +382,19 @@
                 </h2>
                 <ul class="das-task-list__items">
                     <li class="das-task-list__item">
-                        <span>
-                            Check your answers and submit your advert
-                        </span>
+                        @if (Model.TaskListSectionFourState == VacancyTaskListSectionState.Completed)
+                        {
+                            <a class="govuk-link govuk-link--no-visited-state" href="#">
+                                Check your answers and submit your advert
+                            </a>   
+                        }
+                        else
+                        {
+                            <span>
+                                Check your answers and submit your advert
+                            </span>    
+                        }
+                        
                     </li>
                 </ul>
             </li>
