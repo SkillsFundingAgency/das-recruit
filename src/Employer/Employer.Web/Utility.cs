@@ -234,6 +234,11 @@ namespace Esfa.Recruit.Employer.Web
 
         public bool VacancyHasCompletedPartOne(Vacancy vacancy)
         {
+            if (_feature.IsFeatureEnabled(FeatureNames.EmployerTaskList))
+            {
+                return vacancy.ApplicationMethod != null;
+            }
+            
             return GetPermittedRoutesForVacancy(vacancy) == null;
         }
 
