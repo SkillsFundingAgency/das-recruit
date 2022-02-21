@@ -45,6 +45,8 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
             {
                 if (_feature.IsFeatureEnabled(FeatureNames.EmployerTaskList))
                 {
+                    await _orchestrator.SetAccountLegalEntityPublicId(vrm,info, User.ToVacancyUser());
+                    
                     return  RedirectToRoute(RouteNames.Training_Get, new { Wizard = wizard });
                 }
                 
