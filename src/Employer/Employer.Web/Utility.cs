@@ -38,6 +38,7 @@ namespace Esfa.Recruit.Employer.Web
         bool VacancyHasStartedPartTwo(Vacancy vacancy);
         PartOnePageInfoViewModel GetPartOnePageInfo(Vacancy vacancy);
         Task<ApplicationReview> GetAuthorisedApplicationReviewAsync(ApplicationReviewRouteModel rm);
+        bool TaskListCompleted(Vacancy vacancy);
     }
     
     public class Utility : IUtility
@@ -255,6 +256,11 @@ namespace Esfa.Recruit.Employer.Web
                 HasCompletedPartOne = VacancyHasCompletedPartOne(vacancy),
                 HasStartedPartTwo = VacancyHasStartedPartTwo(vacancy)
             };
+        }
+
+        public bool TaskListCompleted(Vacancy vacancy)
+        {
+            return vacancy.ApplicationMethod != null;
         }
 
         public async Task<ApplicationReview> GetAuthorisedApplicationReviewAsync(ApplicationReviewRouteModel rm)
