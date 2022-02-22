@@ -209,7 +209,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
                 Title = vacancy.Title,
                 QualificationTypes = allQualifications,
                 CancelRoute = vacancy.Qualifications?.Any() == true ? RouteNames.Qualifications_Get 
-                    : (_feature.IsFeatureEnabled(FeatureNames.EmployerTaskList) && !_utility.TaskListCompleted(vacancy) ?  RouteNames.Dashboard_Get : RouteNames.Vacancy_Preview_Get)
+                    : _feature.IsFeatureEnabled(FeatureNames.EmployerTaskList) && !_utility.TaskListCompleted(vacancy) ?  RouteNames.Dashboard_Get : RouteNames.Vacancy_Preview_Get
             };
 
             return vm;

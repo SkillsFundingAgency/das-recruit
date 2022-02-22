@@ -52,7 +52,7 @@
                 <div>
                     <esfaFeatureEnabled name="@FeatureNames.EmployerTaskList">
                         <a asp-show="@(!Model.IsTaskListCompleted)" asp-route="@RouteNames.Dashboard_Get" class="govuk-link">Cancel</a>
-                        <a asp-show="@Model.IsTaskListCompleted" asp-route="@RouteNames.Vacancy_Preview_Get" esfa-automation="cancel" class="govuk-link">Cancel</a>    
+                        <a asp-show="@Model.IsTaskListCompleted" asp-route="@RouteNames.EmployerCheckYourAnswersGet" esfa-automation="cancel" class="govuk-link">Cancel</a>    
                     </esfaFeatureEnabled>
                     <esfaFeatureDisabled name="@FeatureNames.EmployerTaskList">
                         <a asp-route="@RouteNames.Vacancy_Preview_Get" esfa-automation="link-cancel" class="govuk-link das-button-link">Cancel</a>

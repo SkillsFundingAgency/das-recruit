@@ -56,7 +56,7 @@
             <div class="govuk-body">
                 <esfaFeatureEnabled name="@FeatureNames.EmployerTaskList">
                     <a asp-show="@(!Model.IsTaskListCompleted)" asp-route="@RouteNames.Considerations_Get" class="govuk-link">Save and continue</a>
-                    <a asp-show="@Model.IsTaskListCompleted" asp-route="@RouteNames.Vacancy_Preview_Get" class="govuk-link">Save and continue</a>
+                    <a asp-show="@Model.IsTaskListCompleted" asp-route="@RouteNames.EmployerCheckYourAnswersGet" class="govuk-link">Save and continue</a>
                 </esfaFeatureEnabled>
                 <esfaFeatureDisabled name="@FeatureNames.EmployerTaskList">
                     <a asp-route="@RouteNames.Vacancy_Preview_Get" class="govuk-link">Preview advert</a>
