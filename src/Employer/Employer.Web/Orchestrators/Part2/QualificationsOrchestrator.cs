@@ -204,12 +204,32 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
 
         private QualificationViewModel GetQualificationViewModel(Vacancy vacancy, IList<string> allQualifications)
         {
+            var cancelRoute = RouteNames.Qualifications_Get;
+            if (!vacancy.Qualifications?.Any() ?? false)
+            {
+                if (_feature.IsFeatureEnabled(FeatureNames.EmployerTaskList))
+                {
+                    if (_utility.TaskListCompleted(vacancy))
+                    {
+                        cancelRoute = RouteNames.EmployerCheckYourAnswersGet;
+                    }
+                    else
+                    {
+                        cancelRoute = RouteNames.Dashboard_Get;
+                    }
+                }
+                else
+                {
+                    cancelRoute = RouteNames.Vacancy_Preview_Get;
+                }
+            }
+            
             var vm = new QualificationViewModel
             {
                 Title = vacancy.Title,
                 QualificationTypes = allQualifications,
-                CancelRoute = vacancy.Qualifications?.Any() == true ? RouteNames.Qualifications_Get 
-                    : _feature.IsFeatureEnabled(FeatureNames.EmployerTaskList) && !_utility.TaskListCompleted(vacancy) ?  RouteNames.Dashboard_Get : RouteNames.Vacancy_Preview_Get
+                CancelRoute = cancelRoute /*vacancy.Qualifications?.Any() == true ? RouteNames.Qualifications_Get 
+                    : _feature.IsFeatureEnabled(FeatureNames.EmployerTaskList) && !_utility.TaskListCompleted(vacancy) ?  RouteNames.Dashboard_Get : RouteNames.Vacancy_Preview_Get*/
             };
 
             return vm;
