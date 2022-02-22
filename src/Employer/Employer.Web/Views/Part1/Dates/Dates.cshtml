@@ -104,11 +104,13 @@
             <div class="govuk-body">
                 <esfaFeatureEnabled name="@FeatureNames.EmployerTaskList">
                     <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Dashboard_Get" class="govuk-link">Cancel</a>
+                    <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.EmployerCheckYourAnswersGet" class="govuk-link">Cancel</a>
                 </esfaFeatureEnabled>
                 <esfaFeatureDisabled name="@FeatureNames.EmployerTaskList">
                     <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Vacancies_Get" class="govuk-link">Cancel</a>
+                    <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.Vacancy_Preview_Get" asp-fragment="@Anchors.ApprenticeshipSummarySection" class="govuk-link">Cancel</a>
                 </esfaFeatureDisabled>
-                <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.Vacancy_Preview_Get" asp-fragment="@Anchors.ApprenticeshipSummarySection" class="govuk-link">Cancel</a>
+                
             </div>
         </form>
     </div>
