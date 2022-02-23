@@ -364,6 +364,8 @@
         <h2 class="govuk-heading-m">Now submit your advert</h2>
         <p class="govuk-body">By submitting this advert you are confirming that, to the best of your knowledge, the details you are providing are correct.</p>
         <p class="govuk-body"><a asp-route="@RouteNames.Vacancy_Preview_Get" class="govuk-link govuk-link--no-visited-state">Preview advert before submitting</a></p>
-        <p class="govuk-body"><a href="#" class="govuk-button">Submit advert</a></p>
+        <form asp-route="@RouteNames.Preview_Submit_Post" class="form-inline">
+            <input type="submit" value="@Model.SubmitButtonText" class="govuk-button" esfa-automation="submit-button" />
+        </form>
     </div>
 </div>
