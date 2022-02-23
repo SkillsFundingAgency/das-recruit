@@ -1,4 +1,5 @@
-﻿@model Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview.VacancyPreviewViewModel
+﻿@using Esfa.Recruit.Vacancies.Client.Domain.Entities
+@model Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview.VacancyPreviewViewModel
 
 @{ ViewBag.GaData.Vpv = "/recruitment/employer/check-your-answers"; }
 
@@ -151,7 +152,7 @@
                     Extra information about pay (optional)
                 </dt>
                 <dd class="govuk-summary-list__value">
-                    @(string.IsNullOrEmpty(Model.WageInfo)?"None":Model.WageInfo)
+                    @(Model.HasWageInfo?Model.WageInfo:"None")
                 </dd>
                 <dd class="govuk-summary-list__actions">
                 </dd>
@@ -295,7 +296,7 @@
                     Organisation website (optional)
                 </dt>
                 <dd class="govuk-summary-list__value">
-                    @Model.EmployerWebsiteUrl
+                    @(Model.HasEmployerWebsiteUrl?Model.EmployerWebsiteUrl:"None")
                 </dd>
                 <dd class="govuk-summary-list__actions">
                 </dd>
@@ -305,7 +306,7 @@
                     Contact name (optional)
                 </dt>
                 <dd class="govuk-summary-list__value">
-                    @Model.EmployerContactName
+                    @(Model.HasEmployerContactName?Model.EmployerContactName:"None")
                 </dd>
                 <dd class="govuk-summary-list__actions">
                     <a class="govuk-link govuk-link--no-visited-state float-right-desktop" asp-route="@RouteNames.EmployerContactDetails_Get">Change<span class="govuk-visually-hidden"> contact details</span></a>
@@ -316,7 +317,7 @@
                     Contact email (optional)
                 </dt>
                 <dd class="govuk-summary-list__value">
-                    @Model.EmployerContactEmail
+                    @(Model.HasEmployerContactEmail?Model.EmployerContactEmail:"None")
                 </dd>
                 <dd class="govuk-summary-list__actions">
                 </dd>
@@ -326,7 +327,7 @@
                     Contact number (optional)
                 </dt>
                 <dd class="govuk-summary-list__value">
-                    @Model.EmployerContactTelephone
+                    @(Model.HasEmployerContactTelephone?Model.EmployerContactTelephone:"None")
                 </dd>
                 <dd class="govuk-summary-list__actions">
                 </dd>
@@ -336,7 +337,14 @@
                     Application website
                 </dt>
                 <dd class="govuk-summary-list__value">
-                    @Model.ApplicationUrl
+                    @if (Model.ApplicationMethod == ApplicationMethod.ThroughExternalApplicationSite)
+                    {
+                        @Model.ApplicationUrl
+                    }
+                    else
+                    {
+                        @Model.FindAnApprenticeshipUrl
+                    }
                 </dd>
                 <dd class="govuk-summary-list__actions">
                     <a class="govuk-link govuk-link--no-visited-state float-right-desktop" asp-route="@RouteNames.ApplicationProcess_Get">Change<span class="govuk-visually-hidden"> application process</span></a>
@@ -347,7 +355,7 @@
                     Explain the application process (optional)
                 </dt>
                 <dd class="govuk-summary-list__value">
-                    @Model.ApplicationInstructions
+                    @(Model.HasApplicationInstructions ? Model.ApplicationInstructions : "None")
                 </dd>
                 <dd class="govuk-summary-list__actions">
                 </dd>
@@ -355,6 +363,7 @@
         </dl>
         <h2 class="govuk-heading-m">Now submit your advert</h2>
         <p class="govuk-body">By submitting this advert you are confirming that, to the best of your knowledge, the details you are providing are correct.</p>
+        <p class="govuk-body"><a asp-route="@RouteNames.Vacancy_Preview_Get" class="govuk-link govuk-link--no-visited-state">Preview advert before submitting</a></p>
         <p class="govuk-body"><a href="#" class="govuk-button">Submit advert</a></p>
     </div>
 </div>
