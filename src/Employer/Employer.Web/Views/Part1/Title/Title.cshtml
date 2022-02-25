@@ -7,16 +7,16 @@
     ViewBag.ZenDeskLabel = "recruit-what-do-you-want-to-call-this-vacancy";
 }
 
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-two-thirds">
-            <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames}' />
-            <partial name="@PartialNames.ReviewSummary" for="Review" />                       
-            <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">What do you want to call this advert?</h1>
-        </div>       
-    </div>
-
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
+        <esfaFeatureEnabled name="@FeatureNames.EmployerTaskList">
+            <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.EmployerCheckYourAnswersGet" asp-route-wizard="@Model.PageInfo.IsWizard" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
+        </esfaFeatureEnabled>
+
+        <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames}' />
+        <partial name="@PartialNames.ReviewSummary" for="Review" />                       
+        <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">What do you want to call this advert?</h1>
+
         <form asp-route="@Model.FormPostRouteName" asp-route-wizard="@Model.PageInfo.IsWizard" novalidate>
             <div esfa-validation-marker-for="Title" class="govuk-form-group">
                 <p asp-hide="Model.ReferredFromSavedFavourites" class="govuk-body">
