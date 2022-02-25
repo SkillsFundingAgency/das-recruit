@@ -7,7 +7,10 @@
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-three-quarters">
-
+        <esfaFeatureEnabled name="@FeatureNames.EmployerTaskList">
+            <a asp-show="@(!Model.IsTaskListCompleted)" asp-route="@RouteNames.Skills_Get" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
+            <a asp-show="@Model.IsTaskListCompleted" asp-route="@RouteNames.EmployerCheckYourAnswersGet" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
+        </esfaFeatureEnabled>
         <div asp-show="Model.HasInfo" class="info-summary">
             <p class="govuk-body">@Model.InfoMessage</p>
         </div>

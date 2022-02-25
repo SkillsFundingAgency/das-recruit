@@ -9,14 +9,8 @@
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         <esfaFeatureEnabled name="@FeatureNames.EmployerTaskList">
-            <div asp-show="@Model.PageInfo.IsWizard">
-                <a asp-show="@Model.HasOnlyOneOrganisation" asp-route="@RouteNames.Title_Get" asp-route-wizard="@Model.PageInfo.IsWizard" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
-                <a asp-hide="@Model.HasOnlyOneOrganisation" asp-route="@RouteNames.Employer_Get" asp-route-wizard="@Model.PageInfo.IsWizard" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
-            </div>
-            <div asp-hide="@Model.PageInfo.IsWizard">
-                <a asp-show="@Model.HasOnlyOneOrganisation" asp-route="@RouteNames.EmployerCheckYourAnswersGet" asp-route-wizard="@Model.PageInfo.IsWizard" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
-                <a asp-hide="@Model.HasOnlyOneOrganisation" asp-route="@RouteNames.Employer_Get" asp-route-wizard="@Model.PageInfo.IsWizard" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
-            </div>
+                <a asp-show="@(!Model.TaskListCompleted)" asp-route="@RouteNames.EmployerTaskListGet" asp-route-wizard="@(!Model.TaskListCompleted)" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
+                <a asp-show="@Model.TaskListCompleted" asp-route="@RouteNames.EmployerCheckYourAnswersGet" asp-route-wizard="@(Model.TaskListCompleted)" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
         </esfaFeatureEnabled>
         <esfaFeatureDisabled name="@FeatureNames.EmployerTaskList">
             <div asp-show="@Model.PageInfo.IsWizard">

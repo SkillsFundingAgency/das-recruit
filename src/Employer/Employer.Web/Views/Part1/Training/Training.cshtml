@@ -10,7 +10,14 @@
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         <esfaFeatureEnabled name="@FeatureNames.EmployerTaskList">
-            <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Employer_Get" asp-route-wizard="@Model.PageInfo.IsWizard" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
+            @if (Model.HasMoreThanOneLegalEntity)
+            {
+                <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Employer_Get" asp-route-wizard="@Model.PageInfo.IsWizard" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
+            }
+            else
+            {
+                <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Title_Get" asp-route-wizard="@Model.PageInfo.IsWizard" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
+            }
             <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.EmployerCheckYourAnswersGet" asp-route-wizard="@Model.PageInfo.IsWizard" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
         </esfaFeatureEnabled>
         <esfaFeatureDisabled name="@FeatureNames.EmployerTaskList">

@@ -11,6 +11,14 @@
     <div class="govuk-grid-column-two-thirds">
         <esfaFeatureEnabled name="@FeatureNames.EmployerTaskList">
             <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.EmployerCheckYourAnswersGet" asp-route-wizard="@Model.PageInfo.IsWizard" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
+            @if (Model.VacancyId != null)
+            {
+                <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.EmployerTaskListGet" asp-route-wizard="@Model.PageInfo.IsWizard" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
+            }
+            else
+            {
+                <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Dashboard_Get" asp-route-wizard="@Model.PageInfo.IsWizard" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
+            }
         </esfaFeatureEnabled>
 
         <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames}' />
