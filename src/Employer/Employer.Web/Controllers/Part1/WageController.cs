@@ -50,7 +50,11 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
 
             if (_feature.IsFeatureEnabled(FeatureNames.EmployerTaskList))
             {
-                return RedirectToRoute(RouteNames.NumberOfPositions_Get);
+                if (wizard)
+                {
+                    return RedirectToRoute(RouteNames.NumberOfPositions_Get);    
+                }
+                return RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet);
             }
 
             return wizard

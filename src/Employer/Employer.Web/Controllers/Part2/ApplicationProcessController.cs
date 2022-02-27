@@ -39,15 +39,20 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part2
             {
                 response.AddErrorsToModelState(ModelState);
             }
-
+            
+            var vm = await _orchestrator.GetApplicationProcessViewModelAsync(m);
             if (!ModelState.IsValid)
             {
-                var vm = await _orchestrator.GetApplicationProcessViewModelAsync(m);
                 return View(vm);
             }
 
             if (_feature.IsFeatureEnabled(FeatureNames.EmployerTaskList))
             {
+                if (vm.IsTaskListCompleted)
+                {
+                    return RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet);
+                }
+                
                 return RedirectToRoute(RouteNames.EmployerTaskListGet);
             }
 
