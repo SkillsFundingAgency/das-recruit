@@ -1,7 +1,7 @@
 ﻿@model Esfa.Recruit.Employer.Web.ViewModels.Part2.VacancyDescription.VacancyDescriptionViewModel
 @{ 
     ViewBag.Vpv = "/recruitment/employer/page-part2-vacancy-description";
-    ViewBag.Title = "Description of the apprenticeship";
+    ViewBag.Title = "About the apprenticeship";
     ViewBag.ZenDeskLabel = "recruit-description-of-the-apprenticeship";
 }
 <div class="govuk-grid-row">
@@ -16,13 +16,14 @@
 
         <h1 class="govuk-heading-xl">
             <span class="govuk-caption-l">@Model.Title</span>
-            Description of the apprenticeship
+            About the apprenticeship
         </h1>
 
         <form asp-route="@RouteNames.VacancyDescription_Index_Post">
             <div esfa-validation-marker-for="VacancyDescription" class="govuk-form-group">
                 <label asp-for="VacancyDescription" class="govuk-label govuk-!-font-weight-bold">What will the apprentice be doing?</label>
                 <span class="govuk-hint">Describe what an average day or week will be like and what tasks the apprentice could be doing.</span>
+                <div class="govuk-inset-text">You must include at least 3 bullet points or your advert will be rejected.</div>
                 <span esfa-validation-message-for="VacancyDescription" class="govuk-error-message"></span>
                 <textarea asp-for="VacancyDescription" class="govuk-textarea html-editor" rows="5" data-val-length-max="500"></textarea>
                 <span class="govuk-body maxchar-count">500</span>
@@ -51,17 +52,15 @@
                 <span class="govuk-body maxchar-count">500</span>
                 <span class="govuk-body maxchar-text"> characters remaining</span>
             </div>
-            <div class="govuk-form-group">
+            <div class="govuk-button-group">
                 <input type="submit" value="Save and continue" esfa-automation="btn-continue" class="govuk-button save-button" />
-                <div>
-                    <esfaFeatureEnabled name="@FeatureNames.EmployerTaskList">
-                        <a asp-show="@(!Model.IsTaskListCompleted)" asp-route="@RouteNames.Dashboard_Get" class="govuk-link">Cancel</a>
-                        <a asp-show="@Model.IsTaskListCompleted" asp-route="@RouteNames.EmployerCheckYourAnswersGet" esfa-automation="cancel" class="govuk-link">Cancel</a>    
-                    </esfaFeatureEnabled>
-                    <esfaFeatureDisabled name="@FeatureNames.EmployerTaskList">
-                        <a asp-route="@RouteNames.Vacancy_Preview_Get" esfa-automation="link-cancel" class="govuk-link das-button-link">Cancel</a>
-                    </esfaFeatureDisabled>
-                </div>
+                <esfaFeatureEnabled name="@FeatureNames.EmployerTaskList">
+                    <a asp-show="@(!Model.IsTaskListCompleted)" asp-route="@RouteNames.Dashboard_Get" class="govuk-link">Cancel</a>
+                    <a asp-show="@Model.IsTaskListCompleted" asp-route="@RouteNames.EmployerCheckYourAnswersGet" esfa-automation="cancel" class="govuk-link">Cancel</a>    
+                </esfaFeatureEnabled>
+                <esfaFeatureDisabled name="@FeatureNames.EmployerTaskList">
+                    <a asp-route="@RouteNames.Vacancy_Preview_Get" esfa-automation="link-cancel" class="govuk-link">Cancel</a>
+                </esfaFeatureDisabled>
             </div>
         </form>
     </div>
