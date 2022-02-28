@@ -213,17 +213,6 @@
         </dl>
         <h2 class="govuk-heading-m">Skills and qualifications</h2>
         <dl class="govuk-summary-list govuk-!-margin-bottom-9">
-            <div class="govuk-summary-list__row govuk-summary-list--no-border">
-                <dt class="govuk-summary-list__key">
-                    Qualifications required
-                </dt>
-                <dd class="govuk-summary-list__value">
-                    @(Model.HasSkills?"Yes":"No")
-                </dd>
-                <dd class="govuk-summary-list__actions">
-                    <a class="govuk-link govuk-link--no-visited-state float-right-desktop" asp-route="@RouteNames.Skills_Get">Change<span class="govuk-visually-hidden"> skills</span></a>
-                </dd>
-            </div>
             <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key">
                     Skills
@@ -237,6 +226,7 @@
                     </ul>
                 </dd>
                 <dd class="govuk-summary-list__actions">
+                    <a class="govuk-link govuk-link--no-visited-state float-right-desktop" asp-route="@RouteNames.Skills_Get">Change<span class="govuk-visually-hidden"> skills</span></a>
                 </dd>
             </div>
             <div class="govuk-summary-list__row">
