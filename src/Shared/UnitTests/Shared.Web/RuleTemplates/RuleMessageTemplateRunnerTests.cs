@@ -31,15 +31,5 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Shared.Web.RuleTemplates
             
             actual.Should().Be("Banned phrase field contains the phrase 'driving licence' 3 times");
         }
-
-        [Fact]
-        public void ShouldCreateTitlePopularityCheckMessage()
-        {
-            var sut = new RuleMessageTemplateRunner();
-
-            var actual = sut.ToText(RuleId.TitlePopularity, "{\"TrainingCode\":\"CODE\",\"TrainingTitle\":\"TITLE\",\"TrainingType\":\"TYPE\"}", "Title field");
-
-            actual.Should().Be("The title field is not common for apprenticeships with the training TYPE CODE - TITLE.");
-        }
     }
 }

@@ -8,15 +8,13 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Rules.VacancyRules
 {
     public class VacancyRuleSet : RuleSet<Vacancy>
     {
-        public VacancyRuleSet(QaRulesConfiguration qaRulesConfig,
+        public VacancyRuleSet(
                     IApprenticeshipProgrammeProvider apprenticeshipProgrammeProvider,
                     IProfanityListProvider profanityListProvider,
-                    IBannedPhrasesProvider bannedPhrasesProvider,
-                    IGetTitlePopularity popularityService) : base(nameof(VacancyRuleSet))
+                    IBannedPhrasesProvider bannedPhrasesProvider) : base(nameof(VacancyRuleSet))
         {
             AddRule(new VacancyProfanityChecksRule(profanityListProvider));
             AddRule(new VacancyBannedPhraseChecksRule(bannedPhrasesProvider));
-            AddRule(new VacancyTitlePopularityCheckRule(apprenticeshipProgrammeProvider, popularityService, qaRulesConfig));
             AddRule(new VacancyAnonymousCheckRule());
         }
     }

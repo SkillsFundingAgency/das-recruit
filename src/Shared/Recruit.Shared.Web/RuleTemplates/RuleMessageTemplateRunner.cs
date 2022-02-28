@@ -15,8 +15,6 @@ namespace Esfa.Recruit.Shared.Web.RuleTemplates
                     return ProfanityRuleMessageTemplate.ToText(JsonConvert.DeserializeObject<ProfanityData>(data), fieldName);
                 case RuleId.BannedPhraseChecks:
                     return BannedPhraseMessageTemplate.ToText(JsonConvert.DeserializeObject<BannedPhrasesData>(data), fieldName);
-                case RuleId.TitlePopularity:
-                    return VacancyTitlePopularityRuleMessageTemplate.ToText(JsonConvert.DeserializeObject<TitlePopularityData>(data), fieldName);
                 case RuleId.VacancyAnonymous:
                     return VacancyAnonymousMessageTemplate.ToText();
                 default:
