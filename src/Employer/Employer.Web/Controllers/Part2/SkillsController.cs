@@ -42,10 +42,9 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part2
                 response.AddErrorsToModelState(ModelState);
             }
 
+            var vm = await _orchestrator.GetSkillsViewModelAsync(vrm);
             if (!ModelState.IsValid)
             {
-                var vm = await _orchestrator.GetSkillsViewModelAsync(vrm);
-
                 return View(vm);
             }
 
@@ -57,6 +56,10 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part2
 
             if (_feature.IsFeatureEnabled(FeatureNames.EmployerTaskList))
             {
+                if (vm.IsTaskListCompleted)
+                {
+                    return RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet);
+                }
                 return RedirectToRoute(RouteNames.Qualifications_Get);
             }
             return RedirectToRoute(RouteNames.Vacancy_Preview_Get);

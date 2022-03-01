@@ -11,13 +11,18 @@ using Esfa.Recruit.Shared.Web.Extensions;
 using Microsoft.Extensions.Logging;
 using Esfa.Recruit.Shared.Web.Helpers;
 using System;
+using Esfa.Recruit.Shared.Web.Orchestrators;
 using Esfa.Recruit.Shared.Web.ViewModels;
+using Esfa.Recruit.Vacancies.Client.Application.Validation;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 {
-    public class EmployerOrchestrator
+    public class EmployerOrchestrator : VacancyValidatingOrchestrator<VacancyEmployerInfoModel>
     {
+        private const VacancyRuleSet ValidationRules = VacancyRuleSet.None;
         private readonly IEmployerVacancyClient _client;
+        private readonly IRecruitVacancyClient _vacancyClient;
         private readonly ILogger<EmployerOrchestrator> _logger;
         private readonly IUtility _utility;
 
@@ -27,9 +32,10 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             IEmployerVacancyClient client,
             IRecruitVacancyClient vacancyClient,
             ILogger<EmployerOrchestrator> logger,
-            IUtility utility)
+            IUtility utility) : base(logger)
         {
             _client = client;
+            _vacancyClient = vacancyClient;
             _logger = logger;
             _utility = utility;
         }
@@ -101,6 +107,21 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             return vm;
         }
 
+        public async Task SetAccountLegalEntityPublicId(VacancyRouteModel vrm, VacancyEmployerInfoModel info, VacancyUser user)
+        {
+            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.Employer_Get);
+            vacancy.AccountLegalEntityPublicHashedId = info.AccountLegalEntityPublicHashedId;
+            
+            await ValidateAndExecute(
+                vacancy,
+                v => _vacancyClient.Validate(v, ValidationRules),
+                async v =>
+                {
+                    await _vacancyClient.UpdateDraftVacancyAsync(vacancy, user);
+                });
+            
+        }
+
         private int GetPageNo(int? requestedPageNo, int page, int totalNumberOfPages, int indexOfSelectedLegalEntity)
         {
             if (indexOfSelectedLegalEntity > MaxLegalEntitiesPerPage && requestedPageNo.HasValue == false)
@@ -147,9 +168,22 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             return info.LegalEntities.Select(ConvertToOrganisationViewModel).ToList();
         }
 
+
         private OrganisationViewModel ConvertToOrganisationViewModel(LegalEntity data)
         {
             return new OrganisationViewModel { Id = data.AccountLegalEntityPublicHashedId, Name = data.Name};
+        }
+
+        protected override EntityToViewModelPropertyMappings<Vacancy, VacancyEmployerInfoModel> DefineMappings()
+        {
+            var mappings = new EntityToViewModelPropertyMappings<Vacancy, VacancyEmployerInfoModel>
+            {
+                {
+                    e=>e.AccountLegalEntityPublicHashedId, vm => vm.AccountLegalEntityPublicHashedId
+                }
+            };
+
+            return mappings;
         }
     }
 }

@@ -19,12 +19,14 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
     {
         private readonly IRecruitVacancyClient _recruitVacancyClient;
         private readonly IUtility _utility;
+        private readonly IEmployerVacancyClient _employerVacancyClient;
         private readonly DisplayVacancyViewModelMapper _displayVacancyViewModelMapper;
-        private const VacancyRuleSet SoftValidationRules = VacancyRuleSet.MinimumWage | VacancyRuleSet.TrainingExpiryDate;
-        public VacancyTaskListOrchestrator(ILogger<VacancyTaskListOrchestrator> logger,IRecruitVacancyClient recruitVacancyClient, IUtility utility, DisplayVacancyViewModelMapper displayVacancyViewModelMapper) : base(logger)
+        public VacancyTaskListOrchestrator(ILogger<VacancyTaskListOrchestrator> logger,IRecruitVacancyClient recruitVacancyClient, IUtility utility, 
+            IEmployerVacancyClient employerVacancyClient,  DisplayVacancyViewModelMapper displayVacancyViewModelMapper) : base(logger)
         {
             _recruitVacancyClient = recruitVacancyClient;
             _utility = utility;
+            _employerVacancyClient = employerVacancyClient;
             _displayVacancyViewModelMapper = displayVacancyViewModelMapper;
         }
 
@@ -32,8 +34,9 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
         {
             var vacancyTask = _utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.EmployerTaskListGet);
             var programmesTask = _recruitVacancyClient.GetActiveApprenticeshipProgrammesAsync();
+            var getEmployerDataTask = _employerVacancyClient.GetEditVacancyInfoAsync(vrm.EmployerAccountId);
 
-            await Task.WhenAll(vacancyTask, programmesTask);
+            await Task.WhenAll(vacancyTask, programmesTask, getEmployerDataTask);
 
             var vacancy = vacancyTask.Result;
             var programme = programmesTask.Result.SingleOrDefault(p => p.Id == vacancy.ProgrammeId);
@@ -46,13 +49,23 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             vm.HasWage = vacancy.Wage != null;
             vm.CanShowReference = vacancy.Status != VacancyStatus.Draft;
             vm.CanShowDraftHeader = vacancy.Status == VacancyStatus.Draft;
-            vm.EducationLevelName =
-                EducationLevelNumberHelper.GetEducationLevelNameOrDefault(programme.EducationLevelNumber, programme.ApprenticeshipLevel);
-
+            
             if (programme != null)
             {
                 vm.ApprenticeshipLevel = programme.ApprenticeshipLevel;
             }
+
+            vm.AccountLegalEntityCount = getEmployerDataTask.Result.LegalEntities.Count();
+            return vm;
+        }
+
+        public async Task<VacancyPreviewViewModel> GetCreateVacancyTaskListModel(VacancyRouteModel vrm)
+        {
+            var getEmployerData = await _employerVacancyClient.GetEditVacancyInfoAsync(vrm.EmployerAccountId);
+            var vm = new VacancyPreviewViewModel
+            {
+                AccountLegalEntityCount = getEmployerData.LegalEntities.Count()
+            };
 
             return vm;
         }

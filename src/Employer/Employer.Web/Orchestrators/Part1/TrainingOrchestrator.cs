@@ -24,13 +24,15 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
         private readonly IRecruitVacancyClient _vacancyClient;
         private readonly IReviewSummaryService _reviewSummaryService;
         private readonly IUtility _utility;
+        private readonly IEmployerVacancyClient _employerVacancyClient;
 
-        public TrainingOrchestrator(IEmployerVacancyClient client, IRecruitVacancyClient vacancyClient, ILogger<TrainingOrchestrator> logger, IReviewSummaryService reviewSummaryService, IUtility utility) : base(logger)
+        public TrainingOrchestrator(IEmployerVacancyClient client, IRecruitVacancyClient vacancyClient, ILogger<TrainingOrchestrator> logger, IReviewSummaryService reviewSummaryService, IUtility utility, IEmployerVacancyClient employerVacancyClient) : base(logger)
         {
             _client = client;
             _vacancyClient = vacancyClient;
             _reviewSummaryService = reviewSummaryService;
             _utility = utility;
+            _employerVacancyClient = employerVacancyClient;
         }
         
         public async Task<TrainingViewModel> GetTrainingViewModelAsync(VacancyRouteModel vrm, VacancyUser user)
@@ -38,8 +40,9 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             var vacancyTask = _utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.Training_Get);
             var programmesTask = _vacancyClient.GetActiveApprenticeshipProgrammesAsync();
             var isUsersFirstVacancyTask = IsUsersFirstVacancy(user.UserId);
+            var getEmployerDataTask = _employerVacancyClient.GetEditVacancyInfoAsync(vrm.EmployerAccountId);
 
-            await Task.WhenAll(vacancyTask, programmesTask, isUsersFirstVacancyTask);
+            await Task.WhenAll(vacancyTask, programmesTask, isUsersFirstVacancyTask, getEmployerDataTask);
 
             var vacancy = vacancyTask.Result;
             var programmes = programmesTask.Result;
@@ -50,7 +53,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                 SelectedProgrammeId = vacancy.ProgrammeId,
                 Programmes = programmes.ToViewModel(),
                 IsUsersFirstVacancy = isUsersFirstVacancyTask.Result && vacancy.TrainingProvider == null,
-                PageInfo = _utility.GetPartOnePageInfo(vacancy)
+                PageInfo = _utility.GetPartOnePageInfo(vacancy),
+                HasMoreThanOneLegalEntity = getEmployerDataTask.Result.LegalEntities.Count() > 1
             };
 
             if (vacancy.Status == VacancyStatus.Referred)

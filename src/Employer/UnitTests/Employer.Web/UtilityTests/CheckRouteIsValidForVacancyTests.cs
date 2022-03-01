@@ -133,6 +133,30 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.UtilityTests
         [InlineData(RouteNames.ShortDescription_Post, false, true)]
         [InlineData(RouteNames.VacancyDescription_Index_Get, false, true)]
         [InlineData(RouteNames.VacancyDescription_Index_Post, false, true)]
+        [InlineData(RouteNames.Dates_Post, false, true)]
+        [InlineData(RouteNames.Dates_Get, false, true)]
+        [InlineData(RouteNames.Duration_Post, false, true)]
+        [InlineData(RouteNames.Duration_Get, false, true)]
+        [InlineData(RouteNames.Wage_Post, false, true)]
+        [InlineData(RouteNames.Wage_Get, false, true)]
+        [InlineData(RouteNames.Skills_Post, false, true)]
+        [InlineData(RouteNames.Skills_Get, false, true)]
+        [InlineData(RouteNames.Qualification_Add_Post, false, true)]
+        [InlineData(RouteNames.Qualification_Delete_Post, false, true)]
+        [InlineData(RouteNames.Qualification_Edit_Post, false, true)]
+        [InlineData(RouteNames.Qualification_Edit_Get, false, true)]
+        [InlineData(RouteNames.Qualification_Add_Get, false, true)]
+        [InlineData(RouteNames.Qualifications_Get, false, true)]
+        [InlineData(RouteNames.Considerations_Post, false, true)]
+        [InlineData(RouteNames.Considerations_Get, false, true)]
+        [InlineData(RouteNames.EmployerName_Post, false, true)]
+        [InlineData(RouteNames.EmployerName_Get, false, true)]
+        [InlineData(RouteNames.AboutEmployer_Post, false, true)]
+        [InlineData(RouteNames.AboutEmployer_Get, false, true)]
+        [InlineData(RouteNames.EmployerContactDetails_Post, false, true)]
+        [InlineData(RouteNames.EmployerContactDetails_Get, false, true)]
+        [InlineData(RouteNames.ApplicationProcess_Post, false, true)]
+        [InlineData(RouteNames.ApplicationProcess_Get, false, true)]
         [InlineData("any other route", true)]
         public void ShouldRedirectToNumberOfPositions(string route, bool shouldRedirect, bool enableTaskList = false)
         {
@@ -357,6 +381,18 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.UtilityTests
             };
 
             CheckRouteIsValidForVacancyTest(vacancy, RouteNames.EmployerTaskListGet, false, null, true);
+        }
+        
+        [Fact]
+        public void ShouldShowCheckYourAnswers()
+        {
+            var vacancy = new Vacancy
+            {
+                EmployerAccountId = "EMPLOYER ACCOUNT ID",
+                Id = Guid.Parse("84af954e-5baf-4942-897d-d00180a0839e")
+            };
+
+            CheckRouteIsValidForVacancyTest(vacancy, RouteNames.EmployerCheckYourAnswersGet, false, null, true);
         }
         
         private void CheckRouteIsValidForVacancyTest(Vacancy vacancy, string route, bool shouldRedirect, string expectedRedirectRoute, bool enableTaskList = false)

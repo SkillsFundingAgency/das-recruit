@@ -1,10 +1,12 @@
 using System.Threading.Tasks;
+using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Extensions;
 using Esfa.Recruit.Employer.Web.Orchestrators.Part1;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.Location;
 using Esfa.Recruit.Shared.Web.Extensions;
+using Esfa.Recruit.Shared.Web.FeatureToggle;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 
@@ -14,10 +16,13 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
     public class LocationController : EmployerControllerBase
     {
         private readonly LocationOrchestrator _orchestrator;
-        public LocationController(LocationOrchestrator orchestrator, IHostingEnvironment hostingEnvironment)
+        private readonly IFeature _feature;
+
+        public LocationController(LocationOrchestrator orchestrator, IHostingEnvironment hostingEnvironment, IFeature feature)
             : base(hostingEnvironment)
         {
             _orchestrator = orchestrator;
+            _feature = feature;
         }
 
         [HttpGet("location", Name = RouteNames.Location_Get)]
@@ -70,6 +75,13 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
 
             DeleteVacancyEmployerInfoCookie();
 
+            if (_feature.IsFeatureEnabled(FeatureNames.EmployerTaskList))
+            {
+                return wizard 
+                    ? RedirectToRoute(RouteNames.EmployerTaskListGet, new { Wizard = wizard }) 
+                    : RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet);
+            }
+            
             IActionResult result = wizard
                 ? RedirectToRoute(RouteNames.Dates_Get)
                 : RedirectToRoute(RouteNames.Vacancy_Preview_Get);

@@ -62,7 +62,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                 vm.Review = await _reviewSummaryService.GetReviewSummaryViewModelAsync(vacancy.VacancyReference.Value,
                     ReviewFieldMappingLookups.GetTitleFieldIndicators());
             }
-
+            
             return vm;
         }
 

@@ -13,6 +13,7 @@ using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.ApprenticeshipProgrammes;
 using FluentAssertions;
 using Microsoft.Extensions.Options;
@@ -30,15 +31,20 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators
             VacancyRouteModel routeModel,
             ApprenticeshipProgramme programme,
             Vacancy vacancy,
+            List<LegalEntity> legalEntities,
             [Frozen] Mock<IOptions<ExternalLinksConfiguration>> externalLinksConfiguration,
             [Frozen] Mock<IUtility> utility,
             [Frozen] Mock<IRecruitVacancyClient> recruitVacancyClient,
+            [Frozen] Mock<IEmployerVacancyClient> employerVacancyClient,
             VacancyTaskListOrchestrator orchestrator)
         {
             vacancy.EmployerLocation = null;
+            vacancy.EmployerNameOption = EmployerNameOption.RegisteredName;
             programme.Id = vacancy.ProgrammeId;
             programme.EducationLevelNumber = 3;
             programme.ApprenticeshipLevel = ApprenticeshipLevel.Higher;
+            employerVacancyClient.Setup(x => x.GetEmployerLegalEntitiesAsync(routeModel.EmployerAccountId))
+                .ReturnsAsync(legalEntities);
             utility.Setup(x => x.GetAuthorisedVacancyForEditAsync(It.Is<VacancyRouteModel>(
                     c => c.VacancyId.Equals(routeModel.VacancyId) &&
                          c.EmployerAccountId.Equals(routeModel.EmployerAccountId)), RouteNames.EmployerTaskListGet))
@@ -67,8 +73,28 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators
                 .Excluding(c=>c.CanShowDraftHeader)
                 .Excluding(c=>c.EducationLevelName)
                 .Excluding(c=>c.ApprenticeshipLevel)
+                .Excluding(c=>c.AccountLegalEntityCount)
+                .Excluding(c=>c.HasSelectedEmployerNameOption)
             );
             viewModel.ApprenticeshipLevel.Should().Be(programme.ApprenticeshipLevel);
+            viewModel.AccountLegalEntityCount.Should().Be(legalEntities.Count);
+            viewModel.HasSelectedEmployerNameOption.Should().BeTrue();
+        }
+
+        [Test, MoqAutoData]
+        public async Task When_Creating_New_Then_The_Account_Legal_Entity_Count_Is_Populated(
+            VacancyRouteModel routeModel,
+            List<LegalEntity> legalEntities,
+            Vacancy vacancy,
+            [Frozen] Mock<IEmployerVacancyClient> employerVacancyClient,
+            VacancyTaskListOrchestrator orchestrator)
+        {
+            employerVacancyClient.Setup(x => x.GetEmployerLegalEntitiesAsync(routeModel.EmployerAccountId))
+                .ReturnsAsync(legalEntities);
+            
+            var viewModel = await orchestrator.GetVacancyTaskListModel(routeModel);
+
+            viewModel.AccountLegalEntityCount.Should().Be(legalEntities.Count);
         }
     }
 }

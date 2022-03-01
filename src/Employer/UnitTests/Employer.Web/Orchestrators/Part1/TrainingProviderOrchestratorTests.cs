@@ -25,35 +25,6 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part1
 {
     public class TrainingProviderOrchestratorTests
     {        
-        [Fact]
-        public async Task PostSelectTrainingProviderAsync_WhenNotChoosingThenRemoveExistingTrainingProvider()
-        {
-            var fixture = new TrainingProviderOrchestratorTestsFixture();
-            fixture
-                .WithVacacny(
-                    new Vacancy
-                    {
-                        Id = fixture.VacancyId,
-                        EmployerAccountId = TrainingProviderOrchestratorTestsFixture.EmployerAccountId,
-                        TrainingProvider = new TrainingProvider(),
-                        Title = "specified for route validation",
-                        ProgrammeId = "specified for route validation"
-                    })
-                .Setup();
-
-            var selectTrainingProviderEditModel = new SelectTrainingProviderEditModel
-            {
-                EmployerAccountId = TrainingProviderOrchestratorTestsFixture.EmployerAccountId,
-                VacancyId = fixture.Vacancy.Id,
-                IsTrainingProviderSelected = false
-            };
-
-            var result = await fixture.PostSelectTrainingProviderAsync(selectTrainingProviderEditModel);
-
-            fixture.VerifyTrainingProviderNotSet();
-            fixture.VerifyNotFoundTrainingProviderUkprn(result);
-        }
-
         [Theory]
         [InlineData("This search won't match a single provider")]
         [InlineData("88888")] // will match multiple providers
@@ -76,7 +47,6 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part1
             {
                 EmployerAccountId = TrainingProviderOrchestratorTestsFixture.EmployerAccountId,
                 VacancyId = fixture.Vacancy.Id,
-                IsTrainingProviderSelected = true,
                 SelectionType = TrainingProviderSelectionType.TrainingProviderSearch,
                 TrainingProviderSearch = trainingProviderSearch
             };
@@ -106,7 +76,6 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part1
             {
                 EmployerAccountId = TrainingProviderOrchestratorTestsFixture.EmployerAccountId,
                 VacancyId = fixture.Vacancy.Id,
-                IsTrainingProviderSelected = true,
                 SelectionType = TrainingProviderSelectionType.TrainingProviderSearch,
                 TrainingProviderSearch = "FIRST TRAINING PROVIDER 88888888",
             };
@@ -136,7 +105,6 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part1
             {
                 EmployerAccountId = TrainingProviderOrchestratorTestsFixture.EmployerAccountId,
                 VacancyId = fixture.Vacancy.Id,
-                IsTrainingProviderSelected = true,
                 SelectionType = TrainingProviderSelectionType.Ukprn,
                 Ukprn = fixture.TrainingProviderOne.Ukprn.ToString()
             };

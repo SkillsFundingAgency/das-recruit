@@ -13,5 +13,6 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Part2.ShortDescription
         };
 
         public string Title { get; internal set; }
+        public bool IsTaskListCompleted { get ; set ; }
     }
 }

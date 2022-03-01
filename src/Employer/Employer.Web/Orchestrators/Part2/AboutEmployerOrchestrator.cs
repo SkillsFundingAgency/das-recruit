@@ -48,6 +48,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
                     ReviewFieldMappingLookups.GetAboutEmployerFieldIndicators());
             }
 
+            vm.IsTaskListCompleted = _utility.TaskListCompleted(vacancy);
+
             return vm;
         }
 

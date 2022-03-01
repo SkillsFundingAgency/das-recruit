@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Mappings;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels.Part2.Qualifications;
 using Esfa.Recruit.Shared.Web.Extensions;
+using Esfa.Recruit.Shared.Web.FeatureToggle;
 using Esfa.Recruit.Shared.Web.Orchestrators;
 using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Shared.Web.ViewModels.Qualifications;
@@ -24,13 +26,15 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
         private readonly IRecruitVacancyClient _vacancyClient;
         private readonly IReviewSummaryService _reviewSummaryService;
         private readonly IUtility _utility;
+        private readonly IFeature _feature;
 
-        public QualificationsOrchestrator(IEmployerVacancyClient client, IRecruitVacancyClient vacancyClient, ILogger<QualificationsOrchestrator> logger, IReviewSummaryService reviewSummaryService, IUtility utility)
+        public QualificationsOrchestrator(IEmployerVacancyClient client, IRecruitVacancyClient vacancyClient, ILogger<QualificationsOrchestrator> logger, IReviewSummaryService reviewSummaryService, IUtility utility, IFeature feature)
             : base(logger)
         {
             _client = client;
             _reviewSummaryService = reviewSummaryService;
             _utility = utility;
+            _feature = feature;
             _vacancyClient = vacancyClient;
         }
 
@@ -57,7 +61,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
                 vm.Review = await _reviewSummaryService.GetReviewSummaryViewModelAsync(vacancy.VacancyReference.Value,
                     ReviewFieldMappingLookups.GetQualificationsFieldIndicators());
             }
-
+            vm.IsTaskListCompleted = _utility.TaskListCompleted(vacancy);
+            
             return vm;
         }
 
@@ -199,11 +204,31 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
 
         private QualificationViewModel GetQualificationViewModel(Vacancy vacancy, IList<string> allQualifications)
         {
+            var cancelRoute = RouteNames.Qualifications_Get;
+            if (!vacancy.Qualifications?.Any() ?? false)
+            {
+                if (_feature.IsFeatureEnabled(FeatureNames.EmployerTaskList))
+                {
+                    if (_utility.TaskListCompleted(vacancy))
+                    {
+                        cancelRoute = RouteNames.EmployerCheckYourAnswersGet;
+                    }
+                    else
+                    {
+                        cancelRoute = RouteNames.Dashboard_Get;
+                    }
+                }
+                else
+                {
+                    cancelRoute = RouteNames.Vacancy_Preview_Get;
+                }
+            }
+            
             var vm = new QualificationViewModel
             {
                 Title = vacancy.Title,
                 QualificationTypes = allQualifications,
-                CancelRoute = vacancy.Qualifications?.Any() == true ? RouteNames.Qualifications_Get : RouteNames.Vacancy_Preview_Get
+                CancelRoute = cancelRoute
             };
 
             return vm;
