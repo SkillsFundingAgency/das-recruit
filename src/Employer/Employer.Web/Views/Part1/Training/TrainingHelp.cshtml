@@ -24,7 +24,12 @@
         <a class="govuk-button" href="@externalLinks.Value.FindApprenticeshipTrainingUrl">Find apprenticeship training</a>
 
         <div class="govuk-body">
-            <a asp-route="@RouteNames.Vacancies_Get" class="govuk-link">Return to dashboard</a>
+            <esfaFeatureEnabled name="@FeatureNames.EmployerTaskList">
+                <a asp-route="@RouteNames.Dashboard_Get" class="govuk-link" esfa-automation="cancel-link">Return to dashboard</a>
+            </esfaFeatureEnabled>
+            <esfaFeatureDisabled name="@FeatureNames.EmployerTaskList">
+                <a asp-route="@RouteNames.Vacancies_Get" class="govuk-link">Return to dashboard</a>
+            </esfaFeatureDisabled>
         </div>
     </div>
 </div>

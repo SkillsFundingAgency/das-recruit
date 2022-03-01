@@ -2,9 +2,11 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.UnitTests.Employer.Web.HardMocks;
+using Esfa.Recruit.Employer.Web;
 using Esfa.Recruit.Employer.Web.Orchestrators.Part2;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels.Part2.Skills;
+using Esfa.Recruit.Shared.Web.FeatureToggle;
 using Esfa.Recruit.Shared.Web.Mappers;
 using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
@@ -296,8 +298,9 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part2
                 MockRecruitVacancyClient.Setup(x => x.Validate(Vacancy, ValidationRules)).Returns(new EntityValidationResult());
                 MockRecruitVacancyClient.Setup(x => x.UpdateDraftVacancyAsync(It.IsAny<Vacancy>(), User));
                 MockRecruitVacancyClient.Setup(x => x.UpdateEmployerProfileAsync(It.IsAny<EmployerProfile>(), User));
+                var utility = new Utility(MockRecruitVacancyClient.Object, Mock.Of<IFeature>());
                 
-                Sut = new SkillsOrchestrator(MockClient.Object, MockRecruitVacancyClient.Object, Mock.Of<ILogger<SkillsOrchestrator>>(), Mock.Of<IReviewSummaryService>());
+                Sut = new SkillsOrchestrator(MockRecruitVacancyClient.Object, Mock.Of<ILogger<SkillsOrchestrator>>(), Mock.Of<IReviewSummaryService>(), utility);
             }
 
             public async Task<SkillsViewModel> GetSkillsViewModelAsync(VacancyRouteModel vacancyRouteModel, string[] draftSkills = null)

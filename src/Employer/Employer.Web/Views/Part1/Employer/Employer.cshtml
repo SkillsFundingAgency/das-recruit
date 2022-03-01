@@ -7,7 +7,13 @@
 }
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-        <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.NumberOfPositions_Get" asp-route-wizard="@Model.PageInfo.IsWizard" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
+        <esfaFeatureEnabled name="@FeatureNames.EmployerTaskList">
+            <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Title_Get" asp-route-wizard="@Model.PageInfo.IsWizard" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
+            <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.EmployerCheckYourAnswersGet" asp-route-wizard="@Model.PageInfo.IsWizard" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
+        </esfaFeatureEnabled>
+        <esfaFeatureDisabled name="@FeatureNames.EmployerTaskList">
+            <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.NumberOfPositions_Get" asp-route-wizard="@Model.PageInfo.IsWizard" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
+        </esfaFeatureDisabled>
 
         <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }' />
 
@@ -60,7 +66,13 @@
 
             <button type="submit" class="govuk-button save-button" esfa-automation="continue-button">Save and continue</button>
             <div class="govuk-body">
-                <a asp-route="@RouteNames.Employer_Cancel" asp-route-wizard="@Model.PageInfo.IsWizard" class="govuk-link">Cancel</a>
+                <esfaFeatureEnabled name="@FeatureNames.EmployerTaskList">
+                    <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Dashboard_Get" class="govuk-link">Cancel</a>
+                    <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.EmployerCheckYourAnswersGet" class="govuk-link">Cancel</a>
+                </esfaFeatureEnabled>
+                <esfaFeatureDisabled name="@FeatureNames.EmployerTaskList">
+                    <a asp-route="@RouteNames.EmployerName_Cancel" asp-route-wizard="@Model.PageInfo.IsWizard" class="govuk-link">Cancel</a>    
+                </esfaFeatureDisabled>
             </div>
         </form>
     </div>

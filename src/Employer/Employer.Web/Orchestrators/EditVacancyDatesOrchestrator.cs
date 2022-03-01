@@ -20,6 +20,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
         private const VacancyRuleSet ValdationRules = VacancyRuleSet.ClosingDate | VacancyRuleSet.StartDate | VacancyRuleSet.TrainingProgramme | VacancyRuleSet.StartDateEndDate | VacancyRuleSet.TrainingExpiryDate | VacancyRuleSet.MinimumWage;
         private readonly IRecruitVacancyClient _vacancyClient;
         private readonly ITimeProvider _timeProvider;
+        private readonly IUtility _utility;
 
         private readonly EntityValidationResult _proposedClosingDateMustBeNewerError = new EntityValidationResult
         {
@@ -29,17 +30,18 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             }
         };
 
-        public EditVacancyDatesOrchestrator(IRecruitVacancyClient vacancyClient, ILogger<EditVacancyDatesOrchestrator> logger, ITimeProvider timeProvider) : base(logger)
+        public EditVacancyDatesOrchestrator(IRecruitVacancyClient vacancyClient, ILogger<EditVacancyDatesOrchestrator> logger, ITimeProvider timeProvider, IUtility utility) : base(logger)
         {
             _vacancyClient = vacancyClient;
             _timeProvider = timeProvider;
+            _utility = utility;
         }
 
         public async Task<Vacancy> GetVacancyAsync(VacancyRouteModel vrm)
         {
             var vacancy = await _vacancyClient.GetVacancyAsync(vrm.VacancyId);
 
-            Utility.CheckAuthorisedAccess(vacancy, vrm.EmployerAccountId);
+            _utility.CheckAuthorisedAccess(vacancy, vrm.EmployerAccountId);
 
             if (vacancy.CanExtendStartAndClosingDates == false)
                 throw new InvalidStateException(string.Format(ErrMsg.VacancyDatesCannotBeEdited, vacancy.Title));

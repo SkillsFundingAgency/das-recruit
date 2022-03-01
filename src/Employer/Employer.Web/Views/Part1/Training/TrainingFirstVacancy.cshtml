@@ -33,7 +33,12 @@
             <div class=" govuk-form-grou govuk-!-margin-top-8">
                 <input type="submit" value="Save and continue" esfa-automation="btn-continue" class="govuk-button" />
                 <div class="govuk-body">
-                    <a asp-route="@RouteNames.Vacancies_Get" class="govuk-link">Cancel</a>
+                    <esfaFeatureEnabled name="@FeatureNames.EmployerTaskList">
+                        <a asp-route="@RouteNames.Dashboard_Get" class="govuk-link" esfa-automation="cancel-link">Cancel</a>
+                    </esfaFeatureEnabled>
+                    <esfaFeatureDisabled name="@FeatureNames.EmployerTaskList">
+                        <a asp-route="@RouteNames.Vacancies_Get" class="govuk-link">Cancel</a>
+                    </esfaFeatureDisabled>
                 </div>
             </div>
         </form>
