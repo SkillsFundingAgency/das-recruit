@@ -63,10 +63,11 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                 LegalEntityName = legalEntity.Name,
                 ExistingTradingName = employerProfile.TradingName,
                 PageInfo = _utility.GetPartOnePageInfo(vacancy),
-                SelectedEmployerIdentityOption = employerInfoModel?.EmployerIdentityOption,
+                SelectedEmployerIdentityOption = employerInfoModel?.EmployerIdentityOption ?? vacancy?.EmployerNameOption?.ConvertToModelOption(),
                 NewTradingName = employerInfoModel?.NewTradingName,
-                AnonymousName = employerInfoModel?.AnonymousName,
-                AnonymousReason = employerInfoModel?.AnonymousReason
+                AnonymousName = employerInfoModel?.AnonymousName ,
+                AnonymousReason = employerInfoModel?.AnonymousReason ?? vacancy?.AnonymousReason,
+                TaskListCompleted = _utility.TaskListCompleted(vacancy)
             };
 
             if (vacancy.Status == VacancyStatus.Referred)

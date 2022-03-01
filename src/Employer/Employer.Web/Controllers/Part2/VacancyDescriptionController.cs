@@ -40,15 +40,19 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part2
                 response.AddErrorsToModelState(ModelState);
             }
 
+            var vm = await _orchestrator.GetVacancyDescriptionViewModelAsync(m);
             if (!ModelState.IsValid)
             {
-                var vm = await _orchestrator.GetVacancyDescriptionViewModelAsync(m);
                 return View(vm);
             }
 
             if (_feature.IsFeatureEnabled(FeatureNames.EmployerTaskList))
             {
-                return RedirectToRoute(RouteNames.Dates_Get);
+                if (vm.IsTaskListCompleted)
+                {
+                    return RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet);
+                }
+                return RedirectToRoute(RouteNames.EmployerTaskListGet);
             }
             
             return RedirectToRoute(RouteNames.Vacancy_Preview_Get);

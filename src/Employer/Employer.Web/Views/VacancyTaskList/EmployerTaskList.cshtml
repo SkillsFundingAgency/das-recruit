@@ -205,13 +205,13 @@
                         @if (Model.NumberOfPositionsSectionState == VacancyPreviewSectionState.Incomplete)
                         {
                             <span class="das-task-list__task-name">
-                                Location
+                                Address
                             </span>    
                         }
                         else
                         {
                             <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.Location_Get">
-                                Location
+                                Address
                             </a>
                         }
                     </li>
@@ -348,14 +348,14 @@
                         @if (Model.HasSelectedEmployerNameOption && !Model.EmployerDescriptionRequiresEdit && Model.TaskListSectionThreeState == VacancyTaskListSectionState.Completed)
                         {
                             <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.ApplicationProcess_Get">
-                                Website for application
+                                Website for applications
                             </a>    
                                
                         }
                         else
                         {
                             <span class="das-task-list__task-name">
-                                Website for application
+                                Website for applications
                             </span> 
                         }
                     </li>
@@ -382,9 +382,19 @@
                 </h2>
                 <ul class="das-task-list__items">
                     <li class="das-task-list__item">
-                        <span>
-                            Check your answers and submit your advert
-                        </span>
+                        @if (Model.TaskListSectionFourState == VacancyTaskListSectionState.Completed)
+                        {
+                            <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.EmployerCheckYourAnswersGet">
+                                Check your answers and submit your advert
+                            </a>   
+                        }
+                        else
+                        {
+                            <span>
+                                Check your answers and submit your advert
+                            </span>    
+                        }
+                        
                     </li>
                 </ul>
             </li>

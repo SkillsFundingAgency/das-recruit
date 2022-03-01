@@ -32,6 +32,25 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.VacancyPreview
 
             model.TaskListSectionFourState.Should().Be(VacancyTaskListSectionState.NotStarted);
         }
+        
+        [Test, MoqAutoData]
+        public async Task Then_The_Section_State_Is_Set_To_Not_Started_If_Section_Three_Is_Complete_But_No_Name_On_Advert(
+            Vacancy vacancy,
+            [Frozen] Mock<IRecruitVacancyClient> recruitVacancyClient,
+            DisplayVacancyViewModelMapper mapper)
+        {
+            recruitVacancyClient.Setup(x => x.GetEmployerNameAsync(vacancy)).ReturnsAsync(string.Empty);
+            vacancy.EmployerDescription = null;
+            vacancy.ApplicationMethod = null;
+            vacancy.EmployerNameOption = null;
+            
+            var model = new VacancyPreviewViewModel();
+            
+            await mapper.MapFromVacancyAsync(model, vacancy);
+            model.SetSectionStates(model, new ModelStateDictionary());
+
+            model.TaskListSectionFourState.Should().Be(VacancyTaskListSectionState.NotStarted);
+        }
 
         [Test, MoqAutoData]
         public async Task Then_Section_State_Is_Set_To_In_Progress_If_Employer_Name_Set(

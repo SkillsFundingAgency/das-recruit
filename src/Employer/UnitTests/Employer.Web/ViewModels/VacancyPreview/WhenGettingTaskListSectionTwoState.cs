@@ -25,6 +25,18 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.VacancyPreview
 
             model.TaskListSectionTwoState.Should().Be(VacancyTaskListSectionState.NotStarted);
         }
+
+        [Test, MoqAutoData]
+        public async Task And_Section_One_Completed_And_Important_Dates_Not_Entered_Then_Not_Started(DisplayVacancyViewModelMapper mapper)
+        {
+            var vacancy = CreateCompletedSectionOneVacancy();
+            vacancy.Id = Guid.NewGuid();
+            var model = new VacancyPreviewViewModel();
+            await mapper.MapFromVacancyAsync(model, vacancy);
+            model.SetSectionStates(model, new ModelStateDictionary());
+
+            model.TaskListSectionTwoState.Should().Be(VacancyTaskListSectionState.NotStarted);
+        }
         
         [Test, MoqAutoData]
         public async Task And_Has_Important_Dates_Then_In_Progress(

@@ -77,7 +77,11 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
 
             if (_feature.IsFeatureEnabled(FeatureNames.EmployerTaskList))
             {
-                return RedirectToRoute(RouteNames.Employer_Get ,new { vacancyId = response.Data });
+                if (wizard)
+                {
+                    return RedirectToRoute(RouteNames.Employer_Get ,new { vacancyId = response.Data });
+                }
+                return RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet);
             }
             
             return wizard

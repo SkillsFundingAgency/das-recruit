@@ -36,6 +36,10 @@ namespace Esfa.Recruit.Employer.Web.Controllers
 
             if (_feature.IsFeatureEnabled(FeatureNames.EmployerTaskList))
             {
+                if (vm.PageInfo.HasCompletedPartOne)
+                {
+                    return RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet);
+                }
                 return RedirectToRoute(RouteNames.AboutEmployer_Get, new { Wizard = wizard });
             }
             

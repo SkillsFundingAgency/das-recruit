@@ -224,6 +224,12 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview
                 return VacancyTaskListSectionState.NotStarted;
             }
 
+            if (TaskListSectionOneState == VacancyTaskListSectionState.Completed &&
+                ClosingDateSectionState == VacancyPreviewSectionState.Incomplete)
+            {
+                return VacancyTaskListSectionState.NotStarted;
+            }
+
             if (WageTextSectionState == VacancyPreviewSectionState.Valid
                 && ExpectedDurationSectionState == VacancyPreviewSectionState.Valid 
                 && ClosingDateSectionState == VacancyPreviewSectionState.Valid 
@@ -238,14 +244,19 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview
         }
         private VacancyTaskListSectionState SetTaskListSectionThreeState()
         {
-            if (SkillsSectionState == VacancyPreviewSectionState.Incomplete)
+            if (TaskListSectionTwoState != VacancyTaskListSectionState.Completed)
+            {
+                return VacancyTaskListSectionState.NotStarted;
+            } 
+
+            if (TaskListSectionTwoState == VacancyTaskListSectionState.Completed 
+                && SkillsSectionState == VacancyPreviewSectionState.Incomplete)
             {
                 return VacancyTaskListSectionState.NotStarted;
             }
-
+            
             if (SkillsSectionState == VacancyPreviewSectionState.Valid
-                && QualificationsSectionState == VacancyPreviewSectionState.Valid
-                && ThingsToConsiderSectionState == VacancyPreviewSectionState.Valid)
+                && QualificationsSectionState == VacancyPreviewSectionState.Valid)
             {
                 return VacancyTaskListSectionState.Completed;
             }
@@ -256,6 +267,12 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview
         private VacancyTaskListSectionState SetTaskListSectionFourState()
         {
             if (TaskListSectionThreeState != VacancyTaskListSectionState.Completed)
+            {
+                return VacancyTaskListSectionState.NotStarted;
+            }
+            
+            if (TaskListSectionThreeState == VacancyTaskListSectionState.Completed 
+                && !HasSelectedEmployerNameOption)
             {
                 return VacancyTaskListSectionState.NotStarted;
             }

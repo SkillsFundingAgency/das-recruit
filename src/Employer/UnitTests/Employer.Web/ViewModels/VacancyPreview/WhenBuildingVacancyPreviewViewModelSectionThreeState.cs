@@ -31,24 +31,40 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.VacancyPreview
             [Frozen] Mock<IRecruitVacancyClient> recruitVacancyClient,
             DisplayVacancyViewModelMapper mapper)
         {
-            var vacancy = new Vacancy
-            {
-                Id = Guid.NewGuid(),
-                Title = title,
-                ProgrammeId = programmeId,
-                Description = description,
-                TrainingDescription = trainingDescription,
-                ShortDescription = shortDescription,
-                OutcomeDescription = outcomeDescription,
-                TrainingProvider = provider,
-                AccountLegalEntityPublicHashedId = accountLegalEntityPublicHashedId 
-            };
+            var vacancy = CreateCompletedSectionOneAndSectionTwoVacancy();
+            vacancy.NumberOfPositions = null;
             var model = new VacancyPreviewViewModel();
             
             await mapper.MapFromVacancyAsync(model, vacancy);
             model.SetSectionStates(model, new ModelStateDictionary());
 
             model.TaskListSectionOneState.Should().Be(VacancyTaskListSectionState.Completed);
+            model.TaskListSectionTwoState.Should().Be(VacancyTaskListSectionState.InProgress);
+            model.TaskListSectionThreeState.Should().Be(VacancyTaskListSectionState.NotStarted);
+        }
+        
+        [Test, MoqAutoData]
+        public async Task Then_If_There_Section_Two_Is_Completed_Then_Section_Three_Set_To_NotStarted(
+            string title,
+            string programmeId,
+            string description,
+            string shortDescription,
+            string trainingDescription,
+            string outcomeDescription,
+            List<string> skills,
+            Vacancies.Client.Domain.Entities.TrainingProvider provider,
+            ApprenticeshipProgramme programme,
+            [Frozen] Mock<IRecruitVacancyClient> recruitVacancyClient,
+            DisplayVacancyViewModelMapper mapper)
+        {
+            var vacancy = CreateCompletedSectionOneAndSectionTwoVacancy();
+            var model = new VacancyPreviewViewModel();
+            
+            await mapper.MapFromVacancyAsync(model, vacancy);
+            model.SetSectionStates(model, new ModelStateDictionary());
+
+            model.TaskListSectionOneState.Should().Be(VacancyTaskListSectionState.Completed);
+            model.TaskListSectionTwoState.Should().Be(VacancyTaskListSectionState.Completed);
             model.TaskListSectionThreeState.Should().Be(VacancyTaskListSectionState.NotStarted);
         }
 
@@ -66,18 +82,8 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.VacancyPreview
             [Frozen] Mock<IRecruitVacancyClient> recruitVacancyClient,
             DisplayVacancyViewModelMapper mapper)
         {
-            var vacancy = new Vacancy
-            {
-                Id = Guid.NewGuid(),
-                Title = title,
-                ProgrammeId = programmeId,
-                Description = description,
-                TrainingDescription = trainingDescription,
-                ShortDescription = shortDescription,
-                OutcomeDescription = outcomeDescription,
-                TrainingProvider = provider,
-                Skills = skills
-            };
+            var vacancy = CreateCompletedSectionOneAndSectionTwoVacancy();
+            vacancy.Skills = skills;
             var model = new VacancyPreviewViewModel();
             
             await mapper.MapFromVacancyAsync(model, vacancy);
@@ -87,7 +93,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.VacancyPreview
         }
         
         [Test, MoqAutoData]
-        public async Task Then_If_There_Are_Skills_And_Qualifications_Added_Section_Set_To_Incomplete(
+        public async Task Then_If_There_Are_Skills_And_Qualifications_Added_Section_Set_To_Complete(
             string title,
             string programmeId,
             string description,
@@ -101,25 +107,15 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.VacancyPreview
             [Frozen] Mock<IRecruitVacancyClient> recruitVacancyClient,
             DisplayVacancyViewModelMapper mapper)
         {
-            var vacancy = new Vacancy
-            {
-                Id = Guid.NewGuid(),
-                Title = title,
-                ProgrammeId = programmeId,
-                Description = description,
-                TrainingDescription = trainingDescription,
-                ShortDescription = shortDescription,
-                OutcomeDescription = outcomeDescription,
-                TrainingProvider = provider,
-                Skills = skills,
-                Qualifications = qualifications
-            };
+            var vacancy = CreateCompletedSectionOneAndSectionTwoVacancy();
+            vacancy.Skills = skills;
+            vacancy.Qualifications = qualifications;
             var model = new VacancyPreviewViewModel();
             
             await mapper.MapFromVacancyAsync(model, vacancy);
             model.SetSectionStates(model, new ModelStateDictionary());
 
-            model.TaskListSectionThreeState.Should().Be(VacancyTaskListSectionState.InProgress);
+            model.TaskListSectionThreeState.Should().Be(VacancyTaskListSectionState.Completed);
         }
         
         [Test, MoqAutoData]
@@ -138,26 +134,52 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.VacancyPreview
             [Frozen] Mock<IRecruitVacancyClient> recruitVacancyClient,
             DisplayVacancyViewModelMapper mapper)
         {
-            var vacancy = new Vacancy
-            {
-                Id = Guid.NewGuid(),
-                Title = title,
-                ProgrammeId = programmeId,
-                Description = description,
-                TrainingDescription = trainingDescription,
-                ShortDescription = shortDescription,
-                OutcomeDescription = outcomeDescription,
-                TrainingProvider = provider,
-                Skills = skills,
-                Qualifications = qualifications,
-                ThingsToConsider = otherThingsToConsider
-            };
+            var vacancy = CreateCompletedSectionOneAndSectionTwoVacancy();
+            vacancy.Skills = skills;
+            vacancy.Qualifications = qualifications;
+            vacancy.ThingsToConsider = otherThingsToConsider;
             var model = new VacancyPreviewViewModel();
             
             await mapper.MapFromVacancyAsync(model, vacancy);
             model.SetSectionStates(model, new ModelStateDictionary());
 
             model.TaskListSectionThreeState.Should().Be(VacancyTaskListSectionState.Completed);
+        }
+        
+        private Vacancy CreateCompletedSectionOneAndSectionTwoVacancy()
+        {
+            return new Vacancy
+            {
+                Title = "title",
+                ProgrammeId = "programmeId",
+                Description = "description",
+                TrainingDescription = "trainingDescription",
+                ShortDescription = "shortDescription",
+                OutcomeDescription = "outcomeDescription",
+                TrainingProvider = new Vacancies.Client.Domain.Entities.TrainingProvider
+                {
+                    Address = new Address(),
+                    Name = "name",
+                    Ukprn = 1231231
+                },
+                AccountLegalEntityPublicHashedId = "accountLegalEntityPublicHashedId",
+                ClosingDate = DateTime.UtcNow.AddMonths(4),
+                StartDate = DateTime.UtcNow.AddMonths(5),
+                Wage = new Wage
+                {
+                    Duration = 36,
+                    DurationUnit = DurationUnit.Month,
+                    WageType = WageType.NationalMinimumWage,
+                    WeeklyHours = 30,
+                    WorkingWeekDescription = "Monday to Thursday"
+                },
+                NumberOfPositions = 1,
+                EmployerLocation = new Address
+                {
+                    AddressLine1 = "test",
+                    Postcode = "test"
+                }
+            };
         }
     }
 }
