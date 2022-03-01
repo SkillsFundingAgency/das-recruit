@@ -32,7 +32,9 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part2
 
         [HttpPost("application-process", Name = RouteNames.ApplicationProcess_Post)]
         public async Task<IActionResult> ApplicationProcess(ApplicationProcessEditModel m)
-        {            
+        {   
+            var vm = await _orchestrator.GetApplicationProcessViewModelAsync(m);
+            
             var response = await _orchestrator.PostApplicationProcessEditModelAsync(m, User.ToVacancyUser());
 
             if (!response.Success)
@@ -40,7 +42,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part2
                 response.AddErrorsToModelState(ModelState);
             }
             
-            var vm = await _orchestrator.GetApplicationProcessViewModelAsync(m);
+            
             if (!ModelState.IsValid)
             {
                 return View(vm);
