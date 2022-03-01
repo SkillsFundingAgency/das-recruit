@@ -17,5 +17,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels
             nameof(EmployerContactDetailsEditModel.EmployerContactEmail),
             nameof(EmployerContactDetailsEditModel.EmployerContactPhone)
         };
+
+        public bool IsTaskListCompleted { get ; set ; }
     }
 }

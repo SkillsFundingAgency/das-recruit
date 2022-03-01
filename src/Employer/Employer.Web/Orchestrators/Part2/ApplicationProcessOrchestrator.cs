@@ -18,25 +18,26 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
     public class ApplicationProcessOrchestrator : VacancyValidatingOrchestrator<ApplicationProcessEditModel>
     {
         private const VacancyRuleSet ValidationRules = VacancyRuleSet.ApplicationMethod;
-        private readonly IEmployerVacancyClient _client;
         private readonly IRecruitVacancyClient _vacancyClient;
         private readonly ExternalLinksConfiguration _externalLinks;
         private readonly IReviewSummaryService _reviewSummaryService;
+        private readonly IUtility _utility;
 
-        public ApplicationProcessOrchestrator(IEmployerVacancyClient client,
+        public ApplicationProcessOrchestrator(
             IRecruitVacancyClient vacancyClient,
             IOptions<ExternalLinksConfiguration> externalLinks, ILogger<ApplicationProcessOrchestrator> logger, 
-            IReviewSummaryService reviewSummaryService) : base(logger)
+            IReviewSummaryService reviewSummaryService,
+            IUtility utility) : base(logger)
         {
-            _client = client;
             _vacancyClient = vacancyClient;
             _externalLinks = externalLinks.Value;
             _reviewSummaryService = reviewSummaryService;
+            _utility = utility;
         }
 
         public async Task<ApplicationProcessViewModel> GetApplicationProcessViewModelAsync(VacancyRouteModel vrm)
         {
-            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, _vacancyClient, vrm, RouteNames.ApplicationProcess_Get);
+            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.ApplicationProcess_Get);
 
             var vm = new ApplicationProcessViewModel
             {
@@ -52,6 +53,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
                 vm.Review = await _reviewSummaryService.GetReviewSummaryViewModelAsync(vacancy.VacancyReference.Value,
                     ReviewFieldMappingLookups.GetApplicationProcessFieldIndicators());
             }
+            
+            vm.IsTaskListCompleted = _utility.TaskListCompleted(vacancy);
 
             return vm;
         }
@@ -69,7 +72,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
 
         public async Task<OrchestratorResponse> PostApplicationProcessEditModelAsync(ApplicationProcessEditModel m, VacancyUser user)
         {
-            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, _vacancyClient, m, RouteNames.ApplicationProcess_Post);
+            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(m, RouteNames.ApplicationProcess_Post);
 
             SetVacancyWithEmployerReviewFieldIndicators(
                 vacancy.ApplicationMethod,

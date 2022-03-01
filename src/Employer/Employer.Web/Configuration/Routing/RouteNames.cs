@@ -1,4 +1,4 @@
-﻿namespace Esfa.Recruit.Employer.Web.Configuration.Routing
+namespace Esfa.Recruit.Employer.Web.Configuration.Routing
 {
     public static class RouteNames
     {
@@ -158,5 +158,8 @@
         public const string EmployerRecruitmentApi = "employer-recruitment-api";
 
         public const string EmployerTaskListGet = "employer-tasklist-get";
+        public const string EmployerTaskListCreateGet = "employer-tasklist-create-get";
+        public const string EmployerCheckYourAnswersGet = "employer-check-your-answers-get";
+
     }
 }

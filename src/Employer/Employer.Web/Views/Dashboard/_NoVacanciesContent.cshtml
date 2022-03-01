@@ -45,6 +45,11 @@
         </ul>
         <div class="govuk-inset-text">It should take no longer than 30 minutes to create your first advert.</div>
 
-        <a asp-route="@RouteNames.CreateVacancyOptions_Get" role="button" class="govuk-button govuk-button--start" esfa-automation="create-vacancy">Start now</a>
+        <esfaFeatureEnabled name="@FeatureNames.EmployerTaskList">
+            <a asp-route="@RouteNames.EmployerTaskListCreateGet" role="button" class="govuk-button govuk-button--start" esfa-automation="create-vacancy">Start now</a>
+        </esfaFeatureEnabled>
+        <esfaFeatureDisabled name="@FeatureNames.EmployerTaskList">
+            <a asp-route="@RouteNames.CreateVacancyOptions_Get" role="button" class="govuk-button govuk-button--start" esfa-automation="create-vacancy">Start now</a>
+        </esfaFeatureDisabled>
     </div>
 </div>
