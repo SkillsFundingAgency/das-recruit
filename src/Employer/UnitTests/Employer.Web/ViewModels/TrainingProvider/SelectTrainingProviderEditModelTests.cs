@@ -79,7 +79,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.TrainingProvid
             result.IsValid.Should().BeFalse();
             result.Errors.Count.Should().Be(1);
             result.Errors[0].PropertyName.Should().Be(nameof(SelectTrainingProviderEditModel.TrainingProviderSearch));
-            result.Errors[0].ErrorMessage.Should().Be("Please select a training provider");
+            result.Errors[0].ErrorMessage.Should().Be("You must enter a training provider or UKPRN to continue");
         }
         
         [Fact]
