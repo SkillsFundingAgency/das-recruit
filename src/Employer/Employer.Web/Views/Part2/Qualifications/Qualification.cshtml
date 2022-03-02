@@ -7,78 +7,75 @@
     ViewBag.Title = "What qualifications would you like the applicant to have?";
     ViewBag.ZenDeskLabel = "recruit-what-qualifications-would-you-like-the-applicant-to-have";
 }
-<div class="govuk-grid-row">
-    <div class="govuk-grid-column-full">
-        <esfaFeatureEnabled name="@FeatureNames.EmployerTaskList">
-            <a asp-show="@(!Model.IsTaskListCompleted)" asp-route="@RouteNames.Qualifications_Get" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
-            <a asp-show="@Model.IsTaskListCompleted" asp-route="@RouteNames.EmployerCheckYourAnswersGet" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
-        </esfaFeatureEnabled>
+
+@section BackLink {
+    <esfaFeatureEnabled name="@FeatureNames.EmployerTaskList">
+        <a asp-show="@(!Model.IsTaskListCompleted)" asp-route="@RouteNames.Qualifications_Get" esfa-automation="link-back" class="govuk-back-link">Back</a>
+        <a asp-show="@Model.IsTaskListCompleted" asp-route="@RouteNames.EmployerCheckYourAnswersGet" esfa-automation="link-back" class="govuk-back-link">Back</a>
+    </esfaFeatureEnabled>
+}
         
-        <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }' />
+<partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }' />
 
-        <h1 class="govuk-heading-xl">
-            <span class="govuk-caption-l">@Model.Title</span>
-            What qualifications would you like the applicant to have?
-        </h1>
+<h1 class="govuk-heading-xl">
+    <span class="govuk-caption-l">@Model.Title</span>
+    What qualifications would you like the applicant to have?
+</h1>
 
-        <form method="post">
-            <div esfa-validation-marker-for="QualificationType" class="govuk-form-group">
-                <label asp-for="QualificationType" class="govuk-label" id="@Anchors.QualificationsHeading">Add qualifications applicants should have</label>
-                <span esfa-validation-message-for="QualificationType" class="govuk-error-message"></span>
-                <select asp-for="QualificationType" class="govuk-select">
-                    <option value="">Select from list</option>
+<form method="post">
+    <div esfa-validation-marker-for="QualificationType" class="govuk-form-group">
+        <label asp-for="QualificationType" class="govuk-label" id="@Anchors.QualificationsHeading">Add qualifications applicants should have</label>
+        <span esfa-validation-message-for="QualificationType" class="govuk-error-message"></span>
+        <select asp-for="QualificationType" class="govuk-select">
+            <option value="">Select from list</option>
 
-                    @foreach (var qualificationType in Model.QualificationTypes)
-                    {
-                        <option value="@qualificationType" selected="@(Model.QualificationType == @qualificationType)">@qualificationType</option>
-                    }
-                </select>
-            </div>
+            @foreach (var qualificationType in Model.QualificationTypes)
+            {
+                <option value="@qualificationType" selected="@(Model.QualificationType == @qualificationType)">@qualificationType</option>
+            }
+        </select>
+    </div>
 
-            <div esfa-validation-marker-for="Subject" class="govuk-form-group">
-                <label asp-for="Subject" class="govuk-label">Subject</label>
-                <span esfa-validation-message-for="Subject" class="govuk-error-message"></span>
-                <input asp-for="Subject" value="@Model.Subject" type="text" class="govuk-input govuk-input--width-20" maxlength="50">
-            </div>
+    <div esfa-validation-marker-for="Subject" class="govuk-form-group">
+        <label asp-for="Subject" class="govuk-label">Subject</label>
+        <span esfa-validation-message-for="Subject" class="govuk-error-message"></span>
+        <input asp-for="Subject" value="@Model.Subject" type="text" class="govuk-input govuk-input--width-20" maxlength="50">
+    </div>
 
-            <div esfa-validation-marker-for="Grade" class="govuk-form-group">
-                <label asp-for="Grade" class="govuk-label">Grade</label>
-                <span esfa-validation-message-for="Grade" class="govuk-error-message"></span>
-                <input asp-for="Grade" value="@Model.Grade" type="text" class="govuk-input govuk-input--width-20" maxlength="30">
-            </div>
+    <div esfa-validation-marker-for="Grade" class="govuk-form-group">
+        <label asp-for="Grade" class="govuk-label">Grade</label>
+        <span esfa-validation-message-for="Grade" class="govuk-error-message"></span>
+        <input asp-for="Grade" value="@Model.Grade" type="text" class="govuk-input govuk-input--width-20" maxlength="30">
+    </div>
 
-            <div esfa-validation-marker-for="Weighting" class="govuk-form-group">
-                <fieldset class="govuk-fieldset">
-                    <legend>
-                        <h1 class="govuk-label govuk-!-font-weight-bold">Is this qualification essential or desirable?</h1>
-                    </legend>
-                    <span esfa-validation-message-for="Weighting" class="govuk-error-message"></span>
-                    <div class="govuk-radios govuk-radios--inline">
-                        <div class="govuk-radios__item">
-                            <input asp-for="Weighting" class="govuk-radios__input" id="WeightingYes" esfa-automation="radio-weighting-yes" type="radio" value="@QualificationWeighting.Essential" data-display="@QualificationWeighting.Essential.GetDisplayName()">
-                            <label class="govuk-label govuk-radios__label" for="WeightingYes">
-                                Essential
-                                <span class="govuk-hint">The applicant must have this qualification to be considered.</span>
-                            </label>
-                        </div>
-                        <div class="govuk-radios__item">
-                            <input asp-for="Weighting" class="govuk-radios__input" id="WeightingNo" esfa-automation="radio-weighting-no" type="radio" value="@QualificationWeighting.Desired" data-display="@QualificationWeighting.Desired.GetDisplayName()">
-                            <label class="govuk-label govuk-radios__label" for="WeightingNo">
-                                Desirable
-                                <span class="govuk-hint">This qualification would be nice to have, but it's not required.</span>
-                            </label>
-                        </div>
-                    </div>
-                </fieldset>
-            </div>
-
-            <div class="govuk-form-group">
-                <button type="submit" esfa-automation="btn-continue" class="govuk-button save-button">Save and continue</button>
-                <div>
-                    <a asp-route="@Model.CancelRoute" esfa-automation="link-cancel" class="govuk-link">Cancel</a>
+    <div esfa-validation-marker-for="Weighting" class="govuk-form-group">
+        <fieldset class="govuk-fieldset">
+            <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
+                Is this qualification essential or desirable?
+            </legend>
+            <span esfa-validation-message-for="Weighting" class="govuk-error-message"></span>
+            <div class="govuk-radios" data-module="govuk-radios">
+                <div class="govuk-radios__item">
+                    <input asp-for="Weighting" class="govuk-radios__input" id="WeightingYes" esfa-automation="radio-weighting-yes" type="radio" value="@QualificationWeighting.Essential" data-display="@QualificationWeighting.Essential.GetDisplayName()">
+                    <label class="govuk-label govuk-radios__label" for="WeightingYes">
+                        Essential
+                    </label>
+                    <span class="govuk-hint govuk-radios__hint">The applicant must have this qualification to be considered.</span>
+                </div>
+                <div class="govuk-radios__item">
+                    <input asp-for="Weighting" class="govuk-radios__input" id="WeightingNo" esfa-automation="radio-weighting-no" type="radio" value="@QualificationWeighting.Desired" data-display="@QualificationWeighting.Desired.GetDisplayName()">
+                    <label class="govuk-label govuk-radios__label" for="WeightingNo">
+                        Desirable
+                    </label>
+                    <span class="govuk-hint govuk-radios__hint">This qualification would be nice to have, but it's not required.</span>
                 </div>
             </div>
-
-        </form>
+        </fieldset>
     </div>
-</div>
+
+    <div class="govuk-button-group">
+        <button type="submit" esfa-automation="btn-continue" class="govuk-button save-button">Save and continue</button>
+        <a asp-route="@Model.CancelRoute" esfa-automation="link-cancel" class="govuk-link govuk-link--no-visited-state">Cancel</a>
+    </div>
+
+</form>

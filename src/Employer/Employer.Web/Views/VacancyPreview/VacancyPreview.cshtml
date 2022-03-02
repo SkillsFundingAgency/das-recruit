@@ -37,7 +37,7 @@
         {
             return VacancyPreviewHelper.ActionLink(Url, "Add", routeName, routeValues, screenReaderText, "govuk-button govuk-button--secondary govuk-!-margin-bottom-0", id);
         }
-        return VacancyPreviewHelper.ActionLink(Url, "Change", routeName, routeValues, screenReaderText, "govuk-body govuk-link", id);
+        return VacancyPreviewHelper.ActionLink(Url, "Change", routeName, routeValues, screenReaderText, "govuk-body govuk-link govuk-link--no-visited-state", id);
     }
 
     public string ProviderReviewClass(VacancyPreviewViewModel model, string fieldIdentifier)
@@ -431,8 +431,8 @@
                     <div asp-show="@ShowProviderReviewFlag(Model, FieldIdentifiers.Skills)" class="govuk-!-margin-top-4">
                         @ProviderReviewFlag(Model, FieldIdentifiers.Skills)
                     </div>
+                    @EditLink(RouteNames.Skills_Get, Model.SkillsSectionState, "desired skills and personal qualities", "link-skills")
                 </div>
-                @EditLink(RouteNames.Skills_Get, Model.SkillsSectionState, "desired skills and personal qualities", "link-skills")
             </div>
         </div>
         <div class="govuk-grid-column-one-half">
@@ -447,8 +447,8 @@
                     <div asp-show="@ShowProviderReviewFlag(Model, FieldIdentifiers.ThingsToConsider)" class="govuk-!-margin-top-4">
                         @ProviderReviewFlag(Model, FieldIdentifiers.ThingsToConsider)
                     </div>
+                    @EditLink(RouteNames.Considerations_Get, Model.ThingsToConsiderSectionState, "things to consider", "link-things-to-consider")
                 </div>
-                @EditLink(RouteNames.Considerations_Get, Model.ThingsToConsiderSectionState, "things to consider", "link-things-to-consider")
             </div>
         </div>
     </div>
@@ -470,8 +470,8 @@
                     <div asp-show="@ShowProviderReviewFlag(Model, FieldIdentifiers.Qualifications)" class="govuk-!-margin-top-4">
                         @ProviderReviewFlag(Model, FieldIdentifiers.Qualifications)
                     </div>
+                    @EditLink(RouteNames.Qualifications_Get, Model.QualificationsSectionState, "qualifications", "link-qualifications")
                 </div>
-                @EditLink(RouteNames.Qualifications_Get, Model.QualificationsSectionState, "qualifications", "link-qualifications")
             </div>
         </div>
     </div>
