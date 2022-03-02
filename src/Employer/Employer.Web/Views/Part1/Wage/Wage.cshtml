@@ -5,7 +5,7 @@
 @inject IOptions<ExternalLinksConfiguration> externalLinks
 @{ 
     ViewBag.Vpv = "/recruitment/employer/page-part1-wage";
-    ViewBag.Title = "How much would you like to pay the apprentice?";
+    ViewBag.Title = "Pay rate";
     ViewBag.ZenDeskLabel = "recruit-how-much-would-you-like-to-pay-the-apprentice";
 }
 
@@ -24,7 +24,7 @@
 
         <partial name="@PartialNames.ReviewSummary" for="Review"/>
 
-        <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">How much would you like to pay the apprentice?</h1>
+        <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">How much will the apprentice be paid?</h1>
 
         <form asp-route="@RouteNames.Wage_Post" asp-route-wizard="@Model.PageInfo.IsWizard" novalidate>
             
@@ -104,9 +104,10 @@
                     <span class="govuk-body maxchar-text"> characters remaining</span>
                 </div>
             </div>
+            
+            <div class="govuk-button-group">
+                <button type="submit" class="govuk-button save-button" esfa-automation="continue-button">@Model.PageInfo.SubmitButtonText</button>
 
-            <button type="submit" class="govuk-button save-button" esfa-automation="continue-button">@Model.PageInfo.SubmitButtonText</button>
-            <div class="govuk-body">
                 <esfaFeatureEnabled name="@FeatureNames.EmployerTaskList">
                     <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Dashboard_Get" class="govuk-link">Cancel</a>
                     <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.EmployerCheckYourAnswersGet" class="govuk-link">Cancel</a>
