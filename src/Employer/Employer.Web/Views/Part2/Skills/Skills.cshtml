@@ -18,6 +18,7 @@
 <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState}' />
 <partial name="@PartialNames.ReviewSummary" for="Review" />
 
+<span class="govuk-caption-l">@Model.Title</span>
 
 <form asp-route="@RouteNames.Skills_Post" id="skillsForm" class="das-ajax-form">
     <fieldset class="govuk-fieldset">
