@@ -340,16 +340,20 @@
                     <a class="govuk-link govuk-link--no-visited-state float-right-desktop" asp-route="@RouteNames.ApplicationProcess_Get">Change<span class="govuk-visually-hidden"> application process</span></a>
                 </dd>
             </div>
-            <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">
-                    Explain the application process (optional)
-                </dt>
-                <dd class="govuk-summary-list__value">
-                    @(Model.HasApplicationInstructions ? Model.ApplicationInstructions : "None")
-                </dd>
-                <dd class="govuk-summary-list__actions">
-                </dd>
-            </div>
+            @if (Model.HasApplicationInstructions)
+            {
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
+                        Explain the application process (optional)
+                    </dt>
+                    <dd class="govuk-summary-list__value">
+                        @(Model.HasApplicationInstructions ? Model.ApplicationInstructions : "None")
+                    </dd>
+                    <dd class="govuk-summary-list__actions">
+                    </dd>
+                </div>
+            }
+            
         </dl>
         <h2 class="govuk-heading-m">Now submit your advert</h2>
         <p class="govuk-body">By submitting this advert you are confirming that, to the best of your knowledge, the details you are providing are correct.</p>

@@ -30,26 +30,17 @@
             <p class="govuk-body">
                 You'll need to use a registered training provider who offers
                 <span class="govuk-!-font-weight-bold">&quot;@Model.Programme.Name&quot;</span>
-                training.
+                training
             </p>
             <div class="govuk-form-group">
                 <div class="govuk-!-margin-bottom-2">
                     <noscript>
                         <div class="govuk-form-group" id="non-js-search">
-                            <span class="govuk-hint">
-                                Enter the training provider reference number (UKPRN).
-                                You will be able to get this from your training provider.
-                                The UKPRN must only be 8 numbers (For example, 12345678)
-                            </span>
                             <span esfa-validation-message-for="Ukprn" class="govuk-error-message"></span>
                             <input asp-for="Ukprn" type="text" maxlength="8" class="govuk-input govuk-input--width-10" />
                         </div>
                     </noscript>
                     <div class="govuk-form-group js-hidden" id="js-search">
-                        <span class="govuk-hint">
-                            Enter the training provider name or reference number (UKPRN).<br>
-                            UKPRN is 8 numbers. For example, 12345678.
-                        </span>
                         <span esfa-validation-message-for="TrainingProviderSearch" class="govuk-error-message"></span>
                         <input asp-for="TrainingProviderSearch" type="text" class="govuk-input search-input" />
                     </div>
