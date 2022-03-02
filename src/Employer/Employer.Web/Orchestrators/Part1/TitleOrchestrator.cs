@@ -24,13 +24,15 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
         private readonly IRecruitVacancyClient _vacancyClient;
         private readonly IReviewSummaryService _reviewSummaryService;
         private readonly ITrainingProviderService _trainingProviderService;
+        private readonly IUtility _utility;
 
-        public TitleOrchestrator(IEmployerVacancyClient client, IRecruitVacancyClient vacancyClient, ILogger<TitleOrchestrator> logger, IReviewSummaryService reviewSummaryService, ITrainingProviderService trainingProviderService) : base(logger)
+        public TitleOrchestrator(IEmployerVacancyClient client, IRecruitVacancyClient vacancyClient, ILogger<TitleOrchestrator> logger, IReviewSummaryService reviewSummaryService, ITrainingProviderService trainingProviderService, IUtility utility) : base(logger)
         {
             _client = client;
             _vacancyClient = vacancyClient;
             _reviewSummaryService = reviewSummaryService;
             _trainingProviderService = trainingProviderService;
+            _utility = utility;
         }
 
         public TitleViewModel GetTitleViewModel()
@@ -46,12 +48,12 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
         {
             var dashboard = await _client.GetDashboardAsync(vrm.EmployerAccountId);
             
-            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, _vacancyClient, vrm, RouteNames.Title_Get);
+            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.Title_Get);
             var vm = new TitleViewModel
             {
                 VacancyId = vacancy.Id,
                 Title = vacancy.Title,
-                PageInfo = Utility.GetPartOnePageInfo(vacancy),
+                PageInfo = _utility.GetPartOnePageInfo(vacancy),
                 HasCloneableVacancies = dashboard.CloneableVacancies.Any()
             };
             
@@ -60,7 +62,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                 vm.Review = await _reviewSummaryService.GetReviewSummaryViewModelAsync(vacancy.VacancyReference.Value,
                     ReviewFieldMappingLookups.GetTitleFieldIndicators());
             }
-
+            
             return vm;
         }
 
@@ -106,8 +108,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                     });
             }
 
-            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, _vacancyClient, 
-                new VacancyRouteModel{EmployerAccountId = m.EmployerAccountId, VacancyId = m.VacancyId.Value}, RouteNames.Title_Post);
+            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(new VacancyRouteModel{EmployerAccountId = m.EmployerAccountId, VacancyId = m.VacancyId.Value}, RouteNames.Title_Post);
 
             SetVacancyWithEmployerReviewFieldIndicators(
                 vacancy.Title,

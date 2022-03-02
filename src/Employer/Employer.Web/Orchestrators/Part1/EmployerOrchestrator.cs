@@ -11,26 +11,33 @@ using Esfa.Recruit.Shared.Web.Extensions;
 using Microsoft.Extensions.Logging;
 using Esfa.Recruit.Shared.Web.Helpers;
 using System;
+using Esfa.Recruit.Shared.Web.Orchestrators;
 using Esfa.Recruit.Shared.Web.ViewModels;
+using Esfa.Recruit.Vacancies.Client.Application.Validation;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 {
-    public class EmployerOrchestrator
+    public class EmployerOrchestrator : VacancyValidatingOrchestrator<VacancyEmployerInfoModel>
     {
+        private const VacancyRuleSet ValidationRules = VacancyRuleSet.None;
         private readonly IEmployerVacancyClient _client;
         private readonly IRecruitVacancyClient _vacancyClient;
         private readonly ILogger<EmployerOrchestrator> _logger;
+        private readonly IUtility _utility;
 
         private const int MaxLegalEntitiesPerPage = 25;
 
         public EmployerOrchestrator(
             IEmployerVacancyClient client,
             IRecruitVacancyClient vacancyClient,
-            ILogger<EmployerOrchestrator> logger)
+            ILogger<EmployerOrchestrator> logger,
+            IUtility utility) : base(logger)
         {
             _client = client;
             _vacancyClient = vacancyClient;
             _logger = logger;
+            _utility = utility;
         }
 
         public async Task<EmployerViewModel> GetEmployerViewModelAsync(VacancyRouteModel vrm, string searchTerm, int? requestedPageNo, string selectedAccountLegalEntityPublicHashedId)
@@ -39,7 +46,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             var setPage = requestedPageNo.HasValue ? requestedPageNo.Value : 1;
 
             var getEmployerDataTask = _client.GetEditVacancyInfoAsync(vrm.EmployerAccountId);
-            var getVacancyTask = Utility.GetAuthorisedVacancyForEditAsync(_client, _vacancyClient, vrm, RouteNames.Employer_Get);
+            var getVacancyTask = _utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.Employer_Get);
             await Task.WhenAll(getEmployerDataTask, getVacancyTask);
             var employerData = getEmployerDataTask.Result;
             var vacancy = getVacancyTask.Result;
@@ -49,7 +56,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             var vm = new EmployerViewModel
             {
                 TotalNumberOfLegalEntities = legalEntities.Count(),
-                PageInfo = Utility.GetPartOnePageInfo(vacancy),
+                PageInfo = _utility.GetPartOnePageInfo(vacancy),
                 SearchTerm = searchTerm,
                 SelectedOrganisationId = vacancy.AccountLegalEntityPublicHashedId
             };
@@ -100,6 +107,21 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             return vm;
         }
 
+        public async Task SetAccountLegalEntityPublicId(VacancyRouteModel vrm, VacancyEmployerInfoModel info, VacancyUser user)
+        {
+            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.Employer_Get);
+            vacancy.AccountLegalEntityPublicHashedId = info.AccountLegalEntityPublicHashedId;
+            
+            await ValidateAndExecute(
+                vacancy,
+                v => _vacancyClient.Validate(v, ValidationRules),
+                async v =>
+                {
+                    await _vacancyClient.UpdateDraftVacancyAsync(vacancy, user);
+                });
+            
+        }
+
         private int GetPageNo(int? requestedPageNo, int page, int totalNumberOfPages, int indexOfSelectedLegalEntity)
         {
             if (indexOfSelectedLegalEntity > MaxLegalEntitiesPerPage && requestedPageNo.HasValue == false)
@@ -146,9 +168,22 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             return info.LegalEntities.Select(ConvertToOrganisationViewModel).ToList();
         }
 
+
         private OrganisationViewModel ConvertToOrganisationViewModel(LegalEntity data)
         {
             return new OrganisationViewModel { Id = data.AccountLegalEntityPublicHashedId, Name = data.Name};
+        }
+
+        protected override EntityToViewModelPropertyMappings<Vacancy, VacancyEmployerInfoModel> DefineMappings()
+        {
+            var mappings = new EntityToViewModelPropertyMappings<Vacancy, VacancyEmployerInfoModel>
+            {
+                {
+                    e=>e.AccountLegalEntityPublicHashedId, vm => vm.AccountLegalEntityPublicHashedId
+                }
+            };
+
+            return mappings;
         }
     }
 }

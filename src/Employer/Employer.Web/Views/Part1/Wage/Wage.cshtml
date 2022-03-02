@@ -8,31 +8,33 @@
     ViewBag.Title = "How much would you like to pay the apprentice?";
     ViewBag.ZenDeskLabel = "recruit-how-much-would-you-like-to-pay-the-apprentice";
 }
-@section BackLink
-{
-    <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Duration_Get" esfa-automation="link-back" class="govuk-back-link">Back</a>
-}
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
+        <esfaFeatureEnabled name="@FeatureNames.EmployerTaskList">
+            <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Duration_Get" asp-route-wizard="@Model.PageInfo.IsWizard" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
+            <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.EmployerCheckYourAnswersGet" asp-route-wizard="@Model.PageInfo.IsWizard" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
+        </esfaFeatureEnabled>
+        <esfaFeatureDisabled name="@FeatureNames.EmployerTaskList">
+            <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Duration_Get" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>    
+        </esfaFeatureDisabled>
         
+
         <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }'/>
 
         <partial name="@PartialNames.ReviewSummary" for="Review"/>
+
+        <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">How much would you like to pay the apprentice?</h1>
 
         <form asp-route="@RouteNames.Wage_Post" asp-route-wizard="@Model.PageInfo.IsWizard" novalidate>
             
             <div esfa-validation-marker-for="WageType" class="govuk-form-group">
                 <fieldset class="govuk-fieldset">
-                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
-                        <h1 class="govuk-fieldset__heading">
-                            How much would you like to pay the apprentice?
-                        </h1>
-                    </legend>
                     <div class="govuk-body">
                         Pay will show as a yearly figure on your advert.  
                         <a href="@externalLinks.Value.NationalMinimumWageRates" rel="noopener" target="_blank" class="govuk-link">View the​ ​National Minimum Wage for apprentices (opens in a new tab or window)​</a>.
                     </div>
+                    
                     <span esfa-validation-message-for="WageType" class="govuk-error-message"></span>
                     <div class="govuk-radios govuk-radios--conditional" data-module="radios">
                         <div class="govuk-radios__item">
@@ -82,10 +84,8 @@
                                         Based on @Model.WeeklyHours working hours a week, you'll need to pay a yearly wage of at least @Model.ApprenticeshipMinimumWageYearly.
                                     </p>
                                     <span esfa-validation-message-for="FixedWageYearlyAmount" class="govuk-error-message"></span>
-                                    <div class="govuk-input__wrapper">
-                                        <input asp-for="FixedWageYearlyAmount" class="govuk-input govuk-!-width-one-quarter" type="text">
-                                        <div class="govuk-input__suffix" aria-hidden="true">yearly</div>
-                                    </div>
+                                    <input asp-for="FixedWageYearlyAmount" class="govuk-input govuk-!-width-one-quarter" type="text">
+                                    <span class="govuk-body">yearly</span>
                                 </div>
                             </fieldset>
                         </div>
@@ -93,21 +93,28 @@
                 </fieldset>
             </div>
 
-            <div class="govuk-character-count" data-module="govuk-character-count" data-maxlength="250">
+            <div class="govuk-character-count">
                 <div esfa-validation-marker-for="WageAdditionalInformation" class="govuk-form-group">
                     <label asp-for="WageAdditionalInformation" class="govuk-label govuk-!-font-weight-bold">Extra information about pay (optional)</label>
                     <span class="govuk-hint">For example, bonus schemes, performance increases or benefits</span>
                     <span esfa-validation-message-for="WageAdditionalInformation" class="govuk-error-message"></span>
-                    <textarea asp-for="WageAdditionalInformation" class="govuk-textarea govuk-js-character-count" rows="5" data-val-length-max="250"></textarea>
-                    <div id="WageAdditionalInformation-info" class="govuk-hint govuk-character-count__message" aria-live="polite">
-                        You can enter up to 250 characters
-                    </div>
+                    <textarea asp-for="WageAdditionalInformation" class="govuk-textarea character-count" rows="5" data-val-length-max="250"></textarea>
+                    <span class="govuk-body">You have </span>
+                    <span class="govuk-body maxchar-count">250</span>
+                    <span class="govuk-body maxchar-text"> characters remaining</span>
                 </div>
             </div>
-            <div class="govuk-button-group">
-                <button type="submit" class="govuk-button save-button" esfa-automation="continue-button">@Model.PageInfo.SubmitButtonText</button>
-                <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Vacancies_Get" class="govuk-link govuk-link--no-visited-state">Cancel</a>
-                <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.Vacancy_Preview_Get" asp-fragment="@Anchors.ApprenticeshipSummarySection" class="govuk-link govuk-link--no-visited-state">Cancel</a>
+
+            <button type="submit" class="govuk-button save-button" esfa-automation="continue-button">@Model.PageInfo.SubmitButtonText</button>
+            <div class="govuk-body">
+                <esfaFeatureEnabled name="@FeatureNames.EmployerTaskList">
+                    <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Dashboard_Get" class="govuk-link">Cancel</a>
+                    <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.EmployerCheckYourAnswersGet" class="govuk-link">Cancel</a>
+                </esfaFeatureEnabled>
+                <esfaFeatureDisabled name="@FeatureNames.EmployerTaskList">
+                    <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Vacancies_Get" class="govuk-link">Cancel</a>
+                    <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.Vacancy_Preview_Get" asp-fragment="@Anchors.ApprenticeshipSummarySection" class="govuk-link">Cancel</a>
+                </esfaFeatureDisabled>
             </div>
         </form>
     </div>

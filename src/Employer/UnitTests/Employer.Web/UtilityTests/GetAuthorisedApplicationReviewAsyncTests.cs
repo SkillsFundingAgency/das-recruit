@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web;
 using Esfa.Recruit.Employer.Web.RouteModel;
+using Esfa.Recruit.Shared.Web.FeatureToggle;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
@@ -17,6 +18,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.UtilityTests
         private readonly Guid _vacancyId;
         private const string ApplicationReviewEmployerAccountId = "EMPLOYER ACCOUNT ID";
         private readonly Mock<IRecruitVacancyClient> _mockVacancyClient;
+        private readonly Utility _utility;
 
         public GetAuthorisedApplicationReviewAsyncTests()
         {   
@@ -36,6 +38,8 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.UtilityTests
                 EmployerAccountId = ApplicationReviewEmployerAccountId,
                 Id = _vacancyId
             });
+
+            _utility = new Utility(_mockVacancyClient.Object, Mock.Of<IFeature>());
         }
 
         [Fact]
@@ -50,7 +54,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.UtilityTests
                 VacancyId = _vacancyId
             };
 
-            var applicationReview = await Utility.GetAuthorisedApplicationReviewAsync(_mockVacancyClient.Object, rm);
+            var applicationReview = await _utility.GetAuthorisedApplicationReviewAsync(rm);
             applicationReview.Should().NotBeNull();
         }
 
@@ -66,7 +70,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.UtilityTests
                 VacancyId = _vacancyId
             };
 
-            Func<Task<ApplicationReview>> act = () => Utility.GetAuthorisedApplicationReviewAsync(_mockVacancyClient.Object, rm);
+            Func<Task<ApplicationReview>> act = () => _utility.GetAuthorisedApplicationReviewAsync(rm);
 
                 var ex = await Assert.ThrowsAsync<AuthorisationException>(act);
                 ex.Message.Should().Be($"The employer account '{requestedEmployerAccountId}' " +

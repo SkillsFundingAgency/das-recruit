@@ -13,17 +13,17 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
     public class ApplicationReviewOrchestrator
     {
         private readonly IEmployerVacancyClient _client;
-        private readonly IRecruitVacancyClient _vacancyClient;
+        private readonly IUtility _utility;
 
-        public ApplicationReviewOrchestrator(IEmployerVacancyClient client, IRecruitVacancyClient vacancyClient)
+        public ApplicationReviewOrchestrator(IEmployerVacancyClient client, IUtility utility)
         {
             _client = client;
-            _vacancyClient = vacancyClient;
+            _utility = utility;
         }
 
         public async Task<ApplicationReviewViewModel> GetApplicationReviewViewModelAsync(ApplicationReviewRouteModel rm)
         {
-            var applicationReview = await Utility.GetAuthorisedApplicationReviewAsync(_vacancyClient, rm);
+            var applicationReview = await _utility.GetAuthorisedApplicationReviewAsync(rm);
            
             if (applicationReview.IsWithdrawn)
                 throw new ApplicationWithdrawnException($"Application has been withdrawn. ApplicationReviewId:{applicationReview.Id}", rm.VacancyId);
@@ -43,7 +43,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 
         public async Task<string> PostApplicationReviewConfirmationEditModelAsync(ApplicationReviewStatusConfirmationEditModel m, VacancyUser user)
         {
-            var applicationReview = await Utility.GetAuthorisedApplicationReviewAsync(_vacancyClient, m);
+            var applicationReview = await _utility.GetAuthorisedApplicationReviewAsync(m);
 
             switch (m.Outcome.Value)
             {
@@ -61,9 +61,9 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 
         internal async Task<ApplicationStatusConfirmationViewModel> GetApplicationStatusConfirmationViewModelAsync(ApplicationReviewStatusConfirmationEditModel m)
         {            
-            await Utility.GetAuthorisedApplicationReviewAsync(_vacancyClient, m);
+            await _utility.GetAuthorisedApplicationReviewAsync(m);
 
-            var applicationReview = await Utility.GetAuthorisedApplicationReviewAsync(_vacancyClient, m);
+            var applicationReview = await _utility.GetAuthorisedApplicationReviewAsync(m);
 
             return new ApplicationStatusConfirmationViewModel {
                 CandidateFeedback = m.CandidateFeedback,

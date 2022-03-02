@@ -5,13 +5,15 @@
     ViewBag.ZenDeskLabel = "recruit-which-organisation-is-this-vacancy-for";
     ViewBag.Title = "Which organisation is this advert for?";
 }
-
-@section BackLink
-{
-    <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.NumberOfPositions_Get" asp-route-wizard="@Model.PageInfo.IsWizard" esfa-automation="link-back" class="govuk-back-link">Back</a>
-}
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
+        <esfaFeatureEnabled name="@FeatureNames.EmployerTaskList">
+            <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Title_Get" asp-route-wizard="@Model.PageInfo.IsWizard" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
+            <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.EmployerCheckYourAnswersGet" asp-route-wizard="@Model.PageInfo.IsWizard" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
+        </esfaFeatureEnabled>
+        <esfaFeatureDisabled name="@FeatureNames.EmployerTaskList">
+            <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.NumberOfPositions_Get" asp-route-wizard="@Model.PageInfo.IsWizard" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
+        </esfaFeatureDisabled>
 
         <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }' />
 
@@ -20,26 +22,29 @@
         <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">Which organisation is this advert for?</h1>
 
         <form asp-show="@Model.CanShowSearchPanel" method="GET" asp-route="@RouteNames.Employer_Get" asp-route-wizard="@Model.PageInfo.IsWizard">
-            <div class="govuk-form-group">
-                <label class="govuk-label" asp-for="SearchTerm">
-                    Search for the organisation
-                </label>
-                <div class="das-search-form__group">
-                    <input asp-for="SearchTerm" class="govuk-input das-search-form__input" maxlength="100" title="Search" />
-                    <div class="das-search-form__button-wrap">
-                        <button class="govuk-button das-search-form__button" type="submit">Search</button>
+            <div class="form-group search-field search-field-darker">
+                <div class="search-input search-input-with-button">
+                    <label class="govuk-label" for="search">
+                        Search for the organisation
+                    </label>
+                    <div class="search-field">
+                        <div class="search-input">
+                            <input asp-for="SearchTerm" class="govuk-input" maxlength="100" />
+                        </div>
+                        <div class="search-submit">
+                            <button type="submit">Search</button>
+                        </div>
                     </div>
                 </div>
-                <p class="govuk-body govuk-!-margin-top-1">
-                    <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.Employer_Get">Clear search</a>
-                </p>
+                <div class="govuk-!-margin-top-6 govuk-!-margin-bottom-6">
+                    <a class="govuk-link govuk-body" asp-route="@RouteNames.Employer_Get">Clear search</a>
+                </div>
             </div>
         </form>
 
         <form asp-route="@RouteNames.Employer_Post" asp-route-wizard="@Model.PageInfo.IsWizard">
             <div esfa-validation-marker-for="SelectedOrganisationId" class="govuk-form-group">
                 <fieldset class="govuk-fieldset">
-                    <legend class="govuk-visually-hidden">Select an organisation</legend>
                     <span esfa-validation-message-for="SelectedOrganisationId" class="govuk-error-message"></span>
                     <input type="hidden" asp-for="SearchTerm" />
                     <input type="hidden" asp-for="Page" />
@@ -59,9 +64,15 @@
 
             <partial name="@PartialNames.Pager" model="@Model.Pager" />
 
-            <div class="govuk-button-group">
-                <button type="submit" class="govuk-button save-button" esfa-automation="continue-button">Save and continue</button>
-                <a asp-route="@RouteNames.Employer_Cancel" asp-route-wizard="@Model.PageInfo.IsWizard" class="govuk-link govuk-link--no-visited-state">Cancel</a>
+            <button type="submit" class="govuk-button save-button" esfa-automation="continue-button">Save and continue</button>
+            <div class="govuk-body">
+                <esfaFeatureEnabled name="@FeatureNames.EmployerTaskList">
+                    <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Dashboard_Get" class="govuk-link">Cancel</a>
+                    <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.EmployerCheckYourAnswersGet" class="govuk-link">Cancel</a>
+                </esfaFeatureEnabled>
+                <esfaFeatureDisabled name="@FeatureNames.EmployerTaskList">
+                    <a asp-route="@RouteNames.EmployerName_Cancel" asp-route-wizard="@Model.PageInfo.IsWizard" class="govuk-link">Cancel</a>    
+                </esfaFeatureDisabled>
             </div>
         </form>
     </div>

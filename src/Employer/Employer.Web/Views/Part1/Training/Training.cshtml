@@ -4,49 +4,93 @@
 @inject IOptions<ExternalLinksConfiguration> externalLinks;
 @{ 
     ViewBag.Vpv = "/recruitment/employer/page-training";
-    ViewBag.Title = "What training will the apprentice take?";
+    ViewBag.Title = "Training Course";
     ViewBag.ZenDeskLabel = "recruit-what-training-will-the-apprentice-take";
 }
-
-@section BackLink {
-    <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Title_Get" esfa-automation="link-back" class="govuk-back-link">Back</a>
-}
-
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
+        <esfaFeatureEnabled name="@FeatureNames.EmployerTaskList">
+            @if (Model.HasMoreThanOneLegalEntity)
+            {
+                <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Employer_Get" asp-route-wizard="@Model.PageInfo.IsWizard" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
+            }
+            else
+            {
+                <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Title_Get" asp-route-wizard="@Model.PageInfo.IsWizard" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
+            }
+            <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.EmployerCheckYourAnswersGet" asp-route-wizard="@Model.PageInfo.IsWizard" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
+        </esfaFeatureEnabled>
+        <esfaFeatureDisabled name="@FeatureNames.EmployerTaskList">
+            <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Title_Get" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
+        </esfaFeatureDisabled>
         <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }' />
         <partial name="@PartialNames.ReviewSummary" for="Review" />
-        <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">What training will the apprentice take?</h1>
+        <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">What training course will the apprentice take?</h1>
         <form asp-route="@RouteNames.Training_Post" asp-route-wizard="@Model.PageInfo.IsWizard" novalidate>
+
             <p class="govuk-body">
-                If you have not found training for this apprenticeship, you can ​use the
-                <a class="govuk-link govuk-link--no-visited-state" href="@externalLinks.Value.FindApprenticeshipTrainingUrl" target="_blank">Find apprenticeship training service (opens in new tab or window)</a>.
+                If you have not found a training course for this apprenticeship, you can use the
+                <a class="govuk-link" href="@externalLinks.Value.FindApprenticeshipTrainingUrl" target="_blank">Find apprenticeship training service (opens in new tab or window)</a>.
             </p>
             <div esfa-validation-marker-for="SelectedProgrammeId" class="govuk-form-group">
-                <label asp-for="SelectedProgrammeId" class="govuk-label govuk-label-s">
-                    <span class="govuk-hint">Enter apprenticeship training title</span>
+                <label asp-for="SelectedProgrammeId" class="govuk-label govuk-!-font-weight-bold">
+                    <span class="govuk-hint">Enter apprenticeship training course title </span>
                 </label>
                 <span esfa-validation-message-for="SelectedProgrammeId" class="govuk-error-message"></span>
                 <div class="govuk-!-margin-bottom-2">
-                    <select asp-for="SelectedProgrammeId" class="govuk-select app-autocomplete">
+                    <select asp-for="SelectedProgrammeId" class="govuk-select">
                         <option value="">Please select</option>
                         @foreach (var programme in Model.Programmes)
                         {
-                            <option value="@programme.Id">@programme.Name</option>
-                        }
+            <option value="@programme.Id">@programme.Name</option>}
                     </select>
                 </div>
                 <p class="govuk-body">
-                    <a asp-route="@RouteNames.Training_Get" asp-route-clear="true" asp-route-wizard="@Model.PageInfo.IsWizard" class="govuk-link govuk-link--no-visited-state">Clear search</a>
+                    <a asp-route="@RouteNames.Training_Get" asp-route-clear="true" asp-route-wizard="@Model.PageInfo.IsWizard" class="govuk-link">Clear search</a>
                 </p>
             </div>
-            <div class="govuk-button-group">
-                <button type="submit" class="govuk-button save-button" esfa-automation="continue-button">Save and continue</button>
-                <div class="govuk-body">
-                    <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Vacancies_Get" class="govuk-link govuk-link--no-visited-state">Cancel</a>
-                    <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.Vacancy_Preview_Get" asp-fragment="@Anchors.TrainingProviderSection" class="govuk-link govuk-link--no-visited-state">Cancel</a>
-                </div>
+            <button type="submit" class="govuk-button save-button" esfa-automation="continue-button">Save and continue</button>
+            <div class="govuk-body">
+                <esfaFeatureEnabled name="@FeatureNames.EmployerTaskList">
+                    <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Dashboard_Get" class="govuk-link" esfa-automation="cancel-link">Cancel</a>
+                    <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.EmployerCheckYourAnswersGet" class="govuk-link" esfa-automation="cancel-link">Cancel</a>
+                </esfaFeatureEnabled>
+                <esfaFeatureDisabled name="@FeatureNames.EmployerTaskList">
+                    <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Vacancies_Get" class="govuk-link" esfa-automation="cancel-link">Cancel</a>
+                    <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.Vacancy_Preview_Get" asp-fragment="@Anchors.TrainingProviderSection" class="govuk-link" esfa-automation="cancel-link">Cancel</a>
+                </esfaFeatureDisabled>
             </div>
         </form>
     </div>
 </div>
+@section HeadCSS
+    {
+    <link asp-append-version="true" rel="stylesheet" media="screen" href="/lib/accessible-autocomplete/style.css" />
+}
+@section FooterJS
+    {
+    <script asp-append-version="true" src="/lib/accessible-autocomplete/accessible-autocomplete.min.js"></script>
+    <script asp-append-version="true" src="/javascripts/esfa-training-suggestions/training-suggestions-service.js"></script>
+    <script nws-csp-add-nonce="true">
+        $(function() {
+            var selectElementSelector = "#@Html.IdFor(m => m.SelectedProgrammeId)";
+            var $selectElement = $(selectElementSelector);
+
+            trainingSuggestionsService.init($selectElement[0]);
+
+            $selectElement.parents("form").on("submit",
+                function () {
+                    var searchedValue = $(selectElementSelector).val();
+                    var $originalSelectElementOptions = $(selectElementSelector + '-select option');
+
+                    var $selectedOption = $originalSelectElementOptions.filter(function (i, optionElement) {
+                        return optionElement.text === searchedValue;
+                    });
+
+                    if ($selectedOption.length === 0) {
+                        $(selectElementSelector + '-select option[value=""]').prop('selected', true);
+                    }
+                });
+        });
+    </script>
+}

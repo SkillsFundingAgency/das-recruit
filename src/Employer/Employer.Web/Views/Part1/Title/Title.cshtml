@@ -9,45 +9,55 @@
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
+        <esfaFeatureEnabled name="@FeatureNames.EmployerTaskList">
+            <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.EmployerCheckYourAnswersGet" asp-route-wizard="@Model.PageInfo.IsWizard" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
+            @if (Model.VacancyId != null)
+            {
+                <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.EmployerTaskListGet" asp-route-wizard="@Model.PageInfo.IsWizard" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
+            }
+            else
+            {
+                <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Dashboard_Get" asp-route-wizard="@Model.PageInfo.IsWizard" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
+            }
+        </esfaFeatureEnabled>
+
         <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames}' />
         <partial name="@PartialNames.ReviewSummary" for="Review" />                       
-        <h1 class="govuk-label-wrapper govuk-!-margin-bottom-6">
-            <label class="govuk-label govuk-label--xl" asp-for="Title">
-                What do you want to call this advert?
-            </label>
-        </h1>
-    </div>       
-</div>
+        <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">What do you want to call this advert?</h1>
 
-<div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
         <form asp-route="@Model.FormPostRouteName" asp-route-wizard="@Model.PageInfo.IsWizard" novalidate>
-            <div class="govuk-character-count" data-module="govuk-character-count" data-maxlength="100">
-                <div esfa-validation-marker-for="Title" class="govuk-form-group">
-                    <p asp-hide="Model.ReferredFromSavedFavourites" class="govuk-body">
-                        To make sure your advert appears in search results, use a title that relates to the apprenticeship training.
-                    </p>
-                    <p asp-show="Model.ReferredFromSavedFavourites" class="govuk-body">
-                        To make sure your advert appears in search results, use a title that relates to the <span class="govuk-!-font-weight-bold">@Model.TrainingTitle</span>.
-                    </p>
-                    <span class="govuk-hint">You must include the word ‘apprentice’ or ‘apprenticeship’.</span>
-                    <span esfa-validation-message-for="Title" class="govuk-error-message"></span>
-                    <input asp-for="Title" class="govuk-input govuk-js-character-count govuk-!-margin-bottom-1" type="text" />
-                    <div id="Title-info" class="govuk-hint govuk-character-count__message" aria-live="polite">
-                        You can enter up to 100 characters
-                    </div>
+            <div esfa-validation-marker-for="Title" class="govuk-form-group">
+                <p asp-hide="Model.ReferredFromSavedFavourites" class="govuk-body">
+                    To make sure your advert appears in search results, use a title that relates to the apprenticeship training.
+                </p>
+                <p asp-show="Model.ReferredFromSavedFavourites" class="govuk-body">
+                    To make sure your advert appears in search results, use a title that relates to the <span class="govuk-!-font-weight-bold">@Model.TrainingTitle</span>.
+                </p>
+                <span class="govuk-hint">You must include the word ‘apprentice’ or ‘apprenticeship’.</span>
+                <span esfa-validation-message-for="Title" class="govuk-error-message"></span>
+                <input asp-for="Title" class="govuk-input character-count" type="text" data-val-length-max="100" />
+                <div>
+                    <span class="govuk-body maxchar-count">100</span>
+                    <span class="govuk-body maxchar-text"> characters remaining</span>
                 </div>
             </div>
-            <div class="govuk-button-group">
-                <button type="submit" class="govuk-button save-button">@Model.PageInfo.SubmitButtonText</button>
-                <span asp-hide="Model.ReferredFromSavedFavourites">
-                    <a asp-show="@Model.PageInfo.IsWizard" href="@Model.CancelLinkRoute" class="govuk-link govuk-link--no-visited-state">Cancel</a>
-                    <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.Vacancy_Preview_Get" asp-fragment="@Anchors.TitleSection" class="govuk-link govuk-link--no-visited-state">Cancel</a>
-                </span>
-                <span asp-show="Model.ReferredFromSavedFavourites">
-                    <a asp-show="@Model.PageInfo.IsWizard" href="@Model.CancelLinkRoute" class="govuk-link govuk-link--no-visited-state" esfa-automation="cancel-link">Cancel</a>
-                    <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.Vacancies_Get" class="govuk-link govuk-link--no-visited-state">Cancel</a>
-                </span>
+            <button type="submit" class="govuk-button save-button">@Model.PageInfo.SubmitButtonText</button>
+            <div class="govuk-body">
+                <esfaFeatureEnabled name="@FeatureNames.EmployerTaskList">
+                    <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Dashboard_Get" class="govuk-link">Cancel</a>
+                    <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.EmployerCheckYourAnswersGet" class="govuk-link">Cancel</a>
+                </esfaFeatureEnabled>
+                <esfaFeatureDisabled name="@FeatureNames.EmployerTaskList">
+                    <span asp-hide="Model.ReferredFromSavedFavourites">
+                        <a asp-show="@Model.PageInfo.IsWizard" href="@Model.CancelLinkRoute" class="govuk-link">Cancel</a>
+                        <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.Vacancy_Preview_Get" asp-fragment="@Anchors.TitleSection" class="govuk-link">Cancel</a>
+                    </span>
+                    <span asp-show="Model.ReferredFromSavedFavourites">
+                        <a asp-show="@Model.PageInfo.IsWizard" href="@Model.CancelLinkRoute" class="govuk-link" esfa-automation="cancel-link">Cancel</a>
+                        <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.Vacancies_Get" class="govuk-link">Cancel</a>
+                    </span>    
+                </esfaFeatureDisabled>
+                
             </div>
         </form>
     </div>
