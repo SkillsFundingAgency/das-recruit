@@ -12,15 +12,17 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
     public class SubmittedOrchestrator
     {
         private readonly IRecruitVacancyClient _vacancyClient;
+        private readonly IUtility _utility;
 
-        public SubmittedOrchestrator(IRecruitVacancyClient vacancyClient)
+        public SubmittedOrchestrator(IRecruitVacancyClient vacancyClient, IUtility utility)
         {
             _vacancyClient = vacancyClient;
+            _utility = utility;
         }
 
         public async Task<VacancySubmittedConfirmationViewModel> GetVacancySubmittedConfirmationViewModelAsync(VacancyRouteModel vrm, VacancyUser vacancyUser)
         {
-            var vacancy = await Utility.GetAuthorisedVacancyAsync(_vacancyClient, vrm, RouteNames.Submitted_Index_Get);
+            var vacancy = await _utility.GetAuthorisedVacancyAsync( vrm, RouteNames.Submitted_Index_Get);
 
             if (vacancy.Status != VacancyStatus.Submitted)
                 throw new InvalidStateException(string.Format(ErrorMessages.VacancyNotSubmittedSuccessfully, vacancy.Title));

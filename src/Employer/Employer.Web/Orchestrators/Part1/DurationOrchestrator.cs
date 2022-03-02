@@ -17,20 +17,20 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
     public class DurationOrchestrator : VacancyValidatingOrchestrator<DurationEditModel>
     {
         private const VacancyRuleSet ValidationRules = VacancyRuleSet.Duration | VacancyRuleSet.WorkingWeekDescription | VacancyRuleSet.WeeklyHours;
-        private readonly IEmployerVacancyClient _client;
         private readonly IRecruitVacancyClient _vacancyClient;
         private readonly IReviewSummaryService _reviewSummaryService;
+        private readonly IUtility _utility;
 
-        public DurationOrchestrator(IEmployerVacancyClient client, IRecruitVacancyClient vacancyClient, ILogger<DurationOrchestrator> logger, IReviewSummaryService reviewSummaryService) : base(logger)
+        public DurationOrchestrator(IEmployerVacancyClient client, IRecruitVacancyClient vacancyClient, ILogger<DurationOrchestrator> logger, IReviewSummaryService reviewSummaryService, IUtility utility) : base(logger)
         {
-            _client = client;
             _vacancyClient = vacancyClient;
             _reviewSummaryService = reviewSummaryService;
+            _utility = utility;
         }
 
         public async Task<DurationViewModel> GetDurationViewModelAsync(VacancyRouteModel vrm)
         {
-            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, _vacancyClient, vrm, RouteNames.Duration_Get);
+            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.Duration_Get);
 
             var training = await _vacancyClient.GetApprenticeshipProgrammeAsync(vacancy.ProgrammeId);
 
@@ -40,7 +40,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                 DurationUnit = vacancy.Wage?.DurationUnit ?? DurationUnit.Month,
                 WorkingWeekDescription = vacancy.Wage?.WorkingWeekDescription,
                 WeeklyHours = $"{vacancy.Wage?.WeeklyHours:0.##}",
-                PageInfo = Utility.GetPartOnePageInfo(vacancy),
+                PageInfo = _utility.GetPartOnePageInfo(vacancy),
                 TrainingTitle = training?.Title,
                 TrainingDurationMonths = training?.Duration ?? 0
             };
@@ -68,7 +68,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 
         public async Task<OrchestratorResponse> PostDurationEditModelAsync(DurationEditModel m, VacancyUser user)
         {
-            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, _vacancyClient, m, RouteNames.Duration_Post);
+            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(m, RouteNames.Duration_Post);
 
             if(vacancy.Wage == null)
                 vacancy.Wage = new Wage();

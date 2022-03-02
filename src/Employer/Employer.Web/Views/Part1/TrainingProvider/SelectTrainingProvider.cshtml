@@ -12,79 +12,54 @@
 }
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-        <a asp-show="@Model.PageInfo.IsWizard" asp-route="@Model.BackLinkRoute" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
+        <esfaFeatureEnabled name="@FeatureNames.EmployerTaskList">
+            <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Training_Get" asp-route-wizard="@Model.PageInfo.IsWizard" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
+            <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.EmployerCheckYourAnswersGet" asp-route-wizard="@Model.PageInfo.IsWizard" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
+        </esfaFeatureEnabled>
+        <esfaFeatureDisabled name="@FeatureNames.EmployerTaskList">
+            <a asp-show="@Model.PageInfo.IsWizard" asp-route="@Model.BackLinkRoute" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>    
+        </esfaFeatureDisabled>
+        
         <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState }' />
         <partial name="@PartialNames.ReviewSummary" for="Review" />
         <h1 class="govuk-heading-xl">
             <span class="govuk-caption-l">@Model.Title</span>
-            Have you found a training provider?
+            Enter the name of the training provider or UKPRN
         </h1>
         <form asp-route="@RouteNames.TrainingProvider_Select_Post" asp-route-wizard="@Model.PageInfo.IsWizard" novalidate>
             <p class="govuk-body">
                 You'll need to use a registered training provider who offers
                 <span class="govuk-!-font-weight-bold">&quot;@Model.Programme.Name&quot;</span>
-                training.
+                training
             </p>
             <div class="govuk-form-group">
-                <div class="govuk-radios govuk-radios--conditional" data-module="radios">
-                    <div class="govuk-radios__item">
-                        <input asp-for="IsTrainingProviderSelected"
-                               class="govuk-radios__input"
-                               id="found_yes"
-                               type="radio"
-                               value="true"
-                               data-aria-controls="found_yes_conditional">
-                        <label class="govuk-label govuk-radios__label" for="found_yes">
-                            Yes
-                        </label>
-                    </div>
-                    <div class="govuk-radios__conditional" id="found_yes_conditional">
-                        <div class="govuk-!-margin-bottom-2">
-                            <noscript>
-                                <div class="govuk-form-group" id="non-js-search">
-                                    <span class="govuk-hint">
-                                        Enter the training provider reference number (UKPRN).
-                                        You will be able to get this from your training provider.
-                                        The UKPRN must only be 8 numbers (For example, 12345678)
-                                    </span>
-                                    <span esfa-validation-message-for="Ukprn" class="govuk-error-message"></span>
-                                    <input asp-for="Ukprn" type="text" maxlength="8" class="govuk-input govuk-input--width-10" />
-                                </div>
-                            </noscript>
-                            <div class="govuk-form-group js-hidden" id="js-search">
-                                <span class="govuk-hint">
-                                    Enter the training provider name or reference number (UKPRN).<br>
-                                    UKPRN is 8 numbers. For example, 12345678.
-                                </span>
-                                <span esfa-validation-message-for="TrainingProviderSearch" class="govuk-error-message"></span>
-                                <input asp-for="TrainingProviderSearch" type="text" class="govuk-input search-input" />
-                            </div>
+                <div class="govuk-!-margin-bottom-2">
+                    <noscript>
+                        <div class="govuk-form-group" id="non-js-search">
+                            <span esfa-validation-message-for="Ukprn" class="govuk-error-message"></span>
+                            <input asp-for="Ukprn" type="text" maxlength="8" class="govuk-input govuk-input--width-10" />
                         </div>
-                        <p class="govuk-body">
-                            <a asp-route="@RouteNames.TrainingProvider_Select_Get" asp-route-clear="true" asp-route-wizard="@Model.PageInfo.IsWizard" class="govuk-link">Clear search</a>
-                        </p>
-                    </div>
-                    <div class="govuk-radios__item">
-                        <input asp-for="IsTrainingProviderSelected"
-                               class="govuk-radios__input"
-                               id="found_no"
-                               type="radio"
-                               value="false"
-                               data-aria-controls="found_no_conditional">
-                        <label class="govuk-label govuk-radios__label" for="found_no">
-                            No, I'll choose one later
-                        </label>
-                    </div>
-                    <div class="govuk-radios__conditional" id="found_no_conditional">
-                        <div class="govuk-form-group">
-                            <p class="govuk-body">
-                                You'll need to add a training provider before submitting the advert. If you need help, you can <a href="@(_externalLinks.Value.FindApprenticeshipTrainingUrl)courses/@Model.Programme.Id/providers" class="govuk-link" target="_blank">​find a training provider (opens in a new tab or window)</a>
-                                based on the apprenticeship training.
-                            </p>
-                        </div>
+                    </noscript>
+                    <div class="govuk-form-group js-hidden" id="js-search">
+                        <span esfa-validation-message-for="TrainingProviderSearch" class="govuk-error-message"></span>
+                        <input asp-for="TrainingProviderSearch" type="text" class="govuk-input search-input" />
                     </div>
                 </div>
+                <p class="govuk-body">
+                    <a asp-route="@RouteNames.TrainingProvider_Select_Get" asp-route-clear="true" asp-route-wizard="@Model.PageInfo.IsWizard" class="govuk-link">Clear search</a>
+                </p>
             </div>
+            <details class="govuk-details">
+                  <summary class="govuk-details__summary">
+                      <span class="govuk-details__summary-text">
+                          What is a UK Provider Reference Number?
+                      </span>
+                  </summary>
+                  <div class="govuk-details__text">
+                      A UK Provider Reference Number (UKPRN) is a unique, 8-digit number that identifies a training provider. Your training provider can tell you their UKPRN.
+                  </div>
+            </details>
+        
             <div class="govuk-form-group">
                 <input type="hidden" name="@nameof(SelectTrainingProviderEditModel.SelectionType)" id="selection-type" value="@TrainingProviderSelectionType.Ukprn" />
                 <input type="submit" value="Save and continue" esfa-automation="btn-continue" class="govuk-button" />
@@ -94,8 +69,14 @@
                         @*<a asp-show="@Model.PageInfo.IsNotWizard" href="@_externalLinksHelper.EmployerFavouritesAccounts" asp-fragment="@Anchors.TrainingProviderSection" class="govuk-link" esfa-automation="cancel-link">Cancel</a>*@
                     </span>
                     <span asp-hide="@Model.ReferredFromSavedFavourites">
-                        <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Vacancies_Get" class="govuk-link" esfa-automation="cancel-link">Cancel</a>
-                        <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.Vacancy_Preview_Get" asp-fragment="@Anchors.TrainingProviderSection" class="govuk-link" esfa-automation="cancel-link">Cancel</a>
+                        <esfaFeatureEnabled name="@FeatureNames.EmployerTaskList">
+                            <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Dashboard_Get" class="govuk-link" esfa-automation="cancel-link">Cancel</a>
+                            <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.EmployerCheckYourAnswersGet" class="govuk-link" esfa-automation="cancel-link">Cancel</a>
+                        </esfaFeatureEnabled>
+                        <esfaFeatureDisabled name="@FeatureNames.EmployerTaskList">
+                            <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Vacancies_Get" class="govuk-link" esfa-automation="cancel-link">Cancel</a>
+                            <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.Vacancy_Preview_Get" asp-fragment="@Anchors.TrainingProviderSection" class="govuk-link" esfa-automation="cancel-link">Cancel</a>
+                        </esfaFeatureDisabled>
                     </span>
                 </div>
             </div>

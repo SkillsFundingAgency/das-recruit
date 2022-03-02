@@ -46,7 +46,12 @@
     </div>
 
     <div class="govuk-grid-column-one-half ">
-        <a asp-route="@RouteNames.CreateVacancyOptions_Get" class="govuk-button float-right clear govuk-!-margin-bottom-6" esfa-automation="create-vacancy">Create an advert</a>
+        <esfaFeatureEnabled name="@FeatureNames.EmployerTaskList">
+            <a asp-route="@RouteNames.EmployerTaskListCreateGet" class="govuk-button float-right clear govuk-!-margin-bottom-6" esfa-automation="create-vacancy">Create an advert</a>
+        </esfaFeatureEnabled>
+        <esfaFeatureDisabled name="@FeatureNames.EmployerTaskList">
+            <a asp-route="@RouteNames.CreateVacancyOptions_Get" class="govuk-button float-right clear govuk-!-margin-bottom-6" esfa-automation="create-vacancy">Create an advert</a>
+        </esfaFeatureDisabled>
     </div>
 </div>
 
@@ -144,7 +149,13 @@
                             <td class="govuk-table__cell dashboard-status" data-label="Status"><span class="tag tag-@vacancy.Status.ToString().ToLower()">@vacancy.Status.GetDisplayName(UserType.Employer)</span></td>
                             <td class="govuk-table__cell dashboard-action" data-label="Action">
                                 <a asp-show="@vacancy.IsNotSubmittable" asp-route="@RouteNames.VacancyManage_Get" asp-route-vacancyId="@vacancy.Id" class="govuk-link">Manage</a>
-                                <a asp-show="@vacancy.IsSubmittable" asp-route="@RouteNames.DisplayVacancy_Get" asp-route-vacancyId="@vacancy.Id" class="govuk-link">@GetLinkText(vacancy)</a>
+                                <esfaFeatureEnabled name="@FeatureNames.EmployerTaskList">
+                                    <a asp-show="@vacancy.IsSubmittable" asp-route="@RouteNames.EmployerTaskListGet" asp-route-vacancyId="@vacancy.Id" class="govuk-link">@GetLinkText(vacancy)</a>
+                                </esfaFeatureEnabled>
+                                <esfaFeatureDisabled name="@FeatureNames.EmployerTaskList">
+                                    <a asp-show="@vacancy.IsSubmittable" asp-route="@RouteNames.DisplayVacancy_Get" asp-route-vacancyId="@vacancy.Id" class="govuk-link">@GetLinkText(vacancy)</a>    
+                                </esfaFeatureDisabled>
+                                
                             </td>
                         </tr>
                     }

@@ -27,24 +27,26 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
         private readonly IRecruitVacancyClient _recruitVacancyClient;
         private readonly IReviewSummaryService _reviewSummaryService;
         private readonly IGetAddressesClient _getAddressesClient;
+        private readonly IUtility _utility;
 
         public LocationOrchestrator(
             IEmployerVacancyClient employerVacancyClient,
             IRecruitVacancyClient recruitVacancyClient,
             ILogger<LocationOrchestrator> logger,
             IReviewSummaryService reviewSummaryService,
-            IGetAddressesClient getAddressesClient) : base(logger)
+            IGetAddressesClient getAddressesClient, 
+            IUtility utility) : base(logger)
         {
             _employerVacancyClient = employerVacancyClient;
             _recruitVacancyClient = recruitVacancyClient;
             _reviewSummaryService = reviewSummaryService;
             _getAddressesClient = getAddressesClient;
+            _utility = utility;
         }
 
         public async Task<VacancyEmployerInfoModel> GetVacancyEmployerInfoModelAsync(VacancyRouteModel vrm)
         {
-            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(
-                _employerVacancyClient, _recruitVacancyClient, vrm, RouteNames.Employer_Post);
+            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.Employer_Post);
 
             var model = new VacancyEmployerInfoModel() {
                 VacancyId = vacancy.Id,
@@ -64,15 +66,14 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
         public async Task<LocationViewModel> GetLocationViewModelAsync(
             VacancyRouteModel vrm, VacancyEmployerInfoModel employerInfoModel, VacancyUser user)
         {
-            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_employerVacancyClient, _recruitVacancyClient,
-                vrm, RouteNames.Location_Get);
+            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.Location_Get);
 
             var accountLegalEntityPublicHashedId = employerInfoModel?.AccountLegalEntityPublicHashedId != null
                 ? employerInfoModel.AccountLegalEntityPublicHashedId
                 : vacancy.AccountLegalEntityPublicHashedId;
 
             var vm = new LocationViewModel();
-            vm.PageInfo = Utility.GetPartOnePageInfo(vacancy);
+            vm.PageInfo = _utility.GetPartOnePageInfo(vacancy);
             
             vm.IsAnonymousVacancy = (employerInfoModel?.EmployerIdentityOption == null) 
                 ? vacancy.IsAnonymous 
@@ -121,8 +122,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             if (string.IsNullOrEmpty(locationEditModel.SelectedLocation))
                 return new OrchestratorResponse(false);
 
-            var vacancyTask = Utility.GetAuthorisedVacancyForEditAsync(
-                _employerVacancyClient, _recruitVacancyClient, locationEditModel, RouteNames.Employer_Post);
+            var vacancyTask = _utility.GetAuthorisedVacancyForEditAsync(locationEditModel, RouteNames.Employer_Post);
             var employerVacancyInfoTask =
                 _employerVacancyClient.GetEditVacancyInfoAsync(locationEditModel.EmployerAccountId);
 

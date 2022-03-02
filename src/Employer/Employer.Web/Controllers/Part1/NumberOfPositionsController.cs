@@ -8,6 +8,7 @@ using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.NumberOfPositions;
 using Microsoft.AspNetCore.Mvc;
 using Esfa.Recruit.Shared.Web.Extensions;
+using Esfa.Recruit.Shared.Web.FeatureToggle;
 
 namespace Esfa.Recruit.Employer.Web.Controllers.Part1
 {
@@ -15,11 +16,13 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
     public class NumberOfPositionsController : Controller
     {
        private readonly NumberOfPositionsOrchestrator _orchestrator;
+       private readonly IFeature _feature;
 
-        public NumberOfPositionsController(NumberOfPositionsOrchestrator orchestrator)
-        {
-            _orchestrator = orchestrator;
-        }
+       public NumberOfPositionsController(NumberOfPositionsOrchestrator orchestrator, IFeature feature)
+       {
+           _orchestrator = orchestrator;
+           _feature = feature;
+       }
         
         [HttpGet("number-of-positions", Name = RouteNames.NumberOfPositions_Get)]
         public async Task<IActionResult> NumberOfPositions(VacancyRouteModel vrm, [FromQuery] string wizard = "true")
@@ -54,6 +57,13 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
                 var vm = await _orchestrator.GetNumberOfPositionsViewModelAsync(m);
                 vm.PageInfo.SetWizard(wizard);
                 return View(vm);
+            }
+
+            if (_feature.IsFeatureEnabled(FeatureNames.EmployerTaskList))
+            {
+                return wizard 
+                    ? RedirectToRoute(RouteNames.Location_Get, new { Wizard = wizard }) 
+                    : RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet);
             }
 
             return wizard

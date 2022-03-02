@@ -10,11 +10,17 @@
 @model LocationViewModel;
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-        <a asp-show="@Model.CanShowBackLink" asp-route="@RouteNames.EmployerName_Get" asp-route-wizard="@Model.PageInfo.IsWizard" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
-        <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }' />
+        <esfaFeatureEnabled name="@FeatureNames.EmployerTaskList">
+            <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.NumberOfPositions_Get" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
+            <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.EmployerCheckYourAnswersGet" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
+        </esfaFeatureEnabled>
+        <esfaFeatureDisabled name="@FeatureNames.EmployerTaskList">
+            <a asp-show="@Model.CanShowBackLink" asp-route="@RouteNames.EmployerName_Get" asp-route-wizard="@Model.PageInfo.IsWizard" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
+        </esfaFeatureDisabled>
+        <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }'/>
         <partial name="@PartialNames.ReviewSummary" for="Review"/>
         <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">Where will the apprentice work?</h1>
-        
+
         <div asp-show="@Model.IsAnonymousVacancy" class="govuk-inset-text">
             For anonymous adverts we will not show the address on the advert. We will only show the first half of the postcode.
         </div>
@@ -25,18 +31,18 @@
                     <div class="govuk-radios govuk-radios--conditional" data-module="radios">
                         <span esfa-validation-message-for="SelectedLocation" class="govuk-error-message"></span>
                         <div class="govuk-radios">
-                           @{
+                            @{
                                 int selectIndex = 0;
                                 foreach (var location in Model.AvailableLocations)
                                 {
                                     selectIndex++;
                                     <div class="govuk-radios__item">
-                                            <input asp-for="SelectedLocation" value="@location" id="OtherLocation_@selectIndex"
-                                                   class="govuk-radios__input" type="radio">
-                                            <label for="OtherLocation_@selectIndex" class="govuk-label govuk-radios__label">
-                                                @location
-                                            </label>
-                                    </div>                                    
+                                        <input asp-for="SelectedLocation" value="@location" id="OtherLocation_@selectIndex"
+                                               class="govuk-radios__input" type="radio">
+                                        <label for="OtherLocation_@selectIndex" class="govuk-label govuk-radios__label">
+                                            @location
+                                        </label>
+                                    </div>
                                 }
                             }
                             <div class="govuk-radios__item">
@@ -51,27 +57,27 @@
                                     <div esfa-validation-marker-for="AddressLine1" class="govuk-form-group-compound address-item govuk-form-group">
                                         <label asp-for="AddressLine1" class="govuk-visually-hidden">Address line 1</label>
                                         <span esfa-validation-message-for="AddressLine1" class="govuk-error-message"></span>
-                                        <input asp-for="AddressLine1" class="govuk-input postcode-lookup" maxlength="100" />
+                                        <input asp-for="AddressLine1" class="govuk-input postcode-lookup" maxlength="100"/>
                                     </div>
                                     <div esfa-validation-marker-for="AddressLine2" class="govuk-form-group-compound address-item govuk-form-group">
                                         <label asp-for="AddressLine2" class="govuk-visually-hidden">Address line 2</label>
                                         <span esfa-validation-message-for="AddressLine2" class="govuk-error-message"></span>
-                                        <input asp-for="AddressLine2" class="govuk-input" maxlength="100" />
+                                        <input asp-for="AddressLine2" class="govuk-input" maxlength="100"/>
                                     </div>
                                     <div esfa-validation-marker-for="AddressLine3" class="govuk-form-group-compound address-item govuk-form-group">
                                         <label asp-for="AddressLine3" class="govuk-visually-hidden">Address line 3</label>
                                         <span esfa-validation-message-for="AddressLine3" class="govuk-error-message"></span>
-                                        <input asp-for="AddressLine3" class="govuk-input" maxlength="100" />
+                                        <input asp-for="AddressLine3" class="govuk-input" maxlength="100"/>
                                     </div>
                                     <div esfa-validation-marker-for="AddressLine4" class="govuk-form-group-compound address-item govuk-form-group">
                                         <label asp-for="AddressLine4" class="govuk-visually-hidden">Address line 4</label>
                                         <span esfa-validation-message-for="AddressLine4" class="govuk-error-message"></span>
-                                        <input asp-for="AddressLine4" class="govuk-input" maxlength="100" />
+                                        <input asp-for="AddressLine4" class="govuk-input" maxlength="100"/>
                                     </div>
                                     <div esfa-validation-marker-for="Postcode" class="govuk-form-group address-item govuk-form-group">
                                         <label asp-for="Postcode" class="govuk-label govuk-!-font-weight-bold">Enter postcode</label>
                                         <span esfa-validation-message-for="Postcode" class="govuk-error-message"></span>
-                                        <input asp-for="Postcode" class="govuk-input govuk-input--width-10 postcode-lookup" maxlength="8" />
+                                        <input asp-for="Postcode" class="govuk-input govuk-input--width-10 postcode-lookup" maxlength="8"/>
                                     </div>
                                 </div>
                             </div>
@@ -81,7 +87,13 @@
             </div>
             <button type="submit" class="govuk-button save-button" esfa-automation="continue-button">@Model.PageInfo.SubmitButtonText</button>
             <div class="govuk-body">
-                <a asp-route="@RouteNames.Location_Cancel" asp-route-wizard="@Model.PageInfo.IsWizard" class="govuk-link">Cancel</a>
+                <esfaFeatureEnabled name="@FeatureNames.EmployerTaskList">
+                    <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Dashboard_Get" class="govuk-link">Cancel</a>
+                    <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.EmployerCheckYourAnswersGet" class="govuk-link">Cancel</a>
+                </esfaFeatureEnabled>
+                <esfaFeatureDisabled name="@FeatureNames.EmployerTaskList">
+                    <a asp-route="@RouteNames.Location_Cancel" asp-route-wizard="@Model.PageInfo.IsWizard" class="govuk-link">Cancel</a>
+                </esfaFeatureDisabled>
             </div>
         </form>
     </div>
