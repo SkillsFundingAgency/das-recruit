@@ -6,63 +6,65 @@
     ViewBag.ZenDeskLabel = "recruit-short-description-of-the-apprenticeship";
 }
 
-<esfaFeatureEnabled name="@FeatureNames.EmployerTaskList">
-    <a asp-show="@(!Model.IsTaskListCompleted)" asp-route="@RouteNames.TrainingProvider_Confirm_Get" asp-route-wizard="@(!Model.IsTaskListCompleted)" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
-    <a asp-show="@Model.IsTaskListCompleted" asp-route="@RouteNames.EmployerCheckYourAnswersGet" asp-route-wizard="@Model.IsTaskListCompleted" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
-</esfaFeatureEnabled>
+
+@section BackLink {
+    <esfaFeatureEnabled name="@FeatureNames.EmployerTaskList">
+        <a asp-show="@(!Model.IsTaskListCompleted)" asp-route="@RouteNames.TrainingProvider_Confirm_Get" asp-route-wizard="@(!Model.IsTaskListCompleted)" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
+        <a asp-show="@Model.IsTaskListCompleted" asp-route="@RouteNames.EmployerCheckYourAnswersGet" asp-route-wizard="@Model.IsTaskListCompleted" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
+    </esfaFeatureEnabled>
+}
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }' />
         <partial name="@PartialNames.ReviewSummary" for="Review" />
-        <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">
+        <h1 class="govuk-heading-xl">
             <span class="govuk-caption-xl">@Model.Title</span>
             Summary of the apprenticeship
         </h1>
-    </div>
-</div>
 
+        <p class="govuk-body">Write a few sentences about the apprenticeship to attract applicants. This information will appear under your advert title when applicants look through a list of adverts - make it stand out.</p>
+        <p class="govuk-body">
+            This could be:
+        </p>
+        <ul class="govuk-list govuk-list--bullet">
+            <li>what you are offering</li>
+            <li>why the applicant should apply</li>
+        </ul>
 
-<div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
         <form asp-route="@RouteNames.ShortDescription_Post">
-            <div class="govuk-character-count">
+            <div class="govuk-character-count" data-module="govuk-character-count" data-maxlength="350">
                 <div esfa-validation-marker-for="ShortDescription" class="govuk-form-group">
-                    <label asp-for="ShortDescription" class="govuk-label govuk-!-font-weight-bold">
-                        <p class="govuk-body">Write a few sentences about the apprenticeship to attract applicants. This information will appear under your advert title when applicants look through a list of adverts - make it stand out.</p>
-                        <p class="govuk-body">
-                            This could be:
-                            <ul class="govuk-list govuk-list--bullet">
-                                <li>what you are offering</li>
-                                <li>why the applicant should apply</li>
-                            </ul>
-                        </p>
+                    <label class="govuk-visually-hidden" asp-for="ShortDescription">
+                        Apprenticeship summary
                     </label>
-                    <span esfa-validation-message-for="ShortDescription" class="govuk-error-message"></span>
-                    <span class="govuk-hint">
+           
+                    <div id="ShortDescription-hint" class="govuk-hint">
                         You must enter at least 50 characters.
-                    </span>
-                    <textarea asp-for="ShortDescription" class="govuk-textarea character-count" rows="5" data-val-length-max="350" esfa-automation="short-description"></textarea>
-                    <span class="govuk-hint">
-                        You can enter up to 350 characters
-                    </span>
-                    <div class="clear"></div>
+                    </div>
+                    <span esfa-validation-message-for="ShortDescription" class="govuk-error-message"></span>
+                    <textarea class="govuk-textarea govuk-js-character-count" asp-for="ShortDescription" rows="5" aria-describedby="ShortDescription-info ShortDescription-hint"></textarea>
                 </div>
-            </div> 
+                <div id="ShortDescription-info" class="govuk-hint govuk-character-count__message" aria-live="polite">
+                    You can enter up to 350 characters
+                </div>
+            </div>
+
             @{
                 var buttonText = "Save and Preview";
             }
             <esfaFeatureEnabled name="@FeatureNames.EmployerTaskList">
                 @{ buttonText = "Save and continue"; }
             </esfaFeatureEnabled>
-            <button type="submit" esfa-automation="btn-continue" class="govuk-button save-button">@buttonText</button>
-            <div class="govuk-body">
+
+            <div class="govuk-button-group">
+                <button type="submit" esfa-automation="btn-continue" class="govuk-button save-button">@buttonText</button>
                 <esfaFeatureEnabled name="@FeatureNames.EmployerTaskList">
-                        <a asp-show="@(!Model.IsTaskListCompleted)" asp-route="@RouteNames.Dashboard_Get" class="govuk-link">Cancel</a>
-                        <a asp-show="@Model.IsTaskListCompleted" asp-route="@RouteNames.EmployerCheckYourAnswersGet" esfa-automation="cancel" class="govuk-link">Cancel</a>    
+                        <a asp-show="@(!Model.IsTaskListCompleted)" asp-route="@RouteNames.Dashboard_Get" class="govuk-link govuk-link--no-visited-state">Cancel</a>
+                        <a asp-show="@Model.IsTaskListCompleted" asp-route="@RouteNames.EmployerCheckYourAnswersGet" esfa-automation="cancel" class="govuk-link govuk-link--no-visited-state">Cancel</a>    
                     </esfaFeatureEnabled>
                 <esfaFeatureDisabled name="@FeatureNames.EmployerTaskList">
-                    <a asp-route="@RouteNames.Vacancy_Preview_Get" esfa-automation="link-cancel" class="govuk-link das-button-link">Cancel</a>
+                    <a asp-route="@RouteNames.Vacancy_Preview_Get" esfa-automation="link-cancel" class="govuk-link govuk-link--no-visited-state">Cancel</a>
                 </esfaFeatureDisabled>
             </div>
         </form>
