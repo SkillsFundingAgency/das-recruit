@@ -63,15 +63,18 @@
             </tbody>
         </table>
 
-        <a asp-route="@RouteNames.Qualification_Add_Get" class="govuk-link">Add another qualification</a>
+        <div class="govuk-button-group">
+            <a asp-route="@RouteNames.Qualification_Add_Get" class="govuk-link govuk-link--no-visited-state">Add another qualification</a>
+        </div>
 
+    
         <div class="govuk-button-group">
             <esfaFeatureEnabled name="@FeatureNames.EmployerTaskList">
                 <a asp-show="@(!Model.IsTaskListCompleted)" asp-route="@RouteNames.Considerations_Get" class="govuk-button">Save and continue</a>
                 <a asp-show="@Model.IsTaskListCompleted" asp-route="@RouteNames.EmployerCheckYourAnswersGet" class="govuk-button">Save and continue</a>
             </esfaFeatureEnabled>
             <esfaFeatureDisabled name="@FeatureNames.EmployerTaskList">
-                <a asp-route="@RouteNames.Vacancy_Preview_Get" class="govuk-link">Preview advert</a>
+                <a asp-route="@RouteNames.Vacancy_Preview_Get" class="govuk-link govuk-link--no-visited-state">Preview advert</a>
             </esfaFeatureDisabled>
         </div>
     </div>
