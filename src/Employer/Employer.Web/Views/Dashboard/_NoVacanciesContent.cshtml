@@ -4,11 +4,10 @@
     ViewBag.ZenDeskLabel = "recruit-recruitment";
 }
 
-<div asp-show="ViewBag.ShowReturnToMaLink" class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
-        <a asp-route="@RouteNames.Dashboard_Account_Home" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
-    </div>
-</div>
+@section BackLink
+{
+    <a asp-route="@RouteNames.Dashboard_Account_Home" class="govuk-back-link">Back</a>
+}
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
