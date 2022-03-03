@@ -113,12 +113,6 @@
             
             <div class="govuk-button-group">
                 <button type="submit" class="govuk-button save-button" esfa-automation="continue-button">@Model.PageInfo.SubmitButtonText</button>
-
-<<<<<<< HEAD
-            <div class="govuk-button-group">
-                <button type="submit" class="govuk-button save-button" esfa-automation="continue-button">@Model.PageInfo.SubmitButtonText</button>
-=======
->>>>>>> FAI-249-about-apprenticeship
                 <esfaFeatureEnabled name="@FeatureNames.EmployerTaskList">
                     <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Dashboard_Get" class="govuk-link govuk-link--no-visited-state">Cancel</a>
                     <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.EmployerCheckYourAnswersGet" class="govuk-link govuk-link--no-visited-state">Cancel</a>
