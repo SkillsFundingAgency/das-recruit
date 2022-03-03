@@ -78,7 +78,7 @@
     @Html.Partial("_CookieBanner", Html.GetCookieBannerViewModel())
     @Html.Partial("_Header", Html.GetHeaderViewModel())
     <div class="govuk-width-container">
-        @RenderSection("BackLink", required: false)
+        @RenderSection(RazorSections.BackLink, required: false)
         <main class="govuk-main-wrapper " id="main-content" role="main">
             @RenderBody()
         </main>
