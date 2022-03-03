@@ -62,7 +62,7 @@
 
             <div esfa-validation-marker-for="StartDate" class="govuk-form-group">
                 <fieldset class="govuk-fieldset">
-                    <legend class="govuk-fieldset__legend govuk-!-font-weight-bold">When do you expect the apprentice to start?<span class="govuk-visually-hidden"> (in numeric format DD MM YYYY)</span></legend>
+                    <legend class="govuk-fieldset__legend govuk-!-font-weight-bold">Apprenticeship start date<span class="govuk-visually-hidden"> (in numeric format DD MM YYYY)</span></legend>
 
                     <p asp-show="@Model.CanShowTrainingHint" class="govuk-hint">
                         The start date must be before the @Model.TrainingDescription closes to new starters on @Model.TrainingEffectiveToDate
@@ -100,11 +100,11 @@
 
             <div class="govuk-form-group">
                 <fieldset class="govuk-fieldset">
-                    <legend class="govuk-label govuk-!-font-weight-bold">Disability Confident (optional)</legend>
+                    <legend class="govuk-label govuk-!-font-weight-bold">Disability Confident employer (optional)</legend>
                     <div class="govuk-checkboxes">
                         <div class="govuk-checkboxes__item">
                             <input asp-for="IsDisabilityConfident" class="govuk-checkboxes__input" type="checkbox" value="true" >
-                            <label asp-for="IsDisabilityConfident" class="govuk-label govuk-checkboxes__label">This advert is <a href="https://www.gov.uk/government/collections/disability-confident-campaign" class="govuk-link" rel="noopener" target="_blank" title="Disability Confident employer scheme and guidance (opens in a new window)">Disability Confident</a>.</label>
+                            <label asp-for="IsDisabilityConfident" class="govuk-label govuk-checkboxes__label">This employer has signed up to the <a href="https://www.gov.uk/government/collections/disability-confident-campaign" class="govuk-link" rel="noopener" target="_blank" title="Disability Confident employer scheme and guidance (opens in a new window)">Disability Confident</a> scheme</label>
                         </div>
                     </div>
                 </fieldset>
