@@ -8,6 +8,7 @@ using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.Title;
 using Microsoft.AspNetCore.Mvc;
 using Esfa.Recruit.Shared.Web.Extensions;
+using Esfa.Recruit.Shared.Web.FeatureToggle;
 
 
 namespace Esfa.Recruit.Employer.Web.Controllers.Part1
@@ -17,10 +18,12 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
     {
         private const string VacancyTitleRoute = "vacancies/{vacancyId:guid}/title";
         private readonly TitleOrchestrator _orchestrator;
+        private readonly IFeature _feature;
 
-        public TitleController(TitleOrchestrator orchestrator)
+        public TitleController(TitleOrchestrator orchestrator, IFeature feature)
         {
             _orchestrator = orchestrator;
+            _feature = feature;
         }
 
         [HttpGet("create-vacancy", Name = RouteNames.CreateVacancy_Get)]
@@ -71,6 +74,16 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
                 }
                 return RedirectToRoute(RouteNames.DisplayVacancy_Get, new { vacancyId = response.Data });
             }
+
+            if (_feature.IsFeatureEnabled(FeatureNames.EmployerTaskList))
+            {
+                if (wizard)
+                {
+                    return RedirectToRoute(RouteNames.Employer_Get ,new { vacancyId = response.Data });
+                }
+                return RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet);
+            }
+            
             return wizard
                 ? RedirectToRoute(RouteNames.Training_Get, new { vacancyId = response.Data })
                 : RedirectToRoute(RouteNames.Vacancy_Preview_Get);

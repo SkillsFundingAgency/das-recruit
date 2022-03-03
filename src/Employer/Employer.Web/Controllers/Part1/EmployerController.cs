@@ -1,11 +1,15 @@
 ﻿using System.Threading.Tasks;
+using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
+using Esfa.Recruit.Employer.Web.Extensions;
+using Esfa.Recruit.Employer.Web.Models;
 using Esfa.Recruit.Employer.Web.Orchestrators.Part1;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.Employer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Hosting;
 using Esfa.Recruit.Employer.Web.ViewModels;
+using Esfa.Recruit.Shared.Web.FeatureToggle;
 
 namespace Esfa.Recruit.Employer.Web.Controllers.Part1
 {
@@ -13,11 +17,13 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
     public class EmployerController : EmployerControllerBase
     {
         private readonly EmployerOrchestrator _orchestrator;
+        private readonly IFeature _feature;
 
-        public EmployerController(EmployerOrchestrator orchestrator, IHostingEnvironment hostingEnvironment)
+        public EmployerController(EmployerOrchestrator orchestrator, IHostingEnvironment hostingEnvironment, IFeature feature)
             : base(hostingEnvironment)
         {
             _orchestrator = orchestrator;
+            _feature = feature;
         }
 
         [HttpGet("employer", Name = RouteNames.Employer_Get)]
@@ -38,6 +44,14 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
 
             if (vm.HasOnlyOneOrganisation)
             {
+                if (_feature.IsFeatureEnabled(FeatureNames.EmployerTaskList))
+                {
+                    info = vm.VacancyEmployerInfoModel;
+                    await _orchestrator.SetAccountLegalEntityPublicId(vrm,info, User.ToVacancyUser());
+                    
+                    return  RedirectToRoute(RouteNames.Training_Get, new { Wizard = wizard });
+                }
+                
                 return RedirectToRoute(RouteNames.EmployerName_Get, new {Wizard = wizard});
             }
 
@@ -78,7 +92,15 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
             }
 
             SetVacancyEmployerInfoCookie(info);
+            await _orchestrator.SetAccountLegalEntityPublicId(m,info, User.ToVacancyUser());
 
+            if (_feature.IsFeatureEnabled(FeatureNames.EmployerTaskList))
+            {
+                return wizard 
+                    ? RedirectToRoute(RouteNames.Training_Get, new { Wizard = wizard }) 
+                    : RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet);
+            }
+            
             return RedirectToRoute(RouteNames.EmployerName_Get, new {Wizard = wizard});
         }
 

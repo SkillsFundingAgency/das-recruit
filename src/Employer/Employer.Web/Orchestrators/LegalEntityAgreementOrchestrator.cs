@@ -10,30 +10,25 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 {
     public class LegalEntityAgreementOrchestrator
     {
-        private readonly IEmployerVacancyClient _client;
-        private readonly IRecruitVacancyClient _vacancyClient;
         private readonly ILegalEntityAgreementService _legalEntityAgreementService;
+        private readonly IUtility _utility;
 
         public LegalEntityAgreementOrchestrator(
-            IEmployerVacancyClient client,
-            IRecruitVacancyClient vacancyClient,
-            ILegalEntityAgreementService legalEntityAgreementService)
+            ILegalEntityAgreementService legalEntityAgreementService, IUtility utility)
         {
-            _client = client;
-            _vacancyClient = vacancyClient;
             _legalEntityAgreementService = legalEntityAgreementService;
+            _utility = utility;
         }
 
         public async Task<LegalEntityAgreementSoftStopViewModel> GetLegalEntityAgreementSoftStopViewModelAsync(
             VacancyRouteModel vrm, string selectedAccountLegalEntityPublicHashedId)
         {
             var vacancy = await
-                Utility.GetAuthorisedVacancyForEditAsync(
-                    _client, _vacancyClient, vrm, RouteNames.LegalEntityAgreement_SoftStop_Get);
+                _utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.LegalEntityAgreement_SoftStop_Get);
 
             var accountLegalEntityPublicHashedId = !string.IsNullOrEmpty(selectedAccountLegalEntityPublicHashedId) ? selectedAccountLegalEntityPublicHashedId : vacancy.AccountLegalEntityPublicHashedId;
 
-            LegalEntity legalEntity = await
+            var legalEntity = await
                 _legalEntityAgreementService.GetLegalEntityAsync(vrm.EmployerAccountId, accountLegalEntityPublicHashedId);
 
             var hasLegalEntityAgreement = await
@@ -44,14 +39,13 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             {                
                 HasLegalEntityAgreement = hasLegalEntityAgreement,
                 LegalEntityName = legalEntity.Name,
-                PageInfo = Utility.GetPartOnePageInfo(vacancy)
+                PageInfo = _utility.GetPartOnePageInfo(vacancy)
             };
         }
 
         public async Task<LegalEntityAgreementHardStopViewModel> GetLegalEntityAgreementHardStopViewModelAsync(VacancyRouteModel vrm)
         {
-            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(
-                _client, _vacancyClient, vrm, RouteNames.LegalEntityAgreement_HardStop_Get);
+            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.LegalEntityAgreement_HardStop_Get);
 
             return new LegalEntityAgreementHardStopViewModel
             {

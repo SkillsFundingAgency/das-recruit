@@ -16,5 +16,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Part2.VacancyDescription
             nameof(VacancyDescriptionEditModel.TrainingDescription),
             nameof(VacancyDescriptionEditModel.OutcomeDescription)
         };
+
+        public bool IsTaskListCompleted { get ; set ; }
     }
 }

@@ -19,30 +19,30 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
     public class DatesOrchestrator : VacancyValidatingOrchestrator<DatesEditModel>
     {
         private const VacancyRuleSet ValidationRules = VacancyRuleSet.ClosingDate | VacancyRuleSet.StartDate | VacancyRuleSet.StartDateEndDate | VacancyRuleSet.TrainingExpiryDate;
-        private readonly IEmployerVacancyClient _client;
         private readonly IRecruitVacancyClient _vacancyClient;
         private readonly ITimeProvider _timeProvider;
         private readonly IReviewSummaryService _reviewSummaryService;
         private readonly IApprenticeshipProgrammeProvider _apprenticeshipProgrammeProvider;
+        private readonly IUtility _utility;
 
-        public DatesOrchestrator(IEmployerVacancyClient client, IRecruitVacancyClient vacancyClient, ILogger<DatesOrchestrator> logger, ITimeProvider timeProvider, IReviewSummaryService reviewSummaryService, IApprenticeshipProgrammeProvider apprenticeshipProgrammeProvider) : base(logger)
+        public DatesOrchestrator(IRecruitVacancyClient vacancyClient, ILogger<DatesOrchestrator> logger, ITimeProvider timeProvider, IReviewSummaryService reviewSummaryService, IApprenticeshipProgrammeProvider apprenticeshipProgrammeProvider, IUtility utility) : base(logger)
         {
-            _client = client;
             _vacancyClient = vacancyClient;
             _timeProvider = timeProvider;
             _reviewSummaryService = reviewSummaryService;
             _apprenticeshipProgrammeProvider = apprenticeshipProgrammeProvider;
+            _utility = utility;
         }
         
         public async Task<DatesViewModel> GetDatesViewModelAsync(VacancyRouteModel vrm)
         {
-            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, _vacancyClient, vrm, RouteNames.Dates_Get);
+            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.Dates_Get);
             
             var vm = new DatesViewModel
             {
                 VacancyId = vacancy.Id,
                 IsDisabilityConfident = vacancy.IsDisabilityConfident,
-                PageInfo = Utility.GetPartOnePageInfo(vacancy),
+                PageInfo = _utility.GetPartOnePageInfo(vacancy),
                 CurrentYear = _timeProvider.Now.Year
             };
 
@@ -98,7 +98,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 
         public async Task<OrchestratorResponse> PostDatesEditModelAsync(DatesEditModel m, VacancyUser user)
         {
-            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, _vacancyClient, m, RouteNames.Dates_Post);
+            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(m, RouteNames.Dates_Post);
 
             SetVacancyWithEmployerReviewFieldIndicators(
                 vacancy.ClosingDate,

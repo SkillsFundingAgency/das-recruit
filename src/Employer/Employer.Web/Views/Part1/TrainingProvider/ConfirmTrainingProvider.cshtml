@@ -31,8 +31,14 @@
                 <input asp-show="@Model.PageInfo.IsWizard" type="submit" value="Confirm and continue" esfa-automation="btn-continue" class="govuk-button" />
                 <input asp-show="@Model.PageInfo.IsNotWizard" type="submit" value="Confirm and preview" esfa-automation="btn-continue" class="govuk-button" />
                 <div class="govuk-body">
-                    <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Vacancies_Get" class="govuk-link" esfa-automation="cancel-link">Cancel</a>
-                    <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.Vacancy_Preview_Get" asp-fragment="@Anchors.TrainingProviderSection" class="govuk-link" esfa-automation="cancel-link">Cancel</a>
+                    <esfaFeatureEnabled name="@FeatureNames.EmployerTaskList">
+                        <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Dashboard_Get" class="govuk-link" esfa-automation="cancel-link">Cancel</a>
+                        <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.EmployerCheckYourAnswersGet" class="govuk-link" esfa-automation="cancel-link">Cancel</a>
+                    </esfaFeatureEnabled>
+                    <esfaFeatureDisabled name="@FeatureNames.EmployerTaskList">
+                        <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Vacancies_Get" class="govuk-link" esfa-automation="cancel-link">Cancel</a>
+                        <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.Vacancy_Preview_Get" asp-fragment="@Anchors.TrainingProviderSection" class="govuk-link" esfa-automation="cancel-link">Cancel</a>
+                    </esfaFeatureDisabled>
                 </div>
             </div>
         </form>
