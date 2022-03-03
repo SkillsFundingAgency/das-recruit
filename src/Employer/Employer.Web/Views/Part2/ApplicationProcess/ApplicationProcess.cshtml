@@ -6,20 +6,23 @@
     ViewBag.ZenDeskLabel = "recruit-how-would-you-like-to-receive-applications";
     ViewBag.Title = "How would you like to receive applications?";
 }
+@section BackLink {
+    <esfaFeatureEnabled name="@FeatureNames.EmployerTaskList">
+        <a asp-show="@(!Model.IsTaskListCompleted)" asp-route="@RouteNames.EmployerContactDetails_Get" esfa-automation="link-back" class="govuk-back-link">Back</a>
+        <a asp-show="@Model.IsTaskListCompleted" asp-route="@RouteNames.EmployerCheckYourAnswersGet" esfa-automation="link-back" class="govuk-back-link">Back</a>
+    </esfaFeatureEnabled>
+}
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-        <esfaFeatureEnabled name="@FeatureNames.EmployerTaskList">
-            <a asp-show="@(!Model.IsTaskListCompleted)" asp-route="@RouteNames.EmployerContactDetails_Get" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
-            <a asp-show="@Model.IsTaskListCompleted" asp-route="@RouteNames.EmployerCheckYourAnswersGet" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
-        </esfaFeatureEnabled>
+       
         <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }' />
-
         <partial name="@PartialNames.ReviewSummary" for="Review" />
 
         <h1 class="govuk-heading-xl">
             <span class="govuk-caption-l">@Model.Title</span>
             How would you like to receive applications?
         </h1>
+
         <form asp-route="@RouteNames.ApplicationProcess_Post" novalidate>
 
             <div esfa-validation-marker-for="ApplicationMethod" class="govuk-form-group">
@@ -47,12 +50,15 @@
                                 <span esfa-validation-message-for="ApplicationUrl" class="govuk-error-message"></span>
                                 <input asp-for="ApplicationUrl" class="govuk-input govuk-!-width-two-thirds" maxlength="200" />
                             </div>
-                            <div esfa-validation-marker-for="ApplicationInstructions" class="govuk-form-group">
-                                <label asp-for="ApplicationInstructions" class="govuk-label govuk-!-font-weight-bold">Explain the application process (optional)</label>
-                                <span esfa-validation-message-for="ApplicationInstructions" class="govuk-error-message"></span>
-                                <textarea asp-for="ApplicationInstructions" class="govuk-textarea character-count" rows="5" data-val-length-max="500"></textarea>
-                                <span class="govuk-body maxchar-count">500</span>
-                                <span class="govuk-body maxchar-text"> characters remaining</span>
+                            <div class="govuk-character-count" data-module="govuk-character-count" data-maxlength="500">
+                                <div class="govuk-form-group" esfa-validation-marker-for="ApplicationInstructions">
+                                    <label asp-for="ApplicationInstructions" class="govuk-label govuk-label--s">Explain the application process (optional)</label>
+                                    <span esfa-validation-message-for="ApplicationInstructions" class="govuk-error-message"></span>
+                                    <textarea class="govuk-textarea govuk-js-character-count" asp-for="ApplicationInstructions" rows="5" aria-describedby="ApplicationInstructions-info"></textarea>
+                                </div>
+                                <div id="ApplicationInstructions-info" class="govuk-hint govuk-character-count__message" aria-live="polite">
+                                    You can enter up to 500 characters
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -60,17 +66,15 @@
             </div>
 
 
-            <div class="govuk-form-group">
+            <div class="govuk-button-group">
                 <input type="submit" value="Save and continue" esfa-automation="btn-continue" class="govuk-button save-button" />
-                <div class="govuk-body">
-                    <esfaFeatureEnabled name="@FeatureNames.EmployerTaskList">
-                        <a asp-show="@(!Model.IsTaskListCompleted)" asp-route="@RouteNames.Dashboard_Get" class="govuk-link">Cancel</a>
-                        <a asp-show="@Model.IsTaskListCompleted" asp-route="@RouteNames.EmployerCheckYourAnswersGet" esfa-automation="cancel" class="govuk-link">Cancel</a>    
-                    </esfaFeatureEnabled>
-                    <esfaFeatureDisabled name="@FeatureNames.EmployerTaskList">
-                        <a asp-route="@RouteNames.Vacancy_Preview_Get" esfa-automation="link-cancel" class="govuk-link">Cancel</a>    
-                    </esfaFeatureDisabled>
-                </div>
+                <esfaFeatureEnabled name="@FeatureNames.EmployerTaskList">
+                    <a asp-show="@(!Model.IsTaskListCompleted)" asp-route="@RouteNames.Dashboard_Get" class="govuk-link govuk-link--no-visited-state">Cancel</a>
+                    <a asp-show="@Model.IsTaskListCompleted" asp-route="@RouteNames.EmployerCheckYourAnswersGet" esfa-automation="cancel" class="govuk-link govuk-link--no-visited-state">Cancel</a>    
+                </esfaFeatureEnabled>
+                <esfaFeatureDisabled name="@FeatureNames.EmployerTaskList">
+                    <a asp-route="@RouteNames.Vacancy_Preview_Get" esfa-automation="link-cancel" class="govuk-link govuk-link--no-visited-state">Cancel</a>    
+                </esfaFeatureDisabled>
             </div>
         </form>
     </div>
