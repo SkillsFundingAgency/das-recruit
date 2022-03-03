@@ -265,7 +265,7 @@ $(function () {
 
     // Data Layer Pushes
 
-    var pageHeading = document.querySelector('h1.govuk-heading-xl') || document.querySelector('h1.govuk-heading-l') || document.querySelector('h1.govuk-fieldset__heading');
+    var pageHeading = document.querySelector('h1.govuk-heading-xl') || document.querySelector('h1.govuk-heading-l') || document.querySelector('h1.govuk-fieldset__heading') || document.querySelector('label.govuk-label--xl');
     var pageTitle = pageHeading.innerText
 
     // Form validation - dataLayer pushes
