@@ -2,7 +2,7 @@
 @{ 
     ViewBag.Vpv = "/recruitment/employer/page-part2-about-employer";
     ViewBag.ZenDeskLabel = "recruit-about-employer";
-    ViewBag.Title = "Add some information about your organisation";
+    ViewBag.Title = "Employer information";
 }
 
 @section BackLink {
@@ -20,7 +20,7 @@
 
         <h1 class="govuk-heading-xl">
             <span class="govuk-caption-l">@Model.Title</span>
-            Add some information about @Model.EmployerTitle
+            Information about @Model.EmployerTitle
         </h1>
         
         <form asp-route="@RouteNames.AboutEmployer_Get">

@@ -3,7 +3,7 @@
 @model EmployerNameViewModel;
 @{ 
     ViewBag.Vpv = "/recruitment/employer/page-part1-employer-name";
-    ViewBag.Title = "Which employer name do you want on your advert?";
+    ViewBag.Title = "Name of employer on advert";
     ViewBag.ZenDeskLabel = "recruit-what-employer-name-do-you-want-to-go-on-the-vacancy";
 }
 
@@ -30,6 +30,11 @@
 
         <partial name="@PartialNames.ReviewSummary" for="Review"/>
 
+<<<<<<< HEAD
+=======
+        <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">What employer name do you want on your advert?</h1>
+
+>>>>>>> FAI-249-about-apprenticeship
         <form asp-route="@RouteNames.EmployerName_Post" asp-route-wizard="@Model.PageInfo.IsWizard">
             <div class="govuk-form-group" id="@FieldIdentifiers.EmployerName">
                 <fieldset class="govuk-fieldset">
@@ -55,7 +60,7 @@
                         <div class="govuk-radios__item">
                             <input asp-for="SelectedEmployerIdentityOption" value="NewTradingName" data-aria-controls="trading-name-conditional" id="existing-trading-name" type="radio" class="govuk-radios__input">
                             <label for="existing-trading-name" class="govuk-label govuk-radios__label">
-                                    A<span asp-show="@Model.HasExistingTradingName"> different</span> trading name
+                                    A different name
                             </label>
                         </div>
                         <div class="govuk-radios__conditional" id="trading-name-conditional">
