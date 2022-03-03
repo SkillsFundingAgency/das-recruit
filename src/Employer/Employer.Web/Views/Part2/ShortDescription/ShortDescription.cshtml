@@ -9,8 +9,8 @@
 
 @section BackLink {
     <esfaFeatureEnabled name="@FeatureNames.EmployerTaskList">
-        <a asp-show="@(!Model.IsTaskListCompleted)" asp-route="@RouteNames.TrainingProvider_Confirm_Get" asp-route-wizard="@(!Model.IsTaskListCompleted)" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
-        <a asp-show="@Model.IsTaskListCompleted" asp-route="@RouteNames.EmployerCheckYourAnswersGet" asp-route-wizard="@Model.IsTaskListCompleted" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
+        <a asp-show="@(!Model.IsTaskListCompleted)" asp-route="@RouteNames.TrainingProvider_Confirm_Get" asp-route-wizard="@(!Model.IsTaskListCompleted)" esfa-automation="link-back" class="govuk-back-link">Back</a>
+        <a asp-show="@Model.IsTaskListCompleted" asp-route="@RouteNames.EmployerCheckYourAnswersGet" asp-route-wizard="@Model.IsTaskListCompleted" esfa-automation="link-back" class="govuk-back-link">Back</a>
     </esfaFeatureEnabled>
 }
 
