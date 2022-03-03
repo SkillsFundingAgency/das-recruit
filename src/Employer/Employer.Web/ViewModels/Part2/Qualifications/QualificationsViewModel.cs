@@ -13,5 +13,6 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Part2.Qualifications
         public ReviewSummaryViewModel Review { get; set; } = new ReviewSummaryViewModel();
 
         public bool HasInfo => string.IsNullOrWhiteSpace(InfoMessage) == false;
+        public bool IsTaskListCompleted { get ; set ; }
     }
 }

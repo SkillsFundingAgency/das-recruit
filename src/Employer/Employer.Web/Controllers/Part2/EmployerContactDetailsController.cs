@@ -4,8 +4,10 @@ using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
+using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Extensions;
 using Esfa.Recruit.Shared.Web.Extensions;
+using Esfa.Recruit.Shared.Web.FeatureToggle;
 
 namespace Esfa.Recruit.Employer.Web.Controllers.Part2
 {
@@ -13,10 +15,12 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part2
     public class EmployerContactDetailsController : Controller
     {
         private readonly EmployerContactDetailsOrchestrator _orchestrator;
+        private readonly IFeature _feature;
 
-        public EmployerContactDetailsController(EmployerContactDetailsOrchestrator orchestrator)
+        public EmployerContactDetailsController(EmployerContactDetailsOrchestrator orchestrator, IFeature feature)
         {
             _orchestrator = orchestrator;
+            _feature = feature;
         }
 
         [HttpGet("employer-contact-details", Name = RouteNames.EmployerContactDetails_Get)]
@@ -36,10 +40,19 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part2
                 response.AddErrorsToModelState(ModelState);
             }
 
+            var vm = await _orchestrator.GetEmployerContactDetailsViewModelAsync(m);
             if (!ModelState.IsValid)
             {
-                var vm = await _orchestrator.GetEmployerContactDetailsViewModelAsync(m);
                 return View(vm);
+            }
+
+            if (_feature.IsFeatureEnabled(FeatureNames.EmployerTaskList))
+            {
+                if (vm.IsTaskListCompleted)
+                {
+                    return RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet);
+                }
+                return RedirectToRoute(RouteNames.ApplicationProcess_Get);
             }
 
             return RedirectToRoute(RouteNames.Vacancy_Preview_Get);

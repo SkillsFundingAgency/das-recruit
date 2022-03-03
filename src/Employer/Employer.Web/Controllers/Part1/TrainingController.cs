@@ -9,6 +9,7 @@ using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.Training;
 using Microsoft.AspNetCore.Mvc;
 using Esfa.Recruit.Shared.Web.Extensions;
+using Esfa.Recruit.Shared.Web.FeatureToggle;
 
 namespace Esfa.Recruit.Employer.Web.Controllers.Part1
 {
@@ -16,11 +17,13 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
     public class TrainingController : Controller
     {
         private readonly TrainingOrchestrator _orchestrator;
+        private readonly IFeature _feature;
         private const string InvalidTraining = "Select the training the apprentice will take";
 
-        public TrainingController(TrainingOrchestrator orchestrator)
+        public TrainingController(TrainingOrchestrator orchestrator, IFeature feature)
         {
             _orchestrator = orchestrator;
+            _feature = feature;
         }
         
         [HttpGet("training", Name = RouteNames.Training_Get)]
@@ -148,7 +151,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
 
             return wizard
                 ? RedirectToRoute(RouteNames.TrainingProvider_Select_Get)
-                : RedirectToRoute(RouteNames.Vacancy_Preview_Get);            
+                : _feature.IsFeatureEnabled(FeatureNames.EmployerTaskList) ? RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet) : RedirectToRoute(RouteNames.Vacancy_Preview_Get);            
         }
 
         private async Task<IActionResult> ProgrammeNotFound(TrainingEditModel m, bool wizard)

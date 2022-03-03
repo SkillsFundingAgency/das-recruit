@@ -10,33 +10,28 @@
     <div class="govuk-grid-column-two-thirds">
         <div class="govuk-panel govuk-panel--confirmation">
             <h1 asp-hide="@Model.IsResubmit" class="govuk-panel__title">
-                Advert submitted to ESFA
+                Advert submitted for approval
             </h1>
             <h1 asp-show="@Model.IsResubmit" class="govuk-panel__title">
-                Advert resubmitted to ESFA
+                Advert resubmitted for approval
             </h1>
             <div class="govuk-panel__body">
                 <p asp-show="@Model.HasVacancyReference">
-                    Your reference number is <br>
+                    The advert reference number is <br>
                     <strong class="govuk-!-font-weight-bold">VAC@(Model.VacancyReference)</strong>
                 </p>
             </div>
         </div>
         
         <h2 class="govuk-heading-m">What happens next</h2>
-        <div asp-show="@Model.HasNotificationsSet">
-            <p class="govuk-body">The ESFA will check the advert and let you know by email, within one working day, if you need to make any edits.</p>
-        </div>
-        <div asp-hide="@Model.HasNotificationsSet">
-            <p class="govuk-body">The ESFA will check the advert and will tell you within one working day, on the Recruitment dashboard within rejected adverts, if you need to make any edits.</p>
-        </div>
-        <p class="govuk-body"><esfaFeatureEnabled name="@FeatureNames.SetNotificationPreferences"><a asp-route="@RouteNames.ManageNotifications_Get" class="govuk-link">Manage the frequency of your recruitment emails</a>.</esfaFeatureEnabled></p>
-        <p class="govuk-body">When the advert is approved, it will appear on <a href="@ExternalLinks.Value.FindAnApprenticeshipUrl" class="govuk-link" target="_blank">​Find an apprenticeship (opens in a new tab)</a>.</p>
+        <p class="govuk-body">We’ll check the advert and tell you within 24 hours if you need to make any edits. If the advert is not approved, we’ll let you know on the dashboard what changes you’ll need to make. <a asp-route="@RouteNames.ManageNotifications_Get" class="govuk-link">Manage your recruitment emails</a> if you'd rather get an email.</p>
+        <p class="govuk-body">When we approve your advert, it will appear on the <a href="@ExternalLinks.Value.FindAnApprenticeshipUrl" class="govuk-link" target="_blank">Find an apprenticeship service</a> (opens in a new tab or window).</p>
+        
         <p class="govuk-body">
-            <a asp-route="@RouteNames.Dashboard_Get" class="govuk-link">Return to dashboard</a>
+            <a asp-route="@RouteNames.CreateVacancyOptions_Get" class="govuk-button">Create another advert</a>
         </p>
         <p class="govuk-body">
-            <a asp-route="@RouteNames.CreateVacancyOptions_Get" class="govuk-link">Create another advert</a>
+            <a asp-route="@RouteNames.Dashboard_Get" class="govuk-link">Return to dashboard</a>
         </p>
     </div>
 </div>

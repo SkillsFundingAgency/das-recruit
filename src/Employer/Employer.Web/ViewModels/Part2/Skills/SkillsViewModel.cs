@@ -10,5 +10,6 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Part2.Skills
         public string AddCustomSkillName { get; set; }
         public List<string> Skills { get; set; }
         public ReviewSummaryViewModel Review { get; set; } = new ReviewSummaryViewModel();
+        public bool IsTaskListCompleted { get ; set ; }
     }
 }
