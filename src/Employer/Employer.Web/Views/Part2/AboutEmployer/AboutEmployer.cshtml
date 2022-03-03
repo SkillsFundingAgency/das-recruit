@@ -2,7 +2,7 @@
 @{ 
     ViewBag.Vpv = "/recruitment/employer/page-part2-about-employer";
     ViewBag.ZenDeskLabel = "recruit-about-employer";
-    ViewBag.Title = "Add some information about your organisation";
+    ViewBag.Title = "Employer information";
 }
 
 <div class="govuk-grid-row">
@@ -17,7 +17,7 @@
 
         <h1 class="govuk-heading-xl">
             <span class="govuk-caption-l">@Model.Title</span>
-            Add some information about @Model.EmployerTitle
+            Information about @Model.EmployerTitle
         </h1>
         
         <form asp-route="@RouteNames.AboutEmployer_Get">
@@ -34,17 +34,15 @@
                 <div asp-show="@Model.IsAnonymous" class="govuk-hint">The website will not be shown as the employer is anonymous</div>
                 <input asp-for="EmployerWebsiteUrl" class="govuk-input govuk-!-width-three-quarters" maxlength="100" />
             </div>
-            <div class="govuk-form-group">
+            <div class="govuk-button-group">
                 <input type="submit" value="Save and continue" esfa-automation="btn-continue" class="govuk-button save-button" />
-                <div class="govuk-body">
-                    <esfaFeatureEnabled name="@FeatureNames.EmployerTaskList">
-                        <a asp-show="@(!Model.IsTaskListCompleted)" asp-route="@RouteNames.Dashboard_Get" class="govuk-link">Cancel</a>
-                        <a asp-show="@Model.IsTaskListCompleted" asp-route="@RouteNames.EmployerCheckYourAnswersGet" esfa-automation="cancel" class="govuk-link">Cancel</a>    
-                    </esfaFeatureEnabled>
-                    <esfaFeatureDisabled name="@FeatureNames.EmployerTaskList">
-                        <a asp-route="@RouteNames.Vacancy_Preview_Get" esfa-automation="cancel" class="govuk-link">Cancel</a>    
-                    </esfaFeatureDisabled>
-                </div>
+                <esfaFeatureEnabled name="@FeatureNames.EmployerTaskList">
+                    <a asp-show="@(!Model.IsTaskListCompleted)" asp-route="@RouteNames.Dashboard_Get" class="govuk-link">Cancel</a>
+                    <a asp-show="@Model.IsTaskListCompleted" asp-route="@RouteNames.EmployerCheckYourAnswersGet" esfa-automation="cancel" class="govuk-link">Cancel</a>    
+                </esfaFeatureEnabled>
+                <esfaFeatureDisabled name="@FeatureNames.EmployerTaskList">
+                    <a asp-route="@RouteNames.Vacancy_Preview_Get" esfa-automation="cancel" class="govuk-link">Cancel</a>    
+                </esfaFeatureDisabled>
             </div>
         </form>
     </div>
