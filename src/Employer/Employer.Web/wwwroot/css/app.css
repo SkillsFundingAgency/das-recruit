@@ -122,3 +122,9 @@
 .mce-tinymce {
     border: 2px solid #0b0c0c !important;
 }
+
+/* Hide error message spans if empty  */
+
+span.govuk-error-message:empty {
+    display: none;
+}
