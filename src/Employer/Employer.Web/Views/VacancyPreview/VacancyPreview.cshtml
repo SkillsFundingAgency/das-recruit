@@ -523,7 +523,7 @@
                     <img asp-show="@Model.DisabilityConfidentRequiresEdit" src="/img/red-cross.png" />
                     Disability Confident (optional)
                 </h3>
-                <img asp-show="@Model.IsDisabilityConfident" src="~/img/disability-confident_545x172.png" class="govuk-!-width-one-quarter govuk-!-margin-bottom-4" alt="A logo confirming that the employer is registered as disability confident" esfa-automation="disability-confident-logo" no-cdn />
+                <img asp-show="@Model.IsDisabilityConfident" src="~/img/disability-confident_545x172.png" class="app-disability-confident-logo" alt="A logo confirming that the employer is registered as disability confident" esfa-automation="disability-confident-logo" no-cdn />
                 <span asp-show="@Model.IsDisabilityConfident" class="govuk-visually-hidden">This advert meets disability confident requirements</span>
                 <partial name="@PartialNames.DisabilityConfident" for="IsDisabilityConfident" />
                 <p asp-show="@Model.IsNotDisabilityConfident" class="govuk-hint">This advert is not Disability Confident<br />This will not appear on the advert when it goes live</p>

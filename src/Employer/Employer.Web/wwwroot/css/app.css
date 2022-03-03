@@ -128,3 +128,8 @@
 span.govuk-error-message:empty {
     display: none;
 }
+
+
+.app-disability-confident-logo {
+    width: 150px;
+}
