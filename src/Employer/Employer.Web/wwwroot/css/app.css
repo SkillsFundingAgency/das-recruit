@@ -116,3 +116,9 @@
     min-height: 80px;
     padding-left: 15px;
 }
+
+/* Tinymce */
+
+.mce-tinymce {
+    border: 2px solid #0b0c0c !important;
+}
