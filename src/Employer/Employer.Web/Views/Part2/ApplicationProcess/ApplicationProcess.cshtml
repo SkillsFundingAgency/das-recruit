@@ -4,7 +4,7 @@
 @{ 
     ViewBag.Vpv = "/recruitment/employer/page-part2-application-process";
     ViewBag.ZenDeskLabel = "recruit-how-would-you-like-to-receive-applications";
-    ViewBag.Title = "How would you like to receive applications?";
+    ViewBag.Title = "Application website";
 }
 @section BackLink {
     <esfaFeatureEnabled name="@FeatureNames.EmployerTaskList">
@@ -22,31 +22,29 @@
             <span class="govuk-caption-l">@Model.Title</span>
             How would you like to receive applications?
         </h1>
+        <p class="govuk-body">We’ll publish all adverts on <a href="@Model.FindAnApprenticeshipUrl" class="govuk-body govuk-link" rel="noopener" target="_blank">Find an apprenticeship (opens in a new tab or window)</a>, but you can include a link to your own website where applicants can apply directly.</p>
 
         <form asp-route="@RouteNames.ApplicationProcess_Post" novalidate>
 
             <div esfa-validation-marker-for="ApplicationMethod" class="govuk-form-group">
                 <fieldset class="govuk-fieldset">
-                    <label class="govuk-hint" id="@Anchors.ApplicationMethodHeading">
-                        We'll publish all adverts on <a href="@Model.FindAnApprenticeshipUrl" class="govuk-body govuk-link" rel="noopener" target="_blank">Find an apprenticeship (opens in a new tab or window)</a>.
-                    </label>
                     <span esfa-validation-message-for="ApplicationMethod" class="govuk-error-message"></span>
                     <div class="govuk-radios govuk-radios--conditional" data-module="radios">
                         <div class="govuk-radios__item">
                             <input asp-for="ApplicationMethod" value="@ApplicationMethod.ThroughFindAnApprenticeship" class="govuk-radios__input" id="application-method-faa" type="radio">
                             <label for="application-method-faa" class="govuk-label govuk-radios__label">
-                                Through the <a href="@Model.FindAnApprenticeshipUrl" class="govuk-body govuk-link" rel="noopener" target="_blank">Find an apprenticeship service(opens in a new tab or window)</a>
+                                Through the Find an apprenticeship website
                             </label>
                         </div>
                         <div class="govuk-radios__item" data-target="application-method-external-panel">
                             <input asp-for="ApplicationMethod" value="@ApplicationMethod.ThroughExternalApplicationSite" class="govuk-radios__input" id="application-method-external" type="radio" data-aria-controls="application-method-external-panel">
                             <label for="application-method-external" class="govuk-label govuk-radios__label">
-                                Through an external website
+                                Through a different website
                             </label>
                         </div>
                         <div id="application-method-external-panel" class="govuk-radios__conditional govuk-radios__conditional--hidden">
                             <div esfa-validation-marker-for="ApplicationUrl" class="govuk-form-group">
-                                <label asp-for="ApplicationUrl" class="govuk-label govuk-!-font-weight-bold">Enter the web address applicants should use to apply for this apprenticeship</label>
+                                <label asp-for="ApplicationUrl" class="govuk-label govuk-!-font-weight-bold">Enter a link about the vacancy. The page should give applicants a way to apply</label>
                                 <span esfa-validation-message-for="ApplicationUrl" class="govuk-error-message"></span>
                                 <input asp-for="ApplicationUrl" class="govuk-input govuk-!-width-two-thirds" maxlength="200" />
                             </div>
