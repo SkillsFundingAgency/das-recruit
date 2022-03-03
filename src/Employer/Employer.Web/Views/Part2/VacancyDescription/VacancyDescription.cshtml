@@ -4,12 +4,17 @@
     ViewBag.Title = "About the apprenticeship";
     ViewBag.ZenDeskLabel = "recruit-description-of-the-apprenticeship";
 }
+
+@section BackLink
+{
+    <esfaFeatureEnabled name="@FeatureNames.EmployerTaskList">
+        <a asp-show="@(!Model.IsTaskListCompleted)" asp-route="@RouteNames.ShortDescription_Get" asp-route-wizard="@(!Model.IsTaskListCompleted)" esfa-automation="link-back" class="govuk-back-link">Back</a>
+        <a asp-show="@Model.IsTaskListCompleted" asp-route="@RouteNames.EmployerCheckYourAnswersGet" asp-route-wizard="@Model.IsTaskListCompleted" esfa-automation="link-back" class="govuk-back-link">Back</a>
+    </esfaFeatureEnabled>
+}
+
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-        <esfaFeatureEnabled name="@FeatureNames.EmployerTaskList">
-            <a asp-show="@(!Model.IsTaskListCompleted)" asp-route="@RouteNames.ShortDescription_Get" asp-route-wizard="@(!Model.IsTaskListCompleted)" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
-            <a asp-show="@Model.IsTaskListCompleted" asp-route="@RouteNames.EmployerCheckYourAnswersGet" asp-route-wizard="@Model.IsTaskListCompleted" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
-        </esfaFeatureEnabled>
         
         <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }' />
         <partial name="@PartialNames.ReviewSummary" for="Review" />
@@ -20,6 +25,7 @@
         </h1>
 
         <form asp-route="@RouteNames.VacancyDescription_Index_Post">
+
             <div esfa-validation-marker-for="VacancyDescription" class="govuk-form-group">
                 <label asp-for="VacancyDescription" class="govuk-label govuk-!-font-weight-bold">What will the apprentice be doing?</label>
                 <span class="govuk-hint">Describe what an average day or week will be like and what tasks the apprentice could be doing.</span>
@@ -29,6 +35,7 @@
                 <span class="govuk-body maxchar-count">500</span>
                 <span class="govuk-body maxchar-text"> characters remaining</span>
             </div>
+
             <div esfa-validation-marker-for="TrainingDescription" class="govuk-form-group">
                 <label asp-for="TrainingDescription" class="govuk-label govuk-!-font-weight-bold govuk-!-margin-bottom-5">What training will the apprentice take and what qualification will the apprentice get at the end?</label>
                 <p class="govuk-body">You must include information about the following:</p>
@@ -44,6 +51,7 @@
                 <span class="govuk-body maxchar-count">500</span>
                 <span class="govuk-body maxchar-text"> characters remaining</span>
             </div>
+
             <div esfa-validation-marker-for="OutcomeDescription" class="govuk-form-group">
                 <label asp-for="OutcomeDescription" class="govuk-label govuk-!-font-weight-bold">What's the expected career progression after this apprenticeship?</label>
                 <span class="govuk-hint">You may want to mention specific routes they could take once qualified.</span>
@@ -52,14 +60,15 @@
                 <span class="govuk-body maxchar-count">500</span>
                 <span class="govuk-body maxchar-text"> characters remaining</span>
             </div>
+
             <div class="govuk-button-group">
                 <input type="submit" value="Save and continue" esfa-automation="btn-continue" class="govuk-button save-button" />
                 <esfaFeatureEnabled name="@FeatureNames.EmployerTaskList">
-                    <a asp-show="@(!Model.IsTaskListCompleted)" asp-route="@RouteNames.Dashboard_Get" class="govuk-link">Cancel</a>
-                    <a asp-show="@Model.IsTaskListCompleted" asp-route="@RouteNames.EmployerCheckYourAnswersGet" esfa-automation="cancel" class="govuk-link">Cancel</a>    
+                    <a asp-show="@(!Model.IsTaskListCompleted)" asp-route="@RouteNames.Dashboard_Get" class="govuk-link govuk-link--no-visited-state">Cancel</a>
+                    <a asp-show="@Model.IsTaskListCompleted" asp-route="@RouteNames.EmployerCheckYourAnswersGet" esfa-automation="cancel" class="govuk-link govuk-link--no-visited-state">Cancel</a>    
                 </esfaFeatureEnabled>
                 <esfaFeatureDisabled name="@FeatureNames.EmployerTaskList">
-                    <a asp-route="@RouteNames.Vacancy_Preview_Get" esfa-automation="link-cancel" class="govuk-link">Cancel</a>
+                    <a asp-route="@RouteNames.Vacancy_Preview_Get" esfa-automation="link-cancel" class="govuk-link govuk-link--no-visited-state">Cancel</a>
                 </esfaFeatureDisabled>
             </div>
         </form>
@@ -68,7 +77,7 @@
 
 @section FooterJS 
 {
-    <script src="/lib/tinymce-4.9.2/tinymce.min.js"></script>
+    <script src="/lib/tinymce-4.9.2/tinymce.min.js" no-cdn></script>
     <script nws-csp-add-nonce="true">
         initializeHtmlEditors();
     </script>

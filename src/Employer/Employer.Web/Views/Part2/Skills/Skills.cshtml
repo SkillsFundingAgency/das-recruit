@@ -32,7 +32,7 @@
             <span esfa-validation-message-for="Skills" class="govuk-error-message"></span>
             <div class="govuk-grid-row">
                 <div class="govuk-grid-column-one-half">
-                    <div class="govuk-checkboxes">
+                    <div class="govuk-checkboxes govuk-!-margin-bottom-2">
                         @for (var i = 0; i < Model.Column1Checkboxes.Count; i++)
                         {
                             var checkbox = Model.Column1Checkboxes[i];
@@ -70,7 +70,7 @@
     <div class="govuk-button-group">
         <button type="submit" esfa-automation="btn-continue" class="govuk-button save-button">Save and continue</button>
         <esfaFeatureEnabled name="@FeatureNames.EmployerTaskList">
-            <a asp-show="@(!Model.IsTaskListCompleted)" asp-route="@RouteNames.Dashboard_Get" class="govuk-link">Cancel</a>
+            <a asp-show="@(!Model.IsTaskListCompleted)" asp-route="@RouteNames.Dashboard_Get" class="govuk-link govuk-link--no-visited-state">Cancel</a>
             <a asp-show="@Model.IsTaskListCompleted" asp-route="@RouteNames.EmployerCheckYourAnswersGet" esfa-automation="cancel" class="govuk-link govuk-link--no-visited-state">Cancel</a>    
         </esfaFeatureEnabled>
         <esfaFeatureDisabled name="@FeatureNames.EmployerTaskList">
