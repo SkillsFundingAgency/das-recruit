@@ -57,7 +57,7 @@ if (selectFields.length > 0) {
     }
 }
 
-// Location Autocomplete
+// Vacancy Autocomplete
 
 var vacancySearchInputs = document.querySelectorAll(".app-vacancy-autocomplete");
 
