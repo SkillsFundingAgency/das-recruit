@@ -117,6 +117,31 @@
     padding-left: 15px;
 }
 
+/* Local overrides to the das-task-list component */
+
+.das-task-list__section {
+    width: 100%;
+}
+
+.das-task-list__section-number {
+    width: 20px;
+}
+
+@media (min-width: 40.0625em) {
+    .das-task-list__section-number {
+        width: 30px;
+    }
+}
+
+.das-task-list__section-heading {
+    display: table-cell;
+}
+
+.das-task-list__section-status {
+    text-align: right;
+    display: table-cell;
+}
+
 /* Tinymce */
 
 .mce-tinymce {
