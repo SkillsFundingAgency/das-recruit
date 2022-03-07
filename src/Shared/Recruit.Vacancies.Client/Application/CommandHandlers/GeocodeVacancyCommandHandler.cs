@@ -43,7 +43,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
           
             if(geocode != null)
             {
-                await SetVacancyGeocode(vacancy.Id, geocode);
+                await SetVacancyGeocode(vacancy, geocode);
             }
             else
             {
@@ -58,19 +58,16 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             if (usingOutCode)
             {
                 _logger.LogInformation("Attempting to geocode outcode:'{outcode}' for anonymous vacancyId:'{vacancyId}'", vacancy.EmployerLocation.PostcodeAsOutcode(), vacancy.Id);
+                return _geocodeService.Geocode(vacancy.EmployerLocation.PostcodeAsOutcode());
             }
-            else
-            {
-                _logger.LogInformation("Attempting to geocode postcode:'{postcode}' for vacancyId:'{vacancyId}'", vacancy.EmployerLocation.Postcode, vacancy.Id);
-            }
-
+            
+            _logger.LogInformation("Attempting to geocode postcode:'{postcode}' for vacancyId:'{vacancyId}'", vacancy.EmployerLocation.Postcode, vacancy.Id);
             return _geocodeService.Geocode(vacancy.EmployerLocation.Postcode);
+            
         }
 
-        private async Task SetVacancyGeocode(Guid vacancyId, Geocode geocode)
+        private async Task SetVacancyGeocode(Vacancy vacancy, Geocode geocode)
         {
-            var vacancy = await _repository.GetVacancyAsync(vacancyId);
-
             if (vacancy.EmployerLocation == null)
             {
                 _logger.LogInformation("Vacancy:{vacancyId} does not have employer location information. Cannot update vacancy", vacancy.Id);
