@@ -1,7 +1,7 @@
 ﻿@model Esfa.Recruit.Employer.Web.ViewModels.EmployerContactDetailsViewModel
 @{ 
     ViewBag.Vpv = "/recruitment/employer/page-part2-employer-contact-details";
-    ViewBag.Title = "Add employer contact information (optional)";
+    ViewBag.Title = "Contact details";
     ViewBag.ZenDeskLabel = "recruit-add-contact-information";
 }
 
@@ -20,8 +20,9 @@
 
         <h1 class="govuk-heading-xl">
             <span class="govuk-caption-l">@Model.Title</span>
-            Add contact information for @Model.EmployerTitle (optional)
+            Contact details for @Model.EmployerTitle (optional)
         </h1>
+        <p class="govuk-body">This should be someone an applicant can contact to ask questions about the apprenticeship position.</p>
         <form asp-route="@RouteNames.EmployerContactDetails_Post" novalidate>
             <div esfa-validation-marker-for="EmployerContactName" class="govuk-form-group">
                 <label asp-for="EmployerContactName" class="govuk-label govuk-label--s">Contact name (optional)</label>
