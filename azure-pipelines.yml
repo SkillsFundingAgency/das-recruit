@@ -20,7 +20,7 @@ resources:
   - repository: das-platform-building-blocks
     type: github
     name: SkillsFundingAgency/das-platform-building-blocks
-    ref: refs/head/unit_test_projects
+    ref: refs/heads/unit_test_projects
     endpoint: SkillsFundingAgency
   - repository: das-platform-automation
     type: github
