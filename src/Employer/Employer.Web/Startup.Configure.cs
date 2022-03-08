@@ -11,6 +11,7 @@ using System.Globalization;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Middleware;
 using Microsoft.ApplicationInsights.Extensibility;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.IdentityModel.Logging;
 
 namespace Esfa.Recruit.Employer.Web
@@ -49,6 +50,9 @@ namespace Esfa.Recruit.Employer.Web
             {
                 IdentityModelEventSource.ShowPII = true;
             }
+            
+            app.UseHealthChecks();
+            
             // Add Content Security Policy           
             app.UseCsp(options => options
                 .DefaultSources(s =>
