@@ -1,0 +1,26 @@
+@model PagerViewModel
+<nav role="navigation" aria-label="Pagination">
+  <div class="das-pagination__summary">
+    @Model.Caption
+  </div>
+  <ul class="das-pagination">
+    <li class="das-pagination__item" asp-show="@Model.ShowPrevious">
+      <a class="das-pagination__link" asp-route="@Model.RouteName" asp-all-route-data="@Model.PreviousPageRouteData" aria-label="Previous page">Previous</a>
+    </li>
+    @for (var pageIndex = 1; pageIndex <= Model.TotalPages; pageIndex++)
+    {
+        <li class="das-pagination__item">
+            @if (pageIndex == Model.CurrentPage) {
+                <a class="das-pagination__link current" asp-route="@Model.RouteName" asp-all-route-data="@Model.GetRouteData(pageIndex)" aria-current="true" aria-label="Page @pageIndex, current page">@pageIndex</a>
+            } 
+            else 
+            {
+                <a class="das-pagination__link asp-route="  asp-route="@Model.RouteName" asp-all-route-data="@Model.GetRouteData(pageIndex)" aria-label="Page @pageIndex">@pageIndex</a>
+            }
+        </li>
+    }
+    <li class="das-pagination__item" asp-show="@Model.ShowNext">
+      <a class="das-pagination__link"  asp-route="@Model.RouteName" asp-all-route-data="@Model.NextPageRouteData" aria-label="Next page">Next</a>
+    </li>
+  </ul>
+</nav>
