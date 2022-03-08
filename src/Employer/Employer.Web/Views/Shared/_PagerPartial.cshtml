@@ -1,5 +1,5 @@
 @model PagerViewModel
-<nav role="navigation" aria-label="Pagination">
+<nav role="navigation" aria-label="Pagination" asp-show="@Model.ShowPager" >
   <div class="das-pagination__summary">
     @Model.Caption
   </div>
