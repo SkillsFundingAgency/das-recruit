@@ -65,14 +65,14 @@
                     <label class="govuk-label govuk-radios__label" for="WeightingYes">
                         Essential
                     </label>
-                    <span class="govuk-hint govuk-radios__hint">The applicant must have this qualification to be considered.</span>
+                    <span class="govuk-hint govuk-radios__hint">The applicant must have this qualification to be considered</span>
                 </div>
                 <div class="govuk-radios__item">
                     <input asp-for="Weighting" class="govuk-radios__input" id="WeightingNo" esfa-automation="radio-weighting-no" type="radio" value="@QualificationWeighting.Desired" data-display="@QualificationWeighting.Desired.GetDisplayName()">
                     <label class="govuk-label govuk-radios__label" for="WeightingNo">
                         Desirable
                     </label>
-                    <span class="govuk-hint govuk-radios__hint">This qualification would be nice to have, but it's not required.</span>
+                    <span class="govuk-hint govuk-radios__hint">This qualification would be a nice to have, but is not required</span>
                 </div>
             </div>
         </fieldset>
