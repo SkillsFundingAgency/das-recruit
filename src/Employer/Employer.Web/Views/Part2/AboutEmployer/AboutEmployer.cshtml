@@ -22,11 +22,11 @@
             <span class="govuk-caption-l">@Model.Title</span>
             Information about @Model.EmployerTitle
         </h1>
-        
+        <p class="govuk-body">Updating the employer information will also update the employer information on any unapproved vacancies eg. draft, pending review or rejected vacancies.</p>
         <form asp-route="@RouteNames.AboutEmployer_Get">
             <div class="govuk-character-count" data-module="govuk-character-count" data-maxlength="500">
                 <div class="govuk-form-group" esfa-validation-marker-for="EmployerDescription">
-                    <label asp-for="EmployerDescription" class="govuk-label govuk-label--s">Tell us about your organisation</label>
+                    <label asp-for="EmployerDescription" class="govuk-label">Tell us about your organisation</label>
                     <span esfa-validation-message-for="EmployerDescription" class="govuk-error-message"></span>
                     <textarea class="govuk-textarea govuk-js-character-count" asp-for="EmployerDescription" rows="5" aria-describedby="EmployerDescription-info"></textarea>
                 </div>
@@ -35,7 +35,7 @@
                 </div>
             </div>
             <div esfa-validation-marker-for="EmployerWebsiteUrl" class="govuk-form-group">
-                <label asp-for="EmployerWebsiteUrl" class="govuk-label govuk-label--s">Website for organisation (optional)</label>
+                <label asp-for="EmployerWebsiteUrl" class="govuk-label">Website for organisation (optional)</label>
                 <span esfa-validation-message-for="EmployerWebsiteUrl" class="govuk-error-message"></span>
                 <div asp-show="@Model.IsAnonymous" class="govuk-hint">The website will not be shown as the employer is anonymous</div>
                 <input asp-for="EmployerWebsiteUrl" class="govuk-input govuk-!-width-three-quarters" maxlength="100" />
