@@ -28,7 +28,14 @@
 
         <table class="govuk-table">
             <caption class="govuk-visually-hidden">Your qualification requirements</caption>
-            
+            <thead>
+                <tr>
+                    <th class="govuk-table__header" scope="col">Qualification</th>
+                    <th class="govuk-table__header" scope="col">Grade</th>
+                    <th class="govuk-table__header" scope="col">Essential or desirable</th>
+                    <th class="govuk-table__header" scope="col">Action</th>
+                </tr>
+            </thead>
             <tbody>
 
                 @for (var i = 0; i < Model.Qualifications.Count; i++)
