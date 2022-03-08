@@ -3,8 +3,8 @@
 var providerSearchInputs = document.querySelectorAll(".app-provider-autocomplete");
 
 if (providerSearchInputs.length > 0) {
-  for (var i = 0; i < providerSearchInputs.length; i++) {
-    var input = providerSearchInputs[i]
+  for (var a = 0; a < providerSearchInputs.length; a++) {
+    var input = providerSearchInputs[a]
     var container = document.createElement('div');
 
     container.className = "das-autocomplete-wrap"
@@ -59,42 +59,42 @@ if (selectFields.length > 0) {
 
 // Vacancy Autocomplete
 
+var vacancyApiUrl, 
+    getVacancySuggestions = function (query, updateResults) {
+    var xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4) {
+        var jsonResponse = JSON.parse(xhr.responseText);
+        updateResults(jsonResponse);
+        }
+    }
+    xhr.open("GET", vacancyApiUrl + '?term=' + query, true);
+    xhr.send();
+};
+
 var vacancySearchInputs = document.querySelectorAll(".app-vacancy-autocomplete");
 
 if (vacancySearchInputs.length > 0) {
 
-  for (var i = 0; i < vacancySearchInputs.length; i++) {
+  for (var v = 0; v < vacancySearchInputs.length; v++) {
 
-    var input = vacancySearchInputs[i]
-    var apiUrl = input.dataset.apiurl
-    var container = document.createElement('div');
+    var searchInput = vacancySearchInputs[v]
+    vacancyApiUrl = searchInput.dataset.apiurl
+    var searchInputContainer = document.createElement('div');
 
-    container.className = "das-autocomplete-wrap"
-    input.parentNode.replaceChild(container, input);
-
-    var getSuggestions = function (query, updateResults) {
-      var results = [];
-      var xhr = new XMLHttpRequest();
-      xhr.onreadystatechange = function() {
-        if (xhr.readyState === 4) {
-          var jsonResponse = JSON.parse(xhr.responseText);
-          updateResults(jsonResponse);
-        }
-      }
-      xhr.open("GET", apiUrl + '?term=' + query, true);
-      xhr.send();
-    };
+    searchInputContainer.className = "das-autocomplete-wrap"
+    searchInput.parentNode.replaceChild(searchInputContainer, searchInput);
 
     accessibleAutocomplete({
-      element: container,
-      id: input.id,
-      name: input.name,
-      defaultValue: input.value,
+      element: searchInputContainer,
+      id: searchInput.id,
+      name: searchInput.name,
+      defaultValue: searchInput.value,
       displayMenu: 'overlay',
       showNoOptionsFound: false,
       minLength: 2,
-      source: getSuggestions,
-      placeholder: input.placeholder,
+      source: getVacancySuggestions,
+      placeholder: searchInput.placeholder,
       confirmOnBlur: false,
       autoselect: true
     });
@@ -108,6 +108,7 @@ if (vacancySearchInputs.length > 0) {
     }
   }
 }
+
 
 
 
