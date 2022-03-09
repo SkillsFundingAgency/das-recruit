@@ -51,7 +51,7 @@
     <link asp-append-version="true" rel="stylesheet" media="screen" href="/css/app.css" no-cdn />
     <!--<![endif]-->
     <meta property="og:image" content="/assets/images/govuk-opengraph-image.png" />
-    @RenderSection(RazorSections.HeadCSS, required: false)
+    @await RenderSectionAsync(RazorSections.HeadCSS, required: false)
     <partial name="@PartialNames.ApplicationInsights" />
     <script src="/libs/jquery/jquery.min.js"></script>
     <script src="@Url.Content("/lib/jquery-are-you-sure/jquery.are-you-sure.js")" no-cdn></script>
@@ -60,7 +60,7 @@
     <script nws-csp-add-nonce="true">
         window.EsfaRecruit = {};
     </script>
-    @RenderSection(RazorSections.HeadJS, required: false)
+    @await RenderSectionAsync(RazorSections.HeadJS, required: false)
     <partial name="@PartialNames.ZenDeskWidget" />
     <partial name="@PartialNames.ZenDeskApi" />
 </head>
@@ -75,16 +75,16 @@
             <button type="submit" class="govuk-button-fake-link">Dismiss</button>
         </form>
     </div>
-    @Html.Partial("_CookieBanner", Html.GetCookieBannerViewModel())
-    @Html.Partial("_Header", Html.GetHeaderViewModel())
+    @await Html.PartialAsync("_CookieBanner", Html.GetCookieBannerViewModel())
+    @await Html.PartialAsync("_Header", Html.GetHeaderViewModel())
     <div class="govuk-width-container">
         @RenderSection(RazorSections.BackLink, required: false)
         <main class="govuk-main-wrapper " id="main-content" role="main">
             @RenderBody()
         </main>
     </div>
-    @Html.Partial("_Footer", Html.GetFooterViewModel())
-    @RenderSection("FooterPreJS", required: false)
+    @await Html.PartialAsync("_Footer", Html.GetFooterViewModel())
+    @await RenderSectionAsync("FooterPreJS", required: false)
     <script src="/libs/govuk-frontend/all.js"></script>
     <script src="/js/das-all.js"></script>
     <script src="/libs/accessible-autocomplete/accessible-autocomplete.min.js"></script>

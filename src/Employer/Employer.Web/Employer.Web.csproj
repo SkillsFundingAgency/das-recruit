@@ -3,7 +3,6 @@
     <TargetFramework>netcoreapp2.2</TargetFramework>
     <UserSecretsId>recruit-employer-web</UserSecretsId>
     <RootNamespace>Esfa.Recruit.Employer.Web</RootNamespace>
-    <MvcRazorCompileOnPublish>true</MvcRazorCompileOnPublish>
   </PropertyGroup>
   <PropertyGroup>
     <AssemblyName>Esfa.Recruit.Employer.Web</AssemblyName>
