@@ -21,7 +21,7 @@
   <ItemGroup>
     <PackageReference Include="CsvHelper" Version="12.1.3" />
     <PackageReference Include="HtmlSanitizer" Version="5.0.372" />
-    <PackageReference Include="Humanizer.Core.uk" Version="2.7.9" />
+    <PackageReference Include="Humanizer.Core" Version="2.14.1" />
     <PackageReference Include="MediatR" Version="8.0.2" />
     <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="8.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.WebUtilities" Version="2.1.1" />
@@ -44,7 +44,6 @@
     <PackageReference Include="Polly" Version="7.2.2" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="2.1.1" />
     <PackageReference Include="TimeZoneConverter" Version="3.2.0" />
-    <PackageReference Include="Humanizer.Core.uk" Version="2.6.2" />
     <ProjectReference Include="..\..\Communication\Communication.Types\Communication.Types.csproj" />
   </ItemGroup>
 </Project>
