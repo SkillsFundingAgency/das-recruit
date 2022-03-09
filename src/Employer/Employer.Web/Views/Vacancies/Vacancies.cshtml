@@ -158,7 +158,31 @@
                     }
                 </tbody>
             </table>
-            <partial name="@PartialNames.Pager" model="@Model.Pager" />
+            <nav role="navigation" aria-label="Pagination" asp-show="@Model.Pager.ShowPager" >
+                <div class="das-pagination__summary">
+                    @Model.Pager.Caption
+                </div>
+                <ul class="das-pagination">
+                    <li class="das-pagination__item" asp-show="@Model.Pager.ShowPrevious">
+                    <a class="das-pagination__link" asp-route="@Model.Pager.RouteName" asp-all-route-data="@Model.Pager.PreviousPageRouteData" aria-label="Previous page">Previous</a>
+                    </li>
+                    @for (var pageIndex = 1; pageIndex <= Model.Pager.TotalPages; pageIndex++)
+                    {
+                        <li class="das-pagination__item">
+                            @if (pageIndex == Model.Pager.CurrentPage) {
+                                <a class="das-pagination__link current" asp-route="@Model.Pager.RouteName" asp-all-route-data="@Model.Pager.GetRouteData(pageIndex)" aria-current="true" aria-label="Page @pageIndex, current page">@pageIndex</a>
+                            } 
+                            else 
+                            {
+                                <a class="das-pagination__link asp-route="  asp-route="@Model.Pager.RouteName" asp-all-route-data="@Model.Pager.GetRouteData(pageIndex)" aria-label="Page @pageIndex">@pageIndex</a>
+                            }
+                        </li>
+                    }
+                    <li class="das-pagination__item" asp-show="@Model.Pager.ShowNext">
+                    <a class="das-pagination__link"  asp-route="@Model.Pager.RouteName" asp-all-route-data="@Model.Pager.NextPageRouteData" aria-label="Next page">Next</a>
+                    </li>
+                </ul>
+            </nav>
         </div>
     </div>
 </div>
