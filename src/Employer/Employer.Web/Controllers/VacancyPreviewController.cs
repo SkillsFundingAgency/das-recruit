@@ -9,6 +9,7 @@ using Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Shared.Web.Extensions;
+using Esfa.Recruit.Shared.Web.FeatureToggle;
 
 namespace Esfa.Recruit.Employer.Web.Controllers
 {
@@ -16,10 +17,12 @@ namespace Esfa.Recruit.Employer.Web.Controllers
     public class VacancyPreviewController : Controller
     {
         private readonly VacancyPreviewOrchestrator _orchestrator;
+        private readonly IFeature _feature;
 
-        public VacancyPreviewController(VacancyPreviewOrchestrator orchestrator)
+        public VacancyPreviewController(VacancyPreviewOrchestrator orchestrator, IFeature feature)
         {
             _orchestrator = orchestrator;
+            _feature = feature;
         }
 
         [HttpGet("preview", Name = RouteNames.Vacancy_Preview_Get)]
@@ -35,6 +38,11 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             if (TempData.ContainsKey(TempDataKeys.VacancyClonedInfoMessage))
                 viewModel.VacancyClonedInfoMessage = TempData[TempDataKeys.VacancyClonedInfoMessage].ToString();
 
+            if (_feature.IsFeatureEnabled(FeatureNames.EmployerTaskList))
+            {
+                return View("AdvertPreview", viewModel);
+            }
+            
             return View(viewModel);
         }
 

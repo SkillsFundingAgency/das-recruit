@@ -1,0 +1,282 @@
+@using Microsoft.AspNetCore.Html
+@using Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview
+@using Esfa.Recruit.Shared.Web.Mappers
+@using Esfa.Recruit.Vacancies.Client.Domain.Entities
+@{ 
+    ViewBag.Vpv = "/recruitment/employer/advert-preview";
+    ViewBag.Title = "Preview your advert"; 
+}
+
+@model VacancyPreviewViewModel
+
+<form action="" method="post">
+<div class="govuk-grid-row">
+<div class="govuk-grid-column-two-thirds-from-desktop">
+  <h1 class="govuk-heading-l">Preview your advert</h1>
+</div>
+
+<div class="govuk-grid-column-full govuk-!-margin-bottom-7">
+<div class="govuk-!-padding-7" style="border:1px solid #b1b4b6">
+
+<div class="govuk-grid-row govuk-!-margin-bottom-6">
+  <div class="govuk-grid-column-full">
+    <h2 class="govuk-heading-xl govuk-!-margin-bottom-6 govuk-grid-column-two-thirds">
+      @Model.Title
+      <span class="govuk-caption-l">@Model.EmployerName</span>
+    </h2>
+  </div>
+</div>
+
+<div class="govuk-grid-row govuk-!-margin-bottom-6">
+  <div class="govuk-grid-column-two-thirds">
+
+    <p class="govuk-body">@Model.ShortDescription</p>
+  </div>
+  <div class="govuk-grid-column-one-third">
+    <h3 class="govuk-heading-s govuk-!-margin-bottom-0">Closing date</h3>
+    <p class="govuk-body">@Model.ClosingDate</p>
+  </div>
+</div>
+
+<div class="govuk-grid-row" id="apprenticeshipSummary">
+  <div class="govuk-grid-column-full">
+    <h2 class="govuk-heading-l">Apprenticeship summary</h2>
+  </div>
+</div>
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-one-third">
+    <ul class="govuk-list">
+      <li>
+        <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Weekly wage</h3>
+        <p id="vacancy-wage">
+          £578.00
+        </p>
+      </li>
+      <li>
+        <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Working week</h3>
+        <p id="vacancy-working-week" itemprop="workHours" class="sfa-small-bottom-margin">@Model.WorkingWeekDescription</p>
+
+        <p id="total-hours-per-week">Total hours per week: @Model.HoursPerWeek</p>
+      </li>
+      <li>
+        <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Expected duration</h3>
+        <p id="vacancy-expected-duration">@Model.ExpectedDuration</p>
+      </li>
+      <li>
+        <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Possible start date</h3>
+        <p id="vacancy-start-date">@Model.PossibleStartDate</p>
+      </li>
+      <li>
+        <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Date posted</h3>
+        <p id="vacancy-posted-date">@Model.PostedDate</p>
+      </li>
+      <li>
+      </li>
+      <li>
+        <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Apprenticeship level</h3>
+        <p id="vacancy-type" itemprop="employmentType">
+          @Model.TrainingLevel <br />
+          @Model.EducationLevelName</p>
+      </li>
+      <li>
+        <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Reference number</h3>
+        <p id="vacancy-reference-id">@Model.VacancyReferenceNumber</p>
+      </li>
+      <li>
+        <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Positions</h3>
+        <p id="number-of-positions">@Model.NumberOfPositions</p>
+      </li>
+    </ul>
+  </div>
+
+
+  <div class="govuk-grid-column-two-thirds" id="vacancyDescription">
+    <div itemprop="responsibilities" class="sfa-if-first">
+      <div id="vacancy-full-description" class="sfa-text-editor-generated ">
+        @Html.Raw(Model.VacancyDescription)
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
+
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-full">
+    <h2 class="govuk-heading-l">Requirements and prospects</h2>
+  </div>
+</div>
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-one-half">
+    <h3 class="govuk-heading-s">Desired skills</h3>
+    <ul class="govuk-list govuk-list--bullet">
+      @foreach (var skill in Model.Skills)
+      {
+        <li>@skill</li>
+      }
+    </ul>
+
+    @* <h3 class="govuk-heading-s">Personal qualities</h3> *@
+    @* <ul class="govuk-list govuk-list--bullet"> *@
+    @*   <li>You have a hands-on attitude, be flexible, adaptable, and proactive</li> *@
+    @*   <li>You aim to attain impeccable customer service and excellent customer facing skills</li> *@
+    @*   <li>You seek and respond well to feedback</li> *@
+    @* </ul> *@
+
+    <h3 class="govuk-heading-s">Desired Qualifications</h3>
+    <p>For the apprenticeship program we prioritize applicants eligible to government funding for their apprenticeship and for this you need to:</p>
+    <ul class="govuk-list govuk-list--bullet">
+      @foreach (var qualification in Model.Qualifications)
+      {
+        <li>@qualification</li>
+      }
+    </ul>
+  </div>
+
+  <div class="govuk-grid-column-one-half">
+
+    @* <h3 class="govuk-heading-s">Future prospects</h3> *@
+    @* <ul class="govuk-list govuk-list--bullet"> *@
+    @*   <li>Amazon is the perfect place to start your career Safety. Safety apprentices can work across a number of teams in Amazon, such as loss prevention, HR and Operations Management working with other teams to deliver big or small projects successfully.</li> *@
+    @* *@
+    @* </ul> *@
+
+    <h3 class="govuk-heading-s">Things to consider</h3>
+    <ul class="govuk-list govuk-list--bullet">
+      <p>@Model.ThingsToConsider</p>
+    </ul>
+  </div>
+</div>
+<hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-full">
+    <h2 class="govuk-heading-l">About the employer</h2>
+  </div>
+</div>
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    <ul class="govuk-list">
+      <li>
+        <p class="govuk-body">@Model.EmployerDescription</p>
+      </li>
+      <li>
+        <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Employer</h3>
+        <p class="govuk-body">@Model.EmployerName</p>
+      </li>
+      <li>
+        <div asp-show="@Model.IsDisabilityConfident">
+          <img asp-show="@Model.IsDisabilityConfident" src="~/img/disability-confident_545x172.png" class="app-disability-confident-logo" alt="A logo confirming that the employer is registered as disability confident" esfa-automation="disability-confident-logo" no-cdn/>
+            <details class="govuk-details">
+              <summary class="govuk-details__summary">
+                <span class="govuk-details__summary-text">
+                  About disability confident
+                </span>
+              </summary>
+              <div class="govuk-details__text">
+                <p>Disabled candidates are generally guaranteed an interview if you meet the minimum requirements for this vacancy. Contact the employer for full details.</p>
+    
+                <p>Employers may need to limit the number of interviews offered to both disabled and non-disabled people if they receive high numbers of applications.</p>
+    
+                <p>The disability confident scheme supports employers to make the most of the talents disabled people can bring to your workplace.provide your nationality, you’ll have to send copies of identity documents through the post.</p>
+              </div>
+            </details>
+        </div>
+        
+      </li>
+
+    </ul>
+  </div>
+
+</div>
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-one-half">
+    <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Address</h3>
+    <ul class="govuk-list">
+      @foreach (var addrLine in Model.EmployerAddressElements)
+      {
+          <li>@addrLine</li>
+      }
+    </ul>
+  </div>
+  <div class="govuk-grid-column-one-half">
+    <img asp-show="@Model.HasMapUrl" id="static-map" src="@Model.MapUrl" alt="Location map" />
+  </div>
+</div>
+<hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-full">
+    <h2 class="govuk-heading-l">Training</h2>
+  </div>
+      
+  <div class="govuk-grid-column-one-half">
+    <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Training provider</h3>
+    <p>@Model.ProviderName</p>
+    <p>Applications for this apprenticeship are being processed by Penshaw View Training Limited</p>
+
+    <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Contact</h3>
+    <p>Kathryn Hewitt-Meadows 07949964739<br>
+      Kathryn.Hewitt-Meadows@Penshawview.co.uk</p>
+  </div>
+
+  <div class="govuk-grid-column-one-half">
+
+    <p>Level 3 Safety, Health &amp; Environment Technician, which includes:</p>
+    <ul class="govuk-list govuk-list--bullet">
+      <li>Level 2 Functional Skills in Maths and English (if required)</li>
+      <li>Level 1 ICT</li>
+      <li>Work based delivery of Level 3 Apprenticeship Standard.</li>
+      <li>Full company induction including Health &amp; Safety.</li>
+      <li>20% off the job time will be given for study/assignments.</li>
+      <li>Monthly contact session with your PV trainer.</li>
+      <li>Internal training provided by your employer and workplace mentor.</li>
+   
+    </ul>
+
+    <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Apprenticeship standard</h3>
+    <p>Safety, health and environment technician<br>Level 3 (A level)</p>
+  
+  </div>
+  
+</div>
+<hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-full">
+    <h2 class="govuk-heading-l">
+      Employer's Application Instructions
+    </h2>
+  </div>
+  <div class="govuk-grid-column-two-thirds">
+    <p>Application journey: Apply through external link/click start your journey today/scroll to the bottom of the screen/ select job category of medical health &amp; safety/select relevant job vacancy. Your recruitment process will start with your online application (providing your CV as well as answering questions about the above basic qualifications) and will then take you onto online testing through one of our external training providers. As a last step, we will invite successful candidates to an assessment centre where they will participate in a group exercise, execute a practical exercise and get a chance to present their profile, motivation and skills 1-on-1 during interviews or presentations.</p>
+    <p>This apprenticeship requires you to apply through the employer's website.</p>
+  </div>
+</div>
+     
+</div>
+</div>
+
+<div class="govuk-grid-column-two-thirds-from-desktop">
+
+  <h2 class="govuk-heading-m">Now submit your advert</h2>
+
+  <p class="govuk-body">By submitting this advert you are confirming that, to the best of your knowledge, the details you are providing are correct.</p>
+
+      
+  <div class="govuk-button-group">
+    <input type="hidden" name="answers-checked" value="true">
+          
+    <button class="govuk-button" data-module="govuk-button">
+      Submit advert
+    </button>
+
+    <a href="check-your-answers" class="govuk-button govuk-button--secondary">Change your advert</a>
+  </div>
+
+      
+
+</div>
+</div>
+</form>
