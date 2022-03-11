@@ -12,6 +12,11 @@
     ViewBag.ZenDeskLabel = "recruit-recruitment";
     ViewBag.Title = "Your apprenticeship adverts"; }
 
+@section BackLink
+{
+    <a asp-hide="@Model.HasAnyVacancies" asp-route="@RouteNames.Dashboard_Account_Home" class="govuk-back-link">Back</a>
+}
+
 <partial asp-hide="@Model.HasAnyVacancies" name="_NoVacanciesContent" />
 
 <div asp-show="@Model.HasAnyVacancies">
