@@ -16,7 +16,13 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         {
             _orchestrator = orchestrator;
         }
-
+        
+        [HttpGet("vacancies/create/start", Name=RouteNames.CreateVacancyStart)]
+        public IActionResult StartVacancyCreate(VacancyRouteModel vrm)
+        {
+            return View("StartCreateVacancy");
+        }
+        
         [HttpGet("vacancies/create/task-list", Name = RouteNames.EmployerTaskListCreateGet)]
         public async Task<IActionResult> CreateEmployerTaskList(VacancyRouteModel vrm)
         {

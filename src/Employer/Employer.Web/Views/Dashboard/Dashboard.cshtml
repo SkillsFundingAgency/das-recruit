@@ -29,7 +29,7 @@
         </div>
         <div class="govuk-grid-column-one-half ">
             <esfaFeatureEnabled name="@FeatureNames.EmployerTaskList">
-                <a asp-route="@RouteNames.EmployerTaskListCreateGet" asp-route-employerAccountId="@Model.EmployerAccountId" class="govuk-button das-float-right govuk-!-margin-top-2 govuk-!-margin-bottom-4" esfa-automation="create-vacancy">Create an advert</a>
+                <a asp-route="@RouteNames.CreateVacancyStart" asp-route-employerAccountId="@Model.EmployerAccountId" class="govuk-button das-float-right govuk-!-margin-top-2 govuk-!-margin-bottom-4" esfa-automation="create-vacancy">Create an advert</a>
             </esfaFeatureEnabled>
             <esfaFeatureDisabled name="@FeatureNames.EmployerTaskList">
                 <a asp-route="@RouteNames.CreateVacancyOptions_Get" asp-route-employerAccountId="@Model.EmployerAccountId" class="govuk-button das-float-right govuk-!-margin-top-2 govuk-!-margin-bottom-4" esfa-automation="create-vacancy">Create an advert</a>
