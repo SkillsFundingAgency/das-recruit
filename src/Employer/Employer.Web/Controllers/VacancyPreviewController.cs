@@ -9,7 +9,6 @@ using Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Shared.Web.Extensions;
-using Esfa.Recruit.Shared.Web.FeatureToggle;
 
 namespace Esfa.Recruit.Employer.Web.Controllers
 {
@@ -17,14 +16,28 @@ namespace Esfa.Recruit.Employer.Web.Controllers
     public class VacancyPreviewController : Controller
     {
         private readonly VacancyPreviewOrchestrator _orchestrator;
-        private readonly IFeature _feature;
 
-        public VacancyPreviewController(VacancyPreviewOrchestrator orchestrator, IFeature feature)
+        public VacancyPreviewController(VacancyPreviewOrchestrator orchestrator)
         {
             _orchestrator = orchestrator;
-            _feature = feature;
         }
 
+        [HttpGet("advert-preview", Name = RouteNames.VacancyAdvertPreview)]
+        public async Task<IActionResult> AdvertPreview(VacancyRouteModel vrm, bool? submitToEfsa = null)
+        {
+            var viewModel = await _orchestrator.GetVacancyPreviewViewModelAsync(vrm);
+            AddSoftValidationErrorsToModelState(viewModel);
+            viewModel.SetSectionStates(viewModel, ModelState);
+
+            viewModel.CanHideValidationSummary = true;
+            viewModel.SubmitToEsfa = submitToEfsa;
+
+            if (TempData.ContainsKey(TempDataKeys.VacancyClonedInfoMessage))
+                viewModel.VacancyClonedInfoMessage = TempData[TempDataKeys.VacancyClonedInfoMessage].ToString();
+
+            return View(viewModel);
+        }
+        
         [HttpGet("preview", Name = RouteNames.Vacancy_Preview_Get)]
         public async Task<IActionResult> VacancyPreview(VacancyRouteModel vrm, bool? submitToEfsa = null)
         {
@@ -38,11 +51,6 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             if (TempData.ContainsKey(TempDataKeys.VacancyClonedInfoMessage))
                 viewModel.VacancyClonedInfoMessage = TempData[TempDataKeys.VacancyClonedInfoMessage].ToString();
 
-            if (_feature.IsFeatureEnabled(FeatureNames.EmployerTaskList))
-            {
-                return View("AdvertPreview", viewModel);
-            }
-            
             return View(viewModel);
         }
 
