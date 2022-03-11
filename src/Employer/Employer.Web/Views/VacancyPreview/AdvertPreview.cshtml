@@ -4,7 +4,7 @@
 @using Esfa.Recruit.Vacancies.Client.Domain.Entities
 @{ 
   ViewBag.Vpv = "/recruitment/employer/advert-preview";
-  ViewBag.Title = "Preview your advert"; 
+  ViewBag.Title = "Advert preview"; 
 }
 
 @model VacancyPreviewViewModel
@@ -96,7 +96,7 @@
       </ul>
     </div>
     <div class="govuk-grid-column-one-half">
-      <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Things to consider</h3>
+      <h3 asp-show="@Model.HasThingsToConsider" class="govuk-heading-s govuk-!-margin-bottom-1">Things to consider</h3>
       <p asp-show="@Model.HasThingsToConsider" class="govuk-body">@Model.ThingsToConsider</p>
     </div>
   </div>
@@ -131,12 +131,12 @@
       </div>
       <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Address</h3>
       <ul class="govuk-list">
-        @foreach (var addrLine in Model.EmployerAddressElements)
+        @foreach (var addressLine in Model.EmployerAddressElements)
         {
-            <li>@addrLine</li>
+            <li>@addressLine</li>
         }
       </ul>
-      <h3 class="govuk-heading-s govuk-!-margin-bottom-1">
+      <h3 asp-show=@(Model.HasEmployerContactName || Model.HasEmployerContactEmail || Model.HasEmployerContactTelephone) class="govuk-heading-s govuk-!-margin-bottom-1">
           Contact
       </h3>
       <p asp-show="@Model.HasEmployerContactName" class="govuk-body govuk-!-margin-bottom-1">@Model.EmployerContactName</p>
@@ -152,18 +152,36 @@
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-one-half">
       <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Training provider</h3>
-
-      <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Contact</h3>
+      <p>@Model.ProviderName</p>
     </div>
     <div class="govuk-grid-column-one-half">
       <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Apprenticeship standard</h3>
+      <p>@Model.TrainingTitle<br/>
+        @Model.EducationLevelName</p>
     </div>
   </div>
   <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
-  <h2 class="govuk-heading-l">Employer's application instructions</h2>
+  <h2 asp-show="@Model.ShowGeneralApplicationProcessSectionTitle" class="govuk-heading-l">Application process</h2>
+  <h2 asp-show="@Model.HasSpecifiedThroughExternalApplicationMethod" class="govuk-heading-l">Employer's application instructions</h2>
+  <div asp-show="@Model.HasSpecifiedThroughFaaApplicationMethod">
+    <p class="govuk-body">
+    Candidates will apply through the <a href="@Model.FindAnApprenticeshipUrl" class="govuk-body govuk-link" rel="noopener" target="_blank">Find an apprenticeship service</a>
+    </p>
+  </div>
+  <div asp-show="@Model.HasSpecifiedThroughExternalApplicationMethod">
+    <p class="govuk-body">This apprenticeship requires you to apply through the employer's website.</p>
+    <h2 class="govuk-heading-s govuk-!-margin-top-4">
+      Apply now web address
+    </h2>
+    <p class="govuk-body">@Model.ApplicationUrl</p>
+  </div>
+  <div asp-show="@Model.HasApplicationInstructions">
+    <p asp-show="@Model.HasApplicationInstructions">@Model.ApplicationInstructions</p>
+  </div>
+
 </div>
 
-<form action="" method="post">
+<form asp-route="@RouteNames.Preview_Submit_Post" method="post">
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-two-thirds">
     <h2 class="govuk-heading-m">Now submit your advert</h2>
@@ -173,7 +191,7 @@
       <button class="govuk-button" data-module="govuk-button">
         Submit advert
       </button>
-      <a href="check-your-answers" class="govuk-button govuk-button--secondary">Change your advert</a>
+      <a asp-route="@RouteNames.EmployerCheckYourAnswersGet" class="govuk-button govuk-button--secondary">Change your advert</a>
     </div>
   </div>
 </div>
