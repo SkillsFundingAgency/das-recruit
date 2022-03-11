@@ -156,8 +156,10 @@
     </div>
     <div class="govuk-grid-column-one-half">
       <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Apprenticeship standard</h3>
-      <p>@Model.TrainingTitle<br/>
-        @Model.EducationLevelName</p>
+      <p>
+        @Model.TrainingTitle <br/>
+        @Model.EducationLevelName
+      </p>
     </div>
   </div>
   <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
@@ -165,7 +167,7 @@
   <h2 asp-show="@Model.HasSpecifiedThroughExternalApplicationMethod" class="govuk-heading-l">Employer's application instructions</h2>
   <div asp-show="@Model.HasSpecifiedThroughFaaApplicationMethod">
     <p class="govuk-body">
-    Candidates will apply through the <a href="@Model.FindAnApprenticeshipUrl" class="govuk-body govuk-link" rel="noopener" target="_blank">Find an apprenticeship service</a>
+      Candidates will apply through the <a href="@Model.FindAnApprenticeshipUrl" class="govuk-link" rel="noopener" target="_blank">Find an apprenticeship service (opens in a new tab)</a>
     </p>
   </div>
   <div asp-show="@Model.HasSpecifiedThroughExternalApplicationMethod">
