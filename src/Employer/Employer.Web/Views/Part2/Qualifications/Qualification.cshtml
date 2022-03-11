@@ -56,7 +56,7 @@
     <div esfa-validation-marker-for="Weighting" class="govuk-form-group">
         <fieldset class="govuk-fieldset">
             <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
-                Is this qualification essential or desired?
+                Is this qualification essential or desirable?
             </legend>
             <span esfa-validation-message-for="Weighting" class="govuk-error-message"></span>
             <div class="govuk-radios" data-module="govuk-radios">
@@ -70,7 +70,7 @@
                 <div class="govuk-radios__item">
                     <input asp-for="Weighting" class="govuk-radios__input" id="WeightingNo" esfa-automation="radio-weighting-no" type="radio" value="@QualificationWeighting.Desired" data-display="@QualificationWeighting.Desired.GetDisplayName()">
                     <label class="govuk-label govuk-radios__label" for="WeightingNo">
-                        Desired
+                        Desirable
                     </label>
                     <span class="govuk-hint govuk-radios__hint">This qualification would be a nice to have, but is not required</span>
                 </div>
