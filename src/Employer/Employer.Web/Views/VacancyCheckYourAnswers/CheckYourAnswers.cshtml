@@ -3,9 +3,12 @@
 
 @{ ViewBag.GaData.Vpv = "/recruitment/employer/check-your-answers"; }
 
+@section BackLink {
+    <a asp-route="@RouteNames.EmployerTaskListGet" esfa-automation="link-back" class="govuk-back-link">Back to task list</a>
+}
+
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">  
-        <a asp-route="@RouteNames.EmployerTaskListGet" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back to task list</a>
         <h1 class="govuk-heading-xl">
             Check your answers before submitting your advert
         </h1>

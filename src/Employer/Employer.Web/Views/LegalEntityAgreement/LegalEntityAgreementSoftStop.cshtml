@@ -5,9 +5,9 @@
 
 <div class="govuk-grid-row employer-agreement-container">
     <div class="govuk-grid-column-two-thirds">
-        <h1 class="govuk-heading-l govuk-!-margin-bottom-8">Agreement not accepted</h1>
+        <h1 class="govuk-heading-xl govuk-!-margin-bottom-8">Agreement not accepted</h1>
 
-        <div class="notice govuk-!-margin-bottom-8 govuk-warning-text">
+        <div class="govuk-!-margin-bottom-8 govuk-warning-text">
             <span class="govuk-warning-text__icon das-warning-text__icon--top" aria-hidden="true">!</span>
 
             <span class="govuk-warning-text__assistive">Warning</span>
@@ -25,9 +25,9 @@
                 </strong>
             </p>
         </div>
-        <a asp-route="@RouteNames.Dashboard_AccountsAgreements" class="govuk-button">Review agreement</a>
-        <div class="govuk-body">
-            <a asp-route="@RouteNames.Location_Get" class="govuk-link">Continue anyway</a>
+        <div class="govuk-button-group">
+            <a asp-route="@RouteNames.Dashboard_AccountsAgreements" class="govuk-button">Review agreement</a>
+            <a asp-route="@RouteNames.Location_Get" class="govuk-link govuk-link--no-visited-state">Continue anyway</a>
         </div>
     </div>
 </div>

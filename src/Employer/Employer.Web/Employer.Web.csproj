@@ -12,10 +12,11 @@
     <Content Remove="Views\ApproveAdvert\**" />
     <EmbeddedResource Remove="Views\ApproveAdvert\**" />
     <None Remove="Views\ApproveAdvert\**" />
-  </ItemGroup>
+    
+  </ItemGroup>  
   <ItemGroup>
     <PackageReference Include="FluentValidation.AspNetCore" Version="7.5.2" />
-    <PackageReference Include="Humanizer.Core.uk" Version="2.7.9" />
+    <PackageReference Include="Humanizer.Core" Version="2.14.1" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.DataProtection.StackExchangeRedis" Version="2.2.5" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.10" />
@@ -26,7 +27,11 @@
     <PackageReference Include="SFA.DAS.Configuration.AzureTableStorage" Version="3.0.84" />
     <PackageReference Include="SFA.DAS.MA.Shared.UI" Version="1.1.79" />
     <PackageReference Include="SFA.DAS.NLog.Targets.Redis" Version="1.2.1" />
-    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.8.2" />
+    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.20.0" />
+    <PackageReference Include="System.IO.FileSystem.AccessControl" Version="4.7.0" />
+    <PackageReference Include="WebEssentials.AspNetCore.CdnTagHelpers" Version="1.0.21" />
+    <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks" Version="2.2.5" />
+    <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions" Version="2.2.0" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Shared\Recruit.Vacancies.Client\Recruit.Vacancies.Client.csproj" />
