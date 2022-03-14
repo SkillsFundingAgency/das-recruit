@@ -5,36 +5,40 @@
 @inject IOptions<ExternalLinksConfiguration> externalLinks
 @{ 
     ViewBag.Vpv = "/recruitment/employer/page-part1-wage";
-    ViewBag.Title = "How much would you like to pay the apprentice?";
+    ViewBag.Title = "Pay rate";
     ViewBag.ZenDeskLabel = "recruit-how-much-would-you-like-to-pay-the-apprentice";
+}
+
+@section BackLink {
+    <esfaFeatureEnabled name="@FeatureNames.EmployerTaskList">
+        <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Duration_Get" asp-route-wizard="@Model.PageInfo.IsWizard" esfa-automation="link-back" class="govuk-back-link">Back</a>
+        <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.EmployerCheckYourAnswersGet" asp-route-wizard="@Model.PageInfo.IsWizard" esfa-automation="link-back" class="govuk-back-link">Back</a>
+    </esfaFeatureEnabled>
+    <esfaFeatureDisabled name="@FeatureNames.EmployerTaskList">
+        <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Duration_Get" esfa-automation="link-back" class="govuk-back-link">Back</a>    
+    </esfaFeatureDisabled>
 }
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-        <esfaFeatureEnabled name="@FeatureNames.EmployerTaskList">
-            <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Duration_Get" asp-route-wizard="@Model.PageInfo.IsWizard" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
-            <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.EmployerCheckYourAnswersGet" asp-route-wizard="@Model.PageInfo.IsWizard" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
-        </esfaFeatureEnabled>
-        <esfaFeatureDisabled name="@FeatureNames.EmployerTaskList">
-            <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Duration_Get" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>    
-        </esfaFeatureDisabled>
-        
 
         <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }'/>
 
         <partial name="@PartialNames.ReviewSummary" for="Review"/>
 
-        <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">How much would you like to pay the apprentice?</h1>
-
         <form asp-route="@RouteNames.Wage_Post" asp-route-wizard="@Model.PageInfo.IsWizard" novalidate>
             
             <div esfa-validation-marker-for="WageType" class="govuk-form-group">
                 <fieldset class="govuk-fieldset">
+                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
+                        <h1 class="govuk-fieldset__heading">
+                            How much will the apprentice be paid?
+                        </h1>
+                    </legend>
                     <div class="govuk-body">
                         Pay will show as a yearly figure on your advert.  
-                        <a href="@externalLinks.Value.NationalMinimumWageRates" rel="noopener" target="_blank" class="govuk-link">View the​ ​National Minimum Wage for apprentices (opens in a new tab or window)​</a>.
+                        <a href="@externalLinks.Value.NationalMinimumWageRates" rel="noopener" target="_blank" class="govuk-link">View the​ ​National Minimum Wage for apprentices (opens in a new tab)​</a>.
                     </div>
-                    
                     <span esfa-validation-message-for="WageType" class="govuk-error-message"></span>
                     <div class="govuk-radios govuk-radios--conditional" data-module="radios">
                         <div class="govuk-radios__item">
@@ -77,15 +81,17 @@
                                 <div esfa-validation-marker-for="FixedWageYearlyAmount" class="govuk-form-group">
                                     <label asp-for="FixedWageYearlyAmount" class="govuk-visually-hidden">Yearly wage</label>
                                     <p class="govuk-body govuk-hint">
-                                        This must be more than the <a href="@externalLinks.Value.NationalMinimumWageRates" rel="noopener" target="_blank" class="govuk-link">National Minimum Wage for apprentices (opens in a new tab or window)​</a>.
+                                        This must be more than the <a href="@externalLinks.Value.NationalMinimumWageRates" rel="noopener" target="_blank" class="govuk-link">National Minimum Wage for apprentices (opens in a new tab)​</a>.
                                     </p>
                                     <p class="govuk-body govuk-hint">
                                         From @Model.MinimumWageStartFrom, the National Minimum Wage for apprentices is @Model.ApprenticeshipMinimumWageHourly an hour.<br /><br />
                                         Based on @Model.WeeklyHours working hours a week, you'll need to pay a yearly wage of at least @Model.ApprenticeshipMinimumWageYearly.
                                     </p>
                                     <span esfa-validation-message-for="FixedWageYearlyAmount" class="govuk-error-message"></span>
-                                    <input asp-for="FixedWageYearlyAmount" class="govuk-input govuk-!-width-one-quarter" type="text">
-                                    <span class="govuk-body">yearly</span>
+                                    <div class="govuk-input__wrapper">
+                                        <input asp-for="FixedWageYearlyAmount" class="govuk-input govuk-!-width-one-quarter" type="text">
+                                        <div class="govuk-input__suffix" aria-hidden="true">yearly</div>
+                                    </div>
                                 </div>
                             </fieldset>
                         </div>
@@ -93,27 +99,27 @@
                 </fieldset>
             </div>
 
-            <div class="govuk-character-count">
+            <div class="govuk-character-count" data-module="govuk-character-count" data-maxlength="250">
                 <div esfa-validation-marker-for="WageAdditionalInformation" class="govuk-form-group">
                     <label asp-for="WageAdditionalInformation" class="govuk-label govuk-!-font-weight-bold">Extra information about pay (optional)</label>
                     <span class="govuk-hint">For example, bonus schemes, performance increases or benefits</span>
                     <span esfa-validation-message-for="WageAdditionalInformation" class="govuk-error-message"></span>
-                    <textarea asp-for="WageAdditionalInformation" class="govuk-textarea character-count" rows="5" data-val-length-max="250"></textarea>
-                    <span class="govuk-body">You have </span>
-                    <span class="govuk-body maxchar-count">250</span>
-                    <span class="govuk-body maxchar-text"> characters remaining</span>
+                    <textarea asp-for="WageAdditionalInformation" class="govuk-textarea govuk-js-character-count" rows="5" data-val-length-max="250"></textarea>
+                    <div id="WageAdditionalInformation-info" class="govuk-hint govuk-character-count__message" aria-live="polite">
+                        You can enter up to 250 characters
+                    </div>
                 </div>
             </div>
-
-            <button type="submit" class="govuk-button save-button" esfa-automation="continue-button">@Model.PageInfo.SubmitButtonText</button>
-            <div class="govuk-body">
+            
+            <div class="govuk-button-group">
+                <button type="submit" class="govuk-button save-button" esfa-automation="continue-button">@Model.PageInfo.SubmitButtonText</button>
                 <esfaFeatureEnabled name="@FeatureNames.EmployerTaskList">
-                    <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Dashboard_Get" class="govuk-link">Cancel</a>
-                    <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.EmployerCheckYourAnswersGet" class="govuk-link">Cancel</a>
+                    <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Dashboard_Get" class="govuk-link govuk-link--no-visited-state">Cancel</a>
+                    <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.EmployerCheckYourAnswersGet" class="govuk-link govuk-link--no-visited-state">Cancel</a>
                 </esfaFeatureEnabled>
                 <esfaFeatureDisabled name="@FeatureNames.EmployerTaskList">
-                    <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Vacancies_Get" class="govuk-link">Cancel</a>
-                    <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.Vacancy_Preview_Get" asp-fragment="@Anchors.ApprenticeshipSummarySection" class="govuk-link">Cancel</a>
+                    <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Vacancies_Get" class="govuk-link govuk-link--no-visited-state">Cancel</a>
+                    <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.Vacancy_Preview_Get" asp-fragment="@Anchors.ApprenticeshipSummarySection" class="govuk-link govuk-link--no-visited-state">Cancel</a>
                 </esfaFeatureDisabled>
             </div>
         </form>

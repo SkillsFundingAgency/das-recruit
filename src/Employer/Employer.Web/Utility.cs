@@ -8,8 +8,10 @@ using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Exceptions;
+using Esfa.Recruit.Employer.Web.Models;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Shared.Web.FeatureToggle;
+using Esfa.Recruit.Shared.Web.Models;
 using Esfa.Recruit.Shared.Web.ViewModels;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 
@@ -39,6 +41,9 @@ namespace Esfa.Recruit.Employer.Web
         PartOnePageInfoViewModel GetPartOnePageInfo(Vacancy vacancy);
         Task<ApplicationReview> GetAuthorisedApplicationReviewAsync(ApplicationReviewRouteModel rm);
         bool TaskListCompleted(Vacancy vacancy);
+
+        Task UpdateEmployerProfile(VacancyEmployerInfoModel employerInfoModel, 
+            EmployerProfile employerProfile, Address address, VacancyUser user);
     }
     
     public class Utility : IUtility
@@ -285,6 +290,31 @@ namespace Esfa.Recruit.Employer.Web
             {
                 throw new AuthorisationException(string.Format(ExceptionMessages.ApplicationReviewUnauthorisedAccess, rm.EmployerAccountId,
                     vacancy.Result.EmployerAccountId, rm.ApplicationReviewId, vacancy.Result.Id));
+            }
+        }
+        
+        public async Task UpdateEmployerProfile(VacancyEmployerInfoModel employerInfoModel, 
+            EmployerProfile employerProfile, Address address, VacancyUser user)
+        {
+            var updateProfile = false;
+            if (string.IsNullOrEmpty(employerProfile.AccountLegalEntityPublicHashedId) && !string.IsNullOrEmpty(employerInfoModel?.AccountLegalEntityPublicHashedId)) 
+            {
+                updateProfile = true;
+                employerProfile.AccountLegalEntityPublicHashedId = employerInfoModel.AccountLegalEntityPublicHashedId;
+            }
+            if (employerInfoModel != null && employerInfoModel.EmployerIdentityOption == EmployerIdentityOption.NewTradingName)
+            {
+                updateProfile = true;
+                employerProfile.TradingName = employerInfoModel.NewTradingName;
+            }
+            if (address != null)
+            {
+                updateProfile = true;
+                employerProfile.OtherLocations.Add(address);
+            }
+            if (updateProfile)    
+            {
+                await _vacancyClient.UpdateEmployerProfileAsync(employerProfile, user);
             }
         }
     }
