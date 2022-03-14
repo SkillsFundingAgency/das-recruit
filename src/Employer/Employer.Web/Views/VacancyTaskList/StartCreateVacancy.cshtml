@@ -1,0 +1,15 @@
+
+@model Esfa.Recruit.Employer.Web.ViewModels.Dashboard.DashboardViewModel
+
+@{  
+    ViewBag.Vpv = "/recruitment/employer/start-create-advert";
+    ViewBag.ZenDeskLabel = "recruit-recruitment";
+    ViewBag.Title = "Your apprenticeship adverts"; }
+
+
+@section BackLink
+{
+    <a asp-route="@RouteNames.Dashboard_Get" class="govuk-back-link">Back</a>
+}
+
+<partial name="_NoVacanciesContent" />

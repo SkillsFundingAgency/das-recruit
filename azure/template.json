@@ -140,6 +140,9 @@
     },
     "logAnalyticsWorkspaceName": {
       "type": "string"
+    },
+    "cdnUrl": {
+      "type": "string"
     }
   },
   "variables": {
@@ -452,6 +455,10 @@
                 {
                   "name": "LoggingRedisConnectionString",
                   "value": "[parameters('loggingRedisConnectionString')]"
+                },                
+                {
+                  "name": "Cdn:Url",
+                  "value": "[parameters('cdnUrl')]"
                 }
               ]
             }
@@ -535,6 +542,10 @@
                 {
                   "name": "LoggingRedisConnectionString",
                   "value": "[parameters('loggingRedisConnectionString')]"
+                },
+                {
+                  "name": "Cdn:Url",
+                  "value": "[parameters('cdnUrl')]"
                 }
               ]
             }
@@ -618,6 +629,10 @@
                 {
                   "name": "LoggingRedisConnectionString",
                   "value": "[parameters('loggingRedisConnectionString')]"
+                },
+                {
+                  "name": "Cdn:Url",
+                  "value": "[parameters('cdnUrl')]"
                 }
               ]
             }

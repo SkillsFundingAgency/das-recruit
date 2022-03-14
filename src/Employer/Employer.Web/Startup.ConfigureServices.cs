@@ -69,6 +69,8 @@ namespace Esfa.Recruit.Employer.Web
                 o.ViewLocationFormats.Add("/Views/Part2/{1}/{0}" + RazorViewEngine.ViewExtension);
             });
 
+            services.AddHealthChecks();
+            
             services.AddMvcService(_hostingEnvironment, _isAuthEnabled, _loggerFactory, featureToggle);
 
             services.AddApplicationInsightsTelemetry(_configuration);

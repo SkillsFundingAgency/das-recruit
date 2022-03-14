@@ -1,0 +1,217 @@
+/* Dashboard */
+
+.app-card {
+    border: 1px solid #bfc1c3;
+    height: 100%;
+    margin-bottom: 20px;
+}
+
+@media (min-width: 40.0625em) {
+    .app-card {
+        margin-bottom: 0;
+    }
+}
+
+.app-card--inactive {
+    background-color: #f8f8f8;
+}
+
+.app-card__heading {
+    margin-bottom: 10px;
+    font-size: 19px;
+    font-size: 1.1875rem;
+    line-height: 1.31579;
+}
+
+@media (min-width: 40.0625em) {
+    .app-card__stat {
+        display: block;
+        font-size: 32px;
+        font-size: 2rem;
+        line-height: 1.25;
+    }
+}
+
+.app-card__content {
+    padding: 20px;
+}
+
+.app-card__description {
+    margin-bottom: 0;
+    font-size: 16px;
+    font-size: 1rem;
+    line-height: 1.25;
+}
+
+.app-card__tasks {
+    margin-top: 15px;
+    margin-bottom: 0;
+}
+
+@media (min-width: 40.0625em) {
+    .app-card__row {
+        display: flex;
+        margin-bottom: 30px;
+    }
+}
+
+
+/* Status Tags */
+
+.app-tag {
+    font-size: inherit;
+}
+
+.app-tag--draft {
+    color: #383f43;
+    background: #eeefef;
+}
+
+.app-tag--submitted {
+    color: #6e3619;
+    background: #fcd6c3;
+}
+
+.app-tag--referred {
+    color: #942514;
+    background: #f6d7d2;
+}
+
+.app-tag--approved {
+    color: #005a30;
+    background: #cce2d8;
+}
+
+.app-tag--live {
+    color: #005a30;
+    background: #cce2d8;
+}
+
+.app-tag--closed {
+    color: #383f43;
+    background: #eeefef;
+}
+
+.app-tag--transferred {
+    color: #144e81;
+    background: #d2e2f1;
+}
+
+/* Vacancy preview */
+
+.app-preview-section--empty {
+    border-left: 5px solid #1d70b8;
+    min-height: 80px;
+    padding-left: 15px;
+}
+
+.app-preview-section--error {
+    border-left: 5px solid #d4351c;
+    min-height: 80px;
+    padding-left: 15px;
+}
+
+.app-preview-section--review {
+    border-left: 5px solid #f47738;
+    min-height: 80px;
+    padding-left: 15px;
+}
+
+/* Local overrides to the das-task-list component */
+
+.das-task-list__section {
+    width: 100%;
+}
+
+.das-task-list__section-number {
+    width: 20px;
+}
+
+@media (min-width: 40.0625em) {
+    .das-task-list__section-number {
+        width: 30px;
+    }
+}
+
+.das-task-list__section-heading {
+    display: table-cell;
+}
+
+.das-task-list__section-status {
+    text-align: right;
+    display: table-cell;
+}
+
+/* Tinymce */
+
+.mce-tinymce {
+    border: 2px solid #0b0c0c !important;
+}
+
+/* Hide error message spans if empty  */
+
+span.govuk-error-message:empty {
+    display: none;
+}
+
+
+.app-disability-confident-logo {
+    width: 150px;
+}
+
+/*** JQuery UI autocomplete styles ***/
+
+.ui-autocomplete {
+    background-color: #fff;
+    border: 2px solid #0b0c0c;
+    color: #34384b;
+    cursor: default;
+    margin: 0;
+    max-height: 342px;
+    max-width: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
+    padding: 0;
+    position: absolute;
+  }
+  
+  .ui-autocomplete .ui-menu-item {
+    font-family: "GDS Transport",arial,sans-serif;
+    -webkit-font-smoothing: antialiased;
+    border-bottom: solid #bfc1c3;
+    border-width: 1px 0;
+    cursor: pointer;
+    display: block;
+    font-size:19px;
+    padding:4px;
+    position: relative;
+  }
+  
+  @media (max-width: 640px) {
+    .ui-autocomplete .ui-menu-item {
+        font-size:16px
+    }
+  }
+  
+  .ui-autocomplete .ui-menu-item > * {
+    pointer-events: none;
+  }
+  
+  .ui-autocomplete .ui-menu-item:first-of-type {
+    border-top-width: 0;
+  }
+  
+  .ui-autocomplete .ui-menu-item:last-of-type {
+    border-bottom-width: 0;
+  }
+  
+  .ui-autocomplete .ui-menu-item:nth-child(odd){
+    background-color: #fafafa;
+  }
+  
+  .ui-autocomplete .ui-menu-item:hover{
+    background-color: #1d70b8;
+    border-color: #1d70b8;
+    color: #fff;
+    outline: 0;
+  }
