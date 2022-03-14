@@ -184,20 +184,26 @@
 </div>
 
 <form asp-route="@RouteNames.Preview_Submit_Post" method="post">
-<div class="govuk-grid-row">
-  <div class="govuk-grid-column-two-thirds">
-    <h2 class="govuk-heading-m">Now submit your advert</h2>
-    <p class="govuk-body">By submitting this advert you are confirming that, to the best of your knowledge, the details you are providing are correct.</p>
-    <div class="govuk-button-group">
-      <input type="hidden" name="answers-checked" value="true">
-      <button class="govuk-button" data-module="govuk-button">
-        Submit advert
-      </button>
-      <a asp-route="@RouteNames.EmployerCheckYourAnswersGet" class="govuk-button govuk-button--secondary">Change your advert</a>
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <h2 class="govuk-heading-m">Now submit your advert</h2>
+      <p class="govuk-body">By submitting this advert you are confirming that, to the best of your knowledge, the details you are providing are correct.</p>
+      <div class="govuk-button-group">
+        <input type="hidden" name="answers-checked" value="true">
+        <button class="govuk-button" data-module="govuk-button">
+          Submit advert
+        </button>
+        <a asp-route="@RouteNames.EmployerCheckYourAnswersGet" class="govuk-button govuk-button--secondary">Change your advert</a>
+      </div>
     </div>
   </div>
-</div>
 </form>
+<div asp-show="@Model.CanDelete" class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    <a asp-route="@RouteNames.DeleteVacancy_Get" class="govuk-button govuk-button--warning" esfa-automation="delete-button">Delete advert</a>
+    <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+  </div>
+</div>
 
 
 
