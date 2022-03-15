@@ -53,7 +53,6 @@ using MediatR;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancyTitle;
 using SFA.DAS.EAS.Account.Api.Client;
 using VacancyRuleSet = Esfa.Recruit.Vacancies.Client.Application.Rules.VacancyRules.VacancyRuleSet;
 
@@ -67,12 +66,7 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
                 .AddHttpClient()
                 .Configure<AccountApiConfiguration>(configuration.GetSection("AccountApiConfiguration"))
                 .AddMemoryCache()
-                .AddTransient<IConfigurationReader, ConfigurationReader>()
-                .AddSingleton(x =>
-                {
-                    var svc = x.GetService<IConfigurationReader>();
-                    return svc.GetAsync<QaRulesConfiguration>("QaRules").Result;
-                });
+                .AddTransient<IConfigurationReader, ConfigurationReader>();
             RegisterClients(services);
             RegisterServiceDeps(services, configuration);
             RegisterAccountApiClientDeps(services);
@@ -103,7 +97,6 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
             // Configuration
             services.AddSingleton(configuration);
             services.Configure<FaaConfiguration>(configuration.GetSection("FaaConfiguration"));
-            services.Configure<VacancyApiConfiguration>(configuration.GetSection("VacancyApiConfiguration"));
             services.Configure<SlackConfiguration>(configuration.GetSection("Slack"));
             services.Configure<NextVacancyReviewServiceConfiguration>(o => o.VacancyReviewAssignationTimeoutMinutes = configuration.GetValue<int>("RecruitConfiguration:VacancyReviewAssignationTimeoutMinutes"));
             services.Configure<PasAccountApiConfiguration>(configuration.GetSection("PasAccountApiConfiguration"));
@@ -122,7 +115,6 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
             services.AddTransient<IVacancyReviewTransferService, VacancyReviewTransferService>();
             services.AddTransient<INextVacancyReviewService, NextVacancyReviewService>();
             services.AddTransient<IVacancyComparerService, VacancyComparerService>();
-            services.AddTransient<IGetTitlePopularity, TitlePopularityService>();
             services.AddTransient<ICache, Cache>();
             services.AddTransient<IHtmlSanitizerService, HtmlSanitizerService>();
             services.AddTransient<IEmployerService, EmployerService>();
@@ -148,7 +140,6 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
             // Infrastructure Services
             services.AddTransient<IEmployerAccountProvider, EmployerAccountProvider>();
             services.AddTransient<ISlackClient, SlackClient>();
-            services.AddTransient<IGetVacancyTitlesProvider, VacancyApiTitlesProvider>();
             services.AddTransient<ITrainingProviderService, TrainingProviderService>();
             services.AddTransient<ITrainingProviderSummaryProvider, TrainingProviderSummaryProvider>();
             services.AddTransient<IFaaService, FaaService>();
