@@ -13,20 +13,49 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 
 namespace Esfa.Recruit.Provider.Web
 {
-    public static class Utility
+    public interface IUtility
     {
-        public static async Task<Vacancy> GetAuthorisedVacancyForEditAsync(IProviderVacancyClient client, IRecruitVacancyClient vacancyClient, VacancyRouteModel vrm, string routeName)
+        Task<Vacancy> GetAuthorisedVacancyForEditAsync(VacancyRouteModel vrm, string routeName);
+        Task<Vacancy> GetAuthorisedVacancyAsync(VacancyRouteModel vrm, string routeName);
+        void CheckAuthorisedAccess(Vacancy vacancy, long ukprn);
+        void CheckRouteIsValidForVacancy(Vacancy vacancy, string currentRouteName, VacancyRouteModel vrm);
+
+        /// <summary>
+        /// Returns a list of routes the user may access based on the current
+        /// state of the vacancy.
+        /// </summary>
+        /// <param name="vacancy"></param>
+        /// <returns>
+        ///  - null if section 1 of the wizard is complete
+        ///  - otherwise a list of accessible routes, where the last entry is the page to start the user on when editing the vacancy
+        /// </returns>
+        IList<string> GetPermittedRoutesForVacancy(Vacancy vacancy);
+
+        bool VacancyHasCompletedPartOne(Vacancy vacancy);
+        bool VacancyHasStartedPartTwo(Vacancy vacancy);
+        PartOnePageInfoViewModel GetPartOnePageInfo(Vacancy vacancy);
+        Task<ApplicationReview> GetAuthorisedApplicationReviewAsync(ApplicationReviewRouteModel rm);
+    }
+    public class Utility : IUtility
+    {
+        private readonly IRecruitVacancyClient _vacancyClient;
+
+        public Utility(IRecruitVacancyClient vacancyClient)
         {
-            var vacancy = await GetAuthorisedVacancyAsync(client, vacancyClient, vrm, routeName);
+            _vacancyClient = vacancyClient;
+        }
+        public async Task<Vacancy> GetAuthorisedVacancyForEditAsync(VacancyRouteModel vrm, string routeName)
+        {
+            var vacancy = await GetAuthorisedVacancyAsync(vrm, routeName);
 
             CheckCanEdit(vacancy);
 
             return vacancy;
         }
 
-        public static async Task<Vacancy> GetAuthorisedVacancyAsync(IProviderVacancyClient client, IRecruitVacancyClient vacancyClient, VacancyRouteModel vrm, string routeName)
+        public async Task<Vacancy> GetAuthorisedVacancyAsync(VacancyRouteModel vrm, string routeName)
         {
-            var vacancy = await vacancyClient.GetVacancyAsync(vrm.VacancyId.GetValueOrDefault());
+            var vacancy = await _vacancyClient.GetVacancyAsync(vrm.VacancyId.GetValueOrDefault());
 
             CheckAuthorisedAccess(vacancy, vrm.Ukprn);
 
@@ -35,14 +64,14 @@ namespace Esfa.Recruit.Provider.Web
             return vacancy;
         }
 
-        private static void CheckCanEdit(Vacancy vacancy)
+        private void CheckCanEdit(Vacancy vacancy)
         {
             if (!vacancy.CanEdit)
                 throw new InvalidStateException(string.Format(ErrorMessages.VacancyNotAvailableForEditing,
                     vacancy.Title));
         }
 
-        public static void CheckAuthorisedAccess(Vacancy vacancy, long ukprn)
+        public void CheckAuthorisedAccess(Vacancy vacancy, long ukprn)
         {
             if (vacancy.TrainingProvider.Ukprn.Value != ukprn)
                 throw new AuthorisationException(string.Format(ExceptionMessages.VacancyUnauthorisedAccessForProvider, ukprn, vacancy.TrainingProvider.Ukprn, vacancy.Title, vacancy.Id));
@@ -50,7 +79,7 @@ namespace Esfa.Recruit.Provider.Web
                 throw new AuthorisationException(string.Format(ExceptionMessages.UserIsNotTheOwner, OwnerType.Provider));
         }
 
-        public static void CheckRouteIsValidForVacancy(Vacancy vacancy, string currentRouteName, VacancyRouteModel vrm)
+        public void CheckRouteIsValidForVacancy(Vacancy vacancy, string currentRouteName, VacancyRouteModel vrm)
         {
             var validRoutes = GetPermittedRoutesForVacancy(vacancy);
 
@@ -74,7 +103,7 @@ namespace Esfa.Recruit.Provider.Web
         ///  - null if section 1 of the wizard is complete
         ///  - otherwise a list of accessible routes, where the last entry is the page to start the user on when editing the vacancy
         /// </returns>
-        public static IList<string> GetPermittedRoutesForVacancy(Vacancy vacancy)
+        public IList<string> GetPermittedRoutesForVacancy(Vacancy vacancy)
         {
             var validRoutes = new List<string>();
 
@@ -99,7 +128,7 @@ namespace Esfa.Recruit.Provider.Web
             if (!vacancy.NumberOfPositions.HasValue)
                 return validRoutes;
 
-           validRoutes.AddRange(new[] 
+            validRoutes.AddRange(new[] 
             {
                 RouteNames.Location_Get, 
                 RouteNames.Location_Post,
@@ -128,12 +157,12 @@ namespace Esfa.Recruit.Provider.Web
             return null;
         }
 
-        public static bool VacancyHasCompletedPartOne(Vacancy vacancy)
+        public bool VacancyHasCompletedPartOne(Vacancy vacancy)
         {
             return GetPermittedRoutesForVacancy(vacancy) == null;
         }
 
-        public static bool VacancyHasStartedPartTwo(Vacancy vacancy)
+        public bool VacancyHasStartedPartTwo(Vacancy vacancy)
         {
             return !string.IsNullOrWhiteSpace(vacancy.EmployerDescription) ||
                    vacancy.ApplicationMethod != null ||
@@ -145,7 +174,7 @@ namespace Esfa.Recruit.Provider.Web
                    !string.IsNullOrWhiteSpace(vacancy.ShortDescription);
         }
 
-        public static PartOnePageInfoViewModel GetPartOnePageInfo(Vacancy vacancy)
+        public PartOnePageInfoViewModel GetPartOnePageInfo(Vacancy vacancy)
         {
             return new PartOnePageInfoViewModel
             {
@@ -154,10 +183,10 @@ namespace Esfa.Recruit.Provider.Web
             };
         }
 
-        public static async Task<ApplicationReview> GetAuthorisedApplicationReviewAsync(IRecruitVacancyClient vacancyClient, ApplicationReviewRouteModel rm)
+        public async Task<ApplicationReview> GetAuthorisedApplicationReviewAsync(ApplicationReviewRouteModel rm)
         {
-            var applicationReview = await vacancyClient.GetApplicationReviewAsync(rm.ApplicationReviewId);
-            var vacancy = await vacancyClient.GetVacancyAsync(rm.VacancyId.GetValueOrDefault());
+            var applicationReview = await _vacancyClient.GetApplicationReviewAsync(rm.ApplicationReviewId);
+            var vacancy = await _vacancyClient.GetVacancyAsync(rm.VacancyId.GetValueOrDefault());
             try
             {
                 CheckAuthorisedAccess(vacancy, rm.Ukprn);

@@ -164,6 +164,30 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview
             nameof(TrainingType),
             nameof(TrainingTitle)
         };
+        
+        public VacancyTaskListSectionState TaskListSectionOneState => SetTaskListSectionState();
+
+        public VacancyTaskListSectionState TaskListSectionTwoState => SetTaskListSectionTwoState();
+        public VacancyTaskListSectionState TaskListSectionThreeState => SetTaskListSectionThreeState();
+        public VacancyTaskListSectionState TaskListSectionFourState => SetTaskListSectionFourState();
+
+        private VacancyTaskListSectionState SetTaskListSectionState()
+        {
+            return VacancyTaskListSectionState.NotStarted;
+        }
+        private VacancyTaskListSectionState SetTaskListSectionTwoState()
+        {
+            return VacancyTaskListSectionState.NotStarted;
+        }
+        private VacancyTaskListSectionState SetTaskListSectionThreeState()
+        {
+            return VacancyTaskListSectionState.NotStarted;
+        }
+        private VacancyTaskListSectionState SetTaskListSectionFourState()
+        {
+            return VacancyTaskListSectionState.NotStarted;
+        }
+        
     }
 
     public enum VacancyPreviewSectionState
@@ -173,6 +197,12 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview
         Invalid,
         InvalidIncomplete,
         Review
+    }
+    public enum VacancyTaskListSectionState
+    {
+        NotStarted,
+        InProgress,
+        Completed
     }
 }
 

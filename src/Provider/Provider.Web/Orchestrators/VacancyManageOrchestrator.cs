@@ -29,20 +29,22 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
         private readonly IRecruitVacancyClient _client;
         private readonly IFeature _featureToggle;
         private readonly ProviderRecruitSystemConfiguration _systemConfig;
+        private readonly IUtility _utility;
 
-        public VacancyManageOrchestrator(ILogger<VacancyManageOrchestrator> logger, DisplayVacancyViewModelMapper vacancyDisplayMapper, IRecruitVacancyClient client, IFeature featureToggle, ProviderRecruitSystemConfiguration systemConfig) : base(logger)
+        public VacancyManageOrchestrator(ILogger<VacancyManageOrchestrator> logger, DisplayVacancyViewModelMapper vacancyDisplayMapper, IRecruitVacancyClient client, IFeature featureToggle, ProviderRecruitSystemConfiguration systemConfig, IUtility utility) : base(logger)
         {
             _vacancyDisplayMapper = vacancyDisplayMapper;
             _client = client;
             _featureToggle = featureToggle;
             _systemConfig = systemConfig;
+            _utility = utility;
         }
 
         public async Task<Vacancy> GetVacancy(VacancyRouteModel vrm)
         {
             var vacancy = await _client.GetVacancyAsync(vrm.VacancyId.GetValueOrDefault());
 
-            Utility.CheckAuthorisedAccess(vacancy, vrm.Ukprn);
+            _utility.CheckAuthorisedAccess(vacancy, vrm.Ukprn);
 
             return vacancy;
         }

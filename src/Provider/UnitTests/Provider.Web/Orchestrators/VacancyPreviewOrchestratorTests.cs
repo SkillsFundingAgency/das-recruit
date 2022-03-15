@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using AutoFixture;
+using Esfa.Recruit.Provider.Web;
 using Esfa.Recruit.Provider.Web.Configuration;
 using Esfa.Recruit.Provider.Web.Mappings;
 using Esfa.Recruit.Provider.Web.Orchestrators;
@@ -78,9 +79,8 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators
 
             var messagingMock = new Mock<IMessaging>();
 
-            var orch = new VacancyPreviewOrchestrator(
-                client.Object, vacancyClient.Object, logger.Object, mapper, review.Object, permission.Object,
-                legalEntityAgreement.Object, agreementServiceMock.Object, messagingMock.Object);
+            var orch = new VacancyPreviewOrchestrator(vacancyClient.Object, logger.Object, mapper, review.Object, permission.Object,
+                legalEntityAgreement.Object, agreementServiceMock.Object, messagingMock.Object, new Utility(vacancyClient.Object));
 
             var m = new SubmitEditModel
             {
@@ -153,9 +153,8 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators
 
             var messagingMock = new Mock<IMessaging>();
 
-            var orch = new VacancyPreviewOrchestrator(
-                client.Object, vacancyClient.Object, logger.Object, mapper, review.Object, permission.Object,
-                legalEntityAgreement.Object, agreementServiceMock.Object, messagingMock.Object);
+            var orch = new VacancyPreviewOrchestrator(vacancyClient.Object, logger.Object, mapper, review.Object, permission.Object,
+                legalEntityAgreement.Object, agreementServiceMock.Object, messagingMock.Object, new Utility(vacancyClient.Object));
 
             var m = new SubmitEditModel
             {

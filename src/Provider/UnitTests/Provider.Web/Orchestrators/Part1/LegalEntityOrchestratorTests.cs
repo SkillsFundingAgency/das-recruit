@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Esfa.Recruit.Provider.Web;
 using Esfa.Recruit.Provider.Web.Orchestrators.Part1;
 using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
@@ -29,8 +30,9 @@ namespace Esfa.Recruit.UnitTests.Provider.Web.Orchestrators.Part1
             _mockLogger = new Mock<ILogger<LegalEntityOrchestrator>>();
             _mockClient = new Mock<IProviderVacancyClient>();
             _mockVacancyClient = new Mock<IRecruitVacancyClient>();
-            _orchestrator = new LegalEntityOrchestrator(_mockClient.Object, _mockVacancyClient.Object, _mockLogger.Object);
             _testVacancy = GetTestVacancy();
+            _mockVacancyClient.Setup(x => x.GetVacancyAsync(It.IsAny<Guid>())).ReturnsAsync(_testVacancy);
+            _orchestrator = new LegalEntityOrchestrator(_mockClient.Object, _mockLogger.Object, new Utility(_mockVacancyClient.Object));
         }
 
         [Fact]
@@ -47,7 +49,7 @@ namespace Esfa.Recruit.UnitTests.Provider.Web.Orchestrators.Part1
             _mockClient.Setup(x => x.GetProviderEmployerVacancyDataAsync(TestUkprn, TestEmployerAccountId))
                         .ReturnsAsync(dummyEmployerInfo);
 
-            _mockVacancyClient.Setup(x => x.GetVacancyAsync(It.IsAny<Guid>())).ReturnsAsync(_testVacancy);
+            
 
             var result = await _orchestrator.GetLegalEntityViewModelAsync(_testRouteModel, TestUkprn, "", 1, AccountLegalEntityPublicHashedId);
 

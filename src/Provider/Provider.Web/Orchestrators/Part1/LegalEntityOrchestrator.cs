@@ -18,19 +18,19 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
     public class LegalEntityOrchestrator
     {
         private readonly IProviderVacancyClient _providerVacancyClient;
-        private readonly IRecruitVacancyClient _recruitVacancyClient;
         private readonly ILogger<LegalEntityOrchestrator> _logger;
+        private readonly IUtility _utility;
 
         private const int MaxLegalEntitiesPerPage = 25;
 
         public LegalEntityOrchestrator(
             IProviderVacancyClient providerVacancyClient,
-            IRecruitVacancyClient recruitVacancyClient,
-            ILogger<LegalEntityOrchestrator> logger)
+            ILogger<LegalEntityOrchestrator> logger,
+            IUtility utility)
         {
             _providerVacancyClient = providerVacancyClient;
-            _recruitVacancyClient = recruitVacancyClient;
             _logger = logger;
+            _utility = utility;
         }
 
         public async Task<LegalEntityViewModel> GetLegalEntityViewModelAsync(VacancyRouteModel vrm, long ukprn, string searchTerm, int? requestedPageNo, string selectedAccountLegalEntityPublicHashedId)
@@ -38,14 +38,14 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
             const int NotFoundIndex = -1;
             var setPage = requestedPageNo.HasValue ? requestedPageNo.Value : 1;
 
-            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_providerVacancyClient, _recruitVacancyClient, vrm, RouteNames.LegalEntity_Get);
+            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.LegalEntity_Get);
             var legalEntities = (await GetLegalEntityViewModelsAsync(ukprn, vacancy.EmployerAccountId)).ToList();
 
             var vm = new LegalEntityViewModel
             {
                 TotalNumberOfLegalEntities = legalEntities.Count(),
                 SelectedOrganisationId = vacancy.AccountLegalEntityPublicHashedId,
-                PageInfo = Utility.GetPartOnePageInfo(vacancy),
+                PageInfo = _utility.GetPartOnePageInfo(vacancy),
                 SearchTerm = searchTerm
             };
 

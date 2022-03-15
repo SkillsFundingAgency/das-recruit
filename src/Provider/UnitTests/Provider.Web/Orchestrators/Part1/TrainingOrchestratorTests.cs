@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Provider.UnitTests.Provider.Web.HardMocks;
+using Esfa.Recruit.Provider.Web;
 using Esfa.Recruit.Provider.Web.Orchestrators.Part1;
 using Esfa.Recruit.Provider.Web.ViewModels.Part1.Training;
 using Esfa.Recruit.Shared.Web.Mappers;
@@ -75,8 +76,8 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part1
                 MockRecruitVacancyClient.Setup(x => x.UpdateDraftVacancyAsync(It.IsAny<Vacancy>(), User));
                 MockRecruitVacancyClient.Setup(x => x.UpdateEmployerProfileAsync(It.IsAny<EmployerProfile>(), User));
 
-                Sut = new TrainingOrchestrator(MockClient.Object, MockRecruitVacancyClient.Object, Mock.Of<ILogger<TrainingOrchestrator>>(), 
-                    Mock.Of<IReviewSummaryService>());
+                Sut = new TrainingOrchestrator(MockRecruitVacancyClient.Object, Mock.Of<ILogger<TrainingOrchestrator>>(), 
+                    Mock.Of<IReviewSummaryService>(), new Utility(MockRecruitVacancyClient.Object));
             }
 
             public async Task PostConfirmTrainingEditModelAsync(ConfirmTrainingEditModel model)
@@ -87,7 +88,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part1
             public void VerifyProviderReviewFieldIndicators(string fieldIdentifier, bool value)
             {
                 Vacancy.ProviderReviewFieldIndicators
-                    .Where(p => p.FieldIdentifier == fieldIdentifier).Single()
+                    .SingleOrDefault(p => p.FieldIdentifier == fieldIdentifier)
                     .Should().NotBeNull().And
                     .Match<ProviderReviewFieldIndicator>((x) => x.IsChangeRequested == value);
             }

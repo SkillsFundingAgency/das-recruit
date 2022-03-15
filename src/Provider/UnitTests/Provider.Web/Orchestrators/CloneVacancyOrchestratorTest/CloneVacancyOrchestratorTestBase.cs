@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Esfa.Recruit.Provider.Web;
 using Esfa.Recruit.Provider.Web.Orchestrators;
 using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
@@ -42,13 +43,15 @@ namespace Esfa.Recruit.UnitTests.Provider.Web.Orchestrators.CloneVacancyOrchestr
             
             var loggerMock = new Mock<ILogger<CloneVacancyOrchestrator>>();
 
+
             var recruitClientMock = new Mock<IRecruitVacancyClient>();
             recruitClientMock
                 .Setup(c => c.GetVacancyAsync(It.IsAny<Guid>()))
                 .ReturnsAsync(vacancy);
+            var utility = new Utility(recruitClientMock.Object);
 
             return new CloneVacancyOrchestrator(recruitClientMock.Object,
-                timeProviderMock.Object, loggerMock.Object);
+                timeProviderMock.Object, loggerMock.Object, utility);
         }
     }
 }

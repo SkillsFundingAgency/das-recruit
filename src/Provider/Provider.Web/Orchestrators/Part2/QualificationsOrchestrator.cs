@@ -20,21 +20,21 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part2
 {
     public class QualificationsOrchestrator : VacancyValidatingOrchestrator<QualificationEditModel>
     {
-        private readonly IProviderVacancyClient _client;
         private readonly IRecruitVacancyClient _vacancyClient;
         private readonly IReviewSummaryService _reviewSummaryService;
-        
-        public QualificationsOrchestrator(IProviderVacancyClient client, IRecruitVacancyClient vacancyClient, ILogger<QualificationsOrchestrator> logger, IReviewSummaryService reviewSummaryService)
+        private readonly IUtility _utility;
+
+        public QualificationsOrchestrator(IRecruitVacancyClient vacancyClient, ILogger<QualificationsOrchestrator> logger, IReviewSummaryService reviewSummaryService, IUtility utility)
             : base(logger)
         {
-            _client = client;
             _reviewSummaryService = reviewSummaryService;
+            _utility = utility;
             _vacancyClient = vacancyClient;
         }
 
         public async Task<QualificationsViewModel> GetQualificationsViewModelAsync(VacancyRouteModel vrm)
         {
-            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, _vacancyClient, vrm, RouteNames.Qualifications_Get);
+            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.Qualifications_Get);
 
             var qualifications = vacancy.Qualifications ?? new List<Qualification>();
 
@@ -61,7 +61,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part2
 
         public async Task<QualificationViewModel> GetQualificationViewModelForAddAsync(VacancyRouteModel vrm)
         {
-            var vacancyTask = Utility.GetAuthorisedVacancyForEditAsync(_client, _vacancyClient, vrm, RouteNames.Qualification_Add_Get);
+            var vacancyTask = _utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.Qualification_Add_Get);
             var allQualificationsTask = _vacancyClient.GetCandidateQualificationsAsync();
 
             await Task.WhenAll(vacancyTask, allQualificationsTask);
@@ -73,7 +73,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part2
 
         public async Task<QualificationViewModel> GetQualificationViewModelForEditAsync(VacancyRouteModel vrm, int index)
         {
-            var vacancyTask = Utility.GetAuthorisedVacancyForEditAsync(_client, _vacancyClient, vrm, RouteNames.Qualification_Edit_Get);
+            var vacancyTask = _utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.Qualification_Edit_Get);
             var allQualificationsTask = _vacancyClient.GetCandidateQualificationsAsync();
 
             await Task.WhenAll(vacancyTask, allQualificationsTask);
@@ -114,7 +114,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part2
 
         public async Task<OrchestratorResponse> PostQualificationEditModelForAddAsync(VacancyRouteModel vrm, QualificationEditModel m, VacancyUser user)
         {
-            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, _vacancyClient, vrm, RouteNames.Qualification_Add_Post);
+            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.Qualification_Add_Post);
 
             if (vacancy.Qualifications == null)
                 vacancy.Qualifications = new List<Qualification>();
@@ -127,7 +127,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part2
 
         public async Task<OrchestratorResponse> PostQualificationEditModelForEditAsync(VacancyRouteModel vrm, QualificationEditModel m, VacancyUser user, int index)
         {
-            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, _vacancyClient, vrm, RouteNames.Qualification_Edit_Post);
+            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.Qualification_Edit_Post);
 
             var qualification = vacancy.Qualifications[index];
             var currentQualification = new Qualification
@@ -143,7 +143,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part2
 
         public async Task DeleteQualificationAsync(VacancyRouteModel vrm, int index, VacancyUser user)
         {
-            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, _vacancyClient, vrm, RouteNames.Qualifications_Get);
+            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.Qualifications_Get);
 
             if (vacancy.Qualifications == null)
                 return;
