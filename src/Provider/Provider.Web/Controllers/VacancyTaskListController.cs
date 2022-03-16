@@ -26,7 +26,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
         public async Task<IActionResult> CreateProviderTaskList(VacancyRouteModel vrm)
         {
             var viewModel = await _orchestrator.GetCreateVacancyTaskListModel(vrm);
-            //viewModel.SetSectionStates(viewModel, ModelState);
+            viewModel.SetSectionStates(viewModel, ModelState);
             
             return View("ProviderTaskList", viewModel);
         }
@@ -36,8 +36,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
         public async Task<IActionResult> ProviderTaskList(VacancyRouteModel vrm)
         {
             var viewModel = await _orchestrator.GetVacancyTaskListModel(vrm); 
-            
-                //viewModel.SetSectionStates(viewModel, ModelState);
+            viewModel.SetSectionStates(viewModel, ModelState);
             
             return View(viewModel);
         }

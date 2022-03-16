@@ -38,11 +38,10 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators
         {
             vacancy.EmployerLocation = null;
             vacancy.EmployerNameOption = EmployerNameOption.RegisteredName;
+            vacancy.ClosedDate = null;
             programme.Id = vacancy.ProgrammeId;
             programme.EducationLevelNumber = 3;
             programme.ApprenticeshipLevel = ApprenticeshipLevel.Higher;
-            // providerVacancyClient.Setup(x => x.GetEmployerLegalEntitiesAsync(routeModel.EmployerAccountId))
-            //     .ReturnsAsync(legalEntities);
             utility.Setup(x => x.GetAuthorisedVacancyForEditAsync(It.Is<VacancyRouteModel>(
                     c => c.VacancyId.Equals(routeModel.VacancyId) &&
                          c.Ukprn.Equals(routeModel.Ukprn)), RouteNames.ProviderTaskListGet))
@@ -60,25 +59,22 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators
 
             var viewModel = await orchestrator.GetVacancyTaskListModel(routeModel);
 
+            await mapper.MapFromVacancyAsync(expectedViewModel, vacancy);
             viewModel.Should().BeAssignableTo<VacancyPreviewViewModel>();
-            
-            // await mapper.MapFromVacancyAsync(expectedViewModel, vacancy);
-            //
-            // viewModel.Should().BeEquivalentTo(expectedViewModel, options=>options
-            //     .Excluding(c=>c.SoftValidationErrors)
-            //     //.Excluding(c=>c.RejectedReason)
-            //     .Excluding(c=>c.HasProgramme)
-            //     .Excluding(c=>c.HasWage)
-            //     .Excluding(c=>c.CanShowReference)
-            //     .Excluding(c=>c.CanShowDraftHeader)
-            //     .Excluding(c=>c.EducationLevelName)
-            //     .Excluding(c=>c.ApprenticeshipLevel)
-            //     // .Excluding(c=>c.AccountLegalEntityCount)
-            //     // .Excluding(c=>c.HasSelectedEmployerNameOption)
-            // );
-            // viewModel.ApprenticeshipLevel.Should().Be(programme.ApprenticeshipLevel);
-            // //viewModel.AccountLegalEntityCount.Should().Be(legalEntities.Count);
-            // //viewModel.HasSelectedEmployerNameOption.Should().BeTrue();
+            viewModel.Should().BeEquivalentTo(expectedViewModel, options=>options
+                .Excluding(c=>c.SoftValidationErrors)
+                .Excluding(c=>c.HasProgramme)
+                .Excluding(c=>c.HasWage)
+                .Excluding(c=>c.CanShowReference)
+                .Excluding(c=>c.CanShowDraftHeader)
+                .Excluding(c=>c.EducationLevelName)
+                .Excluding(c=>c.ApprenticeshipLevel)
+                // .Excluding(c=>c.AccountLegalEntityCount)
+                // .Excluding(c=>c.HasSelectedEmployerNameOption)
+            );
+            viewModel.ApprenticeshipLevel.Should().Be(programme.ApprenticeshipLevel);
+            //viewModel.AccountLegalEntityCount.Should().Be(legalEntities.Count);
+            //viewModel.HasSelectedEmployerNameOption.Should().BeTrue();
         }
 
         // [Test, MoqAutoData]

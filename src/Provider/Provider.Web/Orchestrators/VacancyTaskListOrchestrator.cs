@@ -1,16 +1,29 @@
+using System.Linq;
 using System.Threading.Tasks;
+using Esfa.Recruit.Provider.Web.Configuration.Routing;
+using Esfa.Recruit.Provider.Web.Mappings;
 using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview;
 using Esfa.Recruit.Shared.Web.Orchestrators;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Provider.Web.Orchestrators
 {
     public class VacancyTaskListOrchestrator : EntityValidatingOrchestrator<Vacancy, VacancyPreviewViewModel>
     {
-        public VacancyTaskListOrchestrator(ILogger<VacancyTaskListOrchestrator> logger) : base(logger)
+        private readonly DisplayVacancyViewModelMapper _vacancyDisplayMapper;
+        private readonly IUtility _utility;
+        private readonly IProviderVacancyClient _providerVacancyClient;
+        private readonly IRecruitVacancyClient _vacancyClient;
+
+        public VacancyTaskListOrchestrator(ILogger<VacancyTaskListOrchestrator> logger, DisplayVacancyViewModelMapper vacancyDisplayMapper, IUtility utility, IProviderVacancyClient providerVacancyClient, IRecruitVacancyClient vacancyClient) : base(logger)
         {
+            _vacancyDisplayMapper = vacancyDisplayMapper;
+            _utility = utility;
+            _providerVacancyClient = providerVacancyClient;
+            _vacancyClient = vacancyClient;
         }
 
         protected override EntityToViewModelPropertyMappings<Vacancy, VacancyPreviewViewModel> DefineMappings()
@@ -59,7 +72,28 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
 
         public async Task<VacancyPreviewViewModel> GetVacancyTaskListModel(VacancyRouteModel routeModel)
         {
-            return new VacancyPreviewViewModel();
+            var vacancyTask = _utility.GetAuthorisedVacancyForEditAsync(routeModel, RouteNames.ProviderTaskListGet);
+            var programmesTask = _vacancyClient.GetActiveApprenticeshipProgrammesAsync();
+
+            await Task.WhenAll(vacancyTask, programmesTask);
+
+            var vacancy = vacancyTask.Result;
+            var programme = programmesTask.Result.SingleOrDefault(p => p.Id == vacancy.ProgrammeId);
+
+            var vm = new VacancyPreviewViewModel();
+            await _vacancyDisplayMapper.MapFromVacancyAsync(vm, vacancy);
+
+            vm.HasWage = vacancy.Wage != null;
+            vm.CanShowReference = vacancy.Status != VacancyStatus.Draft;
+            vm.CanShowDraftHeader = vacancy.Status == VacancyStatus.Draft;
+            
+            if (programme != null)
+            {
+                vm.ApprenticeshipLevel = programme.ApprenticeshipLevel;
+            }
+
+            //vm.AccountLegalEntityCount = getEmployerDataTask.Result.LegalEntities.Count();
+            return vm;
         }
 
         public async Task<VacancyPreviewViewModel> GetCreateVacancyTaskListModel(VacancyRouteModel vrm)
