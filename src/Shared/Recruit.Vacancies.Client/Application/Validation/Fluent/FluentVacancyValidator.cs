@@ -393,16 +393,6 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                     .WithErrorCode("607")
                     .RunCondition(VacancyRuleSet.Wage)
                     .WithRuleId(VacancyRuleSet.Wage);
-
-                When(x => x.Wage.WageType == WageType.Unspecified, () =>
-                {
-                    RuleFor(x => x.Wage.WageAdditionalInformation)
-                        .NotEmpty()
-                        .WithMessage("You must provide a reason why you need to use Unspecified")
-                        .WithErrorCode("50")
-                        .RunCondition(VacancyRuleSet.Wage)
-                        .WithRuleId(VacancyRuleSet.Wage);
-                });
             });
         }
 
