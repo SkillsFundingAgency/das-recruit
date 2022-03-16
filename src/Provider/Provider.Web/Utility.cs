@@ -5,9 +5,11 @@ using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Esfa.Recruit.Provider.Web.Configuration;
 using Esfa.Recruit.Provider.Web.Configuration.Routing;
 using Esfa.Recruit.Provider.Web.Exceptions;
 using Esfa.Recruit.Provider.Web.RouteModel;
+using Esfa.Recruit.Shared.Web.FeatureToggle;
 using Esfa.Recruit.Shared.Web.ViewModels;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 
@@ -39,10 +41,12 @@ namespace Esfa.Recruit.Provider.Web
     public class Utility : IUtility
     {
         private readonly IRecruitVacancyClient _vacancyClient;
+        private readonly IFeature _feature;
 
-        public Utility(IRecruitVacancyClient vacancyClient)
+        public Utility(IRecruitVacancyClient vacancyClient, IFeature feature)
         {
             _vacancyClient = vacancyClient;
+            _feature = feature;
         }
         public async Task<Vacancy> GetAuthorisedVacancyForEditAsync(VacancyRouteModel vrm, string routeName)
         {
@@ -111,6 +115,11 @@ namespace Esfa.Recruit.Provider.Web
             if (string.IsNullOrWhiteSpace(vacancy.Title))
                 return validRoutes;
 
+            if (_feature.IsFeatureEnabled(FeatureNames.ProviderTaskList))
+            {
+                validRoutes.AddRange(new [] {RouteNames.ProviderTaskListGet, RouteNames.ProviderTaskListCreateGet});    
+            }
+            
             validRoutes.AddRange(new[]
             {
                 RouteNames.Training_Confirm_Post,

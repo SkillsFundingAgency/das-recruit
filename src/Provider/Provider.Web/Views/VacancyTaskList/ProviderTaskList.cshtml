@@ -74,7 +74,7 @@
                         </li>    
                     @*}*@
                     <li class="das-task-list__item">
-                        @if (true) //(!Model.HasSelectedLegalEntity)
+                        @if (string.IsNullOrEmpty(Model.EmployerName))
                         {
                             <span class="das-task-list__task-name">
                                 Training course
@@ -88,7 +88,7 @@
                         }
                     </li>
                     <li class="das-task-list__item">
-                        @if (Model.ProviderSectionState == VacancyPreviewSectionState.Incomplete)
+                        @if (Model.HasProgramme)
                         {
                             <span>
                                 Summary of the apprenticeship
@@ -111,7 +111,7 @@
                         else
                         {
                             <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.VacancyDescription_Index_Get">
-                                About the apprenticeship
+                                Tasks and training details
                             </a>
                         }
                     </li>

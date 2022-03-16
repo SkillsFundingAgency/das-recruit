@@ -4,6 +4,7 @@ using Esfa.Recruit.Provider.UnitTests.Provider.Web.HardMocks;
 using Esfa.Recruit.Provider.Web;
 using Esfa.Recruit.Provider.Web.Orchestrators.Part2;
 using Esfa.Recruit.Provider.Web.ViewModels.Part2.VacancyDescription;
+using Esfa.Recruit.Shared.Web.FeatureToggle;
 using Esfa.Recruit.Shared.Web.Mappers;
 using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
@@ -122,7 +123,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part2
 
                 Sut = new VacancyDescriptionOrchestrator(MockRecruitVacancyClient.Object,
                     Mock.Of<ILogger<VacancyDescriptionOrchestrator>>(), Mock.Of<IReviewSummaryService>(),
-                    new Utility(MockRecruitVacancyClient.Object));
+                    new Utility(MockRecruitVacancyClient.Object, Mock.Of<IFeature>()));
             }
 
             public async Task PostVacancyDescriptionEditModelAsync(VacancyDescriptionEditModel model)

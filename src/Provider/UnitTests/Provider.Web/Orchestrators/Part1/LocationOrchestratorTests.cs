@@ -5,6 +5,7 @@ using Esfa.Recruit.Provider.Web;
 using Esfa.Recruit.Provider.Web.Models;
 using Esfa.Recruit.Provider.Web.Orchestrators.Part1;
 using Esfa.Recruit.Provider.Web.ViewModels.Part1.Location;
+using Esfa.Recruit.Shared.Web.FeatureToggle;
 using Esfa.Recruit.Shared.Web.Mappers;
 using Esfa.Recruit.Shared.Web.Models;
 using Esfa.Recruit.Shared.Web.Services;
@@ -234,7 +235,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part1
                 MockRecruitVacancyClient.Setup(x => x.UpdateEmployerProfileAsync(It.IsAny<EmployerProfile>(), User));
 
                 Sut = new LocationOrchestrator(MockClient.Object, MockRecruitVacancyClient.Object, Mock.Of<ILogger<LocationOrchestrator>>(), 
-                    Mock.Of<IReviewSummaryService>(), MockAddressesClient.Object, new Utility(MockRecruitVacancyClient.Object));
+                    Mock.Of<IReviewSummaryService>(), MockAddressesClient.Object, new Utility(MockRecruitVacancyClient.Object, Mock.Of<IFeature>()));
             }
 
             public async Task PostLocationEditModelAsync(LocationEditModel model, VacancyEmployerInfoModel vacancyEmployerInfoModel = null)
