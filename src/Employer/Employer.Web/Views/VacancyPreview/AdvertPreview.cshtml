@@ -25,8 +25,18 @@
       <p class="govuk-body">@Model.ShortDescription</p> 
     </div>
     <div class="govuk-grid-column-one-third">
-      <h3 class="govuk-heading-s govuk-!-margin-bottom-0">Closing date</h3>
-      <p class="govuk-body">@Model.ClosingDate</p>
+      <div asp-show="@Model.HasSpecifiedThroughExternalApplicationMethod">
+        <p class="govuk-body">This apprenticeship requires you to apply through the employer's website.</p>
+        <p class="govuk-!-margin-bottom-1">
+          <a id="external-employer-website" class="govuk-link" href="@Model.ApplicationUrl">Apply now</a>
+        </p>
+      </div>
+      <div  asp-show="@Model.HasSpecifiedThroughFaaApplicationMethod">
+         <p class="govuk-!-margin-bottom-1">
+           <a class="govuk-button" id="employer-website" href="#">Sign in to apply</a>
+         </p>
+      </div>
+      <p class="govuk-body-s">Closing date @Model.ClosingDate</p>
     </div>
   </div>
   <h2 class="govuk-heading-l" id="apprenticeshipSummary">Apprenticeship summary</h2>
