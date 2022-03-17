@@ -42,7 +42,13 @@
 
             <button type="submit" class="govuk-button save-button">@PartOnePageInfoViewModel.SubmitButtonCaptionForWizard</button>
 
-            <a asp-route="@RouteNames.Vacancies_Get" class="govuk-link das-button-link">Cancel</a>
+            <esfaFeatureEnabled name="@FeatureNames.ProviderTaskList">
+                <a asp-route="@RouteNames.Dashboard_Get" class="govuk-link das-button-link">Cancel</a>
+            </esfaFeatureEnabled>
+            <esfaFeatureDisabled name="@FeatureNames.ProviderTaskList">
+                <a asp-route="@RouteNames.Vacancies_Get" class="govuk-link das-button-link">Cancel</a>    
+            </esfaFeatureDisabled>
+            
         </form>
     </div>
 </div>

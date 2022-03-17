@@ -26,9 +26,10 @@ namespace Esfa.Recruit.Provider.Web.Controllers
         }
         
         [HttpGet("create/task-list", Name = RouteNames.ProviderTaskListCreateGet)]
-        public async Task<IActionResult> CreateProviderTaskList(VacancyRouteModel vrm)
+        public async Task<IActionResult> CreateProviderTaskList(VacancyRouteModel vrm, [FromQuery] string employerAccountId)
         {
             var viewModel = await _orchestrator.GetCreateVacancyTaskListModel(vrm);
+            viewModel.AccountId = employerAccountId;
             viewModel.SetSectionStates(viewModel, ModelState);
             
             return View("ProviderTaskList", viewModel);

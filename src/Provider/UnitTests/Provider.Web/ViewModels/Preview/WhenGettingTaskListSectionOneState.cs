@@ -5,7 +5,6 @@ using Esfa.Recruit.Provider.Web.Mappings;
 using Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.ApprenticeshipProgrammes;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
@@ -35,7 +34,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.ViewModels.Preview
         }
 
         [Test, MoqAutoData]
-        public async Task Then_If_Section_Started_Then_Set_To_In_Progress(
+        public async Task Then_If_Section_Started_And_Has_Title_Then_Set_To_In_Progress(
             string title,
             TrainingProvider trainingProvider,
             DisplayVacancyViewModelMapper mapper)
@@ -54,10 +53,9 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.ViewModels.Preview
         }
         
         [Test, MoqAutoData]
-        public async Task Then_If_Has_Title_Training_And_Provider_Then_In_Progress(
+        public async Task Then_If_Has_Title_Training_And_Course_Then_In_Progress(
             string title,
             string programmeId,
-            string employerAccountId,
             TrainingProvider trainingProvider,
             ApprenticeshipProgramme programme,
             [Frozen] Mock<IRecruitVacancyClient> recruitVacancyClient,
@@ -69,8 +67,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.ViewModels.Preview
                 Id = Guid.NewGuid(),
                 TrainingProvider = trainingProvider,
                 Title = title,
-                ProgrammeId = programmeId,
-                EmployerAccountId = employerAccountId
+                ProgrammeId = programmeId
             };
             var model = new VacancyPreviewViewModel();
             await mapper.MapFromVacancyAsync(model, vacancy);
@@ -81,11 +78,10 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.ViewModels.Preview
         }
         
         [Test, MoqAutoData]
-        public async Task Then_If_Has_Title_Training_Provider_ShortDescription_Then_In_Progress(
+        public async Task Then_If_Has_Title_Course_ShortDescription_Then_In_Progress(
             string title,
             string programmeId,
             string shortDescription,
-            string employerAccountId,
             TrainingProvider trainingProvider,
             ApprenticeshipProgramme programme,
             [Frozen] Mock<IRecruitVacancyClient> recruitVacancyClient,
@@ -98,8 +94,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.ViewModels.Preview
                 TrainingProvider = trainingProvider,
                 Title = title,
                 ProgrammeId = programmeId,
-                ShortDescription = shortDescription,
-                EmployerAccountId = employerAccountId
+                ShortDescription = shortDescription
             };
             var model = new VacancyPreviewViewModel();
             await mapper.MapFromVacancyAsync(model, vacancy);
@@ -110,26 +105,20 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.ViewModels.Preview
         }
         
         [Test, MoqAutoData]
-        public async Task Then_If_Has_Title_Training_Provider_ShortDescription_And_Descriptions_Then_Completed(
+        public async Task Then_If_Has_Title_Course_ShortDescription_And_Descriptions_Then_Completed(
             string title,
             string programmeId,
             string description,
             string shortDescription,
             string trainingDescription,
             string outcomeDescription,
-            string accountLegalEntityPublicHashedId,
-            string employerAccountId,
-            EmployerInfo employerInfo,
             TrainingProvider trainingProvider,
             ApprenticeshipProgramme programme,
             [Frozen] Mock<IRecruitVacancyClient> recruitVacancyClient,
-            [Frozen] Mock<IProviderVacancyClient> vacancyClient,
             DisplayVacancyViewModelMapper mapper)
         {
             recruitVacancyClient.Setup(x => x.GetApprenticeshipProgrammeAsync(programmeId)).ReturnsAsync(programme);
-            vacancyClient
-                .Setup(x => x.GetProviderEmployerVacancyDataAsync(trainingProvider.Ukprn.Value, employerAccountId))
-                .ReturnsAsync(employerInfo);
+            
             var vacancy = new Vacancy
             {
                 Id = Guid.NewGuid(),
@@ -139,8 +128,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.ViewModels.Preview
                 Description = description,
                 TrainingDescription = trainingDescription,
                 ShortDescription = shortDescription,
-                OutcomeDescription = outcomeDescription,
-                EmployerAccountId = employerAccountId
+                OutcomeDescription = outcomeDescription
             };
             var model = new VacancyPreviewViewModel();
             await mapper.MapFromVacancyAsync(model, vacancy);

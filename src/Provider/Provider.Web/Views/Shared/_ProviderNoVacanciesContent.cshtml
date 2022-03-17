@@ -32,11 +32,12 @@
         </ul>
         <div class="govuk-inset-text"> You can use our <a href="@RouteNames.Dashboard_ProviderRecruitmentApi" class="govuk-link" target="_blank">recruitment Application Programming Interfaces (APIs) (opens in a new tab)</a> to create vacancies using your existing systems or display vacancies from Find an apprenticeship on your website.
         </div>
+        
         <esfaFeatureEnabled name="@FeatureNames.ProviderTaskList">
-            <a asp-route="@RouteNames.ProviderTaskListCreateGet" role="button" class="govuk-button govuk-button--start" esfa-automation="create-vacancy">Start now</a>    
+            <a asp-route="@RouteNames.Employer_Get" role="button" class="govuk-button govuk-button--start" esfa-automation="create-vacancy">Start now</a>    
         </esfaFeatureEnabled>
         <esfaFeatureDisabled name="@FeatureNames.ProviderTaskList">
-            <a asp-route="@RouteNames.ProviderTaskListCreateGet" role="button" class="govuk-button govuk-button--start" esfa-automation="create-vacancy">Create vacancy</a>
+            <a asp-route="@RouteNames.Employer_Get" role="button" class="govuk-button govuk-button--start" esfa-automation="create-vacancy">Create vacancy</a>
         </esfaFeatureDisabled>
         
     </div>

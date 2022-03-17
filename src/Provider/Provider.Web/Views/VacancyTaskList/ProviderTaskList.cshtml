@@ -43,7 +43,7 @@
                         <span>
                             @if (Model.TaskListSectionOneState == VacancyTaskListSectionState.NotStarted)
                             {
-                                <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.CreateVacancy_Get">
+                                <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.CreateVacancy_Get" asp-route-employerAccountId="@Model.AccountId">
                                     Vacancy title
                                 </a>
                             }
@@ -55,26 +55,8 @@
                             }
                         </span>
                     </li>
-                    @* @if (Model.AccountLegalEntityCount > 1) *@
-                    @* { *@
-                     
-                    <li class="das-task-list__item"> 
-                            @if (Model.TitleSectionState == VacancyPreviewSectionState.Incomplete)
-                            {
-                                <span class="das-task-list__task-name">
-                                    Name of organisation
-                                </span>    
-                            }
-                            else
-                            {
-                                <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.Employer_Get">
-                                    Name of organisation
-                                </a>    
-                            }
-                        </li>    
-                    @*}*@
                     <li class="das-task-list__item">
-                        @if (string.IsNullOrEmpty(Model.EmployerName))
+                        @if (string.IsNullOrEmpty(Model.Title))
                         {
                             <span class="das-task-list__task-name">
                                 Training course
@@ -88,7 +70,7 @@
                         }
                     </li>
                     <li class="das-task-list__item">
-                        @if (Model.HasProgramme)
+                        @if (!Model.HasProgramme)
                         {
                             <span>
                                 Summary of the apprenticeship

@@ -202,11 +202,11 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview
         public VacancyTaskListSectionState TaskListSectionTwoState => SetTaskListSectionTwoState();
         public VacancyTaskListSectionState TaskListSectionThreeState => SetTaskListSectionThreeState();
         public VacancyTaskListSectionState TaskListSectionFourState => SetTaskListSectionFourState();
+        public string AccountId { get; set; }
 
         private VacancyTaskListSectionState SetTaskListSectionState()
         {
             if (TitleSectionState == VacancyPreviewSectionState.Valid
-                && !string.IsNullOrEmpty(AccountName)
                 && HasProgramme
                 && HasShortDescription
                 && HasOutcomeDescription

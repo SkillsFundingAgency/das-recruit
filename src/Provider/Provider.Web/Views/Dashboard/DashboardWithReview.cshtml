@@ -19,7 +19,12 @@
             <h1 class="govuk-heading-xl">Recruitment</h1>
         </div>
         <div class="govuk-grid-column-one-half ">
-            <a asp-route="@RouteNames.Employer_Get" class="govuk-button float-right clear govuk-!-margin-top-2 govuk-!-margin-bottom-4" esfa-automation="create-vacancy">Create vacancy</a>
+            <esfaFeatureEnabled name="@FeatureNames.ProviderTaskList">
+                <a asp-route="@RouteNames.CreateVacancyStart" class="govuk-button float-right clear govuk-!-margin-top-2 govuk-!-margin-bottom-4" esfa-automation="create-vacancy">Create vacancy</a>
+            </esfaFeatureEnabled>
+            <esfaFeatureDisabled name="@FeatureNames.ProviderTaskList">
+                <a asp-route="@RouteNames.Employer_Get" class="govuk-button float-right clear govuk-!-margin-top-2 govuk-!-margin-bottom-4" esfa-automation="create-vacancy">Create vacancy</a>    
+            </esfaFeatureDisabled>
         </div>
     </div>
     <div class="govuk-grid-row">

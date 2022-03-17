@@ -130,6 +130,16 @@ namespace Esfa.Recruit.Provider.Web
             if (string.IsNullOrWhiteSpace(vacancy.ProgrammeId))
                 return validRoutes;
 
+            if (_feature.IsFeatureEnabled(FeatureNames.ProviderTaskList))
+            {
+                validRoutes.AddRange(new []
+                {
+                    RouteNames.ShortDescription_Post,
+                    RouteNames.ShortDescription_Get,
+                    RouteNames.VacancyDescription_Index_Post,
+                    RouteNames.VacancyDescription_Index_Get
+                });
+            }
             validRoutes.AddRange(new[] {
                 RouteNames.NumberOfPositions_Post,
                 RouteNames.NumberOfPositions_Get });

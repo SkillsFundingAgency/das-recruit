@@ -7,6 +7,7 @@ using Esfa.Recruit.Provider.Web.Orchestrators.Part1;
 using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Provider.Web.ViewModels.Part1.Training;
 using Esfa.Recruit.Shared.Web.Extensions;
+using Esfa.Recruit.Shared.Web.FeatureToggle;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,11 +18,13 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
     public class TrainingController : Controller
     {
         private readonly TrainingOrchestrator _orchestrator;
+        private readonly IFeature _feature;
         private const string InvalidTraining = "Please select a training programme";
 
-        public TrainingController(TrainingOrchestrator orchestrator)
+        public TrainingController(TrainingOrchestrator orchestrator, IFeature feature)
         {
             _orchestrator = orchestrator;
+            _feature = feature;
         }
 
         [HttpGet("training", Name = RouteNames.Training_Get)]
@@ -112,7 +115,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
             }
 
             return wizard
-                ? RedirectToRoute(RouteNames.NumberOfPositions_Get)
+                ? _feature.IsFeatureEnabled(FeatureNames.ProviderTaskList) ? RedirectToRoute(RouteNames.ShortDescription_Get) : RedirectToRoute(RouteNames.NumberOfPositions_Get)
                 : RedirectToRoute(RouteNames.Vacancy_Preview_Get);
         }
 
