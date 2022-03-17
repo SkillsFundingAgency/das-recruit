@@ -55,8 +55,27 @@
                             }
                         </span>
                     </li>
+                    @if (Model.AccountLegalEntityCount > 1)
+                    {
+                        <li class="das-task-list__item">
+                            <span>
+                                @if (string.IsNullOrEmpty(Model.Title))
+                                {
+                                    <span class="das-task-list__task-name">
+                                        Name of Organisation
+                                    </span>
+                                }
+                                else
+                                {
+                                    <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.LegalEntity_Get">
+                                        Name of Organisation
+                                    </a>
+                                }
+                            </span>
+                        </li>
+                    }
                     <li class="das-task-list__item">
-                        @if (string.IsNullOrEmpty(Model.Title))
+                        @if (!Model.HasSelectedLegalEntity)
                         {
                             <span class="das-task-list__task-name">
                                 Training course

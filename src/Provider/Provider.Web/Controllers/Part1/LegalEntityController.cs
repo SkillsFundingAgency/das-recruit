@@ -80,6 +80,11 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
             }
 
             SetVacancyEmployerInfoCookie(info);
+            await _orchestrator.SetAccountLegalEntityPublicId(new VacancyRouteModel
+            {
+                Ukprn = m.Ukprn,
+                VacancyId = m.VacancyId
+            }, m, HttpContext.User.ToVacancyUser());
 
             return RedirectToRoute(RouteNames.EmployerName_Get, new {Wizard = wizard});
         }

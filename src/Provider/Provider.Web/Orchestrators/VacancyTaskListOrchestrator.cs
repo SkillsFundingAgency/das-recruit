@@ -74,9 +74,13 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
         {
             var vacancyTask = _utility.GetAuthorisedVacancyForEditAsync(routeModel, RouteNames.ProviderTaskListGet);
             var programmesTask = _vacancyClient.GetActiveApprenticeshipProgrammesAsync();
-
+            
             await Task.WhenAll(vacancyTask, programmesTask);
 
+            var employerInfo =
+                await _providerVacancyClient.GetProviderEmployerVacancyDataAsync(routeModel.Ukprn,
+                    vacancyTask.Result.EmployerAccountId);
+            
             var vacancy = vacancyTask.Result;
             var programme = programmesTask.Result.SingleOrDefault(p => p.Id == vacancy.ProgrammeId);
 
@@ -92,7 +96,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
                 vm.ApprenticeshipLevel = programme.ApprenticeshipLevel;
             }
 
-            //vm.AccountLegalEntityCount = getEmployerDataTask.Result.LegalEntities.Count();
+            vm.AccountLegalEntityCount = employerInfo.LegalEntities.Count;
             return vm;
         }
 

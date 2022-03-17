@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -197,17 +197,21 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview
             viewModel.DisabilityConfidentSectionState = GetSectionState(viewModel, new[]{ FieldIdentifiers.DisabilityConfident}, true, modelState, vm => vm.IsDisabilityConfident);
         }
         
+        public int AccountLegalEntityCount { get ; set ; }
+        
         public VacancyTaskListSectionState TaskListSectionOneState => SetTaskListSectionState();
 
         public VacancyTaskListSectionState TaskListSectionTwoState => SetTaskListSectionTwoState();
         public VacancyTaskListSectionState TaskListSectionThreeState => SetTaskListSectionThreeState();
         public VacancyTaskListSectionState TaskListSectionFourState => SetTaskListSectionFourState();
         public string AccountId { get; set; }
+        
 
         private VacancyTaskListSectionState SetTaskListSectionState()
         {
             if (TitleSectionState == VacancyPreviewSectionState.Valid
                 && HasProgramme
+                && HasSelectedLegalEntity
                 && HasShortDescription
                 && HasOutcomeDescription
                 && HasTrainingDescription

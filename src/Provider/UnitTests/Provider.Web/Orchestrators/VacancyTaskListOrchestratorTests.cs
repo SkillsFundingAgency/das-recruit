@@ -69,28 +69,28 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators
                 .Excluding(c=>c.CanShowDraftHeader)
                 .Excluding(c=>c.EducationLevelName)
                 .Excluding(c=>c.ApprenticeshipLevel)
-                // .Excluding(c=>c.AccountLegalEntityCount)
+                .Excluding(c=>c.AccountLegalEntityCount)
                 // .Excluding(c=>c.HasSelectedEmployerNameOption)
             );
             viewModel.ApprenticeshipLevel.Should().Be(programme.ApprenticeshipLevel);
-            //viewModel.AccountLegalEntityCount.Should().Be(legalEntities.Count);
-            //viewModel.HasSelectedEmployerNameOption.Should().BeTrue();
+            
+//            viewModel.HasSelectedEmployerNameOption.Should().BeTrue();
         }
 
-        // [Test, MoqAutoData]
-        // public async Task When_Creating_New_Then_The_Account_Legal_Entity_Count_Is_Populated(
-        //     VacancyRouteModel routeModel,
-        //     List<LegalEntity> legalEntities,
-        //     Vacancy vacancy,
-        //     [Frozen] Mock<IProviderVacancyClient> providerVacancyClient,
-        //     VacancyTaskListOrchestrator orchestrator)
-        // {
-        //     providerVacancyClient.Setup(x => x.GetEmployerLegalEntitiesAsync(routeModel.EmployerAccountId))
-        //         .ReturnsAsync(legalEntities);
-        //     
-        //     var viewModel = await orchestrator.GetVacancyTaskListModel(routeModel);
-        //
-        //     viewModel.AccountLegalEntityCount.Should().Be(legalEntities.Count);
-        // }
+        [Test, MoqAutoData]
+        public async Task When_Creating_New_Then_The_Account_Legal_Entity_Count_Is_Populated(
+            VacancyRouteModel routeModel,
+            EmployerInfo employerInfo,
+            Vacancy vacancy,
+            [Frozen] Mock<IProviderVacancyClient> providerVacancyClient,
+            VacancyTaskListOrchestrator orchestrator)
+        {
+            providerVacancyClient.Setup(x => x.GetProviderEmployerVacancyDataAsync(routeModel.Ukprn, vacancy.EmployerAccountId))
+                .ReturnsAsync(employerInfo);
+            
+            var viewModel = await orchestrator.GetVacancyTaskListModel(routeModel);
+        
+            viewModel.AccountLegalEntityCount.Should().Be(employerInfo.LegalEntities.Count);
+        }
     }
 }

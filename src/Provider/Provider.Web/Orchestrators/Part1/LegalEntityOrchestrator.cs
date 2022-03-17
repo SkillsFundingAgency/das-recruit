@@ -8,27 +8,33 @@ using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Provider.Web.ViewModels.Part1.LegalEntity;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Shared.Web.Helpers;
+using Esfa.Recruit.Shared.Web.Orchestrators;
 using Esfa.Recruit.Shared.Web.ViewModels;
+using Esfa.Recruit.Vacancies.Client.Application.Validation;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
 using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
 {
-    public class LegalEntityOrchestrator
+    public class LegalEntityOrchestrator : VacancyValidatingOrchestrator<LegalEntityEditModel>
     {
         private readonly IProviderVacancyClient _providerVacancyClient;
+        private readonly IRecruitVacancyClient _vacancyClient;
         private readonly ILogger<LegalEntityOrchestrator> _logger;
         private readonly IUtility _utility;
-
+        private const VacancyRuleSet ValidationRules = VacancyRuleSet.None;
         private const int MaxLegalEntitiesPerPage = 25;
 
         public LegalEntityOrchestrator(
             IProviderVacancyClient providerVacancyClient,
+            IRecruitVacancyClient vacancyClient,
             ILogger<LegalEntityOrchestrator> logger,
-            IUtility utility)
+            IUtility utility): base(logger)
         {
             _providerVacancyClient = providerVacancyClient;
+            _vacancyClient = vacancyClient;
             _logger = logger;
             _utility = utility;
         }
@@ -145,6 +151,32 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
             }
 
             return info.LegalEntities.Select(ConvertToOrganisationViewModel).ToList();
+        }
+
+        public async Task SetAccountLegalEntityPublicId(VacancyRouteModel vacancyRouteModel, LegalEntityEditModel vacancyEmployerInfoModel, VacancyUser vacancyUser)
+        {
+            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(vacancyRouteModel, RouteNames.Employer_Get);
+            vacancy.AccountLegalEntityPublicHashedId = vacancyEmployerInfoModel.SelectedOrganisationId;
+            
+            await ValidateAndExecute(
+                vacancy,
+                v => _vacancyClient.Validate(v, ValidationRules),
+                async v =>
+                {
+                    await _vacancyClient.UpdateDraftVacancyAsync(vacancy, vacancyUser);
+                });
+        }
+
+        protected override EntityToViewModelPropertyMappings<Vacancy, LegalEntityEditModel> DefineMappings()
+        {
+            var mappings = new EntityToViewModelPropertyMappings<Vacancy, LegalEntityEditModel>
+            {
+                {
+                    e=>e.AccountLegalEntityPublicHashedId, vm => vm.SelectedOrganisationId
+                }
+            };
+
+            return mappings;
         }
     }
 }

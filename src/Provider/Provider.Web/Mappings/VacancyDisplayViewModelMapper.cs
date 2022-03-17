@@ -81,6 +81,7 @@ namespace Esfa.Recruit.Provider.Web.Mappings
                                         ? $"VAC{vacancy.VacancyReference}"
                                         : string.Empty;
             vm.IsDisabilityConfident = vacancy.IsDisabilityConfident;
+            vm.AccountLegalEntityPublicHashedId = vacancy.AccountLegalEntityPublicHashedId;
 
             if (vacancy.EmployerLocation != null)
             {
