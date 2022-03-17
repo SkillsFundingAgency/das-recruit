@@ -1,5 +1,13 @@
-﻿using System.Threading.Tasks;
+﻿using System.Linq;
+using System.Threading.Tasks;
+using Esfa.Recruit.Provider.UnitTests.Provider.Web.HardMocks;
+using Esfa.Recruit.Provider.Web.Orchestrators.Part2;
+using Esfa.Recruit.Provider.Web.ViewModels.Part2.Considerations;
 using Esfa.Recruit.Provider.Web.ViewModels.Part2.FutureProspects;
+using Esfa.Recruit.Shared.Web.Mappers;
+using Esfa.Recruit.Shared.Web.Services;
+using Esfa.Recruit.Vacancies.Client.Application.Validation;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
@@ -9,13 +17,13 @@ using Xunit;
 
 namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part2
 {
-    class FutureProspectsOrchestratorTests
+    public class FutureProspectsOrchestratorTests
     {
         private FutureProspectsOrchestratorTestsFixture _fixture;
 
         public FutureProspectsOrchestratorTests()
         {
-            _fixture = new ConsiderationsOrchestratorTestsFixture();
+            _fixture = new FutureProspectsOrchestratorTestsFixture();
         }
 
         [Fact]
@@ -32,7 +40,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part2
                 FutureProspects = "has a new value"
             };
 
-            await _fixture.PostConsiderationsEditModelAsync(futureProspectsEditModel);
+            await _fixture.PostFutureProspectsEditModelAsync(futureProspectsEditModel);
 
             _fixture.VerifyUpdateDraftVacancyAsyncIsCalled();
         }
@@ -48,22 +56,22 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part2
             {
                 Ukprn = _fixture.Vacancy.TrainingProvider.Ukprn.Value,
                 VacancyId = _fixture.Vacancy.Id,
-                ThingsToConsider = "has a new value"
+                FutureProspects = "has a new value"
             };
 
-            await _fixture.PostConsiderationsEditModelAsync(thingsToConsiderEditModel);
+            await _fixture.PostFutureProspectsEditModelAsync(futureProspectsEditModel);
 
-            _fixture.VerifyProviderReviewFieldIndicators(FieldIdentifiers.ThingsToConsider, true);
+            _fixture.VerifyProviderReviewFieldIndicators(FieldIdentifiers.OutcomeDescription, true);
         }
 
-        public class ConsiderationsOrchestratorTestsFixture
+        public class FutureProspectsOrchestratorTestsFixture
         {
-            private const VacancyRuleSet ValidationRules = VacancyRuleSet.ThingsToConsider;
+            private const VacancyRuleSet ValidationRules = VacancyRuleSet.OutcomeDescription;
             public VacancyUser User { get; }
             public Vacancy Vacancy { get; }
-            public ConsiderationsOrchestrator Sut { get; private set; }
+            public FutureProspectsOrchestrator Sut { get; private set; }
 
-            public ConsiderationsOrchestratorTestsFixture()
+            public FutureProspectsOrchestratorTestsFixture()
             {
                 MockClient = new Mock<IProviderVacancyClient>();
                 MockRecruitVacancyClient = new Mock<IRecruitVacancyClient>();
@@ -72,9 +80,9 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part2
                 Vacancy = VacancyOrchestratorTestData.GetPart1CompleteVacancy();
             }
 
-            public ConsiderationsOrchestratorTestsFixture WithThingsToConsider(string thingsToConsider)
+            public FutureProspectsOrchestratorTestsFixture WithFutureProspects(string futureProspects)
             {
-                Vacancy.ThingsToConsider = thingsToConsider;
+                Vacancy.OutcomeDescription = futureProspects;
                 return this;
             }
 
@@ -85,12 +93,13 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part2
                 MockRecruitVacancyClient.Setup(x => x.UpdateDraftVacancyAsync(It.IsAny<Vacancy>(), User));
                 MockRecruitVacancyClient.Setup(x => x.UpdateEmployerProfileAsync(It.IsAny<EmployerProfile>(), User));
 
-                Sut = new ConsiderationsOrchestrator(Mock.Of<ILogger<ConsiderationsOrchestrator>>(), MockClient.Object, MockRecruitVacancyClient.Object, Mock.Of<IReviewSummaryService>());
+                Sut = new FutureProspectsOrchestrator(MockClient.Object, MockRecruitVacancyClient.Object,
+                    Mock.Of<ILogger<FutureProspectsOrchestrator>>(), Mock.Of<IReviewSummaryService>());
             }
 
-            public async Task PostConsiderationsEditModelAsync(ConsiderationsEditModel model)
+            public async Task PostFutureProspectsEditModelAsync(FutureProspectsEditModel model)
             {
-                await Sut.PostConsiderationsEditModelAsync(model, User);
+                await Sut.PostFutureProspectsEditModelAsync(model, User);
             }
 
             public void VerifyProviderReviewFieldIndicators(string fieldIdentifier, bool value)
