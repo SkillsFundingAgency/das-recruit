@@ -108,5 +108,8 @@
         public const string NotificationsUpdatedAcknowledgement_Get = "NotificationsUpdatedAcknowledgement_Get";
         public const string NotificationUnsubscribedAcknowledgement_Get = "NotificationUnsubscribedAcknowledgement_Get";
         public const string Dashboard_ProviderRecruitmentApi = "provider-recruitment-api";
+
+        public const string FutureProspects_Get = "FutureProspects_Get";
+        public const string FutureProspects_Post = "FutureProspects_Post";
     }
 }
