@@ -325,17 +325,17 @@
                         }
                     </li>
                     <li class="das-task-list__item">
-                        @if (Model.EmployerNameSectionState == VacancyPreviewSectionState.Incomplete)
+                        @if (Model.TaskListSectionFourState == VacancyTaskListSectionState.InProgress)
                         {
-                            <span class="das-task-list__task-name">
-                                 Employer information
-                            </span>    
+                            <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.AboutEmployer_Get">
+                                Employer information
+                            </a>
                         }
                         else
                         {
-                            <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.AboutEmployer_Get">
-                                 Employer information
-                            </a>    
+                            <span class="das-task-list__task-name">
+                                Employer information
+                            </span>
                         }
                     </li>
                     <li class="das-task-list__item">

@@ -81,14 +81,14 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators
         public async Task When_Creating_New_Then_The_Account_Legal_Entity_Count_Is_Populated(
             VacancyRouteModel routeModel,
             EmployerInfo employerInfo,
-            Vacancy vacancy,
+            string employerAccountId,
             [Frozen] Mock<IProviderVacancyClient> providerVacancyClient,
             VacancyTaskListOrchestrator orchestrator)
         {
-            providerVacancyClient.Setup(x => x.GetProviderEmployerVacancyDataAsync(routeModel.Ukprn, vacancy.EmployerAccountId))
+            providerVacancyClient.Setup(x => x.GetProviderEmployerVacancyDataAsync(routeModel.Ukprn, employerAccountId))
                 .ReturnsAsync(employerInfo);
             
-            var viewModel = await orchestrator.GetVacancyTaskListModel(routeModel);
+            var viewModel = await orchestrator.GetCreateVacancyTaskListModel(routeModel, employerAccountId);
         
             viewModel.AccountLegalEntityCount.Should().Be(employerInfo.LegalEntities.Count);
         }
