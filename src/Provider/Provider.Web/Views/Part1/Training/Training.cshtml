@@ -10,7 +10,15 @@
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         <esfaFeatureEnabled name="@FeatureNames.ProviderTaskList">
-            <a asp-route="@RouteNames.LegalEntity_Get" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
+            @if (Model.HasMoreThanOneLegalEntity)
+            {
+                <a asp-route="@RouteNames.LegalEntity_Get" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>    
+            }
+            else
+            {
+                <a asp-route="@RouteNames.Title_Get" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
+            }
+            
         </esfaFeatureEnabled>
         <esfaFeatureDisabled name="@FeatureNames.ProviderTaskList">
             <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Title_Get" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>    

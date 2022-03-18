@@ -26,7 +26,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part1
             _fixture = new TrainingOrchestratorTestsFixture();
         }
 
-        [Theory]
+        [Xunit.Theory]
         [InlineData("this is a value", false)]
         [InlineData("this is a new value", true)]
         public async Task WhenUpdated_ShouldFlagFieldIndicators(string programmeId, bool fieldIndicatorSet)
@@ -48,6 +48,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part1
             _fixture.VerifyProviderReviewFieldIndicators(FieldIdentifiers.Training, fieldIndicatorSet);
         }
 
+
         public class TrainingOrchestratorTestsFixture
         {
             private const VacancyRuleSet ValidationRules = VacancyRuleSet.TrainingProgramme;
@@ -59,6 +60,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part1
             {
                 MockClient = new Mock<IProviderVacancyClient>();
                 MockRecruitVacancyClient = new Mock<IRecruitVacancyClient>();
+                MockProviderRecruitVacancyClient = new Mock<IProviderVacancyClient>();
 
                 User = VacancyOrchestratorTestData.GetVacancyUser();
                 Vacancy = VacancyOrchestratorTestData.GetPart1CompleteVacancy();
@@ -77,7 +79,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part1
                 MockRecruitVacancyClient.Setup(x => x.UpdateDraftVacancyAsync(It.IsAny<Vacancy>(), User));
                 MockRecruitVacancyClient.Setup(x => x.UpdateEmployerProfileAsync(It.IsAny<EmployerProfile>(), User));
 
-                Sut = new TrainingOrchestrator(MockRecruitVacancyClient.Object, Mock.Of<ILogger<TrainingOrchestrator>>(), 
+                Sut = new TrainingOrchestrator(MockRecruitVacancyClient.Object, MockProviderRecruitVacancyClient.Object, Mock.Of<ILogger<TrainingOrchestrator>>(), 
                     Mock.Of<IReviewSummaryService>(), new Utility(MockRecruitVacancyClient.Object, Mock.Of<IFeature>()));
             }
 
@@ -96,6 +98,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part1
 
             public Mock<IProviderVacancyClient> MockClient { get; set; }
             public Mock<IRecruitVacancyClient> MockRecruitVacancyClient { get; set; }
+            public Mock<IProviderVacancyClient> MockProviderRecruitVacancyClient { get; set; }
         }
     }
 }

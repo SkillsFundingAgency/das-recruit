@@ -21,12 +21,14 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
     {
         private const VacancyRuleSet ValidationRules = VacancyRuleSet.TrainingProgramme;
         private readonly IRecruitVacancyClient _vacancyClient;
+        private readonly IProviderVacancyClient _providerVacancyClient;
         private readonly IReviewSummaryService _reviewSummaryService;
         private readonly IUtility _utility;
 
-        public TrainingOrchestrator(IRecruitVacancyClient vacancyClient, ILogger<TrainingOrchestrator> logger, IReviewSummaryService reviewSummaryService, IUtility utility) : base(logger)
+        public TrainingOrchestrator(IRecruitVacancyClient vacancyClient, IProviderVacancyClient providerVacancyClient, ILogger<TrainingOrchestrator> logger, IReviewSummaryService reviewSummaryService, IUtility utility) : base(logger)
         {
             _vacancyClient = vacancyClient;
+            _providerVacancyClient = providerVacancyClient;
             _reviewSummaryService = reviewSummaryService;
             _utility = utility;
         }
@@ -38,6 +40,10 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
 
             await Task.WhenAll(vacancyTask, programmesTask);
 
+            var employerInfo =
+                await _providerVacancyClient.GetProviderEmployerVacancyDataAsync(vrm.Ukprn,
+                    vacancyTask.Result.EmployerAccountId);
+
             var vacancy = vacancyTask.Result;
             var programmes = programmesTask.Result;
             
@@ -47,6 +53,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
                 SelectedProgrammeId = vacancy.ProgrammeId,
                 Programmes = programmes.ToViewModel(),
                 PageInfo = _utility.GetPartOnePageInfo(vacancy),
+                HasMoreThanOneLegalEntity = employerInfo.LegalEntities.Count > 1
             };
 
             if (vacancy.Status == VacancyStatus.Referred)
