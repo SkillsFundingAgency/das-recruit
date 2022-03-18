@@ -105,7 +105,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.ViewModels.Preview
         }
         
         [Test, MoqAutoData]
-        public async Task Then_If_Has_Title_Course_ShortDescription_And_Descriptions_Then_Completed(
+        public async Task Then_If_Has_Title_Course_ShortDescription_And_Descriptions_Then_InProgress(
             string title,
             string programmeId,
             string description,
@@ -129,6 +129,42 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.ViewModels.Preview
                 TrainingDescription = trainingDescription,
                 ShortDescription = shortDescription,
                 OutcomeDescription = outcomeDescription
+            };
+            var model = new VacancyPreviewViewModel();
+            await mapper.MapFromVacancyAsync(model, vacancy);
+            
+            model.SetSectionStates(model, new ModelStateDictionary());
+
+            model.TaskListSectionOneState.Should().Be(VacancyTaskListSectionState.InProgress);
+        }
+        
+        [Test, MoqAutoData]
+        public async Task Then_If_Has_Title_Organisation_Course_ShortDescription_And_Descriptions_Then_Completed(
+            string title,
+            string programmeId,
+            string description,
+            string shortDescription,
+            string trainingDescription,
+            string outcomeDescription,
+            string accountLegalEntityPublicHashedId,
+            TrainingProvider trainingProvider,
+            ApprenticeshipProgramme programme,
+            [Frozen] Mock<IRecruitVacancyClient> recruitVacancyClient,
+            DisplayVacancyViewModelMapper mapper)
+        {
+            recruitVacancyClient.Setup(x => x.GetApprenticeshipProgrammeAsync(programmeId)).ReturnsAsync(programme);
+            
+            var vacancy = new Vacancy
+            {
+                Id = Guid.NewGuid(),
+                TrainingProvider = trainingProvider,
+                Title = title,
+                ProgrammeId = programmeId,
+                Description = description,
+                TrainingDescription = trainingDescription,
+                ShortDescription = shortDescription,
+                OutcomeDescription = outcomeDescription,
+                AccountLegalEntityPublicHashedId = accountLegalEntityPublicHashedId
             };
             var model = new VacancyPreviewViewModel();
             await mapper.MapFromVacancyAsync(model, vacancy);
