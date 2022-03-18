@@ -111,5 +111,6 @@
         public const string CreateVacancyStart = "provider-task-list-start";
         public const string ProviderTaskListCreateGet = "provider-task-list-create";
         public const string ProviderTaskListGet = "provider-task-list-get";
+        public const string ProviderCheckYourAnswersGet = "provider-check-your-answers-get";
     }
 }

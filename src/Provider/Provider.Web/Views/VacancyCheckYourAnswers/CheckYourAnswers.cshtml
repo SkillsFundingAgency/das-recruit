@@ -1,0 +1,357 @@
+﻿@using Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview
+@using Esfa.Recruit.Vacancies.Client.Domain.Entities
+@model Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview.VacancyPreviewViewModel
+
+@{ ViewBag.GaData.Vpv = "/recruitment/provider/check-your-answers"; }
+
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+        <a asp-route="@RouteNames.ProviderTaskListGet" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back to task list</a>
+    </div>
+</div>
+
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">  
+        <h1 class="govuk-heading-xl">
+            Check your answers before submitting your advert
+        </h1>
+        <h2 class="govuk-heading-m">Advert summary</h2>
+        <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    Advert title
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    @Model.Title
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                    <a class="govuk-link govuk-link--no-visited-state float-right-desktop" asp-route="@RouteNames.Title_Get">Change<span class="govuk-visually-hidden"> advert title</span></a>
+                </dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    Name of organisation
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    @Model.EmployerName
+                </dd>
+                <dd class="govuk-summary-list__actions"></dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    Training course
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    @Model.TrainingTitle
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                    <a class="govuk-link govuk-link--no-visited-state float-right-desktop" asp-route="@RouteNames.Training_Get">Change<span class="govuk-visually-hidden"> training course</span></a>
+                </dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    Summary of the apprenticeship
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    @Model.ShortDescription
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                    <a class="govuk-link govuk-link--no-visited-state float-right-desktop" asp-route="@RouteNames.ShortDescription_Get">Change<span class="govuk-visually-hidden"> summary of the apprenticeship</span></a>
+                </dd>
+            </div>
+            <div class="govuk-summary-list__row govuk-summary-list--no-border">
+                <dt class="govuk-summary-list__key">
+                    What will the apprentice be doing?
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    @Html.Raw(Model.VacancyDescription)
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                    <a class="govuk-link govuk-link--no-visited-state float-right-desktop" asp-route="@RouteNames.VacancyDescription_Index_Get">Change<span class="govuk-visually-hidden"> about the apprenticeship</span></a>
+                </dd>
+            </div>
+            <div class="govuk-summary-list__row govuk-summary-list--no-border">
+                <dt class="govuk-summary-list__key">
+                    Training and qualification levels
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    @Html.Raw(Model.TrainingDescription)
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                </dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    Future prospects
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    @Html.Raw(Model.OutcomeDescription)
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                </dd>
+            </div>
+        </dl>
+    
+        <h2 class="govuk-heading-m">Employment details</h2>
+        <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+            <div class="govuk-summary-list__row govuk-summary-list--no-border">
+                <dt class="govuk-summary-list__key">
+                    Application closing date
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    @Model.ClosingDate
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                    <a class="govuk-link govuk-link--no-visited-state float-right-desktop" asp-route="@RouteNames.Dates_Get">Change<span class="govuk-visually-hidden"> important date</span></a>
+                </dd>
+            </div>
+            <div class="govuk-summary-list__row govuk-summary-list--no-border">
+                <dt class="govuk-summary-list__key">
+                    Apprenticeship start date
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    @Model.PossibleStartDate
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                </dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    Disability Confident Employer?
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    @(Model.IsDisabilityConfident?"Yes":"No")
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                    
+                </dd>
+            </div>
+            <div class="govuk-summary-list__row govuk-summary-list--no-border">
+                <dt class="govuk-summary-list__key">
+                    Pay rate
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    @Model.WageText
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                    <a class="govuk-link govuk-link--no-visited-state float-right-desktop" asp-route="@RouteNames.Wage_Get">Change<span class="govuk-visually-hidden"> wage</span></a>
+                </dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    Extra information about pay (optional)
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    @(Model.HasWageInfo?Model.WageInfo:"None")
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                </dd>
+            </div>
+            <div class="govuk-summary-list__row govuk-summary-list--no-border">
+                <dt class="govuk-summary-list__key">
+                    Duration
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    @Model.ExpectedDuration
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                    <a class="govuk-link govuk-link--no-visited-state float-right-desktop" asp-route="@RouteNames.Duration_Get">Change<span class="govuk-visually-hidden"> duration</span></a>
+                </dd>
+            </div>
+            <div class="govuk-summary-list__row govuk-summary-list--no-border">
+                <dt class="govuk-summary-list__key">
+                    Working week details
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    @Model.WorkingWeekDescription
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                </dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    Hours per week
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    @Model.HoursPerWeek
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                </dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    Number of positions
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    @Model.NumberOfPositions
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                    <a class="govuk-link govuk-link--no-visited-state float-right-desktop" asp-route="@RouteNames.NumberOfPositions_Get">Change<span class="govuk-visually-hidden"> number of positions</span></a>
+                </dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    Address
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    @string.Join(", ", Model.EmployerAddressElements?.Where(s => !string.IsNullOrWhiteSpace(s)).Select(s => s.Trim()) ?? new string[0])
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                    <a class="govuk-link govuk-link--no-visited-state float-right-desktop" asp-route="@RouteNames.Location_Get">Change<span class="govuk-visually-hidden"> location</span></a>
+                </dd>
+            </div>
+        </dl>
+        <h2 class="govuk-heading-m">Skills and qualifications</h2>
+        <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    Skills
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    <ul class="govuk-list govuk-list--bullet">
+                        @foreach (var skill in Model.Skills)
+                        {
+                            <li>@skill</li>
+                        }
+                    </ul>
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                    <a class="govuk-link govuk-link--no-visited-state float-right-desktop" asp-route="@RouteNames.Skills_Get">Change<span class="govuk-visually-hidden"> skills</span></a>
+                </dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    Qualifications
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    <ul class="govuk-list govuk-list--bullet">
+                        @foreach (var qual in Model.Qualifications)
+                        {
+                            <li>@qual</li>
+                        }
+                    </ul>
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                    <a class="govuk-link govuk-link--no-visited-state float-right-desktop" asp-route="@RouteNames.Qualifications_Get">Change<span class="govuk-visually-hidden"> qualifications</span></a>
+                </dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    Other things to consider
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    @Model.ThingsToConsider
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                    <a class="govuk-link govuk-link--no-visited-state float-right-desktop" asp-route="@RouteNames.Considerations_Get">Change<span class="govuk-visually-hidden"> considerations</span></a>
+                </dd>
+            </div>
+        </dl>
+        <h2 class="govuk-heading-m">About the employer</h2>
+        <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    Name of organisation
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    @Model.EmployerName
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                    <a class="govuk-link govuk-link--no-visited-state float-right-desktop" asp-route="@RouteNames.EmployerName_Get">Change<span class="govuk-visually-hidden"> name of organisation</span></a>
+                </dd>
+            </div>
+            <div class="govuk-summary-list__row govuk-summary-list--no-border">
+                <dt class="govuk-summary-list__key">
+                    Employer information
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    @Model.EmployerDescription
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                    <a class="govuk-link govuk-link--no-visited-state float-right-desktop" asp-route="@RouteNames.AboutEmployer_Get">Change<span class="govuk-visually-hidden"> name of organisation</span></a>
+                </dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    Organisation website (optional)
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    @(Model.HasEmployerWebsiteUrl?Model.EmployerWebsiteUrl:"None")
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                </dd>
+            </div>
+            <div class="govuk-summary-list__row govuk-summary-list--no-border">
+                <dt class="govuk-summary-list__key">
+                    Contact name (optional)
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    @(Model.HasEmployerContactName?Model.EmployerContactName:"None")
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                    <a class="govuk-link govuk-link--no-visited-state float-right-desktop" asp-route="@RouteNames.EmployerContactDetails_Get">Change<span class="govuk-visually-hidden"> contact details</span></a>
+                </dd>
+            </div>
+            <div class="govuk-summary-list__row govuk-summary-list--no-border">
+                <dt class="govuk-summary-list__key">
+                    Contact email (optional)
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    @(Model.HasEmployerContactEmail?Model.EmployerContactEmail:"None")
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                </dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    Contact number (optional)
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    @(Model.HasEmployerContactTelephone?Model.EmployerContactTelephone:"None")
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                </dd>
+            </div>
+            <div class="govuk-summary-list__row govuk-summary-list--no-border">
+                <dt class="govuk-summary-list__key">
+                    Application website
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    @if (Model.ApplicationMethod == ApplicationMethod.ThroughExternalApplicationSite)
+                    {
+                        @Model.ApplicationUrl
+                    }
+                    else
+                    {
+                        @Model.FindAnApprenticeshipUrl
+                    }
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                    <a class="govuk-link govuk-link--no-visited-state float-right-desktop" asp-route="@RouteNames.ApplicationProcess_Get">Change<span class="govuk-visually-hidden"> application process</span></a>
+                </dd>
+            </div>
+            @if (Model.HasApplicationInstructions)
+            {
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
+                        Explain the application process (optional)
+                    </dt>
+                    <dd class="govuk-summary-list__value">
+                        @(Model.HasApplicationInstructions ? Model.ApplicationInstructions : "None")
+                    </dd>
+                    <dd class="govuk-summary-list__actions">
+                    </dd>
+                </div>
+            }
+            
+        </dl>
+        <h2 class="govuk-heading-m">Now submit your advert</h2>
+        <p class="govuk-body">By submitting this advert you are confirming that, to the best of your knowledge, the details you are providing are correct.</p>
+        <p class="govuk-body"><a asp-route="@RouteNames.Vacancy_Preview_Get" class="govuk-link govuk-link--no-visited-state">Preview advert before submitting</a></p>
+        <form asp-route="@RouteNames.Preview_Submit_Post" class="form-inline">
+            <input type="submit" value="@Model.SubmitButtonText" class="govuk-button" esfa-automation="submit-button" />
+        </form>
+    </div>
+</div>
