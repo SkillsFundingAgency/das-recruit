@@ -127,6 +127,29 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.ViewModels.Preview
             model.TaskListSectionOneState.Should().Be(VacancyTaskListSectionState.Completed);
             model.TaskListSectionTwoState.Should().Be(VacancyTaskListSectionState.InProgress);
         }
+        
+        [Test, MoqAutoData]
+        public async Task Then_The_Section_Is_Set_To_Complete_When_Dates_Duration_Wage_Number_Of_Positions_address_Set(
+            int? numberOfPositions,
+            Wage wage,
+            Address address,
+            Mock<IRecruitVacancyClient> recruitVacancyClient,
+            DisplayVacancyViewModelMapper mapper)
+        {
+            var vacancy = GetVacancySectionOneComplete(recruitVacancyClient);
+            vacancy.StartDate = DateTime.UtcNow.AddMonths(3);
+            vacancy.ClosingDate = DateTime.UtcNow.AddMonths(2);
+            vacancy.Wage = wage;
+            vacancy.EmployerLocation = address;
+            vacancy.NumberOfPositions = numberOfPositions;
+            var model = new VacancyPreviewViewModel();
+            
+            await mapper.MapFromVacancyAsync(model, vacancy);
+            model.SetSectionStates(model, new ModelStateDictionary());
+
+            model.TaskListSectionOneState.Should().Be(VacancyTaskListSectionState.Completed);
+            model.TaskListSectionTwoState.Should().Be(VacancyTaskListSectionState.Completed);
+        }
 
         private Vacancy GetVacancySectionOneComplete(Mock<IRecruitVacancyClient> recruitVacancyClient)
         {

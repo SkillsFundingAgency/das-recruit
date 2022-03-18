@@ -230,6 +230,20 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview
         }
         private VacancyTaskListSectionState SetTaskListSectionTwoState()
         {
+            if (WageTextSectionState == VacancyPreviewSectionState.Valid
+                && ExpectedDurationSectionState == VacancyPreviewSectionState.Valid
+                && ClosingDateSectionState == VacancyPreviewSectionState.Valid
+                && PossibleStartDateSectionState == VacancyPreviewSectionState.Valid
+                && NumberOfPositionsSectionState == VacancyPreviewSectionState.Valid
+                && EmployerAddressSectionState == VacancyPreviewSectionState.Valid)
+            {
+                return VacancyTaskListSectionState.Completed;
+            }
+            
+            if (HasPossibleStartDate && HasClosingDate)
+            {
+                return VacancyTaskListSectionState.InProgress;
+            }
             return VacancyTaskListSectionState.NotStarted;
         }
         private VacancyTaskListSectionState SetTaskListSectionThreeState()
