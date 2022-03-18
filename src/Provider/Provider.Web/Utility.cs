@@ -144,9 +144,12 @@ namespace Esfa.Recruit.Provider.Web
                 RouteNames.NumberOfPositions_Post,
                 RouteNames.NumberOfPositions_Get });
 
-            if (!vacancy.NumberOfPositions.HasValue)
-                return validRoutes;
-
+            if (!_feature.IsFeatureEnabled(FeatureNames.ProviderTaskList))
+            {
+                if (!vacancy.NumberOfPositions.HasValue)
+                    return validRoutes;    
+            }
+            
             validRoutes.AddRange(new[] 
             {
                 RouteNames.Location_Get, 
@@ -156,10 +159,15 @@ namespace Esfa.Recruit.Provider.Web
                 RouteNames.LegalEntity_Post, 
                 RouteNames.LegalEntity_Get
             });
-            if (string.IsNullOrWhiteSpace(vacancy.LegalEntityName)
-                || vacancy.EmployerNameOption == null
-                || string.IsNullOrWhiteSpace(vacancy.EmployerLocation?.Postcode))
-                return validRoutes;
+            
+            if (!_feature.IsFeatureEnabled(FeatureNames.ProviderTaskList))
+            {
+                if (string.IsNullOrWhiteSpace(vacancy.LegalEntityName)
+                    || vacancy.EmployerNameOption == null
+                    || string.IsNullOrWhiteSpace(vacancy.EmployerLocation?.Postcode))
+                    return validRoutes;    
+            }
+            
 
             validRoutes.AddRange(new[] { RouteNames.Dates_Post, RouteNames.Dates_Get });
             if (vacancy.StartDate == null)

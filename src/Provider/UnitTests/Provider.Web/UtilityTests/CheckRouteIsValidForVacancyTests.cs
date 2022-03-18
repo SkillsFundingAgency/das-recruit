@@ -257,6 +257,23 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.UtilityTests
             CheckRouteIsValidForVacancyTest(vacancy, RouteNames.LegalEntity_Get, false, null);
         }
 
+        [Fact]
+        public void ShouldRedirectToLegalEntityGetWhenNoNumberOfPositionsAndTaskListEnabled()
+        {
+            var vacancy = new Vacancy
+            {
+                EmployerAccountId = "EMPLOYER ACCOUNT ID",
+                Id = Guid.Parse("84af954e-5baf-4942-897d-d00180a0839e"),
+                Title = "has a value",
+                ProgrammeId = "has a value",
+                EmployerNameOption = EmployerNameOption.RegisteredName,
+                EmployerLocation = new Address { Postcode = "has a value" },
+                Wage = new Wage { WageType = WageType.FixedWage}
+            };
+
+            CheckRouteIsValidForVacancyTest(vacancy, RouteNames.Dates_Get, false, null, true);
+        }
+        
         private void CheckRouteIsValidForVacancyTest(Vacancy vacancy, string route,
             bool shouldRedirect, string expectedRedirectRoute, bool taskListEnabled = false)
         {
