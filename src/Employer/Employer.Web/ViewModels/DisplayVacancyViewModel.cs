@@ -33,7 +33,8 @@ namespace Esfa.Recruit.Employer.Web.ViewModels
         public string NumberOfPositions { get; internal set; }
         public string NumberOfPositionsCaption { get; internal set; }
         public string OutcomeDescription { get; internal set; }
-        public string PossibleStartDate { get; internal set; }
+        public string PossibleStartDate { get; internal set; } 
+        public string PostedDate { get; internal set; }
         public string ProviderName { get; internal set; }
         public List<ProviderReviewFieldIndicator> ProviderReviewFieldIndicators { get; internal set; }
         public IEnumerable<string> Qualifications { get; internal set; }

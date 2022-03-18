@@ -1,0 +1,219 @@
+@using Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview
+@{ 
+  ViewBag.Vpv = "/recruitment/employer/advert-preview";
+  ViewBag.Title = "Advert preview"; 
+}
+
+@model VacancyPreviewViewModel
+
+@section BackLink {
+  <a asp-route="@RouteNames.EmployerCheckYourAnswersGet" esfa-automation="link-back" class="govuk-back-link">Back to check your answers</a>
+}
+
+<h1 class="govuk-heading-l">Preview your advert</h1>
+<div class="app-preview-wrap">
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <h2 class="govuk-heading-xl">
+        @Model.Title
+        <span class="govuk-caption-l">@Model.EmployerName</span>
+      </h2>
+    </div>
+  </div>
+  <div class="govuk-grid-row govuk-!-margin-bottom-6">
+    <div class="govuk-grid-column-two-thirds">
+      <p class="govuk-body">@Model.ShortDescription</p> 
+    </div>
+    <div class="govuk-grid-column-one-third">
+      <div asp-show="@Model.HasSpecifiedThroughExternalApplicationMethod">
+        <p class="govuk-body">This apprenticeship requires you to apply through the employer's website.</p>
+        <p class="govuk-!-margin-bottom-1">
+          <a id="external-employer-website" class="govuk-link" href="#">Apply now</a>
+        </p>
+      </div>
+      <div  asp-show="@Model.HasSpecifiedThroughFaaApplicationMethod">
+         <p class="govuk-!-margin-bottom-1">
+           <a class="govuk-button" id="employer-website" href="#">Sign in to apply</a>
+         </p>
+      </div>
+      <p class="govuk-body-s">Closing date @Model.ClosingDate</p>
+    </div>
+  </div>
+  <h2 class="govuk-heading-l" id="apprenticeshipSummary">Apprenticeship summary</h2>
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-one-third">
+
+      <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Annual wage</h3>
+      <p asp-show="@Model.HasWageText" class="govuk-body">@Model.WageText</p>
+      <p asp-show="@Model.HasWageInfo" class="govuk-body">@Model.WageInfo</p>
+
+      <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Working week</h3>
+      <p asp-show="@Model.HasWorkingWeekDescription" class="govuk-body">@Model.WorkingWeekDescription</p>
+      <p asp-show="@Model.HasHoursPerWeek" class="govuk-body">Total hours per week: @Model.HoursPerWeek</p>
+
+      <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Expected duration</h3>
+      <p class="govuk-body" asp-show="@Model.HasExpectedDuration">@Model.ExpectedDuration</p>
+
+
+      <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Possible start date</h3>
+      <p asp-show="@Model.HasPossibleStartDate" class="govuk-body">@Model.PossibleStartDate</p>
+
+      <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Date posted</h3>
+      <p class="govuk-body">@Model.PostedDate</p>
+
+      <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Apprenticeship level</h3>
+      <p asp-show="@Model.HasTrainingLevel" class="govuk-body">
+        @Model.TrainingLevel <br />
+        @Model.EducationLevelName
+      </p>
+
+      <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Reference number</h3>
+      <p class="govuk-body">@Model.VacancyReferenceNumber</p>
+
+      <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Positions</h3>  
+      <p asp-show="@Model.HasNumberOfPositionsCaption" class="govuk-body">@Model.NumberOfPositionsCaption</p>   
+
+    </div>
+    <div class="govuk-grid-column-two-thirds">
+      <h3 asp-show="@Model.HasVacancyDescription" class="govuk-heading-s govuk-!-margin-bottom-1">What will the apprentice be doing?</h3>
+      <div asp-show="@Model.HasVacancyDescription" class="govuk-body">@Html.Raw(Model.VacancyDescription)</div>
+      <h3 asp-show="@Model.HasTrainingDescription" class="govuk-heading-s govuk-!-margin-bottom-1">What training will the apprentice take and what qualification will the apprentice get at the end?</h3>
+      <div asp-show="@Model.HasTrainingDescription" class="govuk-body">@Html.Raw(Model.TrainingDescription)</div>
+      <h3 asp-show="@Model.HasOutcomeDescription" class="govuk-heading-s govuk-!-margin-bottom-1">What is the expected career progression after this apprenticeship?</h3>
+      <div asp-show="@Model.HasOutcomeDescription" class="govuk-body">@Html.Raw(Model.OutcomeDescription)</div>
+    </div>
+  </div>
+  <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
+  <h2 class="govuk-heading-l">Requirements and prospects</h2>
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-one-half">
+      <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Desired skills and personal qualities</h3>
+      <ul class="govuk-list govuk-list--bullet">
+        @foreach (var skill in Model.Skills)
+        {
+          <li>@skill</li>
+        }
+      </ul>
+      <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Qualifications</h3>
+      <ul class="govuk-list govuk-list--bullet">
+        @foreach (var qualification in Model.Qualifications)
+        {
+          <li>@qualification</li>
+        }
+      </ul>
+    </div>
+    <div class="govuk-grid-column-one-half">
+      <h3 asp-show="@Model.HasThingsToConsider" class="govuk-heading-s govuk-!-margin-bottom-1">Things to consider</h3>
+      <p asp-show="@Model.HasThingsToConsider" class="govuk-body">@Model.ThingsToConsider</p>
+    </div>
+  </div>
+  <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
+  <h2 class="govuk-heading-l">About the employer</h2>
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <p class="govuk-body">@Model.EmployerDescription</p>
+    </div>
+  </div>
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-one-half">
+      <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Employer</h3>
+      <p class="govuk-body">@Model.EmployerName</p>
+      <p class="govuk-body govuk" asp-show="@Model.HasEmployerWebsiteUrl">
+          @Model.EmployerWebsiteUrl
+      </p>
+      <div asp-show="@Model.IsDisabilityConfident">
+        <img asp-show="@Model.IsDisabilityConfident" src="~/img/disability-confident_545x172.png" class="app-disability-confident-logo" alt="A logo confirming that the employer is registered as disability confident" esfa-automation="disability-confident-logo" no-cdn/>
+        <details class="govuk-details">
+          <summary class="govuk-details__summary">
+            <span class="govuk-details__summary-text">
+              About disability confident
+            </span>
+          </summary>
+          <div class="govuk-details__text">
+            <p>Disabled candidates are generally guaranteed an interview if you meet the minimum requirements for this vacancy. Contact the employer for full details.</p>
+            <p>Employers may need to limit the number of interviews offered to both disabled and non-disabled people if they receive high numbers of applications.</p>
+            <p>The disability confident scheme supports employers to make the most of the talents disabled people can bring to your workplace.provide your nationality, you’ll have to send copies of identity documents through the post.</p>
+          </div>
+        </details>
+      </div>
+      <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Address</h3>
+      <ul class="govuk-list">
+        @foreach (var addressLine in Model.EmployerAddressElements)
+        {
+            <li>@addressLine</li>
+        }
+      </ul>
+      <h3 asp-show=@(Model.HasEmployerContactName || Model.HasEmployerContactEmail || Model.HasEmployerContactTelephone) class="govuk-heading-s govuk-!-margin-bottom-1">
+          Contact
+      </h3>
+      <p asp-show="@Model.HasEmployerContactName" class="govuk-body govuk-!-margin-bottom-1">@Model.EmployerContactName</p>
+      <p asp-show="@Model.HasEmployerContactEmail" class="govuk-body govuk-!-margin-bottom-1">@Model.EmployerContactEmail</p>
+      <p asp-show="@Model.HasEmployerContactTelephone" class="govuk-body govuk-!-margin-bottom-1">@Model.EmployerContactTelephone</p>
+    </div>
+    <div class="govuk-grid-column-one-half">
+      <img asp-show="@Model.HasMapUrl" src="@Model.MapUrl" alt="Location map" class="app-preview-map" />
+    </div>
+  </div>
+  <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
+  <h2 class="govuk-heading-l">Training</h2>
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-one-half">
+      <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Training provider</h3>
+      <p>@Model.ProviderName</p>
+    </div>
+    <div class="govuk-grid-column-one-half">
+      <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Apprenticeship standard</h3>
+      <p>
+        @Model.TrainingTitle <br/>
+        @Model.EducationLevelName
+      </p>
+    </div>
+  </div>
+  <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
+  <h2 asp-show="@Model.ShowGeneralApplicationProcessSectionTitle" class="govuk-heading-l">Application process</h2>
+  <h2 asp-show="@Model.HasSpecifiedThroughExternalApplicationMethod" class="govuk-heading-l">Employer's application instructions</h2>
+  <div asp-show="@Model.HasSpecifiedThroughFaaApplicationMethod">
+    <p class="govuk-body">
+      Candidates will apply through the <a href="@Model.FindAnApprenticeshipUrl" class="govuk-link" rel="noopener" target="_blank">Find an apprenticeship service (opens in a new tab)</a>
+    </p>
+  </div>
+  <div asp-show="@Model.HasSpecifiedThroughExternalApplicationMethod">
+    <p class="govuk-body">This apprenticeship requires you to apply through the employer's website.</p>
+    <h2 class="govuk-heading-s govuk-!-margin-top-4">
+      Apply now web address
+    </h2>
+    <p class="govuk-body">@Model.ApplicationUrl</p>
+  </div>
+  <div asp-show="@Model.HasApplicationInstructions">
+    <p asp-show="@Model.HasApplicationInstructions">@Model.ApplicationInstructions</p>
+  </div>
+
+</div>
+
+<form asp-route="@RouteNames.Preview_Submit_Post" method="post">
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <h2 class="govuk-heading-m">Now submit your advert</h2>
+      <p class="govuk-body">By submitting this advert you are confirming that, to the best of your knowledge, the details you are providing are correct.</p>
+      <div class="govuk-button-group">
+        <input type="hidden" name="answers-checked" value="true">
+        <button class="govuk-button" data-module="govuk-button">
+          Submit advert
+        </button>
+        <a asp-route="@RouteNames.EmployerCheckYourAnswersGet" class="govuk-button govuk-button--secondary">Change your advert</a>
+      </div>
+    </div>
+  </div>
+</form>
+<div asp-show="@Model.CanDelete" class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+  <p class="govuk-body">
+    <a asp-route="@RouteNames.DeleteVacancy_Get" class="govuk-link govuk-link--no-visited-state" esfa-automation="delete-button">Delete advert</a>
+  </p>
+  </div>
+</div>
+
+
+
+
+
