@@ -7,6 +7,7 @@ using Esfa.Recruit.Provider.Web.Orchestrators.Part1;
 using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Provider.Web.ViewModels.Part1.Dates;
 using Esfa.Recruit.Shared.Web.Extensions;
+using Esfa.Recruit.Shared.Web.FeatureToggle;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -18,9 +19,12 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
     public class DatesController : Controller
     {
         private readonly DatesOrchestrator _orchestrator;
-        public DatesController(DatesOrchestrator orchestrator)
+        private readonly IFeature _feature;
+
+        public DatesController(DatesOrchestrator orchestrator, IFeature feature)
         {
             _orchestrator = orchestrator;
+            _feature = feature;
         }
 
         [HttpGet("dates", Name = RouteNames.Dates_Get)]
@@ -48,6 +52,11 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
                 vm.CanShowTrainingErrorHint = response.Errors.Errors.Any(e => e.ErrorCode == ErrorCodes.TrainingExpiryDate);
                 vm.PageInfo.SetWizard(wizard);
                 return View(vm);
+            }
+
+            if (_feature.IsFeatureEnabled(FeatureNames.ProviderTaskList))
+            {
+                return RedirectToRoute(RouteNames.Duration_Get);
             }
 
             return wizard

@@ -6,6 +6,7 @@ using Esfa.Recruit.Provider.Web.Orchestrators.Part1;
 using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Provider.Web.ViewModels.Part1.Wage;
 using Esfa.Recruit.Shared.Web.Extensions;
+using Esfa.Recruit.Shared.Web.FeatureToggle;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,10 +17,12 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
     public class WageController : Controller
     {
         private readonly WageOrchestrator _orchestrator;
+        private readonly IFeature _feature;
 
-        public WageController(WageOrchestrator orchestrator)
+        public WageController(WageOrchestrator orchestrator, IFeature feature)
         {
             _orchestrator = orchestrator;
+            _feature = feature;
         }
         
         [HttpGet("wage", Name = RouteNames.Wage_Get)]
@@ -45,6 +48,11 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
                 var vm = await _orchestrator.GetWageViewModelAsync(m);
                 vm.PageInfo.SetWizard(wizard);
                 return View(vm);
+            }
+
+            if (_feature.IsFeatureEnabled(FeatureNames.ProviderTaskList))
+            {
+                return RedirectToRoute(RouteNames.NumberOfPositions_Get, new { Wizard = wizard });
             }
 
             return wizard
