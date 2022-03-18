@@ -6,11 +6,17 @@
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-        <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.NumberOfPositions_Get" asp-route-wizard="@Model.PageInfo.IsWizard" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
+        <esfaFeatureEnabled name="@FeatureNames.ProviderTaskList">
+            <a asp-route="@RouteNames.Title_Get" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
+        </esfaFeatureEnabled>
+        <esfaFeatureDisabled name="@FeatureNames.ProviderTaskList">
+            <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.NumberOfPositions_Get" asp-route-wizard="@Model.PageInfo.IsWizard" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>    
+        </esfaFeatureDisabled>
+        
 
-        <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }' />
+        <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }'/>
 
-        <partial name="@PartialNames.ReviewSummary" for="Review" />
+        <partial name="@PartialNames.ReviewSummary" for="Review"/>
 
         <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">Which organisation is this vacancy for?</h1>
 
@@ -22,7 +28,7 @@
                     </label>
                     <div class="search-field">
                         <div class="search-input">
-                            <input asp-for="SearchTerm" class="govuk-input" maxlength="100" />
+                            <input asp-for="SearchTerm" class="govuk-input" maxlength="100"/>
                         </div>
                         <div class="search-submit">
                             <button type="submit">Search</button>
@@ -41,8 +47,8 @@
                     <span asp-hide="@Model.HasNoSearchResults" class="govuk-label govuk-!-font-weight-bold">Which organisation is the vacancy for?</span>
                 </legend>
                 <span esfa-validation-message-for="SelectedOrganisationId" class="govuk-error-message"></span>
-                <input type="hidden" asp-for="SearchTerm" />
-                <input type="hidden" asp-for="Page" />
+                <input type="hidden" asp-for="SearchTerm"/>
+                <input type="hidden" asp-for="Page"/>
                 <span asp-show="@Model.HasNoSearchResults" class="govuk-body">@Model.NoSearchResultsCaption</span>
                 <fieldset class="govuk-fieldset">
                     <div class="govuk-radios">
@@ -53,12 +59,12 @@
                                 <label for="org-@organisation.Id" class="govuk-label govuk-radios__label">@organisation.Name</label>
                             </div>
                         }
-                        <input asp-show="@Model.CanOutputHiddenSelectedOrganisationIdField" type="hidden" asp-for="SelectedOrganisationId" />
+                        <input asp-show="@Model.CanOutputHiddenSelectedOrganisationIdField" type="hidden" asp-for="SelectedOrganisationId"/>
                     </div>
                 </fieldset>
             </div>
 
-            <partial name="@PartialNames.Pager" model="@Model.Pager" />
+            <partial name="@PartialNames.Pager" model="@Model.Pager"/>
 
             <details class="govuk-details" data-module="govuk-details">
                 <summary class="govuk-details__summary">

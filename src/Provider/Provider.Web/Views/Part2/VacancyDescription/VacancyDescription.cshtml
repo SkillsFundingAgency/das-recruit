@@ -4,12 +4,17 @@
     ViewBag.GaData.Vpv = "/recruitment/provider/page-vacancy-description";
 }
 
+
+
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
+        <esfaFeatureEnabled name="@FeatureNames.ProviderTaskList">
+            <a asp-route="@RouteNames.ShortDescription_Get" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
+        </esfaFeatureEnabled>
+        
+        <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }'/>
 
-        <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }' />
-
-        <partial name="@PartialNames.ReviewSummary" for="Review" />
+        <partial name="@PartialNames.ReviewSummary" for="Review"/>
 
         <h1 class="govuk-heading-xl">
             <span class="govuk-caption-l">@Model.Title</span>
@@ -48,8 +53,8 @@
                 <span class="govuk-body maxchar-text"> characters remaining</span>
             </div>
             <div class="govuk-form-group">
-                <input type="submit" value="Save and continue" esfa-automation="btn-continue" class="govuk-button save-button" />
-                
+                <input type="submit" value="Save and continue" esfa-automation="btn-continue" class="govuk-button save-button"/>
+
                 <esfaFeatureEnabled name="@FeatureNames.ProviderTaskList">
                     <a asp-route="@RouteNames.Dashboard_Get" esfa-automation="link-cancel" class="govuk-link das-button-link">Cancel</a>
                 </esfaFeatureEnabled>
