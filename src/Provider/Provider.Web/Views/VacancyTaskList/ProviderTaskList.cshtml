@@ -233,7 +233,7 @@
                 </h2>
                 <ul class="das-task-list__items">
                     <li class="das-task-list__item">
-                        @if (Model.EmployerAddressSectionState == VacancyPreviewSectionState.Incomplete)
+                        @if (Model.TaskListSectionTwoState != VacancyTaskListSectionState.Completed)
                         {
                             <span>
                                 Skills
@@ -275,7 +275,7 @@
                         }
                     </li>
                     <li class="das-task-list__item">
-                        @if (Model.QualificationsSectionState == VacancyPreviewSectionState.Incomplete)
+                        @if (string.IsNullOrEmpty(Model.OutcomeDescription))
                         {
                             <span>
                                 Other things to consider
