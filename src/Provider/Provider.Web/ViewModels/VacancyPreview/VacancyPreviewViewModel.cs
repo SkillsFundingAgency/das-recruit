@@ -213,7 +213,6 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview
                 && HasProgramme
                 && HasSelectedLegalEntity
                 && HasShortDescription
-                && HasOutcomeDescription
                 && HasTrainingDescription
                 && HasVacancyDescription)
             {
@@ -248,6 +247,15 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview
         }
         private VacancyTaskListSectionState SetTaskListSectionThreeState()
         {
+            if (HasSkills && HasQualifications && HasOutcomeDescription)
+            {
+                return VacancyTaskListSectionState.Completed;
+            }
+
+            if (HasSkills)
+            {
+                return VacancyTaskListSectionState.InProgress;
+            }
             return VacancyTaskListSectionState.NotStarted;
         }
         private VacancyTaskListSectionState SetTaskListSectionFourState()

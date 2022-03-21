@@ -127,6 +127,16 @@ namespace Esfa.Recruit.Provider.Web
                 RouteNames.Training_Post,
                 RouteNames.Training_Get
             });
+
+            if (_feature.IsFeatureEnabled(FeatureNames.ProviderTaskList))
+            {
+                validRoutes.AddRange(new[]
+                {
+                    RouteNames.LegalEntity_Post,
+                    RouteNames.LegalEntity_Get
+                });
+            }
+            
             if (string.IsNullOrWhiteSpace(vacancy.ProgrammeId))
                 return validRoutes;
 
@@ -155,10 +165,17 @@ namespace Esfa.Recruit.Provider.Web
                 RouteNames.Location_Get, 
                 RouteNames.Location_Post,
                 RouteNames.EmployerName_Post, 
-                RouteNames.EmployerName_Get, 
-                RouteNames.LegalEntity_Post, 
-                RouteNames.LegalEntity_Get
+                RouteNames.EmployerName_Get 
+             
             });
+            if (!_feature.IsFeatureEnabled(FeatureNames.ProviderTaskList))
+            {
+                validRoutes.AddRange(new[]
+                {
+                    RouteNames.LegalEntity_Post, 
+                    RouteNames.LegalEntity_Get
+                });
+            }
             
             if (!_feature.IsFeatureEnabled(FeatureNames.ProviderTaskList))
             {
