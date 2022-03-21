@@ -1,5 +1,4 @@
-﻿@using Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview
-@using Esfa.Recruit.Vacancies.Client.Domain.Entities
+﻿@using Esfa.Recruit.Vacancies.Client.Domain.Entities
 @model Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview.VacancyPreviewViewModel
 
 @{ ViewBag.GaData.Vpv = "/recruitment/provider/check-your-answers"; }
@@ -15,19 +14,19 @@
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">  
         <h1 class="govuk-heading-xl">
-            Check your answers before submitting your advert
+            Check your answers before submitting your vacancy
         </h1>
-        <h2 class="govuk-heading-m">Advert summary</h2>
+        <h2 class="govuk-heading-m">Vacancy summary</h2>
         <dl class="govuk-summary-list govuk-!-margin-bottom-9">
             <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key">
-                    Advert title
+                    Vacancy title
                 </dt>
                 <dd class="govuk-summary-list__value">
                     @Model.Title
                 </dd>
                 <dd class="govuk-summary-list__actions">
-                    <a class="govuk-link govuk-link--no-visited-state float-right-desktop" asp-route="@RouteNames.Title_Get">Change<span class="govuk-visually-hidden"> advert title</span></a>
+                    <a class="govuk-link govuk-link--no-visited-state float-right-desktop" asp-route="@RouteNames.Title_Get">Change<span class="govuk-visually-hidden"> vacancy title</span></a>
                 </dd>
             </div>
             <div class="govuk-summary-list__row">
@@ -82,18 +81,7 @@
                 <dd class="govuk-summary-list__actions">
                 </dd>
             </div>
-            <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">
-                    Future prospects
-                </dt>
-                <dd class="govuk-summary-list__value">
-                    @Html.Raw(Model.OutcomeDescription)
-                </dd>
-                <dd class="govuk-summary-list__actions">
-                </dd>
-            </div>
         </dl>
-    
         <h2 class="govuk-heading-m">Employment details</h2>
         <dl class="govuk-summary-list govuk-!-margin-bottom-9">
             <div class="govuk-summary-list__row govuk-summary-list--no-border">
@@ -113,38 +101,6 @@
                 </dt>
                 <dd class="govuk-summary-list__value">
                     @Model.PossibleStartDate
-                </dd>
-                <dd class="govuk-summary-list__actions">
-                </dd>
-            </div>
-            <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">
-                    Disability Confident Employer?
-                </dt>
-                <dd class="govuk-summary-list__value">
-                    @(Model.IsDisabilityConfident?"Yes":"No")
-                </dd>
-                <dd class="govuk-summary-list__actions">
-                    
-                </dd>
-            </div>
-            <div class="govuk-summary-list__row govuk-summary-list--no-border">
-                <dt class="govuk-summary-list__key">
-                    Pay rate
-                </dt>
-                <dd class="govuk-summary-list__value">
-                    @Model.WageText
-                </dd>
-                <dd class="govuk-summary-list__actions">
-                    <a class="govuk-link govuk-link--no-visited-state float-right-desktop" asp-route="@RouteNames.Wage_Get">Change<span class="govuk-visually-hidden"> wage</span></a>
-                </dd>
-            </div>
-            <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">
-                    Extra information about pay (optional)
-                </dt>
-                <dd class="govuk-summary-list__value">
-                    @(Model.HasWageInfo?Model.WageInfo:"None")
                 </dd>
                 <dd class="govuk-summary-list__actions">
                 </dd>
@@ -180,6 +136,27 @@
                 <dd class="govuk-summary-list__actions">
                 </dd>
             </div>
+            <div class="govuk-summary-list__row govuk-summary-list--no-border">
+                <dt class="govuk-summary-list__key">
+                    Pay rate
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    @Model.WageText
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                    <a class="govuk-link govuk-link--no-visited-state float-right-desktop" asp-route="@RouteNames.Wage_Get">Change<span class="govuk-visually-hidden"> wage</span></a>
+                </dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    Extra information about pay (optional)
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    @(Model.HasWageInfo?Model.WageInfo:"None")
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                </dd>
+            </div>
             <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key">
                     Number of positions
@@ -203,7 +180,7 @@
                 </dd>
             </div>
         </dl>
-        <h2 class="govuk-heading-m">Skills and qualifications</h2>
+        <h2 class="govuk-heading-m">Requirements and prospects</h2>
         <dl class="govuk-summary-list govuk-!-margin-bottom-9">
             <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key">
@@ -223,7 +200,7 @@
             </div>
             <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key">
-                    Qualifications
+                    Qualifications required
                 </dt>
                 <dd class="govuk-summary-list__value">
                     <ul class="govuk-list govuk-list--bullet">
@@ -235,6 +212,17 @@
                 </dd>
                 <dd class="govuk-summary-list__actions">
                     <a class="govuk-link govuk-link--no-visited-state float-right-desktop" asp-route="@RouteNames.Qualifications_Get">Change<span class="govuk-visually-hidden"> qualifications</span></a>
+                </dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    Future prospects
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    @Html.Raw(Model.OutcomeDescription)
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                    <a class="govuk-link govuk-link--no-visited-state float-right-desktop" asp-route="@RouteNames.Qualifications_Get">Change<span class="govuk-visually-hidden"> future prospects</span></a>
                 </dd>
             </div>
             <div class="govuk-summary-list__row">
@@ -253,7 +241,7 @@
         <dl class="govuk-summary-list govuk-!-margin-bottom-9">
             <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key">
-                    Name of organisation
+                    Name of employer on advert
                 </dt>
                 <dd class="govuk-summary-list__value">
                     @Model.EmployerName
@@ -283,15 +271,26 @@
                 <dd class="govuk-summary-list__actions">
                 </dd>
             </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    Disability Confident Employer?
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    @(Model.IsDisabilityConfident?"Yes":"No")
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                    
+                </dd>
+            </div>
             <div class="govuk-summary-list__row govuk-summary-list--no-border">
                 <dt class="govuk-summary-list__key">
                     Contact name (optional)
                 </dt>
                 <dd class="govuk-summary-list__value">
-                    @(Model.HasEmployerContactName?Model.EmployerContactName:"None")
+                    @(Model.HasProviderContactName?Model.ProviderContactName:"None")
                 </dd>
                 <dd class="govuk-summary-list__actions">
-                    <a class="govuk-link govuk-link--no-visited-state float-right-desktop" asp-route="@RouteNames.EmployerContactDetails_Get">Change<span class="govuk-visually-hidden"> contact details</span></a>
+                    <a class="govuk-link govuk-link--no-visited-state float-right-desktop" asp-route="@RouteNames.ProviderContactDetails_Get">Change<span class="govuk-visually-hidden"> contact details</span></a>
                 </dd>
             </div>
             <div class="govuk-summary-list__row govuk-summary-list--no-border">
@@ -299,7 +298,7 @@
                     Contact email (optional)
                 </dt>
                 <dd class="govuk-summary-list__value">
-                    @(Model.HasEmployerContactEmail?Model.EmployerContactEmail:"None")
+                    @(Model.HasProviderContactEmail?Model.ProviderContactEmail:"None")
                 </dd>
                 <dd class="govuk-summary-list__actions">
                 </dd>
@@ -309,7 +308,7 @@
                     Contact number (optional)
                 </dt>
                 <dd class="govuk-summary-list__value">
-                    @(Model.HasEmployerContactTelephone?Model.EmployerContactTelephone:"None")
+                    @(Model.HasProviderContactTelephone?Model.ProviderContactTelephone:"None")
                 </dd>
                 <dd class="govuk-summary-list__actions">
                 </dd>
@@ -347,9 +346,9 @@
             }
             
         </dl>
-        <h2 class="govuk-heading-m">Now submit your advert</h2>
-        <p class="govuk-body">By submitting this advert you are confirming that, to the best of your knowledge, the details you are providing are correct.</p>
-        <p class="govuk-body"><a asp-route="@RouteNames.Vacancy_Preview_Get" class="govuk-link govuk-link--no-visited-state">Preview advert before submitting</a></p>
+        <h2 class="govuk-heading-m">Now submit your vacancy</h2>
+        <p class="govuk-body">By submitting this vacancy you are confirming that, to the best of your knowledge, the details you are providing are correct.</p>
+        <p class="govuk-body"><a asp-route="@RouteNames.Vacancy_Preview_Get" class="govuk-link govuk-link--no-visited-state">Preview vacancy before submitting</a></p>
         <form asp-route="@RouteNames.Preview_Submit_Post" class="form-inline">
             <input type="submit" value="@Model.SubmitButtonText" class="govuk-button" esfa-automation="submit-button" />
         </form>
