@@ -12,16 +12,12 @@
         <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Title_Get" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
         <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }' />
         <partial name="@PartialNames.ReviewSummary" for="Review" />
-        <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">What training will the apprentice take?</h1>
+        <h1 class="govuk-heading-xl govuk-!-margin-bottom-6"><span class="govuk-caption-l">@Model.Title</span>What training course will the apprentice take?</h1>
         <form asp-route="@RouteNames.Training_Post" asp-route-wizard="@Model.PageInfo.IsWizard" novalidate>
 
-            <p class="govuk-body">
-                If you haven't found appropriate training for the vacancy, you can
-                <a class="govuk-link" href="@externalLinks.Value.FindApprenticeshipTrainingUrl" target="_blank">Find apprenticeship training here (opens in new tab)</a>.
-            </p>
             <div esfa-validation-marker-for="SelectedProgrammeId" class="govuk-form-group">
                 <label asp-for="SelectedProgrammeId" class="govuk-label govuk-!-font-weight-bold">
-                    <span class="govuk-hint">Enter apprenticeship training title</span>
+                    <span class="govuk-hint">Enter apprenticeship training course title</span>
                 </label>
                 <span esfa-validation-message-for="SelectedProgrammeId" class="govuk-error-message"></span>
                 <div class="govuk-!-margin-bottom-2">
@@ -37,7 +33,7 @@
                     <a asp-route="@RouteNames.Training_Get" asp-route-clear="true" asp-route-wizard="@Model.PageInfo.IsWizard" class="govuk-link">Clear search</a>
                 </p>
             </div>
-            <button type="submit" class="govuk-button save-button" esfa-automation="continue-button">Continue</button>
+            <button type="submit" class="govuk-button save-button" esfa-automation="continue-button">Save and Continue</button>
             <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Vacancies_Get" class="govuk-link das-button-link">Cancel</a>
             <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.Vacancy_Preview_Get" asp-fragment="@Anchors.TrainingProviderSection" class="govuk-link das-button-link">Cancel</a>
 
