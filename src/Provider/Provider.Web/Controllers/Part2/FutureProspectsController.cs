@@ -6,18 +6,23 @@ using Esfa.Recruit.Provider.Web.Orchestrators.Part2;
 using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Provider.Web.ViewModels.Part2.FutureProspects;
 using Esfa.Recruit.Shared.Web.Extensions;
+using Esfa.Recruit.Shared.Web.FeatureToggle;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Esfa.Recruit.Provider.Web.Controllers.Part2
 {
+    [Route(RoutePaths.AccountVacancyRoutePath)]
+    [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
     public class FutureProspectsController : Controller
     {
         private readonly FutureProspectsOrchestrator _orchestrator;
+        private readonly IFeature _feature;
 
-        public FutureProspectsController(FutureProspectsOrchestrator orchestrator)
+        public FutureProspectsController(FutureProspectsOrchestrator orchestrator, IFeature feature)
         {
             _orchestrator = orchestrator;
+            _feature = feature;
         }
 
         [HttpGet("future-prospects", Name = RouteNames.FutureProspects_Get)]
@@ -43,7 +48,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part2
                 return View(vm);
             }
 
-            return RedirectToRoute(RouteNames.Vacancy_Preview_Get);
+            return RedirectToRoute(RouteNames.Considerations_Get);
         }
     }
 }
