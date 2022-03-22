@@ -43,6 +43,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
 
             var vm = new LegalEntityViewModel
             {
+                Title = vacancy.Title,
                 TotalNumberOfLegalEntities = legalEntities.Count(),
                 SelectedOrganisationId = vacancy.AccountLegalEntityPublicHashedId,
                 PageInfo = Utility.GetPartOnePageInfo(vacancy),

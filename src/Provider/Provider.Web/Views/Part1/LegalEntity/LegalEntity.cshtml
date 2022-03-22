@@ -11,8 +11,11 @@
         <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }' />
 
         <partial name="@PartialNames.ReviewSummary" for="Review" />
-
-        <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">Which organisation is this vacancy for?</h1>
+        
+        <h1 class="govuk-heading-xl">
+            <span class="govuk-caption-l">@Model.Title</span>
+            Which organisation do you want to create a vacancy for?
+        </h1>
 
         <form asp-show="@Model.CanShowSearchPanel" method="GET" asp-route="@RouteNames.LegalEntity_Get" asp-route-wizard="@Model.PageInfo.IsWizard">
             <div class="form-group search-field search-field-darker">
@@ -37,9 +40,6 @@
 
         <form asp-route="@RouteNames.LegalEntity_Post" asp-route-wizard="@Model.PageInfo.IsWizard">
             <div esfa-validation-marker-for="SelectedOrganisationId" class="govuk-form-group">
-                <legend class="govuk-fieldset__legend">
-                    <span asp-hide="@Model.HasNoSearchResults" class="govuk-label govuk-!-font-weight-bold">Which organisation is the vacancy for?</span>
-                </legend>
                 <span esfa-validation-message-for="SelectedOrganisationId" class="govuk-error-message"></span>
                 <input type="hidden" asp-for="SearchTerm" />
                 <input type="hidden" asp-for="Page" />
@@ -63,15 +63,15 @@
             <details class="govuk-details" data-module="govuk-details">
                 <summary class="govuk-details__summary">
                     <span class="govuk-details__summary-text">
-                        My organisation is not listed
+                        The organisation I want to select is not listed
                     </span>
                 </summary>
                 <div class="govuk-details__text">
-                    Your organisation is not listed because you do not have the permission to create a vacancy for them. You'll need to contact them to set this permission.
+                    The organisation is not listed because you do not have the permission to create a vacancy for them. You'll need to contact them to set this permission.
                 </div>
             </details>
 
-            <button type="submit" class="govuk-button save-button" esfa-automation="continue-button">Continue</button>
+            <button type="submit" class="govuk-button save-button" esfa-automation="continue-button">Save and Continue</button>
 
             <a asp-route="@RouteNames.LegalEntity_Cancel" asp-route-wizard="@Model.PageInfo.IsWizard" class="govuk-link das-button-link">Cancel</a>
         </form>

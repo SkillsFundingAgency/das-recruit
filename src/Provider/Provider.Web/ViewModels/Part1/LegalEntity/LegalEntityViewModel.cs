@@ -7,6 +7,8 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.Part1.LegalEntity
 {
     public class LegalEntityViewModel
     {
+        public string Title { get; internal set; }
+
         private const int LimitForNotShowingSearchPanel = 10;
         public IEnumerable<OrganisationViewModel> Organisations { get; internal set; }
 
