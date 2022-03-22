@@ -44,14 +44,6 @@
                 <span class="govuk-body maxchar-count">500</span>
                 <span class="govuk-body maxchar-text"> characters remaining</span>
             </div>
-            <div esfa-validation-marker-for="OutcomeDescription" class="govuk-form-group">
-                <label asp-for="OutcomeDescription" class="govuk-label govuk-!-font-weight-bold">What is the expected career progression after this apprenticeship?</label>
-                <span class="govuk-hint">You may want to mention specific routes they could take once qualified</span>
-                <span esfa-validation-message-for="OutcomeDescription" class="govuk-error-message"></span>
-                <textarea asp-for="OutcomeDescription" class="govuk-textarea html-editor" rows="5" data-val-length-max="500"></textarea>
-                <span class="govuk-body maxchar-count">500</span>
-                <span class="govuk-body maxchar-text"> characters remaining</span>
-            </div>
             <div class="govuk-form-group">
                 <input type="submit" value="Save and continue" esfa-automation="btn-continue" class="govuk-button save-button"/>
 

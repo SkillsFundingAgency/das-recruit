@@ -16,7 +16,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part2
 {
     public class VacancyDescriptionOrchestrator : VacancyValidatingOrchestrator<VacancyDescriptionEditModel>
     {
-        private const VacancyRuleSet ValidationRules = VacancyRuleSet.Description | VacancyRuleSet.TrainingDescription | VacancyRuleSet.OutcomeDescription;
+        private const VacancyRuleSet ValidationRules = VacancyRuleSet.Description | VacancyRuleSet.TrainingDescription;
         private readonly IRecruitVacancyClient _vacancyClient;
         private readonly IReviewSummaryService _reviewSummaryService;
         private readonly IUtility _utility;
@@ -39,8 +39,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part2
             {
                 Title = vacancy.Title,
                 VacancyDescription = vacancy.Description,
-                TrainingDescription = vacancy.TrainingDescription,
-                OutcomeDescription = vacancy.OutcomeDescription
+                TrainingDescription = vacancy.TrainingDescription
             };
 
             if (vacancy.Status == VacancyStatus.Referred)
@@ -58,7 +57,6 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part2
 
             vm.VacancyDescription = m.VacancyDescription;
             vm.TrainingDescription = m.TrainingDescription;
-            vm.OutcomeDescription = m.OutcomeDescription;
 
             return vm;
         }
@@ -79,12 +77,6 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part2
                 vacancy,
                 (v) => { return v.TrainingDescription = m.TrainingDescription; });
 
-            SetVacancyWithProviderReviewFieldIndicators(
-                vacancy.OutcomeDescription,
-                FieldIdResolver.ToFieldId(v => v.OutcomeDescription),
-                vacancy,
-                (v) => { return v.OutcomeDescription = m.OutcomeDescription; });
-
             return await ValidateAndExecute(
                 vacancy,
                 v => _vacancyClient.Validate(v, ValidationRules),
@@ -98,7 +90,6 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part2
 
             mappings.Add(e => e.Description, vm => vm.VacancyDescription);
             mappings.Add(e => e.TrainingDescription, vm => vm.TrainingDescription);
-            mappings.Add(e => e.OutcomeDescription, vm => vm.OutcomeDescription);
 
             return mappings;
         }
