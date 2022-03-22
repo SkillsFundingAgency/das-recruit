@@ -176,7 +176,9 @@ namespace Esfa.Recruit.Provider.Web
                 validRoutes.AddRange(new[]
                 {
                     RouteNames.LegalEntity_Post, 
-                    RouteNames.LegalEntity_Get
+                    RouteNames.LegalEntity_Get,
+                    RouteNames.FutureProspects_Post,
+                    RouteNames.FutureProspects_Get
                 });
             }
             

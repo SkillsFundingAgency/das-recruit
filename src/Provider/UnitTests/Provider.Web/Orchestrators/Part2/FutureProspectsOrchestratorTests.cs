@@ -93,7 +93,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part2
                 MockRecruitVacancyClient.Setup(x => x.UpdateDraftVacancyAsync(It.IsAny<Vacancy>(), User));
                 MockRecruitVacancyClient.Setup(x => x.UpdateEmployerProfileAsync(It.IsAny<EmployerProfile>(), User));
 
-                Sut = new FutureProspectsOrchestrator(MockClient.Object, MockRecruitVacancyClient.Object,
+                Sut = new FutureProspectsOrchestrator(MockRecruitVacancyClient.Object,
                     Mock.Of<ILogger<FutureProspectsOrchestrator>>(), Mock.Of<IReviewSummaryService>());
             }
 
