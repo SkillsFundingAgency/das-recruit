@@ -77,6 +77,10 @@ namespace Esfa.Recruit.Provider.Web
 
             services.AddProviderUiServiceRegistration(_configuration);
 
+    #if DEBUG
+            services.AddControllersWithViews().AddRazorRuntimeCompilation();
+    #endif
+
             services.AddAuthenticationService(_authConfig, sp.GetService<IRecruitVacancyClient>(), sp.GetService<IHostingEnvironment>());
             services.AddAuthorizationService();            
         }
