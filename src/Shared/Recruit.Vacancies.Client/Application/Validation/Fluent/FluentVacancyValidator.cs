@@ -488,7 +488,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                     .WithMessage("Enter the expected career progression after this apprenticeship")
                     .WithErrorCode("55")
                 .MaximumLength(4000)
-                    .WithMessage("What is the expected career progression after this apprenticeship description must not exceed {MaxLength} characters")
+                    .WithMessage("Future prospects must not exceed {MaxLength} characters")
                     .WithErrorCode("7")
                 .ValidHtmlCharacters(_htmlSanitizerService)
                     .WithMessage("What is the expected career progression after this apprenticeship description contains some invalid characters")
