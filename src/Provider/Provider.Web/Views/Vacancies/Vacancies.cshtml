@@ -2,34 +2,37 @@
 @using Esfa.Recruit.Vacancies.Client.Domain.Entities
 @model VacanciesViewModel
 @{
-            ViewBag.GaData.Vpv = "/recruitment/provider/page-vacancies";
-
-            var vacanciesSearchSuggestionsEndpointUrl = @Url.RouteUrl(RouteNames.VacanciesSearchSuggestions_Get, null, Context.Request.Scheme);
-            string GetLinkText(VacancySummaryViewModel vacancySummary)
-            {
-                switch (vacancySummary.Status)
-                {
-                    case VacancyStatus.Referred:
-                    case VacancyStatus.Rejected:
-                        return "Edit and resubmit";
-                    case VacancyStatus.Draft:
-                        return "Edit and submit";
-                }
-                return "Manage";
-            }
+    ViewBag.GaData.Vpv = "/recruitment/provider/page-vacancies";
+    ViewBag.Title = "Vacancies";
+    var vacanciesSearchSuggestionsEndpointUrl = @Url.RouteUrl(RouteNames.VacanciesSearchSuggestions_Get, null, Context.Request.Scheme);
+    string GetLinkText(VacancySummaryViewModel vacancySummary)
+    {
+        switch (vacancySummary.Status)
+        {
+            case VacancyStatus.Referred:
+            case VacancyStatus.Rejected:
+                return "Edit and resubmit";
+            case VacancyStatus.Draft:
+                return "Edit and submit";
         }
+        return "Manage";
+    }
+}
+
 <partial name="@PartialNames.Alerts" for="Alerts" />
 
-<div asp-show="Model.HasWarning" class="warning-summary govuk-!-margin-top-0">
-    <p class="govuk-body">@Model.WarningMessage</p>
-</div>
-<div asp-show="Model.HasInfo" class="info-summary govuk-!-margin-bottoptom-0">
-    <p class="govuk-body">@Model.InfoMessage</p>
+<div asp-show="Model.HasWarning" class="das-notification das-notification--warning">
+    <p class="das-notification__body">@Model.WarningMessage</p>
 </div>
 
+<div asp-show="Model.HasInfo" class="das-notification das-notification--information">
+    <p class="das-notification__body">>@Model.InfoMessage</p>
+</div>
 
-<a asp-route="@RouteNames.Dashboard_Get" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Return to dashboard</a>
-
+@section BackLink
+{
+    <a asp-route="@RouteNames.Dashboard_Get" esfa-automation="link-back" class="govuk-back-link">Return to dashboard</a>
+}
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-one-half">
@@ -172,17 +175,13 @@
     </div>
 </div>
 
-@section Scripts
-    {
-    <script src="/lib/jquery-ui/dist/jquery-ui.min.js"></script>
-    <script asp-append-version="true" src="/lib/esfa-search-suggestions/searchSuggestionsService.js"></script>
-
+@section FooterJS
+{
     <script nws-csp-add-nonce="true">
         var filterId = "#@Html.IdFor(m => m.Filter)";
         $(function() {
             $("#search-submit-button").removeClass('js-hidden');
             $("#filter-submit").addClass('js-hidden');
-
             $(filterId).on("change",
                 function() {
                 var $filterForm = $(this).parents("form");
@@ -190,7 +189,5 @@
                     $filterForm.submit();
             });
         });
-
-        searchSuggestions.init("#search-input", "@vacanciesSearchSuggestionsEndpointUrl");
     </script>
 }
