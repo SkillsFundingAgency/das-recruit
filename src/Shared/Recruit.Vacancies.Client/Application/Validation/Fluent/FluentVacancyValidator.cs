@@ -437,8 +437,10 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                 .Must(q => q != null && q.Count > 0)
                     .WithMessage("You must add a qualification")
                     .WithErrorCode("52")
-                .SetCollectionValidator(new VacancyQualificationsValidator((long)VacancyRuleSet.Qualifications, 
-                    _qualificationsProvider,_profanityListProvider))
+                .WithRuleId(VacancyRuleSet.Qualifications);
+            RuleForEach(x => x.Qualifications)
+                .SetValidator(new VacancyQualificationsValidator((long) VacancyRuleSet.Qualifications,
+                    _qualificationsProvider, _profanityListProvider))
                 .RunCondition(VacancyRuleSet.Qualifications)
                 .WithRuleId(VacancyRuleSet.Qualifications);
         }

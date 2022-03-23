@@ -59,7 +59,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                 // Set rule type in context so it can be returned in error object
                 foreach (var validator in c.Validators)
                 {
-                    validator.CustomStateProvider = s => ruleId;
+                    validator.Options.CustomStateProvider = s => ruleId;
                 }
             });
         }
@@ -71,7 +71,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                 // Set rule type in context so it can be returned in error object
                 foreach (var validator in c.Validators)
                 {
-                    validator.CustomStateProvider = s => ruleId;
+                    validator.Options.CustomStateProvider = s => ruleId;
                 }
             });
         }
