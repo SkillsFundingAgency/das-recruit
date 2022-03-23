@@ -16,23 +16,21 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
     public class ShortDescriptionOrchestrator : VacancyValidatingOrchestrator<ShortDescriptionEditModel>
     {
         private const VacancyRuleSet ValidationRules = VacancyRuleSet.ShortDescription;
-        private readonly IProviderVacancyClient _providerVacancyClient;
         private readonly IRecruitVacancyClient _recruitVacancyClient;
         private readonly IReviewSummaryService _reviewSummaryService;
+        private readonly IUtility _utility;
 
-        public ShortDescriptionOrchestrator(IProviderVacancyClient providerVacnacyClient, 
-            IRecruitVacancyClient recruitVacancyClient, ILogger<ShortDescriptionOrchestrator> logger, 
-            IReviewSummaryService reviewSummaryService) : base(logger)
+        public ShortDescriptionOrchestrator(IRecruitVacancyClient recruitVacancyClient, ILogger<ShortDescriptionOrchestrator> logger, 
+            IReviewSummaryService reviewSummaryService, IUtility utility) : base(logger)
         {
-            _providerVacancyClient = providerVacnacyClient;
             _recruitVacancyClient = recruitVacancyClient;
             _reviewSummaryService = reviewSummaryService;
+            _utility = utility;
         }
 
         public async Task<ShortDescriptionViewModel> GetShortDescriptionViewModelAsync(VacancyRouteModel vrm)
         {
-            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_providerVacancyClient, 
-                _recruitVacancyClient, vrm, RouteNames.ShortDescription_Get);
+            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.ShortDescription_Get);
 
             var vm = new ShortDescriptionViewModel
             {
@@ -61,8 +59,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
 
         public async Task<OrchestratorResponse> PostShortDescriptionEditModelAsync(ShortDescriptionEditModel m, VacancyUser user)
         {
-            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_providerVacancyClient, 
-                _recruitVacancyClient, m, RouteNames.ShortDescription_Post);
+            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(m, RouteNames.ShortDescription_Post);
 
             SetVacancyWithProviderReviewFieldIndicators(
                 vacancy.ShortDescription,

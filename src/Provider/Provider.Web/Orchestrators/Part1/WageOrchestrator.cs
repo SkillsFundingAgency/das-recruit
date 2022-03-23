@@ -22,25 +22,24 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
     public class WageOrchestrator : VacancyValidatingOrchestrator<WageEditModel>
     {
         private const VacancyRuleSet ValidationRules = VacancyRuleSet.Wage | VacancyRuleSet.MinimumWage;
-        private readonly IProviderVacancyClient _client;
         private readonly IRecruitVacancyClient _vacancyClient;
         private readonly IReviewSummaryService _reviewSummaryService;
         private readonly IMinimumWageProvider _minimumWageProvider;
+        private readonly IUtility _utility;
 
-        public WageOrchestrator(IProviderVacancyClient client, IRecruitVacancyClient vacancyClient, 
-            ILogger<WageOrchestrator> logger, IReviewSummaryService reviewSummaryService, IMinimumWageProvider minimumWageProvider) 
+        public WageOrchestrator(IRecruitVacancyClient vacancyClient, 
+            ILogger<WageOrchestrator> logger, IReviewSummaryService reviewSummaryService, IMinimumWageProvider minimumWageProvider, IUtility utility) 
             : base(logger)
         {
-            _client = client;
             _vacancyClient = vacancyClient;
             _reviewSummaryService = reviewSummaryService;
             _minimumWageProvider = minimumWageProvider;
+            _utility = utility;
         }
 
         public async Task<WageViewModel> GetWageViewModelAsync(VacancyRouteModel vrm)
         {
-            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(
-                _client, _vacancyClient, vrm, RouteNames.Wage_Get);
+            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.Wage_Get);
 
             var wagePeriod = _minimumWageProvider.GetWagePeriod(vacancy.StartDate.Value);
 
@@ -56,7 +55,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
                 ApprenticeshipMinimumWageHourly = wagePeriod.ApprenticeshipMinimumWage.ToString("C"),
                 ApprenticeshipMinimumWageYearly = GetMinimumWageYearlyText(SFA.DAS.VacancyServices.Wage.WageType.ApprenticeshipMinimum, vacancy.Wage?.WeeklyHours, vacancy.StartDate.Value),
                 WeeklyHours = vacancy.Wage.WeeklyHours.Value,
-                PageInfo = Utility.GetPartOnePageInfo(vacancy)
+                PageInfo = _utility.GetPartOnePageInfo(vacancy)
             };
 
             if (vacancy.Status == VacancyStatus.Referred)
@@ -81,7 +80,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
 
         public async Task<OrchestratorResponse> PostWageEditModelAsync(WageEditModel m, VacancyUser user)
         {
-            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, _vacancyClient, m, RouteNames.Wage_Post);
+            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(m, RouteNames.Wage_Post);
 
             if(vacancy.Wage == null)
                 vacancy.Wage = new Wage();

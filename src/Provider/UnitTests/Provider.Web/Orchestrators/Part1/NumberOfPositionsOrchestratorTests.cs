@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Provider.UnitTests.Provider.Web.HardMocks;
+using Esfa.Recruit.Provider.Web;
 using Esfa.Recruit.Provider.Web.Orchestrators.Part1;
 using Esfa.Recruit.Provider.Web.ViewModels.Part1.NumberOfPositions;
 using Esfa.Recruit.Shared.Web.Mappers;
@@ -74,8 +75,8 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part1
                 MockRecruitVacancyClient.Setup(x => x.UpdateDraftVacancyAsync(It.IsAny<Vacancy>(), User));
                 MockRecruitVacancyClient.Setup(x => x.UpdateEmployerProfileAsync(It.IsAny<EmployerProfile>(), User));
 
-                Sut = new NumberOfPositionsOrchestrator(MockClient.Object, MockRecruitVacancyClient.Object, Mock.Of<ILogger<NumberOfPositionsOrchestrator>>(), 
-                    Mock.Of<IReviewSummaryService>());
+                Sut = new NumberOfPositionsOrchestrator(MockRecruitVacancyClient.Object, Mock.Of<ILogger<NumberOfPositionsOrchestrator>>(), 
+                    Mock.Of<IReviewSummaryService>(), new Utility(MockRecruitVacancyClient.Object));
             }
 
             public async Task PostNumberOfPositionsEditModelAsync(NumberOfPositionsEditModel model)

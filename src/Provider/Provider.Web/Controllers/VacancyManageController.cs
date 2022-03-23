@@ -20,11 +20,13 @@ namespace Esfa.Recruit.Provider.Web.Controllers
     {
         private readonly VacancyManageOrchestrator _orchestrator;
         private readonly IHostingEnvironment _hostingEnvironment;
+        private readonly IUtility _utility;
 
-        public VacancyManageController(VacancyManageOrchestrator orchestrator, IHostingEnvironment hostingEnvironment)
+        public VacancyManageController(VacancyManageOrchestrator orchestrator, IHostingEnvironment hostingEnvironment, IUtility utility)
         {
             _orchestrator = orchestrator;
             _hostingEnvironment = hostingEnvironment;
+            _utility = utility;
         }
 
         [HttpGet("manage", Name = RouteNames.VacancyManage_Get)]
@@ -108,15 +110,15 @@ namespace Esfa.Recruit.Provider.Web.Controllers
 
         private IActionResult HandleRedirectOfEditableVacancy(Vacancy vacancy)
         {
-            if (Utility.VacancyHasCompletedPartOne(vacancy))
+            if (_utility.VacancyHasCompletedPartOne(vacancy))
             {
-                if (Utility.VacancyHasStartedPartTwo(vacancy) == false)
+                if (_utility.VacancyHasStartedPartTwo(vacancy) == false)
                     return RedirectToRoute(RouteNames.Part1Complete_Get);
 
                 return RedirectToRoute(RouteNames.Vacancy_Preview_Get);
             }
 
-            var resumeRouteName = Utility.GetPermittedRoutesForVacancy(vacancy).Last();
+            var resumeRouteName = _utility.GetPermittedRoutesForVacancy(vacancy).Last();
 
             return RedirectToRoute(resumeRouteName);
         }

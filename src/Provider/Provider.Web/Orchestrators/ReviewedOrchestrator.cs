@@ -13,17 +13,19 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
     {
         private readonly IProviderVacancyClient _client;
         private readonly IRecruitVacancyClient _vacancyClient;
+        private readonly IUtility _utility;
 
 
-        public ReviewedOrchestrator(IProviderVacancyClient client, IRecruitVacancyClient vacancyClient)
+        public ReviewedOrchestrator(IProviderVacancyClient client, IRecruitVacancyClient vacancyClient, IUtility utility)
         {
             _client = client;
             _vacancyClient = vacancyClient;
+            _utility = utility;
         }
 
         public async Task<VacancyReviewedConfirmationViewModel> GetVacancyReviewedOrchestratorConfirmationViewModelAsync(VacancyRouteModel vrm, VacancyUser vacancyUser)
         {
-            var vacancy = await Utility.GetAuthorisedVacancyAsync(_client, _vacancyClient, vrm, RouteNames.Reviewed_Index_Get);
+            var vacancy = await _utility.GetAuthorisedVacancyAsync(vrm, RouteNames.Reviewed_Index_Get);
             var employer = await _client.GetProviderEmployerVacancyDataAsync(vrm.Ukprn, vacancy.EmployerAccountId);
             var preferences = await _vacancyClient.GetUserNotificationPreferencesAsync(vacancyUser.UserId);
 

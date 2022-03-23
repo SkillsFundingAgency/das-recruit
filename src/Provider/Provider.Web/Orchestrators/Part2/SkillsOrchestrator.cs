@@ -20,22 +20,22 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part2
     public class SkillsOrchestrator : VacancyValidatingOrchestrator<SkillsEditModel>
     {
         private const VacancyRuleSet ValidationRules = VacancyRuleSet.Skills;
-        private readonly IProviderVacancyClient _client;
         private readonly IRecruitVacancyClient _vacancyClient;
         private readonly IReviewSummaryService _reviewSummaryService;
+        private readonly IUtility _utility;
         private readonly SkillsOrchestratorHelper _skillsHelper;
 
-        public SkillsOrchestrator(IProviderVacancyClient client, IRecruitVacancyClient vacancyClient, ILogger<SkillsOrchestrator> logger, IReviewSummaryService reviewSummaryService) : base(logger)
+        public SkillsOrchestrator(IRecruitVacancyClient vacancyClient, ILogger<SkillsOrchestrator> logger, IReviewSummaryService reviewSummaryService, IUtility utility) : base(logger)
         {
-            _client = client;
             _vacancyClient = vacancyClient;
             _reviewSummaryService = reviewSummaryService;
+            _utility = utility;
             _skillsHelper = new SkillsOrchestratorHelper(() => vacancyClient.GetCandidateSkillsAsync().Result);
         }
         
         public async Task<SkillsViewModel> GetSkillsViewModelAsync(VacancyRouteModel vrm, string[] draftSkills = null)
         {
-            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, _vacancyClient, vrm, RouteNames.Skills_Get);
+            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.Skills_Get);
 
             var vm = new SkillsViewModel
             {
@@ -73,7 +73,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part2
 
         public async Task<OrchestratorResponse> PostSkillsEditModelAsync(VacancyRouteModel vrm, SkillsEditModel m, VacancyUser user)
         {
-            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, _vacancyClient, vrm, RouteNames.Skills_Post);
+            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.Skills_Post);
 
             var currentSkills = new List<string>();
             if(vacancy.Skills != null)

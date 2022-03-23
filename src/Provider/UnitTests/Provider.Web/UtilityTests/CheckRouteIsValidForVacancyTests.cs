@@ -4,7 +4,9 @@ using Esfa.Recruit.Provider.Web.Configuration.Routing;
 using Esfa.Recruit.Provider.Web.Exceptions;
 using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using FluentAssertions;
+using Moq;
 using Xunit;
 
 namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.UtilityTests
@@ -244,15 +246,17 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.UtilityTests
         private void CheckRouteIsValidForVacancyTest(Vacancy vacancy, string route,
             bool shouldRedirect, string expectedRedirectRoute)
         {
+            var utility = new Utility(Mock.Of<IRecruitVacancyClient>());
+            
             var vrm = new VacancyRouteModel { Ukprn = 12345678, VacancyId = Guid.NewGuid() };
             if (!shouldRedirect)
             {
-                Utility.CheckRouteIsValidForVacancy(vacancy, route, vrm);
+                utility.CheckRouteIsValidForVacancy(vacancy, route, vrm);
                 return;
             }
 
             var ex = Assert.Throws<InvalidRouteForVacancyException>(()
-                => Utility.CheckRouteIsValidForVacancy(vacancy, route, vrm));
+                => utility.CheckRouteIsValidForVacancy(vacancy, route, vrm));
 
             ex.RouteNameToRedirectTo.Should().Be(expectedRedirectRoute);
             ex.RouteValues.Ukprn.Should().Be(vrm.Ukprn);
