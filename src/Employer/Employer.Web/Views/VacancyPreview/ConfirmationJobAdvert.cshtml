@@ -26,7 +26,7 @@
         <h2 class="govuk-heading-m">What happens next</h2>
         <div asp-show="@Model.ApprovedJobAdvert">
             <p class="govuk-body">We'll check the advert within one working day and let your training provider know if there are any edits.</p>
-            <p class="govuk-body">When we approve your advert, it will appear on the <a href="@Model.FindAnApprenticeshipUrl" target="_blank">Find an apprenticeship service (opens in a new tab or window)</a>.</p>
+            <p class="govuk-body">When we approve your advert, it will appear on the <a href="@Model.FindAnApprenticeshipUrl" target="_blank">Find an apprenticeship service (opens in a new tab)</a>.</p>
         </div>
         <div asp-show="@Model.RejectedJobAdvert">
             <p class="govuk-body">This job advert has gone back to @Model.TrainingProviderName.</p>

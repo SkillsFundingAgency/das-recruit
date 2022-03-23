@@ -92,11 +92,14 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                 : (EmployerNameOption?) null;
 
             // temporarily set the employer name for validation
+            EmployerProfile profile = null;
             if (model.SelectedEmployerIdentityOption == EmployerIdentityOption.NewTradingName)
             {
                 validationRules = VacancyRuleSet.EmployerNameOption | VacancyRuleSet.TradingName;
                 vacancy.EmployerName = model.NewTradingName;
                 _vmPropertyToMapEmployerNameTo = vm => vm.NewTradingName;
+                profile = await _recruitVacancyClient.GetEmployerProfileAsync(vacancy.EmployerAccountId,
+                    vacancy.AccountLegalEntityPublicHashedId);
             }
 
             if (model.SelectedEmployerIdentityOption == EmployerIdentityOption.Anonymous)
@@ -112,6 +115,15 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                 async v =>
                 {
                     await _recruitVacancyClient.UpdateDraftVacancyAsync(vacancy, user);
+                    if (profile != null)
+                    {
+                        await _utility.UpdateEmployerProfile(new VacancyEmployerInfoModel
+                        {
+                            NewTradingName = model.NewTradingName,
+                            EmployerIdentityOption = EmployerIdentityOption.NewTradingName
+                        }, profile, null, user);
+                    }
+                    
                 });
         }
 

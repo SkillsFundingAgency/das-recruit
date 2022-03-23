@@ -1,9 +1,11 @@
 ﻿using System.Threading.Tasks;
+using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Extensions;
 using Esfa.Recruit.Employer.Web.Orchestrators;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels.DeleteVacancy;
+using Esfa.Recruit.Shared.Web.FeatureToggle;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Esfa.Recruit.Employer.Web.Controllers
@@ -12,10 +14,12 @@ namespace Esfa.Recruit.Employer.Web.Controllers
     public class DeleteVacancyController : Controller
     {
         private readonly DeleteVacancyOrchestrator _orchestrator;
+        private readonly IFeature _feature;
 
-        public DeleteVacancyController(DeleteVacancyOrchestrator orchestrator)
+        public DeleteVacancyController(DeleteVacancyOrchestrator orchestrator, IFeature feature)
         {
             _orchestrator = orchestrator;
+            _feature = feature;
         }
 
         [HttpGet("delete", Name = RouteNames.DeleteVacancy_Get)]
@@ -34,6 +38,10 @@ namespace Esfa.Recruit.Employer.Web.Controllers
 
             if (!m.ConfirmDeletion.Value)
             {
+                if (_feature.IsFeatureEnabled(FeatureNames.EmployerTaskList))
+                {
+                    return RedirectToRoute(RouteNames.VacancyAdvertPreview);
+                }
                 return RedirectToRoute(RouteNames.Vacancy_Preview_Get);
             }
 

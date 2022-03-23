@@ -3,9 +3,12 @@
 
 @{ ViewBag.GaData.Vpv = "/recruitment/employer/check-your-answers"; }
 
+@section BackLink {
+    <a asp-route="@RouteNames.EmployerTaskListGet" esfa-automation="link-back" class="govuk-back-link">Back to task list</a>
+}
+
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">  
-        <a asp-route="@RouteNames.EmployerTaskListGet" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back to task list</a>
         <h1 class="govuk-heading-xl">
             Check your answers before submitting your advert
         </h1>
@@ -357,7 +360,7 @@
         </dl>
         <h2 class="govuk-heading-m">Now submit your advert</h2>
         <p class="govuk-body">By submitting this advert you are confirming that, to the best of your knowledge, the details you are providing are correct.</p>
-        <p class="govuk-body"><a asp-route="@RouteNames.Vacancy_Preview_Get" class="govuk-link govuk-link--no-visited-state">Preview advert before submitting</a></p>
+        <p class="govuk-body"><a asp-route="@RouteNames.VacancyAdvertPreview" class="govuk-link govuk-link--no-visited-state">Preview advert before submitting</a></p>
         <form asp-route="@RouteNames.Preview_Submit_Post" class="form-inline">
             <input type="submit" value="@Model.SubmitButtonText" class="govuk-button" esfa-automation="submit-button" />
         </form>

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
-using AngleSharp.Extensions;
+using AngleSharp;
+using AngleSharp.Dom;
 using Ganss.XSS;
 using Microsoft.Extensions.Logging;
 
@@ -45,7 +46,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Services
             var sanitizer = GetSanitizer(removingHtmlCallback);
             using (var dom = sanitizer.SanitizeDom(html))
             {
-                sanitized = string.IsNullOrWhiteSpace(dom.Body.InnerText) ? 
+                sanitized = string.IsNullOrWhiteSpace(dom.Body.GetInnerText()) ? 
                     string.Empty :
                     dom.Body.ChildNodes.ToHtml(HtmlSanitizer.DefaultOutputFormatter);
             }
