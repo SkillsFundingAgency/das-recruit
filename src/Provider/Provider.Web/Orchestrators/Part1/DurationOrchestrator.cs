@@ -44,7 +44,9 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
                 WeeklyHours = $"{vacancy.Wage?.WeeklyHours:0.##}",
                 PageInfo = _utility.GetPartOnePageInfo(vacancy),
                 TrainingTitle = training?.Title,
-                TrainingDurationMonths = training?.Duration ?? 0
+                TrainingDurationMonths = training?.Duration ?? 0,
+                Ukprn = vrm.Ukprn,
+                VacancyId = vrm.VacancyId
             };
 
             if (vacancy.Status == VacancyStatus.Referred)

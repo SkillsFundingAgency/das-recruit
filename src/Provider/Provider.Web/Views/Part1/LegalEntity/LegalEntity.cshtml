@@ -7,10 +7,10 @@
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         <esfaFeatureEnabled name="@FeatureNames.ProviderTaskList">
-            <a asp-route="@RouteNames.Title_Get" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
+            <a asp-route="@RouteNames.Title_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
         </esfaFeatureEnabled>
         <esfaFeatureDisabled name="@FeatureNames.ProviderTaskList">
-            <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.NumberOfPositions_Get" asp-route-wizard="@Model.PageInfo.IsWizard" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>    
+            <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.NumberOfPositions_Get" asp-route-vacancyId="@Model.VacancyId" asp-route-ukprn="@Model.Ukprn"  asp-route-wizard="@Model.PageInfo.IsWizard" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>    
         </esfaFeatureDisabled>
         
 
@@ -20,7 +20,7 @@
 
         <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">Which organisation is this vacancy for?</h1>
 
-        <form asp-show="@Model.CanShowSearchPanel" method="GET" asp-route="@RouteNames.LegalEntity_Get" asp-route-wizard="@Model.PageInfo.IsWizard">
+        <form asp-show="@Model.CanShowSearchPanel" method="GET" asp-route="@RouteNames.LegalEntity_Get" asp-route-wizard="@Model.PageInfo.IsWizard" asp-route-vacancyId="@Model.VacancyId" asp-route-ukprn="@Model.Ukprn">
             <div class="form-group search-field search-field-darker">
                 <div class="search-input search-input-with-button">
                     <label class="govuk-label" for="search">
@@ -41,7 +41,7 @@
             </div>
         </form>
 
-        <form asp-route="@RouteNames.LegalEntity_Post" asp-route-wizard="@Model.PageInfo.IsWizard">
+        <form asp-route="@RouteNames.LegalEntity_Post" asp-route-wizard="@Model.PageInfo.IsWizard" asp-route-ukprn="@Model.Ukprn" asp-route-vacancyId="@Model.VacancyId">
             <div esfa-validation-marker-for="SelectedOrganisationId" class="govuk-form-group">
                 <legend class="govuk-fieldset__legend">
                     <span asp-hide="@Model.HasNoSearchResults" class="govuk-label govuk-!-font-weight-bold">Which organisation is the vacancy for?</span>
@@ -78,8 +78,13 @@
             </details>
 
             <button type="submit" class="govuk-button save-button" esfa-automation="continue-button">Continue</button>
-
-            <a asp-route="@RouteNames.LegalEntity_Cancel" asp-route-wizard="@Model.PageInfo.IsWizard" class="govuk-link das-button-link">Cancel</a>
+            <esfaFeatureEnabled name="@FeatureNames.ProviderTaskList">
+                <a asp-route="@RouteNames.Dashboard_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-cancel" class="govuk-link das-button-link">Cancel</a>
+            </esfaFeatureEnabled>
+            <esfaFeatureDisabled name="@FeatureNames.ProviderTaskList">
+                <a asp-route="@RouteNames.LegalEntity_Cancel" asp-route-wizard="@Model.PageInfo.IsWizard" asp-route-vacancyId="@Model.VacancyId" asp-route-ukprn="@Model.Ukprn" class="govuk-link das-button-link">Cancel</a>
+            </esfaFeatureDisabled>
+            
         </form>
     </div>
 </div>

@@ -50,9 +50,9 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part2
 
             if (_feature.IsFeatureEnabled(FeatureNames.ProviderTaskList))
             {
-                return RedirectToRoute(RouteNames.ProviderContactDetails_Get);
+                return RedirectToRoute(RouteNames.ProviderContactDetails_Get, new {m.Ukprn, m.VacancyId});
             }
-            return RedirectToRoute(RouteNames.Vacancy_Preview_Get);
+            return RedirectToRoute(RouteNames.Vacancy_Preview_Get, new {m.Ukprn, m.VacancyId});
         }
     }
 }

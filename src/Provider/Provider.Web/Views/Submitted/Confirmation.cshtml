@@ -30,14 +30,14 @@
 
         <p class="govuk-body">
             <esfaFeatureEnabled name="@FeatureNames.ProviderTaskList">
-                <a class="govuk-link" asp-route="@RouteNames.CreateVacancyStart">Create another vacancy</a>
+                <a class="govuk-link" asp-route="@RouteNames.CreateVacancyStart" asp-route-ukprn="@Model.Ukprn">Create another vacancy</a>
             </esfaFeatureEnabled>
             <esfaFeatureDisabled name="@FeatureNames.ProviderTaskList">
-                <a class="govuk-link" asp-route="@RouteNames.Employer_Get">Create another vacancy</a>
+                <a class="govuk-link" asp-route="@RouteNames.Employer_Get" asp-route-ukprn="@Model.Ukprn">Create another vacancy</a>
             </esfaFeatureDisabled>
         </p>
         <p class="govuk-body">
-            <a class="govuk-link" asp-route="@RouteNames.Dashboard_Get">Return to dashboard</a>
+            <a class="govuk-link" asp-route="@RouteNames.Dashboard_Get" asp-route-ukprn="@Model.Ukprn">Return to dashboard</a>
         </p>
     </div>
 </div>

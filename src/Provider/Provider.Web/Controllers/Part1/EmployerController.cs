@@ -47,10 +47,10 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
 
             if (_feature.IsFeatureEnabled(FeatureNames.ProviderTaskList))
             {
-                return RedirectToRoute(RouteNames.ProviderTaskListCreateGet, new {employerAccountId = model.SelectedEmployerId});
+                return RedirectToRoute(RouteNames.ProviderTaskListCreateGet, new {employerAccountId = model.SelectedEmployerId, vacancyRouteModel.Ukprn});
             }
             
-            return RedirectToRoute(RouteNames.CreateVacancy_Get, new {employerAccountId = model.SelectedEmployerId});
+            return RedirectToRoute(RouteNames.CreateVacancy_Get, new {employerAccountId = model.SelectedEmployerId, vacancyRouteModel.Ukprn});
         }
     }
 }

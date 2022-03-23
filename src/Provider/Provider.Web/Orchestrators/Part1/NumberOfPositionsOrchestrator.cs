@@ -35,10 +35,10 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
 
             var vm = new NumberOfPositionsViewModel
             {
-                    VacancyId = vacancy.Id,
-                    NumberOfPositions = vacancy.NumberOfPositions?.ToString(),
-                    PageInfo = _utility.GetPartOnePageInfo(vacancy),
-                    Ukprn = vacancy.TrainingProvider.Ukprn.GetValueOrDefault()
+                VacancyId = vacancy.Id,
+                NumberOfPositions = vacancy.NumberOfPositions?.ToString(),
+                PageInfo = _utility.GetPartOnePageInfo(vacancy),
+                Ukprn = vacancy.TrainingProvider.Ukprn.GetValueOrDefault()
             };
 
             if (vacancy.Status == VacancyStatus.Referred)

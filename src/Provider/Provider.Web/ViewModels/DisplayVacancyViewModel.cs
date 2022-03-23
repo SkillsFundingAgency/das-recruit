@@ -1,10 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
 namespace Esfa.Recruit.Provider.Web.ViewModels
 {
-    public abstract class DisplayVacancyViewModel
+    public abstract class DisplayVacancyViewModel : VacancyRouteModel
     {
         public VacancyStatus Status { get; set; }
         public string AccountName { get; set; }
