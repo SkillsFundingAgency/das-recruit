@@ -80,26 +80,28 @@ namespace Esfa.Recruit.Provider.Web.Configuration
             services.AddSingleton<ITempDataProvider, CookieTempDataProvider>();
 
             services.AddMvc(opts =>
-            {
-                opts.Filters.Add(new AuthorizeFilter(PolicyNames.ProviderPolicyName));
-
-                var jsonInputFormatters = opts.InputFormatters.OfType<JsonInputFormatter>();
-                foreach (var formatter in jsonInputFormatters)
                 {
-                    formatter.SupportedMediaTypes
-                        .Add(MediaTypeHeaderValue.Parse("application/csp-report"));
+                    opts.EnableEndpointRouting = false;
+                    opts.Filters.Add(new AuthorizeFilter(PolicyNames.ProviderPolicyName));
+
+                    var jsonInputFormatters = opts.InputFormatters.OfType<SystemTextJsonInputFormatter>();
+                    foreach (var formatter in jsonInputFormatters)
+                    {
+                        formatter.SupportedMediaTypes
+                            .Add(MediaTypeHeaderValue.Parse("application/csp-report"));
+                    }
+
+                    opts.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
+
+                    opts.Filters.AddService<PlannedOutageResultFilter>();
+                    opts.Filters.AddService<GoogleAnalyticsFilter>();
+                    opts.Filters.AddService<ZendeskApiFilter>();
+
+                    opts.AddTrimModelBinderProvider(loggerFactory);
                 }
-
-                opts.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
-
-                opts.Filters.AddService<PlannedOutageResultFilter>();
-                opts.Filters.AddService<GoogleAnalyticsFilter>();
-                opts.Filters.AddService<ZendeskApiFilter>();
-
-                opts.AddTrimModelBinderProvider(loggerFactory);
-            })
+            )
             .AddFluentValidation()
-            .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
         }
 
         public static void AddAuthenticationService(this IServiceCollection services, AuthenticationConfiguration authConfig, IRecruitVacancyClient vacancyClient, IHostingEnvironment hostingEnvironment)
