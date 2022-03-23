@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoFixture;
 using Esfa.Recruit.Provider.Web.Mappings;
@@ -14,49 +15,15 @@ using SFA.DAS.Testing.AutoFixture;
 
 namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.ViewModels.Preview
 {
-    public class WhenGettingTaskListSectionTwoState
+    public class WhenGettingTaskListSectionThreeState
     {
         [Test, MoqAutoData]
-        public async Task Then_The_Section_State_Is_Not_Started_When_Section_One_Complete(
+        public async Task Then_The_Section_State_Is_Not_Started_When_Section_Two_InProgress(
             Mock<IRecruitVacancyClient> recruitVacancyClient,
             DisplayVacancyViewModelMapper mapper)
         {
-            var vacancy = GetVacancySectionOneComplete(recruitVacancyClient);
-            
-            var model = new VacancyPreviewViewModel();
-            
-            await mapper.MapFromVacancyAsync(model, vacancy);
-            model.SetSectionStates(model, new ModelStateDictionary());
-
-            model.TaskListSectionOneState.Should().Be(VacancyTaskListSectionState.Completed);
-            model.TaskListSectionTwoState.Should().Be(VacancyTaskListSectionState.NotStarted);
-        }
-        
-        [Test, MoqAutoData]
-        public async Task Then_The_Section_State_Is_Not_Started_When_Section_One_InProgress(
-            Mock<IRecruitVacancyClient> recruitVacancyClient,
-            DisplayVacancyViewModelMapper mapper)
-        {
-            var vacancy = GetVacancySectionOneComplete(recruitVacancyClient);
-            vacancy.ShortDescription = "";
-            
-            var model = new VacancyPreviewViewModel();
-            
-            await mapper.MapFromVacancyAsync(model, vacancy);
-            model.SetSectionStates(model, new ModelStateDictionary());
-
-            model.TaskListSectionOneState.Should().Be(VacancyTaskListSectionState.InProgress);
-            model.TaskListSectionTwoState.Should().Be(VacancyTaskListSectionState.NotStarted);
-        }
-
-        [Test, MoqAutoData]
-        public async Task Then_The_Section_Is_Set_To_In_Progress_When_Dates_Set(
-            Mock<IRecruitVacancyClient> recruitVacancyClient,
-            DisplayVacancyViewModelMapper mapper)
-        {
-            var vacancy = GetVacancySectionOneComplete(recruitVacancyClient);
-            vacancy.StartDate = DateTime.UtcNow.AddMonths(3);
-            vacancy.ClosingDate = DateTime.UtcNow.AddMonths(2);
+            var vacancy = GetVacancySectionOneAndTwoComplete(recruitVacancyClient);
+            vacancy.NumberOfPositions = null;
             var model = new VacancyPreviewViewModel();
             
             await mapper.MapFromVacancyAsync(model, vacancy);
@@ -64,84 +31,15 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.ViewModels.Preview
 
             model.TaskListSectionOneState.Should().Be(VacancyTaskListSectionState.Completed);
             model.TaskListSectionTwoState.Should().Be(VacancyTaskListSectionState.InProgress);
+            model.TaskListSectionThreeState.Should().Be(VacancyTaskListSectionState.NotStarted);
         }
         
         [Test, MoqAutoData]
-        public async Task Then_The_Section_Is_Set_To_In_Progress_When_Dates_Duration_Set(
+        public async Task Then_The_Section_State_Is_Not_Started_When_Section_Two_Complete(
             Mock<IRecruitVacancyClient> recruitVacancyClient,
             DisplayVacancyViewModelMapper mapper)
         {
-            var vacancy = GetVacancySectionOneComplete(recruitVacancyClient);
-            vacancy.StartDate = DateTime.UtcNow.AddMonths(3);
-            vacancy.ClosingDate = DateTime.UtcNow.AddMonths(2);
-            
-            vacancy.Wage = new Wage
-            {
-                Duration = 36,
-                DurationUnit = DurationUnit.Month,
-                WeeklyHours = 30
-            }; 
-            var model = new VacancyPreviewViewModel();
-            
-            await mapper.MapFromVacancyAsync(model, vacancy);
-            model.SetSectionStates(model, new ModelStateDictionary());
-
-            model.TaskListSectionOneState.Should().Be(VacancyTaskListSectionState.Completed);
-            model.TaskListSectionTwoState.Should().Be(VacancyTaskListSectionState.InProgress);
-        }
-        
-        [Test, MoqAutoData]
-        public async Task Then_The_Section_Is_Set_To_In_Progress_When_Dates_Duration_Wage_Set(
-            Wage wage,
-            Mock<IRecruitVacancyClient> recruitVacancyClient,
-            DisplayVacancyViewModelMapper mapper)
-        {
-            var vacancy = GetVacancySectionOneComplete(recruitVacancyClient);
-            vacancy.StartDate = DateTime.UtcNow.AddMonths(3);
-            vacancy.ClosingDate = DateTime.UtcNow.AddMonths(2);
-            vacancy.Wage = wage; 
-            var model = new VacancyPreviewViewModel();
-            
-            await mapper.MapFromVacancyAsync(model, vacancy);
-            model.SetSectionStates(model, new ModelStateDictionary());
-
-            model.TaskListSectionOneState.Should().Be(VacancyTaskListSectionState.Completed);
-            model.TaskListSectionTwoState.Should().Be(VacancyTaskListSectionState.InProgress);
-        }
-        
-        [Test, MoqAutoData]
-        public async Task Then_The_Section_Is_Set_To_In_Progress_When_Dates_Duration_Wage_Number_Of_Positions_Set(
-            Wage wage,
-            Mock<IRecruitVacancyClient> recruitVacancyClient,
-            DisplayVacancyViewModelMapper mapper)
-        {
-            var vacancy = GetVacancySectionOneComplete(recruitVacancyClient);
-            vacancy.StartDate = DateTime.UtcNow.AddMonths(3);
-            vacancy.ClosingDate = DateTime.UtcNow.AddMonths(2);
-            vacancy.Wage = wage; 
-            var model = new VacancyPreviewViewModel();
-            
-            await mapper.MapFromVacancyAsync(model, vacancy);
-            model.SetSectionStates(model, new ModelStateDictionary());
-
-            model.TaskListSectionOneState.Should().Be(VacancyTaskListSectionState.Completed);
-            model.TaskListSectionTwoState.Should().Be(VacancyTaskListSectionState.InProgress);
-        }
-        
-        [Test, MoqAutoData]
-        public async Task Then_The_Section_Is_Set_To_Complete_When_Dates_Duration_Wage_Number_Of_Positions_address_Set(
-            int? numberOfPositions,
-            Wage wage,
-            Address address,
-            Mock<IRecruitVacancyClient> recruitVacancyClient,
-            DisplayVacancyViewModelMapper mapper)
-        {
-            var vacancy = GetVacancySectionOneComplete(recruitVacancyClient);
-            vacancy.StartDate = DateTime.UtcNow.AddMonths(3);
-            vacancy.ClosingDate = DateTime.UtcNow.AddMonths(2);
-            vacancy.Wage = wage;
-            vacancy.EmployerLocation = address;
-            vacancy.NumberOfPositions = numberOfPositions;
+            var vacancy = GetVacancySectionOneAndTwoComplete(recruitVacancyClient);
             var model = new VacancyPreviewViewModel();
             
             await mapper.MapFromVacancyAsync(model, vacancy);
@@ -149,9 +47,99 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.ViewModels.Preview
 
             model.TaskListSectionOneState.Should().Be(VacancyTaskListSectionState.Completed);
             model.TaskListSectionTwoState.Should().Be(VacancyTaskListSectionState.Completed);
+            model.TaskListSectionThreeState.Should().Be(VacancyTaskListSectionState.NotStarted);
         }
+        
+        
+        [Test, MoqAutoData]
+        public async Task Then_The_Section_State_Is_InProgress_When_Has_Skills(
+            List<string> skills,
+            Mock<IRecruitVacancyClient> recruitVacancyClient,
+            DisplayVacancyViewModelMapper mapper)
+        {
+            var vacancy = GetVacancySectionOneAndTwoComplete(recruitVacancyClient);
+            vacancy.Skills = skills;
+            var model = new VacancyPreviewViewModel();
+            
+            await mapper.MapFromVacancyAsync(model, vacancy);
+            model.SetSectionStates(model, new ModelStateDictionary());
 
-        private Vacancy GetVacancySectionOneComplete(Mock<IRecruitVacancyClient> recruitVacancyClient)
+            model.TaskListSectionOneState.Should().Be(VacancyTaskListSectionState.Completed);
+            model.TaskListSectionTwoState.Should().Be(VacancyTaskListSectionState.Completed);
+            model.TaskListSectionThreeState.Should().Be(VacancyTaskListSectionState.InProgress);
+        }
+        
+        [Test, MoqAutoData]
+        public async Task Then_The_Section_State_Is_InProgress_When_Has_Skills_Qualifications(
+            List<string> skills,
+            List<Qualification> qualifications,
+            Mock<IRecruitVacancyClient> recruitVacancyClient,
+            DisplayVacancyViewModelMapper mapper)
+        {
+            var vacancy = GetVacancySectionOneAndTwoComplete(recruitVacancyClient);
+            vacancy.Skills = skills;
+            vacancy.Qualifications = qualifications;
+            
+            var model = new VacancyPreviewViewModel();
+            
+            await mapper.MapFromVacancyAsync(model, vacancy);
+            model.SetSectionStates(model, new ModelStateDictionary());
+
+            model.TaskListSectionOneState.Should().Be(VacancyTaskListSectionState.Completed);
+            model.TaskListSectionTwoState.Should().Be(VacancyTaskListSectionState.Completed);
+            model.TaskListSectionThreeState.Should().Be(VacancyTaskListSectionState.InProgress);
+        }
+        
+        [Test, MoqAutoData]
+        public async Task Then_The_Section_State_Is_Completed_When_Has_Skills_Qualifications_FutureProspects(
+            List<string> skills,
+            List<Qualification> qualifications,
+            string outcomeDescription,
+            Mock<IRecruitVacancyClient> recruitVacancyClient,
+            DisplayVacancyViewModelMapper mapper)
+        {
+            var vacancy = GetVacancySectionOneAndTwoComplete(recruitVacancyClient);
+            vacancy.Skills = skills;
+            vacancy.Qualifications = qualifications;
+            vacancy.OutcomeDescription = outcomeDescription;
+            
+            var model = new VacancyPreviewViewModel();
+            
+            await mapper.MapFromVacancyAsync(model, vacancy);
+            model.SetSectionStates(model, new ModelStateDictionary());
+
+            model.TaskListSectionOneState.Should().Be(VacancyTaskListSectionState.Completed);
+            model.TaskListSectionTwoState.Should().Be(VacancyTaskListSectionState.Completed);
+            model.TaskListSectionThreeState.Should().Be(VacancyTaskListSectionState.Completed);
+        }
+        
+        [Test, MoqAutoData]
+        public async Task Then_The_Section_State_Is_Complete_When_Has_Skills_Qualifications_FutureProspects_ThingsToConsider(
+            List<string> skills,
+            List<Qualification> qualifications,
+            string futureProspects,
+            string thingsToConsider,
+            string outcomeDescription,
+            Mock<IRecruitVacancyClient> recruitVacancyClient,
+            DisplayVacancyViewModelMapper mapper)
+        {
+            var vacancy = GetVacancySectionOneAndTwoComplete(recruitVacancyClient);
+            vacancy.Skills = skills;
+            vacancy.Qualifications = qualifications;
+            vacancy.OutcomeDescription = outcomeDescription;
+            vacancy.ThingsToConsider = thingsToConsider;
+            
+            var model = new VacancyPreviewViewModel();
+            
+            await mapper.MapFromVacancyAsync(model, vacancy);
+            model.SetSectionStates(model, new ModelStateDictionary());
+
+            model.TaskListSectionOneState.Should().Be(VacancyTaskListSectionState.Completed);
+            model.TaskListSectionTwoState.Should().Be(VacancyTaskListSectionState.Completed);
+            model.TaskListSectionThreeState.Should().Be(VacancyTaskListSectionState.Completed);
+        }
+        
+        private Vacancy GetVacancySectionOneAndTwoComplete(Mock<IRecruitVacancyClient> recruitVacancyClient)
         {
             var fixture = new Fixture();
             var programmeId = fixture.Create<string>();
@@ -167,7 +155,12 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.ViewModels.Preview
                 Description = fixture.Create<string>(),
                 TrainingDescription = fixture.Create<string>(),
                 ShortDescription = fixture.Create<string>(),
-                AccountLegalEntityPublicHashedId = fixture.Create<string>()
+                AccountLegalEntityPublicHashedId = fixture.Create<string>(),
+                StartDate = DateTime.UtcNow.AddMonths(3),
+                ClosingDate = DateTime.UtcNow.AddMonths(2),
+                Wage = fixture.Create<Wage>(),
+                EmployerLocation = fixture.Create<Address>(),
+                NumberOfPositions = fixture.Create<int>(),
             };
         }
     }

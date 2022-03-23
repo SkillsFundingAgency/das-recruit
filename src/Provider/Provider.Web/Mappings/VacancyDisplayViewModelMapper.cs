@@ -82,6 +82,7 @@ namespace Esfa.Recruit.Provider.Web.Mappings
                                         : string.Empty;
             vm.IsDisabilityConfident = vacancy.IsDisabilityConfident;
             vm.AccountLegalEntityPublicHashedId = vacancy.AccountLegalEntityPublicHashedId;
+            vm.EmployerNameOption = vacancy.EmployerNameOption;
 
             if (vacancy.EmployerLocation != null)
             {

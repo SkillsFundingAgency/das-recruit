@@ -9,6 +9,7 @@ using Esfa.Recruit.Provider.Web.ViewModels.Part1.Wage;
 using Esfa.Recruit.Provider.Web.ViewModels.Part2.AboutEmployer;
 using Esfa.Recruit.Provider.Web.ViewModels.Part2.ApplicationProcess;
 using Esfa.Recruit.Provider.Web.ViewModels.Part2.Considerations;
+using Esfa.Recruit.Provider.Web.ViewModels.Part2.FutureProspects;
 using Esfa.Recruit.Provider.Web.ViewModels.Part2.ProviderContactDetails;
 using Esfa.Recruit.Provider.Web.ViewModels.Part2.ShortDescription;
 using Esfa.Recruit.Provider.Web.ViewModels.Part2.VacancyDescription;
@@ -263,7 +264,6 @@ namespace Esfa.Recruit.Provider.Web.Mappings
             {
                 new ReviewFieldIndicatorViewModel(FieldIdentifiers.VacancyDescription, nameof(VacancyDescriptionEditModel.VacancyDescription)),
                 new ReviewFieldIndicatorViewModel(FieldIdentifiers.TrainingDescription, nameof(VacancyDescriptionEditModel.TrainingDescription)),
-                new ReviewFieldIndicatorViewModel(FieldIdentifiers.OutcomeDescription, nameof(VacancyDescriptionEditModel.OutcomeDescription)),
 
             };
 
@@ -370,6 +370,21 @@ namespace Esfa.Recruit.Provider.Web.Mappings
                 { FieldIdResolver.ToFieldId(v => v.ApplicationInstructions), new [] { FieldIdentifiers.ApplicationInstructions }},
                 { FieldIdResolver.ToFieldId(v => v.ApplicationMethod), new [] { FieldIdentifiers.ApplicationMethod} },
                 { FieldIdResolver.ToFieldId(v => v.ApplicationUrl), new []{ FieldIdentifiers.ApplicationUrl} }
+            };
+
+            return new ReviewFieldMappingLookupsForPage(vms, mappings);
+        }
+
+        public static ReviewFieldMappingLookupsForPage GetFutureProspectsFieldIndicators()
+        {
+            var vms = new List<ReviewFieldIndicatorViewModel>
+            {
+                new ReviewFieldIndicatorViewModel(FieldIdentifiers.OutcomeDescription, nameof(FutureProspectsEditModel.FutureProspects))
+            };
+
+            var mappings = new Dictionary<string, IEnumerable<string>>
+            {
+                { FieldIdResolver.ToFieldId(v => v.OutcomeDescription), new []{ FieldIdentifiers.OutcomeDescription} }
             };
 
             return new ReviewFieldMappingLookupsForPage(vms, mappings);

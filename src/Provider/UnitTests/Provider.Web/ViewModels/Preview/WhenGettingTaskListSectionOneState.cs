@@ -111,7 +111,6 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.ViewModels.Preview
             string description,
             string shortDescription,
             string trainingDescription,
-            string outcomeDescription,
             TrainingProvider trainingProvider,
             ApprenticeshipProgramme programme,
             [Frozen] Mock<IRecruitVacancyClient> recruitVacancyClient,
@@ -127,8 +126,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.ViewModels.Preview
                 ProgrammeId = programmeId,
                 Description = description,
                 TrainingDescription = trainingDescription,
-                ShortDescription = shortDescription,
-                OutcomeDescription = outcomeDescription
+                ShortDescription = shortDescription
             };
             var model = new VacancyPreviewViewModel();
             await mapper.MapFromVacancyAsync(model, vacancy);
@@ -145,7 +143,6 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.ViewModels.Preview
             string description,
             string shortDescription,
             string trainingDescription,
-            string outcomeDescription,
             string accountLegalEntityPublicHashedId,
             TrainingProvider trainingProvider,
             ApprenticeshipProgramme programme,
@@ -163,7 +160,6 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.ViewModels.Preview
                 Description = description,
                 TrainingDescription = trainingDescription,
                 ShortDescription = shortDescription,
-                OutcomeDescription = outcomeDescription,
                 AccountLegalEntityPublicHashedId = accountLegalEntityPublicHashedId
             };
             var model = new VacancyPreviewViewModel();

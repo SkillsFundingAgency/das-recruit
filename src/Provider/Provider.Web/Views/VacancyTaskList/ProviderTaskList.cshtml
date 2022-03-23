@@ -233,7 +233,7 @@
                 </h2>
                 <ul class="das-task-list__items">
                     <li class="das-task-list__item">
-                        @if (Model.EmployerAddressSectionState == VacancyPreviewSectionState.Incomplete)
+                        @if (Model.TaskListSectionTwoState != VacancyTaskListSectionState.Completed)
                         {
                             <span>
                                 Skills
@@ -269,13 +269,13 @@
                         }
                         else
                         {
-                            <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.Considerations_Get">
+                            <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.FutureProspects_Get">
                                 Future prospects
                             </a>
                         }
                     </li>
                     <li class="das-task-list__item">
-                        @if (Model.QualificationsSectionState == VacancyPreviewSectionState.Incomplete)
+                        @if (string.IsNullOrEmpty(Model.OutcomeDescription))
                         {
                             <span>
                                 Other things to consider
@@ -325,7 +325,7 @@
                         }
                     </li>
                     <li class="das-task-list__item">
-                        @if (Model.TaskListSectionFourState == VacancyTaskListSectionState.InProgress)
+                        @if (Model.HasSelectedEmployerNameOption)
                         {
                             <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.AboutEmployer_Get">
                                 Employer information
@@ -339,7 +339,7 @@
                         }
                     </li>
                     <li class="das-task-list__item">
-                        @if (true)//(!Model.HasIncompleteProviderContactSection)
+                        @if (!Model.HasEmployerDescription)
                         {
                             <span class="das-task-list__task-name">
                                  Contact details
@@ -353,7 +353,7 @@
                         }
                     </li>
                     <li class="das-task-list__item">
-                        @if (false)//(Model.HasSelectedEmployerNameOption && !Model.EmployerDescriptionRequiresEdit && Model.TaskListSectionThreeState == VacancyTaskListSectionState.Completed)
+                        @if (Model.HasSelectedEmployerNameOption && Model.HasEmployerDescription && Model.TaskListSectionThreeState == VacancyTaskListSectionState.Completed)
                         {
                             <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.ApplicationProcess_Get">
                                 Application website

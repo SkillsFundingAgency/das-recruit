@@ -114,6 +114,6 @@ namespace Esfa.Recruit.Provider.Web.ViewModels
 
         public bool IsNotDisabilityConfident => !IsDisabilityConfident;
         public bool HasSelectedLegalEntity => !string.IsNullOrEmpty(AccountLegalEntityPublicHashedId);
-        
+        public EmployerNameOption? EmployerNameOption { get; set; }
     }
 }
