@@ -11,12 +11,11 @@
 
         <h1 class="govuk-heading-xl">
             <span class="govuk-caption-l">@Model.Title</span>
-            Future Prospects
+            What is the expected career progression after this apprenticeship?
         </h1>
 
         <form asp-route="@RouteNames.FutureProspects_Get">
             <div esfa-validation-marker-for="FutureProspects" class="govuk-form-group">
-                <label asp-for="FutureProspects" class="govuk-label govuk-!-font-weight-bold">What is the expected career progression after this apprenticeship?</label>
                 <span class="govuk-hint">You may want to mention specific routes they could take once qualified.</span>
                 <span esfa-validation-message-for="FutureProspects" class="govuk-error-message"></span>
                 <textarea asp-for="FutureProspects" class="govuk-textarea html-editor" rows="5" data-val-length-max="4000"></textarea>
@@ -28,11 +27,3 @@
         </form>
     </div>
 </div>
-
-@section FooterJS
-    {
-    <script src="/lib/tinymce-4.9.2/tinymce.min.js"></script>
-    <script nws-csp-add-nonce="true">
-        initializeHtmlEditors();
-    </script>
-}
