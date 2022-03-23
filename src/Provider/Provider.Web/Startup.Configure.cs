@@ -162,8 +162,12 @@ namespace Esfa.Recruit.Provider.Web
             app.UseXRobotsTag(options => options.NoIndex().NoFollow());
 
             app.UseNoCacheHttpHeaders(); // Effectively forces the browser to always request dynamic pages
-
-            app.UseMvc(r => r.MapRoute("default", RoutePaths.AccountRoutePath));
+            app.UseRouting();
+            app.UseAuthorization();
+            app.UseEndpoints(builder =>
+            {
+                builder.MapControllerRoute("default", RoutePaths.AccountRoutePath);
+            });
         }
 
         private static string[] GetAllowableDestinations(AuthenticationConfiguration authConfig, ExternalLinksConfiguration linksConfig)
