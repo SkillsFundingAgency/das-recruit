@@ -6,6 +6,7 @@ using Esfa.Recruit.Provider.Web.Orchestrators.Part1;
 using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Provider.Web.ViewModels.Part1.Duration;
 using Esfa.Recruit.Shared.Web.Extensions;
+using Esfa.Recruit.Shared.Web.FeatureToggle;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,10 +17,12 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
     public class DurationController : Controller
     {
         private readonly DurationOrchestrator _orchestrator;
+        private readonly IFeature _feature;
 
-        public DurationController(DurationOrchestrator orchestrator)
+        public DurationController(DurationOrchestrator orchestrator, IFeature feature)
         {
             _orchestrator = orchestrator;
+            _feature = feature;
         }
         
         [HttpGet("duration", Name = RouteNames.Duration_Get)]
@@ -47,6 +50,11 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
                 return View(vm);
             }
 
+            if (_feature.IsFeatureEnabled(FeatureNames.ProviderTaskList))
+            {
+                return RedirectToRoute(RouteNames.Wage_Get);
+            }
+            
             return wizard
                 ? RedirectToRoute(RouteNames.Wage_Get)
                 : RedirectToRoute(RouteNames.Vacancy_Preview_Get);

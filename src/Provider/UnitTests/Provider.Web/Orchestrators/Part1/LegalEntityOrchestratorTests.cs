@@ -74,7 +74,7 @@ namespace Esfa.Recruit.UnitTests.Provider.Web.Orchestrators.Part1
             [Frozen] Mock<IRecruitVacancyClient> vacancyClient,
             LegalEntityOrchestrator orchestrator)
         {
-            utility.Setup(x => x.GetAuthorisedVacancyForEditAsync(vacancyRouteModel, RouteNames.Employer_Get))
+            utility.Setup(x => x.GetAuthorisedVacancyForEditAsync(vacancyRouteModel, RouteNames.LegalEntity_Get))
                 .ReturnsAsync(vacancy);
             vacancyClient.Setup(x => x.Validate(vacancy, VacancyRuleSet.None))
                 .Returns(new EntityValidationResult { Errors = null });

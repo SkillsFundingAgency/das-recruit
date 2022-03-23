@@ -8,8 +8,10 @@ using System.Threading.Tasks;
 using Esfa.Recruit.Provider.Web.Configuration;
 using Esfa.Recruit.Provider.Web.Configuration.Routing;
 using Esfa.Recruit.Provider.Web.Exceptions;
+using Esfa.Recruit.Provider.Web.Models;
 using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Shared.Web.FeatureToggle;
+using Esfa.Recruit.Shared.Web.Models;
 using Esfa.Recruit.Shared.Web.ViewModels;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 
@@ -37,6 +39,7 @@ namespace Esfa.Recruit.Provider.Web
         bool VacancyHasStartedPartTwo(Vacancy vacancy);
         PartOnePageInfoViewModel GetPartOnePageInfo(Vacancy vacancy);
         Task<ApplicationReview> GetAuthorisedApplicationReviewAsync(ApplicationReviewRouteModel rm);
+        Task UpdateEmployerProfile(VacancyEmployerInfoModel vacancyEmployerInfoModel, EmployerProfile profile, Address address, VacancyUser user);
     }
     public class Utility : IUtility
     {
@@ -127,6 +130,18 @@ namespace Esfa.Recruit.Provider.Web
                 RouteNames.Training_Post,
                 RouteNames.Training_Get
             });
+
+            if (_feature.IsFeatureEnabled(FeatureNames.ProviderTaskList))
+            {
+                validRoutes.AddRange(new[]
+                {
+                    RouteNames.LegalEntity_Post,
+                    RouteNames.LegalEntity_Get,
+                    RouteNames.FutureProspects_Post,
+                    RouteNames.FutureProspects_Get
+                });
+            }
+            
             if (string.IsNullOrWhiteSpace(vacancy.ProgrammeId))
                 return validRoutes;
 
@@ -144,22 +159,37 @@ namespace Esfa.Recruit.Provider.Web
                 RouteNames.NumberOfPositions_Post,
                 RouteNames.NumberOfPositions_Get });
 
-            if (!vacancy.NumberOfPositions.HasValue)
-                return validRoutes;
-
+            if (!_feature.IsFeatureEnabled(FeatureNames.ProviderTaskList))
+            {
+                if (!vacancy.NumberOfPositions.HasValue)
+                    return validRoutes;    
+            }
+            
             validRoutes.AddRange(new[] 
             {
                 RouteNames.Location_Get, 
                 RouteNames.Location_Post,
                 RouteNames.EmployerName_Post, 
-                RouteNames.EmployerName_Get, 
-                RouteNames.LegalEntity_Post, 
-                RouteNames.LegalEntity_Get
+                RouteNames.EmployerName_Get 
+             
             });
-            if (string.IsNullOrWhiteSpace(vacancy.LegalEntityName)
-                || vacancy.EmployerNameOption == null
-                || string.IsNullOrWhiteSpace(vacancy.EmployerLocation?.Postcode))
-                return validRoutes;
+            if (!_feature.IsFeatureEnabled(FeatureNames.ProviderTaskList))
+            {
+                validRoutes.AddRange(new[]
+                {
+                    RouteNames.LegalEntity_Post, 
+                    RouteNames.LegalEntity_Get
+                });
+            }
+            
+            if (!_feature.IsFeatureEnabled(FeatureNames.ProviderTaskList))
+            {
+                if (string.IsNullOrWhiteSpace(vacancy.LegalEntityName)
+                    || vacancy.EmployerNameOption == null
+                    || string.IsNullOrWhiteSpace(vacancy.EmployerLocation?.Postcode))
+                    return validRoutes;    
+            }
+            
 
             validRoutes.AddRange(new[] { RouteNames.Dates_Post, RouteNames.Dates_Get });
             if (vacancy.StartDate == null)
@@ -178,6 +208,11 @@ namespace Esfa.Recruit.Provider.Web
 
         public bool VacancyHasCompletedPartOne(Vacancy vacancy)
         {
+            if (_feature.IsFeatureEnabled(FeatureNames.ProviderTaskList))
+            {
+                return vacancy.ApplicationMethod != null;
+            }
+            
             return GetPermittedRoutesForVacancy(vacancy) == null;
         }
 
@@ -216,6 +251,31 @@ namespace Esfa.Recruit.Provider.Web
                 throw new AuthorisationException(string.Format(ExceptionMessages.ApplicationReviewUnauthorisedAccessForProvider, rm.Ukprn, 
                     vacancy.TrainingProvider.Ukprn, rm.ApplicationReviewId,vacancy.Id));
             }                    
+        }
+
+        public async Task UpdateEmployerProfile(VacancyEmployerInfoModel employerInfoModel, 
+            EmployerProfile employerProfile, Address address, VacancyUser user)
+        {
+            var updateProfile = false;
+            if (string.IsNullOrEmpty(employerProfile.AccountLegalEntityPublicHashedId) && !string.IsNullOrEmpty(employerInfoModel?.AccountLegalEntityPublicHashedId)) 
+            {
+                updateProfile = true;
+                employerProfile.AccountLegalEntityPublicHashedId = employerInfoModel.AccountLegalEntityPublicHashedId;
+            }
+            if (employerInfoModel != null && employerInfoModel.EmployerIdentityOption == EmployerIdentityOption.NewTradingName)
+            {
+                updateProfile = true;
+                employerProfile.TradingName = employerInfoModel.NewTradingName;
+            }
+            if (address != null)
+            {
+                updateProfile = true;
+                employerProfile.OtherLocations.Add(address);
+            }
+            if (updateProfile)    
+            {
+                await _vacancyClient.UpdateEmployerProfileAsync(employerProfile, user);
+            }
         }
     }
 }

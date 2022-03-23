@@ -9,9 +9,23 @@
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-        <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Title_Get" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
-        <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }' />
-        <partial name="@PartialNames.ReviewSummary" for="Review" />
+        <esfaFeatureEnabled name="@FeatureNames.ProviderTaskList">
+            @if (Model.HasMoreThanOneLegalEntity)
+            {
+                <a asp-route="@RouteNames.LegalEntity_Get" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>    
+            }
+            else
+            {
+                <a asp-route="@RouteNames.Title_Get" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
+            }
+            
+        </esfaFeatureEnabled>
+        <esfaFeatureDisabled name="@FeatureNames.ProviderTaskList">
+            <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Title_Get" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>    
+        </esfaFeatureDisabled>
+        
+        <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }'/>
+        <partial name="@PartialNames.ReviewSummary" for="Review"/>
         <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">What training will the apprentice take?</h1>
         <form asp-route="@RouteNames.Training_Post" asp-route-wizard="@Model.PageInfo.IsWizard" novalidate>
 
@@ -45,7 +59,7 @@
                 <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Vacancies_Get" class="govuk-link das-button-link">Cancel</a>
                 <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.Vacancy_Preview_Get" asp-fragment="@Anchors.TrainingProviderSection" class="govuk-link das-button-link">Cancel</a>
             </esfaFeatureDisabled>
-            
+
 
         </form>
     </div>

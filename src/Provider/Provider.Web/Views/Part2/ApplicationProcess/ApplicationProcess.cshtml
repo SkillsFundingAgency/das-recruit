@@ -8,9 +8,13 @@
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-        <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }' />
+        <esfaFeatureEnabled name="@FeatureNames.ProviderTaskList">
+            <a asp-route="@RouteNames.ProviderContactDetails_Get" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
+        </esfaFeatureEnabled>
+        
+        <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }'/>
 
-        <partial name="@PartialNames.ReviewSummary" for="Review" />
+        <partial name="@PartialNames.ReviewSummary" for="Review"/>
 
         <h1 class="govuk-heading-xl">
             <span class="govuk-caption-l">@Model.Title</span>
@@ -42,7 +46,7 @@
                             <div esfa-validation-marker-for="ApplicationUrl" class="govuk-form-group">
                                 <label asp-for="ApplicationUrl" class="govuk-label govuk-!-font-weight-bold">Enter the web address candidates should use to apply for this vacancy</label>
                                 <span esfa-validation-message-for="ApplicationUrl" class="govuk-error-message"></span>
-                                <input asp-for="ApplicationUrl" class="govuk-input govuk-!-width-one-half" maxlength="200" />
+                                <input asp-for="ApplicationUrl" class="govuk-input govuk-!-width-one-half" maxlength="200"/>
                             </div>
                             <div esfa-validation-marker-for="ApplicationInstructions" class="govuk-form-group">
                                 <label asp-for="ApplicationInstructions" class="govuk-label govuk-!-font-weight-bold">Explain the application process (optional)</label>
@@ -57,8 +61,14 @@
             </div>
 
             <div class="govuk-form-group">
-                <input type="submit" value="Save and continue" esfa-automation="btn-continue" class="govuk-button save-button" />
-                <a asp-route="@RouteNames.Vacancy_Preview_Get" esfa-automation="link-cancel" class="govuk-link das-button-link">Cancel</a>
+                <input type="submit" value="Save and continue" esfa-automation="btn-continue" class="govuk-button save-button"/>
+                <esfaFeatureEnabled name="@FeatureNames.ProviderTaskList">
+
+                </esfaFeatureEnabled>
+                <esfaFeatureDisabled name="@FeatureNames.ProviderTaskList">
+                    <a asp-route="@RouteNames.Vacancy_Preview_Get" esfa-automation="link-cancel" class="govuk-link das-button-link">Cancel</a>
+                </esfaFeatureDisabled>
+
             </div>
         </form>
     </div>

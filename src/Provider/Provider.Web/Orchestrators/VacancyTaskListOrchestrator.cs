@@ -100,9 +100,18 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             return vm;
         }
 
-        public async Task<VacancyPreviewViewModel> GetCreateVacancyTaskListModel(VacancyRouteModel vrm)
+        public async Task<VacancyPreviewViewModel> GetCreateVacancyTaskListModel(VacancyRouteModel vrm, string employerAccountId)
         {
-            return new VacancyPreviewViewModel();
+            var employerInfo =
+                await _providerVacancyClient.GetProviderEmployerVacancyDataAsync(vrm.Ukprn,
+                    employerAccountId);
+
+            var createVacancyTaskListModel = new VacancyPreviewViewModel
+            {
+                AccountLegalEntityCount = employerInfo.LegalEntities.Count,
+                AccountId = employerAccountId
+            };
+            return createVacancyTaskListModel;
         }
     }
 }
