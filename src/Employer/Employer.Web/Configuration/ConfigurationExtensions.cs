@@ -71,7 +71,7 @@ namespace Esfa.Recruit.Employer.Web.Configuration
                         opts.Filters.Add(new AuthorizeFilter(HasEmployerAccountPolicyName));
                     }
 
-                    var jsonInputFormatters = opts.InputFormatters.OfType<SystemTextJsonInputFormatter>();
+                    var jsonInputFormatters = opts.InputFormatters.OfType<NewtonsoftJsonInputFormatter>();
                     foreach (var formatter in jsonInputFormatters)
                     {
                         formatter.SupportedMediaTypes
@@ -85,6 +85,7 @@ namespace Esfa.Recruit.Employer.Web.Configuration
                     opts.Filters.AddService<ZendeskApiFilter>();
                     opts.AddTrimModelBinderProvider(loggerFactory);
             })
+            .AddNewtonsoftJson()
             .AddFluentValidation()
             .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
         }

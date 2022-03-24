@@ -93,7 +93,7 @@ namespace Esfa.Recruit.Qa.Web.Configuration
                     options.Filters.Add(new AuthorizeFilter(AuthorizationPolicyNames.QaUserPolicyName));
                     options.AddTrimModelBinderProvider(loggerFactory);
 
-                    var jsonInputFormatters = options.InputFormatters.OfType<SystemTextJsonInputFormatter>();
+                    var jsonInputFormatters = options.InputFormatters.OfType<NewtonsoftJsonInputFormatter>();
                     foreach (var formatter in jsonInputFormatters)
                     {
                         formatter.SupportedMediaTypes
@@ -101,7 +101,7 @@ namespace Esfa.Recruit.Qa.Web.Configuration
                     }
 
                     options.Filters.AddService<PlannedOutageResultFilter>();
-            })
+            }).AddNewtonsoftJson()
             .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<Startup>())
             .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
         }

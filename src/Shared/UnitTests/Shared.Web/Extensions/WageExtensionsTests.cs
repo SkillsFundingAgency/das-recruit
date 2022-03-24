@@ -49,18 +49,5 @@ namespace Esfa.Recruit.Shared.Web.UnitTests.Extensions
 
             actual.Should().Be("£7,225.58");
         }
-
-        [Fact]
-        public void ShouldFormatUnspecifiedWageCorrectly()
-        {
-            var wage = new Wage
-            {
-                WageType = WageType.Unspecified
-            };
-
-            var actual = wage.ToText(null);
-
-            actual.Should().Be("Unspecified");
-        }
     }
 }

@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Security.Claims;
 using Esfa.Recruit.Provider.Web.Configuration.Routing;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Provider.Web.Filters;
@@ -78,13 +79,13 @@ namespace Esfa.Recruit.Provider.Web.Configuration
             });
             services.Configure<CookieTempDataProviderOptions>(options => options.Cookie.Name = CookieNames.RecruitTempData);
             services.AddSingleton<ITempDataProvider, CookieTempDataProvider>();
-
+            
             services.AddMvc(opts =>
                 {
                     opts.EnableEndpointRouting = false;
                     opts.Filters.Add(new AuthorizeFilter(PolicyNames.ProviderPolicyName));
 
-                    var jsonInputFormatters = opts.InputFormatters.OfType<SystemTextJsonInputFormatter>();
+                    var jsonInputFormatters = opts.InputFormatters.OfType<NewtonsoftJsonInputFormatter>();
                     foreach (var formatter in jsonInputFormatters)
                     {
                         formatter.SupportedMediaTypes
@@ -99,7 +100,7 @@ namespace Esfa.Recruit.Provider.Web.Configuration
 
                     opts.AddTrimModelBinderProvider(loggerFactory);
                 }
-            )
+            ).AddNewtonsoftJson()
             .AddFluentValidation()
             .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
         }
@@ -136,7 +137,7 @@ namespace Esfa.Recruit.Provider.Web.Configuration
 
         private static async Task HandleUserSignedIn(SecurityTokenValidatedContext ctx, IRecruitVacancyClient vacancyClient)
         {
-            var user = ctx.Principal.ToVacancyUser();            
+            var user = ctx.Principal.ToVacancyUser();           
             await vacancyClient.UserSignedInAsync(user, UserType.Provider);
         }
     }
