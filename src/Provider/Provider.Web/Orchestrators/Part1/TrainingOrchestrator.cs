@@ -49,6 +49,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
             
             var vm = new TrainingViewModel
             {
+                Title = vacancy.Title,
                 VacancyId = vacancy.Id,
                 SelectedProgrammeId = vacancy.ProgrammeId,
                 Programmes = programmes.ToViewModel(),
