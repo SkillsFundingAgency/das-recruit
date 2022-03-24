@@ -15,7 +15,10 @@
         </esfaFeatureDisabled>
         <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames}'/>
         <partial name="@PartialNames.ReviewSummary" for="Review"/>
-        <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">How many positions are there for this apprenticeship?</h1>
+        <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">
+            <span class="govuk-caption-l">@Model.Title</span>
+            How many positions are available?
+        </h1>
     </div>
 </div>
 
