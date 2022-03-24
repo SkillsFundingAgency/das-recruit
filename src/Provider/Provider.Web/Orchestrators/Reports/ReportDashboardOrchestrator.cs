@@ -25,6 +25,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Reports
 
             var vm = new ReportsDashboardViewModel 
             {
+                Ukprn = ukprn,
                 ProcessingCount = reports.Count(r => r.IsProcessing),
                 Reports = reports
                     .OrderByDescending(r => r.RequestedOn)

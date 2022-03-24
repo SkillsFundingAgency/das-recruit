@@ -9,7 +9,7 @@
     <div class="govuk-grid-column-two-thirds">
         <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }' />
         <h1 class="govuk-heading-xl">What time period do you want for the report?</h1>
-        <form asp-route="@RouteNames.ProviderApplicationsReportCreate_Post">
+        <form asp-route="@RouteNames.ProviderApplicationsReportCreate_Post" asp-route-ukprn="@Model.Ukprn">
             <h2 class="govuk-heading-s">Select the options</h2>
             <div class="govuk-form-group">
                 <div esfa-validation-marker-for="DateRange" class="govuk-form-group">
@@ -159,7 +159,7 @@
             </div>
             <div class="govuk-form-group">
                 <button type="submit" class="govuk-button">Generate report</button> 
-                <a asp-route="@RouteNames.ReportDashboard_Get" class="govuk-link das-button-link">Cancel</a>
+                <a asp-route="@RouteNames.ReportDashboard_Get" asp-route-ukprn="@Model.Ukprn" class="govuk-link das-button-link">Cancel</a>
             </div>
         </form>
     </div>
