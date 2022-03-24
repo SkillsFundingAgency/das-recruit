@@ -38,6 +38,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
 
             var vm = new DurationViewModel
             {
+                Title = vacancy.Title,
                 Duration = vacancy.Wage?.Duration?.ToString(),
                 DurationUnit = vacancy.Wage?.DurationUnit ?? DurationUnit.Month,
                 WorkingWeekDescription = vacancy.Wage?.WorkingWeekDescription,
