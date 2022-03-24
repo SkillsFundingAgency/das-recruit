@@ -373,17 +373,17 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
             {
                 RuleFor(x => x.Wage.WageType)
                     .NotEmpty()
-                        .WithMessage("Select how much you'd like to pay the apprentice")
+                        .WithMessage("Select how much the apprentice will be paid")
                         .WithErrorCode("46")
                     .IsInEnum()
-                        .WithMessage("Select how much you'd like to pay the apprentice")
+                        .WithMessage("Select how much the apprentice will be paid")
                         .WithErrorCode("46")
                     .RunCondition(VacancyRuleSet.Wage)
                     .WithRuleId(VacancyRuleSet.Wage);
 
                 RuleFor(x => x.Wage.WageAdditionalInformation)
                     .MaximumLength(250)
-                        .WithMessage("Additional pay information must not exceed {MaxLength} characters")
+                        .WithMessage("Extra information about pay must not exceed {MaxLength} characters")
                         .WithErrorCode("44")
                     .ValidFreeTextCharacters()
                         .WithMessage("Additional pay information contains some invalid characters")

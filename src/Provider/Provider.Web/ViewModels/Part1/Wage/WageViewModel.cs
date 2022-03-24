@@ -9,6 +9,7 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.Part1.Wage
 {
     public class WageViewModel : VacancyRouteModel
     {
+        public string Title { get; set; }
         public WageType? WageType { get; set; }
 
         [TypeOfMoney(ErrorMessage = ErrMsg.TypeOfMoney.FixedWageYearlyAmount)]
