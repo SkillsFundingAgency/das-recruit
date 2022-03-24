@@ -107,7 +107,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
          RuleFor(x => x.Title)
              .Cascade(CascadeMode.StopOnFirstFailure)
                 .NotEmpty()
-                    .WithMessage("Enter the title of this advert")
+                    .WithMessage("Enter a title for this apprenticeship")
                     .WithErrorCode("1")
                 .MaximumLength(100)
                     .WithMessage("Title must not exceed {MaxLength} characters")
@@ -229,10 +229,10 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                 .WithMessage("Enter a short description of the apprenticeship")
                     .WithErrorCode("12")
                 .MaximumLength(350)
-                    .WithMessage("Short description of the apprenticeship must not exceed {MaxLength} characters")
+                    .WithMessage("Summary of the apprenticeship must not exceed {MaxLength} characters")
                     .WithErrorCode("13")
                 .MinimumLength(50)
-                    .WithMessage("Short description of the apprenticeship must be at least {MinLength} characters")
+                    .WithMessage("Summary of the apprenticeship must be at least {MinLength} characters")
                     .WithErrorCode("14")
                 .ValidFreeTextCharacters()
                     .WithMessage("Short description of the apprenticeship contains some invalid characters")
@@ -373,17 +373,17 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
             {
                 RuleFor(x => x.Wage.WageType)
                     .NotEmpty()
-                        .WithMessage("Select how much you'd like to pay the apprentice")
+                        .WithMessage("Select how much the apprentice will be paid")
                         .WithErrorCode("46")
                     .IsInEnum()
-                        .WithMessage("Select how much you'd like to pay the apprentice")
+                        .WithMessage("Select how much the apprentice will be paid")
                         .WithErrorCode("46")
                     .RunCondition(VacancyRuleSet.Wage)
                     .WithRuleId(VacancyRuleSet.Wage);
 
                 RuleFor(x => x.Wage.WageAdditionalInformation)
                     .MaximumLength(250)
-                        .WithMessage("Additional pay information must not exceed {MaxLength} characters")
+                        .WithMessage("Extra information about pay must not exceed {MaxLength} characters")
                         .WithErrorCode("44")
                     .ValidFreeTextCharacters()
                         .WithMessage("Additional pay information contains some invalid characters")
@@ -393,16 +393,6 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                     .WithErrorCode("607")
                     .RunCondition(VacancyRuleSet.Wage)
                     .WithRuleId(VacancyRuleSet.Wage);
-
-                When(x => x.Wage.WageType == WageType.Unspecified, () =>
-                {
-                    RuleFor(x => x.Wage.WageAdditionalInformation)
-                        .NotEmpty()
-                        .WithMessage("You must provide a reason why you need to use Unspecified")
-                        .WithErrorCode("50")
-                        .RunCondition(VacancyRuleSet.Wage)
-                        .WithRuleId(VacancyRuleSet.Wage);
-                });
             });
         }
 
@@ -437,8 +427,12 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                 .Must(q => q != null && q.Count > 0)
                     .WithMessage("You must add a qualification")
                     .WithErrorCode("52")
-                .SetCollectionValidator(new VacancyQualificationsValidator((long)VacancyRuleSet.Qualifications, 
-                    _qualificationsProvider,_profanityListProvider))
+                .RunCondition(VacancyRuleSet.Qualifications)
+                .WithRuleId(VacancyRuleSet.Qualifications);
+            RuleForEach(x => x.Qualifications)
+                .NotEmpty()
+                .SetValidator(new VacancyQualificationsValidator((long) VacancyRuleSet.Qualifications,
+                    _qualificationsProvider, _profanityListProvider))
                 .RunCondition(VacancyRuleSet.Qualifications)
                 .WithRuleId(VacancyRuleSet.Qualifications);
         }

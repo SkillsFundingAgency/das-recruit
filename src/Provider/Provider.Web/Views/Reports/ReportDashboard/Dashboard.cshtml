@@ -2,19 +2,19 @@
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-        <a asp-route="@RouteNames.Dashboard_Get" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Return to dashboard</a>
+        <a asp-route="@RouteNames.Dashboard_Get" asp-route-ukprn="@Model.Ukprn" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Return to dashboard</a>
 
         <h1 class="govuk-heading-xl">Reports</h1>
     </div>
     <div asp-hide="@Model.HasReports"  class="govuk-grid-column-two-thirds">
         <p  class="govuk-body">You can create and download a report that gives you information on all the applications you received. You can decide what time period you would like for the report.</p>
-        <a asp-route="@RouteNames.ProviderApplicationsReportCreate_Get" class="govuk-button">Create new report</a>
+        <a asp-route="@RouteNames.ProviderApplicationsReportCreate_Get" asp-route-ukprn="@Model.Ukprn" class="govuk-button">Create new report</a>
     </div>
     <div asp-show="@Model.HasReports"  class="govuk-grid-column-full">
-        <a asp-route="@RouteNames.ProviderApplicationsReportCreate_Get" class="govuk-button">Create new report</a>
+        <a asp-route="@RouteNames.ProviderApplicationsReportCreate_Get" asp-route-ukprn="@Model.Ukprn" class="govuk-button">Create new report</a>
         <p asp-show="@Model.IsProcessingReports" class="govuk-body">
             You have @Model.ProcessingCaption being processed.
-            <a asp-route="@RouteNames.ReportDashboard_Get">Check if your report is ready to download</a>
+            <a asp-route="@RouteNames.ReportDashboard_Get" asp-route-ukprn="@Model.Ukprn">Check if your report is ready to download</a>
         </p>
     </div>
 </div>
@@ -46,7 +46,7 @@
                     </td>
                     <td class="govuk-table__cell">
                         <span asp-hide="@report.CanDownload">Processing</span>
-                        <a asp-show="@report.CanDownload" asp-route="@RouteNames.ReportDashboard_DownloadCsv", asp-route-reportId="@report.ReportId">Download CSV</a>
+                        <a asp-show="@report.CanDownload" asp-route="@RouteNames.ReportDashboard_DownloadCsv" asp-route-ukprn="@Model.Ukprn" asp-route-reportId="@report.ReportId">Download CSV</a>
                     </td>
                 </tr>
             }

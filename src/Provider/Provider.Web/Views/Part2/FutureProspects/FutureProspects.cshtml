@@ -4,7 +4,7 @@
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-        <a asp-route="@RouteNames.Qualifications_Get" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
+        <a asp-route="@RouteNames.Qualifications_Get"  asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
         <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState}' />
 
         <partial name="@PartialNames.ReviewSummary" for="Review" />
@@ -14,7 +14,7 @@
             What is the expected career progression after this apprenticeship?
         </h1>
 
-        <form asp-route="@RouteNames.FutureProspects_Get">
+        <form asp-route="@RouteNames.FutureProspects_Get" asp-all-route-data="@Model.RouteDictionary">
             <div esfa-validation-marker-for="FutureProspects" class="govuk-form-group">
                 <span class="govuk-hint">You may want to mention specific routes they could take once qualified.</span>
                 <span esfa-validation-message-for="FutureProspects" class="govuk-error-message"></span>
@@ -22,7 +22,7 @@
             </div>
             <div class="govuk-form-group">
                 <input type="submit" value="Save and continue" esfa-automation="btn-continue" class="govuk-button save-button" />
-                <a asp-route="@RouteNames.Dashboard_Get" esfa-automation="link-cancel" class="govuk-link das-button-link">Cancel</a>
+                <a asp-route="@RouteNames.Dashboard_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-cancel" class="govuk-link das-button-link">Cancel</a>
             </div>
         </form>
     </div>

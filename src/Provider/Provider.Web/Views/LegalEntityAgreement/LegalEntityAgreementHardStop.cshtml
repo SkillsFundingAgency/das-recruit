@@ -2,7 +2,7 @@
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-        <a asp-route="@RouteNames.Vacancy_Preview_Get" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
+        <a asp-route="@RouteNames.Vacancy_Preview_Get" asp-route-ukprn="@Model.Ukprn" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
     </div>
 </div>
 
@@ -22,7 +22,7 @@
             The vacancy has been saved as a draft, once the employer has signed the agreement, you can submit it from the vacancies dashboard.
         </p>
         <p class="govuk-body">
-            <a asp-route="@RouteNames.Vacancies_Get" class="govuk-button">Return to dashboard</a>
+            <a asp-route="@RouteNames.Vacancies_Get" asp-route-ukprn="@Model.Ukprn" class="govuk-button">Return to dashboard</a>
         </p>
     </div>
 </div>

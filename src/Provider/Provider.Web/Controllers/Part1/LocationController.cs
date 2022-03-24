@@ -81,18 +81,18 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
 
             if (_feature.IsFeatureEnabled(FeatureNames.ProviderTaskList))
             {
-                return RedirectToRoute(RouteNames.ProviderTaskListGet, new { Wizard = wizard });
+                return RedirectToRoute(RouteNames.ProviderTaskListGet, new { Wizard = wizard, model.Ukprn, model.VacancyId });
             }
             
             return wizard
-                ? RedirectToRoute(RouteNames.Dates_Get)
-                : RedirectToRoute(RouteNames.Vacancy_Preview_Get, null, Anchors.AboutEmployerSection);
+                ? RedirectToRoute(RouteNames.Dates_Get,new { Wizard = true, model.Ukprn, model.VacancyId })
+                : RedirectToRoute(RouteNames.Vacancy_Preview_Get, new { Wizard = false, model.Ukprn, model.VacancyId }, Anchors.AboutEmployerSection);
         }
 
         [HttpGet("location-cancel", Name = RouteNames.Location_Cancel)]
         public IActionResult Cancel(VacancyRouteModel vrm, [FromQuery] bool wizard)
         {
-            return CancelAndRedirect(wizard);
+            return CancelAndRedirect(wizard, vrm);
         }
 
         [HttpGet("location/GetAddresses")]

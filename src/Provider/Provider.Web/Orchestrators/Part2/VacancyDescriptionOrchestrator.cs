@@ -39,7 +39,9 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part2
             {
                 Title = vacancy.Title,
                 VacancyDescription = vacancy.Description,
-                TrainingDescription = vacancy.TrainingDescription
+                TrainingDescription = vacancy.TrainingDescription,
+                Ukprn = vrm.Ukprn,
+                VacancyId = vrm.VacancyId
             };
 
             if (vacancy.Status == VacancyStatus.Referred)

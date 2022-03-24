@@ -1,0 +1,23 @@
+@{
+    Layout = "_Layout.cshtml";
+}
+
+@RenderBody()
+
+@section Styles
+{
+    @RenderSection("Styles", required: false)
+    <link href="/css/app.css" rel="stylesheet" no-cdn />
+}
+
+@section breadcrumb
+{
+    @RenderSection("BackLink", required: false)
+}
+
+@section Scripts
+{
+    @RenderSection("FooterJS", required: false)
+    <script src="libs/accessible-autocomplete/accessible-autocomplete.min.js"></script>
+    <script src="/javascripts/application.js" no-cdn></script>
+}

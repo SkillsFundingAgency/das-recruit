@@ -44,7 +44,9 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part2
                 FindAnApprenticeshipUrl = _externalLinks.FindAnApprenticeshipUrl,
                 ApplicationMethod = vacancy.ApplicationMethod,
                 ApplicationInstructions = vacancy.ApplicationInstructions,
-                ApplicationUrl = vacancy.ApplicationUrl
+                ApplicationUrl = vacancy.ApplicationUrl,
+                Ukprn = vrm.Ukprn,
+                VacancyId = vrm.VacancyId
             };
 
             if (vacancy.Status == VacancyStatus.Referred)

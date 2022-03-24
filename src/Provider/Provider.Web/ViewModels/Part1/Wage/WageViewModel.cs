@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Shared.Web.ViewModels;
 using Esfa.Recruit.Shared.Web.ViewModels.Validations;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
@@ -6,8 +7,9 @@ using ErrMsg = Esfa.Recruit.Shared.Web.ViewModels.ValidationMessages.WageValidat
 
 namespace Esfa.Recruit.Provider.Web.ViewModels.Part1.Wage
 {
-    public class WageViewModel
+    public class WageViewModel : VacancyRouteModel
     {
+        public string Title { get; set; }
         public WageType? WageType { get; set; }
 
         [TypeOfMoney(ErrorMessage = ErrMsg.TypeOfMoney.FixedWageYearlyAmount)]

@@ -49,10 +49,13 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
 
             var vm = new LegalEntityViewModel
             {
+                Title = vacancy.Title,
                 TotalNumberOfLegalEntities = legalEntities.Count(),
                 SelectedOrganisationId = vacancy.AccountLegalEntityPublicHashedId,
                 PageInfo = _utility.GetPartOnePageInfo(vacancy),
-                SearchTerm = searchTerm
+                SearchTerm = searchTerm,
+                VacancyId = vrm.VacancyId,
+                Ukprn = vrm.Ukprn
             };
 
             if (!string.IsNullOrEmpty(vacancy.AccountLegalEntityPublicHashedId) && string.IsNullOrEmpty(selectedAccountLegalEntityPublicHashedId))

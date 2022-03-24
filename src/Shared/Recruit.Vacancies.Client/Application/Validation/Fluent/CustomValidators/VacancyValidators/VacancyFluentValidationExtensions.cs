@@ -9,6 +9,7 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelationship
 using FluentValidation;
 using FluentValidation.Internal;
 using FluentValidation.Results;
+using FluentValidation.Validators;
 using SFA.DAS.VacancyServices.Wage;
 using WageType = SFA.DAS.VacancyServices.Wage.WageType;
 
@@ -193,7 +194,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomVali
                 // Set rule type in context so it can be returned in error object
                 foreach (var validator in c.Validators)
                 {
-                    validator.CustomStateProvider = s => ruleId;
+                    validator.Options.CustomStateProvider = s => ruleId;
                 }
             });
         }
@@ -205,14 +206,14 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomVali
                 // Set rule type in context so it can be returned in error object
                 foreach (var validator in c.Validators)
                 {
-                    validator.CustomStateProvider = s => ruleId;
+                    validator.Options.CustomStateProvider = s => ruleId;
                 }
             });
         }
 
-        private static bool CanRunValidator(this ValidationContext context, VacancyRuleSet validationToCheck)
+        private static bool CanRunValidator(this PropertyValidatorContext context, VacancyRuleSet validationToCheck)
         {
-            var validationsToRun = (VacancyRuleSet)context.RootContextData[ValidationConstants.ValidationsRulesKey];
+            var validationsToRun = (VacancyRuleSet)context.ParentContext.RootContextData[ValidationConstants.ValidationsRulesKey];
 
             return (validationsToRun & validationToCheck) > 0;
         }

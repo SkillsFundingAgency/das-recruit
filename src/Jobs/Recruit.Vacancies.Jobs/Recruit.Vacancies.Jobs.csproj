@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
     <LangVersion>7.1</LangVersion>
     <UserSecretsId>recruit-webjob</UserSecretsId>
     <RootNamespace>Esfa.Recruit.Vacancies.Jobs</RootNamespace>
@@ -16,14 +16,11 @@
     <PackageReference Include="Microsoft.Azure.WebJobs.Extensions" Version="3.0.2" />
     <PackageReference Include="Microsoft.Azure.WebJobs.Extensions.Storage" Version="3.0.6" />
     <PackageReference Include="Microsoft.Azure.WebJobs.Logging.ApplicationInsights" Version="3.0.8" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="2.2.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.2.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.2.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="2.2.0" />
-    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="2.2.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="2.2.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="2.2.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Configuration" Version="2.2.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.1.23" />
+    
+    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="3.1.23" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="3.1.23" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Configuration" Version="3.1.23" />
     <PackageReference Include="NLog" Version="4.6.7" />
     <PackageReference Include="NLog.Extensions.Logging" Version="1.6.1" />
     <PackageReference Include="SFA.DAS.Configuration" Version="3.0.77" />
@@ -34,7 +31,7 @@
     <PackageReference Include="SFA.DAS.Notifications.Api.Client" Version="2.2.1" />
     <PackageReference Include="SFA.DAS.Notifications.Api.Types" Version="2.2.1" />
     <PackageReference Include="SFA.DAS.ProviderRelationships.Messages" Version="3.2.354" />
-    <PackageReference Include="System.Data.SqlClient" Version="4.7.0" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.8.3" />
     <PackageReference Include="SFA.DAS.NServiceBus" Version="16.0.21" />
     <PackageReference Include="SFA.DAS.EmployerAccounts.Messages" Version="1.6.2515" />
 

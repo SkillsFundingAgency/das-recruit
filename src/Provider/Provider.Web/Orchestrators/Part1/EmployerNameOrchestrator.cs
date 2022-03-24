@@ -70,6 +70,8 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
                 NewTradingName = employerInfoModel?.NewTradingName,
                 AnonymousName = employerInfoModel?.AnonymousName ,
                 AnonymousReason = employerInfoModel?.AnonymousReason ?? vacancy.AnonymousReason,
+                Ukprn = vrm.Ukprn,
+                VacancyId = vrm.VacancyId
             };
 
             if (vacancy.Status == VacancyStatus.Referred)

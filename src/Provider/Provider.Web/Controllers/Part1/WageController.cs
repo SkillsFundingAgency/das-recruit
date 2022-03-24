@@ -52,12 +52,12 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
 
             if (_feature.IsFeatureEnabled(FeatureNames.ProviderTaskList))
             {
-                return RedirectToRoute(RouteNames.NumberOfPositions_Get, new { Wizard = wizard });
+                return RedirectToRoute(RouteNames.NumberOfPositions_Get, new { Wizard = wizard, m.VacancyId, m.Ukprn });
             }
 
             return wizard
-                ? RedirectToRoute(RouteNames.Part1Complete_Get)
-                : RedirectToRoute(RouteNames.Vacancy_Preview_Get);
+                ? RedirectToRoute(RouteNames.Part1Complete_Get,new { m.VacancyId, m.Ukprn })
+                : RedirectToRoute(RouteNames.Vacancy_Preview_Get, new { m.VacancyId, m.Ukprn });
         }
     }
 }
