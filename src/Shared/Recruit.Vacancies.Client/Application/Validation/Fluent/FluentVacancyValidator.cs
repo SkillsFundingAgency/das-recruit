@@ -107,7 +107,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
          RuleFor(x => x.Title)
              .Cascade(CascadeMode.StopOnFirstFailure)
                 .NotEmpty()
-                    .WithMessage("Enter the title of this vacancy")
+                    .WithMessage("Enter a title for this apprenticeship")
                     .WithErrorCode("1")
                 .MaximumLength(100)
                     .WithMessage("Title must not exceed {MaxLength} characters")
