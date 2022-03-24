@@ -8,8 +8,12 @@
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-        <a asp-show="@Model.CanShowBackLink" asp-route="@RouteNames.EmployerName_Get" asp-route-wizard="@Model.PageInfo.IsWizard" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
-
+        <esfaFeatureEnabled name="@FeatureNames.ProviderTaskList">
+            <a asp-route="@RouteNames.NumberOfPositions_Get" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
+        </esfaFeatureEnabled>
+        <esfaFeatureDisabled name="@FeatureNames.ProviderTaskList">
+            <a asp-show="@Model.CanShowBackLink" asp-route="@RouteNames.EmployerName_Get" asp-route-wizard="@Model.PageInfo.IsWizard" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
+        </esfaFeatureDisabled>
         <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }' />
 
         <partial name="@PartialNames.ReviewSummary" for="Review" />

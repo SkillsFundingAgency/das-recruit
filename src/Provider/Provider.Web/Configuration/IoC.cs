@@ -63,6 +63,7 @@ namespace Esfa.Recruit.Provider.Web.Configuration
             services.AddTransient<AlertViewModelService>();
             services.AddTransient<IProviderAlertsViewModelFactory, ProviderAlertsViewModelFactory>();
             services.AddTransient<ITrainingProviderAgreementService, TrainingProviderAgreementService>();
+            services.AddTransient<IUtility, Utility>();
         }
 
         private static void RegisterFluentValidators(IServiceCollection services)
@@ -112,6 +113,8 @@ namespace Esfa.Recruit.Provider.Web.Configuration
             services.AddTransient<AlertsOrchestrator>();
             services.AddTransient<ProviderAgreementOrchestrator>();
             services.AddTransient<DurationOrchestrator>();
+            services.AddTransient<VacancyTaskListOrchestrator>();
+            services.AddTransient<FutureProspectsOrchestrator>();
         }
 
         private static void RegisterMapperDeps(IServiceCollection services)

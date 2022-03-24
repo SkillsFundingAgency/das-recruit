@@ -108,5 +108,11 @@
         public const string NotificationsUpdatedAcknowledgement_Get = "NotificationsUpdatedAcknowledgement_Get";
         public const string NotificationUnsubscribedAcknowledgement_Get = "NotificationUnsubscribedAcknowledgement_Get";
         public const string Dashboard_ProviderRecruitmentApi = "provider-recruitment-api";
+        public const string CreateVacancyStart = "provider-task-list-start";
+        public const string ProviderTaskListCreateGet = "provider-task-list-create";
+        public const string ProviderTaskListGet = "provider-task-list-get";
+
+        public const string FutureProspects_Get = "FutureProspects_Get";
+        public const string FutureProspects_Post = "FutureProspects_Post";
     }
 }

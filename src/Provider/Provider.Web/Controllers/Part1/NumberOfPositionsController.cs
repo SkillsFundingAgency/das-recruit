@@ -5,9 +5,9 @@ using Esfa.Recruit.Provider.Web.Extensions;
 using Esfa.Recruit.Provider.Web.RouteModel;
 using Microsoft.AspNetCore.Mvc;
 using Esfa.Recruit.Shared.Web.Extensions;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Provider.Web.Orchestrators.Part1;
 using Esfa.Recruit.Provider.Web.ViewModels.Part1.NumberOfPositions;
+using Esfa.Recruit.Shared.Web.FeatureToggle;
 using Microsoft.AspNetCore.Authorization;
 
 namespace Esfa.Recruit.Provider.Web.Controllers.Part1
@@ -17,12 +17,13 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
     public class NumberOfPositionsController : Controller
     {
         private readonly NumberOfPositionsOrchestrator _orchestrator;
-        public IProviderVacancyClient ProviderVacancyClient { get; }
+        private readonly IFeature _feature;
+        
 
-        public NumberOfPositionsController(NumberOfPositionsOrchestrator orchestrator, IProviderVacancyClient providerVacancyClient)
+        public NumberOfPositionsController(NumberOfPositionsOrchestrator orchestrator, IFeature feature)
         {
-            ProviderVacancyClient = providerVacancyClient;
             _orchestrator = orchestrator;
+            _feature = feature;
         }
 
         [HttpGet("number-of-positions", Name = RouteNames.NumberOfPositions_Get)]
@@ -48,6 +49,11 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
                 var vm = await _orchestrator.GetNumberOfPositionsViewModelFromEditModelAsync(model);
                 vm.PageInfo.SetWizard(wizard);
                 return View(vm);
+            }
+            
+            if (_feature.IsFeatureEnabled(FeatureNames.ProviderTaskList))
+            {
+                return RedirectToRoute(RouteNames.Location_Get, new { Wizard = wizard });
             }
 
             return wizard

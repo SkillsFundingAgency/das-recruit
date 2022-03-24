@@ -26,7 +26,6 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
         private const VacancyRuleSet SubmitValidationRules = VacancyRuleSet.All;
         private const VacancyRuleSet SoftValidationRules = VacancyRuleSet.MinimumWage | VacancyRuleSet.TrainingExpiryDate;
 
-        private readonly IProviderVacancyClient _client;
         private readonly IRecruitVacancyClient _vacancyClient;
         private readonly DisplayVacancyViewModelMapper _vacancyDisplayMapper;
         private readonly IReviewSummaryService _reviewSummaryService;
@@ -34,19 +33,18 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
         private readonly ILegalEntityAgreementService _legalEntityAgreementService;
         private readonly ITrainingProviderAgreementService _trainingProviderAgreementService;
         private readonly IMessaging _messaging;
+        private readonly IUtility _utility;
 
-        public VacancyPreviewOrchestrator(
-            IProviderVacancyClient client,
-            IRecruitVacancyClient vacancyClient,
+        public VacancyPreviewOrchestrator(IRecruitVacancyClient vacancyClient,
             ILogger<VacancyPreviewOrchestrator> logger,
             DisplayVacancyViewModelMapper vacancyDisplayMapper, 
             IReviewSummaryService reviewSummaryService,
             IProviderRelationshipsService providerRelationshipsService,
             ILegalEntityAgreementService legalEntityAgreementService,
             ITrainingProviderAgreementService trainingProviderAgreementService,
-            IMessaging messaging) : base(logger)
+            IMessaging messaging,
+            IUtility utility) : base(logger)
         {
-            _client = client;
             _vacancyClient = vacancyClient;
             _vacancyDisplayMapper = vacancyDisplayMapper;
             _reviewSummaryService = reviewSummaryService;
@@ -54,11 +52,12 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             _legalEntityAgreementService = legalEntityAgreementService;
             _trainingProviderAgreementService = trainingProviderAgreementService;
             _messaging = messaging;
+            _utility = utility;
         }
 
         public async Task<VacancyPreviewViewModel> GetVacancyPreviewViewModelAsync(VacancyRouteModel vrm)
         {
-            var vacancyTask = Utility.GetAuthorisedVacancyForEditAsync(_client, _vacancyClient, vrm, RouteNames.Vacancy_Preview_Get);
+            var vacancyTask = _utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.Vacancy_Preview_Get);
             var programmesTask = _vacancyClient.GetActiveApprenticeshipProgrammesAsync();
            
             await Task.WhenAll(vacancyTask, programmesTask);
@@ -70,7 +69,6 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             var vm = new VacancyPreviewViewModel();
             await _vacancyDisplayMapper.MapFromVacancyAsync(vm, vacancy);
             
-            vm.HasProgramme = vacancy.ProgrammeId != null;
             vm.HasWage = vacancy.Wage != null;
             vm.CanShowReference = vacancy.Status != VacancyStatus.Draft;
             vm.CanShowDraftHeader = vacancy.Status == VacancyStatus.Draft;
@@ -96,7 +94,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
 
         public async Task<OrchestratorResponse<SubmitVacancyResponse>> SubmitVacancyAsync(SubmitEditModel m, VacancyUser user)
         {
-            var vacancy = await Utility.GetAuthorisedVacancyAsync(_client, _vacancyClient, m, RouteNames.Preview_Submit_Post);
+            var vacancy = await _utility.GetAuthorisedVacancyAsync(m, RouteNames.Preview_Submit_Post);
             
             if (!vacancy.CanSubmit)
                 throw new InvalidStateException(string.Format(ErrMsg.VacancyNotAvailableForEditing, vacancy.Title));

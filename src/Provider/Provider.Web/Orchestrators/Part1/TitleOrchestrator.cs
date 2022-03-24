@@ -24,13 +24,15 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
         private readonly IProviderVacancyClient _providerVacancyClient;
         private readonly IRecruitVacancyClient _recruitVacancyClient;
         private readonly IReviewSummaryService _reviewSummaryService;
+        private readonly IUtility _utility;
 
         public TitleOrchestrator(IProviderVacancyClient providerVacancyClient, IRecruitVacancyClient recruitVacancyClient, 
-            ILogger<TitleOrchestrator> logger, IReviewSummaryService reviewSummaryService) : base(logger)
+            ILogger<TitleOrchestrator> logger, IReviewSummaryService reviewSummaryService, IUtility utility) : base(logger)
         {
             _providerVacancyClient = providerVacancyClient;
             _recruitVacancyClient = recruitVacancyClient;
             _reviewSummaryService = reviewSummaryService;
+            _utility = utility;
         }
 
         public async Task<TitleViewModel> GetTitleViewModelForNewVacancyAsync(string employerAccountId, long ukprn)
@@ -49,14 +51,14 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
 
         public async Task<TitleViewModel> GetTitleViewModelForExistingVacancyAsync(VacancyRouteModel vrm)
         {
-            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_providerVacancyClient, _recruitVacancyClient, vrm, RouteNames.Title_Get);
+            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.Title_Get);
             var ukprn = vacancy.TrainingProvider.Ukprn.GetValueOrDefault();
             var dashboard = await _providerVacancyClient.GetDashboardAsync(ukprn);
             var vm = new TitleViewModel
             {
                     VacancyId = vacancy.Id,
                     Title = vacancy.Title,
-                    PageInfo = Utility.GetPartOnePageInfo(vacancy),
+                    PageInfo = _utility.GetPartOnePageInfo(vacancy),
                     Ukprn = ukprn,
                     EmployerAccountId = vacancy.EmployerAccountId,
                     HasAnyVacancies = dashboard.Vacancies.Any()
@@ -93,7 +95,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
         {
             if (model.VacancyId.HasValue) 
             {
-                var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_providerVacancyClient, _recruitVacancyClient, vrm, RouteNames.Title_Post);
+                var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.Title_Post);
 
                 SetVacancyWithProviderReviewFieldIndicators(
                 vacancy.Title,

@@ -12,7 +12,6 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation.
         [InlineData(WageType.FixedWage, 30000, null)]
         [InlineData(WageType.NationalMinimumWage, null, null)]
         [InlineData(WageType.NationalMinimumWageForApprentices, null, null)]
-        [InlineData(WageType.Unspecified, null, "This is a valid value")]
         public void NoErrorsWhenWageFieldsAreValid(WageType wageTypeValue, int? yearlyFixedWageAmountValue, string wageAdditionalInfoValue)
         {
             var vacancy = new Vacancy
@@ -149,29 +148,6 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation.
             result.Errors.Should().HaveCount(1);
             result.Errors[0].PropertyName.Should().Be($"{nameof(vacancy.Wage)}.{nameof(vacancy.Wage.WageAdditionalInformation)}");
             result.Errors[0].ErrorCode.Should().Be("44");
-            result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.Wage);
-        }
-
-        [Theory]
-        [InlineData(null)]
-        [InlineData("")]
-        public void UnspecifiedWageMustHaveAWageAddtionalInfoValue(string wageAdditionalInfoValue)
-        {
-            var vacancy = new Vacancy
-            {
-                Wage = new Wage
-                {
-                    WageType = WageType.Unspecified,
-                    WageAdditionalInformation = wageAdditionalInfoValue
-                }
-            };
-
-            var result = Validator.Validate(vacancy, VacancyRuleSet.Wage);
-
-            result.HasErrors.Should().BeTrue();
-            result.Errors.Should().HaveCount(1);
-            result.Errors[0].PropertyName.Should().Be($"{nameof(vacancy.Wage)}.{nameof(vacancy.Wage.WageAdditionalInformation)}");
-            result.Errors[0].ErrorCode.Should().Be("50");
             result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.Wage);
         }
     }

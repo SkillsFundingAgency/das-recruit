@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Esfa.Recruit.Provider.Web.Orchestrators.Part1;
 using Esfa.Recruit.Provider.Web.ViewModels;
 using Esfa.Recruit.Provider.Web.ViewModels.Part1.Employer;
+using Esfa.Recruit.Shared.Web.FeatureToggle;
 using Microsoft.AspNetCore.Authorization;
 
 namespace Esfa.Recruit.Provider.Web.Controllers.Part1
@@ -15,10 +16,12 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
     public class EmployerController : Controller
     {
         private readonly EmployerOrchestrator _orchestrator;
+        private readonly IFeature _feature;
 
-        public EmployerController(EmployerOrchestrator orchestrator)
+        public EmployerController(EmployerOrchestrator orchestrator, IFeature feature)
         {
             _orchestrator = orchestrator;
+            _feature = feature;
         }
 
         [HttpGet("employer", Name = RouteNames.Employer_Get)]
@@ -42,6 +45,11 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
                 return View(vm);
             }
 
+            if (_feature.IsFeatureEnabled(FeatureNames.ProviderTaskList))
+            {
+                return RedirectToRoute(RouteNames.ProviderTaskListCreateGet, new {employerAccountId = model.SelectedEmployerId});
+            }
+            
             return RedirectToRoute(RouteNames.CreateVacancy_Get, new {employerAccountId = model.SelectedEmployerId});
         }
     }
