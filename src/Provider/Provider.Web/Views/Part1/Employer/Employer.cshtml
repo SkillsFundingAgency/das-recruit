@@ -9,12 +9,11 @@
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         
-        <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.LegalEntity_Get" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
+        <a asp-route="@RouteNames.Dashboard_Get" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
 
         <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState }'/>
 
         <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">
-            @*<span class="govuk-caption-l">@Model.Title</span>*@
             Which employer is this vacancy for?
         </h1>
 
