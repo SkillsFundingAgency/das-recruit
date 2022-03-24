@@ -16,6 +16,9 @@
             <span class="govuk-caption-l">@Model.Title</span>
             What qualifications would you like the applicant to have?
         </h1>
+        <p class="govuk-body">
+            <a href="https://www.gov.uk/what-different-qualification-levels-mean/list-of-qualification-levels" class="govuk-link" rel="noopener" target="_blank" title=">What’s the GCSE grading system? (opens in a new tab)">What’s the GCSE grading system? (opens in a new tab)</a>
+        </p>
 
         <form method="post" asp-all-route-data="@Model.RouteDictionary">
             <input asp-for="EditIndex" type="hidden" />
