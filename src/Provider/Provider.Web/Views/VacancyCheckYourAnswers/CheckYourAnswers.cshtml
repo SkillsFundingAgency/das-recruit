@@ -1,7 +1,10 @@
 ﻿@using Esfa.Recruit.Vacancies.Client.Domain.Entities
 @model Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview.VacancyPreviewViewModel
 
-@{ ViewBag.GaData.Vpv = "/recruitment/provider/check-your-answers"; }
+@{
+    ViewBag.GaData.Vpv = "/recruitment/provider/check-your-answers";
+    ViewBag.Title = "Check your answers before submitting your vacancy";
+}
 
 
 <div class="govuk-grid-row">
@@ -13,7 +16,7 @@
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">  
-        <h1 class="govuk-heading-xl">
+        <h1 class="govuk-heading-l">
             Check your answers before submitting your vacancy
         </h1>
         <h2 class="govuk-heading-m">Vacancy summary</h2>
@@ -29,15 +32,20 @@
                     <a class="govuk-link govuk-link--no-visited-state float-right-desktop" asp-route="@RouteNames.Title_Get">Change<span class="govuk-visually-hidden"> vacancy title</span></a>
                 </dd>
             </div>
-            <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">
-                    Name of organisation
-                </dt>
-                <dd class="govuk-summary-list__value">
-                    @Model.EmployerName
-                </dd>
-                <dd class="govuk-summary-list__actions"></dd>
-            </div>
+            @if (Model.AccountLegalEntityCount > 1)
+            {
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
+                        Name of organisation
+                    </dt>
+                    <dd class="govuk-summary-list__value">
+                        @Model.EmployerName
+                    </dd>
+                    <dd class="govuk-summary-list__actions">
+                        <a class="govuk-link govuk-link--no-visited-state float-right-desktop" asp-route="@RouteNames.LegalEntity_Get">Change<span class="govuk-visually-hidden"> legal entity</span></a>
+                    </dd>
+                </div>   
+            }
             <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key">
                     Training course
@@ -95,7 +103,7 @@
                     <a class="govuk-link govuk-link--no-visited-state float-right-desktop" asp-route="@RouteNames.Dates_Get">Change<span class="govuk-visually-hidden"> important date</span></a>
                 </dd>
             </div>
-            <div class="govuk-summary-list__row govuk-summary-list--no-border">
+            <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key">
                     Apprenticeship start date
                 </dt>
@@ -222,7 +230,7 @@
                     @Html.Raw(Model.OutcomeDescription)
                 </dd>
                 <dd class="govuk-summary-list__actions">
-                    <a class="govuk-link govuk-link--no-visited-state float-right-desktop" asp-route="@RouteNames.Qualifications_Get">Change<span class="govuk-visually-hidden"> future prospects</span></a>
+                    <a class="govuk-link govuk-link--no-visited-state float-right-desktop" asp-route="@RouteNames.FutureProspects_Get">Change<span class="govuk-visually-hidden"> future prospects</span></a>
                 </dd>
             </div>
             <div class="govuk-summary-list__row">
@@ -261,7 +269,7 @@
                     <a class="govuk-link govuk-link--no-visited-state float-right-desktop" asp-route="@RouteNames.AboutEmployer_Get">Change<span class="govuk-visually-hidden"> name of organisation</span></a>
                 </dd>
             </div>
-            <div class="govuk-summary-list__row">
+            <div class="govuk-summary-list__row govuk-summary-list--no-border">
                 <dt class="govuk-summary-list__key">
                     Organisation website (optional)
                 </dt>
