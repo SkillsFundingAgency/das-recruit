@@ -239,7 +239,7 @@
                 @EmployerReviewFlag(Model, FieldIdentifiers.Title)
             </div>
         </div>
-        @EditLink(RouteNames.Title_Get, Model.TitleSectionState, "employer-name", "link-employer-name", new { wizard = false })
+        @EditLink(RouteNames.Title_Get, Model.TitleSectionState, "employer-name", "link-employer-name", new { wizard = false , Model.Ukprn, Model.VacancyId})
     </div>
 </div>
 <div class="govuk-grid-row @EmployerReviewClass(Model, new string[] { FieldIdentifiers.ShortDescription, FieldIdentifiers.ClosingDate })" id="@Anchors.ShortDescriptionSection">
@@ -255,7 +255,7 @@
                 @EmployerReviewFlag(Model, FieldIdentifiers.ShortDescription)
             </div>
         </div>
-        @EditLink(RouteNames.ShortDescription_Get, Model.ShortDescriptionSectionState, "brief overview", "link-overview", new { wizard = false })
+        @EditLink(RouteNames.ShortDescription_Get, Model.ShortDescriptionSectionState, "brief overview", "link-overview", new { wizard = false, Model.Ukprn, Model.VacancyId })
     </div>
     <div class="govuk-grid-column-one-third">
         <div class="@GetSectionClass(Model.ClosingDateSectionState) govuk-!-margin-bottom-6">
@@ -269,7 +269,7 @@
                 @EmployerReviewFlag(Model, FieldIdentifiers.ClosingDate)
             </div>
         </div>
-        @EditLink(RouteNames.Dates_Get, Model.ClosingDateSectionState, "closing date", "link-closing-date", new { wizard = false })
+        @EditLink(RouteNames.Dates_Get, Model.ClosingDateSectionState, "closing date", "link-closing-date", new { wizard = false , Model.Ukprn, Model.VacancyId})
     </div>
 </div>
 <div class="govuk-grid-row" id="@Anchors.ApprenticeshipSummarySection">
@@ -295,7 +295,7 @@
                         @EmployerReviewFlag(Model, FieldIdentifiers.Wage)
                     </div>
                 </div>
-                @EditLink(RouteNames.Wage_Get, Model.WageTextSectionState, "yearly wage", "link-salary", new { wizard = false })
+                @EditLink(RouteNames.Wage_Get, Model.WageTextSectionState, "yearly wage", "link-salary", new { wizard = false , Model.Ukprn, Model.VacancyId})
             </li>
             <li class="@GetSectionClass(Model.WorkingWeekSectionState)">
                 <div class="govuk-!-margin-bottom-6">
@@ -311,7 +311,7 @@
                         @EmployerReviewFlag(Model, FieldIdentifiers.WorkingWeek)
                     </div>
                 </div>
-                @EditLink(RouteNames.Duration_Get, Model.WorkingWeekSectionState, "working week", "link-working-week", new { wizard = false })
+                @EditLink(RouteNames.Duration_Get, Model.WorkingWeekSectionState, "working week", "link-working-week", new { wizard = false, Model.Ukprn, Model.VacancyId })
             </li>
             <li class="@GetSectionClass(Model.ExpectedDurationSectionState)">
                 
@@ -326,7 +326,7 @@
                         @EmployerReviewFlag(Model, FieldIdentifiers.ExpectedDuration)
                     </div>
                 </div>
-                @EditLink(RouteNames.Duration_Get, Model.ExpectedDurationSectionState, "expected duration", "link-duration", new { wizard = false })
+                @EditLink(RouteNames.Duration_Get, Model.ExpectedDurationSectionState, "expected duration", "link-duration", new { wizard = false, Model.Ukprn, Model.VacancyId })
             </li>
             <li class="@GetSectionClass(Model.PossibleStartDateSectionState)">
                 <div class="govuk-!-margin-bottom-6">
@@ -340,7 +340,7 @@
                         @EmployerReviewFlag(Model, FieldIdentifiers.PossibleStartDate)
                     </div>
                 </div>
-                @EditLink(RouteNames.Dates_Get, Model.PossibleStartDateSectionState, "possible start date", "link-start-date", new { wizard = false })
+                @EditLink(RouteNames.Dates_Get, Model.PossibleStartDateSectionState, "possible start date", "link-start-date", new { wizard = false, Model.Ukprn, Model.VacancyId })
             </li>
             <li class="@GetSectionClass(Model.TrainingLevelSectionState)">
                 <div class="govuk-!-margin-bottom-6">
@@ -358,7 +358,7 @@
                         @EmployerReviewFlag(Model, FieldIdentifiers.TrainingLevel)
                     </div>
                 </div>
-                @EditLink(RouteNames.Training_Get, Model.TrainingLevelSectionState, "apprenticeship level", "link-apprenticeship-level", new { wizard = false })
+                @EditLink(RouteNames.Training_Get, Model.TrainingLevelSectionState, "apprenticeship level", "link-apprenticeship-level", new { wizard = false, Model.Ukprn, Model.VacancyId })
             </li>
             <li asp-show="@Model.CanShowReference">
                 <h3 class="govuk-heading-s govuk-!-margin-top-4">Reference number</h3>
@@ -376,7 +376,7 @@
                         @EmployerReviewFlag(Model, FieldIdentifiers.NumberOfPositions)
                     </div>
                 </div>
-                @EditLink(RouteNames.NumberOfPositions_Get, Model.NumberOfPositionsSectionState, "positions", "link-positions", new { wizard = false })
+                @EditLink(RouteNames.NumberOfPositions_Get, Model.NumberOfPositionsSectionState, "positions", "link-positions", new { wizard = false, Model.Ukprn, Model.VacancyId })
             </li>
         </ul>
     </div>
@@ -419,7 +419,7 @@
                     @EmployerReviewFlag(Model, FieldIdentifiers.OutcomeDescription)
                 </div>
             </div>
-            @EditLink(RouteNames.VacancyDescription_Index_Get, Model.DescriptionsSectionState, "full vacancy description", "link-vacancy-description")
+            @EditLink(RouteNames.VacancyDescription_Index_Get, Model.DescriptionsSectionState, "full vacancy description", "link-vacancy-description", new {Model.Ukprn, Model.VacancyId})
         </div>
     </div>
 </div>
@@ -444,7 +444,7 @@
                         @EmployerReviewFlag(Model, FieldIdentifiers.Skills)
                     </div>
                 </div>
-                @EditLink(RouteNames.Skills_Get, Model.SkillsSectionState, "desired skills and personal qualities", "link-skills")
+                @EditLink(RouteNames.Skills_Get, Model.SkillsSectionState, "desired skills and personal qualities", "link-skills",new {Model.Ukprn, Model.VacancyId})
             </div>
         </div>
         <div class="govuk-grid-column-one-half">
@@ -460,7 +460,7 @@
                         @EmployerReviewFlag(Model, FieldIdentifiers.ThingsToConsider)
                     </div>
                 </div>
-                @EditLink(RouteNames.Considerations_Get, Model.ThingsToConsiderSectionState, "things to consider", "link-things-to-consider")
+                @EditLink(RouteNames.Considerations_Get, Model.ThingsToConsiderSectionState, "things to consider", "link-things-to-consider",new {Model.Ukprn, Model.VacancyId})
             </div>
         </div>
     </div>
@@ -483,7 +483,7 @@
                         @EmployerReviewFlag(Model, FieldIdentifiers.Qualifications)
                     </div>
                 </div>
-                @EditLink(RouteNames.Qualifications_Get, Model.QualificationsSectionState, "qualifications", "link-qualifications")
+                @EditLink(RouteNames.Qualifications_Get, Model.QualificationsSectionState, "qualifications", "link-qualifications",new {Model.Ukprn, Model.VacancyId})
             </div>
         </div>
     </div>
@@ -510,7 +510,7 @@
                     @EmployerReviewFlag(Model, FieldIdentifiers.EmployerDescription)
                 </div>
             </div>
-            @EditLink(RouteNames.AboutEmployer_Get, Model.EmployerDescriptionSectionState, "employer description", "link-description")
+            @EditLink(RouteNames.AboutEmployer_Get, Model.EmployerDescriptionSectionState, "employer description", "link-description", new {Model.Ukprn, Model.VacancyId})
         </div>
         <div class="@GetSectionClass(Model.EmployerNameSectionState)">
             <div class="govuk-!-margin-bottom-6">
@@ -524,7 +524,7 @@
                     @EmployerReviewFlag(Model, FieldIdentifiers.EmployerName)
                 </div>
             </div>
-            @EditLink(RouteNames.LegalEntity_Get, Model.EmployerAddressSectionState, "employer", "link-employer", new { wizard = false })
+            @EditLink(RouteNames.LegalEntity_Get, Model.EmployerAddressSectionState, "employer", "link-employer", new { wizard = false, Model.Ukprn, Model.VacancyId })
         </div>
         <div class="@GetSectionClass(Model.DisabilityConfidentSectionState)">
             <div class="govuk-!-margin-bottom-6">
@@ -539,7 +539,7 @@
                     @EmployerReviewFlag(Model, FieldIdentifiers.DisabilityConfident)
                 </div>
             </div>
-            @EditLink(RouteNames.Dates_Get, Model.TrainingSectionState, "disability confident", "link-standard", new { wizard = false })
+            @EditLink(RouteNames.Dates_Get, Model.TrainingSectionState, "disability confident", "link-standard", new { wizard = false, Model.Ukprn, Model.VacancyId })
         </div>
         <div class="@GetSectionClass(Model.EmployerWebsiteUrlSectionState)">
             <div class="govuk-!-margin-bottom-6">
@@ -558,7 +558,7 @@
                     @EmployerReviewFlag(Model, FieldIdentifiers.EmployerWebsiteUrl)
                 </div>
             </div>
-            @EditLink(RouteNames.AboutEmployer_Get, Model.EmployerWebsiteUrlSectionState, "website", "link-website")
+            @EditLink(RouteNames.AboutEmployer_Get, Model.EmployerWebsiteUrlSectionState, "website", "link-website", new{Model.Ukprn, Model.VacancyId})
         </div>
     </div>
 </div>
@@ -581,7 +581,7 @@
                     @EmployerReviewFlag(Model, FieldIdentifiers.EmployerAddress)
                 </div>
             </div>
-            @EditLink(RouteNames.Location_Get, Model.EmployerAddressSectionState, "location", "link-location", new { wizard = false })
+            @EditLink(RouteNames.Location_Get, Model.EmployerAddressSectionState, "location", "link-location", new { wizard = false, Model.Ukprn, Model.VacancyId })
         </div>
     </div>
     <div class="govuk-grid-column-one-half">
@@ -620,7 +620,7 @@
             <p asp-show="@Model.HasProviderContactEmail" class="govuk-body">@Model.ProviderContactEmail</p>
             <span esfa-validation-message-for="ProviderContactTelephone" class="govuk-error-message"></span>
             <p asp-show="@Model.HasProviderContactTelephone" class="govuk-body">@Model.ProviderContactTelephone</p>
-            @EditLink(RouteNames.ProviderContactDetails_Get, Model.ProviderContactSectionState, "provider contact details", "link-provider-contact-details")
+            @EditLink(RouteNames.ProviderContactDetails_Get, Model.ProviderContactSectionState, "provider contact details", "link-provider-contact-details", new {Model.Ukprn, Model.VacancyId})
         </div>
     </div>
     <div class="govuk-grid-column-one-third">
@@ -638,7 +638,7 @@
                     @EmployerReviewFlag(Model, FieldIdentifiers.Training)
                 </div>
             </div>
-            @EditLink(RouteNames.Training_Get, Model.TrainingSectionState, "apprenticeship training", "link-standard", new { wizard = false })
+            @EditLink(RouteNames.Training_Get, Model.TrainingSectionState, "apprenticeship training", "link-standard", new { wizard = false, Model.Ukprn, Model.VacancyId })
         </div>
     </div>
 </div>
@@ -661,7 +661,7 @@
                     @EmployerReviewFlag(Model, FieldIdentifiers.ApplicationMethod)
                 </div>
             </div>
-            @EditLink(RouteNames.ApplicationProcess_Get, Model.ApplicationMethodSectionState, "application method", "link-application-method")
+            @EditLink(RouteNames.ApplicationProcess_Get, Model.ApplicationMethodSectionState, "application method", "link-application-method", new{ Model.Ukprn, Model.VacancyId})
         </div>
         <div asp-show="@Model.HasSpecifiedThroughFaaApplicationMethod" class="@GetSectionClass(Model.ApplicationMethodSectionState)">
             <div class="govuk-!-margin-bottom-6">
@@ -673,7 +673,7 @@
                     @EmployerReviewFlag(Model, FieldIdentifiers.ApplicationMethod)
                 </div>
             </div>
-            @EditLink(RouteNames.ApplicationProcess_Get, Model.ApplicationMethodSectionState, "application method", "link-application-method")
+            @EditLink(RouteNames.ApplicationProcess_Get, Model.ApplicationMethodSectionState, "application method", "link-application-method", new{ Model.Ukprn, Model.VacancyId})
         </div>
         <div asp-show="@Model.HasSpecifiedThroughExternalApplicationMethod">
             <div asp-show="@Model.HasApplicationUrl">
@@ -690,7 +690,7 @@
                             @EmployerReviewFlag(Model, FieldIdentifiers.ApplicationUrl)
                         </div>
                     </div>
-                    @EditLink(RouteNames.ApplicationProcess_Get, Model.ApplicationUrlSectionState, "application link", "link-application-link")
+                    @EditLink(RouteNames.ApplicationProcess_Get, Model.ApplicationUrlSectionState, "application link", "link-application-link", new{ Model.Ukprn, Model.VacancyId})
                 </div>
             </div>
             <div class="@GetSectionClass(Model.ApplicationInstructionsSectionState)">
@@ -705,7 +705,7 @@
                         @EmployerReviewFlag(Model, FieldIdentifiers.ApplicationInstructions)
                     </div>
                 </div>
-                @EditLink(RouteNames.ApplicationProcess_Get, Model.ApplicationInstructionsSectionState, "application-instructions", "link-application-instructions")
+                @EditLink(RouteNames.ApplicationProcess_Get, Model.ApplicationInstructionsSectionState, "application-instructions", "link-application-instructions", new{ Model.Ukprn, Model.VacancyId})
             </div>
         </div>
     </div>
@@ -718,13 +718,13 @@
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
         <div class="govuk-body govuk-button-group">
-            <form asp-show="@Model.CanSubmit" asp-route="@RouteNames.Preview_Submit_Post" class="form-inline">
+            <form asp-show="@Model.CanSubmit" asp-route-vacancyId="@Model.VacancyId" asp-route-ukprn="@Model.Ukprn" asp-route="@RouteNames.Preview_Submit_Post" class="form-inline">
                 <input type="submit" value="@Model.SubmitButtonText" class="govuk-button" esfa-automation="submit-button" />
             </form>
-            <a asp-show="@Model.CanDelete" asp-route="@RouteNames.DeleteVacancy_Get" class="govuk-button delete-button" esfa-automation="delete-button">Delete</a>
+            <a asp-show="@Model.CanDelete" asp-route="@RouteNames.DeleteVacancy_Get" asp-route-vacancyId="@Model.VacancyId" asp-route-ukprn="@Model.Ukprn" class="govuk-button delete-button" esfa-automation="delete-button">Delete</a>
         </div>
         <div class="govuk-body">
-            <a asp-route="@RouteNames.Vacancies_Get" class="govuk-link das-button-link" esfa-automation="dashboard-link">Return to dashboard</a>
+            <a asp-route="@RouteNames.Vacancies_Get" asp-route-ukprn="@Model.Ukprn" class="govuk-link das-button-link" esfa-automation="dashboard-link">Return to dashboard</a>
         </div>
     </div>
 </div>

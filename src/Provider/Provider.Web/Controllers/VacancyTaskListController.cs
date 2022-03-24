@@ -22,7 +22,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
         [HttpGet("create/start", Name=RouteNames.CreateVacancyStart)]
         public IActionResult StartVacancyCreate(VacancyRouteModel vrm)
         {
-            return View("StartCreateVacancy");
+            return View("StartCreateVacancy", vrm);
         }
         
         [HttpGet("create/task-list", Name = RouteNames.ProviderTaskListCreateGet)]

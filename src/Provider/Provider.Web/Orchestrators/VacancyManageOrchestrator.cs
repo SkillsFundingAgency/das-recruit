@@ -49,13 +49,18 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             return vacancy;
         }
 
-        public async Task<ManageVacancyViewModel> GetManageVacancyViewModel(Vacancy vacancy)
+        public async Task<ManageVacancyViewModel> GetManageVacancyViewModel(Vacancy vacancy,
+            VacancyRouteModel vacancyRouteModel)
         {
-            var viewModel = new ManageVacancyViewModel();
+            var viewModel = new ManageVacancyViewModel
+            {
+                Title = vacancy.Title,
+                Status = vacancy.Status,
+                VacancyReference = vacancy.VacancyReference.Value.ToString(),
+                Ukprn = vacancyRouteModel.Ukprn,
+                VacancyId = vacancyRouteModel.VacancyId
+            };
 
-            viewModel.Title = vacancy.Title;
-            viewModel.Status = vacancy.Status;
-            viewModel.VacancyReference = vacancy.VacancyReference.Value.ToString();
             viewModel.ClosingDate = viewModel.Status == VacancyStatus.Closed ? vacancy.ClosedDate?.AsGdsDate() : vacancy.ClosingDate?.AsGdsDate();
             viewModel.AnalyticsAvailableAfterApprovalDate = _systemConfig.ShowAnalyticsForVacanciesApprovedAfterDate.AsGdsDate();
             viewModel.PossibleStartDate = vacancy.StartDate?.AsGdsDate();
@@ -93,7 +98,9 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             viewModel.Applications = new VacancyApplicationsViewModel
             {
                 Applications = applications,
-                ShowDisability = vacancy.IsDisabilityConfident
+                ShowDisability = vacancy.IsDisabilityConfident,
+                Ukprn = vacancyRouteModel.Ukprn,
+                VacancyId = vacancyRouteModel.VacancyId
             };
 
             return viewModel;
@@ -103,7 +110,11 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
         {
             var vacancy = await GetVacancy(vrm);
 
-            var viewModel = new EditVacancyViewModel();
+            var viewModel = new EditVacancyViewModel
+            {
+                Ukprn = vrm.Ukprn,
+                VacancyId = vrm.VacancyId
+            };
             await _vacancyDisplayMapper.MapFromVacancyAsync(viewModel, vacancy);
 
             if (proposedClosingDate.HasValue)

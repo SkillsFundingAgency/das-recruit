@@ -6,6 +6,7 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.Part1.Training
 {
     public class TrainingViewModel : VacancyRouteModel
     {
+        public string Title { get; set; }
         public IEnumerable<ApprenticeshipProgrammeViewModel> Programmes { get; set; }
 
         public string SelectedProgrammeId { get; set; }

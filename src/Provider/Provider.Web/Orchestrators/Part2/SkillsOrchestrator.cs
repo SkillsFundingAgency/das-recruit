@@ -39,7 +39,9 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part2
 
             var vm = new SkillsViewModel
             {
-                Title = vacancy.Title
+                Title = vacancy.Title,
+                Ukprn = vrm.Ukprn, 
+                VacancyId = vrm.VacancyId
             };
 
             if (draftSkills == null)

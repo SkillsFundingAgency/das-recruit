@@ -56,12 +56,12 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
 
             if (_feature.IsFeatureEnabled(FeatureNames.ProviderTaskList))
             {
-                return RedirectToRoute(RouteNames.Duration_Get);
+                return RedirectToRoute(RouteNames.Duration_Get, new {m.Ukprn, m.VacancyId});
             }
 
             return wizard
-                ? RedirectToRoute(RouteNames.Duration_Get)
-                : RedirectToRoute(RouteNames.Vacancy_Preview_Get);
+                ? RedirectToRoute(RouteNames.Duration_Get, new {m.Ukprn, m.VacancyId})
+                : RedirectToRoute(RouteNames.Vacancy_Preview_Get, new {m.Ukprn, m.VacancyId});
         }
         private void AddSoftValidationErrorsToModelState(DatesViewModel viewModel)
         {

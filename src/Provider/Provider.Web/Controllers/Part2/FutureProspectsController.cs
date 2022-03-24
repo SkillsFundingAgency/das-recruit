@@ -48,7 +48,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part2
                 return View(vm);
             }
 
-            return RedirectToRoute(RouteNames.Considerations_Get);
+            return RedirectToRoute(RouteNames.Considerations_Get, new {m.VacancyId, m.Ukprn});
         }
     }
 }

@@ -17,7 +17,7 @@
                 </span>
             </p>
             
-            <form asp-route="@RouteNames.Alerts_Dismiss_Post">
+            <form asp-route="@RouteNames.Alerts_Dismiss_Post" asp-route-ukprn="@Model.Ukprn">
                 <p class="govuk-body govuk-!-margin-bottom-0">
                     @{ string returnUrl = ViewContext.HttpContext.Request.Path + ViewContext.HttpContext.Request.QueryString; }
                     <input name="@nameof(AlertDismissalEditModel.ReturnUrl)" value="@returnUrl" type="hidden" />
