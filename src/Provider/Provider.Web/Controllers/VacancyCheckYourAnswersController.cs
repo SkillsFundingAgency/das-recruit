@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Esfa.Recruit.Provider.Web.Controllers
 {
-    [Route(RoutePaths.VacancyRoutePath)]
+    [Route(RoutePaths.VacanciesRoutePath)]
     [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
     public class VacancyCheckYourAnswersController : Controller
     {
@@ -19,7 +19,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
             _orchestrator = orchestrator;
         }
         
-        [HttpGet("check-your-answers", Name = RouteNames.ProviderCheckYourAnswersGet)]
+        [HttpGet("{vacancyId:guid}/check-your-answers", Name = RouteNames.ProviderCheckYourAnswersGet)]
         public async Task<IActionResult> CheckYourAnswers(VacancyRouteModel vrm)
         {
             var viewModel = await _orchestrator.GetVacancyTaskListModel(vrm); 
