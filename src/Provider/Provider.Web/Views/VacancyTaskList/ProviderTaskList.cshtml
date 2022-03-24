@@ -1,0 +1,411 @@
+@using Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview
+@using Esfa.Recruit.Vacancies.Client.Domain.Entities
+@model Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview.VacancyPreviewViewModel
+
+@{ ViewBag.GaData.Vpv = "/recruitment/provider/task-list"; }
+
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+        <a asp-route="@RouteNames.Dashboard_Get" asp-route-ukprn="@Model.Ukprn" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Return to dashboard</a>
+    </div>
+</div>
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">  
+        <h1 class="govuk-heading-xl">
+            Create an apprenticeship vacancy
+        </h1>
+        <ol class="das-task-list">
+            <li>
+                <h2 class="das-task-list__section">
+                    <span class="das-task-list__section-number">1. </span> 
+                    <span class="das-task-list__section-heading">Vacancy summary</span>
+                    <span class="das-task-list__section-status">
+                        @if(Model.TaskListSectionOneState == VacancyTaskListSectionState.InProgress)
+                        {
+                            <strong class="govuk-tag govuk-tag--blue das-task-list__section-tag">In progress</strong>
+                        }
+                        else if (Model.TaskListSectionOneState == VacancyTaskListSectionState.Completed)
+                        {
+                            <strong class="govuk-tag das-task-list__section-tag">Completed</strong>    
+                        }
+                        else
+                        {
+                            <strong class="govuk-tag govuk-tag--grey das-task-list__section-tag">Not started</strong>
+                        }
+                        
+                    </span>
+                </h2>
+                <ul class="das-task-list__items">
+                    
+                    <li class="das-task-list__item">
+                        <span>
+                            @if (Model.TaskListSectionOneState == VacancyTaskListSectionState.NotStarted)
+                            {
+                                <a class="govuk-link govuk-link--no-visited-state" asp-all-route-data="@Model.RouteDictionary" asp-route="@RouteNames.CreateVacancy_Get" asp-route-employerAccountId="@Model.AccountId">
+                                    Vacancy title
+                                </a>
+                            }
+                            else
+                            {
+                                <a class="govuk-link govuk-link--no-visited-state" asp-all-route-data="@Model.RouteDictionary" asp-route="@RouteNames.Title_Get">
+                                    Vacancy title
+                                </a>
+                            }
+                        </span>
+                    </li>
+                    @if (Model.AccountLegalEntityCount > 1)
+                    {
+                        <li class="das-task-list__item">
+                            <span>
+                                @if (string.IsNullOrEmpty(Model.Title))
+                                {
+                                    <span class="das-task-list__task-name">
+                                        Name of organisation
+                                    </span>
+                                }
+                                else
+                                {
+                                    <a class="govuk-link govuk-link--no-visited-state" asp-all-route-data="@Model.RouteDictionary" asp-route="@RouteNames.LegalEntity_Get">
+                                        Name of organisation
+                                    </a>
+                                }
+                            </span>
+                        </li>
+                    }
+                    <li class="das-task-list__item">
+                        @if (!Model.HasSelectedLegalEntity)
+                        {
+                            <span class="das-task-list__task-name">
+                                Training course
+                            </span>
+                        }
+                        else
+                        {
+                            <a class="govuk-link govuk-link--no-visited-state" asp-all-route-data="@Model.RouteDictionary" asp-route="@RouteNames.Training_Get">
+                                Training course
+                            </a>
+                        }
+                    </li>
+                    <li class="das-task-list__item">
+                        @if (!Model.HasProgramme)
+                        {
+                            <span>
+                                Summary of the apprenticeship
+                            </span>
+                        }
+                        else
+                        {
+                            <a class="govuk-link govuk-link--no-visited-state" asp-all-route-data="@Model.RouteDictionary" asp-route="@RouteNames.ShortDescription_Get">
+                                Summary of the apprenticeship
+                            </a>
+                        }
+                    </li>
+                    <li class="das-task-list__item">
+                        @if (Model.ShortDescriptionSectionState == VacancyPreviewSectionState.Incomplete)
+                        {
+                            <span>
+                                Tasks and training details
+                            </span>
+                        }
+                        else
+                        {
+                            <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.VacancyDescription_Index_Get" asp-all-route-data="@Model.RouteDictionary">
+                                Tasks and training details
+                            </a>
+                        }
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <h2 class="das-task-list__section">
+                    <span class="das-task-list__section-number">2. </span> 
+                    <span class="das-task-list__section-heading">Employment details</span>
+                    <span class="das-task-list__section-status">
+                        @if(Model.TaskListSectionTwoState == VacancyTaskListSectionState.InProgress)
+                        {
+                            <strong class="govuk-tag govuk-tag--blue das-task-list__section-tag">In progress</strong>
+                        }
+                        else if (Model.TaskListSectionTwoState == VacancyTaskListSectionState.Completed)
+                        {
+                            <strong class="govuk-tag das-task-list__section-tag">Completed</strong>    
+                        }
+                        else
+                        {
+                            <strong class="govuk-tag govuk-tag--grey das-task-list__section-tag">Not started</strong>
+                        }
+                    </span>
+                </h2>
+                <ul class="das-task-list__items">
+                    <li class="das-task-list__item">
+                        @if (Model.TaskListSectionOneState != VacancyTaskListSectionState.Completed)
+                        {
+                            <span class="das-task-list__task-name">
+                                Important dates
+                            </span>    
+                        }
+                        else
+                        {
+                            <a class="govuk-link govuk-link--no-visited-state" asp-all-route-data="@Model.RouteDictionary" asp-route="@RouteNames.Dates_Get">
+                                Important dates
+                            </a>
+                        }
+                    </li>
+                    <li class="das-task-list__item">
+                        @if (Model.ClosingDateSectionState == VacancyPreviewSectionState.Incomplete || Model.PossibleStartDateSectionState == VacancyPreviewSectionState.Incomplete)
+                        {
+                            <span class="das-task-list__task-name">
+                                Duration and working hours
+                            </span>    
+                        }
+                        else
+                        {
+                            <a class="govuk-link govuk-link--no-visited-state" asp-all-route-data="@Model.RouteDictionary" asp-route="@RouteNames.Duration_Get">
+                                Duration and working hours
+                            </a>
+                        }
+                    </li>
+                    <li class="das-task-list__item">
+                        @if (Model.ExpectedDurationSectionState == VacancyPreviewSectionState.Incomplete)
+                        {
+                            <span class="das-task-list__task-name">
+                                Pay rate
+                            </span>    
+                        }
+                        else
+                        {
+                            <a class="govuk-link govuk-link--no-visited-state" asp-all-route-data="@Model.RouteDictionary" asp-route="@RouteNames.Wage_Get">
+                                Pay rate
+                            </a>
+                        }
+                    </li>
+                    
+                    <li class="das-task-list__item">
+                        @if (Model.WageTextSectionState == VacancyPreviewSectionState.Incomplete)
+                        {
+                            <span class="das-task-list__task-name">
+                                Number of positions
+                            </span>    
+                        }
+                        else
+                        {
+                            <a class="govuk-link govuk-link--no-visited-state" asp-all-route-data="@Model.RouteDictionary" asp-route="@RouteNames.NumberOfPositions_Get">
+                                Number of positions
+                            </a>
+                        }
+                    </li>
+                    <li class="das-task-list__item">
+                        @if (Model.NumberOfPositionsSectionState == VacancyPreviewSectionState.Incomplete)
+                        {
+                            <span class="das-task-list__task-name">
+                                Address
+                            </span>    
+                        }
+                        else
+                        {
+                            <a class="govuk-link govuk-link--no-visited-state" asp-all-route-data="@Model.RouteDictionary" asp-route="@RouteNames.Location_Get">
+                                Address
+                            </a>
+                        }
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <h2 class="das-task-list__section">
+                    <span class="das-task-list__section-number">3. </span> 
+                    <span class="das-task-list__section-heading">Skills and qualifications</span>
+                    <span class="das-task-list__section-status">
+                        @if(Model.TaskListSectionThreeState == VacancyTaskListSectionState.InProgress)
+                        {
+                            <strong class="govuk-tag govuk-tag--blue das-task-list__section-tag">In progress</strong>
+                        }
+                        else if (Model.TaskListSectionThreeState == VacancyTaskListSectionState.Completed)
+                        {
+                            <strong class="govuk-tag das-task-list__section-tag">Completed</strong>    
+                        }
+                        else
+                        {
+                            <strong class="govuk-tag govuk-tag--grey das-task-list__section-tag">Not started</strong>
+                        }
+                        
+                    </span>
+                </h2>
+                <ul class="das-task-list__items">
+                    <li class="das-task-list__item">
+                        @if (Model.TaskListSectionTwoState != VacancyTaskListSectionState.Completed)
+                        {
+                            <span>
+                                Skills
+                            </span>
+                        }
+                        else
+                        {
+                            <a class="govuk-link govuk-link--no-visited-state" asp-all-route-data="@Model.RouteDictionary" asp-route="@RouteNames.Skills_Get">
+                                Skills
+                            </a>
+                        }
+                    </li>
+                    <li class="das-task-list__item">
+                        @if (Model.SkillsSectionState == VacancyPreviewSectionState.Incomplete)
+                        {
+                            <span>
+                                Qualifications
+                            </span>
+                        }
+                        else
+                        {
+                            <a class="govuk-link govuk-link--no-visited-state" asp-all-route-data="@Model.RouteDictionary" asp-route="@RouteNames.Qualifications_Get">
+                                Qualifications
+                            </a>
+                        }
+                    </li>
+                    <li class="das-task-list__item">
+                        @if (Model.QualificationsSectionState == VacancyPreviewSectionState.Incomplete)
+                        {
+                            <span>
+                                Future prospects
+                            </span>
+                        }
+                        else
+                        {
+                            <a class="govuk-link govuk-link--no-visited-state" asp-all-route-data="@Model.RouteDictionary" asp-route="@RouteNames.FutureProspects_Get">
+                                Future prospects
+                            </a>
+                        }
+                    </li>
+                    <li class="das-task-list__item">
+                        @if (string.IsNullOrEmpty(Model.OutcomeDescription))
+                        {
+                            <span>
+                                Other things to consider
+                            </span>
+                        }
+                        else
+                        {
+                            <a class="govuk-link govuk-link--no-visited-state" asp-all-route-data="@Model.RouteDictionary" asp-route="@RouteNames.Considerations_Get">
+                                Other things to consider
+                            </a>
+                        }
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <h2 class="das-task-list__section">
+                    <span class="das-task-list__section-number">4. </span> 
+                    <span class="das-task-list__section-heading">About the employer</span>
+                    <span class="das-task-list__section-status">
+                        @if(Model.TaskListSectionFourState == VacancyTaskListSectionState.InProgress)
+                        {
+                            <strong class="govuk-tag govuk-tag--blue das-task-list__section-tag">In progress</strong>
+                        }
+                        else if (Model.TaskListSectionFourState == VacancyTaskListSectionState.Completed)
+                        {
+                            <strong class="govuk-tag das-task-list__section-tag">Completed</strong>    
+                        }
+                        else
+                        {
+                            <strong class="govuk-tag govuk-tag--grey das-task-list__section-tag">Not started</strong>
+                        }
+                    </span>
+                </h2>
+                <ul class="das-task-list__items">
+                    <li class="das-task-list__item">
+                        @if (Model.TaskListSectionThreeState != VacancyTaskListSectionState.Completed)
+                        {
+                            <span>
+                                 Name of employer on vacancy
+                            </span>    
+                        }
+                        else
+                        {
+                            <a class="govuk-link govuk-link--no-visited-state" asp-all-route-data="@Model.RouteDictionary" asp-route="@RouteNames.EmployerName_Get">
+                                 Name of employer on vacancy
+                            </a>    
+                        }
+                    </li>
+                    <li class="das-task-list__item">
+                        @if (Model.HasSelectedEmployerNameOption)
+                        {
+                            <a class="govuk-link govuk-link--no-visited-state" asp-all-route-data="@Model.RouteDictionary" asp-route="@RouteNames.AboutEmployer_Get">
+                                Employer information
+                            </a>
+                        }
+                        else
+                        {
+                            <span class="das-task-list__task-name">
+                                Employer information
+                            </span>
+                        }
+                    </li>
+                    <li class="das-task-list__item">
+                        @if (!Model.HasEmployerDescription)
+                        {
+                            <span class="das-task-list__task-name">
+                                 Contact details
+                            </span>    
+                        }
+                        else
+                        {
+                            <a class="govuk-link govuk-link--no-visited-state" asp-all-route-data="@Model.RouteDictionary" asp-route="@RouteNames.ProviderContactDetails_Get">
+                                 Contact details
+                            </a>    
+                        }
+                    </li>
+                    <li class="das-task-list__item">
+                        @if (Model.HasSelectedEmployerNameOption && Model.HasEmployerDescription && Model.TaskListSectionThreeState == VacancyTaskListSectionState.Completed)
+                        {
+                            <a class="govuk-link govuk-link--no-visited-state" asp-all-route-data="@Model.RouteDictionary" asp-route="@RouteNames.ApplicationProcess_Get">
+                                Application website
+                            </a>    
+                               
+                        }
+                        else
+                        {
+                            <span class="das-task-list__task-name">
+                                Application website
+                            </span> 
+                        }
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <h2 class="das-task-list__section">
+                    <span class="das-task-list__section-number">5. </span> 
+                    <span class="das-task-list__section-heading">Check and submit your vacancy</span>
+                    <span class="das-task-list__section-status">
+                        @if(Model.TaskListSectionFourState == VacancyTaskListSectionState.Completed)
+                        {
+                            <strong class="govuk-tag govuk-tag--blue das-task-list__section-tag">In progress</strong>
+                        }
+                        else if (Model.Status == VacancyStatus.Submitted)
+                        {
+                            <strong class="govuk-tag das-task-list__section-tag">Completed</strong>    
+                        }
+                        else
+                        {
+                            <strong class="govuk-tag govuk-tag--grey das-task-list__section-tag">Not started</strong>
+                        }
+                    </span>
+                </h2>
+                <ul class="das-task-list__items">
+                    <li class="das-task-list__item">
+                        @if (Model.TaskListSectionFourState == VacancyTaskListSectionState.Completed)
+                        {
+                            <a class="govuk-link govuk-link--no-visited-state" href="#">
+                                Check your answers and submit your vacancy
+                            </a>   
+                        }
+                        else
+                        {
+                            <span>
+                                Check your answers and submit your vacancy
+                            </span>    
+                        }
+                        
+                    </li>
+                </ul>
+            </li>
+        </ol>
+    </div>
+</div>

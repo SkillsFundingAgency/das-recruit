@@ -229,10 +229,10 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                 .WithMessage("Enter a short description of the apprenticeship")
                     .WithErrorCode("12")
                 .MaximumLength(350)
-                    .WithMessage("Short description of the apprenticeship must not exceed {MaxLength} characters")
+                    .WithMessage("Summary of the apprenticeship must not exceed {MaxLength} characters")
                     .WithErrorCode("13")
                 .MinimumLength(50)
-                    .WithMessage("Short description of the apprenticeship must be at least {MinLength} characters")
+                    .WithMessage("Summary of the apprenticeship must be at least {MinLength} characters")
                     .WithErrorCode("14")
                 .ValidFreeTextCharacters()
                     .WithMessage("Short description of the apprenticeship contains some invalid characters")
@@ -373,17 +373,17 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
             {
                 RuleFor(x => x.Wage.WageType)
                     .NotEmpty()
-                        .WithMessage("Select how much you'd like to pay the apprentice")
+                        .WithMessage("Select how much the apprentice will be paid")
                         .WithErrorCode("46")
                     .IsInEnum()
-                        .WithMessage("Select how much you'd like to pay the apprentice")
+                        .WithMessage("Select how much the apprentice will be paid")
                         .WithErrorCode("46")
                     .RunCondition(VacancyRuleSet.Wage)
                     .WithRuleId(VacancyRuleSet.Wage);
 
                 RuleFor(x => x.Wage.WageAdditionalInformation)
                     .MaximumLength(250)
-                        .WithMessage("Additional pay information must not exceed {MaxLength} characters")
+                        .WithMessage("Extra information about pay must not exceed {MaxLength} characters")
                         .WithErrorCode("44")
                     .ValidFreeTextCharacters()
                         .WithMessage("Additional pay information contains some invalid characters")
@@ -393,16 +393,6 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                     .WithErrorCode("607")
                     .RunCondition(VacancyRuleSet.Wage)
                     .WithRuleId(VacancyRuleSet.Wage);
-
-                When(x => x.Wage.WageType == WageType.Unspecified, () =>
-                {
-                    RuleFor(x => x.Wage.WageAdditionalInformation)
-                        .NotEmpty()
-                        .WithMessage("You must provide a reason why you need to use Unspecified")
-                        .WithErrorCode("50")
-                        .RunCondition(VacancyRuleSet.Wage)
-                        .WithRuleId(VacancyRuleSet.Wage);
-                });
             });
         }
 
@@ -437,8 +427,12 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                 .Must(q => q != null && q.Count > 0)
                     .WithMessage("You must add a qualification")
                     .WithErrorCode("52")
-                .SetCollectionValidator(new VacancyQualificationsValidator((long)VacancyRuleSet.Qualifications, 
-                    _qualificationsProvider,_profanityListProvider))
+                .RunCondition(VacancyRuleSet.Qualifications)
+                .WithRuleId(VacancyRuleSet.Qualifications);
+            RuleForEach(x => x.Qualifications)
+                .NotEmpty()
+                .SetValidator(new VacancyQualificationsValidator((long) VacancyRuleSet.Qualifications,
+                    _qualificationsProvider, _profanityListProvider))
                 .RunCondition(VacancyRuleSet.Qualifications)
                 .WithRuleId(VacancyRuleSet.Qualifications);
         }
@@ -449,7 +443,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                 .NotEmpty()
                     .WithMessage("Enter what the apprentice will be doing")
                     .WithErrorCode("53")
-                .MaximumLength(1000)
+                .MaximumLength(4000)
                     .WithMessage("What the apprenticeship involves must not exceed {MaxLength} characters")
                     .WithErrorCode("7")
                 .ValidHtmlCharacters(_htmlSanitizerService)
@@ -468,7 +462,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                 .NotEmpty()
                     .WithMessage("Enter the training the apprentice will take and the qualification the apprentice will get")
                     .WithErrorCode("54")
-                .MaximumLength(1000)
+                .MaximumLength(4000)
                     .WithMessage("Training to be provided description must not exceed {MaxLength} characters")
                     .WithErrorCode("7")
                 .ValidHtmlCharacters(_htmlSanitizerService)
@@ -487,8 +481,8 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                 .NotEmpty()
                     .WithMessage("Enter the expected career progression after this apprenticeship")
                     .WithErrorCode("55")
-                .MaximumLength(1000)
-                    .WithMessage("What is the expected career progression after this apprenticeship description must not exceed {MaxLength} characters")
+                .MaximumLength(4000)
+                    .WithMessage("Future prospects must not exceed {MaxLength} characters")
                     .WithErrorCode("7")
                 .ValidHtmlCharacters(_htmlSanitizerService)
                     .WithMessage("What is the expected career progression after this apprenticeship description contains some invalid characters")
@@ -591,7 +585,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
         private void ValidateThingsToConsider()
         {
             RuleFor(x => x.ThingsToConsider)
-                .MaximumLength(350)
+                .MaximumLength(4000)
                     .WithMessage("Things to consider must not exceed {MaxLength} characters")
                     .WithErrorCode("75")
                 .ValidFreeTextCharacters()
@@ -610,7 +604,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                 .NotEmpty()
                     .WithMessage("Enter details about your organisation")
                     .WithErrorCode("80")
-                .MaximumLength(500)
+                .MaximumLength(4000)
                     .WithMessage("Employer description must not exceed {MaxLength} characters")
                     .WithErrorCode("77")
                 .ValidFreeTextCharacters()

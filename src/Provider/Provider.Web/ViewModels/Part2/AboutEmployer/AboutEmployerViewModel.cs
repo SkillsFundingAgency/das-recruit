@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
+using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Shared.Web.ViewModels;
 
 namespace Esfa.Recruit.Provider.Web.ViewModels.Part2.AboutEmployer
 {
-    public class AboutEmployerViewModel
+    public class AboutEmployerViewModel : VacancyRouteModel
     {
         public string Title { get; internal set; }
         public string EmployerDescription { get; internal set; }

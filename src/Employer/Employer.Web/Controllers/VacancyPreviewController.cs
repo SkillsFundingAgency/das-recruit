@@ -22,6 +22,22 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             _orchestrator = orchestrator;
         }
 
+        [HttpGet("advert-preview", Name = RouteNames.VacancyAdvertPreview)]
+        public async Task<IActionResult> AdvertPreview(VacancyRouteModel vrm, bool? submitToEfsa = null)
+        {
+            var viewModel = await _orchestrator.GetVacancyPreviewViewModelAsync(vrm);
+            AddSoftValidationErrorsToModelState(viewModel);
+            viewModel.SetSectionStates(viewModel, ModelState);
+
+            viewModel.CanHideValidationSummary = true;
+            viewModel.SubmitToEsfa = submitToEfsa;
+
+            if (TempData.ContainsKey(TempDataKeys.VacancyClonedInfoMessage))
+                viewModel.VacancyClonedInfoMessage = TempData[TempDataKeys.VacancyClonedInfoMessage].ToString();
+
+            return View(viewModel);
+        }
+        
         [HttpGet("preview", Name = RouteNames.Vacancy_Preview_Get)]
         public async Task<IActionResult> VacancyPreview(VacancyRouteModel vrm, bool? submitToEfsa = null)
         {

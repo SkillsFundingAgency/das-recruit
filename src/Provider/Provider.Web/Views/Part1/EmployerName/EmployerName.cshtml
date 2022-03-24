@@ -8,19 +8,25 @@
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-        <div asp-show="@Model.PageInfo.IsWizard">
-            <a asp-show="@Model.HasOnlyOneOrganisation" asp-route="@RouteNames.NumberOfPositions_Get" asp-route-wizard="@Model.PageInfo.IsWizard" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
-            <a asp-hide="@Model.HasOnlyOneOrganisation" asp-route="@RouteNames.LegalEntity_Get" asp-route-wizard="@Model.PageInfo.IsWizard" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
-        </div>
-        <div asp-hide="@Model.PageInfo.IsWizard">
-            <a asp-hide="@Model.HasOnlyOneOrganisation" asp-route="@RouteNames.LegalEntity_Get" asp-route-wizard="@Model.PageInfo.IsWizard" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
-        </div>
-        <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState }' />
-        <partial name="@PartialNames.ReviewSummary" for="Review" />
+        <esfaFeatureEnabled name="@FeatureNames.ProviderTaskList">
+            <a asp-route="@RouteNames.ProviderTaskListGet" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
+        </esfaFeatureEnabled>
+        <esfaFeatureDisabled name="@FeatureNames.ProviderTaskList">
+            <div asp-show="@Model.PageInfo.IsWizard">
+                <a asp-show="@Model.HasOnlyOneOrganisation" asp-route="@RouteNames.NumberOfPositions_Get"  asp-route-vacancyId="@Model.VacancyId" asp-route-ukprn="@Model.Ukprn" asp-route-wizard="@Model.PageInfo.IsWizard" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
+                <a asp-hide="@Model.HasOnlyOneOrganisation" asp-route="@RouteNames.LegalEntity_Get"  asp-route-vacancyId="@Model.VacancyId" asp-route-ukprn="@Model.Ukprn" asp-route-wizard="@Model.PageInfo.IsWizard" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
+            </div>
+            <div asp-hide="@Model.PageInfo.IsWizard">
+                <a asp-hide="@Model.HasOnlyOneOrganisation" asp-route="@RouteNames.LegalEntity_Get"  asp-route-vacancyId="@Model.VacancyId" asp-route-ukprn="@Model.Ukprn" asp-route-wizard="@Model.PageInfo.IsWizard" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
+            </div>
+        </esfaFeatureDisabled>
+        
+        <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState }'/>
+        <partial name="@PartialNames.ReviewSummary" for="Review"/>
 
         <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">What employer name do you want to go on the vacancy?</h1>
 
-        <form asp-route="@RouteNames.EmployerName_Post" asp-route-wizard="@Model.PageInfo.IsWizard">
+        <form asp-route="@RouteNames.EmployerName_Post" asp-route-wizard="@Model.PageInfo.IsWizard" asp-route-vacancyId="@Model.VacancyId" asp-route-ukprn="@Model.Ukprn" >
             <div class="govuk-form-group" id="@FieldIdentifiers.EmployerName">
                 <fieldset class="govuk-fieldset">
                     <span esfa-validation-message-for="SelectedEmployerIdentityOption" class="govuk-error-message"></span>
@@ -96,7 +102,14 @@
 
             <button type="submit" class="govuk-button save-button" esfa-automation="continue-button">Continue</button>
 
-            <a asp-route="@RouteNames.EmployerName_Cancel" asp-route-wizard="@Model.PageInfo.IsWizard" class="govuk-link das-button-link">Cancel</a>
+            <esfaFeatureEnabled name="@FeatureNames.ProviderTaskList">
+                <a asp-route="@RouteNames.Dashboard_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-cancel" class="govuk-link das-button-link">Cancel</a>
+            </esfaFeatureEnabled>
+            <esfaFeatureDisabled name="@FeatureNames.ProviderTaskList">
+                <a asp-route="@RouteNames.EmployerName_Cancel" asp-route-vacancyId="@Model.VacancyId" asp-route-ukprn="@Model.Ukprn" asp-route-wizard="@Model.PageInfo.IsWizard" class="govuk-link das-button-link">Cancel</a>
+            </esfaFeatureDisabled>
+            
+            
         </form>
     </div>
 </div>

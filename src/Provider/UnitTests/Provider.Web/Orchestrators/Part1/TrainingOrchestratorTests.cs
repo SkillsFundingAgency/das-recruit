@@ -1,8 +1,10 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Provider.UnitTests.Provider.Web.HardMocks;
+using Esfa.Recruit.Provider.Web;
 using Esfa.Recruit.Provider.Web.Orchestrators.Part1;
 using Esfa.Recruit.Provider.Web.ViewModels.Part1.Training;
+using Esfa.Recruit.Shared.Web.FeatureToggle;
 using Esfa.Recruit.Shared.Web.Mappers;
 using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
@@ -24,7 +26,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part1
             _fixture = new TrainingOrchestratorTestsFixture();
         }
 
-        [Theory]
+        [Xunit.Theory]
         [InlineData("this is a value", false)]
         [InlineData("this is a new value", true)]
         public async Task WhenUpdated_ShouldFlagFieldIndicators(string programmeId, bool fieldIndicatorSet)
@@ -46,6 +48,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part1
             _fixture.VerifyProviderReviewFieldIndicators(FieldIdentifiers.Training, fieldIndicatorSet);
         }
 
+
         public class TrainingOrchestratorTestsFixture
         {
             private const VacancyRuleSet ValidationRules = VacancyRuleSet.TrainingProgramme;
@@ -57,6 +60,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part1
             {
                 MockClient = new Mock<IProviderVacancyClient>();
                 MockRecruitVacancyClient = new Mock<IRecruitVacancyClient>();
+                MockProviderRecruitVacancyClient = new Mock<IProviderVacancyClient>();
 
                 User = VacancyOrchestratorTestData.GetVacancyUser();
                 Vacancy = VacancyOrchestratorTestData.GetPart1CompleteVacancy();
@@ -75,8 +79,8 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part1
                 MockRecruitVacancyClient.Setup(x => x.UpdateDraftVacancyAsync(It.IsAny<Vacancy>(), User));
                 MockRecruitVacancyClient.Setup(x => x.UpdateEmployerProfileAsync(It.IsAny<EmployerProfile>(), User));
 
-                Sut = new TrainingOrchestrator(MockClient.Object, MockRecruitVacancyClient.Object, Mock.Of<ILogger<TrainingOrchestrator>>(), 
-                    Mock.Of<IReviewSummaryService>());
+                Sut = new TrainingOrchestrator(MockRecruitVacancyClient.Object, MockProviderRecruitVacancyClient.Object, Mock.Of<ILogger<TrainingOrchestrator>>(), 
+                    Mock.Of<IReviewSummaryService>(), new Utility(MockRecruitVacancyClient.Object, Mock.Of<IFeature>()));
             }
 
             public async Task PostConfirmTrainingEditModelAsync(ConfirmTrainingEditModel model)
@@ -87,13 +91,14 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part1
             public void VerifyProviderReviewFieldIndicators(string fieldIdentifier, bool value)
             {
                 Vacancy.ProviderReviewFieldIndicators
-                    .Where(p => p.FieldIdentifier == fieldIdentifier).Single()
+                    .SingleOrDefault(p => p.FieldIdentifier == fieldIdentifier)
                     .Should().NotBeNull().And
                     .Match<ProviderReviewFieldIndicator>((x) => x.IsChangeRequested == value);
             }
 
             public Mock<IProviderVacancyClient> MockClient { get; set; }
             public Mock<IRecruitVacancyClient> MockRecruitVacancyClient { get; set; }
+            public Mock<IProviderVacancyClient> MockProviderRecruitVacancyClient { get; set; }
         }
     }
 }

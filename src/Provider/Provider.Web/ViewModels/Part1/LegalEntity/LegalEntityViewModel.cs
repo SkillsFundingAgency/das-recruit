@@ -1,11 +1,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using Esfa.Recruit.Provider.Web.Models;
+using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Shared.Web.ViewModels;
 
 namespace Esfa.Recruit.Provider.Web.ViewModels.Part1.LegalEntity
 {
-    public class LegalEntityViewModel
+    public class LegalEntityViewModel : VacancyRouteModel
     {
         public string Title { get; internal set; }
 

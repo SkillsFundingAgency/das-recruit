@@ -19,18 +19,20 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
     {
         private readonly DisplayVacancyViewModelMapper _vacancyDisplayMapper;
         private readonly IRecruitVacancyClient _client;
+        private readonly IUtility _utility;
 
-        public VacancyViewOrchestrator(DisplayVacancyViewModelMapper vacancyDisplayMapper, IRecruitVacancyClient client)
+        public VacancyViewOrchestrator(DisplayVacancyViewModelMapper vacancyDisplayMapper, IRecruitVacancyClient client, IUtility utility)
         {
             _vacancyDisplayMapper = vacancyDisplayMapper;
             _client = client;
+            _utility = utility;
         }
 
         public async Task<Vacancy> GetVacancy(VacancyRouteModel vrm)
         {
             var vacancy = await _client.GetVacancyAsync(vrm.VacancyId.GetValueOrDefault());
 
-            Utility.CheckAuthorisedAccess(vacancy, vrm.Ukprn);
+            _utility.CheckAuthorisedAccess(vacancy, vrm.Ukprn);
 
             return vacancy;
         }
@@ -165,7 +167,9 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             viewModel.Applications = new VacancyApplicationsViewModel
             {
                 Applications = applications,
-                ShowDisability = vacancy.IsDisabilityConfident
+                ShowDisability = vacancy.IsDisabilityConfident,
+                Ukprn = viewModel.Ukprn,
+                VacancyId = viewModel.VacancyId
             };
         }
 

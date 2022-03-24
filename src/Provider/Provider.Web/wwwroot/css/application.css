@@ -1369,3 +1369,169 @@ a[rel="external"]:hover:after {
   color: #6e3619;
   background: #fcd6c3;
 }
+
+
+.govuk-tag--grey {
+  color: #383f43;
+  background: #eeefef;
+}
+
+
+
+
+/* DAS task lists */
+
+.das-task-list {
+  list-style-type: none;
+  padding-left: 0;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+@media (min-width: 40.0625em) {
+  .das-task-list {
+    min-width: 550px;
+  }
+}
+
+.das-task-list__section {
+  display: table;
+  width: 100%;
+  font-family: "nta", Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-weight: 700;
+  font-size: 18px;
+  font-size: 1.125rem;
+  line-height: 1.11111;
+}
+
+@media print {
+  .das-task-list__section {
+    font-family: sans-serif;
+  }
+}
+
+@media (min-width: 40.0625em) {
+  .das-task-list__section {
+    font-size: 24px;
+    font-size: 1.5rem;
+    line-height: 1.25;
+  }
+}
+
+@media print {
+  .das-task-list__section {
+    font-size: 18pt;
+    line-height: 1.15;
+  }
+}
+
+.das-task-list__section-number {
+  display: table-cell;
+  width: 20px;
+}
+
+@media (min-width: 40.0625em) {
+  .das-task-list__section-number {
+    width: 30px;
+    padding-right: 0;
+  }
+}
+
+.das-task-list__section-heading {
+  display: table-cell;
+}
+
+.das-task-list__section-status {
+  display: table-cell;
+  text-align: right;
+}
+
+.das-task-list__items {
+  font-family: "nta", Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-weight: 400;
+  font-size: 16px;
+  font-size: 1rem;
+  line-height: 1.25;
+  margin-bottom: 40px;
+  list-style: none;
+  padding-left: 0;
+}
+
+@media print {
+  .das-task-list__items {
+    font-family: sans-serif;
+  }
+}
+
+@media (min-width: 40.0625em) {
+  .das-task-list__items {
+    font-size: 19px;
+    font-size: 1.1875rem;
+    line-height: 1.31579;
+  }
+}
+
+@media print {
+  .das-task-list__items {
+    font-size: 14pt;
+    line-height: 1.15;
+  }
+}
+
+@media (min-width: 40.0625em) {
+  .das-task-list__items {
+    margin-bottom: 60px;
+  }
+}
+
+@media (min-width: 40.0625em) {
+  .das-task-list__items {
+    padding-left: 30px;
+  }
+}
+
+.das-task-list__item {
+  border-bottom: 1px solid #b1b4b6;
+  margin-bottom: 0 !important;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.das-task-list__item:after {
+  content: "";
+  display: block;
+  clear: both;
+}
+
+.das-task-list__item:first-child {
+  border-top: 1px solid #b1b4b6;
+}
+
+.das-task-list__task-name {
+  display: block;
+}
+
+@media (min-width: 28.125em) {
+  .das-task-list__task-name {
+    float: left;
+  }
+}
+
+.das-task-list__task-completed,
+.das-task-list__task-tag {
+  margin-top: 10px;
+  margin-bottom: 5px;
+}
+
+@media (min-width: 28.125em) {
+  .das-task-list__task-completed,
+  .das-task-list__task-tag {
+    float: right;
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+}
