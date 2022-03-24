@@ -60,7 +60,6 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
 
             var vm = new EmployerNameViewModel 
             {
-                Title = vacancy.Title,
                 HasOnlyOneOrganisation = employerInfo.LegalEntities.Count() == 1,
                 LegalEntityName = legalEntity.Name,
                 ExistingTradingName = employerProfile?.TradingName,

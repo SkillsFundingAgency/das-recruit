@@ -5,7 +5,6 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.Part1.EmployerName
 {
     public class EmployerNameViewModel
     {
-        public string Title { get; set; }
         public string LegalEntityName { get; set; }
         public string ExistingTradingName { get; set; } 
         public string NewTradingName { get; set; }
