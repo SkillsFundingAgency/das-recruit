@@ -90,6 +90,9 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             vm.HasWage = vacancy.Wage != null;
             vm.CanShowReference = vacancy.Status != VacancyStatus.Draft;
             vm.CanShowDraftHeader = vacancy.Status == VacancyStatus.Draft;
+
+            vm.Ukprn = routeModel.Ukprn;
+            vm.VacancyId = routeModel.VacancyId;
             
             if (programme != null)
             {
@@ -109,7 +112,9 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             var createVacancyTaskListModel = new VacancyPreviewViewModel
             {
                 AccountLegalEntityCount = employerInfo.LegalEntities.Count,
-                AccountId = employerAccountId
+                AccountId = employerAccountId,
+                Ukprn = vrm.Ukprn,
+                VacancyId = null
             };
             return createVacancyTaskListModel;
         }

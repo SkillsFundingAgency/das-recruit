@@ -61,7 +61,8 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
                     v.ClosingDate <= _timeProvider.Today.AddDays(ClosingSoonDays) &&
                     v.Status == VacancyStatus.Live),
                 Alerts = _providerAlertsViewModelFactory.Create(dashboard, userDetails),
-                HasEmployerReviewPermission = providerPermissions.Any()
+                HasEmployerReviewPermission = providerPermissions.Any(),
+                Ukprn = user.Ukprn.Value
             };
             return vm;
         }

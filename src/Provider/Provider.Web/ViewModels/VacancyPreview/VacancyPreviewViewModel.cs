@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Shared.Web.Mappers;
 using Esfa.Recruit.Shared.Web.ViewModels;
@@ -13,7 +14,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview
 {
-    public class VacancyPreviewViewModel : DisplayVacancyViewModel
+    public class VacancyPreviewViewModel : DisplayVacancyViewModel 
     {
         public VacancyPreviewSectionState ApplicationInstructionsSectionState { get; internal set; }
         public VacancyPreviewSectionState ApplicationMethodSectionState { get; internal set; }
