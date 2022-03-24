@@ -26,10 +26,11 @@
             <input type="hidden" name="EmployerAccountId" value="@Model.EmployerAccountId" />
             <div esfa-validation-marker-for="Title" class="govuk-form-group">
                 <p class="govuk-body">Use a title that relates to the apprenticeship training for this vacancy, this will help it get found in the Find an apprenticeship search.</p>
-                <span class="govuk-hint">Must include the word 'apprentice' or 'apprenticeship' </span>
+                <span class="govuk-hint">Must include the word 'apprentice' or 'apprenticeship'</span>
                 <span esfa-validation-message-for="Title" class="govuk-error-message"></span>
                 <input asp-for="Title" class="govuk-input character-count" type="text" data-val-length-max="100" />
                 <div>
+                    <span class="govuk-body"> You have </span>
                     <span class="govuk-body maxchar-count">100</span>
                     <span class="govuk-body maxchar-text"> characters remaining</span>
                 </div>
