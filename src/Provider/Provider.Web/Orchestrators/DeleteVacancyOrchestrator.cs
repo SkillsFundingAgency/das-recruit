@@ -12,18 +12,20 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
     {
         private readonly IProviderVacancyClient _client;
         private readonly IRecruitVacancyClient _vacancyClient;
+        private readonly IUtility _utility;
 
-        public DeleteVacancyOrchestrator(IProviderVacancyClient client, IRecruitVacancyClient vacancyClient)
+        public DeleteVacancyOrchestrator(IProviderVacancyClient client, IRecruitVacancyClient vacancyClient, IUtility utility)
         {
             _client = client;
             _vacancyClient = vacancyClient;
+            _utility = utility;
         }
 
         public async Task<DeleteViewModel> GetDeleteViewModelAsync(VacancyRouteModel vrm)
         {
             var vacancy = await _vacancyClient.GetVacancyAsync(vrm.VacancyId.Value);
 
-            Utility.CheckAuthorisedAccess(vacancy, vrm.Ukprn);
+            _utility.CheckAuthorisedAccess(vacancy, vrm.Ukprn);
 
             if (!vacancy.CanDelete)
                 throw new InvalidStateException(string.Format(ErrorMessages.VacancyNotAvailableForEditing, vacancy.Title));
@@ -40,7 +42,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
         {
             var vacancy = await _vacancyClient.GetVacancyAsync(m.VacancyId.Value);
 
-            Utility.CheckAuthorisedAccess(vacancy, m.Ukprn);
+            _utility.CheckAuthorisedAccess(vacancy, m.Ukprn);
 
             if (!vacancy.CanDelete)
                 throw new InvalidStateException(string.Format(ErrorMessages.VacancyNotAvailableForEditing, vacancy.Title));

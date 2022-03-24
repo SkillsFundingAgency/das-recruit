@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Esfa.Recruit.Provider.Web.ViewModels.Part1.LegalEntity;
 using Esfa.Recruit.Provider.Web.ViewModels;
+using Esfa.Recruit.Shared.Web.FeatureToggle;
 using Microsoft.AspNetCore.Authorization;
 
 namespace Esfa.Recruit.Provider.Web.Controllers.Part1
@@ -17,11 +18,13 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
     public class LegalEntityController : EmployerControllerBase
     {
         private readonly LegalEntityOrchestrator _orchestrator;
+        private readonly IFeature _feature;
 
-        public LegalEntityController(LegalEntityOrchestrator orchestrator, IHostingEnvironment hostingEnvironment)
+        public LegalEntityController(LegalEntityOrchestrator orchestrator, IHostingEnvironment hostingEnvironment, IFeature feature)
             : base(hostingEnvironment)
         {
             _orchestrator = orchestrator;
+            _feature = feature;
         }
 
         [HttpGet("legal-entity", Name = RouteNames.LegalEntity_Get)]
@@ -80,14 +83,24 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
             }
 
             SetVacancyEmployerInfoCookie(info);
+            await _orchestrator.SetAccountLegalEntityPublicId(new VacancyRouteModel
+            {
+                Ukprn = m.Ukprn,
+                VacancyId = m.VacancyId
+            }, m, HttpContext.User.ToVacancyUser());
 
-            return RedirectToRoute(RouteNames.EmployerName_Get, new {Wizard = wizard});
+            if (_feature.IsFeatureEnabled(FeatureNames.ProviderTaskList))
+            {
+                return RedirectToRoute(RouteNames.Training_Get, new {Wizard = wizard, m.Ukprn, m.VacancyId});    
+            }
+            
+            return RedirectToRoute(RouteNames.EmployerName_Get, new {Wizard = wizard, m.Ukprn, m.VacancyId});
         }
 
         [HttpGet("legal-entity-cancel", Name = RouteNames.LegalEntity_Cancel)]
         public IActionResult Cancel(VacancyRouteModel vrm, [FromQuery] bool wizard)
         {
-            return CancelAndRedirect(wizard);
+            return CancelAndRedirect(wizard, vrm);
         }
     }
 }

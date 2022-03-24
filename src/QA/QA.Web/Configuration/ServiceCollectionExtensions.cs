@@ -85,24 +85,25 @@ namespace Esfa.Recruit.Qa.Web.Configuration
             services.AddSingleton<ITempDataProvider, CookieTempDataProvider>();
 
             services.AddMvc(options =>
-            {
-                options.SslPort = 5025;
-                options.Filters.Add(new RequireHttpsAttribute());
-                options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
-                options.Filters.Add(new AuthorizeFilter(AuthorizationPolicyNames.QaUserPolicyName));
-                options.AddTrimModelBinderProvider(loggerFactory);
-
-                var jsonInputFormatters = options.InputFormatters.OfType<JsonInputFormatter>();
-                foreach (var formatter in jsonInputFormatters)
                 {
-                    formatter.SupportedMediaTypes
-                        .Add(MediaTypeHeaderValue.Parse("application/csp-report"));
-                }
+                    options.EnableEndpointRouting = false;
+                    options.SslPort = 5025;
+                    options.Filters.Add(new RequireHttpsAttribute());
+                    options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
+                    options.Filters.Add(new AuthorizeFilter(AuthorizationPolicyNames.QaUserPolicyName));
+                    options.AddTrimModelBinderProvider(loggerFactory);
 
-                options.Filters.AddService<PlannedOutageResultFilter>();
-            })
+                    var jsonInputFormatters = options.InputFormatters.OfType<NewtonsoftJsonInputFormatter>();
+                    foreach (var formatter in jsonInputFormatters)
+                    {
+                        formatter.SupportedMediaTypes
+                            .Add(MediaTypeHeaderValue.Parse("application/csp-report"));
+                    }
+
+                    options.Filters.AddService<PlannedOutageResultFilter>();
+            }).AddNewtonsoftJson()
             .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<Startup>())
-            .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
         }
     }
 }

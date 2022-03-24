@@ -3,9 +3,11 @@ using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Provider.UnitTests.Provider.Web.HardMocks;
+using Esfa.Recruit.Provider.Web;
 using Esfa.Recruit.Provider.Web.Orchestrators.Part1;
 using Esfa.Recruit.Provider.Web.ViewModels.Part1.Dates;
 using Esfa.Recruit.Shared.Web.Extensions;
+using Esfa.Recruit.Shared.Web.FeatureToggle;
 using Esfa.Recruit.Shared.Web.Mappers;
 using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
@@ -104,8 +106,8 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part1
                 MockRecruitVacancyClient.Setup(x => x.UpdateDraftVacancyAsync(It.IsAny<Vacancy>(), User));
                 MockRecruitVacancyClient.Setup(x => x.UpdateEmployerProfileAsync(It.IsAny<EmployerProfile>(), User));
 
-                Sut = new DatesOrchestrator(MockClient.Object, MockRecruitVacancyClient.Object, Mock.Of<ILogger<DatesOrchestrator>>(),
-                    Mock.Of<ITimeProvider>(), Mock.Of<IReviewSummaryService>(), Mock.Of<IApprenticeshipProgrammeProvider>());
+                Sut = new DatesOrchestrator(MockRecruitVacancyClient.Object, Mock.Of<ILogger<DatesOrchestrator>>(),
+                    Mock.Of<ITimeProvider>(), Mock.Of<IReviewSummaryService>(), Mock.Of<IApprenticeshipProgrammeProvider>(), new Utility(MockRecruitVacancyClient.Object, Mock.Of<IFeature>()));
             }
 
             public async Task PostDatesEditModelAsync(DatesEditModel model)

@@ -6,6 +6,7 @@ using Esfa.Recruit.Provider.Web.Orchestrators.Part1;
 using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Provider.Web.ViewModels.Part2.ShortDescription;
 using Esfa.Recruit.Shared.Web.Extensions;
+using Esfa.Recruit.Shared.Web.FeatureToggle;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,10 +17,12 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part2
     public class ShortDescriptionController : Controller
     {
         private readonly ShortDescriptionOrchestrator _orchestrator;
+        private readonly IFeature _feature;
 
-        public ShortDescriptionController(ShortDescriptionOrchestrator orchestrator)
+        public ShortDescriptionController(ShortDescriptionOrchestrator orchestrator, IFeature feature)
         {
             _orchestrator = orchestrator;
+            _feature = feature;
         }
         
         [HttpGet("description", Name = RouteNames.ShortDescription_Get)]
@@ -45,7 +48,11 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part2
                 return View(vm);
             }
 
-            return RedirectToRoute(RouteNames.Vacancy_Preview_Get);
+            if (_feature.IsFeatureEnabled(FeatureNames.ProviderTaskList))
+            {
+                return RedirectToRoute(RouteNames.VacancyDescription_Index_Get, new {m.Ukprn, m.VacancyId});
+            }
+            return RedirectToRoute(RouteNames.Vacancy_Preview_Get, new {m.Ukprn, m.VacancyId});
         }
     }
 }

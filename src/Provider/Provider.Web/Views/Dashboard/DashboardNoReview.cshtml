@@ -1,4 +1,5 @@
 ﻿@using Esfa.Recruit.Vacancies.Client.Domain.Entities
+@using Esfa.Recruit.Provider.Web.RouteModel
 
 @model Esfa.Recruit.Provider.Web.ViewModels.Dashboard.DashboardViewModel
 
@@ -6,21 +7,10 @@
     ViewBag.GaData.Vpv = "/recruitment/provider/page-dashboard";
 
     var vacanciesSearchSuggestionsEndpointUrl = @Url.RouteUrl(RouteNames.VacanciesSearchSuggestions_Get, null, Context.Request.Scheme);
+    var vacancyRouteModel = new VacancyRouteModel {Ukprn = Model.Ukprn};
 }
 
-<div asp-hide="@Model.HasAnyVacancies">
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-one-half">
-            <h1 class="govuk-heading-xl">Recruitment</h1>
-            <p class="govuk-body">Your dashboard is empty, start by creating your first vacancy</p>
-            <p class="govuk-body">Vacancies will be approved or rejected within 24 hours.</p>
-        </div>
-
-        <div class="govuk-grid-column-one-half ">
-            <a asp-route="@RouteNames.Employer_Get" class="govuk-button float-right clear govuk-!-margin-top-2 govuk-!-margin-bottom-4" esfa-automation="create-vacancy">Create vacancy</a>
-        </div>
-    </div>
-</div>
+<partial asp-hide="@Model.HasAnyVacancies" name="_ProviderNoVacanciesContent" model="@vacancyRouteModel" />
 
 <div asp-show="@Model.HasAnyVacancies">
 
@@ -31,11 +21,17 @@
             <h1 class="govuk-heading-xl">Recruitment</h1>
         </div>
         <div class="govuk-grid-column-one-half ">
-            <a asp-route="@RouteNames.Employer_Get" class="govuk-button float-right clear govuk-!-margin-top-2 govuk-!-margin-bottom-4" esfa-automation="create-vacancy">Create vacancy</a>
+            <esfaFeatureEnabled name="@FeatureNames.ProviderTaskList">
+                <a asp-route="@RouteNames.CreateVacancyStart"  asp-route-ukprn="@Model.Ukprn" class="govuk-button float-right clear govuk-!-margin-top-2 govuk-!-margin-bottom-4" esfa-automation="create-vacancy">Create vacancy</a>
+            </esfaFeatureEnabled>
+            <esfaFeatureDisabled name="@FeatureNames.ProviderTaskList">
+                <a asp-route="@RouteNames.Employer_Get" asp-route-ukprn="@Model.Ukprn"  class="govuk-button float-right clear govuk-!-margin-top-2 govuk-!-margin-bottom-4" esfa-automation="create-vacancy">Create vacancy</a>    
+            </esfaFeatureDisabled>
+            
         </div>
     </div>
     <div class="govuk-grid-row">
-        <form asp-route="@RouteNames.Vacancies_Get" method="get" autocomplete="off">
+        <form asp-route="@RouteNames.Vacancies_Get" method="get" autocomplete="off"  asp-route-ukprn="@Model.Ukprn" >
             <div class="govuk-grid-column-two-thirds">
                 <div class="govuk-form-group">
                     <fieldset class="govuk-fieldset">
@@ -62,7 +58,7 @@
                 <div class="das-card--content">
                     <h3 class="govuk-heading-m das-card--heading">
                         <span class="das-card--stat">@Model.VacancyCountDraft</span>
-                        <a asp-route="@RouteNames.Vacancies_Get" asp-route-filter="@FilteringOptions.Draft" class="govuk-link">
+                        <a asp-route="@RouteNames.Vacancies_Get"  asp-route-ukprn="@Model.Ukprn"  asp-route-filter="@FilteringOptions.Draft" class="govuk-link">
                             @FilteringOptions.Draft @Model.VacancyTextDraft
                         </a>
                     </h3>
@@ -75,7 +71,7 @@
                 <div class="das-card--content">
                     <h3 class="govuk-heading-m das-card--heading">
                         <span class="das-card--stat">@Model.VacancyCountSubmitted</span>
-                        <a asp-route="@RouteNames.Vacancies_Get" asp-route-filter="@FilteringOptions.Submitted" class="govuk-link">
+                        <a asp-route="@RouteNames.Vacancies_Get"  asp-route-ukprn="@Model.Ukprn"  asp-route-filter="@FilteringOptions.Submitted" class="govuk-link">
                             @FilteringOptions.Submitted.GetDisplayName(UserType.Provider)
                         </a>
                     </h3>
@@ -88,7 +84,7 @@
                 <div class="das-card--content">
                     <h3 class="govuk-heading-m das-card--heading">
                         <span class="das-card--stat">@Model.VacancyCountReferred</span>
-                        <a asp-route="@RouteNames.Vacancies_Get" asp-route-filter="@FilteringOptions.Referred" class="govuk-link">
+                        <a asp-route="@RouteNames.Vacancies_Get"  asp-route-ukprn="@Model.Ukprn"  asp-route-filter="@FilteringOptions.Referred" class="govuk-link">
                             @FilteringOptions.Referred.GetDisplayName() @Model.VacancyTextReferred
                         </a>
                     </h3>
@@ -103,7 +99,7 @@
                 <div class="das-card--content">
                     <h3 class="govuk-heading-m das-card--heading">
                         <span class="das-card--stat">@Model.VacancyCountLive</span>
-                        <a asp-route="@RouteNames.Vacancies_Get" asp-route-filter="@FilteringOptions.Live" class="govuk-link">
+                        <a asp-route="@RouteNames.Vacancies_Get"  asp-route-ukprn="@Model.Ukprn"  asp-route-filter="@FilteringOptions.Live" class="govuk-link">
                             @FilteringOptions.Live @Model.VacancyTextLive
                         </a>
                     </h3>
@@ -111,10 +107,10 @@
                     <p class="govuk-body das-card--description"></p>
                     <ul class="das-card--tasks govuk-list">
                         <li asp-show="@Model.ShowNoOfVacanciesClosingSoon">
-                            <a class="govuk-link" asp-route="@RouteNames.Vacancies_Get" asp-route-filter="@FilteringOptions.ClosingSoon">@Model.NoOfVacanciesClosingSoon live @Model.VacancyTextClosingSoon closing soon</a>
+                            <a class="govuk-link" asp-route="@RouteNames.Vacancies_Get" asp-route-ukprn="@Model.Ukprn"  asp-route-filter="@FilteringOptions.ClosingSoon">@Model.NoOfVacanciesClosingSoon live @Model.VacancyTextClosingSoon closing soon</a>
                         </li>
                         <li asp-show="@Model.ShowNoOfVacanciesClosingSoonWithNoApplications">
-                            <a class="govuk-link" asp-route="@RouteNames.Vacancies_Get" asp-route-filter="@FilteringOptions.ClosingSoonWithNoApplications">
+                            <a class="govuk-link" asp-route="@RouteNames.Vacancies_Get" asp-route-ukprn="@Model.Ukprn"  asp-route-filter="@FilteringOptions.ClosingSoonWithNoApplications">
                                 @Model.NoOfVacanciesClosingSoonWithNoApplications live @Model.VacancyTextClosingSoonWithNoApplications closing soon with no applications
                             </a>
                         </li>
@@ -127,14 +123,14 @@
                 <div class="das-card--content">
                     <h3 class="govuk-heading-m das-card--heading">
                         <span class="das-card--stat">@Model.NoOfNewApplications</span>
-                        <a asp-route="@RouteNames.Vacancies_Get" asp-route-filter="@FilteringOptions.NewApplications" class="govuk-link">
+                        <a asp-route="@RouteNames.Vacancies_Get" asp-route-ukprn="@Model.Ukprn"  asp-route-filter="@FilteringOptions.NewApplications" class="govuk-link">
                             New @Model.ApplicationTextLive
                         </a>
                     </h3>
                     <span class="govuk-body das-card--description">Applications from Find an apprenticeship service.</span>
                     <ul class="das-card--tasks govuk-list" asp-show="@Model.ShowAllApplications">
                         <li>
-                            <a class="govuk-link ga-track-anchor-click" asp-route="@RouteNames.Vacancies_Get" asp-route-filter="@FilteringOptions.AllApplications" data-ga-event-category="link - click">
+                            <a class="govuk-link ga-track-anchor-click" asp-route="@RouteNames.Vacancies_Get" asp-route-ukprn="@Model.Ukprn"  asp-route-filter="@FilteringOptions.AllApplications" data-ga-event-category="link - click">
                                 View all applications
                             </a>
                         </li>
@@ -147,7 +143,7 @@
                 <div class="das-card--content">
                     <h3 class="govuk-heading-m das-card--heading">
                         <span class="das-card--stat">@Model.VacancyCountClosed</span>
-                        <a asp-route="@RouteNames.Vacancies_Get" asp-route-filter="@FilteringOptions.Closed" class="govuk-link">
+                        <a asp-route="@RouteNames.Vacancies_Get" asp-route-ukprn="@Model.Ukprn"  asp-route-filter="@FilteringOptions.Closed" class="govuk-link">
                             @FilteringOptions.Closed @Model.VacancyTextClosed
                         </a>
                     </h3>
@@ -158,19 +154,19 @@
     </div>
     <div class="govuk-grid-row">
         <div asp-show="@Model.HasOneVacancy" class="govuk-grid-column-full">
-            <a asp-route="@RouteNames.VacancyManage_Get" asp-route-vacancyId="@Model.CurrentVacancyId" class="govuk-link govuk-!-font-size-24 govuk-!-font-weight-bold govuk-link--no-visited-state" name="button">
+            <a asp-route="@RouteNames.VacancyManage_Get" asp-route-ukprn="@Model.Ukprn"  asp-route-vacancyId="@Model.CurrentVacancyId" class="govuk-link govuk-!-font-size-24 govuk-!-font-weight-bold govuk-link--no-visited-state" name="button">
                 View your vacancy
             </a>
         </div>
         <div asp-hide="@Model.HasOneVacancy" class="govuk-grid-column-full">
-            <a asp-route="@RouteNames.Vacancies_Get" asp-route-filter="@FilteringOptions.All" class="govuk-link govuk-!-font-size-24 govuk-!-font-weight-bold govuk-link--no-visited-state" name="button">
+            <a asp-route="@RouteNames.Vacancies_Get" asp-route-ukprn="@Model.Ukprn"  asp-route-filter="@FilteringOptions.All" class="govuk-link govuk-!-font-size-24 govuk-!-font-weight-bold govuk-link--no-visited-state" name="button">
                 View all your vacancies (@Model.Vacancies.Count)
             </a>
         </div>
         <div class="govuk-grid-column-one-third">
             <h3 class="govuk-heading-s">
                 <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible" />
-                <a class="govuk-link  govuk-link--no-visited-state" asp-route="@RouteNames.ReportDashboard_Get">Reports</a>
+                <a class="govuk-link  govuk-link--no-visited-state" asp-route="@RouteNames.ReportDashboard_Get" asp-route-ukprn="@Model.Ukprn" >Reports</a>
             </h3>
             <p class="govuk-body">Create a report about applicants or vacancies</p>
         </div>
@@ -178,7 +174,7 @@
             <div class="govuk-grid-column-one-third">
                 <h3 class="govuk-heading-s">
                     <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible" />
-                    <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.ManageNotifications_Get">Manage your recruitment emails</a>
+                    <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.ManageNotifications_Get" asp-route-ukprn="@Model.Ukprn" >Manage your recruitment emails</a>
                 </h3>
                 <p class="govuk-body">Set up and manage the emails you’re sent about your vacancies and applications</p>
             </div>
@@ -187,7 +183,7 @@
             <div class="govuk-grid-column-one-third">
                 <h3 class="govuk-heading-s">
                     <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible" />
-                    <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.Dashboard_ProviderRecruitmentApi">Recruitment APIs</a>
+                    <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.Dashboard_ProviderRecruitmentApi" asp-route-ukprn="@Model.Ukprn" >Recruitment APIs</a>
                 </h3>
                 <p class="govuk-body">Integrate our APIs to create vacancies using your own systems and display adverts on multiple sites.</p>
             </div>

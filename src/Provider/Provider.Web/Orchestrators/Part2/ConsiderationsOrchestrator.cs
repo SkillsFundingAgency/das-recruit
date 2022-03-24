@@ -16,25 +16,27 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part2
     public class ConsiderationsOrchestrator : VacancyValidatingOrchestrator<ConsiderationsEditModel>
     {
         private const VacancyRuleSet ValidationRules = VacancyRuleSet.ThingsToConsider;
-        private readonly IProviderVacancyClient _client;
         private readonly IRecruitVacancyClient _vacancyClient;
         private readonly IReviewSummaryService _reviewSummaryService;
+        private readonly IUtility _utility;
 
-        public ConsiderationsOrchestrator(ILogger<ConsiderationsOrchestrator> logger, IProviderVacancyClient client, IRecruitVacancyClient vacancyClient, IReviewSummaryService reviewSummaryService) : base(logger)
+        public ConsiderationsOrchestrator(ILogger<ConsiderationsOrchestrator> logger, IRecruitVacancyClient vacancyClient, IReviewSummaryService reviewSummaryService, IUtility utility) : base(logger)
         {
-            _client = client;
             _vacancyClient = vacancyClient;
             _reviewSummaryService = reviewSummaryService;
+            _utility = utility;
         }
 
         public async Task<ConsiderationsViewModel> GetConsiderationsViewModelAsync(VacancyRouteModel vrm)
         {
-            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, _vacancyClient, vrm, RouteNames.Considerations_Get);
+            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.Considerations_Get);
             
             var vm = new ConsiderationsViewModel
             {
                 Title = vacancy.Title,
                 ThingsToConsider = vacancy.ThingsToConsider,
+                Ukprn = vrm.Ukprn,
+                VacancyId = vrm.VacancyId
             };
 
             if (vacancy.Status == VacancyStatus.Referred)
@@ -57,7 +59,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part2
 
         public async Task<OrchestratorResponse> PostConsiderationsEditModelAsync(ConsiderationsEditModel m, VacancyUser user)
         {
-            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, _vacancyClient, m, RouteNames.Considerations_Post);
+            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(m, RouteNames.Considerations_Post);
 
             SetVacancyWithProviderReviewFieldIndicators(
                 vacancy.ThingsToConsider,
