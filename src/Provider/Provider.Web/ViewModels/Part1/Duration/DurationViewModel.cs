@@ -9,6 +9,8 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.Part1.Duration
 {
     public class DurationViewModel : VacancyRouteModel
     {
+        public string Title { get; set; }
+        
         [TypeOfInteger(ErrorMessage = ErrMsg.TypeOfInteger.Duration)]
         public string Duration { get; set; }
 

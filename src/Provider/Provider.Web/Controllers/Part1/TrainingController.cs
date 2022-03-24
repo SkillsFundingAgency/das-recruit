@@ -19,7 +19,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
     {
         private readonly TrainingOrchestrator _orchestrator;
         private readonly IFeature _feature;
-        private const string InvalidTraining = "Please select a training programme";
+        private const string InvalidTraining = "Select a training course";
 
         public TrainingController(TrainingOrchestrator orchestrator, IFeature feature)
         {
