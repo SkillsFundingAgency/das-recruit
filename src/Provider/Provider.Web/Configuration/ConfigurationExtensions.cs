@@ -21,6 +21,7 @@ using Esfa.Recruit.Provider.Web.Middleware;
 using System.Threading.Tasks;
 using Esfa.Recruit.Provider.Web.Extensions;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using SFA.DAS.Provider.Shared.UI.Startup;
 
 namespace Esfa.Recruit.Provider.Web.Configuration
 {
@@ -102,6 +103,8 @@ namespace Esfa.Recruit.Provider.Web.Configuration
                 }
             ).AddNewtonsoftJson()
             .AddFluentValidation()
+            .EnableCookieBanner()
+            .EnableCsp()
             .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
         }
 
