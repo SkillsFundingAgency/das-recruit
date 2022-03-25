@@ -9,7 +9,7 @@
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
-        <a asp-route="@RouteNames.ProviderTaskListGet" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back to task list</a>
+        <a asp-route="@RouteNames.ProviderTaskListGet" asp-route-ukprn="@Model.Ukprn" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back to task list</a>
     </div>
 </div>
 
@@ -29,7 +29,7 @@
                     @Model.Title
                 </dd>
                 <dd class="govuk-summary-list__actions">
-                    <a class="govuk-link govuk-link--no-visited-state float-right-desktop" asp-route="@RouteNames.Title_Get">Change<span class="govuk-visually-hidden"> vacancy title</span></a>
+                    <a class="govuk-link govuk-link--no-visited-state float-right-desktop" asp-route="@RouteNames.Title_Get" asp-all-route-data="@Model.RouteDictionary">Change<span class="govuk-visually-hidden"> vacancy title</span></a>
                 </dd>
             </div>
             @if (Model.AccountLegalEntityCount > 1)
@@ -42,7 +42,7 @@
                         @Model.EmployerName
                     </dd>
                     <dd class="govuk-summary-list__actions">
-                        <a class="govuk-link govuk-link--no-visited-state float-right-desktop" asp-route="@RouteNames.LegalEntity_Get">Change<span class="govuk-visually-hidden"> legal entity</span></a>
+                        <a class="govuk-link govuk-link--no-visited-state float-right-desktop" asp-route="@RouteNames.LegalEntity_Get" asp-all-route-data="@Model.RouteDictionary">Change<span class="govuk-visually-hidden"> legal entity</span></a>
                     </dd>
                 </div>   
             }
@@ -54,7 +54,7 @@
                     @Model.TrainingTitle
                 </dd>
                 <dd class="govuk-summary-list__actions">
-                    <a class="govuk-link govuk-link--no-visited-state float-right-desktop" asp-route="@RouteNames.Training_Get">Change<span class="govuk-visually-hidden"> training course</span></a>
+                    <a class="govuk-link govuk-link--no-visited-state float-right-desktop" asp-route="@RouteNames.Training_Get" asp-all-route-data="@Model.RouteDictionary">Change<span class="govuk-visually-hidden"> training course</span></a>
                 </dd>
             </div>
             <div class="govuk-summary-list__row">
@@ -65,7 +65,7 @@
                     @Model.ShortDescription
                 </dd>
                 <dd class="govuk-summary-list__actions">
-                    <a class="govuk-link govuk-link--no-visited-state float-right-desktop" asp-route="@RouteNames.ShortDescription_Get">Change<span class="govuk-visually-hidden"> summary of the apprenticeship</span></a>
+                    <a class="govuk-link govuk-link--no-visited-state float-right-desktop" asp-route="@RouteNames.ShortDescription_Get" asp-all-route-data="@Model.RouteDictionary">Change<span class="govuk-visually-hidden"> summary of the apprenticeship</span></a>
                 </dd>
             </div>
             <div class="govuk-summary-list__row govuk-summary-list--no-border">
@@ -76,7 +76,7 @@
                     @Html.Raw(Model.VacancyDescription)
                 </dd>
                 <dd class="govuk-summary-list__actions">
-                    <a class="govuk-link govuk-link--no-visited-state float-right-desktop" asp-route="@RouteNames.VacancyDescription_Index_Get">Change<span class="govuk-visually-hidden"> about the apprenticeship</span></a>
+                    <a class="govuk-link govuk-link--no-visited-state float-right-desktop" asp-route="@RouteNames.VacancyDescription_Index_Get" asp-all-route-data="@Model.RouteDictionary">Change<span class="govuk-visually-hidden"> about the apprenticeship</span></a>
                 </dd>
             </div>
             <div class="govuk-summary-list__row govuk-summary-list--no-border">
@@ -100,7 +100,7 @@
                     @Model.ClosingDate
                 </dd>
                 <dd class="govuk-summary-list__actions">
-                    <a class="govuk-link govuk-link--no-visited-state float-right-desktop" asp-route="@RouteNames.Dates_Get">Change<span class="govuk-visually-hidden"> important date</span></a>
+                    <a class="govuk-link govuk-link--no-visited-state float-right-desktop" asp-route="@RouteNames.Dates_Get" asp-all-route-data="@Model.RouteDictionary">Change<span class="govuk-visually-hidden"> important date</span></a>
                 </dd>
             </div>
             <div class="govuk-summary-list__row">
@@ -121,7 +121,7 @@
                     @Model.ExpectedDuration
                 </dd>
                 <dd class="govuk-summary-list__actions">
-                    <a class="govuk-link govuk-link--no-visited-state float-right-desktop" asp-route="@RouteNames.Duration_Get">Change<span class="govuk-visually-hidden"> duration</span></a>
+                    <a class="govuk-link govuk-link--no-visited-state float-right-desktop" asp-route="@RouteNames.Duration_Get" asp-all-route-data="@Model.RouteDictionary">Change<span class="govuk-visually-hidden"> duration</span></a>
                 </dd>
             </div>
             <div class="govuk-summary-list__row govuk-summary-list--no-border">
@@ -152,7 +152,7 @@
                     @Model.WageText
                 </dd>
                 <dd class="govuk-summary-list__actions">
-                    <a class="govuk-link govuk-link--no-visited-state float-right-desktop" asp-route="@RouteNames.Wage_Get">Change<span class="govuk-visually-hidden"> wage</span></a>
+                    <a class="govuk-link govuk-link--no-visited-state float-right-desktop" asp-route="@RouteNames.Wage_Get" asp-all-route-data="@Model.RouteDictionary">Change<span class="govuk-visually-hidden"> wage</span></a>
                 </dd>
             </div>
             <div class="govuk-summary-list__row">
@@ -173,7 +173,7 @@
                     @Model.NumberOfPositions
                 </dd>
                 <dd class="govuk-summary-list__actions">
-                    <a class="govuk-link govuk-link--no-visited-state float-right-desktop" asp-route="@RouteNames.NumberOfPositions_Get">Change<span class="govuk-visually-hidden"> number of positions</span></a>
+                    <a class="govuk-link govuk-link--no-visited-state float-right-desktop" asp-route="@RouteNames.NumberOfPositions_Get" asp-all-route-data="@Model.RouteDictionary">Change<span class="govuk-visually-hidden"> number of positions</span></a>
                 </dd>
             </div>
             <div class="govuk-summary-list__row">
@@ -184,7 +184,7 @@
                     @string.Join(", ", Model.EmployerAddressElements?.Where(s => !string.IsNullOrWhiteSpace(s)).Select(s => s.Trim()) ?? new string[0])
                 </dd>
                 <dd class="govuk-summary-list__actions">
-                    <a class="govuk-link govuk-link--no-visited-state float-right-desktop" asp-route="@RouteNames.Location_Get">Change<span class="govuk-visually-hidden"> location</span></a>
+                    <a class="govuk-link govuk-link--no-visited-state float-right-desktop" asp-route="@RouteNames.Location_Get" asp-all-route-data="@Model.RouteDictionary">Change<span class="govuk-visually-hidden"> location</span></a>
                 </dd>
             </div>
         </dl>
@@ -203,7 +203,7 @@
                     </ul>
                 </dd>
                 <dd class="govuk-summary-list__actions">
-                    <a class="govuk-link govuk-link--no-visited-state float-right-desktop" asp-route="@RouteNames.Skills_Get">Change<span class="govuk-visually-hidden"> skills</span></a>
+                    <a class="govuk-link govuk-link--no-visited-state float-right-desktop" asp-route="@RouteNames.Skills_Get" asp-all-route-data="@Model.RouteDictionary">Change<span class="govuk-visually-hidden"> skills</span></a>
                 </dd>
             </div>
             <div class="govuk-summary-list__row">
@@ -219,7 +219,7 @@
                     </ul>
                 </dd>
                 <dd class="govuk-summary-list__actions">
-                    <a class="govuk-link govuk-link--no-visited-state float-right-desktop" asp-route="@RouteNames.Qualifications_Get">Change<span class="govuk-visually-hidden"> qualifications</span></a>
+                    <a class="govuk-link govuk-link--no-visited-state float-right-desktop" asp-route="@RouteNames.Qualifications_Get" asp-all-route-data="@Model.RouteDictionary">Change<span class="govuk-visually-hidden"> qualifications</span></a>
                 </dd>
             </div>
             <div class="govuk-summary-list__row">
@@ -230,7 +230,7 @@
                     @Html.Raw(Model.OutcomeDescription)
                 </dd>
                 <dd class="govuk-summary-list__actions">
-                    <a class="govuk-link govuk-link--no-visited-state float-right-desktop" asp-route="@RouteNames.FutureProspects_Get">Change<span class="govuk-visually-hidden"> future prospects</span></a>
+                    <a class="govuk-link govuk-link--no-visited-state float-right-desktop" asp-route="@RouteNames.FutureProspects_Get" asp-all-route-data="@Model.RouteDictionary">Change<span class="govuk-visually-hidden"> future prospects</span></a>
                 </dd>
             </div>
             <div class="govuk-summary-list__row">
@@ -241,7 +241,7 @@
                     @Model.ThingsToConsider
                 </dd>
                 <dd class="govuk-summary-list__actions">
-                    <a class="govuk-link govuk-link--no-visited-state float-right-desktop" asp-route="@RouteNames.Considerations_Get">Change<span class="govuk-visually-hidden"> considerations</span></a>
+                    <a class="govuk-link govuk-link--no-visited-state float-right-desktop" asp-route="@RouteNames.Considerations_Get" asp-all-route-data="@Model.RouteDictionary">Change<span class="govuk-visually-hidden"> considerations</span></a>
                 </dd>
             </div>
         </dl>
@@ -255,7 +255,7 @@
                     @Model.EmployerName
                 </dd>
                 <dd class="govuk-summary-list__actions">
-                    <a class="govuk-link govuk-link--no-visited-state float-right-desktop" asp-route="@RouteNames.EmployerName_Get">Change<span class="govuk-visually-hidden"> name of organisation</span></a>
+                    <a class="govuk-link govuk-link--no-visited-state float-right-desktop" asp-route="@RouteNames.EmployerName_Get" asp-all-route-data="@Model.RouteDictionary">Change<span class="govuk-visually-hidden"> name of organisation</span></a>
                 </dd>
             </div>
             <div class="govuk-summary-list__row govuk-summary-list--no-border">
@@ -266,7 +266,7 @@
                     @Model.EmployerDescription
                 </dd>
                 <dd class="govuk-summary-list__actions">
-                    <a class="govuk-link govuk-link--no-visited-state float-right-desktop" asp-route="@RouteNames.AboutEmployer_Get">Change<span class="govuk-visually-hidden"> name of organisation</span></a>
+                    <a class="govuk-link govuk-link--no-visited-state float-right-desktop" asp-route="@RouteNames.AboutEmployer_Get" asp-all-route-data="@Model.RouteDictionary">Change<span class="govuk-visually-hidden"> name of organisation</span></a>
                 </dd>
             </div>
             <div class="govuk-summary-list__row govuk-summary-list--no-border">
@@ -298,7 +298,7 @@
                     @(Model.HasProviderContactName?Model.ProviderContactName:"None")
                 </dd>
                 <dd class="govuk-summary-list__actions">
-                    <a class="govuk-link govuk-link--no-visited-state float-right-desktop" asp-route="@RouteNames.ProviderContactDetails_Get">Change<span class="govuk-visually-hidden"> contact details</span></a>
+                    <a class="govuk-link govuk-link--no-visited-state float-right-desktop" asp-route="@RouteNames.ProviderContactDetails_Get" asp-all-route-data="@Model.RouteDictionary">Change<span class="govuk-visually-hidden"> contact details</span></a>
                 </dd>
             </div>
             <div class="govuk-summary-list__row govuk-summary-list--no-border">
@@ -336,7 +336,7 @@
                     }
                 </dd>
                 <dd class="govuk-summary-list__actions">
-                    <a class="govuk-link govuk-link--no-visited-state float-right-desktop" asp-route="@RouteNames.ApplicationProcess_Get">Change<span class="govuk-visually-hidden"> application process</span></a>
+                    <a class="govuk-link govuk-link--no-visited-state float-right-desktop" asp-route="@RouteNames.ApplicationProcess_Get" asp-all-route-data="@Model.RouteDictionary">Change<span class="govuk-visually-hidden"> application process</span></a>
                 </dd>
             </div>
             @if (Model.HasApplicationInstructions)
