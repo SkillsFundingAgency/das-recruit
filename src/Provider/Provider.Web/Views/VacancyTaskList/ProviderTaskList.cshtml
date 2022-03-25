@@ -2,7 +2,10 @@
 @using Esfa.Recruit.Vacancies.Client.Domain.Entities
 @model Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview.VacancyPreviewViewModel
 
-@{ ViewBag.GaData.Vpv = "/recruitment/provider/task-list"; }
+@{ 
+    ViewBag.GaData.Vpv = "/recruitment/provider/task-list";
+    ViewBag.Title = "Create an apprenticeship vacancy";
+}
 
 @section BackLink {
     <a asp-route="@RouteNames.Dashboard_Get" asp-route-ukprn="@Model.Ukprn" esfa-automation="link-back" class="govuk-back-link">Return to dashboard</a>
