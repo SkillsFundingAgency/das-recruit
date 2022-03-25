@@ -350,6 +350,7 @@ function inViewport($el) {
 }
 
 function initializeHtmlEditors() {
+    console.log(123)
     tinymce.init({
         element_format: 'html',
         apply_source_formatting: true,
@@ -359,7 +360,7 @@ function initializeHtmlEditors() {
         statusbar: false,
         toolbar: 'bullist',
         paste_as_text: true,
-        content_style: ".mce-content-body {font-size:19px;font-family:nta,Arial,sans-serif;}",
+        content_style: ".mce-content-body {font-size:19px;font-family:\"GDS Transport\",arial,sans-serif}",
         setup: function (tinyMceEditor) {
             var element = tinyMceEditor.getElement();
 
@@ -391,12 +392,8 @@ function setEditorMaxLength(element, tinyMceEditor) {
 }
 
 $(function () {
-    
-    //Legacy menu script
-    sfa.navigation.init();
     // Dirty forms handling
     $('form').areYouSure();
     //handle anchor clicks to account for floating menu
     handleAnchorClicks();
-    window.GOVUKFrontend.initAll();
 });
