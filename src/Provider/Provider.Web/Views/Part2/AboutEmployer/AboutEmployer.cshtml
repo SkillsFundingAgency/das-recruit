@@ -15,15 +15,15 @@
 
         <h1 class="govuk-heading-xl">
             <span class="govuk-caption-l">@Model.Title</span>
-            Add some information about @Model.EmployerTitle
+            Information about @Model.EmployerTitle
         </h1>
-
+        <p class="govuk-body">Updating the employer information will also update the employer information on any unapproved vacancies eg. draft, pending review or rejected vacancies.</p>
         <form asp-route="@RouteNames.AboutEmployer_Get" asp-all-route-data="@Model.RouteDictionary">
             <div esfa-validation-marker-for="EmployerDescription" class="govuk-form-group">
                 <label asp-for="EmployerDescription" class="govuk-label govuk-!-font-weight-bold">Tell us about the organisation</label>
                 <span esfa-validation-message-for="EmployerDescription" class="govuk-error-message"></span>
-                <textarea asp-for="EmployerDescription" class="govuk-textarea character-count" rows="5" data-val-length-max="500"></textarea>
-                <span class="govuk-body maxchar-count">500</span>
+                <textarea asp-for="EmployerDescription" class="govuk-textarea character-count" rows="5" data-val-length-max="4000"></textarea>
+                <span class="govuk-body maxchar-count">4000</span>
                 <span class="govuk-body maxchar-text"> characters remaining</span>
             </div>
             <div esfa-validation-marker-for="EmployerWebsiteUrl" class="govuk-form-group">
@@ -32,6 +32,22 @@
                 <div asp-show="@Model.IsAnonymous" class="govuk-hint">The website will not be shown as the employer is anonymous</div>
                 <input asp-for="EmployerWebsiteUrl" class="govuk-input govuk-!-width-three-quarters" maxlength="100" />
             </div>
+            <esfaFeatureEnabled name="@FeatureNames.ProviderTaskList">
+                <div class="govuk-form-group">
+                    <fieldset class="govuk-fieldset">
+                        <legend class="govuk-label govuk-!-font-weight-bold">Disability Confident (optional)</legend>
+                        <div class="govuk-checkboxes">
+                            <div class="govuk-checkboxes__item">
+                                <input asp-for="IsDisabilityConfident" class="govuk-checkboxes__input" type="checkbox" value="true">
+                                <label asp-for="IsDisabilityConfident" class="govuk-label govuk-checkboxes__label">This vacancy is <a href="https://www.gov.uk/government/collections/disability-confident-campaign" class="govuk-link" rel="noopener" target="_blank" title="Disability Confident employer scheme and guidance (opens in a new window)">Disability Confident</a>.</label>
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+            </esfaFeatureEnabled>
+            <esfaFeatureDisabled name="@FeatureNames.ProviderTaskList">
+                <input type="hidden" asp-for="IsDisabilityConfident"/>
+            </esfaFeatureDisabled>
             <div class="govuk-form-group">
                 <input type="submit" value="Save and continue" esfa-automation="btn-continue" class="govuk-button save-button" />
                 <esfaFeatureEnabled name="@FeatureNames.ProviderTaskList">
