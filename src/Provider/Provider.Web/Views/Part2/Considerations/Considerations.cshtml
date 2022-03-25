@@ -2,6 +2,7 @@
 
 @{
     ViewBag.GaData.Vpv = "/recruitment/provider/page-vacancy-considerations";
+    ViewBag.Title = "Other things to consider";
 }
 
 <div class="govuk-grid-row">
@@ -17,16 +18,16 @@
 
         <h1 class="govuk-heading-xl">
             <span class="govuk-caption-l">@Model.Title</span>
-            What else would you like the applicant to consider? (optional)
+            What else do you want the applicant to consider? (optional)
         </h1>
 
         <form asp-route="@RouteNames.Considerations_Post" asp-all-route-data="@Model.RouteDictionary">
             <div esfa-validation-marker-for="ThingsToConsider" class="govuk-form-group">
                 <label asp-for="ThingsToConsider" class="govuk-visually-hidden">Things to consider (optional)</label>
-                <span class="govuk-hint">For example, if the vacancy will involve working outdoors, or lifting heavy objects</span>
+                <span class="govuk-hint">For example, if the vacancy will involve working outdoors or lifting heavy objects</span>
                 <span esfa-validation-message-for="ThingsToConsider" class="govuk-error-message"></span>
-                <textarea asp-for="ThingsToConsider" class="govuk-textarea character-count" rows="5" data-val-length-max="350"></textarea>
-                <span class="govuk-body maxchar-count">350</span>
+                <textarea asp-for="ThingsToConsider" class="govuk-textarea character-count" rows="5" data-val-length-max="4000"></textarea>
+                <span class="govuk-body maxchar-count">4000</span>
                 <span class="govuk-body maxchar-text"> characters remaining</span>
             </div>
             <div class="govuk-form-group">

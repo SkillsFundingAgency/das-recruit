@@ -142,13 +142,13 @@
                         @if (Model.TaskListSectionOneState != VacancyTaskListSectionState.Completed)
                         {
                             <span class="das-task-list__task-name">
-                                Important dates
+                                Closing and start dates
                             </span>    
                         }
                         else
                         {
                             <a class="govuk-link govuk-link--no-visited-state" asp-all-route-data="@Model.RouteDictionary" asp-route="@RouteNames.Dates_Get">
-                                Important dates
+                                Closing and start dates
                             </a>
                         }
                     </li>
