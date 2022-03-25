@@ -90,6 +90,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
 
             return new ConfirmTrainingViewModel
             {
+                Title = vacancyTask.Result.Title,
                 ProgrammeId = programme.Id,
                 ApprenticeshipLevel = programme.ApprenticeshipLevel,
                 TrainingTitle = programme.Title,
