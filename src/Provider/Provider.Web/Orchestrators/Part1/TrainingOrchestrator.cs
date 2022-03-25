@@ -80,6 +80,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
         {
             var vacancyTask = _utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.Training_Confirm_Get);
             var programmesTask = _vacancyClient.GetActiveApprenticeshipProgrammesAsync();
+            var vacancy = vacancyTask.Result;
 
             await Task.WhenAll(vacancyTask, programmesTask);
 
@@ -90,6 +91,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
 
             return new ConfirmTrainingViewModel
             {
+                Title = vacancy.Title,
                 ProgrammeId = programme.Id,
                 ApprenticeshipLevel = programme.ApprenticeshipLevel,
                 TrainingTitle = programme.Title,
