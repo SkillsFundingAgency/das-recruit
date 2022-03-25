@@ -7,20 +7,24 @@
     ViewBag.Title = "Duration and working hours";
 }
 
+@section BackLink {
+    <esfaFeatureEnabled name="@FeatureNames.ProviderTaskList">
+        <a asp-route="@RouteNames.Dates_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Back</a>
+    </esfaFeatureEnabled>
+    <esfaFeatureDisabled name="@FeatureNames.ProviderTaskList">
+        <a asp-show="@Model.PageInfo.IsWizard" asp-all-route-data="@Model.RouteDictionary" asp-route="@RouteNames.Dates_Get" esfa-automation="link-back" class="govuk-back-link">Back</a>
+    </esfaFeatureDisabled>
+}
+
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-        <esfaFeatureEnabled name="@FeatureNames.ProviderTaskList">
-            <a asp-route="@RouteNames.Dates_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
-        </esfaFeatureEnabled>
-        <esfaFeatureDisabled name="@FeatureNames.ProviderTaskList">
-            <a asp-show="@Model.PageInfo.IsWizard" asp-all-route-data="@Model.RouteDictionary" asp-route="@RouteNames.Dates_Get" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
-        </esfaFeatureDisabled>
+
         <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }' />
 
         <partial name="@PartialNames.ReviewSummary" for="Review" />
 
         <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">
-            <span class="govuk-caption-l">@Model.Title</span>
+            <span class="govuk-caption-xl">@Model.Title</span>
             Duration and working hours
         </h1>
 

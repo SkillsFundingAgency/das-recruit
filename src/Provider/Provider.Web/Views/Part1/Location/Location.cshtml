@@ -4,16 +4,23 @@
 
 @model LocationViewModel;
 
-@{ ViewBag.GaData.Vpv = "/recruitment/provider/page-create-vacancy-location"; }
+@{ 
+    ViewBag.GaData.Vpv = "/recruitment/provider/page-create-vacancy-location"; 
+    ViewBag.Title = "Where will the apprentice work?";
+}
+
+@section BackLink {
+    <esfaFeatureEnabled name="@FeatureNames.ProviderTaskList">
+        <a asp-route="@RouteNames.NumberOfPositions_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Back</a>
+    </esfaFeatureEnabled>
+    <esfaFeatureDisabled name="@FeatureNames.ProviderTaskList">
+        <a asp-show="@Model.CanShowBackLink" asp-route="@RouteNames.EmployerName_Get" asp-route-ukprn="@Model.Ukprn" asp-route-vacancyId="@Model.VacancyId" asp-route-wizard="@Model.PageInfo.IsWizard" esfa-automation="link-back" class="govuk-back-link">Back</a>
+    </esfaFeatureDisabled>
+}
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-        <esfaFeatureEnabled name="@FeatureNames.ProviderTaskList">
-            <a asp-route="@RouteNames.NumberOfPositions_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
-        </esfaFeatureEnabled>
-        <esfaFeatureDisabled name="@FeatureNames.ProviderTaskList">
-            <a asp-show="@Model.CanShowBackLink" asp-route="@RouteNames.EmployerName_Get" asp-route-ukprn="@Model.Ukprn" asp-route-vacancyId="@Model.VacancyId" asp-route-wizard="@Model.PageInfo.IsWizard" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
-        </esfaFeatureDisabled>
+        
         <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }' />
 
         <partial name="@PartialNames.ReviewSummary" for="Review" />
@@ -81,14 +88,16 @@
                     </div>
                 </fieldset>
             </div>
-            <button type="submit" class="govuk-button save-button" esfa-automation="continue-button">@Model.PageInfo.SubmitButtonText</button>
-            <esfaFeatureEnabled name="@FeatureNames.ProviderTaskList">
-                <a asp-route="@RouteNames.Dashboard_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-cancel" class="govuk-link das-button-link">Cancel</a>
-            </esfaFeatureEnabled>
-            <esfaFeatureDisabled name="@FeatureNames.ProviderTaskList">
-                <a asp-route="@RouteNames.Location_Cancel" asp-route-ukprn="@Model.Ukprn" asp-route-vacancyId="@Model.VacancyId" asp-route-wizard="@Model.PageInfo.IsWizard" class="govuk-link das-button-link">Cancel</a>
-            </esfaFeatureDisabled>
-            
+
+            <div class="govuk-button-group">
+                <button type="submit" class="govuk-button save-button" esfa-automation="continue-button">@Model.PageInfo.SubmitButtonText</button>
+                <esfaFeatureEnabled name="@FeatureNames.ProviderTaskList">
+                    <a asp-route="@RouteNames.Dashboard_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-cancel" class="govuk-link das-button-link">Cancel</a>
+                </esfaFeatureEnabled>
+                <esfaFeatureDisabled name="@FeatureNames.ProviderTaskList">
+                    <a asp-route="@RouteNames.Location_Cancel" asp-route-ukprn="@Model.Ukprn" asp-route-vacancyId="@Model.VacancyId" asp-route-wizard="@Model.PageInfo.IsWizard" class="govuk-link das-button-link">Cancel</a>
+                </esfaFeatureDisabled>
+            </div>
         </form>
     </div>
 </div>

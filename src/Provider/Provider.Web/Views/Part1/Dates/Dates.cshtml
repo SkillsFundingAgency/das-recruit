@@ -26,7 +26,7 @@
 
         <partial name="@PartialNames.ReviewSummary" for="Review"/>
 
-        <h1 class="govuk-heading-xl govuk-!-margin-bottom-6"><span class="govuk-caption-l">@Model.Title</span>Closing and start dates</h1>
+        <h1 class="govuk-heading-xl govuk-!-margin-bottom-6"><span class="govuk-caption-xl">@Model.Title</span>Closing and start dates</h1>
         
         <form asp-route="@RouteNames.Dates_Post" asp-route-vacancyId="@Model.VacancyId" asp-route-ukprn="@Model.Ukprn"  asp-route-wizard="@Model.PageInfo.IsWizard" novalidate>
 

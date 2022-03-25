@@ -24,7 +24,8 @@
         <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }' />
         <partial name="@PartialNames.ReviewSummary" for="Review" />
         <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">
-            <span class="govuk-caption-l">@Model.Title</span>How much will the apprentice be paid?
+            <span class="govuk-caption-xl">@Model.Title</span>
+            How much will the apprentice be paid?
         </h1>
         <form asp-route="@RouteNames.Wage_Post" asp-route-vacancyId="@Model.VacancyId" asp-route-ukprn="@Model.Ukprn" asp-route-wizard="@Model.PageInfo.IsWizard" novalidate>
 
@@ -32,7 +33,7 @@
                 <fieldset class="govuk-fieldset">
                     <div class="govuk-body">
                         Pay will show as a yearly figure on your vacancy.
-                        <a href="@externalLinks.Value.NationalMinimumWageRates" rel="noopener" target="_blank" class="govuk-link">View the National Minimum Wage for apprentices (opens in a new tab).</a>
+                        <a href="@externalLinks.Value.NationalMinimumWageRates" rel="noopener" target="_blank" class="govuk-link govuk-link--no-visited-state">View the National Minimum Wage for apprentices (opens in a new tab).</a>
                     </div>
                     <span esfa-validation-message-for="WageType" class="govuk-error-message"></span>
                     <div class="govuk-radios govuk-radios--conditional" data-module="radios">
@@ -72,7 +73,7 @@
                              <div esfa-validation-marker-for="FixedWageYearlyAmount" class="govuk-form-group">
                                 <label asp-for="FixedWageYearlyAmount" class="govuk-visually-hidden">Yearly wage</label>
                                 <p class="govuk-body govuk-hint">
-                                    This must be more than the <a href="@externalLinks.Value.NationalMinimumWageRates" rel="noopener" target="_blank" class="govuk-link">National Minimum Wage for apprentices (opens in a new tab)​</a>.
+                                    This must be more than the <a href="@externalLinks.Value.NationalMinimumWageRates" rel="noopener" target="_blank" class="govuk-link govuk-link--no-visited-state">National Minimum Wage for apprentices (opens in a new tab)​</a>.
                                 </p>
                                 <p class="govuk-body govuk-hint">
                                     From @Model.MinimumWageStartFrom, the National Minimum Wage for apprentices is @Model.ApprenticeshipMinimumWageHourly an hour.<br /><br />
