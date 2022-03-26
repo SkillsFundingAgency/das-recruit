@@ -55,6 +55,8 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part2
                     ReviewFieldMappingLookups.GetApplicationProcessFieldIndicators());
             }
 
+            vm.IsTaskListCompleted = _utility.TaskListCompleted(vacancy);
+
             return vm;
         }
 

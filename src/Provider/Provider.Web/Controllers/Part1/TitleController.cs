@@ -66,8 +66,12 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
             }
 
             return wizard
-                ? _feature.IsFeatureEnabled(FeatureNames.ProviderTaskList) ? RedirectToRoute(RouteNames.LegalEntity_Get, new {vrm.Ukprn, vacancyId = response.Data}) : RedirectToRoute(RouteNames.Training_Get, new {vrm.Ukprn, vacancyId = response.Data})
-                : RedirectToRoute(RouteNames.Vacancy_Preview_Get, new {vrm.Ukprn, vacancyId = response.Data});
+                ? _feature.IsFeatureEnabled(FeatureNames.ProviderTaskList) 
+                    ? RedirectToRoute(RouteNames.LegalEntity_Get, new {vrm.Ukprn, vacancyId = response.Data}) 
+                    : RedirectToRoute(RouteNames.Training_Get, new {vrm.Ukprn, vacancyId = response.Data})
+                : _feature.IsFeatureEnabled(FeatureNames.ProviderTaskList)
+                    ? RedirectToRoute(RouteNames.ProviderCheckYourAnswersGet, new {vrm.Ukprn, vacancyId = response.Data}) 
+                    : RedirectToRoute(RouteNames.Vacancy_Preview_Get, new {vrm.Ukprn, vacancyId = response.Data});
         }    
     }
 }

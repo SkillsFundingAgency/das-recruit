@@ -57,7 +57,9 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
             
             return wizard
                 ? RedirectToRoute(RouteNames.Wage_Get, new {m.Ukprn, m.VacancyId})
-                : RedirectToRoute(RouteNames.Vacancy_Preview_Get, new {m.Ukprn, m.VacancyId});
+                : _feature.IsFeatureEnabled(FeatureNames.ProviderTaskList) 
+                    ? RedirectToRoute(RouteNames.ProviderCheckYourAnswersGet, new {m.Ukprn, m.VacancyId}) 
+                    : RedirectToRoute(RouteNames.Vacancy_Preview_Get, new {m.Ukprn, m.VacancyId});
         }
     }
 }

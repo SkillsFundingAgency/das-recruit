@@ -37,6 +37,7 @@ namespace Esfa.Recruit.Provider.Web
 
         bool VacancyHasCompletedPartOne(Vacancy vacancy);
         bool VacancyHasStartedPartTwo(Vacancy vacancy);
+        bool TaskListCompleted(Vacancy vacancy);
         PartOnePageInfoViewModel GetPartOnePageInfo(Vacancy vacancy);
         Task<ApplicationReview> GetAuthorisedApplicationReviewAsync(ApplicationReviewRouteModel rm);
         Task UpdateEmployerProfile(VacancyEmployerInfoModel vacancyEmployerInfoModel, EmployerProfile profile, Address address, VacancyUser user);
@@ -226,6 +227,11 @@ namespace Esfa.Recruit.Provider.Web
                    vacancy.Skills != null ||
                    !string.IsNullOrWhiteSpace(vacancy.Description) ||
                    !string.IsNullOrWhiteSpace(vacancy.ShortDescription);
+        }
+        
+        public bool TaskListCompleted(Vacancy vacancy)
+        {
+            return vacancy.ApplicationMethod != null;
         }
 
         public PartOnePageInfoViewModel GetPartOnePageInfo(Vacancy vacancy)

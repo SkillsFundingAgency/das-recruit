@@ -115,8 +115,12 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
             }
 
             return wizard
-                ? _feature.IsFeatureEnabled(FeatureNames.ProviderTaskList) ? RedirectToRoute(RouteNames.ShortDescription_Get, new {m.VacancyId, m.Ukprn}) : RedirectToRoute(RouteNames.NumberOfPositions_Get,new {m.VacancyId, m.Ukprn})
-                : RedirectToRoute(RouteNames.Vacancy_Preview_Get, new {m.VacancyId, m.Ukprn});
+                ? _feature.IsFeatureEnabled(FeatureNames.ProviderTaskList) 
+                    ? RedirectToRoute(RouteNames.ShortDescription_Get, new {m.VacancyId, m.Ukprn}) 
+                    : RedirectToRoute(RouteNames.NumberOfPositions_Get,new {m.VacancyId, m.Ukprn})
+                : _feature.IsFeatureEnabled(FeatureNames.ProviderTaskList) 
+                    ? RedirectToRoute(RouteNames.ProviderCheckYourAnswersGet, new {m.VacancyId, m.Ukprn}) 
+                    : RedirectToRoute(RouteNames.Vacancy_Preview_Get, new {m.VacancyId, m.Ukprn});
         }
 
         private async Task<IActionResult> ProgrammeNotFound(TrainingEditModel m, bool wizard)
