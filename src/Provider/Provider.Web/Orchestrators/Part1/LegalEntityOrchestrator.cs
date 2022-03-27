@@ -100,6 +100,8 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
                 vm.VacancyEmployerInfoModel.AnonymousReason = vacancy.IsAnonymous ? vacancy.AnonymousReason : null;
             }
 
+            vm.IsTaskListCompleted = _utility.TaskListCompleted(vacancy);
+
             return vm;
         }
 

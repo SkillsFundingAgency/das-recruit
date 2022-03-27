@@ -66,9 +66,9 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
                 response.AddErrorsToModelState(ModelState);
             }
 
+            var vm = await _orchestrator.GetEmployerNameViewModelAsync(model, employerInfoModel, User.ToVacancyUser());
             if (!ModelState.IsValid)
             {
-                var vm = await _orchestrator.GetEmployerNameViewModelAsync(model, employerInfoModel, User.ToVacancyUser());
                 vm.PageInfo.SetWizard(wizard);
                 vm.NewTradingName = model.NewTradingName;
                 vm.SelectedEmployerIdentityOption = model.SelectedEmployerIdentityOption;
@@ -85,7 +85,11 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
 
             if (_feature.IsFeatureEnabled(FeatureNames.ProviderTaskList))
             {
-                return RedirectToRoute(RouteNames.AboutEmployer_Get, new {model.Ukprn, model.VacancyId});
+                if (!vm.IsTaskListCompleted)
+                {
+                    return RedirectToRoute(RouteNames.AboutEmployer_Get, new {model.Ukprn, model.VacancyId});
+                }
+                return RedirectToRoute(RouteNames.ProviderCheckYourAnswersGet, new {model.Ukprn, model.VacancyId});
             }
             
             return RedirectToRoute(RouteNames.Location_Get, new {Wizard = wizard, model.Ukprn, model.VacancyId});

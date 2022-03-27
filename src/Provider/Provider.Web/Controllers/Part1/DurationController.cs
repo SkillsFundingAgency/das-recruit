@@ -49,11 +49,6 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
                 vm.PageInfo.SetWizard(wizard);
                 return View(vm);
             }
-
-            if (_feature.IsFeatureEnabled(FeatureNames.ProviderTaskList))
-            {
-                return RedirectToRoute(RouteNames.Wage_Get, new {m.Ukprn, m.VacancyId});
-            }
             
             return wizard
                 ? RedirectToRoute(RouteNames.Wage_Get, new {m.Ukprn, m.VacancyId})
