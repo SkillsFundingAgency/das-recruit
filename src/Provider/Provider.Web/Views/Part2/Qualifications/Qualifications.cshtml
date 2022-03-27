@@ -59,7 +59,8 @@
 
         <div class="govuk-form-group">
             <esfaFeatureEnabled name="@FeatureNames.ProviderTaskList">
-                <a asp-route="@RouteNames.FutureProspects_Get" asp-all-route-data="@Model.RouteDictionary" class="govuk-button">Save and continue</a>
+                <a asp-show="@(!Model.IsTaskListCompleted)" asp-route="@RouteNames.FutureProspects_Get" asp-all-route-data="@Model.RouteDictionary"  class="govuk-button">Save and continue</a>
+                <a asp-show="@Model.IsTaskListCompleted" asp-route="@RouteNames.ProviderCheckYourAnswersGet" asp-all-route-data="@Model.RouteDictionary" class="govuk-button">Save and continue</a>
             </esfaFeatureEnabled>
             <esfaFeatureDisabled name="@FeatureNames.ProviderTaskList">
                 <a asp-route="@RouteNames.Vacancy_Preview_Get" asp-all-route-data="@Model.RouteDictionary" class="govuk-button">Preview</a>    
