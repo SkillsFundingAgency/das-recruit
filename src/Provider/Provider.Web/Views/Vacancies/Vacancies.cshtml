@@ -135,15 +135,14 @@
                             <td class="govuk-table__cell" data-label="Closing date"><span>@vacancy.ClosingDate?.AsGdsDate()</span></td>
                             <td class="govuk-table__cell" data-label="Status">
                                 <span class="govuk-tag app-tag app-tag--@vacancy.Status.ToString().ToLower()">@vacancy.Status.GetDisplayName(UserType.Provider)</span></td>
-                            <td class="govuk-table__cell" data-label="Action">
-                                <a asp-show="@vacancy.IsNotSubmittable" asp-route="@RouteNames.VacancyManage_Get" asp-route-ukprn="@Model.Ukprn" asp-route-vacancyId="@vacancy.Id" class="govuk-link">@GetLinkText(vacancy)</a>
+                            <td class="govuk-table__cell govuk-table__cell--numeric" data-label="Action">
+                                <a asp-show="@vacancy.IsNotSubmittable" asp-route="@RouteNames.VacancyManage_Get" asp-route-ukprn="@Model.Ukprn" asp-route-vacancyId="@vacancy.Id" class="govuk-link">@GetLinkText(vacancy) <span class="govuk-visually-hidden">@vacancy.Title</span></a>
                                 <esfaFeatureDisabled name="@FeatureNames.ProviderTaskList">
-                                    <a asp-show="@vacancy.IsSubmittable" asp-route="@RouteNames.DisplayVacancy_Get" asp-route-ukprn="@Model.Ukprn" asp-route-vacancyId="@vacancy.Id" class="govuk-link">@GetLinkText(vacancy)</a>    
+                                    <a asp-show="@vacancy.IsSubmittable" asp-route="@RouteNames.DisplayVacancy_Get" asp-route-ukprn="@Model.Ukprn" asp-route-vacancyId="@vacancy.Id" class="govuk-link">@GetLinkText(vacancy) <span class="govuk-visually-hidden">@vacancy.Title</span></a>    
                                 </esfaFeatureDisabled>
                                 <esfaFeatureEnabled name="@FeatureNames.ProviderTaskList">
-                                    <a asp-show="@vacancy.IsSubmittable" asp-route="@RouteNames.ProviderTaskListGet" asp-route-ukprn="@Model.Ukprn" asp-route-vacancyId="@vacancy.Id" class="govuk-link">@GetLinkText(vacancy)</a>
+                                    <a asp-show="@vacancy.IsSubmittable" asp-route="@RouteNames.ProviderTaskListGet" asp-route-ukprn="@Model.Ukprn" asp-route-vacancyId="@vacancy.Id" class="govuk-link">@GetLinkText(vacancy) <span class="govuk-visually-hidden">@vacancy.Title</span></a>
                                 </esfaFeatureEnabled>
-                                
                             </td>
                         </tr>
                     }
