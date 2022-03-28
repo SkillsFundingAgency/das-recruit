@@ -1,5 +1,4 @@
-﻿@using Esfa.Recruit.Shared.Web.Mappers
-@model Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview.VacancyPreviewViewModel
+﻿@model Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview.VacancyPreviewViewModel
 
 @{
     ViewBag.GaData.Vpv = "/recruitment/provider/page-create-vacancy-previewed";
@@ -11,8 +10,6 @@
         <a asp-route="@RouteNames.ProviderTaskListGet" asp-route-ukprn="@Model.Ukprn" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back to check your answers</a>
     </div>
 </div>
-
-
 
 <h1 class="govuk-heading-l">Preview your vacancy</h1>
 <div class="app-preview-wrap">
@@ -37,7 +34,7 @@
       </div>
       <div  asp-show="@Model.HasSpecifiedThroughFaaApplicationMethod">
          <p class="govuk-!-margin-bottom-1">
-           <a class="govuk-button" id="employer-website" href="#">Sign in to apply</a>
+           <a class="govuk-button govuk-!-margin-bottom-0" id="employer-website" href="#">Apply for apprenticeship</a>
          </p>
       </div>
       <p class="govuk-body-s">Closing date @Model.ClosingDate</p>
@@ -199,12 +196,12 @@
   <div class="govuk-grid-column-two-thirds">
     <h2 class="govuk-heading-m">Now submit your vacancy</h2>
     <p class="govuk-body">By submitting this vacancy you are confirming that, to the best of your knowledge, the details you are providing are correct.</p>
-    <div class="govuk-button-group">
-      <form asp-route="@RouteNames.Preview_Submit_Post" asp-all-route-data="@Model.RouteDictionary" method="post">
+    <form asp-route="@RouteNames.Preview_Submit_Post" asp-all-route-data="@Model.RouteDictionary" method="post">
+      <div class="govuk-button-group">
         <input type="submit" value="Submit vacancy" class="govuk-button" esfa-automation="submit-button" />
-      </form>
-      <a asp-route="@RouteNames.ProviderCheckYourAnswersGet" asp-all-route-data="@Model.RouteDictionary" class="govuk-button govuk-button--secondary">Change your answers</a>
-    </div>
+        <a asp-route="@RouteNames.ProviderCheckYourAnswersGet" asp-all-route-data="@Model.RouteDictionary" class="govuk-button govuk-button--secondary">Change your answers</a>
+      </div>
+    </form>
   </div>
 </div>
 
@@ -214,32 +211,4 @@
       <a asp-show="@Model.CanDelete" asp-route="@RouteNames.DeleteVacancy_Get" class="govuk-link govuk-link--no-visited-state" esfa-automation="delete-button">Delete vacancy</a>
     </p>
   </div>
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div class="govuk-grid-row">
-    <div class="govuk-grid-column-full">
-        <div class="govuk-body govuk-button-group">
-            <form asp-show="@Model.CanSubmit" asp-route-vacancyId="@Model.VacancyId" asp-route-ukprn="@Model.Ukprn" asp-route="@RouteNames.Preview_Submit_Post" class="form-inline">
-                <input type="submit" value="@Model.SubmitButtonText" class="govuk-button" esfa-automation="submit-button" />
-            </form>
-            <a asp-show="@Model.CanDelete" asp-route="@RouteNames.DeleteVacancy_Get" asp-route-vacancyId="@Model.VacancyId" asp-route-ukprn="@Model.Ukprn" class="govuk-button delete-button" esfa-automation="delete-button">Delete</a>
-        </div>
-        <div class="govuk-body">
-            <a asp-route="@RouteNames.Vacancies_Get" asp-route-ukprn="@Model.Ukprn" class="govuk-link das-button-link" esfa-automation="dashboard-link">Return to dashboard</a>
-        </div>
-    </div>
 </div>
