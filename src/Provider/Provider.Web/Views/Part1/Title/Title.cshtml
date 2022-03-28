@@ -17,17 +17,16 @@
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-
         
         <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames}'/>
         <partial name="@PartialNames.ReviewSummary" for="Review"/>
-        <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">What do you want to call this vacancy?</h1>
-    </div>
-</div>
 
-<div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
         <form asp-route="@Model.FormPostRouteName" asp-route-vacancyId="@Model.VacancyId" asp-route-ukprn="@Model.Ukprn"  asp-route-wizard="@Model.PageInfo.IsWizard" novalidate>
+            <h1 class="govuk-label-wrapper">
+                <label class="govuk-label govuk-label--xl" asp-for="Title">
+                    What do you want to call this vacancy?
+                </label>
+            </h1>
             <input type="hidden" name="EmployerAccountId" value="@Model.EmployerAccountId" />
             <div class="govuk-character-count" data-module="govuk-character-count" data-maxlength="100">
                 <div esfa-validation-marker-for="Title" class="govuk-form-group">

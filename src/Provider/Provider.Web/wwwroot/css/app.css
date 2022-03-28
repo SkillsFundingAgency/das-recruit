@@ -175,6 +175,11 @@ span.govuk-error-message:empty {
     display: none;
 }
 
+/* Fix the height of autocomplete */
+
+.autocomplete__input {
+    height: 40px;
+}
 
 .app-disability-confident-logo {
     width: 150px;
