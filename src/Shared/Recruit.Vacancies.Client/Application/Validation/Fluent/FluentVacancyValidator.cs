@@ -182,7 +182,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                     .NotEmpty()
                     .WithMessage("Enter why you want your advert to be anonymous")
                     .WithErrorCode("408")
-                    .MaximumLength(200)
+                    .MaximumLength(4000)
                     .WithMessage("The reason must not be more than {MaxLength} characters")
                     .WithErrorCode("409")
                     .ValidFreeTextCharacters()
