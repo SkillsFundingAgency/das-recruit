@@ -40,6 +40,22 @@
                 <div asp-show="@Model.IsAnonymous" class="govuk-hint">The website will not be shown as the employer is anonymous</div>
                 <input asp-for="EmployerWebsiteUrl" class="govuk-input govuk-!-width-three-quarters" maxlength="100" />
             </div>
+            <esfaFeatureEnabled name="@FeatureNames.ProviderTaskList">
+                <div class="govuk-form-group">
+                    <fieldset class="govuk-fieldset">
+                        <legend class="govuk-label govuk-!-font-weight-bold">Disability Confident (optional)</legend>
+                        <div class="govuk-checkboxes">
+                            <div class="govuk-checkboxes__item">
+                                <input asp-for="IsDisabilityConfident" class="govuk-checkboxes__input" type="checkbox" value="true">
+                                <label asp-for="IsDisabilityConfident" class="govuk-label govuk-checkboxes__label">This vacancy is <a href="https://www.gov.uk/government/collections/disability-confident-campaign" class="govuk-link" rel="noopener" target="_blank" title="Disability Confident employer scheme and guidance (opens in a new window)">Disability Confident</a>.</label>
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+            </esfaFeatureEnabled>
+            <esfaFeatureDisabled name="@FeatureNames.ProviderTaskList">
+                <input type="hidden" asp-for="IsDisabilityConfident"/>
+            </esfaFeatureDisabled>
             <div class="govuk-button-group">
                 <input type="submit" value="Save and continue" esfa-automation="btn-continue" class="govuk-button save-button" />
                 <esfaFeatureEnabled name="@FeatureNames.ProviderTaskList">
