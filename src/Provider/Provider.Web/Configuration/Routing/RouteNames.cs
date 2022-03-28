@@ -84,6 +84,7 @@
         public const string Dates_Get = "Dates_Get";
         public const string Dates_Post = "Dates_Post";
         public const string Vacancy_Preview_Get = "Vacancy_Preview_Get";
+        public const string Vacancy_Advert_Preview_Get = "Vacancy_Advert_Preview_Get";
         public const string VacancyDescription_Index_Get = "VacancyDescription_Index_Get";
         public const string VacancyDescription_Index_Post = "VacancyDescription_Index_Post";
         public const string VacancyEdit_Get = "VacancyEdit_Get";
