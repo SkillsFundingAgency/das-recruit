@@ -99,6 +99,23 @@
 
 /* Vacancy preview */
 
+.app-preview-wrap {
+    border: 1px solid #b1b4b6;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+@media (min-width: 40.0625em) {
+    .app-preview-wrap {
+        padding: 40px;
+        margin-bottom: 40px;
+    }
+}
+
+.app-preview-map {
+    max-width: 100%;
+}
+
 .app-preview-section--empty {
     border-left: 5px solid #1d70b8;
     min-height: 80px;
