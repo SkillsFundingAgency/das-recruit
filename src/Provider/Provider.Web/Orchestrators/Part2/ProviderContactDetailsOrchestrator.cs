@@ -39,7 +39,10 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part2
                 ProviderContactPhone = vacancy.ProviderContact?.Phone,
                 ProviderName = vacancy.TrainingProvider?.Name,
                 VacancyId = vrm.VacancyId,
-                Ukprn = vrm.Ukprn
+                Ukprn = vrm.Ukprn,
+                AddContactDetails = !string.IsNullOrEmpty(vacancy.ProviderContact?.Name) || 
+                                    !string.IsNullOrEmpty(vacancy.ProviderContact?.Email) ||
+                                    !string.IsNullOrEmpty(vacancy.ProviderContact?.Phone) ? true : (bool?) null
             };
 
             if (vacancy.Status == VacancyStatus.Referred)
