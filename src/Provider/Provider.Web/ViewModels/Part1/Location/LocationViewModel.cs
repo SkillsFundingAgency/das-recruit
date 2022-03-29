@@ -7,6 +7,7 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.Part1.Location
 {
     public class LocationViewModel : VacancyRouteModel
     {
+        public string Title { get; set; }
         public const string UseOtherLocationConst = "UseOtherLocation";
         public string UseOtherLocation => UseOtherLocationConst;
         public string SelectedLocation { get; set; }

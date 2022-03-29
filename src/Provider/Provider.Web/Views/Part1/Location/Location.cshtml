@@ -30,6 +30,7 @@
                 <fieldset class="govuk-fieldset">
                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
                         <h1 class="govuk-fieldset__heading">
+                            <span class="govuk-caption-xl">@Model.Title</span>
                             Where will the apprentice work?
                         </h1>
                     </legend>
@@ -58,7 +59,7 @@
                             <div class="govuk-radios__item">
                                 <input asp-for="SelectedLocation" value="@Model.UseOtherLocation" data-aria-controls="other-location-conditional" id="other-location" class="govuk-radios__input" type="radio">
                                 <label for="other-location" class="govuk-label govuk-radios__label">
-                                    A different location
+                                    A different address
                                 </label>
                             </div>
                             <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="other-location-conditional">
