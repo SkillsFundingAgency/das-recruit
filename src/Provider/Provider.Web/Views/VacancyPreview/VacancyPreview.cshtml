@@ -229,7 +229,7 @@
     <div class="govuk-grid-column-two-thirds">
         <div class="@GetSectionClass(Model.TitleSectionState) govuk-!-margin-bottom-6">
             <h2 class="govuk-heading-xl govuk-!-margin-bottom-6" id="@Anchors.Title">
-                <img asp-show="@Model.TitleRequiresEdit" src="/img/red-cross.png" no-cdn />
+                <img asp-show="@Model.TitleRequiresEdit" src="/img/red-cross.png" alt="X" no-cdn />
                 @Model.Title
                 <span class="govuk-caption-xl">@Model.EmployerName</span>
             </h2>
@@ -244,7 +244,7 @@
     <div class="govuk-grid-column-two-thirds">
         <div class="@GetSectionClass(Model.ShortDescriptionSectionState) govuk-!-margin-bottom-6">
             <h3 class="govuk-heading-s govuk-!-margin-top-4" id="@Anchors.ShortDescription">
-                <img asp-show="@Model.ShortDescriptionRequiresEdit" src="/img/red-cross.png" no-cdn />
+                <img asp-show="@Model.ShortDescriptionRequiresEdit" src="/img/red-cross.png" alt="X" no-cdn />
                 Brief overview
             </h3>
             <span esfa-validation-message-for="ShortDescription" class="govuk-error-message"></span>
@@ -258,7 +258,7 @@
     <div class="govuk-grid-column-one-third">
         <div class="@GetSectionClass(Model.ClosingDateSectionState) govuk-!-margin-bottom-6">
             <h3 class="govuk-heading-s govuk-!-margin-top-4" id="@Anchors.ClosingDate">
-                <img asp-show="@Model.ClosingDateRequiresEdit" src="/img/red-cross.png" no-cdn />
+                <img asp-show="@Model.ClosingDateRequiresEdit" src="/img/red-cross.png" alt="X" no-cdn />
                 Closing Date
             </h3>
             <span esfa-validation-message-for="ClosingDate" class="govuk-error-message"></span>
@@ -281,7 +281,7 @@
             <li class="@GetSectionClass(Model.WageTextSectionState)">
                 <div class="govuk-!-margin-bottom-6">
                     <h3 class="govuk-heading-s govuk-!-margin-top-4" id="@Anchors.YearlyWage">
-                        <img asp-show="@Model.WageRequiresEdit" src="/img/red-cross.png" no-cdn />
+                        <img asp-show="@Model.WageRequiresEdit" src="/img/red-cross.png" alt="X" no-cdn />
                         Annual wage
                     </h3>
                     <span esfa-validation-message-for="HasWage" class="govuk-error-message"></span>
@@ -298,7 +298,7 @@
             <li class="@GetSectionClass(Model.WorkingWeekSectionState)">
                 <div class="govuk-!-margin-bottom-6">
                     <h3 class="govuk-heading-s govuk-!-margin-top-4" id="@Anchors.WorkingWeek">
-                        <img asp-show="@Model.WorkingWeekRequiresEdit" src="/img/red-cross.png" no-cdn />
+                        <img asp-show="@Model.WorkingWeekRequiresEdit" src="/img/red-cross.png" alt="X" no-cdn />
                         Working week
                     </h3>
                     <span esfa-validation-message-for="WorkingWeekDescription" class="govuk-error-message"></span>
@@ -314,7 +314,7 @@
             <li class="@GetSectionClass(Model.ExpectedDurationSectionState)">
                 <div class="govuk-!-margin-bottom-6">
                     <h3 class="govuk-heading-s govuk-!-margin-top-4" id="@Anchors.ExpectedDuration">
-                        <img asp-show="@Model.ExpectedDurationRequiresEdit" src="/img/red-cross.png" no-cdn />
+                        <img asp-show="@Model.ExpectedDurationRequiresEdit" src="/img/red-cross.png" alt="X" no-cdn />
                         Expected duration
                     </h3>
                     <span esfa-validation-message-for="ExpectedDuration" class="govuk-error-message"></span>
@@ -328,7 +328,7 @@
             <li class="@GetSectionClass(Model.PossibleStartDateSectionState)">
                 <div class="govuk-!-margin-bottom-6">
                     <h3 class="govuk-heading-s govuk-!-margin-top-4" id="@Anchors.PossibleStartDate">
-                        <img asp-show="@Model.PossibleStartDateRequiresEdit" src="/img/red-cross.png" no-cdn />
+                        <img asp-show="@Model.PossibleStartDateRequiresEdit" src="/img/red-cross.png" alt="X" no-cdn />
                         Possible start date
                     </h3>
                     <span esfa-validation-message-for="PossibleStartDate" class="govuk-error-message"></span>
@@ -342,7 +342,7 @@
             <li class="@GetSectionClass(Model.TrainingLevelSectionState)">
                 <div class="govuk-!-margin-bottom-6">
                     <h3 class="govuk-heading-s govuk-!-margin-top-4" id="@Anchors.TrainingLevel">
-                        <img asp-show="@Model.TrainingLevelRequiresEdit" src="/img/red-cross.png" no-cdn />
+                        <img asp-show="@Model.TrainingLevelRequiresEdit" src="/img/red-cross.png" alt="X" no-cdn />
                         Apprenticeship level
                     </h3>
                     <span esfa-validation-message-for="HasProgramme" class="govuk-error-message"></span>
@@ -364,7 +364,7 @@
             <li class="@GetSectionClass(Model.NumberOfPositionsSectionState)">
                 <div class="govuk-!-margin-bottom-6">
                     <h3 class="govuk-heading-s govuk-!-margin-top-4" id="@Anchors.NumberOfPositions">
-                        <img asp-show="@Model.NumberOfPositionsRequiresEdit" src="/img/red-cross.png" no-cdn />
+                        <img asp-show="@Model.NumberOfPositionsRequiresEdit" src="/img/red-cross.png" alt="X" no-cdn />
                         Positions
                     </h3>
                     <span esfa-validation-message-for="NumberOfPositions" class="govuk-error-message"></span>
@@ -383,7 +383,7 @@
                 <h3 asp-hide="@Model.HasVacancyDescription" class="govuk-heading-s">Description of the apprenticeship</h3>
                 <p asp-hide="@Model.HasVacancyDescription" class="govuk-body">What will the apprentice be doing?</p>
                 <h3 asp-show="@Model.HasVacancyDescription" class="govuk-heading-s govuk-!-margin-top-4" id="@Anchors.VacancyDescription">
-                    <img asp-show="@Model.VacancyDescriptionRequiresEdit" src="/img/red-cross.png" no-cdn />
+                    <img asp-show="@Model.VacancyDescriptionRequiresEdit" src="/img/red-cross.png" alt="X" no-cdn />
                     What will the apprentice be doing?
                 </h3>
                 <span esfa-validation-message-for="VacancyDescription" class="govuk-error-message"></span>
@@ -395,7 +395,7 @@
             <div>
                 <p asp-hide="@Model.HasTrainingDescription" class="govuk-body">What training will the apprentice take and what qualification will the apprentice get at the end?</p>
                 <h3 asp-show="@Model.HasTrainingDescription" class="govuk-heading-s govuk-!-margin-top-4" id="@Anchors.TrainingDescription">
-                    <img asp-show="@Model.TrainingDescriptionRequiresEdit" src="/img/red-cross.png" no-cdn />
+                    <img asp-show="@Model.TrainingDescriptionRequiresEdit" src="/img/red-cross.png" alt="X" no-cdn />
                     What training will the apprentice take and what qualification will the apprentice get at the end?
                 </h3>
                 <span esfa-validation-message-for="TrainingDescription" class="govuk-error-message"></span>
@@ -407,7 +407,7 @@
             <div class="govuk-!-margin-bottom-6">
                 <p asp-hide="@Model.HasOutcomeDescription" class="govuk-body">What is the expected career progression after this apprenticeship?</p>
                 <h3 asp-show="@Model.HasOutcomeDescription" class="govuk-heading-s govuk-!-margin-top-4" id="@Anchors.OutcomeDescription">
-                    <img asp-show="@Model.OutcomeDescriptionRequiresEdit" src="/img/red-cross.png" no-cdn />
+                    <img asp-show="@Model.OutcomeDescriptionRequiresEdit" src="/img/red-cross.png" alt="X" no-cdn />
                     What is the expected career progression after this apprenticeship?
                 </h3>
                 <span esfa-validation-message-for="OutcomeDescription" class="govuk-error-message"></span>
@@ -432,7 +432,7 @@
             <div class="@GetSectionClass(Model.SkillsSectionState)">
                 <div class="govuk-!-margin-bottom-6">
                     <h3 class="govuk-heading-s govuk-!-margin-top-4" id="@Anchors.Skills">
-                        <img asp-show="@Model.SkillsRequiresEdit" src="/img/red-cross.png" no-cdn />
+                        <img asp-show="@Model.SkillsRequiresEdit" src="/img/red-cross.png" alt="X" no-cdn />
                         Desired skills and personal qualities
                     </h3>
                     <span esfa-validation-message-for="Skills" class="govuk-error-message"></span>
@@ -448,7 +448,7 @@
             <div class="@GetSectionClass(Model.ThingsToConsiderSectionState)">
                 <div class="govuk-!-margin-bottom-6">
                     <h3 class="govuk-heading-s govuk-!-margin-top-4" id="@Anchors.ThingsToConsider">
-                        <img asp-show="@Model.ThingsToConsiderRequiresEdit" src="/img/red-cross.png" no-cdn />
+                        <img asp-show="@Model.ThingsToConsiderRequiresEdit" src="/img/red-cross.png" alt="X" no-cdn />
                         Things to consider (optional)
                     </h3>
                     <span esfa-validation-message-for="ThingsToConsider" class="govuk-error-message"></span>
@@ -466,7 +466,7 @@
             <div class="@GetSectionClass(Model.QualificationsSectionState)">
                 <div class="govuk-!-margin-bottom-6">
                     <h3 class="govuk-heading-s govuk-!-margin-top-4" id="@Anchors.Qualifications">
-                        <img asp-show="@Model.QualificationsRequiresEdit" src="/img/red-cross.png" no-cdn />
+                        <img asp-show="@Model.QualificationsRequiresEdit" src="/img/red-cross.png" alt="X" no-cdn />
                         Qualifications
                     </h3>
                     <span esfa-validation-message-for="Qualifications" class="govuk-error-message"></span>
@@ -496,7 +496,7 @@
         <div class="@GetSectionClass(Model.EmployerDescriptionSectionState)">
             <div class="govuk-!-margin-bottom-6">
                 <h3 class="govuk-heading-s govuk-!-margin-top-4" id="@Anchors.EmployerDescription">
-                    <img asp-show="@Model.EmployerDescriptionRequiresEdit" src="/img/red-cross.png" no-cdn />
+                    <img asp-show="@Model.EmployerDescriptionRequiresEdit" src="/img/red-cross.png" alt="X" no-cdn />
                     Description
                 </h3>
                 <span esfa-validation-message-for="EmployerDescription" class="govuk-error-message"></span>
@@ -510,7 +510,7 @@
         <div class="@GetSectionClass(Model.EmployerNameSectionState)">
             <div class="govuk-!-margin-bottom-6">
                 <h3 class="govuk-heading-s govuk-!-margin-top-4" id="@Anchors.EmployerName">
-                    <img asp-show="@Model.EmployerNameRequiresEdit" src="/img/red-cross.png" no-cdn />
+                    <img asp-show="@Model.EmployerNameRequiresEdit" src="/img/red-cross.png" alt="X" no-cdn />
                     Employer
                 </h3>
                 <span esfa-validation-message-for="EmployerName" class="govuk-error-message"></span>
@@ -524,7 +524,7 @@
         <div class="@GetSectionClass(Model.DisabilityConfidentSectionState)">
             <div class="govuk-!-margin-bottom-6">
                 <h3 class="govuk-heading-s govuk-!-margin-top-4" id="@Anchors.DisabilityConfident">
-                    <img asp-show="@Model.DisabilityConfidentRequiresEdit" src="/img/red-cross.png" no-cdn />
+                    <img asp-show="@Model.DisabilityConfidentRequiresEdit" src="/img/red-cross.png" alt="X" no-cdn />
                     Disability Confident (optional)
                 </h3>
                 <img asp-show="@Model.IsDisabilityConfident" src="~/img/disability-confident_545x172.png" class="disability-confident-logo" alt="A logo confirming that the employer is registered as disability confident" esfa-automation="disability-confident-logo" />
@@ -539,7 +539,7 @@
         <div class="@GetSectionClass(Model.EmployerWebsiteUrlSectionState)">
             <div class="govuk-!-margin-bottom-6">
                 <h3 class="govuk-heading-s govuk-!-margin-top-4" id="@Anchors.EmployerWebsiteUrl">
-                    <img asp-show="@Model.EmployerWebsiteUrlRequiresEdit" src="/img/red-cross.png" no-cdn />
+                    <img asp-show="@Model.EmployerWebsiteUrlRequiresEdit" src="/img/red-cross.png" alt="X" no-cdn />
                     Website (optional)
                 </h3>
                 <span esfa-validation-message-for="EmployerWebsiteUrl" class="govuk-error-message"></span>
@@ -562,7 +562,7 @@
         <div class="@GetSectionClass(Model.EmployerAddressSectionState)">
             <div class="govuk-!-margin-bottom-6">
                 <h3 class="govuk-heading-s govuk-!-margin-top-4" id="@Anchors.EmployerAddress">
-                    <img asp-show="@Model.EmployerAddressRequiresEdit" src="/img/red-cross.png" no-cdn />
+                    <img asp-show="@Model.EmployerAddressRequiresEdit" src="/img/red-cross.png" alt="X" no-cdn />
                     Location
                 </h3>
                 <span esfa-validation-message-for="EmployerAddressElements" class="govuk-error-message"></span>
@@ -594,7 +594,7 @@
         <div class="@GetSectionClass(Model.ProviderSectionState)">
             <div class="govuk-!-margin-bottom-6">
                 <h3 class="govuk-heading-s govuk-!-margin-top-4" id="@Anchors.Provider">
-                    <img asp-show="@Model.ProviderRequiresEdit" src="/img/red-cross.png" no-cdn />
+                    <img asp-show="@Model.ProviderRequiresEdit" src="/img/red-cross.png" alt="X" no-cdn />
                     Training provider
                 </h3>
                 <span esfa-validation-message-for="ProviderName" class="govuk-error-message"></span>
@@ -606,7 +606,7 @@
         </div>
         <div class="@GetSectionClass(Model.ProviderContactSectionState)">
             <h3 class="govuk-heading-s govuk-!-margin-top-4" id="@Anchors.ProviderContact">
-                <img asp-show="@Model.ProviderContactRequiresEdit" src="/img/red-cross.png" no-cdn />
+                <img asp-show="@Model.ProviderContactRequiresEdit" src="/img/red-cross.png" alt="X" no-cdn />
                 Contact details (optional)
             </h3>
             <span esfa-validation-message-for="ProviderContactName" class="govuk-error-message"></span>
@@ -622,7 +622,7 @@
         <div class="@GetSectionClass(Model.TrainingSectionState)">
             <div class="govuk-!-margin-bottom-6">
                 <h3 class="govuk-heading-s govuk-!-margin-top-4" id="@Anchors.Training">
-                    <img asp-show="@Model.TrainingRequiresEdit" src="/img/red-cross.png" no-cdn />
+                    <img asp-show="@Model.TrainingRequiresEdit" src="/img/red-cross.png" alt="X" no-cdn />
                     Apprenticeship @Model.TrainingType
                 </h3>
                 <p asp-show="@Model.HasTrainingTitle" class="govuk-body">
@@ -661,7 +661,7 @@
         <div asp-show="@Model.HasSpecifiedThroughFaaApplicationMethod" class="@GetSectionClass(Model.ApplicationMethodSectionState)">
             <div class="govuk-!-margin-bottom-6">
                 <p class="govuk-body">
-                    <img asp-show="@Model.ApplicationMethodRequiresEdit" src="/img/red-cross.png" no-cdn />
+                    <img asp-show="@Model.ApplicationMethodRequiresEdit" src="/img/red-cross.png" alt="X" no-cdn />
                     Candidates will apply through the <a href="@Model.FindAnApprenticeshipUrl" class="govuk-body govuk-link" rel="noopener" target="_blank">Find an apprenticeship service</a>
                 </p>
                 <div asp-show="@ShowEmployerReviewFlag(Model, FieldIdentifiers.ApplicationMethod)" class="govuk-!-margin-top-4">
@@ -676,7 +676,7 @@
                 <div class="@GetSectionClass(Model.ApplicationUrlSectionState)">
                     <div class="govuk-!-margin-bottom-6">
                         <h2 class="govuk-heading-s govuk-!-margin-top-4" id="@Anchors.ApplicationUrl">
-                            <img asp-show="@Model.ApplicationUrlRequiresEdit" src="/img/red-cross.png" no-cdn />
+                            <img asp-show="@Model.ApplicationUrlRequiresEdit" src="/img/red-cross.png" alt="X" no-cdn />
                             Apply now web address
                         </h2>
                         <span esfa-validation-message-for="ApplicationUrl" class="govuk-error-message"></span>
@@ -691,7 +691,7 @@
             <div class="@GetSectionClass(Model.ApplicationInstructionsSectionState)">
                 <div class="govuk-!-margin-bottom-6">
                     <h2 class="govuk-heading-s govuk-!-margin-top-4" id="@Anchors.ApplicationInstructions">
-                        <img asp-show="@Model.ApplicationInstructionsRequiresEdit" src="/img/red-cross.png" no-cdn />
+                        <img asp-show="@Model.ApplicationInstructionsRequiresEdit" src="/img/red-cross.png" alt="X" no-cdn />
                         Explain the application process (optional)
                     </h2>
                     <span esfa-validation-message-for="ApplicationInstructions" class="govuk-error-message"></span>
