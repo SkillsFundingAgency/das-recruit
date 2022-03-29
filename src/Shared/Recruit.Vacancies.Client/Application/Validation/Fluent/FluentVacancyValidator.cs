@@ -264,7 +264,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                 .WithMessage("Enter when you expect the apprentice to start")
                     .WithErrorCode("20")
                 .GreaterThan(v => _timeProvider.Now.Date.AddDays(1).AddTicks(-1))
-                .WithMessage("Possible apprenticeship start date can't be today or earlier. We advise using a date more than two weeks from now.")
+                .WithMessage("Start date cannot be today or earlier. We advise using a date more than two weeks from now.")
                     .WithErrorCode("22")
                 .RunCondition(VacancyRuleSet.StartDate)
                 .WithRuleId(VacancyRuleSet.StartDate);
