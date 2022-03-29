@@ -123,7 +123,8 @@ namespace Esfa.Recruit.Employer.Web.Configuration
                 options.ClientId = authConfig.ClientId;
                 options.ClientSecret = authConfig.ClientSecret;
                 options.Scope.Add("profile");
-
+                options.UsePkce = false;
+                
                 options.Events.OnTokenValidated = async (ctx) =>
                 {
                     await PopulateAccountsClaim(ctx, recruitClient);
