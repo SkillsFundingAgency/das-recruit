@@ -116,7 +116,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                     .WithMessage("Title contains some invalid characters")
                     .WithErrorCode("3")
                 .Matches(ValidationConstants.ContainsApprenticeOrApprenticeshipRegex)
-                    .WithMessage("Title must contain the word 'apprentice' or 'apprenticeship'")
+                    .WithMessage("Enter a title which includes the word 'apprentice' or 'apprenticeship'")
                     .WithErrorCode("200")
              .ProfanityCheck(_profanityListProvider)
              .WithMessage("Title must not contain a banned word or phrase.")
