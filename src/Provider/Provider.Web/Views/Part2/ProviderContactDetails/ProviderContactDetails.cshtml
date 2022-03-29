@@ -31,12 +31,12 @@
                     <div class="govuk-radios govuk-radios--conditional govuk-form-group" data-module="radios" esfa-validation-marker-for="AddContactDetails">
                         <span esfa-validation-message-for="AddContactDetails" class="govuk-error-message"></span>                
                         <div class="govuk-radios__item">
-                            <input asp-for="AddContactDetails" value="true" class="govuk-radios__input" id="application-method-faa" type="radio" data-aria-controls="application-method-external-panel">
-                            <label for="application-method-faa" class="govuk-label govuk-radios__label">
+                            <input asp-for="AddContactDetails" value="true" class="govuk-radios__input" id="contact-details-yes" type="radio" data-aria-controls="contact-details-panel">
+                            <label for="contact-details-yes" class="govuk-label govuk-radios__label">
                                 Yes
                             </label>
                         </div>
-                        <div id="application-method-external-panel" class="govuk-radios__conditional govuk-radios__conditional--hidden">
+                        <div id="contact-details-panel" class="govuk-radios__conditional govuk-radios__conditional--hidden">
                             <div esfa-validation-marker-for="ProviderContactName" class="govuk-form-group">
                                 <label asp-for="ProviderContactName" class="govuk-label">First and last name (optional)</label>
                                 <span esfa-validation-message-for="ProviderContactName" class="govuk-error-message"></span>
@@ -53,9 +53,9 @@
                                 <input asp-for="ProviderContactPhone" class="govuk-input govuk-input--width-20" type="tel" maxlength="16"/>
                             </div>
                         </div>
-                        <div class="govuk-radios__item" data-target="application-method-external-panel">
-                            <input asp-for="AddContactDetails" value="false" class="govuk-radios__input" id="application-method-external" type="radio" >
-                            <label for="application-method-external" class="govuk-label govuk-radios__label">
+                        <div class="govuk-radios__item">
+                            <input asp-for="AddContactDetails" value="false" class="govuk-radios__input" id="contact-details-no" type="radio" >
+                            <label for="contact-details-no" class="govuk-label govuk-radios__label">
                                 No
                             </label>
                         </div>
