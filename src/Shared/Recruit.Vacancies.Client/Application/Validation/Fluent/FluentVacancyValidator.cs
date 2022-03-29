@@ -331,7 +331,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                         .WithMessage("Working week details contains some invalid characters")
                         .WithErrorCode("38")
                     .MaximumLength(250)
-                        .WithMessage("Working week details must not exceed {MaxLength} characters")
+                        .WithMessage("Details about the working week must not exceed {MaxLength} characters")
                         .WithErrorCode("39")
                     .ProfanityCheck(_profanityListProvider)
                     .WithMessage("Working week details must not contain a banned word or phrase.")
