@@ -53,7 +53,6 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part2
         public async Task<IActionResult> Qualification(VacancyRouteModel vrm, int index)
         {
             var vm = await _orchestrator.GetQualificationViewModelForEditAsync(vrm, index);
-
             return View(vm);
         }
 

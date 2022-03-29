@@ -92,6 +92,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part2
             vm.Subject = qualificationToEdit.Subject;
             vm.Grade = qualificationToEdit.Grade;
             vm.Weighting = qualificationToEdit.Weighting;
+            vm.EditIndex = index;
 
             return vm;
         }
