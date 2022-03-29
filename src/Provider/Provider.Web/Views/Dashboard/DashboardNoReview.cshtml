@@ -5,6 +5,7 @@
 
 @{
     ViewBag.GaData.Vpv = "/recruitment/provider/page-dashboard";
+    ViewBag.Title = "Recruitment";
 
     var vacanciesSearchSuggestionsEndpointUrl = @Url.RouteUrl(RouteNames.VacanciesSearchSuggestions_Get, null, Context.Request.Scheme);
     var vacancyRouteModel = new VacancyRouteModel {Ukprn = Model.Ukprn};
@@ -22,90 +23,88 @@
         </div>
         <div class="govuk-grid-column-one-half ">
             <esfaFeatureEnabled name="@FeatureNames.ProviderTaskList">
-                <a asp-route="@RouteNames.CreateVacancyStart"  asp-route-ukprn="@Model.Ukprn" class="govuk-button float-right clear govuk-!-margin-top-2 govuk-!-margin-bottom-4" esfa-automation="create-vacancy">Create vacancy</a>
+                <a asp-route="@RouteNames.CreateVacancyStart"  asp-route-ukprn="@Model.Ukprn" class="govuk-button das-float-right govuk-!-margin-top-2 govuk-!-margin-bottom-4" esfa-automation="create-vacancy">Create vacancy</a>
             </esfaFeatureEnabled>
             <esfaFeatureDisabled name="@FeatureNames.ProviderTaskList">
-                <a asp-route="@RouteNames.Employer_Get" asp-route-ukprn="@Model.Ukprn"  class="govuk-button float-right clear govuk-!-margin-top-2 govuk-!-margin-bottom-4" esfa-automation="create-vacancy">Create vacancy</a>    
+                <a asp-route="@RouteNames.Employer_Get" asp-route-ukprn="@Model.Ukprn"  class="govuk-button das-float-right govuk-!-margin-top-2 govuk-!-margin-bottom-4" esfa-automation="create-vacancy">Create vacancy</a>    
             </esfaFeatureDisabled>
-            
         </div>
     </div>
+    
     <div class="govuk-grid-row">
-        <form asp-route="@RouteNames.Vacancies_Get" method="get" autocomplete="off"  asp-route-ukprn="@Model.Ukprn" >
-            <div class="govuk-grid-column-two-thirds">
+        <div class="govuk-grid-column-two-thirds">
+            <form asp-route="@RouteNames.Vacancies_Get" method="get" autocomplete="off">
                 <div class="govuk-form-group">
-                    <fieldset class="govuk-fieldset">
-                        <div class="form-group search-field">
-                            <div class="search-input-with-button">
-                                <label class="govuk-label" for="search">
-                                    Search vacancies
-                                </label>
-                                <input id="search-input" name="searchTerm" placeholder="Search by title, reference number or employer" class="govuk-input search-input" maxlength="200">
-                            </div>
-                            <div class="search-submit">
-                                <!-- hide button for no js version -->
-                                <button type="submit" id="search-submit-button">Search</button>
-                            </div>
+                    <label for="search-input" class="govuk-label">
+                        Search by advert title or reference number
+                    </label>
+                    <div class="das-search-form__group">
+                        <input id="search-input" name="searchTerm" title="Search" class="govuk-input das-search-form__input app-vacancy-autocomplete" type="text" maxlength="200" data-apiurl="@vacanciesSearchSuggestionsEndpointUrl" />
+                        <div class="das-search-form__button-wrap">
+                            <button class="govuk-button das-search-form__button" type="submit">
+                                Search
+                            </button>
                         </div>
-                    </fieldset>
+                    </div>
                 </div>
-            </div>
-        </form>
+            </form>
+        </div>
     </div>
-    <div class="govuk-grid-row das-card--row">
+    
+    <div class="govuk-grid-row app-card__row">
         <div class="govuk-grid-column-one-third">
-            <div class="das-card">
-                <div class="das-card--content">
-                    <h3 class="govuk-heading-m das-card--heading">
-                        <span class="das-card--stat">@Model.VacancyCountDraft</span>
+            <div class="app-card">
+                <div class="app-card__content">
+                    <h3 class="govuk-heading-m app-card__heading">
+                        <span class="app-card__stat">@Model.VacancyCountDraft</span>
                         <a asp-route="@RouteNames.Vacancies_Get"  asp-route-ukprn="@Model.Ukprn"  asp-route-filter="@FilteringOptions.Draft" class="govuk-link">
                             @FilteringOptions.Draft @Model.VacancyTextDraft
                         </a>
                     </h3>
-                    <p class="govuk-body das-card--description">Vacancies that need completing and sending for review.</p>
+                    <p class="govuk-body app-card__description">Vacancies that need completing and sending for review.</p>
                 </div>
             </div>
         </div>
         <div class="govuk-grid-column-one-third">
-            <div class="das-card">
-                <div class="das-card--content">
-                    <h3 class="govuk-heading-m das-card--heading">
-                        <span class="das-card--stat">@Model.VacancyCountSubmitted</span>
+            <div class="app-card">
+                <div class="app-card__content">
+                    <h3 class="govuk-heading-m app-card__heading">
+                        <span class="app-card__stat">@Model.VacancyCountSubmitted</span>
                         <a asp-route="@RouteNames.Vacancies_Get"  asp-route-ukprn="@Model.Ukprn"  asp-route-filter="@FilteringOptions.Submitted" class="govuk-link">
                             @FilteringOptions.Submitted.GetDisplayName(UserType.Provider)
                         </a>
                     </h3>
-                    <p class="govuk-body das-card--description">Vacancies that have been sent for review.</p>
+                    <p class="govuk-body app-card__description">Vacancies that have been sent for review.</p>
                 </div>
             </div>
         </div>
         <div class="govuk-grid-column-one-third">
-            <div class="das-card">
-                <div class="das-card--content">
-                    <h3 class="govuk-heading-m das-card--heading">
-                        <span class="das-card--stat">@Model.VacancyCountReferred</span>
+            <div class="app-card">
+                <div class="app-card__content">
+                    <h3 class="govuk-heading-m app-card__heading">
+                        <span class="app-card__stat">@Model.VacancyCountReferred</span>
                         <a asp-route="@RouteNames.Vacancies_Get"  asp-route-ukprn="@Model.Ukprn"  asp-route-filter="@FilteringOptions.Referred" class="govuk-link">
                             @FilteringOptions.Referred.GetDisplayName() @Model.VacancyTextReferred
                         </a>
                     </h3>
-                    <p class="govuk-body das-card--description">Rejected vacancies will need to be edited and resubmitted.</p>
+                    <p class="govuk-body app-card__description">Rejected vacancies will need to be edited and resubmitted.</p>
                 </div>
             </div>
         </div>
     </div>
-    <div class="govuk-grid-row das-card--row">
+    <div class="govuk-grid-row app-card__row">
         <div class="govuk-grid-column-one-third">
-            <div class="das-card">
-                <div class="das-card--content">
-                    <h3 class="govuk-heading-m das-card--heading">
-                        <span class="das-card--stat">@Model.VacancyCountLive</span>
+            <div class="app-card">
+                <div class="app-card__content">
+                    <h3 class="govuk-heading-m app-card__heading">
+                        <span class="app-card__stat">@Model.VacancyCountLive</span>
                         <a asp-route="@RouteNames.Vacancies_Get"  asp-route-ukprn="@Model.Ukprn"  asp-route-filter="@FilteringOptions.Live" class="govuk-link">
                             @FilteringOptions.Live @Model.VacancyTextLive
                         </a>
                     </h3>
-                    <span class="govuk-body das-card--description">Vacancies on Find an apprenticeship service.</span>
-                    <p class="govuk-body das-card--description"></p>
-                    <ul class="das-card--tasks govuk-list">
+                    <span class="govuk-body app-card__description">Vacancies on Find an apprenticeship service.</span>
+                    <p class="govuk-body app-card__description"></p>
+                    <ul class="app-card--tasks govuk-list">
                         <li asp-show="@Model.ShowNoOfVacanciesClosingSoon">
                             <a class="govuk-link" asp-route="@RouteNames.Vacancies_Get" asp-route-ukprn="@Model.Ukprn"  asp-route-filter="@FilteringOptions.ClosingSoon">@Model.NoOfVacanciesClosingSoon live @Model.VacancyTextClosingSoon closing soon</a>
                         </li>
@@ -119,16 +118,16 @@
             </div>
         </div>
         <div class="govuk-grid-column-one-third">
-            <div class="das-card">
-                <div class="das-card--content">
-                    <h3 class="govuk-heading-m das-card--heading">
-                        <span class="das-card--stat">@Model.NoOfNewApplications</span>
+            <div class="app-card">
+                <div class="app-card__content">
+                    <h3 class="govuk-heading-m app-card__heading">
+                        <span class="app-card__stat">@Model.NoOfNewApplications</span>
                         <a asp-route="@RouteNames.Vacancies_Get" asp-route-ukprn="@Model.Ukprn"  asp-route-filter="@FilteringOptions.NewApplications" class="govuk-link">
                             New @Model.ApplicationTextLive
                         </a>
                     </h3>
-                    <span class="govuk-body das-card--description">Applications from Find an apprenticeship service.</span>
-                    <ul class="das-card--tasks govuk-list" asp-show="@Model.ShowAllApplications">
+                    <span class="govuk-body app-card__description">Applications from Find an apprenticeship service.</span>
+                    <ul class="app-card--tasks govuk-list" asp-show="@Model.ShowAllApplications">
                         <li>
                             <a class="govuk-link ga-track-anchor-click" asp-route="@RouteNames.Vacancies_Get" asp-route-ukprn="@Model.Ukprn"  asp-route-filter="@FilteringOptions.AllApplications" data-ga-event-category="link - click">
                                 View all applications
@@ -139,15 +138,15 @@
             </div>
         </div>
         <div class="govuk-grid-column-one-third">
-            <div class="das-card">
-                <div class="das-card--content">
-                    <h3 class="govuk-heading-m das-card--heading">
-                        <span class="das-card--stat">@Model.VacancyCountClosed</span>
+            <div class="app-card">
+                <div class="app-card__content">
+                    <h3 class="govuk-heading-m app-card__heading">
+                        <span class="app-card__stat">@Model.VacancyCountClosed</span>
                         <a asp-route="@RouteNames.Vacancies_Get" asp-route-ukprn="@Model.Ukprn"  asp-route-filter="@FilteringOptions.Closed" class="govuk-link">
                             @FilteringOptions.Closed @Model.VacancyTextClosed
                         </a>
                     </h3>
-                    <span class="govuk-body das-card--description">Vacancies that have passed the closing date. You can clone these vacancies to republish them.</span>
+                    <span class="govuk-body app-card__description">Vacancies that have passed the closing date. You can clone these vacancies to republish them.</span>
                 </div>
             </div>
         </div>

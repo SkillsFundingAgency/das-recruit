@@ -13,13 +13,14 @@
     {
         ViewBag.GaData.Vpv = "/recruitment/provider/page-create-vacancy-previewed";
     }
+    ViewBag.Title = "Preview vacancy";
 }
 
 @functions
 {
-    const string EmptySectionClass = "preview-empty";
-    const string ErrorSectionClass = "preview-error";
-    const string ReviewSectionClass = "preview-review";
+    const string EmptySectionClass = "app-preview-section--empty";
+    const string ErrorSectionClass = "app-preview-section--error";
+    const string ReviewSectionClass = "app-preview-section--review";
 
     public string GetSectionClass(VacancyPreviewSectionState state)
     {
@@ -40,9 +41,9 @@
     {
         if (state == VacancyPreviewSectionState.Incomplete || state == VacancyPreviewSectionState.InvalidIncomplete)
         {
-            return VacancyPreviewHelper.ActionLink(Url, "Add", routeName, routeValues, screenReaderText, "button-secondary", id);
+            return VacancyPreviewHelper.ActionLink(Url, "Add", routeName, routeValues, screenReaderText, "govuk-button govuk-button--secondary govuk-!-margin-bottom-0", id);
         }
-        return VacancyPreviewHelper.ActionLink(Url, "Change", routeName, routeValues, screenReaderText, "govuk-body govuk-link", id);
+        return VacancyPreviewHelper.ActionLink(Url, "Change", routeName, routeValues, screenReaderText, "govuk-body govuk-link govuk-link--no-visited-state", id);
     }
 
     public string EmployerReviewClass(VacancyPreviewViewModel model, string fieldIdentifier)
@@ -165,88 +166,85 @@
     </div>
 }
 
-<div class="govuk-grid-row">
-    <div class="govuk-grid-column-full">
-        <div asp-show="Model.HasInfo" class="info-summary highlight-summary">
-            <p class="govuk-!-margin-bottom-0 govuk-body">@Model.InfoMessage</p>
-        </div>
-    </div>
-</div>
-<div class="govuk-grid-row">
-    <div class="govuk-grid-column-full">
-        <partial asp-hide="@Model.CanHideValidationSummary" name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }' />
-        <div class="info-summary__header-bar" asp-show="@Model.HasIncompleteMandatorySections">
-            <h2 class="govuk-heading-m" asp-show="@Model.HasSoftValidationErrors">@Model.SoftValidationErrors.Errors.Count section needs updating and</h2>
-            <h2 class="govuk-heading-m">@Model.IncompleteRequiredSectionCount required @Model.IncompleteRequiredSectionText to complete</h2>
-        </div>
-        <div class="info-summary__header-bar govuk-!-margin-bottom-6" asp-hide="@Model.HasIncompleteMandatorySections">
-            <h2 class="govuk-heading-m" asp-show="@Model.HasSoftValidationErrors">@Model.SoftValidationErrors.Errors.Count section needs updating and</h2>
-            <h2 class="govuk-heading-m">You have completed all required sections</h2>
-        </div>
-        <div asp-show="@Model.ShowIncompleteSections" class="info-summary govuk-!-margin-top-0" role="alert">
-            <div asp-show="Model.HasSoftValidationErrors">
-                <p class="govuk-body">
-                    Sections you will need to update:
-                </p>
-                <ul class=" govuk-list govuk-error-summary__list govuk-!-margin-bottom-4">
-                    @foreach (var softError in Model.SoftValidationErrors.Errors.OrderBy(x => Model.OrderedFieldNames.IndexOf(x.PropertyName)))
-                    {
-                        var softErrorVm = new ErrorListItemViewModel(softError.PropertyName, softError.ErrorMessage);
-                        <partial name="@RecruitPartialNames.ErrorListItem" model="@softErrorVm" />
-                    }
-                </ul>
-            </div>
-            <div asp-show="@Model.HasIncompleteMandatorySections">
-                <p class="govuk-body">Sections you will need to complete:</p>
-                <ul class="govuk-list">
-                    <li asp-hide="@Model.HasShortDescription"><a asp-fragment="@Anchors.ShortDescriptionSection" class="govuk-link summary-link">Brief overview</a></li>
-                    <li asp-hide="@Model.HasVacancyDescription"><a asp-fragment="@Anchors.VacancyDescriptionSection" class="govuk-link summary-link">Description of the apprenticeship</a></li>
-                    <li asp-show="@Model.HasIncompleteSkillsSection"><a asp-fragment="@Anchors.Skills" class="govuk-link summary-link">Desired skills and personal qualities</a></li>
-                    <li asp-show="@Model.HasIncompleteQualificationsSection"><a asp-fragment="@Anchors.Qualifications" class="govuk-link summary-link">Qualifications</a></li>
-                    <li asp-show="@Model.HasIncompleteEmployerDescriptionSection"><a asp-fragment="@Anchors.EmployerDescription" class="govuk-link summary-link">Employer description</a></li>
-                    <li asp-show="@Model.HasIncompleteTrainingProviderSection"><a asp-fragment="@Anchors.TrainingProviderSection" class="govuk-link summary-link">Training provider</a></li>
-                    <li asp-show="@Model.HasIncompleteApplicationProcessSection"><a asp-fragment="@Anchors.ApplicationProcessSection" class="govuk-link summary-link">Application process</a></li>
-                </ul>
-            </div>
-            <div asp-show="@Model.HasIncompleteOptionalSections">
-                <p class="govuk-body">You may wish to complete these optional sections</p>
-                <ul class="govuk-list">
-                    <li asp-show="@Model.HasIncompleteThingsToConsiderSection"><a asp-fragment="@Anchors.ThingsToConsider" class="govuk-link summary-link">Things to consider</a></li>
-                    <li asp-show="@Model.HasIncompleteEmployerWebsiteUrlSection"><a asp-fragment="@Anchors.EmployerWebsiteUrl" class="govuk-link summary-link">Employer website</a></li>
-                    <li asp-show="@Model.HasIncompleteProviderContactSection"><a asp-fragment="@Anchors.ProviderContact" class="govuk-link summary-link">Contact details</a></li>
-                </ul>
-            </div>
-        </div>
-
-    </div>
+<div asp-show="Model.HasInfo" class="info-summary highlight-summary">
+    <p class="govuk-!-margin-bottom-0 govuk-body">@Model.InfoMessage</p>
 </div>
 
-<div asp-show="@Model.Review.HasBeenReviewed" class="govuk-grid-row">
-    <div class="govuk-grid-column-full">
-        <partial name="@PartialNames.ReviewSummary" for="Review" />
+<partial asp-hide="@Model.CanHideValidationSummary" name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }' />
+
+<div class="govuk-notification-banner">
+
+    <div class="govuk-notification-banner__header" asp-show="@Model.HasIncompleteMandatorySections">
+        <h2 class="govuk-notification-banner__title" asp-show="@Model.HasSoftValidationErrors">@Model.SoftValidationErrors.Errors.Count section needs updating and</h2>
+        <h2 class="govuk-notification-banner__title">@Model.IncompleteRequiredSectionCount required @Model.IncompleteRequiredSectionText to complete</h2>
     </div>
+
+    <div class="govuk-notification-banner__header" asp-hide="@Model.HasIncompleteMandatorySections">
+        <h2 class="govuk-notification-banner__title" asp-show="@Model.HasSoftValidationErrors">@Model.SoftValidationErrors.Errors.Count section needs updating and</h2>
+        <h2 class="govuk-notification-banner__title">You have completed all required sections</h2>
+    </div>
+    <div asp-show="@Model.ShowIncompleteSections" class="info-summary govuk-!-margin-top-0" role="alert">
+        <div asp-show="Model.HasSoftValidationErrors">
+            <p class="govuk-body">
+                Sections you will need to update:
+            </p>
+            <ul class=" govuk-list govuk-error-summary__list govuk-!-margin-bottom-4">
+                @foreach (var softError in Model.SoftValidationErrors.Errors.OrderBy(x => Model.OrderedFieldNames.IndexOf(x.PropertyName)))
+                {
+                    var softErrorVm = new ErrorListItemViewModel(softError.PropertyName, softError.ErrorMessage);
+                    <partial name="@RecruitPartialNames.ErrorListItem" model="@softErrorVm" />
+                }
+            </ul>
+        </div>
+        <div asp-show="@Model.HasIncompleteMandatorySections" class="govuk-notification-banner__content">
+            <p class="govuk-body">Sections you will need to complete:</p>
+            <ul class="govuk-list">
+                <li asp-hide="@Model.HasShortDescription"><a asp-fragment="@Anchors.ShortDescriptionSection" class="govuk-link summary-link">Brief overview</a></li>
+                <li asp-hide="@Model.HasVacancyDescription"><a asp-fragment="@Anchors.VacancyDescriptionSection" class="govuk-link summary-link">Description of the apprenticeship</a></li>
+                <li asp-show="@Model.HasIncompleteSkillsSection"><a asp-fragment="@Anchors.Skills" class="govuk-link summary-link">Desired skills and personal qualities</a></li>
+                <li asp-show="@Model.HasIncompleteQualificationsSection"><a asp-fragment="@Anchors.Qualifications" class="govuk-link summary-link">Qualifications</a></li>
+                <li asp-show="@Model.HasIncompleteEmployerDescriptionSection"><a asp-fragment="@Anchors.EmployerDescription" class="govuk-link summary-link">Employer description</a></li>
+                <li asp-show="@Model.HasIncompleteTrainingProviderSection"><a asp-fragment="@Anchors.TrainingProviderSection" class="govuk-link summary-link">Training provider</a></li>
+                <li asp-show="@Model.HasIncompleteApplicationProcessSection"><a asp-fragment="@Anchors.ApplicationProcessSection" class="govuk-link summary-link">Application process</a></li>
+            </ul>
+        </div>
+        <div asp-show="@Model.HasIncompleteOptionalSections" class="govuk-notification-banner__content">
+            <p class="govuk-body">You may wish to complete these optional sections</p>
+            <ul class="govuk-list">
+                <li asp-show="@Model.HasIncompleteThingsToConsiderSection"><a asp-fragment="@Anchors.ThingsToConsider" class="govuk-link summary-link">Things to consider</a></li>
+                <li asp-show="@Model.HasIncompleteEmployerWebsiteUrlSection"><a asp-fragment="@Anchors.EmployerWebsiteUrl" class="govuk-link summary-link">Employer website</a></li>
+                <li asp-show="@Model.HasIncompleteProviderContactSection"><a asp-fragment="@Anchors.ProviderContact" class="govuk-link summary-link">Contact details</a></li>
+            </ul>
+        </div>
+    </div>
+
+</div>
+
+
+<div asp-show="@Model.Review.HasBeenReviewed">
+    <partial name="@PartialNames.ReviewSummary" for="Review" />
 </div>
 
 <div class="govuk-grid-row @EmployerReviewClass(Model, FieldIdentifiers.Title)" id="@Anchors.TitleSection">
     <div class="govuk-grid-column-two-thirds">
         <div class="@GetSectionClass(Model.TitleSectionState) govuk-!-margin-bottom-6">
             <h2 class="govuk-heading-xl govuk-!-margin-bottom-6" id="@Anchors.Title">
-                <img asp-show="@Model.TitleRequiresEdit" src="/img/red-cross.png" />
+                <img asp-show="@Model.TitleRequiresEdit" src="/img/red-cross.png" no-cdn />
                 @Model.Title
                 <span class="govuk-caption-xl">@Model.EmployerName</span>
             </h2>
             <div asp-show="@ShowEmployerReviewFlag(Model, FieldIdentifiers.Title)" class="govuk-!-margin-top-4">
                 @EmployerReviewFlag(Model, FieldIdentifiers.Title)
             </div>
+            @EditLink(RouteNames.Title_Get, Model.TitleSectionState, "employer-name", "link-employer-name", new { wizard = false , Model.Ukprn, Model.VacancyId})
         </div>
-        @EditLink(RouteNames.Title_Get, Model.TitleSectionState, "employer-name", "link-employer-name", new { wizard = false , Model.Ukprn, Model.VacancyId})
     </div>
 </div>
 <div class="govuk-grid-row @EmployerReviewClass(Model, new string[] { FieldIdentifiers.ShortDescription, FieldIdentifiers.ClosingDate })" id="@Anchors.ShortDescriptionSection">
     <div class="govuk-grid-column-two-thirds">
         <div class="@GetSectionClass(Model.ShortDescriptionSectionState) govuk-!-margin-bottom-6">
             <h3 class="govuk-heading-s govuk-!-margin-top-4" id="@Anchors.ShortDescription">
-                <img asp-show="@Model.ShortDescriptionRequiresEdit" src="/img/red-cross.png" />
+                <img asp-show="@Model.ShortDescriptionRequiresEdit" src="/img/red-cross.png" no-cdn />
                 Brief overview
             </h3>
             <span esfa-validation-message-for="ShortDescription" class="govuk-error-message"></span>
@@ -254,13 +252,13 @@
             <div asp-show="@ShowEmployerReviewFlag(Model, FieldIdentifiers.ShortDescription)" class="govuk-!-margin-top-4">
                 @EmployerReviewFlag(Model, FieldIdentifiers.ShortDescription)
             </div>
+            @EditLink(RouteNames.ShortDescription_Get, Model.ShortDescriptionSectionState, "brief overview", "link-overview", new { wizard = false, Model.Ukprn, Model.VacancyId })
         </div>
-        @EditLink(RouteNames.ShortDescription_Get, Model.ShortDescriptionSectionState, "brief overview", "link-overview", new { wizard = false, Model.Ukprn, Model.VacancyId })
     </div>
     <div class="govuk-grid-column-one-third">
         <div class="@GetSectionClass(Model.ClosingDateSectionState) govuk-!-margin-bottom-6">
             <h3 class="govuk-heading-s govuk-!-margin-top-4" id="@Anchors.ClosingDate">
-                <img asp-show="@Model.ClosingDateRequiresEdit" src="/img/red-cross.png" />
+                <img asp-show="@Model.ClosingDateRequiresEdit" src="/img/red-cross.png" no-cdn />
                 Closing Date
             </h3>
             <span esfa-validation-message-for="ClosingDate" class="govuk-error-message"></span>
@@ -268,8 +266,8 @@
             <div asp-show="@ShowEmployerReviewFlag(Model, FieldIdentifiers.ClosingDate)" class="govuk-!-margin-top-4">
                 @EmployerReviewFlag(Model, FieldIdentifiers.ClosingDate)
             </div>
+            @EditLink(RouteNames.Dates_Get, Model.ClosingDateSectionState, "closing date", "link-closing-date", new { wizard = false , Model.Ukprn, Model.VacancyId})
         </div>
-        @EditLink(RouteNames.Dates_Get, Model.ClosingDateSectionState, "closing date", "link-closing-date", new { wizard = false , Model.Ukprn, Model.VacancyId})
     </div>
 </div>
 <div class="govuk-grid-row" id="@Anchors.ApprenticeshipSummarySection">
@@ -283,7 +281,7 @@
             <li class="@GetSectionClass(Model.WageTextSectionState)">
                 <div class="govuk-!-margin-bottom-6">
                     <h3 class="govuk-heading-s govuk-!-margin-top-4" id="@Anchors.YearlyWage">
-                        <img asp-show="@Model.WageRequiresEdit" src="/img/red-cross.png" />
+                        <img asp-show="@Model.WageRequiresEdit" src="/img/red-cross.png" no-cdn />
                         Annual wage
                     </h3>
                     <span esfa-validation-message-for="HasWage" class="govuk-error-message"></span>
@@ -294,13 +292,13 @@
                     <div asp-show="@ShowEmployerReviewFlag(Model, FieldIdentifiers.Wage)" class="govuk-!-margin-top-4">
                         @EmployerReviewFlag(Model, FieldIdentifiers.Wage)
                     </div>
+                    @EditLink(RouteNames.Wage_Get, Model.WageTextSectionState, "yearly wage", "link-salary", new { wizard = false , Model.Ukprn, Model.VacancyId})
                 </div>
-                @EditLink(RouteNames.Wage_Get, Model.WageTextSectionState, "yearly wage", "link-salary", new { wizard = false , Model.Ukprn, Model.VacancyId})
             </li>
             <li class="@GetSectionClass(Model.WorkingWeekSectionState)">
                 <div class="govuk-!-margin-bottom-6">
                     <h3 class="govuk-heading-s govuk-!-margin-top-4" id="@Anchors.WorkingWeek">
-                        <img asp-show="@Model.WorkingWeekRequiresEdit" src="/img/red-cross.png" />
+                        <img asp-show="@Model.WorkingWeekRequiresEdit" src="/img/red-cross.png" no-cdn />
                         Working week
                     </h3>
                     <span esfa-validation-message-for="WorkingWeekDescription" class="govuk-error-message"></span>
@@ -310,14 +308,13 @@
                     <div asp-show="@ShowEmployerReviewFlag(Model, FieldIdentifiers.WorkingWeek)" class="govuk-!-margin-top-4">
                         @EmployerReviewFlag(Model, FieldIdentifiers.WorkingWeek)
                     </div>
+                    @EditLink(RouteNames.Duration_Get, Model.WorkingWeekSectionState, "working week", "link-working-week", new { wizard = false, Model.Ukprn, Model.VacancyId })
                 </div>
-                @EditLink(RouteNames.Duration_Get, Model.WorkingWeekSectionState, "working week", "link-working-week", new { wizard = false, Model.Ukprn, Model.VacancyId })
             </li>
             <li class="@GetSectionClass(Model.ExpectedDurationSectionState)">
-                
                 <div class="govuk-!-margin-bottom-6">
                     <h3 class="govuk-heading-s govuk-!-margin-top-4" id="@Anchors.ExpectedDuration">
-                        <img asp-show="@Model.ExpectedDurationRequiresEdit" src="/img/red-cross.png" />
+                        <img asp-show="@Model.ExpectedDurationRequiresEdit" src="/img/red-cross.png" no-cdn />
                         Expected duration
                     </h3>
                     <span esfa-validation-message-for="ExpectedDuration" class="govuk-error-message"></span>
@@ -325,13 +322,13 @@
                     <div asp-show="@ShowEmployerReviewFlag(Model, FieldIdentifiers.ExpectedDuration)" class="govuk-!-margin-top-4">
                         @EmployerReviewFlag(Model, FieldIdentifiers.ExpectedDuration)
                     </div>
+                    @EditLink(RouteNames.Duration_Get, Model.ExpectedDurationSectionState, "expected duration", "link-duration", new { wizard = false, Model.Ukprn, Model.VacancyId })
                 </div>
-                @EditLink(RouteNames.Duration_Get, Model.ExpectedDurationSectionState, "expected duration", "link-duration", new { wizard = false, Model.Ukprn, Model.VacancyId })
             </li>
             <li class="@GetSectionClass(Model.PossibleStartDateSectionState)">
                 <div class="govuk-!-margin-bottom-6">
                     <h3 class="govuk-heading-s govuk-!-margin-top-4" id="@Anchors.PossibleStartDate">
-                        <img asp-show="@Model.PossibleStartDateRequiresEdit" src="/img/red-cross.png" />
+                        <img asp-show="@Model.PossibleStartDateRequiresEdit" src="/img/red-cross.png" no-cdn />
                         Possible start date
                     </h3>
                     <span esfa-validation-message-for="PossibleStartDate" class="govuk-error-message"></span>
@@ -339,13 +336,13 @@
                     <div asp-show="@ShowEmployerReviewFlag(Model, FieldIdentifiers.PossibleStartDate)" class="govuk-!-margin-top-4">
                         @EmployerReviewFlag(Model, FieldIdentifiers.PossibleStartDate)
                     </div>
+                    @EditLink(RouteNames.Dates_Get, Model.PossibleStartDateSectionState, "possible start date", "link-start-date", new { wizard = false, Model.Ukprn, Model.VacancyId })
                 </div>
-                @EditLink(RouteNames.Dates_Get, Model.PossibleStartDateSectionState, "possible start date", "link-start-date", new { wizard = false, Model.Ukprn, Model.VacancyId })
             </li>
             <li class="@GetSectionClass(Model.TrainingLevelSectionState)">
                 <div class="govuk-!-margin-bottom-6">
                     <h3 class="govuk-heading-s govuk-!-margin-top-4" id="@Anchors.TrainingLevel">
-                        <img asp-show="@Model.TrainingLevelRequiresEdit" src="/img/red-cross.png" />
+                        <img asp-show="@Model.TrainingLevelRequiresEdit" src="/img/red-cross.png" no-cdn />
                         Apprenticeship level
                     </h3>
                     <span esfa-validation-message-for="HasProgramme" class="govuk-error-message"></span>
@@ -357,8 +354,8 @@
                     <div asp-show="@ShowEmployerReviewFlag(Model, FieldIdentifiers.TrainingLevel)" class="govuk-!-margin-top-4">
                         @EmployerReviewFlag(Model, FieldIdentifiers.TrainingLevel)
                     </div>
+                    @EditLink(RouteNames.Training_Get, Model.TrainingLevelSectionState, "apprenticeship level", "link-apprenticeship-level", new { wizard = false, Model.Ukprn, Model.VacancyId })
                 </div>
-                @EditLink(RouteNames.Training_Get, Model.TrainingLevelSectionState, "apprenticeship level", "link-apprenticeship-level", new { wizard = false, Model.Ukprn, Model.VacancyId })
             </li>
             <li asp-show="@Model.CanShowReference">
                 <h3 class="govuk-heading-s govuk-!-margin-top-4">Reference number</h3>
@@ -367,7 +364,7 @@
             <li class="@GetSectionClass(Model.NumberOfPositionsSectionState)">
                 <div class="govuk-!-margin-bottom-6">
                     <h3 class="govuk-heading-s govuk-!-margin-top-4" id="@Anchors.NumberOfPositions">
-                        <img asp-show="@Model.NumberOfPositionsRequiresEdit" src="/img/red-cross.png" />
+                        <img asp-show="@Model.NumberOfPositionsRequiresEdit" src="/img/red-cross.png" no-cdn />
                         Positions
                     </h3>
                     <span esfa-validation-message-for="NumberOfPositions" class="govuk-error-message"></span>
@@ -375,8 +372,8 @@
                     <div asp-show="@ShowEmployerReviewFlag(Model, FieldIdentifiers.NumberOfPositions)" class="govuk-!-margin-top-4">
                         @EmployerReviewFlag(Model, FieldIdentifiers.NumberOfPositions)
                     </div>
+                    @EditLink(RouteNames.NumberOfPositions_Get, Model.NumberOfPositionsSectionState, "positions", "link-positions", new { wizard = false, Model.Ukprn, Model.VacancyId })
                 </div>
-                @EditLink(RouteNames.NumberOfPositions_Get, Model.NumberOfPositionsSectionState, "positions", "link-positions", new { wizard = false, Model.Ukprn, Model.VacancyId })
             </li>
         </ul>
     </div>
@@ -386,7 +383,7 @@
                 <h3 asp-hide="@Model.HasVacancyDescription" class="govuk-heading-s">Description of the apprenticeship</h3>
                 <p asp-hide="@Model.HasVacancyDescription" class="govuk-body">What will the apprentice be doing?</p>
                 <h3 asp-show="@Model.HasVacancyDescription" class="govuk-heading-s govuk-!-margin-top-4" id="@Anchors.VacancyDescription">
-                    <img asp-show="@Model.VacancyDescriptionRequiresEdit" src="/img/red-cross.png" />
+                    <img asp-show="@Model.VacancyDescriptionRequiresEdit" src="/img/red-cross.png" no-cdn />
                     What will the apprentice be doing?
                 </h3>
                 <span esfa-validation-message-for="VacancyDescription" class="govuk-error-message"></span>
@@ -398,7 +395,7 @@
             <div>
                 <p asp-hide="@Model.HasTrainingDescription" class="govuk-body">What training will the apprentice take and what qualification will the apprentice get at the end?</p>
                 <h3 asp-show="@Model.HasTrainingDescription" class="govuk-heading-s govuk-!-margin-top-4" id="@Anchors.TrainingDescription">
-                    <img asp-show="@Model.TrainingDescriptionRequiresEdit" src="/img/red-cross.png" />
+                    <img asp-show="@Model.TrainingDescriptionRequiresEdit" src="/img/red-cross.png" no-cdn />
                     What training will the apprentice take and what qualification will the apprentice get at the end?
                 </h3>
                 <span esfa-validation-message-for="TrainingDescription" class="govuk-error-message"></span>
@@ -410,7 +407,7 @@
             <div class="govuk-!-margin-bottom-6">
                 <p asp-hide="@Model.HasOutcomeDescription" class="govuk-body">What is the expected career progression after this apprenticeship?</p>
                 <h3 asp-show="@Model.HasOutcomeDescription" class="govuk-heading-s govuk-!-margin-top-4" id="@Anchors.OutcomeDescription">
-                    <img asp-show="@Model.OutcomeDescriptionRequiresEdit" src="/img/red-cross.png" />
+                    <img asp-show="@Model.OutcomeDescriptionRequiresEdit" src="/img/red-cross.png" no-cdn />
                     What is the expected career progression after this apprenticeship?
                 </h3>
                 <span esfa-validation-message-for="OutcomeDescription" class="govuk-error-message"></span>
@@ -429,13 +426,13 @@
         <h2 class="govuk-heading-l govuk-!-margin-top-7">Requirements and prospects</h2>
     </div>
 </div>
-<div class="govuk-grid-row @RequirementsAndProspectsEmployerReviewClass(Model)">
+<div class="@RequirementsAndProspectsEmployerReviewClass(Model)">
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-one-half">
             <div class="@GetSectionClass(Model.SkillsSectionState)">
                 <div class="govuk-!-margin-bottom-6">
                     <h3 class="govuk-heading-s govuk-!-margin-top-4" id="@Anchors.Skills">
-                        <img asp-show="@Model.SkillsRequiresEdit" src="/img/red-cross.png" />
+                        <img asp-show="@Model.SkillsRequiresEdit" src="/img/red-cross.png" no-cdn />
                         Desired skills and personal qualities
                     </h3>
                     <span esfa-validation-message-for="Skills" class="govuk-error-message"></span>
@@ -443,15 +440,15 @@
                     <div asp-show="@ShowEmployerReviewFlag(Model, FieldIdentifiers.Skills)" class="govuk-!-margin-top-4">
                         @EmployerReviewFlag(Model, FieldIdentifiers.Skills)
                     </div>
+                    @EditLink(RouteNames.Skills_Get, Model.SkillsSectionState, "desired skills and personal qualities", "link-skills",new {Model.Ukprn, Model.VacancyId})
                 </div>
-                @EditLink(RouteNames.Skills_Get, Model.SkillsSectionState, "desired skills and personal qualities", "link-skills",new {Model.Ukprn, Model.VacancyId})
             </div>
         </div>
         <div class="govuk-grid-column-one-half">
             <div class="@GetSectionClass(Model.ThingsToConsiderSectionState)">
                 <div class="govuk-!-margin-bottom-6">
                     <h3 class="govuk-heading-s govuk-!-margin-top-4" id="@Anchors.ThingsToConsider">
-                        <img asp-show="@Model.ThingsToConsiderRequiresEdit" src="/img/red-cross.png" />
+                        <img asp-show="@Model.ThingsToConsiderRequiresEdit" src="/img/red-cross.png" no-cdn />
                         Things to consider (optional)
                     </h3>
                     <span esfa-validation-message-for="ThingsToConsider" class="govuk-error-message"></span>
@@ -459,8 +456,8 @@
                     <div asp-show="@ShowEmployerReviewFlag(Model, FieldIdentifiers.ThingsToConsider)" class="govuk-!-margin-top-4">
                         @EmployerReviewFlag(Model, FieldIdentifiers.ThingsToConsider)
                     </div>
+                    @EditLink(RouteNames.Considerations_Get, Model.ThingsToConsiderSectionState, "things to consider", "link-things-to-consider",new {Model.Ukprn, Model.VacancyId})
                 </div>
-                @EditLink(RouteNames.Considerations_Get, Model.ThingsToConsiderSectionState, "things to consider", "link-things-to-consider",new {Model.Ukprn, Model.VacancyId})
             </div>
         </div>
     </div>
@@ -469,7 +466,7 @@
             <div class="@GetSectionClass(Model.QualificationsSectionState)">
                 <div class="govuk-!-margin-bottom-6">
                     <h3 class="govuk-heading-s govuk-!-margin-top-4" id="@Anchors.Qualifications">
-                        <img asp-show="@Model.QualificationsRequiresEdit" src="/img/red-cross.png" />
+                        <img asp-show="@Model.QualificationsRequiresEdit" src="/img/red-cross.png" no-cdn />
                         Qualifications
                     </h3>
                     <span esfa-validation-message-for="Qualifications" class="govuk-error-message"></span>
@@ -482,14 +479,12 @@
                     <div asp-show="@ShowEmployerReviewFlag(Model, FieldIdentifiers.Qualifications)" class="govuk-!-margin-top-4">
                         @EmployerReviewFlag(Model, FieldIdentifiers.Qualifications)
                     </div>
+                    @EditLink(RouteNames.Qualifications_Get, Model.QualificationsSectionState, "qualifications", "link-qualifications",new {Model.Ukprn, Model.VacancyId})
                 </div>
-                @EditLink(RouteNames.Qualifications_Get, Model.QualificationsSectionState, "qualifications", "link-qualifications",new {Model.Ukprn, Model.VacancyId})
             </div>
         </div>
     </div>
 </div>
-
-
 <div class="govuk-grid-row" id="@Anchors.AboutEmployerSection">
     <div class="govuk-grid-column-full">
         <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
@@ -501,7 +496,7 @@
         <div class="@GetSectionClass(Model.EmployerDescriptionSectionState)">
             <div class="govuk-!-margin-bottom-6">
                 <h3 class="govuk-heading-s govuk-!-margin-top-4" id="@Anchors.EmployerDescription">
-                    <img asp-show="@Model.EmployerDescriptionRequiresEdit" src="/img/red-cross.png" />
+                    <img asp-show="@Model.EmployerDescriptionRequiresEdit" src="/img/red-cross.png" no-cdn />
                     Description
                 </h3>
                 <span esfa-validation-message-for="EmployerDescription" class="govuk-error-message"></span>
@@ -509,13 +504,13 @@
                 <div asp-show="@ShowEmployerReviewFlag(Model, FieldIdentifiers.EmployerDescription)" class="govuk-!-margin-top-4">
                     @EmployerReviewFlag(Model, FieldIdentifiers.EmployerDescription)
                 </div>
+                @EditLink(RouteNames.AboutEmployer_Get, Model.EmployerDescriptionSectionState, "employer description", "link-description", new {Model.Ukprn, Model.VacancyId})
             </div>
-            @EditLink(RouteNames.AboutEmployer_Get, Model.EmployerDescriptionSectionState, "employer description", "link-description", new {Model.Ukprn, Model.VacancyId})
         </div>
         <div class="@GetSectionClass(Model.EmployerNameSectionState)">
             <div class="govuk-!-margin-bottom-6">
                 <h3 class="govuk-heading-s govuk-!-margin-top-4" id="@Anchors.EmployerName">
-                    <img asp-show="@Model.EmployerNameRequiresEdit" src="/img/red-cross.png" />
+                    <img asp-show="@Model.EmployerNameRequiresEdit" src="/img/red-cross.png" no-cdn />
                     Employer
                 </h3>
                 <span esfa-validation-message-for="EmployerName" class="govuk-error-message"></span>
@@ -523,13 +518,13 @@
                 <div asp-show="@ShowEmployerReviewFlag(Model, FieldIdentifiers.EmployerName)" class="govuk-!-margin-top-4">
                     @EmployerReviewFlag(Model, FieldIdentifiers.EmployerName)
                 </div>
+                @EditLink(RouteNames.LegalEntity_Get, Model.EmployerAddressSectionState, "employer", "link-employer", new { wizard = false, Model.Ukprn, Model.VacancyId })
             </div>
-            @EditLink(RouteNames.LegalEntity_Get, Model.EmployerAddressSectionState, "employer", "link-employer", new { wizard = false, Model.Ukprn, Model.VacancyId })
         </div>
         <div class="@GetSectionClass(Model.DisabilityConfidentSectionState)">
             <div class="govuk-!-margin-bottom-6">
                 <h3 class="govuk-heading-s govuk-!-margin-top-4" id="@Anchors.DisabilityConfident">
-                    <img asp-show="@Model.DisabilityConfidentRequiresEdit" src="/img/red-cross.png" />
+                    <img asp-show="@Model.DisabilityConfidentRequiresEdit" src="/img/red-cross.png" no-cdn />
                     Disability Confident (optional)
                 </h3>
                 <img asp-show="@Model.IsDisabilityConfident" src="~/img/disability-confident_545x172.png" class="disability-confident-logo" alt="A logo confirming that the employer is registered as disability confident" esfa-automation="disability-confident-logo" />
@@ -538,13 +533,13 @@
                 <div asp-show="@ShowEmployerReviewFlag(Model, FieldIdentifiers.DisabilityConfident)" class="govuk-!-margin-top-4">
                     @EmployerReviewFlag(Model, FieldIdentifiers.DisabilityConfident)
                 </div>
+                @EditLink(RouteNames.Dates_Get, Model.TrainingSectionState, "disability confident", "link-standard", new { wizard = false, Model.Ukprn, Model.VacancyId })
             </div>
-            @EditLink(RouteNames.Dates_Get, Model.TrainingSectionState, "disability confident", "link-standard", new { wizard = false, Model.Ukprn, Model.VacancyId })
         </div>
         <div class="@GetSectionClass(Model.EmployerWebsiteUrlSectionState)">
             <div class="govuk-!-margin-bottom-6">
                 <h3 class="govuk-heading-s govuk-!-margin-top-4" id="@Anchors.EmployerWebsiteUrl">
-                    <img asp-show="@Model.EmployerWebsiteUrlRequiresEdit" src="/img/red-cross.png" />
+                    <img asp-show="@Model.EmployerWebsiteUrlRequiresEdit" src="/img/red-cross.png" no-cdn />
                     Website (optional)
                 </h3>
                 <span esfa-validation-message-for="EmployerWebsiteUrl" class="govuk-error-message"></span>
@@ -557,8 +552,8 @@
                 <div asp-show="@ShowEmployerReviewFlag(Model, FieldIdentifiers.EmployerWebsiteUrl)" class="govuk-!-margin-top-4">
                     @EmployerReviewFlag(Model, FieldIdentifiers.EmployerWebsiteUrl)
                 </div>
+                @EditLink(RouteNames.AboutEmployer_Get, Model.EmployerWebsiteUrlSectionState, "website", "link-website", new{Model.Ukprn, Model.VacancyId})
             </div>
-            @EditLink(RouteNames.AboutEmployer_Get, Model.EmployerWebsiteUrlSectionState, "website", "link-website", new{Model.Ukprn, Model.VacancyId})
         </div>
     </div>
 </div>
@@ -567,7 +562,7 @@
         <div class="@GetSectionClass(Model.EmployerAddressSectionState)">
             <div class="govuk-!-margin-bottom-6">
                 <h3 class="govuk-heading-s govuk-!-margin-top-4" id="@Anchors.EmployerAddress">
-                    <img asp-show="@Model.EmployerAddressRequiresEdit" src="/img/red-cross.png" />
+                    <img asp-show="@Model.EmployerAddressRequiresEdit" src="/img/red-cross.png" no-cdn />
                     Location
                 </h3>
                 <span esfa-validation-message-for="EmployerAddressElements" class="govuk-error-message"></span>
@@ -580,8 +575,8 @@
                 <div asp-show="@ShowEmployerReviewFlag(Model, FieldIdentifiers.EmployerAddress)" class="govuk-!-margin-top-4">
                     @EmployerReviewFlag(Model, FieldIdentifiers.EmployerAddress)
                 </div>
+                @EditLink(RouteNames.Location_Get, Model.EmployerAddressSectionState, "location", "link-location", new { wizard = false, Model.Ukprn, Model.VacancyId })
             </div>
-            @EditLink(RouteNames.Location_Get, Model.EmployerAddressSectionState, "location", "link-location", new { wizard = false, Model.Ukprn, Model.VacancyId })
         </div>
     </div>
     <div class="govuk-grid-column-one-half">
@@ -599,7 +594,7 @@
         <div class="@GetSectionClass(Model.ProviderSectionState)">
             <div class="govuk-!-margin-bottom-6">
                 <h3 class="govuk-heading-s govuk-!-margin-top-4" id="@Anchors.Provider">
-                    <img asp-show="@Model.ProviderRequiresEdit" src="/img/red-cross.png" />
+                    <img asp-show="@Model.ProviderRequiresEdit" src="/img/red-cross.png" no-cdn />
                     Training provider
                 </h3>
                 <span esfa-validation-message-for="ProviderName" class="govuk-error-message"></span>
@@ -611,7 +606,7 @@
         </div>
         <div class="@GetSectionClass(Model.ProviderContactSectionState)">
             <h3 class="govuk-heading-s govuk-!-margin-top-4" id="@Anchors.ProviderContact">
-                <img asp-show="@Model.ProviderContactRequiresEdit" src="/img/red-cross.png" />
+                <img asp-show="@Model.ProviderContactRequiresEdit" src="/img/red-cross.png" no-cdn />
                 Contact details (optional)
             </h3>
             <span esfa-validation-message-for="ProviderContactName" class="govuk-error-message"></span>
@@ -627,7 +622,7 @@
         <div class="@GetSectionClass(Model.TrainingSectionState)">
             <div class="govuk-!-margin-bottom-6">
                 <h3 class="govuk-heading-s govuk-!-margin-top-4" id="@Anchors.Training">
-                    <img asp-show="@Model.TrainingRequiresEdit" src="/img/red-cross.png" />
+                    <img asp-show="@Model.TrainingRequiresEdit" src="/img/red-cross.png" no-cdn />
                     Apprenticeship @Model.TrainingType
                 </h3>
                 <p asp-show="@Model.HasTrainingTitle" class="govuk-body">
@@ -637,8 +632,8 @@
                 <div asp-show="@ShowEmployerReviewFlag(Model, FieldIdentifiers.Training)" class="govuk-!-margin-top-4">
                     @EmployerReviewFlag(Model, FieldIdentifiers.Training)
                 </div>
+                @EditLink(RouteNames.Training_Get, Model.TrainingSectionState, "apprenticeship training", "link-standard", new { wizard = false, Model.Ukprn, Model.VacancyId })
             </div>
-            @EditLink(RouteNames.Training_Get, Model.TrainingSectionState, "apprenticeship training", "link-standard", new { wizard = false, Model.Ukprn, Model.VacancyId })
         </div>
     </div>
 </div>
@@ -660,20 +655,20 @@
                 <div asp-show="@ShowEmployerReviewFlag(Model, FieldIdentifiers.ApplicationMethod)" class="govuk-!-margin-top-4">
                     @EmployerReviewFlag(Model, FieldIdentifiers.ApplicationMethod)
                 </div>
+                @EditLink(RouteNames.ApplicationProcess_Get, Model.ApplicationMethodSectionState, "application method", "link-application-method", new{ Model.Ukprn, Model.VacancyId})
             </div>
-            @EditLink(RouteNames.ApplicationProcess_Get, Model.ApplicationMethodSectionState, "application method", "link-application-method", new{ Model.Ukprn, Model.VacancyId})
         </div>
         <div asp-show="@Model.HasSpecifiedThroughFaaApplicationMethod" class="@GetSectionClass(Model.ApplicationMethodSectionState)">
             <div class="govuk-!-margin-bottom-6">
                 <p class="govuk-body">
-                    <img asp-show="@Model.ApplicationMethodRequiresEdit" src="/img/red-cross.png" />
+                    <img asp-show="@Model.ApplicationMethodRequiresEdit" src="/img/red-cross.png" no-cdn />
                     Candidates will apply through the <a href="@Model.FindAnApprenticeshipUrl" class="govuk-body govuk-link" rel="noopener" target="_blank">Find an apprenticeship service</a>
                 </p>
                 <div asp-show="@ShowEmployerReviewFlag(Model, FieldIdentifiers.ApplicationMethod)" class="govuk-!-margin-top-4">
                     @EmployerReviewFlag(Model, FieldIdentifiers.ApplicationMethod)
                 </div>
+                @EditLink(RouteNames.ApplicationProcess_Get, Model.ApplicationMethodSectionState, "application method", "link-application-method", new{ Model.Ukprn, Model.VacancyId})
             </div>
-            @EditLink(RouteNames.ApplicationProcess_Get, Model.ApplicationMethodSectionState, "application method", "link-application-method", new{ Model.Ukprn, Model.VacancyId})
         </div>
         <div asp-show="@Model.HasSpecifiedThroughExternalApplicationMethod">
             <div asp-show="@Model.HasApplicationUrl">
@@ -681,7 +676,7 @@
                 <div class="@GetSectionClass(Model.ApplicationUrlSectionState)">
                     <div class="govuk-!-margin-bottom-6">
                         <h2 class="govuk-heading-s govuk-!-margin-top-4" id="@Anchors.ApplicationUrl">
-                            <img asp-show="@Model.ApplicationUrlRequiresEdit" src="/img/red-cross.png" />
+                            <img asp-show="@Model.ApplicationUrlRequiresEdit" src="/img/red-cross.png" no-cdn />
                             Apply now web address
                         </h2>
                         <span esfa-validation-message-for="ApplicationUrl" class="govuk-error-message"></span>
@@ -689,14 +684,14 @@
                         <div asp-show="@ShowEmployerReviewFlag(Model, FieldIdentifiers.ApplicationUrl)" class="govuk-!-margin-top-4">
                             @EmployerReviewFlag(Model, FieldIdentifiers.ApplicationUrl)
                         </div>
+                        @EditLink(RouteNames.ApplicationProcess_Get, Model.ApplicationUrlSectionState, "application link", "link-application-link", new{ Model.Ukprn, Model.VacancyId})
                     </div>
-                    @EditLink(RouteNames.ApplicationProcess_Get, Model.ApplicationUrlSectionState, "application link", "link-application-link", new{ Model.Ukprn, Model.VacancyId})
                 </div>
             </div>
             <div class="@GetSectionClass(Model.ApplicationInstructionsSectionState)">
                 <div class="govuk-!-margin-bottom-6">
                     <h2 class="govuk-heading-s govuk-!-margin-top-4" id="@Anchors.ApplicationInstructions">
-                        <img asp-show="@Model.ApplicationInstructionsRequiresEdit" src="/img/red-cross.png" />
+                        <img asp-show="@Model.ApplicationInstructionsRequiresEdit" src="/img/red-cross.png" no-cdn />
                         Explain the application process (optional)
                     </h2>
                     <span esfa-validation-message-for="ApplicationInstructions" class="govuk-error-message"></span>
@@ -704,27 +699,22 @@
                     <div asp-show="@ShowEmployerReviewFlag(Model, FieldIdentifiers.ApplicationInstructions)" class="govuk-!-margin-top-4">
                         @EmployerReviewFlag(Model, FieldIdentifiers.ApplicationInstructions)
                     </div>
+                    @EditLink(RouteNames.ApplicationProcess_Get, Model.ApplicationInstructionsSectionState, "application-instructions", "link-application-instructions", new{ Model.Ukprn, Model.VacancyId})
                 </div>
-                @EditLink(RouteNames.ApplicationProcess_Get, Model.ApplicationInstructionsSectionState, "application-instructions", "link-application-instructions", new{ Model.Ukprn, Model.VacancyId})
             </div>
         </div>
     </div>
 </div>
-<div class="govuk-grid-row">
-    <div class="govuk-grid-column-full">
-        <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
-    </div>
+
+<hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+
+<div class="govuk-button-group">
+    <form asp-show="@Model.CanSubmit" asp-route-vacancyId="@Model.VacancyId" asp-route-ukprn="@Model.Ukprn" asp-route="@RouteNames.Preview_Submit_Post" class="form-inline">
+        <input type="submit" value="@Model.SubmitButtonText" class="govuk-button" esfa-automation="submit-button" />
+        <a asp-show="@Model.CanDelete" asp-route="@RouteNames.DeleteVacancy_Get" asp-route-vacancyId="@Model.VacancyId" asp-route-ukprn="@Model.Ukprn" class="govuk-button govuk-button--warning" esfa-automation="delete-button">Delete</a>
+    </form>
 </div>
-<div class="govuk-grid-row">
-    <div class="govuk-grid-column-full">
-        <div class="govuk-body govuk-button-group">
-            <form asp-show="@Model.CanSubmit" asp-route-vacancyId="@Model.VacancyId" asp-route-ukprn="@Model.Ukprn" asp-route="@RouteNames.Preview_Submit_Post" class="form-inline">
-                <input type="submit" value="@Model.SubmitButtonText" class="govuk-button" esfa-automation="submit-button" />
-            </form>
-            <a asp-show="@Model.CanDelete" asp-route="@RouteNames.DeleteVacancy_Get" asp-route-vacancyId="@Model.VacancyId" asp-route-ukprn="@Model.Ukprn" class="govuk-button delete-button" esfa-automation="delete-button">Delete</a>
-        </div>
-        <div class="govuk-body">
-            <a asp-route="@RouteNames.Vacancies_Get" asp-route-ukprn="@Model.Ukprn" class="govuk-link das-button-link" esfa-automation="dashboard-link">Return to dashboard</a>
-        </div>
-    </div>
+
+<div class="govuk-body">
+    <a asp-route="@RouteNames.Vacancies_Get" asp-route-ukprn="@Model.Ukprn" class="govuk-link govuk-link--no-visited-state" esfa-automation="dashboard-link">Return to dashboard</a>
 </div>

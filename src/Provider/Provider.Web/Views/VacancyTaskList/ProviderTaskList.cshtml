@@ -2,14 +2,14 @@
 @using Esfa.Recruit.Vacancies.Client.Domain.Entities
 @model Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview.VacancyPreviewViewModel
 
-@{ ViewBag.GaData.Vpv = "/recruitment/provider/task-list"; }
+@{ 
+    ViewBag.GaData.Vpv = "/recruitment/provider/task-list";
+    ViewBag.Title = "Create an apprenticeship vacancy";
+}
 
-
-<div class="govuk-grid-row">
-    <div class="govuk-grid-column-full">
-        <a asp-route="@RouteNames.Dashboard_Get" asp-route-ukprn="@Model.Ukprn" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Return to dashboard</a>
-    </div>
-</div>
+@section BackLink {
+    <a asp-route="@RouteNames.Dashboard_Get" asp-route-ukprn="@Model.Ukprn" esfa-automation="link-back" class="govuk-back-link">Return to dashboard</a>
+}
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">  
@@ -142,13 +142,13 @@
                         @if (Model.TaskListSectionOneState != VacancyTaskListSectionState.Completed)
                         {
                             <span class="das-task-list__task-name">
-                                Important dates
+                                Closing and start dates
                             </span>    
                         }
                         else
                         {
                             <a class="govuk-link govuk-link--no-visited-state" asp-all-route-data="@Model.RouteDictionary" asp-route="@RouteNames.Dates_Get">
-                                Important dates
+                                Closing and start dates
                             </a>
                         }
                     </li>

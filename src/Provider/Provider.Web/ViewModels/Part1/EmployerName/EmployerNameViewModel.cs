@@ -19,5 +19,6 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.Part1.EmployerName
         public bool HasExistingTradingName => string.IsNullOrWhiteSpace(ExistingTradingName) == false;
 
         public bool HasOnlyOneOrganisation { get; internal set; }
+        public string Title { get; set; }
     }
 }

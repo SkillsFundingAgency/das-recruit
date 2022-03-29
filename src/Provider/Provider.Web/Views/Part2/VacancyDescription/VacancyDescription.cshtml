@@ -5,41 +5,45 @@
     ViewBag.Title = "Tasks and training details";
 }
 
+@section BackLink {
+    <esfaFeatureEnabled name="@FeatureNames.ProviderTaskList">
+        <a asp-route="@RouteNames.ShortDescription_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Back</a>
+    </esfaFeatureEnabled>
+}
 
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-        <esfaFeatureEnabled name="@FeatureNames.ProviderTaskList">
-            <a asp-route="@RouteNames.ShortDescription_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
-        </esfaFeatureEnabled>
+
         
         <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }'/>
 
         <partial name="@PartialNames.ReviewSummary" for="Review"/>
 
         <h1 class="govuk-heading-xl">
-            <span class="govuk-caption-l">@Model.Title</span>
+            <span class="govuk-caption-xl">@Model.Title</span>
             Tasks and training details
         </h1>
 
         <form asp-route="@RouteNames.VacancyDescription_Index_Post" asp-all-route-data="@Model.RouteDictionary">
             <div esfa-validation-marker-for="VacancyDescription" class="govuk-form-group">
                 <label asp-for="VacancyDescription" class="govuk-label govuk-!-font-weight-bold">What will the apprentice be doing?</label>
-                <span class="govuk-hint">Describe what an average day or week will be like and what tasks they could be doing.</span>
+                <span class="govuk-hint">Describe what an average day or week will be like and what tasks the apprentice could be doing.</span>
                 <div class="govuk-inset-text">You must include at least 3 bullet points or your advert will be rejected.</div>
                 <span esfa-validation-message-for="VacancyDescription" class="govuk-error-message"></span>
                 <textarea asp-for="VacancyDescription" class="govuk-textarea html-editor" rows="5" data-val-length-max="4000"></textarea>
                 <span class="govuk-body maxchar-count">4000</span>
                 <span class="govuk-body maxchar-text"> characters remaining</span>
             </div>
+
             <div esfa-validation-marker-for="TrainingDescription" class="govuk-form-group">
-                <label asp-for="TrainingDescription" class="govuk-label govuk-!-font-weight-bold">What training will the apprentice take and what qualification will the apprentice get at the end?</label>
+                <label asp-for="TrainingDescription" class="govuk-label govuk-!-font-weight-bold govuk-!-margin-bottom-5">What training will the apprentice take and what qualification will the apprentice get at the end?</label>
                 <p class="govuk-body">You must include information about the following:</p>
                 <ul class="govuk-list govuk-list--bullet">
                     <li>
-                        the qualification they’ll get at the end - you can <a class="govuk-link" target="_blank" href="https://www.gov.uk/what-different-qualification-levels-mean/list-of-qualification-levels">view the types of qualifications available (opens in a new tab)</a>
+                        the qualification they'll get at the end - you can <a class="govuk-link" target="_blank" href="https://www.gov.uk/what-different-qualification-levels-mean/list-of-qualification-levels">view the types of qualifications available (opens in a new tab or window)</a>
                     </li>
-                    <li>where and when the apprentice will do their training - if you can, add details about the location of the training</li>
+                    <li>where and when the apprentice will do their training - if you can, add details about the location of the training </li>
                     <li>whether the training will be one day a week or block release</li>
                 </ul>
                 <span esfa-validation-message-for="TrainingDescription" class="govuk-error-message"></span>
@@ -47,14 +51,14 @@
                 <span class="govuk-body maxchar-count">4000</span>
                 <span class="govuk-body maxchar-text"> characters remaining</span>
             </div>
-            <div class="govuk-form-group">
+            <div class="govuk-button-group">
                 <input type="submit" value="Save and continue" esfa-automation="btn-continue" class="govuk-button save-button"/>
 
                 <esfaFeatureEnabled name="@FeatureNames.ProviderTaskList">
-                    <a asp-route="@RouteNames.Dashboard_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-cancel" class="govuk-link das-button-link">Cancel</a>
+                    <a asp-route="@RouteNames.Dashboard_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-cancel" class="govuk-link govuk-link--no-visited-state">Cancel</a>
                 </esfaFeatureEnabled>
                 <esfaFeatureDisabled name="@FeatureNames.ProviderTaskList">
-                    <a asp-route="@RouteNames.Vacancy_Preview_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-cancel" class="govuk-link das-button-link">Cancel</a>
+                    <a asp-route="@RouteNames.Vacancy_Preview_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-cancel" class="govuk-link govuk-link--no-visited-state">Cancel</a>
                 </esfaFeatureDisabled>
             </div>
         </form>
@@ -63,7 +67,7 @@
 
 @section FooterJS
     {
-    <script src="/lib/tinymce-4.9.2/tinymce.min.js"></script>
+    <script src="/lib/tinymce-4.9.2/tinymce.min.js" no-cdn></script>
     <script nws-csp-add-nonce="true">
         initializeHtmlEditors();
     </script>

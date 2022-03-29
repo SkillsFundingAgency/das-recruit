@@ -4,6 +4,7 @@
 
 @{
     ViewBag.GaData.Vpv = "/recruitment/provider/page-employer";
+    ViewBag.Title = "Which employer do you want to create a vacancy for?";
 }
 
 <div class="govuk-grid-row">
@@ -20,6 +21,11 @@
         <form asp-route="@RouteNames.Employer_Post"  asp-all-route-data="@Model.RouteDictionary">
             <div esfa-validation-marker-for="SelectedEmployerId" class="govuk-form-group">
                 <fieldset class="govuk-fieldset">
+                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
+                        <h2 class="govuk-fieldset__heading">
+                            Select employer
+                        </h2>
+                    </legend>
                     <span esfa-validation-message-for="SelectedEmployerId" class="govuk-error-message"></span>
                     <div class="govuk-radios">
                         @foreach (var employer in Model.Employers)
@@ -32,15 +38,16 @@
                     </div>
                 </fieldset>
             </div>
-
-            <button type="submit" class="govuk-button save-button">@PartOnePageInfoViewModel.SubmitButtonCaptionForWizard</button>
-
-            <esfaFeatureEnabled name="@FeatureNames.ProviderTaskList">
-                <a asp-route="@RouteNames.Dashboard_Get" asp-all-route-data="@Model.RouteDictionary" class="govuk-link das-button-link">Cancel</a>
-            </esfaFeatureEnabled>
-            <esfaFeatureDisabled name="@FeatureNames.ProviderTaskList">
-                <a asp-route="@RouteNames.Vacancies_Get" asp-all-route-data="@Model.RouteDictionary" class="govuk-link das-button-link">Cancel</a>    
-            </esfaFeatureDisabled>
+            
+            <div class="govuk-button-group">
+                <button type="submit" class="govuk-button save-button">@PartOnePageInfoViewModel.SubmitButtonCaptionForWizard</button>
+                <esfaFeatureEnabled name="@FeatureNames.ProviderTaskList">
+                    <a asp-route="@RouteNames.Dashboard_Get" asp-all-route-data="@Model.RouteDictionary" class="govuk-link govuk-link--no-visited-state">Cancel</a>
+                </esfaFeatureEnabled>
+                <esfaFeatureDisabled name="@FeatureNames.ProviderTaskList">
+                    <a asp-route="@RouteNames.Vacancies_Get" asp-all-route-data="@Model.RouteDictionary" class="govuk-link govuk-link--no-visited-state">Cancel</a>    
+                </esfaFeatureDisabled>
+            </div>
             
         </form>
     </div>

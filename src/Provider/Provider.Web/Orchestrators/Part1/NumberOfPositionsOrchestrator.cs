@@ -35,6 +35,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
 
             var vm = new NumberOfPositionsViewModel
             {
+                Title = vacancy.Title,
                 VacancyId = vacancy.Id,
                 NumberOfPositions = vacancy.NumberOfPositions?.ToString(),
                 PageInfo = _utility.GetPartOnePageInfo(vacancy),
