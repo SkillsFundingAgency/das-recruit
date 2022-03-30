@@ -37,8 +37,8 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part2
         {      
             if (!ModelState.IsValid)
             {
-                var vm = await _orchestrator.GetProviderContactDetailsViewModelAsync(m);
-                return View(vm);
+                var viewModel = await _orchestrator.GetProviderContactDetailsViewModelAsync(m);    
+                return View(viewModel);
             }
             
             var response = await _orchestrator.PostProviderContactDetailsEditModelAsync(m, User.ToVacancyUser());
