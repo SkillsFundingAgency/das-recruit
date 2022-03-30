@@ -45,7 +45,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
 
             if (vm.HasOnlyOneOrganisation)
             {
-                return RedirectToRoute(RouteNames.EmployerName_Get, new {Wizard = wizard});
+                return RedirectToRoute(RouteNames.EmployerName_Get, new {Wizard = wizard, vrm.Ukprn, vrm.VacancyId});
             }
 
             vm.Pager.OtherRouteValues.Add(nameof(wizard), wizard);
