@@ -71,6 +71,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
 
             var vm = new LocationViewModel
             {
+                Title = vacancy.Title,
                 PageInfo = _utility.GetPartOnePageInfo(vacancy),
                 IsAnonymousVacancy = (employerInfoModel?.EmployerIdentityOption == null)
                     ? vacancy.IsAnonymous

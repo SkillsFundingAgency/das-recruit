@@ -6,5 +6,6 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.Part2.AboutEmployer
     {
         public string EmployerDescription { get; set; }
         public string EmployerWebsiteUrl { get; set; }
+        public bool IsDisabilityConfident { get; set; }
     }
 }
