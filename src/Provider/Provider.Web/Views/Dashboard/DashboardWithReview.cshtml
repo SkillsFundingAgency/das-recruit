@@ -168,12 +168,12 @@
     </div>
     <div class="govuk-grid-row">
         <div asp-show="@Model.HasOneVacancy" class="govuk-grid-column-full">
-            <a asp-route="@RouteNames.VacancyManage_Get" asp-route-ukprn="@Model.Ukprn"  asp-route-vacancyId="@Model.CurrentVacancyId" class="govuk-link govuk-!-font-size-24 govuk-!-font-weight-bold govuk-link--no-visited-state" name="button">
+            <a asp-route="@RouteNames.VacancyManage_Get" asp-route-ukprn="@Model.Ukprn"  asp-route-vacancyId="@Model.CurrentVacancyId" class="govuk-link govuk-!-font-size-24 govuk-!-font-weight-bold govuk-link--no-visited-state">
                 View your vacancy
             </a>
         </div>
         <div asp-hide="@Model.HasOneVacancy" class="govuk-grid-column-full">
-            <a asp-route="@RouteNames.Vacancies_Get" asp-route-ukprn="@Model.Ukprn"  asp-route-filter="@FilteringOptions.All" class="govuk-link govuk-!-font-size-24 govuk-!-font-weight-bold govuk-link--no-visited-state" name="button">
+            <a asp-route="@RouteNames.Vacancies_Get" asp-route-ukprn="@Model.Ukprn"  asp-route-filter="@FilteringOptions.All" class="govuk-link govuk-!-font-size-24 govuk-!-font-weight-bold govuk-link--no-visited-state">
                 View all your vacancies (@Model.Vacancies.Count)
             </a>
         </div>
