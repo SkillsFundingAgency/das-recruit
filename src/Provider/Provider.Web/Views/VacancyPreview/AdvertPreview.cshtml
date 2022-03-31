@@ -7,7 +7,7 @@
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
-        <a asp-route="@RouteNames.ProviderTaskListGet" asp-route-ukprn="@Model.Ukprn" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back to check your answers</a>
+        <a asp-route="@RouteNames.ProviderCheckYourAnswersGet" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back to check your answers</a>
     </div>
 </div>
 
@@ -208,7 +208,7 @@
 <div asp-show="@Model.CanDelete" class="govuk-grid-row">
   <div class="govuk-grid-column-two-thirds">
     <p class="govuk-body">
-      <a asp-show="@Model.CanDelete" asp-route="@RouteNames.DeleteVacancy_Get" class="govuk-link govuk-link--no-visited-state" esfa-automation="delete-button">Delete vacancy</a>
+      <a asp-show="@Model.CanDelete" asp-route="@RouteNames.DeleteVacancy_Get" asp-all-route-data="@Model.RouteDictionary" class="govuk-link govuk-link--no-visited-state" esfa-automation="delete-button">Delete vacancy</a>
     </p>
   </div>
 </div>

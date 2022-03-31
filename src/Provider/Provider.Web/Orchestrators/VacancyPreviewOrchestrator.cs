@@ -76,6 +76,9 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             vm.RequiresEmployerReview = hasProviderReviewPermission;
 
             if (programme != null) vm.ApprenticeshipLevel = programme.ApprenticeshipLevel;
+            
+            vm.Ukprn = vrm.Ukprn;
+            vm.VacancyId = vrm.VacancyId;
 
             if (vacancy.Status == VacancyStatus.Referred)
             {
