@@ -534,13 +534,13 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
         {
             RuleFor(x => x.ApplicationUrl)
                 .NotEmpty()
-                    .WithMessage("Enter the web address applicants should use to apply for this apprenticeship")
+                    .WithMessage("Enter a link where candidates can apply")
                     .WithErrorCode("85")
                 .MaximumLength(200)
                     .WithMessage("The website address must not exceed {MaxLength} characters")
                     .WithErrorCode("84")
                 .Must(FluentExtensions.BeValidWebUrl)
-                    .WithMessage("Enter the web address applicants should use to apply for this apprenticeship")
+                    .WithMessage("Website address must be a valid link")
                     .WithErrorCode("86")
                 .RunCondition(VacancyRuleSet.ApplicationMethod)
                 .WithRuleId(VacancyRuleSet.ApplicationMethod);
