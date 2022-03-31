@@ -7,8 +7,8 @@
     ViewBag.GaData.Vpv = "/recruitment/provider/page-dashboard";
     ViewBag.Title = "Recruitment";
 
-    var vacanciesSearchSuggestionsEndpointUrl = @Url.RouteUrl(RouteNames.VacanciesSearchSuggestions_Get, null, Context.Request.Scheme);
     var vacancyRouteModel = new VacancyRouteModel {Ukprn = Model.Ukprn};
+    var vacanciesSearchSuggestionsEndpointUrl = @Url.RouteUrl(RouteNames.VacanciesSearchSuggestions_Get, vacancyRouteModel.RouteDictionary, Context.Request.Scheme);
 }
 
 <partial asp-hide="@Model.HasAnyVacancies" name="_ProviderNoVacanciesContent" model="@vacancyRouteModel" />
@@ -33,7 +33,7 @@
     
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
-            <form asp-route="@RouteNames.Vacancies_Get" method="get" autocomplete="off">
+            <form asp-route="@RouteNames.Vacancies_Get" asp-all-route-data="@vacancyRouteModel.RouteDictionary" method="get" autocomplete="off">
                 <div class="govuk-form-group">
                     <label for="search-input" class="govuk-label">
                         Search by advert title or reference number
