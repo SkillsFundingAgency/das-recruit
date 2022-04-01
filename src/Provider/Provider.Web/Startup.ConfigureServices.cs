@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using Esfa.Recruit.Provider.Web.Configuration;
 using Esfa.Recruit.Shared.Web.Extensions;
@@ -14,14 +15,13 @@ namespace Esfa.Recruit.Provider.Web
 {
     public partial class Startup
     {
-        private readonly IConfiguration _configuration;
+        private readonly IConfigurationRoot _configuration;
         private readonly IHostingEnvironment _hostingEnvironment;
         private readonly AuthenticationConfiguration _authConfig;
         private readonly ILoggerFactory _loggerFactory;
 
         public Startup(IConfiguration config, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
-            _configuration = config;
             _hostingEnvironment = env;
             var configBuilder = new ConfigurationBuilder()
                 .AddConfiguration(config)
@@ -51,6 +51,18 @@ namespace Esfa.Recruit.Provider.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            var serviceParameters = new ServiceParameters();
+            if (_configuration[nameof(VacancyType)]
+                .Equals(VacancyType.Apprenticeship.ToString(), StringComparison.CurrentCultureIgnoreCase))
+            {
+                serviceParameters.VacancyType = VacancyType.Apprenticeship;
+            }
+            else if (_configuration[nameof(VacancyType)]
+                .Equals(VacancyType.Traineeship.ToString(), StringComparison.CurrentCultureIgnoreCase))
+            {
+                serviceParameters.VacancyType = VacancyType.Traineeship;
+            }
+            
             services.AddIoC(_configuration);
 
             // Routing has to come before adding Mvc
