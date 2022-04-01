@@ -51,18 +51,6 @@ namespace Esfa.Recruit.Provider.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            var serviceParameters = new ServiceParameters();
-            if (_configuration[nameof(VacancyType)]
-                .Equals(VacancyType.Apprenticeship.ToString(), StringComparison.CurrentCultureIgnoreCase))
-            {
-                serviceParameters.VacancyType = VacancyType.Apprenticeship;
-            }
-            else if (_configuration[nameof(VacancyType)]
-                .Equals(VacancyType.Traineeship.ToString(), StringComparison.CurrentCultureIgnoreCase))
-            {
-                serviceParameters.VacancyType = VacancyType.Traineeship;
-            }
-            
             services.AddIoC(_configuration);
 
             // Routing has to come before adding Mvc

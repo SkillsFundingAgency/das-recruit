@@ -1,4 +1,5 @@
-﻿using Esfa.Recruit.Provider.Web.Filters;
+﻿using System;
+using Esfa.Recruit.Provider.Web.Filters;
 using Esfa.Recruit.Provider.Web.Mappings;
 using Esfa.Recruit.Provider.Web.Orchestrators;
 using Esfa.Recruit.Shared.Web.Configuration;
@@ -28,6 +29,20 @@ namespace Esfa.Recruit.Provider.Web.Configuration
     {
         public static void AddIoC(this IServiceCollection services, IConfiguration configuration)
         {
+            var serviceParameters = new ServiceParameters();
+            if (configuration[nameof(VacancyType)]
+                .Equals(VacancyType.Apprenticeship.ToString(), StringComparison.CurrentCultureIgnoreCase))
+            {
+                serviceParameters.VacancyType = VacancyType.Apprenticeship;
+            }
+            else if (configuration[nameof(VacancyType)]
+                .Equals(VacancyType.Traineeship.ToString(), StringComparison.CurrentCultureIgnoreCase))
+            {
+                serviceParameters.VacancyType = VacancyType.Traineeship;
+            }
+
+            services.AddSingleton(serviceParameters);
+            
             services.AddRecruitStorageClient(configuration);
 
             //Configuration
