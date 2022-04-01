@@ -105,6 +105,7 @@ namespace Esfa.Recruit.Provider.Web.Configuration
             ).AddNewtonsoftJson()
             .AddFluentValidation()
             .EnableCookieBanner()
+            .EnableGoogleAnalytics()
             .EnableCsp()
             .SetDefaultNavigationSection(NavigationSection.Recruit)
             .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
