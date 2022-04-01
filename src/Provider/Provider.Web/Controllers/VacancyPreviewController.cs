@@ -83,6 +83,22 @@ namespace Esfa.Recruit.Provider.Web.Controllers
 
             return View(ViewNames.VacancyPreview, viewModel);
         }
+        
+        [HttpGet("advert-preview", Name = RouteNames.Vacancy_Advert_Preview_Get)]
+        public async Task<IActionResult> AdvertPreview(VacancyRouteModel vrm)
+        {
+            var viewModel = await _orchestrator.GetVacancyPreviewViewModelAsync(vrm);
+
+            if (TempData.ContainsKey(TempDataKeys.VacancyPreviewInfoMessage))
+                viewModel.InfoMessage = TempData[TempDataKeys.VacancyPreviewInfoMessage].ToString();
+
+            AddSoftValidationErrorsToModelState(viewModel);
+            viewModel.SetSectionStates(viewModel, ModelState);
+
+            viewModel.CanHideValidationSummary = true;
+
+            return View(viewModel);
+        }
 
         private void AddSoftValidationErrorsToModelState(VacancyPreviewViewModel viewModel)
         {

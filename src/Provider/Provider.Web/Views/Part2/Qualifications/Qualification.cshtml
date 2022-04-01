@@ -24,7 +24,11 @@
     <a class="govuk-link govuk-link--no-visited-state" target="_blank" rel="noopener" href="https://www.gov.uk/what-different-qualification-levels-mean/list-of-qualification-levels" rel="noopener"> What's the GCSE grading system? (opens in a new tab)</a>
 </p>
 
-<form method="post" asp-all-route-data="@Model.RouteDictionary">
+<form method="post" 
+      asp-route="@(Model.EditIndex != null ? RouteNames.Qualification_Edit_Post : RouteNames.Qualification_Add_Post)"
+      asp-route-vacancyId="@Model.VacancyId"
+      asp-route-ukprn="@Model.Ukprn"
+      asp-route-index="@Model.EditIndex">
     <input asp-for="EditIndex" type="hidden" />
 
     <div esfa-validation-marker-for="QualificationType" class="govuk-form-group">
