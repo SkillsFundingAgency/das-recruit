@@ -28,10 +28,7 @@
                 <div class="govuk-form-group" esfa-validation-marker-for="EmployerDescription">
                     <label asp-for="EmployerDescription" class="govuk-label">Tell us about the organisation</label>
                     <span esfa-validation-message-for="EmployerDescription" class="govuk-error-message"></span>
-                    <textarea class="govuk-textarea govuk-js-character-count" asp-for="EmployerDescription" rows="5" aria-describedby="EmployerDescription-info"></textarea>
-                </div>
-                <div id="EmployerDescription-info" class="govuk-hint govuk-character-count__message" aria-live="polite">
-                    You can enter up to 500 characters
+                    <textarea class="govuk-textarea" asp-for="EmployerDescription" rows="5" aria-describedby="EmployerDescription-info"></textarea>
                 </div>
             </div>
             <div esfa-validation-marker-for="EmployerWebsiteUrl" class="govuk-form-group">
