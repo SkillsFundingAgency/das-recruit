@@ -46,7 +46,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
                 return RedirectToRoute(RouteNames.NotificationsUpdatedAcknowledgement_Get, vm);
             }
 
-            return RedirectToRoute(RouteNames.NotificationUnsubscribedAcknowledgement_Get);
+            return RedirectToRoute(RouteNames.NotificationUnsubscribedAcknowledgement_Get, new {ukprn = User.GetUkprn().ToString()});
         }
 
         [HttpGet("notifications-unsubscribe", Name = RouteNames.ConfirmUnsubscribeNotifications_Get)]
@@ -62,11 +62,11 @@ namespace Esfa.Recruit.Provider.Web.Controllers
                 return View(new ConfirmUnsubscribeNotificationsViewModel());
 
             if(model.ConfirmUnsubscribe == false)
-                return RedirectToRoute(RouteNames.ManageNotifications_Get);
+                return RedirectToRoute(RouteNames.ManageNotifications_Get, new {ukprn = User.GetUkprn().ToString()});
 
             await _orchestrator.UnsubscribeUserNotificationsAsync(User.ToVacancyUser());
             
-            return RedirectToRoute(RouteNames.NotificationUnsubscribedAcknowledgement_Get);
+            return RedirectToRoute(RouteNames.NotificationUnsubscribedAcknowledgement_Get, new {ukprn = User.GetUkprn().ToString()});
         }
 
         [HttpGet("notifications-acknowledgement", Name = RouteNames.NotificationsUpdatedAcknowledgement_Get)]

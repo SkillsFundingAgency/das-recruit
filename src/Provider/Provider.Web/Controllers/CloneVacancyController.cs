@@ -56,7 +56,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
             }
             else
             {
-                return RedirectToRoute(RouteNames.CloneVacancyWithNewDates_Get);
+                return RedirectToRoute(RouteNames.CloneVacancyWithNewDates_Get, new { model.VacancyId, model.Ukprn });
             }
         }
 
@@ -84,7 +84,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
             }
 
             TempData.Add(TempDataKeys.VacancyPreviewInfoMessage, InfoMessages.VacancyCloned);
-            return RedirectToRoute(RouteNames.Vacancy_Preview_Get, new { VacancyId = response.Data });
+            return RedirectToRoute(RouteNames.Vacancy_Preview_Get, new { VacancyId = response.Data, model.Ukprn });
         }        
     }
 }

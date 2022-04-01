@@ -37,12 +37,12 @@ namespace Esfa.Recruit.Provider.Web.Controllers
 
             if (!m.ConfirmDeletion.Value)
             {
-                return RedirectToRoute(RouteNames.Vacancy_Preview_Get);
+                return RedirectToRoute(RouteNames.Vacancy_Preview_Get, new {m.Ukprn, m.VacancyId});
             }
 
             await _orchestrator.DeleteVacancyAsync(m, User.ToVacancyUser());
             
-            return RedirectToRoute(RouteNames.Vacancies_Get);
+            return RedirectToRoute(RouteNames.Vacancies_Get, new {m.Ukprn});
         }
 
         private async Task<IActionResult> GetDeleteVacancyConfirmationView(VacancyRouteModel vrm)
