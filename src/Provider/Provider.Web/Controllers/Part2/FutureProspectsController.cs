@@ -41,14 +41,18 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part2
             {
                 response.AddErrorsToModelState(ModelState);
             }
-
+            
+            var vm = await _orchestrator.GetFutureProspectsViewModelAsync(m);
             if (!ModelState.IsValid)
             {
-                var vm = await _orchestrator.GetFutureProspectsViewModelAsync(m);
                 return View(vm);
             }
-
-            return RedirectToRoute(RouteNames.Considerations_Get, new {m.VacancyId, m.Ukprn});
+            
+            if (!vm.IsTaskListCompleted)
+            {
+                return RedirectToRoute(RouteNames.Considerations_Get, new {m.VacancyId, m.Ukprn});
+            }
+            return RedirectToRoute(RouteNames.ProviderCheckYourAnswersGet, new {m.VacancyId, m.Ukprn});
         }
     }
 }

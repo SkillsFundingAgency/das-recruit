@@ -8,5 +8,6 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.Part2.FutureProspects
         public string Title { get; internal set; }
         public string FutureProspects { get; internal set; }
         public ReviewSummaryViewModel Review { get; set; } = new ReviewSummaryViewModel();
+        public bool IsTaskListCompleted { get; set; }
     }
 }

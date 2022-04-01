@@ -42,16 +42,21 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part2
                 response.AddErrorsToModelState(ModelState);
             }
 
+            var vm = await _orchestrator.GetAboutEmployerViewModelAsync(m);
             if (!ModelState.IsValid)
             {
-                var vm = await _orchestrator.GetAboutEmployerViewModelAsync(m);
                 return View(vm);
             }
 
             if (_feature.IsFeatureEnabled(FeatureNames.ProviderTaskList))
             {
-                return RedirectToRoute(RouteNames.ProviderContactDetails_Get, new {m.Ukprn, m.VacancyId});
+                if (!vm.IsTaskListCompleted)
+                {
+                    return RedirectToRoute(RouteNames.ProviderContactDetails_Get, new {m.Ukprn, m.VacancyId});
+                }
+                return RedirectToRoute(RouteNames.ProviderCheckYourAnswersGet, new {m.Ukprn, m.VacancyId});
             }
+
             return RedirectToRoute(RouteNames.Vacancy_Preview_Get, new {m.Ukprn, m.VacancyId});
         }
     }

@@ -13,6 +13,7 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.Part2.AboutEmployer
         public bool IsAnonymous { get; internal set; }
         public bool IsDisabilityConfident { get; set; }
         public ReviewSummaryViewModel Review { get; set; } = new ReviewSummaryViewModel();
+        public bool IsTaskListCompleted { get; set; }
 
         public IList<string> OrderedFieldNames => new List<string>
         {

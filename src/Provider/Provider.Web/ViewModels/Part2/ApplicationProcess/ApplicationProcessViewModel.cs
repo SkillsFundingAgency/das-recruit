@@ -23,5 +23,6 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.Part2.ApplicationProcess
         };
 
         public string FindAnApprenticeshipUrl { get; internal set; }
+        public bool IsTaskListCompleted { get; set; }
     }
 }

@@ -76,9 +76,9 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
                     ValidationMessages.EmployerSelectionValidationMessages.EmployerSelectionRequired);
             }
 
+            var vm = await _orchestrator.GetLegalEntityViewModelAsync(m, User.GetUkprn(), m.SearchTerm, m.Page, info.AccountLegalEntityPublicHashedId);
             if (!ModelState.IsValid)
             {
-                var vm = await _orchestrator.GetLegalEntityViewModelAsync(m, User.GetUkprn(), m.SearchTerm, m.Page, info.AccountLegalEntityPublicHashedId);
                 SetVacancyEmployerInfoCookie(vm.VacancyEmployerInfoModel);
                 vm.Pager.OtherRouteValues.Add(nameof(wizard), wizard.ToString());
                 vm.PageInfo.SetWizard(wizard);
@@ -102,7 +102,11 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
 
             if (_feature.IsFeatureEnabled(FeatureNames.ProviderTaskList))
             {
-                return RedirectToRoute(RouteNames.Training_Get, new {Wizard = wizard, m.Ukprn, m.VacancyId});    
+                if (!vm.IsTaskListCompleted)
+                {
+                    return RedirectToRoute(RouteNames.Training_Get, new {Wizard = wizard, m.Ukprn, m.VacancyId});
+                }
+                return RedirectToRoute(RouteNames.ProviderCheckYourAnswersGet, new {m.Ukprn, m.VacancyId});
             }
             
             return RedirectToRoute(RouteNames.EmployerName_Get, new {Wizard = wizard, m.Ukprn, m.VacancyId});

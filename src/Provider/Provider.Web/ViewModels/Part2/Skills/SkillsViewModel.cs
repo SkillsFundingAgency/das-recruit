@@ -30,5 +30,7 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.Part2.Skills
                 return routeDictionary;
             }
         }
+
+        public bool IsTaskListCompleted { get; set; }
     }
 }
