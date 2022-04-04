@@ -19,7 +19,6 @@ using Esfa.Recruit.Provider.Web.Orchestrators.Reports;
 using Esfa.Recruit.Provider.Web.ViewModels.Reports.ProviderApplicationsReport;
 using Esfa.Recruit.Vacancies.Client.Ioc;
 using FluentValidation;
-using Esfa.Recruit.Provider.Web.Configuration.Routing;
 using Esfa.Recruit.Provider.Web.Services;
 using Esfa.Recruit.Shared.Web.Orchestrators;
 
@@ -29,18 +28,8 @@ namespace Esfa.Recruit.Provider.Web.Configuration
     {
         public static void AddIoC(this IServiceCollection services, IConfiguration configuration)
         {
-            var serviceParameters = new ServiceParameters();
-            if (configuration[nameof(VacancyType)]
-                .Equals(VacancyType.Apprenticeship.ToString(), StringComparison.CurrentCultureIgnoreCase))
-            {
-                serviceParameters.VacancyType = VacancyType.Apprenticeship;
-            }
-            else if (configuration[nameof(VacancyType)]
-                .Equals(VacancyType.Traineeship.ToString(), StringComparison.CurrentCultureIgnoreCase))
-            {
-                serviceParameters.VacancyType = VacancyType.Traineeship;
-            }
-
+            var serviceParameters = new ServiceParameters(configuration[nameof(VacancyType)]);
+            
             services.AddSingleton(serviceParameters);
             
             services.AddRecruitStorageClient(configuration);
