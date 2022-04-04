@@ -49,6 +49,16 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
                 vm.PageInfo.SetWizard(wizard);
                 return View(vm);
             }
+            
+            if (_feature.IsFeatureEnabled(FeatureNames.ProviderTaskList))
+            {
+                if (wizard)
+                {
+                    return RedirectToRoute(RouteNames.NumberOfPositions_Get, new { Wizard = true, m.VacancyId, m.Ukprn });    
+                }
+
+                return RedirectToRoute(RouteNames.ProviderCheckYourAnswersGet, new {m.VacancyId, m.Ukprn});
+            }
 
             return wizard
                 ? RedirectToRoute(RouteNames.Part1Complete_Get,new { m.VacancyId, m.Ukprn })

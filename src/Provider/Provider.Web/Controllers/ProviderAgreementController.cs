@@ -29,7 +29,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
             {
                 if (_feature.IsFeatureEnabled(FeatureNames.ProviderTaskList))
                 {
-                    //TODO this will need setting
+                    return RedirectToRoute(RouteNames.Vacancy_Advert_Preview_Get, new {vrm.Ukprn, vrm.VacancyId});
                 }
                 
                 return RedirectToRoute(RouteNames.Vacancy_Preview_Get, new {vrm.Ukprn, vrm.VacancyId});
