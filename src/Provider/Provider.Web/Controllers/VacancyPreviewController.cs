@@ -59,16 +59,16 @@ namespace Esfa.Recruit.Provider.Web.Controllers
             if (ModelState.IsValid)
             {
                 if (response.Data.IsSubmitted)
-                    return RedirectToRoute(RouteNames.Submitted_Index_Get);
+                    return RedirectToRoute(RouteNames.Submitted_Index_Get, m.RouteDictionary);
 
                 if (response.Data.IsSentForReview)
-                    return RedirectToRoute(RouteNames.Reviewed_Index_Get);
+                    return RedirectToRoute(RouteNames.Reviewed_Index_Get, m.RouteDictionary);
 
                 if (response.Data.HasProviderAgreement == false)
-                    return RedirectToRoute(RouteNames.ProviderAgreement_HardStop_Get);
+                    return RedirectToRoute(RouteNames.ProviderAgreement_HardStop_Get, m.RouteDictionary);
 
                 if (response.Data.HasLegalEntityAgreement == false)
-                    return RedirectToRoute(RouteNames.LegalEntityAgreement_HardStop_Get);
+                    return RedirectToRoute(RouteNames.LegalEntityAgreement_HardStop_Get, m.RouteDictionary);
 
                 throw new Exception("Unknown submit state");
             }
