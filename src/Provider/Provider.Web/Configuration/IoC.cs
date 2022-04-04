@@ -21,6 +21,7 @@ using Esfa.Recruit.Vacancies.Client.Ioc;
 using FluentValidation;
 using Esfa.Recruit.Provider.Web.Services;
 using Esfa.Recruit.Shared.Web.Orchestrators;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
 namespace Esfa.Recruit.Provider.Web.Configuration
 {
