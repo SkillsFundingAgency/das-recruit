@@ -1,8 +1,9 @@
-using Esfa.Recruit.Provider.Web.Configuration;
+using Esfa.Recruit.Vacancies.Client.Application.Configuration;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using FluentAssertions;
 using NUnit.Framework;
 
-namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Configuration
+namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.Configuration
 {
     public class WhenCreatingServiceParameters
     {
