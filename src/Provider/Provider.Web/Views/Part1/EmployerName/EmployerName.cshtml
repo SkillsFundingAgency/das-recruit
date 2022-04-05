@@ -90,7 +90,10 @@
                                     </label>
                                     <span class="govuk-hint">This information will not show on your advert. We'll use it to help us decide whether you can be anonymous.</span>
                                     <span esfa-validation-message-for="AnonymousReason" class="govuk-error-message"></span>
-                                    <textarea asp-for="AnonymousReason" class="govuk-textarea govuk-!-width-three-quarters" rows="5" type="text"></textarea>
+                                    <textarea asp-for="AnonymousReason" data-val-length-max="4000" class="govuk-textarea govuk-!-width-three-quarters govuk-js-character-count" rows="5" type="text"></textarea>
+                                    <div id="AnonymousReason-info" class="govuk-hint govuk-character-count__message" aria-live="polite">
+                                        You can enter up to 4000 characters
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -99,7 +102,7 @@
             </div>
 
             <div class="govuk-button-group">
-                <button type="submit" class="govuk-button save-button" esfa-automation="continue-button">Continue</button>
+                <button type="submit" class="govuk-button save-button" esfa-automation="continue-button">Save and continue</button>
                 <esfaFeatureEnabled name="@FeatureNames.ProviderTaskList">
                     <a asp-route="@RouteNames.Dashboard_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-cancel" class="govuk-link govuk-link--no-visited-state">Cancel</a>
                 </esfaFeatureEnabled>
