@@ -105,12 +105,12 @@
                     <nav class="app-header__nav">
                         <ul id="app-nav" class="app-header__navigation">
                             <li class="app-header__navigation-item">
-                                <a class="govuk-link app-header__link" href="/apprentices" id="traineeships-header-link-profile">
+                                <a class="govuk-link app-header__link" href="/" id="traineeships-header-link-profile">
                                     @Context.User.Identity.Name
                                 </a>
                             </li>
                             <li class="app-header__navigation-item">
-                                <a class="govuk-link app-header__link" href="/employers" id="traineeships-header-link-signout">
+                                <a class="govuk-link app-header__link" asp-Route="provider-signout" id="traineeships-header-link-signout">
                                     Sign out
                                 </a>
                             </li>
