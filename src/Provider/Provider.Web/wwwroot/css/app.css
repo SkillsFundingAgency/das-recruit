@@ -282,7 +282,8 @@ span.govuk-error-message:empty {
 }
 
 .app-header__link,
-.app-header__link:link {
+.app-header__link:link,
+.app-header__link:visited {
     color: #fff;
     padding: 2px 5px;
 }
