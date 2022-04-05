@@ -148,5 +148,10 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
         /// Should the vacancy be geocoded using the outcode part of the postcode
         /// </summary>
         public bool GeocodeUsingOutcode => IsAnonymous;
+        
+        /// <summary>
+        /// Type of Vacancy being created, either Apprenticeship or Traineeship. Set by application startup.
+        /// </summary>
+        public VacancyType? VacancyType { get; set; }
     }
 }

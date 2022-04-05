@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Provider.Web.Configuration;
 using Esfa.Recruit.Provider.Web.Configuration.Routing;
@@ -45,7 +46,17 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
 
             if (vm.HasOnlyOneOrganisation)
             {
-                return RedirectToRoute(RouteNames.EmployerName_Get, new {Wizard = wizard});
+                if (_feature.IsFeatureEnabled(FeatureNames.ProviderTaskList))
+                {
+                    var model = new LegalEntityEditModel
+                    {
+                        SelectedOrganisationId = vm.Organisations.FirstOrDefault()?.Id
+                    };
+                    await _orchestrator.SetAccountLegalEntityPublicId(vrm,model, User.ToVacancyUser());
+                    
+                    return RedirectToRoute(RouteNames.Training_Get, new {Wizard = wizard, vrm.Ukprn, vrm.VacancyId});
+                }
+                return RedirectToRoute(RouteNames.EmployerName_Get, new {Wizard = wizard, vrm.Ukprn, vrm.VacancyId});
             }
 
             vm.Pager.OtherRouteValues.Add(nameof(wizard), wizard);

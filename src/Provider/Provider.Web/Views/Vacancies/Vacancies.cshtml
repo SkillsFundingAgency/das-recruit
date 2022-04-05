@@ -1,24 +1,27 @@
 ﻿
 @using Esfa.Recruit.Vacancies.Client.Domain.Entities
+@using Esfa.Recruit.Provider.Web.RouteModel;
 @model VacanciesViewModel
 @{
-            ViewBag.GaData.Vpv = "/recruitment/provider/page-vacancies";
-            ViewBag.Title = "Vacancies";
+    ViewBag.GaData.Vpv = "/recruitment/provider/page-vacancies";
+    ViewBag.Title = "Vacancies";
 
-            var vacanciesSearchSuggestionsEndpointUrl = @Url.RouteUrl(RouteNames.VacanciesSearchSuggestions_Get, null, Context.Request.Scheme);
-            string GetLinkText(VacancySummaryViewModel vacancySummary)
-            {
-                switch (vacancySummary.Status)
-                {
-                    case VacancyStatus.Referred:
-                    case VacancyStatus.Rejected:
-                        return "Edit and resubmit";
-                    case VacancyStatus.Draft:
-                        return "Edit and submit";
-                }
-                return "Manage";
-            }
+    var vacancyRouteModel = new VacancyRouteModel {Ukprn = Model.Ukprn};
+    var vacanciesSearchSuggestionsEndpointUrl = @Url.RouteUrl(RouteNames.VacanciesSearchSuggestions_Get, vacancyRouteModel.RouteDictionary, Context.Request.Scheme);
+    string GetLinkText(VacancySummaryViewModel vacancySummary)
+    {
+        switch (vacancySummary.Status)
+        {
+            case VacancyStatus.Referred:
+            case VacancyStatus.Rejected:
+                return "Edit and resubmit";
+            case VacancyStatus.Draft:
+                return "Edit and submit";
         }
+        return "Manage";
+    }
+}
+
 <partial name="@PartialNames.Alerts" for="Alerts" />
 
 <div asp-show="Model.HasWarning" class="das-notification das-notification--warning">

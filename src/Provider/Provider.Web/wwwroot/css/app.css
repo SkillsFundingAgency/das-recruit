@@ -43,11 +43,6 @@
     line-height: 1.25;
 }
 
-.app-card__tasks {
-    margin-top: 15px;
-    margin-bottom: 0;
-}
-
 @media (min-width: 40.0625em) {
     .app-card__row {
         display: flex;
@@ -55,6 +50,13 @@
     }
 }
 
+.app-card__tasks {
+    margin-top: 15px;
+    margin-bottom: 0;
+    font-size: 16px;
+    font-size: 1rem;
+    line-height: 1.25;
+}
 
 /* Status Tags */
 

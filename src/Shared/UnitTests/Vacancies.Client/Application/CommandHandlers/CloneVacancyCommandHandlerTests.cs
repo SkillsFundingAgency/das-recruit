@@ -173,7 +173,8 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.CommandHandlers
                 {nameof(Vacancy.ClosureReason), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.IsNull)},
                 {nameof(Vacancy.ClosureExplanation), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.IsNull)},
                 {nameof(Vacancy.TransferInfo), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.IsNull)},
-                {nameof(Vacancy.AccountLegalEntityPublicHashedId), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.Cloned)}
+                {nameof(Vacancy.AccountLegalEntityPublicHashedId), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.Cloned)},
+                {nameof(Vacancy.VacancyType), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.Cloned)}
             };
 
             foreach (var property in typeof(Vacancy).GetProperties())

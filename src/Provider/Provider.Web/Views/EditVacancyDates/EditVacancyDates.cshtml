@@ -82,8 +82,10 @@
                     <label class="govuk-label govuk-!-font-weight-bold" for="apprenticeship-type">Apprenticeship training</label>
                     <p class="govuk-body">@Model.ProgrammeName</p>
                 </div>
-                <button type="submit" class="govuk-button save-button">Preview changes</button>
-                <a asp-route="@RouteNames.VacancyEdit_Get" class="govuk-link das-button-link">Cancel</a>
+                <div class="govuk-button-group">
+                    <button type="submit" class="govuk-button save-button">Preview changes</button>
+                    <a asp-route="@RouteNames.VacancyEdit_Get" class="govuk-link">Cancel</a>
+                </div>
             </form>
         </div>
     </div>

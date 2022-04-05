@@ -5,6 +5,7 @@ using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using MediatR;
 using System.Threading;
 using System.Threading.Tasks;
+using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Microsoft.Extensions.Logging;
@@ -17,17 +18,20 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
         private readonly IVacancyRepository _repository;
         private readonly IMessaging _messaging;
         private readonly ITimeProvider _timeProvider;
+        private readonly ServiceParameters _serviceParameters;
 
         public CreateProviderOwnedVacancyCommandHandler(
             ILogger<CreateProviderOwnedVacancyCommandHandler> logger,
             IVacancyRepository repository, 
             IMessaging messaging, 
-            ITimeProvider timeProvider)
+            ITimeProvider timeProvider,
+            ServiceParameters serviceParameters)
         {
             _logger = logger;
             _repository = repository;
             _messaging = messaging;
             _timeProvider = timeProvider;
+            _serviceParameters = serviceParameters;
         }
 
         public async Task<Unit> Handle(CreateProviderOwnedVacancyCommand message, CancellationToken cancellationToken)
@@ -50,7 +54,8 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
                 LastUpdatedDate = now,
                 LastUpdatedByUser = message.User,
                 IsDeleted = false,
-                Title = message.Title
+                Title = message.Title,
+                VacancyType = _serviceParameters.VacancyType
             };
 
             await _repository.CreateAsync(vacancy);
