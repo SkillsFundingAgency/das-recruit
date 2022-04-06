@@ -11,5 +11,6 @@ namespace Esfa.Recruit.Provider.Web.Configuration
         public string ReservationsSiteUrl { get; set; }
         public string NationalMinimumWageRates { get; set; }
         public string ProviderRecruitmentApiUrl { get; set; }
+        public string FindATraineeshipUrl { get; set; }
     }
 }
