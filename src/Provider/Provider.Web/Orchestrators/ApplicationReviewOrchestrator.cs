@@ -7,6 +7,7 @@ using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Shared.Web.ViewModels.ApplicationReview;
 using Esfa.Recruit.Proivder.Web.Exceptions;
+using StructureMap.Query;
 
 namespace Esfa.Recruit.Provider.Web.Orchestrators
 {
@@ -29,8 +30,11 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
 
             if (applicationReview.IsWithdrawn)
                 throw new ApplicationWithdrawnException($"Application has been withdrawn. ApplicationReviewId:{applicationReview.Id}", rm.VacancyId.Value);
-
-            return applicationReview.ToViewModel();
+            var viewModel = applicationReview.ToViewModel();
+            viewModel.Ukprn = rm.Ukprn;
+            viewModel.VacancyId = rm.VacancyId;
+            viewModel.ApplicationReviewId = rm.ApplicationReviewId;
+            return viewModel;
         }
 
         public async Task<ApplicationReviewViewModel> GetApplicationReviewViewModelAsync(ApplicationReviewEditModel m)
@@ -83,7 +87,9 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
                 CandidateFeedback = rm.CandidateFeedback,
                 Outcome = rm.Outcome,
                 ApplicationReviewId = rm.ApplicationReviewId,
-                Name = applicationReviewVm.Name                
+                Name = applicationReviewVm.Name,
+                Ukprn = rm.Ukprn,
+                VacancyId = rm.VacancyId
             };
         }        
     }
