@@ -119,9 +119,7 @@
     <div class="govuk-grid-column-one-half">
       <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Employer</h3>
       <p class="govuk-body">@Model.EmployerName</p>
-      <p class="govuk-body govuk" asp-show="@Model.HasEmployerWebsiteUrl">
-          @Model.EmployerWebsiteUrl
-      </p>
+      
       <div asp-show="@Model.IsDisabilityConfident">
         <img asp-show="@Model.IsDisabilityConfident" src="~/img/disability-confident_545x172.png" class="app-disability-confident-logo" alt="A logo confirming that the employer is registered as disability confident" esfa-automation="disability-confident-logo" no-cdn/>
         <details class="govuk-details">
@@ -137,6 +135,9 @@
           </div>
         </details>
       </div>
+      <p class="govuk-body govuk" asp-show="@Model.HasEmployerWebsiteUrl">
+            @Model.EmployerWebsiteUrl
+      </p>
       <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Address</h3>
       <ul class="govuk-list">
         @foreach (var addressLine in Model.EmployerAddressElements)
