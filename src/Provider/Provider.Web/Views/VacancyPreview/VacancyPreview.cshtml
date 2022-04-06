@@ -404,18 +404,21 @@
                     @EmployerReviewFlag(Model, FieldIdentifiers.TrainingDescription)
                 </div>
             </div>
-            <div class="govuk-!-margin-bottom-6">
-                <p asp-hide="@Model.HasOutcomeDescription" class="govuk-body">What is the expected career progression after this apprenticeship?</p>
-                <h3 asp-show="@Model.HasOutcomeDescription" class="govuk-heading-s govuk-!-margin-top-4" id="@Anchors.OutcomeDescription">
-                    <img asp-show="@Model.OutcomeDescriptionRequiresEdit" src="/img/red-cross.png" alt="X" no-cdn />
-                    What is the expected career progression after this apprenticeship?
-                </h3>
-                <span esfa-validation-message-for="OutcomeDescription" class="govuk-error-message"></span>
-                <div asp-show="@Model.HasOutcomeDescription" class="govuk-body">@Html.Raw(Model.OutcomeDescription)</div>
-                <div asp-show="@ShowEmployerReviewFlag(Model, FieldIdentifiers.OutcomeDescription)" class="govuk-!-margin-top-4">
-                    @EmployerReviewFlag(Model, FieldIdentifiers.OutcomeDescription)
+            <esfaFeatureDisabled name="@FeatureNames.ProviderTaskList">
+                <div class="govuk-!-margin-bottom-6">
+                    <p asp-hide="@Model.HasOutcomeDescription" class="govuk-body">What is the expected career progression after this apprenticeship?</p>
+                    <h3 asp-show="@Model.HasOutcomeDescription" class="govuk-heading-s govuk-!-margin-top-4" id="@Anchors.OutcomeDescription">
+                        <img asp-show="@Model.OutcomeDescriptionRequiresEdit" src="/img/red-cross.png" alt="X" no-cdn />
+                        What is the expected career progression after this apprenticeship?
+                    </h3>
+                    <span esfa-validation-message-for="OutcomeDescription" class="govuk-error-message"></span>
+                    <div asp-show="@Model.HasOutcomeDescription" class="govuk-body">@Html.Raw(Model.OutcomeDescription)</div>
+                    <div asp-show="@ShowEmployerReviewFlag(Model, FieldIdentifiers.OutcomeDescription)" class="govuk-!-margin-top-4">
+                        @EmployerReviewFlag(Model, FieldIdentifiers.OutcomeDescription)
+                    </div>
                 </div>
-            </div>
+            </esfaFeatureDisabled>
+            
             @EditLink(RouteNames.VacancyDescription_Index_Get, Model.DescriptionsSectionState, "full vacancy description", "link-vacancy-description", new {Model.Ukprn, Model.VacancyId})
         </div>
     </div>
@@ -444,6 +447,24 @@
                 </div>
             </div>
         </div>
+        <esfaFeatureEnabled name="@FeatureNames.ProviderTaskList">
+            <div class="govuk-grid-column-one-half">
+                <div class="@GetSectionClass(Model.FutureProspectsSectionState)">
+                    <div class="govuk-!-margin-bottom-6">
+                        <h3 class="govuk-heading-s govuk-!-margin-top-4" id="@Anchors.OutcomeDescription">
+                            <img asp-show="@Model.OutcomeDescriptionRequiresEdit" src="/img/red-cross.png" alt="X" no-cdn />
+                            Future prospects
+                        </h3>
+                        <span esfa-validation-message-for="ThingsToConsider" class="govuk-error-message"></span>
+                        <p asp-show="@Model.HasOutcomeDescription" class="govuk-body">@Model.OutcomeDescription</p>
+                        <div asp-show="@ShowEmployerReviewFlag(Model, FieldIdentifiers.OutcomeDescription)" class="govuk-!-margin-top-4">
+                            @EmployerReviewFlag(Model, FieldIdentifiers.OutcomeDescription)
+                        </div>
+                        @EditLink(RouteNames.FutureProspects_Get, Model.FutureProspectsSectionState, "future prospects", "link-future-prospects",new {Model.Ukprn, Model.VacancyId})
+                    </div>
+                </div>
+            </div>
+        </esfaFeatureEnabled>
         <div class="govuk-grid-column-one-half">
             <div class="@GetSectionClass(Model.ThingsToConsiderSectionState)">
                 <div class="govuk-!-margin-bottom-6">
