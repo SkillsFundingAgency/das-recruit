@@ -160,8 +160,13 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
 
         public async Task SetAccountLegalEntityPublicId(VacancyRouteModel vacancyRouteModel, LegalEntityEditModel vacancyEmployerInfoModel, VacancyUser vacancyUser)
         {
+            
             var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(vacancyRouteModel, RouteNames.LegalEntity_Get);
+            var employerVacancyInfo = await _providerVacancyClient.GetProviderEmployerVacancyDataAsync(vacancyRouteModel.Ukprn, vacancy.EmployerAccountId);
             vacancy.AccountLegalEntityPublicHashedId = vacancyEmployerInfoModel.SelectedOrganisationId;
+            
+            var selectedOrganisation = employerVacancyInfo.LegalEntities.Single(l => l.AccountLegalEntityPublicHashedId == vacancyEmployerInfoModel.SelectedOrganisationId);
+            vacancy.LegalEntityName = selectedOrganisation.Name;
             
             await ValidateAndExecute(
                 vacancy,
