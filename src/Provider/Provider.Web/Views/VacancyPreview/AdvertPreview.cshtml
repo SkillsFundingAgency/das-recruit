@@ -34,10 +34,10 @@
       </div>
       <div  asp-show="@Model.HasSpecifiedThroughFaaApplicationMethod">
          <p class="govuk-!-margin-bottom-1">
-           <a class="govuk-button govuk-!-margin-bottom-0" id="employer-website" href="#">Apply for apprenticeship</a>
+           <a class="govuk-button govuk-!-margin-bottom-0" id="employer-website" href="#">Sign in to Apply</a>
          </p>
       </div>
-      <p class="govuk-body-s">Closing date @Model.ClosingDate</p>
+      <p class="govuk-body-s">Closing date: @Model.ClosingDate</p>
     </div>
   </div>
   <h2 class="govuk-heading-l" id="apprenticeshipSummary">Apprenticeship summary</h2>
@@ -199,7 +199,7 @@
     <form asp-route="@RouteNames.Preview_Submit_Post" asp-all-route-data="@Model.RouteDictionary" method="post">
       <div class="govuk-button-group">
         <input type="submit" value="Submit vacancy" class="govuk-button" esfa-automation="submit-button" />
-        <a asp-route="@RouteNames.ProviderCheckYourAnswersGet" asp-all-route-data="@Model.RouteDictionary" class="govuk-button govuk-button--secondary">Change your answers</a>
+        <a asp-route="@RouteNames.ProviderCheckYourAnswersGet" asp-all-route-data="@Model.RouteDictionary" class="govuk-button govuk-button--secondary">Change your vacancy</a>
       </div>
     </form>
   </div>
