@@ -24,7 +24,7 @@
 
         <h2 class="govuk-heading-m">What happens next</h2>
 
-        <p class="govuk-body">We’ll check the vacancy and tell you within 24 hours if you need to make any edits. If the vacancy is not approved, we’ll let you know on the dashboard what changes you’ll need to make. <a asp-route="@RouteNames.ManageNotifications_Get" class="govuk-link">Manage your recruitment emails</a> if you'd rather get an email.</p>
+        <p class="govuk-body">We’ll check the vacancy and tell you within 24 hours if you need to make any edits. If the vacancy is not approved, we’ll let you know on the dashboard what changes you’ll need to make. <a asp-route="@RouteNames.ManageNotifications_Get" asp-route-ukprn="@Model.Ukprn" class="govuk-link">Manage your recruitment emails</a> if you'd rather get an email.</p>
         
         <p class="govuk-body">When we approve your advert, it will appear on the <a href="@ExternalLinks.Value.FindAnApprenticeshipUrl" class="govuk-link" target="_blank">Find an apprenticeship service</a> (opens in a new tab).</p>
 
