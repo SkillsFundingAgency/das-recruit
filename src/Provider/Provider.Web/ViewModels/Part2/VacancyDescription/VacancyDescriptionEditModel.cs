@@ -6,5 +6,6 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.Part2.VacancyDescription
     {
         public string VacancyDescription { get; set; }
         public string TrainingDescription { get; set; }
+        public string OutcomeDescription { get; set; }
     }
 }

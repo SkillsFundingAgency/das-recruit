@@ -47,6 +47,14 @@
                 <span esfa-validation-message-for="TrainingDescription" class="govuk-error-message"></span>
                 <textarea asp-for="TrainingDescription" class="govuk-textarea html-editor" rows="5"></textarea>
             </div>
+            <esfaFeatureDisabled name="@FeatureNames.ProviderTaskList">
+                <div esfa-validation-marker-for="OutcomeDescription" class="govuk-form-group">
+                    <label asp-for="OutcomeDescription" class="govuk-label govuk-!-font-weight-bold">What is the expected career progression after this apprenticeship?</label>
+                    <span class="govuk-hint">You may want to mention specific routes they could take once qualified</span>
+                    <span esfa-validation-message-for="OutcomeDescription" class="govuk-error-message"></span>
+                    <textarea asp-for="OutcomeDescription" class="govuk-textarea html-editor" rows="5" data-val-length-max="500"></textarea>
+                </div>
+            </esfaFeatureDisabled>
             <div class="govuk-button-group">
                 <input type="submit" value="Save and continue" esfa-automation="btn-continue" class="govuk-button save-button"/>
 
