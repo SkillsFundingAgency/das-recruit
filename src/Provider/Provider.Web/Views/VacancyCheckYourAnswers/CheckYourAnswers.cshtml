@@ -1,4 +1,4 @@
-@using Esfa.Recruit.Vacancies.Client.Domain.Entities
+﻿@using Esfa.Recruit.Vacancies.Client.Domain.Entities
 @model Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview.VacancyPreviewViewModel
 
 @{
@@ -9,7 +9,7 @@
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
-        <a asp-route="@RouteNames.ProviderTaskListGet" asp-route-ukprn="@Model.Ukprn" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back to task list</a>
+        <a asp-route="@RouteNames.ProviderTaskListGet" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back to task list</a>
     </div>
 </div>
 
@@ -170,7 +170,7 @@
                     Number of positions
                 </dt>
                 <dd class="govuk-summary-list__value">
-                    @Model.NumberOfPositions
+                    @Model.NumberOfPositions available
                 </dd>
                 <dd class="govuk-summary-list__actions">
                     <a class="govuk-link govuk-link--no-visited-state float-right-desktop" asp-route="@RouteNames.NumberOfPositions_Get" asp-all-route-data="@Model.RouteDictionary">Change<span class="govuk-visually-hidden"> number of positions</span></a>
@@ -238,7 +238,15 @@
                     Other things to consider
                 </dt>
                 <dd class="govuk-summary-list__value">
-                    @Model.ThingsToConsider
+                    @if (string.IsNullOrEmpty(Model.ThingsToConsider))
+                    {
+                        @:None
+                    }
+                    else
+                    {
+                        @Model.ThingsToConsider    
+                    }
+                    
                 </dd>
                 <dd class="govuk-summary-list__actions">
                     <a class="govuk-link govuk-link--no-visited-state float-right-desktop" asp-route="@RouteNames.Considerations_Get" asp-all-route-data="@Model.RouteDictionary">Change<span class="govuk-visually-hidden"> considerations</span></a>
