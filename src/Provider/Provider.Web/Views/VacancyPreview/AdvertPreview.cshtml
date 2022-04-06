@@ -147,9 +147,9 @@
       <h3 asp-show=@(Model.HasProviderContactName || Model.HasProviderContactEmail || Model.HasProviderContactTelephone) class="govuk-heading-s govuk-!-margin-bottom-1">
           Contact
       </h3>
-      <p asp-show="@Model.HasProviderContactName" class="govuk-body govuk-!-margin-bottom-1">@Model.HasProviderContactName</p>
-      <p asp-show="@Model.HasProviderContactEmail" class="govuk-body govuk-!-margin-bottom-1">@Model.HasProviderContactEmail</p>
-      <p asp-show="@Model.HasProviderContactTelephone" class="govuk-body govuk-!-margin-bottom-1">@Model.HasProviderContactTelephone</p>
+      <p asp-show="@Model.HasProviderContactName" class="govuk-body govuk-!-margin-bottom-1">@Model.ProviderContactName</p>
+      <p asp-show="@Model.HasProviderContactEmail" class="govuk-body govuk-!-margin-bottom-1">@Model.ProviderContactEmail</p>
+      <p asp-show="@Model.HasProviderContactTelephone" class="govuk-body govuk-!-margin-bottom-1">@Model.ProviderContactTelephone</p>
     </div>
     <div class="govuk-grid-column-one-half">
       <img asp-show="@Model.HasMapUrl" src="@Model.MapUrl" alt="Location map" class="app-preview-map" />
