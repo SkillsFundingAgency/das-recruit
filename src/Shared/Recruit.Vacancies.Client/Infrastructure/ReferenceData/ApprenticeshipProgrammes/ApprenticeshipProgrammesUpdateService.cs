@@ -49,7 +49,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Apprentices
                 if (frameworksCount == 0)
                     throw new InfrastructureException("Retrieved 0 frameworks from the apprenticeships api.");
 
-                
                 await ValidateList(trainingProgrammesFromApi);                
                 await _referenceDataWriter.UpsertReferenceData(new ApprenticeshipProgrammes {
                         Data = trainingProgrammesFromApi.Distinct(new ApprenticeshipProgrammeEqualityComparer()).ToList()
@@ -109,5 +108,20 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Apprentices
                         _logger.LogWarning($"Error connecting to Outer Api for {context["apiCall"]}. Retrying in {timeSpan.Seconds} secs...attempt: {retryCount}");    
                     });
         }
+
+        public async Task<IEnumerable<ApprenticeshipRoute.ApprenticeshipRoute>> UpdateApprenticeshipRouteAsync()
+        {
+            _logger.LogTrace("Getting Routes from Outer Api");
+
+            var retryPolicy = GetApiRetryPolicy();
+
+            var result = await retryPolicy.Execute(context => _outerApiClient.Get<GetRouteResponse>(new GetRouteRequest()), new Dictionary<string, object>() { { "apiCall", "Routes" } });
+
+            return result.Routes.Select(c => (ApprenticeshipRoute.ApprenticeshipRoute)c);
+
+        }
     }
+
+
+
 }
