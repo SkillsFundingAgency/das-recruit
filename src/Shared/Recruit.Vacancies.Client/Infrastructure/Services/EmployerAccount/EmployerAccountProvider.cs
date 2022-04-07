@@ -54,15 +54,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount
         {
             try
             {
-                var accounts = await _accountApiClient.GetLegalEntitiesConnectedToAccount(accountId);
+                var legalEntities = await _accountApiClient.GetLegalEntityDetailsConnectedToAccount(accountId);
 
-                var legalEntitiesTasks = accounts.Select(r => _accountApiClient.GetLegalEntity(accountId, long.Parse(r.Id)));
-
-                await Task.WhenAll(legalEntitiesTasks.ToArray());
-
-                var entities = legalEntitiesTasks.Select(t => t.Result);
-
-                return entities;
+                return legalEntities;
             }
             catch (Exception ex)
             {
