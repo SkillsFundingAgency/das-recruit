@@ -9,7 +9,7 @@
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
-        <a asp-route="@RouteNames.ProviderTaskListGet" asp-route-ukprn="@Model.Ukprn" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back to task list</a>
+        <a asp-route="@RouteNames.ProviderTaskListGet" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back to task list</a>
     </div>
 </div>
 
@@ -170,7 +170,7 @@
                     Number of positions
                 </dt>
                 <dd class="govuk-summary-list__value">
-                    @Model.NumberOfPositions
+                    @Model.NumberOfPositions available
                 </dd>
                 <dd class="govuk-summary-list__actions">
                     <a class="govuk-link govuk-link--no-visited-state float-right-desktop" asp-route="@RouteNames.NumberOfPositions_Get" asp-all-route-data="@Model.RouteDictionary">Change<span class="govuk-visually-hidden"> number of positions</span></a>
@@ -238,7 +238,15 @@
                     Other things to consider
                 </dt>
                 <dd class="govuk-summary-list__value">
-                    @Model.ThingsToConsider
+                    @if (string.IsNullOrEmpty(Model.ThingsToConsider))
+                    {
+                        @:None
+                    }
+                    else
+                    {
+                        @Model.ThingsToConsider    
+                    }
+                    
                 </dd>
                 <dd class="govuk-summary-list__actions">
                     <a class="govuk-link govuk-link--no-visited-state float-right-desktop" asp-route="@RouteNames.Considerations_Get" asp-all-route-data="@Model.RouteDictionary">Change<span class="govuk-visually-hidden"> considerations</span></a>
@@ -357,8 +365,11 @@
         <h2 class="govuk-heading-m">Now submit your vacancy</h2>
         <p class="govuk-body">By submitting this vacancy you are confirming that, to the best of your knowledge, the details you are providing are correct.</p>
         <p class="govuk-body"><a asp-route="@RouteNames.Vacancy_Advert_Preview_Get" asp-all-route-data="@Model.RouteDictionary" class="govuk-link govuk-link--no-visited-state">Preview vacancy before submitting</a></p>
-        <form asp-route="@RouteNames.Preview_Submit_Post" asp-all-route-data="@Model.RouteDictionary" class="form-inline">
-            <input type="submit" value="@Model.SubmitButtonText" class="govuk-button" esfa-automation="submit-button" />
-        </form>
+         <form asp-route="@RouteNames.Preview_Submit_Post" asp-all-route-data="@Model.RouteDictionary">
+             <div class="govuk-button-group">    
+                  <button type="submit" class="govuk-button save-button" esfa-automation="continue-button">@Model.SubmitButtonText</button>
+                  <a asp-route="@RouteNames.Dashboard_Get" asp-route-ukprn="@Model.Ukprn" esfa-automation="link-cancel" class="govuk-link govuk-link--no-visited-state">Cancel</a>
+             </div>
+          </form>
     </div>
 </div>

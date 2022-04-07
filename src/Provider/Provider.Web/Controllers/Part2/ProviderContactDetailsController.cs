@@ -40,6 +40,18 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part2
                 var viewModel = await _orchestrator.GetProviderContactDetailsViewModelAsync(m);    
                 return View(viewModel);
             }
+
+            if (m.AddContactDetails.GetValueOrDefault())
+            {
+                if (string.IsNullOrEmpty(m.ProviderContactEmail) 
+                    && string.IsNullOrEmpty(m.ProviderContactName) 
+                    && string.IsNullOrEmpty(m.ProviderContactPhone))
+                {
+                    ModelState.AddModelError(nameof(m.AddContactDetails), "Enter contact details");
+                    var viewModel = await _orchestrator.GetProviderContactDetailsViewModelAsync(m);    
+                    return View(viewModel);
+                }
+            }
             
             var response = await _orchestrator.PostProviderContactDetailsEditModelAsync(m, User.ToVacancyUser());
 
