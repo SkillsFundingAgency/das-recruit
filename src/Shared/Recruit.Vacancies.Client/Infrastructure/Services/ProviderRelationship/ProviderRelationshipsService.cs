@@ -23,17 +23,14 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelation
         private readonly ProviderRelationshipApiConfiguration _configuration;
         private readonly ILogger<ProviderRelationshipApiConfiguration> _logger;
         private readonly IEmployerAccountProvider _employerAccountProvider;
-        private readonly IAccountApiClient _accountApiClient;
 
         public ProviderRelationshipsService(IOptions<ProviderRelationshipApiConfiguration> configuration,
             ILogger<ProviderRelationshipApiConfiguration> logger,
-            IEmployerAccountProvider employerAccountProvider,
-            IAccountApiClient accountApiClient)
+            IEmployerAccountProvider employerAccountProvider)
         {
             _configuration = configuration.Value;
             _logger = logger;
             _employerAccountProvider = employerAccountProvider;
-            _accountApiClient = accountApiClient;
         }
 
         public async Task<IEnumerable<EmployerInfo>> GetLegalEntitiesForProviderAsync(long ukprn, OperationType operation)
@@ -52,8 +49,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelation
 
         public async Task<bool> HasProviderGotEmployersPermissionAsync(long ukprn, string accountHashedId, string accountLegalEntityPublicHashedId, OperationType operation)
         {
-            var accountDetails = await _accountApiClient.GetAccount(accountHashedId);
-            var permittedLegalEntities = await GetProviderPermissionsforEmployer(ukprn, accountDetails.PublicHashedAccountId, operation);
+            var permittedLegalEntities = await GetProviderPermissionsforEmployer(ukprn,accountHashedId, operation);
 
             if (permittedLegalEntities.Any() == false)
                 return false;
@@ -70,12 +66,12 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelation
             return hasPermission;
         }
 
-        private async Task<List<LegalEntityDto>> GetProviderPermissionsforEmployer(long ukprn, string accountPublicHashedId, OperationType operation)
+        private async Task<List<LegalEntityDto>> GetProviderPermissionsforEmployer(long ukprn, string accountHashedId, OperationType operation)
         {
             var providerPermissions = await GetProviderPermissionsAsync(ukprn, operation);
 
             var permittedLegalEntities = providerPermissions.AccountProviderLegalEntities
-                .Where(l => l.AccountPublicHashedId == accountPublicHashedId)
+                .Where(l => l.AccountHashedId == accountHashedId)
                 .ToList();
 
             return permittedLegalEntities;
@@ -174,20 +170,18 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelation
         {
             var employerInfos = new List<EmployerInfo>();
 
-            var permittedEmployerAccounts = providerPermissions.AccountProviderLegalEntities.GroupBy(p => p.AccountId);
+            var permittedEmployerAccounts = providerPermissions.AccountProviderLegalEntities.GroupBy(p => p.AccountHashedId);
 
             foreach(var permittedEmployer in permittedEmployerAccounts)
             {
-                var accountId = await _employerAccountProvider.GetEmployerAccountPublicHashedIdAsync(permittedEmployer.Key);
-
                 var employerInfo = new EmployerInfo()
                 {
-                    EmployerAccountId = accountId,
+                    EmployerAccountId = permittedEmployer.Key,
                     Name = permittedEmployer.First().AccountName, //should be same in all the items hence read from first
                     LegalEntities = new List<LegalEntity>()
                 };
 
-                var legalEntityViewModels = await _employerAccountProvider.GetLegalEntitiesConnectedToAccountAsync(accountId);
+                var legalEntityViewModels = await _employerAccountProvider.GetLegalEntitiesConnectedToAccountAsync(permittedEmployer.Key);
 
                 foreach(var permittedLegalEntity in permittedEmployer)
                 {
