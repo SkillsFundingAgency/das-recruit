@@ -46,6 +46,7 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview
 
         public bool HasWage { get; internal set; }
         public bool HasProgramme => !string.IsNullOrEmpty(TrainingTitle);
+        public bool HasRoute => !string.IsNullOrEmpty(RouteTitle);
         public bool CanShowReference { get; set; }
 
         public bool HasIncompleteVacancyDescription => !HasVacancyDescription;
@@ -212,7 +213,7 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview
         private VacancyTaskListSectionState SetTaskListSectionState()
         {
             if (TitleSectionState == VacancyPreviewSectionState.Valid
-                && HasProgramme
+                && (VacancyType.GetValueOrDefault() == Vacancies.Client.Domain.Entities.VacancyType.Apprenticeship ? HasProgramme : HasRoute)
                 && HasSelectedLegalEntity
                 && HasShortDescription
                 && HasTrainingDescription

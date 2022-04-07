@@ -153,5 +153,10 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
         /// Type of Vacancy being created, either Apprenticeship or Traineeship. Set by application startup.
         /// </summary>
         public VacancyType? VacancyType { get; set; }
+
+        /// <summary>
+        /// If traineeship vacancy then this must be populated
+        /// </summary>
+        public int? RouteId { get; set; }
     }
 }
