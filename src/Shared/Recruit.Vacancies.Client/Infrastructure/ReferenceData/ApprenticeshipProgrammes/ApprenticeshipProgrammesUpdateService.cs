@@ -8,6 +8,7 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.Exceptions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Requests;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Responses;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Routes;
 using Microsoft.Extensions.Logging;
 using Polly;
 
@@ -64,6 +65,24 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Apprentices
             }
         }
 
+        public async Task UpdateApprenticeshipRouteAsync()
+        {
+            try
+            {
+                var routes = await GetApprenticeshipRoutes();
+                
+                await _referenceDataWriter.UpsertReferenceData(new ApprenticeshipRoutes {
+                    Data = routes.ToList()
+                });
+                _logger.LogInformation("Inserted: {routeCount} routes.", routes.Count() ;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+        }
+
         private async Task ValidateList(List<ApprenticeshipProgramme> apprenticeshipProgrammesFromApi)
         {
             var apprenticeshipProgrammesFromDb = await _referenceDataReader.GetReferenceData<ApprenticeshipProgrammes>();
@@ -94,6 +113,18 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Apprentices
             return result.TrainingProgrammes.Select(c=>(ApprenticeshipProgramme)c);
 
         }
+        
+        private async Task<IEnumerable<ApprenticeshipRoute>> GetApprenticeshipRoutes()
+        {
+            _logger.LogTrace("Getting Routes from Outer Api");
+
+            var retryPolicy = GetApiRetryPolicy();
+
+            var result = await retryPolicy.Execute(context => _outerApiClient.Get<GetRouteResponse>(new GetRouteRequest()), new Dictionary<string, object>() { { "apiCall", "Routes" } });
+
+            return result.Routes.Select(c => (ApprenticeshipRoute)c);
+
+        }
 
         private Polly.Retry.RetryPolicy GetApiRetryPolicy()
         {
@@ -109,17 +140,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Apprentices
                     });
         }
 
-        public async Task<IEnumerable<ApprenticeshipRoute.ApprenticeshipRoute>> UpdateApprenticeshipRouteAsync()
-        {
-            _logger.LogTrace("Getting Routes from Outer Api");
-
-            var retryPolicy = GetApiRetryPolicy();
-
-            var result = await retryPolicy.Execute(context => _outerApiClient.Get<GetRouteResponse>(new GetRouteRequest()), new Dictionary<string, object>() { { "apiCall", "Routes" } });
-
-            return result.Routes.Select(c => (ApprenticeshipRoute.ApprenticeshipRoute)c);
-
-        }
+        
     }
 
 
