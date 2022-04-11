@@ -5,6 +5,7 @@ using FluentAssertions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount;
 using System;
 using System.Collections.Generic;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Responses;
 
 namespace UnitTests.Recruit.Vacancies.Client.Infrastructure.Mappings.LegalEntityMapperTests
 {
@@ -16,40 +17,44 @@ namespace UnitTests.Recruit.Vacancies.Client.Infrastructure.Mappings.LegalEntity
             // Arrange
             var fixture = new Fixture();
             var expected = fixture
-                .Build<LegalEntityViewModel>()
+                .Build<AccountLegalEntity>()
                 .With(x => x.Address, "Cheylesmore House, 5 Quinton Rd, Coventry, CV1 2WT")
-                .With( x => x.Agreements, new List<AgreementViewModel>())
                 .Create();
 
             // Act
             var actual = LegalEntityMapper.MapFromAccountApiLegalEntity(expected);
 
             // Assert
-            actual.AccountLegalEntityPublicHashedId.Should().Be(expected.AccountLegalEntityPublicHashedId);
-            actual.Name.Should().Be(expected.Name);
-            actual.HasLegalEntityAgreement.Should().BeFalse();
+            actual.Should().BeEquivalentTo(expected, options=>options
+                .Excluding(c=>c.Address)
+                .Excluding(c=>c.HasLegalAgreement)
+                .Excluding(c=>c.AccountLegalEntityId)
+                .Excluding(c=>c.DasAccountId)
+                .Excluding(c=>c.LegalEntityId)
+            );
+            actual.HasLegalEntityAgreement.Should().Be(expected.HasLegalAgreement);
         }
 
         [Fact]
-        public void ThenSetsHasLegalEntityAgreementToTrue()
+        public void ThenMapsAddress()
         {
             // Arrange
             var fixture = new Fixture();
-            var agreementViewModel = fixture
-                .Build<AgreementViewModel>()
-                .With(x => x.Status, EmployerAgreementStatus.Signed)
-                .Create();
+            
             var expected = fixture
-                .Build<LegalEntityViewModel>()
+                .Build<AccountLegalEntity>()
                 .With(x => x.Address, "Cheylesmore House, 5 Quinton Rd, Coventry, CV1 2WT")
-                .With( x => x.Agreements, new List<AgreementViewModel>{ agreementViewModel }) 
                 .Create();
 
             // Act
             var actual = LegalEntityMapper.MapFromAccountApiLegalEntity(expected);
 
             // Assert
-            actual.HasLegalEntityAgreement.Should().BeTrue();
+            actual.Address.AddressLine1.Should().Be("Cheylesmore House");
+            actual.Address.AddressLine2.Should().Be("5 Quinton Rd");
+            actual.Address.AddressLine3.Should().Be("Coventry");
+            actual.Address.AddressLine4.Should().BeNullOrEmpty();
+            actual.Address.Postcode.Should().Be("CV1 2WT");
         }
     }
 }

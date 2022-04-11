@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Responses;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
 using SFA.DAS.EAS.Account.Api.Types;
 
@@ -8,15 +9,14 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount
 {
     public static class LegalEntityMapper
     {
-        public static LegalEntity MapFromAccountApiLegalEntity(LegalEntityViewModel data)
+        public static LegalEntity MapFromAccountApiLegalEntity(AccountLegalEntity data)
         {
             return new LegalEntity
             {
                 AccountLegalEntityPublicHashedId = data.AccountLegalEntityPublicHashedId,
                 Name = data.Name,
                 Address = MapFromAddressLine(data.Address),
-                HasLegalEntityAgreement = data.Agreements.Any(a =>
-                    a.Status == EmployerAgreementStatus.Signed)
+                HasLegalEntityAgreement = data.HasLegalAgreement
             };
         }
 
