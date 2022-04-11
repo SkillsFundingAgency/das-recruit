@@ -17,12 +17,10 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part2
     public class FutureProspectsController : Controller
     {
         private readonly FutureProspectsOrchestrator _orchestrator;
-        private readonly IFeature _feature;
 
-        public FutureProspectsController(FutureProspectsOrchestrator orchestrator, IFeature feature)
+        public FutureProspectsController(FutureProspectsOrchestrator orchestrator)
         {
             _orchestrator = orchestrator;
-            _feature = feature;
         }
 
         [HttpGet("future-prospects", Name = RouteNames.FutureProspects_Get)]

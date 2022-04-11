@@ -115,5 +115,7 @@
         public const string ProviderCheckYourAnswersGet = "provider-check-your-answers-get";
         public const string FutureProspects_Get = "FutureProspects_Get";
         public const string FutureProspects_Post = "FutureProspects_Post";
+        public const string WorkExperience_Get = "work-experience-get";
+        public const string WorkExperience_Post = "work-experience-post";
     }
 }
