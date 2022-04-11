@@ -6,6 +6,7 @@ using Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.ApprenticeshipProgrammes;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Routes;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Moq;
@@ -114,7 +115,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.ViewModels.Preview
             [Frozen] Mock<IRecruitVacancyClient> recruitVacancyClient,
             DisplayVacancyViewModelMapper mapper)
         {
-            recruitVacancyClient.Setup(x => x.GetRoute(It.IsAny<int?>())).ReturnsAsync((Route)null);
+            recruitVacancyClient.Setup(x => x.GetRoute(It.IsAny<int?>())).ReturnsAsync((ApprenticeshipRoute)null);
             recruitVacancyClient.Setup(x => x.GetApprenticeshipProgrammeAsync(It.IsAny<string>())).ReturnsAsync((ApprenticeshipProgramme)null);
             var vacancy = new Vacancy
             {
@@ -144,7 +145,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.ViewModels.Preview
             string trainingDescription,
             string accountLegalEntityPublicHashedId,
             TrainingProvider trainingProvider,
-            Route route,
+            ApprenticeshipRoute route,
             [Frozen] Mock<IRecruitVacancyClient> recruitVacancyClient,
             DisplayVacancyViewModelMapper mapper)
         {

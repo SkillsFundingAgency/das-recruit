@@ -384,7 +384,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return _messaging.SendCommandAsync(new CloseVacancyCommand(vacancyId, user, reason));
         }
 
-        public Task<IRoute> GetRoute(int? routeId)
+        public Task<IApprenticeshipRoute> GetRoute(int? routeId)
         {
             throw new NotImplementedException();
         }

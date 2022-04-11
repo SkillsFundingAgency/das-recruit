@@ -37,6 +37,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         Task<IEnumerable<string>> GetEmployerIdentifiersAsync(string userId);
         EntityValidationResult ValidateQualification(Qualification qualification);
         Task CloseVacancyAsync(Guid vacancyId, VacancyUser user, ClosureReason reason);
-        Task<IRoute> GetRoute(int? routeId);
+        Task<IApprenticeshipRoute> GetRoute(int? routeId);
     }
 }

@@ -74,7 +74,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Apprentices
                 await _referenceDataWriter.UpsertReferenceData(new ApprenticeshipRoutes {
                     Data = routes.ToList()
                 });
-                _logger.LogInformation("Inserted: {routeCount} routes.", routes.Count() ;
+                _logger.LogInformation("Inserted: {routeCount} routes.", routes.Count() );
             }
             catch (Exception e)
             {

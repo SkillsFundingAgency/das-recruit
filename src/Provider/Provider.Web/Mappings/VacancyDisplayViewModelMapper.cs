@@ -114,7 +114,7 @@ namespace Esfa.Recruit.Provider.Web.Mappings
             if (route != null)
             {
                 vm.RouteId = route.Id;
-                vm.RouteTitle = route.Title;
+                vm.RouteTitle = route.Route;
             }
 
             vm.VacancyType = vacancy.VacancyType;
