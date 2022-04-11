@@ -5,11 +5,9 @@
     ViewBag.Title = "Preview your vacancy";
 }
 
-<div class="govuk-grid-row">
-    <div class="govuk-grid-column-full">
-        <a asp-route="@RouteNames.ProviderCheckYourAnswersGet" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back to check your answers</a>
-    </div>
-</div>
+@section BackLink {
+  <a asp-route="@RouteNames.ProviderCheckYourAnswersGet" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Back to check your answers</a>
+}
 
 <h1 class="govuk-heading-l">Preview your vacancy</h1>
 <div class="app-preview-wrap">
