@@ -166,8 +166,8 @@
     </div>
 }
 
-<div asp-show="Model.HasInfo" class="info-summary highlight-summary">
-    <p class="govuk-!-margin-bottom-0 govuk-body">@Model.InfoMessage</p>
+<div asp-show="Model.HasInfo" class="das-notification das-notification--information">
+    <p class="das-notification__body">@Model.InfoMessage</p>
 </div>
 
 <partial asp-hide="@Model.CanHideValidationSummary" name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }' />
