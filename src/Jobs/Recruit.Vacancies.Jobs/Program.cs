@@ -112,6 +112,7 @@ namespace Esfa.Recruit.Vacancies.Jobs
                         services.ConfigureJobServices(context.Configuration);
 
                         services.AddDasNServiceBus(context.Configuration);
+                        services.AddApplicationInsightsTelemetry(context.Configuration);
                     })
                     .UseConsoleLifetime();
         }
