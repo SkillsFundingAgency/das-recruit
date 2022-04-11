@@ -1,20 +1,20 @@
+using AutoFixture.NUnit3;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Requests;
 using FluentAssertions;
 using NUnit.Framework;
-using Xunit;
 
 namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructure.OuterApi.Requests
 {
-    public class WhenConstructingGetProvidersUrl
+    public class WhenConstructingGetAccountRequest
     {
-        [Test]
-        public void Then_It_Is_Correctly_Constructed()
+        [Test, AutoData]
+        public void Then_It_Is_Correctly_Constructed(long accountId)
         {
             //Arrange
-            var actual = new GetProvidersRequest();
+            var actual = new GetAccountRequest(accountId);
             
             //Assert
-            actual.GetUrl.Should().Be("providers");
+            actual.GetUrl.Should().Be($"employeraccounts/{accountId}");
         }
     }
 }
