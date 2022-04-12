@@ -1,15 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using Esfa.Recruit.Provider.Web.Configuration.Routing;
+using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Shared.Web.ViewModels;
 
 namespace Esfa.Recruit.Provider.Web.ViewModels.Part1.Title
 {
-    public class TitleViewModel
+    public class TitleViewModel : VacancyRouteModel
     {
-        public Guid? VacancyId { get; set; }
         public string EmployerAccountId { get; set; }
-        public long Ukprn { get; set; }
         public string Title { get; set; }
         public IList<string> OrderedFieldNames => new List<string>
         {

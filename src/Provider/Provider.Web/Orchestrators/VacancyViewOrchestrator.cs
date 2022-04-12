@@ -167,7 +167,9 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             viewModel.Applications = new VacancyApplicationsViewModel
             {
                 Applications = applications,
-                ShowDisability = vacancy.IsDisabilityConfident
+                ShowDisability = vacancy.IsDisabilityConfident,
+                Ukprn = viewModel.Ukprn,
+                VacancyId = viewModel.VacancyId
             };
         }
 

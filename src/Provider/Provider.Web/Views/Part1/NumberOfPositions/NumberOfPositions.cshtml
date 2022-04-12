@@ -3,28 +3,45 @@
 
 @{
     ViewBag.GaData.Vpv = "/recruitment/provider/page-create-vacancy-number-of-positions";
+    ViewBag.Title = "How many positions are available?";
+}
+
+@section BackLink {
+    <esfaFeatureEnabled name="@FeatureNames.ProviderTaskList">
+        <a asp-route="@RouteNames.Wage_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Back</a>
+    </esfaFeatureEnabled>
+    <esfaFeatureDisabled name="@FeatureNames.ProviderTaskList">
+        <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Training_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Back</a>
+    </esfaFeatureDisabled>
 }
 
 <div class="govuk-grid-row">
-    <div class="govuk-grid-column-three-quarters">
-        <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Training_Get" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
-        <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames}' />
-        <partial name="@PartialNames.ReviewSummary" for="Review" />
-        <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">How many positions are there for this apprenticeship?</h1>
-    </div>
-</div>
+     <div class="govuk-grid-column-three-quarters">
 
-
-<div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
-        <form asp-route="@RouteNames.NumberOfPositions_Post" asp-route-wizard="@Model.PageInfo.IsWizard" novalidate>
+        <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames}'/>
+        <partial name="@PartialNames.ReviewSummary" for="Review"/>
+        <span class="govuk-caption-xl">@Model.Title</span>
+        <form asp-route="@RouteNames.NumberOfPositions_Post" asp-route-wizard="@Model.PageInfo.IsWizard" asp-route-ukprn="@Model.Ukprn" asp-route-vacancyId="@Model.VacancyId" novalidate>
             <div esfa-validation-marker-for="NumberOfPositions" class="govuk-form-group">
+                <h1 class="govuk-label-wrapper">
+                    <label class="govuk-label govuk-label--xl"  asp-for="NumberOfPositions">
+                        How many positions are available?
+                    </label>
+                </h1>
                 <span esfa-validation-message-for="NumberOfPositions" class="govuk-error-message"></span>
                 <input asp-for="NumberOfPositions" class="govuk-input govuk-input--width-4" type="number" min="1" />
             </div>
-            <button type="submit" class="govuk-button save-button">@Model.PageInfo.SubmitButtonText</button>
-            <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Vacancies_Get" class="govuk-link das-button-link">Cancel</a>
-            <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.Vacancy_Preview_Get" asp-fragment="@Anchors.NumberOfPositionsSection" class="govuk-link das-button-link">Cancel</a>
+
+            <div class="govuk-button-group">
+                <button type="submit" class="govuk-button save-button">@Model.PageInfo.SubmitButtonText</button>
+                <esfaFeatureEnabled name="@FeatureNames.ProviderTaskList">
+                    <a asp-route="@RouteNames.Dashboard_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-cancel" class="govuk-link govuk-link--no-visited-state">Cancel</a>
+                </esfaFeatureEnabled>
+                <esfaFeatureDisabled name="@FeatureNames.ProviderTaskList">
+                    <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Vacancies_Get" asp-all-route-data="@Model.RouteDictionary" class="govuk-link govuk-link--no-visited-state">Cancel</a>
+                    <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.Vacancy_Preview_Get" asp-all-route-data="@Model.RouteDictionary" asp-fragment="@Anchors.NumberOfPositionsSection" class="govuk-link govuk-link--no-visited-state">Cancel</a>
+                </esfaFeatureDisabled>
+            </div>
         </form>
     </div>
 </div>

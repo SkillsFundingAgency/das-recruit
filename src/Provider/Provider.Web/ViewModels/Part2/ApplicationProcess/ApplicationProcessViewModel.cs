@@ -1,10 +1,11 @@
 ﻿using System.Collections.Generic;
+using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Shared.Web.ViewModels;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
 namespace Esfa.Recruit.Provider.Web.ViewModels.Part2.ApplicationProcess
 {
-    public class ApplicationProcessViewModel
+    public class ApplicationProcessViewModel : VacancyRouteModel
     {
         public string Title { get; internal set; }
         public ApplicationMethod? ApplicationMethod { get; internal set; }
@@ -22,5 +23,6 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.Part2.ApplicationProcess
         };
 
         public string FindAnApprenticeshipUrl { get; internal set; }
+        public bool IsTaskListCompleted { get; set; }
     }
 }

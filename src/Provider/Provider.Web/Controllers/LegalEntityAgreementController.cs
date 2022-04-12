@@ -24,7 +24,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
             if (vm.HasLegalEntityAgreement == false)
                 return View(vm);
 
-            return RedirectToRoute(RouteNames.Dashboard_Get);
+            return RedirectToRoute(RouteNames.Dashboard_Get, new {vrm.Ukprn});
         }
     }
 }

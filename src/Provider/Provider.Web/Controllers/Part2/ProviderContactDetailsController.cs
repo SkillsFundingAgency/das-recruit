@@ -7,6 +7,7 @@ using Esfa.Recruit.Provider.Web.Extensions;
 using Esfa.Recruit.Provider.Web.Orchestrators.Part2;
 using Esfa.Recruit.Provider.Web.ViewModels.Part2.ProviderContactDetails;
 using Esfa.Recruit.Shared.Web.Extensions;
+using Esfa.Recruit.Shared.Web.FeatureToggle;
 using Microsoft.AspNetCore.Authorization;
 
 namespace Esfa.Recruit.Provider.Web.Controllers.Part2
@@ -16,10 +17,12 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part2
     public class ProviderContactDetailsController : Controller
     {
         private readonly ProviderContactDetailsOrchestrator _orchestrator;
+        private readonly IFeature _feature;
 
-        public ProviderContactDetailsController(ProviderContactDetailsOrchestrator orchestrator)
+        public ProviderContactDetailsController(ProviderContactDetailsOrchestrator orchestrator, IFeature feature)
         {
             _orchestrator = orchestrator;
+            _feature = feature;
         }
 
         [HttpGet("provider-contact-details", Name = RouteNames.ProviderContactDetails_Get)]
@@ -31,7 +34,25 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part2
 
         [HttpPost("provider-contact-details", Name = RouteNames.ProviderContactDetails_Post)]
         public async Task<IActionResult> ProviderContactDetails(ProviderContactDetailsEditModel m)
-        {            
+        {      
+            if (!ModelState.IsValid)
+            {
+                var viewModel = await _orchestrator.GetProviderContactDetailsViewModelAsync(m);    
+                return View(viewModel);
+            }
+
+            if (m.AddContactDetails.GetValueOrDefault())
+            {
+                if (string.IsNullOrEmpty(m.ProviderContactEmail) 
+                    && string.IsNullOrEmpty(m.ProviderContactName) 
+                    && string.IsNullOrEmpty(m.ProviderContactPhone))
+                {
+                    ModelState.AddModelError(nameof(m.AddContactDetails), "Enter contact details");
+                    var viewModel = await _orchestrator.GetProviderContactDetailsViewModelAsync(m);    
+                    return View(viewModel);
+                }
+            }
+            
             var response = await _orchestrator.PostProviderContactDetailsEditModelAsync(m, User.ToVacancyUser());
 
             if (!response.Success)
@@ -39,13 +60,22 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part2
                 response.AddErrorsToModelState(ModelState);
             }
 
+            var vm = await _orchestrator.GetProviderContactDetailsViewModelAsync(m);
             if (!ModelState.IsValid)
             {
-                var vm = await _orchestrator.GetProviderContactDetailsViewModelAsync(m);
                 return View(vm);
             }
+            
+            if (_feature.IsFeatureEnabled(FeatureNames.ProviderTaskList))
+            {
+                if (!vm.IsTaskListCompleted)
+                {
+                    return RedirectToRoute(RouteNames.ApplicationProcess_Get, new {m.VacancyId, m.Ukprn});
+                }
+                return RedirectToRoute(RouteNames.ProviderCheckYourAnswersGet, new {m.VacancyId, m.Ukprn});
+            }
 
-            return RedirectToRoute(RouteNames.Vacancy_Preview_Get);
+            return RedirectToRoute(RouteNames.Vacancy_Preview_Get, new {m.VacancyId, m.Ukprn});
         }
     }
 }

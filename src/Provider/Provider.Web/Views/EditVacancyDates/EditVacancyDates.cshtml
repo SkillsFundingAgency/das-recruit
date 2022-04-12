@@ -5,7 +5,7 @@
         <h1 class="govuk-heading-xl">Edit vacancy dates</h1>
         <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }' />
         <div class="govuk-form-group govuk-!-margin-top-6">
-            <form asp-route="@RouteNames.VacancyEditDates_Post" novalidate>
+            <form asp-route="@RouteNames.VacancyEditDates_Post" asp-all-route-data="@Model.RouteDictionary" novalidate>
                 <div esfa-validation-marker-for="ClosingDate" class="govuk-form-group">
                     <fieldset class="govuk-fieldset" aria-describedby="closing-hint" role="group">
                         <label class="govuk-label govuk-!-font-weight-bold" for="shortDescription">
@@ -82,8 +82,10 @@
                     <label class="govuk-label govuk-!-font-weight-bold" for="apprenticeship-type">Apprenticeship training</label>
                     <p class="govuk-body">@Model.ProgrammeName</p>
                 </div>
-                <button type="submit" class="govuk-button save-button">Preview changes</button>
-                <a asp-route="@RouteNames.VacancyEdit_Get" class="govuk-link das-button-link">Cancel</a>
+                <div class="govuk-button-group">
+                    <button type="submit" class="govuk-button save-button">Preview changes</button>
+                    <a asp-route="@RouteNames.VacancyEdit_Get" class="govuk-link">Cancel</a>
+                </div>
             </form>
         </div>
     </div>

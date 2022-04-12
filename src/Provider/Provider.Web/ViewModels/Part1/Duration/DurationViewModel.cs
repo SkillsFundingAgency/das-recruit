@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Shared.Web.ViewModels;
 using Esfa.Recruit.Shared.Web.ViewModels.Validations;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
@@ -6,8 +7,10 @@ using ErrMsg = Esfa.Recruit.Shared.Web.ViewModels.ValidationMessages.DurationVal
 
 namespace Esfa.Recruit.Provider.Web.ViewModels.Part1.Duration
 {
-    public class DurationViewModel
+    public class DurationViewModel : VacancyRouteModel
     {
+        public string Title { get; set; }
+        
         [TypeOfInteger(ErrorMessage = ErrMsg.TypeOfInteger.Duration)]
         public string Duration { get; set; }
 
