@@ -2,6 +2,6 @@
 {
     public class GetRouteRequest : IGetApiRequest
     {
-        public string GetUrl => "sectors";
+        public string GetUrl => "routes";
     }
 }
