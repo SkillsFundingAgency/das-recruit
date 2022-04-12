@@ -37,8 +37,8 @@ namespace Esfa.Recruit.Provider.Web.Mappings
 
         public async Task MapFromVacancyAsync(DisplayVacancyViewModel vm, Vacancy vacancy)
         {
-            var programme = vacancy.VacancyType == VacancyType.Apprenticeship ? await _vacancyClient.GetApprenticeshipProgrammeAsync(vacancy.ProgrammeId) : null;
-            var route = vacancy.VacancyType == VacancyType.Traineeship ? await _vacancyClient.GetRoute(vacancy.RouteId) : null;
+            var programme = vacancy.VacancyType.GetValueOrDefault() == VacancyType.Apprenticeship ? await _vacancyClient.GetApprenticeshipProgrammeAsync(vacancy.ProgrammeId) : null;
+            var route = vacancy.VacancyType.GetValueOrDefault() == VacancyType.Traineeship ? await _vacancyClient.GetRoute(vacancy.RouteId) : null;
             var employer = await _client.GetProviderEmployerVacancyDataAsync(vacancy.TrainingProvider.Ukprn.Value, vacancy.EmployerAccountId);
 
             var allQualifications = await _vacancyClient.GetCandidateQualificationsAsync();

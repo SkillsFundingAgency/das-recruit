@@ -1,3 +1,4 @@
+using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Application.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomValidators.VacancyValidators;
@@ -19,6 +20,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
         private readonly IBlockedOrganisationQuery _blockedOrganisationRepo;
         private readonly IProfanityListProvider _profanityListProvider;
         private readonly IProviderRelationshipsService _providerRelationshipService;
+        private readonly ServiceParameters _serviceParameters;
 
         public FluentVacancyValidator(
             ITimeProvider timeProvider, 
@@ -29,7 +31,8 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
             ITrainingProviderSummaryProvider trainingProviderSummaryProvider, 
             IBlockedOrganisationQuery blockedOrganisationRepo, 
             IProfanityListProvider profanityListProvider,
-            IProviderRelationshipsService providerRelationshipService)
+            IProviderRelationshipsService providerRelationshipService,
+            ServiceParameters serviceParameters)
         {
             _timeProvider = timeProvider;
             _minimumWageService = minimumWageService;
@@ -40,6 +43,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
             _blockedOrganisationRepo = blockedOrganisationRepo;
             _profanityListProvider = profanityListProvider;
             _providerRelationshipService = providerRelationshipService;
+            _serviceParameters = serviceParameters;
 
             SingleFieldValidations();
 
@@ -48,8 +52,15 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
 
         private void SingleFieldValidations()
         {
-            ValidateTitle();
-
+            if (_serviceParameters.VacancyType == VacancyType.Apprenticeship)
+            {
+                ValidateApprenticeshipTitle();    
+            }
+            else if (_serviceParameters.VacancyType == VacancyType.Traineeship)
+            {
+                ValidateTraineeshipTitle();
+            }
+            
             ValidateOrganisation();
 
             ValidateNumberOfPositions();
@@ -102,7 +113,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
             TrainingExpiryDateValidation();
         }
 
-        private void ValidateTitle()
+        private void ValidateApprenticeshipTitle()
         {
          RuleFor(x => x.Title)
              .Cascade(CascadeMode.StopOnFirstFailure)
@@ -122,6 +133,28 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
              .WithMessage("Title must not contain a banned word or phrase.")
              .WithErrorCode("601")
              .RunCondition(VacancyRuleSet.Title)
+                .WithRuleId(VacancyRuleSet.Title);
+        }
+        private void ValidateTraineeshipTitle()
+        {
+            RuleFor(x => x.Title)
+                .Cascade(CascadeMode.StopOnFirstFailure)
+                .NotEmpty()
+                .WithMessage("Enter a title for this traineeship")
+                .WithErrorCode("1")
+                .MaximumLength(100)
+                .WithMessage("Title must not exceed {MaxLength} characters")
+                .WithErrorCode("2")
+                .ValidFreeTextCharacters()
+                .WithMessage("Title contains some invalid characters")
+                .WithErrorCode("3")
+                .Matches(ValidationConstants.ContainsTraineeOrTraineeshipRegex)
+                .WithMessage("Enter a title which includes the word 'trainee' or 'traineeship'")
+                .WithErrorCode("200")
+                .ProfanityCheck(_profanityListProvider)
+                .WithMessage("Title must not contain a banned word or phrase.")
+                .WithErrorCode("601")
+                .RunCondition(VacancyRuleSet.Title)
                 .WithRuleId(VacancyRuleSet.Title);
         }
 
