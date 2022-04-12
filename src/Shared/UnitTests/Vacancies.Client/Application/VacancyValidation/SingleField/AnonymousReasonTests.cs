@@ -33,7 +33,7 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation.
                 EmployerName = "a valid anonymous name",
                 EmployerNameOption = EmployerNameOption.Anonymous,
                 SourceOrigin = SourceOrigin.EmployerWeb,
-                AnonymousReason = "ï¿½$$%$%ï¿½$<>" + new string('a', 200),
+                AnonymousReason = "£$$%$%£$<>" + new string('a', 200),
             };
 
             var result = Validator.Validate(vacancy, VacancyRuleSet.EmployerNameOption);

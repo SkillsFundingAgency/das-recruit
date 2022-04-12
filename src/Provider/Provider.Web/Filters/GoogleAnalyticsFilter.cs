@@ -2,7 +2,6 @@
 using Esfa.Recruit.Provider.Web.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using SFA.DAS.Provider.Shared.UI.Models;
 using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Provider.Web.Filters
@@ -28,7 +27,7 @@ namespace Esfa.Recruit.Provider.Web.Filters
                     controller.ViewBag.GaData = new GaData
                     {
                         UserId = user.UserId,
-                        UkPrn = user.Ukprn.HasValue ? user.Ukprn.Value.ToString() : string.Empty
+                        Acc = user.Ukprn.HasValue ? user.Ukprn.Value.ToString() : string.Empty
                     };
                 }
             }
@@ -38,6 +37,13 @@ namespace Esfa.Recruit.Provider.Web.Filters
             }
 
             base.OnActionExecuting(filterContext);
+        }
+
+        public class GaData
+        {
+            public string UserId { get; set; }
+            public string Vpv { get; set; }
+            public string Acc { get; set; }
         }
     }
 }

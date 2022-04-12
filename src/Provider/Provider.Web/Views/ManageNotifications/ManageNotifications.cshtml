@@ -8,7 +8,7 @@
 
 <div class="govuk-grid-row">
     <div class="govuk-gird-column-two-thirds">
-        <form method="post" asp-route="@RouteNames.ManageNotifications_Post"  asp-route-ukprn="@Model.Ukprn">
+        <form method="post">
             <div class="govuk-form-group">
                 <fieldset class="govuk-fieldset" aria-describedby="when-conditional-hint">
                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
@@ -107,12 +107,12 @@
                 </fieldset>
             </div>
             <p asp-show="@Model.HasAnySubscription" class="govuk-body">
-                <a asp-route="@RouteNames.ConfirmUnsubscribeNotifications_Get" asp-route-ukprn="@Model.Ukprn" class="govuk-link">Unsubscribe from all recruitment emails</a>
+                <a asp-route="@RouteNames.ConfirmUnsubscribeNotifications_Get" class="govuk-link">Unsubscribe from all recruitment emails</a>
             </p>
             <button class="govuk-button submit" type="submit">Save and continue</button>
 
             <p class="govuk-body govuk-!-margin-bottom-0">
-                <a asp-route="@RouteNames.Dashboard_Get" asp-route-ukprn="@Model.Ukprn" class="govuk-body govuk-link">Return to dashboard</a>
+                <a asp-route="@RouteNames.Dashboard_Get" class="govuk-body govuk-link">Return to dashboard</a>
             </p>
         </form>
     </div>

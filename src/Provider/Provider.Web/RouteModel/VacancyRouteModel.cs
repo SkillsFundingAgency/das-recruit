@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Esfa.Recruit.Provider.Web.RouteModel
@@ -11,21 +10,5 @@ namespace Esfa.Recruit.Provider.Web.RouteModel
 
         [FromRoute]
         public Guid? VacancyId { get; set; }
-
-        public Dictionary<string, string> RouteDictionary
-        {
-            get
-            {
-                var routeDictionary = new Dictionary<string, string>
-                {
-                    {"Ukprn", Ukprn.ToString()}
-                };  
-                if(VacancyId != null)
-                {
-                    routeDictionary.Add("VacancyId", VacancyId.ToString());
-                }
-                return routeDictionary;
-            }
-        }
     }
 }

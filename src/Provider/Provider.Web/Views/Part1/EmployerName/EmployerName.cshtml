@@ -4,35 +4,25 @@
 
 @{
     ViewBag.GaData.Vpv = "/recruitment/provider/page-create-vacancy-employer-name";
-    ViewBag.Title = "Employer name on vacancy";
-}
-
-@section BackLink {
-    <esfaFeatureEnabled name="@FeatureNames.ProviderTaskList">
-        <a asp-route="@RouteNames.ProviderTaskListGet" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Back</a>
-    </esfaFeatureEnabled>
-    <esfaFeatureDisabled name="@FeatureNames.ProviderTaskList">
-        <div asp-show="@Model.PageInfo.IsWizard">
-            <a asp-show="@Model.HasOnlyOneOrganisation" asp-route="@RouteNames.NumberOfPositions_Get"  asp-route-vacancyId="@Model.VacancyId" asp-route-ukprn="@Model.Ukprn" asp-route-wizard="@Model.PageInfo.IsWizard" esfa-automation="link-back" class="govuk-back-link">Back</a>
-            <a asp-hide="@Model.HasOnlyOneOrganisation" asp-route="@RouteNames.LegalEntity_Get"  asp-route-vacancyId="@Model.VacancyId" asp-route-ukprn="@Model.Ukprn" asp-route-wizard="@Model.PageInfo.IsWizard" esfa-automation="link-back" class="govuk-back-link">Back</a>
-        </div>
-        <div asp-hide="@Model.PageInfo.IsWizard">
-            <a asp-hide="@Model.HasOnlyOneOrganisation" asp-route="@RouteNames.LegalEntity_Get"  asp-route-vacancyId="@Model.VacancyId" asp-route-ukprn="@Model.Ukprn" asp-route-wizard="@Model.PageInfo.IsWizard" esfa-automation="link-back" class="govuk-back-link">Back</a>
-        </div>
-    </esfaFeatureDisabled>
 }
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
+        <div asp-show="@Model.PageInfo.IsWizard">
+            <a asp-show="@Model.HasOnlyOneOrganisation" asp-route="@RouteNames.NumberOfPositions_Get" asp-route-wizard="@Model.PageInfo.IsWizard" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
+            <a asp-hide="@Model.HasOnlyOneOrganisation" asp-route="@RouteNames.LegalEntity_Get" asp-route-wizard="@Model.PageInfo.IsWizard" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
+        </div>
+        <div asp-hide="@Model.PageInfo.IsWizard">
+            <a asp-hide="@Model.HasOnlyOneOrganisation" asp-route="@RouteNames.LegalEntity_Get" asp-route-wizard="@Model.PageInfo.IsWizard" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
+        </div>
+        <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState }' />
+        <partial name="@PartialNames.ReviewSummary" for="Review" />
 
-        <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState }'/>
-        <partial name="@PartialNames.ReviewSummary" for="Review"/>
+        <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">What employer name do you want to go on the vacancy?</h1>
 
-        <form asp-route="@RouteNames.EmployerName_Post" asp-route-wizard="@Model.PageInfo.IsWizard" asp-route-vacancyId="@Model.VacancyId" asp-route-ukprn="@Model.Ukprn" >
-            <div class="govuk-form-group" id="@FieldIdentifiers.EmployerName"  esfa-validation-marker-for="SelectedEmployerIdentityOption">
+        <form asp-route="@RouteNames.EmployerName_Post" asp-route-wizard="@Model.PageInfo.IsWizard">
+            <div class="govuk-form-group" id="@FieldIdentifiers.EmployerName">
                 <fieldset class="govuk-fieldset">
-                    <h1 class="govuk-heading-xl govuk-!-margin-bottom-6"><span class="govuk-caption-xl">@Model.Title</span>What employer name do you want to go on the vacancy?</h1>
-                    
                     <span esfa-validation-message-for="SelectedEmployerIdentityOption" class="govuk-error-message"></span>
                     <div class="govuk-radios govuk-radios--conditional" data-module="radios">
                         <div class="govuk-radios__item">
@@ -50,7 +40,7 @@
                         <div class="govuk-radios__item">
                             <input asp-for="SelectedEmployerIdentityOption" value="NewTradingName" data-aria-controls="trading-name-conditional" id="existing-trading-name" type="radio" class="govuk-radios__input">
                             <label for="existing-trading-name" class="govuk-label govuk-radios__label">
-                                A different name
+                                A<span asp-show="@Model.HasExistingTradingName"> different</span> trading name
                             </label>
                         </div>
                         <div class="govuk-radios__conditional" id="trading-name-conditional">
@@ -70,47 +60,43 @@
                         <div class="govuk-radios__item">
                             <input asp-for="SelectedEmployerIdentityOption" value="Anonymous" data-aria-controls="anonymous-conditional" id="anonymous" class="govuk-radios__input" type="radio">
                             <label class="govuk-label govuk-radios__label" for="anonymous">
-                                I do not want an employer name on my vacancy (be anonymous)
+                                Do not display a name (Be anonymous)
                                 <span class="govuk-hint">This could mean fewer people see your vacancy</span>
                             </label>
                         </div>
                         <div class="govuk-radios__conditional" id="anonymous-conditional">
                             <div class="govuk-form-group">
-                                <label class="govuk-label" asp-for="AnonymousName">
-                                    Brief description of what the employer does
-                                </label>
-                                <span class="govuk-hint">For example, car manufacturer or clothing retailer.</span>
-                                <span esfa-validation-message-for="AnonymousName" class="govuk-error-message"></span>
-                                <input asp-for="AnonymousName" data-val-length-max="200" class="govuk-input govuk-input--width-20" type="text">
-                            </div>
-                            <div class="govuk-character-count" data-module="govuk-character-count" data-maxlength="200">
-                                <div class="govuk-form-group">
-                                    <label class="govuk-label" asp-for="AnonymousReason">
-                                        Reason for being anonymous
-                                    </label>
-                                    <span class="govuk-hint">This information will not show on your advert. We'll use it to help us decide whether you can be anonymous.</span>
-                                    <span esfa-validation-message-for="AnonymousReason" class="govuk-error-message"></span>
-                                    <textarea asp-for="AnonymousReason" data-val-length-max="4000" class="govuk-textarea govuk-!-width-three-quarters govuk-js-character-count" rows="5" type="text"></textarea>
-                                    <div id="AnonymousReason-info" class="govuk-hint govuk-character-count__message" aria-live="polite">
-                                        You can enter up to 4000 characters
+                                <fieldset class="govuk-fieldset">
+                                    <div class="govuk-form-group">
+                                        <label class="govuk-label" asp-for="AnonymousName">
+                                            Brief description of what the employer does
+                                        </label>
+                                        <span class="govuk-hint">For example, car manufacturer or clothing retailer.</span>
+                                        <span esfa-validation-message-for="AnonymousName" class="govuk-error-message"></span>
+                                        <input asp-for="AnonymousName" data-val-length-max="200" class="govuk-input govuk-input--width-20" type="text">
                                     </div>
-                                </div>
+                                    <div class="govuk-form-group">
+                                        <label class="govuk-label" asp-for="AnonymousReason">
+                                            Reason for being anonymous
+                                        </label>
+                                        <span class="govuk-hint"> This will help our vacancy reviewers validate your request to remain anonymous. This information will not be displayed on the advert.</span>
+                                        <span esfa-validation-message-for="AnonymousReason" class="govuk-error-message"></span>
+                                        <textarea asp-for="AnonymousReason" data-val-length-max="200" class="govuk-textarea govuk-!-width-three-quarters character-count" rows="5" type="text"></textarea>
+                                        <div>
+                                            <span class="govuk-body maxchar-count">200</span>
+                                            <span class="govuk-body maxchar-text"> characters remaining</span>
+                                        </div>
+                                    </div>
+                                </fieldset>
                             </div>
                         </div>
                     </div>
                 </fieldset>
             </div>
 
-            <div class="govuk-button-group">
-                <button type="submit" class="govuk-button save-button" esfa-automation="continue-button">Save and continue</button>
-                <esfaFeatureEnabled name="@FeatureNames.ProviderTaskList">
-                    <a asp-route="@RouteNames.Dashboard_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-cancel" class="govuk-link govuk-link--no-visited-state">Cancel</a>
-                </esfaFeatureEnabled>
-                <esfaFeatureDisabled name="@FeatureNames.ProviderTaskList">
-                    <a asp-route="@RouteNames.EmployerName_Cancel" asp-route-vacancyId="@Model.VacancyId" asp-route-ukprn="@Model.Ukprn" asp-route-wizard="@Model.PageInfo.IsWizard" class="govuk-link govuk-link--no-visited-state">Cancel</a>
-                </esfaFeatureDisabled>
-            </div>
-            
+            <button type="submit" class="govuk-button save-button" esfa-automation="continue-button">Continue</button>
+
+            <a asp-route="@RouteNames.EmployerName_Cancel" asp-route-wizard="@Model.PageInfo.IsWizard" class="govuk-link das-button-link">Cancel</a>
         </form>
     </div>
 </div>

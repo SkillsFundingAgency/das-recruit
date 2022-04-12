@@ -69,16 +69,12 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
             var accountLegalEntityPublicHashedId = !string.IsNullOrEmpty(employerInfoModel?.AccountLegalEntityPublicHashedId)
                 ? employerInfoModel.AccountLegalEntityPublicHashedId : vacancy.AccountLegalEntityPublicHashedId;
 
-            var vm = new LocationViewModel
-            {
-                Title = vacancy.Title,
-                PageInfo = _utility.GetPartOnePageInfo(vacancy),
-                IsAnonymousVacancy = (employerInfoModel?.EmployerIdentityOption == null)
-                    ? vacancy.IsAnonymous
-                    : employerInfoModel.EmployerIdentityOption == EmployerIdentityOption.Anonymous,
-                VacancyId = vrm.VacancyId,
-                Ukprn = vrm.Ukprn
-            };
+            var vm = new LocationViewModel();
+            vm.PageInfo = _utility.GetPartOnePageInfo(vacancy);
+
+            vm.IsAnonymousVacancy = (employerInfoModel?.EmployerIdentityOption == null)
+                ? vacancy.IsAnonymous
+                : employerInfoModel.EmployerIdentityOption == EmployerIdentityOption.Anonymous;
 
             var employerProfile =
                 await _recruitVacancyClient.GetEmployerProfileAsync(vacancy.EmployerAccountId, accountLegalEntityPublicHashedId);

@@ -306,17 +306,17 @@
                 </h2>
                 <ul class="das-task-list__items">
                     <li class="das-task-list__item">
-                        @if (Model.TaskListSectionThreeState == VacancyTaskListSectionState.Completed)
+                        @if (Model.TaskListSectionThreeState != VacancyTaskListSectionState.Completed)
                         {
-                            <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.EmployerName_Get">
-                                Name of employer on advert
-                            </a>    
+                            <span>
+                                 Name of employer on advert
+                            </span>    
                         }
                         else
                         {
-                            <span>
-                                Name of employer on advert
-                            </span> 
+                            <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.EmployerName_Get">
+                                 Name of employer on advert
+                            </a>    
                         }
                     </li>
                     <li class="das-task-list__item">

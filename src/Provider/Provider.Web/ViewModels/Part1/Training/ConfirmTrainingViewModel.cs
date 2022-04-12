@@ -1,12 +1,10 @@
-﻿using Esfa.Recruit.Provider.Web.RouteModel;
-using Esfa.Recruit.Shared.Web.ViewModels;
+﻿using Esfa.Recruit.Shared.Web.ViewModels;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
 namespace Esfa.Recruit.Provider.Web.ViewModels.Part1.Training
 {
-    public class ConfirmTrainingViewModel : VacancyRouteModel
+    public class ConfirmTrainingViewModel
     {
-        public string Title { get; set; }
         public string TrainingTitle { get; set; }
         public ApprenticeshipLevel ApprenticeshipLevel { get; set; }
         public string EducationLevelName { get; set; }

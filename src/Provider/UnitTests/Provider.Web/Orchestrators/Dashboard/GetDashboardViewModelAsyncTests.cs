@@ -48,7 +48,6 @@ namespace Esfa.Recruit.Provider.UnitTests.Employer.Web.Orchestrators.Dashboard
             actualDashboard.NoOfVacanciesClosingSoonWithNoApplications.Should().Be(2);
             actualDashboard.NoOfVacanciesClosingSoon.Should().Be(4);
             actualDashboard.Alerts.Should().NotBeNull();
-            actualDashboard.Ukprn.Should().Be(Ukprn);
         }
 
         [Fact]
@@ -65,7 +64,6 @@ namespace Esfa.Recruit.Provider.UnitTests.Employer.Web.Orchestrators.Dashboard
             actualDashboard.NoOfVacanciesClosingSoonWithNoApplications.Should().Be(0);
             actualDashboard.NoOfVacanciesClosingSoon.Should().Be(0);
             actualDashboard.Alerts.Should().NotBeNull();
-            actualDashboard.Ukprn.Should().Be(Ukprn);
         }
 
         private DashboardOrchestrator GetSut(List<VacancySummary> vacancies)
@@ -92,7 +90,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Employer.Web.Orchestrators.Dashboard
             clientMock.Setup(c => c.GetUsersDetailsAsync(UserId))
                 .ReturnsAsync(userDetails);
 
-            var alertsViewModel = new AlertsViewModel(null, null, Ukprn);
+            var alertsViewModel = new AlertsViewModel(null, null);
             var alertsFactoryMock = new Mock<IProviderAlertsViewModelFactory>();
             alertsFactoryMock.Setup(a => a.Create(dashboardProjection, userDetails))
                 .Returns(alertsViewModel);

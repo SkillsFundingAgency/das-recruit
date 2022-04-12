@@ -6,7 +6,6 @@ using Esfa.Recruit.Provider.Web.Orchestrators.Part1;
 using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Provider.Web.ViewModels.Part1.Location;
 using Esfa.Recruit.Shared.Web.Extensions;
-using Esfa.Recruit.Shared.Web.FeatureToggle;
 using Esfa.Recruit.Shared.Web.Mappers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi;
@@ -21,13 +20,11 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
     public class LocationController : EmployerControllerBase
     {
         private readonly LocationOrchestrator _orchestrator;
-        private readonly IFeature _feature;
 
-        public LocationController(LocationOrchestrator orchestrator, IHostingEnvironment hostingEnvironment, IFeature feature)
+        public LocationController(LocationOrchestrator orchestrator, IHostingEnvironment hostingEnvironment)
             :base(hostingEnvironment)
         {
             _orchestrator = orchestrator;
-            _feature = feature;
         }
 
         [HttpGet("location", Name = RouteNames.Location_Get)]
@@ -79,22 +76,15 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
 
             DeleteVacancyEmployerInfoCookie();
 
-            if (_feature.IsFeatureEnabled(FeatureNames.ProviderTaskList))
-            {
-                return RedirectToRoute(RouteNames.ProviderTaskListGet, new { Wizard = wizard, model.Ukprn, model.VacancyId });
-            }
-            
             return wizard
-                ? RedirectToRoute(RouteNames.Dates_Get,new { Wizard = true, model.Ukprn, model.VacancyId })
-                : _feature.IsFeatureEnabled(FeatureNames.ProviderTaskList) 
-                    ? RedirectToRoute(RouteNames.ProviderCheckYourAnswersGet, new {model.Ukprn, model.VacancyId}) 
-                    : RedirectToRoute(RouteNames.Vacancy_Preview_Get, new {wizard = false, model.Ukprn, model.VacancyId, Anchors.AboutEmployerSection});
+                ? RedirectToRoute(RouteNames.Dates_Get)
+                : RedirectToRoute(RouteNames.Vacancy_Preview_Get, null, Anchors.AboutEmployerSection);
         }
 
         [HttpGet("location-cancel", Name = RouteNames.Location_Cancel)]
         public IActionResult Cancel(VacancyRouteModel vrm, [FromQuery] bool wizard)
         {
-            return CancelAndRedirect(wizard, vrm);
+            return CancelAndRedirect(wizard);
         }
 
         [HttpGet("location/GetAddresses")]

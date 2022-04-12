@@ -55,39 +55,37 @@ namespace Esfa.Recruit.Employer.Web.Configuration
             services.Configure<CookieTempDataProviderOptions>(options => options.Cookie.Name = CookieNames.RecruitTempData);
             services.AddSingleton<ITempDataProvider, CookieTempDataProvider>();                                    
             services.AddMvc(opts =>
+            {
+                if (!hostingEnvironment.IsDevelopment())
                 {
-                    opts.EnableEndpointRouting = false;
-                    if (!hostingEnvironment.IsDevelopment())
-                    {
-                        opts.Filters.Add(new RequireHttpsAttribute());
-                    }
+                    opts.Filters.Add(new RequireHttpsAttribute());
+                }
 
-                    if (!isAuthEnabled)
-                    {
-                        opts.Filters.Add(new AllowAnonymousFilter());
-                    }
-                    else
-                    {
-                        opts.Filters.Add(new AuthorizeFilter(HasEmployerAccountPolicyName));
-                    }
+                if (!isAuthEnabled)
+                {
+                    opts.Filters.Add(new AllowAnonymousFilter());
+                }
+                else
+                {
+                    opts.Filters.Add(new AuthorizeFilter(HasEmployerAccountPolicyName));
+                }
 
-                    var jsonInputFormatters = opts.InputFormatters.OfType<NewtonsoftJsonInputFormatter>();
-                    foreach (var formatter in jsonInputFormatters)
-                    {
-                        formatter.SupportedMediaTypes
-                            .Add(MediaTypeHeaderValue.Parse("application/csp-report"));
-                    }
+                var jsonInputFormatters = opts.InputFormatters.OfType<JsonInputFormatter>();
+                foreach (var formatter in jsonInputFormatters)
+                {
+                    formatter.SupportedMediaTypes
+                        .Add(MediaTypeHeaderValue.Parse("application/csp-report"));
+                }
 
-                    opts.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
+                opts.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
 
-                    opts.Filters.AddService<PlannedOutageResultFilter>();
-                    opts.Filters.AddService<GoogleAnalyticsFilter>();
-                    opts.Filters.AddService<ZendeskApiFilter>();
-                    opts.AddTrimModelBinderProvider(loggerFactory);
+                opts.Filters.AddService<PlannedOutageResultFilter>();
+                opts.Filters.AddService<GoogleAnalyticsFilter>();
+                opts.Filters.AddService<ZendeskApiFilter>();
+                opts.AddTrimModelBinderProvider(loggerFactory);
             })
-            .AddNewtonsoftJson()
             .AddFluentValidation()
-            .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
+            .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
 
         public static void AddAuthenticationService(this IServiceCollection services, AuthenticationConfiguration authConfig, IEmployerVacancyClient vacancyClient, IRecruitVacancyClient recruitClient, IHostingEnvironment hostingEnvironment)
@@ -123,8 +121,7 @@ namespace Esfa.Recruit.Employer.Web.Configuration
                 options.ClientId = authConfig.ClientId;
                 options.ClientSecret = authConfig.ClientSecret;
                 options.Scope.Add("profile");
-                options.UsePkce = false;
-                
+
                 options.Events.OnTokenValidated = async (ctx) =>
                 {
                     await PopulateAccountsClaim(ctx, recruitClient);

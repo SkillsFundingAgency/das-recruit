@@ -47,7 +47,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
         {
             var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.EmployerName_Get);
 
-            var accountLegalEntityPublicHashedId = employerInfoModel?.AccountLegalEntityPublicHashedId ?? vacancy.AccountLegalEntityPublicHashedId;
+            var accountLegalEntityPublicHashedId = employerInfoModel.AccountLegalEntityPublicHashedId;
                 
             var getVacancyEditInfoTask = _providerVacancyClient.GetProviderEditVacancyInfoAsync(vrm.Ukprn);
 
@@ -66,13 +66,10 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
                 LegalEntityName = legalEntity.Name,
                 ExistingTradingName = employerProfile?.TradingName,
                 PageInfo = _utility.GetPartOnePageInfo(vacancy),
-                SelectedEmployerIdentityOption = employerInfoModel?.EmployerIdentityOption ?? vacancy?.EmployerNameOption?.ConvertToModelOption(),      
-                NewTradingName = employerInfoModel?.NewTradingName,
-                AnonymousName = employerInfoModel?.AnonymousName ,
-                AnonymousReason = employerInfoModel?.AnonymousReason ?? vacancy.AnonymousReason,
-                Ukprn = vrm.Ukprn,
-                VacancyId = vrm.VacancyId,
-                Title = vacancy.Title
+                SelectedEmployerIdentityOption = employerInfoModel.EmployerIdentityOption,
+                NewTradingName = employerInfoModel.NewTradingName,
+                AnonymousName = employerInfoModel.AnonymousName,
+                AnonymousReason = employerInfoModel.AnonymousReason
             };
 
             if (vacancy.Status == VacancyStatus.Referred)
@@ -81,13 +78,11 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
                     ReviewFieldMappingLookups.GetEmployerNameReviewFieldIndicators());
             }
 
-            vm.IsTaskListCompleted = _utility.TaskListCompleted(vacancy);
-
             return vm;
         }
 
         public async Task<OrchestratorResponse> PostEmployerNameEditModelAsync(
-            EmployerNameEditModel model, VacancyUser user)
+            EmployerNameEditModel model, VacancyEmployerInfoModel employerInfoModel, VacancyUser user)
         {
             var validationRules = VacancyRuleSet.EmployerNameOption;
 
@@ -98,14 +93,11 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
                 : (EmployerNameOption?) null;
 
             // temporarily set the employer name for validation
-            EmployerProfile profile = null;
             if (model.SelectedEmployerIdentityOption == EmployerIdentityOption.NewTradingName)
             {
                 validationRules = VacancyRuleSet.EmployerNameOption | VacancyRuleSet.TradingName;
                 vacancy.EmployerName = model.NewTradingName;
                 _vmPropertyToMapEmployerNameTo = vm => vm.NewTradingName;
-                profile = await _recruitVacancyClient.GetEmployerProfileAsync(vacancy.EmployerAccountId,
-                    vacancy.AccountLegalEntityPublicHashedId);
             }
 
             if (model.SelectedEmployerIdentityOption == EmployerIdentityOption.Anonymous)
@@ -118,19 +110,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
             return await ValidateAndExecute(
                 vacancy, 
                 v => _recruitVacancyClient.Validate(v, validationRules),
-                async v =>
-                {
-                    await _recruitVacancyClient.UpdateDraftVacancyAsync(vacancy, user);
-                    if (profile != null)
-                    {
-                        await _utility.UpdateEmployerProfile(new VacancyEmployerInfoModel
-                        {
-                            NewTradingName = model.NewTradingName,
-                            EmployerIdentityOption = EmployerIdentityOption.NewTradingName
-                        }, profile, null, user);
-                    }
-                    return Task.FromResult(new OrchestratorResponse(true));
-                });
+                v => Task.FromResult(new OrchestratorResponse(true)));
         }
 
         protected override EntityToViewModelPropertyMappings<Vacancy, EmployerNameEditModel> DefineMappings()

@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Mvc;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Provider.Web.Orchestrators.Part1;
-using Esfa.Recruit.Shared.Web.FeatureToggle;
 using Microsoft.AspNetCore.Authorization;
 
 namespace Esfa.Recruit.Provider.Web.Controllers.Part1
@@ -20,14 +19,12 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
         private const string NewVacancyTitleRoute = "create-vacancy";
         private const string ExistingVacancyTitleRoute = "vacancies/{vacancyId:guid}/title";
         private readonly TitleOrchestrator _orchestrator;
-        private readonly IFeature _feature;
         public IProviderVacancyClient ProviderVacancyClient { get; }
 
-        public TitleController(TitleOrchestrator orchestrator, IProviderVacancyClient providerVacancyClient, IFeature feature)
+        public TitleController(TitleOrchestrator orchestrator, IProviderVacancyClient providerVacancyClient)
         {
             this.ProviderVacancyClient = providerVacancyClient;
             _orchestrator = orchestrator;
-            _feature = feature;
         }
 
         [HttpGet(NewVacancyTitleRoute, Name = RouteNames.CreateVacancy_Get)]
@@ -66,12 +63,8 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
             }
 
             return wizard
-                ? _feature.IsFeatureEnabled(FeatureNames.ProviderTaskList) 
-                    ? RedirectToRoute(RouteNames.LegalEntity_Get, new {vrm.Ukprn, vacancyId = response.Data}) 
-                    : RedirectToRoute(RouteNames.Training_Get, new {vrm.Ukprn, vacancyId = response.Data})
-                : _feature.IsFeatureEnabled(FeatureNames.ProviderTaskList)
-                    ? RedirectToRoute(RouteNames.ProviderCheckYourAnswersGet, new {vrm.Ukprn, vacancyId = response.Data}) 
-                    : RedirectToRoute(RouteNames.Vacancy_Preview_Get, new {vrm.Ukprn, vacancyId = response.Data});
+                ? RedirectToRoute(RouteNames.Training_Get, new {vacancyId = response.Data})
+                : RedirectToRoute(RouteNames.Vacancy_Preview_Get);
         }    
     }
 }
