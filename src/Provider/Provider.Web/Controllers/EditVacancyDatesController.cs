@@ -39,6 +39,9 @@ namespace Esfa.Recruit.Provider.Web.Controllers
                 response.AddErrorsToModelState(ModelState);
             }
 
+            response.Data.Ukprn = vrm.Ukprn;
+            response.Data.VacancyId = vrm.VacancyId;
+
             return View(response.Data);
         }
 
@@ -61,7 +64,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
             Response.Cookies.SetProposedClosingDate(_hostingEnvironment, m.VacancyId.GetValueOrDefault(), DateTime.Parse(m.ClosingDate));
             Response.Cookies.SetProposedStartDate(_hostingEnvironment, m.VacancyId.GetValueOrDefault(), DateTime.Parse(m.StartDate));
 
-            return RedirectToRoute(RouteNames.VacancyEdit_Get);
+            return RedirectToRoute(RouteNames.VacancyEdit_Get, new {m.Ukprn, m.VacancyId});
         }
     }
 }

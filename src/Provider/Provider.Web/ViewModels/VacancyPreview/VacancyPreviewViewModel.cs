@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Shared.Web.Mappers;
 using Esfa.Recruit.Shared.Web.ViewModels;
@@ -13,7 +14,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview
 {
-    public class VacancyPreviewViewModel : DisplayVacancyViewModel
+    public class VacancyPreviewViewModel : DisplayVacancyViewModel 
     {
         public VacancyPreviewSectionState ApplicationInstructionsSectionState { get; internal set; }
         public VacancyPreviewSectionState ApplicationMethodSectionState { get; internal set; }
@@ -39,6 +40,7 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview
         public VacancyPreviewSectionState WageTextSectionState { get; internal set; }
         public VacancyPreviewSectionState DescriptionsSectionState { get; internal set; }
         public VacancyPreviewSectionState WorkingWeekSectionState { get; internal set; }
+        public VacancyPreviewSectionState FutureProspectsSectionState { get; internal set; }
 
         public EntityValidationResult SoftValidationErrors { get; internal set; }
         public bool CanHideValidationSummary { get; internal set; }
@@ -182,6 +184,7 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview
             viewModel.TrainingLevelSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.TrainingLevel }, true, modelState, vm => vm.HasProgramme, vm => vm.TrainingLevel);
             viewModel.NumberOfPositionsSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.NumberOfPositions }, true, modelState, vm => vm.NumberOfPositions);
             viewModel.DescriptionsSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.VacancyDescription, FieldIdentifiers.TrainingDescription, FieldIdentifiers.OutcomeDescription }, true, modelState, vm => vm.VacancyDescription, vm => vm.TrainingDescription, vm => vm.OutcomeDescription);
+            viewModel.FutureProspectsSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.OutcomeDescription }, true, modelState,  vm => vm.OutcomeDescription);
             viewModel.SkillsSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.Skills }, true, modelState, vm => vm.Skills);
             viewModel.QualificationsSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.Qualifications }, true, modelState, vm => vm.Qualifications);
             viewModel.ThingsToConsiderSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.ThingsToConsider }, true, modelState, vm => vm.ThingsToConsider);

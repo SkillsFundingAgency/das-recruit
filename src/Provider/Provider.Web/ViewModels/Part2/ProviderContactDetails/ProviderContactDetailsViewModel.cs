@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
+using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Shared.Web.ViewModels;
 
 namespace Esfa.Recruit.Provider.Web.ViewModels.Part2.ProviderContactDetails
 {
-    public class ProviderContactDetailsViewModel
+    public class ProviderContactDetailsViewModel : VacancyRouteModel
     {
         public string Title { get; internal set; }
         public string ProviderContactName { get; internal set; }
@@ -17,5 +18,7 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.Part2.ProviderContactDetails
             nameof(ProviderContactEmail),
             nameof(ProviderContactPhone)
         };
+        public bool? AddContactDetails { get; set; }
+        public bool IsTaskListCompleted { get; set; }
     }
 }

@@ -3,50 +3,62 @@
 
 @{
     ViewBag.GaData.Vpv = "/recruitment/provider/page-vacancy-qualifications";
+    ViewBag.Title = "Qualifications";
 }
+
+@section BackLink {
+    <esfaFeatureEnabled name="@FeatureNames.ProviderTaskList">
+        <a asp-route="@RouteNames.Skills_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Back</a>
+    </esfaFeatureEnabled>
+}
+
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-three-quarters">
-        <esfaFeatureEnabled name="@FeatureNames.ProviderTaskList">
-            <a asp-route="@RouteNames.Skills_Get" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
-        </esfaFeatureEnabled>
-        
-        <div asp-show="Model.HasInfo" class="info-summary">
-            <p class="govuk-body">@Model.InfoMessage</p>
+
+        <div asp-show="Model.HasInfo" class="das-notification das-notification--information">
+            <p class="das-notification__body">@Model.InfoMessage</p>
         </div>
 
         <partial name="@PartialNames.ReviewSummary" for="Review" />
 
         <h1 class="govuk-heading-xl">
-            <span class="govuk-caption-l">@Model.Title</span>
+            <span class="govuk-caption-xl">@Model.Title</span>
             Qualifications
         </h1>
 
-        <table class="govuk-table responsive-table">
-            <tbody class="govuk-table__body">
+        <table class="govuk-table">
+            <caption class="govuk-visually-hidden">Your qualification requirements</caption>
+            <thead>
+                <tr>
+                    <th class="govuk-table__header" scope="col">Qualification</th>
+                    <th class="govuk-table__header" scope="col">Grade</th>
+                    <th class="govuk-table__header" scope="col">Essential or desirable</th>
+                    <th class="govuk-table__header" scope="col"><span class="govuk-visually-hidden">Action</span></th>
+                </tr>
+            </thead>
+            <tbody>
+
                 @for (var i = 0; i < Model.Qualifications.Count; i++)
                 {
                     var qualification = Model.Qualifications[i];
 
-                    <tr class="govuk-table__row" role="row">
-                        <td class="govuk-table__cell" role="gridcell">
-                            <span class="govuk-visually-hidden" aria-hidden="true">Qualification</span>
+                    <tr class="govuk-table__row">
+                        <td class="govuk-table__cell">
                             @qualification.QualificationType in @qualification.Subject
                         </td>
-                        <td class="govuk-table__cell" role="gridcell">
-                            <span class="govuk-visually-hidden" aria-hidden="true">Grade</span>
+                        <td class="govuk-table__cell">
                             @qualification.Grade
                         </td>
-                        <td class="govuk-table__cell" role="gridcell">
-                            <span class="govuk-visually-hidden" aria-hidden="true">Essential or Desirable</span>
+                        <td class="govuk-table__cell">
                             @qualification.Weighting.GetDisplayName()
                         </td>
-                        <td class="govuk-table__cell" role="gridcell">
-                            <form asp-route="@RouteNames.Qualification_Delete_Post" class="govuk-!-display-inline">
+                        <td class="govuk-table__cell">
+                            <form asp-route="@RouteNames.Qualification_Delete_Post" asp-all-route-data="@Model.RouteDictionary" class="govuk-!-display-inline">
                                 <input type="hidden" name="index" value="@i" />
-                                <button type="submit" class="button-fake-link govuk-link">Remove</button>
+                                <button type="submit" class="das-button--inline-link">Remove</button>
                             </form>
-                            <a asp-route="@RouteNames.Qualification_Edit_Get" asp-route-index="@i" class="govuk-link govuk-!-margin-left-1">Edit</a>
+                            <a asp-route="@RouteNames.Qualification_Edit_Get" asp-route-ukprn="@Model.Ukprn" asp-route-vacancyId="@Model.VacancyId" asp-route-index="@i" class="govuk-link govuk-!-margin-left-1">Edit</a>
                         </td>
                     </tr>
                 }
@@ -54,15 +66,17 @@
         </table>
 
         <p class="govuk-body">
-            <a asp-route="@RouteNames.Qualification_Add_Get" class="govuk-link">Add another qualification</a>
+            <a asp-route="@RouteNames.Qualification_Add_Get" asp-all-route-data="@Model.RouteDictionary" class="govuk-link govuk-link--no-visited-state">Add another qualification</a>
         </p>
 
-        <div class="govuk-form-group">
+        <div class="govuk-button-group">
             <esfaFeatureEnabled name="@FeatureNames.ProviderTaskList">
-                <a asp-route="@RouteNames.Considerations_Get" class="govuk-button">Save and continue</a>
+                <a asp-show="@(!Model.IsTaskListCompleted)" asp-route="@RouteNames.FutureProspects_Get" asp-all-route-data="@Model.RouteDictionary"  class="govuk-button">Save and continue</a>
+                <a asp-show="@Model.IsTaskListCompleted" asp-route="@RouteNames.ProviderCheckYourAnswersGet" asp-all-route-data="@Model.RouteDictionary" class="govuk-button">Save and continue</a>
+                <a asp-route="@RouteNames.Dashboard_Get" asp-route-ukprn="@Model.Ukprn" class="govuk-link govuk-link--no-visited-state">Cancel</a>
             </esfaFeatureEnabled>
             <esfaFeatureDisabled name="@FeatureNames.ProviderTaskList">
-                <a asp-route="@RouteNames.Vacancy_Preview_Get" class="govuk-button">Preview</a>    
+                <a asp-route="@RouteNames.Vacancy_Preview_Get" asp-all-route-data="@Model.RouteDictionary" class="govuk-button">Preview</a>    
             </esfaFeatureDisabled>
             
         </div>

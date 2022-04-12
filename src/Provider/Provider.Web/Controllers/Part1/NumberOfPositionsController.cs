@@ -53,12 +53,17 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
             
             if (_feature.IsFeatureEnabled(FeatureNames.ProviderTaskList))
             {
-                return RedirectToRoute(RouteNames.Location_Get, new { Wizard = wizard });
+                if (wizard)
+                {
+                    return RedirectToRoute(RouteNames.Location_Get, new { Wizard = wizard, model.Ukprn, model.VacancyId });    
+                }
+
+                return RedirectToRoute(RouteNames.ProviderCheckYourAnswersGet, new {model.Ukprn, model.VacancyId});
             }
 
             return wizard
-                ? RedirectToRoute(RouteNames.LegalEntity_Get, new {vacancyId = response.Data})
-                : RedirectToRoute(RouteNames.Vacancy_Preview_Get);
+                ? RedirectToRoute(RouteNames.LegalEntity_Get, new {vacancyId = response.Data, model.Ukprn})
+                : RedirectToRoute(RouteNames.Vacancy_Preview_Get, new {model.Ukprn, model.VacancyId});
         }    
     }
 }

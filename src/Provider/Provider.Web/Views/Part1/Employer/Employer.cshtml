@@ -4,18 +4,28 @@
 
 @{
     ViewBag.GaData.Vpv = "/recruitment/provider/page-employer";
+    ViewBag.Title = "Which employer do you want to create a vacancy for?";
 }
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-        <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState }' />
+        
+        <a asp-route="@RouteNames.Dashboard_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
 
-        <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">Which employer do you want to create a vacancy for?</h1>
+        <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState }'/>
 
-        <form asp-route="@RouteNames.Employer_Post">
+        <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">
+            Which employer is this vacancy for?
+        </h1>
+
+        <form asp-route="@RouteNames.Employer_Post"  asp-all-route-data="@Model.RouteDictionary">
             <div esfa-validation-marker-for="SelectedEmployerId" class="govuk-form-group">
-                <h2 class="govuk-heading-s">Select employer</h2>
                 <fieldset class="govuk-fieldset">
+                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
+                        <h2 class="govuk-fieldset__heading">
+                            Select employer
+                        </h2>
+                    </legend>
                     <span esfa-validation-message-for="SelectedEmployerId" class="govuk-error-message"></span>
                     <div class="govuk-radios">
                         @foreach (var employer in Model.Employers)
@@ -29,25 +39,15 @@
                 </fieldset>
             </div>
             
-            <details class="govuk-details" data-module="govuk-details">
-                <summary class="govuk-details__summary">
-                    <span class="govuk-details__summary-text">
-                        My employer is not listed
-                    </span>
-                </summary>
-                <div class="govuk-details__text">
-                    Your employer is not listed because you do not have the permission to create a vacancy for them. You'll need to contact them to set this permission.
-                </div>
-            </details>
-
-            <button type="submit" class="govuk-button save-button">@PartOnePageInfoViewModel.SubmitButtonCaptionForWizard</button>
-
-            <esfaFeatureEnabled name="@FeatureNames.ProviderTaskList">
-                <a asp-route="@RouteNames.Dashboard_Get" class="govuk-link das-button-link">Cancel</a>
-            </esfaFeatureEnabled>
-            <esfaFeatureDisabled name="@FeatureNames.ProviderTaskList">
-                <a asp-route="@RouteNames.Vacancies_Get" class="govuk-link das-button-link">Cancel</a>    
-            </esfaFeatureDisabled>
+            <div class="govuk-button-group">
+                <button type="submit" class="govuk-button save-button">@PartOnePageInfoViewModel.SubmitButtonCaptionForWizard</button>
+                <esfaFeatureEnabled name="@FeatureNames.ProviderTaskList">
+                    <a asp-route="@RouteNames.Dashboard_Get" asp-all-route-data="@Model.RouteDictionary" class="govuk-link govuk-link--no-visited-state">Cancel</a>
+                </esfaFeatureEnabled>
+                <esfaFeatureDisabled name="@FeatureNames.ProviderTaskList">
+                    <a asp-route="@RouteNames.Vacancies_Get" asp-all-route-data="@Model.RouteDictionary" class="govuk-link govuk-link--no-visited-state">Cancel</a>    
+                </esfaFeatureDisabled>
+            </div>
             
         </form>
     </div>

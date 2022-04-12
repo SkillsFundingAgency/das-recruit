@@ -4,47 +4,62 @@
 
 @model LocationViewModel;
 
-@{ ViewBag.GaData.Vpv = "/recruitment/provider/page-create-vacancy-location"; }
+@{ 
+    ViewBag.GaData.Vpv = "/recruitment/provider/page-create-vacancy-location"; 
+    ViewBag.Title = "Where will the apprentice work?";
+}
+
+@section BackLink {
+    <esfaFeatureEnabled name="@FeatureNames.ProviderTaskList">
+        <a asp-route="@RouteNames.NumberOfPositions_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Back</a>
+    </esfaFeatureEnabled>
+    <esfaFeatureDisabled name="@FeatureNames.ProviderTaskList">
+        <a asp-show="@Model.CanShowBackLink" asp-route="@RouteNames.EmployerName_Get" asp-route-ukprn="@Model.Ukprn" asp-route-vacancyId="@Model.VacancyId" asp-route-wizard="@Model.PageInfo.IsWizard" esfa-automation="link-back" class="govuk-back-link">Back</a>
+    </esfaFeatureDisabled>
+}
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-        <esfaFeatureEnabled name="@FeatureNames.ProviderTaskList">
-            <a asp-route="@RouteNames.NumberOfPositions_Get" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
-        </esfaFeatureEnabled>
-        <esfaFeatureDisabled name="@FeatureNames.ProviderTaskList">
-            <a asp-show="@Model.CanShowBackLink" asp-route="@RouteNames.EmployerName_Get" asp-route-wizard="@Model.PageInfo.IsWizard" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
-        </esfaFeatureDisabled>
+        
         <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }' />
 
         <partial name="@PartialNames.ReviewSummary" for="Review" />
 
-        <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">Where will the apprentice work?</h1>
-
-        <div asp-show="@Model.IsAnonymousVacancy" class="govuk-inset-text">
-            For anonymous vacancies we will not show the address on the vacancy. We will only show the first half of the postcode.
-        </div>
-
-        <form asp-route="@RouteNames.Location_Post" asp-route-wizard="@Model.PageInfo.IsWizard">
+        <form asp-route="@RouteNames.Location_Post" asp-route-wizard="@Model.PageInfo.IsWizard" asp-route-ukprn="@Model.Ukprn" asp-route-vacancyId="@Model.VacancyId">
             <div class="govuk-form-group">
                 <fieldset class="govuk-fieldset">
-                    <div class="govuk-radios govuk-radios--conditional" data-module="radios">
+                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
+                        <h1 class="govuk-fieldset__heading">
+                            <span class="govuk-caption-xl">@Model.Title</span>
+                            Where will the apprentice work?
+                        </h1>
+                    </legend>
+
+                    <div asp-show="@Model.IsAnonymousVacancy" class="govuk-inset-text">
+                        For anonymous adverts we will not show the address on the advert. We will only show the first half of the postcode.
+                    </div>
+
+                    <div class="govuk-radios govuk-radios--conditional" data-module="radios" esfa-validation-marker-for="SelectedLocation">
                         <span esfa-validation-message-for="SelectedLocation" class="govuk-error-message"></span>
                         <div class="govuk-radios">
-                            @{ int selectIndex = 0;
+                           @{
+                                int selectIndex = 0;
                                 foreach (var location in Model.AvailableLocations)
                                 {
                                     selectIndex++;
-                    <div class="govuk-radios__item">
-                        <input asp-for="SelectedLocation" value="@location" id="OtherLocation_@selectIndex"
-                               class="govuk-radios__input" type="radio">
-                        <label for="OtherLocation_@selectIndex" class="govuk-label govuk-radios__label">
-                            @location
-                        </label>
-                    </div> } }
+                                    <div class="govuk-radios__item">
+                                            <input asp-for="SelectedLocation" value="@location" id="OtherLocation_@selectIndex"
+                                                   class="govuk-radios__input" type="radio">
+                                            <label for="OtherLocation_@selectIndex" class="govuk-label govuk-radios__label">
+                                                @location
+                                            </label>
+                                    </div>                                    
+                                }
+                            }
                             <div class="govuk-radios__item">
                                 <input asp-for="SelectedLocation" value="@Model.UseOtherLocation" data-aria-controls="other-location-conditional" id="other-location" class="govuk-radios__input" type="radio">
                                 <label for="other-location" class="govuk-label govuk-radios__label">
-                                    A different location
+                                    A different address
                                 </label>
                             </div>
                             <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="other-location-conditional">
@@ -71,7 +86,7 @@
                                         <input asp-for="AddressLine4" class="govuk-input" maxlength="100" />
                                     </div>
                                     <div esfa-validation-marker-for="Postcode" class="govuk-form-group address-item govuk-form-group">
-                                        <label asp-for="Postcode" class="govuk-label govuk-!-font-weight-bold">Postcode</label>
+                                        <label asp-for="Postcode" class="govuk-label govuk-!-font-weight-bold">Enter postcode</label>
                                         <span esfa-validation-message-for="Postcode" class="govuk-error-message"></span>
                                         <input asp-for="Postcode" class="govuk-input govuk-input--width-10 postcode-lookup" maxlength="8" />
                                     </div>
@@ -81,14 +96,22 @@
                     </div>
                 </fieldset>
             </div>
-            <button type="submit" class="govuk-button save-button" esfa-automation="continue-button">@Model.PageInfo.SubmitButtonText</button>
-            <a asp-route="@RouteNames.Location_Cancel" asp-route-wizard="@Model.PageInfo.IsWizard" class="govuk-link das-button-link">Cancel</a>
+
+            <div class="govuk-button-group">
+                <button type="submit" class="govuk-button save-button" esfa-automation="continue-button">@Model.PageInfo.SubmitButtonText</button>
+                <esfaFeatureEnabled name="@FeatureNames.ProviderTaskList">
+                    <a asp-route="@RouteNames.Dashboard_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-cancel" class="govuk-link">Cancel</a>
+                </esfaFeatureEnabled>
+                <esfaFeatureDisabled name="@FeatureNames.ProviderTaskList">
+                    <a asp-route="@RouteNames.Location_Cancel" asp-route-ukprn="@Model.Ukprn" asp-route-vacancyId="@Model.VacancyId" asp-route-wizard="@Model.PageInfo.IsWizard" class="govuk-link">Cancel</a>
+                </esfaFeatureDisabled>
+            </div>
         </form>
     </div>
 </div>
 
 @section FooterJS
     {
-    <script src="/lib/jquery-ui/dist/jquery-ui.min.js"></script>
-    <script asp-append-version="true" src="/lib/esfa-postcode/lookupService.js"></script>
+    <script src="/lib/jquery-ui/dist/jquery-ui.min.js" no-cdn></script>
+    <script asp-append-version="true" src="/lib/esfa-postcode/lookupService.js" no-cdn></script>
 }

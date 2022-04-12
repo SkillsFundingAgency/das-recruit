@@ -1,10 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
 namespace Esfa.Recruit.Provider.Web.ViewModels
 {
-    public abstract class DisplayVacancyViewModel
+    public abstract class DisplayVacancyViewModel : VacancyRouteModel
     {
         public VacancyStatus Status { get; set; }
         public string AccountName { get; set; }
@@ -15,6 +16,7 @@ namespace Esfa.Recruit.Provider.Web.ViewModels
         public bool CanSubmit { get; internal set; }
         public bool IsSentForReview { get; internal set; }
         public string ClosingDate { get; internal set; }
+        public string PostedDate { get; internal set; }
         public string EducationLevelName { get; internal set; }
         public string EmployerDescription { get; internal set; }
         public string EmployerName { get; internal set; }

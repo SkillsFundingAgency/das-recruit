@@ -54,15 +54,13 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
                 return View(vm);
             }
 
-            if (_feature.IsFeatureEnabled(FeatureNames.ProviderTaskList))
-            {
-                return RedirectToRoute(RouteNames.Duration_Get);
-            }
-
             return wizard
-                ? RedirectToRoute(RouteNames.Duration_Get)
-                : RedirectToRoute(RouteNames.Vacancy_Preview_Get);
+                ? RedirectToRoute(RouteNames.Duration_Get, new {m.Ukprn, m.VacancyId})
+                : _feature.IsFeatureEnabled(FeatureNames.ProviderTaskList) 
+                    ? RedirectToRoute(RouteNames.ProviderCheckYourAnswersGet, new {m.Ukprn, m.VacancyId}) 
+                    : RedirectToRoute(RouteNames.Vacancy_Preview_Get, new {m.Ukprn, m.VacancyId});
         }
+        
         private void AddSoftValidationErrorsToModelState(DatesViewModel viewModel)
         {
             if (viewModel.SoftValidationErrors == null)
@@ -74,6 +72,5 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
                 ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
             }
         }
-
     }
 }

@@ -70,6 +70,9 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
                 NewTradingName = employerInfoModel?.NewTradingName,
                 AnonymousName = employerInfoModel?.AnonymousName ,
                 AnonymousReason = employerInfoModel?.AnonymousReason ?? vacancy.AnonymousReason,
+                Ukprn = vrm.Ukprn,
+                VacancyId = vrm.VacancyId,
+                Title = vacancy.Title
             };
 
             if (vacancy.Status == VacancyStatus.Referred)
@@ -77,6 +80,8 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
                 vm.Review = await _reviewSummaryService.GetReviewSummaryViewModelAsync(vacancy.VacancyReference.Value, 
                     ReviewFieldMappingLookups.GetEmployerNameReviewFieldIndicators());
             }
+
+            vm.IsTaskListCompleted = _utility.TaskListCompleted(vacancy);
 
             return vm;
         }

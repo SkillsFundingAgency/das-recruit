@@ -49,11 +49,13 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
             
             var vm = new TrainingViewModel
             {
+                Title = vacancy.Title,
                 VacancyId = vacancy.Id,
                 SelectedProgrammeId = vacancy.ProgrammeId,
                 Programmes = programmes.ToViewModel(),
                 PageInfo = _utility.GetPartOnePageInfo(vacancy),
-                HasMoreThanOneLegalEntity = employerInfo.LegalEntities.Count > 1
+                HasMoreThanOneLegalEntity = employerInfo.LegalEntities.Count > 1,
+                Ukprn = vrm.Ukprn
             };
 
             if (vacancy.Status == VacancyStatus.Referred)
@@ -88,6 +90,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
 
             return new ConfirmTrainingViewModel
             {
+                Title = vacancyTask.Result.Title,
                 ProgrammeId = programme.Id,
                 ApprenticeshipLevel = programme.ApprenticeshipLevel,
                 TrainingTitle = programme.Title,
@@ -96,7 +99,9 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
                 PageInfo = _utility.GetPartOnePageInfo(vacancyTask.Result),
                 TrainingEffectiveToDate = programme.EffectiveTo?.AsGdsDate(),
                 EducationLevelName =
-                    EducationLevelNumberHelper.GetEducationLevelNameOrDefault(programme.EducationLevelNumber, programme.ApprenticeshipLevel)
+                    EducationLevelNumberHelper.GetEducationLevelNameOrDefault(programme.EducationLevelNumber, programme.ApprenticeshipLevel),
+                Ukprn = vrm.Ukprn,
+                VacancyId = vrm.VacancyId
             };
         }
 

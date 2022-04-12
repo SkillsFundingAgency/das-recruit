@@ -49,10 +49,13 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
 
             var vm = new LegalEntityViewModel
             {
+                Title = vacancy.Title,
                 TotalNumberOfLegalEntities = legalEntities.Count(),
                 SelectedOrganisationId = vacancy.AccountLegalEntityPublicHashedId,
                 PageInfo = _utility.GetPartOnePageInfo(vacancy),
-                SearchTerm = searchTerm
+                SearchTerm = searchTerm,
+                VacancyId = vrm.VacancyId,
+                Ukprn = vrm.Ukprn
             };
 
             if (!string.IsNullOrEmpty(vacancy.AccountLegalEntityPublicHashedId) && string.IsNullOrEmpty(selectedAccountLegalEntityPublicHashedId))
@@ -96,6 +99,8 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
                 vm.VacancyEmployerInfoModel.AnonymousName = vacancy.IsAnonymous ? vacancy.EmployerName : null;
                 vm.VacancyEmployerInfoModel.AnonymousReason = vacancy.IsAnonymous ? vacancy.AnonymousReason : null;
             }
+
+            vm.IsTaskListCompleted = _utility.TaskListCompleted(vacancy);
 
             return vm;
         }
@@ -155,8 +160,13 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
 
         public async Task SetAccountLegalEntityPublicId(VacancyRouteModel vacancyRouteModel, LegalEntityEditModel vacancyEmployerInfoModel, VacancyUser vacancyUser)
         {
+            
             var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(vacancyRouteModel, RouteNames.LegalEntity_Get);
+            var employerVacancyInfo = await _providerVacancyClient.GetProviderEmployerVacancyDataAsync(vacancyRouteModel.Ukprn, vacancy.EmployerAccountId);
             vacancy.AccountLegalEntityPublicHashedId = vacancyEmployerInfoModel.SelectedOrganisationId;
+            
+            var selectedOrganisation = employerVacancyInfo.LegalEntities.Single(l => l.AccountLegalEntityPublicHashedId == vacancyEmployerInfoModel.SelectedOrganisationId);
+            vacancy.LegalEntityName = selectedOrganisation.Name;
             
             await ValidateAndExecute(
                 vacancy,

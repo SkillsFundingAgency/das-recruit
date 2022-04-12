@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
+using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Shared.Web.ViewModels;
 
 namespace Esfa.Recruit.Provider.Web.ViewModels.Part2.VacancyDescription
 {
-    public class VacancyDescriptionViewModel
+    public class VacancyDescriptionViewModel : VacancyRouteModel
     {
         public string Title { get; internal set; }
         public string VacancyDescription { get; internal set; }
@@ -14,5 +15,8 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.Part2.VacancyDescription
             nameof(VacancyDescriptionEditModel.VacancyDescription),
             nameof(VacancyDescriptionEditModel.TrainingDescription),
         };
+
+        public bool IsTaskListCompleted { get; set; }
+        public string OutcomeDescription { get; set; }
     }
 }

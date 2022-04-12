@@ -59,16 +59,16 @@ namespace Esfa.Recruit.Provider.Web.Controllers
             if (ModelState.IsValid)
             {
                 if (response.Data.IsSubmitted)
-                    return RedirectToRoute(RouteNames.Submitted_Index_Get);
+                    return RedirectToRoute(RouteNames.Submitted_Index_Get, m.RouteDictionary);
 
                 if (response.Data.IsSentForReview)
-                    return RedirectToRoute(RouteNames.Reviewed_Index_Get);
+                    return RedirectToRoute(RouteNames.Reviewed_Index_Get, m.RouteDictionary);
 
                 if (response.Data.HasProviderAgreement == false)
-                    return RedirectToRoute(RouteNames.ProviderAgreement_HardStop_Get);
+                    return RedirectToRoute(RouteNames.ProviderAgreement_HardStop_Get, m.RouteDictionary);
 
                 if (response.Data.HasLegalEntityAgreement == false)
-                    return RedirectToRoute(RouteNames.LegalEntityAgreement_HardStop_Get);
+                    return RedirectToRoute(RouteNames.LegalEntityAgreement_HardStop_Get, m.RouteDictionary);
 
                 throw new Exception("Unknown submit state");
             }
@@ -82,6 +82,22 @@ namespace Esfa.Recruit.Provider.Web.Controllers
             viewModel.SetSectionStates(viewModel, ModelState);
 
             return View(ViewNames.VacancyPreview, viewModel);
+        }
+        
+        [HttpGet("advert-preview", Name = RouteNames.Vacancy_Advert_Preview_Get)]
+        public async Task<IActionResult> AdvertPreview(VacancyRouteModel vrm)
+        {
+            var viewModel = await _orchestrator.GetVacancyPreviewViewModelAsync(vrm);
+
+            if (TempData.ContainsKey(TempDataKeys.VacancyPreviewInfoMessage))
+                viewModel.InfoMessage = TempData[TempDataKeys.VacancyPreviewInfoMessage].ToString();
+
+            AddSoftValidationErrorsToModelState(viewModel);
+            viewModel.SetSectionStates(viewModel, ModelState);
+
+            viewModel.CanHideValidationSummary = true;
+
+            return View(viewModel);
         }
 
         private void AddSoftValidationErrorsToModelState(VacancyPreviewViewModel viewModel)

@@ -23,6 +23,41 @@ using Xunit;
 
 namespace Esfa.Recruit.UnitTests.Provider.Web.Orchestrators.Part1
 {
+    public class LegalEntityOrchestratorUnitTests
+    {
+        
+        [Test, MoqAutoData]
+        public async Task Then_The_Vacancy_Is_Updated_With_The_AccountLegalEntityPublicHashedId(
+            VacancyRouteModel vacancyRouteModel,
+            LegalEntityEditModel legalEntityEditModel,
+            VacancyUser vacancyUser,
+            Vacancy vacancy,
+            LegalEntity legalEntity,
+            [Frozen] Mock<IUtility> utility,
+            [Frozen] Mock<IRecruitVacancyClient> vacancyClient,
+            [Frozen] Mock<IProviderVacancyClient> providerVacancyClient,
+            LegalEntityOrchestrator orchestrator)
+        {
+            legalEntity.AccountLegalEntityPublicHashedId = legalEntityEditModel.SelectedOrganisationId;
+            utility.Setup(x => x.GetAuthorisedVacancyForEditAsync(vacancyRouteModel, RouteNames.LegalEntity_Get))
+                .ReturnsAsync(vacancy);
+            vacancyClient.Setup(x => x.Validate(vacancy, VacancyRuleSet.None))
+                .Returns(new EntityValidationResult { Errors = null });
+            providerVacancyClient
+                .Setup(x => x.GetProviderEmployerVacancyDataAsync(vacancyRouteModel.Ukprn, vacancy.EmployerAccountId))
+                .ReturnsAsync(new EmployerInfo
+                {
+                    LegalEntities = new List<LegalEntity> {legalEntity}
+                });
+            
+            await orchestrator.SetAccountLegalEntityPublicId(vacancyRouteModel, legalEntityEditModel, vacancyUser);
+            
+            vacancyClient.Verify(x=>x.UpdateDraftVacancyAsync(It.Is<Vacancy>(c=>
+                c.AccountLegalEntityPublicHashedId.Equals(legalEntityEditModel.SelectedOrganisationId)
+                && c.LegalEntityName.Equals(legalEntity.Name)
+                ), vacancyUser ), Times.Once);
+        }
+    }
     public class LegalEntityOrchestratorTests
     {
         private const long TestUkprn = 12345678;
@@ -64,25 +99,6 @@ namespace Esfa.Recruit.UnitTests.Provider.Web.Orchestrators.Part1
             result.Organisations.Count().Should().Be(0);
         }
         
-        [Test, MoqAutoData]
-        public async Task Then_The_Vacancy_Is_Updated_With_The_AccountLegalEntityPublicHashedId(
-            VacancyRouteModel vacancyRouteModel,
-            LegalEntityEditModel legalEntityEditModel,
-            VacancyUser vacancyUser,
-            Vacancy vacancy,
-            [Frozen] Mock<IUtility> utility,
-            [Frozen] Mock<IRecruitVacancyClient> vacancyClient,
-            LegalEntityOrchestrator orchestrator)
-        {
-            utility.Setup(x => x.GetAuthorisedVacancyForEditAsync(vacancyRouteModel, RouteNames.LegalEntity_Get))
-                .ReturnsAsync(vacancy);
-            vacancyClient.Setup(x => x.Validate(vacancy, VacancyRuleSet.None))
-                .Returns(new EntityValidationResult { Errors = null });
-            
-            await orchestrator.SetAccountLegalEntityPublicId(vacancyRouteModel, legalEntityEditModel, vacancyUser);
-            
-            vacancyClient.Verify(x=>x.UpdateDraftVacancyAsync(It.Is<Vacancy>(c=>c.AccountLegalEntityPublicHashedId.Equals(legalEntityEditModel.SelectedOrganisationId)), vacancyUser ), Times.Once);
-        }
 
         private Vacancy GetTestVacancy()
         {

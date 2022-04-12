@@ -70,11 +70,15 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators
                 .Excluding(c=>c.EducationLevelName)
                 .Excluding(c=>c.ApprenticeshipLevel)
                 .Excluding(c=>c.AccountLegalEntityCount)
-                // .Excluding(c=>c.HasSelectedEmployerNameOption)
+                .Excluding(c=>c.Ukprn)
+                .Excluding(c=>c.VacancyId)
+                .Excluding(c=>c.RouteDictionary)
+                .Excluding(c=>c.HasSelectedEmployerNameOption)
             );
             viewModel.ApprenticeshipLevel.Should().Be(programme.ApprenticeshipLevel);
-            
-//            viewModel.HasSelectedEmployerNameOption.Should().BeTrue();
+            viewModel.HasSelectedEmployerNameOption.Should().BeTrue();
+            viewModel.Ukprn.Should().Be(routeModel.Ukprn);
+            viewModel.VacancyId.Should().Be(routeModel.VacancyId);
         }
 
         [Test, MoqAutoData]

@@ -44,25 +44,29 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part2
                 response.AddErrorsToModelState(ModelState);
             }
 
+            var vm = await _orchestrator.GetSkillsViewModelAsync(vrm, m);
             if (!ModelState.IsValid)
             {
-                var vm = await _orchestrator.GetSkillsViewModelAsync(vrm, m);
-
                 return View(vm);
             }
 
             if (!string.IsNullOrEmpty(m.AddCustomSkillAction))
             {
                 TempData[TempDataKeys.Skills] = m.Skills;
-                return RedirectToRoute(RouteNames.Skills_Get);
+                return RedirectToRoute(RouteNames.Skills_Get, new {vrm.Ukprn, vrm.VacancyId});
             }
 
             if (_feature.IsFeatureEnabled(FeatureNames.ProviderTaskList))
             {
-                return RedirectToRoute(RouteNames.Qualifications_Get);
+                if (!vm.IsTaskListCompleted)
+                {
+                    return RedirectToRoute(RouteNames.Qualifications_Get, new {vrm.Ukprn, vrm.VacancyId});
+                }
+                return RedirectToRoute(RouteNames.ProviderCheckYourAnswersGet, new {vrm.Ukprn, vrm.VacancyId});
+                
             }
 
-            return RedirectToRoute(RouteNames.Vacancy_Preview_Get);
+            return RedirectToRoute(RouteNames.Vacancy_Preview_Get, new {vrm.Ukprn, vrm.VacancyId});
         }
     }
 }

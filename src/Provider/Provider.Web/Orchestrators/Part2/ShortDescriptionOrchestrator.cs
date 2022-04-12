@@ -36,7 +36,8 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
             {
                 VacancyId = vacancy.Id,
                 ShortDescription = vacancy.ShortDescription,
-                Title = vacancy.Title
+                Title = vacancy.Title,
+                Ukprn = vrm.Ukprn
             };
 
             if (vacancy.Status == VacancyStatus.Referred)
@@ -44,6 +45,8 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
                 vm.Review = await _reviewSummaryService.GetReviewSummaryViewModelAsync(vacancy.VacancyReference.Value,
                     ReviewFieldMappingLookups.GetShortDescriptionReviewFieldIndicators());
             }
+
+            vm.IsTaskListCompleted = _utility.TaskListCompleted(vacancy);
 
             return vm;
         }
