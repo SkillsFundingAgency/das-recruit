@@ -54,19 +54,12 @@ namespace Esfa.Recruit.Provider.Web.Controllers
 
         private IActionResult HandleRedirectOfEditableVacancy(Vacancy vacancy)
         {
-            if (_feature.IsFeatureEnabled(FeatureNames.ProviderTaskList))
+            if (_utility.TaskListCompleted(vacancy))
             {
-                return RedirectToRoute(RouteNames.ProviderTaskListGet, new {vacancy.TrainingProvider.Ukprn, vacancyId = vacancy.Id});
+                return RedirectToRoute(RouteNames.ProviderCheckYourAnswersGet, new {vacancy.TrainingProvider.Ukprn, vacancyId = vacancy.Id});
             }
+            return RedirectToRoute(RouteNames.ProviderTaskListGet, new {vacancy.TrainingProvider.Ukprn, vacancyId = vacancy.Id});
             
-            if (_utility.VacancyHasCompletedPartOne(vacancy))
-            {
-                return RedirectToRoute(RouteNames.Vacancy_Preview_Get, new {vacancy.TrainingProvider.Ukprn, vacancyId = vacancy.Id});
-            }
-
-            var resumeRouteName = _utility.GetPermittedRoutesForVacancy(vacancy).Last();
-
-            return RedirectToRoute(resumeRouteName, new { wizard = "true",vacancy.TrainingProvider.Ukprn, vacancyId = vacancy.Id });
         }
     }
 }

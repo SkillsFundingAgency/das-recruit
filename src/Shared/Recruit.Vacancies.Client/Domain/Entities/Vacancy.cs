@@ -65,6 +65,7 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
         public ClosureReason? ClosureReason { get; set; }
         public string ClosureExplanation { get; set; }
         public TransferInfo TransferInfo { get; set; }
+        public string WorkExperience { get; set; }
         public bool CanClose => Status == VacancyStatus.Live;
         public bool CanClone => (Status == VacancyStatus.Live || 
                                  Status == VacancyStatus.Closed || 
@@ -148,5 +149,15 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
         /// Should the vacancy be geocoded using the outcode part of the postcode
         /// </summary>
         public bool GeocodeUsingOutcode => IsAnonymous;
+        
+        /// <summary>
+        /// Type of Vacancy being created, either Apprenticeship or Traineeship. Set by application startup.
+        /// </summary>
+        public VacancyType? VacancyType { get; set; }
+
+        /// <summary>
+        /// If traineeship vacancy then this must be populated
+        /// </summary>
+        public int? RouteId { get; set; }
     }
 }

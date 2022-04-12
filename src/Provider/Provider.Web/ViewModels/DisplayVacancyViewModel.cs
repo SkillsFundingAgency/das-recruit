@@ -54,6 +54,8 @@ namespace Esfa.Recruit.Provider.Web.ViewModels
         public string WageText { get; internal set; }
         public string WorkingWeekDescription { get; internal set; }
         public string AccountLegalEntityPublicHashedId { get; internal set; }
+        public int RouteId { get; set; }
+        public string RouteTitle { get; set; }
 
         public bool HasClosingDate => !string.IsNullOrWhiteSpace(ClosingDate);
 
@@ -117,5 +119,6 @@ namespace Esfa.Recruit.Provider.Web.ViewModels
         public bool IsNotDisabilityConfident => !IsDisabilityConfident;
         public bool HasSelectedLegalEntity => !string.IsNullOrEmpty(AccountLegalEntityPublicHashedId);
         public EmployerNameOption? EmployerNameOption { get; set; }
+        public VacancyType? VacancyType { get; set; }
     }
 }

@@ -347,6 +347,13 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return _messaging.SendCommandAsync(command);
         }
 
+        public Task UpdateApprenticeshipRouteAsync()
+        {
+            var command = new UpdateApprenticeshipRouteCommand();
+
+            return _messaging.SendCommandAsync(command);
+        }
+
         public Task UpdateProviders()
         {
             var command = new UpdateProvidersCommand();
@@ -375,6 +382,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         public Task CloseVacancyAsync(Guid vacancyId, VacancyUser user, ClosureReason reason)
         {
             return _messaging.SendCommandAsync(new CloseVacancyCommand(vacancyId, user, reason));
+        }
+
+        public Task<IApprenticeshipRoute> GetRoute(int? routeId)
+        {
+            throw new NotImplementedException();
         }
 
         public async Task CloseExpiredVacancies()

@@ -36,6 +36,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation
         EmployerNameOption = 1 << 27,
         LegalEntityName = 1 << 28,
         TradingName = 1 << 29,
+        WorkExperience = 1 << 30,
         All = ~None,
     }
 }

@@ -37,7 +37,8 @@ namespace Esfa.Recruit.Provider.Web.Mappings
 
         public async Task MapFromVacancyAsync(DisplayVacancyViewModel vm, Vacancy vacancy)
         {
-            var programme = await _vacancyClient.GetApprenticeshipProgrammeAsync(vacancy.ProgrammeId);
+            var programme = vacancy.VacancyType.GetValueOrDefault() == VacancyType.Apprenticeship ? await _vacancyClient.GetApprenticeshipProgrammeAsync(vacancy.ProgrammeId) : null;
+            var route = vacancy.VacancyType.GetValueOrDefault() == VacancyType.Traineeship ? await _vacancyClient.GetRoute(vacancy.RouteId) : null;
             var employer = await _client.GetProviderEmployerVacancyDataAsync(vacancy.TrainingProvider.Ukprn.Value, vacancy.EmployerAccountId);
 
             var allQualifications = await _vacancyClient.GetCandidateQualificationsAsync();
@@ -109,6 +110,14 @@ namespace Esfa.Recruit.Provider.Web.Mappings
                 vm.WageText = vacancy.StartDate.HasValue ? vacancy.Wage.ToText(vacancy.StartDate) : null;
                 vm.WorkingWeekDescription = vacancy.Wage.WorkingWeekDescription;
             }
+
+            if (route != null)
+            {
+                vm.RouteId = route.Id;
+                vm.RouteTitle = route.Route;
+            }
+
+            vm.VacancyType = vacancy.VacancyType;
         }
     }
 }
