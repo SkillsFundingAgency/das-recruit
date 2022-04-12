@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Esfa.Recruit.Provider.Web;
 using Esfa.Recruit.Provider.Web.RouteModel;
+using Esfa.Recruit.Shared.Web.FeatureToggle;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
@@ -43,7 +44,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.UtilityTests
         public async Task GetAuthorisedApplicationReviewAsync_ShouldAllowForProviderAssociatedUkprn()
         {
             const long requestedUkprn = 12345678;
-            var utility = new Utility(_mockVacancyClient.Object);
+            var utility = new Utility(_mockVacancyClient.Object, Mock.Of<IFeature>());
             var rm = new ApplicationReviewRouteModel
             {
                 Ukprn = requestedUkprn,
@@ -59,7 +60,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.UtilityTests
         public async Task GetAuthorisedApplicationReviewAsync_ShouldNotAllowForProviderUnassociatedUkprn()
         {
             const long requestedUkprn = 123456789;
-            var utility = new Utility(_mockVacancyClient.Object);
+            var utility = new Utility(_mockVacancyClient.Object, Mock.Of<IFeature>());
             var rm = new ApplicationReviewRouteModel
             {
                 Ukprn = requestedUkprn,

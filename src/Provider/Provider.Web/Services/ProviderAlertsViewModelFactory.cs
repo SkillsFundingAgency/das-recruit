@@ -28,7 +28,20 @@ namespace Esfa.Recruit.Provider.Web.Services
                 providerDashboard?.Vacancies ?? Array.Empty<VacancySummary>(),
                 user.ClosedVacanciesWithdrawnByQaAlertDismissedOn);
 
-            return new AlertsViewModel(transferredVacanciesAlert, withdrawnByQaVacanciesAlert);
+            if (user.Ukprn.HasValue)
+            {
+                if (transferredVacanciesAlert != null)
+                {
+                    transferredVacanciesAlert.Ukprn = user.Ukprn.Value;    
+                    
+                }
+                if (withdrawnByQaVacanciesAlert != null)
+                {
+                    withdrawnByQaVacanciesAlert.Ukprn = user.Ukprn.Value;    
+                }
+            }
+            
+            return new AlertsViewModel(transferredVacanciesAlert, withdrawnByQaVacanciesAlert, user.Ukprn);
         }
     }
 }

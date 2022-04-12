@@ -4,61 +4,76 @@
 
 @{
     ViewBag.GaData.Vpv = "/recruitment/provider/page-vacancy-application-process";
+    ViewBag.Title = "Application website";
+}
+
+@section BackLink {
+    <esfaFeatureEnabled name="@FeatureNames.ProviderTaskList">
+        <a asp-route="@RouteNames.ProviderContactDetails_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Back</a>
+    </esfaFeatureEnabled>
 }
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-        <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }' />
 
-        <partial name="@PartialNames.ReviewSummary" for="Review" />
+        <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }'/>
+
+        <partial name="@PartialNames.ReviewSummary" for="Review"/>
 
         <h1 class="govuk-heading-xl">
-            <span class="govuk-caption-l">@Model.Title</span>
+            <span class="govuk-caption-xl">@Model.Title</span>
             How would you like to receive applications?
         </h1>
-
-        <form asp-route="@RouteNames.ApplicationProcess_Post" novalidate>
+        <p class="govuk-body">We’ll publish all vacancies on <a href="@Model.FindAnApprenticeshipUrl" class="govuk-link govuk-link--no-visited-state" rel="noopener" target="_blank">Find an apprenticeship (opens in a new tab)</a>, but you can include a link to your own website where applicants can apply directly.</p>
+        
+        <form asp-route="@RouteNames.ApplicationProcess_Post" asp-all-route-data="@Model.RouteDictionary" novalidate>
             <div esfa-validation-marker-for="ApplicationMethod" class="govuk-form-group">
                 <fieldset class="govuk-fieldset">
-                    <label class="govuk-label govuk-!-font-weight-bold sfa-govuk-!-margin-bottom-6" id="@Anchors.ApplicationMethodHeading">
-                        How will candidates apply for this vacancy?
-                        <span class="govuk-hint">All vacancies will be published on Find an apprenticeship</span>
-                    </label>
+                    <legend class="govuk-visually-hidden">Select how you would like to receive applications</legend>
                     <span esfa-validation-message-for="ApplicationMethod" class="govuk-error-message"></span>
                     <div class="govuk-radios govuk-radios--conditional" data-module="radios">
                         <div class="govuk-radios__item">
                             <input asp-for="ApplicationMethod" value="@ApplicationMethod.ThroughFindAnApprenticeship" class="govuk-radios__input" id="application-method-faa" type="radio">
                             <label for="application-method-faa" class="govuk-label govuk-radios__label">
-                                Through the <a href="@Model.FindAnApprenticeshipUrl" class="govuk-body govuk-link" rel="noopener" target="_blank">Find an apprenticeship service</a>
+                                Through the Find an apprenticeship website
                             </label>
                         </div>
                         <div class="govuk-radios__item" data-target="application-method-external-panel">
                             <input asp-for="ApplicationMethod" value="@ApplicationMethod.ThroughExternalApplicationSite" class="govuk-radios__input" id="application-method-external" type="radio" data-aria-controls="application-method-external-panel">
                             <label for="application-method-external" class="govuk-label govuk-radios__label">
-                                Through an external website
+                                Through a different website
                             </label>
                         </div>
                         <div id="application-method-external-panel" class="govuk-radios__conditional govuk-radios__conditional--hidden">
                             <div esfa-validation-marker-for="ApplicationUrl" class="govuk-form-group">
-                                <label asp-for="ApplicationUrl" class="govuk-label govuk-!-font-weight-bold">Enter the web address candidates should use to apply for this vacancy</label>
+                                <label asp-for="ApplicationUrl" class="govuk-label">Enter a link about the vacancy. The page should give applicants a way to apply</label>
                                 <span esfa-validation-message-for="ApplicationUrl" class="govuk-error-message"></span>
-                                <input asp-for="ApplicationUrl" class="govuk-input govuk-!-width-one-half" maxlength="200" />
+                                <input asp-for="ApplicationUrl" class="govuk-input govuk-!-width-two-thirds" maxlength="200" />
                             </div>
-                            <div esfa-validation-marker-for="ApplicationInstructions" class="govuk-form-group">
-                                <label asp-for="ApplicationInstructions" class="govuk-label govuk-!-font-weight-bold">Explain the application process (optional)</label>
-                                <span esfa-validation-message-for="ApplicationInstructions" class="govuk-error-message"></span>
-                                <textarea asp-for="ApplicationInstructions" class="govuk-textarea character-count" rows="5" data-val-length-max="500"></textarea>
-                                <span class="govuk-body maxchar-count">500</span>
-                                <span class="govuk-body maxchar-text"> characters remaining</span>
+                            <div class="govuk-character-count" data-module="govuk-character-count" data-maxlength="500">
+                                <div class="govuk-form-group" esfa-validation-marker-for="ApplicationInstructions">
+                                    <label asp-for="ApplicationInstructions" class="govuk-label">Explain the application process (optional)</label>
+                                    <span esfa-validation-message-for="ApplicationInstructions" class="govuk-error-message"></span>
+                                    <textarea class="govuk-textarea govuk-js-character-count" asp-for="ApplicationInstructions" rows="5" aria-describedby="ApplicationInstructions-info"></textarea>
+                                </div>
+                                <div id="ApplicationInstructions-info" class="govuk-hint govuk-character-count__message" aria-live="polite">
+                                    You can enter up to 500 characters
+                                </div>
                             </div>
                         </div>
                     </div>
                 </fieldset>
             </div>
 
-            <div class="govuk-form-group">
-                <input type="submit" value="Save and continue" esfa-automation="btn-continue" class="govuk-button save-button" />
-                <a asp-route="@RouteNames.Vacancy_Preview_Get" esfa-automation="link-cancel" class="govuk-link das-button-link">Cancel</a>
+            <div class="govuk-button-group">
+                <input type="submit" value="Save and continue" esfa-automation="btn-continue" class="govuk-button save-button"/>
+                <esfaFeatureEnabled name="@FeatureNames.ProviderTaskList">
+                    <a asp-route="@RouteNames.Dashboard_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-cancel" class="govuk-link govuk-link--no-visited-state">Cancel</a>
+                </esfaFeatureEnabled>
+                <esfaFeatureDisabled name="@FeatureNames.ProviderTaskList">
+                    <a asp-route="@RouteNames.Vacancy_Preview_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-cancel" class="govuk-link govuk-link--no-visited-state">Cancel</a>
+                </esfaFeatureDisabled>
+
             </div>
         </form>
     </div>

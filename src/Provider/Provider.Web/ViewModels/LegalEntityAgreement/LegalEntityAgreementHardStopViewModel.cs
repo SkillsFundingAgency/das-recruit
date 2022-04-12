@@ -4,5 +4,6 @@
     {
         public bool HasLegalEntityAgreement { get; set; }
         public string LegalEntityName { get; set; }
+        public long Ukprn { get; set; }
     }
 }

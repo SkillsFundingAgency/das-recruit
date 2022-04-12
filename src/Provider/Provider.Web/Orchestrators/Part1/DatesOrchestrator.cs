@@ -46,7 +46,9 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
                 VacancyId = vacancy.Id,
                 IsDisabilityConfident = vacancy.IsDisabilityConfident,
                 PageInfo = _utility.GetPartOnePageInfo(vacancy),
-                CurrentYear = _timeProvider.Now.Year
+                CurrentYear = _timeProvider.Now.Year,
+                Ukprn = vrm.Ukprn,
+                Title = vacancy.Title
             };
 
             if (vacancy.ClosingDate.HasValue)
