@@ -54,7 +54,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelation
             if (permittedLegalEntities.Any() == false)
                 return false;
 
-            var accountId = await _employerAccountProvider.GetEmployerAccountPublicHashedIdAsync(permittedLegalEntities.First().AccountId);
+            var accountId = permittedLegalEntities.First().AccountHashedId;
             var allLegalEntities = (await _employerAccountProvider.GetLegalEntitiesConnectedToAccountAsync(accountId)).ToList();
 
             var hasPermission = permittedLegalEntities.Join(allLegalEntities,
