@@ -6,13 +6,9 @@
     ViewBag.Title = "Check your answers before submitting your vacancy";
 }
 
-
-<div class="govuk-grid-row">
-    <div class="govuk-grid-column-full">
-        <a asp-route="@RouteNames.ProviderTaskListGet" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back to task list</a>
-    </div>
-</div>
-
+@section BackLink {
+    <a asp-route="@RouteNames.ProviderTaskListGet" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Back to task list</a>
+}
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">  

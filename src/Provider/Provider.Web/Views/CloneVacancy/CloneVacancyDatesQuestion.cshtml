@@ -40,7 +40,7 @@
             </div>
             <div class="govuk-button-group">
                 <button type="submit" class="govuk-button  save-button" esfa-automation="continue-button">Continue</button>
-                <a asp-route="@RouteNames.VacancyManage_Get" asp-route-ukprn="@Model.Ukprn" class="govuk-link" esfa-automation="cancel-link">Cancel</a>
+                <a asp-route="@RouteNames.VacancyManage_Get" asp-all-route-data="@Model.RouteDictionary" class="govuk-link" esfa-automation="cancel-link">Cancel</a>
             </div>
         </form>
     </div>
