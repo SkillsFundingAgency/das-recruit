@@ -85,14 +85,6 @@ namespace Esfa.Recruit.Vacancies.Jobs
                         b.AddDebug();
                         b.AddConsole();
                         b.AddNLog();
-
-                        // If this key exists in any config, use it to enable App Insights
-                        string appInsightsKey = context.Configuration["APPINSIGHTS_INSTRUMENTATIONKEY"];
-                        if (!string.IsNullOrEmpty(appInsightsKey))
-                        {
-                            b.AddApplicationInsights(o => o.InstrumentationKey = appInsightsKey);
-                        }
-
                         b.ConfigureRecruitLogging();
                     })
                     .ConfigureServices((context, services) =>
@@ -112,6 +104,7 @@ namespace Esfa.Recruit.Vacancies.Jobs
                         services.ConfigureJobServices(context.Configuration);
 
                         services.AddDasNServiceBus(context.Configuration);
+                        services.AddApplicationInsightsTelemetry(context.Configuration);
                     })
                     .UseConsoleLifetime();
         }
