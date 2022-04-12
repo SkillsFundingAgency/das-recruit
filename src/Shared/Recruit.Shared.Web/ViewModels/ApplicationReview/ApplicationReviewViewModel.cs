@@ -1,10 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
 namespace Esfa.Recruit.Shared.Web.ViewModels.ApplicationReview
 {
-    public class ApplicationReviewViewModel
+    public class ApplicationReviewViewModel 
     {
         public string AddressLine1 { get; set; }
         public string AddressLine2 { get; set; }
@@ -46,5 +47,9 @@ namespace Esfa.Recruit.Shared.Web.ViewModels.ApplicationReview
         {
             nameof(Outcome)
         };
+        
+        public long Ukprn { get; set; }
+        public Guid? VacancyId { get; set; }
+        public Guid ApplicationReviewId { get; set; }
     }
 }

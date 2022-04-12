@@ -6,6 +6,7 @@ using Esfa.Recruit.Provider.Web.Orchestrators.Part1;
 using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Provider.Web.ViewModels.Part1.Wage;
 using Esfa.Recruit.Shared.Web.Extensions;
+using Esfa.Recruit.Shared.Web.FeatureToggle;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,10 +17,12 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
     public class WageController : Controller
     {
         private readonly WageOrchestrator _orchestrator;
+        private readonly IFeature _feature;
 
-        public WageController(WageOrchestrator orchestrator)
+        public WageController(WageOrchestrator orchestrator, IFeature feature)
         {
             _orchestrator = orchestrator;
+            _feature = feature;
         }
         
         [HttpGet("wage", Name = RouteNames.Wage_Get)]
@@ -46,10 +49,22 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
                 vm.PageInfo.SetWizard(wizard);
                 return View(vm);
             }
+            
+            if (_feature.IsFeatureEnabled(FeatureNames.ProviderTaskList))
+            {
+                if (wizard)
+                {
+                    return RedirectToRoute(RouteNames.NumberOfPositions_Get, new { Wizard = true, m.VacancyId, m.Ukprn });    
+                }
+
+                return RedirectToRoute(RouteNames.ProviderCheckYourAnswersGet, new {m.VacancyId, m.Ukprn});
+            }
 
             return wizard
-                ? RedirectToRoute(RouteNames.Part1Complete_Get)
-                : RedirectToRoute(RouteNames.Vacancy_Preview_Get);
+                ? RedirectToRoute(RouteNames.Part1Complete_Get,new { m.VacancyId, m.Ukprn })
+                : _feature.IsFeatureEnabled(FeatureNames.ProviderTaskList)
+                    ? RedirectToRoute(RouteNames.ProviderCheckYourAnswersGet, new {m.VacancyId, m.Ukprn}) 
+                    : RedirectToRoute(RouteNames.Vacancy_Preview_Get, new {m.VacancyId, m.Ukprn});
         }
     }
 }

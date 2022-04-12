@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Esfa.Recruit.Provider.Web;
+using Esfa.Recruit.Shared.Web.FeatureToggle;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using FluentAssertions;
@@ -14,7 +15,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.UtilityTests
 
         public VacancyHasStartedPartTwoTests()
         {
-            _utility = new Utility(Mock.Of<IRecruitVacancyClient>());
+            _utility = new Utility(Mock.Of<IRecruitVacancyClient>(),Mock.Of<IFeature>());
         }
         [Fact]
         public void ShouldReturnTrueIfAnyPartTwoFieldsAreCompleted()

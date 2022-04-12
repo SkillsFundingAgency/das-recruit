@@ -40,11 +40,11 @@ namespace Esfa.Recruit.Provider.Web.Controllers
                 return View(vm);
             }
             TempData[TempDateARModel] = JsonConvert.SerializeObject(applicationReviewEditModel);
-            return RedirectToRoute(RouteNames.ApplicationReviewConfirmation_Get);
+            return RedirectToRoute(RouteNames.ApplicationReviewConfirmation_Get, new {applicationReviewEditModel.ApplicationReviewId, applicationReviewEditModel.VacancyId, applicationReviewEditModel.Ukprn});
         }
 
         [HttpGet("status", Name = RouteNames.ApplicationReviewConfirmation_Get)]
-        public async Task<IActionResult> ApplicationStatusConfirmation()
+        public async Task<IActionResult> ApplicationStatusConfirmation(ApplicationReviewRouteModel applicationReviewEditModel)
         {
             if (TempData[TempDateARModel] is string model)
             {
@@ -52,7 +52,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
                 var applicationStatusConfirmationViewModel = await _orchestrator.GetApplicationStatusConfirmationViewModelAsync(applicationReviewEditViewModel);
                 return View(applicationStatusConfirmationViewModel);
             }
-            return RedirectToRoute(RouteNames.ApplicationReview_Get);
+            return RedirectToRoute(RouteNames.ApplicationReview_Get, new {applicationReviewEditModel.ApplicationReviewId, applicationReviewEditModel.VacancyId, applicationReviewEditModel.Ukprn});
         }
 
         [HttpPost("status", Name = RouteNames.ApplicationReviewConfirmation_Post)]
@@ -69,9 +69,9 @@ namespace Esfa.Recruit.Provider.Web.Controllers
             {
                 var candidateName = await _orchestrator.PostApplicationReviewConfirmationEditModelAsync(applicationReviewStatusConfirmationEditModel, User.ToVacancyUser());
                 TempData.Add(TempDataKeys.ApplicationReviewStatusInfoMessage, string.Format(InfoMessages.ApplicationReviewStatusHeader, candidateName, applicationReviewStatusConfirmationEditModel.Outcome.ToString().ToLower()));
-                return RedirectToRoute(RouteNames.VacancyManage_Get);
+                return RedirectToRoute(RouteNames.VacancyManage_Get, new {applicationReviewStatusConfirmationEditModel.VacancyId, applicationReviewStatusConfirmationEditModel.Ukprn});
             }
-            return RedirectToRoute(RouteNames.ApplicationReview_Get);
+            return RedirectToRoute(RouteNames.ApplicationReview_Get, new {applicationReviewStatusConfirmationEditModel.ApplicationReviewId, applicationReviewStatusConfirmationEditModel.VacancyId, applicationReviewStatusConfirmationEditModel.Ukprn});
         }
     }
 }

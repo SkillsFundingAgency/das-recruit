@@ -2,10 +2,12 @@ using System.Threading.Tasks;
 using Esfa.Recruit.Provider.Web.Configuration;
 using Esfa.Recruit.Provider.Web.Configuration.Routing;
 using Esfa.Recruit.Provider.Web.Extensions;
+using Esfa.Recruit.Provider.Web.Models;
 using Esfa.Recruit.Provider.Web.Orchestrators.Part1;
 using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Provider.Web.ViewModels.Part1.EmployerName;
 using Esfa.Recruit.Shared.Web.Extensions;
+using Esfa.Recruit.Shared.Web.FeatureToggle;
 using Esfa.Recruit.Shared.Web.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
@@ -18,10 +20,13 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
     public class EmployerNameController : EmployerControllerBase
     {
         private EmployerNameOrchestrator _orchestrator;
+        private readonly IFeature _feature;
+
         public EmployerNameController(EmployerNameOrchestrator orchestrator,
-            IHostingEnvironment hostingEnvironment) : base(hostingEnvironment)
+            IHostingEnvironment hostingEnvironment, IFeature feature) : base(hostingEnvironment)
         {
             _orchestrator = orchestrator;
+            _feature = feature;
         } 
 
         [HttpGet("employer-name", Name = RouteNames.EmployerName_Get)]
@@ -31,7 +36,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
             //if matching cookie is not found redirect to legal entity selection
             //this could happen if the user navigates straight to employer-name end point
             //by passing employer or location end point
-            if (employerInfoModel == null) 
+            if (employerInfoModel == null && !_feature.IsFeatureEnabled(FeatureNames.ProviderTaskList)) 
                 return RedirectToRoute(RouteNames.Employer_Get);
             var vm = await _orchestrator.GetEmployerNameViewModelAsync(vrm, employerInfoModel, User.ToVacancyUser());
             vm.PageInfo.SetWizard(wizard);
@@ -43,19 +48,27 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
         { 
             var employerInfoModel = GetVacancyEmployerInfoCookie(model.VacancyId.GetValueOrDefault());
             //respective cookie can go missing if user has opened another vacancy in a different browser tab 
-            if(employerInfoModel == null)
+            if(employerInfoModel == null && !_feature.IsFeatureEnabled((FeatureNames.ProviderTaskList)))
                 return RedirectToRoute(RouteNames.Employer_Get);
 
-            var response = await _orchestrator.PostEmployerNameEditModelAsync(model, employerInfoModel, User.ToVacancyUser());
+            if(_feature.IsFeatureEnabled(FeatureNames.ProviderTaskList))
+            {
+                employerInfoModel = new VacancyEmployerInfoModel
+                {
+                    VacancyId = model.VacancyId
+                };
+            }
+            
+            var response = await _orchestrator.PostEmployerNameEditModelAsync(model, User.ToVacancyUser());
 
             if (!response.Success)
             {
                 response.AddErrorsToModelState(ModelState);
             }
 
+            var vm = await _orchestrator.GetEmployerNameViewModelAsync(model, employerInfoModel, User.ToVacancyUser());
             if (!ModelState.IsValid)
             {
-                var vm = await _orchestrator.GetEmployerNameViewModelAsync(model, employerInfoModel, User.ToVacancyUser());
                 vm.PageInfo.SetWizard(wizard);
                 vm.NewTradingName = model.NewTradingName;
                 vm.SelectedEmployerIdentityOption = model.SelectedEmployerIdentityOption;
@@ -70,13 +83,22 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
             employerInfoModel.AnonymousReason = model.SelectedEmployerIdentityOption == EmployerIdentityOption.Anonymous ? model.AnonymousReason : null;
             SetVacancyEmployerInfoCookie(employerInfoModel);
 
-            return RedirectToRoute(RouteNames.Location_Get, new {Wizard = wizard});
+            if (_feature.IsFeatureEnabled(FeatureNames.ProviderTaskList))
+            {
+                if (!vm.IsTaskListCompleted)
+                {
+                    return RedirectToRoute(RouteNames.AboutEmployer_Get, new {model.Ukprn, model.VacancyId});
+                }
+                return RedirectToRoute(RouteNames.ProviderCheckYourAnswersGet, new {model.Ukprn, model.VacancyId});
+            }
+            
+            return RedirectToRoute(RouteNames.Location_Get, new {Wizard = wizard, model.Ukprn, model.VacancyId});
         }
 
         [HttpGet("employer-name-cancel", Name = RouteNames.EmployerName_Cancel)]
         public IActionResult Cancel(VacancyRouteModel vrm, [FromQuery] bool wizard)
         {
-            return CancelAndRedirect(wizard);
+            return CancelAndRedirect(wizard, vrm);
         }
     }
 }
