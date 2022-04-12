@@ -34,8 +34,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             {
                 HasLegalEntityAgreement = await _legalEntityAgreementService.HasLegalEntityAgreementAsync(
                     vacancy.EmployerAccountId, vacancy.AccountLegalEntityPublicHashedId),
-                LegalEntityName = vacancy.LegalEntityName,
-                Ukprn = vrm.Ukprn
+                LegalEntityName = vacancy.LegalEntityName
             };
         }
     }

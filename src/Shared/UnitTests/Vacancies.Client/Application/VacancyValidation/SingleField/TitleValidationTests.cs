@@ -96,7 +96,7 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation.
         {
             var vacancy = new Vacancy 
             {
-                Title = $"apprentice {new string('a', 101)}"
+                Title = $"apprentice {new string('a', 110)}"
             };
 
             var result = Validator.Validate(vacancy, VacancyRuleSet.Title);

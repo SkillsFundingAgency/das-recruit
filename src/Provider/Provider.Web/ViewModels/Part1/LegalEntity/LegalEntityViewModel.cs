@@ -1,15 +1,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using Esfa.Recruit.Provider.Web.Models;
-using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Shared.Web.ViewModels;
 
 namespace Esfa.Recruit.Provider.Web.ViewModels.Part1.LegalEntity
 {
-    public class LegalEntityViewModel : VacancyRouteModel
+    public class LegalEntityViewModel
     {
-        public string Title { get; internal set; }
-
         private const int LimitForNotShowingSearchPanel = 10;
         public IEnumerable<OrganisationViewModel> Organisations { get; internal set; }
 
@@ -47,7 +44,6 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.Part1.LegalEntity
                             && Organisations.Any(org => org.Id == SelectedOrganisationId);
 
         public bool CanOutputHiddenSelectedOrganisationIdField => !string.IsNullOrEmpty(SelectedOrganisationId) && IsSelectedOrganisationInPagedOrganisations == false;
-        public bool IsTaskListCompleted { get; set; }
     }
 
     public class OrganisationViewModel

@@ -44,7 +44,5 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.Reports.ProviderApplicationsRepor
             nameof(FromDate),
             nameof(ToDate)
         };
-
-        public long Ukprn { get; set; }
     }
 }

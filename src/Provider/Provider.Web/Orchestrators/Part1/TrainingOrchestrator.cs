@@ -21,14 +21,12 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
     {
         private const VacancyRuleSet ValidationRules = VacancyRuleSet.TrainingProgramme;
         private readonly IRecruitVacancyClient _vacancyClient;
-        private readonly IProviderVacancyClient _providerVacancyClient;
         private readonly IReviewSummaryService _reviewSummaryService;
         private readonly IUtility _utility;
 
-        public TrainingOrchestrator(IRecruitVacancyClient vacancyClient, IProviderVacancyClient providerVacancyClient, ILogger<TrainingOrchestrator> logger, IReviewSummaryService reviewSummaryService, IUtility utility) : base(logger)
+        public TrainingOrchestrator(IRecruitVacancyClient vacancyClient, ILogger<TrainingOrchestrator> logger, IReviewSummaryService reviewSummaryService, IUtility utility) : base(logger)
         {
             _vacancyClient = vacancyClient;
-            _providerVacancyClient = providerVacancyClient;
             _reviewSummaryService = reviewSummaryService;
             _utility = utility;
         }
@@ -40,22 +38,15 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
 
             await Task.WhenAll(vacancyTask, programmesTask);
 
-            var employerInfo =
-                await _providerVacancyClient.GetProviderEmployerVacancyDataAsync(vrm.Ukprn,
-                    vacancyTask.Result.EmployerAccountId);
-
             var vacancy = vacancyTask.Result;
             var programmes = programmesTask.Result;
             
             var vm = new TrainingViewModel
             {
-                Title = vacancy.Title,
                 VacancyId = vacancy.Id,
                 SelectedProgrammeId = vacancy.ProgrammeId,
                 Programmes = programmes.ToViewModel(),
                 PageInfo = _utility.GetPartOnePageInfo(vacancy),
-                HasMoreThanOneLegalEntity = employerInfo.LegalEntities.Count > 1,
-                Ukprn = vrm.Ukprn
             };
 
             if (vacancy.Status == VacancyStatus.Referred)
@@ -90,7 +81,6 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
 
             return new ConfirmTrainingViewModel
             {
-                Title = vacancyTask.Result.Title,
                 ProgrammeId = programme.Id,
                 ApprenticeshipLevel = programme.ApprenticeshipLevel,
                 TrainingTitle = programme.Title,
@@ -99,9 +89,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
                 PageInfo = _utility.GetPartOnePageInfo(vacancyTask.Result),
                 TrainingEffectiveToDate = programme.EffectiveTo?.AsGdsDate(),
                 EducationLevelName =
-                    EducationLevelNumberHelper.GetEducationLevelNameOrDefault(programme.EducationLevelNumber, programme.ApprenticeshipLevel),
-                Ukprn = vrm.Ukprn,
-                VacancyId = vrm.VacancyId
+                    EducationLevelNumberHelper.GetEducationLevelNameOrDefault(programme.EducationLevelNumber, programme.ApprenticeshipLevel)
             };
         }
 

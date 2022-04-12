@@ -3,7 +3,7 @@
     <div class="govuk-grid-column-two-thirds">
         <partial name=@PartialNames.ValidationSummary model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState }' />
         
-        <form asp-route="@RouteNames.CloseVacancy_Post" asp-all-route-data="@Model.RouteDictionary">
+        <form asp-route="@RouteNames.CloseVacancy_Post">
             <legend class="govuk-fieldset__legend govuk-fieldset__legend--m govuk-!-margin-top-6 govuk-!-margin-bottom-6">
                 <h3 class="govuk-fieldset__heading">
                     Are you sure you want to close this vacancy on Find an apprenticeship?

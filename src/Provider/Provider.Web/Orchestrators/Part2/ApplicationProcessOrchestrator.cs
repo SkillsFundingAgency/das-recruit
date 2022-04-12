@@ -44,9 +44,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part2
                 FindAnApprenticeshipUrl = _externalLinks.FindAnApprenticeshipUrl,
                 ApplicationMethod = vacancy.ApplicationMethod,
                 ApplicationInstructions = vacancy.ApplicationInstructions,
-                ApplicationUrl = vacancy.ApplicationUrl,
-                Ukprn = vrm.Ukprn,
-                VacancyId = vrm.VacancyId
+                ApplicationUrl = vacancy.ApplicationUrl
             };
 
             if (vacancy.Status == VacancyStatus.Referred)
@@ -54,8 +52,6 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part2
                 vm.Review = await _reviewSummaryService.GetReviewSummaryViewModelAsync(vacancy.VacancyReference.Value,
                     ReviewFieldMappingLookups.GetApplicationProcessFieldIndicators());
             }
-
-            vm.IsTaskListCompleted = _utility.TaskListCompleted(vacancy);
 
             return vm;
         }

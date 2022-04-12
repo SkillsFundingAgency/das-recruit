@@ -24,7 +24,6 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Reports
             {
                 FromDate = ((DateTime)report.Parameters[ReportParameterName.FromDate]).AsGdsDate(),
                 ToDate = ((DateTime)report.Parameters[ReportParameterName.ToDate]).AsGdsDate(),
-                Ukprn = rrm.Ukprn
             };
 
             return vm;

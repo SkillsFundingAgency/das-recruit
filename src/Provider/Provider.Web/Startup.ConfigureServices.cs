@@ -8,7 +8,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.Configuration.AzureTableStorage;
-using SFA.DAS.Provider.Shared.UI.Startup;
 
 namespace Esfa.Recruit.Provider.Web
 {
@@ -74,12 +73,6 @@ namespace Esfa.Recruit.Provider.Web
 
             //A service provider for resolving services configured in IoC
             var sp = services.BuildServiceProvider();
-
-            services.AddProviderUiServiceRegistration(_configuration);
-
-    #if DEBUG
-            services.AddControllersWithViews().AddRazorRuntimeCompilation();
-    #endif
 
             services.AddAuthenticationService(_authConfig, sp.GetService<IRecruitVacancyClient>(), sp.GetService<IHostingEnvironment>());
             services.AddAuthorizationService();            

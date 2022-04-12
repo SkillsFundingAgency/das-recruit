@@ -1,11 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
 namespace Esfa.Recruit.Provider.Web.ViewModels
 {
-    public abstract class DisplayVacancyViewModel : VacancyRouteModel
+    public abstract class DisplayVacancyViewModel
     {
         public VacancyStatus Status { get; set; }
         public string AccountName { get; set; }
@@ -16,7 +15,6 @@ namespace Esfa.Recruit.Provider.Web.ViewModels
         public bool CanSubmit { get; internal set; }
         public bool IsSentForReview { get; internal set; }
         public string ClosingDate { get; internal set; }
-        public string PostedDate { get; internal set; }
         public string EducationLevelName { get; internal set; }
         public string EmployerDescription { get; internal set; }
         public string EmployerName { get; internal set; }
@@ -53,7 +51,6 @@ namespace Esfa.Recruit.Provider.Web.ViewModels
         public string WageInfo { get; internal set; }
         public string WageText { get; internal set; }
         public string WorkingWeekDescription { get; internal set; }
-        public string AccountLegalEntityPublicHashedId { get; internal set; }
 
         public bool HasClosingDate => !string.IsNullOrWhiteSpace(ClosingDate);
 
@@ -115,7 +112,5 @@ namespace Esfa.Recruit.Provider.Web.ViewModels
         public bool ShowGeneralApplicationProcessSectionTitle => ApplicationMethod == null || ApplicationMethod.Value != Esfa.Recruit.Vacancies.Client.Domain.Entities.ApplicationMethod.ThroughExternalApplicationSite;
 
         public bool IsNotDisabilityConfident => !IsDisabilityConfident;
-        public bool HasSelectedLegalEntity => !string.IsNullOrEmpty(AccountLegalEntityPublicHashedId);
-        public EmployerNameOption? EmployerNameOption { get; set; }
     }
 }

@@ -25,11 +25,11 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation.
         }
 
         [Fact]
-        public void ThingsToConsiderMustBe4000CharactersOrLess()
+        public void ThingsToConsiderMustBe350CharactersOrLess()
         {
             var vacancy = new Vacancy
             {
-                ThingsToConsider = "name".PadRight(4001, 'w')
+                ThingsToConsider = "name".PadRight(351, 'w')
             };
 
             var result = Validator.Validate(vacancy, VacancyRuleSet.ThingsToConsider);

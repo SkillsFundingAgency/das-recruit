@@ -20,6 +20,5 @@ namespace Esfa.Recruit.Provider.Web.ViewModels
         public FilteringOptions Filter { get; set; }
         public string SearchTerm { get; set; }
         public bool HasEmployerReviewPermission { get; set; }
-        public long Ukprn { get; set; }
     }
 }

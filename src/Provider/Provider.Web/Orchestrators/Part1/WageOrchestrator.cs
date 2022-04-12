@@ -45,7 +45,6 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
 
             var vm = new WageViewModel
             {
-                Title = vacancy.Title,
                 WageType = vacancy.Wage?.WageType,
                 FixedWageYearlyAmount = vacancy.Wage?.FixedWageYearlyAmount?.AsMoney(),
                 WageAdditionalInformation = vacancy.Wage?.WageAdditionalInformation,
@@ -56,9 +55,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
                 ApprenticeshipMinimumWageHourly = wagePeriod.ApprenticeshipMinimumWage.ToString("C"),
                 ApprenticeshipMinimumWageYearly = GetMinimumWageYearlyText(SFA.DAS.VacancyServices.Wage.WageType.ApprenticeshipMinimum, vacancy.Wage?.WeeklyHours, vacancy.StartDate.Value),
                 WeeklyHours = vacancy.Wage.WeeklyHours.Value,
-                PageInfo = _utility.GetPartOnePageInfo(vacancy),
-                Ukprn = vrm.Ukprn,
-                VacancyId = vrm.VacancyId
+                PageInfo = _utility.GetPartOnePageInfo(vacancy)
             };
 
             if (vacancy.Status == VacancyStatus.Referred)

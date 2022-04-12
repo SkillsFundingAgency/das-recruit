@@ -1,13 +1,11 @@
 using System.Collections.Generic;
-using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Shared.Web.ViewModels;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
 namespace Esfa.Recruit.Provider.Web.ViewModels.Part1.Location
 {
-    public class LocationViewModel : VacancyRouteModel
+    public class LocationViewModel
     {
-        public string Title { get; set; }
         public const string UseOtherLocationConst = "UseOtherLocation";
         public string UseOtherLocation => UseOtherLocationConst;
         public string SelectedLocation { get; set; }

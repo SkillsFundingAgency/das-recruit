@@ -4,7 +4,6 @@ using Esfa.Recruit.Provider.UnitTests.Provider.Web.HardMocks;
 using Esfa.Recruit.Provider.Web;
 using Esfa.Recruit.Provider.Web.Orchestrators.Part1;
 using Esfa.Recruit.Provider.Web.ViewModels.Part1.Duration;
-using Esfa.Recruit.Shared.Web.FeatureToggle;
 using Esfa.Recruit.Shared.Web.Mappers;
 using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
@@ -105,7 +104,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part1
                 MockRecruitVacancyClient.Setup(x => x.UpdateEmployerProfileAsync(It.IsAny<EmployerProfile>(), User));
 
                 Sut = new DurationOrchestrator(MockRecruitVacancyClient.Object, Mock.Of<ILogger<DurationOrchestrator>>(), 
-                    Mock.Of<IReviewSummaryService>(), new Utility(MockRecruitVacancyClient.Object, Mock.Of<IFeature>()));
+                    Mock.Of<IReviewSummaryService>(), new Utility(MockRecruitVacancyClient.Object));
             }
 
             public async Task PostDurationEditModelAsync(DurationEditModel model)
