@@ -21,18 +21,18 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Apprentices
         }
         public async Task<IApprenticeshipRoute> GetApprenticeshipRouteAsync(int routeId)
         {
-            var apprenticeships = await GetApprenticeshipProgrammesAsync();
+            var apprenticeships = await GetApprenticeshipRoutesAsync();
 
             return apprenticeships?.SingleOrDefault(x => x.Id == routeId);
         }
 
-        public async Task<IEnumerable<IApprenticeshipRoute>> GetApprenticeshipProgrammesAsync()
+        public async Task<IEnumerable<IApprenticeshipRoute>> GetApprenticeshipRoutesAsync()
         {
-            var queryItem = await GetApprenticeshipRoutesAsync();
+            var queryItem = await GetApprenticeshipRoutes();
             return queryItem.Data;
 
         }
-        private Task<ApprenticeshipRoutes> GetApprenticeshipRoutesAsync()
+        private Task<ApprenticeshipRoutes> GetApprenticeshipRoutes()
         {
             return _cache.CacheAsideAsync(CacheKeys.ApprenticeshipRoutes,
                 _timeProvider.NextDay6am,

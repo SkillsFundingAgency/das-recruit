@@ -7,6 +7,6 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Providers
     public interface IApprenticeshipRouteProvider
     {
         Task<IApprenticeshipRoute> GetApprenticeshipRouteAsync(int routeId);
-        Task<IEnumerable<IApprenticeshipRoute>> GetApprenticeshipProgrammesAsync();
+        Task<IEnumerable<IApprenticeshipRoute>> GetApprenticeshipRoutesAsync();
     }
 }
