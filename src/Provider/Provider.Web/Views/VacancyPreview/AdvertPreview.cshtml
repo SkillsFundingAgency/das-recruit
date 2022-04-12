@@ -5,11 +5,9 @@
     ViewBag.Title = "Preview your vacancy";
 }
 
-<div class="govuk-grid-row">
-    <div class="govuk-grid-column-full">
-        <a asp-route="@RouteNames.ProviderCheckYourAnswersGet" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back to check your answers</a>
-    </div>
-</div>
+@section BackLink {
+  <a asp-route="@RouteNames.ProviderCheckYourAnswersGet" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Back to check your answers</a>
+}
 
 <h1 class="govuk-heading-l">Preview your vacancy</h1>
 <div class="app-preview-wrap">
@@ -34,10 +32,10 @@
       </div>
       <div  asp-show="@Model.HasSpecifiedThroughFaaApplicationMethod">
          <p class="govuk-!-margin-bottom-1">
-           <a class="govuk-button govuk-!-margin-bottom-0" id="employer-website" href="#">Apply for apprenticeship</a>
+           <a class="govuk-button govuk-!-margin-bottom-0" id="employer-website" href="#">Sign in to Apply</a>
          </p>
       </div>
-      <p class="govuk-body-s">Closing date @Model.ClosingDate</p>
+      <p class="govuk-body-s">Closing date: @Model.ClosingDate</p>
     </div>
   </div>
   <h2 class="govuk-heading-l" id="apprenticeshipSummary">Apprenticeship summary</h2>
@@ -119,9 +117,7 @@
     <div class="govuk-grid-column-one-half">
       <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Employer</h3>
       <p class="govuk-body">@Model.EmployerName</p>
-      <p class="govuk-body govuk" asp-show="@Model.HasEmployerWebsiteUrl">
-          @Model.EmployerWebsiteUrl
-      </p>
+      
       <div asp-show="@Model.IsDisabilityConfident">
         <img asp-show="@Model.IsDisabilityConfident" src="~/img/disability-confident_545x172.png" class="app-disability-confident-logo" alt="A logo confirming that the employer is registered as disability confident" esfa-automation="disability-confident-logo" no-cdn/>
         <details class="govuk-details">
@@ -137,6 +133,9 @@
           </div>
         </details>
       </div>
+      <p class="govuk-body govuk" asp-show="@Model.HasEmployerWebsiteUrl">
+            @Model.EmployerWebsiteUrl
+      </p>
       <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Address</h3>
       <ul class="govuk-list">
         @foreach (var addressLine in Model.EmployerAddressElements)
@@ -147,9 +146,9 @@
       <h3 asp-show=@(Model.HasProviderContactName || Model.HasProviderContactEmail || Model.HasProviderContactTelephone) class="govuk-heading-s govuk-!-margin-bottom-1">
           Contact
       </h3>
-      <p asp-show="@Model.HasProviderContactName" class="govuk-body govuk-!-margin-bottom-1">@Model.HasProviderContactName</p>
-      <p asp-show="@Model.HasProviderContactEmail" class="govuk-body govuk-!-margin-bottom-1">@Model.HasProviderContactEmail</p>
-      <p asp-show="@Model.HasProviderContactTelephone" class="govuk-body govuk-!-margin-bottom-1">@Model.HasProviderContactTelephone</p>
+      <p asp-show="@Model.HasProviderContactName" class="govuk-body govuk-!-margin-bottom-1">@Model.ProviderContactName</p>
+      <p asp-show="@Model.HasProviderContactEmail" class="govuk-body govuk-!-margin-bottom-1">@Model.ProviderContactEmail</p>
+      <p asp-show="@Model.HasProviderContactTelephone" class="govuk-body govuk-!-margin-bottom-1">@Model.ProviderContactTelephone</p>
     </div>
     <div class="govuk-grid-column-one-half">
       <img asp-show="@Model.HasMapUrl" src="@Model.MapUrl" alt="Location map" class="app-preview-map" />
@@ -199,7 +198,7 @@
     <form asp-route="@RouteNames.Preview_Submit_Post" asp-all-route-data="@Model.RouteDictionary" method="post">
       <div class="govuk-button-group">
         <input type="submit" value="Submit vacancy" class="govuk-button" esfa-automation="submit-button" />
-        <a asp-route="@RouteNames.ProviderCheckYourAnswersGet" asp-all-route-data="@Model.RouteDictionary" class="govuk-button govuk-button--secondary">Change your answers</a>
+        <a asp-route="@RouteNames.ProviderCheckYourAnswersGet" asp-all-route-data="@Model.RouteDictionary" class="govuk-button govuk-button--secondary">Change your vacancy</a>
       </div>
     </form>
   </div>

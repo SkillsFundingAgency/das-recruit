@@ -175,6 +175,7 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.CommandHandlers
                 {nameof(Vacancy.TransferInfo), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.IsNull)},
                 {nameof(Vacancy.AccountLegalEntityPublicHashedId), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.Cloned)},
                 {nameof(Vacancy.VacancyType), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.Cloned)},
+                {nameof(Vacancy.WorkExperience), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.Cloned)},
                 {nameof(Vacancy.RouteId), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.Cloned)}
             };
 

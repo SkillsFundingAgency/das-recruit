@@ -11,7 +11,7 @@
         <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }' />
         <h1 class="govuk-heading-xl">@Model.Title</h1>
         <div asp-show="Model.IsNewDatesForced" class="govuk-inset-text">The vacancy you are copying has a closing date or start date that is in the past. Add new dates.</div>
-        <form asp-route="@RouteNames.CloneVacancyWithNewDates_Post" novalidate>
+        <form asp-route="@RouteNames.CloneVacancyWithNewDates_Post" asp-all-route-data="@Model.RouteDictionary" novalidate>
             <div esfa-validation-marker-for="ClosingDate" class="govuk-form-group">
                 <fieldset class="govuk-fieldset">
                     <span esfa-validation-message-for="ClosingDate" class="govuk-error-message"></span>
@@ -74,7 +74,7 @@
 
             <div class="govuk-button-group">
                 <button type="submit" class="govuk-button save-button" esfa-automation="continue-button">Continue</button>
-                <a asp-route="@RouteNames.VacancyManage_Get" class="govuk-link">Cancel</a>
+                <a asp-route="@RouteNames.VacancyManage_Get"  asp-all-route-data="@Model.RouteDictionary" class="govuk-link">Cancel</a>
             </div>
         </form>
     </div>

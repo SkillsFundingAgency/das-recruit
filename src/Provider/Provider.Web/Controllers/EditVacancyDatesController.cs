@@ -39,6 +39,9 @@ namespace Esfa.Recruit.Provider.Web.Controllers
                 response.AddErrorsToModelState(ModelState);
             }
 
+            response.Data.Ukprn = vrm.Ukprn;
+            response.Data.VacancyId = vrm.VacancyId;
+
             return View(response.Data);
         }
 

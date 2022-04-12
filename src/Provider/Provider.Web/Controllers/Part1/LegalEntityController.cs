@@ -41,7 +41,10 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
             }
             else
             {
-                vm.SelectedOrganisationId = info.AccountLegalEntityPublicHashedId;
+                if (!string.IsNullOrEmpty(info.AccountLegalEntityPublicHashedId))
+                {
+                    vm.SelectedOrganisationId = info.AccountLegalEntityPublicHashedId;    
+                }
             }
 
             if (vm.HasOnlyOneOrganisation)

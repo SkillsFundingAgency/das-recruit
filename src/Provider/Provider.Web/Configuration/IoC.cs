@@ -120,6 +120,7 @@ namespace Esfa.Recruit.Provider.Web.Configuration
             services.AddTransient<DurationOrchestrator>();
             services.AddTransient<VacancyTaskListOrchestrator>();
             services.AddTransient<FutureProspectsOrchestrator>();
+            services.AddTransient<WorkExperienceOrchestrator>();
         }
 
         private static void RegisterMapperDeps(IServiceCollection services)

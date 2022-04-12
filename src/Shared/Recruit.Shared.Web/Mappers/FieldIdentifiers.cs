@@ -34,5 +34,6 @@
         public const string Wage = "Wage";
         public const string WorkingWeek = "WorkingWeek";
         public const string WageAdditionalInfo = "WageAdditionalInfo";
+        public const string WorkExperience = "WorkExperience";
     }
 }

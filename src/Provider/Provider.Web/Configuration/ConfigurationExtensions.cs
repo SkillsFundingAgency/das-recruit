@@ -65,10 +65,21 @@ namespace Esfa.Recruit.Provider.Web.Configuration
                     policy.RequireClaim(ProviderRecruitClaims.IdamsUserServiceTypeClaimTypeIdentifier);
                     policy.Requirements.Add(new MinimumServiceClaimRequirement(ServiceClaim.DAA));
                 });
+                
+                options.AddPolicy(PolicyNames.IsTraineeshipWeb, policy =>
+                {
+                    policy.Requirements.Add(new VacancyTypeRequirement(VacancyType.Traineeship));
+                });
+                
+                options.AddPolicy(PolicyNames.IsApprenticeshipWeb, policy =>
+                {
+                    policy.Requirements.Add(new VacancyTypeRequirement(VacancyType.Apprenticeship));
+                });
             });
 
             services.AddTransient<IAuthorizationHandler, ProviderAccountHandler>();
             services.AddTransient<IAuthorizationHandler, MinimumServiceClaimRequirementHandler>();
+            services.AddTransient<IAuthorizationHandler, VacancyTypeRequirementHandler>();
         }
 
         public static void AddMvcService(this IServiceCollection services, IHostingEnvironment hostingEnvironment, ILoggerFactory loggerFactory)
