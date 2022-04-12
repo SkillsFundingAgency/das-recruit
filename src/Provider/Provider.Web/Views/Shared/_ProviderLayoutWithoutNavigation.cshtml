@@ -12,7 +12,18 @@ public string GetTitle()
 
     return defaultTitle;
 }
+    
 }
+
+@{
+    var vpv = ViewBag.GaData?.Vpv != null ? ViewBag.GaData.Vpv : ViewBag.Vpv;
+    var userId = ViewBag.GaData?.UserId != null ? ViewBag.GaData.UserId : null;
+    var ukprn = ViewBag.GaData?.UkPrn != null ? ViewBag.GaData.UkPrn : null;
+    var isAuthenticated = User.Identity.IsAuthenticated ? "True" : "False";
+}}
+
+
+
 <!DOCTYPE html>
 <html lang="en" class="govuk-template">
 
@@ -39,9 +50,18 @@ public string GetTitle()
 
     <partial name="@PartialNames.ApplicationInsights" />
     <environment exclude="@EnvironmentNames.GetTestEnvironmentNamesCommaDelimited()">
-        <partial name="@PartialNames.GoogleAnalyticsInfo" />
+        <script nws-csp-add-nonce="true">
+                window.dataLayer = window.dataLayer || [];
+                    dataLayer.push({
+            'event': 'dataLoaded',
+                'loggedIn': '@isAuthenticated',
+                'vpv': '@vpv',
+                'userID': '@userId',
+                'Account' : '@ukprn'
+        });
+        </script>
         <partial name="@PartialNames.GoogleTagManagerHead" />
-    </environment>
+    </environment>    
     <script nws-csp-add-nonce="true">
         window.EsfaRecruit = {};
     </script>
