@@ -73,13 +73,7 @@ namespace Esfa.Recruit.Provider.Web
                                       "https://*.zendesk.com",
                                       "wss://*.zendesk.com",
                                       "wss://*.zopim.com",
-                                      "https://*.rcrsv.io",
-                                        "https://das-at-frnt-end.azureedge.net", 
-                                        "https://das-test-frnt-end.azureedge.net", 
-                                        "https://das-test2-frnt-end.azureedge.net",
-                                        "https://das-demo-frnt-end.azureedge.net", 
-                                        "https://das-pp-frnt-end.azureedge.net",
-                                        "https://das-prd-frnt-end.azureedge.net"
+                                      "https://*.rcrsv.io"
                                       );
                       
                       //Google tag manager uses inline styles when administering tags. This is done on PREPROD only
@@ -101,13 +95,7 @@ namespace Esfa.Recruit.Provider.Web
                                     "wss://*.zendesk.com",
                                     "wss://*.zopim.com",
                                     "https://*.zopim.com",
-                                    "https://*.rcrsv.io",
-                                    "https://das-at-frnt-end.azureedge.net", 
-                                    "https://das-test-frnt-end.azureedge.net", 
-                                    "https://das-test2-frnt-end.azureedge.net",
-                                    "https://das-demo-frnt-end.azureedge.net", 
-                                    "https://das-pp-frnt-end.azureedge.net",
-                                    "https://das-prd-frnt-end.azureedge.net");
+                                    "https://*.rcrsv.io");
 
                     //Google tag manager uses inline scripts when administering tags. This is done on PREPROD only
                         if (env.IsEnvironment(EnvironmentNames.PREPROD))
@@ -121,13 +109,7 @@ namespace Esfa.Recruit.Provider.Web
                     .CustomSources("data:",
                                     "https://fonts.gstatic.com",
                                     "https://fonts.googleapis.com/",
-                                    "https://assets-ukdoe.rcrsv.io/",
-                                    "https://das-at-frnt-end.azureedge.net", 
-                                    "https://das-test-frnt-end.azureedge.net", 
-                                    "https://das-test2-frnt-end.azureedge.net",
-                                    "https://das-demo-frnt-end.azureedge.net", 
-                                    "https://das-pp-frnt-end.azureedge.net",
-                                    "https://das-prd-frnt-end.azureedge.net")
+                                    "https://assets-ukdoe.rcrsv.io/")
                 )
                 .ConnectSources(s =>
                     s.Self()
@@ -152,12 +134,6 @@ namespace Esfa.Recruit.Provider.Web
                                     "https://*.zendesk.com",
                                     "wss://*.zendesk.com",
                                     "wss://*.zopim.com",
-                                    "https://das-at-frnt-end.azureedge.net", 
-                                    "https://das-test-frnt-end.azureedge.net", 
-                                    "https://das-test2-frnt-end.azureedge.net",
-                                    "https://das-demo-frnt-end.azureedge.net", 
-                                    "https://das-pp-frnt-end.azureedge.net",
-                                    "https://das-prd-frnt-end.azureedge.net",
                                     "data:")
                 )
                 .ReportUris(r => r.Uris("/ContentPolicyReport/Report")));
@@ -186,12 +162,8 @@ namespace Esfa.Recruit.Provider.Web
             app.UseXRobotsTag(options => options.NoIndex().NoFollow());
 
             app.UseNoCacheHttpHeaders(); // Effectively forces the browser to always request dynamic pages
-            app.UseRouting();
-            app.UseAuthorization();
-            app.UseEndpoints(builder =>
-            {
-                builder.MapControllerRoute("default", RoutePaths.AccountRoutePath);
-            });
+
+            app.UseMvc(r => r.MapRoute("default", RoutePaths.AccountRoutePath));
         }
 
         private static string[] GetAllowableDestinations(AuthenticationConfiguration authConfig, ExternalLinksConfiguration linksConfig)

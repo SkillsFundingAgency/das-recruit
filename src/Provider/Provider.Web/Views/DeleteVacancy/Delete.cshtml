@@ -6,7 +6,7 @@
         <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">@Model.Title</h1>
         
         <h1 class="govuk-heading-l">Are you sure you want to delete the vacancy?</h1>
-        <form asp-route="@RouteNames.DeleteVacancy_Post"  asp-route-ukprn="@Model.Ukprn" asp-route-vacancyId="@Model.VacancyId">
+        <form asp-route="@RouteNames.DeleteVacancy_Post">
             <div esfa-validation-marker-for="ConfirmDeletion" class="govuk-form-group">
                 <fieldset class="govuk-fieldset">
                     <span esfa-validation-message-for="ConfirmDeletion" class="govuk-error-message"></span>

@@ -1,12 +1,12 @@
 ﻿@model Esfa.Recruit.Provider.Web.ViewModels.VacancyView.VacancyApplicationsViewModel
-<table class="govuk-table das-table--responsive">
+<table class="govuk-table responsive">
     <thead class="govuk-table__head">
         <tr class="govuk-table__row">
-            <th class="govuk-table__header" scope="col">Name</th>
-            <th class="govuk-table__header" scope="col">Application ID</th>
-            <th class="govuk-table__header" scope="col">Status</th>
-            <th class="govuk-table__header" scope="col">Date applied</th>
-            <th asp-show="@Model.ShowDisability" class="govuk-table__header" scope="col">Disability</th>
+            <th class="govuk-table__header">Name</th>
+            <th class="govuk-table__header">Application ID</th>
+            <th class="govuk-table__header">Status</th>
+            <th class="govuk-table__header">Date applied</th>
+            <th asp-show="@Model.ShowDisability" class="govuk-table__header">Disability</th>
         </tr>
     </thead>
     <tbody class="govuk-table__body">
@@ -15,7 +15,7 @@
             foreach (var application in applicationStatusGroup)
             {
                 <tr class="govuk-table__row" asp-show="@application.IsNotWithdrawn">
-                    <td class="govuk-table__cell" data-label="Name"><a asp-route="@RouteNames.ApplicationReview_Get"  asp-route-ukprn="@Model.Ukprn" asp-route-vacancyId="@Model.VacancyId" asp-route-applicationReviewId="@application.ApplicationReviewId" class="govuk-link">@application.CandidateName</a></td>
+                    <td class="govuk-table__cell" data-label="Name"><a asp-route="@RouteNames.ApplicationReview_Get" asp-route-applicationReviewId="@application.ApplicationReviewId" class="govuk-link">@application.CandidateName</a></td>
                     <td class="govuk-table__cell" data-label="Application ID">@application.GetFriendlyId()</td>
                     <td class="govuk-table__cell" data-label="Status">@application.Status.GetDisplayName()</td>
                     <td class="govuk-table__cell" data-label="Date applied">@application.SubmittedDate.AsGdsDate()</td>

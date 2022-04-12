@@ -5,7 +5,6 @@ using Esfa.Recruit.Provider.Web.Extensions;
 using Esfa.Recruit.Provider.Web.Orchestrators.Part2;
 using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Shared.Web.Extensions;
-using Esfa.Recruit.Shared.Web.FeatureToggle;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SkillsEditModel = Esfa.Recruit.Provider.Web.ViewModels.Part2.Skills.SkillsEditModel;
@@ -17,12 +16,10 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part2
     public class SkillsController : Controller
     {
         private readonly SkillsOrchestrator _orchestrator;
-        private readonly IFeature _feature;
 
-        public SkillsController(SkillsOrchestrator orchestrator, IFeature feature)
+        public SkillsController(SkillsOrchestrator orchestrator)
         {
             _orchestrator = orchestrator;
-            _feature = feature;
         }
 
         [HttpGet("skills", Name = RouteNames.Skills_Get)]
@@ -44,29 +41,20 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part2
                 response.AddErrorsToModelState(ModelState);
             }
 
-            var vm = await _orchestrator.GetSkillsViewModelAsync(vrm, m);
             if (!ModelState.IsValid)
             {
+                var vm = await _orchestrator.GetSkillsViewModelAsync(vrm, m);
+
                 return View(vm);
             }
 
             if (!string.IsNullOrEmpty(m.AddCustomSkillAction))
             {
                 TempData[TempDataKeys.Skills] = m.Skills;
-                return RedirectToRoute(RouteNames.Skills_Get, new {vrm.Ukprn, vrm.VacancyId});
+                return RedirectToRoute(RouteNames.Skills_Get);
             }
 
-            if (_feature.IsFeatureEnabled(FeatureNames.ProviderTaskList))
-            {
-                if (!vm.IsTaskListCompleted)
-                {
-                    return RedirectToRoute(RouteNames.Qualifications_Get, new {vrm.Ukprn, vrm.VacancyId});
-                }
-                return RedirectToRoute(RouteNames.ProviderCheckYourAnswersGet, new {vrm.Ukprn, vrm.VacancyId});
-                
-            }
-
-            return RedirectToRoute(RouteNames.Vacancy_Preview_Get, new {vrm.Ukprn, vrm.VacancyId});
+            return RedirectToRoute(RouteNames.Vacancy_Preview_Get);
         }
     }
 }

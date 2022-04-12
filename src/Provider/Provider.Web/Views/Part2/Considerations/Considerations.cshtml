@@ -2,13 +2,6 @@
 
 @{
     ViewBag.GaData.Vpv = "/recruitment/provider/page-vacancy-considerations";
-    ViewBag.Title = "Other things to consider";
-}
-
-@section BackLink {
-    <esfaFeatureEnabled name="@FeatureNames.ProviderTaskList">
-        <a asp-route="@RouteNames.FutureProspects_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Back</a>
-    </esfaFeatureEnabled>
 }
 
 <div class="govuk-grid-row">
@@ -18,32 +11,23 @@
 
         <partial name="@PartialNames.ReviewSummary" for="Review" />
 
-        <form asp-route="@RouteNames.Considerations_Post" asp-all-route-data="@Model.RouteDictionary">
+        <h1 class="govuk-heading-xl">
+            <span class="govuk-caption-l">@Model.Title</span>
+            What else would you like the applicant to consider? (optional)
+        </h1>
 
-            <div class="govuk-character-count" data-module="govuk-character-count" data-maxlength="4000">
-                <div esfa-validation-marker-for="ThingsToConsider" class="govuk-form-group">
-                    <span class="govuk-caption-xl">@Model.Title</span>
-                    <h1 class="govuk-label-wrapper">
-                        <label class="govuk-label govuk-label--xl" asp-for="ThingsToConsider" >
-                            What else do you want the applicant to consider? (optional)
-                        </label>
-                    </h1>
-                    <div id="ThingsToConsider-hint" class="govuk-hint">
-                        For example, if the vacancy will involve working outdoors or lifting heavy objects
-                    </div>
-                    <span esfa-validation-message-for="ThingsToConsider" class="govuk-error-message"></span>
-                    <textarea class="govuk-textarea" asp-for="ThingsToConsider" rows="5" aria-describedby="ThingsToConsider-info ThingsToConsider-hint"></textarea>
-                </div>
+        <form asp-route="@RouteNames.Considerations_Post">
+            <div esfa-validation-marker-for="ThingsToConsider" class="govuk-form-group">
+                <label asp-for="ThingsToConsider" class="govuk-visually-hidden">Things to consider (optional)</label>
+                <span class="govuk-hint">For example, if the vacancy will involve working outdoors, or lifting heavy objects</span>
+                <span esfa-validation-message-for="ThingsToConsider" class="govuk-error-message"></span>
+                <textarea asp-for="ThingsToConsider" class="govuk-textarea character-count" rows="5" data-val-length-max="350"></textarea>
+                <span class="govuk-body maxchar-count">350</span>
+                <span class="govuk-body maxchar-text"> characters remaining</span>
             </div>
-
-            <div class="govuk-button-group">
+            <div class="govuk-form-group">
                 <input type="submit" value="Save and continue" esfa-automation="btn-continue" class="govuk-button save-button" />
-                <esfaFeatureEnabled name="@FeatureNames.ProviderTaskList">
-                    <a asp-route="@RouteNames.Dashboard_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-cancel" class="govuk-link govuk-link--no-visited-state">Cancel</a>
-                </esfaFeatureEnabled>
-                <esfaFeatureDisabled name="@FeatureNames.ProviderTaskList">
-                    <a asp-route="@RouteNames.Vacancy_Preview_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-cancel" class="govuk-link govuk-link--no-visited-state">Cancel</a>
-                </esfaFeatureDisabled>
+                <a asp-route="@RouteNames.Vacancy_Preview_Get" esfa-automation="link-cancel" class="govuk-link das-button-link">Cancel</a>
             </div>
         </form>
     </div>

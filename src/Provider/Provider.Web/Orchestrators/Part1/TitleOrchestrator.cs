@@ -56,12 +56,12 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
             var dashboard = await _providerVacancyClient.GetDashboardAsync(ukprn);
             var vm = new TitleViewModel
             {
-                VacancyId = vacancy.Id,
-                Title = vacancy.Title,
-                PageInfo = _utility.GetPartOnePageInfo(vacancy),
-                Ukprn = ukprn,
-                EmployerAccountId = vacancy.EmployerAccountId,
-                HasAnyVacancies = dashboard.Vacancies.Any()
+                    VacancyId = vacancy.Id,
+                    Title = vacancy.Title,
+                    PageInfo = _utility.GetPartOnePageInfo(vacancy),
+                    Ukprn = ukprn,
+                    EmployerAccountId = vacancy.EmployerAccountId,
+                    HasAnyVacancies = dashboard.Vacancies.Any()
             };
 
             if (vacancy.Status == VacancyStatus.Referred)

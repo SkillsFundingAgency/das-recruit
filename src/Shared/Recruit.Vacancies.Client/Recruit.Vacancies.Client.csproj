@@ -40,7 +40,7 @@
     <PackageReference Include="SFA.DAS.VacancyServices.Wage" Version="1.0.25" />
     <PackageReference Include="SimMetrics.Net" Version="1.0.5" />
     <PackageReference Include="WindowsAzure.Storage" Version="9.3.3" />
-    <PackageReference Include="FluentValidation" Version="9.5.4" />
+    <PackageReference Include="FluentValidation" Version="7.5.2" />
     <PackageReference Include="Polly" Version="7.2.2" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="2.1.1" />
     <PackageReference Include="TimeZoneConverter" Version="3.2.0" />

@@ -1,6 +1,5 @@
 using System;
 using System.Linq;
-using System.Security.Claims;
 using Esfa.Recruit.Provider.Web.Configuration.Routing;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Provider.Web.Filters;
@@ -21,8 +20,6 @@ using Esfa.Recruit.Provider.Web.Middleware;
 using System.Threading.Tasks;
 using Esfa.Recruit.Provider.Web.Extensions;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using SFA.DAS.Provider.Shared.UI;
-using SFA.DAS.Provider.Shared.UI.Startup;
 
 namespace Esfa.Recruit.Provider.Web.Configuration
 {
@@ -81,34 +78,28 @@ namespace Esfa.Recruit.Provider.Web.Configuration
             });
             services.Configure<CookieTempDataProviderOptions>(options => options.Cookie.Name = CookieNames.RecruitTempData);
             services.AddSingleton<ITempDataProvider, CookieTempDataProvider>();
-            
+
             services.AddMvc(opts =>
+            {
+                opts.Filters.Add(new AuthorizeFilter(PolicyNames.ProviderPolicyName));
+
+                var jsonInputFormatters = opts.InputFormatters.OfType<JsonInputFormatter>();
+                foreach (var formatter in jsonInputFormatters)
                 {
-                    opts.EnableEndpointRouting = false;
-                    opts.Filters.Add(new AuthorizeFilter(PolicyNames.ProviderPolicyName));
-
-                    var jsonInputFormatters = opts.InputFormatters.OfType<NewtonsoftJsonInputFormatter>();
-                    foreach (var formatter in jsonInputFormatters)
-                    {
-                        formatter.SupportedMediaTypes
-                            .Add(MediaTypeHeaderValue.Parse("application/csp-report"));
-                    }
-
-                    opts.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
-
-                    opts.Filters.AddService<PlannedOutageResultFilter>();
-                    opts.Filters.AddService<GoogleAnalyticsFilter>();
-                    opts.Filters.AddService<ZendeskApiFilter>();
-
-                    opts.AddTrimModelBinderProvider(loggerFactory);
+                    formatter.SupportedMediaTypes
+                        .Add(MediaTypeHeaderValue.Parse("application/csp-report"));
                 }
-            ).AddNewtonsoftJson()
+
+                opts.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
+
+                opts.Filters.AddService<PlannedOutageResultFilter>();
+                opts.Filters.AddService<GoogleAnalyticsFilter>();
+                opts.Filters.AddService<ZendeskApiFilter>();
+
+                opts.AddTrimModelBinderProvider(loggerFactory);
+            })
             .AddFluentValidation()
-            .EnableCookieBanner()
-            .EnableGoogleAnalytics()
-            .EnableCsp()
-            .SetDefaultNavigationSection(NavigationSection.Recruit)
-            .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
+            .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
 
         public static void AddAuthenticationService(this IServiceCollection services, AuthenticationConfiguration authConfig, IRecruitVacancyClient vacancyClient, IHostingEnvironment hostingEnvironment)
@@ -143,7 +134,7 @@ namespace Esfa.Recruit.Provider.Web.Configuration
 
         private static async Task HandleUserSignedIn(SecurityTokenValidatedContext ctx, IRecruitVacancyClient vacancyClient)
         {
-            var user = ctx.Principal.ToVacancyUser();           
+            var user = ctx.Principal.ToVacancyUser();            
             await vacancyClient.UserSignedInAsync(user, UserType.Provider);
         }
     }

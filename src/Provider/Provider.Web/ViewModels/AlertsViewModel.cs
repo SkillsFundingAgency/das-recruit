@@ -9,13 +9,11 @@ namespace Esfa.Recruit.Provider.Web.ViewModels
 
         public bool ShowTransferredVacanciesAlert => TransferredVacanciesAlert != null;
         public bool ShowWithdrawnByQaVacanciesAlert => WithdrawnByQaVacanciesAlert != null;
-        public long? Ukprn { get; set; }
 
-        public AlertsViewModel(ProviderTransferredVacanciesAlertViewModel transferredVacanciesAlert, WithdrawnVacanciesAlertViewModel withdrawnByQaVacanciesAlert, long? ukprn)
+        public AlertsViewModel(ProviderTransferredVacanciesAlertViewModel transferredVacanciesAlert, WithdrawnVacanciesAlertViewModel withdrawnByQaVacanciesAlert)
         {
             TransferredVacanciesAlert = transferredVacanciesAlert;
             WithdrawnByQaVacanciesAlert = withdrawnByQaVacanciesAlert;
-            Ukprn = ukprn;
         }
     }
 }

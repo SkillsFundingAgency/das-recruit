@@ -1,10 +1,9 @@
-using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Shared.Web.Models;
 using Esfa.Recruit.Shared.Web.ViewModels;
 
 namespace Esfa.Recruit.Provider.Web.ViewModels.Part1.EmployerName
 {
-    public class EmployerNameViewModel : VacancyRouteModel
+    public class EmployerNameViewModel
     {
         public string LegalEntityName { get; set; }
         public string ExistingTradingName { get; set; } 
@@ -19,7 +18,5 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.Part1.EmployerName
         public bool HasExistingTradingName => string.IsNullOrWhiteSpace(ExistingTradingName) == false;
 
         public bool HasOnlyOneOrganisation { get; internal set; }
-        public string Title { get; set; }
-        public bool IsTaskListCompleted { get; set; }
     }
 }

@@ -40,8 +40,6 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part2
 
             var vm = new QualificationsViewModel
             {
-                VacancyId = vrm.VacancyId,
-                Ukprn = vrm.Ukprn,
                 Title = vacancy.Title,
                 Qualifications = qualifications.Select(q => new QualificationEditModel
                 { 
@@ -58,8 +56,6 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part2
                    ReviewFieldMappingLookups.GetQualificationsFieldIndicators());
             }
 
-            vm.IsTaskListCompleted = _utility.TaskListCompleted(vacancy);
-
             return vm;
         }
 
@@ -70,7 +66,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part2
 
             await Task.WhenAll(vacancyTask, allQualificationsTask);
 
-            var vm = GetQualificationViewModel(vacancyTask.Result, allQualificationsTask.Result, vrm);
+            var vm = GetQualificationViewModel(vacancyTask.Result, allQualificationsTask.Result);
 
             return vm;
         }
@@ -84,7 +80,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part2
 
             var vacancy = vacancyTask.Result;
 
-            var vm = GetQualificationViewModel(vacancy, allQualificationsTask.Result, vrm);
+            var vm = GetQualificationViewModel(vacancy, allQualificationsTask.Result);
 
             ValidateIndex(index, vacancy.Qualifications);
 
@@ -94,7 +90,6 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part2
             vm.Subject = qualificationToEdit.Subject;
             vm.Grade = qualificationToEdit.Grade;
             vm.Weighting = qualificationToEdit.Weighting;
-            vm.EditIndex = index;
 
             return vm;
         }
@@ -200,12 +195,10 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part2
             throw new ArgumentException($"Invalid qualification index: {index}");
         }
 
-        private QualificationViewModel GetQualificationViewModel(Vacancy vacancy, IList<string> allQualifications, VacancyRouteModel vrm)
+        private QualificationViewModel GetQualificationViewModel(Vacancy vacancy, IList<string> allQualifications)
         {
             var vm = new QualificationViewModel
             {
-                Ukprn = vrm.Ukprn,
-                VacancyId = vrm.VacancyId,
                 Title = vacancy.Title,
                 QualificationTypes = allQualifications,
                 CancelRoute = vacancy.Qualifications?.Any() == true ? RouteNames.Qualifications_Get : RouteNames.Vacancy_Preview_Get

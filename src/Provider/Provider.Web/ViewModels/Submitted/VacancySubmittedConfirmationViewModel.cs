@@ -1,8 +1,6 @@
-﻿using Esfa.Recruit.Provider.Web.RouteModel;
-
-namespace Esfa.Recruit.Provider.Web.ViewModels.Submitted
+﻿namespace Esfa.Recruit.Provider.Web.ViewModels.Submitted
 {
-    public class VacancySubmittedConfirmationViewModel : VacancyRouteModel
+    public class VacancySubmittedConfirmationViewModel
     {
         public string Title { get; set; }
         public string VacancyReference { get; set; }

@@ -39,9 +39,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part2
 
             var vm = new SkillsViewModel
             {
-                Title = vacancy.Title,
-                Ukprn = vrm.Ukprn, 
-                VacancyId = vrm.VacancyId
+                Title = vacancy.Title
             };
 
             if (draftSkills == null)
@@ -58,8 +56,6 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part2
                 vm.Review = await _reviewSummaryService.GetReviewSummaryViewModelAsync(vacancy.VacancyReference.Value,
                     ReviewFieldMappingLookups.GetSkillsFieldIndicators());
             }
-
-            vm.IsTaskListCompleted = _utility.TaskListCompleted(vacancy);
 
             return vm;
         }

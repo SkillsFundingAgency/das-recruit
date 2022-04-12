@@ -43,6 +43,5 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.Dashboard
         public bool ShowNoOfVacanciesClosingSoonWithNoApplications => NoOfVacanciesClosingSoonWithNoApplications > 0;
         public bool HasAnyVacancies => Vacancies.Any();
         public bool HasEmployerReviewPermission { get; set; }
-        public long Ukprn { get; set; }
     }
 }

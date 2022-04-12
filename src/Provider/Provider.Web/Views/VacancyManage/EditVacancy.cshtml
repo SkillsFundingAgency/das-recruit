@@ -25,12 +25,14 @@
 </div>
 <partial name="@PartialNames.EditVacancyPartial" model="Model" />
 
-<div class="govuk-button-group">
-    <form asp-show="@Model.HasChanges" asp-route="@RouteNames.SubmitVacancyChanges_Post" asp-all-route-data="@Model.RouteDictionary" novalidate>
-        <input type="hidden" name="ProposedClosingDate" value="@Model.ProposedClosingDateFormValue" />
-        <input type="hidden" name="ProposedStartDate" value="@Model.ProposedStartDateFormValue" />
-        <button type="submit" class="govuk-button save-button">Publish</button>
-        <a asp-show="@Model.HasChanges" asp-route="@RouteNames.CancelVacancyChanges_Get" asp-all-route-data="@Model.RouteDictionary" class="govuk-link">Cancel</a>
-        <a asp-show="@Model.IsUnchanged" asp-route="@RouteNames.VacancyManage_Get" asp-all-route-data="@Model.RouteDictionary" class="govuk-link">Return to manage vacancy</a>
-    </form>
+<div class="govuk-form-group">
+    <div class="govuk-form-group govuk-!-margin-top-6">
+        <form asp-show="@Model.HasChanges" asp-route="@RouteNames.SubmitVacancyChanges_Post" novalidate>
+            <input type="hidden" name="ProposedClosingDate" value="@Model.ProposedClosingDateFormValue" />
+            <input type="hidden" name="ProposedStartDate" value="@Model.ProposedStartDateFormValue" />
+            <button type="submit" class="govuk-button save-button">Publish</button>
+        </form>
+        <a asp-show="@Model.HasChanges" asp-route="@RouteNames.CancelVacancyChanges_Get" class="govuk-link das-button-link">Cancel</a>
+        <a asp-show="@Model.IsUnchanged" asp-route="@RouteNames.VacancyManage_Get" class="govuk-button">Return to manage vacancy</a>
+    </div>
 </div>    

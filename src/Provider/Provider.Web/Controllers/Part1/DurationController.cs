@@ -6,7 +6,6 @@ using Esfa.Recruit.Provider.Web.Orchestrators.Part1;
 using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Provider.Web.ViewModels.Part1.Duration;
 using Esfa.Recruit.Shared.Web.Extensions;
-using Esfa.Recruit.Shared.Web.FeatureToggle;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,12 +16,10 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
     public class DurationController : Controller
     {
         private readonly DurationOrchestrator _orchestrator;
-        private readonly IFeature _feature;
 
-        public DurationController(DurationOrchestrator orchestrator, IFeature feature)
+        public DurationController(DurationOrchestrator orchestrator)
         {
             _orchestrator = orchestrator;
-            _feature = feature;
         }
         
         [HttpGet("duration", Name = RouteNames.Duration_Get)]
@@ -49,12 +46,10 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
                 vm.PageInfo.SetWizard(wizard);
                 return View(vm);
             }
-            
+
             return wizard
-                ? RedirectToRoute(RouteNames.Wage_Get, new {m.Ukprn, m.VacancyId})
-                : _feature.IsFeatureEnabled(FeatureNames.ProviderTaskList) 
-                    ? RedirectToRoute(RouteNames.ProviderCheckYourAnswersGet, new {m.Ukprn, m.VacancyId}) 
-                    : RedirectToRoute(RouteNames.Vacancy_Preview_Get, new {m.Ukprn, m.VacancyId});
+                ? RedirectToRoute(RouteNames.Wage_Get)
+                : RedirectToRoute(RouteNames.Vacancy_Preview_Get);
         }
     }
 }

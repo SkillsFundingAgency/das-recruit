@@ -19,10 +19,10 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Reports
         }
 
         [HttpGet("create", Name = RouteNames.ProviderApplicationsReportCreate_Get)]
-        public IActionResult Create([FromRoute]long ukprn)
+        public IActionResult Create()
         {
             var vm = _orchestrator.GetCreateViewModel();
-            vm.Ukprn = ukprn;
+
             return View(vm);
         }
 

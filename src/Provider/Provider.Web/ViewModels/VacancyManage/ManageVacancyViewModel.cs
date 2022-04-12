@@ -1,12 +1,11 @@
 using System.Linq;
-using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Provider.Web.ViewModels.VacancyView;
 using Esfa.Recruit.Shared.Web.ViewModels;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
 namespace Esfa.Recruit.Provider.Web.ViewModels.VacancyManage
 {
-    public class ManageVacancyViewModel : VacancyRouteModel
+    public class ManageVacancyViewModel
     {
         public string Title { get; internal set; }
         public VacancyStatus Status { get; internal set; }

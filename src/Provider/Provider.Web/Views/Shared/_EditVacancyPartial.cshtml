@@ -7,7 +7,7 @@
     <div class="govuk-grid-column-one-third" id="closingDateSection">
         <h3 class="govuk-heading-s govuk-!-margin-top-0">Closing Date</h3>
         <p id="vacancy-closing-date">@Model.DisplayableClosingDate</p>
-        <a class="govuk-body govuk-link" asp-route="@RouteNames.VacancyEditDates_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="edit-closing-date">Edit</a>
+        <a class="govuk-body govuk-link" asp-route="@RouteNames.VacancyEditDates_Get" esfa-automation="edit-closing-date">Edit</a>
     </div>
 </div>
 <div class="govuk-grid-row">
@@ -35,7 +35,7 @@
             <li id="possibleStartDateSection">
                 <h3 class="govuk-heading-s">Possible start date</h3>
                 <p class="govuk-body">@Model.DisplayableStartDate</p>
-                <a asp-route="@RouteNames.VacancyEditDates_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="edit-start-date" class="govuk-body govuk-link">Edit</a>
+                <a asp-route="@RouteNames.VacancyEditDates_Get" esfa-automation="edit-start-date" class="govuk-body govuk-link">Edit</a>
             </li>
             <li>
                 <h3 class="govuk-heading-s">Apprenticeship level</h3>

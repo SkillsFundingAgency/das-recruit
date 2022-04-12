@@ -1,10 +1,9 @@
 ﻿using System.Collections.Generic;
-using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
 namespace Esfa.Recruit.Provider.Web.ViewModels.Part2.Qualifications
 {
-    public class QualificationViewModel : VacancyRouteModel
+    public class QualificationViewModel
     {
         public string Title { get; internal set; }
 

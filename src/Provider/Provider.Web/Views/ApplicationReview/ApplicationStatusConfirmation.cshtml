@@ -31,7 +31,7 @@
         <div class="govuk-inset-text">
             <p>This action cannot be undone.</p>
         </div>
-        <form asp-route="@RouteNames.ApplicationReviewConfirmation_Post"  asp-route-applicationReviewId="@Model.ApplicationReviewId" asp-route-ukprn="@Model.Ukprn" asp-route-vacancyId="@Model.VacancyId" >
+        <form asp-route="@RouteNames.ApplicationReviewConfirmation_Post">
             @Html.HiddenFor(model => model.Outcome)
             @Html.HiddenFor(model => model.CandidateFeedback)
             @Html.HiddenFor(model => model.Name)

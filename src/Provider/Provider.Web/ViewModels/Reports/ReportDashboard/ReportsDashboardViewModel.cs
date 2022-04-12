@@ -16,7 +16,6 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.Reports.ReportDashboard
         public string ProcessingCaption => $"{"report".ToQuantity(ProcessingCount)}";
 
         public bool IsProcessingReports => ProcessingCount > 0;
-        public long Ukprn { get; set; }
     }
 
     public class ReportRowViewModel
