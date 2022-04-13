@@ -11,12 +11,9 @@
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-        
         <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState}' />
         <partial name="@PartialNames.ReviewSummary" for="Review" />
-
         <form asp-route="@RouteNames.WorkExperience_Post" asp-all-route-data="@Model.RouteDictionary">
-
             <div esfa-validation-marker-for="WorkExperience" class="govuk-form-group">
                 <span class="govuk-caption-xl">@Model.Title</span>
                 <h1 class="govuk-label-wrapper">
@@ -25,11 +22,10 @@
                     </label>
                 </h1>
                 <span class="govuk-hint">Describe what an average day or week will be like and what tasks they could be doing.</span>
-                <span class="govuk-inset-text">You must include at least 3 bullet points or your vacancy will be rejected.</span>
+                <div class="govuk-inset-text">You must include at least 3 bullet points or your vacancy will be rejected.</div>
                 <span esfa-validation-message-for="WorkExperience" class="govuk-error-message"></span>
                 <textarea asp-for="WorkExperience" class="govuk-textarea html-editor" rows="9"></textarea>
             </div>
-
             <div class="govuk-button-group">
                 <input type="submit" value="Save and continue" esfa-automation="btn-continue" class="govuk-button save-button" />
                 <a asp-route="@RouteNames.Dashboard_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-cancel" class="govuk-link govuk-link--no-visited-state">Cancel</a>
