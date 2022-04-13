@@ -144,7 +144,7 @@
                     Pay rate
                 </dt>
                 <dd class="govuk-summary-list__value">
-                    @Model.WageText
+                    @Model.WageText a year
                 </dd>
                 <dd class="govuk-summary-list__actions">
                     <a class="govuk-link govuk-link--no-visited-state float-right-desktop" asp-route="@RouteNames.Wage_Get">Change<span class="govuk-visually-hidden"> wage</span></a>
@@ -196,7 +196,7 @@
                     Number of positions
                 </dt>
                 <dd class="govuk-summary-list__value">
-                    @Model.NumberOfPositions
+                    @Model.NumberOfPositions available
                 </dd>
                 <dd class="govuk-summary-list__actions">
                     <a class="govuk-link govuk-link--no-visited-state float-right-desktop" asp-route="@RouteNames.NumberOfPositions_Get">Change<span class="govuk-visually-hidden"> number of positions</span></a>
@@ -253,7 +253,15 @@
                     Other things to consider
                 </dt>
                 <dd class="govuk-summary-list__value">
-                    @Model.ThingsToConsider
+                    @if (string.IsNullOrEmpty(Model.ThingsToConsider))
+                    {
+                        @:None
+                    }
+                    else
+                    {
+                        @Model.ThingsToConsider    
+                    }
+
                 </dd>
                 <dd class="govuk-summary-list__actions">
                     <a class="govuk-link govuk-link--no-visited-state float-right-desktop" asp-route="@RouteNames.Considerations_Get">Change<span class="govuk-visually-hidden"> considerations</span></a>

@@ -37,7 +37,12 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part2
                 ProviderContactName = vacancy.ProviderContact?.Name,
                 ProviderContactEmail = vacancy.ProviderContact?.Email,
                 ProviderContactPhone = vacancy.ProviderContact?.Phone,
-                ProviderName = vacancy.TrainingProvider?.Name
+                ProviderName = vacancy.TrainingProvider?.Name,
+                VacancyId = vrm.VacancyId,
+                Ukprn = vrm.Ukprn,
+                AddContactDetails = !string.IsNullOrEmpty(vacancy.ProviderContact?.Name) || 
+                                    !string.IsNullOrEmpty(vacancy.ProviderContact?.Email) ||
+                                    !string.IsNullOrEmpty(vacancy.ProviderContact?.Phone) ? true : (bool?) null
             };
 
             if (vacancy.Status == VacancyStatus.Referred)
@@ -45,6 +50,8 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part2
                 vm.Review = await _reviewSummaryService.GetReviewSummaryViewModelAsync(vacancy.VacancyReference.Value,
                    ReviewFieldMappingLookups.GetProviderContactDetailsFieldIndicators());
             }
+
+            vm.IsTaskListCompleted = _utility.TaskListCompleted(vacancy);
 
             return vm;
         }

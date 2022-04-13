@@ -69,7 +69,6 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             var vm = new VacancyPreviewViewModel();
             await _vacancyDisplayMapper.MapFromVacancyAsync(vm, vacancy);
             
-            vm.HasProgramme = vacancy.ProgrammeId != null;
             vm.HasWage = vacancy.Wage != null;
             vm.CanShowReference = vacancy.Status != VacancyStatus.Draft;
             vm.CanShowDraftHeader = vacancy.Status == VacancyStatus.Draft;
@@ -77,6 +76,9 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             vm.RequiresEmployerReview = hasProviderReviewPermission;
 
             if (programme != null) vm.ApprenticeshipLevel = programme.ApprenticeshipLevel;
+            
+            vm.Ukprn = vrm.Ukprn;
+            vm.VacancyId = vrm.VacancyId;
 
             if (vacancy.Status == VacancyStatus.Referred)
             {

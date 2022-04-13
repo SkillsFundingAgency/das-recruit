@@ -9,5 +9,6 @@ namespace Esfa.Recruit.Shared.Web.ViewModels.Alerts
         public int ClosedVacanciesCount => ClosedVacancies.Count;
 
         public bool HasMultipleClosedVacancies => ClosedVacanciesCount > 1;
+        public long Ukprn { get; set; }
     }
 }

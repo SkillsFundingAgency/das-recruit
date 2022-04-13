@@ -84,6 +84,7 @@
         public const string Dates_Get = "Dates_Get";
         public const string Dates_Post = "Dates_Post";
         public const string Vacancy_Preview_Get = "Vacancy_Preview_Get";
+        public const string Vacancy_Advert_Preview_Get = "Vacancy_Advert_Preview_Get";
         public const string VacancyDescription_Index_Get = "VacancyDescription_Index_Get";
         public const string VacancyDescription_Index_Post = "VacancyDescription_Index_Post";
         public const string VacancyEdit_Get = "VacancyEdit_Get";
@@ -111,5 +112,8 @@
         public const string CreateVacancyStart = "provider-task-list-start";
         public const string ProviderTaskListCreateGet = "provider-task-list-create";
         public const string ProviderTaskListGet = "provider-task-list-get";
+        public const string ProviderCheckYourAnswersGet = "provider-check-your-answers-get";
+        public const string FutureProspects_Get = "FutureProspects_Get";
+        public const string FutureProspects_Post = "FutureProspects_Post";
     }
 }

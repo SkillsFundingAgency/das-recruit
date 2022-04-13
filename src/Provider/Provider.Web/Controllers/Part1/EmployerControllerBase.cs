@@ -3,6 +3,7 @@ using Esfa.Recruit.Provider.Web.Configuration;
 using Esfa.Recruit.Provider.Web.Configuration.Routing;
 using Esfa.Recruit.Provider.Web.Extensions;
 using Esfa.Recruit.Provider.Web.Models;
+using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Shared.Web.Mappers;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -40,12 +41,12 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
             Response.Cookies.DeleteSessionCookie(_hostingEnvironment, CookieNames.VacancyEmployerInfo);
         }
 
-        protected IActionResult CancelAndRedirect(bool wizard)
+        protected IActionResult CancelAndRedirect(bool wizard, VacancyRouteModel vacancyRouteModel)
         {
             DeleteVacancyEmployerInfoCookie();
             return wizard 
-                ? RedirectToRoute(RouteNames.Vacancies_Get) 
-                : RedirectToRoute(RouteNames.Vacancy_Preview_Get, Anchors.AboutEmployerSection);
+                ? RedirectToRoute(RouteNames.Vacancies_Get, new {vacancyRouteModel.Ukprn, vacancyRouteModel.VacancyId}) 
+                : RedirectToRoute(RouteNames.Vacancy_Preview_Get, new {vacancyRouteModel.Ukprn, vacancyRouteModel.VacancyId}, Anchors.AboutEmployerSection);
         }
     }
 }

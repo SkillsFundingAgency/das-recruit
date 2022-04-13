@@ -38,13 +38,16 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
 
             var vm = new DurationViewModel
             {
+                Title = vacancy.Title,
                 Duration = vacancy.Wage?.Duration?.ToString(),
                 DurationUnit = vacancy.Wage?.DurationUnit ?? DurationUnit.Month,
                 WorkingWeekDescription = vacancy.Wage?.WorkingWeekDescription,
                 WeeklyHours = $"{vacancy.Wage?.WeeklyHours:0.##}",
                 PageInfo = _utility.GetPartOnePageInfo(vacancy),
                 TrainingTitle = training?.Title,
-                TrainingDurationMonths = training?.Duration ?? 0
+                TrainingDurationMonths = training?.Duration ?? 0,
+                Ukprn = vrm.Ukprn,
+                VacancyId = vrm.VacancyId
             };
 
             if (vacancy.Status == VacancyStatus.Referred)
