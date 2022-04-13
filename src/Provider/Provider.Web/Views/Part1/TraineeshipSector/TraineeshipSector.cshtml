@@ -7,22 +7,26 @@
     ViewBag.GaData.Vpv = "/recruitment/provider/page-create-vacancy-sector";
     ViewBag.Title = "Select the traineeship sector";
 }
+
+@section BackLink {
+    <a href="#" class="govuk-back-link">Back</a>
+}
+
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
   
         <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }'/>
         <partial name="@PartialNames.ReviewSummary" for="Review"/>
-        <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">
-            <span class="govuk-caption-xl">@Model.Title</span>
-            Select the traineeship sector
-        </h1>
+        <span class="govuk-caption-xl">@Model.Title</span>
         <form asp-route="@RouteNames.Training_Post" asp-route-vacancyId="@Model.VacancyId" asp-route-ukprn="@Model.Ukprn" asp-route-wizard="@Model.PageInfo.IsWizard" novalidate>
 
 
             <div esfa-validation-marker-for="SelectedRouteId" class="govuk-form-group">
-                <label asp-for="SelectedRouteId" class="govuk-label govuk-label-s">
-                    <span class="govuk-hint">Enter apprenticeship training title</span>
-                </label>
+                <h1 class="govuk-label-wrapper">
+                    <label class="govuk-label govuk-label--xl" asp-for="SelectedRouteId">
+                        Select the traineeship sector
+                    </label>
+                </h1>
                 <span esfa-validation-message-for="SelectedRouteId" class="govuk-error-message"></span>
                 <div class="govuk-!-margin-bottom-2">
                     <select asp-for="SelectedRouteId" class="govuk-select">
