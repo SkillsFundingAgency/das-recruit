@@ -75,18 +75,38 @@
                         </li>
                     }
                     <li class="das-task-list__item">
-                        @if (!Model.HasSelectedLegalEntity)
+                        @if (_serviceParameters.VacancyType == VacancyType.Apprenticeship)
                         {
-                            <span class="das-task-list__task-name">
-                                Training course
-                            </span>
+                            if (!Model.HasSelectedLegalEntity)
+                            {
+                                <span class="das-task-list__task-name">
+                                    Training course
+                                </span>
+                            }
+                            else
+                            {
+                                <a class="govuk-link govuk-link--no-visited-state" asp-all-route-data="@Model.RouteDictionary" asp-route="@RouteNames.Training_Get">
+                                    Training course
+                                </a>
+                            }
                         }
                         else
                         {
-                            <a class="govuk-link govuk-link--no-visited-state" asp-all-route-data="@Model.RouteDictionary" asp-route="@RouteNames.Training_Get">
-                                Training course
-                            </a>
+                            if (!Model.HasSelectedLegalEntity)
+                            {
+                                <span class="das-task-list__task-name">
+                                    Traineeship sector
+                                </span>
+                            }
+                            else
+                            {
+                                <a class="govuk-link govuk-link--no-visited-state" asp-all-route-data="@Model.RouteDictionary" asp-route="@RouteNames.TraineeSector_Get">
+                                    Traineeship sector
+                                </a>
+                            }
                         }
+                        
+                       
                     </li>
                     <li class="das-task-list__item">
                         @if (!Model.HasProgramme)
