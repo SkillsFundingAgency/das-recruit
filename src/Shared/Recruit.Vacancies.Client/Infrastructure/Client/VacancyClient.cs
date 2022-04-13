@@ -256,6 +256,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return _apprenticeshipProgrammesProvider.GetApprenticeshipProgrammesAsync();
         }
 
+        public Task<IEnumerable<IApprenticeshipRoute>> GetApprenticeshipRoutes()
+        {
+            return _apprenticeshipRouteProvider.GetApprenticeshipRoutesAsync();
+        }
+
         public Task<IApprenticeshipProgramme> GetApprenticeshipProgrammeAsync(string programmeId)
         {
             return _apprenticeshipProgrammesProvider.GetApprenticeshipProgrammeAsync(programmeId);

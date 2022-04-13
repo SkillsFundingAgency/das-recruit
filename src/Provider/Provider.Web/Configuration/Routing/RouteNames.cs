@@ -117,5 +117,7 @@
         public const string FutureProspects_Post = "FutureProspects_Post";
         public const string WorkExperience_Get = "work-experience-get";
         public const string WorkExperience_Post = "work-experience-post";
+        public const string TraineeSector_Get = "trainee-sector-get";
+        public const string TraineeSector_Post = "trainee-sector-post";
     }
 }
