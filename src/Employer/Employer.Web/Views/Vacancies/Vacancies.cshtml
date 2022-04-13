@@ -22,15 +22,12 @@
 
 <partial name="@PartialNames.Alerts" for="Alerts" />
 
-<div class="govuk-grid-row">
-    <div class="govuk-grid-column-full">
-        <div asp-show="Model.HasWarning" class="warning-summary govuk-!-margin-bottom-0">
-            <p>@Model.WarningMessage</p>
-        </div>
-        <div asp-show="Model.HasInfo" class="info-summary govuk-!-margin-bottom-0">
-            <p>@Model.InfoMessage</p>
-        </div>
-    </div>
+<div asp-show="Model.HasWarning" class="das-notification das-notification--warning">
+    <p class="das-notification__body">@Model.WarningMessage</p>
+</div>
+
+<div asp-show="Model.HasInfo" class="das-notification das-notification--information">
+    <p class="das-notification__body">>@Model.InfoMessage</p>
 </div>
 
 @section BackLink

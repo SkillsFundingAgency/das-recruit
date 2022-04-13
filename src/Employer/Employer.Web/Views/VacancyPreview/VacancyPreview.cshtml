@@ -143,8 +143,8 @@
     } 
 }
 
-<div asp-show="Model.CanShowVacancyClonedStatusHeader" class="info-summary highlight-summary">
-    <p class="govuk-!-margin-bottom-0 govuk-body">@Model.VacancyClonedInfoMessage</p>
+<div asp-show="Model.CanShowVacancyClonedStatusHeader" class="das-notification das-notification--information">
+    <p class="das-notification__body">@Model.VacancyClonedInfoMessage</p>
 </div>
 
 <div asp-show="@Model.IsTransferred">
