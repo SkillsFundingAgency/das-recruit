@@ -242,6 +242,30 @@
     },
     {
       "apiVersion": "2020-10-01",
+      "name": "webjob-recruit-app-insights",
+      "type": "Microsoft.Resources/deployments",
+      "resourceGroup": "[variables('resourceGroupName')]",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(variables('deploymentUrlBase'),'application-insights.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "appInsightsName": {
+            "value": "[variables('webjobAppServiceName')]"
+          },
+          "attachedService": {
+            "value": "[variables('webjobAppServiceName')]"
+          }
+        }
+      },
+      "dependsOn": [
+        "[variables('resourceGroupName')]"
+      ]
+    },
+    {
+      "apiVersion": "2020-10-01",
       "name": "cosmos-db",
       "type": "Microsoft.Resources/deployments",
       "resourceGroup": "[variables('resourceGroupName')]",
@@ -455,7 +479,7 @@
                 {
                   "name": "LoggingRedisConnectionString",
                   "value": "[parameters('loggingRedisConnectionString')]"
-                },                
+                },
                 {
                   "name": "Cdn:Url",
                   "value": "[parameters('cdnUrl')]"
@@ -820,6 +844,10 @@
                 {
                   "name": "ConfigNames",
                   "value": "[variables('jobsConfigNames')]"
+                },
+                {
+                  "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
+                  "value": "[reference('webjob-recruit-app-insights').outputs.InstrumentationKey.value]"
                 }
               ]
             }
