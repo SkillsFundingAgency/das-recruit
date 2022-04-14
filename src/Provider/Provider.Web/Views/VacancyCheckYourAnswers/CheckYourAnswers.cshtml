@@ -65,42 +65,68 @@
                         @Model.RouteTitle
                     </dd>
                     <dd class="govuk-summary-list__actions">
-                        <a class="govuk-link govuk-link--no-visited-state float-right-desktop" asp-route="@RouteNames.TraineeSector_Get" asp-all-route-data="@Model.RouteDictionary">Change<span class="govuk-visually-hidden"> training course</span></a>
+                        <a class="govuk-link govuk-link--no-visited-state float-right-desktop" asp-route="@RouteNames.TraineeSector_Get" asp-all-route-data="@Model.RouteDictionary">Change<span class="govuk-visually-hidden"> sector</span></a>
                     </dd>
                 </div>
             }
             <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">
-                    Summary of the apprenticeship
-                </dt>
+                @if (_serviceParameters.VacancyType == VacancyType.Apprenticeship)
+                {
+                    <dt class="govuk-summary-list__key">
+                        Summary of the apprenticeship
+                    </dt>
+                }
+                else
+                {
+                    <dt class="govuk-summary-list__key">
+                        Summary of the traineeship
+                    </dt>
+                }
                 <dd class="govuk-summary-list__value">
                     @Model.ShortDescription
                 </dd>
                 <dd class="govuk-summary-list__actions">
-                    <a class="govuk-link govuk-link--no-visited-state float-right-desktop" asp-route="@RouteNames.ShortDescription_Get" asp-all-route-data="@Model.RouteDictionary">Change<span class="govuk-visually-hidden"> summary of the apprenticeship</span></a>
+                    <a class="govuk-link govuk-link--no-visited-state float-right-desktop" asp-route="@RouteNames.ShortDescription_Get" asp-all-route-data="@Model.RouteDictionary">Change<span class="govuk-visually-hidden"> summary of the vacancy</span></a>
                 </dd>
             </div>
-            <div class="govuk-summary-list__row govuk-summary-list--no-border">
-                <dt class="govuk-summary-list__key">
-                    What will the apprentice be doing?
-                </dt>
-                <dd class="govuk-summary-list__value">
-                    @Html.Raw(Model.VacancyDescription)
-                </dd>
-                <dd class="govuk-summary-list__actions">
-                    <a class="govuk-link govuk-link--no-visited-state float-right-desktop" asp-route="@RouteNames.VacancyDescription_Index_Get" asp-all-route-data="@Model.RouteDictionary">Change<span class="govuk-visually-hidden"> about the apprenticeship</span></a>
-                </dd>
-            </div>
-            <div class="govuk-summary-list__row govuk-summary-list--no-border">
-                <dt class="govuk-summary-list__key">
-                    Training and qualification levels
-                </dt>
-                <dd class="govuk-summary-list__value">
-                    @Html.Raw(Model.TrainingDescription)
-                </dd>
-                <dd class="govuk-summary-list__actions">
-                </dd>
-            </div>
+            @if (_serviceParameters.VacancyType == VacancyType.Apprenticeship)
+            {
+                <div class="govuk-summary-list__row govuk-summary-list--no-border">
+                    <dt class="govuk-summary-list__key">
+                        What will the apprentice be doing?
+                    </dt>
+                    <dd class="govuk-summary-list__value">
+                        @Html.Raw(Model.VacancyDescription)
+                    </dd>
+                    <dd class="govuk-summary-list__actions">
+                        <a class="govuk-link govuk-link--no-visited-state float-right-desktop" asp-route="@RouteNames.VacancyDescription_Index_Get" asp-all-route-data="@Model.RouteDictionary">Change<span class="govuk-visually-hidden"> about the apprenticeship</span></a>
+                    </dd>
+                </div>
+                <div class="govuk-summary-list__row govuk-summary-list--no-border">
+                    <dt class="govuk-summary-list__key">
+                        Training and qualification levels
+                    </dt>
+                    <dd class="govuk-summary-list__value">
+                        @Html.Raw(Model.TrainingDescription)
+                    </dd>
+                    <dd class="govuk-summary-list__actions">
+                    </dd>
+                </div>
+            }
+            else
+            {
+                <div class="govuk-summary-list__row govuk-summary-list--no-border">
+                    <dt class="govuk-summary-list__key">
+                        Training provided
+                    </dt>
+                    <dd class="govuk-summary-list__value">
+                        @Html.Raw(Model.TrainingDescription)
+                    </dd>
+                    <dd class="govuk-summary-list__actions">
+                        <a class="govuk-link govuk-link--no-visited-state float-right-desktop" asp-route="@RouteNames.VacancyDescription_Index_Get" asp-all-route-data="@Model.RouteDictionary">Change<span class="govuk-visually-hidden"> training provided</span></a>
+                    </dd>
+                </div>
+            }
         </dl>
         <h2 class="govuk-heading-m">Employment details</h2>
         <dl class="govuk-summary-list govuk-!-margin-bottom-9">
@@ -125,6 +151,20 @@
                 <dd class="govuk-summary-list__actions">
                 </dd>
             </div>
+            @if (_serviceParameters.VacancyType == VacancyType.Traineeship)
+            {
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
+                        Work experience
+                    </dt>
+                    <dd class="govuk-summary-list__value">
+                        @Model.WorkExperience
+                    </dd>
+                    <dd class="govuk-summary-list__actions">
+                        <a class="govuk-link govuk-link--no-visited-state float-right-desktop" asp-route="@RouteNames.WorkExperience_Get" asp-all-route-data="@Model.RouteDictionary">Change<span class="govuk-visually-hidden"> work experience</span></a>
+                    </dd>
+                </div>
+            }
             <div class="govuk-summary-list__row govuk-summary-list--no-border">
                 <dt class="govuk-summary-list__key">
                     Duration
@@ -156,27 +196,30 @@
                 <dd class="govuk-summary-list__actions">
                 </dd>
             </div>
-            <div class="govuk-summary-list__row govuk-summary-list--no-border">
-                <dt class="govuk-summary-list__key">
-                    Pay rate
-                </dt>
-                <dd class="govuk-summary-list__value">
-                    @Model.WageText
-                </dd>
-                <dd class="govuk-summary-list__actions">
-                    <a class="govuk-link govuk-link--no-visited-state float-right-desktop" asp-route="@RouteNames.Wage_Get" asp-all-route-data="@Model.RouteDictionary">Change<span class="govuk-visually-hidden"> wage</span></a>
-                </dd>
-            </div>
-            <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">
-                    Extra information about pay (optional)
-                </dt>
-                <dd class="govuk-summary-list__value">
-                    @(Model.HasWageInfo?Model.WageInfo:"None")
-                </dd>
-                <dd class="govuk-summary-list__actions">
-                </dd>
-            </div>
+            @if (_serviceParameters.VacancyType == VacancyType.Apprenticeship)
+            {
+                <div class="govuk-summary-list__row govuk-summary-list--no-border">
+                    <dt class="govuk-summary-list__key">
+                        Pay rate
+                    </dt>
+                    <dd class="govuk-summary-list__value">
+                        @Model.WageText
+                    </dd>
+                    <dd class="govuk-summary-list__actions">
+                        <a class="govuk-link govuk-link--no-visited-state float-right-desktop" asp-route="@RouteNames.Wage_Get" asp-all-route-data="@Model.RouteDictionary">Change<span class="govuk-visually-hidden"> wage</span></a>
+                    </dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
+                        Extra information about pay (optional)
+                    </dt>
+                    <dd class="govuk-summary-list__value">
+                        @(Model.HasWageInfo?Model.WageInfo:"None")
+                    </dd>
+                    <dd class="govuk-summary-list__actions">
+                    </dd>
+                </div>
+            }
             <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key">
                     Number of positions
@@ -218,22 +261,25 @@
                     <a class="govuk-link govuk-link--no-visited-state float-right-desktop" asp-route="@RouteNames.Skills_Get" asp-all-route-data="@Model.RouteDictionary">Change<span class="govuk-visually-hidden"> skills</span></a>
                 </dd>
             </div>
-            <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">
-                    Qualifications required
-                </dt>
-                <dd class="govuk-summary-list__value">
-                    <ul class="govuk-list govuk-list--bullet">
-                        @foreach (var qual in Model.Qualifications)
-                        {
-                            <li>@qual</li>
-                        }
-                    </ul>
-                </dd>
-                <dd class="govuk-summary-list__actions">
-                    <a class="govuk-link govuk-link--no-visited-state float-right-desktop" asp-route="@RouteNames.Qualifications_Get" asp-all-route-data="@Model.RouteDictionary">Change<span class="govuk-visually-hidden"> qualifications</span></a>
-                </dd>
-            </div>
+            @if (_serviceParameters.VacancyType == VacancyType.Apprenticeship)
+            {
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
+                        Qualifications required
+                    </dt>
+                    <dd class="govuk-summary-list__value">
+                        <ul class="govuk-list govuk-list--bullet">
+                            @foreach (var qual in Model.Qualifications)
+                            {
+                                <li>@qual</li>
+                            }
+                        </ul>
+                    </dd>
+                    <dd class="govuk-summary-list__actions">
+                        <a class="govuk-link govuk-link--no-visited-state float-right-desktop" asp-route="@RouteNames.Qualifications_Get" asp-all-route-data="@Model.RouteDictionary">Change<span class="govuk-visually-hidden"> qualifications</span></a>
+                    </dd>
+                </div>                
+            }
             <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key">
                     Future prospects

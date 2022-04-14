@@ -117,6 +117,8 @@ namespace Esfa.Recruit.Provider.Web.Mappings
                 vm.RouteTitle = route.Route;
             }
 
+            vm.WorkExperience = vacancy.WorkExperience;
+
             vm.VacancyType = vacancy.VacancyType;
         }
     }
