@@ -1,5 +1,4 @@
-﻿@using Esfa.Recruit.Vacancies.Client.Domain.Entities
-@model Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview.VacancyPreviewViewModel
+﻿@model Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview.VacancyPreviewViewModel
 
 @{
     ViewBag.GaData.Vpv = "/recruitment/provider/check-your-answers";
@@ -42,17 +41,34 @@
                     </dd>
                 </div>   
             }
-            <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">
-                    Training course
-                </dt>
-                <dd class="govuk-summary-list__value">
-                    @Model.TrainingTitle
-                </dd>
-                <dd class="govuk-summary-list__actions">
-                    <a class="govuk-link govuk-link--no-visited-state float-right-desktop" asp-route="@RouteNames.Training_Get" asp-all-route-data="@Model.RouteDictionary">Change<span class="govuk-visually-hidden"> training course</span></a>
-                </dd>
-            </div>
+            @if (_serviceParameters.VacancyType == VacancyType.Apprenticeship)
+            {
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
+                        Training course
+                    </dt>
+                    <dd class="govuk-summary-list__value">
+                        @Model.TrainingTitle
+                    </dd>
+                    <dd class="govuk-summary-list__actions">
+                        <a class="govuk-link govuk-link--no-visited-state float-right-desktop" asp-route="@RouteNames.Training_Get" asp-all-route-data="@Model.RouteDictionary">Change<span class="govuk-visually-hidden"> training course</span></a>
+                    </dd>
+                </div>
+            }
+            else
+            {
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
+                        Traineeship sector
+                    </dt>
+                    <dd class="govuk-summary-list__value">
+                        @Model.RouteTitle
+                    </dd>
+                    <dd class="govuk-summary-list__actions">
+                        <a class="govuk-link govuk-link--no-visited-state float-right-desktop" asp-route="@RouteNames.TraineeSector_Get" asp-all-route-data="@Model.RouteDictionary">Change<span class="govuk-visually-hidden"> training course</span></a>
+                    </dd>
+                </div>
+            }
             <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key">
                     Summary of the apprenticeship
