@@ -34,7 +34,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part1
                 .ReturnsAsync(vacancy);
             recruitVacancyClient.Setup(x => x.GetApprenticeshipRoutes()).ReturnsAsync(routes);
 
-            var actual = await orchestrator.GetTraineeViewModelAsync(vacancyRouteModel);
+            var actual = await orchestrator.GetTraineeSectorViewModelAsync(vacancyRouteModel);
 
             actual.Routes.Should().BeEquivalentTo(routes.Select(c => new ApprenticeshipRouteViewModel
             {

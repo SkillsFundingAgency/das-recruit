@@ -33,7 +33,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
             _reviewSummaryService = reviewSummaryService;
         }
 
-        public async Task<TraineeSectorViewModel> GetTraineeViewModelAsync(VacancyRouteModel vrm)
+        public async Task<TraineeSectorViewModel> GetTraineeSectorViewModelAsync(VacancyRouteModel vrm)
         {
             var vacancyTask = _utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.TraineeSector_Get);
             var routesTask = _vacancyClient.GetApprenticeshipRoutes();
@@ -54,7 +54,8 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
                     Name = c.Route
                 }),
                 PageInfo = _utility.GetPartOnePageInfo(vacancy),
-                Ukprn = vrm.Ukprn
+                Ukprn = vrm.Ukprn,
+                IsTaskListCompleted = _utility.TaskListCompleted(vacancy)
             };
             
             if (vacancy.Status == VacancyStatus.Referred)
