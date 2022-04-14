@@ -6,6 +6,7 @@ using Esfa.Recruit.Provider.Web;
 using Esfa.Recruit.Provider.Web.Configuration.Routing;
 using Esfa.Recruit.Provider.Web.Orchestrators.Part1;
 using Esfa.Recruit.Provider.Web.RouteModel;
+using Esfa.Recruit.Provider.Web.ViewModels.Part1.Training;
 using Esfa.Recruit.Shared.Web.ViewModels;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
@@ -19,7 +20,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part1
     public class TraineeOrchestratorTests
     {
         [Test, MoqAutoData]
-        public async Task Then_Returns_Routes_In_The_View_Model(
+        public async Task When_Calling_Get_Then_Returns_Routes_In_The_View_Model(
             Vacancy vacancy,
             VacancyRouteModel vacancyRouteModel,
             List<IApprenticeshipRoute> routes,
@@ -41,6 +42,32 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part1
             actual.Title.Should().Be(vacancy.Title);
             actual.VacancyId.Should().Be(vacancy.Id);
             actual.Ukprn.Should().Be(vacancyRouteModel.Ukprn);
+        }
+        
+        [Test, MoqAutoData, Ignore("bad")]
+        public async Task When_Calling_Post_Then_Updates_VacancyClient(
+            Vacancy vacancy,
+            TraineeSectorEditModel editModel,
+            List<IApprenticeshipRoute> routes,
+            [Frozen] Mock<IUtility> utility,
+            [Frozen] Mock<IRecruitVacancyClient> recruitVacancyClient,
+            TraineeSectorOrchestrator orchestrator)
+        {
+            utility
+                .Setup(x => x.GetAuthorisedVacancyForEditAsync(editModel, RouteNames.TraineeSector_Get))
+                .ReturnsAsync(vacancy);
+            recruitVacancyClient.Setup(x => x.GetApprenticeshipRoutes()).ReturnsAsync(routes);
+
+            var actual = await orchestrator.PostTraineeEditModelAsync(editModel);
+
+            actual.Routes.Should().BeEquivalentTo(routes.Select(c => new ApprenticeshipRouteViewModel
+            {
+                Id = c.Id,
+                Name = c.Route
+            }));
+            actual.Title.Should().Be(vacancy.Title);
+            actual.VacancyId.Should().Be(vacancy.Id);
+            actual.Ukprn.Should().Be(editModel.Ukprn);
         }
     }
 }

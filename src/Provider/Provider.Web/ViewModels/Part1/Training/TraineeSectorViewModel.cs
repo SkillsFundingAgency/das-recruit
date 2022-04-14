@@ -4,7 +4,7 @@ using Esfa.Recruit.Shared.Web.ViewModels;
 
 namespace Esfa.Recruit.Provider.Web.ViewModels.Part1.Training
 {
-    public class TraineeViewModel : VacancyRouteModel
+    public class TraineeSectorViewModel : VacancyRouteModel
     {
         public string Title { get; set; }
         public IEnumerable<ApprenticeshipRouteViewModel> Routes { get; set; }

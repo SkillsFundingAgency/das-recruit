@@ -24,7 +24,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
             _reviewSummaryService = reviewSummaryService;
         }
 
-        public async Task<TraineeViewModel> GetTraineeViewModelAsync(VacancyRouteModel vrm)
+        public async Task<TraineeSectorViewModel> GetTraineeViewModelAsync(VacancyRouteModel vrm)
         {
             var vacancyTask = _utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.TraineeSector_Get);
             var routesTask = _vacancyClient.GetApprenticeshipRoutes();
@@ -34,7 +34,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
             var vacancy = vacancyTask.Result;
             var routes = routesTask.Result;
             
-            var vm = new TraineeViewModel
+            var vm = new TraineeSectorViewModel
             {
                 Title = vacancy.Title,
                 VacancyId = vacancy.Id,
@@ -55,6 +55,11 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
             }
 
             return vm;
+        }
+
+        public async Task<TraineeSectorViewModel> PostTraineeEditModelAsync(TraineeSectorEditModel editModel)
+        {
+            return null;
         }
     }
 }
