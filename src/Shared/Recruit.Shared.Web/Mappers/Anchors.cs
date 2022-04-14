@@ -42,6 +42,7 @@
         public const string ApplicationUrl = "ApplicationUrl";
         public const string ApplicationInstructions = "ApplicationInstructions";
         public const string WorkExperience = "WorkExperience";
+        public const string TraineeSector = "TraineeSector";
 
         //Wage
         public const string WageTypeHeading = "WageTypeHeading";
