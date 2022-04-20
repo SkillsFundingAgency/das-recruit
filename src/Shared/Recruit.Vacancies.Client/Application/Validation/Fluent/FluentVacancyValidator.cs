@@ -256,22 +256,27 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
 
         private void ValidateShortDescription()
         {
+
+            var vacancyContext = _serviceParameters.VacancyType == VacancyType.Apprenticeship
+                ? "apprenticeship"
+                : "traineeship";
+            
             RuleFor(x => x.ShortDescription)
                 .Cascade(CascadeMode.StopOnFirstFailure)
                 .NotEmpty()
-                .WithMessage("Enter a short description of the apprenticeship")
+                .WithMessage($"Enter a short description of the {vacancyContext}")
                     .WithErrorCode("12")
                 .MaximumLength(350)
-                    .WithMessage("Summary of the apprenticeship must not exceed {MaxLength} characters")
+                    .WithMessage($"Summary of the {vacancyContext} must not exceed {{MaxLength}} characters")
                     .WithErrorCode("13")
                 .MinimumLength(50)
-                    .WithMessage("Summary of the apprenticeship must be at least {MinLength} characters")
+                    .WithMessage($"Summary of the {vacancyContext} must be at least {{MinLength}} characters")
                     .WithErrorCode("14")
                 .ValidFreeTextCharacters()
-                    .WithMessage("Short description of the apprenticeship contains some invalid characters")
+                    .WithMessage($"Short description of the {vacancyContext} contains some invalid characters")
                     .WithErrorCode("15")
                 .ProfanityCheck(_profanityListProvider)
-                .WithMessage("Short description of the apprenticeship must not contain a banned word or phrase.")
+                .WithMessage($"Short description of the {vacancyContext} must not contain a banned word or phrase.")
                 .WithErrorCode("605")
                 .RunCondition(VacancyRuleSet.ShortDescription)
                 .WithRuleId(VacancyRuleSet.ShortDescription);
@@ -294,7 +299,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
         {
             RuleFor(x => x.StartDate)
                 .NotNull()
-                .WithMessage("Enter when you expect the apprentice to start")
+                .WithMessage(_serviceParameters.VacancyType == VacancyType.Apprenticeship ? "Enter when you expect the apprentice to start" : "Enter when you expect the trainee to start")
                     .WithErrorCode("20")
                 .GreaterThan(v => _timeProvider.Now.Date.AddDays(1).AddTicks(-1))
                 .WithMessage("Start date cannot be today or earlier. We advise using a date more than two weeks from now.")

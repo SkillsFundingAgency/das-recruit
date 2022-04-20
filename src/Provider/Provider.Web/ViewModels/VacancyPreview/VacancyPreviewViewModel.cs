@@ -41,6 +41,7 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview
         public VacancyPreviewSectionState DescriptionsSectionState { get; internal set; }
         public VacancyPreviewSectionState WorkingWeekSectionState { get; internal set; }
         public VacancyPreviewSectionState FutureProspectsSectionState { get; internal set; }
+        public VacancyPreviewSectionState WorkExperienceProvidedSectionState { get; internal set; }
 
         public EntityValidationResult SoftValidationErrors { get; internal set; }
         public bool CanHideValidationSummary { get; internal set; }
@@ -200,8 +201,9 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview
             viewModel.ProviderContactSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.ProviderContact }, false, modelState, vm => vm.ProviderContactName, vm => vm.ProviderContactEmail, vm => vm.ProviderContactTelephone);
             viewModel.TrainingSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.Training }, true, modelState, vm => vm.TrainingType, vm => vm.TrainingTitle);
             viewModel.DisabilityConfidentSectionState = GetSectionState(viewModel, new[]{ FieldIdentifiers.DisabilityConfident}, true, modelState, vm => vm.IsDisabilityConfident);
+            viewModel.WorkExperienceProvidedSectionState = GetSectionState(viewModel, new[]{ FieldIdentifiers.WorkExperience}, true, modelState, vm => vm.WorkExperience);
         }
-        
+
         public int AccountLegalEntityCount { get ; set ; }
         
         public VacancyTaskListSectionState TaskListSectionOneState => SetTaskListSectionState();
@@ -239,7 +241,8 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview
                 return VacancyTaskListSectionState.NotStarted;
             } 
             
-            if (WageTextSectionState == VacancyPreviewSectionState.Valid
+            if ((VacancyType.GetValueOrDefault() == Vacancies.Client.Domain.Entities.VacancyType.Traineeship || WageTextSectionState == VacancyPreviewSectionState.Valid)
+                && (VacancyType.GetValueOrDefault() == Vacancies.Client.Domain.Entities.VacancyType.Apprenticeship || WorkExperienceProvidedSectionState == VacancyPreviewSectionState.Valid)
                 && ExpectedDurationSectionState == VacancyPreviewSectionState.Valid
                 && ClosingDateSectionState == VacancyPreviewSectionState.Valid
                 && PossibleStartDateSectionState == VacancyPreviewSectionState.Valid
@@ -262,7 +265,9 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview
                 return VacancyTaskListSectionState.NotStarted;
             } 
             
-            if (HasSkills && HasQualifications && HasOutcomeDescription)
+            if (HasSkills 
+                && (VacancyType.GetValueOrDefault() == Vacancies.Client.Domain.Entities.VacancyType.Traineeship || HasQualifications) 
+                && HasOutcomeDescription)
             {
                 return VacancyTaskListSectionState.Completed;
             }

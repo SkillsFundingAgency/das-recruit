@@ -13,7 +13,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Provider.Web.Orchestrators.Part2
 {
-    public class WorkExperienceOrchestrator: VacancyValidatingOrchestrator<WorkExperienceEditModel>
+    public class WorkExperienceOrchestrator : VacancyValidatingOrchestrator<WorkExperienceEditModel>
     {
         private readonly IRecruitVacancyClient _recruitVacancyClient;
         private readonly IReviewSummaryService _reviewSummaryService;
