@@ -67,6 +67,12 @@
     "providerKeyvaultCertificateName": {
       "type": "string"
     },
+    "traineeshipCustomHostname": {
+      "type": "string"
+    },
+    "traineeshipKeyvaultCertificateName": {
+      "type": "string"
+    },
     "cosmosDbSubnetResourceIdList": {
       "type": "array",
       "defaultValue": []
@@ -152,6 +158,7 @@
     "webJobAppServicePlanName": "[concat(variables('resourceNamePrefix'),'-webjob-asp')]",
     "employerRecruitAppServiceName": "[concat(variables('resourceNamePrefix'), '-as')]",
     "providerRecruitAppServiceName": "[concat(variables('resourceNamePrefix'), '-pr-as')]",
+    "traineeshipProviderAppServiceName": "[concat(variables('resourceNamePrefix'), '-trpr-as')]",
     "qaAppServiceName": "[concat(variables('resourceNamePrefix'), '-qa-as')]",
     "webjobAppServiceName": "[concat(variables('resourceNamePrefix'), '-webjob-as')]",
     "storageAccountName": "[toLower(concat('das', parameters('resourceEnvironmentName'), parameters('serviceName'), 'str'))]",
@@ -233,6 +240,30 @@
           },
           "attachedService": {
             "value": "[variables('providerRecruitAppServiceName')]"
+          }
+        }
+      },
+      "dependsOn": [
+        "[variables('resourceGroupName')]"
+      ]
+    },
+    {
+      "apiVersion": "2020-10-01",
+      "name": "traineeship-recruit-app-insights",
+      "type": "Microsoft.Resources/deployments",
+      "resourceGroup": "[variables('resourceGroupName')]",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(variables('deploymentUrlBase'),'application-insights.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "appInsightsName": {
+            "value": "[variables('traineeshipProviderAppServiceName')]"
+          },
+          "attachedService": {
+            "value": "[variables('traineeshipProviderAppServiceName')]"
           }
         }
       },
@@ -665,7 +696,94 @@
             "value": "[parameters('ProviderCustomHostname')]"
           },
           "certificateThumbprint": {
-            "value": "[if(greater(length(parameters('EmployerCustomHostname')), 0), reference('provider-recruit-app-service-certificate', '2018-11-01').outputs.certificateThumbprint.value, '')]"
+            "value": "[if(greater(length(parameters('ProviderCustomHostname')), 0), reference('provider-recruit-app-service-certificate', '2018-11-01').outputs.certificateThumbprint.value, '')]"
+          },
+          "ipSecurityRestrictions": {
+            "value": "[parameters('frontEndAccessRestrictions')]"
+          }
+        }
+      }
+    },
+    {
+      "condition": "[greater(length(parameters('traineeshipKeyvaultCertificateName')), 0)]",
+      "apiVersion": "2020-10-01",
+      "name": "traineeship-recruit-app-service-certificate",
+      "resourceGroup": "[parameters('sharedEnvResourceGroup')]",
+      "type": "Microsoft.Resources/deployments",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(variables('deploymentUrlBase'),'app-service-certificate.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "keyVaultCertificateName": {
+            "value": "[parameters('traineeshipKeyvaultCertificateName')]"
+          },
+          "keyVaultName": {
+            "value": "[parameters('sharedKeyvaultName')]"
+          },
+          "keyVaultResourceGroup": {
+            "value": "[parameters('sharedManagementResourceGroup')]"
+          }
+        }
+      }
+    },
+    {
+      "apiVersion": "2020-10-01",
+      "name": "traineeship-recruit-app-service",
+      "type": "Microsoft.Resources/deployments",
+      "resourceGroup": "[variables('resourceGroupName')]",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(variables('deploymentUrlBase'),'app-service-v2.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "appServiceName": {
+            "value": "[variables('traineeshipProviderAppServiceName')]"
+          },
+          "appServicePlanName": {
+            "value": "[parameters('sharedFrontEndAppServicePlanName')]"
+          },
+          "appServicePlanResourceGroup": {
+            "value": "[parameters('sharedEnvResourceGroup')]"
+          },
+          "subnetResourceId": {
+            "value": "[parameters('sharedFrontEndSubnetResourceId')]"
+          },
+          "appServiceAppSettings": {
+            "value": {
+              "array": [
+                {
+                  "name": "ConfigurationStorageConnectionString",
+                  "value": "[parameters('configurationStorageConnectionString')]"
+                },
+                {
+                  "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
+                  "value": "[reference('traineeship-recruit-app-insights').outputs.InstrumentationKey.value]"
+                },
+                {
+                  "name": "Environment",
+                  "value": "[toUpper(parameters('environmentName'))]"
+                },
+                {
+                  "name": "LoggingRedisConnectionString",
+                  "value": "[parameters('loggingRedisConnectionString')]"
+                },
+                {
+                  "name": "Cdn:Url",
+                  "value": "[parameters('cdnUrl')]"
+                }
+              ]
+            }
+          },
+          "customHostName": {
+            "value": "[parameters('traineeshipCustomHostname')]"
+          },
+          "certificateThumbprint": {
+            "value": "[if(greater(length(parameters('traineeshipCustomHostname')), 0), reference('traineeship-recruit-app-service-certificate', '2018-11-01').outputs.certificateThumbprint.value, '')]"
           },
           "ipSecurityRestrictions": {
             "value": "[parameters('frontEndAccessRestrictions')]"
@@ -1031,6 +1149,10 @@
     "ProviderAppServiceName": {
       "type": "string",
       "value": "[variables('providerRecruitAppServiceName')]"
+    },
+    "TraineeshipProviderAppServiceName": {
+      "type": "string",
+      "value": "[variables('traineeshipProviderAppServiceName')]"
     },
     "QAAppServiceName": {
       "type": "string",
