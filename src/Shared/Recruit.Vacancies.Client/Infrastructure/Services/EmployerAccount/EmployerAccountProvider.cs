@@ -2,31 +2,32 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Requests;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Responses;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
 using Microsoft.Extensions.Logging;
-using SFA.DAS.EAS.Account.Api.Client;
-using SFA.DAS.EAS.Account.Api.Types;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount
 {
     internal class EmployerAccountProvider : IEmployerAccountProvider
     {
         private readonly ILogger<EmployerAccountProvider> _logger;
-        private readonly IAccountApiClient _accountApiClient;
+        private readonly IOuterApiClient _outerApiClient;
 
-        public EmployerAccountProvider(ILogger<EmployerAccountProvider> logger, IAccountApiClient accountApiClient)
+        public EmployerAccountProvider(ILogger<EmployerAccountProvider> logger, IOuterApiClient outerApiClient)
         {
             _logger = logger;
-            _accountApiClient = accountApiClient;
+            _outerApiClient = outerApiClient;
         }
 
         public async Task<IEnumerable<string>> GetEmployerIdentifiersAsync(string userId)
         {
             try
             {
-                var accounts = await _accountApiClient.GetUserAccounts(userId);
+                var accounts = await _outerApiClient.Get<GetUserAccountsResponse>(new GetUserAccountsRequest(userId));
                 
-                return accounts.Select(acc => acc.HashedAccountId);
+                return accounts.HashedAccountIds.ToList();
             }
             catch (Exception ex)
             {
@@ -50,19 +51,15 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount
             }
         }
 
-        public async Task<IEnumerable<LegalEntityViewModel>> GetLegalEntitiesConnectedToAccountAsync(string accountId)
+        public async Task<IEnumerable<AccountLegalEntity>> GetLegalEntitiesConnectedToAccountAsync(string accountId)
         {
             try
             {
-                var accounts = await _accountApiClient.GetLegalEntitiesConnectedToAccount(accountId);
-
-                var legalEntitiesTasks = accounts.Select(r => _accountApiClient.GetLegalEntity(accountId, long.Parse(r.Id)));
-
-                await Task.WhenAll(legalEntitiesTasks.ToArray());
-
-                var entities = legalEntitiesTasks.Select(t => t.Result);
-
-                return entities;
+                var legalEntities =
+                    await _outerApiClient.Get<GetAccountLegalEntitiesResponse>(
+                        new GetAccountLegalEntitiesRequest(accountId));
+                
+                return legalEntities.AccountLegalEntities;
             }
             catch (Exception ex)
             {
@@ -75,7 +72,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount
         {
             try
             {
-                var account = await _accountApiClient.GetAccount(accountId);
+                var account = await _outerApiClient.Get<GetAccountResponse>(new GetAccountRequest(accountId));
+                
                 return account.HashedAccountId;
             }
             catch (Exception ex)

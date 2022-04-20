@@ -12,6 +12,7 @@ using System;
 using SFA.DAS.EAS.Account.Api.Types;
 using Polly;
 using System.Collections.Generic;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Responses;
 
 namespace Esfa.Recruit.Vacancies.Jobs.Triggers.QueueTriggers
 {
@@ -71,7 +72,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.Triggers.QueueTriggers
                 return;
             }
 
-            LegalEntityViewModel selectedLegalEntity;
+            AccountLegalEntity selectedLegalEntity;
             try
             {
                 var retryPolicy = GetApiRetryPolicy();

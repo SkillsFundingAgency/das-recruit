@@ -8,6 +8,7 @@ using Esfa.Recruit.Vacancies.Client.Application.Queues;
 using Esfa.Recruit.Vacancies.Client.Application.Queues.Messages;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Responses;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount;
 using Esfa.Recruit.Vacancies.Jobs.Configuration;
 using Esfa.Recruit.Vacancies.Jobs.ExternalSystemEventHandlers;
@@ -36,7 +37,7 @@ namespace Recruit.Vacancies.Jobs.UnitTests.ExternalSystemEventHandlers
         private const long RecruitLegalEntityId = 5678;
         private const int NoOfDummyLegalEntitiesToCreate = 10;
         private readonly Fixture _autoFixture = new Fixture();
-        private readonly IEnumerable<LegalEntityViewModel> _dummyLegalEntities;
+        private readonly IEnumerable<AccountLegalEntity> _dummyLegalEntities;
         private readonly RecruitWebJobsSystemConfiguration _jobsConfig;
         private readonly Mock<IRecruitQueueService> _mockRecruitQueueService;
         private readonly Mock<IEmployerAccountProvider> _mockEmployerAccountProvider;
@@ -46,7 +47,7 @@ namespace Recruit.Vacancies.Jobs.UnitTests.ExternalSystemEventHandlers
 
         public UpdatedPermissionsExternalSystemEventHandlerTests()
         {
-            _dummyLegalEntities = _autoFixture.CreateMany<LegalEntityViewModel>(NoOfDummyLegalEntitiesToCreate);
+            _dummyLegalEntities = _autoFixture.CreateMany<AccountLegalEntity>(NoOfDummyLegalEntitiesToCreate);
             _jobsConfig = new RecruitWebJobsSystemConfiguration { DisabledJobs = new List<string>() };
             _mockRecruitQueueService = new Mock<IRecruitQueueService>();
             _mockEmployerAccountProvider = new Mock<IEmployerAccountProvider>();
@@ -133,7 +134,7 @@ namespace Recruit.Vacancies.Jobs.UnitTests.ExternalSystemEventHandlers
         [Fact]
         public async Task GivenMatchingExistingLegalEntityId_ThenVerifyTransferProcessIsQueued()
         {
-            var matchingLegalEntityViewModel = _autoFixture.Build<LegalEntityViewModel>()
+            var matchingLegalEntityViewModel = _autoFixture.Build<AccountLegalEntity>()
                                                             .With(l => l.DasAccountId, EmployerAccountIdEncoded)
                                                             .With(l => l.AccountLegalEntityId, AccountLegalEntityId)
                                                             .With(l => l.LegalEntityId, RecruitLegalEntityId)
@@ -157,7 +158,7 @@ namespace Recruit.Vacancies.Jobs.UnitTests.ExternalSystemEventHandlers
         [Fact]
         public async Task GivenMatchingExistingLegalEntityId_ThenVerifyTransferReviewProcessIsQueued()
         {
-            var matchingLegalEntityViewModel = _autoFixture.Build<LegalEntityViewModel>()
+            var matchingLegalEntityViewModel = _autoFixture.Build<AccountLegalEntity>()
                 .With(l => l.DasAccountId, EmployerAccountIdEncoded)
                 .With(l => l.AccountLegalEntityId, AccountLegalEntityId)
                 .With(l => l.LegalEntityId, RecruitLegalEntityId)
@@ -181,7 +182,7 @@ namespace Recruit.Vacancies.Jobs.UnitTests.ExternalSystemEventHandlers
         [Fact]
         public async Task GivenMatchingExistingLegalEntityId_ThenTransferQueuedMessageIsMappedCorrectly()
         {
-            var matchingLegalEntityViewModel = _autoFixture.Build<LegalEntityViewModel>()
+            var matchingLegalEntityViewModel = _autoFixture.Build<AccountLegalEntity>()
                                                             .With(l => l.DasAccountId, EmployerAccountIdEncoded)
                                                             .With(l => l.AccountLegalEntityId, AccountLegalEntityId)
                                                             .With(l => l.LegalEntityId, RecruitLegalEntityId)
@@ -216,7 +217,7 @@ namespace Recruit.Vacancies.Jobs.UnitTests.ExternalSystemEventHandlers
         [Fact]
         public async Task GivenMatchingExistingLegalEntityId_ThenReviewQueuedMessageIsMappedCorrectly()
         {
-            var matchingLegalEntityViewModel = _autoFixture.Build<LegalEntityViewModel>()
+            var matchingLegalEntityViewModel = _autoFixture.Build<AccountLegalEntity>()
                                                             .With(l => l.DasAccountId, EmployerAccountIdEncoded)
                                                             .With(l => l.AccountLegalEntityId, AccountLegalEntityId)
                                                             .With(l => l.LegalEntityId, RecruitLegalEntityId)
