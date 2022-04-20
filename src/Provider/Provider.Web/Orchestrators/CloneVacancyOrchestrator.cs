@@ -11,6 +11,7 @@ using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Microsoft.Extensions.Logging;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
+using NWebsec.AspNetCore.Middleware.Middleware;
 using ErrorMessages = Esfa.Recruit.Shared.Web.ViewModels.ErrorMessages;
 
 namespace Esfa.Recruit.Provider.Web.Orchestrators
@@ -42,7 +43,9 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             var vm = new CloneVacancyDatesQuestionViewModel 
             {
                 StartDate = vacancy.StartDate?.AsGdsDate(),
-                ClosingDate = vacancy.ClosingDate?.AsGdsDate()
+                ClosingDate = vacancy.ClosingDate?.AsGdsDate(),
+                Ukprn = vrm.Ukprn,
+                VacancyId = vrm.VacancyId
             };
 
             return vm;
@@ -59,6 +62,8 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
                 {
                     IsNewDatesForced = isNewDatesForced,
                     Title = ChangeBothDatesTitle,
+                    Ukprn = vrm.Ukprn,
+                    VacancyId = vrm.VacancyId
                 };
             }
             else
@@ -73,7 +78,9 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
                     StartDay = $"{vacancy.StartDate.Value.Day:00}",
                     StartMonth = $"{vacancy.StartDate.Value.Month:00}",
                     StartYear = $"{vacancy.StartDate.Value.Year}",
-                    CurrentYear = _timeProvider.Now.Year
+                    CurrentYear = _timeProvider.Now.Year,
+                    Ukprn = vrm.Ukprn,
+                    VacancyId = vrm.VacancyId
                 };
             }
         }
