@@ -29,9 +29,9 @@
                 <div class="govuk-!-margin-bottom-2">
                     <select asp-for="SelectedRouteId" class="govuk-select">
                         <option value="">Please select</option>
-                        @foreach (var programme in Model.Routes)
+                        @foreach (var route in Model.Routes)
                         {
-                            <option value="@programme.Id">@programme.Name</option>
+                            <option value="@route.Id">@route.Name</option>
                         }
                     </select>
                 </div>
