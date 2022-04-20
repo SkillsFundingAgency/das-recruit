@@ -2,7 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Employer;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Provider;
@@ -20,11 +22,13 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
     {
         private readonly IQueryStore _queryStore;
         private readonly ITimeProvider _timeProvider;
+        private readonly ServiceParameters _serviceParameters;
 
-        public QueryStoreClient(IQueryStore queryStore, ITimeProvider timeProvider)
+        public QueryStoreClient(IQueryStore queryStore, ITimeProvider timeProvider, ServiceParameters serviceParameters)
         {
             _queryStore = queryStore;
             _timeProvider = timeProvider;
+            _serviceParameters = serviceParameters;
         }
 
         public Task<EmployerDashboard> GetEmployerDashboardAsync(string employerAccountId)
@@ -36,9 +40,21 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
 
         public Task<ProviderDashboard> GetProviderDashboardAsync(long ukprn)
         {
-            var key = QueryViewType.ProviderDashboard.GetIdValue(ukprn);
+            var key = string.Empty;
+            var typeName = string.Empty;
 
-            return _queryStore.GetAsync<ProviderDashboard>(QueryViewType.ProviderDashboard.TypeName, key);
+            if (_serviceParameters.VacancyType.GetValueOrDefault() == VacancyType.Apprenticeship)
+            {
+                key = QueryViewType.ProviderDashboard.GetIdValue(ukprn);
+                typeName = QueryViewType.ProviderDashboard.TypeName;
+            }
+            else if (_serviceParameters.VacancyType.GetValueOrDefault() == VacancyType.Traineeship)
+            {
+                key = QueryViewType.ProviderTraineeshipDashboard.GetIdValue(ukprn);
+                typeName = QueryViewType.ProviderTraineeshipDashboard.TypeName;
+            }
+
+            return _queryStore.GetAsync<ProviderDashboard>(typeName, key);
         }
 
         public Task<VacancyAnalyticsSummary> GetVacancyAnalyticsSummaryAsync(long vacancyReference)
