@@ -265,7 +265,9 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview
                 return VacancyTaskListSectionState.NotStarted;
             } 
             
-            if (HasSkills && HasQualifications && HasOutcomeDescription)
+            if (HasSkills 
+                && (VacancyType.GetValueOrDefault() == Vacancies.Client.Domain.Entities.VacancyType.Traineeship || HasQualifications) 
+                && HasOutcomeDescription)
             {
                 return VacancyTaskListSectionState.Completed;
             }
