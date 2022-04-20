@@ -87,7 +87,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
         {
             var dashboardItem = new ProviderDashboard
             {
-                Id = QueryViewType.ProviderDashboard.GetIdValue(ukprn),
+                Id = _serviceParameters.VacancyType.GetValueOrDefault() == VacancyType.Apprenticeship ? QueryViewType.ProviderDashboard.GetIdValue(ukprn) :  QueryViewType.ProviderTraineeshipDashboard.GetIdValue(ukprn),
                 Vacancies = vacancySummaries,
                 TransferredVacancies = transferredVacancies,
                 LastUpdated = _timeProvider.Now
