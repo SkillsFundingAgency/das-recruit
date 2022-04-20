@@ -14,7 +14,7 @@ using SFA.DAS.Testing.AutoFixture;
 
 namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.ViewModels.Preview
 {
-    public class WhenGettingTaskListSectionTwoState
+    public class WhenGettingTaskListSectionTwoStateForTraineeship
     {
         [Test, MoqAutoData]
         public async Task Then_The_Section_State_Is_Not_Started_When_Section_One_Complete(
@@ -74,7 +74,26 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.ViewModels.Preview
             var vacancy = GetVacancySectionOneComplete(recruitVacancyClient);
             vacancy.StartDate = DateTime.UtcNow.AddMonths(3);
             vacancy.ClosingDate = DateTime.UtcNow.AddMonths(2);
+            var model = new VacancyPreviewViewModel();
             
+            await mapper.MapFromVacancyAsync(model, vacancy);
+            model.SetSectionStates(model, new ModelStateDictionary());
+
+            model.TaskListSectionOneState.Should().Be(VacancyTaskListSectionState.Completed);
+            model.TaskListSectionTwoState.Should().Be(VacancyTaskListSectionState.InProgress);
+        }
+        
+        [Test, MoqAutoData]
+        public async Task Then_The_Section_Is_Set_To_In_Progress_When_Dates_Duration_WorkExperience_Set(
+            Wage wage,
+            string workExperience,
+            Mock<IRecruitVacancyClient> recruitVacancyClient,
+            DisplayVacancyViewModelMapper mapper)
+        {
+            var vacancy = GetVacancySectionOneComplete(recruitVacancyClient);
+            vacancy.StartDate = DateTime.UtcNow.AddMonths(3);
+            vacancy.ClosingDate = DateTime.UtcNow.AddMonths(2);
+            vacancy.WorkExperience = workExperience;
             vacancy.Wage = new Wage
             {
                 Duration = 36,
@@ -91,46 +110,9 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.ViewModels.Preview
         }
         
         [Test, MoqAutoData]
-        public async Task Then_The_Section_Is_Set_To_In_Progress_When_Dates_Duration_Wage_Set(
-            Wage wage,
-            Mock<IRecruitVacancyClient> recruitVacancyClient,
-            DisplayVacancyViewModelMapper mapper)
-        {
-            var vacancy = GetVacancySectionOneComplete(recruitVacancyClient);
-            vacancy.StartDate = DateTime.UtcNow.AddMonths(3);
-            vacancy.ClosingDate = DateTime.UtcNow.AddMonths(2);
-            vacancy.Wage = wage; 
-            var model = new VacancyPreviewViewModel();
-            
-            await mapper.MapFromVacancyAsync(model, vacancy);
-            model.SetSectionStates(model, new ModelStateDictionary());
-
-            model.TaskListSectionOneState.Should().Be(VacancyTaskListSectionState.Completed);
-            model.TaskListSectionTwoState.Should().Be(VacancyTaskListSectionState.InProgress);
-        }
-        
-        [Test, MoqAutoData]
-        public async Task Then_The_Section_Is_Set_To_In_Progress_When_Dates_Duration_Wage_Number_Of_Positions_Set(
-            Wage wage,
-            Mock<IRecruitVacancyClient> recruitVacancyClient,
-            DisplayVacancyViewModelMapper mapper)
-        {
-            var vacancy = GetVacancySectionOneComplete(recruitVacancyClient);
-            vacancy.StartDate = DateTime.UtcNow.AddMonths(3);
-            vacancy.ClosingDate = DateTime.UtcNow.AddMonths(2);
-            vacancy.Wage = wage; 
-            var model = new VacancyPreviewViewModel();
-            
-            await mapper.MapFromVacancyAsync(model, vacancy);
-            model.SetSectionStates(model, new ModelStateDictionary());
-
-            model.TaskListSectionOneState.Should().Be(VacancyTaskListSectionState.Completed);
-            model.TaskListSectionTwoState.Should().Be(VacancyTaskListSectionState.InProgress);
-        }
-        
-        [Test, MoqAutoData]
-        public async Task Then_The_Section_Is_Set_To_Complete_When_Dates_Duration_Wage_Number_Of_Positions_address_Set(
+        public async Task Then_The_Section_Is_Set_To_Complete_When_Dates_Duration_Number_Of_Positions_Address_Set(
             int? numberOfPositions,
+            string workExperience,
             Wage wage,
             Address address,
             Mock<IRecruitVacancyClient> recruitVacancyClient,
@@ -139,9 +121,43 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.ViewModels.Preview
             var vacancy = GetVacancySectionOneComplete(recruitVacancyClient);
             vacancy.StartDate = DateTime.UtcNow.AddMonths(3);
             vacancy.ClosingDate = DateTime.UtcNow.AddMonths(2);
-            vacancy.Wage = wage;
             vacancy.EmployerLocation = address;
             vacancy.NumberOfPositions = numberOfPositions;
+            vacancy.Wage = new Wage
+            {
+                Duration = 36,
+                DurationUnit = DurationUnit.Month,
+                WeeklyHours = 30
+            }; 
+            var model = new VacancyPreviewViewModel();
+            
+            await mapper.MapFromVacancyAsync(model, vacancy);
+            model.SetSectionStates(model, new ModelStateDictionary());
+
+            model.TaskListSectionOneState.Should().Be(VacancyTaskListSectionState.Completed);
+            model.TaskListSectionTwoState.Should().Be(VacancyTaskListSectionState.InProgress);
+        }
+        [Test, MoqAutoData]
+        public async Task Then_The_Section_Is_Set_To_Complete_When_Dates_Duration_Number_Of_Positions_Address_WorkExperience_Set(
+            int? numberOfPositions,
+            string workExperience,
+            Wage wage,
+            Address address,
+            Mock<IRecruitVacancyClient> recruitVacancyClient,
+            DisplayVacancyViewModelMapper mapper)
+        {
+            var vacancy = GetVacancySectionOneComplete(recruitVacancyClient);
+            vacancy.StartDate = DateTime.UtcNow.AddMonths(3);
+            vacancy.ClosingDate = DateTime.UtcNow.AddMonths(2);
+            vacancy.EmployerLocation = address;
+            vacancy.NumberOfPositions = numberOfPositions;
+            vacancy.WorkExperience = workExperience;
+            vacancy.Wage = new Wage
+            {
+                Duration = 36,
+                DurationUnit = DurationUnit.Month,
+                WeeklyHours = 30
+            }; 
             var model = new VacancyPreviewViewModel();
             
             await mapper.MapFromVacancyAsync(model, vacancy);
@@ -168,7 +184,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.ViewModels.Preview
                 TrainingDescription = fixture.Create<string>(),
                 ShortDescription = fixture.Create<string>(),
                 AccountLegalEntityPublicHashedId = fixture.Create<string>(),
-                VacancyType = VacancyType.Apprenticeship
+                VacancyType = VacancyType.Traineeship
             };
         }
     }
