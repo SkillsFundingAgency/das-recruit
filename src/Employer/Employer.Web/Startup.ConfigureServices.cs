@@ -85,6 +85,11 @@ namespace Esfa.Recruit.Employer.Web
             }
 
             services.AddDataProtection(_configuration, _hostingEnvironment, applicationName: "das-employer-recruit-web");
+
+    #if DEBUG
+            services.AddControllersWithViews().AddRazorRuntimeCompilation();
+    #endif
+
         }
     }
 }
