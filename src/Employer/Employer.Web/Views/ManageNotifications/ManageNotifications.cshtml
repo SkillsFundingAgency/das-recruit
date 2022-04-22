@@ -8,11 +8,11 @@
 @model ManageNotificationsViewModel
 
 <div class="govuk-grid-row">
-    <div class="govuk-gird-column-two-thirds">
+    <div class="govuk-grid-column-two-thirds">
 
         <partial name=@PartialNames.ValidationSummary model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState }' />
 
-        <h1 class="govuk-heading-l govuk-!-margin-bottom-6">Manage your emails</h1>
+        <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">Manage your emails</h1>
 
         <form method="post">
             <div esfa-validation-marker-for="HasAnySubscription" class="govuk-form-group">
