@@ -7,6 +7,7 @@ using Esfa.Recruit.Provider.Web.Orchestrators;
 using Esfa.Recruit.Provider.Web.ViewModels.CloneVacancy;
 using Esfa.Recruit.Provider.Web.Extensions;
 using Esfa.Recruit.Shared.Web.Extensions;
+using Esfa.Recruit.Shared.Web.FeatureToggle;
 using Esfa.Recruit.Shared.Web.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 
@@ -17,9 +18,12 @@ namespace Esfa.Recruit.Provider.Web.Controllers
     public class CloneVacancyController : Controller
     {
         private readonly CloneVacancyOrchestrator _orchestrator;
-        public CloneVacancyController(CloneVacancyOrchestrator orchestrator)
+        private readonly IFeature _feature;
+
+        public CloneVacancyController(CloneVacancyOrchestrator orchestrator, IFeature feature)
         {
             _orchestrator = orchestrator;
+            _feature = feature;
         }
 
         [HttpGet("clone", Name = RouteNames.CloneVacancy_Get)]
@@ -52,6 +56,12 @@ namespace Esfa.Recruit.Provider.Web.Controllers
             {
                 var newVacancyId = await _orchestrator.PostCloneVacancyWithSameDates(model, User.ToVacancyUser());
                 TempData.Add(TempDataKeys.VacancyPreviewInfoMessage, InfoMessages.VacancyCloned);
+
+                if (_feature.IsFeatureEnabled(FeatureNames.ProviderTaskList))
+                {
+                    return RedirectToRoute(RouteNames.ProviderTaskListGet, new { VacancyId = newVacancyId, model.Ukprn });    
+                }
+                
                 return RedirectToRoute(RouteNames.Vacancy_Preview_Get, new { VacancyId = newVacancyId, model.Ukprn });
             }
             else
@@ -84,6 +94,11 @@ namespace Esfa.Recruit.Provider.Web.Controllers
             }
 
             TempData.Add(TempDataKeys.VacancyPreviewInfoMessage, InfoMessages.VacancyCloned);
+            if (_feature.IsFeatureEnabled(FeatureNames.ProviderTaskList))
+            {
+                return RedirectToRoute(RouteNames.ProviderTaskListGet, new { VacancyId = response.Data, model.Ukprn });    
+            }
+            
             return RedirectToRoute(RouteNames.Vacancy_Preview_Get, new { VacancyId = response.Data, model.Ukprn });
         }        
     }
