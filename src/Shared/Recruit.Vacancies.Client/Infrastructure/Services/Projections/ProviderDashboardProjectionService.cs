@@ -50,7 +50,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Projections
 
             foreach (var ukprn in ukprns)
             {
-                await ReBuildDashboardAsync(ukprn);
+                await ReBuildDashboardAsync(ukprn, VacancyType.Apprenticeship);
+                await ReBuildDashboardAsync(ukprn, VacancyType.Traineeship);
             }
 
             _logger.LogInformation($"Rebuilding {ukprns.Count} provider dashboards took {stopwatch.ElapsedMilliseconds} milliseconds");
@@ -60,14 +61,15 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Projections
             _logger.LogInformation($"Removed {count} redundant/old provider dashboards from query store");
         }
 
-        public async Task ReBuildDashboardAsync(long ukprn)
+        public async Task ReBuildDashboardAsync(long ukprn, VacancyType? vacancyType = null)
         {
             var vacancySummariesTasks = _vacancySummariesQuery.GetProviderOwnedVacancySummariesByUkprnAsync(ukprn);
-            var transferredVacanciesTasks = _vacancySummariesQuery.GetTransferredFromProviderAsync(ukprn);
+            var transferredVacanciesTasks = _vacancySummariesQuery.GetTransferredFromProviderAsync(ukprn, vacancyType.GetValueOrDefault());
 
             await Task.WhenAll(vacancySummariesTasks, transferredVacanciesTasks);
 
-            var vacancySummaries = vacancySummariesTasks.Result;
+            var vacancySummaries = vacancySummariesTasks.Result
+                .Where(c=>vacancyType.GetValueOrDefault() == VacancyType.Traineeship ? c.IsTraineeship : !c.IsTraineeship).ToList();
             var transferredVacancies = transferredVacanciesTasks.Result.Select(t => 
                 new ProviderDashboardTransferredVacancy
                 {
@@ -81,9 +83,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Projections
                 await UpdateWithTrainingProgrammeInfo(summary);
             }
 
-            await _queryStoreWriter.UpdateProviderDashboardAsync(ukprn, vacancySummaries.OrderByDescending(v => v.CreatedDate), transferredVacancies);
+            await _queryStoreWriter.UpdateProviderDashboardAsync(ukprn, vacancySummaries.OrderByDescending(v => v.CreatedDate), transferredVacancies, vacancyType.GetValueOrDefault());
 
-            _logger.LogDebug("Update provider dashboard with {count} summary records for account: {ukprn}", vacancySummaries.Count, ukprn);
+            _logger.LogDebug("Update provider dashboard with {count} summary records for account: {ukprn} for Vacancy type {}", vacancySummaries.Count, ukprn, vacancyType.GetValueOrDefault());
         }
 
         private async Task UpdateWithTrainingProgrammeInfo(VacancySummary summary)

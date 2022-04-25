@@ -2,6 +2,7 @@ using System.Threading.Tasks;
 using AutoFixture.NUnit3;
 using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Provider;
 using FluentAssertions;
@@ -17,16 +18,15 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
         public async Task Then_If_Apprenticeship_Then_Gets_Provider_Apprentice_Dashboard(
             long ukprn,
             ProviderDashboard providerDashboard,
-            [Frozen] Mock<IQueryStore> queryStore)
+            [Frozen] Mock<IQueryStore> queryStore,
+            QueryStoreClient client)
         {
-            var client = new QueryStoreClient(queryStore.Object, Mock.Of<ITimeProvider>(),
-                new ServiceParameters("Apprenticeship"));
             queryStore
                 .Setup(x => x.GetAsync<ProviderDashboard>(
                     QueryViewType.ProviderDashboard.TypeName, 
                     QueryViewType.ProviderDashboard.GetIdValue(ukprn))).ReturnsAsync(providerDashboard);
 
-            var dashboard = await client.GetProviderDashboardAsync(ukprn);
+            var dashboard = await client.GetProviderDashboardAsync(ukprn, VacancyType.Apprenticeship);
             
             dashboard.Should().BeEquivalentTo(providerDashboard);
         }
@@ -34,16 +34,16 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
         public async Task Then_If_Traineeship_Then_Gets_Provider_Trainee_Dashboard(
             long ukprn,
             ProviderDashboard providerDashboard,
-            [Frozen] Mock<IQueryStore> queryStore)
+            [Frozen] Mock<IQueryStore> queryStore,
+            QueryStoreClient client)
         {
-            var client = new QueryStoreClient(queryStore.Object, Mock.Of<ITimeProvider>(),
-                new ServiceParameters("Traineeship"));
+            
             queryStore
                 .Setup(x => x.GetAsync<ProviderDashboard>(
-                    QueryViewType.ProviderTraineeshipDashboard.TypeName, 
+                    QueryViewType.ProviderDashboard.TypeName, 
                     QueryViewType.ProviderTraineeshipDashboard.GetIdValue(ukprn))).ReturnsAsync(providerDashboard);
 
-            var dashboard = await client.GetProviderDashboardAsync(ukprn);
+            var dashboard = await client.GetProviderDashboardAsync(ukprn, VacancyType.Traineeship);
             
             dashboard.Should().BeEquivalentTo(providerDashboard);
         }

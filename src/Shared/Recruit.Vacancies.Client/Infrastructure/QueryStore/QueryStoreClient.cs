@@ -22,13 +22,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
     {
         private readonly IQueryStore _queryStore;
         private readonly ITimeProvider _timeProvider;
-        private readonly ServiceParameters _serviceParameters;
 
-        public QueryStoreClient(IQueryStore queryStore, ITimeProvider timeProvider, ServiceParameters serviceParameters)
+        public QueryStoreClient(IQueryStore queryStore, ITimeProvider timeProvider)
         {
             _queryStore = queryStore;
             _timeProvider = timeProvider;
-            _serviceParameters = serviceParameters;
         }
 
         public Task<EmployerDashboard> GetEmployerDashboardAsync(string employerAccountId)
@@ -38,20 +36,20 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
             return _queryStore.GetAsync<EmployerDashboard>(QueryViewType.EmployerDashboard.TypeName, key);
         }
 
-        public Task<ProviderDashboard> GetProviderDashboardAsync(long ukprn)
+        public Task<ProviderDashboard> GetProviderDashboardAsync(long ukprn, VacancyType vacancyType)
         {
             var key = string.Empty;
             var typeName = string.Empty;
 
-            if (_serviceParameters.VacancyType.GetValueOrDefault() == VacancyType.Apprenticeship)
+            if (vacancyType == VacancyType.Apprenticeship)
             {
                 key = QueryViewType.ProviderDashboard.GetIdValue(ukprn);
                 typeName = QueryViewType.ProviderDashboard.TypeName;
             }
-            else if (_serviceParameters.VacancyType.GetValueOrDefault() == VacancyType.Traineeship)
+            else if (vacancyType == VacancyType.Traineeship)
             {
                 key = QueryViewType.ProviderTraineeshipDashboard.GetIdValue(ukprn);
-                typeName = QueryViewType.ProviderTraineeshipDashboard.TypeName;
+                typeName = QueryViewType.ProviderDashboard.TypeName;
             }
 
             return _queryStore.GetAsync<ProviderDashboard>(typeName, key);
@@ -83,11 +81,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
             return _queryStore.UpsertAsync(dashboardItem);
         }
 
-        public Task UpdateProviderDashboardAsync(long ukprn, IEnumerable<VacancySummary> vacancySummaries, IEnumerable<ProviderDashboardTransferredVacancy> transferredVacancies)
+        public Task UpdateProviderDashboardAsync(long ukprn, IEnumerable<VacancySummary> vacancySummaries, IEnumerable<ProviderDashboardTransferredVacancy> transferredVacancies, VacancyType vacancyType)
         {
             var dashboardItem = new ProviderDashboard
             {
-                Id = _serviceParameters.VacancyType.GetValueOrDefault() == VacancyType.Apprenticeship ? QueryViewType.ProviderDashboard.GetIdValue(ukprn) :  QueryViewType.ProviderTraineeshipDashboard.GetIdValue(ukprn),
+                Id = vacancyType == VacancyType.Apprenticeship ? QueryViewType.ProviderDashboard.GetIdValue(ukprn) :  QueryViewType.ProviderTraineeshipDashboard.GetIdValue(ukprn),
                 Vacancies = vacancySummaries,
                 TransferredVacancies = transferredVacancies,
                 LastUpdated = _timeProvider.Now
@@ -205,6 +203,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
 
         public Task<long> RemoveOldProviderDashboards(DateTime oldestLastUpdatedDate)
         {
+            //TODO
             return _queryStore.DeleteManyLessThanAsync<ProviderDashboard, DateTime>(QueryViewType.ProviderDashboard.TypeName, x => x.LastUpdated, oldestLastUpdatedDate);
         }
 

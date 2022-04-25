@@ -9,6 +9,7 @@ using Esfa.Recruit.Provider.Web.ViewModels;
 using Esfa.Recruit.Shared.Web.Helpers;
 using Esfa.Recruit.Shared.Web.Mappers;
 using Esfa.Recruit.Shared.Web.ViewModels;
+using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Models;
@@ -27,25 +28,28 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
         private readonly ITimeProvider _timeProvider;
         private readonly IProviderAlertsViewModelFactory _providerAlertsViewModelFactory;
         private readonly IProviderRelationshipsService _providerRelationshipsService;
+        private readonly ServiceParameters _serviceParameters;
 
         public VacanciesOrchestrator(
             IProviderVacancyClient providerVacancyClient,
             IRecruitVacancyClient recruitVacancyClient,
             ITimeProvider timeProvider,
             IProviderAlertsViewModelFactory providerAlertsViewModelFactory,
-            IProviderRelationshipsService providerRelationshipsService)
+            IProviderRelationshipsService providerRelationshipsService,
+            ServiceParameters serviceParameters)
         {
             _providerVacancyClient = providerVacancyClient;
             _recruitVacancyClient = recruitVacancyClient;
             _timeProvider = timeProvider;
             _providerAlertsViewModelFactory = providerAlertsViewModelFactory;
             _providerRelationshipsService = providerRelationshipsService;
+            _serviceParameters = serviceParameters;
         }
 
         public async Task<VacanciesViewModel> GetVacanciesViewModelAsync(
             VacancyUser user, string filter, int page, string searchTerm)
         {
-            var getDashboardTask = _providerVacancyClient.GetDashboardAsync(user.Ukprn.Value, createIfNonExistent: true);
+            var getDashboardTask = _providerVacancyClient.GetDashboardAsync(user.Ukprn.Value, _serviceParameters.VacancyType.GetValueOrDefault(), true);
             var getUserDetailsTask = _recruitVacancyClient.GetUsersDetailsAsync(user.UserId);
             var providerTask = _providerRelationshipsService.GetLegalEntitiesForProviderAsync(user.Ukprn.Value, OperationType.RecruitmentRequiresReview);
 

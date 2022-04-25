@@ -38,5 +38,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
         public DateTime? TransferInfoTransferredDate { get; set; }
         public TransferReason? TransferInfoReason { get; set; }
         public string TrainingProviderName { get; set; }
+        public bool IsTraineeship { get; set; }
+        public VacancyType? VacancyType { get; set; }
     }
 }

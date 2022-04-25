@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Provider.Web.Services;
 using Esfa.Recruit.Provider.Web.ViewModels.Dashboard;
+using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Models;
@@ -20,24 +21,27 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
         private readonly IRecruitVacancyClient _client;
         private readonly IProviderAlertsViewModelFactory _providerAlertsViewModelFactory;
         private readonly IProviderRelationshipsService _providerRelationshipsService;
+        private readonly ServiceParameters _serviceParameters;
 
         public DashboardOrchestrator(
             IProviderVacancyClient vacancyClient,
             ITimeProvider timeProvider,
             IRecruitVacancyClient client,
             IProviderAlertsViewModelFactory providerAlertsViewModelFactory,
-            IProviderRelationshipsService providerRelationshipsService)
+            IProviderRelationshipsService providerRelationshipsService,
+            ServiceParameters serviceParameters)
         {
             _vacancyClient = vacancyClient;
             _timeProvider = timeProvider;
             _client = client;
             _providerAlertsViewModelFactory = providerAlertsViewModelFactory;
             _providerRelationshipsService = providerRelationshipsService;
+            _serviceParameters = serviceParameters;
         }
 
         public async Task<DashboardViewModel> GetDashboardViewModelAsync(VacancyUser user)
         {
-            var dashboardTask = _vacancyClient.GetDashboardAsync(user.Ukprn.Value, createIfNonExistent: true);
+            var dashboardTask = _vacancyClient.GetDashboardAsync(user.Ukprn.Value, _serviceParameters.VacancyType.GetValueOrDefault(), true);
             var userDetailsTask = _client.GetUsersDetailsAsync(user.UserId);
             var providerTask = _providerRelationshipsService.GetLegalEntitiesForProviderAsync(user.Ukprn.Value, OperationType.RecruitmentRequiresReview);
 
