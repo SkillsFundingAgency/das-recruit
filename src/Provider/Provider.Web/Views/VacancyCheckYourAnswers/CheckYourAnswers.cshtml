@@ -380,33 +380,35 @@
                 <dd class="govuk-summary-list__actions">
                 </dd>
             </div>
-            <div class="govuk-summary-list__row govuk-summary-list--no-border">
-                <dt class="govuk-summary-list__key">
-                    Application website
-                </dt>
-                <dd class="govuk-summary-list__value">
-                    @(_serviceParameters.VacancyType == VacancyType.Apprenticeship
-                        ?Model.ApplicationUrl
-                        :Model.FindAnApprenticeshipUrl)
-                </dd>
-                <dd class="govuk-summary-list__actions">
-                    <a class="govuk-link govuk-link--no-visited-state float-right-desktop" asp-route="@RouteNames.ApplicationProcess_Get" asp-all-route-data="@Model.RouteDictionary">Change<span class="govuk-visually-hidden"> application process</span></a>
-                </dd>
-            </div>
-            @if (Model.HasApplicationInstructions)
+            @if (_serviceParameters.VacancyType == VacancyType.Apprenticeship)
             {
-                <div class="govuk-summary-list__row">
+                <div class="govuk-summary-list__row govuk-summary-list--no-border">
                     <dt class="govuk-summary-list__key">
-                        Explain the application process (optional)
+                        Application website
                     </dt>
                     <dd class="govuk-summary-list__value">
-                        @(Model.HasApplicationInstructions ? Model.ApplicationInstructions : "None")
+                        @(Model.ApplicationMethod == ApplicationMethod.ThroughExternalApplicationSite
+                            ? Model.ApplicationUrl
+                            : Model.FindAnApprenticeshipUrl)
                     </dd>
                     <dd class="govuk-summary-list__actions">
+                        <a class="govuk-link govuk-link--no-visited-state float-right-desktop" asp-route="@RouteNames.ApplicationProcess_Get" asp-all-route-data="@Model.RouteDictionary">Change<span class="govuk-visually-hidden"> application process</span></a>
                     </dd>
                 </div>
+                @if (Model.HasApplicationInstructions)
+                {
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">
+                            Explain the application process (optional)
+                        </dt>
+                        <dd class="govuk-summary-list__value">
+                            @(Model.HasApplicationInstructions ? Model.ApplicationInstructions : "None")
+                        </dd>
+                        <dd class="govuk-summary-list__actions">
+                        </dd>
+                    </div>
+                }
             }
-            
         </dl>
         <h2 class="govuk-heading-m">Now submit your vacancy</h2>
         <p class="govuk-body">By submitting this vacancy you are confirming that, to the best of your knowledge, the details you are providing are correct.</p>
