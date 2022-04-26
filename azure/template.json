@@ -149,12 +149,6 @@
     },
     "cdnUrl": {
       "type": "string"
-    },
-    "providerVacancyType": {
-      "type": "string"
-    },
-    "traineeshipVacancyType": {
-      "type": "string"
     }
   },
   "variables": {
@@ -694,10 +688,6 @@
                 {
                   "name": "Cdn:Url",
                   "value": "[parameters('cdnUrl')]"
-                },
-                {
-                  "name": "VacancyType",
-                  "value": "[parameters('providerVacancyType')]"
                 }
               ]
             }
@@ -785,10 +775,6 @@
                 {
                   "name": "Cdn:Url",
                   "value": "[parameters('cdnUrl')]"
-                },
-                {
-                  "name": "VacancyType",
-                  "value": "[parameters('traineeshipVacancyType')]"
                 }
               ]
             }
