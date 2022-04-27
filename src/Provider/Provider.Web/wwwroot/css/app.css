@@ -181,6 +181,9 @@ span.govuk-error-message:empty {
 
 .app-disability-confident-logo {
     width: 150px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    display: inline-block;
 }
 
 /*** JQuery UI autocomplete styles ***/
