@@ -149,12 +149,6 @@
     },
     "cdnUrl": {
       "type": "string"
-    },
-    "providerVacancyType": {
-      "type": "string"
-    },
-    "traineeshipVacancyType": {
-      "type": "string"
     }
   },
   "variables": {
@@ -170,6 +164,8 @@
     "storageAccountName": "[toLower(concat('das', parameters('resourceEnvironmentName'), parameters('serviceName'), 'str'))]",
     "apiAppServiceName": "[concat(variables('resourceNamePrefix'), 'api-as')]",
     "apiConfigNames": "SFA.DAS.Recruit.Api",
+    "providerWebConfigNames": "SFA.DAS.Recruit.Provider",
+    "traineeshipWebConfigNames": "SFA.DAS.Recruit.Traineeship.Provider",
     "jobsConfigNames": "SFA.DAS.Recruit.Jobs,SFA.DAS.Encoding"
   },
   "resources": [
@@ -696,8 +692,8 @@
                   "value": "[parameters('cdnUrl')]"
                 },
                 {
-                  "name": "VacancyType",
-                  "value": "[parameters('providerVacancyType')]"
+                  "name": "ConfigNames",
+                  "value": "[variables('providerWebConfigNames')]"
                 }
               ]
             }
@@ -787,8 +783,8 @@
                   "value": "[parameters('cdnUrl')]"
                 },
                 {
-                  "name": "VacancyType",
-                  "value": "[parameters('traineeshipVacancyType')]"
+                  "name": "ConfigNames",
+                  "value": "[variables('traineeshipWebConfigNames')]"
                 }
               ]
             }
