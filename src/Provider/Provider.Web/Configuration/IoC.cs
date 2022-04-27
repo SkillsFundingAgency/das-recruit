@@ -29,7 +29,7 @@ namespace Esfa.Recruit.Provider.Web.Configuration
     {
         public static void AddIoC(this IServiceCollection services, IConfiguration configuration)
         {
-            var serviceParameters = new ServiceParameters($"RecruitConfiguration:{configuration[nameof(VacancyType)]}");
+            var serviceParameters = new ServiceParameters(configuration[$"RecruitConfiguration:{nameof(VacancyType)}"]);
             
             services.AddSingleton(serviceParameters);
             
