@@ -98,7 +98,7 @@
 </form>
 
 <h2 class="govuk-heading-m">
-    @Model.ResultsHeading <a asp-show="@Model.IsFiltered" asp-route="@RouteNames.Vacancies_Get" asp-route-ukprn="@Model.Ukprn" asp-route-filter="All" class="govuk-!-font-weight-regular govuk-link govuk-!-font-size-19">Show all vacancies</a>
+    @Model.ResultsHeading <a asp-show="@Model.IsFiltered" asp-route="@RouteNames.Vacancies_Get" asp-route-ukprn="@Model.Ukprn" asp-route-filter="All" class="govuk-!-font-weight-regular govuk-!-font-size-19 govuk-!-margin-left-1 govuk-link govuk-link--no-visited-state">Show all vacancies</a>
 </h2>
 
 <p asp-hide="@Model.ShowResultsTable" class="govuk-body">No vacancies match the criteria</p>
