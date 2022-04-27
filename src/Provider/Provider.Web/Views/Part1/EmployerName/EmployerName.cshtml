@@ -54,11 +54,12 @@
                             </label>
                         </div>
                         <div class="govuk-radios__conditional" id="trading-name-conditional">
-                            <span esfa-validation-message-for="NewTradingName" class="govuk-error-message"></span>
-                            <div class="govuk-form-group">
+                            
+                            <div class="govuk-form-group" esfa-validation-marker-for="NewTradingName">
                                 <div asp-hide="@Model.HasExistingTradingName">
-                                    <label asp-for="NewTradingName" class="govuk-label govuk-!-font-weight-bold" for="NewTradingName">Trading name</label>
+                                    <label asp-for="NewTradingName" class="govuk-label" for="NewTradingName">Trading name</label>
                                 </div>
+                                <span esfa-validation-message-for="NewTradingName" class="govuk-error-message"></span>
                                 <div asp-show="@Model.HasExistingTradingName">
                                     <label asp-for="NewTradingName" class="govuk-label govuk-!-font-weight-bold" for="NewTradingName">Add a new trading name</label>
                                     <span class="govuk-hint">This will also change the trading name on all your vacancies that are in draft or rejected.</span>
@@ -75,7 +76,7 @@
                             </label>
                         </div>
                         <div class="govuk-radios__conditional" id="anonymous-conditional">
-                            <div class="govuk-form-group">
+                            <div class="govuk-form-group" esfa-validation-marker-for="AnonymousName">
                                 <label class="govuk-label" asp-for="AnonymousName">
                                     Brief description of what the employer does
                                 </label>
@@ -84,7 +85,7 @@
                                 <input asp-for="AnonymousName" data-val-length-max="200" class="govuk-input govuk-input--width-20" type="text">
                             </div>
                             <div class="govuk-character-count" data-module="govuk-character-count" data-maxlength="200">
-                                <div class="govuk-form-group">
+                                <div class="govuk-form-group" esfa-validation-marker-for="AnonymousReason">
                                     <label class="govuk-label" asp-for="AnonymousReason">
                                         Reason for being anonymous
                                     </label>
