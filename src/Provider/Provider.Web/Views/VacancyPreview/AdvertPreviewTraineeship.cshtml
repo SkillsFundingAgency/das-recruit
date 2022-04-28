@@ -44,8 +44,8 @@
       <div asp-show="@Model.HasVacancyDescription" class="govuk-body">@Html.Raw(Model.VacancyDescription)</div>
       <h3 asp-show="@Model.HasTrainingDescription" class="govuk-heading-s govuk-!-margin-bottom-1">Training provided</h3>
       <div asp-show="@Model.HasTrainingDescription" class="govuk-body">@Html.Raw(Model.TrainingDescription)</div>
-      <h3 asp-show="@Model.HasOutcomeDescription" class="govuk-heading-s govuk-!-margin-bottom-1">Work experience provided</h3>
-      <div asp-show="@Model.HasOutcomeDescription" class="govuk-body">@Html.Raw(Model.OutcomeDescription)</div>
+      <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Work experience provided</h3>
+      <div class="govuk-body">@Html.Raw(Model.WorkExperience)</div>
     </div>
     <div class="govuk-grid-column-one-third">
 
@@ -127,11 +127,15 @@
 
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-      <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Desired skills and qualities</h3>
-      SkillsRequired
-      PersonalQualities
+      <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Desired skills and personal qualities</h3>
+        <ul class="govuk-list govuk-list--bullet">
+          @foreach (var skill in Model.Skills)
+          {
+            <li>@skill</li>
+          }
+        </ul>
       <h3 class="govuk-heading-s govuk-!-margin-bottom-1">What this will lead to</h3>
-      FutureProspects
+      <div asp-show="@Model.HasOutcomeDescription" class="govuk-body">@Html.Raw(Model.OutcomeDescription)</div>
     </div>
   </div>
 </div>
