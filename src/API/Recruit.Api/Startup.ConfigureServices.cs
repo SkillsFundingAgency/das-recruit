@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 using Esfa.Recruit.Vacancies.Client.Application.Commands;
+using Esfa.Recruit.Vacancies.Client.Application.Configuration;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Ioc;
 using MediatR;
 using Microsoft.AspNetCore.Authentication;
@@ -25,6 +27,7 @@ namespace SFA.DAS.Recruit.Api
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddOptions();
+            services.AddSingleton(new ServiceParameters(VacancyType.Apprenticeship.ToString()));
             services.Configure<ConnectionStrings>(Configuration.GetSection("ConnectionStrings"));
             services.Configure<RecruitConfiguration>(Configuration.GetSection("Recruit"));
             services.Configure<AzureActiveDirectoryConfiguration>(Configuration.GetSection("AzureAd"));
