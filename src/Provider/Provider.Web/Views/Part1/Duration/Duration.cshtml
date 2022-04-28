@@ -9,7 +9,14 @@
 
 @section BackLink {
     <esfaFeatureEnabled name="@FeatureNames.ProviderTaskList">
-        <a asp-route="@RouteNames.Dates_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Back</a>
+        @if (_serviceParameters.VacancyType == VacancyType.Apprenticeship)
+        {
+            <a asp-route="@RouteNames.Dates_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Back</a>            
+        }
+        else
+        {
+            <a asp-route="@RouteNames.WorkExperience_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Back</a>
+        }
     </esfaFeatureEnabled>
     <esfaFeatureDisabled name="@FeatureNames.ProviderTaskList">
         <a asp-show="@Model.PageInfo.IsWizard" asp-all-route-data="@Model.RouteDictionary" asp-route="@RouteNames.Dates_Get" esfa-automation="link-back" class="govuk-back-link">Back</a>

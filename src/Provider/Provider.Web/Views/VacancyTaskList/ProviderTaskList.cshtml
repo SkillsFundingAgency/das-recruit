@@ -200,24 +200,9 @@
                             </a>
                         }
                     </li>
-                    <li class="das-task-list__item">
-                        @if (_serviceParameters.VacancyType == VacancyType.Apprenticeship)
-                        {
-                            @if (Model.ClosingDateSectionState == VacancyPreviewSectionState.Incomplete || Model.PossibleStartDateSectionState == VacancyPreviewSectionState.Incomplete)
-                            {
-                                <span class="das-task-list__task-name">
-                                    Duration and working hours
-                                </span>    
-                            }
-                            else
-                            {
-                                <a class="govuk-link govuk-link--no-visited-state" asp-all-route-data="@Model.RouteDictionary" asp-route="@RouteNames.Duration_Get">
-                                    Duration and working hours
-                                </a>
-                            }
-                        }
-                        else
-                        {
+                    @if (_serviceParameters.VacancyType == VacancyType.Traineeship)
+                    {
+                        <li class="das-task-list__item">
                             @if (Model.ClosingDateSectionState == VacancyPreviewSectionState.Incomplete || Model.PossibleStartDateSectionState == VacancyPreviewSectionState.Incomplete)
                             {
                                 <span class="das-task-list__task-name">
@@ -230,8 +215,22 @@
                                     Work experience provided
                                 </a>
                             }
+                        </li>
+                    }
+                    <li class="das-task-list__item">
+                        @if (_serviceParameters.VacancyType == VacancyType.Apprenticeship && (Model.ClosingDateSectionState == VacancyPreviewSectionState.Incomplete || Model.PossibleStartDateSectionState == VacancyPreviewSectionState.Incomplete)
+                            || _serviceParameters.VacancyType==VacancyType.Traineeship && Model.WorkExperienceProvidedSectionState == VacancyPreviewSectionState.Incomplete)
+                        {
+                            <span class="das-task-list__task-name">
+                                Duration and working hours
+                            </span>    
                         }
-                        
+                        else
+                        {
+                            <a class="govuk-link govuk-link--no-visited-state" asp-all-route-data="@Model.RouteDictionary" asp-route="@RouteNames.Duration_Get">
+                                Duration and working hours
+                            </a>
+                        }
                     </li>
                      @if (_serviceParameters.VacancyType == VacancyType.Apprenticeship)
                      {
@@ -252,7 +251,7 @@
                      }
                     <li class="das-task-list__item">
                         @if ((_serviceParameters.VacancyType == VacancyType.Apprenticeship && Model.WageTextSectionState == VacancyPreviewSectionState.Incomplete)
-                            ||(_serviceParameters.VacancyType == VacancyType.Traineeship && Model.WorkExperienceProvidedSectionState == VacancyPreviewSectionState.Incomplete))
+                            ||(_serviceParameters.VacancyType == VacancyType.Traineeship && Model.ExpectedDurationSectionState == VacancyPreviewSectionState.Incomplete))
                         {
                             <span class="das-task-list__task-name">
                                 Number of positions
