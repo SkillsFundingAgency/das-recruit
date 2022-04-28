@@ -158,7 +158,7 @@
                         Work experience
                     </dt>
                     <dd class="govuk-summary-list__value">
-                        @Model.WorkExperience
+                        @Html.Raw(Model.WorkExperience)
                     </dd>
                     <dd class="govuk-summary-list__actions">
                         <a class="govuk-link govuk-link--no-visited-state float-right-desktop" asp-route="@RouteNames.WorkExperience_Get" asp-all-route-data="@Model.RouteDictionary">Change<span class="govuk-visually-hidden"> work experience</span></a>

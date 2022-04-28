@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections;
@@ -76,18 +77,26 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                     }
                 }
             };
-
+            
             var aggPipeline = VacancySummaryAggQueryBuilder.GetAggregateQueryPipeline(match);
 
             return await RunAggPipelineQuery(aggPipeline);
         }
 
-        public async Task<IList<TransferInfo>> GetTransferredFromProviderAsync(long ukprn)
+        public async Task<IList<TransferInfo>> GetTransferredFromProviderAsync(long ukprn, VacancyType vacancyType)
         {
             var builder = Builders<VacancyTransferInfo>.Filter;
             var filter = builder.Eq(TransferInfoUkprn, ukprn) &
-                         builder.Eq(TransferInfoReason, TransferReason.EmployerRevokedPermission.ToString());
+                         builder.Eq(TransferInfoReason, TransferReason.EmployerRevokedPermission.ToString()) &
+                         builder.AnyEq("VacancyType",new []{"Apprenticeship", null});
 
+            if (vacancyType == VacancyType.Traineeship)
+            {
+                filter = builder.Eq(TransferInfoUkprn, ukprn) &
+                        builder.Eq(TransferInfoReason, TransferReason.EmployerRevokedPermission.ToString()) &
+                        builder.Eq("VacancyType", "Traineeship" );
+            }
+            
             var collection = GetCollection<VacancyTransferInfo>();
 
             var result = await RetryPolicy.Execute(_ =>

@@ -48,20 +48,20 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             await AssignVacancyNumber(id);
         }
         
-        public async Task<ProviderDashboard> GetDashboardAsync(long ukprn, bool createIfNonExistent = false)
+        public async Task<ProviderDashboard> GetDashboardAsync(long ukprn, VacancyType vacancyType, bool createIfNonExistent = false)
         {
-            ProviderDashboard result = await _reader.GetProviderDashboardAsync(ukprn);
+            ProviderDashboard result = await _reader.GetProviderDashboardAsync(ukprn, vacancyType);
             if (result == null && createIfNonExistent)
             {
-                await GenerateDashboard(ukprn);
-                result = await _reader.GetProviderDashboardAsync(ukprn);
+                await GenerateDashboard(ukprn, vacancyType);
+                result = await _reader.GetProviderDashboardAsync(ukprn, vacancyType);
             }
             return result;
         }
 
-        public Task GenerateDashboard(long ukprn)
+        private Task GenerateDashboard(long ukprn, VacancyType vacancyType)
         {
-            return _providerDashboardService.ReBuildDashboardAsync(ukprn);
+            return _providerDashboardService.ReBuildDashboardAsync(ukprn, vacancyType);
         }
 
         public Task<ProviderEditVacancyInfo> GetProviderEditVacancyInfoAsync(long ukprn)
