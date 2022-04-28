@@ -203,6 +203,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
 
         public Task<long> RemoveOldProviderDashboards(DateTime oldestLastUpdatedDate)
         {
+            //TODO
             return _queryStore.DeleteManyLessThanAsync<ProviderDashboard, DateTime>(QueryViewType.ProviderDashboard.TypeName, x => x.LastUpdated, oldestLastUpdatedDate);
         }
 

@@ -70,18 +70,11 @@
                 </div>
             }
             <div class="govuk-summary-list__row">
-                @if (_serviceParameters.VacancyType == VacancyType.Apprenticeship)
-                {
-                    <dt class="govuk-summary-list__key">
-                        Summary of the apprenticeship
-                    </dt>
-                }
-                else
-                {
-                    <dt class="govuk-summary-list__key">
-                        Summary of the traineeship
-                    </dt>
-                }
+                <dt class="govuk-summary-list__key">
+                    @(_serviceParameters.VacancyType == VacancyType.Apprenticeship
+                        ?"Summary of the apprenticeship"
+                        :"Summary of the traineeship")
+                </dt>
                 <dd class="govuk-summary-list__value">
                     @Model.ShortDescription
                 </dd>
@@ -128,7 +121,11 @@
                 </div>
             }
         </dl>
-        <h2 class="govuk-heading-m">Employment details</h2>
+        <h2 class="govuk-heading-m">
+            @(_serviceParameters.VacancyType == VacancyType.Apprenticeship
+                ?"Employment details"
+                :"Placement details")
+        </h2>
         <dl class="govuk-summary-list govuk-!-margin-bottom-9">
             <div class="govuk-summary-list__row govuk-summary-list--no-border">
                 <dt class="govuk-summary-list__key">
@@ -143,7 +140,9 @@
             </div>
             <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key">
-                    Apprenticeship start date
+                    @(_serviceParameters.VacancyType == VacancyType.Apprenticeship
+                        ?"Apprenticeship start date"
+                        :"Traineeship start date")
                 </dt>
                 <dd class="govuk-summary-list__value">
                     @Model.PossibleStartDate
@@ -296,15 +295,7 @@
                     Other things to consider
                 </dt>
                 <dd class="govuk-summary-list__value">
-                    @if (string.IsNullOrEmpty(Model.ThingsToConsider))
-                    {
-                        @:None
-                    }
-                    else
-                    {
-                        @Model.ThingsToConsider    
-                    }
-                    
+                    @(Model.HasThingsToConsider?Model.ThingsToConsider:"None")
                 </dd>
                 <dd class="govuk-summary-list__actions">
                     <a class="govuk-link govuk-link--no-visited-state float-right-desktop" asp-route="@RouteNames.Considerations_Get" asp-all-route-data="@Model.RouteDictionary">Change<span class="govuk-visually-hidden"> considerations</span></a>
@@ -315,7 +306,9 @@
         <dl class="govuk-summary-list govuk-!-margin-bottom-9">
             <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key">
-                    Name of employer on advert
+                    @(_serviceParameters.VacancyType == VacancyType.Apprenticeship
+                        ?"Name of employer on advert"
+                        :"Name of employer on vacancy")
                 </dt>
                 <dd class="govuk-summary-list__value">
                     @Model.EmployerName
@@ -392,14 +385,9 @@
                     Application website
                 </dt>
                 <dd class="govuk-summary-list__value">
-                    @if (Model.ApplicationMethod == ApplicationMethod.ThroughExternalApplicationSite)
-                    {
-                        @Model.ApplicationUrl
-                    }
-                    else
-                    {
-                        @Model.FindAnApprenticeshipUrl
-                    }
+                    @(Model.ApplicationMethod == ApplicationMethod.ThroughExternalApplicationSite
+                        ? Model.ApplicationUrl
+                        : Model.FindAnApprenticeshipUrl)
                 </dd>
                 <dd class="govuk-summary-list__actions">
                     <a class="govuk-link govuk-link--no-visited-state float-right-desktop" asp-route="@RouteNames.ApplicationProcess_Get" asp-all-route-data="@Model.RouteDictionary">Change<span class="govuk-visually-hidden"> application process</span></a>
@@ -418,7 +406,6 @@
                     </dd>
                 </div>
             }
-            
         </dl>
         <h2 class="govuk-heading-m">Now submit your vacancy</h2>
         <p class="govuk-body">By submitting this vacancy you are confirming that, to the best of your knowledge, the details you are providing are correct.</p>
