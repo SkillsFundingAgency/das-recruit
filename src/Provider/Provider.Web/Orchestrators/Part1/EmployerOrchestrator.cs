@@ -21,7 +21,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
         {
             var editVacancyInfo = await _providerVacancyClient.GetProviderEditVacancyInfoAsync(vrm.Ukprn);
 
-            if (editVacancyInfo.Employers.Any() == false)
+            if (editVacancyInfo?.Employers == null || editVacancyInfo.Employers.Any() == false)
             {
                 throw new MissingPermissionsException(string.Format(RecruitWebExceptionMessages.ProviderMissingPermission, vrm.Ukprn));
             }
