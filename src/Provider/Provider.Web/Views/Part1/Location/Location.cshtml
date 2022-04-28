@@ -64,32 +64,34 @@
                             </div>
                             <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="other-location-conditional">
                                 <div id="address-details" class="address-manual-input">
-                                    <label class="govuk-label govuk-!-font-weight-bold">Enter the address where the apprentice will work</label>
-                                    <div esfa-validation-marker-for="AddressLine1" class="govuk-form-group-compound address-item govuk-form-group">
-                                        <label asp-for="AddressLine1" class="govuk-visually-hidden">Address line 1</label>
-                                        <span esfa-validation-message-for="AddressLine1" class="govuk-error-message"></span>
-                                        <input asp-for="AddressLine1" class="govuk-input postcode-lookup" maxlength="100" />
-                                    </div>
-                                    <div esfa-validation-marker-for="AddressLine2" class="govuk-form-group-compound address-item govuk-form-group">
-                                        <label asp-for="AddressLine2" class="govuk-visually-hidden">Address line 2</label>
-                                        <span esfa-validation-message-for="AddressLine2" class="govuk-error-message"></span>
-                                        <input asp-for="AddressLine2" class="govuk-input" maxlength="100" />
-                                    </div>
-                                    <div esfa-validation-marker-for="AddressLine3" class="govuk-form-group-compound address-item govuk-form-group">
-                                        <label asp-for="AddressLine3" class="govuk-visually-hidden">Address line 3</label>
-                                        <span esfa-validation-message-for="AddressLine3" class="govuk-error-message"></span>
-                                        <input asp-for="AddressLine3" class="govuk-input" maxlength="100" />
-                                    </div>
-                                    <div esfa-validation-marker-for="AddressLine4" class="govuk-form-group-compound address-item govuk-form-group">
-                                        <label asp-for="AddressLine4" class="govuk-visually-hidden">Address line 4</label>
-                                        <span esfa-validation-message-for="AddressLine4" class="govuk-error-message"></span>
-                                        <input asp-for="AddressLine4" class="govuk-input" maxlength="100" />
-                                    </div>
-                                    <div esfa-validation-marker-for="Postcode" class="govuk-form-group address-item govuk-form-group">
-                                        <label asp-for="Postcode" class="govuk-label govuk-!-font-weight-bold">Enter postcode</label>
-                                        <span esfa-validation-message-for="Postcode" class="govuk-error-message"></span>
-                                        <input asp-for="Postcode" class="govuk-input govuk-input--width-10 postcode-lookup" maxlength="8" />
-                                    </div>
+                                    <fieldset class="govuk-fieldset">
+                                        <legend class="govuk-fieldset__legend">Enter the address where the apprentice will work</legend>
+                                        <div esfa-validation-marker-for="AddressLine1" class="govuk-form-group-compound address-item govuk-form-group">
+                                            <label asp-for="AddressLine1" class="govuk-visually-hidden">Address line 1</label>
+                                            <span esfa-validation-message-for="AddressLine1" class="govuk-error-message"></span>
+                                            <input asp-for="AddressLine1" class="govuk-input postcode-lookup" maxlength="100" />
+                                        </div>
+                                        <div esfa-validation-marker-for="AddressLine2" class="govuk-form-group-compound address-item govuk-form-group">
+                                            <label asp-for="AddressLine2" class="govuk-visually-hidden">Address line 2</label>
+                                            <span esfa-validation-message-for="AddressLine2" class="govuk-error-message"></span>
+                                            <input asp-for="AddressLine2" class="govuk-input" maxlength="100" />
+                                        </div>
+                                        <div esfa-validation-marker-for="AddressLine3" class="govuk-form-group-compound address-item govuk-form-group">
+                                            <label asp-for="AddressLine3" class="govuk-visually-hidden">Address line 3</label>
+                                            <span esfa-validation-message-for="AddressLine3" class="govuk-error-message"></span>
+                                            <input asp-for="AddressLine3" class="govuk-input" maxlength="100" />
+                                        </div>
+                                        <div esfa-validation-marker-for="AddressLine4" class="govuk-form-group-compound address-item govuk-form-group">
+                                            <label asp-for="AddressLine4" class="govuk-visually-hidden">Address line 4</label>
+                                            <span esfa-validation-message-for="AddressLine4" class="govuk-error-message"></span>
+                                            <input asp-for="AddressLine4" class="govuk-input" maxlength="100" />
+                                        </div>
+                                        <div esfa-validation-marker-for="Postcode" class="govuk-form-group address-item govuk-form-group">
+                                            <label asp-for="Postcode" class="govuk-label">Enter postcode</label>
+                                            <span esfa-validation-message-for="Postcode" class="govuk-error-message"></span>
+                                            <input asp-for="Postcode" class="govuk-input govuk-input--width-10 postcode-lookup" maxlength="8" />
+                                        </div>
+                                    </fieldset>
                                 </div>
                             </div>
                         </div>
