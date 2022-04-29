@@ -16,25 +16,20 @@
                 </h1>
             </div>
             <div class="govuk-panel__body">
-                <p asp-show="@Model.HasVacancyReference">
+                <div asp-show="@Model.HasVacancyReference">
                     Advert reference number <br>
                     <strong class="govuk-!-font-weight-bold">VAC@(Model.VacancyReference)</strong>
-                </p>
+                </div>
             </div>
         </div>
-
         <h2 class="govuk-heading-m">What happens next</h2>
         <div asp-show="@Model.ApprovedJobAdvert">
             <p class="govuk-body">We'll check the advert within one working day and let your training provider know if there are any edits.</p>
-            <p class="govuk-body">When we approve your advert, it will appear on the <a href="@Model.FindAnApprenticeshipUrl" target="_blank">Find an apprenticeship service (opens in a new tab)</a>.</p>
+            <p class="govuk-body">When we approve your advert, it will appear on the <a href="@Model.FindAnApprenticeshipUrl" target="_blank" class="govuk-link govuk-link--no-visited-state">Find an apprenticeship service (opens in a new tab)</a>.</p>
         </div>
         <div asp-show="@Model.RejectedJobAdvert">
             <p class="govuk-body">This job advert has gone back to @Model.TrainingProviderName.</p>
         </div>
-        <div class="govuk-form-group inline">
-            <div class="govuk-form-group">
-                Go to <a asp-route="@RouteNames.Dashboard_Get">your apprenticeship adverts</a>
-            </div>
-        </div>
+        <p class="govuk-body">Go to <a asp-route="@RouteNames.Dashboard_Get" class="govuk-link govuk-link--no-visited-state">your apprenticeship adverts</a></p>
     </div>
 </div>
