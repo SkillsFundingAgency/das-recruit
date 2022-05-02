@@ -1,4 +1,5 @@
 ﻿@using Esfa.Recruit.Vacancies.Client.Domain.Entities
+@using Esfa.Recruit.Shared.Web.Mappers
 @model Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview.VacancyPreviewViewModel
 
 @{
@@ -8,6 +9,23 @@
 
 @section BackLink {
     <a asp-route="@RouteNames.ProviderTaskListGet" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Back to task list</a>
+}
+
+@if (Model.Status == VacancyStatus.Rejected)
+{
+    <div class="govuk-notification-banner" role="region" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
+        <div class="govuk-notification-banner__header">
+            <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
+                Important
+            </h2>
+        </div>
+        <div class="govuk-notification-banner__content">
+            <p class="govuk-notification-banner__heading">
+                @Model.EmployerName has rejected this vacancy for the following reason.
+            </p>
+            <p class="govuk-body">@Model.EmployerRejectedReason</p>
+        </div>
+    </div>
 }
 
 <div class="govuk-grid-row">
@@ -26,6 +44,7 @@
                 </dd>
                 <dd class="govuk-summary-list__actions">
                     <a class="govuk-link govuk-link--no-visited-state float-right-desktop" asp-route="@RouteNames.Title_Get" asp-all-route-data="@Model.RouteDictionary">Change<span class="govuk-visually-hidden"> vacancy title</span></a>
+                    <review-field class="govuk-tag--purple" field-name="@FieldIdentifiers.Title" tag-name="strong" model="@Model"/>
                 </dd>
             </div>
             @if (Model.AccountLegalEntityCount > 1)
@@ -39,6 +58,7 @@
                     </dd>
                     <dd class="govuk-summary-list__actions">
                         <a class="govuk-link govuk-link--no-visited-state float-right-desktop" asp-route="@RouteNames.LegalEntity_Get" asp-all-route-data="@Model.RouteDictionary">Change<span class="govuk-visually-hidden"> legal entity</span></a>
+                        <review-field class="govuk-tag--purple" field-name="@FieldIdentifiers.EmployerName" tag-name="strong" model="@Model"/>
                     </dd>
                 </div>   
             }
@@ -51,6 +71,7 @@
                 </dd>
                 <dd class="govuk-summary-list__actions">
                     <a class="govuk-link govuk-link--no-visited-state float-right-desktop" asp-route="@RouteNames.Training_Get" asp-all-route-data="@Model.RouteDictionary">Change<span class="govuk-visually-hidden"> training course</span></a>
+                    <review-field class="govuk-tag--purple" field-name="@FieldIdentifiers.Training" tag-name="strong" model="@Model"/>
                 </dd>
             </div>
             <div class="govuk-summary-list__row">
@@ -62,6 +83,7 @@
                 </dd>
                 <dd class="govuk-summary-list__actions">
                     <a class="govuk-link govuk-link--no-visited-state float-right-desktop" asp-route="@RouteNames.ShortDescription_Get" asp-all-route-data="@Model.RouteDictionary">Change<span class="govuk-visually-hidden"> summary of the apprenticeship</span></a>
+                    <review-field class="govuk-tag--purple" field-name="@FieldIdentifiers.ShortDescription" tag-name="strong" model="@Model"/>
                 </dd>
             </div>
             <div class="govuk-summary-list__row govuk-summary-list--no-border">
@@ -73,6 +95,7 @@
                 </dd>
                 <dd class="govuk-summary-list__actions">
                     <a class="govuk-link govuk-link--no-visited-state float-right-desktop" asp-route="@RouteNames.VacancyDescription_Index_Get" asp-all-route-data="@Model.RouteDictionary">Change<span class="govuk-visually-hidden"> about the apprenticeship</span></a>
+                    <review-field class="govuk-tag--purple" field-name="@FieldIdentifiers.VacancyDescription" tag-name="strong" model="@Model"/>
                 </dd>
             </div>
             <div class="govuk-summary-list__row govuk-summary-list--no-border">
@@ -83,6 +106,7 @@
                     @Html.Raw(Model.TrainingDescription)
                 </dd>
                 <dd class="govuk-summary-list__actions">
+                    <review-field class="govuk-tag--purple" field-name="@FieldIdentifiers.TrainingDescription" tag-name="strong" model="@Model"/>
                 </dd>
             </div>
         </dl>
@@ -97,6 +121,7 @@
                 </dd>
                 <dd class="govuk-summary-list__actions">
                     <a class="govuk-link govuk-link--no-visited-state float-right-desktop" asp-route="@RouteNames.Dates_Get" asp-all-route-data="@Model.RouteDictionary">Change<span class="govuk-visually-hidden"> important date</span></a>
+                    <review-field class="govuk-tag--purple" field-name="@FieldIdentifiers.ClosingDate" tag-name="strong" model="@Model"/>
                 </dd>
             </div>
             <div class="govuk-summary-list__row">
@@ -107,6 +132,7 @@
                     @Model.PossibleStartDate
                 </dd>
                 <dd class="govuk-summary-list__actions">
+                    <review-field class="govuk-tag--purple" field-name="@FieldIdentifiers.PossibleStartDate" tag-name="strong" model="@Model"/>
                 </dd>
             </div>
             <div class="govuk-summary-list__row govuk-summary-list--no-border">
@@ -118,6 +144,7 @@
                 </dd>
                 <dd class="govuk-summary-list__actions">
                     <a class="govuk-link govuk-link--no-visited-state float-right-desktop" asp-route="@RouteNames.Duration_Get" asp-all-route-data="@Model.RouteDictionary">Change<span class="govuk-visually-hidden"> duration</span></a>
+                    <review-field class="govuk-tag--purple" field-name="@FieldIdentifiers.ExpectedDuration" tag-name="strong" model="@Model"/>
                 </dd>
             </div>
             <div class="govuk-summary-list__row govuk-summary-list--no-border">
@@ -128,6 +155,7 @@
                     @Model.WorkingWeekDescription
                 </dd>
                 <dd class="govuk-summary-list__actions">
+                    <review-field class="govuk-tag--purple" field-name="@FieldIdentifiers.WorkingWeek" tag-name="strong" model="@Model"/>
                 </dd>
             </div>
             <div class="govuk-summary-list__row">
@@ -138,6 +166,7 @@
                     @Model.HoursPerWeek
                 </dd>
                 <dd class="govuk-summary-list__actions">
+                    
                 </dd>
             </div>
             <div class="govuk-summary-list__row govuk-summary-list--no-border">
@@ -149,6 +178,7 @@
                 </dd>
                 <dd class="govuk-summary-list__actions">
                     <a class="govuk-link govuk-link--no-visited-state float-right-desktop" asp-route="@RouteNames.Wage_Get" asp-all-route-data="@Model.RouteDictionary">Change<span class="govuk-visually-hidden"> wage</span></a>
+                    <review-field class="govuk-tag--purple" field-name="@FieldIdentifiers.Wage" tag-name="strong" model="@Model"/>
                 </dd>
             </div>
             <div class="govuk-summary-list__row">
@@ -159,6 +189,7 @@
                     @(Model.HasWageInfo?Model.WageInfo:"None")
                 </dd>
                 <dd class="govuk-summary-list__actions">
+                    <review-field class="govuk-tag--purple" field-name="@FieldIdentifiers.WageAdditionalInfo" tag-name="strong" model="@Model"/>
                 </dd>
             </div>
             <div class="govuk-summary-list__row">
@@ -170,6 +201,7 @@
                 </dd>
                 <dd class="govuk-summary-list__actions">
                     <a class="govuk-link govuk-link--no-visited-state float-right-desktop" asp-route="@RouteNames.NumberOfPositions_Get" asp-all-route-data="@Model.RouteDictionary">Change<span class="govuk-visually-hidden"> number of positions</span></a>
+                    <review-field class="govuk-tag--purple" field-name="@FieldIdentifiers.NumberOfPositions" tag-name="strong" model="@Model"/>
                 </dd>
             </div>
             <div class="govuk-summary-list__row">
@@ -181,6 +213,7 @@
                 </dd>
                 <dd class="govuk-summary-list__actions">
                     <a class="govuk-link govuk-link--no-visited-state float-right-desktop" asp-route="@RouteNames.Location_Get" asp-all-route-data="@Model.RouteDictionary">Change<span class="govuk-visually-hidden"> location</span></a>
+                    <review-field class="govuk-tag--purple" field-name="@FieldIdentifiers.EmployerAddress" tag-name="strong" model="@Model"/>
                 </dd>
             </div>
         </dl>
@@ -200,6 +233,7 @@
                 </dd>
                 <dd class="govuk-summary-list__actions">
                     <a class="govuk-link govuk-link--no-visited-state float-right-desktop" asp-route="@RouteNames.Skills_Get" asp-all-route-data="@Model.RouteDictionary">Change<span class="govuk-visually-hidden"> skills</span></a>
+                    <review-field class="govuk-tag--purple" field-name="@FieldIdentifiers.Skills" tag-name="strong" model="@Model"/>
                 </dd>
             </div>
             <div class="govuk-summary-list__row">
@@ -216,6 +250,7 @@
                 </dd>
                 <dd class="govuk-summary-list__actions">
                     <a class="govuk-link govuk-link--no-visited-state float-right-desktop" asp-route="@RouteNames.Qualifications_Get" asp-all-route-data="@Model.RouteDictionary">Change<span class="govuk-visually-hidden"> qualifications</span></a>
+                    <review-field class="govuk-tag--purple" field-name="@FieldIdentifiers.Qualifications" tag-name="strong" model="@Model"/>
                 </dd>
             </div>
             <div class="govuk-summary-list__row">
@@ -227,6 +262,7 @@
                 </dd>
                 <dd class="govuk-summary-list__actions">
                     <a class="govuk-link govuk-link--no-visited-state float-right-desktop" asp-route="@RouteNames.FutureProspects_Get" asp-all-route-data="@Model.RouteDictionary">Change<span class="govuk-visually-hidden"> future prospects</span></a>
+                    <review-field class="govuk-tag--purple" field-name="@FieldIdentifiers.FutureProspects" tag-name="strong" model="@Model"/>
                 </dd>
             </div>
             <div class="govuk-summary-list__row">
@@ -246,6 +282,7 @@
                 </dd>
                 <dd class="govuk-summary-list__actions">
                     <a class="govuk-link govuk-link--no-visited-state float-right-desktop" asp-route="@RouteNames.Considerations_Get" asp-all-route-data="@Model.RouteDictionary">Change<span class="govuk-visually-hidden"> considerations</span></a>
+                    <review-field class="govuk-tag--purple" field-name="@FieldIdentifiers.ThingsToConsider" tag-name="strong" model="@Model"/>
                 </dd>
             </div>
         </dl>
@@ -260,6 +297,7 @@
                 </dd>
                 <dd class="govuk-summary-list__actions">
                     <a class="govuk-link govuk-link--no-visited-state float-right-desktop" asp-route="@RouteNames.EmployerName_Get" asp-all-route-data="@Model.RouteDictionary">Change<span class="govuk-visually-hidden"> name of organisation</span></a>
+                    <review-field class="govuk-tag--purple" field-name="@FieldIdentifiers.EmployerName" tag-name="strong" model="@Model"/>
                 </dd>
             </div>
             <div class="govuk-summary-list__row govuk-summary-list--no-border">
@@ -271,6 +309,7 @@
                 </dd>
                 <dd class="govuk-summary-list__actions">
                     <a class="govuk-link govuk-link--no-visited-state float-right-desktop" asp-route="@RouteNames.AboutEmployer_Get" asp-all-route-data="@Model.RouteDictionary">Change<span class="govuk-visually-hidden"> name of organisation</span></a>
+                    <review-field class="govuk-tag--purple" field-name="@FieldIdentifiers.EmployerDescription" tag-name="strong" model="@Model"/>
                 </dd>
             </div>
             <div class="govuk-summary-list__row govuk-summary-list--no-border">
@@ -281,6 +320,7 @@
                     @(Model.HasEmployerWebsiteUrl?Model.EmployerWebsiteUrl:"None")
                 </dd>
                 <dd class="govuk-summary-list__actions">
+                    <review-field class="govuk-tag--purple" field-name="@FieldIdentifiers.EmployerWebsiteUrl" tag-name="strong" model="@Model"/>
                 </dd>
             </div>
             <div class="govuk-summary-list__row">
@@ -291,7 +331,7 @@
                     @(Model.IsDisabilityConfident?"Yes":"No")
                 </dd>
                 <dd class="govuk-summary-list__actions">
-                    
+                    <review-field class="govuk-tag--purple" field-name="@FieldIdentifiers.DisabilityConfident" tag-name="strong" model="@Model"/>
                 </dd>
             </div>
             <div class="govuk-summary-list__row govuk-summary-list--no-border">
@@ -303,6 +343,7 @@
                 </dd>
                 <dd class="govuk-summary-list__actions">
                     <a class="govuk-link govuk-link--no-visited-state float-right-desktop" asp-route="@RouteNames.ProviderContactDetails_Get" asp-all-route-data="@Model.RouteDictionary">Change<span class="govuk-visually-hidden"> contact details</span></a>
+                    <review-field class="govuk-tag--purple" field-name="@FieldIdentifiers.ProviderContact" tag-name="strong" model="@Model"/>
                 </dd>
             </div>
             <div class="govuk-summary-list__row govuk-summary-list--no-border">
@@ -323,6 +364,7 @@
                     @(Model.HasProviderContactTelephone?Model.ProviderContactTelephone:"None")
                 </dd>
                 <dd class="govuk-summary-list__actions">
+                    <review-field class="govuk-tag--purple" field-name="@FieldIdentifiers.ProviderContact" tag-name="strong" model="@Model"/>
                 </dd>
             </div>
             <div class="govuk-summary-list__row govuk-summary-list--no-border">
@@ -338,9 +380,11 @@
                     {
                         @Model.FindAnApprenticeshipUrl
                     }
+                    <review-field class="govuk-tag--purple" field-name="@FieldIdentifiers.ApplicationUrl" tag-name="strong" model="@Model"/>
                 </dd>
                 <dd class="govuk-summary-list__actions">
                     <a class="govuk-link govuk-link--no-visited-state float-right-desktop" asp-route="@RouteNames.ApplicationProcess_Get" asp-all-route-data="@Model.RouteDictionary">Change<span class="govuk-visually-hidden"> application process</span></a>
+                    <review-field class="govuk-tag--purple" field-name="@FieldIdentifiers.ApplicationMethod" tag-name="strong" model="@Model"/>
                 </dd>
             </div>
             @if (Model.HasApplicationInstructions)
@@ -353,6 +397,7 @@
                         @(Model.HasApplicationInstructions ? Model.ApplicationInstructions : "None")
                     </dd>
                     <dd class="govuk-summary-list__actions">
+                        <review-field class="govuk-tag--purple" field-name="@FieldIdentifiers.ApplicationInstructions" tag-name="strong" model="@Model"/>
                     </dd>
                 </div>
             }
