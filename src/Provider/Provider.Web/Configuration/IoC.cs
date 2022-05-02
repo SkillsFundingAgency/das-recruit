@@ -20,6 +20,7 @@ using Esfa.Recruit.Vacancies.Client.Ioc;
 using FluentValidation;
 using Esfa.Recruit.Provider.Web.Configuration.Routing;
 using Esfa.Recruit.Provider.Web.Services;
+using Esfa.Recruit.Provider.Web.TagHelpers;
 using Esfa.Recruit.Shared.Web.Orchestrators;
 
 namespace Esfa.Recruit.Provider.Web.Configuration
@@ -64,6 +65,8 @@ namespace Esfa.Recruit.Provider.Web.Configuration
             services.AddTransient<IProviderAlertsViewModelFactory, ProviderAlertsViewModelFactory>();
             services.AddTransient<ITrainingProviderAgreementService, TrainingProviderAgreementService>();
             services.AddTransient<IUtility, Utility>();
+
+            services.AddTransient<IFieldReviewHelper, FieldReviewHelper>();
         }
 
         private static void RegisterFluentValidators(IServiceCollection services)
