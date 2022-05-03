@@ -41,6 +41,11 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview
         public VacancyPreviewSectionState DescriptionsSectionState { get; internal set; }
         public VacancyPreviewSectionState WorkingWeekSectionState { get; internal set; }
         public VacancyPreviewSectionState FutureProspectsSectionState { get; internal set; }
+        public VacancyPreviewSectionState TrainingDescriptionSectionState { get; internal set; }
+        public VacancyPreviewSectionState VacancyDescriptionSectionState { get; internal set; }
+        public VacancyPreviewSectionState WorkingWeekHoursSectionState { get; internal set; }
+        public VacancyPreviewSectionState WorkingWeekDescriptionSectionState { get; internal set; }
+        public VacancyPreviewSectionState WageAdditionalInfoSectionState { get; internal set; }
 
         public EntityValidationResult SoftValidationErrors { get; internal set; }
         public bool CanHideValidationSummary { get; internal set; }
@@ -178,12 +183,17 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview
             viewModel.ShortDescriptionSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.ShortDescription }, true, modelState, vm => vm.ShortDescription);
             viewModel.ClosingDateSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.ClosingDate }, true, modelState, vm => vm.ClosingDate);
             viewModel.WorkingWeekSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.WorkingWeek }, true, modelState, vm => vm.HoursPerWeek, vm => vm.WorkingWeekDescription);
+            viewModel.WorkingWeekHoursSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.WorkingWeekHours }, true, modelState, vm => vm.HoursPerWeek);
+            viewModel.WorkingWeekDescriptionSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.WorkingWeekDescription }, true, modelState, vm => vm.WorkingWeekDescription);
             viewModel.WageTextSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.Wage }, true, modelState, vm => vm.HasWage, vm => vm.WageText);
+            viewModel.WageAdditionalInfoSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.WageAdditionalInfo }, true, modelState, vm => vm.WageText);
             viewModel.ExpectedDurationSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.ExpectedDuration }, true, modelState, vm => vm.ExpectedDuration);
             viewModel.PossibleStartDateSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.PossibleStartDate }, true, modelState, vm => vm.PossibleStartDate);
             viewModel.TrainingLevelSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.TrainingLevel }, true, modelState, vm => vm.HasProgramme, vm => vm.TrainingLevel);
             viewModel.NumberOfPositionsSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.NumberOfPositions }, true, modelState, vm => vm.NumberOfPositions);
             viewModel.DescriptionsSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.VacancyDescription, FieldIdentifiers.TrainingDescription, FieldIdentifiers.OutcomeDescription }, true, modelState, vm => vm.VacancyDescription, vm => vm.TrainingDescription, vm => vm.OutcomeDescription);
+            viewModel.VacancyDescriptionSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.VacancyDescription }, true, modelState, vm => vm.VacancyDescription);
+            viewModel.TrainingDescriptionSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.TrainingDescription }, true, modelState, vm => vm.TrainingDescription);
             viewModel.FutureProspectsSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.OutcomeDescription }, true, modelState,  vm => vm.OutcomeDescription);
             viewModel.SkillsSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.Skills }, true, modelState, vm => vm.Skills);
             viewModel.QualificationsSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.Qualifications }, true, modelState, vm => vm.Qualifications);

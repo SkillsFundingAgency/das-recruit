@@ -36,9 +36,7 @@
         <h2 class="govuk-heading-m">Vacancy summary</h2>
         <dl class="govuk-summary-list govuk-!-margin-bottom-9">
             <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">
-                    Vacancy title
-                </dt>
+                <dt-review-section field-name="@Model.TitleSectionState">Vacancy title</dt-review-section>
                 <dd class="govuk-summary-list__value">
                     @Model.Title
                 </dd>
@@ -50,9 +48,7 @@
             @if (Model.AccountLegalEntityCount > 1)
             {
                 <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key">
-                        Name of organisation
-                    </dt>
+                    <dt-review-section field-name="@Model.EmployerNameSectionState">Name of organisation</dt-review-section>
                     <dd class="govuk-summary-list__value">
                         @Model.EmployerName
                     </dd>
@@ -63,9 +59,7 @@
                 </div>   
             }
             <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">
-                    Training course
-                </dt>
+                <dt-review-section field-name="@Model.TrainingSectionState">Training course</dt-review-section>
                 <dd class="govuk-summary-list__value">
                     @Model.TrainingTitle
                 </dd>
@@ -75,9 +69,7 @@
                 </dd>
             </div>
             <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">
-                    Summary of the apprenticeship
-                </dt>
+                <dt-review-section field-name="@Model.ShortDescriptionSectionState">Summary of the apprenticeship</dt-review-section>
                 <dd class="govuk-summary-list__value">
                     @Model.ShortDescription
                 </dd>
@@ -87,9 +79,7 @@
                 </dd>
             </div>
             <div class="govuk-summary-list__row govuk-summary-list--no-border">
-                <dt class="govuk-summary-list__key">
-                    What will the apprentice be doing?
-                </dt>
+                <dt-review-section field-name="@Model.VacancyDescriptionSectionState">What will the apprentice be doing?</dt-review-section>
                 <dd class="govuk-summary-list__value">
                     <div class="app-ugc-wrap">
                         @Html.Raw(Model.VacancyDescription)
@@ -101,9 +91,7 @@
                 </dd>
             </div>
             <div class="govuk-summary-list__row govuk-summary-list--no-border">
-                <dt class="govuk-summary-list__key">
-                    Training and qualification levels
-                </dt>
+                <dt-review-section field-name="@Model.TrainingDescriptionSectionState">Training and qualification levels</dt-review-section>
                 <dd class="govuk-summary-list__value">
                     <div class="app-ugc-wrap">
                         @Html.Raw(Model.TrainingDescription)
@@ -117,9 +105,7 @@
         <h2 class="govuk-heading-m">Employment details</h2>
         <dl class="govuk-summary-list govuk-!-margin-bottom-9">
             <div class="govuk-summary-list__row govuk-summary-list--no-border">
-                <dt class="govuk-summary-list__key">
-                    Application closing date
-                </dt>
+                <dt-review-section field-name="@Model.ClosingDateSectionState">Application closing date</dt-review-section>
                 <dd class="govuk-summary-list__value">
                     @Model.ClosingDate
                 </dd>
@@ -129,9 +115,7 @@
                 </dd>
             </div>
             <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">
-                    Apprenticeship start date
-                </dt>
+                <dt-review-section field-name="@Model.PossibleStartDateSectionState">Apprenticeship start date</dt-review-section>
                 <dd class="govuk-summary-list__value">
                     @Model.PossibleStartDate
                 </dd>
@@ -140,9 +124,7 @@
                 </dd>
             </div>
             <div class="govuk-summary-list__row govuk-summary-list--no-border">
-                <dt class="govuk-summary-list__key">
-                    Duration
-                </dt>
+                <dt-review-section field-name="@Model.ExpectedDurationSectionState">Duration</dt-review-section>
                 <dd class="govuk-summary-list__value">
                     @Model.ExpectedDuration
                 </dd>
@@ -152,9 +134,7 @@
                 </dd>
             </div>
             <div class="govuk-summary-list__row govuk-summary-list--no-border">
-                <dt class="govuk-summary-list__key">
-                    Working week details
-                </dt>
+                <dt-review-section field-name="@Model.WorkingWeekSectionState">Working week details</dt-review-section>
                 <dd class="govuk-summary-list__value">
                     @Model.WorkingWeekDescription
                 </dd>
@@ -163,6 +143,7 @@
                 </dd>
             </div>
             <div class="govuk-summary-list__row">
+                <dt-review-section field-name="@Model.WorkingWeekHoursSectionState">Hours per week</dt-review-section>
                 <dt class="govuk-summary-list__key">
                     Hours per week
                 </dt>
@@ -170,13 +151,11 @@
                     @Model.HoursPerWeek
                 </dd>
                 <dd class="govuk-summary-list__actions">
-                    
+
                 </dd>
             </div>
             <div class="govuk-summary-list__row govuk-summary-list--no-border">
-                <dt class="govuk-summary-list__key">
-                    Pay rate
-                </dt>
+                <dt-review-section field-name="@Model.WageTextSectionState">Pay rate</dt-review-section>
                 <dd class="govuk-summary-list__value">
                     @Model.WageText
                 </dd>
@@ -186,20 +165,16 @@
                 </dd>
             </div>
             <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">
-                    Extra information about pay (optional)
-                </dt>
+                <dt-review-section field-name="@Model.WageAdditionalInfoSectionState">Extra information about pay (optional)</dt-review-section>
                 <dd class="govuk-summary-list__value">
-                    @(Model.HasWageInfo?Model.WageInfo:"None")
+                    @(Model.HasWageInfo ? Model.WageInfo : "None")
                 </dd>
                 <dd class="govuk-summary-list__actions">
                     <review-field class="govuk-tag--purple" field-name="@FieldIdentifiers.WageAdditionalInfo" tag-name="strong" model="@Model"/>
                 </dd>
             </div>
             <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">
-                    Number of positions
-                </dt>
+                <dt-review-section field-name="@Model.NumberOfPositionsSectionState">Number of positions</dt-review-section>
                 <dd class="govuk-summary-list__value">
                     @Model.NumberOfPositions available
                 </dd>
@@ -209,9 +184,7 @@
                 </dd>
             </div>
             <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">
-                    Address
-                </dt>
+                <dt-review-section field-name="@Model.EmployerAddressSectionState">Address</dt-review-section>
                 <dd class="govuk-summary-list__value">
                     @string.Join(", ", Model.EmployerAddressElements?.Where(s => !string.IsNullOrWhiteSpace(s)).Select(s => s.Trim()) ?? new string[0])
                 </dd>
@@ -224,9 +197,7 @@
         <h2 class="govuk-heading-m">Requirements and prospects</h2>
         <dl class="govuk-summary-list govuk-!-margin-bottom-9">
             <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">
-                    Skills
-                </dt>
+                <dt-review-section field-name="@Model.SkillsSectionState">Skills</dt-review-section>
                 <dd class="govuk-summary-list__value">
                     <ul class="govuk-list govuk-list--bullet">
                         @foreach (var skill in Model.Skills)
@@ -241,9 +212,7 @@
                 </dd>
             </div>
             <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">
-                    Qualifications required
-                </dt>
+                <dt-review-section field-name="@Model.QualificationsSectionState">Qualifications required</dt-review-section>
                 <dd class="govuk-summary-list__value">
                     <ul class="govuk-list govuk-list--bullet">
                         @foreach (var qual in Model.Qualifications)
@@ -258,9 +227,7 @@
                 </dd>
             </div>
             <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">
-                    Future prospects
-                </dt>
+                <dt-review-section field-name="@Model.FutureProspectsSectionState">Future prospects</dt-review-section>
                 <dd class="govuk-summary-list__value">
                     <div class="app-ugc-wrap">
                         @Html.Raw(Model.OutcomeDescription)
@@ -272,9 +239,7 @@
                 </dd>
             </div>
             <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">
-                    Other things to consider
-                </dt>
+                <dt-review-section field-name="@Model.ThingsToConsiderSectionState">Other things to consider</dt-review-section>
                 <dd class="govuk-summary-list__value">
                     @if (string.IsNullOrEmpty(Model.ThingsToConsider))
                     {
@@ -295,9 +260,7 @@
         <h2 class="govuk-heading-m">About the employer</h2>
         <dl class="govuk-summary-list govuk-!-margin-bottom-9">
             <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">
-                    Name of employer on advert
-                </dt>
+                <dt-review-section field-name="@Model.EmployerNameSectionState">Name of employer on advert</dt-review-section>
                 <dd class="govuk-summary-list__value">
                     @Model.EmployerName
                 </dd>
@@ -307,9 +270,7 @@
                 </dd>
             </div>
             <div class="govuk-summary-list__row govuk-summary-list--no-border">
-                <dt class="govuk-summary-list__key">
-                    Employer information
-                </dt>
+                <dt-review-section field-name="@Model.EmployerDescriptionSectionState">Employer information</dt-review-section>
                 <dd class="govuk-summary-list__value">
                     @Model.EmployerDescription
                 </dd>
@@ -319,33 +280,27 @@
                 </dd>
             </div>
             <div class="govuk-summary-list__row govuk-summary-list--no-border">
-                <dt class="govuk-summary-list__key">
-                    Organisation website (optional)
-                </dt>
+                <dt-review-section field-name="@Model.EmployerWebsiteUrlSectionState">Organisation website (optional)</dt-review-section>
                 <dd class="govuk-summary-list__value">
-                    @(Model.HasEmployerWebsiteUrl?Model.EmployerWebsiteUrl:"None")
+                    @(Model.HasEmployerWebsiteUrl ? Model.EmployerWebsiteUrl : "None")
                 </dd>
                 <dd class="govuk-summary-list__actions">
                     <review-field class="govuk-tag--purple" field-name="@FieldIdentifiers.EmployerWebsiteUrl" tag-name="strong" model="@Model"/>
                 </dd>
             </div>
             <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">
-                    Disability Confident Employer?
-                </dt>
+                <dt-review-section field-name="@Model.DisabilityConfidentSectionState">Disability Confident Employer?</dt-review-section>
                 <dd class="govuk-summary-list__value">
-                    @(Model.IsDisabilityConfident?"Yes":"No")
+                    @(Model.IsDisabilityConfident ? "Yes" : "No")
                 </dd>
                 <dd class="govuk-summary-list__actions">
                     <review-field class="govuk-tag--purple" field-name="@FieldIdentifiers.DisabilityConfident" tag-name="strong" model="@Model"/>
                 </dd>
             </div>
             <div class="govuk-summary-list__row govuk-summary-list--no-border">
-                <dt class="govuk-summary-list__key">
-                    Contact name (optional)
-                </dt>
+                <dt-review-section field-name="@Model.ProviderContactSectionState">Contact name (optional)</dt-review-section>
                 <dd class="govuk-summary-list__value">
-                    @(Model.HasProviderContactName?Model.ProviderContactName:"None")
+                    @(Model.HasProviderContactName ? Model.ProviderContactName : "None")
                 </dd>
                 <dd class="govuk-summary-list__actions">
                     <a class="govuk-link govuk-link--no-visited-state float-right-desktop" asp-route="@RouteNames.ProviderContactDetails_Get" asp-all-route-data="@Model.RouteDictionary">Change<span class="govuk-visually-hidden"> contact details</span></a>
@@ -353,30 +308,27 @@
                 </dd>
             </div>
             <div class="govuk-summary-list__row govuk-summary-list--no-border">
+                <dt-review-section field-name="@Model.ProviderContactSectionState">Contact email (optional)</dt-review-section>
                 <dt class="govuk-summary-list__key">
                     Contact email (optional)
                 </dt>
                 <dd class="govuk-summary-list__value">
-                    @(Model.HasProviderContactEmail?Model.ProviderContactEmail:"None")
+                    @(Model.HasProviderContactEmail ? Model.ProviderContactEmail : "None")
                 </dd>
                 <dd class="govuk-summary-list__actions">
                 </dd>
             </div>
             <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">
-                    Contact number (optional)
-                </dt>
+                <dt-review-section field-name="@Model.ProviderContactSectionState">Contact number (optional)</dt-review-section>
                 <dd class="govuk-summary-list__value">
-                    @(Model.HasProviderContactTelephone?Model.ProviderContactTelephone:"None")
+                    @(Model.HasProviderContactTelephone ? Model.ProviderContactTelephone : "None")
                 </dd>
                 <dd class="govuk-summary-list__actions">
                     <review-field class="govuk-tag--purple" field-name="@FieldIdentifiers.ProviderContact" tag-name="strong" model="@Model"/>
                 </dd>
             </div>
             <div class="govuk-summary-list__row govuk-summary-list--no-border">
-                <dt class="govuk-summary-list__key">
-                    Application website
-                </dt>
+                <dt-review-section field-name="@Model.ApplicationMethodSectionState">Application website</dt-review-section>
                 <dd class="govuk-summary-list__value">
                     @if (Model.ApplicationMethod == ApplicationMethod.ThroughExternalApplicationSite)
                     {
@@ -396,9 +348,7 @@
             @if (Model.HasApplicationInstructions)
             {
                 <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key">
-                        Explain the application process (optional)
-                    </dt>
+                    <dt-review-section field-name="@Model.ApplicationInstructionsSectionState">Explain the application process (optional)</dt-review-section>
                     <dd class="govuk-summary-list__value">
                         @(Model.HasApplicationInstructions ? Model.ApplicationInstructions : "None")
                     </dd>
