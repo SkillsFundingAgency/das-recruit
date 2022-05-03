@@ -8,11 +8,14 @@ using Esfa.Recruit.Provider.Web.ViewModels.Part2.VacancyDescription;
 using Esfa.Recruit.Shared.Web.FeatureToggle;
 using Esfa.Recruit.Shared.Web.Orchestrators;
 using Esfa.Recruit.Shared.Web.Services;
+using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Application.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using Microsoft.WindowsAzure.Storage.Shared.Protocol;
 
 namespace Esfa.Recruit.Provider.Web.Orchestrators.Part2
 {
@@ -23,18 +26,24 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part2
         private readonly IReviewSummaryService _reviewSummaryService;
         private readonly IUtility _utility;
         private readonly IFeature _feature;
+        private readonly ServiceParameters _serviceParameters;
 
         public VacancyDescriptionOrchestrator(IRecruitVacancyClient vacancyClient,
             ILogger<VacancyDescriptionOrchestrator> logger, 
             IReviewSummaryService reviewSummaryService,
-            IUtility utility, IFeature feature) : base(logger)
+            IUtility utility, 
+            IFeature feature,
+            ServiceParameters serviceParameters) : base(logger)
         {
             _vacancyClient = vacancyClient;
             _reviewSummaryService = reviewSummaryService;
             _utility = utility;
             _feature = feature;
+            _serviceParameters = serviceParameters;
             ValidationRules = _feature.IsFeatureEnabled(FeatureNames.ProviderTaskList)
-                ? VacancyRuleSet.Description | VacancyRuleSet.TrainingDescription
+                ? _serviceParameters.VacancyType == VacancyType.Apprenticeship 
+                    ? VacancyRuleSet.Description | VacancyRuleSet.TrainingDescription
+                    : VacancyRuleSet.TrainingDescription
                 : VacancyRuleSet.Description | VacancyRuleSet.TrainingDescription | VacancyRuleSet.OutcomeDescription;
         }
 
@@ -45,11 +54,15 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part2
             var vm = new VacancyDescriptionViewModel
             {
                 Title = vacancy.Title,
-                VacancyDescription = vacancy.Description,
                 TrainingDescription = vacancy.TrainingDescription,
                 Ukprn = vrm.Ukprn,
                 VacancyId = vrm.VacancyId
             };
+
+            if (_serviceParameters.VacancyType == VacancyType.Apprenticeship)
+            {
+                vm.VacancyDescription = vacancy.Description;
+            }
 
             if (!_feature.IsFeatureEnabled(FeatureNames.ProviderTaskList))
             {
@@ -71,7 +84,10 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part2
         {
             var vm = await GetVacancyDescriptionViewModelAsync((VacancyRouteModel)m);
 
-            vm.VacancyDescription = m.VacancyDescription;
+            if (_serviceParameters.VacancyType == VacancyType.Apprenticeship)
+            {
+                vm.VacancyDescription = m.VacancyDescription;
+            }
             vm.TrainingDescription = m.TrainingDescription;
             if (!_feature.IsFeatureEnabled(FeatureNames.ProviderTaskList))
             {
@@ -83,12 +99,15 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part2
         public async Task<OrchestratorResponse> PostVacancyDescriptionEditModelAsync(VacancyDescriptionEditModel m, VacancyUser user)
         {
             var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(m, RouteNames.VacancyDescription_Index_Post);
-
-            SetVacancyWithProviderReviewFieldIndicators(
-                vacancy.Description,
-                FieldIdResolver.ToFieldId(v => v.Description),
-                vacancy,
-                (v) => { return v.Description = m.VacancyDescription; });
+            
+            if (_serviceParameters.VacancyType is VacancyType.Apprenticeship)
+            {
+                SetVacancyWithProviderReviewFieldIndicators(
+                    vacancy.Description,
+                    FieldIdResolver.ToFieldId(v => v.Description),
+                    vacancy,
+                    (v) => { return v.Description = m.VacancyDescription; });
+            }
 
             SetVacancyWithProviderReviewFieldIndicators(
                 vacancy.TrainingDescription,
@@ -116,7 +135,10 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part2
         {
             var mappings = new EntityToViewModelPropertyMappings<Vacancy, VacancyDescriptionEditModel>();
 
-            mappings.Add(e => e.Description, vm => vm.VacancyDescription);
+            if (_serviceParameters.VacancyType == VacancyType.Apprenticeship)
+            {
+                mappings.Add(e => e.Description, vm => vm.VacancyDescription);   
+            }
             mappings.Add(e => e.TrainingDescription, vm => vm.TrainingDescription);
             if (!_feature.IsFeatureEnabled(FeatureNames.ProviderTaskList))
             {
