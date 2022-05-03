@@ -8,6 +8,7 @@ using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview;
 using Esfa.Recruit.Shared.Web.Helpers;
 using Esfa.Recruit.Shared.Web.Orchestrators;
+using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
@@ -21,13 +22,16 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
         private readonly IUtility _utility;
         private readonly IEmployerVacancyClient _employerVacancyClient;
         private readonly DisplayVacancyViewModelMapper _displayVacancyViewModelMapper;
+        private readonly IReviewSummaryService _reviewSummaryService;
+
         public VacancyTaskListOrchestrator(ILogger<VacancyTaskListOrchestrator> logger,IRecruitVacancyClient recruitVacancyClient, IUtility utility, 
-            IEmployerVacancyClient employerVacancyClient,  DisplayVacancyViewModelMapper displayVacancyViewModelMapper) : base(logger)
+            IEmployerVacancyClient employerVacancyClient,  DisplayVacancyViewModelMapper displayVacancyViewModelMapper,IReviewSummaryService reviewSummaryService) : base(logger)
         {
             _recruitVacancyClient = recruitVacancyClient;
             _utility = utility;
             _employerVacancyClient = employerVacancyClient;
             _displayVacancyViewModelMapper = displayVacancyViewModelMapper;
+            _reviewSummaryService = reviewSummaryService;
         }
 
         public async Task<VacancyPreviewViewModel> GetVacancyTaskListModel(VacancyRouteModel vrm)
@@ -53,6 +57,11 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             if (programme != null)
             {
                 vm.ApprenticeshipLevel = programme.ApprenticeshipLevel;
+            }
+            if (vacancy.Status == VacancyStatus.Referred)
+            {
+                vm.Review = await _reviewSummaryService.GetReviewSummaryViewModelAsync(vacancy.VacancyReference.Value, 
+                    ReviewFieldMappingLookups.GetPreviewReviewFieldIndicators());
             }
 
             vm.AccountLegalEntityCount = getEmployerDataTask.Result.LegalEntities.Count();
