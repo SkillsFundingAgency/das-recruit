@@ -144,7 +144,15 @@
                                     <a id="preview-@vacancy.Id" asp-show="@vacancy.IsSubmittable" asp-route="@RouteNames.DisplayVacancy_Get" asp-route-ukprn="@Model.Ukprn" asp-route-vacancyId="@vacancy.Id" class="govuk-link">@GetLinkText(vacancy) <span class="govuk-visually-hidden">@vacancy.Title</span></a>    
                                 </esfaFeatureDisabled>
                                 <esfaFeatureEnabled name="@FeatureNames.ProviderTaskList">
-                                    <a id="task-list-@vacancy.Id" asp-show="@vacancy.IsSubmittable" asp-route="@RouteNames.ProviderTaskListGet" asp-route-ukprn="@Model.Ukprn" asp-route-vacancyId="@vacancy.Id" class="govuk-link">@GetLinkText(vacancy) <span class="govuk-visually-hidden">@vacancy.Title</span></a>
+                                    @if (vacancy.Status == VacancyStatus.Referred || vacancy.Status == VacancyStatus.Rejected)
+                                    {
+                                        <a id="task-list-@vacancy.Id" asp-show="@vacancy.IsSubmittable" asp-route="@RouteNames.ProviderCheckYourAnswersGet" asp-route-ukprn="@Model.Ukprn" asp-route-vacancyId="@vacancy.Id" class="govuk-link">@GetLinkText(vacancy) <span class="govuk-visually-hidden">@vacancy.Title</span></a>
+                                    }
+                                    else
+                                    {
+                                        <a id="task-list-@vacancy.Id" asp-show="@vacancy.IsSubmittable" asp-route="@RouteNames.ProviderTaskListGet" asp-route-ukprn="@Model.Ukprn" asp-route-vacancyId="@vacancy.Id" class="govuk-link">@GetLinkText(vacancy) <span class="govuk-visually-hidden">@vacancy.Title</span></a>    
+                                    }
+                                    
                                 </esfaFeatureEnabled>
                             </td>
                         </tr>

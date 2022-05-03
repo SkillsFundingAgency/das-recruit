@@ -32,8 +32,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.TagHelpers.FieldReviewHel
             var model = new VacancyPreviewViewModel();
             await mapper.MapFromVacancyAsync(model, vacancy);
             model.SetSectionStates(model, new ModelStateDictionary());
-            
-            
+
             //Act
             var actual = helper.ShowReviewField(model, model.EmployerReviewFieldIndicators.First().FieldIdentifier);
 

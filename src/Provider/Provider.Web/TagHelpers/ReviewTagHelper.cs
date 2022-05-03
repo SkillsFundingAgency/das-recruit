@@ -31,4 +31,23 @@ namespace Esfa.Recruit.Provider.Web.TagHelpers
             }
         }
     }
+
+    [HtmlTargetElement("dt-review-section")]
+    public class AdvisorReviewTagHelper : TagHelper
+    {
+        private readonly IFieldReviewHelper _fieldReviewHelper;
+
+        public AdvisorReviewTagHelper(IFieldReviewHelper fieldReviewHelper)
+        {
+            _fieldReviewHelper = fieldReviewHelper;
+        }
+        public string FieldName { get; set; }
+        public override void Process(TagHelperContext context, TagHelperOutput tagHelperOutput)
+        {
+            tagHelperOutput.TagName = "dt";
+            tagHelperOutput.AddClass("govuk-summary-list__key", HtmlEncoder.Default);
+            tagHelperOutput.AddClass(_fieldReviewHelper.GetReviewSectionClass(FieldName), HtmlEncoder.Default);
+            tagHelperOutput.TagMode = TagMode.StartTagAndEndTag;
+        }
+    }
 }
