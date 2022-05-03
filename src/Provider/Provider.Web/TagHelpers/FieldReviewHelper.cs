@@ -12,9 +12,9 @@ namespace Esfa.Recruit.Provider.Web.TagHelpers
     }
     public class FieldReviewHelper : IFieldReviewHelper
     {
-        private const string EmptySectionClass = "app-preview-section--empty";
-        private const string ErrorSectionClass = "app-preview-section--error";
-        private const string ReviewSectionClass = "app-preview-section--review";
+        private const string EmptySectionClass = "app-check-answers__key--empty";
+        private const string ErrorSectionClass = "app-check-answers__key--error";
+        private const string ReviewSectionClass = "app-check-answers__key--review";
         
         public bool ShowReviewField(VacancyPreviewViewModel model, string fieldIdentifier)
         {

@@ -26,7 +26,7 @@ namespace Esfa.Recruit.Provider.Web.TagHelpers
                 tagHelperOutput.TagName = TagName;
                 tagHelperOutput.AddClass("govuk-tag",HtmlEncoder.Default);
                 tagHelperOutput.AddClass(Class,HtmlEncoder.Default);
-                tagHelperOutput.Content.SetHtmlContent("AMENDED BY EMPLOYER");
+                tagHelperOutput.Content.SetHtmlContent("Amended by employer");
                 tagHelperOutput.TagMode = TagMode.StartTagAndEndTag;    
             }
         }
@@ -46,6 +46,7 @@ namespace Esfa.Recruit.Provider.Web.TagHelpers
         {
             tagHelperOutput.TagName = "dt";
             tagHelperOutput.AddClass("govuk-summary-list__key", HtmlEncoder.Default);
+            tagHelperOutput.AddClass("app-check-answers__key", HtmlEncoder.Default);
             tagHelperOutput.AddClass(_fieldReviewHelper.GetReviewSectionClass(SectionState), HtmlEncoder.Default);
             tagHelperOutput.TagMode = TagMode.StartTagAndEndTag;
         }
