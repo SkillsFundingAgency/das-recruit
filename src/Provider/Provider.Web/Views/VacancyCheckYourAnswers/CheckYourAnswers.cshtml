@@ -144,9 +144,6 @@
             </div>
             <div class="govuk-summary-list__row">
                 <dt-review-section field-name="@Model.WorkingWeekHoursSectionState">Hours per week</dt-review-section>
-                <dt class="govuk-summary-list__key">
-                    Hours per week
-                </dt>
                 <dd class="govuk-summary-list__value">
                     @Model.HoursPerWeek
                 </dd>
@@ -309,9 +306,6 @@
             </div>
             <div class="govuk-summary-list__row govuk-summary-list--no-border">
                 <dt-review-section field-name="@Model.ProviderContactSectionState">Contact email (optional)</dt-review-section>
-                <dt class="govuk-summary-list__key">
-                    Contact email (optional)
-                </dt>
                 <dd class="govuk-summary-list__value">
                     @(Model.HasProviderContactEmail ? Model.ProviderContactEmail : "None")
                 </dd>
