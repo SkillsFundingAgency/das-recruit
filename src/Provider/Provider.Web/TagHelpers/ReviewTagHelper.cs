@@ -41,12 +41,12 @@ namespace Esfa.Recruit.Provider.Web.TagHelpers
         {
             _fieldReviewHelper = fieldReviewHelper;
         }
-        public string FieldName { get; set; }
+        public string SectionState { get; set; }
         public override void Process(TagHelperContext context, TagHelperOutput tagHelperOutput)
         {
             tagHelperOutput.TagName = "dt";
             tagHelperOutput.AddClass("govuk-summary-list__key", HtmlEncoder.Default);
-            tagHelperOutput.AddClass(_fieldReviewHelper.GetReviewSectionClass(FieldName), HtmlEncoder.Default);
+            tagHelperOutput.AddClass(_fieldReviewHelper.GetReviewSectionClass(SectionState), HtmlEncoder.Default);
             tagHelperOutput.TagMode = TagMode.StartTagAndEndTag;
         }
     }

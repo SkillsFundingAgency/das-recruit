@@ -8,7 +8,7 @@ namespace Esfa.Recruit.Provider.Web.TagHelpers
     public interface IFieldReviewHelper
     {
         bool ShowReviewField(VacancyPreviewViewModel model, string fieldIdentifier);
-        string GetReviewSectionClass(string sectionToCheck);
+        string GetReviewSectionClass(string sectionState);
     }
     public class FieldReviewHelper : IFieldReviewHelper
     {
@@ -24,9 +24,9 @@ namespace Esfa.Recruit.Provider.Web.TagHelpers
             return model.EmployerReviewFieldIndicators?.Any(p => p.FieldIdentifier == fieldIdentifier && p.IsChangeRequested) ?? false;
         }
 
-        public string GetReviewSectionClass(string sectionToCheck)
+        public string GetReviewSectionClass(string sectionState)
         {
-            Enum.TryParse<VacancyPreviewSectionState>(sectionToCheck, out var section);
+            Enum.TryParse<VacancyPreviewSectionState>(sectionState, out var section);
             
             switch (section)
             {
