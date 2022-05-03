@@ -91,7 +91,9 @@
                     What will the apprentice be doing?
                 </dt>
                 <dd class="govuk-summary-list__value">
-                    @Html.Raw(Model.VacancyDescription)
+                    <div class="app-ugc-wrap">
+                        @Html.Raw(Model.VacancyDescription)
+                    </div>
                 </dd>
                 <dd class="govuk-summary-list__actions">
                     <a class="govuk-link govuk-link--no-visited-state float-right-desktop" asp-route="@RouteNames.VacancyDescription_Index_Get" asp-all-route-data="@Model.RouteDictionary">Change<span class="govuk-visually-hidden"> about the apprenticeship</span></a>
@@ -103,7 +105,9 @@
                     Training and qualification levels
                 </dt>
                 <dd class="govuk-summary-list__value">
-                    @Html.Raw(Model.TrainingDescription)
+                    <div class="app-ugc-wrap">
+                        @Html.Raw(Model.TrainingDescription)
+                    </div>
                 </dd>
                 <dd class="govuk-summary-list__actions">
                     <review-field class="govuk-tag--purple" field-name="@FieldIdentifiers.TrainingDescription" tag-name="strong" model="@Model"/>
@@ -258,7 +262,9 @@
                     Future prospects
                 </dt>
                 <dd class="govuk-summary-list__value">
-                    @Html.Raw(Model.OutcomeDescription)
+                    <div class="app-ugc-wrap">
+                        @Html.Raw(Model.OutcomeDescription)
+                    </div>
                 </dd>
                 <dd class="govuk-summary-list__actions">
                     <a class="govuk-link govuk-link--no-visited-state float-right-desktop" asp-route="@RouteNames.FutureProspects_Get" asp-all-route-data="@Model.RouteDictionary">Change<span class="govuk-visually-hidden"> future prospects</span></a>
