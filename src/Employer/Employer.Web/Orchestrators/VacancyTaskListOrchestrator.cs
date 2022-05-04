@@ -23,6 +23,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
         private readonly IEmployerVacancyClient _employerVacancyClient;
         private readonly DisplayVacancyViewModelMapper _displayVacancyViewModelMapper;
         private readonly IReviewSummaryService _reviewSummaryService;
+        private const VacancyRuleSet SoftValidationRules = VacancyRuleSet.MinimumWage | VacancyRuleSet.TrainingExpiryDate;
 
         public VacancyTaskListOrchestrator(ILogger<VacancyTaskListOrchestrator> logger,IRecruitVacancyClient recruitVacancyClient, IUtility utility, 
             IEmployerVacancyClient employerVacancyClient,  DisplayVacancyViewModelMapper displayVacancyViewModelMapper,IReviewSummaryService reviewSummaryService) : base(logger)
@@ -53,6 +54,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             vm.HasWage = vacancy.Wage != null;
             vm.CanShowReference = vacancy.Status != VacancyStatus.Draft;
             vm.CanShowDraftHeader = vacancy.Status == VacancyStatus.Draft;
+            vm.SoftValidationErrors = GetSoftValidationErrors(vacancy);
             
             if (programme != null)
             {
@@ -77,6 +79,29 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             };
 
             return vm;
+        }
+        
+        private EntityValidationResult GetSoftValidationErrors(Vacancy vacancy)
+        {
+            var result = ValidateVacancy(vacancy, SoftValidationRules);
+            MapValidationPropertiesToViewModel(result);
+            return result;
+        }
+        
+        private EntityValidationResult ValidateVacancy(Vacancy vacancy, VacancyRuleSet rules)
+        {
+            var result = _recruitVacancyClient.Validate(vacancy, rules);
+            FlattenErrors(result.Errors);
+            return result;
+        }
+        
+        private void FlattenErrors(IList<EntityValidationError> errors)
+        {
+            //Flatten Qualification errors to its ViewModel parent instead. 'Qualifications[1].Grade' becomes 'Qualifications'
+            foreach (var error in errors.Where(e => e.PropertyName.StartsWith(nameof(Vacancy.Qualifications))))
+            {
+                error.PropertyName = nameof(VacancyPreviewViewModel.Qualifications);
+            }
         }
         
         protected override EntityToViewModelPropertyMappings<Vacancy, VacancyPreviewViewModel> DefineMappings()
