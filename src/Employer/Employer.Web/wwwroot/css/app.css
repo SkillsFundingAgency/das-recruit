@@ -158,6 +158,12 @@
     border-left-color: #d4351c;
 }
 
+.app-review-field-tag  {
+    display: inline-block;
+    margin-top: 5px;
+    font-size: 16px;
+}
+
 /* Local overrides to the das-task-list component */
 
 .das-task-list__section {
@@ -181,6 +187,14 @@
 .das-task-list__section-status {
     text-align: right;
     display: table-cell;
+}
+
+/* User generated content */
+
+.app-ugc-wrap > ul {
+    margin: 0;
+    padding-left: 20px;
+    list-style-type: disc;
 }
 
 /* Tinymce */

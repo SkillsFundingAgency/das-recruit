@@ -340,6 +340,7 @@
                 <dt-review-section section-state="@Model.ProviderContactSectionState">Contact email (optional)</dt-review-section>
                 <dd class="govuk-summary-list__value">
                     @(Model.HasProviderContactEmail ? Model.ProviderContactEmail : "None")
+                    <review-field class="govuk-tag--purple" field-name="@FieldIdentifiers.ProviderContact" tag-name="strong" model="@Model"/>
                 </dd>
                 <dd class="govuk-summary-list__actions">
                 </dd>

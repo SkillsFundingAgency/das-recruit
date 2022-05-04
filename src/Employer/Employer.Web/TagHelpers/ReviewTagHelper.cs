@@ -28,6 +28,11 @@ namespace Esfa.Recruit.Employer.Web.TagHelpers
                 tagHelperOutput.AddClass(Class,HtmlEncoder.Default);
                 tagHelperOutput.Content.SetHtmlContent("Amended by provider");
                 tagHelperOutput.TagMode = TagMode.StartTagAndEndTag;    
+            } 
+            else 
+            {
+                tagHelperOutput.TagName = "span";
+                tagHelperOutput.TagMode = TagMode.StartTagAndEndTag;  
             }
         }
     }
