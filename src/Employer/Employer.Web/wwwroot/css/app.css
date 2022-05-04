@@ -134,6 +134,30 @@
     padding-left: 15px;
 }
 
+/* Check your answers */
+
+.app-check-answers__key,
+.govuk-summary-list--no-border .app-check-answers__key {
+    border-left: 5px solid transparent;
+    min-height: 80px;
+    padding-left: 15px;
+}
+
+.govuk-summary-list--no-border .app-check-answers__key--empty,
+.app-check-answers__key--empty {
+    border-left-color: transparent;
+}
+
+.govuk-summary-list--no-border .app-check-answers__key--error,
+.app-check-answers__key--error {
+    border-left-color: #d4351c;
+}
+
+.govuk-summary-list--no-border .app-check-answers__key--review,
+.app-check-answers__key--review {
+    border-left-color: #d4351c;
+}
+
 /* Local overrides to the das-task-list component */
 
 .das-task-list__section {
