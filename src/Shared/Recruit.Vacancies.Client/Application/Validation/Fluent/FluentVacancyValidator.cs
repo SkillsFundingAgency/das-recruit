@@ -50,13 +50,31 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
             CrossFieldValidations();
         }
 
+        private bool IsApprenticeshipVacancy
+        {
+            get
+            {
+                return _serviceParameters.VacancyType == VacancyType.Apprenticeship;
+            }
+        }
+
+        private string VacancyContext
+        {
+            get
+            {
+                return IsApprenticeshipVacancy
+                    ? "apprenticeship"
+                    : "traineeship";
+            }
+        }
+
         private void SingleFieldValidations()
         {
-            if (_serviceParameters.VacancyType == VacancyType.Apprenticeship)
+            if (IsApprenticeshipVacancy)
             {
                 ValidateApprenticeshipTitle();    
             }
-            else if (_serviceParameters.VacancyType == VacancyType.Traineeship)
+            else
             {
                 ValidateTraineeshipTitle();
             }
@@ -248,7 +266,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
         {
             RuleFor(x => x.NumberOfPositions)
                 .Must(x => x.HasValue && x.Value > 0)
-                    .WithMessage("Enter the number of positions for this apprenticeship")
+                    .WithMessage($"Enter the number of positions for this {VacancyContext}")
                     .WithErrorCode("10")
                 .RunCondition(VacancyRuleSet.NumberOfPositions)
                 .WithRuleId(VacancyRuleSet.NumberOfPositions);
@@ -256,27 +274,22 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
 
         private void ValidateShortDescription()
         {
-
-            var vacancyContext = _serviceParameters.VacancyType == VacancyType.Apprenticeship
-                ? "apprenticeship"
-                : "traineeship";
-            
             RuleFor(x => x.ShortDescription)
                 .Cascade(CascadeMode.StopOnFirstFailure)
                 .NotEmpty()
-                .WithMessage($"Enter a short description of the {vacancyContext}")
+                .WithMessage($"Enter a short description of the {VacancyContext}")
                     .WithErrorCode("12")
                 .MaximumLength(350)
-                    .WithMessage($"Summary of the {vacancyContext} must not exceed {{MaxLength}} characters")
+                    .WithMessage($"Summary of the {VacancyContext} must not exceed {{MaxLength}} characters")
                     .WithErrorCode("13")
                 .MinimumLength(50)
-                    .WithMessage($"Summary of the {vacancyContext} must be at least {{MinLength}} characters")
+                    .WithMessage($"Summary of the {VacancyContext} must be at least {{MinLength}} characters")
                     .WithErrorCode("14")
                 .ValidFreeTextCharacters()
-                    .WithMessage($"Short description of the {vacancyContext} contains some invalid characters")
+                    .WithMessage($"Short description of the {VacancyContext} contains some invalid characters")
                     .WithErrorCode("15")
                 .ProfanityCheck(_profanityListProvider)
-                .WithMessage($"Short description of the {vacancyContext} must not contain a banned word or phrase.")
+                .WithMessage($"Short description of the {VacancyContext} must not contain a banned word or phrase.")
                 .WithErrorCode("605")
                 .RunCondition(VacancyRuleSet.ShortDescription)
                 .WithRuleId(VacancyRuleSet.ShortDescription);
@@ -299,7 +312,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
         {
             RuleFor(x => x.StartDate)
                 .NotNull()
-                .WithMessage(_serviceParameters.VacancyType == VacancyType.Apprenticeship ? "Enter when you expect the apprentice to start" : "Enter when you expect the trainee to start")
+                .WithMessage($"Enter when you expect the {(IsApprenticeshipVacancy? "apprentice" :"trainee")} to start")
                     .WithErrorCode("20")
                 .GreaterThan(v => _timeProvider.Now.Date.AddDays(1).AddTicks(-1))
                 .WithMessage("Start date cannot be today or earlier. We advise using a date more than two weeks from now.")
@@ -312,7 +325,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
         {
             RuleFor(x => x.ProgrammeId)
                 .NotEmpty()
-                    .WithMessage("You must select apprenticeship training")
+                    .WithMessage($"You must select {VacancyContext} training")
                     .WithErrorCode("25")
                 .WithRuleId(VacancyRuleSet.TrainingProgramme)
                 .RunCondition(VacancyRuleSet.TrainingProgramme);
@@ -324,10 +337,10 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
             {
                 RuleFor(x => x.Wage.DurationUnit)
                     .NotEmpty()
-                    .WithMessage("Enter how long the whole apprenticeship is, including work and training")
+                    .WithMessage($"Enter how long the whole {VacancyContext} is, including work and training")
                     .WithErrorCode("34")
                     .IsInEnum()
-                    .WithMessage("Enter how long the whole apprenticeship is, including work and training")
+                    .WithMessage($"Enter how long the whole {VacancyContext} is, including work and training")
                     .WithErrorCode("34")
                     .RunCondition(VacancyRuleSet.Duration)
                     .WithRuleId(VacancyRuleSet.Duration);
@@ -335,10 +348,10 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                 RuleFor(x => x.Wage.Duration)
                     .Cascade(CascadeMode.StopOnFirstFailure)
                     .NotEmpty()
-                    .WithMessage("Enter how long the whole apprenticeship is, including work and training")
+                    .WithMessage($"Enter how long the whole {VacancyContext} is, including work and training")
                     .WithErrorCode("34")
                     .GreaterThan(0)
-                    .WithMessage("Enter how long the whole apprenticeship is, including work and training")
+                    .WithMessage($"Enter how long the whole {VacancyContext} is, including work and training")
                     .WithErrorCode("34")
                     .Must((vacancy, value) =>
                     {
@@ -385,7 +398,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
             {
                 RuleFor(x => x.Wage.WeeklyHours)
                     .NotEmpty()
-                        .WithMessage("Enter how many hours the apprentice will work each week, including training")
+                        .WithMessage($"Enter how many hours the {(IsApprenticeshipVacancy? "apprentice" :"trainee")} will work each week, including training")
                         .WithErrorCode("40")
                     .GreaterThanOrEqualTo(16)
                         .WithMessage("The total hours a week must be at least {ComparisonValue}")
@@ -479,16 +492,16 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
         {
             RuleFor(x => x.Description)
                 .NotEmpty()
-                    .WithMessage("Enter what the apprentice will be doing")
+                    .WithMessage($"Enter what the {(IsApprenticeshipVacancy? "apprentice" :"trainee")} will be doing")
                     .WithErrorCode("53")
                 .MaximumLength(4000)
-                    .WithMessage("What the apprenticeship involves must not exceed {MaxLength} characters")
+                    .WithMessage($"What the {VacancyContext} involves must not exceed {{MaxLength}} characters")
                     .WithErrorCode("7")
                 .ValidHtmlCharacters(_htmlSanitizerService)
-                    .WithMessage("What the apprenticeship involves contains some invalid characters")
+                    .WithMessage($"What the {VacancyContext} involves contains some invalid characters")
                     .WithErrorCode("6")
                 .ProfanityCheck(_profanityListProvider)
-                .WithMessage("What the apprenticeship involves must not contain a banned word or phrase.")
+                .WithMessage($"What the {VacancyContext} involves must not contain a banned word or phrase.")
                 .WithErrorCode("609")
                 .RunCondition(VacancyRuleSet.Description)
                 .WithRuleId(VacancyRuleSet.Description);
@@ -498,7 +511,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
         {
             RuleFor(x => x.TrainingDescription)
                 .NotEmpty()
-                    .WithMessage("Enter the training the apprentice will take and the qualification the apprentice will get")
+                    .WithMessage($"Enter the training the {(IsApprenticeshipVacancy? "apprentice" :"trainee")} will take and the qualification the {(IsApprenticeshipVacancy? "apprentice" :"trainee")} will get")
                     .WithErrorCode("54")
                 .MaximumLength(4000)
                     .WithMessage("Training to be provided description must not exceed {MaxLength} characters")
@@ -548,14 +561,14 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
             {
                 RuleFor(x => x.ApplicationUrl)
                     .Empty()
-                        .WithMessage("Application url must be empty when apply through Find an apprenticeship service option is specified")
+                        .WithMessage($"Application url must be empty when apply through {(IsApprenticeshipVacancy? "Find an apprenticeship" :"Find a traineeship")} service option is specified")
                         .WithErrorCode("86")
                     .RunCondition(VacancyRuleSet.ApplicationMethod)
                     .WithRuleId(VacancyRuleSet.ApplicationMethod);
 
                 RuleFor(x => x.ApplicationInstructions)
                     .Empty()
-                        .WithMessage("Application process must be empty when apply through Find an apprenticeship service option is specified")
+                        .WithMessage($"Application process must be empty when apply through {(IsApprenticeshipVacancy? "Find an apprenticeship" :"Find a traineeship")} service option is specified")
                         .WithErrorCode("89")
                     .RunCondition(VacancyRuleSet.ApplicationMethod)
                     .WithRuleId(VacancyRuleSet.ApplicationMethod);
