@@ -160,6 +160,12 @@
     border-left-color: #d4351c;
 }
 
+.app-review-field-tag  {
+    display: inline-block;
+    margin-top: 5px;
+    font-size: 16px;
+}
+
 /* Local overrides to the das-task-list component */
 
 .das-task-list__section {
