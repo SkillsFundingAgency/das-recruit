@@ -24,10 +24,14 @@ namespace Esfa.Recruit.Provider.Web.TagHelpers
             if (_fieldReviewHelper.ShowReviewField(Model, FieldName))
             {
                 tagHelperOutput.TagName = TagName;
+                tagHelperOutput.AddClass("app-review-field-tag",HtmlEncoder.Default);
                 tagHelperOutput.AddClass("govuk-tag",HtmlEncoder.Default);
                 tagHelperOutput.AddClass(Class,HtmlEncoder.Default);
                 tagHelperOutput.Content.SetHtmlContent("Amended by employer");
                 tagHelperOutput.TagMode = TagMode.StartTagAndEndTag;    
+            } else {
+                tagHelperOutput.TagName = "span";
+                tagHelperOutput.TagMode = TagMode.StartTagAndEndTag; 
             }
         }
     }
