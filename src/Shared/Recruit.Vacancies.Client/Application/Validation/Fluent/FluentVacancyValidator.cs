@@ -120,7 +120,15 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
             ValidateEmployerInformation();
 
             ValidateTrainingProvider();
+
+            if (!IsApprenticeshipVacancy)
+            {
+                ValidateWorkExperience();    
+            }
+            
         }
+
+        
 
         private void CrossFieldValidations()
         {
@@ -647,6 +655,25 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                 .WithErrorCode("613")
                 .RunCondition(VacancyRuleSet.ThingsToConsider)
                 .WithRuleId(VacancyRuleSet.ThingsToConsider);
+        }
+        
+        private void ValidateWorkExperience()
+        {
+            RuleFor(x => x.WorkExperience)
+                .NotEmpty()
+                    .WithMessage("What work experience will the employer give the trainee?")
+                    .WithErrorCode("83")
+                .MaximumLength(4000)
+                    .WithMessage("What work experience will the employer give the trainee must not exceed {MaxLength} characters")
+                    .WithErrorCode("81")
+                .ValidHtmlCharacters(_htmlSanitizerService)
+                    .WithMessage("What work experience will the employer give the trainee contains some invalid characters")
+                    .WithErrorCode("82")
+                .ProfanityCheck(_profanityListProvider)
+                    .WithMessage("What work experience will the employer give the trainee must not contain a banned word or phrase.")
+                    .WithErrorCode("615")
+                .RunCondition(VacancyRuleSet.WorkExperience)
+                .WithRuleId(VacancyRuleSet.WorkExperience);
         }
 
         private void ValidateEmployerInformation()
