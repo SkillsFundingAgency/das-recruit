@@ -5,7 +5,15 @@
 @{ ViewBag.GaData.Vpv = "/recruitment/employer/check-your-answers"; }
 
 @section BackLink {
-    <a asp-route="@RouteNames.EmployerTaskListGet" esfa-automation="link-back" class="govuk-back-link">Back to task list</a>
+    @if (Model.CanReview)
+    {
+        <a asp-route="@RouteNames.Dashboard_Get" esfa-automation="link-back" class="govuk-back-link">Return to dashboard</a>
+    }
+    else
+    {
+        <a asp-route="@RouteNames.EmployerTaskListGet" esfa-automation="link-back" class="govuk-back-link">Back to task list</a>    
+    }
+    
 }
 
 @if (Model.Status == VacancyStatus.Referred)
@@ -301,73 +309,73 @@
             </div>
         </dl>
         <h2 class="govuk-heading-m">About the employer</h2>
-        <dl class="govuk-summary-list govuk-!-margin-bottom-9">
-            <div class="govuk-summary-list__row">
-                <dt-review-section id="@FieldIdentifiers.EmployerName" section-state="@Model.EmployerNameSectionState">Name of organisation</dt-review-section>
-                <dd class="govuk-summary-list__value">
-                    @Model.EmployerName
-                    <review-field class="govuk-tag--orange" field-name="@FieldIdentifiers.EmployerName" tag-name="strong" model="@Model"/>
-                </dd>
-                <dd class="govuk-summary-list__actions">
-                    <a class="govuk-link govuk-link--no-visited-state float-right-desktop" asp-route="@RouteNames.EmployerName_Get">Change<span class="govuk-visually-hidden"> name of organisation</span></a>
+    <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+        <div class="govuk-summary-list__row">
+            <dt-review-section id="@FieldIdentifiers.EmployerName" section-state="@Model.EmployerNameSectionState">Name of organisation</dt-review-section>
+            <dd class="govuk-summary-list__value">
+                @Model.EmployerName
+                <review-field class="govuk-tag--orange" field-name="@FieldIdentifiers.EmployerName" tag-name="strong" model="@Model"/>
+            </dd>
+            <dd class="govuk-summary-list__actions">
+                <a class="govuk-link govuk-link--no-visited-state float-right-desktop" asp-route="@RouteNames.EmployerName_Get">Change<span class="govuk-visually-hidden"> name of organisation</span></a>
                     
-                </dd>
-            </div>
-            <div class="govuk-summary-list__row govuk-summary-list--no-border">
-                <dt-review-section id="@FieldIdentifiers.EmployerDescription" section-state="@Model.EmployerDescriptionSectionState">Employer information</dt-review-section>
-                <dd class="govuk-summary-list__value">
-                    @Model.EmployerDescription
-                    <review-field class="govuk-tag--orange" field-name="@FieldIdentifiers.EmployerDescription" tag-name="strong" model="@Model"/>
-                </dd>
-                <dd class="govuk-summary-list__actions">
-                    <a class="govuk-link govuk-link--no-visited-state float-right-desktop" asp-route="@RouteNames.AboutEmployer_Get">Change<span class="govuk-visually-hidden"> name of organisation</span></a>
+            </dd>
+        </div>
+        <div class="govuk-summary-list__row govuk-summary-list--no-border">
+            <dt-review-section id="@FieldIdentifiers.EmployerDescription" section-state="@Model.EmployerDescriptionSectionState">Employer information</dt-review-section>
+            <dd class="govuk-summary-list__value">
+                @Model.EmployerDescription
+                <review-field class="govuk-tag--orange" field-name="@FieldIdentifiers.EmployerDescription" tag-name="strong" model="@Model"/>
+            </dd>
+            <dd class="govuk-summary-list__actions">
+                <a class="govuk-link govuk-link--no-visited-state float-right-desktop" asp-route="@RouteNames.AboutEmployer_Get">Change<span class="govuk-visually-hidden"> name of organisation</span></a>
                     
-                </dd>
-            </div>
-            <div class="govuk-summary-list__row">
-                <dt-review-section id="@FieldIdentifiers.EmployerWebsiteUrl" section-state="@Model.EmployerWebsiteUrlSectionState">Organisation website (optional)</dt-review-section>
-                <dd class="govuk-summary-list__value">
-                    @(Model.HasEmployerWebsiteUrl ? Model.EmployerWebsiteUrl : "None")
-                    <review-field class="govuk-tag--orange" field-name="@FieldIdentifiers.EmployerWebsiteUrl" tag-name="strong" model="@Model"/>
-                </dd>
-                <dd class="govuk-summary-list__actions">
+            </dd>
+        </div>
+        <div class="govuk-summary-list__row">
+            <dt-review-section id="@FieldIdentifiers.EmployerWebsiteUrl" section-state="@Model.EmployerWebsiteUrlSectionState">Organisation website (optional)</dt-review-section>
+            <dd class="govuk-summary-list__value">
+                @(Model.HasEmployerWebsiteUrl ? Model.EmployerWebsiteUrl : "None")
+                <review-field class="govuk-tag--orange" field-name="@FieldIdentifiers.EmployerWebsiteUrl" tag-name="strong" model="@Model"/>
+            </dd>
+            <dd class="govuk-summary-list__actions">
                     
-                </dd>
-            </div>
-            <div class="govuk-summary-list__row govuk-summary-list--no-border">
-                <dt-review-section id="@FieldIdentifiers.EmployerContact" section-state="@Model.EmployerContactSectionState">Contact name (optional)</dt-review-section>
-                <dd class="govuk-summary-list__value">
-                    @(Model.HasEmployerContactName ? Model.EmployerContactName : "None")
-                    <review-field class="govuk-tag--orange" field-name="@FieldIdentifiers.EmployerContact" tag-name="strong" model="@Model"/>
-                </dd>
-                <dd class="govuk-summary-list__actions">
-                    <a class="govuk-link govuk-link--no-visited-state float-right-desktop" asp-route="@RouteNames.EmployerContactDetails_Get">Change<span class="govuk-visually-hidden"> contact details</span></a>
+            </dd>
+        </div>
+        <div class="govuk-summary-list__row govuk-summary-list--no-border">
+            <dt-review-section id="@FieldIdentifiers.EmployerContact" section-state="@Model.EmployerContactSectionState">Contact name (optional)</dt-review-section>
+            <dd class="govuk-summary-list__value">
+                @(Model.HasEmployerContactName ? Model.EmployerContactName : "None")
+                <review-field class="govuk-tag--orange" field-name="@FieldIdentifiers.EmployerContact" tag-name="strong" model="@Model"/>
+            </dd>
+            <dd class="govuk-summary-list__actions">
+                <a class="govuk-link govuk-link--no-visited-state float-right-desktop" asp-route="@RouteNames.EmployerContactDetails_Get">Change<span class="govuk-visually-hidden"> contact details</span></a>
                     
-                </dd>
-            </div>
-            <div class="govuk-summary-list__row govuk-summary-list--no-border">
-                <dt-review-section id="@FieldIdentifiers.EmployerContact" section-state="@Model.EmployerContactSectionState">Contact email (optional)</dt-review-section>
-                <dd class="govuk-summary-list__value">
-                    @(Model.HasEmployerContactEmail ? Model.EmployerContactEmail : "None")
-                    <review-field class="govuk-tag--orange" field-name="@FieldIdentifiers.EmployerContact" tag-name="strong" model="@Model"/>
-                </dd>
-                <dd class="govuk-summary-list__actions">
+            </dd>
+        </div>
+        <div class="govuk-summary-list__row govuk-summary-list--no-border">
+            <dt-review-section id="@FieldIdentifiers.EmployerContact" section-state="@Model.EmployerContactSectionState">Contact email (optional)</dt-review-section>
+            <dd class="govuk-summary-list__value">
+                @(Model.HasEmployerContactEmail ? Model.EmployerContactEmail : "None")
+                <review-field class="govuk-tag--orange" field-name="@FieldIdentifiers.EmployerContact" tag-name="strong" model="@Model"/>
+            </dd>
+            <dd class="govuk-summary-list__actions">
                     
-                </dd>
-            </div>
-            <div class="govuk-summary-list__row">
-                <dt-review-section id="@FieldIdentifiers.EmployerContact" section-state="@Model.EmployerContactSectionState">Contact number (optional)</dt-review-section>
-                <dd class="govuk-summary-list__value">
-                    @(Model.HasEmployerContactTelephone ? Model.EmployerContactTelephone : "None")
-                    <review-field class="govuk-tag--orange" field-name="@FieldIdentifiers.EmployerContact" tag-name="strong" model="@Model"/>
-                </dd>
-                <dd class="govuk-summary-list__actions">
+            </dd>
+        </div>
+        <div class="govuk-summary-list__row">
+            <dt-review-section id="@FieldIdentifiers.EmployerContact" section-state="@Model.EmployerContactSectionState">Contact number (optional)</dt-review-section>
+            <dd class="govuk-summary-list__value">
+                @(Model.HasEmployerContactTelephone ? Model.EmployerContactTelephone : "None")
+                <review-field class="govuk-tag--orange" field-name="@FieldIdentifiers.EmployerContact" tag-name="strong" model="@Model"/>
+            </dd>
+            <dd class="govuk-summary-list__actions">
                     
-                </dd>
-            </div>
-            <div class="govuk-summary-list__row govuk-summary-list--no-border">
-                <dt-review-section id="@FieldIdentifiers.ApplicationMethod" section-state="@Model.ApplicationMethodSectionState">Application website</dt-review-section>
-                <dd class="govuk-summary-list__value">
+            </dd>
+        </div>
+        <div class="govuk-summary-list__row govuk-summary-list--no-border">
+            <dt-review-section id="@FieldIdentifiers.ApplicationMethod" section-state="@Model.ApplicationMethodSectionState">Application website</dt-review-section>
+            <dd class="govuk-summary-list__value">
                 @if (Model.ApplicationMethod == ApplicationMethod.ThroughExternalApplicationSite)
                 {   
                     @Model.ApplicationUrl
@@ -376,32 +384,80 @@
                 {
                     @Model.FindAnApprenticeshipUrl
                 }
-                    <review-field class="govuk-tag--orange" field-name="@FieldIdentifiers.ApplicationMethod" tag-name="strong" model="@Model"/>
-                    <review-field class="govuk-tag--orange" field-name="@FieldIdentifiers.ApplicationUrl" tag-name="strong" model="@Model"/>
+                <review-field class="govuk-tag--orange" field-name="@FieldIdentifiers.ApplicationMethod" tag-name="strong" model="@Model"/>
+                <review-field class="govuk-tag--orange" field-name="@FieldIdentifiers.ApplicationUrl" tag-name="strong" model="@Model"/>
+            </dd>
+            <dd class="govuk-summary-list__actions">
+                <a class="govuk-link govuk-link--no-visited-state float-right-desktop" asp-route="@RouteNames.ApplicationProcess_Get">Change<span class="govuk-visually-hidden"> application process</span></a>
+            </dd>
+        </div>
+        @if (Model.HasApplicationInstructions)
+        {
+            <div class="govuk-summary-list__row">
+                <dt-review-section id="@FieldIdentifiers.ApplicationInstructions" section-state="@Model.ApplicationInstructionsSectionState">Explain the application process (optional)</dt-review-section>
+                <dd class="govuk-summary-list__value">
+                    @(Model.HasApplicationInstructions ? Model.ApplicationInstructions : "None")
+                    <review-field class="govuk-tag--orange" field-name="@FieldIdentifiers.ApplicationInstructions" tag-name="strong" model="@Model"/>
                 </dd>
                 <dd class="govuk-summary-list__actions">
-                    <a class="govuk-link govuk-link--no-visited-state float-right-desktop" asp-route="@RouteNames.ApplicationProcess_Get">Change<span class="govuk-visually-hidden"> application process</span></a>
+
                 </dd>
             </div>
-            @if (Model.HasApplicationInstructions)
-            {
-                <div class="govuk-summary-list__row">
-                    <dt-review-section id="@FieldIdentifiers.ApplicationInstructions" section-state="@Model.ApplicationInstructionsSectionState">Explain the application process (optional)</dt-review-section>
-                    <dd class="govuk-summary-list__value">
-                        @(Model.HasApplicationInstructions ? Model.ApplicationInstructions : "None")
-                        <review-field class="govuk-tag--orange" field-name="@FieldIdentifiers.ApplicationInstructions" tag-name="strong" model="@Model"/>
-                    </dd>
-                    <dd class="govuk-summary-list__actions">
-
-                    </dd>
-                </div>
-            }
-        </dl>
-        <h2 class="govuk-heading-m">Now submit your advert</h2>
-        <p class="govuk-body">By submitting this advert you are confirming that, to the best of your knowledge, the details you are providing are correct.</p>
-        <p class="govuk-body"><a asp-route="@RouteNames.VacancyAdvertPreview" class="govuk-link govuk-link--no-visited-state">Preview advert before submitting</a></p>
-        <form asp-route="@RouteNames.Preview_Submit_Post" class="form-inline">
-            <input type="submit" value="@Model.SubmitButtonText" class="govuk-button" esfa-automation="submit-button" />
+        }
+    </dl>
+    
+    <div asp-show="@Model.CanReview" class="govuk-body">
+        <form asp-route="@RouteNames.Preview_Review_Post">
+            <div class="govuk-form-group @(ViewData.ModelState.ContainsKey("SubmitToEsfa") ? "govuk-form-group--error" : "")">
+                <fieldset class="govuk-fieldset">
+                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                        <h1 class="govuk-fieldset__heading">
+                            Choose an option
+                        </h1>
+                    </legend>
+                    <span id="error-message-SubmitToEsfa" class="govuk-error-message">
+                        <span class="govuk-visually-hidden">Error:</span> @Html.ValidationMessage("SubmitToEsfa")
+                    </span>
+                    <div class="govuk-radios govuk-radios--conditional" data-module="radios">
+                        <div class="govuk-radios__item">
+                            <input asp-for="SubmitToEsfa" class="govuk-radios__input" id="submit-advert" type="radio" value="true">
+                            <label class="govuk-label govuk-radios__label" for="submit-advert">
+                                Submit advert to ESFA for checking and publication
+                            </label>
+                        </div>
+                        <div class="govuk-radios__item">
+                            <input asp-for="SubmitToEsfa" class="govuk-radios__input" id="reject-advert" type="radio" value="false" data-aria-controls="reject-advert-conditional">
+                            <label class="govuk-label govuk-radios__label" for="reject-advert">
+                                Reject advert and return to training provider
+                            </label>
+                        </div>
+                        <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="reject-advert-conditional">
+                            <label class="govuk-label">Let @Model.ProviderName know why you're rejecting it. Tell them which fields need changing for example; weekly wage, hours or expected duration.</label>
+                            <div esfa-validation-marker-for="RejectedReason" class="govuk-form-group">
+                                <span esfa-validation-message-for="RejectedReason" class="govuk-error-message"></span>
+                                <textarea asp-for="RejectedReason" class="govuk-textarea character-count" rows="5" data-val-length-max="200"></textarea>
+                                <span class="govuk-body">You have </span>
+                                <span class="govuk-body maxchar-count">200</span>
+                                <span class="govuk-body maxchar-text"> characters remaining</span>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+            <button type="submit" class="govuk-button" data-module="govuk-button">
+                Continue
+            </button>
         </form>
+    </div>
+    
+        <div asp-hide="@Model.CanReview">
+        
+            <h2 class="govuk-heading-m">Now submit your advert</h2>
+            <p class="govuk-body">By submitting this advert you are confirming that, to the best of your knowledge, the details you are providing are correct.</p>
+            <p class="govuk-body"><a asp-route="@RouteNames.VacancyAdvertPreview" class="govuk-link govuk-link--no-visited-state">Preview advert before submitting</a></p>
+            <form asp-route="@RouteNames.Preview_Submit_Post" class="form-inline">
+                <input type="submit" value="@Model.SubmitButtonText" class="govuk-button" esfa-automation="submit-button" />
+            </form>
+        </div>
     </div>
 </div>
