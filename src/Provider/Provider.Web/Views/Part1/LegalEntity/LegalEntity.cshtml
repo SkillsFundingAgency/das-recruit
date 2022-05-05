@@ -25,14 +25,14 @@
         
         <h1 class="govuk-heading-xl">
             <span class="govuk-caption-xl">@Model.Title</span>
-            Which organisation do you want to create a vacancy for?
+            Which employer is this vacancy for?
         </h1>
 
 
         <form asp-show="@Model.CanShowSearchPanel" method="GET" asp-route="@RouteNames.LegalEntity_Get" asp-route-wizard="@Model.PageInfo.IsWizard">
             <div class="govuk-form-group">
                 <label class="govuk-label" asp-for="SearchTerm">
-                    Search for the organisation
+                    Search for the employer
                 </label>
                 <div class="das-search-form__group">
                     <input asp-for="SearchTerm" class="govuk-input das-search-form__input" maxlength="100" title="Search" />
@@ -49,7 +49,7 @@
         <form asp-route="@RouteNames.LegalEntity_Post" asp-route-wizard="@Model.PageInfo.IsWizard" asp-route-ukprn="@Model.Ukprn" asp-route-vacancyId="@Model.VacancyId">
             <div esfa-validation-marker-for="SelectedOrganisationId" class="govuk-form-group">
                 <fieldset class="govuk-fieldset">
-                    <legend class="govuk-visually-hidden">Select an organisation</legend>
+                    <legend class="govuk-visually-hidden">Select an employer</legend>
                     <span esfa-validation-message-for="SelectedOrganisationId" class="govuk-error-message"></span>
                     <input type="hidden" asp-for="SearchTerm" />
                     <input type="hidden" asp-for="Page" />
@@ -96,11 +96,11 @@
             <details class="govuk-details" data-module="govuk-details">
                 <summary class="govuk-details__summary">
                     <span class="govuk-details__summary-text">
-                        The organisation I want to select is not listed
+                        The employer I want to select is not listed
                     </span>
                 </summary>
                 <div class="govuk-details__text">
-                    The organisation is not listed because you do not have the permission to create a vacancy for them. You'll need to contact them to set this permission.
+                    The employer is not listed because you do not have the permission to create a vacancy for them. You'll need to contact them to set this permission.
                 </div>
             </details>
 

@@ -4,12 +4,12 @@ namespace Esfa.Recruit.Provider.Web.ViewModels
     {
         public static class EmployerSelectionMessages
         {
-            public const string EmployerMustBeSelectedMessage = "You must select an employer";
+            public const string EmployerMustBeSelectedMessage = "You must select an organisation";
         }
 
         public static class EmployerSelectionValidationMessages
         {
-            public const string EmployerSelectionRequired = "You must select an organisation.";
+            public const string EmployerSelectionRequired = "You must select an employer";
         }
 
         public static class LocationPreferenceMessages
