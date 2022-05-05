@@ -87,7 +87,7 @@
             }
             <div class="govuk-summary-list__row">
                 <dt-review-section id="@FieldIdentifiers.Training" section-state="@Model.TrainingSectionState">Training course</dt-review-section>
-                <dd class="govuk-summary-list__value">
+                <dd id="TrainingLevel" class="govuk-summary-list__value">
                     @Model.TrainingTitle
                     <review-field class="govuk-tag--purple" field-name="@FieldIdentifiers.Training" tag-name="strong" model="@Model"/>
                 </dd>
@@ -154,7 +154,7 @@
             </div>
             <div class="govuk-summary-list__row govuk-summary-list--no-border">
                 <dt-review-section id="@FieldIdentifiers.ExpectedDuration" section-state="@Model.ExpectedDurationSectionState">Duration</dt-review-section>
-                <dd class="govuk-summary-list__value">
+                <dd id="WorkingWeek" class="govuk-summary-list__value">
                     @Model.ExpectedDuration
                     <review-field class="govuk-tag--purple" field-name="@FieldIdentifiers.ExpectedDuration" tag-name="strong" model="@Model"/>
                 </dd>
@@ -183,7 +183,7 @@
             </div>
             <div class="govuk-summary-list__row govuk-summary-list--no-border">
                 <dt-review-section section-state="@Model.WageTextSectionState">Pay rate</dt-review-section>
-                <dd class="govuk-summary-list__value">
+                <dd id="YearlyWage" class="govuk-summary-list__value">
                     @Model.WageText
                     <review-field class="govuk-tag--purple" field-name="@FieldIdentifiers.Wage" tag-name="strong" model="@Model"/>
                 </dd>
@@ -255,7 +255,7 @@
                 </dd>
             </div>
             <div class="govuk-summary-list__row">
-                <dt-review-section section-state="@Model.FutureProspectsSectionState">Future prospects</dt-review-section>
+                <dt-review-section id="OutcomeDescription" section-state="@Model.FutureProspectsSectionState">Future prospects</dt-review-section>
                 <dd class="govuk-summary-list__value">
                     <div class="app-ugc-wrap">
                         @Html.Raw(Model.OutcomeDescription)
@@ -267,7 +267,7 @@
                 </dd>
             </div>
             <div class="govuk-summary-list__row">
-                <dt-review-section section-state="@Model.ThingsToConsiderSectionState">Other things to consider</dt-review-section>
+                <dt-review-section id="@FieldIdentifiers.ThingsToConsider" section-state="@Model.ThingsToConsiderSectionState">Other things to consider</dt-review-section>
                 <dd class="govuk-summary-list__value">
                     @if (string.IsNullOrEmpty(Model.ThingsToConsider))
                     {

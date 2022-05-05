@@ -69,7 +69,7 @@
             }
             <div class="govuk-summary-list__row">
                 <dt-review-section id="@FieldIdentifiers.Training" section-state="@Model.TrainingSectionState">Training course</dt-review-section>
-                <dd class="govuk-summary-list__value">
+                <dd id="TrainingLevel" class="govuk-summary-list__value">
                     @Model.TrainingTitle
                     <review-field class="govuk-tag--orange" field-name="@FieldIdentifiers.Training" tag-name="strong" model="@Model"/>
                 </dd>
@@ -126,7 +126,7 @@
                 </dd>
             </div>
             <div class="govuk-summary-list__row">
-                <dt-review-section id="@FieldIdentifiers.FutureProspects" section-state="@Model.DescriptionsSectionState">Future prospects</dt-review-section>
+                <dt-review-section id="OutcomeDescription" section-state="@Model.DescriptionsSectionState">Future prospects</dt-review-section>
                 <dd class="govuk-summary-list__value">
                     <div class="app-ugc-wrap">
                         @Html.Raw(Model.OutcomeDescription)
@@ -174,7 +174,7 @@
             </div>
             <div class="govuk-summary-list__row govuk-summary-list--no-border">
                 <dt-review-section id="@FieldIdentifiers.Wage" section-state="@Model.WageTextSectionState">Pay rate</dt-review-section>
-                <dd class="govuk-summary-list__value">
+                <dd id="YearlyWage"  class="govuk-summary-list__value">
                     @Model.WageText a year
                     <review-field class="govuk-tag--orange" field-name="@FieldIdentifiers.Wage" tag-name="strong" model="@Model"/>
                 </dd>
@@ -195,7 +195,7 @@
             </div>
             <div class="govuk-summary-list__row govuk-summary-list--no-border">
                 <dt-review-section id="@FieldIdentifiers.ExpectedDuration" section-state="@Model.ExpectedDurationSectionState">Duration</dt-review-section>
-                <dd class="govuk-summary-list__value">
+                <dd id="WorkingWeek"  class="govuk-summary-list__value">
                     @Model.ExpectedDuration
                     <review-field class="govuk-tag--orange" field-name="@FieldIdentifiers.ExpectedDuration" tag-name="strong" model="@Model"/>
                 </dd>
