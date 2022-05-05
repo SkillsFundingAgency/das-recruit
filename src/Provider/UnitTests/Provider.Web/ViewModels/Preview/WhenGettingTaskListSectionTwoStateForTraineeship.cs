@@ -180,7 +180,6 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.ViewModels.Preview
                 TrainingProvider = fixture.Create<TrainingProvider>(),
                 Title = fixture.Create<string>(),
                 ProgrammeId = programmeId,
-                Description = fixture.Create<string>(),
                 TrainingDescription = fixture.Create<string>(),
                 ShortDescription = fixture.Create<string>(),
                 AccountLegalEntityPublicHashedId = fixture.Create<string>(),

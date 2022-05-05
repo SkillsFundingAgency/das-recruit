@@ -221,7 +221,7 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview
                 && HasSelectedLegalEntity
                 && HasShortDescription
                 && HasTrainingDescription
-                && HasVacancyDescription)
+                && (VacancyType.GetValueOrDefault() == Vacancies.Client.Domain.Entities.VacancyType.Traineeship || HasVacancyDescription))
             {
                 return VacancyTaskListSectionState.Completed;
             }

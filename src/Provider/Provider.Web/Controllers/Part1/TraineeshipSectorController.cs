@@ -5,6 +5,7 @@ using Esfa.Recruit.Provider.Web.Configuration.Routing;
 using Esfa.Recruit.Provider.Web.Extensions;
 using Esfa.Recruit.Provider.Web.Orchestrators.Part1;
 using Esfa.Recruit.Provider.Web.RouteModel;
+using Esfa.Recruit.Provider.Web.ViewModels;
 using Esfa.Recruit.Provider.Web.ViewModels.Part1.Training;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Microsoft.AspNetCore.Authorization;
@@ -45,8 +46,19 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
         }
         
         [HttpPost("traineeship-sector", Name = RouteNames.TraineeSector_Post)]
-        public async Task<IActionResult> PostTraineeshipSector(TraineeSectorEditModel editModel)
+        public async Task<IActionResult> TraineeshipSector(TraineeSectorEditModel editModel)
         {
+            var vm = await _orchestrator.GetTraineeSectorViewModelAsync(editModel);
+            
+            if (editModel.SelectedRouteId == -1)
+            {
+                ModelState.AddModelError(nameof(editModel.SelectedRouteId), ValidationMessages.TraineeshipSectorValidationMessages.SelectionRequired);
+            }
+            if (!ModelState.IsValid)
+            {
+                return View(vm);
+            }
+            
             var response = await _orchestrator.PostTraineeSectorEditModelAsync(editModel, User.ToVacancyUser());
 
             if (!response.Success)
@@ -54,7 +66,6 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
                 response.AddErrorsToModelState(ModelState);
             }
             
-            var vm = await _orchestrator.GetTraineeSectorViewModelAsync(editModel);
             if (!ModelState.IsValid)
             {
                 return View(vm);

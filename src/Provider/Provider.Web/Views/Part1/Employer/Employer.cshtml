@@ -19,7 +19,7 @@
                 <fieldset class="govuk-fieldset">
                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
                         <h1 class="govuk-fieldset__heading">
-                            Which employer is this vacancy for?
+                            Which organisation do you want to create a vacancy for?
                         </h1>
                     </legend>
                     <span esfa-validation-message-for="SelectedEmployerId" class="govuk-error-message"></span>
@@ -34,6 +34,16 @@
                     </div>
                 </fieldset>
             </div>
+            <details class="govuk-details" data-module="govuk-details">
+                <summary class="govuk-details__summary">
+                    <span class="govuk-details__summary-text">
+                        The organisation I want to select is not listed
+                    </span>
+                </summary>
+                <div class="govuk-details__text">
+                    The organisation is not listed because you do not have the permission to create a vacancy for them. You'll need to contact them to set this permission.
+                </div>
+            </details>
             <div class="govuk-button-group">
                 <button type="submit" class="govuk-button save-button">@PartOnePageInfoViewModel.SubmitButtonCaptionForWizard</button>
                 <esfaFeatureEnabled name="@FeatureNames.ProviderTaskList">
