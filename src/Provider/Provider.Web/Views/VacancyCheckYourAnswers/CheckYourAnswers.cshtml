@@ -8,7 +8,15 @@
 }
 
 @section BackLink {
-    <a asp-route="@RouteNames.ProviderTaskListGet" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Back to task list</a>
+    @if (Model.Status == VacancyStatus.Rejected || Model.Status == VacancyStatus.Referred)
+    {
+        <a asp-route="@RouteNames.Dashboard_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Return to dashboard</a>        
+    }
+    else
+    {
+        <a asp-route="@RouteNames.ProviderTaskListGet" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Back to task list</a>    
+    }
+    
 }
 
 @if (Model.Status == VacancyStatus.Rejected)

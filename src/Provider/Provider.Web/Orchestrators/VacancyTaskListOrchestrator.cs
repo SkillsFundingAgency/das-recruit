@@ -9,7 +9,9 @@ using Esfa.Recruit.Shared.Web.Orchestrators;
 using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Vacancies.Client.Domain.Models;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelationship;
 using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Provider.Web.Orchestrators
@@ -24,14 +26,18 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
         private readonly IProviderVacancyClient _providerVacancyClient;
         private readonly IRecruitVacancyClient _vacancyClient;
         private readonly IReviewSummaryService _reviewSummaryService;
+        private readonly IProviderRelationshipsService _providerRelationshipsService;
 
-        public VacancyTaskListOrchestrator(ILogger<VacancyTaskListOrchestrator> logger, DisplayVacancyViewModelMapper vacancyDisplayMapper, IUtility utility, IProviderVacancyClient providerVacancyClient, IRecruitVacancyClient vacancyClient, IReviewSummaryService reviewSummaryService) : base(logger)
+        public VacancyTaskListOrchestrator(ILogger<VacancyTaskListOrchestrator> logger, DisplayVacancyViewModelMapper vacancyDisplayMapper,
+            IUtility utility, IProviderVacancyClient providerVacancyClient, 
+            IRecruitVacancyClient vacancyClient, IReviewSummaryService reviewSummaryService, IProviderRelationshipsService providerRelationshipsService) : base(logger)
         {
             _vacancyDisplayMapper = vacancyDisplayMapper;
             _utility = utility;
             _providerVacancyClient = providerVacancyClient;
             _vacancyClient = vacancyClient;
             _reviewSummaryService = reviewSummaryService;
+            _providerRelationshipsService = providerRelationshipsService;
         }
 
         public async Task<VacancyPreviewViewModel> GetVacancyTaskListModel(VacancyRouteModel routeModel)
@@ -47,7 +53,8 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             
             var vacancy = vacancyTask.Result;
             var programme = programmesTask.Result.SingleOrDefault(p => p.Id == vacancy.ProgrammeId);
-
+            var hasProviderReviewPermission = await _providerRelationshipsService.HasProviderGotEmployersPermissionAsync(routeModel.Ukprn, vacancy.EmployerAccountId, vacancy.AccountLegalEntityPublicHashedId, OperationType.RecruitmentRequiresReview);
+            
             var vm = new VacancyPreviewViewModel();
             await _vacancyDisplayMapper.MapFromVacancyAsync(vm, vacancy);
 
@@ -57,6 +64,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             vm.SoftValidationErrors = GetSoftValidationErrors(vacancy);
             vm.Ukprn = routeModel.Ukprn;
             vm.VacancyId = routeModel.VacancyId;
+            vm.RequiresEmployerReview = hasProviderReviewPermission;
             
             if (programme != null)
             {
