@@ -1,4 +1,4 @@
-﻿using Esfa.Recruit.Employer.Web.Configuration.Routing;
+using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Orchestrators;
 using Esfa.Recruit.Employer.Web.ViewModels.Preview;
 using Microsoft.AspNetCore.Mvc;
@@ -110,6 +110,11 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             viewModel.SoftValidationErrors = null;
             viewModel.SetSectionStates(viewModel, ModelState);
 
+            if (_feature.IsFeatureEnabled(FeatureNames.EmployerTaskList))
+            {
+                return RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet);
+            }
+            
             return View(ViewNames.VacancyPreview, viewModel);
         }
 
