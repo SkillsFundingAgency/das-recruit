@@ -70,7 +70,8 @@
         </h1>
         <h2 class="govuk-heading-m">Vacancy summary</h2>
         <dl class="app-summary-list govuk-!-margin-bottom-9">
-            <div class="app-summary-list__row">
+            <field-review-message field-name="@FieldIdentifiers.Title" model="@Model"></field-review-message>
+            <div class="app-summary-list__row" field-review-marker="Title" >
                 <dt class="app-summary-list__key" id="@FieldIdentifiers.Title">Vacancy title</dt>
                 <dd class="app-summary-list__value">
                     @Model.Title
@@ -82,7 +83,8 @@
             </div>
             @if (Model.AccountLegalEntityCount > 1)
             {
-                <div class="app-summary-list__row">
+                <field-review-message field-name="@FieldIdentifiers.EmployerName" model="@Model"></field-review-message>
+                <div class="app-summary-list__row" field-review-marker="EmployerName">
                     <dt class="app-summary-list__key" id="aboutEmployer">Name of organisation</dt>
                     <dd class="app-summary-list__value">
                         @Model.EmployerName
@@ -93,7 +95,8 @@
                     </dd>
                 </div>   
             }
-            <div class="app-summary-list__row">
+            <field-review-message field-name="@FieldIdentifiers.Training" model="@Model"></field-review-message>
+            <div class="app-summary-list__row" field-review-marker="TrainingTitle">
                 <dt class="app-summary-list__key" id="@FieldIdentifiers.Training">Training course</dt>
                 <dd id="TrainingLevel" class="app-summary-list__value">
                     @Model.TrainingTitle
@@ -103,7 +106,8 @@
                     <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.Training_Get" asp-all-route-data="@Model.RouteDictionary">Change<span class="govuk-visually-hidden"> training course</span></a>
                 </dd>
             </div>
-            <div class="app-summary-list__row">
+            <field-review-message field-name="@FieldIdentifiers.ShortDescription" model="@Model"></field-review-message>
+            <div class="app-summary-list__row" field-review-marker="ShortDescription">
                 <dt class="app-summary-list__key" id="@FieldIdentifiers.ShortDescription">Summary of the apprenticeship</dt>
                 <dd class="app-summary-list__value">
                     @Model.ShortDescription
@@ -113,7 +117,8 @@
                     <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.ShortDescription_Get" asp-all-route-data="@Model.RouteDictionary">Change<span class="govuk-visually-hidden"> summary of the apprenticeship</span></a>
                 </dd>
             </div>
-            <div class="app-summary-list__row app-summary-list__row--no-border">
+            <field-review-message field-name="@FieldIdentifiers.VacancyDescription" model="@Model"></field-review-message>
+            <div class="app-summary-list__row app-summary-list__row--no-border" field-review-marker="VacancyDescription">
                 <dt class="app-summary-list__key" id="@FieldIdentifiers.VacancyDescription">What will the apprentice be doing?</dt>
                 <dd class="app-summary-list__value">
                     <div class="app-ugc-wrap">
@@ -125,7 +130,8 @@
                     <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.VacancyDescription_Index_Get" asp-all-route-data="@Model.RouteDictionary">Change<span class="govuk-visually-hidden"> about the apprenticeship</span></a>
                 </dd>
             </div>
-            <div class="app-summary-list__row app-summary-list__row--no-border">
+            <field-review-message field-name="@FieldIdentifiers.TrainingDescription" model="@Model"></field-review-message>
+            <div class="app-summary-list__row app-summary-list__row--no-border" field-review-marker="TrainingDescription">
                 <dt class="app-summary-list__key" id="@FieldIdentifiers.TrainingDescription">Training and qualification levels</dt>
                 <dd class="app-summary-list__value">
                     <div class="app-ugc-wrap">
@@ -140,7 +146,8 @@
         </dl>
         <h2 class="govuk-heading-m">Employment details</h2>
         <dl class="app-summary-list govuk-!-margin-bottom-9">
-            <div class="app-summary-list__row app-summary-list__row--no-border">
+            <field-review-message field-name="@FieldIdentifiers.ClosingDate" model="@Model"></field-review-message>
+            <div class="app-summary-list__row app-summary-list__row--no-border" field-review-marker="ClosingDate">
                 <dt class="app-summary-list__key" id="@FieldIdentifiers.ClosingDate">Application closing date</dt>
                 <dd class="app-summary-list__value">
                     @Model.ClosingDate
@@ -150,7 +157,8 @@
                     <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.Dates_Get" asp-all-route-data="@Model.RouteDictionary">Change<span class="govuk-visually-hidden"> important date</span></a>
                 </dd>
             </div>
-            <div class="app-summary-list__row">
+            <field-review-message field-name="@FieldIdentifiers.PossibleStartDate" model="@Model"></field-review-message>
+            <div class="app-summary-list__row" field-review-marker="PossibleStartDate">
                 <dt class="app-summary-list__key" id="@FieldIdentifiers.PossibleStartDate">Apprenticeship start date</dt>
                 <dd class="app-summary-list__value">
                     @Model.PossibleStartDate
@@ -160,7 +168,8 @@
                     
                 </dd>
             </div>
-            <div class="app-summary-list__row app-summary-list__row--no-border">
+            <field-review-message field-name="@FieldIdentifiers.ExpectedDuration" model="@Model"></field-review-message>
+            <div class="app-summary-list__row app-summary-list__row--no-border" field-review-marker="ExpectedDuration">
                 <dt class="app-summary-list__key" id="@FieldIdentifiers.ExpectedDuration">Duration</dt>
                 <dd id="WorkingWeek" class="app-summary-list__value">
                     @Model.ExpectedDuration
@@ -170,7 +179,8 @@
                     <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.Duration_Get" asp-all-route-data="@Model.RouteDictionary">Change<span class="govuk-visually-hidden"> duration</span></a>
                 </dd>
             </div>
-            <div class="app-summary-list__row app-summary-list__row--no-border">
+            <field-review-message field-name="WorkingWeek" model="@Model"></field-review-message>
+            <div class="app-summary-list__row app-summary-list__row--no-border" field-review-marker="WorkingWeekDescription">
                 <dt class="app-summary-list__key" id="@FieldIdentifiers.WorkingWeek">Working week details</dt>
                 <dd class="app-summary-list__value">
                     @Model.WorkingWeekDescription
@@ -180,7 +190,8 @@
             
                 </dd>
             </div>
-            <div class="app-summary-list__row">
+            <field-review-message field-name="@FieldIdentifiers.WorkingWeekHours" model="@Model"></field-review-message>
+            <div class="app-summary-list__row" field-review-marker="HoursPerWeek">
                 <dt class="app-summary-list__key" id="@FieldIdentifiers.WorkingWeek">Hours per week</dt>
                 <dd class="app-summary-list__value">
                     @Model.HoursPerWeek
@@ -189,7 +200,8 @@
 
                 </dd>
             </div>
-            <div class="app-summary-list__row app-summary-list__row--no-border">
+            <field-review-message field-name="@FieldIdentifiers.Wage" model="@Model"></field-review-message>
+            <div class="app-summary-list__row app-summary-list__row--no-border" field-review-marker="WageText">
                 <dt class="app-summary-list__key">Pay rate</dt>
                 <dd id="YearlyWage" class="app-summary-list__value">
                     @Model.WageText
@@ -199,7 +211,8 @@
                     <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.Wage_Get" asp-all-route-data="@Model.RouteDictionary">Change<span class="govuk-visually-hidden"> wage</span></a>    
                 </dd>
             </div>
-            <div class="app-summary-list__row">
+            <field-review-message field-name="@FieldIdentifiers.WageAdditionalInfo" model="@Model"></field-review-message>
+            <div class="app-summary-list__row" field-review-marker="WageInfo">
                 <dt class="app-summary-list__key">Extra information about pay (optional)</dt>
                 <dd class="app-summary-list__value">
                     @(Model.HasWageInfo ? Model.WageInfo : "None")
@@ -209,7 +222,8 @@
                     
                 </dd>
             </div>
-            <div class="app-summary-list__row">
+            <field-review-message field-name="@FieldIdentifiers.NumberOfPositions" model="@Model"></field-review-message>
+            <div class="app-summary-list__row" field-review-marker="NumberOfPositions">
                 <dt class="app-summary-list__key">Number of positions</dt>
                 <dd class="app-summary-list__value">
                     @Model.NumberOfPositions available
@@ -219,7 +233,8 @@
                     <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.NumberOfPositions_Get" asp-all-route-data="@Model.RouteDictionary">Change<span class="govuk-visually-hidden"> number of positions</span></a>
                 </dd>
             </div>
-            <div class="app-summary-list__row">
+            <field-review-message field-name="@FieldIdentifiers.EmployerAddress" model="@Model"></field-review-message>
+            <div class="app-summary-list__row" field-review-marker="EmployerAddressElements">
                 <dt class="app-summary-list__key">Address</dt>
                 <dd class="app-summary-list__value">
                     @string.Join(", ", Model.EmployerAddressElements?.Where(s => !string.IsNullOrWhiteSpace(s)).Select(s => s.Trim()) ?? new string[0])
@@ -232,7 +247,8 @@
         </dl>
         <h2 class="govuk-heading-m">Requirements and prospects</h2>
         <dl class="app-summary-list govuk-!-margin-bottom-9">
-            <div class="app-summary-list__row">
+            <field-review-message field-name="@FieldIdentifiers.Skills" model="@Model"></field-review-message>
+            <div class="app-summary-list__row" field-review-marker="Skills">
                 <dt class="app-summary-list__key">Skills</dt>
                 <dd class="app-summary-list__value">
                     <ul class="govuk-list govuk-list--bullet">
@@ -247,7 +263,8 @@
                     <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.Skills_Get" asp-all-route-data="@Model.RouteDictionary">Change<span class="govuk-visually-hidden"> skills</span></a>
                 </dd>
             </div>
-            <div class="app-summary-list__row">
+            <field-review-message field-name="@FieldIdentifiers.Qualifications" model="@Model"></field-review-message>
+            <div class="app-summary-list__row" field-review-marker="Qualifications">
                 <dt class="app-summary-list__key">Qualifications required</dt>
                 <dd class="app-summary-list__value">
                     <ul class="govuk-list govuk-list--bullet">
@@ -262,7 +279,8 @@
                     <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.Qualifications_Get" asp-all-route-data="@Model.RouteDictionary">Change<span class="govuk-visually-hidden"> qualifications</span></a>
                 </dd>
             </div>
-            <div class="app-summary-list__row">
+            <field-review-message field-name="@FieldIdentifiers.FutureProspects" model="@Model"></field-review-message>
+            <div class="app-summary-list__row" field-review-marker="OutcomeDescription">
                 <dt class="app-summary-list__key" id="OutcomeDescription">Future prospects</dt>
                 <dd class="app-summary-list__value">
                     <div class="app-ugc-wrap">
@@ -274,7 +292,8 @@
                     <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.FutureProspects_Get" asp-all-route-data="@Model.RouteDictionary">Change<span class="govuk-visually-hidden"> future prospects</span></a>
                 </dd>
             </div>
-            <div class="app-summary-list__row">
+            <field-review-message field-name="@FieldIdentifiers.ThingsToConsider" model="@Model"></field-review-message>
+            <div class="app-summary-list__row" field-review-marker="ThingsToConsider">
                 <dt class="app-summary-list__key" id="@FieldIdentifiers.ThingsToConsider">Other things to consider</dt>
                 <dd class="app-summary-list__value">
                     @if (string.IsNullOrEmpty(Model.ThingsToConsider))
@@ -294,6 +313,7 @@
         </dl>
         <h2 class="govuk-heading-m">About the employer</h2>
         <dl class="app-summary-list govuk-!-margin-bottom-9">
+            <field-review-message field-name="@FieldIdentifiers.EmployerName" model="@Model"></field-review-message>
             <div class="app-summary-list__row">
                 <dt class="app-summary-list__key">Name of employer on advert</dt>
                 <dd class="app-summary-list__value">
@@ -304,6 +324,7 @@
                     <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.EmployerName_Get" asp-all-route-data="@Model.RouteDictionary">Change<span class="govuk-visually-hidden"> name of organisation</span></a>
                 </dd>
             </div>
+            
             <div class="app-summary-list__row app-summary-list__row--no-border">
                 <dt class="app-summary-list__key">Employer information</dt>
                 <dd class="app-summary-list__value">
