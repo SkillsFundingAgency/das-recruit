@@ -55,9 +55,15 @@ namespace Esfa.Recruit.Provider.Web.TagHelpers
             {
                 return new Dictionary<string, string>
                 {
-                    {
-                        "WorkingWeekDescription", "WorkingWeek"
-                    }
+                    { "WorkingWeekDescription", "WorkingWeek" },
+                    { "HoursPerWeek", "WorkingWeek" },
+                    { "WageText", "Wage" },
+                    { "EmployerAddressElements", "EmployerAddress" },
+                    { "IsDisabilityConfident", "DisabilityConfident" },
+                    { "TrainingTitle", "Training" },
+                    { "ProviderContactName", "ProviderContact" },
+                    { "ProviderContactEmail", "ProviderContact" },
+                    { "ProviderContactPhone", "ProviderContact" },
                 };
             }
         }
