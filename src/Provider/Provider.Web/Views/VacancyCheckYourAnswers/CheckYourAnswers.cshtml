@@ -83,12 +83,10 @@
             </div>
             @if (Model.AccountLegalEntityCount > 1)
             {
-                <field-review-message field-name="@FieldIdentifiers.EmployerName" model="@Model"></field-review-message>
-                <div class="app-summary-list__row" field-review-marker="EmployerName">
-                    <dt class="app-summary-list__key" id="aboutEmployer">Name of organisation</dt>
+                <div class="app-summary-list__row" >
+                    <dt class="app-summary-list__key" >Name of organisation</dt>
                     <dd class="app-summary-list__value">
                         @Model.EmployerName
-                        <review-field class="govuk-tag--purple" field-name="@FieldIdentifiers.EmployerName" tag-name="strong" model="@Model"/>
                     </dd>
                     <dd class="app-summary-list__actions">
                         <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.LegalEntity_Get" asp-all-route-data="@Model.RouteDictionary">Change<span class="govuk-visually-hidden"> legal entity</span></a>
@@ -316,7 +314,7 @@
         <dl class="app-summary-list govuk-!-margin-bottom-9">
             <field-review-message field-name="@FieldIdentifiers.EmployerName" model="@Model"></field-review-message>
             <div class="app-summary-list__row" field-review-marker="EmployerName">
-                <dt class="app-summary-list__key" id="@FieldIdentifiers.EmployerName">Name of employer on advert</dt>
+                <dt class="app-summary-list__key" id="aboutEmployer">Name of employer on advert</dt>
                 <dd class="app-summary-list__value">
                     @Model.EmployerName
                     <review-field class="govuk-tag--purple" field-name="@FieldIdentifiers.EmployerName" tag-name="strong" model="@Model"/>
