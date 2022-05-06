@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Razor.TagHelpers;
 
 namespace Esfa.Recruit.Employer.Web.TagHelpers
 {
-    [HtmlTargetElement("review-field")]
+    [HtmlTargetElement("field-review-tag")]
     public class ReviewTagHelper : TagHelper
     {
         private readonly IFieldReviewHelper _fieldReviewHelper;

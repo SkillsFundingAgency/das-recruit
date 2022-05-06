@@ -222,6 +222,11 @@
     padding: 0 10px 10px;
     color: #d4351c;
     font-weight: 700;
+    display: block;
+}
+
+.app-summary-list__error-message:empty {
+    display: none;
 }
 
 /* Local overrides to the das-task-list component */
