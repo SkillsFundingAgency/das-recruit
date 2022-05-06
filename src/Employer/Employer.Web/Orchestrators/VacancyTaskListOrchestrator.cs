@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Mappings;
 using Esfa.Recruit.Employer.Web.RouteModel;
+using Esfa.Recruit.Employer.Web.ViewModels.Preview;
 using Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview;
 using Esfa.Recruit.Shared.Web.Helpers;
 using Esfa.Recruit.Shared.Web.Orchestrators;
@@ -79,6 +80,24 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             };
 
             return vm;
+        }
+        
+        public async Task ClearRejectedVacancyReason(SubmitReviewModel m, VacancyUser user)
+        {
+            var vacancy = await _utility.GetAuthorisedVacancyAsync(m, RouteNames.ApproveJobAdvert_Post);
+
+            vacancy.EmployerRejectedReason = null;
+
+            await _recruitVacancyClient.UpdateDraftVacancyAsync(vacancy, user);
+        }
+
+        public async Task UpdateRejectedVacancyReason(SubmitReviewModel m, VacancyUser user)
+        {
+            var vacancy = await _utility.GetAuthorisedVacancyAsync(m, RouteNames.ApproveJobAdvert_Post);
+
+            vacancy.EmployerRejectedReason = m.RejectedReason;
+
+            await _recruitVacancyClient.UpdateDraftVacancyAsync(vacancy, user);
         }
         
         private EntityValidationResult GetSoftValidationErrors(Vacancy vacancy)

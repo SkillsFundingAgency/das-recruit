@@ -43,6 +43,12 @@
     </div>
 }
 
+
+<div asp-show="@Model.Review.HasBeenReviewed">
+    <partial name="@PartialNames.ReviewSummary" for="Review" />
+</div>
+<partial asp-hide="@Model.CanHideValidationSummary" name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }' />
+
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">  
         <h1 class="govuk-heading-xl">
@@ -407,7 +413,7 @@
     </dl>
     
     <div asp-show="@Model.CanReview" class="govuk-body">
-        <form asp-route="@RouteNames.Preview_Review_Post">
+        <form asp-route="@RouteNames.EmployerCheckYourAnswersPost">
             <div class="govuk-form-group @(ViewData.ModelState.ContainsKey("SubmitToEsfa") ? "govuk-form-group--error" : "")">
                 <fieldset class="govuk-fieldset">
                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
