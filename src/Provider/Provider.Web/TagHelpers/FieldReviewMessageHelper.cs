@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Linq;
 using System.Text.Encodings.Web;
-using Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview;
+using Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview;
 using Microsoft.AspNetCore.Mvc.TagHelpers;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 
-namespace Esfa.Recruit.Employer.Web.TagHelpers
+namespace Esfa.Recruit.Provider.Web.TagHelpers
 {
     [HtmlTargetElement("field-review-message")]
     public class FieldReviewMessageHelper : TagHelper

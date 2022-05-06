@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview;
+using Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 
-namespace Esfa.Recruit.Employer.Web.TagHelpers
+namespace Esfa.Recruit.Proivder.Web.TagHelpers
 {
     [HtmlTargetElement("div", Attributes = ValidationForAttributeName)]
     public class FieldReviewMarkerHelper : TagHelper
