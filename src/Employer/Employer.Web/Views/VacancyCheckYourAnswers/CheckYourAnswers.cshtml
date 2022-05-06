@@ -52,7 +52,7 @@
         <dl class="app-summary-list govuk-!-margin-bottom-9">
             <field-review-message field-name="@FieldIdentifiers.Title" model="@Model"></field-review-message>
             <div class="app-summary-list__row" field-review-marker="Title">
-                <dt class="app-summary-list__key" id="@FieldIdentifiers.Title" section-state="@Model.TitleSectionState">Advert title</dt>
+                <dt class="app-summary-list__key" id="@FieldIdentifiers.Title">Advert title</dt>
                 <dd class="app-summary-list__value">
                     @Model.Title
                     <field-review-tag class="govuk-tag--orange" field-name="@FieldIdentifiers.Title" tag-name="strong" model="@Model"/>
@@ -66,7 +66,7 @@
             {
                 <field-review-message field-name="@FieldIdentifiers.EmployerName" model="@Model"></field-review-message>
                 <div class="app-summary-list__row" field-review-marker="EmployerName">
-                    <dt class="app-summary-list__key" id="aboutEmployer" section-state="@Model.EmployerNameSectionState">Name of organisation</dt>
+                    <dt class="app-summary-list__key" id="aboutEmployer">Name of organisation</dt>
                     <dd class="app-summary-list__value">
                         @Model.EmployerName
                         <field-review-tag class="govuk-tag--orange" field-name="@FieldIdentifiers.EmployerName" tag-name="strong" model="@Model"/>
@@ -79,7 +79,7 @@
             }
             <field-review-message field-name="@FieldIdentifiers.Training" model="@Model"></field-review-message>
             <div class="app-summary-list__row" field-review-marker="TrainingTitle">
-                <dt class="app-summary-list__key" id="@FieldIdentifiers.Training" section-state="@Model.TrainingSectionState">Training course</dt>
+                <dt class="app-summary-list__key" id="@FieldIdentifiers.Training">Training course</dt>
                 <dd id="TrainingLevel" class="app-summary-list__value">
                     @Model.TrainingTitle
                     <field-review-tag class="govuk-tag--orange" field-name="@FieldIdentifiers.Training" tag-name="strong" model="@Model"/>
@@ -91,7 +91,7 @@
             </div>
             <field-review-message field-name="@FieldIdentifiers.Provider" model="@Model"></field-review-message>
             <div class="app-summary-list__row" field-review-marker="ProviderName">
-                <dt class="app-summary-list__key" id="@FieldIdentifiers.Provider" section-state="@Model.ProviderSectionState">Training provider</dt>
+                <dt class="app-summary-list__key" id="@FieldIdentifiers.Provider">Training provider</dt>
                 <dd class="app-summary-list__value">
                     @Model.ProviderName
                     <field-review-tag class="govuk-tag--orange" field-name="@FieldIdentifiers.Provider" tag-name="strong" model="@Model"/>
@@ -103,7 +103,7 @@
             </div>
             <field-review-message field-name="@FieldIdentifiers.ShortDescription" model="@Model"></field-review-message>
             <div class="app-summary-list__row" field-review-marker="ShortDescription">
-                <dt class="app-summary-list__key" id="@FieldIdentifiers.ShortDescription" section-state="@Model.ShortDescriptionSectionState">Summary of the apprenticeship</dt>
+                <dt class="app-summary-list__key" id="@FieldIdentifiers.ShortDescription">Summary of the apprenticeship</dt>
                 <dd class="app-summary-list__value">
                     @Model.ShortDescription
                     <field-review-tag class="govuk-tag--orange" field-name="@FieldIdentifiers.ShortDescription" tag-name="strong" model="@Model"/>
@@ -115,7 +115,7 @@
             </div>
             <field-review-message field-name="@FieldIdentifiers.VacancyDescription" model="@Model"></field-review-message>
             <div class="app-summary-list__row app-summary-list__row--no-border" field-review-marker="VacancyDescription">
-                <dt class="app-summary-list__key" id="@FieldIdentifiers.VacancyDescription" section-state="@Model.DescriptionsSectionState">What will the apprentice be doing?</dt>
+                <dt class="app-summary-list__key" id="@FieldIdentifiers.VacancyDescription">What will the apprentice be doing?</dt>
                 <dd class="app-summary-list__value">
                     <div class="app-ugc-wrap">
                         @Html.Raw(Model.VacancyDescription)
@@ -129,7 +129,7 @@
             </div>
             <field-review-message field-name="@FieldIdentifiers.TrainingDescription" model="@Model"></field-review-message>
             <div class="app-summary-list__row app-summary-list__row--no-border" field-review-marker="TrainingDescription">
-                <dt class="app-summary-list__key" id="@FieldIdentifiers.TrainingDescription" section-state="@Model.DescriptionsSectionState">Training and qualification levels</dt>
+                <dt class="app-summary-list__key" id="@FieldIdentifiers.TrainingDescription">Training and qualification levels</dt>
                 <dd class="app-summary-list__value">
                     <div class="app-ugc-wrap">
                         @Html.Raw(Model.TrainingDescription)
@@ -142,7 +142,7 @@
             </div>
             <field-review-message field-name="@FieldIdentifiers.FutureProspects" model="@Model"></field-review-message>
             <div class="app-summary-list__row" field-review-marker="OutcomeDescription">
-                <dt class="app-summary-list__key" id="OutcomeDescription" section-state="@Model.DescriptionsSectionState">Future prospects</dt>
+                <dt class="app-summary-list__key" id="OutcomeDescription">Future prospects</dt>
                 <dd class="app-summary-list__value">
                     <div class="app-ugc-wrap">
                         @Html.Raw(Model.OutcomeDescription)
@@ -159,7 +159,7 @@
         <dl class="app-summary-list govuk-!-margin-bottom-9">
             <field-review-message field-name="@FieldIdentifiers.ClosingDate" model="@Model"></field-review-message>
             <div class="app-summary-list__row app-summary-list__row--no-border" field-review-marker="ClosingDate">
-                <dt class="app-summary-list__key" id="@FieldIdentifiers.ClosingDate" section-state="@Model.ClosingDateSectionState">Application closing date</dt>
+                <dt class="app-summary-list__key" id="@FieldIdentifiers.ClosingDate">Application closing date</dt>
                 <dd class="app-summary-list__value">
                     @Model.ClosingDate
                      <field-review-tag class="govuk-tag--orange" field-name="@FieldIdentifiers.ClosingDate" tag-name="strong" model="@Model"/>
@@ -171,7 +171,7 @@
             </div>
             <field-review-message field-name="@FieldIdentifiers.PossibleStartDate" model="@Model"></field-review-message>
             <div class="app-summary-list__row app-summary-list__row--no-border" field-review-marker="PossibleStartDate">
-                <dt class="app-summary-list__key" id="@FieldIdentifiers.PossibleStartDate" section-state="@Model.PossibleStartDateSectionState">Apprenticeship start date</dt>
+                <dt class="app-summary-list__key" id="@FieldIdentifiers.PossibleStartDate">Apprenticeship start date</dt>
                 <dd class="app-summary-list__value">
                     @Model.PossibleStartDate
                     <field-review-tag class="govuk-tag--orange" field-name="@FieldIdentifiers.PossibleStartDate" tag-name="strong" model="@Model"/>
@@ -182,7 +182,7 @@
             </div>
             <field-review-message field-name="@FieldIdentifiers.DisabilityConfident" model="@Model"></field-review-message>
             <div class="app-summary-list__row" field-review-marker="IsDisabilityConfident">
-                <dt class="app-summary-list__key" id="@FieldIdentifiers.DisabilityConfident" section-state="@Model.DisabilityConfidentSectionState">Disability Confident Employer?</dt>
+                <dt class="app-summary-list__key" id="@FieldIdentifiers.DisabilityConfident">Disability Confident Employer?</dt>
                 <dd class="app-summary-list__value">
                     @(Model.IsDisabilityConfident ? "Yes" : "No")
                     <field-review-tag class="govuk-tag--orange" field-name="@FieldIdentifiers.DisabilityConfident" tag-name="strong" model="@Model"/>
@@ -193,7 +193,7 @@
             </div>
             <field-review-message field-name="@FieldIdentifiers.Wage" model="@Model"></field-review-message>
             <div class="app-summary-list__row app-summary-list__row--no-border" field-review-marker="WageText">
-                <dt class="app-summary-list__key" id="@FieldIdentifiers.Wage" section-state="@Model.WageTextSectionState">Pay rate</dt>
+                <dt class="app-summary-list__key" id="@FieldIdentifiers.Wage">Pay rate</dt>
                 <dd id="YearlyWage"  class="app-summary-list__value">
                     @Model.WageText a year
                     <field-review-tag class="govuk-tag--orange" field-name="@FieldIdentifiers.Wage" tag-name="strong" model="@Model"/>
@@ -205,7 +205,7 @@
             </div>
             <field-review-message field-name="@FieldIdentifiers.WageAdditionalInfo" model="@Model"></field-review-message>
             <div class="app-summary-list__row" field-review-marker="WageInfo">
-                <dt class="app-summary-list__key" id="@FieldIdentifiers.WageAdditionalInfo" section-state="@Model.WageTextSectionState">Extra information about pay (optional)</dt>
+                <dt class="app-summary-list__key" id="@FieldIdentifiers.WageAdditionalInfo">Extra information about pay (optional)</dt>
                 <dd class="app-summary-list__value">
                     @(Model.HasWageInfo ? Model.WageInfo : "None")
                     <field-review-tag class="govuk-tag--orange" field-name="@FieldIdentifiers.WageAdditionalInfo" tag-name="strong" model="@Model"/>
@@ -216,7 +216,7 @@
             </div>
             <field-review-message field-name="@FieldIdentifiers.ExpectedDuration" model="@Model"></field-review-message>
             <div class="app-summary-list__row app-summary-list__row--no-border" field-review-marker="ExpectedDuration">
-                <dt class="app-summary-list__key" id="@FieldIdentifiers.ExpectedDuration" section-state="@Model.ExpectedDurationSectionState">Duration</dt>
+                <dt class="app-summary-list__key" id="@FieldIdentifiers.ExpectedDuration">Duration</dt>
                 <dd id="WorkingWeek"  class="app-summary-list__value">
                     @Model.ExpectedDuration
                     <field-review-tag class="govuk-tag--orange" field-name="@FieldIdentifiers.ExpectedDuration" tag-name="strong" model="@Model"/>
@@ -228,7 +228,7 @@
             </div>
             <field-review-message field-name="@FieldIdentifiers.WorkingWeekDescription" model="@Model"></field-review-message>
             <div class="app-summary-list__row app-summary-list__row--no-border" field-review-marker="WorkingWeekDescription">
-                <dt class="app-summary-list__key" id="@FieldIdentifiers.WorkingWeekDescription" section-state="@Model.WorkingWeekSectionState">Working week details</dt>
+                <dt class="app-summary-list__key" id="@FieldIdentifiers.WorkingWeekDescription">Working week details</dt>
                 <dd class="app-summary-list__value">
                     @Model.WorkingWeekDescription
                     <field-review-tag class="govuk-tag--orange" field-name="@FieldIdentifiers.WorkingWeekDescription" tag-name="strong" model="@Model"/>
@@ -239,7 +239,7 @@
             </div>
             <field-review-message field-name="@FieldIdentifiers.WorkingWeekHours" model="@Model"></field-review-message>
             <div class="app-summary-list__row" field-review-marker="HoursPerWeek">
-                <dt class="app-summary-list__key" id="@FieldIdentifiers.WorkingWeekHours" section-state="@Model.WorkingWeekSectionState">Hours per week</dt>
+                <dt class="app-summary-list__key" id="@FieldIdentifiers.WorkingWeekHours">Hours per week</dt>
                 <dd class="app-summary-list__value">
                     @Model.HoursPerWeek
                     <field-review-tag class="govuk-tag--orange" field-name="@FieldIdentifiers.WorkingWeekHours" tag-name="strong" model="@Model"/>
@@ -250,7 +250,7 @@
             </div>
             <field-review-message field-name="@FieldIdentifiers.NumberOfPositions" model="@Model"></field-review-message>
             <div class="app-summary-list__row" field-review-marker="NumberOfPositions">
-                <dt class="app-summary-list__key" id="@FieldIdentifiers.NumberOfPositions" section-state="@Model.NumberOfPositionsSectionState">Number of positions</dt>
+                <dt class="app-summary-list__key" id="@FieldIdentifiers.NumberOfPositions">Number of positions</dt>
                 <dd class="app-summary-list__value">
                     @Model.NumberOfPositions available
                     <field-review-tag class="govuk-tag--orange" field-name="@FieldIdentifiers.NumberOfPositions" tag-name="strong" model="@Model"/>
@@ -262,7 +262,7 @@
             </div>
             <field-review-message field-name="@FieldIdentifiers.EmployerAddress" model="@Model"></field-review-message>
             <div class="app-summary-list__row" field-review-marker="EmployerAddressElements">
-                <dt class="app-summary-list__key" id="@FieldIdentifiers.EmployerAddress" section-state="@Model.EmployerAddressSectionState">Address</dt>
+                <dt class="app-summary-list__key" id="@FieldIdentifiers.EmployerAddress">Address</dt>
                 <dd class="app-summary-list__value">
                     @string.Join(", ", Model.EmployerAddressElements?.Where(s => !string.IsNullOrWhiteSpace(s)).Select(s => s.Trim()) ?? new string[0])
                     <field-review-tag class="govuk-tag--orange" field-name="@FieldIdentifiers.EmployerAddress" tag-name="strong" model="@Model"/>
@@ -277,7 +277,7 @@
         <dl class="app-summary-list govuk-!-margin-bottom-9">
             <field-review-message field-name="@FieldIdentifiers.Skills" model="@Model"></field-review-message>
             <div class="app-summary-list__row" field-review-marker="Skills">
-                <dt class="app-summary-list__key" id="@FieldIdentifiers.Skills" section-state="@Model.SkillsSectionState">Skills</dt>
+                <dt class="app-summary-list__key" id="@FieldIdentifiers.Skills">Skills</dt>
                 <dd class="app-summary-list__value">
                     <ul class="govuk-list govuk-list--bullet">
                         @foreach (var skill in Model.Skills)
@@ -294,7 +294,7 @@
             </div>
             <field-review-message field-name="@FieldIdentifiers.Qualifications" model="@Model"></field-review-message>
             <div class="app-summary-list__row" field-review-marker="Qualifications">
-                <dt class="app-summary-list__key" id="@FieldIdentifiers.Qualifications" section-state="@Model.QualificationsSectionState">Qualifications</dt>
+                <dt class="app-summary-list__key" id="@FieldIdentifiers.Qualifications">Qualifications</dt>
                 <dd class="app-summary-list__value">
                     <ul class="govuk-list govuk-list--bullet">
                         @foreach (var qual in Model.Qualifications)
@@ -311,7 +311,7 @@
             </div>
             <field-review-message field-name="@FieldIdentifiers.ThingsToConsider" model="@Model"></field-review-message>
             <div class="app-summary-list__row" field-review-marker="ThingsToConsider">
-                <dt class="app-summary-list__key" id="@FieldIdentifiers.ThingsToConsider" section-state="@Model.ThingsToConsiderSectionState">Other things to consider</dt>
+                <dt class="app-summary-list__key" id="@FieldIdentifiers.ThingsToConsider">Other things to consider</dt>
                 <dd class="app-summary-list__value">
                     @if (string.IsNullOrEmpty(Model.ThingsToConsider))
                     {
@@ -333,7 +333,7 @@
     <dl class="app-summary-list govuk-!-margin-bottom-9">
         <field-review-message field-name="@FieldIdentifiers.EmployerName" model="@Model"></field-review-message>
         <div class="app-summary-list__row" field-review-marker="EmployerName">
-            <dt class="app-summary-list__key" id="@FieldIdentifiers.EmployerName" section-state="@Model.EmployerNameSectionState">Name of organisation</dt>
+            <dt class="app-summary-list__key" id="@FieldIdentifiers.EmployerName">Name of organisation</dt>
             <dd class="app-summary-list__value">
                 @Model.EmployerName
                 <field-review-tag class="govuk-tag--orange" field-name="@FieldIdentifiers.EmployerName" tag-name="strong" model="@Model"/>
@@ -345,7 +345,7 @@
         </div>
         <field-review-message field-name="@FieldIdentifiers.EmployerDescription" model="@Model"></field-review-message>
         <div class="app-summary-list__row app-summary-list__row--no-border" field-review-marker="EmployerDescription">
-            <dt class="app-summary-list__key" id="@FieldIdentifiers.EmployerDescription" section-state="@Model.EmployerDescriptionSectionState">Employer information</dt>
+            <dt class="app-summary-list__key" id="@FieldIdentifiers.EmployerDescription">Employer information</dt>
             <dd class="app-summary-list__value">
                 @Model.EmployerDescription
                 <field-review-tag class="govuk-tag--orange" field-name="@FieldIdentifiers.EmployerDescription" tag-name="strong" model="@Model"/>
@@ -357,7 +357,7 @@
         </div>
         <field-review-message field-name="@FieldIdentifiers.EmployerWebsiteUrl" model="@Model"></field-review-message>
         <div class="app-summary-list__row" field-review-marker="EmployerWebsiteUrl">
-            <dt class="app-summary-list__key" id="@FieldIdentifiers.EmployerWebsiteUrl" section-state="@Model.EmployerWebsiteUrlSectionState">Organisation website (optional)</dt>
+            <dt class="app-summary-list__key" id="@FieldIdentifiers.EmployerWebsiteUrl">Organisation website (optional)</dt>
             <dd class="app-summary-list__value">
                 @(Model.HasEmployerWebsiteUrl ? Model.EmployerWebsiteUrl : "None")
                 <field-review-tag class="govuk-tag--orange" field-name="@FieldIdentifiers.EmployerWebsiteUrl" tag-name="strong" model="@Model"/>
@@ -368,7 +368,7 @@
         </div>
         <field-review-message field-name="@FieldIdentifiers.EmployerContact" model="@Model"></field-review-message>
         <div class="app-summary-list__row app-summary-list__row--no-border" field-review-marker="EmployerContactName">
-            <dt class="app-summary-list__key" id="@FieldIdentifiers.EmployerContact" section-state="@Model.EmployerContactSectionState">Contact name (optional)</dt>
+            <dt class="app-summary-list__key" id="@FieldIdentifiers.EmployerContact">Contact name (optional)</dt>
             <dd class="app-summary-list__value">
                 @(Model.HasEmployerContactName ? Model.EmployerContactName : "None")
                 <field-review-tag class="govuk-tag--orange" field-name="@FieldIdentifiers.EmployerContact" tag-name="strong" model="@Model"/>
@@ -380,7 +380,7 @@
         </div>
         <field-review-message field-name="@FieldIdentifiers.EmployerContact" model="@Model"></field-review-message>
         <div class="app-summary-list__row app-summary-list__row--no-border" field-review-marker="EmployerContactEmail">
-            <dt class="app-summary-list__key" id="@FieldIdentifiers.EmployerContact" section-state="@Model.EmployerContactSectionState">Contact email (optional)</dt>
+            <dt class="app-summary-list__key" id="@FieldIdentifiers.EmployerContact">Contact email (optional)</dt>
             <dd class="app-summary-list__value">
                 @(Model.HasEmployerContactEmail ? Model.EmployerContactEmail : "None")
                 <field-review-tag class="govuk-tag--orange" field-name="@FieldIdentifiers.EmployerContact" tag-name="strong" model="@Model"/>
@@ -391,7 +391,7 @@
         </div>
         <field-review-message field-name="@FieldIdentifiers.EmployerContact" model="@Model"></field-review-message>
         <div class="app-summary-list__row" field-review-marker="EmployerContactTelephone">
-            <dt class="app-summary-list__key" id="@FieldIdentifiers.EmployerContact" section-state="@Model.EmployerContactSectionState">Contact number (optional)</dt>
+            <dt class="app-summary-list__key" id="@FieldIdentifiers.EmployerContact">Contact number (optional)</dt>
             <dd class="app-summary-list__value">
                 @(Model.HasEmployerContactTelephone ? Model.EmployerContactTelephone : "None")
                 <field-review-tag class="govuk-tag--orange" field-name="@FieldIdentifiers.EmployerContact" tag-name="strong" model="@Model"/>
@@ -403,7 +403,7 @@
         <field-review-message field-name="@FieldIdentifiers.ApplicationMethod" model="@Model"></field-review-message>
         <field-review-message field-name="@FieldIdentifiers.ApplicationUrl" model="@Model"></field-review-message>
         <div class="app-summary-list__row app-summary-list__row--no-border" field-review-marker="ApplicationMethod" field-review-marker="ApplicationUrl">
-            <dt class="app-summary-list__key" id="@FieldIdentifiers.ApplicationMethod" section-state="@Model.ApplicationMethodSectionState">Application website</dt>
+            <dt class="app-summary-list__key" id="@FieldIdentifiers.ApplicationMethod">Application website</dt>
             <dd class="app-summary-list__value">
                 @if (Model.ApplicationMethod == ApplicationMethod.ThroughExternalApplicationSite)
                 {   
@@ -424,7 +424,7 @@
         {
             <field-review-message field-name="@FieldIdentifiers.ApplicationInstructions" model="@Model"></field-review-message>
             <div class="app-summary-list__row" field-review-marker="ApplicationInstructions">
-                <dt class="app-summary-list__key" id="@FieldIdentifiers.ApplicationInstructions" section-state="@Model.ApplicationInstructionsSectionState">Explain the application process (optional)</dt>
+                <dt class="app-summary-list__key" id="@FieldIdentifiers.ApplicationInstructions">Explain the application process (optional)</dt>
                 <dd class="app-summary-list__value">
                     @(Model.HasApplicationInstructions ? Model.ApplicationInstructions : "None")
                     <field-review-tag class="govuk-tag--orange" field-name="@FieldIdentifiers.ApplicationInstructions" tag-name="strong" model="@Model"/>
