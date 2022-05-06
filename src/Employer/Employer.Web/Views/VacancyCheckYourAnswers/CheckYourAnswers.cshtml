@@ -5,7 +5,7 @@
 @{ ViewBag.GaData.Vpv = "/recruitment/employer/check-your-answers"; }
 
 @section BackLink {
-    @if (Model.CanReview)
+    @if (Model.CanReview || Model.Review.HasBeenReviewed)
     {
         <a asp-route="@RouteNames.Dashboard_Get" esfa-automation="link-back" class="govuk-back-link">Return to dashboard</a>
     }
@@ -15,34 +15,6 @@
     }
     
 }
-
-@if (Model.Status == VacancyStatus.Referred)
-{
-    <div class="govuk-error-summary review-summary govuk-!-margin-top-0" role="alert" tabindex="-1">
-        <h2 class="govuk-error-summary__title">
-            Edits needed
-        </h2>
-        <div class="govuk-error-summary__body">
-            <p class="govuk-body">Call us on @RecruitViewConstants.HelpdeskPhoneNumber and select the employer option if you need to discuss any of our advert review comments.</p>
-            <p class="govuk-body">@Model.Review.ReviewerComments</p>    
-            <ul class="govuk-list govuk-error-summary__list">
-                @foreach (var fieldIndicator in Model.Review.FieldIndicators)
-                {
-                    if (!string.IsNullOrWhiteSpace(fieldIndicator.ManualQaText))
-                    {
-                        <li><a asp-fragment="@fieldIndicator.Anchor" class="govuk-link">@fieldIndicator.ManualQaText</a></li>
-                    }
-
-                    foreach (var errorText in fieldIndicator.AutoQaTexts)
-                    {
-                        <li><a asp-fragment="@fieldIndicator.Anchor" class="govuk-link">@errorText</a></li>
-                    }
-                }
-            </ul>
-        </div>
-    </div>
-}
-
 
 <div asp-show="@Model.Review.HasBeenReviewed">
     <partial name="@PartialNames.ReviewSummary" for="Review" />
@@ -57,7 +29,7 @@
         <h2 class="govuk-heading-m">Advert summary</h2>
         <dl class="app-summary-list govuk-!-margin-bottom-9">
             <field-review-message field-name="@FieldIdentifiers.Title" model="@Model"></field-review-message>
-            <div class="app-summary-list__row" field-review-marker="Title">
+            <div class="app-summary-list__row" field-review-marker="Title" >
                 <dt class="app-summary-list__key" id="@FieldIdentifiers.Title">Advert title</dt>
                 <dd class="app-summary-list__value">
                     @Model.Title
@@ -232,12 +204,12 @@
                     
                 </dd>
             </div>
-            <field-review-message field-name="@FieldIdentifiers.WorkingWeekDescription" model="@Model"></field-review-message>
+            <field-review-message field-name="WorkingWeek" model="@Model"></field-review-message>
             <div class="app-summary-list__row app-summary-list__row--no-border" field-review-marker="WorkingWeekDescription">
-                <dt class="app-summary-list__key" id="@FieldIdentifiers.WorkingWeekDescription">Working week details</dt>
+                <dt class="app-summary-list__key" id="@FieldIdentifiers.WorkingWeek">Working week details</dt>
                 <dd class="app-summary-list__value">
                     @Model.WorkingWeekDescription
-                    <field-review-tag class="govuk-tag--orange" field-name="@FieldIdentifiers.WorkingWeekDescription" tag-name="strong" model="@Model"/>
+                    <field-review-tag class="govuk-tag--orange" field-name="@FieldIdentifiers.WorkingWeek" tag-name="strong" model="@Model"/>
                 </dd>
                 <dd class="app-summary-list__actions">
                     

@@ -1,4 +1,8 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Linq;
+using System.Threading.Tasks;
+using Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview;
+using Esfa.Recruit.Shared.Web.ViewModels;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
@@ -13,16 +17,16 @@ namespace Esfa.Recruit.Employer.Web.TagHelpers
         private const string ClassAttributeIdentifier = "class";
         private const string ErrorClassSpecifier = "app-summary-list__row--error";
         
-        [HtmlAttributeNotBound]
-        [ViewContext]
-        public ViewContext ViewContext { get; set; }
-
         [HtmlAttributeName(ValidationForAttributeName)]
         public ModelExpression For { get; set; }
         
+        [HtmlAttributeNotBound]
+        [ViewContext]
+        public ViewContext ViewContext { get; set; }
         public override Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
         {
-            if (ViewContext.ModelState.TryGetValue(For.Name, out var modelStateEntry) && modelStateEntry.ValidationState == ModelValidationState.Invalid)
+            var model = ViewContext.ViewData.Model as VacancyPreviewViewModel;
+            if (model?.Review?.FieldIndicators?.FirstOrDefault(c=>c.ReviewFieldIdentifier.Equals(For.Name, StringComparison.CurrentCultureIgnoreCase)) != null)
             {
                 if (output.Attributes.ContainsName(ClassAttributeIdentifier))
                 {
