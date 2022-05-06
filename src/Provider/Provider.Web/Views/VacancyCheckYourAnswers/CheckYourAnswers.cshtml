@@ -279,14 +279,14 @@
                     <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.Qualifications_Get" asp-all-route-data="@Model.RouteDictionary">Change<span class="govuk-visually-hidden"> qualifications</span></a>
                 </dd>
             </div>
-            <field-review-message field-name="@FieldIdentifiers.FutureProspects" model="@Model"></field-review-message>
+            <field-review-message field-name="OutcomeDescription" model="@Model"></field-review-message>
             <div class="app-summary-list__row" field-review-marker="OutcomeDescription">
                 <dt class="app-summary-list__key" id="OutcomeDescription">Future prospects</dt>
                 <dd class="app-summary-list__value">
                     <div class="app-ugc-wrap">
                         @Html.Raw(Model.OutcomeDescription)
                     </div>
-                    <review-field class="govuk-tag--purple" field-name="@FieldIdentifiers.FutureProspects" tag-name="strong" model="@Model"/>
+                    <review-field class="govuk-tag--purple" field-name="OutcomeDescription" tag-name="strong" model="@Model"/>
                 </dd>
                 <dd class="app-summary-list__actions">
                     <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.FutureProspects_Get" asp-all-route-data="@Model.RouteDictionary">Change<span class="govuk-visually-hidden"> future prospects</span></a>
@@ -325,6 +325,7 @@
                 </dd>
             </div>
             
+            <field-review-message field-name="@FieldIdentifiers.EmployerDescription" model="@Model"></field-review-message>
             <div class="app-summary-list__row app-summary-list__row--no-border" field-review-marker="EmployerDescription">
                 <dt class="app-summary-list__key" id="@FieldIdentifiers.EmployerDescription">Employer information</dt>
                 <dd class="app-summary-list__value">
@@ -335,6 +336,7 @@
                     <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.AboutEmployer_Get" asp-all-route-data="@Model.RouteDictionary">Change<span class="govuk-visually-hidden"> name of organisation</span></a>
                 </dd>
             </div>
+            <field-review-message field-name="@FieldIdentifiers.EmployerWebsiteUrl" model="@Model"></field-review-message>
             <div class="app-summary-list__row app-summary-list__row--no-border" field-review-marker="EmployerWebsiteUrl">
                 <dt class="app-summary-list__key" id="@FieldIdentifiers.EmployerWebsiteUrl">Organisation website (optional)</dt>
                 <dd class="app-summary-list__value">
@@ -345,6 +347,7 @@
                     
                 </dd>
             </div>
+            <field-review-message field-name="@FieldIdentifiers.DisabilityConfident" model="@Model"></field-review-message>
             <div class="app-summary-list__row" field-review-marker="IsDisabilityConfident">
                 <dt class="app-summary-list__key" id="@FieldIdentifiers.DisabilityConfident">Disability Confident Employer?</dt>
                 <dd class="app-summary-list__value">
@@ -355,6 +358,7 @@
                     
                 </dd>
             </div>
+            <field-review-message field-name="@FieldIdentifiers.ProviderContact" model="@Model"></field-review-message>
             <div class="app-summary-list__row app-summary-list__row--no-border" field-review-marker="ProviderContactName">
                 <dt class="app-summary-list__key"  id="@FieldIdentifiers.ProviderContact">Contact name (optional)</dt>
                 <dd class="app-summary-list__value">
@@ -374,6 +378,7 @@
                 <dd class="app-summary-list__actions">
                 </dd>
             </div>
+            
             <div class="app-summary-list__row" field-review-marker="ProviderContactTelephone">
                 <dt class="app-summary-list__key" id="@FieldIdentifiers.ProviderContact">Contact number (optional)</dt>
                 <dd class="app-summary-list__value">
@@ -384,6 +389,8 @@
                     
                 </dd>
             </div>
+            <field-review-message field-name="@FieldIdentifiers.ApplicationMethod" model="@Model"></field-review-message>
+            <field-review-message field-name="@FieldIdentifiers.ApplicationUrl" model="@Model"></field-review-message>
             <div class="app-summary-list__row app-summary-list__row--no-border" field-review-marker="ApplicationMethod">
                 <dt class="app-summary-list__key" id="@FieldIdentifiers.ApplicationMethod">Application website</dt>
                 <dd class="app-summary-list__value" id="@FieldIdentifiers.ApplicationUrl">
