@@ -61,6 +61,9 @@ namespace Esfa.Recruit.Employer.Web.TagHelpers
                     { "EmployerAddressElements", "EmployerAddress" },
                     { "IsDisabilityConfident", "DisabilityConfident" },
                     { "TrainingTitle", "Training" },
+                    { "EmployerContactName", "EmployerContact" },
+                    { "EmployerContactEmail", "EmployerContact" },
+                    { "EmployerContactTelephone", "EmployerContact" }
                 };
             }
         }
