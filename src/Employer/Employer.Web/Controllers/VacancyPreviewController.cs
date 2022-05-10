@@ -1,4 +1,4 @@
-﻿using Esfa.Recruit.Employer.Web.Configuration.Routing;
+using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Orchestrators;
 using Esfa.Recruit.Employer.Web.ViewModels.Preview;
 using Microsoft.AspNetCore.Mvc;
@@ -9,6 +9,7 @@ using Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Shared.Web.Extensions;
+using Esfa.Recruit.Shared.Web.FeatureToggle;
 
 namespace Esfa.Recruit.Employer.Web.Controllers
 {
@@ -16,10 +17,12 @@ namespace Esfa.Recruit.Employer.Web.Controllers
     public class VacancyPreviewController : Controller
     {
         private readonly VacancyPreviewOrchestrator _orchestrator;
+        private readonly IFeature _feature;
 
-        public VacancyPreviewController(VacancyPreviewOrchestrator orchestrator)
+        public VacancyPreviewController(VacancyPreviewOrchestrator orchestrator, IFeature feature)
         {
             _orchestrator = orchestrator;
+            _feature = feature;
         }
 
         [HttpGet("advert-preview", Name = RouteNames.VacancyAdvertPreview)]
@@ -107,6 +110,11 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             viewModel.SoftValidationErrors = null;
             viewModel.SetSectionStates(viewModel, ModelState);
 
+            if (_feature.IsFeatureEnabled(FeatureNames.EmployerTaskList))
+            {
+                return RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet);
+            }
+            
             return View(ViewNames.VacancyPreview, viewModel);
         }
 
@@ -145,7 +153,16 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             }
             else
             {
+                if (_feature.IsFeatureEnabled(FeatureNames.EmployerTaskList))
+                {
+                    return RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet);
+                }
                 return RedirectToRoute(RouteNames.Vacancy_Preview_Get, new { VacancyId = vm.VacancyId, SubmitToEfsa = true });
+            }
+
+            if (_feature.IsFeatureEnabled(FeatureNames.EmployerTaskList))
+            {
+                return RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet);
             }
 
             var viewModel = await _orchestrator.GetVacancyPreviewViewModelAsync(vm);
@@ -185,6 +202,10 @@ namespace Esfa.Recruit.Employer.Web.Controllers
                 {
                     return RedirectToRoute(RouteNames.JobAdvertConfirmation_Get);
                 }
+            }
+            if (_feature.IsFeatureEnabled(FeatureNames.EmployerTaskList))
+            {
+                return RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet);
             }
 
             return RedirectToRoute(RouteNames.Vacancy_Preview_Get, new { VacancyId = vm.VacancyId, SubmitToEfsa = false });
