@@ -75,6 +75,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators
                 .Excluding(c=>c.ApprenticeshipLevel)
                 .Excluding(c=>c.AccountLegalEntityCount)
                 .Excluding(c=>c.HasSelectedEmployerNameOption)
+                .Excluding(c=>c.HasSoftValidationErrors)
             );
             viewModel.ApprenticeshipLevel.Should().Be(programme.ApprenticeshipLevel);
             viewModel.AccountLegalEntityCount.Should().Be(legalEntities.Count);

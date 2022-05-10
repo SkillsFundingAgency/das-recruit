@@ -6,6 +6,7 @@ using Esfa.Recruit.Employer.Web.Orchestrators;
 using Esfa.Recruit.Employer.Web.Orchestrators.Part1;
 using Esfa.Recruit.Employer.Web.Orchestrators.Part2;
 using Esfa.Recruit.Employer.Web.Services;
+using Esfa.Recruit.Employer.Web.TagHelpers;
 using Esfa.Recruit.Employer.Web.ViewModels.ApplicationReview;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.TrainingProvider;
 using Esfa.Recruit.Shared.Web.Configuration;
@@ -68,6 +69,7 @@ namespace Esfa.Recruit.Employer.Web.Configuration
             services.AddTransient<AlertViewModelService>();
             services.AddTransient<IEmployerAlertsViewModelFactory, EmployerAlertsViewModelFactory>();
             services.AddTransient<IUtility, Utility>();
+            services.AddTransient<IFieldReviewHelper, FieldReviewHelper>();
         }
 
         private static void RegisterFluentValidators(IServiceCollection services)
