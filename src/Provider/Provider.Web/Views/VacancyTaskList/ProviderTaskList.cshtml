@@ -121,13 +121,28 @@
                              || (_serviceParameters.VacancyType==VacancyType.Traineeship && !Model.HasRoute))
                         {
                             <span>
-                                Summary of the apprenticeship
+                                @if (_serviceParameters.VacancyType == VacancyType.Apprenticeship)
+                                {
+                                    @:Summary of the apprenticeship    
+                                }
+                                else
+                                {
+                                    @:Summary of the traineeship
+                                }
+                                
                             </span>
                         }
                         else
                         {
                             <a class="govuk-link govuk-link--no-visited-state" asp-all-route-data="@Model.RouteDictionary" asp-route="@RouteNames.ShortDescription_Get">
-                                Summary of the apprenticeship
+                                @if (_serviceParameters.VacancyType == VacancyType.Apprenticeship)
+                                {
+                                    @:Summary of the apprenticeship    
+                                }
+                                else
+                                {
+                                    @:Summary of the traineeship
+                                }
                             </a>
                         }
                     </li>
