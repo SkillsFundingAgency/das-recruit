@@ -265,7 +265,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                 .NotNull()
                     .WithMessage("You must provide an employer location")
                     .WithErrorCode("98")
-                .SetValidator(new AddressValidator((long)VacancyRuleSet.EmployerAddress))
+                .SetValidator(new AddressValidator((long)VacancyRuleSet.EmployerAddress, IsApprenticeshipVacancy))
                 .RunCondition(VacancyRuleSet.EmployerAddress)
                 .WithRuleId(VacancyRuleSet.EmployerAddress);
         }
