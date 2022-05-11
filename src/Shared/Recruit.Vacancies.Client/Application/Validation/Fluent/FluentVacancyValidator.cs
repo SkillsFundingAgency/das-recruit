@@ -72,12 +72,15 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
         {
             if (IsApprenticeshipVacancy)
             {
-                ValidateApprenticeshipTitle();    
+                ValidateApprenticeshipTitle();
+                ValidateApprenticeshipDuration();
             }
             else
             {
                 ValidateTraineeshipTitle();
+                ValidateTraineeshipDuration();
             }
+
             
             ValidateOrganisation();
 
@@ -90,8 +93,6 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
             ValidateStartDate();
 
             ValidateTrainingProgramme();
-
-            ValidateDuration();
 
             ValidateWorkingWeek();
 
@@ -331,7 +332,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                 .RunCondition(VacancyRuleSet.TrainingProgramme);
         }
 
-        private void ValidateDuration()
+        private void ValidateApprenticeshipDuration()
         {
             When(x => x.Wage != null, () =>
             {
@@ -369,6 +370,54 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
             });
         }
 
+        private void ValidateTraineeshipDuration()
+        {
+            When(x => x.Wage != null, () =>
+            {
+                RuleFor(x => x.Wage.DurationUnit)
+                    .NotEmpty()
+                    .WithMessage($"Enter how long the whole {VacancyContext} is, including work and training")
+                    .WithErrorCode("34")
+                    .IsInEnum()
+                    .WithMessage($"Enter how long the whole {VacancyContext} is, including work and training")
+                    .WithErrorCode("34")
+                    .RunCondition(VacancyRuleSet.Duration)
+                    .WithRuleId(VacancyRuleSet.Duration);
+
+                RuleFor(x => x.Wage.Duration)
+                    .Cascade(CascadeMode.StopOnFirstFailure)
+                    .NotEmpty()
+                    .WithMessage($"Enter how long the whole {VacancyContext} is, including work and training")
+                    .WithErrorCode("34")
+                    .GreaterThan(0)
+                    .WithMessage($"Enter how long the whole {VacancyContext} is, including work and training")
+                    .WithErrorCode("34")
+                    .Must((vacancy, value) =>
+                    {
+                        if (vacancy.Wage.DurationUnit == DurationUnit.Week && value < 6)
+                        {
+                            return false;
+                        }
+
+                        return true;
+                    })
+                    .WithMessage("A traineeship should last a minimum of 6 weeks")
+                    .WithErrorCode("36")
+                    .Must((vacancy, value) =>
+                    {
+                        if (vacancy.Wage.DurationUnit == DurationUnit.Month && value > 12)
+                        {
+                            return false;
+                        }
+
+                        return true;
+                    })
+                    .WithMessage("a traineeship should last no more than 12 months")
+                    .WithErrorCode("36")
+                    .RunCondition(VacancyRuleSet.Duration)
+                    .WithRuleId(VacancyRuleSet.Duration);
+            });
+        }
         private void ValidateWorkingWeek()
         {
             When(x => x.Wage != null, () =>
