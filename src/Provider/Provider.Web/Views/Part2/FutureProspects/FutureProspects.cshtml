@@ -28,10 +28,12 @@
                 <span class="govuk-caption-xl">@Model.Title</span>
                 <h1 class="govuk-label-wrapper">
                     <label class="govuk-label govuk-label--xl" asp-for="FutureProspects" >
-                        What is the expected career progression after this apprenticeship?
+                        What is the expected career progression after this @(_serviceParameters.VacancyType == VacancyType.Apprenticeship ? "apprenticeship" : "traineeship")?
                     </label>
                 </h1>
-                <span class="govuk-hint">You may want to mention specific routes they could take once qualified.</span>
+                <span class="govuk-hint">
+                    @(_serviceParameters.VacancyType == VacancyType.Apprenticeship ? "You may want to mention specific routes they could take once qualified." : "You may want to mention specific routes they could take. For example, an apprenticeship, job or further education.")
+                </span>
                 <span esfa-validation-message-for="FutureProspects" class="govuk-error-message"></span>
                 <textarea asp-for="FutureProspects" class="govuk-textarea html-editor" rows="5"></textarea>
             </div>
