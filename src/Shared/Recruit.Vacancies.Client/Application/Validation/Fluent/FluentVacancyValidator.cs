@@ -89,7 +89,14 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
 
             ValidateStartDate();
 
-            ValidateTrainingProgramme();
+            if (IsApprenticeshipVacancy)
+            {
+                ValidateTrainingProgramme();
+            }
+            else
+            {
+                ValidateRoute();
+            }
 
             ValidateDuration();
 
@@ -97,13 +104,18 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
 
             ValidateWeeklyHours();
 
-            ValidateWage();
+            if (IsApprenticeshipVacancy)
+            {
+                ValidateWage();
+            }
 
             ValidateSkills();
 
-            ValidateQualifications();
-
-            ValidateDescription();
+            if (IsApprenticeshipVacancy)
+            {
+                ValidateQualifications();
+                ValidateDescription();
+            }
 
             ValidateTrainingDescription();
 
@@ -337,6 +349,16 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                     .WithErrorCode("25")
                 .WithRuleId(VacancyRuleSet.TrainingProgramme)
                 .RunCondition(VacancyRuleSet.TrainingProgramme);
+        }
+
+        private void ValidateRoute()
+        {
+            RuleFor(x => x.RouteId)
+                .NotEmpty()
+                .WithMessage($"You must select trainee sector")
+                .WithErrorCode("25")
+                .WithRuleId(VacancyRuleSet.RouteId)
+                .RunCondition(VacancyRuleSet.RouteId);
         }
 
         private void ValidateDuration()
