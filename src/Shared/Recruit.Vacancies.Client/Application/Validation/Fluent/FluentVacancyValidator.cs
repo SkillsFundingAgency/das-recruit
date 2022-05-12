@@ -405,7 +405,29 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                     .WithErrorCode("36")
                     .Must((vacancy, value) =>
                     {
+                        if (vacancy.Wage.DurationUnit == DurationUnit.Month && value <= 1)
+                        {
+                            return false;
+                        }
+
+                        return true;
+                    })
+                    .WithMessage("A traineeship should last a minimum of 6 weeks")
+                    .WithErrorCode("36")
+                    .Must((vacancy, value) =>
+                    {
                         if (vacancy.Wage.DurationUnit == DurationUnit.Month && value > 12)
+                        {
+                            return false;
+                        }
+
+                        return true;
+                    })
+                    .WithMessage("a traineeship should last no more than 12 months")
+                    .WithErrorCode("36")
+                    .Must((vacancy, value) =>
+                    {
+                        if (vacancy.Wage.DurationUnit == DurationUnit.Week && value > 52)
                         {
                             return false;
                         }
