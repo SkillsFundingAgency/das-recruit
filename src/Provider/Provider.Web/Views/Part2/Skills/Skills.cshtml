@@ -21,7 +21,15 @@
     <fieldset class="govuk-fieldset">
         <legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
             <h1 class="govuk-fieldset__heading">
-                What skills and personal qualities do applicants need to have?
+                @if (_serviceParameters.VacancyType == VacancyType.Apprenticeship)
+                {
+                    @:What skills and personal qualities do applicants need to have?    
+                }
+                else
+                {
+                    @:What skills and personal qualities would you like applicants to have?
+                }
+                
             </h1>
         </legend>
         <p class="govuk-hint govuk-!-margin-top-5">Select all that apply or add your own</p>
