@@ -305,7 +305,17 @@
             <li>
                 <h2 class="das-task-list__section">
                     <span class="das-task-list__section-number">3. </span> 
-                    <span class="das-task-list__section-heading">Skills and qualifications</span>
+                    <span class="das-task-list__section-heading">
+                        @if (_serviceParameters.VacancyType == VacancyType.Apprenticeship)
+                        {
+                            @:Skills and qualifications    
+                        }
+                        else
+                        {
+                            @:Requirements and Prospects
+                        }
+                        
+                    </span>
                     <span class="das-task-list__section-status">
                         @if(Model.TaskListSectionThreeState == VacancyTaskListSectionState.InProgress)
                         {
