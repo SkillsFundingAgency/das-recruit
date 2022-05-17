@@ -25,6 +25,7 @@ namespace Esfa.Recruit.Provider.Web.ViewModels
         public string EmployerWebsiteUrl { get; internal set; }
         public string ExpectedDuration { get; internal set; }
         public string FindAnApprenticeshipUrl { get; internal set; }
+        public string FindATraineeshipUrl { get; internal set; }
         public string HoursPerWeek { get; internal set; }
         public bool IsAnonymous { get; internal set; }
         public bool IsDisabilityConfident { get; internal set; }
@@ -111,6 +112,8 @@ namespace Esfa.Recruit.Provider.Web.ViewModels
         public bool HasNotSpecifiedApplicationMethod => !ApplicationMethod.HasValue;
         public bool HasApplicationMethod => ApplicationMethod.HasValue;
         public bool HasSpecifiedThroughFaaApplicationMethod => HasApplicationMethod && ApplicationMethod.Value == Esfa.Recruit.Vacancies.Client.Domain.Entities.ApplicationMethod.ThroughFindAnApprenticeship;
+
+        public bool HasSpecifiedThroughFaTApplicationMethod => HasApplicationMethod && ApplicationMethod.Value == Vacancies.Client.Domain.Entities.ApplicationMethod.ThroughFindATraineeship;
         public bool HasSpecifiedThroughExternalApplicationMethod => HasApplicationMethod && ApplicationMethod.Value == Esfa.Recruit.Vacancies.Client.Domain.Entities.ApplicationMethod.ThroughExternalApplicationSite;
         public bool HasApplicationInstructions => !string.IsNullOrWhiteSpace(ApplicationInstructions);
         public bool HasApplicationUrl => !string.IsNullOrWhiteSpace(ApplicationUrl);

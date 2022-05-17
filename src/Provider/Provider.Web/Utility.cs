@@ -94,7 +94,12 @@ namespace Esfa.Recruit.Provider.Web
         
         public bool TaskListCompleted(Vacancy vacancy)
         {
-            return vacancy.ApplicationMethod != null;
+            if(vacancy.VacancyType == VacancyType.Apprenticeship)
+                return vacancy.ApplicationMethod != null;
+            if (vacancy.VacancyType == VacancyType.Traineeship)
+                return !string.IsNullOrEmpty(vacancy.EmployerDescription);
+
+            return false;
         }
 
         public PartOnePageInfoViewModel GetPartOnePageInfo(Vacancy vacancy)

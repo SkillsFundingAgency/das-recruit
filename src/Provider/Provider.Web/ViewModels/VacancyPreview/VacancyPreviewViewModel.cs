@@ -224,6 +224,7 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview
         public string AccountId { get; set; }
         
 
+
         private VacancyTaskListSectionState SetTaskListSectionState()
         {
             if (TitleSectionState == VacancyPreviewSectionState.Valid
@@ -302,7 +303,7 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview
             }
             
             if (HasSelectedEmployerNameOption
-                && ApplicationMethodSectionState == VacancyPreviewSectionState.Valid
+                && (VacancyType.GetValueOrDefault() == Vacancies.Client.Domain.Entities.VacancyType.Traineeship || ApplicationMethodSectionState == VacancyPreviewSectionState.Valid)
                 && EmployerDescriptionSectionState == VacancyPreviewSectionState.Valid)
             {
                 return VacancyTaskListSectionState.Completed;
