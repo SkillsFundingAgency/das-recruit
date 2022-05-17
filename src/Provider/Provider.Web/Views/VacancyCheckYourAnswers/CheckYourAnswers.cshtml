@@ -513,39 +513,44 @@
                     
                 </dd>
             </div>
-            <field-review-message field-name="@FieldIdentifiers.ApplicationMethod" model="@Model"></field-review-message>
-            <field-review-message field-name="@FieldIdentifiers.ApplicationUrl" model="@Model"></field-review-message>
-            <div class="app-summary-list__row app-summary-list__row--no-border" field-review-marker="ApplicationMethod">
-                <dt class="app-summary-list__key" id="@FieldIdentifiers.ApplicationMethod">Application website</dt>
-                <dd class="app-summary-list__value" id="@FieldIdentifiers.ApplicationUrl">
-                    @if (Model.ApplicationMethod == ApplicationMethod.ThroughExternalApplicationSite)
-                    {
-                        @Model.ApplicationUrl
-                    }
-                    else
-                    {
-                        @Model.FindAnApprenticeshipUrl
-                    }
-                    <review-field class="govuk-tag--purple" field-name="@FieldIdentifiers.ApplicationUrl" tag-name="strong" model="@Model"/>
-                    <review-field class="govuk-tag--purple" field-name="@FieldIdentifiers.ApplicationMethod" tag-name="strong" model="@Model"/>
-                </dd>
-                <dd class="app-summary-list__actions">
-                    <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.ApplicationProcess_Get" asp-all-route-data="@Model.RouteDictionary">Change<span class="govuk-visually-hidden"> application process</span></a>
-                </dd>
-            </div>
-            @if (Model.HasApplicationInstructions)
+            
+            @if (_serviceParameters.VacancyType.GetValueOrDefault() == VacancyType.Apprenticeship)
             {
-                <div class="app-summary-list__row" field-review-marker="ApplicationInstructions">
-                    <dt class="app-summary-list__key" id="@FieldIdentifiers.ApplicationInstructions">Explain the application process (optional)</dt>
-                    <dd class="app-summary-list__value">
-                        @(Model.HasApplicationInstructions ? Model.ApplicationInstructions : "None")
-                        <review-field class="govuk-tag--purple" field-name="@FieldIdentifiers.ApplicationInstructions" tag-name="strong" model="@Model"/>
+                <field-review-message field-name="@FieldIdentifiers.ApplicationMethod" model="@Model"></field-review-message>
+                <field-review-message field-name="@FieldIdentifiers.ApplicationUrl" model="@Model"></field-review-message>
+                <div class="app-summary-list__row app-summary-list__row--no-border" field-review-marker="ApplicationMethod">
+                    <dt class="app-summary-list__key" id="@FieldIdentifiers.ApplicationMethod">Application website</dt>
+                    <dd class="app-summary-list__value" id="@FieldIdentifiers.ApplicationUrl">
+                        @if (Model.ApplicationMethod == ApplicationMethod.ThroughExternalApplicationSite)
+                        {
+                            @Model.ApplicationUrl
+                        }
+                        else
+                        {
+                            @Model.FindAnApprenticeshipUrl
+                        }
+                        <review-field class="govuk-tag--purple" field-name="@FieldIdentifiers.ApplicationUrl" tag-name="strong" model="@Model"/>
+                        <review-field class="govuk-tag--purple" field-name="@FieldIdentifiers.ApplicationMethod" tag-name="strong" model="@Model"/>
                     </dd>
                     <dd class="app-summary-list__actions">
-                        
+                        <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.ApplicationProcess_Get" asp-all-route-data="@Model.RouteDictionary">Change<span class="govuk-visually-hidden"> application process</span></a>
                     </dd>
                 </div>
+                if (Model.HasApplicationInstructions)
+                {
+                    <div class="app-summary-list__row" field-review-marker="ApplicationInstructions">
+                        <dt class="app-summary-list__key" id="@FieldIdentifiers.ApplicationInstructions">Explain the application process (optional)</dt>
+                        <dd class="app-summary-list__value">
+                            @(Model.HasApplicationInstructions ? Model.ApplicationInstructions : "None")
+                            <review-field class="govuk-tag--purple" field-name="@FieldIdentifiers.ApplicationInstructions" tag-name="strong" model="@Model"/>
+                        </dd>
+                        <dd class="app-summary-list__actions">
+                            
+                        </dd>
+                    </div>
+                }
             }
+            
         </dl>
         <h2 class="govuk-heading-m">Now submit your vacancy</h2>
         <p class="govuk-body">By submitting this vacancy you are confirming that, to the best of your knowledge, the details you are providing are correct.</p>

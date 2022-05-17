@@ -23,13 +23,7 @@
       <p class="govuk-body">@Model.ShortDescription</p> 
     </div>
     <div class="govuk-grid-column-one-third">
-      <div asp-show="@Model.HasSpecifiedThroughExternalApplicationMethod">
-        <p class="govuk-body">This apprenticeship requires you to apply through the employer's website.</p>
-        <p class="govuk-!-margin-bottom-1">
-          <a id="external-employer-website" class="govuk-link" href="#">Apply now</a>
-        </p>
-      </div>
-      <div  asp-show="@Model.HasSpecifiedThroughFaaApplicationMethod">
+      <div  asp-show="@Model.HasSpecifiedThroughFaTApplicationMethod">
          <p class="govuk-!-margin-bottom-1">
            <a class="govuk-button govuk-!-margin-bottom-0" id="employer-website" href="#">Sign in to Apply</a>
          </p>

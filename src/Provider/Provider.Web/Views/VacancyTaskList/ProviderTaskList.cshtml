@@ -457,21 +457,25 @@
                             </a>    
                         }
                     </li>
-                    <li class="das-task-list__item">
-                        @if (Model.HasSelectedEmployerNameOption && Model.HasEmployerDescription && Model.TaskListSectionThreeState == VacancyTaskListSectionState.Completed)
-                        {
-                            <a class="govuk-link govuk-link--no-visited-state" asp-all-route-data="@Model.RouteDictionary" asp-route="@RouteNames.ApplicationProcess_Get">
-                                Application website
-                            </a>    
+                    @if (_serviceParameters.VacancyType == VacancyType.Apprenticeship)
+                    {
+                        <li class="das-task-list__item">
+                            @if (Model.HasSelectedEmployerNameOption && Model.HasEmployerDescription && Model.TaskListSectionThreeState == VacancyTaskListSectionState.Completed)
+                            {
+                                <a class="govuk-link govuk-link--no-visited-state" asp-all-route-data="@Model.RouteDictionary" asp-route="@RouteNames.ApplicationProcess_Get">
+                                    Application website
+                                </a>    
                                
-                        }
-                        else
-                        {
-                            <span class="das-task-list__task-name">
-                                Application website
-                            </span> 
-                        }
-                    </li>
+                            }
+                            else
+                            {
+                                <span class="das-task-list__task-name">
+                                    Application website
+                                </span> 
+                            }
+                        </li>
+                    }
+                    
                 </ul>
             </li>
             <li>
