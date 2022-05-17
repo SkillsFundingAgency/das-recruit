@@ -75,6 +75,10 @@ namespace Esfa.Recruit.Employer.Web
 
             services.AddApplicationInsightsTelemetry(_configuration);
 
+#if DEBUG
+            services.AddControllersWithViews().AddRazorRuntimeCompilation();
+#endif
+            
             if (_isAuthEnabled)
             {
                 //A service provider for resolving services configured in IoC

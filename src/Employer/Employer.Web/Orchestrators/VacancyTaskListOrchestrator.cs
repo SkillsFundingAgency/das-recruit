@@ -5,9 +5,11 @@ using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Mappings;
 using Esfa.Recruit.Employer.Web.RouteModel;
+using Esfa.Recruit.Employer.Web.ViewModels.Preview;
 using Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview;
 using Esfa.Recruit.Shared.Web.Helpers;
 using Esfa.Recruit.Shared.Web.Orchestrators;
+using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
@@ -21,13 +23,17 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
         private readonly IUtility _utility;
         private readonly IEmployerVacancyClient _employerVacancyClient;
         private readonly DisplayVacancyViewModelMapper _displayVacancyViewModelMapper;
+        private readonly IReviewSummaryService _reviewSummaryService;
+        private const VacancyRuleSet SoftValidationRules = VacancyRuleSet.MinimumWage | VacancyRuleSet.TrainingExpiryDate;
+
         public VacancyTaskListOrchestrator(ILogger<VacancyTaskListOrchestrator> logger,IRecruitVacancyClient recruitVacancyClient, IUtility utility, 
-            IEmployerVacancyClient employerVacancyClient,  DisplayVacancyViewModelMapper displayVacancyViewModelMapper) : base(logger)
+            IEmployerVacancyClient employerVacancyClient,  DisplayVacancyViewModelMapper displayVacancyViewModelMapper,IReviewSummaryService reviewSummaryService) : base(logger)
         {
             _recruitVacancyClient = recruitVacancyClient;
             _utility = utility;
             _employerVacancyClient = employerVacancyClient;
             _displayVacancyViewModelMapper = displayVacancyViewModelMapper;
+            _reviewSummaryService = reviewSummaryService;
         }
 
         public async Task<VacancyPreviewViewModel> GetVacancyTaskListModel(VacancyRouteModel vrm)
@@ -49,10 +55,16 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             vm.HasWage = vacancy.Wage != null;
             vm.CanShowReference = vacancy.Status != VacancyStatus.Draft;
             vm.CanShowDraftHeader = vacancy.Status == VacancyStatus.Draft;
+            vm.SoftValidationErrors = GetSoftValidationErrors(vacancy);
             
             if (programme != null)
             {
                 vm.ApprenticeshipLevel = programme.ApprenticeshipLevel;
+            }
+            if (vacancy.Status == VacancyStatus.Referred)
+            {
+                vm.Review = await _reviewSummaryService.GetReviewSummaryViewModelAsync(vacancy.VacancyReference.Value, 
+                    ReviewFieldMappingLookups.GetPreviewReviewFieldIndicators());
             }
 
             vm.AccountLegalEntityCount = getEmployerDataTask.Result.LegalEntities.Count();
@@ -68,6 +80,47 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             };
 
             return vm;
+        }
+        
+        public async Task ClearRejectedVacancyReason(SubmitReviewModel m, VacancyUser user)
+        {
+            var vacancy = await _utility.GetAuthorisedVacancyAsync(m, RouteNames.ApproveJobAdvert_Post);
+
+            vacancy.EmployerRejectedReason = null;
+
+            await _recruitVacancyClient.UpdateDraftVacancyAsync(vacancy, user);
+        }
+
+        public async Task UpdateRejectedVacancyReason(SubmitReviewModel m, VacancyUser user)
+        {
+            var vacancy = await _utility.GetAuthorisedVacancyAsync(m, RouteNames.ApproveJobAdvert_Post);
+
+            vacancy.EmployerRejectedReason = m.RejectedReason;
+
+            await _recruitVacancyClient.UpdateDraftVacancyAsync(vacancy, user);
+        }
+        
+        private EntityValidationResult GetSoftValidationErrors(Vacancy vacancy)
+        {
+            var result = ValidateVacancy(vacancy, SoftValidationRules);
+            MapValidationPropertiesToViewModel(result);
+            return result;
+        }
+        
+        private EntityValidationResult ValidateVacancy(Vacancy vacancy, VacancyRuleSet rules)
+        {
+            var result = _recruitVacancyClient.Validate(vacancy, rules);
+            FlattenErrors(result.Errors);
+            return result;
+        }
+        
+        private void FlattenErrors(IList<EntityValidationError> errors)
+        {
+            //Flatten Qualification errors to its ViewModel parent instead. 'Qualifications[1].Grade' becomes 'Qualifications'
+            foreach (var error in errors.Where(e => e.PropertyName.StartsWith(nameof(Vacancy.Qualifications))))
+            {
+                error.PropertyName = nameof(VacancyPreviewViewModel.Qualifications);
+            }
         }
         
         protected override EntityToViewModelPropertyMappings<Vacancy, VacancyPreviewViewModel> DefineMappings()

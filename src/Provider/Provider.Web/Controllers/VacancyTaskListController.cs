@@ -3,6 +3,7 @@ using Esfa.Recruit.Provider.Web.Configuration;
 using Esfa.Recruit.Provider.Web.Configuration.Routing;
 using Esfa.Recruit.Provider.Web.Orchestrators;
 using Esfa.Recruit.Provider.Web.RouteModel;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -40,6 +41,11 @@ namespace Esfa.Recruit.Provider.Web.Controllers
         {
             var viewModel = await _orchestrator.GetVacancyTaskListModel(vrm); 
             viewModel.SetSectionStates(viewModel, ModelState);
+
+            if (viewModel.Status == VacancyStatus.Rejected || viewModel.Status == VacancyStatus.Referred)
+            {
+                return RedirectToRoute(RouteNames.ProviderCheckYourAnswersGet, new {vrm.Ukprn, vrm.VacancyId});
+            }
             
             return View(viewModel);
         }

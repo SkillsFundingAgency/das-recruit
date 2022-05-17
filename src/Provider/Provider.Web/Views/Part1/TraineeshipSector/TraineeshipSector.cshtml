@@ -28,7 +28,7 @@
                 <span esfa-validation-message-for="SelectedRouteId" class="govuk-error-message"></span>
                 <div class="govuk-!-margin-bottom-2">
                     <select asp-for="SelectedRouteId" class="govuk-select">
-                        <option value="">Please select</option>
+                        <option value="-1">Select an option</option>
                         @foreach (var route in Model.Routes)
                         {
                             <option value="@route.Id">@route.Name</option>
