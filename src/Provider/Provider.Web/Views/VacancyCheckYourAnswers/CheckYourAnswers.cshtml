@@ -174,7 +174,9 @@
                         What will the apprentice be doing?
                     </dt>
                     <dd class="app-summary-list__value">
-                        @Html.Raw(Model.VacancyDescription)
+                        <div class="app-ugc-wrap">
+                            @Html.Raw(Model.VacancyDescription)
+                        </div>
                     </dd>
                     <dd class="app-summary-list__actions">
                         <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.VacancyDescription_Index_Get" asp-all-route-data="@Model.RouteDictionary">Change<span class="govuk-visually-hidden"> about the apprenticeship</span></a>
@@ -185,7 +187,9 @@
                         Training and qualification levels
                     </dt>
                     <dd class="app-summary-list__value">
-                        @Html.Raw(Model.TrainingDescription)
+                        <div class="app-ugc-wrap">
+                            @Html.Raw(Model.TrainingDescription)
+                        </div>
                     </dd>
                     <dd class="app-summary-list__actions">
                     </dd>
@@ -198,7 +202,9 @@
                         Training provided
                     </dt>
                     <dd class="app-summary-list__value">
-                        @Html.Raw(Model.TrainingDescription)
+                        <div class="app-ugc-wrap">
+                            @Html.Raw(Model.TrainingDescription)
+                        </div>
                     </dd>
                     <dd class="app-summary-list__actions">
                         <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.VacancyDescription_Index_Get" asp-all-route-data="@Model.RouteDictionary">Change<span class="govuk-visually-hidden"> training provided</span></a>
@@ -247,7 +253,9 @@
                         Work experience provided
                     </dt>
                     <dd class="app-summary-list__value">
-                        @Html.Raw(Model.WorkExperience)
+                        <div class="app-ugc-wrap">
+                            @Html.Raw(Model.WorkExperience)
+                        </div>
                     </dd>
                     <dd class="app-summary-list__actions">
                         <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.WorkExperience_Get" asp-all-route-data="@Model.RouteDictionary">Change<span class="govuk-visually-hidden"> work experience</span></a>
