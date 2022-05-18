@@ -32,7 +32,8 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
 
             var vm = new DeleteViewModel
             {
-                Title = vacancy.Title
+                Title = vacancy.Title,
+                Status = vacancy.Status
             };
 
             return vm;
