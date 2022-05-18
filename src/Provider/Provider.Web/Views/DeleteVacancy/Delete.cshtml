@@ -6,24 +6,25 @@
         <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">@Model.Title</h1>
         
         <h1 class="govuk-heading-l">Are you sure you want to delete the vacancy?</h1>
-        <form asp-route="@RouteNames.DeleteVacancy_Post"  asp-route-ukprn="@Model.Ukprn" asp-route-vacancyId="@Model.VacancyId">
+        <form asp-route="@RouteNames.DeleteVacancy_Post" asp-route-ukprn="@Model.Ukprn" asp-route-vacancyId="@Model.VacancyId">
+            <input type="hidden" name="Status" value="@Model.Status"/>
             <div esfa-validation-marker-for="ConfirmDeletion" class="govuk-form-group">
                 <fieldset class="govuk-fieldset">
                     <span esfa-validation-message-for="ConfirmDeletion" class="govuk-error-message"></span>
                     <div class="govuk-radios">
                         <div class="govuk-radios__item">
-                            <input asp-for="@Model.ConfirmDeletion" type="radio" value="true" class="govuk-radios__input" id="delete-yes" />
+                            <input asp-for="@Model.ConfirmDeletion" type="radio" value="true" class="govuk-radios__input" id="delete-yes"/>
                             <label class="govuk-label govuk-radios__label" for="delete-yes">Yes, delete this vacancy now</label>
                         </div>
                         <div class="govuk-radios__item">
-                            <input asp-for="@Model.ConfirmDeletion" type="radio" value="false" class="govuk-radios__input" id="delete-no" />
+                            <input asp-for="@Model.ConfirmDeletion" type="radio" value="false" class="govuk-radios__input" id="delete-no"/>
                             <label class="govuk-label govuk-radios__label" for="delete-no">No, don't delete this vacancy</label>
                         </div>
                     </div>
                 </fieldset>
             </div>
             <div class="govuk-form-group">
-                <input type="submit" value="Continue" class="govuk-button" />
+                <input type="submit" value="Continue" class="govuk-button"/>
             </div>
         </form>
     </div>
