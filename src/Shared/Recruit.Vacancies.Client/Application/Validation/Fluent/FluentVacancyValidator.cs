@@ -450,7 +450,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
 
                         return true;
                     })
-                    .WithMessage("a traineeship should last no more than 12 months")
+                    .WithMessage("A traineeship should last no more than 12 months")
                     .WithErrorCode("36")
                     .RunCondition(VacancyRuleSet.Duration)
                     .WithRuleId(VacancyRuleSet.Duration);
