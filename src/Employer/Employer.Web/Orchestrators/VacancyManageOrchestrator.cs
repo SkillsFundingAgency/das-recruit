@@ -61,6 +61,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             viewModel.TransferredOnDate = vacancy.TransferInfo?.TransferredDate.AsGdsDate();
             viewModel.CanShowEditVacancyLink = vacancy.CanExtendStartAndClosingDates;
             viewModel.CanShowCloseVacancyLink = vacancy.CanClose;
+            viewModel.CanShowDeleteLink = vacancy.CanDelete;
             viewModel.IsClosedBlockedByQa = vacancy.Status == VacancyStatus.Closed && vacancy.ClosureReason == ClosureReason.BlockedByQa;
             viewModel.CanClone = vacancy.CanClone;
 

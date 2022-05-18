@@ -89,6 +89,7 @@
             <li asp-show="@Model.CanShowEditVacancyLink"><a asp-route="@RouteNames.VacancyEdit_Get" class="govuk-link">Edit advert</a></li>
             <li asp-show="@Model.CanClone"><a asp-route="@RouteNames.CloneVacancy_Get" class="govuk-link">Clone advert</a></li>
             <li asp-show="@Model.CanShowCloseVacancyLink"><a asp-route="@RouteNames.CloseVacancy_Get" class="govuk-link">Close advert</a></li>
+            <li asp-show="@Model.CanShowDeleteLink"><a asp-route="@RouteNames.DeleteVacancy_Get" class="govuk-link">Delete advert</a></li>
 
         </ul>
     </div>
