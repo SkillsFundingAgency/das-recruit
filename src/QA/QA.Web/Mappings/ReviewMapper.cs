@@ -130,7 +130,13 @@ namespace Esfa.Recruit.Qa.Web.Mappings
 
             var currentVacancy = _vacancyClient.GetVacancyAsync(review.VacancyReference);
 
-            var programmeTask = _vacancyClient.GetApprenticeshipProgrammeAsync(vacancy.ProgrammeId);
+            var programmeTask = vacancy.VacancyType.GetValueOrDefault() == VacancyType.Apprenticeship 
+                ? _vacancyClient.GetApprenticeshipProgrammeAsync(vacancy.ProgrammeId)
+                : Task.FromResult((IApprenticeshipProgramme)null);
+            
+            var routeTask = vacancy.VacancyType.GetValueOrDefault() == VacancyType.Traineeship 
+                ? _vacancyClient.GetRoute(vacancy.RouteId)
+                : Task.FromResult((IApprenticeshipRoute)null);
 
             var reviewHistoryTask = _vacancyClient.GetVacancyReviewHistoryAsync(review.VacancyReference);
 
@@ -144,7 +150,9 @@ namespace Esfa.Recruit.Qa.Web.Mappings
             var anonymousApprovedCountTask = vacancy.IsAnonymous ? _vacancyClient.GetAnonymousApprovedCountAsync(vacancy.AccountLegalEntityPublicHashedId) : Task.FromResult(0);
 
             await Task.WhenAll(
-                currentVacancy,programmeTask,
+                currentVacancy,
+                programmeTask,
+                routeTask,
                 approvedCountTask,
                 approvedFirstTimeCountTask,
                 reviewHistoryTask,
@@ -152,9 +160,8 @@ namespace Esfa.Recruit.Qa.Web.Mappings
                 anonymousApprovedCountTask);
 
             var programme = programmeTask.Result;
-
+            var route = routeTask.Result;
             var currentVacancyResult = currentVacancy.Result;
-
             var historiesVm = GetReviewHistoriesViewModel(reviewHistoryTask.Result);
 
             var vm = new ReviewViewModel();
@@ -167,8 +174,9 @@ namespace Esfa.Recruit.Qa.Web.Mappings
                 vm.ApplicationMethod = vacancy.ApplicationMethod.Value;
                 vm.ApplicationUrl = vacancy.ApplicationUrl;
                 vm.ClosingDate = vacancy.ClosingDate?.AsGdsDate();
-                vm.EducationLevelName =
-                    EducationLevelNumberHelper.GetEducationLevelNameOrDefault(programme.EducationLevelNumber, programme.ApprenticeshipLevel);
+                vm.EducationLevelName = vacancy.VacancyType == VacancyType.Apprenticeship 
+                    ? EducationLevelNumberHelper.GetEducationLevelNameOrDefault(programme.EducationLevelNumber, programme.ApprenticeshipLevel) 
+                    : "";
                 vm.EmployerContactName = vacancy.EmployerContact?.Name;
                 vm.EmployerContactEmail = vacancy.EmployerContact?.Email;
                 vm.EmployerContactTelephone = vacancy.EmployerContact?.Phone;
@@ -178,9 +186,13 @@ namespace Esfa.Recruit.Qa.Web.Mappings
                 vm.AnonymousReason = vacancy.AnonymousReason;
                 vm.AnonymousApprovedCount = anonymousApprovedCountTask.Result;
                 vm.EmployerWebsiteUrl = vacancy.EmployerWebsiteUrl;
-                vm.MapUrl = MapImageHelper.GetEmployerLocationMapUrl(vacancy, _mapService, MapImageWidth, MapImageHeight);
-                vm.EmployerAddressElements = vacancy.EmployerAddressForDisplay();
+                if (vacancy.EmployerLocation != null)
+                {
+                    vm.MapUrl = MapImageHelper.GetEmployerLocationMapUrl(vacancy, _mapService, MapImageWidth, MapImageHeight);
+                    vm.EmployerAddressElements = vacancy.EmployerAddressForDisplay();
+                }
                 vm.LegalEntityName = vacancy.LegalEntityName;
+                vm.AccountLegalEntityPublicHashedId = vacancy.AccountLegalEntityPublicHashedId;
                 vm.IsDisabilityConfident = vacancy.IsDisabilityConfident;
                 vm.NumberOfPositionsCaption = $"{"position".ToQuantity(vacancy.NumberOfPositions.Value)} available";
                 vm.OutcomeDescription = vacancy.OutcomeDescription;
@@ -198,19 +210,29 @@ namespace Esfa.Recruit.Qa.Web.Mappings
                 vm.TrainingDescription = vacancy.TrainingDescription;
                 vm.VacancyDescription = vacancy.Description;
                 vm.VacancyReferenceNumber = $"VAC{vacancy.VacancyReference}";
-                vm.TrainingTitle = programme.Title;
-                vm.TrainingType = programme.ApprenticeshipType.GetDisplayName();
-                vm.TrainingLevel = programme.ApprenticeshipLevel.GetDisplayName();
-                vm.Level = programme.ApprenticeshipLevel;
-                vm.ExpectedDuration = (vacancy.Wage.DurationUnit.HasValue && vacancy.Wage.Duration.HasValue)
-                    ? vacancy.Wage.DurationUnit.Value.GetDisplayName().ToQuantity(vacancy.Wage.Duration.Value)
-                    : null;
-                vm.HoursPerWeek = $"{vacancy.Wage.WeeklyHours:0.##}";
-                vm.WageInfo = vacancy.Wage.WageAdditionalInformation;
-                vm.WageText = vacancy.StartDate.HasValue
-                    ? vacancy.Wage.ToText(vacancy.StartDate)
-                    : null;
-                vm.WorkingWeekDescription = vacancy.Wage.WorkingWeekDescription;
+                if (programme != null)
+                {
+                    vm.TrainingTitle = programme.Title;
+                    vm.TrainingType = programme.ApprenticeshipType.GetDisplayName();
+                    vm.TrainingLevel = programme.ApprenticeshipLevel.GetDisplayName();
+                    vm.Level = programme.ApprenticeshipLevel;
+                }
+
+                if (vacancy.Wage != null)
+                {
+                    vm.ExpectedDuration = (vacancy.Wage.DurationUnit.HasValue && vacancy.Wage.Duration.HasValue)
+                        ? vacancy.Wage.DurationUnit.Value.GetDisplayName().ToQuantity(vacancy.Wage.Duration.Value)
+                        : null;
+                    vm.HoursPerWeek = $"{vacancy.Wage.WeeklyHours:0.##}";
+                    vm.WageInfo = vacancy.Wage.WageAdditionalInformation;
+                    vm.WageText = vacancy.StartDate.HasValue
+                        ? vacancy.Wage.ToText(vacancy.StartDate)
+                        : null;
+                    vm.WorkingWeekDescription = vacancy.Wage.WorkingWeekDescription;
+                }
+                vm.WorkExperience = vacancy.WorkExperience;
+                vm.VacancyType = vacancy.VacancyType;
+                
                 vm.SubmittedDate = vacancy.SubmittedDate.Value;
                 vm.VacancyReviewsApprovedCount = approvedCountTask.Result;
                 vm.VacancyReviewsApprovedFirstTimeCount = approvedFirstTimeCountTask.Result;
