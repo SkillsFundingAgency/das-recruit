@@ -81,11 +81,14 @@
 
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-one-half">
-      <p class="govuk-body @(Model.HasEmployerWebsiteUrl ? "govuk-!-margin-bottom-0" : "")">
-          @Model.EmployerName
+      <p class="govuk-body govuk-!-margin-bottom-0">
+        @Model.EmployerName
       </p>
-      <p class="govuk-body" asp-show="@Model.HasEmployerWebsiteUrl">
-            @Model.EmployerWebsiteUrl
+      <p>
+        @Model.EmployerWebsiteUrl
+      </p>
+      <p class="govuk-body">
+        @Model.EmployerDescription
       </p>
       <div asp-show="@Model.IsDisabilityConfident">
         <img asp-show="@Model.IsDisabilityConfident" src="~/img/disability-confident_545x172.png" class="app-disability-confident-logo" alt="A logo confirming that the employer is registered as disability confident" esfa-automation="disability-confident-logo" no-cdn/>
