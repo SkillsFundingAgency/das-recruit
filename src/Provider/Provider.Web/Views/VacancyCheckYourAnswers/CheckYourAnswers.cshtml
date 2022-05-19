@@ -128,10 +128,10 @@
             <field-review-message field-name="@FieldIdentifiers.ShortDescription" model="@Model"></field-review-message>
             <div class="app-summary-list__row" field-review-marker="ShortDescription">
                 <dt class="app-summary-list__key" id="@FieldIdentifiers.ShortDescription">
-                                    @(_serviceParameters.VacancyType == VacancyType.Apprenticeship
-                                        ?"Summary of the apprenticeship"
-                                        :"Summary of the traineeship")
-                                </dt>
+                    @(_serviceParameters.VacancyType == VacancyType.Apprenticeship
+                        ?"Summary of the apprenticeship"
+                        :"Summary of the traineeship")
+                </dt>
                 
                 <dd class="app-summary-list__value">
                     @Model.ShortDescription
@@ -141,19 +141,22 @@
                     <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.ShortDescription_Get" asp-all-route-data="@Model.RouteDictionary">Change<span class="govuk-visually-hidden"> summary of the vacancy</span></a>
                 </dd>
             </div>
-            <field-review-message field-name="@FieldIdentifiers.VacancyDescription" model="@Model"></field-review-message>
-            <div class="app-summary-list__row app-summary-list__row--no-border" field-review-marker="VacancyDescription">
-                <dt class="app-summary-list__key" id="@FieldIdentifiers.VacancyDescription">What will the apprentice be doing?</dt>
-                <dd class="app-summary-list__value">
-                    <div class="app-ugc-wrap">
-                        @Html.Raw(Model.VacancyDescription)
-                    </div>
-                    <review-field class="govuk-tag--purple" field-name="@FieldIdentifiers.VacancyDescription" tag-name="strong" model="@Model"/>
-                </dd>
-                <dd class="app-summary-list__actions">
-                    <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.VacancyDescription_Index_Get" asp-all-route-data="@Model.RouteDictionary">Change<span class="govuk-visually-hidden"> about the apprenticeship</span></a>
-                </dd>
-            </div>
+            @if (_serviceParameters.VacancyType.GetValueOrDefault() == VacancyType.Apprenticeship)
+            {
+                <field-review-message field-name="@FieldIdentifiers.VacancyDescription" model="@Model"></field-review-message>
+                <div class="app-summary-list__row app-summary-list__row--no-border" field-review-marker="VacancyDescription">
+                    <dt class="app-summary-list__key" id="@FieldIdentifiers.VacancyDescription">What will the apprentice be doing?</dt>
+                    <dd class="app-summary-list__value">
+                        <div class="app-ugc-wrap">
+                            @Html.Raw(Model.VacancyDescription)
+                        </div>
+                        <review-field class="govuk-tag--purple" field-name="@FieldIdentifiers.VacancyDescription" tag-name="strong" model="@Model"/>
+                    </dd>
+                    <dd class="app-summary-list__actions">
+                        <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.VacancyDescription_Index_Get" asp-all-route-data="@Model.RouteDictionary">Change<span class="govuk-visually-hidden"> about the apprenticeship</span></a>
+                    </dd>
+                </div>    
+            }
             <field-review-message field-name="@FieldIdentifiers.TrainingDescription" model="@Model"></field-review-message>
             <div class="app-summary-list__row" field-review-marker="TrainingDescription">
                 <dt class="app-summary-list__key" id="@FieldIdentifiers.TrainingDescription">Training and qualification levels</dt>
