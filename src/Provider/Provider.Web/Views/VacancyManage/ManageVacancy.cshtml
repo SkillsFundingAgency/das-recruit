@@ -53,6 +53,7 @@
     <a asp-show="@Model.CanShowCloneVacancyLink" asp-route="@RouteNames.CloneVacancy_Get" asp-all-route-data="@Model.RouteDictionary" class="govuk-link">Clone vacancy</a>
     <a asp-show="@Model.CanShowEditVacancyLink" asp-route="@RouteNames.VacancyEdit_Get" asp-all-route-data="@Model.RouteDictionary" class="govuk-link">Edit vacancy</a>
     <a asp-show="@Model.CanShowCloseVacancyLink" asp-route="@RouteNames.CloseVacancy_Get" asp-all-route-data="@Model.RouteDictionary" class="govuk-link">Close vacancy</a>
+    <a asp-show="@Model.CanShowDeleteVacancyLink" asp-route="@RouteNames.DeleteVacancy_Get" asp-all-route-data="@Model.RouteDictionary" class="govuk-link">Delete vacancy</a>
 </div>
 
 <div asp-show="@Model.CanShowVacancyAnalytics">

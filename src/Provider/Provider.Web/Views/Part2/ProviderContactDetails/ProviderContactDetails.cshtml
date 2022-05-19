@@ -27,7 +27,7 @@
                             Do you want to add your contact details?
                         </h1>
                     </legend>
-                    <p>This should be someone an applicant can contact to ask questions about the apprenticeship position.</p>
+                    <p>This should be someone an applicant can contact to ask questions about the @(_serviceParameters.VacancyType == VacancyType.Apprenticeship ? "apprenticeship" : "traineeship") position.</p>
                     <div class="govuk-radios govuk-radios--conditional govuk-form-group" data-module="radios" esfa-validation-marker-for="AddContactDetails">
                         <span esfa-validation-message-for="AddContactDetails" class="govuk-error-message"></span>                
                         <div class="govuk-radios__item">

@@ -23,9 +23,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi
 
         public async Task<TResponse> Get<TResponse>(IGetApiRequest request)
         {
-            AddHeaders();
-
-            var response = await _httpClient.GetAsync(request.GetUrl).ConfigureAwait(false);
+            
+            var requestMessage = new HttpRequestMessage(HttpMethod.Get, request.GetUrl);
+            AddHeaders(requestMessage);
+            
+            var response = await _httpClient.SendAsync(requestMessage).ConfigureAwait(false);
 
             if (response.StatusCode.Equals(HttpStatusCode.NotFound))
             {
@@ -43,10 +45,10 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi
             return default;
         }
 
-        private void AddHeaders()
+        private void AddHeaders(HttpRequestMessage httpRequestMessage)
         {
-            _httpClient.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", _config.Key);
-            _httpClient.DefaultRequestHeaders.Add("X-Version", "1");
+            httpRequestMessage.Headers.Add("Ocp-Apim-Subscription-Key", _config.Key);
+            httpRequestMessage.Headers.Add("X-Version", "1");
         }       
     }
 

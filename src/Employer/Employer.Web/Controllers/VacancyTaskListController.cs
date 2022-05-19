@@ -3,6 +3,7 @@ using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Orchestrators;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Esfa.Recruit.Employer.Web.Controllers
@@ -39,6 +40,13 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             var viewModel = await _orchestrator.GetVacancyTaskListModel(vrm); 
             
             viewModel.SetSectionStates(viewModel, ModelState);
+
+            if (viewModel.Status == VacancyStatus.Rejected
+                || viewModel.Status == VacancyStatus.Referred
+                || viewModel.Status == VacancyStatus.Review)
+            {
+                return RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet);
+            }
             
             return View(viewModel);
         }

@@ -55,7 +55,9 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
                 LastUpdatedByUser = message.User,
                 IsDeleted = false,
                 Title = message.Title,
-                VacancyType = _serviceParameters.VacancyType
+                VacancyType = _serviceParameters.VacancyType,
+                ApplicationMethod = _serviceParameters.VacancyType.GetValueOrDefault() == VacancyType.Traineeship 
+                    ? ApplicationMethod.ThroughFindATraineeship : (ApplicationMethod?)null
             };
 
             await _repository.CreateAsync(vacancy);

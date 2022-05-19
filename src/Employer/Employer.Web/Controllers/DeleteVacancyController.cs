@@ -6,6 +6,7 @@ using Esfa.Recruit.Employer.Web.Orchestrators;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels.DeleteVacancy;
 using Esfa.Recruit.Shared.Web.FeatureToggle;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Esfa.Recruit.Employer.Web.Controllers
@@ -40,7 +41,11 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             {
                 if (_feature.IsFeatureEnabled(FeatureNames.EmployerTaskList))
                 {
-                    return RedirectToRoute(RouteNames.VacancyAdvertPreview);
+                    if (m.Status == VacancyStatus.Draft)
+                    {
+                        return RedirectToRoute(RouteNames.VacancyAdvertPreview);
+                    }
+                    return RedirectToRoute(RouteNames.Vacancies_Get);
                 }
                 return RedirectToRoute(RouteNames.Vacancy_Preview_Get);
             }

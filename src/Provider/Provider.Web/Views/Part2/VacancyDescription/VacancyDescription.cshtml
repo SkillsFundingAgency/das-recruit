@@ -22,31 +22,44 @@
 
         <h1 class="govuk-heading-xl">
             <span class="govuk-caption-xl">@Model.Title</span>
-            Tasks and training details
+            @(_serviceParameters.VacancyType == VacancyType.Apprenticeship
+                ?"Tasks and training details"
+                :"What training will you give the trainee?")
         </h1>
 
         <form asp-route="@RouteNames.VacancyDescription_Index_Post" asp-all-route-data="@Model.RouteDictionary">
-            <div esfa-validation-marker-for="VacancyDescription" class="govuk-form-group">
-                <label asp-for="VacancyDescription" class="govuk-label govuk-!-font-weight-bold">What will the apprentice be doing?</label>
-                <span class="govuk-hint">Describe what an average day or week will be like and what tasks the apprentice could be doing.</span>
-                <div class="govuk-inset-text">You must include at least 3 bullet points or your advert will be rejected.</div>
-                <span esfa-validation-message-for="VacancyDescription" class="govuk-error-message"></span>
-                <textarea asp-for="VacancyDescription" class="govuk-textarea html-editor" rows="5"></textarea>
-            </div>
-
-            <div esfa-validation-marker-for="TrainingDescription" class="govuk-form-group">
-                <label asp-for="TrainingDescription" class="govuk-label govuk-!-font-weight-bold govuk-!-margin-bottom-5">What training will the apprentice take and what qualification will the apprentice get at the end?</label>
-                <p class="govuk-body">You must include information about the following:</p>
-                <ul class="govuk-list govuk-list--bullet">
-                    <li>
-                        the qualification they'll get at the end - you can <a class="govuk-link" rel="noopener" target="_blank" href="https://www.gov.uk/what-different-qualification-levels-mean/list-of-qualification-levels">view the types of qualifications available (opens in a new tab or window)</a>
-                    </li>
-                    <li>where and when the apprentice will do their training - if you can, add details about the location of the training </li>
-                    <li>whether the training will be one day a week or block release</li>
-                </ul>
-                <span esfa-validation-message-for="TrainingDescription" class="govuk-error-message"></span>
-                <textarea asp-for="TrainingDescription" class="govuk-textarea html-editor" rows="5"></textarea>
-            </div>
+            @if (_serviceParameters.VacancyType == VacancyType.Apprenticeship)
+            {
+                <div esfa-validation-marker-for="VacancyDescription" class="govuk-form-group">
+                    <label asp-for="VacancyDescription" class="govuk-label govuk-!-font-weight-bold">What will the apprentice be doing?</label>
+                    <span class="govuk-hint">Describe what an average day or week will be like and what tasks the apprentice could be doing.</span>
+                    <div class="govuk-inset-text">You must include at least 3 bullet points or your advert will be rejected.</div>
+                    <span esfa-validation-message-for="VacancyDescription" class="govuk-error-message"></span>
+                    <textarea asp-for="VacancyDescription" class="govuk-textarea html-editor" rows="5"></textarea>
+                </div>
+                <div esfa-validation-marker-for="TrainingDescription" class="govuk-form-group">
+                    <label asp-for="TrainingDescription" class="govuk-label govuk-!-font-weight-bold govuk-!-margin-bottom-5">What training will the apprentice take and what qualification will the apprentice get at the end?</label>
+                    <p class="govuk-body">You must include information about the following:</p>
+                    <ul class="govuk-list govuk-list--bullet">
+                        <li>
+                            the qualification they'll get at the end - you can <a class="govuk-link" rel="noopener" target="_blank" href="https://www.gov.uk/what-different-qualification-levels-mean/list-of-qualification-levels">view the types of qualifications available (opens in a new tab or window)</a>
+                        </li>
+                        <li>where and when the apprentice will do their training - if you can, add details about the location of the training </li>
+                        <li>whether the training will be one day a week or block release</li>
+                    </ul>
+                    <span esfa-validation-message-for="TrainingDescription" class="govuk-error-message"></span>
+                    <textarea asp-for="TrainingDescription" class="govuk-textarea html-editor" rows="5"></textarea>
+                </div>
+            }
+            else
+            {
+                <div esfa-validation-marker-for="TrainingDescription" class="govuk-form-group">
+                    <label asp-for="TrainingDescription" class="govuk-label govuk-!-font-weight-bold govuk-!-margin-bottom-5">
+                    <span class="govuk-hint">For example, work preparation training, Maths and English support, CV and interview skills</span></label>
+                    <span esfa-validation-message-for="TrainingDescription" class="govuk-error-message"></span>
+                    <textarea asp-for="TrainingDescription" class="govuk-textarea html-editor" rows="5"></textarea>
+                </div>
+            }
             <esfaFeatureDisabled name="@FeatureNames.ProviderTaskList">
                 <div esfa-validation-marker-for="OutcomeDescription" class="govuk-form-group">
                     <label asp-for="OutcomeDescription" class="govuk-label govuk-!-font-weight-bold">What is the expected career progression after this apprenticeship?</label>

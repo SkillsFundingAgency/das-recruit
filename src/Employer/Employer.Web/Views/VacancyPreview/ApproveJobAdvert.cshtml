@@ -3,20 +3,28 @@
 @{ ViewBag.Vpv = "/recruitment/employer/approve-job-advert";
 ViewBag.Title = "Are you sure you want to submit this job advert?"; }
 
-<a asp-route="@RouteNames.Vacancy_Preview_Get" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
+@section BackLink {
+    <esfaFeatureDisabled name="@FeatureNames.EmployerTaskList">
+        <a asp-route="@RouteNames.Vacancy_Preview_Get" asp-route-submittoefsa="false" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
+    </esfaFeatureDisabled>
+    <esfaFeatureEnabled name="@FeatureNames.EmployerTaskList">
+        <a asp-route="@RouteNames.EmployerCheckYourAnswersGet" esfa-automation="link-back" class="govuk-back-link">Back to check your answers</a>
+    </esfaFeatureEnabled>
+    
+}
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-        <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState }' />
-        <div>
-            <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">
-                Are you sure you want to submit this job advert?
-            </h1>          
-        </div>        
-        <p class="govuk-body">We'll do a final review and post it on 'Find an apprenticeship'.</p>        
+        <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState }' />  
         <form asp-route="@RouteNames.ApproveJobAdvert_Post">           
             <div esfa-validation-marker-for="ApproveJobAdvert" class="govuk-form-group">
                 <fieldset class="govuk-fieldset">
+                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
+                        <h1 class="govuk-fieldset__heading">
+                            Are you sure you want to submit this job advert?
+                        </h1>
+                    </legend>
+                    <p class="govuk-body">We'll do a final review and post it on 'Find an apprenticeship'.</p> 
                     <span esfa-validation-message-for="ApproveJobAdvert" class="govuk-error-message"></span>
                     <div class="govuk-radios">
                         <div class="govuk-radios__item">
@@ -30,9 +38,7 @@ ViewBag.Title = "Are you sure you want to submit this job advert?"; }
                     </div>
                 </fieldset>
             </div>
-            <div class="govuk-form-group">
-                <input type="submit" value="Continue" class="govuk-button" />
-            </div>
+            <input type="submit" value="Continue" class="govuk-button" />
         </form> 
     </div>
 </div>

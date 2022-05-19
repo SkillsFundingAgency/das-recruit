@@ -105,38 +105,6 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.ViewModels.Preview
         }
         
         [Test, MoqAutoData]
-        public async Task Then_If_Has_Title_Organisation_ShortDescription_And_Descriptions_Then_InProgress(
-            string title,
-            string accountLegalEntityPublicHashedId,
-            string description,
-            string shortDescription,
-            string trainingDescription,
-            TrainingProvider trainingProvider,
-            [Frozen] Mock<IRecruitVacancyClient> recruitVacancyClient,
-            DisplayVacancyViewModelMapper mapper)
-        {
-            recruitVacancyClient.Setup(x => x.GetRoute(It.IsAny<int?>())).ReturnsAsync((ApprenticeshipRoute)null);
-            recruitVacancyClient.Setup(x => x.GetApprenticeshipProgrammeAsync(It.IsAny<string>())).ReturnsAsync((ApprenticeshipProgramme)null);
-            var vacancy = new Vacancy
-            {
-                Id = Guid.NewGuid(),
-                TrainingProvider = trainingProvider,
-                Title = title,
-                Description = description,
-                TrainingDescription = trainingDescription,
-                ShortDescription = shortDescription,
-                AccountLegalEntityPublicHashedId = accountLegalEntityPublicHashedId,
-                VacancyType = VacancyType.Traineeship
-            };
-            var model = new VacancyPreviewViewModel();
-            await mapper.MapFromVacancyAsync(model, vacancy);
-            
-            model.SetSectionStates(model, new ModelStateDictionary());
-
-            model.TaskListSectionOneState.Should().Be(VacancyTaskListSectionState.InProgress);
-        }
-        
-        [Test, MoqAutoData]
         public async Task Then_If_Has_Title_Organisation_Sector_ShortDescription_And_Descriptions_Then_Completed(
             string title,
             string programmeId,
@@ -157,7 +125,6 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.ViewModels.Preview
                 TrainingProvider = trainingProvider,
                 Title = title,
                 RouteId = route.Id,
-                Description = description,
                 TrainingDescription = trainingDescription,
                 ShortDescription = shortDescription,
                 AccountLegalEntityPublicHashedId = accountLegalEntityPublicHashedId,
