@@ -435,7 +435,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                         }
                         return true;
                     })
-                    .WithMessage("A traineeship should last a minimum of 6 weeks")
+                    .WithMessage("Expected duration must be at least 6 weeks")
                     .WithErrorCode("36")
                     .Must((vacancy, value) =>
                     {
@@ -450,7 +450,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
 
                         return true;
                     })
-                    .WithMessage("A traineeship should last no more than 12 months")
+                    .WithMessage("Expected duration must be 12 months or under")
                     .WithErrorCode("36")
                     .RunCondition(VacancyRuleSet.Duration)
                     .WithRuleId(VacancyRuleSet.Duration);
