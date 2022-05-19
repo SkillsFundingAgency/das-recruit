@@ -9,7 +9,15 @@
 }
 
 @section BackLink {
-    <a asp-route="@RouteNames.LegalEntity_Get"  asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Back</a>
+    @if (Model.HasMoreThanOneLegalEntity)
+    {
+        <a asp-route="@RouteNames.LegalEntity_Get"  asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Back</a>    
+    }
+    else
+    {
+        <a asp-route="@RouteNames.Title_Get"  asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Back</a>
+    }
+    
 }
 
 <div class="govuk-grid-row">
