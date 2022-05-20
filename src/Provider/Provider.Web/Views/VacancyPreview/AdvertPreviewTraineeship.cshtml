@@ -100,7 +100,7 @@
 
   <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
 
-  <h2 class="govuk-heading-l">Employer</h2>
+  <h2 class="govuk-heading-l">About the employer</h2>
 
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-one-half">
@@ -156,6 +156,10 @@
         </ul>
       <h3 class="govuk-heading-s govuk-!-margin-bottom-1">What this will lead to</h3>
       <div asp-show="@Model.HasOutcomeDescription" class="govuk-body">@Html.Raw(Model.OutcomeDescription)</div>
+      <div>
+        <h3 asp-show="@Model.HasThingsToConsider" class="govuk-heading-s govuk-!-margin-bottom-1">Things to consider</h3>
+        <p asp-show="@Model.HasThingsToConsider" class="govuk-body">@Model.ThingsToConsider</p>
+      </div>
     </div>
   </div>
 </div>
