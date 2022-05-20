@@ -8,17 +8,12 @@ using Esfa.Recruit.Provider.Web.Orchestrators.Part1;
 using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Provider.Web.ViewModels.Part1.Training;
 using Esfa.Recruit.Shared.Web.Mappers;
-using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Shared.Web.ViewModels;
-using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using Esfa.Recruit.Vacancies.Client.Domain.Models;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelationship;
 using FluentAssertions;
-using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Testing.AutoFixture;
@@ -69,14 +64,13 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part1
             List<IApprenticeshipRoute> routes,
             [Frozen] Mock<IUtility> utility,
             [Frozen] Mock<IRecruitVacancyClient> recruitVacancyClient,
-            [Frozen] Mock<IProviderVacancyClient> providerVacancyClient)
+            [Frozen] Mock<IProviderVacancyClient> providerVacancyClient,
+            TraineeSectorOrchestrator orchestrator)
         {
             utility.Setup(x => x.GetAuthorisedVacancyForEditAsync(vacancyRouteModel, RouteNames.TraineeSector_Get))
                 .ReturnsAsync(vacancy);
             recruitVacancyClient.Setup(x => x.GetApprenticeshipRoutes()).ReturnsAsync(routes);
             providerVacancyClient.Setup(x => x.GetProviderEmployerVacancyDataAsync(vacancyRouteModel.Ukprn, vacancy.EmployerAccountId)).ReturnsAsync(employerInfo);
-            var orchestrator = new TraineeSectorOrchestrator(Mock.Of<ILogger<TraineeSectorOrchestrator>>(),
-                recruitVacancyClient.Object, providerVacancyClient.Object, utility.Object, Mock.Of<IReviewSummaryService>(), Mock.Of<IProviderRelationshipsService>(), new ServiceParameters("Apprenticeship"));
             
             var actual = await orchestrator.GetTraineeSectorViewModelAsync(vacancyRouteModel);
 
@@ -89,40 +83,6 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part1
             actual.VacancyId.Should().Be(vacancy.Id);
             actual.Ukprn.Should().Be(vacancyRouteModel.Ukprn);
             actual.HasMoreThanOneLegalEntity.Should().BeTrue();
-        }
-
-        [Test, MoqAutoData]
-        public async Task Then_If_Traineeship_Then_Employers_Are_Filtered_By_Permissions(
-            Vacancy vacancy,
-            VacancyRouteModel vacancyRouteModel,
-            EmployerInfo employerInfo,
-            List<IApprenticeshipRoute> routes,
-            [Frozen] Mock<IUtility> utility,
-            [Frozen] Mock<IRecruitVacancyClient> recruitVacancyClient,
-            [Frozen] Mock<IProviderVacancyClient> providerVacancyClient,
-            [Frozen] Mock<IProviderRelationshipsService> providerRelationshipsService,
-            [Frozen] Mock<IReviewSummaryService> reviewSummaryService)
-        {
-            utility.Setup(x => x.GetAuthorisedVacancyForEditAsync(vacancyRouteModel, RouteNames.TraineeSector_Get))
-                .ReturnsAsync(vacancy);
-            recruitVacancyClient.Setup(x => x.GetApprenticeshipRoutes()).ReturnsAsync(routes);
-            providerVacancyClient.Setup(x => x.GetProviderEmployerVacancyDataAsync(vacancyRouteModel.Ukprn, vacancy.EmployerAccountId)).ReturnsAsync(employerInfo);
-            providerRelationshipsService
-                .Setup(x => x.GetAccountLegalEntitiesForProvider(vacancyRouteModel.Ukprn, vacancy.EmployerAccountId,
-                    OperationType.Recruitment)).ReturnsAsync(new List<LegalEntity>
-                {
-                    new LegalEntity
-                    {
-                        AccountLegalEntityPublicHashedId =
-                            employerInfo.LegalEntities.Last().AccountLegalEntityPublicHashedId
-                    }
-                });
-            var orchestrator = new TraineeSectorOrchestrator(Mock.Of<ILogger<TraineeSectorOrchestrator>>(),
-                recruitVacancyClient.Object, providerVacancyClient.Object, utility.Object, reviewSummaryService.Object, providerRelationshipsService.Object, new ServiceParameters("Traineeship"));
-            
-            var actual = await orchestrator.GetTraineeSectorViewModelAsync(vacancyRouteModel);
-
-            actual.HasMoreThanOneLegalEntity.Should().BeFalse();
         }
         
         [Test, MoqAutoData]
@@ -201,6 +161,5 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part1
             actual.Success.Should().BeFalse();
             recruitVacancyClient.Verify(x => x.UpdateDraftVacancyAsync(vacancy, vacancyUser), Times.Never);
         }
-
     }
 }
