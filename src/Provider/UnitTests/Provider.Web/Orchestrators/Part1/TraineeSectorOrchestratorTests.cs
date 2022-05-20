@@ -109,14 +109,10 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part1
             providerVacancyClient.Setup(x => x.GetProviderEmployerVacancyDataAsync(vacancyRouteModel.Ukprn, vacancy.EmployerAccountId)).ReturnsAsync(employerInfo);
             providerRelationshipsService
                 .Setup(x => x.GetAccountLegalEntitiesForProvider(vacancyRouteModel.Ukprn, vacancy.EmployerAccountId,
-                    OperationType.Recruitment)).ReturnsAsync(new List<LegalEntity>
+                    OperationType.RecruitmentRequiresReview)).ReturnsAsync(employerInfo.LegalEntities.Take(employerInfo.LegalEntities.Count-1).Select(c=>new LegalEntity
                 {
-                    new LegalEntity
-                    {
-                        AccountLegalEntityPublicHashedId =
-                            employerInfo.LegalEntities.Last().AccountLegalEntityPublicHashedId
-                    }
-                });
+                   AccountLegalEntityPublicHashedId = c.AccountLegalEntityPublicHashedId
+                })) ;
             var orchestrator = new TraineeSectorOrchestrator(Mock.Of<ILogger<TraineeSectorOrchestrator>>(),
                 recruitVacancyClient.Object, providerVacancyClient.Object, utility.Object, reviewSummaryService.Object, providerRelationshipsService.Object, new ServiceParameters("Traineeship"));
             
