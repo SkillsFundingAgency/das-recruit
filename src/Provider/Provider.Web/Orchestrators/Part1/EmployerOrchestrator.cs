@@ -37,9 +37,9 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
 
             if (_serviceParameters.VacancyType.GetValueOrDefault() == VacancyType.Traineeship)
             {
-                var providerPermissions = await _providerRelationshipsService.GetLegalEntitiesForProviderAsync(vrm.Ukprn, OperationType.RecruitmentRequiresReview);
+                var providerPermissions = await _providerRelationshipsService.GetLegalEntitiesForProviderAsync(vrm.Ukprn, OperationType.Recruitment);
                 employerInfos = employerInfos.Where(x =>
-                        providerPermissions.FirstOrDefault(p => p.EmployerAccountId == x.EmployerAccountId) == null)
+                        providerPermissions.FirstOrDefault(p => p.EmployerAccountId == x.EmployerAccountId) != null)
                     .ToList();
 
                 if (!employerInfos.Any())

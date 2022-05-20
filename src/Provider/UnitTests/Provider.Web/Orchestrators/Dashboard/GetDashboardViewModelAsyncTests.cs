@@ -83,19 +83,16 @@ namespace Esfa.Recruit.Provider.UnitTests.Employer.Web.Orchestrators.Dashboard
                 
             var orch = GetSut(vacancies, vacancyType);
 
-            var actual = await orch.GetDashboardViewModelAsync(_user);
+            await orch.GetDashboardViewModelAsync(_user);
 
-
-            
             if (vacancyType == VacancyType.Traineeship)
             {
-                actual.HasEmployerReviewPermission.Should().BeFalse();
+                _permissionServiceMock.Verify(x=>x.GetLegalEntitiesForProviderAsync(Ukprn, OperationType.Recruitment));
             }
 
             if (vacancyType == VacancyType.Apprenticeship)
             {
                 _permissionServiceMock.Verify(x=>x.GetLegalEntitiesForProviderAsync(Ukprn, OperationType.RecruitmentRequiresReview));
-                actual.HasEmployerReviewPermission.Should().BeTrue();
             }
         }
 
@@ -116,9 +113,13 @@ namespace Esfa.Recruit.Provider.UnitTests.Employer.Web.Orchestrators.Dashboard
                 .ReturnsAsync(dashboardProjection);
 
             _permissionServiceMock = new Mock<IProviderRelationshipsService>();
+
+            var operationType = vacancyType == VacancyType.Apprenticeship
+                ? OperationType.RecruitmentRequiresReview
+                : OperationType.Recruitment;
             
-            _permissionServiceMock.Setup(p => p.GetLegalEntitiesForProviderAsync(Ukprn, OperationType.RecruitmentRequiresReview))
-                .ReturnsAsync(new List<EmployerInfo>{new EmployerInfo()});
+            _permissionServiceMock.Setup(p => p.GetLegalEntitiesForProviderAsync(Ukprn, operationType))
+                .ReturnsAsync(new List<EmployerInfo>());
 
             var userDetails = new User();
 

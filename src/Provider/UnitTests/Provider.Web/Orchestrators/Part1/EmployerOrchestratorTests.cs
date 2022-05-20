@@ -61,10 +61,10 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part1
             providerVacancyClient.Setup(x => x.GetProviderEditVacancyInfoAsync(vacancyRouteModel.Ukprn))
                 .ReturnsAsync(providerEditVacancyInfo);
             providerRelationshipService
-                .Setup(x => x.GetLegalEntitiesForProviderAsync(vacancyRouteModel.Ukprn, OperationType.RecruitmentRequiresReview))
+                .Setup(x => x.GetLegalEntitiesForProviderAsync(vacancyRouteModel.Ukprn, OperationType.Recruitment))
                 .ReturnsAsync(new List<EmployerInfo>{new EmployerInfo
                 {
-                    EmployerAccountId = providerEditVacancyInfo.Employers.Last().EmployerAccountId,
+                    EmployerAccountId = providerEditVacancyInfo.Employers.First().EmployerAccountId,
                     LegalEntities = new List<LegalEntity>()
                 }});
             
@@ -73,7 +73,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part1
             
             var actual = await orchestrator.GetEmployersViewModelAsync(vacancyRouteModel);
 
-            actual.Employers.Count().Should().Be(providerEditVacancyInfo.Employers.Count()-1);
+            actual.Employers.Count().Should().Be(1);
             actual.Employers.First().Id.Should().Be(providerEditVacancyInfo.Employers.First().EmployerAccountId);
             actual.VacancyId.Should().Be(vacancyRouteModel.VacancyId);
             actual.Ukprn.Should().Be(vacancyRouteModel.Ukprn);
@@ -89,11 +89,8 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part1
             providerVacancyClient.Setup(x => x.GetProviderEditVacancyInfoAsync(vacancyRouteModel.Ukprn))
                 .ReturnsAsync(providerEditVacancyInfo);
             providerRelationshipService
-                .Setup(x => x.GetLegalEntitiesForProviderAsync(vacancyRouteModel.Ukprn, OperationType.RecruitmentRequiresReview))
-                .ReturnsAsync(providerEditVacancyInfo.Employers.Select(c=>new EmployerInfo
-                {
-                    EmployerAccountId = c.EmployerAccountId
-                }));
+                .Setup(x => x.GetLegalEntitiesForProviderAsync(vacancyRouteModel.Ukprn, OperationType.Recruitment))
+                .ReturnsAsync(new List<EmployerInfo>());
 
             var orchestrator = new EmployerOrchestrator(providerVacancyClient.Object,
                 providerRelationshipService.Object, new ServiceParameters("Traineeship"));

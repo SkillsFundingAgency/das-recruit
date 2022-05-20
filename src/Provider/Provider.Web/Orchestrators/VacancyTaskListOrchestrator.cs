@@ -51,8 +51,6 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
                 await _providerVacancyClient.GetProviderEmployerVacancyDataAsync(routeModel.Ukprn,
                     vacancyTask.Result.EmployerAccountId);
             
-            
-            
             var vacancy = vacancyTask.Result;
             var programme = programmesTask.Result.SingleOrDefault(p => p.Id == vacancy.ProgrammeId);
             var hasProviderReviewPermission = await _providerRelationshipsService.HasProviderGotEmployersPermissionAsync(routeModel.Ukprn, vacancy.EmployerAccountId, vacancy.AccountLegalEntityPublicHashedId, OperationType.RecruitmentRequiresReview);
