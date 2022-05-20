@@ -20,5 +20,6 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.Part1.Training
 
         public PartOnePageInfoViewModel PageInfo { get; set; }
         public bool IsTaskListCompleted { get; set; }
+        public bool HasMoreThanOneLegalEntity { get; set; }
     }
 }

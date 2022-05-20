@@ -18,6 +18,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
     public class TraineeSectorOrchestrator : VacancyValidatingOrchestrator<TraineeSectorEditModel>
     {
         private readonly IRecruitVacancyClient _vacancyClient;
+        private readonly IProviderVacancyClient _providerVacancyClient;
         private readonly IUtility _utility;
         private readonly IReviewSummaryService _reviewSummaryService;
         private const VacancyRuleSet ValidationRules = VacancyRuleSet.RouteId;
@@ -25,10 +26,12 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
         public TraineeSectorOrchestrator(
             ILogger<TraineeSectorOrchestrator> logger,
             IRecruitVacancyClient vacancyClient,
+            IProviderVacancyClient providerVacancyClient,
             IUtility utility,
             IReviewSummaryService reviewSummaryService) : base(logger)
         {
             _vacancyClient = vacancyClient;
+            _providerVacancyClient = providerVacancyClient;
             _utility = utility;
             _reviewSummaryService = reviewSummaryService;
         }
@@ -42,6 +45,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
             
             var vacancy = vacancyTask.Result;
             var routes = routesTask.Result;
+            var employerInfo = await _providerVacancyClient.GetProviderEmployerVacancyDataAsync(vrm.Ukprn, vacancy.EmployerAccountId);
             
             var vm = new TraineeSectorViewModel
             {
@@ -55,7 +59,8 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
                 }),
                 PageInfo = _utility.GetPartOnePageInfo(vacancy),
                 Ukprn = vrm.Ukprn,
-                IsTaskListCompleted = _utility.TaskListCompleted(vacancy)
+                IsTaskListCompleted = _utility.TaskListCompleted(vacancy),
+                HasMoreThanOneLegalEntity = employerInfo.LegalEntities.Count > 1
             };
             
             if (vacancy.Status == VacancyStatus.Referred)

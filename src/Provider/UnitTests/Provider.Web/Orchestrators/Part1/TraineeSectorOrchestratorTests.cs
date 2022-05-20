@@ -12,6 +12,7 @@ using Esfa.Recruit.Shared.Web.ViewModels;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
@@ -28,12 +29,21 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part1
             List<IApprenticeshipRoute> routes,
             [Frozen] Mock<IUtility> utility,
             [Frozen] Mock<IRecruitVacancyClient> recruitVacancyClient,
+            [Frozen] Mock<IProviderVacancyClient> providerVacancyClient,
             TraineeSectorOrchestrator orchestrator)
         {
             utility.Setup(x => x.GetAuthorisedVacancyForEditAsync(vacancyRouteModel, RouteNames.TraineeSector_Get))
                 .ReturnsAsync(vacancy);
             recruitVacancyClient.Setup(x => x.GetApprenticeshipRoutes()).ReturnsAsync(routes);
-
+            providerVacancyClient.Setup(x => x.GetProviderEmployerVacancyDataAsync(vacancyRouteModel.Ukprn, vacancy.EmployerAccountId)).ReturnsAsync(
+                new EmployerInfo
+                {
+                    LegalEntities = new List<LegalEntity>
+                    {
+                        new LegalEntity()
+                    }
+                });
+            
             var actual = await orchestrator.GetTraineeSectorViewModelAsync(vacancyRouteModel);
 
             actual.Routes.Should().BeEquivalentTo(routes.Select(c => new ApprenticeshipRouteViewModel
@@ -44,6 +54,35 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part1
             actual.Title.Should().Be(vacancy.Title);
             actual.VacancyId.Should().Be(vacancy.Id);
             actual.Ukprn.Should().Be(vacancyRouteModel.Ukprn);
+            actual.HasMoreThanOneLegalEntity.Should().BeFalse();
+        }
+        [Test, MoqAutoData]
+        public async Task When_Calling_Get_Then_Returns_Routes_In_The_View_Model_And_Set_Legal_Entity_Count_True_If_More_Than_One(
+            Vacancy vacancy,
+            VacancyRouteModel vacancyRouteModel,
+            EmployerInfo employerInfo,
+            List<IApprenticeshipRoute> routes,
+            [Frozen] Mock<IUtility> utility,
+            [Frozen] Mock<IRecruitVacancyClient> recruitVacancyClient,
+            [Frozen] Mock<IProviderVacancyClient> providerVacancyClient,
+            TraineeSectorOrchestrator orchestrator)
+        {
+            utility.Setup(x => x.GetAuthorisedVacancyForEditAsync(vacancyRouteModel, RouteNames.TraineeSector_Get))
+                .ReturnsAsync(vacancy);
+            recruitVacancyClient.Setup(x => x.GetApprenticeshipRoutes()).ReturnsAsync(routes);
+            providerVacancyClient.Setup(x => x.GetProviderEmployerVacancyDataAsync(vacancyRouteModel.Ukprn, vacancy.EmployerAccountId)).ReturnsAsync(employerInfo);
+            
+            var actual = await orchestrator.GetTraineeSectorViewModelAsync(vacancyRouteModel);
+
+            actual.Routes.Should().BeEquivalentTo(routes.Select(c => new ApprenticeshipRouteViewModel
+            {
+                Id = c.Id,
+                Name = c.Route
+            }));
+            actual.Title.Should().Be(vacancy.Title);
+            actual.VacancyId.Should().Be(vacancy.Id);
+            actual.Ukprn.Should().Be(vacancyRouteModel.Ukprn);
+            actual.HasMoreThanOneLegalEntity.Should().BeTrue();
         }
         
         [Test, MoqAutoData]

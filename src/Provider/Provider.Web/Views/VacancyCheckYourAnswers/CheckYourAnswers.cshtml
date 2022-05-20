@@ -156,7 +156,7 @@
                         <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.VacancyDescription_Index_Get" asp-all-route-data="@Model.RouteDictionary">Change<span class="govuk-visually-hidden"> about the apprenticeship</span></a>
                     </dd>
                 </div>    
-            }
+            
             <field-review-message field-name="@FieldIdentifiers.TrainingDescription" model="@Model"></field-review-message>
             <div class="app-summary-list__row" field-review-marker="TrainingDescription">
                 <dt class="app-summary-list__key" id="@FieldIdentifiers.TrainingDescription">Training and qualification levels</dt>
@@ -170,37 +170,10 @@
               
                 </dd>
             </div>
-            @if (_serviceParameters.VacancyType == VacancyType.Apprenticeship)
-            {
-                <div class="app-summary-list__row app-summary-list__row--no-border">
-                    <dt class="app-summary-list__key">
-                        What will the apprentice be doing?
-                    </dt>
-                    <dd class="app-summary-list__value">
-                        <div class="app-ugc-wrap">
-                            @Html.Raw(Model.VacancyDescription)
-                        </div>
-                    </dd>
-                    <dd class="app-summary-list__actions">
-                        <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.VacancyDescription_Index_Get" asp-all-route-data="@Model.RouteDictionary">Change<span class="govuk-visually-hidden"> about the apprenticeship</span></a>
-                    </dd>
-                </div>
-                <div class="app-summary-list__row app-summary-list__row--no-border">
-                    <dt class="app-summary-list__key">
-                        Training and qualification levels
-                    </dt>
-                    <dd class="app-summary-list__value">
-                        <div class="app-ugc-wrap">
-                            @Html.Raw(Model.TrainingDescription)
-                        </div>
-                    </dd>
-                    <dd class="app-summary-list__actions">
-                    </dd>
-                </div>
             }
             else
             {
-                <div class="app-summary-list__row app-summary-list__row--no-border">
+                <div class="app-summary-list__row">
                     <dt class="app-summary-list__key">
                         Training provided
                     </dt>
@@ -301,51 +274,31 @@
             </div>
             @if (_serviceParameters.VacancyType == VacancyType.Apprenticeship)
             {
-                <div class="app-summary-list__row app-summary-list__row--no-border">
-                    <dt class="app-summary-list__key">
-                        Pay rate
-                    </dt>
-                    <dd class="app-summary-list__value">
+                
+                <field-review-message field-name="@FieldIdentifiers.Wage" model="@Model"></field-review-message>
+                <div class="app-summary-list__row app-summary-list__row--no-border" field-review-marker="WageText">
+                    <dt class="app-summary-list__key" id="@FieldIdentifiers.Wage">Pay rate</dt>
+                    <dd id="YearlyWage" class="app-summary-list__value">
                         @Model.WageText
+                        <review-field class="govuk-tag--purple" field-name="@FieldIdentifiers.Wage" tag-name="strong" model="@Model"/>
                     </dd>
                     <dd class="app-summary-list__actions">
-                        <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.Wage_Get" asp-all-route-data="@Model.RouteDictionary">Change<span class="govuk-visually-hidden"> wage</span></a>
+                        <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.Wage_Get" asp-all-route-data="@Model.RouteDictionary">Change<span class="govuk-visually-hidden"> wage</span></a>    
                     </dd>
                 </div>
-                <div class="app-summary-list__row">
-                    <dt class="app-summary-list__key">
-                        Extra information about pay (optional)
-                    </dt>
+                <field-review-message field-name="@FieldIdentifiers.WageAdditionalInfo" model="@Model"></field-review-message>
+                <div class="app-summary-list__row" field-review-marker="WageInfo">
+                    <dt class="app-summary-list__key" id="@FieldIdentifiers.WageAdditionalInfo">Extra information about pay (optional)</dt>
                     <dd class="app-summary-list__value">
-                        @(Model.HasWageInfo?Model.WageInfo:"None")
+                        @(Model.HasWageInfo ? Model.WageInfo : "None")
+                        <review-field class="govuk-tag--purple" field-name="@FieldIdentifiers.WageAdditionalInfo" tag-name="strong" model="@Model"/>
                     </dd>
                     <dd class="app-summary-list__actions">
+                        
                     </dd>
                 </div>
             }
        
-            <field-review-message field-name="@FieldIdentifiers.Wage" model="@Model"></field-review-message>
-            <div class="app-summary-list__row app-summary-list__row--no-border" field-review-marker="WageText">
-                <dt class="app-summary-list__key" id="@FieldIdentifiers.Wage">Pay rate</dt>
-                <dd id="YearlyWage" class="app-summary-list__value">
-                    @Model.WageText
-                    <review-field class="govuk-tag--purple" field-name="@FieldIdentifiers.Wage" tag-name="strong" model="@Model"/>
-                </dd>
-                <dd class="app-summary-list__actions">
-                    <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.Wage_Get" asp-all-route-data="@Model.RouteDictionary">Change<span class="govuk-visually-hidden"> wage</span></a>    
-                </dd>
-            </div>
-            <field-review-message field-name="@FieldIdentifiers.WageAdditionalInfo" model="@Model"></field-review-message>
-            <div class="app-summary-list__row" field-review-marker="WageInfo">
-                <dt class="app-summary-list__key" id="@FieldIdentifiers.WageAdditionalInfo">Extra information about pay (optional)</dt>
-                <dd class="app-summary-list__value">
-                    @(Model.HasWageInfo ? Model.WageInfo : "None")
-                    <review-field class="govuk-tag--purple" field-name="@FieldIdentifiers.WageAdditionalInfo" tag-name="strong" model="@Model"/>
-                </dd>
-                <dd class="app-summary-list__actions">
-                    
-                </dd>
-            </div>
             <field-review-message field-name="@FieldIdentifiers.NumberOfPositions" model="@Model"></field-review-message>
             <div class="app-summary-list__row" field-review-marker="NumberOfPositions">
                 <dt class="app-summary-list__key" id="@FieldIdentifiers.NumberOfPositions">Number of positions</dt>
