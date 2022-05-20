@@ -23,11 +23,9 @@
       <p class="govuk-body">@Model.ShortDescription</p> 
     </div>
     <div class="govuk-grid-column-one-third">
-      <div  asp-show="@Model.HasSpecifiedThroughFaTApplicationMethod">
-         <p class="govuk-!-margin-bottom-1">
-           <a class="govuk-button govuk-!-margin-bottom-0" id="employer-website" href="#">Sign in to Apply</a>
-         </p>
-      </div>
+      <p class="govuk-!-margin-bottom-1">
+        <a class="govuk-button govuk-!-margin-bottom-0" id="employer-website" href="#">Sign in to Apply</a>
+      </p>
       <p class="govuk-body-s">Closing date: @Model.ClosingDate</p>
     </div>
   </div>
