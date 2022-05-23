@@ -1,7 +1,11 @@
 @using Esfa.Recruit.Shared.Web.Mappers
 @using Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
+@using Esfa.Recruit.Vacancies.Client.Domain.Entities
 @using Humanizer
 @model ReviewViewModel
+@{
+    var isApprenticeshipVacancyType = Model.VacancyType.GetValueOrDefault() == VacancyType.Apprenticeship; 
+}
 <div class="review-container">
     <form asp-route="@RouteNames.Vacancy_Review_Post">
         <partial name="_ReviewHeader" />
@@ -105,106 +109,177 @@
         </div>
         <div class="govuk-grid-row">
             <div class="govuk-grid-column-full">
-                <h2 class="govuk-heading-l">Apprenticeship summary</h2>
+                <h2 class="govuk-heading-l">@(isApprenticeshipVacancyType? "Apprenticeship":"Traineeship") summary</h2>
             </div>
         </div>
         <div class="govuk-grid-row">
-            <div class="govuk-grid-column-one-third">
-                <ul class="govuk-list">
-                    <li>
-                        <div class="@Model.WageClass" id="@FieldIdentifiers.Wage">
-                            <h3 class="govuk-heading-s">Annual wage</h3>
-                            <p class="govuk-body">@Model.WageText</p>
-                            <p class="govuk-body">@Model.WageInfo</p>
+            @if (isApprenticeshipVacancyType)
+            {
+                <div class="govuk-grid-column-one-third">
+                    <ul class="govuk-list">
+                        <li>
+                            <div class="@Model.WageClass" id="@FieldIdentifiers.Wage">
+                                <h3 class="govuk-heading-s">Annual wage</h3>
+                                <p class="govuk-body">@Model.WageText</p>
+                                <p class="govuk-body">@Model.WageInfo</p>
+                                <esfa-review-checkbox asp-for="SelectedFieldIdentifiers"
+                                                      asp-value="@FieldIdentifiers.Wage"
+                                                      asp-items="@Model.FieldIdentifiers"></esfa-review-checkbox>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="@Model.WorkingWeekClass" id="@FieldIdentifiers.WorkingWeek">
+                                <h3 class="govuk-heading-s">Working week</h3>
+                                <p class="govuk-body">@Model.WorkingWeekDescription</p>
+                                <p class="govuk-body">Total hours per week: @Model.HoursPerWeek</p>
+                                <esfa-review-checkbox asp-for="SelectedFieldIdentifiers"
+                                                      asp-value="@FieldIdentifiers.WorkingWeek"
+                                                      asp-items="@Model.FieldIdentifiers"></esfa-review-checkbox>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="@Model.ExpectedDurationClass" id="@FieldIdentifiers.ExpectedDuration">
+                                <h3 class="govuk-heading-s">Expected duration</h3>
+                                <p class="govuk-body">@Model.ExpectedDuration</p>
+                                <esfa-review-checkbox asp-for="SelectedFieldIdentifiers"
+                                                      asp-value="@FieldIdentifiers.ExpectedDuration"
+                                                      asp-items="@Model.FieldIdentifiers"></esfa-review-checkbox>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="@Model.PossibleStartDateClass" id="@FieldIdentifiers.PossibleStartDate">
+                                <h3 class="govuk-heading-s">Possible start date</h3>
+                                <p class="govuk-body">@Model.PossibleStartDate</p>
+                                <esfa-review-checkbox asp-for="SelectedFieldIdentifiers"
+                                                      asp-value="@FieldIdentifiers.PossibleStartDate"
+                                                      asp-items="@Model.FieldIdentifiers"></esfa-review-checkbox>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="@Model.TrainingLevelClass" id="@FieldIdentifiers.TrainingLevel">
+                                <h3 class="govuk-heading-s">Apprenticeship level</h3>
+                                <p class="govuk-body">
+                                    @Model.TrainingLevel <br />
+                                    @Model.EducationLevelName
+                                </p>
                             <esfa-review-checkbox asp-for="SelectedFieldIdentifiers"
-                                                  asp-value="@FieldIdentifiers.Wage"
+                                                  asp-value="@FieldIdentifiers.TrainingLevel"
                                                   asp-items="@Model.FieldIdentifiers"></esfa-review-checkbox>
                         </div>
                     </li>
                     <li>
-                        <div class="@Model.WorkingWeekClass" id="@FieldIdentifiers.WorkingWeek">
-                            <h3 class="govuk-heading-s">Working week</h3>
-                            <p class="govuk-body">@Model.WorkingWeekDescription</p>
-                            <p class="govuk-body">Total hours per week: @Model.HoursPerWeek</p>
+                        <h3 class="govuk-heading-s">Reference number</h3>
+                        <p class="govuk-body">@Model.VacancyReferenceNumber</p>
+                    </li>
+                    <li>
+                        <div class="@Model.NumberOfPositionsClass" id="@FieldIdentifiers.NumberOfPositions">
+                            <h3 class="govuk-heading-s">Positions</h3>
+                            <p class="govuk-body">@Model.NumberOfPositionsCaption</p>
                             <esfa-review-checkbox asp-for="SelectedFieldIdentifiers"
-                                                  asp-value="@FieldIdentifiers.WorkingWeek"
+                                                  asp-value="@FieldIdentifiers.NumberOfPositions"
                                                   asp-items="@Model.FieldIdentifiers"></esfa-review-checkbox>
                         </div>
                     </li>
-                    <li>
-                        <div class="@Model.ExpectedDurationClass" id="@FieldIdentifiers.ExpectedDuration">
-                            <h3 class="govuk-heading-s">Expected duration</h3>
-                            <p class="govuk-body">@Model.ExpectedDuration</p>
-                            <esfa-review-checkbox asp-for="SelectedFieldIdentifiers"
-                                                  asp-value="@FieldIdentifiers.ExpectedDuration"
-                                                  asp-items="@Model.FieldIdentifiers"></esfa-review-checkbox>
-                        </div>
-                    </li>
-                    <li>
-                        <div class="@Model.PossibleStartDateClass" id="@FieldIdentifiers.PossibleStartDate">
-                            <h3 class="govuk-heading-s">Possible start date</h3>
-                            <p class="govuk-body">@Model.PossibleStartDate</p>
-                            <esfa-review-checkbox asp-for="SelectedFieldIdentifiers"
-                                                  asp-value="@FieldIdentifiers.PossibleStartDate"
-                                                  asp-items="@Model.FieldIdentifiers"></esfa-review-checkbox>
-                        </div>
-                    </li>
-                    <li>
-                        <div class="@Model.TrainingLevelClass" id="@FieldIdentifiers.TrainingLevel">
-                            <h3 class="govuk-heading-s">Apprenticeship level</h3>
-                            <p class="govuk-body">
-                                @Model.TrainingLevel <br />
-                                @Model.EducationLevelName
-                            </p>
+                    </ul>
+                </div>
+                <div class="govuk-grid-column-two-thirds vacancy-descriptions">
+                    <div class="@Model.VacancyDescriptionClass" id="@FieldIdentifiers.VacancyDescription">
+
+                        <h3 class="govuk-heading-s">What will the apprentice be doing?</h3>
+                        <div class="govuk-body">@Html.Raw(Model.VacancyDescription)</div>
+
                         <esfa-review-checkbox asp-for="SelectedFieldIdentifiers"
-                                              asp-value="@FieldIdentifiers.TrainingLevel"
+                                              asp-value="@FieldIdentifiers.VacancyDescription"
                                               asp-items="@Model.FieldIdentifiers"></esfa-review-checkbox>
                     </div>
-                </li>
-                <li>
-                    <h3 class="govuk-heading-s">Reference number</h3>
-                    <p class="govuk-body">@Model.VacancyReferenceNumber</p>
-                </li>
-                <li>
-                    <div class="@Model.NumberOfPositionsClass" id="@FieldIdentifiers.NumberOfPositions">
-                        <h3 class="govuk-heading-s">Positions</h3>
-                        <p class="govuk-body">@Model.NumberOfPositionsCaption</p>
+                    <div class="@Model.TrainingDescriptionClass" id="@FieldIdentifiers.TrainingDescription">
+
+                        <h3 class="govuk-heading-s">What training will the apprentice take and what qualification will the apprentice get at the end?</h3>
+                        <div class="govuk-body">@Html.Raw(Model.TrainingDescription)</div>
+
                         <esfa-review-checkbox asp-for="SelectedFieldIdentifiers"
-                                              asp-value="@FieldIdentifiers.NumberOfPositions"
+                                              asp-value="@FieldIdentifiers.TrainingDescription"
                                               asp-items="@Model.FieldIdentifiers"></esfa-review-checkbox>
                     </div>
-                </li>
-                </ul>
-            </div>
-            <div class="govuk-grid-column-two-thirds vacancy-descriptions">
-                <div class="@Model.VacancyDescriptionClass" id="@FieldIdentifiers.VacancyDescription">
+                    <div class="@Model.OutcomeDescriptionClass" id="@FieldIdentifiers.OutcomeDescription">
 
-                    <h3 class="govuk-heading-s">What will the apprentice be doing?</h3>
-                    <div class="govuk-body">@Html.Raw(Model.VacancyDescription)</div>
+                        <h3 class="govuk-heading-s">What is the expected career progression after this apprenticeship?</h3>
+                        <div class="govuk-body">@Html.Raw(Model.OutcomeDescription)</div>
 
-                    <esfa-review-checkbox asp-for="SelectedFieldIdentifiers"
-                                          asp-value="@FieldIdentifiers.VacancyDescription"
-                                          asp-items="@Model.FieldIdentifiers"></esfa-review-checkbox>
+                        <esfa-review-checkbox asp-for="SelectedFieldIdentifiers"
+                                              asp-value="@FieldIdentifiers.OutcomeDescription"
+                                              asp-items="@Model.FieldIdentifiers"></esfa-review-checkbox>
+                    </div>
                 </div>
-                <div class="@Model.TrainingDescriptionClass" id="@FieldIdentifiers.TrainingDescription">
+            }
+            else
+            {
+                <div class="govuk-grid-column-one-third">
+                    <div class="@Model.TrainingDescriptionClass" id="@FieldIdentifiers.TrainingDescription">
 
-                    <h3 class="govuk-heading-s">What training will the apprentice take and what qualification will the apprentice get at the end?</h3>
-                    <div class="govuk-body">@Html.Raw(Model.TrainingDescription)</div>
+                        <h3 class="govuk-heading-s">What training will you give the trainee?</h3>
+                        <div class="govuk-body">@Html.Raw(Model.TrainingDescription)</div>
 
-                    <esfa-review-checkbox asp-for="SelectedFieldIdentifiers"
-                                          asp-value="@FieldIdentifiers.TrainingDescription"
-                                          asp-items="@Model.FieldIdentifiers"></esfa-review-checkbox>
+                        <esfa-review-checkbox asp-for="SelectedFieldIdentifiers"
+                                              asp-value="@FieldIdentifiers.TrainingDescription"
+                                              asp-items="@Model.FieldIdentifiers"></esfa-review-checkbox>
+                    </div>
+                    <div class="@Model.WorkExperienceClass" id="@FieldIdentifiers.WorkExperience">
+
+                        <h3 class="govuk-heading-s">What work experience will the employer give the trainee?</h3>
+                        <div class="govuk-body">@Html.Raw(Model.WorkExperience)</div>
+
+                        <esfa-review-checkbox asp-for="SelectedFieldIdentifiers"
+                                              asp-value="@FieldIdentifiers.WorkExperience"
+                                              asp-items="@Model.FieldIdentifiers"></esfa-review-checkbox>
+                    </div>
                 </div>
-                <div class="@Model.OutcomeDescriptionClass" id="@FieldIdentifiers.OutcomeDescription">
-
-                    <h3 class="govuk-heading-s">What is the expected career progression after this apprenticeship?</h3>
-                    <div class="govuk-body">@Html.Raw(Model.OutcomeDescription)</div>
-
-                    <esfa-review-checkbox asp-for="SelectedFieldIdentifiers"
-                                          asp-value="@FieldIdentifiers.OutcomeDescription"
-                                          asp-items="@Model.FieldIdentifiers"></esfa-review-checkbox>
+                <div class="govuk-grid-column-two-thirds vacancy-descriptions">
+                    <ul class="govuk-list">
+                        <li>
+                            <div class="@Model.WorkingWeekClass" id="@FieldIdentifiers.WorkingWeek">
+                                <h3 class="govuk-heading-s">Working week</h3>
+                                <p class="govuk-body">@Model.WorkingWeekDescription</p>
+                                <p class="govuk-body">Total hours per week: @Model.HoursPerWeek</p>
+                                <esfa-review-checkbox asp-for="SelectedFieldIdentifiers"
+                                                      asp-value="@FieldIdentifiers.WorkingWeek"
+                                                      asp-items="@Model.FieldIdentifiers"></esfa-review-checkbox>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="@Model.ExpectedDurationClass" id="@FieldIdentifiers.ExpectedDuration">
+                                <h3 class="govuk-heading-s">Expected duration</h3>
+                                <p class="govuk-body">@Model.ExpectedDuration</p>
+                                <esfa-review-checkbox asp-for="SelectedFieldIdentifiers"
+                                                      asp-value="@FieldIdentifiers.ExpectedDuration"
+                                                      asp-items="@Model.FieldIdentifiers"></esfa-review-checkbox>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="@Model.PossibleStartDateClass" id="@FieldIdentifiers.PossibleStartDate">
+                                <h3 class="govuk-heading-s">Possible start date</h3>
+                                <p class="govuk-body">@Model.PossibleStartDate</p>
+                                <esfa-review-checkbox asp-for="SelectedFieldIdentifiers"
+                                                      asp-value="@FieldIdentifiers.PossibleStartDate"
+                                                      asp-items="@Model.FieldIdentifiers"></esfa-review-checkbox>
+                            </div>
+                        </li>
+                        <li>
+                            <h3 class="govuk-heading-s">Reference number</h3>
+                            <p class="govuk-body">@Model.VacancyReferenceNumber</p>
+                        </li>
+                        <li>
+                            <div class="@Model.NumberOfPositionsClass" id="@FieldIdentifiers.NumberOfPositions">
+                                <h3 class="govuk-heading-s">Positions</h3>
+                                <p class="govuk-body">@Model.NumberOfPositionsCaption</p>
+                                <esfa-review-checkbox asp-for="SelectedFieldIdentifiers"
+                                                      asp-value="@FieldIdentifiers.NumberOfPositions"
+                                                      asp-items="@Model.FieldIdentifiers"></esfa-review-checkbox>
+                            </div>
+                        </li>
+                    </ul>
                 </div>
-            </div>
+            }
         </div>
         <div class="govuk-grid-row" id="@Anchors.RequirementsAndProspectsSection">
             <div class="govuk-grid-column-full">
@@ -325,9 +400,9 @@
                 <div class="@Model.EmployerAddressClass" id="@FieldIdentifiers.EmployerAddress">
                     <h3 class="govuk-heading-s">Location</h3>
                     <ul class="govuk-list">
-                        @foreach (var addrLine in Model.EmployerAddressElements)
+                        @foreach (var addressLine in Model.EmployerAddressElements)
                         {
-                            <li>@addrLine</li>
+                            <li>@addressLine</li>
                         }
                     </ul>
                     <esfa-review-checkbox asp-for="SelectedFieldIdentifiers"
@@ -370,16 +445,31 @@
                 </div>
             </div>
             <div class="govuk-grid-column-one-third">
-                <div class="@Model.TrainingClass" id="@FieldIdentifiers.Training">
-                    <h3 class="govuk-heading-s">Apprenticeship @Model.TrainingType</h3>
-                    <p class="govuk-body">
-                        @Model.TrainingTitle<br />
-                        @Model.EducationLevelName
-                    </p>
-                    <esfa-review-checkbox asp-for="SelectedFieldIdentifiers"
-                                          asp-value="@FieldIdentifiers.Training"
-                                          asp-items="@Model.FieldIdentifiers"></esfa-review-checkbox>
-                </div>
+                @if (isApprenticeshipVacancyType)
+                {
+                    <div class="@Model.TrainingClass" id="@FieldIdentifiers.Training">
+                        <h3 class="govuk-heading-s">Apprenticeship @Model.TrainingType</h3>
+                        <p class="govuk-body">
+                            @Model.TrainingTitle<br />
+                            @Model.EducationLevelName
+                        </p>
+                        <esfa-review-checkbox asp-for="SelectedFieldIdentifiers"
+                                              asp-value="@FieldIdentifiers.Training"
+                                              asp-items="@Model.FieldIdentifiers"></esfa-review-checkbox>
+                    </div>
+                }
+                else
+                {
+                    <div class="@Model.TraineeRouteClass" id="@FieldIdentifiers.TraineeRoute">
+                        <h3 class="govuk-heading-s">Traineeship sector</h3>
+                        <p class="govuk-body">
+                            @Model.TraineeRoute
+                        </p>
+                        <esfa-review-checkbox asp-for="SelectedFieldIdentifiers"
+                                              asp-value="@FieldIdentifiers.TraineeRoute"
+                                              asp-items="@Model.FieldIdentifiers"></esfa-review-checkbox>
+                    </div>
+                }
             </div>
         </div>
         <div class="govuk-grid-row" id="@Anchors.RequirementsAndProspectsSection">
