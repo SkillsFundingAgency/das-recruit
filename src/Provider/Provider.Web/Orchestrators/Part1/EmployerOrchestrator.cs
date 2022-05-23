@@ -38,11 +38,20 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
             if (_serviceParameters.VacancyType.GetValueOrDefault() == VacancyType.Traineeship)
             {
                 var providerPermissions = await _providerRelationshipsService.GetLegalEntitiesForProviderAsync(vrm.Ukprn, OperationType.RecruitmentRequiresReview);
-                employerInfos = employerInfos.Where(x =>
-                        providerPermissions.FirstOrDefault(p => p.EmployerAccountId == x.EmployerAccountId) == null)
-                    .ToList();
+                
+                foreach (var providerPermission in providerPermissions)
+                {
+                    foreach (var legalEntity in providerPermission.LegalEntities)
+                    {
+                        var employerInfo = employerInfos.FirstOrDefault(c =>
+                            c.EmployerAccountId.Equals(providerPermission.EmployerAccountId));
+                        employerInfo?.LegalEntities.RemoveAt(employerInfo.LegalEntities.FindIndex(c =>
+                            c.AccountLegalEntityPublicHashedId.Equals(legalEntity.AccountLegalEntityPublicHashedId)));
 
-                if (!employerInfos.Any())
+                    }
+                }
+                
+                if (!employerInfos.Any() || employerInfos.TrueForAll(c=>!c.LegalEntities.Any()))
                 {
                     throw new MissingPermissionsException(string.Format(RecruitWebExceptionMessages.ProviderMissingPermission, vrm.Ukprn));
                 }
@@ -50,7 +59,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
             
             var vm = new EmployersViewModel
             {
-                Employers = employerInfos.Select(e => new EmployerViewModel {Id = e.EmployerAccountId, Name = e.Name}),
+                Employers = employerInfos.Where(c=>c.LegalEntities.Count > 0).Select(e => new EmployerViewModel {Id = e.EmployerAccountId, Name = e.Name}),
                 VacancyId = vrm.VacancyId,
                 Ukprn = vrm.Ukprn
             };
