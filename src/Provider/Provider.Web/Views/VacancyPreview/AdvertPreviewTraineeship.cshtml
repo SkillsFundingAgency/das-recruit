@@ -101,7 +101,11 @@
   <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
 
   <h2 class="govuk-heading-l">About the employer</h2>
-
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <p class="govuk-body">@Model.EmployerDescription</p>
+    </div>
+  </div>
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-one-half">
       <p class="govuk-body govuk-!-margin-bottom-0">
@@ -109,9 +113,6 @@
       </p>
       <p>
         @Model.EmployerWebsiteUrl
-      </p>
-      <p class="govuk-body">
-        @Model.EmployerDescription
       </p>
       <div asp-show="@Model.IsDisabilityConfident">
         <img asp-show="@Model.IsDisabilityConfident" src="~/img/disability-confident_545x172.png" class="app-disability-confident-logo" alt="A logo confirming that the employer is registered as disability confident" esfa-automation="disability-confident-logo" no-cdn/>
