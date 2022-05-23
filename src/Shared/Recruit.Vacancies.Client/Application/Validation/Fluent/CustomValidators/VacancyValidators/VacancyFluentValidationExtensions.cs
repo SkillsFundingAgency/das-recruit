@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
@@ -156,7 +157,9 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomVali
             });
         }
 
-        internal static IRuleBuilderInitial<Vacancy, Vacancy> TrainingProviderVacancyMustHaveEmployerPermission(this IRuleBuilder<Vacancy, Vacancy> ruleBuilder, IProviderRelationshipsService providerRelationshipService)
+        internal static IRuleBuilderInitial<Vacancy, Vacancy> TrainingProviderVacancyMustHaveEmployerPermission(
+            this IRuleBuilder<Vacancy, Vacancy> ruleBuilder, IProviderRelationshipsService providerRelationshipService,
+            ServiceParameters serviceParameters)
         {
             return ruleBuilder.CustomAsync(async (vacancy, context, cancellationToken) =>
             {
@@ -165,7 +168,14 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomVali
 
                 var hasPermission = await providerRelationshipService.HasProviderGotEmployersPermissionAsync(vacancy.TrainingProvider.Ukprn.Value, vacancy.EmployerAccountId, vacancy.AccountLegalEntityPublicHashedId, OperationType.Recruitment);
 
-                if (hasPermission)
+                var requiresReviewPermission = false;
+                
+                if (serviceParameters.VacancyType.GetValueOrDefault() == VacancyType.Traineeship)
+                {
+                    requiresReviewPermission = await providerRelationshipService.HasProviderGotEmployersPermissionAsync(vacancy.TrainingProvider.Ukprn.Value, vacancy.EmployerAccountId, vacancy.AccountLegalEntityPublicHashedId, OperationType.RecruitmentRequiresReview);
+                }
+                
+                if (hasPermission && !requiresReviewPermission)
                     return;
                 
                 var failure = new ValidationFailure(string.Empty, "Training provider does not have permission to create vacancies for this employer")
