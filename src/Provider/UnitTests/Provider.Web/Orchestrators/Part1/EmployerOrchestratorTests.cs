@@ -58,7 +58,6 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part1
             [Frozen] Mock<IProviderVacancyClient> providerVacancyClient,
             [Frozen] Mock<IProviderRelationshipsService> providerRelationshipService)
         {
-            providerEditVacancyInfo.Employers.Last().LegalEntities.RemoveRange(1, providerEditVacancyInfo.Employers.Last().LegalEntities.Count-1);
             providerVacancyClient.Setup(x => x.GetProviderEditVacancyInfoAsync(vacancyRouteModel.Ukprn))
                 .ReturnsAsync(providerEditVacancyInfo);
             providerRelationshipService
@@ -66,13 +65,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part1
                 .ReturnsAsync(new List<EmployerInfo>{new EmployerInfo
                 {
                     EmployerAccountId = providerEditVacancyInfo.Employers.Last().EmployerAccountId,
-                    LegalEntities = new List<LegalEntity>
-                    {
-                        new LegalEntity
-                        {
-                            AccountLegalEntityPublicHashedId = providerEditVacancyInfo.Employers.Last().LegalEntities.First().AccountLegalEntityPublicHashedId
-                        }
-                    }
+                    LegalEntities = new List<LegalEntity>()
                 }});
             
             var orchestrator = new EmployerOrchestrator(providerVacancyClient.Object,
@@ -90,22 +83,16 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part1
         public async Task Then_If_There_Are_Employers_And_No_Employer_Has_Given_Recruit_Permission_For_Traineeship_Then_Exception_Thrown(
             VacancyRouteModel vacancyRouteModel,
             ProviderEditVacancyInfo providerEditVacancyInfo,
-            LegalEntity entity,
             [Frozen] Mock<IProviderVacancyClient> providerVacancyClient,
             [Frozen] Mock<IProviderRelationshipsService> providerRelationshipService)
         {
-            foreach (var employerInfo in providerEditVacancyInfo.Employers)
-            {
-                employerInfo.LegalEntities = new List<LegalEntity> {entity};
-            }
             providerVacancyClient.Setup(x => x.GetProviderEditVacancyInfoAsync(vacancyRouteModel.Ukprn))
                 .ReturnsAsync(providerEditVacancyInfo);
             providerRelationshipService
                 .Setup(x => x.GetLegalEntitiesForProviderAsync(vacancyRouteModel.Ukprn, OperationType.RecruitmentRequiresReview))
                 .ReturnsAsync(providerEditVacancyInfo.Employers.Select(c=>new EmployerInfo
                 {
-                    EmployerAccountId = c.EmployerAccountId,
-                    LegalEntities = new List<LegalEntity>{entity}
+                    EmployerAccountId = c.EmployerAccountId
                 }));
 
             var orchestrator = new EmployerOrchestrator(providerVacancyClient.Object,
