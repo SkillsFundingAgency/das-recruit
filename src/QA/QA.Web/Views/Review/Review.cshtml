@@ -291,6 +291,8 @@
                 <h2 class="govuk-heading-l">Requirements and prospects</h2>
             </div>
         </div>
+        @if (isApprenticeshipVacancyType)
+        {
         <div class="govuk-grid-row">
             <div class="govuk-grid-column-one-half">
                 <div class="@Model.SkillsClass" id="@FieldIdentifiers.Skills">
@@ -329,6 +331,46 @@
                 </div>
             </div>
         </div>
+        }
+        else
+        {
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-one-half">
+                <div class="@Model.SkillsClass" id="@FieldIdentifiers.Skills">
+                    <h3 class="govuk-heading-s">Desired skills and personal qualities</h3>
+                    <p class="govuk-body">@string.Join(", ", Model.Skills)</p>
+                    <esfa-review-checkbox asp-for="SelectedFieldIdentifiers"
+                                          asp-value="@FieldIdentifiers.Skills"
+                                          asp-items="@Model.FieldIdentifiers"></esfa-review-checkbox>
+                </div>
+            </div>
+            <div class="govuk-grid-column-one-half">
+                <div class="@Model.OutcomeDescriptionClass" id="@FieldIdentifiers.OutcomeDescription">
+                    <h3 class="govuk-heading-s">What is the expected career progression after this traineeship?</h3>
+
+                    <p class="govuk-body">@Model.OutcomeDescription</p>
+
+                    <esfa-review-checkbox asp-for="SelectedFieldIdentifiers"
+                                          asp-value="@FieldIdentifiers.OutcomeDescription"
+                                          asp-items="@Model.FieldIdentifiers"></esfa-review-checkbox>
+                </div>
+            </div>
+        </div>
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-full">
+                <div class="@Model.ThingsToConsiderClass" id="@FieldIdentifiers.ThingsToConsider">
+                    <h3 class="govuk-heading-s">Things to consider (optional)</h3>
+
+                    <p class="govuk-body">@Model.ThingsToConsider</p>
+
+                    <esfa-review-checkbox asp-for="SelectedFieldIdentifiers"
+                                          asp-value="@FieldIdentifiers.ThingsToConsider"
+                                          asp-items="@Model.FieldIdentifiers"></esfa-review-checkbox>
+                </div>
+            </div>
+        </div>
+        }
+        
         <div class="govuk-grid-row" id="@Anchors.RequirementsAndProspectsSection">
             <div class="govuk-grid-column-full">
                 <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
