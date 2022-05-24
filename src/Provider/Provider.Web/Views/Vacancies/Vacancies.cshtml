@@ -61,7 +61,7 @@
                         <option value="@FilteringOptions.All">all vacancies</option>
                         <option value="@FilteringOptions.Live">live vacancies</option>
                         <option value="@FilteringOptions.Referred">rejected vacancies</option>
-                        @if (Model.HasEmployerReviewPermission)
+                        @if (Model.HasEmployerReviewPermission && _serviceParameters.VacancyType.GetValueOrDefault() == VacancyType.Apprenticeship)
                         {
                             <option value="@FilteringOptions.Review">pending employer review</option>   
                         }
@@ -117,7 +117,7 @@
                         }
                         else
                         {
-                        <th class="govuk-table__header" scope="col">Vacancy reference number</th>
+                            <th class="govuk-table__header" scope="col">Vacancy reference number</th>
                         }
                         <th class="govuk-table__header" scope="col">Applications</th>
                         <th class="govuk-table__header" scope="col">Closing date</th>
