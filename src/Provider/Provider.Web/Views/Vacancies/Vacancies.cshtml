@@ -111,14 +111,8 @@
                 <thead class="govuk-table__head">
                     <tr class="govuk-table__row">
                         <th class="govuk-table__header" scope="col">Vacancy title</th>
-                        @if (_serviceParameters.VacancyType == VacancyType.Apprenticeship)
-                        {
-                            <th class="govuk-table__header" scope="col">Employer</th>
-                        }
-                        else
-                        {
-                            <th class="govuk-table__header" scope="col">Vacancy reference number</th>
-                        }
+                        <th class="govuk-table__header" scope="col">Employer</th>
+                        <th class="govuk-table__header" scope="col">Vacancy reference number</th>
                         <th class="govuk-table__header" scope="col">Applications</th>
                         <th class="govuk-table__header" scope="col">Closing date</th>
                         <th class="govuk-table__header" scope="col">Status</th>
@@ -127,27 +121,17 @@
                 </thead>
                 <tbody class="govuk-table__body">
                     @foreach (var vacancy in Model.Vacancies)
-        {
+                    {
                     <tr class="govuk-table__row">
                         <td class="govuk-table__cell" data-label="Vacancy title">
                             <div>@vacancy.Title</div>
-                            @if (_serviceParameters.VacancyType == VacancyType.Apprenticeship)
-                            {
-                                <span asp-show="@vacancy.HasVacancyReference"><span>VAC</span>@vacancy.VacancyReference</span>}
                         </td>
-
-                        @if (_serviceParameters.VacancyType == VacancyType.Apprenticeship)
-                        {
-                            <td class="govuk-table__cell" data-label="Employer">
-                                <span>@vacancy.EmployerName</span>
-                            </td>
-                        }
-                        else
-                        {
-                            <td class="govuk-table__cell" data-label="Vacancy reference number">
-                                <span asp-show="@vacancy.HasVacancyReference"><span>VAC</span>@vacancy.VacancyReference</span>
-                            </td>
-                        }
+                        <td class="govuk-table__cell" data-label="Employer">
+                            <span>@vacancy.EmployerName</span>
+                        </td>
+                        <td class="govuk-table__cell" data-label="Vacancy reference number">
+                            <span asp-show="@vacancy.HasVacancyReference"><span>VAC</span>@vacancy.VacancyReference</span>
+                        </td>
                         <td asp-show="@vacancy.CanShowVacancyApplicationsCount" class="govuk-table__cell" data-label="Applications">
                             <span asp-show="@vacancy.HasNoApplications">0</span>
                             <span asp-show="@vacancy.HasApplications">@vacancy.NoOfApplications</span>
