@@ -477,45 +477,6 @@
                 <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
             </div>
         </div>
-        <div class="govuk-grid-row">
-            <div class="govuk-grid-column-full">
-                <h2 class="govuk-heading-l" id="@FieldIdentifiers.ApplicationMethod">Application process</h2>
-            </div>
-        </div>
-        <div class="govuk-grid-row">
-            <div class="govuk-grid-column-full">
-                <div class="@Model.ApplicationMethodClass" id="@FieldIdentifiers.ApplicationMethod">
-                    <p class="govuk-body" asp-show="@Model.HasSpecifiedThroughFaaApplicationMethod">
-                        Candidates will apply through the Find an apprenticeship service
-                    </p>
-                    <p class="govuk-body" asp-show="@Model.HasSpecifiedThroughExternalApplicationSiteMethod">
-                        Candidates will apply through the employer's website
-                    </p>
-                    <esfa-review-checkbox asp-for="SelectedFieldIdentifiers"
-                                          asp-value="@FieldIdentifiers.ApplicationMethod"
-                                          asp-items="@Model.FieldIdentifiers"></esfa-review-checkbox>
-                </div>
-                <div asp-show="@Model.HasApplicationUrl" class="@Model.ApplicationUrlClass" id="@FieldIdentifiers.ApplicationUrl">
-                    <h2 class="govuk-heading-s">Employer's application website</h2>
-                    <p class="govuk-body">@Model.ApplicationUrl</p>
-                    <esfa-review-checkbox asp-for="SelectedFieldIdentifiers"
-                                          asp-value="@FieldIdentifiers.ApplicationUrl"
-                                          asp-items="@Model.FieldIdentifiers"></esfa-review-checkbox>
-                </div>
-                <div asp-show="@Model.HasApplicationInstructions" class="@Model.ApplicationInstructionsClass" id="@FieldIdentifiers.ApplicationInstructions">
-                    <h2 class="govuk-heading-s">Employer's application instructions (optional)</h2>
-                    <p class="govuk-body">@Model.ApplicationInstructions</p>
-                    <esfa-review-checkbox asp-for="SelectedFieldIdentifiers"
-                                          asp-value="@FieldIdentifiers.ApplicationInstructions"
-                                          asp-items="@Model.FieldIdentifiers"></esfa-review-checkbox>
-                </div>
-            </div>
-        </div>
-        <div class="govuk-grid-row" id="@Anchors.RequirementsAndProspectsSection">
-            <div class="govuk-grid-column-full">
-                <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
-            </div>
-        </div>
         <partial name="_ReviewHistories" for="ReviewHistories" />
         <div class="govuk-grid-row">
             <div class="govuk-grid-column-full">
