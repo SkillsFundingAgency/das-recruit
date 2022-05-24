@@ -806,7 +806,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                 .WithRuleId(VacancyRuleSet.TrainingProvider);
 
             RuleFor(x => x)
-                .TrainingProviderVacancyMustHaveEmployerPermission(_providerRelationshipService)
+                .TrainingProviderVacancyMustHaveEmployerPermission(_providerRelationshipService, _serviceParameters)
                 .RunCondition(VacancyRuleSet.TrainingProvider)
                 .WithRuleId(VacancyRuleSet.TrainingProvider);
         }
