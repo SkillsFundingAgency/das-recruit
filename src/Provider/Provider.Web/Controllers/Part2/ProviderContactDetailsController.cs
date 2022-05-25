@@ -1,4 +1,5 @@
-﻿using Esfa.Recruit.Provider.Web.Configuration.Routing;
+﻿using System;
+using Esfa.Recruit.Provider.Web.Configuration.Routing;
 using Esfa.Recruit.Provider.Web.RouteModel;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
@@ -51,6 +52,12 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part2
                     var viewModel = await _orchestrator.GetProviderContactDetailsViewModelAsync(m);    
                     return View(viewModel);
                 }
+            }
+            else
+            {
+                m.ProviderContactEmail = null;
+                m.ProviderContactName = null;
+                m.ProviderContactPhone = null;
             }
             
             var response = await _orchestrator.PostProviderContactDetailsEditModelAsync(m, User.ToVacancyUser());
