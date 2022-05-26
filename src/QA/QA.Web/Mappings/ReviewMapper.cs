@@ -173,8 +173,12 @@ namespace Esfa.Recruit.Qa.Web.Mappings
                     // requirements and prospects section
                     new FieldIdentifierViewModel { FieldIdentifier = FieldIdentifiers.Skills, Text = "Skills" },
                     new FieldIdentifierViewModel
+                    {
+                        FieldIdentifier = FieldIdentifiers.OutcomeDescription,
+                        Text = "What is the expected career progression after this apprenticeship?"
+                    },
+                    new FieldIdentifierViewModel
                         { FieldIdentifier = FieldIdentifiers.ThingsToConsider, Text = "Things to consider" },
-                    new FieldIdentifierViewModel { FieldIdentifier = FieldIdentifiers.Qualifications, Text = "Qualifications" },
                     // about the employer
                     new FieldIdentifierViewModel
                         { FieldIdentifier = FieldIdentifiers.EmployerDescription, Text = "Employer description" },

@@ -348,7 +348,7 @@
                 <div class="@Model.OutcomeDescriptionClass" id="@FieldIdentifiers.OutcomeDescription">
                     <h3 class="govuk-heading-s">What is the expected career progression after this traineeship?</h3>
 
-                    <p class="govuk-body">@Model.OutcomeDescription</p>
+                    <div class="govuk-body">@Html.Raw(Model.OutcomeDescription)</div>
 
                     <esfa-review-checkbox asp-for="SelectedFieldIdentifiers"
                                           asp-value="@FieldIdentifiers.OutcomeDescription"
