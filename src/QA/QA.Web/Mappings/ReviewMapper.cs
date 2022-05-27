@@ -175,7 +175,7 @@ namespace Esfa.Recruit.Qa.Web.Mappings
                     new FieldIdentifierViewModel
                     {
                         FieldIdentifier = FieldIdentifiers.OutcomeDescription,
-                        Text = "What is the expected career progression after this apprenticeship?"
+                        Text = "Future prospects"
                     },
                     new FieldIdentifierViewModel
                         { FieldIdentifier = FieldIdentifiers.ThingsToConsider, Text = "Things to consider" },
@@ -199,17 +199,6 @@ namespace Esfa.Recruit.Qa.Web.Mappings
                         { FieldIdentifier = FieldIdentifiers.ApplicationUrl, Text = "Apply now web address" },
                     new FieldIdentifierViewModel
                         { FieldIdentifier = FieldIdentifiers.ApplicationInstructions, Text = "Application process" }
-                    
-                    
-                    
-                    /*,new FieldIdentifierViewModel
-                        { FieldIdentifier = FieldIdentifiers.VacancyDescription, Text = "What will the apprentice be doing?" },
-                    
-                    new FieldIdentifierViewModel
-                    {
-                        FieldIdentifier = FieldIdentifiers.OutcomeDescription,
-                        Text = "What is the expected career progression after this apprenticeship?"
-                    },*/
                 };
             }
         }
