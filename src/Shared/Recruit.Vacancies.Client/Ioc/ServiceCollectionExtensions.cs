@@ -247,15 +247,27 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
 
         private static void AddValidation(IServiceCollection services)
         {
-            services.AddSingleton<AbstractValidator<Vacancy>, FluentVacancyValidator>();
-            services.AddSingleton(typeof(IEntityValidator<,>), typeof(EntityValidator<,>));
+            services.AddTransient<AbstractValidator<Vacancy>, FluentVacancyValidator>();
+            services.AddTransient(typeof(IEntityValidator<,>), typeof(EntityValidator<,>));
 
-            services.AddSingleton<AbstractValidator<ApplicationReview>, ApplicationReviewValidator>();
-            services.AddSingleton<AbstractValidator<VacancyReview>, VacancyReviewValidator>();
+            services.AddTransient<AbstractValidator<ApplicationReview>, ApplicationReviewValidator>();
+            services.AddTransient<AbstractValidator<VacancyReview>, VacancyReviewValidator>();
 
-            services.AddSingleton<AbstractValidator<UserNotificationPreferences>, UserNotificationPreferencesValidator>();
-            services.AddSingleton<AbstractValidator<Qualification>, QualificationValidator>();
+            services.AddTransient<AbstractValidator<UserNotificationPreferences>, UserNotificationPreferencesValidator>();
+            services.AddTransient<AbstractValidator<Qualification>, QualificationValidator>();
         }
+
+        //private static void AddValidation(IServiceCollection services)
+        //{
+        //    services.AddSingleton<AbstractValidator<Vacancy>, FluentVacancyValidator>();
+        //    services.AddSingleton(typeof(IEntityValidator<,>), typeof(EntityValidator<,>));
+
+        //    services.AddSingleton<AbstractValidator<ApplicationReview>, ApplicationReviewValidator>();
+        //    services.AddSingleton<AbstractValidator<VacancyReview>, VacancyReviewValidator>();
+
+        //    services.AddSingleton<AbstractValidator<UserNotificationPreferences>, UserNotificationPreferencesValidator>();
+        //    services.AddSingleton<AbstractValidator<Qualification>, QualificationValidator>();
+        //}
 
         private static void AddRules(IServiceCollection services)
         {

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Esfa.Recruit.Vacancies.Client.Application.Commands;
 using Esfa.Recruit.Vacancies.Client.Application.Configuration;
@@ -6,6 +7,7 @@ using Esfa.Recruit.Vacancies.Client.Ioc;
 using MediatR;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.Configuration;
@@ -27,10 +29,22 @@ namespace SFA.DAS.Recruit.Api
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddOptions();
-            services.AddSingleton(new ServiceParameters(VacancyType.Apprenticeship.ToString()));
+            //services.AddSingleton(new ServiceParameters(VacancyType.Apprenticeship.ToString()));
             services.Configure<ConnectionStrings>(Configuration.GetSection("ConnectionStrings"));
             services.Configure<RecruitConfiguration>(Configuration.GetSection("Recruit"));
             services.Configure<AzureActiveDirectoryConfiguration>(Configuration.GetSection("AzureAd"));
+
+            services.AddScoped(provider => {
+                var httpContext = provider.GetRequiredService<IHttpContextAccessor>().HttpContext;
+
+                if (httpContext.Request.RouteValues["Controller"].ToString()!.Equals("Vacancies", StringComparison.CurrentCultureIgnoreCase)
+                   && httpContext.Request.RouteValues["Action"].ToString()!.Equals("CreateTraineeship", StringComparison.CurrentCultureIgnoreCase))
+                {
+                    return new ServiceParameters(VacancyType.Traineeship.ToString());
+                }
+                return new ServiceParameters(VacancyType.Apprenticeship.ToString());
+            });
+
 
             var azureAdConfig = Configuration
                 .GetSection("AzureAd")

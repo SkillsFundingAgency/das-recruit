@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -14,10 +15,12 @@ namespace SFA.DAS.Recruit.Api.Controllers
     public class VacanciesController : ApiControllerBase
     {
         private readonly IMediator _mediator;
+        private readonly ServiceParameters _serviceParameters;
 
-        public VacanciesController(IMediator mediator)
+        public VacanciesController(IMediator mediator, ServiceParameters serviceParameters)
         {
             _mediator = mediator;
+            _serviceParameters = serviceParameters;
         }
 
         // GET api/vacancies
@@ -49,6 +52,7 @@ namespace SFA.DAS.Recruit.Api.Controllers
         [Route("{id}/validate")]
         public async Task<IActionResult> Validate([FromRoute]Guid id, CreateVacancyRequest request, [FromQuery]string userEmail = null, [FromQuery]long? ukprn = null)
         {
+            var type = _serviceParameters.VacancyType;
             var resp = await _mediator.Send(new CreateVacancyCommand
             {
                 Vacancy = request.MapFromCreateVacancyRequest(id),
@@ -58,6 +62,24 @@ namespace SFA.DAS.Recruit.Api.Controllers
                     Ukprn = ukprn
                 },
                 ValidateOnly = true
+            });
+
+            return GetApiResponse(resp);
+        }
+
+        [HttpPost]
+        [Route("createtraineeship/{id}")]
+        public async Task<IActionResult> CreateTraineeship([FromRoute] Guid id, CreateTraineeshipVacancyRequest request, [FromQuery] string userEmail = null, [FromQuery] long? ukprn = null)
+        {
+            var type = _serviceParameters.VacancyType;
+            var resp = await _mediator.Send(new CreateTraineeshipVacancyCommand
+            {
+                Vacancy = request.MapFromCreateTraineeshipVacancyRequest(id),
+                VacancyUserDetails = new VacancyUser
+                {
+                    Email = userEmail,
+                    Ukprn = ukprn
+                }
             });
 
             return GetApiResponse(resp);
