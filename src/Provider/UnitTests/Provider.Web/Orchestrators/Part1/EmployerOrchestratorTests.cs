@@ -87,7 +87,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part1
         }
         
         [Test, MoqAutoData]
-        public async Task Then_If_There_Are_Employers_And_No_Employer_Has_Given_Recruit_Permission_For_Traineeship_Then_Exception_Thrown(
+        public void Then_If_There_Are_Employers_And_No_Employer_Has_Given_Recruit_Permission_For_Traineeship_Then_Exception_Thrown(
             VacancyRouteModel vacancyRouteModel,
             ProviderEditVacancyInfo providerEditVacancyInfo,
             LegalEntity entity,
