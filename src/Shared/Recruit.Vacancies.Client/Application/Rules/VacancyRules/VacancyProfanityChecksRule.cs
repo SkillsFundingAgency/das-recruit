@@ -40,8 +40,10 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Rules.VacancyRules
             outcomes.AddRange(ProfanityCheckAsync(() => subject.TrainingDescription));
             outcomes.AddRange(ProfanityCheckAsync(() => subject.OutcomeDescription));
             outcomes.AddRange(ProfanityCheckAsync(() => subject.ThingsToConsider));
-            outcomes.AddRange(ProfanityCheckAsync(() => subject.Skills.ToDelimitedString(","), "Skills"));
-            outcomes.AddRange(ProfanityCheckAsync(() => subject.Qualifications.SelectMany(q => new[]{q.Grade, q.Subject}).ToDelimitedString(","), "Qualifications"));
+            if (subject.Skills != null)
+                outcomes.AddRange(ProfanityCheckAsync(() => subject.Skills.ToDelimitedString(","), "Skills"));
+            if (subject.Qualifications != null)
+                outcomes.AddRange(ProfanityCheckAsync(() => subject.Qualifications.SelectMany(q => new[]{q.Grade, q.Subject}).ToDelimitedString(","), "Qualifications"));
             outcomes.AddRange(ProfanityCheckAsync(() => subject.EmployerDescription));
 
             if (subject.EmployerContact != null)
