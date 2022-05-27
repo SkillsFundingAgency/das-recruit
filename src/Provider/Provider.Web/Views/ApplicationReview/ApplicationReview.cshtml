@@ -199,7 +199,7 @@
                         <h3 class="govuk-fieldset__heading">Outcome</h3>
                     </legend>
                     <span esfa-validation-message-for="Outcome" class="govuk-error-message"></span>
-                    <div class="govuk-radios govuk-radios--conditional" data-module="radios">
+                    <div class="govuk-radios govuk-radios--conditional" data-module="govuk-radios">
                         <div class="govuk-radios__item">
                             <input asp-for="Outcome" class="govuk-radios__input" id="outcome-successful" type="radio" value="@ApplicationReviewStatus.Successful.ToString()" checked="@(Model.Outcome == ApplicationReviewStatus.Successful ? "checked" : null)">
                             <label for="outcome-successful" class="govuk-label govuk-radios__label">Successful</label>
