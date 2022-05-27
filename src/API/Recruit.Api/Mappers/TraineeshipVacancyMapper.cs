@@ -12,7 +12,7 @@ namespace SFA.DAS.Recruit.Api.Mappers
 {
     public static class TraineeshipVacancyMapper
     {
-        public static Vacancy MapFromCreateTraineeshipVacancyRequest(this CreateTraineeshipVacancyRequest request, Guid id)
+        public static Vacancy MapFromCreateTraineeshipVacancyRequest(this CreateTraineeshipVacancyRequest request, Guid id, VacancyType vacancyType)
         {
             return new Vacancy
             {
@@ -70,7 +70,7 @@ namespace SFA.DAS.Recruit.Api.Mappers
                 ThingsToConsider = request.ThingsToConsider,
                 CreatedByUser = request.User,
                 WorkExperience = request.WorkExperience,
-                VacancyType = VacancyType.Traineeship,
+                VacancyType = vacancyType,
             };
         }
     }

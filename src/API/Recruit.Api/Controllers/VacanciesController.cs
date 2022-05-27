@@ -25,7 +25,7 @@ namespace SFA.DAS.Recruit.Api.Controllers
 
         // GET api/vacancies
         [HttpGet]
-        public async Task<IActionResult> Get([FromQuery]string employerAccountId, uint? legalEntityId, ulong? ukprn, uint pageSize = 25, uint pageNo = 1)
+        public async Task<IActionResult> Get([FromQuery] string employerAccountId, uint? legalEntityId, ulong? ukprn, uint pageSize = 25, uint pageNo = 1)
         {
             var resp = await _mediator.Send(new GetVacanciesQuery(employerAccountId.Trim().ToUpper(), (int?)legalEntityId, (long?)ukprn, (int)pageSize, (int)pageNo));
             return GetApiResponse(resp);
@@ -33,7 +33,7 @@ namespace SFA.DAS.Recruit.Api.Controllers
 
         [HttpPost]
         [Route("{id}")]
-        public async Task<IActionResult> Create([FromRoute]Guid id, CreateVacancyRequest request, [FromQuery]string userEmail = null, [FromQuery]long? ukprn = null)
+        public async Task<IActionResult> Create([FromRoute] Guid id, CreateVacancyRequest request, [FromQuery] string userEmail = null, [FromQuery] long? ukprn = null)
         {
             var resp = await _mediator.Send(new CreateVacancyCommand
             {
@@ -47,12 +47,11 @@ namespace SFA.DAS.Recruit.Api.Controllers
 
             return GetApiResponse(resp);
         }
-        
+
         [HttpPost]
         [Route("{id}/validate")]
-        public async Task<IActionResult> Validate([FromRoute]Guid id, CreateVacancyRequest request, [FromQuery]string userEmail = null, [FromQuery]long? ukprn = null)
+        public async Task<IActionResult> Validate([FromRoute] Guid id, CreateVacancyRequest request, [FromQuery] string userEmail = null, [FromQuery] long? ukprn = null)
         {
-            var type = _serviceParameters.VacancyType;
             var resp = await _mediator.Send(new CreateVacancyCommand
             {
                 Vacancy = request.MapFromCreateVacancyRequest(id),
@@ -71,10 +70,9 @@ namespace SFA.DAS.Recruit.Api.Controllers
         [Route("createtraineeship/{id}")]
         public async Task<IActionResult> CreateTraineeship([FromRoute] Guid id, CreateTraineeshipVacancyRequest request, [FromQuery] string userEmail = null, [FromQuery] long? ukprn = null)
         {
-            var type = _serviceParameters.VacancyType;
             var resp = await _mediator.Send(new CreateTraineeshipVacancyCommand
             {
-                Vacancy = request.MapFromCreateTraineeshipVacancyRequest(id),
+                Vacancy = request.MapFromCreateTraineeshipVacancyRequest(id, (VacancyType)_serviceParameters.VacancyType),
                 VacancyUserDetails = new VacancyUser
                 {
                     Email = userEmail,
