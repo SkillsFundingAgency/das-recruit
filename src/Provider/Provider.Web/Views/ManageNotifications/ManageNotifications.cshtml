@@ -14,11 +14,10 @@
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-        
+        <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState }' />
         <h1 class="govuk-heading-xl">Manage your recruitment emails</h1>
-
         <form method="post" asp-route="@RouteNames.ManageNotifications_Post"  asp-route-ukprn="@Model.Ukprn">
-            <div class="govuk-form-group">
+            <div class="govuk-form-group" esfa-validation-marker-for="HasAnySubscription">
                 <fieldset class="govuk-fieldset" aria-describedby="when-conditional-hint">
                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
                         <h2 class="govuk-fieldset__heading">
@@ -58,6 +57,7 @@
                         </div>
            
                             <div class="govuk-checkboxes__conditional govuk-checkboxes__conditional--hidden" id="conditional-when-conditional">
+                                <div class="govuk-form-group"  esfa-validation-marker-for="NotificationFrequency">
                                 <fieldset class="govuk-fieldset" aria-describedby="when-conditional-hint">
                                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
                                         <h3 class="govuk-fieldset__heading">
@@ -86,12 +86,13 @@
                                         </div>
                                     </div>
                                 </fieldset>
+                                </div>
                             </div>
                         
                     </div>
                 </fieldset>
             </div>
-            <div class="govuk-form-group">
+            <div class="govuk-form-group" esfa-validation-marker-for="NotificationScope">
                 <fieldset class="govuk-fieldset">
                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
                         <h2 class="govuk-fieldset__heading">
