@@ -37,7 +37,8 @@ namespace SFA.DAS.Recruit.Api
                 var httpContext = provider.GetRequiredService<IHttpContextAccessor>().HttpContext;
 
                 if (httpContext.Request.RouteValues["Controller"].ToString()!.Equals("Vacancies", StringComparison.CurrentCultureIgnoreCase)
-                   && httpContext.Request.RouteValues["Action"].ToString()!.Equals("CreateTraineeship", StringComparison.CurrentCultureIgnoreCase))
+                   && (httpContext.Request.RouteValues["Action"].ToString()!.Equals("CreateTraineeship", StringComparison.CurrentCultureIgnoreCase)
+                   || httpContext.Request.RouteValues["Action"].ToString()!.Equals("ValidateTraineeship", StringComparison.CurrentCultureIgnoreCase)))
                 {
                     return new ServiceParameters(VacancyType.Traineeship.ToString());
                 }

@@ -12,7 +12,7 @@ namespace SFA.DAS.Recruit.Api.Mappers
 {
     public static class TraineeshipVacancyMapper
     {
-        public static Vacancy MapFromCreateTraineeshipVacancyRequest(this CreateTraineeshipVacancyRequest request, Guid id, VacancyType vacancyType)
+        public static Vacancy MapFromCreateTraineeshipVacancyRequest(this CreateTraineeshipVacancyRequest request, Guid id)
         {
             return new Vacancy
             {
@@ -29,7 +29,6 @@ namespace SFA.DAS.Recruit.Api.Mappers
                 Title = request.Title,
                 EmployerName = request.EmployerName,
                 LegalEntityName = request.LegalEntityName,
-                ApplicationMethod = (ApplicationMethod?)CreateTraineeshipVacancyApplicationMethod.ThroughFindATraineeship,
                 Wage = new Wage
                 {
                     WorkingWeekDescription = request.Wage.WorkingWeekDescription,
@@ -51,10 +50,8 @@ namespace SFA.DAS.Recruit.Api.Mappers
                 TrainingDescription = request.TrainingDescription,
                 Skills = request.Skills,
                 DisabilityConfident = (DisabilityConfident)request.DisabilityConfident,
-                ThingsToConsider = request.ThingsToConsider,
-                CreatedByUser = request.User,
                 WorkExperience = request.WorkExperience,
-                VacancyType = vacancyType,
+                ApplicationMethod = (ApplicationMethod?)CreateTraineeshipVacancyApplicationMethod.ThroughFindATraineeship,
             };
         }
     }

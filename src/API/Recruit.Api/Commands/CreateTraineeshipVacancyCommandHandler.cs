@@ -118,13 +118,11 @@ namespace SFA.DAS.Recruit.Api.Commands
                 };
             }
 
-            var requiresEmployerApproval = await CheckEmployerApprovalNeeded(request);
-
-            var newVacancy = await MapDraftVacancyValues(request, request.Vacancy, requiresEmployerApproval);
+            var newVacancy = await MapDraftVacancyValues(request, request.Vacancy);
 
             await _vacancyRepository.UpdateAsync(newVacancy);
 
-            await PublishVacancyEvent(requiresEmployerApproval, newVacancy);
+            await PublishVacancyEvent(newVacancy);
 
             return new CreateTraineeshipVacancyCommandResponse
             {
@@ -150,19 +148,7 @@ namespace SFA.DAS.Recruit.Api.Commands
             }
         }
 
-        private async Task<bool> CheckEmployerApprovalNeeded(CreateTraineeshipVacancyCommand request)
-        {
-            if (request.Vacancy.OwnerType == OwnerType.Provider)
-            {
-                return
-                    await _providerRelationshipsService.HasProviderGotEmployersPermissionAsync(
-                        request.Vacancy.TrainingProvider.Ukprn.Value, request.Vacancy.EmployerAccountId,
-                        request.Vacancy.AccountLegalEntityPublicHashedId, OperationType.RecruitmentRequiresReview);
-            }
-            return false;
-        }
-
-        private async Task<Vacancy> MapDraftVacancyValues(CreateTraineeshipVacancyCommand request, Vacancy draftVacancyFromRequest, bool requiresEmployerReview)
+        private async Task<Vacancy> MapDraftVacancyValues(CreateTraineeshipVacancyCommand request, Vacancy draftVacancyFromRequest)
         {
             var newVacancy = await _recruitVacancyClient.GetVacancyAsync(draftVacancyFromRequest.Id);
 
@@ -185,47 +171,23 @@ namespace SFA.DAS.Recruit.Api.Commands
                 await _recruitVacancyClient.UpdateEmployerProfileAsync(employerProfile, draftVacancyFromRequest.CreatedByUser);
             }
 
-            if (requiresEmployerReview)
-            {
-                draftVacancyFromRequest.Status = VacancyStatus.Review;
-                draftVacancyFromRequest.ReviewDate = now;
-                draftVacancyFromRequest.ReviewByUser = request.VacancyUserDetails;
-                draftVacancyFromRequest.ReviewByUser = request.VacancyUserDetails;
-                draftVacancyFromRequest.ReviewCount += 1;
-            }
-            else
-            {
-                draftVacancyFromRequest.Status = VacancyStatus.Submitted;
-                draftVacancyFromRequest.SubmittedDate = now;
-                draftVacancyFromRequest.SubmittedByUser = request.VacancyUserDetails;
-            }
+            draftVacancyFromRequest.Status = VacancyStatus.Submitted;
+            draftVacancyFromRequest.SubmittedDate = now;
+            draftVacancyFromRequest.SubmittedByUser = request.VacancyUserDetails;
 
             draftVacancyFromRequest.LastUpdatedDate = now;
             draftVacancyFromRequest.LastUpdatedByUser = request.VacancyUserDetails;
             return draftVacancyFromRequest;
         }
 
-        private async Task PublishVacancyEvent(bool requiresEmployerApproval, Vacancy newVacancy)
+        private async Task PublishVacancyEvent(Vacancy newVacancy)
         {
-            if (requiresEmployerApproval)
+            await _messaging.PublishEvent(new VacancySubmittedEvent
             {
-                await _messaging.PublishEvent(new VacancyReviewedEvent
-                {
-                    EmployerAccountId = newVacancy.EmployerAccountId,
-                    VacancyId = newVacancy.Id,
-                    VacancyReference = newVacancy.VacancyReference.Value,
-                    Ukprn = newVacancy.TrainingProvider.Ukprn.GetValueOrDefault()
-                });
-            }
-            else
-            {
-                await _messaging.PublishEvent(new VacancySubmittedEvent
-                {
-                    EmployerAccountId = newVacancy.EmployerAccountId,
-                    VacancyId = newVacancy.Id,
-                    VacancyReference = newVacancy.VacancyReference.Value
-                });
-            }
+                EmployerAccountId = newVacancy.EmployerAccountId,
+                VacancyId = newVacancy.Id,
+                VacancyReference = newVacancy.VacancyReference.Value
+            });
         }
     }
 }

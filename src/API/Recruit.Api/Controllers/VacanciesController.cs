@@ -15,12 +15,9 @@ namespace SFA.DAS.Recruit.Api.Controllers
     public class VacanciesController : ApiControllerBase
     {
         private readonly IMediator _mediator;
-        private readonly ServiceParameters _serviceParameters;
-
-        public VacanciesController(IMediator mediator, ServiceParameters serviceParameters)
+        public VacanciesController(IMediator mediator)
         {
             _mediator = mediator;
-            _serviceParameters = serviceParameters;
         }
 
         // GET api/vacancies
@@ -72,12 +69,30 @@ namespace SFA.DAS.Recruit.Api.Controllers
         {
             var resp = await _mediator.Send(new CreateTraineeshipVacancyCommand
             {
-                Vacancy = request.MapFromCreateTraineeshipVacancyRequest(id, (VacancyType)_serviceParameters.VacancyType),
+                Vacancy = request.MapFromCreateTraineeshipVacancyRequest(id),
                 VacancyUserDetails = new VacancyUser
                 {
                     Email = userEmail,
                     Ukprn = ukprn
                 }
+            });
+
+            return GetApiResponse(resp);
+        }
+
+        [HttpPost]
+        [Route("{id}/ValidateTraineeship")]
+        public async Task<IActionResult> ValidateTraineeship([FromRoute] Guid id, CreateTraineeshipVacancyRequest request, [FromQuery] string userEmail = null, [FromQuery] long? ukprn = null)
+        {
+            var resp = await _mediator.Send(new CreateTraineeshipVacancyCommand
+            {
+                Vacancy = request.MapFromCreateTraineeshipVacancyRequest(id),
+                VacancyUserDetails = new VacancyUser
+                {
+                    Email = userEmail,
+                    Ukprn = ukprn
+                },
+                ValidateOnly = true
             });
 
             return GetApiResponse(resp);
