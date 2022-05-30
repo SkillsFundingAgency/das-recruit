@@ -157,7 +157,7 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
         /// <summary>
         /// If traineeship vacancy then this must be populated
         /// </summary>
-        public int? RouteId { get; set; }
+        public string RouteId { get; set; }
         public string WorkExperience { get; set; }
     }
 }

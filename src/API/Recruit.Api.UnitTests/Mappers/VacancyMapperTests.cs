@@ -26,5 +26,21 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Mappers
             actual.EmployerLocation.Should().BeEquivalentTo(request.Address);
             actual.CreatedByUser.Should().BeEquivalentTo(request.User);
         }
+
+        [Test, AutoData]
+        public void Then_The_Request_Is_Mapped_To_The_TraineeshipVacancy(CreateTraineeshipVacancyRequest request, Guid id)
+        {
+            request.ApplicationMethod = CreateVacancyApplicationMethod.ThroughExternalApplicationSite;
+
+            var actual = request.MapFromCreateTraineeshipVacancyRequest(id);
+
+            actual.Id.Should().Be(id);
+            actual.Should().BeEquivalentTo(request, options => options
+                .Excluding(c => c.User)
+                .Excluding(c => c.Address)
+            );
+            actual.EmployerLocation.Should().BeEquivalentTo(request.Address);
+            actual.CreatedByUser.Should().BeEquivalentTo(request.User);
+        }
     }
 }

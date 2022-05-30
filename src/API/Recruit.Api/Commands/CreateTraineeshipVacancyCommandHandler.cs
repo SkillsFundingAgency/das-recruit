@@ -74,7 +74,7 @@ namespace SFA.DAS.Recruit.Api.Commands
             }
 
             request.Vacancy.TrainingProvider = trainingProvider;
-            request.Vacancy.OwnerType = string.IsNullOrEmpty(request.VacancyUserDetails.Email) ? OwnerType.Provider : OwnerType.Employer;
+            request.Vacancy.OwnerType = OwnerType.Provider;
 
 
             var result = _recruitVacancyClient.Validate(request.Vacancy, VacancyRuleSet.All);
@@ -133,19 +133,10 @@ namespace SFA.DAS.Recruit.Api.Commands
 
         private async Task CreateVacancy(CreateTraineeshipVacancyCommand request, TrainingProvider trainingProvider)
         {
-            if (!string.IsNullOrEmpty(request.VacancyUserDetails.Email))
-            {
-                request.VacancyUserDetails.Ukprn = null;
-                await _employerVacancyClient.CreateEmployerApiVacancy(request.Vacancy.Id, request.Vacancy.Title,
-                    request.Vacancy.EmployerAccountId,
-                    request.VacancyUserDetails, trainingProvider, request.Vacancy.ProgrammeId);
-            }
-            else
-            {
-                await _providerVacancyClient.CreateProviderApiVacancy(request.Vacancy.Id, request.Vacancy.Title,
-                    request.Vacancy.EmployerAccountId,
-                    request.VacancyUserDetails);
-            }
+            await _providerVacancyClient.CreateProviderApiVacancy(request.Vacancy.Id, request.Vacancy.Title,
+              request.Vacancy.EmployerAccountId,
+              request.VacancyUserDetails);
+
         }
 
         private async Task<Vacancy> MapDraftVacancyValues(CreateTraineeshipVacancyCommand request, Vacancy draftVacancyFromRequest)

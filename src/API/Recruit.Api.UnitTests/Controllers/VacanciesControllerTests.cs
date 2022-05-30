@@ -136,6 +136,7 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Controllers
             actualResult.Value.Should().Be((long)response.Data);
         }
 
+        [Test, MoqAutoData]
         public async Task ValidateTraineeeshipVacancy_Then_The_Request_Is_Sent_To_Mediator_Command(
             Guid id,
             long vacancyRef,

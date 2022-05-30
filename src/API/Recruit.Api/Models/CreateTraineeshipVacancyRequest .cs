@@ -8,7 +8,7 @@ namespace SFA.DAS.Recruit.Api.Models
     {
         public string Title { get; set; }
         public string Description { get; set; }
-        public int RouteId { get; set; }
+        public string RouteId { get; set; }
         public string EmployerAccountId { get; set; }
         public VacancyUser User { get; set; }
         public string EmployerName { get; set; }
@@ -26,11 +26,8 @@ namespace SFA.DAS.Recruit.Api.Models
         public List<string> Skills { get; set; }
         public TraineeshipEmployerNameOption EmployerNameOption { get; set; }
         public string AnonymousReason { get; set; }
-        public string ApplicationInstructions { get; set; }
-        public string ApplicationUrl { get; set; }
-        public CreateTraineeshipVacancyApplicationMethod ApplicationMethod { get; set; }
         public CreateTraineeshipVacancyDisabilityConfident DisabilityConfident { get; set; }
-        public string ThingsToConsider { get; set; }
+        public CreateVacancyApplicationMethod ApplicationMethod { get; set; }
         public string WorkExperience { get; set; }
     }
 
@@ -51,11 +48,6 @@ namespace SFA.DAS.Recruit.Api.Models
         public TraineeshipDurationUnit DurationUnit { get; set; }
     }
 
-    public enum TraineeshipQualificationWeighting
-    {
-        Essential,
-        Desired
-    }
     public enum CreateTraineeshipVacancyApplicationMethod
     {
         ThroughFindAnApprenticeship,
