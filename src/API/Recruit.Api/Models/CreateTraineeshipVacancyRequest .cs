@@ -8,28 +8,24 @@ namespace SFA.DAS.Recruit.Api.Models
     {
         public string Title { get; set; }
         public string Description { get; set; }
-        public string ProgrammeId { get; set; }
+        public int RouteId { get; set; }
         public string EmployerAccountId { get; set; }
         public VacancyUser User { get; set; }
         public string EmployerName { get; set; }
         public string ShortDescription { get; set; }
         public int NumberOfPositions { get; set; }
         public string OutcomeDescription { get; set; }
-
         public string AccountLegalEntityPublicHashedId { get; set; }
         public DateTime ClosingDate { get; set; }
         public DateTime StartDate { get; set; }
-
         public string LegalEntityName { get; set; }
         public string EmployerDescription { get; set; }
         public string TrainingDescription { get; set; }
-
         public CreateTraineeshipVacancyAddress Address { get; set; }
         public CreateTraineeshipVacancyWage Wage { get; set; }
         public List<string> Skills { get; set; }
-        public EmployerNameOption EmployerNameOption { get; set; }
+        public TraineeshipEmployerNameOption EmployerNameOption { get; set; }
         public string AnonymousReason { get; set; }
-        public List<CreateTraineeshipVacancyQualification> Qualifications { get; set; }
         public string ApplicationInstructions { get; set; }
         public string ApplicationUrl { get; set; }
         public CreateTraineeshipVacancyApplicationMethod ApplicationMethod { get; set; }
@@ -37,8 +33,6 @@ namespace SFA.DAS.Recruit.Api.Models
         public string ThingsToConsider { get; set; }
         public string WorkExperience { get; set; }
     }
-
-
 
     public class CreateTraineeshipVacancyAddress
     {
@@ -51,22 +45,10 @@ namespace SFA.DAS.Recruit.Api.Models
 
     public class CreateTraineeshipVacancyWage
     {
-        public string WageAdditionalInformation { get; set; }
-        public decimal? FixedWageYearlyAmount { get; set; }
         public decimal WeeklyHours { get; set; }
         public int Duration { get; set; }
         public string WorkingWeekDescription { get; set; }
-
-        public WageType WageType { get; set; }
-        public DurationUnit DurationUnit { get; set; }
-    }
-
-    public class CreateTraineeshipVacancyQualification
-    {
-        public string QualificationType { get; set; }
-        public string Subject { get; set; }
-        public string Grade { get; set; }
-        public QualificationWeighting Weighting { get; set; }
+        public TraineeshipDurationUnit DurationUnit { get; set; }
     }
 
     public enum TraineeshipQualificationWeighting
@@ -81,20 +63,11 @@ namespace SFA.DAS.Recruit.Api.Models
         ThroughFindATraineeship
     }
 
-    public enum TraineeshipWageType
-    {
-        FixedWage,
-        NationalMinimumWageForApprentices,
-        NationalMinimumWage,
-        Unspecified
-    }
-
     public enum TraineeshipDurationUnit
     {
         Month,
         Year
     }
-
     public enum TraineeshipEmployerNameOption
     {
         RegisteredName,

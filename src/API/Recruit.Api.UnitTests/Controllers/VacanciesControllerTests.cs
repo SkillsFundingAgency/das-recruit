@@ -32,7 +32,7 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Controllers
             _mockMediator.Setup(x => x.Send(It.IsAny<GetVacanciesQuery>(), CancellationToken.None))
                         .ReturnsAsync(new GetVacanciesResponse())
                         .Callback<IRequest<GetVacanciesResponse>, CancellationToken>((q, _) => _queryPassed = (GetVacanciesQuery)q);
-            _sut = new VacanciesController(_mockMediator.Object, new ServiceParameters(""));
+            _sut = new VacanciesController(_mockMediator.Object, new ServiceParameters(VacancyType.Apprenticeship.ToString()));
         }
 
         [Xunit.Theory]

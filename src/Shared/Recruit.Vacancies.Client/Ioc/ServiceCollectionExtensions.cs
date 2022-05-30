@@ -257,18 +257,6 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
             services.AddTransient<AbstractValidator<Qualification>, QualificationValidator>();
         }
 
-        //private static void AddValidation(IServiceCollection services)
-        //{
-        //    services.AddSingleton<AbstractValidator<Vacancy>, FluentVacancyValidator>();
-        //    services.AddSingleton(typeof(IEntityValidator<,>), typeof(EntityValidator<,>));
-
-        //    services.AddSingleton<AbstractValidator<ApplicationReview>, ApplicationReviewValidator>();
-        //    services.AddSingleton<AbstractValidator<VacancyReview>, VacancyReviewValidator>();
-
-        //    services.AddSingleton<AbstractValidator<UserNotificationPreferences>, UserNotificationPreferencesValidator>();
-        //    services.AddSingleton<AbstractValidator<Qualification>, QualificationValidator>();
-        //}
-
         private static void AddRules(IServiceCollection services)
         {
             services.AddTransient<RuleSet<Vacancy>, VacancyRuleSet>();

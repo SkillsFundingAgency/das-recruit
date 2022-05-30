@@ -29,30 +29,14 @@ namespace SFA.DAS.Recruit.Api.Mappers
                 Title = request.Title,
                 EmployerName = request.EmployerName,
                 LegalEntityName = request.LegalEntityName,
-                ApplicationMethod = (ApplicationMethod?)request.ApplicationMethod,
-                ApplicationInstructions = request.ApplicationInstructions,
-                ApplicationUrl = request.ApplicationUrl,
-                Qualifications = request.Qualifications
-                    .Select(c =>
-                        new Qualification
-                        {
-                            Grade = c.Grade,
-                            Subject = c.Subject,
-                            Weighting = (QualificationWeighting?)c.Weighting,
-                            QualificationType = c.QualificationType
-                        })
-                    .ToList(),
+                ApplicationMethod = (ApplicationMethod?)CreateTraineeshipVacancyApplicationMethod.ThroughFindATraineeship,
                 Wage = new Wage
                 {
-                    WageType = (WageType)request.Wage.WageType,
                     WorkingWeekDescription = request.Wage.WorkingWeekDescription,
                     WeeklyHours = request.Wage.WeeklyHours,
                     Duration = request.Wage.Duration,
                     DurationUnit = (DurationUnit?)request.Wage.DurationUnit,
-                    WageAdditionalInformation = request.Wage.WageAdditionalInformation,
-                    FixedWageYearlyAmount = request.Wage.FixedWageYearlyAmount
                 },
-
                 ShortDescription = request.ShortDescription,
                 NumberOfPositions = request.NumberOfPositions,
                 OutcomeDescription = request.OutcomeDescription,
@@ -60,7 +44,7 @@ namespace SFA.DAS.Recruit.Api.Mappers
                 AccountLegalEntityPublicHashedId = request.AccountLegalEntityPublicHashedId,
                 ClosingDate = request.ClosingDate,
                 StartDate = request.StartDate,
-                ProgrammeId = request.ProgrammeId,
+                RouteId = request.RouteId,
                 EmployerNameOption = (EmployerNameOption?)request.EmployerNameOption,
                 AnonymousReason = request.AnonymousReason,
                 EmployerDescription = request.EmployerDescription,
