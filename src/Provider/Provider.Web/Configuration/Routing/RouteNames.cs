@@ -119,5 +119,6 @@
         public const string WorkExperience_Post = "work-experience-post";
         public const string TraineeSector_Get = "trainee-sector-get";
         public const string TraineeSector_Post = "trainee-sector-post";
+        public const string TraineeshipHelp = "trainee-help-get";
     }
 }
