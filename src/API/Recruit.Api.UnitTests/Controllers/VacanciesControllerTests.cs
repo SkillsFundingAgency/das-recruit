@@ -167,6 +167,5 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Controllers
             actualResult.Value.Should().Be((long)response.Data);
         }
 
-
     }
 }

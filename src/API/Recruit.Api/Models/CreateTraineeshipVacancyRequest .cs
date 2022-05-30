@@ -27,7 +27,6 @@ namespace SFA.DAS.Recruit.Api.Models
         public TraineeshipEmployerNameOption EmployerNameOption { get; set; }
         public string AnonymousReason { get; set; }
         public CreateTraineeshipVacancyDisabilityConfident DisabilityConfident { get; set; }
-        public CreateVacancyApplicationMethod ApplicationMethod { get; set; }
         public string WorkExperience { get; set; }
     }
 
@@ -47,14 +46,6 @@ namespace SFA.DAS.Recruit.Api.Models
         public string WorkingWeekDescription { get; set; }
         public TraineeshipDurationUnit DurationUnit { get; set; }
     }
-
-    public enum CreateTraineeshipVacancyApplicationMethod
-    {
-        ThroughFindAnApprenticeship,
-        ThroughExternalApplicationSite,
-        ThroughFindATraineeship
-    }
-
     public enum TraineeshipDurationUnit
     {
         Month,
