@@ -144,7 +144,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part1
             actual.Success.Should().BeTrue();
             recruitVacancyClient.Verify(x => x.UpdateDraftVacancyAsync(vacancy, vacancyUser), Times.Once);
             vacancy.ProviderReviewFieldIndicators
-                .FirstOrDefault(indicator => indicator.FieldIdentifier == FieldIdentifiers.TraineeSector).Should().BeNull();
+                .FirstOrDefault(indicator => indicator.FieldIdentifier == FieldIdentifiers.TraineeRoute).Should().BeNull();
         }
 
         [Test, MoqAutoData]
@@ -171,7 +171,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part1
             actual.Success.Should().BeTrue();
             recruitVacancyClient.Verify(x => x.UpdateDraftVacancyAsync(vacancy, vacancyUser), Times.Once);
             vacancy.ProviderReviewFieldIndicators
-                .FirstOrDefault(indicator => indicator.FieldIdentifier == FieldIdentifiers.TraineeSector).Should().NotBeNull()
+                .FirstOrDefault(indicator => indicator.FieldIdentifier == FieldIdentifiers.TraineeRoute).Should().NotBeNull()
                 .And.Match<ProviderReviewFieldIndicator>(indicator => indicator.IsChangeRequested);
         }
         

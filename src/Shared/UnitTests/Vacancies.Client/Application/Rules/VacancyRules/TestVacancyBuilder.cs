@@ -13,7 +13,6 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.Rules.VacancyRules
                 EmployerLocation = new Address(),
                 EmployerContact = new ContactDetail(),
                 Skills = new List<string>(),
-                Qualifications = new List<Qualification>(),
                 Wage = new Wage()
             };
         }
