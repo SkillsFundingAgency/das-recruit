@@ -16,8 +16,21 @@ namespace Esfa.Recruit.Provider.Web.Controllers
         {
             return View();
         }
+        
         [HttpGet("traineeship-terms-and-conditions", Name = RouteNames.TraineeshipTermsAndConditions)]
         public IActionResult TermsAndConditions()
+        {
+            return View();
+        }
+        
+        [HttpGet("traineeship-cookies", Name = RouteNames.TraineeshipCookies)]
+        public IActionResult Cookies()
+        {
+            return View();
+        }
+        
+        [HttpGet("traineeship-cookies-details", Name = RouteNames.TraineeshipCookiesDetails)]
+        public IActionResult CookiesDetails()
         {
             return View();
         }
