@@ -150,6 +150,7 @@ namespace SFA.DAS.Recruit.Api.Commands
             draftVacancyFromRequest.OwnerType = newVacancy.OwnerType;
             draftVacancyFromRequest.SourceOrigin = newVacancy.SourceOrigin;
             draftVacancyFromRequest.SourceType = newVacancy.SourceType;
+            draftVacancyFromRequest.VacancyType = newVacancy.VacancyType;
 
             var now = _timeProvider.Now;
 
@@ -168,6 +169,7 @@ namespace SFA.DAS.Recruit.Api.Commands
 
             draftVacancyFromRequest.LastUpdatedDate = now;
             draftVacancyFromRequest.LastUpdatedByUser = request.VacancyUserDetails;
+ 
             return draftVacancyFromRequest;
         }
 
