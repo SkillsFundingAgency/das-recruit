@@ -121,5 +121,6 @@
         public const string TraineeSector_Post = "trainee-sector-post";
         public const string TraineeshipHelp = "trainee-help-get";
         public const string TraineeshipPrivacy = "trainee-privacy-get";
+        public const string TraineeshipTermsAndConditions = "trainee-terms-and-conditions";
     }
 }
