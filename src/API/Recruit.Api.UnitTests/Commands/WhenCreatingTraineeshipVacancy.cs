@@ -181,6 +181,7 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Commands
                   && c.Status == VacancyStatus.Submitted
                   && c.VacancyReference == vacancy.VacancyReference
                   && c.CreatedByUser == vacancy.CreatedByUser
+                  && c.VacancyType == vacancy.VacancyType
                   && c.Title == command.Vacancy.Title
                   && c.CreatedByUser == vacancy.CreatedByUser
                   && c.CreatedDate == vacancy.CreatedDate
