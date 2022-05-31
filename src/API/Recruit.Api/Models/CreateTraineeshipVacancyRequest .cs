@@ -8,7 +8,7 @@ namespace SFA.DAS.Recruit.Api.Models
     {
         public string Title { get; set; }
         public string Description { get; set; }
-        public string RouteId { get; set; }
+        public int RouteId { get; set; }
         public string EmployerAccountId { get; set; }
         public VacancyUser User { get; set; }
         public string EmployerName { get; set; }
