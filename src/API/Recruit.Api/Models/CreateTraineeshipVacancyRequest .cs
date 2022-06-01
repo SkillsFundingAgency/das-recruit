@@ -48,8 +48,8 @@ namespace SFA.DAS.Recruit.Api.Models
     }
     public enum TraineeshipDurationUnit
     {
-        Month,
-        Year
+        Week,
+        Month
     }
     public enum TraineeshipEmployerNameOption
     {
