@@ -150,7 +150,7 @@ namespace Esfa.Recruit.Qa.Web.Mappings
                 return new List<FieldIdentifierViewModel>
                 {
                     //These need to be in display order
-                    new FieldIdentifierViewModel { FieldIdentifier = FieldIdentifiers.Title, Text = "Title" },
+                    new FieldIdentifierViewModel { FieldIdentifier = FieldIdentifiers.Title, Text = "Vacancy title" },
                     new FieldIdentifierViewModel { FieldIdentifier = FieldIdentifiers.ShortDescription, Text = "Brief overview" },
                     new FieldIdentifierViewModel { FieldIdentifier = FieldIdentifiers.ClosingDate, Text = "Closing date" },
                     // summary section
