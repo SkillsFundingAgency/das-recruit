@@ -9,6 +9,7 @@ using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Models;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelationship;
 
 namespace Esfa.Recruit.Provider.Web.Orchestrators
@@ -44,7 +45,9 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             var serviceParametersVacancyType = _serviceParameters.VacancyType.GetValueOrDefault();
             var dashboardTask = _vacancyClient.GetDashboardAsync(user.Ukprn.Value, serviceParametersVacancyType, true);
             var userDetailsTask = _client.GetUsersDetailsAsync(user.UserId);
-            var providerTask = _providerRelationshipsService.GetLegalEntitiesForProviderAsync(user.Ukprn.Value, serviceParametersVacancyType == VacancyType.Apprenticeship ? OperationType.RecruitmentRequiresReview : OperationType.Recruitment);
+            var providerTask = serviceParametersVacancyType == VacancyType.Apprenticeship 
+                ? _providerRelationshipsService.GetLegalEntitiesForProviderAsync(user.Ukprn.Value, OperationType.RecruitmentRequiresReview)
+                : Task.FromResult((IEnumerable<EmployerInfo>)new List<EmployerInfo>());
 
             await Task.WhenAll(dashboardTask, userDetailsTask, providerTask);
 
