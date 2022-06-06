@@ -23,9 +23,9 @@
         <p asp-show="@Model.IsWithdrawn" class="govuk-inset-text">
             This vacancy has issues and was closed on @Model.WithdrawnDate.
         </p>
-        <div asp-show="Model.HasVacancyClosedInfoMessage" class="info-summary govuk-!-margin-bottom-0">
-            <p class="govuk-body">@Model.VacancyClosedInfoMessage</p>
-            <p class="govuk-body">The vacancy will be unpublished from the Find an apprenticeship service within the next hour.</p>
+        <div asp-show="Model.HasVacancyClosedInfoMessage" class="das-notification das-notification--information">
+            <p class="das-notification__body">@Model.VacancyClosedInfoMessage</p>
+            <p class="das-notification__body">The vacancy will be unpublished from the Find an apprenticeship service within the next hour.</p>
         </div>
     </div>
 </div>
