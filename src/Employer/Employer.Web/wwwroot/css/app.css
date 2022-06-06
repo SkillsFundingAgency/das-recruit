@@ -230,6 +230,30 @@
     display: none;
 }
 
+/* Analytics styles for vacancies */
+
+.app-analytics {
+    background: #f3f2f1;
+}
+
+.app-analytics__heading {
+    padding: 5px 10px;
+    background: #ddd;
+    margin: 0;
+}
+
+.app-analytics__data {
+    padding: 10px;
+    font-weight: 700;
+    margin: 0;
+}
+
+.app-analytics__summary {
+    border-top: 1px solid #ccc;
+    padding: 5px 10px;
+}
+
+
 /* Local overrides to the das-task-list component */
 
 .das-task-list__section {
