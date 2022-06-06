@@ -8,14 +8,11 @@ using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Events;
 using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
-using Esfa.Recruit.Vacancies.Client.Domain.Models;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelationship;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using NLog;
 using SFA.DAS.Recruit.Api.Models;
 using EmployerNameOption = Esfa.Recruit.Vacancies.Client.Domain.Entities.EmployerNameOption;
 
@@ -24,34 +21,28 @@ namespace SFA.DAS.Recruit.Api.Commands
     public class CreateTraineeshipVacancyCommandHandler : IRequestHandler<CreateTraineeshipVacancyCommand, CreateTraineeshipVacancyCommandResponse>
     {
         private readonly IRecruitVacancyClient _recruitVacancyClient;
-        private readonly IEmployerVacancyClient _employerVacancyClient;
         private readonly IVacancyRepository _vacancyRepository;
         private readonly IMessaging _messaging;
         private readonly ITimeProvider _timeProvider;
         private readonly ITrainingProviderService _trainingProviderService;
         private readonly IProviderVacancyClient _providerVacancyClient;
-        private readonly IProviderRelationshipsService _providerRelationshipsService;
         private readonly ILogger<CreateTraineeshipVacancyCommandHandler> _logger;
 
         public CreateTraineeshipVacancyCommandHandler(
             IRecruitVacancyClient recruitVacancyClient,
-            IEmployerVacancyClient employerVacancyClient,
             IVacancyRepository vacancyRepository,
             IMessaging messaging,
             ITimeProvider timeProvider,
             ITrainingProviderService trainingProviderService,
             IProviderVacancyClient providerVacancyClient,
-            IProviderRelationshipsService providerRelationshipsService,
             ILogger<CreateTraineeshipVacancyCommandHandler> logger)
         {
             _recruitVacancyClient = recruitVacancyClient;
-            _employerVacancyClient = employerVacancyClient;
             _vacancyRepository = vacancyRepository;
             _messaging = messaging;
             _timeProvider = timeProvider;
             _trainingProviderService = trainingProviderService;
             _providerVacancyClient = providerVacancyClient;
-            _providerRelationshipsService = providerRelationshipsService;
             _logger = logger;
         }
         public async Task<CreateTraineeshipVacancyCommandResponse> Handle(CreateTraineeshipVacancyCommand request, CancellationToken cancellationToken)
