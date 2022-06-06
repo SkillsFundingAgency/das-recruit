@@ -52,7 +52,7 @@ namespace SFA.DAS.Recruit.Api.Mappers
                 DisabilityConfident = (DisabilityConfident)request.DisabilityConfident,
                 WorkExperience = request.WorkExperience,
                 ApplicationMethod = ApplicationMethod.ThroughFindATraineeship,
-                CreatedByUser = request.User,
+                CreatedByUser = request.User
             };
         }
     }
