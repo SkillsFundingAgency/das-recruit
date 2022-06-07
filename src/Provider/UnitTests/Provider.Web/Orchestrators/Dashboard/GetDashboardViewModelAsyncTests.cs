@@ -85,18 +85,17 @@ namespace Esfa.Recruit.Provider.UnitTests.Employer.Web.Orchestrators.Dashboard
 
             var actual = await orch.GetDashboardViewModelAsync(_user);
 
-
-            
-            if (vacancyType == VacancyType.Traineeship)
-            {
-                actual.HasEmployerReviewPermission.Should().BeFalse();
-            }
-
             if (vacancyType == VacancyType.Apprenticeship)
             {
                 _permissionServiceMock.Verify(x=>x.GetLegalEntitiesForProviderAsync(Ukprn, OperationType.RecruitmentRequiresReview));
                 actual.HasEmployerReviewPermission.Should().BeTrue();
             }
+            if (vacancyType == VacancyType.Traineeship)
+            {
+                actual.HasEmployerReviewPermission.Should().BeFalse();
+            }
+            
+        
         }
 
         private DashboardOrchestrator GetSut(List<VacancySummary> vacancies, VacancyType vacancyType)
