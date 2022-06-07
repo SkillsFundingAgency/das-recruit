@@ -45,18 +45,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelation
             var providerPermissions = await GetProviderPermissionsAsync(accountHashedId, operation);
             
             return await GetEmployerInfosAsync(providerPermissions);
-        }
-
-        public async Task<IEnumerable<LegalEntity>> GetAccountLegalEntitiesForProvider(long ukprn, string accountHashedId, OperationType operationType)
-        {
-            var permittedLegalEntities = await GetProviderPermissionsforEmployer(ukprn, accountHashedId, operationType);
-            
-            return permittedLegalEntities.Select(c=> new LegalEntity
-            {
-                AccountLegalEntityPublicHashedId = c.AccountLegalEntityPublicHashedId,
-                Name = c.AccountLegalEntityName
-            });
-        }
+        }      
 
         public async Task<bool> HasProviderGotEmployersPermissionAsync(long ukprn, string accountHashedId, string accountLegalEntityPublicHashedId, OperationType operation)
         {

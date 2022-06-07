@@ -9,6 +9,7 @@ using Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview;
 using Esfa.Recruit.Shared.Web.FeatureToggle;
 using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Commands;
+using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
@@ -81,7 +82,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators
             var messagingMock = new Mock<IMessaging>();
 
             var orch = new VacancyPreviewOrchestrator(vacancyClient.Object, logger.Object, mapper, review.Object, permission.Object,
-                legalEntityAgreement.Object, agreementServiceMock.Object, messagingMock.Object, new Utility(vacancyClient.Object, Mock.Of<IFeature>()));
+                legalEntityAgreement.Object, agreementServiceMock.Object, messagingMock.Object, new Utility(vacancyClient.Object, Mock.Of<IFeature>()), new ServiceParameters("Apprenticeship"));
 
             var m = new SubmitEditModel
             {
@@ -102,9 +103,11 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators
         }
 
         [Theory]
-        [InlineData(true)]
-        [InlineData(false)]
-        public async Task SubmitVacancyAsync_ShouldEithSubmitOrReviewVacancyBasedOnPermission(bool hasProviderReviewPermission)
+        [InlineData(true, VacancyType.Apprenticeship)]
+        [InlineData(false, VacancyType.Apprenticeship)]
+        [InlineData(true, VacancyType.Traineeship)]
+        [InlineData(false, VacancyType.Traineeship)]
+        public async Task SubmitVacancyAsync_ShouldEithSubmitOrReviewVacancyBasedOnPermission(bool hasProviderReviewPermission, VacancyType vacancyType)
         {
             var vacancyId = Guid.NewGuid();
             const long ukprn = 12345678;
@@ -155,7 +158,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators
             var messagingMock = new Mock<IMessaging>();
 
             var orch = new VacancyPreviewOrchestrator(vacancyClient.Object, logger.Object, mapper, review.Object, permission.Object,
-                legalEntityAgreement.Object, agreementServiceMock.Object, messagingMock.Object, new Utility(vacancyClient.Object, Mock.Of<IFeature>()));
+                legalEntityAgreement.Object, agreementServiceMock.Object, messagingMock.Object, new Utility(vacancyClient.Object, Mock.Of<IFeature>()), new ServiceParameters(vacancyType.ToString()));
 
             var m = new SubmitEditModel
             {
@@ -167,13 +170,22 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators
 
             var actualResponse = await orch.SubmitVacancyAsync(m, user);
 
-            var submittedTimes = hasProviderReviewPermission ? Times.Never() : Times.Once();
-            var reviewedTimes = hasProviderReviewPermission ? Times.Once() : Times.Never();
+            var submittedTimes = hasProviderReviewPermission && vacancyType == VacancyType.Apprenticeship ? Times.Never() : Times.Once();
+            var reviewedTimes = hasProviderReviewPermission && vacancyType == VacancyType.Apprenticeship ? Times.Once() : Times.Never();
             messagingMock.Verify(c => c.SendCommandAsync(It.IsAny<SubmitVacancyCommand>()), submittedTimes);
             messagingMock.Verify(c => c.SendCommandAsync(It.IsAny<ReviewVacancyCommand>()), reviewedTimes);
 
-            actualResponse.Data.IsSubmitted.Should().Be(!hasProviderReviewPermission);
-            actualResponse.Data.IsSentForReview.Should().Be(hasProviderReviewPermission);
+            if (vacancyType == VacancyType.Traineeship)
+            {
+                actualResponse.Data.IsSubmitted.Should().Be(true);
+                actualResponse.Data.IsSentForReview.Should().Be(false);
+            }
+            else if (vacancyType == VacancyType.Apprenticeship)
+            {
+                actualResponse.Data.IsSubmitted.Should().Be(!hasProviderReviewPermission);
+                actualResponse.Data.IsSentForReview.Should().Be(hasProviderReviewPermission);
+            }
+            
         }
     }
 }

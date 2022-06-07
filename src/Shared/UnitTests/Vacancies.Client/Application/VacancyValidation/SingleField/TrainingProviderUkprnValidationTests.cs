@@ -1,5 +1,4 @@
 ﻿using Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation;
-using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Models;
@@ -172,34 +171,6 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
 
             result.HasErrors.Should().BeFalse();
             result.Errors.Should().HaveCount(0);
-        }
-        [Fact]
-        public void ShouldErrorIfProviderVacancyHasEmployerPermissionForTraineeship()
-        {
-            const long ukprn = 12345678;
-            const string employerAccountId = "employer-account-id";
-            const string accountLegalEntityPublicHashedId = "1234";
-            ServiceParameters = new ServiceParameters("Traineeship");
-
-            var vacancy = new Vacancy
-            {
-                OwnerType = OwnerType.Provider,
-                TrainingProvider = new TrainingProvider { Ukprn = ukprn },
-                EmployerAccountId = employerAccountId,
-                AccountLegalEntityPublicHashedId = accountLegalEntityPublicHashedId
-            };
-
-            MockTrainingProviderSummaryProvider.Setup(p => p.GetAsync(ukprn)).ReturnsAsync(new TrainingProviderSummary());
-
-            MockProviderRelationshipsService.Setup(p => p.HasProviderGotEmployersPermissionAsync(ukprn, employerAccountId, accountLegalEntityPublicHashedId, OperationType.Recruitment))
-                .ReturnsAsync(true);
-            MockProviderRelationshipsService.Setup(p => p.HasProviderGotEmployersPermissionAsync(ukprn, employerAccountId, accountLegalEntityPublicHashedId, OperationType.RecruitmentRequiresReview))
-                .ReturnsAsync(true);
-
-            var result = Validator.Validate(vacancy, VacancyRuleSet.TrainingProvider);
-
-            result.HasErrors.Should().BeTrue();
-            result.Errors.Should().HaveCount(1);
         }
     }
 }
