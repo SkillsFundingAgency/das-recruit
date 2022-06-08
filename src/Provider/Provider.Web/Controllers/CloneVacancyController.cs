@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Esfa.Recruit.Provider.Web.Configuration.Routing;
 using Esfa.Recruit.Provider.Web.RouteModel;
@@ -51,8 +52,8 @@ namespace Esfa.Recruit.Provider.Web.Controllers
             if (model.HasConfirmedClone == true)
             {
                 var newVacancyId = await _orchestrator.PostCloneVacancyWithSameDates(model, User.ToVacancyUser());
-                TempData.Add(TempDataKeys.VacancyPreviewInfoMessage, InfoMessages.VacancyCloned);
-                return RedirectToRoute(RouteNames.Vacancy_Preview_Get, new { VacancyId = newVacancyId, model.Ukprn });
+                TempData.TryAdd(TempDataKeys.VacancyPreviewInfoMessage, InfoMessages.VacancyCloned);
+                return RedirectToRoute(RouteNames.ProviderCheckYourAnswersGet, new { VacancyId = newVacancyId, model.Ukprn });
             }
             else
             {
@@ -83,8 +84,8 @@ namespace Esfa.Recruit.Provider.Web.Controllers
                 return View(vm);
             }
 
-            TempData.Add(TempDataKeys.VacancyPreviewInfoMessage, InfoMessages.VacancyCloned);
-            return RedirectToRoute(RouteNames.Vacancy_Preview_Get, new { VacancyId = response.Data, model.Ukprn });
+            TempData.TryAdd(TempDataKeys.VacancyPreviewInfoMessage, InfoMessages.VacancyCloned);
+            return RedirectToRoute(RouteNames.ProviderCheckYourAnswersGet, new { VacancyId = response.Data, model.Ukprn });
         }        
     }
 }
