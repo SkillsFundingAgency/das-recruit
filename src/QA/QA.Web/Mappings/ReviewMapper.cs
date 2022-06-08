@@ -151,25 +151,25 @@ namespace Esfa.Recruit.Qa.Web.Mappings
                 {
                     //These need to be in display order
                     new FieldIdentifierViewModel { FieldIdentifier = FieldIdentifiers.Title, Text = "Vacancy title" },
-                    new FieldIdentifierViewModel { FieldIdentifier = FieldIdentifiers.ShortDescription, Text = "Brief overview" },
+                    new FieldIdentifierViewModel { FieldIdentifier = FieldIdentifiers.ShortDescription, Text = "Summary of the traineeship" },
                     new FieldIdentifierViewModel { FieldIdentifier = FieldIdentifiers.ClosingDate, Text = "Closing date" },
                     // summary section
                     new FieldIdentifierViewModel
                     {
                         FieldIdentifier = FieldIdentifiers.TrainingDescription,
-                        Text = "What training will you give the trainee?"
+                        Text = "Training provided"
                     },
                     new FieldIdentifierViewModel
                     {
                         FieldIdentifier = FieldIdentifiers.WorkExperience,
-                        Text = "What work experience will the employer give the trainee?"
+                        Text = "Work experience provided"
                     },
-                    new FieldIdentifierViewModel { FieldIdentifier = FieldIdentifiers.WorkingWeek, Text = "Working week" },
+                    new FieldIdentifierViewModel { FieldIdentifier = FieldIdentifiers.WorkingWeek, Text = "Working week details" },
                     new FieldIdentifierViewModel
-                        { FieldIdentifier = FieldIdentifiers.ExpectedDuration, Text = "Expected duration" },
+                        { FieldIdentifier = FieldIdentifiers.ExpectedDuration, Text = "Duration" },
                     new FieldIdentifierViewModel
-                        { FieldIdentifier = FieldIdentifiers.PossibleStartDate, Text = "Possible start" },
-                    new FieldIdentifierViewModel { FieldIdentifier = FieldIdentifiers.NumberOfPositions, Text = "Positions" },
+                        { FieldIdentifier = FieldIdentifiers.PossibleStartDate, Text = "Traineeship start date" },
+                    new FieldIdentifierViewModel { FieldIdentifier = FieldIdentifiers.NumberOfPositions, Text = "Number of positions" },
                     // requirements and prospects section
                     new FieldIdentifierViewModel { FieldIdentifier = FieldIdentifiers.Skills, Text = "Skills" },
                     new FieldIdentifierViewModel
@@ -178,27 +178,21 @@ namespace Esfa.Recruit.Qa.Web.Mappings
                         Text = "Future prospects"
                     },
                     new FieldIdentifierViewModel
-                        { FieldIdentifier = FieldIdentifiers.ThingsToConsider, Text = "Things to consider" },
+                        { FieldIdentifier = FieldIdentifiers.ThingsToConsider, Text = "Other things to consider" },
                     // about the employer
                     new FieldIdentifierViewModel
-                        { FieldIdentifier = FieldIdentifiers.EmployerDescription, Text = "Employer description" },
+                        { FieldIdentifier = FieldIdentifiers.EmployerDescription, Text = "Employer information" },
                     new FieldIdentifierViewModel { FieldIdentifier = FieldIdentifiers.EmployerName, Text = "Employer name" },
                     new FieldIdentifierViewModel
-                        { FieldIdentifier = FieldIdentifiers.DisabilityConfident, Text = "Disability confident" },
+                        { FieldIdentifier = FieldIdentifiers.DisabilityConfident, Text = "Disability Confident employer?" },
                     new FieldIdentifierViewModel
-                        { FieldIdentifier = FieldIdentifiers.EmployerWebsiteUrl, Text = "Employer website" },
+                        { FieldIdentifier = FieldIdentifiers.EmployerWebsiteUrl, Text = "Organisation website" },
                     new FieldIdentifierViewModel { FieldIdentifier = FieldIdentifiers.EmployerContact, Text = "Contact details" },
                     new FieldIdentifierViewModel
-                        { FieldIdentifier = FieldIdentifiers.EmployerAddress, Text = "Employer address" },
+                        { FieldIdentifier = FieldIdentifiers.EmployerAddress, Text = "Work experience address" },
                     new FieldIdentifierViewModel { FieldIdentifier = FieldIdentifiers.Provider, Text = "Training provider" },
                     new FieldIdentifierViewModel { FieldIdentifier = FieldIdentifiers.ProviderContact, Text = "Contact details" },
-                    new FieldIdentifierViewModel { FieldIdentifier = FieldIdentifiers.TraineeRoute, Text = "Traineeship sector" },
-                    new FieldIdentifierViewModel
-                        { FieldIdentifier = FieldIdentifiers.ApplicationMethod, Text = "Application method" },
-                    new FieldIdentifierViewModel
-                        { FieldIdentifier = FieldIdentifiers.ApplicationUrl, Text = "Apply now web address" },
-                    new FieldIdentifierViewModel
-                        { FieldIdentifier = FieldIdentifiers.ApplicationInstructions, Text = "Application process" }
+                    new FieldIdentifierViewModel { FieldIdentifier = FieldIdentifiers.TraineeRoute, Text = "Traineeship sector" }
                 };
             }
         }
