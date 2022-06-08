@@ -54,13 +54,13 @@
                     <div class="govuk-grid-row">
                         <div class="govuk-grid-column-two-thirds">
                             <h2 class="govuk-heading-m das-cookie-banner__header">Tell us whether you accept cookies</h2>
-                            <p class="das-cookie-banner__message">We use <a asp-external-controller="cookie-details" class="govuk-link govuk-link--no-visited-state">cookies to collect information</a> about how you use this service. We use this information to make the service work as well as possible and improve this service.</p>
+                            <p class="das-cookie-banner__message">We use <a asp-route="@RouteNames.TraineeshipCookiesDetails" class="govuk-link govuk-link--no-visited-state">cookies to collect information</a> about how you use this service. We use this information to make the service work as well as possible and improve this service.</p>
                             <div class="das-cookie-banner__buttons">
                                 <div class="das-cookie-banner__button-wrap das-cookie-banner__button-accept">
                                     <button class="govuk-button das-cookie-banner__button" type="submit" data-accept-cookies="true">Accept all cookies</button>
                                 </div>
                                 <div class="das-cookie-banner__button-wrap das-cookie-banner__button-settings">
-                                    <a asp-external-controller="cookies" class="govuk-button das-cookie-banner__button" role="button" id="btn-cookie-settings">Set cookie preferences</a>
+                                    <a asp-route="@RouteNames.TraineeshipCookies" class="govuk-button das-cookie-banner__button" role="button" id="btn-cookie-settings">Set cookie preferences</a>
                                 </div>
                             </div>
                         </div>
@@ -145,7 +145,7 @@
                             <li class="govuk-footer__inline-list-item"><a class="govuk-footer__link" asp-route="@RouteNames.TraineeshipHelp">Help</a></li>
                             <li class="govuk-footer__inline-list-item"><a class="govuk-footer__link" href="https://www.surveymonkey.co.uk/r/accessmylevysurvey" target="_blank" rel="noopener" aria-label="Give feedback">Feedback </a></li>
                             <li class="govuk-footer__inline-list-item"><a class="govuk-footer__link" asp-route="@RouteNames.TraineeshipPrivacy">Privacy</a></li>
-                            <li class="govuk-footer__inline-list-item"><a class="govuk-footer__link" asp-external-controller="cookies">Cookies</a></li>
+                            <li class="govuk-footer__inline-list-item"><a class="govuk-footer__link" asp-route="@RouteNames.TraineeshipCookies">Cookies</a></li>
                             <li class="govuk-footer__inline-list-item"><a class="govuk-footer__link" asp-route="@RouteNames.TraineeshipTermsAndConditions">Terms and conditions</a></li>
                             <li class="govuk-footer__inline-list-item">Built by the <a href="https://www.gov.uk/government/organisations/education-and-skills-funding-agency" target="_blank" rel="noopener" class="govuk-footer__link">Education and Skills Funding Agency</a></li>
                         </ul>

@@ -122,5 +122,7 @@
         public const string TraineeshipHelp = "trainee-help-get";
         public const string TraineeshipPrivacy = "trainee-privacy-get";
         public const string TraineeshipTermsAndConditions = "trainee-terms-and-conditions";
+        public const string TraineeshipCookies = "trainee-cookies";
+        public const string TraineeshipCookiesDetails = "trainee-cookies-details";
     }
 }
