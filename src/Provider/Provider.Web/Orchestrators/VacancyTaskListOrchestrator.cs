@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -40,7 +41,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             _providerRelationshipsService = providerRelationshipsService;
         }
 
-        public async Task<VacancyPreviewViewModel> GetVacancyTaskListModel(VacancyRouteModel routeModel)
+        public async Task<VacancyPreviewViewModel> GetVacancyTaskListModel(VacancyRouteModel routeModel, VacancyUser user)
         {
             var vacancyTask = _utility.GetAuthorisedVacancyForEditAsync(routeModel, RouteNames.ProviderTaskListGet);
             var programmesTask = _vacancyClient.GetActiveApprenticeshipProgrammesAsync();
@@ -54,6 +55,30 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             var vacancy = vacancyTask.Result;
             var programme = programmesTask.Result.SingleOrDefault(p => p.Id == vacancy.ProgrammeId);
             var hasProviderReviewPermission = await _providerRelationshipsService.HasProviderGotEmployersPermissionAsync(routeModel.Ukprn, vacancy.EmployerAccountId, vacancy.AccountLegalEntityPublicHashedId, OperationType.RecruitmentRequiresReview);
+
+            
+            if (employerInfo.LegalEntities.FirstOrDefault(c =>
+                    c.AccountLegalEntityPublicHashedId.Equals(vacancy.AccountLegalEntityPublicHashedId)) == null)
+            {
+                if (employerInfo.LegalEntities.Count == 1)
+                {
+                    vacancy.LegalEntityName = employerInfo.LegalEntities.FirstOrDefault()?.Name;
+                    vacancy.AccountLegalEntityPublicHashedId = employerInfo.LegalEntities.FirstOrDefault()?.AccountLegalEntityPublicHashedId;
+                }
+                else
+                {
+                    vacancy.LegalEntityName = null;
+                    vacancy.AccountLegalEntityPublicHashedId = null;    
+                }
+                vacancy.EmployerName = null;
+                
+                vacancy.EmployerLocation = null;
+                
+                vacancy.EmployerNameOption = null;
+                vacancy.EmployerDescription = null;
+                await _vacancyClient.UpdateDraftVacancyAsync(vacancy, user);
+            }
+        
             
             var vm = new VacancyPreviewViewModel();
             await _vacancyDisplayMapper.MapFromVacancyAsync(vm, vacancy);

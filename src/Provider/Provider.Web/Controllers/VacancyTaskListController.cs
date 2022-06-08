@@ -1,6 +1,7 @@
 using System.Threading.Tasks;
 using Esfa.Recruit.Provider.Web.Configuration;
 using Esfa.Recruit.Provider.Web.Configuration.Routing;
+using Esfa.Recruit.Provider.Web.Extensions;
 using Esfa.Recruit.Provider.Web.Orchestrators;
 using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
@@ -39,7 +40,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
         
         public async Task<IActionResult> ProviderTaskList(VacancyRouteModel vrm)
         {
-            var viewModel = await _orchestrator.GetVacancyTaskListModel(vrm); 
+            var viewModel = await _orchestrator.GetVacancyTaskListModel(vrm, User.ToVacancyUser()); 
             viewModel.SetSectionStates(viewModel, ModelState);
 
             if (viewModel.Status == VacancyStatus.Rejected || viewModel.Status == VacancyStatus.Referred)
