@@ -24,19 +24,21 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
         private readonly IEmployerVacancyClient _employerVacancyClient;
         private readonly DisplayVacancyViewModelMapper _displayVacancyViewModelMapper;
         private readonly IReviewSummaryService _reviewSummaryService;
+        private readonly IRecruitVacancyClient _vacancyClient;
         private const VacancyRuleSet SoftValidationRules = VacancyRuleSet.MinimumWage | VacancyRuleSet.TrainingExpiryDate;
 
         public VacancyTaskListOrchestrator(ILogger<VacancyTaskListOrchestrator> logger,IRecruitVacancyClient recruitVacancyClient, IUtility utility, 
-            IEmployerVacancyClient employerVacancyClient,  DisplayVacancyViewModelMapper displayVacancyViewModelMapper,IReviewSummaryService reviewSummaryService) : base(logger)
+            IEmployerVacancyClient employerVacancyClient,  DisplayVacancyViewModelMapper displayVacancyViewModelMapper,IReviewSummaryService reviewSummaryService, IRecruitVacancyClient vacancyClient) : base(logger)
         {
             _recruitVacancyClient = recruitVacancyClient;
             _utility = utility;
             _employerVacancyClient = employerVacancyClient;
             _displayVacancyViewModelMapper = displayVacancyViewModelMapper;
             _reviewSummaryService = reviewSummaryService;
+            _vacancyClient = vacancyClient;
         }
 
-        public async Task<VacancyPreviewViewModel> GetVacancyTaskListModel(VacancyRouteModel vrm)
+        public async Task<VacancyPreviewViewModel> GetVacancyTaskListModel(VacancyRouteModel vrm, VacancyUser user)
         {
             var vacancyTask = _utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.EmployerTaskListGet);
             var programmesTask = _recruitVacancyClient.GetActiveApprenticeshipProgrammesAsync();
@@ -44,9 +46,32 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 
             await Task.WhenAll(vacancyTask, programmesTask, getEmployerDataTask);
 
+            var employerInfo = getEmployerDataTask.Result;
             var vacancy = vacancyTask.Result;
             var programme = programmesTask.Result.SingleOrDefault(p => p.Id == vacancy.ProgrammeId);
 
+            if (employerInfo.LegalEntities.FirstOrDefault(c =>
+                    c.AccountLegalEntityPublicHashedId.Equals(vacancy.AccountLegalEntityPublicHashedId)) == null)
+            {
+                if (employerInfo.LegalEntities.Count() == 1)
+                {
+                    vacancy.LegalEntityName = employerInfo.LegalEntities.FirstOrDefault()?.Name;
+                    vacancy.AccountLegalEntityPublicHashedId = employerInfo.LegalEntities.FirstOrDefault()?.AccountLegalEntityPublicHashedId;
+                }
+                else
+                {
+                    vacancy.LegalEntityName = null;
+                    vacancy.AccountLegalEntityPublicHashedId = null;    
+                }
+                vacancy.EmployerName = null;
+                
+                vacancy.EmployerLocation = null;
+                
+                vacancy.EmployerNameOption = null;
+                vacancy.EmployerDescription = null;
+                await _vacancyClient.UpdateDraftVacancyAsync(vacancy, user);
+            }
+            
             var vm = new VacancyPreviewViewModel();
             await _displayVacancyViewModelMapper.MapFromVacancyAsync(vm, vacancy);
 
@@ -67,7 +92,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
                     ReviewFieldMappingLookups.GetPreviewReviewFieldIndicators());
             }
 
-            vm.AccountLegalEntityCount = getEmployerDataTask.Result.LegalEntities.Count();
+            vm.AccountLegalEntityCount = employerInfo.LegalEntities.Count();
             return vm;
         }
 

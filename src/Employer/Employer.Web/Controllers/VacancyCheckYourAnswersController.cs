@@ -23,7 +23,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         
         public async Task<IActionResult> CheckYourAnswers(VacancyRouteModel vrm)
         {
-            var viewModel = await _orchestrator.GetVacancyTaskListModel(vrm); 
+            var viewModel = await _orchestrator.GetVacancyTaskListModel(vrm, User.ToVacancyUser()); 
             
             viewModel.SetSectionStates(viewModel, ModelState);
             
@@ -54,7 +54,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             {
                 VacancyId = m.VacancyId,
                 EmployerAccountId = m.EmployerAccountId
-            });
+            }, User.ToVacancyUser());
             viewModel.SoftValidationErrors = null;
             viewModel.SubmitToEsfa = m.SubmitToEsfa;
             viewModel.RejectedReason = m.RejectedReason;
