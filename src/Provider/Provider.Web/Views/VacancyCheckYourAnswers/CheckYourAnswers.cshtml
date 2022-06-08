@@ -112,12 +112,13 @@
             else
             {
                 <field-review-message field-name="@FieldIdentifiers.TraineeRoute" model="@Model"></field-review-message>
-                <div class="app-summary-list__row">
-                    <dt class="app-summary-list__key">
+                <div class="app-summary-list__row" field-review-marker="RouteTitle">
+                    <dt class="app-summary-list__key" id="@FieldIdentifiers.TraineeRoute">
                         Traineeship sector
                     </dt>
                     <dd class="app-summary-list__value">
                         @Model.RouteTitle
+                        <review-field class="govuk-tag--purple" field-name="@FieldIdentifiers.TraineeRoute" tag-name="strong" model="@Model"/>
                     </dd>
                     <dd class="app-summary-list__actions">
                         <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.TraineeSector_Get" asp-all-route-data="@Model.RouteDictionary">Change<span class="govuk-visually-hidden"> sector</span></a>
