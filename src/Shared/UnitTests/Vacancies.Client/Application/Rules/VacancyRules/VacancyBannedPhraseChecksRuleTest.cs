@@ -81,6 +81,7 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.Rules.VacancyRules
             outcome.Narrative.Should().Contain("Banned phrase 'driving license' found in 'Title'");
             outcome.Narrative.Should().Contain("Banned phrase 'driving license' found 2 times in 'Description'");
             outcome.Narrative.Should().Contain("Banned phrase 'driving license' found in 'Skills'");
+            outcome.Narrative.Should().Contain("Banned phrase 'over 18' found in 'Description'");
             outcome.Narrative.Should().Contain("Banned phrase 'over 18' found in 'Qualifications'");
         }
 
