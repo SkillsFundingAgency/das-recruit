@@ -24,7 +24,8 @@ namespace Esfa.Recruit.Shared.Web.Mappers
                 TrainingLevel = vacancySummary.TrainingLevel,
                 TrainingTitle = vacancySummary.TrainingTitle,
                 TrainingType = vacancySummary.TrainingType,
-                IsTransferred = vacancySummary.TransferInfoTransferredDate.HasValue
+                IsTransferred = vacancySummary.TransferInfoTransferredDate.HasValue,
+                IsTaskListCompleted = vacancySummary.IsTaskListCompleted
             };
 
             return summaryViewModel;

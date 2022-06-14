@@ -19,6 +19,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
         public string LegalEntityName { get; set; }
         public string EmployerAccountId { get; set; }
         public string EmployerName { get; set; }
+        
+        public string EmployerDescription { get; set; }
         public long? Ukprn { get; set; }
         public DateTime? CreatedDate { get; set; }
         public VacancyStatus Status { get; set; }
