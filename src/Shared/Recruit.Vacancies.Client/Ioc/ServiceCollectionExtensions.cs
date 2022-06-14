@@ -146,6 +146,7 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
             services.AddTransient<IPasAccountProvider, PasAccountProvider>();
             services.AddHttpClient<IOuterApiClient, OuterApiClient>();
             services.AddTransient<IOuterApiGeocodeService, OuterApiGeocodeService>();
+            services.AddSingleton<IVacancyTaskListStatusService, VacancyTaskListStatusService>();
 
             // Projection services
             services.AddTransient<IEmployerDashboardProjectionService, EmployerDashboardProjectionService>();
