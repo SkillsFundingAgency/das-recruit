@@ -20,7 +20,8 @@
         }
         else
         {
-            <h2 class="govuk-heading-l">Traineeship summary</h2>}
+            <h2 class="govuk-heading-l">Traineeship summary</h2>
+        }
     </div>
 </div>
 
@@ -40,7 +41,8 @@
                 <li>A work experience placement</li>
                 <li>Help with English and maths (if you need it)</li>
             </ul>
-            <p class="govuk-body">You won’t be paid, but you may be given expenses for things like travel and meals.</p>}
+            <p class="govuk-body">You won’t be paid, but you may be given expenses for things like travel and meals.</p>
+        }
 
         <ul class="govuk-list">
             @if (_serviceParameters.VacancyType == VacancyType.Apprenticeship)
@@ -57,7 +59,8 @@
                 <li>
                     <h3 class="govuk-heading-s">Training provided</h3>
                     <p class="govuk-body">@Model.TrainingDescription</p>
-                </li>}
+                </li>
+            }
 
             <li>
                 <h3 class="govuk-heading-s">Working week</h3>
@@ -103,7 +106,8 @@
                     <p class="govuk-body">@Model.ProviderContactName</p>
                     <p class="govuk-body">@Model.ProviderContactEmail</p>
                     <p class="govuk-body">@Model.ProviderContactTelephone</p>
-                </li>}
+                </li>
+            }
 
             <li>
                 <h3 class="govuk-heading-s">Reference number</h3>
@@ -128,7 +132,8 @@
             <div class="govuk-body">@Html.Raw(Model.TrainingDescription)</div>
             <h3 class="govuk-heading-s">What is the expected career progression after this apprenticeship?</h3>
             <div class="govuk-body">@Html.Raw(Model.OutcomeDescription)</div>
-        </div>}
+        </div>
+    }
 
 
 
@@ -163,13 +168,15 @@
             <ul class="govuk-list">
                 @foreach (var addrLine in Model.EmployerAddressElements)
                 {
-                    <li>@addrLine</li>}
+                    <li>@addrLine</li>
+                }
             </ul>
         </div>
         <div class="govuk-grid-column-one-half">
             <img asp-show="@Model.HasMapUrl" id="static-map" src="@Model.MapUrl"/>
         </div>
-    </div>}
+    </div>
+}
 
 
 <div class="govuk-grid-row">
@@ -192,12 +199,14 @@
         <div class="govuk-grid-column-one-half">
             <h3 class="govuk-heading-s">Things to consider</h3>
             <p class="govuk-body">@Model.ThingsToConsider</p>
-        </div>}
+        </div>
+    }
 </div>
 @if (_serviceParameters.VacancyType == VacancyType.Traineeship)
 {
     <h2 asp-show="@Model.HasSpecifiedThroughExternalApplicationMethod" class="govuk-heading-l">Employer's application instructions</h2>
-    <div asp-show="@Model.HasSpecifiedThroughFaaApplicationMethod"></div>}
+    <div asp-show="@Model.HasSpecifiedThroughFaaApplicationMethod"></div>
+}
 
 @if (_serviceParameters.VacancyType == VacancyType.Apprenticeship)
 {
@@ -206,7 +215,8 @@
             <h3 class="govuk-heading-s">Qualifications</h3>
             <p class="govuk-body">@Html.Raw(string.Join("<br />", Model.Qualifications))</p>
         </div>
-    </div>}
+    </div>
+}
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
@@ -250,7 +260,8 @@
         <div class="govuk-grid-column-one-half">
             <img asp-show="@Model.HasMapUrl" id="static-map" src="@Model.MapUrl"/>
         </div>
-    </div>}
+    </div>
+}
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
         <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
@@ -258,7 +269,7 @@
 </div>
 
 @if (_serviceParameters.VacancyType == VacancyType.Apprenticeship)
-{
+    {
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-full">
             <h2 class="govuk-heading-l">Training</h2>
@@ -269,38 +280,40 @@
         <div class="govuk-grid-column-one-third">
             <h3 class="govuk-heading-s">Apprenticeship @Model.TrainingType</h3>
             <p class="govuk-body">@Model.TrainingTitle</p>
-        </div> }
-        else
-        {
-        <div class="govuk-grid-column-one-third">
-            <h3 class="govuk-heading-s">Traineeship sector </h3>
-            <p class="govuk-body">@Model.RouteTitle</p>
-        </div>}
-    </div>
-
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-full">
-            <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
         </div>
-    </div>
-    <div id="offline-vacancy">
+
         <div class="govuk-grid-row">
             <div class="govuk-grid-column-full">
-                <h2 asp-show="@Model.ShowGeneralApplicationProcessSectionTitle" class="govuk-heading-l">Application process</h2>
-                <h2 asp-show="@Model.HasSpecifiedThroughExternalApplicationMethod" class="govuk-heading-l">Employer's application instructions</h2>
-                <div asp-show="@Model.HasSpecifiedThroughFaaApplicationMethod">
-                    <p class="govuk-body">Candidates will apply through the <a href="@Model.FindAnApprenticeshipUrl" class="govuk-body govuk-link" rel="noopener" target="_blank">Find an apprenticeship service</a></p>
-                </div>
-                <div asp-show="@Model.HasSpecifiedThroughExternalApplicationMethod">
-                    <p class="govuk-body"> This apprenticeship requires you to apply through the employer'swebsite.</p>
-                    <p class="govuk-body"> Model.ApplicationUrl </p>
-                </div>
-                <div asp-show="@Model.HasApplicationInstructions">
-                    <p class="govuk-body">Model.ApplicationInstructions</p>
+                <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+            </div>
+        </div>
+        <div id="offline-vacancy">
+            <div class="govuk-grid-row">
+                <div class="govuk-grid-column-full">
+                    <h2 asp-show="@Model.ShowGeneralApplicationProcessSectionTitle" class="govuk-heading-l">Application process</h2>
+                    <h2 asp-show="@Model.HasSpecifiedThroughExternalApplicationMethod" class="govuk-heading-l">Employer's application instructions</h2>
+                    <div asp-show="@Model.HasSpecifiedThroughFaaApplicationMethod">
+                        <p class="govuk-body">Candidates will apply through the <a href="@Model.FindAnApprenticeshipUrl" class="govuk-body govuk-link" rel="noopener" target="_blank">Find an apprenticeship service</a></p>
+                    </div>
+                    <div asp-show="@Model.HasSpecifiedThroughExternalApplicationMethod">
+                        <p class="govuk-body"> This apprenticeship requires you to apply through the employer'swebsite.</p>
+                        <p class="govuk-body"> Model.ApplicationUrl </p>
+                    </div>
+                    <div asp-show="@Model.HasApplicationInstructions">
+                        <p class="govuk-body">Model.ApplicationInstructions</p>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>}
+    </div>
+     }
+else
+    {
+        <div class="govuk-grid-column-one-third">
+            <h3 class="govuk-heading-s">Traineeship sector </h3>
+            <p class="govuk-body">@Model.RouteTitle</p>
+        </div>
+    }
 
 
 <div class="govuk-grid-row">
