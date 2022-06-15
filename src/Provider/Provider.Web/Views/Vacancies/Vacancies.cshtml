@@ -148,13 +148,12 @@
                                 <a id="preview-@vacancy.Id" asp-show="@vacancy.IsSubmittable" asp-route="@RouteNames.DisplayVacancy_Get" asp-route-ukprn="@Model.Ukprn" asp-route-vacancyId="@vacancy.Id" class="govuk-link">@GetLinkText(vacancy) <span class="govuk-visually-hidden">@vacancy.Title</span></a>
                             </esfaFeatureDisabled>
                             <esfaFeatureEnabled name="@FeatureNames.ProviderTaskList">
-                                @if (vacancy.Status == VacancyStatus.Referred || vacancy.Status == VacancyStatus.Rejected)
+                                @if (vacancy.Status == VacancyStatus.Referred || vacancy.Status == VacancyStatus.Rejected || vacancy.IsTaskListCompleted)
                                 {
                                     <a id="task-list-@vacancy.Id" asp-show="@vacancy.IsSubmittable" asp-route="@RouteNames.ProviderCheckYourAnswersGet" asp-route-ukprn="@Model.Ukprn" asp-route-vacancyId="@vacancy.Id" class="govuk-link">@GetLinkText(vacancy) <span class="govuk-visually-hidden">@vacancy.Title</span></a> 
                                 }
                                 else
                                 {
-                                    @*Model.TaskListSectionFourState == VacancyTaskListSectionState.Completed*@
                                     <a id="task-list-@vacancy.Id" asp-show="@vacancy.IsSubmittable" asp-route="@RouteNames.ProviderTaskListGet" asp-route-ukprn="@Model.Ukprn" asp-route-vacancyId="@vacancy.Id" class="govuk-link">@GetLinkText(vacancy) <span class="govuk-visually-hidden">@vacancy.Title</span></a>
                                 }
                             </esfaFeatureEnabled>
