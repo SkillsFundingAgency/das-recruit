@@ -47,6 +47,12 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.Rules.VacancyRules
             entity.Skills = skills.ToList();
             return entity;
         }
+        
+        internal static Vacancy SetQualifications(this Vacancy entity, IEnumerable<Qualification> qualifications)
+        {
+            entity.Qualifications = qualifications.ToList();
+            return entity;
+        }
 
         internal static Vacancy SetDetails(this Vacancy entity, string title, string description)
         {

@@ -63,7 +63,8 @@ namespace Esfa.Recruit.Provider.Web.TagHelpers
                     { "TrainingTitle", "Training" },
                     { "ProviderContactName", "ProviderContact" },
                     { "ProviderContactEmail", "ProviderContact" },
-                    { "ProviderContactTelephone", "ProviderContact" }
+                    { "ProviderContactTelephone", "ProviderContact" },
+                    { "RouteTitle", "TraineeRoute" }
                 };
             }
         }

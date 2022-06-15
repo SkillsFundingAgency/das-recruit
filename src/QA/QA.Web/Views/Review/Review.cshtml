@@ -1,10 +1,17 @@
 @using Esfa.Recruit.Shared.Web.Mappers
 @using Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
 @using Esfa.Recruit.Vacancies.Client.Domain.Entities
-@using Humanizer
 @model ReviewViewModel
 @{
-    var isApprenticeshipVacancyType = Model.VacancyType.GetValueOrDefault() == VacancyType.Apprenticeship; 
+    var isApprenticeshipVacancyType = Model.VacancyType.GetValueOrDefault() == VacancyType.Apprenticeship;
+    if (isApprenticeshipVacancyType)
+    {
+        ViewBag.Title = "Apprenticeship review page";
+    }
+    else
+    {
+        ViewBag.Title = "Traineeship review page";
+    }
 }
 <div class="review-container">
     <form asp-route="@RouteNames.Vacancy_Review_Post">
@@ -358,7 +365,7 @@
         </div>
         <div class="govuk-grid-row">
             <div class="govuk-grid-column-full">
-                <div class="@Model.ThingsToConsiderClass" id="@FieldIdentifiers.ThingsToConsider">
+                <div asp-hide="@string.IsNullOrEmpty(Model.ThingsToConsider)" class="@Model.ThingsToConsiderClass" id="@FieldIdentifiers.ThingsToConsider">
                     <h3 class="govuk-heading-s">Things to consider (optional)</h3>
 
                     <p class="govuk-body">@Model.ThingsToConsider</p>
@@ -415,7 +422,7 @@
                                           asp-value="@FieldIdentifiers.DisabilityConfident"
                                           asp-items="@Model.FieldIdentifiers"></esfa-review-checkbox>
                 </div>
-                <div class="@Model.EmployerWebsiteUrlClass" id="@FieldIdentifiers.EmployerWebsiteUrl">
+                <div asp-show="@(!string.IsNullOrEmpty(Model.EmployerWebsiteUrl) || Model.IsAnonymous)" class="@Model.EmployerWebsiteUrlClass" id="@FieldIdentifiers.EmployerWebsiteUrl">
                     <h3 class="govuk-heading-s">Website (optional)</h3>
                     <div asp-show="@Model.IsAnonymous" class="govuk-hint">Website will not be shown as the employer is anonymous</div>
                     <p class="govuk-body">@Model.EmployerWebsiteUrl</p>
@@ -426,7 +433,7 @@
             </div>
 
             <div class="govuk-grid-column-one-third">
-                <div asp-show="@Model.IsEmployerVacancy" class="@Model.EmployerContactClass" id="@FieldIdentifiers.EmployerContact">
+                <div asp-show="@(Model.IsEmployerVacancy && !string.IsNullOrEmpty(Model.EmployerContactName + Model.EmployerContactEmail + Model.EmployerContactTelephone))" class="@Model.EmployerContactClass" id="@FieldIdentifiers.EmployerContact">
                     <h3 class="govuk-heading-s">Contact details (optional)</h3>
                     <p class="govuk-body">@Model.EmployerContactName</p>
                     <p class="govuk-body">@Model.EmployerContactEmail</p>
@@ -476,7 +483,7 @@
                                           asp-value="@FieldIdentifiers.Provider"
                                           asp-items="@Model.FieldIdentifiers"></esfa-review-checkbox>
                 </div>
-                <div asp-show="@Model.IsProviderVacancy" class="@Model.ProviderContactClass" id="@FieldIdentifiers.ProviderContact">
+                <div asp-show="@(Model.IsProviderVacancy && !string.IsNullOrEmpty(Model.ProviderContactName + Model.ProviderContactEmail + Model.ProviderContactTelephone))" class="@Model.ProviderContactClass" id="@FieldIdentifiers.ProviderContact">
                     <h3 class="govuk-heading-s">Contact details (optional)</h3>
                     <p class="govuk-body">@Model.ProviderContactName</p>
                     <p class="govuk-body">@Model.ProviderContactEmail</p>

@@ -1,6 +1,7 @@
-﻿@model DisplayVacancyViewModel
+@model DisplayVacancyViewModel
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
+        <h3 class="govuk-heading-s govuk-!-margin-top-0">Brief overview</h3>
         <p class="govuk-body">@Model.ShortDescription</p>
     </div>
     <div class="govuk-grid-column-one-third">
@@ -8,9 +9,7 @@
         <p class="govuk-body" id="vacancy-closing-date">@Model.ClosingDate</p>
     </div>
 </div>
-
 <div class="govuk-grid-row">
-
     <div class="govuk-grid-column-full">
         @if (_serviceParameters.VacancyType == VacancyType.Apprenticeship)
         {
@@ -20,9 +19,9 @@
         {
             <h2 class="govuk-heading-l">Traineeship summary</h2>
         }
+
     </div>
 </div>
-
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-one-third">
         @if (_serviceParameters.VacancyType == VacancyType.Traineeship)
@@ -66,7 +65,7 @@
                 <p class="govuk-body">Total hours per week: @Model.HoursPerWeek</p>
             </li>
             <li>
-                <h3 class="govuk-heading-s">Expected duration</h3>
+                <h3 class="govuk-heading-s">Expected apprenticeship duration</h3>
                 <p class="govuk-body">@Model.ExpectedDuration</p>
             </li>
             <li>
@@ -105,7 +104,6 @@
                     <p class="govuk-body">@Model.ProviderContactTelephone</p>
                 </li>
             }
-
             <li>
                 <h3 class="govuk-heading-s">Reference number</h3>
                 <p class="govuk-body">@Model.VacancyReferenceNumber</p>
@@ -113,10 +111,6 @@
             <li>
                 <h3 class="govuk-heading-s">Positions</h3>
                 <p class="govuk-body">@Model.NumberOfPositionsCaption</p>
-            </li>
-            <li>
-                <h3 class="govuk-heading-s">Work experience provided</h3>
-                <p class="govuk-body">@Model.WorkExperience</p>
             </li>
         </ul>
     </div>
@@ -131,7 +125,6 @@
             <div class="govuk-body">@Html.Raw(Model.OutcomeDescription)</div>
         </div>
     }
-
 
 
 </div>
@@ -178,17 +171,28 @@
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
-        <h2 class="govuk-heading-l">Desired skills and what this will lead to </h2>
+        <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
     </div>
 </div>
 <div class="govuk-grid-row">
-    <div class="govuk-grid-column-one-half">
-        <h3 class="govuk-heading-s">Desired skills and qualities</h3>
-        <p class="govuk-body">@string.Join(", ", Model.Skills)</p>
+    <div class="govuk-grid-column-full">
+        <h2 class="govuk-heading-l">Training</h2>
     </div>
-    <div class="govuk-grid-column-one-half">
-        <h3 class="govuk-heading-s">What this will lead to</h3>
-        <p class="govuk-body">@Model.OutcomeDescription</p>
+</div>
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <h3 class="govuk-heading-s">
+            Training provider
+        </h3>
+        <p class="govuk-body">@Model.ProviderName</p>
+        <h3 class="govuk-heading-s">Contact</h3>
+        <p class="govuk-body">@Model.ProviderContactName</p>
+        <p class="govuk-body">@Model.ProviderContactEmail</p>
+        <p class="govuk-body">@Model.ProviderContactTelephone</p>
+    </div>
+    <div class="govuk-grid-column-one-third">
+        <h3 class="govuk-heading-s">Apprenticeship @Model.TrainingType</h3>
+        <p class="govuk-body">@Model.TrainingTitle</p>
     </div>
 
     @if (Model.HasThingsToConsider)
@@ -269,7 +273,20 @@
 {
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-full">
-            <h2 class="govuk-heading-l">Training</h2>
+            <h2 asp-show="@Model.ShowGeneralApplicationProcessSectionTitle" class="govuk-heading-l">Application process</h2>
+            <h2 asp-show="@Model.HasSpecifiedThroughExternalApplicationMethod" class="govuk-heading-l">Employer's application instructions</h2>
+            <div asp-show="@Model.HasSpecifiedThroughFaaApplicationMethod">
+                <p class="govuk-body">Candidates will apply through the <a href="@Model.FindAnApprenticeshipUrl" class="govuk-body govuk-link" rel="noopener" target="_blank">Find an apprenticeship service</a></p>
+            </div>
+            <div asp-show="@Model.HasSpecifiedThroughExternalApplicationMethod">
+                <p class="govuk-body">This apprenticeship requires you to apply through the employer's website.</p>
+                <p class="govuk-body">@Model.ApplicationUrl</p>
+            </div>
+            <div asp-show="@Model.HasApplicationInstructions">
+                <p class="govuk-body">
+                    @Model.ApplicationInstructions
+                </p>
+            </div>
         </div>
     </div>
     <div class="govuk-grid-row">

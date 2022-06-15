@@ -112,12 +112,13 @@
             else
             {
                 <field-review-message field-name="@FieldIdentifiers.TraineeRoute" model="@Model"></field-review-message>
-                <div class="app-summary-list__row">
-                    <dt class="app-summary-list__key">
+                <div class="app-summary-list__row" field-review-marker="RouteTitle">
+                    <dt class="app-summary-list__key" id="@FieldIdentifiers.TraineeRoute">
                         Traineeship sector
                     </dt>
                     <dd class="app-summary-list__value">
                         @Model.RouteTitle
+                        <review-field class="govuk-tag--purple" field-name="@FieldIdentifiers.TraineeRoute" tag-name="strong" model="@Model"/>
                     </dd>
                     <dd class="app-summary-list__actions">
                         <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.TraineeSector_Get" asp-all-route-data="@Model.RouteDictionary">Change<span class="govuk-visually-hidden"> sector</span></a>
@@ -174,14 +175,16 @@
             }
             else
             {
-                <div class="app-summary-list__row">
-                    <dt class="app-summary-list__key">
+                <field-review-message field-name="@FieldIdentifiers.TrainingDescription" model="@Model"></field-review-message>
+                <div class="app-summary-list__row" field-review-marker="TrainingDescription">
+                    <dt class="app-summary-list__key" id="@FieldIdentifiers.TrainingDescription">
                         Training provided
                     </dt>
                     <dd class="app-summary-list__value">
                         <div class="app-ugc-wrap">
                             @Html.Raw(Model.TrainingDescription)
                         </div>
+                        <review-field class="govuk-tag--purple" field-name="@FieldIdentifiers.TrainingDescription" tag-name="strong" model="@Model"/>
                     </dd>
                     <dd class="app-summary-list__actions">
                         <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.VacancyDescription_Index_Get" asp-all-route-data="@Model.RouteDictionary">Change<span class="govuk-visually-hidden"> training provided</span></a>
@@ -225,14 +228,16 @@
 
             @if (_serviceParameters.VacancyType == VacancyType.Traineeship)
             {
-                <div class="app-summary-list__row">
-                    <dt class="app-summary-list__key">
+                <field-review-message field-name="@FieldIdentifiers.WorkExperience" model="@Model"></field-review-message>
+                <div class="app-summary-list__row" field-review-marker="WorkExperience">
+                    <dt class="app-summary-list__key" id="@FieldIdentifiers.WorkExperience">
                         Work experience provided
                     </dt>
                     <dd class="app-summary-list__value">
                         <div class="app-ugc-wrap">
                             @Html.Raw(Model.WorkExperience)
                         </div>
+                        <review-field class="govuk-tag--purple" field-name="@FieldIdentifiers.WorkExperience" tag-name="strong" model="@Model"/>
                     </dd>
                     <dd class="app-summary-list__actions">
                         <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.WorkExperience_Get" asp-all-route-data="@Model.RouteDictionary">Change<span class="govuk-visually-hidden"> work experience</span></a>
