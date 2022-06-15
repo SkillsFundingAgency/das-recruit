@@ -18,7 +18,8 @@
         }
         else
         {
-            <h2 class="govuk-heading-l">Traineeship summary</h2>}
+            <h2 class="govuk-heading-l">Traineeship summary</h2>
+        }
     </div>
 </div>
 
@@ -38,7 +39,8 @@
                 <li>A work experience placement</li>
                 <li>Help with English and maths (if you need it)</li>
             </ul>
-            <p class="govuk-body">You won’t be paid, but you may be given expenses for things like travel and meals.</p>}
+            <p class="govuk-body">You won’t be paid, but you may be given expenses for things like travel and meals.</p>
+        }
 
         <ul class="govuk-list">
             @if (_serviceParameters.VacancyType == VacancyType.Apprenticeship)
@@ -127,7 +129,8 @@
             <div class="govuk-body">@Html.Raw(Model.TrainingDescription)</div>
             <h3 class="govuk-heading-s">What is the expected career progression after this apprenticeship?</h3>
             <div class="govuk-body">@Html.Raw(Model.OutcomeDescription)</div>
-        </div>}
+        </div>
+    }
 
 
 
@@ -169,7 +172,8 @@
         <div class="govuk-grid-column-one-half">
             <img asp-show="@Model.HasMapUrl" id="static-map" src="@Model.MapUrl"/>
         </div>
-    </div>}
+    </div>
+}
 
 
 <div class="govuk-grid-row">
@@ -192,7 +196,8 @@
         <div class="govuk-grid-column-one-half">
             <h3 class="govuk-heading-s">Things to consider</h3>
             <p class="govuk-body">@Model.ThingsToConsider</p>
-        </div>}
+        </div>
+    }
 </div>
 @if (_serviceParameters.VacancyType == VacancyType.Traineeship)
 {
@@ -207,7 +212,8 @@
             <h3 class="govuk-heading-s">Qualifications</h3>
             <p class="govuk-body">@Html.Raw(string.Join("<br />", Model.Qualifications))</p>
         </div>
-    </div>}
+    </div>
+}
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
@@ -244,13 +250,15 @@
             <ul class="govuk-list">
                 @foreach (var addrLine in Model.EmployerAddressElements)
                 {
-                    <li>@addrLine</li>}
+                    <li>@addrLine</li>
+                }
             </ul>
         </div>
         <div class="govuk-grid-column-one-half">
             <img asp-show="@Model.HasMapUrl" id="static-map" src="@Model.MapUrl"/>
         </div>
-    </div>}
+    </div>
+}
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
         <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
@@ -269,13 +277,15 @@
         <div class="govuk-grid-column-one-third">
             <h3 class="govuk-heading-s">Apprenticeship @Model.TrainingType</h3>
             <p class="govuk-body">@Model.TrainingTitle</p>
-        </div> }
+        </div> 
+        }
         else
         {
         <div class="govuk-grid-column-one-third">
             <h3 class="govuk-heading-s">Traineeship sector </h3>
             <p class="govuk-body">@Model.RouteTitle</p>
-        </div>}
+        </div>
+        }
     </div>
 
     <div class="govuk-grid-row">
@@ -292,7 +302,7 @@
                     <p class="govuk-body">Candidates will apply through the <a href="@Model.FindAnApprenticeshipUrl" class="govuk-body govuk-link" rel="noopener" target="_blank">Find an apprenticeship service</a></p>
                 </div>
                 <div asp-show="@Model.HasSpecifiedThroughExternalApplicationMethod">
-                    <p class="govuk-body"> This apprenticeship requires you to apply through the employer'swebsite.</p>
+                    <p class="govuk-body"> This apprenticeship requires you to apply through the employer's website.</p>
                     <p class="govuk-body"> Model.ApplicationUrl </p>
                 </div>
                 <div asp-show="@Model.HasApplicationInstructions">
@@ -300,7 +310,8 @@
                 </div>
             </div>
         </div>
-    </div>}
+    </div>
+}
 
 
 <div class="govuk-grid-row">
