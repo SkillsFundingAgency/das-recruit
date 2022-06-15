@@ -1,9 +1,10 @@
 using System;
 using System.Collections.Generic;
+using Esfa.Recruit.Vacancies.Client.Domain.Interfaces;
 
 namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
 {
-    public class Vacancy
+    public class Vacancy : ITaskListVacancy
     {
         public Guid Id { get; set; }
         public string EmployerAccountId { get; set; }

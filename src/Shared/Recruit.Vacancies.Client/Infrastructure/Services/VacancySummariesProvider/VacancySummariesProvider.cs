@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections;
@@ -15,13 +14,19 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
 {
     internal sealed class VacancySummariesProvider : MongoDbCollectionBase, IVacancySummariesProvider
     {
+        private readonly IVacancyTaskListStatusService _vacancyTaskListStatusService;
         private const string TransferInfoUkprn = "transferInfo.ukprn";
         private const string TransferInfoReason = "transferInfo.reason";
 
-        public VacancySummariesProvider(ILoggerFactory loggerFactory, IOptions<MongoDbConnectionDetails> details)
+        public VacancySummariesProvider(
+            ILoggerFactory loggerFactory, 
+            IOptions<MongoDbConnectionDetails> details, 
+            IVacancyTaskListStatusService vacancyTaskListStatusService)
             : base(loggerFactory, MongoDbNames.RecruitDb, MongoDbCollectionNames.Vacancies, details)
         {
+            _vacancyTaskListStatusService = vacancyTaskListStatusService;
         }
+        
         public async Task<IList<VacancySummary>> GetEmployerOwnedVacancySummariesByEmployerAccountAsync(string employerAccountId)
         {
             var match = new BsonDocument
@@ -110,20 +115,18 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
 
         private async Task<IList<VacancySummary>> RunAggPipelineQuery(BsonDocument[] pipeline)
         {
-            var mongoQuery = pipeline.ToJson();
-
             var db = GetDatabase();
             var collection = db.GetCollection<BsonDocument>(MongoDbCollectionNames.Vacancies);
 
             var vacancySummaries = await RetryPolicy.Execute(async context =>
-                                                                    {
-                                                                        var aggResults = await collection.AggregateAsync<VacancySummaryAggQueryResponseDto>(pipeline);
-                                                                        return await aggResults.ToListAsync();
-                                                                    },
-                                                                    new Context(nameof(RunAggPipelineQuery)));
+                {
+                    var aggResults = await collection.AggregateAsync<VacancySummaryAggQueryResponseDto>(pipeline);
+                    return await aggResults.ToListAsync();
+                },
+                new Context(nameof(RunAggPipelineQuery)));
 
             return vacancySummaries
-                    .Select(VacancySummaryMapper.MapFromVacancySummaryAggQueryResponseDto)
+                    .Select(dto => VacancySummaryMapper.MapFromVacancySummaryAggQueryResponseDto(dto, _vacancyTaskListStatusService.IsTaskListCompleted(dto.Id)))
                     .ToList();
         }
 

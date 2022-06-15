@@ -1,5 +1,6 @@
 using System;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Vacancies.Client.Domain.Interfaces;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummariesProvider
 {
@@ -11,7 +12,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
         public int NoOfUnsuccessfulApplications { get; set; }
     }
 
-    internal class VacancySummaryDetails
+    internal class VacancySummaryDetails :  ITaskListVacancy
     {
         public Guid VacancyGuid { get; set; }
         public long? VacancyReference { get; set; }
