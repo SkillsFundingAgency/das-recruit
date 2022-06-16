@@ -31,8 +31,6 @@ jobs:
       SonarCloud: true
       SonarCloudProjectKey: SkillsFundingAgency_das-recruit
 
-  - template: azure-pipelines-templates/build/step/dependency-check.yml@das-platform-building-blocks
-
   - task: DotNetCoreCLI@2
     displayName: Publish Web/Api/Job Apps
     inputs:
