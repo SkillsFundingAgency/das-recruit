@@ -70,7 +70,7 @@ namespace Esfa.Recruit.Shared.Web.Mappers
             { FieldIdentifiers.EmployerAddress, "Work experience address requires edit" },
             { FieldIdentifiers.Provider, "Training provider requires edit" },
             { FieldIdentifiers.ProviderContact, "Contact details requires edit" },
-            { FieldIdentifiers.WorkExperience, "Work experience requires edit" },
+            { FieldIdentifiers.WorkExperience, "Work experience provided requires edit" },
             { FieldIdentifiers.TraineeRoute, "Traineeship sector requires edit" }
         };
 
