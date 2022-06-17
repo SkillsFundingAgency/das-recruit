@@ -61,7 +61,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
                 vm.Review = await _reviewSummaryService.GetReviewSummaryViewModelAsync(vacancy.VacancyReference.Value,
                     ReviewFieldMappingLookups.GetQualificationsFieldIndicators());
             }
-            vm.IsTaskListCompleted = _utility.TaskListCompleted(vacancy);
+            vm.IsTaskListCompleted = _utility.IsTaskListCompleted(vacancy);
             
             return vm;
         }
@@ -209,7 +209,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
             {
                 if (_feature.IsFeatureEnabled(FeatureNames.EmployerTaskList))
                 {
-                    if (_utility.TaskListCompleted(vacancy))
+                    if (_utility.IsTaskListCompleted(vacancy))
                     {
                         cancelRoute = RouteNames.EmployerCheckYourAnswersGet;
                     }

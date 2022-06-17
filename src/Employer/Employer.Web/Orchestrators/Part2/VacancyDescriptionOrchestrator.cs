@@ -41,7 +41,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
                 VacancyDescription = vacancy.Description,
                 TrainingDescription = vacancy.TrainingDescription,
                 OutcomeDescription = vacancy.OutcomeDescription,
-                IsTaskListCompleted = _utility.TaskListCompleted(vacancy)
+                IsTaskListCompleted = _utility.IsTaskListCompleted(vacancy)
             };
 
             if (vacancy.Status == VacancyStatus.Referred)
@@ -50,7 +50,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
                     ReviewFieldMappingLookups.GetVacancyDescriptionFieldIndicators());
             }
             
-            vm.IsTaskListCompleted = _utility.TaskListCompleted(vacancy);
+            vm.IsTaskListCompleted = _utility.IsTaskListCompleted(vacancy);
             
             return vm;
         }

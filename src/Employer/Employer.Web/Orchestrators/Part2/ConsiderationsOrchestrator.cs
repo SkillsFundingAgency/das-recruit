@@ -35,7 +35,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
             {
                 Title = vacancy.Title,
                 ThingsToConsider = vacancy.ThingsToConsider,
-                IsTaskListCompleted = _utility.TaskListCompleted(vacancy)
+                IsTaskListCompleted = _utility.IsTaskListCompleted(vacancy)
             };
 
             if (vacancy.Status == VacancyStatus.Referred)
