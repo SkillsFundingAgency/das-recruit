@@ -377,7 +377,7 @@
     },
     {
       "apiVersion": "2021-04-01",
-      "name": "[concat(parameters('cosmosDbName'), '-settings-', parameters('containerArray')[copyIndex()].containerName, '-', parameters('utcValue'))]",
+      "name": "[concat('rcrt-cdb-settings-', parameters('containerArray')[copyIndex()].containerName, '-', parameters('utcValue'))]",
       "dependsOn": [
         "[concat(parameters('cosmosDbName'), '-', parameters('containerArray')[copyIndex()].containerName,'-', parameters('utcValue'))]"
       ],
