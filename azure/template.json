@@ -988,7 +988,7 @@
                 },
                 {
                   "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
-                  "value": "[reference(concat(variables('apiAppServiceName'), '-application-insights', parameters('utcValue'))).outputs.InstrumentationKey.value]"
+                  "value": "[reference(concat(variables('apiAppServiceName'), '-application-insights-', parameters('utcValue'))).outputs.InstrumentationKey.value]"
                 },
                 {
                   "name": "Environment",
