@@ -49,6 +49,8 @@ namespace Esfa.Recruit.Provider.Web.Controllers
             }
 
             var vm = await _orchestrator.GetFullVacancyDisplayViewModelAsync(vacancy);
+            vm.Ukprn = vrm.Ukprn;
+            vm.VacancyId = vrm.VacancyId;
             return View(ViewNames.FullVacancyView, vm);
         }
 
