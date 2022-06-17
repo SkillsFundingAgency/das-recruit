@@ -74,6 +74,8 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Commands
             recruitVacancyClient.Verify(x=>x.Validate(It.Is<Vacancy>(c=>c.OwnerType == OwnerType.Employer), VacancyRuleSet.All), Times.Once);
         }
 
+
+
         [Test, MoqAutoData]
         public async Task Then_If_Not_Valid_Then_Returns_Response_With_Errors(
             EntityValidationError entityValidationError,

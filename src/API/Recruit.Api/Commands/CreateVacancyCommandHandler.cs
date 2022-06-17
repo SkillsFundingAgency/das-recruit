@@ -74,6 +74,9 @@ namespace SFA.DAS.Recruit.Api.Commands
             }
 
             request.Vacancy.TrainingProvider = trainingProvider;
+
+            
+
             request.Vacancy.OwnerType = string.IsNullOrEmpty(request.VacancyUserDetails.Email) ? OwnerType.Provider : OwnerType.Employer; 
             
             

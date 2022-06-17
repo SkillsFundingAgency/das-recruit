@@ -35,6 +35,7 @@ namespace SFA.DAS.Recruit.Api.Models
         public CreateVacancyApplicationMethod ApplicationMethod { get ; set ; }
         public CreateVacancyDisabilityConfident DisabilityConfident { get ; set ; }
         public string ThingsToConsider { get ; set ; }
+        public AccountType AccountType { get; set; }
     }
 
     
