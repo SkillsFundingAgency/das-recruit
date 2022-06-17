@@ -113,7 +113,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
 
         private IActionResult HandleRedirectOfEditableVacancy(Vacancy vacancy)
         {
-            if (_utility.TaskListCompleted(vacancy))
+            if (_utility.IsTaskListCompleted(vacancy))
             {
                 return RedirectToRoute(RouteNames.ProviderCheckYourAnswersGet, new {vacancy.TrainingProvider.Ukprn, vacancyId = vacancy.Id});
             }
