@@ -113,7 +113,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         {
             if (_feature.IsFeatureEnabled(FeatureNames.EmployerTaskList))
             {
-                if (_utility.TaskListCompleted(vacancy))
+                if (_utility.IsTaskListCompleted(vacancy))
                 {
                     return RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet);
                 }
