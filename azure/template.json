@@ -339,7 +339,7 @@
     },
     {
       "apiVersion": "2021-04-01",
-      "name": "[concat(parameters('cosmosDbName'), '-cont-', parameters('containerArray')[copyIndex()].containerName,'-', parameters('utcValue'))]",
+      "name": "[concat(parameters('cosmosDbName'), '-', parameters('containerArray')[copyIndex()].containerName,'-', parameters('utcValue'))]",
       "dependsOn": [
         "[concat(parameters('cosmosDbName'), '-database-', parameters('utcValue'))]"
       ],
@@ -379,7 +379,7 @@
       "apiVersion": "2021-04-01",
       "name": "[concat(parameters('cosmosDbName'), '-settings-', parameters('containerArray')[copyIndex()].containerName, '-', parameters('utcValue'))]",
       "dependsOn": [
-        "[concat(parameters('cosmosDbName'), '-cont-', parameters('containerArray')[copyIndex()].containerName,'-', parameters('utcValue'))]"
+        "[concat(parameters('cosmosDbName'), '-', parameters('containerArray')[copyIndex()].containerName,'-', parameters('utcValue'))]"
       ],
       "type": "Microsoft.Resources/deployments",
       "resourceGroup": "[variables('resourceGroupName')]",
