@@ -49,7 +49,7 @@
 
 
 <div class="govuk-button-group">
-    <a asp-route="@RouteNames.DisplayFullVacancy_Get" asp-all-route-data="@Model.RouteDictionary" class="govuk-link" target="_blank">View vacancy</a>
+    <a asp-route="@RouteNames.DisplayFullVacancy_Get" asp-all-route-data="@Model.RouteDictionary" class="govuk-link">View vacancy</a>
     <a asp-show="@Model.CanShowCloneVacancyLink" asp-route="@RouteNames.CloneVacancy_Get" asp-all-route-data="@Model.RouteDictionary" class="govuk-link">Clone vacancy</a>
     <a asp-show="@Model.CanShowEditVacancyLink" asp-route="@RouteNames.VacancyEdit_Get" asp-all-route-data="@Model.RouteDictionary" class="govuk-link">Edit vacancy</a>
     <a asp-show="@Model.CanShowCloseVacancyLink" asp-route="@RouteNames.CloseVacancy_Get" asp-all-route-data="@Model.RouteDictionary" class="govuk-link">Close vacancy</a>
