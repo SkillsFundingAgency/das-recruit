@@ -17,6 +17,7 @@ using MediatR;
 using Microsoft.Extensions.Logging;
 using NLog;
 using SFA.DAS.Recruit.Api.Models;
+using SFA.DAS.Recruit.Api.Queries;
 using EmployerNameOption = Esfa.Recruit.Vacancies.Client.Domain.Entities.EmployerNameOption;
 
 namespace SFA.DAS.Recruit.Api.Commands
@@ -75,9 +76,10 @@ namespace SFA.DAS.Recruit.Api.Commands
 
             request.Vacancy.TrainingProvider = trainingProvider;
 
-            
-
-            request.Vacancy.OwnerType = string.IsNullOrEmpty(request.VacancyUserDetails.Email) ? OwnerType.Provider : OwnerType.Employer; 
+            if (request.Vacancy.OwnerType == null)
+            {
+                request.Vacancy.OwnerType = string.IsNullOrEmpty(request.VacancyUserDetails.Email) ? OwnerType.Provider : OwnerType.Employer;
+            }
             
             
             var result = _recruitVacancyClient.Validate(request.Vacancy, VacancyRuleSet.All);

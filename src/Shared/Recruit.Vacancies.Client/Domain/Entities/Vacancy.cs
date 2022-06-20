@@ -9,7 +9,7 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
         public string EmployerAccountId { get; set; }
         public long? VacancyReference { get; set; }
         public VacancyStatus Status { get; set; }
-        public OwnerType OwnerType { get; set; }
+        public OwnerType? OwnerType { get; set; }
         public SourceOrigin SourceOrigin { get; set; }
         public SourceType SourceType { get; set; }
         public long? SourceVacancyReference { get; set; }
