@@ -39,15 +39,11 @@ namespace Esfa.Recruit.Employer.Web.Controllers
 
             if (!m.ConfirmDeletion.Value)
             {
-                if (_feature.IsFeatureEnabled(FeatureNames.EmployerTaskList))
+                if (m.Status == VacancyStatus.Draft)
                 {
-                    if (m.Status == VacancyStatus.Draft)
-                    {
-                        return RedirectToRoute(RouteNames.VacancyAdvertPreview);
-                    }
-                    return RedirectToRoute(RouteNames.Vacancies_Get);
+                    return RedirectToRoute(RouteNames.VacancyAdvertPreview);
                 }
-                return RedirectToRoute(RouteNames.Vacancy_Preview_Get);
+                return RedirectToRoute(RouteNames.Vacancies_Get);
             }
 
             await _orchestrator.DeleteVacancyAsync(m, User.ToVacancyUser());

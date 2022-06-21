@@ -74,18 +74,10 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
             }
 
             DeleteVacancyEmployerInfoCookie();
-
-            if (_feature.IsFeatureEnabled(FeatureNames.EmployerTaskList))
-            {
-                return wizard 
-                    ? RedirectToRoute(RouteNames.EmployerTaskListGet, new { Wizard = wizard }) 
-                    : RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet);
-            }
             
-            IActionResult result = wizard
-                ? RedirectToRoute(RouteNames.Dates_Get)
-                : RedirectToRoute(RouteNames.Vacancy_Preview_Get);
-            return result;
+            return wizard 
+                ? RedirectToRoute(RouteNames.EmployerTaskListGet, new { Wizard = wizard }) 
+                : RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet);
         }
 
         [HttpGet("location-cancel", Name = RouteNames.Location_Cancel)]

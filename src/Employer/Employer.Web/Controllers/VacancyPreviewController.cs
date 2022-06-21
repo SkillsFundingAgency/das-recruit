@@ -110,12 +110,8 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             viewModel.SoftValidationErrors = null;
             viewModel.SetSectionStates(viewModel, ModelState);
 
-            if (_feature.IsFeatureEnabled(FeatureNames.EmployerTaskList))
-            {
-                return RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet);
-            }
-            
-            return View(ViewNames.VacancyPreview, viewModel);
+
+            return RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet);
         }
 
         [HttpGet("approve-advert", Name = RouteNames.ApproveJobAdvert_Get)]
@@ -153,23 +149,10 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             }
             else
             {
-                if (_feature.IsFeatureEnabled(FeatureNames.EmployerTaskList))
-                {
-                    return RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet);
-                }
-                return RedirectToRoute(RouteNames.Vacancy_Preview_Get, new { VacancyId = vm.VacancyId, SubmitToEfsa = true });
-            }
-
-            if (_feature.IsFeatureEnabled(FeatureNames.EmployerTaskList))
-            {
                 return RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet);
             }
-
-            var viewModel = await _orchestrator.GetVacancyPreviewViewModelAsync(vm);
-            viewModel.SoftValidationErrors = null;
-            viewModel.SetSectionStates(viewModel, ModelState);
-
-            return View(ViewNames.VacancyPreview, viewModel);
+            
+            return RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet);
         }
 
         [HttpGet("reject-advert", Name = RouteNames.RejectJobAdvert_Get)]
@@ -203,12 +186,8 @@ namespace Esfa.Recruit.Employer.Web.Controllers
                     return RedirectToRoute(RouteNames.JobAdvertConfirmation_Get);
                 }
             }
-            if (_feature.IsFeatureEnabled(FeatureNames.EmployerTaskList))
-            {
-                return RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet);
-            }
 
-            return RedirectToRoute(RouteNames.Vacancy_Preview_Get, new { VacancyId = vm.VacancyId, SubmitToEfsa = false });
+            return RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet);
         }
 
         [HttpGet("confirmation-advert", Name = RouteNames.JobAdvertConfirmation_Get)]

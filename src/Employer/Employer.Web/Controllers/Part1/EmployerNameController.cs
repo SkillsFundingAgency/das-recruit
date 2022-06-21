@@ -35,10 +35,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
             //if matching cookie is not found redirect to legal entity selection
             //this could happen if the user navigates straight to employer-name end point
             //by passing employer or location end point
-            
-            if (employerInfoModel == null && !_feature.IsFeatureEnabled(FeatureNames.EmployerTaskList)) 
-                return RedirectToRoute(RouteNames.Employer_Get);
-            
+
             var vm = await _orchestrator.GetEmployerNameViewModelAsync(vrm, employerInfoModel);
 
             if (vm == null)
@@ -55,16 +52,11 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
         { 
             var employerInfoModel = GetVacancyEmployerInfoCookie(model.VacancyId);
             //respective cookie can go missing if user has opened another vacancy in a different browser tab 
-            if(employerInfoModel == null && !_feature.IsFeatureEnabled(FeatureNames.EmployerTaskList))
-                return RedirectToRoute(RouteNames.Employer_Get);
-            
-            if(_feature.IsFeatureEnabled(FeatureNames.EmployerTaskList))
+
+            employerInfoModel = new VacancyEmployerInfoModel
             {
-                employerInfoModel = new VacancyEmployerInfoModel
-                {
-                    VacancyId = model.VacancyId
-                };
-            }
+                VacancyId = model.VacancyId
+            };
 
             var response = await _orchestrator.PostEmployerNameEditModelAsync(model, User.ToVacancyUser());
 

@@ -75,18 +75,11 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
                 return RedirectToRoute(RouteNames.DisplayVacancy_Get, new { vacancyId = response.Data });
             }
 
-            if (_feature.IsFeatureEnabled(FeatureNames.EmployerTaskList))
+            if (wizard)
             {
-                if (wizard)
-                {
-                    return RedirectToRoute(RouteNames.Employer_Get ,new { vacancyId = response.Data });
-                }
-                return RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet);
+                return RedirectToRoute(RouteNames.Employer_Get ,new { vacancyId = response.Data });
             }
-            
-            return wizard
-                ? RedirectToRoute(RouteNames.Training_Get, new { vacancyId = response.Data })
-                : RedirectToRoute(RouteNames.Vacancy_Preview_Get);
+            return RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet);
         }
 
         private void PopulateModelFromTempData(TitleEditModel m)

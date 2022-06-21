@@ -207,20 +207,13 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
             var cancelRoute = RouteNames.Qualifications_Get;
             if (!vacancy.Qualifications?.Any() ?? false)
             {
-                if (_feature.IsFeatureEnabled(FeatureNames.EmployerTaskList))
+                if (_utility.IsTaskListCompleted(vacancy))
                 {
-                    if (_utility.IsTaskListCompleted(vacancy))
-                    {
-                        cancelRoute = RouteNames.EmployerCheckYourAnswersGet;
-                    }
-                    else
-                    {
-                        cancelRoute = RouteNames.Dashboard_Get;
-                    }
+                    cancelRoute = RouteNames.EmployerCheckYourAnswersGet;
                 }
                 else
                 {
-                    cancelRoute = RouteNames.Vacancy_Preview_Get;
+                    cancelRoute = RouteNames.Dashboard_Get;
                 }
             }
             

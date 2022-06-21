@@ -44,15 +44,10 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
 
             if (vm.HasOnlyOneOrganisation)
             {
-                if (_feature.IsFeatureEnabled(FeatureNames.EmployerTaskList))
-                {
-                    info = vm.VacancyEmployerInfoModel;
-                    await _orchestrator.SetAccountLegalEntityPublicId(vrm,info, User.ToVacancyUser());
-                    
-                    return  RedirectToRoute(RouteNames.Training_Get, new { Wizard = wizard });
-                }
+                info = vm.VacancyEmployerInfoModel;
+                await _orchestrator.SetAccountLegalEntityPublicId(vrm,info, User.ToVacancyUser());
                 
-                return RedirectToRoute(RouteNames.EmployerName_Get, new {Wizard = wizard});
+                return  RedirectToRoute(RouteNames.Training_Get, new { Wizard = wizard });
             }
 
             vm.Pager.OtherRouteValues.Add(nameof(wizard), wizard);
@@ -93,15 +88,10 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
 
             SetVacancyEmployerInfoCookie(info);
             await _orchestrator.SetAccountLegalEntityPublicId(m,info, User.ToVacancyUser());
-
-            if (_feature.IsFeatureEnabled(FeatureNames.EmployerTaskList))
-            {
-                return wizard 
-                    ? RedirectToRoute(RouteNames.Training_Get, new { Wizard = wizard }) 
-                    : RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet);
-            }
             
-            return RedirectToRoute(RouteNames.EmployerName_Get, new {Wizard = wizard});
+            return wizard 
+                ? RedirectToRoute(RouteNames.Training_Get, new { Wizard = wizard }) 
+                : RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet);
         }
 
         [HttpGet("employer-cancel", Name = RouteNames.Employer_Cancel)]

@@ -113,19 +113,11 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
         
         private IActionResult GetRedirectToNextPage(bool wizard)
         {
-            if (_feature.IsFeatureEnabled(FeatureNames.EmployerTaskList))
+            if (wizard)
             {
-                if (wizard)
-                {
-                    return RedirectToRoute(RouteNames.ShortDescription_Get);
-                }
-
-                return RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet);
+                return RedirectToRoute(RouteNames.ShortDescription_Get);
             }
-            
-            return wizard
-                ? RedirectToRoute(RouteNames.NumberOfPositions_Get)
-                : RedirectToRoute(RouteNames.Vacancy_Preview_Get);
+            return RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet);
         }
 
         public void AddTrainingProviderErrorsToModelState(TrainingProviderSelectionType selectionType, string ukprn, OrchestratorResponse response, ModelStateDictionary modelState)
