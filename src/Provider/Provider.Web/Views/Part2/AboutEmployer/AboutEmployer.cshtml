@@ -2,7 +2,7 @@
 
 @{
     ViewBag.GaData.Vpv = "/recruitment/provider/page-vacancy-employer-about";
-    ViewBag.Title = "Add some information";
+    ViewBag.Title = "Employer information";
 }
 
 @section BackLink {
@@ -22,7 +22,7 @@
             <span class="govuk-caption-xl">@Model.Title</span>
             Information about @Model.EmployerTitle
         </h1>
-        <p class="govuk-body">Updating the employer information will also update the employer information on any unapproved vacancies eg. draft, pending review or rejected vacancies.</p>
+        <p class="govuk-body">Updating the employer information will also update the employer information on any unapproved vacancies, for example. draft, pending review or rejected vacancies.</p>
         <form asp-route="@RouteNames.AboutEmployer_Get" asp-all-route-data="@Model.RouteDictionary">
             <div class="govuk-character-count" data-module="govuk-character-count" data-maxlength="500">
                 <div class="govuk-form-group" esfa-validation-marker-for="EmployerDescription">
@@ -32,7 +32,7 @@
                 </div>
             </div>
             <div esfa-validation-marker-for="EmployerWebsiteUrl" class="govuk-form-group">
-                <label asp-for="EmployerWebsiteUrl" class="govuk-label">Website for organisation (optional)</label>
+                <label asp-for="EmployerWebsiteUrl" class="govuk-label">The organisation's website (optional)</label>
                 <span esfa-validation-message-for="EmployerWebsiteUrl" class="govuk-error-message"></span>
                 <div asp-show="@Model.IsAnonymous" class="govuk-hint">The website will not be shown as the employer is anonymous</div>
                 <input asp-for="EmployerWebsiteUrl" class="govuk-input govuk-!-width-three-quarters" maxlength="100" />

@@ -21,7 +21,15 @@
     <fieldset class="govuk-fieldset">
         <legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
             <h1 class="govuk-fieldset__heading">
-                What skills and personal qualities do applicants need to have?
+                @if (_serviceParameters.VacancyType == VacancyType.Apprenticeship)
+                {
+                    @:What skills and personal qualities do applicants need to have?    
+                }
+                else
+                {
+                    @:What skills and personal qualities would you like applicants to have?
+                }
+                
             </h1>
         </legend>
         <p class="govuk-hint govuk-!-margin-top-5">Select all that apply or add your own</p>
@@ -59,7 +67,7 @@
     <p class="govuk-body govuk-!-margin-bottom-5">or</p>
 
     <div esfa-validation-marker-for="AddCustomSkillName" class="govuk-form-group">
-        <label asp-for="AddCustomSkillName" class="govuk-label govuk-!-font-weight-bold">Add a new desired skill or personal quality</label>
+        <label asp-for="AddCustomSkillName" class="govuk-label">Add a new desired skill or personal quality</label>
         <span esfa-validation-message-for="AddCustomSkillName" class="govuk-error-message"></span>
         <input asp-for="AddCustomSkillName" value="@Model.AddCustomSkillName" type="text" class="govuk-input govuk-!-width-one-half" maxlength="30">
         <button name="AddCustomSkillAction" id="add-custom-skill" value="AddCustomSkill" type="submit" class="govuk-button govuk-button--secondary">Add this skill</button>

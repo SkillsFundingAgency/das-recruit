@@ -23,5 +23,7 @@
         public const string ApplicationWithdrawn = "ApplicationWithdrawn";
         public const string DashboardWithReview = "DashboardWithReview";
         public const string DashboardNoReview = "DashboardNoReview";
+        public const string AdvertPreview = "AdvertPreview";
+        public const string AdvertPreviewTraineeship = "AdvertPreviewTraineeship";
     }
 }

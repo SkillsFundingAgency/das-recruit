@@ -117,7 +117,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
             var vacancy = await _vacancyRepository.GetVacancyAsync(notification.VacancyReference);
 
             _logger.LogInformation("Handling {eventType} for ukprn: {ukprn} and vacancyReference: {vacancyReference}", notification.GetType().Name, vacancy.TrainingProvider.Ukprn.Value, notification.VacancyReference);
-            await _dashboardService.ReBuildDashboardAsync(vacancy.TrainingProvider.Ukprn.GetValueOrDefault());
+            await _dashboardService.ReBuildDashboardAsync(vacancy.TrainingProvider.Ukprn.GetValueOrDefault(), VacancyType.Apprenticeship);
+            await _dashboardService.ReBuildDashboardAsync(vacancy.TrainingProvider.Ukprn.GetValueOrDefault(), VacancyType.Traineeship);
         }
 
         public Task Handle(VacancyReviewWithdrawnEvent notification, CancellationToken cancellationToken)
@@ -125,13 +126,14 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
             return Handle(notification);
         }
 
-        private Task Handle(IProviderEvent notification)
+        private async Task Handle(IProviderEvent notification)
         {
             if (notification == null)
                 throw new ArgumentNullException(nameof(notification), "Should not be null");
 
             _logger.LogInformation("Handling {eventType} for ukprn: {ukprn}", notification.GetType().Name, notification.Ukprn);
-            return _dashboardService.ReBuildDashboardAsync(notification.Ukprn);
+            await _dashboardService.ReBuildDashboardAsync(notification.Ukprn, VacancyType.Apprenticeship);
+            await _dashboardService.ReBuildDashboardAsync(notification.Ukprn, VacancyType.Traineeship);
         }
 
         private async Task Handle(IApplicationReviewEvent notification)
@@ -144,7 +146,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
             if (vacancy.TrainingProvider != null)
             {
                 _logger.LogInformation("Handling {eventType} for ukprn: {ukprn} and vacancyReference: {vacancyReference}", notification.GetType().Name, vacancy.TrainingProvider.Ukprn.Value, notification.VacancyReference);
-                await _dashboardService.ReBuildDashboardAsync(vacancy.TrainingProvider.Ukprn.Value);
+                await _dashboardService.ReBuildDashboardAsync(vacancy.TrainingProvider.Ukprn.Value, VacancyType.Apprenticeship);
+                await _dashboardService.ReBuildDashboardAsync(vacancy.TrainingProvider.Ukprn.Value, VacancyType.Traineeship);
             }
         }
 
@@ -158,7 +161,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
             if (vacancy.TrainingProvider != null)
             {
                 _logger.LogInformation("Handling {eventType} for ukprn: {ukprn} and vacancyId: {vacancyId}", notification.GetType().Name, vacancy.TrainingProvider.Ukprn.Value, notification.VacancyId);
-                await _dashboardService.ReBuildDashboardAsync(vacancy.TrainingProvider.Ukprn.Value);
+                await _dashboardService.ReBuildDashboardAsync(vacancy.TrainingProvider.Ukprn.Value, VacancyType.Apprenticeship);
+                await _dashboardService.ReBuildDashboardAsync(vacancy.TrainingProvider.Ukprn.Value, VacancyType.Traineeship);
             }
         }
     }

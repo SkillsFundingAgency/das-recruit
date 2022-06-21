@@ -16,6 +16,7 @@ using Esfa.Recruit.Shared.Web.RuleTemplates;
 using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Shared.Web.ViewModels.Validations.Fluent;
 using Esfa.Recruit.Vacancies.Client.Application.Configuration;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.FAA;
 using Esfa.Recruit.Vacancies.Client.Ioc;
 using FluentValidation;
@@ -31,6 +32,8 @@ namespace Esfa.Recruit.Employer.Web.Configuration
         {
             services.AddRecruitStorageClient(configuration);
 
+            services.AddSingleton(new ServiceParameters(VacancyType.Apprenticeship.ToString()));
+            
             //Configuration
             services.Configure<ApplicationInsightsConfiguration>(configuration.GetSection("ApplicationInsights"));
             services.Configure<ExternalLinksConfiguration>(configuration.GetSection("ExternalLinks"));

@@ -46,7 +46,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                     'transferInfoTransferredDate': '$transferInfo.transferredDate',
                     'transferInfoReason': '$transferInfo.reason',
                     'trainingProviderName': '$trainingProvider.name',
-                    'isApplicationWithdrawn': '$candidateApplicationReview.isWithdrawn'
+                    'vacancyType': 1,
+                    'isApplicationWithdrawn': '$candidateApplicationReview.isWithdrawn',
+                    'isTraineeship' :1
                 }
             },
             {
@@ -73,7 +75,15 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                     'transferInfoProviderName': 1,
                     'transferInfoTransferredDate': 1,
                     'transferInfoReason': 1,
-                    'trainingProviderName': 1
+                    'trainingProviderName': 1,
+                    'vacancyType': 1,
+                    'isTraineeship': {
+                        '$cond': {
+                            'if': {'$eq': [ '$vacancyType', 'Traineeship']},
+                            'then': true,
+                            'else': false
+                        }
+                    }
                 }
             },
             {
@@ -100,6 +110,14 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                     'transferInfoTransferredDate': 1,
                     'transferInfoReason': 1,
                     'trainingProviderName': 1,
+                    'vacancyType': 1,
+                    'isTraineeship': {
+                        '$cond': {
+                            'if': {'$eq': [ '$vacancyType', 'Traineeship']},
+                            'then': true,
+                            'else': false
+                        }
+                    },
                     'isNew': {
                         '$cond': {
                             'if': {'$eq': [ '$appStatus', 'New']},
@@ -147,7 +165,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                         'transferInfoProviderName': '$transferInfoProviderName',
                         'transferInfoTransferredDate': '$transferInfoTransferredDate',
                         'transferInfoReason': '$transferInfoReason',
-                        'trainingProviderName': '$trainingProviderName'
+                        'trainingProviderName': '$trainingProviderName',
+                        'vacancyType': '$vacancyType',
+                        'isTraineeship': '$isTraineeship'
                     },
                     'noOfNewApplications': {
                         '$sum': '$isNew'

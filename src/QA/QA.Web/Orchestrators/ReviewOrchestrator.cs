@@ -31,7 +31,7 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
             var review = await _vacancyClient.GetVacancyReviewAsync(m.ReviewId);
             await EnsureUserIsAssignedAsync(review, user.UserId);
 
-            var manualQaFieldIndicators = _mapper.GetManualQaFieldIndicators(m);
+            var manualQaFieldIndicators = _mapper.GetManualQaFieldIndicators(m, review.VacancySnapshot.VacancyType.GetValueOrDefault());
             var selectedAutomatedQaRuleOutcomeIds = m.SelectedAutomatedQaResults.Select(Guid.Parse).ToList();
 
             if (m.IsRefer)

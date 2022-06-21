@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using Esfa.Recruit.Provider.Web.Configuration;
 using Esfa.Recruit.Shared.Web.Extensions;
@@ -14,14 +15,13 @@ namespace Esfa.Recruit.Provider.Web
 {
     public partial class Startup
     {
-        private readonly IConfiguration _configuration;
+        private readonly IConfigurationRoot _configuration;
         private readonly IHostingEnvironment _hostingEnvironment;
         private readonly AuthenticationConfiguration _authConfig;
         private readonly ILoggerFactory _loggerFactory;
 
         public Startup(IConfiguration config, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
-            _configuration = config;
             _hostingEnvironment = env;
             var configBuilder = new ConfigurationBuilder()
                 .AddConfiguration(config)

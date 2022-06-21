@@ -1,33 +1,29 @@
 ﻿@using Esfa.Recruit.Vacancies.Client.Domain.Entities
 @model Esfa.Recruit.Shared.Web.ViewModels.Alerts.WithdrawnVacanciesAlertViewModel
 
-<div class="govuk-grid-row">
-    <div class="govuk-grid-column-full">
-        <div class="warning-summary">
-            <p class="govuk-body">
-                <span asp-hide="@Model.HasMultipleClosedVacancies">
-                    Your @Model.ClosedVacancies.FirstOrDefault() advert has issues, was closed and has been removed from the Find an apprenticeship service.
-                </span>
-                <span asp-show="@Model.HasMultipleClosedVacancies">
-                    The following adverts have issues, were closed and have been removed from the Find an apprenticeship service:
-                </span>
-            </p>
-            <ul asp-show="@Model.HasMultipleClosedVacancies" class="govuk-body">
-                @foreach (var vacancy in Model.ClosedVacancies)
-                {
-                    <li>@vacancy</li>
-                }
-            </ul>
-
-            <p class="govuk-body">If you need to discuss this further, you can contact our helpdesk on @RecruitViewConstants.HelpdeskPhoneNumber.</p>
-            <form asp-route="@RouteNames.Alerts_Dismiss_Post">
-                <p class="govuk-body govuk-!-margin-bottom-0">
-                    @{ string returnUrl = ViewContext.HttpContext.Request.Path + ViewContext.HttpContext.Request.QueryString; }
-                    <input name="@nameof(AlertDismissalEditModel.ReturnUrl)" value="@returnUrl" type="hidden" />
-                    <input name="@nameof(AlertDismissalEditModel.AlertType)" value="@AlertType.ClosedVacanciesWithdrawnByQa" type="hidden" />
-                    <button type="submit" class="button-fake-link govuk-link govuk-link--no-visited-state">Hide notification</button>
-                </p>
-            </form>
-        </div>
-    </div>
+<div class="das-notification das-notification--warning">
+    <p class="das-notification__body">
+        <span asp-hide="@Model.HasMultipleClosedVacancies">
+            Your @Model.ClosedVacancies.FirstOrDefault() advert has issues, was closed and has been removed from the Find an apprenticeship service.
+        </span>
+        <span asp-show="@Model.HasMultipleClosedVacancies">
+            The following adverts have issues, were closed and have been removed from the Find an apprenticeship service:
+        </span>
+    </p>
+    <ul asp-show="@Model.HasMultipleClosedVacancies" class="govuk-list govuk-list--bullet">
+        @foreach (var vacancy in Model.ClosedVacancies)
+        {
+            <li>@vacancy</li>
+        }
+    </ul>
+    <p class="das-notification__body">If you need to discuss this further, you can contact our helpdesk on @RecruitViewConstants.HelpdeskPhoneNumber.</p>
+    <form asp-route="@RouteNames.Alerts_Dismiss_Post">
+        <p class="das-notification__body">
+            @{ string returnUrl = ViewContext.HttpContext.Request.Path + ViewContext.HttpContext.Request.QueryString; }
+            <input name="@nameof(AlertDismissalEditModel.ReturnUrl)" value="@returnUrl" type="hidden" />
+            <input name="@nameof(AlertDismissalEditModel.AlertType)" value="@AlertType.ClosedVacanciesWithdrawnByQa" type="hidden" />
+            <button type="submit" class="das-button--inline-link">Hide notification</button>
+        </p>
+    </form>
 </div>
+

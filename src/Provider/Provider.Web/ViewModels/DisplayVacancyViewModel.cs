@@ -25,6 +25,7 @@ namespace Esfa.Recruit.Provider.Web.ViewModels
         public string EmployerWebsiteUrl { get; internal set; }
         public string ExpectedDuration { get; internal set; }
         public string FindAnApprenticeshipUrl { get; internal set; }
+        public string FindATraineeshipUrl { get; internal set; }
         public string HoursPerWeek { get; internal set; }
         public bool IsAnonymous { get; internal set; }
         public bool IsDisabilityConfident { get; internal set; }
@@ -54,6 +55,9 @@ namespace Esfa.Recruit.Provider.Web.ViewModels
         public string WageText { get; internal set; }
         public string WorkingWeekDescription { get; internal set; }
         public string AccountLegalEntityPublicHashedId { get; internal set; }
+        public int RouteId { get; set; }
+        public string RouteTitle { get; set; }
+        public string WorkExperience { get; set; }
 
         public bool HasClosingDate => !string.IsNullOrWhiteSpace(ClosingDate);
 
@@ -108,6 +112,8 @@ namespace Esfa.Recruit.Provider.Web.ViewModels
         public bool HasNotSpecifiedApplicationMethod => !ApplicationMethod.HasValue;
         public bool HasApplicationMethod => ApplicationMethod.HasValue;
         public bool HasSpecifiedThroughFaaApplicationMethod => HasApplicationMethod && ApplicationMethod.Value == Esfa.Recruit.Vacancies.Client.Domain.Entities.ApplicationMethod.ThroughFindAnApprenticeship;
+
+        public bool HasSpecifiedThroughFaTApplicationMethod => HasApplicationMethod && ApplicationMethod.Value == Vacancies.Client.Domain.Entities.ApplicationMethod.ThroughFindATraineeship;
         public bool HasSpecifiedThroughExternalApplicationMethod => HasApplicationMethod && ApplicationMethod.Value == Esfa.Recruit.Vacancies.Client.Domain.Entities.ApplicationMethod.ThroughExternalApplicationSite;
         public bool HasApplicationInstructions => !string.IsNullOrWhiteSpace(ApplicationInstructions);
         public bool HasApplicationUrl => !string.IsNullOrWhiteSpace(ApplicationUrl);
@@ -117,5 +123,6 @@ namespace Esfa.Recruit.Provider.Web.ViewModels
         public bool IsNotDisabilityConfident => !IsDisabilityConfident;
         public bool HasSelectedLegalEntity => !string.IsNullOrEmpty(AccountLegalEntityPublicHashedId);
         public EmployerNameOption? EmployerNameOption { get; set; }
+        public VacancyType? VacancyType { get; set; }
     }
 }
