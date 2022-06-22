@@ -398,7 +398,6 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.UtilityTests
         private void CheckRouteIsValidForVacancyTest(Vacancy vacancy, string route, bool shouldRedirect, string expectedRedirectRoute, bool enableTaskList = false)
         {
             var featureMock = new Mock<IFeature>();
-            featureMock.Setup(x=>x.IsFeatureEnabled(FeatureNames.EmployerTaskList)).Returns(enableTaskList);
             var utility = new Utility(Mock.Of<IRecruitVacancyClient>(), featureMock.Object);
             if (!shouldRedirect)
             {
@@ -412,6 +411,5 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.UtilityTests
             ex.RouteValues.EmployerAccountId.Should().Be(vacancy.EmployerAccountId);
             ex.RouteValues.VacancyId.Should().Be(vacancy.Id);
         }
-
     }
 }
