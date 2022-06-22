@@ -1,3 +1,5 @@
+using System;
+using System.Diagnostics;
 using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Application.Services;
@@ -394,6 +396,25 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                         return true;
                     })
                     .WithMessage("Expected duration must be at least 12 months")
+                    .WithErrorCode("36")
+                    .Must((vacancy, value) =>
+                    {
+                        if ((vacancy.Wage.DurationUnit == DurationUnit.Week && value == 52
+                             || vacancy.Wage.DurationUnit == DurationUnit.Month && value == 12 
+                             || vacancy.Wage.DurationUnit == DurationUnit.Year && value == 1)
+                            && vacancy.Wage.WeeklyHours.HasValue
+                            && vacancy.Wage.WeeklyHours < 30) 
+                        {
+                            return false;
+                        }
+
+                        return true;
+                    })
+                    .WithMessage((vacancy, value) =>
+                    {
+                        var numberOfMonths = Math.Ceiling(30 / vacancy.Wage.WeeklyHours.GetValueOrDefault() * 12);
+                        return $"Duration of apprenticeship must be {numberOfMonths} months based on the number of hours per week entered";
+                    })
                     .WithErrorCode("36")
                     .RunCondition(VacancyRuleSet.Duration)
                     .WithRuleId(VacancyRuleSet.Duration);
