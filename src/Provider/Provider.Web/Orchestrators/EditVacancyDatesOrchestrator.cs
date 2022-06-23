@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading.Tasks;
 using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Provider.Web.ViewModels.EditVacancyDates;
@@ -11,6 +11,7 @@ using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
 using Esfa.Recruit.Shared.Web.Orchestrators;
 using Esfa.Recruit.Shared.Web.Extensions;
+using Esfa.Recruit.Shared.Web.Helpers;
 using ErrMsg = Esfa.Recruit.Shared.Web.ViewModels.ErrorMessages;
 
 namespace Esfa.Recruit.Provider.Web.Orchestrators
@@ -53,10 +54,12 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
         {
             var vacancyTask = GetVacancyAsync(vrm);
             var programmesTask = _vacancyClient.GetActiveApprenticeshipProgrammesAsync();
-
-            await Task.WhenAll(vacancyTask, programmesTask);
+            var routesTask = _vacancyClient.GetApprenticeshipRoutes();
+            
+            await Task.WhenAll(vacancyTask, programmesTask, routesTask);
 
             var vacancy = vacancyTask.Result;
+            var routes = routesTask.Result;
             var programmes = programmesTask.Result;
 
             var vm = new EditVacancyDatesViewModel
@@ -71,7 +74,10 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
 
                 CurrentYear = _timeProvider.Now.Year,
 
-                ProgrammeName = programmes.First(p => p.Id == vacancy.ProgrammeId).Title
+                ProgrammeName = vacancy.VacancyType.GetValueOrDefault() == VacancyType.Apprenticeship ? programmes.First(p => p.Id == vacancy.ProgrammeId).Title : "",
+                RouteName = vacancy.VacancyType.GetValueOrDefault() == VacancyType.Traineeship ? routes.First(r => r.Id == vacancy.RouteId).Route : "",
+                VacancyType = vacancy.VacancyType.GetValueOrDefault(),
+                Title = vacancy.Title
             };
 
             var resp = new OrchestratorResponse<EditVacancyDatesViewModel>(vm);
