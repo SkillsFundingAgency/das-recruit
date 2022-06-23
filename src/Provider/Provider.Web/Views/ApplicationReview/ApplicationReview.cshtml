@@ -44,7 +44,7 @@
             <span class="govuk-body">@Model.Strengths</span>
         </div>
         <div class="govuk-form-group">
-            <span class="govuk-label govuk-!-font-weight-bold">What skills would you like to improve during this apprenticeship?</span>
+            <span class="govuk-label govuk-!-font-weight-bold">What skills would you like to improve during this @(_serviceParameters.VacancyType.GetValueOrDefault() == VacancyType.Apprenticeship ? "apprenticeship" : "traineeship")?</span>
             <span class="govuk-body">@Model.Improvements</span>
         </div>
         <div class="govuk-form-group">
