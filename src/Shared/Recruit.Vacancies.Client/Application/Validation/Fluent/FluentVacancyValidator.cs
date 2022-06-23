@@ -403,7 +403,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                              || vacancy.Wage.DurationUnit == DurationUnit.Month && value == 12 
                              || vacancy.Wage.DurationUnit == DurationUnit.Year && value == 1)
                             && vacancy.Wage.WeeklyHours.HasValue
-                            && vacancy.Wage.WeeklyHours < 30) 
+                            && vacancy.Wage.WeeklyHours < 30m) 
                         {
                             return false;
                         }
@@ -412,7 +412,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                     })
                     .WithMessage((vacancy, value) =>
                     {
-                        var numberOfMonths = Math.Ceiling(30 / vacancy.Wage.WeeklyHours.GetValueOrDefault() * 12);
+                        int numberOfMonths = (int)Math.Ceiling(30 / vacancy.Wage.WeeklyHours.GetValueOrDefault() * 12);
                         return $"Duration of apprenticeship must be {numberOfMonths} months based on the number of hours per week entered";
                     })
                     .WithErrorCode("36")
