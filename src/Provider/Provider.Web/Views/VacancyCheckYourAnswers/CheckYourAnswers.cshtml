@@ -257,8 +257,11 @@
                 </dd>
             </div>
             <field-review-message field-name="WorkingWeek" model="@Model"></field-review-message>
-            <div class="app-summary-list__row app-summary-list__row--no-border" field-review-marker="WorkingWeekDescription">
-                <dt class="app-summary-list__key" id="@FieldIdentifiers.WorkingWeek">Working week details</dt>
+            <div class="app-summary-list__row @(_serviceParameters.VacancyType == VacancyType.Apprenticeship? "app-summary-list__row--no-border" : "")" field-review-marker="WorkingWeekDescription">
+                <dt class="app-summary-list__key" id="@FieldIdentifiers.WorkingWeek">@(_serviceParameters.VacancyType == VacancyType.Apprenticeship
+                                                                                             ? "Working week details"
+                                                                                             : "Weekly hours")
+                    </dt>
                 <dd class="app-summary-list__value">
                     @Model.WorkingWeekDescription
                     <review-field class="govuk-tag--purple" field-name="@FieldIdentifiers.WorkingWeek" tag-name="strong" model="@Model"/>
@@ -268,18 +271,19 @@
                 </dd>
             </div>
 
-            <field-review-message field-name="@FieldIdentifiers.WorkingWeekHours" model="@Model"></field-review-message>
-            <div class="app-summary-list__row" field-review-marker="HoursPerWeek">
-                <dt class="app-summary-list__key" id="@FieldIdentifiers.WorkingWeek">Hours per week</dt>
-                <dd class="app-summary-list__value">
-                    @Model.HoursPerWeek
-                </dd>
-                <dd class="app-summary-list__actions">
-
-                </dd>
-            </div>
             @if (_serviceParameters.VacancyType == VacancyType.Apprenticeship)
             {
+
+                <field-review-message field-name="@FieldIdentifiers.WorkingWeekHours" model="@Model"></field-review-message>
+                <div class="app-summary-list__row" field-review-marker="HoursPerWeek">
+                    <dt class="app-summary-list__key" id="@FieldIdentifiers.WorkingWeek">Hours per week</dt>
+                    <dd class="app-summary-list__value">
+                        @Model.HoursPerWeek
+                    </dd>
+                    <dd class="app-summary-list__actions">
+
+                    </dd>
+                </div>
                 
                 <field-review-message field-name="@FieldIdentifiers.Wage" model="@Model"></field-review-message>
                 <div class="app-summary-list__row app-summary-list__row--no-border" field-review-marker="WageText">
