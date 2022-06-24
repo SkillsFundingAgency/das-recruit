@@ -103,10 +103,9 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
 
             ValidateWorkingWeek();
 
-            ValidateWeeklyHours();
-
             if (IsApprenticeshipVacancy)
             {
+                ValidateWeeklyHours();
                 ValidateWage();
             }
 
