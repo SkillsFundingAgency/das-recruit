@@ -93,43 +93,40 @@
                     @if (_serviceParameters.VacancyType == VacancyType.Apprenticeship)
                     {
                         <label asp-for="WorkingWeekDescription" class="govuk-label govuk-!-font-weight-bold">Details of working week</label>
+                        <span class="govuk-hint">For example, Monday to Friday 9am to 5pm, shifts, may work evenings and weekends.</span>
+                        <span esfa-validation-message-for="WorkingWeekDescription" class="govuk-error-message"></span>
+                        <textarea asp-for="WorkingWeekDescription" class="govuk-textarea govuk-js-character-count" rows="5" data-val-length-max="250"></textarea>
+                        <div id="WorkingWeekDescription-info" class="govuk-hint govuk-character-count__message" aria-live="polite">
+                            You have 250 characters remaining
+                        </div>
                     }
                     
                     else
                     {
-                        <label asp-for="WorkingWeekDescription" class="govuk-label govuk-!-font-weight-bold">Details of work experience placement</label>
-
+                        <label asp-for="WorkingWeekDescription" class="govuk-label govuk-!-font-weight-bold">Weekly hours on the traineeship</label>
+                        <span class="govuk-hint">Include the hours and days of the week the trainee will be in training and on placement.</span>
+                        <span esfa-validation-message-for="WorkingWeekDescription" class="govuk-error-message"></span>
+                        <textarea asp-for="WorkingWeekDescription" class="govuk-textarea govuk-js-character-count" rows="5" data-val-length-max="250"></textarea>
+                        <div id="WorkingWeekDescription-info" class="govuk-hint govuk-character-count__message" aria-live="polite">
+                            You have 250 characters remaining
+                        </div>
                     }
 
-                    <span class="govuk-hint">For example, Monday to Friday 9am to 5pm, shifts, may work evenings and weekends.</span>
-                    <span esfa-validation-message-for="WorkingWeekDescription" class="govuk-error-message"></span>
-                    <textarea asp-for="WorkingWeekDescription" class="govuk-textarea govuk-js-character-count" rows="5" data-val-length-max="250"></textarea>
-                    <div id="WorkingWeekDescription-info" class="govuk-hint govuk-character-count__message" aria-live="polite">
-                        You can enter up to 250 characters
-                    </div>
                 </div>
             </div>
+
+         @if (_serviceParameters.VacancyType == VacancyType.Apprenticeship)
+         {
             <div esfa-validation-marker-for="WeeklyHours" class="govuk-form-group">
-                @if (_serviceParameters.VacancyType == VacancyType.Apprenticeship)
-                {
-                    <label asp-for="WeeklyHours" class="govuk-label govuk-!-font-weight-bold">How many hours will the apprentice work each week, including training?</label>
-                }
-
-                else
-                {
-                    <label asp-for="WeeklyHours" class="govuk-label govuk-!-font-weight-bold">How many hours will the trainee be on placement in total?</label>
-
-                }
+                <label asp-for="WeeklyHours" class="govuk-label govuk-!-font-weight-bold">How many hours will the apprentice work each week, including training?</label>     
                 <span esfa-validation-message-for="WeeklyHours" class="govuk-error-message"></span>
                 <div class="govuk-input__wrapper">
                     <input asp-for="WeeklyHours" class="govuk-input govuk-input--width-2" type="number" step=".25" min="16" max="48">
                     <div class="govuk-input__suffix" aria-hidden="true">hours</div>
                 </div>
             </div>
-            
-
-
-            
+         }           
+  
             <div class="govuk-button-group">        
                 <button type="submit" class="govuk-button save-button" esfa-automation="continue-button">@Model.PageInfo.SubmitButtonText</button>
                 <esfaFeatureEnabled name="@FeatureNames.ProviderTaskList">

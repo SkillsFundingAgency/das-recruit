@@ -65,7 +65,10 @@
             <li>
                 <h3 class="govuk-heading-s">Working week</h3>
                 <p class="govuk-body">@Model.WorkingWeekDescription</p>
+            @if (_serviceParameters.VacancyType == VacancyType.Apprenticeship)
+            {
                 <p class="govuk-body">Total hours per week: @Model.HoursPerWeek</p>
+            }
             </li>
             <li>
                 <h3 class="govuk-heading-s">Expected duration</h3>
