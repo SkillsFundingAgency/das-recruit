@@ -7,7 +7,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
     {
         public bool IsTaskListCompleted(ITaskListVacancy vacancy)
         {
-            if(vacancy.VacancyType == VacancyType.Apprenticeship)
+            if(vacancy.VacancyType.GetValueOrDefault() == VacancyType.Apprenticeship)
                 return vacancy.ApplicationMethod != null;
             if (vacancy.VacancyType == VacancyType.Traineeship)
                 return !string.IsNullOrEmpty(vacancy.EmployerDescription);

@@ -34,6 +34,17 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
         }
         
         [Test, MoqAutoData]
+        public void When_Null_VacancyType_And_Has_ApplicationMethod_Then_TaskList_Completed(VacancyTaskListStatusService service, Mock<ITaskListVacancy> vacancy)
+        {
+            vacancy.Object.VacancyType = null;
+            vacancy.Object.ApplicationMethod = ApplicationMethod.ThroughExternalApplicationSite;
+            
+            bool result = service.IsTaskListCompleted(vacancy.Object);
+
+            result.Should().BeTrue();
+        }
+        
+        [Test, MoqAutoData]
         public void When_Traineeship_And_No_EmployerDescription_Then_TaskList_Not_Completed(VacancyTaskListStatusService service, Mock<ITaskListVacancy> vacancy)
         {
             vacancy.Object.VacancyType = VacancyType.Traineeship;
