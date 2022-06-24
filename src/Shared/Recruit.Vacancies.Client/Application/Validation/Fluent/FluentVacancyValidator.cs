@@ -80,16 +80,11 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                 ValidateTraineeshipTitle();
                 ValidateTraineeshipDuration();
             }
-
             
             ValidateOrganisation();
-
             ValidateNumberOfPositions();
-
             ValidateShortDescription();
-
             ValidateClosingDate();
-
             ValidateStartDate();
 
             if (IsApprenticeshipVacancy)
@@ -102,7 +97,6 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
             }
 
             ValidateWorkingWeek();
-
             ValidateWeeklyHours();
 
             if (IsApprenticeshipVacancy)
@@ -119,36 +113,24 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
             }
 
             ValidateTrainingDescription();
-
             ValidateOutcomeDescription();
-
             ValidateApplicationMethod();
-
             ValidateEmployerContactDetails();
-
             ValidateProviderContactDetails();
-
             ValidateThingsToConsider();
-
             ValidateEmployerInformation();
-
             ValidateTrainingProvider();
 
             if (!IsApprenticeshipVacancy)
             {
                 ValidateWorkExperience();    
             }
-            
         }
-
         
-
         private void CrossFieldValidations()
         {
             ValidateStartDateClosingDate();
-
             MinimumWageValidation();
-            
             TrainingExpiryDateValidation();
         }
 
@@ -201,7 +183,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
         {
             RuleFor(x => x.EmployerName)
                 .NotEmpty()
-                    .WithMessage("Select the employer name you want on your advert")
+                    .WithMessage((vacancy, value) => $"Select the employer name you want on your {(vacancy.OwnerType == OwnerType.Employer ? "advert" : "vacancy")}")
                     .WithErrorCode("4")
                 .RunCondition(VacancyRuleSet.EmployerName)
                 .WithRuleId(VacancyRuleSet.EmployerName);
@@ -252,7 +234,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
             When(v => v.EmployerNameOption == EmployerNameOption.Anonymous, () =>
                 RuleFor(x => x.AnonymousReason)
                     .NotEmpty()
-                    .WithMessage("Enter why you want your advert to be anonymous")
+                    .WithMessage((vacancy, value) => $"Enter why you want your {(vacancy.OwnerType == OwnerType.Employer ? "advert" : "vacancy")} to be anonymous")
                     .WithErrorCode("408")
                     .MaximumLength(200)
                     .WithMessage("The reason must not be more than {MaxLength} characters")
@@ -269,7 +251,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
 
             RuleFor(x => x.EmployerNameOption)
                 .NotEmpty()
-                    .WithMessage("Select the employer name you want on your advert")
+                    .WithMessage((vacancy, value) => $"Select the employer name you want on your {(vacancy.OwnerType == OwnerType.Employer ? "advert" : "vacancy")}")
                     .WithErrorCode("404")
                 .RunCondition(VacancyRuleSet.EmployerNameOption)
                 .WithRuleId(VacancyRuleSet.EmployerNameOption);
