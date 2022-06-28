@@ -1,22 +1,15 @@
 @using Esfa.Recruit.Shared.Web.Mappers
-@using Esfa.Recruit.Vacancies.Client.Domain.Entities
 @model Esfa.Recruit.Provider.Web.ViewModels.Part1.Duration.DurationViewModel
 
 @{
     ViewBag.GaData.Vpv = "/recruitment/provider/page-create-vacancy-duration";
-    ViewBag.Title = "Duration and working hours";
+    ViewBag.Title = $"Duration and {(_serviceParameters.VacancyType.GetValueOrDefault() == VacancyType.Apprenticeship ? "working" : "weekly")} hours";
+    var routeName = _serviceParameters.VacancyType.GetValueOrDefault() == VacancyType.Apprenticeship ? RouteNames.Dates_Get : RouteNames.WorkExperience_Get;
 }
 
 @section BackLink {
     <esfaFeatureEnabled name="@FeatureNames.ProviderTaskList">
-        @if (_serviceParameters.VacancyType == VacancyType.Apprenticeship)
-        {
-            <a asp-route="@RouteNames.Dates_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Back</a>            
-        }
-        else
-        {
-            <a asp-route="@RouteNames.WorkExperience_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Back</a>
-        }
+        <a asp-route="@routeName" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Back</a>
     </esfaFeatureEnabled>
     <esfaFeatureDisabled name="@FeatureNames.ProviderTaskList">
         <a asp-show="@Model.PageInfo.IsWizard" asp-all-route-data="@Model.RouteDictionary" asp-route="@RouteNames.Dates_Get" esfa-automation="link-back" class="govuk-back-link">Back</a>
@@ -32,47 +25,43 @@
 
         <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">
             <span class="govuk-caption-xl">@Model.Title</span>
-            Duration and working hours
+            @ViewBag.Title
         </h1>
 
         <form asp-route="@RouteNames.Duration_Post" asp-route-vacancyId="@Model.VacancyId" asp-route-ukprn="@Model.Ukprn" asp-route-wizard="@Model.PageInfo.IsWizard" novalidate>
             <div esfa-validation-marker-for="Duration" class="govuk-form-group">
                 <fieldset class="govuk-fieldset">
                     
-                    @if (_serviceParameters.VacancyType == VacancyType.Apprenticeship)
+                    @if (_serviceParameters.VacancyType.GetValueOrDefault() == VacancyType.Apprenticeship)
                     {
-                <label asp-for="Duration" class="govuk-label govuk-!-font-weight-bold">
-                    How long is the whole apprenticeship, including work and training?
-                    <span class="govuk-visually-hidden"> (enter a numeric value and then select Month(s) or Year(s) in the next field)</span>
-                </label>
-                                <span class="govuk-hint">
-                                    The apprenticeship must last for at least 12 months.
-                                </span> 
-                    <span asp-show="@Model.ShowTraining" class="govuk-hint">
-                        For @Model.TrainingTitle, typical length is @Model.TrainingDurationMonths months.
-                    </span>
-                    <span esfa-validation-message-for="Duration" class="govuk-error-message"></span>
-                    <input asp-for="Duration" class="govuk-input govuk-input--width-2" type="number" min="1">
-                    <label asp-for="DurationUnit" class="govuk-visually-hidden">
-                        Months or years
-                    </label>
-                    <select asp-for="DurationUnit" class="govuk-select duration-unit-select">
-                        <option value="@DurationUnit.Month">Months</option>
-                        <option value="@DurationUnit.Year">Year(s)</option>
-                    </select>
-                    }
-
-                    else
-                    {
-                <label asp-for="Duration" class="govuk-label govuk-!-font-weight-bold">
-                    How long is the traineeship?
-                    <span class="govuk-visually-hidden"> (enter a numeric value and then select Week(s) or Month(s) in the next field)</span>
-                </label>
-                <span class="govuk-hint">
-                    A traineeship can last from 6 weeks up to 12 months, though most traineeships last for less than 6 months.
-                </span>
+                        <label asp-for="Duration" class="govuk-label govuk-!-font-weight-bold">
+                            How long is the whole apprenticeship, including work and training?
+                            <span class="govuk-visually-hidden"> (enter a numeric value and then select Month(s) or Year(s) in the next field)</span>
+                        </label>
+                        <span class="govuk-hint">
+                            The apprenticeship must last for at least 12 months.
+                        </span> 
                         <span asp-show="@Model.ShowTraining" class="govuk-hint">
                             For @Model.TrainingTitle, typical length is @Model.TrainingDurationMonths months.
+                        </span>
+                        <span esfa-validation-message-for="Duration" class="govuk-error-message"></span>
+                        <input asp-for="Duration" class="govuk-input govuk-input--width-2" type="number" min="1">
+                        <label asp-for="DurationUnit" class="govuk-visually-hidden">
+                            Months or years
+                        </label>
+                        <select asp-for="DurationUnit" class="govuk-select duration-unit-select">
+                            <option value="@DurationUnit.Month">Months</option>
+                            <option value="@DurationUnit.Year">Year(s)</option>
+                        </select>
+                    }
+                    else
+                    {
+                        <label asp-for="Duration" class="govuk-label govuk-!-font-weight-bold">
+                            How long is the traineeship?
+                            <span class="govuk-visually-hidden"> (enter a numeric value and then select Week(s) or Month(s) in the next field)</span>
+                        </label>
+                        <span class="govuk-hint">
+                            A traineeship can last from 6 weeks up to 12 months, though most traineeships last for less than 6 months.
                         </span>
                         <span esfa-validation-message-for="Duration" class="govuk-error-message"></span>
                         <input asp-for="Duration" class="govuk-input govuk-input--width-2" type="number" min="1">
@@ -90,46 +79,38 @@
 
             <div class="govuk-character-count" data-module="govuk-character-count" data-maxlength="250">
                 <div esfa-validation-marker-for="WorkingWeekDescription" class="govuk-form-group">
-                    @if (_serviceParameters.VacancyType == VacancyType.Apprenticeship)
+                    @if (_serviceParameters.VacancyType.GetValueOrDefault() == VacancyType.Apprenticeship)
                     {
                         <label asp-for="WorkingWeekDescription" class="govuk-label govuk-!-font-weight-bold">Details of working week</label>
+                        <span class="govuk-hint">For example, Monday to Friday 9am to 5pm, shifts, may work evenings and weekends.</span>
                     }
-                    
                     else
                     {
-                        <label asp-for="WorkingWeekDescription" class="govuk-label govuk-!-font-weight-bold">Details of work experience placement</label>
-
+                        <label asp-for="WorkingWeekDescription" class="govuk-label govuk-!-font-weight-bold">Weekly hours on the traineeship</label>
+                        <span class="govuk-hint">Include the hours and days of the week the trainee will be in training and on placement.</span>
                     }
-
-                    <span class="govuk-hint">For example, Monday to Friday 9am to 5pm, shifts, may work evenings and weekends.</span>
+                    
                     <span esfa-validation-message-for="WorkingWeekDescription" class="govuk-error-message"></span>
                     <textarea asp-for="WorkingWeekDescription" class="govuk-textarea govuk-js-character-count" rows="5" data-val-length-max="250"></textarea>
                     <div id="WorkingWeekDescription-info" class="govuk-hint govuk-character-count__message" aria-live="polite">
-                        You can enter up to 250 characters
+                            You have 250 characters remaining
                     </div>
+
                 </div>
             </div>
+
+         @if (_serviceParameters.VacancyType == VacancyType.Apprenticeship)
+         {
             <div esfa-validation-marker-for="WeeklyHours" class="govuk-form-group">
-                @if (_serviceParameters.VacancyType == VacancyType.Apprenticeship)
-                {
-                    <label asp-for="WeeklyHours" class="govuk-label govuk-!-font-weight-bold">How many hours will the apprentice work each week, including training?</label>
-                }
-
-                else
-                {
-                    <label asp-for="WeeklyHours" class="govuk-label govuk-!-font-weight-bold">How many hours will the trainee be on placement in total?</label>
-
-                }
+                <label asp-for="WeeklyHours" class="govuk-label govuk-!-font-weight-bold">How many hours will the apprentice work each week, including training?</label>     
                 <span esfa-validation-message-for="WeeklyHours" class="govuk-error-message"></span>
                 <div class="govuk-input__wrapper">
                     <input asp-for="WeeklyHours" class="govuk-input govuk-input--width-2" type="number" step=".25" min="16" max="48">
                     <div class="govuk-input__suffix" aria-hidden="true">hours</div>
                 </div>
             </div>
-            
-
-
-            
+         }           
+  
             <div class="govuk-button-group">        
                 <button type="submit" class="govuk-button save-button" esfa-automation="continue-button">@Model.PageInfo.SubmitButtonText</button>
                 <esfaFeatureEnabled name="@FeatureNames.ProviderTaskList">
