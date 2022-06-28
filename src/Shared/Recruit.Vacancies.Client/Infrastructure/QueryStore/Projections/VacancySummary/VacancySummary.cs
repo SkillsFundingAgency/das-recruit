@@ -36,5 +36,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections
         public int NoOfApplications => NoOfNewApplications + NoOfSuccessfulApplications + NoOfUnsuccessfulApplications;
         public bool IsTraineeship { get; set; }
         public VacancyType? VacancyType { get; set; }
+        public bool IsTaskListCompleted { get; set; }
     }
 }
