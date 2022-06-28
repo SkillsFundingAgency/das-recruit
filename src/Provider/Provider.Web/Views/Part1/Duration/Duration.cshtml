@@ -3,15 +3,14 @@
 @model Esfa.Recruit.Provider.Web.ViewModels.Part1.Duration.DurationViewModel
 
 @{
+    var title = _serviceParameters.VacancyType == VacancyType.Apprenticeship
+    ? "Duration and working hours"
+    : "Duration and weekly hours"; ;
+}
+
+@{
     ViewBag.GaData.Vpv = "/recruitment/provider/page-create-vacancy-duration";
-    @if (_serviceParameters.VacancyType == VacancyType.Apprenticeship)
-    {
-        ViewBag.Title = "Duration and working hours";
-    }
-    else
-    {
-        ViewBag.Title = "Duration and weekly hours";
-    }
+    ViewBag.Title = title;
 }
 
 @section BackLink {
@@ -37,20 +36,10 @@
 
         <partial name="@PartialNames.ReviewSummary" for="Review" />
 
-        @if (_serviceParameters.VacancyType == VacancyType.Apprenticeship)
-        {
-            <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">
-                <span class="govuk-caption-xl">@Model.Title</span>
-                Duration and workings hours
-            </h1>
-        }
-        else
-        {
-            <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">
-                <span class="govuk-caption-xl">@Model.Title</span>
-                Duration and weekly hours
-            </h1>
-        }
+        <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">
+            <span class="govuk-caption-xl">@Model.Title</span>
+            @title
+        </h1>
 
         <form asp-route="@RouteNames.Duration_Post" asp-route-vacancyId="@Model.VacancyId" asp-route-ukprn="@Model.Ukprn" asp-route-wizard="@Model.PageInfo.IsWizard" novalidate>
             <div esfa-validation-marker-for="Duration" class="govuk-form-group">
