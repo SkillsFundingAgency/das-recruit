@@ -121,7 +121,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Extensions
                 FixedWageYearlyAmount = wage.FixedWageYearlyAmount,
                 WageAdditionalInformation = wage.WageAdditionalInformation,
                 WageType = wage.WageType?.ToString(),
-                WeeklyHours = wage.WeeklyHours.Value,
+                WeeklyHours = wage.WeeklyHours ?? 0,
                 WorkingWeekDescription = wage.WorkingWeekDescription
             };
         }

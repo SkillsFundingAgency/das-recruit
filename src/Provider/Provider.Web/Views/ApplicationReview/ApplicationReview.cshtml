@@ -44,7 +44,7 @@
             <span class="govuk-body">@Model.Strengths</span>
         </div>
         <div class="govuk-form-group">
-            <span class="govuk-label govuk-!-font-weight-bold">What skills would you like to improve during this apprenticeship?</span>
+            <span class="govuk-label govuk-!-font-weight-bold">What skills would you like to improve during this @(_serviceParameters.VacancyType.GetValueOrDefault() == VacancyType.Apprenticeship ? "apprenticeship" : "traineeship")?</span>
             <span class="govuk-body">@Model.Improvements</span>
         </div>
         <div class="govuk-form-group">
@@ -187,7 +187,7 @@
             <p class="govuk-body">@Model.Status.Value.GetDisplayName()</p>
             <p class="govuk-body">@Model.CandidateFeedback</p>
 
-            <a asp-route="@RouteNames.VacancyManage_Get" asp-route-ukprn="@Model.Ukprn" class="govuk-button">Return to vacancy</a>
+            <a asp-route="@RouteNames.VacancyManage_Get" asp-route-ukprn="@Model.Ukprn" asp-route-vacancyId="@Model.VacancyId" class="govuk-button">Return to vacancy</a>
         </div>
 
     <form asp-show="@Model.CanChangeOutcome" asp-route="@RouteNames.ApplicationReview_Post" 
@@ -224,7 +224,7 @@
 
             <div class="govuk-button-group hide-print">
                 <button type="submit" class="govuk-button">Save</button>
-                <a asp-route="@RouteNames.VacancyManage_Get" asp-route-ukprn="@Model.Ukprn" class="govuk-link">Cancel</a>
+                <a asp-route="@RouteNames.VacancyManage_Get" asp-route-ukprn="@Model.Ukprn" asp-route-vacancyId="@Model.VacancyId" class="govuk-link">Cancel</a>
             </div>
         </form>
     </div>

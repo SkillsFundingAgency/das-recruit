@@ -1,16 +1,25 @@
 ﻿@model Esfa.Recruit.Provider.Web.ViewModels.EditVacancyDates.EditVacancyDatesViewModel
+@{
+    var exampleClosingDate = DateTime.Now.AddMonths(2);
+    var exampleStartingDate = exampleClosingDate.AddDays(14);
+}
 
+@section BackLink {
+    <a asp-route="@RouteNames.VacancyManage_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Back</a>
+}
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         <h1 class="govuk-heading-xl">Edit vacancy dates</h1>
         <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }' />
         <div class="govuk-form-group govuk-!-margin-top-6">
             <form asp-route="@RouteNames.VacancyEditDates_Post" asp-all-route-data="@Model.RouteDictionary" novalidate>
+                <input type="hidden" asp-for="Title"/>
                 <div esfa-validation-marker-for="ClosingDate" class="govuk-form-group">
                     <fieldset class="govuk-fieldset" aria-describedby="closing-hint" role="group">
                         <label class="govuk-label govuk-!-font-weight-bold" for="shortDescription">
-                            Closing date for applications
+                            Application closing date
                         </label>
+                        <span class="govuk-hint">For example, @exampleClosingDate.AsInputHintDisplayDate()</span>
                         <span esfa-validation-message-for="ClosingDate" class="govuk-error-message"></span>
                         <div class="govuk-date-input">
                             <div class="govuk-date-input__item">
@@ -33,28 +42,33 @@
                             </div>
                         </div>
                         <br>
-                        <details class="govuk-details govuk-!-margin-bottom-0">
-                            <summary class="govuk-details__summary">
-                                <span class="govuk-details__summary-text">
-                                    Information about extending closing dates
-                                </span>
-                            </summary>
-                            <div class="govuk-details__text">
-                                <p>Before you extend the closing date remember that:</p>
-                                <ul class="list list-bullet">
-                                    <li>the apprenticeship training you chose may no longer be available</li>
-                                    <li>the fixed wage may no longer be valid, depending on National Minimum Wage changes</li>
-                                </ul>
-                                <p>To change the apprenticeship training or wage on the vacancy, you will need to create a new vacancy</p>
-                            </div>
-                        </details>  
+                        @if (Model.VacancyType == VacancyType.Apprenticeship)
+                        {
+                            <details class="govuk-details govuk-!-margin-bottom-0">
+                                <summary class="govuk-details__summary">
+                                    <span class="govuk-details__summary-text">
+                                        Information about extending closing dates
+                                    </span>
+                                </summary>
+                                <div class="govuk-details__text">
+                                    <p>Before you extend the closing date remember that:</p>
+                                    <ul class="list list-bullet">
+                                        <li>the apprenticeship training you chose may no longer be available</li>
+                                        <li>the fixed wage may no longer be valid, depending on National Minimum Wage changes</li>
+                                    </ul>
+                                    <p>To change the apprenticeship training or wage on the vacancy, you will need to create a new vacancy</p>
+                                </div>
+                            </details>
+                        }
+                        
                     </fieldset>
-                </div>                                                  
+                </div>
                 <div esfa-validation-marker-for="StartDate" class="govuk-form-group">
                     <fieldset class="govuk-fieldset" aria-describedby="closing-hint" role="group">
                         <label class="govuk-label govuk-!-font-weight-bold" for="shortDescription">
-                            Possible start date
+                            @(Model.VacancyType == VacancyType.Apprenticeship ? "Apprenticeship" : "Traineeship") start date
                         </label>
+                        <span class="govuk-hint">For example, @exampleStartingDate.AsInputHintDisplayDate()</span>
                         <span esfa-validation-message-for="StartDate" class="govuk-error-message"></span>
                         <div class="govuk-date-input">
                             <div class="govuk-date-input__item">
@@ -78,13 +92,24 @@
                         </div>
                     </fieldset>
                 </div>
-                <div class="govuk-form-group">
-                    <label class="govuk-label govuk-!-font-weight-bold" for="apprenticeship-type">Apprenticeship training</label>
-                    <p class="govuk-body">@Model.ProgrammeName</p>
-                </div>
+                @if (Model.VacancyType == VacancyType.Apprenticeship)
+                {
+                    <div class="govuk-form-group">
+                        <label class="govuk-label govuk-!-font-weight-bold" for="apprenticeship-type">Apprenticeship training</label>
+                        <p class="govuk-body">@Model.ProgrammeName</p>
+                    </div>
+                }
+                else
+                {
+                    <div class="govuk-form-group">
+                        <label class="govuk-label govuk-!-font-weight-bold" for="apprenticeship-type">Traineeship sector</label>
+                        <p class="govuk-body">@Model.RouteName</p>
+                    </div>
+                }
+
                 <div class="govuk-button-group">
-                    <button type="submit" class="govuk-button save-button">Preview changes</button>
-                    <a asp-route="@RouteNames.VacancyEdit_Get" class="govuk-link">Cancel</a>
+                    <button type="submit" class="govuk-button save-button">Update vacancy</button>
+                    <a asp-route="@RouteNames.Dashboard_Get" asp-all-route-data="@Model.RouteDictionary" class="govuk-link">Cancel</a>
                 </div>
             </form>
         </div>

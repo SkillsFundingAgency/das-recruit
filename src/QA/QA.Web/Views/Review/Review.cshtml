@@ -247,7 +247,6 @@
                             <div class="@Model.WorkingWeekClass" id="@FieldIdentifiers.WorkingWeek">
                                 <h3 class="govuk-heading-s">Working week</h3>
                                 <p class="govuk-body">@Model.WorkingWeekDescription</p>
-                                <p class="govuk-body">Total hours per week: @Model.HoursPerWeek</p>
                                 <esfa-review-checkbox asp-for="SelectedFieldIdentifiers"
                                                       asp-value="@FieldIdentifiers.WorkingWeek"
                                                       asp-items="@Model.FieldIdentifiers"></esfa-review-checkbox>

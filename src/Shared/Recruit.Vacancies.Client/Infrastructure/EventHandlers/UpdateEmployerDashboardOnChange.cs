@@ -135,6 +135,10 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
 
             var vacancy = await _vacancyRepository.GetVacancyAsync(notification.VacancyReference);
 
+            if (vacancy.VacancyType.GetValueOrDefault() == VacancyType.Traineeship)
+            {
+                return;
+            }
             _logger.LogInformation("Handling {eventType} for accountId: {employerAccountId} and vacancyReference: {vacancyReference}", notification.GetType().Name, vacancy.EmployerAccountId, notification.VacancyReference);
             await _dashboardService.ReBuildDashboardAsync(vacancy.EmployerAccountId);
         }
