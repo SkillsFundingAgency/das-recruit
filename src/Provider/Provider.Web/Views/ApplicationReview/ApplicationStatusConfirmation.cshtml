@@ -1,4 +1,9 @@
 ﻿@model Esfa.Recruit.Shared.Web.ViewModels.ApplicationReview.ApplicationStatusConfirmationViewModel
+
+@{
+    var vacancyType = _serviceParameters.VacancyType.GetValueOrDefault() == VacancyType.Apprenticeship ? "apprenticeship" : "traineeship";
+}
+
 <div class="govuk-grid-row">    
     <div class="govuk-grid-column-two-thirds">
         <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }' />        
@@ -7,7 +12,7 @@
                 Are you sure you want to tell this applicant that they have been accepted?
             </h1>
             <p>
-                This will notify @Model.Name to say that they have been accepted for this apprenticeship.
+                This will notify @Model.Name to say that they have been accepted for this @vacancyType.
             </p>
         </div>
         <div asp-show="@Model.ShowStatusUnSuccessful">
@@ -15,7 +20,7 @@
                 Are you sure you want to tell this applicant that they have not been accepted?
             </h1>
             <p>
-                This will notify @Model.Name to say that they have not been accepted for this apprenticeship.
+                This will notify @Model.Name to say that they have not been accepted for this @vacancyType.
             </p>
             <details class="govuk-details">
                 <summary class="govuk-details__summary">

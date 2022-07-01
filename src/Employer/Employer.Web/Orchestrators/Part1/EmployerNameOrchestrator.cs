@@ -67,7 +67,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                 NewTradingName = employerInfoModel?.NewTradingName,
                 AnonymousName = employerInfoModel?.AnonymousName ,
                 AnonymousReason = employerInfoModel?.AnonymousReason ?? vacancy?.AnonymousReason,
-                TaskListCompleted = _utility.TaskListCompleted(vacancy)
+                TaskListCompleted = _utility.IsTaskListCompleted(vacancy)
             };
 
             if (vacancy.Status == VacancyStatus.Referred)

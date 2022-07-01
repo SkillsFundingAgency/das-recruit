@@ -50,7 +50,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part2
                     ReviewFieldMappingLookups.GetWorkExperienceFieldIndicators());
             }
             
-            viewModel.IsTaskListCompleted = _utility.TaskListCompleted(vacancy);
+            viewModel.IsTaskListCompleted = _utility.IsTaskListCompleted(vacancy);
 
             return viewModel;
         }
