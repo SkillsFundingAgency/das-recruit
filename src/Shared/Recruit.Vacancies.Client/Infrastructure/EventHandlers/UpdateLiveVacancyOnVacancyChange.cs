@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.Commands;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Events;
 using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
@@ -55,7 +56,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
             await Task.WhenAll(vacancyTask, programmeTask);
 
             var vacancy = vacancyTask.Result;
-            var programme = programmeTask.Result.Data.Single(p => p.Id == vacancy.ProgrammeId);
+            var programme = vacancy.VacancyType.GetValueOrDefault() == VacancyType.Apprenticeship ? programmeTask.Result.Data.Single(p => p.Id == vacancy.ProgrammeId) : null;
 
             var liveVacancy = vacancy.ToVacancyProjectionBase<LiveVacancy>(programme, () => QueryViewType.LiveVacancy.GetIdValue(vacancy.VacancyReference.ToString()), _timeProvider);
             await _queryStoreWriter.UpdateLiveVacancyAsync(liveVacancy);

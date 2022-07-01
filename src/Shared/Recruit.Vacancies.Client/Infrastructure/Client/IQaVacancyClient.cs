@@ -13,6 +13,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         Task<QaDashboard> GetDashboardAsync();
         Task<Vacancy> GetVacancyAsync(long vacancyReference);
         Task<IApprenticeshipProgramme> GetApprenticeshipProgrammeAsync(string programmeId);
+        Task<IApprenticeshipRoute> GetRoute(int? routeId);
         Task<VacancyReview> GetVacancyReviewAsync(Guid reviewId);
         Task ReferVacancyReviewAsync(Guid reviewId, string manualQaComment, List<ManualQaFieldIndicator> manualQaFieldIndicators, List<Guid> automatedQaRuleOutcomeIds);
         Task<Qualifications> GetCandidateQualificationsAsync();

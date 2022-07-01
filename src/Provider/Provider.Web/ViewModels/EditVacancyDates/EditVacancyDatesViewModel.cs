@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Esfa.Recruit.Provider.Web.RouteModel;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
 namespace Esfa.Recruit.Provider.Web.ViewModels.EditVacancyDates
 {
@@ -8,7 +9,9 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.EditVacancyDates
         public string ClosingDay { get; set; }
         public string ClosingMonth { get; set; }
         public string ClosingYear { get; set; }
-
+        public string Title { get; set; }
+        public string RouteName { get; set; }
+        public VacancyType VacancyType { get; set; }
         public string ClosingDate
         {
             get

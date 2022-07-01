@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Esfa.Recruit.Provider.Web.Orchestrators;
 using Esfa.Recruit.Provider.Web.Services;
+using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
@@ -38,7 +39,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Vacancies
 
             var providerClientMock = new Mock<IProviderVacancyClient>();
             var timeProviderMock = new Mock<ITimeProvider>();
-            providerClientMock.Setup(c => c.GetDashboardAsync(_user.Ukprn.Value, true))
+            providerClientMock.Setup(c => c.GetDashboardAsync(_user.Ukprn.Value, VacancyType.Apprenticeship, true))
                 .Returns(Task.FromResult(new ProviderDashboard {
                     Vacancies = vacancies
                 }));
@@ -48,7 +49,8 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Vacancies
                 _recruitVacancyClientMock.Object,
                 timeProviderMock.Object,
                 _providerAlertsViewModelFactoryMock.Object,
-                _providerRelationshipsServiceMock.Object);
+                _providerRelationshipsServiceMock.Object,
+                new ServiceParameters(VacancyType.Apprenticeship.ToString()));
 
             var vm = await orch.GetVacanciesViewModelAsync(_user, "Submitted", 2, string.Empty);
 
@@ -75,7 +77,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Vacancies
 
             var providerClientMock = new Mock<IProviderVacancyClient>();
             var timeProviderMock = new Mock<ITimeProvider>();
-            providerClientMock.Setup(c => c.GetDashboardAsync(_user.Ukprn.Value, true))
+            providerClientMock.Setup(c => c.GetDashboardAsync(_user.Ukprn.Value,VacancyType.Apprenticeship, true))
                 .Returns(Task.FromResult(new ProviderDashboard {
                     Vacancies = vacancies
                 }));
@@ -85,7 +87,8 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Vacancies
                 _recruitVacancyClientMock.Object,
                 timeProviderMock.Object,
                 _providerAlertsViewModelFactoryMock.Object,
-                _providerRelationshipsServiceMock.Object);
+                _providerRelationshipsServiceMock.Object,
+                new ServiceParameters(VacancyType.Apprenticeship.ToString()));
 
             var vm = await orch.GetVacanciesViewModelAsync(_user, "Submitted", 2, string.Empty);
 

@@ -9,6 +9,7 @@ using Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview;
 using Esfa.Recruit.Shared.Web.Orchestrators;
 using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Commands;
+using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
@@ -34,6 +35,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
         private readonly ITrainingProviderAgreementService _trainingProviderAgreementService;
         private readonly IMessaging _messaging;
         private readonly IUtility _utility;
+        private readonly ServiceParameters _serviceParameters;
 
         public VacancyPreviewOrchestrator(IRecruitVacancyClient vacancyClient,
             ILogger<VacancyPreviewOrchestrator> logger,
@@ -43,7 +45,8 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             ILegalEntityAgreementService legalEntityAgreementService,
             ITrainingProviderAgreementService trainingProviderAgreementService,
             IMessaging messaging,
-            IUtility utility) : base(logger)
+            IUtility utility,
+            ServiceParameters serviceParameters) : base(logger)
         {
             _vacancyClient = vacancyClient;
             _vacancyDisplayMapper = vacancyDisplayMapper;
@@ -53,6 +56,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             _trainingProviderAgreementService = trainingProviderAgreementService;
             _messaging = messaging;
             _utility = utility;
+            _serviceParameters = serviceParameters;
         }
 
         public async Task<VacancyPreviewViewModel> GetVacancyPreviewViewModelAsync(VacancyRouteModel vrm)
@@ -129,7 +133,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
 
             if (response.HasLegalEntityAgreement && response.HasProviderAgreement)
             {
-                if (hasProviderReviewPermission)
+                if (hasProviderReviewPermission && _serviceParameters.VacancyType.GetValueOrDefault() == VacancyType.Apprenticeship)
                 {
                     var command = new ReviewVacancyCommand(vacancy.Id, user, OwnerType.Provider);
                     await _messaging.SendCommandAsync(command);

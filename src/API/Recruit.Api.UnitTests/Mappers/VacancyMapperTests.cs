@@ -4,6 +4,8 @@ using FluentAssertions;
 using NUnit.Framework;
 using SFA.DAS.Recruit.Api.Mappers;
 using SFA.DAS.Recruit.Api.Models;
+using DurationUnit = SFA.DAS.Recruit.Api.Models.DurationUnit;
+using WageType = SFA.DAS.Recruit.Api.Models.WageType;
 
 namespace SFA.DAS.Recruit.Api.UnitTests.Mappers
 {

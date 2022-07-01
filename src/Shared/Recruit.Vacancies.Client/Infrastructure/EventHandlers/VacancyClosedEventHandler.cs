@@ -67,7 +67,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
             await Task.WhenAll(vacancyTask, programmeTask);
 
             var vacancy = vacancyTask.Result;
-            var programme = programmeTask.Result.Data.Single(p => p.Id == vacancy.ProgrammeId);
+            var programme = vacancy.VacancyType.GetValueOrDefault() == VacancyType.Apprenticeship ? programmeTask.Result.Data.Single(p => p.Id == vacancy.ProgrammeId) : null;
 
             await _queryStore.UpdateClosedVacancyAsync(vacancy.ToVacancyProjectionBase<ClosedVacancy>(programme, () => QueryViewType.ClosedVacancy.GetIdValue(vacancy.VacancyReference.ToString()), _timeProvider));
 

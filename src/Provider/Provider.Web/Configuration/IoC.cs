@@ -1,4 +1,5 @@
-﻿using Esfa.Recruit.Provider.Web.Filters;
+﻿using System;
+using Esfa.Recruit.Provider.Web.Filters;
 using Esfa.Recruit.Provider.Web.Mappings;
 using Esfa.Recruit.Provider.Web.Orchestrators;
 using Esfa.Recruit.Shared.Web.Configuration;
@@ -18,10 +19,10 @@ using Esfa.Recruit.Provider.Web.Orchestrators.Reports;
 using Esfa.Recruit.Provider.Web.ViewModels.Reports.ProviderApplicationsReport;
 using Esfa.Recruit.Vacancies.Client.Ioc;
 using FluentValidation;
-using Esfa.Recruit.Provider.Web.Configuration.Routing;
 using Esfa.Recruit.Provider.Web.Services;
 using Esfa.Recruit.Provider.Web.TagHelpers;
 using Esfa.Recruit.Shared.Web.Orchestrators;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
 namespace Esfa.Recruit.Provider.Web.Configuration
 {
@@ -29,6 +30,10 @@ namespace Esfa.Recruit.Provider.Web.Configuration
     {
         public static void AddIoC(this IServiceCollection services, IConfiguration configuration)
         {
+            var serviceParameters = new ServiceParameters(configuration[$"RecruitConfiguration:{nameof(VacancyType)}"]);
+            
+            services.AddSingleton(serviceParameters);
+            
             services.AddRecruitStorageClient(configuration);
 
             //Configuration
@@ -118,6 +123,8 @@ namespace Esfa.Recruit.Provider.Web.Configuration
             services.AddTransient<DurationOrchestrator>();
             services.AddTransient<VacancyTaskListOrchestrator>();
             services.AddTransient<FutureProspectsOrchestrator>();
+            services.AddTransient<WorkExperienceOrchestrator>();
+            services.AddTransient<TraineeSectorOrchestrator>();
         }
 
         private static void RegisterMapperDeps(IServiceCollection services)

@@ -146,6 +146,7 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
             services.AddTransient<IPasAccountProvider, PasAccountProvider>();
             services.AddHttpClient<IOuterApiClient, OuterApiClient>();
             services.AddTransient<IOuterApiGeocodeService, OuterApiGeocodeService>();
+            services.AddSingleton<IVacancyTaskListStatusService, VacancyTaskListStatusService>();
 
             // Projection services
             services.AddTransient<IEmployerDashboardProjectionService, EmployerDashboardProjectionService>();
@@ -159,6 +160,7 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
             // Reference Data Providers
             services.AddTransient<IMinimumWageProvider, NationalMinimumWageProvider>();
             services.AddTransient<IApprenticeshipProgrammeProvider, ApprenticeshipProgrammeProvider>();
+            services.AddTransient<IApprenticeshipRouteProvider, ApprenticeshipRouteProvider>();
             services.AddTransient<IQualificationsProvider, QualificationsProvider>();
             services.AddTransient<ICandidateSkillsProvider, CandidateSkillsProvider>();
             services.AddTransient<IProfanityListProvider, ProfanityListProvider>();
@@ -246,14 +248,14 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
 
         private static void AddValidation(IServiceCollection services)
         {
-            services.AddSingleton<AbstractValidator<Vacancy>, FluentVacancyValidator>();
-            services.AddSingleton(typeof(IEntityValidator<,>), typeof(EntityValidator<,>));
+            services.AddTransient<AbstractValidator<Vacancy>, FluentVacancyValidator>();
+            services.AddTransient(typeof(IEntityValidator<,>), typeof(EntityValidator<,>));
 
-            services.AddSingleton<AbstractValidator<ApplicationReview>, ApplicationReviewValidator>();
-            services.AddSingleton<AbstractValidator<VacancyReview>, VacancyReviewValidator>();
+            services.AddTransient<AbstractValidator<ApplicationReview>, ApplicationReviewValidator>();
+            services.AddTransient<AbstractValidator<VacancyReview>, VacancyReviewValidator>();
 
-            services.AddSingleton<AbstractValidator<UserNotificationPreferences>, UserNotificationPreferencesValidator>();
-            services.AddSingleton<AbstractValidator<Qualification>, QualificationValidator>();
+            services.AddTransient<AbstractValidator<UserNotificationPreferences>, UserNotificationPreferencesValidator>();
+            services.AddTransient<AbstractValidator<Qualification>, QualificationValidator>();
         }
 
         private static void AddRules(IServiceCollection services)

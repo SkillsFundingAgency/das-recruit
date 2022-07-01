@@ -115,5 +115,14 @@
         public const string ProviderCheckYourAnswersGet = "provider-check-your-answers-get";
         public const string FutureProspects_Get = "FutureProspects_Get";
         public const string FutureProspects_Post = "FutureProspects_Post";
+        public const string WorkExperience_Get = "work-experience-get";
+        public const string WorkExperience_Post = "work-experience-post";
+        public const string TraineeSector_Get = "trainee-sector-get";
+        public const string TraineeSector_Post = "trainee-sector-post";
+        public const string TraineeshipHelp = "trainee-help-get";
+        public const string TraineeshipPrivacy = "trainee-privacy-get";
+        public const string TraineeshipTermsAndConditions = "trainee-terms-and-conditions";
+        public const string TraineeshipCookies = "trainee-cookies";
+        public const string TraineeshipCookiesDetails = "trainee-cookies-details";
     }
 }

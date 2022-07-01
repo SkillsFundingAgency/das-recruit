@@ -2,6 +2,7 @@
 {
     public enum DurationUnit
     {
+        Week,
         Month,
         Year
     }

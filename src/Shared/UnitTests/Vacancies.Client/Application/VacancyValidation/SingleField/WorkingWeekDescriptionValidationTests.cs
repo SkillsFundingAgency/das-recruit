@@ -1,4 +1,5 @@
 using System;
+using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using FluentAssertions;
@@ -8,9 +9,12 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation.
 {
     public class WorkingWeekDescriptionValidationTests : VacancyValidationTestsBase
     {
-        [Fact]
-        public void NoErrorsWhenWorkingWeekDescriptionValueIsValid()
+        [Theory]
+        [InlineData("Apprenticeship")]
+        [InlineData("Traineeship")]
+        public void NoErrorsWhenWorkingWeekDescriptionValueIsValid(string serviceType)
         {
+            ServiceParameters = new ServiceParameters(serviceType);
             var vacancy = new Vacancy
             {
                 Wage = new Wage
@@ -26,10 +30,13 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation.
         }
 
         [Theory]
-        [InlineData(null)]
-        [InlineData("")]
-        public void WorkingWeekDescriptionMustHaveAValue(string descriptionValue)
+        [InlineData("Apprenticeship", null)]
+        [InlineData("Apprenticeship", "")]
+        [InlineData("Traineeship", null)]
+        [InlineData("Traineeship", "")]
+        public void WorkingWeekDescriptionMustHaveAValue(string serviceType, string descriptionValue)
         {
+            ServiceParameters = new ServiceParameters(serviceType);
             var vacancy = new Vacancy
             {
                 Wage = new Wage
@@ -48,10 +55,13 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation.
         }
 
         [Theory]
-        [InlineData("<")]
-        [InlineData(">")]
-        public void WorkingWeekDescriptionMustContainValidCharacters(string invalidCharacter)
+        [InlineData("Apprenticeship", "<")]
+        [InlineData("Apprenticeship", ">")]
+        [InlineData("Traineeship", "<")]
+        [InlineData("Traineeship", ">")]
+        public void WorkingWeekDescriptionMustContainValidCharacters(string serviceType, string invalidCharacter)
         {
+            ServiceParameters = new ServiceParameters(serviceType);
             var vacancy = new Vacancy
             {
                 Wage = new Wage
@@ -69,9 +79,12 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation.
             result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.WorkingWeekDescription);
         }
 
-        [Fact]
-        public void WorkingWeekDescriptionMustBeLessThan250Characters()
+        [Theory]
+        [InlineData("Apprenticeship")]
+        [InlineData("Traineeship")]
+        public void WorkingWeekDescriptionMustBeLessThan250Characters(string serviceType)
         {
+            ServiceParameters = new ServiceParameters(serviceType);
             var vacancy = new Vacancy
             {
                 Wage = new Wage
@@ -90,12 +103,17 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation.
         }
 
         [Theory]
-        [InlineData("some text bother")]
-        [InlineData("some text dang")]
-        [InlineData("some text drat")]
-        [InlineData("some text balderdash")]
-        public void WorkingWeekDescription_ShouldFailIfContainsWordsFromTheProfanityList(string freeText)
+        [InlineData("Apprenticeship", "some text bother")]
+        [InlineData("Apprenticeship", "some text dang")]
+        [InlineData("Apprenticeship", "some text drat")]
+        [InlineData("Apprenticeship", "some text balderdash")]
+        [InlineData("Traineeship", "some text bother")]
+        [InlineData("Traineeship", "some text dang")]
+        [InlineData("Traineeship", "some text drat")]
+        [InlineData("Traineeship", "some text balderdash")]
+        public void WorkingWeekDescription_ShouldFailIfContainsWordsFromTheProfanityList(string serviceType, string freeText)
         {
+            ServiceParameters = new ServiceParameters(serviceType);
             var vacancy = new Vacancy
             {
                 Wage = new Wage
@@ -111,12 +129,17 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation.
         }
 
         [Theory]
-        [InlineData("some textbother")]
-        [InlineData("some textdang")]
-        [InlineData("some textdrat")]
-        [InlineData("some textbalderdash")]
-        public void WorkingWeekDescription_ShouldFail_Not_IfContainsWordsFromTheProfanityList(string freeText)
+        [InlineData("Apprenticeship", "some textbother")]
+        [InlineData("Apprenticeship", "some textdang")]
+        [InlineData("Apprenticeship", "some textdrat")]
+        [InlineData("Apprenticeship", "some textbalderdash")]
+        [InlineData("Traineeship", "some textbother")]
+        [InlineData("Traineeship", "some textdang")]
+        [InlineData("Traineeship", "some textdrat")]
+        [InlineData("Traineeship", "some textbalderdash")]
+        public void WorkingWeekDescription_ShouldFail_Not_IfContainsWordsFromTheProfanityList(string serviceType, string freeText)
         {
+            ServiceParameters = new ServiceParameters(serviceType);
             var vacancy = new Vacancy
             {
                 Wage = new Wage

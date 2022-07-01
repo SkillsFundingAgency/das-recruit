@@ -66,6 +66,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             viewModel.PossibleStartDate = vacancy.StartDate?.AsGdsDate();
             viewModel.IsDisabilityConfident = vacancy.IsDisabilityConfident;
             viewModel.IsApplyThroughFaaVacancy = vacancy.ApplicationMethod == ApplicationMethod.ThroughFindAnApprenticeship;
+            viewModel.IsApplyThroughFatVacancy = vacancy.ApplicationMethod == ApplicationMethod.ThroughFindATraineeship;
             viewModel.CanShowEditVacancyLink = vacancy.CanExtendStartAndClosingDates;
             viewModel.CanShowCloseVacancyLink = vacancy.CanClose;
             viewModel.CanShowCloneVacancyLink = vacancy.CanClone;
