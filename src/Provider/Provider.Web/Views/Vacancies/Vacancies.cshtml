@@ -28,8 +28,18 @@
     <p class="das-notification__body">@Model.WarningMessage</p>
 </div>
 
-<div asp-show="Model.HasInfo" class="das-notification das-notification--information">
-    <p class="das-notification__body">@Model.InfoMessage</p>
+
+<div asp-show="Model.HasInfo" class="govuk-notification-banner govuk-notification-banner--success" role="alert" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
+  <div class="govuk-notification-banner__header">
+    <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
+      Success
+    </h2>
+  </div>
+  <div class="govuk-notification-banner__content">
+    <h3 class="govuk-notification-banner__heading">
+        @Model.InfoMessage        
+    </h3>
+  </div>
 </div>
 
 @section BackLink
@@ -116,7 +126,7 @@
                         <th class="govuk-table__header" scope="col">Applications</th>
                         <th class="govuk-table__header" scope="col">Closing date</th>
                         <th class="govuk-table__header" scope="col">Status</th>
-                        <th class="govuk-table__header" scope="col">Action</th>
+                        <th class="govuk-table__header govuk-table__header--numeric govuk-!-padding-right-0" scope="col">Action</th>
                     </tr>
                 </thead>
                 <tbody class="govuk-table__body">
@@ -148,13 +158,14 @@
                                 <a id="preview-@vacancy.Id" asp-show="@vacancy.IsSubmittable" asp-route="@RouteNames.DisplayVacancy_Get" asp-route-ukprn="@Model.Ukprn" asp-route-vacancyId="@vacancy.Id" class="govuk-link">@GetLinkText(vacancy) <span class="govuk-visually-hidden">@vacancy.Title</span></a>
                             </esfaFeatureDisabled>
                             <esfaFeatureEnabled name="@FeatureNames.ProviderTaskList">
-                                @if (vacancy.Status == VacancyStatus.Referred || vacancy.Status == VacancyStatus.Rejected)
+                                @if (vacancy.Status == VacancyStatus.Referred || vacancy.Status == VacancyStatus.Rejected || vacancy.IsTaskListCompleted)
                                 {
-                    <a id="task-list-@vacancy.Id" asp-show="@vacancy.IsSubmittable" asp-route="@RouteNames.ProviderCheckYourAnswersGet" asp-route-ukprn="@Model.Ukprn" asp-route-vacancyId="@vacancy.Id" class="govuk-link">@GetLinkText(vacancy) <span class="govuk-visually-hidden">@vacancy.Title</span></a> }
-                else
-                {
-                    <a id="task-list-@vacancy.Id" asp-show="@vacancy.IsSubmittable" asp-route="@RouteNames.ProviderTaskListGet" asp-route-ukprn="@Model.Ukprn" asp-route-vacancyId="@vacancy.Id" class="govuk-link">@GetLinkText(vacancy) <span class="govuk-visually-hidden">@vacancy.Title</span></a>}
-
+                                    <a id="task-list-@vacancy.Id" asp-show="@vacancy.IsSubmittable" asp-route="@RouteNames.ProviderCheckYourAnswersGet" asp-route-ukprn="@Model.Ukprn" asp-route-vacancyId="@vacancy.Id" class="govuk-link">@GetLinkText(vacancy) <span class="govuk-visually-hidden">@vacancy.Title</span></a> 
+                                }
+                                else
+                                {
+                                    <a id="task-list-@vacancy.Id" asp-show="@vacancy.IsSubmittable" asp-route="@RouteNames.ProviderTaskListGet" asp-route-ukprn="@Model.Ukprn" asp-route-vacancyId="@vacancy.Id" class="govuk-link">@GetLinkText(vacancy) <span class="govuk-visually-hidden">@vacancy.Title</span></a>
+                                }
                             </esfaFeatureEnabled>
                         </td>
                     </tr>
