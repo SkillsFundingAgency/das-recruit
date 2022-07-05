@@ -1144,10 +1144,7 @@
             "value": "[parameters('wafOutboundIPAddresses')]"
           }
         }
-      },
-      "dependsOn": [
-        "[concat('recruit-api-app-service-certificate-', parameters('utcValue'))]"
-      ]
+      }
     }
   ],
   "outputs": {
