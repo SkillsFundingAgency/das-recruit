@@ -152,7 +152,7 @@
     },
     "utcValue": {
       "type": "string",
-      "defaultValue": "[utcNow()]"
+      "defaultValue": "[utcNow('yyMMddHHmmss')]"
     }
   },
   "variables": {
@@ -410,7 +410,7 @@
     },
     {
       "apiVersion": "2020-10-01",
-      "name": "[concat('cosmos-db-container-settings-', parameters('containerArray')[copyIndex()].containerName, '-', parameters('utcValue'))]",
+      "name": "[concat('cdb-contnr-settings-', parameters('containerArray')[copyIndex()].containerName, '-', parameters('utcValue'))]",
       "dependsOn": [
         "[concat('cosmos-db-container-', parameters('containerArray')[copyIndex()].containerName, '-', parameters('utcValue'))]"
       ],
