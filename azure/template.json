@@ -347,7 +347,7 @@
       "apiVersion": "2020-10-01",
       "name": "[concat('cosmos-db-database-deployment-', parameters('utcValue'))]",
       "dependsOn": [
-        "cosmos-db"
+        "[concat('cosmos-db-', parameters('utcValue'))]"
       ],
       "type": "Microsoft.Resources/deployments",
       "resourceGroup": "[variables('resourceGroupName')]",
@@ -374,7 +374,7 @@
       "apiVersion": "2020-10-01",
       "name": "[concat('cosmos-db-container-', parameters('containerArray')[copyIndex()].containerName, '-', parameters('utcValue'))]",
       "dependsOn": [
-        "cosmos-db-database-deployment"
+        "[concat('cosmos-db-database-deployment', parameters('utcValue'))]"
       ],
       "type": "Microsoft.Resources/deployments",
       "resourceGroup": "[variables('resourceGroupName')]",
@@ -1007,8 +1007,8 @@
         }
       },
       "dependsOn": [
-        "webjob-app-service-plan",
-        "webjob-apim-product-subscription"
+        "[concat('webjob-app-service-plan-', parameters('utcValue'))]",
+        "[concat('webjob-apim-product-subscription', parameters('utcValue'))]"
       ]
     },
     {
@@ -1146,7 +1146,7 @@
         }
       },
       "dependsOn": [
-        "recruit-api-app-service-certificate"
+        "[concat('recruit-api-app-service-certificate-', parameters('utcValue'))]"
       ]
     }
   ],
