@@ -401,13 +401,23 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                     .WithErrorCode("36")
                     .Must((vacancy, value) =>
                     {
-                        if ((vacancy.Wage.DurationUnit == DurationUnit.Week && value == 52
-                             || vacancy.Wage.DurationUnit == DurationUnit.Month && value == 12 
-                             || vacancy.Wage.DurationUnit == DurationUnit.Year && value == 1)
+                        if (( vacancy.Wage.DurationUnit == DurationUnit.Month && value >= 12 
+                             || vacancy.Wage.DurationUnit == DurationUnit.Year && value >= 1)
                             && vacancy.Wage.WeeklyHours.HasValue
-                            && vacancy.Wage.WeeklyHours < 30m) 
+                            && vacancy.Wage.WeeklyHours < 30m)
                         {
-                            return false;
+
+                            var numberOfMonths = (int) Math.Ceiling(30 / vacancy.Wage.WeeklyHours.GetValueOrDefault() * 12);
+
+                            if (vacancy.Wage.DurationUnit == DurationUnit.Year)
+                            {
+                                value *= 12;
+                            }
+                            
+                            if (numberOfMonths > value)
+                            {
+                                return false;    
+                            }
                         }
 
                         return true;
