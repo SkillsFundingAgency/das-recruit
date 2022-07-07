@@ -13,7 +13,7 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation.
         [InlineData(DurationUnit.Month, 12,  "Apprenticeship", "30")]
         [InlineData(DurationUnit.Year, 1,  "Apprenticeship", "30")]
         [InlineData(DurationUnit.Week, 52,  "Apprenticeship", "30")]
-        [InlineData(DurationUnit.Month, 13,  "Apprenticeship", "20")]
+        [InlineData(DurationUnit.Month, 13,  "Apprenticeship", "30")]
         [InlineData(DurationUnit.Month, 12,  "Apprenticeship")]
         [InlineData(DurationUnit.Week, 6,  "Traineeship")]
         [InlineData(DurationUnit.Week, 52, "Traineeship")]
