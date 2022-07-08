@@ -22,6 +22,35 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.C
     public class CloseExpiredVacanciesCommandHandlerTests
     {
         [Fact]
+        public async Task ThenWithNoVacanciesDoesNotProcess()
+        {
+            var mockLogger = new Mock<ILogger<CloseExpiredVacanciesCommandHandler>>();
+
+            var mockCursor = new Mock<IAsyncCursor<VacancyIdentifier>>();
+            mockCursor.Setup(x => x.Current)
+                .Returns(new List<VacancyIdentifier>());
+            mockCursor
+                .SetupSequence(_ => _.MoveNextAsync(It.IsAny<CancellationToken>()))
+                .ReturnsAsync(false);
+            
+            var mockQuery = new Mock<IVacancyQuery>();
+            mockQuery.Setup(q => q.GetVacanciesByStatusAndClosingDateAsync(It.Is<VacancyStatus>(s => s == VacancyStatus.Live), DateTime.Parse("2019-03-24")))
+                .ReturnsAsync(mockCursor.Object);
+            
+            var mockTimeProvider = new Mock<ITimeProvider>();
+            mockTimeProvider.Setup(t => t.Today).Returns(DateTime.Parse("2019-03-24"));
+            
+            var mockVacancyService = new Mock<IVacancyService>();
+            
+            var handler = new CloseExpiredVacanciesCommandHandler(mockLogger.Object, mockQuery.Object, mockTimeProvider.Object, mockVacancyService.Object);
+            
+            var command = new CloseExpiredVacanciesCommand();
+            
+            await handler.Handle(command, new CancellationToken());
+            
+            mockVacancyService.Verify(s => s.CloseExpiredVacancy(It.IsAny<Guid>()), Times.Never());
+        }
+        [Fact]
         public async Task ShouldCloseAllVacanciesWithClosingDateBeforeToday()
         {
             var vacancies = new List<VacancyIdentifier> 
@@ -57,7 +86,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.C
             
             await handler.Handle(command, new CancellationToken());
             
-            mockVacancyService.Verify(s => s.CloseExpiredVacancy(It.IsAny<Guid>()), Times.Exactly(8));
+            mockVacancyService.Verify(s => s.CloseExpiredVacancy(It.IsAny<Guid>()), Times.Exactly(4));
         }
     }
 }

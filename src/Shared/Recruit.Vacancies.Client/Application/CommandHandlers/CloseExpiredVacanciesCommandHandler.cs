@@ -36,10 +36,11 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             var vacancies = (await _query.GetVacanciesByStatusAndClosingDateAsync(VacancyStatus.Live, _timeProvider.Today));
             var numberClosed = 0;
 
-            var hasDocuments = true;
+            
+            var hasDocuments = await vacancies.MoveNextAsync(cancellationToken);
             
             while (hasDocuments)
-            {
+            {   
                 foreach (var vacancy in vacancies.Current)
                 {
                     _logger.LogInformation($"Closing vacancy {vacancy.VacancyReference} with closing date of {vacancy.ClosingDate}");
