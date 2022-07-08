@@ -173,7 +173,10 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
                 {
                     _logger.LogError(e,"Unable to rebuild dashboard for {ukprn} as part of IVacancyEvent", vacancy.TrainingProvider.Ukprn.Value);    
                 }
-                _logger.LogError(e,"Unable to rebuild dashboard as part of IVacancyEvent");
+                else
+                {
+                    _logger.LogError(e,"Unable to rebuild dashboard as part of IVacancyEvent");
+                }
             }
         }
     }
