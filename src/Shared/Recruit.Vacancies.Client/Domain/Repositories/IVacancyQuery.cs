@@ -3,6 +3,7 @@ using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Domain.Models;
+using MongoDB.Driver;
 
 namespace Esfa.Recruit.Vacancies.Client.Domain.Repositories
 {
@@ -11,6 +12,8 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Repositories
         Task<IEnumerable<T>> GetVacanciesByEmployerAccountAsync<T>(string employerAccountId);
         Task<IEnumerable<T>> GetVacanciesByProviderAccountAsync<T>(long ukprn);
         Task<IEnumerable<T>> GetVacanciesByStatusAsync<T>(VacancyStatus status);
+
+        Task<IAsyncCursor<VacancyIdentifier>> GetVacanciesByStatusAndClosingDateAsync(VacancyStatus status, DateTime? closingDate);
         Task<int> GetVacancyCountForUserAsync(string userId);
         Task<Vacancy> GetSingleVacancyForPostcodeAsync(string postcode);
         Task<Vacancy> GetVacancyAsync(Guid id);
