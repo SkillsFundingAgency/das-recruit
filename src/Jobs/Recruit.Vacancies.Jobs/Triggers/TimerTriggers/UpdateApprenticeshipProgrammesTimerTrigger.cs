@@ -21,7 +21,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.Triggers.TimerTriggers
             _timeProvider = timeProvider;
         }
 
-        public Task UpdateApprenticeshipProgrammesAsync([TimerTrigger(Schedules.EveryFiveMinutes)] TimerInfo timerInfo, TextWriter log)
+        public Task UpdateApprenticeshipProgrammesAsync([TimerTrigger(Schedules.FourAmDaily)] TimerInfo timerInfo, TextWriter log)
         {
             _logger.LogInformation($"Timer trigger {this.GetType().Name} fired");
 
