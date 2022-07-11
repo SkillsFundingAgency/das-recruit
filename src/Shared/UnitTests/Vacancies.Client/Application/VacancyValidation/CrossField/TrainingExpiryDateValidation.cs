@@ -21,7 +21,7 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation.
 
             var programmes = new List<IApprenticeshipProgramme>
             {
-                new TestApprenticeshipProgramme {Id = "123", EffectiveTo = null}
+                new TestApprenticeshipProgramme {Id = "123", LastDateStarts = null}
             };
 
             MockApprenticeshipProgrammeProvider.Setup(x => x.GetApprenticeshipProgrammesAsync(false)).ReturnsAsync(programmes);
@@ -47,7 +47,7 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation.
 
             var programmes = new List<IApprenticeshipProgramme>
             {
-                new TestApprenticeshipProgramme {Id = "123", EffectiveTo = startDate.AddDays(daysAfterStartDate)}
+                new TestApprenticeshipProgramme {Id = "123", LastDateStarts = startDate.AddDays(daysAfterStartDate)}
             };
 
             MockApprenticeshipProgrammeProvider.Setup(x => x.GetApprenticeshipProgrammesAsync(false)).ReturnsAsync(programmes);
@@ -71,7 +71,7 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation.
 
             var programmes = new List<IApprenticeshipProgramme>
             {
-                new TestApprenticeshipProgramme {Id = "123", EffectiveTo = startDate.AddDays(-1)}
+                new TestApprenticeshipProgramme {Id = "123", LastDateStarts = startDate.AddDays(-1)}
             };
 
             MockApprenticeshipProgrammeProvider.Setup(x => x.GetApprenticeshipProgrammesAsync(false)).ReturnsAsync(programmes);
