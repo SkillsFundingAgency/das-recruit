@@ -39,42 +39,56 @@
 
         <h2 class="govuk-heading-l govuk-!-margin-top-6">About you</h2>
 
-        <div class="govuk-form-group">
-            <span class="govuk-label govuk-!-font-weight-bold">What are your main strengths?</span>
-            <span class="govuk-body">@Model.Strengths</span>
-        </div>
-        <div class="govuk-form-group">
-            <span class="govuk-label govuk-!-font-weight-bold">What skills would you like to improve during this @(_serviceParameters.VacancyType.GetValueOrDefault() == VacancyType.Apprenticeship ? "apprenticeship" : "traineeship")?</span>
-            <span class="govuk-body">@Model.Improvements</span>
-        </div>
-        <div class="govuk-form-group">
-            <span class="govuk-label govuk-!-font-weight-bold">What are your hobbies and interests?</span>
-            <span class="govuk-body">@Model.HobbiesAndInterests</span>
-        </div>
+        @if (_serviceParameters.VacancyType.GetValueOrDefault() == VacancyType.Apprenticeship)
+        {
+            <div class="govuk-form-group">
+                <span class="govuk-label govuk-!-font-weight-bold">What are your main strengths?</span>
+                <span class="govuk-body">@Model.Strengths</span>
+            </div>
+            <div class="govuk-form-group">
+                <span class="govuk-label govuk-!-font-weight-bold">What skills would you like to improve during this @(_serviceParameters.VacancyType.GetValueOrDefault() == VacancyType.Apprenticeship ? "apprenticeship" : "traineeship")?</span>
+                <span class="govuk-body">@Model.Improvements</span>
+            </div>
+            <div class="govuk-form-group">
+                <span class="govuk-label govuk-!-font-weight-bold">What are your hobbies and interests?</span>
+                <span class="govuk-body">@Model.HobbiesAndInterests</span>
+            </div>
 
-        <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+            <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
 
-        <h2 class="govuk-heading-l govuk-!-margin-top-6">Education</h2>
+            <h2 class="govuk-heading-l govuk-!-margin-top-6">Education</h2>
 
-        <h3 class="govuk-heading-s">Name of most recent school/college</h3>
-        <p class="govuk-body">@Model.EducationInstitution</p>
+            <h3 class="govuk-heading-s">Name of most recent school/college</h3>
+            <p class="govuk-body">@Model.EducationInstitution</p>
 
-        <table class="govuk-table">
-            <caption class="govuk-table__caption">Years attended</caption>
-            <thead class="govuk-table__head">
-                <tr class="govuk-table__row">
-                    <th class="govuk-table__header">Started</th>
-                    <th class="govuk-table__header">Finished</th>
-                </tr>
-            </thead>
-            <tbody class="govuk-table__body">
-                <tr class="govuk-table__row">
-                    <td class="govuk-table__cell">@Model.EducationFromYear</td>
-                    <td class="govuk-table__cell">@Model.EducationToYear</td>
-                </tr>
-            </tbody>
-        </table>
-
+            <table class="govuk-table">
+                <caption class="govuk-table__caption">Years attended</caption>
+                <thead class="govuk-table__head">
+                    <tr class="govuk-table__row">
+                        <th class="govuk-table__header">Started</th>
+                        <th class="govuk-table__header">Finished</th>
+                    </tr>
+                </thead>
+                <tbody class="govuk-table__body">
+                    <tr class="govuk-table__row">
+                        <td class="govuk-table__cell">@Model.EducationFromYear</td>
+                        <td class="govuk-table__cell">@Model.EducationToYear</td>
+                    </tr>
+                </tbody>
+            </table>
+        }
+        else
+        {
+            @*<div class="govuk-form-group">
+                <span class="govuk-label govuk-!-font-weight-bold">Would it bother you working for free?</span>
+                <span class="govuk-body"></span>
+            </div>
+            <div class="govuk-form-group">
+                <span class="govuk-label govuk-!-font-weight-bold">Why do you want to be considered for this position? How will you get to work, and how long will it take you?</span>
+                <span class="govuk-body"></span>
+            </div>*@
+        }
+    
         <h2 class="govuk-heading-l govuk-!-margin-top-6">Qualifications</h2>
 
         <p asp-show="@Model.HasNoQualifications" class="govuk-body">I don't have any qualifications</p>
