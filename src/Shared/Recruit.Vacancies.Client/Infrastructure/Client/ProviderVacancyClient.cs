@@ -1,11 +1,15 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.Commands;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Provider;
+using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 {
@@ -48,15 +52,43 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             await AssignVacancyNumber(id);
         }
         
-        public async Task<ProviderDashboard> GetDashboardAsync(long ukprn, VacancyType vacancyType, bool createIfNonExistent = false)
+        public async Task<ProviderDashboard> GetDashboardAsync(long ukprn, VacancyType vacancyType)
         {
-            ProviderDashboard result = await _reader.GetProviderDashboardAsync(ukprn, vacancyType);
+            var vacancySummariesTasks = _vacancySummariesQuery.GetProviderOwnedVacancySummariesByUkprnAsync(ukprn);
+            var transferredVacanciesTasks = _vacancySummariesQuery.GetTransferredFromProviderAsync(ukprn, vacancyType);
+
+            await Task.WhenAll(vacancySummariesTasks, transferredVacanciesTasks);
+
+            var vacancySummaries = vacancySummariesTasks.Result
+                .Where(c=>vacancyType == VacancyType.Traineeship ? c.IsTraineeship : !c.IsTraineeship).ToList();
+            var transferredVacancies = transferredVacanciesTasks.Result.Select(t => 
+                new ProviderDashboardTransferredVacancy
+                {
+                    LegalEntityName = t.LegalEntityName,
+                    TransferredDate = t.TransferredDate,
+                    Reason = t.Reason
+                });
+
+            foreach (var summary in vacancySummaries)
+            {
+                await UpdateWithTrainingProgrammeInfo(summary);
+            }
+            
+            return new ProviderDashboard
+            {
+                Id = vacancyType == VacancyType.Apprenticeship ? QueryViewType.ProviderDashboard.GetIdValue(ukprn) :  QueryViewType.ProviderTraineeshipDashboard.GetIdValue(ukprn),
+                Vacancies = vacancySummaries,
+                TransferredVacancies = transferredVacancies,
+                LastUpdated = _timeProvider.Now
+            };
+
+            /*ProviderDashboard result = await _reader.GetProviderDashboardAsync(ukprn, vacancyType);
             if (result == null && createIfNonExistent)
             {
                 await GenerateDashboard(ukprn, vacancyType);
                 result = await _reader.GetProviderDashboardAsync(ukprn, vacancyType);
             }
-            return result;
+            return result;*/
         }
 
         private Task GenerateDashboard(long ukprn, VacancyType vacancyType)
@@ -125,6 +157,25 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         public Task IncrementReportDownloadCountAsync(Guid reportId)
         {
             return _reportRepository.IncrementReportDownloadCountAsync(reportId);
+        }
+        
+        private async Task UpdateWithTrainingProgrammeInfo(VacancySummary summary)
+        {
+            if (summary.ProgrammeId != null)
+            {
+                var programme = await _apprenticeshipProgrammesProvider.GetApprenticeshipProgrammeAsync(summary.ProgrammeId);
+
+                if (programme == null)
+                {
+                    _logger.LogWarning($"No training programme found for ProgrammeId: {summary.ProgrammeId}");
+                }
+                else
+                {
+                    summary.TrainingTitle = programme.Title;
+                    summary.TrainingType = programme.ApprenticeshipType;
+                    summary.TrainingLevel = programme.ApprenticeshipLevel;
+                }
+            }
         }
     }
 }

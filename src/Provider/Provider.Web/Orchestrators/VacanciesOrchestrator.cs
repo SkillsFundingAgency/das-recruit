@@ -49,7 +49,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
         public async Task<VacanciesViewModel> GetVacanciesViewModelAsync(
             VacancyUser user, string filter, int page, string searchTerm)
         {
-            var getDashboardTask = _providerVacancyClient.GetDashboardAsync(user.Ukprn.Value, _serviceParameters.VacancyType.GetValueOrDefault(), true);
+            var getDashboardTask = _providerVacancyClient.GetDashboardAsync(user.Ukprn.Value, _serviceParameters.VacancyType.GetValueOrDefault());
             var getUserDetailsTask = _recruitVacancyClient.GetUsersDetailsAsync(user.UserId);
             var providerTask = _providerRelationshipsService.GetLegalEntitiesForProviderAsync(user.Ukprn.Value, OperationType.RecruitmentRequiresReview);
 
