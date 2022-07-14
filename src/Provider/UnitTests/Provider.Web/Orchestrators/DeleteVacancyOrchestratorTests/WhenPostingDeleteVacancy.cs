@@ -16,7 +16,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.DeleteVacan
     {
 
         [Test, MoqAutoData]
-        public async Task ThenReturnsViewModelWit_VacancyReference_Title_Status(
+        public async Task Then_Returns_ViewModel_With_VacancyReference_Title_Status(
                  DeleteEditModel model,
                  VacancyUser user,
                  Vacancy vacancy,
@@ -24,7 +24,6 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.DeleteVacan
                  DeleteVacancyOrchestrator orchestrator)
         {
             vacancy.ClosingDate = DateTime.UtcNow.AddMonths(-1);
-            vacancy.StartDate = DateTime.UtcNow.AddMonths(-2);
             vacancy.Status = VacancyStatus.Submitted;
             vacancy.IsDeleted = false;
 

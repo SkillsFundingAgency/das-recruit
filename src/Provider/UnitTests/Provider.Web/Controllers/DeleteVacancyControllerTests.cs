@@ -22,7 +22,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
     class DeleteVacancyControllerTests
     {
         [Test, MoqAutoData]
-        public async Task ThenReturnsTempDataWit_VacancyReference_Title(
+        public async Task Then_Returns_TempData_With_VacancyReference_Title(
                 string userName,
                 DeleteEditModel model,
                 Vacancy vacancy,
@@ -31,7 +31,6 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
         {
 
             vacancy.ClosingDate = DateTime.UtcNow.AddMonths(-1);
-            vacancy.StartDate = DateTime.UtcNow.AddMonths(-2);
             vacancy.Status = VacancyStatus.Submitted;
             vacancy.IsDeleted = false;
 
