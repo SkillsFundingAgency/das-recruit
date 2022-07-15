@@ -848,6 +848,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                 RuleFor(x => x)
                     .Cascade(CascadeMode.StopOnFirstFailure)
                     .TrainingMustExist(_apprenticeshipProgrammesProvider)
+                    .TrainingMustBeActiveForCurrentDate(_apprenticeshipProgrammesProvider, _timeProvider)
                     .TrainingMustBeActiveForStartDate(_apprenticeshipProgrammesProvider)
                 .RunCondition(VacancyRuleSet.TrainingExpiryDate)
                 .WithRuleId(VacancyRuleSet.TrainingExpiryDate);
