@@ -77,7 +77,8 @@ namespace SFA.DAS.Recruit.Api.Models
     public enum CreateVacancyApplicationMethod
     {
         ThroughFindAnApprenticeship,
-        ThroughExternalApplicationSite
+        ThroughExternalApplicationSite,
+        ThroughFindATraineeship
     }
     
     public enum WageType

@@ -135,6 +135,10 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
 
             var vacancy = await _vacancyRepository.GetVacancyAsync(notification.VacancyReference);
 
+            if (vacancy.VacancyType.GetValueOrDefault() == VacancyType.Traineeship)
+            {
+                return;
+            }
             _logger.LogInformation("Handling {eventType} for accountId: {employerAccountId} and vacancyReference: {vacancyReference}", notification.GetType().Name, vacancy.EmployerAccountId, notification.VacancyReference);
             await _dashboardService.ReBuildDashboardAsync(vacancy.EmployerAccountId);
         }
@@ -147,7 +151,23 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
             var vacancy = await _vacancyRepository.GetVacancyAsync(notification.VacancyId);
 
            _logger.LogInformation("Handling {eventType} for accountId: {employerAccountId} and vacancyId: {vacancyId}", notification.GetType().Name, vacancy.EmployerAccountId, notification.VacancyId);
-           await _dashboardService.ReBuildDashboardAsync(vacancy.EmployerAccountId);
+           try
+           {
+               await _dashboardService.ReBuildDashboardAsync(vacancy.EmployerAccountId);
+           }
+           catch (Exception e)
+           {
+               // While this is not ideal - the issue comes from an error rebuilding the dashboard stopping other vacancies from being closed
+               if (vacancy.TrainingProvider?.Ukprn != null)
+               {
+                   _logger.LogError(e,"Unable to rebuild dashboard for {employerAccountId} as part of IVacancyEvent", vacancy.EmployerAccountId);    
+               }
+               else
+               {
+                   _logger.LogError(e,"Unable to rebuild dashboard as part of IVacancyEvent");
+               }
+           }
+           
         }
     }
 }

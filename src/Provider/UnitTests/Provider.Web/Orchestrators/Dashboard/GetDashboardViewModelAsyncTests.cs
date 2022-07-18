@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Esfa.Recruit.Provider.Web.Orchestrators;
 using Esfa.Recruit.Provider.Web.Services;
 using Esfa.Recruit.Provider.Web.ViewModels;
+using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Models;
@@ -25,9 +26,12 @@ namespace Esfa.Recruit.Provider.UnitTests.Employer.Web.Orchestrators.Dashboard
 
         private readonly DateTime _today = DateTime.Parse("2019-09-18");
         private readonly VacancyUser _user = new VacancyUser {UserId = UserId,  Ukprn = Ukprn };
+        private Mock<IProviderRelationshipsService> _permissionServiceMock;
 
-        [Fact]
-        public async Task WhenHasVacancies_ShouldReturnViewModelAsync()
+        [Theory]
+        [InlineData(VacancyType.Apprenticeship)]
+        [InlineData(VacancyType.Traineeship)]
+        public async Task WhenHasVacancies_ShouldReturnViewModelAsync(VacancyType vacancyType)
         {
             var vacancies = new List<VacancySummary>()
                 {
@@ -39,7 +43,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Employer.Web.Orchestrators.Dashboard
                     new VacancySummary{ClosingDate = _today.AddDays(6), Status = VacancyStatus.Live}, //Should NOT be included in NoOfVacanciesClosingSoon
                 };
 
-            var orch = GetSut(vacancies);
+            var orch = GetSut(vacancies, vacancyType);
 
             var actualDashboard = await orch.GetDashboardViewModelAsync(_user);
 
@@ -51,12 +55,14 @@ namespace Esfa.Recruit.Provider.UnitTests.Employer.Web.Orchestrators.Dashboard
             actualDashboard.Ukprn.Should().Be(Ukprn);
         }
 
-        [Fact]
-        public async Task WhenHasNoVacancies_ShouldReturnViewModelAsync()
+        [Theory]
+        [InlineData(VacancyType.Apprenticeship)]
+        [InlineData(VacancyType.Traineeship)]
+        public async Task WhenHasNoVacancies_ShouldReturnViewModelAsync(VacancyType vacancyType)
         {
             var vacancies = new List<VacancySummary>();
                 
-            var orch = GetSut(vacancies);
+            var orch = GetSut(vacancies, vacancyType);
 
             var actualDashboard = await orch.GetDashboardViewModelAsync(_user);
 
@@ -68,23 +74,50 @@ namespace Esfa.Recruit.Provider.UnitTests.Employer.Web.Orchestrators.Dashboard
             actualDashboard.Ukprn.Should().Be(Ukprn);
         }
 
-        private DashboardOrchestrator GetSut(List<VacancySummary> vacancies)
+        [Theory]
+        [InlineData(VacancyType.Apprenticeship)]
+        [InlineData(VacancyType.Traineeship)]
+        public async Task Then_Checks_For_CorrectPermission_BasedOn_Vacancy_Type(VacancyType vacancyType)
+        {
+            var vacancies = new List<VacancySummary>();
+                
+            var orch = GetSut(vacancies, vacancyType);
+
+            var actual = await orch.GetDashboardViewModelAsync(_user);
+
+            if (vacancyType == VacancyType.Apprenticeship)
+            {
+                _permissionServiceMock.Verify(x=>x.GetLegalEntitiesForProviderAsync(Ukprn, OperationType.RecruitmentRequiresReview));
+                actual.HasEmployerReviewPermission.Should().BeTrue();
+            }
+            if (vacancyType == VacancyType.Traineeship)
+            {
+                actual.HasEmployerReviewPermission.Should().BeFalse();
+            }
+            
+        
+        }
+
+        private DashboardOrchestrator GetSut(List<VacancySummary> vacancies, VacancyType vacancyType)
         {
             var timeProviderMock = new Mock<ITimeProvider>();
             timeProviderMock.Setup(t => t.Today).Returns(_today);
 
+            var serviceParameters = new ServiceParameters(vacancyType.ToString());
+            
             var dashboardProjection = new ProviderDashboard
             {
                 Vacancies = vacancies
             };
 
             var vacancyClientMock = new Mock<IProviderVacancyClient>();
-            vacancyClientMock.Setup(c => c.GetDashboardAsync(Ukprn, true))
+            vacancyClientMock.Setup(c => c.GetDashboardAsync(Ukprn, vacancyType, true))
                 .ReturnsAsync(dashboardProjection);
 
-            var permissionServiceMock = new Mock<IProviderRelationshipsService>();
-            permissionServiceMock.Setup(p => p.GetLegalEntitiesForProviderAsync(Ukprn, OperationType.RecruitmentRequiresReview))
-                .ReturnsAsync(new List<EmployerInfo>());
+            _permissionServiceMock = new Mock<IProviderRelationshipsService>();
+            
+            _permissionServiceMock.Setup(p => p.GetLegalEntitiesForProviderAsync(Ukprn, OperationType.RecruitmentRequiresReview))
+                .ReturnsAsync(new List<EmployerInfo>{new EmployerInfo()});
 
             var userDetails = new User();
 
@@ -97,7 +130,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Employer.Web.Orchestrators.Dashboard
             alertsFactoryMock.Setup(a => a.Create(dashboardProjection, userDetails))
                 .Returns(alertsViewModel);
 
-            var orch = new DashboardOrchestrator(vacancyClientMock.Object, timeProviderMock.Object, clientMock.Object, alertsFactoryMock.Object, permissionServiceMock.Object);
+            var orch = new DashboardOrchestrator(vacancyClientMock.Object, timeProviderMock.Object, clientMock.Object, alertsFactoryMock.Object, _permissionServiceMock.Object, serviceParameters);
 
             return orch;
         }

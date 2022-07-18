@@ -6,7 +6,6 @@ using Esfa.Recruit.Provider.Web.Orchestrators.Part2;
 using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Provider.Web.ViewModels.Part2.FutureProspects;
 using Esfa.Recruit.Shared.Web.Extensions;
-using Esfa.Recruit.Shared.Web.FeatureToggle;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,12 +16,10 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part2
     public class FutureProspectsController : Controller
     {
         private readonly FutureProspectsOrchestrator _orchestrator;
-        private readonly IFeature _feature;
 
-        public FutureProspectsController(FutureProspectsOrchestrator orchestrator, IFeature feature)
+        public FutureProspectsController(FutureProspectsOrchestrator orchestrator)
         {
             _orchestrator = orchestrator;
-            _feature = feature;
         }
 
         [HttpGet("future-prospects", Name = RouteNames.FutureProspects_Get)]

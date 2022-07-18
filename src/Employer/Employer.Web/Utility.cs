@@ -14,10 +14,11 @@ using Esfa.Recruit.Shared.Web.FeatureToggle;
 using Esfa.Recruit.Shared.Web.Models;
 using Esfa.Recruit.Shared.Web.ViewModels;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummariesProvider;
 
 namespace Esfa.Recruit.Employer.Web
 {
-    public interface IUtility
+    public interface IUtility : IVacancyTaskListStatusService
     {
         Task<Vacancy> GetAuthorisedVacancyForEditAsync(VacancyRouteModel vrm, string routeName);
         Task<Vacancy> GetAuthorisedVacancyAsync(VacancyRouteModel vrm, string routeName);
@@ -40,13 +41,12 @@ namespace Esfa.Recruit.Employer.Web
         bool VacancyHasStartedPartTwo(Vacancy vacancy);
         PartOnePageInfoViewModel GetPartOnePageInfo(Vacancy vacancy);
         Task<ApplicationReview> GetAuthorisedApplicationReviewAsync(ApplicationReviewRouteModel rm);
-        bool TaskListCompleted(Vacancy vacancy);
 
         Task UpdateEmployerProfile(VacancyEmployerInfoModel employerInfoModel, 
             EmployerProfile employerProfile, Address address, VacancyUser user);
     }
     
-    public class Utility : IUtility
+    public class Utility : VacancyTaskListStatusService, IUtility
     {
         private readonly IRecruitVacancyClient _vacancyClient;
         private readonly IFeature _feature;
@@ -267,11 +267,6 @@ namespace Esfa.Recruit.Employer.Web
                 HasCompletedPartOne = VacancyHasCompletedPartOne(vacancy),
                 HasStartedPartTwo = VacancyHasStartedPartTwo(vacancy)
             };
-        }
-
-        public bool TaskListCompleted(Vacancy vacancy)
-        {
-            return vacancy.ApplicationMethod != null;
         }
 
         public async Task<ApplicationReview> GetAuthorisedApplicationReviewAsync(ApplicationReviewRouteModel rm)

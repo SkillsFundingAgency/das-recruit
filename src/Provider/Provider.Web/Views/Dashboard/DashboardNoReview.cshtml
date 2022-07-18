@@ -19,7 +19,15 @@
 
     <div class="govuk-grid-row" asp-show="@Model.HasAnyVacancies">
         <div class="govuk-grid-column-one-half">
-            <h1 class="govuk-heading-xl">Recruitment</h1>
+            @if (_serviceParameters.VacancyType == VacancyType.Apprenticeship)
+            {
+                <h1 class="govuk-heading-xl">Recruitment</h1>
+            }
+            else
+            {
+                <h1 class="govuk-heading-xl">Your traineeship vacancies </h1>
+            }
+            
         </div>
         <div class="govuk-grid-column-one-half ">
             <esfaFeatureEnabled name="@FeatureNames.ProviderTaskList">
@@ -36,7 +44,7 @@
             <form asp-route="@RouteNames.Vacancies_Get" asp-all-route-data="@vacancyRouteModel.RouteDictionary" method="get" autocomplete="off">
                 <div class="govuk-form-group">
                     <label for="search-input" class="govuk-label">
-                        Search by advert title or reference number
+                        Search by vacancy title or reference number
                     </label>
                     <div class="das-search-form__group">
                         <input id="search-input" name="searchTerm" title="Search" class="govuk-input das-search-form__input app-vacancy-autocomplete" type="text" maxlength="200" data-apiurl="@vacanciesSearchSuggestionsEndpointUrl" />
@@ -61,7 +69,7 @@
                             @FilteringOptions.Draft @Model.VacancyTextDraft
                         </a>
                     </h3>
-                    <p class="govuk-body app-card__description">Vacancies that need completing and sending for review.</p>
+                    <p class="govuk-body app-card__description">Vacancies that you need to complete and send for review.</p>
                 </div>
             </div>
         </div>
@@ -102,7 +110,16 @@
                             @FilteringOptions.Live @Model.VacancyTextLive
                         </a>
                     </h3>
-                    <p class="govuk-body app-card__description">Vacancies on Find an apprenticeship service.</p>
+                    @if (_serviceParameters.VacancyType == VacancyType.Apprenticeship)
+                    {
+                        <p class="govuk-body app-card__description">Vacancies on Find an apprenticeship service.</p>
+
+                    }
+                    else
+                    {
+                        <p class="govuk-body app-card__description">Vacancies on Find a traineeship.</p>
+        
+                    }
                     <ul class="govuk-list app-card__tasks" asp-show="@(Model.ShowNoOfVacanciesClosingSoon || Model.ShowNoOfVacanciesClosingSoonWithNoApplications)">
                         <li asp-show="@Model.ShowNoOfVacanciesClosingSoon">
                             <a class="govuk-link  govuk-link--no-visited-state" asp-route="@RouteNames.Vacancies_Get" asp-route-ukprn="@Model.Ukprn"  asp-route-filter="@FilteringOptions.ClosingSoon">@Model.NoOfVacanciesClosingSoon live @Model.VacancyTextClosingSoon closing soon</a>
@@ -122,10 +139,19 @@
                     <h3 class="govuk-heading-m app-card__heading">
                         <span class="app-card__stat">@Model.NoOfNewApplications</span>
                         <a asp-route="@RouteNames.Vacancies_Get" asp-route-ukprn="@Model.Ukprn"  asp-route-filter="@FilteringOptions.NewApplications" class="govuk-link  govuk-link--no-visited-state">
-                            New @Model.ApplicationTextLive
+                            Live @Model.ApplicationTextLive
                         </a>
                     </h3>
-                    <p class="govuk-body app-card__description">Applications from Find an apprenticeship service.</p>
+                    @if (_serviceParameters.VacancyType == VacancyType.Apprenticeship)
+                    {
+                        <p class="govuk-body app-card__description">Applications from Find an apprenticeship service.</p>
+
+                    }
+                    else
+                    {
+                        <p class="govuk-body app-card__description">Applications from Find a traineeship. </p>
+        
+                    }
                     <ul class="govuk-list app-card__tasks" asp-show="@Model.ShowAllApplications">
                         <li>
                             <a class="govuk-link ga-track-anchor-click" asp-route="@RouteNames.Vacancies_Get" asp-route-ukprn="@Model.Ukprn"  asp-route-filter="@FilteringOptions.AllApplications" data-ga-event-category="link - click">
@@ -145,7 +171,16 @@
                             @FilteringOptions.Closed @Model.VacancyTextClosed
                         </a>
                     </h3>
-                    <p class="govuk-body app-card__description">Vacancies that have passed the closing date. You can clone these vacancies to republish them.</p>
+                    @if (_serviceParameters.VacancyType == VacancyType.Apprenticeship)
+                    {
+                        <p class="govuk-body app-card__description">Vacancies that have passed the closing date. You can clone these vacancies to republish them.</p>
+
+                    }
+                    else
+                    {
+                        <p class="govuk-body app-card__description">Vacancies that have passed the closing date.</p>
+        
+                    }
                 </div>
             </div>
         </div>
@@ -164,12 +199,15 @@
     </div>
     <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible" />
     <div class="govuk-grid-row">
+    @if (_serviceParameters.VacancyType == VacancyType.Apprenticeship)
+    {
         <div class="govuk-grid-column-one-third">
             <h3 class="govuk-heading-s govuk-!-margin-bottom-2">
-                <a class="govuk-link  govuk-link--no-visited-state" asp-route="@RouteNames.ReportDashboard_Get" asp-route-ukprn="@Model.Ukprn" >Reports</a>
+                <a class="govuk-link  govuk-link--no-visited-state" asp-route="@RouteNames.ReportDashboard_Get" asp-route-ukprn="@Model.Ukprn">Reports</a>
             </h3>
             <p class="govuk-body">Create a report about applicants or vacancies</p>
         </div>
+    }
         <esfaFeatureEnabled name="@FeatureNames.SetNotificationPreferences">
             <div class="govuk-grid-column-one-third">
                 <h3 class="govuk-heading-s govuk-!-margin-bottom-2">
@@ -178,13 +216,16 @@
                 <p class="govuk-body">Set up and manage the emails you’re sent about your vacancies and applications</p>
             </div>
         </esfaFeatureEnabled>
-        <esfaFeatureEnabled name="@FeatureNames.ShowRecruitmentApiLink">
-            <div class="govuk-grid-column-one-third">
-                <h3 class="govuk-heading-s govuk-!-margin-bottom-2">
-                    <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.Dashboard_ProviderRecruitmentApi" asp-route-ukprn="@Model.Ukprn" >Recruitment APIs</a>
-                </h3>
-                <p class="govuk-body">Integrate our APIs to create vacancies using your own systems and display adverts on multiple sites.</p>
-            </div>
-        </esfaFeatureEnabled>
+        @if (_serviceParameters.VacancyType == VacancyType.Apprenticeship)
+        {
+            <esfaFeatureEnabled name="@FeatureNames.ShowRecruitmentApiLink">
+                <div class="govuk-grid-column-one-third">
+                    <h3 class="govuk-heading-s govuk-!-margin-bottom-2">
+                        <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.Dashboard_ProviderRecruitmentApi" asp-route-ukprn="@Model.Ukprn" >Recruitment APIs</a>
+                    </h3>
+                    <p class="govuk-body">Integrate our APIs to create vacancies using your own systems and display adverts on multiple sites.</p>
+                </div>
+            </esfaFeatureEnabled>
+        }
     </div>
 </div>

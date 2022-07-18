@@ -3,6 +3,7 @@
     public enum ApplicationMethod
     {
         ThroughFindAnApprenticeship,
-        ThroughExternalApplicationSite
+        ThroughExternalApplicationSite,
+        ThroughFindATraineeship
     }
 }
