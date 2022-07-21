@@ -95,13 +95,14 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomVali
                 if ((matchingProgramme.LastDateStarts != null && matchingProgramme.LastDateStarts < timeProvider.Now.Date) ||
                     (matchingProgramme.EffectiveTo != null && matchingProgramme.EffectiveTo < timeProvider.Now.Date))
                 {
-                    var failure = new ValidationFailure(string.Empty, "The training course you have selected is no longer available.")
+                    var failure = new ValidationFailure(string.Empty, "The training course you have selected is no longer available. You can select a new course or create a new advert.")
                     {
                         ErrorCode = ErrorCodes.TrainingNotExist,
                         CustomState = VacancyRuleSet.TrainingProgramme,
                         PropertyName = nameof(Vacancy.ProgrammeId),
                     };
                     context.AddFailure(failure);
+                    
                 }
             });
         }
@@ -133,7 +134,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomVali
                         ? matchingProgramme.LastDateStarts.Value.AsGdsDate()
                         : matchingProgramme.EffectiveTo.Value.AsGdsDate();
                     
-                    var message = $"The start date must be before {dateToDisplay} when the apprenticeship training closes to new starters.";
+                    var message = $"Start date must be on or before {dateToDisplay} as this is the last day for new starters for the training course you have selected. If you don’t want to change the start date, you can change the training course.";
                     var failure = new ValidationFailure(string.Empty, message)
                     {
                         ErrorCode = ErrorCodes.TrainingExpiryDate,
@@ -149,9 +150,10 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomVali
         {
             return ruleBuilder.CustomAsync(async (trainingProvider, context, cancellationToken) =>
             {
-                if (trainingProvider.Ukprn.HasValue && 
-                    (await trainingProviderSummaryProvider.GetAsync(trainingProvider.Ukprn.Value)) != null)
-                return;
+                if (trainingProvider.Ukprn.HasValue && (await trainingProviderSummaryProvider.GetAsync(trainingProvider.Ukprn.Value)) != null)
+                {
+                    return;
+                }
 
                 var failure = new ValidationFailure(nameof(Vacancy.TrainingProvider), "The UKPRN is not valid or the associated provider is not active")
                 {

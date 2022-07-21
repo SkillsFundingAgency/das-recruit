@@ -56,7 +56,7 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation.
 
             result.HasErrors.Should().BeTrue();
             result.Errors.Should().HaveCount(1);
-            result.Errors.FirstOrDefault().ErrorMessage.Should().Be("The training course you have selected is no longer available.");
+            result.Errors.FirstOrDefault().ErrorMessage.Should().Be("The training course you have selected is no longer available. You can select a new course or create a new advert.");
         }
         
         [Fact]
@@ -80,7 +80,7 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation.
 
             result.HasErrors.Should().BeTrue();
             result.Errors.Should().HaveCount(1);
-            result.Errors.FirstOrDefault().ErrorMessage.Should().Be("The training course you have selected is no longer available.");
+            result.Errors.FirstOrDefault().ErrorMessage.Should().Be("The training course you have selected is no longer available. You can select a new course or create a new advert.");
         }
     }
 }
