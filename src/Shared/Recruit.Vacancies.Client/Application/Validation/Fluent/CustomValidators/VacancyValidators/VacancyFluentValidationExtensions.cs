@@ -127,9 +127,14 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomVali
 
                 var matchingProgramme = allProgrammes.SingleOrDefault(x => x.Id.Equals(vacancy.ProgrammeId, StringComparison.InvariantCultureIgnoreCase));
 
-                if (matchingProgramme.LastDateStarts != null && matchingProgramme.LastDateStarts < vacancy.StartDate)
+                if ((matchingProgramme.LastDateStarts != null && matchingProgramme.LastDateStarts < vacancy.StartDate) ||
+                    (matchingProgramme.EffectiveTo !=null && matchingProgramme.EffectiveTo < vacancy.StartDate))
                 {
-                    var message = $"The start date must be before {matchingProgramme.LastDateStarts.Value.AsGdsDate()} when the apprenticeship training closes to new starters.";
+                    var dateToDisplay = matchingProgramme.LastDateStarts.HasValue 
+                        ? matchingProgramme.LastDateStarts.Value.AsGdsDate()
+                        : matchingProgramme.EffectiveTo.Value.AsGdsDate();
+                    
+                    var message = $"The start date must be before {dateToDisplay} when the apprenticeship training closes to new starters.";
                     var failure = new ValidationFailure(string.Empty, message)
                     {
                         ErrorCode = ErrorCodes.TrainingExpiryDate,
