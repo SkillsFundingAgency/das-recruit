@@ -88,19 +88,18 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomVali
         {
             return ruleBuilder.CustomAsync(async (vacancy, context, cancellationToken) =>
             {
-
                 var allProgrammes = await apprenticeshipProgrammesProvider.GetApprenticeshipProgrammesAsync();
 
                 var matchingProgramme = allProgrammes.SingleOrDefault(x => x.Id.Equals(vacancy.ProgrammeId, StringComparison.InvariantCultureIgnoreCase));
 
-                if (matchingProgramme.LastDateStarts != null && matchingProgramme.LastDateStarts < timeProvider.Now.Date && vacancy.Status == VacancyStatus.Draft)
+                if ((matchingProgramme.LastDateStarts != null && matchingProgramme.LastDateStarts < timeProvider.Now.Date) ||
+                    (matchingProgramme.EffectiveTo != null && matchingProgramme.EffectiveTo < timeProvider.Now.Date))
                 {
-                    var message = $"The The training course you have selected is no longer available.";
-                    var failure = new ValidationFailure(string.Empty, message)
+                    var failure = new ValidationFailure(string.Empty, "The training course you have selected is no longer available.")
                     {
                         ErrorCode = ErrorCodes.TrainingNotExist,
                         CustomState = VacancyRuleSet.TrainingProgramme,
-                        PropertyName = nameof(Vacancy.ProgrammeId)
+                        PropertyName = nameof(Vacancy.ProgrammeId),
                     };
                     context.AddFailure(failure);
                 }
