@@ -14,7 +14,7 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation.
             {
                 new object[] { DateTime.UtcNow.Date },
                 new object[] { DateTime.UtcNow },
-                new object[] { DateTime.UtcNow.AddDays(-1) }
+                new object[] { DateTime.UtcNow.AddDays(13) }
             };
 
 
@@ -23,7 +23,7 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation.
         {
             var vacancy = new Vacancy
             {
-                ClosingDate = DateTime.UtcNow.AddDays(5)
+                ClosingDate = DateTime.UtcNow.AddDays(15)
             };
 
             var result = Validator.Validate(vacancy, VacancyRuleSet.ClosingDate);
