@@ -24,7 +24,7 @@ using Xunit;
 
 namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators
 {
-    public class VacancyPreviewOrchestratorTests
+    public class VacancySubmitTaskListOrchestratorTests
     {
         [Theory]
         [InlineData(true, true, true)]
@@ -59,7 +59,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators
             vacancyClient.Setup(c => c.Validate(vacancy, It.IsAny<Recruit.Vacancies.Client.Application.Validation.VacancyRuleSet>()))
                 .Returns(new EntityValidationResult());
 
-            var logger = new Mock<ILogger<VacancyPreviewOrchestrator>>();
+            var logger = new Mock<ILogger<VacancyTaskListOrchestrator>>();
 
             var geocodeImageService = new Mock<IGeocodeImageService>();
             var externalLinks = new Mock<IOptions<ExternalLinksConfiguration>>();
@@ -81,8 +81,8 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators
 
             var messagingMock = new Mock<IMessaging>();
 
-            var orch = new VacancyPreviewOrchestrator(vacancyClient.Object, logger.Object, mapper, review.Object, permission.Object,
-                legalEntityAgreement.Object, agreementServiceMock.Object, messagingMock.Object, new Utility(vacancyClient.Object, Mock.Of<IFeature>()), new ServiceParameters("Apprenticeship"));
+            var orch = new VacancyTaskListOrchestrator(logger.Object, mapper,new Utility(vacancyClient.Object, Mock.Of<IFeature>()),Mock.Of<IProviderVacancyClient>(), vacancyClient.Object, review.Object, permission.Object,
+                legalEntityAgreement.Object, agreementServiceMock.Object, messagingMock.Object, new ServiceParameters("Apprenticeship"));
 
             var m = new SubmitEditModel
             {
@@ -135,7 +135,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators
             vacancyClient.Setup(c => c.Validate(vacancy, It.IsAny<Recruit.Vacancies.Client.Application.Validation.VacancyRuleSet>()))
                 .Returns(new EntityValidationResult());
 
-            var logger = new Mock<ILogger<VacancyPreviewOrchestrator>>();
+            var logger = new Mock<ILogger<VacancyTaskListOrchestrator>>();
 
             var geocodeImageService = new Mock<IGeocodeImageService>();
             var externalLinks = new Mock<IOptions<ExternalLinksConfiguration>>();
@@ -157,8 +157,8 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators
 
             var messagingMock = new Mock<IMessaging>();
 
-            var orch = new VacancyPreviewOrchestrator(vacancyClient.Object, logger.Object, mapper, review.Object, permission.Object,
-                legalEntityAgreement.Object, agreementServiceMock.Object, messagingMock.Object, new Utility(vacancyClient.Object, Mock.Of<IFeature>()), new ServiceParameters(vacancyType.ToString()));
+            var orch = new VacancyTaskListOrchestrator(logger.Object, mapper,new Utility(vacancyClient.Object, Mock.Of<IFeature>()),Mock.Of<IProviderVacancyClient>(), vacancyClient.Object, review.Object, permission.Object,
+                legalEntityAgreement.Object, agreementServiceMock.Object, messagingMock.Object, new ServiceParameters(vacancyType.ToString()));
 
             var m = new SubmitEditModel
             {
