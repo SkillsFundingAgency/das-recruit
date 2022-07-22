@@ -1,4 +1,4 @@
-﻿@using Esfa.Recruit.Shared.Web.Mappers
+@using Esfa.Recruit.Shared.Web.Mappers
 @model Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview.VacancyPreviewViewModel
 
 @{
@@ -536,7 +536,7 @@
             </strong>
         </div>
         <p class="govuk-body"><a asp-route="@RouteNames.Vacancy_Advert_Preview_Get" asp-all-route-data="@Model.RouteDictionary" class="govuk-link govuk-link--no-visited-state">Preview vacancy before submitting</a></p>
-         <form asp-route="@RouteNames.Preview_Submit_Post" asp-all-route-data="@Model.RouteDictionary">
+         <form asp-route="@RouteNames.ProviderCheckYourAnswersPost" asp-all-route-data="@Model.RouteDictionary">
              <div class="govuk-button-group">    
                   <button type="submit" class="govuk-button save-button" esfa-automation="continue-button">@Model.SubmitButtonText</button>
                   <a asp-route="@RouteNames.Dashboard_Get" asp-route-ukprn="@Model.Ukprn" esfa-automation="link-cancel" class="govuk-link govuk-link--no-visited-state">Cancel</a>
