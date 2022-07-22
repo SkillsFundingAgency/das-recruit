@@ -1,4 +1,8 @@
-@using Esfa.Recruit.Shared.Web.Mappers
+﻿@using Esfa.Recruit.Shared.Web.Mappers
+@using Esfa.Recruit.Shared.Web.TagHelpers
+@using Microsoft.AspNetCore.Mvc.ModelBinding
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using Esfa.Recruit.Provider.Web.TagHelpers
 @model Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview.VacancyPreviewViewModel
 
 @{
@@ -16,6 +20,34 @@
         <a asp-route="@RouteNames.ProviderTaskListGet" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Back to task list</a>    
     }
     
+}
+
+
+@if (!Model.CanHideValidationSummary)
+{
+    <div class="govuk-error-summary review-summary govuk-!-margin-top-0" role="alert" tabindex="-1">
+        <h2 class="govuk-error-summary__title">
+            There is a problem
+        </h2>
+        <div class="govuk-error-summary__body">    
+            <ul class="govuk-list govuk-error-summary__list">
+                @foreach (var stateItem in Model.ValidationErrors.ModelState.Where(msi => msi.Value.ValidationState == ModelValidationState.Invalid)
+                    .OrderBy(x => Model.OrderedFieldNames.IndexOf(x.Key)))
+                {
+                    <li>
+                        @if (!string.IsNullOrEmpty(stateItem.Value.Errors.FirstOrDefault()?.ErrorMessage))
+                        {
+                            <a asp-fragment="@stateItem.Key" class="govuk-link">@stateItem.Value.Errors.FirstOrDefault()?.ErrorMessage</a>
+                        }
+                        else
+                        {
+                            <span>@stateItem.Value.Errors.FirstOrDefault()?.ErrorMessage</span>
+                        }
+                    </li>
+                }
+            </ul>
+        </div>
+    </div>
 }
 
 @if (Model.Status == VacancyStatus.Rejected)
