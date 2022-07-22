@@ -39,7 +39,6 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.TagHelpers.FieldReviewHel
             [Frozen] Mock<TagHelperContext> context, 
             FieldReviewMessageHelper fieldReviewMessageHelper)
         {
-            
             fieldReviewMessageHelper.Model = new VacancyPreviewViewModel
             {
                 Review = model
@@ -103,7 +102,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.TagHelpers.FieldReviewHel
 
             tagHelperOutput.Content.IsModified.Should().BeTrue();
             tagHelperOutput.Content.IsEmptyOrWhiteSpace.Should().BeFalse();
-            tagHelperOutput.Content.GetContent().Should().Be(errorMessage + "<br/>" +model.FieldIndicators.FirstOrDefault().ManualQaText);
+            tagHelperOutput.Content.GetContent().Should().Be(errorMessage + "<br/>" + model.FieldIndicators.FirstOrDefault().ManualQaText);
         }
     }
 }
