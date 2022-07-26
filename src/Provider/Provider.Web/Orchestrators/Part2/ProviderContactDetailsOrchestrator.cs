@@ -70,9 +70,13 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part2
         public async Task<OrchestratorResponse> PostProviderContactDetailsEditModelAsync(ProviderContactDetailsEditModel m, VacancyUser user)
         {
             var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(m, RouteNames.ProviderContactDetails_Post);
-
+            vacancy.HasChosenProviderContactDetails = true;
+            
             if (vacancy.ProviderContact == null)
+            {
                 vacancy.ProviderContact = new ContactDetail();
+            }
+                
 
             SetVacancyWithProviderReviewFieldIndicators(
                 vacancy.ProviderContact.Name,
