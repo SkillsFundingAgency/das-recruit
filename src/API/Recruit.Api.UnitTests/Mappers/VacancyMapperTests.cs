@@ -30,7 +30,7 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Mappers
             );
             actual.EmployerLocation.Should().BeEquivalentTo(request.Address);
             actual.CreatedByUser.Should().BeEquivalentTo(request.User);
-            actual.OwnerType.Should().HaveSameValueAs(request.AccountType);
+            actual.OwnerType.Should().HaveSameValueAs(request.AccountType.Value);
         }
     }
 }
