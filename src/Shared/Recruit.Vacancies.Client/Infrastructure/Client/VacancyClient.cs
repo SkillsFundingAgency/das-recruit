@@ -17,13 +17,16 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Vacanc
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyApplications;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Projections;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummariesProvider;
 using FluentValidation;
 using FluentValidation.Results;
+using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 {
     public partial class VacancyClient : IRecruitVacancyClient, IEmployerVacancyClient, IJobsVacancyClient
     {
+        private readonly ILogger<VacancyClient> _logger;
         private readonly IMessaging _messaging;
         private readonly IQueryStoreReader _reader;
         private readonly IVacancyRepository _repository;
@@ -47,8 +50,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         private readonly AbstractValidator<UserNotificationPreferences> _userNotificationPreferencesValidator;
         private readonly AbstractValidator<Qualification> _qualificationValidator;
         private readonly IApprenticeshipRouteProvider _apprenticeshipRouteProvider;
+        private readonly IVacancySummariesProvider _vacancySummariesQuery;
+        private readonly ITimeProvider _timeProvider;
 
         public VacancyClient(
+            ILogger<VacancyClient> logger,
             IVacancyRepository repository,
             IVacancyQuery vacancyQuery,
             IQueryStoreReader reader,
@@ -71,8 +77,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             IUserNotificationPreferencesRepository userNotificationPreferencesRepository,
             AbstractValidator<UserNotificationPreferences> userNotificationPreferencesValidator,
             AbstractValidator<Qualification> qualificationValidator,
-            IApprenticeshipRouteProvider apprenticeshipRouteProvider)
+            IApprenticeshipRouteProvider apprenticeshipRouteProvider, 
+            IVacancySummariesProvider vacancySummariesQuery, 
+            ITimeProvider timeProvider)
         {
+            _logger = logger;
             _repository = repository;
             _vacancyQuery = vacancyQuery;
             _reader = reader;
@@ -96,6 +105,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             _userNotificationPreferencesValidator = userNotificationPreferencesValidator;
             _qualificationValidator = qualificationValidator;
             _apprenticeshipRouteProvider = apprenticeshipRouteProvider;
+            _vacancySummariesQuery = vacancySummariesQuery;
+            _timeProvider = timeProvider;
         }
 
         public Task UpdateDraftVacancyAsync(Vacancy vacancy, VacancyUser user)

@@ -111,7 +111,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Employer.Web.Orchestrators.Dashboard
             };
 
             var vacancyClientMock = new Mock<IProviderVacancyClient>();
-            vacancyClientMock.Setup(c => c.GetDashboardAsync(Ukprn, vacancyType, true))
+            vacancyClientMock.Setup(c => c.GetDashboardAsync(Ukprn, vacancyType))
                 .ReturnsAsync(dashboardProjection);
 
             _permissionServiceMock = new Mock<IProviderRelationshipsService>();

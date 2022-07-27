@@ -43,7 +43,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
         public async Task<DashboardViewModel> GetDashboardViewModelAsync(VacancyUser user)
         {
             var serviceParametersVacancyType = _serviceParameters.VacancyType.GetValueOrDefault();
-            var dashboardTask = _vacancyClient.GetDashboardAsync(user.Ukprn.Value, serviceParametersVacancyType, true);
+            var dashboardTask = _vacancyClient.GetDashboardAsync(user.Ukprn.Value, serviceParametersVacancyType);
             var userDetailsTask = _client.GetUsersDetailsAsync(user.UserId);
             var providerTask = serviceParametersVacancyType == VacancyType.Apprenticeship 
                 ? _providerRelationshipsService.GetLegalEntitiesForProviderAsync(user.Ukprn.Value, OperationType.RecruitmentRequiresReview)
