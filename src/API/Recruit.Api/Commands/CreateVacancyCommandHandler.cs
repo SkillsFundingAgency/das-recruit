@@ -75,6 +75,7 @@ namespace SFA.DAS.Recruit.Api.Commands
 
             request.Vacancy.TrainingProvider = trainingProvider;
 
+            //
             if (request.Vacancy.OwnerType == null)
             {
                 request.Vacancy.OwnerType = string.IsNullOrEmpty(request.VacancyUserDetails.Email) ? OwnerType.Provider : OwnerType.Employer;
@@ -136,6 +137,7 @@ namespace SFA.DAS.Recruit.Api.Commands
             };
         }
 
+        //
         private async Task CreateVacancy(CreateVacancyCommand request, TrainingProvider trainingProvider)
         {
             if (!string.IsNullOrEmpty(request.VacancyUserDetails.Email))
@@ -173,7 +175,7 @@ namespace SFA.DAS.Recruit.Api.Commands
             draftVacancyFromRequest.TrainingProvider = request.Vacancy.TrainingProvider;
             draftVacancyFromRequest.CreatedByUser = newVacancy.CreatedByUser;
             draftVacancyFromRequest.CreatedDate = newVacancy.CreatedDate;
-            draftVacancyFromRequest.OwnerType = newVacancy.OwnerType;
+            draftVacancyFromRequest.OwnerType = request.Vacancy.OwnerType;
             draftVacancyFromRequest.SourceOrigin = newVacancy.SourceOrigin;
             draftVacancyFromRequest.SourceType = newVacancy.SourceType;
 
