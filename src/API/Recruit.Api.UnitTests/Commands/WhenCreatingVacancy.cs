@@ -229,7 +229,7 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Commands
             CreateVacancyCommandHandler handler)
         {
             command.ValidateOnly = false;
-            command.VacancyUserDetails.Email = null;
+            command.Vacancy.OwnerType = OwnerType.Provider;
             vacancy.Id = command.Vacancy.Id;
             vacancy.ProgrammeId = command.Vacancy.ProgrammeId;
             trainingProviderService.Setup(x => x.GetProviderAsync(command.VacancyUserDetails.Ukprn.Value))
@@ -272,7 +272,7 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Commands
             CreateVacancyCommandHandler handler)
         {
             command.ValidateOnly = false;
-            command.VacancyUserDetails.Email = null;
+            command.Vacancy.OwnerType = OwnerType.Provider;
             vacancy.Id = command.Vacancy.Id;
             vacancy.ProgrammeId = command.Vacancy.ProgrammeId;
             trainingProviderService.Setup(x => x.GetProviderAsync(command.VacancyUserDetails.Ukprn.Value))
@@ -326,6 +326,7 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Commands
             CreateVacancyCommandHandler handler)
         {
             command.ValidateOnly = false;
+            command.Vacancy.OwnerType = OwnerType.Provider;
             vacancy.Id = command.Vacancy.Id;
             vacancy.ProgrammeId = command.Vacancy.ProgrammeId;
             trainingProviderService.Setup(x => x.GetProviderAsync(command.VacancyUserDetails.Ukprn.Value))
