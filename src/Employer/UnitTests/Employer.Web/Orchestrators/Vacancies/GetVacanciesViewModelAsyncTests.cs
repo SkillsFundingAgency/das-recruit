@@ -115,7 +115,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Vacancies
             var timeProviderMock = new Mock<ITimeProvider>();
 
             var clientMock = new Mock<IEmployerVacancyClient>();
-            clientMock.Setup(c => c.GetDashboardAsync(EmployerAccountId, true))
+            clientMock.Setup(c => c.GetDashboardAsync(EmployerAccountId))
                 .Returns(Task.FromResult(new EmployerDashboard
                 {
                     Vacancies = vacancies

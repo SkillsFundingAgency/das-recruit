@@ -37,7 +37,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 
         public async Task<DashboardViewModel> GetDashboardViewModelAsync(string employerAccountId, VacancyUser user)
         {
-            var dashboardTask = _vacancyClient.GetDashboardAsync(employerAccountId, createIfNonExistent: true);
+            var dashboardTask = _vacancyClient.GetDashboardAsync(employerAccountId);
             var userDetailsTask = _client.GetUsersDetailsAsync(user.UserId);
             var providerTask = _providerRelationshipsService.GetLegalEntitiesForProviderAsync(employerAccountId, OperationType.RecruitmentRequiresReview);
 

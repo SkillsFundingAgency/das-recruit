@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application;
 using Esfa.Recruit.Vacancies.Client.Application.Commands;
@@ -38,7 +39,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         private readonly IVacancyReviewQuery _vacancyReviewQuery;
         private readonly ICandidateSkillsProvider _candidateSkillsProvider;
         private readonly IVacancyService _vacancyService;
-        private readonly IEmployerDashboardProjectionService _employerDashboardService;
         private readonly IEmployerProfileRepository _employerProfileRepository;
         private readonly IUserRepository _userRepository;
         private readonly IQualificationsProvider _qualificationsProvider;
@@ -65,7 +65,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             IVacancyReviewQuery vacancyReviewQuery,
             ICandidateSkillsProvider candidateSkillsProvider,
             IVacancyService vacancyService,
-            IEmployerDashboardProjectionService employerDashboardService,
             IEmployerProfileRepository employerProfileRepository,
             IUserRepository userRepository,
             IQualificationsProvider qualificationsProvider,
@@ -91,7 +90,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             _vacancyReviewQuery = vacancyReviewQuery;
             _candidateSkillsProvider = candidateSkillsProvider;
             _vacancyService = vacancyService;
-            _employerDashboardService = employerDashboardService;
             _employerProfileRepository = employerProfileRepository;
             _userRepository = userRepository;
             _qualificationsProvider = qualificationsProvider;
@@ -214,23 +212,26 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return _messaging.SendCommandAsync(command);
         }
 
-        public async Task<EmployerDashboard> GetDashboardAsync(string employerAccountId, bool createIfNonExistent = false)
+        public async Task<EmployerDashboard> GetDashboardAsync(string employerAccountId)
         {
-            var dashboard = await _reader.GetEmployerDashboardAsync(employerAccountId);
+            var vacancySummaries = await _vacancySummariesQuery.GetEmployerOwnedVacancySummariesByEmployerAccountAsync(employerAccountId);
+            var reviewSummaries = await _vacancySummariesQuery.GetProviderOwnedVacancySummariesInReviewByEmployerAccountAsync(employerAccountId);
 
-            if (dashboard == null && createIfNonExistent)
+            var summaries = vacancySummaries.Concat(reviewSummaries).ToList();
+
+            foreach (var summary in summaries)
             {
-                await GenerateDashboard(employerAccountId);
-                dashboard = await GetDashboardAsync(employerAccountId);
+                await UpdateWithTrainingProgrammeInfo(summary);
             }
 
-            return dashboard;
+            return new EmployerDashboard
+            {
+                Id = QueryViewType.EmployerDashboard.GetIdValue(employerAccountId),
+                Vacancies = vacancySummaries,
+                LastUpdated = _timeProvider.Now
+            };
         }
 
-        public Task GenerateDashboard(string employerAccountId)
-        {
-            return _employerDashboardService.ReBuildDashboardAsync(employerAccountId);
-        }
 
         public Task UserSignedInAsync(VacancyUser user, UserType userType)
         {

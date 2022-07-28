@@ -69,7 +69,7 @@ namespace Esfa.Recruit.UnitTests.Employer.Web.Orchestrators.Vacancies
         {
             var employerClientMock = new Mock<IEmployerVacancyClient>();
             var timeProviderMock = new Mock<ITimeProvider>();
-            employerClientMock.Setup(c => c.GetDashboardAsync(EmployerAccountId, true))
+            employerClientMock.Setup(c => c.GetDashboardAsync(EmployerAccountId))
                 .ReturnsAsync(new EmployerDashboard {
                     Vacancies = _testVacancies
                 });

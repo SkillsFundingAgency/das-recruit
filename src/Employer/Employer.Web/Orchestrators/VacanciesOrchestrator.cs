@@ -134,7 +134,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 
         private async Task<List<VacancySummary>> GetVacanciesAsync(string employerAccountId)
         {
-            var dashboard = await _vacancyClient.GetDashboardAsync(employerAccountId, createIfNonExistent: true);
+            var dashboard = await _vacancyClient.GetDashboardAsync(employerAccountId);
 
             return dashboard?.Vacancies?.ToList() ?? new List<VacancySummary>();
         }
