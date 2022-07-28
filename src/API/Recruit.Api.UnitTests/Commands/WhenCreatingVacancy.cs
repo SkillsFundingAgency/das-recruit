@@ -52,7 +52,7 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Commands
             CreateVacancyCommandHandler handler)
         {
             command.ValidateOnly = false;
-            command.VacancyUserDetails.Email = null;
+            command.Vacancy.OwnerType = OwnerType.Provider;
             
             await handler.Handle(command, CancellationToken.None);
             
