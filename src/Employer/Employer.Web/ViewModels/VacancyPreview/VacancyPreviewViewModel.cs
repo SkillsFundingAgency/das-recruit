@@ -30,6 +30,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview
         public VacancyPreviewSectionState PossibleStartDateSectionState { get; internal set; }
         public VacancyPreviewSectionState ProviderSectionState { get; internal set; }
         public VacancyPreviewSectionState QualificationsSectionState { get; internal set; }
+        public VacancyPreviewSectionState FutureProspectsSectionState { get; internal set; }
         public VacancyPreviewSectionState ShortDescriptionSectionState { get; internal set; }
         public VacancyPreviewSectionState SkillsSectionState { get; internal set; }
         public VacancyPreviewSectionState TitleSectionState { get; internal set; }
