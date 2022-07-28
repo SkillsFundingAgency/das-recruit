@@ -150,7 +150,6 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
 
             // Projection services
             services.AddTransient<IEmployerDashboardProjectionService, EmployerDashboardProjectionService>();
-            services.AddTransient<IProviderDashboardProjectionService, ProviderDashboardProjectionService>();
             services.AddTransient<IQaDashboardProjectionService, QaDashboardProjectionService>();
             services.AddTransient<IEditVacancyInfoProjectionService, EditVacancyInfoProjectionService>();
             services.AddTransient<IPublishedVacancyProjectionService, PublishedVacancyProjectionService>();

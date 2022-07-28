@@ -39,7 +39,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         private readonly ICandidateSkillsProvider _candidateSkillsProvider;
         private readonly IVacancyService _vacancyService;
         private readonly IEmployerDashboardProjectionService _employerDashboardService;
-        private readonly IProviderDashboardProjectionService _providerDashboardService;
         private readonly IEmployerProfileRepository _employerProfileRepository;
         private readonly IUserRepository _userRepository;
         private readonly IQualificationsProvider _qualificationsProvider;
@@ -67,7 +66,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             ICandidateSkillsProvider candidateSkillsProvider,
             IVacancyService vacancyService,
             IEmployerDashboardProjectionService employerDashboardService,
-            IProviderDashboardProjectionService providerDashboardService,
             IEmployerProfileRepository employerProfileRepository,
             IUserRepository userRepository,
             IQualificationsProvider qualificationsProvider,
@@ -94,7 +92,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             _candidateSkillsProvider = candidateSkillsProvider;
             _vacancyService = vacancyService;
             _employerDashboardService = employerDashboardService;
-            _providerDashboardService = providerDashboardService;
             _employerProfileRepository = employerProfileRepository;
             _userRepository = userRepository;
             _qualificationsProvider = qualificationsProvider;

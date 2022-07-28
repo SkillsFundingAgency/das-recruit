@@ -81,19 +81,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
                 TransferredVacancies = transferredVacancies,
                 LastUpdated = _timeProvider.Now
             };
-
-            /*ProviderDashboard result = await _reader.GetProviderDashboardAsync(ukprn, vacancyType);
-            if (result == null && createIfNonExistent)
-            {
-                await GenerateDashboard(ukprn, vacancyType);
-                result = await _reader.GetProviderDashboardAsync(ukprn, vacancyType);
-            }
-            return result;*/
-        }
-
-        private Task GenerateDashboard(long ukprn, VacancyType vacancyType)
-        {
-            return _providerDashboardService.ReBuildDashboardAsync(ukprn, vacancyType);
         }
 
         public Task<ProviderEditVacancyInfo> GetProviderEditVacancyInfoAsync(long ukprn)
