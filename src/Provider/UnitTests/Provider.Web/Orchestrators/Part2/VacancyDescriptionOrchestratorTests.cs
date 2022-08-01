@@ -207,7 +207,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part2
 
                 Sut = new VacancyDescriptionOrchestrator(MockRecruitVacancyClient.Object,
                     Mock.Of<ILogger<VacancyDescriptionOrchestrator>>(), Mock.Of<IReviewSummaryService>(),
-                    new Utility(MockRecruitVacancyClient.Object, Mock.Of<IFeature>()), MockFeature.Object, new ServiceParameters(VacancyType.Apprenticeship.ToString()));
+                    new Utility(MockRecruitVacancyClient.Object), MockFeature.Object, new ServiceParameters(VacancyType.Apprenticeship.ToString()));
             }
 
             public async Task PostVacancyDescriptionEditModelAsync(VacancyDescriptionEditModel model)
