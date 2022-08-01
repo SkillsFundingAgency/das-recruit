@@ -4,6 +4,7 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Vacancy;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
@@ -61,6 +62,21 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
                 new Context(nameof(IQueryStore.DeleteManyLessThanAsync)));
 
             return result.DeletedCount;
+        }
+
+        public async Task<IEnumerable<LiveVacancy>> GetAllLiveExpired(DateTime? closingDate)
+        {
+            var builder = Builders<LiveVacancy>.Filter;
+            
+            var filter = builder.Lt(identifier => identifier.ClosingDate, closingDate);
+
+            var collection = GetCollection<LiveVacancy>();
+            
+            var result = await RetryPolicy.Execute(_ =>
+                    collection.Find(filter).Project<LiveVacancy>(GetProjection<LiveVacancy>()).ToListAsync(),
+                new Context(nameof(GetAllLiveExpired)));
+
+            return result;
         }
 
         async Task<T> IQueryStore.GetAsync<T>(string typeName, string key)
