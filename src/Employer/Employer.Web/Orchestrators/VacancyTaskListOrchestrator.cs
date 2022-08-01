@@ -85,7 +85,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             var getEmployerData = await _employerVacancyClient.GetEditVacancyInfoAsync(vrm.EmployerAccountId);
             var vm = new VacancyPreviewViewModel
             {
-                AccountLegalEntityCount = getEmployerData.LegalEntities.Count()
+                AccountLegalEntityCount = getEmployerData?.LegalEntities?.Count() ?? 0
             };
 
             return vm;
