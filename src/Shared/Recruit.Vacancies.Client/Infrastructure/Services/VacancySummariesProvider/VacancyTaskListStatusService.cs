@@ -1,4 +1,5 @@
-﻿using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+﻿using System;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Interfaces;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummariesProvider
@@ -8,9 +9,14 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
         public bool IsTaskListCompleted(ITaskListVacancy vacancy)
         {
             if(vacancy.VacancyType.GetValueOrDefault() == VacancyType.Apprenticeship)
+            {
                 return vacancy.ApplicationMethod != null;
+            }
             if (vacancy.VacancyType == VacancyType.Traineeship)
-                return !string.IsNullOrEmpty(vacancy.EmployerDescription);
+            {
+                return vacancy.HasChosenProviderContactDetails ?? false;
+            }
+                
 
             return false;
         }

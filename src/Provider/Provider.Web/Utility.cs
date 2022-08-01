@@ -5,7 +5,6 @@ using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
 using System.Threading.Tasks;
 using Esfa.Recruit.Provider.Web.Models;
 using Esfa.Recruit.Provider.Web.RouteModel;
-using Esfa.Recruit.Shared.Web.FeatureToggle;
 using Esfa.Recruit.Shared.Web.Models;
 using Esfa.Recruit.Shared.Web.ViewModels;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
@@ -27,12 +26,10 @@ namespace Esfa.Recruit.Provider.Web
     public class Utility : VacancyTaskListStatusService, IUtility
     {
         private readonly IRecruitVacancyClient _vacancyClient;
-        private readonly IFeature _feature;
 
-        public Utility(IRecruitVacancyClient vacancyClient, IFeature feature)
+        public Utility(IRecruitVacancyClient vacancyClient)
         {
             _vacancyClient = vacancyClient;
-            _feature = feature;
         }
         public async Task<Vacancy> GetAuthorisedVacancyForEditAsync(VacancyRouteModel vrm, string routeName)
         {
@@ -48,8 +45,6 @@ namespace Esfa.Recruit.Provider.Web
             var vacancy = await _vacancyClient.GetVacancyAsync(vrm.VacancyId.GetValueOrDefault());
 
             CheckAuthorisedAccess(vacancy, vrm.Ukprn);
-
-            //CheckRouteIsValidForVacancy(vacancy, routeName, vrm);
 
             return vacancy;
         }
