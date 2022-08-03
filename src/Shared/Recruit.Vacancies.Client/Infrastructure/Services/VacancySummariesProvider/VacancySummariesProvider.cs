@@ -153,6 +153,28 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
             return result.Select(v => v.TransferInfo).ToList();
         }
 
+        public async Task<long> VacancyCount(long ukprn, VacancyType vacancyType)
+        {
+            var builder = Builders<Vacancy>.Filter;
+            
+            var filter = builder.Eq("trainingProvider.ukprn", ukprn) &
+                         builder.Eq("isDeleted", false) &
+                         builder.AnyEq("VacancyType",new []{"Apprenticeship", null});
+
+            if (vacancyType == VacancyType.Traineeship)
+            {
+                filter = builder.Eq("trainingProvider.ukprn", ukprn) &
+                         builder.Eq("isDeleted", false) &
+                         builder.Eq("VacancyType", "Traineeship" );
+            }
+            
+            var collection = GetCollection<Vacancy>();
+
+            var result = await RetryPolicy.Execute(_ =>
+                collection.CountDocumentsAsync(filter), new Context(nameof(VacancyCount)));
+            return result;
+        }
+
         private async Task<List<VacancyDashboard>> RunDashboardAggPipelineQuery(BsonDocument[] pipeline)
         {
             var db = GetDatabase();
