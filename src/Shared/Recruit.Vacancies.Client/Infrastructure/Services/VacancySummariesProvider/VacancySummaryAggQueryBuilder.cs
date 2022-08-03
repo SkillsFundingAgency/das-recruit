@@ -6,6 +6,118 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
 {
     public static class VacancySummaryAggQueryBuilder
     {
+        private const string DashboardPipeline = @"[
+            {
+                '$lookup': {
+                    'from': 'applicationReviews',
+                    'localField': 'vacancyReference',
+                    'foreignField': 'vacancyReference',
+                    'as': 'candidateApplicationReview'
+                }
+            },
+            {
+                '$unwind': {
+                    'path': '$candidateApplicationReview',
+                    'preserveNullAndEmptyArrays': true
+                }
+            },
+            {
+                '$project': {
+                    'status': 1,
+                    'appStatus': '$candidateApplicationReview.status',
+                    'vacancyType': 1,
+                    'isTraineeship' :1,
+                    'closingDate':1
+                }
+            },
+            {
+                '$project': {
+                    'status': 1,
+                    'appStatus': { '$cond' : [ { '$eq': ['$isApplicationWithdrawn', true] }, 'withdrawn', '$appStatus' ]},
+                    'vacancyType': 1,
+                    'closingDate':1,
+                    'isTraineeship': {
+                        '$cond': {
+                            'if': {'$eq': [ '$vacancyType', 'Traineeship']},
+                            'then': true,
+                            'else': false
+                        }
+                    }
+                }
+            },
+            {
+                '$project': {
+                    'status': 1,
+                    'vacancyType': 1,
+                    'closingDate':1,
+                    'closingSoon' : {
+                        '$cond': {
+                            'if': {'$lte':[{$dateDiff: {
+                                                  startDate: new Date(),
+                                                  endDate:'$closingDate' ,
+                                                  unit: 'day'
+                                               }},5]},
+                            'then': {
+                                '$cond':{
+                                    'if': {'$eq': [ '$status', 'Live']},
+                                        'then': true,
+                                        'else': false
+                                }
+                            },
+                            'else': false
+                        }
+                    },
+                    'isTraineeship': {
+                        '$cond': {
+                            'if': {'$eq': [ '$vacancyType', 'Traineeship']},
+                            'then': true,
+                            'else': false
+                        }
+                    },
+                    'isNew': {
+                        '$cond': {
+                            'if': {'$eq': [ '$appStatus', 'New']},
+                            'then': 1,
+                            'else': 0
+                        }
+                    },
+                    'isSuccessful': {
+                        '$cond': {
+                            'if': {'$eq': [ '$appStatus', 'Successful']},
+                            'then': 1,
+                            'else': 0
+                        }
+                    },
+                    'isUnsuccessful': {
+                        '$cond': {
+                            'if': {'$eq': [ '$appStatus', 'Unsuccessful']},
+                            'then': 1,
+                            'else': 0
+                        }
+                    }
+                }
+            },
+            {
+                '$group': {
+                    '_id': {
+                        'status':'$status',
+                        'isTraineeship' : '$isTraineeship',
+                        'closingSoon' : '$closingSoon',
+                    },
+                    'statusCount' : { '$sum' : 1 },
+                    'noOfNewApplications': {
+                        '$sum': '$isNew'
+                    },
+                    'noOfSuccessfulApplications': {
+                        '$sum': '$isSuccessful'
+                    },
+                    'noOfUnsuccessfulApplications': {
+                        '$sum': '$isUnsuccessful'
+                    }
+                }
+            }
+        ]";
+        
         private const string Pipeline = @"[
             {
                 '$lookup': {
@@ -189,6 +301,16 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
         public static BsonDocument[] GetAggregateQueryPipeline(BsonDocument vacanciesMatchClause)
         {
             var pipeline = BsonSerializer.Deserialize<BsonArray>(Pipeline);
+            pipeline.Insert(0, vacanciesMatchClause);
+
+            var pipelineDefinition = pipeline.Values.Select(p => p.ToBsonDocument()).ToArray();
+
+            return pipelineDefinition;
+        }
+        
+        public static BsonDocument[] GetAggregateQueryPipelineDashboard(BsonDocument vacanciesMatchClause)
+        {
+            var pipeline = BsonSerializer.Deserialize<BsonArray>(DashboardPipeline);
             pipeline.Insert(0, vacanciesMatchClause);
 
             var pipelineDefinition = pipeline.Values.Select(p => p.ToBsonDocument()).ToArray();
