@@ -1,0 +1,125 @@
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using AutoFixture.NUnit3;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Provider;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummariesProvider;
+using FluentAssertions;
+using Moq;
+using NUnit.Framework;
+using SFA.DAS.Testing.AutoFixture;
+
+namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructure.Services.ProviderVacancyClient
+{
+    public class ProviderVacancyClientGetDashboardSummaryTests
+    {
+        [Test, MoqAutoData]
+        public async Task Then_Maps_Statuses_To_ProviderDashboardSummary(
+            int closedCount,
+            int draftCount,
+            int reviewCount,
+            int referredCount,
+            int liveCount,
+            int submittedCount,
+            int numberOfNewApplications,
+            int numberOfUnsuccessfulApplications,
+            int numberOfSuccessfulApplications,
+            int closingSoon,
+            int closingSoonNoApplications,
+            long ukprn,
+            VacancyType vacancyType,
+            [Frozen] Mock<IVacancySummariesProvider> vacanciesSummaryProvider,
+            VacancyClient vacancyClient)
+        {
+            var vacancyDashboards =new List<VacancyDashboard>
+            {
+                new VacancyDashboard { Status = VacancyStatus.Closed, StatusCount = closedCount },
+                new VacancyDashboard { Status = VacancyStatus.Draft, StatusCount = draftCount },
+                new VacancyDashboard { Status = VacancyStatus.Review, StatusCount = reviewCount },
+                new VacancyDashboard { Status = VacancyStatus.Referred, StatusCount = referredCount },
+                new VacancyDashboard { Status = VacancyStatus.Submitted, StatusCount = submittedCount },
+                new VacancyDashboard { Status = VacancyStatus.Live,ClosingSoon = false, StatusCount = liveCount, NoOfNewApplications = numberOfNewApplications, NoOfSuccessfulApplications = numberOfSuccessfulApplications,NoOfUnsuccessfulApplications = numberOfUnsuccessfulApplications},
+                new VacancyDashboard { Status = VacancyStatus.Live,ClosingSoon = true, StatusCount = closingSoon, NoOfNewApplications = numberOfNewApplications },
+                new VacancyDashboard { Status = VacancyStatus.Live,ClosingSoon = true, StatusCount = closingSoonNoApplications },
+            };
+            vacanciesSummaryProvider.Setup(x => x.GetProviderOwnedVacancyDashboardByUkprnAsync(ukprn, vacancyType)).ReturnsAsync(vacancyDashboards);
+            
+            var actual = await vacancyClient.GetDashboardSummary(ukprn, vacancyType);
+
+            actual.Closed.Should().Be(closedCount);
+            actual.Draft.Should().Be(draftCount);
+            actual.Review.Should().Be(reviewCount);
+            actual.Referred.Should().Be(referredCount);
+            actual.Live.Should().Be(liveCount);
+            actual.NumberOfNewApplications.Should().Be(numberOfNewApplications);
+            actual.NumberOfUnsuccessfulApplications.Should().Be(numberOfUnsuccessfulApplications);
+            actual.NumberOfSuccessfulApplications.Should().Be(numberOfSuccessfulApplications);
+            actual.NumberClosingSoon.Should().Be(closingSoon);
+            actual.NumberClosingSoonWithNoApplications.Should().Be(closingSoonNoApplications);
+
+            actual.HasVacancies.Should().BeTrue();
+            actual.HasOneVacancy.Should().BeFalse();
+            actual.HasApplications.Should().BeTrue();
+            actual.NumberOfVacancies.Should().Be(closedCount + draftCount + reviewCount + referredCount + submittedCount + liveCount);
+        }
+
+        [Test, MoqAutoData]
+        public async Task Then_Model_Values_Set_For_No_Vacancies(
+            long ukprn,
+            VacancyType vacancyType,
+            [Frozen] Mock<IVacancySummariesProvider> vacanciesSummaryProvider,
+            VacancyClient vacancyClient)
+        {
+            vacanciesSummaryProvider.Setup(x => x.GetProviderOwnedVacancyDashboardByUkprnAsync(ukprn, vacancyType)).ReturnsAsync(new List<VacancyDashboard>());
+            
+            var actual = await vacancyClient.GetDashboardSummary(ukprn, vacancyType);
+            
+            actual.HasVacancies.Should().BeFalse();
+            actual.HasOneVacancy.Should().BeFalse();
+            actual.HasApplications.Should().BeFalse();
+            actual.NumberOfVacancies.Should().Be(0);
+        }
+        
+        
+        [Test, MoqAutoData]
+        public async Task Then_Model_Values_Set_For_One_Vacancies(
+            long ukprn,
+            VacancyType vacancyType,
+            [Frozen] Mock<IVacancySummariesProvider> vacanciesSummaryProvider,
+            VacancyClient vacancyClient)
+        {
+            vacanciesSummaryProvider.Setup(x => x.GetProviderOwnedVacancyDashboardByUkprnAsync(ukprn, vacancyType)).ReturnsAsync(new List<VacancyDashboard>());
+            
+            var actual = await vacancyClient.GetDashboardSummary(ukprn, vacancyType);
+            
+            actual.HasVacancies.Should().BeFalse();
+            actual.HasOneVacancy.Should().BeFalse();
+            actual.HasApplications.Should().BeFalse();
+            actual.NumberOfVacancies.Should().Be(0);
+        }
+        
+        [Test, MoqAutoData]
+        public async Task Then_Gets_DashboardSummary_With_TransferredVacancies(
+            List<TransferInfo> transferredVacancies,
+            long ukprn,
+            VacancyType vacancyType,
+            [Frozen] Mock<IVacancySummariesProvider> vacanciesSummaryProvider,
+            VacancyClient vacancyClient)
+        {
+            vacanciesSummaryProvider.Setup(x => x.GetTransferredFromProviderAsync(ukprn, vacancyType)).ReturnsAsync(transferredVacancies);
+            
+            var actual = await vacancyClient.GetDashboardSummary(ukprn, vacancyType);
+
+            actual.TransferredVacancies.Should().BeEquivalentTo(transferredVacancies.Select(t => 
+                new ProviderDashboardTransferredVacancy
+                {
+                    LegalEntityName = t.LegalEntityName,
+                    TransferredDate = t.TransferredDate,
+                    Reason = t.Reason
+                }));
+        }
+    }
+}

@@ -51,10 +51,48 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             
             await AssignVacancyNumber(id);
         }
-        
-        public async Task<ProviderDashboard> GetDashboardAsync(long ukprn, VacancyType vacancyType)
+
+        public async Task<long> GetVacancyCount(long ukprn, VacancyType vacancyType)
         {
-            var vacancySummariesTasks = _vacancySummariesQuery.GetProviderOwnedVacancySummariesByUkprnAsync(ukprn);
+            return await _vacancySummariesQuery.VacancyCount(ukprn, vacancyType);
+        }
+
+        public async Task<ProviderDashboardSummary> GetDashboardSummary(long ukprn, VacancyType vacancyType)
+        {
+            var dashboardTask = _vacancySummariesQuery.GetProviderOwnedVacancyDashboardByUkprnAsync(ukprn, vacancyType);
+            var transferredVacanciesTask = _vacancySummariesQuery.GetTransferredFromProviderAsync(ukprn, vacancyType);
+
+            await Task.WhenAll(dashboardTask, transferredVacanciesTask);
+
+            var dashboard = dashboardTask.Result;
+            var transferredVacancies = transferredVacanciesTask.Result.Select(t => 
+                new ProviderDashboardTransferredVacancy
+                {
+                    LegalEntityName = t.LegalEntityName,
+                    TransferredDate = t.TransferredDate,
+                    Reason = t.Reason
+                });
+            
+            return new ProviderDashboardSummary
+            {
+                Closed = dashboard.SingleOrDefault(c=>c.Status == VacancyStatus.Closed)?.StatusCount ?? 0,
+                Draft = dashboard.SingleOrDefault(c=>c.Status == VacancyStatus.Draft)?.StatusCount ?? 0,
+                Review = dashboard.SingleOrDefault(c=>c.Status == VacancyStatus.Review)?.StatusCount ?? 0,
+                Referred = dashboard.SingleOrDefault(c=>c.Status == VacancyStatus.Referred)?.StatusCount ?? 0,
+                Live = dashboard.SingleOrDefault(c=>c.Status == VacancyStatus.Live && !c.ClosingSoon)?.StatusCount ?? 0,
+                Submitted = dashboard.SingleOrDefault(c=>c.Status == VacancyStatus.Submitted)?.StatusCount ?? 0,
+                NumberOfNewApplications = dashboard.SingleOrDefault(c=>c.Status == VacancyStatus.Live && !c.ClosingSoon)?.NoOfNewApplications ?? 0,
+                NumberOfSuccessfulApplications = dashboard.SingleOrDefault(c=>c.Status == VacancyStatus.Live && !c.ClosingSoon)?.NoOfSuccessfulApplications ?? 0,
+                NumberOfUnsuccessfulApplications = dashboard.SingleOrDefault(c=>c.Status == VacancyStatus.Live && !c.ClosingSoon)?.NoOfUnsuccessfulApplications ?? 0,
+                NumberClosingSoon =dashboard.SingleOrDefault(c=>c.Status == VacancyStatus.Live && c.ClosingSoon && (c.NoOfNewApplications != 0 || c.NoOfSuccessfulApplications != 0 || c.NoOfUnsuccessfulApplications != 0))?.StatusCount ?? 0,
+                NumberClosingSoonWithNoApplications =dashboard.SingleOrDefault(c=>c.Status == VacancyStatus.Live && c.ClosingSoon && c.NoOfNewApplications == 0 && c.NoOfSuccessfulApplications == 0 && c.NoOfUnsuccessfulApplications == 0)?.StatusCount ?? 0,
+                TransferredVacancies = transferredVacancies
+            };
+        }
+        
+        public async Task<ProviderDashboard> GetDashboardAsync(long ukprn, VacancyType vacancyType, VacancyStatus status)
+        {
+            var vacancySummariesTasks = _vacancySummariesQuery.GetProviderOwnedVacancySummariesByUkprnAsync(ukprn, vacancyType);
             var transferredVacanciesTasks = _vacancySummariesQuery.GetTransferredFromProviderAsync(ukprn, vacancyType);
 
             await Task.WhenAll(vacancySummariesTasks, transferredVacanciesTasks);
