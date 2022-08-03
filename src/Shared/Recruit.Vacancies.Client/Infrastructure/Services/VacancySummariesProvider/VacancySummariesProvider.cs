@@ -68,8 +68,18 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
             return await RunAggPipelineQuery(aggPipeline);
         }
 
-        public async Task<IList<VacancySummary>> GetProviderOwnedVacancySummariesByUkprnAsync(long ukprn)
+        public async Task<IList<VacancyDashboard>> GetProviderOwnedVacancyDashboardByUkprnAsync(long ukprn, VacancyType vacancyType)
         {
+            var bsonArray = new BsonArray
+            {
+                vacancyType.ToString()
+            };
+            
+            if (vacancyType == VacancyType.Apprenticeship)
+            {
+                bsonArray.Add(BsonNull.Value);
+            }
+            
             var match = new BsonDocument
             {
                 {
@@ -78,7 +88,37 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                     {
                         { "trainingProvider.ukprn", ukprn },
                         { "ownerType", OwnerType.Provider.ToString() },
-                        { "isDeleted", false }
+                        { "isDeleted", false },
+                        { "vacancyType", new BsonDocument{{"$in", bsonArray} } }
+                    }
+                }
+            };
+            var aggPipelines = VacancySummaryAggQueryBuilder.GetAggregateQueryPipelineDashboard(match);
+            return await RunDashboardAggPipelineQuery(aggPipelines);
+        }
+        
+        public async Task<IList<VacancySummary>> GetProviderOwnedVacancySummariesByUkprnAsync(long ukprn, VacancyType vacancyType)
+        {
+            var bsonArray = new BsonArray
+            {
+                vacancyType.ToString()
+            };
+            
+            if (vacancyType == VacancyType.Apprenticeship)
+            {
+                bsonArray.Add(BsonNull.Value);
+            }
+            
+            var match = new BsonDocument
+            {
+                {
+                    "$match",
+                    new BsonDocument
+                    {
+                        { "trainingProvider.ukprn", ukprn },
+                        { "ownerType", OwnerType.Provider.ToString() },
+                        { "isDeleted", false },
+                        { "vacancyType", new BsonDocument{{"$in", bsonArray} } }
                     }
                 }
             };
@@ -113,11 +153,26 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
             return result.Select(v => v.TransferInfo).ToList();
         }
 
+        private async Task<List<VacancyDashboard>> RunDashboardAggPipelineQuery(BsonDocument[] pipeline)
+        {
+            var db = GetDatabase();
+            var collection = db.GetCollection<BsonDocument>(MongoDbCollectionNames.Vacancies);
+            
+            var vacancyDashboard = await RetryPolicy.Execute(async context =>
+                {
+                    var aggResults = await collection.AggregateAsync<VacancyDashboardAggQueryResponseDto>(pipeline);
+                    return await aggResults.ToListAsync();
+                },
+                new Context(nameof(RunDashboardAggPipelineQuery)));
+
+            return vacancyDashboard.Select(VacancyDashboardMapper.MapFromVacancyDashboardSummaryResponseDto).ToList();
+        }
+
         private async Task<IList<VacancySummary>> RunAggPipelineQuery(BsonDocument[] pipeline)
         {
             var db = GetDatabase();
             var collection = db.GetCollection<BsonDocument>(MongoDbCollectionNames.Vacancies);
-
+            
             var vacancySummaries = await RetryPolicy.Execute(async context =>
                 {
                     var aggResults = await collection.AggregateAsync<VacancySummaryAggQueryResponseDto>(pipeline);
