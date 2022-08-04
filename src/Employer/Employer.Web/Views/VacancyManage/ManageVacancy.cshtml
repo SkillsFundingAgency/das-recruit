@@ -26,10 +26,20 @@
         <p asp-show="@Model.IsClosedBlockedByQa" class="govuk-inset-text">
             This advert was closed on @Model.ClosingDate because the training provider is no longer able to manage or recruit apprentices.
         </p>
-
-        <div asp-show="@Model.HasVacancyClosedInfoMessage" class="das-notification das-notification--information">
-            <p class="das-notification__body">@Model.VacancyClosedInfoMessage</p>
-            <p class="das-notification__body">The advert will be unpublished from the Find an apprenticeship service within the next hour.</p>
+    </div>
+    <div class="govuk-grid-column-full">
+        <div asp-show="Model.HasVacancyClosedInfoMessage" class="govuk-notification-banner govuk-notification-banner--success" role="alert" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
+            <div class="govuk-notification-banner__header">
+                <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
+                    Success
+                </h2>
+            </div>
+            <div class="govuk-notification-banner__content">
+                <h3 class="govuk-notification-banner__heading">
+                    @Model.VacancyClosedInfoMessage
+                </h3>
+                <p class="govuk-body">The advert will be unpublished from the Find an apprenticeship service within the next hour.</p>
+            </div>
         </div>
     </div>
 </div>
