@@ -26,7 +26,7 @@
 
         <partial name="@PartialNames.ReviewSummary" for="Review"/>
 
-        <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">Important dates</h1>
+        <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">Closing and start date</h1>
 
         <form asp-route="@RouteNames.Dates_Post" asp-route-wizard="@Model.PageInfo.IsWizard" novalidate>
 
@@ -65,10 +65,10 @@
                     <legend class="govuk-fieldset__legend govuk-!-font-weight-bold">Apprenticeship start date<span class="govuk-visually-hidden"> (in numeric format DD MM YYYY)</span></legend>
 
                     <p asp-show="@Model.CanShowTrainingHint" class="govuk-hint">
-                        The start date must be before the @Model.TrainingDescription closes to new starters on @Model.TrainingEffectiveToDate
+                        Start date must be on or before @Model.TrainingEffectiveToDate as this is the last day for new starters for the training course you have selected.
                     </p>
                     <p asp-show="@Model.CanShowTrainingErrorHint" class="govuk-hint">
-                        You may want to <a asp-route="@RouteNames.Training_Get" asp-route-wizard="@Model.PageInfo.IsWizard" class="govuk-link">find different apprenticeship training</a>.
+                        If you don’t want to change the start date, you can change the <a asp-route="@RouteNames.Training_Get" asp-route-wizard="@Model.PageInfo.IsWizard" class="govuk-link">training course.</a>.
                     </p>
 
                     <div class="govuk-hint">For example, @exampleStartingDate.AsInputHintDisplayDate()</div>
