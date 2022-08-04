@@ -458,6 +458,13 @@
         
             <h2 class="govuk-heading-m">Now submit your advert</h2>
             <p class="govuk-body">By submitting this advert you are confirming that, to the best of your knowledge, the details you are providing are correct.</p>
+            <div class="govuk-warning-text">
+              <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+              <strong class="govuk-warning-text__text">
+                  <span class="govuk-warning-text__assistive">Warning</span>
+                  Proofread your advert for spelling and formatting to avoid it being rejected by our QA team.
+              </strong>
+          </div>
             <p class="govuk-body"><a asp-route="@RouteNames.VacancyAdvertPreview" class="govuk-link govuk-link--no-visited-state">Preview advert before submitting</a></p>
             <form asp-route="@RouteNames.Preview_Submit_Post" class="form-inline">
                 <input type="submit" value="@Model.SubmitButtonText" class="govuk-button" esfa-automation="submit-button" />
