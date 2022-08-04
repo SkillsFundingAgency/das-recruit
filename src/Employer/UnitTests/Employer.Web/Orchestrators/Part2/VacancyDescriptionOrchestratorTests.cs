@@ -57,10 +57,9 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part2
         }
 
         [Theory]
-        [InlineData("has a new value", "has a value", "has a value", new string[] { FieldIdentifiers.VacancyDescription }, new string[] { FieldIdentifiers.TrainingDescription, FieldIdentifiers.OutcomeDescription })]
-        [InlineData("has a value", "has a new value", "has a value", new string[] { FieldIdentifiers.TrainingDescription }, new string[] { FieldIdentifiers.VacancyDescription, FieldIdentifiers.OutcomeDescription })]
-        [InlineData("has a value", "has a value", "has a new value", new string[] { FieldIdentifiers.OutcomeDescription }, new string[] { FieldIdentifiers.VacancyDescription, FieldIdentifiers.Training})]
-        [InlineData("has a new value", "has a new value", "has a new value", new string[] { FieldIdentifiers.VacancyDescription, FieldIdentifiers.TrainingDescription , FieldIdentifiers.OutcomeDescription }, new string[] { })]
+        [InlineData("has a new value", "has a value", "has a value", new string[] { FieldIdentifiers.VacancyDescription }, new string[] { FieldIdentifiers.TrainingDescription })]
+        [InlineData("has a value", "has a new value", "has a value", new string[] { FieldIdentifiers.TrainingDescription }, new string[] { FieldIdentifiers.VacancyDescription })]
+        [InlineData("has a new value", "has a new value", "has a new value", new string[] { FieldIdentifiers.VacancyDescription, FieldIdentifiers.TrainingDescription }, new string[] { })]
         public async Task WhenShortDescriptionIsUpdated_ShouldFlagFieldIndicators(string description, string trainingDescription, string outcomeDescription, string[] setFieldIndicators, string[] unsetFieldIndicators)
         {
             _fixture

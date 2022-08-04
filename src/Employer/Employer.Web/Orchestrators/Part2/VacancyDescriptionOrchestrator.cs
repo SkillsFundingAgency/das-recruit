@@ -40,7 +40,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
                 Title = vacancy.Title,
                 VacancyDescription = vacancy.Description,
                 TrainingDescription = vacancy.TrainingDescription,
-                OutcomeDescription = vacancy.OutcomeDescription,
+                //OutcomeDescription = vacancy.OutcomeDescription,
                 IsTaskListCompleted = _utility.IsTaskListCompleted(vacancy)
             };
 
@@ -61,7 +61,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
 
             vm.VacancyDescription = m.VacancyDescription;
             vm.TrainingDescription = m.TrainingDescription;
-            vm.OutcomeDescription = m.OutcomeDescription;
+            //vm.OutcomeDescription = m.OutcomeDescription;
 
             return vm;
         }
@@ -82,11 +82,11 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
                 vacancy,
                 (v) => { return v.TrainingDescription = m.TrainingDescription; });
 
-            SetVacancyWithEmployerReviewFieldIndicators(
+            /*SetVacancyWithEmployerReviewFieldIndicators(
                 vacancy.OutcomeDescription,
                 FieldIdResolver.ToFieldId(v => v.OutcomeDescription),
                 vacancy,
-                (v) => { return v.OutcomeDescription = m.OutcomeDescription; });
+                (v) => { return v.OutcomeDescription = m.OutcomeDescription; });*/
 
             return await ValidateAndExecute(
                 vacancy,
@@ -101,7 +101,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
 
             mappings.Add(e => e.Description, vm => vm.VacancyDescription);
             mappings.Add(e => e.TrainingDescription, vm => vm.TrainingDescription);
-            mappings.Add(e => e.OutcomeDescription, vm => vm.OutcomeDescription);
+            //mappings.Add(e => e.OutcomeDescription, vm => vm.OutcomeDescription);
 
             return mappings;
         }
