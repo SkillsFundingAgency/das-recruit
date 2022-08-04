@@ -1,5 +1,9 @@
 ﻿@using Esfa.Recruit.Vacancies.Client.Domain.Entities
 @using Esfa.Recruit.Shared.Web.Mappers
+@using Esfa.Recruit.Shared.Web.TagHelpers
+@using Microsoft.AspNetCore.Mvc.ModelBinding
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using Esfa.Recruit.Employer.Web.TagHelpers
 @model Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview.VacancyPreviewViewModel
 
 @{ ViewBag.GaData.Vpv = "/recruitment/employer/check-your-answers"; }
@@ -19,7 +23,32 @@
 <div asp-show="@Model.Review.HasBeenReviewed">
     <partial name="@PartialNames.ReviewSummary" for="Review" />
 </div>
-<partial asp-hide="@Model.CanHideValidationSummary" name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }' />
+@if (!Model.CanHideValidationSummary)
+{
+    <div class="govuk-error-summary review-summary govuk-!-margin-top-0" role="alert" tabindex="-1">
+        <h2 class="govuk-error-summary__title">
+            There is a problem
+        </h2>
+        <div class="govuk-error-summary__body">    
+            <ul class="govuk-list govuk-error-summary__list">
+                @foreach (var stateItem in Model.ValidationErrors.ModelState.Where(msi => msi.Value.ValidationState == ModelValidationState.Invalid)
+                    .OrderBy(x => Model.OrderedFieldNames.IndexOf(x.Key)))
+                {
+                    <li>
+                        @if (!string.IsNullOrEmpty(stateItem.Value.Errors.FirstOrDefault()?.ErrorMessage))
+                        {
+                            <a asp-fragment="@stateItem.Key" class="govuk-link">@stateItem.Value.Errors.FirstOrDefault()?.ErrorMessage</a>
+                        }
+                        else
+                        {
+                            <span>@stateItem.Value.Errors.FirstOrDefault()?.ErrorMessage</span>
+                        }
+                    </li>
+                }
+            </ul>
+        </div>
+    </div>
+}
 
 <div asp-show="Model.CanShowVacancyClonedStatusHeader" class="govuk-notification-banner govuk-notification-banner--success" role="alert" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
   <div class="govuk-notification-banner__header">
@@ -480,7 +509,7 @@
               </strong>
           </div>
             <p class="govuk-body"><a asp-route="@RouteNames.VacancyAdvertPreview" class="govuk-link govuk-link--no-visited-state">Preview advert before submitting</a></p>
-            <form asp-route="@RouteNames.Preview_Submit_Post" class="form-inline">
+            <form asp-route="@RouteNames.EmployerCheckYourAnswersSubmitPost" class="form-inline">
                 <input type="submit" value="@Model.SubmitButtonText" class="govuk-button" esfa-automation="submit-button" />
             </form>
         </div>

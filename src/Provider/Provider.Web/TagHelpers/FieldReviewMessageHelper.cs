@@ -2,6 +2,8 @@
 using System.Linq;
 using System.Text.Encodings.Web;
 using Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview;
+using Esfa.Recruit.Shared.Web.ViewModels;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.TagHelpers;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 
@@ -17,19 +19,42 @@ namespace Esfa.Recruit.Provider.Web.TagHelpers
             var error = Model.Review.FieldIndicators.FirstOrDefault(c =>
                 c.ReviewFieldIdentifier.Equals(FieldName, StringComparison.CurrentCultureIgnoreCase));
 
-            if (error == null)
+
+            var validationError = string.Empty;
+            if (Model.ValidationErrors.ModelState != null 
+                && Model.ValidationErrors.ModelState.ContainsKey(FieldName) 
+                && Model.ValidationErrors.ModelState[FieldName].ValidationState == ModelValidationState.Invalid)
+            {
+                var item = Model.ValidationErrors.ModelState[FieldName];
+                validationError = item.Errors.FirstOrDefault()?.ErrorMessage;
+            }
+            
+            if (error == null && string.IsNullOrEmpty(validationError))
             {
                 return;
             }
             
             tagHelperOutput.TagName = "span";
             tagHelperOutput.AddClass("app-summary-list__error-message", HtmlEncoder.Default);
-            tagHelperOutput.Content.AppendHtml(error.ManualQaText);
-            foreach (string autoQaText in error.AutoQaTexts)
+            if (!string.IsNullOrEmpty(validationError))
             {
-                tagHelperOutput.Content.AppendHtml("<br/>");
-                tagHelperOutput.Content.Append($"{autoQaText}");
+                tagHelperOutput.Content.AppendHtml(validationError);
+                if (error != null)
+                {
+                    tagHelperOutput.Content.AppendHtml("<br/>");
+                }
             }
+
+            if (error != null)
+            {
+                tagHelperOutput.Content.AppendHtml(error.ManualQaText);
+                foreach (string autoQaText in error.AutoQaTexts)
+                {
+                    tagHelperOutput.Content.AppendHtml("<br/>");
+                    tagHelperOutput.Content.Append($"{autoQaText}");
+                }    
+            }
+            
             
             tagHelperOutput.TagMode = TagMode.StartTagAndEndTag;  
         }
