@@ -49,6 +49,21 @@
         </div>
     </div>
 }
+
+<div asp-show="Model.CanShowVacancyClonedStatusHeader" class="govuk-notification-banner govuk-notification-banner--success" role="alert" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
+  <div class="govuk-notification-banner__header">
+    <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
+      Success
+    </h2>
+  </div>
+  <div class="govuk-notification-banner__content">
+      <h3 class="govuk-notification-banner__heading">
+          @Model.VacancyClonedInfoMessage        
+      </h3>
+      <p>Reference number: @Model.VacancyReferenceNumber</p>
+  </div>
+</div>
+
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">  
         <h1 class="govuk-heading-xl">
@@ -486,6 +501,13 @@
         
             <h2 class="govuk-heading-m">Now submit your advert</h2>
             <p class="govuk-body">By submitting this advert you are confirming that, to the best of your knowledge, the details you are providing are correct.</p>
+            <div class="govuk-warning-text">
+              <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+              <strong class="govuk-warning-text__text">
+                  <span class="govuk-warning-text__assistive">Warning</span>
+                  Proofread your advert for spelling and formatting to avoid it being rejected by our QA team.
+              </strong>
+          </div>
             <p class="govuk-body"><a asp-route="@RouteNames.VacancyAdvertPreview" class="govuk-link govuk-link--no-visited-state">Preview advert before submitting</a></p>
             <form asp-route="@RouteNames.EmployerCheckYourAnswersSubmitPost" class="form-inline">
                 <input type="submit" value="@Model.SubmitButtonText" class="govuk-button" esfa-automation="submit-button" />
