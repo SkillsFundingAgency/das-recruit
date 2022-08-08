@@ -26,7 +26,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         
         public async Task<IActionResult> CheckYourAnswers(VacancyRouteModel vrm)
         {
-            var viewModel = await _orchestrator.GetVacancyTaskListModel(vrm); 
+            var viewModel = await _orchestrator.GetVacancyTaskListModel(vrm, User.ToVacancyUser()); 
             viewModel.CanHideValidationSummary = true;
             viewModel.SetSectionStates(viewModel, ModelState);
             
@@ -88,7 +88,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
                 throw new Exception("Unknown submit state");
             }
 
-            var viewModel = await _orchestrator.GetVacancyTaskListModel(m);
+            var viewModel = await _orchestrator.GetVacancyTaskListModel(m, User.ToVacancyUser());
             viewModel.SoftValidationErrors = null;
             viewModel.SetSectionStates(viewModel, ModelState);
             viewModel.ValidationErrors = new ValidationSummaryViewModel

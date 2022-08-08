@@ -74,7 +74,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
             if(response.Errors.Errors.Any(e => e.ErrorCode == ErrorCodes.TrainingProviderMustHaveEmployerPermission))
                 throw new MissingPermissionsException(string.Format(RecruitWebExceptionMessages.ProviderMissingPermission, m.Ukprn));
 
-            var viewModel = await _orchestrator.GetVacancyTaskListModel(m);
+            var viewModel = await _orchestrator.GetVacancyTaskListModel(m, User.ToVacancyUser());
 
             viewModel.SoftValidationErrors = null;
             viewModel.SetSectionStates(viewModel, ModelState);
