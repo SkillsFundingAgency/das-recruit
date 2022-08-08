@@ -40,12 +40,12 @@
     <ProjectReference Include="..\..\Communication\Communication.Types\Communication.Types.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <Content Update="appsettings.json">
-      <CopyToPublishDirectory>Never</CopyToPublishDirectory>
-    </Content>
-    <Content Update="appsettings.Development.json">
-      <CopyToPublishDirectory>Never</CopyToPublishDirectory>
-    </Content>
+    <None Update="appSettings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="appSettings.Development.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="nlog.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

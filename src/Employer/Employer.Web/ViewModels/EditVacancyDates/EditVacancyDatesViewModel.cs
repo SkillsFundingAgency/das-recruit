@@ -49,5 +49,6 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.EditVacancyDates
         };
 
         public int CurrentYear { get; set; }
+        public string Title { get; set; }
     }
 }
