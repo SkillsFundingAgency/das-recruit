@@ -55,7 +55,7 @@ namespace Esfa.Recruit.Vacancies.Jobs
                         configHost.SetBasePath(Directory.GetCurrentDirectory());  
                         configHost.AddEnvironmentVariables();
 #if DEBUG
-                        configHost.AddJsonFile("appSettings.json", optional: false)
+                        configHost.AddJsonFile("appSettings.json", true)
                             .AddJsonFile($"appSettings.Development.json", true);               
 #endif
                     })  
@@ -86,6 +86,11 @@ namespace Esfa.Recruit.Vacancies.Jobs
                         b.AddConsole();
                         b.AddNLog();
                         b.ConfigureRecruitLogging();
+                        string instrumentationKey = context.Configuration["APPINSIGHTS_INSTRUMENTATIONKEY"];
+                        if (!string.IsNullOrEmpty(instrumentationKey))
+                        {
+                            b.AddApplicationInsights(o => o.InstrumentationKey = instrumentationKey);
+                        }
                     })
                     .ConfigureServices((context, services) =>
                     {
@@ -104,7 +109,7 @@ namespace Esfa.Recruit.Vacancies.Jobs
                         services.ConfigureJobServices(context.Configuration);
 
                         services.AddDasNServiceBus(context.Configuration);
-                        services.AddApplicationInsightsTelemetry(context.Configuration);
+                        services.AddApplicationInsightsTelemetryWorkerService(context.Configuration);
                     })
                     .UseConsoleLifetime();
         }

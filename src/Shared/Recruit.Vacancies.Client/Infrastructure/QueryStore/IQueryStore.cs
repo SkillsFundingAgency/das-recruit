@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Vacancy;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
 {
@@ -18,5 +19,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
         Task<long> DeleteManyLessThanAsync<T, T1>(string typeName, Expression<Func<T, T1>> property, T1 value) where T : QueryProjectionBase;
 
         Task<long> DeleteAllAsync<T>(string typeName) where T : QueryProjectionBase;
+        Task<IEnumerable<LiveVacancy>> GetAllLiveExpired(DateTime? closingDate);
     }
 }

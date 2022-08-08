@@ -9,7 +9,7 @@
   <a asp-route="@RouteNames.ProviderCheckYourAnswersGet" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Back to check your answers</a>
 }
 
-<h1 class="govuk-heading-l">Preview your vacancy</h1>
+<h1 class="govuk-heading-xl">Preview your vacancy</h1>
 <partial name="_vacancyApprenticeshipPreview" model="@Model" />
 
 
@@ -17,7 +17,7 @@
   <div class="govuk-grid-column-two-thirds">
     <h2 class="govuk-heading-m">Now submit your vacancy</h2>
     <p class="govuk-body">By submitting this vacancy you are confirming that, to the best of your knowledge, the details you are providing are correct.</p>
-    <form asp-route="@RouteNames.Preview_Submit_Post" asp-all-route-data="@Model.RouteDictionary" method="post">
+    <form asp-route="@RouteNames.ProviderCheckYourAnswersPost" asp-all-route-data="@Model.RouteDictionary" method="post">
       <div class="govuk-button-group">
         <input type="submit" value="Submit vacancy" class="govuk-button" esfa-automation="submit-button" />
         <a asp-route="@RouteNames.ProviderCheckYourAnswersGet" asp-all-route-data="@Model.RouteDictionary" class="govuk-button govuk-button--secondary">Change your vacancy</a>

@@ -213,5 +213,36 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators
 
             viewModel.AccountLegalEntityCount.Should().Be(legalEntities.Count);
         }
+        
+        [Test, MoqAutoData]
+        public async Task When_Calling_GetCreateVacancyTaskListModel_Then_Returns_Count(
+            VacancyRouteModel routeModel,
+            EmployerEditVacancyInfo responseFromClient,
+            [Frozen] Mock<IEmployerVacancyClient> mockEmployerVacancyClient,
+            VacancyTaskListOrchestrator orchestrator)
+        {
+            mockEmployerVacancyClient
+                .Setup(x => x.GetEditVacancyInfoAsync(routeModel.EmployerAccountId))
+                .ReturnsAsync(responseFromClient);
+            
+            var viewModel = await orchestrator.GetCreateVacancyTaskListModel(routeModel);
+
+            viewModel.AccountLegalEntityCount.Should().Be(responseFromClient.LegalEntities.Count());
+        }
+        
+        [Test, MoqAutoData]
+        public async Task When_Calling_GetCreateVacancyTaskListModel_And_Response_Null_Then_Returns_0_Count(
+            VacancyRouteModel routeModel,
+            [Frozen] Mock<IEmployerVacancyClient> mockEmployerVacancyClient,
+            VacancyTaskListOrchestrator orchestrator)
+        {
+            mockEmployerVacancyClient
+                .Setup(x => x.GetEditVacancyInfoAsync(routeModel.EmployerAccountId))
+                .ReturnsAsync((EmployerEditVacancyInfo)null);
+            
+            var viewModel = await orchestrator.GetCreateVacancyTaskListModel(routeModel);
+
+            viewModel.AccountLegalEntityCount.Should().Be(0);
+        }
     }
 }

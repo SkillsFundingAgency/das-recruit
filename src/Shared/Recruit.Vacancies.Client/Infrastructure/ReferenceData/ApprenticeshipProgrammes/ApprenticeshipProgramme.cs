@@ -16,6 +16,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Apprentices
 
         public DateTime? EffectiveTo { get; set; }
 
+        public DateTime? LastDateStarts { get; set; }
+
         public ApprenticeshipLevel ApprenticeshipLevel { get; set; }
 
         public int Duration { get; set; }
@@ -33,6 +35,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Apprentices
                 Title = source.Title,
                 EffectiveFrom = source.EffectiveFrom,
                 EffectiveTo = source.EffectiveTo,
+                LastDateStarts = source.LastDateStarts,
                 ApprenticeshipLevel = source.ApprenticeshipLevel,
                 Duration = source.Duration,
                 IsActive = source.IsActive,

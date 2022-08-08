@@ -1,3 +1,5 @@
+using System;
+using System.Diagnostics;
 using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Application.Services;
@@ -80,16 +82,11 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                 ValidateTraineeshipTitle();
                 ValidateTraineeshipDuration();
             }
-
-
+            
             ValidateOrganisation();
-
             ValidateNumberOfPositions();
-
             ValidateShortDescription();
-
             ValidateClosingDate();
-
             ValidateStartDate();
 
             if (IsApprenticeshipVacancy)
@@ -121,36 +118,24 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
             }
 
             ValidateTrainingDescription();
-
             ValidateOutcomeDescription();
-
             ValidateApplicationMethod();
-
             ValidateEmployerContactDetails();
-
             ValidateProviderContactDetails();
-
             ValidateThingsToConsider();
-
             ValidateEmployerInformation();
-
             ValidateTrainingProvider();
 
             if (!IsApprenticeshipVacancy)
             {
                 ValidateWorkExperience();
             }
-
         }
-
-
-
+        
         private void CrossFieldValidations()
         {
             ValidateStartDateClosingDate();
-
             MinimumWageValidation();
-
             TrainingExpiryDateValidation();
         }
 
@@ -203,7 +188,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
         {
             RuleFor(x => x.EmployerName)
                 .NotEmpty()
-                    .WithMessage("Select the employer name you want on your advert")
+                    .WithMessage((vacancy, value) => $"Select the employer name you want on your {(vacancy.OwnerType == OwnerType.Employer ? "advert" : "vacancy")}")
                     .WithErrorCode("4")
                 .RunCondition(VacancyRuleSet.EmployerName)
                 .WithRuleId(VacancyRuleSet.EmployerName);
@@ -254,7 +239,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
             When(v => v.EmployerNameOption == EmployerNameOption.Anonymous, () =>
                 RuleFor(x => x.AnonymousReason)
                     .NotEmpty()
-                    .WithMessage("Enter why you want your advert to be anonymous")
+                    .WithMessage((vacancy, value) => $"Enter why you want your {(vacancy.OwnerType == OwnerType.Employer ? "advert" : "vacancy")} to be anonymous")
                     .WithErrorCode("408")
                     .MaximumLength(200)
                     .WithMessage("The reason must not be more than {MaxLength} characters")
@@ -271,7 +256,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
 
             RuleFor(x => x.EmployerNameOption)
                 .NotEmpty()
-                    .WithMessage("Select the employer name you want on your advert")
+                    .WithMessage((vacancy, value) => $"Select the employer name you want on your {(vacancy.OwnerType == OwnerType.Employer ? "advert" : "vacancy")}")
                     .WithErrorCode("404")
                 .RunCondition(VacancyRuleSet.EmployerNameOption)
                 .WithRuleId(VacancyRuleSet.EmployerNameOption);
@@ -324,8 +309,8 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                 .NotNull()
                     .WithMessage("Enter an application closing date")
                     .WithErrorCode("16")
-                .GreaterThan(v => _timeProvider.Now.Date.AddDays(1).AddTicks(-1))
-                    .WithMessage("Closing date for applications cannot be today or earlier.")
+                .GreaterThan(v => _timeProvider.Now.Date.AddDays(14).AddTicks(-1))
+                    .WithMessage("Closing date should be at least 14 days in the future.")
                     .WithErrorCode("18")
                 .RunCondition(VacancyRuleSet.ClosingDate)
                 .WithRuleId(VacancyRuleSet.ClosingDate);
@@ -337,8 +322,8 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                 .NotNull()
                 .WithMessage($"Enter when you expect the {(IsApprenticeshipVacancy? "apprentice" :"trainee")} to start")
                     .WithErrorCode("20")
-                .GreaterThan(v => _timeProvider.Now.Date.AddDays(1).AddTicks(-1))
-                .WithMessage("Start date cannot be today or earlier. We advise using a date more than two weeks from now.")
+                .GreaterThan(v => v.ClosingDate)
+                .WithMessage("Start date cannot be before the closing date. We advise using a date more than 14 days from now.")
                     .WithErrorCode("22")
                 .RunCondition(VacancyRuleSet.StartDate)
                 .WithRuleId(VacancyRuleSet.StartDate);
@@ -396,6 +381,35 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                         return true;
                     })
                     .WithMessage("Expected duration must be at least 12 months")
+                    .WithErrorCode("36")
+                    .Must((vacancy, value) =>
+                    {
+                        if (( vacancy.Wage.DurationUnit == DurationUnit.Month && value >= 12 
+                             || vacancy.Wage.DurationUnit == DurationUnit.Year && value >= 1)
+                            && vacancy.Wage.WeeklyHours.HasValue
+                            && vacancy.Wage.WeeklyHours < 30m)
+                        {
+
+                            var numberOfMonths = (int) Math.Ceiling(30 / vacancy.Wage.WeeklyHours.GetValueOrDefault() * 12);
+
+                            if (vacancy.Wage.DurationUnit == DurationUnit.Year)
+                            {
+                                value *= 12;
+                            }
+                            
+                            if (numberOfMonths > value)
+                            {
+                                return false;    
+                            }
+                        }
+
+                        return true;
+                    })
+                    .WithMessage((vacancy, value) =>
+                    {
+                        int numberOfMonths = (int)Math.Ceiling(30 / vacancy.Wage.WeeklyHours.GetValueOrDefault() * 12);
+                        return $"Duration of apprenticeship must be {numberOfMonths} months based on the number of hours per week entered";
+                    })
                     .WithErrorCode("36")
                     .RunCondition(VacancyRuleSet.Duration)
                     .WithRuleId(VacancyRuleSet.Duration);
@@ -865,6 +879,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                 RuleFor(x => x)
                     .Cascade(CascadeMode.StopOnFirstFailure)
                     .TrainingMustExist(_apprenticeshipProgrammesProvider)
+                    .TrainingMustBeActiveForCurrentDate(_apprenticeshipProgrammesProvider, _timeProvider)
                     .TrainingMustBeActiveForStartDate(_apprenticeshipProgrammesProvider)
                 .RunCondition(VacancyRuleSet.TrainingExpiryDate)
                 .WithRuleId(VacancyRuleSet.TrainingExpiryDate);

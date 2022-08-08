@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Vacancy;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.WindowsAzure.Storage;
@@ -81,6 +83,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.TableStore
                 TableQuery.GenerateFilterCondition(PartitionKeyFieldName, QueryComparisons.Equal, typeName));
 
             return DeleteInBatchesAsync(query);
+        }
+
+        public Task<IEnumerable<LiveVacancy>> GetAllLiveExpired(DateTime? closingDate)
+        {
+            throw new NotImplementedException();
         }
 
         public async Task DeleteAsync<T>(string typeName, string key) where T : QueryProjectionBase
