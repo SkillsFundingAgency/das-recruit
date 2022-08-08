@@ -381,5 +381,10 @@ namespace Esfa.Recruit.Employer.Web.Mappings
 
             return new ReviewFieldMappingLookupsForPage(vms, mappings);
         }
+
+        public static ReviewFieldMappingLookupsForPage GetFutureProspectsFieldIndicators()
+        {
+            return null;
+        }
     }
 }
