@@ -254,16 +254,13 @@ namespace Esfa.Recruit.Employer.Web.Mappings
             var vms = new List<ReviewFieldIndicatorViewModel>
             {
                 new ReviewFieldIndicatorViewModel(FieldIdentifiers.VacancyDescription, nameof(VacancyDescriptionEditModel.VacancyDescription)),
-                new ReviewFieldIndicatorViewModel(FieldIdentifiers.TrainingDescription, nameof(VacancyDescriptionEditModel.TrainingDescription)),
-                new ReviewFieldIndicatorViewModel(FieldIdentifiers.OutcomeDescription, nameof(VacancyDescriptionEditModel.OutcomeDescription)),
-
+                new ReviewFieldIndicatorViewModel(FieldIdentifiers.TrainingDescription, nameof(VacancyDescriptionEditModel.TrainingDescription))
             };
 
             var mappings =  new Dictionary<string, IEnumerable<string>>
             {
                 { FieldIdResolver.ToFieldId(v => v.Description), new []{ FieldIdentifiers.VacancyDescription} },
-                { FieldIdResolver.ToFieldId(v => v.TrainingDescription), new []{ FieldIdentifiers.TrainingDescription} },
-                { FieldIdResolver.ToFieldId(v => v.OutcomeDescription), new []{ FieldIdentifiers.OutcomeDescription} }
+                { FieldIdResolver.ToFieldId(v => v.TrainingDescription), new []{ FieldIdentifiers.TrainingDescription} }
             };
 
             return new ReviewFieldMappingLookupsForPage(vms, mappings);
@@ -384,7 +381,17 @@ namespace Esfa.Recruit.Employer.Web.Mappings
 
         public static ReviewFieldMappingLookupsForPage GetFutureProspectsFieldIndicators()
         {
-            return null;
+            var vms = new List<ReviewFieldIndicatorViewModel>
+            {
+                new ReviewFieldIndicatorViewModel(FieldIdentifiers.OutcomeDescription, nameof(VacancyDescriptionEditModel.OutcomeDescription))
+            };
+
+            var mappings =  new Dictionary<string, IEnumerable<string>>
+            {
+                { FieldIdResolver.ToFieldId(v => v.OutcomeDescription), new []{ FieldIdentifiers.OutcomeDescription} }
+            };
+
+            return new ReviewFieldMappingLookupsForPage(vms, mappings);
         }
     }
 }
