@@ -133,7 +133,7 @@ namespace SFA.DAS.Recruit.Api.Commands
         //
         private async Task CreateVacancy(CreateVacancyCommand request, TrainingProvider trainingProvider)
         {
-            if (!string.IsNullOrEmpty(request.VacancyUserDetails.Email))
+            if (request.Vacancy.OwnerType == OwnerType.Employer)
             {
                 request.VacancyUserDetails.Ukprn = null;
                 await _employerVacancyClient.CreateEmployerApiVacancy(request.Vacancy.Id, request.Vacancy.Title,

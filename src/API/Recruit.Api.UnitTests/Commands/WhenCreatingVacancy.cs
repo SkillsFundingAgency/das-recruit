@@ -199,6 +199,7 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Commands
             CreateVacancyCommandHandler handler)
         {
             command.ValidateOnly = false;
+            command.Vacancy.OwnerType = OwnerType.Provider;
             vacancyClient.Setup(x => x.Validate(It.IsAny<Vacancy>(), VacancyRuleSet.All))
                 .Returns(new EntityValidationResult());
             command.VacancyUserDetails.Email = string.Empty;
@@ -326,7 +327,7 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Commands
             CreateVacancyCommandHandler handler)
         {
             command.ValidateOnly = false;
-            command.Vacancy.OwnerType = OwnerType.Provider;
+            vacancy.OwnerType = OwnerType.Provider;
             vacancy.Id = command.Vacancy.Id;
             vacancy.ProgrammeId = command.Vacancy.ProgrammeId;
             trainingProviderService.Setup(x => x.GetProviderAsync(command.VacancyUserDetails.Ukprn.Value))
