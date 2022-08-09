@@ -145,15 +145,13 @@ namespace Esfa.Recruit.Employer.Web.Mappings
             var vms = new List<ReviewFieldIndicatorViewModel>
             {
                 new ReviewFieldIndicatorViewModel(FieldIdentifiers.ClosingDate, nameof(DatesEditModel.ClosingDay)),
-                new ReviewFieldIndicatorViewModel(FieldIdentifiers.PossibleStartDate, nameof(DatesEditModel.StartDay)),
-                new ReviewFieldIndicatorViewModel(FieldIdentifiers.DisabilityConfident, nameof(DatesEditModel.IsDisabilityConfident))
+                new ReviewFieldIndicatorViewModel(FieldIdentifiers.PossibleStartDate, nameof(DatesEditModel.StartDay))
             };
 
             var mappings = new Dictionary<string, IEnumerable<string>>
             {
                 { FieldIdResolver.ToFieldId(v => v.ClosingDate), new []{ FieldIdentifiers.ClosingDate} },
-                { FieldIdResolver.ToFieldId(v => v.StartDate), new []{ FieldIdentifiers.PossibleStartDate} },
-                { FieldIdResolver.ToFieldId(v => v.DisabilityConfident), new []{ FieldIdentifiers.DisabilityConfident} }
+                { FieldIdResolver.ToFieldId(v => v.StartDate), new []{ FieldIdentifiers.PossibleStartDate} }
             };
 
             return new ReviewFieldMappingLookupsForPage(vms, mappings);
@@ -316,13 +314,15 @@ namespace Esfa.Recruit.Employer.Web.Mappings
             var vms = new List<ReviewFieldIndicatorViewModel>
             {
                 new ReviewFieldIndicatorViewModel(FieldIdentifiers.EmployerDescription, nameof(AboutEmployerEditModel.EmployerDescription)),
-                new ReviewFieldIndicatorViewModel(FieldIdentifiers.EmployerWebsiteUrl, nameof(AboutEmployerEditModel.EmployerWebsiteUrl))
+                new ReviewFieldIndicatorViewModel(FieldIdentifiers.EmployerWebsiteUrl, nameof(AboutEmployerEditModel.EmployerWebsiteUrl)),
+                new ReviewFieldIndicatorViewModel(FieldIdentifiers.DisabilityConfident, nameof(AboutEmployerEditModel.IsDisabilityConfident))
             };
 
             var mappings =  new Dictionary<string, IEnumerable<string>>
             {
                 { FieldIdResolver.ToFieldId(v => v.EmployerDescription), new [] { FieldIdentifiers.EmployerDescription }},
-                { FieldIdResolver.ToFieldId(v => v.EmployerWebsiteUrl), new []{ FieldIdentifiers.EmployerWebsiteUrl} }
+                { FieldIdResolver.ToFieldId(v => v.EmployerWebsiteUrl), new []{ FieldIdentifiers.EmployerWebsiteUrl} },
+                { FieldIdResolver.ToFieldId(v => v.DisabilityConfident), new []{ FieldIdentifiers.DisabilityConfident} }
             };
 
             return new ReviewFieldMappingLookupsForPage(vms, mappings);
