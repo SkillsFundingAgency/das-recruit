@@ -327,7 +327,7 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Commands
             CreateVacancyCommandHandler handler)
         {
             command.ValidateOnly = false;
-            vacancy.OwnerType = OwnerType.Provider;
+            vacancy.OwnerType = OwnerType.Employer;
             vacancy.Id = command.Vacancy.Id;
             vacancy.ProgrammeId = command.Vacancy.ProgrammeId;
             trainingProviderService.Setup(x => x.GetProviderAsync(command.VacancyUserDetails.Ukprn.Value))
