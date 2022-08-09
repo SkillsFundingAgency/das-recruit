@@ -27,10 +27,19 @@
         <div asp-show="Model.HasWarning" class="warning-summary govuk-!-margin-bottom-0">
             <p>@Model.WarningMessage</p>
         </div>
-        <div asp-show="Model.HasInfo" class="info-summary govuk-!-margin-bottom-0">
-            <p>@Model.InfoMessage</p>
-        </div>
     </div>
+</div>
+<div asp-show="Model.HasInfo" class="govuk-notification-banner govuk-notification-banner--success" role="alert" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
+  <div class="govuk-notification-banner__header">
+    <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
+      Success
+    </h2>
+  </div>
+  <div class="govuk-notification-banner__content">
+    <h3 class="govuk-notification-banner__heading">
+        @Model.InfoMessage        
+    </h3>
+  </div>
 </div>
 
 @section BackLink

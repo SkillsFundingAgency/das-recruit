@@ -9,11 +9,13 @@ using Esfa.Recruit.Vacancies.Client.Application.Commands;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Application.Services;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Vacancies.Client.Domain.Events;
+using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Vacancy;
 using Microsoft.Extensions.Logging;
-using MongoDB.Bson;
 using MongoDB.Driver;
-using MongoDB.Driver.Core.Operations;
 using Moq;
 using Xunit;
 
@@ -41,17 +43,20 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.C
             mockTimeProvider.Setup(t => t.Today).Returns(DateTime.Parse("2019-03-24"));
             
             var mockVacancyService = new Mock<IVacancyService>();
+            var messagingService = new Mock<IMessaging>();
+            var queryStoreReader = new Mock<IQueryStoreReader>();
             
-            var handler = new CloseExpiredVacanciesCommandHandler(mockLogger.Object, mockQuery.Object, mockTimeProvider.Object, mockVacancyService.Object);
+            var handler = new CloseExpiredVacanciesCommandHandler(mockLogger.Object, mockQuery.Object, mockTimeProvider.Object, mockVacancyService.Object, queryStoreReader.Object, messagingService.Object);
             
             var command = new CloseExpiredVacanciesCommand();
             
             await handler.Handle(command, new CancellationToken());
             
             mockVacancyService.Verify(s => s.CloseExpiredVacancy(It.IsAny<Guid>()), Times.Never());
+            messagingService.Verify(x=>x.PublishEvent(It.IsAny<IEvent>()), Times.Never);
         }
         [Fact]
-        public async Task ShouldCloseAllVacanciesWithClosingDateBeforeToday()
+        public async Task ShouldCloseAllVacanciesWithClosingDateBeforeToday_And_Orphaned_Vacancies()
         {
             var vacancies = new List<VacancyIdentifier> 
             {
@@ -74,19 +79,40 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.C
             var mockQuery = new Mock<IVacancyQuery>();
             mockQuery.Setup(q => q.GetVacanciesByStatusAndClosingDateAsync(It.Is<VacancyStatus>(s => s == VacancyStatus.Live), DateTime.Parse("2019-03-24")))
                 .ReturnsAsync(mockCursor.Object);
+
+            var liveVacancies = new List<LiveVacancy>
+            {
+                new LiveVacancy
+                {
+                    VacancyId= Guid.NewGuid(),
+                    VacancyReference = 1
+                },
+                new LiveVacancy
+                {
+                    VacancyId= Guid.NewGuid(),
+                    VacancyReference = 2
+                }
+            };
+            var queryStoreReader = new Mock<IQueryStoreReader>();
+            queryStoreReader.Setup(x => x.GetLiveExpiredVacancies(DateTime.Parse("2019-03-24")))
+                .ReturnsAsync(liveVacancies);
             
             var mockTimeProvider = new Mock<ITimeProvider>();
             mockTimeProvider.Setup(t => t.Today).Returns(DateTime.Parse("2019-03-24"));
             
             var mockVacancyService = new Mock<IVacancyService>();
+            var messagingService = new Mock<IMessaging>();
             
-            var handler = new CloseExpiredVacanciesCommandHandler(mockLogger.Object, mockQuery.Object, mockTimeProvider.Object, mockVacancyService.Object);
+            var handler = new CloseExpiredVacanciesCommandHandler(mockLogger.Object, mockQuery.Object, mockTimeProvider.Object, mockVacancyService.Object, queryStoreReader.Object, messagingService.Object);
             
             var command = new CloseExpiredVacanciesCommand();
             
             await handler.Handle(command, new CancellationToken());
             
             mockVacancyService.Verify(s => s.CloseExpiredVacancy(It.IsAny<Guid>()), Times.Exactly(4));
+            messagingService.Verify(x=>x.PublishEvent(It.Is<VacancyClosedEvent>(c=>c.VacancyReference.Equals(1))), Times.Once());
+            messagingService.Verify(x=>x.PublishEvent(It.Is<VacancyClosedEvent>(c=>c.VacancyReference.Equals(2))), Times.Once());
         }
+
     }
 }
