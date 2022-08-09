@@ -6,6 +6,8 @@ using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels.Part2.FutureProspects;
 using Esfa.Recruit.Shared.Web.Orchestrators;
 using Esfa.Recruit.Shared.Web.Services;
+using Esfa.Recruit.Vacancies.Client.Application.Services;
+using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Microsoft.Extensions.Logging;
@@ -50,14 +52,29 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
             return viewModel;
         }
 
-        public async Task<OrchestratorResponse> PostEditModel(FutureProspectsEditModel futureProspectsEditModel, VacancyUser toVacancyUser)
+        public async Task<OrchestratorResponse> PostEditModel(FutureProspectsEditModel editModel, VacancyUser user)
         {
-            throw new System.NotImplementedException();
+            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(editModel, RouteNames.FutureProspects_Post);
+            
+            SetVacancyWithEmployerReviewFieldIndicators(
+                vacancy.OutcomeDescription,
+                FieldIdResolver.ToFieldId(v => v.OutcomeDescription),
+                vacancy,
+                (v) => { return v.OutcomeDescription = editModel.FutureProspects; });
+
+            return await ValidateAndExecute(
+                vacancy,
+                v => _vacancyClient.Validate(v, VacancyRuleSet.OutcomeDescription),
+                v => _vacancyClient.UpdateDraftVacancyAsync(vacancy, user));
         }
         
         protected override EntityToViewModelPropertyMappings<Vacancy, FutureProspectsEditModel> DefineMappings()
         {
-            throw new System.NotImplementedException();
+            var mappings = new EntityToViewModelPropertyMappings<Vacancy, FutureProspectsEditModel>();
+
+            mappings.Add(e => e.OutcomeDescription, vm => vm.FutureProspects);
+
+            return mappings;
         }
     }
 }

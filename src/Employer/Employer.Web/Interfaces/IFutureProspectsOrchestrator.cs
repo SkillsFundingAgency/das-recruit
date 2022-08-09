@@ -9,6 +9,6 @@ namespace Esfa.Recruit.Employer.Web.Interfaces
     public interface IFutureProspectsOrchestrator
     {
         Task<FutureProspectsViewModel> GetViewModel(VacancyRouteModel routeModel);
-        Task<OrchestratorResponse> PostEditModel(FutureProspectsEditModel futureProspectsEditModel, VacancyUser vacancyUser);
+        Task<OrchestratorResponse> PostEditModel(FutureProspectsEditModel editModel, VacancyUser user);
     }
 }
