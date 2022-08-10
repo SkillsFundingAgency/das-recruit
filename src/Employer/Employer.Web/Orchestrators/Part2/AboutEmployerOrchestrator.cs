@@ -39,7 +39,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
                 EmployerDescription =  await _vacancyClient.GetEmployerDescriptionAsync(vacancy),
                 EmployerTitle = await GetEmployerTitleAsync(vacancy),
                 EmployerWebsiteUrl = vacancy.EmployerWebsiteUrl,
-                IsAnonymous = vacancy.IsAnonymous
+                IsAnonymous = vacancy.IsAnonymous,
+                IsDisabilityConfident = vacancy.IsDisabilityConfident
             };
 
             if (vacancy.Status == VacancyStatus.Referred)
@@ -59,6 +60,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
 
             vm.EmployerDescription = m.EmployerDescription;
             vm.EmployerWebsiteUrl = m.EmployerWebsiteUrl;
+            vm.IsDisabilityConfident = m.IsDisabilityConfident;
 
             return vm;
         }
@@ -78,6 +80,15 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
                 FieldIdResolver.ToFieldId(v => v.EmployerWebsiteUrl),
                 vacancy,
                 (v) => { return v.EmployerWebsiteUrl = m.EmployerWebsiteUrl; });
+            
+            SetVacancyWithEmployerReviewFieldIndicators(
+                vacancy.DisabilityConfident,
+                FieldIdResolver.ToFieldId(v => v.DisabilityConfident),
+                vacancy,
+                (v) =>
+                {
+                    return v.DisabilityConfident = m.IsDisabilityConfident ? DisabilityConfident.Yes : DisabilityConfident.No;
+                });
             
             SetVacancyWithEmployerReviewFieldIndicators(
                 vacancy.DisabilityConfident,
