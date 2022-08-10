@@ -158,19 +158,6 @@
                     
                 </dd>
             </div>
-            <field-review-message field-name="@FieldIdentifiers.OutcomeDescription" model="@Model"></field-review-message>
-            <div class="app-summary-list__row" field-review-marker="OutcomeDescription">
-                <dt class="app-summary-list__key" id="OutcomeDescription">Future prospects</dt>
-                <dd class="app-summary-list__value">
-                    <div class="app-ugc-wrap">
-                        @Html.Raw(Model.OutcomeDescription)
-                    </div>
-                    <field-review-tag class="govuk-tag--orange" field-name="@FieldIdentifiers.OutcomeDescription" tag-name="strong" model="@Model"/>
-                </dd>
-                <dd class="app-summary-list__actions">
-                    
-                </dd>
-            </div>
         </dl>
     
         <h2 class="govuk-heading-m">Employment details</h2>
@@ -193,17 +180,6 @@
                 <dd class="app-summary-list__value">
                     @Model.PossibleStartDate
                     <field-review-tag class="govuk-tag--orange" field-name="@FieldIdentifiers.PossibleStartDate" tag-name="strong" model="@Model"/>
-                </dd>
-                <dd class="app-summary-list__actions">
-                    
-                </dd>
-            </div>
-            <field-review-message field-name="@FieldIdentifiers.DisabilityConfident" model="@Model"></field-review-message>
-            <div class="app-summary-list__row" field-review-marker="IsDisabilityConfident">
-                <dt class="app-summary-list__key" id="@FieldIdentifiers.DisabilityConfident">Disability Confident Employer?</dt>
-                <dd class="app-summary-list__value">
-                    @(Model.IsDisabilityConfident ? "Yes" : "No")
-                    <field-review-tag class="govuk-tag--orange" field-name="@FieldIdentifiers.DisabilityConfident" tag-name="strong" model="@Model"/>
                 </dd>
                 <dd class="app-summary-list__actions">
                     
@@ -327,6 +303,19 @@
                     
                 </dd>
             </div>
+            <field-review-message field-name="@FieldIdentifiers.OutcomeDescription" model="@Model"></field-review-message>
+            <div class="app-summary-list__row" field-review-marker="OutcomeDescription">
+                <dt class="app-summary-list__key" id="OutcomeDescription">Future prospects</dt>
+                <dd class="app-summary-list__value">
+                    <div class="app-ugc-wrap">
+                        @Html.Raw(Model.OutcomeDescription)
+                    </div>
+                    <field-review-tag class="govuk-tag--orange" field-name="@FieldIdentifiers.OutcomeDescription" tag-name="strong" model="@Model"/>
+                </dd>
+                <dd class="app-summary-list__actions">
+                    
+                </dd>
+            </div>
             <field-review-message field-name="@FieldIdentifiers.ThingsToConsider" model="@Model"></field-review-message>
             <div class="app-summary-list__row" field-review-marker="ThingsToConsider">
                 <dt class="app-summary-list__key" id="@FieldIdentifiers.ThingsToConsider">Other things to consider</dt>
@@ -348,7 +337,7 @@
             </div>
         </dl>
         <h2 class="govuk-heading-m">About the employer</h2>
-    <dl class="app-summary-list govuk-!-margin-bottom-9">
+        <dl class="app-summary-list govuk-!-margin-bottom-9">
         <field-review-message field-name="@FieldIdentifiers.EmployerName" model="@Model"></field-review-message>
         <div class="app-summary-list__row" field-review-marker="EmployerName">
             <dt class="app-summary-list__key" id="aboutEmployer">Name of organisation</dt>
@@ -384,6 +373,17 @@
                     
             </dd>
         </div>
+            <field-review-message field-name="@FieldIdentifiers.DisabilityConfident" model="@Model"></field-review-message>
+            <div class="app-summary-list__row" field-review-marker="IsDisabilityConfident">
+                <dt class="app-summary-list__key" id="@FieldIdentifiers.DisabilityConfident">Disability Confident Employer?</dt>
+                <dd class="app-summary-list__value">
+                    @(Model.IsDisabilityConfident ? "Yes" : "No")
+                    <field-review-tag class="govuk-tag--orange" field-name="@FieldIdentifiers.DisabilityConfident" tag-name="strong" model="@Model"/>
+                </dd>
+                <dd class="app-summary-list__actions">
+                    
+                </dd>
+            </div>
         <field-review-message field-name="@FieldIdentifiers.EmployerContact" model="@Model"></field-review-message>
         <div class="app-summary-list__row app-summary-list__row--no-border" field-review-marker="EmployerContactName">
             <dt class="app-summary-list__key" id="@FieldIdentifiers.EmployerContact">Contact name (optional)</dt>
