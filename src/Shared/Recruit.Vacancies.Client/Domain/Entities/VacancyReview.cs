@@ -63,5 +63,8 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
 
         public RuleSetOutcome AutomatedQaOutcome { get; set; }
         public IEnumerable<RuleOutcomeIndicator> AutomatedQaOutcomeIndicators { get; set; } = new List<RuleOutcomeIndicator>();
+
+        public IEnumerable<ManualQaFieldEditIndicator> ManualQaFieldEditIndicators { get; set; } =
+            new List<ManualQaFieldEditIndicator>();
     }
 }
