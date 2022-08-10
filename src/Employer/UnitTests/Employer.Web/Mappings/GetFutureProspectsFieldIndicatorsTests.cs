@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using Esfa.Recruit.Employer.Web.Mappings;
-using Esfa.Recruit.Employer.Web.ViewModels.Part2.VacancyDescription;
+using Esfa.Recruit.Employer.Web.ViewModels.Part2.FutureProspects;
 using Esfa.Recruit.Shared.Web.Mappers;
 using Esfa.Recruit.Shared.Web.ViewModels;
 using Esfa.Recruit.Vacancies.Client.Application.Services;
@@ -16,7 +16,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Mappings
         {
             var expectedFieldIdentifiers = new List<ReviewFieldIndicatorViewModel>
             {
-                new ReviewFieldIndicatorViewModel(FieldIdentifiers.OutcomeDescription, nameof(VacancyDescriptionEditModel.OutcomeDescription))
+                new ReviewFieldIndicatorViewModel(FieldIdentifiers.OutcomeDescription, nameof(FutureProspectsEditModel.FutureProspects))
             };
             var expectedMappings =  new Dictionary<string, IEnumerable<string>>
             {

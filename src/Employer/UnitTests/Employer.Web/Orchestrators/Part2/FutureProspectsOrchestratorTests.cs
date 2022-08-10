@@ -7,6 +7,7 @@ using Esfa.Recruit.Employer.Web.Mappings;
 using Esfa.Recruit.Employer.Web.Orchestrators.Part2;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels.Part2.FutureProspects;
+using Esfa.Recruit.Shared.Web.Mappers;
 using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Shared.Web.ViewModels;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
@@ -65,7 +66,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part2
                 .Returns(isTaskListCompleted);
             mockReviewSummaryService
                 .Setup(service => service.GetReviewSummaryViewModelAsync(vacancy.VacancyReference.Value,
-                    ReviewFieldMappingLookups.GetFutureProspectsFieldIndicators()))
+                    It.IsAny<ReviewFieldMappingLookupsForPage>()))
                 .ReturnsAsync(reviewSummaryViewModel);
 
             var response = await orchestrator.GetViewModel(vacancyRouteModel);

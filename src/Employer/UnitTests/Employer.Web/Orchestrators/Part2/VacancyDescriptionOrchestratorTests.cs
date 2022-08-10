@@ -30,16 +30,15 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part2
         }
 
         [Theory]
-        [InlineData("has a new value", "has a value", "has a value")]
-        [InlineData("has a value", "has a new value", "has a value")]
-        [InlineData("has a value", "has a value", "has a new value")]
-        [InlineData("has a new value", "has a new value", "has a new value")]
-        public async Task WhenUpdated__ShouldCallUpdateDraftVacancy(string description, string trainingDescription, string outcomeDescription)
+        [InlineData("has a new value", "has a value")]
+        [InlineData("has a value", "has a new value")]
+        [InlineData("has a value", "has a value")]
+        [InlineData("has a new value", "has a new value")]
+        public async Task WhenUpdated__ShouldCallUpdateDraftVacancy(string description, string trainingDescription)
         {
             _fixture
                 .WithDescription("has a value")
                 .WithTrainingDescription("has a value")
-                .WithOutcomeDescription("has a value")
                 .Setup();
 
             var vacancyDescriptionEditModel = new VacancyDescriptionEditModel
@@ -47,8 +46,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part2
                 EmployerAccountId = _fixture.Vacancy.EmployerAccountId,
                 VacancyId = _fixture.Vacancy.Id,
                 VacancyDescription = description,
-                TrainingDescription = trainingDescription,
-                OutcomeDescription = outcomeDescription
+                TrainingDescription = trainingDescription
             };
 
             await _fixture.PostVacancyDescriptionEditModelAsync(vacancyDescriptionEditModel);
@@ -57,15 +55,14 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part2
         }
 
         [Theory]
-        [InlineData("has a new value", "has a value", "has a value", new string[] { FieldIdentifiers.VacancyDescription }, new string[] { FieldIdentifiers.TrainingDescription })]
-        [InlineData("has a value", "has a new value", "has a value", new string[] { FieldIdentifiers.TrainingDescription }, new string[] { FieldIdentifiers.VacancyDescription })]
-        [InlineData("has a new value", "has a new value", "has a new value", new string[] { FieldIdentifiers.VacancyDescription, FieldIdentifiers.TrainingDescription }, new string[] { })]
-        public async Task WhenShortDescriptionIsUpdated_ShouldFlagFieldIndicators(string description, string trainingDescription, string outcomeDescription, string[] setFieldIndicators, string[] unsetFieldIndicators)
+        [InlineData("has a new value", "has a value", new string[] { FieldIdentifiers.VacancyDescription }, new string[] { FieldIdentifiers.TrainingDescription })]
+        [InlineData("has a value", "has a new value", new string[] { FieldIdentifiers.TrainingDescription }, new string[] { FieldIdentifiers.VacancyDescription })]
+        [InlineData("has a new value", "has a new value", new string[] { FieldIdentifiers.VacancyDescription, FieldIdentifiers.TrainingDescription }, new string[] { })]
+        public async Task WhenShortDescriptionIsUpdated_ShouldFlagFieldIndicators(string description, string trainingDescription, string[] setFieldIndicators, string[] unsetFieldIndicators)
         {
             _fixture
                 .WithDescription("has a value")
                 .WithTrainingDescription("has a value")
-                .WithOutcomeDescription("has a value")
                 .Setup();
 
             var vacancyDescriptionEditModel = new VacancyDescriptionEditModel
@@ -73,8 +70,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part2
                 EmployerAccountId = _fixture.Vacancy.EmployerAccountId,
                 VacancyId = _fixture.Vacancy.Id,
                 VacancyDescription = description,
-                TrainingDescription = trainingDescription,
-                OutcomeDescription = outcomeDescription
+                TrainingDescription = trainingDescription
             };
 
             await _fixture.PostVacancyDescriptionEditModelAsync(vacancyDescriptionEditModel);
@@ -84,7 +80,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part2
 
         public class VacancyDescriptionOrchestratorTestsFixture
         {
-            private const VacancyRuleSet ValidationRules = VacancyRuleSet.Description | VacancyRuleSet.TrainingDescription | VacancyRuleSet.OutcomeDescription;
+            private const VacancyRuleSet ValidationRules = VacancyRuleSet.Description | VacancyRuleSet.TrainingDescription;
             public VacancyUser User { get; }
             public Vacancy Vacancy { get; }
             public VacancyDescriptionOrchestrator Sut {get; private set;}
@@ -107,12 +103,6 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part2
             public VacancyDescriptionOrchestratorTestsFixture WithTrainingDescription(string trainingDescription)
             {
                 Vacancy.TrainingDescription = trainingDescription;
-                return this;
-            }
-
-            public VacancyDescriptionOrchestratorTestsFixture WithOutcomeDescription(string outcomeDescription)
-            {
-                Vacancy.OutcomeDescription = outcomeDescription;
                 return this;
             }
 

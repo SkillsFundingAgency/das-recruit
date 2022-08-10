@@ -65,7 +65,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
             return await ValidateAndExecute(
                 vacancy,
                 v => _vacancyClient.Validate(v, VacancyRuleSet.OutcomeDescription),
-                v => _vacancyClient.UpdateDraftVacancyAsync(vacancy, user));
+                v => _vacancyClient.UpdateDraftVacancyAsync(v, user));
         }
         
         protected override EntityToViewModelPropertyMappings<Vacancy, FutureProspectsEditModel> DefineMappings()
