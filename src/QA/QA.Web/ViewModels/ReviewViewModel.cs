@@ -120,7 +120,6 @@ namespace Esfa.Recruit.Qa.Web.ViewModels
         }
         public ApprenticeshipLevel Level { get; set; }
         public string AccountLegalEntityPublicHashedId { get; set; }
-        public string WorkExperience { get; set; }
         public string WorkExperienceClass => GetFieldIdentifierCssClass(FieldIdentifier.WorkExperience);
         public VacancyType? VacancyType { get; set; }
     }

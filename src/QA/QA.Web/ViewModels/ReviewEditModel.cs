@@ -22,6 +22,6 @@ namespace Esfa.Recruit.Qa.Web.ViewModels
         public string VacancyDescription { get; set; }
         public string TrainingDescription { get; set; }
         public string OutcomeDescription { get; set; }
-        
+        public string WorkExperience { get; set; }
     }
 }

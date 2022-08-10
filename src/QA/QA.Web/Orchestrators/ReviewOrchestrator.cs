@@ -209,6 +209,17 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
                 vacancy.Wage.WorkingWeekDescription = m.WorkingWeekDescription;
             }
 
+            if (review.VacancySnapshot.WorkExperience != m.WorkExperience)
+            {
+                manualQaFieldEditIndicator.Add(new ManualQaFieldEditIndicator
+                {
+                    FieldIdentifier = nameof(m.WorkExperience),
+                    BeforeEdit = review.VacancySnapshot.WorkExperience,
+                    AfterEdit = m.WorkExperience
+                });
+                vacancy.WorkExperience = m.WorkExperience;
+            }
+
             return manualQaFieldEditIndicator;
         }
     }
