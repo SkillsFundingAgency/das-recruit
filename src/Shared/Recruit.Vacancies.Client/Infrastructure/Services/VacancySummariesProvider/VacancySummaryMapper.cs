@@ -41,7 +41,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                 NoOfUnsuccessfulApplications = src.NoOfUnsuccessfulApplications,
                 IsTraineeship = vacSummaryDetail.IsTraineeship,
                 VacancyType = vacSummaryDetail.VacancyType,
-                IsTaskListCompleted = isTaskListCompleted
+                IsTaskListCompleted = isTaskListCompleted,
+                HasChosenProviderContactDetails = vacSummaryDetail.HasChosenProviderContactDetails
             };
 
             return vacancySummary;

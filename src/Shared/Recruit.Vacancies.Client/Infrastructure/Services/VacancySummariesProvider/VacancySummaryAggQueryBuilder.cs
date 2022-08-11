@@ -161,6 +161,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                     'trainingProviderName': '$trainingProvider.name',
                     'vacancyType': 1,
                     'isApplicationWithdrawn': '$candidateApplicationReview.isWithdrawn',
+                    'hasChosenProviderContactDetails' : 1,
                     'isTraineeship' :1
                 }
             },
@@ -191,6 +192,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                     'transferInfoReason': 1,
                     'trainingProviderName': 1,
                     'vacancyType': 1,
+                    'hasChosenProviderContactDetails' : 1,
                     'isTraineeship': {
                         '$cond': {
                             'if': {'$eq': [ '$vacancyType', 'Traineeship']},
@@ -233,6 +235,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                             'else': false
                         }
                     },
+                    'hasChosenProviderContactDetails' : 1,
                     'isNew': {
                         '$cond': {
                             'if': {'$eq': [ '$appStatus', 'New']},
@@ -283,7 +286,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                         'transferInfoReason': '$transferInfoReason',
                         'trainingProviderName': '$trainingProviderName',
                         'vacancyType': '$vacancyType',
-                        'isTraineeship': '$isTraineeship'
+                        'isTraineeship': '$isTraineeship',
+                        'hasChosenProviderContactDetails' : '$hasChosenProviderContactDetails'
                     },
                     'noOfNewApplications': {
                         '$sum': '$isNew'
