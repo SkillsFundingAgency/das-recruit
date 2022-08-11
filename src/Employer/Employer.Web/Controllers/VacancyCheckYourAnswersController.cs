@@ -30,6 +30,9 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             viewModel.CanHideValidationSummary = true;
             viewModel.SetSectionStates(viewModel, ModelState);
             
+            if (TempData.ContainsKey(TempDataKeys.VacancyClonedInfoMessage))
+                viewModel.VacancyClonedInfoMessage = TempData[TempDataKeys.VacancyClonedInfoMessage].ToString();
+            
             return View(viewModel);
         }
         
