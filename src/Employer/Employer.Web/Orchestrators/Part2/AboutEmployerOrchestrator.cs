@@ -89,15 +89,6 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
                 {
                     return v.DisabilityConfident = m.IsDisabilityConfident ? DisabilityConfident.Yes : DisabilityConfident.No;
                 });
-            
-            SetVacancyWithEmployerReviewFieldIndicators(
-                vacancy.DisabilityConfident,
-                FieldIdResolver.ToFieldId(v => v.DisabilityConfident),
-                vacancy,
-                (v) =>
-                {
-                    return v.DisabilityConfident = m.IsDisabilityConfident ? DisabilityConfident.Yes : DisabilityConfident.No;
-                });
 
             return await ValidateAndExecute(
                 vacancy,
