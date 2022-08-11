@@ -43,5 +43,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.EditVacancyDates
                 return $"{StartDay}/{StartMonth}/{StartYear}";
             }
         }
+        
+        public string Title { get; set; }
     }
 }

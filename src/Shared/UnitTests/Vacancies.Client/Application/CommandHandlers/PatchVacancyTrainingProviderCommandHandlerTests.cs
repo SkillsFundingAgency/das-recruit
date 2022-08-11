@@ -88,7 +88,7 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.CommandHandlers
 
             await _handler.Handle(command, CancellationToken.None);
 
-            _updatedVacancy.TrainingProvider.Name.Should().Be("Education Skills Funding Agency");
+            _updatedVacancy.TrainingProvider.Name.Should().Be("To be confirmed");
             _updatedVacancy.TrainingProvider.Address.Should().NotBeNull();
             _mockTrainingProvider.Verify(x => x.GetProviderAsync(EsfaUkprn), Times.Never);
             _mockRepository.Verify(x => x.UpdateAsync(_updatedVacancy), Times.AtMostOnce);

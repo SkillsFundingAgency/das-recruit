@@ -161,6 +161,7 @@
         public const string EmployerTaskListCreateGet = "employer-tasklist-create-get";
         public const string EmployerCheckYourAnswersGet = "employer-check-your-answers-get";
         public const string EmployerCheckYourAnswersPost = "employer-check-your-answers-post";
+        public const string EmployerCheckYourAnswersSubmitPost = "employer-check-your-answers-submit-post";
         public const string VacancyAdvertPreview = "employer-advert-preview";
         public const string CreateVacancyStart = "employer-vacancy-start";
     }

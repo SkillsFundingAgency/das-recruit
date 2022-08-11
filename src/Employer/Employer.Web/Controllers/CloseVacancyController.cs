@@ -42,7 +42,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
 
             var response = await _orchestrator.CloseVacancyAsync(m, User.ToVacancyUser());
 
-            TempData.Add(TempDataKeys.VacancyClosedMessage, string.Format(InfoMessages.VacancyClosed, response.Data.VacancyReference, response.Data.Title));
+            TempData.Add(TempDataKeys.VacancyClosedMessage, string.Format(InfoMessages.AdvertClosed, response.Data.VacancyReference, response.Data.Title));
 
             return RedirectToRoute(RouteNames.VacancyManage_Get);
         }
