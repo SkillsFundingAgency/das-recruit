@@ -175,7 +175,7 @@
                 </dd>
             </div>
             <field-review-message field-name="@FieldIdentifiers.PossibleStartDate" model="@Model"></field-review-message>
-            <div class="app-summary-list__row app-summary-list__row--no-border" field-review-marker="PossibleStartDate">
+            <div class="app-summary-list__row" field-review-marker="PossibleStartDate">
                 <dt class="app-summary-list__key" id="@FieldIdentifiers.PossibleStartDate">Apprenticeship start date</dt>
                 <dd class="app-summary-list__value">
                     @Model.PossibleStartDate
@@ -363,7 +363,7 @@
             </dd>
         </div>
         <field-review-message field-name="@FieldIdentifiers.EmployerWebsiteUrl" model="@Model"></field-review-message>
-        <div class="app-summary-list__row" field-review-marker="EmployerWebsiteUrl">
+        <div class="app-summary-list__row app-summary-list__row--no-border" field-review-marker="EmployerWebsiteUrl">
             <dt class="app-summary-list__key" id="@FieldIdentifiers.EmployerWebsiteUrl">Organisation website (optional)</dt>
             <dd class="app-summary-list__value">
                 @(Model.HasEmployerWebsiteUrl ? Model.EmployerWebsiteUrl : "None")
