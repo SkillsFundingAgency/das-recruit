@@ -162,11 +162,11 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview
         };
 
         public VacancyTaskListSectionState TaskListSectionOneState => SetTaskListSectionState();
+        public VacancyTaskListSectionState TaskListSectionTwoState => SetTaskListSectionTwoState();
         public VacancyTaskListSectionState TaskListSectionThreeState => SetTaskListSectionThreeState();
         public VacancyTaskListSectionState TaskListSectionFourState => SetTaskListSectionFourState();
-
         
-        public VacancyTaskListSectionState TaskListSectionTwoState => SetTaskListSectionTwoState();
+        
         public int AccountLegalEntityCount { get ; set ; }
 
 
@@ -181,7 +181,8 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview
             viewModel.PossibleStartDateSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.PossibleStartDate }, true, modelState,vm => vm.PossibleStartDate);
             viewModel.TrainingLevelSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.TrainingLevel }, true, modelState,vm => vm.HasProgramme, vm => vm.TrainingLevel);
             viewModel.NumberOfPositionsSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.NumberOfPositions }, true, modelState,vm => vm.NumberOfPositions);
-            viewModel.DescriptionsSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.VacancyDescription, FieldIdentifiers.TrainingDescription, FieldIdentifiers.OutcomeDescription }, true, modelState,vm => vm.VacancyDescription, vm => vm.TrainingDescription, vm => vm.OutcomeDescription);
+            viewModel.DescriptionsSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.VacancyDescription, FieldIdentifiers.TrainingDescription }, true, modelState,vm => vm.VacancyDescription, vm => vm.TrainingDescription);
+            viewModel.FutureProspectsSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.OutcomeDescription }, true, modelState,vm => vm.OutcomeDescription);
             viewModel.SkillsSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.Skills }, true, modelState,vm => vm.Skills);
             viewModel.QualificationsSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.Qualifications }, true, modelState,vm => vm.Qualifications);
             viewModel.ThingsToConsiderSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.ThingsToConsider }, true, modelState,vm => vm.ThingsToConsider);
@@ -257,7 +258,8 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview
             }
             
             if (SkillsSectionState == VacancyPreviewSectionState.Valid
-                && QualificationsSectionState == VacancyPreviewSectionState.Valid)
+                && QualificationsSectionState == VacancyPreviewSectionState.Valid 
+                && FutureProspectsSectionState == VacancyPreviewSectionState.Valid)
             {
                 return VacancyTaskListSectionState.Completed;
             }
