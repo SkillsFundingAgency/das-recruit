@@ -189,6 +189,8 @@ namespace Esfa.Recruit.Employer.Web
                     RouteNames.Qualification_Edit_Get,
                     RouteNames.Qualification_Add_Get,
                     RouteNames.Qualifications_Get,
+                    RouteNames.FutureProspects_Get,
+                    RouteNames.FutureProspects_Post,
                     RouteNames.Considerations_Post,
                     RouteNames.Considerations_Get,
                     

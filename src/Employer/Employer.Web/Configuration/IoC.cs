@@ -1,6 +1,7 @@
 ﻿using Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Filters;
+using Esfa.Recruit.Employer.Web.Interfaces;
 using Esfa.Recruit.Employer.Web.Mappings;
 using Esfa.Recruit.Employer.Web.Orchestrators;
 using Esfa.Recruit.Employer.Web.Orchestrators.Part1;
@@ -119,6 +120,7 @@ namespace Esfa.Recruit.Employer.Web.Configuration
             services.AddTransient<AlertsOrchestrator>();
             services.AddTransient<CloneVacancyOrchestrator>();
             services.AddTransient<VacancyTaskListOrchestrator>();
+            services.AddTransient<IFutureProspectsOrchestrator, FutureProspectsOrchestrator>();
         }
 
         private static void RegisterMapperDeps(IServiceCollection services)
