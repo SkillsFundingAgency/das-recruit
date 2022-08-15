@@ -15,7 +15,6 @@ namespace Esfa.Recruit.Qa.Web.ViewModels
         
         public string Title { get; internal set; }
         public string EmployerName { get; internal set; }
-        public string ShortDescription { get; internal set; }
         public string ClosingDate { get; internal set; }
         public string ApplicationInstructions { get; internal set; }
         public ApplicationMethod ApplicationMethod { get; internal set; }
@@ -33,7 +32,6 @@ namespace Esfa.Recruit.Qa.Web.ViewModels
         public bool IsDisabilityConfident { get; set; }
         public string LegalEntityName { get; set; }
         public string NumberOfPositionsCaption { get; internal set; }
-        public string OutcomeDescription { get; internal set; }
         public string HoursPerWeek { get; internal set; }
         public OwnerType OwnerType { get; internal set; }
         public string PossibleStartDate { get; internal set; }
@@ -42,8 +40,6 @@ namespace Esfa.Recruit.Qa.Web.ViewModels
         public string ProviderContactTelephone { get; internal set; }
         public string ProviderName { get; internal set; }
         public string ThingsToConsider { get; internal set; }
-        public string TrainingDescription { get; internal set; }
-        public string VacancyDescription { get; internal set; }
         public string VacancyReferenceNumber { get; internal set; }
         public string TrainingTitle { get; internal set; }
         public string TrainingType { get; internal set; }
@@ -51,7 +47,6 @@ namespace Esfa.Recruit.Qa.Web.ViewModels
         public string TraineeRoute { get; internal set; }
         public string ExpectedDuration { get; internal set; }
         public string WageInfo { get; internal set; }
-        public string WorkingWeekDescription { get; internal set; }
         public string MapUrl { get; internal set; }
         public IEnumerable<string> Qualifications { get; internal set; }
         public IEnumerable<string> Skills { get; internal set; }
@@ -125,7 +120,6 @@ namespace Esfa.Recruit.Qa.Web.ViewModels
         }
         public ApprenticeshipLevel Level { get; set; }
         public string AccountLegalEntityPublicHashedId { get; set; }
-        public string WorkExperience { get; set; }
         public string WorkExperienceClass => GetFieldIdentifierCssClass(FieldIdentifier.WorkExperience);
         public VacancyType? VacancyType { get; set; }
     }
