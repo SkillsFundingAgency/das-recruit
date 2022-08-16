@@ -1,12 +1,14 @@
+using System;
+using System.Globalization;
 using System.Linq;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummariesProvider
 {
-    public static class VacancySummaryAggQueryBuilder
+    public class VacancySummaryAggQueryBuilder
     {
-        private const string DashboardPipeline = @"[
+        private string DashboardPipeline = @"[
             {
                 '$lookup': {
                     'from': 'applicationReviews',
@@ -52,11 +54,10 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                     'closingDate':1,
                     'closingSoon' : {
                         '$cond': {
-                            'if': {'$lte':[{$dateDiff: {
-                                                  startDate: new Date(),
-                                                  endDate:'$closingDate' ,
-                                                  unit: 'day'
-                                               }},5]},
+                            'if': {'$lte':[
+                                '$closingDate',ISODate('" + DateTime.UtcNow.AddDays(5).ToString("o", CultureInfo.InvariantCulture) + @"')
+                            ]},
+                                
                             'then': {
                                 '$cond':{
                                     'if': {'$eq': [ '$status', 'Live']},
@@ -303,11 +304,12 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                         '$sum': '$isUnsuccessful'
                     }
                 }
-            },{ '$sort' : { '_id.status' : -1 } },{ '$limit' : 25 } 
+            },{ '$sort' : { '_id.vacancyReference' : -1 } },{ '$limit' : 25 } 
         ]";
 
         public static BsonDocument[] GetAggregateQueryPipeline(BsonDocument vacanciesMatchClause, int pageNumber, BsonDocument secondaryMatch)
         {
+            
             var pipeline = BsonSerializer.Deserialize<BsonArray>(Pipeline);
             pipeline.Insert(pipeline.Count-2, secondaryMatch);
             pipeline.Insert(pipeline.Count-1, new BsonDocument {{"$skip", (pageNumber-1) * 25}});
@@ -318,7 +320,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
             return pipelineDefinition;
         }
         
-        public static BsonDocument[] GetAggregateQueryPipelineDashboard(BsonDocument vacanciesMatchClause)          
+        public BsonDocument[] GetAggregateQueryPipelineDashboard(BsonDocument vacanciesMatchClause)          
         {
             var pipeline = BsonSerializer.Deserialize<BsonArray>(DashboardPipeline);
             pipeline.Insert(0, vacanciesMatchClause);
