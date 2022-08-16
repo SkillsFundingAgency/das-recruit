@@ -94,11 +94,11 @@
         </div>
         <div class="govuk-grid-row">
             <div class="govuk-grid-column-two-thirds">
-                <div class="@Model.ShortDescriptionClass" id="@FieldIdentifiers.ShortDescription">
+                <div class="@Model.ShortDescriptionClass govuk-character-count" id="@FieldIdentifiers.ShortDescription" data-module="govuk-character-count" data-maxlength="350">
                     <h3 class="govuk-heading-s govuk-!-margin-top-0">Brief overview</h3>
 
-                    <p class="govuk-body">@Model.ShortDescription</p>
-
+                    <textarea class="govuk-textarea govuk-js-character-count" asp-for="ShortDescription" rows="5"></textarea>
+                    
                     <esfa-review-checkbox asp-for="SelectedFieldIdentifiers"
                                           asp-value="@FieldIdentifiers.ShortDescription"
                                           asp-items="@Model.FieldIdentifiers"></esfa-review-checkbox>
@@ -135,9 +135,9 @@
                             </div>
                         </li>
                         <li>
-                            <div class="@Model.WorkingWeekClass" id="@FieldIdentifiers.WorkingWeek">
+                            <div class="@Model.WorkingWeekClass" id="@FieldIdentifiers.WorkingWeek" data-module="govuk-character-count" data-maxlength="250">
                                 <h3 class="govuk-heading-s">Working week</h3>
-                                <p class="govuk-body">@Model.WorkingWeekDescription</p>
+                                <textarea class="govuk-textarea govuk-js-character-count" asp-for="WorkingWeekDescription" rows="5" data-val-length-max="250"></textarea>
                                 <p class="govuk-body">Total hours per week: @Model.HoursPerWeek</p>
                                 <esfa-review-checkbox asp-for="SelectedFieldIdentifiers"
                                                       asp-value="@FieldIdentifiers.WorkingWeek"
@@ -193,8 +193,8 @@
                     <div class="@Model.VacancyDescriptionClass" id="@FieldIdentifiers.VacancyDescription">
 
                         <h3 class="govuk-heading-s">What will the apprentice be doing?</h3>
-                        <div class="govuk-body">@Html.Raw(Model.VacancyDescription)</div>
-
+                        <textarea asp-for="VacancyDescription" class="govuk-textarea html-editor" rows="5" data-val-length-max="4000"></textarea>
+                        
                         <esfa-review-checkbox asp-for="SelectedFieldIdentifiers"
                                               asp-value="@FieldIdentifiers.VacancyDescription"
                                               asp-items="@Model.FieldIdentifiers"></esfa-review-checkbox>
@@ -202,8 +202,8 @@
                     <div class="@Model.TrainingDescriptionClass" id="@FieldIdentifiers.TrainingDescription">
 
                         <h3 class="govuk-heading-s">What training will the apprentice take and what qualification will the apprentice get at the end?</h3>
-                        <div class="govuk-body">@Html.Raw(Model.TrainingDescription)</div>
-
+                        <textarea asp-for="TrainingDescription" class="govuk-textarea html-editor" rows="5" data-val-length-max="4000"></textarea>
+                        
                         <esfa-review-checkbox asp-for="SelectedFieldIdentifiers"
                                               asp-value="@FieldIdentifiers.TrainingDescription"
                                               asp-items="@Model.FieldIdentifiers"></esfa-review-checkbox>
@@ -211,8 +211,8 @@
                     <div class="@Model.OutcomeDescriptionClass" id="@FieldIdentifiers.OutcomeDescription">
 
                         <h3 class="govuk-heading-s">What is the expected career progression after this apprenticeship?</h3>
-                        <div class="govuk-body">@Html.Raw(Model.OutcomeDescription)</div>
-
+                        <textarea asp-for="OutcomeDescription" class="govuk-textarea html-editor" rows="5" data-val-length-max="4000"></textarea>
+                        
                         <esfa-review-checkbox asp-for="SelectedFieldIdentifiers"
                                               asp-value="@FieldIdentifiers.OutcomeDescription"
                                               asp-items="@Model.FieldIdentifiers"></esfa-review-checkbox>
@@ -225,7 +225,7 @@
                     <div class="@Model.TrainingDescriptionClass" id="@FieldIdentifiers.TrainingDescription">
 
                         <h3 class="govuk-heading-s">What training will you give the trainee?</h3>
-                        <div class="govuk-body">@Html.Raw(Model.TrainingDescription)</div>
+                        <textarea asp-for="TrainingDescription" class="govuk-textarea html-editor" rows="5" data-val-length-max="4000"></textarea>
 
                         <esfa-review-checkbox asp-for="SelectedFieldIdentifiers"
                                               asp-value="@FieldIdentifiers.TrainingDescription"
@@ -234,8 +234,7 @@
                     <div class="@Model.WorkExperienceClass" id="@FieldIdentifiers.WorkExperience">
 
                         <h3 class="govuk-heading-s">What work experience will the employer give the trainee?</h3>
-                        <div class="govuk-body">@Html.Raw(Model.WorkExperience)</div>
-
+                        <textarea asp-for="WorkExperience" class="govuk-textarea html-editor" rows="5" data-val-length-max="4000"></textarea>
                         <esfa-review-checkbox asp-for="SelectedFieldIdentifiers"
                                               asp-value="@FieldIdentifiers.WorkExperience"
                                               asp-items="@Model.FieldIdentifiers"></esfa-review-checkbox>
@@ -246,7 +245,7 @@
                         <li>
                             <div class="@Model.WorkingWeekClass" id="@FieldIdentifiers.WorkingWeek">
                                 <h3 class="govuk-heading-s">Working week</h3>
-                                <p class="govuk-body">@Model.WorkingWeekDescription</p>
+                                <textarea class="govuk-textarea govuk-js-character-count" asp-for="WorkingWeekDescription" rows="5" data-val-length-max="250"></textarea>
                                 <esfa-review-checkbox asp-for="SelectedFieldIdentifiers"
                                                       asp-value="@FieldIdentifiers.WorkingWeek"
                                                       asp-items="@Model.FieldIdentifiers"></esfa-review-checkbox>

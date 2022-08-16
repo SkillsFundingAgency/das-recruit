@@ -242,5 +242,16 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         {
             return _reportRepository.IncrementReportDownloadCountAsync(reportId);
         }
+
+        public Task UpdateDraftVacancyAsync(Vacancy vacancy, VacancyUser user)
+        {
+            var command = new UpdateDraftVacancyCommand
+            {
+                Vacancy = vacancy,
+                User = user
+            };
+
+            return _messaging.SendCommandAsync(command);
+        }
     }
 }

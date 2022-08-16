@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture;
@@ -66,7 +67,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.C
         {
             _mockVacancyReviewRepository.Setup(x => x.GetAsync(_existingReviewId)).ReturnsAsync(new VacancyReview { Status = reviewStatus});
 
-            var command = new ApproveVacancyReviewCommand(_existingReviewId, "comment", new List<ManualQaFieldIndicator>(), new List<Guid>());
+            var command = new ApproveVacancyReviewCommand(_existingReviewId, "comment", new List<ManualQaFieldIndicator>(), new List<Guid>(), new List<ManualQaFieldEditIndicator>());
 
             await _sut.Handle(command, CancellationToken.None);
 
@@ -99,7 +100,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.C
                 VacancySnapshot = new Vacancy()
             });
 
-            var command = new ApproveVacancyReviewCommand(_existingReviewId, "comment", new List<ManualQaFieldIndicator>(), new List<Guid>());
+            var command = new ApproveVacancyReviewCommand(_existingReviewId, "comment", new List<ManualQaFieldIndicator>(), new List<Guid>(), new List<ManualQaFieldEditIndicator>());
 
             await _sut.Handle(command, CancellationToken.None);
 
@@ -134,11 +135,20 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.C
             _mockBlockedOrganisationQuery.Setup(b => b.GetByOrganisationIdAsync(BlockedProviderUkprn.ToString()))
                 .ReturnsAsync(new BlockedOrganisation {BlockedStatus = BlockedStatus.Blocked});
 
-            var command = new ApproveVacancyReviewCommand(_existingReviewId, "comment", new List<ManualQaFieldIndicator>(), new List<Guid>());
+            var manualQaFieldEditIndicators = new List<ManualQaFieldEditIndicator>
+            {
+                new ManualQaFieldEditIndicator
+                {
+                    FieldIdentifier = "test",
+                    AfterEdit = "this",
+                    BeforeEdit = "that"
+                }
+            };
+            var command = new ApproveVacancyReviewCommand(_existingReviewId, "comment", new List<ManualQaFieldIndicator>(), new List<Guid>(), manualQaFieldEditIndicators);
 
             await _sut.Handle(command, CancellationToken.None);
 
-            _mockVacancyReviewRepository.Verify(x => x.UpdateAsync(It.Is<VacancyReview>(r => r.Id == _existingReviewId)), Times.Once);
+            _mockVacancyReviewRepository.Verify(x => x.UpdateAsync(It.Is<VacancyReview>(r => r.Id == _existingReviewId && r.ManualQaFieldEditIndicators.SingleOrDefault(c=>c.FieldIdentifier.Equals("test"))!=null)), Times.Once);
             _mockMessaging.Verify(x => x.PublishEvent(It.IsAny<VacancyReviewApprovedEvent>()), Times.Never);
 
             existingVacancy.Status.Should().Be(VacancyStatus.Closed);
