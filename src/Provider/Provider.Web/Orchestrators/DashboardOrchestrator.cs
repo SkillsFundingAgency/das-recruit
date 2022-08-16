@@ -49,10 +49,12 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             var userDetails = userDetailsTask.Result;
             var providerPermissions = providerTask.Result;
 
+            var alerts = await _providerAlertsViewModelFactory.Create(userDetails);
+            
             var vm = new DashboardViewModel
             {
                 ProviderDashboardSummary = dashboard,
-                Alerts = _providerAlertsViewModelFactory.Create(dashboard, userDetails),
+                Alerts = alerts,
                 HasEmployerReviewPermission = providerPermissions.Any(),
                 Ukprn = user.Ukprn.Value
             };

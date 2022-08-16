@@ -10,7 +10,6 @@ using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Models;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Provider;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelationship;
@@ -110,8 +109,8 @@ namespace Esfa.Recruit.Provider.UnitTests.Employer.Web.Orchestrators.Dashboard
 
             var alertsViewModel = new AlertsViewModel(null, null, Ukprn);
             var alertsFactoryMock = new Mock<IProviderAlertsViewModelFactory>();
-            alertsFactoryMock.Setup(a => a.Create(dashboardProjection, userDetails))
-                .Returns(alertsViewModel);
+            alertsFactoryMock.Setup(a => a.Create(userDetails))
+                .ReturnsAsync(alertsViewModel);
 
             var orch = new DashboardOrchestrator(vacancyClientMock.Object, clientMock.Object, alertsFactoryMock.Object, _permissionServiceMock.Object, serviceParameters);
 
