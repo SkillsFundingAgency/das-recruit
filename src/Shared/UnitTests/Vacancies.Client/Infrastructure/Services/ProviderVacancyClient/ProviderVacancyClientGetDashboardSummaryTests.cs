@@ -27,8 +27,11 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
             int numberOfNewApplications,
             int numberOfUnsuccessfulApplications,
             int numberOfSuccessfulApplications,
+            int closedSuccessfulApplications,
+            int closedUnsuccessfulApplications,
             int closingSoon,
             int closingSoonNoApplications,
+            int rejectedCount,
             long ukprn,
             VacancyType vacancyType,
             [Frozen] Mock<IVacancySummariesProvider> vacanciesSummaryProvider,
@@ -36,10 +39,11 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
         {
             var vacancyDashboards =new List<VacancyDashboard>
             {
-                new VacancyDashboard { Status = VacancyStatus.Closed, StatusCount = closedCount },
+                new VacancyDashboard { Status = VacancyStatus.Closed, StatusCount = closedCount, NoOfSuccessfulApplications = closedSuccessfulApplications, NoOfUnsuccessfulApplications = closedUnsuccessfulApplications},
                 new VacancyDashboard { Status = VacancyStatus.Draft, StatusCount = draftCount },
                 new VacancyDashboard { Status = VacancyStatus.Review, StatusCount = reviewCount },
                 new VacancyDashboard { Status = VacancyStatus.Referred, StatusCount = referredCount },
+                new VacancyDashboard { Status = VacancyStatus.Rejected, StatusCount = rejectedCount },
                 new VacancyDashboard { Status = VacancyStatus.Submitted, StatusCount = submittedCount },
                 new VacancyDashboard { Status = VacancyStatus.Live,ClosingSoon = false, StatusCount = liveCount, NoOfNewApplications = numberOfNewApplications, NoOfSuccessfulApplications = numberOfSuccessfulApplications,NoOfUnsuccessfulApplications = numberOfUnsuccessfulApplications},
                 new VacancyDashboard { Status = VacancyStatus.Live,ClosingSoon = true, StatusCount = closingSoon, NoOfNewApplications = numberOfNewApplications },
@@ -52,18 +56,18 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
             actual.Closed.Should().Be(closedCount);
             actual.Draft.Should().Be(draftCount);
             actual.Review.Should().Be(reviewCount);
-            actual.Referred.Should().Be(referredCount);
+            actual.Referred.Should().Be(referredCount + rejectedCount);
             actual.Live.Should().Be(liveCount);
             actual.NumberOfNewApplications.Should().Be(numberOfNewApplications);
-            actual.NumberOfUnsuccessfulApplications.Should().Be(numberOfUnsuccessfulApplications);
-            actual.NumberOfSuccessfulApplications.Should().Be(numberOfSuccessfulApplications);
+            actual.NumberOfUnsuccessfulApplications.Should().Be(numberOfUnsuccessfulApplications + closedUnsuccessfulApplications);
+            actual.NumberOfSuccessfulApplications.Should().Be(numberOfSuccessfulApplications + closedSuccessfulApplications);
             actual.NumberClosingSoon.Should().Be(closingSoon);
             actual.NumberClosingSoonWithNoApplications.Should().Be(closingSoonNoApplications);
 
             actual.HasVacancies.Should().BeTrue();
             actual.HasOneVacancy.Should().BeFalse();
             actual.HasApplications.Should().BeTrue();
-            actual.NumberOfVacancies.Should().Be(closedCount + draftCount + reviewCount + referredCount + submittedCount + liveCount);
+            actual.NumberOfVacancies.Should().Be(closedCount + draftCount + reviewCount + referredCount + rejectedCount + submittedCount + liveCount);
         }
 
         [Test, MoqAutoData]
