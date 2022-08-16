@@ -136,6 +136,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
             {
                 '$project': {
                     'vacancyGuid': '$_id',
+                    'searchField': 1,
                     'vacancyReference': 1,
                     'title': 1,
                     'status': 1,
@@ -168,6 +169,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
             {
                 '$project': {
                     'vacancyGuid': 1,
+                    'searchField': 1,
                     'vacancyReference': 1,
                     'title': 1,
                     'status': 1,
@@ -205,6 +207,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
             {
                 '$project': {
                     'vacancyGuid': 1,
+                    'searchField': 1,
                     'vacancyReference': 1,
                     'title': 1,
                     'status': 1,
@@ -262,6 +265,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
             {
                 '$group': {
                     '_id': {
+                        'searchField':{$toLower: { $concat: [ '$title', '|', '$legalEntityName','|','VAC',{$toString:'$vacancyReference'} ] }},
                         'vacancyGuid': '$vacancyGuid',
                         'vacancyReference': '$vacancyReference',
                         'title': '$title',
@@ -299,12 +303,14 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                         '$sum': '$isUnsuccessful'
                     }
                 }
-            }
+            },{ '$sort' : { '_id.status' : -1 } },{ '$limit' : 25 } 
         ]";
 
-        public static BsonDocument[] GetAggregateQueryPipeline(BsonDocument vacanciesMatchClause)
+        public static BsonDocument[] GetAggregateQueryPipeline(BsonDocument vacanciesMatchClause, int pageNumber, BsonDocument secondaryMatch)
         {
             var pipeline = BsonSerializer.Deserialize<BsonArray>(Pipeline);
+            pipeline.Insert(pipeline.Count-2, secondaryMatch);
+            pipeline.Insert(pipeline.Count-1, new BsonDocument {{"$skip", (pageNumber-1) * 25}});
             pipeline.Insert(0, vacanciesMatchClause);
 
             var pipelineDefinition = pipeline.Values.Select(p => p.ToBsonDocument()).ToArray();
@@ -312,7 +318,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
             return pipelineDefinition;
         }
         
-        public static BsonDocument[] GetAggregateQueryPipelineDashboard(BsonDocument vacanciesMatchClause)
+        public static BsonDocument[] GetAggregateQueryPipelineDashboard(BsonDocument vacanciesMatchClause)          
         {
             var pipeline = BsonSerializer.Deserialize<BsonArray>(DashboardPipeline);
             pipeline.Insert(0, vacanciesMatchClause);
