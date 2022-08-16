@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using AutoFixture;
 using Esfa.Recruit.Provider.Web.Orchestrators;
 using Esfa.Recruit.Provider.Web.Services;
 using Esfa.Recruit.Provider.Web.ViewModels;
@@ -33,24 +34,14 @@ namespace Esfa.Recruit.Provider.UnitTests.Employer.Web.Orchestrators.Dashboard
         [InlineData(VacancyType.Traineeship)]
         public async Task WhenHasVacancies_ShouldReturnViewModelAsync(VacancyType vacancyType)
         {
-            var vacancies = new List<VacancySummary>()
-                {
-                    new VacancySummary{ClosingDate = _today.AddDays(4), Status = VacancyStatus.Live, ApplicationMethod = ApplicationMethod.ThroughFindAnApprenticeship, NoOfNewApplications = 0}, //Should be included in NoOfVacanciesClosingSoonWithNoApplications & NoOfVacanciesClosingSoon
-                    new VacancySummary{ClosingDate = _today.AddDays(5), Status = VacancyStatus.Live, ApplicationMethod = ApplicationMethod.ThroughFindAnApprenticeship, NoOfNewApplications = 0}, //Should be included in NoOfVacanciesClosingSoonWithNoApplications & NoOfVacanciesClosingSoon
-                    new VacancySummary{ClosingDate = _today.AddDays(6), Status = VacancyStatus.Live, ApplicationMethod = ApplicationMethod.ThroughFindAnApprenticeship, NoOfNewApplications = 0}, //Should NOT be included in NoOfVacanciesClosingSoonWithNoApplications OR NoOfVacanciesClosingSoon
-                    new VacancySummary{ClosingDate = _today.AddDays(5), Status = VacancyStatus.Live, ApplicationMethod = ApplicationMethod.ThroughFindAnApprenticeship, NoOfNewApplications = 100000}, //Should NOT be included in NoOfVacanciesClosingSoonWithNoApplications. Should be included in NoOfVacanciesClosingSoon
-                    new VacancySummary{ClosingDate = _today.AddDays(5), Status = VacancyStatus.Live}, //Should be included in NoOfVacanciesClosingSoon
-                    new VacancySummary{ClosingDate = _today.AddDays(6), Status = VacancyStatus.Live}, //Should NOT be included in NoOfVacanciesClosingSoon
-                };
+            var fixture = new Fixture();
+            var dashboardProjection = fixture.Create<ProviderDashboardSummary>();
 
-            var orch = GetSut(vacancies, vacancyType);
+            var orch = GetSut(dashboardProjection, vacancyType);
 
             var actualDashboard = await orch.GetDashboardViewModelAsync(_user);
 
-            actualDashboard.Vacancies.Should().Equal(vacancies);
             actualDashboard.HasAnyVacancies.Should().BeTrue();
-            actualDashboard.NoOfVacanciesClosingSoonWithNoApplications.Should().Be(2);
-            actualDashboard.NoOfVacanciesClosingSoon.Should().Be(4);
             actualDashboard.Alerts.Should().NotBeNull();
             actualDashboard.Ukprn.Should().Be(Ukprn);
         }
@@ -60,13 +51,10 @@ namespace Esfa.Recruit.Provider.UnitTests.Employer.Web.Orchestrators.Dashboard
         [InlineData(VacancyType.Traineeship)]
         public async Task WhenHasNoVacancies_ShouldReturnViewModelAsync(VacancyType vacancyType)
         {
-            var vacancies = new List<VacancySummary>();
-                
-            var orch = GetSut(vacancies, vacancyType);
+            var orch = GetSut(new ProviderDashboardSummary(), vacancyType);
 
             var actualDashboard = await orch.GetDashboardViewModelAsync(_user);
 
-            actualDashboard.Vacancies.Should().Equal(vacancies);
             actualDashboard.HasAnyVacancies.Should().BeFalse();
             actualDashboard.NoOfVacanciesClosingSoonWithNoApplications.Should().Be(0);
             actualDashboard.NoOfVacanciesClosingSoon.Should().Be(0);
@@ -79,9 +67,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Employer.Web.Orchestrators.Dashboard
         [InlineData(VacancyType.Traineeship)]
         public async Task Then_Checks_For_CorrectPermission_BasedOn_Vacancy_Type(VacancyType vacancyType)
         {
-            var vacancies = new List<VacancySummary>();
-                
-            var orch = GetSut(vacancies, vacancyType);
+            var orch = GetSut(new ProviderDashboardSummary(), vacancyType);
 
             var actual = await orch.GetDashboardViewModelAsync(_user);
 
@@ -98,20 +84,17 @@ namespace Esfa.Recruit.Provider.UnitTests.Employer.Web.Orchestrators.Dashboard
         
         }
 
-        private DashboardOrchestrator GetSut(List<VacancySummary> vacancies, VacancyType vacancyType)
+        private DashboardOrchestrator GetSut(ProviderDashboardSummary dashboardProjection, VacancyType vacancyType)
         {
             var timeProviderMock = new Mock<ITimeProvider>();
             timeProviderMock.Setup(t => t.Today).Returns(_today);
 
             var serviceParameters = new ServiceParameters(vacancyType.ToString());
-            
-            var dashboardProjection = new ProviderDashboard
-            {
-                Vacancies = vacancies
-            };
+
+            var fixture = new Fixture();
 
             var vacancyClientMock = new Mock<IProviderVacancyClient>();
-            vacancyClientMock.Setup(c => c.GetDashboardAsync(Ukprn, vacancyType))
+            vacancyClientMock.Setup(c => c.GetDashboardSummary(Ukprn, vacancyType))
                 .ReturnsAsync(dashboardProjection);
 
             _permissionServiceMock = new Mock<IProviderRelationshipsService>();
@@ -130,7 +113,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Employer.Web.Orchestrators.Dashboard
             alertsFactoryMock.Setup(a => a.Create(dashboardProjection, userDetails))
                 .Returns(alertsViewModel);
 
-            var orch = new DashboardOrchestrator(vacancyClientMock.Object, timeProviderMock.Object, clientMock.Object, alertsFactoryMock.Object, _permissionServiceMock.Object, serviceParameters);
+            var orch = new DashboardOrchestrator(vacancyClientMock.Object, clientMock.Object, alertsFactoryMock.Object, _permissionServiceMock.Object, serviceParameters);
 
             return orch;
         }

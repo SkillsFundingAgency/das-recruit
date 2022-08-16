@@ -24,18 +24,17 @@ namespace Esfa.Recruit.UnitTests.Provider.Web.Orchestrators.Vacancies.SearchResu
         protected Mock<ITimeProvider> TimeProvider;
         protected const int ClosingSoonDays = 5;
 
-        protected VacanciesOrchestrator GetSut(IEnumerable<VacancySummary> vacancySummaries)
+        protected VacanciesOrchestrator GetSut(IEnumerable<VacancySummary> vacancySummaries, FilteringOptions? status, string searchTerm)
         {
             var clientMock = new Mock<IProviderVacancyClient>();
             TimeProvider = new Mock<ITimeProvider>();
-            clientMock.Setup(c => c.GetDashboardAsync(User.Ukprn.Value, VacancyType.Apprenticeship))
+            clientMock.Setup(c => c.GetDashboardAsync(User.Ukprn.Value, VacancyType.Apprenticeship, 1, status, searchTerm))
                 .ReturnsAsync(new ProviderDashboard {
                     Vacancies = vacancySummaries
                 });
             return new VacanciesOrchestrator(
                 clientMock.Object,
                 RecruitVacancyClientMock.Object,
-                TimeProvider.Object,
                 ProviderAlertsViewModelFactoryMock.Object,
                 ProviderRelationshipsServiceMock.Object, new ServiceParameters(VacancyType.Apprenticeship.ToString()));
         }

@@ -28,7 +28,8 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Vacancies
         public async Task WhenHaveOver25Vacancies_ShouldShowPager()
         {
             var vacancies = new List<VacancySummary>();
-            for (var i = 1; i <= 27; i++)
+            int totalVacancies = 27;
+            for (var i = 26; i <= totalVacancies; i++)
             {
                 vacancies.Add(new VacancySummary
                 {
@@ -38,26 +39,28 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Vacancies
             }
 
             var providerClientMock = new Mock<IProviderVacancyClient>();
-            var timeProviderMock = new Mock<ITimeProvider>();
-            providerClientMock.Setup(c => c.GetDashboardAsync(_user.Ukprn.Value, VacancyType.Apprenticeship))
+            providerClientMock.Setup(c => c.GetDashboardAsync(_user.Ukprn.Value, VacancyType.Apprenticeship, 1, FilteringOptions.Submitted, string.Empty))
                 .Returns(Task.FromResult(new ProviderDashboard {
                     Vacancies = vacancies
                 }));
 
+            providerClientMock.Setup(x => x.GetVacancyCount(_user.Ukprn.Value, VacancyType.Apprenticeship, FilteringOptions.Submitted))
+                .ReturnsAsync(totalVacancies);
+
             var orch = new VacanciesOrchestrator(
                 providerClientMock.Object,
                 _recruitVacancyClientMock.Object,
-                timeProviderMock.Object,
                 _providerAlertsViewModelFactoryMock.Object,
                 _providerRelationshipsServiceMock.Object,
                 new ServiceParameters(VacancyType.Apprenticeship.ToString()));
 
-            var vm = await orch.GetVacanciesViewModelAsync(_user, "Submitted", 2, string.Empty);
+            var vm = await orch.GetVacanciesViewModelAsync(_user, "Submitted", 1, string.Empty);
 
             vm.ShowResultsTable.Should().BeTrue();
             
             vm.Pager.ShowPager.Should().BeTrue();
 
+            vm.TotalVacancies.Should().Be(totalVacancies);
             vm.Vacancies.Count.Should().Be(2);
             vm.Vacancies[0].Title.Should().Be("26");
             vm.Vacancies[1].Title.Should().Be("27");
@@ -77,15 +80,16 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Vacancies
 
             var providerClientMock = new Mock<IProviderVacancyClient>();
             var timeProviderMock = new Mock<ITimeProvider>();
-            providerClientMock.Setup(c => c.GetDashboardAsync(_user.Ukprn.Value,VacancyType.Apprenticeship))
+            providerClientMock.Setup(c => c.GetDashboardAsync(_user.Ukprn.Value,VacancyType.Apprenticeship, 2, FilteringOptions.Submitted, string.Empty))
                 .Returns(Task.FromResult(new ProviderDashboard {
                     Vacancies = vacancies
                 }));
+            providerClientMock.Setup(c => c.GetVacancyCount(_user.Ukprn.Value,VacancyType.Apprenticeship, FilteringOptions.Submitted))
+                .ReturnsAsync(25);
 
             var orch = new VacanciesOrchestrator(
                 providerClientMock.Object,
                 _recruitVacancyClientMock.Object,
-                timeProviderMock.Object,
                 _providerAlertsViewModelFactoryMock.Object,
                 _providerRelationshipsServiceMock.Object,
                 new ServiceParameters(VacancyType.Apprenticeship.ToString()));

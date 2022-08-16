@@ -17,12 +17,13 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
             long ukprn,
             long vacancyCount,
             VacancyType vacancyType,
+            FilteringOptions? filteringOptions,
             [Frozen] Mock<IVacancySummariesProvider> vacanciesSummaryProvider,
             VacancyClient vacancyClient)
         {
-            vacanciesSummaryProvider.Setup(x => x.VacancyCount(ukprn, vacancyType)).ReturnsAsync(vacancyCount);
+            vacanciesSummaryProvider.Setup(x => x.VacancyCount(ukprn, vacancyType, filteringOptions)).ReturnsAsync(vacancyCount);
 
-            var actual = await vacancyClient.GetVacancyCount(ukprn, vacancyType);
+            var actual = await vacancyClient.GetVacancyCount(ukprn, vacancyType, filteringOptions);
 
             actual.Should().Be(vacancyCount);
         }
