@@ -41,7 +41,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
         public async Task<TitleViewModel> GetTitleViewModelForNewVacancyAsync(string employerAccountId, long ukprn)
         {
             await ValidateEmployerAccountIdAsync(ukprn, employerAccountId);
-            var vacancyCount = await _providerVacancyClient.GetVacancyCount(ukprn, _serviceParameters.VacancyType.GetValueOrDefault(), null);
+            var vacancyCount = await _providerVacancyClient.GetVacancyCount(ukprn, _serviceParameters.VacancyType.GetValueOrDefault(), null, string.Empty);
             var vm = new TitleViewModel
             {
                 EmployerAccountId = employerAccountId,
@@ -56,7 +56,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
         {
             var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.Title_Get);
             var ukprn = vacancy.TrainingProvider.Ukprn.GetValueOrDefault();
-            var vacancyCount = await _providerVacancyClient.GetVacancyCount(ukprn, _serviceParameters.VacancyType.GetValueOrDefault(), null);
+            var vacancyCount = await _providerVacancyClient.GetVacancyCount(ukprn, _serviceParameters.VacancyType.GetValueOrDefault(), null, string.Empty);
             var vm = new TitleViewModel
             {
                 VacancyId = vacancy.Id,

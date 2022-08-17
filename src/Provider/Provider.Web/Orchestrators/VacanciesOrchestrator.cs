@@ -49,7 +49,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             var getDashboardTask = _providerVacancyClient.GetDashboardAsync(user.Ukprn.Value, _serviceParameters.VacancyType.GetValueOrDefault(), page, filteringOption, searchTerm);
             var getUserDetailsTask = _recruitVacancyClient.GetUsersDetailsAsync(user.UserId);
             var providerTask = _providerRelationshipsService.GetLegalEntitiesForProviderAsync(user.Ukprn.Value, OperationType.RecruitmentRequiresReview);
-            var providerVacancyCountTask = _providerVacancyClient.GetVacancyCount(user.Ukprn.Value, _serviceParameters.VacancyType.GetValueOrDefault(), filteringOption);
+            var providerVacancyCountTask = _providerVacancyClient.GetVacancyCount(user.Ukprn.Value, _serviceParameters.VacancyType.GetValueOrDefault(), filteringOption, searchTerm);
 
             await Task.WhenAll(getDashboardTask, getUserDetailsTask, providerTask, providerVacancyCountTask);
 

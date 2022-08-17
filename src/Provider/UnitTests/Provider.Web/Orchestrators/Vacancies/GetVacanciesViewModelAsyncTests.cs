@@ -44,7 +44,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Vacancies
                     Vacancies = vacancies
                 }));
 
-            providerClientMock.Setup(x => x.GetVacancyCount(_user.Ukprn.Value, VacancyType.Apprenticeship, FilteringOptions.Submitted))
+            providerClientMock.Setup(x => x.GetVacancyCount(_user.Ukprn.Value, VacancyType.Apprenticeship, FilteringOptions.Submitted, string.Empty))
                 .ReturnsAsync(totalVacancies);
 
             var orch = new VacanciesOrchestrator(
@@ -84,7 +84,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Vacancies
                 .Returns(Task.FromResult(new ProviderDashboard {
                     Vacancies = vacancies
                 }));
-            providerClientMock.Setup(c => c.GetVacancyCount(_user.Ukprn.Value,VacancyType.Apprenticeship, FilteringOptions.Submitted))
+            providerClientMock.Setup(c => c.GetVacancyCount(_user.Ukprn.Value,VacancyType.Apprenticeship, FilteringOptions.Submitted, string.Empty))
                 .ReturnsAsync(25);
 
             var orch = new VacanciesOrchestrator(
