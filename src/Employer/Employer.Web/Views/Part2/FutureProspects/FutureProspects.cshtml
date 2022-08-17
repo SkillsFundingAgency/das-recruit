@@ -29,15 +29,9 @@
                         </label>
                     </h1>
                     <span class="govuk-hint">You may want to mention specific routes they could take once qualified.</span>
-           
-                    <div id="ShortDescription-hint" class="govuk-hint">
-                        You must enter at least 50 characters.
-                    </div>
+                    
                     <span esfa-validation-message-for="FutureProspects" class="govuk-error-message"></span>
-                    <textarea class="govuk-textarea govuk-js-character-count" asp-for="FutureProspects" rows="5" aria-describedby="FutureProspects-info FutureProspects-hint"></textarea>
-                </div>
-                <div id="ShortDescription-info" class="govuk-hint govuk-character-count__message" aria-live="polite">
-                    You can enter up to 4000 characters
+                    <textarea class="govuk-textarea" asp-for="FutureProspects" rows="5" aria-describedby="FutureProspects-info FutureProspects-hint" maxlength="4000"></textarea>
                 </div>
             </div>
 

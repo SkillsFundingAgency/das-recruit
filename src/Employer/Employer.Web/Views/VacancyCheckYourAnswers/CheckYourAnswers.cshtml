@@ -146,7 +146,7 @@
                 </dd>
             </div>
             <field-review-message field-name="@FieldIdentifiers.TrainingDescription" model="@Model"></field-review-message>
-            <div class="app-summary-list__row app-summary-list__row--no-border" field-review-marker="TrainingDescription">
+            <div class="app-summary-list__row" field-review-marker="TrainingDescription">
                 <dt class="app-summary-list__key" id="@FieldIdentifiers.TrainingDescription">Training and qualification levels</dt>
                 <dd class="app-summary-list__value">
                     <div class="app-ugc-wrap">
@@ -159,7 +159,6 @@
                 </dd>
             </div>
         </dl>
-    
         <h2 class="govuk-heading-m">Employment details</h2>
         <dl class="app-summary-list govuk-!-margin-bottom-9">
             <field-review-message field-name="@FieldIdentifiers.ClosingDate" model="@Model"></field-review-message>
@@ -288,7 +287,7 @@
             </div>
             <field-review-message field-name="@FieldIdentifiers.Qualifications" model="@Model"></field-review-message>
             <div class="app-summary-list__row" field-review-marker="Qualifications">
-                <dt class="app-summary-list__key" id="@FieldIdentifiers.Qualifications">Qualifications</dt>
+                <dt class="app-summary-list__key" id="@FieldIdentifiers.Qualifications">Qualifications required</dt>
                 <dd class="app-summary-list__value">
                     <ul class="govuk-list govuk-list--bullet">
                         @foreach (var qual in Model.Qualifications)
@@ -340,13 +339,13 @@
         <dl class="app-summary-list govuk-!-margin-bottom-9">
         <field-review-message field-name="@FieldIdentifiers.EmployerName" model="@Model"></field-review-message>
         <div class="app-summary-list__row" field-review-marker="EmployerName">
-            <dt class="app-summary-list__key" id="aboutEmployer">Name of organisation</dt>
+            <dt class="app-summary-list__key" id="aboutEmployer">Name of employer on advert</dt>
             <dd class="app-summary-list__value">
                 @Model.EmployerName
                 <field-review-tag class="govuk-tag--orange" field-name="@FieldIdentifiers.EmployerName" tag-name="strong" model="@Model"/>
             </dd>
             <dd class="app-summary-list__actions">
-                <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.EmployerName_Get" esfa-automation="change-employername">Change<span class="govuk-visually-hidden"> name of organisation</span></a>
+                <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.EmployerName_Get" esfa-automation="change-employername">Change<span class="govuk-visually-hidden"> name of employer on advert</span></a>
                     
             </dd>
         </div>
@@ -419,7 +418,7 @@
         </div>
         <field-review-message field-name="@FieldIdentifiers.ApplicationMethod" model="@Model"></field-review-message>
         <field-review-message field-name="@FieldIdentifiers.ApplicationUrl" model="@Model"></field-review-message>
-        <div class="app-summary-list__row app-summary-list__row--no-border" field-review-marker="ApplicationMethod" field-review-marker="ApplicationUrl">
+        <div class="app-summary-list__row @(Model.HasApplicationInstructions ? "app-summary-list__row--no-border" : "")" field-review-marker="ApplicationMethod" field-review-marker="ApplicationUrl">
             <dt class="app-summary-list__key" id="@FieldIdentifiers.ApplicationMethod">Application website</dt>
             <dd class="app-summary-list__value">
                 @if (Model.ApplicationMethod == ApplicationMethod.ThroughExternalApplicationSite)
@@ -441,7 +440,7 @@
         {
             <field-review-message field-name="@FieldIdentifiers.ApplicationInstructions" model="@Model"></field-review-message>
             <div class="app-summary-list__row" field-review-marker="ApplicationInstructions">
-                <dt class="app-summary-list__key" id="@FieldIdentifiers.ApplicationInstructions">Explain the application process (optional)</dt>
+                <dt class="app-summary-list__key" id="@FieldIdentifiers.ApplicationInstructions">Application process (optional)</dt>
                 <dd class="app-summary-list__value">
                     @(Model.HasApplicationInstructions ? Model.ApplicationInstructions : "None")
                     <field-review-tag class="govuk-tag--orange" field-name="@FieldIdentifiers.ApplicationInstructions" tag-name="strong" model="@Model"/>
