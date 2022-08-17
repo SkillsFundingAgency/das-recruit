@@ -13,6 +13,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
         Task<IList<VacancySummary>> GetProviderOwnedVacancySummariesByUkprnAsync(long ukprn, VacancyType vacancyType, int page, FilteringOptions? status, string searchTerm);
         Task<IList<TransferInfo>> GetTransferredFromProviderAsync(long ukprn, VacancyType vacancyType);
         Task<IList<VacancyDashboard>> GetProviderOwnedVacancyDashboardByUkprnAsync(long ukprn, VacancyType vacancyType);
-        Task<long> VacancyCount(long ukprn, VacancyType vacancyType, FilteringOptions? filteringOptions, string searchTerm);
+        Task<long> VacancyCount(long? ukprn, string employerAccountId, VacancyType vacancyType, FilteringOptions? filteringOptions, string searchTerm, OwnerType ownerType);
     }
 }

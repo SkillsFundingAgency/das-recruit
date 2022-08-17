@@ -17,7 +17,6 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Employ
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyAnalytics;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyApplications;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Projections;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummariesProvider;
 using FluentValidation;
 using FluentValidation.Results;
@@ -535,6 +534,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         {
             ValidationResult fluentResult = _qualificationValidator.Validate(qualification);
             return EntityValidationResult.FromFluentValidationResult(fluentResult);
+        }
+        
+        public async Task<long> GetVacancyCount(string employerAccountId, VacancyType vacancyType, FilteringOptions? filteringOptions, string searchTerm)
+        {
+            return await _vacancySummariesQuery.VacancyCount(null, employerAccountId, vacancyType, filteringOptions, searchTerm, OwnerType.Employer);
         }
     }
 }

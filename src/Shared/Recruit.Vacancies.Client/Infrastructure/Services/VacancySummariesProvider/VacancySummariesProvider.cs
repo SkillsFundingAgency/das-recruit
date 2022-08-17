@@ -9,7 +9,6 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MongoDB.Bson;
 using MongoDB.Driver;
-using MongoDB.Driver.Linq;
 using Polly;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummariesProvider
@@ -87,7 +86,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
             {
                 {
                     "$match",
-                    BuildBsonDocumentFilterValues(ukprn, null, bsonArray, null)
+                    BuildBsonDocumentFilterValues(ukprn, null, null, bsonArray, null, OwnerType.Provider)
                 }
             };
             var builder = new VacancySummaryAggQueryBuilder();
@@ -111,7 +110,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
             {
                 {
                     "$match",
-                    BuildBsonDocumentFilterValues(ukprn, status, bsonArray, vacancyType)
+                    BuildBsonDocumentFilterValues(ukprn,string.Empty, status, bsonArray, vacancyType, OwnerType.Provider)
                 }
             };
             var secondaryMath = new BsonDocument
@@ -125,79 +124,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
             var aggPipeline = VacancySummaryAggQueryBuilder.GetAggregateQueryPipeline(match, page,secondaryMath);
 
             return await RunAggPipelineQuery(aggPipeline);
-        }
-
-        private static BsonDocument BuildSecondaryBsonDocumentFilter(FilteringOptions? filteringOptions, string searchTerm)
-        {
-            var document = new BsonDocument();
-
-            if (filteringOptions.HasValue)
-            {
-                switch (filteringOptions)
-                {
-                    case FilteringOptions.NewApplications:
-                        document.Add("noOfNewApplications", new BsonDocument {{"$gt", 0}});
-                        break;
-                    case FilteringOptions.AllApplications:
-                        document.Add("noOfApplications", new BsonDocument {{"$gt", 0}});
-                        break;
-                    case FilteringOptions.ClosingSoonWithNoApplications:
-                        document.Add("noOfApplications", 0);
-                        break;
-                }
-            }
-
-            if (!string.IsNullOrEmpty(searchTerm))
-            {
-                document.Add("_id.searchField", new BsonRegularExpression($"/{searchTerm.ToLower()}/"));
-            }
-
-            return document;
-        }
-
-        private static BsonDocument BuildBsonDocumentFilterValues(long ukprn, FilteringOptions? status, BsonArray bsonArray, VacancyType? vacancyType)
-        {
-            var document = new BsonDocument
-            {
-                { "trainingProvider.ukprn", ukprn },
-                { "ownerType", OwnerType.Provider.ToString() },
-                { "isDeleted", false },
-                { "vacancyType", new BsonDocument{{"$in", bsonArray} } },
-            };
-
-            if (status.HasValue)
-            {
-                switch (status)
-                {
-                    case FilteringOptions.Draft:
-                    case FilteringOptions.Live:
-                    case FilteringOptions.Closed:
-                    case FilteringOptions.Review:
-                    case FilteringOptions.Submitted:
-                        document.Add("status", status.Value.ToString());
-                        break;
-                    case FilteringOptions.Referred:
-                        var statuses = new BsonArray
-                        {
-                            VacancyStatus.Referred.ToString(),
-                            VacancyStatus.Rejected.ToString()
-                        };
-                        document.Add("status", new BsonDocument{{"$in", statuses}});
-                        break;
-                    case FilteringOptions.ClosingSoon:
-                        document.Add("status", VacancyStatus.Live.ToString());
-                        document.Add("closingDate", new BsonDocument {{"$lte",BsonDateTime.Create(DateTime.UtcNow.AddDays(ClosingSoonDays))}});
-                        break;
-                    case FilteringOptions.ClosingSoonWithNoApplications:
-                        document.Add("status", VacancyStatus.Live.ToString());
-                        document.Add("closingDate", new BsonDocument {{"$lte",BsonDateTime.Create(DateTime.UtcNow.AddDays(ClosingSoonDays))}});
-                        document.Add("applicationMethod", vacancyType == VacancyType.Apprenticeship ? ApplicationMethod.ThroughFindAnApprenticeship:ApplicationMethod.ThroughFindATraineeship);
-                        break;
-                }
-                
-            }
-
-            return document;
         }
 
         public async Task<IList<TransferInfo>> GetTransferredFromProviderAsync(long ukprn, VacancyType vacancyType)
@@ -225,7 +151,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
             return result.Select(v => v.TransferInfo).ToList();
         }
 
-        public async Task<long> VacancyCount(long ukprn, VacancyType vacancyType, FilteringOptions? filteringOptions, string searchTerm)
+        public async Task<long> VacancyCount(long? ukprn, string employerAccountId, VacancyType vacancyType, FilteringOptions? filteringOptions, string searchTerm, OwnerType ownerType)
         {
             var bsonArray = new BsonArray
             {
@@ -241,7 +167,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
             {
                 {
                     "$match",
-                    BuildBsonDocumentFilterValues(ukprn, filteringOptions, bsonArray, vacancyType)
+                    BuildBsonDocumentFilterValues(ukprn, employerAccountId, filteringOptions, bsonArray, vacancyType, ownerType)
                 }
             };
             var secondaryMath = new BsonDocument
@@ -301,6 +227,87 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
             return vacancySummaries
                     .Select(dto => VacancySummaryMapper.MapFromVacancySummaryAggQueryResponseDto(dto, _vacancyTaskListStatusService.IsTaskListCompleted(dto.Id)))
                     .ToList();
+        }
+
+        private static BsonDocument BuildSecondaryBsonDocumentFilter(FilteringOptions? filteringOptions, string searchTerm)
+        {
+            var document = new BsonDocument();
+
+            if (filteringOptions.HasValue)
+            {
+                switch (filteringOptions)
+                {
+                    case FilteringOptions.NewApplications:
+                        document.Add("noOfNewApplications", new BsonDocument {{"$gt", 0}});
+                        break;
+                    case FilteringOptions.AllApplications:
+                        document.Add("noOfApplications", new BsonDocument {{"$gt", 0}});
+                        break;
+                    case FilteringOptions.ClosingSoonWithNoApplications:
+                        document.Add("noOfApplications", 0);
+                        break;
+                }
+            }
+
+            if (!string.IsNullOrEmpty(searchTerm))
+            {
+                document.Add("_id.searchField", new BsonRegularExpression($"/{searchTerm.ToLower()}/"));
+            }
+
+            return document;
+        }
+
+        private static BsonDocument BuildBsonDocumentFilterValues(long? ukprn, string employerAccountId, FilteringOptions? status, BsonArray bsonArray, VacancyType? vacancyType, OwnerType ownerType)
+        {
+            var document = new BsonDocument
+            {
+                { "ownerType", ownerType.ToString() },
+                { "isDeleted", false },
+                { "vacancyType", new BsonDocument{{"$in", bsonArray} } },
+            };
+
+            if (ukprn.HasValue)
+            {
+                document.Add("trainingProvider.ukprn", ukprn.Value.ToString());
+            }
+            if (!string.IsNullOrEmpty(employerAccountId))
+            {
+                document.Add("employerAccountId", employerAccountId);
+            }
+
+            if (status.HasValue)
+            {
+                switch (status)
+                {
+                    case FilteringOptions.Draft:
+                    case FilteringOptions.Live:
+                    case FilteringOptions.Closed:
+                    case FilteringOptions.Review:
+                    case FilteringOptions.Submitted:
+                        document.Add("status", status.Value.ToString());
+                        break;
+                    case FilteringOptions.Referred:
+                        var statuses = new BsonArray
+                        {
+                            VacancyStatus.Referred.ToString(),
+                            VacancyStatus.Rejected.ToString()
+                        };
+                        document.Add("status", new BsonDocument{{"$in", statuses}});
+                        break;
+                    case FilteringOptions.ClosingSoon:
+                        document.Add("status", VacancyStatus.Live.ToString());
+                        document.Add("closingDate", new BsonDocument {{"$lte",BsonDateTime.Create(DateTime.UtcNow.AddDays(ClosingSoonDays))}});
+                        break;
+                    case FilteringOptions.ClosingSoonWithNoApplications:
+                        document.Add("status", VacancyStatus.Live.ToString());
+                        document.Add("closingDate", new BsonDocument {{"$lte",BsonDateTime.Create(DateTime.UtcNow.AddDays(ClosingSoonDays))}});
+                        document.Add("applicationMethod", vacancyType == VacancyType.Apprenticeship ? ApplicationMethod.ThroughFindAnApprenticeship:ApplicationMethod.ThroughFindATraineeship);
+                        break;
+                }
+                
+            }
+
+            return document;
         }
 
         private class VacancyTransferInfo

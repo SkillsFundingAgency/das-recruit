@@ -54,7 +54,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 
         public async Task<long> GetVacancyCount(long ukprn, VacancyType vacancyType, FilteringOptions? filteringOptions, string searchTerm)
         {
-            return await _vacancySummariesQuery.VacancyCount(ukprn, vacancyType, filteringOptions, searchTerm);
+            return await _vacancySummariesQuery.VacancyCount(ukprn, string.Empty, vacancyType, filteringOptions, searchTerm, OwnerType.Provider);
         }
 
         public async Task<ProviderDashboardSummary> GetDashboardSummary(long ukprn, VacancyType vacancyType)
