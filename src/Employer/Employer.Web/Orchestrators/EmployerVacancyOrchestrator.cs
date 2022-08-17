@@ -24,8 +24,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 
         public async Task<bool> HasNoVacancies(string employerAccountId)
         {
-            var dashboard = await _employerVacancyClient.GetDashboardAsync(employerAccountId);
-            return !dashboard.Vacancies.Any();
+            var vacancyCount = await _employerVacancyClient.GetVacancyCount(employerAccountId, VacancyType.Apprenticeship, null, null);
+            return vacancyCount == 0;
         }
 
         public async Task<TrainingProviderSummary> GetProviderUkprn(string ukprn)
