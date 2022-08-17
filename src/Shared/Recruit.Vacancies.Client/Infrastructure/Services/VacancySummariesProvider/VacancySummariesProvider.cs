@@ -44,7 +44,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                 }
             };
 
-            var aggPipeline = VacancySummaryAggQueryBuilder.GetAggregateQueryPipeline(match, 1, new BsonDocument());
+            var aggPipeline = VacancySummaryAggQueryBuilder.GetAggregateQueryPipeline(match, 1, null);
 
             return await RunAggPipelineQuery(aggPipeline);
         }
@@ -65,7 +65,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                 }
             };
 
-            var aggPipeline = VacancySummaryAggQueryBuilder.GetAggregateQueryPipeline(match, 1, new BsonDocument());
+            var aggPipeline = VacancySummaryAggQueryBuilder.GetAggregateQueryPipeline(match, 1, null);
 
             return await RunAggPipelineQuery(aggPipeline);
         }
@@ -208,7 +208,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                     var aggResults = await collection.AggregateAsync<CountResponseDto>(pipeline);
                     return await aggResults.FirstOrDefaultAsync();
                 },
-                new Context(nameof(RunAggPipelineQuery)));
+                new Context(nameof(RunAggPipelineCountQuery)));
             return vacancySummaries?.Total ?? 0;
         }
 

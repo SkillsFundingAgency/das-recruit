@@ -315,7 +315,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
         public static BsonDocument[] GetAggregateQueryPipeline(BsonDocument vacanciesMatchClause, int pageNumber, BsonDocument secondaryMatch)
         {
             var pipeline = BsonSerializer.Deserialize<BsonArray>(Pipeline);
-            pipeline.Insert(pipeline.Count-1, secondaryMatch);
+            if (secondaryMatch != null)
+            {
+                pipeline.Insert(pipeline.Count-1, secondaryMatch);    
+            }
+            
             pipeline.Insert(pipeline.Count, new BsonDocument {{"$skip", (pageNumber-1) * 25}});
             pipeline.Insert(pipeline.Count, new BsonDocument {{"$limit",25}});
             pipeline.Insert(0, vacanciesMatchClause);
