@@ -302,17 +302,34 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                     },
                     'noOfUnsuccessfulApplications': {
                         '$sum': '$isUnsuccessful'
+                    },
+                    'noOfApplications': {
+                         '$sum' :{'$add': ['$isUnsuccessful','$isSuccessful'] }
                     }
                 }
-            },{ '$sort' : { '_id.vacancyReference' : -1 } },{ '$limit' : 25 } 
+            },
+            { '$sort' : { '_id.vacancyReference' : -1 } }
+            
         ]";
 
         public static BsonDocument[] GetAggregateQueryPipeline(BsonDocument vacanciesMatchClause, int pageNumber, BsonDocument secondaryMatch)
         {
-            
             var pipeline = BsonSerializer.Deserialize<BsonArray>(Pipeline);
-            pipeline.Insert(pipeline.Count-2, secondaryMatch);
-            pipeline.Insert(pipeline.Count-1, new BsonDocument {{"$skip", (pageNumber-1) * 25}});
+            pipeline.Insert(pipeline.Count-1, secondaryMatch);
+            pipeline.Insert(pipeline.Count, new BsonDocument {{"$skip", (pageNumber-1) * 25}});
+            pipeline.Insert(pipeline.Count, new BsonDocument {{"$limit",25}});
+            pipeline.Insert(0, vacanciesMatchClause);
+
+            var pipelineDefinition = pipeline.Values.Select(p => p.ToBsonDocument()).ToArray();
+
+            return pipelineDefinition;
+        }
+
+        public static BsonDocument[] GetAggregateQueryPipelineDocumentCount(BsonDocument vacanciesMatchClause, BsonDocument secondaryMatch)
+        {
+            var pipeline = BsonSerializer.Deserialize<BsonArray>(Pipeline);
+            pipeline.Insert(pipeline.Count-1, secondaryMatch);
+            pipeline.Insert(pipeline.Count, new BsonDocument {{"$count","total"}});
             pipeline.Insert(0, vacanciesMatchClause);
 
             var pipelineDefinition = pipeline.Values.Select(p => p.ToBsonDocument()).ToArray();

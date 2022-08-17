@@ -184,12 +184,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                         };
                         document.Add("status", new BsonDocument{{"$in", statuses}});
                         break;
-                    case FilteringOptions.NewApplications:
-                        document.Add("noOfNewApplications", new BsonDocument{{"$gt",0}});
-                        break;
-                    case FilteringOptions.AllApplications:
-                        document.Add("noOfApplications", new BsonDocument{{"$gt",0}});
-                        break;
                     case FilteringOptions.ClosingSoon:
                         document.Add("status", VacancyStatus.Live.ToString());
                         document.Add("closingDate", new BsonDocument {{"$lte",BsonDateTime.Create(DateTime.UtcNow.AddDays(ClosingSoonDays))}});
@@ -231,71 +225,36 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
             return result.Select(v => v.TransferInfo).ToList();
         }
 
-        public async Task<long> VacancyCount(long ukprn, VacancyType vacancyType, FilteringOptions? filteringOptions)
+        public async Task<long> VacancyCount(long ukprn, VacancyType vacancyType, FilteringOptions? filteringOptions, string searchTerm)
         {
-            var builder = Builders<Vacancy>.Filter;
-            
-            var filter = BuildCountFilter(ukprn, builder, vacancyType, OwnerType.Provider, filteringOptions);
-
-            var collection = GetCollection<Vacancy>();
-
-            var result = await RetryPolicy.Execute(_ =>
-                collection.CountDocumentsAsync(filter), new Context(nameof(VacancyCount)));
-            return result;
-        }
-
-        private static FilterDefinition<Vacancy> BuildCountFilter(long ukprn, FilterDefinitionBuilder<Vacancy> builder, VacancyType vacancyType, OwnerType ownerType, FilteringOptions? filteringOptions)
-        {
-            var buildCountFilter = builder.Eq("trainingProvider.ukprn", ukprn) &
-                                   builder.Eq("isDeleted", false) &
-                                   Eq(builder, ownerType) &
-                                   (BuildStatusFilterDefinition(builder, filteringOptions, vacancyType)) &
-                                   (vacancyType == VacancyType.Apprenticeship ? builder.In("VacancyType",new []{"Apprenticeship", null}) : builder.Eq("vacancyType", "Traineeship" ));
-            
-            return buildCountFilter;
-        }
-
-        private static FilterDefinition<Vacancy> Eq(FilterDefinitionBuilder<Vacancy> builder, OwnerType ownerType)
-        {
-            return builder.Eq("ownerType", ownerType.ToString());
-        }
-
-        private static FilterDefinition<Vacancy> BuildStatusFilterDefinition(FilterDefinitionBuilder<Vacancy> builder, FilteringOptions? filteringOptions, VacancyType vacancyType)
-        {
-            if (filteringOptions.HasValue)
+            var bsonArray = new BsonArray
             {
-                switch (filteringOptions)
-                {
-                    case FilteringOptions.Draft:
-                    case FilteringOptions.Live:
-                    case FilteringOptions.Closed:
-                    case FilteringOptions.Review:
-                    case FilteringOptions.Submitted:
-                        return builder.Eq("status",filteringOptions.Value.ToString());
-                    case FilteringOptions.Referred:
-                        var statuses = new BsonArray
-                        {
-                            VacancyStatus.Referred.ToString(),
-                            VacancyStatus.Rejected.ToString()
-                        };
-                        return builder.In("status",statuses);
-                    case FilteringOptions.NewApplications:
-                        return builder.Gt("noOfNewApplications", 0);
-                    case FilteringOptions.AllApplications:
-                        return builder.Gt("noOfApplications", 0);
-                    case FilteringOptions.ClosingSoon:
-                        return builder.Eq("status",VacancyStatus.Live.ToString()) &
-                        builder.Lte("closingDate", BsonDateTime.Create(DateTime.UtcNow.AddDays(ClosingSoonDays)));
-                    case FilteringOptions.ClosingSoonWithNoApplications:
-                        return builder.Eq("status",VacancyStatus.Live.ToString()) &
-                        builder.Lte("closingDate", BsonDateTime.Create(DateTime.UtcNow.AddDays(ClosingSoonDays))) &
-                        builder.Eq("applicationMethod", vacancyType == VacancyType.Apprenticeship ? ApplicationMethod.ThroughFindAnApprenticeship:ApplicationMethod.ThroughFindATraineeship);
-                        
-                }
-                
+                vacancyType.ToString()
+            };
+            
+            if (vacancyType == VacancyType.Apprenticeship)
+            {
+                bsonArray.Add(BsonNull.Value);
             }
 
-            return builder.Eq("1", "1");
+            var match = new BsonDocument
+            {
+                {
+                    "$match",
+                    BuildBsonDocumentFilterValues(ukprn, filteringOptions, bsonArray, vacancyType)
+                }
+            };
+            var secondaryMath = new BsonDocument
+            {
+                {
+                    "$match",
+                    BuildSecondaryBsonDocumentFilter(filteringOptions, searchTerm)
+                }
+            };
+            
+            var aggPipeline = VacancySummaryAggQueryBuilder.GetAggregateQueryPipelineDocumentCount(match,secondaryMath);
+
+            return await RunAggPipelineCountQuery(aggPipeline);
         }
 
         private async Task<List<VacancyDashboard>> RunDashboardAggPipelineQuery(BsonDocument[] pipeline)
@@ -311,6 +270,20 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                 new Context(nameof(RunDashboardAggPipelineQuery)));
 
             return vacancyDashboard.Select(VacancyDashboardMapper.MapFromVacancyDashboardSummaryResponseDto).ToList();
+        }
+
+        private async Task<long> RunAggPipelineCountQuery(BsonDocument[] pipeline)
+        {
+            var db = GetDatabase();
+            var collection = db.GetCollection<BsonDocument>(MongoDbCollectionNames.Vacancies);
+            
+            var vacancySummaries = await RetryPolicy.Execute(async context =>
+                {
+                    var aggResults = await collection.AggregateAsync<CountResponseDto>(pipeline);
+                    return await aggResults.FirstOrDefaultAsync();
+                },
+                new Context(nameof(RunAggPipelineQuery)));
+            return vacancySummaries?.Total ?? 0;
         }
 
         private async Task<IList<VacancySummary>> RunAggPipelineQuery(BsonDocument[] pipeline)
