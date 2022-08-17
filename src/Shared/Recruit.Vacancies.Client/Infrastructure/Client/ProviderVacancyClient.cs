@@ -52,9 +52,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             await AssignVacancyNumber(id);
         }
 
-        public async Task<long> GetVacancyCount(long ukprn, VacancyType vacancyType, FilteringOptions? filteringOptions)
+        public async Task<long> GetVacancyCount(long ukprn, VacancyType vacancyType, FilteringOptions? filteringOptions, string searchTerm)
         {
-            return await _vacancySummariesQuery.VacancyCount(ukprn, vacancyType, filteringOptions);
+            return await _vacancySummariesQuery.VacancyCount(ukprn, vacancyType, filteringOptions, searchTerm);
         }
 
         public async Task<ProviderDashboardSummary> GetDashboardSummary(long ukprn, VacancyType vacancyType)
