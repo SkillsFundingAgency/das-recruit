@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using Esfa.Recruit.Provider.Web.Orchestrators;
 using Esfa.Recruit.Provider.Web.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Configuration;
-using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections;
@@ -23,6 +22,33 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Vacancies
         private Mock<IProviderAlertsViewModelFactory> _providerAlertsViewModelFactoryMock;
         private Mock<IRecruitVacancyClient> _recruitVacancyClientMock;
         private Mock<IProviderRelationshipsService> _providerRelationshipsServiceMock;
+
+        public GetVacanciesViewModelAsyncTests()
+        {
+            var userId = Guid.NewGuid();
+            _user = new VacancyUser
+            {
+                Email = "F.Sinatra@gmail.com",
+                Name = "Frank Sinatra",
+                Ukprn = 54321,
+                UserId = userId.ToString()
+            };
+            _userDetails = new User
+            {
+                Ukprn = _user.Ukprn,
+                Email = _user.Email,
+                Name = _user.Name,
+                Id = userId
+            };
+
+            _recruitVacancyClientMock = new Mock<IRecruitVacancyClient>();
+            _recruitVacancyClientMock
+                .Setup(x => x.GetUsersDetailsAsync(_user.UserId))
+                .ReturnsAsync(_userDetails);
+
+            _providerAlertsViewModelFactoryMock = new Mock<IProviderAlertsViewModelFactory>();
+            _providerRelationshipsServiceMock = new Mock<IProviderRelationshipsService>();
+        }
 
         [Fact]
         public async Task WhenHaveOver25Vacancies_ShouldShowPager()
@@ -100,33 +126,6 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Vacancies
             vm.Pager.ShowPager.Should().BeFalse();
 
             vm.Vacancies.Count.Should().Be(25);
-        }
-
-        public GetVacanciesViewModelAsyncTests()
-        {
-            var userId = Guid.NewGuid();
-            _user = new VacancyUser
-            {
-                Email = "F.Sinatra@gmail.com",
-                Name = "Frank Sinatra",
-                Ukprn = 54321,
-                UserId = userId.ToString()
-            };
-            _userDetails = new User
-            {
-                Ukprn = _user.Ukprn,
-                Email = _user.Email,
-                Name = _user.Name,
-                Id = userId
-            };
-
-            _recruitVacancyClientMock = new Mock<IRecruitVacancyClient>();
-            _recruitVacancyClientMock
-                .Setup(x => x.GetUsersDetailsAsync(_user.UserId))
-                .ReturnsAsync(_userDetails);
-
-            _providerAlertsViewModelFactoryMock = new Mock<IProviderAlertsViewModelFactory>();
-            _providerRelationshipsServiceMock = new Mock<IProviderRelationshipsService>();
         }
     }
 }

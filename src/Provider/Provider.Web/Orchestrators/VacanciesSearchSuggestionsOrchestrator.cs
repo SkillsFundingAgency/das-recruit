@@ -41,7 +41,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
         
         private async Task<IEnumerable<VacancySummary>> GetVacanciesAsync(long ukprn, string searchTerm)
         {
-            var dashboard = await _providerVacancyClient.GetDashboardAsync(ukprn, _serviceParameters.VacancyType.GetValueOrDefault(), 1, FilteringOptions.Draft, searchTerm); 
+            var dashboard = await _providerVacancyClient.GetDashboardAsync(ukprn, _serviceParameters.VacancyType.GetValueOrDefault(), 1, null, searchTerm); 
 
             return dashboard?.Vacancies?.OrderByDescending(v => v.CreatedDate) ?? Enumerable.Empty<VacancySummary>();
         }

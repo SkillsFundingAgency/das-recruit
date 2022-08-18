@@ -243,6 +243,19 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             };
         }
 
+        public async Task<EmployerDashboard> GetDashboardAsync(string employerAccountId, int page, FilteringOptions? status = null, string searchTerm = null)
+        {
+            var vacancySummaries =
+                await _vacancySummariesQuery.GetEmployerOwnedVacancySummariesByEmployerAccountId(employerAccountId,
+                    VacancyType.Apprenticeship, page, status, searchTerm);
+            return new EmployerDashboard
+            {
+                Id = QueryViewType.EmployerDashboard.GetIdValue(employerAccountId),
+                Vacancies = vacancySummaries,
+                LastUpdated = _timeProvider.Now
+            };
+        }
+
 
         public Task UserSignedInAsync(VacancyUser user, UserType userType)
         {

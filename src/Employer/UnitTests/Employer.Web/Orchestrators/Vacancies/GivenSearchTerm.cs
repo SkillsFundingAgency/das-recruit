@@ -35,41 +35,31 @@ namespace Esfa.Recruit.UnitTests.Employer.Web.Orchestrators.Vacancies
         };
 
         [Theory]
-        [InlineData("Closed", "lazy", "1000000105")]
-        [InlineData("Live", "fox", "1000000102,1000000104")]
-        [InlineData("", "fox", "1000000101,1000000102,1000000104,1000000105")]
-        [InlineData("", "105", "2000000105,1000000105")]
-        [InlineData("Closed", "VAC100", "1000000101,1000000105")]
-        [InlineData("Referred", "", "2000000105")]
-        public async Task ThenReturnResults(string status, string searchTerm, string references)
+        [InlineData("Closed", "lazy")]
+        public async Task ThenReturnResults(string status, string searchTerm)
         {
-            var expectedReferences = references.Split(',');
-            var sut = GetSut(); 
+            var sut = GetSut(searchTerm, 1, status); 
             var result = await sut.GetVacanciesViewModelAsync(EmployerAccountId, status, 1, _user, searchTerm);
             result.Vacancies.Any().Should().BeTrue();
-            result.Vacancies.Count.Should().Be(expectedReferences.Count());
-            result.Vacancies
-                .Select(v => v.VacancyReference.ToString())
-                .All(r => expectedReferences.Contains(r))
-                .Should().BeTrue();
+            result.Vacancies.Count.Should().Be(6);
+            
         }
 
-        [Theory]
-        [InlineData("Submitted", "fox")]
-        [InlineData("Live","xyz")]
-        [InlineData("Submitted","")]
-        public async Task ThenReturnNoResults(string status, string searchTerm)
+        [Fact]
+        public async Task ThenReturnNoResults()
         {
-            var sut = GetSut(); 
-            var result = await sut.GetVacanciesViewModelAsync(EmployerAccountId, status, 1, _user, searchTerm);
+            var sut = GetSut("fox", 1, "Live"); 
+            var result = await sut.GetVacanciesViewModelAsync(EmployerAccountId, "Live", 1, _user, "test");
             result.Vacancies.Any().Should().BeFalse();
         }
 
-        private VacanciesOrchestrator GetSut()
+        private VacanciesOrchestrator GetSut(string searchTerm, int page, string status)
         {
+            Enum.TryParse<FilteringOptions>(status, out var filter);
+            
             var employerClientMock = new Mock<IEmployerVacancyClient>();
             var timeProviderMock = new Mock<ITimeProvider>();
-            employerClientMock.Setup(c => c.GetDashboardAsync(EmployerAccountId))
+            employerClientMock.Setup(c => c.GetDashboardAsync(EmployerAccountId, page, filter, searchTerm))
                 .ReturnsAsync(new EmployerDashboard {
                     Vacancies = _testVacancies
                 });

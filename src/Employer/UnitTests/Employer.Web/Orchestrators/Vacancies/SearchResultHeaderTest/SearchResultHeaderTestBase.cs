@@ -22,11 +22,11 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Vacancies.S
         protected Mock<IEmployerAlertsViewModelFactory> EmployerAlertsViewModelFactoryMock;
         protected Mock<ITimeProvider> TimeProvider;
 
-        protected VacanciesOrchestrator GetSut(IEnumerable<VacancySummary> vacancySummaries)
+        protected VacanciesOrchestrator GetSut(IEnumerable<VacancySummary> vacancySummaries, FilteringOptions? status, string searchTerm)
         {
             var clientMock = new Mock<IEmployerVacancyClient>();
             TimeProvider = new Mock<ITimeProvider>();
-            clientMock.Setup(c => c.GetDashboardAsync(EmployerAccountId))
+            clientMock.Setup(c => c.GetDashboardAsync(EmployerAccountId, 1, status, searchTerm))
                 .ReturnsAsync(new EmployerDashboard {
                     Vacancies = vacancySummaries
                 });
