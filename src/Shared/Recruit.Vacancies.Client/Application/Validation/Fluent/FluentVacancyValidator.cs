@@ -653,17 +653,17 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                     .WithErrorCode("54")
                 .MaximumLength(4000)
                     .WithMessage(IsApprenticeshipVacancy
-                    ? "Training to be provided description must not exceed {MaxLength} characters"
+                    ? "Training and qualifications the apprentice will get must not exceed {MaxLength} characters"
                     : "Training provided must not exceed {MaxLength} characters")
                     .WithErrorCode("7")
                 .ValidHtmlCharacters(_htmlSanitizerService)
                     .WithMessage(IsApprenticeshipVacancy
-                    ? "Training to be provided description contains some invalid characters"
+                    ? "Training and qualifications the apprentice will get contains some invalid characters"
                     : "Training provided contains some invalid characters")
                     .WithErrorCode("6")
                 .ProfanityCheck(_profanityListProvider)
                 .WithMessage(IsApprenticeshipVacancy
-                    ? "Training to be provided description must not contain a banned word or phrase"
+                    ? "Training and qualifications the apprentice will get must not contain a banned word or phrase"
                     : "Training provided must not contain a banned word or phrase")
                 .WithErrorCode("610")
                 .RunCondition(VacancyRuleSet.TrainingDescription)

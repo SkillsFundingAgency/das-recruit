@@ -22,7 +22,7 @@
             <span class="govuk-caption-l">@Model.Title</span>
             Information about @Model.EmployerTitle
         </h1>
-        <p class="govuk-body">Updating the employer information will also update the employer information on any unapproved adverts eg. draft, pending review or rejected vacancies.</p>
+        <p class="govuk-body">Updating the employer information will also update the employer information on any unapproved adverts eg. draft, pending review or rejected adverts.</p>
         <form asp-route="@RouteNames.AboutEmployer_Get">
             <div class="govuk-form-group" esfa-validation-marker-for="EmployerDescription">
                 <label asp-for="EmployerDescription" class="govuk-label">Tell us about your organisation</label>
@@ -41,7 +41,7 @@
                     <div class="govuk-checkboxes">
                         <div class="govuk-checkboxes__item">
                             <input asp-for="IsDisabilityConfident" class="govuk-checkboxes__input" type="checkbox" value="true" >
-                            <label asp-for="IsDisabilityConfident" class="govuk-label govuk-checkboxes__label">This employer has signed up to the <a href="https://www.gov.uk/government/collections/disability-confident-campaign" class="govuk-link" rel="noopener" target="_blank" title="Disability Confident employer scheme and guidance (opens in new tab)">Disability Confident</a> scheme (opens in new tab)</label>
+                            <label asp-for="IsDisabilityConfident" class="govuk-label govuk-checkboxes__label">This employer has signed up to the <a href="https://www.gov.uk/government/collections/disability-confident-campaign" class="govuk-link" rel="noopener" target="_blank" title="Disability Confident employer scheme and guidance (opens in new tab)">Disability Confident scheme (opens in new tab)</a></label>
                         </div>
                     </div>
                 </fieldset>
