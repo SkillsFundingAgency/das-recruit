@@ -231,18 +231,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             };
         }
 
-        public async Task<EmployerDashboard> GetDashboardAsync(string employerAccountId)
-        {
-            var vacancySummaries = await _vacancySummariesQuery.GetEmployerOwnedVacancySummariesByEmployerAccountAsync(employerAccountId);
-            
-            return new EmployerDashboard
-            {
-                Id = QueryViewType.EmployerDashboard.GetIdValue(employerAccountId),
-                Vacancies = vacancySummaries,
-                LastUpdated = _timeProvider.Now
-            };
-        }
-
         public async Task<EmployerDashboard> GetDashboardAsync(string employerAccountId, int page, FilteringOptions? status = null, string searchTerm = null)
         {
             var vacancySummaries =
@@ -255,7 +243,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
                 LastUpdated = _timeProvider.Now
             };
         }
-
 
         public Task UserSignedInAsync(VacancyUser user, UserType userType)
         {
