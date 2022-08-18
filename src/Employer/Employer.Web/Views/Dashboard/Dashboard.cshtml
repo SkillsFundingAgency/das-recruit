@@ -173,16 +173,16 @@
         </div>
     </div>
     
-    <div asp-show="@Model.HasOneVacancy">
-        <a asp-route="@RouteNames.VacancyManage_Get" asp-route-vacancyId="@Model.CurrentVacancyId" class="govuk-link govuk-!-font-size-24 govuk-!-font-weight-bold govuk-link--no-visited-state" name="button">
-            View your advert
-        </a>
-    </div>
-    <div asp-hide="@Model.HasOneVacancy">
+    @* <div asp-show="@Model.HasOneVacancy"> *@
+    @*     <a asp-route="@RouteNames.VacancyManage_Get" asp-route-vacancyId="@Model.CurrentVacancyId" class="govuk-link govuk-!-font-size-24 govuk-!-font-weight-bold govuk-link--no-visited-state" name="button"> *@
+    @*         View your advert *@
+    @*     </a> *@
+    @* </div> *@
+    @* <div asp-hide="@Model.HasOneVacancy"> *@
         <a asp-route="@RouteNames.Vacancies_Get" asp-route-filter="@FilteringOptions.All" class="govuk-link govuk-!-font-size-24 govuk-!-font-weight-bold govuk-link--no-visited-state" name="button">
-            View all your adverts (@Model.Vacancies.Count)
+            View all your adverts (@Model.NumberOfVacancies)
         </a>
-    </div>
+    @* </div> *@
 
     <hr class="govuk-grid-column-full govuk-section-break govuk-section-break--xl govuk-section-break--visible" />
       
