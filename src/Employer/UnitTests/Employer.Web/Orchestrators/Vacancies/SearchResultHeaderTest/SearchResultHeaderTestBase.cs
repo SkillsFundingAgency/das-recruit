@@ -32,7 +32,6 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Vacancies.S
                 });
             return new VacanciesOrchestrator(
                 clientMock.Object,
-                TimeProvider.Object,
                 RecruitVacancyClientMock.Object,
                 EmployerAlertsViewModelFactoryMock.Object);
         }

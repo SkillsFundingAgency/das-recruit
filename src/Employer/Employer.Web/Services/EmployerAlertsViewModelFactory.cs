@@ -24,27 +24,13 @@ namespace Esfa.Recruit.Employer.Web.Services
             if (string.IsNullOrEmpty(employerAccountId))
                 throw new ArgumentNullException(nameof(employerAccountId));
 
-            // transferred vacancies
-            var employerRevokedTransferredVacanciesAlert = _alertViewModelService.GetTransferredVacanciesAlert(new List<VacancySummary>(), TransferReason.EmployerRevokedPermission, user.TransferredVacanciesEmployerRevokedPermissionAlertDismissedOn);
-            var blockedProviderTransferredVacanciesAlert = _alertViewModelService.GetTransferredVacanciesAlert(new List<VacancySummary>(), TransferReason.BlockedByQa, user.TransferredVacanciesBlockedProviderAlertDismissedOn);
+            var transferredVacancies = await _employerVacancyClient.GetDashboardAsync(employerAccountId, 1, FilteringOptions.Transferred, string.Empty);
+            var employerRevokedTransferredVacanciesAlert = _alertViewModelService.GetTransferredVacanciesAlert(transferredVacancies.Vacancies, TransferReason.EmployerRevokedPermission, user.TransferredVacanciesEmployerRevokedPermissionAlertDismissedOn);
+            var blockedProviderTransferredVacanciesAlert = _alertViewModelService.GetTransferredVacanciesAlert(transferredVacancies.Vacancies, TransferReason.BlockedByQa, user.TransferredVacanciesBlockedProviderAlertDismissedOn);
             
-            //TODO pass list of closed vacancies
-            var blockedProviderAlert = _alertViewModelService.GetBlockedProviderVacanciesAlert(new List<VacancySummary>(), user.ClosedVacanciesBlockedProviderAlertDismissedOn);
-            var withdrawnByQaVacanciesAlert = _alertViewModelService.GetWithdrawnByQaVacanciesAlert(new List<VacancySummary>(), user.ClosedVacanciesWithdrawnByQaAlertDismissedOn);
-
-            return new AlertsViewModel(
-                employerRevokedTransferredVacanciesAlert, 
-                blockedProviderTransferredVacanciesAlert, 
-                blockedProviderAlert,
-                withdrawnByQaVacanciesAlert);
-        }
-
-        public AlertsViewModel Create(IEnumerable<VacancySummary> vacancies, User user)
-        {
-            var employerRevokedTransferredVacanciesAlert = _alertViewModelService.GetTransferredVacanciesAlert(vacancies, TransferReason.EmployerRevokedPermission, user.TransferredVacanciesEmployerRevokedPermissionAlertDismissedOn);
-            var blockedProviderTransferredVacanciesAlert = _alertViewModelService.GetTransferredVacanciesAlert(vacancies, TransferReason.BlockedByQa, user.TransferredVacanciesBlockedProviderAlertDismissedOn);
-            var blockedProviderAlert = _alertViewModelService.GetBlockedProviderVacanciesAlert(vacancies, user.ClosedVacanciesBlockedProviderAlertDismissedOn);
-            var withdrawnByQaVacanciesAlert = _alertViewModelService.GetWithdrawnByQaVacanciesAlert(vacancies, user.ClosedVacanciesWithdrawnByQaAlertDismissedOn);
+            var closedVacancies = await _employerVacancyClient.GetDashboardAsync(employerAccountId, 1, FilteringOptions.Closed, string.Empty);
+            var blockedProviderAlert = _alertViewModelService.GetBlockedProviderVacanciesAlert(closedVacancies.Vacancies, user.ClosedVacanciesBlockedProviderAlertDismissedOn);
+            var withdrawnByQaVacanciesAlert = _alertViewModelService.GetWithdrawnByQaVacanciesAlert(closedVacancies.Vacancies, user.ClosedVacanciesWithdrawnByQaAlertDismissedOn);
 
             return new AlertsViewModel(
                 employerRevokedTransferredVacanciesAlert, 

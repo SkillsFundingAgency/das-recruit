@@ -88,7 +88,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Vacancies
             
             var alertsFactoryMock = new Mock<IEmployerAlertsViewModelFactory>();
 
-            return new VacanciesOrchestrator(clientMock.Object, timeProviderMock.Object, recruitClientMock.Object, alertsFactoryMock.Object);
+            return new VacanciesOrchestrator(clientMock.Object, recruitClientMock.Object, alertsFactoryMock.Object);
         }
     }
 }
