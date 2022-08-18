@@ -210,19 +210,31 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 
             return _messaging.SendCommandAsync(command);
         }
+        
+        public async Task<EmployerDashboardSummary> GetDashboardSummary(string employerAccountId)
+        {
+            var dashboard = await  _vacancySummariesQuery.GetEmployerOwnedVacancyDashboardByEmployerAccountIdAsync(employerAccountId, VacancyType.Apprenticeship);
+            
+            return new EmployerDashboardSummary
+            {
+                Closed = dashboard.SingleOrDefault(c=>c.Status == VacancyStatus.Closed)?.StatusCount ?? 0,
+                Draft = dashboard.SingleOrDefault(c=>c.Status == VacancyStatus.Draft)?.StatusCount ?? 0,
+                Review = dashboard.SingleOrDefault(c=>c.Status == VacancyStatus.Review)?.StatusCount ?? 0,
+                Referred = (dashboard.SingleOrDefault(c=>c.Status == VacancyStatus.Referred)?.StatusCount ?? 0) + (dashboard.SingleOrDefault(c=>c.Status == VacancyStatus.Rejected)?.StatusCount ?? 0),
+                Live = dashboard.SingleOrDefault(c=>c.Status == VacancyStatus.Live && !c.ClosingSoon)?.StatusCount ?? 0,
+                Submitted = dashboard.SingleOrDefault(c=>c.Status == VacancyStatus.Submitted)?.StatusCount ?? 0,
+                NumberOfNewApplications = dashboard.SingleOrDefault(c=>c.Status == VacancyStatus.Live && !c.ClosingSoon)?.NoOfNewApplications ?? 0,
+                NumberOfSuccessfulApplications = (dashboard.SingleOrDefault(c=>c.Status == VacancyStatus.Live && !c.ClosingSoon)?.NoOfSuccessfulApplications ?? 0) + (dashboard.SingleOrDefault(c=>c.Status == VacancyStatus.Closed && !c.ClosingSoon)?.NoOfSuccessfulApplications ?? 0),
+                NumberOfUnsuccessfulApplications = (dashboard.SingleOrDefault(c=>c.Status == VacancyStatus.Live && !c.ClosingSoon)?.NoOfUnsuccessfulApplications ?? 0) + (dashboard.SingleOrDefault(c=>c.Status == VacancyStatus.Closed && !c.ClosingSoon)?.NoOfUnsuccessfulApplications ?? 0),
+                NumberClosingSoon =dashboard.SingleOrDefault(c=>c.Status == VacancyStatus.Live && c.ClosingSoon && (c.NoOfNewApplications != 0 || c.NoOfSuccessfulApplications != 0 || c.NoOfUnsuccessfulApplications != 0))?.StatusCount ?? 0,
+                NumberClosingSoonWithNoApplications =dashboard.SingleOrDefault(c=>c.Status == VacancyStatus.Live && c.ClosingSoon && c.NoOfNewApplications == 0 && c.NoOfSuccessfulApplications == 0 && c.NoOfUnsuccessfulApplications == 0)?.StatusCount ?? 0
+            };
+        }
 
         public async Task<EmployerDashboard> GetDashboardAsync(string employerAccountId)
         {
             var vacancySummaries = await _vacancySummariesQuery.GetEmployerOwnedVacancySummariesByEmployerAccountAsync(employerAccountId);
-            var reviewSummaries = await _vacancySummariesQuery.GetProviderOwnedVacancySummariesInReviewByEmployerAccountAsync(employerAccountId);
-
-            var summaries = vacancySummaries.Concat(reviewSummaries).ToList();
-
-            foreach (var summary in summaries)
-            {
-                await UpdateWithTrainingProgrammeInfo(summary);
-            }
-
+            
             return new EmployerDashboard
             {
                 Id = QueryViewType.EmployerDashboard.GetIdValue(employerAccountId),

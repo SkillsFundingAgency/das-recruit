@@ -93,6 +93,29 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
             var aggPipelines = builder.GetAggregateQueryPipelineDashboard(match);
             return await RunDashboardAggPipelineQuery(aggPipelines);
         }
+        public async Task<IList<VacancyDashboard>> GetEmployerOwnedVacancyDashboardByEmployerAccountIdAsync(string employerAccountId, VacancyType vacancyType)
+        {
+            var bsonArray = new BsonArray
+            {
+                vacancyType.ToString()
+            };
+            
+            if (vacancyType == VacancyType.Apprenticeship)
+            {
+                bsonArray.Add(BsonNull.Value);
+            }
+            
+            var match = new BsonDocument
+            {
+                {
+                    "$match",
+                    BuildBsonDocumentFilterValues(null, employerAccountId, null, bsonArray, null, OwnerType.Employer)
+                }
+            };
+            var builder = new VacancySummaryAggQueryBuilder();
+            var aggPipelines = builder.GetAggregateQueryPipelineDashboard(match);
+            return await RunDashboardAggPipelineQuery(aggPipelines);
+        }
         
         public async Task<IList<VacancySummary>> GetProviderOwnedVacancySummariesByUkprnAsync(long ukprn, VacancyType vacancyType, int page, FilteringOptions? status, string searchTerm)
         {
@@ -111,6 +134,39 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                 {
                     "$match",
                     BuildBsonDocumentFilterValues(ukprn,string.Empty, status, bsonArray, vacancyType, OwnerType.Provider)
+                }
+            };
+            var secondaryMath = new BsonDocument
+            {
+                {
+                    "$match",
+                    BuildSecondaryBsonDocumentFilter(status, searchTerm)
+                }
+            };
+            
+            var aggPipeline = VacancySummaryAggQueryBuilder.GetAggregateQueryPipeline(match, page,secondaryMath);
+
+            return await RunAggPipelineQuery(aggPipeline);
+        }
+
+        public async Task<IList<VacancySummary>> GetEmployerOwnedVacancySummariesByEmployerAccountId(string employerAccountId, VacancyType vacancyType, int page,
+            FilteringOptions? status, string searchTerm)
+        {
+            var bsonArray = new BsonArray
+            {
+                vacancyType.ToString()
+            };
+            
+            if (vacancyType == VacancyType.Apprenticeship)
+            {
+                bsonArray.Add(BsonNull.Value);
+            }
+
+            var match = new BsonDocument
+            {
+                {
+                    "$match",
+                    BuildBsonDocumentFilterValues(null,employerAccountId, status, bsonArray, vacancyType, OwnerType.Employer)
                 }
             };
             var secondaryMath = new BsonDocument
