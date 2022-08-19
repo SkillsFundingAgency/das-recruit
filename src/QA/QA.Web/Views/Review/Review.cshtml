@@ -190,7 +190,7 @@
                     </ul>
                 </div>
                 <div class="govuk-grid-column-two-thirds vacancy-descriptions">
-                    <div class="@Model.VacancyDescriptionClass" id="@FieldIdentifiers.VacancyDescription">
+                    <div class="@Model.VacancyDescriptionClass">
 
                         <h3 class="govuk-heading-s">What will the apprentice be doing?</h3>
                         <textarea asp-for="VacancyDescription" class="govuk-textarea html-editor" rows="5" data-val-length-max="4000"></textarea>
@@ -199,7 +199,7 @@
                                               asp-value="@FieldIdentifiers.VacancyDescription"
                                               asp-items="@Model.FieldIdentifiers"></esfa-review-checkbox>
                     </div>
-                    <div class="@Model.TrainingDescriptionClass" id="@FieldIdentifiers.TrainingDescription">
+                    <div class="@Model.TrainingDescriptionClass">
 
                         <h3 class="govuk-heading-s">What training will the apprentice take and what qualification will the apprentice get at the end?</h3>
                         <textarea asp-for="TrainingDescription" class="govuk-textarea html-editor" rows="5" data-val-length-max="4000"></textarea>
@@ -208,7 +208,7 @@
                                               asp-value="@FieldIdentifiers.TrainingDescription"
                                               asp-items="@Model.FieldIdentifiers"></esfa-review-checkbox>
                     </div>
-                    <div class="@Model.OutcomeDescriptionClass" id="@FieldIdentifiers.OutcomeDescription">
+                    <div class="@Model.OutcomeDescriptionClass">
 
                         <h3 class="govuk-heading-s">What is the expected career progression after this apprenticeship?</h3>
                         <textarea asp-for="OutcomeDescription" class="govuk-textarea html-editor" rows="5" data-val-length-max="4000"></textarea>
@@ -222,7 +222,7 @@
             else
             {
                 <div class="govuk-grid-column-one-third">
-                    <div class="@Model.TrainingDescriptionClass" id="@FieldIdentifiers.TrainingDescription">
+                    <div class="@Model.TrainingDescriptionClass">
 
                         <h3 class="govuk-heading-s">What training will you give the trainee?</h3>
                         <textarea asp-for="TrainingDescription" class="govuk-textarea html-editor" rows="5" data-val-length-max="4000"></textarea>
@@ -231,7 +231,7 @@
                                               asp-value="@FieldIdentifiers.TrainingDescription"
                                               asp-items="@Model.FieldIdentifiers"></esfa-review-checkbox>
                     </div>
-                    <div class="@Model.WorkExperienceClass" id="@FieldIdentifiers.WorkExperience">
+                    <div class="@Model.WorkExperienceClass">
 
                         <h3 class="govuk-heading-s">What work experience will the employer give the trainee?</h3>
                         <textarea asp-for="WorkExperience" class="govuk-textarea html-editor" rows="5" data-val-length-max="4000"></textarea>
@@ -524,36 +524,33 @@
                 <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
             </div>
         </div>
+
         <partial name="_ReviewHistories" for="ReviewHistories" />
-        <div class="govuk-grid-row">
-            <div class="govuk-grid-column-full">
-                <div esfa-validation-marker-for="ReviewerComment" class="govuk-form-group">
-                    <h2 class="govuk-heading-m">Reviewer's Comments</h2>
-                    <ul class="govuk-!-margin-bottom-6 govuk-list" id="automatedqarules-selected-comments"></ul>
-                    <span asp-validation-for="ReviewerComment" class="govuk-error-message"></span>
-                    <div class="govuk-form-group">
-                        <textarea asp-for="ReviewerComment"
-                                  class="govuk-textarea"
-                                  cols="20"
-                                  rows="5"
-                                  size="12"
-                                  type="text"
-                                  data-val-length-max="@VacancyReviewValidator.ManualQaCommentMaxLength"></textarea>
-                        <span class="maxchar-count"></span>
-                        <span class="maxchar-text"></span>
-                    </div>
-                </div>
-            </div>
-        <div class="govuk-grid-row">
-            <div class="govuk-grid-column-full">
-                <div class="govuk-form-group inline">
-                    <div class="govuk-form-group govuk-!-margin-top-6">
-                        <button type="submit" class="govuk-button" id="submit-button">Approve</button>
-                        <a asp-route="@RouteNames.Dashboard_Index_Get" class="govuk-link das-button-link">Back to QA dashboard</a>
-                    </div>
-                </div>
+    
+        <div esfa-validation-marker-for="ReviewerComment" class="govuk-form-group">
+            <h2 class="govuk-heading-m">Reviewer's Comments</h2>
+            <ul class="govuk-!-margin-bottom-6 govuk-list" id="automatedqarules-selected-comments"></ul>
+            <span asp-validation-for="ReviewerComment" class="govuk-error-message"></span>
+            <div class="govuk-form-group">
+                <textarea asp-for="ReviewerComment"
+                            class="govuk-textarea"
+                            cols="20"
+                            rows="5"
+                            size="12"
+                            type="text"
+                            data-val-length-max="@VacancyReviewValidator.ManualQaCommentMaxLength"></textarea>
+                <span class="maxchar-count"></span>
+                <span class="maxchar-text"></span>
             </div>
         </div>
+
+        <div class="govuk-form-group inline">
+            <div class="govuk-form-group govuk-!-margin-top-6">
+                <button type="submit" class="govuk-button" id="submit-button">Approve</button>
+                <a asp-route="@RouteNames.Dashboard_Index_Get" class="govuk-link das-button-link">Back to QA dashboard</a>
+            </div>
+        </div>
+       
     </form>
 </div>
 <script nws-csp-add-nonce="true">
@@ -589,3 +586,11 @@
         rebuildAutomatedQaReviewersComment();
     });
 </script>
+
+@section FooterJS
+    {
+    <script src="/lib/tinymce-4.9.2/tinymce.min.js"></script>
+    <script nws-csp-add-nonce="true">
+        initializeHtmlEditors();
+    </script>
+}
