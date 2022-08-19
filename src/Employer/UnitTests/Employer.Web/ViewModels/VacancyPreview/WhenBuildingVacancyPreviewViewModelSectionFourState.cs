@@ -101,6 +101,5 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.VacancyPreview
 
             model.TaskListSectionFourState.Should().Be(VacancyTaskListSectionState.Completed);
         }
-        
     }
 }

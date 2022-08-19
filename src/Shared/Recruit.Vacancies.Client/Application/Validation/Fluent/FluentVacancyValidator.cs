@@ -70,6 +70,16 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
             }
         }
 
+        private string ApplicantContext
+        {
+            get
+            {
+                return IsApprenticeshipVacancy 
+                    ? "apprentice" 
+                    : "trainee";
+            }
+        }
+
         private void SingleFieldValidations()
         {
             if (IsApprenticeshipVacancy)
@@ -320,7 +330,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
         {
             RuleFor(x => x.StartDate)
                 .NotNull()
-                .WithMessage($"Enter when you expect the {(IsApprenticeshipVacancy? "apprentice" :"trainee")} to start")
+                .WithMessage($"Enter when you expect the {ApplicantContext} to start")
                     .WithErrorCode("20")
                 .GreaterThan(v => v.ClosingDate)
                 .WithMessage("Start date cannot be before the closing date. We advise using a date more than 14 days from now.")
@@ -524,7 +534,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
             {
                 RuleFor(x => x.Wage.WeeklyHours)
                     .NotEmpty()
-                        .WithMessage($"Enter how many hours the {(IsApprenticeshipVacancy? "apprentice" :"trainee")} will work each week, including training")
+                        .WithMessage($"Enter how many hours the {ApplicantContext} will work each week, including training")
                         .WithErrorCode("40")
                     .GreaterThanOrEqualTo(16)
                         .WithMessage("The total hours a week must be at least {ComparisonValue}")
@@ -618,16 +628,16 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
         {
             RuleFor(x => x.Description)
                 .NotEmpty()
-                    .WithMessage($"Enter what the {(IsApprenticeshipVacancy? "apprentice" :"trainee")} will be doing")
+                    .WithMessage($"Enter what the {ApplicantContext} will be doing")
                     .WithErrorCode("53")
                 .MaximumLength(4000)
-                    .WithMessage($"What the {VacancyContext} involves must not exceed {{MaxLength}} characters")
+                    .WithMessage($"What the {ApplicantContext} will be doing must not exceed {{MaxLength}} characters")
                     .WithErrorCode("7")
                 .ValidHtmlCharacters(_htmlSanitizerService)
-                    .WithMessage($"What the {VacancyContext} involves contains some invalid characters")
+                    .WithMessage($"What the {ApplicantContext} will be doing contains some invalid characters")
                     .WithErrorCode("6")
                 .ProfanityCheck(_profanityListProvider)
-                .WithMessage($"What the {VacancyContext} involves must not contain a banned word or phrase.")
+                .WithMessage($"What the {ApplicantContext} will be doing must not contain a banned word or phrase.")
                 .WithErrorCode("609")
                 .RunCondition(VacancyRuleSet.Description)
                 .WithRuleId(VacancyRuleSet.Description);
@@ -643,17 +653,17 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                     .WithErrorCode("54")
                 .MaximumLength(4000)
                     .WithMessage(IsApprenticeshipVacancy
-                    ? "Training to be provided description must not exceed {MaxLength} characters"
+                    ? "Training and qualifications the apprentice will get must not exceed {MaxLength} characters"
                     : "Training provided must not exceed {MaxLength} characters")
                     .WithErrorCode("7")
                 .ValidHtmlCharacters(_htmlSanitizerService)
                     .WithMessage(IsApprenticeshipVacancy
-                    ? "Training to be provided description contains some invalid characters"
+                    ? "Training and qualifications the apprentice will get contains some invalid characters"
                     : "Training provided contains some invalid characters")
                     .WithErrorCode("6")
                 .ProfanityCheck(_profanityListProvider)
                 .WithMessage(IsApprenticeshipVacancy
-                    ? "Training to be provided description must not contain a banned word or phrase"
+                    ? "Training and qualifications the apprentice will get must not contain a banned word or phrase"
                     : "Training provided must not contain a banned word or phrase")
                 .WithErrorCode("610")
                 .RunCondition(VacancyRuleSet.TrainingDescription)
@@ -664,7 +674,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
         {
             RuleFor(x => x.OutcomeDescription)
                 .NotEmpty()
-                    .WithMessage($"Enter the expected career progression after this {(IsApprenticeshipVacancy? "apprenticeship" : "traineeship")}")
+                    .WithMessage($"Enter the expected career progression after this {VacancyContext}")
                     .WithErrorCode("55")
                 .MaximumLength(4000)
                     .WithMessage("Expected career progression must not exceed {MaxLength} characters")

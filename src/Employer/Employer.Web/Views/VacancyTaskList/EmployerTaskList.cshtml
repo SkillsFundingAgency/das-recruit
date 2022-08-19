@@ -115,13 +115,13 @@
                         @if (Model.ShortDescriptionSectionState == VacancyPreviewSectionState.Incomplete)
                         {
                             <span>
-                                About the apprenticeship
+                                Tasks and training details
                             </span>
                         }
                         else
                         {
                             <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.VacancyDescription_Index_Get">
-                                About the apprenticeship
+                                Tasks and training details
                             </a>
                         }
                     </li>
@@ -151,13 +151,13 @@
                         @if (Model.TaskListSectionOneState != VacancyTaskListSectionState.Completed)
                         {
                             <span class="das-task-list__task-name">
-                                Important dates
+                                Closing and start dates
                             </span>    
                         }
                         else
                         {
                             <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.Dates_Get">
-                                Important dates
+                                Closing and start dates
                             </a>
                         }
                     </li>
@@ -189,7 +189,6 @@
                             </a>
                         }
                     </li>
-                    
                     <li class="das-task-list__item">
                         @if (Model.WageTextSectionState == VacancyPreviewSectionState.Incomplete)
                         {
@@ -223,7 +222,7 @@
             <li>
                 <h2 class="das-task-list__section">
                     <span class="das-task-list__section-number">3. </span> 
-                    <span class="das-task-list__section-heading">Skills and qualifications</span>
+                    <span class="das-task-list__section-heading">Requirements and prospects</span>
                     <span class="das-task-list__section-status">
                         @if(Model.TaskListSectionThreeState == VacancyTaskListSectionState.InProgress)
                         {
@@ -271,6 +270,20 @@
                     </li>
                     <li class="das-task-list__item">
                         @if (Model.QualificationsSectionState == VacancyPreviewSectionState.Incomplete)
+                        {
+                            <span>
+                                Future prospects
+                            </span>
+                        }
+                        else
+                        {
+                            <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.FutureProspects_Get">
+                                Future prospects
+                            </a>
+                        }
+                    </li>
+                    <li class="das-task-list__item">
+                        @if (Model.FutureProspectsSectionState == VacancyPreviewSectionState.Incomplete)
                         {
                             <span>
                                 Other things to consider
