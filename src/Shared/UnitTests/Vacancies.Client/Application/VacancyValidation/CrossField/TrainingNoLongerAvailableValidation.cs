@@ -82,5 +82,29 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation.
             result.Errors.Should().HaveCount(1);
             result.Errors.FirstOrDefault().ErrorMessage.Should().Be("The training course you have selected is no longer available. You can select a new course or create a new advert.");
         }
+
+        [Fact]
+        public void Training_Is_Not_Valid_If_No_Longer_Available()
+        {
+            var mockTimeProvider = new Mock<ITimeProvider>();
+            mockTimeProvider.Setup(x => x.Now).Returns(DateTime.UtcNow.AddDays(8));
+            TimeProvider = mockTimeProvider.Object;
+            var programmes = new List<IApprenticeshipProgramme>
+            {
+                new TestApprenticeshipProgramme {Id = "1234", EffectiveTo = DateTime.UtcNow.AddDays(7) }
+            };
+            MockApprenticeshipProgrammeProvider.Setup(x => x.GetApprenticeshipProgrammesAsync(false)).ReturnsAsync(programmes);
+            var vacancy = new Vacancy
+            {
+                ProgrammeId = "123",
+                StartDate = DateTime.UtcNow.AddDays(10)
+            };
+         
+            var result = Validator.Validate(vacancy, VacancyRuleSet.TrainingExpiryDate);
+
+            result.HasErrors.Should().BeTrue();
+            result.Errors.Should().HaveCount(1);
+            result.Errors.FirstOrDefault().ErrorMessage.Should().Be("The training course you have selected is no longer available. You can select a new course or create a new advert.");
+        }
     }
 }
