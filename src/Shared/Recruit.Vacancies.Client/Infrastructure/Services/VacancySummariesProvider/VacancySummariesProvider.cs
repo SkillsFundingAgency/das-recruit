@@ -324,7 +324,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
 
             if (ukprn.HasValue)
             {
-                document.Add("trainingProvider.ukprn", ukprn.Value.ToString());
+                document.Add("trainingProvider.ukprn", ukprn.Value);
             }
             if (!string.IsNullOrEmpty(employerAccountId))
             {
