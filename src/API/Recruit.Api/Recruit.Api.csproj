@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+	  <TargetFramework>net6.0</TargetFramework>
     <UserSecretsId>recruit-api</UserSecretsId>
     <RootNamespace>SFA.DAS.Recruit.Api</RootNamespace>
     <AssemblyName>SFA.DAS.Recruit.Api</AssemblyName>
