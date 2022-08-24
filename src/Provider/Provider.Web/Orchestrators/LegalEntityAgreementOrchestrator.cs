@@ -12,27 +12,30 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
         private readonly IProviderVacancyClient _client;
         private readonly IRecruitVacancyClient _vacancyClient;
         private readonly ILegalEntityAgreementService _legalEntityAgreementService;
+        private readonly IUtility _utility;
 
         public LegalEntityAgreementOrchestrator(
             IProviderVacancyClient client,
             IRecruitVacancyClient vacancyClient,
-            ILegalEntityAgreementService legalEntityAgreementService)
+            ILegalEntityAgreementService legalEntityAgreementService,
+            IUtility utility)
         {
             _client = client;
             _vacancyClient = vacancyClient;
             _legalEntityAgreementService = legalEntityAgreementService;
+            _utility = utility;
         }
 
         public async Task<LegalEntityAgreementHardStopViewModel> GetLegalEntityAgreementHardStopViewModelAsync(VacancyRouteModel vrm)
         {
-            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(
-                _client, _vacancyClient, vrm, RouteNames.LegalEntityAgreement_HardStop_Get);
+            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.LegalEntityAgreement_HardStop_Get);
 
             return new LegalEntityAgreementHardStopViewModel
             {
                 HasLegalEntityAgreement = await _legalEntityAgreementService.HasLegalEntityAgreementAsync(
                     vacancy.EmployerAccountId, vacancy.AccountLegalEntityPublicHashedId),
-                LegalEntityName = vacancy.LegalEntityName
+                LegalEntityName = vacancy.LegalEntityName,
+                Ukprn = vrm.Ukprn
             };
         }
     }

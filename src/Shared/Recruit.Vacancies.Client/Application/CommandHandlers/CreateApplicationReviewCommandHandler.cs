@@ -12,7 +12,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 {
-    public class CreateApplicationReviewCommandHandler : IRequestHandler<CreateApplicationReviewCommand>
+    public class CreateApplicationReviewCommandHandler : IRequestHandler<CreateApplicationReviewCommand,Unit>
     {
         private readonly IVacancyRepository _vacancyRepository;
         private readonly ILogger<CreateApplicationReviewCommandHandler> _logger;
@@ -29,7 +29,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             _messaging = messaging;
         }
 
-        public async Task Handle(CreateApplicationReviewCommand message, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(CreateApplicationReviewCommand message, CancellationToken cancellationToken)
         {
             _logger.LogInformation("Submitting application for vacancyId: {vacancyReference} for candidateId: {candidateId}", message.Application.VacancyReference, message.Application.CandidateId);
 
@@ -40,7 +40,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             {
                 _logger.LogWarning("Application review already exists for vacancyReference:{vacancyReference} and candidateId:{candidateId}. Found applicationReviewId:{applicationReviewId}",
                     vacancy.VacancyReference.Value, message.Application.CandidateId, existingReview.Id);
-                return;
+                return Unit.Value;
             }
             
             var review = new ApplicationReview
@@ -60,6 +60,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             {
                 VacancyReference = vacancy.VacancyReference.Value
             });
+            return Unit.Value;
         }
     }
 }

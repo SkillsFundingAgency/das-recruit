@@ -1,0 +1,76 @@
+﻿@using Microsoft.Extensions.Options
+@model Esfa.Recruit.Provider.Web.RouteModel.VacancyRouteModel
+@inject IOptions<ExternalLinksConfiguration> _externalLinks
+
+@{ 
+    ViewBag.ZenDeskLabel = "recruit-recruitment"; 
+    ViewBag.Title = "Create a vacancy";
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-xl">Create a vacancy</h1>
+        @if (_serviceParameters.VacancyType is VacancyType.Traineeship)
+        {
+            <p class="govuk-body-l">
+                Recruit a trainee by creating a vacancy on
+                <a href="@_externalLinks.Value.FindATraineeshipUrl" class="govuk-link govuk-link--no-visited-state" target="_blank">Find a traineeship (opens in a new tab)</a>.
+            </p>
+            <h2 class="govuk-heading-m">Before you start</h2>
+            <p class="govuk-body">Before you create a vacancy, you'll need to know:</p>
+            <ul class="govuk-list govuk-list--bullet">
+                <li>
+                    the name of the employer
+                </li>
+                <li>
+                    what work experience the trainee will get
+                </li>
+                <li>
+                    the training the trainee will get from the training provider
+                </li>
+                <li>
+                    the duration of the traineeship
+                </li>
+                <li>
+                    the number of hours the trainee will be on placement each week
+                </li>
+            </ul>
+        }
+        else
+        {
+            <p class="govuk-body-l">
+                Recruit an apprentice by creating a vacancy on
+                <a href="@_externalLinks.Value.FindAnApprenticeshipUrl" class="govuk-link govuk-link--no-visited-state" target="_blank">Find an apprenticeship (opens in a new tab)</a>.
+            </p>
+            <h2 class="govuk-heading-m">Before you start</h2>
+            <p class="govuk-body">Before you create a vacancy, you'll need to know:</p>
+            <ul class="govuk-list govuk-list--bullet">
+                <li>
+                    the name of the employer
+                </li>
+                <li>
+                    the name of the apprenticeship training course
+                </li>
+                <li>
+                    the duration of the apprenticeship
+                </li>
+                <li>
+                    the number of hours spent working and training
+                </li>
+                <li>
+                    how much your apprentice will be paid
+                </li>
+            </ul>
+            <div class="govuk-inset-text"> You can use our <a asp-route="@RouteNames.Dashboard_ProviderRecruitmentApi" asp-route-ukprn="@Model.Ukprn" class="govuk-link" target="_blank">recruitment Application Programming Interfaces (APIs) (opens in a new tab)</a> to create vacancies using your existing systems or display vacancies from Find an apprenticeship on your website.
+            </div>
+        }
+
+        <esfaFeatureEnabled name="@FeatureNames.ProviderTaskList">
+            <a asp-route="@RouteNames.Employer_Get"  asp-all-route-data="@Model.RouteDictionary" role="button" class="govuk-button govuk-button--start" esfa-automation="create-vacancy">Start now</a>    
+        </esfaFeatureEnabled>
+        <esfaFeatureDisabled name="@FeatureNames.ProviderTaskList">
+            <a asp-route="@RouteNames.Employer_Get"  asp-all-route-data="@Model.RouteDictionary" role="button" class="govuk-button govuk-button--start" esfa-automation="create-vacancy">Create vacancy</a>
+        </esfaFeatureDisabled>
+        
+    </div>
+</div>

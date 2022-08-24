@@ -137,7 +137,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Reports
             try
             {
                 List<BsonDocument> currentResults =
-                        await RetryPolicy.ExecuteAsync(_ =>
+                        await RetryPolicy.Execute(_ =>
                             _collection.Aggregate<BsonDocument>(queryBson).ToListAsync(),
                             new Context(nameof(GetApplicationReviewsAsync)));
 

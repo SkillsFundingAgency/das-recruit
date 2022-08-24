@@ -12,7 +12,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 {
-    public class CreateReportCommandHandler : IRequestHandler<CreateReportCommand>
+    public class CreateReportCommandHandler : IRequestHandler<CreateReportCommand, Unit>
     {
         private readonly ILogger<CreateReportCommandHandler> _logger;
         private readonly IReportRepository _repository;
@@ -31,7 +31,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             _queue = queue;
         }
 
-        public async Task Handle(CreateReportCommand message, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(CreateReportCommand message, CancellationToken cancellationToken)
         {
             _logger.LogInformation("Creating report '{reportType}' with parameters '{reportParameters}' requested by {userId}", message.ReportType, message.Parameters, message.RequestedBy.UserId);
 
@@ -57,6 +57,8 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             await _queue.AddMessageAsync(queueMessage);
 
             _logger.LogInformation("Finished create report '{reportType}' with parameters '{reportParameters}' requested by {userId}", message.ReportType, message.Parameters, message.RequestedBy.UserId);
+            
+            return Unit.Value;
         }
     }
 }

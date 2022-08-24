@@ -1,4 +1,5 @@
-﻿using Esfa.Recruit.Provider.Web.Filters;
+﻿using System;
+using Esfa.Recruit.Provider.Web.Filters;
 using Esfa.Recruit.Provider.Web.Mappings;
 using Esfa.Recruit.Provider.Web.Orchestrators;
 using Esfa.Recruit.Shared.Web.Configuration;
@@ -18,9 +19,10 @@ using Esfa.Recruit.Provider.Web.Orchestrators.Reports;
 using Esfa.Recruit.Provider.Web.ViewModels.Reports.ProviderApplicationsReport;
 using Esfa.Recruit.Vacancies.Client.Ioc;
 using FluentValidation;
-using Esfa.Recruit.Provider.Web.Configuration.Routing;
 using Esfa.Recruit.Provider.Web.Services;
+using Esfa.Recruit.Provider.Web.TagHelpers;
 using Esfa.Recruit.Shared.Web.Orchestrators;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
 namespace Esfa.Recruit.Provider.Web.Configuration
 {
@@ -28,15 +30,17 @@ namespace Esfa.Recruit.Provider.Web.Configuration
     {
         public static void AddIoC(this IServiceCollection services, IConfiguration configuration)
         {
+            var serviceParameters = new ServiceParameters(configuration[$"RecruitConfiguration:{nameof(VacancyType)}"]);
+            
+            services.AddSingleton(serviceParameters);
+            
             services.AddRecruitStorageClient(configuration);
 
             //Configuration
             services.Configure<ApplicationInsightsConfiguration>(configuration.GetSection("ApplicationInsights"));
             services.Configure<ExternalLinksConfiguration>(configuration.GetSection("ExternalLinks"));
-            services.Configure<ProviderApprenticeshipsRoutes>(configuration.GetSection(nameof(ProviderApprenticeshipsRoutes)));
             services.Configure<AuthenticationConfiguration>(configuration.GetSection("Authentication"));
             services.Configure<GoogleAnalyticsConfiguration>(configuration.GetSection("GoogleAnalytics"));
-            services.Configure<PostcodeAnywhereConfiguration>(configuration.GetSection("PostcodeAnywhere"));
             services.Configure<FaaConfiguration>(configuration.GetSection("FaaConfiguration"));
             services.Configure<ZenDeskConfiguration>(configuration.GetSection("ZenDesk"));
             services.AddSingleton<ProviderApprenticeshipsLinkHelper>();
@@ -59,12 +63,15 @@ namespace Esfa.Recruit.Provider.Web.Configuration
 
         private static void RegisterServiceDeps(IServiceCollection services, IConfiguration configuration)
         {
-            services.AddTransient<IGeocodeImageService>(_ => new GoogleMapsGeocodeImageService(configuration.GetValue<string>("GoogleMapsPrivateKey")));
+            services.AddTransient<IGeocodeImageService>(_ => new GoogleMapsGeocodeImageService(configuration.GetValue<string>("RecruitConfiguration:GoogleMapsPrivateKey")));
             services.AddTransient<IReviewSummaryService, ReviewSummaryService>();
             services.AddTransient<ILegalEntityAgreementService, LegalEntityAgreementService>();
             services.AddTransient<AlertViewModelService>();
             services.AddTransient<IProviderAlertsViewModelFactory, ProviderAlertsViewModelFactory>();
             services.AddTransient<ITrainingProviderAgreementService, TrainingProviderAgreementService>();
+            services.AddTransient<IUtility, Utility>();
+
+            services.AddTransient<IFieldReviewHelper, FieldReviewHelper>();
         }
 
         private static void RegisterFluentValidators(IServiceCollection services)
@@ -90,6 +97,7 @@ namespace Esfa.Recruit.Provider.Web.Configuration
             services.AddTransient<ShortDescriptionOrchestrator>();
             services.AddTransient<SkillsOrchestrator>();
             services.AddTransient<SubmittedOrchestrator>();
+            services.AddTransient<ReviewedOrchestrator>();
             services.AddTransient<TitleOrchestrator>();
             services.AddTransient<NumberOfPositionsOrchestrator>();
             services.AddTransient<TrainingOrchestrator>();
@@ -113,6 +121,10 @@ namespace Esfa.Recruit.Provider.Web.Configuration
             services.AddTransient<AlertsOrchestrator>();
             services.AddTransient<ProviderAgreementOrchestrator>();
             services.AddTransient<DurationOrchestrator>();
+            services.AddTransient<VacancyTaskListOrchestrator>();
+            services.AddTransient<FutureProspectsOrchestrator>();
+            services.AddTransient<WorkExperienceOrchestrator>();
+            services.AddTransient<TraineeSectorOrchestrator>();
         }
 
         private static void RegisterMapperDeps(IServiceCollection services)

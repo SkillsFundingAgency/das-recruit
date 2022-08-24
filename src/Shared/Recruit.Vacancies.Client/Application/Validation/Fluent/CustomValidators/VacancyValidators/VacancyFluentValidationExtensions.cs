@@ -3,11 +3,13 @@ using System.Linq;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
+using Esfa.Recruit.Vacancies.Client.Domain.Models;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelationship;
 using FluentValidation;
 using FluentValidation.Internal;
 using FluentValidation.Results;
+using FluentValidation.Validators;
 using SFA.DAS.VacancyServices.Wage;
 using WageType = SFA.DAS.VacancyServices.Wage.WageType;
 
@@ -60,7 +62,29 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomVali
             });
         }
 
-        internal static IRuleBuilderInitial<Vacancy, Vacancy> TrainingMustBeActiveForStartDate(this IRuleBuilder<Vacancy, Vacancy> ruleBuilder, IApprenticeshipProgrammeProvider apprenticeshipProgrammesProvider)
+        internal static IRuleBuilderInitial<Vacancy, Vacancy> TrainingMustExist(
+            this IRuleBuilder<Vacancy, Vacancy> ruleBuilder,
+            IApprenticeshipProgrammeProvider apprenticeshipProgrammeProvider)
+        {
+            return ruleBuilder.CustomAsync(async (vacancy, context, cancellationToken) =>
+            {
+                var programme =
+                    await apprenticeshipProgrammeProvider.GetApprenticeshipProgrammeAsync(vacancy.ProgrammeId);
+
+                if (programme == null)
+                {
+                    var message = $"Training programme {vacancy.ProgrammeId} does not exist.";
+                    var failure = new ValidationFailure(string.Empty, message)
+                    {
+                        ErrorCode = ErrorCodes.TrainingNotExist,
+                        CustomState = VacancyRuleSet.TrainingProgramme,
+                        PropertyName = nameof(Vacancy.ProgrammeId)
+                    };
+                    context.AddFailure(failure);
+                }
+            });
+        }
+        internal static IRuleBuilderInitial<Vacancy, Vacancy> TrainingMustBeActiveForCurrentDate(this IRuleBuilder<Vacancy, Vacancy> ruleBuilder, IApprenticeshipProgrammeProvider apprenticeshipProgrammesProvider, ITimeProvider timeProvider)
         {
             return ruleBuilder.CustomAsync(async (vacancy, context, cancellationToken) =>
             {
@@ -68,9 +92,49 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomVali
 
                 var matchingProgramme = allProgrammes.SingleOrDefault(x => x.Id.Equals(vacancy.ProgrammeId, StringComparison.InvariantCultureIgnoreCase));
 
-                if (matchingProgramme.EffectiveTo != null && matchingProgramme.EffectiveTo < vacancy.StartDate)
+                if (matchingProgramme == null || (matchingProgramme.LastDateStarts != null && matchingProgramme.LastDateStarts < timeProvider.Now.Date) ||
+                    (matchingProgramme.EffectiveTo != null && matchingProgramme.EffectiveTo < timeProvider.Now.Date))
                 {
-                    var message = $"The start date must be before {matchingProgramme.EffectiveTo.Value.AsGdsDate()} when the apprenticeship training closes to new starters.";
+                    var failure = new ValidationFailure(string.Empty, "The training course you have selected is no longer available. You can select a new course or create a new advert.")
+                    {
+                        ErrorCode = ErrorCodes.TrainingNotExist,
+                        CustomState = VacancyRuleSet.TrainingProgramme,
+                        PropertyName = nameof(Vacancy.ProgrammeId),
+                    };
+                    context.AddFailure(failure);
+                    
+                }
+            });
+        }
+
+        internal static IRuleBuilderInitial<Vacancy, Vacancy> TrainingMustBeActiveForStartDate(this IRuleBuilder<Vacancy, Vacancy> ruleBuilder, IApprenticeshipProgrammeProvider apprenticeshipProgrammesProvider)
+        {
+            return ruleBuilder.CustomAsync(async (vacancy, context, cancellationToken) =>
+            {
+                if (!vacancy.StartDate.HasValue)
+                {
+                    var message = $"The start date must have a value.";
+                    var failure = new ValidationFailure(string.Empty, message)
+                    {
+                        ErrorCode = ErrorCodes.TrainingExpiryDate,
+                        CustomState = VacancyRuleSet.TrainingExpiryDate,
+                        PropertyName = nameof(Vacancy.StartDate)
+                    };
+                    context.AddFailure(failure);
+                }
+                
+                var allProgrammes = await apprenticeshipProgrammesProvider.GetApprenticeshipProgrammesAsync();
+
+                var matchingProgramme = allProgrammes.SingleOrDefault(x => x.Id.Equals(vacancy.ProgrammeId, StringComparison.InvariantCultureIgnoreCase));
+
+                if ((matchingProgramme.LastDateStarts != null && matchingProgramme.LastDateStarts < vacancy.StartDate) ||
+                    (matchingProgramme.EffectiveTo !=null && matchingProgramme.EffectiveTo < vacancy.StartDate))
+                {
+                    var dateToDisplay = matchingProgramme.LastDateStarts.HasValue 
+                        ? matchingProgramme.LastDateStarts.Value.AsGdsDate()
+                        : matchingProgramme.EffectiveTo.Value.AsGdsDate();
+                    
+                    var message = $"Start date must be on or before {dateToDisplay} as this is the last day for new starters for the training course you have selected. If you don’t want to change the start date, you can change the training course.";
                     var failure = new ValidationFailure(string.Empty, message)
                     {
                         ErrorCode = ErrorCodes.TrainingExpiryDate,
@@ -86,9 +150,10 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomVali
         {
             return ruleBuilder.CustomAsync(async (trainingProvider, context, cancellationToken) =>
             {
-                if (trainingProvider.Ukprn.HasValue && 
-                    (await trainingProviderSummaryProvider.GetAsync(trainingProvider.Ukprn.Value)) != null)
-                return;
+                if (trainingProvider.Ukprn.HasValue && (await trainingProviderSummaryProvider.GetAsync(trainingProvider.Ukprn.Value)) != null)
+                {
+                    return;
+                }
 
                 var failure = new ValidationFailure(nameof(Vacancy.TrainingProvider), "The UKPRN is not valid or the associated provider is not active")
                 {
@@ -126,7 +191,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomVali
                 if (vacancy.OwnerType != OwnerType.Provider)
                     return;
 
-                var hasPermission = await providerRelationshipService.HasProviderGotEmployersPermissionAsync(vacancy.TrainingProvider.Ukprn.Value, vacancy.EmployerAccountId, vacancy.AccountLegalEntityPublicHashedId);
+                var hasPermission = await providerRelationshipService.HasProviderGotEmployersPermissionAsync(vacancy.TrainingProvider.Ukprn.Value, vacancy.EmployerAccountId, vacancy.AccountLegalEntityPublicHashedId, OperationType.Recruitment);
 
                 if (hasPermission)
                     return;
@@ -157,7 +222,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomVali
                 // Set rule type in context so it can be returned in error object
                 foreach (var validator in c.Validators)
                 {
-                    validator.CustomStateProvider = s => ruleId;
+                    validator.Options.CustomStateProvider = s => ruleId;
                 }
             });
         }
@@ -169,14 +234,14 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomVali
                 // Set rule type in context so it can be returned in error object
                 foreach (var validator in c.Validators)
                 {
-                    validator.CustomStateProvider = s => ruleId;
+                    validator.Options.CustomStateProvider = s => ruleId;
                 }
             });
         }
 
-        private static bool CanRunValidator(this ValidationContext context, VacancyRuleSet validationToCheck)
+        private static bool CanRunValidator(this PropertyValidatorContext context, VacancyRuleSet validationToCheck)
         {
-            var validationsToRun = (VacancyRuleSet)context.RootContextData[ValidationConstants.ValidationsRulesKey];
+            var validationsToRun = (VacancyRuleSet)context.ParentContext.RootContextData[ValidationConstants.ValidationsRulesKey];
 
             return (validationsToRun & validationToCheck) > 0;
         }

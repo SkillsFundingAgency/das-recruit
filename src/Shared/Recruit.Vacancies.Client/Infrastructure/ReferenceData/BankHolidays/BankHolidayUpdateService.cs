@@ -12,15 +12,13 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.BankHoliday
 {
     public class BankHolidayUpdateService : IBankHolidayUpdateService
     {
-        private readonly BankHolidayConfiguration _config;
         private readonly IReferenceDataWriter _referenceDataWriter;
         private readonly ILogger<BankHolidayUpdateService> _logger;        
         private readonly IReferenceDataReader _referenceDataReader;
 
-        public BankHolidayUpdateService(IOptions<BankHolidayConfiguration> config, IReferenceDataWriter referenceDataWriter, 
+        public BankHolidayUpdateService( IReferenceDataWriter referenceDataWriter, 
             ILogger<BankHolidayUpdateService> logger, IReferenceDataReader referenceDataReader)
         {
-            _config = config.Value;
             _referenceDataWriter = referenceDataWriter;
             _logger = logger;            
             _referenceDataReader = referenceDataReader;
@@ -28,15 +26,15 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.BankHoliday
 
         public async Task UpdateBankHolidaysAsync()
         {
-            var client = new RestClient(_config.Url);
+            var client = new RestClient(BankHolidayConfiguration.Url);
             var request = new RestRequest();
             var response = await client.ExecuteTaskAsync<BankHolidays.BankHolidaysData>(request);
            
             if (!response.IsSuccessful)
-                throw new Exception($"Error getting list of bank holidays from url:{_config.Url}. Error:{response.ErrorMessage}");
+                throw new Exception($"Error getting list of bank holidays from url:{BankHolidayConfiguration.Url}. Error:{response.ErrorMessage}");
 
             if (!response.Data.EnglandAndWales.Events.Any())
-                throw new Exception($"Expected a non-empty list of bank holidays from url:{_config.Url}");
+                throw new Exception($"Expected a non-empty list of bank holidays from url:{BankHolidayConfiguration.Url}");
 
             var bankHolidaysFromApi = new BankHolidays
             {

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Esfa.Recruit.Qa.Web.Configuration;
 using Esfa.Recruit.Qa.Web.Configuration.Routing;
 using Esfa.Recruit.Qa.Web.Security;
@@ -111,14 +112,22 @@ namespace Esfa.Recruit.Qa.Web
         private static string[] GetAllowableDestinations(AuthenticationConfiguration authConfig, ExternalLinksConfiguration linksConfig)
         {
             var destinations = new List<string>();
-
+            
             if (!string.IsNullOrWhiteSpace(authConfig?.MetaDataAddress))
-                destinations.Add(authConfig.MetaDataAddress);
+                destinations.Add(ExtractAuthHost(authConfig));
 
             if (!string.IsNullOrWhiteSpace(linksConfig?.StaffIdamsUrl))
                 destinations.Add(linksConfig.StaffIdamsUrl);
 
             return destinations.ToArray();
+        }
+        
+        private static string ExtractAuthHost(AuthenticationConfiguration authConfig)
+        {
+            var metaDataAddress = new Uri(authConfig.MetaDataAddress);
+            var authHost = new UriBuilder(metaDataAddress.Scheme, metaDataAddress.Host).ToString();
+
+            return authHost;
         }
     }
 }

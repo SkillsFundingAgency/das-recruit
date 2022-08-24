@@ -1,0 +1,44 @@
+﻿@model Esfa.Recruit.Provider.Web.ViewModels.Part2.WorkExperience.WorkExperienceViewModel
+
+@{ 
+    ViewBag.GaData.Vpv = "/recruitment/provider/work-experience"; 
+    ViewBag.Title = "Work experience provided";
+}
+
+@section BackLink {
+    <a asp-route="@RouteNames.Dates_Get"  asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Back</a>
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState}' />
+        <partial name="@PartialNames.ReviewSummary" for="Review" />
+        <form asp-route="@RouteNames.WorkExperience_Post" asp-all-route-data="@Model.RouteDictionary">
+            <div esfa-validation-marker-for="WorkExperience" class="govuk-form-group">
+                <span class="govuk-caption-xl">@Model.Title</span>
+                <h1 class="govuk-label-wrapper">
+                    <label class="govuk-label govuk-label--xl" asp-for="WorkExperience" >
+                        What work experience will the employer give the trainee?
+                    </label>
+                </h1>
+                <span class="govuk-hint">Describe what an average day or week will be like and what tasks the trainee could be doing.</span>
+                <div class="govuk-inset-text">You must include at least 3 bullet points or your vacancy will be rejected.</div>
+                <span esfa-validation-message-for="WorkExperience" class="govuk-error-message"></span>
+                <textarea asp-for="WorkExperience" class="govuk-textarea html-editor" rows="9"></textarea>
+            </div>
+            <div class="govuk-button-group">
+                <input type="submit" value="Save and continue" esfa-automation="btn-continue" class="govuk-button save-button" />
+                <a asp-route="@RouteNames.Dashboard_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-cancel" class="govuk-link govuk-link--no-visited-state">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+@section FooterJS
+{
+    <script src="/lib/tinymce-4.9.2/tinymce.min.js" no-cdn></script>
+    <script nws-csp-add-nonce="true">
+        initializeHtmlEditors();
+    </script>
+}

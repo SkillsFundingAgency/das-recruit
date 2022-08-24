@@ -6,6 +6,7 @@ using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Provider.Web.ViewModels.Part1.NumberOfPositions;
 using Esfa.Recruit.Shared.Web.Orchestrators;
 using Esfa.Recruit.Shared.Web.Services;
+using Esfa.Recruit.Vacancies.Client.Application.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
@@ -13,31 +14,32 @@ using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
 {
-    public class NumberOfPositionsOrchestrator : EntityValidatingOrchestrator<Vacancy, NumberOfPositionsEditModel>
+    public class NumberOfPositionsOrchestrator : VacancyValidatingOrchestrator<NumberOfPositionsEditModel>
     {
         private const VacancyRuleSet ValidationRules = VacancyRuleSet.NumberOfPositions;
-        private readonly IProviderVacancyClient _providerVacancyClient;
         private readonly IRecruitVacancyClient _recruitVacancyClient;
         private readonly IReviewSummaryService _reviewSummaryService;
+        private readonly IUtility _utility;
 
-        public NumberOfPositionsOrchestrator(IProviderVacancyClient providerVacancyClient, IRecruitVacancyClient recruitVacancyClient, 
-            ILogger<NumberOfPositionsOrchestrator> logger, IReviewSummaryService reviewSummaryService) : base(logger)
+        public NumberOfPositionsOrchestrator(IRecruitVacancyClient recruitVacancyClient, 
+            ILogger<NumberOfPositionsOrchestrator> logger, IReviewSummaryService reviewSummaryService, IUtility utility) : base(logger)
         {
-            _providerVacancyClient = providerVacancyClient;
             _recruitVacancyClient = recruitVacancyClient;
             _reviewSummaryService = reviewSummaryService;
+            _utility = utility;
         }
 
         public async Task<NumberOfPositionsViewModel> GetNumberOfPositionsViewModelForExistingVacancyAsync(VacancyRouteModel vrm)
         {
-            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_providerVacancyClient, _recruitVacancyClient, vrm, RouteNames.NumberOfPositions_Get);
+            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.NumberOfPositions_Get);
 
             var vm = new NumberOfPositionsViewModel
             {
-                    VacancyId = vacancy.Id,
-                    NumberOfPositions = vacancy.NumberOfPositions?.ToString(),
-                    PageInfo = Utility.GetPartOnePageInfo(vacancy),
-                    Ukprn = vacancy.TrainingProvider.Ukprn.GetValueOrDefault()
+                Title = vacancy.Title,
+                VacancyId = vacancy.Id,
+                NumberOfPositions = vacancy.NumberOfPositions?.ToString(),
+                PageInfo = _utility.GetPartOnePageInfo(vacancy),
+                Ukprn = vacancy.TrainingProvider.Ukprn.GetValueOrDefault()
             };
 
             if (vacancy.Status == VacancyStatus.Referred)
@@ -58,9 +60,17 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
 
         public async Task<OrchestratorResponse<Guid>> PostNumberOfPositionsEditModelAsync(NumberOfPositionsEditModel model, VacancyUser user)
         {
-            var numberOfPositions = int.TryParse(model.NumberOfPositions, out var n) ? n : default(int?);
-            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_providerVacancyClient, _recruitVacancyClient, model, RouteNames.NumberOfPositions_Post);
-            vacancy.NumberOfPositions = numberOfPositions;
+            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(model, RouteNames.NumberOfPositions_Post);
+            
+            SetVacancyWithProviderReviewFieldIndicators(
+               vacancy.NumberOfPositions,
+               FieldIdResolver.ToFieldId(v => v.NumberOfPositions),
+               vacancy,
+               (v) =>
+               {
+                   return v.NumberOfPositions = int.TryParse(model.NumberOfPositions, out var n) ? n : default(int?);
+               });
+
             return await ValidateAndExecute(
                     vacancy,
                     v => _recruitVacancyClient.Validate(v, ValidationRules),

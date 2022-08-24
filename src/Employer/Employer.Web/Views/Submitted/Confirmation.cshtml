@@ -6,13 +6,14 @@
     ViewBag.Title = "Advert submitted for approval";
 }
 
-<h1 class="govuk-heading-l">@Model.Title</h1>
-
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-        <div asp-hide="@Model.IsResubmit" class="govuk-panel govuk-panel--confirmation">
-            <h1 class="govuk-panel__title">
+        <div class="govuk-panel govuk-panel--confirmation">
+            <h1 asp-hide="@Model.IsResubmit" class="govuk-panel__title">
                 Advert submitted for approval
+            </h1>
+            <h1 asp-show="@Model.IsResubmit" class="govuk-panel__title">
+                Advert resubmitted for approval
             </h1>
             <div class="govuk-panel__body">
                 <p asp-show="@Model.HasVacancyReference">
@@ -21,27 +22,16 @@
                 </p>
             </div>
         </div>
-        <div asp-show="@Model.IsResubmit" class="govuk-panel govuk-panel--confirmation">
-            <h1 class="govuk-panel__title">
-                Advert resubmitted for approval
-            </h1>
-        </div>
+        
         <h2 class="govuk-heading-m">What happens next</h2>
-        <div asp-show="@Model.HasNotificationsSet">
-            <p class="govuk-body">We’ll check the advert within one working day and let you know by email if you need to make any edits. <esfaFeatureEnabled name="@FeatureNames.SetNotificationPreferences"><a asp-route="@RouteNames.ManageNotifications_Get" class="govuk-link">Manage your emails</a>.</esfaFeatureEnabled></p>
-            <p class="govuk-body">When we approve your advert, it will appear on the <a href="@ExternalLinks.Value.FindAnApprenticeshipUrl" class="govuk-link" target="_blank">​Find an apprenticeship service (opens in a new tab or window)</a>.</p>
-        </div>
-        <div asp-hide="@Model.HasNotificationsSet">
-            <p class="govuk-body">We’ll check the advert within one working day and tell you on the dashboard if you need to make any edits. <esfaFeatureEnabled name="@FeatureNames.SetNotificationPreferences">You can <a asp-route="@RouteNames.ManageNotifications_Get" class="govuk-link">manage your emails</a> if you’d also like to get an email.</esfaFeatureEnabled></p>
-            <p class="govuk-body">When we approve your advert, it will appear on the <a href="@ExternalLinks.Value.FindAnApprenticeshipUrl" class="govuk-link" target="_blank">​Find an apprenticeship service (opens in a new tab or window)</a>.</p>
-        </div>
-        <div class="govuk-form-group inline">
-            <div class="govuk-form-group">
-                <a asp-route="@RouteNames.CreateVacancyOptions_Get" class="govuk-button">Create another advert</a>
-                <p class="govuk-body">
-                    <a asp-route="@RouteNames.Dashboard_Get" class="govuk-link">Return to dashboard</a>
-                </p>
-            </div>
-        </div>
+        <p class="govuk-body">We’ll check the advert and tell you within 24 hours if you need to make any edits. If the advert is not approved, we’ll let you know on the dashboard what changes you’ll need to make. <a asp-route="@RouteNames.ManageNotifications_Get" class="govuk-link">Manage your recruitment emails</a> if you'd rather get an email.</p>
+        <p class="govuk-body">When we approve your advert, it will appear on the <a href="@ExternalLinks.Value.FindAnApprenticeshipUrl" class="govuk-link" target="_blank">Find an apprenticeship service</a> (opens in a new tab).</p>
+        
+        <p class="govuk-body">
+            <a asp-route="@RouteNames.CreateVacancyStart" class="govuk-button">Create another advert</a>
+        </p>
+        <p class="govuk-body">
+            <a asp-route="@RouteNames.Dashboard_Get" class="govuk-link">Return to dashboard</a>
+        </p>
     </div>
 </div>

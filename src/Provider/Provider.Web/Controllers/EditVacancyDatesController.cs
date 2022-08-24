@@ -9,6 +9,7 @@ using System;
 using Esfa.Recruit.Provider.Web.Configuration;
 using Esfa.Recruit.Provider.Web.Extensions;
 using Esfa.Recruit.Shared.Web.Extensions;
+using Esfa.Recruit.Shared.Web.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 
 namespace Esfa.Recruit.Provider.Web.Controllers
@@ -39,13 +40,16 @@ namespace Esfa.Recruit.Provider.Web.Controllers
                 response.AddErrorsToModelState(ModelState);
             }
 
+            response.Data.Ukprn = vrm.Ukprn;
+            response.Data.VacancyId = vrm.VacancyId;
+
             return View(response.Data);
         }
 
         [HttpPost("edit-dates", Name = RouteNames.VacancyEditDates_Post)]
         public async Task<IActionResult> EditVacancyDates(EditVacancyDatesEditModel m)
         {
-            var response = await _orchestrator.PostEditVacancyDatesEditModelAsync(m);
+            var response = await _orchestrator.PostEditVacancyDatesEditModelAsync(m, User.ToVacancyUser());
 
             if (!response.Success)
             {
@@ -57,11 +61,11 @@ namespace Esfa.Recruit.Provider.Web.Controllers
                 var vm = await _orchestrator.GetEditVacancyDatesViewModelAsync(m);
                 return View(vm);
             }
+            
+            TempData.Add(TempDataKeys.VacanciesInfoMessage, string.Format(InfoMessages.VacancyUpdated, m.Title));
 
-            Response.Cookies.SetProposedClosingDate(_hostingEnvironment, m.VacancyId.GetValueOrDefault(), DateTime.Parse(m.ClosingDate));
-            Response.Cookies.SetProposedStartDate(_hostingEnvironment, m.VacancyId.GetValueOrDefault(), DateTime.Parse(m.StartDate));
 
-            return RedirectToRoute(RouteNames.VacancyEdit_Get);
+            return RedirectToRoute(RouteNames.Vacancies_Get, new {m.Ukprn});
         }
     }
 }

@@ -1,0 +1,55 @@
+﻿@model Esfa.Recruit.Provider.Web.ViewModels.Part2.FutureProspects.FutureProspectsViewModel
+
+@{ 
+    ViewBag.GaData.Vpv = "/recruitment/provider/future-prospects"; 
+    ViewBag.Title = "What is the expected career progression after this apprenticeship?";
+}
+
+@section BackLink {
+    @if (_serviceParameters.VacancyType == VacancyType.Apprenticeship)
+    {
+        <a asp-route="@RouteNames.Qualifications_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Back</a>
+    }
+    @if (_serviceParameters.VacancyType == VacancyType.Traineeship)
+    {
+        <a asp-route="@RouteNames.Skills_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Back</a>
+    }
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        
+        <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState}' />
+        <partial name="@PartialNames.ReviewSummary" for="Review" />
+
+        <form asp-route="@RouteNames.FutureProspects_Get" asp-all-route-data="@Model.RouteDictionary">
+
+            <div esfa-validation-marker-for="FutureProspects" class="govuk-form-group">
+                <span class="govuk-caption-xl">@Model.Title</span>
+                <h1 class="govuk-label-wrapper">
+                    <label class="govuk-label govuk-label--xl" asp-for="FutureProspects" >
+                        What is the expected career progression after this @(_serviceParameters.VacancyType == VacancyType.Apprenticeship ? "apprenticeship" : "traineeship")?
+                    </label>
+                </h1>
+                <span class="govuk-hint">
+                    @(_serviceParameters.VacancyType == VacancyType.Apprenticeship ? "You may want to mention specific routes they could take once qualified." : "You may want to mention specific routes they could take. For example, an apprenticeship, job or further education.")
+                </span>
+                <span esfa-validation-message-for="FutureProspects" class="govuk-error-message"></span>
+                <textarea asp-for="FutureProspects" class="govuk-textarea html-editor" rows="5"></textarea>
+            </div>
+
+            <div class="govuk-button-group">
+                <input type="submit" value="Save and continue" esfa-automation="btn-continue" class="govuk-button save-button" />
+                <a asp-route="@RouteNames.Dashboard_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-cancel" class="govuk-link govuk-link--no-visited-state">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section FooterJS
+    {
+    <script src="/lib/tinymce-4.9.2/tinymce.min.js" no-cdn></script>
+    <script nws-csp-add-nonce="true">
+        initializeHtmlEditors();
+    </script>
+}

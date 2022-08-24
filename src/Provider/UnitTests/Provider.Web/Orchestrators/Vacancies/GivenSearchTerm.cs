@@ -3,11 +3,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Provider.Web.Orchestrators;
 using Esfa.Recruit.Provider.Web.Services;
+using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Provider;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelationship;
 using FluentAssertions;
 using Moq;
 using Xunit;
@@ -20,6 +22,7 @@ namespace Esfa.Recruit.UnitTests.Provider.Web.Orchestrators.Vacancies
         private User _userDetails;
         private Mock<IRecruitVacancyClient> _recruitVacancyClientMock;
         private Mock<IProviderAlertsViewModelFactory> _providerAlertsViewModelFactoryMock;
+        private Mock<IProviderRelationshipsService> _providerRelationshipsServiceMock;
 
         private VacancySummary[] _testVacancies = new[] 
         {
@@ -66,7 +69,7 @@ namespace Esfa.Recruit.UnitTests.Provider.Web.Orchestrators.Vacancies
         {
             var providerClientMock = new Mock<IProviderVacancyClient>();
             var timeProviderMock = new Mock<ITimeProvider>();
-            providerClientMock.Setup(c => c.GetDashboardAsync(_user.Ukprn.Value, true))
+            providerClientMock.Setup(c => c.GetDashboardAsync(_user.Ukprn.Value, VacancyType.Apprenticeship, true))
                 .ReturnsAsync(new ProviderDashboard {
                     Vacancies = _testVacancies
                 });
@@ -74,7 +77,8 @@ namespace Esfa.Recruit.UnitTests.Provider.Web.Orchestrators.Vacancies
                 providerClientMock.Object,
                 _recruitVacancyClientMock.Object,
                 timeProviderMock.Object,
-                _providerAlertsViewModelFactoryMock.Object);
+                _providerAlertsViewModelFactoryMock.Object,
+                _providerRelationshipsServiceMock.Object, new ServiceParameters(VacancyType.Apprenticeship.ToString()));
         }
 
         public GivenSearchTerm()
@@ -101,6 +105,7 @@ namespace Esfa.Recruit.UnitTests.Provider.Web.Orchestrators.Vacancies
                 .ReturnsAsync(_userDetails);
 
             _providerAlertsViewModelFactoryMock = new Mock<IProviderAlertsViewModelFactory>();
+            _providerRelationshipsServiceMock = new Mock<IProviderRelationshipsService>();
         }
 
     }

@@ -1,11 +1,12 @@
 using System.Linq;
+using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Provider.Web.ViewModels.VacancyView;
 using Esfa.Recruit.Shared.Web.ViewModels;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
 namespace Esfa.Recruit.Provider.Web.ViewModels.VacancyManage
 {
-    public class ManageVacancyViewModel
+    public class ManageVacancyViewModel : VacancyRouteModel
     {
         public string Title { get; internal set; }
         public VacancyStatus Status { get; internal set; }
@@ -23,6 +24,7 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.VacancyManage
         public bool CanShowEditVacancyLink { get; internal set; }
         public bool CanShowCloseVacancyLink { get; internal set; }
         public bool CanShowCloneVacancyLink { get; internal set; }
+        public bool CanShowDeleteVacancyLink { get; internal set; }
         public string VacancyClosedInfoMessage { get; internal set; }
         public bool HasVacancyClosedInfoMessage => !string.IsNullOrEmpty(VacancyClosedInfoMessage);
         public string ApplicationReviewStatusHeaderInfoMessage { get; internal set; }
@@ -36,5 +38,6 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.VacancyManage
         public bool IsVacancyClosed => Status == VacancyStatus.Closed;
         public string WithdrawnDate { get; internal set; }
         public bool IsWithdrawn => !string.IsNullOrEmpty(WithdrawnDate);
+        public bool IsApplyThroughFatVacancy { get; internal set; }
     }
 }

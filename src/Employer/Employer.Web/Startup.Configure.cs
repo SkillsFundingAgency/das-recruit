@@ -11,6 +11,7 @@ using System.Globalization;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Middleware;
 using Microsoft.ApplicationInsights.Extensibility;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.IdentityModel.Logging;
 
 namespace Esfa.Recruit.Employer.Web
@@ -49,6 +50,9 @@ namespace Esfa.Recruit.Employer.Web
             {
                 IdentityModelEventSource.ShowPII = true;
             }
+            
+            app.UseHealthChecks();
+            
             // Add Content Security Policy           
             app.UseCsp(options => options
                 .DefaultSources(s =>
@@ -74,7 +78,13 @@ namespace Esfa.Recruit.Employer.Web
                                     "https://*.zendesk.com",
                                     "wss://*.zendesk.com",
                                     "wss://*.zopim.com",
-                                    "https://*.rcrsv.io"
+                                    "https://*.rcrsv.io",
+                                    "https://das-at-frnt-end.azureedge.net", 
+                                    "https://das-test-frnt-end.azureedge.net", 
+                                    "https://das-test2-frnt-end.azureedge.net",
+                                    "https://das-demo-frnt-end.azureedge.net", 
+                                    "https://das-pp-frnt-end.azureedge.net",
+                                    "https://das-prd-frnt-end.azureedge.net"
                                     );
 
                     //Google tag manager uses inline styles when administering tags. This is done on PREPROD only
@@ -89,26 +99,39 @@ namespace Esfa.Recruit.Employer.Web
                                     "*.google-analytics.com",
                                     "*.googleapis.com",
                                     "*.googletagmanager.com/",
-                                    "*.postcodeanywhere.co.uk/",
+                                    "https://tagmanager.google.com",
                                     "https://www.tagmanager.google.com/",
                                     "https://*.zdassets.com",
                                     "https://*.zendesk.com",
                                     "wss://*.zendesk.com",
                                     "wss://*.zopim.com",
-                                    "https://*.rcrsv.io");
+                                    "https://*.zopim.com",
+                                    "https://*.rcrsv.io",
+                                    "https://das-at-frnt-end.azureedge.net", 
+                                    "https://das-test-frnt-end.azureedge.net", 
+                                    "https://das-test2-frnt-end.azureedge.net",
+                                    "https://das-demo-frnt-end.azureedge.net", 
+                                    "https://das-pp-frnt-end.azureedge.net",
+                                    "https://das-prd-frnt-end.azureedge.net"
+                                    );
 
-                    //Google tag manager uses inline scripts when administering tags. This is done on PREPROD only
-                    if (env.IsEnvironment(EnvironmentNames.PREPROD))
-                    {
-                        s.UnsafeInline();
-                        s.UnsafeEval();
-                    }
+                    //Google tag manager uses inline scripts when administering tags
+                    s.UnsafeInline();
+                    s.UnsafeEval();
                 })
                 .FontSources(s =>
                     s.Self()
                     .CustomSources("data:",
+                                    "https://fonts.gstatic.com",
                                     "https://fonts.googleapis.com/",
-                                    "https://assets-ukdoe.rcrsv.io/")
+                                    "https://assets-ukdoe.rcrsv.io/", 
+                                    "https://das-at-frnt-end.azureedge.net", 
+                                    "https://das-test-frnt-end.azureedge.net", 
+                                    "https://das-test2-frnt-end.azureedge.net",
+                                    "https://das-demo-frnt-end.azureedge.net", 
+                                    "https://das-pp-frnt-end.azureedge.net",
+                                    "https://das-prd-frnt-end.azureedge.net"
+                                    )
                 )
                 .ConnectSources(s =>
                     s.Self()
@@ -116,6 +139,7 @@ namespace Esfa.Recruit.Employer.Web
                         "https://*.zendesk.com",
                         "https://*.zdassets.com",
                         "https://dc.services.visualstudio.com",
+                        "https://*.google-analytics.com",
                         "wss://*.zendesk.com",
                         "wss://*.zopim.com",
                         "https://*.rcrsv.io")
@@ -124,6 +148,7 @@ namespace Esfa.Recruit.Employer.Web
                     s.Self()
                     .CustomSources("https://maps.googleapis.com",
                                     "*.google-analytics.com",
+                                    "*.googletagmanager.com/",
                                     "https://ssl.gstatic.com",
                                     "https://www.gstatic.com/",
                                     "https://*.zopim.io",
@@ -131,6 +156,12 @@ namespace Esfa.Recruit.Employer.Web
                                     "https://*.zendesk.com",
                                     "wss://*.zendesk.com",
                                     "wss://*.zopim.com",
+                                    "https://das-at-frnt-end.azureedge.net", 
+                                    "https://das-test-frnt-end.azureedge.net", 
+                                    "https://das-test2-frnt-end.azureedge.net",
+                                    "https://das-demo-frnt-end.azureedge.net", 
+                                    "https://das-pp-frnt-end.azureedge.net",
+                                    "https://das-prd-frnt-end.azureedge.net",
                                     "data:")
                 )
                 .ReportUris(r => r.Uris("/ContentPolicyReport/Report")));
@@ -185,6 +216,12 @@ namespace Esfa.Recruit.Employer.Web
             if (!string.IsNullOrWhiteSpace(linksConfig?.EmployerFavouritesUrl))
                 destinations.Add(linksConfig.EmployerFavouritesUrl);
 
+            if (!string.IsNullOrWhiteSpace(linksConfig?.TrainingProviderPermissionUrl))
+                destinations.Add(linksConfig.TrainingProviderPermissionUrl);
+
+            if (!string.IsNullOrWhiteSpace(linksConfig?.EmployerRecruitmentApiUrl))
+                destinations.Add(linksConfig.EmployerRecruitmentApiUrl);
+            
             return destinations.ToArray();
         }
     }

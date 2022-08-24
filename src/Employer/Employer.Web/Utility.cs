@@ -1,32 +1,74 @@
-﻿using Esfa.Recruit.Vacancies.Client.Application.Exceptions;
+using Esfa.Recruit.Vacancies.Client.Application.Exceptions;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Exceptions;
+using Esfa.Recruit.Employer.Web.Models;
 using Esfa.Recruit.Employer.Web.RouteModel;
+using Esfa.Recruit.Shared.Web.FeatureToggle;
+using Esfa.Recruit.Shared.Web.Models;
 using Esfa.Recruit.Shared.Web.ViewModels;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummariesProvider;
 
 namespace Esfa.Recruit.Employer.Web
 {
-    public static class Utility
+    public interface IUtility : IVacancyTaskListStatusService
     {
-        public static async Task<Vacancy> GetAuthorisedVacancyForEditAsync(IEmployerVacancyClient client, IRecruitVacancyClient vacancyClient, VacancyRouteModel vrm, string routeName)
+        Task<Vacancy> GetAuthorisedVacancyForEditAsync(VacancyRouteModel vrm, string routeName);
+        Task<Vacancy> GetAuthorisedVacancyAsync(VacancyRouteModel vrm, string routeName);
+        void CheckCanEdit(Vacancy vacancy);
+        void CheckAuthorisedAccess(Vacancy vacancy, string employerAccountId);
+        void CheckRouteIsValidForVacancy(Vacancy vacancy, string currentRouteName);
+
+        /// <summary>
+        /// Returns a list of routes the user may access based on the current
+        /// state of the vacancy.
+        /// </summary>
+        /// <param name="vacancy"></param>
+        /// <returns>
+        ///  - null if section 1 of the wizard is complete
+        ///  - otherwise a list of accessible routes, where the last entry is the page to start the user on when editing the vacancy
+        /// </returns>
+        IList<string> GetPermittedRoutesForVacancy(Vacancy vacancy);
+
+        bool VacancyHasCompletedPartOne(Vacancy vacancy);
+        bool VacancyHasStartedPartTwo(Vacancy vacancy);
+        PartOnePageInfoViewModel GetPartOnePageInfo(Vacancy vacancy);
+        Task<ApplicationReview> GetAuthorisedApplicationReviewAsync(ApplicationReviewRouteModel rm);
+
+        Task UpdateEmployerProfile(VacancyEmployerInfoModel employerInfoModel, 
+            EmployerProfile employerProfile, Address address, VacancyUser user);
+    }
+    
+    public class Utility : VacancyTaskListStatusService, IUtility
+    {
+        private readonly IRecruitVacancyClient _vacancyClient;
+        private readonly IFeature _feature;
+
+        public Utility (IRecruitVacancyClient vacancyClient, IFeature feature)
         {
-            var vacancy = await GetAuthorisedVacancyAsync(vacancyClient, vrm, routeName);
+            _vacancyClient = vacancyClient;
+            _feature = feature;
+        }
+        
+        public async Task<Vacancy> GetAuthorisedVacancyForEditAsync(VacancyRouteModel vrm, string routeName)
+        {
+            var vacancy = await GetAuthorisedVacancyAsync(vrm, routeName);
 
             CheckCanEdit(vacancy);
 
             return vacancy;
         }
 
-        public static async Task<Vacancy> GetAuthorisedVacancyAsync(IRecruitVacancyClient client, VacancyRouteModel vrm, string routeName)
+        public async Task<Vacancy> GetAuthorisedVacancyAsync(VacancyRouteModel vrm, string routeName)
         {
-            var vacancy = await client.GetVacancyAsync(vrm.VacancyId);
+            var vacancy = await _vacancyClient.GetVacancyAsync(vrm.VacancyId);
 
             CheckAuthorisedAccess(vacancy, vrm.EmployerAccountId);
 
@@ -35,22 +77,22 @@ namespace Esfa.Recruit.Employer.Web
             return vacancy;
         }
 
-        private static void CheckCanEdit(Vacancy vacancy)
+        public void CheckCanEdit(Vacancy vacancy)
         {
-            if (!vacancy.CanEdit)
+            if (!vacancy.CanEmployerEdit)
                 throw new InvalidStateException(string.Format(ErrorMessages.VacancyNotAvailableForEditing,
                     vacancy.Title));
         }
 
-        public static void CheckAuthorisedAccess(Vacancy vacancy, string employerAccountId)
+        public void CheckAuthorisedAccess(Vacancy vacancy, string employerAccountId)
         {
             if (!vacancy.EmployerAccountId.Equals(employerAccountId, StringComparison.OrdinalIgnoreCase))
                 throw new AuthorisationException(string.Format(ExceptionMessages.VacancyUnauthorisedAccess, employerAccountId, vacancy.EmployerAccountId, vacancy.Title, vacancy.Id));
-            if (vacancy.OwnerType != OwnerType.Employer)
+            if (!vacancy.CanEmployerAndProviderCollabarate && vacancy.OwnerType != OwnerType.Employer)
                 throw new AuthorisationException(string.Format(ExceptionMessages.UserIsNotTheOwner, OwnerType.Employer));
         }
 
-        public static void CheckRouteIsValidForVacancy(Vacancy vacancy, string currentRouteName)
+        public void CheckRouteIsValidForVacancy(Vacancy vacancy, string currentRouteName)
         {
             var validRoutes = GetPermittedRoutesForVacancy(vacancy);
 
@@ -74,11 +116,25 @@ namespace Esfa.Recruit.Employer.Web
         ///  - null if section 1 of the wizard is complete
         ///  - otherwise a list of accessible routes, where the last entry is the page to start the user on when editing the vacancy
         /// </returns>
-        public static IList<string> GetPermittedRoutesForVacancy(Vacancy vacancy)
+        public IList<string> GetPermittedRoutesForVacancy(Vacancy vacancy)
         {
             var validRoutes = new List<string>();
 
             validRoutes.AddRange(new [] {RouteNames.Title_Post, RouteNames.Title_Get});
+
+            if (_feature.IsFeatureEnabled(FeatureNames.EmployerTaskList))
+            {
+                validRoutes.AddRange( new[]
+                {
+                    RouteNames.EmployerTaskListGet,
+                    RouteNames.EmployerCheckYourAnswersGet,
+                    RouteNames.Employer_Post,
+                    RouteNames.Employer_Get,
+                    RouteNames.EmployerName_Post,
+                    RouteNames.EmployerName_Get,
+                });
+            }
+            
             if (string.IsNullOrWhiteSpace(vacancy.Title))
                 return validRoutes;
 
@@ -111,8 +167,47 @@ namespace Esfa.Recruit.Employer.Web
                 validRoutes.Add(RouteNames.TrainingProvider_Select_Get);
             }
 
-            if (!vacancy.NumberOfPositions.HasValue)
-                return validRoutes;
+            if (_feature.IsFeatureEnabled(FeatureNames.EmployerTaskList))
+            {
+                validRoutes.AddRange(new []
+                {
+                    RouteNames.ShortDescription_Get,
+                    RouteNames.ShortDescription_Post,
+                    RouteNames.VacancyDescription_Index_Post,
+                    RouteNames.VacancyDescription_Index_Get,
+                    RouteNames.Dates_Post, 
+                    RouteNames.Dates_Get,
+                    RouteNames.Duration_Post, 
+                    RouteNames.Duration_Get,
+                    RouteNames.Wage_Post, 
+                    RouteNames.Wage_Get,
+                    RouteNames.Skills_Post,
+                    RouteNames.Skills_Get,
+                    RouteNames.Qualification_Add_Post,
+                    RouteNames.Qualification_Delete_Post,
+                    RouteNames.Qualification_Edit_Post,
+                    RouteNames.Qualification_Edit_Get,
+                    RouteNames.Qualification_Add_Get,
+                    RouteNames.Qualifications_Get,
+                    RouteNames.FutureProspects_Get,
+                    RouteNames.FutureProspects_Post,
+                    RouteNames.Considerations_Post,
+                    RouteNames.Considerations_Get,
+                    
+                    RouteNames.AboutEmployer_Post,
+                    RouteNames.AboutEmployer_Get,
+                    RouteNames.EmployerContactDetails_Post,
+                    RouteNames.EmployerContactDetails_Get,
+                    RouteNames.ApplicationProcess_Post,
+                    RouteNames.ApplicationProcess_Get
+                });
+            }
+            else
+            {
+                if (!vacancy.NumberOfPositions.HasValue)
+                    return validRoutes;    
+            }
+            
 
             validRoutes.AddRange(new[] 
             {
@@ -145,12 +240,17 @@ namespace Esfa.Recruit.Employer.Web
             return null;
         }
 
-        public static bool VacancyHasCompletedPartOne(Vacancy vacancy)
+        public bool VacancyHasCompletedPartOne(Vacancy vacancy)
         {
+            if (_feature.IsFeatureEnabled(FeatureNames.EmployerTaskList))
+            {
+                return vacancy.ApplicationMethod != null;
+            }
+            
             return GetPermittedRoutesForVacancy(vacancy) == null;
         }
 
-        public static bool VacancyHasStartedPartTwo(Vacancy vacancy)
+        public bool VacancyHasStartedPartTwo(Vacancy vacancy)
         {
             return !string.IsNullOrWhiteSpace(vacancy.EmployerDescription) ||
                    vacancy.ApplicationMethod != null ||
@@ -162,7 +262,7 @@ namespace Esfa.Recruit.Employer.Web
                 !string.IsNullOrWhiteSpace(vacancy.ShortDescription);
         }
 
-        public static PartOnePageInfoViewModel GetPartOnePageInfo(Vacancy vacancy)
+        public PartOnePageInfoViewModel GetPartOnePageInfo(Vacancy vacancy)
         {
             return new PartOnePageInfoViewModel
             {
@@ -171,19 +271,47 @@ namespace Esfa.Recruit.Employer.Web
             };
         }
 
-        public static async Task<ApplicationReview> GetAuthorisedApplicationReviewAsync(IRecruitVacancyClient client, ApplicationReviewRouteModel rm)
+        public async Task<ApplicationReview> GetAuthorisedApplicationReviewAsync(ApplicationReviewRouteModel rm)
         {
-            var applicationReview = await client.GetApplicationReviewAsync(rm.ApplicationReviewId);
-            var vacancy = await client.GetVacancyAsync(rm.VacancyId);
+            var applicationReview = _vacancyClient.GetApplicationReviewAsync(rm.ApplicationReviewId);
+            var vacancy = _vacancyClient.GetVacancyAsync(rm.VacancyId);
+
+            await Task.WhenAll(applicationReview, vacancy);
+            
             try
             {
-                CheckAuthorisedAccess(vacancy, rm.EmployerAccountId);
-                return applicationReview;
+                CheckAuthorisedAccess(vacancy.Result, rm.EmployerAccountId);
+                return applicationReview.Result;
             }
             catch (Exception)
             {
                 throw new AuthorisationException(string.Format(ExceptionMessages.ApplicationReviewUnauthorisedAccess, rm.EmployerAccountId,
-                    vacancy.EmployerAccountId, rm.ApplicationReviewId, vacancy.Id));
+                    vacancy.Result.EmployerAccountId, rm.ApplicationReviewId, vacancy.Result.Id));
+            }
+        }
+        
+        public async Task UpdateEmployerProfile(VacancyEmployerInfoModel employerInfoModel, 
+            EmployerProfile employerProfile, Address address, VacancyUser user)
+        {
+            var updateProfile = false;
+            if (string.IsNullOrEmpty(employerProfile.AccountLegalEntityPublicHashedId) && !string.IsNullOrEmpty(employerInfoModel?.AccountLegalEntityPublicHashedId)) 
+            {
+                updateProfile = true;
+                employerProfile.AccountLegalEntityPublicHashedId = employerInfoModel.AccountLegalEntityPublicHashedId;
+            }
+            if (employerInfoModel != null && employerInfoModel.EmployerIdentityOption == EmployerIdentityOption.NewTradingName)
+            {
+                updateProfile = true;
+                employerProfile.TradingName = employerInfoModel.NewTradingName;
+            }
+            if (address != null)
+            {
+                updateProfile = true;
+                employerProfile.OtherLocations.Add(address);
+            }
+            if (updateProfile)    
+            {
+                await _vacancyClient.UpdateEmployerProfileAsync(employerProfile, user);
             }
         }
     }

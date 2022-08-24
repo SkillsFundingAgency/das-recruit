@@ -57,9 +57,6 @@ namespace Esfa.Recruit.Provider.Web.Middleware
 
                         if (isProviderBlocked == false)
                         {
-                            //Run actions that must be done only once per authorized session
-                            await SetupProvider(context);
-
                             SetOncePerAuthorizedSessionActionsCompleted(context);
                         }
                         else
@@ -116,7 +113,7 @@ namespace Esfa.Recruit.Provider.Web.Middleware
 
                     if (!string.IsNullOrEmpty(ukprnFromUrl) && ukprnFromUrl.Equals(ukprnFromClaim))
                     {
-                        mvcContext.HttpContext.Items.Add(ContextItemKeys.ProviderIdentifier, ukprnFromClaim);
+                        mvcContext.HttpContext.Items.TryAdd(ContextItemKeys.ProviderIdentifier, ukprnFromClaim);
                         _dict.Add(TempDataKeys.ProviderIdentifier, ukprnFromClaim);
 
                         return true;

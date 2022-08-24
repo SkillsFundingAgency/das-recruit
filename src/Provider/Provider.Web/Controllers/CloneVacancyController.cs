@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Esfa.Recruit.Provider.Web.Configuration.Routing;
 using Esfa.Recruit.Provider.Web.RouteModel;
@@ -28,8 +29,8 @@ namespace Esfa.Recruit.Provider.Web.Controllers
             var vacancy = await _orchestrator.GetCloneableAuthorisedVacancyAsync(vrm);
 
             return _orchestrator.IsNewDatesRequired(vacancy) 
-                ? RedirectToRoute(RouteNames.CloneVacancyWithNewDates_Get) 
-                : RedirectToRoute(RouteNames.CloneVacancyDatesQuestion_Get);
+                ? RedirectToRoute(RouteNames.CloneVacancyWithNewDates_Get, new {vrm.Ukprn, vrm.VacancyId}) 
+                : RedirectToRoute(RouteNames.CloneVacancyDatesQuestion_Get, new {vrm.Ukprn, vrm.VacancyId});
         }
 
         [HttpGet("clone-dates-question", Name = RouteNames.CloneVacancyDatesQuestion_Get)]
@@ -51,12 +52,12 @@ namespace Esfa.Recruit.Provider.Web.Controllers
             if (model.HasConfirmedClone == true)
             {
                 var newVacancyId = await _orchestrator.PostCloneVacancyWithSameDates(model, User.ToVacancyUser());
-                TempData.Add(TempDataKeys.VacancyPreviewInfoMessage, InfoMessages.VacancyCloned);
-                return RedirectToRoute(RouteNames.Vacancy_Preview_Get, new { VacancyId = newVacancyId });
+                TempData.TryAdd(TempDataKeys.VacancyPreviewInfoMessage, InfoMessages.VacancyCloned);
+                return RedirectToRoute(RouteNames.ProviderCheckYourAnswersGet, new { VacancyId = newVacancyId, model.Ukprn });
             }
             else
             {
-                return RedirectToRoute(RouteNames.CloneVacancyWithNewDates_Get);
+                return RedirectToRoute(RouteNames.CloneVacancyWithNewDates_Get, new { model.VacancyId, model.Ukprn });
             }
         }
 
@@ -83,8 +84,8 @@ namespace Esfa.Recruit.Provider.Web.Controllers
                 return View(vm);
             }
 
-            TempData.Add(TempDataKeys.VacancyPreviewInfoMessage, InfoMessages.VacancyCloned);
-            return RedirectToRoute(RouteNames.Vacancy_Preview_Get, new { VacancyId = response.Data });
+            TempData.TryAdd(TempDataKeys.VacancyPreviewInfoMessage, InfoMessages.VacancyCloned);
+            return RedirectToRoute(RouteNames.ProviderCheckYourAnswersGet, new { VacancyId = response.Data, model.Ukprn });
         }        
     }
 }

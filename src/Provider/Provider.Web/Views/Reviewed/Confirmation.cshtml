@@ -1,0 +1,65 @@
+﻿@model Esfa.Recruit.Provider.Web.ViewModels.Reviewed.VacancyReviewedConfirmationViewModel
+
+@{
+    ViewBag.GaData.Vpv = "/recruitment/provider/page-vacancy-submitted-for-review";
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <div class="govuk-panel govuk-panel--confirmation">
+            <h1 asp-hide="@Model.IsResubmit" class="govuk-panel__title">
+                Vacancy submitted to employer
+            </h1>
+            <h1 asp-show="@Model.IsResubmit" class="govuk-panel__title">
+                Vacancy resubmitted to employer
+            </h1>
+            <div class="govuk-panel__body">
+                <p asp-show="@Model.HasVacancyReference">
+                    Your reference number <br>
+                    <strong class="govuk-!-font-weight-bold">VAC@(Model.VacancyReference)</strong>
+                </p>
+            </div>
+        </div>
+
+        <h2 class="govuk-heading-m">What happens next</h2>
+
+        <p class="govuk-body">
+            @Model.EmployerName needs to approve the vacancy.
+        </p>
+
+        <p class="govuk-body">
+            If @Model.EmployerName approves the vacancy, the <abbr>ESFA</abbr> will do a final review and then post it on 'Find an apprenticeship'.
+        </p>
+
+        @if (Model.IsVacancyRejectedByEmployerNotificationSelected)
+        {
+            <p class="govuk-body">
+                If @Model.EmployerName reject the vacancy, it will come back to you to edit and resubmit. We will let you know by email if you need to make any edits.
+            </p>
+        }
+        else
+        {
+            <p class="govuk-body">
+                If the vacancy is rejected by either @Model.EmployerName or the <abbr>ESFA</abbr> and you need to make edits, they will tell you in the rejected vacancies of your Recruitment dashboard.
+            </p>
+        }
+
+        <p class="govuk-body">
+            <a class="govuk-link" asp-route="@RouteNames.ManageNotifications_Get" asp-route-ukprn="@Model.Ukprn">Manage the frequency of your recruitment emails</a>
+        </p>
+
+        <p class="govuk-body">
+            <a class="govuk-link" asp-route="@RouteNames.Dashboard_Get" asp-route-ukprn="@Model.Ukprn">Return to recruitment</a>
+        </p>
+
+        <p class="govuk-body">
+            <esfaFeatureDisabled name="@FeatureNames.ProviderTaskList">
+                <a class="govuk-link" asp-route="@RouteNames.Employer_Get" asp-route-ukprn="@Model.Ukprn">Create another vacancy</a>    
+            </esfaFeatureDisabled>
+            <esfaFeatureEnabled name="@FeatureNames.ProviderTaskList">
+                <a class="govuk-link" asp-route="@RouteNames.CreateVacancyStart" asp-route-ukprn="@Model.Ukprn">Create another vacancy</a>
+            </esfaFeatureEnabled>
+            
+        </p>
+    </div>
+</div>

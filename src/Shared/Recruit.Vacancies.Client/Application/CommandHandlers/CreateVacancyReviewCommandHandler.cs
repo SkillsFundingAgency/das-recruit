@@ -16,7 +16,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 {
-    public class CreateVacancyReviewCommandHandler: IRequestHandler<CreateVacancyReviewCommand>
+    public class CreateVacancyReviewCommandHandler: IRequestHandler<CreateVacancyReviewCommand, Unit>
     {
         private readonly ILogger<CreateVacancyReviewCommandHandler> _logger;
         private readonly IVacancyRepository _vacancyRepository;
@@ -47,7 +47,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             _vacancyComparerService = vacancyComparerService;
         }
 
-        public async Task Handle(CreateVacancyReviewCommand message, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(CreateVacancyReviewCommand message, CancellationToken cancellationToken)
         {
             _logger.LogInformation("Creating vacancy review for vacancy {vacancyReference}.", message.VacancyReference);
 
@@ -64,7 +64,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             if (activePreviousReview != null)
             {
                 _logger.LogWarning($"Cannot create review for vacancy {message.VacancyReference} as an active review {activePreviousReview.Id} already exists.");
-                return;
+                return Unit.Value;
             }
 
             var slaDeadline = await _slaService.GetSlaDeadlineAsync(vacancy.SubmittedDate.Value);
@@ -80,6 +80,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
                 VacancyReference = message.VacancyReference,
                 ReviewId =  review.Id
             });
+            return Unit.Value;
         }
 
         private VacancyReview BuildNewReview(Vacancy vacancy, int previousReviewCount, DateTime slaDeadline, List<string> updatedFieldIdentifiers)

@@ -38,14 +38,17 @@ namespace Esfa.Recruit.Employer.Web.Mappings
 
             var allQualifications = await _vacancyClient.GetCandidateQualificationsAsync();
 
+            vm.AccountLegalEntityPublicHashedId = vacancy.AccountLegalEntityPublicHashedId;
+            vm.Status = vacancy.Status;
             vm.ApplicationMethod = vacancy.ApplicationMethod;
             vm.ApplicationInstructions = vacancy.ApplicationInstructions;
             vm.ApplicationUrl = vacancy.ApplicationUrl;
             vm.CanDelete = vacancy.CanDelete;
-            vm.CanSubmit = vacancy.CanSubmit;
+            vm.CanSubmit = vacancy.CanSubmit && vacancy.Status != VacancyStatus.Review;
+            vm.CanReview = vacancy.CanReview;
             vm.ClosingDate = (vacancy.ClosedDate ?? vacancy.ClosingDate)?.AsGdsDate();
-            vm.EducationLevelName =
-                EducationLevelNumberHelper.GetEducationLevelNameOrDefault(programme.EducationLevelNumber, programme.ApprenticeshipLevel);
+            vm.EducationLevelName = vacancy.ProgrammeId != null ?
+                EducationLevelNumberHelper.GetEducationLevelNameOrDefault(programme.EducationLevelNumber, programme.ApprenticeshipLevel) : null;
             vm.EmployerContactName = vacancy.EmployerContact?.Name;
             vm.EmployerContactEmail = vacancy.EmployerContact?.Email;
             vm.EmployerContactTelephone = vacancy.EmployerContact?.Phone;
@@ -61,7 +64,9 @@ namespace Esfa.Recruit.Employer.Web.Mappings
                 : null;
             vm.OutcomeDescription = vacancy.OutcomeDescription;
             vm.PossibleStartDate = vacancy.StartDate?.AsGdsDate();
+            vm.PostedDate = vacancy.CreatedDate?.AsGdsDate();
             vm.ProviderName = vacancy.TrainingProvider?.Name;
+            vm.ProviderReviewFieldIndicators = vacancy.ProviderReviewFieldIndicators;
             vm.Qualifications = vacancy.Qualifications.SortQualifications(allQualifications).AsText();
             vm.ShortDescription = vacancy.ShortDescription;
             vm.Skills = vacancy.Skills ?? Enumerable.Empty<string>();
@@ -76,7 +81,8 @@ namespace Esfa.Recruit.Employer.Web.Mappings
 
             vm.TransferredProviderName = vacancy.TransferInfo?.ProviderName;
             vm.TransferredOnDate = vacancy.TransferInfo?.TransferredDate.AsGdsDate();
-
+            vm.EmployerNameOption = vacancy.EmployerNameOption;
+            
             if (vacancy.EmployerLocation != null)
             {
                 if (vacancy.EmployerLocation != null)

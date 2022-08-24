@@ -12,6 +12,7 @@ using System;
 using SFA.DAS.EAS.Account.Api.Types;
 using Polly;
 using System.Collections.Generic;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Responses;
 
 namespace Esfa.Recruit.Vacancies.Jobs.Triggers.QueueTriggers
 {
@@ -71,11 +72,11 @@ namespace Esfa.Recruit.Vacancies.Jobs.Triggers.QueueTriggers
                 return;
             }
 
-            LegalEntityViewModel selectedLegalEntity;
+            AccountLegalEntity selectedLegalEntity;
             try
             {
                 var retryPolicy = GetApiRetryPolicy();
-                var legalEntities = await retryPolicy.ExecuteAsync(context => 
+                var legalEntities = await retryPolicy.Execute(context => 
                     _employerAccountProvider.GetLegalEntitiesConnectedToAccountAsync(vacancy.EmployerAccountId), 
                     new Dictionary<string, object>() {{ "apiCall", "employer details" }});
                 selectedLegalEntity = legalEntities.FirstOrDefault(l => l.AccountLegalEntityPublicHashedId == vacancy.AccountLegalEntityPublicHashedId);
@@ -102,7 +103,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.Triggers.QueueTriggers
         {
             return Policy
                     .Handle<Exception>()
-                    .WaitAndRetryAsync(new[]
+                    .WaitAndRetry(new[]
                     {
                         TimeSpan.FromSeconds(1),
                         TimeSpan.FromSeconds(5),

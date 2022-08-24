@@ -33,7 +33,7 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.CommandHandlers
             vacancy.OwnerType = OwnerType.Employer;
             var user = new VacancyUser();
             var now = DateTime.Now;
-            var message = new SubmitVacancyCommand(vacancy.Id, user, expectedDescription, OwnerType.Employer);
+            var message = new SubmitVacancyCommand(vacancy.Id, user, OwnerType.Employer, expectedDescription);
 
             var sut = GetSut(vacancy.Id, vacancy, now);
             await sut.Handle(message, new CancellationToken());

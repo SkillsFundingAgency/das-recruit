@@ -3,12 +3,18 @@
     <div class="govuk-grid-column-two-thirds">
         <partial name=@PartialNames.ValidationSummary model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState }' />
         
-        <form asp-route="@RouteNames.CloseVacancy_Post">
+        <form asp-route="@RouteNames.CloseVacancy_Post" asp-all-route-data="@Model.RouteDictionary">
             <legend class="govuk-fieldset__legend govuk-fieldset__legend--m govuk-!-margin-top-6 govuk-!-margin-bottom-6">
-                <h3 class="govuk-fieldset__heading">
-                    Are you sure you want to close this vacancy on Find an apprenticeship?
-                </h3>
-            </legend>
+                @if (_serviceParameters.VacancyType == VacancyType.Apprenticeship)
+                {
+                    <h3 class="govuk-fieldset__heading">Are you sure you want to close this vacancy on Find an apprenticeship?</h3>
+                }
+                else
+                {
+                    <h3 class="govuk-fieldset__heading">Are you sure you want to close this vacancy on Find a traineeship?</h3>
+                }
+
+</legend>
             <div esfa-validation-marker-for="ConfirmClose" class="govuk-form-group">
                 <fieldset class="govuk-fieldset">
                     <span esfa-validation-message-for="ConfirmClose" class="govuk-error-message"></span>
@@ -24,12 +30,19 @@
                     </div>
                 </fieldset>
             </div>
-            <div class="govuk-inset-text govuk-body">
-                This action cannot be undone and it will take up to an hour for the vacancy to stop showing on Find an apprenticeship.
-            </div>
+            
+                @if (_serviceParameters.VacancyType == VacancyType.Apprenticeship)
+                {
+                    <div class="govuk-inset-text govuk-body">This action cannot be undone and it will take up to an hour for the vacancy to stop showing on Find an apprenticeship.</div>
+                }
+                else
+                {
+                    <div class="govuk-inset-text govuk-body">This action cannot be undone and it will take up to an hour for the vacancy to stop showing on Find a traineeship.</div>
+                }
+
             <div class="govuk-form-group">
                 <input type="submit" value="Continue" class="govuk-button" />
             </div>
-        </form>
+</form>
     </div>
 </div>

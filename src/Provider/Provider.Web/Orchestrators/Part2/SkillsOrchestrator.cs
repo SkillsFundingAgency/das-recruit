@@ -9,6 +9,7 @@ using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Shared.Web.Orchestrators;
 using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Shared.Web.ViewModels.Skills;
+using Esfa.Recruit.Vacancies.Client.Application.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
@@ -16,29 +17,31 @@ using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Provider.Web.Orchestrators.Part2
 {
-    public class SkillsOrchestrator : EntityValidatingOrchestrator<Vacancy, SkillsEditModel>
+    public class SkillsOrchestrator : VacancyValidatingOrchestrator<SkillsEditModel>
     {
         private const VacancyRuleSet ValidationRules = VacancyRuleSet.Skills;
-        private readonly IProviderVacancyClient _client;
         private readonly IRecruitVacancyClient _vacancyClient;
         private readonly IReviewSummaryService _reviewSummaryService;
+        private readonly IUtility _utility;
         private readonly SkillsOrchestratorHelper _skillsHelper;
 
-        public SkillsOrchestrator(IProviderVacancyClient client, IRecruitVacancyClient vacancyClient, ILogger<SkillsOrchestrator> logger, IReviewSummaryService reviewSummaryService) : base(logger)
+        public SkillsOrchestrator(IRecruitVacancyClient vacancyClient, ILogger<SkillsOrchestrator> logger, IReviewSummaryService reviewSummaryService, IUtility utility) : base(logger)
         {
-            _client = client;
             _vacancyClient = vacancyClient;
             _reviewSummaryService = reviewSummaryService;
+            _utility = utility;
             _skillsHelper = new SkillsOrchestratorHelper(() => vacancyClient.GetCandidateSkillsAsync().Result);
         }
         
         public async Task<SkillsViewModel> GetSkillsViewModelAsync(VacancyRouteModel vrm, string[] draftSkills = null)
         {
-            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, _vacancyClient, vrm, RouteNames.Skills_Get);
+            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.Skills_Get);
 
             var vm = new SkillsViewModel
             {
-                Title = vacancy.Title
+                Title = vacancy.Title,
+                Ukprn = vrm.Ukprn, 
+                VacancyId = vrm.VacancyId
             };
 
             if (draftSkills == null)
@@ -56,6 +59,8 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part2
                     ReviewFieldMappingLookups.GetSkillsFieldIndicators());
             }
 
+            vm.IsTaskListCompleted = _utility.IsTaskListCompleted(vacancy);
+
             return vm;
         }
 
@@ -72,11 +77,24 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part2
 
         public async Task<OrchestratorResponse> PostSkillsEditModelAsync(VacancyRouteModel vrm, SkillsEditModel m, VacancyUser user)
         {
-            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, _vacancyClient, vrm, RouteNames.Skills_Post);
+            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.Skills_Post);
 
-            _skillsHelper.SetVacancyFromEditModel(vacancy, m);
+            var currentSkills = new List<string>();
+            if(vacancy.Skills != null)
+                currentSkills.AddRange(vacancy.Skills);
 
-            //if we are adding a skill then just validate and don't persist
+            SetVacancyWithProviderReviewFieldIndicators(
+                currentSkills,
+                FieldIdResolver.ToFieldId(v => v.Skills),
+                vacancy,
+                (v) =>
+                {
+                    _skillsHelper.SetVacancyFromEditModel(v, m);
+                    return v.Skills;
+                });
+
+            // when adding a custom skill the vacancy is not saved immediately, the new custom skill is
+            // validated but all the updates are saved later in a single operation
             var validateOnly = m.IsAddingCustomSkill;
 
             return await ValidateAndExecute(vacancy,

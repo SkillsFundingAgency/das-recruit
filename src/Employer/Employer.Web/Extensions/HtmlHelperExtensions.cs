@@ -16,11 +16,10 @@ namespace Esfa.Recruit.Employer.Web.Extensions
             var authConfig = (html.ViewContext.HttpContext.RequestServices.GetService(typeof(IOptions<AuthenticationConfiguration>)) as IOptions<AuthenticationConfiguration>)?.Value;
             var requestRoot = html.ViewContext.HttpContext.Request.GetRequestUrlRoot();
             var requestPath = html.ViewContext.HttpContext.Request.Path;
-            var commitmentsSiteUrl = new Uri(externalLinks?.CommitmentsSiteUrl);
 
             var headerModel = new HeaderViewModel(new HeaderConfiguration
                 {
-                    EmployerCommitmentsBaseUrl = $"{commitmentsSiteUrl.Scheme}://{commitmentsSiteUrl.Host}/commitments",
+                    EmployerCommitmentsV2BaseUrl = externalLinks?.CommitmentsSiteUrl,
                     EmployerFinanceBaseUrl = externalLinks?.ManageApprenticeshipSiteUrl,
                     ManageApprenticeshipsBaseUrl = externalLinks?.ManageApprenticeshipSiteUrl,
                     AuthenticationAuthorityUrl = authConfig?.Authority,
@@ -53,7 +52,8 @@ namespace Esfa.Recruit.Employer.Web.Extensions
 
             return new FooterViewModel(new FooterConfiguration
                 {
-                    ManageApprenticeshipsBaseUrl = externalLinks?.ManageApprenticeshipSiteUrl
+                    ManageApprenticeshipsBaseUrl = externalLinks?.ManageApprenticeshipSiteUrl,
+                    AuthenticationAuthorityUrl = externalLinks?.EmployerIdamsSiteUrl
                 },
                 new UserContext
                 {

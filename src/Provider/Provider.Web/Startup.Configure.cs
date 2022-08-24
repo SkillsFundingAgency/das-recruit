@@ -73,7 +73,13 @@ namespace Esfa.Recruit.Provider.Web
                                       "https://*.zendesk.com",
                                       "wss://*.zendesk.com",
                                       "wss://*.zopim.com",
-                                      "https://*.rcrsv.io"
+                                      "https://*.rcrsv.io",
+                                        "https://das-at-frnt-end.azureedge.net", 
+                                        "https://das-test-frnt-end.azureedge.net", 
+                                        "https://das-test2-frnt-end.azureedge.net",
+                                        "https://das-demo-frnt-end.azureedge.net", 
+                                        "https://das-pp-frnt-end.azureedge.net",
+                                        "https://das-prd-frnt-end.azureedge.net"
                                       );
                       
                       //Google tag manager uses inline styles when administering tags. This is done on PREPROD only
@@ -88,14 +94,20 @@ namespace Esfa.Recruit.Provider.Web
                                     "*.google-analytics.com",
                                     "*.googleapis.com",
                                     "*.googletagmanager.com/",
-                                    "*.postcodeanywhere.co.uk/",
-                                    "https://www.tagmanager.google.com/",
+                                    "https://tagmanager.google.com",
+                                    "https://www.tagmanager.google.com/",                                    
                                     "https://*.zdassets.com",
                                     "https://*.zendesk.com",
                                     "wss://*.zendesk.com",
                                     "wss://*.zopim.com",
                                     "https://*.zopim.com",
-                                    "https://*.rcrsv.io");
+                                    "https://*.rcrsv.io",
+                                    "https://das-at-frnt-end.azureedge.net", 
+                                    "https://das-test-frnt-end.azureedge.net", 
+                                    "https://das-test2-frnt-end.azureedge.net",
+                                    "https://das-demo-frnt-end.azureedge.net", 
+                                    "https://das-pp-frnt-end.azureedge.net",
+                                    "https://das-prd-frnt-end.azureedge.net");
 
                     //Google tag manager uses inline scripts when administering tags. This is done on PREPROD only
                         if (env.IsEnvironment(EnvironmentNames.PREPROD))
@@ -107,8 +119,15 @@ namespace Esfa.Recruit.Provider.Web
                 .FontSources(s =>
                     s.Self()
                     .CustomSources("data:",
+                                    "https://fonts.gstatic.com",
                                     "https://fonts.googleapis.com/",
-                                    "https://assets-ukdoe.rcrsv.io/")
+                                    "https://assets-ukdoe.rcrsv.io/",
+                                    "https://das-at-frnt-end.azureedge.net", 
+                                    "https://das-test-frnt-end.azureedge.net", 
+                                    "https://das-test2-frnt-end.azureedge.net",
+                                    "https://das-demo-frnt-end.azureedge.net", 
+                                    "https://das-pp-frnt-end.azureedge.net",
+                                    "https://das-prd-frnt-end.azureedge.net")
                 )
                 .ConnectSources(s =>
                     s.Self()
@@ -116,6 +135,7 @@ namespace Esfa.Recruit.Provider.Web
                         "https://*.zendesk.com",
                         "https://*.zdassets.com",
                         "https://dc.services.visualstudio.com",
+                        "https://*.google-analytics.com",
                         "wss://*.zendesk.com",
                         "wss://*.zopim.com",
                         "https://*.rcrsv.io")
@@ -132,6 +152,12 @@ namespace Esfa.Recruit.Provider.Web
                                     "https://*.zendesk.com",
                                     "wss://*.zendesk.com",
                                     "wss://*.zopim.com",
+                                    "https://das-at-frnt-end.azureedge.net", 
+                                    "https://das-test-frnt-end.azureedge.net", 
+                                    "https://das-test2-frnt-end.azureedge.net",
+                                    "https://das-demo-frnt-end.azureedge.net", 
+                                    "https://das-pp-frnt-end.azureedge.net",
+                                    "https://das-prd-frnt-end.azureedge.net",
                                     "data:")
                 )
                 .ReportUris(r => r.Uris("/ContentPolicyReport/Report")));
@@ -160,8 +186,12 @@ namespace Esfa.Recruit.Provider.Web
             app.UseXRobotsTag(options => options.NoIndex().NoFollow());
 
             app.UseNoCacheHttpHeaders(); // Effectively forces the browser to always request dynamic pages
-
-            app.UseMvc(r => r.MapRoute("default", RoutePaths.AccountRoutePath));
+            app.UseRouting();
+            app.UseAuthorization();
+            app.UseEndpoints(builder =>
+            {
+                builder.MapControllerRoute("default", RoutePaths.AccountRoutePath);
+            });
         }
 
         private static string[] GetAllowableDestinations(AuthenticationConfiguration authConfig, ExternalLinksConfiguration linksConfig)
@@ -183,6 +213,9 @@ namespace Esfa.Recruit.Provider.Web
             if (!string.IsNullOrWhiteSpace(linksConfig?.ReservationsSiteUrl))
                 destinations.Add(linksConfig.ReservationsSiteUrl);
 
+            if (!string.IsNullOrWhiteSpace(linksConfig?.ProviderRecruitmentApiUrl))
+                destinations.Add(linksConfig.ProviderRecruitmentApiUrl);
+            
             return destinations.ToArray();
         }
 

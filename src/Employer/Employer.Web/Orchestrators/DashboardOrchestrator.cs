@@ -5,8 +5,10 @@ using Esfa.Recruit.Employer.Web.Services;
 using Esfa.Recruit.Employer.Web.ViewModels.Dashboard;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Vacancies.Client.Domain.Models;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelationship;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators
 {
@@ -17,28 +19,33 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
         private readonly ITimeProvider _timeProvider;
         private readonly IRecruitVacancyClient _client;
         private readonly IEmployerAlertsViewModelFactory _alertsViewModelFactory;
+        private readonly IProviderRelationshipsService _providerRelationshipsService;
 
         public DashboardOrchestrator(
             IEmployerVacancyClient vacancyClient,
             ITimeProvider timeProvider,
             IRecruitVacancyClient client,
-            IEmployerAlertsViewModelFactory alertsViewModelFactory)
+            IEmployerAlertsViewModelFactory alertsViewModelFactory,
+            IProviderRelationshipsService providerRelationshipsService)
         {
             _vacancyClient = vacancyClient;
             _timeProvider = timeProvider;
             _client = client;
-            _alertsViewModelFactory = alertsViewModelFactory;            
+            _alertsViewModelFactory = alertsViewModelFactory;
+            _providerRelationshipsService = providerRelationshipsService;
         }
 
         public async Task<DashboardViewModel> GetDashboardViewModelAsync(string employerAccountId, VacancyUser user)
         {
             var dashboardTask = _vacancyClient.GetDashboardAsync(employerAccountId, createIfNonExistent: true);
             var userDetailsTask = _client.GetUsersDetailsAsync(user.UserId);
+            var providerTask = _providerRelationshipsService.GetLegalEntitiesForProviderAsync(employerAccountId, OperationType.RecruitmentRequiresReview);
 
-            await Task.WhenAll(dashboardTask, userDetailsTask);
+            await Task.WhenAll(dashboardTask, userDetailsTask, providerTask);
 
             var dashboard = dashboardTask.Result;
             var userDetails = userDetailsTask.Result;
+            var providerPermissions = providerTask.Result;
 
             var vacancies = dashboard.Vacancies?.ToList() ?? new List<VacancySummary>();
 
@@ -54,7 +61,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
                 NoOfVacanciesClosingSoon = vacancies.Count(v =>
                     v.ClosingDate <= _timeProvider.Today.AddDays(ClosingSoonDays) &&
                     v.Status == VacancyStatus.Live),
-                Alerts = _alertsViewModelFactory.Create(vacancies, userDetails)
+                Alerts = _alertsViewModelFactory.Create(vacancies, userDetails),
+                HasEmployerReviewPermission = providerPermissions.Any()
             };
             return vm;
         }

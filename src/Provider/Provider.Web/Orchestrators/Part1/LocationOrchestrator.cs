@@ -16,29 +16,34 @@ using System.Collections.Generic;
 using Esfa.Recruit.Provider.Web.Models;
 using Esfa.Recruit.Shared.Web.Models;
 using Address = Esfa.Recruit.Vacancies.Client.Domain.Entities.Address;
+using Esfa.Recruit.Vacancies.Client.Application.Services;
+using Esfa.Recruit.Shared.Web.ViewModels;
 
 namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
 {
-    public class LocationOrchestrator : EntityValidatingOrchestrator<Vacancy, LocationEditModel>
+    public class LocationOrchestrator : VacancyValidatingOrchestrator<LocationEditModel>
     {
         private const VacancyRuleSet ValidationRules = VacancyRuleSet.EmployerAddress;
         private readonly IProviderVacancyClient _providerVacancyClient;
         private readonly IRecruitVacancyClient _recruitVacancyClient;
         private readonly IReviewSummaryService _reviewSummaryService;
+        private readonly IGetAddressesClient _getAddressesClient;
+        private readonly IUtility _utility;
 
         public LocationOrchestrator(IProviderVacancyClient providerVacancyClient,
-            IRecruitVacancyClient recruitVacancyClient, ILogger<LocationOrchestrator> logger, IReviewSummaryService reviewSummaryService)
+            IRecruitVacancyClient recruitVacancyClient, ILogger<LocationOrchestrator> logger, IReviewSummaryService reviewSummaryService, IGetAddressesClient getAddressesClient, IUtility utility)
             : base(logger)
         {
             _providerVacancyClient = providerVacancyClient;
             _recruitVacancyClient = recruitVacancyClient;
             _reviewSummaryService = reviewSummaryService;
+            _getAddressesClient = getAddressesClient;
+            _utility = utility;
         }
 
         public async Task<VacancyEmployerInfoModel> GetVacancyEmployerInfoModelAsync(VacancyRouteModel vrm)
         {
-            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(
-                _providerVacancyClient, _recruitVacancyClient, vrm, RouteNames.Location_Get);
+            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.Location_Get);
 
             var model = new VacancyEmployerInfoModel()
             {
@@ -59,18 +64,21 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
         public async Task<LocationViewModel> GetLocationViewModelAsync(
             VacancyRouteModel vrm, VacancyEmployerInfoModel employerInfoModel, VacancyUser user)
         {
-            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(
-                _providerVacancyClient, _recruitVacancyClient, vrm, RouteNames.Location_Get);
+            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.Location_Get);
 
             var accountLegalEntityPublicHashedId = !string.IsNullOrEmpty(employerInfoModel?.AccountLegalEntityPublicHashedId)
-                ? employerInfoModel.AccountLegalEntityPublicHashedId : vacancy.AccountLegalEntityPublicHashedId; 
-            
-            var vm = new LocationViewModel();
-            vm.PageInfo = Utility.GetPartOnePageInfo(vacancy);
+                ? employerInfoModel.AccountLegalEntityPublicHashedId : vacancy.AccountLegalEntityPublicHashedId;
 
-            vm.IsAnonymousVacancy = (employerInfoModel?.EmployerIdentityOption == null)
-                ? vacancy.IsAnonymous
-                : employerInfoModel.EmployerIdentityOption == EmployerIdentityOption.Anonymous;
+            var vm = new LocationViewModel
+            {
+                Title = vacancy.Title,
+                PageInfo = _utility.GetPartOnePageInfo(vacancy),
+                IsAnonymousVacancy = (employerInfoModel?.EmployerIdentityOption == null)
+                    ? vacancy.IsAnonymous
+                    : employerInfoModel.EmployerIdentityOption == EmployerIdentityOption.Anonymous,
+                VacancyId = vrm.VacancyId,
+                Ukprn = vrm.Ukprn
+            };
 
             var employerProfile =
                 await _recruitVacancyClient.GetEmployerProfileAsync(vacancy.EmployerAccountId, accountLegalEntityPublicHashedId);
@@ -110,9 +118,8 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
             if (string.IsNullOrEmpty(locationEditModel.SelectedLocation))
                 return new OrchestratorResponse(false);
 
-            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_providerVacancyClient,
-                _recruitVacancyClient, locationEditModel, RouteNames.Location_Post);
-            var accountLegalEntityPublicHashedId = !string.IsNullOrEmpty(employerInfoModel?.AccountLegalEntityPublicHashedId) 
+            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(locationEditModel, RouteNames.Location_Post);
+            var accountLegalEntityPublicHashedId = !string.IsNullOrEmpty(employerInfoModel?.AccountLegalEntityPublicHashedId)
                 ? employerInfoModel.AccountLegalEntityPublicHashedId : vacancy.AccountLegalEntityPublicHashedId;
 
             var employerVacancyInfoTask = _providerVacancyClient.GetProviderEmployerVacancyDataAsync(ukprn, vacancy.EmployerAccountId);
@@ -130,14 +137,91 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
 
             var matchingAddress = GetMatchingAddress(newLocation, allLocations);
 
-            vacancy.EmployerLocation = matchingAddress ?? ConvertToDomainAddress(locationEditModel);
+            var employerLocation = matchingAddress != null ? matchingAddress : ConvertToDomainAddress(locationEditModel);
 
-            //if cookie is found update legal entity and name option
+            // this has diverged from the usual pattern because the individual properties are review fields
+            SetVacancyWithProviderReviewFieldIndicators(
+                vacancy.EmployerLocation?.AddressLine1,
+                FieldIdResolver.ToFieldId(v => v.EmployerLocation.AddressLine1),
+                vacancy,
+                (v) =>
+                {
+                    return employerLocation.AddressLine1;
+                });
+
+            SetVacancyWithProviderReviewFieldIndicators(
+                vacancy.EmployerLocation?.AddressLine2,
+                FieldIdResolver.ToFieldId(v => v.EmployerLocation.AddressLine2),
+                vacancy,
+                (v) =>
+                {
+                    return employerLocation.AddressLine2;
+                });
+
+            SetVacancyWithProviderReviewFieldIndicators(
+                vacancy.EmployerLocation?.AddressLine3,
+                FieldIdResolver.ToFieldId(v => v.EmployerLocation.AddressLine3),
+                vacancy,
+                (v) =>
+                {
+                    return employerLocation.AddressLine3;
+                });
+
+            SetVacancyWithProviderReviewFieldIndicators(
+                vacancy.EmployerLocation?.AddressLine4,
+                FieldIdResolver.ToFieldId(v => v.EmployerLocation.AddressLine4),
+                vacancy,
+                (v) =>
+                {
+                    return employerLocation.AddressLine4;
+                });
+
+            SetVacancyWithProviderReviewFieldIndicators(
+                vacancy.EmployerLocation?.Postcode,
+                FieldIdResolver.ToFieldId(v => v.EmployerLocation.Postcode),
+                vacancy,
+                (v) =>
+                {
+                    return employerLocation.Postcode;
+                });
+
+            vacancy.EmployerLocation = employerLocation;
+
+            // if cookie is found update legal entity and name option
             if (employerInfoModel != null)
             {
-                vacancy.LegalEntityName = selectedOrganisation.Name;
+                SetVacancyWithProviderReviewFieldIndicators(
+                    vacancy.LegalEntityName,
+                    FieldIdResolver.ToFieldId(v => v.EmployerName),
+                    vacancy,
+                    (v) =>
+                    {
+                        return v.LegalEntityName = selectedOrganisation.Name;
+                    });
+
+                SetVacancyWithProviderReviewFieldIndicators(
+                    vacancy.EmployerNameOption,
+                    FieldIdResolver.ToFieldId(v => v.EmployerName),
+                    vacancy,
+                    (v) =>
+                    {
+                        return v.EmployerNameOption = employerInfoModel.EmployerIdentityOption?.ConvertToDomainOption();
+                    });
+
+                if (employerInfoModel.EmployerIdentityOption == EmployerIdentityOption.NewTradingName)
+                {
+                    SetVacancyWithProviderReviewFieldIndicators(
+                        employerProfile.TradingName,
+                        FieldIdResolver.ToFieldId(v => v.EmployerName),
+                        vacancy,
+                        (e) =>
+                        {
+                            // the indicator will be set for the vacancy when the employer profile will change to the new trading name
+                            return employerInfoModel.NewTradingName;
+                        });
+                }
+
                 vacancy.AccountLegalEntityPublicHashedId = selectedOrganisation.AccountLegalEntityPublicHashedId;
-                vacancy.EmployerNameOption = employerInfoModel.EmployerIdentityOption?.ConvertToDomainOption();
                 vacancy.AnonymousReason = vacancy.IsAnonymous ? employerInfoModel.AnonymousReason : null;
                 vacancy.EmployerName = vacancy.IsAnonymous ? employerInfoModel.AnonymousName : null;
             }
@@ -150,6 +234,12 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
                     await _recruitVacancyClient.UpdateDraftVacancyAsync(vacancy, user);
                     await UpdateEmployerProfileAsync(employerInfoModel, employerProfile, matchingAddress == null ? vacancy.EmployerLocation : null, user);
                 });
+        }
+
+        public async Task<GetAddressesListResponse> GetAddresses(string searchTerm)
+        {
+            var addresses = await _getAddressesClient.GetAddresses(searchTerm);
+            return addresses;
         }
 
         private Address GetMatchingAddress(string locationToMatch, IEnumerable<Address> allLocations)

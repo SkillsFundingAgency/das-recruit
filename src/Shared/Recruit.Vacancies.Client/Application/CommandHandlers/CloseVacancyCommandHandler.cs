@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 {
-    public class CloseVacancyCommandHandler : IRequestHandler<CloseVacancyCommand>
+    public class CloseVacancyCommandHandler : IRequestHandler<CloseVacancyCommand, Unit>
     {
         private readonly IVacancyRepository _vacancyRepository;
         private readonly ILogger<CloseVacancyCommandHandler> _logger;
@@ -29,7 +29,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             _logger = logger;
         }
 
-        public async Task Handle(CloseVacancyCommand message, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(CloseVacancyCommand message, CancellationToken cancellationToken)
         {
             var vacancy = await _vacancyRepository.GetVacancyAsync(message.VacancyId);
 
@@ -52,6 +52,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
                 VacancyReference = vacancy.VacancyReference.GetValueOrDefault(),
                 VacancyId = vacancy.Id
             });
+            return Unit.Value;
         }
 
     }

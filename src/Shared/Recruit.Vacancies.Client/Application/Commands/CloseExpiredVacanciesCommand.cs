@@ -3,6 +3,6 @@ using MediatR;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.Commands
 {
-    public class CloseExpiredVacanciesCommand : ICommand, IRequest
+    public class CloseExpiredVacanciesCommand : ICommand, IRequest<Unit>
     { }
 }

@@ -9,12 +9,12 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation.
 {
     public class StartDateValidationTests : VacancyValidationTestsBase
     {
-        public static IEnumerable<object[]> InvalidStartDates =>
+        public static IEnumerable<object[]> InvalidDaysFromClosingDate =>
             new List<object[]>
             {
-                new object[] { DateTime.UtcNow.Date },
-                new object[] { DateTime.UtcNow },
-                new object[] { DateTime.UtcNow.AddDays(-1) }
+                new object[] { -1 },
+                new object[] { -2 },
+                new object[] { -15 }
             };
 
         [Fact]
@@ -22,7 +22,8 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation.
         {
             var vacancy = new Vacancy
             {
-                StartDate = DateTime.UtcNow.AddDays(5)
+                ClosingDate = DateTime.Today.AddDays(14), 
+                StartDate = DateTime.UtcNow.AddDays(15)
             };
 
             var result = Validator.Validate(vacancy, VacancyRuleSet.StartDate);
@@ -49,12 +50,14 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation.
         }
 
         [Theory]
-        [MemberData(nameof(InvalidStartDates))]
-        public void StartDateMustBeGreaterThanToday(DateTime startDate)
+        [MemberData(nameof(InvalidDaysFromClosingDate))]
+        public void StartDateMustBeGreaterThanToday(int startDate)
         {
+            var closingDate = DateTime.Today.AddDays(50);
             var vacancy = new Vacancy
             {
-                StartDate = startDate
+                ClosingDate = closingDate,
+                StartDate = closingDate.AddDays(startDate)
             };
 
             var result = Validator.Validate(vacancy, VacancyRuleSet.StartDate);

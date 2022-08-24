@@ -6,6 +6,7 @@ using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels;
 using Esfa.Recruit.Shared.Web.Orchestrators;
 using Esfa.Recruit.Shared.Web.Services;
+using Esfa.Recruit.Vacancies.Client.Application.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
@@ -14,28 +15,29 @@ using Microsoft.Extensions.Options;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
 {
-    public class ApplicationProcessOrchestrator : EntityValidatingOrchestrator<Vacancy, ApplicationProcessEditModel>
+    public class ApplicationProcessOrchestrator : VacancyValidatingOrchestrator<ApplicationProcessEditModel>
     {
         private const VacancyRuleSet ValidationRules = VacancyRuleSet.ApplicationMethod;
-        private readonly IEmployerVacancyClient _client;
         private readonly IRecruitVacancyClient _vacancyClient;
         private readonly ExternalLinksConfiguration _externalLinks;
         private readonly IReviewSummaryService _reviewSummaryService;
+        private readonly IUtility _utility;
 
-        public ApplicationProcessOrchestrator(IEmployerVacancyClient client,
+        public ApplicationProcessOrchestrator(
             IRecruitVacancyClient vacancyClient,
             IOptions<ExternalLinksConfiguration> externalLinks, ILogger<ApplicationProcessOrchestrator> logger, 
-            IReviewSummaryService reviewSummaryService) : base(logger)
+            IReviewSummaryService reviewSummaryService,
+            IUtility utility) : base(logger)
         {
-            _client = client;
             _vacancyClient = vacancyClient;
             _externalLinks = externalLinks.Value;
             _reviewSummaryService = reviewSummaryService;
+            _utility = utility;
         }
 
         public async Task<ApplicationProcessViewModel> GetApplicationProcessViewModelAsync(VacancyRouteModel vrm)
         {
-            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, _vacancyClient, vrm, RouteNames.ApplicationProcess_Get);
+            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.ApplicationProcess_Get);
 
             var vm = new ApplicationProcessViewModel
             {
@@ -51,6 +53,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
                 vm.Review = await _reviewSummaryService.GetReviewSummaryViewModelAsync(vacancy.VacancyReference.Value,
                     ReviewFieldMappingLookups.GetApplicationProcessFieldIndicators());
             }
+            
+            vm.IsTaskListCompleted = _utility.IsTaskListCompleted(vacancy);
 
             return vm;
         }
@@ -68,13 +72,27 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
 
         public async Task<OrchestratorResponse> PostApplicationProcessEditModelAsync(ApplicationProcessEditModel m, VacancyUser user)
         {
-            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, _vacancyClient, m, RouteNames.ApplicationProcess_Post);
+            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(m, RouteNames.ApplicationProcess_Post);
+
+            SetVacancyWithEmployerReviewFieldIndicators(
+                vacancy.ApplicationMethod,
+                FieldIdResolver.ToFieldId(v => v.ApplicationMethod),
+                vacancy, 
+                (v) => { return v.ApplicationMethod = m.ApplicationMethod; });
 
             var hasSelectedApplyThroughFaa = m.ApplicationMethod == ApplicationMethod.ThroughFindAnApprenticeship;
 
-            vacancy.ApplicationMethod = m.ApplicationMethod;
-            vacancy.ApplicationInstructions = hasSelectedApplyThroughFaa ? null : m.ApplicationInstructions;
-            vacancy.ApplicationUrl = hasSelectedApplyThroughFaa ? null : m.ApplicationUrl;
+            SetVacancyWithEmployerReviewFieldIndicators(
+                vacancy.ApplicationInstructions,
+                FieldIdResolver.ToFieldId(v => v.ApplicationInstructions),
+                vacancy,
+                (v) => { return v.ApplicationInstructions = hasSelectedApplyThroughFaa ? null : m.ApplicationInstructions; });
+
+            SetVacancyWithEmployerReviewFieldIndicators(
+                vacancy.ApplicationUrl,
+                FieldIdResolver.ToFieldId(v => v.ApplicationUrl),
+                vacancy,
+                (v) => { return v.ApplicationUrl = hasSelectedApplyThroughFaa ? null : m.ApplicationUrl; });
 
             return await ValidateAndExecute(
                 vacancy,

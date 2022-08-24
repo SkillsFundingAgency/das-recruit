@@ -30,9 +30,13 @@
         public const string Training = "Training";
         public const string TrainingDescription = "TrainingDescription";
         public const string TrainingLevel = "TrainingLevel";
+        public const string TraineeRoute = nameof(TraineeRoute);
         public const string VacancyDescription = "VacancyDescription";
         public const string Wage = "Wage";
         public const string WorkingWeek = "WorkingWeek";
         public const string WageAdditionalInfo = "WageAdditionalInfo";
+        public const string WorkingWeekHours = nameof(WorkingWeekHours);
+        public const string WorkingWeekDescription = nameof(WorkingWeekDescription);
+        public const string WorkExperience = "WorkExperience";
     }
 }

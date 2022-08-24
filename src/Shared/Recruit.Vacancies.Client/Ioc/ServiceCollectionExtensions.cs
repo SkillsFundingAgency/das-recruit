@@ -53,7 +53,6 @@ using MediatR;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancyTitle;
 using SFA.DAS.EAS.Account.Api.Client;
 using VacancyRuleSet = Esfa.Recruit.Vacancies.Client.Application.Rules.VacancyRules.VacancyRuleSet;
 
@@ -67,12 +66,7 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
                 .AddHttpClient()
                 .Configure<AccountApiConfiguration>(configuration.GetSection("AccountApiConfiguration"))
                 .AddMemoryCache()
-                .AddTransient<IConfigurationReader, ConfigurationReader>()
-                .AddSingleton(x =>
-                {
-                    var svc = x.GetService<IConfigurationReader>();
-                    return svc.GetAsync<QaRulesConfiguration>("QaRules").Result;
-                });
+                .AddTransient<IConfigurationReader, ConfigurationReader>();
             RegisterClients(services);
             RegisterServiceDeps(services, configuration);
             RegisterAccountApiClientDeps(services);
@@ -101,12 +95,10 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
         private static void RegisterServiceDeps(IServiceCollection services, IConfiguration configuration)
         {
             // Configuration
-            services.Configure<GeocodeConfiguration>(configuration.GetSection("Geocode"));
-            services.Configure<BankHolidayConfiguration>(configuration.GetSection("BankHoliday"));
+            services.AddSingleton(configuration);
             services.Configure<FaaConfiguration>(configuration.GetSection("FaaConfiguration"));
-            services.Configure<VacancyApiConfiguration>(configuration.GetSection("VacancyApiConfiguration"));
             services.Configure<SlackConfiguration>(configuration.GetSection("Slack"));
-            services.Configure<NextVacancyReviewServiceConfiguration>(o => o.VacancyReviewAssignationTimeoutMinutes = configuration.GetValue<int>("VacancyReviewAssignationTimeoutMinutes"));
+            services.Configure<NextVacancyReviewServiceConfiguration>(o => o.VacancyReviewAssignationTimeoutMinutes = configuration.GetValue<int>("RecruitConfiguration:VacancyReviewAssignationTimeoutMinutes"));
             services.Configure<PasAccountApiConfiguration>(configuration.GetSection("PasAccountApiConfiguration"));
             services.Configure<OuterApiConfiguration>(configuration.GetSection("OuterApiConfiguration"));
 
@@ -123,7 +115,6 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
             services.AddTransient<IVacancyReviewTransferService, VacancyReviewTransferService>();
             services.AddTransient<INextVacancyReviewService, NextVacancyReviewService>();
             services.AddTransient<IVacancyComparerService, VacancyComparerService>();
-            services.AddTransient<IGetTitlePopularity, TitlePopularityService>();
             services.AddTransient<ICache, Cache>();
             services.AddTransient<IHtmlSanitizerService, HtmlSanitizerService>();
             services.AddTransient<IEmployerService, EmployerService>();
@@ -149,13 +140,13 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
             // Infrastructure Services
             services.AddTransient<IEmployerAccountProvider, EmployerAccountProvider>();
             services.AddTransient<ISlackClient, SlackClient>();
-            services.AddTransient<IGeocodeServiceFactory, GeocodeServiceFactory>();
-            services.AddTransient<IGetVacancyTitlesProvider, VacancyApiTitlesProvider>();
             services.AddTransient<ITrainingProviderService, TrainingProviderService>();
             services.AddTransient<ITrainingProviderSummaryProvider, TrainingProviderSummaryProvider>();
             services.AddTransient<IFaaService, FaaService>();
             services.AddTransient<IPasAccountProvider, PasAccountProvider>();
             services.AddHttpClient<IOuterApiClient, OuterApiClient>();
+            services.AddTransient<IOuterApiGeocodeService, OuterApiGeocodeService>();
+            services.AddSingleton<IVacancyTaskListStatusService, VacancyTaskListStatusService>();
 
             // Projection services
             services.AddTransient<IEmployerDashboardProjectionService, EmployerDashboardProjectionService>();
@@ -169,6 +160,7 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
             // Reference Data Providers
             services.AddTransient<IMinimumWageProvider, NationalMinimumWageProvider>();
             services.AddTransient<IApprenticeshipProgrammeProvider, ApprenticeshipProgrammeProvider>();
+            services.AddTransient<IApprenticeshipRouteProvider, ApprenticeshipRouteProvider>();
             services.AddTransient<IQualificationsProvider, QualificationsProvider>();
             services.AddTransient<ICandidateSkillsProvider, CandidateSkillsProvider>();
             services.AddTransient<IProfanityListProvider, ProfanityListProvider>();
@@ -238,7 +230,7 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
         private static void RegisterTableStorageProviderDeps(IServiceCollection services, IConfiguration configuration)
         {
             var storageConnectionString = configuration.GetConnectionString("TableStorage");
-            var useTableStorageQueryStore = configuration.GetValue<bool>("UseTableStorageQueryStore");
+            var useTableStorageQueryStore = configuration.GetValue<bool>("RecruitConfiguration:UseTableStorageQueryStore");
             services.AddTransient<QueryStoreTableChecker>();
             services.Configure<TableStorageConnectionsDetails>(options =>
             {
@@ -256,14 +248,14 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
 
         private static void AddValidation(IServiceCollection services)
         {
-            services.AddSingleton<AbstractValidator<Vacancy>, FluentVacancyValidator>();
-            services.AddSingleton(typeof(IEntityValidator<,>), typeof(EntityValidator<,>));
+            services.AddTransient<AbstractValidator<Vacancy>, FluentVacancyValidator>();
+            services.AddTransient(typeof(IEntityValidator<,>), typeof(EntityValidator<,>));
 
-            services.AddSingleton<AbstractValidator<ApplicationReview>, ApplicationReviewValidator>();
-            services.AddSingleton<AbstractValidator<VacancyReview>, VacancyReviewValidator>();
+            services.AddTransient<AbstractValidator<ApplicationReview>, ApplicationReviewValidator>();
+            services.AddTransient<AbstractValidator<VacancyReview>, VacancyReviewValidator>();
 
-            services.AddSingleton<AbstractValidator<UserNotificationPreferences>, UserNotificationPreferencesValidator>();
-            services.AddSingleton<AbstractValidator<Qualification>, QualificationValidator>();
+            services.AddTransient<AbstractValidator<UserNotificationPreferences>, UserNotificationPreferencesValidator>();
+            services.AddTransient<AbstractValidator<Qualification>, QualificationValidator>();
         }
 
         private static void AddRules(IServiceCollection services)
@@ -278,7 +270,8 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
                 .AddTransient<IEmployerVacancyClient, VacancyClient>()
                 .AddTransient<IProviderVacancyClient, VacancyClient>()
                 .AddTransient<IQaVacancyClient, QaVacancyClient>()
-                .AddTransient<IJobsVacancyClient, VacancyClient>();
+                .AddTransient<IJobsVacancyClient, VacancyClient>()
+                .AddTransient<IGetAddressesClient, OuterApiGetAddressesClient>();
         }
 
 

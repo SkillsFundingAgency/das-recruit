@@ -1,5 +1,6 @@
 using System.Linq;
 using System.Threading.Tasks;
+using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Extensions;
 using Esfa.Recruit.Employer.Web.Orchestrators.Part1;
@@ -7,6 +8,7 @@ using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.Dates;
 using Microsoft.AspNetCore.Mvc;
 using Esfa.Recruit.Shared.Web.Extensions;
+using Esfa.Recruit.Shared.Web.FeatureToggle;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 
 namespace Esfa.Recruit.Employer.Web.Controllers.Part1
@@ -15,10 +17,12 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
     public class DatesController : Controller
     {
         private readonly DatesOrchestrator _orchestrator;
+        private readonly IFeature _feature;
 
-        public DatesController(DatesOrchestrator orchestrator)
+        public DatesController(DatesOrchestrator orchestrator, IFeature feature)
         {
             _orchestrator = orchestrator;
+            _feature = feature;
         }
         
         [HttpGet("dates", Name = RouteNames.Dates_Get)]
@@ -62,7 +66,9 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
 
             return wizard
                 ? RedirectToRoute(RouteNames.Duration_Get)
-                : RedirectToRoute(RouteNames.Vacancy_Preview_Get);
+                : _feature.IsFeatureEnabled(FeatureNames.EmployerTaskList) 
+                    ? RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet) 
+                    : RedirectToRoute(RouteNames.Vacancy_Preview_Get);
         }            
     }
 }

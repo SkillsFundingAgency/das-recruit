@@ -10,6 +10,7 @@ using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Shared.Web.Orchestrators;
 using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Shared.Web.ViewModels.Qualifications;
+using Esfa.Recruit.Vacancies.Client.Application.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
@@ -17,28 +18,30 @@ using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Provider.Web.Orchestrators.Part2
 {
-    public class QualificationsOrchestrator : EntityValidatingOrchestrator<Vacancy, QualificationEditModel>
+    public class QualificationsOrchestrator : VacancyValidatingOrchestrator<QualificationEditModel>
     {
-        private readonly IProviderVacancyClient _client;
         private readonly IRecruitVacancyClient _vacancyClient;
         private readonly IReviewSummaryService _reviewSummaryService;
-        
-        public QualificationsOrchestrator(IProviderVacancyClient client, IRecruitVacancyClient vacancyClient, ILogger<QualificationsOrchestrator> logger, IReviewSummaryService reviewSummaryService)
+        private readonly IUtility _utility;
+
+        public QualificationsOrchestrator(IRecruitVacancyClient vacancyClient, ILogger<QualificationsOrchestrator> logger, IReviewSummaryService reviewSummaryService, IUtility utility)
             : base(logger)
         {
-            _client = client;
             _reviewSummaryService = reviewSummaryService;
+            _utility = utility;
             _vacancyClient = vacancyClient;
         }
 
         public async Task<QualificationsViewModel> GetQualificationsViewModelAsync(VacancyRouteModel vrm)
         {
-            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, _vacancyClient, vrm, RouteNames.Qualifications_Get);
+            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.Qualifications_Get);
 
             var qualifications = vacancy.Qualifications ?? new List<Qualification>();
 
             var vm = new QualificationsViewModel
             {
+                VacancyId = vrm.VacancyId,
+                Ukprn = vrm.Ukprn,
                 Title = vacancy.Title,
                 Qualifications = qualifications.Select(q => new QualificationEditModel
                 { 
@@ -55,31 +58,33 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part2
                    ReviewFieldMappingLookups.GetQualificationsFieldIndicators());
             }
 
+            vm.IsTaskListCompleted = _utility.IsTaskListCompleted(vacancy);
+
             return vm;
         }
 
         public async Task<QualificationViewModel> GetQualificationViewModelForAddAsync(VacancyRouteModel vrm)
         {
-            var vacancyTask = Utility.GetAuthorisedVacancyForEditAsync(_client, _vacancyClient, vrm, RouteNames.Qualification_Add_Get);
+            var vacancyTask = _utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.Qualification_Add_Get);
             var allQualificationsTask = _vacancyClient.GetCandidateQualificationsAsync();
 
             await Task.WhenAll(vacancyTask, allQualificationsTask);
 
-            var vm = GetQualificationViewModel(vacancyTask.Result, allQualificationsTask.Result);
+            var vm = GetQualificationViewModel(vacancyTask.Result, allQualificationsTask.Result, vrm);
 
             return vm;
         }
 
         public async Task<QualificationViewModel> GetQualificationViewModelForEditAsync(VacancyRouteModel vrm, int index)
         {
-            var vacancyTask = Utility.GetAuthorisedVacancyForEditAsync(_client, _vacancyClient, vrm, RouteNames.Qualification_Edit_Get);
+            var vacancyTask = _utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.Qualification_Edit_Get);
             var allQualificationsTask = _vacancyClient.GetCandidateQualificationsAsync();
 
             await Task.WhenAll(vacancyTask, allQualificationsTask);
 
             var vacancy = vacancyTask.Result;
 
-            var vm = GetQualificationViewModel(vacancy, allQualificationsTask.Result);
+            var vm = GetQualificationViewModel(vacancy, allQualificationsTask.Result, vrm);
 
             ValidateIndex(index, vacancy.Qualifications);
 
@@ -89,6 +94,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part2
             vm.Subject = qualificationToEdit.Subject;
             vm.Grade = qualificationToEdit.Grade;
             vm.Weighting = qualificationToEdit.Weighting;
+            vm.EditIndex = index;
 
             return vm;
         }
@@ -113,7 +119,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part2
 
         public async Task<OrchestratorResponse> PostQualificationEditModelForAddAsync(VacancyRouteModel vrm, QualificationEditModel m, VacancyUser user)
         {
-            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, _vacancyClient, vrm, RouteNames.Qualification_Add_Post);
+            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.Qualification_Add_Post);
 
             if (vacancy.Qualifications == null)
                 vacancy.Qualifications = new List<Qualification>();
@@ -121,26 +127,41 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part2
             var qualification = new Qualification();
             vacancy.Qualifications.Add(qualification);
 
-            return await UpdateVacancyWithQualificationAsync(vacancy, qualification, m, user);
+            return await UpdateVacancyWithQualificationAsync(vacancy, null, qualification, m, user);
         }
 
         public async Task<OrchestratorResponse> PostQualificationEditModelForEditAsync(VacancyRouteModel vrm, QualificationEditModel m, VacancyUser user, int index)
         {
-            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, _vacancyClient, vrm, RouteNames.Qualification_Edit_Post);
+            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.Qualification_Edit_Post);
 
             var qualification = vacancy.Qualifications[index];
+            var currentQualification = new Qualification
+            {
+                QualificationType = qualification.QualificationType,
+                Grade = qualification.Grade,
+                Subject = qualification.Subject,
+                Weighting = qualification.Weighting,
+            };
 
-            return await UpdateVacancyWithQualificationAsync(vacancy, qualification, m, user);
+            return await UpdateVacancyWithQualificationAsync(vacancy, currentQualification, qualification, m, user);
         }
 
         public async Task DeleteQualificationAsync(VacancyRouteModel vrm, int index, VacancyUser user)
         {
-            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, _vacancyClient, vrm, RouteNames.Qualifications_Get);
+            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.Qualifications_Get);
 
             if (vacancy.Qualifications == null)
                 return;
 
-            vacancy.Qualifications.RemoveAt(index);
+            SetVacancyWithProviderReviewFieldIndicators(
+                vacancy.Qualifications[index],
+                FieldIdResolver.ToFieldId(v => v.Qualifications),
+                vacancy,
+                (v) =>
+                {
+                    vacancy.Qualifications.RemoveAt(index);
+                    return null;
+                });
 
             await _vacancyClient.UpdateDraftVacancyAsync(vacancy, user);
         }
@@ -179,10 +200,12 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part2
             throw new ArgumentException($"Invalid qualification index: {index}");
         }
 
-        private QualificationViewModel GetQualificationViewModel(Vacancy vacancy, IList<string> allQualifications)
+        private QualificationViewModel GetQualificationViewModel(Vacancy vacancy, IList<string> allQualifications, VacancyRouteModel vrm)
         {
             var vm = new QualificationViewModel
             {
+                Ukprn = vrm.Ukprn,
+                VacancyId = vrm.VacancyId,
                 Title = vacancy.Title,
                 QualificationTypes = allQualifications,
                 CancelRoute = vacancy.Qualifications?.Any() == true ? RouteNames.Qualifications_Get : RouteNames.Vacancy_Preview_Get
@@ -199,15 +222,22 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part2
             vm.Weighting = m.Weighting;
         }
 
-        private async Task<OrchestratorResponse> UpdateVacancyWithQualificationAsync(Vacancy vacancy, Qualification qualification, QualificationEditModel m, VacancyUser user)
+        private async Task<OrchestratorResponse> UpdateVacancyWithQualificationAsync(Vacancy vacancy, Qualification currentQualification, Qualification qualification, QualificationEditModel m, VacancyUser user)
         {
-            qualification.QualificationType = m.QualificationType;
-            qualification.Grade = m.Grade;
-            qualification.Subject = m.Subject;
-            qualification.Weighting = m.Weighting;
+            SetVacancyWithProviderReviewFieldIndicators(
+                currentQualification,
+                FieldIdResolver.ToFieldId(v => v.Qualifications),
+                vacancy,
+                (v) => {
+                    qualification.QualificationType = m.QualificationType;
+                    qualification.Grade = m.Grade;
+                    qualification.Subject = m.Subject;
+                    qualification.Weighting = m.Weighting;
+                    return qualification;
+                });
 
-            var allQualifications = await _vacancyClient.GetCandidateQualificationsAsync();
-            vacancy.Qualifications = vacancy.Qualifications.SortQualifications(allQualifications).ToList();
+            var qualificationTypes = await _vacancyClient.GetCandidateQualificationsAsync();
+            vacancy.Qualifications = vacancy.Qualifications.SortQualifications(qualificationTypes).ToList();
 
             return await ValidateAndExecute(vacancy,
                 v =>

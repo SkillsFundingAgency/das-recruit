@@ -11,7 +11,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 {
-    public class ResetSubmittedVacancyCommandHandler : IRequestHandler<ResetSubmittedVacancyCommand>
+    public class ResetSubmittedVacancyCommandHandler : IRequestHandler<ResetSubmittedVacancyCommand, Unit>
     {
         private readonly ILogger<ResetSubmittedVacancyCommandHandler> _logger;
         private readonly IVacancyRepository _vacancyRepository;
@@ -34,13 +34,13 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             _timeProvider = timeProvider;
             _messaging = messaging;
         }
-        public async Task Handle(ResetSubmittedVacancyCommand message, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(ResetSubmittedVacancyCommand message, CancellationToken cancellationToken)
         {
             var vacancy = await _vacancyRepository.GetVacancyAsync(message.VacancyId);
             if (vacancy.Status != VacancyStatus.Submitted)
             {
                 _logger.LogInformation($"No reviews will be updated for the vacancy {vacancy.VacancyReference} as it is in status {vacancy.Status}");
-                return;
+                return Unit.Value;
             }
 
             var review = await _vacancyReviewQuery.GetLatestReviewByReferenceAsync(vacancy.VacancyReference.GetValueOrDefault());
@@ -48,13 +48,13 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             if (review == null || review.Status == ReviewStatus.Closed)
             {
                 _logger.LogInformation($"No active reviews found for vacancy {vacancy.VacancyReference}");
-                return;
+                return Unit.Value;
             }
 
             if (review.Status == ReviewStatus.UnderReview)
             {
                 _logger.LogInformation($"The vacancy will not be updated {vacancy.VacancyReference} as it is being reviewed {review.Id}.");
-                return;
+                return Unit.Value;
             }
             else if (review.IsPending)
             {
@@ -63,6 +63,8 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
                 await _messaging.PublishEvent(
                     new VacancyReviewWithdrawnEvent(vacancy.Id, vacancy.VacancyReference.GetValueOrDefault(), review.Id));
             }
+            
+            return Unit.Value;
         }
 
         private Task UpdateVacancyStatusToDraft(Vacancy vacancy)

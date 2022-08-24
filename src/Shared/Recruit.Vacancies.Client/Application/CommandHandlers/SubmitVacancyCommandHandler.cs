@@ -13,7 +13,7 @@ using Esfa.Recruit.Vacancies.Client.Application.Services;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 {
-    public class SubmitVacancyCommandHandler : IRequestHandler<SubmitVacancyCommand>
+    public class SubmitVacancyCommandHandler : IRequestHandler<SubmitVacancyCommand, Unit>
     {
         public const string VacancyNotFoundExceptionMessageFormat = "Vacancy {0} not found";
         public const string InvalidStateExceptionMessageFormat = "Unable to submit vacancy {0} due to vacancy having a status of {1}.";
@@ -39,7 +39,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             _employerService = employerService;
         }
 
-        public async Task Handle(SubmitVacancyCommand message, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(SubmitVacancyCommand message, CancellationToken cancellationToken)
         {
             _logger.LogInformation("Submitting vacancy {vacancyId}.", message.VacancyId);
 
@@ -54,7 +54,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             if(vacancy.CanSubmit == false)
                 throw new InvalidOperationException(string.Format(InvalidStateExceptionMessageFormat, vacancy.Id, vacancy.Status));
 
-            if(vacancy.OwnerType != message.SubmissionOwner)
+            if(vacancy.OwnerType != message.SubmissionOwner && vacancy.Status != VacancyStatus.Review)
                 throw new InvalidOperationException(string.Format(InvalidOwnerExceptionMessageFormat, vacancy.Id, message.SubmissionOwner, vacancy.OwnerType));
 
             var now = _timeProvider.Now;
@@ -65,6 +65,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             vacancy.EmployerName = await _employerService.GetEmployerNameAsync(vacancy);
 
             vacancy.Status = VacancyStatus.Submitted;
+            vacancy.EmployerRejectedReason = null;
             vacancy.SubmittedDate = now;
             vacancy.SubmittedByUser = message.User;
             vacancy.LastUpdatedDate = now;
@@ -78,6 +79,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
                 VacancyId = vacancy.Id,
                 VacancyReference = vacancy.VacancyReference.Value
             });
+            return Unit.Value;
         }
     }
 }

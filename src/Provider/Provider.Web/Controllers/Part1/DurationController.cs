@@ -6,6 +6,9 @@ using Esfa.Recruit.Provider.Web.Orchestrators.Part1;
 using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Provider.Web.ViewModels.Part1.Duration;
 using Esfa.Recruit.Shared.Web.Extensions;
+using Esfa.Recruit.Shared.Web.FeatureToggle;
+using Esfa.Recruit.Vacancies.Client.Application.Configuration;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,10 +19,14 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
     public class DurationController : Controller
     {
         private readonly DurationOrchestrator _orchestrator;
+        private readonly IFeature _feature;
+        private readonly ServiceParameters _serviceParameters;
 
-        public DurationController(DurationOrchestrator orchestrator)
+        public DurationController(DurationOrchestrator orchestrator, IFeature feature, ServiceParameters serviceParameters)
         {
             _orchestrator = orchestrator;
+            _feature = feature;
+            _serviceParameters = serviceParameters;
         }
         
         [HttpGet("duration", Name = RouteNames.Duration_Get)]
@@ -46,10 +53,12 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
                 vm.PageInfo.SetWizard(wizard);
                 return View(vm);
             }
-
+            
             return wizard
-                ? RedirectToRoute(RouteNames.Wage_Get)
-                : RedirectToRoute(RouteNames.Vacancy_Preview_Get);
+                ? _serviceParameters.VacancyType == VacancyType.Apprenticeship ? RedirectToRoute(RouteNames.Wage_Get, new {m.Ukprn, m.VacancyId}) : RedirectToRoute(RouteNames.NumberOfPositions_Get, new {m.Ukprn, m.VacancyId})
+                : _feature.IsFeatureEnabled(FeatureNames.ProviderTaskList) 
+                    ? RedirectToRoute(RouteNames.ProviderCheckYourAnswersGet, new {m.Ukprn, m.VacancyId}) 
+                    : RedirectToRoute(RouteNames.Vacancy_Preview_Get, new {m.Ukprn, m.VacancyId});
         }
     }
 }

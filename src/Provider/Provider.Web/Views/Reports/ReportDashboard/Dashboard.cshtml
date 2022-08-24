@@ -1,31 +1,42 @@
 ﻿@model Esfa.Recruit.Provider.Web.ViewModels.Reports.ReportDashboard.ReportsDashboardViewModel
 
+@{
+    ViewBag.Title = "Reports";
+}
+
+@section BackLink {
+    <a asp-route="@RouteNames.Dashboard_Get" asp-route-ukprn="@Model.Ukprn" class="govuk-back-link">Return to dashboard</a>
+}
+
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-        <a asp-route="@RouteNames.Dashboard_Get" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Return to dashboard</a>
 
         <h1 class="govuk-heading-xl">Reports</h1>
-    </div>
-    <div asp-hide="@Model.HasReports"  class="govuk-grid-column-two-thirds">
-        <p  class="govuk-body">You can create and download a report that gives you information on all the applications you received. You can decide what time period you would like for the report.</p>
-        <a asp-route="@RouteNames.ProviderApplicationsReportCreate_Get" class="govuk-button">Create new report</a>
-    </div>
-    <div asp-show="@Model.HasReports"  class="govuk-grid-column-full">
-        <a asp-route="@RouteNames.ProviderApplicationsReportCreate_Get" class="govuk-button">Create new report</a>
-        <p asp-show="@Model.IsProcessingReports" class="govuk-body">
-            You have @Model.ProcessingCaption being processed.
-            <a asp-route="@RouteNames.ReportDashboard_Get">Check if your report is ready to download</a>
-        </p>
+    
+        <div asp-hide="@Model.HasReports">
+            <p  class="govuk-body">You can create and download a report that gives you information on all the applications you received. You can decide what time period you would like for the report.</p>
+            <a asp-route="@RouteNames.ProviderApplicationsReportCreate_Get" asp-route-ukprn="@Model.Ukprn" class="govuk-button">Create new report</a>
+        </div>
+
+        <div asp-show="@Model.HasReports">
+            <a asp-route="@RouteNames.ProviderApplicationsReportCreate_Get" asp-route-ukprn="@Model.Ukprn" class="govuk-button">Create new report</a>
+            <p asp-show="@Model.IsProcessingReports" class="govuk-body">
+                You have @Model.ProcessingCaption being processed.
+                <a asp-route="@RouteNames.ReportDashboard_Get" asp-route-ukprn="@Model.Ukprn">Check if your report is ready to download</a>
+            </p>
+        </div>
+
     </div>
 </div>
+
 <div asp-show="@Model.HasReports">
-    <table class="govuk-table responsive">
+    <table class="govuk-table das-table--responsive">
         <thead class="govuk-table__head">
             <tr class="govuk-table__row">
                 <th class="govuk-table__header" scope="col">Report period</th>
                 <th class="govuk-table__header" scope="col">Created</th>
                 <th class="govuk-table__header" scope="col">Created by</th>
-                <th class="govuk-table__header" scope="col"></th>
+                <th class="govuk-table__header" scope="col"><span class="govuk-visually-hidden">Action</span></th>
             </tr>
         </thead>
         <tbody class="govuk-table__body">
@@ -33,10 +44,8 @@
             {
                 <tr class="govuk-table__row">
                     <td class="govuk-table__cell" data-label="Report period">
-                        @report.ReportName
-                        <div asp-show="@report.IsNew">
-                            <span class="das-tag das-tag--new">new</span>
-                        </div>
+                        <span class="govuk-tag govuk-tag--blue govuk-!-margin-right-1" asp-show="@report.IsNew">New</span>
+                        @report.ReportName 
                     </td>
                     <td class="govuk-table__cell" data-label="Created">
                         @report.CreatedDate
@@ -44,13 +53,15 @@
                     <td class="govuk-table__cell" data-label="Created by">
                         @report.CreatedBy
                     </td>
-                    <td class="govuk-table__cell">
+                    <td class="govuk-table__cell govuk-table__cell--numeric">
                         <span asp-hide="@report.CanDownload">Processing</span>
-                        <a asp-show="@report.CanDownload" asp-route="@RouteNames.ReportDashboard_DownloadCsv", asp-route-reportId="@report.ReportId">Download CSV</a>
+                        <a asp-show="@report.CanDownload" asp-route="@RouteNames.ReportDashboard_DownloadCsv" asp-route-ukprn="@Model.Ukprn" asp-route-reportId="@report.ReportId" class="govuk-link">
+                            Download <span class="govuk-visually-hidden">the @report.ReportName in</span>CSV<span class="govuk-visually-hidden"> format</span>
+                        </a>
                     </td>
                 </tr>
             }
         </tbody>
     </table>
-    <p class="govuk-body">The files will be kept for 7 days from the date created</p>
+    <p class="govuk-body">The files will be kept for 7 days from the date created.</p>
 </div>

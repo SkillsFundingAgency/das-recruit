@@ -8,7 +8,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 {
-    public class UnassignVacancyReviewCommandHandler : IRequestHandler<UnassignVacancyReviewCommand>
+    public class UnassignVacancyReviewCommandHandler : IRequestHandler<UnassignVacancyReviewCommand, Unit>
     {
         private readonly IVacancyReviewRepository _repository;
         private readonly ILogger<UnassignVacancyReviewCommandHandler> _logger;
@@ -20,7 +20,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             _logger = logger;
         }
 
-        public async Task Handle(UnassignVacancyReviewCommand message, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(UnassignVacancyReviewCommand message, CancellationToken cancellationToken)
         {
             _logger.LogInformation("Attempting to unassign review {reviewId}.", message.ReviewId);
 
@@ -29,7 +29,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             if (!review.CanUnassign)
             {
                 _logger.LogWarning($"Unable to unassign {review.ReviewedByUser.Name} from review {message.ReviewId}, it may already be unassigned.");
-                return;
+                return Unit.Value;
             }
 
             review.Status = ReviewStatus.PendingReview;
@@ -37,6 +37,8 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             review.ReviewedByUser = null;
 
             await _repository.UpdateAsync(review);
+            
+            return Unit.Value;
         }
     }
 }

@@ -5,6 +5,7 @@ using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Provider.Web.ViewModels.Part2.ShortDescription;
 using Esfa.Recruit.Shared.Web.Orchestrators;
 using Esfa.Recruit.Shared.Web.Services;
+using Esfa.Recruit.Vacancies.Client.Application.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
@@ -12,32 +13,31 @@ using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
 {
-    public class ShortDescriptionOrchestrator : EntityValidatingOrchestrator<Vacancy, ShortDescriptionEditModel>
+    public class ShortDescriptionOrchestrator : VacancyValidatingOrchestrator<ShortDescriptionEditModel>
     {
         private const VacancyRuleSet ValidationRules = VacancyRuleSet.ShortDescription;
-        private readonly IProviderVacancyClient _providerVacancyClient;
         private readonly IRecruitVacancyClient _recruitVacancyClient;
         private readonly IReviewSummaryService _reviewSummaryService;
+        private readonly IUtility _utility;
 
-        public ShortDescriptionOrchestrator(IProviderVacancyClient providerVacnacyClient, 
-            IRecruitVacancyClient recruitVacancyClient, ILogger<ShortDescriptionOrchestrator> logger, 
-            IReviewSummaryService reviewSummaryService) : base(logger)
+        public ShortDescriptionOrchestrator(IRecruitVacancyClient recruitVacancyClient, ILogger<ShortDescriptionOrchestrator> logger, 
+            IReviewSummaryService reviewSummaryService, IUtility utility) : base(logger)
         {
-            _providerVacancyClient = providerVacnacyClient;
             _recruitVacancyClient = recruitVacancyClient;
             _reviewSummaryService = reviewSummaryService;
+            _utility = utility;
         }
 
         public async Task<ShortDescriptionViewModel> GetShortDescriptionViewModelAsync(VacancyRouteModel vrm)
         {
-            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_providerVacancyClient, 
-                _recruitVacancyClient, vrm, RouteNames.ShortDescription_Get);
+            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.ShortDescription_Get);
 
             var vm = new ShortDescriptionViewModel
             {
                 VacancyId = vacancy.Id,
                 ShortDescription = vacancy.ShortDescription,
-                Title = vacancy.Title
+                Title = vacancy.Title,
+                Ukprn = vrm.Ukprn
             };
 
             if (vacancy.Status == VacancyStatus.Referred)
@@ -45,6 +45,8 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
                 vm.Review = await _reviewSummaryService.GetReviewSummaryViewModelAsync(vacancy.VacancyReference.Value,
                     ReviewFieldMappingLookups.GetShortDescriptionReviewFieldIndicators());
             }
+
+            vm.IsTaskListCompleted = _utility.IsTaskListCompleted(vacancy);
 
             return vm;
         }
@@ -60,10 +62,16 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
 
         public async Task<OrchestratorResponse> PostShortDescriptionEditModelAsync(ShortDescriptionEditModel m, VacancyUser user)
         {
-            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_providerVacancyClient, 
-                _recruitVacancyClient, m, RouteNames.ShortDescription_Post);
+            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(m, RouteNames.ShortDescription_Post);
 
-            vacancy.ShortDescription = m.ShortDescription;
+            SetVacancyWithProviderReviewFieldIndicators(
+                vacancy.ShortDescription,
+                FieldIdResolver.ToFieldId(v => v.ShortDescription),
+                vacancy,
+                (v) =>
+                {
+                    return v.ShortDescription = m.ShortDescription;
+                });
 
             return await ValidateAndExecute(
                 vacancy, 

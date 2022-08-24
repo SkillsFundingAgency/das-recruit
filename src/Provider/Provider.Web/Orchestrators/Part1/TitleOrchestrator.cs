@@ -8,7 +8,9 @@ using Esfa.Recruit.Provider.Web.ViewModels.Part1.Title;
 using Esfa.Recruit.Shared.Web.Orchestrators;
 using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Shared.Web.ViewModels;
+using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Application.Exceptions;
+using Esfa.Recruit.Vacancies.Client.Application.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
@@ -17,25 +19,29 @@ using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
 {
-    public class TitleOrchestrator : EntityValidatingOrchestrator<Vacancy, TitleEditModel>
+    public class TitleOrchestrator : VacancyValidatingOrchestrator<TitleEditModel>
     {
         private const VacancyRuleSet ValidationRules = VacancyRuleSet.Title;
         private readonly IProviderVacancyClient _providerVacancyClient;
         private readonly IRecruitVacancyClient _recruitVacancyClient;
         private readonly IReviewSummaryService _reviewSummaryService;
+        private readonly IUtility _utility;
+        private readonly ServiceParameters _serviceParameters;
 
         public TitleOrchestrator(IProviderVacancyClient providerVacancyClient, IRecruitVacancyClient recruitVacancyClient, 
-            ILogger<TitleOrchestrator> logger, IReviewSummaryService reviewSummaryService) : base(logger)
+            ILogger<TitleOrchestrator> logger, IReviewSummaryService reviewSummaryService, IUtility utility, ServiceParameters serviceParameters) : base(logger)
         {
             _providerVacancyClient = providerVacancyClient;
             _recruitVacancyClient = recruitVacancyClient;
             _reviewSummaryService = reviewSummaryService;
+            _utility = utility;
+            _serviceParameters = serviceParameters;
         }
 
         public async Task<TitleViewModel> GetTitleViewModelForNewVacancyAsync(string employerAccountId, long ukprn)
         {
             await ValidateEmployerAccountIdAsync(ukprn, employerAccountId);
-            var dashboard = await _providerVacancyClient.GetDashboardAsync(ukprn);
+            var dashboard = await _providerVacancyClient.GetDashboardAsync(ukprn, _serviceParameters.VacancyType.GetValueOrDefault());
             var vm = new TitleViewModel
             {
                 EmployerAccountId = employerAccountId,
@@ -48,17 +54,17 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
 
         public async Task<TitleViewModel> GetTitleViewModelForExistingVacancyAsync(VacancyRouteModel vrm)
         {
-            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_providerVacancyClient, _recruitVacancyClient, vrm, RouteNames.Title_Get);
+            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.Title_Get);
             var ukprn = vacancy.TrainingProvider.Ukprn.GetValueOrDefault();
-            var dashboard = await _providerVacancyClient.GetDashboardAsync(ukprn);
+            var dashboard = await _providerVacancyClient.GetDashboardAsync(ukprn, _serviceParameters.VacancyType.GetValueOrDefault());
             var vm = new TitleViewModel
             {
-                    VacancyId = vacancy.Id,
-                    Title = vacancy.Title,
-                    PageInfo = Utility.GetPartOnePageInfo(vacancy),
-                    Ukprn = ukprn,
-                    EmployerAccountId = vacancy.EmployerAccountId,
-                    HasAnyVacancies = dashboard.Vacancies.Any()
+                VacancyId = vacancy.Id,
+                Title = vacancy.Title,
+                PageInfo = _utility.GetPartOnePageInfo(vacancy),
+                Ukprn = ukprn,
+                EmployerAccountId = vacancy.EmployerAccountId,
+                HasAnyVacancies = dashboard.Vacancies.Any()
             };
 
             if (vacancy.Status == VacancyStatus.Referred)
@@ -92,9 +98,16 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
         {
             if (model.VacancyId.HasValue) 
             {
-                var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_providerVacancyClient, _recruitVacancyClient, vrm, RouteNames.Title_Post);
+                var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.Title_Post);
 
-                vacancy.Title = model.Title;
+                SetVacancyWithProviderReviewFieldIndicators(
+                vacancy.Title,
+                FieldIdResolver.ToFieldId(v => v.Title),
+                vacancy,
+                (v) =>
+                {
+                    return v.Title = model.Title;
+                });
 
                 return await ValidateAndExecute(
                     vacancy, 

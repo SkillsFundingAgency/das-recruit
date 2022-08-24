@@ -1,9 +1,10 @@
 using System;
 using System.Collections.Generic;
+using Esfa.Recruit.Vacancies.Client.Domain.Interfaces;
 
 namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
 {
-    public class Vacancy
+    public class Vacancy : ITaskListVacancy
     {
         public Guid Id { get; set; }
         public string EmployerAccountId { get; set; }
@@ -19,6 +20,9 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
         public VacancyUser CreatedByUser { get; set; }
         public DateTime? SubmittedDate { get; set; }
         public VacancyUser SubmittedByUser { get; set; }
+        public DateTime? ReviewDate { get; set; }
+        public VacancyUser ReviewByUser { get; set; }
+        public int ReviewCount { get; set; }
         public DateTime? ApprovedDate { get; set; }
         public DateTime? LiveDate { get; set; }
 
@@ -39,6 +43,8 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
         public Address EmployerLocation { get; set; }
         public string EmployerName { get; set; }
         public EmployerNameOption? EmployerNameOption { get; set; }
+        public List<EmployerReviewFieldIndicator> EmployerReviewFieldIndicators { get; set; }
+        public string EmployerRejectedReason { get; set; }
         public string LegalEntityName { get; set; }
         public string EmployerWebsiteUrl { get; set; }
         public GeoCodeMethod? GeoCodeMethod { get; set; }
@@ -46,6 +52,7 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
         public int? NumberOfPositions { get; set; }
         public string OutcomeDescription { get; set; }
         public ContactDetail ProviderContact { get; set; }
+        public List<ProviderReviewFieldIndicator> ProviderReviewFieldIndicators { get; set; }
         public string ProgrammeId { get; set; }
         public List<Qualification> Qualifications { get; set; }
         public string ShortDescription { get; set; }
@@ -60,25 +67,42 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
         public string ClosureExplanation { get; set; }
         public TransferInfo TransferInfo { get; set; }
         public bool CanClose => Status == VacancyStatus.Live;
-        public bool CanClone => Status == 
-            VacancyStatus.Live || Status == VacancyStatus.Closed || Status == VacancyStatus.Submitted;
+        public bool CanClone => (Status == VacancyStatus.Live || 
+                                 Status == VacancyStatus.Closed || 
+                                 Status == VacancyStatus.Submitted || 
+                                 Status == VacancyStatus.Review);
         /// <summary>
         /// We can only delete draft vacancies that have not been deleted
         /// </summary>
-        public bool CanDelete => (Status == VacancyStatus.Draft ||
-                                  Status == VacancyStatus.Referred)
-                                 && IsDeleted == false;
+        public bool CanDelete => ((Status == VacancyStatus.Draft ||
+                                  Status == VacancyStatus.Referred ||
+                                  Status == VacancyStatus.Rejected )
+                                 && IsDeleted == false) || (Status == VacancyStatus.Submitted && ClosingDate <= DateTime.UtcNow && !IsDeleted);
         /// <summary>
-        /// We can only edit draft & referred vacancies that have not been deleted
+        /// We can only edit draft & referred & rejected vacancies that have not been deleted
         /// </summary>
         public bool CanEdit => (Status == VacancyStatus.Draft || 
-                                Status == VacancyStatus.Referred ) 
-                               && IsDeleted == false;
+                                Status == VacancyStatus.Referred ||
+                                Status == VacancyStatus.Rejected)                               
+                                && IsDeleted == false;
+
+        /// <summary>
+        /// Employer can only edit draft , referred & review vacancies that have not been deleted
+        /// </summary>
+        public bool CanEmployerEdit => (Status == VacancyStatus.Draft ||
+                                Status == VacancyStatus.Referred ||
+                                Status == VacancyStatus.Review)                                
+                                && IsDeleted == false;
+
+        public bool CanGetEmployerProfileAboutOrganisation => (Status == VacancyStatus.Draft ||
+                                Status == VacancyStatus.Referred)                                
+                                && IsDeleted == false;
+
         /// <summary>
         /// The vacancy is being edited
-        /// We can only submit draft & referred vacancies that have not been deleted
+        /// We can only submit draft & referred & rejected vacancies that have not been deleted
         /// </summary>
-        public bool CanSubmit => (Status == VacancyStatus.Draft || Status == VacancyStatus.Referred) && IsDeleted == false;
+        public bool CanSubmit => (Status == VacancyStatus.Draft || Status == VacancyStatus.Referred || Status == VacancyStatus.Rejected || Status == VacancyStatus.Review) && IsDeleted == false;
 
         /// <summary>
         /// We can only approve submitted vacancies that have not been deleted
@@ -91,6 +115,11 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
         public bool CanRefer => Status == VacancyStatus.Submitted && IsDeleted == false;
 
         /// <summary>
+        /// We can only reject  review vacancies that have not been deleted
+        /// </summary>
+        public bool CanReject => Status == VacancyStatus.Review && IsDeleted == false;
+
+        /// <summary>
         /// We can only make approved vacancies live that have not been deleted
         /// </summary>
         public bool CanMakeLive => Status == VacancyStatus.Approved && IsDeleted == false;
@@ -99,6 +128,10 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
         /// We can send for review vacancies that are submitted and that have not been deleted
         /// </summary>
         public bool CanSendForReview => Status == VacancyStatus.Submitted && IsDeleted == false;
+        
+        public bool CanReview => Status == VacancyStatus.Review && IsDeleted == false;
+
+        public bool CanEmployerAndProviderCollabarate => (Status == VacancyStatus.Review || Status == VacancyStatus.Rejected);
 
         public bool IsDisabilityConfident => DisabilityConfident == DisabilityConfident.Yes;
 
@@ -116,5 +149,17 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
         /// Should the vacancy be geocoded using the outcode part of the postcode
         /// </summary>
         public bool GeocodeUsingOutcode => IsAnonymous;
+        
+        /// <summary>
+        /// Type of Vacancy being created, either Apprenticeship or Traineeship. Set by application startup.
+        /// </summary>
+        public VacancyType? VacancyType { get; set; }
+
+        /// <summary>
+        /// If traineeship vacancy then this must be populated
+        /// </summary>
+        public int? RouteId { get; set; }
+        public string WorkExperience { get; set; }
+        public bool? HasChosenProviderContactDetails { get; set; }
     }
 }

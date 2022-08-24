@@ -8,6 +8,7 @@ using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Shared.Web.Orchestrators;
 using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
+using Esfa.Recruit.Vacancies.Client.Application.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
@@ -18,25 +19,25 @@ using WageType = Esfa.Recruit.Vacancies.Client.Domain.Entities.WageType;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 {
-    public class WageOrchestrator : EntityValidatingOrchestrator<Vacancy, WageEditModel>
+    public class WageOrchestrator : VacancyValidatingOrchestrator<WageEditModel>
     {
         private const VacancyRuleSet ValidationRules = VacancyRuleSet.Wage | VacancyRuleSet.MinimumWage;
-        private readonly IEmployerVacancyClient _client;
         private readonly IRecruitVacancyClient _vacancyClient;
         private readonly IReviewSummaryService _reviewSummaryService;
         private readonly IMinimumWageProvider _minimumWageProvider;
+        private readonly IUtility _utility;
 
-        public WageOrchestrator(IEmployerVacancyClient client, IRecruitVacancyClient vacancyClient, ILogger<WageOrchestrator> logger, IReviewSummaryService reviewSummaryService, IMinimumWageProvider minimumWageProvider) : base(logger)
+        public WageOrchestrator(IRecruitVacancyClient vacancyClient, ILogger<WageOrchestrator> logger, IReviewSummaryService reviewSummaryService, IMinimumWageProvider minimumWageProvider, IUtility utility) : base(logger)
         {
-            _client = client;
             _vacancyClient = vacancyClient;
             _reviewSummaryService = reviewSummaryService;
             _minimumWageProvider = minimumWageProvider;
+            _utility = utility;
         }
 
         public async Task<WageViewModel> GetWageViewModelAsync(VacancyRouteModel vrm)
         {
-            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, _vacancyClient, vrm, RouteNames.Wage_Get);
+            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.Wage_Get);
 
             var wagePeriod = _minimumWageProvider.GetWagePeriod(vacancy.StartDate.Value);
             
@@ -52,7 +53,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                 ApprenticeshipMinimumWageHourly = wagePeriod.ApprenticeshipMinimumWage.ToString("C"),
                 ApprenticeshipMinimumWageYearly = GetMinimumWageYearlyText(SFA.DAS.VacancyServices.Wage.WageType.ApprenticeshipMinimum, vacancy.Wage?.WeeklyHours, vacancy.StartDate.Value),
                 WeeklyHours = vacancy.Wage.WeeklyHours.Value,
-                PageInfo = Utility.GetPartOnePageInfo(vacancy)
+                PageInfo = _utility.GetPartOnePageInfo(vacancy)
             };
 
             if (vacancy.Status == VacancyStatus.Referred)
@@ -77,15 +78,38 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 
         public async Task<OrchestratorResponse> PostWageEditModelAsync(WageEditModel m, VacancyUser user)
         {
-            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, _vacancyClient, m, RouteNames.Wage_Post);
+            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(m, RouteNames.Wage_Post);
             
             if(vacancy.Wage == null)
                 vacancy.Wage = new Wage();
 
-            vacancy.Wage.WageType = m.WageType;
-            vacancy.Wage.FixedWageYearlyAmount = (m.WageType == WageType.FixedWage) ? m.FixedWageYearlyAmount?.AsMoney() : null;
-            vacancy.Wage.WageAdditionalInformation = m.WageAdditionalInformation;
-            
+            SetVacancyWithEmployerReviewFieldIndicators(
+                vacancy.Wage.WageType,
+                FieldIdResolver.ToFieldId(v => v.Wage.WageType),
+                vacancy,
+                (v) =>
+                {
+                    return v.Wage.WageType = m.WageType;
+                });
+
+            SetVacancyWithEmployerReviewFieldIndicators(
+                vacancy.Wage.FixedWageYearlyAmount,
+                FieldIdResolver.ToFieldId(v => v.Wage.FixedWageYearlyAmount),
+                vacancy,
+                (v) =>
+                {
+                    return v.Wage.FixedWageYearlyAmount = (m.WageType == WageType.FixedWage) ? m.FixedWageYearlyAmount?.AsMoney() : null;
+                });
+
+            SetVacancyWithEmployerReviewFieldIndicators(
+                vacancy.Wage.WageAdditionalInformation,
+                FieldIdResolver.ToFieldId(v => v.Wage.WageAdditionalInformation),
+                vacancy,
+                (v) =>
+                {
+                    return v.Wage.WageAdditionalInformation = m.WageAdditionalInformation;
+                });
+
             return await ValidateAndExecute(
                 vacancy, 
                 v => _vacancyClient.Validate(v, ValidationRules),

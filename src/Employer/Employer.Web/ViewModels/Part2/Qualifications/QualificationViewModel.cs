@@ -22,5 +22,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Part2.Qualifications
             nameof(Grade),
             nameof(Weighting)
         };
+
+        public bool IsTaskListCompleted { get ; set ; }
     }
 }

@@ -1,51 +1,59 @@
-@using Esfa.Recruit.Shared.Web.Configuration;
 @model Esfa.Recruit.Provider.Web.ViewModels.Part1.LegalEntity.LegalEntityViewModel;
 
 @{
     ViewBag.GaData.Vpv = "/recruitment/provider/page-create-vacancy-which-organisation";
+    ViewBag.Title = "Which organisation do you want to create a vacancy for?";
+}
+
+@section BackLink {
+    <esfaFeatureEnabled name="@FeatureNames.ProviderTaskList">
+        <a asp-route="@RouteNames.Title_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Back</a>
+    </esfaFeatureEnabled>
+    <esfaFeatureDisabled name="@FeatureNames.ProviderTaskList">
+        <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.NumberOfPositions_Get" asp-route-vacancyId="@Model.VacancyId" asp-route-ukprn="@Model.Ukprn"  asp-route-wizard="@Model.PageInfo.IsWizard" esfa-automation="link-back" class="govuk-back-link">Back</a>    
+    </esfaFeatureDisabled>
 }
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-        <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.NumberOfPositions_Get" asp-route-wizard="@Model.PageInfo.IsWizard" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
 
-        <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }' />
+        
+
+        <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }'/>
 
         <partial name="@PartialNames.ReviewSummary" for="Review" />
+        
+        <h1 class="govuk-heading-xl">
+            <span class="govuk-caption-xl">@Model.Title</span>
+            Which employer is this vacancy for?
+        </h1>
 
-        <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">Which organisation is this vacancy for?</h1>
 
         <form asp-show="@Model.CanShowSearchPanel" method="GET" asp-route="@RouteNames.LegalEntity_Get" asp-route-wizard="@Model.PageInfo.IsWizard">
-            <div class="form-group search-field search-field-darker">
-                <div class="search-input search-input-with-button">
-                    <label class="govuk-label" for="search">
-                        Search for the organisation
-                    </label>
-                    <div class="search-field">
-                        <div class="search-input">
-                            <input asp-for="SearchTerm" class="govuk-input" maxlength="100" />
-                        </div>
-                        <div class="search-submit">
-                            <button type="submit">Search</button>
-                        </div>
+            <div class="govuk-form-group">
+                <label class="govuk-label" asp-for="SearchTerm">
+                    Search for the employer
+                </label>
+                <div class="das-search-form__group">
+                    <input asp-for="SearchTerm" class="govuk-input das-search-form__input" maxlength="100" title="Search" />
+                    <div class="das-search-form__button-wrap">
+                        <button class="govuk-button das-search-form__button" type="submit">Search</button>
                     </div>
                 </div>
-                <div class="govuk-!-margin-top-6 govuk-!-margin-bottom-6">
-                    <a class="govuk-link govuk-body" asp-route="@RouteNames.LegalEntity_Get">Clear search</a>
-                </div>
+                <p class="govuk-body govuk-!-margin-top-1">
+                    <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.LegalEntity_Get">Clear search</a>
+                </p>
             </div>
         </form>
 
-        <form asp-route="@RouteNames.LegalEntity_Post" asp-route-wizard="@Model.PageInfo.IsWizard">
+        <form asp-route="@RouteNames.LegalEntity_Post" asp-route-wizard="@Model.PageInfo.IsWizard" asp-route-ukprn="@Model.Ukprn" asp-route-vacancyId="@Model.VacancyId">
             <div esfa-validation-marker-for="SelectedOrganisationId" class="govuk-form-group">
-                <legend class="govuk-fieldset__legend">
-                    <span asp-hide="@Model.HasNoSearchResults" class="govuk-label govuk-!-font-weight-bold">Which organisation is the vacancy for?</span>
-                </legend>
-                <span esfa-validation-message-for="SelectedOrganisationId" class="govuk-error-message"></span>
-                <input type="hidden" asp-for="SearchTerm" />
-                <input type="hidden" asp-for="Page" />
-                <span asp-show="@Model.HasNoSearchResults" class="govuk-body">@Model.NoSearchResultsCaption</span>
                 <fieldset class="govuk-fieldset">
+                    <legend class="govuk-visually-hidden">Select an employer</legend>
+                    <span esfa-validation-message-for="SelectedOrganisationId" class="govuk-error-message"></span>
+                    <input type="hidden" asp-for="SearchTerm" />
+                    <input type="hidden" asp-for="Page" />
+                    <span asp-show="@Model.HasNoSearchResults" class="govuk-body">@Model.NoSearchResultsCaption</span>
                     <div class="govuk-radios">
                         @foreach (var organisation in Model.Organisations)
                         {
@@ -59,11 +67,43 @@
                 </fieldset>
             </div>
 
-            <partial name="@PartialNames.Pager" model="@Model.Pager" />
+            <nav role="navigation" aria-label="Pagination" asp-show="@Model.Pager.ShowPager" >
+                <div class="das-pagination__summary">
+                    @Model.Pager.Caption
+                </div>
+                <ul class="das-pagination">
+                    <li class="das-pagination__item" asp-show="@Model.Pager.ShowPrevious">
+                    <a class="das-pagination__link" asp-route="@Model.Pager.RouteName" asp-all-route-data="@Model.Pager.PreviousPageRouteData" aria-label="Previous page">Previous</a>
+                    </li>
+                    @for (var pageIndex = 1; pageIndex <= Model.Pager.TotalPages; pageIndex++)
+                    {
+                        <li class="das-pagination__item">
+                            @if (pageIndex == Model.Pager.CurrentPage) {
+                                <a class="das-pagination__link current" asp-route="@Model.Pager.RouteName" asp-all-route-data="@Model.Pager.GetRouteData(pageIndex)" aria-current="true" aria-label="Page @pageIndex, current page">@pageIndex</a>
+                            } 
+                            else 
+                            {
+                                <a class="das-pagination__link asp-route="  asp-route="@Model.Pager.RouteName" asp-all-route-data="@Model.Pager.GetRouteData(pageIndex)" aria-label="Page @pageIndex">@pageIndex</a>
+                            }
+                        </li>
+                    }
+                    <li class="das-pagination__item" asp-show="@Model.Pager.ShowNext">
+                    <a class="das-pagination__link"  asp-route="@Model.Pager.RouteName" asp-all-route-data="@Model.Pager.NextPageRouteData" aria-label="Next page">Next</a>
+                    </li>
+                </ul>
+            </nav>
 
-            <button type="submit" class="govuk-button save-button" esfa-automation="continue-button">Continue</button>
 
-            <a asp-route="@RouteNames.LegalEntity_Cancel" asp-route-wizard="@Model.PageInfo.IsWizard" class="govuk-link das-button-link">Cancel</a>
+            <div class="govuk-button-group">
+                <button type="submit" class="govuk-button save-button" esfa-automation="continue-button">Save and continue</button>
+                <esfaFeatureEnabled name="@FeatureNames.ProviderTaskList">
+                    <a asp-route="@RouteNames.Dashboard_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-cancel" class="govuk-link govuk-link--no-visited-state">Cancel</a>
+                </esfaFeatureEnabled>
+                <esfaFeatureDisabled name="@FeatureNames.ProviderTaskList">
+                    <a asp-route="@RouteNames.LegalEntity_Cancel" asp-route-wizard="@Model.PageInfo.IsWizard" asp-route-vacancyId="@Model.VacancyId" asp-route-ukprn="@Model.Ukprn" class="govuk-link govuk-link--no-visited-state">Cancel</a>
+                </esfaFeatureDisabled>
+            </div>
+            
         </form>
     </div>
 </div>

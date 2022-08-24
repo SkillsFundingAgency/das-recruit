@@ -2,16 +2,20 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Esfa.Recruit.Provider.Web.Configuration;
 using Esfa.Recruit.Provider.Web.Configuration.Routing;
 using Esfa.Recruit.Provider.Web.Services;
 using Esfa.Recruit.Provider.Web.ViewModels;
 using Esfa.Recruit.Shared.Web.Helpers;
 using Esfa.Recruit.Shared.Web.Mappers;
 using Esfa.Recruit.Shared.Web.ViewModels;
+using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Vacancies.Client.Domain.Models;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelationship;
 
 namespace Esfa.Recruit.Provider.Web.Orchestrators
 {
@@ -23,29 +27,37 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
         private readonly IRecruitVacancyClient _recruitVacancyClient;
         private readonly ITimeProvider _timeProvider;
         private readonly IProviderAlertsViewModelFactory _providerAlertsViewModelFactory;
+        private readonly IProviderRelationshipsService _providerRelationshipsService;
+        private readonly ServiceParameters _serviceParameters;
 
         public VacanciesOrchestrator(
             IProviderVacancyClient providerVacancyClient,
             IRecruitVacancyClient recruitVacancyClient,
             ITimeProvider timeProvider,
-            IProviderAlertsViewModelFactory providerAlertsViewModelFactory)
+            IProviderAlertsViewModelFactory providerAlertsViewModelFactory,
+            IProviderRelationshipsService providerRelationshipsService,
+            ServiceParameters serviceParameters)
         {
             _providerVacancyClient = providerVacancyClient;
             _recruitVacancyClient = recruitVacancyClient;
             _timeProvider = timeProvider;
             _providerAlertsViewModelFactory = providerAlertsViewModelFactory;
+            _providerRelationshipsService = providerRelationshipsService;
+            _serviceParameters = serviceParameters;
         }
 
         public async Task<VacanciesViewModel> GetVacanciesViewModelAsync(
             VacancyUser user, string filter, int page, string searchTerm)
         {
-            var getDashboardTask = _providerVacancyClient.GetDashboardAsync(user.Ukprn.Value, createIfNonExistent: true);
+            var getDashboardTask = _providerVacancyClient.GetDashboardAsync(user.Ukprn.Value, _serviceParameters.VacancyType.GetValueOrDefault(), true);
             var getUserDetailsTask = _recruitVacancyClient.GetUsersDetailsAsync(user.UserId);
+            var providerTask = _providerRelationshipsService.GetLegalEntitiesForProviderAsync(user.Ukprn.Value, OperationType.RecruitmentRequiresReview);
 
-            await Task.WhenAll(getDashboardTask, getUserDetailsTask);
+            await Task.WhenAll(getDashboardTask, getUserDetailsTask, providerTask);
 
             var dashboard = getDashboardTask.Result;
             var userDetails = getUserDetailsTask.Result;
+            var providerPermissions = providerTask.Result;
 
             var alerts = _providerAlertsViewModelFactory.Create(dashboard, userDetails);
 
@@ -85,8 +97,10 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
                 Pager = pager,
                 Filter = filteringOption,
                 SearchTerm = searchTerm,
-                ResultsHeading = VacancyFilterHeadingHelper.GetFilterHeading(filteredVacanciesTotal, filteringOption, searchTerm),
-                Alerts = alerts
+                ResultsHeading = VacancyFilterHeadingHelper.GetFilterHeading(Constants.VacancyTerm, filteredVacanciesTotal, filteringOption, searchTerm, UserType.Provider),
+                Alerts = alerts,
+                HasEmployerReviewPermission = providerPermissions.Any(),
+                Ukprn = user.Ukprn.Value
             };
 
             return vm;
@@ -99,8 +113,8 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             {
                 case FilteringOptions.Live:
                 case FilteringOptions.Closed:
-                case FilteringOptions.Referred:
                 case FilteringOptions.Draft:
+                case FilteringOptions.Review:
                 case FilteringOptions.Submitted:
                     filteredVacancies = vacancies.Where(v =>
                         v.Status.ToString() == filterStatus.ToString());
@@ -125,6 +139,11 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
                         v.Status == VacancyStatus.Live && 
                         v.ApplicationMethod == ApplicationMethod.ThroughFindAnApprenticeship && 
                         v.NoOfApplications == 0);
+                    break;
+                case FilteringOptions.Referred:
+                    filteredVacancies = vacancies.Where(v => 
+                        v.Status.ToString() == VacancyStatus.Referred.ToString() || 
+                        v.Status.ToString() == VacancyStatus.Rejected.ToString());
                     break;
             }
             return filteredVacancies

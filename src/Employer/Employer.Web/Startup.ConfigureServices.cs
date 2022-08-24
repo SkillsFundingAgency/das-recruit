@@ -1,3 +1,4 @@
+using System.IO;
 using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Shared.Web.FeatureToggle;
@@ -7,6 +8,7 @@ using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using SFA.DAS.Configuration.AzureTableStorage;
 
 namespace Esfa.Recruit.Employer.Web
 {
@@ -21,7 +23,27 @@ namespace Esfa.Recruit.Employer.Web
 
         public Startup(IConfiguration config, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
-            _configuration = config;
+            var configBuilder = new ConfigurationBuilder()
+                .AddConfiguration(config)
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddEnvironmentVariables();
+                
+#if DEBUG
+            configBuilder
+                .AddJsonFile("appsettings.json", optional:true)
+                .AddJsonFile("appsettings.Development.json", optional: true);   
+#endif   
+            
+            configBuilder.AddAzureTableStorage(
+                options => {
+                    options.ConfigurationKeys = config["ConfigNames"].Split(",");
+                    options.EnvironmentName = config["Environment"];
+                    options.StorageConnectionString = config["ConfigurationStorageConnectionString"];
+                    options.PreFixConfigurationKeys = false;
+                }
+            );
+
+            _configuration =  configBuilder.Build();
             _hostingEnvironment = env;
             _authConfig = _configuration.GetSection("Authentication").Get<AuthenticationConfiguration>();
             _loggerFactory = loggerFactory;
@@ -47,10 +69,16 @@ namespace Esfa.Recruit.Employer.Web
                 o.ViewLocationFormats.Add("/Views/Part2/{1}/{0}" + RazorViewEngine.ViewExtension);
             });
 
+            services.AddHealthChecks();
+            
             services.AddMvcService(_hostingEnvironment, _isAuthEnabled, _loggerFactory, featureToggle);
 
             services.AddApplicationInsightsTelemetry(_configuration);
 
+#if DEBUG
+            services.AddControllersWithViews().AddRazorRuntimeCompilation();
+#endif
+            
             if (_isAuthEnabled)
             {
                 //A service provider for resolving services configured in IoC

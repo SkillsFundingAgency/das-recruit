@@ -1,3 +1,117 @@
+// Training Provider Autocomplete
+
+var providerSearchInputs = document.querySelectorAll(".app-provider-autocomplete");
+
+if (providerSearchInputs.length > 0) {
+  for (var a = 0; a < providerSearchInputs.length; a++) {
+    var input = providerSearchInputs[a]
+    var container = document.createElement('div');
+
+    container.className = "das-autocomplete-wrap"
+    input.parentNode.replaceChild(container, input);
+
+    accessibleAutocomplete({
+      element: container,
+      id: input.id,
+      name: input.name,
+      defaultValue: input.value,
+      displayMenu: 'overlay',
+      showNoOptionsFound: false,
+      minLength: 2,
+      source: providerArray,
+      placeholder: input.placeholder,
+      confirmOnBlur: false,
+      autoselect: true
+    });
+  }
+}
+
+
+// Select Field Autocomplete 
+
+var selectFields = document.querySelectorAll(".app-autocomplete");
+if (selectFields.length > 0) {
+    for (var s = 0; s < selectFields.length; s++) {
+        accessibleAutocomplete.enhanceSelectElement({
+            selectElement: selectFields[s],
+            minLength: 2,
+            autoselect: true,
+            defaultValue: '',
+            displayMenu: 'overlay',
+            placeholder: '',
+            onConfirm: function (opt) {
+                var txtInput = document.querySelector('#' + this.id);
+                var searchString = opt || txtInput.value;
+                var requestedOption = [].filter.call(this.selectElement.options,
+                function (option) {
+                    return (option.textContent || option.innerText) === searchString
+                }
+                )[0];
+                if (requestedOption) {
+                    requestedOption.selected = true;
+                } else {
+                    this.selectElement.selectedIndex = 0;
+                }
+            }
+        });
+    }
+}
+
+// Vacancy Autocomplete
+
+var vacancyApiUrl, 
+    getVacancySuggestions = function (query, updateResults) {
+    var xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4) {
+        var jsonResponse = JSON.parse(xhr.responseText);
+        updateResults(jsonResponse);
+        }
+    }
+    xhr.open("GET", vacancyApiUrl + '?term=' + query, true);
+    xhr.send();
+};
+
+var vacancySearchInputs = document.querySelectorAll(".app-vacancy-autocomplete");
+
+if (vacancySearchInputs.length > 0) {
+
+  for (var v = 0; v < vacancySearchInputs.length; v++) {
+
+    var searchInput = vacancySearchInputs[v]
+    vacancyApiUrl = searchInput.dataset.apiurl
+    var searchInputContainer = document.createElement('div');
+
+    searchInputContainer.className = "das-autocomplete-wrap"
+    searchInput.parentNode.replaceChild(searchInputContainer, searchInput);
+
+    accessibleAutocomplete({
+      element: searchInputContainer,
+      id: searchInput.id,
+      name: searchInput.name,
+      defaultValue: searchInput.value,
+      displayMenu: 'overlay',
+      showNoOptionsFound: false,
+      minLength: 2,
+      source: getVacancySuggestions,
+      placeholder: searchInput.placeholder,
+      confirmOnBlur: false,
+      autoselect: true
+    });
+  }
+
+  var autocompleteInputs = document.querySelectorAll(".autocomplete__input");
+  if (autocompleteInputs.length > 0) {
+    for (var i = 0; i < autocompleteInputs.length; i++) {
+      var autocompleteInput = autocompleteInputs[i];
+      autocompleteInput.setAttribute("autocomplete", "new-password");
+    }
+  }
+}
+
+
+
+
 // Legacy JavaScript from DAS
 var sfa;
 sfa = sfa || {};
@@ -175,16 +289,6 @@ $(".character-count").each(function() {
   characterCount(this);
 });
 
-/* Prevent multiple submissions */
-$('button, input[type="submit"], a.button').on("click", function() {
-    var button = $(this)
-      , label = button.text();
-      button.is(".save-button") ? button.text("Saving").addClass("disabled") : button.text("Loading").addClass("disabled");
-    setTimeout(function() {
-        $(".form-group.error").length > 0 ? button.text(label).removeClass("disabled") : $(".block-label.error").length > 0 && button.text(label).removeClass("disabled");
-        button.attr("disabled")
-    }, 50)
-});
 
 /* Disable Are you sure for links */
 $('a').on("click", function() {
@@ -255,7 +359,7 @@ function initializeHtmlEditors() {
         statusbar: false,
         toolbar: 'bullist',
         paste_as_text: true,
-        content_style: ".mce-content-body {font-size:19px;font-family:nta,Arial,sans-serif;}",
+        content_style: ".mce-content-body {font-size:19px;font-family:\"GDS Transport\",arial,sans-serif}",
         setup: function (tinyMceEditor) {
             var element = tinyMceEditor.getElement();
 
@@ -287,12 +391,8 @@ function setEditorMaxLength(element, tinyMceEditor) {
 }
 
 $(function () {
-    
-    //Legacy menu script
-    sfa.navigation.init();
     // Dirty forms handling
     $('form').areYouSure();
     //handle anchor clicks to account for floating menu
     handleAnchorClicks();
-    window.GOVUKFrontend.initAll();
 });

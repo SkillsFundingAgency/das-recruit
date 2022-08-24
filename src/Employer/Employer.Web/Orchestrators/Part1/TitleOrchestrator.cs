@@ -8,6 +8,7 @@ using Esfa.Recruit.Employer.Web.ViewModels.Part1.Title;
 using Esfa.Recruit.Shared.Web.Orchestrators;
 using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Shared.Web.ViewModels;
+using Esfa.Recruit.Vacancies.Client.Application.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
@@ -16,22 +17,22 @@ using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 {
-    public class TitleOrchestrator : EntityValidatingOrchestrator<Vacancy, TitleEditModel>
+    public class TitleOrchestrator : VacancyValidatingOrchestrator<TitleEditModel>
     {
         private const VacancyRuleSet ValidationRules = VacancyRuleSet.Title;
         private readonly IEmployerVacancyClient _client;
         private readonly IRecruitVacancyClient _vacancyClient;
         private readonly IReviewSummaryService _reviewSummaryService;
-        private readonly IEmployerVacancyClient _employerVacancyClient;
         private readonly ITrainingProviderService _trainingProviderService;
+        private readonly IUtility _utility;
 
-        public TitleOrchestrator(IEmployerVacancyClient client, IRecruitVacancyClient vacancyClient, ILogger<TitleOrchestrator> logger, IReviewSummaryService reviewSummaryService, IEmployerVacancyClient employerVacancyClient, ITrainingProviderService trainingProviderService) : base(logger)
+        public TitleOrchestrator(IEmployerVacancyClient client, IRecruitVacancyClient vacancyClient, ILogger<TitleOrchestrator> logger, IReviewSummaryService reviewSummaryService, ITrainingProviderService trainingProviderService, IUtility utility) : base(logger)
         {
             _client = client;
             _vacancyClient = vacancyClient;
             _reviewSummaryService = reviewSummaryService;
-            _employerVacancyClient = employerVacancyClient;
             _trainingProviderService = trainingProviderService;
+            _utility = utility;
         }
 
         public TitleViewModel GetTitleViewModel()
@@ -45,14 +46,14 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 
         public async Task<TitleViewModel> GetTitleViewModelAsync(VacancyRouteModel vrm)
         {
-            var dashboard = await _employerVacancyClient.GetDashboardAsync(vrm.EmployerAccountId);
+            var dashboard = await _client.GetDashboardAsync(vrm.EmployerAccountId);
             
-            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, _vacancyClient, vrm, RouteNames.Title_Get);
+            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.Title_Get);
             var vm = new TitleViewModel
             {
                 VacancyId = vacancy.Id,
                 Title = vacancy.Title,
-                PageInfo = Utility.GetPartOnePageInfo(vacancy),
+                PageInfo = _utility.GetPartOnePageInfo(vacancy),
                 HasCloneableVacancies = dashboard.CloneableVacancies.Any()
             };
             
@@ -61,7 +62,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                 vm.Review = await _reviewSummaryService.GetReviewSummaryViewModelAsync(vacancy.VacancyReference.Value,
                     ReviewFieldMappingLookups.GetTitleFieldIndicators());
             }
-
+            
             return vm;
         }
 
@@ -82,7 +83,6 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             vm.Title = m.Title;
             return vm;
         }
-
 
         public async Task<OrchestratorResponse<Guid>> PostTitleEditModelAsync(TitleEditModel m, VacancyUser user)
         {
@@ -108,10 +108,16 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                     });
             }
 
-            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, _vacancyClient, 
-                new VacancyRouteModel{EmployerAccountId = m.EmployerAccountId, VacancyId = m.VacancyId.Value}, RouteNames.Title_Post);
+            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(new VacancyRouteModel{EmployerAccountId = m.EmployerAccountId, VacancyId = m.VacancyId.Value}, RouteNames.Title_Post);
 
-            vacancy.Title = m.Title;
+            SetVacancyWithEmployerReviewFieldIndicators(
+                vacancy.Title,
+                FieldIdResolver.ToFieldId(v => v.Title),
+                vacancy,
+                (v) =>
+                {
+                    return v.Title = m.Title;
+                });
 
             return await ValidateAndExecute(
                 vacancy, 

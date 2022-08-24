@@ -1,29 +1,43 @@
 @using Esfa.Recruit.Employer.Web.ViewModels.Part1.Location;
 @using Esfa.Recruit.Shared.Web.Configuration
 @using Microsoft.Extensions.Options
-@inject IOptions<PostcodeAnywhereConfiguration> PcaConfig
 @{ 
     ViewBag.Vpv = "/recruitment/employer/page-part1-location";
     ViewBag.Title = "Where will the apprentice work?";
     ViewBag.ZenDeskLabel = "recruit-where-will-the-apprentice-work";
 }
 
+@section BackLink {
+    <esfaFeatureEnabled name="@FeatureNames.EmployerTaskList">
+        <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.NumberOfPositions_Get" esfa-automation="link-back" class="govuk-back-link">Back</a>
+        <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.EmployerCheckYourAnswersGet" esfa-automation="link-back" class="govuk-back-link">Back</a>
+    </esfaFeatureEnabled>
+    <esfaFeatureDisabled name="@FeatureNames.EmployerTaskList">
+        <a asp-show="@Model.CanShowBackLink" asp-route="@RouteNames.EmployerName_Get" asp-route-wizard="@Model.PageInfo.IsWizard" esfa-automation="link-back" class="govuk-back-link">Back</a>
+    </esfaFeatureDisabled>
+}
+
 @model LocationViewModel;
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-        <a asp-show="@Model.CanShowBackLink" asp-route="@RouteNames.EmployerName_Get" asp-route-wizard="@Model.PageInfo.IsWizard" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
-        <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }' />
-        <partial name="@PartialNames.ReviewSummary" for="Review"/>
-        <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">Where will the apprentice work?</h1>
-        
-        <div asp-show="@Model.IsAnonymousVacancy" class="govuk-inset-text">
-            For anonymous adverts we will not show the address on the advert. We will only show the first half of the postcode.
-        </div>
 
+        <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }'/>
+        <partial name="@PartialNames.ReviewSummary" for="Review"/>
+        
         <form asp-route="@RouteNames.Location_Post" asp-route-wizard="@Model.PageInfo.IsWizard">
             <div class="govuk-form-group">
                 <fieldset class="govuk-fieldset">
-                    <div class="govuk-radios govuk-radios--conditional" data-module="radios">
+                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
+                        <h1 class="govuk-fieldset__heading">
+                            Where will the apprentice work?
+                        </h1>
+                    </legend>
+
+                    <div asp-show="@Model.IsAnonymousVacancy" class="govuk-inset-text">
+                        For anonymous adverts we will not show the address on the advert. We will only show the first half of the postcode.
+                    </div>
+
+                    <div class="govuk-radios govuk-radios--conditional" data-module="radios" esfa-validation-marker-for="SelectedLocation">
                         <span esfa-validation-message-for="SelectedLocation" class="govuk-error-message"></span>
                         <div class="govuk-radios">
                            @{
@@ -80,25 +94,21 @@
                     </div>
                 </fieldset>
             </div>
-            <button type="submit" class="govuk-button save-button" esfa-automation="continue-button">@Model.PageInfo.SubmitButtonText</button>
-            <div class="govuk-body">
-                <a asp-route="@RouteNames.Location_Cancel" asp-route-wizard="@Model.PageInfo.IsWizard" class="govuk-link">Cancel</a>
+            <div class="govuk-button-group">
+                <button type="submit" class="govuk-button save-button" esfa-automation="continue-button">@Model.PageInfo.SubmitButtonText</button>
+                <esfaFeatureEnabled name="@FeatureNames.EmployerTaskList">
+                    <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Dashboard_Get" class="govuk-link govuk-link--no-visited-state">Cancel</a>
+                    <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.EmployerCheckYourAnswersGet" class="govuk-link govuk-link--no-visited-state">Cancel</a>
+                </esfaFeatureEnabled>
+                <esfaFeatureDisabled name="@FeatureNames.EmployerTaskList">
+                    <a asp-route="@RouteNames.Location_Cancel" asp-route-wizard="@Model.PageInfo.IsWizard" class="govuk-link govuk-link--no-visited-state">Cancel</a>
+                </esfaFeatureDisabled>
             </div>
         </form>
     </div>
 </div>
-@section HeadJS
-    {
-    <script nws-csp-add-nonce="true">
-        window.EsfaRecruit.PcaConfig = {
-            key: '@PcaConfig.Value.Key',
-            findEndpoint: '@PcaConfig.Value.FindEndpoint',
-            retrieveEndpoint: '@PcaConfig.Value.RetrieveEndpoint'
-        };
-    </script>
-}
 @section FooterJS
     {
-    <script src="/lib/jquery-ui/dist/jquery-ui.min.js"></script>
-    <script asp-append-version="true" src="/lib/esfa-postcode/lookupService.js"></script>
+    <script src="/lib/jquery-ui/dist/jquery-ui.min.js" no-cdn></script>
+    <script asp-append-version="true" src="/lib/esfa-postcode/lookupService.js" no-cdn></script>
 }

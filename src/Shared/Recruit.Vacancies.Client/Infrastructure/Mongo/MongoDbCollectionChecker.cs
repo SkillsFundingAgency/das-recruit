@@ -59,7 +59,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo
         {
             var db = GetMongoDatabase();
 
-            var collections = await MongoDbRetryPolicy.GetRetryPolicy(logger).ExecuteAsync(context =>
+            var collections = await MongoDbRetryPolicy.GetRetryPolicy(logger).Execute(context =>
                     db.ListCollectionNames().ToListAsync()
                 , new Context(nameof(GetMongoCollectionsAsync)));
 

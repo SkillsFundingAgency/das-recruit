@@ -24,7 +24,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
         public Task CreateAsync(Report report)
         {
             var collection = GetCollection<Report>();
-            return RetryPolicy.ExecuteAsync(_ => 
+            return RetryPolicy.Execute(_ => 
                 collection.InsertOneAsync(report), 
                 new Context(nameof(CreateAsync)));
         }
@@ -33,7 +33,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
         {
             var filter = Builders<Report>.Filter.Eq(v => v.Id, report.Id);
             var collection = GetCollection<Report>();
-            await RetryPolicy.ExecuteAsync(_ =>
+            await RetryPolicy.Execute(_ =>
                     collection.ReplaceOneAsync(filter, report),
                 new Context(nameof(UpdateAsync)));
         }
@@ -46,7 +46,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
 
             var collection = GetCollection<T>();
 
-            var result = await RetryPolicy.ExecuteAsync(_ =>
+            var result = await RetryPolicy.Execute(_ =>
                     collection.Find(filter)
                         .Project<T>(GetProjection<T>())
                         .ToListAsync(),
@@ -62,7 +62,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
 
             var collection = GetCollection<T>();
 
-            var result = await RetryPolicy.ExecuteAsync(_ =>
+            var result = await RetryPolicy.Execute(_ =>
                     collection.Find(filter)
                         .Project<T>(GetProjection<T>())
                         .ToListAsync(),
@@ -76,7 +76,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
             var filter = Builders<Report>.Filter.Eq(r => r.Id, reportId);
             var collection = GetCollection<Report>();
 
-            var result = await RetryPolicy.ExecuteAsync(async _ =>
+            var result = await RetryPolicy.Execute(async _ =>
                     await collection.Find(filter).SingleOrDefaultAsync(),
                 new Context(nameof(GetReportAsync)));
 
@@ -88,7 +88,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
             var filter = Builders<Report>.Filter.Lt(r => r.RequestedOn, requestedOn);
             var collection = GetCollection<Report>();
 
-            var result = await RetryPolicy.ExecuteAsync(async _ =>
+            var result = await RetryPolicy.Execute(async _ =>
                     await collection.DeleteManyAsync(filter),
                 new Context(nameof(GetReportAsync)));
 
@@ -101,7 +101,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
             var update = new UpdateDefinitionBuilder<Report>().Inc(r => r.DownloadCount, 1);
             var collection = GetCollection<Report>();
 
-            return RetryPolicy.ExecuteAsync(async _ =>
+            return RetryPolicy.Execute(async _ =>
                 await collection.FindOneAndUpdateAsync(filter, update),
             new Context(nameof(IncrementReportDownloadCountAsync)));
         }

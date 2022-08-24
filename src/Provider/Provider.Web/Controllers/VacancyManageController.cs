@@ -7,6 +7,7 @@ using Esfa.Recruit.Provider.Web.Extensions;
 using Esfa.Recruit.Provider.Web.Orchestrators;
 using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Provider.Web.ViewModels.VacancyManage;
+using Esfa.Recruit.Shared.Web.FeatureToggle;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
@@ -20,11 +21,15 @@ namespace Esfa.Recruit.Provider.Web.Controllers
     {
         private readonly VacancyManageOrchestrator _orchestrator;
         private readonly IHostingEnvironment _hostingEnvironment;
+        private readonly IUtility _utility;
+        private readonly IFeature _feature;
 
-        public VacancyManageController(VacancyManageOrchestrator orchestrator, IHostingEnvironment hostingEnvironment)
+        public VacancyManageController(VacancyManageOrchestrator orchestrator, IHostingEnvironment hostingEnvironment, IUtility utility, IFeature feature)
         {
             _orchestrator = orchestrator;
             _hostingEnvironment = hostingEnvironment;
+            _utility = utility;
+            _feature = feature;
         }
 
         [HttpGet("manage", Name = RouteNames.VacancyManage_Get)]
@@ -39,7 +44,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
                 return HandleRedirectOfEditableVacancy(vacancy);
             }
 
-            var viewModel = await _orchestrator.GetManageVacancyViewModel(vacancy);
+            var viewModel = await _orchestrator.GetManageVacancyViewModel(vacancy, vrm);
 
             if (TempData.ContainsKey(TempDataKeys.VacancyClosedMessage))
                 viewModel.VacancyClosedInfoMessage = TempData[TempDataKeys.VacancyClosedMessage].ToString();
@@ -62,7 +67,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
 
             if (vacancy.Status != VacancyStatus.Live)
             {
-                return RedirectToRoute(RouteNames.DisplayVacancy_Get);
+                return RedirectToRoute(RouteNames.DisplayVacancy_Get, new {vrm.VacancyId, vrm.Ukprn});
             }
 
             var parsedClosingDate = Request.Cookies.GetProposedClosingDate(vacancy.Id);
@@ -81,7 +86,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
 
             if (!response.Success)
             {
-                return RedirectToRoute(RouteNames.VacancyEditDates_Get);
+                return RedirectToRoute(RouteNames.VacancyEditDates_Get, new {m.VacancyId, m.Ukprn});
             }
 
             var vacancy = await _orchestrator.GetVacancy(m);
@@ -89,7 +94,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
 
             EnsureProposedChangesCookiesAreCleared(m.VacancyId.GetValueOrDefault());
 
-            return RedirectToRoute(RouteNames.Vacancies_Get);
+            return RedirectToRoute(RouteNames.Vacancies_Get, new {m.Ukprn});
         }
 
         [HttpGet("cancel-vacancy-changes", Name = RouteNames.CancelVacancyChanges_Get)]
@@ -97,7 +102,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
         {
             EnsureProposedChangesCookiesAreCleared(vrm.VacancyId.GetValueOrDefault());
             
-            return RedirectToRoute(RouteNames.Vacancies_Get);
+            return RedirectToRoute(RouteNames.Vacancies_Get, new {vrm.Ukprn});
         }
 
         private void EnsureProposedChangesCookiesAreCleared(Guid vacancyId)
@@ -108,17 +113,11 @@ namespace Esfa.Recruit.Provider.Web.Controllers
 
         private IActionResult HandleRedirectOfEditableVacancy(Vacancy vacancy)
         {
-            if (Utility.VacancyHasCompletedPartOne(vacancy))
+            if (_utility.IsTaskListCompleted(vacancy))
             {
-                if (Utility.VacancyHasStartedPartTwo(vacancy) == false)
-                    return RedirectToRoute(RouteNames.Part1Complete_Get);
-
-                return RedirectToRoute(RouteNames.Vacancy_Preview_Get);
+                return RedirectToRoute(RouteNames.ProviderCheckYourAnswersGet, new {vacancy.TrainingProvider.Ukprn, vacancyId = vacancy.Id});
             }
-
-            var resumeRouteName = Utility.GetPermittedRoutesForVacancy(vacancy).Last();
-
-            return RedirectToRoute(resumeRouteName);
+            return RedirectToRoute(RouteNames.ProviderTaskListGet, new {vacancy.TrainingProvider.Ukprn, vacancyId = vacancy.Id});
         }
     }
 }

@@ -6,12 +6,14 @@ namespace Esfa.Recruit.Employer.Web.ViewModels
 {
     public abstract class DisplayVacancyViewModel
     {
+        public VacancyStatus Status { get; set; }
         public string ApplicationInstructions { get; internal set; }
         public ApplicationMethod? ApplicationMethod { get; internal set; }
         public string ApplicationUrl { get; internal set; }
         public bool CanDelete { get; internal set; }
         public bool CanShowVacancyClonedStatusHeader => !string.IsNullOrEmpty(VacancyClonedInfoMessage);
         public bool CanSubmit { get; internal set; }
+        public bool CanReview { get; internal set; }
         public string ClosingDate { get; internal set; }
         public string EducationLevelName { get; internal set; }
         public string EmployerContactName { get; internal set; }
@@ -31,8 +33,10 @@ namespace Esfa.Recruit.Employer.Web.ViewModels
         public string NumberOfPositions { get; internal set; }
         public string NumberOfPositionsCaption { get; internal set; }
         public string OutcomeDescription { get; internal set; }
-        public string PossibleStartDate { get; internal set; }
+        public string PossibleStartDate { get; internal set; } 
+        public string PostedDate { get; internal set; }
         public string ProviderName { get; internal set; }
+        public List<ProviderReviewFieldIndicator> ProviderReviewFieldIndicators { get; internal set; }
         public IEnumerable<string> Qualifications { get; internal set; }
         public string ShortDescription { get; internal set; }
         public IEnumerable<string> Skills { get; internal set; }
@@ -50,7 +54,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels
         public string WageInfo { get; internal set; }
         public string WageText { get; internal set; }
         public string WorkingWeekDescription { get; internal set; }
-        
+        public string AccountLegalEntityPublicHashedId { get ; set ; }
         public bool HasClosingDate => !string.IsNullOrWhiteSpace(ClosingDate);
 
         public bool HasShortDescription => !string.IsNullOrWhiteSpace(ShortDescription);
@@ -115,5 +119,8 @@ namespace Esfa.Recruit.Employer.Web.ViewModels
 
         public bool IsNotDisabilityConfident => !IsDisabilityConfident;
         public bool IsTransferred => string.IsNullOrWhiteSpace(TransferredProviderName) == false && string.IsNullOrWhiteSpace(TransferredOnDate) == false;
+        public bool HasSelectedLegalEntity => !string.IsNullOrEmpty(AccountLegalEntityPublicHashedId);
+        
+        public EmployerNameOption? EmployerNameOption { get; set; }
     }
 }

@@ -36,7 +36,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData
                 var filter = Builders<T>.Filter.Eq(Id, id);
                 var collection = GetCollection<T>();
 
-                var result = await RetryPolicy.ExecuteAsync(_=>
+                var result = await RetryPolicy.Execute(_=>
                     collection.Find(filter).SingleOrDefaultAsync(),
                     new Context(nameof(GetReferenceData)));
 
@@ -58,7 +58,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData
 
             var filter = Builders<T>.Filter.Eq(Id, id);
 
-            return RetryPolicy.ExecuteAsync(context => 
+            return RetryPolicy.Execute(context => 
                 collection.ReplaceOneAsync(
                     filter, 
                     referenceData, 
@@ -74,6 +74,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData
                 { typeof(Holidays.BankHolidays), "BankHolidays" },
                 { typeof(Quals.Qualifications), "QualificationTypes" },
                 { typeof(Programmes.ApprenticeshipProgrammes), "ApprenticeshipProgrammes" },
+                { typeof(Programmes.ApprenticeshipRoutes), "ApprenticeshipRoutes" },
                 { typeof(Profanities.ProfanityList), "Profanities" },
                 { typeof(BannedPhrases.BannedPhraseList), "BannedPhrases" },
                 { typeof(TrainingProviders.TrainingProviders), "Providers" }

@@ -14,17 +14,19 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
     {
         private readonly IProviderVacancyClient _client;
         private readonly IRecruitVacancyClient _vacancyClient;
+        private readonly IUtility _utility;
 
 
-        public SubmittedOrchestrator(IProviderVacancyClient client, IRecruitVacancyClient vacancyClient)
+        public SubmittedOrchestrator(IProviderVacancyClient client, IRecruitVacancyClient vacancyClient, IUtility utility)
         {
             _client = client;
             _vacancyClient = vacancyClient;
+            _utility = utility;
         }
 
         public async Task<VacancySubmittedConfirmationViewModel> GetVacancySubmittedConfirmationViewModelAsync(VacancyRouteModel vrm, VacancyUser vacancyUser)
         {
-            var vacancy = await Utility.GetAuthorisedVacancyAsync(_client, _vacancyClient, vrm, RouteNames.Submitted_Index_Get);
+            var vacancy = await _utility.GetAuthorisedVacancyAsync(vrm, RouteNames.Submitted_Index_Get);
 
             if (vacancy.Status != VacancyStatus.Submitted)
                 throw new InvalidStateException(string.Format(ErrorMessages.VacancyNotSubmittedSuccessfully, vacancy.Title));
@@ -43,7 +45,10 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
                 Title = vacancy.Title,
                 VacancyReference = vacancy.VacancyReference?.ToString(),
                 IsResubmit = isResubmit,
-                HasNotificationsSet = preferences != null && preferences.NotificationTypes > NotificationTypes.None
+                HasNotificationsSet = preferences != null && preferences.NotificationTypes > NotificationTypes.None,
+                IsVacancyRejectedByESFANotificationSelected = preferences.NotificationTypes.HasFlag(NotificationTypes.VacancyRejected),
+                Ukprn = vrm.Ukprn,
+                VacancyId = vrm.VacancyId
             };
 
             return vm;

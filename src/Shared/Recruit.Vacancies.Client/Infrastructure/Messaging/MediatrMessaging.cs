@@ -15,7 +15,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Messaging
 
         public async Task SendCommandAsync(ICommand command)
         {
-            var request = command as IRequest;
+            var request = command as IRequest<Unit>;
 
             await _mediator.Send(request);
         }

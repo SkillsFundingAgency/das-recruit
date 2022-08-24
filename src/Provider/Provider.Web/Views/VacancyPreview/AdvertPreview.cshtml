@@ -1,0 +1,42 @@
+﻿@model Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview.VacancyPreviewViewModel
+
+@{
+    ViewBag.GaData.Vpv = "/recruitment/provider/page-create-vacancy-previewed";
+    ViewBag.Title = "Preview your vacancy";
+}
+
+@section BackLink {
+  <a asp-route="@RouteNames.ProviderCheckYourAnswersGet" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Back to check your answers</a>
+}
+
+<h1 class="govuk-heading-xl">Preview your vacancy</h1>
+<partial name="_vacancyApprenticeshipPreview" model="@Model" />
+
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    <h2 class="govuk-heading-m">Now submit your vacancy</h2>
+    <p class="govuk-body">By submitting this vacancy you are confirming that, to the best of your knowledge, the details you are providing are correct.</p>
+    <div class="govuk-warning-text">
+        <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+        <strong class="govuk-warning-text__text">
+            <span class="govuk-warning-text__assistive">Warning</span>
+            Proofread your vacancy for spelling and formatting to avoid it being rejected by our QA team.
+        </strong>
+    </div>
+    <form asp-route="@RouteNames.ProviderCheckYourAnswersPost" asp-all-route-data="@Model.RouteDictionary" method="post">
+      <div class="govuk-button-group">
+        <input type="submit" value="Submit vacancy" class="govuk-button" esfa-automation="submit-button" />
+        <a asp-route="@RouteNames.ProviderCheckYourAnswersGet" asp-all-route-data="@Model.RouteDictionary" class="govuk-button govuk-button--secondary">Change your vacancy</a>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div asp-show="@Model.CanDelete" class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    <p class="govuk-body">
+      <a asp-show="@Model.CanDelete" asp-route="@RouteNames.DeleteVacancy_Get" asp-all-route-data="@Model.RouteDictionary" class="govuk-link govuk-link--no-visited-state" esfa-automation="delete-button">Delete vacancy</a>
+    </p>
+  </div>
+</div>

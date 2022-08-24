@@ -33,6 +33,12 @@
                                 <span class="govuk-visually-hidden">Get notifications </span>When an advert is rejected after review
                             </label>
                         </div>
+                        <div class="govuk-checkboxes__item">
+                            <input class="govuk-checkboxes__input" asp-for="IsVacancySentForEmployerReviewSelected" id="notifications-review" type="checkbox">
+                            <label class="govuk-label govuk-checkboxes__label" for="notifications-review">
+                                <span class="govuk-visually-hidden">Get notifications </span>When a provider sends an advert for review
+                            </label>
+                        </div>
                         <div asp-hide="true">
                             <div class="govuk-checkboxes__item">
                                 <input class="govuk-checkboxes__input" asp-for="IsVacancyClosingSoonSelected" id="notifications-closing" type="checkbox">
@@ -106,15 +112,14 @@
                     </div>
                 </fieldset>
             </div>
-            <div class="govuk-form-group">
-                <p asp-show="@Model.HasAnySubscription" class="govuk-body">
-                    <a asp-route="@RouteNames.ConfirmUnsubscribeNotifications_Get" class="govuk-link">Unsubscribe from all emails about adverts and applications</a>
-                </p>
-                <button class="govuk-button submit" type="submit">Save and continue</button>
+            
+            <p asp-show="@Model.HasAnySubscription" class="govuk-body">
+                <a asp-route="@RouteNames.ConfirmUnsubscribeNotifications_Get" class="govuk-link">Unsubscribe from all emails about adverts and applications</a>
+            </p>
 
-                <div class="govuk-body">
-                    <a asp-route="@RouteNames.Dashboard_Get" class="govuk-link">Return to dashboard</a>
-                </div>
+            <div class="govuk-button-group">
+                <button class="govuk-button submit" type="submit">Save and continue</button>
+                <a asp-route="@RouteNames.Dashboard_Get" class="govuk-link govuk-link--no-visited-state">Return to dashboard</a>
             </div>
         </form>
     </div>

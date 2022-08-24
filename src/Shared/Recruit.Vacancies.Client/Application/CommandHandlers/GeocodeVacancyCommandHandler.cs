@@ -1,7 +1,5 @@
 ﻿using System;
 using Esfa.Recruit.Vacancies.Client.Application.Commands;
-using Esfa.Recruit.Vacancies.Client.Domain.Events;
-using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using MediatR;
 using System.Threading;
@@ -13,23 +11,23 @@ using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 {
-    public class GeoVacancyCommandHandler: IRequestHandler<GeocodeVacancyCommand>
+    public class GeocodeVacancyCommandHandler: IRequestHandler<GeocodeVacancyCommand,Unit>
     {
         private readonly IVacancyRepository _repository;
-        private readonly IGeocodeServiceFactory _geocodeServiceFactory;
-        private readonly ILogger<GeoVacancyCommandHandler> _logger;
+        private readonly IOuterApiGeocodeService _geocodeService;
+        private readonly ILogger<GeocodeVacancyCommandHandler> _logger;
 
-        public GeoVacancyCommandHandler(
-            IVacancyRepository repository, 
-            IGeocodeServiceFactory geocodeServiceFactory,
-            ILogger<GeoVacancyCommandHandler> logger)
+        public GeocodeVacancyCommandHandler(
+            IVacancyRepository repository,
+            IOuterApiGeocodeService geocodeServiceFactory,
+            ILogger<GeocodeVacancyCommandHandler> logger)
         {
             _repository = repository;
-            _geocodeServiceFactory = geocodeServiceFactory;
+            _geocodeService = geocodeServiceFactory;
             _logger = logger;
         }
 
-        public async Task Handle(GeocodeVacancyCommand message, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(GeocodeVacancyCommand message, CancellationToken cancellationToken)
         {
             _logger.LogInformation("Geocoding vacancy {vacancyId}.", message.VacancyId);
 
@@ -38,38 +36,38 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             if (string.IsNullOrEmpty(vacancy?.EmployerLocation?.Postcode))
             {
                 _logger.LogWarning("Geocode vacancyId:{vacancyId} cannot geocode as vacancy has no postcode", vacancy.Id);
-                return;
+                return Unit.Value;
             }
 
-            var geocode = vacancy.GeocodeUsingOutcode
-                ? await GeocodeOutcodeAsync(vacancy)
-                : await GeocodePostcodeAsync(vacancy);
-
-            await SetVacancyGeocode(vacancy.Id, geocode);
+            var geocode = await GetGeocode(vacancy, vacancy.GeocodeUsingOutcode);
+          
+            if(geocode != null)
+            {
+                await SetVacancyGeocode(vacancy, geocode);
+            }
+            else
+            {
+                _logger.LogWarning($"Unable to get geocode information for postcode: {vacancy.EmployerLocation.Postcode}");
+            }
+            
+            return Unit.Value;
         }
 
-        private Task<Geocode> GeocodePostcodeAsync(Vacancy vacancy)
-        {            
+        private Task<Geocode> GetGeocode(Vacancy vacancy, bool usingOutCode)
+        {
+            if (usingOutCode)
+            {
+                _logger.LogInformation("Attempting to geocode outcode:'{outcode}' for anonymous vacancyId:'{vacancyId}'", vacancy.EmployerLocation.PostcodeAsOutcode(), vacancy.Id);
+                return _geocodeService.Geocode(vacancy.EmployerLocation.PostcodeAsOutcode());
+            }
+            
             _logger.LogInformation("Attempting to geocode postcode:'{postcode}' for vacancyId:'{vacancyId}'", vacancy.EmployerLocation.Postcode, vacancy.Id);
-
-            var geocodeService = _geocodeServiceFactory.GetGeocodeService();
-            return geocodeService.Geocode(vacancy.EmployerLocation.Postcode);
+            return _geocodeService.Geocode(vacancy.EmployerLocation.Postcode);
+            
         }
 
-        private Task<Geocode> GeocodeOutcodeAsync(Vacancy vacancy)
+        private async Task SetVacancyGeocode(Vacancy vacancy, Geocode geocode)
         {
-            var outcode = vacancy.EmployerLocation.PostcodeAsOutcode();
-
-            _logger.LogInformation("Attempting to geocode outcode:'{outcode}' for anonymous vacancyId:'{vacancyId}'", outcode, vacancy.Id);
-
-            var geocodeService = _geocodeServiceFactory.GetGeocodeOutcodeService();
-            return geocodeService.Geocode(outcode);
-        }
-
-        private async Task SetVacancyGeocode(Guid vacancyId, Geocode geocode)
-        {
-            var vacancy = await _repository.GetVacancyAsync(vacancyId);
-
             if (vacancy.EmployerLocation == null)
             {
                 _logger.LogInformation("Vacancy:{vacancyId} does not have employer location information. Cannot update vacancy", vacancy.Id);

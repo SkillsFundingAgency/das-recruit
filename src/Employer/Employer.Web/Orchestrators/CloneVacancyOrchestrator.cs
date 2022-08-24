@@ -22,12 +22,14 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
         public const string ChangeEitherDatesTitle = "Change the closing date or start date";
         private readonly IRecruitVacancyClient _vacancyClient;
         private readonly ITimeProvider _timeProvider;
+        private readonly IUtility _utility;
 
         public CloneVacancyOrchestrator(IRecruitVacancyClient vacancyClient,
-            ITimeProvider timeProvider, ILogger<CloneVacancyOrchestrator> logger) : base(logger)
+            ITimeProvider timeProvider, ILogger<CloneVacancyOrchestrator> logger, IUtility utility) : base(logger)
         {
             _vacancyClient = vacancyClient;
             _timeProvider = timeProvider;
+            _utility = utility;
         }
 
         public async Task<CloneVacancyDatesQuestionViewModel> GetCloneVacancyDatesQuestionViewModelAsync(VacancyRouteModel vrm)
@@ -138,7 +140,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
         {
             var vacancy = await _vacancyClient.GetVacancyAsync(vrm.VacancyId);
 
-            Utility.CheckAuthorisedAccess(vacancy, vrm.EmployerAccountId);
+            _utility.CheckAuthorisedAccess(vacancy, vrm.EmployerAccountId);
 
             if (!vacancy.CanClone)
                 throw new InvalidStateException(string.Format(ErrorMessages.VacancyNotAvailableForCloning, vacancy.Title));

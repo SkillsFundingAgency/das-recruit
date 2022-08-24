@@ -1,7 +1,7 @@
 using System;
+using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 
@@ -23,19 +23,32 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi
 
         public async Task<TResponse> Get<TResponse>(IGetApiRequest request)
         {
-            AddHeaders();
+            
+            var requestMessage = new HttpRequestMessage(HttpMethod.Get, request.GetUrl);
+            AddHeaders(requestMessage);
+            
+            var response = await _httpClient.SendAsync(requestMessage).ConfigureAwait(false);
 
-            var response = await _httpClient.GetAsync(request.GetUrl).ConfigureAwait(false);
+            if (response.StatusCode.Equals(HttpStatusCode.NotFound))
+            {
+                return default;
+            }
+
+            if (response.IsSuccessStatusCode)
+            {
+                var json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                return JsonConvert.DeserializeObject<TResponse>(json);
+            }
 
             response.EnsureSuccessStatusCode();
-            var json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-            return JsonConvert.DeserializeObject<TResponse>(json);
+
+            return default;
         }
 
-        private void AddHeaders()
+        private void AddHeaders(HttpRequestMessage httpRequestMessage)
         {
-            _httpClient.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", _config.Key);
-            _httpClient.DefaultRequestHeaders.Add("X-Version", "1");
+            httpRequestMessage.Headers.Add("Ocp-Apim-Subscription-Key", _config.Key);
+            httpRequestMessage.Headers.Add("X-Version", "1");
         }       
     }
 

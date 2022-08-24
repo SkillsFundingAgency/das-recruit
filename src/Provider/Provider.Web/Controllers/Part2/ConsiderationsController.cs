@@ -6,6 +6,7 @@ using Esfa.Recruit.Provider.Web.Orchestrators.Part2;
 using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Provider.Web.ViewModels.Part2.Considerations;
 using Esfa.Recruit.Shared.Web.Extensions;
+using Esfa.Recruit.Shared.Web.FeatureToggle;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,10 +17,12 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part2
     public class ConsiderationsController : Controller
     {
         private readonly ConsiderationsOrchestrator _orchestrator;
+        private readonly IFeature _feature;
 
-        public ConsiderationsController(ConsiderationsOrchestrator orchestrator)
+        public ConsiderationsController(ConsiderationsOrchestrator orchestrator, IFeature feature)
         {
             _orchestrator = orchestrator;
+            _feature = feature;
         }
 
         [HttpGet("considerations", Name = RouteNames.Considerations_Get)]
@@ -39,14 +42,22 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part2
                 response.AddErrorsToModelState(ModelState);
             }
 
+            var vm = await _orchestrator.GetConsiderationsViewModelAsync(m);
             if (!ModelState.IsValid)
             {
-                var vm = await _orchestrator.GetConsiderationsViewModelAsync(m);
-
                 return View(vm);
             }
+            
+            if (_feature.IsFeatureEnabled(FeatureNames.ProviderTaskList))
+            {
+                if (!vm.IsTaskListCompleted)
+                {
+                    return RedirectToRoute(RouteNames.ProviderTaskListGet, new {m.VacancyId, m.Ukprn});
+                }
+                return RedirectToRoute(RouteNames.ProviderCheckYourAnswersGet, new {m.VacancyId, m.Ukprn});
+            }
 
-            return RedirectToRoute(RouteNames.Vacancy_Preview_Get);
+            return RedirectToRoute(RouteNames.Vacancy_Preview_Get, new {m.VacancyId, m.Ukprn});
         }
     }
 }

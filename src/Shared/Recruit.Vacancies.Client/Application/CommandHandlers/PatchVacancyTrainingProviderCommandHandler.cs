@@ -10,7 +10,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 {
-    public class PatchVacancyTrainingProviderCommandHandler : IRequestHandler<PatchVacancyTrainingProviderCommand>
+    public class PatchVacancyTrainingProviderCommandHandler : IRequestHandler<PatchVacancyTrainingProviderCommand, Unit>
     {
         private readonly IVacancyRepository _repository;
         private readonly ILogger<PatchVacancyTrainingProviderCommandHandler> _logger;
@@ -26,20 +26,20 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             _trainingProviderService = trainingProviderService;
         }
 
-        public async Task Handle(PatchVacancyTrainingProviderCommand message, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(PatchVacancyTrainingProviderCommand message, CancellationToken cancellationToken)
         {
             var vacancy = await _repository.GetVacancyAsync(message.VacancyId);
 
             if (vacancy.OwnerType == OwnerType.Employer)
             {
                 _logger.LogInformation("Vacancy: {vacancyId} already is employer owned so will not backfill provider info.", vacancy.Id);
-                return;
+                return Unit.Value;
             }
 
             if (!string.IsNullOrEmpty(vacancy.TrainingProvider.Name))
             {
                 _logger.LogInformation("Vacancy: {vacancyId} already has training provider info backfilled. Will not be changed.", vacancy.Id);
-                return;
+                return Unit.Value;
             }
 
             _logger.LogInformation("Patching training provider name and address for vacancy {vacancyId}.", message.VacancyId);
@@ -61,6 +61,8 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             await _repository.UpdateAsync(vacancy);
 
             _logger.LogInformation("Updated Vacancy: {vacancyId} with training provider name and address", vacancy.Id);
+            
+            return Unit.Value;
         }
 
         private void PatchVacancyTrainingProvider(Esfa.Recruit.Vacancies.Client.Domain.Entities.Vacancy vacancy, Esfa.Recruit.Vacancies.Client.Domain.Entities.TrainingProvider tp)

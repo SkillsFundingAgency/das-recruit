@@ -21,14 +21,16 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
         {
             var editVacancyInfo = await _providerVacancyClient.GetProviderEditVacancyInfoAsync(vrm.Ukprn);
 
-            if (editVacancyInfo.Employers.Any() == false)
+            if (editVacancyInfo?.Employers == null || editVacancyInfo.Employers.Any() == false)
             {
                 throw new MissingPermissionsException(string.Format(RecruitWebExceptionMessages.ProviderMissingPermission, vrm.Ukprn));
             }
 
             var vm = new EmployersViewModel
             {
-                Employers = editVacancyInfo.Employers.Select(e => new EmployerViewModel {Id = e.EmployerAccountId, Name = e.Name})
+                Employers = editVacancyInfo.Employers.Select(e => new EmployerViewModel {Id = e.EmployerAccountId, Name = e.Name}),
+                VacancyId = vrm.VacancyId,
+                Ukprn = vrm.Ukprn
             };
 
             return vm;

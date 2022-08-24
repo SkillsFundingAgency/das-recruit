@@ -4,6 +4,7 @@ using Esfa.Recruit.Provider.Web.Configuration;
 using Esfa.Recruit.Provider.Web.Configuration.Routing;
 using Esfa.Recruit.Provider.Web.Orchestrators;
 using Esfa.Recruit.Provider.Web.RouteModel;
+using Esfa.Recruit.Shared.Web.FeatureToggle;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,10 +14,14 @@ namespace Esfa.Recruit.Provider.Web.Controllers
     public class VacancyViewController : Controller
     {
         private readonly VacancyViewOrchestrator _orchestrator;
+        private readonly IUtility _utility;
+        private readonly IFeature _feature;
 
-        public VacancyViewController(VacancyViewOrchestrator orchestrator)
+        public VacancyViewController(VacancyViewOrchestrator orchestrator, IUtility utility, IFeature feature)
         {
             _orchestrator = orchestrator;
+            _utility = utility;
+            _feature = feature;
         }
 
         [HttpGet("", Name = RouteNames.DisplayVacancy_Get)]
@@ -44,19 +49,19 @@ namespace Esfa.Recruit.Provider.Web.Controllers
             }
 
             var vm = await _orchestrator.GetFullVacancyDisplayViewModelAsync(vacancy);
+            vm.Ukprn = vrm.Ukprn;
+            vm.VacancyId = vrm.VacancyId;
             return View(ViewNames.FullVacancyView, vm);
         }
 
         private IActionResult HandleRedirectOfEditableVacancy(Vacancy vacancy)
         {
-            if (Utility.VacancyHasCompletedPartOne(vacancy))
+            if (_utility.IsTaskListCompleted(vacancy))
             {
-                return RedirectToRoute(RouteNames.Vacancy_Preview_Get);
+                return RedirectToRoute(RouteNames.ProviderCheckYourAnswersGet, new {vacancy.TrainingProvider.Ukprn, vacancyId = vacancy.Id});
             }
-
-            var resumeRouteName = Utility.GetPermittedRoutesForVacancy(vacancy).Last();
-
-            return RedirectToRoute(resumeRouteName, new { wizard = "true" });
+            return RedirectToRoute(RouteNames.ProviderTaskListGet, new {vacancy.TrainingProvider.Ukprn, vacancyId = vacancy.Id});
+            
         }
     }
 }

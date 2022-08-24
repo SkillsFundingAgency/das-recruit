@@ -8,6 +8,7 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.Exceptions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Requests;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Responses;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Routes;
 using Microsoft.Extensions.Logging;
 using Polly;
 
@@ -49,7 +50,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Apprentices
                 if (frameworksCount == 0)
                     throw new InfrastructureException("Retrieved 0 frameworks from the apprenticeships api.");
 
-                
                 await ValidateList(trainingProgrammesFromApi);                
                 await _referenceDataWriter.UpsertReferenceData(new ApprenticeshipProgrammes {
                         Data = trainingProgrammesFromApi.Distinct(new ApprenticeshipProgrammeEqualityComparer()).ToList()
@@ -61,6 +61,24 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Apprentices
                 
                 _logger.LogError(e, "Failed to get training programmes from api");
                 
+                throw;
+            }
+        }
+
+        public async Task UpdateApprenticeshipRouteAsync()
+        {
+            try
+            {
+                var routes = await GetApprenticeshipRoutes();
+                
+                await _referenceDataWriter.UpsertReferenceData(new ApprenticeshipRoutes {
+                    Data = routes.ToList()
+                });
+                _logger.LogInformation("Inserted: {routeCount} routes.", routes.Count());
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
                 throw;
             }
         }
@@ -90,9 +108,21 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Apprentices
 
             var retryPolicy = GetApiRetryPolicy();
 
-            var result = await retryPolicy.ExecuteAsync(context => _outerApiClient.Get<GetTrainingProgrammesResponse>(new GetTrainingProgrammesRequest()), new Dictionary<string, object>() {{ "apiCall", "Standards" }});
+            var result = await retryPolicy.Execute(context => _outerApiClient.Get<GetTrainingProgrammesResponse>(new GetTrainingProgrammesRequest()), new Dictionary<string, object>() {{ "apiCall", "Standards" }});
 
             return result.TrainingProgrammes.Select(c=>(ApprenticeshipProgramme)c);
+
+        }
+        
+        private async Task<IEnumerable<ApprenticeshipRoute>> GetApprenticeshipRoutes()
+        {
+            _logger.LogTrace("Getting Routes from Outer Api");
+
+            var retryPolicy = GetApiRetryPolicy();
+
+            var result = await retryPolicy.Execute(context => _outerApiClient.Get<GetRouteResponse>(new GetRouteRequest()), new Dictionary<string, object>() { { "apiCall", "Routes" } });
+
+            return result.Routes.Select(c => (ApprenticeshipRoute)c);
 
         }
 
@@ -100,7 +130,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Apprentices
         {
             return Policy
                     .Handle<Exception>()
-                    .WaitAndRetryAsync(new[]
+                    .WaitAndRetry(new[]
                     {
                         TimeSpan.FromSeconds(1),
                         TimeSpan.FromSeconds(2),
@@ -109,5 +139,10 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Apprentices
                         _logger.LogWarning($"Error connecting to Outer Api for {context["apiCall"]}. Retrying in {timeSpan.Seconds} secs...attempt: {retryCount}");    
                     });
         }
+
+        
     }
+
+
+
 }

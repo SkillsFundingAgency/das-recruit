@@ -7,9 +7,18 @@
 }
 <div class="govuk-grid-row"> 
     <div class="govuk-grid-column-two-thirds">
-        <div asp-show="@Model.ShowDisabilityStatusAlert" class="info-summary govuk-!-margin-top-6" role="alert" tabindex="-1">
-            <h3 class="govuk-heading-m govuk-!-margin-top-0">Disability Confident - Alert</h3>
-            <p class="govuk-body">This applicant has stated that they have either a learning difficulty, disability or medical condition.</p>
+
+        <div asp-show="@Model.ShowDisabilityStatusAlert" class="govuk-notification-banner" role="region" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
+            <div class="govuk-notification-banner__header">
+                <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
+                    Disability Confident - Alert
+                </h2>
+            </div>
+            <div class="govuk-notification-banner__content">
+                <p class="govuk-notification-banner__heading">
+                    This applicant has stated that they have either a learning difficulty, disability or medical condition.
+                </p>
+            </div>
         </div>
 
         <h1 class="govuk-heading-xl govuk-!-margin-bottom-0">@Model.Name</h1>
@@ -19,7 +28,7 @@
 
         <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }' />
 
-        <div class="panel panel-border-narrow">
+        <div class="das-highlight">
             <p class="govuk-body">
                 @Html.Raw(
                                         string.Join("<br>",
@@ -34,7 +43,7 @@
                                             }.Where(s => !string.IsNullOrWhiteSpace(s))
                                                 .Select(WebUtility.HtmlEncode)))
             </p>
-            <p class="govuk-body">
+            <p class="govuk-body govuk-!-margin-bottom-0">
                 @Model.Phone
                 <br> <a class="govuk-link" href="mailto:@Model.Email">@Model.Email</a>
             </p>
@@ -66,8 +75,8 @@
             <caption class="govuk-table__caption">Years attended</caption>
             <thead class="govuk-table__head">
                 <tr class="govuk-table__row">
-                    <th class="govuk-table__header">Started</th>
-                    <th class="govuk-table__header">Finished</th>
+                    <th class="govuk-table__header" scope="col">Started</th>
+                    <th class="govuk-table__header" scope="col">Finished</th>
                 </tr>
             </thead>
             <tbody class="govuk-table__body">
@@ -90,9 +99,9 @@
             <caption class="govuk-table__caption">@Html.Encode(group.Key)</caption>
             <thead class="govuk-table__head">
                 <tr class="govuk-table__row">
-                    <th class="govuk-table__header govuk-!-width-one-half">Subject</th>
-                    <th class="govuk-table__header govuk-!-width-one-quarter">Grade</th>
-                    <th class="govuk-table__header govuk-!-width-one-quarter">Year</th>
+                    <th class="govuk-table__header govuk-!-width-one-half" scope="col">Subject</th>
+                    <th class="govuk-table__header govuk-!-width-one-quarter" scope="col">Grade</th>
+                    <th class="govuk-table__header govuk-!-width-one-quarter" scope="col">Year</th>
                 </tr>
             </thead>
             <tbody class="govuk-table__body">
@@ -115,9 +124,9 @@
         <table  asp-hide="@Model.HasNoWorkExperience" class="govuk-table">
             <thead class="govuk-table__head">
                 <tr class="govuk-table__row">
-                    <th class="govuk-table__header govuk-!-width-one-half">Work experience</th>
-                    <th class="govuk-table__header govuk-!-width-one-quarter">From</th>
-                    <th class="govuk-table__header govuk-!-width-one-quarter">To</th>
+                    <th class="govuk-table__header govuk-!-width-one-half" scope="col">Work experience</th>
+                    <th class="govuk-table__header govuk-!-width-one-quarter" scope="col">From</th>
+                    <th class="govuk-table__header govuk-!-width-one-quarter" scope="col">To</th>
                 </tr>
             </thead>
             <tbody class="govuk-table__body">
@@ -144,9 +153,9 @@
         <table asp-hide="@Model.HasNoTrainingCourses" class="govuk-table">
             <thead class="govuk-table__head">
                 <tr class="govuk-table__row">
-                    <th class="govuk-table__header govuk-!-width-one-half">Training course</th>
-                    <th class="govuk-table__header govuk-!-width-one-quarter">From</th>
-                    <th class="govuk-table__header govuk-!-width-one-quarter">To</th>
+                    <th class="govuk-table__header govuk-!-width-one-half" scope="col">Training course</th>
+                    <th class="govuk-table__header govuk-!-width-one-quarter" scope="col">From</th>
+                    <th class="govuk-table__header govuk-!-width-one-quarter" scope="col">To</th>
                 </tr>
             </thead>
             <tbody class="govuk-table__body">
@@ -190,7 +199,7 @@
             <p class="govuk-body">@Model.Status.Value.GetDisplayName()</p>
             <p class="govuk-body">@Model.CandidateFeedback</p>
 
-            <a asp-route="@RouteNames.VacancyManage_Get" class="govuk-button">Return to vacancy</a>
+            <a asp-route="@RouteNames.VacancyManage_Get" class="govuk-button">Return to advert</a>
         </div>
 
         <form asp-show="@Model.CanChangeOutcome" asp-route="@RouteNames.ApplicationReview_Post" class="govuk-!-margin-top-6">

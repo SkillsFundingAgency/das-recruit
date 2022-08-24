@@ -25,7 +25,7 @@ namespace Esfa.Recruit.Shared.Web.ViewModels
         public bool HasVacancyReference => VacancyReference.HasValue;
         public bool HasNoVacancyReference => !HasVacancyReference;
         public bool CanShowVacancyApplicationsCount => (Status== VacancyStatus.Live || Status == VacancyStatus.Closed) 
-                                             && ApplicationMethod == Vacancies.Client.Domain.Entities.ApplicationMethod.ThroughFindAnApprenticeship;
+                                             && (ApplicationMethod == Vacancies.Client.Domain.Entities.ApplicationMethod.ThroughFindAnApprenticeship || ApplicationMethod == Vacancies.Client.Domain.Entities.ApplicationMethod.ThroughFindATraineeship);
 
         public bool HasApplications => NoOfApplications > 0;
         public bool HasNoApplications => !HasApplications;
@@ -33,8 +33,9 @@ namespace Esfa.Recruit.Shared.Web.ViewModels
         public bool IsLive => Status == VacancyStatus.Live;
         public bool IsNotLive => !IsLive;
 
-        public bool IsSubmittable => Status == VacancyStatus.Draft || Status == VacancyStatus.Referred;
+        public bool IsSubmittable => Status == VacancyStatus.Draft || Status == VacancyStatus.Referred || Status == VacancyStatus.Rejected;
         public bool IsNotSubmittable => !IsSubmittable;
         public int NoOfApplications => NoOfNewApplications + NoOfSuccessfulApplications + NoOfUnsuccessfulApplications;
+        public bool IsTaskListCompleted { get; set; }
     }
 }

@@ -12,6 +12,7 @@
         public const string ManageClosedVacancyWithApplicationsView = "ClosedWithApplications";
         public const string ManageReferredVacancyView = "Referred";
         public const string FullVacancyView = "FullVacancyView";
+        public const string ManageReviewVacancyView = "Review";       
 
         public const string Training = "Training";
         public const string SelectTrainingProvider = "SelectTrainingProvider";

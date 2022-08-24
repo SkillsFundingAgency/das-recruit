@@ -1,14 +1,23 @@
 @model Esfa.Recruit.Provider.Web.ViewModels.ManageNotifications.ConfirmUnsubscribeNotificationsViewModel
 
+@{
+    ViewBag.Title = "Are you sure you want to stop receiving all recruitment emails?";
+}
+
+@section BackLink {
+    <a asp-route="@RouteNames.ManageNotifications_Get" asp-route-ukprn="@Model.Ukprn" class="govuk-back-link">Back</a>
+}
+
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-        <form method="post">
-            <div class="govuk-form-group">
+        <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState }' />
+        <form method="post" asp-route-ukprn="@Model.Ukprn">
+            <div class="govuk-form-group" esfa-validation-marker-for="ConfirmUnsubscribe">
                 <fieldset class="govuk-fieldset">
                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
-                    <h1 class="govuk-fieldset__heading">
-                        Are you sure you want to stop receiving all recruitment emails?
-                    </h1>
+                        <h1 class="govuk-fieldset__heading">
+                            Are you sure you want to stop receiving all recruitment emails?
+                        </h1>
                     </legend>
                     <span esfa-validation-message-for="ConfirmUnsubscribe" class="govuk-error-message"></span>
                     <div class="govuk-radios govuk-radios--inline">

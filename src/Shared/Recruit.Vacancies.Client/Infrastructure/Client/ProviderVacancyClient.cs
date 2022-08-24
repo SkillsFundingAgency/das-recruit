@@ -31,20 +31,37 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return vacancyId;
         }
 
-        public async Task<ProviderDashboard> GetDashboardAsync(long ukprn, bool createIfNonExistent = false)
+        public async Task CreateProviderApiVacancy(Guid id, string title, string employerAccountId, VacancyUser user)
         {
-            ProviderDashboard result = await _reader.GetProviderDashboardAsync(ukprn);
+            var command = new CreateProviderOwnedVacancyCommand(
+                id, 
+                SourceOrigin.Api,
+                user.Ukprn.Value,
+                employerAccountId,
+                user,
+                UserType.Provider,
+                title
+            );
+            
+            await _messaging.SendCommandAsync(command);
+            
+            await AssignVacancyNumber(id);
+        }
+        
+        public async Task<ProviderDashboard> GetDashboardAsync(long ukprn, VacancyType vacancyType, bool createIfNonExistent = false)
+        {
+            ProviderDashboard result = await _reader.GetProviderDashboardAsync(ukprn, vacancyType);
             if (result == null && createIfNonExistent)
             {
-                await GenerateDashboard(ukprn);
-                result = await _reader.GetProviderDashboardAsync(ukprn);
+                await GenerateDashboard(ukprn, vacancyType);
+                result = await _reader.GetProviderDashboardAsync(ukprn, vacancyType);
             }
             return result;
         }
 
-        public Task GenerateDashboard(long ukprn)
+        private Task GenerateDashboard(long ukprn, VacancyType vacancyType)
         {
-            return _providerDashboardService.ReBuildDashboardAsync(ukprn);
+            return _providerDashboardService.ReBuildDashboardAsync(ukprn, vacancyType);
         }
 
         public Task<ProviderEditVacancyInfo> GetProviderEditVacancyInfoAsync(long ukprn)

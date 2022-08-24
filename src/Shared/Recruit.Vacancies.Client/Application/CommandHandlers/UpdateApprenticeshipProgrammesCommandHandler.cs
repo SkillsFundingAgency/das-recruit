@@ -7,7 +7,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 {
-    public class UpdateApprenticeshipProgrammesCommandHandler : IRequestHandler<UpdateApprenticeshipProgrammesCommand>
+    public class UpdateApprenticeshipProgrammesCommandHandler : IRequestHandler<UpdateApprenticeshipProgrammesCommand, Unit>
     {
         private readonly ILogger<UpdateApprenticeshipProgrammesCommandHandler> _logger;
         private readonly IApprenticeshipProgrammesUpdateService _updaterService;
@@ -20,13 +20,15 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             _updaterService = updaterService;
         }
 
-        public async Task Handle(UpdateApprenticeshipProgrammesCommand message, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(UpdateApprenticeshipProgrammesCommand message, CancellationToken cancellationToken)
         {
             _logger.LogInformation("Updating Apprenticeship Programmes Reference Data");
 
             await _updaterService.UpdateApprenticeshipProgrammesAsync();
 
             _logger.LogInformation("Updated Apprenticeship Programmes Reference Data");
+            
+            return Unit.Value;
         }
     }
 }

@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Vacancy;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.WindowsAzure.Storage;
@@ -39,7 +41,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.TableStore
         public async Task<T> GetAsync<T>(string typeName, string key) where T : QueryProjectionBase
         {
             var retrieveOperation = TableOperation.Retrieve<QueryEntity>(typeName, key);
-            var result = await RetryPolicy.ExecuteAsync(context => CloudTable.ExecuteAsync(retrieveOperation), new Context(nameof(IQueryStore.GetAsync)));
+            var result = await RetryPolicy.Execute(context => CloudTable.ExecuteAsync(retrieveOperation), new Context(nameof(IQueryStore.GetAsync)));
             var queryEntity = (QueryEntity)result.Result;
 
             if (queryEntity != null)
@@ -54,7 +56,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.TableStore
         public async Task<T> GetAsync<T>(string key) where T : QueryProjectionBase
         {
             var retrieveOperation = TableOperation.Retrieve<QueryEntity>(key, key);
-            var result = await RetryPolicy.ExecuteAsync(context => CloudTable.ExecuteAsync(retrieveOperation), new Context(nameof(IQueryStore.GetAsync)));
+            var result = await RetryPolicy.Execute(context => CloudTable.ExecuteAsync(retrieveOperation), new Context(nameof(IQueryStore.GetAsync)));
             var queryEntity = (QueryEntity)result.Result;
 
             if (queryEntity != null)
@@ -71,7 +73,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.TableStore
             var serializedItem = JsonConvert.SerializeObject(item, _jsonWriter);
             var query = new QueryEntity(item.ViewType, item.Id, serializedItem);
             var insertOrReplaceOperation = TableOperation.InsertOrReplace(query);
-            var retrievedResult = RetryPolicy.ExecuteAsync(context => CloudTable.ExecuteAsync(insertOrReplaceOperation), new Context(nameof(IQueryStore.UpsertAsync)));
+            var retrievedResult = RetryPolicy.Execute(context => CloudTable.ExecuteAsync(insertOrReplaceOperation), new Context(nameof(IQueryStore.UpsertAsync)));
             return retrievedResult;
         }
 
@@ -83,15 +85,20 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.TableStore
             return DeleteInBatchesAsync(query);
         }
 
+        public Task<IEnumerable<LiveVacancy>> GetAllLiveExpired(DateTime? closingDate)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task DeleteAsync<T>(string typeName, string key) where T : QueryProjectionBase
         {
             var retrieveOperation = TableOperation.Retrieve<QueryEntity>(typeName, key);
-            var retrievedResult = await RetryPolicy.ExecuteAsync(async context => await CloudTable.ExecuteAsync(retrieveOperation), new Context(nameof(IQueryStore.DeleteAsync)));
+            var retrievedResult = await RetryPolicy.Execute(async context => await CloudTable.ExecuteAsync(retrieveOperation), new Context(nameof(IQueryStore.DeleteAsync)));
             var deleteEntity = (QueryEntity)retrievedResult.Result;
             if (deleteEntity != null)
             {
                 var tableOperation = TableOperation.Delete(deleteEntity);
-                await RetryPolicy.ExecuteAsync(async context => await CloudTable.ExecuteAsync(tableOperation), new Context(nameof(IQueryStore.DeleteAsync)));
+                await RetryPolicy.Execute(async context => await CloudTable.ExecuteAsync(tableOperation), new Context(nameof(IQueryStore.DeleteAsync)));
                 _logger.LogInformation($"Entity deleted with typeName:{typeName} and key:{key}");
             }
         }
@@ -128,7 +135,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.TableStore
 
             while (segment == null || segment.ContinuationToken != null)
             {
-                segment = await RetryPolicy.ExecuteAsync(_ =>
+                segment = await RetryPolicy.Execute(_ =>
                     CloudTable.ExecuteQuerySegmentedAsync(query.Take(DeleteBatchSize),
                     segment?.ContinuationToken),
                     new Context($"{nameof(DeleteInBatchesAsync)}-ExecuteQuerySegmentedAsync"));
@@ -143,7 +150,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.TableStore
                 if (batch.Count == 0)
                     continue;
 
-                var result = await RetryPolicy.ExecuteAsync(_ =>
+                var result = await RetryPolicy.Execute(_ =>
                         CloudTable.ExecuteBatchAsync(batch),
                     new Context($"{nameof(DeleteInBatchesAsync)}-ExecuteBatchAsync"));
 

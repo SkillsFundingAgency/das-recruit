@@ -6,11 +6,19 @@
     ViewBag.Title = "Duration and working hours";
     ViewBag.ZenDeskLabel = "recruit-duration-and-working-hours";
 }
+@section BackLink
+{
+    <esfaFeatureEnabled name="@FeatureNames.EmployerTaskList">
+        <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Dates_Get" asp-route-wizard="@Model.PageInfo.IsWizard" esfa-automation="link-back" class="govuk-back-link">Back</a>
+        <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.EmployerCheckYourAnswersGet" asp-route-wizard="@Model.PageInfo.IsWizard" esfa-automation="link-back" class="govuk-back-link">Back</a>
+    </esfaFeatureEnabled>
+    <esfaFeatureDisabled name="@FeatureNames.EmployerTaskList">
+        <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Dates_Get" esfa-automation="link-back" class="govuk-back-link">Back</a>
+    </esfaFeatureDisabled>
+}
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         
-        <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Dates_Get" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
-
         <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }'/>
 
         <partial name="@PartialNames.ReviewSummary" for="Review"/>
@@ -32,6 +40,9 @@
                     </span>
                     <span esfa-validation-message-for="Duration" class="govuk-error-message"></span>
                     <input asp-for="Duration" class="govuk-input govuk-input--width-2" type="number" min="1" >
+                    <label asp-for="DurationUnit" class="govuk-visually-hidden">
+                        Months or years
+                    </label>
                     <select asp-for="DurationUnit" class="govuk-select duration-unit-select">
                         <option value="@DurationUnit.Month">Months</option>
                         <option value="@DurationUnit.Year">Year(s)</option>
@@ -39,15 +50,15 @@
                 </fieldset>
             </div>
 
-            <div class="govuk-character-count">
+            <div class="govuk-character-count" data-module="govuk-character-count" data-maxlength="250">
                 <div esfa-validation-marker-for="WorkingWeekDescription" class="govuk-form-group">
                     <label asp-for="WorkingWeekDescription" class="govuk-label govuk-!-font-weight-bold">Details of working week</label>
                     <span class="govuk-hint">For example, Monday to Friday 9am to 5pm, shifts, may work evenings and weekends.</span>
                     <span esfa-validation-message-for="WorkingWeekDescription" class="govuk-error-message"></span>
-                    <textarea asp-for="WorkingWeekDescription" class="govuk-textarea character-count" rows="5" data-val-length-max="250"></textarea>
-                    <span class="govuk-body">You have </span>
-                    <span class="govuk-body maxchar-count">250</span>
-                    <span class="govuk-body maxchar-text"> characters remaining</span>
+                    <textarea asp-for="WorkingWeekDescription" class="govuk-textarea govuk-js-character-count" rows="5" data-val-length-max="250"></textarea>
+                     <div id="WorkingWeekDescription-info" class="govuk-hint govuk-character-count__message" aria-live="polite">
+                        You can enter up to 250 characters
+                    </div>
                 </div>
             </div>
 
@@ -55,14 +66,22 @@
             <div esfa-validation-marker-for="WeeklyHours" class="govuk-form-group">
                 <label asp-for="WeeklyHours" class="govuk-label govuk-!-font-weight-bold">How many hours will the apprentice work each week, including training?</label>
                 <span esfa-validation-message-for="WeeklyHours" class="govuk-error-message"></span>
-                <input asp-for="WeeklyHours" class="govuk-input govuk-input--width-2" type="number" step=".25" min="16" max="48">
-                <span class="govuk-body">hours</span>
+                <div class="govuk-input__wrapper">
+                    <input asp-for="WeeklyHours" class="govuk-input govuk-input--width-2" type="number" step=".25" min="16" max="48">
+                    <div class="govuk-input__suffix" aria-hidden="true">hours</div>
+                </div>
             </div>
-            
-            <button type="submit" class="govuk-button save-button" esfa-automation="continue-button">@Model.PageInfo.SubmitButtonText</button>
-            <div class="govuk-body">
-                <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Vacancies_Get" class="govuk-link">Cancel</a>
-                <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.Vacancy_Preview_Get" asp-fragment="@Anchors.ApprenticeshipSummarySection" class="govuk-link">Cancel</a>
+
+            <div class="govuk-button-group">
+                <button type="submit" class="govuk-button save-button" esfa-automation="continue-button">@Model.PageInfo.SubmitButtonText</button>
+                <esfaFeatureEnabled name="@FeatureNames.EmployerTaskList">
+                    <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Dashboard_Get" class="govuk-link govuk-link--no-visited-state">Cancel</a>
+                    <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.EmployerCheckYourAnswersGet" class="govuk-link govuk-link--no-visited-state">Cancel</a>
+                </esfaFeatureEnabled>
+                <esfaFeatureDisabled name="@FeatureNames.EmployerTaskList">
+                    <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Vacancies_Get" class="govuk-link govuk-link--no-visited-state">Cancel</a>
+                    <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.Vacancy_Preview_Get" asp-fragment="@Anchors.ApprenticeshipSummarySection" class="govuk-link govuk-link--no-visited-state">Cancel</a>
+                </esfaFeatureDisabled>
             </div>
         </form>
     </div>

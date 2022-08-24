@@ -1,3 +1,5 @@
+using System;
+using System.IO;
 using Esfa.Recruit.Provider.Web.Configuration;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
@@ -6,20 +8,42 @@ using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using SFA.DAS.Configuration.AzureTableStorage;
+using SFA.DAS.Provider.Shared.UI.Startup;
 
 namespace Esfa.Recruit.Provider.Web
 {
     public partial class Startup
     {
-        private readonly IConfiguration _configuration;
+        private readonly IConfigurationRoot _configuration;
         private readonly IHostingEnvironment _hostingEnvironment;
         private readonly AuthenticationConfiguration _authConfig;
         private readonly ILoggerFactory _loggerFactory;
 
         public Startup(IConfiguration config, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
-            _configuration = config;
             _hostingEnvironment = env;
+            var configBuilder = new ConfigurationBuilder()
+                .AddConfiguration(config)
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddEnvironmentVariables();
+                
+#if DEBUG
+            configBuilder
+                .AddJsonFile("appsettings.json", optional:true)
+                .AddJsonFile("appsettings.Development.json", optional: true);   
+#endif
+            
+            configBuilder.AddAzureTableStorage(
+                options => {
+                    options.ConfigurationKeys = config["ConfigNames"].Split(",");
+                    options.EnvironmentName = config["Environment"];
+                    options.StorageConnectionString = config["ConfigurationStorageConnectionString"];
+                    options.PreFixConfigurationKeys = false;
+                }
+            );
+
+            _configuration =  configBuilder.Build();
             _authConfig = _configuration.GetSection("Authentication").Get<AuthenticationConfiguration>();
             _loggerFactory = loggerFactory;
         }
@@ -50,6 +74,12 @@ namespace Esfa.Recruit.Provider.Web
 
             //A service provider for resolving services configured in IoC
             var sp = services.BuildServiceProvider();
+
+            services.AddProviderUiServiceRegistration(_configuration);
+
+    #if DEBUG
+            services.AddControllersWithViews().AddRazorRuntimeCompilation();
+    #endif
 
             services.AddAuthenticationService(_authConfig, sp.GetService<IRecruitVacancyClient>(), sp.GetService<IHostingEnvironment>());
             services.AddAuthorizationService();            

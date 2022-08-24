@@ -47,7 +47,7 @@
         public const string Location_Get = "Location_Get";
         public const string Location_Post = "Location_Post";
         public const string Location_Cancel = "Location_Cancel";
-        public const string Logout_Get = "Logout_Get";
+        public const string ProviderSignOut = "provider-signout";
         public const string Preview_Submit_Post = "Preview_Submit_Post";
         public const string ProviderApplicationsReportCreate_Get = "ProviderApplicationsReportCreate_Get";
         public const string ProviderApplicationsReportCreate_Post = "ProviderApplicationsReportCreate_Post";
@@ -70,6 +70,7 @@
         public const string Skills_Get = "Skills_Get";
         public const string Skills_Post = "Skills_Post";
         public const string Submitted_Index_Get = "Submitted_Index_Get";
+        public const string Reviewed_Index_Get = "Reviewed_Index_Get";
         public const string SubmitVacancyChanges_Post = "SubmitVacancyChanges_Post";
         public const string Title_Get = "Title_Get";
         public const string Title_Post = "Title_Post";
@@ -83,6 +84,7 @@
         public const string Dates_Get = "Dates_Get";
         public const string Dates_Post = "Dates_Post";
         public const string Vacancy_Preview_Get = "Vacancy_Preview_Get";
+        public const string Vacancy_Advert_Preview_Get = "Vacancy_Advert_Preview_Get";
         public const string VacancyDescription_Index_Get = "VacancyDescription_Index_Get";
         public const string VacancyDescription_Index_Post = "VacancyDescription_Index_Post";
         public const string VacancyEdit_Get = "VacancyEdit_Get";
@@ -106,5 +108,22 @@
         public const string ConfirmUnsubscribeNotifications_Post = "ConfirmUnsubscribeNotifications_Post";
         public const string NotificationsUpdatedAcknowledgement_Get = "NotificationsUpdatedAcknowledgement_Get";
         public const string NotificationUnsubscribedAcknowledgement_Get = "NotificationUnsubscribedAcknowledgement_Get";
+        public const string Dashboard_ProviderRecruitmentApi = "provider-recruitment-api";
+        public const string CreateVacancyStart = "provider-task-list-start";
+        public const string ProviderTaskListCreateGet = "provider-task-list-create";
+        public const string ProviderTaskListGet = "provider-task-list-get";
+        public const string ProviderCheckYourAnswersGet = "provider-check-your-answers-get";
+        public const string ProviderCheckYourAnswersPost = "provider-check-your-answers-post";
+        public const string FutureProspects_Get = "FutureProspects_Get";
+        public const string FutureProspects_Post = "FutureProspects_Post";
+        public const string WorkExperience_Get = "work-experience-get";
+        public const string WorkExperience_Post = "work-experience-post";
+        public const string TraineeSector_Get = "trainee-sector-get";
+        public const string TraineeSector_Post = "trainee-sector-post";
+        public const string TraineeshipHelp = "trainee-help-get";
+        public const string TraineeshipPrivacy = "trainee-privacy-get";
+        public const string TraineeshipTermsAndConditions = "trainee-terms-and-conditions";
+        public const string TraineeshipCookies = "trainee-cookies";
+        public const string TraineeshipCookiesDetails = "trainee-cookies-details";
     }
 }

@@ -13,7 +13,7 @@ using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 {
-    public class CloneVacancyCommandHandler: IRequestHandler<CloneVacancyCommand>
+    public class CloneVacancyCommandHandler: IRequestHandler<CloneVacancyCommand, Unit>
     {
         private readonly ILogger<CloneVacancyCommandHandler> _logger;
         private readonly IVacancyRepository _repository;
@@ -32,13 +32,13 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             _timeProvider = timeProvider;
         }
 
-        public async Task Handle(CloneVacancyCommand message, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(CloneVacancyCommand message, CancellationToken cancellationToken)
         {
             _logger.LogInformation("Cloning new vacancy with id: {vacancyId} from vacancy with id: {clonedVacancyId}", message.IdOfVacancyToClone, message.NewVacancyId);
 
             var vacancy = await _repository.GetVacancyAsync(message.IdOfVacancyToClone);
 
-            if (vacancy.Status != VacancyStatus.Submitted && vacancy.Status != VacancyStatus.Live && vacancy.Status != VacancyStatus.Closed)
+            if (vacancy.Status != VacancyStatus.Submitted && vacancy.Status != VacancyStatus.Live && vacancy.Status != VacancyStatus.Closed && vacancy.Status != VacancyStatus.Review)
             {
                 _logger.LogError($"Unable to clone vacancy {{vacancyId}} due to it having a status of {vacancy.Status}.", message.IdOfVacancyToClone);
                 
@@ -53,6 +53,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             {
                 VacancyId = clone.Id
             });
+            return Unit.Value;
         }
 
         private Vacancy CreateClone(CloneVacancyCommand message, Vacancy vacancy)
@@ -88,6 +89,12 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             clone.ClosureReason = null;
             clone.ClosureExplanation = null;
             clone.TransferInfo = null;
+            clone.ReviewByUser = null;
+            clone.ReviewDate = null;
+            clone.ReviewCount = 0;
+            clone.EmployerReviewFieldIndicators = null;
+            clone.EmployerRejectedReason = null;
+            clone.ProviderReviewFieldIndicators = null;
 
             return clone;
         }

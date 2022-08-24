@@ -8,23 +8,26 @@
             </h1>
         </div>
 
-        <p asp-show="@Model.IsUserSubmittedVacanciesSelected">We'll send emails to <b>@Model.UserEmail</b> when your submitted vacancies:</p>
-        <p asp-hide="@Model.IsUserSubmittedVacanciesSelected">We'll send emails to <b>@Model.UserEmail</b> when vacancies:</p>
+        <p>We'll send emails to <b>@Model.UserEmail</b>:</p>
 
         <ul class="govuk-list govuk-list--bullet">
             <li asp-show="@Model.IsVacancyRejectedSelected">
-                are rejected after review
+                when vacancies are rejected by ESFA
+            </li>
+
+            <li asp-show="@Model.IsVacancyRejectedByEmployerSelected">
+                when vacancies are rejected by employer
             </li>
 
             <li asp-show="@Model.IsVacancyClosingSoonSelected">
-                are closing soon
+                when vacancies are closing soon
             </li>
-            
+
             <li asp-show="@Model.IsApplicationSubmittedSelected">
-                receive new applications (@Model.Frequency)
+                when there are new applications (@Model.Frequency)
             </li>
         </ul>
 
-        <a asp-route="@RouteNames.Dashboard_Get" class="govuk-button govuk-!-margin-bottom-6" esfa-automation="create-vacancy">Return to dashboard</a>
+        <a asp-route="@RouteNames.Dashboard_Get" asp-route-ukprn="@Model.Ukprn" class="govuk-button govuk-!-margin-bottom-6" esfa-automation="create-vacancy">Return to dashboard</a>
     </div>
 </div>

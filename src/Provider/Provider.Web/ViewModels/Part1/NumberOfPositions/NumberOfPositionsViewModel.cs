@@ -6,6 +6,7 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.Part1.NumberOfPositions
 {
     public class NumberOfPositionsViewModel : VacancyRouteModel
     {
+        public string Title { get; set; }
         public PartOnePageInfoViewModel PageInfo { get; set; }
         public ReviewSummaryViewModel Review { get; set; } = new ReviewSummaryViewModel();
         public string NumberOfPositions { get; set; }

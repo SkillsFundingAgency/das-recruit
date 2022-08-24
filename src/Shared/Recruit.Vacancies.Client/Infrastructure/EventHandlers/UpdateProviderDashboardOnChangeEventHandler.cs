@@ -14,6 +14,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
     public class UpdateProviderDashboardOnChangeEventHandler : INotificationHandler<VacancyCreatedEvent>,
                                             INotificationHandler<DraftVacancyUpdatedEvent>,
                                             INotificationHandler<VacancySubmittedEvent>,
+                                            INotificationHandler<VacancyReviewedEvent>,
                                             INotificationHandler<VacancyDeletedEvent>,
                                             INotificationHandler<VacancyPublishedEvent>,
                                             INotificationHandler<VacancyClosedEvent>,
@@ -23,6 +24,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
                                             INotificationHandler<ApplicationReviewedEvent>,
                                             INotificationHandler<SetupProviderEvent>,
                                             INotificationHandler<VacancyReferredEvent>,
+                                            INotificationHandler<VacancyRejectedEvent>,
                                             INotificationHandler<VacancyTransferredEvent>,
                                             INotificationHandler<VacancyReviewWithdrawnEvent>
     {
@@ -48,6 +50,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
         }
 
         public Task Handle(VacancySubmittedEvent notification, CancellationToken cancellationToken)
+        {
+            return Handle(notification);
+        }
+
+        public Task Handle(VacancyReviewedEvent notification, CancellationToken cancellationToken)
         {
             return Handle(notification);
         }
@@ -97,6 +104,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
             return Handle(notification);
         }
 
+        public Task Handle(VacancyRejectedEvent notification, CancellationToken cancellationToken)
+        {
+            return Handle(notification);
+        }
+
         public async Task Handle(VacancyTransferredEvent notification, CancellationToken cancellationToken)
         {
             if (notification == null)
@@ -105,7 +117,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
             var vacancy = await _vacancyRepository.GetVacancyAsync(notification.VacancyReference);
 
             _logger.LogInformation("Handling {eventType} for ukprn: {ukprn} and vacancyReference: {vacancyReference}", notification.GetType().Name, vacancy.TrainingProvider.Ukprn.Value, notification.VacancyReference);
-            await _dashboardService.ReBuildDashboardAsync(vacancy.TrainingProvider.Ukprn.GetValueOrDefault());
+            await _dashboardService.ReBuildDashboardAsync(vacancy.TrainingProvider.Ukprn.GetValueOrDefault(), VacancyType.Apprenticeship);
+            await _dashboardService.ReBuildDashboardAsync(vacancy.TrainingProvider.Ukprn.GetValueOrDefault(), VacancyType.Traineeship);
         }
 
         public Task Handle(VacancyReviewWithdrawnEvent notification, CancellationToken cancellationToken)
@@ -113,13 +126,14 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
             return Handle(notification);
         }
 
-        private Task Handle(IProviderEvent notification)
+        private async Task Handle(IProviderEvent notification)
         {
             if (notification == null)
                 throw new ArgumentNullException(nameof(notification), "Should not be null");
 
             _logger.LogInformation("Handling {eventType} for ukprn: {ukprn}", notification.GetType().Name, notification.Ukprn);
-            return _dashboardService.ReBuildDashboardAsync(notification.Ukprn);
+            await _dashboardService.ReBuildDashboardAsync(notification.Ukprn, VacancyType.Apprenticeship);
+            await _dashboardService.ReBuildDashboardAsync(notification.Ukprn, VacancyType.Traineeship);
         }
 
         private async Task Handle(IApplicationReviewEvent notification)
@@ -129,10 +143,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
 
             var vacancy = await _vacancyRepository.GetVacancyAsync(notification.VacancyReference);
 
-            if (vacancy.OwnerType != OwnerType.Employer)
+            if (vacancy.TrainingProvider != null)
             {
                 _logger.LogInformation("Handling {eventType} for ukprn: {ukprn} and vacancyReference: {vacancyReference}", notification.GetType().Name, vacancy.TrainingProvider.Ukprn.Value, notification.VacancyReference);
-                await _dashboardService.ReBuildDashboardAsync(vacancy.TrainingProvider.Ukprn.Value);
+                await _dashboardService.ReBuildDashboardAsync(vacancy.TrainingProvider.Ukprn.Value, VacancyType.Apprenticeship);
+                await _dashboardService.ReBuildDashboardAsync(vacancy.TrainingProvider.Ukprn.Value, VacancyType.Traineeship);
             }
         }
 
@@ -140,13 +155,28 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
         {
             if (notification == null)
                 throw new ArgumentNullException(nameof(notification), "Should not be null");
-
             var vacancy = await _vacancyRepository.GetVacancyAsync(notification.VacancyId);
-
-            if (vacancy.OwnerType != OwnerType.Employer)
+            try
             {
-                _logger.LogInformation("Handling {eventType} for ukprn: {ukprn} and vacancyId: {vacancyId}", notification.GetType().Name, vacancy.TrainingProvider.Ukprn.Value, notification.VacancyId);
-                await _dashboardService.ReBuildDashboardAsync(vacancy.TrainingProvider.Ukprn.Value);
+                
+                if (vacancy.TrainingProvider != null)
+                {
+                    _logger.LogInformation("Handling {eventType} for ukprn: {ukprn} and vacancyId: {vacancyId}", notification.GetType().Name, vacancy.TrainingProvider.Ukprn.Value, notification.VacancyId);
+                    await _dashboardService.ReBuildDashboardAsync(vacancy.TrainingProvider.Ukprn.Value, VacancyType.Apprenticeship);
+                    await _dashboardService.ReBuildDashboardAsync(vacancy.TrainingProvider.Ukprn.Value, VacancyType.Traineeship);
+                }
+            }
+            catch (Exception e)
+            {
+                // While this is not ideal - the issue comes from an error rebuilding the dashboard stopping other vacancies from being closed
+                if (vacancy.TrainingProvider?.Ukprn != null)
+                {
+                    _logger.LogError(e,"Unable to rebuild dashboard for {ukprn} as part of IVacancyEvent", vacancy.TrainingProvider.Ukprn.Value);    
+                }
+                else
+                {
+                    _logger.LogError(e,"Unable to rebuild dashboard as part of IVacancyEvent");
+                }
             }
         }
     }

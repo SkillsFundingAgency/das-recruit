@@ -22,7 +22,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
             var filter = Builders<UserNotificationPreferences>.Filter.Eq(v => v.Id, idamsUserId);
 
             var collection = GetCollection<UserNotificationPreferences>();
-            var result = await RetryPolicy.ExecuteAsync(_ => 
+            var result = await RetryPolicy.Execute(_ => 
                 collection.Find(filter)
                 .SingleOrDefaultAsync(),
                 new Context(nameof(GetAsync)));
@@ -33,7 +33,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
         {
             var filter = Builders<UserNotificationPreferences>.Filter.Eq(v => v.Id, preferences.Id);
             var collection = GetCollection<UserNotificationPreferences>();
-            return RetryPolicy.ExecuteAsync(_ => 
+            return RetryPolicy.Execute(_ => 
                 collection.ReplaceOneAsync(filter, preferences, new UpdateOptions { IsUpsert = true }),
                 new Context(nameof(UpsertAsync)));
         }

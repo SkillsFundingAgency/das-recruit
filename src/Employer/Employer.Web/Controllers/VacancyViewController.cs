@@ -13,10 +13,12 @@ namespace Esfa.Recruit.Employer.Web.Controllers
     public class VacancyViewController : Controller
     {
         private readonly VacancyViewOrchestrator _orchestrator;
+        private readonly IUtility _utility;
 
-        public VacancyViewController(VacancyViewOrchestrator orchestrator)
+        public VacancyViewController(VacancyViewOrchestrator orchestrator, IUtility utility)
         {
             _orchestrator = orchestrator;
+            _utility = utility;
         }
 
         [HttpGet("", Name = RouteNames.DisplayVacancy_Get)]
@@ -24,7 +26,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         {
             var vacancy = await _orchestrator.GetVacancy(vrm);
 
-            if (vacancy.CanEdit)
+            if (vacancy.CanEmployerEdit)
             {
                 return HandleRedirectOfEditableVacancy(vacancy);
             }
@@ -38,7 +40,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         {
             var vacancy = await _orchestrator.GetVacancy(vrm);
 
-            if (vacancy.CanEdit)
+            if (vacancy.CanEmployerEdit)
             {
                 return HandleRedirectOfEditableVacancy(vacancy);
             }
@@ -49,12 +51,12 @@ namespace Esfa.Recruit.Employer.Web.Controllers
 
         private IActionResult HandleRedirectOfEditableVacancy(Vacancy vacancy)
         {
-            if (Utility.VacancyHasCompletedPartOne(vacancy))
+            if (_utility.VacancyHasCompletedPartOne(vacancy))
             {
                 return RedirectToRoute(RouteNames.Vacancy_Preview_Get);
             }
 
-            var resumeRouteName = Utility.GetPermittedRoutesForVacancy(vacancy).Last();
+            var resumeRouteName = _utility.GetPermittedRoutesForVacancy(vacancy).Last();
 
             return RedirectToRoute(resumeRouteName, new { wizard = "true" });
         }

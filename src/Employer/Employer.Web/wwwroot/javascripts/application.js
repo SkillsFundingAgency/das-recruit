@@ -1,116 +1,116 @@
-var navLinksContainer = document.getElementsByClassName('das-navigation__list');
-var navLinksListItems = document.getElementsByClassName('das-navigation__list-item');
-var availableSpace, currentVisibleLinks, numOfVisibleItems, requiredSpace, currentHiddenLinks;
-var totalSpace = 0;
-var breakWidths = [];
+// Training Provider Autocomplete
 
-var addMenuButton = function () {
-  var priorityLi = $('<li />').addClass('das-navigation__priority-list-item govuk-visually-hidden').attr('id', 'priority-list-menu');
-  var priorityUl = $('<ul />').addClass('das-navigation__priority-list govuk-visually-hidden');
-  var priorityBut = $('<a />')
-    .addClass('das-navigation__priority-button')
-    .attr('href', '#')
-    .text('More')
-    .on('click', function(e) {
-      $(menuLinksContainer).toggleClass('govuk-visually-hidden');
-      $(this).toggleClass('open');
-      e.preventDefault();
-    });
-  priorityLi.append(priorityBut, priorityUl).appendTo($(navLinksContainer).eq(0));
-  return priorityUl;
-};
+var providerSearchInputs = document.querySelectorAll(".app-provider-autocomplete");
 
-var checkSpaceForPriorityLinks = function () {
-  availableSpace = navLinksContainer[0].offsetWidth - 80;
-  currentVisibleLinks = document.querySelectorAll('.das-navigation__list > .das-navigation__list-item');
-  currentHiddenLinks = document.querySelectorAll('.das-navigation__priority-list > .das-navigation__list-item');
-  numOfVisibleItems = currentVisibleLinks.length;
-  requiredSpace = breakWidths[numOfVisibleItems - 1];
+if (providerSearchInputs.length > 0) {
+  for (var a = 0; a < providerSearchInputs.length; a++) {
+    var input = providerSearchInputs[a]
+    var container = document.createElement('div');
 
-  if (requiredSpace > availableSpace) {
-    numOfVisibleItems -= 1;
-    var lastVisibleLink = currentVisibleLinks[numOfVisibleItems];
-    menuLinksContainer[0].insertBefore(lastVisibleLink, menuLinksContainer[0].childNodes[0]);
-    $('#priority-list-menu').removeClass('govuk-visually-hidden');
-    checkSpaceForPriorityLinks();
-  } else if (availableSpace > breakWidths[numOfVisibleItems]) {
-    if (currentHiddenLinks.length > 0) {
-      var firstLink = currentHiddenLinks[0];
-      var priorityListItem = document.getElementsByClassName('das-navigation__priority-list-item');
-      navLinksContainer[0].insertBefore(firstLink, priorityListItem[0])
-      if (currentHiddenLinks.length === 1) {
-        $('#priority-list-menu').addClass('govuk-visually-hidden');
-      }
-    }
-    numOfVisibleItems += 1;
-  }
-};
+    container.className = "das-autocomplete-wrap"
+    input.parentNode.replaceChild(container, input);
 
-if (navLinksContainer.length > 0) {
-  var menuLinksContainer  = addMenuButton();
-  for (var i = 0; i < navLinksListItems.length; i++) {
-    var width = navLinksListItems[i].offsetWidth;
-    totalSpace += width;
-    breakWidths.push(totalSpace);
-  }
-  checkSpaceForPriorityLinks();
-}
-
-$(window).resize(function() {
-  if (navLinksContainer.length > 0)
-    checkSpaceForPriorityLinks();
-});
-
-var dasJs = dasJs || {};
-
-dasJs.userNavigation = {
-  elems: {
-    settingsMenu: $('#das-user-navigation > ul')
-  },
-  init: function () {
-    this.setupMenus(this.elems.settingsMenu);
-    this.setupEvents(this.elems.settingsMenu);
-  },
-  setupMenus: function (menu) {
-    menu.find('ul').attr("aria-expanded", "false");
-  },
-  setupEvents: function (menu) {
-    var that = this;
-    var subMenuLi = menu.find('li.das-user-navigation__list-item--has-sub-menu');
-    subMenuLi.find('> a').on('click', function (e) {
-      var $that = $(this);
-      that.toggleMenu($that, $that.next('ul'));
-      e.stopPropagation();
-      e.preventDefault();
-    });
-  },
-  toggleMenu: function (link, subMenu) {
-    var $li = link.parent();
-    if ($li.hasClass("das-user-navigation__sub-menu--open")) {
-      $li.removeClass("das-user-navigation__sub-menu--open");
-      subMenu.addClass("js-hidden").attr("aria-expanded", "false");
-    } else {
-      this.closeAllOpenMenus();
-      $li.addClass("das-user-navigation__sub-menu--open");
-      subMenu.removeClass("js-hidden").attr("aria-expanded", "true");
-    }
-  },
-  closeAllOpenMenus: function () {
-    $('li.das-user-navigation__list-item--has-sub-menu').each(function () {
-      var listItem = $(this);
-      var subMenu = $(this).children('ul');
-      var openClass = 'das-user-navigation__sub-menu--open';
-      if (listItem.hasClass(openClass)) {
-        listItem.removeClass(openClass);
-        subMenu.addClass("js-hidden").attr("aria-expanded", "false");
-      }
+    accessibleAutocomplete({
+      element: container,
+      id: input.id,
+      name: input.name,
+      defaultValue: input.value,
+      displayMenu: 'overlay',
+      showNoOptionsFound: false,
+      minLength: 2,
+      source: providerArray,
+      placeholder: input.placeholder,
+      confirmOnBlur: false,
+      autoselect: true
     });
   }
 }
 
-$(document).click(function() {
-  dasJs.userNavigation.closeAllOpenMenus();
-});
+
+// Select Field Autocomplete 
+
+var selectFields = document.querySelectorAll(".app-autocomplete");
+if (selectFields.length > 0) {
+    for (var s = 0; s < selectFields.length; s++) {
+        accessibleAutocomplete.enhanceSelectElement({
+            selectElement: selectFields[s],
+            minLength: 2,
+            autoselect: true,
+            defaultValue: '',
+            displayMenu: 'overlay',
+            placeholder: '',
+            onConfirm: function (opt) {
+                var txtInput = document.querySelector('#' + this.id);
+                var searchString = opt || txtInput.value;
+                var requestedOption = [].filter.call(this.selectElement.options,
+                function (option) {
+                    return (option.textContent || option.innerText) === searchString
+                }
+                )[0];
+                if (requestedOption) {
+                    requestedOption.selected = true;
+                } else {
+                    this.selectElement.selectedIndex = 0;
+                }
+            }
+        });
+    }
+}
+
+// Vacancy Autocomplete
+
+var vacancyApiUrl, 
+    getVacancySuggestions = function (query, updateResults) {
+    var xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4) {
+        var jsonResponse = JSON.parse(xhr.responseText);
+        updateResults(jsonResponse);
+        }
+    }
+    xhr.open("GET", vacancyApiUrl + '?term=' + query, true);
+    xhr.send();
+};
+
+var vacancySearchInputs = document.querySelectorAll(".app-vacancy-autocomplete");
+
+if (vacancySearchInputs.length > 0) {
+
+  for (var v = 0; v < vacancySearchInputs.length; v++) {
+
+    var searchInput = vacancySearchInputs[v]
+    vacancyApiUrl = searchInput.dataset.apiurl
+    var searchInputContainer = document.createElement('div');
+
+    searchInputContainer.className = "das-autocomplete-wrap"
+    searchInput.parentNode.replaceChild(searchInputContainer, searchInput);
+
+    accessibleAutocomplete({
+      element: searchInputContainer,
+      id: searchInput.id,
+      name: searchInput.name,
+      defaultValue: searchInput.value,
+      displayMenu: 'overlay',
+      showNoOptionsFound: false,
+      minLength: 2,
+      source: getVacancySuggestions,
+      placeholder: searchInput.placeholder,
+      confirmOnBlur: false,
+      autoselect: true
+    });
+  }
+
+  var autocompleteInputs = document.querySelectorAll(".autocomplete__input");
+  if (autocompleteInputs.length > 0) {
+    for (var i = 0; i < autocompleteInputs.length; i++) {
+      var autocompleteInput = autocompleteInputs[i];
+      autocompleteInput.setAttribute("autocomplete", "new-password");
+    }
+  }
+}
+
+
+
 
 /* -----------------------
 Character count behaviour
@@ -156,16 +156,6 @@ $(".character-count").each(function() {
   characterCount(this);
 });
 
-/* Prevent multiple submissions */
-$('button, input[type="submit"], a.button').on("click", function() {
-    var button = $(this)
-      , label = button.text();
-      button.is(".save-button") ? button.text("Saving").addClass("disabled") : button.text("Loading").addClass("disabled");
-    setTimeout(function() {
-        $(".govuk-form-group.error").length > 0 ? button.text(label).removeClass("disabled") : $(".block-label.error").length > 0 && button.text(label).removeClass("disabled");
-        button.attr("disabled")
-    }, 50)
-});
 
 /* Disable Are you sure for links */
 $('a').on("click", function() {
@@ -268,35 +258,32 @@ function setEditorMaxLength(element, tinyMceEditor) {
 }
 
 $(function () {
-    if ($('#das-user-navigation')) {
-        dasJs.userNavigation.init();
-    }
+
     // Dirty forms handling
     $('form').areYouSure();
     //handle anchor clicks to account for floating menu
     handleAnchorClicks();
-    window.GOVUKFrontend.initAll()
-
 
     // Data Layer Pushes
 
-    var pageTitle = document.querySelector('h1.govuk-heading-xl').innerText;
+    var pageHeading = document.querySelector('h1.govuk-heading-xl') || document.querySelector('h1.govuk-heading-l') || document.querySelector('h1.govuk-fieldset__heading') || document.querySelector('label.govuk-label--xl');
+    var pageTitle = pageHeading.innerText
+
     // Form validation - dataLayer pushes
     var errorSummary = document.querySelector('.govuk-error-summary');
     if (errorSummary !== null) {
-        var validationErrors = errorSummary.querySelectorAll('ul.govuk-error-summary__list li');
-        var numberOfErrors = validationErrors.length;
-        var validationMessage = 'Form validation';
-        var dataLayerObj;
-        if (numberOfErrors === 1) {
-            validationMessage = validationErrors[0].innerText
-        }
-        dataLayerObj = {
-            event: 'form submission error',
-            page: pageTitle,
-            message: validationMessage
-        }
-        window.dataLayer.push(dataLayerObj)
+      var validationErrors = errorSummary.querySelectorAll('ul.govuk-error-summary__list li a');
+      var validationErrorsArr = [];
+      nodeListForEach(validationErrors, function(validationError) {
+        validationErrorsArr.push(validationError.innerText)
+      });
+      var validationMessage = validationErrorsArr.join();
+      var dataLayerObj = {
+        event: 'form submission error',
+        page: pageTitle,
+        message: validationMessage
+      }
+      window.dataLayer.push(dataLayerObj)
     }
     // Radio button selection - dataLayer pushes
     var radioWrapper = document.querySelector('.govuk-radios');

@@ -11,7 +11,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 {
-    public class PublishVacancyCommandHandler : IRequestHandler<PublishVacancyCommand>
+    public class PublishVacancyCommandHandler : IRequestHandler<PublishVacancyCommand,Unit>
     {
         private readonly ILogger<PublishVacancyCommandHandler> _logger;
         private readonly IVacancyRepository _repository;
@@ -30,7 +30,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             _timeProvider = timeProvider;
         }
 
-        public async Task Handle(PublishVacancyCommand message, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(PublishVacancyCommand message, CancellationToken cancellationToken)
         {
             _logger.LogInformation("Setting vacancy Live for vacancy {vacancyId}.", message.VacancyId);
 
@@ -39,7 +39,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             if (!vacancy.CanMakeLive)
             {
                 _logger.LogWarning($"Cannot make vacancy {{vacancyId}} Live due to vacancy having a status of {vacancy.Status}.", vacancy.Id);
-                return;
+                return Unit.Value;
             }
 
             vacancy.Status = VacancyStatus.Live;
@@ -51,6 +51,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             {
                 VacancyId = vacancy.Id
             });
+            return Unit.Value;
         }
     }
 }

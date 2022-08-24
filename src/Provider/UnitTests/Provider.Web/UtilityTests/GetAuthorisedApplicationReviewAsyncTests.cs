@@ -43,7 +43,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.UtilityTests
         public async Task GetAuthorisedApplicationReviewAsync_ShouldAllowForProviderAssociatedUkprn()
         {
             const long requestedUkprn = 12345678;
-
+            var utility = new Utility(_mockVacancyClient.Object);
             var rm = new ApplicationReviewRouteModel
             {
                 Ukprn = requestedUkprn,
@@ -51,7 +51,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.UtilityTests
                 VacancyId = _vacancyId
             };
 
-            var applicationReview = await Utility.GetAuthorisedApplicationReviewAsync(_mockVacancyClient.Object, rm);
+            var applicationReview = await utility.GetAuthorisedApplicationReviewAsync(rm);
             applicationReview.Should().NotBeNull();
         }
 
@@ -59,7 +59,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.UtilityTests
         public async Task GetAuthorisedApplicationReviewAsync_ShouldNotAllowForProviderUnassociatedUkprn()
         {
             const long requestedUkprn = 123456789;
-
+            var utility = new Utility(_mockVacancyClient.Object);
             var rm = new ApplicationReviewRouteModel
             {
                 Ukprn = requestedUkprn,
@@ -67,9 +67,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.UtilityTests
                 VacancyId = _vacancyId
             };
 
-            Func<Task<ApplicationReview>> act = () => Utility.GetAuthorisedApplicationReviewAsync(_mockVacancyClient.Object, rm);
-
-            var ex = await Assert.ThrowsAsync<AuthorisationException>(act);
+            var ex = await Assert.ThrowsAsync<AuthorisationException>(() => utility.GetAuthorisedApplicationReviewAsync(rm));
             ex.Message.Should().Be(
                 $"The provider account '{requestedUkprn}' cannot access provider account '{_applicationReviewUkprn}' " +
                 $"application '{rm.ApplicationReviewId}' for vacancy '{_vacancyId}'.");

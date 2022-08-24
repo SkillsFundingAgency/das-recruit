@@ -11,7 +11,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 {
-    public class AssignVacanyReviewCommandHandler: IRequestHandler<AssignVacancyReviewCommand>
+    public class AssignVacanyReviewCommandHandler: IRequestHandler<AssignVacancyReviewCommand, Unit>
     {
         private readonly ILogger<AssignVacancyReviewCommand> _logger;
         private readonly IVacancyReviewRepository _vacancyReviewRepository;
@@ -30,7 +30,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             _nextVacancyReviewService = nextVacancyReviewService;
         }
 
-        public async Task Handle(AssignVacancyReviewCommand message, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(AssignVacancyReviewCommand message, CancellationToken cancellationToken)
         {
             VacancyReview review;
 
@@ -46,13 +46,14 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             }
 
             if (review == null)
-                return;
+                return Unit.Value;
 
             review.Status = ReviewStatus.UnderReview;
             review.ReviewedByUser = message.User;
             review.ReviewedDate = _time.Now;
 
             await _vacancyReviewRepository.UpdateAsync(review);
+            return Unit.Value;
         }
 
         private async Task<VacancyReview> GetVacancyReviewAsync(Guid reviewId)

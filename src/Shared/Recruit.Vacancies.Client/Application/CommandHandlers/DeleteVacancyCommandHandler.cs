@@ -10,7 +10,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 {
-    public class DeleteVacancyCommandHandler : IRequestHandler<DeleteVacancyCommand>
+    public class DeleteVacancyCommandHandler : IRequestHandler<DeleteVacancyCommand, Unit>
     {
         private readonly ILogger<DeleteVacancyCommandHandler> _logger;
         private readonly IVacancyRepository _repository;
@@ -29,7 +29,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             _timeProvider = timeProvider;
         }
 
-        public async Task Handle(DeleteVacancyCommand message, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(DeleteVacancyCommand message, CancellationToken cancellationToken)
         {
             _logger.LogInformation("Deleting vacancy {vacancyId}", message.VacancyId);
             
@@ -38,13 +38,13 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             if (vacancy == null)
             {
                 _logger.LogWarning($"Unable to find vacancy {{vacancyId}} for deletion", message.VacancyId);
-                return;
+                return Unit.Value;
             }
 
             if (vacancy.CanDelete == false)
             {
                 _logger.LogWarning($"Unable to delete vacancy {{vacancyId}} due to vacancy having a status of {vacancy?.Status}.", message.VacancyId);
-                return;
+                return Unit.Value;
             }
 
             var now = _timeProvider.Now;
@@ -65,6 +65,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             {
                 VacancyId = vacancy.Id
             });
+            return Unit.Value;
         }
     }
 }

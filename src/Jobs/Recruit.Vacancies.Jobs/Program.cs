@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Configuration;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo;
@@ -49,7 +50,15 @@ namespace Esfa.Recruit.Vacancies.Jobs
         {
             return
                 new HostBuilder()
-                    .UseEnvironment(RecruitEnvironment.EnvironmentName)
+                    .ConfigureHostConfiguration(configHost =>  
+                    {  
+                        configHost.SetBasePath(Directory.GetCurrentDirectory());  
+                        configHost.AddEnvironmentVariables();
+#if DEBUG
+                        configHost.AddJsonFile("appSettings.json", true)
+                            .AddJsonFile($"appSettings.Development.json", true);               
+#endif
+                    })  
                     .ConfigureWebJobs(b =>
                     {
                         b.AddAzureStorageCoreServices()
@@ -58,22 +67,17 @@ namespace Esfa.Recruit.Vacancies.Jobs
                     })
                     .ConfigureAppConfiguration((hostBuilderContext, configBuilder)=>
                     {
-                        configBuilder.AddJsonFile("appSettings.json", optional: false)
-                            .AddJsonFile($"appSettings.{RecruitEnvironment.EnvironmentName}.json", true)
-                            .AddEnvironmentVariables()
+                        
+                        configBuilder
                             .AddAzureTableStorage(
-                            options => {
-                                options.ConfigurationKeys = new[] { "SFA.DAS.Encoding" };
-                                options.EnvironmentNameEnvironmentVariableName = "APPSETTING_ASPNETCORE_Environment";
-                                options.StorageConnectionStringEnvironmentVariableName = "CUSTOMCONNSTR_ConfigurationStorageConnectionString";
-                                options.PreFixConfigurationKeys = false;
-                            }
+                                options =>
+                                {
+                                    options.ConfigurationKeys = hostBuilderContext.Configuration["ConfigNames"].Split(",");
+                                    options.EnvironmentName = hostBuilderContext.Configuration["Environment"];
+                                    options.StorageConnectionString = hostBuilderContext.Configuration["ConfigurationStorageConnectionString"];
+                                    options.PreFixConfigurationKeys = false;
+                                }
                         );
-
-                        if (RecruitEnvironment.IsDevelopment)
-                        {
-                            configBuilder.AddUserSecrets<Program>();
-                        }
                     })
                     .ConfigureLogging((context, b) =>
                     {
@@ -81,15 +85,12 @@ namespace Esfa.Recruit.Vacancies.Jobs
                         b.AddDebug();
                         b.AddConsole();
                         b.AddNLog();
-
-                        // If this key exists in any config, use it to enable App Insights
-                        string appInsightsKey = context.Configuration["APPINSIGHTS_INSTRUMENTATIONKEY"];
-                        if (!string.IsNullOrEmpty(appInsightsKey))
-                        {
-                            b.AddApplicationInsights(o => o.InstrumentationKey = appInsightsKey);
-                        }
-
                         b.ConfigureRecruitLogging();
+                        string instrumentationKey = context.Configuration["APPINSIGHTS_INSTRUMENTATIONKEY"];
+                        if (!string.IsNullOrEmpty(instrumentationKey))
+                        {
+                            b.AddApplicationInsights(o => o.InstrumentationKey = instrumentationKey);
+                        }
                     })
                     .ConfigureServices((context, services) =>
                     {
@@ -108,6 +109,7 @@ namespace Esfa.Recruit.Vacancies.Jobs
                         services.ConfigureJobServices(context.Configuration);
 
                         services.AddDasNServiceBus(context.Configuration);
+                        services.AddApplicationInsightsTelemetryWorkerService(context.Configuration);
                     })
                     .UseConsoleLifetime();
         }

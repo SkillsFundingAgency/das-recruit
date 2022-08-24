@@ -6,6 +6,7 @@ using Esfa.Recruit.Employer.Web.ViewModels.Part1.Duration;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Shared.Web.Orchestrators;
 using Esfa.Recruit.Shared.Web.Services;
+using Esfa.Recruit.Vacancies.Client.Application.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
@@ -13,23 +14,23 @@ using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 {
-    public class DurationOrchestrator : EntityValidatingOrchestrator<Vacancy, DurationEditModel>
+    public class DurationOrchestrator : VacancyValidatingOrchestrator<DurationEditModel>
     {
         private const VacancyRuleSet ValidationRules = VacancyRuleSet.Duration | VacancyRuleSet.WorkingWeekDescription | VacancyRuleSet.WeeklyHours;
-        private readonly IEmployerVacancyClient _client;
         private readonly IRecruitVacancyClient _vacancyClient;
         private readonly IReviewSummaryService _reviewSummaryService;
+        private readonly IUtility _utility;
 
-        public DurationOrchestrator(IEmployerVacancyClient client, IRecruitVacancyClient vacancyClient, ILogger<DurationOrchestrator> logger, IReviewSummaryService reviewSummaryService) : base(logger)
+        public DurationOrchestrator(IEmployerVacancyClient client, IRecruitVacancyClient vacancyClient, ILogger<DurationOrchestrator> logger, IReviewSummaryService reviewSummaryService, IUtility utility) : base(logger)
         {
-            _client = client;
             _vacancyClient = vacancyClient;
             _reviewSummaryService = reviewSummaryService;
+            _utility = utility;
         }
 
         public async Task<DurationViewModel> GetDurationViewModelAsync(VacancyRouteModel vrm)
         {
-            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, _vacancyClient, vrm, RouteNames.Duration_Get);
+            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.Duration_Get);
 
             var training = await _vacancyClient.GetApprenticeshipProgrammeAsync(vacancy.ProgrammeId);
 
@@ -39,7 +40,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                 DurationUnit = vacancy.Wage?.DurationUnit ?? DurationUnit.Month,
                 WorkingWeekDescription = vacancy.Wage?.WorkingWeekDescription,
                 WeeklyHours = $"{vacancy.Wage?.WeeklyHours:0.##}",
-                PageInfo = Utility.GetPartOnePageInfo(vacancy),
+                PageInfo = _utility.GetPartOnePageInfo(vacancy),
                 TrainingTitle = training?.Title,
                 TrainingDurationMonths = training?.Duration ?? 0
             };
@@ -67,16 +68,47 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 
         public async Task<OrchestratorResponse> PostDurationEditModelAsync(DurationEditModel m, VacancyUser user)
         {
-            var vacancy = await Utility.GetAuthorisedVacancyForEditAsync(_client, _vacancyClient, m, RouteNames.Duration_Post);
+            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(m, RouteNames.Duration_Post);
 
             if(vacancy.Wage == null)
                 vacancy.Wage = new Wage();
 
-            vacancy.Wage.Duration = int.TryParse(m.Duration, out int duration) ? duration : default(int?);
-            vacancy.Wage.DurationUnit = m.DurationUnit;
-            vacancy.Wage.WorkingWeekDescription = m.WorkingWeekDescription;
-            vacancy.Wage.WeeklyHours = m.WeeklyHours.AsDecimal(2);
-            
+            SetVacancyWithEmployerReviewFieldIndicators(
+                vacancy.Wage.Duration,
+                FieldIdResolver.ToFieldId(v => v.Wage.Duration),
+                vacancy,
+                (v) =>
+                {
+                    return v.Wage.Duration = int.TryParse(m.Duration, out int duration) ? duration : default(int?);
+                });
+
+            SetVacancyWithEmployerReviewFieldIndicators(
+                vacancy.Wage.DurationUnit,
+                FieldIdResolver.ToFieldId(v => v.Wage.DurationUnit),
+                vacancy,
+                (v) =>
+                {
+                    return v.Wage.DurationUnit = m.DurationUnit;
+                });
+
+            SetVacancyWithEmployerReviewFieldIndicators(
+                vacancy.Wage.WorkingWeekDescription,
+                FieldIdResolver.ToFieldId(v => v.Wage.WorkingWeekDescription),
+                vacancy,
+                (v) =>
+                {
+                    return v.Wage.WorkingWeekDescription = m.WorkingWeekDescription;
+                });
+
+            SetVacancyWithEmployerReviewFieldIndicators(
+                vacancy.Wage.WeeklyHours,
+                FieldIdResolver.ToFieldId(v => v.Wage.WeeklyHours),
+                vacancy,
+                (v) =>
+                {
+                    return v.Wage.WeeklyHours = m.WeeklyHours.AsDecimal(2);
+                });
+
             return await ValidateAndExecute(
                 vacancy, 
                 v => _vacancyClient.Validate(v, ValidationRules),

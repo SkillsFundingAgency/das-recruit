@@ -6,11 +6,13 @@
                 Processing report from @Model.FromDate to @Model.ToDate
             </h1>
         </div>
-        <p class="govuk-body">When your report is ready you will be able to download it from the 
-            <a asp-route="@RouteNames.ReportDashboard_Get">reporting dashboard</a></p>
+        <p class="govuk-body">
+            When your report is ready you will be able to download it from the 
+            <a asp-route="@RouteNames.ReportDashboard_Get" asp-route-ukprn="@Model.Ukprn" class="govuk-link govuk-link--no-visited-state">reporting dashboard</a>.
+        </p>
         <p class="govuk-body">Some large reports can take longer to process.</p>
         <p class="govuk-body">
-            <a asp-route="@RouteNames.ReportDashboard_Get" class="govuk-button">Back to report dashboard</a>
+            <a asp-route="@RouteNames.ReportDashboard_Get" asp-route-ukprn="@Model.Ukprn" class="govuk-button">Back to report dashboard</a>
         </p>
     </div>
 </div>

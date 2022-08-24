@@ -1,19 +1,15 @@
-﻿using Esfa.Recruit.Employer.Web.Configuration.Routing;
+using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Orchestrators;
 using Esfa.Recruit.Employer.Web.ViewModels.Preview;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Extensions;
 using Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Shared.Web.Extensions;
-using Esfa.Recruit.Shared.Web.Mappers;
+using Esfa.Recruit.Shared.Web.FeatureToggle;
 
 namespace Esfa.Recruit.Employer.Web.Controllers
 {
@@ -21,20 +17,39 @@ namespace Esfa.Recruit.Employer.Web.Controllers
     public class VacancyPreviewController : Controller
     {
         private readonly VacancyPreviewOrchestrator _orchestrator;
+        private readonly IFeature _feature;
 
-        public VacancyPreviewController(VacancyPreviewOrchestrator orchestrator)
+        public VacancyPreviewController(VacancyPreviewOrchestrator orchestrator, IFeature feature)
         {
             _orchestrator = orchestrator;
+            _feature = feature;
         }
 
-        [HttpGet("preview", Name = RouteNames.Vacancy_Preview_Get)]
-        public async Task<IActionResult> VacancyPreview(VacancyRouteModel vrm)
+        [HttpGet("advert-preview", Name = RouteNames.VacancyAdvertPreview)]
+        public async Task<IActionResult> AdvertPreview(VacancyRouteModel vrm, bool? submitToEfsa = null)
         {
             var viewModel = await _orchestrator.GetVacancyPreviewViewModelAsync(vrm);
             AddSoftValidationErrorsToModelState(viewModel);
-            SetSectionStates(viewModel);
+            viewModel.SetSectionStates(viewModel, ModelState);
 
             viewModel.CanHideValidationSummary = true;
+            viewModel.SubmitToEsfa = submitToEfsa;
+
+            if (TempData.ContainsKey(TempDataKeys.VacancyClonedInfoMessage))
+                viewModel.VacancyClonedInfoMessage = TempData[TempDataKeys.VacancyClonedInfoMessage].ToString();
+
+            return View(viewModel);
+        }
+        
+        [HttpGet("preview", Name = RouteNames.Vacancy_Preview_Get)]
+        public async Task<IActionResult> VacancyPreview(VacancyRouteModel vrm, bool? submitToEfsa = null)
+        {
+            var viewModel = await _orchestrator.GetVacancyPreviewViewModelAsync(vrm);
+            AddSoftValidationErrorsToModelState(viewModel);
+            viewModel.SetSectionStates(viewModel, ModelState);
+
+            viewModel.CanHideValidationSummary = true;
+            viewModel.SubmitToEsfa = submitToEfsa;
 
             if (TempData.ContainsKey(TempDataKeys.VacancyClonedInfoMessage))
                 viewModel.VacancyClonedInfoMessage = TempData[TempDataKeys.VacancyClonedInfoMessage].ToString();
@@ -42,7 +57,35 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             return View(viewModel);
         }
 
-       [HttpPost("preview", Name = RouteNames.Preview_Submit_Post)]
+        [HttpPost("review", Name = RouteNames.Preview_Review_Post)]
+        public async Task<IActionResult> Review(SubmitReviewModel m)
+        {
+            if (ModelState.IsValid)
+            {
+                if(m.SubmitToEsfa.Value)
+                {
+                    await _orchestrator.ClearRejectedVacancyReason(m, User.ToVacancyUser());
+                }
+                else
+                {
+                    await _orchestrator.UpdateRejectedVacancyReason(m, User.ToVacancyUser());
+                }
+
+                return RedirectToRoute(m.SubmitToEsfa.GetValueOrDefault()
+                    ? RouteNames.ApproveJobAdvert_Get
+                    : RouteNames.RejectJobAdvert_Get);
+            }
+
+            var viewModel = await _orchestrator.GetVacancyPreviewViewModelAsync(m);
+            viewModel.SoftValidationErrors = null;
+            viewModel.SubmitToEsfa = m.SubmitToEsfa;
+            viewModel.RejectedReason = m.RejectedReason;
+            viewModel.SetSectionStates(viewModel, ModelState);
+
+            return View(ViewNames.VacancyPreview, viewModel);
+        }
+
+        [HttpPost("preview", Name = RouteNames.Preview_Submit_Post)]
         public async Task<IActionResult> Submit(SubmitEditModel m)
         {
             var response = await _orchestrator.SubmitVacancyAsync(m, User.ToVacancyUser());
@@ -65,127 +108,118 @@ namespace Esfa.Recruit.Employer.Web.Controllers
 
             var viewModel = await _orchestrator.GetVacancyPreviewViewModelAsync(m);
             viewModel.SoftValidationErrors = null;
-            SetSectionStates(viewModel);
+            viewModel.SetSectionStates(viewModel, ModelState);
+
+            if (_feature.IsFeatureEnabled(FeatureNames.EmployerTaskList))
+            {
+                return RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet);
+            }
+            
+            return View(ViewNames.VacancyPreview, viewModel);
+        }
+
+        [HttpGet("approve-advert", Name = RouteNames.ApproveJobAdvert_Get)]
+        public IActionResult ApproveJobAdvert(VacancyRouteModel vm)
+        {              
+            return View(new ApproveJobAdvertViewModel());
+        }
+
+        [HttpPost("approve-advert", Name = RouteNames.ApproveJobAdvert_Post)]
+        public async Task<IActionResult> ApproveJobAdvert(ApproveJobAdvertViewModel vm)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View("ApproveJobAdvert");
+            }
+
+            if (vm.ApproveJobAdvert.GetValueOrDefault())
+            {
+                var response = await _orchestrator.ApproveJobAdvertAsync(vm, User.ToVacancyUser());
+                if (!response.Success)
+                {
+                    response.AddErrorsToModelState(ModelState);
+                }
+
+                if (ModelState.IsValid)
+                {
+                    if (response.Data.IsSubmitted)
+                        return RedirectToRoute(RouteNames.JobAdvertConfirmation_Get);
+
+                    if (response.Data.HasLegalEntityAgreement == false)
+                        return RedirectToRoute(RouteNames.LegalEntityAgreement_HardStop_Get);
+
+                    throw new Exception("Unknown submit state");
+                }
+            }
+            else
+            {
+                if (_feature.IsFeatureEnabled(FeatureNames.EmployerTaskList))
+                {
+                    return RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet);
+                }
+                return RedirectToRoute(RouteNames.Vacancy_Preview_Get, new { VacancyId = vm.VacancyId, SubmitToEfsa = true });
+            }
+
+            if (_feature.IsFeatureEnabled(FeatureNames.EmployerTaskList))
+            {
+                return RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet);
+            }
+
+            var viewModel = await _orchestrator.GetVacancyPreviewViewModelAsync(vm);
+            viewModel.SoftValidationErrors = null;
+            viewModel.SetSectionStates(viewModel, ModelState);
 
             return View(ViewNames.VacancyPreview, viewModel);
         }
 
-        private void SetSectionStates(VacancyPreviewViewModel viewModel)
+        [HttpGet("reject-advert", Name = RouteNames.RejectJobAdvert_Get)]
+        public async Task<IActionResult> RejectJobAdvert(VacancyRouteModel vm)
         {
-            viewModel.TitleSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.Title }, true, vm => vm.Title);
-            viewModel.ShortDescriptionSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.ShortDescription }, true, vm => vm.ShortDescription);
-            viewModel.ClosingDateSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.ClosingDate }, true, vm => vm.ClosingDate);
-            viewModel.WorkingWeekSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.WorkingWeek }, true, vm => vm.HoursPerWeek, vm => vm.WorkingWeekDescription);
-            viewModel.WageTextSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.Wage }, true, vm => vm.HasWage, vm => vm.WageText);
-            viewModel.ExpectedDurationSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.ExpectedDuration }, true, vm => vm.ExpectedDuration);
-            viewModel.PossibleStartDateSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.PossibleStartDate }, true, vm => vm.PossibleStartDate);
-            viewModel.TrainingLevelSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.TrainingLevel }, true, vm => vm.HasProgramme, vm => vm.TrainingLevel);
-            viewModel.NumberOfPositionsSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.NumberOfPositions }, true, vm => vm.NumberOfPositions);
-            viewModel.DescriptionsSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.VacancyDescription, FieldIdentifiers.TrainingDescription, FieldIdentifiers.OutcomeDescription }, true, vm => vm.VacancyDescription, vm => vm.TrainingDescription, vm => vm.OutcomeDescription);
-            viewModel.SkillsSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.Skills }, true, vm => vm.Skills);
-            viewModel.QualificationsSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.Qualifications }, true, vm => vm.Qualifications);
-            viewModel.ThingsToConsiderSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.ThingsToConsider }, true, vm => vm.ThingsToConsider);
-            viewModel.EmployerNameSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.EmployerName }, true, vm => vm.EmployerName);
-            viewModel.EmployerDescriptionSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.EmployerDescription }, true, vm => vm.EmployerDescription);
-            viewModel.EmployerWebsiteUrlSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.EmployerWebsiteUrl }, true, vm => vm.EmployerWebsiteUrl);
-            viewModel.EmployerContactSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.EmployerContact }, false, vm => vm.EmployerContactName, vm => vm.EmployerContactEmail, vm => vm.EmployerContactTelephone);
-            viewModel.EmployerAddressSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.EmployerAddress }, true, vm => vm.EmployerAddressElements);
-            viewModel.ApplicationInstructionsSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.ApplicationInstructions }, true, vm => vm.ApplicationInstructions);
-            viewModel.ApplicationMethodSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.ApplicationMethod }, true, vm => vm.ApplicationMethod);
-            viewModel.ApplicationUrlSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.ApplicationUrl }, true, vm => vm.ApplicationUrl);
-            viewModel.ProviderSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.Provider }, true, vm => vm.ProviderName);
-            viewModel.TrainingSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.Training }, true, vm => vm.TrainingType, vm => vm.TrainingTitle);
-            viewModel.DisabilityConfidentSectionState = GetSectionState(viewModel, new[]{ FieldIdentifiers.DisabilityConfident}, true, vm => vm.IsDisabilityConfident);
+            var viewModel = await _orchestrator.GetVacancyRejectJobAdvertAsync(vm);          
+
+            return View(viewModel);
         }
 
-        private VacancyPreviewSectionState GetSectionState(VacancyPreviewViewModel vm, IEnumerable<string> reviewFieldIndicators, bool requiresAll, params Expression<Func<VacancyPreviewViewModel, object>>[] sectionProperties)
+
+        [HttpPost("reject-advert", Name = RouteNames.RejectJobAdvert_Post)]
+        public async Task<IActionResult> RejectJobAdvert(RejectJobAdvertViewModel vm)
         {
-            if (IsSectionModelStateValid(sectionProperties) == false)
+            if (!ModelState.IsValid)
             {
-                return IsSectionComplete(vm, requiresAll, sectionProperties) ? 
-                    VacancyPreviewSectionState.Invalid : 
-                    VacancyPreviewSectionState.InvalidIncomplete;
+                var viewModel = await _orchestrator.GetVacancyRejectJobAdvertAsync(vm);
+                return View("RejectJobAdvert", viewModel);
             }
 
-            if (IsSectionForReview(vm, reviewFieldIndicators))
-                return VacancyPreviewSectionState.Review;
-
-            return IsSectionComplete(vm, requiresAll, sectionProperties) ?
-                VacancyPreviewSectionState.Valid :
-                VacancyPreviewSectionState.Incomplete;
-        }
-
-        private bool IsSectionModelStateValid(params Expression<Func<VacancyPreviewViewModel, object>>[] sectionProperties)
-        {
-            if (ModelState.IsValid)
-                return true;
-
-            foreach (var property in sectionProperties)
-            {
-                var propertyName = property.GetPropertyName();
-                if (ModelState.Keys.Any(k => k == propertyName && ModelState[k].Errors.Any()))
+            if (vm.RejectJobAdvert.GetValueOrDefault())
+            {                
+                var response =  await _orchestrator.RejectJobAdvertAsync(vm, User.ToVacancyUser());
+                if (!response.Success)
                 {
-                    return false;
+                    response.AddErrorsToModelState(ModelState);
+                }
+
+                if (response.Data.IsRejected)
+                {
+                    return RedirectToRoute(RouteNames.JobAdvertConfirmation_Get);
                 }
             }
-
-            return true;
-        }
-
-        private bool IsSectionComplete(VacancyPreviewViewModel vm, bool requiresAll, params Expression<Func<VacancyPreviewViewModel, object>>[] sectionProperties)
-        {
-            foreach (var requiredPropertyExpression in sectionProperties)
+            if (_feature.IsFeatureEnabled(FeatureNames.EmployerTaskList))
             {
-                var requiredPropertyFunc = requiredPropertyExpression.Compile();
-                var propertyValue = requiredPropertyFunc(vm);
-
-                var result = true;
-                switch (propertyValue)
-                {
-                    case null:
-                        result = false;
-                        break;
-                    case string stringProperty:
-                        if (string.IsNullOrWhiteSpace(stringProperty))
-                        {
-                            result = false;
-                        }
-                        break;
-                    case IEnumerable listProperty:
-                        if (listProperty.Cast<object>().Any() == false)
-                        {
-                            result = false;
-                        }
-                        break;
-                    case bool _:
-                        //No way to tell if a bool has been 'completed' so just skip
-                        break;
-                    default:
-                        //Skipping other types for now
-                        break;
-                }
-
-                if (requiresAll && result == false)
-                {
-                    return false;
-                }
-
-                if (!requiresAll && result)
-                {
-                    return true;
-                }
+                return RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet);
             }
 
-            return requiresAll;
+            return RedirectToRoute(RouteNames.Vacancy_Preview_Get, new { VacancyId = vm.VacancyId, SubmitToEfsa = false });
         }
 
-        private bool IsSectionForReview(VacancyPreviewViewModel vm, IEnumerable<string> reviewFieldIndicators)
+        [HttpGet("confirmation-advert", Name = RouteNames.JobAdvertConfirmation_Get)]
+        public async Task<IActionResult> ConfirmationJobAdvert(VacancyRouteModel vrm)
         {
-            return reviewFieldIndicators != null && reviewFieldIndicators.Any(reviewFieldIndicator =>
-                       vm.Review.FieldIndicators.Select(r => r.ReviewFieldIdentifier)
-                           .Contains(reviewFieldIndicator));
+            var viewModel = await _orchestrator.GetVacancyConfirmationJobAdvertAsync(vrm);
+
+            return View("ConfirmationJobAdvert", viewModel);
         }
 
+        
         private void AddSoftValidationErrorsToModelState(VacancyPreviewViewModel viewModel)
         {
             if (!viewModel.SoftValidationErrors.HasErrors)
