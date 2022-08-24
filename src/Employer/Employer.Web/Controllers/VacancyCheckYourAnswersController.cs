@@ -6,6 +6,7 @@ using Esfa.Recruit.Employer.Web.Extensions;
 using Esfa.Recruit.Employer.Web.Orchestrators;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels.Preview;
+using Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Shared.Web.ViewModels;
 using Microsoft.AspNetCore.Mvc;
@@ -29,6 +30,10 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             var viewModel = await _orchestrator.GetVacancyTaskListModel(vrm, User.ToVacancyUser()); 
             viewModel.CanHideValidationSummary = true;
             viewModel.SetSectionStates(viewModel, ModelState);
+            if (viewModel.TaskListSectionFourState == VacancyTaskListSectionState.InProgress)
+            {
+                return RedirectToRoute(RouteNames.EmployerTaskListGet);
+            }
             
             if (TempData.ContainsKey(TempDataKeys.VacancyClonedInfoMessage))
                 viewModel.VacancyClonedInfoMessage = TempData[TempDataKeys.VacancyClonedInfoMessage].ToString();

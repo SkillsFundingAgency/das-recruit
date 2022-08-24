@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web;
 using Esfa.Recruit.Employer.Web.RouteModel;
-using Esfa.Recruit.Shared.Web.FeatureToggle;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
@@ -39,7 +38,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.UtilityTests
                 Id = _vacancyId
             });
 
-            _utility = new Utility(_mockVacancyClient.Object, Mock.Of<IFeature>());
+            _utility = new Utility(_mockVacancyClient.Object);
         }
 
         [Fact]
