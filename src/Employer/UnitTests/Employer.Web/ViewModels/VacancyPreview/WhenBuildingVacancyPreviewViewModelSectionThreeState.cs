@@ -19,16 +19,6 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.VacancyPreview
     {
         [Test, MoqAutoData]
         public async Task Then_The_Section_State_Is_Set_to_Not_Started(
-            string title,
-            string programmeId,
-            string description,
-            string shortDescription,
-            string trainingDescription,
-            string outcomeDescription,
-            string accountLegalEntityPublicHashedId,
-            Vacancies.Client.Domain.Entities.TrainingProvider provider,
-            ApprenticeshipProgramme programme,
-            [Frozen] Mock<IRecruitVacancyClient> recruitVacancyClient,
             DisplayVacancyViewModelMapper mapper)
         {
             var vacancy = CreateCompletedSectionOneAndSectionTwoVacancy();
@@ -45,16 +35,6 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.VacancyPreview
         
         [Test, MoqAutoData]
         public async Task Then_If_There_Section_Two_Is_Completed_Then_Section_Three_Set_To_NotStarted(
-            string title,
-            string programmeId,
-            string description,
-            string shortDescription,
-            string trainingDescription,
-            string outcomeDescription,
-            List<string> skills,
-            Vacancies.Client.Domain.Entities.TrainingProvider provider,
-            ApprenticeshipProgramme programme,
-            [Frozen] Mock<IRecruitVacancyClient> recruitVacancyClient,
             DisplayVacancyViewModelMapper mapper)
         {
             var vacancy = CreateCompletedSectionOneAndSectionTwoVacancy();
@@ -70,16 +50,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.VacancyPreview
 
         [Test, MoqAutoData]
         public async Task Then_If_There_Are_Skills_Added_Section_Set_To_Incomplete(
-            string title,
-            string programmeId,
-            string description,
-            string shortDescription,
-            string trainingDescription,
-            string outcomeDescription,
             List<string> skills,
-            Vacancies.Client.Domain.Entities.TrainingProvider provider,
-            ApprenticeshipProgramme programme,
-            [Frozen] Mock<IRecruitVacancyClient> recruitVacancyClient,
             DisplayVacancyViewModelMapper mapper)
         {
             var vacancy = CreateCompletedSectionOneAndSectionTwoVacancy();
@@ -94,17 +65,8 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.VacancyPreview
         
         [Test, MoqAutoData]
         public async Task Then_If_There_Are_Skills_And_Qualifications_Added_Section_Set_To_Complete(
-            string title,
-            string programmeId,
-            string description,
-            string shortDescription,
-            string trainingDescription,
-            string outcomeDescription,
             List<string> skills,
             List<Qualification> qualifications,
-            Vacancies.Client.Domain.Entities.TrainingProvider provider,
-            ApprenticeshipProgramme programme,
-            [Frozen] Mock<IRecruitVacancyClient> recruitVacancyClient,
             DisplayVacancyViewModelMapper mapper)
         {
             var vacancy = CreateCompletedSectionOneAndSectionTwoVacancy();
@@ -115,28 +77,40 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.VacancyPreview
             await mapper.MapFromVacancyAsync(model, vacancy);
             model.SetSectionStates(model, new ModelStateDictionary());
 
-            model.TaskListSectionThreeState.Should().Be(VacancyTaskListSectionState.Completed);
+            model.TaskListSectionThreeState.Should().Be(VacancyTaskListSectionState.InProgress);
         }
         
         [Test, MoqAutoData]
-        public async Task Then_If_There_Are_Skills_Qualifications_And_Other_Things_To_Consider_Added_Section_Set_To_Complete(
-            string title,
-            string programmeId,
-            string description,
-            string shortDescription,
-            string trainingDescription,
+        public async Task Then_If_There_Are_Skills_Qualifications_And_FutureProspects_Added_Section_Set_To_Complete(
             string outcomeDescription,
             List<string> skills,
-            string otherThingsToConsider,
             List<Qualification> qualifications,
-            Vacancies.Client.Domain.Entities.TrainingProvider provider,
-            ApprenticeshipProgramme programme,
-            [Frozen] Mock<IRecruitVacancyClient> recruitVacancyClient,
             DisplayVacancyViewModelMapper mapper)
         {
             var vacancy = CreateCompletedSectionOneAndSectionTwoVacancy();
             vacancy.Skills = skills;
             vacancy.Qualifications = qualifications;
+            vacancy.OutcomeDescription = outcomeDescription;
+            var model = new VacancyPreviewViewModel();
+            
+            await mapper.MapFromVacancyAsync(model, vacancy);
+            model.SetSectionStates(model, new ModelStateDictionary());
+
+            model.TaskListSectionThreeState.Should().Be(VacancyTaskListSectionState.Completed);
+        }
+        
+        [Test, MoqAutoData]
+        public async Task Then_If_There_Are_Skills_Qualifications_And_Other_Things_To_Consider_Added_Section_Set_To_Complete(
+            string outcomeDescription,
+            List<string> skills,
+            string otherThingsToConsider,
+            List<Qualification> qualifications,
+            DisplayVacancyViewModelMapper mapper)
+        {
+            var vacancy = CreateCompletedSectionOneAndSectionTwoVacancy();
+            vacancy.Skills = skills;
+            vacancy.Qualifications = qualifications;
+            vacancy.OutcomeDescription = outcomeDescription;
             vacancy.ThingsToConsider = otherThingsToConsider;
             var model = new VacancyPreviewViewModel();
             
@@ -155,7 +129,6 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.VacancyPreview
                 Description = "description",
                 TrainingDescription = "trainingDescription",
                 ShortDescription = "shortDescription",
-                OutcomeDescription = "outcomeDescription",
                 TrainingProvider = new Vacancies.Client.Domain.Entities.TrainingProvider
                 {
                     Address = new Address(),

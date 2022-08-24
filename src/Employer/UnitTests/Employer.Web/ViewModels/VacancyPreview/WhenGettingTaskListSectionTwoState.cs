@@ -168,7 +168,6 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.VacancyPreview
                 Description = "description",
                 TrainingDescription = "trainingDescription",
                 ShortDescription = "shortDescription",
-                OutcomeDescription = "outcomeDescription",
                 TrainingProvider = new Vacancies.Client.Domain.Entities.TrainingProvider
                 {
                     Address = new Address(),

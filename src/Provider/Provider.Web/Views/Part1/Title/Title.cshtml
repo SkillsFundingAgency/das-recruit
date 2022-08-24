@@ -30,10 +30,20 @@
             <input type="hidden" name="EmployerAccountId" value="@Model.EmployerAccountId" />
             <div class="govuk-character-count" data-module="govuk-character-count" data-maxlength="100">
                 <div esfa-validation-marker-for="Title" class="govuk-form-group">
-                    <p class="govuk-body">Use a title that relates to the apprenticeship training for this vacancy, this will help it get found in the Find an apprenticeship search.</p>
-                    <span class="govuk-hint">Must include the word 'apprentice' or 'apprenticeship'</span>
+                    @if (_serviceParameters.VacancyType == VacancyType.Apprenticeship)
+                    {
+                        <p class="govuk-body">Use a title that relates to the apprenticeship training for this vacancy, this will help it get found in the Find an apprenticeship search.</p>
+                        <span class="govuk-hint">Must include the word 'apprentice' or 'apprenticeship'</span>
+                    }
+                    else
+                    {
+                        <p class="govuk-body">Use a title that relates to the traineeship, this will help it get found in the Find a traineeship search.</p>
+                        <span class="govuk-hint">Must include the word 'trainee' or 'traineeship'</span>
+                    }
+                    
+                    
                     <span esfa-validation-message-for="Title" class="govuk-error-message"></span>
-                    <input asp-for="Title" class="govuk-input govuk-js-character-count" type="text"  aria-describedby="Title-info Title-hint" />
+                    <input asp-for="Title" class="govuk-input govuk-js-character-count" type="text" aria-describedby="Title-info Title-hint"/>
                     <div id="Title-info" class="govuk-hint govuk-character-count__message" aria-live="polite">
                         You can enter up to 100 characters
                     </div>

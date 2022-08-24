@@ -31,6 +31,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                     'legalEntityName': 1,
                     'employerAccountId': 1,
                     'employerName': 1,
+                    'employerDescription': 1,
                     'ukprn': '$trainingProvider.ukprn',
                     'createdDate': 1,
                     'closingDate': 1,
@@ -46,7 +47,10 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                     'transferInfoTransferredDate': '$transferInfo.transferredDate',
                     'transferInfoReason': '$transferInfo.reason',
                     'trainingProviderName': '$trainingProvider.name',
-                    'isApplicationWithdrawn': '$candidateApplicationReview.isWithdrawn'
+                    'vacancyType': 1,
+                    'isApplicationWithdrawn': '$candidateApplicationReview.isWithdrawn',
+                    'hasChosenProviderContactDetails' : 1,
+                    'isTraineeship' :1
                 }
             },
             {
@@ -59,32 +63,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                     'legalEntityName': 1,
                     'employerAccountId': 1,
                     'employerName': 1,
-                    'ukprn': 1,
-                    'createdDate': 1,
-                    'closingDate': 1,
-                    'startDate': 1,
-                    'closedDate': 1,
-                    'closureReason': 1,
-                    'applicationMethod': 1,
-                    'programmeId': 1,
-                    'duration': 1,
-                    'durationUnit': 1,
-                    'transferInfoUkprn': 1,
-                    'transferInfoProviderName': 1,
-                    'transferInfoTransferredDate': 1,
-                    'transferInfoReason': 1,
-                    'trainingProviderName': 1
-                }
-            },
-            {
-                '$project': {
-                    'vacancyGuid': 1,
-                    'vacancyReference': 1,
-                    'title': 1,
-                    'status': 1,
-                    'legalEntityName': 1,
-                    'employerAccountId': 1,
-                    'employerName': 1,
+                    'employerDescription': 1,
                     'ukprn': 1,
                     'createdDate': 1,
                     'closingDate': 1,
@@ -100,6 +79,51 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                     'transferInfoTransferredDate': 1,
                     'transferInfoReason': 1,
                     'trainingProviderName': 1,
+                    'vacancyType': 1,
+                    'hasChosenProviderContactDetails' : 1,
+                    'isTraineeship': {
+                        '$cond': {
+                            'if': {'$eq': [ '$vacancyType', 'Traineeship']},
+                            'then': true,
+                            'else': false
+                        }
+                    }
+                }
+            },
+            {
+                '$project': {
+                    'vacancyGuid': 1,
+                    'vacancyReference': 1,
+                    'title': 1,
+                    'status': 1,
+                    'legalEntityName': 1,
+                    'employerAccountId': 1,
+                    'employerName': 1,
+                    'employerDescription': 1,
+                    'ukprn': 1,
+                    'createdDate': 1,
+                    'closingDate': 1,
+                    'startDate': 1,
+                    'closedDate': 1,
+                    'closureReason': 1,
+                    'applicationMethod': 1,
+                    'programmeId': 1,
+                    'duration': 1,
+                    'durationUnit': 1,
+                    'transferInfoUkprn': 1,
+                    'transferInfoProviderName': 1,
+                    'transferInfoTransferredDate': 1,
+                    'transferInfoReason': 1,
+                    'trainingProviderName': 1,
+                    'vacancyType': 1,
+                    'isTraineeship': {
+                        '$cond': {
+                            'if': {'$eq': [ '$vacancyType', 'Traineeship']},
+                            'then': true,
+                            'else': false
+                        }
+                    },
+                    'hasChosenProviderContactDetails' : 1,
                     'isNew': {
                         '$cond': {
                             'if': {'$eq': [ '$appStatus', 'New']},
@@ -133,6 +157,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                         'legalEntityName': '$legalEntityName',
                         'employerAccountId': '$employerAccountId',
                         'employerName': '$employerName',
+                        'employerDescription': '$employerDescription',
                         'ukprn': '$ukprn',
                         'createdDate': '$createdDate',
                         'closingDate': '$closingDate',
@@ -147,7 +172,10 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                         'transferInfoProviderName': '$transferInfoProviderName',
                         'transferInfoTransferredDate': '$transferInfoTransferredDate',
                         'transferInfoReason': '$transferInfoReason',
-                        'trainingProviderName': '$trainingProviderName'
+                        'trainingProviderName': '$trainingProviderName',
+                        'vacancyType': '$vacancyType',
+                        'isTraineeship': '$isTraineeship',
+                        'hasChosenProviderContactDetails' : '$hasChosenProviderContactDetails'
                     },
                     'noOfNewApplications': {
                         '$sum': '$isNew'

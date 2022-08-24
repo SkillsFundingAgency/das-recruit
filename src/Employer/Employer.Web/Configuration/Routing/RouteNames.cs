@@ -124,6 +124,9 @@
         public const string Qualification_Edit_Post = "Qualification_Edit_Post";
         public const string Qualification_Delete_Post = "Qualification_Delete_Post";
 
+        public const string FutureProspects_Get = nameof(FutureProspects_Get);
+        public const string FutureProspects_Post = nameof(FutureProspects_Post);
+        
         public const string ApplicationReview_Get = "ApplicationReview_Get";
         public const string ApplicationReview_Post = "ApplicationReview_Post";
         public const string ApplicationReviewConfirmation_Get = "ApplicationReviewConfirmation_Get";
@@ -160,6 +163,8 @@
         public const string EmployerTaskListGet = "employer-tasklist-get";
         public const string EmployerTaskListCreateGet = "employer-tasklist-create-get";
         public const string EmployerCheckYourAnswersGet = "employer-check-your-answers-get";
+        public const string EmployerCheckYourAnswersPost = "employer-check-your-answers-post";
+        public const string EmployerCheckYourAnswersSubmitPost = "employer-check-your-answers-submit-post";
         public const string VacancyAdvertPreview = "employer-advert-preview";
         public const string CreateVacancyStart = "employer-vacancy-start";
     }

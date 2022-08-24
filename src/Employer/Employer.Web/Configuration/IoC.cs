@@ -1,11 +1,13 @@
 ﻿using Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Filters;
+using Esfa.Recruit.Employer.Web.Interfaces;
 using Esfa.Recruit.Employer.Web.Mappings;
 using Esfa.Recruit.Employer.Web.Orchestrators;
 using Esfa.Recruit.Employer.Web.Orchestrators.Part1;
 using Esfa.Recruit.Employer.Web.Orchestrators.Part2;
 using Esfa.Recruit.Employer.Web.Services;
+using Esfa.Recruit.Employer.Web.TagHelpers;
 using Esfa.Recruit.Employer.Web.ViewModels.ApplicationReview;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.TrainingProvider;
 using Esfa.Recruit.Shared.Web.Configuration;
@@ -15,6 +17,7 @@ using Esfa.Recruit.Shared.Web.RuleTemplates;
 using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Shared.Web.ViewModels.Validations.Fluent;
 using Esfa.Recruit.Vacancies.Client.Application.Configuration;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.FAA;
 using Esfa.Recruit.Vacancies.Client.Ioc;
 using FluentValidation;
@@ -30,6 +33,8 @@ namespace Esfa.Recruit.Employer.Web.Configuration
         {
             services.AddRecruitStorageClient(configuration);
 
+            services.AddSingleton(new ServiceParameters(VacancyType.Apprenticeship.ToString()));
+            
             //Configuration
             services.Configure<ApplicationInsightsConfiguration>(configuration.GetSection("ApplicationInsights"));
             services.Configure<ExternalLinksConfiguration>(configuration.GetSection("ExternalLinks"));
@@ -59,12 +64,14 @@ namespace Esfa.Recruit.Employer.Web.Configuration
 
         private static void RegisterServiceDeps(IServiceCollection services, IConfiguration configuration)
         {
+            services.AddSingleton(new RecruitConfiguration(configuration.GetValue<string>("RecruitConfiguration:EmployerAccountId")));
             services.AddTransient<IGeocodeImageService>(_ => new GoogleMapsGeocodeImageService(configuration.GetValue<string>("RecruitConfiguration:GoogleMapsPrivateKey")));
             services.AddTransient<IReviewSummaryService, ReviewSummaryService>();
             services.AddTransient<ILegalEntityAgreementService, LegalEntityAgreementService>();
             services.AddTransient<AlertViewModelService>();
             services.AddTransient<IEmployerAlertsViewModelFactory, EmployerAlertsViewModelFactory>();
             services.AddTransient<IUtility, Utility>();
+            services.AddTransient<IFieldReviewHelper, FieldReviewHelper>();
         }
 
         private static void RegisterFluentValidators(IServiceCollection services)
@@ -113,6 +120,7 @@ namespace Esfa.Recruit.Employer.Web.Configuration
             services.AddTransient<AlertsOrchestrator>();
             services.AddTransient<CloneVacancyOrchestrator>();
             services.AddTransient<VacancyTaskListOrchestrator>();
+            services.AddTransient<IFutureProspectsOrchestrator, FutureProspectsOrchestrator>();
         }
 
         private static void RegisterMapperDeps(IServiceCollection services)

@@ -67,6 +67,12 @@
     "providerKeyvaultCertificateName": {
       "type": "string"
     },
+    "traineeshipCustomHostname": {
+      "type": "string"
+    },
+    "traineeshipKeyvaultCertificateName": {
+      "type": "string"
+    },
     "cosmosDbSubnetResourceIdList": {
       "type": "array",
       "defaultValue": []
@@ -143,6 +149,10 @@
     },
     "cdnUrl": {
       "type": "string"
+    },
+    "utcValue": {
+      "type": "string",
+      "defaultValue": "[utcNow('yyMMddHHmmss')]"
     }
   },
   "variables": {
@@ -152,11 +162,14 @@
     "webJobAppServicePlanName": "[concat(variables('resourceNamePrefix'),'-webjob-asp')]",
     "employerRecruitAppServiceName": "[concat(variables('resourceNamePrefix'), '-as')]",
     "providerRecruitAppServiceName": "[concat(variables('resourceNamePrefix'), '-pr-as')]",
+    "traineeshipProviderAppServiceName": "[concat(variables('resourceNamePrefix'), '-trpr-as')]",
     "qaAppServiceName": "[concat(variables('resourceNamePrefix'), '-qa-as')]",
     "webjobAppServiceName": "[concat(variables('resourceNamePrefix'), '-webjob-as')]",
     "storageAccountName": "[toLower(concat('das', parameters('resourceEnvironmentName'), parameters('serviceName'), 'str'))]",
     "apiAppServiceName": "[concat(variables('resourceNamePrefix'), 'api-as')]",
     "apiConfigNames": "SFA.DAS.Recruit.Api",
+    "providerWebConfigNames": "SFA.DAS.Recruit.Provider",
+    "traineeshipWebConfigNames": "SFA.DAS.Recruit.Traineeship.Provider",
     "jobsConfigNames": "SFA.DAS.Recruit.Jobs,SFA.DAS.Encoding"
   },
   "resources": [
@@ -170,7 +183,7 @@
     },
     {
       "apiVersion": "2020-10-01",
-      "name": "employer-recruit-app-insights",
+      "name": "[concat('employer-recruit-app-insights-', parameters('utcValue'))]",
       "type": "Microsoft.Resources/deployments",
       "resourceGroup": "[variables('resourceGroupName')]",
       "properties": {
@@ -194,7 +207,7 @@
     },
     {
       "apiVersion": "2020-10-01",
-      "name": "qa-app-insights",
+      "name": "[concat('qa-app-insights-', parameters('utcValue'))]",
       "type": "Microsoft.Resources/deployments",
       "resourceGroup": "[variables('resourceGroupName')]",
       "properties": {
@@ -218,7 +231,7 @@
     },
     {
       "apiVersion": "2020-10-01",
-      "name": "provider-recruit-app-insights",
+      "name": "[concat('provider-recruit-app-insights-', parameters('utcValue'))]",
       "type": "Microsoft.Resources/deployments",
       "resourceGroup": "[variables('resourceGroupName')]",
       "properties": {
@@ -242,7 +255,31 @@
     },
     {
       "apiVersion": "2020-10-01",
-      "name": "webjob-recruit-app-insights",
+      "name": "[concat('traineeship-recruit-app-insights-', parameters('utcValue'))]",
+      "type": "Microsoft.Resources/deployments",
+      "resourceGroup": "[variables('resourceGroupName')]",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(variables('deploymentUrlBase'),'application-insights.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "appInsightsName": {
+            "value": "[variables('traineeshipProviderAppServiceName')]"
+          },
+          "attachedService": {
+            "value": "[variables('traineeshipProviderAppServiceName')]"
+          }
+        }
+      },
+      "dependsOn": [
+        "[variables('resourceGroupName')]"
+      ]
+    },
+    {
+      "apiVersion": "2020-10-01",
+      "name": "[concat('webjob-recruit-app-insights-', parameters('utcValue'))]",
       "type": "Microsoft.Resources/deployments",
       "resourceGroup": "[variables('resourceGroupName')]",
       "properties": {
@@ -266,7 +303,7 @@
     },
     {
       "apiVersion": "2020-10-01",
-      "name": "cosmos-db",
+      "name": "[concat('cosmos-db-', parameters('utcValue'))]",
       "type": "Microsoft.Resources/deployments",
       "resourceGroup": "[variables('resourceGroupName')]",
       "properties": {
@@ -308,9 +345,9 @@
     },
     {
       "apiVersion": "2020-10-01",
-      "name": "cosmos-db-database-deployment",
+      "name": "[concat('cosmos-db-database-deployment-', parameters('utcValue'))]",
       "dependsOn": [
-        "cosmos-db"
+        "[concat('cosmos-db-', parameters('utcValue'))]"
       ],
       "type": "Microsoft.Resources/deployments",
       "resourceGroup": "[variables('resourceGroupName')]",
@@ -335,9 +372,9 @@
     },
     {
       "apiVersion": "2020-10-01",
-      "name": "[concat('cosmos-db-container-', parameters('containerArray')[copyIndex()].containerName)]",
+      "name": "[concat('cosmos-db-container-', parameters('containerArray')[copyIndex()].containerName, '-', parameters('utcValue'))]",
       "dependsOn": [
-        "cosmos-db-database-deployment"
+        "[concat('cosmos-db-database-deployment-', parameters('utcValue'))]"
       ],
       "type": "Microsoft.Resources/deployments",
       "resourceGroup": "[variables('resourceGroupName')]",
@@ -373,9 +410,9 @@
     },
     {
       "apiVersion": "2020-10-01",
-      "name": "[concat('cosmos-db-container-settings-', parameters('containerArray')[copyIndex()].containerName)]",
+      "name": "[concat('cdb-contnr-settings-', parameters('containerArray')[copyIndex()].containerName, '-', parameters('utcValue'))]",
       "dependsOn": [
-        "[concat('cosmos-db-container-', parameters('containerArray')[copyIndex()].containerName)]"
+        "[concat('cosmos-db-container-', parameters('containerArray')[copyIndex()].containerName, '-', parameters('utcValue'))]"
       ],
       "type": "Microsoft.Resources/deployments",
       "resourceGroup": "[variables('resourceGroupName')]",
@@ -415,7 +452,7 @@
     {
       "condition": "[greater(length(parameters('EmployerCustomHostname')), 0)]",
       "apiVersion": "2020-10-01",
-      "name": "employer-recruit-app-service-certificate",
+      "name": "[concat('employer-recruit-app-service-certificate-', parameters('utcValue'))]",
       "resourceGroup": "[parameters('sharedEnvResourceGroup')]",
       "type": "Microsoft.Resources/deployments",
       "properties": {
@@ -439,7 +476,7 @@
     },
     {
       "apiVersion": "2020-10-01",
-      "name": "employer-recruit-app-service",
+      "name": "[concat('employer-recruit-app-service-', parameters('utcValue'))]",
       "type": "Microsoft.Resources/deployments",
       "resourceGroup": "[variables('resourceGroupName')]",
       "properties": {
@@ -470,7 +507,7 @@
                 },
                 {
                   "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
-                  "value": "[reference('employer-recruit-app-insights').outputs.InstrumentationKey.value]"
+                  "value": "[reference(concat('employer-recruit-app-insights-', parameters('utcValue'))).outputs.InstrumentationKey.value]"
                 },
                 {
                   "name": "Environment",
@@ -491,7 +528,7 @@
             "value": "[parameters('EmployerCustomHostname')]"
           },
           "certificateThumbprint": {
-            "value": "[if(greater(length(parameters('EmployerCustomHostname')), 0), reference('employer-recruit-app-service-certificate', '2018-11-01').outputs.certificateThumbprint.value, '')]"
+            "value": "[if(greater(length(parameters('EmployerCustomHostname')), 0), reference(concat('employer-recruit-app-service-certificate-', parameters('utcValue')), '2018-11-01').outputs.certificateThumbprint.value, '')]"
           },
           "ipSecurityRestrictions": {
             "value": "[parameters('frontEndAccessRestrictions')]"
@@ -502,7 +539,7 @@
     {
       "condition": "[greater(length(parameters('QAAppCustomHostname')), 0)]",
       "apiVersion": "2020-10-01",
-      "name": "qa-app-service-certificate",
+      "name": "[concat('qa-app-service-certificate-', parameters('utcValue'))]",
       "resourceGroup": "[parameters('sharedEnvResourceGroup')]",
       "type": "Microsoft.Resources/deployments",
       "properties": {
@@ -526,7 +563,7 @@
     },
     {
       "apiVersion": "2020-10-01",
-      "name": "qa-app-service",
+      "name": "[concat('qa-app-service-', parameters('utcValue'))]",
       "type": "Microsoft.Resources/deployments",
       "resourceGroup": "[variables('resourceGroupName')]",
       "properties": {
@@ -557,7 +594,7 @@
                 },
                 {
                   "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
-                  "value": "[reference('qa-app-insights').outputs.InstrumentationKey.value]"
+                  "value": "[reference(concat('qa-app-insights-', parameters('utcValue'))).outputs.InstrumentationKey.value]"
                 },
                 {
                   "name": "Environment",
@@ -578,7 +615,7 @@
             "value": "[parameters('QAAppCustomHostname')]"
           },
           "certificateThumbprint": {
-            "value": "[if(greater(length(parameters('EmployerCustomHostname')), 0), reference('qa-app-service-certificate', '2018-11-01').outputs.certificateThumbprint.value, '')]"
+            "value": "[if(greater(length(parameters('EmployerCustomHostname')), 0), reference(concat('qa-app-service-certificate-', parameters('utcValue')), '2018-11-01').outputs.certificateThumbprint.value, '')]"
           },
           "ipSecurityRestrictions": {
             "value": "[parameters('frontEndAccessRestrictions')]"
@@ -589,7 +626,7 @@
     {
       "condition": "[greater(length(parameters('ProviderKeyvaultCertificateName')), 0)]",
       "apiVersion": "2020-10-01",
-      "name": "provider-recruit-app-service-certificate",
+      "name": "[concat('provider-recruit-app-service-certificate-', parameters('utcValue'))]",
       "resourceGroup": "[parameters('sharedEnvResourceGroup')]",
       "type": "Microsoft.Resources/deployments",
       "properties": {
@@ -613,7 +650,7 @@
     },
     {
       "apiVersion": "2020-10-01",
-      "name": "provider-recruit-app-service",
+      "name": "[concat('provider-recruit-app-service-', parameters('utcValue'))]",
       "type": "Microsoft.Resources/deployments",
       "resourceGroup": "[variables('resourceGroupName')]",
       "properties": {
@@ -644,7 +681,7 @@
                 },
                 {
                   "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
-                  "value": "[reference('provider-recruit-app-insights').outputs.InstrumentationKey.value]"
+                  "value": "[reference(concat('provider-recruit-app-insights-', parameters('utcValue'))).outputs.InstrumentationKey.value]"
                 },
                 {
                   "name": "Environment",
@@ -657,6 +694,10 @@
                 {
                   "name": "Cdn:Url",
                   "value": "[parameters('cdnUrl')]"
+                },
+                {
+                  "name": "ConfigNames",
+                  "value": "[variables('providerWebConfigNames')]"
                 }
               ]
             }
@@ -665,7 +706,98 @@
             "value": "[parameters('ProviderCustomHostname')]"
           },
           "certificateThumbprint": {
-            "value": "[if(greater(length(parameters('EmployerCustomHostname')), 0), reference('provider-recruit-app-service-certificate', '2018-11-01').outputs.certificateThumbprint.value, '')]"
+            "value": "[if(greater(length(parameters('ProviderCustomHostname')), 0), reference(concat('provider-recruit-app-service-certificate-', parameters('utcValue')), '2018-11-01').outputs.certificateThumbprint.value, '')]"
+          },
+          "ipSecurityRestrictions": {
+            "value": "[parameters('frontEndAccessRestrictions')]"
+          }
+        }
+      }
+    },
+    {
+      "condition": "[greater(length(parameters('traineeshipKeyvaultCertificateName')), 0)]",
+      "apiVersion": "2020-10-01",
+      "name": "[concat('traineeship-recruit-app-service-certificate-', parameters('utcValue'))]",
+      "resourceGroup": "[parameters('sharedEnvResourceGroup')]",
+      "type": "Microsoft.Resources/deployments",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(variables('deploymentUrlBase'),'app-service-certificate.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "keyVaultCertificateName": {
+            "value": "[parameters('traineeshipKeyvaultCertificateName')]"
+          },
+          "keyVaultName": {
+            "value": "[parameters('sharedKeyvaultName')]"
+          },
+          "keyVaultResourceGroup": {
+            "value": "[parameters('sharedManagementResourceGroup')]"
+          }
+        }
+      }
+    },
+    {
+      "apiVersion": "2020-10-01",
+      "name": "[concat('traineeship-recruit-app-service-', parameters('utcValue'))]",
+      "type": "Microsoft.Resources/deployments",
+      "resourceGroup": "[variables('resourceGroupName')]",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(variables('deploymentUrlBase'),'app-service-v2.json')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "appServiceName": {
+            "value": "[variables('traineeshipProviderAppServiceName')]"
+          },
+          "appServicePlanName": {
+            "value": "[parameters('sharedFrontEndAppServicePlanName')]"
+          },
+          "appServicePlanResourceGroup": {
+            "value": "[parameters('sharedEnvResourceGroup')]"
+          },
+          "subnetResourceId": {
+            "value": "[parameters('sharedFrontEndSubnetResourceId')]"
+          },
+          "appServiceAppSettings": {
+            "value": {
+              "array": [
+                {
+                  "name": "ConfigurationStorageConnectionString",
+                  "value": "[parameters('configurationStorageConnectionString')]"
+                },
+                {
+                  "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
+                  "value": "[reference(concat('traineeship-recruit-app-insights-', parameters('utcValue'))).outputs.InstrumentationKey.value]"
+                },
+                {
+                  "name": "Environment",
+                  "value": "[toUpper(parameters('environmentName'))]"
+                },
+                {
+                  "name": "LoggingRedisConnectionString",
+                  "value": "[parameters('loggingRedisConnectionString')]"
+                },
+                {
+                  "name": "Cdn:Url",
+                  "value": "[parameters('cdnUrl')]"
+                },
+                {
+                  "name": "ConfigNames",
+                  "value": "[variables('traineeshipWebConfigNames')]"
+                }
+              ]
+            }
+          },
+          "customHostName": {
+            "value": "[parameters('traineeshipCustomHostname')]"
+          },
+          "certificateThumbprint": {
+            "value": "[if(greater(length(parameters('traineeshipCustomHostname')), 0), reference(concat('traineeship-recruit-app-service-certificate-', parameters('utcValue')), '2018-11-01').outputs.certificateThumbprint.value, '')]"
           },
           "ipSecurityRestrictions": {
             "value": "[parameters('frontEndAccessRestrictions')]"
@@ -675,7 +807,7 @@
     },
     {
       "apiVersion": "2020-10-01",
-      "name": "storage-account",
+      "name": "[concat('storage-account-', parameters('utcValue'))]",
       "type": "Microsoft.Resources/deployments",
       "resourceGroup": "[variables('resourceGroupName')]",
       "properties": {
@@ -699,7 +831,7 @@
     },
     {
       "apiVersion": "2020-10-01",
-      "name": "webjob-app-service-plan",
+      "name": "[concat('webjob-app-service-plan-', parameters('utcValue'))]",
       "type": "Microsoft.Resources/deployments",
       "resourceGroup": "[variables('resourceGroupName')]",
       "properties": {
@@ -730,7 +862,7 @@
     {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2020-10-01",
-      "name": "recruit-worker-subnet",
+      "name": "[concat('recruit-worker-subnet-', parameters('utcValue'))]",
       "resourceGroup": "[parameters('sharedEnvResourceGroup')]",
       "properties": {
         "mode": "Incremental",
@@ -759,7 +891,7 @@
     },
     {
       "apiVersion": "2021-04-01",
-      "name": "recruit-worker-sql-firewall-rule",
+      "name": "[concat('recruit-worker-sql-firewall-rule-', parameters('utcValue'))]",
       "resourceGroup": "[parameters('sharedEnvResourceGroup')]",
       "type": "Microsoft.Resources/deployments",
       "properties": {
@@ -773,14 +905,14 @@
             "value": "[parameters('sharedSQLServerName')]"
           },
           "subnetResourceIdList": {
-            "value": "[createArray(reference('recruit-worker-subnet').outputs.SubnetResourceId.value)]"
+            "value": "[createArray(reference(concat('recruit-worker-subnet-', parameters('utcValue'))).outputs.SubnetResourceId.value)]"
           }
         }
       }
     },
     {
       "apiVersion": "2020-10-01",
-      "name": "webjob-apim-product-subscription",
+      "name": "[concat('webjob-apim-product-subscription-', parameters('utcValue'))]",
       "resourceGroup": "[parameters('sharedApimResourceGroup')]",
       "type": "Microsoft.Resources/deployments",
       "properties": {
@@ -804,7 +936,7 @@
     },
     {
       "apiVersion": "2020-10-01",
-      "name": "webjob-app-service",
+      "name": "[concat('webjob-app-service-', parameters('utcValue'))]",
       "type": "Microsoft.Resources/deployments",
       "resourceGroup": "[variables('resourceGroupName')]",
       "properties": {
@@ -824,7 +956,7 @@
             "value": "[variables('resourcegroupName')]"
           },
           "subnetResourceId": {
-            "value": "[reference('recruit-worker-subnet').outputs.subnetResourceId.value]"
+            "value": "[reference(concat('recruit-worker-subnet-', parameters('utcValue'))).outputs.subnetResourceId.value]"
           },
           "appServiceAppSettings": {
             "value": {
@@ -847,7 +979,7 @@
                 },
                 {
                   "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
-                  "value": "[reference('webjob-recruit-app-insights').outputs.InstrumentationKey.value]"
+                  "value": "[reference(concat('webjob-recruit-app-insights-', parameters('utcValue'))).outputs.InstrumentationKey.value]"
                 }
               ]
             }
@@ -875,13 +1007,13 @@
         }
       },
       "dependsOn": [
-        "webjob-app-service-plan",
-        "webjob-apim-product-subscription"
+        "[concat('webjob-app-service-plan-', parameters('utcValue'))]",
+        "[concat('webjob-apim-product-subscription-', parameters('utcValue'))]"
       ]
     },
     {
       "apiVersion": "2020-06-01",
-      "name": "[concat('webjob-servicebus-role-assignments')]",
+      "name": "[concat('webjob-servicebus-role-assignments-', parameters('utcValue'))]",
       "type": "Microsoft.Resources/deployments",
       "resourceGroup": "[parameters('sharedEnvResourceGroup')]",
       "properties": {
@@ -892,7 +1024,7 @@
         },
         "parameters": {
           "principalId": {
-            "value": "[reference('webjob-app-service').outputs.managedServiceIdentityId.value]"
+            "value": "[reference(concat('webjob-app-service-', parameters('utcValue'))).outputs.managedServiceIdentityId.value]"
           },
           "assignmentType": {
             "value": "ServiceBusOwner"
@@ -906,7 +1038,7 @@
     /// API Resources
     {
       "apiVersion": "2020-10-01",
-      "name": "recruit-api-app-service-certificate",
+      "name": "[concat('recruit-api-app-service-certificate-', parameters('utcValue'))]",
       "type": "Microsoft.Resources/deployments",
       "resourceGroup": "[parameters('sharedEnvResourceGroup')]",
       "properties": {
@@ -930,7 +1062,7 @@
     },
     {
       "apiVersion": "2020-10-01",
-      "name": "api-application-insights",
+      "name": "[concat('api-application-insights-', parameters('utcValue'))]",
       "type": "Microsoft.Resources/deployments",
       "resourceGroup": "[variables('resourceGroupName')]",
       "properties": {
@@ -954,7 +1086,7 @@
     },
     {
       "apiVersion": "2020-10-01",
-      "name": "api-app-service",
+      "name": "[concat('api-app-service-', parameters('utcValue'))]",
       "type": "Microsoft.Resources/deployments",
       "resourceGroup": "[variables('resourceGroupName')]",
       "properties": {
@@ -985,7 +1117,7 @@
                 },
                 {
                   "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
-                  "value": "[reference('api-application-insights').outputs.InstrumentationKey.value]"
+                  "value": "[reference(concat('api-application-insights-', parameters('utcValue'))).outputs.InstrumentationKey.value]"
                 },
                 {
                   "name": "Environment",
@@ -1006,18 +1138,14 @@
             "value": "[parameters('apiCustomHostname')]"
           },
           "certificateThumbprint": {
-            "value": "[reference('recruit-api-app-service-certificate').outputs.certificateThumbprint.value]"
+            "value": "[reference(concat('recruit-api-app-service-certificate-', parameters('utcValue'))).outputs.certificateThumbprint.value]"
           },
           "ipSecurityRestrictions": {
             "value": "[parameters('wafOutboundIPAddresses')]"
           }
         }
-      },
-      "dependsOn": [
-        "recruit-api-app-service-certificate"
-      ]
+      }
     }
-    /// End
   ],
   "outputs": {
     "ResourceGroupName": {
@@ -1031,6 +1159,10 @@
     "ProviderAppServiceName": {
       "type": "string",
       "value": "[variables('providerRecruitAppServiceName')]"
+    },
+    "TraineeshipProviderAppServiceName": {
+      "type": "string",
+      "value": "[variables('traineeshipProviderAppServiceName')]"
     },
     "QAAppServiceName": {
       "type": "string",

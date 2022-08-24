@@ -27,10 +27,19 @@
         <div asp-show="Model.HasWarning" class="warning-summary govuk-!-margin-bottom-0">
             <p>@Model.WarningMessage</p>
         </div>
-        <div asp-show="Model.HasInfo" class="info-summary govuk-!-margin-bottom-0">
-            <p>@Model.InfoMessage</p>
-        </div>
     </div>
+</div>
+<div asp-show="Model.HasInfo" class="govuk-notification-banner govuk-notification-banner--success" role="alert" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
+  <div class="govuk-notification-banner__header">
+    <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
+      Success
+    </h2>
+  </div>
+  <div class="govuk-notification-banner__content">
+    <h3 class="govuk-notification-banner__heading">
+        @Model.InfoMessage        
+    </h3>
+  </div>
 </div>
 
 @section BackLink
@@ -147,7 +156,15 @@
                             <td class="govuk-table__cell" data-label="Action">
                                 <a id="manage-@vacancy.Id" asp-show="@vacancy.IsNotSubmittable" asp-route="@RouteNames.VacancyManage_Get" asp-route-vacancyId="@vacancy.Id" class="govuk-link">Manage</a>
                                 <esfaFeatureEnabled name="@FeatureNames.EmployerTaskList">
-                                    <a id="preview-@vacancy.Id" asp-show="@vacancy.IsSubmittable" asp-route="@RouteNames.EmployerTaskListGet" asp-route-vacancyId="@vacancy.Id" class="govuk-link">@GetLinkText(vacancy)</a>
+                                    @if (vacancy.Status == VacancyStatus.Referred || vacancy.Status == VacancyStatus.Rejected || vacancy.Status == VacancyStatus.Review || vacancy.IsTaskListCompleted)
+                                    {
+                                        <a id="task-list-@vacancy.Id" asp-show="@vacancy.IsSubmittable" asp-route="@RouteNames.EmployerCheckYourAnswersGet" asp-route-vacancyId="@vacancy.Id" class="govuk-link">@GetLinkText(vacancy)</a>
+                                    }
+                                    else
+                                    {
+                                        <a id="preview-@vacancy.Id" asp-show="@vacancy.IsSubmittable" asp-route="@RouteNames.EmployerTaskListGet" asp-route-vacancyId="@vacancy.Id" class="govuk-link">@GetLinkText(vacancy)</a>    
+                                    }
+                                    
                                 </esfaFeatureEnabled>
                                 <esfaFeatureDisabled name="@FeatureNames.EmployerTaskList">
                                     <a id="task-list-@vacancy.Id" asp-show="@vacancy.IsSubmittable" asp-route="@RouteNames.DisplayVacancy_Get" asp-route-vacancyId="@vacancy.Id" class="govuk-link">@GetLinkText(vacancy)</a>    

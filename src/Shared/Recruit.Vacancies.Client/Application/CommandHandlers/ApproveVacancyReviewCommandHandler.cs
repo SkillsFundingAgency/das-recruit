@@ -1,4 +1,5 @@
-﻿using Esfa.Recruit.Vacancies.Client.Application.Commands;
+﻿using System.Linq;
+using Esfa.Recruit.Vacancies.Client.Application.Commands;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using MediatR;
 using System.Threading;
@@ -67,7 +68,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             review.ClosedDate = _timeProvider.Now;
             review.ManualQaComment = message.ManualQaComment;
             review.ManualQaFieldIndicators = message.ManualQaFieldIndicators;
-
+            review.ManualQaFieldEditIndicators = message.ManualQaFieldEditIndicators;
             foreach (var automatedQaOutcomeIndicator in review.AutomatedQaOutcomeIndicators)
             {
                 automatedQaOutcomeIndicator.IsReferred = message.SelectedAutomatedQaRuleOutcomeIds

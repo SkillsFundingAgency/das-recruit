@@ -10,9 +10,11 @@ using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview;
 using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Vacancies.Client.Domain.Models;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.ApprenticeshipProgrammes;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelationship;
 using FluentAssertions;
 using Microsoft.Extensions.Options;
 using Moq;
@@ -34,6 +36,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators
             [Frozen] Mock<IUtility> utility,
             [Frozen] Mock<IRecruitVacancyClient> recruitVacancyClient,
             [Frozen] Mock<IProviderVacancyClient> providerVacancyClient,
+            [Frozen] Mock<IProviderRelationshipsService> providerRelationshipsService,
             VacancyTaskListOrchestrator orchestrator)
         {
             vacancy.EmployerLocation = null;
@@ -42,6 +45,9 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators
             programme.Id = vacancy.ProgrammeId;
             programme.EducationLevelNumber = 3;
             programme.ApprenticeshipLevel = ApprenticeshipLevel.Higher;
+            providerRelationshipsService.Setup(x => x.HasProviderGotEmployersPermissionAsync(routeModel.Ukprn,
+                vacancy.EmployerAccountId, vacancy.AccountLegalEntityPublicHashedId,
+                OperationType.RecruitmentRequiresReview)).ReturnsAsync(false);
             utility.Setup(x => x.GetAuthorisedVacancyForEditAsync(It.Is<VacancyRouteModel>(
                     c => c.VacancyId.Equals(routeModel.VacancyId) &&
                          c.Ukprn.Equals(routeModel.Ukprn)), RouteNames.ProviderTaskListGet))
@@ -74,6 +80,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators
                 .Excluding(c=>c.VacancyId)
                 .Excluding(c=>c.RouteDictionary)
                 .Excluding(c=>c.HasSelectedEmployerNameOption)
+                .Excluding(c=>c.HasSoftValidationErrors)
             );
             viewModel.ApprenticeshipLevel.Should().Be(programme.ApprenticeshipLevel);
             viewModel.HasSelectedEmployerNameOption.Should().BeTrue();

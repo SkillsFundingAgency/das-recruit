@@ -350,7 +350,6 @@ function inViewport($el) {
 }
 
 function initializeHtmlEditors() {
-    console.log(123)
     tinymce.init({
         element_format: 'html',
         apply_source_formatting: true,

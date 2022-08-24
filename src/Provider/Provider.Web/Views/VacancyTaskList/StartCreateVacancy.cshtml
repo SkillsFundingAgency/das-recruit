@@ -1,2 +1,8 @@
 @model Esfa.Recruit.Provider.Web.RouteModel.VacancyRouteModel
+
+@section BackLink
+{
+    <a asp-route="@RouteNames.Dashboard_Get" asp-route-ukprn="@User.GetUkprn()" class="govuk-back-link">Back</a>
+}
+
 <partial name="_ProviderNoVacanciesContent" model="@Model" />

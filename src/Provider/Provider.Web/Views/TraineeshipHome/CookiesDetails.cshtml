@@ -1,0 +1,106 @@
+@{
+    ViewBag.Title = "Cookie details";
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-xl">Details about our cookies</h1>
+        <p>
+            This service website puts small files (known as 'cookies') onto your computer.
+            These cookies are used to:
+        </p>
+        <ul class="govuk-list govuk-list--bullet">
+            <li>help us understand how you use the website, so we can make improvements</li>
+            <li>remember what notifications you've seen so you're not shown them more than once</li>
+            <li>temporarily store the selections you make</li>
+        </ul>
+        <p>Find out more about <a href="http://www.aboutcookies.org/" target="_blank" rel="external" class="govuk-link">how to manage cookies</a>.</p>
+
+        <h2 class="govuk-heading-m"> Cookies that measure website usage </h2>
+        <p>
+            We use Google Analytics software (Universal Analytics) to collect anonymised information about how you use the service. We do this to help make sure the site is meeting the needs of its users and to help us make improvements.
+            We do not allow Google to use or share the data about how you use this site.
+        </p>
+        <p>Google Analytics stores information about:</p>
+        <ul class="govuk-list govuk-list--bullet">
+            <li>how you got to the site</li>
+            <li>the pages you visit on this service and how long you spend on them</li>
+            <li>what you click on while you’re visiting the site</li>
+        </ul>
+        <p>We may also set our own cookies to understand how people move through the site.</p>
+
+        <table class="govuk-table">
+            <thead>
+                <tr class="govuk-table__row">
+                    <th scope="col" class="govuk-table__header">
+                        Name
+                    </th>
+                    <th scope="col" class="govuk-table__header">
+                        Purpose
+                    </th>
+                    <th scope="col" class="govuk-table__header">
+                        Expires
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="govuk-table__row">
+                    <td class="govuk-table__cell"> __zlcmid </td>
+                    <td class="govuk-table__cell"> ZenDesk chat user identifier </td>
+                    <td class="govuk-table__cell"> 1 year </td>
+                </tr>
+                <tr class="govuk-table__row">
+                    <td class="govuk-table__cell"> _ga </td>
+                    <td class="govuk-table__cell"> Used by Google Analytics, this registers a unique ID to generate statistics about how you use the website </td>
+                    <td class="govuk-table__cell"> 1 year </td>
+                </tr>
+                <tr class="govuk-table__row">
+                    <td class="govuk-table__cell"> _gat </td>
+                    <td class="govuk-table__cell"> Google Analytics throttling rate request </td>
+                    <td class="govuk-table__cell"> 1 year </td>
+                </tr>
+                <tr class="govuk-table__row">
+                    <td class="govuk-table__cell"> _gid </td>
+                    <td class="govuk-table__cell"> Google Analytics cookie that registers a unique ID to generate statistics about how you use the website </td>
+                    <td class="govuk-table__cell"> 1 year </td>
+                </tr>
+                <tr class="govuk-table__row">
+                    <td class="govuk-table__cell"> AnalyticsConsent </td>
+                    <td class="govuk-table__cell"> Status of consent for Analytics tracking </td>
+                    <td class="govuk-table__cell"> 1 year </td>
+                </tr>
+                <tr class="govuk-table__row">
+                    <td class="govuk-table__cell"> DASSeenCookieMessage </td>
+                    <td class="govuk-table__cell"> Stores if user has seen the cookie message </td>
+                    <td class="govuk-table__cell"> 1 year </td>
+                </tr>
+                <tr class="govuk-table__row">
+                    <td class="govuk-table__cell"> __RequestVerificationToken</td>
+                    <td class="govuk-table__cell"> This enables the website to function properly </td>
+                    <td class="govuk-table__cell"> Session </td>
+                </tr>
+                <tr class="govuk-table__row">
+                    <td class="govuk-table__cell"> .AspNet.Cookies</td>
+                    <td class="govuk-table__cell"> This enables the website to function properly</td>
+                    <td class="govuk-table__cell"> Session </td>
+                </tr>
+                <tr class="govuk-table__row">
+                    <td class="govuk-table__cell"> ai_session </td>
+                    <td class="govuk-table__cell"> This monitors the performance of the website </td>
+                    <td class="govuk-table__cell"> Session </td>
+                </tr>
+                <tr class="govuk-table__row">
+                    <td class="govuk-table__cell"> ai_user</td>
+                    <td class="govuk-table__cell"> This monitors the performance of the website </td>
+                    <td class="govuk-table__cell"> Session </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h3 class="govuk-heading-m">Change your settings</h3>
+        <p>
+            You can <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.TraineeshipCookies"> change which cookies you're happy for us to use</a>.
+        </p>
+
+    </div>
+</div>

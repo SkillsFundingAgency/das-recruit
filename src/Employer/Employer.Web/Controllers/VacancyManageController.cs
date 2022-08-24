@@ -9,6 +9,7 @@ using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Extensions;
+using Esfa.Recruit.Shared.Web.FeatureToggle;
 using Microsoft.AspNetCore.Hosting;
 using InfoMsg = Esfa.Recruit.Shared.Web.ViewModels.InfoMessages;
 
@@ -20,12 +21,14 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         private readonly VacancyManageOrchestrator _orchestrator;
         private readonly IHostingEnvironment _hostingEnvironment;
         private readonly IUtility _utility;
+        private readonly IFeature _feature;
 
-        public VacancyManageController(VacancyManageOrchestrator orchestrator, IHostingEnvironment hostingEnvironment, IUtility utility)
+        public VacancyManageController(VacancyManageOrchestrator orchestrator, IHostingEnvironment hostingEnvironment, IUtility utility, IFeature feature)
         {
             _orchestrator = orchestrator;
             _hostingEnvironment = hostingEnvironment;
             _utility = utility;
+            _feature = feature;
         }
 
         [HttpGet("manage", Name = RouteNames.VacancyManage_Get)]
@@ -108,6 +111,15 @@ namespace Esfa.Recruit.Employer.Web.Controllers
 
         private IActionResult HandleRedirectOfEditableVacancy(Vacancy vacancy)
         {
+            if (_feature.IsFeatureEnabled(FeatureNames.EmployerTaskList))
+            {
+                if (_utility.IsTaskListCompleted(vacancy))
+                {
+                    return RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet);
+                }
+                return RedirectToRoute(RouteNames.EmployerTaskListGet);
+            }
+            
             if (_utility.VacancyHasCompletedPartOne(vacancy))
             {
                 if (_utility.VacancyHasStartedPartTwo(vacancy) == false)

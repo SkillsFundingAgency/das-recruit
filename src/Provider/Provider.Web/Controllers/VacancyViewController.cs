@@ -49,24 +49,19 @@ namespace Esfa.Recruit.Provider.Web.Controllers
             }
 
             var vm = await _orchestrator.GetFullVacancyDisplayViewModelAsync(vacancy);
+            vm.Ukprn = vrm.Ukprn;
+            vm.VacancyId = vrm.VacancyId;
             return View(ViewNames.FullVacancyView, vm);
         }
 
         private IActionResult HandleRedirectOfEditableVacancy(Vacancy vacancy)
         {
-            if (_feature.IsFeatureEnabled(FeatureNames.ProviderTaskList))
+            if (_utility.IsTaskListCompleted(vacancy))
             {
-                return RedirectToRoute(RouteNames.ProviderTaskListGet, new {vacancy.TrainingProvider.Ukprn, vacancyId = vacancy.Id});
+                return RedirectToRoute(RouteNames.ProviderCheckYourAnswersGet, new {vacancy.TrainingProvider.Ukprn, vacancyId = vacancy.Id});
             }
+            return RedirectToRoute(RouteNames.ProviderTaskListGet, new {vacancy.TrainingProvider.Ukprn, vacancyId = vacancy.Id});
             
-            if (_utility.VacancyHasCompletedPartOne(vacancy))
-            {
-                return RedirectToRoute(RouteNames.Vacancy_Preview_Get, new {vacancy.TrainingProvider.Ukprn, vacancyId = vacancy.Id});
-            }
-
-            var resumeRouteName = _utility.GetPermittedRoutesForVacancy(vacancy).Last();
-
-            return RedirectToRoute(resumeRouteName, new { wizard = "true",vacancy.TrainingProvider.Ukprn, vacancyId = vacancy.Id });
         }
     }
 }

@@ -10,7 +10,7 @@
   <a asp-route="@RouteNames.EmployerCheckYourAnswersGet" esfa-automation="link-back" class="govuk-back-link">Back to check your answers</a>
 }
 
-<h1 class="govuk-heading-l">Preview your advert</h1>
+<h1 class="govuk-heading-xl">Preview your advert</h1>
 <div class="app-preview-wrap">
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
@@ -190,11 +190,18 @@
 
 </div>
 
-<form asp-route="@RouteNames.Preview_Submit_Post" method="post">
+<form asp-route="@RouteNames.EmployerCheckYourAnswersSubmitPost" method="post">
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
       <h2 class="govuk-heading-m">Now submit your advert</h2>
       <p class="govuk-body">By submitting this advert you are confirming that, to the best of your knowledge, the details you are providing are correct.</p>
+      <div class="govuk-warning-text">
+          <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+          <strong class="govuk-warning-text__text">
+              <span class="govuk-warning-text__assistive">Warning</span>
+              Proofread your advert for spelling and formatting to avoid it being rejected by our QA team.
+          </strong>
+      </div>
       <div class="govuk-button-group">
         <input type="hidden" name="answers-checked" value="true">
         <button class="govuk-button" data-module="govuk-button">

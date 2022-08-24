@@ -171,6 +171,24 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
 
             return result;
         }
+        
+        public async Task<IAsyncCursor<VacancyIdentifier>> GetVacanciesByStatusAndClosingDateAsync(VacancyStatus status, DateTime? closingDate)
+        {
+            var builder = Builders<VacancyIdentifier>.Filter;
+                
+            var filter =builder.Eq(VacancyStatusFieldName, status.ToString()) & 
+                        builder.Lt(identifier => identifier.ClosingDate, closingDate);
+                
+            var collection = GetCollection<VacancyIdentifier>();
+
+            var result = await RetryPolicy.Execute(_ =>
+                    collection.Find(filter)
+                        .Project<VacancyIdentifier>(GetProjection<VacancyIdentifier>())
+                        .ToCursorAsync(),
+                new Context(nameof(GetVacanciesByStatusAsync)));
+
+            return result;
+        }
 
         public async Task<Vacancy> GetSingleVacancyForPostcodeAsync(string postcode)
         {

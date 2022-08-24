@@ -79,7 +79,8 @@ namespace SFA.DAS.Recruit.Api.Services
     public enum ApplicationMethod
     {
         ThroughFindAnApprenticeship,
-        ThroughExternalApplicationSite
+        ThroughExternalApplicationSite,
+        ThroughFindATraineeship
     }
 
     public enum ProgrammeLevel
