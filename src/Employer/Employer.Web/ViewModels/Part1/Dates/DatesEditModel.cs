@@ -43,7 +43,5 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.Dates
                 return $"{StartDay}/{StartMonth}/{StartYear}";
             }
         }
-
-        public bool IsDisabilityConfident { get; set; }
     }
 }
