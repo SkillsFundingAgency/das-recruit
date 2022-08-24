@@ -28,48 +28,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
         {
             _vacancyTaskListStatusService = vacancyTaskListStatusService;
         }
-        
-        public async Task<IList<VacancySummary>> GetEmployerOwnedVacancySummariesByEmployerAccountAsync(string employerAccountId)
-        {
-            var match = new BsonDocument
-            {
-                {
-                    "$match",
-                    new BsonDocument
-                    {
-                        { "employerAccountId", employerAccountId },
-                        { "ownerType", OwnerType.Employer.ToString() },
-                        { "isDeleted", false }
-                    }
-                }
-            };
-
-            var aggPipeline = VacancySummaryAggQueryBuilder.GetAggregateQueryPipeline(match, 1, null);
-
-            return await RunAggPipelineQuery(aggPipeline);
-        }
-
-        public async Task<IList<VacancySummary>> GetProviderOwnedVacancySummariesInReviewByEmployerAccountAsync(string employerAccountId)
-        {
-            var match = new BsonDocument
-            {
-                {
-                    "$match",
-                    new BsonDocument
-                    {
-                        { "employerAccountId", employerAccountId },
-                        { "ownerType", OwnerType.Provider.ToString() },
-                        { "status", VacancyStatus.Review.ToString() },
-                        { "isDeleted", false }
-                    }
-                }
-            };
-
-            var aggPipeline = VacancySummaryAggQueryBuilder.GetAggregateQueryPipeline(match, 1, null);
-
-            return await RunAggPipelineQuery(aggPipeline);
-        }
-
+       
         public async Task<IList<VacancyDashboard>> GetProviderOwnedVacancyDashboardByUkprnAsync(long ukprn, VacancyType vacancyType)
         {
             var bsonArray = new BsonArray
@@ -86,7 +45,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
             {
                 {
                     "$match",
-                    BuildBsonDocumentFilterValues(ukprn, null, null, bsonArray, null, OwnerType.Provider)
+                    BuildBsonDocumentFilterValues(ukprn, null, null, bsonArray, null)
                 }
             };
             var builder = new VacancySummaryAggQueryBuilder();
@@ -109,11 +68,18 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
             {
                 {
                     "$match",
-                    BuildBsonDocumentFilterValues(null, employerAccountId, null, bsonArray, null, OwnerType.Employer)
+                    BuildBsonDocumentFilterValues(null, employerAccountId, null, bsonArray, null)
+                }
+            };
+            var employerReviewMatch = new BsonDocument
+            {
+                {
+                    "$match",
+                    BuildEmployerReviewMatch()
                 }
             };
             var builder = new VacancySummaryAggQueryBuilder();
-            var aggPipelines = builder.GetAggregateQueryPipelineDashboard(match);
+            var aggPipelines = builder.GetAggregateQueryPipelineDashboard(match,employerReviewMatch);
             return await RunDashboardAggPipelineQuery(aggPipelines);
         }
         
@@ -133,7 +99,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
             {
                 {
                     "$match",
-                    BuildBsonDocumentFilterValues(ukprn,string.Empty, status, bsonArray, vacancyType, OwnerType.Provider)
+                    BuildBsonDocumentFilterValues(ukprn,string.Empty, status, bsonArray, vacancyType)
                 }
             };
             var secondaryMath = new BsonDocument
@@ -166,7 +132,14 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
             {
                 {
                     "$match",
-                    BuildBsonDocumentFilterValues(null,employerAccountId, status, bsonArray, vacancyType, OwnerType.Employer)
+                    BuildBsonDocumentFilterValues(null,employerAccountId, status, bsonArray, vacancyType)
+                }
+            };
+            var employerReviewMatch = new BsonDocument
+            {
+                {
+                    "$match",
+                    BuildEmployerReviewMatch()
                 }
             };
             var secondaryMath = new BsonDocument
@@ -177,7 +150,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                 }
             };
             
-            var aggPipeline = VacancySummaryAggQueryBuilder.GetAggregateQueryPipeline(match, page,secondaryMath);
+            var aggPipeline = VacancySummaryAggQueryBuilder.GetAggregateQueryPipeline(match, page,secondaryMath, employerReviewMatch);
 
             return await RunAggPipelineQuery(aggPipeline);
         }
@@ -223,7 +196,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
             {
                 {
                     "$match",
-                    BuildBsonDocumentFilterValues(ukprn, employerAccountId, filteringOptions, bsonArray, vacancyType, ownerType)
+                    BuildBsonDocumentFilterValues(ukprn, employerAccountId, filteringOptions, bsonArray, vacancyType)
                 }
             };
             var secondaryMath = new BsonDocument
@@ -233,8 +206,17 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                     BuildSecondaryBsonDocumentFilter(filteringOptions, searchTerm)
                 }
             };
+
+            var employerReviewMatch = ownerType == OwnerType.Employer ? 
+                new BsonDocument
+                {
+                    {
+                        "$match",
+                        BuildEmployerReviewMatch()
+                    }
+                } : null;
             
-            var aggPipeline = VacancySummaryAggQueryBuilder.GetAggregateQueryPipelineDocumentCount(match,secondaryMath);
+            var aggPipeline = VacancySummaryAggQueryBuilder.GetAggregateQueryPipelineDocumentCount(match,secondaryMath, employerReviewMatch);
 
             return await RunAggPipelineCountQuery(aggPipeline);
         }
@@ -313,17 +295,31 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
             return document;
         }
 
-        private static BsonDocument BuildBsonDocumentFilterValues(long? ukprn, string employerAccountId, FilteringOptions? status, BsonArray bsonArray, VacancyType? vacancyType, OwnerType ownerType)
+        private static BsonDocument BuildEmployerReviewMatch()
         {
             var document = new BsonDocument
             {
-                { "ownerType", ownerType.ToString() },
+                {"$or", new BsonArray
+                {
+                    new BsonDocument{{"ownerType","Employer"}},
+                    new BsonDocument{ {"$and",new BsonArray{ new BsonDocument{{"ownerType","Provider"}},new BsonDocument{{"status","Review"}}}} }
+                }}
+            };
+            
+            return document;
+        }
+        
+        private static BsonDocument BuildBsonDocumentFilterValues(long? ukprn, string employerAccountId, FilteringOptions? status, BsonArray bsonArray, VacancyType? vacancyType)
+        {
+            var document = new BsonDocument
+            {
                 { "isDeleted", false },
                 { "vacancyType", new BsonDocument{{"$in", bsonArray} } },
             };
 
             if (ukprn.HasValue)
             {
+                document.Add("ownerType", "Provider");
                 document.Add("trainingProvider.ukprn", ukprn.Value);
             }
             if (!string.IsNullOrEmpty(employerAccountId))
