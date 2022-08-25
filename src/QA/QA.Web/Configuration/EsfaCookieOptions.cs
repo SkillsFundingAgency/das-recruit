@@ -3,6 +3,7 @@ using Esfa.Recruit.Qa.Web.Security;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Hosting;
 
 namespace Esfa.Recruit.QA.Web.Configuration
 {
