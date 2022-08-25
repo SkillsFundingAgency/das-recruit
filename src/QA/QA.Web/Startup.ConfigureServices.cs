@@ -27,14 +27,14 @@ namespace Esfa.Recruit.Qa.Web
     public partial class Startup
     {
         private readonly IConfiguration _configuration;
-        private readonly IHostingEnvironment _hostingEnvironment;
+        private readonly IWebHostEnvironment _hostingEnvironment;
         private readonly AuthenticationConfiguration _authenticationConfig;
         private readonly AuthorizationConfiguration _legacyAuthorizationConfig;
         private readonly AuthorizationConfiguration _authorizationConfig;
         private readonly ExternalLinksConfiguration _externalLinks;
         private readonly ILoggerFactory _loggerFactory;
 
-        public Startup(IConfiguration configuration, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        public Startup(IConfiguration configuration, IWebHostEnvironment env, ILoggerFactory loggerFactory)
         {
             var configBuilder = new ConfigurationBuilder()
                 .AddConfiguration(configuration)

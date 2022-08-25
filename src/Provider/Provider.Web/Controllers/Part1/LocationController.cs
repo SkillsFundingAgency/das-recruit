@@ -23,7 +23,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
         private readonly LocationOrchestrator _orchestrator;
         private readonly IFeature _feature;
 
-        public LocationController(LocationOrchestrator orchestrator, IHostingEnvironment hostingEnvironment, IFeature feature)
+        public LocationController(LocationOrchestrator orchestrator, IWebHostEnvironment hostingEnvironment, IFeature feature)
             :base(hostingEnvironment)
         {
             _orchestrator = orchestrator;

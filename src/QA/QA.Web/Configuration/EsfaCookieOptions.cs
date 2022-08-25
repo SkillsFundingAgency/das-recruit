@@ -8,14 +8,14 @@ namespace Esfa.Recruit.QA.Web.Configuration
 {
     public class EsfaCookieOptions
     {
-        public static CookieOptions GetDefaultHttpCookieOption(IHostingEnvironment env) => new CookieOptions
+        public static CookieOptions GetDefaultHttpCookieOption(IWebHostEnvironment env) => new CookieOptions
         {
             Secure = !env.IsDevelopment(),
             SameSite = SameSiteMode.Strict,
             HttpOnly = true
         };
 
-        public static CookieOptions GetSessionLifetimeHttpCookieOption(IHostingEnvironment env) => new CookieOptions
+        public static CookieOptions GetSessionLifetimeHttpCookieOption(IWebHostEnvironment env) => new CookieOptions
         {
             Secure = !env.IsDevelopment(),
             SameSite = SameSiteMode.Strict,
@@ -23,7 +23,7 @@ namespace Esfa.Recruit.QA.Web.Configuration
             Expires = DateTimeOffset.UtcNow.AddMinutes(AuthenticationConfiguration.SessionTimeoutMinutes)
         };
 
-        public static CookieOptions GetSingleDayLifetimeHttpCookieOption(IHostingEnvironment env, ITimeProvider timeProvider) => new CookieOptions
+        public static CookieOptions GetSingleDayLifetimeHttpCookieOption(IWebHostEnvironment env, ITimeProvider timeProvider) => new CookieOptions
         {
             Secure = !env.IsDevelopment(),
             SameSite = SameSiteMode.Strict,

@@ -44,7 +44,7 @@ namespace Esfa.Recruit.Employer.Web.Configuration
             services.AddTransient<IAuthorizationHandler, EmployerAccountHandler>();
         }
 
-        public static void AddMvcService(this IServiceCollection services, IHostingEnvironment hostingEnvironment, bool isAuthEnabled, ILoggerFactory loggerFactory, IFeature featureToggle)
+        public static void AddMvcService(this IServiceCollection services, IWebHostEnvironment hostingEnvironment, bool isAuthEnabled, ILoggerFactory loggerFactory, IFeature featureToggle)
         {
             services.AddAntiforgery(options =>
             {
@@ -90,7 +90,7 @@ namespace Esfa.Recruit.Employer.Web.Configuration
             .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
         }
 
-        public static void AddAuthenticationService(this IServiceCollection services, AuthenticationConfiguration authConfig, IEmployerVacancyClient vacancyClient, IRecruitVacancyClient recruitClient, IHostingEnvironment hostingEnvironment)
+        public static void AddAuthenticationService(this IServiceCollection services, AuthenticationConfiguration authConfig, IEmployerVacancyClient vacancyClient, IRecruitVacancyClient recruitClient, IWebHostEnvironment hostingEnvironment)
         {
             JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 

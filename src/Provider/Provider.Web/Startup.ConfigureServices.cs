@@ -16,11 +16,11 @@ namespace Esfa.Recruit.Provider.Web
     public partial class Startup
     {
         private readonly IConfigurationRoot _configuration;
-        private readonly IHostingEnvironment _hostingEnvironment;
+        private readonly IWebHostEnvironment _hostingEnvironment;
         private readonly AuthenticationConfiguration _authConfig;
         private readonly ILoggerFactory _loggerFactory;
 
-        public Startup(IConfiguration config, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        public Startup(IConfiguration config, IWebHostEnvironment env, ILoggerFactory loggerFactory)
         {
             _hostingEnvironment = env;
             var configBuilder = new ConfigurationBuilder()
@@ -81,7 +81,7 @@ namespace Esfa.Recruit.Provider.Web
             services.AddControllersWithViews().AddRazorRuntimeCompilation();
     #endif
 
-            services.AddAuthenticationService(_authConfig, sp.GetService<IRecruitVacancyClient>(), sp.GetService<IHostingEnvironment>());
+            services.AddAuthenticationService(_authConfig, sp.GetService<IRecruitVacancyClient>(), sp.GetService<IWebHostEnvironment>());
             services.AddAuthorizationService();            
         }
     }

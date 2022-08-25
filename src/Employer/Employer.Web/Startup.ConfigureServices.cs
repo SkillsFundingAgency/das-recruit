@@ -16,12 +16,12 @@ namespace Esfa.Recruit.Employer.Web
     {
         private readonly bool _isAuthEnabled = true;
         private IConfiguration _configuration { get; }
-        private IHostingEnvironment _hostingEnvironment { get; }
+        private IWebHostEnvironment _hostingEnvironment { get; }
         private AuthenticationConfiguration _authConfig { get; }
 
         private readonly ILoggerFactory _loggerFactory;
 
-        public Startup(IConfiguration config, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        public Startup(IConfiguration config, IWebHostEnvironment env, ILoggerFactory loggerFactory)
         {
             var configBuilder = new ConfigurationBuilder()
                 .AddConfiguration(config)
@@ -84,7 +84,7 @@ namespace Esfa.Recruit.Employer.Web
                 //A service provider for resolving services configured in IoC
                 var sp = services.BuildServiceProvider();
 
-                services.AddAuthenticationService(_authConfig, sp.GetService<IEmployerVacancyClient>(), sp.GetService<IRecruitVacancyClient>(), sp.GetService<IHostingEnvironment>());
+                services.AddAuthenticationService(_authConfig, sp.GetService<IEmployerVacancyClient>(), sp.GetService<IRecruitVacancyClient>(), sp.GetService<IWebHostEnvironment>());
                 services.AddAuthorizationService();
             }
 

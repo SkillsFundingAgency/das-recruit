@@ -82,7 +82,7 @@ namespace Esfa.Recruit.Provider.Web.Configuration
             services.AddTransient<IAuthorizationHandler, VacancyTypeRequirementHandler>();
         }
 
-        public static void AddMvcService(this IServiceCollection services, IHostingEnvironment hostingEnvironment, ILoggerFactory loggerFactory)
+        public static void AddMvcService(this IServiceCollection services, IWebHostEnvironment hostingEnvironment, ILoggerFactory loggerFactory)
         {
             services.AddAntiforgery(options =>
             {
@@ -122,7 +122,7 @@ namespace Esfa.Recruit.Provider.Web.Configuration
             .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
         }
 
-        public static void AddAuthenticationService(this IServiceCollection services, AuthenticationConfiguration authConfig, IRecruitVacancyClient vacancyClient, IHostingEnvironment hostingEnvironment)
+        public static void AddAuthenticationService(this IServiceCollection services, AuthenticationConfiguration authConfig, IRecruitVacancyClient vacancyClient, IWebHostEnvironment hostingEnvironment)
         {
             services.AddAuthentication(sharedOptions =>
             {

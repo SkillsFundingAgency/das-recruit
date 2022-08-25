@@ -22,7 +22,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
         private readonly IFeature _feature;
 
         public EmployerNameController(EmployerNameOrchestrator orchestrator,
-            IHostingEnvironment hostingEnvironment, IFeature feature) : base(hostingEnvironment)
+            IWebHostEnvironment hostingEnvironment, IFeature feature) : base(hostingEnvironment)
         {
             _orchestrator = orchestrator;
             _feature = feature;

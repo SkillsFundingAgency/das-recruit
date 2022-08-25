@@ -17,7 +17,7 @@ namespace Esfa.Recruit.Qa.Web
 {
     public partial class Startup
     {
-        public void Configure(ILogger<Startup> logger, IApplicationBuilder app, IHostingEnvironment env, IApplicationLifetime applicationLifetime)
+        public void Configure(ILogger<Startup> logger, IApplicationBuilder app, IWebHostEnvironment env, IApplicationLifetime applicationLifetime)
         {
             applicationLifetime.ApplicationStarted.Register(() => logger.LogInformation("Host fully started"));
             applicationLifetime.ApplicationStopping.Register(() => logger.LogInformation("Host shutting down...waiting to complete requests."));

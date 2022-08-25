@@ -12,8 +12,8 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
 {
     public abstract class EmployerControllerBase : Controller
     {
-        private readonly IHostingEnvironment _hostingEnvironment;
-        protected EmployerControllerBase(IHostingEnvironment hostingEnvironment)
+        private readonly IWebHostEnvironment _hostingEnvironment;
+        protected EmployerControllerBase(IWebHostEnvironment hostingEnvironment)
         {
             _hostingEnvironment = hostingEnvironment;
         }

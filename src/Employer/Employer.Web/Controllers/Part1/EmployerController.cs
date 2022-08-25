@@ -19,7 +19,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
         private readonly EmployerOrchestrator _orchestrator;
         private readonly IFeature _feature;
 
-        public EmployerController(EmployerOrchestrator orchestrator, IHostingEnvironment hostingEnvironment, IFeature feature)
+        public EmployerController(EmployerOrchestrator orchestrator, IWebHostEnvironment hostingEnvironment, IFeature feature)
             : base(hostingEnvironment)
         {
             _orchestrator = orchestrator;

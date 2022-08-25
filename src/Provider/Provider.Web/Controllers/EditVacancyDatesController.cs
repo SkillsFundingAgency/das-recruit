@@ -19,9 +19,9 @@ namespace Esfa.Recruit.Provider.Web.Controllers
     public class EditVacancyDatesController : Controller
     {
         private readonly EditVacancyDatesOrchestrator _orchestrator;
-        private readonly IHostingEnvironment _hostingEnvironment;
+        private readonly IWebHostEnvironment _hostingEnvironment;
 
-        public EditVacancyDatesController(EditVacancyDatesOrchestrator orchestrator, IHostingEnvironment hostingEnvironment)
+        public EditVacancyDatesController(EditVacancyDatesOrchestrator orchestrator, IWebHostEnvironment hostingEnvironment)
         {
             _orchestrator = orchestrator;
             _hostingEnvironment = hostingEnvironment;

@@ -17,7 +17,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         private readonly IFeature _feature;
 
         public LegalEntityAgreementController(
-            LegalEntityAgreementOrchestrator orchestrator, IHostingEnvironment hostingEnvironment, IFeature feature)
+            LegalEntityAgreementOrchestrator orchestrator, IWebHostEnvironment hostingEnvironment, IFeature feature)
             : base(hostingEnvironment)
         {
             _orchestrator = orchestrator;
