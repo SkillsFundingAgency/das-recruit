@@ -50,7 +50,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
             _qualificationTypes = qualificationsProvider.GetQualificationsAsync().Result ?? new List<string>();
             
             RuleFor(x => x.QualificationType)
-                .Cascade(CascadeMode.StopOnFirstFailure)
+                .Cascade(CascadeMode.Stop)
                 .NotEmpty()
                     .WithMessage("Select a qualification")
                     .WithErrorCode("53")

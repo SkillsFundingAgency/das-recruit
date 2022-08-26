@@ -28,7 +28,7 @@ namespace Esfa.Recruit.Qa.Web.ViewModels.Reports.ApplicationsReport
                       x.ToDate.AsDateTimeUk() != null, () =>
             {
                 RuleFor(x => x.ToDate)
-                    .Cascade(CascadeMode.StopOnFirstFailure)
+                    .Cascade(CascadeMode.Stop)
                     .Must(date => date.AsDateTimeUk() < timeProvider.NextDay)
                     .WithMessage("Date to cannot be in the future")
                     .Must((model, x) => model.ToDate.AsDateTimeUk() < model.FromDate.AsDateTimeUk().Value.AddMonths(3))

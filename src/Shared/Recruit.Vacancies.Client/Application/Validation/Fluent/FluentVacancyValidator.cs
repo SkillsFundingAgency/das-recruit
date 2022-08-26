@@ -152,7 +152,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
         private void ValidateApprenticeshipTitle()
         {
             RuleFor(x => x.Title)
-                .Cascade(CascadeMode.StopOnFirstFailure)
+                .Cascade(CascadeMode.Stop)
                    .NotEmpty()
                        .WithMessage("Enter a title for this apprenticeship")
                        .WithErrorCode("1")
@@ -174,7 +174,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
         private void ValidateTraineeshipTitle()
         {
             RuleFor(x => x.Title)
-                .Cascade(CascadeMode.StopOnFirstFailure)
+                .Cascade(CascadeMode.Stop)
                 .NotEmpty()
                 .WithMessage("Enter a title for this traineeship")
                 .WithErrorCode("1")
@@ -293,7 +293,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
         private void ValidateShortDescription()
         {
             RuleFor(x => x.ShortDescription)
-                .Cascade(CascadeMode.StopOnFirstFailure)
+                .Cascade(CascadeMode.Stop)
                 .NotEmpty()
                 .WithMessage($"Enter a short description of the {VacancyContext}")
                     .WithErrorCode("12")
@@ -374,7 +374,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                     .WithRuleId(VacancyRuleSet.Duration);
 
                 RuleFor(x => x.Wage.Duration)
-                    .Cascade(CascadeMode.StopOnFirstFailure)
+                    .Cascade(CascadeMode.Stop)
                     .NotEmpty()
                     .WithMessage($"Enter how long the whole {VacancyContext} is, including work and training")
                     .WithErrorCode("34")
@@ -441,7 +441,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                     .WithRuleId(VacancyRuleSet.Duration);
 
                 RuleFor(x => x.Wage.Duration)
-                    .Cascade(CascadeMode.StopOnFirstFailure)
+                    .Cascade(CascadeMode.Stop)
                     .NotEmpty()
                     .WithMessage($"Enter {VacancyContext} duration")
                     .WithErrorCode("34")
@@ -487,7 +487,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
             When(x => x.Wage != null, () =>
             {
                 RuleFor(x => x.Wage.WorkingWeekDescription)
-                    .Cascade(CascadeMode.StopOnFirstFailure)
+                    .Cascade(CascadeMode.Stop)
                     .NotEmpty()
                         .WithMessage("Enter details about the working week")
                         .WithErrorCode("37")
@@ -510,7 +510,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
             When(x => x.Wage != null, () =>
             {
                 RuleFor(x => x.Wage.WorkingWeekDescription)
-                    .Cascade(CascadeMode.StopOnFirstFailure)
+                    .Cascade(CascadeMode.Stop)
                     .NotEmpty()
                         .WithMessage("Enter weekly hours on the traineeship")
                         .WithErrorCode("37")
@@ -887,7 +887,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
             When(x => !string.IsNullOrWhiteSpace(x.ProgrammeId), () =>
             {
                 RuleFor(x => x)
-                    .Cascade(CascadeMode.StopOnFirstFailure)
+                    .Cascade(CascadeMode.Stop)
                     .TrainingMustExist(_apprenticeshipProgrammesProvider)
                     .TrainingMustBeActiveForCurrentDate(_apprenticeshipProgrammesProvider, _timeProvider)
                     .TrainingMustBeActiveForStartDate(_apprenticeshipProgrammesProvider)
