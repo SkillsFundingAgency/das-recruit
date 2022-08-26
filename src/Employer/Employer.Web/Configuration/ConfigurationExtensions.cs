@@ -22,6 +22,7 @@ using Esfa.Recruit.Employer.Web.Filters;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Shared.Web.FeatureToggle;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Microsoft.Extensions.Hosting;
 
 namespace Esfa.Recruit.Employer.Web.Configuration
 {
