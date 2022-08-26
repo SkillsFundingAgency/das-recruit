@@ -34,7 +34,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
             var filter = Builders<User>.Filter.Eq(v => v.Id, user.Id);
             var collection = GetCollection<User>();
             return RetryPolicy.Execute(_ => 
-                collection.ReplaceOneAsync(filter, user, new UpdateOptions { IsUpsert = true }),
+                collection.ReplaceOneAsync(filter, user, new ReplaceOptions { IsUpsert = true }),
                 new Context(nameof(UpsertUserAsync)));
         }
 
