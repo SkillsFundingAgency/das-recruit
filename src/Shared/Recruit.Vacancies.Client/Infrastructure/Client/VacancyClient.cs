@@ -306,9 +306,14 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return _applicationReviewRepository.GetAsync(applicationReviewId);
         }
 
-        public Task<VacancyApplications> GetVacancyApplicationsAsync(string vacancyReference)
+        public async Task<List<VacancyApplication>> GetVacancyApplicationsAsync(long vacancyReference)
         {
-            return _reader.GetVacancyApplicationsAsync(vacancyReference);
+            var applicationReviews =
+                await _applicationReviewRepository.GetForVacancyAsync<ApplicationReview>(vacancyReference);
+
+            return applicationReviews == null 
+                ? new List<VacancyApplication>() 
+                : applicationReviews.Select(c=>(VacancyApplication)c).ToList();
         }
 
         public Task SetApplicationReviewSuccessful(Guid applicationReviewId, VacancyUser user)
