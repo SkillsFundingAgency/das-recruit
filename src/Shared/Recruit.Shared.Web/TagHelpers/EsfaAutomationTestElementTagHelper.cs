@@ -2,6 +2,7 @@
 using Esfa.Recruit.Shared.Web.Configuration;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Razor.TagHelpers;
+using Microsoft.Extensions.Hosting;
 
 namespace Esfa.Recruit.Shared.Web.TagHelpers
 {
