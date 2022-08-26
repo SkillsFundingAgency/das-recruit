@@ -54,7 +54,7 @@ namespace Esfa.Recruit.Employer.Web.Configuration
                 options.HeaderName = "X-XSRF-TOKEN";
             });
             services.Configure<CookieTempDataProviderOptions>(options => options.Cookie.Name = CookieNames.RecruitTempData);
-            services.AddSingleton<ITempDataProvider, CookieTempDataProvider>();                                    
+            services.AddSingleton<ITempDataProvider, CookieTempDataProvider>();
             services.AddMvc(opts =>
                 {
                     opts.EnableEndpointRouting = false;
@@ -85,10 +85,9 @@ namespace Esfa.Recruit.Employer.Web.Configuration
                     opts.Filters.AddService<GoogleAnalyticsFilter>();
                     opts.Filters.AddService<ZendeskApiFilter>();
                     opts.AddTrimModelBinderProvider(loggerFactory);
-            })
+                })
             .AddNewtonsoftJson()
-            .AddFluentValidation()
-            .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
+            .AddFluentValidation();
         }
 
         public static void AddAuthenticationService(this IServiceCollection services, AuthenticationConfiguration authConfig, IEmployerVacancyClient vacancyClient, IRecruitVacancyClient recruitClient, IWebHostEnvironment hostingEnvironment)

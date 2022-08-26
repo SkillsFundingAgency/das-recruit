@@ -81,7 +81,6 @@ namespace SFA.DAS.Recruit.Api
                     }
                     o.Conventions.Add(new ApiExplorerGroupPerVersionConvention());
                 })
-                .SetCompatibilityVersion(CompatibilityVersion.Version_3_0)
                 .AddJsonOptions(options =>
                 {
                     options.JsonSerializerOptions.IgnoreNullValues = true;

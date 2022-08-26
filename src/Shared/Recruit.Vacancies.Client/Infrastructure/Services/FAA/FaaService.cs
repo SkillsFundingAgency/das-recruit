@@ -3,9 +3,9 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
-using Microsoft.Azure.ServiceBus;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
+using Azure.Messaging.ServiceBus;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.FAA
 {
