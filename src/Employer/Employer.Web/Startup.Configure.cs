@@ -9,19 +9,17 @@ using Microsoft.Extensions.Options;
 using System.Collections.Generic;
 using System.Globalization;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
-using Esfa.Recruit.Employer.Web.Middleware;
 using Microsoft.ApplicationInsights.Extensibility;
-using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.IdentityModel.Logging;
 using Microsoft.Extensions.Hosting;
-using IApplicationLifetime = Microsoft.AspNetCore.Hosting.IApplicationLifetime;
+
 
 namespace Esfa.Recruit.Employer.Web
 {
     public partial class Startup
     {
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IOptions<ExternalLinksConfiguration> externalLinks, IApplicationLifetime applicationLifetime, ILogger<Startup> logger)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IOptions<ExternalLinksConfiguration> externalLinks, IHostApplicationLifetime applicationLifetime, ILogger<Startup> logger)
         {
             var cultureInfo = new CultureInfo("en-GB");
 
