@@ -15,8 +15,8 @@ using NUnit.Framework;
 using SFA.DAS.Recruit.Api.Commands;
 using SFA.DAS.Recruit.Api.Models;
 using SFA.DAS.Testing.AutoFixture;
-using Assert = Xunit.Assert;
 using Esfa.Recruit.Vacancies.Client.Application.Configuration;
+using Assert = NUnit.Framework.Assert;
 
 namespace SFA.DAS.Recruit.Api.UnitTests.Controllers
 {
@@ -68,7 +68,7 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Controllers
 
             var actual = await controller.Create(id, request, userEmail, ukprn) as CreatedResult;
 
-            Assert.NotNull(actual);
+            NUnit.Framework.Assert.NotNull(actual);
             actual.StatusCode.Should().Be((int)HttpStatusCode.Created);
             var actualResult = actual.Value as long?;
             Assert.NotNull(actualResult);
