@@ -92,7 +92,7 @@ namespace Esfa.Recruit.Provider.Web.Configuration
             });
             services.Configure<CookieTempDataProviderOptions>(options => options.Cookie.Name = CookieNames.RecruitTempData);
             services.AddSingleton<ITempDataProvider, CookieTempDataProvider>();
-            
+
             services.AddMvc(opts =>
                 {
                     opts.EnableEndpointRouting = false;
@@ -118,8 +118,7 @@ namespace Esfa.Recruit.Provider.Web.Configuration
             .EnableCookieBanner()
             .EnableGoogleAnalytics()
             .EnableCsp()
-            .SetDefaultNavigationSection(NavigationSection.Recruit)
-            .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
+            .SetDefaultNavigationSection(NavigationSection.Recruit);
         }
 
         public static void AddAuthenticationService(this IServiceCollection services, AuthenticationConfiguration authConfig, IRecruitVacancyClient vacancyClient, IWebHostEnvironment hostingEnvironment)
