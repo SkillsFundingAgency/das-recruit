@@ -29,7 +29,6 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Exceptions
             ValidationResult = (EntityValidationResult)info.GetValue(nameof(ValidationResult), typeof(EntityValidationResult));
         }
 
-        [SecurityPermissionAttribute(SecurityAction.Demand, SerializationFormatter = true)]
         public override void GetObjectData(SerializationInfo info, StreamingContext context)
         {
             if (info == null) 
