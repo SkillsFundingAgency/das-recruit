@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26124.0
+# Visual Studio Version 17
+VisualStudioVersion = 17.3.32811.315
 MinimumVisualStudioVersion = 15.0.26124.0
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Employer", "Employer", "{470FBC22-748F-4CB6-A273-C89638289E6E}"
 EndProject
@@ -37,19 +37,19 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Recruit.Vacancies.Jobs", "J
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Communication", "Communication", "{2E95FA8B-6D59-47E7-8096-426B9C46A10C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Communication.Core", "Communication\Communication.Core\Communication.Core.csproj", "{7BCF66A2-3803-4C3E-BA5A-A408CC154190}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Communication.Core", "Communication\Communication.Core\Communication.Core.csproj", "{7BCF66A2-3803-4C3E-BA5A-A408CC154190}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Communication.Types", "Communication\Communication.Types\Communication.Types.csproj", "{7AD8BAA3-368D-42F8-ADCF-350A30DA995E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Communication.Types", "Communication\Communication.Types\Communication.Types.csproj", "{7AD8BAA3-368D-42F8-ADCF-350A30DA995E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Communication.UnitTests", "Communication\Communication.UnitTests\Communication.UnitTests.csproj", "{988F6AF8-9D1F-43B1-A2DA-9D50E227FE29}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Communication.UnitTests", "Communication\Communication.UnitTests\Communication.UnitTests.csproj", "{988F6AF8-9D1F-43B1-A2DA-9D50E227FE29}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Recruit.Vacancies.Jobs.UnitTests", "Jobs\Recruit.Vacancies.Jobs.UnitTests\Recruit.Vacancies.Jobs.UnitTests.csproj", "{C842F94B-3762-4DC1-9048-EB34BECFB3FA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Recruit.Vacancies.Jobs.UnitTests", "Jobs\Recruit.Vacancies.Jobs.UnitTests\Recruit.Vacancies.Jobs.UnitTests.csproj", "{C842F94B-3762-4DC1-9048-EB34BECFB3FA}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "API", "API", "{49C2027D-9827-492A-864C-D59FFD36BFA6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Recruit.Api", "API\Recruit.Api\Recruit.Api.csproj", "{C3C9AF16-A656-49E0-8DBA-48BDC2E8EA74}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Recruit.Api", "API\Recruit.Api\Recruit.Api.csproj", "{C3C9AF16-A656-49E0-8DBA-48BDC2E8EA74}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Recruit.Api.UnitTests", "API\Recruit.Api.UnitTests\Recruit.Api.UnitTests.csproj", "{8343F252-37F2-4D05-B4A9-27C654F4F2B9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Recruit.Api.UnitTests", "API\Recruit.Api.UnitTests\Recruit.Api.UnitTests.csproj", "{8343F252-37F2-4D05-B4A9-27C654F4F2B9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

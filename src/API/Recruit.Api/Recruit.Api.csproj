@@ -17,7 +17,7 @@
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.21.0" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.HealthChecks" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="6.0.0" />
-    <PackageReference Include="NLog.Web.AspNetCore" Version="5.1.1" />
+    <PackageReference Include="NLog.Web.AspNetCore" Version="5.1.2" />
     <PackageReference Include="SFA.DAS.Configuration" Version="3.0.84" />
     <PackageReference Include="SFA.DAS.Configuration.AzureTableStorage" Version="3.0.84" />
     <PackageReference Include="SFA.DAS.NLog.Targets.Redis" Version="1.2.1" />
@@ -28,8 +28,8 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
 	<PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.2.0" />
 	<PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.2.0" />
-	<PackageReference Include="Microsoft.Identity.Client" Version="4.46.1" />
-	<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.10.0" />
+	<PackageReference Include="Microsoft.Identity.Client" Version="4.46.2" />
+	<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.22.1" />
 
   </ItemGroup>
 
