@@ -23,9 +23,9 @@
 
   <ItemGroup>
     <PackageReference Include="Azure.Messaging.ServiceBus" Version="7.10.0" />
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
-    <PackageReference Include="Microsoft.Extensions.Logging" Version="2.1.1" />
-    <PackageReference Include="WindowsAzure.Storage" Version="9.3.3" />
+    <PackageReference Include="Azure.Storage.Blobs" Version="12.13.1" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="6.0.0" />
 
     <ProjectReference Include="..\Communication.Types\Communication.Types.csproj" />
   </ItemGroup>
