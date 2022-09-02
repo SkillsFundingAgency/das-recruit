@@ -16,7 +16,6 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomVali
         protected override string GetDefaultMessageTemplate(string errorCode) 
         {
             return base.GetDefaultMessageTemplate("{PropertyName} must contain valid characters");
-            _regex = CreateRegEx();
         }
 
 		public override bool IsValid(ValidationContext<T> context, TProperty PropertyValue) {

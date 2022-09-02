@@ -10,6 +10,7 @@ using FluentValidation;
 using FluentValidation.Internal;
 using FluentValidation.Results;
 using FluentValidation.Validators;
+using ServiceStack.FluentValidation.Internal;
 using SFA.DAS.VacancyServices.Wage;
 using WageType = SFA.DAS.VacancyServices.Wage.WageType;
 
@@ -19,7 +20,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomVali
     {
         internal static IRuleBuilderInitial<Vacancy, Vacancy> ClosingDateMustBeLessThanStartDate(this IRuleBuilder<Vacancy, Vacancy> ruleBuilder)
         {
-            return ruleBuilder.Custom((vacancy, context) =>
+            return (IRuleBuilderInitial<Vacancy, Vacancy>)ruleBuilder.Custom((vacancy, context) =>
             {
                 if (vacancy.StartDate.Value.Date <= vacancy.ClosingDate.Value.Date)
                 {
@@ -35,7 +36,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomVali
 
         internal static IRuleBuilderInitial<Vacancy, Vacancy> FixedWageMustBeGreaterThanApprenticeshipMinimumWage(this IRuleBuilder<Vacancy, Vacancy> ruleBuilder, IMinimumWageProvider minimumWageService)
         {
-            return ruleBuilder.Custom((vacancy, context) =>
+            return (IRuleBuilderInitial<Vacancy, Vacancy>)ruleBuilder.Custom((vacancy, context) =>
             {
                 var wagePeriod = minimumWageService.GetWagePeriod(vacancy.StartDate.Value);
 
@@ -66,7 +67,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomVali
             this IRuleBuilder<Vacancy, Vacancy> ruleBuilder,
             IApprenticeshipProgrammeProvider apprenticeshipProgrammeProvider)
         {
-            return ruleBuilder.CustomAsync(async (vacancy, context, cancellationToken) =>
+            return (IRuleBuilderInitial<Vacancy, Vacancy>)ruleBuilder.CustomAsync(async (vacancy, context, cancellationToken) =>
             {
                 var programme =
                     await apprenticeshipProgrammeProvider.GetApprenticeshipProgrammeAsync(vacancy.ProgrammeId);
@@ -86,7 +87,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomVali
         }
         internal static IRuleBuilderInitial<Vacancy, Vacancy> TrainingMustBeActiveForCurrentDate(this IRuleBuilder<Vacancy, Vacancy> ruleBuilder, IApprenticeshipProgrammeProvider apprenticeshipProgrammesProvider, ITimeProvider timeProvider)
         {
-            return ruleBuilder.CustomAsync(async (vacancy, context, cancellationToken) =>
+            return (IRuleBuilderInitial<Vacancy, Vacancy>)ruleBuilder.CustomAsync(async (vacancy, context, cancellationToken) =>
             {
                 var allProgrammes = await apprenticeshipProgrammesProvider.GetApprenticeshipProgrammesAsync();
 
@@ -109,7 +110,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomVali
 
         internal static IRuleBuilderInitial<Vacancy, Vacancy> TrainingMustBeActiveForStartDate(this IRuleBuilder<Vacancy, Vacancy> ruleBuilder, IApprenticeshipProgrammeProvider apprenticeshipProgrammesProvider)
         {
-            return ruleBuilder.CustomAsync(async (vacancy, context, cancellationToken) =>
+            return (IRuleBuilderInitial<Vacancy, Vacancy>)ruleBuilder.CustomAsync(async (vacancy, context, cancellationToken) =>
             {
                 if (!vacancy.StartDate.HasValue)
                 {
@@ -148,7 +149,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomVali
 
         internal static IRuleBuilderInitial<TrainingProvider, TrainingProvider> TrainingProviderMustExistInRoatp(this IRuleBuilder<TrainingProvider, TrainingProvider> ruleBuilder, ITrainingProviderSummaryProvider trainingProviderSummaryProvider)
         {
-            return ruleBuilder.CustomAsync(async (trainingProvider, context, cancellationToken) =>
+            return (IRuleBuilderInitial<TrainingProvider, TrainingProvider>)ruleBuilder.CustomAsync(async (trainingProvider, context, cancellationToken) =>
             {
                 if (trainingProvider.Ukprn.HasValue && (await trainingProviderSummaryProvider.GetAsync(trainingProvider.Ukprn.Value)) != null)
                 {
@@ -166,7 +167,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomVali
 
         internal static IRuleBuilderInitial<TrainingProvider, TrainingProvider> TrainingProviderMustNotBeBlocked(this IRuleBuilder<TrainingProvider, TrainingProvider> ruleBuilder, IBlockedOrganisationQuery blockedOrganisationRep)
         {
-            return ruleBuilder.CustomAsync(async (trainingProvider, context, cancellationToken) =>
+            return (IRuleBuilderInitial<TrainingProvider, TrainingProvider>)ruleBuilder.CustomAsync(async (trainingProvider, context, cancellationToken) =>
             {
                 if (trainingProvider.Ukprn != null)
                 {
@@ -186,7 +187,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomVali
 
         internal static IRuleBuilderInitial<Vacancy, Vacancy> TrainingProviderVacancyMustHaveEmployerPermission(this IRuleBuilder<Vacancy, Vacancy> ruleBuilder, IProviderRelationshipsService providerRelationshipService)
         {
-            return ruleBuilder.CustomAsync(async (vacancy, context, cancellationToken) =>
+            return (IRuleBuilderInitial<Vacancy, Vacancy>)ruleBuilder.CustomAsync(async (vacancy, context, cancellationToken) =>
             {
                 if (vacancy.OwnerType != OwnerType.Provider)
                     return;
@@ -239,9 +240,9 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomVali
             });
         }
 
-        private static bool CanRunValidator(this PropertyValidatorContext context, VacancyRuleSet validationToCheck)
+        private static bool CanRunValidator(this ValidationContext<T> context, VacancyRuleSet validationToCheck)
         {
-            var validationsToRun = (VacancyRuleSet)context.ParentContext.RootContextData[ValidationConstants.ValidationsRulesKey];
+            var validationsToRun = (VacancyRuleSet)context.RootContextData[ValidationConstants.ValidationsRulesKey];
 
             return (validationsToRun & validationToCheck) > 0;
         }

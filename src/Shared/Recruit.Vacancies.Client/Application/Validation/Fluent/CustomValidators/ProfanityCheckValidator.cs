@@ -1,25 +1,30 @@
 using System.Linq;
+using System.Text.RegularExpressions;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Application.Rules.Extensions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Profanities;
+using FluentValidation;
 using FluentValidation.Validators;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomValidators
 {
-    public class ProfanityCheckValidator : PropertyValidator
+    public class ProfanityCheckValidator<T, TProperty> : PropertyValidator<T, TProperty>
     {
+        public override string Name => "ProfanityCheckValidator";
+
         private readonly IProfanityListProvider _profanityListProvider;
 
-        public ProfanityCheckValidator(IProfanityListProvider profanityListProvider) 
-            : base("{PropertyName} must not contain a banned word or phrase.")
+        protected override string GetDefaultMessageTemplate(string errorCode)
         {
-            _profanityListProvider = profanityListProvider;
+            return base.GetDefaultMessageTemplate("{PropertyName} must not contain a banned word or phrase.");
         }
-        protected override bool IsValid(PropertyValidatorContext context)
+
+
+        public override bool IsValid(ValidationContext<T> context, TProperty PropertyValue)
         {
             var profanityList = _profanityListProvider.GetProfanityListAsync();
 
-            var freeText = (string) context.PropertyValue;
+            var freeText = PropertyValue as string;
 
             var formatForParsing = freeText.FormatForParsing();
 

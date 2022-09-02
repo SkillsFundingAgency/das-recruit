@@ -4,6 +4,7 @@ using FluentValidation.Internal;
 using System;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Application.Services;
+using ServiceStack.FluentValidation.Internal;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
 {
