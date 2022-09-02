@@ -1,22 +1,27 @@
 using System;
 using System.Text.RegularExpressions;
+using FluentValidation;
 using FluentValidation.Validators;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomValidators
 {
-    internal class PostCodeValidator : PropertyValidator, IRegularExpressionValidator 
+    internal class PostCodeValidator<T, TProperty> : PropertyValidator<T, TProperty>, IRegularExpressionValidator 
     {
+        public override string Name => "PostCodeValidator";
+
 		private readonly Regex _regex;
 
-        internal PostCodeValidator() : base("{PropertyName} must be a valid postcode format")
+        protected override string GetDefaultMessageTemplate(string errorcode)
         {
-			_regex = CreateRegEx();
-		}
+            return base.GetDefaultMessageTemplate("{PropertyName} must be a valid postcode format");
+                _regex = CreateRegEx();
+        }
 
-		protected override bool IsValid(PropertyValidatorContext context) {
-			if (context.PropertyValue == null) return true;
 
-			if (!_regex.IsMatch((string)context.PropertyValue)) {
+		public override bool IsValid(ValidationContext<T> context, TProperty PropertyValue) {
+			if (PropertyValue == null) return true;
+
+			if (!_regex.IsMatch(PropertyValue as string)) {
 				return false;
 			}
 
