@@ -139,6 +139,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                     'vacancyGuid': '$_id',
                     'searchField': 1,
                     'vacancyReference': 1,
+                    'vacancyReferenceSort' :1,
                     'title': 1,
                     'status': 1,
                     'appStatus': '$candidateApplicationReview.status',
@@ -172,6 +173,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                     'vacancyGuid': 1,
                     'searchField': 1,
                     'vacancyReference': 1,
+                    'vacancyReferenceSort' :1,
                     'title': 1,
                     'status': 1,
                     'appStatus': { '$cond' : [ { '$eq': ['$isApplicationWithdrawn', true] }, 'withdrawn', '$appStatus' ]},
@@ -210,6 +212,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                     'vacancyGuid': 1,
                     'searchField': 1,
                     'vacancyReference': 1,
+                    'vacancyReferenceSort' :1,
                     'title': 1,
                     'status': 1,
                     'legalEntityName': 1,
@@ -266,8 +269,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
             {
                 '$group': {
                     '_id': {
-                        'searchField':{$toLower: { $concat: [ '$title', '|', '$legalEntityName','|','VAC',{$toString:'$vacancyReference'} ] }},
+                        'searchField':{$toLower: { $concat: [ '$title', '|', {$ifNull:['$legalEntityName','']},'|','VAC',{$toString: {$ifNull:['$vacancyReference','']}} ] }},
                         'vacancyGuid': '$vacancyGuid',
+                        'vacancyReferenceSort': {$ifNull:['$vacancyReference','']}
                         'vacancyReference': '$vacancyReference',
                         'title': '$title',
                         'status': '$status',
@@ -308,7 +312,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                     }
                 }
             },
-            { '$sort' : { '_id.vacancyReference' : -1 } }
+            { '$sort' : { '_id.vacancyReferenceSort' : -1 } }
             
         ]";
 
