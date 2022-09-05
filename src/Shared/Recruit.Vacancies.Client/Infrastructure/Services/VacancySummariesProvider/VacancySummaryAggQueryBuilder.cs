@@ -312,7 +312,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                     }
                 }
             },
-            { '$sort' : { '_id.vacancyReferenceSort' : -1 } }
+            { '$sort' : { '_id.vacancyReferenceSort' : -1  , '_id.createdDate' : -1} }
             
         ]";
 
