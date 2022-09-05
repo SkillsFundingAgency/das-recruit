@@ -35,6 +35,7 @@
     <PackageReference Include="MongoDB.Driver" Version="2.17.1" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="RestSharp" Version="108.0.1" />
+    <PackageReference Include="ServiceStack" Version="6.3.0" />
     <PackageReference Include="SFA.DAS.Account.Api.Client" Version="1.6.3100" />
     <PackageReference Include="SFA.DAS.Http" Version="3.2.69" />
     <PackageReference Include="SFA.DAS.VacancyServices.Wage" Version="1.0.25" />
