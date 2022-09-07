@@ -10,7 +10,6 @@ using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.QA;
 using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
-using System.Collections.Generic;
 
 namespace Esfa.Recruit.Qa.Web.Orchestrators
 {

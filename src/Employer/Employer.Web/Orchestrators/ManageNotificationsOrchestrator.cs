@@ -1,4 +1,3 @@
-using System;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.ViewModels.ManageNotifications;
 using Esfa.Recruit.Shared.Web.Orchestrators;

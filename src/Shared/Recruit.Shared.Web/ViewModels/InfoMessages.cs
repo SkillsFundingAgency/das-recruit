@@ -1,5 +1,3 @@
-using System;
-
 namespace Esfa.Recruit.Shared.Web.ViewModels
 {
     public class InfoMessages

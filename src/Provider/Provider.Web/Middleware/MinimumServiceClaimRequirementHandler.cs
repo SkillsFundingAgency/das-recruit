@@ -1,5 +1,4 @@
 ﻿using System.Threading.Tasks;
-using Esfa.Recruit.Provider.Web.Configuration;
 using Esfa.Recruit.Provider.Web.Extensions;
 using Microsoft.AspNetCore.Authorization;
 

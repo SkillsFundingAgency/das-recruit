@@ -1,4 +1,3 @@
-using System;
 using Esfa.Recruit.Employer.Web.RouteModel;
 
 namespace Esfa.Recruit.Employer.Web.ViewModels.CloneVacancy

@@ -13,7 +13,6 @@ using Esfa.Recruit.Shared.Web.ViewModels;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using StructureMap.Query;
 
 namespace Esfa.Recruit.Provider.Web.Controllers
 {

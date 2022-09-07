@@ -9,7 +9,6 @@ using System.Linq;
 using Microsoft.Extensions.Logging;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using System;
-using SFA.DAS.EAS.Account.Api.Types;
 using Polly;
 using System.Collections.Generic;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Responses;

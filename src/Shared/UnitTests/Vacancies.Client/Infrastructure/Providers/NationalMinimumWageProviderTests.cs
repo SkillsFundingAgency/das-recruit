@@ -1,6 +1,5 @@
 using System;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services;
-using Esfa.Recruit.UnitTests.TestHelpers;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Moq;

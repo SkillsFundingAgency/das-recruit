@@ -1,5 +1,4 @@
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
-using Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent;
 using Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation;
 using FluentAssertions;
 using FluentValidation;

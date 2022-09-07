@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Globalization;
 using System.Threading.Tasks;
 using Esfa.Recruit.Provider.Web.ViewModels.Reports;
 using Esfa.Recruit.Provider.Web.ViewModels.Reports.ProviderApplicationsReport;

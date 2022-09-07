@@ -1,7 +1,6 @@
 using System.Threading.Tasks;
 using Communication.Types;
 using Newtonsoft.Json;
-using Azure.Storage.Blobs;
 using Azure.Storage.Queues;
 
 namespace Communication.Core

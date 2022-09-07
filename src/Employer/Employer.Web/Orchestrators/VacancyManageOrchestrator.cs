@@ -14,7 +14,6 @@ using Esfa.Recruit.Shared.Web.Orchestrators;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Shared.Web.Mappers;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyAnalytics;
-using Esfa.Recruit.Shared.Web.FeatureToggle;
 using Employer.Web.Configuration;
 using Esfa.Recruit.Shared.Web.Helpers;
 

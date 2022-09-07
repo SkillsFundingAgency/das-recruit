@@ -1,8 +1,5 @@
-using System.Linq;
-using System.Text.RegularExpressions;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Application.Rules.Extensions;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Profanities;
 using FluentValidation;
 using FluentValidation.Validators;
 

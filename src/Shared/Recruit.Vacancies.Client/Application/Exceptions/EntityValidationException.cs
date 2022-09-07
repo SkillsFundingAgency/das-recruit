@@ -1,6 +1,5 @@
 using System;
 using System.Runtime.Serialization;
-using System.Security.Permissions;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.Exceptions

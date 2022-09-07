@@ -4,7 +4,6 @@ using Esfa.Recruit.Employer.Web.Orchestrators;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels.EditVacancyDates;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Collections.Generic;
 using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Extensions;
