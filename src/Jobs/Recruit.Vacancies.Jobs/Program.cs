@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Threading.Tasks;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.Configuration;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.TableStore;
 using Esfa.Recruit.Vacancies.Client.Ioc;
@@ -62,7 +61,9 @@ namespace Esfa.Recruit.Vacancies.Jobs
                     .ConfigureWebJobs(b =>
                     {
                         b.AddAzureStorageCoreServices()
-                            .AddAzureStorage()
+                            .AddAzureStorageBlobs()
+                            
+                            //.AddAzureStorage()
                             .AddTimers();
                     })
                     .ConfigureAppConfiguration((hostBuilderContext, configBuilder)=>
@@ -89,7 +90,7 @@ namespace Esfa.Recruit.Vacancies.Jobs
                         string instrumentationKey = context.Configuration["APPINSIGHTS_INSTRUMENTATIONKEY"];
                         if (!string.IsNullOrEmpty(instrumentationKey))
                         {
-                            b.AddApplicationInsights(o => o.InstrumentationKey = instrumentationKey);
+                            b.AddApplicationInsightsWebJobs(o => o.InstrumentationKey = instrumentationKey);
                         }
                     })
                     .ConfigureServices((context, services) =>

@@ -4,12 +4,12 @@ namespace Esfa.Recruit.Vacancies.Jobs
 {
     public class CustomQueueProcessorFactory : IQueueProcessorFactory
     {
-        public QueueProcessor Create(QueueProcessorFactoryContext context)
+        public QueueProcessor Create(QueueProcessorOptions queueProcessorOptions)
         {
-            context.Queue.CreateIfNotExistsAsync().Wait();
+            queueProcessorOptions.Queue.CreateIfNotExistsAsync().Wait();
 
             // return the default processor
-            return new QueueProcessor(context);
+            return new CustomQueueProcessorFactory().Create(queueProcessorOptions);
         }
     }
 }

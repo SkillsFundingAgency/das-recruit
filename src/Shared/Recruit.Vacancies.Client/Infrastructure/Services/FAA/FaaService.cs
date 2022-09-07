@@ -1,8 +1,5 @@
-﻿using System.IO;
-using System.Runtime.Serialization;
-using System.Text;
+﻿using System.Text;
 using System.Threading.Tasks;
-using System.Xml;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using Azure.Messaging.ServiceBus;
@@ -47,9 +44,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.FAA
             return message;
         }
 
-        private TopicClient CreateTopicClient(string topicName)
+        private ServiceBusSender CreateTopicClient(string topicName)
         {
-            return new TopicClient(_config.StorageConnectionString, topicName, RetryPolicy.Default);
+            var client = new ServiceBusClient(_config.StorageConnectionString);
+
+            return client.CreateSender(topicName);
         }
     }
 }

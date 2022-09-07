@@ -1,6 +1,5 @@
 using System.Threading.Tasks;
 using Communication.Types;
-using Azure.Storage.Blobs;
 using Azure.Storage.Queues;
 using Newtonsoft.Json;
 
@@ -18,16 +17,13 @@ namespace Communication.Core
 
         public async Task AddMessageAsync(CommunicationMessageIdentifier message)
         {
-            var storageAccount = CloudStorageAccount.Parse(_storageConnectionString);
-            var client = storageAccount.CreateCloudQueueClient();
+            var client = new QueueClient(_storageConnectionString, QueueName);
+            
+            await client.CreateIfNotExistsAsync();
 
-            var queue = client.GetQueueReference(QueueName);
+            var cloudMessage = JsonConvert.SerializeObject(message, Formatting.Indented);
 
-            await queue.CreateIfNotExistsAsync();
-
-            var cloudMessage = new CloudQueueMessage(JsonConvert.SerializeObject(message, Formatting.Indented));
-
-            await queue.AddMessageAsync(cloudMessage);
+            await client.SendMessageAsync(System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(cloudMessage)));
         }
     }
 }
