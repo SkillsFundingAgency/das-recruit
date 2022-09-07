@@ -44,4 +44,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="Views\CreateVacancyOptions\Options.cshtml" />
+  </ItemGroup>
 </Project>

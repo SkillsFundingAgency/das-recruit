@@ -6,7 +6,6 @@ namespace SFA.DAS.Recruit.Api.Models
     {
         public string Title { get; set; }
         public long? VacancyReference { get; set; }
-        public long? LegalEntityId { get; set; }
         public string LegalEntityName { get; set; }
         public string EmployerAccountId { get; set; }
         public string EmployerName { get; set; }

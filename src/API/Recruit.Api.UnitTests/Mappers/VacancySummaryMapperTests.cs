@@ -12,13 +12,13 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Mappers
     {
         private const string ValidEmployerAccountId = "MYJR4X";
         private readonly VacancySummaryMapper _sut;
-        private readonly VacancySummaryProjection _vacancySummaryProjection;
+        private readonly Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancySummary _vacancySummaryProjection;
 
         public VacancySummaryMapperTests()
         {
             var vacancySummaryFixture = new Fixture();
             _vacancySummaryProjection = vacancySummaryFixture
-                                        .Build<VacancySummaryProjection>()
+                                        .Build<Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancySummary>()
                                         .With(vsp => vsp.EmployerAccountId, ValidEmployerAccountId)
                                         .Create();
 
