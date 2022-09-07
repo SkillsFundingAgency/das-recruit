@@ -18,7 +18,7 @@ using Assert = NUnit.Framework.Assert;
 
 namespace SFA.DAS.Recruit.Api.UnitTests.Controllers
 {
-    public class VacanciesControllerTests
+    public class GetVacanciesControllerTests
     {
         private Mock<IMediator> _mockMediator;
         private VacanciesController _sut;
@@ -40,7 +40,7 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Controllers
         [TestCase(" myjR4X ")]
         public async Task GetCall_EnsuresEmployerAccountIdPassedInQueryPassedToMediatorIsTrimmedAndUppercased(string input)
         {
-            await _sut.Get(input, 0, 0, 25, 1);
+            await _sut.Get(input, 0,  25, 1);
             string.CompareOrdinal(_queryPassed.EmployerAccountId, "MYJR4X").Should().Be(0);
         }
         

@@ -1,11 +1,15 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.Commands;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Provider;
+using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 {
@@ -47,21 +51,74 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             
             await AssignVacancyNumber(id);
         }
-        
-        public async Task<ProviderDashboard> GetDashboardAsync(long ukprn, VacancyType vacancyType, bool createIfNonExistent = false)
+
+        public async Task<long> GetVacancyCount(long ukprn, VacancyType vacancyType, FilteringOptions? filteringOptions, string searchTerm)
         {
-            ProviderDashboard result = await _reader.GetProviderDashboardAsync(ukprn, vacancyType);
-            if (result == null && createIfNonExistent)
-            {
-                await GenerateDashboard(ukprn, vacancyType);
-                result = await _reader.GetProviderDashboardAsync(ukprn, vacancyType);
-            }
-            return result;
+            return await _vacancySummariesQuery.VacancyCount(ukprn, string.Empty, vacancyType, filteringOptions, searchTerm, OwnerType.Provider);
         }
 
-        private Task GenerateDashboard(long ukprn, VacancyType vacancyType)
+        public async Task<ProviderDashboardSummary> GetDashboardSummary(long ukprn, VacancyType vacancyType)
         {
-            return _providerDashboardService.ReBuildDashboardAsync(ukprn, vacancyType);
+            var dashboardTask = _vacancySummariesQuery.GetProviderOwnedVacancyDashboardByUkprnAsync(ukprn, vacancyType);
+            var transferredVacanciesTask = _vacancySummariesQuery.GetTransferredFromProviderAsync(ukprn, vacancyType);
+
+            await Task.WhenAll(dashboardTask, transferredVacanciesTask);
+
+            var dashboard = dashboardTask.Result;
+            var transferredVacancies = transferredVacanciesTask.Result.Select(t => 
+                new ProviderDashboardTransferredVacancy
+                {
+                    LegalEntityName = t.LegalEntityName,
+                    TransferredDate = t.TransferredDate,
+                    Reason = t.Reason
+                });
+            
+            return new ProviderDashboardSummary
+            {
+                Closed = dashboard.SingleOrDefault(c=>c.Status == VacancyStatus.Closed)?.StatusCount ?? 0,
+                Draft = dashboard.SingleOrDefault(c=>c.Status == VacancyStatus.Draft)?.StatusCount ?? 0,
+                Review = dashboard.SingleOrDefault(c=>c.Status == VacancyStatus.Review)?.StatusCount ?? 0,
+                Referred = (dashboard.SingleOrDefault(c=>c.Status == VacancyStatus.Referred)?.StatusCount ?? 0) + (dashboard.SingleOrDefault(c=>c.Status == VacancyStatus.Rejected)?.StatusCount ?? 0),
+                Live = dashboard.SingleOrDefault(c=>c.Status == VacancyStatus.Live && !c.ClosingSoon)?.StatusCount ?? 0,
+                Submitted = dashboard.SingleOrDefault(c=>c.Status == VacancyStatus.Submitted)?.StatusCount ?? 0,
+                NumberOfNewApplications = dashboard.SingleOrDefault(c=>c.Status == VacancyStatus.Live && !c.ClosingSoon)?.NoOfNewApplications ?? 0,
+                NumberOfSuccessfulApplications = (dashboard.SingleOrDefault(c=>c.Status == VacancyStatus.Live && !c.ClosingSoon)?.NoOfSuccessfulApplications ?? 0) + (dashboard.SingleOrDefault(c=>c.Status == VacancyStatus.Closed && !c.ClosingSoon)?.NoOfSuccessfulApplications ?? 0),
+                NumberOfUnsuccessfulApplications = (dashboard.SingleOrDefault(c=>c.Status == VacancyStatus.Live && !c.ClosingSoon)?.NoOfUnsuccessfulApplications ?? 0) + (dashboard.SingleOrDefault(c=>c.Status == VacancyStatus.Closed && !c.ClosingSoon)?.NoOfUnsuccessfulApplications ?? 0),
+                NumberClosingSoon =dashboard.SingleOrDefault(c=>c.Status == VacancyStatus.Live && c.ClosingSoon && (c.NoOfNewApplications != 0 || c.NoOfSuccessfulApplications != 0 || c.NoOfUnsuccessfulApplications != 0))?.StatusCount ?? 0,
+                NumberClosingSoonWithNoApplications =dashboard.SingleOrDefault(c=>c.Status == VacancyStatus.Live && c.ClosingSoon && c.NoOfNewApplications == 0 && c.NoOfSuccessfulApplications == 0 && c.NoOfUnsuccessfulApplications == 0)?.StatusCount ?? 0,
+                TransferredVacancies = transferredVacancies
+            };
+        }
+        
+        public async Task<ProviderDashboard> GetDashboardAsync(long ukprn, VacancyType vacancyType,int page, FilteringOptions? status = null, string searchTerm = null)
+        {
+            var vacancySummariesTasks = _vacancySummariesQuery.GetProviderOwnedVacancySummariesByUkprnAsync(ukprn, vacancyType, page, status, searchTerm);
+            var transferredVacanciesTasks = _vacancySummariesQuery.GetTransferredFromProviderAsync(ukprn, vacancyType);
+            
+            await Task.WhenAll(vacancySummariesTasks, transferredVacanciesTasks);
+
+            var vacancySummaries = vacancySummariesTasks.Result
+                .Where(c=>vacancyType == VacancyType.Traineeship ? c.IsTraineeship : !c.IsTraineeship).ToList();
+            var transferredVacancies = transferredVacanciesTasks.Result.Select(t => 
+                new ProviderDashboardTransferredVacancy
+                {
+                    LegalEntityName = t.LegalEntityName,
+                    TransferredDate = t.TransferredDate,
+                    Reason = t.Reason
+                });
+
+            foreach (var summary in vacancySummaries)
+            {
+                await UpdateWithTrainingProgrammeInfo(summary);
+            }
+            
+            return new ProviderDashboard
+            {
+                Id = vacancyType == VacancyType.Apprenticeship ? QueryViewType.ProviderDashboard.GetIdValue(ukprn) :  QueryViewType.ProviderTraineeshipDashboard.GetIdValue(ukprn),
+                Vacancies = vacancySummaries,
+                TransferredVacancies = transferredVacancies,
+                LastUpdated = _timeProvider.Now
+            };
         }
 
         public Task<ProviderEditVacancyInfo> GetProviderEditVacancyInfoAsync(long ukprn)
@@ -125,6 +182,25 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         public Task IncrementReportDownloadCountAsync(Guid reportId)
         {
             return _reportRepository.IncrementReportDownloadCountAsync(reportId);
+        }
+        
+        private async Task UpdateWithTrainingProgrammeInfo(VacancySummary summary)
+        {
+            if (summary.ProgrammeId != null)
+            {
+                var programme = await _apprenticeshipProgrammesProvider.GetApprenticeshipProgrammeAsync(summary.ProgrammeId);
+
+                if (programme == null)
+                {
+                    _logger.LogWarning($"No training programme found for ProgrammeId: {summary.ProgrammeId}");
+                }
+                else
+                {
+                    summary.TrainingTitle = programme.Title;
+                    summary.TrainingType = programme.ApprenticeshipType;
+                    summary.TrainingLevel = programme.ApprenticeshipLevel;
+                }
+            }
         }
     }
 }

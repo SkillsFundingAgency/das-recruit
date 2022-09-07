@@ -36,9 +36,8 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             {
                 if (await _employerVacancyOrchestrator.HasNoVacancies(employerAccountId))
                     return RedirectToRoute(RouteNames.Dashboard_Get);
-                return RedirectToRoute(RouteNames.CreateVacancyOptions_Get);
             }
-            return RedirectToRoute(RouteNames.CreateVacancy_Get);
+            return RedirectToRoute(RouteNames.CreateVacancyStart);
         }
 
         private void ManageTempData(TrainingProviderSummary provider, IApprenticeshipProgramme programme)

@@ -1,28 +1,32 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.Recruit.Api.Helpers;
 using SFA.DAS.Recruit.Api.Mappers;
 using SFA.DAS.Recruit.Api.Models;
-using SFA.DAS.Recruit.Api.Services;
 
 namespace SFA.DAS.Recruit.Api.Queries
 {
     public class GetVacanciesQueryHandler : IRequestHandler<GetVacanciesQuery, GetVacanciesResponse>
     {
         private readonly ILogger<GetVacanciesQueryHandler> _logger;
-        private readonly IQueryStoreReader _queryStoreReader;
         private readonly IVacancySummaryMapper _mapper;
+        private readonly IProviderVacancyClient _providerVacancyClient;
+        private readonly IEmployerVacancyClient _employerVacancyClient;
 
-        public GetVacanciesQueryHandler(ILogger<GetVacanciesQueryHandler> logger, IQueryStoreReader queryStoreReader, IVacancySummaryMapper mapper)
+        public GetVacanciesQueryHandler(ILogger<GetVacanciesQueryHandler> logger, IVacancySummaryMapper mapper, IProviderVacancyClient providerVacancyClient, IEmployerVacancyClient employerVacancyClient)
         {
             _logger = logger;
-            _queryStoreReader = queryStoreReader;
             _mapper = mapper;
+            _providerVacancyClient = providerVacancyClient;
+            _employerVacancyClient = employerVacancyClient;
         }
 
         public async Task<GetVacanciesResponse> Handle(GetVacanciesQuery request, CancellationToken cancellationToken)
@@ -34,48 +38,47 @@ namespace SFA.DAS.Recruit.Api.Queries
                 return new GetVacanciesResponse { ResultCode = ResponseCode.InvalidRequest, ValidationErrors = validationErrors.Cast<object>().ToList() };
             }
 
-            IList<VacancySummaryProjection> vacancies;
+            IList<Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancySummary> vacancies;
             var isRequestingProviderOwnedVacancies = request.Ukprn.HasValue;
-
+            long totalVacancies;
             if (isRequestingProviderOwnedVacancies)
             {
-                var dashboard = await _queryStoreReader.GetProviderDashboardAsync(request.Ukprn.Value);
-                vacancies = dashboard?
-                            .Vacancies
-                            .Where(vs => vs.EmployerAccountId.Equals(request.EmployerAccountId))
-                            .ToList();
+                var providerVacanciesTask = _providerVacancyClient.GetDashboardAsync(request.Ukprn.Value,
+                    VacancyType.Apprenticeship, request.PageNo, FilteringOptions.All, null);
+                var totalVacanciesTask = _providerVacancyClient.GetVacancyCount(request.Ukprn.Value,
+                    VacancyType.Apprenticeship, FilteringOptions.All, null);
+
+                await Task.WhenAll(providerVacanciesTask, totalVacanciesTask);
+
+                vacancies = providerVacanciesTask.Result?.Vacancies?.ToList() ?? new List<Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancySummary>();
+                totalVacancies = totalVacanciesTask.Result;
             }
             else
             {
-                var dashboard = await _queryStoreReader.GetEmployerDashboardAsync(request.EmployerAccountId);
-                vacancies = dashboard?.Vacancies.ToList();
+                var employerVacanciesTask = _employerVacancyClient.GetDashboardAsync(request.EmployerAccountId,
+                    request.PageNo, FilteringOptions.All, null);
+                var totalVacanciesTask = _employerVacancyClient.GetVacancyCount(request.EmployerAccountId, VacancyType.Apprenticeship, FilteringOptions.All, null);
+
+                await Task.WhenAll(employerVacanciesTask, totalVacanciesTask);
+                
+                vacancies = employerVacanciesTask.Result?.Vacancies?.ToList() ?? new List<Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancySummary>();
+                totalVacancies = totalVacanciesTask.Result;
             }
 
-            if (vacancies == null || vacancies.Any() == false)
+            if (vacancies.Any() == false)
             {
                 return new GetVacanciesResponse { ResultCode = ResponseCode.NotFound };
             }
+            
+            var pageNo = PagingHelper.GetRequestedPageNo(request.PageNo, 25, Convert.ToInt32(totalVacancies));
+            var totalPages = PagingHelper.GetTotalNoOfPages(25, Convert.ToInt32(totalVacancies));
 
-            if (request.LegalEntityId.HasValue)
-            {
-                vacancies = vacancies.Where(vs => vs.LegalEntityId == request.LegalEntityId.Value).ToList();
-
-                if (vacancies.Any() == false)
-                {
-                    return new GetVacanciesResponse { ResultCode = ResponseCode.NotFound };
-                }
-            }
-
-            var totalVacancies = vacancies.Count;
-            var pageNo = PagingHelper.GetRequestedPageNo(request.PageNo, request.PageSize, totalVacancies);
-            var totalPages = PagingHelper.GetTotalNoOfPages(request.PageSize, totalVacancies);
-
-            var responseVacancies = GetVacanciesForPage(vacancies, pageNo, request.PageSize, isRequestingProviderOwnedVacancies);
+            var responseVacancies = GetVacanciesForPage(vacancies, isRequestingProviderOwnedVacancies);
 
             return new GetVacanciesResponse
             {
                 ResultCode = ResponseCode.Success,
-                Data = new VacanciesSummary(responseVacancies, request.PageSize, pageNo, totalVacancies, totalPages)
+                Data = new VacanciesSummary(responseVacancies, request.PageSize, pageNo, Convert.ToInt32(totalVacancies), totalPages)
             };
         }
 
@@ -100,13 +103,9 @@ namespace SFA.DAS.Recruit.Api.Queries
             return validationErrors;
         }
 
-        private List<VacancySummary> GetVacanciesForPage(IList<VacancySummaryProjection> vacancies, int pageNo, int pageSize, bool isRequestingProviderOwnedVacancies)
+        private List<VacancySummary> GetVacanciesForPage(IList<Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancySummary> vacancies, bool isRequestingProviderOwnedVacancies)
         {
-            var skip = (pageNo - 1) * pageSize;
-
             var responseVacancies = vacancies
-                .Skip(skip)
-                .Take(pageSize)
                 .Select(vs => _mapper.MapFromVacancySummaryProjection(vs, isRequestingProviderOwnedVacancies))
                 .ToList();
 

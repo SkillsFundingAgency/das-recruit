@@ -146,11 +146,11 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
         private void PopulateViewModelWithApplications(Vacancy vacancy, DisplayVacancyApplicationViewModel viewModel)
         {
             var mappedDisplayVacancyViewModelTask = _vacancyDisplayMapper.MapFromVacancyAsync(viewModel, vacancy);
-            var vacancyApplicationsTask = _client.GetVacancyApplicationsAsync(vacancy.VacancyReference.Value.ToString());
+            var vacancyApplicationsTask = _client.GetVacancyApplicationsAsync(vacancy.VacancyReference.Value);
 
             Task.WaitAll(mappedDisplayVacancyViewModelTask, vacancyApplicationsTask);
 
-            var applications = vacancyApplicationsTask.Result?.Applications ?? new List<VacancyApplication>();
+            var applications = vacancyApplicationsTask.Result ?? new List<VacancyApplication>();
 
             viewModel.Applications = new VacancyApplicationsViewModel
             {

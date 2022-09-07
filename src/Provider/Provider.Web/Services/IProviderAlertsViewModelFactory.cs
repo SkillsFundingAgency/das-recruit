@@ -6,6 +6,7 @@ namespace Esfa.Recruit.Provider.Web.Services
 {
     public interface IProviderAlertsViewModelFactory
     {
+        Task<AlertsViewModel> Create(User user);
         AlertsViewModel Create(ProviderDashboard providerDashboard, User user);
     }
 }

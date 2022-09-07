@@ -24,7 +24,6 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
         private readonly AbstractValidator<VacancyReview> _vacancyReviewValidator;
         private readonly ITimeProvider _timeProvider;
         private readonly IBlockedOrganisationQuery _blockedOrganisationQuery;
-        private readonly IEmployerDashboardProjectionService _dashboardService;
         private readonly ICommunicationQueueService _communicationQueueService;
 
         public ApproveVacancyReviewCommandHandler(ILogger<ApproveVacancyReviewCommandHandler> logger,
@@ -34,7 +33,6 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
                                         AbstractValidator<VacancyReview> vacancyReviewValidator,
                                         ITimeProvider timeProvider,
                                         IBlockedOrganisationQuery blockedOrganisationQuery, 
-                                        IEmployerDashboardProjectionService dashboardService,
                                         ICommunicationQueueService communicationQueueService)
         {
             _logger = logger;
@@ -44,7 +42,6 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             _vacancyReviewValidator = vacancyReviewValidator;
             _timeProvider = timeProvider;
             _blockedOrganisationQuery = blockedOrganisationQuery;
-            _dashboardService = dashboardService;
             _communicationQueueService = communicationQueueService;
         }
 
@@ -83,7 +80,6 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             {
                 await CloseVacancyAsync(vacancy, closureReason.Value);
                 await SendNotificationToEmployerAsync(vacancy.TrainingProvider.Ukprn.GetValueOrDefault(), vacancy.EmployerAccountId);
-                await _dashboardService.ReBuildDashboardAsync(vacancy.EmployerAccountId);
                 return Unit.Value;
             }
 
