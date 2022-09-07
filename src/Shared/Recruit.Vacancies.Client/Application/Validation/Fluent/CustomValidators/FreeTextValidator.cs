@@ -9,9 +9,9 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomVali
     {
         public override string Name => "FreeTextValidator";
 
-        private readonly Regex _regex;
+        private Regex _regex;
 
-		private const string ValidCharactersExpression = @"^[a-zA-Z0-9\u0080-\uFFA7?$@#()""'!,+\-=_:;.&€£*%\s\/\[\]]*$";
+        private const string ValidCharactersExpression = @"^[a-zA-Z0-9\u0080-\uFFA7?$@#()""'!,+\-=_:;.&€£*%\s\/\[\]]*$";
 
         protected override string GetDefaultMessageTemplate(string errorCode) 
         {
@@ -20,8 +20,8 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomVali
 
 		public override bool IsValid(ValidationContext<T> context, TProperty PropertyValue) {
 			if (PropertyValue == null) return true;
-
-			if (!_regex.IsMatch(PropertyValue as string)) {
+            _regex = CreateRegEx();
+			if (!_regex.IsMatch(PropertyValue as string ?? string.Empty)) {
 				return false;
 			}
 
@@ -44,5 +44,5 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomVali
 
             return new Regex(ValidCharactersExpression, RegexOptions.IgnoreCase);
 		}
-	}
+    }
 }

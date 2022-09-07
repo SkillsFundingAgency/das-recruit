@@ -11,22 +11,20 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomVali
         public override string Name => "HtmlValidator";
 
         public const string HtmlRegularExpression = @"^[a-zA-Z0-9\u0080-\uFFA7?$@#()""'!,+\-=_:;.&€£*%\s\/<>\[\]]+$";
-        private readonly IHtmlSanitizerService _sanitizer;
-        private readonly Regex _regex;
+        private IHtmlSanitizerService _sanitizer;
+        private Regex _regex;
 
-        protected override string GetDefaultMessageTemplate(string errorCode)
+        public HtmlValidator(IHtmlSanitizerService sanitizer)
         {
-            return base.GetDefaultMessageTemplate("{PropertyName} must contain valid characters");
             _regex = CreateRegEx();
             _sanitizer = sanitizer;
         }
+        protected override string GetDefaultMessageTemplate(string errorCode) 
+        {
+            return base.GetDefaultMessageTemplate("{PropertyName} must contain valid characters");
+        }
 
-        //internal HtmlValidator(IHtmlSanitizerService sanitizer) : base("{PropertyName} must contain allowed HTML")
-        //{
-        //    _regex = CreateRegEx();
-        //    _sanitizer = sanitizer;
-        //}
-
+        
         public override bool IsValid(ValidationContext<T> context, TProperty PropertyValue)
         {
             var value = PropertyValue as string;

@@ -72,7 +72,7 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application
         {
             RuleFor(x => x.TestProperty)
                 .GreaterThan(5)
-                .WithRuleId((long)TestEntityRules.All);
+                .WithState(_ => (long)TestEntityRules.All);
         }
     }
 }

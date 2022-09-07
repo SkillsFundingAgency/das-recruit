@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
@@ -7,10 +7,7 @@ using Esfa.Recruit.Vacancies.Client.Domain.Models;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelationship;
 using FluentValidation;
-using FluentValidation.Internal;
 using FluentValidation.Results;
-using FluentValidation.Validators;
-using ServiceStack.FluentValidation.Internal;
 using SFA.DAS.VacancyServices.Wage;
 using WageType = SFA.DAS.VacancyServices.Wage.WageType;
 
@@ -206,41 +203,18 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomVali
             });
         }
 
-        internal static IRuleBuilderOptions<Vacancy, TElement> RunCondition<TElement>(this IConfigurable<PropertyRule, IRuleBuilderOptions<Vacancy, TElement>> ruleBuilder, VacancyRuleSet condition)
+
+        internal static IRuleBuilderOptions<Vacancy, T> RunCondition<T>(this IRuleBuilderOptions<Vacancy, T> context, VacancyRuleSet condition)
         {
-            return ruleBuilder.Configure(c => c.ApplyCondition(context => context.CanRunValidator(condition), ApplyConditionTo.AllValidators));
+            return context.Configure(c=>c.ApplyCondition(x => x.CanRunValidator(condition)));
+        }
+        
+        internal static IRuleBuilderInitial<Vacancy, T> RunCondition<T>(this IRuleBuilderInitial<Vacancy, T> context, VacancyRuleSet condition)
+        {
+            return context.Configure(c=>c.ApplyCondition(x => x.CanRunValidator(condition)));
         }
 
-        internal static IRuleBuilderInitial<Vacancy, TElement> RunCondition<TElement>(this IConfigurable<PropertyRule, IRuleBuilderInitial<Vacancy, TElement>> ruleBuilder, VacancyRuleSet condition)
-        {
-            return ruleBuilder.Configure(c => c.ApplyCondition(context => context.CanRunValidator(condition), ApplyConditionTo.AllValidators));
-        }
-
-        internal static IRuleBuilderOptions<Vacancy, TElement> WithRuleId<TElement>(this IConfigurable<PropertyRule, IRuleBuilderOptions<Vacancy, TElement>> ruleBuilder, VacancyRuleSet ruleId)
-        {
-            return ruleBuilder.Configure(c =>
-            {
-                // Set rule type in context so it can be returned in error object
-                foreach (var validator in c.Validators)
-                {
-                    validator.Options.CustomStateProvider = s => ruleId;
-                }
-            });
-        }
-
-        internal static IRuleBuilderInitial<Vacancy, TElement> WithRuleId<TElement>(this IConfigurable<PropertyRule, IRuleBuilderInitial<Vacancy, TElement>> ruleBuilder, VacancyRuleSet ruleId)
-        {
-            return ruleBuilder.Configure(c =>
-            {
-                // Set rule type in context so it can be returned in error object
-                foreach (var validator in c.Validators)
-                {
-                    validator.Options.CustomStateProvider = s => ruleId;
-                }
-            });
-        }
-
-        private static bool CanRunValidator(this ValidationContext<T> context, VacancyRuleSet validationToCheck)
+        private static bool CanRunValidator<T>(this ValidationContext<T> context, VacancyRuleSet validationToCheck)
         {
             var validationsToRun = (VacancyRuleSet)context.RootContextData[ValidationConstants.ValidationsRulesKey];
 

@@ -14,6 +14,11 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomVali
 
         private readonly IProfanityListProvider _profanityListProvider;
 
+        public ProfanityCheckValidator(IProfanityListProvider profanityListProvider)
+        {
+            _profanityListProvider = profanityListProvider;
+        }
+        
         protected override string GetDefaultMessageTemplate(string errorCode)
         {
             return base.GetDefaultMessageTemplate("{PropertyName} must not contain a banned word or phrase.");

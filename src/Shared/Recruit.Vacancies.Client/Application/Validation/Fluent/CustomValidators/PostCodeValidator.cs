@@ -11,10 +11,14 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomVali
 
 		private readonly Regex _regex;
 
+        public PostCodeValidator()
+        {
+            _regex = CreateRegEx();
+        }
+        
         protected override string GetDefaultMessageTemplate(string errorcode)
         {
             return base.GetDefaultMessageTemplate("{PropertyName} must be a valid postcode format");
-                _regex = CreateRegEx();
         }
 
 
