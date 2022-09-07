@@ -1,8 +1,6 @@
-using System;
 using System.IO;
 using Esfa.Recruit.Provider.Web.Configuration;
 using Esfa.Recruit.Shared.Web.Extensions;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.Extensions.Configuration;
@@ -72,16 +70,13 @@ namespace Esfa.Recruit.Provider.Web
 
             services.AddApplicationInsightsTelemetry(_configuration);
 
-            //A service provider for resolving services configured in IoC
-            var sp = services.BuildServiceProvider();
-
             services.AddProviderUiServiceRegistration(_configuration);
 
     #if DEBUG
             services.AddControllersWithViews().AddRazorRuntimeCompilation();
     #endif
 
-            services.AddAuthenticationService(_authConfig, sp.GetService<IRecruitVacancyClient>(), sp.GetService<IWebHostEnvironment>());
+            services.AddAuthenticationService(_authConfig);
             services.AddAuthorizationService();            
         }
     }

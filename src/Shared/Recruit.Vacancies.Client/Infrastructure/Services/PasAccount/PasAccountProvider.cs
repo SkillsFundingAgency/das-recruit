@@ -41,7 +41,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.PasAccount
         {
             var httpClient = new HttpClientBuilder()
                 .WithDefaultHeaders()
-                .WithBearerAuthorisationHeader(new AzureADBearerTokenGenerator(_config))
+                .WithBearerAuthorisationHeader(new AzureActiveDirectoryBearerTokenGenerator(_config))
                 .Build();
 
             httpClient.BaseAddress = new Uri(_config.ApiBaseUrl);

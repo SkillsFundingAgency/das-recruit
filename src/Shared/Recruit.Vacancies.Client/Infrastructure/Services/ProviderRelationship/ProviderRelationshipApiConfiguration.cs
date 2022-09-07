@@ -1,8 +1,8 @@
-using SFA.DAS.Http;
+using SFA.DAS.Http.Configuration;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelationship
 {
-    public class ProviderRelationshipApiConfiguration : IAzureADClientConfiguration
+    public class ProviderRelationshipApiConfiguration : IAzureActiveDirectoryClientConfiguration
     {
         public string ApiBaseUrl { get; set; }
         public string ClientId { get; set; }

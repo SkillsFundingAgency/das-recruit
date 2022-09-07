@@ -13,7 +13,6 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Rewrite;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Hosting;
-using IApplicationLifetime = Microsoft.AspNetCore.Hosting.IApplicationLifetime;
 
 namespace Esfa.Recruit.Qa.Web
 {
@@ -108,7 +107,6 @@ namespace Esfa.Recruit.Qa.Web
 
             app.UseNoCacheHttpHeaders(); // Affectively forces the browser to always request dynamic pages
 
-            app.UseMvc();
         }
 
         private static string[] GetAllowableDestinations(AuthenticationConfiguration authConfig, ExternalLinksConfiguration linksConfig)

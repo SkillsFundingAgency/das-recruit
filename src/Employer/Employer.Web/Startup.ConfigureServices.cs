@@ -2,7 +2,6 @@ using System.IO;
 using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Shared.Web.FeatureToggle;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.Extensions.Configuration;
@@ -15,9 +14,9 @@ namespace Esfa.Recruit.Employer.Web
     public partial class Startup
     {
         private readonly bool _isAuthEnabled = true;
-        private IConfiguration _configuration { get; }
-        private IWebHostEnvironment _hostingEnvironment { get; }
-        private AuthenticationConfiguration _authConfig { get; }
+        private IConfiguration Configuration { get; }
+        private IWebHostEnvironment HostingEnvironment { get; }
+        private AuthenticationConfiguration AuthConfig { get; }
 
         private readonly ILoggerFactory _loggerFactory;
 
@@ -43,19 +42,16 @@ namespace Esfa.Recruit.Employer.Web
                 }
             );
 
-            _configuration =  configBuilder.Build();
-            _hostingEnvironment = env;
-            _authConfig = _configuration.GetSection("Authentication").Get<AuthenticationConfiguration>();
+            Configuration =  configBuilder.Build();
+            HostingEnvironment = env;
+            AuthConfig = Configuration.GetSection("Authentication").Get<AuthenticationConfiguration>();
             _loggerFactory = loggerFactory;
         }
         
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddIoC(_configuration);
-
-            var serviceProvider = services.BuildServiceProvider();
-            var featureToggle = serviceProvider.GetService<IFeature>();
+            services.AddIoC(Configuration);
 
             // Routing has to come before adding Mvc
             services.AddRouting(opt =>
@@ -71,9 +67,9 @@ namespace Esfa.Recruit.Employer.Web
 
             services.AddHealthChecks();
             
-            services.AddMvcService(_hostingEnvironment, _isAuthEnabled, _loggerFactory, featureToggle);
+            services.AddMvcService(HostingEnvironment, _isAuthEnabled, _loggerFactory);
 
-            services.AddApplicationInsightsTelemetry(_configuration);
+            services.AddApplicationInsightsTelemetry(Configuration);
 
 #if DEBUG
             services.AddControllersWithViews().AddRazorRuntimeCompilation();
@@ -81,14 +77,11 @@ namespace Esfa.Recruit.Employer.Web
             
             if (_isAuthEnabled)
             {
-                //A service provider for resolving services configured in IoC
-                var sp = services.BuildServiceProvider();
-
-                services.AddAuthenticationService(_authConfig, sp.GetService<IEmployerVacancyClient>(), sp.GetService<IRecruitVacancyClient>(), sp.GetService<IWebHostEnvironment>());
+                services.AddAuthenticationService(AuthConfig);
                 services.AddAuthorizationService();
             }
 
-            services.AddDataProtection(_configuration, _hostingEnvironment, applicationName: "das-employer-recruit-web");
+            services.AddDataProtection(Configuration, HostingEnvironment, applicationName: "das-employer-recruit-web");
         }
     }
 }

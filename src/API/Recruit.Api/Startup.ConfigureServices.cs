@@ -81,8 +81,6 @@ namespace SFA.DAS.Recruit.Api
                 {
                     options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
                 });
-
-            services.AddApplicationInsightsTelemetry(Configuration["APPINSIGHTS_INSTRUMENTATIONKEY"]);
             
             services.AddSwaggerGen(c =>
             {

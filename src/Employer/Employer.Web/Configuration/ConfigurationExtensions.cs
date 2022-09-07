@@ -17,11 +17,10 @@ using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using FluentValidation.AspNetCore;
 using Microsoft.Extensions.Logging;
-using Esfa.Recruit.Shared.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Filters;
 using Esfa.Recruit.Shared.Web.Extensions;
-using Esfa.Recruit.Shared.Web.FeatureToggle;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.Extensions.Hosting;
 
 namespace Esfa.Recruit.Employer.Web.Configuration
@@ -45,7 +44,7 @@ namespace Esfa.Recruit.Employer.Web.Configuration
             services.AddTransient<IAuthorizationHandler, EmployerAccountHandler>();
         }
 
-        public static void AddMvcService(this IServiceCollection services, IWebHostEnvironment hostingEnvironment, bool isAuthEnabled, ILoggerFactory loggerFactory, IFeature featureToggle)
+        public static void AddMvcService(this IServiceCollection services, IWebHostEnvironment hostingEnvironment, bool isAuthEnabled, ILoggerFactory loggerFactory)
         {
             services.AddAntiforgery(options =>
             {
@@ -86,11 +85,11 @@ namespace Esfa.Recruit.Employer.Web.Configuration
                     opts.Filters.AddService<ZendeskApiFilter>();
                     opts.AddTrimModelBinderProvider(loggerFactory);
                 })
-            .AddNewtonsoftJson()
-            .AddFluentValidation();
+                .AddNewtonsoftJson();
+            services.AddFluentValidationAutoValidation();
         }
 
-        public static void AddAuthenticationService(this IServiceCollection services, AuthenticationConfiguration authConfig, IEmployerVacancyClient vacancyClient, IRecruitVacancyClient recruitClient, IWebHostEnvironment hostingEnvironment)
+        public static void AddAuthenticationService(this IServiceCollection services, AuthenticationConfiguration authConfig)
         {
             JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 
@@ -102,14 +101,9 @@ namespace Esfa.Recruit.Employer.Web.Configuration
             .AddCookie("Cookies", options =>
             {
                 options.Cookie.Name = CookieNames.RecruitData;
-
-                if (!hostingEnvironment.IsDevelopment())
-                {
-                    options.Cookie.SecurePolicy = Microsoft.AspNetCore.Http.CookieSecurePolicy.Always;
-                    options.SlidingExpiration = true;
-                    options.ExpireTimeSpan = TimeSpan.FromMinutes(AuthenticationConfiguration.SessionTimeoutMinutes);
-                }
-
+                options.Cookie.SecurePolicy = Microsoft.AspNetCore.Http.CookieSecurePolicy.Always;
+                options.SlidingExpiration = true;
+                options.ExpireTimeSpan = TimeSpan.FromMinutes(AuthenticationConfiguration.SessionTimeoutMinutes);
                 options.AccessDeniedPath = "/Error/403";
             })
             .AddOpenIdConnect("oidc", options =>
@@ -125,12 +119,6 @@ namespace Esfa.Recruit.Employer.Web.Configuration
                 options.Scope.Add("profile");
                 options.UsePkce = false;
                 
-                options.Events.OnTokenValidated = async (ctx) =>
-                {
-                    await PopulateAccountsClaim(ctx, recruitClient);
-                    await HandleUserSignedIn(ctx, recruitClient);
-                };
-
                 options.Events.OnRemoteFailure = ctx =>
                 {
                     if (ctx.Failure.Message.Contains("Correlation failed"))
@@ -145,6 +133,16 @@ namespace Esfa.Recruit.Employer.Web.Configuration
                     return Task.CompletedTask;
                 };
             });
+            services
+                .AddOptions<OpenIdConnectOptions>(OpenIdConnectDefaults.AuthenticationScheme)
+                .Configure<IRecruitVacancyClient>((options, recruitVacancyClient) =>
+                {
+                    options.Events.OnTokenValidated = async (ctx) =>
+                    {
+                        await PopulateAccountsClaim(ctx, recruitVacancyClient);
+                        await HandleUserSignedIn(ctx, recruitVacancyClient);
+                    };
+                });
         }
 
         private static async Task PopulateAccountsClaim(

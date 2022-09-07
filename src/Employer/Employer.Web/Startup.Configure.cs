@@ -1,9 +1,7 @@
 ﻿using Esfa.Recruit.Employer.Web.Configuration;
-using Esfa.Recruit.Shared.Web.Configuration;
 using Esfa.Recruit.Shared.Web.Middleware;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Rewrite;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System.Collections.Generic;
@@ -185,7 +183,7 @@ namespace Esfa.Recruit.Employer.Web
             app.UseRedirectValidation(opts =>
             {
                 opts.AllowSameHostRedirectsToHttps();
-                opts.AllowedDestinations(GetAllowableDestinations(_authConfig, externalLinks.Value));
+                opts.AllowedDestinations(GetAllowableDestinations(AuthConfig, externalLinks.Value));
             }); //Register this earlier if there's middleware that might redirect.
 
             // Redirect requests to root to the MA site.
@@ -197,7 +195,6 @@ namespace Esfa.Recruit.Employer.Web
 
             app.UseNoCacheHttpHeaders(); // Effectively forces the browser to always request dynamic pages
 
-            app.UseMvc();
         }
 
         private static string[] GetAllowableDestinations(AuthenticationConfiguration authConfig, ExternalLinksConfiguration linksConfig)

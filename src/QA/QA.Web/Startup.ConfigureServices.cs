@@ -70,9 +70,6 @@ namespace Esfa.Recruit.Qa.Web
         {
             services.Configure<ApplicationInsightsConfiguration>(_configuration.GetSection("ApplicationInsights"));
 
-            //A service provider for resolving services configured in IoC
-            var sp = services.BuildServiceProvider();
-
             // Routing has to come before adding Mvc
             services.AddRouting(opt =>
             {
