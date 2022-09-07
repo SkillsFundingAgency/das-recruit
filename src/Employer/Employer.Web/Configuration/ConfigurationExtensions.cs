@@ -134,7 +134,7 @@ namespace Esfa.Recruit.Employer.Web.Configuration
                 };
             });
             services
-                .AddOptions<OpenIdConnectOptions>(OpenIdConnectDefaults.AuthenticationScheme)
+                .AddOptions<OpenIdConnectOptions>("oidc")
                 .Configure<IRecruitVacancyClient>((options, recruitVacancyClient) =>
                 {
                     options.Events.OnTokenValidated = async (ctx) =>

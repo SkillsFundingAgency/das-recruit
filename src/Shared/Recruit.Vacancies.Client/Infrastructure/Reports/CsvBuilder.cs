@@ -4,7 +4,6 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
-using AngleSharp.Css;
 using CsvHelper;
 using Newtonsoft.Json.Linq;
 
@@ -42,9 +41,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Reports
 
         private static CsvWriter GetCsvWriter(TextWriter streamWriter)
         {
-            var csv = new CsvWriter(streamWriter, true);
-
-            csv.Configuration.CultureInfo = CultureInfo.GetCultureInfo("en-GB");
+            var csv = new CsvWriter(streamWriter, CultureInfo.GetCultureInfo("en-GB"), true);
 
             return csv;
         }

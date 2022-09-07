@@ -100,6 +100,13 @@ namespace Esfa.Recruit.Qa.Web
 
             app.UseStaticFiles();
 
+            app.UseRouting();
+            app.UseAuthorization();
+            app.UseEndpoints(builder =>
+            {
+                builder.MapControllerRoute("default", RoutePaths.VacancyReviewsRoutePath);
+            });
+            
              //Registered after static files, to set headers for dynamic content.
             app.UseXfo(xfo => xfo.Deny());
             app.UseXDownloadOptions();

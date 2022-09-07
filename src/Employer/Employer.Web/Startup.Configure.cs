@@ -189,7 +189,12 @@ namespace Esfa.Recruit.Employer.Web
             // Redirect requests to root to the MA site.
             app.UseRootRedirect(externalLinks.Value.ManageApprenticeshipSiteUrl);
             app.UseHttpsRedirection();
-
+            app.UseRouting();
+            app.UseAuthorization();
+            app.UseEndpoints(builder =>
+            {
+                builder.MapControllerRoute("default", RoutePaths.AccountRoutePath);
+            });
             app.UseXDownloadOptions();
             app.UseXRobotsTag(options => options.NoIndex().NoFollow());
 
