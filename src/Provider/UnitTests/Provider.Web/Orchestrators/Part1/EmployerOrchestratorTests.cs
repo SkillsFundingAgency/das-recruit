@@ -17,7 +17,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part1
     public class EmployerOrchestratorTests
     {
         [Test, MoqAutoData]
-        public async Task Then_If_There_Are_No_Permissions_Returned_Exception_Thrown(
+        public void Then_If_There_Are_No_Permissions_Returned_Exception_Thrown(
             VacancyRouteModel vacancyRouteModel,
             [Frozen] Mock<IProviderVacancyClient> providerVacancyClient,
             EmployerOrchestrator orchestrator)

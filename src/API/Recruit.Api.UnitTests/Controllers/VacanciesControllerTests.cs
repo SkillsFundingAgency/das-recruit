@@ -9,42 +9,41 @@ using MediatR;
 using SFA.DAS.Recruit.Api.Queries;
 using System.Threading;
 using AutoFixture.NUnit3;
-using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 using NUnit.Framework;
 using SFA.DAS.Recruit.Api.Commands;
 using SFA.DAS.Recruit.Api.Models;
 using SFA.DAS.Testing.AutoFixture;
-using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Assert = NUnit.Framework.Assert;
 
 namespace SFA.DAS.Recruit.Api.UnitTests.Controllers
 {
     public class VacanciesControllerTests
     {
-        private readonly Mock<IMediator> _mockMediator;
-        private readonly VacanciesController _sut;
+        private Mock<IMediator> _mockMediator;
+        private VacanciesController _sut;
         private GetVacanciesQuery _queryPassed;
 
-        public VacanciesControllerTests()
+        [SetUp]
+        public void Setup()
         {
             _mockMediator = new Mock<IMediator>();
             _mockMediator.Setup(x => x.Send(It.IsAny<GetVacanciesQuery>(), CancellationToken.None))
-                        .ReturnsAsync(new GetVacanciesResponse())
-                        .Callback<IRequest<GetVacanciesResponse>, CancellationToken>((q, _) => _queryPassed = (GetVacanciesQuery)q);
+                .ReturnsAsync(new GetVacanciesResponse())
+                .Callback<IRequest<GetVacanciesResponse>, CancellationToken>((q, _) => _queryPassed = (GetVacanciesQuery)q);
             _sut = new VacanciesController(_mockMediator.Object);
         }
 
-        [Xunit.Theory]
-        [InlineData(" myjr4x")]
-        [InlineData("MYJR4X")]
-        [InlineData(" myjR4X ")]
+        
+        [TestCase(" myjr4x")]
+        [TestCase("MYJR4X")]
+        [TestCase(" myjR4X ")]
         public async Task GetCall_EnsuresEmployerAccountIdPassedInQueryPassedToMediatorIsTrimmedAndUppercased(string input)
         {
             await _sut.Get(input, 0, 0, 25, 1);
             string.CompareOrdinal(_queryPassed.EmployerAccountId, "MYJR4X").Should().Be(0);
         }
-
+        
         [Test, MoqAutoData]
         public async Task CreateVacancy_Then_The_Request_Is_Sent_To_Mediator_Command(
             Guid id,
