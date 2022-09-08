@@ -29,7 +29,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
             _vacancyTaskListStatusService = vacancyTaskListStatusService;
         }
        
-        public async Task<IList<VacancyDashboard>> GetProviderOwnedVacancyDashboardByUkprnAsync(long ukprn, VacancyType vacancyType)
+        public async Task<VacancyDashboard> GetProviderOwnedVacancyDashboardByUkprnAsync(long ukprn, VacancyType vacancyType)
         {
             var bsonArray = new BsonArray
             {
@@ -50,9 +50,19 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
             };
             var builder = new VacancySummaryAggQueryBuilder();
             var aggPipelines = builder.GetAggregateQueryPipelineDashboard(match);
-            return await RunDashboardAggPipelineQuery(aggPipelines);
+            var applicationAggPipeline = builder.GetAggregateQueryPipelineDashboardApplications(match);
+            var dashboardValuesTask =  RunDashboardAggPipelineQuery(aggPipelines);
+            var applicationDashboardValuesTask = RunApplicationsDashboardAggPipelineQuery(applicationAggPipeline);
+
+            await Task.WhenAll(dashboardValuesTask, applicationDashboardValuesTask);
+            
+            return new VacancyDashboard
+            {
+                VacancyStatusDashboard = dashboardValuesTask.Result,
+                VacancyApplicationsDashboard = applicationDashboardValuesTask.Result
+            };
         }
-        public async Task<IList<VacancyDashboard>> GetEmployerOwnedVacancyDashboardByEmployerAccountIdAsync(string employerAccountId, VacancyType vacancyType)
+        public async Task<VacancyDashboard> GetEmployerOwnedVacancyDashboardByEmployerAccountIdAsync(string employerAccountId, VacancyType vacancyType)
         {
             var bsonArray = new BsonArray
             {
@@ -80,7 +90,17 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
             };
             var builder = new VacancySummaryAggQueryBuilder();
             var aggPipelines = builder.GetAggregateQueryPipelineDashboard(match,employerReviewMatch);
-            return await RunDashboardAggPipelineQuery(aggPipelines);
+            var applicationAggPipeline = builder.GetAggregateQueryPipelineDashboardApplications(match, employerReviewMatch);
+            
+            var dashboardValuesTask = RunDashboardAggPipelineQuery(aggPipelines);
+            var applicationDashboardValuesTask = RunApplicationsDashboardAggPipelineQuery(applicationAggPipeline);
+
+            await Task.WhenAll(dashboardValuesTask, applicationDashboardValuesTask);
+            return new VacancyDashboard
+            {
+                VacancyStatusDashboard = dashboardValuesTask.Result,
+                VacancyApplicationsDashboard = applicationDashboardValuesTask.Result
+            };
         }
         
         public async Task<IList<VacancySummary>> GetProviderOwnedVacancySummariesByUkprnAsync(long ukprn, VacancyType vacancyType, int page, FilteringOptions? status, string searchTerm)
@@ -221,7 +241,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
             return await RunAggPipelineCountQuery(aggPipeline);
         }
 
-        private async Task<List<VacancyDashboard>> RunDashboardAggPipelineQuery(BsonDocument[] pipeline)
+        private async Task<List<VacancyStatusDashboard>> RunDashboardAggPipelineQuery(BsonDocument[] pipeline)
         {
             var db = GetDatabase();
             var collection = db.GetCollection<BsonDocument>(MongoDbCollectionNames.Vacancies);
@@ -234,6 +254,22 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                 new Context(nameof(RunDashboardAggPipelineQuery)));
 
             return vacancyDashboard.Select(VacancyDashboardMapper.MapFromVacancyDashboardSummaryResponseDto).ToList();
+        }
+
+        private async Task<List<VacancyApplicationsDashboard>> RunApplicationsDashboardAggPipelineQuery(
+            BsonDocument[] pipeline)
+        {
+            var db = GetDatabase();
+            var collection = db.GetCollection<BsonDocument>(MongoDbCollectionNames.Vacancies);
+            
+            var vacancyDashboard = await RetryPolicy.Execute(async context =>
+                {
+                    var aggResults = await collection.AggregateAsync<VacancyApplicationsDashboardResponseDto>(pipeline);
+                    return await aggResults.ToListAsync();
+                },
+                new Context(nameof(RunDashboardAggPipelineQuery)));
+
+            return vacancyDashboard.Select(VacancyDashboardApplicationsMapper.MapFromVacancyApplicationsDashboardResponseDto).ToList();
         }
 
         private async Task<long> RunAggPipelineCountQuery(BsonDocument[] pipeline)
