@@ -14,25 +14,18 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Dashboard
         public string EmployerAccountId { get; set; }
         public AlertsViewModel Alerts { get; internal set; }
 
-        public bool HasOneVacancy => EmployerDashboardSummary.HasOneVacancy;
-        //public Guid CurrentVacancyId => HasOneVacancy ? Vacancies.Single().Id : new Guid();
         public int VacancyCountDraft => EmployerDashboardSummary.Draft;
         public string VacancyTextDraft => "advert".ToQuantity(VacancyCountDraft, ShowQuantityAs.None);
         public bool HasDraftVacancy => VacancyCountDraft > 0;
         public int VacancyCountReview => EmployerDashboardSummary.Review;
         public string VacancyTextReview => "advert".ToQuantity(VacancyCountReview, ShowQuantityAs.None);
-        public bool HasReviewVacancy => VacancyCountReview > 0;
         public int VacancyCountLive => EmployerDashboardSummary.Live;
         public string VacancyTextLive => "advert".ToQuantity(VacancyCountLive, ShowQuantityAs.None);
-        public bool HasLiveVacancy => VacancyCountLive > 0;
         public int VacancyCountClosed => EmployerDashboardSummary.Closed;
         public string VacancyTextClosed => "advert".ToQuantity(VacancyCountClosed, ShowQuantityAs.None);
-        public bool HasClosedVacancy => VacancyCountClosed > 0;
         public int VacancyCountReferred => EmployerDashboardSummary.Referred;
         public string VacancyTextReferred => "advert".ToQuantity(VacancyCountReferred, ShowQuantityAs.None);
-        public bool HasReferredVacancy => VacancyCountReferred > 0;
         public int VacancyCountSubmitted => EmployerDashboardSummary.Submitted;
-        public bool HasSubmittedVacancy => VacancyCountSubmitted > 0;
         public int NoOfNewApplications => EmployerDashboardSummary.NumberOfNewApplications;
         public bool HasNewApplications => NoOfNewApplications > 0;
         public bool ShowAllApplications => EmployerDashboardSummary.HasApplications;
