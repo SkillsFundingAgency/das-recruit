@@ -4,16 +4,13 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
 {
     internal static class VacancyDashboardMapper
     {
-        internal static VacancyDashboard MapFromVacancyDashboardSummaryResponseDto(VacancyDashboardAggQueryResponseDto src)
+        internal static VacancyStatusDashboard MapFromVacancyDashboardSummaryResponseDto(VacancyDashboardAggQueryResponseDto src)
         {
-            return new VacancyDashboard
+            return new VacancyStatusDashboard
             {
                 Status = src.Id.Status,
                 StatusCount = src.StatusCount,
                 ClosingSoon = src.Id.ClosingSoon,
-                NoOfNewApplications = src.NoOfNewApplications,
-                NoOfSuccessfulApplications = src.NoOfSuccessfulApplications,
-                NoOfUnsuccessfulApplications = src.NoOfUnsuccessfulApplications
             };
         }
     }

@@ -64,7 +64,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 
             await Task.WhenAll(dashboardTask, transferredVacanciesTask);
 
-            var dashboard = dashboardTask.Result;
+            var dashboardValue = dashboardTask.Result;
             var transferredVacancies = transferredVacanciesTask.Result.Select(t => 
                 new ProviderDashboardTransferredVacancy
                 {
@@ -72,20 +72,25 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
                     TransferredDate = t.TransferredDate,
                     Reason = t.Reason
                 });
+
+            var dashboard = dashboardValue.VacancyStatusDashboard;
+            var dashboardApplications = dashboardValue.VacancyApplicationsDashboard;
             
             return new ProviderDashboardSummary
             {
-                Closed = dashboard.SingleOrDefault(c=>c.Status == VacancyStatus.Closed)?.StatusCount ?? 0,
+                Closed = dashboard.FirstOrDefault(c=>c.Status == VacancyStatus.Closed)?.StatusCount ?? 0,
                 Draft = dashboard.SingleOrDefault(c=>c.Status == VacancyStatus.Draft)?.StatusCount ?? 0,
                 Review = dashboard.SingleOrDefault(c=>c.Status == VacancyStatus.Review)?.StatusCount ?? 0,
                 Referred = (dashboard.SingleOrDefault(c=>c.Status == VacancyStatus.Referred)?.StatusCount ?? 0) + (dashboard.SingleOrDefault(c=>c.Status == VacancyStatus.Rejected)?.StatusCount ?? 0),
-                Live = dashboard.SingleOrDefault(c=>c.Status == VacancyStatus.Live && !c.ClosingSoon)?.StatusCount ?? 0,
+                Live = dashboard.Where(c=>c.Status == VacancyStatus.Live).Sum(c=>c.StatusCount),
                 Submitted = dashboard.SingleOrDefault(c=>c.Status == VacancyStatus.Submitted)?.StatusCount ?? 0,
-                NumberOfNewApplications = dashboard.SingleOrDefault(c=>c.Status == VacancyStatus.Live && !c.ClosingSoon)?.NoOfNewApplications ?? 0,
-                NumberOfSuccessfulApplications = (dashboard.SingleOrDefault(c=>c.Status == VacancyStatus.Live && !c.ClosingSoon)?.NoOfSuccessfulApplications ?? 0) + (dashboard.SingleOrDefault(c=>c.Status == VacancyStatus.Closed && !c.ClosingSoon)?.NoOfSuccessfulApplications ?? 0),
-                NumberOfUnsuccessfulApplications = (dashboard.SingleOrDefault(c=>c.Status == VacancyStatus.Live && !c.ClosingSoon)?.NoOfUnsuccessfulApplications ?? 0) + (dashboard.SingleOrDefault(c=>c.Status == VacancyStatus.Closed && !c.ClosingSoon)?.NoOfUnsuccessfulApplications ?? 0),
-                NumberClosingSoon =dashboard.SingleOrDefault(c=>c.Status == VacancyStatus.Live && c.ClosingSoon && (c.NoOfNewApplications != 0 || c.NoOfSuccessfulApplications != 0 || c.NoOfUnsuccessfulApplications != 0))?.StatusCount ?? 0,
-                NumberClosingSoonWithNoApplications =dashboard.SingleOrDefault(c=>c.Status == VacancyStatus.Live && c.ClosingSoon && c.NoOfNewApplications == 0 && c.NoOfSuccessfulApplications == 0 && c.NoOfUnsuccessfulApplications == 0)?.StatusCount ?? 0,
+                NumberOfNewApplications = dashboardApplications.Where(c=>c.Status == VacancyStatus.Live || c.Status == VacancyStatus.Closed).Sum(x=>x.NoOfNewApplications),
+                NumberOfSuccessfulApplications = dashboardApplications.Where(c=>c.Status == VacancyStatus.Live && !c.ClosingSoon).Sum(x=>x.NoOfSuccessfulApplications) 
+                                                 + dashboardApplications.Where(c=>c.Status == VacancyStatus.Closed && !c.ClosingSoon).Sum(x=>x.NoOfSuccessfulApplications),
+                NumberOfUnsuccessfulApplications = dashboardApplications.Where(c=>c.Status == VacancyStatus.Live && !c.ClosingSoon).Sum(x=>x.NoOfUnsuccessfulApplications) 
+                                                   + dashboardApplications.Where(c=>c.Status == VacancyStatus.Closed && !c.ClosingSoon).Sum(x=>x.NoOfUnsuccessfulApplications),
+                NumberClosingSoon =dashboardApplications.FirstOrDefault(c=>c.Status == VacancyStatus.Live && c.ClosingSoon && (c.NoOfNewApplications != 0 || c.NoOfSuccessfulApplications != 0 || c.NoOfUnsuccessfulApplications != 0))?.StatusCount ?? 0,
+                NumberClosingSoonWithNoApplications =dashboardApplications.FirstOrDefault(c=>c.Status == VacancyStatus.Live && c.ClosingSoon && c.NoOfNewApplications == 0 && c.NoOfSuccessfulApplications == 0 && c.NoOfUnsuccessfulApplications == 0)?.StatusCount ?? 0,
                 TransferredVacancies = transferredVacancies
             };
         }
