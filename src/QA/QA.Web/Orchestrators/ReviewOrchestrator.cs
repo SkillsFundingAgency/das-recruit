@@ -78,6 +78,11 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
 
             var vm = await _mapper.Map(review);
 
+            if(!vm.EmployerWebsiteUrl.Contains("https://"))
+            {
+                vm.EmployerWebsiteUrl = "https://" + $"{vm.EmployerWebsiteUrl}";
+            }
+
             return vm;
         }
 
