@@ -13,7 +13,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Vacancies.S
         public async Task WhenThereAreNoVacancies()
         {
             var expectedMessage = "0 adverts with 'nurse'";
-            var sut = GetSut(new List<VacancySummary>());
+            var sut = GetSut(new List<VacancySummary>(), FilteringOptions.All, "nurses");
             var vm = await sut.GetVacanciesViewModelAsync(EmployerAccountId, "All", 1, User, "nurse");
             vm.ResultsHeading.Should().Be(expectedMessage);
         }
@@ -22,7 +22,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Vacancies.S
         public async Task WhenThereIsOneVacancy()
         {
             var expectedMessage = "1 advert with 'nurse'";
-            var sut = GetSut(GenerateVacancySummaries(1, "nurse", string.Empty, VacancyStatus.Live));
+            var sut = GetSut(GenerateVacancySummaries(1, "nurse", string.Empty, VacancyStatus.Live), FilteringOptions.All, "nurse");
             var vm = await sut.GetVacanciesViewModelAsync(EmployerAccountId, "All", 1, User, "nurse");
             vm.ResultsHeading.Should().Be(expectedMessage);
         }
@@ -31,7 +31,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Vacancies.S
         public async Task WhenThereIsMoreThanOneVacancy()
         {
             var expectedMessage = "2 adverts with 'nurse'";
-            var sut = GetSut(GenerateVacancySummaries(2, "nurse", string.Empty, VacancyStatus.Live));
+            var sut = GetSut(GenerateVacancySummaries(2, "nurse", string.Empty, VacancyStatus.Live), FilteringOptions.All, "nurse");
             var vm = await sut.GetVacanciesViewModelAsync(EmployerAccountId, "All", 1, User, "nurse");
             vm.ResultsHeading.Should().Be(expectedMessage);
         }

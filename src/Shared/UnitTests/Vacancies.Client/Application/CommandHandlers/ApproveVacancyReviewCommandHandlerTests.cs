@@ -34,7 +34,6 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.C
         private readonly Mock<IMessaging> _mockMessaging;
         private readonly Mock<IBlockedOrganisationQuery> _mockBlockedOrganisationQuery;
         private readonly ApproveVacancyReviewCommandHandler _sut;
-        private readonly Mock<IEmployerDashboardProjectionService> _dashboardService;
         private readonly Mock<ICommunicationQueueService> _mockCommunicationQueueService;
         private const long BlockedProviderUkprn = 12345678;
         private const string EmployerAccountId = "EMPLOYERACCOUNTID";
@@ -53,12 +52,11 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.C
 
             _mockBlockedOrganisationQuery = new Mock<IBlockedOrganisationQuery>();
 
-            _dashboardService = new Mock<IEmployerDashboardProjectionService>();
             _mockCommunicationQueueService = new Mock<ICommunicationQueueService>();
 
             _sut = new ApproveVacancyReviewCommandHandler(Mock.Of<ILogger<ApproveVacancyReviewCommandHandler>>(), _mockVacancyReviewRepository.Object,
                                                         _mockVacancyRepository.Object, _mockMessaging.Object, mockValidator, _mockTimeProvider.Object, 
-                                                        _mockBlockedOrganisationQuery.Object, _dashboardService.Object, _mockCommunicationQueueService.Object);
+                                                        _mockBlockedOrganisationQuery.Object, _mockCommunicationQueueService.Object);
         }
 
         [Theory]
@@ -157,36 +155,6 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.C
             existingVacancy.ClosureReason.Should().Be(ClosureReason.BlockedByQa);
             _mockVacancyRepository.Verify(x => x.UpdateAsync(existingVacancy), Times.Once);
             _mockCommunicationQueueService.Verify(c => c.AddMessageAsync(It.Is<CommunicationRequest>(r => r.RequestType == CommunicationConstants.RequestType.ProviderBlockedEmployerNotificationForLiveVacancies)));
-        }
-
-        [Fact]
-        public async Task GivenApprovedVacancyReviewCommand_AndProviderHasBeenBlockedSinceReviewWasCreated_ThenRaiseUpdateEmployerDashboardEvent()
-        {
-            var existingVacancy = _autoFixture.Build<Vacancy>()
-                .With(x=>x.EmployerAccountId, EmployerAccountId)
-                                                .Without(x => x.TransferInfo)
-                                                .With(x => x.TrainingProvider, new TrainingProvider { Ukprn = BlockedProviderUkprn })
-                                                .Create();
-
-            _mockVacancyRepository.Setup(x => x.GetVacancyAsync(existingVacancy.VacancyReference.Value)).ReturnsAsync(existingVacancy);
-
-            _mockVacancyReviewRepository.Setup(x => x.GetAsync(_existingReviewId)).ReturnsAsync(new VacancyReview
-            {
-                Id = _existingReviewId,
-                CreatedDate = _mockTimeProvider.Object.Now.AddHours(-5),
-                Status = ReviewStatus.UnderReview,
-                VacancyReference = existingVacancy.VacancyReference.Value,
-                VacancySnapshot = new Vacancy()
-            });
-
-            _mockBlockedOrganisationQuery.Setup(b => b.GetByOrganisationIdAsync(BlockedProviderUkprn.ToString()))
-                .ReturnsAsync(new BlockedOrganisation { BlockedStatus = BlockedStatus.Blocked });
-
-            var command = new ApproveVacancyReviewCommand(_existingReviewId, "comment", new List<ManualQaFieldIndicator>(), new List<Guid>(), new List<ManualQaFieldEditIndicator>());
-
-            await _sut.Handle(command, CancellationToken.None);
-            _dashboardService.Verify(x=>x.ReBuildDashboardAsync(EmployerAccountId),Times.Once);
-            
         }
     }
 }

@@ -18,13 +18,11 @@ namespace Esfa.Recruit.UnitTests.Provider.Web.Orchestrators.Vacancies
 {
     public class GivenSearchTerm
     {
-        private VacancyUser _user;
-        private User _userDetails;
-        private Mock<IRecruitVacancyClient> _recruitVacancyClientMock;
-        private Mock<IProviderAlertsViewModelFactory> _providerAlertsViewModelFactoryMock;
-        private Mock<IProviderRelationshipsService> _providerRelationshipsServiceMock;
-
-        private VacancySummary[] _testVacancies = new[] 
+        private readonly VacancyUser _user = new VacancyUser
+        {
+            Ukprn = 12345
+        };
+        private VacancySummary[] _testVacancies =  
         {
             new VacancySummary(){Title="The quick brown", LegalEntityName="20th Century Fox", VacancyReference=1000000101, Status = VacancyStatus.Closed},
             new VacancySummary(){Title="fox jumped over", LegalEntityName="20th Century Fox", VacancyReference=1000000102, Status = VacancyStatus.Live},
@@ -34,24 +32,13 @@ namespace Esfa.Recruit.UnitTests.Provider.Web.Orchestrators.Vacancies
             new VacancySummary(){Title="brown dog", LegalEntityName="Black & Brown Ltd", VacancyReference=2000000105, Status = VacancyStatus.Referred}
         };
 
-        [Theory]
-        [InlineData("Closed", "lazy", "1000000105")]
-        [InlineData("Live", "fox", "1000000102,1000000104")]
-        [InlineData("", "fox", "1000000101,1000000102,1000000104,1000000105")]
-        [InlineData("", "105", "2000000105,1000000105")]
-        [InlineData("Closed", "VAC100", "1000000101,1000000105")]
-        [InlineData("Referred", "", "2000000105")]
-        public async Task ThenReturnResults(string status, string searchTerm, string references)
+        [Fact]
+        public async Task ThenReturnResults()
         {
-            var expectedReferences = references.Split(',');
-            var sut = GetSut(); 
-            var result = await sut.GetVacanciesViewModelAsync(_user, status, 1, searchTerm);
+            var sut = GetSut(1, FilteringOptions.Live, "something"); 
+            
+            var result = await sut.GetVacanciesViewModelAsync(_user, "Live", 1, "something");
             result.Vacancies.Any().Should().BeTrue();
-            result.Vacancies.Count.Should().Be(expectedReferences.Count());
-            result.Vacancies
-                .Select(v => v.VacancyReference.ToString())
-                .All(r => expectedReferences.Contains(r))
-                .Should().BeTrue();
         }
 
         [Theory]
@@ -60,52 +47,26 @@ namespace Esfa.Recruit.UnitTests.Provider.Web.Orchestrators.Vacancies
         [InlineData("Submitted","")]
         public async Task ThenReturnNoResults(string status, string searchTerm)
         {
-            var sut = GetSut(); 
+            Enum.TryParse<FilteringOptions>(status, out var vacancyStatus);
+            
+            var sut = GetSut(1, vacancyStatus, searchTerm + "1"); 
             var result = await sut.GetVacanciesViewModelAsync(_user, status, 1, searchTerm);
             result.Vacancies.Any().Should().BeFalse();
         }
 
-        private VacanciesOrchestrator GetSut()
+        private VacanciesOrchestrator GetSut(int page, FilteringOptions? status, string searchTerm)
         {
             var providerClientMock = new Mock<IProviderVacancyClient>();
-            var timeProviderMock = new Mock<ITimeProvider>();
-            providerClientMock.Setup(c => c.GetDashboardAsync(_user.Ukprn.Value, VacancyType.Apprenticeship, true))
+            
+            providerClientMock.Setup(c => c.GetDashboardAsync(_user.Ukprn.Value, VacancyType.Apprenticeship,page, status, searchTerm))
                 .ReturnsAsync(new ProviderDashboard {
                     Vacancies = _testVacancies
                 });
             return new VacanciesOrchestrator(
                 providerClientMock.Object,
-                _recruitVacancyClientMock.Object,
-                timeProviderMock.Object,
-                _providerAlertsViewModelFactoryMock.Object,
-                _providerRelationshipsServiceMock.Object, new ServiceParameters(VacancyType.Apprenticeship.ToString()));
-        }
-
-        public GivenSearchTerm()
-        {
-            var userId = Guid.NewGuid();
-            _user = new VacancyUser
-            {
-                Email = "me@home.com",
-                UserId = userId.ToString(),
-                Name = "Bob Monkhouse",
-                Ukprn = 12345678
-            };
-            _userDetails = new User
-            {
-                Email = _user.Email,
-                Name = _user.Name,
-                Ukprn = _user.Ukprn,
-                Id = userId
-            };
-
-            _recruitVacancyClientMock = new Mock<IRecruitVacancyClient>();
-            _recruitVacancyClientMock
-                .Setup(x => x.GetUsersDetailsAsync(_user.UserId))
-                .ReturnsAsync(_userDetails);
-
-            _providerAlertsViewModelFactoryMock = new Mock<IProviderAlertsViewModelFactory>();
-            _providerRelationshipsServiceMock = new Mock<IProviderRelationshipsService>();
+                Mock.Of<IRecruitVacancyClient>(),
+               Mock.Of<IProviderAlertsViewModelFactory>(),
+                Mock.Of<IProviderRelationshipsService>(), new ServiceParameters(VacancyType.Apprenticeship.ToString()));
         }
 
     }
