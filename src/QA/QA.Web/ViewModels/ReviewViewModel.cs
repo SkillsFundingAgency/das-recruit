@@ -28,7 +28,6 @@ namespace Esfa.Recruit.Qa.Web.ViewModels
         public string AnonymousReason { get; internal set; }
         public int AnonymousApprovedCount { get; internal set; }
         public string EmployerWebsiteUrl { get; internal set; }
-        public Uri EmployerWebsiteUri { get; internal set; }
         public IEnumerable<string> EmployerAddressElements { get; internal set; }
         public bool IsDisabilityConfident { get; set; }
         public string LegalEntityName { get; set; }
