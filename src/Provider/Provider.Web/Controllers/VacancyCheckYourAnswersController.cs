@@ -41,6 +41,9 @@ namespace Esfa.Recruit.Provider.Web.Controllers
                 return RedirectToRoute(RouteNames.ProviderTaskListGet, new {vrm.Ukprn, vrm.VacancyId});
             }
             
+            if (TempData.ContainsKey(TempDataKeys.VacancyPreviewInfoMessage))
+                viewModel.VacancyClonedInfoMessage = TempData[TempDataKeys.VacancyPreviewInfoMessage].ToString();
+            
             return View(viewModel);
         }
         
