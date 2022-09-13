@@ -20,7 +20,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         [HttpGet("vacancies/create/start", Name=RouteNames.CreateVacancyStart)]
         public IActionResult StartVacancyCreate(VacancyRouteModel vrm)
         {
-            return View("StartCreateVacancy");
+            return View("StartCreateVacancy", vrm);
         }
         
         [HttpGet("vacancies/create/task-list", Name = RouteNames.EmployerTaskListCreateGet)]
@@ -44,7 +44,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
                 || viewModel.Status == VacancyStatus.Referred
                 || viewModel.Status == VacancyStatus.Review)
             {
-                return RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet);
+                return RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet, vrm);
             }
             
             return View(viewModel);

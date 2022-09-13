@@ -37,6 +37,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators
             [Frozen] Mock<IEmployerVacancyClient> employerVacancyClient,
             VacancyTaskListOrchestrator orchestrator)
         {
+            //arrange
             vacancy.EmployerLocation = null;
             vacancy.EmployerNameOption = EmployerNameOption.RegisteredName;
             programme.Id = vacancy.ProgrammeId;
@@ -58,11 +59,14 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators
             var expectedViewModel = new VacancyPreviewViewModel();
             var mapper = new DisplayVacancyViewModelMapper(Mock.Of<IGeocodeImageService>(),
                 externalLinksConfiguration.Object, recruitVacancyClient.Object);
+            await mapper.MapFromVacancyAsync(expectedViewModel, vacancy);
+            expectedViewModel.VacancyId = routeModel.VacancyId;
+            expectedViewModel.EmployerAccountId = routeModel.EmployerAccountId;
 
+            //act
             var viewModel = await orchestrator.GetVacancyTaskListModel(routeModel);
 
-            await mapper.MapFromVacancyAsync(expectedViewModel, vacancy);
-            
+            //assert
             viewModel.Should().BeEquivalentTo(expectedViewModel, options=>options
                 .Excluding(c=>c.SoftValidationErrors)
                 .Excluding(c=>c.RejectedReason)

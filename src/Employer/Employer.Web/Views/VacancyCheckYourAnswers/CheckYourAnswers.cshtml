@@ -11,11 +11,11 @@
 @section BackLink {
     @if (Model.CanReview || Model.Review.HasBeenReviewed)
     {
-        <a asp-route="@RouteNames.Dashboard_Get" esfa-automation="link-back" class="govuk-back-link">Return to dashboard</a>
+        <a asp-route="@RouteNames.Dashboard_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Return to dashboard</a>
     }
     else
     {
-        <a asp-route="@RouteNames.EmployerTaskListGet" esfa-automation="link-back" class="govuk-back-link">Back to task list</a>    
+        <a asp-route="@RouteNames.EmployerTaskListGet" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Back to task list</a>    
     }
     
 }

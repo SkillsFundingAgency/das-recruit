@@ -65,6 +65,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             vm.CanShowReference = vacancy.Status != VacancyStatus.Draft;
             vm.CanShowDraftHeader = vacancy.Status == VacancyStatus.Draft;
             vm.SoftValidationErrors = GetSoftValidationErrors(vacancy);
+            vm.VacancyId = vrm.VacancyId;
+            vm.EmployerAccountId = vrm.EmployerAccountId;
             
             if (programme != null)
             {
@@ -85,7 +87,9 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             var getEmployerData = await _employerVacancyClient.GetEditVacancyInfoAsync(vrm.EmployerAccountId);
             var vm = new VacancyPreviewViewModel
             {
-                AccountLegalEntityCount = getEmployerData?.LegalEntities?.Count() ?? 0
+                AccountLegalEntityCount = getEmployerData?.LegalEntities?.Count() ?? 0,
+                VacancyId = vrm.VacancyId,
+                EmployerAccountId = vrm.EmployerAccountId
             };
 
             return vm;
