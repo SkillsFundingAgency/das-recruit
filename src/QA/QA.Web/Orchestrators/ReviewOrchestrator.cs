@@ -78,7 +78,7 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
 
             var vm = await _mapper.Map(review);
 
-            if(!vm.EmployerWebsiteUrl.Contains("https://"))
+            if(!vm.EmployerWebsiteUrl.StartsWith("http", true, null))
             {
                 vm.EmployerWebsiteUrl = "https://" + $"{vm.EmployerWebsiteUrl}";
             }
@@ -95,12 +95,12 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
 
             var vm = await _mapper.Map(review);
 
-            if (!vm.EmployerWebsiteUrl.Contains("https://"))
+            if (!vm.EmployerWebsiteUrl.StartsWith("http", true, null))
             {
                 vm.EmployerWebsiteUrl = "https://" + $"{vm.EmployerWebsiteUrl}";
             }
 
-            if (!vm.ApplicationUrl.Contains("https://"))
+            if (!vm.ApplicationUrl.StartsWith("http", true, null))
             {
                 vm.ApplicationUrl = "https://" + $"{vm.ApplicationUrl}";
             }
