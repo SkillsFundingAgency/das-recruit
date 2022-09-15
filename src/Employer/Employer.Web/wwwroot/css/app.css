@@ -287,6 +287,10 @@
     list-style-type: disc;
 }
 
+.app-preserve-line-breaks {
+    white-space: pre-line;
+}
+
 /* Tinymce */
 
 .mce-tinymce {

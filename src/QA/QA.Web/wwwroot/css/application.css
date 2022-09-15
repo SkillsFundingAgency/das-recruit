@@ -474,3 +474,7 @@ mce-tinymce {
     font-weight: 700;
 }
 
+/*** User Generated Content***/
+.app-preserve-line-breaks {
+    white-space: pre-line;
+}
