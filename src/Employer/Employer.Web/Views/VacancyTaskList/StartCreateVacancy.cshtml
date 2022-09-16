@@ -12,4 +12,4 @@
     <a asp-route="@RouteNames.Dashboard_Get" asp-all-route-data="@Model.RouteDictionary" class="govuk-back-link">Back</a>
 }
 
-<partial name="_NoVacanciesContent" model="Model" />
+<partial name="_NoVacanciesContent" model="@Model.RouteDictionary" />

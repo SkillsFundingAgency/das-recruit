@@ -37,7 +37,7 @@
                     <li>
                         @if (!string.IsNullOrEmpty(stateItem.Value.Errors.FirstOrDefault()?.ErrorMessage))
                         {
-                            <a asp-fragment="@stateItem.Key" class="govuk-link">@stateItem.Value.Errors.FirstOrDefault()?.ErrorMessage</a>
+                            <a asp-fragment="@stateItem.Key" asp-all-route-data="@Model.RouteDictionary" class="govuk-link">@stateItem.Value.Errors.FirstOrDefault()?.ErrorMessage</a>
                         }
                         else
                         {
@@ -79,7 +79,7 @@
                     <field-review-tag class="govuk-tag--orange" field-name="@FieldIdentifiers.Title" tag-name="strong" model="@Model"/>
                 </dd>
                 <dd class="app-summary-list__actions">
-                    <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.Title_Get" esfa-automation="change-title">Change<span class="govuk-visually-hidden"> advert title</span></a>
+                    <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.Title_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="change-title">Change<span class="govuk-visually-hidden"> advert title</span></a>
                     
                 </dd>
             </div>
@@ -91,7 +91,7 @@
                         @Model.EmployerName
                     </dd>
                     <dd class="app-summary-list__actions">
-                        <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.Employer_Get" esfa-automation="change-name-of-org">Change<span class="govuk-visually-hidden"> name of organisation</span></a>
+                        <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.Employer_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="change-name-of-org">Change<span class="govuk-visually-hidden"> name of organisation</span></a>
                     </dd>
                 </div>
             }
@@ -103,7 +103,7 @@
                     <field-review-tag class="govuk-tag--orange" field-name="@FieldIdentifiers.Training" tag-name="strong" model="@Model"/>
                 </dd>
                 <dd class="app-summary-list__actions">
-                    <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.Training_Get" esfa-automation="change-course">Change<span class="govuk-visually-hidden"> training course</span></a>
+                    <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.Training_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="change-course">Change<span class="govuk-visually-hidden"> training course</span></a>
                     
                 </dd>
             </div>
@@ -115,7 +115,7 @@
                     <field-review-tag class="govuk-tag--orange" field-name="@FieldIdentifiers.Provider" tag-name="strong" model="@Model"/>
                 </dd>
                 <dd class="app-summary-list__actions">
-                    <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.TrainingProvider_Select_Get" esfa-automation="change-provider">Change<span class="govuk-visually-hidden"> training provider</span></a>
+                    <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.TrainingProvider_Select_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="change-provider">Change<span class="govuk-visually-hidden"> training provider</span></a>
                     
                 </dd>
             </div>
@@ -127,7 +127,7 @@
                     <field-review-tag class="govuk-tag--orange" field-name="@FieldIdentifiers.ShortDescription" tag-name="strong" model="@Model"/>
                 </dd>
                 <dd class="app-summary-list__actions">
-                    <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.ShortDescription_Get" esfa-automation="change-shortdescription">Change<span class="govuk-visually-hidden"> summary of the apprenticeship</span></a>
+                    <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.ShortDescription_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="change-shortdescription">Change<span class="govuk-visually-hidden"> summary of the apprenticeship</span></a>
                     
                 </dd>
             </div>
@@ -141,7 +141,7 @@
                     <field-review-tag class="govuk-tag--orange" field-name="@FieldIdentifiers.VacancyDescription" tag-name="strong" model="@Model"/>
                 </dd>
                 <dd class="app-summary-list__actions">
-                    <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.VacancyDescription_Index_Get" esfa-automation="change-description">Change<span class="govuk-visually-hidden"> about the apprenticeship</span></a>
+                    <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.VacancyDescription_Index_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="change-description">Change<span class="govuk-visually-hidden"> about the apprenticeship</span></a>
                     
                 </dd>
             </div>
@@ -169,7 +169,7 @@
                      <field-review-tag class="govuk-tag--orange" field-name="@FieldIdentifiers.ClosingDate" tag-name="strong" model="@Model"/>
                 </dd>
                 <dd class="app-summary-list__actions">
-                    <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.Dates_Get" esfa-automation="change-dates">Change<span class="govuk-visually-hidden"> important date</span></a>
+                    <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.Dates_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="change-dates">Change<span class="govuk-visually-hidden"> important date</span></a>
                    
                 </dd>
             </div>
@@ -192,7 +192,7 @@
                     <field-review-tag class="govuk-tag--orange" field-name="@FieldIdentifiers.Wage" tag-name="strong" model="@Model"/>
                 </dd>
                 <dd class="app-summary-list__actions">
-                    <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.Wage_Get" esfa-automation="change-wage">Change<span class="govuk-visually-hidden"> wage</span></a>
+                    <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.Wage_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="change-wage">Change<span class="govuk-visually-hidden"> wage</span></a>
                     
                 </dd>
             </div>
@@ -215,7 +215,7 @@
                     <field-review-tag class="govuk-tag--orange" field-name="@FieldIdentifiers.ExpectedDuration" tag-name="strong" model="@Model"/>
                 </dd>
                 <dd class="app-summary-list__actions">
-                    <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.Duration_Get" esfa-automation="change-duration">Change<span class="govuk-visually-hidden"> duration</span></a>
+                    <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.Duration_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="change-duration">Change<span class="govuk-visually-hidden"> duration</span></a>
                     
                 </dd>
             </div>
@@ -249,7 +249,7 @@
                     <field-review-tag class="govuk-tag--orange" field-name="@FieldIdentifiers.NumberOfPositions" tag-name="strong" model="@Model"/>
                 </dd>
                 <dd class="app-summary-list__actions">
-                    <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.NumberOfPositions_Get" esfa-automation="change-numberofpositions">Change<span class="govuk-visually-hidden"> number of positions</span></a>
+                    <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.NumberOfPositions_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="change-numberofpositions">Change<span class="govuk-visually-hidden"> number of positions</span></a>
                     
                 </dd>
             </div>
@@ -261,7 +261,7 @@
                     <field-review-tag class="govuk-tag--orange" field-name="@FieldIdentifiers.EmployerAddress" tag-name="strong" model="@Model"/>
                 </dd>
                 <dd class="app-summary-list__actions">
-                    <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.Location_Get" esfa-automation="change-location">Change<span class="govuk-visually-hidden"> location</span></a>
+                    <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.Location_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="change-location">Change<span class="govuk-visually-hidden"> location</span></a>
                     
                 </dd>
             </div>
@@ -281,7 +281,7 @@
                     <field-review-tag class="govuk-tag--orange" field-name="@FieldIdentifiers.Skills" tag-name="strong" model="@Model"/>
                 </dd>
                 <dd class="app-summary-list__actions">
-                    <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.Skills_Get" esfa-automation="change-skills">Change<span class="govuk-visually-hidden"> skills</span></a>
+                    <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.Skills_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="change-skills">Change<span class="govuk-visually-hidden"> skills</span></a>
                     
                 </dd>
             </div>
@@ -298,7 +298,7 @@
                     <field-review-tag class="govuk-tag--orange" field-name="@FieldIdentifiers.Qualifications" tag-name="strong" model="@Model"/>
                 </dd>
                 <dd class="app-summary-list__actions">
-                    <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.Qualifications_Get" esfa-automation="change-qualifications">Change<span class="govuk-visually-hidden"> qualifications</span></a>
+                    <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.Qualifications_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="change-qualifications">Change<span class="govuk-visually-hidden"> qualifications</span></a>
                     
                 </dd>
             </div>
@@ -312,7 +312,7 @@
                     <field-review-tag class="govuk-tag--orange" field-name="@FieldIdentifiers.OutcomeDescription" tag-name="strong" model="@Model"/>
                 </dd>
                 <dd class="app-summary-list__actions">
-                    <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.FutureProspects_Get" esfa-automation="change-future-prospects">Change<span class="govuk-visually-hidden"> future prospects</span></a>
+                    <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.FutureProspects_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="change-future-prospects">Change<span class="govuk-visually-hidden"> future prospects</span></a>
                 </dd>
             </div>
             <field-review-message field-name="@FieldIdentifiers.ThingsToConsider" model="@Model"></field-review-message>
@@ -330,7 +330,7 @@
                     <field-review-tag class="govuk-tag--orange" field-name="@FieldIdentifiers.ThingsToConsider" tag-name="strong" model="@Model"/>
                 </dd>
                 <dd class="app-summary-list__actions">
-                    <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.Considerations_Get" esfa-automation="change-thingstoconsider">Change<span class="govuk-visually-hidden"> considerations</span></a>
+                    <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.Considerations_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="change-thingstoconsider">Change<span class="govuk-visually-hidden"> considerations</span></a>
                     
                 </dd>
             </div>
@@ -345,7 +345,7 @@
                 <field-review-tag class="govuk-tag--orange" field-name="@FieldIdentifiers.EmployerName" tag-name="strong" model="@Model"/>
             </dd>
             <dd class="app-summary-list__actions">
-                <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.EmployerName_Get" esfa-automation="change-employername">Change<span class="govuk-visually-hidden"> name of employer on advert</span></a>
+                <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.EmployerName_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="change-employername">Change<span class="govuk-visually-hidden"> name of employer on advert</span></a>
                     
             </dd>
         </div>
@@ -357,7 +357,7 @@
                 <field-review-tag class="govuk-tag--orange" field-name="@FieldIdentifiers.EmployerDescription" tag-name="strong" model="@Model"/>
             </dd>
             <dd class="app-summary-list__actions">
-                <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.AboutEmployer_Get" esfa-automation="change-employerdescription">Change<span class="govuk-visually-hidden"> name of organisation</span></a>
+                <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.AboutEmployer_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="change-employerdescription">Change<span class="govuk-visually-hidden"> name of organisation</span></a>
                     
             </dd>
         </div>
@@ -391,7 +391,7 @@
                 <field-review-tag class="govuk-tag--orange" field-name="@FieldIdentifiers.EmployerContact" tag-name="strong" model="@Model"/>
             </dd>
             <dd class="app-summary-list__actions">
-                <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.EmployerContactDetails_Get" esfa-automation="change-employercontact">Change<span class="govuk-visually-hidden"> contact details</span></a>
+                <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.EmployerContactDetails_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="change-employercontact">Change<span class="govuk-visually-hidden"> contact details</span></a>
                     
             </dd>
         </div>
@@ -433,7 +433,7 @@
                 <field-review-tag class="govuk-tag--orange" field-name="@FieldIdentifiers.ApplicationUrl" tag-name="strong" model="@Model"/>
             </dd>
             <dd class="app-summary-list__actions">
-                <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.ApplicationProcess_Get" esfa-automation="change-application">Change<span class="govuk-visually-hidden"> application process</span></a>
+                <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.ApplicationProcess_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="change-application">Change<span class="govuk-visually-hidden"> application process</span></a>
             </dd>
         </div>
         @if (Model.HasApplicationInstructions)
@@ -453,7 +453,7 @@
     </dl>
     
     <div asp-show="@Model.CanReview" class="govuk-body">
-        <form asp-route="@RouteNames.EmployerCheckYourAnswersPost">
+        <form asp-route="@RouteNames.EmployerCheckYourAnswersPost" asp-all-route-data="@Model.RouteDictionary">
             <div class="govuk-form-group @(ViewData.ModelState.ContainsKey("SubmitToEsfa") ? "govuk-form-group--error" : "")">
                 <fieldset class="govuk-fieldset">
                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
@@ -508,7 +508,7 @@
               </strong>
           </div>
             <p class="govuk-body"><a asp-route="@RouteNames.VacancyAdvertPreview" class="govuk-link govuk-link--no-visited-state">Preview advert before submitting</a></p>
-            <form asp-route="@RouteNames.EmployerCheckYourAnswersSubmitPost" class="form-inline">
+            <form asp-route="@RouteNames.EmployerCheckYourAnswersSubmitPost" asp-all-route-data="@Model.RouteDictionary" class="form-inline">
                 <input type="submit" value="@Model.SubmitButtonText" class="govuk-button" esfa-automation="submit-button" />
             </form>
         </div>
