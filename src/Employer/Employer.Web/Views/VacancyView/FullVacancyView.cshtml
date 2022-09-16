@@ -1,16 +1,13 @@
 ﻿@model DisplayVacancyViewModel
 @{
-    Layout = LayoutNames.LayoutWithoutNavigation;
     ViewBag.Vpv = "/recruitment/employer/page-full-vacancy-view";
     ViewBag.Title = "View your advert";
 }
-<div class="govuk-grid-row">
-    <div class="govuk-grid-column-full">
-        <h1 class="govuk-heading-xl" id="vacancy-header">
-            @Model.Title
-            <span class="govuk-caption-xl">@Model.EmployerName</span>
-        </h1>
-    </div>
-</div>
 
-<partial name="@PartialNames.NonEditableVacancyDisplay" model="Model" />
+@section BackLink {
+  <a asp-route="@RouteNames.VacancyManage_Get" esfa-automation="link-back" class="govuk-back-link">Back</a>
+}
+
+<h1 class="govuk-heading-l">View your advert</h1>
+
+<partial name="_vacancyApprenticeshipPreview" model="@Model" />   

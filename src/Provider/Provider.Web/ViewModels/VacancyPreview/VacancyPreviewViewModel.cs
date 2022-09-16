@@ -223,7 +223,8 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview
         public VacancyTaskListSectionState TaskListSectionThreeState => SetTaskListSectionThreeState();
         public VacancyTaskListSectionState TaskListSectionFourState => SetTaskListSectionFourState();
         public string AccountId { get; set; }
-        
+        public bool CanShowVacancyClonedStatusHeader => !string.IsNullOrEmpty(VacancyClonedInfoMessage);
+        public string VacancyClonedInfoMessage { get; set; }
 
 
         private VacancyTaskListSectionState SetTaskListSectionState()

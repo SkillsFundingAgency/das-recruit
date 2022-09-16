@@ -35,6 +35,9 @@ namespace Esfa.Recruit.Provider.Web.Controllers
             AddSoftValidationErrorsToModelState(viewModel);
             viewModel.SetSectionStates(viewModel, ModelState);
             
+            if (TempData.ContainsKey(TempDataKeys.VacancyPreviewInfoMessage))
+                viewModel.VacancyClonedInfoMessage = TempData[TempDataKeys.VacancyPreviewInfoMessage].ToString();
+            
             return View(viewModel);
         }
         

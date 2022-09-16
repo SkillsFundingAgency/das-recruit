@@ -72,7 +72,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 
                 CurrentYear = _timeProvider.Now.Year,
 
-                ProgrammeName = programmes.First(p => p.Id == vacancy.ProgrammeId).Title,
+                ProgrammeName = programmes.FirstOrDefault(p => p.Id == vacancy.ProgrammeId)?.Title ?? "",
                 
                 Title = vacancy.Title
             };
