@@ -34,7 +34,7 @@
 
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
-            <form asp-route="@RouteNames.Vacancies_Get" method="get" autocomplete="off">
+            <form asp-route="@RouteNames.Vacancies_Get" asp-route-employerAccountId="@Model.EmployerAccountId" method="get" autocomplete="off">
                 <div class="govuk-form-group">
                     <label for="search-input" class="govuk-label">
                         Search by advert title or reference number
@@ -58,7 +58,7 @@
                 <div class="app-card__content">
                     <h3 class="govuk-heading-m app-card__heading">
                         <span class="app-card__stat">@Model.VacancyCountDraft</span>
-                        <a asp-route="@RouteNames.Vacancies_Get" asp-route-filter="@FilteringOptions.Draft" class="govuk-link govuk-link--no-visited-state">
+                        <a asp-route="@RouteNames.Vacancies_Get" asp-route-employerAccountId="@Model.EmployerAccountId" asp-route-filter="@FilteringOptions.Draft" class="govuk-link govuk-link--no-visited-state">
                             @FilteringOptions.Draft @Model.VacancyTextDraft
                         </a>
                     </h3>
@@ -71,7 +71,7 @@
                 <div class="app-card__content">
                     <h3 class="govuk-heading-m app-card__heading">
                         <span class="app-card__stat">@Model.VacancyCountReview</span>
-                        <a asp-show="@Model.HasEmployerReviewPermission" asp-route="@RouteNames.Vacancies_Get" asp-route-filter="@FilteringOptions.Review" class="govuk-link govuk-link--no-visited-state">
+                        <a asp-show="@Model.HasEmployerReviewPermission" asp-route="@RouteNames.Vacancies_Get" asp-route-employerAccountId="@Model.EmployerAccountId" asp-route-filter="@FilteringOptions.Review" class="govuk-link govuk-link--no-visited-state">
                             @FilteringOptions.Review @Model.VacancyTextReview
                         </a>
                         <span asp-hide="@Model.HasEmployerReviewPermission">@FilteringOptions.Review @Model.VacancyTextReview</span>
@@ -79,7 +79,7 @@
                     <p asp-show="@Model.HasEmployerReviewPermission" class="govuk-body app-card__description">Adverts created by training providers that you need to review.</p>
                     <p asp-hide="@Model.HasEmployerReviewPermission" class="govuk-body app-card__description">
                         If you want to review adverts before they are published you need to
-                        <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.YourTrainingProviderPermission">manage your permissions</a>.
+                        <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.YourTrainingProviderPermission" asp-route-employerAccountId="@Model.EmployerAccountId">manage your permissions</a>.
                     </p>
                 </div>
             </div>
@@ -89,7 +89,7 @@
                 <div class="app-card__content">
                     <h3 class="govuk-heading-m app-card__heading">
                         <span class="app-card__stat">@Model.VacancyCountSubmitted</span>
-                        <a asp-route="@RouteNames.Vacancies_Get" asp-route-filter="@FilteringOptions.Submitted" class="govuk-link govuk-link--no-visited-state">
+                        <a asp-route="@RouteNames.Vacancies_Get" asp-route-employerAccountId="@Model.EmployerAccountId" asp-route-filter="@FilteringOptions.Submitted" class="govuk-link govuk-link--no-visited-state">
                             @FilteringOptions.Submitted.GetDisplayName(UserType.Employer)
                         </a>
                     </h3>
@@ -104,7 +104,7 @@
                 <div class="app-card__content">
                     <h3 class="govuk-heading-m app-card__heading">
                         <span class="app-card__stat">@Model.VacancyCountReferred</span>
-                        <a asp-route="@RouteNames.Vacancies_Get" asp-route-filter="@FilteringOptions.Referred" class="govuk-link govuk-link--no-visited-state">
+                        <a asp-route="@RouteNames.Vacancies_Get" asp-route-employerAccountId="@Model.EmployerAccountId" asp-route-filter="@FilteringOptions.Referred" class="govuk-link govuk-link--no-visited-state">
                             @FilteringOptions.Referred.GetDisplayName() @Model.VacancyTextReferred
                         </a>
                     </h3>
@@ -117,7 +117,7 @@
                 <div class="app-card__content">
                     <h3 class="govuk-heading-m app-card__heading">
                         <span class="app-card__stat">@Model.VacancyCountLive</span>
-                        <a asp-route="@RouteNames.Vacancies_Get" asp-route-filter="@FilteringOptions.Live" class="govuk-link govuk-link--no-visited-state">
+                        <a asp-route="@RouteNames.Vacancies_Get" asp-route-employerAccountId="@Model.EmployerAccountId" asp-route-filter="@FilteringOptions.Live" class="govuk-link govuk-link--no-visited-state">
                             @FilteringOptions.Live @Model.VacancyTextLive
                         </a>
                     </h3>
@@ -125,10 +125,10 @@
                     <p class="govuk-body app-card__description"></p>
                     <ul class="app-card__tasks govuk-list" asp-show="@(Model.ShowNoOfVacanciesClosingSoon || Model.ShowNoOfVacanciesClosingSoonWithNoApplications)">
                         <li asp-show="@Model.ShowNoOfVacanciesClosingSoon">
-                            <a class="govuk-link" asp-route="@RouteNames.Vacancies_Get" asp-route-filter="@FilteringOptions.ClosingSoon">@Model.NoOfVacanciesClosingSoon live @Model.VacancyTextClosingSoon closing soon</a>
+                            <a class="govuk-link" asp-route="@RouteNames.Vacancies_Get" asp-route-employerAccountId="@Model.EmployerAccountId" asp-route-filter="@FilteringOptions.ClosingSoon">@Model.NoOfVacanciesClosingSoon live @Model.VacancyTextClosingSoon closing soon</a>
                         </li>
                         <li asp-show="@Model.ShowNoOfVacanciesClosingSoonWithNoApplications">
-                            <a class="govuk-link" asp-route="@RouteNames.Vacancies_Get" asp-route-filter="@FilteringOptions.ClosingSoonWithNoApplications">
+                            <a class="govuk-link" asp-route="@RouteNames.Vacancies_Get" asp-route-employerAccountId="@Model.EmployerAccountId" asp-route-filter="@FilteringOptions.ClosingSoonWithNoApplications">
                                 @Model.NoOfVacanciesClosingSoonWithNoApplications live @Model.VacancyTextClosingSoonWithNoApplications closing soon with no applications
                             </a>
                         </li>
@@ -141,14 +141,14 @@
                 <div class="app-card__content">
                     <h3 class="govuk-heading-m app-card__heading">
                         <span class="app-card__stat">@Model.NoOfNewApplications</span>
-                        <a asp-route="@RouteNames.Vacancies_Get" asp-route-filter="@FilteringOptions.NewApplications" class="govuk-link govuk-link--no-visited-state">
+                        <a asp-route="@RouteNames.Vacancies_Get" asp-route-employerAccountId="@Model.EmployerAccountId" asp-route-filter="@FilteringOptions.NewApplications" class="govuk-link govuk-link--no-visited-state">
                             New @Model.ApplicationTextLive
                         </a>
                     </h3>
                     <span class="govuk-body app-card__description">Applications from Find an apprenticeship service.</span>
                     <ul class="app-card__tasks govuk-list" asp-show="@Model.ShowAllApplications">
                         <li>
-                            <a class="govuk-link ga-track-anchor-click" asp-route="@RouteNames.Vacancies_Get" asp-route-filter="@FilteringOptions.AllApplications" data-ga-event-category="link - click">
+                            <a class="govuk-link ga-track-anchor-click" asp-route="@RouteNames.Vacancies_Get" asp-route-employerAccountId="@Model.EmployerAccountId" asp-route-filter="@FilteringOptions.AllApplications" data-ga-event-category="link - click">
                                 View all applications
                             </a>
                         </li>
@@ -163,7 +163,7 @@
                 <div class="app-card__content">
                     <h3 class="govuk-heading-m app-card__heading">
                         <span class="app-card__stat">@Model.VacancyCountClosed</span>
-                        <a asp-route="@RouteNames.Vacancies_Get" asp-route-filter="@FilteringOptions.Closed" class="govuk-link govuk-link--no-visited-state">
+                        <a asp-route="@RouteNames.Vacancies_Get" asp-route-employerAccountId="@Model.EmployerAccountId" asp-route-filter="@FilteringOptions.Closed" class="govuk-link govuk-link--no-visited-state">
                             @FilteringOptions.Closed @Model.VacancyTextClosed
                         </a>
                     </h3>
@@ -174,7 +174,7 @@
     </div>
     
     
-    <a asp-route="@RouteNames.Vacancies_Get" asp-route-filter="@FilteringOptions.All" class="govuk-link govuk-!-font-size-24 govuk-!-font-weight-bold govuk-link--no-visited-state" name="button">
+    <a asp-route="@RouteNames.Vacancies_Get" asp-route-employerAccountId="@Model.EmployerAccountId" asp-route-filter="@FilteringOptions.All" class="govuk-link govuk-!-font-size-24 govuk-!-font-weight-bold govuk-link--no-visited-state" name="button">
         View all your adverts (@Model.NumberOfVacancies)
     </a>
 
@@ -184,7 +184,7 @@
         <div class="govuk-grid-column-one-third">
             <h3 class="govuk-heading-s">
 
-                <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.YourTrainingProviderPermission">Set up permission</a>
+                <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.YourTrainingProviderPermission" asp-route-employerAccountId="@Model.EmployerAccountId">Set up permission</a>
             </h3>
             <p class="govuk-body">Give training providers permission to add apprentice records, recruit apprentices and create job adverts on your behalf.</p>
         </div>
@@ -193,7 +193,7 @@
             <div class="govuk-grid-column-one-third">
                 <h3 class="govuk-heading-s">
 
-                    <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.ManageNotifications_Get">Manage your emails</a>
+                    <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.ManageNotifications_Get" asp-route-employerAccountId="@Model.EmployerAccountId">Manage your emails</a>
                 </h3>
                 <p class="govuk-body">Set up and manage the emails you receive about your adverts and applications.</p>
             </div>
@@ -202,7 +202,7 @@
             <div class="govuk-grid-column-one-third">
                 <h3 class="govuk-heading-s">
 
-                    <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.EmployerRecruitmentApi">Recruitment APIs</a>
+                    <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.EmployerRecruitmentApi" asp-route-employerAccountId="@Model.EmployerAccountId">Recruitment APIs</a>
                 </h3>
                 <p class="govuk-body">Integrate our APIs to create adverts using your own systems and display adverts on your websites.</p>
             </div>

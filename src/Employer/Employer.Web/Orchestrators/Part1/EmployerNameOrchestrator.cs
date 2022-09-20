@@ -58,6 +58,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 
             var vm = new EmployerNameViewModel 
             {
+                VacancyId = vrm.VacancyId,
+                EmployerAccountId = vrm.EmployerAccountId,
                 HasOnlyOneOrganisation = editVacancyInfo.LegalEntities.Count() == 1,
                 LegalEntityName = legalEntity.Name,
                 ExistingTradingName = employerProfile.TradingName,
