@@ -45,10 +45,12 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             VacancyUser user, string filter, int page, string searchTerm)
         {
             var filteringOption = SanitizeFilter(filter);
-            
+            var serviceParametersVacancyType = _serviceParameters.VacancyType.GetValueOrDefault();
             var getDashboardTask = _providerVacancyClient.GetDashboardAsync(user.Ukprn.Value, _serviceParameters.VacancyType.GetValueOrDefault(), page, filteringOption, searchTerm);
             var getUserDetailsTask = _recruitVacancyClient.GetUsersDetailsAsync(user.UserId);
-            var providerTask = _providerRelationshipsService.GetLegalEntitiesForProviderAsync(user.Ukprn.Value, OperationType.RecruitmentRequiresReview);
+            var providerTask = serviceParametersVacancyType == VacancyType.Apprenticeship ? 
+                _providerRelationshipsService.CheckProviderHasPermissions(user.Ukprn.Value, OperationType.RecruitmentRequiresReview)
+                : Task.FromResult(false);
             var providerVacancyCountTask = _providerVacancyClient.GetVacancyCount(user.Ukprn.Value, _serviceParameters.VacancyType.GetValueOrDefault(), filteringOption, searchTerm);
 
             await Task.WhenAll(getDashboardTask, getUserDetailsTask, providerTask, providerVacancyCountTask);
@@ -89,7 +91,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
                 SearchTerm = searchTerm,
                 ResultsHeading = VacancyFilterHeadingHelper.GetFilterHeading(Constants.VacancyTerm, vacancies.Count, filteringOption, searchTerm, UserType.Provider),
                 Alerts = alerts,
-                HasEmployerReviewPermission = providerPermissions.Any(),
+                HasEmployerReviewPermission = providerPermissions,
                 Ukprn = user.Ukprn.Value,
                 TotalVacancies = totalItems
             };

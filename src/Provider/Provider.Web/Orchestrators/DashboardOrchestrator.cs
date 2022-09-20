@@ -40,8 +40,8 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             var dashboardTask = _vacancyClient.GetDashboardSummary(user.Ukprn.Value, serviceParametersVacancyType);
             var userDetailsTask = _client.GetUsersDetailsAsync(user.UserId);
             var providerTask = serviceParametersVacancyType == VacancyType.Apprenticeship 
-                ? _providerRelationshipsService.GetLegalEntitiesForProviderAsync(user.Ukprn.Value, OperationType.RecruitmentRequiresReview)
-                : Task.FromResult((IEnumerable<EmployerInfo>)new List<EmployerInfo>());
+                ? _providerRelationshipsService.CheckProviderHasPermissions(user.Ukprn.Value, OperationType.RecruitmentRequiresReview)
+                : Task.FromResult(false);
 
             await Task.WhenAll(dashboardTask, userDetailsTask, providerTask);
 
@@ -55,7 +55,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             {
                 ProviderDashboardSummary = dashboard,
                 Alerts = alerts,
-                HasEmployerReviewPermission = providerPermissions.Any(),
+                HasEmployerReviewPermission = providerPermissions,
                 Ukprn = user.Ukprn.Value
             };
             return vm;
