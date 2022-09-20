@@ -78,6 +78,11 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
 
             var vm = await _mapper.Map(review);
 
+            if(!string.IsNullOrEmpty(vm?.EmployerWebsiteUrl) && !vm.EmployerWebsiteUrl.StartsWith("http", true, null))
+            {
+                vm.EmployerWebsiteUrl = "https://" + $"{vm.EmployerWebsiteUrl}";
+            }
+
             return vm;
         }
 
@@ -89,6 +94,16 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
                 throw new NotFoundException($"Unable to find review with id: {reviewId}");
 
             var vm = await _mapper.Map(review);
+
+            if (!string.IsNullOrEmpty(vm?.EmployerWebsiteUrl) && !vm.EmployerWebsiteUrl.StartsWith("http", true, null))
+            {
+                vm.EmployerWebsiteUrl = "https://" + $"{vm.EmployerWebsiteUrl}";
+            }
+
+            if (!string.IsNullOrEmpty(vm?.ApplicationUrl) && !vm.ApplicationUrl.StartsWith("http", true, null))
+            {
+                vm.ApplicationUrl = "https://" + $"{vm.ApplicationUrl}";
+            }
 
             return vm;
         }
