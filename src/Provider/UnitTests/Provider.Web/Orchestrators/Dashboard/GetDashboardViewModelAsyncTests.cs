@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoFixture;
 using Esfa.Recruit.Provider.Web.Orchestrators;
@@ -10,7 +9,6 @@ using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Models;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Provider;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelationship;
 using FluentAssertions;
@@ -72,7 +70,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Employer.Web.Orchestrators.Dashboard
 
             if (vacancyType == VacancyType.Apprenticeship)
             {
-                _permissionServiceMock.Verify(x=>x.GetLegalEntitiesForProviderAsync(Ukprn, OperationType.RecruitmentRequiresReview));
+                _permissionServiceMock.Verify(x=>x.CheckProviderHasPermissions(Ukprn, OperationType.RecruitmentRequiresReview));
                 actual.HasEmployerReviewPermission.Should().BeTrue();
             }
             if (vacancyType == VacancyType.Traineeship)
@@ -90,16 +88,14 @@ namespace Esfa.Recruit.Provider.UnitTests.Employer.Web.Orchestrators.Dashboard
 
             var serviceParameters = new ServiceParameters(vacancyType.ToString());
 
-            var fixture = new Fixture();
-
             var vacancyClientMock = new Mock<IProviderVacancyClient>();
             vacancyClientMock.Setup(c => c.GetDashboardSummary(Ukprn, vacancyType))
                 .ReturnsAsync(dashboardProjection);
 
             _permissionServiceMock = new Mock<IProviderRelationshipsService>();
             
-            _permissionServiceMock.Setup(p => p.GetLegalEntitiesForProviderAsync(Ukprn, OperationType.RecruitmentRequiresReview))
-                .ReturnsAsync(new List<EmployerInfo>{new EmployerInfo()});
+            _permissionServiceMock.Setup(p => p.CheckProviderHasPermissions(Ukprn, OperationType.RecruitmentRequiresReview))
+                .ReturnsAsync(true);
 
             var userDetails = new User();
 
