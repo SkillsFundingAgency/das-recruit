@@ -7,13 +7,8 @@
 }
 
 @section BackLink {
-    <esfaFeatureEnabled name="@FeatureNames.EmployerTaskList">
-        <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Title_Get" asp-route-wizard="@Model.PageInfo.IsWizard" esfa-automation="link-back" class="govuk-back-link">Back</a>
-        <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.EmployerCheckYourAnswersGet" asp-route-wizard="@Model.PageInfo.IsWizard" esfa-automation="link-back" class="govuk-back-link">Back</a>
-    </esfaFeatureEnabled>
-    <esfaFeatureDisabled name="@FeatureNames.EmployerTaskList">
-        <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.NumberOfPositions_Get" asp-route-wizard="@Model.PageInfo.IsWizard" esfa-automation="link-back" class="govuk-back-link">Back</a>
-    </esfaFeatureDisabled>
+    <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Title_Get" asp-all-route-data="@Model.RouteDictionary" asp-route-wizard="@Model.PageInfo.IsWizard" esfa-automation="link-back" class="govuk-back-link">Back</a>
+    <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.EmployerCheckYourAnswersGet" asp-all-route-data="@Model.RouteDictionary" asp-route-wizard="@Model.PageInfo.IsWizard" esfa-automation="link-back" class="govuk-back-link">Back</a>
 }
 
 <div class="govuk-grid-row">
@@ -43,7 +38,7 @@
             </div>
         </form>
 
-        <form asp-route="@RouteNames.Employer_Post" asp-route-wizard="@Model.PageInfo.IsWizard">
+        <form asp-route="@RouteNames.Employer_Post" asp-all-route-data="@Model.RouteDictionary" asp-route-wizard="@Model.PageInfo.IsWizard">
             
             <div esfa-validation-marker-for="SelectedOrganisationId" class="govuk-form-group">
                 <fieldset class="govuk-fieldset">
@@ -93,13 +88,9 @@
 
             <div class="govuk-button-group">
                 <button type="submit" class="govuk-button save-button" esfa-automation="continue-button">Save and continue</button>
-                <esfaFeatureEnabled name="@FeatureNames.EmployerTaskList">
-                    <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Dashboard_Get" class="govuk-link govuk-link--no-visited-state">Cancel</a>
-                    <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.EmployerCheckYourAnswersGet" class="govuk-link govuk-link--no-visited-state">Cancel</a>
-                </esfaFeatureEnabled>
-                <esfaFeatureDisabled name="@FeatureNames.EmployerTaskList">
-                    <a asp-route="@RouteNames.EmployerName_Cancel" asp-route-wizard="@Model.PageInfo.IsWizard" class="govuk-link govuk-link--no-visited-state">Cancel</a>    
-                </esfaFeatureDisabled>
+                <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Dashboard_Get" asp-all-route-data="@Model.RouteDictionary" class="govuk-link govuk-link--no-visited-state">Cancel</a>
+                <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.EmployerCheckYourAnswersGet" asp-all-route-data="@Model.RouteDictionary" class="govuk-link govuk-link--no-visited-state">Cancel</a>
+
             </div>
 
         </form>

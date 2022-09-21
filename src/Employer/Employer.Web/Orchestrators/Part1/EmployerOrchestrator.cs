@@ -55,6 +55,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 
             var vm = new EmployerViewModel
             {
+                VacancyId = vrm.VacancyId,
+                EmployerAccountId = vrm.EmployerAccountId,
                 TotalNumberOfLegalEntities = legalEntities.Count(),
                 PageInfo = _utility.GetPartOnePageInfo(vacancy),
                 SearchTerm = searchTerm,
