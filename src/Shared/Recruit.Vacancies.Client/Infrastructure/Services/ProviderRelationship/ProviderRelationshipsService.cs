@@ -38,13 +38,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelation
             return await GetEmployerInfosAsync(providerPermissions);
         }
 
-        public async Task<IEnumerable<EmployerInfo>> GetLegalEntitiesForProviderAsync(string accountHashedId, OperationType operation)
-        {
-            var providerPermissions = await GetProviderPermissionsAsync(accountHashedId, operation);
-            
-            return await GetEmployerInfosAsync(providerPermissions);
-        }      
-
         public async Task<bool> HasProviderGotEmployersPermissionAsync(long ukprn, string accountHashedId, string accountLegalEntityPublicHashedId, OperationType operation)
         {
             var permittedLegalEntities = await GetProviderPermissionsforEmployer(ukprn,accountHashedId, operation);
@@ -153,6 +146,20 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelation
                     throw new Exception($"Failed to revoke provider {ukprn} permission for account legal entity {accountLegalEntityPublicHashedId} response code: {response.StatusCode}");
                 }
             }
+        }
+
+        public async Task<bool> CheckProviderHasPermissions(long ukprn, OperationType operationType)
+        {
+            var result = await GetProviderPermissionsAsync(ukprn, operationType);
+
+            return result.AccountProviderLegalEntities.Any();
+        }
+
+        public async Task<bool> CheckEmployerHasPermissions(string accountHashedId, OperationType operationType)
+        {
+            var result = await GetProviderPermissionsAsync(accountHashedId, operationType);
+
+            return result.AccountProviderLegalEntities.Any();
         }
 
 

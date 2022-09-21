@@ -39,7 +39,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
         {
             var dashboardTask = _vacancyClient.GetDashboardSummary(employerAccountId);
             var userDetailsTask = _client.GetUsersDetailsAsync(user.UserId);
-            var providerTask = _providerRelationshipsService.GetLegalEntitiesForProviderAsync(employerAccountId, OperationType.RecruitmentRequiresReview);
+            var providerTask = _providerRelationshipsService.CheckEmployerHasPermissions(employerAccountId, OperationType.RecruitmentRequiresReview);
 
             await Task.WhenAll(dashboardTask, userDetailsTask, providerTask);
 
@@ -53,7 +53,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
                 EmployerDashboardSummary = dashboard,
                 EmployerAccountId = employerAccountId,
                 Alerts = await _alertsViewModelFactory.Create(employerAccountId, userDetails),
-                HasEmployerReviewPermission = providerPermissions.Any()
+                HasEmployerReviewPermission = providerPermissions
             };
             return vm;
         }

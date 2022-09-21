@@ -45,6 +45,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Dashboard
             actualDashboard.NoOfVacanciesClosingSoon.Should().Be(4);
             actualDashboard.NoOfNewApplications.Should().Be(3);
             actualDashboard.Alerts.Should().NotBeNull();
+            actualDashboard.HasEmployerReviewPermission.Should().BeTrue();
         }
 
         [Fact]
@@ -71,8 +72,8 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Dashboard
                 .ReturnsAsync(dashboardSummary);
 
             var permissionServiceMock = new Mock<IProviderRelationshipsService>();
-            permissionServiceMock.Setup(p => p.GetLegalEntitiesForProviderAsync(EmployerAccountId, OperationType.RecruitmentRequiresReview))
-                .ReturnsAsync(new List<EmployerInfo>());
+            permissionServiceMock.Setup(p => p.CheckEmployerHasPermissions(EmployerAccountId, OperationType.RecruitmentRequiresReview))
+                .ReturnsAsync(true);
 
             var userDetails = new User();
 
