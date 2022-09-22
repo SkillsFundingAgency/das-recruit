@@ -5,7 +5,7 @@
 @{ ViewBag.GaData.Vpv = "/recruitment/employer/task-list"; }
 
 @section BackLink {
-    <a asp-route="@RouteNames.Dashboard_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Return to your applications</a>
+    <a asp-route="@RouteNames.Dashboard_Get" asp-route-employerAccountId="@Model.EmployerAccountId" esfa-automation="link-back" class="govuk-back-link">Return to your applications</a>
 }
 
 <div class="govuk-grid-row">
@@ -40,7 +40,7 @@
                         <span>
                             @if (Model.TaskListSectionOneState == VacancyTaskListSectionState.NotStarted)
                             {
-                                <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.CreateVacancy_Get" asp-all-route-data="@Model.RouteDictionary">
+                                <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.CreateVacancy_Get" asp-route-employerAccountId="@Model.EmployerAccountId">
                                     Advert title
                                 </a>
                             }
@@ -63,7 +63,7 @@
                             }
                             else
                             {
-                                <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.Employer_Get">
+                                <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.Employer_Get" asp-all-route-data="@Model.RouteDictionary">
                                     Name of organisation
                                 </a>    
                             }

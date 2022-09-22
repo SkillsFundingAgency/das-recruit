@@ -18,18 +18,16 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
     {
         private const string VacancyTitleRoute = "vacancies/{vacancyId:guid}/title";
         private readonly TitleOrchestrator _orchestrator;
-        private readonly IFeature _feature;
 
-        public TitleController(TitleOrchestrator orchestrator, IFeature feature)
+        public TitleController(TitleOrchestrator orchestrator)
         {
             _orchestrator = orchestrator;
-            _feature = feature;
         }
 
         [HttpGet("create-vacancy", Name = RouteNames.CreateVacancy_Get)]
-        public async Task<IActionResult> Title()
+        public async Task<IActionResult> Title([FromRoute] string employerAccountId)
         {
-            var vm = _orchestrator.GetTitleViewModel();
+            var vm = _orchestrator.GetTitleViewModel(employerAccountId);
             await PopulateModelFromTempData(vm);
             vm.PageInfo.SetWizard();
             return View(vm);
@@ -72,21 +70,14 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
                     TempData.Remove(TempDataKeys.ReferredUkprn);
                     TempData.Remove(TempDataKeys.ReferredProgrammeId);
                 }
-                return RedirectToRoute(RouteNames.DisplayVacancy_Get, new { vacancyId = response.Data });
-            }
-
-            if (_feature.IsFeatureEnabled(FeatureNames.EmployerTaskList))
-            {
-                if (wizard)
-                {
-                    return RedirectToRoute(RouteNames.Employer_Get ,new { vacancyId = response.Data });
-                }
-                return RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet);
+                return RedirectToRoute(RouteNames.DisplayVacancy_Get, new { vacancyId = response.Data, employerAccountId = m.EmployerAccountId });
             }
             
-            return wizard
-                ? RedirectToRoute(RouteNames.Training_Get, new { vacancyId = response.Data })
-                : RedirectToRoute(RouteNames.Vacancy_Preview_Get);
+            if (wizard)
+            {
+                return RedirectToRoute(RouteNames.Employer_Get ,new { vacancyId = response.Data, employerAccountId = m.EmployerAccountId });
+            }
+            return RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet, new { vacancyId = response.Data, employerAccountId = m.EmployerAccountId });
         }
 
         private void PopulateModelFromTempData(TitleEditModel m)

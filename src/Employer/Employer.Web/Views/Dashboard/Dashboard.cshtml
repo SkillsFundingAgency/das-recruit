@@ -14,10 +14,10 @@
 
 @section BackLink
 {
-    <a asp-hide="@Model.HasAnyVacancies" asp-route="@RouteNames.Dashboard_Account_Home" class="govuk-back-link">Back</a>
+    <a asp-hide="@Model.HasAnyVacancies" asp-route="@RouteNames.Dashboard_Account_Home" asp-route-employerAccountId="@Model.EmployerAccountId"  class="govuk-back-link">Back</a>
 }
 
-<partial asp-hide="@Model.HasAnyVacancies" name="_NoVacanciesContent" />
+<partial asp-hide="@Model.HasAnyVacancies" name="_NoVacanciesContent" model="@Model" />
 
 <div asp-show="@Model.HasAnyVacancies">
 

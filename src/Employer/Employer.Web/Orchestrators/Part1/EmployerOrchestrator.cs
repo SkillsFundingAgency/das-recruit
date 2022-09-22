@@ -91,6 +91,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             vm.VacancyEmployerInfoModel = new VacancyEmployerInfoModel()
             {
                 VacancyId = vacancy.Id,
+                EmployerAccountId = vrm.EmployerAccountId,
                 AccountLegalEntityPublicHashedId = vacancy.AccountLegalEntityPublicHashedId 
             };
 
