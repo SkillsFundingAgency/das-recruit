@@ -65,8 +65,8 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
                 if (response.Success)
                 {
                     return response.Data.FoundTrainingProviderUkprn.HasValue
-                        ? RedirectToRoute(RouteNames.TrainingProvider_Confirm_Get, new { ukprn = response.Data.FoundTrainingProviderUkprn.Value, wizard })
-                        : GetRedirectToNextPage(wizard);
+                        ? RedirectToRoute(RouteNames.TrainingProvider_Confirm_Get, new { ukprn = response.Data.FoundTrainingProviderUkprn.Value, wizard, m.VacancyId, m.EmployerAccountId })
+                        : GetRedirectToNextPage(wizard, m);
                 }
 
                 AddTrainingProviderErrorsToModelState(m.SelectionType, m.Ukprn, response, ModelState);
@@ -99,7 +99,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
                 var response = await _orchestrator.PostConfirmEditModelAsync(m, User.ToVacancyUser());
 
                 if(response.Success)
-                    return GetRedirectToNextPage(wizard);
+                    return GetRedirectToNextPage(wizard, m);
                 
                 AddTrainingProviderErrorsToModelState(TrainingProviderSelectionType.Ukprn, m.Ukprn, response, ModelState);
             }
@@ -109,16 +109,16 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
             return View(ViewNames.SelectTrainingProvider, vm);
         }
         
-        private IActionResult GetRedirectToNextPage(bool wizard)
+        private IActionResult GetRedirectToNextPage(bool wizard, VacancyRouteModel vrm)
         {
             if (_feature.IsFeatureEnabled(FeatureNames.EmployerTaskList))
             {
                 if (wizard)
                 {
-                    return RedirectToRoute(RouteNames.ShortDescription_Get);
+                    return RedirectToRoute(RouteNames.ShortDescription_Get, new { wizard, vrm.VacancyId, vrm.EmployerAccountId});
                 }
 
-                return RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet);
+                return RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet, new { vrm.VacancyId, vrm.EmployerAccountId});
             }
             
             return wizard
