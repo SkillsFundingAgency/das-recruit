@@ -107,59 +107,59 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Reports
             return GetApplicationReviewsAsync(fromDate, toDate);
         }
 
-        private async Task<ReportStrategyResult> GetApplicationReviewsAsync(DateTime fromDate, DateTime toDate)
+        private Task<ReportStrategyResult> GetApplicationReviewsAsync(DateTime fromDate, DateTime toDate)
         {
             var results = new List<BsonDocument>();
-            await GetApplicationReviewsRecursiveAsync(fromDate.AddTicks(-1), toDate, results);
             _logger.LogInformation($"Report parameters fromDate:{fromDate} toDate:{toDate} returned {results.Count} results");
 
-            var dotNetFriendlyResults = results
-                .OrderBy(x => x[Column.DateSubmitted].ToUniversalTime())
-                .ThenBy(x => x[Column.VacancyReferenceNumber].ToInt64())
-                .Select(BsonTypeMapper.MapToDotNetValue);
-
-            var data = JsonConvert.SerializeObject(dotNetFriendlyResults);
+            var queryJson = QueryFormat
+                .Replace(QueryFromDate, fromDate.AddTicks(-1).ToString("o"))
+                .Replace(QueryToDate, toDate.ToString("o"));
+            
             var headers = new List<KeyValuePair<string, string>>
             {
                 new KeyValuePair<string, string>("Date", _timeProvider.Now.ToUkTime().ToString("dd/MM/yyyy HH:mm:ss"))
             };
 
-            return new ReportStrategyResult(headers, data);
+            return Task.FromResult(new ReportStrategyResult(headers, "", queryJson));
         }
 
-        private async Task GetApplicationReviewsRecursiveAsync(DateTime fromDate, DateTime toDate, List<BsonDocument> results)
+        public async Task<string> GetApplicationReviewsRecursiveAsync(string queryJson)
         {
-            var queryJson = QueryFormat
-                .Replace(QueryFromDate, fromDate.ToString("o"))
-                .Replace(QueryToDate, toDate.ToString("o"));
-            var queryBson = MongoDB.Bson.Serialization.BsonSerializer.Deserialize<BsonDocument[]>(queryJson);
-
-            try
+            var pageNumber = 1;
+            var results = new List<BsonDocument>();
+            var currentResults = await GetCurrentPageOfResults(pageNumber, queryJson);
+            results.AddRange(currentResults);
+            
+            while (currentResults.Any())
             {
-                List<BsonDocument> currentResults =
-                        await RetryPolicy.Execute(_ =>
-                            _collection.Aggregate<BsonDocument>(queryBson).ToListAsync(),
-                            new Context(nameof(GetApplicationReviewsAsync)));
+                pageNumber++;
 
-                await ProcessResultsAsync(currentResults);
-                results.AddRange(currentResults);
+                currentResults = await GetCurrentPageOfResults(pageNumber, queryJson);
+                
+                results.AddRange(currentResults);    
             }
-            catch (MongoExecutionTimeoutException)
-            {
-                // If the date range is too large for Cosmongo to process without
-                // throwing a MongoExecutionTimeoutException, split it in two and try again
-                long ticks = (toDate - fromDate).Ticks;
+            var dotNetFriendlyResults = results
+                .OrderBy(x => x[Column.DateSubmitted].ToUniversalTime())
+                .ThenBy(x => x[Column.VacancyReferenceNumber].ToInt64())
+                .Select(BsonTypeMapper.MapToDotNetValue);
+            
+            return JsonConvert.SerializeObject(dotNetFriendlyResults);
+        }
 
-                // If our window of time reaches only a minute then we really need to give up
-                // in order to avoid a StackOverflow exception
-                if (ticks <= TimeSpan.TicksPerMinute)
-                    throw;
+        private async Task<List<BsonDocument>> GetCurrentPageOfResults(int pageNumber, string queryJson)
+        {
+            var queryBson = MongoDB.Bson.Serialization.BsonSerializer.Deserialize<BsonArray>(queryJson);
+            queryBson.Insert(queryBson.Count, new BsonDocument {{"$skip", (pageNumber-1) * 500}});
+            queryBson.Insert(queryBson.Count, new BsonDocument {{"$limit",500}});
+            var pipelineDefinition = queryBson.Values.Select(p => p.ToBsonDocument()).ToArray();
+            List<BsonDocument> currentResults =
+                await RetryPolicy.Execute(_ =>
+                        _collection.Aggregate<BsonDocument>(pipelineDefinition).ToListAsync(),
+                    new Context(nameof(GetApplicationReviewsAsync)));
+            await ProcessResultsAsync(currentResults);
 
-                long halfOfTicks = ticks / 2;
-                DateTime dateTimeInMiddleOfTimeRange = fromDate.AddTicks(halfOfTicks);
-                await GetApplicationReviewsRecursiveAsync(fromDate, dateTimeInMiddleOfTimeRange, results);
-                await GetApplicationReviewsRecursiveAsync(dateTimeInMiddleOfTimeRange, toDate, results);
-            }
+            return currentResults;
         }
 
         private async Task ProcessResultsAsync(List<BsonDocument> results)

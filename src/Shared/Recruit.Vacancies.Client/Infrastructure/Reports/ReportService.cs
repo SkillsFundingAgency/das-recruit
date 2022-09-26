@@ -67,6 +67,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Reports
                 }
                 report.Headers = reportStrategyResult.Headers;
                 report.Query = reportStrategyResult.Query;
+                report.Data = reportStrategyResult.Data;
                 report.Status = ReportStatus.Generated;
                 report.GeneratedOn = _timeProvider.Now;
 
