@@ -72,8 +72,17 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Reports
                         }
                     }
                 }
+                ,'Referred Fields' : { 
+                    $filter: {
+                        input: {$ifNull: ['$manualQaFieldIndicators', []] },
+                        as: 'field',
+                        cond: { $eq: ['$$field.isChangeRequested', true] }
+                    } 
+                }
                 ,'Reviewed by': { $ifNull: ['$reviewedByUser.userId', null] }
+                ,'Reviewer Comment': { $ifNull: ['$manualQaComment', null] }
                 ,'Vacancy submitted by': { $ifNull: ['$vacancySnapshot.ownerType', null] }
+                ,'Vacancy submitted by user': { $ifNull: ['$submittedByUser.email', null] }
                 ,'Employer': { $ifNull: ['$vacancySnapshot.legalEntityName', null] }
                 ,'Display name': { $ifNull: ['$vacancySnapshot.employerName', null] }
                 ,'Training provider': { $ifNull: ['$vacancySnapshot.trainingProvider.name', null] }
@@ -180,20 +189,21 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Reports
 
             result.InsertAt(result.IndexOfName(Column.ProgrammeId),
                 new BsonElement(Column.StandardOrFramework, (BsonValue)programmeValue));
-
+            result.InsertAt(result.IndexOfName(Column.StandardOrFramework),
+                new BsonElement("level", (BsonValue)programme.ApprenticeshipLevel));
             result.Remove(Column.ProgrammeId);
         }
 
         private void SetDurations(BsonDocument result)
         {
-            DateTime slaDeadline = result[Column.SlaDeadline].ToUniversalTime();
+            DateTime slaDeadline = result[Column.SlaDeadline].ToLocalTime();
             DateTime? reviewedDate =
                 result.IndexOfName(Column.ReviewStarted) >= 0
-                ? result[Column.ReviewStarted].ToNullableUniversalTime()
+                ? result[Column.ReviewStarted].ToNullableLocalTime()
                 : null;
             DateTime? closedDate =
                 result.IndexOfName(Column.ReviewCompleted) >= 0
-                ? result[Column.ReviewCompleted].ToNullableUniversalTime()
+                ? result[Column.ReviewCompleted].ToNullableLocalTime()
                 : null;
             DateTime effectiveClosedDate = closedDate ?? _timeProvider.Now;
 
