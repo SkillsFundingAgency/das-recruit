@@ -111,26 +111,11 @@ namespace Esfa.Recruit.Employer.Web.Controllers
 
         private IActionResult HandleRedirectOfEditableVacancy(Vacancy vacancy)
         {
-            if (_feature.IsFeatureEnabled(FeatureNames.EmployerTaskList))
+            if (_utility.IsTaskListCompleted(vacancy))
             {
-                if (_utility.IsTaskListCompleted(vacancy))
-                {
-                    return RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet);
-                }
-                return RedirectToRoute(RouteNames.EmployerTaskListGet);
+                return RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet);
             }
-            
-            if (_utility.VacancyHasCompletedPartOne(vacancy))
-            {
-                if (_utility.VacancyHasStartedPartTwo(vacancy) == false)
-                    return RedirectToRoute(RouteNames.Part1Complete_Get);
-
-                return RedirectToRoute(RouteNames.Vacancy_Preview_Get);
-            }
-
-            var resumeRouteName = _utility.GetPermittedRoutesForVacancy(vacancy).Last();
-
-            return RedirectToRoute(resumeRouteName);
+            return RedirectToRoute(RouteNames.EmployerTaskListGet);
         }
     }
 }
