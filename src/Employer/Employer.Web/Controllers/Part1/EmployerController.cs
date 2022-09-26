@@ -92,21 +92,16 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
 
             SetVacancyEmployerInfoCookie(info);
             await _orchestrator.SetAccountLegalEntityPublicId(m,info, User.ToVacancyUser());
-
-            if (_feature.IsFeatureEnabled(FeatureNames.EmployerTaskList))
-            {
-                return wizard 
-                    ? RedirectToRoute(RouteNames.Training_Get, new { wizard, m.VacancyId, m.EmployerAccountId }) 
-                    : RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet, new { wizard, m.VacancyId, m.EmployerAccountId });
-            }
             
-            return RedirectToRoute(RouteNames.EmployerName_Get, new { wizard, m.VacancyId, m.EmployerAccountId });
+            return wizard 
+                ? RedirectToRoute(RouteNames.Training_Get, new { wizard, m.VacancyId, m.EmployerAccountId }) 
+                : RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet, new { m.VacancyId, m.EmployerAccountId });
         }
 
         [HttpGet("employer-cancel", Name = RouteNames.Employer_Cancel)]
         public IActionResult Cancel(VacancyRouteModel vrm, [FromQuery] bool wizard)
         {
-            return CancelAndRedirect(wizard);
+            return CancelAndRedirect(wizard, vrm);
         }
     }
 }

@@ -150,9 +150,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
 
             return wizard
                 ? RedirectToRoute(RouteNames.TrainingProvider_Select_Get, new {m.VacancyId, m.EmployerAccountId})
-                : _feature.IsFeatureEnabled(FeatureNames.EmployerTaskList) 
-                    ? RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet, new {m.VacancyId, m.EmployerAccountId}) 
-                    : RedirectToRoute(RouteNames.Vacancy_Preview_Get, new {m.VacancyId, m.EmployerAccountId});            
+                : RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet, new {m.VacancyId, m.EmployerAccountId});            
         }
 
         private async Task<IActionResult> ProgrammeNotFound(TrainingEditModel m, bool wizard)
