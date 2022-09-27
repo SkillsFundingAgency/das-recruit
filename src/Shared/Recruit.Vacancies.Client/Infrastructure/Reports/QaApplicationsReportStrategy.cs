@@ -72,6 +72,13 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Reports
                         }
                     }
                 }
+                ,'Vacancy submitted by': { $ifNull: ['$vacancySnapshot.ownerType', null] }
+                ,'Vacancy submitted by user': { $ifNull: ['$submittedByUser.email', null] }
+                ,'Employer': { $ifNull: ['$vacancySnapshot.legalEntityName', null] }
+                ,'Display name': { $ifNull: ['$vacancySnapshot.employerName', null] }
+                ,'Training provider': { $ifNull: ['$vacancySnapshot.trainingProvider.name', null] }
+                ,'Vacancy postcode': { $ifNull: ['$vacancySnapshot.employerLocation.postcode', null] }
+                ,'programmeId': { $ifNull: ['$vacancySnapshot.programmeId', null] }
                 ,'Referred Fields' : { 
                     $filter: {
                         input: {$ifNull: ['$manualQaFieldIndicators', []] },
@@ -81,13 +88,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Reports
                 }
                 ,'Reviewed by': { $ifNull: ['$reviewedByUser.userId', null] }
                 ,'Reviewer Comment': { $ifNull: ['$manualQaComment', null] }
-                ,'Vacancy submitted by': { $ifNull: ['$vacancySnapshot.ownerType', null] }
-                ,'Vacancy submitted by user': { $ifNull: ['$submittedByUser.email', null] }
-                ,'Employer': { $ifNull: ['$vacancySnapshot.legalEntityName', null] }
-                ,'Display name': { $ifNull: ['$vacancySnapshot.employerName', null] }
-                ,'Training provider': { $ifNull: ['$vacancySnapshot.trainingProvider.name', null] }
-                ,'Vacancy postcode': { $ifNull: ['$vacancySnapshot.employerLocation.postcode', null] }
-                ,'programmeId': { $ifNull: ['$vacancySnapshot.programmeId', null] }
             }}
         ]";
 
