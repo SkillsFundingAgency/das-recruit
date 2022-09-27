@@ -122,10 +122,10 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Reports
             switch (format)
             {
                 case ReportDataType.DateType:
-                    value = field.Value.Value<DateTime>().ToString(DateFormat);
+                    value = field.Value.Value<DateTime?>() != null ? field.Value.Value<DateTime>().ToLocalTime().ToString(DateFormat) : "";
                     break;
                 case ReportDataType.DateTimeType:
-                    value = field.Value.Value<DateTime>().ToString(DateTimeFormat);
+                    value = field.Value.Value<DateTime?>() != null ? field.Value.Value<DateTime>().ToLocalTime().ToString(DateTimeFormat) : "";
                     break;
                 case ReportDataType.StringType:
                     value = field.Value.Value<string>();
