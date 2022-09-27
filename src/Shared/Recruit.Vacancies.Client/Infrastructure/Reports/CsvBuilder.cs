@@ -6,6 +6,8 @@ using System.Linq;
 using System.Text;
 using AngleSharp.Css;
 using CsvHelper;
+using Esfa.Recruit.Vacancies.Client.Application.Rules.Extensions;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Reports
@@ -128,11 +130,28 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Reports
                 case ReportDataType.StringType:
                     value = field.Value.Value<string>();
                     break;
+                case ReportDataType.ArrayType:
+                    if (!field.Value.Value<JArray>().Any())
+                    {
+                        value = "";
+                        break;
+                    }
+                    
+                    value = field.Value.Value<JArray>()
+                        .Select(c => JsonConvert.DeserializeObject<ReviewField>(c.ToString()).FieldIdentifier)
+                        .ToDelimitedString("|");
+                    break;
                 default:
                     throw new NotImplementedException(format.ToString());
             }
 
             csv.WriteField(value);
         }
+
+        private class ReviewField
+        {
+            public string FieldIdentifier { get; set; }
+        }
     }
 }
+

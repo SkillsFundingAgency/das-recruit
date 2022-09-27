@@ -106,7 +106,14 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Reports
             RetryPolicy = MongoDbRetryPolicy.GetConnectionRetryPolicy(_logger);
         }
 
-        public ReportDataType ResolveFormat(string fieldName) => ReportDataType.StringType;
+        public ReportDataType ResolveFormat(string fieldName)
+        {
+            if (fieldName.Equals("Referred Fields", StringComparison.CurrentCultureIgnoreCase))
+            {
+                return ReportDataType.ArrayType;
+            }
+            return ReportDataType.StringType;
+        }
 
         public Task<ReportStrategyResult> GetReportDataAsync(Dictionary<string, object> parameters)
         {
@@ -182,15 +189,27 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Reports
 
         private async Task SetProgrammeAsync(BsonDocument result)
         {
+            if (result[Column.ProgrammeId].IsBsonNull)
+            {
+                result.InsertAt(result.IndexOfName(Column.ProgrammeId),
+                    new BsonElement(Column.StandardOrFramework, (BsonValue)"unknown"));
+                result.Remove(Column.ProgrammeId);
+                return;
+            }
+            
             var programmeId = result[Column.ProgrammeId].AsString;
+            
             var programme = await _programmeProvider.GetApprenticeshipProgrammeAsync(programmeId);
 
-            var programmeValue = $"{programme.Id} {programme.Title}";
-
+            var programmeValue = programme != null ? $"{programme.Id} {programme.Title}" : programmeId;
+            
             result.InsertAt(result.IndexOfName(Column.ProgrammeId),
                 new BsonElement(Column.StandardOrFramework, (BsonValue)programmeValue));
-            result.InsertAt(result.IndexOfName(Column.StandardOrFramework),
-                new BsonElement("level", (BsonValue)programme.ApprenticeshipLevel));
+            
+            result.InsertAt(result.IndexOfName(Column.StandardOrFramework) + 1,
+                new BsonElement("level", (BsonValue)(programme != null ? programme.ApprenticeshipLevel.ToString() : "")));
+            
+            
             result.Remove(Column.ProgrammeId);
         }
 
