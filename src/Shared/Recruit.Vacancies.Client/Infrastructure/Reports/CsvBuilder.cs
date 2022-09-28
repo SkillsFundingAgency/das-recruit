@@ -5,6 +5,9 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using CsvHelper;
+using Esfa.Recruit.Vacancies.Client.Application.Rules.Extensions;
+using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Reports
@@ -117,13 +120,24 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Reports
             switch (format)
             {
                 case ReportDataType.DateType:
-                    value = field.Value.Value<DateTime>().ToString(DateFormat);
+                    value = field.Value.Value<DateTime?>() != null ? field.Value.Value<DateTime>().ToUkTime().ToString(DateFormat) : "";
                     break;
                 case ReportDataType.DateTimeType:
-                    value = field.Value.Value<DateTime>().ToString(DateTimeFormat);
+                    value = field.Value.Value<DateTime?>() != null ? field.Value.Value<DateTime>().ToUkTime().ToString(DateTimeFormat) : "";
                     break;
                 case ReportDataType.StringType:
                     value = field.Value.Value<string>();
+                    break;
+                case ReportDataType.ArrayType:
+                    if (!field.Value.Value<JArray>().Any())
+                    {
+                        value = "";
+                        break;
+                    }
+                    
+                    value = field.Value.Value<JArray>()
+                        .Select(c => JsonConvert.DeserializeObject<ReviewField>(c.ToString()).FieldIdentifier)
+                        .ToDelimitedString("|");
                     break;
                 default:
                     throw new NotImplementedException(format.ToString());
@@ -131,5 +145,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Reports
 
             csv.WriteField(value);
         }
+
+        private class ReviewField
+        {
+            public string FieldIdentifier { get; set; }
+        }
     }
 }
+

@@ -71,13 +71,22 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Reports
                         }
                     }
                 }
-                ,'Reviewed by': { $ifNull: ['$reviewedByUser.userId', null] }
                 ,'Vacancy submitted by': { $ifNull: ['$vacancySnapshot.ownerType', null] }
+                ,'Vacancy submitted by user': { $ifNull: ['$submittedByUser.email', null] }
                 ,'Employer': { $ifNull: ['$vacancySnapshot.legalEntityName', null] }
                 ,'Display name': { $ifNull: ['$vacancySnapshot.employerName', null] }
                 ,'Training provider': { $ifNull: ['$vacancySnapshot.trainingProvider.name', null] }
                 ,'Vacancy postcode': { $ifNull: ['$vacancySnapshot.employerLocation.postcode', null] }
                 ,'programmeId': { $ifNull: ['$vacancySnapshot.programmeId', null] }
+                ,'Referred Fields' : { 
+                    $filter: {
+                        input: {$ifNull: ['$manualQaFieldIndicators', []] },
+                        as: 'field',
+                        cond: { $eq: ['$$field.isChangeRequested', true] }
+                    } 
+                }
+                ,'Reviewed by': { $ifNull: ['$reviewedByUser.userId', null] }
+                ,'Reviewer Comment': { $ifNull: ['$manualQaComment', null] }
             }}
         ]";
 
@@ -96,7 +105,23 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Reports
             RetryPolicy = MongoDbRetryPolicy.GetConnectionRetryPolicy(_logger);
         }
 
-        public ReportDataType ResolveFormat(string fieldName) => ReportDataType.StringType;
+        public ReportDataType ResolveFormat(string fieldName)
+        {
+            if (fieldName.Equals("Referred Fields", StringComparison.CurrentCultureIgnoreCase))
+            {
+                return ReportDataType.ArrayType;
+            }
+
+            if (fieldName.Equals("SLA deadline", StringComparison.CurrentCultureIgnoreCase)
+                || fieldName.Equals("Date submitted", StringComparison.CurrentCultureIgnoreCase)
+                || fieldName.Equals("Review completed", StringComparison.CurrentCultureIgnoreCase)
+                || fieldName.Equals("Review started", StringComparison.CurrentCultureIgnoreCase))
+            {
+                return ReportDataType.DateTimeType;
+            }
+            
+            return ReportDataType.StringType;
+        }
 
         public Task<ReportStrategyResult> GetReportDataAsync(Dictionary<string, object> parameters)
         {
@@ -106,59 +131,59 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Reports
             return GetApplicationReviewsAsync(fromDate, toDate);
         }
 
-        private async Task<ReportStrategyResult> GetApplicationReviewsAsync(DateTime fromDate, DateTime toDate)
+        private Task<ReportStrategyResult> GetApplicationReviewsAsync(DateTime fromDate, DateTime toDate)
         {
             var results = new List<BsonDocument>();
-            await GetApplicationReviewsRecursiveAsync(fromDate.AddTicks(-1), toDate, results);
             _logger.LogInformation($"Report parameters fromDate:{fromDate} toDate:{toDate} returned {results.Count} results");
 
-            var dotNetFriendlyResults = results
-                .OrderBy(x => x[Column.DateSubmitted].ToUniversalTime())
-                .ThenBy(x => x[Column.VacancyReferenceNumber].ToInt64())
-                .Select(BsonTypeMapper.MapToDotNetValue);
-
-            var data = JsonConvert.SerializeObject(dotNetFriendlyResults);
+            var queryJson = QueryFormat
+                .Replace(QueryFromDate, fromDate.AddTicks(-1).ToString("o"))
+                .Replace(QueryToDate, toDate.ToString("o"));
+            
             var headers = new List<KeyValuePair<string, string>>
             {
                 new KeyValuePair<string, string>("Date", _timeProvider.Now.ToUkTime().ToString("dd/MM/yyyy HH:mm:ss"))
             };
 
-            return new ReportStrategyResult(headers, data);
+            return Task.FromResult(new ReportStrategyResult(headers, "", queryJson));
         }
 
-        private async Task GetApplicationReviewsRecursiveAsync(DateTime fromDate, DateTime toDate, List<BsonDocument> results)
+        public async Task<string> GetApplicationReviewsRecursiveAsync(string queryJson)
         {
-            var queryJson = QueryFormat
-                .Replace(QueryFromDate, fromDate.ToString("o"))
-                .Replace(QueryToDate, toDate.ToString("o"));
-            var queryBson = MongoDB.Bson.Serialization.BsonSerializer.Deserialize<BsonDocument[]>(queryJson);
-
-            try
+            var pageNumber = 1;
+            var results = new List<BsonDocument>();
+            var currentResults = await GetCurrentPageOfResults(pageNumber, queryJson);
+            results.AddRange(currentResults);
+            
+            while (currentResults.Any())
             {
-                List<BsonDocument> currentResults =
-                        await RetryPolicy.Execute(_ =>
-                            _collection.Aggregate<BsonDocument>(queryBson).ToListAsync(),
-                            new Context(nameof(GetApplicationReviewsAsync)));
+                pageNumber++;
 
-                await ProcessResultsAsync(currentResults);
-                results.AddRange(currentResults);
+                currentResults = await GetCurrentPageOfResults(pageNumber, queryJson);
+                
+                results.AddRange(currentResults);    
             }
-            catch (MongoExecutionTimeoutException)
-            {
-                // If the date range is too large for Cosmongo to process without
-                // throwing a MongoExecutionTimeoutException, split it in two and try again
-                long ticks = (toDate - fromDate).Ticks;
+            var dotNetFriendlyResults = results
+                .OrderBy(x => x[Column.DateSubmitted].ToUniversalTime())
+                .ThenBy(x => x[Column.VacancyReferenceNumber].ToInt64())
+                .Select(BsonTypeMapper.MapToDotNetValue);
+            
+            return JsonConvert.SerializeObject(dotNetFriendlyResults);
+        }
 
-                // If our window of time reaches only a minute then we really need to give up
-                // in order to avoid a StackOverflow exception
-                if (ticks <= TimeSpan.TicksPerMinute)
-                    throw;
+        private async Task<List<BsonDocument>> GetCurrentPageOfResults(int pageNumber, string queryJson)
+        {
+            var queryBson = MongoDB.Bson.Serialization.BsonSerializer.Deserialize<BsonArray>(queryJson);
+            queryBson.Insert(queryBson.Count, new BsonDocument {{"$skip", (pageNumber-1) * 500}});
+            queryBson.Insert(queryBson.Count, new BsonDocument {{"$limit",500}});
+            var pipelineDefinition = queryBson.Values.Select(p => p.ToBsonDocument()).ToArray();
+            List<BsonDocument> currentResults =
+                await RetryPolicy.Execute(_ =>
+                        _collection.Aggregate<BsonDocument>(pipelineDefinition).ToListAsync(),
+                    new Context(nameof(GetApplicationReviewsAsync)));
+            await ProcessResultsAsync(currentResults);
 
-                long halfOfTicks = ticks / 2;
-                DateTime dateTimeInMiddleOfTimeRange = fromDate.AddTicks(halfOfTicks);
-                await GetApplicationReviewsRecursiveAsync(fromDate, dateTimeInMiddleOfTimeRange, results);
-                await GetApplicationReviewsRecursiveAsync(dateTimeInMiddleOfTimeRange, toDate, results);
-            }
+            return currentResults;
         }
 
         private async Task ProcessResultsAsync(List<BsonDocument> results)
@@ -172,27 +197,40 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Reports
 
         private async Task SetProgrammeAsync(BsonDocument result)
         {
+            if (result[Column.ProgrammeId].IsBsonNull)
+            {
+                result.InsertAt(result.IndexOfName(Column.ProgrammeId),
+                    new BsonElement(Column.StandardOrFramework, (BsonValue)"unknown"));
+                result.Remove(Column.ProgrammeId);
+                return;
+            }
+            
             var programmeId = result[Column.ProgrammeId].AsString;
+            
             var programme = await _programmeProvider.GetApprenticeshipProgrammeAsync(programmeId);
 
-            var programmeValue = $"{programme.Id} {programme.Title}";
-
+            var programmeValue = programme != null ? $"{programme.Id} {programme.Title}" : programmeId;
+            
             result.InsertAt(result.IndexOfName(Column.ProgrammeId),
                 new BsonElement(Column.StandardOrFramework, (BsonValue)programmeValue));
-
+            
+            result.InsertAt(result.IndexOfName(Column.StandardOrFramework) + 1,
+                new BsonElement("level", (BsonValue)(programme != null ? programme.ApprenticeshipLevel.ToString() : "")));
+            
+            
             result.Remove(Column.ProgrammeId);
         }
 
         private void SetDurations(BsonDocument result)
         {
-            DateTime slaDeadline = result[Column.SlaDeadline].ToUniversalTime();
+            DateTime slaDeadline = result[Column.SlaDeadline].ToLocalTime();
             DateTime? reviewedDate =
                 result.IndexOfName(Column.ReviewStarted) >= 0
-                ? result[Column.ReviewStarted].ToNullableUniversalTime()
+                ? result[Column.ReviewStarted].ToNullableLocalTime()
                 : null;
             DateTime? closedDate =
                 result.IndexOfName(Column.ReviewCompleted) >= 0
-                ? result[Column.ReviewCompleted].ToNullableUniversalTime()
+                ? result[Column.ReviewCompleted].ToNullableLocalTime()
                 : null;
             DateTime effectiveClosedDate = closedDate ?? _timeProvider.Now;
 

@@ -8,6 +8,6 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Services.Reports
     public interface IReportService
     {
         Task GenerateReportAsync(Guid reportId);
-        void WriteReportAsCsv(Stream stream, Report report);
+        Task WriteReportAsCsv(Stream stream, Report report);
     }
 }

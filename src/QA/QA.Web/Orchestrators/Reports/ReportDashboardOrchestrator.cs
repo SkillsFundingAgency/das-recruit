@@ -48,10 +48,12 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators.Reports
             var report = await GetReportAsync(reportId);
 
             var stream = new MemoryStream();
+            
+            var reportTask = _vacancyClient.WriteReportAsCsv(stream, report);
 
-            _vacancyClient.WriteReportAsCsv(stream, report);
+            var downloadIncrementTask = _vacancyClient.IncrementReportDownloadCountAsync(report.Id);
 
-            await _vacancyClient.IncrementReportDownloadCountAsync(report.Id);
+            await Task.WhenAll(reportTask, downloadIncrementTask);
 
             return new ReportDownloadViewModel
             {
