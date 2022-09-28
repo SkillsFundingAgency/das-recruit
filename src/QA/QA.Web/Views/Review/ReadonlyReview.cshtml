@@ -190,7 +190,7 @@
             <div id="@Anchors.EmployerWebsiteUrl">
                 <h3 class="govuk-heading-s">Website (optional)</h3>
                 <div asp-show="@Model.IsAnonymous" class="govuk-hint">Website will not be shown as the employer is anonymous</div>
-                <p class="govuk-body">@Model.EmployerWebsiteUrl</p>
+                <a href="@Model.EmployerWebsiteUrl" class="govuk-link govuk-link--no-visited-state" target="_blank" rel="noopener noreferrer">@Model.EmployerWebsiteUrl</a>
             </div>
         </div>
         <div class="govuk-grid-column-one-third">
@@ -272,7 +272,7 @@
 
             <div asp-show="@Model.HasApplicationUrl" id="@Anchors.ApplicationUrl">
                 <h2 class="govuk-heading-s">Employer's application website</h2>
-                <p class="govuk-body">@Model.ApplicationUrl</p>
+                <a href="@Model.ApplicationUrl" class="govuk-link govuk-link--no-visited-state" target="_blank" rel="noopener noreferrer">@Model.ApplicationUrl</a>
             </div>
             <div asp-show="@Model.HasApplicationInstructions" id="@Anchors.ApplicationInstructions">
                 <h2 class="govuk-heading-s">Employer's application instructions (optional)</h2>
@@ -297,7 +297,7 @@
                     <li>@automatedQaResult.Text</li>
                 }
             </ul>
-            <p class="govuk-body">@Model.ReviewerComment</p>
+            <p class="govuk-body app-preserve-line-breaks">@Model.ReviewerComment</p>
         </div>
     </div>
 

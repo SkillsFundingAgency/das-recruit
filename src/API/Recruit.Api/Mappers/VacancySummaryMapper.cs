@@ -2,6 +2,8 @@ using Microsoft.Extensions.Options;
 using SFA.DAS.Recruit.Api.Configuration;
 using SFA.DAS.Recruit.Api.Models;
 using SFA.DAS.Recruit.Api.Services;
+using ApplicationMethod = Esfa.Recruit.Vacancies.Client.Domain.Entities.ApplicationMethod;
+using VacancyStatus = Esfa.Recruit.Vacancies.Client.Domain.Entities.VacancyStatus;
 
 namespace SFA.DAS.Recruit.Api.Mappers
 {
@@ -14,7 +16,7 @@ namespace SFA.DAS.Recruit.Api.Mappers
             _recruitConfig = recruitConfig.Value;
         }
 
-        public VacancySummary MapFromVacancySummaryProjection(VacancySummaryProjection vsp, bool isForProviderOwnedVacancies)
+        public VacancySummary MapFromVacancySummaryProjection(Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancySummary vsp, bool isForProviderOwnedVacancies)
         {
             var raaManageVacancyFormattedUrl = isForProviderOwnedVacancies
                                                 ? _recruitConfig.ProviderRecruitAnApprenticeManageVacancyFormattedUrl
@@ -27,7 +29,6 @@ namespace SFA.DAS.Recruit.Api.Mappers
                 EmployerAccountId = vsp.EmployerAccountId,
                 Title = vsp.Title,
                 VacancyReference = vsp.VacancyReference,
-                LegalEntityId = vsp.LegalEntityId,
                 LegalEntityName = vsp.LegalEntityName,
                 EmployerName = vsp.EmployerName,
                 Ukprn = vsp.Ukprn,

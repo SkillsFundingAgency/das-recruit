@@ -103,6 +103,8 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview
         public bool ShowIncompleteSections => ((HasIncompleteMandatorySections || HasIncompleteOptionalSections) && !Review.HasBeenReviewed) || HasSoftValidationErrors;
         public ReviewSummaryViewModel Review { get; set; } = new ReviewSummaryViewModel();
 
+        public ValidationSummaryViewModel ValidationErrors { get; set; } = new ValidationSummaryViewModel(); 
+        
         public string SubmitButtonText => RequiresEmployerReview && VacancyType.GetValueOrDefault() == Vacancies.Client.Domain.Entities.VacancyType.Apprenticeship
             ? Status == VacancyStatus.Rejected
                 ? "Resubmit vacancy to employer"
@@ -222,7 +224,8 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview
         public VacancyTaskListSectionState TaskListSectionThreeState => SetTaskListSectionThreeState();
         public VacancyTaskListSectionState TaskListSectionFourState => SetTaskListSectionFourState();
         public string AccountId { get; set; }
-        
+        public bool CanShowVacancyClonedStatusHeader => !string.IsNullOrEmpty(VacancyClonedInfoMessage);
+        public string VacancyClonedInfoMessage { get; set; }
 
 
         private VacancyTaskListSectionState SetTaskListSectionState()

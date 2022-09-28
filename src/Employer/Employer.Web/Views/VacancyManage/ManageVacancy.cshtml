@@ -3,7 +3,23 @@
     ViewBag.Vpv = "/recruitment/employer/page-manage-vacancy";
     ViewBag.Title = "Manage advert";
 }
+
 <div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+        <div asp-show="Model.HasVacancyClosedInfoMessage" class="govuk-notification-banner govuk-notification-banner--success" role="alert" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
+            <div class="govuk-notification-banner__header">
+                <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
+                    Success
+                </h2>
+            </div>
+            <div class="govuk-notification-banner__content">
+                <h3 class="govuk-notification-banner__heading">
+                    @Model.VacancyClosedInfoMessage
+                </h3>
+                <p class="govuk-body">The advert will be unpublished from the Find an apprenticeship service within the next hour.</p>
+            </div>
+        </div>
+    </div>
     <div class="govuk-grid-column-two-thirds govuk-!-margin-bottom-6">
         <div asp-show="@Model.CanShowApplicationReviewStatusHeader" class="das-notification das-notification--information">
             <p class="das-notification__body">
@@ -26,20 +42,16 @@
         <p asp-show="@Model.IsClosedBlockedByQa" class="govuk-inset-text">
             This advert was closed on @Model.ClosingDate because the training provider is no longer able to manage or recruit apprentices.
         </p>
-
-        <div asp-show="@Model.HasVacancyClosedInfoMessage" class="das-notification das-notification--information">
-            <p class="das-notification__body">@Model.VacancyClosedInfoMessage</p>
-            <p class="das-notification__body">The advert will be unpublished from the Find an apprenticeship service within the next hour.</p>
-        </div>
     </div>
+
 </div>
 
 <dl class="das-definition-list das-definition-list--table">
     <dt class="das-definition-list__title das-definition-list__title--spacer">Status</dt>
     <dd class="das-definition-list__definition das-definition-list__definition--spacer">@Model.Status.GetDisplayName()</dd>
-    <dt class="das-definition-list__title das-definition-list__title--spacer">Vacancy title</dt>
+    <dt class="das-definition-list__title das-definition-list__title--spacer">Advert title</dt>
     <dd class="das-definition-list__definition das-definition-list__definition--spacer">@Model.Title</dd>
-    <dt class="das-definition-list__title das-definition-list__title--spacer">Vacancy reference</dt>
+    <dt class="das-definition-list__title das-definition-list__title--spacer">Advert reference</dt>
     <dd class="das-definition-list__definition das-definition-list__definition--spacer"><span>VAC</span>@Model.VacancyReference</dd>
     <dt class="das-definition-list__title das-definition-list__title--spacer">Closing date</dt>
     <dd class="das-definition-list__definition das-definition-list__definition--spacer">@Model.ClosingDate</dd>
@@ -52,9 +64,9 @@
 </dl>
 
 <div class="govuk-button-group">
-    <a asp-route="@RouteNames.DisplayFullVacancy_Get" target="_blank" class="govuk-button">View advert</a>
-    <a asp-show="@Model.CanShowEditVacancyLink" asp-route="@RouteNames.VacancyEdit_Get" class="govuk-link">Edit advert</a>
+    <a asp-route="@RouteNames.DisplayFullVacancy_Get" class="govuk-link">View advert</a>
     <a asp-show="@Model.CanClone" asp-route="@RouteNames.CloneVacancy_Get" class="govuk-link">Clone advert</a>
+    <a asp-show="@Model.CanShowEditVacancyLink" asp-route="@RouteNames.VacancyEditDates_Get" class="govuk-link">Edit advert dates</a>
     <a asp-show="@Model.CanShowCloseVacancyLink" asp-route="@RouteNames.CloseVacancy_Get" class="govuk-link">Close advert</a>
     <a asp-show="@Model.CanShowDeleteLink" asp-route="@RouteNames.DeleteVacancy_Get" class="govuk-link">Delete advert</a>
 </div>

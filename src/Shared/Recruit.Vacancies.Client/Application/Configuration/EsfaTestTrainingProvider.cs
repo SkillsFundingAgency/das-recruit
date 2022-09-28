@@ -3,7 +3,7 @@
     public static class EsfaTestTrainingProvider
     {
         public const long Ukprn = 10033670;
-        public const string Name = "Education Skills Funding Agency";
+        public const string Name = "To be confirmed";
         public const string AddressLine1 = "Cheylesmore House";
         public const string AddressLine2 = "Quinton Road";
         public const string AddressLine3 = "Coventry";
