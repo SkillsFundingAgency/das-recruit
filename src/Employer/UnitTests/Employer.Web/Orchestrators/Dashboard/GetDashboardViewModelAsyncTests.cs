@@ -1,15 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Orchestrators;
 using Esfa.Recruit.Employer.Web.Services;
 using Esfa.Recruit.Employer.Web.ViewModels;
-using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Models;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Employer;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelationship;
 using FluentAssertions;
@@ -23,7 +19,6 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Dashboard
         private const string EmployerAccountId = "XXXXXX";
         private const string UserId = "user id";
 
-        private readonly DateTime _today = DateTime.Parse("2019-09-18");
         private readonly VacancyUser _user = new VacancyUser { UserId = UserId };
 
         [Fact]
@@ -64,9 +59,6 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Dashboard
 
         private DashboardOrchestrator GetSut(EmployerDashboardSummary dashboardSummary)
         {
-            var timeProviderMock = new Mock<ITimeProvider>();
-            timeProviderMock.Setup(t => t.Today).Returns(_today);
-
             var vacancyClientMock = new Mock<IEmployerVacancyClient>();
             vacancyClientMock.Setup(c => c.GetDashboardSummary(EmployerAccountId))
                 .ReturnsAsync(dashboardSummary);
@@ -86,7 +78,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Dashboard
             alertsFactoryMock.Setup(a => a.Create(EmployerAccountId, userDetails))
                 .ReturnsAsync(alertsViewModel);
 
-            var dashboardOrchestrator = new DashboardOrchestrator(vacancyClientMock.Object, timeProviderMock.Object, clientMock.Object, alertsFactoryMock.Object, permissionServiceMock.Object);
+            var dashboardOrchestrator = new DashboardOrchestrator(vacancyClientMock.Object, clientMock.Object, alertsFactoryMock.Object, permissionServiceMock.Object);
 
             return dashboardOrchestrator;
         }
