@@ -113,7 +113,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Reports
                 return ReportDataType.ArrayType;
             }
 
-            if (fieldName.Equals("SLA Deadline", StringComparison.CurrentCultureIgnoreCase)
+            if (fieldName.Equals("SLA deadline", StringComparison.CurrentCultureIgnoreCase)
                 || fieldName.Equals("Date submitted", StringComparison.CurrentCultureIgnoreCase)
                 || fieldName.Equals("Review completed", StringComparison.CurrentCultureIgnoreCase)
                 || fieldName.Equals("Review started", StringComparison.CurrentCultureIgnoreCase))

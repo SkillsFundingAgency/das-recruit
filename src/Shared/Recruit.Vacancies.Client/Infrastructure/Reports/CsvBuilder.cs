@@ -7,6 +7,7 @@ using System.Text;
 using AngleSharp.Css;
 using CsvHelper;
 using Esfa.Recruit.Vacancies.Client.Application.Rules.Extensions;
+using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -122,10 +123,10 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Reports
             switch (format)
             {
                 case ReportDataType.DateType:
-                    value = field.Value.Value<DateTime?>() != null ? field.Value.Value<DateTime>().ToLocalTime().ToString(DateFormat) : "";
+                    value = field.Value.Value<DateTime?>() != null ? field.Value.Value<DateTime>().ToUkTime().ToString(DateFormat) : "";
                     break;
                 case ReportDataType.DateTimeType:
-                    value = field.Value.Value<DateTime?>() != null ? field.Value.Value<DateTime>().ToLocalTime().ToString(DateTimeFormat) : "";
+                    value = field.Value.Value<DateTime?>() != null ? field.Value.Value<DateTime>().ToUkTime().ToString(DateTimeFormat) : "";
                     break;
                 case ReportDataType.StringType:
                     value = field.Value.Value<string>();
