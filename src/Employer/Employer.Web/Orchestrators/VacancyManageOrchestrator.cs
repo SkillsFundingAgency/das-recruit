@@ -48,6 +48,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
         {
             var viewModel = new ManageVacancyViewModel();
 
+            viewModel.VacancyId = vacancy.Id;
+            viewModel.EmployerAccountId = vacancy.EmployerAccountId;
             viewModel.Title = vacancy.Title;
             viewModel.Status = vacancy.Status;
             viewModel.VacancyReference = vacancy.VacancyReference.Value.ToString();

@@ -120,6 +120,8 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.VacancyPreview
         {
             return new Vacancy
             {
+                Id = new Guid(),
+                EmployerAccountId = "employerAccountId",
                 Title = "title",
                 ProgrammeId = "programmeId",
                 Description = "description",
