@@ -54,7 +54,8 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
         {
             var employerInfoModel = new VacancyEmployerInfoModel
             {
-                VacancyId = model.VacancyId
+                VacancyId = model.VacancyId,
+                EmployerAccountId = model.EmployerAccountId
             };
 
             var response = await _orchestrator.PostEmployerNameEditModelAsync(model, User.ToVacancyUser());
@@ -81,7 +82,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
             employerInfoModel.AnonymousReason = model.SelectedEmployerIdentityOption == EmployerIdentityOption.Anonymous ? model.AnonymousReason : null;
             SetVacancyEmployerInfoCookie(employerInfoModel);
 
-            return RedirectToRoute(RouteNames.LegalEntityAgreement_SoftStop_Get, new {model.VacancyId, model.EmployerAccountId});
+            return RedirectToRoute(RouteNames.LegalEntityAgreement_SoftStop_Get, new {model.VacancyId, model.EmployerAccountId, wizard});
         }
 
         [HttpGet("employer-name-cancel", Name = RouteNames.EmployerName_Cancel)]

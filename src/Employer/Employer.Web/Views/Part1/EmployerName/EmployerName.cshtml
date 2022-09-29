@@ -9,8 +9,8 @@
 
 @section BackLink 
 {
-    <a asp-show="@(!Model.TaskListCompleted)" asp-route="@RouteNames.EmployerTaskListGet" asp-all-route-data="@Model.RouteDictionary" asp-route-wizard="@(!Model.TaskListCompleted)" esfa-automation="link-back" class="govuk-back-link">Back</a>
-    <a asp-show="@Model.TaskListCompleted" asp-route="@RouteNames.EmployerCheckYourAnswersGet" asp-all-route-data="@Model.RouteDictionary" asp-route-wizard="@(Model.TaskListCompleted)" esfa-automation="link-back" class="govuk-back-link">Back</a>
+    <a asp-show="@(!Model.TaskListCompleted)" asp-route="@RouteNames.EmployerTaskListGet" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Back</a>
+    <a asp-show="@Model.TaskListCompleted" asp-route="@RouteNames.EmployerCheckYourAnswersGet" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Back</a>
 }
 
 <div class="govuk-grid-row">

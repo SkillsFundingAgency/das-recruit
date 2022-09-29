@@ -34,16 +34,12 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             if (vm.HasLegalEntityAgreement == false)
                 return View(vm);
 
-            if (_feature.IsFeatureEnabled(FeatureNames.EmployerTaskList))
+            if (vm.PageInfo.HasCompletedPartOne)
             {
-                if (vm.PageInfo.HasCompletedPartOne)
-                {
-                    return RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet);
-                }
-                return RedirectToRoute(RouteNames.AboutEmployer_Get, new { Wizard = wizard });
+                return RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet, new {vrm.VacancyId, vrm.EmployerAccountId});
             }
-            
-            return RedirectToRoute(RouteNames.Location_Get, new {Wizard = wizard});
+            return RedirectToRoute(RouteNames.AboutEmployer_Get, new { vrm.VacancyId, vrm.EmployerAccountId, wizard });
+
         }
 
         [HttpGet("legal-entity-agreement-stop", Name = RouteNames.LegalEntityAgreement_HardStop_Get)]
@@ -54,7 +50,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             if(vm.HasLegalEntityAgreement == false)
                 return View(vm);
 
-            return RedirectToRoute(RouteNames.Dashboard_Get);
+            return RedirectToRoute(RouteNames.Dashboard_Get, new {vrm.EmployerAccountId});
         }
     }
 }
