@@ -33,5 +33,6 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
         public int DownloadCount { get; set; }
         public string Data { get; set; }
         public IEnumerable<KeyValuePair<string, string>> Headers { get; set; }
+        public string Query { get; set; }
     }
 }

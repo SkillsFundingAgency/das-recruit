@@ -19,7 +19,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         Task<Guid> CreateProviderApplicationsReportAsync(long ukprn, DateTime fromDate, DateTime toDate, VacancyUser user, string reportName);
         Task<List<ReportSummary>> GetReportsForProviderAsync(long ukprn);
         Task<Report> GetReportAsync(Guid reportId);
-        void WriteReportAsCsv(Stream stream, Report report);
+        Task WriteReportAsCsv(Stream stream, Report report);
         Task IncrementReportDownloadCountAsync(Guid reportId);
         Task CreateProviderApiVacancy(Guid id, string title, string employerAccountId, VacancyUser user);
         Task<ProviderDashboardSummary> GetDashboardSummary(long ukprn, VacancyType vacancyType);

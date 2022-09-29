@@ -3,33 +3,27 @@ using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Services;
 using Esfa.Recruit.Employer.Web.ViewModels.Dashboard;
-using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Models;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelationship;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators
 {
     public class DashboardOrchestrator
     {
-        private const int ClosingSoonDays = 5;
         private readonly IEmployerVacancyClient _vacancyClient;
-        private readonly ITimeProvider _timeProvider;
         private readonly IRecruitVacancyClient _client;
         private readonly IEmployerAlertsViewModelFactory _alertsViewModelFactory;
         private readonly IProviderRelationshipsService _providerRelationshipsService;
 
         public DashboardOrchestrator(
             IEmployerVacancyClient vacancyClient,
-            ITimeProvider timeProvider,
             IRecruitVacancyClient client,
             IEmployerAlertsViewModelFactory alertsViewModelFactory,
             IProviderRelationshipsService providerRelationshipsService)
         {
             _vacancyClient = vacancyClient;
-            _timeProvider = timeProvider;
             _client = client;
             _alertsViewModelFactory = alertsViewModelFactory;
             _providerRelationshipsService = providerRelationshipsService;
