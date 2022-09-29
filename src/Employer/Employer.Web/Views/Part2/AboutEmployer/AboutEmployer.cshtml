@@ -7,8 +7,8 @@
 
 @section BackLink {
     <esfaFeatureEnabled name="@FeatureNames.EmployerTaskList">
-        <a asp-show="@(!Model.IsTaskListCompleted)" asp-route="@RouteNames.EmployerName_Get" esfa-automation="link-back" class="govuk-back-link">Back</a>
-        <a asp-show="@Model.IsTaskListCompleted" asp-route="@RouteNames.EmployerCheckYourAnswersGet" esfa-automation="link-back" class="govuk-back-link">Back</a>
+        <a asp-show="@(!Model.IsTaskListCompleted)" asp-route="@RouteNames.EmployerName_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Back</a>
+        <a asp-show="@Model.IsTaskListCompleted" asp-route="@RouteNames.EmployerCheckYourAnswersGet" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Back</a>
     </esfaFeatureEnabled>
 }
 
@@ -23,7 +23,7 @@
             Information about @Model.EmployerTitle
         </h1>
         <p class="govuk-body">Updating the employer information will also update the employer information on any unapproved adverts eg. draft, pending review or rejected adverts.</p>
-        <form asp-route="@RouteNames.AboutEmployer_Get">
+        <form asp-route="@RouteNames.AboutEmployer_Get" asp-all-route-data="@Model.RouteDictionary">
             <div class="govuk-form-group" esfa-validation-marker-for="EmployerDescription">
                 <label asp-for="EmployerDescription" class="govuk-label">Tell us about your organisation</label>
                 <span esfa-validation-message-for="EmployerDescription" class="govuk-error-message"></span>
@@ -48,8 +48,8 @@
             </div>
             <div class="govuk-button-group">
                 <input type="submit" value="Save and continue" esfa-automation="btn-continue" class="govuk-button save-button" />
-                <a asp-show="@(!Model.IsTaskListCompleted)" asp-route="@RouteNames.Dashboard_Get" class="govuk-link govuk-link--no-visited-state">Cancel</a>
-                <a asp-show="@Model.IsTaskListCompleted" asp-route="@RouteNames.EmployerCheckYourAnswersGet" esfa-automation="cancel" class="govuk-link govuk-link--no-visited-state">Cancel</a>
+                <a asp-show="@(!Model.IsTaskListCompleted)" asp-route="@RouteNames.Dashboard_Get" asp-route-employerAccountId="@Model.EmployerAccountId" class="govuk-link govuk-link--no-visited-state">Cancel</a>
+                <a asp-show="@Model.IsTaskListCompleted" asp-route="@RouteNames.EmployerCheckYourAnswersGet" asp-all-route-data="@Model.RouteDictionary" esfa-automation="cancel" class="govuk-link govuk-link--no-visited-state">Cancel</a>
             </div>
         </form>
     </div>
