@@ -11,7 +11,7 @@
 @section BackLink {
     @if (Model.CanReview || Model.Review.HasBeenReviewed)
     {
-        <a asp-route="@RouteNames.Dashboard_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Return to dashboard</a>
+        <a asp-route="@RouteNames.Dashboard_Get" asp-route-employerAccountId="@Model.EmployerAccountId" esfa-automation="link-back" class="govuk-back-link">Return to dashboard</a>
     }
     else
     {
@@ -507,7 +507,7 @@
                   Proofread your advert for spelling and formatting to avoid it being rejected by our QA team.
               </strong>
           </div>
-            <p class="govuk-body"><a asp-route="@RouteNames.VacancyAdvertPreview" class="govuk-link govuk-link--no-visited-state">Preview advert before submitting</a></p>
+            <p class="govuk-body"><a asp-route="@RouteNames.VacancyAdvertPreview" asp-all-route-data="@Model.RouteDictionary" class="govuk-link govuk-link--no-visited-state">Preview advert before submitting</a></p>
             <form asp-route="@RouteNames.EmployerCheckYourAnswersSubmitPost" asp-all-route-data="@Model.RouteDictionary" class="form-inline">
                 <input type="submit" value="@Model.SubmitButtonText" class="govuk-button" esfa-automation="submit-button" />
             </form>

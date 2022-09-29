@@ -53,7 +53,8 @@ namespace Esfa.Recruit.Employer.Web.Controllers
 
                 return RedirectToRoute(m.SubmitToEsfa.GetValueOrDefault()
                     ? RouteNames.ApproveJobAdvert_Get
-                    : RouteNames.RejectJobAdvert_Get);
+                    : RouteNames.RejectJobAdvert_Get, 
+                    new {m.VacancyId, m.EmployerAccountId});
             }
 
             var viewModel = await _orchestrator.GetVacancyTaskListModel(new VacancyRouteModel
@@ -83,10 +84,10 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             if (ModelState.IsValid)
             {
                 if (response.Data.IsSubmitted)
-                    return RedirectToRoute(RouteNames.Submitted_Index_Get);
+                    return RedirectToRoute(RouteNames.Submitted_Index_Get, new {m.VacancyId, m.EmployerAccountId});
 
                 if (response.Data.HasLegalEntityAgreement == false)
-                    return RedirectToRoute(RouteNames.LegalEntityAgreement_HardStop_Get);
+                    return RedirectToRoute(RouteNames.LegalEntityAgreement_HardStop_Get, new {m.VacancyId, m.EmployerAccountId});
 
                 throw new Exception("Unknown submit state");
             }
