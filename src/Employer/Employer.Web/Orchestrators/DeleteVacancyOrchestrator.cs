@@ -32,6 +32,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 
             var vm = new DeleteViewModel
             {
+                VacancyId = vacancy.Id,
+                EmployerAccountId = vacancy.EmployerAccountId,
                 Title = vacancy.Title,
                 Status = vacancy.Status
             };
