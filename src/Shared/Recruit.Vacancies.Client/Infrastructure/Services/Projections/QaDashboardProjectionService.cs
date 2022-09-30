@@ -32,7 +32,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Projections
             {
                 TotalVacanciesForReview = activeReviews.Count,
                 TotalVacanciesResubmitted = GetTotalVacanciesResubmittedCount(activeReviews),
-                TotalVacanciesBrokenSla = GetTotalVacanciesBrokenSla(activeReviews)
+                TotalVacanciesBrokenSla = GetTotalVacanciesBrokenSla(activeReviews),
+                TotalVacanciesSubmittedTwelveTwentyFourHours = activeReviews.Count(c=>
+                    c.SubmissionCount == 1 
+                    && c.CreatedDate.HasValue 
+                    && ((_timeProvider.Now - c.CreatedDate.Value).TotalHours >= 12 && (_timeProvider.Now - c.CreatedDate.Value).TotalHours < 24))
             };
 
             await _queryStoreWriter.UpdateQaDashboardAsync(qaDashboard);
