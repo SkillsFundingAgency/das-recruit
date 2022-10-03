@@ -5,6 +5,6 @@ namespace SFA.DAS.Recruit.Api.Mappers
 {
     public interface IVacancySummaryMapper
     {
-        VacancySummary MapFromVacancySummaryProjection(VacancySummaryProjection vsp, bool isForProviderOwnedVacancies);
+        VacancySummary MapFromVacancySummaryProjection(Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancySummary vsp, bool isForProviderOwnedVacancies);
     }
 }

@@ -3,23 +3,28 @@ using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Provider.Web.Configuration.Routing;
 using Esfa.Recruit.Provider.Web.Mappings;
+using Esfa.Recruit.Provider.Web.Models;
 using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview;
 using Esfa.Recruit.Shared.Web.Orchestrators;
 using Esfa.Recruit.Shared.Web.Services;
+using Esfa.Recruit.Vacancies.Client.Application.Commands;
 using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
+using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
 using Esfa.Recruit.Vacancies.Client.Domain.Models;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelationship;
 using Microsoft.Extensions.Logging;
+using ErrorMessages = Esfa.Recruit.Shared.Web.ViewModels.ErrorMessages;
 
 namespace Esfa.Recruit.Provider.Web.Orchestrators
 {
     public class VacancyTaskListOrchestrator : EntityValidatingOrchestrator<Vacancy, VacancyPreviewViewModel>
     {
+        private const VacancyRuleSet SubmitValidationRules = VacancyRuleSet.All;
         private const VacancyRuleSet SoftValidationRules = VacancyRuleSet.MinimumWage | VacancyRuleSet.TrainingExpiryDate;
         
         private readonly DisplayVacancyViewModelMapper _vacancyDisplayMapper;
@@ -28,11 +33,15 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
         private readonly IRecruitVacancyClient _vacancyClient;
         private readonly IReviewSummaryService _reviewSummaryService;
         private readonly IProviderRelationshipsService _providerRelationshipsService;
+        private readonly ILegalEntityAgreementService _legalEntityAgreementService;
+        private readonly ITrainingProviderAgreementService _trainingProviderAgreementService;
+        private readonly IMessaging _messaging;
         private readonly ServiceParameters _serviceParameters;
 
         public VacancyTaskListOrchestrator(ILogger<VacancyTaskListOrchestrator> logger, DisplayVacancyViewModelMapper vacancyDisplayMapper,
             IUtility utility, IProviderVacancyClient providerVacancyClient, 
-            IRecruitVacancyClient vacancyClient, IReviewSummaryService reviewSummaryService, IProviderRelationshipsService providerRelationshipsService, ServiceParameters serviceParameters) : base(logger)
+            IRecruitVacancyClient vacancyClient, IReviewSummaryService reviewSummaryService, IProviderRelationshipsService providerRelationshipsService, 
+            ILegalEntityAgreementService legalEntityAgreementService, ITrainingProviderAgreementService trainingProviderAgreementService, IMessaging messaging, ServiceParameters serviceParameters) : base(logger)
         {
             _vacancyDisplayMapper = vacancyDisplayMapper;
             _utility = utility;
@@ -40,6 +49,9 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             _vacancyClient = vacancyClient;
             _reviewSummaryService = reviewSummaryService;
             _providerRelationshipsService = providerRelationshipsService;
+            _legalEntityAgreementService = legalEntityAgreementService;
+            _trainingProviderAgreementService = trainingProviderAgreementService;
+            _messaging = messaging;
             _serviceParameters = serviceParameters;
         }
 
@@ -50,6 +62,10 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             
             await Task.WhenAll(vacancyTask, programmesTask);
 
+            var employerInfo =
+                await _providerVacancyClient.GetProviderEmployerVacancyDataAsync(routeModel.Ukprn,
+                    vacancyTask.Result.EmployerAccountId);
+            
             var vacancy = vacancyTask.Result;
             var programme = programmesTask.Result.SingleOrDefault(p => p.Id == vacancy.ProgrammeId);
             var hasProviderReviewPermission = await _providerRelationshipsService.HasProviderGotEmployersPermissionAsync(routeModel.Ukprn, vacancy.EmployerAccountId, vacancy.AccountLegalEntityPublicHashedId, OperationType.RecruitmentRequiresReview);
@@ -75,16 +91,15 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
                 vm.Review = await _reviewSummaryService.GetReviewSummaryViewModelAsync(vacancy.VacancyReference.Value, ReviewFieldMappingLookups.GetPreviewReviewFieldIndicators());
             }
 
-            var employerInfo = await GetEmployerInfo(routeModel.Ukprn, vacancy.EmployerAccountId, vacancy.VacancyType.GetValueOrDefault());
-            
             vm.AccountLegalEntityCount = employerInfo.LegalEntities.Count;
             return vm;
         }
 
         public async Task<VacancyPreviewViewModel> GetCreateVacancyTaskListModel(VacancyRouteModel vrm, string employerAccountId)
         {
-            var employerInfo = await GetEmployerInfo(vrm.Ukprn, employerAccountId,
-                _serviceParameters.VacancyType.GetValueOrDefault());
+            var employerInfo =
+                await _providerVacancyClient.GetProviderEmployerVacancyDataAsync(vrm.Ukprn,
+                    employerAccountId);
 
             var createVacancyTaskListModel = new VacancyPreviewViewModel
             {
@@ -94,6 +109,57 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
                 VacancyId = null
             };
             return createVacancyTaskListModel;
+        }
+        
+        public async Task<OrchestratorResponse<SubmitVacancyResponse>> SubmitVacancyAsync(SubmitEditModel m, VacancyUser user)
+        {
+            var vacancy = await _utility.GetAuthorisedVacancyAsync(m, RouteNames.Preview_Submit_Post);
+            
+            if (!vacancy.CanSubmit)
+                throw new InvalidStateException(string.Format(ErrorMessages.VacancyNotAvailableForEditing, vacancy.Title));
+            
+            vacancy.EmployerName = await _vacancyClient.GetEmployerNameAsync(vacancy);
+
+            return await ValidateAndExecute(
+                vacancy,
+                v => ValidateVacancy(v, SubmitValidationRules),
+                v => SubmitActionAsync(vacancy, user)
+            );
+        }
+        
+        private async Task<SubmitVacancyResponse> SubmitActionAsync(Vacancy vacancy, VacancyUser user)
+        {
+            var hasLegalEntityAgreementTask = _legalEntityAgreementService.HasLegalEntityAgreementAsync(vacancy.EmployerAccountId, vacancy.AccountLegalEntityPublicHashedId);
+            var hasProviderAgreementTask = _trainingProviderAgreementService.HasAgreementAsync(vacancy.TrainingProvider.Ukprn.Value);
+
+            await Task.WhenAll(hasLegalEntityAgreementTask, hasProviderAgreementTask);
+
+            var hasProviderReviewPermission = await _providerRelationshipsService.HasProviderGotEmployersPermissionAsync(vacancy.TrainingProvider.Ukprn.Value, vacancy.EmployerAccountId, vacancy.AccountLegalEntityPublicHashedId, OperationType.RecruitmentRequiresReview);
+
+            var response = new SubmitVacancyResponse
+            {
+                HasLegalEntityAgreement = hasLegalEntityAgreementTask.Result,
+                HasProviderAgreement = hasProviderAgreementTask.Result,
+                IsSubmitted = false
+            };
+
+            if (response.HasLegalEntityAgreement && response.HasProviderAgreement)
+            {
+                if (hasProviderReviewPermission && _serviceParameters.VacancyType.GetValueOrDefault() == VacancyType.Apprenticeship)
+                {
+                    var command = new ReviewVacancyCommand(vacancy.Id, user, OwnerType.Provider);
+                    await _messaging.SendCommandAsync(command);
+                    response.IsSentForReview = true;
+                }
+                else
+                {
+                    var command = new SubmitVacancyCommand(vacancy.Id, user, OwnerType.Provider);
+                    await _messaging.SendCommandAsync(command);
+                    response.IsSubmitted = true;
+                }
+            }
+            
+            return response;
         }
         
         private EntityValidationResult GetSoftValidationErrors(Vacancy vacancy)
@@ -118,25 +184,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
                 error.PropertyName = nameof(VacancyPreviewViewModel.Qualifications);
             }
         }
-
-        private async Task<EmployerInfo> GetEmployerInfo(long ukprn, string employerAccountId, VacancyType vacancyType)
-        {
-            var employerInfo =
-                await _providerVacancyClient.GetProviderEmployerVacancyDataAsync(ukprn,
-                    employerAccountId);
-            if (vacancyType == VacancyType.Traineeship)
-            {
-                var permissions = await
-                    _providerRelationshipsService.GetAccountLegalEntitiesForProvider(ukprn, employerAccountId,
-                        OperationType.RecruitmentRequiresReview);
-
-                employerInfo.LegalEntities = employerInfo.LegalEntities.Where(x =>
-                    permissions.FirstOrDefault(c =>
-                        c.AccountLegalEntityPublicHashedId == x.AccountLegalEntityPublicHashedId) == null).ToList();
-            }
-
-            return employerInfo;
-        }
+        
         
         protected override EntityToViewModelPropertyMappings<Vacancy, VacancyPreviewViewModel> DefineMappings()
         {

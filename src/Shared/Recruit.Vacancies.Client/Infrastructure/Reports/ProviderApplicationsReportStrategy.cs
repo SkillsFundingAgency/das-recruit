@@ -112,7 +112,12 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Reports
             }
         }
 
-        private async Task<ReportStrategyResult> GetProviderApplicationsAsync(long ukprn, DateTime fromDate, DateTime toDate, VacancyType vacancyType)
+        public Task<string> GetApplicationReviewsRecursiveAsync(string queryJson)
+        {
+            throw new NotImplementedException();
+        }
+
+        private async Task<ReportStrategyResult> GetProviderApplicationsAsync(long ukprn, DateTime fromDate, DateTime toDate)
         {
             var collection = GetCollection<BsonDocument>();
 
@@ -149,7 +154,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Reports
                 new KeyValuePair<string, string>("Date", _timeProvider.Now.ToUkTime().ToString("dd/MM/yyyy HH:mm:ss")),
                 new KeyValuePair<string, string>("Total_Number_Of_Applications", results.Count.ToString())
             };
-            return new ReportStrategyResult(headers, data);
+            return new ReportStrategyResult(headers, data,"");
         }
 
         private async Task ProcessResultsAsync(List<BsonDocument> results)

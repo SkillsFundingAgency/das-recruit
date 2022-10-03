@@ -7,5 +7,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Reports
     {
         Task<ReportStrategyResult> GetReportDataAsync(Dictionary<string, object> parameters);
         ReportDataType ResolveFormat(string fieldName);
+
+        Task<string> GetApplicationReviewsRecursiveAsync(string queryJson);
     }
 }

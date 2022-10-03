@@ -1,0 +1,157 @@
+@model DisplayVacancyViewModel
+
+
+<div class="app-preview-wrap">
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <h2 class="govuk-heading-xl">
+        @Model.Title
+        <span class="govuk-caption-l">@Model.EmployerName</span>
+      </h2>
+    </div>
+  </div>
+  <div class="govuk-grid-row govuk-!-margin-bottom-6">
+    <div class="govuk-grid-column-two-thirds">
+      <p class="govuk-body">@Model.ShortDescription</p> 
+    </div>
+    <div class="govuk-grid-column-one-third">
+      <p class="govuk-!-margin-bottom-1">
+        <a class="govuk-button govuk-!-margin-bottom-0" id="employer-website" href="#">Sign in to apply</a>
+      </p>
+      <p class="govuk-body-s">Closing date: @Model.ClosingDate</p>
+    </div>
+  </div>
+  <h2 class="govuk-heading-l" id="apprenticeshipSummary">Traineeship summary</h2>
+  <div class="govuk-grid-row">
+  
+    <div class="govuk-grid-column-two-thirds">
+      <div class="govuk-body">
+        <p>
+          A traineeship is a course with work experience that gets you ready for work or an apprenticeship. It can last up to 12 months.
+        </p>
+        <p class="govuk-body">      
+          You can apply if you’re:
+        </p>
+        <ul class="govuk-list govuk-list--bullet">
+          <li>Eligible to work in England</li>
+          <li>Unemployed and have little or no work experience</li>
+          <li>Aged 16 to 24 and qualified below Level 4</li>
+        </ul>
+      
+        <p class="govuk-body">
+          You'll get:
+        </p>
+        <ul class="govuk-list govuk-list--bullet">
+           <li>A work experience placement</li>
+           <li>Help with English and maths (if you need it)</li>
+           <li>Aged 16 to 24 and qualified below Level 4</li>
+        </ul>
+        <p class="govuk-body">
+            You won’t be paid, but you may be given expenses for things like travel and meals.
+        </p>
+      </div>
+      <div asp-show="@Model.HasVacancyDescription" class="govuk-body">@Html.Raw(Model.VacancyDescription)</div>
+      <h3 asp-show="@Model.HasTrainingDescription" class="govuk-heading-s govuk-!-margin-bottom-1">Training provided</h3>
+      <div asp-show="@Model.HasTrainingDescription" class="govuk-body">@Html.Raw(Model.TrainingDescription)</div>
+      <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Work experience provided</h3>
+      <div class="govuk-body">@Html.Raw(Model.WorkExperience)</div>
+    </div>
+    <div class="govuk-grid-column-one-third">
+
+      <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Working week</h3>
+      <p asp-show="@Model.HasWorkingWeekDescription" class="govuk-body">@Model.WorkingWeekDescription</p>
+
+      <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Expected duration</h3>
+      <p class="govuk-body" asp-show="@Model.HasExpectedDuration">@Model.ExpectedDuration</p>
+
+      <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Possible start date</h3>
+      <p asp-show="@Model.HasPossibleStartDate" class="govuk-body">@Model.PossibleStartDate</p>
+
+      <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Date posted</h3>
+      <p class="govuk-body">@Model.PostedDate</p>
+
+      <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Training provider</h3>
+      <p class="govuk-body">@Model.ProviderName</p>
+
+      <h3 asp-show=@(Model.HasProviderContactName || Model.HasProviderContactEmail || Model.HasProviderContactTelephone) class="govuk-heading-s govuk-!-margin-bottom-1">Contact</h3>
+      <div asp-show=@(Model.HasProviderContactName || Model.HasProviderContactEmail || Model.HasProviderContactTelephone) class="govuk-!-margin-bottom-6">
+      <p asp-show="@Model.HasProviderContactName" class="govuk-body govuk-!-margin-bottom-1">@Model.ProviderContactName</p>
+      <p asp-show="@Model.HasProviderContactTelephone" class="govuk-body govuk-!-margin-bottom-1">@Model.ProviderContactTelephone</p>
+      <p asp-show="@Model.HasProviderContactEmail" class="govuk-body govuk-!-margin-bottom-1">@Model.ProviderContactEmail</p>
+      </div>
+
+      <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Reference number</h3>
+      <p class="govuk-body">@Model.VacancyReferenceNumber</p>
+
+      <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Positions</h3>  
+      <p asp-show="@Model.HasNumberOfPositionsCaption" class="govuk-body">@Model.NumberOfPositionsCaption</p>   
+
+    </div>
+  </div>
+
+  <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
+
+  <h2 class="govuk-heading-l">About the employer</h2>
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <p class="govuk-body">@Model.EmployerDescription</p>
+    </div>
+  </div>
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-one-half">
+      <p class="govuk-body govuk-!-margin-bottom-0">
+        @Model.EmployerName
+      </p>
+      <p>
+        @Model.EmployerWebsiteUrl
+      </p>
+      <div asp-show="@Model.IsDisabilityConfident">
+        <img asp-show="@Model.IsDisabilityConfident" src="~/img/disability-confident_545x172.png" class="app-disability-confident-logo" alt="A logo confirming that the employer is registered as disability confident" esfa-automation="disability-confident-logo" no-cdn/>
+        <details class="govuk-details">
+          <summary class="govuk-details__summary">
+            <span class="govuk-details__summary-text">
+              About disability confident
+            </span>
+          </summary>
+          <div class="govuk-details__text">
+            <p>Disabled candidates are generally guaranteed an interview if you meet the minimum requirements for this vacancy. Contact the employer for full details.</p>
+            <p>Employers may need to limit the number of interviews offered to both disabled and non-disabled people if they receive high numbers of applications.</p>
+            <p>The disability confident scheme supports employers to make the most of the talents disabled people can bring to your workplace.provide your nationality, you’ll have to send copies of identity documents through the post.</p>
+          </div>
+        </details>
+      </div>
+      <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Address</h3>
+      <ul class="govuk-list">
+        @foreach (var addressLine in Model.EmployerAddressElements)
+        {
+            <li>@addressLine</li>
+        }
+      </ul>
+    </div>
+    <div class="govuk-grid-column-one-half">
+      <img asp-show="@Model.HasMapUrl" src="@Model.MapUrl" alt="Location map" class="app-preview-map" />
+    </div>
+  </div>
+
+  <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
+
+  <h2 class="govuk-heading-l">Desired skills and what this will lead to</h2>
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Desired skills and qualities</h3>
+        <ul class="govuk-list govuk-list--bullet">
+          @foreach (var skill in Model.Skills)
+          {
+            <li>@skill</li>
+          }
+        </ul>
+      <h3 class="govuk-heading-s govuk-!-margin-bottom-1">What this will lead to</h3>
+      <div asp-show="@Model.HasOutcomeDescription" class="govuk-body">@Html.Raw(Model.OutcomeDescription)</div>
+      <div>
+        <h3 asp-show="@Model.HasThingsToConsider" class="govuk-heading-s govuk-!-margin-bottom-1">Things to consider</h3>
+        <p asp-show="@Model.HasThingsToConsider" class="govuk-body">@Model.ThingsToConsider</p>
+      </div>
+    </div>
+  </div>
+</div>

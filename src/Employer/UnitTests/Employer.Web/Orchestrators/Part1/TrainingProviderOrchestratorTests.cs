@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Employer.Web.Configuration;
 using Esfa.Recruit.Employer.UnitTests.Employer.Web.HardMocks;
 using Esfa.Recruit.Employer.Web;
 using Esfa.Recruit.Employer.Web.Models;
@@ -11,6 +12,7 @@ using Esfa.Recruit.Shared.Web.FeatureToggle;
 using Esfa.Recruit.Shared.Web.Mappers;
 using Esfa.Recruit.Shared.Web.Orchestrators;
 using Esfa.Recruit.Shared.Web.Services;
+using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
@@ -144,6 +146,64 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part1
             fixture.VerifyEmployerReviewFieldIndicators(FieldIdentifiers.Provider, true);
         }
 
+        [Fact]
+        public async Task Then_The_Static_Provider_Is_Returned_For_The_Configured_EmployerAccountId()
+        {
+            var fixture = new TrainingProviderOrchestratorTestsFixture();
+            fixture
+                .WithVacacny(
+                    new Vacancy
+                    {
+                        Id = fixture.VacancyId,
+                        EmployerAccountId = TrainingProviderOrchestratorTestsFixture.EmployerAccountId,
+                        TrainingProvider = new TrainingProvider(),
+                        Title = "specified for route validation",
+                        ProgrammeId = "specified for route validation"
+                    })
+                .Setup();
+            
+            var selectTrainingProviderEditModel = new SelectTrainingProviderEditModel
+            {
+                EmployerAccountId = TrainingProviderOrchestratorTestsFixture.EmployerAccountId,
+                VacancyId = fixture.Vacancy.Id,
+                SelectionType = TrainingProviderSelectionType.TrainingProviderSearch,
+                TrainingProviderSearch = EsfaTestTrainingProvider.Ukprn.ToString()
+            };
+
+            var result = await fixture.PostSelectTrainingProviderAsync(selectTrainingProviderEditModel);
+
+            result.Data.FoundTrainingProviderUkprn.Should().Be(EsfaTestTrainingProvider.Ukprn);
+        }
+
+        [Fact]
+        public async Task Then_The_Static_Provider_Is_Not_Returned_For_Non_Configured_EmployerAccountId()
+        {
+            var fixture = new TrainingProviderOrchestratorTestsFixture();
+            fixture
+                .WithVacacny(
+                    new Vacancy
+                    {
+                        Id = fixture.VacancyId,
+                        EmployerAccountId = "ABC123",
+                        TrainingProvider = new TrainingProvider(),
+                        Title = "specified for route validation",
+                        ProgrammeId = "specified for route validation"
+                    })
+                .Setup();
+            
+            var selectTrainingProviderEditModel = new SelectTrainingProviderEditModel
+            {
+                EmployerAccountId = "ABC123",
+                VacancyId = fixture.Vacancy.Id,
+                SelectionType = TrainingProviderSelectionType.TrainingProviderSearch,
+                TrainingProviderSearch = EsfaTestTrainingProvider.Ukprn.ToString()
+            };
+
+            var result = await fixture.PostSelectTrainingProviderAsync(selectTrainingProviderEditModel);
+
+            result.Data.FoundTrainingProviderUkprn.Should().BeNull();
+        }
+
         public class TrainingProviderOrchestratorTestsFixture
         {
             private const VacancyRuleSet ValidationRules = VacancyRuleSet.TrainingProvider;
@@ -198,16 +258,25 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part1
                 MockTrainingProviderSummaryProvider.Setup(p => p.GetAsync(TrainingProviderSummaryTwo.Ukprn))
                     .ReturnsAsync(TrainingProviderSummaryTwo);
 
+                MockTrainingProviderSummaryProvider.Setup(p => p.GetAsync(EsfaTestTrainingProvider.Ukprn))
+                    .ReturnsAsync(new TrainingProviderSummary { Ukprn = EsfaTestTrainingProvider.Ukprn, ProviderName = EsfaTestTrainingProvider.Name });
+                
                 MockTrainingProviderService.Setup(t => t.GetProviderAsync(TrainingProviderOne.Ukprn.Value))
                     .ReturnsAsync(TrainingProviderOne);
 
                 MockTrainingProviderService.Setup(t => t.GetProviderAsync(TrainingProviderTwo.Ukprn.Value))
                     .ReturnsAsync(TrainingProviderTwo);
-
+                
+                MockTrainingProviderService.Setup(t => t.GetProviderAsync(EsfaTestTrainingProvider.Ukprn))
+                    .ReturnsAsync(new TrainingProvider
+                    {
+                        Ukprn = EsfaTestTrainingProvider.Ukprn
+                    });
+                
                 var utility = new Utility(MockRecruitVacancyClient.Object, Mock.Of<IFeature>());
                 
                 Sut = new TrainingProviderOrchestrator(MockRecruitVacancyClient.Object, Mock.Of<ILogger<TrainingProviderOrchestrator>>(), 
-                    Mock.Of<IReviewSummaryService>(), MockTrainingProviderSummaryProvider.Object, MockTrainingProviderService.Object, utility);
+                    Mock.Of<IReviewSummaryService>(), MockTrainingProviderSummaryProvider.Object, MockTrainingProviderService.Object, utility, new RecruitConfiguration(EmployerAccountId));
             }
 
             public async Task<OrchestratorResponse<PostSelectTrainingProviderResult>> PostSelectTrainingProviderAsync(SelectTrainingProviderEditModel model)

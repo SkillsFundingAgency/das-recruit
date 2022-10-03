@@ -19,5 +19,6 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.AboutEmployer
         };
 
         public bool IsTaskListCompleted { get ; set ; }
+        public bool IsDisabilityConfident { get; set; }
     }
 }

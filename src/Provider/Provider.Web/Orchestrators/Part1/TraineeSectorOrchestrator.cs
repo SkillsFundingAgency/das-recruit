@@ -7,14 +7,11 @@ using Esfa.Recruit.Provider.Web.ViewModels.Part1.Training;
 using Esfa.Recruit.Shared.Web.Orchestrators;
 using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Shared.Web.ViewModels;
-using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Application.Services;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Microsoft.Extensions.Logging;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
-using Esfa.Recruit.Vacancies.Client.Domain.Models;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelationship;
 
 namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
 {
@@ -24,8 +21,6 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
         private readonly IProviderVacancyClient _providerVacancyClient;
         private readonly IUtility _utility;
         private readonly IReviewSummaryService _reviewSummaryService;
-        private readonly IProviderRelationshipsService _providerRelationshipsService;
-        private readonly ServiceParameters _serviceParameters;
         private const VacancyRuleSet ValidationRules = VacancyRuleSet.RouteId;
 
         public TraineeSectorOrchestrator(
@@ -33,16 +28,12 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
             IRecruitVacancyClient vacancyClient,
             IProviderVacancyClient providerVacancyClient,
             IUtility utility,
-            IReviewSummaryService reviewSummaryService,
-            IProviderRelationshipsService providerRelationshipsService,
-            ServiceParameters serviceParameters) : base(logger)
+            IReviewSummaryService reviewSummaryService) : base(logger)
         {
             _vacancyClient = vacancyClient;
             _providerVacancyClient = providerVacancyClient;
             _utility = utility;
             _reviewSummaryService = reviewSummaryService;
-            _providerRelationshipsService = providerRelationshipsService;
-            _serviceParameters = serviceParameters;
         }
 
         public async Task<TraineeSectorViewModel> GetTraineeSectorViewModelAsync(VacancyRouteModel vrm)
@@ -56,14 +47,6 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
             var routes = routesTask.Result;
             var employerInfo = await _providerVacancyClient.GetProviderEmployerVacancyDataAsync(vrm.Ukprn, vacancy.EmployerAccountId);
             
-            if (_serviceParameters.VacancyType.GetValueOrDefault() == VacancyType.Traineeship)
-            {
-                var providerPermissions = await _providerRelationshipsService.GetAccountLegalEntitiesForProvider(vrm.Ukprn, vacancy.EmployerAccountId, OperationType.RecruitmentRequiresReview);
-                employerInfo.LegalEntities = employerInfo.LegalEntities.Where(x =>
-                        providerPermissions.FirstOrDefault(p => p.AccountLegalEntityPublicHashedId == x.AccountLegalEntityPublicHashedId) == null)
-                    .ToList();
-            }
-            
             var vm = new TraineeSectorViewModel
             {
                 Title = vacancy.Title,
@@ -76,7 +59,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
                 }),
                 PageInfo = _utility.GetPartOnePageInfo(vacancy),
                 Ukprn = vrm.Ukprn,
-                IsTaskListCompleted = _utility.TaskListCompleted(vacancy),
+                IsTaskListCompleted = _utility.IsTaskListCompleted(vacancy),
                 HasMoreThanOneLegalEntity = employerInfo.LegalEntities.Count > 1
             };
             

@@ -2,42 +2,34 @@
 using Esfa.Recruit.Vacancies.Client.Application.Exceptions;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using Esfa.Recruit.Provider.Web.Configuration;
-using Esfa.Recruit.Provider.Web.Configuration.Routing;
-using Esfa.Recruit.Provider.Web.Exceptions;
 using Esfa.Recruit.Provider.Web.Models;
 using Esfa.Recruit.Provider.Web.RouteModel;
-using Esfa.Recruit.Shared.Web.FeatureToggle;
 using Esfa.Recruit.Shared.Web.Models;
 using Esfa.Recruit.Shared.Web.ViewModels;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummariesProvider;
 
 namespace Esfa.Recruit.Provider.Web
 {
-    public interface IUtility
+    public interface IUtility : IVacancyTaskListStatusService
     {
         Task<Vacancy> GetAuthorisedVacancyForEditAsync(VacancyRouteModel vrm, string routeName);
         Task<Vacancy> GetAuthorisedVacancyAsync(VacancyRouteModel vrm, string routeName);
         void CheckAuthorisedAccess(Vacancy vacancy, long ukprn);
         bool VacancyHasCompletedPartOne(Vacancy vacancy);
         bool VacancyHasStartedPartTwo(Vacancy vacancy);
-        bool TaskListCompleted(Vacancy vacancy);
         PartOnePageInfoViewModel GetPartOnePageInfo(Vacancy vacancy);
         Task<ApplicationReview> GetAuthorisedApplicationReviewAsync(ApplicationReviewRouteModel rm);
         Task UpdateEmployerProfile(VacancyEmployerInfoModel vacancyEmployerInfoModel, EmployerProfile profile, Address address, VacancyUser user);
     }
-    public class Utility : IUtility
+    public class Utility : VacancyTaskListStatusService, IUtility
     {
         private readonly IRecruitVacancyClient _vacancyClient;
-        private readonly IFeature _feature;
 
-        public Utility(IRecruitVacancyClient vacancyClient, IFeature feature)
+        public Utility(IRecruitVacancyClient vacancyClient)
         {
             _vacancyClient = vacancyClient;
-            _feature = feature;
         }
         public async Task<Vacancy> GetAuthorisedVacancyForEditAsync(VacancyRouteModel vrm, string routeName)
         {
@@ -53,8 +45,6 @@ namespace Esfa.Recruit.Provider.Web
             var vacancy = await _vacancyClient.GetVacancyAsync(vrm.VacancyId.GetValueOrDefault());
 
             CheckAuthorisedAccess(vacancy, vrm.Ukprn);
-
-            //CheckRouteIsValidForVacancy(vacancy, routeName, vrm);
 
             return vacancy;
         }
@@ -77,7 +67,7 @@ namespace Esfa.Recruit.Provider.Web
         
         public bool VacancyHasCompletedPartOne(Vacancy vacancy)
         {
-            return TaskListCompleted(vacancy);
+            return base.IsTaskListCompleted(vacancy);
         }
 
         public bool VacancyHasStartedPartTwo(Vacancy vacancy)
@@ -90,16 +80,6 @@ namespace Esfa.Recruit.Provider.Web
                    vacancy.Skills != null ||
                    !string.IsNullOrWhiteSpace(vacancy.Description) ||
                    !string.IsNullOrWhiteSpace(vacancy.ShortDescription);
-        }
-        
-        public bool TaskListCompleted(Vacancy vacancy)
-        {
-            if(vacancy.VacancyType == VacancyType.Apprenticeship)
-                return vacancy.ApplicationMethod != null;
-            if (vacancy.VacancyType == VacancyType.Traineeship)
-                return !string.IsNullOrEmpty(vacancy.EmployerDescription);
-
-            return false;
         }
 
         public PartOnePageInfoViewModel GetPartOnePageInfo(Vacancy vacancy)

@@ -53,7 +53,7 @@ namespace Esfa.Recruit.Provider.Web.Mappings
                 new ReviewFieldIndicatorViewModel(FieldIdentifiers.ApplicationInstructions, Anchors.ApplicationInstructions),
                 new ReviewFieldIndicatorViewModel(FieldIdentifiers.EmployerName, Anchors.AboutEmployerSection),
                 new ReviewFieldIndicatorViewModel(FieldIdentifiers.WorkExperience, Anchors.WorkExperience),
-                new ReviewFieldIndicatorViewModel(FieldIdentifiers.TraineeSector, Anchors.TraineeSector)
+                new ReviewFieldIndicatorViewModel(FieldIdentifiers.TraineeRoute, Anchors.TraineeSector)
             };
 
             var mappings =  new Dictionary<string, IEnumerable<string>>
@@ -95,7 +95,7 @@ namespace Esfa.Recruit.Provider.Web.Mappings
                 { FieldIdResolver.ToFieldId(v => v.ApplicationMethod), new [] { FieldIdentifiers.ApplicationMethod} },
                 { FieldIdResolver.ToFieldId(v => v.ApplicationUrl), new []{ FieldIdentifiers.ApplicationUrl} },
                 { FieldIdResolver.ToFieldId(v => v.WorkExperience), new []{ FieldIdentifiers.WorkExperience} },
-                { FieldIdResolver.ToFieldId(v => v.RouteId), new []{ FieldIdentifiers.TraineeSector} }
+                { FieldIdResolver.ToFieldId(v => v.RouteId), new []{ FieldIdentifiers.TraineeRoute} }
             };
 
             return new ReviewFieldMappingLookupsForPage(vms, mappings);
@@ -414,12 +414,12 @@ namespace Esfa.Recruit.Provider.Web.Mappings
         {
             var vms = new List<ReviewFieldIndicatorViewModel>
             {
-                new ReviewFieldIndicatorViewModel(FieldIdentifiers.TraineeSector, nameof(TraineeSectorEditModel.SelectedRouteId))
+                new ReviewFieldIndicatorViewModel(FieldIdentifiers.TraineeRoute, nameof(TraineeSectorEditModel.SelectedRouteId))
             };
 
             var mappings = new Dictionary<string, IEnumerable<string>>
             {
-                { FieldIdResolver.ToFieldId(v => v.RouteId), new []{ FieldIdentifiers.TraineeSector} }
+                { FieldIdResolver.ToFieldId(v => v.RouteId), new []{ FieldIdentifiers.TraineeRoute } }
             };
 
             return new ReviewFieldMappingLookupsForPage(vms, mappings);

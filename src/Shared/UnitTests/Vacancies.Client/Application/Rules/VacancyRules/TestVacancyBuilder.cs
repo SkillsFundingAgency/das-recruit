@@ -13,7 +13,6 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.Rules.VacancyRules
                 EmployerLocation = new Address(),
                 EmployerContact = new ContactDetail(),
                 Skills = new List<string>(),
-                Qualifications = new List<Qualification>(),
                 Wage = new Wage()
             };
         }
@@ -46,6 +45,12 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.Rules.VacancyRules
         internal static Vacancy SetSkills(this Vacancy entity, IEnumerable<string> skills)
         {
             entity.Skills = skills.ToList();
+            return entity;
+        }
+        
+        internal static Vacancy SetQualifications(this Vacancy entity, IEnumerable<Qualification> qualifications)
+        {
+            entity.Qualifications = qualifications.ToList();
             return entity;
         }
 

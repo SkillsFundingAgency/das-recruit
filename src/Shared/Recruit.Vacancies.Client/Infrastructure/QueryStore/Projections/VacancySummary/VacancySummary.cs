@@ -9,6 +9,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections
         public string Title { get; set; }
         public long? VacancyReference { get; set; }
         public string LegalEntityName { get; set; }
+        public string AccountLegalEntityId { get; set; }
         public string EmployerAccountId { get; set; }
         public string EmployerName { get; set; }
         public long? Ukprn { get; set; }
@@ -36,5 +37,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections
         public int NoOfApplications => NoOfNewApplications + NoOfSuccessfulApplications + NoOfUnsuccessfulApplications;
         public bool IsTraineeship { get; set; }
         public VacancyType? VacancyType { get; set; }
+        public bool IsTaskListCompleted { get; set; }
+        public bool? HasChosenProviderContactDetails { get; set; }
     }
 }

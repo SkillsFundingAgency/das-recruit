@@ -8,9 +8,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelation
     public interface IProviderRelationshipsService
     {
         Task<IEnumerable<EmployerInfo>> GetLegalEntitiesForProviderAsync(long ukprn, OperationType operation);
-        Task<IEnumerable<EmployerInfo>> GetLegalEntitiesForProviderAsync(string accountHashedId, OperationType operation);
         Task<bool> HasProviderGotEmployersPermissionAsync(long ukprn, string accountPublicHashedId, string accountLegalEntityPublicHashedId, OperationType operation);
         Task RevokeProviderPermissionToRecruitAsync(long ukprn, string accountLegalEntityPublicHashedId);
-        Task<IEnumerable<LegalEntity>> GetAccountLegalEntitiesForProvider(long ukprn, string accountHashedId, OperationType operationType);
+        Task<bool> CheckProviderHasPermissions(long ukprn, OperationType operationType);
+        Task<bool> CheckEmployerHasPermissions(string accountHashedId, OperationType operationType);
     }
 }

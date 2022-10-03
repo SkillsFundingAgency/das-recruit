@@ -159,7 +159,6 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.VacancyPreview
             string description,
             string shortDescription,
             string trainingDescription,
-            string outcomeDescription,
             string accountLegalEntityPublicHashedId,
             Vacancies.Client.Domain.Entities.TrainingProvider provider,
             ApprenticeshipProgramme programme,
@@ -175,7 +174,6 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.VacancyPreview
                 Description = description,
                 TrainingDescription = trainingDescription,
                 ShortDescription = shortDescription,
-                OutcomeDescription = outcomeDescription,
                 TrainingProvider = provider,
                 AccountLegalEntityPublicHashedId = accountLegalEntityPublicHashedId 
             };

@@ -41,13 +41,13 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
         public async Task<TitleViewModel> GetTitleViewModelForNewVacancyAsync(string employerAccountId, long ukprn)
         {
             await ValidateEmployerAccountIdAsync(ukprn, employerAccountId);
-            var dashboard = await _providerVacancyClient.GetDashboardAsync(ukprn, _serviceParameters.VacancyType.GetValueOrDefault());
+            var vacancyCount = await _providerVacancyClient.GetVacancyCount(ukprn, _serviceParameters.VacancyType.GetValueOrDefault(), null, string.Empty);
             var vm = new TitleViewModel
             {
                 EmployerAccountId = employerAccountId,
                 Ukprn = ukprn,
                 PageInfo = new PartOnePageInfoViewModel(),
-                HasAnyVacancies = dashboard.Vacancies.Any()
+                HasAnyVacancies = vacancyCount > 0
             };
             return vm;
         }
@@ -56,7 +56,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
         {
             var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.Title_Get);
             var ukprn = vacancy.TrainingProvider.Ukprn.GetValueOrDefault();
-            var dashboard = await _providerVacancyClient.GetDashboardAsync(ukprn, _serviceParameters.VacancyType.GetValueOrDefault());
+            var vacancyCount = await _providerVacancyClient.GetVacancyCount(ukprn, _serviceParameters.VacancyType.GetValueOrDefault(), null, string.Empty);
             var vm = new TitleViewModel
             {
                 VacancyId = vacancy.Id,
@@ -64,7 +64,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
                 PageInfo = _utility.GetPartOnePageInfo(vacancy),
                 Ukprn = ukprn,
                 EmployerAccountId = vacancy.EmployerAccountId,
-                HasAnyVacancies = dashboard.Vacancies.Any()
+                HasAnyVacancies = vacancyCount > 0
             };
 
             if (vacancy.Status == VacancyStatus.Referred)

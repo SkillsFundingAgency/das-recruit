@@ -7,12 +7,10 @@ using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Domain.Models;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount;
-using Esfa.Recruit.Vacancies.Client.Domain.Models;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
-using SFA.DAS.EAS.Account.Api.Client;
 using SFA.DAS.Http;
 using SFA.DAS.Http.TokenGenerators;
 
@@ -38,24 +36,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelation
             var providerPermissions = await GetProviderPermissionsAsync(ukprn, operation);
 
             return await GetEmployerInfosAsync(providerPermissions);
-        }
-
-        public async Task<IEnumerable<EmployerInfo>> GetLegalEntitiesForProviderAsync(string accountHashedId, OperationType operation)
-        {
-            var providerPermissions = await GetProviderPermissionsAsync(accountHashedId, operation);
-            
-            return await GetEmployerInfosAsync(providerPermissions);
-        }
-
-        public async Task<IEnumerable<LegalEntity>> GetAccountLegalEntitiesForProvider(long ukprn, string accountHashedId, OperationType operationType)
-        {
-            var permittedLegalEntities = await GetProviderPermissionsforEmployer(ukprn, accountHashedId, operationType);
-            
-            return permittedLegalEntities.Select(c=> new LegalEntity
-            {
-                AccountLegalEntityPublicHashedId = c.AccountLegalEntityPublicHashedId,
-                Name = c.AccountLegalEntityName
-            });
         }
 
         public async Task<bool> HasProviderGotEmployersPermissionAsync(long ukprn, string accountHashedId, string accountLegalEntityPublicHashedId, OperationType operation)
@@ -166,6 +146,20 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelation
                     throw new Exception($"Failed to revoke provider {ukprn} permission for account legal entity {accountLegalEntityPublicHashedId} response code: {response.StatusCode}");
                 }
             }
+        }
+
+        public async Task<bool> CheckProviderHasPermissions(long ukprn, OperationType operationType)
+        {
+            var result = await GetProviderPermissionsAsync(ukprn, operationType);
+
+            return result.AccountProviderLegalEntities.Any();
+        }
+
+        public async Task<bool> CheckEmployerHasPermissions(string accountHashedId, OperationType operationType)
+        {
+            var result = await GetProviderPermissionsAsync(accountHashedId, operationType);
+
+            return result.AccountProviderLegalEntities.Any();
         }
 
 
