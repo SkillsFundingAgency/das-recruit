@@ -30,11 +30,7 @@
         </ul>
         <div class="govuk-inset-text">You can use our <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.EmployerRecruitmentApi" target="_blank">recruitment Application Programming Interfaces (APIs)</a> to create adverts using your existing systems or display adverts from Find an apprenticeship on your websites.</div>
 
-        <esfaFeatureEnabled name="@FeatureNames.EmployerTaskList">
-            <a asp-route="@RouteNames.EmployerTaskListCreateGet" role="button" class="govuk-button govuk-button--start" esfa-automation="create-vacancy">Start now</a>
-        </esfaFeatureEnabled>
-        <esfaFeatureDisabled name="@FeatureNames.EmployerTaskList">
-            <a asp-route="@RouteNames.CreateVacancyOptions_Get" role="button" class="govuk-button govuk-button--start" esfa-automation="create-vacancy">Start now</a>
-        </esfaFeatureDisabled>
+        <a asp-route="@RouteNames.EmployerTaskListCreateGet" role="button" class="govuk-button govuk-button--start" esfa-automation="create-vacancy">Start now</a>
+        
     </div>
 </div>

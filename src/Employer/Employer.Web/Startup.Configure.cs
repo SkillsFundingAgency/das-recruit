@@ -139,7 +139,7 @@ namespace Esfa.Recruit.Employer.Web
                         "https://*.zendesk.com",
                         "https://*.zdassets.com",
                         "https://dc.services.visualstudio.com",
-                        "https://www.google-analytics.com",
+                        "https://*.google-analytics.com",
                         "wss://*.zendesk.com",
                         "wss://*.zopim.com",
                         "https://*.rcrsv.io")

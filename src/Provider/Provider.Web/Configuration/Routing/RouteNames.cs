@@ -7,7 +7,6 @@
         public const string AboutEmployer_Post = "AboutEmployer_Post";
         public const string ApplicationProcess_Get = "ApplicationProcess_Get";
         public const string ApplicationProcess_Post = "ApplicationProcess_Post";
-        public const string CancelVacancyChanges_Get = "CancelVacancyChanges_Get";
         public const string CloseVacancy_Get = "CloseVacancy_Get";
         public const string CloseVacancy_Post = "CloseVacancy_Post";
         public const string CloneVacancy_Get = "CloneVacancy_Get";
@@ -76,7 +75,6 @@
         public const string Vacancy_Advert_Preview_Get = "Vacancy_Advert_Preview_Get";
         public const string VacancyDescription_Index_Get = "VacancyDescription_Index_Get";
         public const string VacancyDescription_Index_Post = "VacancyDescription_Index_Post";
-        public const string VacancyEdit_Get = "VacancyEdit_Get";
         public const string VacancyEditDates_Get = "VacancyEditDates_Get";
         public const string VacancyEditDates_Post = "VacancyEditDates_Post";
         public const string VacancyManage_Get = "VacancyManage_Get";
@@ -102,7 +100,17 @@
         public const string ProviderTaskListCreateGet = "provider-task-list-create";
         public const string ProviderTaskListGet = "provider-task-list-get";
         public const string ProviderCheckYourAnswersGet = "provider-check-your-answers-get";
+        public const string ProviderCheckYourAnswersPost = "provider-check-your-answers-post";
         public const string FutureProspects_Get = "FutureProspects_Get";
         public const string FutureProspects_Post = "FutureProspects_Post";
+        public const string WorkExperience_Get = "work-experience-get";
+        public const string WorkExperience_Post = "work-experience-post";
+        public const string TraineeSector_Get = "trainee-sector-get";
+        public const string TraineeSector_Post = "trainee-sector-post";
+        public const string TraineeshipHelp = "trainee-help-get";
+        public const string TraineeshipPrivacy = "trainee-privacy-get";
+        public const string TraineeshipTermsAndConditions = "trainee-terms-and-conditions";
+        public const string TraineeshipCookies = "trainee-cookies";
+        public const string TraineeshipCookiesDetails = "trainee-cookies-details";
     }
 }

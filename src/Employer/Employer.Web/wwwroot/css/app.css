@@ -164,6 +164,7 @@
     .app-summary-list__row {
         display: flex;
         flex-direction: row;
+        margin-bottom: 10px;
     }
 }
 
@@ -212,7 +213,7 @@
         flex-basis: 20%;
         text-align: right;
         padding-bottom: 10px;
-        margin-bottom: 5px;
+        margin-bottom: 0;
     }
 }
 
@@ -228,6 +229,30 @@
 .app-summary-list__error-message:empty {
     display: none;
 }
+
+/* Analytics styles for vacancies */
+
+.app-analytics {
+    background: #f3f2f1;
+}
+
+.app-analytics__heading {
+    padding: 5px 10px;
+    background: #ddd;
+    margin: 0;
+}
+
+.app-analytics__data {
+    padding: 10px;
+    font-weight: 700;
+    margin: 0;
+}
+
+.app-analytics__summary {
+    border-top: 1px solid #ccc;
+    padding: 5px 10px;
+}
+
 
 /* Local overrides to the das-task-list component */
 
@@ -260,6 +285,10 @@
     margin: 0;
     padding-left: 20px;
     list-style-type: disc;
+}
+
+.app-preserve-line-breaks {
+    white-space: pre-line;
 }
 
 /* Tinymce */

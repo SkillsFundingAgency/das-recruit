@@ -26,6 +26,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         private readonly IVacancyReviewQuery _vacancyReviewQuery;
         private readonly IVacancyRepository _vacancyRepository;
         private readonly IApprenticeshipProgrammeProvider _apprenticeshipProgrammesProvider;
+        private readonly IApprenticeshipRouteProvider _apprenticeshipRouteProvider;
         private readonly IMessaging _messaging;
         private readonly INextVacancyReviewService _nextVacancyReviewService;
         private readonly IReportService _reportService;
@@ -42,7 +43,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
                     IMessaging messaging,
                     INextVacancyReviewService nextVacancyReviewService,
                     IReportRepository reportRepository,
-                    IReportService reportService)
+                    IReportService reportService, 
+                    IApprenticeshipRouteProvider apprenticeshipRouteProvider)
         {
             _queryStoreReader = queryStoreReader;
             _referenceDataReader = referenceDataReader;
@@ -53,6 +55,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             _messaging = messaging;
             _nextVacancyReviewService = nextVacancyReviewService;
             _reportService = reportService;
+            _apprenticeshipRouteProvider = apprenticeshipRouteProvider;
             _reportRepository = reportRepository;
         }
 
@@ -64,6 +67,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         public Task<IApprenticeshipProgramme> GetApprenticeshipProgrammeAsync(string programmeId)
         {
             return _apprenticeshipProgrammesProvider.GetApprenticeshipProgrammeAsync(programmeId);
+        }
+        
+        public Task<IApprenticeshipRoute> GetRoute(int? routeId)
+        {
+            return _apprenticeshipRouteProvider.GetApprenticeshipRouteAsync(routeId.GetValueOrDefault());
         }
 
         public Task<Qualifications> GetCandidateQualificationsAsync()
@@ -225,14 +233,25 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return _reportRepository.GetReportAsync(reportId);
         }
 
-        public void WriteReportAsCsv(Stream stream, Report report)
+        public async Task WriteReportAsCsv(Stream stream, Report report)
         {
-            _reportService.WriteReportAsCsv(stream, report);
+            await _reportService.WriteReportAsCsv(stream, report);
         }
 
         public Task IncrementReportDownloadCountAsync(Guid reportId)
         {
             return _reportRepository.IncrementReportDownloadCountAsync(reportId);
+        }
+
+        public Task UpdateDraftVacancyAsync(Vacancy vacancy, VacancyUser user)
+        {
+            var command = new UpdateDraftVacancyCommand
+            {
+                Vacancy = vacancy,
+                User = user
+            };
+
+            return _messaging.SendCommandAsync(command);
         }
     }
 }

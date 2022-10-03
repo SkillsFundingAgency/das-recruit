@@ -11,6 +11,7 @@ using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
 using Esfa.Recruit.Shared.Web.Orchestrators;
 using Esfa.Recruit.Shared.Web.Extensions;
+using Esfa.Recruit.Shared.Web.Helpers;
 using ErrMsg = Esfa.Recruit.Shared.Web.ViewModels.ErrorMessages;
 
 namespace Esfa.Recruit.Provider.Web.Orchestrators
@@ -53,10 +54,12 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
         {
             var vacancyTask = GetVacancyAsync(vrm);
             var programmesTask = _vacancyClient.GetActiveApprenticeshipProgrammesAsync();
-
-            await Task.WhenAll(vacancyTask, programmesTask);
+            var routesTask = _vacancyClient.GetApprenticeshipRoutes();
+            
+            await Task.WhenAll(vacancyTask, programmesTask, routesTask);
 
             var vacancy = vacancyTask.Result;
+            var routes = routesTask.Result;
             var programmes = programmesTask.Result;
 
             var vm = new EditVacancyDatesViewModel
@@ -71,7 +74,10 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
 
                 CurrentYear = _timeProvider.Now.Year,
 
-                ProgrammeName = programmes.First(p => p.Id == vacancy.ProgrammeId).Title
+                ProgrammeName = vacancy.VacancyType.GetValueOrDefault() == VacancyType.Apprenticeship ? programmes.First(p => p.Id == vacancy.ProgrammeId).Title : "",
+                RouteName = vacancy.VacancyType.GetValueOrDefault() == VacancyType.Traineeship ? routes.First(r => r.Id == vacancy.RouteId).Route : "",
+                VacancyType = vacancy.VacancyType.GetValueOrDefault(),
+                Title = vacancy.Title
             };
 
             var resp = new OrchestratorResponse<EditVacancyDatesViewModel>(vm);
@@ -110,7 +116,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             return resp.Data;
         }
 
-        public async Task<OrchestratorResponse> PostEditVacancyDatesEditModelAsync(EditVacancyDatesEditModel m)
+        public async Task<OrchestratorResponse> PostEditVacancyDatesEditModelAsync(EditVacancyDatesEditModel m, VacancyUser user)
         {
             var vacancy = await GetVacancyAsync(m);
 
@@ -119,10 +125,19 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             if (proposedClosingDate < vacancy.ClosingDate)
                 return new OrchestratorResponse(_proposedClosingDateMustBeNewerError);
 
-            vacancy.ClosingDate = proposedClosingDate;
-            vacancy.StartDate = m.StartDate.AsDateTimeUk()?.ToUniversalTime();
+            
+            var proposedVacancyStartDate = m.StartDate.AsDateTimeUk()?.ToUniversalTime();
+            
+            var updateKind = VacancyHelper.DetermineLiveUpdateKind(vacancy, proposedClosingDate, proposedVacancyStartDate);
 
-            return new OrchestratorResponse(_vacancyClient.Validate(vacancy, ValidationRules));
+            vacancy.ClosingDate = proposedClosingDate;
+            vacancy.StartDate = proposedVacancyStartDate;
+            
+            return await ValidateAndExecute(
+                vacancy, 
+                v => _vacancyClient.Validate(v, ValidationRules),
+                v => _vacancyClient.UpdatePublishedVacancyAsync(vacancy, user, updateKind)
+            );
         }
 
         protected override EntityToViewModelPropertyMappings<Vacancy, EditVacancyDatesEditModel> DefineMappings()

@@ -8,6 +8,7 @@ using Esfa.Recruit.Provider.Web.ViewModels.Part2.VacancyDescription;
 using Esfa.Recruit.Shared.Web.FeatureToggle;
 using Esfa.Recruit.Shared.Web.Mappers;
 using Esfa.Recruit.Shared.Web.Services;
+using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
@@ -77,7 +78,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part2
         [InlineData("has a new value", "has a value", new string[] { FieldIdentifiers.VacancyDescription }, new string[] { FieldIdentifiers.TrainingDescription})]
         [InlineData("has a value", "has a new value", new string[] { FieldIdentifiers.TrainingDescription }, new string[] { FieldIdentifiers.VacancyDescription})]
         [InlineData("has a new value", "has a new value", new string[] { FieldIdentifiers.VacancyDescription, FieldIdentifiers.TrainingDescription}, new string[] { })]
-        public async Task WhenShortDescriptionIsUpdated_ShouldFlagFieldIndicators(string description, string trainingDescription, string[] setFieldIndicators, string[] unsetFieldIndicators)
+        public async Task WhenDescriptionIsUpdated_ShouldFlagFieldIndicators(string description, string trainingDescription, string[] setFieldIndicators, string[] unsetFieldIndicators)
         {
             _fixture
                 .WithTaskListSet(true)
@@ -97,9 +98,32 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part2
 
             _fixture.VerifyProviderReviewFieldIndicators(setFieldIndicators, unsetFieldIndicators);
         }
+        
+        [Fact]
+        public async Task When_Traineeship_Then_Ignores_VacancyDescription_And_OutcomeDescription()
+        {
+            _fixture
+                .WithTaskListSet(false)
+                .WithVacancyType(VacancyType.Traineeship)
+                .WithTrainingDescription("hello")
+                .Setup();
+            
+            var vacancyDescriptionEditModel = new VacancyDescriptionEditModel
+            {
+                Ukprn = _fixture.Vacancy.TrainingProvider.Ukprn.Value,
+                VacancyId = _fixture.Vacancy.Id,
+                TrainingDescription = "new value"
+            };
+            
+            await _fixture.PostVacancyDescriptionEditModelAsync(vacancyDescriptionEditModel);
+
+            _fixture.VerifyProviderReviewFieldIndicators(
+                new [] { FieldIdentifiers.TrainingDescription },
+                new []{ FieldIdentifiers.VacancyDescription, FieldIdentifiers.OutcomeDescription});
+        }
 
         [Fact]
-        public async Task When_TaskList_Not_Enabled_Then_Sets_Review_Feild_For_OutcomeDescription()
+        public async Task When_TaskList_Not_Enabled_Then_Sets_Review_Field_For_OutcomeDescription()
         {
             _fixture
                 .WithTaskListSet(false)
@@ -140,12 +164,13 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part2
                 Vacancy.Description = description;
                 return this;
             }
-
+            
             public VacancyDescriptionOrchestratorTestsFixture WithTrainingDescription(string trainingDescription)
             {
                 Vacancy.TrainingDescription = trainingDescription;
                 return this;
             }
+            
             public VacancyDescriptionOrchestratorTestsFixture WithOutcomeDescription(string outcomeDescription)
             {
                 Vacancy.OutcomeDescription = outcomeDescription;
@@ -166,6 +191,13 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part2
                 MockFeature.Setup(x => x.IsFeatureEnabled(FeatureNames.ProviderTaskList)).Returns(value);
                 return this;
             }
+            
+            public VacancyDescriptionOrchestratorTestsFixture WithVacancyType(VacancyType vacancyType)
+            {
+                Vacancy.VacancyType = vacancyType;
+                return this;
+            }
+            
             public void Setup()
             {
                 MockRecruitVacancyClient.Setup(x => x.GetVacancyAsync(Vacancy.Id)).ReturnsAsync(Vacancy);
@@ -175,7 +207,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part2
 
                 Sut = new VacancyDescriptionOrchestrator(MockRecruitVacancyClient.Object,
                     Mock.Of<ILogger<VacancyDescriptionOrchestrator>>(), Mock.Of<IReviewSummaryService>(),
-                    new Utility(MockRecruitVacancyClient.Object, Mock.Of<IFeature>()), MockFeature.Object);
+                    new Utility(MockRecruitVacancyClient.Object), MockFeature.Object, new ServiceParameters(VacancyType.Apprenticeship.ToString()));
             }
 
             public async Task PostVacancyDescriptionEditModelAsync(VacancyDescriptionEditModel model)

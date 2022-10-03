@@ -47,9 +47,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Extensions
             projectedVacancy.NumberOfPositions = vacancy.NumberOfPositions.GetValueOrDefault();
             projectedVacancy.OutcomeDescription = vacancy.OutcomeDescription;
             projectedVacancy.ProgrammeId = vacancy.ProgrammeId;
-            projectedVacancy.ProgrammeLevel = programme.ApprenticeshipLevel.ToString();
-            projectedVacancy.ProgrammeType = programme.ApprenticeshipType.ToString();
-            projectedVacancy.Qualifications = vacancy.Qualifications.ToProjection();
+            projectedVacancy.ProgrammeLevel = programme?.ApprenticeshipLevel.ToString();
+            projectedVacancy.ProgrammeType = programme?.ApprenticeshipType.ToString();
+            projectedVacancy.Qualifications = vacancy.VacancyType.GetValueOrDefault() == VacancyType.Apprenticeship ? vacancy.Qualifications.ToProjection() : new List<ProjectionQualification>();
             projectedVacancy.ShortDescription = vacancy.ShortDescription;
             projectedVacancy.Skills = vacancy.Skills;
             projectedVacancy.StartDate = vacancy.StartDate.GetValueOrDefault();
@@ -59,10 +59,14 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Extensions
             projectedVacancy.TrainingProvider = vacancy.TrainingProvider.ToProjection();
             projectedVacancy.VacancyReference = vacancy.VacancyReference.GetValueOrDefault();
             projectedVacancy.Wage = vacancy.Wage.ToProjection();
-            projectedVacancy.EducationLevelNumber = programme.EducationLevelNumber;
+            projectedVacancy.EducationLevelNumber = programme?.EducationLevelNumber;
 
             projectedVacancy.AccountPublicHashedId = vacancy.EmployerAccountId;
             projectedVacancy.AccountLegalEntityPublicHashedId = vacancy.AccountLegalEntityPublicHashedId;
+            
+            projectedVacancy.RouteId = vacancy.RouteId;
+            projectedVacancy.WorkExperience = vacancy.WorkExperience;
+            projectedVacancy.VacancyType = vacancy.VacancyType.GetValueOrDefault();
             
             return projectedVacancy;
         }
@@ -116,8 +120,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Extensions
                 DurationUnit = wage.DurationUnit.Value.ToString(),
                 FixedWageYearlyAmount = wage.FixedWageYearlyAmount,
                 WageAdditionalInformation = wage.WageAdditionalInformation,
-                WageType = wage.WageType.Value.ToString(),
-                WeeklyHours = wage.WeeklyHours.Value,
+                WageType = wage.WageType?.ToString(),
+                WeeklyHours = wage.WeeklyHours ?? 0,
                 WorkingWeekDescription = wage.WorkingWeekDescription
             };
         }

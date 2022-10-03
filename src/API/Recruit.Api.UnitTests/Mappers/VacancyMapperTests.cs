@@ -4,6 +4,8 @@ using FluentAssertions;
 using NUnit.Framework;
 using SFA.DAS.Recruit.Api.Mappers;
 using SFA.DAS.Recruit.Api.Models;
+using DurationUnit = SFA.DAS.Recruit.Api.Models.DurationUnit;
+using WageType = SFA.DAS.Recruit.Api.Models.WageType;
 
 namespace SFA.DAS.Recruit.Api.UnitTests.Mappers
 {
@@ -13,7 +15,7 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Mappers
         public void Then_The_Request_Is_Mapped_To_The_Vacancy(CreateVacancyRequest request, Guid id)
         {
             request.Wage.WageType = WageType.NationalMinimumWageForApprentices;
-            request.Wage.DurationUnit = DurationUnit.Year;
+            request.Wage.DurationUnit = DurationUnit.Month;
             request.ApplicationMethod = CreateVacancyApplicationMethod.ThroughExternalApplicationSite;
             
             var actual = request.MapFromCreateVacancyRequest(id);
@@ -22,9 +24,12 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Mappers
             actual.Should().BeEquivalentTo(request, options => options
                 .Excluding(c => c.User)
                 .Excluding(c => c.Address)
+                .Excluding(c=>c.Wage.DurationUnit)
             );
             actual.EmployerLocation.Should().BeEquivalentTo(request.Address);
             actual.CreatedByUser.Should().BeEquivalentTo(request.User);
+            actual.Wage.DurationUnit.Should().Be(Esfa.Recruit.Vacancies.Client.Domain.Entities.DurationUnit.Month);
+
         }
     }
 }

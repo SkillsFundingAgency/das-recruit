@@ -7,5 +7,6 @@ namespace Esfa.Recruit.Provider.Web.Configuration
         public string NationalMinimumWageRates { get; set; }
         public string ProviderRecruitmentApiUrl { get; set; }
         public string SignProviderAgreementUrl { get; set; }
+        public string FindATraineeshipUrl { get; set; }
     }
 }

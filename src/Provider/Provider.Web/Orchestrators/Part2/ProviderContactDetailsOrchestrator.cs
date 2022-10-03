@@ -51,7 +51,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part2
                    ReviewFieldMappingLookups.GetProviderContactDetailsFieldIndicators());
             }
 
-            vm.IsTaskListCompleted = _utility.TaskListCompleted(vacancy);
+            vm.IsTaskListCompleted = _utility.IsTaskListCompleted(vacancy);
 
             return vm;
         }
@@ -70,9 +70,13 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part2
         public async Task<OrchestratorResponse> PostProviderContactDetailsEditModelAsync(ProviderContactDetailsEditModel m, VacancyUser user)
         {
             var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(m, RouteNames.ProviderContactDetails_Post);
-
+            vacancy.HasChosenProviderContactDetails = true;
+            
             if (vacancy.ProviderContact == null)
+            {
                 vacancy.ProviderContact = new ContactDetail();
+            }
+                
 
             SetVacancyWithProviderReviewFieldIndicators(
                 vacancy.ProviderContact.Name,

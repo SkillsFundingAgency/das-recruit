@@ -5,7 +5,6 @@ using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Application.Rules;
 using Esfa.Recruit.Vacancies.Client.Application.Rules.BaseRules;
 using Esfa.Recruit.Vacancies.Client.Application.Rules.VacancyRules;
-using Esfa.Recruit.Vacancies.Client.Application.Services;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Xunit;
 
@@ -33,7 +32,6 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.Rules.VacancyRules
         public async Task WhenInvoked_ItShouldReturnTheExpectedScore(string phrase, int expectedScore, decimal weighting = 1.0m)
         {
             var rule = new VacancyProfanityChecksRule(new TestProfanityListProvider(), ConsolidationOption.ConsolidateByField, weighting);
-
             var entity = TestVacancyBuilder.Create().SetTitle(phrase);
 
             var outcome = await rule.EvaluateAsync(entity);
@@ -45,13 +43,13 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.Rules.VacancyRules
         public async Task WhenInvoked_ItShouldReturnAnOverallUnconsolidatedNarrative()
         {
             var rule = new VacancyProfanityChecksRule(new TestProfanityListProvider());
-
             var skills = new[] { "Juggling", "Running", "dang" };
-
+            var qualifications = new List<Qualification> { new Qualification{Grade = "dang grade", Subject = "subject"} };
             var entity = TestVacancyBuilder.Create()
                 .SetTitle("bother-bother, bother!")
                 .SetDescription("dang it and balderdash!!")
-                .SetSkills(skills);
+                .SetSkills(skills)
+                .SetQualifications(qualifications);
 
             var outcome = await rule.EvaluateAsync(entity);
 
@@ -59,15 +57,14 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.Rules.VacancyRules
             Assert.Contains("Profanity 'dang' found in 'Description'", outcome.Narrative);
             Assert.Contains("Profanity 'balderdash' found in 'Description'", outcome.Narrative);
             Assert.Contains("Profanity 'dang' found in 'Skills'", outcome.Narrative);
+            Assert.Contains("Profanity 'dang' found in 'Qualifications'", outcome.Narrative);
         }
 
         [Fact]
         public async Task WhenInvoked_ItShouldReturnAnOverallConsolidatedNarrative()
         {
             var rule = new VacancyProfanityChecksRule(new TestProfanityListProvider(), ConsolidationOption.ConsolidateByField);
-
             var skills = new[] { "Juggling", "Running", "dang" };
-
             var entity = TestVacancyBuilder.Create()
                 .SetTitle("bother-bother, bother!")
                 .SetDescription("dang it and balderdash!!")
@@ -84,9 +81,7 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.Rules.VacancyRules
         public async Task WhenInvoked_ItShouldIncludeDetailsOfEachFieldOutcome()
         {
             var rule = new VacancyProfanityChecksRule(new TestProfanityListProvider());
-
             var skills = new[] { "Juggling", "Running", "dang" };
-
             var entity = TestVacancyBuilder.Create()
                 .SetTitle("bother-bother, bother!")
                 .SetDescription("dang it and balderdash!!")
@@ -95,7 +90,7 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.Rules.VacancyRules
             var outcome = await rule.EvaluateAsync(entity);
 
             Assert.True(outcome.HasDetails);
-            Assert.Equal(18, outcome.Details.Count());
+            Assert.Equal(17, outcome.Details.Count());
 
             Assert.All(outcome.Details, a =>
             {

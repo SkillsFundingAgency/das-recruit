@@ -32,6 +32,7 @@ using System.Collections.Generic;
 using System.Data;
 using SFA.DAS.Encoding;
 using Esfa.Recruit.Vacancies.Client.Application.Communications.ParticipantResolverPlugins;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Recruit.Vacancies.Client.Application.Communications.CompositeDataItemProviderPlugins;
 using Esfa.Recruit.Vacancies.Jobs.Jobs;
 using Microsoft.Azure.Services.AppAuthentication;
@@ -58,7 +59,6 @@ namespace Esfa.Recruit.Vacancies.Jobs
             services.AddScoped<DomainEventsQueueTrigger>();
             services.AddScoped<UpdateApprenticeshipProgrammesQueueTrigger>();
             services.AddScoped<VacancyStatusQueueTrigger>();
-            services.AddScoped<GenerateSingleEmployerDashboardQueueTrigger>();
             services.AddScoped<GeneratePublishedVacanciesQueueTrigger>();
             services.AddScoped<UpdateBankHolidayQueueTrigger>();
             services.AddScoped<UpdateQaDashboardQueueTrigger>();
@@ -109,6 +109,10 @@ namespace Esfa.Recruit.Vacancies.Jobs
             RegisterCommunicationsService(services, configuration);
             RegisterDasNotifications(services, configuration);
             RegisterDasEncodingService(services, configuration);
+            
+            var serviceParameters = new ServiceParameters("Apprenticeships");
+            
+            services.AddSingleton(serviceParameters);
         }
 
         private static void RegisterCommunicationsService(IServiceCollection services, IConfiguration configuration)

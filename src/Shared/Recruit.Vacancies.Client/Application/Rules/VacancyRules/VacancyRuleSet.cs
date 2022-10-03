@@ -1,7 +1,5 @@
-﻿using Esfa.Recruit.Vacancies.Client.Application.Configuration;
-using Esfa.Recruit.Vacancies.Client.Application.Providers;
+﻿using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Application.Rules.Engine;
-using Esfa.Recruit.Vacancies.Client.Application.Services;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.Rules.VacancyRules
@@ -9,7 +7,6 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Rules.VacancyRules
     public class VacancyRuleSet : RuleSet<Vacancy>
     {
         public VacancyRuleSet(
-                    IApprenticeshipProgrammeProvider apprenticeshipProgrammeProvider,
                     IProfanityListProvider profanityListProvider,
                     IBannedPhrasesProvider bannedPhrasesProvider) : base(nameof(VacancyRuleSet))
         {

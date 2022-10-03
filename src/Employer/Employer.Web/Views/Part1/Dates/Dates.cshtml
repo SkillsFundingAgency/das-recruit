@@ -10,13 +10,8 @@
 
 @section BackLink
 {
-    <esfaFeatureEnabled name="@FeatureNames.EmployerTaskList">
-        <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.EmployerTaskListGet" asp-route-wizard="@Model.PageInfo.IsWizard" esfa-automation="link-back" class="govuk-back-link">Back</a>
-        <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.EmployerCheckYourAnswersGet" asp-route-wizard="@Model.PageInfo.IsWizard" esfa-automation="link-back" class="govuk-back-link">Back</a>
-    </esfaFeatureEnabled>
-    <esfaFeatureDisabled name="@FeatureNames.EmployerTaskList">
-        <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Location_Get" esfa-automation="link-back" class="govuk-back-link">Back</a>
-    </esfaFeatureDisabled>
+    <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.EmployerTaskListGet" asp-route-wizard="@Model.PageInfo.IsWizard" esfa-automation="link-back" class="govuk-back-link">Back</a>
+    <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.EmployerCheckYourAnswersGet" asp-route-wizard="@Model.PageInfo.IsWizard" esfa-automation="link-back" class="govuk-back-link">Back</a>
 }
 
 <div class="govuk-grid-row">
@@ -26,8 +21,10 @@
 
         <partial name="@PartialNames.ReviewSummary" for="Review"/>
 
-        <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">Important dates</h1>
-
+        <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">
+            <span class="govuk-caption-l">@Model.Title</span>
+            Closing and start date
+        </h1>
         <form asp-route="@RouteNames.Dates_Post" asp-route-wizard="@Model.PageInfo.IsWizard" novalidate>
 
             <div esfa-validation-marker-for="ClosingDate" class="govuk-form-group">
@@ -65,10 +62,10 @@
                     <legend class="govuk-fieldset__legend govuk-!-font-weight-bold">Apprenticeship start date<span class="govuk-visually-hidden"> (in numeric format DD MM YYYY)</span></legend>
 
                     <p asp-show="@Model.CanShowTrainingHint" class="govuk-hint">
-                        The start date must be before the @Model.TrainingDescription closes to new starters on @Model.TrainingEffectiveToDate
+                        Start date must be on or before @Model.TrainingEffectiveToDate as this is the last day for new starters for the training course you have selected.
                     </p>
                     <p asp-show="@Model.CanShowTrainingErrorHint" class="govuk-hint">
-                        You may want to <a asp-route="@RouteNames.Training_Get" asp-route-wizard="@Model.PageInfo.IsWizard" class="govuk-link">find different apprenticeship training</a>.
+                        If you don’t want to change the start date, you can change the <a asp-route="@RouteNames.Training_Get" asp-route-wizard="@Model.PageInfo.IsWizard" class="govuk-link">training course.</a>.
                     </p>
 
                     <div class="govuk-hint">For example, @exampleStartingDate.AsInputHintDisplayDate()</div>
@@ -97,28 +94,11 @@
                     </div>
                 </fieldset>
             </div>
-
-            <div class="govuk-form-group">
-                <fieldset class="govuk-fieldset">
-                    <legend class="govuk-label govuk-!-font-weight-bold">Disability Confident employer (optional)</legend>
-                    <div class="govuk-checkboxes">
-                        <div class="govuk-checkboxes__item">
-                            <input asp-for="IsDisabilityConfident" class="govuk-checkboxes__input" type="checkbox" value="true" >
-                            <label asp-for="IsDisabilityConfident" class="govuk-label govuk-checkboxes__label">This employer has signed up to the <a href="https://www.gov.uk/government/collections/disability-confident-campaign" class="govuk-link" rel="noopener" target="_blank" title="Disability Confident employer scheme and guidance (opens in a new window)">Disability Confident</a> scheme</label>
-                        </div>
-                    </div>
-                </fieldset>
-            </div>
+            
             <div class="govuk-button-group">
                 <button type="submit" class="govuk-button save-button" esfa-automation="continue-button">@Model.PageInfo.SubmitButtonText</button>
-                <esfaFeatureEnabled name="@FeatureNames.EmployerTaskList">
-                    <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Dashboard_Get" class="govuk-link govuk-link--no-visited-state">Cancel</a>
-                    <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.EmployerCheckYourAnswersGet" class="govuk-link govuk-link--no-visited-state">Cancel</a>
-                </esfaFeatureEnabled>
-                <esfaFeatureDisabled name="@FeatureNames.EmployerTaskList">
-                    <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Vacancies_Get" class="govuk-link govuk-link--no-visited-state">Cancel</a>
-                    <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.Vacancy_Preview_Get" asp-fragment="@Anchors.ApprenticeshipSummarySection" class="govuk-link govuk-link--no-visited-state">Cancel</a>
-                </esfaFeatureDisabled>
+                <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Dashboard_Get" class="govuk-link govuk-link--no-visited-state">Cancel</a>
+                <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.EmployerCheckYourAnswersGet" class="govuk-link govuk-link--no-visited-state">Cancel</a>
             </div>
         </form>
     </div>
