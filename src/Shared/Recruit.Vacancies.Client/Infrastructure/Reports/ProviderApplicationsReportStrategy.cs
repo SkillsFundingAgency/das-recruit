@@ -117,7 +117,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Reports
             throw new NotImplementedException();
         }
 
-        private async Task<ReportStrategyResult> GetProviderApplicationsAsync(long ukprn, DateTime fromDate, DateTime toDate)
+        private async Task<ReportStrategyResult> GetProviderApplicationsAsync(long ukprn, DateTime fromDate, DateTime toDate, VacancyType vacancyType)
         {
             var collection = GetCollection<BsonDocument>();
 
