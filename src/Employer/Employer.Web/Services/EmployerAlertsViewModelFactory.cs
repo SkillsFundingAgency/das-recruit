@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
-using Esfa.Recruit.Employer.Web.ViewModels;
+using Esfa.Recruit.Employer.Web.ViewModels.Alerts;
 using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections;
 
 namespace Esfa.Recruit.Employer.Web.Services
 {
@@ -19,6 +17,7 @@ namespace Esfa.Recruit.Employer.Web.Services
             _alertViewModelService = alertViewModelService;
             _employerVacancyClient = employerVacancyClient;
         }
+        
         public async Task<AlertsViewModel> Create(string employerAccountId, User user)
         {
             if (string.IsNullOrEmpty(employerAccountId))
@@ -32,11 +31,37 @@ namespace Esfa.Recruit.Employer.Web.Services
             var blockedProviderAlert = _alertViewModelService.GetBlockedProviderVacanciesAlert(closedVacancies.Vacancies, user.ClosedVacanciesBlockedProviderAlertDismissedOn);
             var withdrawnByQaVacanciesAlert = _alertViewModelService.GetWithdrawnByQaVacanciesAlert(closedVacancies.Vacancies, user.ClosedVacanciesWithdrawnByQaAlertDismissedOn);
 
+            var employerRevokedTransfers = new EmployerTransferredVacanciesAlertViewModel
+            {
+                EmployerAccountId = employerAccountId,
+                TransferredVacanciesCount = employerRevokedTransferredVacanciesAlert?.TransferredVacanciesCount ?? 0,
+                TransferredVacanciesProviderNames = employerRevokedTransferredVacanciesAlert?.TransferredVacanciesProviderNames
+            };
+            var blockedProviderTransferred = new EmployerTransferredVacanciesAlertViewModel
+            {
+                EmployerAccountId = employerAccountId,
+                TransferredVacanciesCount = blockedProviderTransferredVacanciesAlert?.TransferredVacanciesCount ?? 0,
+                TransferredVacanciesProviderNames = blockedProviderTransferredVacanciesAlert?.TransferredVacanciesProviderNames
+            };
+            var blockedProvider = new BlockedProviderAlertViewModel
+            {
+                EmployerAccountId = employerAccountId,
+                ClosedVacancies = blockedProviderAlert?.ClosedVacancies,
+                BlockedProviderNames = blockedProviderAlert?.BlockedProviderNames
+            };
+            var withdrawn = new WithdrawnVacanciesAlertViewModel
+            {
+                EmployerAccountId = employerAccountId,
+                ClosedVacancies = withdrawnByQaVacanciesAlert?.ClosedVacancies,
+                Ukprn = withdrawnByQaVacanciesAlert?.Ukprn ?? default
+            };
+            
             return new AlertsViewModel(
-                employerRevokedTransferredVacanciesAlert, 
-                blockedProviderTransferredVacanciesAlert, 
-                blockedProviderAlert,
-                withdrawnByQaVacanciesAlert);
+                employerRevokedTransfers, 
+                blockedProviderTransferred, 
+                blockedProvider, 
+                withdrawn);
+
         }
     }
 }

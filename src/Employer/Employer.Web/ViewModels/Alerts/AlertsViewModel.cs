@@ -1,6 +1,6 @@
-﻿using Esfa.Recruit.Shared.Web.ViewModels.Alerts;
+﻿
 
-namespace Esfa.Recruit.Employer.Web.ViewModels
+namespace Esfa.Recruit.Employer.Web.ViewModels.Alerts
 {
     public class AlertsViewModel
     {
