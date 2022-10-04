@@ -55,20 +55,6 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             return Redirect(url);
         }
 
-        [HttpGet(RoutePaths.AccountLevelServices + "/apprentices", Name = RouteNames.Dashboard_AccountsApprentices)]
-        public IActionResult AccountsApprentices(string employerAccountId)
-        {
-            var url = string.Format(_linkHelper.Apprentices, employerAccountId);
-            return Redirect(url);
-        }
-
-        [HttpGet(RoutePaths.AccountLevelServices + "/teams", Name = RouteNames.Dashboard_AccountsTeams)]
-        public IActionResult AccountsTeams(string employerAccountId)
-        {
-            var url = string.Format(_linkHelper.Teams, employerAccountId);
-            return Redirect(url);
-        }
-
         [HttpGet(RoutePaths.AccountLevelServices + "/agreements", Name = RouteNames.Dashboard_AccountsAgreements)]
         public IActionResult AccountsAgreements(string employerAccountId)
         {
@@ -76,21 +62,6 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             return Redirect(url);
         }
 
-        [HttpGet(RoutePaths.AccountLevelServices + "/schemes", Name = RouteNames.Dashboard_AccountsSchemes)]
-        public IActionResult AccountsSchemes(string employerAccountId)
-        {
-            var url = string.Format(_linkHelper.Schemes, employerAccountId);
-            return Redirect(url);
-        }
-
-        [HttpGet(RoutePaths.AccountLevelServices + "/apprenticeships", Name = RouteNames.EmployerFavourites)]
-        public IActionResult EmployerFavouritesTrainingProviders(string employerAccountId, string referredUkprn, string referredProgrammeId)
-        {
-            var url = string.IsNullOrWhiteSpace(referredUkprn)
-                ? string.Format(_linkHelper.EmployerFavouritesApprenticeshipList, employerAccountId) : string.Format(_linkHelper.EmployerFavouritesTrainingProviders, employerAccountId, referredProgrammeId);
-            return Redirect(url);
-        }
-        
         [HttpGet(RoutePaths.AccountLevelServices + "/providers", Name = RouteNames.YourTrainingProviderPermission)]
         public IActionResult YourTrainingProviderPermission(string employerAccountId)
         {
