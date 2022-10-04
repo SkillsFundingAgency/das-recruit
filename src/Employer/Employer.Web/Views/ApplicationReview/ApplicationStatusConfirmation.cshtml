@@ -1,4 +1,4 @@
-﻿@model Esfa.Recruit.Shared.Web.ViewModels.ApplicationReview.ApplicationStatusConfirmationViewModel
+﻿@model Esfa.Recruit.Employer.Web.ViewModels.ApplicationReview.ApplicationStatusConfirmationViewModel
 
 @{ 
     ViewBag.Vpv = "/recruitment/employer/page-application-status-confirmation";
@@ -36,7 +36,7 @@
         <div class="govuk-inset-text">
             <p>This action cannot be undone.</p>
         </div>
-        <form asp-route="@RouteNames.ApplicationReviewConfirmation_Post">
+        <form asp-route="@RouteNames.ApplicationReviewConfirmation_Post" asp-all-route-data="@Model.ApplicationRouteDictionary">
             @Html.HiddenFor(model => model.Outcome)
             @Html.HiddenFor(model => model.CandidateFeedback)
             @Html.HiddenFor(model => model.Name)

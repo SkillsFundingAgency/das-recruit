@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Esfa.Recruit.Employer.Web.RouteModel;
+using Esfa.Recruit.Shared.Web.ViewModels.ApplicationReview;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
-namespace Esfa.Recruit.Shared.Web.ViewModels.ApplicationReview
-{
-    public class ApplicationReviewViewModel
+namespace Esfa.Recruit.Employer.Web.ViewModels.ApplicationReview;
+
+    public class ApplicationReviewViewModel : ApplicationReviewRouteModel
     {
         public string AddressLine1 { get; set; }
         public string AddressLine2 { get; set; }
@@ -47,9 +49,4 @@ namespace Esfa.Recruit.Shared.Web.ViewModels.ApplicationReview
         {
             nameof(Outcome)
         };
-        
-        public long Ukprn { get; set; }
-        public Guid? VacancyId { get; set; }
-        public Guid ApplicationReviewId { get; set; }
     }
-}
