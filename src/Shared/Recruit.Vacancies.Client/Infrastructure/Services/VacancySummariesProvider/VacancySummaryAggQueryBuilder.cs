@@ -1,11 +1,189 @@
+using System;
+using System.Globalization;
 using System.Linq;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummariesProvider
 {
-    public static class VacancySummaryAggQueryBuilder
+    public class VacancySummaryAggQueryBuilder
     {
+         private string DashboardApplicationsPipeline = @"[
+            {
+                '$lookup': {
+                    'from': 'applicationReviews',
+                    'localField': 'vacancyReference',
+                    'foreignField': 'vacancyReference',
+                    'as': 'candidateApplicationReview'
+                }
+            },
+            {
+                '$unwind': {
+                    'path': '$candidateApplicationReview',
+                    'preserveNullAndEmptyArrays': true
+                }
+            },
+            {
+                '$project': {
+                    'status': 1,
+                    'appStatus': '$candidateApplicationReview.status',
+                    'vacancyType': 1,
+                    'isTraineeship' :1,
+                    'closingDate' : 1
+                }
+            },
+            {
+                '$project': {
+                    'status': 1,
+                    'appStatus': { '$cond' : [ { '$eq': ['$isApplicationWithdrawn', true] }, 'withdrawn', '$appStatus' ]},
+                    'vacancyType': 1,
+                    'closingDate' : 1,
+                    'isTraineeship': {
+                        '$cond': {
+                            'if': {'$eq': [ '$vacancyType', 'Traineeship']},
+                            'then': true,
+                            'else': false
+                        }
+                    }
+                }
+            },
+            {
+                '$project': {
+                    'status': 1,
+                    'vacancyType': 1,
+                    'closingSoon' : {
+                        '$cond': {
+                            'if': {'$lte':[
+                                '$closingDate',ISODate('" + DateTime.UtcNow.AddDays(5).ToString("o", CultureInfo.InvariantCulture) + @"')
+                            ]},
+                                
+                            'then': {
+                                '$cond':{
+                                    'if': {'$eq': [ '$status', 'Live']},
+                                        'then': true,
+                                        'else': false
+                                }
+                            },
+                            'else': false
+                        }
+                    },
+                    'isTraineeship': {
+                        '$cond': {
+                            'if': {'$eq': [ '$vacancyType', 'Traineeship']},
+                            'then': true,
+                            'else': false
+                        }
+                    },
+                    'isNew': {
+                        '$cond': {
+                            'if': {'$eq': [ '$appStatus', 'New']},
+                            'then': 1,
+                            'else': 0
+                        }
+                    },
+                    'isSuccessful': {
+                        '$cond': {
+                            'if': {'$eq': [ '$appStatus', 'Successful']},
+                            'then': 1,
+                            'else': 0
+                        }
+                    },
+                    'isUnsuccessful': {
+                        '$cond': {
+                            'if': {'$eq': [ '$appStatus', 'Unsuccessful']},
+                            'then': 1,
+                            'else': 0
+                        }
+                    }
+                }
+            },
+            {
+                '$group': {
+                    '_id': {
+                        'status':'$status',
+                        'isTraineeship' : '$isTraineeship',
+                        'closingSoon' : '$closingSoon'    
+                    },
+                    'noOfNewApplications': {
+                        '$sum': '$isNew'
+                    },
+                    'noOfSuccessfulApplications': {
+                        '$sum': '$isSuccessful'
+                    },
+                    'noOfUnsuccessfulApplications': {
+                        '$sum': '$isUnsuccessful'
+                    },
+                    'statusCount' : { '$sum' : 1 }
+                    
+                }
+            }
+        ]";
+        private string DashboardPipeline = @"[
+            {
+                '$project': {
+                    'status': 1,
+                    'vacancyType': 1,
+                    'isTraineeship' :1,
+                    'closingDate':1
+                }
+            },
+            {
+                '$project': {
+                    'status': 1,
+                    'vacancyType': 1,
+                    'closingDate':1,
+                    'isTraineeship': {
+                        '$cond': {
+                            'if': {'$eq': [ '$vacancyType', 'Traineeship']},
+                            'then': true,
+                            'else': false
+                        }
+                    }
+                }
+            },
+            {
+                '$project': {
+                    'status': 1,
+                    'vacancyType': 1,
+                    'closingDate':1,
+                    'closingSoon' : {
+                        '$cond': {
+                            'if': {'$lte':[
+                                '$closingDate',ISODate('" + DateTime.UtcNow.AddDays(5).ToString("o", CultureInfo.InvariantCulture) + @"')
+                            ]},
+                                
+                            'then': {
+                                '$cond':{
+                                    'if': {'$eq': [ '$status', 'Live']},
+                                        'then': true,
+                                        'else': false
+                                }
+                            },
+                            'else': false
+                        }
+                    },
+                    'isTraineeship': {
+                        '$cond': {
+                            'if': {'$eq': [ '$vacancyType', 'Traineeship']},
+                            'then': true,
+                            'else': false
+                        }
+                    }
+                }
+            },
+            {
+                '$group': {
+                    '_id': {
+                        'status':'$status',
+                        'isTraineeship' : '$isTraineeship',
+                        'closingSoon' : '$closingSoon'                        
+                    },
+                    'statusCount' : { '$sum' : 1 }
+                    
+                }
+            }
+        ]";
+        
         private const string Pipeline = @"[
             {
                 '$lookup': {
@@ -24,6 +202,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
             {
                 '$project': {
                     'vacancyGuid': '$_id',
+                    'searchField': 1,
                     'vacancyReference': 1,
                     'title': 1,
                     'status': 1,
@@ -56,6 +235,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
             {
                 '$project': {
                     'vacancyGuid': 1,
+                    'searchField': 1,
                     'vacancyReference': 1,
                     'title': 1,
                     'status': 1,
@@ -93,6 +273,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
             {
                 '$project': {
                     'vacancyGuid': 1,
+                    'searchField': 1,
                     'vacancyReference': 1,
                     'title': 1,
                     'status': 1,
@@ -150,6 +331,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
             {
                 '$group': {
                     '_id': {
+                        'searchField':{$toLower: { $concat: [ '$title', '|', {$ifNull:['$legalEntityName','']},'|','VAC',{$toString: {$ifNull:['$vacancyReference','']}} ] }},
                         'vacancyGuid': '$vacancyGuid',
                         'vacancyReference': '$vacancyReference',
                         'title': '$title',
@@ -185,19 +367,78 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                     },
                     'noOfUnsuccessfulApplications': {
                         '$sum': '$isUnsuccessful'
+                    },
+                    'noOfApplications': {
+                         '$sum' :{'$add': ['$isUnsuccessful','$isSuccessful'] }
                     }
                 }
-            }
+            },
+            { '$sort' : { '_id.createdDate' : -1} }
+            
         ]";
 
-        public static BsonDocument[] GetAggregateQueryPipeline(BsonDocument vacanciesMatchClause)
+        public static BsonDocument[] GetAggregateQueryPipeline(BsonDocument vacanciesMatchClause, int pageNumber, BsonDocument secondaryMatch, BsonDocument employerReviewMatch = null)
         {
             var pipeline = BsonSerializer.Deserialize<BsonArray>(Pipeline);
+            if (secondaryMatch != null)
+            {
+                pipeline.Insert(pipeline.Count-1, secondaryMatch);    
+            }
+            
+            pipeline.Insert(pipeline.Count, new BsonDocument {{"$skip", (pageNumber-1) * 25}});
+            pipeline.Insert(pipeline.Count, new BsonDocument {{"$limit",25}});
+            if (employerReviewMatch != null)
+            {
+                pipeline.Insert(0, employerReviewMatch);
+            }
             pipeline.Insert(0, vacanciesMatchClause);
 
             var pipelineDefinition = pipeline.Values.Select(p => p.ToBsonDocument()).ToArray();
 
             return pipelineDefinition;
         }
+
+        public static BsonDocument[] GetAggregateQueryPipelineDocumentCount(BsonDocument vacanciesMatchClause, BsonDocument secondaryMatch, BsonDocument employerReviewMatch = null)
+        {
+            var pipeline = BsonSerializer.Deserialize<BsonArray>(Pipeline);
+            pipeline.Insert(pipeline.Count-1, secondaryMatch);
+            pipeline.Insert(pipeline.Count, new BsonDocument {{"$count","total"}});
+            if (employerReviewMatch != null)
+            {
+                pipeline.Insert(0, employerReviewMatch);
+            }
+            pipeline.Insert(0, vacanciesMatchClause);
+
+            var pipelineDefinition = pipeline.Values.Select(p => p.ToBsonDocument()).ToArray();
+
+            return pipelineDefinition;
+        }
+        
+        public BsonDocument[] GetAggregateQueryPipelineDashboard(BsonDocument vacanciesMatchClause, BsonDocument employerReviewMatch = null)         
+        {
+            var pipeline = BsonSerializer.Deserialize<BsonArray>(DashboardPipeline);
+            if (employerReviewMatch != null)
+            {
+                pipeline.Insert(0, employerReviewMatch);
+            }
+            pipeline.Insert(0, vacanciesMatchClause);
+            var pipelineDefinition = pipeline.Values.Select(p => p.ToBsonDocument()).ToArray();
+
+            return pipelineDefinition;
+        }
+
+        public BsonDocument[] GetAggregateQueryPipelineDashboardApplications(BsonDocument vacanciesMatchClause, BsonDocument employerReviewMatch = null)
+        {
+            var pipeline = BsonSerializer.Deserialize<BsonArray>(DashboardApplicationsPipeline);
+            if (employerReviewMatch != null)
+            {
+                pipeline.Insert(0, employerReviewMatch);
+            }
+            pipeline.Insert(0, vacanciesMatchClause);
+            var pipelineDefinition = pipeline.Values.Select(p => p.ToBsonDocument()).ToArray();
+
+            return pipelineDefinition;
+        }
+        
     }
 }

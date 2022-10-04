@@ -17,14 +17,16 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Employ
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyAnalytics;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyApplications;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Projections;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummariesProvider;
 using FluentValidation;
 using FluentValidation.Results;
+using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 {
     public partial class VacancyClient : IRecruitVacancyClient, IEmployerVacancyClient, IJobsVacancyClient
     {
+        private readonly ILogger<VacancyClient> _logger;
         private readonly IMessaging _messaging;
         private readonly IQueryStoreReader _reader;
         private readonly IVacancyRepository _repository;
@@ -36,8 +38,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         private readonly IVacancyReviewQuery _vacancyReviewQuery;
         private readonly ICandidateSkillsProvider _candidateSkillsProvider;
         private readonly IVacancyService _vacancyService;
-        private readonly IEmployerDashboardProjectionService _employerDashboardService;
-        private readonly IProviderDashboardProjectionService _providerDashboardService;
         private readonly IEmployerProfileRepository _employerProfileRepository;
         private readonly IUserRepository _userRepository;
         private readonly IQualificationsProvider _qualificationsProvider;
@@ -48,8 +48,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         private readonly AbstractValidator<UserNotificationPreferences> _userNotificationPreferencesValidator;
         private readonly AbstractValidator<Qualification> _qualificationValidator;
         private readonly IApprenticeshipRouteProvider _apprenticeshipRouteProvider;
+        private readonly IVacancySummariesProvider _vacancySummariesQuery;
+        private readonly ITimeProvider _timeProvider;
 
         public VacancyClient(
+            ILogger<VacancyClient> logger,
             IVacancyRepository repository,
             IVacancyQuery vacancyQuery,
             IQueryStoreReader reader,
@@ -61,8 +64,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             IVacancyReviewQuery vacancyReviewQuery,
             ICandidateSkillsProvider candidateSkillsProvider,
             IVacancyService vacancyService,
-            IEmployerDashboardProjectionService employerDashboardService,
-            IProviderDashboardProjectionService providerDashboardService,
             IEmployerProfileRepository employerProfileRepository,
             IUserRepository userRepository,
             IQualificationsProvider qualificationsProvider,
@@ -72,8 +73,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             IUserNotificationPreferencesRepository userNotificationPreferencesRepository,
             AbstractValidator<UserNotificationPreferences> userNotificationPreferencesValidator,
             AbstractValidator<Qualification> qualificationValidator,
-            IApprenticeshipRouteProvider apprenticeshipRouteProvider)
+            IApprenticeshipRouteProvider apprenticeshipRouteProvider, 
+            IVacancySummariesProvider vacancySummariesQuery, 
+            ITimeProvider timeProvider)
         {
+            _logger = logger;
             _repository = repository;
             _vacancyQuery = vacancyQuery;
             _reader = reader;
@@ -85,8 +89,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             _vacancyReviewQuery = vacancyReviewQuery;
             _candidateSkillsProvider = candidateSkillsProvider;
             _vacancyService = vacancyService;
-            _employerDashboardService = employerDashboardService;
-            _providerDashboardService = providerDashboardService;
             _employerProfileRepository = employerProfileRepository;
             _userRepository = userRepository;
             _qualificationsProvider = qualificationsProvider;
@@ -97,6 +99,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             _userNotificationPreferencesValidator = userNotificationPreferencesValidator;
             _qualificationValidator = qualificationValidator;
             _apprenticeshipRouteProvider = apprenticeshipRouteProvider;
+            _vacancySummariesQuery = vacancySummariesQuery;
+            _timeProvider = timeProvider;
         }
 
         public Task UpdateDraftVacancyAsync(Vacancy vacancy, VacancyUser user)
@@ -206,23 +210,43 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 
             return _messaging.SendCommandAsync(command);
         }
-
-        public async Task<EmployerDashboard> GetDashboardAsync(string employerAccountId, bool createIfNonExistent = false)
+        
+        public async Task<EmployerDashboardSummary> GetDashboardSummary(string employerAccountId)
         {
-            var dashboard = await _reader.GetEmployerDashboardAsync(employerAccountId);
-
-            if (dashboard == null && createIfNonExistent)
+            var dashboardValue = await  _vacancySummariesQuery.GetEmployerOwnedVacancyDashboardByEmployerAccountIdAsync(employerAccountId, VacancyType.Apprenticeship);
+            
+            var dashboard = dashboardValue.VacancyStatusDashboard;
+            var dashboardApplications = dashboardValue.VacancyApplicationsDashboard;
+            
+            return new EmployerDashboardSummary
             {
-                await GenerateDashboard(employerAccountId);
-                dashboard = await GetDashboardAsync(employerAccountId);
-            }
-
-            return dashboard;
+                Closed = dashboard.FirstOrDefault(c=>c.Status == VacancyStatus.Closed)?.StatusCount ?? 0,
+                Draft = dashboard.SingleOrDefault(c=>c.Status == VacancyStatus.Draft)?.StatusCount ?? 0,
+                Review = dashboard.SingleOrDefault(c=>c.Status == VacancyStatus.Review)?.StatusCount ?? 0,
+                Referred = (dashboard.SingleOrDefault(c=>c.Status == VacancyStatus.Referred)?.StatusCount ?? 0) + (dashboard.SingleOrDefault(c=>c.Status == VacancyStatus.Rejected)?.StatusCount ?? 0),
+                Live = dashboard.Where(c=>c.Status == VacancyStatus.Live).Sum(c=>c.StatusCount),
+                Submitted = dashboard.SingleOrDefault(c=>c.Status == VacancyStatus.Submitted)?.StatusCount ?? 0,
+                NumberOfNewApplications = dashboardApplications.Where(c=>c.Status == VacancyStatus.Live || c.Status == VacancyStatus.Closed).Sum(x=>x.NoOfNewApplications),
+                NumberOfSuccessfulApplications = dashboardApplications.Where(c=>c.Status == VacancyStatus.Live).Sum(x=>x.NoOfSuccessfulApplications) 
+                                                 + dashboardApplications.Where(c=>c.Status == VacancyStatus.Closed).Sum(x=>x.NoOfSuccessfulApplications),
+                NumberOfUnsuccessfulApplications = dashboardApplications.Where(c=>c.Status == VacancyStatus.Live).Sum(x=>x.NoOfUnsuccessfulApplications) 
+                                                   + dashboardApplications.Where(c=>c.Status == VacancyStatus.Closed).Sum(x=>x.NoOfUnsuccessfulApplications),
+                NumberClosingSoon =dashboardApplications.FirstOrDefault(c=>c.Status == VacancyStatus.Live && c.ClosingSoon && (c.NoOfNewApplications != 0 || c.NoOfSuccessfulApplications != 0 || c.NoOfUnsuccessfulApplications != 0))?.StatusCount ?? 0,
+                NumberClosingSoonWithNoApplications =dashboardApplications.FirstOrDefault(c=>c.Status == VacancyStatus.Live && c.ClosingSoon && c.NoOfNewApplications == 0 && c.NoOfSuccessfulApplications == 0 && c.NoOfUnsuccessfulApplications == 0)?.StatusCount ?? 0
+            };
         }
 
-        public Task GenerateDashboard(string employerAccountId)
+        public async Task<EmployerDashboard> GetDashboardAsync(string employerAccountId, int page, FilteringOptions? status = null, string searchTerm = null)
         {
-            return _employerDashboardService.ReBuildDashboardAsync(employerAccountId);
+            var vacancySummaries =
+                await _vacancySummariesQuery.GetEmployerOwnedVacancySummariesByEmployerAccountId(employerAccountId,
+                    VacancyType.Apprenticeship, page, status, searchTerm);
+            return new EmployerDashboard
+            {
+                Id = QueryViewType.EmployerDashboard.GetIdValue(employerAccountId),
+                Vacancies = vacancySummaries,
+                LastUpdated = _timeProvider.Now
+            };
         }
 
         public Task UserSignedInAsync(VacancyUser user, UserType userType)
@@ -532,6 +556,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         {
             ValidationResult fluentResult = _qualificationValidator.Validate(qualification);
             return EntityValidationResult.FromFluentValidationResult(fluentResult);
+        }
+        
+        public async Task<long> GetVacancyCount(string employerAccountId, VacancyType vacancyType, FilteringOptions? filteringOptions, string searchTerm)
+        {
+            return await _vacancySummariesQuery.VacancyCount(null, employerAccountId, vacancyType, filteringOptions, searchTerm, OwnerType.Employer);
         }
     }
 }

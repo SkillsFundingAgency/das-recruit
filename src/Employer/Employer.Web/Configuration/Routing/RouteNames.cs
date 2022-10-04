@@ -54,9 +54,6 @@
         public const string Location_Post = "Location_Post";
         public const string Location_Cancel = "Location_Cancel";
 
-        public const string CreateVacancyOptions_Get = "CreateVacancyOptions_Get";
-        public const string CreateVacancyOptions_Post = "CreateVacancyOptions_Post";
-
         public const string CreateVacancy_Get = "CreateVacancy_Get";
         public const string CreateVacancy_Post = "CreateVacancy_Post";
 

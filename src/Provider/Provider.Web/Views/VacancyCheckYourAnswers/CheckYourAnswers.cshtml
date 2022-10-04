@@ -50,6 +50,20 @@
     </div>
 }
 
+<div asp-show="Model.CanShowVacancyClonedStatusHeader" class="govuk-notification-banner govuk-notification-banner--success" role="alert" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
+  <div class="govuk-notification-banner__header">
+    <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
+      Success
+    </h2>
+  </div>
+  <div class="govuk-notification-banner__content">
+      <h3 class="govuk-notification-banner__heading">
+          @Model.VacancyClonedInfoMessage        
+      </h3>
+      <p>Reference number: @Model.VacancyReferenceNumber</p>
+  </div>
+</div>
+
 @if (Model.Status == VacancyStatus.Rejected)
 {
     <div class="govuk-notification-banner" role="region" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
@@ -75,7 +89,7 @@
         </h2>
         <div class="govuk-error-summary__body">
             <p class="govuk-body">Call us on @RecruitViewConstants.HelpdeskPhoneNumber and select the training provider option if you need to discuss any of our vacancy review comments.</p>
-            <p class="govuk-body">@Model.Review.ReviewerComments</p>    
+            <p class="govuk-body app-preserve-line-breaks">@Model.Review.ReviewerComments</p>
             <ul class="govuk-list govuk-error-summary__list">
                 @foreach (var fieldIndicator in Model.Review.FieldIndicators)
                 {
