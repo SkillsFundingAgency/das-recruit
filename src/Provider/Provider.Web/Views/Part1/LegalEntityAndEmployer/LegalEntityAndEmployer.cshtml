@@ -2,12 +2,12 @@
 
 @{
     ViewBag.GaData.Vpv = "/recruitment/provider/page-create-vacancy-which-organisation";
-    ViewBag.Title = "Which organisation do you want to create a vacancy for?";
+    ViewBag.Title = "Name of employer";
 }
 
 @section BackLink {
     <esfaFeatureEnabled name="@FeatureNames.ProviderTaskList">
-        <a asp-route="@RouteNames.Title_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Back</a>
+        <a asp-route="@RouteNames.CreateVacancyStart" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Back</a>
     </esfaFeatureEnabled>
     <esfaFeatureDisabled name="@FeatureNames.ProviderTaskList">
         <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.NumberOfPositions_Get" asp-route-vacancyId="@Model.VacancyId" asp-route-ukprn="@Model.Ukprn"  asp-route-wizard="@Model.PageInfo.IsWizard" esfa-automation="link-back" class="govuk-back-link">Back</a>    
@@ -24,12 +24,20 @@
         <partial name="@PartialNames.ReviewSummary" for="Review" />
         
         <h1 class="govuk-heading-xl">
-            <span class="govuk-caption-xl">@Model.Title</span>
-            Which employer is this vacancy for? WOORKKKK
+            Which employer do you want to create a vacancy for?
         </h1>
+        <details class="govuk-details" data-module="govuk-details">
+            <summary class="govuk-details__summary">
+                <span class="govuk-details__summary-text">
+                        The employer I want to select is not listed
+                </span>
+            </summary>
+            <div class="govuk-details__text">
+                    <p class="govuk-body"> The employer is not listed because you do not have permission to create a vacancy for them.</p>
+                    <p class="govuk-body"> You'll need to contact them to give you permission in the 'training provider permissions' section of their Apprenticeship service account.</p>
+            </div>
+        </details>
 
-
-        <form asp-show="@Model.CanShowSearchPanel" method="GET" asp-route="@RouteNames.LegalEntity_Get" asp-route-wizard="@Model.PageInfo.IsWizard">
             <div class="govuk-form-group">
                 <label class="govuk-label" asp-for="SearchTerm">
                     Search for the employer
@@ -44,7 +52,6 @@
                     <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.LegalEntity_Get">Clear search</a>
                 </p>
             </div>
-        </form>
 
         <form asp-route="@RouteNames.LegalEntity_Post" asp-route-wizard="@Model.PageInfo.IsWizard" asp-route-ukprn="@Model.Ukprn" asp-route-vacancyId="@Model.VacancyId">
             <div esfa-validation-marker-for="SelectedOrganisationId" class="govuk-form-group">
