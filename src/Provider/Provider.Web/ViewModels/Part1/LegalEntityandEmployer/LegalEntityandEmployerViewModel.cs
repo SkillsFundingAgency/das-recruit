@@ -4,7 +4,7 @@ using Esfa.Recruit.Provider.Web.Models;
 using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Shared.Web.ViewModels;
 
-namespace Esfa.Recruit.Provider.Web.ViewModels.Part1.LegalEntity
+namespace Esfa.Recruit.Provider.Web.ViewModels.Part1.LegalEntityAndEmployer
 {
     public class LegalEntityandEmployerViewModel : VacancyRouteModel
     {
