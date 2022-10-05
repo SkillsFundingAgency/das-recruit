@@ -40,6 +40,9 @@
         public const string LegalEntity_Post = "LegalEntity_Post";
         public const string LegalEntity_Cancel = "LegalEntity_Cancel";
         public const string LegalEntityAgreement_HardStop_Get = "LegalEntityAgreement_HardStop_Get";
+        public const string LegalEntityEmployer_Get = "LegalEntityEmployer_Get";
+        public const string LegalEntityEmployer_Post = "LegalEntityEmployer_Post";
+        public const string LegalEntityEmployer_Cancel = "LegalEntityEmployer_Cancel";
         public const string EmployerName_Cancel = "EmployerName_Cancel";
         public const string EmployerName_Get = "EmployerName_Get";
         public const string EmployerName_Post = "EmployerName_Post";
