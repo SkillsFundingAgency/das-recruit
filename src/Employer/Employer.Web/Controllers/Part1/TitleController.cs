@@ -1,4 +1,3 @@
-using System;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
@@ -30,7 +29,6 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
         public async Task<IActionResult> Title()
         {
             var vm = _orchestrator.GetTitleViewModel();
-            await PopulateModelFromTempData(vm);
             vm.PageInfo.SetWizard();
             return View(vm);
         }
@@ -39,7 +37,6 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
         public async Task<IActionResult> Title(VacancyRouteModel vrm, [FromQuery] string wizard = "true")
         {
             var vm = await _orchestrator.GetTitleViewModelAsync(vrm);
-            await PopulateModelFromTempData(vm);
             vm.PageInfo.SetWizard();
             return View(vm);
         }
@@ -48,7 +45,6 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
         [HttpPost(VacancyTitleRoute, Name = RouteNames.Title_Post)]
         public async Task<IActionResult> Title(TitleEditModel m, [FromQuery] bool wizard)
         {
-            PopulateModelFromTempData(m);
             var response = await _orchestrator.PostTitleEditModelAsync(m, User.ToVacancyUser());
             if (!response.Success)
             {
@@ -58,21 +54,8 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
             if (!ModelState.IsValid)
             {
                 var vm = await _orchestrator.GetTitleViewModelAsync(m);
-                await PopulateModelFromTempData(vm);
                 vm.PageInfo.SetWizard(wizard);
                 return View(vm);
-            }
-
-            if (m.ReferredFromSavedFavourites)
-            {
-                if (m.VacancyId == null)
-                {
-                    TempData[TempDataKeys.ReferredUkprn + response.Data] = TempData[TempDataKeys.ReferredUkprn];
-                    TempData[TempDataKeys.ReferredProgrammeId + response.Data] = TempData[TempDataKeys.ReferredProgrammeId];
-                    TempData.Remove(TempDataKeys.ReferredUkprn);
-                    TempData.Remove(TempDataKeys.ReferredProgrammeId);
-                }
-                return RedirectToRoute(RouteNames.DisplayVacancy_Get, new { vacancyId = response.Data });
             }
 
             if (_feature.IsFeatureEnabled(FeatureNames.EmployerTaskList))
@@ -89,56 +72,5 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
                 : RedirectToRoute(RouteNames.Vacancy_Preview_Get);
         }
 
-        private void PopulateModelFromTempData(TitleEditModel m)
-        {
-            m.ReferredFromMa = Convert.ToBoolean(TempData.Peek(TempDataKeys.ReferredFromMa));
-            m.ReferredUkprn = GetReferredProviderUkprn(m.VacancyId);
-            m.ReferredProgrammeId = GetReferredProgrammeId(m.VacancyId);
-        }
-
-        private async Task PopulateModelFromTempData(TitleViewModel vm)
-        {
-            vm.ReferredFromMa = Convert.ToBoolean(TempData.Peek(TempDataKeys.ReferredFromMa));
-            vm.ReferredUkprn = GetReferredProviderUkprn(vm.VacancyId);
-            vm.ReferredProgrammeId = GetReferredProgrammeId(vm.VacancyId);
-            await UpdateTextAndLinks(vm);
-        }
-
-        private async Task UpdateTextAndLinks(TitleViewModel vm)
-        {
-            if (vm.ReferredFromMa && vm.VacancyId == null)
-            {
-                if(!string.IsNullOrWhiteSpace(vm.ReferredProgrammeId))
-                {
-                    var training = await _orchestrator.GetProgramme(vm.ReferredProgrammeId);
-                    vm.TrainingTitle = training.Title + ", Level: " + training.EducationLevelNumber;                    
-                    vm.CancelLinkRoute = GenerateEmployerFavouriteUrl(vm);
-                }
-                else
-                {                    
-                    vm.CancelLinkRoute = Url.RouteUrl(RouteNames.Dashboard_Account_Home);
-                }
-            }
-            else
-            {                
-                vm.CancelLinkRoute = Url.RouteUrl(vm.CancelLink);
-            }
-        }
-
-        private string GenerateEmployerFavouriteUrl(TitleViewModel vm)
-        {
-            return Url.RouteUrl(RouteNames.EmployerFavourites,
-                new { referredUkprn = GetReferredProviderUkprn(vm.VacancyId), referredProgrammeId = GetReferredProgrammeId(vm.VacancyId) });
-        }
-
-        private string GetReferredProgrammeId(Guid? vacancyId)
-        {
-            return Convert.ToString(vacancyId == null ? TempData.Peek(TempDataKeys.ReferredProgrammeId) : TempData.Peek(TempDataKeys.ReferredProgrammeId + vacancyId));
-        }
-
-        private string GetReferredProviderUkprn(Guid? vacancyId)
-        {
-            return Convert.ToString(vacancyId == null ? TempData.Peek(TempDataKeys.ReferredUkprn) : TempData.Peek(TempDataKeys.ReferredUkprn + vacancyId));
-        }
     }
 }
