@@ -37,21 +37,23 @@
                     <p class="govuk-body"> You'll need to contact them to give you permission in the 'training provider permissions' section of their Apprenticeship service account.</p>
             </div>
         </details>
-
-            <div class="govuk-form-group">
-                <label class="govuk-label" asp-for="SearchTerm">
-                    Search for the employer
-                </label>
-                <div class="das-search-form__group">
-                    <input asp-for="SearchTerm" class="govuk-input das-search-form__input" maxlength="100" title="Search" />
-                    <div class="das-search-form__button-wrap">
-                        <button class="govuk-button das-search-form__button" type="submit">Search</button>
-                    </div>
+        
+        <form method="GET" asp-route="@RouteNames.LegalEntityEmployer_Get" asp-route-wizard="@Model.PageInfo.IsWizard">
+        <div class="govuk-form-group">
+            <label class="govuk-label" asp-for="SearchTerm">
+                Search employer name or account name
+            </label>
+            <div class="das-search-form__group">
+                <input asp-for="SearchTerm" class="govuk-input das-search-form__input" maxlength="100" title="Search" />
+                <div class="das-search-form__button-wrap">
+                    <button class="govuk-button das-search-form__button" type="submit">Search</button>
                 </div>
-                <p class="govuk-body govuk-!-margin-top-1">
-                    <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.LegalEntity_Get">Clear search</a>
-                </p>
             </div>
+            <p class="govuk-body govuk-!-margin-top-1">
+                <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.LegalEntityEmployer_Get">Clear search</a>
+            </p>
+        </div>
+        </form>
 
         <form asp-route="@RouteNames.LegalEntity_Post" asp-route-wizard="@Model.PageInfo.IsWizard" asp-route-ukprn="@Model.Ukprn" asp-route-vacancyId="@Model.VacancyId">
             <div esfa-validation-marker-for="SelectedOrganisationId" class="govuk-form-group">
