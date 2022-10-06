@@ -55,7 +55,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             }
             TempData.TryAdd(TempDataKeys.DashboardInfoMessage, string.Format(InfoMessages.AdvertUpdated, m.Title));
             
-            return RedirectToRoute(RouteNames.Vacancies_Get);
+            return RedirectToRoute(RouteNames.Vacancies_Get, new {m.EmployerAccountId});
         }
     }
 }
