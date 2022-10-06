@@ -54,6 +54,27 @@
             </p>
         </div>
         </form>
+        
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-full">
+                <table class="govuk-table das-table--condensed das-table--responsive">
+                    <thead class="govuk-table__head">
+                    <tr class="govuk-table__row">
+                        <th class="govuk-table__header" scope="col">Employer</th>
+                        <th class="govuk-table__header" scope="col">Account Name</th>
+                        <th class="govuk-table__header" scope="col">Agreement ID</th>
+                    </tr>
+                    </thead>
+                    <tbody class="govuk-table__body">
+
+                </table>
+            </div>
+        </div>
+
+        
+        
+        
+        
 
         <form asp-route="@RouteNames.LegalEntity_Post" asp-route-wizard="@Model.PageInfo.IsWizard" asp-route-ukprn="@Model.Ukprn" asp-route-vacancyId="@Model.VacancyId">
             <div esfa-validation-marker-for="SelectedOrganisationId" class="govuk-form-group">
