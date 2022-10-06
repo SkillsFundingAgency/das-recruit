@@ -14,14 +14,12 @@ namespace Esfa.Recruit.Employer.Web.Controllers
     public class LegalEntityAgreementController : EmployerControllerBase
     {
         private readonly LegalEntityAgreementOrchestrator _orchestrator;
-        private readonly IFeature _feature;
 
         public LegalEntityAgreementController(
-            LegalEntityAgreementOrchestrator orchestrator, IWebHostEnvironment hostingEnvironment, IFeature feature)
+            LegalEntityAgreementOrchestrator orchestrator, IWebHostEnvironment hostingEnvironment)
             : base(hostingEnvironment)
         {
             _orchestrator = orchestrator;
-            _feature = feature;
         }
 
         [HttpGet("legal-entity-agreement", Name = RouteNames.LegalEntityAgreement_SoftStop_Get)]
