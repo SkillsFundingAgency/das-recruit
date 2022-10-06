@@ -6,7 +6,7 @@
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         <partial name=@PartialNames.ValidationSummary model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState }' />
-        <form asp-route="@RouteNames.CloseVacancy_Post">
+        <form asp-route="@RouteNames.CloseVacancy_Post" asp-all-route-data="@Model.RouteDictionary">
             <legend class="govuk-fieldset__legend govuk-fieldset__legend--m govuk-!-margin-top-6 govuk-!-margin-bottom-6">
                 <h1 class="govuk-fieldset__heading">
                     Are you sure you want to close this advert on Find an apprenticeship?
