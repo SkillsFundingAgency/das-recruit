@@ -17,9 +17,12 @@ namespace Esfa.Recruit.UnitTests.Employer.Web.Orchestrators.ManageNotificationsO
         [Fact]
         public async Task WhenUserPreferencesAreNotSet()
         {
+            var employerAccountId = "ABC123";
             _recruitVacancyClientMock.Setup(c => c.GetUserNotificationPreferencesAsync(It.IsAny<string>())).ReturnsAsync(new UserNotificationPreferences());
             var sut = GetSut();
-            var result = await sut.GetManageNotificationsViewModelAsync(new VacancyUser());
+            var result = await sut.GetManageNotificationsViewModelAsync(new VacancyUser(), employerAccountId);
+
+            result.EmployerAccountId.Should().Be(employerAccountId);
             result.IsApplicationSubmittedSelected.Should().BeFalse();
             result.IsVacancyClosingSoonSelected.Should().BeFalse();
             result.IsVacancyRejectedSelected.Should().BeFalse();
@@ -46,7 +49,7 @@ namespace Esfa.Recruit.UnitTests.Employer.Web.Orchestrators.ManageNotificationsO
                 .Setup(c => c.GetUserNotificationPreferencesAsync(It.IsAny<string>()))
                 .ReturnsAsync(new UserNotificationPreferences { NotificationTypes = notificationTypes });
             var sut = GetSut();
-            var result = await sut.GetManageNotificationsViewModelAsync(new VacancyUser());
+            var result = await sut.GetManageNotificationsViewModelAsync(new VacancyUser(), "ABC123");
             result.IsApplicationSubmittedSelected.Should().Be(expectedIsApplicationSubmittedSelected);
             result.IsVacancyClosingSoonSelected.Should().Be(expectedIsVacancyClosingSoonSelected);
             result.IsVacancyRejectedSelected.Should().Be(expectedIsVacancyRejectedSelected);
