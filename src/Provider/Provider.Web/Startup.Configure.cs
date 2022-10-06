@@ -135,7 +135,7 @@ namespace Esfa.Recruit.Provider.Web
                         "https://*.zendesk.com",
                         "https://*.zdassets.com",
                         "https://dc.services.visualstudio.com",
-                        "https://www.google-analytics.com",
+                        "https://*.google-analytics.com",
                         "wss://*.zendesk.com",
                         "wss://*.zopim.com",
                         "https://*.rcrsv.io")
@@ -203,15 +203,6 @@ namespace Esfa.Recruit.Provider.Web
 
             if (!string.IsNullOrWhiteSpace(linksConfig?.ProviderApprenticeshipSiteUrl))
                 destinations.Add(linksConfig.ProviderApprenticeshipSiteUrl);
-
-            if (!string.IsNullOrWhiteSpace(linksConfig?.ProviderApprenticeshipSiteFeedbackUrl))
-                destinations.Add(linksConfig.ProviderApprenticeshipSiteFeedbackUrl);
-
-            if (!string.IsNullOrWhiteSpace(linksConfig?.CommitmentsSiteUrl))
-                destinations.Add(linksConfig.CommitmentsSiteUrl);
-
-            if (!string.IsNullOrWhiteSpace(linksConfig?.ReservationsSiteUrl))
-                destinations.Add(linksConfig.ReservationsSiteUrl);
 
             if (!string.IsNullOrWhiteSpace(linksConfig?.ProviderRecruitmentApiUrl))
                 destinations.Add(linksConfig.ProviderRecruitmentApiUrl);

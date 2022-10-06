@@ -233,14 +233,25 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return _reportRepository.GetReportAsync(reportId);
         }
 
-        public void WriteReportAsCsv(Stream stream, Report report)
+        public async Task WriteReportAsCsv(Stream stream, Report report)
         {
-            _reportService.WriteReportAsCsv(stream, report);
+            await _reportService.WriteReportAsCsv(stream, report);
         }
 
         public Task IncrementReportDownloadCountAsync(Guid reportId)
         {
             return _reportRepository.IncrementReportDownloadCountAsync(reportId);
+        }
+
+        public Task UpdateDraftVacancyAsync(Vacancy vacancy, VacancyUser user)
+        {
+            var command = new UpdateDraftVacancyCommand
+            {
+                Vacancy = vacancy,
+                User = user
+            };
+
+            return _messaging.SendCommandAsync(command);
         }
     }
 }

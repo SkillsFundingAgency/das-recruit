@@ -49,7 +49,7 @@ namespace SFA.DAS.Recruit.Api.Mappers
                     WorkingWeekDescription = request.Wage.WorkingWeekDescription,
                     WeeklyHours = request.Wage.WeeklyHours,
                     Duration = request.Wage.Duration,
-                    DurationUnit = (DurationUnit?) request.Wage.DurationUnit,
+                    DurationUnit = Enum.Parse<DurationUnit>(request.Wage.DurationUnit.ToString(), true),
                     WageAdditionalInformation = request.Wage.WageAdditionalInformation,
                     FixedWageYearlyAmount = request.Wage.FixedWageYearlyAmount
                 },

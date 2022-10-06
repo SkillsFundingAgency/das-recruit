@@ -16,7 +16,7 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Mappers
         public void Then_The_Request_Is_Mapped_To_The_Vacancy(CreateVacancyRequest request, Guid id)
         {
             request.Wage.WageType = WageType.NationalMinimumWageForApprentices;
-            request.Wage.DurationUnit = DurationUnit.Year;
+            request.Wage.DurationUnit = DurationUnit.Month;
             request.ApplicationMethod = CreateVacancyApplicationMethod.ThroughExternalApplicationSite;
             request.AccountType = AccountType.Employer;
             
@@ -27,10 +27,12 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Mappers
                 .Excluding(c => c.User)
                 .Excluding(c => c.Address)
                 .Excluding(c=> c.AccountType)
+                .Excluding(c=>c.Wage.DurationUnit)
             );
             actual.EmployerLocation.Should().BeEquivalentTo(request.Address);
             actual.CreatedByUser.Should().BeEquivalentTo(request.User);
             actual.OwnerType.Should().HaveSameValueAs(request.AccountType.Value);
+            actual.Wage.DurationUnit.Should().Be(Esfa.Recruit.Vacancies.Client.Domain.Entities.DurationUnit.Month);
         }
     }
 }

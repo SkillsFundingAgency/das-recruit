@@ -7,7 +7,6 @@ using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Shared.Web.Mappers;
 using Esfa.Recruit.Shared.Web.ViewModels;
-using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections;
 using Esfa.Recruit.Employer.Web.ViewModels.Vacancies;
@@ -19,48 +18,40 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
     public class VacanciesOrchestrator
     {
         private const int VacanciesPerPage = 25;
-        private readonly ITimeProvider _timeProvider;
-        private const int ClosingSoonDays = 5;
         private readonly IEmployerVacancyClient _vacancyClient;
         private readonly IRecruitVacancyClient _client;
         private readonly IEmployerAlertsViewModelFactory _alertsViewModelFactory;
 
-        public VacanciesOrchestrator(IEmployerVacancyClient vacancyClient, ITimeProvider timeProvider, IRecruitVacancyClient client, IEmployerAlertsViewModelFactory alertsViewModelFactory)
+        public VacanciesOrchestrator(IEmployerVacancyClient vacancyClient, IRecruitVacancyClient client, IEmployerAlertsViewModelFactory alertsViewModelFactory)
         {
             _vacancyClient = vacancyClient;
-            _timeProvider = timeProvider;
             _client = client;
             _alertsViewModelFactory = alertsViewModelFactory;
         }
 
         public async Task<VacanciesViewModel> GetVacanciesViewModelAsync(string employerAccountId, string filter, int page, VacancyUser user, string searchTerm)
         {
-            var vacanciesTask = GetVacanciesAsync(employerAccountId);
-            var userDetailsTask = _client.GetUsersDetailsAsync(user.UserId);
-
-            await Task.WhenAll(vacanciesTask, userDetailsTask);
-
-            var vacancies = vacanciesTask.Result;
-            var userDetails = userDetailsTask.Result;
-
             var filteringOption = SanitizeFilter(filter);
+            var vacanciesTask = _vacancyClient.GetDashboardAsync(employerAccountId, page, filteringOption, searchTerm);
+            var userDetailsTask = _client.GetUsersDetailsAsync(user.UserId);
+            var employerVacancyCountTask = _vacancyClient.GetVacancyCount(employerAccountId, VacancyType.Apprenticeship, filteringOption, searchTerm);
 
-            var filteredVacancies = GetFilteredVacancies(vacancies, filteringOption, searchTerm);
+            await Task.WhenAll(vacanciesTask, userDetailsTask, employerVacancyCountTask);
 
-            var filteredVacanciesTotal = filteredVacancies.Count();
+            var employerDashboard = vacanciesTask.Result;
+            var userDetails = userDetailsTask.Result;
+            var vacancyCount = employerVacancyCountTask.Result;
+            var totalItems = Convert.ToInt32(vacancyCount);
 
-            page = SanitizePage(page, filteredVacanciesTotal);
+            var vacancies = new List<VacancySummary>(employerDashboard?.Vacancies ?? Array.Empty<VacancySummary>());
+            page = SanitizePage(page, totalItems);
 
-            var skip = (page - 1) * VacanciesPerPage;
-
-            var vacanciesVm = filteredVacancies
-                .Skip(skip)
-                .Take(VacanciesPerPage)
+            var vacanciesVm = vacancies
                 .Select(VacancySummaryMapper.ConvertToVacancySummaryViewModel)
                 .ToList();
 
             var pager = new PagerViewModel(
-                filteredVacanciesTotal,
+                totalItems,
                 VacanciesPerPage,
                 page,
                 "Showing {0} to {1} of {2} adverts",
@@ -77,66 +68,11 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
                 Pager = pager,
                 Filter = filteringOption,
                 SearchTerm = searchTerm,
-                ResultsHeading = VacancyFilterHeadingHelper.GetFilterHeading(Constants.VacancyTerm, filteredVacanciesTotal, filteringOption, searchTerm, UserType.Employer),
-                Alerts = _alertsViewModelFactory.Create(vacancies, userDetails)
+                ResultsHeading = VacancyFilterHeadingHelper.GetFilterHeading(Constants.VacancyTerm, vacancies.Count, filteringOption, searchTerm, UserType.Employer),
+                Alerts = await _alertsViewModelFactory.Create(employerAccountId, userDetails)
             };
 
             return vm;
-        }
-
-        private List<VacancySummary> GetFilteredVacancies(List<VacancySummary> vacancies, FilteringOptions filterStatus, string searchTerm)
-        {
-            IEnumerable<VacancySummary> filteredVacancies = new List<VacancySummary>();
-            switch (filterStatus)
-            {
-                case FilteringOptions.Live:
-                case FilteringOptions.Closed:
-                case FilteringOptions.Referred:
-                case FilteringOptions.Draft:
-                case FilteringOptions.Review:
-                case FilteringOptions.Submitted:
-                    filteredVacancies = vacancies.Where(v =>
-                        v.Status.ToString() == filterStatus.ToString());
-                    break;
-                case FilteringOptions.All:
-                    filteredVacancies = vacancies;
-                    break;
-                case FilteringOptions.NewApplications:
-                    filteredVacancies = vacancies.Where(v => v.NoOfNewApplications > 0);
-                    break;
-                case FilteringOptions.AllApplications:
-                    filteredVacancies = vacancies.Where(v => v.NoOfApplications > 0);
-                    break;
-                case FilteringOptions.ClosingSoon:
-                    filteredVacancies = vacancies.Where(v =>
-                        v.ClosingDate <= _timeProvider.Today.AddDays(ClosingSoonDays) &&
-                        v.Status == VacancyStatus.Live);
-                    break;
-                case FilteringOptions.ClosingSoonWithNoApplications:
-                    filteredVacancies = vacancies.Where(v =>
-                        v.ClosingDate <= _timeProvider.Today.AddDays(ClosingSoonDays) &&
-                        v.Status == VacancyStatus.Live &&
-                        v.ApplicationMethod == ApplicationMethod.ThroughFindAnApprenticeship &&
-                        v.NoOfApplications == 0);
-                    break;
-                case FilteringOptions.Transferred:
-                        filteredVacancies = vacancies.Where(v => v.TransferInfoTransferredDate.HasValue);
-                    break;
-            }
-            return filteredVacancies
-                .Where(v => string.IsNullOrWhiteSpace(searchTerm)
-                            || (v.Title.Contains(searchTerm, StringComparison.OrdinalIgnoreCase))
-                            || (string.IsNullOrWhiteSpace(v.LegalEntityName) == false && v.LegalEntityName.Contains(searchTerm, StringComparison.OrdinalIgnoreCase))
-                            || (v.VacancyReference.HasValue && $"VAC{v.VacancyReference}".Contains(searchTerm, StringComparison.OrdinalIgnoreCase)))
-                .OrderByDescending(v => v.CreatedDate)
-                .ToList();
-        }
-
-        private async Task<List<VacancySummary>> GetVacanciesAsync(string employerAccountId)
-        {
-            var dashboard = await _vacancyClient.GetDashboardAsync(employerAccountId, createIfNonExistent: true);
-
-            return dashboard?.Vacancies?.ToList() ?? new List<VacancySummary>();
         }
 
         private int SanitizePage(int page, int totalVacancies)

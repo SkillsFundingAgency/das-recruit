@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Application.Services.Reports;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
@@ -67,6 +66,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Reports
                     return;
                 }
                 report.Headers = reportStrategyResult.Headers;
+                report.Query = reportStrategyResult.Query;
                 report.Data = reportStrategyResult.Data;
                 report.Status = ReportStatus.Generated;
                 report.GeneratedOn = _timeProvider.Now;
@@ -83,7 +83,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Reports
             }
         }
 
-        public void WriteReportAsCsv(Stream stream, Report report)
+        public async Task WriteReportAsCsv(Stream stream, Report report)
         {
             if (report.Status != ReportStatus.Generated)
             {
@@ -91,8 +91,17 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Reports
             }
 
             var reportStrategy = _reportStrategyAccessor(report.ReportType);
+            string reportData;
+            if (!string.IsNullOrEmpty(report.Query))
+            {
+                reportData = await reportStrategy.GetApplicationReviewsRecursiveAsync(report.Query);    
+            }
+            else
+            {
+                reportData = report.Data;
+            }
 
-            var results = JArray.Parse(report.Data);
+            var results = JArray.Parse(reportData);
 
             _csvBuilder.WriteCsvToStream(stream, results, report.Headers, reportStrategy.ResolveFormat);
         }
