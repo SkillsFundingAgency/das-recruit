@@ -27,8 +27,8 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             var vacancy = await _orchestrator.GetCloneableAuthorisedVacancyAsync(vrm);
 
             return _orchestrator.IsNewDatesRequired(vacancy) 
-                ? RedirectToRoute(RouteNames.CloneVacancyWithNewDates_Get) 
-                : RedirectToRoute(RouteNames.CloneVacancyDatesQuestion_Get);
+                ? RedirectToRoute(RouteNames.CloneVacancyWithNewDates_Get, new {vrm.VacancyId, vrm.EmployerAccountId}) 
+                : RedirectToRoute(RouteNames.CloneVacancyDatesQuestion_Get, new {vrm.VacancyId, vrm.EmployerAccountId});
         }
 
         [HttpGet("clone-dates-question", Name = RouteNames.CloneVacancyDatesQuestion_Get)]
@@ -51,12 +51,10 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             {
                 var newVacancyId = await _orchestrator.PostCloneVacancyWithSameDates(model, User.ToVacancyUser());
                 TempData.TryAdd(TempDataKeys.VacancyClonedInfoMessage, InfoMessages.AdvertCloned);
-                return RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet, new { VacancyId = newVacancyId });
+                return RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet, new { VacancyId = newVacancyId, model.EmployerAccountId });
             }
-            else
-            {
-                return RedirectToRoute(RouteNames.CloneVacancyWithNewDates_Get);
-            }
+
+            return RedirectToRoute(RouteNames.CloneVacancyWithNewDates_Get, new {model.VacancyId, model.EmployerAccountId});
         }
 
         [HttpGet("clone-with-dates", Name = RouteNames.CloneVacancyWithNewDates_Get)]
@@ -82,8 +80,9 @@ namespace Esfa.Recruit.Employer.Web.Controllers
                 return View(vm);
             }
 
+            var newVacancyId = response.Data;
             TempData.TryAdd(TempDataKeys.VacancyClonedInfoMessage, InfoMessages.AdvertCloned);
-            return RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet, new { VacancyId = response.Data });
+            return RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet, new { VacancyId = newVacancyId, model.EmployerAccountId });
         }
     }
 }
