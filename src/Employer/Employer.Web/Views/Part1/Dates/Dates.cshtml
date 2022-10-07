@@ -64,7 +64,7 @@
                         Start date must be on or before @Model.TrainingEffectiveToDate as this is the last day for new starters for the training course you have selected.
                     </p>
                     <p asp-show="@Model.CanShowTrainingErrorHint" class="govuk-hint">
-                        If you don’t want to change the start date, you can change the <a asp-route="@RouteNames.Training_Get" asp-route-wizard="@Model.PageInfo.IsWizard" class="govuk-link">training course.</a>.
+                        If you don’t want to change the start date, you can change the <a asp-route="@RouteNames.Training_Get" asp-all-route-data="@Model.RouteDictionary" asp-route-wizard="@Model.PageInfo.IsWizard" class="govuk-link">training course.</a>.
                     </p>
 
                     <div class="govuk-hint">For example, @exampleStartingDate.AsInputHintDisplayDate()</div>
