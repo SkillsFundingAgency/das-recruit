@@ -21,7 +21,7 @@
 
         <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">Which organisation is this advert for?</h1>
 
-        <form asp-show="@Model.CanShowSearchPanel" method="GET" asp-route="@RouteNames.Employer_Get" asp-route-wizard="@Model.PageInfo.IsWizard">
+        <form asp-show="@Model.CanShowSearchPanel" method="GET" asp-route="@RouteNames.Employer_Get" asp-all-route-data="@Model.RouteDictionary" asp-route-wizard="@Model.PageInfo.IsWizard">
             <div class="govuk-form-group">
                 <label class="govuk-label" asp-for="SearchTerm">
                     Search for the organisation
@@ -33,7 +33,7 @@
                     </div>
                 </div>
                 <p class="govuk-body govuk-!-margin-top-1">
-                    <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.Employer_Get">Clear search</a>
+                    <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.Employer_Get" asp-all-route-data="@Model.RouteDictionary">Clear search</a>
                 </p>
             </div>
         </form>
