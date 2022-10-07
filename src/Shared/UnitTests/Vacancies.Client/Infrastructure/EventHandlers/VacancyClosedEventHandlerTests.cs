@@ -67,6 +67,27 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
             Assert.Equal(3, sequence);
         }
 
+        [Fact]
+        public async Task Handle_ShouldDeleteLiveVacancyFromQueryStoreThenRecreate_If_Apprenticeship_No_Longer_Exists()
+        {
+            _vacancy.ProgrammeId = "-1";
+            int sequence = 1;
+
+            _mockQueryStore
+                .Setup(x => x.DeleteLiveVacancyAsync(_vacancy.VacancyReference.Value))
+                .Callback(() => Assert.Equal(1, sequence++))
+                .Returns(Task.CompletedTask);
+
+            _mockQueryStore
+                .Setup(x => x.UpdateClosedVacancyAsync(It.IsAny<Projections.ClosedVacancy>()))
+                .Callback(() => Assert.Equal(2, sequence++))
+                .Returns(Task.CompletedTask);
+
+            await _handler.Handle(_event, CancellationToken.None);
+
+            Assert.Equal(3, sequence);
+        }
+        
         public VacancyClosedEventHandlerTests()
         {
             _currentTime = DateTime.UtcNow;

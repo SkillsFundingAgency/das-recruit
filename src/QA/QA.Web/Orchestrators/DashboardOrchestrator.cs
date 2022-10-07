@@ -96,7 +96,8 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
             {
                 TotalVacanciesForReview = dashboard.TotalVacanciesForReview,
                 TotalVacanciesBrokenSla = dashboard.TotalVacanciesBrokenSla,
-                TotalVacanciesResubmitted = dashboard.TotalVacanciesResubmitted
+                TotalVacanciesResubmitted = dashboard.TotalVacanciesResubmitted,
+                TotalVacanciesSubmittedTwelveToTwentyFourHours = dashboard.TotalVacanciesSubmittedTwelveTwentyFourHours
             };
 
             return vm;

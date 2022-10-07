@@ -15,7 +15,7 @@
         <h1 class="govuk-heading-l govuk-!-margin-bottom-6">Manage your emails</h1>
 
         <form method="post" asp-route-employerAccountId="@Model.EmployerAccountId">
-            <div esfa-validation-marker-for="HasAnySubscription" class="govuk-form-group">
+            <div esfa-validation-marker-for="HasAnySubscription" class="govuk-form-group" data-module="govuk-checkboxes">
                 <fieldset class="govuk-fieldset" aria-describedby="when-conditional-hint">
                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
                         <h2 class="govuk-fieldset__heading">
