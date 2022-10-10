@@ -142,7 +142,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Reports
                     collection.Aggregate<BsonDocument>(bson).ToListAsync(),
             new Context(nameof(GetProviderApplicationsAsync)));
 
-            await ProcessResultsAsync(results);
+            await ProcessResultsAsync(results, vacancyType);
 
             _logger.LogInformation($"Report parameters ukprn:{ukprn} fromDate:{fromDate} toDate:{toDate} returned {results.Count} results");
 
@@ -157,12 +157,19 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Reports
             return new ReportStrategyResult(headers, data,"");
         }
 
-        private async Task ProcessResultsAsync(List<BsonDocument> results)
+        private async Task ProcessResultsAsync(List<BsonDocument> results, VacancyType vacancyType)
         {
             foreach (var result in results)
             {
-                await SetProgrammeAsync(result);
-                await SetRoute(result);
+                if (vacancyType == Domain.Entities.VacancyType.Apprenticeship)
+                {
+                    await SetProgrammeAsync(result);
+                }
+                else
+                {
+                    await SetRoute(result);
+                }
+                
                 SetNumberOfDaysAtThisStatus(result);
                 SetVacancyReference(result);
                 SetApplicantId(result);
