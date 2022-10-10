@@ -13,8 +13,7 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.Part1.LegalEntityAndEmployer
         public string Title { get; internal set; }
 
         private const int LimitForNotShowingSearchPanel = 10;
-        public IEnumerable<OrganisationsViewModel> Organisations { get; internal set; }
-
+        
         public bool HasOnlyOneOrganisation => TotalNumberOfLegalEntities == 1;
 
         public ReviewSummaryViewModel Review { get; set; } = new ReviewSummaryViewModel();
@@ -36,20 +35,29 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.Part1.LegalEntityAndEmployer
 
         public bool CanShowSearchPanel => TotalNumberOfLegalEntities > LimitForNotShowingSearchPanel;
 
-        public bool HasNoSearchResults => string.IsNullOrEmpty(SearchTerm) == false && Organisations.Count() == 0;
+        //public bool HasNoSearchResults => string.IsNullOrEmpty(SearchTerm) == false && Organisations.Count() == 0;
         public string NoSearchResultsCaption => $"0 matches for '{SearchTerm}'";
 
         public int TotalNumberOfLegalEntities { get; internal set; }
 
         public bool IsPreviouslySelectedLegalEntityStillValid { get; internal set; }
         public bool HasPreviouslyPersistedLegalEntity => !string.IsNullOrEmpty(SelectedOrganisationId);
-        public bool IsSelectedOrganisationInPagedOrganisations
-                        => IsPreviouslySelectedLegalEntityStillValid
-                            && HasPreviouslyPersistedLegalEntity
-                            && Organisations.Any(org => org.Id == SelectedOrganisationId);
+        //public bool IsSelectedOrganisationInPagedOrganisations
+        //                => IsPreviouslySelectedLegalEntityStillValid
+        //                    && HasPreviouslyPersistedLegalEntity
+        //                    && Organisations.Any(org => org.Id == SelectedOrganisationId);
 
-        public bool CanOutputHiddenSelectedOrganisationIdField => !string.IsNullOrEmpty(SelectedOrganisationId) && IsSelectedOrganisationInPagedOrganisations == false;
+        //public bool CanOutputHiddenSelectedOrganisationIdField => !string.IsNullOrEmpty(SelectedOrganisationId) && IsSelectedOrganisationInPagedOrganisations == false;
         public bool IsTaskListCompleted { get; set; }
+    }
+
+
+    public class EmployerViewModel
+    {
+        public string Id { get; set; }
+        public string Name { get; set; }
+        public IEnumerable<OrganisationsViewModel> Organisations { get; internal set; }
+
     }
 
     public class OrganisationsViewModel

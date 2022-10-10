@@ -59,11 +59,11 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
             {
                 if (!_feature.IsFeatureEnabled(FeatureNames.ProviderTaskList))
                     return RedirectToRoute(RouteNames.EmployerName_Get, new {Wizard = wizard, vrm.Ukprn, vrm.VacancyId});
-                
-                var model = new LegalEntityAndEmployerEditModel()
-                {
-                    SelectedOrganisationId = vm.Organisations.FirstOrDefault()?.Id
-                };
+
+                var model = new LegalEntityAndEmployerEditModel();
+                //{
+                //    SelectedOrganisationId = vm.Organisations.FirstOrDefault()?.Id
+                //};
                 await _orchestrator.SetAccountLegalEntityPublicId(vrm,model, User.ToVacancyUser());
 
                 return RedirectToRoute(_serviceParameters.VacancyType == VacancyType.Traineeship 

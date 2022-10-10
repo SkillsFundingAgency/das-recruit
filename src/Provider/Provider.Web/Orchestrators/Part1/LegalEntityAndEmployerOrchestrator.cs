@@ -17,6 +17,7 @@ using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
 using Microsoft.Extensions.Logging;
+using EmployerViewModel = Esfa.Recruit.Provider.Web.ViewModels.Part1.LegalEntityAndEmployer.EmployerViewModel;
 
 namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
 {
@@ -53,16 +54,18 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
             const int NotFoundIndex = -1;
             var setPage = requestedPageNo.HasValue ? requestedPageNo.Value : 1;
 
-            var legalEntities = (await GetLegalEntityAndEmployerViewModelsAsync(ukprn, editVacancyInfo.Id)).ToList();
 
             var vm = new LegalEntityandEmployerViewModel
             {
-                Employers = editVacancyInfo.Employers.Select(e => new EmployerViewModel { Id = e.EmployerAccountId, Name = e.Name }),
-                TotalNumberOfLegalEntities = legalEntities.Count(),
+                Employers = editVacancyInfo.Employers.Select(e => new EmployerViewModel { Id = e.EmployerAccountId, Name = e.Name}),
+                //TotalNumberOfLegalEntities = legalEntities.Count(),
                 SearchTerm = searchTerm,
                 VacancyId = vrm.VacancyId,
                 Ukprn = vrm.Ukprn
             };
+            
+            var legalEntities = (await GetLegalEntityAndEmployerViewModelsAsync(ukprn, editVacancyInfo.Id)).ToList();
+
 
             vm.IsPreviouslySelectedLegalEntityStillValid = !string.IsNullOrEmpty(selectedAccountLegalEntityPublicHashedId) && legalEntities.Any(le => le.Id == selectedAccountLegalEntityPublicHashedId);
 
@@ -80,11 +83,8 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
 
             setPage = GetPageNo(requestedPageNo, setPage, totalNumberOfPages, indexOfSelectedLegalEntity);
 
-            SetFilteredOrganisationsForPage(setPage, vm, filteredLegalEntities);
+            //SetFilteredOrganisationsForPage(setPage, vm, filteredLegalEntities);
             SetPager(searchTerm, setPage, vm, filteredLegalEntitiesTotal);
-
-
-
 
 
             return vm;
@@ -115,15 +115,15 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
             vm.Pager = pager;
         }
 
-        private void SetFilteredOrganisationsForPage(int page, LegalEntityandEmployerViewModel vm, List<OrganisationsViewModel> filteredLegalEntities)
-        {
-            var skip = (page - 1) * MaxLegalEntitiesPerPage;
+        //private void SetFilteredOrganisationsForPage(int page, LegalEntityandEmployerViewModel vm, List<OrganisationsViewModel> filteredLegalEntities)
+        //{
+        //    var skip = (page - 1) * MaxLegalEntitiesPerPage;
 
-            vm.Organisations = filteredLegalEntities
-                .Skip(skip)
-                .Take(MaxLegalEntitiesPerPage)
-                .ToList();
-        }
+        //    vm.Organisations = filteredLegalEntities
+        //        .Skip(skip)
+        //        .Take(MaxLegalEntitiesPerPage)
+        //        .ToList();
+        //}
 
         private OrganisationsViewModel ConvertToOrganisationViewModel(LegalEntity data)
         {
