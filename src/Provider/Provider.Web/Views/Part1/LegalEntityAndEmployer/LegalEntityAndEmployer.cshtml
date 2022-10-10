@@ -38,7 +38,7 @@
             </div>
         </details>
         
-        <form method="GET" asp-route="@RouteNames.LegalEntityEmployer_Get" asp-route-wizard="@Model.PageInfo.IsWizard">
+@*        <form method="GET" asp-route="@RouteNames.LegalEntityEmployer_Get" asp-route-wizard="@Model.PageInfo.IsWizard">*@
         <div class="govuk-form-group">
             <label class="govuk-label" asp-for="SearchTerm">
                 Search employer name or account name
@@ -53,7 +53,7 @@
                 <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.LegalEntityEmployer_Get">Clear search</a>
             </p>
         </div>
-        </form>
+@*        </form>*@
         
         <div class="govuk-grid-row">
             <div class="govuk-grid-column-full">
@@ -66,6 +66,19 @@
                     </tr>
                     </thead>
                     <tbody class="govuk-table__body">
+                        @foreach (var employer in @Model.Employers)
+                        {
+                            <tr class="govuk-table__row">
+
+                                <td class="govuk-table__cell" data-label="Employer">
+                                    <div>@employer.Name</div>
+                                </td>
+
+                            </tr>
+                        }
+                    </tbody>
+                    
+                    <tbody class="govuk-table__body">
 
                 </table>
             </div>
@@ -76,7 +89,7 @@
         
         
 
-        <form asp-route="@RouteNames.LegalEntity_Post" asp-route-wizard="@Model.PageInfo.IsWizard" asp-route-ukprn="@Model.Ukprn" asp-route-vacancyId="@Model.VacancyId">
+        <form asp-route="@RouteNames.LegalEntity_Post" asp-route-ukprn="@Model.Ukprn" asp-route-vacancyId="@Model.VacancyId">
             <div esfa-validation-marker-for="SelectedOrganisationId" class="govuk-form-group">
                 <fieldset class="govuk-fieldset">
                     <legend class="govuk-visually-hidden">Select an employer</legend>
@@ -85,6 +98,7 @@
                     <input type="hidden" asp-for="Page" />
                     <span asp-show="@Model.HasNoSearchResults" class="govuk-body">@Model.NoSearchResultsCaption</span>
                     <div class="govuk-radios">
+                        
                         @foreach (var organisation in Model.Organisations)
                         {
                             <div class="govuk-radios__item">
@@ -92,7 +106,7 @@
                                 <label for="org-@organisation.Id" class="govuk-label govuk-radios__label">@organisation.Name</label>
                             </div>
                         }
-                        <input asp-show="@Model.CanOutputHiddenSelectedOrganisationIdField" type="hidden" asp-for="SelectedOrganisationId" />
+                        <input asp-show="@Model.CanOutputHiddenSelectedOrganisationIdField" type="hidden" asp-for="SelectedOrganisationId"/>
                     </div>
                 </fieldset>
             </div>

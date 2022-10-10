@@ -2,12 +2,14 @@ using System.Collections.Generic;
 using System.Linq;
 using Esfa.Recruit.Provider.Web.Models;
 using Esfa.Recruit.Provider.Web.RouteModel;
+using Esfa.Recruit.Provider.Web.ViewModels.Part1.Employer;
 using Esfa.Recruit.Shared.Web.ViewModels;
 
 namespace Esfa.Recruit.Provider.Web.ViewModels.Part1.LegalEntityAndEmployer
 {
     public class LegalEntityandEmployerViewModel : VacancyRouteModel
     {
+        public IEnumerable<EmployerViewModel> Employers { get; set; }
         public string Title { get; internal set; }
 
         private const int LimitForNotShowingSearchPanel = 10;

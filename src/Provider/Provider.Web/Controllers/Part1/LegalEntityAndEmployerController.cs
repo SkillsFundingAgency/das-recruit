@@ -72,7 +72,6 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
             }
 
             vm.Pager.OtherRouteValues.Add(nameof(wizard), wizard);
-            vm.PageInfo.SetWizard(wizard);
             return View(vm);
         }
 
