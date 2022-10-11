@@ -179,9 +179,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Reports
         private async Task SetRoute(BsonDocument result)
         {
             var routeId = result[ColumnRoute].AsString;
-            if (!string.IsNullOrEmpty(routeId))
+            if (!string.IsNullOrEmpty(routeId) && int.TryParse(routeId,out var routeIdResult))
             {
-                var route = await _apprenticeshipRouteProvider.GetApprenticeshipRouteAsync(Convert.ToInt32(routeId));
+                var route = await _apprenticeshipRouteProvider.GetApprenticeshipRouteAsync(routeIdResult);
             
                 result.InsertAt(result.IndexOfName(ColumnRoute),
                     new BsonElement(ColumnRouteName, (BsonValue)route?.Route ?? BsonNull.Value));    
