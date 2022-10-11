@@ -66,20 +66,15 @@
                     </tr>
                     </thead>
                     <tbody class="govuk-table__body">
-                        @foreach (var employer in @Model.Employers)
+                        @foreach (var organisation in @Model.Organisations)
                         {
                             <tr class="govuk-table__row">
-
                                 <td class="govuk-table__cell" data-label="Employer">
-                                    <div>@employer.Name</div>
+                                    <div>@organisation.EmployerName</div>
                                 </td>
-                                @foreach (var organisation in @Model.Employers)
-                                {
-                                    <td class="govuk-table__cell" data-label="Legal Entity">
-                                        <div>@organisation.Organisations </div>
-                                    </td>
-                                }
-
+                                <td class="govuk-table__cell" data-label="Legal Entity">
+                                        <div>@organisation.Name </div>
+                                 </td>
                             </tr>
                         }
                     </tbody>

@@ -10,6 +10,8 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.Part1.LegalEntityAndEmployer
     public class LegalEntityandEmployerViewModel : VacancyRouteModel
     {
         public IEnumerable<EmployerViewModel> Employers { get; set; }
+        public IEnumerable<OrganisationsViewModel> Organisations { get; internal set; }
+
         public string Title { get; internal set; }
 
         private const int LimitForNotShowingSearchPanel = 10;
@@ -56,13 +58,12 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.Part1.LegalEntityAndEmployer
     {
         public string Id { get; set; }
         public string Name { get; set; }
-        public IEnumerable<OrganisationsViewModel> Organisations { get; internal set; }
-
     }
 
     public class OrganisationsViewModel
     {
         public string Id { get; set; }
         public string Name { get; set; }
+        public string EmployerName { get; set; }
     }
 }
