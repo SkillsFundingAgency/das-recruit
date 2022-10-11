@@ -63,7 +63,7 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.Part1.LegalEntityAndEmployer
     public class OrganisationsViewModel
     {
         public string Id { get; set; }
-        public string Name { get; set; }
+        public string AccountLegalEntityName { get; set; }
         public string EmployerName { get; set; }
     }
 }

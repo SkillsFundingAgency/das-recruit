@@ -140,6 +140,13 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
             return providerInfo?.Employers.FirstOrDefault(e => e.EmployerAccountId == employerAccountId);
         }
 
+        public async Task<IEnumerable<EmployerInfo>> GetProviderEmployerVacancyDatasAsync(long ukprn, IList<string> employerAccountIds)
+        {
+            var key = QueryViewType.EditVacancyInfo.GetIdValue(ukprn);
+            var providerInfo = await _queryStore.GetAsync<ProviderEditVacancyInfo>(QueryViewType.EditVacancyInfo.TypeName, key);
+            return providerInfo?.Employers.Where(e => employerAccountIds.Contains(e.EmployerAccountId));
+        }
+
         public Task<VacancyApplications> GetVacancyApplicationsAsync(string vacancyReference)
         {
             var key = QueryViewType.VacancyApplications.GetIdValue(vacancyReference);

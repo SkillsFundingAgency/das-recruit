@@ -17,6 +17,7 @@ using Esfa.Recruit.Shared.Web.ViewModels;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Responses;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.Extensions.Logging;
@@ -54,6 +55,8 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
                 throw new MissingPermissionsException(string.Format(RecruitWebExceptionMessages.ProviderMissingPermission, vrm.Ukprn));
             }
 
+            var accountLegalEntities = await _providerVacancyClient.GetProviderEmployerVacancyDatasAsync(vrm.Ukprn, editVacancyInfo.Employers.Select(info => info.EmployerAccountId).ToList());
+
             const int NotFoundIndex = -1;
             var setPage = requestedPageNo.HasValue ? requestedPageNo.Value : 1;
 
@@ -61,19 +64,18 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
             var vm = new LegalEntityandEmployerViewModel
             {
                 Employers = editVacancyInfo.Employers.Select(e => new EmployerViewModel { Id = e.EmployerAccountId, Name = e.Name}),
+                Organisations = GetLegalEntityAndEmployerViewModels(accountLegalEntities),
                 //TotalNumberOfLegalEntities = legalEntities.Count(),
                 SearchTerm = searchTerm,
                 VacancyId = vrm.VacancyId,
                 Ukprn = vrm.Ukprn
             };
 
-            var legalEntities = (await GetLegalEntityAndEmployerViewModelsAsync(ukprn, vm.Employers, vm)).ToList();
+            vm.IsPreviouslySelectedLegalEntityStillValid = !string.IsNullOrEmpty(selectedAccountLegalEntityPublicHashedId) && vm.Organisations.Any(le => le.Id == selectedAccountLegalEntityPublicHashedId);
 
-            vm.IsPreviouslySelectedLegalEntityStillValid = !string.IsNullOrEmpty(selectedAccountLegalEntityPublicHashedId) && legalEntities.Any(le => le.Id == selectedAccountLegalEntityPublicHashedId);
-
-            var filteredLegalEntities = legalEntities
-                .Where(le => string.IsNullOrEmpty(searchTerm) || le.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase))
-                .OrderBy(v => v.Name)
+            var filteredLegalEntities = vm.Organisations
+                .Where(le => string.IsNullOrEmpty(searchTerm) || le.AccountLegalEntityName.Contains(searchTerm, StringComparison.OrdinalIgnoreCase))
+                .OrderBy(v => v.AccountLegalEntityName)
                 .ToList();
 
             var filteredLegalEntitiesTotal = filteredLegalEntities.Count();
@@ -127,30 +129,28 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
         //        .ToList();
         //}
 
-        private OrganisationsViewModel ConvertToOrganisationViewModel(LegalEntity data)
+        private OrganisationsViewModel ConvertToOrganisationViewModel(TempOrganisationViewModel data)
         {
-            return new OrganisationsViewModel { Id = data.AccountLegalEntityPublicHashedId, Name = data.Name };
+            return new OrganisationsViewModel { Id = data.LegalEntity.AccountLegalEntityPublicHashedId, AccountLegalEntityName = data.LegalEntity.Name, EmployerName = data.EmployerName };
         }
 
-        private async Task<List<OrganisationsViewModel>> GetLegalEntityAndEmployerViewModelsAsync(long ukprn, IEnumerable<EmployerViewModel> employer, LegalEntityandEmployerViewModel vm)
+        private IEnumerable<OrganisationsViewModel> GetLegalEntityAndEmployerViewModels(IEnumerable<EmployerInfo> accountLegalEntities)
         {
             List<OrganisationsViewModel> legalEntities = new List<OrganisationsViewModel>();
-            foreach (var employerId in employer)
+            foreach (var employerId in accountLegalEntities)
             {
-             var info = await _providerVacancyClient.GetProviderEmployerVacancyDataAsync(ukprn, employerId.Id);
 
-                if (info == null || !info.LegalEntities.Any())
+                if (!employerId.LegalEntities.Any())
                 {
-                    _logger.LogWarning("No legal entities found for {employerAccountId}", employerId.Id);
+                    _logger.LogWarning("No legal entities found for {employerAccountId}", employerId.EmployerAccountId);
                     return new List<OrganisationsViewModel>();
                 }
 
-                legalEntities = info.LegalEntities.Select(ConvertToOrganisationViewModel).ToList();
-                vm.Organisations = legalEntities.Select(e => new OrganisationsViewModel{Id = e.Id, Name = e.Name, EmployerName = employerId.Name});
+                legalEntities.AddRange(employerId.LegalEntities.Select(x => ConvertToOrganisationViewModel(new TempOrganisationViewModel{LegalEntity = x, EmployerName = employerId.Name})));
                 
             }
-
             return legalEntities;
+
         }
 
         public async Task SetAccountLegalEntityPublicId(VacancyRouteModel vacancyRouteModel, LegalEntityAndEmployerEditModel vacancyEmployerInfoModel, VacancyUser vacancyUser)
@@ -183,5 +183,11 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
 
             return mappings;
         }
+    }
+
+    public class TempOrganisationViewModel
+    {
+        public LegalEntity LegalEntity { get; set; }
+        public string EmployerName { get; set; }
     }
 }

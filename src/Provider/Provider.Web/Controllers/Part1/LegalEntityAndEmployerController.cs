@@ -57,8 +57,6 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
 
             if (vm.HasOnlyOneOrganisation)
             {
-                if (!_feature.IsFeatureEnabled(FeatureNames.ProviderTaskList))
-                    return RedirectToRoute(RouteNames.EmployerName_Get, new {Wizard = wizard, vrm.Ukprn, vrm.VacancyId});
 
                 var model = new LegalEntityAndEmployerEditModel();
                 //{

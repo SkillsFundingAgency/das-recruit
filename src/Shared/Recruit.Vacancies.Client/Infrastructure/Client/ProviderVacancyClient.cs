@@ -136,6 +136,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return _reader.GetProviderEmployerVacancyDataAsync(ukprn, employerAccountId);
         }
 
+        public Task<IEnumerable<EmployerInfo>> GetProviderEmployerVacancyDatasAsync(long ukprn, IList<string> employerAccountIds)
+        {
+            return _reader.GetProviderEmployerVacancyDatasAsync(ukprn, employerAccountIds);
+        }
+
         public Task SetupProviderAsync(long ukprn)
         {
             var command = new SetupProviderCommand(ukprn);
@@ -207,5 +212,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
                 }
             }
         }
+
     }
 }
