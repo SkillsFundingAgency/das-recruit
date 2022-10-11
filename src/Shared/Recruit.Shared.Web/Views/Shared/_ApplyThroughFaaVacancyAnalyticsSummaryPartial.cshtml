@@ -1,3 +1,5 @@
+@using Esfa.Recruit.Vacancies.Client.Application.Configuration
+@using Esfa.Recruit.Vacancies.Client.Domain.Entities
 @model Esfa.Recruit.Shared.Web.ViewModels.VacancyAnalyticsSummaryViewModel
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-one-third">
@@ -18,14 +20,17 @@
     </div>
 </div>
 <div class="govuk-grid-row">
-    <div class="govuk-grid-column-one-third">
-        <div class="app-analytics">
-            <h3 class="govuk-heading-s app-analytics__heading">Total applications started</h3>
-            <div class="govuk-body govuk-!-font-size-48 app-analytics__data">@Model.NoOfApplicationsStarted</div>
-            <div class="govuk-body app-analytics__summary" asp-show="@Model.HasNoOfApplicationsStartedIncreasedOverLastSevenDays"><span class="govuk-!-font-weight-bold">+@Model.NoOfApplicationsStartedOverLastSevenDays</span> increase <span class="govuk-visually-hidden"> in the last 7 days</span></div>
-            <div class="govuk-body app-analytics__summary" asp-hide="@Model.HasNoOfApplicationsStartedIncreasedOverLastSevenDays"><span class="govuk-!-font-weight-bold">No</span> increase</div>
+    @if (_serviceParameters.VacancyType.GetValueOrDefault() == VacancyType.Apprenticeship)
+    {
+        <div class="govuk-grid-column-one-third">
+            <div class="app-analytics">
+                <h3 class="govuk-heading-s app-analytics__heading">Total applications started</h3>
+                <div class="govuk-body govuk-!-font-size-48 app-analytics__data">@Model.NoOfApplicationsStarted</div>
+                <div class="govuk-body app-analytics__summary" asp-show="@Model.HasNoOfApplicationsStartedIncreasedOverLastSevenDays"><span class="govuk-!-font-weight-bold">+@Model.NoOfApplicationsStartedOverLastSevenDays</span> increase <span class="govuk-visually-hidden"> in the last 7 days</span></div>
+                <div class="govuk-body app-analytics__summary" asp-hide="@Model.HasNoOfApplicationsStartedIncreasedOverLastSevenDays"><span class="govuk-!-font-weight-bold">No</span> increase</div>
+            </div>
         </div>
-    </div>
+    }
     <div class="govuk-grid-column-one-third">
         <div class="app-analytics">
             <h3 class="govuk-heading-s app-analytics__heading">Total applications submitted</h3>

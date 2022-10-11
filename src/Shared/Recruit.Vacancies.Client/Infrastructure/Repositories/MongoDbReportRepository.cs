@@ -15,6 +15,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
     {
         private const string OwnerTypeFieldName = "owner.ownerType";
         private const string OwnerUkprnFieldName = "owner.ukprn";
+        private const string ParametersVacancyTypeFieldName = "parameters.VacancyType";
 
         public MongoDbReportRepository(ILoggerFactory loggerFactory, IOptions<MongoDbConnectionDetails> details) 
             : base(loggerFactory, MongoDbNames.RecruitDb, MongoDbCollectionNames.Reports, details)
@@ -38,10 +39,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
                 new Context(nameof(UpdateAsync)));
         }
 
-        public async Task<List<T>> GetReportsForProviderAsync<T>(long ukprn)
+        public async Task<List<T>> GetReportsForProviderAsync<T>(long ukprn, VacancyType vacancyType)
         {
             var builder = Builders<T>.Filter;
             var filter = builder.Eq(OwnerTypeFieldName, ReportOwnerType.Provider.ToString()) &
+                         builder.Eq(ParametersVacancyTypeFieldName, vacancyType.ToString()) &
                          builder.Eq(OwnerUkprnFieldName, ukprn);
 
             var collection = GetCollection<T>();
