@@ -90,34 +90,7 @@
                 </table>
             </div>
         </div>
-
         
-        
-        
-        
-
-        <form asp-route="@RouteNames.LegalEntity_Post" asp-route-ukprn="@Model.Ukprn" asp-route-vacancyId="@Model.VacancyId">
-            <div esfa-validation-marker-for="SelectedOrganisationId" class="govuk-form-group">
-                <fieldset class="govuk-fieldset">
-                    <legend class="govuk-visually-hidden">Select an employer</legend>
-                    <span esfa-validation-message-for="SelectedOrganisationId" class="govuk-error-message"></span>
-                    <input type="hidden" asp-for="SearchTerm" />
-                    <input type="hidden" asp-for="Page" />
-@*                    <span asp-show="@Model.HasNoSearchResults" class="govuk-body">@Model.NoSearchResultsCaption</span>*@
- @*                   <div class="govuk-radios">
-                        
-                        @foreach (var organisation in Model.Organisations)
-                        {
-                            <div class="govuk-radios__item">
-                                <input asp-for="SelectedOrganisationId" type="radio" value="@organisation.Id" class="govuk-radios__input" id="org-@organisation.Id" esfa-automation="selected-organisation-id">
-                                <label for="org-@organisation.Id" class="govuk-label govuk-radios__label">@organisation.Name</label>
-                            </div>
-                        }
-                        <input asp-show="@Model.CanOutputHiddenSelectedOrganisationIdField" type="hidden" asp-for="SelectedOrganisationId"/>
-                    </div>*@
-                </fieldset>
-            </div>
-
             <nav role="navigation" aria-label="Pagination" asp-show="@Model.Pager.ShowPager" >
                 <div class="das-pagination__summary">
                     @Model.Pager.Caption
@@ -143,6 +116,6 @@
                     </li>
                 </ul>
             </nav>
-            </form>
+
     </div>
 </div>
