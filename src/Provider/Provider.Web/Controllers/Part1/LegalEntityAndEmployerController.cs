@@ -41,7 +41,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
         {
             var info = GetVacancyEmployerInfoCookie(vrm.VacancyId.GetValueOrDefault());
 
-            var vm = await _orchestrator.GetLegalEntityAndEmployerViewModelAsync(vrm, User.GetUkprn(), searchTerm, page, info?.AccountLegalEntityPublicHashedId);
+            var vm = await _orchestrator.GetLegalEntityAndEmployerViewModelAsync(vrm, User.GetUkprn(), searchTerm, page);
 
             if (info == null || !string.IsNullOrEmpty(info.AccountLegalEntityPublicHashedId))
             {
@@ -57,11 +57,10 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
 
             if (vm.HasOnlyOneOrganisation)
             {
-
                 var model = new LegalEntityAndEmployerEditModel();
-                //{
-                //    SelectedOrganisationId = vm.Organisations.FirstOrDefault()?.Id
-                //};
+                {
+                    model.SelectedOrganisationId = vm.Organisations.FirstOrDefault()?.Id;
+                }
                 await _orchestrator.SetAccountLegalEntityPublicId(vrm,model, User.ToVacancyUser());
 
                 return RedirectToRoute(_serviceParameters.VacancyType == VacancyType.Traineeship 
@@ -69,64 +68,28 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
                     : RouteNames.Training_Get, new {Wizard = wizard, vrm.Ukprn, vrm.VacancyId});
             }
 
-            vm.Pager.OtherRouteValues.Add(nameof(wizard), wizard);
             return View(vm);
         }
 
         [HttpPost("legal-entity-employer", Name = RouteNames.LegalEntityEmployer_Post)]
         public async Task<IActionResult> LegalEntityAndEmployer(LegalEntityAndEmployerEditModel m, [FromQuery] bool wizard)
         {
-            var info = GetVacancyEmployerInfoCookie(m.VacancyId.GetValueOrDefault());
-            if (info == null)
-            {
-                //something went wrong, the matching cookie was not found
-                //Redirect the user with validation error to allow them to continue
-                ModelState.AddModelError(nameof(LegalEntityAndEmployerEditModel.SelectedOrganisationId),
-                    ValidationMessages.EmployerSelectionValidationMessages.EmployerSelectionRequired);
-            }
 
-            var vm = await _orchestrator.GetLegalEntityAndEmployerViewModelAsync(m, User.GetUkprn(), m.SearchTerm, m.Page, info.AccountLegalEntityPublicHashedId);
+            var vm = await _orchestrator.GetLegalEntityAndEmployerViewModelAsync(m, User.GetUkprn(), m.SearchTerm, m.Page);
             if (!ModelState.IsValid)
             {
-                SetVacancyEmployerInfoCookie(vm.VacancyEmployerInfoModel);
-                vm.Pager.OtherRouteValues.Add(nameof(wizard), wizard.ToString());
-                vm.PageInfo.SetWizard(wizard);
                 return View(vm);
             }
 
-            if (info.AccountLegalEntityPublicHashedId != m.SelectedOrganisationId)
-            {
-                info.AccountLegalEntityPublicHashedId = m.SelectedOrganisationId;
-                info.HasLegalEntityChanged = true;
-                info.EmployerIdentityOption = null;
-                info.NewTradingName = null;
-            }
-
-            SetVacancyEmployerInfoCookie(info);
             await _orchestrator.SetAccountLegalEntityPublicId(new VacancyRouteModel
             {
                 Ukprn = m.Ukprn,
                 VacancyId = m.VacancyId
             }, m, HttpContext.User.ToVacancyUser());
 
-            if (_feature.IsFeatureEnabled(FeatureNames.ProviderTaskList))
-            {
-                if (!vm.IsTaskListCompleted)
-                {
-                    return RedirectToRoute(_serviceParameters.VacancyType == VacancyType.Traineeship 
-                        ? RouteNames.TraineeSector_Get 
-                        : RouteNames.Training_Get, new {Wizard = wizard, m.Ukprn, m.VacancyId});
-                }
-                return RedirectToRoute(RouteNames.ProviderCheckYourAnswersGet, new {m.Ukprn, m.VacancyId});
-            }
             
             return RedirectToRoute(RouteNames.EmployerName_Get, new {Wizard = wizard, m.Ukprn, m.VacancyId});
         }
 
-        [HttpGet("legal-entity-employer-cancel", Name = RouteNames.LegalEntityEmployer_Cancel)]
-        public IActionResult Cancel(VacancyRouteModel vrm, [FromQuery] bool wizard)
-        {
-            return CancelAndRedirect(wizard, vrm);
-        }
     }
 }
