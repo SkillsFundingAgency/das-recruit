@@ -72,8 +72,12 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
         }
 
         [HttpPost("legal-entity-employer", Name = RouteNames.LegalEntityEmployer_Post)]
-        public async Task<IActionResult> LegalEntityAndEmployer(LegalEntityAndEmployerEditModel m, [FromQuery] bool wizard)
+        public async Task<IActionResult> LegalEntityAndEmployer(LegalEntityAndEmployerEditModel m, VacancyRouteModel vacancyRouteModel)
         {
+            if (string.IsNullOrWhiteSpace(m.SelectedOrganisationId))
+            {
+                ModelState.AddModelError(nameof(m.SelectedOrganisationId), ValidationMessages.EmployerSelectionMessages.EmployerMustBeSelectedMessage);
+            }
 
             var vm = await _orchestrator.GetLegalEntityAndEmployerViewModelAsync(m, User.GetUkprn(), m.SearchTerm, m.Page);
             if (!ModelState.IsValid)
@@ -87,8 +91,8 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
                 VacancyId = m.VacancyId
             }, m, HttpContext.User.ToVacancyUser());
 
-            
-            return RedirectToRoute(RouteNames.EmployerName_Get, new {Wizard = wizard, m.Ukprn, m.VacancyId});
+
+            return RedirectToRoute(RouteNames.ProviderTaskListCreateGet, new { employerAccountId = m.SelectedOrganisationId, vacancyRouteModel.Ukprn });
         }
 
     }

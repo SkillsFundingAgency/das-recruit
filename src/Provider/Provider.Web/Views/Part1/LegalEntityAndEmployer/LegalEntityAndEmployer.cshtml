@@ -80,8 +80,7 @@
                                     <div>@organisation.Id </div>
                                 </td>
                                 <td class="govuk-table__cell" data-label="Select Employer and Legal Entity">
-                                    <div>Select </div>
-                                    <input asp-for="SelectedOrganisationId" type="radio" value="@organisation.Id" class="govuk-radios__input" id="org-@organisation.Id" esfa-automation="selected-organisation-id">
+                                    <input asp-for="SelectedOrganisationId" value="@organisation.Id" class="govuk-radios__input" id="org-@organisation.Id" esfa-automation="selected-organisation-id">
                                     <label for="org-@organisation.Id" class="govuk-label govuk-radios__label">Select</label>
                                 </td>
                             </tr>
@@ -144,18 +143,6 @@
                     </li>
                 </ul>
             </nav>
-
-
-            <div class="govuk-button-group">
-                <button type="submit" class="govuk-button save-button" esfa-automation="continue-button">Save and continue</button>
-                <esfaFeatureEnabled name="@FeatureNames.ProviderTaskList">
-                    <a asp-route="@RouteNames.Dashboard_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-cancel" class="govuk-link govuk-link--no-visited-state">Cancel</a>
-                </esfaFeatureEnabled>
-                <esfaFeatureDisabled name="@FeatureNames.ProviderTaskList">
-                    <a asp-route="@RouteNames.LegalEntity_Cancel" asp-route-wizard="@Model.PageInfo.IsWizard" asp-route-vacancyId="@Model.VacancyId" asp-route-ukprn="@Model.Ukprn" class="govuk-link govuk-link--no-visited-state">Cancel</a>
-                </esfaFeatureDisabled>
-            </div>
-            
-        </form>
+            </form>
     </div>
 </div>
