@@ -6,6 +6,7 @@ using Esfa.Recruit.Employer.Web.Extensions;
 using Esfa.Recruit.Employer.Web.Orchestrators;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels.Preview;
+using Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Shared.Web.ViewModels;
 using Microsoft.AspNetCore.Mvc;
@@ -26,9 +27,13 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         
         public async Task<IActionResult> CheckYourAnswers(VacancyRouteModel vrm)
         {
-            var viewModel = await _orchestrator.GetVacancyTaskListModel(vrm); 
+            var viewModel = await _orchestrator.GetVacancyTaskListModel(vrm, User.ToVacancyUser()); 
             viewModel.CanHideValidationSummary = true;
             viewModel.SetSectionStates(viewModel, ModelState);
+            if (viewModel.TaskListSectionFourState == VacancyTaskListSectionState.InProgress)
+            {
+                return RedirectToRoute(RouteNames.EmployerTaskListGet);
+            }
             
             if (TempData.ContainsKey(TempDataKeys.VacancyClonedInfoMessage))
                 viewModel.VacancyClonedInfoMessage = TempData[TempDataKeys.VacancyClonedInfoMessage].ToString();
@@ -60,7 +65,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             {
                 VacancyId = m.VacancyId,
                 EmployerAccountId = m.EmployerAccountId
-            });
+            }, User.ToVacancyUser());
             viewModel.SoftValidationErrors = null;
             viewModel.SubmitToEsfa = m.SubmitToEsfa;
             viewModel.RejectedReason = m.RejectedReason;
@@ -91,7 +96,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
                 throw new Exception("Unknown submit state");
             }
 
-            var viewModel = await _orchestrator.GetVacancyTaskListModel(m);
+            var viewModel = await _orchestrator.GetVacancyTaskListModel(m, User.ToVacancyUser());
             viewModel.SoftValidationErrors = null;
             viewModel.SetSectionStates(viewModel, ModelState);
             viewModel.ValidationErrors = new ValidationSummaryViewModel

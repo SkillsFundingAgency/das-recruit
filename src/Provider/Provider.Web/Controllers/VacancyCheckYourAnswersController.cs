@@ -31,10 +31,15 @@ namespace Esfa.Recruit.Provider.Web.Controllers
         [HttpGet("{vacancyId:guid}/check-your-answers", Name = RouteNames.ProviderCheckYourAnswersGet)]
         public async Task<IActionResult> CheckYourAnswers(VacancyRouteModel vrm)
         {
-            var viewModel = await _orchestrator.GetVacancyTaskListModel(vrm); 
+            var viewModel = await _orchestrator.GetVacancyTaskListModel(vrm, User.ToVacancyUser()); 
             viewModel.CanHideValidationSummary = true;
             AddSoftValidationErrorsToModelState(viewModel);
             viewModel.SetSectionStates(viewModel, ModelState);
+
+            if (viewModel.TaskListSectionOneState == VacancyTaskListSectionState.InProgress)
+            {
+                return RedirectToRoute(RouteNames.ProviderTaskListGet, new {vrm.Ukprn, vrm.VacancyId});
+            }
             
             if (TempData.ContainsKey(TempDataKeys.VacancyPreviewInfoMessage))
                 viewModel.VacancyClonedInfoMessage = TempData[TempDataKeys.VacancyPreviewInfoMessage].ToString();
@@ -72,7 +77,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
             if(response.Errors.Errors.Any(e => e.ErrorCode == ErrorCodes.TrainingProviderMustHaveEmployerPermission))
                 throw new MissingPermissionsException(string.Format(RecruitWebExceptionMessages.ProviderMissingPermission, m.Ukprn));
 
-            var viewModel = await _orchestrator.GetVacancyTaskListModel(m);
+            var viewModel = await _orchestrator.GetVacancyTaskListModel(m, User.ToVacancyUser());
 
             viewModel.SoftValidationErrors = null;
             viewModel.SetSectionStates(viewModel, ModelState);

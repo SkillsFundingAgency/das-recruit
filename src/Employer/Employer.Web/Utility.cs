@@ -10,7 +10,6 @@ using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Exceptions;
 using Esfa.Recruit.Employer.Web.Models;
 using Esfa.Recruit.Employer.Web.RouteModel;
-using Esfa.Recruit.Shared.Web.FeatureToggle;
 using Esfa.Recruit.Shared.Web.Models;
 using Esfa.Recruit.Shared.Web.ViewModels;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
@@ -24,21 +23,6 @@ namespace Esfa.Recruit.Employer.Web
         Task<Vacancy> GetAuthorisedVacancyAsync(VacancyRouteModel vrm, string routeName);
         void CheckCanEdit(Vacancy vacancy);
         void CheckAuthorisedAccess(Vacancy vacancy, string employerAccountId);
-        void CheckRouteIsValidForVacancy(Vacancy vacancy, string currentRouteName);
-
-        /// <summary>
-        /// Returns a list of routes the user may access based on the current
-        /// state of the vacancy.
-        /// </summary>
-        /// <param name="vacancy"></param>
-        /// <returns>
-        ///  - null if section 1 of the wizard is complete
-        ///  - otherwise a list of accessible routes, where the last entry is the page to start the user on when editing the vacancy
-        /// </returns>
-        IList<string> GetPermittedRoutesForVacancy(Vacancy vacancy);
-
-        bool VacancyHasCompletedPartOne(Vacancy vacancy);
-        bool VacancyHasStartedPartTwo(Vacancy vacancy);
         PartOnePageInfoViewModel GetPartOnePageInfo(Vacancy vacancy);
         Task<ApplicationReview> GetAuthorisedApplicationReviewAsync(ApplicationReviewRouteModel rm);
 
@@ -49,12 +33,10 @@ namespace Esfa.Recruit.Employer.Web
     public class Utility : VacancyTaskListStatusService, IUtility
     {
         private readonly IRecruitVacancyClient _vacancyClient;
-        private readonly IFeature _feature;
 
-        public Utility (IRecruitVacancyClient vacancyClient, IFeature feature)
+        public Utility (IRecruitVacancyClient vacancyClient)
         {
             _vacancyClient = vacancyClient;
-            _feature = feature;
         }
         
         public async Task<Vacancy> GetAuthorisedVacancyForEditAsync(VacancyRouteModel vrm, string routeName)
@@ -71,8 +53,6 @@ namespace Esfa.Recruit.Employer.Web
             var vacancy = await _vacancyClient.GetVacancyAsync(vrm.VacancyId);
 
             CheckAuthorisedAccess(vacancy, vrm.EmployerAccountId);
-
-            CheckRouteIsValidForVacancy(vacancy, routeName);
 
             return vacancy;
         }
@@ -92,162 +72,9 @@ namespace Esfa.Recruit.Employer.Web
                 throw new AuthorisationException(string.Format(ExceptionMessages.UserIsNotTheOwner, OwnerType.Employer));
         }
 
-        public void CheckRouteIsValidForVacancy(Vacancy vacancy, string currentRouteName)
-        {
-            var validRoutes = GetPermittedRoutesForVacancy(vacancy);
-
-            if (validRoutes == null || validRoutes.Contains(currentRouteName))
-            {
-                return;
-            }
-
-            var redirectRoute = validRoutes.Last();
-            
-            throw new InvalidRouteForVacancyException(string.Format(RecruitWebExceptionMessages.RouteNotValidForVacancy, currentRouteName, redirectRoute),
-                redirectRoute, new VacancyRouteModel{ EmployerAccountId = vacancy.EmployerAccountId, VacancyId = vacancy.Id });
-        }
-
-        /// <summary>
-        /// Returns a list of routes the user may access based on the current
-        /// state of the vacancy.
-        /// </summary>
-        /// <param name="vacancy"></param>
-        /// <returns>
-        ///  - null if section 1 of the wizard is complete
-        ///  - otherwise a list of accessible routes, where the last entry is the page to start the user on when editing the vacancy
-        /// </returns>
-        public IList<string> GetPermittedRoutesForVacancy(Vacancy vacancy)
-        {
-            var validRoutes = new List<string>();
-
-            validRoutes.AddRange(new [] {RouteNames.Title_Post, RouteNames.Title_Get});
-
-            if (_feature.IsFeatureEnabled(FeatureNames.EmployerTaskList))
-            {
-                validRoutes.AddRange( new[]
-                {
-                    RouteNames.EmployerTaskListGet,
-                    RouteNames.EmployerCheckYourAnswersGet,
-                    RouteNames.Employer_Post,
-                    RouteNames.Employer_Get,
-                    RouteNames.EmployerName_Post,
-                    RouteNames.EmployerName_Get,
-                });
-            }
-            
-            if (string.IsNullOrWhiteSpace(vacancy.Title))
-                return validRoutes;
-
-            validRoutes.AddRange(new[]
-            {
-                RouteNames.Training_Help_Get,
-                RouteNames.Training_First_Time_Post,
-                RouteNames.Training_First_Time_Get,
-                RouteNames.Training_Confirm_Post,
-                RouteNames.Training_Confirm_Get,
-                RouteNames.Training_Post,
-                RouteNames.Training_Get
-            });
-            if (string.IsNullOrWhiteSpace(vacancy.ProgrammeId))
-                return validRoutes;
-
-            validRoutes.AddRange(new[] {
-                RouteNames.TrainingProvider_Confirm_Post,
-                RouteNames.TrainingProvider_Confirm_Get,
-                RouteNames.TrainingProvider_Select_Post,
-                RouteNames.TrainingProvider_Select_Get,
-                RouteNames.NumberOfPositions_Post,
-                RouteNames.NumberOfPositions_Get
-                });
-
-            if (vacancy.TrainingProvider == null && string.IsNullOrWhiteSpace(vacancy.NumberOfPositions?.ToString()))
-            {
-                //Move Training Provider Get to last valid route for resuming
-                validRoutes.Remove(RouteNames.TrainingProvider_Select_Get);
-                validRoutes.Add(RouteNames.TrainingProvider_Select_Get);
-            }
-
-            if (_feature.IsFeatureEnabled(FeatureNames.EmployerTaskList))
-            {
-                validRoutes.AddRange(new []
-                {
-                    RouteNames.ShortDescription_Get,
-                    RouteNames.ShortDescription_Post,
-                    RouteNames.VacancyDescription_Index_Post,
-                    RouteNames.VacancyDescription_Index_Get,
-                    RouteNames.Dates_Post, 
-                    RouteNames.Dates_Get,
-                    RouteNames.Duration_Post, 
-                    RouteNames.Duration_Get,
-                    RouteNames.Wage_Post, 
-                    RouteNames.Wage_Get,
-                    RouteNames.Skills_Post,
-                    RouteNames.Skills_Get,
-                    RouteNames.Qualification_Add_Post,
-                    RouteNames.Qualification_Delete_Post,
-                    RouteNames.Qualification_Edit_Post,
-                    RouteNames.Qualification_Edit_Get,
-                    RouteNames.Qualification_Add_Get,
-                    RouteNames.Qualifications_Get,
-                    RouteNames.FutureProspects_Get,
-                    RouteNames.FutureProspects_Post,
-                    RouteNames.Considerations_Post,
-                    RouteNames.Considerations_Get,
-                    
-                    RouteNames.AboutEmployer_Post,
-                    RouteNames.AboutEmployer_Get,
-                    RouteNames.EmployerContactDetails_Post,
-                    RouteNames.EmployerContactDetails_Get,
-                    RouteNames.ApplicationProcess_Post,
-                    RouteNames.ApplicationProcess_Get
-                });
-            }
-            else
-            {
-                if (!vacancy.NumberOfPositions.HasValue)
-                    return validRoutes;    
-            }
-            
-
-            validRoutes.AddRange(new[] 
-            {
-                RouteNames.LegalEntityAgreement_SoftStop_Get,
-                RouteNames.Location_Get, 
-                RouteNames.Location_Post,
-                RouteNames.EmployerName_Post, 
-                RouteNames.EmployerName_Get, 
-                RouteNames.Employer_Post, 
-                RouteNames.Employer_Get
-            });
-
-            if (string.IsNullOrWhiteSpace(vacancy.LegalEntityName) 
-                || vacancy.EmployerNameOption == null 
-                || string.IsNullOrWhiteSpace(vacancy.EmployerLocation?.Postcode))
-                return validRoutes;
-
-            validRoutes.AddRange(new[] { RouteNames.Dates_Post, RouteNames.Dates_Get });
-            if (vacancy.StartDate == null)
-                return validRoutes;
-
-            validRoutes.AddRange(new[] { RouteNames.Duration_Post, RouteNames.Duration_Get });
-            if (vacancy.Wage?.Duration == null)
-                return validRoutes;
-
-            validRoutes.AddRange(new[] { RouteNames.Wage_Post, RouteNames.Wage_Get});
-            if (vacancy.Wage?.WageType == null)
-                return validRoutes;
-
-            return null;
-        }
-
         public bool VacancyHasCompletedPartOne(Vacancy vacancy)
         {
-            if (_feature.IsFeatureEnabled(FeatureNames.EmployerTaskList))
-            {
-                return vacancy.ApplicationMethod != null;
-            }
-            
-            return GetPermittedRoutesForVacancy(vacancy) == null;
+            return vacancy.ApplicationMethod != null;
         }
 
         public bool VacancyHasStartedPartTwo(Vacancy vacancy)

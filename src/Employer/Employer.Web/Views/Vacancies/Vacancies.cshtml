@@ -150,7 +150,6 @@
                             </td>
                             <td class="govuk-table__cell" data-label="Action">
                                 <a id="manage-@vacancy.Id" asp-show="@vacancy.IsNotSubmittable" asp-route="@RouteNames.VacancyManage_Get" asp-route-vacancyId="@vacancy.Id" class="govuk-link">Manage</a>
-                                <esfaFeatureEnabled name="@FeatureNames.EmployerTaskList">
                                     @if (vacancy.Status == VacancyStatus.Referred || vacancy.Status == VacancyStatus.Rejected || vacancy.Status == VacancyStatus.Review || vacancy.IsTaskListCompleted)
                                     {
                                         <a id="task-list-@vacancy.Id" asp-show="@vacancy.IsSubmittable" asp-route="@RouteNames.EmployerCheckYourAnswersGet" asp-route-vacancyId="@vacancy.Id" class="govuk-link">@GetLinkText(vacancy)</a>
@@ -159,12 +158,6 @@
                                     {
                                         <a id="preview-@vacancy.Id" asp-show="@vacancy.IsSubmittable" asp-route="@RouteNames.EmployerTaskListGet" asp-route-vacancyId="@vacancy.Id" class="govuk-link">@GetLinkText(vacancy)</a>    
                                     }
-                                    
-                                </esfaFeatureEnabled>
-                                <esfaFeatureDisabled name="@FeatureNames.EmployerTaskList">
-                                    <a id="task-list-@vacancy.Id" asp-show="@vacancy.IsSubmittable" asp-route="@RouteNames.DisplayVacancy_Get" asp-route-vacancyId="@vacancy.Id" class="govuk-link">@GetLinkText(vacancy)</a>    
-                                </esfaFeatureDisabled>
-                                
                             </td>
                         </tr>
                     }
