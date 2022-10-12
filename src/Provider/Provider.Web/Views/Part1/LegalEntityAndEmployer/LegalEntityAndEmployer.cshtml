@@ -80,8 +80,7 @@
                                     <div>@organisation.Id </div>
                                 </td>
                                 <td class="govuk-table__cell" data-label="Select Employer and Legal Entity">
-                                    <input asp-for="SelectedOrganisationId" value="@organisation.Id" class="govuk-radios__input" id="org-@organisation.Id" esfa-automation="selected-organisation-id">
-                                    <label for="org-@organisation.Id" class="govuk-label govuk-radios__label">Select</label>
+                                    <a asp route="#" value="@organisation.Id" id="manage-@organisation.Id" class="govuk-link">Select</a>
                                 </td>
                             </tr>
                         }
