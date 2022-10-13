@@ -1,6 +1,6 @@
-namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
+﻿namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
 {
-    public enum OwnerType
+    public enum AccountType
     {
         Employer = 0,
         Provider = 1,
