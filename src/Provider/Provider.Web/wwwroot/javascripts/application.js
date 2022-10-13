@@ -397,54 +397,61 @@ $(function () {
     handleAnchorClicks();
 });
 
-const tableSort = () => {
-    const getCellValue = (tr, idx) => {
-        return tr.children[idx].innerText || tr.children[idx].textContent
+var tableSort = function() {
+
+    var getCellValue = function(tr, idx) {
+      return tr.children[idx].innerText || tr.children[idx].textContent
     };
-
-    const comparer = (idx, asc) => (a, b) => ((v1, v2) =>
-        v1 !== '' && v2 !== '' && !isNaN(v1) && !isNaN(v2) ? v1 - v2 : v1.toString().localeCompare(v2)
+  
+    var comparer = (idx, asc) => (a, b) => ((v1, v2) =>
+      v1 !== '' && v2 !== '' && !isNaN(v1) && !isNaN(v2) ? v1 - v2 : v1.toString().localeCompare(v2)
     )(getCellValue(asc ? a : b, idx), getCellValue(asc ? b : a, idx));
+  
+    var sortableTable = document.querySelector('[data-module="das-table-sort"]');
+    var allSortLinks = sortableTable.querySelectorAll('.govuk-table__header .govuk-link');
+  
+    var handleClick = function(e) {
+      e.preventDefault();
 
-    const sortableTable = document.querySelector('[data-module="das-table-sort"]');
-    const allSortLinks = sortableTable.querySelectorAll('.govuk-table__header .govuk-link');
+      var sortLink = e.target
+      var directionFromLink = sortLink.getAttribute("aria-sort")
+      var directionToSort = "ascending"
 
-    const handleClick = event => {
-        event.preventDefault();
-        const sortLink = event.target
+      if (directionFromLink === "ascending") {
+        directionToSort = "descending"
+      }
 
-        allSortLinks.forEach(link => {
-            if (link === event.target) return false;
-            link.parentNode.classList.add("das-table--double-arrows")
-            link.classList.remove("das-table__sort--asc", "das-table__sort--desc")
-            link.setAttribute("aria-sort", "none")
-        });
+     allSortLinks.forEach(function(link) {
+        link.parentNode.classList.add("das-table--double-arrows")
+        link.classList.remove("das-table__sort--asc", "das-table__sort--desc")
+        link.removeAttribute("aria-sort")
+      });
+  
+      if (directionToSort === "ascending") {
+        sortLink.parentNode.classList.remove("das-table--double-arrows")
+        sortLink.classList.add("das-table__sort--asc")
+      } else {
+        sortLink.parentNode.classList.remove("das-table--double-arrows")
+        sortLink.classList.add("das-table__sort--desc")
+      }
 
-        if (sortLink.classList.contains("das-table__sort--asc")) {
-            sortLink.parentNode.classList.remove("das-table--double-arrows")
-            sortLink.classList.replace("das-table__sort--asc", "das-table__sort--desc")
-            sortLink.setAttribute("aria-sort", "descending")
-        } else if (sortLink.classList.contains("das-table__sort--desc")) {
-            sortLink.parentNode.classList.remove("das-table--double-arrows")
-            sortLink.classList.replace("das-table__sort--desc", "das-table__sort--asc")
-            sortLink.setAttribute("aria-sort", "ascending")
-        } else {
-            sortLink.parentNode.classList.remove("das-table--double-arrows")
-            sortLink.classList.add("das-table__sort--desc")
-            sortLink.setAttribute("aria-sort", "descending")
-        }
-
-        Array.from(sortableTable.querySelectorAll('.govuk-table__body .govuk-table__row'))
-            .sort(comparer(Array.from(sortLink.parentNode.parentNode.children)
-                .indexOf(sortLink.parentNode), this.asc = !this.asc))
-            .forEach(tr => sortableTable.querySelector(".govuk-table__body").appendChild(tr));
+      sortLink.setAttribute("aria-sort", directionToSort)
+  
+      Array
+        .from(sortableTable.querySelectorAll('.govuk-table__body .govuk-table__row'))
+        .sort(
+            comparer(Array.from(sortLink.parentNode.parentNode.children).indexOf(sortLink.parentNode), directionToSort === "ascending")
+        )
+        .forEach(tr => sortableTable.querySelector(".govuk-table__body").appendChild(tr));
     }
-
+  
     allSortLinks.forEach(link => {
-        link.addEventListener('click', handleClick)
+      link.addEventListener('click', handleClick)
     });
-}
 
-if (document.querySelector('[data-module="das-table-sort"]')) {
+    allSortLinks[0].click()
+  }
+  
+  if (document.querySelector('[data-module="das-table-sort"]')) {
     tableSort();
-}
+  }
