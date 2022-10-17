@@ -20,8 +20,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Reports
         private const string QueryUkprn = "_ukprn_";
         private const string QueryFromDate = "_fromDate_";
         private const string QueryToDate = "_toDate_";
+        private const string VacancyType = "_vacancytype_";
+        private const string ApplicationMethod = "_applicationMethod_";
 
         private const string ColumnProgramme = "Programme";
+        private const string ColumnRoute = "RouteId";
         private const string ColumnApplicationLastUpdatedDate = "Application_LastUpdatedDate";
         private const string ColumnApplicationDate = "Application_Date";
         private const string ColumnNumberOfDaysAppAtThisStatus = "Number_Of_Days_App_At_This_Status";
@@ -29,6 +32,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Reports
         private const string ColumnFramework = "Framework";
         private const string ColumnFrameworkStatus = "Framework_Status";
         private const string ColumnStandard = "Standard";
+        private const string ColumnRouteName = "Route";
         private const string ColumnStandardStatus = "Standard_Status";
         private const string ColumnCandidateId = "Candidate_Id";
         private const string ColumnApplicantId = "Applicant_Id";
@@ -36,9 +40,10 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Reports
         private readonly IApprenticeshipProgrammeProvider _programmeProvider;
         private readonly ITimeProvider _timeProvider;
         private readonly ILogger<ProviderApplicationsReportStrategy> _logger;
+        private readonly IApprenticeshipRouteProvider _apprenticeshipRouteProvider;
 
         private const string QueryFormat = @"[
-            { $match: {'trainingProvider.ukprn' : _ukprn_, 'ownerType' : 'Provider', 'isDeleted' : false, 'applicationMethod' : 'ThroughFindAnApprenticeship', 'status' : {$in : ['Live','Closed']}}},
+            { $match: {'trainingProvider.ukprn' : _ukprn_, 'ownerType' : 'Provider', 'isDeleted' : false, 'applicationMethod' : '_applicationMethod_', 'status' : {$in : ['Live','Closed']}, 'vacancyType' : {_vacancytype_ : ['Traineeship']}}},
             { $lookup: { from: 'applicationReviews', localField: 'vacancyReference', foreignField: 'vacancyReference', as: 'ar'}},
             { $unwind: '$ar'},
             { $match: {'ar.submittedDate' : { $gte: ISODate('_fromDate_'), $lte: ISODate('_toDate_')}, 'ar.isWithdrawn' : false}},
@@ -58,6 +63,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Reports
                     'Vacancy_Reference_Number' : '$vacancyReference',
                     'Vacancy_Title' : '$title',
                     'Programme' : { $ifNull: ['$programmeId', null]},
+                    'RouteId' : { $ifNull: ['routeId', null]},
                     'Employer' : { $ifNull: ['$employerName', null]},
                     'Vacancy_Postcode' : { $ifNull: ['$employerLocation.postcode', null]},
                     'Learning_Provider' : { $ifNull: ['$trainingProvider.name', null]},
@@ -73,12 +79,14 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Reports
             IOptions<MongoDbConnectionDetails> details,
             IApprenticeshipProgrammeProvider programmeProvider,
             ITimeProvider timeProvider,
-            ILogger<ProviderApplicationsReportStrategy> logger) 
+            ILogger<ProviderApplicationsReportStrategy> logger,
+            IApprenticeshipRouteProvider apprenticeshipRouteProvider) 
             : base(loggerFactory, MongoDbNames.RecruitDb, MongoDbCollectionNames.Vacancies, details)
         {
             _programmeProvider = programmeProvider;
             _timeProvider = timeProvider;
             _logger = logger;
+            _apprenticeshipRouteProvider = apprenticeshipRouteProvider;
         }
 
         public Task<ReportStrategyResult> GetReportDataAsync(Dictionary<string,object> parameters)
@@ -86,8 +94,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Reports
             var ukprn = long.Parse(parameters[ReportParameterName.Ukprn].ToString());
             var fromDate = (DateTime) parameters[ReportParameterName.FromDate];
             var toDate = (DateTime)parameters[ReportParameterName.ToDate];
+            Enum.TryParse<VacancyType>((string) parameters[ReportParameterName.VacancyType], true, out var vacancyType);
 
-            return GetProviderApplicationsAsync(ukprn, fromDate, toDate);
+            return GetProviderApplicationsAsync(ukprn, fromDate, toDate, vacancyType);
         }
 
         public ReportDataType ResolveFormat(string fieldName)
@@ -108,14 +117,24 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Reports
             throw new NotImplementedException();
         }
 
-        private async Task<ReportStrategyResult> GetProviderApplicationsAsync(long ukprn, DateTime fromDate, DateTime toDate)
+        private async Task<ReportStrategyResult> GetProviderApplicationsAsync(long ukprn, DateTime fromDate, DateTime toDate, VacancyType vacancyType)
         {
             var collection = GetCollection<BsonDocument>();
+
+            var vacancyQuery = "$in";
+            var applicationMethod = "ThroughFindATraineeship";
+            if (vacancyType == Domain.Entities.VacancyType.Apprenticeship)
+            {
+                vacancyQuery = "$nin";
+                applicationMethod = "ThroughFindAnApprenticeship";
+            }
 
             var queryJson = QueryFormat
                 .Replace(QueryUkprn, ukprn.ToString())
                 .Replace(QueryFromDate, fromDate.ToString("o"))
-                .Replace(QueryToDate , toDate.ToString("o"));
+                .Replace(QueryToDate , toDate.ToString("o"))
+                .Replace(VacancyType, vacancyQuery)
+                .Replace(ApplicationMethod, applicationMethod);
 
             var bson = MongoDB.Bson.Serialization.BsonSerializer.Deserialize<BsonDocument[]>(queryJson);
 
@@ -123,7 +142,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Reports
                     collection.Aggregate<BsonDocument>(bson).ToListAsync(),
             new Context(nameof(GetProviderApplicationsAsync)));
 
-            await ProcessResultsAsync(results);
+            await ProcessResultsAsync(results, vacancyType);
 
             _logger.LogInformation($"Report parameters ukprn:{ukprn} fromDate:{fromDate} toDate:{toDate} returned {results.Count} results");
 
@@ -138,20 +157,47 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Reports
             return new ReportStrategyResult(headers, data,"");
         }
 
-        private async Task ProcessResultsAsync(List<BsonDocument> results)
+        private async Task ProcessResultsAsync(List<BsonDocument> results, VacancyType vacancyType)
         {
             foreach (var result in results)
             {
-                await SetProgrammeAsync(result);
+                if (vacancyType == Domain.Entities.VacancyType.Apprenticeship)
+                {
+                    await SetProgrammeAsync(result);
+                }
+                else
+                {
+                    await SetRoute(result);
+                }
+                
                 SetNumberOfDaysAtThisStatus(result);
                 SetVacancyReference(result);
                 SetApplicantId(result);
             }
         }
 
+        private async Task SetRoute(BsonDocument result)
+        {
+            var routeId = result[ColumnRoute].AsString;
+            if (!string.IsNullOrEmpty(routeId) && int.TryParse(routeId,out var routeIdResult))
+            {
+                var route = await _apprenticeshipRouteProvider.GetApprenticeshipRouteAsync(routeIdResult);
+            
+                result.InsertAt(result.IndexOfName(ColumnRoute),
+                    new BsonElement(ColumnRouteName, (BsonValue)route?.Route ?? BsonNull.Value));    
+            }
+            
+            result.Remove(ColumnRoute);
+        }
         private async Task SetProgrammeAsync(BsonDocument result)
         {    
             var programmeId = result[ColumnProgramme].AsString;
+            
+            if (string.IsNullOrEmpty(programmeId))
+            {
+                result.Remove(ColumnProgramme);
+                return;
+            }
             var programme = await _programmeProvider.GetApprenticeshipProgrammeAsync(programmeId);
 
             var programmeValue = $"{programme.Id} {programme.Title}";

@@ -5,5 +5,6 @@
         public const string Ukprn = "Ukprn";
         public const string FromDate = "FromDate";
         public const string ToDate = "ToDate";
+        public const string VacancyType = "VacancyType";
     }
 }

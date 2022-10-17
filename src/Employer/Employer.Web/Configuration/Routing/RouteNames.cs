@@ -147,7 +147,6 @@
         public const string NotificationsUpdatedAcknowledgement_Get = "NotificationsUpdatedAcknowledgement_Get";
         public const string NotificationUnsubscribedAcknowledgement_Get = "NotificationUnsubscribedAcknowledgement_Get";
 
-        public const string EmployerFavourites = "EmployerFavourites";
         public const string YourTrainingProviderPermission = "YourTrainingProviderPermission";
 
         public const string ApproveJobAdvert_Get = "ApproveJobAdvert_Get";

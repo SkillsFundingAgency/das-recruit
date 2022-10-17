@@ -16,6 +16,7 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.Recruit.Api.Models;
+using SFA.DAS.Recruit.Api.Queries;
 using EmployerNameOption = Esfa.Recruit.Vacancies.Client.Domain.Entities.EmployerNameOption;
 
 namespace SFA.DAS.Recruit.Api.Commands
@@ -73,10 +74,8 @@ namespace SFA.DAS.Recruit.Api.Commands
             }
 
             request.Vacancy.TrainingProvider = trainingProvider;
-            request.Vacancy.OwnerType = string.IsNullOrEmpty(request.VacancyUserDetails.Email) ? OwnerType.Provider : OwnerType.Employer; 
-            
-            
-            var result = _recruitVacancyClient.Validate(request.Vacancy, VacancyRuleSet.All);
+
+              var result = _recruitVacancyClient.Validate(request.Vacancy, VacancyRuleSet.All);
 
             if (result.HasErrors)
             {
@@ -131,9 +130,10 @@ namespace SFA.DAS.Recruit.Api.Commands
             };
         }
 
+        //
         private async Task CreateVacancy(CreateVacancyCommand request, TrainingProvider trainingProvider)
         {
-            if (!string.IsNullOrEmpty(request.VacancyUserDetails.Email))
+            if (request.Vacancy.OwnerType == OwnerType.Employer)
             {
                 request.VacancyUserDetails.Ukprn = null;
                 await _employerVacancyClient.CreateEmployerApiVacancy(request.Vacancy.Id, request.Vacancy.Title,
@@ -168,7 +168,7 @@ namespace SFA.DAS.Recruit.Api.Commands
             draftVacancyFromRequest.TrainingProvider = request.Vacancy.TrainingProvider;
             draftVacancyFromRequest.CreatedByUser = newVacancy.CreatedByUser;
             draftVacancyFromRequest.CreatedDate = newVacancy.CreatedDate;
-            draftVacancyFromRequest.OwnerType = newVacancy.OwnerType;
+            draftVacancyFromRequest.OwnerType = request.Vacancy.OwnerType;
             draftVacancyFromRequest.SourceOrigin = newVacancy.SourceOrigin;
             draftVacancyFromRequest.SourceType = newVacancy.SourceType;
 
