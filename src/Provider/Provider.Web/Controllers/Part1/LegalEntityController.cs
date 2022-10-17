@@ -26,7 +26,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
 
         public LegalEntityController(
             LegalEntityOrchestrator orchestrator, 
-            IHostingEnvironment hostingEnvironment, 
+            IWebHostEnvironment hostingEnvironment, 
             IFeature feature,
             ServiceParameters serviceParameters)
             : base(hostingEnvironment)

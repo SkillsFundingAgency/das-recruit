@@ -7,12 +7,12 @@ namespace Esfa.Recruit.Provider.Web.Extensions
 {
     public static class CookiesExtensions
     {
-        public static void SetSessionCookie(this IResponseCookies cookies, IHostingEnvironment hostingEnvironment, string key, string value)
+        public static void SetSessionCookie(this IResponseCookies cookies, IWebHostEnvironment hostingEnvironment, string key, string value)
         {
             cookies.Append(key, value, EsfaCookieOptions.GetSessionLifetimeHttpCookieOption(hostingEnvironment));
         }
 
-        public static void DeleteSessionCookie(this IResponseCookies cookies, IHostingEnvironment hostingEnvironment, string key)
+        public static void DeleteSessionCookie(this IResponseCookies cookies, IWebHostEnvironment hostingEnvironment, string key)
         {
             cookies.Delete(key, EsfaCookieOptions.GetSessionLifetimeHttpCookieOption(hostingEnvironment));
         }
@@ -22,12 +22,12 @@ namespace Esfa.Recruit.Provider.Web.Extensions
             return cookies[key]?.Trim();
         }
         
-        public static void SetProposedClosingDate(this IResponseCookies cookies, IHostingEnvironment hostingEnvironment, Guid vacancyId, DateTime date)
+        public static void SetProposedClosingDate(this IResponseCookies cookies, IWebHostEnvironment hostingEnvironment, Guid vacancyId, DateTime date)
         {
             cookies.Append(string.Format(CookieNames.VacancyProposedClosingDate, vacancyId), date.ToShortDateString(), EsfaCookieOptions.GetSessionLifetimeHttpCookieOption(hostingEnvironment));
         }
 
-        public static void ClearProposedClosingDate(this IResponseCookies cookies, IHostingEnvironment hostingEnvironment, Guid vacancyId)
+        public static void ClearProposedClosingDate(this IResponseCookies cookies, IWebHostEnvironment hostingEnvironment, Guid vacancyId)
         {
             cookies.Delete(string.Format(CookieNames.VacancyProposedClosingDate, vacancyId), EsfaCookieOptions.GetSessionLifetimeHttpCookieOption(hostingEnvironment));
         }
@@ -42,12 +42,12 @@ namespace Esfa.Recruit.Provider.Web.Extensions
             return null;
         }
 
-        public static void SetProposedStartDate(this IResponseCookies cookies, IHostingEnvironment hostingEnvironment, Guid vacancyId, DateTime date)
+        public static void SetProposedStartDate(this IResponseCookies cookies, IWebHostEnvironment hostingEnvironment, Guid vacancyId, DateTime date)
         {
             cookies.Append(string.Format(CookieNames.VacancyProposedStartDate, vacancyId), date.ToShortDateString(), EsfaCookieOptions.GetSessionLifetimeHttpCookieOption(hostingEnvironment));
         }
 
-        public static void ClearProposedStartDate(this IResponseCookies cookies, IHostingEnvironment hostingEnvironment, Guid vacancyId)
+        public static void ClearProposedStartDate(this IResponseCookies cookies, IWebHostEnvironment hostingEnvironment, Guid vacancyId)
         {
             cookies.Delete(string.Format(CookieNames.VacancyProposedStartDate, vacancyId), EsfaCookieOptions.GetSessionLifetimeHttpCookieOption(hostingEnvironment));
         }

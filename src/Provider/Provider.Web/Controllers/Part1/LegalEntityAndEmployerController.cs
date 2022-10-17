@@ -8,7 +8,6 @@ using Esfa.Recruit.Provider.Web.Extensions;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Esfa.Recruit.Provider.Web.ViewModels;
-using Esfa.Recruit.Shared.Web.FeatureToggle;
 using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
@@ -16,23 +15,20 @@ using Esfa.Recruit.Provider.Web.ViewModels.Part1.LegalEntityAndEmployer;
 
 namespace Esfa.Recruit.Provider.Web.Controllers.Part1
 {
-    [Route(RoutePaths.AccountVacancyRoutePath)]
+    [Route(RoutePaths.AccountRoutePath)]
     [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-    public class LegalEntityandEmployerController : EmployerControllerBase
+    public class LegalEntityAndEmployerController : EmployerControllerBase
     {
         private readonly LegalEntityAndEmployerOrchestrator _orchestrator;
-        private readonly IFeature _feature;
         private readonly ServiceParameters _serviceParameters;
 
-        public LegalEntityandEmployerController(
+        public LegalEntityAndEmployerController(
             LegalEntityAndEmployerOrchestrator orchestrator, 
-            IHostingEnvironment hostingEnvironment, 
-            IFeature feature,
+            IWebHostEnvironment hostingEnvironment,
             ServiceParameters serviceParameters)
             : base(hostingEnvironment)
         {
             _orchestrator = orchestrator;
-            _feature = feature;
             _serviceParameters = serviceParameters;
         }
 
