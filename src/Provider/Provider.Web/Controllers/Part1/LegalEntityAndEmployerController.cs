@@ -79,5 +79,35 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
             return View(viewModel);
         }
 
+        [HttpPost("confirm-employer-legal-entity", Name = RouteNames.ConfirmLegalEntityEmployer_Post)]
+        public async Task<IActionResult> ConfirmEmployerLegalEntitySelection(ConfirmLegalEntityAndEmployerEditModel model, VacancyRouteModel vacancyRouteModel)
+        {
+
+            if (!ModelState.IsValid)
+            {
+                return View(new ConfirmLegalEntityAndEmployerViewModel
+                {
+                    EmployerName = model.EmployerName,
+                    EmployerAccountId = model.EmployerAccountId,
+                    AccountLegalEntityName = model.AccountLegalEntityName,
+                    AccountLegalEntityPublicHashedId = model.AccountLegalEntityPublicHashedId,
+                    Ukprn = vacancyRouteModel.Ukprn
+                    
+                });
+            }
+
+            if (model.HasConfirmedEmployer.HasValue && !model.HasConfirmedEmployer.Value)
+            {
+                return RedirectToRoute(RouteNames.LegalEntityEmployer_Get, new {ukprn = vacancyRouteModel.Ukprn});
+            }
+
+            return RedirectToRoute(RouteNames.ProviderTaskListCreateGet,
+                    new
+                            {
+                                employerAccountId = model.EmployerAccountId,
+                                accountLegalEntityPublicHashedId = model.AccountLegalEntityPublicHashedId, 
+                                vacancyRouteModel.Ukprn
+                            });
+        }
     }
 }

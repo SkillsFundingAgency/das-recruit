@@ -26,22 +26,27 @@
             <dt class="das-definition-list__title govuk-!-font-weight-regular">Agreement ID</dt>
             <dd class="das-definition-list__definition">@Model.AgreementId</dd>
         </dl>
-        <form>
+        <form method="post" asp-all-route-data="@Model.RouteDictionary" asp-route="@RouteNames.ConfirmLegalEntityEmployer_Post">
+            <input asp-for="EmployerName" type="hidden"/>
+            <input asp-for="EmployerAccountId" type="hidden"/>
+            <input asp-for="AccountLegalEntityPublicHashedId" type="hidden"/>
+            <input asp-for="AccountLegalEntityName" type="hidden"/>
             <div class="govuk-form-group">
                 <fieldset class="govuk-fieldset">
                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
                         Is this the employer you'd like to create a vacancy for?
                     </legend>
-                    <div class="govuk-radios" data-module="govuk-radios">
+                    <div class="govuk-radios" data-module="govuk-radios"  esfa-validation-marker-for="HasConfirmedEmployer">
+                        <span esfa-validation-message-for="HasConfirmedEmployer" class="govuk-error-message"></span>        
                         <div class="govuk-radios__item">
-                            <input class="govuk-radios__input" type="radio" value="yes">
-                            <label class="govuk-label govuk-radios__label" >
+                            <input asp-for="HasConfirmedEmployer" value="true" class="govuk-radios__input" id="confirm-yes" type="radio">
+                            <label for="confirm-yes" class="govuk-label govuk-radios__label">
                                 Yes, use @Model.AccountLegalEntityName
                             </label>
                         </div>
                         <div class="govuk-radios__item">
-                            <input class="govuk-radios__input"  type="radio" value="no">
-                            <label class="govuk-label govuk-radios__label" >
+                            <input asp-for="HasConfirmedEmployer" value="false" class="govuk-radios__input" id="confirm-no" type="radio" for="has-confirmed-no-label">
+                            <label for="confirm-no" class="govuk-label govuk-radios__label">
                                 No, choose a different employer
                             </label>
                         </div>
@@ -52,7 +57,7 @@
                 <button class="govuk-button" data-module="govuk-button">
                     Save and continue
                 </button>
-                <a class="govuk-link" href="#">Cancel</a>
+                <a class="govuk-link" asp-route="@RouteNames.Dashboard_Get" asp-all-route-data="@Model.RouteDictionary">Cancel</a>
             </div>
         </form>
     </div>
