@@ -1,4 +1,4 @@
-@model Esfa.Recruit.Provider.Web.ViewModels.Part1.LegalEntityAndEmployer.LegalEntityandEmployerViewModel;
+@model Esfa.Recruit.Provider.Web.ViewModels.Part1.LegalEntityAndEmployer.LegalEntityAndEmployerViewModel;
 
 @{
     ViewBag.GaData.Vpv = "/recruitment/provider/page-create-vacancy-which-organisation";
@@ -38,39 +38,38 @@
             </div>
         </details>
         
-       <form method="GET" asp-route="@RouteNames.LegalEntityEmployer_Get">
-        <div class="govuk-form-group">
-            <label class="govuk-label" asp-for="SearchTerm">
-                Search employer name or account name
-            </label>
-            <div class="das-search-form__group">
-                <input asp-for="SearchTerm" class="govuk-input das-search-form__input" maxlength="100" title="Search" />
-                <div class="das-search-form__button-wrap">
-                    <button class="govuk-button das-search-form__button" type="submit">Search</button>
+        <form method="GET" asp-route="@RouteNames.LegalEntityEmployer_Get" asp-all-route-data="@Model.RouteDictionary">
+            <div class="govuk-form-group">
+                <label class="govuk-label" asp-for="SearchTerm">
+                    Search employer name or account name
+                </label>
+                <div class="das-search-form__group">
+                    <input asp-for="SearchTerm" class="govuk-input das-search-form__input" maxlength="100" title="Search" />
+                    <div class="das-search-form__button-wrap">
+                        <button class="govuk-button das-search-form__button" type="submit">Search</button>
+                    </div>
                 </div>
+                <p class="govuk-body govuk-!-margin-top-1">
+                    <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.LegalEntityEmployer_Get">Clear search</a>
+                </p>
             </div>
-            <p class="govuk-body govuk-!-margin-top-1">
-                <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.LegalEntityEmployer_Get">Clear search</a>
-            </p>
-        </div>
-      </form>
-        
-        <div class="govuk-grid-row">
-            <div class="govuk-grid-column-full">
+        </form>
+        <form method="POST" asp-route="@RouteNames.LegalEntityEmployer_Post" asp-all-route-data="@Model.RouteDictionary">
+                <div class="govuk-grid-column-full">
                     <table class="govuk-table das-table--condensed das-table--responsive" data-module="das-table-sort">
-                    <thead class="govuk-table__head">
-                    <tr class="govuk-table__row">
-                        <th class="govuk-table__header das-table--double-arrows" scope="col">
-                            <a href="#" class="govuk-link das-table__sort">Employer</a>
-                        </th>
-                        <th class="govuk-table__header das-table--double-arrows" scope="col">
-                            <a href="#" class="govuk-link das-table__sort">Account Name</a>
-                        </th>
-                        <th class="govuk-table__header" scope="col">Agreement ID</th>
-                        <th class="govuk-table__header" scope="col"></th>
-                    </tr>
-                    </thead>
-                    <tbody class="govuk-table__body">
+                        <thead class="govuk-table__head">
+                        <tr class="govuk-table__row">
+                            <th class="govuk-table__header das-table--double-arrows" scope="col">
+                                <a href="#" class="govuk-link das-table__sort">Employer</a>
+                            </th>
+                            <th class="govuk-table__header das-table--double-arrows" scope="col">
+                                <a href="#" class="govuk-link das-table__sort">Account Name</a>
+                            </th>
+                            <th class="govuk-table__header" scope="col">Agreement ID</th>
+                            <th class="govuk-table__header" scope="col"></th>
+                        </tr>
+                        </thead>
+                        <tbody class="govuk-table__body">
                         @foreach (var organisation in @Model.Organisations)
                         {
                             <tr class="govuk-table__row">
@@ -84,15 +83,16 @@
                                     <div>@organisation.Id </div>
                                 </td>
                                 <td class="govuk-table__cell" data-label="Select Employer and Legal Entity">
-                                    <a asp route="#" value="@organisation.Id" id="manage-@organisation.Id" class="govuk-link">Select</a>
+                                    <button type="submit" name="selectedOrganisationId" value="@($"{organisation.Id}|{organisation.EmployerAccountId}")" id="select-@organisation.Id" class="govuk-link das-button-link">Select</button>
                                 </td>
                             </tr>
                         }
-                    </tbody>
-                    <tbody class="govuk-table__body">
-                </table>
-            </div>
-        </div>
+                        </tbody>
+                        <tbody class="govuk-table__body">
+                    </table>
+                </div>
+        </form>
+        
         
             <nav role="navigation" aria-label="Pagination" asp-show="@Model.Pager.ShowPager" >
                 <div class="das-pagination__summary">
