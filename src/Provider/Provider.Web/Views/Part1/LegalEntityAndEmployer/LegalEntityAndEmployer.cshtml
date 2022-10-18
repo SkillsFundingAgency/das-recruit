@@ -49,9 +49,6 @@
                     <button class="govuk-button das-search-form__button" type="submit">Search</button>
                 </div>
             </div>
-            <p class="govuk-body govuk-!-margin-top-1">
-                <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.LegalEntityEmployer_Get">Clear search</a>
-            </p>
         </div>
       </form>
         
@@ -84,7 +81,7 @@
                                     <div>@organisation.Id </div>
                                 </td>
                                 <td class="govuk-table__cell" data-label="Select Employer and Legal Entity">
-                                    <a asp route="#" value="@organisation.Id" id="manage-@organisation.Id" class="govuk-link">Select</a>
+                                    <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.LegalEntityEmployer_Get" asp-route-selectedOrganisationId="@Model.SelectedOrganisationId">Select</a>
                                 </td>
                             </tr>
                         }
