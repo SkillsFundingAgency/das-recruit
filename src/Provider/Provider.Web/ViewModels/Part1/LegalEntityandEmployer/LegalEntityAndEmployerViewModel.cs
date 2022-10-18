@@ -1,13 +1,11 @@
 using System.Collections.Generic;
-using System.Linq;
 using Esfa.Recruit.Provider.Web.Models;
 using Esfa.Recruit.Provider.Web.RouteModel;
-using Esfa.Recruit.Provider.Web.ViewModels.Part1.Employer;
 using Esfa.Recruit.Shared.Web.ViewModels;
 
 namespace Esfa.Recruit.Provider.Web.ViewModels.Part1.LegalEntityAndEmployer
 {
-    public class LegalEntityandEmployerViewModel : VacancyRouteModel
+    public class LegalEntityAndEmployerViewModel : VacancyRouteModel
     {
         public IEnumerable<EmployerViewModel> Employers { get; set; }
         public IEnumerable<OrganisationsViewModel> Organisations { get; internal set; }
@@ -37,20 +35,14 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.Part1.LegalEntityAndEmployer
 
         public bool CanShowSearchPanel => TotalNumberOfLegalEntities > LimitForNotShowingSearchPanel;
 
-        //public bool HasNoSearchResults => string.IsNullOrEmpty(SearchTerm) == false && Organisations.Count() == 0;
         public string NoSearchResultsCaption => $"0 matches for '{SearchTerm}'";
 
         public int TotalNumberOfLegalEntities { get; internal set; }
 
         public bool IsPreviouslySelectedLegalEntityStillValid { get; internal set; }
         public bool HasPreviouslyPersistedLegalEntity => !string.IsNullOrEmpty(SelectedOrganisationId);
-        //public bool IsSelectedOrganisationInPagedOrganisations
-        //                => IsPreviouslySelectedLegalEntityStillValid
-        //                    && HasPreviouslyPersistedLegalEntity
-        //                    && Organisations.Any(org => org.Id == SelectedOrganisationId);
-
-        //public bool CanOutputHiddenSelectedOrganisationIdField => !string.IsNullOrEmpty(SelectedOrganisationId) && IsSelectedOrganisationInPagedOrganisations == false;
         public bool IsTaskListCompleted { get; set; }
+        public string EmployerAccountId { get; set; }
     }
 
 
@@ -65,5 +57,6 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.Part1.LegalEntityAndEmployer
         public string Id { get; set; }
         public string AccountLegalEntityName { get; set; }
         public string EmployerName { get; set; }
+        public string EmployerAccountId { get; set; }
     }
 }

@@ -1,9 +1,6 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Xml.Linq;
 using Esfa.Recruit.Provider.Web.Configuration.Routing;
 using Esfa.Recruit.Provider.Web.Exceptions;
 using Esfa.Recruit.Provider.Web.RouteModel;
@@ -11,10 +8,11 @@ using Esfa.Recruit.Provider.Web.ViewModels.Part1.LegalEntityAndEmployer;
 using Esfa.Recruit.Shared.Web.Helpers;
 using Esfa.Recruit.Shared.Web.Orchestrators;
 using Esfa.Recruit.Shared.Web.ViewModels;
-using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Vacancies.Client.Domain.Models;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelationship;
 using Microsoft.Extensions.Logging;
 using EmployerViewModel = Esfa.Recruit.Provider.Web.ViewModels.Part1.LegalEntityAndEmployer.EmployerViewModel;
 
@@ -23,25 +21,21 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
     public class LegalEntityAndEmployerOrchestrator : VacancyValidatingOrchestrator<LegalEntityAndEmployerEditModel>
     {
         private readonly IProviderVacancyClient _providerVacancyClient;
-        private readonly IRecruitVacancyClient _vacancyClient;
         private readonly ILogger<LegalEntityOrchestrator> _logger;
-        private readonly IUtility _utility;
-        private const VacancyRuleSet ValidationRules = VacancyRuleSet.None;
+        private readonly IProviderRelationshipsService _providerRelationshipsService;
         private const int MaxLegalEntitiesPerPage = 25;
 
         public LegalEntityAndEmployerOrchestrator(
             IProviderVacancyClient providerVacancyClient,
-            IRecruitVacancyClient vacancyClient,
             ILogger<LegalEntityOrchestrator> logger,
-            IUtility utility): base(logger)
+            IProviderRelationshipsService providerRelationshipsService): base(logger)
         {
             _providerVacancyClient = providerVacancyClient;
-            _vacancyClient = vacancyClient;
             _logger = logger;
-            _utility = utility;
+            _providerRelationshipsService = providerRelationshipsService;
         }
 
-        public async Task<LegalEntityandEmployerViewModel> GetLegalEntityAndEmployerViewModelAsync(VacancyRouteModel vrm, long ukprn, string searchTerm, int? requestedPageNo)
+        public async Task<LegalEntityAndEmployerViewModel> GetLegalEntityAndEmployerViewModelAsync(VacancyRouteModel vrm, string searchTerm, int? requestedPageNo)
         {
             var editVacancyInfo = await _providerVacancyClient.GetProviderEditVacancyInfoAsync(vrm.Ukprn);
 
@@ -56,7 +50,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
             var setPage = requestedPageNo.HasValue ? requestedPageNo.Value : 1;
 
 
-            var vm = new LegalEntityandEmployerViewModel
+            var vm = new LegalEntityAndEmployerViewModel
             {
                 Employers = editVacancyInfo.Employers.Select(e => new EmployerViewModel { Id = e.EmployerAccountId, Name = e.Name}),
                 Organisations = GetLegalEntityAndEmployerViewModels(accountLegalEntities).OrderBy(a => a.EmployerName),
@@ -74,31 +68,68 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
             return vm;
         }
 
+        public async Task<ConfirmLegalEntityAndEmployerViewModel> GetConfirmLegalEntityViewModel(VacancyRouteModel vacancyRouteModel,string employerAccountId, string employerAccountLegalEntityPublicHashedId)
+        {
+            var employerVacancyInfo = await _providerVacancyClient.GetProviderEmployerVacancyDataAsync(vacancyRouteModel.Ukprn, employerAccountId);
+            if (employerVacancyInfo?.LegalEntities == null || employerVacancyInfo.LegalEntities.Any() == false)
+            {
+                throw new MissingPermissionsException(string.Format(RecruitWebExceptionMessages.ProviderMissingPermission, vacancyRouteModel.Ukprn));
+            }
+            
+            var selectedOrganisation = employerVacancyInfo.LegalEntities.SingleOrDefault(l => l.AccountLegalEntityPublicHashedId == employerAccountLegalEntityPublicHashedId);
+
+            if (selectedOrganisation == null)
+            {
+                throw new MissingPermissionsException(string.Format(RecruitWebExceptionMessages.ProviderMissingPermission, vacancyRouteModel.Ukprn));
+            }
+            
+            var hasProviderReviewPermission = await _providerRelationshipsService.HasProviderGotEmployersPermissionAsync(vacancyRouteModel.Ukprn, employerAccountId, employerAccountLegalEntityPublicHashedId, OperationType.RecruitmentRequiresReview);
+
+            if (!hasProviderReviewPermission)
+            {
+                throw new MissingPermissionsException(string.Format(RecruitWebExceptionMessages.ProviderMissingPermission, vacancyRouteModel.Ukprn));                
+            }
+            
+            return new ConfirmLegalEntityAndEmployerViewModel
+            {
+                AccountLegalEntityPublicHashedId = selectedOrganisation?.AccountLegalEntityPublicHashedId,
+                EmployerName = employerVacancyInfo.Name,
+                EmployerAccountId = employerVacancyInfo.EmployerAccountId,
+                AccountLegalEntityName = selectedOrganisation?.Name,
+                Ukprn = vacancyRouteModel.Ukprn
+            };
+        }
+
         private int GetPageNo(int page, int totalNumberOfPages)
         {
             page = page > totalNumberOfPages ? 1 : page;
             return page;
         }
 
-        private void SetPager(string searchTerm, int page, LegalEntityandEmployerViewModel vm, int filteredLegalEntitiesTotal)
+        private void SetPager(string searchTerm, int page, LegalEntityAndEmployerViewModel vm, int filteredLegalEntitiesTotal)
         {
             var pager = new PagerViewModel(
-                            filteredLegalEntitiesTotal,
-                            MaxLegalEntitiesPerPage,
-                            page,
-                            "Showing {0} to {1} of {2} organisations",
-                            RouteNames.LegalEntity_Get,
-                            new Dictionary<string, string>
-                            {
-                                { nameof(searchTerm), searchTerm }
-                            });
+                filteredLegalEntitiesTotal,
+                MaxLegalEntitiesPerPage,
+                page,
+                "Showing {0} to {1} of {2} organisations",
+                RouteNames.LegalEntity_Get,
+                new Dictionary<string, string>
+                {
+                    { nameof(searchTerm), searchTerm }
+                });
 
             vm.Pager = pager;
         }
 
         private OrganisationsViewModel ConvertToOrganisationViewModel(LegalEntityEmployerViewModel data)
         {
-            return new OrganisationsViewModel { Id = data.LegalEntity.AccountLegalEntityPublicHashedId, AccountLegalEntityName = data.LegalEntity.Name, EmployerName = data.EmployerName };
+            return new OrganisationsViewModel { 
+                Id = data.LegalEntity.AccountLegalEntityPublicHashedId, 
+                AccountLegalEntityName = data.LegalEntity.Name, 
+                EmployerName = data.EmployerName,
+                EmployerAccountId = data.EmployerAccountId
+            };
         }
 
         private IEnumerable<OrganisationsViewModel> GetLegalEntityAndEmployerViewModels(IEnumerable<EmployerInfo> accountLegalEntities)
@@ -113,30 +144,11 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
                     return new List<OrganisationsViewModel>();
                 }
 
-                legalEntities.AddRange(employerId.LegalEntities.Select(x => ConvertToOrganisationViewModel(new LegalEntityEmployerViewModel{LegalEntity = x, EmployerName = employerId.Name})));
+                legalEntities.AddRange(employerId.LegalEntities.Select(x => ConvertToOrganisationViewModel(new LegalEntityEmployerViewModel{LegalEntity = x, EmployerName = employerId.Name, EmployerAccountId = employerId.EmployerAccountId})));
                 
             }
             return legalEntities;
 
-        }
-
-        public async Task SetAccountLegalEntityPublicId(VacancyRouteModel vacancyRouteModel, LegalEntityAndEmployerEditModel vacancyEmployerInfoModel, VacancyUser vacancyUser)
-        {
-            
-            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(vacancyRouteModel, RouteNames.LegalEntityEmployer_Get);
-            var employerVacancyInfo = await _providerVacancyClient.GetProviderEmployerVacancyDataAsync(vacancyRouteModel.Ukprn, vacancy.EmployerAccountId);
-            vacancy.AccountLegalEntityPublicHashedId = vacancyEmployerInfoModel.SelectedOrganisationId;
-            
-            var selectedOrganisation = employerVacancyInfo.LegalEntities.Single(l => l.AccountLegalEntityPublicHashedId == vacancyEmployerInfoModel.SelectedOrganisationId);
-            vacancy.LegalEntityName = selectedOrganisation.Name;
-            
-            await ValidateAndExecute(
-                vacancy,
-                v => _vacancyClient.Validate(v, ValidationRules),
-                async v =>
-                {
-                    await _vacancyClient.UpdateDraftVacancyAsync(vacancy, vacancyUser);
-                });
         }
 
         protected override EntityToViewModelPropertyMappings<Vacancy, LegalEntityAndEmployerEditModel> DefineMappings()
@@ -156,5 +168,6 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
     {
         public LegalEntity LegalEntity { get; set; }
         public string EmployerName { get; set; }
+        public string EmployerAccountId { get; set; }
     }
 }

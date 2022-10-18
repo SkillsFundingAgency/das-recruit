@@ -10,5 +10,6 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.Part1.LegalEntityAndEmployer
 
         public string SearchTerm { get; set; }
         public int Page { get; set; }
+        public string EmployerAccountId { get; set; }
     }
 }

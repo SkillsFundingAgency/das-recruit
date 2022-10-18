@@ -26,7 +26,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part1
                 .ReturnsAsync((ProviderEditVacancyInfo)null);
 
             Assert.ThrowsAsync<MissingPermissionsException>(() =>
-                orchestrator.GetLegalEntityAndEmployerViewModelAsync(vacancyRouteModel, vacancyRouteModel.Ukprn,
+                orchestrator.GetLegalEntityAndEmployerViewModelAsync(vacancyRouteModel,
                     "", 1));
         }
 
@@ -41,7 +41,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part1
             providerVacancyClient.Setup(x => x.GetProviderEditVacancyInfoAsync(vacancyRouteModel.Ukprn))
                 .ReturnsAsync(providerEditVacancyInfo);
 
-            var actual = await orchestrator.GetLegalEntityAndEmployerViewModelAsync(vacancyRouteModel, vacancyRouteModel.Ukprn,
+            var actual = await orchestrator.GetLegalEntityAndEmployerViewModelAsync(vacancyRouteModel,
                 "", 1);
 
             actual.Employers.Count().Should().Be(providerEditVacancyInfo.Employers.Select(e => new EmployerViewModel { Id = e.EmployerAccountId, Name = e.Name }).Count());
