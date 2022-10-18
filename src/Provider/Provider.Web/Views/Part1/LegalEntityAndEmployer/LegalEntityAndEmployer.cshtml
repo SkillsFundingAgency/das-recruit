@@ -55,7 +55,7 @@
             </div>
         </form>
         <form method="POST" asp-route="@RouteNames.LegalEntityEmployer_Post" asp-all-route-data="@Model.RouteDictionary">
-                <div class="govuk-grid-column-full">
+    
                     <table class="govuk-table das-table--condensed das-table--responsive" data-module="das-table-sort">
                         <thead class="govuk-table__head">
                         <tr class="govuk-table__row">
@@ -83,14 +83,13 @@
                                     <div>@organisation.Id </div>
                                 </td>
                                 <td class="govuk-table__cell" data-label="Select Employer and Legal Entity">
-                                    <button type="submit" name="selectedOrganisationId" value="@($"{organisation.Id}|{organisation.EmployerAccountId}")" id="select-@organisation.Id" class="govuk-link das-button-link">Select</button>
+                                    <button type="submit" name="selectedOrganisationId" value="@($"{organisation.Id}|{organisation.EmployerAccountId}")" id="select-@organisation.Id" class="das-button--inline-link">Select<span class="govuk-visually-hidden"> @organisation.AccountLegalEntityName</span></button>
                                 </td>
                             </tr>
                         }
                         </tbody>
-                        <tbody class="govuk-table__body">
                     </table>
-                </div>
+     
         </form>
         
         
