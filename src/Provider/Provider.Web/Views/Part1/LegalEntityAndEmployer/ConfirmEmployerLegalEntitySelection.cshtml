@@ -15,18 +15,45 @@
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
 
-            
-
         <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState }'/>
-
         <partial name="@PartialNames.ReviewSummary" for="Review" />
             
-        <h1 class="govuk-heading-xl">
-            Confirm employer
-        </h1>
-       
+        <h1 class="govuk-heading-xl">Confirm employer</h1>
+        <h2 class="govuk-heading-m">@Model.AccountLegalEntityName</h2>
+        <dl class="das-definition-list das-definition-list--inline das-!-color-dark-grey govuk-!-margin-bottom-6">
+            <dt class="das-definition-list__title govuk-!-font-weight-regular">Account name</dt>
+            <dd class="das-definition-list__definition">@Model.EmployerName</dd>
+            <dt class="das-definition-list__title govuk-!-font-weight-regular">Agreement ID</dt>
+            <dd class="das-definition-list__definition">@Model.AgreementId</dd>
+        </dl>
+        <form>
+            <div class="govuk-form-group">
+                <fieldset class="govuk-fieldset">
+                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
+                        Is this the employer you'd like to create a vacancy for?
+                    </legend>
+                    <div class="govuk-radios" data-module="govuk-radios">
+                        <div class="govuk-radios__item">
+                            <input class="govuk-radios__input" type="radio" value="yes">
+                            <label class="govuk-label govuk-radios__label" >
+                                Yes, use @Model.AccountLegalEntityName
+                            </label>
+                        </div>
+                        <div class="govuk-radios__item">
+                            <input class="govuk-radios__input"  type="radio" value="no">
+                            <label class="govuk-label govuk-radios__label" >
+                                No, choose a different employer
+                            </label>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+            <div class="govuk-button-group">
+                <button class="govuk-button" data-module="govuk-button">
+                    Save and continue
+                </button>
+                <a class="govuk-link" href="#">Cancel</a>
+            </div>
+        </form>
     </div>
-    @Model.AccountLegalEntityName
-    Account name: @Model.EmployerName
-    Agreement Id: @Model.AgreementId
 </div>
