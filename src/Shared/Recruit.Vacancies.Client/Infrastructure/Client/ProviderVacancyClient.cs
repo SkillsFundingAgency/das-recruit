@@ -148,7 +148,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return _messaging.SendCommandAsync(command);
         }
 
-        public async Task<Guid> CreateProviderApplicationsReportAsync(long ukprn, DateTime fromDate, DateTime toDate, VacancyUser user, string reportName)
+        public async Task<Guid> CreateProviderApplicationsReportAsync(long ukprn, DateTime fromDate, DateTime toDate, VacancyUser user, string reportName, VacancyType vacancyType)
         {
             var reportId = Guid.NewGuid();
 
@@ -165,7 +165,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
                 new Dictionary<string, object> {
                     { ReportParameterName.Ukprn, ukprn},
                     { ReportParameterName.FromDate, fromDate},
-                    { ReportParameterName.ToDate, toDate}
+                    { ReportParameterName.ToDate, toDate},
+                    { ReportParameterName.VacancyType, vacancyType.ToString()}
                 },
                 user,
                 reportName)
@@ -174,9 +175,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return reportId;
         }
 
-        public Task<List<ReportSummary>> GetReportsForProviderAsync(long ukprn)
+        public Task<List<ReportSummary>> GetReportsForProviderAsync(long ukprn, VacancyType vacancyType)
         {
-            return _reportRepository.GetReportsForProviderAsync<ReportSummary>(ukprn);
+            return _reportRepository.GetReportsForProviderAsync<ReportSummary>(ukprn, vacancyType);
         }
 
         public Task<Report> GetReportAsync(Guid reportId)

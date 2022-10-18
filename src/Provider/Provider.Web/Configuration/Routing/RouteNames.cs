@@ -19,16 +19,7 @@
         public const string CreateVacancy_Get = "CreateVacancy_Get";
         public const string CreateVacancy_Post = "CreateVacancy_Post";
         public const string Vacancies_Get = "Vacancies_Get";
-        public const string Dashboard_AccountsNotifications = "Dashboard_AccountsNotifications";
-        public const string Dashboard_ManageApprentices = "Dashboard_ManageApprentices";
-        public const string Dashboard_YourCohorts = "Dashboard_YourCohorts";
-        public const string Dashboard_ManageFunding = "Dashboard_ManageFunding";
-        public const string Dashboard_AccountsAgreements = "Dashboard_AccountsAgreements";
         public const string Dashboard_Account_Home = "Dashboard_Account_Home";
-        public const string Dashboard_Help = "Dashboard_Help";
-        public const string Dashboard_Feedback = "Dashboard_Feedback";
-        public const string Dashboard_Privacy = "Dashboard_Privacy";
-        public const string Dashboard_TermsAndConditions = "Dashboard_TermsAndConditions";
         public const string DeleteVacancy_Get = "DeleteVacancy_Get";
         public const string DeleteVacancy_Post = "DeleteVacancy_Post";
         public const string DisplayFullVacancy_Get = "DisplayFullVacancy_Get";
@@ -57,8 +48,6 @@
         public const string ProviderApplicationsReportCreate_Post = "ProviderApplicationsReportCreate_Post";
         public const string ProviderContactDetails_Get = "ProviderContactDetails_Get";
         public const string ProviderContactDetails_Post = "ProviderContactDetails_Post";
-        public const string ProviderCookieDetails = "ProviderCookieDetails";
-        public const string ProviderCookieSettings = "ProviderCookieSettings";
         public const string Qualifications_Get = "Qualifications_Get";
         public const string Qualification_Add_Get = "Qualification_Add_Get";
         public const string Qualification_Edit_Get = "Qualification_Edit_Get";
