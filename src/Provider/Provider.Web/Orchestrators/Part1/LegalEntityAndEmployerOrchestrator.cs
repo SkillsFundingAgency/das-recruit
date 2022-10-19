@@ -66,6 +66,8 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
                 .OrderBy(v => v.EmployerName)
                 .ToList();
 
+            vm.NoOfSearchResults = filteredLegalEntities.Count();
+
             var filteredLegalEntitiesTotal = filteredLegalEntities.Count();
             var totalNumberOfPages = PagingHelper.GetTotalNoOfPages(MaxLegalEntitiesPerPage, filteredLegalEntitiesTotal);
 
