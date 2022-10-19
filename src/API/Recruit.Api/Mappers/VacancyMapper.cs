@@ -32,6 +32,7 @@ namespace SFA.DAS.Recruit.Api.Mappers
                 ApplicationMethod = (ApplicationMethod?) request.ApplicationMethod,
                 ApplicationInstructions = request.ApplicationInstructions,
                 ApplicationUrl = request.ApplicationUrl,
+                OwnerType = (OwnerType)request.AccountType,
                 Qualifications = request.Qualifications
                     .Select(c=>
                         new Qualification

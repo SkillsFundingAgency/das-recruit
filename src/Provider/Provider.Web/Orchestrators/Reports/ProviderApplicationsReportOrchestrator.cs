@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Esfa.Recruit.Provider.Web.ViewModels.Reports;
 using Esfa.Recruit.Provider.Web.ViewModels.Reports.ProviderApplicationsReport;
 using Esfa.Recruit.Shared.Web.Extensions;
+using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
@@ -14,11 +15,13 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Reports
     {
         private readonly IProviderVacancyClient _client;
         private readonly ITimeProvider _timeProvider;
+        private readonly ServiceParameters _serviceParameters;
 
-        public ProviderApplicationsReportOrchestrator(IProviderVacancyClient client, ITimeProvider timeProvider)
+        public ProviderApplicationsReportOrchestrator(IProviderVacancyClient client, ITimeProvider timeProvider, ServiceParameters serviceParameters)
         {
             _client = client;
             _timeProvider = timeProvider;
+            _serviceParameters = serviceParameters;
         }
 
         public ProviderApplicationsReportCreateViewModel GetCreateViewModel()
@@ -69,7 +72,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Reports
 
             DateTime toDateInclusive = toDate.AddDays(1).AddTicks(-1);
 
-            return _client.CreateProviderApplicationsReportAsync(model.Ukprn, fromDate, toDateInclusive, user, reportName);
+            return _client.CreateProviderApplicationsReportAsync(model.Ukprn, fromDate, toDateInclusive, user, reportName, _serviceParameters.VacancyType.GetValueOrDefault());
         }
     }
 }
