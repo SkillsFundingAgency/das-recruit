@@ -62,7 +62,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
             };
 
             var filteredLegalEntities = vm.Organisations
-                .Where(le => string.IsNullOrEmpty(searchTerm) || le.EmployerName.Contains(searchTerm, StringComparison.OrdinalIgnoreCase))
+                .Where(le => string.IsNullOrEmpty(searchTerm) || le.EmployerName.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) || le.AccountLegalEntityName.Contains(searchTerm, StringComparison.OrdinalIgnoreCase))
                 .OrderBy(v => v.EmployerName)
                 .ToList();
 
