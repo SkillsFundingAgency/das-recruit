@@ -58,43 +58,46 @@
                 }
             </div>
         </form>
-        <form method="POST" asp-route="@RouteNames.LegalEntityEmployer_Post" asp-all-route-data="@Model.RouteDictionary">
-    
-                    <table class="govuk-table das-table--condensed das-table--responsive" data-module="das-table-sort">
-                        <thead class="govuk-table__head">
-                        <tr class="govuk-table__row">
-                            <th class="govuk-table__header das-table--double-arrows" scope="col">
-                                <a href="#" class="govuk-link das-table__sort">Employer</a>
-                            </th>
-                            <th class="govuk-table__header das-table--double-arrows" scope="col">
-                                <a href="#" class="govuk-link das-table__sort">Account Name</a>
-                            </th>
-                            <th class="govuk-table__header" scope="col">Agreement ID</th>
-                            <th class="govuk-table__header" scope="col"></th>
-                        </tr>
-                        </thead>
-                        <tbody class="govuk-table__body">
-                        @foreach (var organisation in @Model.Organisations)
-                        {
+        @if (Model.NoOfSearchResults != 0)
+        {
+            <form method="POST" asp-route="@RouteNames.LegalEntityEmployer_Post" asp-all-route-data="@Model.RouteDictionary">
+        
+                        <table class="govuk-table das-table--condensed das-table--responsive" data-module="das-table-sort">
+                            <thead class="govuk-table__head">
                             <tr class="govuk-table__row">
-                                <td class="govuk-table__cell" data-label="Employer">
-                                    <div>@organisation.EmployerName</div>
-                                </td>
-                                <td class="govuk-table__cell" data-label="Legal Entity">
-                                    <div>@organisation.AccountLegalEntityName </div>
-                                </td>
-                                <td class="govuk-table__cell" data-label="Agreement Id">
-                                    <div>@organisation.Id </div>
-                                </td>
-                                <td class="govuk-table__cell" data-label="Select Employer and Legal Entity">
-                                    <button type="submit" name="selectedOrganisationId" value="@($"{organisation.Id}|{organisation.EmployerAccountId}")" id="select-@organisation.Id" class="das-button--inline-link">Select<span class="govuk-visually-hidden"> @organisation.AccountLegalEntityName</span></button>
-                                </td>
+                                <th class="govuk-table__header das-table--double-arrows" scope="col">
+                                    <a href="#" class="govuk-link das-table__sort">Employer</a>
+                                </th>
+                                <th class="govuk-table__header das-table--double-arrows" scope="col">
+                                    <a href="#" class="govuk-link das-table__sort">Account Name</a>
+                                </th>
+                                <th class="govuk-table__header" scope="col">Agreement ID</th>
+                                <th class="govuk-table__header" scope="col"></th>
                             </tr>
-                        }
-                        </tbody>
-                    </table>
-     
-        </form>
+                            </thead>
+                            <tbody class="govuk-table__body">
+                            @foreach (var organisation in @Model.Organisations)
+                            {
+                                <tr class="govuk-table__row">
+                                    <td class="govuk-table__cell" data-label="Employer">
+                                        <div>@organisation.EmployerName</div>
+                                    </td>
+                                    <td class="govuk-table__cell" data-label="Legal Entity">
+                                        <div>@organisation.AccountLegalEntityName </div>
+                                    </td>
+                                    <td class="govuk-table__cell" data-label="Agreement Id">
+                                        <div>@organisation.Id </div>
+                                    </td>
+                                    <td class="govuk-table__cell" data-label="Select Employer and Legal Entity">
+                                        <button type="submit" name="selectedOrganisationId" value="@($"{organisation.Id}|{organisation.EmployerAccountId}")" id="select-@organisation.Id" class="das-button--inline-link">Select<span class="govuk-visually-hidden"> @organisation.AccountLegalEntityName</span></button>
+                                    </td>
+                                </tr>
+                            }
+                            </tbody>
+                        </table>
+            </form>
+        }
+
         
         
             <nav role="navigation" aria-label="Pagination" asp-show="@Model.Pager.ShowPager" >
