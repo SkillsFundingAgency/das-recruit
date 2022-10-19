@@ -1,4 +1,5 @@
 ﻿@using Esfa.Recruit.Vacancies.Client.Domain.Entities
+@using Esfa.Recruit.Employer.Web.RouteModel
 
 @model Esfa.Recruit.Employer.Web.ViewModels.Dashboard.DashboardViewModel
 
@@ -17,7 +18,7 @@
     <a asp-hide="@Model.HasAnyVacancies" asp-route="@RouteNames.Dashboard_Account_Home" asp-route-employerAccountId="@Model.EmployerAccountId"  class="govuk-back-link">Back</a>
 }
 
-<partial asp-hide="@Model.HasAnyVacancies" name="_NoVacanciesContent" model="@Model" />
+<partial asp-hide="@Model.HasAnyVacancies" name="_NoVacanciesContent" model="@(new VacancyRouteModel{EmployerAccountId = Model.EmployerAccountId})" />
 
 <div asp-show="@Model.HasAnyVacancies">
 
