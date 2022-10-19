@@ -66,7 +66,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
 
             if (vacancy.Status != VacancyStatus.Live)
             {
-                return RedirectToRoute(RouteNames.DisplayVacancy_Get);
+                return RedirectToRoute(RouteNames.DisplayVacancy_Get, new {vrm.VacancyId, vrm.EmployerAccountId});
             }
 
             var parsedClosingDate = Request.Cookies.GetProposedClosingDate(vacancy.Id);
@@ -84,7 +84,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
 
             if (!response.Success)
             {
-                return RedirectToRoute(RouteNames.VacancyEditDates_Get);
+                return RedirectToRoute(RouteNames.VacancyEditDates_Get, new {m.VacancyId, m.EmployerAccountId});
             }
 
             var vacancy = await _orchestrator.GetVacancy(m);
@@ -92,7 +92,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
 
             EnsureProposedChangesCookiesAreCleared(m.VacancyId);
 
-            return RedirectToRoute(RouteNames.Vacancies_Get);
+            return RedirectToRoute(RouteNames.Vacancies_Get, new {m.VacancyId, m.EmployerAccountId});
         }
 
         [HttpGet("cancel-vacancy-changes", Name = RouteNames.CancelVacancyChanges_Get)]
@@ -100,7 +100,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         {
             EnsureProposedChangesCookiesAreCleared(vrm.VacancyId);
             
-            return RedirectToRoute(RouteNames.Vacancies_Get);
+            return RedirectToRoute(RouteNames.Vacancies_Get, new {vrm.VacancyId, vrm.EmployerAccountId});
         }
 
         private void EnsureProposedChangesCookiesAreCleared(Guid vacancyId)
@@ -113,9 +113,9 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         {
             if (_utility.IsTaskListCompleted(vacancy))
             {
-                return RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet);
+                return RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet, new {vacancy.Id, vacancy.EmployerAccountId});
             }
-            return RedirectToRoute(RouteNames.EmployerTaskListGet);
+            return RedirectToRoute(RouteNames.EmployerTaskListGet, new {vacancy.Id, vacancy.EmployerAccountId});
         }
     }
 }

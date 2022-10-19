@@ -44,7 +44,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
 
             if (vm.IsUsersFirstVacancy &&
                 userHasFoundTraining == false)
-                return RedirectToRoute(RouteNames.Training_First_Time_Get);
+                return RedirectToRoute(RouteNames.Training_First_Time_Get, new {vrm.VacancyId, vrm.EmployerAccountId});
 
             if (clearTraining)
                 vm.SelectedProgrammeId = "";

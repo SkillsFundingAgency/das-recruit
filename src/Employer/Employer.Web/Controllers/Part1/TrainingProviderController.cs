@@ -83,7 +83,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
             var provider = await _orchestrator.GetProviderAsync(ukprn);
             
             if(provider == null)
-                return RedirectToRoute(RouteNames.TrainingProvider_Select_Get);
+                return RedirectToRoute(RouteNames.TrainingProvider_Select_Get, new {vrm.VacancyId, vrm.EmployerAccountId});
             
             var vm = await _orchestrator.GetConfirmViewModelAsync(vrm, provider.Ukprn);
             vm.PageInfo.SetWizard(wizard);

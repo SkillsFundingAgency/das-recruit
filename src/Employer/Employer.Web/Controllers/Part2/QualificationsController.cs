@@ -29,7 +29,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part2
             if (vm.Qualifications.Any() == false)
             {
                 TempData.Remove(QualificationDeletedTempDataKey);
-                return RedirectToRoute(RouteNames.Qualification_Add_Get);
+                return RedirectToRoute(RouteNames.Qualification_Add_Get,new {vrm.VacancyId, vrm.EmployerAccountId});
             }
             
             if (TempData[QualificationDeletedTempDataKey] != null)

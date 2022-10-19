@@ -49,7 +49,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part2
             if (!string.IsNullOrEmpty(m.AddCustomSkillAction))
             {
                 TempData[TempDataKeys.Skills] = m.Skills;
-                return RedirectToRoute(RouteNames.Skills_Get);
+                return RedirectToRoute(RouteNames.Skills_Get, new {vrm.VacancyId, vrm.EmployerAccountId});
             }
             
             if (vm.IsTaskListCompleted)
