@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -60,10 +61,18 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
                 Ukprn = vrm.Ukprn
             };
 
+            var filteredLegalEntities = vm.Organisations
+                .Where(le => string.IsNullOrEmpty(searchTerm) || le.EmployerName.Contains(searchTerm, StringComparison.OrdinalIgnoreCase))
+                .OrderBy(v => v.EmployerName)
+                .ToList();
 
-            var totalNumberOfPages = PagingHelper.GetTotalNoOfPages(MaxLegalEntitiesPerPage, vm.TotalNumberOfLegalEntities);
-            setPage = GetPageNo(setPage, totalNumberOfPages);
-            SetPager(searchTerm, setPage, vm, vm.TotalNumberOfLegalEntities);
+            var filteredLegalEntitiesTotal = filteredLegalEntities.Count();
+            var totalNumberOfPages = PagingHelper.GetTotalNoOfPages(MaxLegalEntitiesPerPage, filteredLegalEntitiesTotal);
+
+            setPage = GetPageNo(requestedPageNo, setPage, totalNumberOfPages);
+
+            SetFilteredOrganisationsForPage(setPage, vm, filteredLegalEntities);
+            SetPager(searchTerm, setPage, vm, filteredLegalEntitiesTotal);
 
             return vm;
         }
@@ -100,7 +109,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
             };
         }
 
-        private int GetPageNo(int page, int totalNumberOfPages)
+        private int GetPageNo(int? requestedPageNo, int page, int totalNumberOfPages)
         {
             page = page > totalNumberOfPages ? 1 : page;
             return page;
@@ -120,6 +129,16 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
                 });
 
             vm.Pager = pager;
+        }
+
+        private void SetFilteredOrganisationsForPage(int page, LegalEntityAndEmployerViewModel vm, List<OrganisationsViewModel> filteredLegalEntities)
+        {
+            var skip = (page - 1) * MaxLegalEntitiesPerPage;
+
+            vm.Organisations = filteredLegalEntities
+                .Skip(skip)
+                .Take(MaxLegalEntitiesPerPage)
+                .ToList();
         }
 
         private OrganisationsViewModel ConvertToOrganisationViewModel(LegalEntityEmployerViewModel data)
