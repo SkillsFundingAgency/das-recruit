@@ -1,15 +1,16 @@
+using System.Collections.Generic;
 using Microsoft.Azure.WebJobs.Host.Queues;
 
 namespace Esfa.Recruit.Vacancies.Jobs
 {
     public class CustomQueueProcessorFactory : IQueueProcessorFactory
     {
-        public QueueProcessor Create(QueueProcessorOptions queueProcessorOptions)
+        public QueueProcessor Create(QueueProcessorFactoryContext context)
         {
-            queueProcessorOptions.Queue.CreateIfNotExistsAsync().Wait();
-
+            context.Queue.CreateIfNotExistsAsync().Wait();
+        
             // return the default processor
-            return new CustomQueueProcessorFactory().Create(queueProcessorOptions);
+            return new QueueProcessor(context);
         }
     }
 }
