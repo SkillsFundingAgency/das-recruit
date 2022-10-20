@@ -48,10 +48,10 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
                     info = vm.VacancyEmployerInfoModel;
                     await _orchestrator.SetAccountLegalEntityPublicId(vrm,info, User.ToVacancyUser());
                     
-                    return  RedirectToRoute(RouteNames.Training_Get, new { Wizard = wizard });
+                    return  RedirectToRoute(RouteNames.Training_Get, new { Wizard = wizard, vrm.VacancyId, vrm.EmployerAccountId  });
                 }
                 
-                return RedirectToRoute(RouteNames.EmployerName_Get, new {Wizard = wizard});
+                return RedirectToRoute(RouteNames.EmployerName_Get, new {Wizard = wizard, vrm.VacancyId, vrm.EmployerAccountId});
             }
 
             vm.Pager.OtherRouteValues.Add(nameof(wizard), wizard);
