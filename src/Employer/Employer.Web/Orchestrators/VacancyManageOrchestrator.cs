@@ -93,7 +93,9 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             viewModel.Applications = new VacancyApplicationsViewModel
             {
                 Applications = applications,
-                ShowDisability = vacancy.IsDisabilityConfident
+                ShowDisability = vacancy.IsDisabilityConfident,
+                VacancyId = vacancy.Id,
+                EmployerAccountId = vacancy.EmployerAccountId
             };
 
             return viewModel;
