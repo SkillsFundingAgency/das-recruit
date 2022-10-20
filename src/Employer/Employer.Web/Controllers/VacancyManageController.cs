@@ -113,9 +113,9 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         {
             if (_utility.IsTaskListCompleted(vacancy))
             {
-                return RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet, new {vacancy.Id, vacancy.EmployerAccountId});
+                return RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet, new {VacancyId = vacancy.Id, vacancy.EmployerAccountId});
             }
-            return RedirectToRoute(RouteNames.EmployerTaskListGet, new {vacancy.Id, vacancy.EmployerAccountId});
+            return RedirectToRoute(RouteNames.EmployerTaskListGet, new {VacancyId = vacancy.Id, vacancy.EmployerAccountId});
         }
     }
 }
