@@ -6,6 +6,7 @@ using Esfa.Recruit.Provider.Web.Orchestrators.Part1;
 using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Provider.Web.ViewModels.Part1.Location;
 using Esfa.Recruit.Shared.Web.Extensions;
+using Esfa.Recruit.Shared.Web.FeatureToggle;
 using Esfa.Recruit.Shared.Web.Mappers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
@@ -19,7 +20,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
     {
         private readonly LocationOrchestrator _orchestrator;
 
-        public LocationController(LocationOrchestrator orchestrator, IHostingEnvironment hostingEnvironment, IFeature feature)
+        public LocationController(LocationOrchestrator orchestrator, IWebHostEnvironment hostingEnvironment, IFeature feature)
             :base(hostingEnvironment)
         {
             _orchestrator = orchestrator;
