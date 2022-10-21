@@ -64,6 +64,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             
             var vm = new VacanciesViewModel
             {
+                EmployerAccountId = employerAccountId,
                 Vacancies = vacanciesVm,
                 Pager = pager,
                 Filter = filteringOption,

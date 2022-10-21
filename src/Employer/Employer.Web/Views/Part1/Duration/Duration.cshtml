@@ -1,5 +1,4 @@
-﻿@using Esfa.Recruit.Shared.Web.Mappers
-@using Esfa.Recruit.Vacancies.Client.Domain.Entities
+﻿@using Esfa.Recruit.Vacancies.Client.Domain.Entities
 @model Esfa.Recruit.Employer.Web.ViewModels.Part1.Duration.DurationViewModel
 @{ 
     ViewBag.Vpv = "/recruitment/employer/page-part1-duration";
@@ -8,13 +7,8 @@
 }
 @section BackLink
 {
-    <esfaFeatureEnabled name="@FeatureNames.EmployerTaskList">
-        <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Dates_Get" asp-route-wizard="@Model.PageInfo.IsWizard" esfa-automation="link-back" class="govuk-back-link">Back</a>
-        <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.EmployerCheckYourAnswersGet" asp-route-wizard="@Model.PageInfo.IsWizard" esfa-automation="link-back" class="govuk-back-link">Back</a>
-    </esfaFeatureEnabled>
-    <esfaFeatureDisabled name="@FeatureNames.EmployerTaskList">
-        <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Dates_Get" esfa-automation="link-back" class="govuk-back-link">Back</a>
-    </esfaFeatureDisabled>
+    <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Dates_Get"  asp-all-route-data="@Model.RouteDictionary" asp-route-wizard="@Model.PageInfo.IsWizard" esfa-automation="link-back" class="govuk-back-link">Back</a>
+    <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.EmployerCheckYourAnswersGet"  asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Back</a>
 }
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
@@ -25,7 +19,7 @@
 
         <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">Duration and working hours</h1>
 
-        <form asp-route="@RouteNames.Duration_Post" asp-route-wizard="@Model.PageInfo.IsWizard" novalidate>
+        <form asp-route="@RouteNames.Duration_Post"  asp-all-route-data="@Model.RouteDictionary" asp-route-wizard="@Model.PageInfo.IsWizard" novalidate>
             <div esfa-validation-marker-for="Duration" class="govuk-form-group">
                 <fieldset class="govuk-fieldset">
                     <label asp-for="Duration" class="govuk-label govuk-!-font-weight-bold">
@@ -74,14 +68,8 @@
 
             <div class="govuk-button-group">
                 <button type="submit" class="govuk-button save-button" esfa-automation="continue-button">@Model.PageInfo.SubmitButtonText</button>
-                <esfaFeatureEnabled name="@FeatureNames.EmployerTaskList">
-                    <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Dashboard_Get" class="govuk-link govuk-link--no-visited-state">Cancel</a>
-                    <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.EmployerCheckYourAnswersGet" class="govuk-link govuk-link--no-visited-state">Cancel</a>
-                </esfaFeatureEnabled>
-                <esfaFeatureDisabled name="@FeatureNames.EmployerTaskList">
-                    <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Vacancies_Get" class="govuk-link govuk-link--no-visited-state">Cancel</a>
-                    <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.Vacancy_Preview_Get" asp-fragment="@Anchors.ApprenticeshipSummarySection" class="govuk-link govuk-link--no-visited-state">Cancel</a>
-                </esfaFeatureDisabled>
+                <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Dashboard_Get" asp-route-employerAccountId="@Model.EmployerAccountId" class="govuk-link govuk-link--no-visited-state">Cancel</a>
+                <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.EmployerCheckYourAnswersGet" asp-all-route-data="@Model.RouteDictionary" class="govuk-link govuk-link--no-visited-state">Cancel</a>
             </div>
         </form>
     </div>

@@ -14,6 +14,7 @@ using Microsoft.Net.Http.Headers;
 using Microsoft.Extensions.Logging;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.QA.Web.Filters;
+using FluentValidation;
 
 namespace Esfa.Recruit.Qa.Web.Configuration
 {
@@ -101,9 +102,8 @@ namespace Esfa.Recruit.Qa.Web.Configuration
                     }
 
                     options.Filters.AddService<PlannedOutageResultFilter>();
-            }).AddNewtonsoftJson()
-            .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<Startup>())
-            .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
+                }).AddNewtonsoftJson();
+            services.AddValidatorsFromAssemblyContaining<Startup>();
         }
     }
 }

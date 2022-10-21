@@ -5,7 +5,7 @@ using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
 namespace Esfa.Recruit.Shared.Web.ViewModels.ApplicationReview
 {
-    public class ApplicationReviewViewModel 
+    public class ApplicationReviewViewModel
     {
         public string AddressLine1 { get; set; }
         public string AddressLine2 { get; set; }

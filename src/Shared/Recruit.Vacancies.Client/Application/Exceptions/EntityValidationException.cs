@@ -1,6 +1,5 @@
 using System;
 using System.Runtime.Serialization;
-using System.Security.Permissions;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.Exceptions
@@ -29,7 +28,6 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Exceptions
             ValidationResult = (EntityValidationResult)info.GetValue(nameof(ValidationResult), typeof(EntityValidationResult));
         }
 
-        [SecurityPermissionAttribute(SecurityAction.Demand, SerializationFormatter = true)]
         public override void GetObjectData(SerializationInfo info, StreamingContext context)
         {
             if (info == null) 

@@ -1,6 +1,5 @@
 using System;
 using System.Linq;
-using System.Security.Claims;
 using Esfa.Recruit.Provider.Web.Configuration.Routing;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Provider.Web.Filters;
@@ -82,7 +81,7 @@ namespace Esfa.Recruit.Provider.Web.Configuration
             services.AddTransient<IAuthorizationHandler, VacancyTypeRequirementHandler>();
         }
 
-        public static void AddMvcService(this IServiceCollection services, IHostingEnvironment hostingEnvironment, ILoggerFactory loggerFactory)
+        public static void AddMvcService(this IServiceCollection services, IWebHostEnvironment hostingEnvironment, ILoggerFactory loggerFactory)
         {
             services.AddAntiforgery(options =>
             {
@@ -92,7 +91,7 @@ namespace Esfa.Recruit.Provider.Web.Configuration
             });
             services.Configure<CookieTempDataProviderOptions>(options => options.Cookie.Name = CookieNames.RecruitTempData);
             services.AddSingleton<ITempDataProvider, CookieTempDataProvider>();
-            
+
             services.AddMvc(opts =>
                 {
                     opts.EnableEndpointRouting = false;
@@ -114,15 +113,14 @@ namespace Esfa.Recruit.Provider.Web.Configuration
                     opts.AddTrimModelBinderProvider(loggerFactory);
                 }
             ).AddNewtonsoftJson()
-            .AddFluentValidation()
             .EnableCookieBanner()
             .EnableGoogleAnalytics()
             .EnableCsp()
-            .SetDefaultNavigationSection(NavigationSection.Recruit)
-            .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
+            .SetDefaultNavigationSection(NavigationSection.Recruit);
+            services.AddFluentValidationAutoValidation();
         }
 
-        public static void AddAuthenticationService(this IServiceCollection services, AuthenticationConfiguration authConfig, IRecruitVacancyClient vacancyClient, IHostingEnvironment hostingEnvironment)
+        public static void AddAuthenticationService(this IServiceCollection services, AuthenticationConfiguration authConfig)
         {
             services.AddAuthentication(sharedOptions =>
             {
@@ -136,10 +134,7 @@ namespace Esfa.Recruit.Provider.Web.Configuration
                 options.Wtrealm = authConfig.WtRealm;
                 options.MetadataAddress = authConfig.MetaDataAddress;
                 options.UseTokenLifetime = false;
-                options.Events.OnSecurityTokenValidated = async (ctx) =>
-                {
-                    await HandleUserSignedIn(ctx, vacancyClient);
-                };
+                
             })
             .AddCookie(options =>
             {
@@ -150,6 +145,15 @@ namespace Esfa.Recruit.Provider.Web.Configuration
                 options.SlidingExpiration = true;
                 options.ExpireTimeSpan = TimeSpan.FromMinutes(SessionTimeoutMinutes);
             });
+            services
+                .AddOptions<WsFederationOptions>(WsFederationDefaults.AuthenticationScheme)
+                .Configure<IRecruitVacancyClient>((options, recruitVacancyClient) =>
+                {
+                    options.Events.OnSecurityTokenValidated = async (ctx) =>
+                    {
+                        await HandleUserSignedIn(ctx, recruitVacancyClient);
+                    };
+                });
         }
 
         private static async Task HandleUserSignedIn(SecurityTokenValidatedContext ctx, IRecruitVacancyClient vacancyClient)

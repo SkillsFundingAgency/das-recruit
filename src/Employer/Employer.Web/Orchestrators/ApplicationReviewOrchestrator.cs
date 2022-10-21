@@ -5,8 +5,9 @@ using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels.ApplicationReview;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
-using Esfa.Recruit.Shared.Web.ViewModels.ApplicationReview;
 using Esfa.Recruit.Employer.Web.Exceptions;
+using ApplicationReviewViewModel = Esfa.Recruit.Employer.Web.ViewModels.ApplicationReview.ApplicationReviewViewModel;
+using ApplicationStatusConfirmationViewModel = Esfa.Recruit.Employer.Web.ViewModels.ApplicationReview.ApplicationStatusConfirmationViewModel;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators
 {
@@ -28,7 +29,11 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             if (applicationReview.IsWithdrawn)
                 throw new ApplicationWithdrawnException($"Application has been withdrawn. ApplicationReviewId:{applicationReview.Id}", rm.VacancyId);
 
-            return applicationReview.ToViewModel();
+            var viewModel = applicationReview.ToViewModel();
+            viewModel.EmployerAccountId = rm.EmployerAccountId;
+            viewModel.VacancyId = rm.VacancyId;
+            viewModel.ApplicationReviewId = rm.ApplicationReviewId;
+            return viewModel;
         }
 
         public async Task<ApplicationReviewViewModel> GetApplicationReviewViewModelAsync(ApplicationReviewEditModel m)
@@ -59,16 +64,17 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             return applicationReview.Application.FullName;
         }                
 
-        internal async Task<ApplicationStatusConfirmationViewModel> GetApplicationStatusConfirmationViewModelAsync(ApplicationReviewStatusConfirmationEditModel m)
+        public async Task<ApplicationStatusConfirmationViewModel> GetApplicationStatusConfirmationViewModelAsync(ApplicationReviewStatusConfirmationEditModel m)
         {            
-            await _utility.GetAuthorisedApplicationReviewAsync(m);
-
             var applicationReview = await _utility.GetAuthorisedApplicationReviewAsync(m);
 
             return new ApplicationStatusConfirmationViewModel {
+                EmployerAccountId = m.EmployerAccountId,
+                VacancyId = m.VacancyId,
+                ApplicationReviewId = m.ApplicationReviewId,
+                
                 CandidateFeedback = m.CandidateFeedback,
                 Outcome = m.Outcome,
-                ApplicationReviewId = m.ApplicationReviewId,
                 Name = applicationReview.Application.FullName
             };
         }
@@ -80,7 +86,6 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             return new ApplicationStatusConfirmationViewModel {                
                 CandidateFeedback = rm.CandidateFeedback,                
                 Outcome = rm.Outcome,
-                ApplicationReviewId = rm.ApplicationReviewId,
                 Name = applicationReviewVm.Name                
             };
         }        

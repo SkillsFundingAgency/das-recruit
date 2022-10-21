@@ -2,7 +2,6 @@ using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Orchestrators;
 using Esfa.Recruit.Employer.Web.RouteModel;
-using Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 
@@ -21,7 +20,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         [HttpGet("vacancies/create/start", Name=RouteNames.CreateVacancyStart)]
         public IActionResult StartVacancyCreate(VacancyRouteModel vrm)
         {
-            return View("StartCreateVacancy");
+            return View("StartCreateVacancy", vrm);
         }
         
         [HttpGet("vacancies/create/task-list", Name = RouteNames.EmployerTaskListCreateGet)]
@@ -45,7 +44,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
                 || viewModel.Status == VacancyStatus.Referred
                 || viewModel.Status == VacancyStatus.Review)
             {
-                return RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet);
+                return RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet, vrm);
             }
             
             return View(viewModel);

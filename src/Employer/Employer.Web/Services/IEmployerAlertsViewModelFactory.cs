@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.ViewModels;
+using Esfa.Recruit.Employer.Web.ViewModels.Alerts;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections;
 

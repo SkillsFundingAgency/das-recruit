@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using AutoFixture.NUnit3;
 using Esfa.Recruit.Provider.Web;
 using Esfa.Recruit.Provider.Web.Configuration.Routing;
-using Esfa.Recruit.Provider.Web.Models;
 using Esfa.Recruit.Provider.Web.Orchestrators.Part1;
 using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Provider.Web.ViewModels.Part1.LegalEntity;

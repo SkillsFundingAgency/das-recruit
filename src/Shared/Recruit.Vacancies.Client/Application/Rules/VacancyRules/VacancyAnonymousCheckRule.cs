@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.Rules.Engine;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Qa.Web.RouteModel;
 using Esfa.Recruit.Qa.Web.ViewModels.Reports.ReportConfirmation;

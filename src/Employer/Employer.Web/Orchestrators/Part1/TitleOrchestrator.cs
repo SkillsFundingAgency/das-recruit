@@ -35,10 +35,11 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             _utility = utility;
         }
 
-        public TitleViewModel GetTitleViewModel()
+        public TitleViewModel GetTitleViewModel(string employerAccountId)
         {
             var vm = new TitleViewModel
             {
+                EmployerAccountId = employerAccountId,
                 PageInfo = new PartOnePageInfoViewModel()
             };
             return vm;
@@ -52,6 +53,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             var vm = new TitleViewModel
             {
                 VacancyId = vacancy.Id,
+                EmployerAccountId = vrm.EmployerAccountId,
                 Title = vacancy.Title,
                 PageInfo = _utility.GetPartOnePageInfo(vacancy),
                 HasCloneableVacancies = vacancyCount > 0
@@ -77,7 +79,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             }
             else
             {
-                vm = GetTitleViewModel();
+                vm = GetTitleViewModel(m.EmployerAccountId);
             }
 
             vm.Title = m.Title;

@@ -1,5 +1,4 @@
 ﻿using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Responses;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.TrainingProviders;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider

@@ -1,6 +1,8 @@
+using Microsoft.AspNetCore.Mvc;
+
 namespace Esfa.Recruit.Employer.Web.ViewModels.ManageNotifications
 {
-    public class ManageNotificationsAcknowledgementViewModel
+    public class ManageNotificationsAcknowledgementViewModel : ManageNotificationsRouteModel
     {
         public string UserEmail { get; set; }
         public bool IsVacancyRejectedSelected { get; set; }

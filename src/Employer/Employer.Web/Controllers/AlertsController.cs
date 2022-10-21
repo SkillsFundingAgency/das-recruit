@@ -30,7 +30,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             if (!string.IsNullOrWhiteSpace(model.ReturnUrl))
                 return Redirect(model.ReturnUrl);
 
-            return RedirectToRoute(RouteNames.Dashboard_Get);
+            return RedirectToRoute(RouteNames.Dashboard_Get, new {model.EmployerAccountId});
         }
     }
 }

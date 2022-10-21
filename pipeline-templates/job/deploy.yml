@@ -41,21 +41,6 @@ jobs:
             version: 2.1.x
             installationPath: $(Agent.ToolsDirectory)/dotnet
 
-        - task: PowerShell@2
-          displayName: 'Seed Recruit Database'
-          inputs:
-            filePath: $(Pipeline.Workspace)/Recruit/Console.RecruitSeedDataWriter/SeedScript.ps1
-            arguments: -dbConnectionString "$(RecruitCosmosConnectionString)"
-            pwsh: true
-
-        # Requires dotnet and mongo CLIs
-        - task: PowerShell@2
-          displayName: 'Run Mongo API Script'
-          inputs:
-            filePath: $(Pipeline.Workspace)/Recruit/src/Data/Recruit.ChangeScripts/Invoke-CosmosDbScript.ps1
-            arguments: '-CosmosDb $(CosmosDbName).mongo.cosmos.azure.com:10255 -Username $(CosmosDbName) -Password $(CosmosDbPrimaryReadWriteKey) -MongoScript "$(Pipeline.Workspace)/Recruit/src/Data/Recruit.ChangeScripts/documentMigration.js"'
-            pwsh: true
-
         - template: azure-pipelines-templates/deploy/step/generate-config.yml@das-platform-building-blocks
           parameters:
             ServiceConnection: ${{ parameters.ServiceConnection }}

@@ -11,7 +11,7 @@ namespace Esfa.Recruit.UnitTests.Employer.Web.Orchestrators.CloneVacancyOrchestr
         public void WhenStatusIsLiveAndDatesAreInFuture_ThenReturnFalse()
         {
             var sut = GetSut(SourceVacancy);
-            var vacancy = new Vacancy{Status = VacancyStatus.Live, ClosingDate = DateTime.Now.AddDays(1)};
+            var vacancy = new Vacancy{Status = VacancyStatus.Live, ClosingDate = DateTime.UtcNow.AddDays(1)};
             sut.IsNewDatesRequired(vacancy).Should().BeFalse();
         }
 
@@ -19,7 +19,7 @@ namespace Esfa.Recruit.UnitTests.Employer.Web.Orchestrators.CloneVacancyOrchestr
         public void WhenStatusIsLiveAndDatesAreInPast_ThenReturnTrue()
         {
             var sut = GetSut(SourceVacancy);
-            var vacancy = new Vacancy{Status = VacancyStatus.Live, ClosingDate = DateTime.Now.AddDays(-1)};
+            var vacancy = new Vacancy{Status = VacancyStatus.Live, ClosingDate = DateTime.UtcNow.AddDays(-1)};
             sut.IsNewDatesRequired(vacancy).Should().BeTrue();
         }
 
