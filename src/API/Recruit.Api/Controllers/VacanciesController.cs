@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;

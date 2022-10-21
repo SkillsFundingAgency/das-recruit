@@ -38,6 +38,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 
             var vm = new VacancySubmittedConfirmationViewModel
             {
+                VacancyId = vacancy.Id,
+                EmployerAccountId = vacancy.EmployerAccountId,
                 Title = vacancy.Title,
                 VacancyReference = vacancy.VacancyReference?.ToString(),
                 IsResubmit = isResubmit,

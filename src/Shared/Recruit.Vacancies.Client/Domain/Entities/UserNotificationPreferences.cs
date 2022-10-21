@@ -1,5 +1,3 @@
-using System;
-
 namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
 {
     public class UserNotificationPreferences

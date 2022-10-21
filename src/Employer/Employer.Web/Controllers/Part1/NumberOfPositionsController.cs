@@ -58,17 +58,10 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
                 vm.PageInfo.SetWizard(wizard);
                 return View(vm);
             }
-
-            if (_feature.IsFeatureEnabled(FeatureNames.EmployerTaskList))
-            {
-                return wizard 
-                    ? RedirectToRoute(RouteNames.Location_Get, new { Wizard = wizard }) 
-                    : RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet);
-            }
-
-            return wizard
-                ? RedirectToRoute(RouteNames.Employer_Get, new {vacancyId = response.Data})
-                : RedirectToRoute(RouteNames.Vacancy_Preview_Get);
+            
+            return wizard 
+                ? RedirectToRoute(RouteNames.Location_Get, new {m.VacancyId, m.EmployerAccountId, wizard}) 
+                : RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet, new {m.VacancyId, m.EmployerAccountId});
         }
     }
 }

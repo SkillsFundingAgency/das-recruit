@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent;
+﻿using Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent;
 using FluentValidation;
 
 namespace Esfa.Recruit.Qa.Web.ViewModels.Validations

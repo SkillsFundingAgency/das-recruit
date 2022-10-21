@@ -5,7 +5,7 @@ using Esfa.Recruit.Shared.Web.ViewModels.Skills;
 
 namespace Esfa.Recruit.Provider.Web.ViewModels.Part2.Skills
 {
-    public class SkillsViewModel : SkillsViewModelBase
+    public class SkillsViewModel : ISkillsViewModel
     {
         public string Title { get; set; }
         public string AddCustomSkillName { get; set; }
@@ -32,5 +32,8 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.Part2.Skills
         }
 
         public bool IsTaskListCompleted { get; set; }
+        
+        public List<SkillViewModel> Column1Checkboxes { get; set; }
+        public List<SkillViewModel> Column2Checkboxes { get; set; }
     }
 }

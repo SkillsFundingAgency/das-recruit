@@ -1,5 +1,7 @@
-﻿@model Esfa.Recruit.Qa.Web.ViewModels.Reports.ReportDashboard.ReportsDashboardViewModel
-@using Esfa.Recruit.Vacancies.Client.Domain.Entities
+﻿@using Esfa.Recruit.Vacancies.Client.Domain.Entities
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using Esfa.Recruit.Shared.Web.TagHelpers
+@model Esfa.Recruit.Qa.Web.ViewModels.Reports.ReportDashboard.ReportsDashboardViewModel
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
@@ -47,7 +49,7 @@
                     </td>
                     <td class="govuk-table__cell">
                         <span asp-show="@report.IsProcessing">Processing</span>
-                        <span asp-show="@report.Status == ReportStatus.Failed">Failed</span>
+                        <span asp-show="@(report.Status == ReportStatus.Failed)">Failed</span>
                         <a asp-show="@report.CanDownload" asp-route="@RouteNames.ReportDashboard_DownloadCsv" , asp-route-reportId="@report.ReportId">Download CSV</a>
                     </td>
                 </tr>

@@ -38,6 +38,8 @@ namespace Esfa.Recruit.Employer.Web.Mappings
 
             var allQualifications = await _vacancyClient.GetCandidateQualificationsAsync();
 
+            vm.VacancyId = vacancy.Id;
+            vm.EmployerAccountId = vacancy.EmployerAccountId;
             vm.AccountLegalEntityPublicHashedId = vacancy.AccountLegalEntityPublicHashedId;
             vm.Status = vacancy.Status;
             vm.ApplicationMethod = vacancy.ApplicationMethod;

@@ -1,5 +1,4 @@
-﻿using Esfa.Recruit.Employer.Web.ViewModels.Part1;
-using Esfa.Recruit.Shared.Web.ViewModels;
+﻿using Esfa.Recruit.Shared.Web.ViewModels;
 
 namespace Esfa.Recruit.Employer.Web.ViewModels.LegalEntityAgreement
 {

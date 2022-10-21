@@ -2,12 +2,13 @@
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Hosting;
 
 namespace Esfa.Recruit.Employer.Web.Configuration
 {
     public static class EsfaCookieOptions
     {
-        public static CookieOptions GetDefaultHttpCookieOption(IHostingEnvironment env) =>
+        public static CookieOptions GetDefaultHttpCookieOption(IWebHostEnvironment env) =>
             new CookieOptions
             {
                 Secure = !env.IsDevelopment(),
@@ -15,15 +16,15 @@ namespace Esfa.Recruit.Employer.Web.Configuration
                 HttpOnly = true
             };
 
-        public static CookieOptions GetSessionLifetimeHttpCookieOption(IHostingEnvironment env) =>
+        public static CookieOptions GetSessionLifetimeHttpCookieOption(IWebHostEnvironment env) =>
             GetDefaultHttpCookieOption(env)
             .WithExpiryTime(DateTimeOffset.UtcNow.AddMinutes(AuthenticationConfiguration.SessionTimeoutMinutes));
 
-        public static CookieOptions GetSingleDayLifetimeHttpCookieOption(IHostingEnvironment env, ITimeProvider timeProvider) =>
+        public static CookieOptions GetSingleDayLifetimeHttpCookieOption(IWebHostEnvironment env, ITimeProvider timeProvider) =>
             GetDefaultHttpCookieOption(env)
             .WithExpiryTime(timeProvider.NextDay);
 
-        public static CookieOptions GetTenYearHttpCookieOption(IHostingEnvironment env) =>
+        public static CookieOptions GetTenYearHttpCookieOption(IWebHostEnvironment env) =>
             GetDefaultHttpCookieOption(env)
             .WithExpiryTime(DateTimeOffset.UtcNow.AddYears(10));
 

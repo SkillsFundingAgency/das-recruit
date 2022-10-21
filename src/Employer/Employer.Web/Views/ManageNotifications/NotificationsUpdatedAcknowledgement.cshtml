@@ -31,6 +31,6 @@
             </div>
         </div>
       
-        <a asp-route="@RouteNames.Dashboard_Get" class="govuk-button govuk-!-margin-bottom-6" esfa-automation="create-vacancy">Return to dashboard</a>
+        <a asp-route="@RouteNames.Dashboard_Get" asp-route-employerAccountId="@Model.EmployerAccountId" class="govuk-button govuk-!-margin-bottom-6" esfa-automation="create-vacancy">Return to dashboard</a>
     </div>
 </div>

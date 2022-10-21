@@ -62,7 +62,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData
                 collection.ReplaceOneAsync(
                     filter, 
                     referenceData, 
-                    new UpdateOptions { IsUpsert = true }), 
+                    new ReplaceOptions { IsUpsert = true }), 
                 new Context(nameof(IReferenceDataWriter.UpsertReferenceData)));
         }
 

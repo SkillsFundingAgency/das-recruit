@@ -18,9 +18,9 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         }
 
         [HttpGet("notifications-manage", Name = RouteNames.ManageNotifications_Get)]
-        public async Task<IActionResult> ManageNotifications()
+        public async Task<IActionResult> ManageNotifications([FromRoute] string employerAccountId)
         {
-            var vm = await _orchestrator.GetManageNotificationsViewModelAsync(User.ToVacancyUser());
+            var vm = await _orchestrator.GetManageNotificationsViewModelAsync(User.ToVacancyUser(), employerAccountId);
             return View(vm);
         }
 
@@ -36,7 +36,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
 
             if(!ModelState.IsValid)
             {
-                var vm = await _orchestrator.GetManageNotificationsViewModelAsync(User.ToVacancyUser());
+                var vm = await _orchestrator.GetManageNotificationsViewModelAsync(User.ToVacancyUser(), model.EmployerAccountId);
                 return View(vm);
             }
 
@@ -46,27 +46,27 @@ namespace Esfa.Recruit.Employer.Web.Controllers
                 return RedirectToRoute(RouteNames.NotificationsUpdatedAcknowledgement_Get, vm);
             }
 
-            return RedirectToRoute(RouteNames.NotificationUnsubscribedAcknowledgement_Get);
+            return RedirectToRoute(RouteNames.NotificationUnsubscribedAcknowledgement_Get, new {model.EmployerAccountId});
         }
 
         [HttpGet("notifications-unsubscribe", Name = RouteNames.ConfirmUnsubscribeNotifications_Get)]
-        public IActionResult ConfirmUnsubscribeNotifications()
+        public IActionResult ConfirmUnsubscribeNotifications(ManageNotificationsRouteModel model)
         {
-            return View(new ConfirmUnsubscribeNotificationsViewModel());
+            return View(new ConfirmUnsubscribeNotificationsViewModel{EmployerAccountId = model.EmployerAccountId});
         }
 
         [HttpPost("notifications-unsubscribe", Name = RouteNames.ConfirmUnsubscribeNotifications_Post)]
         public async Task<IActionResult> ConfirmUnsubscribeNotifications(ConfirmUnsubscribeNotificationsEditModel model)
         {
             if(!ModelState.IsValid)
-                return View(new ConfirmUnsubscribeNotificationsViewModel());
+                return View(new ConfirmUnsubscribeNotificationsViewModel{EmployerAccountId = model.EmployerAccountId});
 
             if(model.ConfirmUnsubscribe == false)
-                return RedirectToRoute(RouteNames.ManageNotifications_Get);
+                return RedirectToRoute(RouteNames.ManageNotifications_Get, new {model.EmployerAccountId});
 
             await _orchestrator.UnsubscribeUserNotificationsAsync(User.ToVacancyUser());
             
-            return RedirectToRoute(RouteNames.NotificationUnsubscribedAcknowledgement_Get);
+            return RedirectToRoute(RouteNames.NotificationUnsubscribedAcknowledgement_Get, new {model.EmployerAccountId});
         }
 
         [HttpGet("notifications-acknowledgement", Name = RouteNames.NotificationsUpdatedAcknowledgement_Get)]
@@ -76,9 +76,9 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         }
 
         [HttpGet("notifications-unsubscribed", Name = RouteNames.NotificationUnsubscribedAcknowledgement_Get)]
-        public IActionResult NotificationUnsubscribedAcknowledgement()
+        public IActionResult NotificationUnsubscribedAcknowledgement(ManageNotificationsRouteModel routeModel)
         {
-            return View();
+            return View(routeModel);
         }
     }
 }

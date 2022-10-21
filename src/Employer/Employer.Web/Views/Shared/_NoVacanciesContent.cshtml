@@ -1,4 +1,5 @@
 ﻿@using Microsoft.Extensions.Options
+@model Esfa.Recruit.Employer.Web.RouteModel.VacancyRouteModel
 @inject IOptions<ExternalLinksConfiguration> _externalLinks
 @{
     ViewBag.ZenDeskLabel = "recruit-recruitment";
@@ -28,9 +29,9 @@
                 how much your apprentice will be paid
             </li>
         </ul>
-        <div class="govuk-inset-text">You can use our <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.EmployerRecruitmentApi" target="_blank">recruitment Application Programming Interfaces (APIs)</a> to create adverts using your existing systems or display adverts from Find an apprenticeship on your websites.</div>
+        <div class="govuk-inset-text">You can use our <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.EmployerRecruitmentApi" asp-route-employerAccountId="@Model.EmployerAccountId" target="_blank">recruitment Application Programming Interfaces (APIs)</a> to create adverts using your existing systems or display adverts from Find an apprenticeship on your websites.</div>
 
-        <a asp-route="@RouteNames.EmployerTaskListCreateGet" role="button" class="govuk-button govuk-button--start" esfa-automation="create-vacancy">Start now</a>
+        <a asp-route="@RouteNames.EmployerTaskListCreateGet" asp-route-employerAccountId="@Model.EmployerAccountId" role="button" class="govuk-button govuk-button--start" esfa-automation="create-vacancy">Start now</a>
         
     </div>
 </div>
