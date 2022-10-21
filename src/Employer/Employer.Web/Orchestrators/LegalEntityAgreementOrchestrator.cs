@@ -37,7 +37,9 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             {                
                 HasLegalEntityAgreement = hasLegalEntityAgreement,
                 LegalEntityName = legalEntity.Name,
-                PageInfo = _utility.GetPartOnePageInfo(vacancy)
+                PageInfo = _utility.GetPartOnePageInfo(vacancy),
+                VacancyId = vrm.VacancyId,
+                EmployerAccountId = vrm.EmployerAccountId
             };
         }
 
@@ -48,7 +50,9 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             return new LegalEntityAgreementHardStopViewModel
             {
                 HasLegalEntityAgreement = await _legalEntityAgreementService.HasLegalEntityAgreementAsync(
-                    vacancy.EmployerAccountId, vacancy.AccountLegalEntityPublicHashedId)
+                    vacancy.EmployerAccountId, vacancy.AccountLegalEntityPublicHashedId),
+                EmployerAccountId = vrm.EmployerAccountId,
+                VacancyId = vrm.VacancyId
             };
         }
     }
