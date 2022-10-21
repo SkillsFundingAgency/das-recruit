@@ -1,25 +1,23 @@
 ﻿using Esfa.Recruit.Employer.Web.Configuration;
-using Esfa.Recruit.Shared.Web.Configuration;
 using Esfa.Recruit.Shared.Web.Middleware;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Rewrite;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System.Collections.Generic;
 using System.Globalization;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
-using Esfa.Recruit.Employer.Web.Middleware;
 using Microsoft.ApplicationInsights.Extensibility;
-using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.IdentityModel.Logging;
+using Microsoft.Extensions.Hosting;
+
 
 namespace Esfa.Recruit.Employer.Web
 {
     public partial class Startup
     {
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IOptions<ExternalLinksConfiguration> externalLinks, IApplicationLifetime applicationLifetime, ILogger<Startup> logger)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IOptions<ExternalLinksConfiguration> externalLinks, IHostApplicationLifetime applicationLifetime, ILogger<Startup> logger)
         {
             var cultureInfo = new CultureInfo("en-GB");
 
@@ -185,19 +183,23 @@ namespace Esfa.Recruit.Employer.Web
             app.UseRedirectValidation(opts =>
             {
                 opts.AllowSameHostRedirectsToHttps();
-                opts.AllowedDestinations(GetAllowableDestinations(_authConfig, externalLinks.Value));
+                opts.AllowedDestinations(GetAllowableDestinations(AuthConfig, externalLinks.Value));
             }); //Register this earlier if there's middleware that might redirect.
 
             // Redirect requests to root to the MA site.
             app.UseRootRedirect(externalLinks.Value.ManageApprenticeshipSiteUrl);
             app.UseHttpsRedirection();
-
+            app.UseRouting();
+            app.UseAuthorization();
+            app.UseEndpoints(builder =>
+            {
+                builder.MapControllerRoute("default", RoutePaths.AccountRoutePath);
+            });
             app.UseXDownloadOptions();
             app.UseXRobotsTag(options => options.NoIndex().NoFollow());
 
             app.UseNoCacheHttpHeaders(); // Effectively forces the browser to always request dynamic pages
 
-            app.UseMvc();
         }
 
         private static string[] GetAllowableDestinations(AuthenticationConfiguration authConfig, ExternalLinksConfiguration linksConfig)

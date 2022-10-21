@@ -20,7 +20,7 @@ namespace Esfa.Recruit.Provider.Web.Middleware
 {
     public class ProviderAccountHandler : AuthorizationHandler<ProviderAccountRequirement>
     {
-        private readonly IHostingEnvironment _hostingEnvironment;
+        private readonly IWebHostEnvironment _hostingEnvironment;
         private readonly IProviderVacancyClient _client;
         private readonly IRecruitVacancyClient _vacancyClient;
         private readonly IBlockedOrganisationQuery _blockedOrganisationsRepo;
@@ -29,7 +29,7 @@ namespace Esfa.Recruit.Provider.Web.Middleware
         private readonly IDictionary<string, object> _dict = new Dictionary<string, object>();
         private readonly ITrainingProviderSummaryProvider _trainingProviderSummaryProvider;
 
-        public ProviderAccountHandler(IHostingEnvironment hostingEnvironment, IProviderVacancyClient client, IRecruitVacancyClient vacancyClient, IBlockedOrganisationQuery blockedOrganisationsRepo, ITempDataProvider tempDataProvider, ITrainingProviderSummaryProvider trainingProviderSummaryProvider)
+        public ProviderAccountHandler(IWebHostEnvironment hostingEnvironment, IProviderVacancyClient client, IRecruitVacancyClient vacancyClient, IBlockedOrganisationQuery blockedOrganisationsRepo, ITempDataProvider tempDataProvider, ITrainingProviderSummaryProvider trainingProviderSummaryProvider)
         {
             _hostingEnvironment = hostingEnvironment;
             _client = client;

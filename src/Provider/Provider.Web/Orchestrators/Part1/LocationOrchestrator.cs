@@ -17,7 +17,6 @@ using Esfa.Recruit.Provider.Web.Models;
 using Esfa.Recruit.Shared.Web.Models;
 using Address = Esfa.Recruit.Vacancies.Client.Domain.Entities.Address;
 using Esfa.Recruit.Vacancies.Client.Application.Services;
-using Esfa.Recruit.Shared.Web.ViewModels;
 
 namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
 {

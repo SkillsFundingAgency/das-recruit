@@ -1,7 +1,4 @@
-﻿using System.Linq;
-using Microsoft.AspNetCore.Hosting;
-
-namespace Esfa.Recruit.Shared.Web.Configuration
+﻿namespace Esfa.Recruit.Shared.Web.Configuration
 {
     public static class EnvironmentNames
     {
@@ -16,9 +13,5 @@ namespace Esfa.Recruit.Shared.Web.Configuration
         public static string[] GetTestEnvironmentNames() => new []{ Development, AT, TEST, TEST2 };
         public static string GetTestEnvironmentNamesCommaDelimited() => string.Join(",", GetTestEnvironmentNames());
         public static string GetNonProdEnvironmentNamesCommaDelimited() => string.Join(",", Development, AT, TEST, TEST2, DEMO, PREPROD);
-        public static bool IsProductionEnvironment(IHostingEnvironment hostingEnvironment)
-        {
-            return GetTestEnvironmentNames().Contains(hostingEnvironment.EnvironmentName.ToUpper()) == false;
-        }
     }
 }

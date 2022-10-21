@@ -1,5 +1,4 @@
-﻿using Esfa.Recruit.Vacancies.Client.Infrastructure.Exceptions;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Table;

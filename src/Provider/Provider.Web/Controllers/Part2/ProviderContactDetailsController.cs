@@ -1,5 +1,4 @@
-﻿using System;
-using Esfa.Recruit.Provider.Web.Configuration.Routing;
+﻿using Esfa.Recruit.Provider.Web.Configuration.Routing;
 using Esfa.Recruit.Provider.Web.RouteModel;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;

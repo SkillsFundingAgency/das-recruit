@@ -11,7 +11,6 @@ using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using MongoDB.Driver;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 {

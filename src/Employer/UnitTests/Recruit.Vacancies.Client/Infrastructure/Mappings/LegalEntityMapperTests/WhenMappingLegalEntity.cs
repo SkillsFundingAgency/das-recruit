@@ -1,10 +1,7 @@
-using SFA.DAS.EAS.Account.Api.Types;
 using Xunit;
 using AutoFixture;
 using FluentAssertions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount;
-using System;
-using System.Collections.Generic;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Responses;
 
 namespace UnitTests.Recruit.Vacancies.Client.Infrastructure.Mappings.LegalEntityMapperTests

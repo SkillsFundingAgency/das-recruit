@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using Esfa.Recruit.Provider.Web.Exceptions;
 using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Provider.Web.ViewModels.Part1.Employer;
-using Esfa.Recruit.Shared.Web.Models;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 
 namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1

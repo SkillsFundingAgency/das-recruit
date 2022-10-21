@@ -64,11 +64,11 @@
 </dl>
 
 <div class="govuk-button-group">
-    <a asp-route="@RouteNames.DisplayFullVacancy_Get" class="govuk-link">View advert</a>
-    <a asp-show="@Model.CanClone" asp-route="@RouteNames.CloneVacancy_Get" class="govuk-link">Clone advert</a>
-    <a asp-show="@Model.CanShowEditVacancyLink" asp-route="@RouteNames.VacancyEditDates_Get" class="govuk-link">Edit advert dates</a>
-    <a asp-show="@Model.CanShowCloseVacancyLink" asp-route="@RouteNames.CloseVacancy_Get" class="govuk-link">Close advert</a>
-    <a asp-show="@Model.CanShowDeleteLink" asp-route="@RouteNames.DeleteVacancy_Get" class="govuk-link">Delete advert</a>
+    <a asp-route="@RouteNames.DisplayFullVacancy_Get" asp-all-route-data="@Model.RouteDictionary" class="govuk-link">View advert</a>
+    <a asp-show="@Model.CanClone" asp-route="@RouteNames.CloneVacancy_Get" asp-all-route-data="@Model.RouteDictionary" class="govuk-link">Clone advert</a>
+    <a asp-show="@Model.CanShowEditVacancyLink" asp-route="@RouteNames.VacancyEditDates_Get" asp-all-route-data="@Model.RouteDictionary" class="govuk-link">Edit advert dates</a>
+    <a asp-show="@Model.CanShowCloseVacancyLink" asp-route="@RouteNames.CloseVacancy_Get" asp-all-route-data="@Model.RouteDictionary" class="govuk-link">Close advert</a>
+    <a asp-show="@Model.CanShowDeleteLink" asp-route="@RouteNames.DeleteVacancy_Get" asp-all-route-data="@Model.RouteDictionary" class="govuk-link">Delete advert</a>
 </div>
 
 <div asp-show="@Model.CanShowVacancyAnalytics">
@@ -92,6 +92,6 @@
 
 <div class="govuk-body">
     <div class="govuk-!-margin-top-6">
-        <a asp-route="@RouteNames.Vacancies_Get" class="govuk-link">Return to dashboard</a>
+        <a asp-route="@RouteNames.Vacancies_Get" asp-route-employerAccountId="@Model.EmployerAccountId" class="govuk-link">Return to dashboard</a>
     </div>
 </div>

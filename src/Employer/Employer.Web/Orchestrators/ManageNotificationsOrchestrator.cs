@@ -1,4 +1,3 @@
-using System;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.ViewModels.ManageNotifications;
 using Esfa.Recruit.Shared.Web.Orchestrators;
@@ -28,11 +27,12 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
         {
             _recruitVacancyClient = recruitVacancyClient;
         }
-        public async Task<ManageNotificationsViewModel> GetManageNotificationsViewModelAsync(VacancyUser vacancyUser)
+        
+        public async Task<ManageNotificationsViewModel> GetManageNotificationsViewModelAsync(VacancyUser vacancyUser, string employerAccountId)
         {
             var preferences = await _recruitVacancyClient.GetUserNotificationPreferencesAsync(vacancyUser.UserId);
 
-            return GetViewModelFromDomainModel(preferences);
+            return GetViewModelFromDomainModel(preferences, employerAccountId);
         }
 
         public async Task<OrchestratorResponse> UpdateUserNotificationPreferencesAsync(ManageNotificationsEditModel editModel, VacancyUser vacancyUser)
@@ -62,6 +62,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
         {
             return new ManageNotificationsAcknowledgementViewModel
             {
+                EmployerAccountId = editModel.EmployerAccountId,
                 IsApplicationSubmittedSelected = editModel.IsApplicationSubmittedSelected,
                 IsVacancySentForEmployerReviewSelected = editModel.IsVacancySentForEmployerReviewSelected,
                 IsVacancyClosingSoonSelected = editModel.IsVacancyClosingSoonSelected,
@@ -90,10 +91,11 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             return targetModel;
         }
 
-        private ManageNotificationsViewModel GetViewModelFromDomainModel(UserNotificationPreferences preferences)
+        private ManageNotificationsViewModel GetViewModelFromDomainModel(UserNotificationPreferences preferences, string employerAccountId)
         {
             return new ManageNotificationsViewModel
             {
+                EmployerAccountId = employerAccountId,
                 IsVacancyRejectedSelected = (preferences.NotificationTypes & NotificationTypes.VacancyRejected) == NotificationTypes.VacancyRejected,
                 IsVacancyClosingSoonSelected = (preferences.NotificationTypes & NotificationTypes.VacancyClosingSoon) == NotificationTypes.VacancyClosingSoon,
                 IsApplicationSubmittedSelected = (preferences.NotificationTypes & NotificationTypes.ApplicationSubmitted) == NotificationTypes.ApplicationSubmitted,

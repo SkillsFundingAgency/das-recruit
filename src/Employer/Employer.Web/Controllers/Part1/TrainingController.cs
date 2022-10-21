@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Extensions;
-using Esfa.Recruit.Employer.Web.Models;
 using Esfa.Recruit.Employer.Web.Orchestrators.Part1;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.Training;
@@ -45,7 +44,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
 
             if (vm.IsUsersFirstVacancy &&
                 userHasFoundTraining == false)
-                return RedirectToRoute(RouteNames.Training_First_Time_Get);
+                return RedirectToRoute(RouteNames.Training_First_Time_Get, new {vrm.VacancyId, vrm.EmployerAccountId});
 
             if (clearTraining)
                 vm.SelectedProgrammeId = "";
@@ -73,7 +72,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
                 return View(vm);
             }
 
-            return RedirectToRoute(RouteNames.Training_Confirm_Get, new {programmeId = m.SelectedProgrammeId, wizard});
+            return RedirectToRoute(RouteNames.Training_Confirm_Get, new {programmeId = m.SelectedProgrammeId, wizard, m.VacancyId, m.EmployerAccountId});
         }
 
         [HttpGet("training-first-vacancy", Name = RouteNames.Training_First_Time_Get)]
@@ -94,15 +93,15 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
             }
 
             if (m.HasFoundTraining.Value)
-                return RedirectToRoute(RouteNames.Training_Get, new {hasTraining = true});
+                return RedirectToRoute(RouteNames.Training_Get, new {hasTraining = true, m.VacancyId, m.EmployerAccountId});
 
-            return RedirectToRoute(RouteNames.Training_Help_Get);
+            return RedirectToRoute(RouteNames.Training_Help_Get, new {m.VacancyId, m.EmployerAccountId});
         }
 
         [HttpGet("training-help", Name = RouteNames.Training_Help_Get)]
         public IActionResult TrainingHelp(VacancyRouteModel vrm)
         {
-            return View();
+            return View(vrm);
         }
 
         [HttpGet("training-confirm", Name = RouteNames.Training_Confirm_Get)]
@@ -150,8 +149,8 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
             }
 
             return wizard
-                ? RedirectToRoute(RouteNames.TrainingProvider_Select_Get)
-                : _feature.IsFeatureEnabled(FeatureNames.EmployerTaskList) ? RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet) : RedirectToRoute(RouteNames.Vacancy_Preview_Get);            
+                ? RedirectToRoute(RouteNames.TrainingProvider_Select_Get, new {m.VacancyId, m.EmployerAccountId})
+                : RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet, new {m.VacancyId, m.EmployerAccountId});            
         }
 
         private async Task<IActionResult> ProgrammeNotFound(TrainingEditModel m, bool wizard)

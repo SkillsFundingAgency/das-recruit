@@ -17,18 +17,16 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
     {
         private const string VacancyTitleRoute = "vacancies/{vacancyId:guid}/title";
         private readonly TitleOrchestrator _orchestrator;
-        private readonly IFeature _feature;
 
-        public TitleController(TitleOrchestrator orchestrator, IFeature feature)
+        public TitleController(TitleOrchestrator orchestrator)
         {
             _orchestrator = orchestrator;
-            _feature = feature;
         }
 
         [HttpGet("create-vacancy", Name = RouteNames.CreateVacancy_Get)]
-        public async Task<IActionResult> Title()
+        public IActionResult Title([FromRoute] string employerAccountId)
         {
-            var vm = _orchestrator.GetTitleViewModel();
+            var vm = _orchestrator.GetTitleViewModel(employerAccountId);
             vm.PageInfo.SetWizard();
             return View(vm);
         }
@@ -58,19 +56,11 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
                 return View(vm);
             }
 
-            if (_feature.IsFeatureEnabled(FeatureNames.EmployerTaskList))
+            if (wizard)
             {
-                if (wizard)
-                {
-                    return RedirectToRoute(RouteNames.Employer_Get ,new { vacancyId = response.Data });
-                }
-                return RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet);
+                return RedirectToRoute(RouteNames.Employer_Get,new { vacancyId = response.Data, m.EmployerAccountId });
             }
-            
-            return wizard
-                ? RedirectToRoute(RouteNames.Training_Get, new { vacancyId = response.Data })
-                : RedirectToRoute(RouteNames.Vacancy_Preview_Get);
+            return RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet,new { vacancyId = response.Data, m.EmployerAccountId });
         }
-
     }
 }

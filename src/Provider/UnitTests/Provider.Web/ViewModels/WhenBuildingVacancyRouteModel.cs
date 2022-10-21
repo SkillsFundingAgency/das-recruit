@@ -24,7 +24,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.ViewModels
         }
 
         [Test, AutoData]
-        public void Then_No_VacancyId_Then_Not_Added_To_Disctionary(int ukprn)
+        public void Then_No_VacancyId_Then_Not_Added_To_Dictionary(int ukprn)
         {
             var actual = new VacancyRouteModel
             {

@@ -8,10 +8,8 @@ using Esfa.Recruit.Employer.Web.Orchestrators.Part1;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.TrainingProvider;
 using Esfa.Recruit.Shared.Web.FeatureToggle;
-using Esfa.Recruit.Shared.Web.Mappers;
 using Esfa.Recruit.Shared.Web.Orchestrators;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
@@ -67,8 +65,8 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
                 if (response.Success)
                 {
                     return response.Data.FoundTrainingProviderUkprn.HasValue
-                        ? RedirectToRoute(RouteNames.TrainingProvider_Confirm_Get, new { ukprn = response.Data.FoundTrainingProviderUkprn.Value, wizard })
-                        : GetRedirectToNextPage(wizard);
+                        ? RedirectToRoute(RouteNames.TrainingProvider_Confirm_Get, new { ukprn = response.Data.FoundTrainingProviderUkprn.Value, wizard, m.VacancyId, m.EmployerAccountId })
+                        : GetRedirectToNextPage(wizard, m);
                 }
 
                 AddTrainingProviderErrorsToModelState(m.SelectionType, m.Ukprn, response, ModelState);
@@ -85,7 +83,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
             var provider = await _orchestrator.GetProviderAsync(ukprn);
             
             if(provider == null)
-                return RedirectToRoute(RouteNames.TrainingProvider_Select_Get);
+                return RedirectToRoute(RouteNames.TrainingProvider_Select_Get, new {vrm.VacancyId, vrm.EmployerAccountId});
             
             var vm = await _orchestrator.GetConfirmViewModelAsync(vrm, provider.Ukprn);
             vm.PageInfo.SetWizard(wizard);
@@ -101,7 +99,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
                 var response = await _orchestrator.PostConfirmEditModelAsync(m, User.ToVacancyUser());
 
                 if(response.Success)
-                    return GetRedirectToNextPage(wizard);
+                    return GetRedirectToNextPage(wizard, m);
                 
                 AddTrainingProviderErrorsToModelState(TrainingProviderSelectionType.Ukprn, m.Ukprn, response, ModelState);
             }
@@ -111,21 +109,14 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
             return View(ViewNames.SelectTrainingProvider, vm);
         }
         
-        private IActionResult GetRedirectToNextPage(bool wizard)
+        private IActionResult GetRedirectToNextPage(bool wizard, VacancyRouteModel vrm)
         {
-            if (_feature.IsFeatureEnabled(FeatureNames.EmployerTaskList))
+            if (wizard)
             {
-                if (wizard)
-                {
-                    return RedirectToRoute(RouteNames.ShortDescription_Get);
-                }
-
-                return RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet);
+                return RedirectToRoute(RouteNames.ShortDescription_Get, new { wizard, vrm.VacancyId, vrm.EmployerAccountId});
             }
-            
-            return wizard
-                ? RedirectToRoute(RouteNames.NumberOfPositions_Get)
-                : RedirectToRoute(RouteNames.Vacancy_Preview_Get);
+
+            return RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet, new { vrm.VacancyId, vrm.EmployerAccountId});
         }
 
         public void AddTrainingProviderErrorsToModelState(TrainingProviderSelectionType selectionType, string ukprn, OrchestratorResponse response, ModelStateDictionary modelState)

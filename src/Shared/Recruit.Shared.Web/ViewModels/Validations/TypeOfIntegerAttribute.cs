@@ -1,6 +1,5 @@
 ﻿namespace Esfa.Recruit.Shared.Web.ViewModels.Validations
 {
-    using System;
     using System.ComponentModel.DataAnnotations;
 
     public class TypeOfIntegerAttribute : ValidationAttribute
