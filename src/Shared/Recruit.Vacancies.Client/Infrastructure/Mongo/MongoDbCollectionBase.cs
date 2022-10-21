@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Linq;
 using System.Security.Authentication;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.Configuration;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MongoDB.Bson;
@@ -16,7 +14,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo
     {
         private readonly string _dbName;
         private readonly string _collectionName;
-        private readonly IConfiguration _configuration;
         private readonly MongoDbConnectionDetails _config;
         private readonly Lazy<ILogger> _mongoCommandLogger;
         private readonly string[] _excludedCommands = { "isMaster", "buildInfo", "saslStart", "saslContinue", "getLastError" };

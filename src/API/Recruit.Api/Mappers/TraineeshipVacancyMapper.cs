@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Linq;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using SFA.DAS.Recruit.Api.Models;
 using ApplicationMethod = Esfa.Recruit.Vacancies.Client.Domain.Entities.ApplicationMethod;
 using DurationUnit = Esfa.Recruit.Vacancies.Client.Domain.Entities.DurationUnit;
 using EmployerNameOption = Esfa.Recruit.Vacancies.Client.Domain.Entities.EmployerNameOption;
-using QualificationWeighting = Esfa.Recruit.Vacancies.Client.Domain.Entities.QualificationWeighting;
-using WageType = Esfa.Recruit.Vacancies.Client.Domain.Entities.WageType;
 
 namespace SFA.DAS.Recruit.Api.Mappers
 {

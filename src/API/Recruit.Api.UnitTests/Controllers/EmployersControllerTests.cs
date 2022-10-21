@@ -1,4 +1,3 @@
-using System;
 using System.Threading.Tasks;
 using FluentAssertions;
 using SFA.DAS.Recruit.Api.Controllers;

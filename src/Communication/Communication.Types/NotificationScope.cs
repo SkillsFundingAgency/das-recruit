@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Communication.Types
+﻿namespace Communication.Types
 {
     /// <summary>
     /// used to indicate whether a user is interested in communications that relate directly

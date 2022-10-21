@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-
 namespace Esfa.Recruit.Provider.Web.ViewModels.Part1.Employer
 {
     public class EmployerViewModel

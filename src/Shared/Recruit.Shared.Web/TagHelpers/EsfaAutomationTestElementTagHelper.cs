@@ -2,6 +2,7 @@
 using Esfa.Recruit.Shared.Web.Configuration;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Razor.TagHelpers;
+using Microsoft.Extensions.Hosting;
 
 namespace Esfa.Recruit.Shared.Web.TagHelpers
 {
@@ -10,9 +11,9 @@ namespace Esfa.Recruit.Shared.Web.TagHelpers
     {
         private const string TagAttributeName = "esfa-automation";
         private const string DataAutomationAttributeName = "data-automation";
-        private readonly IHostingEnvironment _env;
+        private readonly IWebHostEnvironment _env;
 
-        public EsfaAutomationTestElementTagHelper(IHostingEnvironment env)
+        public EsfaAutomationTestElementTagHelper(IWebHostEnvironment env)
         {
             _env = env;
         }

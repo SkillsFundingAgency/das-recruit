@@ -3,6 +3,7 @@ using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Extensions;
 using Esfa.Recruit.Employer.Web.Models;
+using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Shared.Web.Mappers;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -12,8 +13,8 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
 {
     public abstract class EmployerControllerBase : Controller
     {
-        private readonly IHostingEnvironment _hostingEnvironment;
-        protected EmployerControllerBase(IHostingEnvironment hostingEnvironment)
+        private readonly IWebHostEnvironment _hostingEnvironment;
+        protected EmployerControllerBase(IWebHostEnvironment hostingEnvironment)
         {
             _hostingEnvironment = hostingEnvironment;
         }
@@ -40,12 +41,12 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
             Response.Cookies.DeleteSessionCookie(_hostingEnvironment, CookieNames.VacancyEmployerInfo);
         }
 
-        protected IActionResult CancelAndRedirect(bool wizard)
+        protected IActionResult CancelAndRedirect(bool wizard, VacancyRouteModel vrm)
         {
             DeleteVacancyEmployerInfoCookie();
             return wizard 
-                ? RedirectToRoute(RouteNames.Vacancies_Get) 
-                : RedirectToRoute(RouteNames.Vacancy_Preview_Get, Anchors.AboutEmployerSection);
+                ? RedirectToRoute(RouteNames.Vacancies_Get, new {vrm.EmployerAccountId}) 
+                : RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet, new {vrm.VacancyId, vrm.EmployerAccountId});
         }
     }    
 }

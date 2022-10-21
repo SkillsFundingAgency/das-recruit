@@ -12,12 +12,13 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Rewrite;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Hosting;
 
 namespace Esfa.Recruit.Qa.Web
 {
     public partial class Startup
     {
-        public void Configure(ILogger<Startup> logger, IApplicationBuilder app, IHostingEnvironment env, IApplicationLifetime applicationLifetime)
+        public void Configure(ILogger<Startup> logger, IApplicationBuilder app, IWebHostEnvironment env, IHostApplicationLifetime applicationLifetime)
         {
             applicationLifetime.ApplicationStarted.Register(() => logger.LogInformation("Host fully started"));
             applicationLifetime.ApplicationStopping.Register(() => logger.LogInformation("Host shutting down...waiting to complete requests."));
@@ -99,6 +100,13 @@ namespace Esfa.Recruit.Qa.Web
 
             app.UseStaticFiles();
 
+            app.UseRouting();
+            app.UseAuthorization();
+            app.UseEndpoints(builder =>
+            {
+                builder.MapControllerRoute("default", RoutePaths.VacancyReviewsRoutePath);
+            });
+            
              //Registered after static files, to set headers for dynamic content.
             app.UseXfo(xfo => xfo.Deny());
             app.UseXDownloadOptions();
@@ -106,7 +114,6 @@ namespace Esfa.Recruit.Qa.Web
 
             app.UseNoCacheHttpHeaders(); // Affectively forces the browser to always request dynamic pages
 
-            app.UseMvc();
         }
 
         private static string[] GetAllowableDestinations(AuthenticationConfiguration authConfig, ExternalLinksConfiguration linksConfig)

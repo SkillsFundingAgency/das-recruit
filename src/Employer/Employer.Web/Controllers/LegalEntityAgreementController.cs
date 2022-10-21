@@ -14,14 +14,12 @@ namespace Esfa.Recruit.Employer.Web.Controllers
     public class LegalEntityAgreementController : EmployerControllerBase
     {
         private readonly LegalEntityAgreementOrchestrator _orchestrator;
-        private readonly IFeature _feature;
 
         public LegalEntityAgreementController(
-            LegalEntityAgreementOrchestrator orchestrator, IHostingEnvironment hostingEnvironment, IFeature feature)
+            LegalEntityAgreementOrchestrator orchestrator, IWebHostEnvironment hostingEnvironment)
             : base(hostingEnvironment)
         {
             _orchestrator = orchestrator;
-            _feature = feature;
         }
 
         [HttpGet("legal-entity-agreement", Name = RouteNames.LegalEntityAgreement_SoftStop_Get)]
@@ -34,16 +32,12 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             if (vm.HasLegalEntityAgreement == false)
                 return View(vm);
 
-            if (_feature.IsFeatureEnabled(FeatureNames.EmployerTaskList))
+            if (vm.PageInfo.HasCompletedPartOne)
             {
-                if (vm.PageInfo.HasCompletedPartOne)
-                {
-                    return RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet);
-                }
-                return RedirectToRoute(RouteNames.AboutEmployer_Get, new { Wizard = wizard });
+                return RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet, new {vrm.VacancyId, vrm.EmployerAccountId});
             }
-            
-            return RedirectToRoute(RouteNames.Location_Get, new {Wizard = wizard});
+            return RedirectToRoute(RouteNames.AboutEmployer_Get, new { vrm.VacancyId, vrm.EmployerAccountId, wizard });
+
         }
 
         [HttpGet("legal-entity-agreement-stop", Name = RouteNames.LegalEntityAgreement_HardStop_Get)]
@@ -54,7 +48,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             if(vm.HasLegalEntityAgreement == false)
                 return View(vm);
 
-            return RedirectToRoute(RouteNames.Dashboard_Get);
+            return RedirectToRoute(RouteNames.Dashboard_Get, new {vrm.EmployerAccountId});
         }
     }
 }

@@ -1,10 +1,12 @@
 ﻿using System.Collections.Generic;
+using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
 namespace Esfa.Recruit.Employer.Web.ViewModels.Part2.Qualifications
 {
-    public class QualificationViewModel
+    public class QualificationViewModel : VacancyRouteModel
     {
+        public int Index { get; set; }
         public string Title { get; internal set; }
 
         public IList<string> QualificationTypes { get; set; }
@@ -24,5 +26,6 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Part2.Qualifications
         };
 
         public bool IsTaskListCompleted { get ; set ; }
+        public string PostRoute { get; set; }
     }
 }

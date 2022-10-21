@@ -10,6 +10,14 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.Title
     {
         [FromRoute]
         public Guid? VacancyId { get; set; }
+        private string _employerAccountId;
+
+        [FromRoute]
+        public string EmployerAccountId
+        {
+            get => _employerAccountId;
+            set => _employerAccountId = value.ToUpper();
+        }
         public string Title { get; set; }
         public ReviewSummaryViewModel Review { get; set; } = new ReviewSummaryViewModel();
         public IList<string> OrderedFieldNames => new List<string>
@@ -28,5 +36,21 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.Title
                                                    (!string.IsNullOrEmpty(ReferredUkprn) ||
                                                     !string.IsNullOrEmpty(ReferredProgrammeId));
         public string TrainingTitle { get; set; }
+        
+        public Dictionary<string, string> RouteDictionary
+        {
+            get
+            {
+                var routeDictionary = new Dictionary<string, string>
+                {
+                    {"EmployerAccountId", EmployerAccountId}
+                };
+                if(VacancyId.HasValue)
+                {
+                    routeDictionary.Add("VacancyId", VacancyId.ToString());
+                }
+                return routeDictionary;
+            }
+        }
     }
 }

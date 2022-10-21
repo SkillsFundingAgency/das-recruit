@@ -14,7 +14,6 @@ using Esfa.Recruit.Shared.Web.Orchestrators;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Shared.Web.Mappers;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyAnalytics;
-using Esfa.Recruit.Shared.Web.FeatureToggle;
 using Employer.Web.Configuration;
 using Esfa.Recruit.Shared.Web.Helpers;
 
@@ -49,6 +48,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
         {
             var viewModel = new ManageVacancyViewModel();
 
+            viewModel.VacancyId = vacancy.Id;
+            viewModel.EmployerAccountId = vacancy.EmployerAccountId;
             viewModel.Title = vacancy.Title;
             viewModel.Status = vacancy.Status;
             viewModel.VacancyReference = vacancy.VacancyReference.Value.ToString();
@@ -92,7 +93,9 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             viewModel.Applications = new VacancyApplicationsViewModel
             {
                 Applications = applications,
-                ShowDisability = vacancy.IsDisabilityConfident
+                ShowDisability = vacancy.IsDisabilityConfident,
+                VacancyId = vacancy.Id,
+                EmployerAccountId = vacancy.EmployerAccountId
             };
 
             return viewModel;

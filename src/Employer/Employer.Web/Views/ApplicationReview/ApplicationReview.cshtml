@@ -1,6 +1,6 @@
 ﻿@using System.Net
 @using Esfa.Recruit.Vacancies.Client.Domain.Entities
-@model Esfa.Recruit.Shared.Web.ViewModels.ApplicationReview.ApplicationReviewViewModel
+@model Esfa.Recruit.Employer.Web.ViewModels.ApplicationReview.ApplicationReviewViewModel
 @{ 
     ViewBag.Vpv = "/recruitment/employer/page-application-review";
     ViewBag.Title = "Review application";
@@ -199,10 +199,10 @@
             <p class="govuk-body">@Model.Status.Value.GetDisplayName()</p>
             <p class="govuk-body">@Model.CandidateFeedback</p>
 
-            <a asp-route="@RouteNames.VacancyManage_Get" class="govuk-button">Return to advert</a>
+            <a asp-route="@RouteNames.VacancyManage_Get" asp-route-employerAccountId="@Model.EmployerAccountId" class="govuk-button">Return to advert</a>
         </div>
 
-        <form asp-show="@Model.CanChangeOutcome" asp-route="@RouteNames.ApplicationReview_Post" class="govuk-!-margin-top-6">
+        <form asp-show="@Model.CanChangeOutcome" asp-route="@RouteNames.ApplicationReview_Post" asp-all-route-data="@Model.ApplicationRouteDictionary" class="govuk-!-margin-top-6">
             <div esfa-validation-marker-for="Outcome" class="govuk-form-group">
                 <fieldset class="govuk-fieldset">
                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
@@ -235,7 +235,7 @@
             <div class="govuk-form-group hide-print">
                 <button type="submit" class="govuk-button">Save</button>
 
-                <a asp-route="@RouteNames.VacancyManage_Get" class="govuk-link das-button-link">Cancel</a>
+                <a asp-route="@RouteNames.VacancyManage_Get" asp-all-route-data="@Model.RouteDictionary" class="govuk-link das-button-link">Cancel</a>
             </div>
         </form>
     </div>

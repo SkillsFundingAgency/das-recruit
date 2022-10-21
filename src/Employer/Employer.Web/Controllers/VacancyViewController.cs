@@ -52,9 +52,9 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         {
             if (_utility.IsTaskListCompleted(vacancy))
             {
-                return RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet);
+                return RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet, new {vacancyId = vacancy.Id, vacancy.EmployerAccountId});
             }
-            return RedirectToRoute(RouteNames.EmployerTaskListGet);
+            return RedirectToRoute(RouteNames.EmployerTaskListGet, new {vacancyId = vacancy.Id, vacancy.EmployerAccountId});
         }
     }
 }

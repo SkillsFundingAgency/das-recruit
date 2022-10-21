@@ -13,8 +13,8 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
 {
     public class EmployerControllerBase : Controller
     {
-        private readonly IHostingEnvironment _hostingEnvironment;
-        protected EmployerControllerBase(IHostingEnvironment hostingEnvironment)
+        private readonly IWebHostEnvironment _hostingEnvironment;
+        protected EmployerControllerBase(IWebHostEnvironment hostingEnvironment)
         {
             _hostingEnvironment = hostingEnvironment;
         }

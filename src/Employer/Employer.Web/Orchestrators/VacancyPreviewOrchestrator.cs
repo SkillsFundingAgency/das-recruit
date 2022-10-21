@@ -69,6 +69,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             var vm = new VacancyPreviewViewModel();
             await _vacancyDisplayMapper.MapFromVacancyAsync(vm, vacancy);
 
+            vm.VacancyId = vacancy.Id;
+            vm.EmployerAccountId = vacancy.EmployerAccountId;
             vm.RejectedReason = vacancy.EmployerRejectedReason;
             vm.HasProgramme = vacancy.ProgrammeId != null;
             vm.HasWage = vacancy.Wage != null;
