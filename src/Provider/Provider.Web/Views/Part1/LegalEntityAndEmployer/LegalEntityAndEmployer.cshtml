@@ -54,7 +54,11 @@
                     <p class="govuk-body govuk-!-margin-top-1">
                         <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.LegalEntityEmployer_Get">Clear search</a>
                     </p>
-                    <p class="govuk-body">@Model.SearchResultsCaption </p>
+                    @if (Model.NoOfSearchResults == 0)
+                    {
+                        <p class="govuk-body">@Model.SearchResultsCaption </p>
+                    }
+                    
                 }
             </div>
         </form>

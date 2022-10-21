@@ -36,7 +36,7 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.Part1.LegalEntityAndEmployer
 
         public bool CanShowSearchPanel => TotalNumberOfLegalEntities > LimitForNotShowingSearchPanel;
 
-        public string SearchResultsCaption => $"{NoOfSearchResults} matches for '{SearchTerm}'";
+        public string SearchResultsCaption => $"0 matches for '{SearchTerm}'";
 
         public int TotalNumberOfLegalEntities { get; internal set; }
 
