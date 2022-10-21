@@ -20,13 +20,13 @@
             <p>
                 <strong class="govuk-warning-text__text">
                     Only account owners can accept DfE agreements. If you’re not sure who the owner is, you can
-                    <a asp-route="@RouteNames.Dashboard_AccountsAgreements" class="govuk-link">check your team details.</a>
+                    <a asp-route="@RouteNames.Dashboard_AccountsAgreements" asp-route-employerAccountId="@Model.EmployerAccountId"  class="govuk-link">check your team details.</a>
                 </strong>
             </p>
         </div>
         <div class="govuk-button-group">
-            <a asp-route="@RouteNames.Dashboard_AccountsAgreements" class="govuk-button">Review agreement</a>
-            <a asp-route="@RouteNames.Location_Get" class="govuk-link govuk-link--no-visited-state">Continue anyway</a>
+            <a asp-route="@RouteNames.Dashboard_AccountsAgreements" asp-route-employerAccountId="@Model.EmployerAccountId" class="govuk-button">Review agreement</a>
+            <a asp-route="@RouteNames.Location_Get" asp-all-route-data="@Model.RouteDictionary" class="govuk-link govuk-link--no-visited-state">Continue anyway</a>
         </div>
     </div>
 </div>
