@@ -1,8 +1,0 @@
-{
-    "_id" : "RecruitWebJobsSystem",
-    "disabledJobs" : ["VacancyAnalyticsSummaryGeneratorJob"],
-    "queryStoreDocumentsStaleByDays" : 90,
-    "draftVacanciesStaleByDays" : 180,
-    "referredVacanciesStaleByDays" : 90,
-	  "hardDeleteCommunicationMessagesStaleByDays" : 180
-}

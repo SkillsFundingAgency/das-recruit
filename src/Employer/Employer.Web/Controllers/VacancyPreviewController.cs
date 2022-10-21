@@ -17,12 +17,10 @@ namespace Esfa.Recruit.Employer.Web.Controllers
     public class VacancyPreviewController : Controller
     {
         private readonly VacancyPreviewOrchestrator _orchestrator;
-        private readonly IFeature _feature;
 
-        public VacancyPreviewController(VacancyPreviewOrchestrator orchestrator, IFeature feature)
+        public VacancyPreviewController(VacancyPreviewOrchestrator orchestrator)
         {
             _orchestrator = orchestrator;
-            _feature = feature;
         }
 
         [HttpGet("advert-preview", Name = RouteNames.VacancyAdvertPreview)]
@@ -73,7 +71,8 @@ namespace Esfa.Recruit.Employer.Web.Controllers
 
                 return RedirectToRoute(m.SubmitToEsfa.GetValueOrDefault()
                     ? RouteNames.ApproveJobAdvert_Get
-                    : RouteNames.RejectJobAdvert_Get);
+                    : RouteNames.RejectJobAdvert_Get,
+                    new {m.VacancyId, m.EmployerAccountId});
             }
 
             var viewModel = await _orchestrator.GetVacancyPreviewViewModelAsync(m);
@@ -98,10 +97,10 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             if (ModelState.IsValid)
             {
                 if (response.Data.IsSubmitted)
-                    return RedirectToRoute(RouteNames.Submitted_Index_Get);
+                    return RedirectToRoute(RouteNames.Submitted_Index_Get, new {m.VacancyId, m.EmployerAccountId});
 
                 if (response.Data.HasLegalEntityAgreement == false)
-                    return RedirectToRoute(RouteNames.LegalEntityAgreement_HardStop_Get);
+                    return RedirectToRoute(RouteNames.LegalEntityAgreement_HardStop_Get, new {m.VacancyId, m.EmployerAccountId});
 
                 throw new Exception("Unknown submit state");
             }
@@ -110,12 +109,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             viewModel.SoftValidationErrors = null;
             viewModel.SetSectionStates(viewModel, ModelState);
 
-            if (_feature.IsFeatureEnabled(FeatureNames.EmployerTaskList))
-            {
-                return RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet);
-            }
-            
-            return View(ViewNames.VacancyPreview, viewModel);
+            return RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet, new {m.VacancyId, m.EmployerAccountId});
         }
 
         [HttpGet("approve-advert", Name = RouteNames.ApproveJobAdvert_Get)]
@@ -143,33 +137,20 @@ namespace Esfa.Recruit.Employer.Web.Controllers
                 if (ModelState.IsValid)
                 {
                     if (response.Data.IsSubmitted)
-                        return RedirectToRoute(RouteNames.JobAdvertConfirmation_Get);
+                        return RedirectToRoute(RouteNames.JobAdvertConfirmation_Get, new {vm.VacancyId, vm.EmployerAccountId});
 
                     if (response.Data.HasLegalEntityAgreement == false)
-                        return RedirectToRoute(RouteNames.LegalEntityAgreement_HardStop_Get);
+                        return RedirectToRoute(RouteNames.LegalEntityAgreement_HardStop_Get, new {vm.VacancyId, vm.EmployerAccountId});
 
                     throw new Exception("Unknown submit state");
                 }
             }
             else
             {
-                if (_feature.IsFeatureEnabled(FeatureNames.EmployerTaskList))
-                {
-                    return RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet);
-                }
-                return RedirectToRoute(RouteNames.Vacancy_Preview_Get, new { VacancyId = vm.VacancyId, SubmitToEfsa = true });
+                return RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet, new {vm.VacancyId, vm.EmployerAccountId});
             }
-
-            if (_feature.IsFeatureEnabled(FeatureNames.EmployerTaskList))
-            {
-                return RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet);
-            }
-
-            var viewModel = await _orchestrator.GetVacancyPreviewViewModelAsync(vm);
-            viewModel.SoftValidationErrors = null;
-            viewModel.SetSectionStates(viewModel, ModelState);
-
-            return View(ViewNames.VacancyPreview, viewModel);
+            
+            return RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet, new {vm.VacancyId, vm.EmployerAccountId});
         }
 
         [HttpGet("reject-advert", Name = RouteNames.RejectJobAdvert_Get)]
@@ -200,16 +181,12 @@ namespace Esfa.Recruit.Employer.Web.Controllers
 
                 if (response.Data.IsRejected)
                 {
-                    return RedirectToRoute(RouteNames.JobAdvertConfirmation_Get);
+                    return RedirectToRoute(RouteNames.JobAdvertConfirmation_Get, new {vm.VacancyId, vm.EmployerAccountId});
                 }
             }
-            if (_feature.IsFeatureEnabled(FeatureNames.EmployerTaskList))
-            {
-                return RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet);
+            
+            return RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet, new {vm.VacancyId, vm.EmployerAccountId});
             }
-
-            return RedirectToRoute(RouteNames.Vacancy_Preview_Get, new { VacancyId = vm.VacancyId, SubmitToEfsa = false });
-        }
 
         [HttpGet("confirmation-advert", Name = RouteNames.JobAdvertConfirmation_Get)]
         public async Task<IActionResult> ConfirmationJobAdvert(VacancyRouteModel vrm)

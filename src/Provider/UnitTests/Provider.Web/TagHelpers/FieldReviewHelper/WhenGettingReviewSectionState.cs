@@ -1,4 +1,3 @@
-using Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview;
 using FluentAssertions;
 using NUnit.Framework;
 using SFA.DAS.Testing.AutoFixture;

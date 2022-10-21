@@ -50,6 +50,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             var vm = new TrainingViewModel
             {
                 VacancyId = vacancy.Id,
+                EmployerAccountId = vrm.EmployerAccountId,
                 SelectedProgrammeId = vacancy.ProgrammeId,
                 Programmes = programmes.ToViewModel(),
                 IsUsersFirstVacancy = isUsersFirstVacancyTask.Result && vacancy.TrainingProvider == null,
@@ -96,6 +97,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 
             return new ConfirmTrainingViewModel
             {
+                VacancyId = vrm.VacancyId,
+                EmployerAccountId = vrm.EmployerAccountId,
                 ProgrammeId = programme.Id,
                 ApprenticeshipLevel = programme.ApprenticeshipLevel,
                 TrainingTitle = programme.Title,

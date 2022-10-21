@@ -118,7 +118,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
                         & filterBuilder.Eq(d => d.Id, item.Id);
 
             return RetryPolicy.Execute(_ =>
-                collection.ReplaceOneAsync(filter, item, new UpdateOptions { IsUpsert = true }),
+                collection.ReplaceOneAsync(filter, item, new ReplaceOptions { IsUpsert = true }),
                 new Context(nameof(IQueryStore.UpsertAsync)));
         }
 

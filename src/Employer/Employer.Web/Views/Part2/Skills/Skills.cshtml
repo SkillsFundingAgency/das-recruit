@@ -1,5 +1,4 @@
 ﻿@using Esfa.Recruit.Employer.Web.ViewModels.Part2.Skills
-@using Esfa.Recruit.Shared.Web.Mappers
 @model SkillsViewModel
 @{ 
     ViewBag.Vpv = "/recruitment/employer/page-part2-skills";
@@ -8,10 +7,8 @@
 }
 
 @section BackLink {
-    <esfaFeatureEnabled name="@FeatureNames.EmployerTaskList">
-        <a asp-show="@(!Model.IsTaskListCompleted)" asp-route="@RouteNames.EmployerTaskListGet" esfa-automation="link-back" class="govuk-back-link">Back</a>
-        <a asp-show="@Model.IsTaskListCompleted" asp-route="@RouteNames.EmployerCheckYourAnswersGet" esfa-automation="link-back" class="govuk-back-link">Back</a>
-    </esfaFeatureEnabled>
+    <a asp-show="@(!Model.IsTaskListCompleted)" asp-route="@RouteNames.EmployerTaskListGet" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Back</a>
+    <a asp-show="@Model.IsTaskListCompleted" asp-route="@RouteNames.EmployerCheckYourAnswersGet" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Back</a>
 }
 
 
@@ -20,7 +17,7 @@
 
 <span class="govuk-caption-l">@Model.Title</span>
 
-<form asp-route="@RouteNames.Skills_Post" id="skillsForm" class="das-ajax-form">
+<form asp-route="@RouteNames.Skills_Post" asp-all-route-data="@Model.RouteDictionary" id="skillsForm" class="das-ajax-form">
     <fieldset class="govuk-fieldset">
         <legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
             <h1 class="govuk-fieldset__heading">
@@ -69,13 +66,8 @@
 
     <div class="govuk-button-group">
         <button type="submit" esfa-automation="btn-continue" class="govuk-button save-button">Save and continue</button>
-        <esfaFeatureEnabled name="@FeatureNames.EmployerTaskList">
-            <a asp-show="@(!Model.IsTaskListCompleted)" asp-route="@RouteNames.Dashboard_Get" class="govuk-link govuk-link--no-visited-state">Cancel</a>
-            <a asp-show="@Model.IsTaskListCompleted" asp-route="@RouteNames.EmployerCheckYourAnswersGet" esfa-automation="cancel" class="govuk-link govuk-link--no-visited-state">Cancel</a>    
-        </esfaFeatureEnabled>
-        <esfaFeatureDisabled name="@FeatureNames.EmployerTaskList">
-            <a asp-route="@RouteNames.Vacancy_Preview_Get" asp-fragment="reqAndProspects" esfa-automation="link-cancel" class="govuk-link govuk-link--no-visited-state">Cancel</a>
-        </esfaFeatureDisabled>
+        <a asp-show="@(!Model.IsTaskListCompleted)" asp-route="@RouteNames.Dashboard_Get" asp-route-employerAccountId="@Model.EmployerAccountId" class="govuk-link govuk-link--no-visited-state">Cancel</a>
+        <a asp-show="@Model.IsTaskListCompleted" asp-route="@RouteNames.EmployerCheckYourAnswersGet" asp-all-route-data="@Model.RouteDictionary" esfa-automation="cancel" class="govuk-link govuk-link--no-visited-state">Cancel</a>
     </div>
 
 </form>

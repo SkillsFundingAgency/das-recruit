@@ -50,44 +50,53 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
             _qualificationTypes = qualificationsProvider.GetQualificationsAsync().Result ?? new List<string>();
             
             RuleFor(x => x.QualificationType)
-                .Cascade(CascadeMode.StopOnFirstFailure)
+                .Cascade(CascadeMode.Stop)
                 .NotEmpty()
                     .WithMessage("Select a qualification")
                     .WithErrorCode("53")
+                .WithState(_=>ruleId)
                 .Must(_qualificationTypes.Contains)
                     .WithMessage("Invalid qualification type")
                     .WithErrorCode("57")
-                .WithRuleId(ruleId);
+                .WithState(_=>ruleId)
+                .WithState(_ => ruleId);
 
             RuleFor(x => x.Subject)
                 .NotEmpty()
                     .WithMessage("Enter the subject")
                     .WithErrorCode("54")
+                .WithState(_=>ruleId)
                 .MaximumLength(50)
                     .WithMessage("The qualification must not exceed {MaxLength} characters")
                     .WithErrorCode("7")
+                .WithState(_=>ruleId)
                 .ValidFreeTextCharacters()
                     .WithMessage("Subject contains some invalid characters")
                     .WithErrorCode("6")
+                .WithState(_=>ruleId)
                 .ProfanityCheck(profanityListProvider)
                 .WithMessage("Subject must not contain a banned word or phrase.")
                 .WithErrorCode("618")
-                .WithRuleId(ruleId);
+                .WithState(_=>ruleId)
+                .WithState(_ => ruleId);
 
             RuleFor(x => x.Grade)
                 .NotEmpty()
                     .WithMessage("Enter the grade")
                     .WithErrorCode("55")
+                .WithState(_=>ruleId)
                 .MaximumLength(30)
                     .WithMessage("The grade should be no longer than {MaxLength} characters")
                     .WithErrorCode("7")
+                .WithState(_=>ruleId)
                 .ValidFreeTextCharacters()
                     .WithMessage("Grade contains some invalid characters")
                     .WithErrorCode("6")
+                .WithState(_=>ruleId)
                 .ProfanityCheck(profanityListProvider)
                 .WithMessage("Grade must not contain a banned word or phrase.")
                 .WithErrorCode("619")
-                .WithRuleId(ruleId);
+                .WithState(_ => ruleId);
 
             When(x => x.QualificationType != null && x.QualificationType.Contains("GCSE"), () =>
             {
@@ -95,14 +104,14 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                     .Matches("[1-9]")
                         .WithMessage("GCSEs must include the 1-9 grading system")
                         .WithErrorCode("115")
-                    .WithRuleId(ruleId);
+                    .WithState(_ => ruleId);
             });
 
             RuleFor(x => x.Weighting)
                 .NotEmpty()
                     .WithMessage("Select if this qualification is essential or desirable")
                     .WithErrorCode("56")
-                .WithRuleId(ruleId);
+                .WithState(_ => ruleId);
         }
 
     }

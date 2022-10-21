@@ -1,5 +1,4 @@
-﻿using Esfa.Recruit.Employer.Web.ViewModels;
-using Esfa.Recruit.Employer.Web.ViewModels.Part1.TrainingProvider;
+﻿using Esfa.Recruit.Employer.Web.ViewModels.Part1.TrainingProvider;
 using FluentAssertions;
 using Xunit;
 

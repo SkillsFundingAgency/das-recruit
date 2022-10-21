@@ -22,7 +22,7 @@ namespace Esfa.Recruit.Shared.Web.Orchestrators
             _lazyCandidateSkills = new Lazy<List<string>>(getCandidateSkillsAsync);
         }
 
-        public void SetViewModelSkillsFromVacancy(SkillsViewModelBase vm, Vacancy vacancy)
+        public void SetViewModelSkillsFromVacancy(ISkillsViewModel vm, Vacancy vacancy)
         {
             var orderedCustomSkills = GetCustomSkills(vacancy.Skills).ToArray();
             var baseSkills = GetBaseSkills(vacancy.Skills).ToArray();
@@ -30,7 +30,7 @@ namespace Esfa.Recruit.Shared.Web.Orchestrators
             SetViewModelSkills(vm, baseSkills, orderedCustomSkills);
         }
 
-        public void SetViewModelSkillsFromDraftSkills(SkillsViewModelBase vm, IList<string> draftSkills)
+        public void SetViewModelSkillsFromDraftSkills(ISkillsViewModel vm, IList<string> draftSkills)
         {
             var orderedCustomSkills = ExtractAndSort(GetCustomSkills(draftSkills).ToArray());
             var baseSkills = GetBaseSkills(draftSkills).ToArray();
@@ -67,7 +67,7 @@ namespace Esfa.Recruit.Shared.Web.Orchestrators
             return selected == null ? new List<string>() : selected.Intersect(CandidateSkills);
         }
 
-        private void SetViewModelSkills(SkillsViewModelBase vm, IList<string> baseSkills, IEnumerable<string> orderedCustomSkills)
+        private void SetViewModelSkills(ISkillsViewModel vm, IList<string> baseSkills, IEnumerable<string> orderedCustomSkills)
         {
             var col1Skills = GetSkillsColumnViewModel(Column1BuiltInSkills, baseSkills);
             var col2Skills = GetSkillsColumnViewModel(Column2BuiltInSkills, baseSkills);

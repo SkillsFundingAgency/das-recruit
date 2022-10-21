@@ -8,7 +8,6 @@ using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.EmployerName;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Shared.Web.FeatureToggle;
-using Esfa.Recruit.Shared.Web.Mappers;
 using Esfa.Recruit.Shared.Web.Models;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -22,7 +21,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
         private readonly IFeature _feature;
 
         public EmployerNameController(EmployerNameOrchestrator orchestrator,
-            IHostingEnvironment hostingEnvironment, IFeature feature) : base(hostingEnvironment)
+            IWebHostEnvironment hostingEnvironment, IFeature feature) : base(hostingEnvironment)
         {
             _orchestrator = orchestrator;
             _feature = feature;
@@ -37,13 +36,13 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
             //by passing employer or location end point
             
             if (employerInfoModel == null && !_feature.IsFeatureEnabled(FeatureNames.EmployerTaskList)) 
-                return RedirectToRoute(RouteNames.Employer_Get);
+                return RedirectToRoute(RouteNames.Employer_Get, new {vrm.VacancyId, vrm.EmployerAccountId});
             
             var vm = await _orchestrator.GetEmployerNameViewModelAsync(vrm, employerInfoModel);
 
             if (vm == null)
             {
-                return RedirectToRoute(RouteNames.Employer_Get);
+                return RedirectToRoute(RouteNames.Employer_Get, new {vrm.VacancyId, vrm.EmployerAccountId});
             }
             
             vm.PageInfo.SetWizard(wizard);
@@ -52,19 +51,12 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
 
         [HttpPost("employer-name", Name = RouteNames.EmployerName_Post)]
         public async Task<IActionResult> EmployerName(EmployerNameEditModel model, [FromQuery] bool wizard)
-        { 
-            var employerInfoModel = GetVacancyEmployerInfoCookie(model.VacancyId);
-            //respective cookie can go missing if user has opened another vacancy in a different browser tab 
-            if(employerInfoModel == null && !_feature.IsFeatureEnabled(FeatureNames.EmployerTaskList))
-                return RedirectToRoute(RouteNames.Employer_Get);
-            
-            if(_feature.IsFeatureEnabled(FeatureNames.EmployerTaskList))
+        {
+            var employerInfoModel = new VacancyEmployerInfoModel
             {
-                employerInfoModel = new VacancyEmployerInfoModel
-                {
-                    VacancyId = model.VacancyId
-                };
-            }
+                VacancyId = model.VacancyId,
+                EmployerAccountId = model.EmployerAccountId
+            };
 
             var response = await _orchestrator.PostEmployerNameEditModelAsync(model, User.ToVacancyUser());
 
@@ -90,13 +82,13 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
             employerInfoModel.AnonymousReason = model.SelectedEmployerIdentityOption == EmployerIdentityOption.Anonymous ? model.AnonymousReason : null;
             SetVacancyEmployerInfoCookie(employerInfoModel);
 
-            return RedirectToRoute(RouteNames.LegalEntityAgreement_SoftStop_Get, new {Wizard = wizard});
+            return RedirectToRoute(RouteNames.LegalEntityAgreement_SoftStop_Get, new {model.VacancyId, model.EmployerAccountId, wizard});
         }
 
         [HttpGet("employer-name-cancel", Name = RouteNames.EmployerName_Cancel)]
         public IActionResult Cancel(VacancyRouteModel vrm, [FromQuery] bool wizard)
         {
-            return CancelAndRedirect(wizard);
+            return CancelAndRedirect(wizard, vrm);
         }
     }
 }

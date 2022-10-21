@@ -18,11 +18,13 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.VacancyPreview
     {
         [Test, MoqAutoData]
         public async Task Then_The_Section_State_Is_Set(
+            string employerAccountId,
             DisplayVacancyViewModelMapper mapper)
         {
             var vacancy = new Vacancy()
             {
-                Id = Guid.NewGuid()
+                Id = Guid.NewGuid(),
+                EmployerAccountId = employerAccountId
             };
             var model = new VacancyPreviewViewModel();
             await mapper.MapFromVacancyAsync(model, vacancy);
@@ -34,11 +36,13 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.VacancyPreview
         [Test, MoqAutoData]
         public async Task Then_If_Section_Started_Then_Set_To_In_Progress(
             string title,
+            string employerAccountId,
             DisplayVacancyViewModelMapper mapper)
         {
             var vacancy = new Vacancy()
             {
                 Id = Guid.NewGuid(),
+                EmployerAccountId = employerAccountId,
                 Title = title
             };
             var model = new VacancyPreviewViewModel();
@@ -50,6 +54,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.VacancyPreview
 
         [Test, MoqAutoData]
         public async Task Then_If_Has_Title_And_Training_Then_In_Progress(
+            string employerAccountId,
             string title,
             string programmeId,
             ApprenticeshipProgramme programme,
@@ -60,6 +65,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.VacancyPreview
             var vacancy = new Vacancy
             {
                 Id = Guid.NewGuid(),
+                EmployerAccountId = employerAccountId,
                 Title = title,
                 ProgrammeId = programmeId
             };
@@ -73,6 +79,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.VacancyPreview
         
         [Test, MoqAutoData]
         public async Task Then_If_Has_Title_Training_And_Provider_Then_In_Progress(
+            string employerAccountId,
             string title,
             string programmeId,
             Vacancies.Client.Domain.Entities.TrainingProvider provider,
@@ -84,6 +91,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.VacancyPreview
             var vacancy = new Vacancy
             {
                 Id = Guid.NewGuid(),
+                EmployerAccountId = employerAccountId,
                 Title = title,
                 ProgrammeId = programmeId,
                 TrainingProvider = provider
@@ -98,6 +106,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.VacancyPreview
         
         [Test, MoqAutoData]
         public async Task Then_If_Has_Title_Training_Provider_ShortDescription_Then_In_Progress(
+            string employerAccountId,
             string title,
             string programmeId,
             string shortDescription,
@@ -110,6 +119,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.VacancyPreview
             var vacancy = new Vacancy
             {
                 Id = Guid.NewGuid(),
+                EmployerAccountId = employerAccountId,
                 Title = title,
                 ProgrammeId = programmeId,
                 ShortDescription = shortDescription,
@@ -125,6 +135,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.VacancyPreview
         
         [Test, MoqAutoData]
         public async Task Then_If_Has_Title_Training_Provider_ShortDescription_Ale_Then_In_Progress(
+            string employerAccountId,
             string title,
             string programmeId,
             string shortDescription,
@@ -138,6 +149,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.VacancyPreview
             var vacancy = new Vacancy
             {
                 Id = Guid.NewGuid(),
+                EmployerAccountId = employerAccountId,
                 Title = title,
                 ProgrammeId = programmeId,
                 ShortDescription = shortDescription,
@@ -154,6 +166,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.VacancyPreview
         
         [Test, MoqAutoData]
         public async Task Then_If_Has_Title_Training_Provider_ShortDescription_And_Descriptions_Then_Completed(
+            string employerAccountId,
             string title,
             string programmeId,
             string description,
@@ -169,6 +182,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.VacancyPreview
             var vacancy = new Vacancy
             {
                 Id = Guid.NewGuid(),
+                EmployerAccountId = employerAccountId,
                 Title = title,
                 ProgrammeId = programmeId,
                 Description = description,

@@ -1,4 +1,3 @@
-using System;
 using Communication.Types;
 using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
@@ -32,10 +31,8 @@ using System.Collections.Generic;
 using System.Data;
 using SFA.DAS.Encoding;
 using Esfa.Recruit.Vacancies.Client.Application.Communications.ParticipantResolverPlugins;
-using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Recruit.Vacancies.Client.Application.Communications.CompositeDataItemProviderPlugins;
 using Esfa.Recruit.Vacancies.Jobs.Jobs;
-using Microsoft.Azure.Services.AppAuthentication;
 
 namespace Esfa.Recruit.Vacancies.Jobs
 {

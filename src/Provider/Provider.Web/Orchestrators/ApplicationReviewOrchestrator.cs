@@ -7,7 +7,6 @@ using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Shared.Web.ViewModels.ApplicationReview;
 using Esfa.Recruit.Proivder.Web.Exceptions;
-using StructureMap.Query;
 
 namespace Esfa.Recruit.Provider.Web.Orchestrators
 {

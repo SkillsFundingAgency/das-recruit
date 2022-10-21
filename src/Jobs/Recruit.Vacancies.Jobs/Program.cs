@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Threading.Tasks;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.Configuration;
+using Azure.Storage.Queues;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.TableStore;
 using Esfa.Recruit.Vacancies.Client.Ioc;
@@ -62,6 +62,8 @@ namespace Esfa.Recruit.Vacancies.Jobs
                     .ConfigureWebJobs(b =>
                     {
                         b.AddAzureStorageCoreServices()
+                            //.AddAzureStorageBlobs()
+                            //.AddAzureStorageQueues()
                             .AddAzureStorage()
                             .AddTimers();
                     })

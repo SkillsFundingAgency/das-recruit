@@ -37,6 +37,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
             var viewModel = new FutureProspectsViewModel
             {
                 VacancyId = vacancy.Id,
+                EmployerAccountId = vacancy.EmployerAccountId,
                 Title = vacancy.Title,
                 FutureProspects = vacancy.OutcomeDescription
             };

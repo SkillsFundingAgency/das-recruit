@@ -1,5 +1,4 @@
 ﻿using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using MongoDB.Driver;
 
 namespace Esfa.Recruit.Shared.Web.Helpers
 {

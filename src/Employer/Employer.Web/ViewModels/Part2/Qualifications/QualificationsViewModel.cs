@@ -1,10 +1,11 @@
 ﻿using System.Collections.Generic;
+using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Shared.Web.ViewModels;
 using Esfa.Recruit.Shared.Web.ViewModels.Qualifications;
 
 namespace Esfa.Recruit.Employer.Web.ViewModels.Part2.Qualifications
 {
-    public class QualificationsViewModel
+    public class QualificationsViewModel : VacancyRouteModel
     {
         public string Title { get; set; }
         public List<QualificationEditModel> Qualifications { get; set; }
