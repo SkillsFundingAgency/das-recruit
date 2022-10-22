@@ -22,6 +22,9 @@ public class EmployerAlertsViewModelFactoryTests
         var viewModel = await factory.Create(employerAccountId, user);
 
         viewModel.Should().NotBeNull();
-        viewModel.BlockedProviderAlert.Should().NotBeNull();
+        viewModel.BlockedProviderAlert.Should().BeNull();
+        viewModel.BlockedProviderTransferredVacanciesAlert.Should().BeNull();
+        viewModel.EmployerRevokedTransferredVacanciesAlert.Should().BeNull();
+        viewModel.WithdrawnByQaVacanciesAlert.Should().BeNull();
     }
 }
