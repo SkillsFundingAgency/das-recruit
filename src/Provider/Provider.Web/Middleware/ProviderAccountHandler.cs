@@ -22,18 +22,16 @@ namespace Esfa.Recruit.Provider.Web.Middleware
     {
         private readonly IWebHostEnvironment _hostingEnvironment;
         private readonly IProviderVacancyClient _client;
-        private readonly IRecruitVacancyClient _vacancyClient;
         private readonly IBlockedOrganisationQuery _blockedOrganisationsRepo;
         private readonly ITempDataProvider _tempDataProvider;
         private readonly Predicate<Claim> _ukprnClaimFinderPredicate = c => c.Type.Equals(ProviderRecruitClaims.IdamsUserUkprnClaimsTypeIdentifier);
         private readonly IDictionary<string, object> _dict = new Dictionary<string, object>();
         private readonly ITrainingProviderSummaryProvider _trainingProviderSummaryProvider;
 
-        public ProviderAccountHandler(IWebHostEnvironment hostingEnvironment, IProviderVacancyClient client, IRecruitVacancyClient vacancyClient, IBlockedOrganisationQuery blockedOrganisationsRepo, ITempDataProvider tempDataProvider, ITrainingProviderSummaryProvider trainingProviderSummaryProvider)
+        public ProviderAccountHandler(IWebHostEnvironment hostingEnvironment, IProviderVacancyClient client, IBlockedOrganisationQuery blockedOrganisationsRepo, ITempDataProvider tempDataProvider, ITrainingProviderSummaryProvider trainingProviderSummaryProvider)
         {
             _hostingEnvironment = hostingEnvironment;
             _client = client;
-            _vacancyClient = vacancyClient;
             _blockedOrganisationsRepo = blockedOrganisationsRepo;
             _tempDataProvider = tempDataProvider;
             _trainingProviderSummaryProvider = trainingProviderSummaryProvider;
