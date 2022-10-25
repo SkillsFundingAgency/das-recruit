@@ -24,7 +24,7 @@
             <dt class="das-definition-list__title govuk-!-font-weight-regular">Account name</dt>
             <dd class="das-definition-list__definition">@Model.EmployerName</dd>
             <dt class="das-definition-list__title govuk-!-font-weight-regular">Agreement ID</dt>
-            <dd class="das-definition-list__definition">@Model.AgreementId</dd>
+            <dd class="das-definition-list__definition">@Model.AccountLegalEntityPublicHashedId</dd>
         </dl>
         <form method="post" asp-all-route-data="@Model.RouteDictionary" asp-route="@RouteNames.ConfirmLegalEntityEmployer_Post">
             <input asp-for="EmployerName" type="hidden"/>
