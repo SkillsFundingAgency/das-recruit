@@ -48,7 +48,14 @@
                     </span>
                 </h2>
                 <ul class="das-task-list__items">
-                    
+
+                <li class="das-task-list__item">
+                    <span>
+                            <a class="govuk-link govuk-link--no-visited-state" asp-all-route-data="@Model.RouteDictionary" asp-route="@RouteNames.ConfirmLegalEntityEmployer_Get" asp-route-selectedId=@($"{Model.confirmLegalEntityAndEmployerViewModel.AccountLegalEntityPublicHashedId}|{Model.confirmLegalEntityAndEmployerViewModel.EmployerAccountId}")>
+                            Name of employer
+                        </a>
+                    </span>
+                </li>
                     <li class="das-task-list__item">
                         <span>
                             @if (Model.TaskListSectionOneState == VacancyTaskListSectionState.NotStarted)
@@ -65,25 +72,6 @@
                             }
                         </span>
                     </li>
-                    @if (Model.AccountLegalEntityCount > 1)
-                    {
-                        <li class="das-task-list__item">
-                            <span>
-                                @if (string.IsNullOrEmpty(Model.Title))
-                                {
-                                    <span class="das-task-list__task-name">
-                                        Name of employer
-                                    </span>
-                                }
-                                else
-                                {
-                                    <a class="govuk-link govuk-link--no-visited-state" asp-all-route-data="@Model.RouteDictionary" asp-route="@RouteNames.LegalEntity_Get">
-                                        Name of employer
-                                    </a>
-                                }
-                            </span>
-                        </li>
-                    }
                     <li class="das-task-list__item">
                         @if (_serviceParameters.VacancyType == VacancyType.Apprenticeship)
                         {
