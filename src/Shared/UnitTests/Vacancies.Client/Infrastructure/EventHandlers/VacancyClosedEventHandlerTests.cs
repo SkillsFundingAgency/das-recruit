@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Communication.Types;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Events;
@@ -33,6 +34,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
         private VacancyClosedEvent _event;
         private Vacancy _vacancy;
         private ApprenticeshipProgrammes _apprenticeshipProgrammes;
+        private readonly Mock<IQueryStoreReader> _mockQueryReader;
 
 
         [Fact]
@@ -84,8 +86,32 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
                 .Returns(Task.CompletedTask);
 
             await _handler.Handle(_event, CancellationToken.None);
-
             Assert.Equal(3, sequence);
+        }
+        
+        [Fact]
+        public async Task Handle_ShouldNotSendEmail_IfAlreadyClosed()
+        {
+            _vacancy.ProgrammeId = "-1";
+            int sequence = 1;
+
+            _mockQueryReader.Setup(x => x.GetClosedVacancy(_vacancy.VacancyReference.Value))
+                .ReturnsAsync(new Projections.ClosedVacancy());
+            
+            _mockQueryStore
+                .Setup(x => x.DeleteLiveVacancyAsync(_vacancy.VacancyReference.Value))
+                .Callback(() => Assert.Equal(1, sequence++))
+                .Returns(Task.CompletedTask);
+
+            _mockQueryStore
+                .Setup(x => x.UpdateClosedVacancyAsync(It.IsAny<Projections.ClosedVacancy>()))
+                .Callback(() => Assert.Equal(2, sequence++))
+                .Returns(Task.CompletedTask);
+
+            await _handler.Handle(_event, CancellationToken.None);
+
+            _mockCommunicationQueueService.Verify(x=>x.AddMessageAsync(It.IsAny<CommunicationRequest>()), Times.Never);
+            Assert.Equal(2, sequence);
         }
         
         public VacancyClosedEventHandlerTests()
@@ -149,6 +175,8 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
 
             _mockCommunicationQueueService = new Mock<ICommunicationQueueService>();
 
+            _mockQueryReader = new Mock<IQueryStoreReader>();
+
             _handler = new VacancyClosedEventHandler(
                 _mockLogger.Object,
                 _mockQueryStore.Object,
@@ -156,7 +184,8 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
                 _mockReferenceDataReader.Object,
                 _mockTimeProvider.Object,
                 _mockFaaService.Object,
-                _mockCommunicationQueueService.Object);
+                _mockCommunicationQueueService.Object,
+                _mockQueryReader.Object);
         }
     }
 }

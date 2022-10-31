@@ -93,12 +93,16 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
             {
                 throw new MissingPermissionsException(string.Format(RecruitWebExceptionMessages.ProviderMissingPermission, vacancyRouteModel.Ukprn));
             }
-            
-            var hasProviderReviewPermission = await _providerRelationshipsService.HasProviderGotEmployersPermissionAsync(vacancyRouteModel.Ukprn, employerAccountId, employerAccountLegalEntityPublicHashedId, OperationType.RecruitmentRequiresReview);
 
-            if (!hasProviderReviewPermission)
+
+            if (!await _providerRelationshipsService.HasProviderGotEmployersPermissionAsync(vacancyRouteModel.Ukprn, employerAccountId, employerAccountLegalEntityPublicHashedId, OperationType.Recruitment))
             {
-                throw new MissingPermissionsException(string.Format(RecruitWebExceptionMessages.ProviderMissingPermission, vacancyRouteModel.Ukprn));                
+                if (!await _providerRelationshipsService.HasProviderGotEmployersPermissionAsync(vacancyRouteModel.Ukprn,
+                        employerAccountId, employerAccountLegalEntityPublicHashedId,
+                        OperationType.RecruitmentRequiresReview))
+                {
+                    throw new MissingPermissionsException(string.Format(RecruitWebExceptionMessages.ProviderMissingPermission, vacancyRouteModel.Ukprn));    
+                }
             }
             
             return new ConfirmLegalEntityAndEmployerViewModel

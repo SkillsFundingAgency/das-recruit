@@ -1,8 +1,11 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using AutoFixture.NUnit3;
 using Esfa.Recruit.Employer.Web.Services;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Employer;
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
@@ -19,9 +22,18 @@ public class EmployerAlertsViewModelFactoryTests
         [Frozen] Mock<IEmployerVacancyClient> mockEmployerVacancyClient,
         EmployerAlertsViewModelFactory factory)
     {
+        mockEmployerVacancyClient.Setup(x =>
+            x.GetDashboardAsync(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<FilteringOptions>(), It.IsAny<string>())).ReturnsAsync(new EmployerDashboard
+        {
+            Vacancies = new List<VacancySummary>()
+        });
+        
         var viewModel = await factory.Create(employerAccountId, user);
 
         viewModel.Should().NotBeNull();
-        viewModel.BlockedProviderAlert.Should().NotBeNull();
+        viewModel.BlockedProviderAlert.Should().BeNull();
+        viewModel.BlockedProviderTransferredVacanciesAlert.Should().BeNull();
+        viewModel.EmployerRevokedTransferredVacanciesAlert.Should().BeNull();
+        viewModel.WithdrawnByQaVacanciesAlert.Should().BeNull();
     }
 }

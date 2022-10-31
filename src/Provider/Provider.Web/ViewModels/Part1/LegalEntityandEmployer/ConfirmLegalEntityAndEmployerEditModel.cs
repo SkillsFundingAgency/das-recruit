@@ -5,7 +5,7 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.Part1.LegalEntityAndEmployer
 {
     public class ConfirmLegalEntityAndEmployerEditModel : VacancyRouteModel
     {
-        [Required(ErrorMessage = "Select if you want to use these details")]
+        [Required(ErrorMessage = "You must confirm the employer")]
         public bool? HasConfirmedEmployer { get; set; }
         public string EmployerAccountId { get; set; }
         public string AccountLegalEntityPublicHashedId { get; set; }

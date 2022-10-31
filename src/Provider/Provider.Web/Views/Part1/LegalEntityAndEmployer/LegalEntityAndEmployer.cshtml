@@ -49,7 +49,7 @@
                         <button class="govuk-button das-search-form__button" type="submit">Search</button>
                     </div>
                 </div>
-                @if (Model.SearchTerm != null)
+                @if (!string.IsNullOrEmpty(Model.SearchTerm))
                 {
                     <p class="govuk-body govuk-!-margin-top-1">
                         <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.LegalEntityEmployer_Get">Clear search</a>
@@ -60,6 +60,7 @@
                     }
                     
                 }
+                
             </div>
         </form>
         @if (Model.NoOfSearchResults != 0)
