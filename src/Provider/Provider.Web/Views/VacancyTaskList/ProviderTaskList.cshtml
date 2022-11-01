@@ -51,31 +51,22 @@
 
                 <li class="das-task-list__item">
                     <span>
-                            <a class="govuk-link govuk-link--no-visited-state" asp-all-route-data="@Model.RouteDictionary" asp-route="@RouteNames.ConfirmLegalEntityEmployer_Get" asp-route-selectedId=@($"{Model.confirmLegalEntityAndEmployerViewModel.AccountLegalEntityPublicHashedId}|{Model.confirmLegalEntityAndEmployerViewModel.EmployerAccountId}")>
+                            <a class="govuk-link govuk-link--no-visited-state" asp-all-route-data="@Model.RouteDictionary" asp-route="@RouteNames.ConfirmSelectedLegalEntityEmployer_Get">
                             Name of employer
                         </a>
                     </span>
                 </li>
                     <li class="das-task-list__item">
                         <span>
-                            @if (Model.TaskListSectionOneState == VacancyTaskListSectionState.NotStarted)
-                            {
-                                <a class="govuk-link govuk-link--no-visited-state" asp-all-route-data="@Model.RouteDictionary" asp-route="@RouteNames.CreateVacancy_Get" asp-route-employerAccountId="@Model.AccountId">
-                                    Vacancy title
-                                </a>
-                            }
-                            else
-                            {
-                                <a class="govuk-link govuk-link--no-visited-state" asp-all-route-data="@Model.RouteDictionary" asp-route="@RouteNames.Title_Get">
-                                    Vacancy title
-                                </a>
-                            }
+                            <a class="govuk-link govuk-link--no-visited-state" asp-all-route-data="@Model.RouteDictionary" asp-route="@RouteNames.Title_Get">
+                                Vacancy title
+                            </a>
                         </span>
                     </li>
                     <li class="das-task-list__item">
                         @if (_serviceParameters.VacancyType == VacancyType.Apprenticeship)
                         {
-                            if (!Model.HasSelectedLegalEntity)
+                            if (!Model.HasSelectedLegalEntity || string.IsNullOrEmpty(Model.Title))
                             {
                                 <span class="das-task-list__task-name">
                                     Training course
@@ -90,7 +81,7 @@
                         }
                         else
                         {
-                            if (!Model.HasSelectedLegalEntity)
+                            if (!Model.HasSelectedLegalEntity|| string.IsNullOrEmpty(Model.Title))
                             {
                                 <span class="das-task-list__task-name">
                                     Traineeship sector
