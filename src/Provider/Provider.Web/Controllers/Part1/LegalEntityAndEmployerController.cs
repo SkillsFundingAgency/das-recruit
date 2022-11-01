@@ -109,7 +109,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
             return RedirectToRoute(RouteNames.ProviderTaskListGet,
                     new
                             {
-                                VacancyId = result.Data, 
+                                vacancyId = result.Data, 
                                 vacancyRouteModel.Ukprn
                             });
         }
