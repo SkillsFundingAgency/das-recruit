@@ -35,6 +35,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
 
             var vm = new AboutEmployerViewModel
             {
+                VacancyId = vacancy.Id,
+                EmployerAccountId = vacancy.EmployerAccountId,
                 Title = vacancy.Title,
                 EmployerDescription =  await _vacancyClient.GetEmployerDescriptionAsync(vacancy),
                 EmployerTitle = await GetEmployerTitleAsync(vacancy),

@@ -32,6 +32,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 
             var vm = new CloseViewModel
             {
+                VacancyId = vrm.VacancyId,
+                EmployerAccountId = vrm.EmployerAccountId,
                 Title = vacancy.Title,
                 VacancyReference = vacancy.VacancyReference.Value.ToString()
             };

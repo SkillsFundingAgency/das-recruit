@@ -1,5 +1,4 @@
-﻿@using Esfa.Recruit.Vacancies.Client.Domain.Entities
-@using Esfa.Recruit.Provider.Web.RouteModel
+﻿@using Esfa.Recruit.Provider.Web.RouteModel
 
 @model Esfa.Recruit.Provider.Web.ViewModels.Dashboard.DashboardViewModel
 
@@ -185,22 +184,21 @@
             </div>
         </div>
     </div>
-    <div class="govuk-grid-row">
-        <a asp-route="@RouteNames.Vacancies_Get" asp-route-ukprn="@Model.Ukprn"  asp-route-filter="@FilteringOptions.All" class="govuk-link govuk-!-font-size-24 govuk-!-font-weight-bold govuk-link--no-visited-state">
-            View all your vacancies (@Model.NumberOfVacancies)
-        </a>
-    </div>
+
+    <a asp-route="@RouteNames.Vacancies_Get" asp-route-ukprn="@Model.Ukprn"  asp-route-filter="@FilteringOptions.All" class="govuk-link govuk-!-font-size-24 govuk-!-font-weight-bold govuk-link--no-visited-state">
+        View all your vacancies (@Model.NumberOfVacancies)
+    </a>
+
     <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible" />
     <div class="govuk-grid-row">
-    @if (_serviceParameters.VacancyType == VacancyType.Apprenticeship)
-    {
+    
         <div class="govuk-grid-column-one-third">
             <h3 class="govuk-heading-s govuk-!-margin-bottom-2">
                 <a class="govuk-link  govuk-link--no-visited-state" asp-route="@RouteNames.ReportDashboard_Get" asp-route-ukprn="@Model.Ukprn">Reports</a>
             </h3>
             <p class="govuk-body">Create a report about applicants or vacancies</p>
         </div>
-    }
+    
         <esfaFeatureEnabled name="@FeatureNames.SetNotificationPreferences">
             <div class="govuk-grid-column-one-third">
                 <h3 class="govuk-heading-s govuk-!-margin-bottom-2">

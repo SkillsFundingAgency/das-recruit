@@ -13,9 +13,9 @@ namespace Esfa.Recruit.Provider.Web.Controllers
     public class VacanciesController : Controller
     {
         private readonly VacanciesOrchestrator _orchestrator;
-        private readonly IHostingEnvironment _hostingEnvironment;
+        private readonly IWebHostEnvironment _hostingEnvironment;
 
-        public VacanciesController(VacanciesOrchestrator orchestrator, IHostingEnvironment hostingEnvironment)
+        public VacanciesController(VacanciesOrchestrator orchestrator, IWebHostEnvironment hostingEnvironment)
         {
             _orchestrator = orchestrator;
             _hostingEnvironment = hostingEnvironment;

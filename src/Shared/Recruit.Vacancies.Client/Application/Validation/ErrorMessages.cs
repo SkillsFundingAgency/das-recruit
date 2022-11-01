@@ -1,5 +1,4 @@
-﻿using System;
-namespace Esfa.Recruit.Vacancies.Client.Application.Validation
+﻿namespace Esfa.Recruit.Vacancies.Client.Application.Validation
 {
     public static class ErrorMessages
     {

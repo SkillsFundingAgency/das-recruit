@@ -13,10 +13,10 @@ namespace Esfa.Recruit.Employer.Web.Middleware
 {
     public class EmployerAccountHandler : AuthorizationHandler<EmployerAccountRequirement>
     {
-        private readonly IHostingEnvironment _hostingEnvironment;
+        private readonly IWebHostEnvironment _hostingEnvironment;
         private readonly IEmployerVacancyClient _client;
 
-        public EmployerAccountHandler(IHostingEnvironment hostingEnvironment, IEmployerVacancyClient client)
+        public EmployerAccountHandler(IWebHostEnvironment hostingEnvironment, IEmployerVacancyClient client)
         {
             _hostingEnvironment = hostingEnvironment;
             _client = client;

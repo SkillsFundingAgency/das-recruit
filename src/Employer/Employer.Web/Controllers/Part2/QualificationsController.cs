@@ -29,7 +29,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part2
             if (vm.Qualifications.Any() == false)
             {
                 TempData.Remove(QualificationDeletedTempDataKey);
-                return RedirectToRoute(RouteNames.Qualification_Add_Get);
+                return RedirectToRoute(RouteNames.Qualification_Add_Get,new {vrm.VacancyId, vrm.EmployerAccountId});
             }
             
             if (TempData[QualificationDeletedTempDataKey] != null)
@@ -71,7 +71,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part2
                 return View(vm);
             }
             
-            return RedirectToRoute(RouteNames.Qualifications_Get);
+            return RedirectToRoute(RouteNames.Qualifications_Get, new {vrm.VacancyId, vrm.EmployerAccountId});
         }
 
         [HttpPost("qualifications/{index:int}", Name = RouteNames.Qualification_Edit_Post)]
@@ -91,7 +91,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part2
                 return View(vm);
             }
 
-            return RedirectToRoute(RouteNames.Qualifications_Get);
+            return RedirectToRoute(RouteNames.Qualifications_Get, new {vrm.VacancyId, vrm.EmployerAccountId});
         }
 
         [HttpPost("qualifications/delete", Name = RouteNames.Qualification_Delete_Post)]
@@ -100,7 +100,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part2
             await _orchestrator.DeleteQualificationAsync(vrm, index, User.ToVacancyUser());
 
             TempData[QualificationDeletedTempDataKey] = 1;
-            return RedirectToRoute(RouteNames.Qualifications_Get);
+            return RedirectToRoute(RouteNames.Qualifications_Get, new {vrm.VacancyId, vrm.EmployerAccountId});
         }
     }
 }

@@ -7,7 +7,7 @@ namespace Esfa.Recruit.Shared.Web.ViewModels.Alerts
     public class BlockedProviderAlertViewModel
     {
         public List<string> ClosedVacancies { get; set; }
-        public List<string> BlockedProviderNames { get; internal set; }
+        public List<string> BlockedProviderNames { get; set; }
 
         public string CountCaption => GetCaptionCount();
 

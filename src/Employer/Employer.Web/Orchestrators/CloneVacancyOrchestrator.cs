@@ -41,6 +41,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 
             var vm = new CloneVacancyDatesQuestionViewModel
             {
+                VacancyId = vacancy.Id,
+                EmployerAccountId = vacancy.EmployerAccountId,
                 VacancyReference = vacancy.VacancyReference.GetValueOrDefault(),
                 StartDate = vacancy.StartDate?.AsGdsDate(),
                 ClosingDate = vacancy.ClosingDate?.AsGdsDate()
@@ -58,6 +60,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             {
                 return new CloneVacancyWithNewDatesViewModel
                 {
+                    VacancyId = vacancy.Id,
+                    EmployerAccountId = vacancy.EmployerAccountId,
                     VacancyReference = vacancy.VacancyReference.GetValueOrDefault(),
                     IsNewDatesForced = isNewDatesForced,
                     Title = ChangeBothDatesTitle,
@@ -67,6 +71,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             {
                 return new CloneVacancyWithNewDatesViewModel
                 {
+                    VacancyId = vacancy.Id,
+                    EmployerAccountId = vacancy.EmployerAccountId,
                     VacancyReference = vacancy.VacancyReference.GetValueOrDefault(),
                     IsNewDatesForced = isNewDatesForced,
                     Title = ChangeEitherDatesTitle,
@@ -84,6 +90,9 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
         public async Task<CloneVacancyWithNewDatesViewModel> GetDirtyCloneVacancyWithNewDatesViewModelAsync(CloneVacancyWithNewDatesEditModel dirtyModel)
         {
             var model = await GetCloneVacancyWithNewDatesViewModelAsync(dirtyModel);
+
+            model.VacancyId = model.VacancyId;
+            model.EmployerAccountId = model.EmployerAccountId;
 
             model.ClosingDay = dirtyModel.ClosingDay;
             model.ClosingMonth = dirtyModel.ClosingMonth;

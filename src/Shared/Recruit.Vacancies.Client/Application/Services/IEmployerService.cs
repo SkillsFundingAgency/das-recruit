@@ -1,4 +1,3 @@
-using System;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 

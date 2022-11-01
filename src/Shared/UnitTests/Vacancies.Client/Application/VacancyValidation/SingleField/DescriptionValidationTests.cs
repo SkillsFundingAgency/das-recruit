@@ -1,6 +1,5 @@
 using System;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
-using Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomValidators;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using FluentAssertions;
 using Xunit;

@@ -50,6 +50,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 
             var model = new VacancyEmployerInfoModel() {
                 VacancyId = vacancy.Id,
+                EmployerAccountId = vrm.EmployerAccountId,
                 AccountLegalEntityPublicHashedId = vacancy.AccountLegalEntityPublicHashedId
             };
 
@@ -73,6 +74,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                 : vacancy.AccountLegalEntityPublicHashedId;
 
             var vm = new LocationViewModel();
+            vm.VacancyId = vrm.VacancyId;
+            vm.EmployerAccountId = vrm.EmployerAccountId;
             vm.PageInfo = _utility.GetPartOnePageInfo(vacancy);
             
             vm.IsAnonymousVacancy = (employerInfoModel?.EmployerIdentityOption == null) 

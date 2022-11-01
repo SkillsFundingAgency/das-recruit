@@ -4,7 +4,7 @@ using NServiceBus;
 using SFA.DAS.NServiceBus.Configuration;
 using SFA.DAS.NServiceBus.Configuration.AzureServiceBus;
 using SFA.DAS.NServiceBus.Configuration.NewtonsoftJsonSerializer;
-using SFA.DAS.NServiceBus.Configuration.NLog;
+
 
 namespace Esfa.Recruit.Vacancies.Jobs.NServiceBus
 {
@@ -38,7 +38,6 @@ namespace Esfa.Recruit.Vacancies.Jobs.NServiceBus
                         .UseMessageConventions()
                         .UseDasMessageConventions()
                         .UseNewtonsoftJsonSerializer()
-                        .UseNLogFactory()
                         .UseServiceCollection(services);
 
                     return Endpoint.Start(endpointConfiguration).GetAwaiter().GetResult();

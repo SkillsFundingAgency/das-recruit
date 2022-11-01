@@ -15,12 +15,10 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part2
     public class ConsiderationsController : Controller
     {
         private readonly ConsiderationsOrchestrator _orchestrator;
-        private readonly IFeature _feature;
 
-        public ConsiderationsController(ConsiderationsOrchestrator orchestrator, IFeature feature)
+        public ConsiderationsController(ConsiderationsOrchestrator orchestrator)
         {
             _orchestrator = orchestrator;
-            _feature = feature;
         }
 
         [HttpGet("considerations", Name = RouteNames.Considerations_Get)]
@@ -46,16 +44,11 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part2
                 return View(vm);
             }
 
-            if (_feature.IsFeatureEnabled(FeatureNames.EmployerTaskList))
+            if (!vm.IsTaskListCompleted)
             {
-                if (!vm.IsTaskListCompleted)
-                {
-                    return RedirectToRoute(RouteNames.EmployerTaskListGet);    
-                }
-                return RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet);
+                return RedirectToRoute(RouteNames.EmployerTaskListGet, new {m.VacancyId, m.EmployerAccountId});    
             }
-            
-            return RedirectToRoute(RouteNames.Vacancy_Preview_Get);
+            return RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet, new {m.VacancyId, m.EmployerAccountId});
         }
     }
 }

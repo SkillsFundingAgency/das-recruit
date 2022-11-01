@@ -62,6 +62,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 
             var vm = new EditVacancyDatesViewModel
             {
+                VacancyId = vacancy.Id,
+                EmployerAccountId = vacancy.EmployerAccountId,
                 ClosingDay = $"{vacancy.ClosingDate.Value.Day:00}",
                 ClosingMonth = $"{vacancy.ClosingDate.Value.Month:00}",
                 ClosingYear = $"{vacancy.ClosingDate.Value.Year}",

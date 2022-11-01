@@ -99,9 +99,9 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
         }
 
         [Theory]
-        [InlineData(0)]
-        [InlineData(1234)]
-        [InlineData(123456789)]
+        [InlineData(0L)]
+        [InlineData(1234L)]
+        [InlineData(123456789L)]
         public void TrainingProviderUkprnMustBe8Digits(long? ukprn)
         {
             var vacancy = new Vacancy

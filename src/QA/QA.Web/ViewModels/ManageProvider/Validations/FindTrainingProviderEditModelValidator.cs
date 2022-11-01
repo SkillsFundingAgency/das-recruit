@@ -12,14 +12,14 @@ namespace Esfa.Recruit.QA.Web.ViewModels.ManageProvider.Validations
         public FindTrainingProviderEditModelValidator(ITrainingProviderService service)
         {
             RuleFor(m => m.Ukprn)
-                .Cascade(CascadeMode.StopOnFirstFailure)
+                .Cascade(CascadeMode.Stop)
                 .NotNull()
                 .WithMessage("Please add a UKPRN to continue")
                 .ValidUkprn()
                 .WithMessage("Please add a valid UKPRN to continue");
 
             RuleFor(m => m.Postcode)
-                .Cascade(CascadeMode.StopOnFirstFailure)
+                .Cascade(CascadeMode.Stop)
                 .NotEmpty()
                 .WithMessage("Please add a postcode to continue")
                 .ValidPostCode()

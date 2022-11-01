@@ -37,6 +37,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
 
             var vm = new VacancyDescriptionViewModel
             {
+                VacancyId = vacancy.Id,
+                EmployerAccountId = vacancy.EmployerAccountId,
                 Title = vacancy.Title,
                 VacancyDescription = vacancy.Description,
                 TrainingDescription = vacancy.TrainingDescription,
