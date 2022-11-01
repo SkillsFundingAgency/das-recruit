@@ -231,6 +231,7 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview
         {
             if (TitleSectionState == VacancyPreviewSectionState.Valid
                 && (VacancyType.GetValueOrDefault() == Vacancies.Client.Domain.Entities.VacancyType.Apprenticeship ? HasProgramme : HasRoute)
+                && !string.IsNullOrEmpty(Title)
                 && HasSelectedLegalEntity
                 && HasShortDescription
                 && HasTrainingDescription
@@ -239,7 +240,7 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview
                 return VacancyTaskListSectionState.Completed;
             }
             
-            if (TitleSectionState == VacancyPreviewSectionState.Valid)
+            if (HasSelectedLegalEntity)
             {
                 return VacancyTaskListSectionState.InProgress;    
             }
