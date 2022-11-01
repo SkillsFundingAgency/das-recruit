@@ -49,7 +49,25 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
         }
         
         [Test, MoqAutoData]
-        public async Task Then_Chooses_No_For_Employer_Then_Redirected_To_EmployerLegalEntity_View(
+        public async Task Then_Chooses_No_For_Employer_Then_Redirected_To_EmployerLegalEntity_View_For_New_Vacancy(
+            ConfirmLegalEntityAndEmployerEditModel editModel,
+            VacancyRouteModel vacancyRouteModel,
+            LegalEntityAndEmployerOrchestrator orchestrator)
+        {
+            editModel.VacancyId = null;
+            var controller = new LegalEntityAndEmployerController(orchestrator, Mock.Of<IWebHostEnvironment>(),
+                new ServiceParameters("Apprenticeship"));
+            editModel.HasConfirmedEmployer = false;
+
+            var actual = await controller.ConfirmEmployerLegalEntitySelection(editModel, vacancyRouteModel);
+
+            actual.Should().NotBeNull();
+            var result = actual as RedirectToRouteResult;
+            result?.RouteName.Should().Be(RouteNames.LegalEntityEmployer_Get);
+            result?.RouteValues["ukprn"].Should().Be(vacancyRouteModel.Ukprn);
+        }
+        [Test, MoqAutoData]
+        public async Task Then_Chooses_No_For_Employer_Then_Redirected_To_EmployerLegalEntity_View_For_Existing_Vacancy(
             ConfirmLegalEntityAndEmployerEditModel editModel,
             VacancyRouteModel vacancyRouteModel,
             LegalEntityAndEmployerOrchestrator orchestrator)
@@ -62,8 +80,9 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
 
             actual.Should().NotBeNull();
             var result = actual as RedirectToRouteResult;
-            result?.RouteName.Should().Be(RouteNames.LegalEntityEmployer_Get);
+            result?.RouteName.Should().Be(RouteNames.LegalEntityEmployerChange_Get);
             result?.RouteValues["ukprn"].Should().Be(vacancyRouteModel.Ukprn);
+            result?.RouteValues["vacancyId"].Should().Be(vacancyRouteModel.VacancyId);
         }
         
         [Test, MoqAutoData]
