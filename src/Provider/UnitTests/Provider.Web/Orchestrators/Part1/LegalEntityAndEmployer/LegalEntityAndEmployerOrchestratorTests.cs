@@ -12,7 +12,7 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.Testing.AutoFixture;
 
-namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part1
+namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part1.LegalEntityAndEmployer
 {
     public class LegalEntityAndEmployerOrchestratorTests
     {

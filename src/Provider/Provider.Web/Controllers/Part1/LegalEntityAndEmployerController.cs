@@ -2,6 +2,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Provider.Web.Configuration;
 using Esfa.Recruit.Provider.Web.Configuration.Routing;
+using Esfa.Recruit.Provider.Web.Extensions;
 using Esfa.Recruit.Provider.Web.Orchestrators.Part1;
 using Esfa.Recruit.Provider.Web.RouteModel;
 using Microsoft.AspNetCore.Hosting;
@@ -70,10 +71,11 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
         }
 
         [HttpGet("confirm-employer-legal-entity", Name = RouteNames.ConfirmLegalEntityEmployer_Get)]
+        [HttpGet("{VacancyId}/confirm-selected-legal-entity", Name = RouteNames.ConfirmSelectedLegalEntityEmployer_Get)]
         public async Task<IActionResult> ConfirmEmployerLegalEntitySelection(VacancyRouteModel vacancyRouteModel,[FromQuery] string selectedId)
         {
-            var employerAccountLegalEntityId = selectedId.Split('|')[0];
-            var employerAccountId = selectedId.Split('|')[1];
+            var employerAccountLegalEntityId = selectedId?.Split('|')[0];
+            var employerAccountId = selectedId?.Split('|')[1];
             var viewModel = await _orchestrator.GetConfirmLegalEntityViewModel(vacancyRouteModel, employerAccountId, employerAccountLegalEntityId);
             
             return View(viewModel);

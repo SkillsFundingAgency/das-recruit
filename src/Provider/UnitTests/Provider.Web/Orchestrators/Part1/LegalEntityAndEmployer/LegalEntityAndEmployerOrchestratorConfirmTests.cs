@@ -1,9 +1,12 @@
 using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
+using Esfa.Recruit.Provider.Web;
+using Esfa.Recruit.Provider.Web.Configuration.Routing;
 using Esfa.Recruit.Provider.Web.Exceptions;
 using Esfa.Recruit.Provider.Web.Orchestrators.Part1;
 using Esfa.Recruit.Provider.Web.RouteModel;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Models;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
@@ -13,7 +16,7 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.Testing.AutoFixture;
 
-namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part1
+namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part1.LegalEntityAndEmployer
 {
     public class LegalEntityAndEmployerOrchestratorConfirmTests
     {
@@ -40,6 +43,37 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part1
             
             var actual = await orchestrator.GetConfirmLegalEntityViewModel(vacancyRouteModel, employerAccountId,
                 employerAccountLegalEntityId);
+
+            actual.EmployerName.Should().Be(employerInfo.Name);
+            actual.EmployerAccountId.Should().Be(employerInfo.EmployerAccountId);
+            actual.AccountLegalEntityPublicHashedId.Should().Be(employerInfo.LegalEntities.Last().AccountLegalEntityPublicHashedId);
+            actual.AccountLegalEntityName.Should().Be(employerInfo.LegalEntities.Last().Name);
+        }
+        [Test, MoqAutoData]
+        public async Task Then_The_ConfirmLegalEntityViewModel_Is_Returned_From_The_VacancyId_If_Present(
+            Vacancy vacancy,
+            EmployerInfo employerInfo,
+            VacancyRouteModel vacancyRouteModel,
+            [Frozen] Mock<IProviderVacancyClient> providerVacancyClient,
+            [Frozen] Mock<IProviderRelationshipsService> providerRelationshipsService,
+            [Frozen] Mock<IUtility> utility,
+            LegalEntityAndEmployerOrchestrator orchestrator)
+        {
+            utility.Setup(x =>
+                    x.GetAuthorisedVacancyForEditAsync(vacancyRouteModel, RouteNames.ConfirmLegalEntityEmployer_Get))
+                .ReturnsAsync(vacancy);
+            
+            employerInfo.EmployerAccountId = vacancy.EmployerAccountId;
+            employerInfo.LegalEntities.Last().AccountLegalEntityPublicHashedId = vacancy.AccountLegalEntityPublicHashedId;
+            
+            providerVacancyClient
+                .Setup(x => x.GetProviderEmployerVacancyDataAsync(vacancyRouteModel.Ukprn, vacancy.EmployerAccountId))
+                .ReturnsAsync(employerInfo);
+            providerRelationshipsService.Setup(x => x.HasProviderGotEmployersPermissionAsync(vacancyRouteModel.Ukprn,
+                    vacancy.EmployerAccountId, vacancy.AccountLegalEntityPublicHashedId, OperationType.RecruitmentRequiresReview))
+                .ReturnsAsync(true);
+            
+            var actual = await orchestrator.GetConfirmLegalEntityViewModel(vacancyRouteModel, null, null);
 
             actual.EmployerName.Should().Be(employerInfo.Name);
             actual.EmployerAccountId.Should().Be(employerInfo.EmployerAccountId);
