@@ -35,6 +35,7 @@
         public const string LegalEntityEmployer_Post = "LegalEntityEmployer_Post";
         public const string LegalEntityEmployer_Cancel = "LegalEntityEmployer_Cancel";
         public const string ConfirmLegalEntityEmployer_Get = "ConfirmLegalEntityEmployer_Get";
+        public const string ConfirmSelectedLegalEntityEmployer_Get = "ConfirmSelectedLegalEntityEmployer_Get";
         public const string ConfirmLegalEntityEmployer_Post = "ConfirmLegalEntityEmployer_Post";
         public const string EmployerName_Cancel = "EmployerName_Cancel";
         public const string EmployerName_Get = "EmployerName_Get";

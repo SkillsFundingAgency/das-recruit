@@ -10,7 +10,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 {
     public interface IProviderVacancyClient
     {
-        Task<Guid> CreateVacancyAsync(string employerAccountId, long ukprn, string title, VacancyUser user);
+        Task<Guid> CreateVacancyAsync(string employerAccountId, long ukprn, string title, VacancyUser user, string accountLegalEntityPublicHashedId, string legalEntityName);
         Task<ProviderDashboard> GetDashboardAsync(long ukprn, VacancyType vacancyType,int page, FilteringOptions? status = null, string searchTerm = null);
         Task SetupProviderAsync(long ukprn);
         Task<ProviderEditVacancyInfo> GetProviderEditVacancyInfoAsync(long ukprn);

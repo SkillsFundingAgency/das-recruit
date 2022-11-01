@@ -100,14 +100,16 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
 
             if (model.HasConfirmedEmployer.HasValue && !model.HasConfirmedEmployer.Value)
             {
-                return RedirectToRoute(RouteNames.LegalEntityEmployer_Get, new {ukprn = vacancyRouteModel.Ukprn});
+                return RedirectToRoute(RouteNames.LegalEntityEmployer_Get, new {ukprn = vacancyRouteModel.Ukprn, vacancyId = vacancyRouteModel.VacancyId});
             }
 
-            return RedirectToRoute(RouteNames.ProviderTaskListCreateGet,
+            var result =
+                await _orchestrator.PostTitleEditModelAsync(vacancyRouteModel, model, HttpContext.User.ToVacancyUser());
+
+            return RedirectToRoute(RouteNames.ProviderTaskListGet,
                     new
                             {
-                                employerAccountId = model.EmployerAccountId,
-                                accountLegalEntityPublicHashedId = model.AccountLegalEntityPublicHashedId, 
+                                VacancyId = result.Data, 
                                 vacancyRouteModel.Ukprn
                             });
         }

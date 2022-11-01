@@ -77,7 +77,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
             var filteredLegalEntitiesTotal = filteredLegalEntities.Count();
             var totalNumberOfPages = PagingHelper.GetTotalNoOfPages(MaxLegalEntitiesPerPage, filteredLegalEntitiesTotal);
 
-            setPage = GetPageNo(requestedPageNo, setPage, totalNumberOfPages);
+            setPage = GetPageNo(setPage, totalNumberOfPages);
 
             SetFilteredOrganisationsForPage(setPage, vm, filteredLegalEntities);
             SetPager(searchTerm, setPage, vm, filteredLegalEntitiesTotal);
@@ -128,8 +128,40 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
                 Ukprn = vacancyRouteModel.Ukprn
             };
         }
+        public async Task<OrchestratorResponse<Guid>> PostTitleEditModelAsync(VacancyRouteModel vacancyRouteModel, ConfirmLegalEntityAndEmployerEditModel model, VacancyUser user)
+        {
+            if (vacancyRouteModel.VacancyId != null)
+            {
+                var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(vacancyRouteModel,
+                    RouteNames.ConfirmLegalEntityEmployer_Get);
+                vacancy.EmployerAccountId = model.EmployerAccountId;
+                vacancy.AccountLegalEntityPublicHashedId = model.AccountLegalEntityPublicHashedId;
+                vacancy.LegalEntityName = model.AccountLegalEntityName;
 
-        private int GetPageNo(int? requestedPageNo, int page, int totalNumberOfPages)
+                 await ValidateAndExecute(
+                    vacancy,
+                    v => _recruitVacancyClient.Validate(v, ValidationRules),
+                    async v => await _recruitVacancyClient.UpdateDraftVacancyAsync(vacancy, user));
+                 return new OrchestratorResponse<Guid>(vacancy.Id);
+            }
+            
+            var newVacancy = new Vacancy
+            {
+                TrainingProvider = new TrainingProvider { Ukprn = user.Ukprn },
+                EmployerAccountId = model.EmployerAccountId,
+                AccountLegalEntityPublicHashedId = model.AccountLegalEntityPublicHashedId,
+                LegalEntityName = model.AccountLegalEntityName,
+                
+            };
+
+            return await ValidateAndExecute(
+                newVacancy,
+                v => _recruitVacancyClient.Validate(v, ValidationRules),
+                async v => await _providerVacancyClient.CreateVacancyAsync(
+                    model.EmployerAccountId, user.Ukprn.Value, null, user, model.AccountLegalEntityPublicHashedId, model.AccountLegalEntityName));
+        }
+
+        private int GetPageNo(int page, int totalNumberOfPages)
         {
             page = page > totalNumberOfPages ? 1 : page;
             return page;
