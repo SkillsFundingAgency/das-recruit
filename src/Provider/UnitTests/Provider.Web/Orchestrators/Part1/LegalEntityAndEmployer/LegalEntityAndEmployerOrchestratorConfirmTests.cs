@@ -31,6 +31,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part1.Legal
             [Frozen] Mock<IProviderRelationshipsService> providerRelationshipsService,
             LegalEntityAndEmployerOrchestrator orchestrator)
         {
+            vacancyRouteModel.VacancyId = null;
             employerInfo.EmployerAccountId = employerAccountId;
             employerInfo.LegalEntities.Last().AccountLegalEntityPublicHashedId = employerAccountLegalEntityId;
             
@@ -90,6 +91,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part1.Legal
             [Frozen] Mock<IProviderVacancyClient> providerVacancyClient,
             LegalEntityAndEmployerOrchestrator orchestrator)
         {
+            vacancyRouteModel.VacancyId = null;
             providerVacancyClient
                 .Setup(x => x.GetProviderEmployerVacancyDataAsync(vacancyRouteModel.Ukprn, employerAccountId))
                 .ReturnsAsync(new EmployerInfo());
@@ -107,6 +109,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part1.Legal
             [Frozen] Mock<IProviderVacancyClient> providerVacancyClient,
             LegalEntityAndEmployerOrchestrator orchestrator)
         {
+            vacancyRouteModel.VacancyId = null;
             providerVacancyClient
                 .Setup(x => x.GetProviderEmployerVacancyDataAsync(vacancyRouteModel.Ukprn, employerAccountId))
                 .ReturnsAsync(employerInfo);
@@ -125,6 +128,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part1.Legal
             [Frozen] Mock<IProviderRelationshipsService> providerRelationshipsService,
             LegalEntityAndEmployerOrchestrator orchestrator)
         {
+            vacancyRouteModel.VacancyId = null;
             employerInfo.EmployerAccountId = employerAccountId;
             employerInfo.LegalEntities.Last().AccountLegalEntityPublicHashedId = employerAccountLegalEntityId;
             
@@ -152,6 +156,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part1.Legal
             [Frozen] Mock<IProviderRelationshipsService> providerRelationshipsService,
             LegalEntityAndEmployerOrchestrator orchestrator)
         {
+            vacancyRouteModel.VacancyId = null;
             employerInfo.EmployerAccountId = employerAccountId;
             employerInfo.LegalEntities.Last().AccountLegalEntityPublicHashedId = employerAccountLegalEntityId;
             
@@ -184,6 +189,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part1.Legal
             [Frozen] Mock<IProviderRelationshipsService> providerRelationshipsService,
             LegalEntityAndEmployerOrchestrator orchestrator)
         {
+            vacancyRouteModel.VacancyId = null;
             employerInfo.EmployerAccountId = employerAccountId;
             employerInfo.LegalEntities.Last().AccountLegalEntityPublicHashedId = employerAccountLegalEntityId;
             

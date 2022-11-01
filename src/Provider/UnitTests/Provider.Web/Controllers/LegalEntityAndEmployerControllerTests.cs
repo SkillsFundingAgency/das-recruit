@@ -74,7 +74,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
 
             actual.Should().NotBeNull();
             var result = actual as RedirectToRouteResult;
-            result?.RouteName.Should().Be(RouteNames.ProviderTaskListCreateGet);
+            result?.RouteName.Should().Be(RouteNames.ProviderTaskListGet);
             result?.RouteValues["ukprn"].Should().Be(vacancyRouteModel.Ukprn);
             result?.RouteValues["employerAccountId"].Should().Be(editModel.EmployerAccountId);
             result?.RouteValues["accountLegalEntityPublicHashedId"].Should().Be(editModel.AccountLegalEntityPublicHashedId);
