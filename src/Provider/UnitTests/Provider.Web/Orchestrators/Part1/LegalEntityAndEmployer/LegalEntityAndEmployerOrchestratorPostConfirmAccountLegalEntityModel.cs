@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
 using Esfa.Recruit.Provider.Web;
@@ -7,13 +6,9 @@ using Esfa.Recruit.Provider.Web.Configuration.Routing;
 using Esfa.Recruit.Provider.Web.Orchestrators.Part1;
 using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Provider.Web.ViewModels.Part1.LegalEntityAndEmployer;
-using Esfa.Recruit.Vacancies.Client.Application.Rules.VacancyRules;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using Esfa.Recruit.Vacancies.Client.Domain.Models;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelationship;
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
@@ -21,7 +16,7 @@ using SFA.DAS.Testing.AutoFixture;
 
 namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part1.LegalEntityAndEmployer;
 
-public class LegalEntityAndEmployerOrchestratorPostTitleEditModelAsync
+public class LegalEntityAndEmployerOrchestratorPostConfirmAccountLegalEntityModel
 {
     [Test, MoqAutoData]
     public async Task Then_The_Vacancy_Is_Created_If_No_VacancyId_Present(
@@ -46,7 +41,7 @@ public class LegalEntityAndEmployerOrchestratorPostTitleEditModelAsync
         providerVacancyClient.Setup(x => x.CreateVacancyAsync(model.EmployerAccountId, user.Ukprn.Value, null, user,
             model.AccountLegalEntityPublicHashedId, model.AccountLegalEntityName)).ReturnsAsync(vacancyId);
         
-        var actual = await orchestrator.PostTitleEditModelAsync(vacancyRouteModel, model, user);
+        var actual = await orchestrator.PostConfirmAccountLegalEntityModel(vacancyRouteModel, model, user);
 
         actual.Data.Should().Be(vacancyId);
         
@@ -72,7 +67,7 @@ public class LegalEntityAndEmployerOrchestratorPostTitleEditModelAsync
                     && c.AccountLegalEntityPublicHashedId.Equals(model.AccountLegalEntityPublicHashedId)),
                 Esfa.Recruit.Vacancies.Client.Application.Validation.VacancyRuleSet.None)).Returns(new EntityValidationResult());
         
-        var actual = await orchestrator.PostTitleEditModelAsync(vacancyRouteModel, model, user);
+        var actual = await orchestrator.PostConfirmAccountLegalEntityModel(vacancyRouteModel, model, user);
 
         actual.Data.Should().Be(vacancy.Id);
         recruitVacancyClient.Verify(x =>

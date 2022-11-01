@@ -128,7 +128,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
                 Ukprn = vacancyRouteModel.Ukprn
             };
         }
-        public async Task<OrchestratorResponse<Guid>> PostTitleEditModelAsync(VacancyRouteModel vacancyRouteModel, ConfirmLegalEntityAndEmployerEditModel model, VacancyUser user)
+        public async Task<OrchestratorResponse<Guid>> PostConfirmAccountLegalEntityModel(VacancyRouteModel vacancyRouteModel, ConfirmLegalEntityAndEmployerEditModel model, VacancyUser user)
         {
             if (vacancyRouteModel.VacancyId != null)
             {

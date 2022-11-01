@@ -33,21 +33,22 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
         }
 
         [HttpGet("employer-legal-entity", Name = RouteNames.LegalEntityEmployer_Get)]
-        public async Task<IActionResult> LegalEntityAndEmployer(VacancyRouteModel vrm, [FromQuery]string searchTerm, [FromQuery]int? page, [FromQuery] string wizard = "true")
+        [HttpGet("{VacancyId}/change-employer-legal-entity", Name = RouteNames.LegalEntityEmployerChange_Get)]
+        public async Task<IActionResult> LegalEntityAndEmployer(VacancyRouteModel vrm, [FromQuery]string searchTerm, [FromQuery]int? page)
         {
             var vm = await _orchestrator.GetLegalEntityAndEmployerViewModelAsync(vrm, searchTerm, page);
 
             if (vm.HasOnlyOneOrganisation)
             {
-                var model = new LegalEntityAndEmployerEditModel();
-                {
-                    model.SelectedOrganisationId = vm.Organisations.FirstOrDefault()?.Id;
-                }
+                var result =
+                    await _orchestrator.PostConfirmAccountLegalEntityModel(vrm, new ConfirmLegalEntityAndEmployerEditModel
+                    {
+                        AccountLegalEntityName = vm.Organisations.First().AccountLegalEntityName,
+                        EmployerAccountId = vm.EmployerAccountId,
+                        AccountLegalEntityPublicHashedId = vm.Organisations.First().Id
+                    }, HttpContext.User.ToVacancyUser());
                 
-                //TODO not the correct flow
-                return RedirectToRoute(_serviceParameters.VacancyType == VacancyType.Traineeship 
-                    ? RouteNames.TraineeSector_Get 
-                    : RouteNames.Training_Get, new {Wizard = wizard, vrm.Ukprn, vrm.VacancyId});
+                return RedirectToRoute(RouteNames.ProviderTaskListGet, new {vrm.Ukprn, VacancyId = result.Data});
             }
 
             return View(vm);
@@ -100,11 +101,14 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
 
             if (model.HasConfirmedEmployer.HasValue && !model.HasConfirmedEmployer.Value)
             {
-                return RedirectToRoute(RouteNames.LegalEntityEmployer_Get, new {ukprn = vacancyRouteModel.Ukprn, vacancyId = vacancyRouteModel.VacancyId});
+                var routeName = model.VacancyId != null
+                    ? RouteNames.LegalEntityEmployerChange_Get
+                    : RouteNames.LegalEntityEmployer_Get;
+                return RedirectToRoute(routeName, new {ukprn = vacancyRouteModel.Ukprn, vacancyId = vacancyRouteModel.VacancyId});
             }
 
             var result =
-                await _orchestrator.PostTitleEditModelAsync(vacancyRouteModel, model, HttpContext.User.ToVacancyUser());
+                await _orchestrator.PostConfirmAccountLegalEntityModel(vacancyRouteModel, model, HttpContext.User.ToVacancyUser());
 
             return RedirectToRoute(RouteNames.ProviderTaskListGet,
                     new
