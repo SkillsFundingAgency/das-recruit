@@ -18,7 +18,7 @@ using SFA.DAS.Testing.AutoFixture;
 
 namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
 {
-    class DeleteVacancyControllerTests
+    public class DeleteVacancyControllerTests
     {
         [Test, MoqAutoData]
         public async Task Then_Returns_TempData_With_VacancyReference_Title(
