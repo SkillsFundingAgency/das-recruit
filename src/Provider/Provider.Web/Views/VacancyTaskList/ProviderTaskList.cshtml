@@ -516,11 +516,10 @@
                 </ul>
             </li>
         </ol>
-    </div>
-    <div class="govuk-grid-column-two-thirds">
-        <h3 class="govuk-heading-s">No longer need this vacancy?</h3>
-        <p class="govuk-body">
-            <a asp-route="@RouteNames.DeleteVacancy_Get" asp-all-route-data="@Model.RouteDictionary" class="govuk-link govuk-link--no-visited-state" esfa-automation="delete-button">Delete vacancy</a>
-        </p>
+
+        <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+
+        <p class="govuk-heading-s">No longer need this vacancy?</p>
+        <a asp-route="@RouteNames.DeleteVacancy_Get" asp-all-route-data="@Model.RouteDictionary" class="govuk-button govuk-button--warning" esfa-automation="delete-button">Delete vacancy</a>
     </div>
 </div>
