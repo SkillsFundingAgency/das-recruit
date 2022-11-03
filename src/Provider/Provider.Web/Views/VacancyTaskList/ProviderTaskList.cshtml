@@ -517,4 +517,10 @@
             </li>
         </ol>
     </div>
+    <div class="govuk-grid-column-two-thirds">
+        <h3 class="govuk-heading-s">No longer need this vacancy?</h3>
+        <p class="govuk-body">
+            <a asp-route="@RouteNames.DeleteVacancy_Get" asp-all-route-data="@Model.RouteDictionary" class="govuk-link govuk-link--no-visited-state" esfa-automation="delete-button">Delete vacancy</a>
+        </p>
+    </div>
 </div>

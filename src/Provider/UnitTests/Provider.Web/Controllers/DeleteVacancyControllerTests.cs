@@ -6,7 +6,6 @@ using Esfa.Recruit.Provider.Web.Configuration;
 using Esfa.Recruit.Provider.Web.Controllers;
 using Esfa.Recruit.Provider.Web.Orchestrators;
 using Esfa.Recruit.Provider.Web.ViewModels.DeleteVacancy;
-using Esfa.Recruit.Shared.Web.FeatureToggle;
 using Esfa.Recruit.Shared.Web.ViewModels;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
@@ -37,7 +36,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
             var httpContext = new DefaultHttpContext();
             var tempData = new TempDataDictionary(httpContext, Mock.Of<ITempDataProvider>());
 
-            var controller = new DeleteVacancyController(orchestrator, Mock.Of<IFeature>())
+            var controller = new DeleteVacancyController(orchestrator)
             {
                 TempData = tempData
             };
@@ -45,8 +44,8 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
             var user = new ClaimsPrincipal(new ClaimsIdentity(
                 new[]
                 {
-                                new Claim(ProviderRecruitClaims.IdamsUserNameClaimTypeIdentifier,userName),
-                                new Claim(ProviderRecruitClaims.IdamsUserUkprnClaimsTypeIdentifier,"10000001")
+                    new Claim(ProviderRecruitClaims.IdamsUserNameClaimTypeIdentifier,userName),
+                    new Claim(ProviderRecruitClaims.IdamsUserUkprnClaimsTypeIdentifier,"10000001")
                 }
             ));
             controller.ControllerContext = new ControllerContext
