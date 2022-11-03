@@ -39,7 +39,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             {
                 if (m.Status == VacancyStatus.Draft)
                 {
-                    return RedirectToRoute(RouteNames.VacancyAdvertPreview, new {m.VacancyId, m.EmployerAccountId});
+                    return RedirectToRoute(RouteNames.EmployerTaskListGet, new {m.VacancyId, m.EmployerAccountId});
                 }
                 return RedirectToRoute(RouteNames.Vacancies_Get, new {m.VacancyId, m.EmployerAccountId});
             }

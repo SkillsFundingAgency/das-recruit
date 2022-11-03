@@ -39,9 +39,10 @@
 </form>
 <div asp-show="@Model.CanDelete" class="govuk-grid-row">
   <div class="govuk-grid-column-two-thirds">
-  <p class="govuk-body">
-    <a asp-route="@RouteNames.DeleteVacancy_Get" asp-all-route-data="@Model.RouteDictionary" class="govuk-link govuk-link--no-visited-state" esfa-automation="delete-button">Delete advert</a>
-  </p>
+      <h3 class="govuk-heading-s">No longer need this advert?</h3>
+      <p class="govuk-body">
+          <a asp-route="@RouteNames.DeleteVacancy_Get" asp-all-route-data="@Model.RouteDictionary" class="govuk-link govuk-link--no-visited-state" esfa-automation="delete-button">Delete advert</a>
+      </p>
   </div>
 </div>
 
