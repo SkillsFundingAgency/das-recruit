@@ -583,11 +583,17 @@
             </strong>
         </div>
         <p class="govuk-body"><a asp-route="@RouteNames.Vacancy_Advert_Preview_Get" asp-all-route-data="@Model.RouteDictionary" class="govuk-link govuk-link--no-visited-state">Preview vacancy before submitting</a></p>
-         <form asp-route="@RouteNames.ProviderCheckYourAnswersPost" asp-all-route-data="@Model.RouteDictionary">
-             <div class="govuk-button-group">    
-                  <button type="submit" class="govuk-button save-button" esfa-automation="continue-button">@Model.SubmitButtonText</button>
-                  <a asp-route="@RouteNames.Dashboard_Get" asp-route-ukprn="@Model.Ukprn" esfa-automation="link-cancel" class="govuk-link govuk-link--no-visited-state">Cancel</a>
-             </div>
-          </form>
+        <form asp-route="@RouteNames.ProviderCheckYourAnswersPost" asp-all-route-data="@Model.RouteDictionary">
+            <div class="govuk-button-group">    
+                <button type="submit" class="govuk-button save-button" esfa-automation="continue-button">@Model.SubmitButtonText</button>
+                <a asp-route="@RouteNames.Dashboard_Get" asp-route-ukprn="@Model.Ukprn" esfa-automation="link-cancel" class="govuk-link govuk-link--no-visited-state">Cancel</a>
+            </div>
+        </form>
+  
+        <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+
+        <p class="govuk-heading-s">No longer need this vacancy?</p>
+        <a asp-route="@RouteNames.DeleteVacancy_Get" asp-all-route-data="@Model.RouteDictionary" class="govuk-button govuk-button--warning" esfa-automation="delete-button">Delete vacancy</a>
+          
     </div>
 </div>

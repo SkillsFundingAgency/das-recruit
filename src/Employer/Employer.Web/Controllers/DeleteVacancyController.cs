@@ -6,6 +6,7 @@ using Esfa.Recruit.Employer.Web.Orchestrators;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels.DeleteVacancy;
 using Esfa.Recruit.Shared.Web.FeatureToggle;
+using Esfa.Recruit.Shared.Web.ViewModels;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 
@@ -39,12 +40,13 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             {
                 if (m.Status == VacancyStatus.Draft)
                 {
-                    return RedirectToRoute(RouteNames.VacancyAdvertPreview, new {m.VacancyId, m.EmployerAccountId});
+                    return RedirectToRoute(RouteNames.EmployerTaskListGet, new {m.VacancyId, m.EmployerAccountId});
                 }
                 return RedirectToRoute(RouteNames.Vacancies_Get, new {m.VacancyId, m.EmployerAccountId});
             }
 
-            await _orchestrator.DeleteVacancyAsync(m, User.ToVacancyUser());
+            var vm = await _orchestrator.DeleteVacancyAsync(m, User.ToVacancyUser());
+            TempData.Add(TempDataKeys.DashboardInfoMessage, string.Format(InfoMessages.AdvertDeleted, vm.VacancyReference, vm.Title));
             
             return RedirectToRoute(RouteNames.Vacancies_Get, new {m.EmployerAccountId});
         }
