@@ -21,11 +21,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount
             _outerApiClient = outerApiClient;
         }
 
-        public async Task<IEnumerable<string>> GetEmployerIdentifiersAsync(string userId)
+        public async Task<IEnumerable<string>> GetEmployerIdentifiersAsync(string userId, string email)
         {
             try
             {
-                var accounts = await _outerApiClient.Get<GetUserAccountsResponse>(new GetUserAccountsRequest(userId));
+                var accounts = await _outerApiClient.Get<GetUserAccountsResponse>(new GetUserAccountsRequest(userId, email));
                 
                 return accounts.HashedAccountIds.ToList();
             }

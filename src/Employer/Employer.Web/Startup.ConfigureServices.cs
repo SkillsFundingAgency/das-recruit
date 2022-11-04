@@ -1,4 +1,6 @@
+using System;
 using System.IO;
+using Esfa.Recruit.Employer.Web.AppStart;
 using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Shared.Web.FeatureToggle;
@@ -8,6 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.Configuration.AzureTableStorage;
+using SFA.DAS.GovUK.Auth.AppStart;
 
 namespace Esfa.Recruit.Employer.Web
 {
@@ -74,12 +77,23 @@ namespace Esfa.Recruit.Employer.Web
 #if DEBUG
             services.AddControllersWithViews().AddRazorRuntimeCompilation();
 #endif
-            
-            if (_isAuthEnabled)
+
+            if (Configuration["Recruit:UseGovSignIn"] != null && Configuration["Recruit:UseGovSignIn"]
+                    .Equals("true", StringComparison.CurrentCultureIgnoreCase))
             {
-                services.AddAuthenticationService(AuthConfig);
-                services.AddAuthorizationService();
+                services.AddAndConfigureGovUkAuthentication(Configuration, $"{typeof(AddServiceRegistrationExtension).Assembly.GetName().Name}.Auth", typeof(EmployerAccountPostAuthenticationClaimsHandler));
+
             }
+
+            else
+            {
+                if (_isAuthEnabled)
+                {
+                    services.AddAuthenticationService(AuthConfig);
+                    services.AddAuthorizationService();
+                }
+            }
+
 
             services.AddDataProtection(Configuration, HostingEnvironment, applicationName: "das-employer-recruit-web");
         }

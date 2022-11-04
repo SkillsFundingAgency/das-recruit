@@ -53,4 +53,7 @@
     <_ContentIncludedByDefault Remove="Views\CreateVacancyOptions\Options.cshtml" />
     <_ContentIncludedByDefault Remove="Views\Part1\Part1Complete\Part1Complete.cshtml" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="AppStart\" />
+  </ItemGroup>
 </Project>

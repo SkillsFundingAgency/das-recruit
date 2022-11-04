@@ -291,9 +291,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return _apprenticeshipProgrammesProvider.GetApprenticeshipProgrammeAsync(programmeId);
         }
 
-        public Task<IEnumerable<string>> GetEmployerIdentifiersAsync(string userId)
+        public Task<IEnumerable<string>> GetEmployerIdentifiersAsync(string userId, string email)
         {
-            return _employerAccountProvider.GetEmployerIdentifiersAsync(userId);
+            return _employerAccountProvider.GetEmployerIdentifiersAsync(userId, email);
         }
 
         public Task<List<string>> GetCandidateSkillsAsync()
