@@ -104,7 +104,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
                 var routeName = model.VacancyId != null
                     ? RouteNames.LegalEntityEmployerChange_Get
                     : RouteNames.LegalEntityEmployer_Get;
-                return RedirectToRoute(routeName, new {ukprn = vacancyRouteModel.Ukprn, vacancyId = vacancyRouteModel.VacancyId});
+                return RedirectToRoute(routeName, new {ukprn = vacancyRouteModel.Ukprn, vacancyId = model.VacancyId});
             }
 
             var result =

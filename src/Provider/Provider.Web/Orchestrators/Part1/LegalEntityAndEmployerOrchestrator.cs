@@ -87,12 +87,14 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
 
         public async Task<ConfirmLegalEntityAndEmployerViewModel> GetConfirmLegalEntityViewModel(VacancyRouteModel vacancyRouteModel,string employerAccountId, string employerAccountLegalEntityPublicHashedId)
         {
+            Guid? vacancyId = null;
             if (vacancyRouteModel.VacancyId != null)
             {
                 var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(vacancyRouteModel,
                     RouteNames.ConfirmLegalEntityEmployer_Get);
                 employerAccountId = vacancy.EmployerAccountId;
                 employerAccountLegalEntityPublicHashedId = vacancy.AccountLegalEntityPublicHashedId;
+                vacancyId = vacancy.Id;
             }
             
             var employerVacancyInfo = await _providerVacancyClient.GetProviderEmployerVacancyDataAsync(vacancyRouteModel.Ukprn, employerAccountId);
@@ -125,7 +127,8 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
                 EmployerName = employerVacancyInfo.Name,
                 EmployerAccountId = employerVacancyInfo.EmployerAccountId,
                 AccountLegalEntityName = selectedOrganisation?.Name,
-                Ukprn = vacancyRouteModel.Ukprn
+                Ukprn = vacancyRouteModel.Ukprn,
+                VacancyId = vacancyId
             };
         }
         public async Task<OrchestratorResponse<Guid>> PostConfirmAccountLegalEntityModel(VacancyRouteModel vacancyRouteModel, ConfirmLegalEntityAndEmployerEditModel model, VacancyUser user)

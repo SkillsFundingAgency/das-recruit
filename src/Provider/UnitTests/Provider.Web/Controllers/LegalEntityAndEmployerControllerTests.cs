@@ -82,7 +82,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
             var result = actual as RedirectToRouteResult;
             result?.RouteName.Should().Be(RouteNames.LegalEntityEmployerChange_Get);
             result?.RouteValues["ukprn"].Should().Be(vacancyRouteModel.Ukprn);
-            result?.RouteValues["vacancyId"].Should().Be(vacancyRouteModel.VacancyId);
+            result?.RouteValues["vacancyId"].Should().Be(editModel.VacancyId);
         }
         
         [Test, MoqAutoData]
