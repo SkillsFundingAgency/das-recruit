@@ -1,10 +1,14 @@
-﻿using Microsoft.AspNetCore.Authentication.OpenIdConnect;
-using Microsoft.Extensions.Options;
+﻿using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using System;
+using Employer.Web.Configuration;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
 using SFA.DAS.GovUK.Auth.Services;
 
 namespace Esfa.Recruit.Employer.Web.AppStart;
@@ -13,13 +17,13 @@ public class EmployerAccountPostAuthenticationClaimsHandler : ICustomClaims
 {
     private readonly IEmployerAccountService _accountsSvc;
     private readonly IConfiguration _configuration;
-    private readonly ApimDeveloperWeb _apimDeveloperWebConfiguration;
+    private readonly RecruitConfiguration _recruitConfiguration;
 
-    public EmployerAccountPostAuthenticationClaimsHandler(IEmployerAccountService accountsSvc, IConfiguration configuration, IOptions<ApimDeveloperWeb> apimDeveloperWebConfiguration)
+    public EmployerAccountPostAuthenticationClaimsHandler(IEmployerAccountService accountsSvc, IConfiguration configuration, IOptions<RecruitConfiguration> recruitConfiguration)
     {
         _accountsSvc = accountsSvc;
         _configuration = configuration;
-        _apimDeveloperWebConfiguration = apimDeveloperWebConfiguration.Value;
+        _recruitConfiguration = recruitConfiguration.Value;
     }
     public async Task<IEnumerable<Claim>> GetClaims(TokenValidatedContext ctx)
     {
@@ -44,7 +48,7 @@ public class EmployerAccountPostAuthenticationClaimsHandler : ICustomClaims
 
         string userId;
         var email = string.Empty;
-        if (_apimDeveloperWebConfiguration.UseGovSignIn)
+        if (_recruitConfiguration.UseGovSignIn)
         {
             userId = ctx.Principal.Claims
                 .First(c => c.Type.Equals(ClaimTypes.NameIdentifier))

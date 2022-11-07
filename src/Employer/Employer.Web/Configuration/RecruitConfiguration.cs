@@ -7,5 +7,6 @@ namespace Employer.Web.Configuration
             EmployerAccountId = employerAccountId;
         }
         public string EmployerAccountId { get; set; }
+        public bool UseGovSignIn { get; set; }
     }
 }
