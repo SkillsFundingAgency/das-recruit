@@ -6,7 +6,14 @@
 }
 
 @section BackLink {
-    <a asp-route="@RouteNames.CreateVacancyStart" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Back</a>
+    @if (Model.VacancyId == null)
+    {
+        <a asp-route="@RouteNames.CreateVacancyStart" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Back</a>    
+    }
+    else
+    {
+        <a asp-route="@RouteNames.ConfirmSelectedLegalEntityEmployer_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Back</a>
+    }
 }
 
 <div class="govuk-grid-row">
