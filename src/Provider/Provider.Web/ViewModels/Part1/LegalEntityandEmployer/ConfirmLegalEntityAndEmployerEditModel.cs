@@ -15,8 +15,9 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.Part1.LegalEntityAndEmployer
         public string EmployerName { get; set; }
         [FromRoute]
         public long Ukprn { get; set; }
-
         public Guid? VacancyId { get; set; }
+        public string CancelLinkRoute { get; set; }
+        public string BackLinkRoute { get; set; }
 
         public Dictionary<string, string> RouteDictionary
         {

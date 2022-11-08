@@ -106,7 +106,9 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
                     AccountLegalEntityName = model.AccountLegalEntityName,
                     AccountLegalEntityPublicHashedId = model.AccountLegalEntityPublicHashedId,
                     Ukprn = model.Ukprn,
-                    VacancyId = model.VacancyId
+                    VacancyId = model.VacancyId,
+                    CancelLinkRoute = model.CancelLinkRoute,
+                    BackLinkRoute = model.BackLinkRoute
                 });
             }
 

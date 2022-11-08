@@ -13,5 +13,7 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.Part1.LegalEntityAndEmployer
         public string EmployerName { get; set; }
         public string AgreementId { get; set; }
         public ReviewSummaryViewModel Review { get; set; } = new ReviewSummaryViewModel();
+        public string CancelLinkRoute { get; set; }
+        public string BackLinkRoute { get; set; }
     }
 }

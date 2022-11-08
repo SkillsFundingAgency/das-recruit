@@ -3,16 +3,10 @@
 @{
     ViewBag.GaData.Vpv = "/recruitment/provider/page-create-vacancy-confirm-which-organisation";
     ViewBag.Title = "Confirm employer name and legal entity";
-    var backLink = RouteNames.LegalEntityEmployerChange_Get;
-    
-    if (Model.VacancyId == null)
-    {
-        backLink = RouteNames.LegalEntityEmployer_Get;
-    }
 }
 
 @section BackLink {
-    <a asp-route="@backLink" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Back</a>
+    <a asp-route="@Model.BackLinkRoute" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Back</a>
 }
 
 
@@ -35,6 +29,9 @@
             <input asp-for="EmployerAccountId" type="hidden"/>
             <input asp-for="AccountLegalEntityPublicHashedId" type="hidden"/>
             <input asp-for="AccountLegalEntityName" type="hidden"/>
+            <input asp-for="BackLinkRoute" type="hidden"/>
+            <input asp-for="CancelLinkRoute" type="hidden"/>
+            
             <div class="govuk-form-group">
                 <fieldset class="govuk-fieldset">
                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
@@ -61,7 +58,7 @@
                 <button class="govuk-button" data-module="govuk-button">
                     Save and continue
                 </button>
-                <a class="govuk-link" asp-route="@RouteNames.Dashboard_Get" asp-all-route-data="@Model.RouteDictionary">Cancel</a>
+                <a class="govuk-link" asp-route="@Model.CancelLinkRoute" asp-all-route-data="@Model.RouteDictionary">Cancel</a>
             </div>
         </form>
     </div>

@@ -47,6 +47,8 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
             actualModel.AccountLegalEntityName.Should().Be(editModel.AccountLegalEntityName);
             actualModel.AccountLegalEntityPublicHashedId.Should().Be(editModel.AccountLegalEntityPublicHashedId);
             actualModel.Ukprn.Should().Be(editModel.Ukprn);
+            actualModel.BackLinkRoute.Should().Be(editModel.BackLinkRoute);
+            actualModel.CancelLinkRoute.Should().Be(editModel.CancelLinkRoute);
         }
         
         [Test, MoqAutoData]
