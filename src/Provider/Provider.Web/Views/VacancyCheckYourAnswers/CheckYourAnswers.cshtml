@@ -126,7 +126,7 @@
                     <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.Title_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="change-title">Change<span class="govuk-visually-hidden"> vacancy title</span></a>
                 </dd>
             </div>
-            @if (Model.AccountLegalEntityCount > 1)
+            @if (Model.AccountLegalEntityCount + Model.AccountCount > 2 )
             {
                 <div class="app-summary-list__row">
                     <dt class="app-summary-list__key">
@@ -136,9 +136,9 @@
                         @Model.EmployerName
                     </dd>
                     <dd class="app-summary-list__actions">
-                        <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.LegalEntity_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="change-legalentity">Change<span class="govuk-visually-hidden"> legal entity</span></a>
+                        <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.ConfirmSelectedLegalEntityEmployer_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="change-legalentity">Change<span class="govuk-visually-hidden"> legal entity</span></a>
                     </dd>
-                </div>   
+                </div>
             }
             @if (_serviceParameters.VacancyType == VacancyType.Apprenticeship)
             {

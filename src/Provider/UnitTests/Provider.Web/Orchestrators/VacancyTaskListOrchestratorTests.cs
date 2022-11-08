@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
 using Esfa.Recruit.Provider.Web;
@@ -32,6 +33,8 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators
             ApprenticeshipProgramme programme,
             Vacancy vacancy,
             List<LegalEntity> legalEntities,
+            List<EmployerInfo> providerEditVacancyInfo,
+            EmployerInfo employerInfo,
             [Frozen] Mock<IOptions<ExternalLinksConfiguration>> externalLinksConfiguration,
             [Frozen] Mock<IUtility> utility,
             [Frozen] Mock<IRecruitVacancyClient> recruitVacancyClient,
@@ -58,6 +61,12 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators
                 .ReturnsAsync(programme);
             recruitVacancyClient.Setup(x => x.GetEmployerDescriptionAsync(vacancy)).ReturnsAsync(vacancy.EmployerDescription);
             recruitVacancyClient.Setup(x => x.GetEmployerNameAsync(vacancy)).ReturnsAsync(vacancy.EmployerName);
+            providerVacancyClient.Setup(x => x.GetProviderEmployerVacancyDataAsync(routeModel.Ukprn, vacancy.EmployerAccountId))
+                .ReturnsAsync(employerInfo);
+            providerVacancyClient.Setup(x => x.GetProviderEditVacancyInfoAsync(routeModel.Ukprn)).ReturnsAsync(new ProviderEditVacancyInfo
+            {
+                Employers = providerEditVacancyInfo
+            });
             externalLinksConfiguration.Object.Value.FindAnApprenticeshipUrl = findAnApprenticeshipUrl;
             var expectedViewModel = new VacancyPreviewViewModel();
             var mapper = new DisplayVacancyViewModelMapper(Mock.Of<IGeocodeImageService>(),
@@ -81,27 +90,34 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators
                 .Excluding(c=>c.RouteDictionary)
                 .Excluding(c=>c.HasSelectedEmployerNameOption)
                 .Excluding(c=>c.HasSoftValidationErrors)
+                .Excluding(c=>c.AccountCount)
             );
             viewModel.ApprenticeshipLevel.Should().Be(programme.ApprenticeshipLevel);
             viewModel.HasSelectedEmployerNameOption.Should().BeTrue();
             viewModel.Ukprn.Should().Be(routeModel.Ukprn);
             viewModel.VacancyId.Should().Be(routeModel.VacancyId);
+            viewModel.AccountLegalEntityCount.Should().Be(employerInfo.LegalEntities.Count);
+            viewModel.AccountCount.Should().Be(providerEditVacancyInfo.Count);
         }
 
         [Test, MoqAutoData]
-        public async Task When_Creating_New_Then_The_Account_Legal_Entity_Count_Is_Populated(
+        public async Task When_Creating_New_Then_The_Account_Legal_Entity_And_Employer_Count_Is_Populated(
             VacancyRouteModel routeModel,
             EmployerInfo employerInfo,
             string employerAccountId,
+            ProviderEditVacancyInfo providerEditVacancyInfo,
             [Frozen] Mock<IProviderVacancyClient> providerVacancyClient,
             VacancyTaskListOrchestrator orchestrator)
         {
             providerVacancyClient.Setup(x => x.GetProviderEmployerVacancyDataAsync(routeModel.Ukprn, employerAccountId))
                 .ReturnsAsync(employerInfo);
+            providerVacancyClient.Setup(x => x.GetProviderEditVacancyInfoAsync(routeModel.Ukprn)).ReturnsAsync(providerEditVacancyInfo);
             
             var viewModel = await orchestrator.GetCreateVacancyTaskListModel(routeModel, employerAccountId);
         
             viewModel.AccountLegalEntityCount.Should().Be(employerInfo.LegalEntities.Count);
+            viewModel.AccountCount.Should().Be(providerEditVacancyInfo.Employers.Count());
         }
+        
     }
 }

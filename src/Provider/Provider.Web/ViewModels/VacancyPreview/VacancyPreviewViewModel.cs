@@ -215,8 +215,9 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview
             viewModel.WorkExperienceProvidedSectionState = GetSectionState(viewModel, new[]{ FieldIdentifiers.WorkExperience}, true, modelState, vm => vm.WorkExperience);
         }
 
+        public int AccountCount { get; set; }
         public int AccountLegalEntityCount { get ; set ; }
-        
+
         public VacancyTaskListSectionState TaskListSectionOneState => SetTaskListSectionState();
 
         public VacancyTaskListSectionState TaskListSectionTwoState => SetTaskListSectionTwoState();
