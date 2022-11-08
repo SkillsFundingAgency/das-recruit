@@ -29,7 +29,7 @@ public class LegalEntityAndEmployerOrchestratorPostConfirmAccountLegalEntityMode
         [Frozen] Mock<IProviderVacancyClient> providerVacancyClient,
         LegalEntityAndEmployerOrchestrator orchestrator)
     {
-        vacancyRouteModel.VacancyId = null;
+        model.VacancyId = null;
         
         recruitVacancyClient.Setup(x =>
             x.Validate(It.Is<Vacancy>(c => 
@@ -41,9 +41,9 @@ public class LegalEntityAndEmployerOrchestratorPostConfirmAccountLegalEntityMode
         providerVacancyClient.Setup(x => x.CreateVacancyAsync(model.EmployerAccountId, user.Ukprn.Value, null, user,
             model.AccountLegalEntityPublicHashedId, model.AccountLegalEntityName)).ReturnsAsync(vacancyId);
         
-        var actual = await orchestrator.PostConfirmAccountLegalEntityModel(vacancyRouteModel, model, user);
+        var actual = await orchestrator.PostConfirmAccountLegalEntityModel(model, user);
 
-        actual.Data.Should().Be(vacancyId);
+        actual.Data.Item1.Should().Be(vacancyId);
         
     }
 
@@ -58,7 +58,9 @@ public class LegalEntityAndEmployerOrchestratorPostConfirmAccountLegalEntityMode
         LegalEntityAndEmployerOrchestrator orchestrator)
     {
         utility.Setup(x =>
-                x.GetAuthorisedVacancyForEditAsync(vacancyRouteModel, RouteNames.ConfirmLegalEntityEmployer_Get))
+                x.GetAuthorisedVacancyForEditAsync(
+                    It.Is<VacancyRouteModel>(c => c.Ukprn.Equals(model.Ukprn) && c.VacancyId.Equals(model.VacancyId)),
+                    RouteNames.ConfirmLegalEntityEmployer_Get))
             .ReturnsAsync(vacancy);
         recruitVacancyClient.Setup(x =>
             x.Validate(It.Is<Vacancy>(c => 
@@ -67,9 +69,9 @@ public class LegalEntityAndEmployerOrchestratorPostConfirmAccountLegalEntityMode
                     && c.AccountLegalEntityPublicHashedId.Equals(model.AccountLegalEntityPublicHashedId)),
                 Esfa.Recruit.Vacancies.Client.Application.Validation.VacancyRuleSet.None)).Returns(new EntityValidationResult());
         
-        var actual = await orchestrator.PostConfirmAccountLegalEntityModel(vacancyRouteModel, model, user);
+        var actual = await orchestrator.PostConfirmAccountLegalEntityModel(model, user);
 
-        actual.Data.Should().Be(vacancy.Id);
+        actual.Data.Item1.Should().Be(vacancy.Id);
         recruitVacancyClient.Verify(x =>
             x.UpdateDraftVacancyAsync(It.Is<Vacancy>(c => 
                 c.EmployerAccountId.Equals(model.EmployerAccountId)

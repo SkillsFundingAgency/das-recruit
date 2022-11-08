@@ -92,8 +92,16 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
             {
                 var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(vacancyRouteModel,
                     RouteNames.ConfirmLegalEntityEmployer_Get);
-                employerAccountId = vacancy.EmployerAccountId;
-                employerAccountLegalEntityPublicHashedId = vacancy.AccountLegalEntityPublicHashedId;
+                if (string.IsNullOrEmpty(employerAccountId))
+                {
+                    employerAccountId = vacancy.EmployerAccountId;    
+                }
+
+                if (string.IsNullOrEmpty(employerAccountLegalEntityPublicHashedId))
+                {
+                    employerAccountLegalEntityPublicHashedId = vacancy.AccountLegalEntityPublicHashedId;    
+                }
+                
                 vacancyId = vacancy.Id;
             }
             
@@ -131,11 +139,15 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
                 VacancyId = vacancyId
             };
         }
-        public async Task<OrchestratorResponse<Guid>> PostConfirmAccountLegalEntityModel(VacancyRouteModel vacancyRouteModel, ConfirmLegalEntityAndEmployerEditModel model, VacancyUser user)
+        public async Task<OrchestratorResponse<Tuple<Guid, bool>>> PostConfirmAccountLegalEntityModel(ConfirmLegalEntityAndEmployerEditModel model, VacancyUser user)
         {
-            if (vacancyRouteModel.VacancyId != null)
+            if (model.VacancyId != null)
             {
-                var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(vacancyRouteModel,
+                var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(new VacancyRouteModel
+                    {
+                        Ukprn = model.Ukprn,
+                        VacancyId = model.VacancyId
+                    },
                     RouteNames.ConfirmLegalEntityEmployer_Get);
                 vacancy.EmployerAccountId = model.EmployerAccountId;
                 vacancy.AccountLegalEntityPublicHashedId = model.AccountLegalEntityPublicHashedId;
@@ -145,7 +157,8 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
                     vacancy,
                     v => _recruitVacancyClient.Validate(v, ValidationRules),
                     async v => await _recruitVacancyClient.UpdateDraftVacancyAsync(vacancy, user));
-                 return new OrchestratorResponse<Guid>(vacancy.Id);
+                 var isCompleted = _utility.IsTaskListCompleted(vacancy);
+                 return new OrchestratorResponse<Tuple<Guid, bool>>(new Tuple<Guid, bool>(vacancy.Id, isCompleted));
             }
             
             var newVacancy = new Vacancy
@@ -157,11 +170,13 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
                 
             };
 
-            return await ValidateAndExecute(
+            var result =  await ValidateAndExecute(
                 newVacancy,
                 v => _recruitVacancyClient.Validate(v, ValidationRules),
                 async v => await _providerVacancyClient.CreateVacancyAsync(
                     model.EmployerAccountId, user.Ukprn.Value, null, user, model.AccountLegalEntityPublicHashedId, model.AccountLegalEntityName));
+
+            return new OrchestratorResponse<Tuple<Guid, bool>>(new Tuple<Guid, bool>(result.Data, false));
         }
 
         private int GetPageNo(int page, int totalNumberOfPages)
