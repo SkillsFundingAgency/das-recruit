@@ -10,6 +10,7 @@ using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Provider.Web.ViewModels.Part1.LegalEntityAndEmployer;
 using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using FluentAssertions;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -34,7 +35,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
             
             editModel.HasConfirmedEmployer = null;
 
-            var actual = await controller.ConfirmEmployerLegalEntitySelection(editModel, vacancyRouteModel);
+            var actual = await controller.ConfirmEmployerLegalEntitySelection(editModel);
             var actualResult = actual as ViewResult;
             
             Assert.IsNotNull(actual);
@@ -45,7 +46,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
             actualModel.EmployerAccountId.Should().Be(editModel.EmployerAccountId);
             actualModel.AccountLegalEntityName.Should().Be(editModel.AccountLegalEntityName);
             actualModel.AccountLegalEntityPublicHashedId.Should().Be(editModel.AccountLegalEntityPublicHashedId);
-            actualModel.Ukprn.Should().Be(vacancyRouteModel.Ukprn);
+            actualModel.Ukprn.Should().Be(editModel.Ukprn);
         }
         
         [Test, MoqAutoData]
@@ -59,12 +60,12 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
                 new ServiceParameters("Apprenticeship"));
             editModel.HasConfirmedEmployer = false;
 
-            var actual = await controller.ConfirmEmployerLegalEntitySelection(editModel, vacancyRouteModel);
+            var actual = await controller.ConfirmEmployerLegalEntitySelection(editModel);
 
             actual.Should().NotBeNull();
             var result = actual as RedirectToRouteResult;
             result?.RouteName.Should().Be(RouteNames.LegalEntityEmployer_Get);
-            result?.RouteValues["ukprn"].Should().Be(vacancyRouteModel.Ukprn);
+            result?.RouteValues["ukprn"].Should().Be(editModel.Ukprn);
         }
         [Test, MoqAutoData]
         public async Task Then_Chooses_No_For_Employer_Then_Redirected_To_EmployerLegalEntity_View_For_Existing_Vacancy(
@@ -76,12 +77,12 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
                 new ServiceParameters("Apprenticeship"));
             editModel.HasConfirmedEmployer = false;
 
-            var actual = await controller.ConfirmEmployerLegalEntitySelection(editModel, vacancyRouteModel);
+            var actual = await controller.ConfirmEmployerLegalEntitySelection(editModel);
 
             actual.Should().NotBeNull();
             var result = actual as RedirectToRouteResult;
             result?.RouteName.Should().Be(RouteNames.LegalEntityEmployerChange_Get);
-            result?.RouteValues["ukprn"].Should().Be(vacancyRouteModel.Ukprn);
+            result?.RouteValues["ukprn"].Should().Be(editModel.Ukprn);
             result?.RouteValues["vacancyId"].Should().Be(editModel.VacancyId);
         }
         
@@ -91,15 +92,17 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
             VacancyRouteModel vacancyRouteModel,
             Vacancy vacancy,
             [Frozen] Mock<IUtility> utility,
+            [Frozen] Mock<IRecruitVacancyClient> recruitVacancyClient,
             LegalEntityAndEmployerOrchestrator orchestrator)
         {
-            utility.Setup(x =>
-                    x.GetAuthorisedVacancyForEditAsync(vacancyRouteModel, RouteNames.ConfirmLegalEntityEmployer_Get))
-                .ReturnsAsync(vacancy);
             var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
             {
                 new Claim(ProviderRecruitClaims.IdamsUserUkprnClaimsTypeIdentifier,vacancyRouteModel.Ukprn.ToString()),
             }));
+            utility.Setup(x =>
+                    x.GetAuthorisedVacancyForEditAsync(It.Is<VacancyRouteModel>(c=>c.Ukprn.Equals(editModel.Ukprn) && c.VacancyId.Equals(editModel.VacancyId)), RouteNames.ConfirmLegalEntityEmployer_Get))
+                .ReturnsAsync(vacancy);
+            utility.Setup(x => x.IsTaskListCompleted(vacancy)).Returns(false);
             var controller = new LegalEntityAndEmployerController(orchestrator, Mock.Of<IWebHostEnvironment>(),
                 new ServiceParameters("Apprenticeship"))
             {
@@ -114,12 +117,52 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
             };
             editModel.HasConfirmedEmployer = true;
 
-            var actual = await controller.ConfirmEmployerLegalEntitySelection(editModel, vacancyRouteModel);
+            var actual = await controller.ConfirmEmployerLegalEntitySelection(editModel);
 
             actual.Should().NotBeNull();
             var result = actual as RedirectToRouteResult;
             result?.RouteName.Should().Be(RouteNames.ProviderTaskListGet);
-            result?.RouteValues["ukprn"].Should().Be(vacancyRouteModel.Ukprn);
+            result?.RouteValues["ukprn"].Should().Be(editModel.Ukprn);
+            result?.RouteValues["vacancyId"].Should().Be(vacancy.Id);
+        }
+        
+        [Test, MoqAutoData]
+        public async Task Then_If_Has_Confirmed_Employer_And_Completed_TaskList_Then_Redirected_To_CheckYourAnswers(
+            ConfirmLegalEntityAndEmployerEditModel editModel,
+            VacancyRouteModel vacancyRouteModel,
+            Vacancy vacancy,
+            [Frozen] Mock<IUtility> utility,
+            [Frozen] Mock<IRecruitVacancyClient> recruitVacancyClient,
+            LegalEntityAndEmployerOrchestrator orchestrator)
+        {
+            var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
+            {
+                new Claim(ProviderRecruitClaims.IdamsUserUkprnClaimsTypeIdentifier,vacancyRouteModel.Ukprn.ToString()),
+            }));
+            utility.Setup(x =>
+                    x.GetAuthorisedVacancyForEditAsync(It.Is<VacancyRouteModel>(c=>c.Ukprn.Equals(editModel.Ukprn) && c.VacancyId.Equals(editModel.VacancyId)), RouteNames.ConfirmLegalEntityEmployer_Get))
+                .ReturnsAsync(vacancy);
+            utility.Setup(x => x.IsTaskListCompleted(vacancy)).Returns(true);
+            var controller = new LegalEntityAndEmployerController(orchestrator, Mock.Of<IWebHostEnvironment>(),
+                new ServiceParameters("Apprenticeship"))
+            {
+                ControllerContext = new ControllerContext
+                {
+                    HttpContext = new DefaultHttpContext
+                    {
+                        User = user
+                    }
+                }
+                
+            };
+            editModel.HasConfirmedEmployer = true;
+
+            var actual = await controller.ConfirmEmployerLegalEntitySelection(editModel);
+
+            actual.Should().NotBeNull();
+            var result = actual as RedirectToRouteResult;
+            result?.RouteName.Should().Be(RouteNames.ProviderCheckYourAnswersGet);
+            result?.RouteValues["ukprn"].Should().Be(editModel.Ukprn);
             result?.RouteValues["vacancyId"].Should().Be(vacancy.Id);
         }
     }

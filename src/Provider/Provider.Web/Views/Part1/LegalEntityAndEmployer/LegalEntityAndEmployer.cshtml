@@ -64,10 +64,10 @@
             </div>
         </form>
         @if (Model.NoOfSearchResults != 0)
-        {
+        {   
             <form method="POST" asp-route="@RouteNames.LegalEntityEmployer_Post" asp-all-route-data="@Model.RouteDictionary">
-        
-                        <table class="govuk-table das-table--condensed das-table--responsive" data-module="das-table-sort">
+                    <input type="hidden" asp-for="VacancyId"/>
+                    <table class="govuk-table das-table--condensed das-table--responsive" data-module="das-table-sort">
                             <thead class="govuk-table__head">
                             <tr class="govuk-table__row">
                                 <th class="govuk-table__header das-table--double-arrows" scope="col">

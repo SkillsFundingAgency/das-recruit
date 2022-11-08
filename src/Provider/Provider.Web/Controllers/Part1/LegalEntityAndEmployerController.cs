@@ -12,6 +12,7 @@ using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Esfa.Recruit.Provider.Web.ViewModels.Part1.LegalEntityAndEmployer;
+using StructureMap.Query;
 
 namespace Esfa.Recruit.Provider.Web.Controllers.Part1
 {
@@ -41,34 +42,44 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
             if (vm.HasOnlyOneOrganisation)
             {
                 var result =
-                    await _orchestrator.PostConfirmAccountLegalEntityModel(vrm, new ConfirmLegalEntityAndEmployerEditModel
+                    await _orchestrator.PostConfirmAccountLegalEntityModel(new ConfirmLegalEntityAndEmployerEditModel
                     {
                         AccountLegalEntityName = vm.Organisations.First().AccountLegalEntityName,
                         EmployerAccountId = vm.EmployerAccountId,
-                        AccountLegalEntityPublicHashedId = vm.Organisations.First().Id
+                        AccountLegalEntityPublicHashedId = vm.Organisations.First().Id,
+                        VacancyId = vm.VacancyId,
+                        Ukprn = vm.Ukprn
                     }, HttpContext.User.ToVacancyUser());
                 
-                return RedirectToRoute(RouteNames.ProviderTaskListGet, new {vrm.Ukprn, VacancyId = result.Data});
+                return RedirectToRoute(RouteNames.ProviderTaskListGet, new {vrm.Ukprn, VacancyId = result.Data.Item1});
             }
 
             return View(vm);
         }
 
         [HttpPost("employer-legal-entity", Name = RouteNames.LegalEntityEmployer_Post)]
-        public async Task<IActionResult> LegalEntityAndEmployer(LegalEntityAndEmployerEditModel m, VacancyRouteModel vacancyRouteModel)
+        public async Task<IActionResult> LegalEntityAndEmployer(LegalEntityAndEmployerEditModel m)
         {
             if (string.IsNullOrWhiteSpace(m.SelectedOrganisationId))
             {
                 ModelState.AddModelError(nameof(m.SelectedOrganisationId), ValidationMessages.EmployerSelectionMessages.EmployerMustBeSelectedMessage);
             }
 
-            var vm = await _orchestrator.GetLegalEntityAndEmployerViewModelAsync(m, m.SearchTerm, m.Page);
+            var vm = await _orchestrator.GetLegalEntityAndEmployerViewModelAsync(new VacancyRouteModel
+            {
+                Ukprn = m.Ukprn,
+                VacancyId = m.VacancyId
+            }, m.SearchTerm, m.Page);
             if (!ModelState.IsValid)
             {
                 return View(vm);
             }
+            if(m.VacancyId != null)
+            {
+                return RedirectToRoute(RouteNames.ConfirmSelectedLegalEntityEmployer_Get, new { selectedId = m.SelectedOrganisationId, m.Ukprn, m.VacancyId});    
+            }
 
-            return RedirectToRoute(RouteNames.ConfirmLegalEntityEmployer_Get, new { selectedId = m.SelectedOrganisationId, vacancyRouteModel.Ukprn});
+            return RedirectToRoute(RouteNames.ConfirmLegalEntityEmployer_Get, new { selectedId = m.SelectedOrganisationId, m.Ukprn});
         }
 
         [HttpGet("confirm-employer-legal-entity", Name = RouteNames.ConfirmLegalEntityEmployer_Get)]
@@ -83,7 +94,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
         }
 
         [HttpPost("confirm-employer-legal-entity", Name = RouteNames.ConfirmLegalEntityEmployer_Post)]
-        public async Task<IActionResult> ConfirmEmployerLegalEntitySelection(ConfirmLegalEntityAndEmployerEditModel model, VacancyRouteModel vacancyRouteModel)
+        public async Task<IActionResult> ConfirmEmployerLegalEntitySelection(ConfirmLegalEntityAndEmployerEditModel model)
         {
 
             if (!ModelState.IsValid)
@@ -94,8 +105,8 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
                     EmployerAccountId = model.EmployerAccountId,
                     AccountLegalEntityName = model.AccountLegalEntityName,
                     AccountLegalEntityPublicHashedId = model.AccountLegalEntityPublicHashedId,
-                    Ukprn = vacancyRouteModel.Ukprn
-                    
+                    Ukprn = model.Ukprn,
+                    VacancyId = model.VacancyId
                 });
             }
 
@@ -104,17 +115,27 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
                 var routeName = model.VacancyId != null
                     ? RouteNames.LegalEntityEmployerChange_Get
                     : RouteNames.LegalEntityEmployer_Get;
-                return RedirectToRoute(routeName, new {ukprn = vacancyRouteModel.Ukprn, vacancyId = model.VacancyId});
+                return RedirectToRoute(routeName, new {ukprn = model.Ukprn, vacancyId = model.VacancyId});
             }
 
             var result =
-                await _orchestrator.PostConfirmAccountLegalEntityModel(vacancyRouteModel, model, HttpContext.User.ToVacancyUser());
+                await _orchestrator.PostConfirmAccountLegalEntityModel( model, HttpContext.User.ToVacancyUser());
 
+            if (result.Data.Item2)
+            {
+                return RedirectToRoute(RouteNames.ProviderCheckYourAnswersGet,
+                    new
+                    {
+                        vacancyId = result.Data.Item1, 
+                        model.Ukprn
+                    });
+            }
+            
             return RedirectToRoute(RouteNames.ProviderTaskListGet,
                     new
                             {
-                                vacancyId = result.Data, 
-                                vacancyRouteModel.Ukprn
+                                vacancyId = result.Data.Item1, 
+                                model.Ukprn
                             });
         }
     }
