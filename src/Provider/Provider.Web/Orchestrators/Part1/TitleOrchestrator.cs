@@ -132,7 +132,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
                 newVacancy,
                 v => _recruitVacancyClient.Validate(v, ValidationRules),
                 async v => await _providerVacancyClient.CreateVacancyAsync(
-                        model.EmployerAccountId, ukprn, model.Title, user));
+                        model.EmployerAccountId, ukprn, model.Title, user, null, null));
         }
 
         protected override EntityToViewModelPropertyMappings<Vacancy, TitleEditModel> DefineMappings()

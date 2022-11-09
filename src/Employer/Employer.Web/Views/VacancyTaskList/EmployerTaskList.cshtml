@@ -415,5 +415,11 @@
                 </ul>
             </li>
         </ol>
+
+        <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+
+        <p class="govuk-heading-s">No longer need this advert?</p>
+        <a asp-route="@RouteNames.DeleteVacancy_Get" asp-all-route-data="@Model.RouteDictionary" class="govuk-button govuk-button--warning" esfa-automation="delete-button">Delete advert</a>
+
     </div>
 </div>

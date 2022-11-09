@@ -58,6 +58,8 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.C
                         && c.Title.Equals(command.Title)
                         && c.VacancyType.Equals(VacancyType.Apprenticeship)
                         && c.ApplicationMethod == null
+                        && c.AccountLegalEntityPublicHashedId.Equals(command.AccountLegalEntityPublicHashedId)
+                        && c.LegalEntityName.Equals(command.LegalEntityName)
                 )), Times.Once);
             messaging.Verify(x=>x.PublishEvent(
                 It.Is<VacancyCreatedEvent>(c=>c.VacancyId.Equals(command.VacancyId))));
