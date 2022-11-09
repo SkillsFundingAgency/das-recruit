@@ -45,7 +45,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
                     await _orchestrator.PostConfirmAccountLegalEntityModel(new ConfirmLegalEntityAndEmployerEditModel
                     {
                         AccountLegalEntityName = vm.Organisations.First().AccountLegalEntityName,
-                        EmployerAccountId = vm.EmployerAccountId,
+                        EmployerAccountId = vm.Organisations.First().EmployerAccountId,
                         AccountLegalEntityPublicHashedId = vm.Organisations.First().Id,
                         VacancyId = vm.VacancyId,
                         Ukprn = vm.Ukprn

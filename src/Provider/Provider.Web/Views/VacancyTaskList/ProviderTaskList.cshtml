@@ -49,13 +49,17 @@
                 </h2>
                 <ul class="das-task-list__items">
 
-                <li class="das-task-list__item">
-                    <span>
-                            <a class="govuk-link govuk-link--no-visited-state" asp-all-route-data="@Model.RouteDictionary" asp-route="@RouteNames.ConfirmSelectedLegalEntityEmployer_Get">
-                            Name of employer
-                        </a>
-                    </span>
-                </li>
+                    @if (Model.AccountLegalEntityCount + Model.AccountCount > 2)
+                    {
+                        <li class="das-task-list__item">
+                            <span>
+                                <a class="govuk-link govuk-link--no-visited-state" asp-all-route-data="@Model.RouteDictionary" asp-route="@RouteNames.ConfirmSelectedLegalEntityEmployer_Get">
+                                    Name of employer
+                                </a>
+                            </span>
+                        </li>
+                    }
+                    
                     <li class="das-task-list__item">
                         <span>
                             <a class="govuk-link govuk-link--no-visited-state" asp-all-route-data="@Model.RouteDictionary" asp-route="@RouteNames.Title_Get">
