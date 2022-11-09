@@ -11,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.Configuration.AzureTableStorage;
 using SFA.DAS.GovUK.Auth.AppStart;
+using SFA.DAS.GovUK.Auth.Services;
 
 namespace Esfa.Recruit.Employer.Web
 {
@@ -78,11 +79,12 @@ namespace Esfa.Recruit.Employer.Web
             services.AddControllersWithViews().AddRazorRuntimeCompilation();
 #endif
 
-            if (Configuration["Recruit:UseGovSignIn"] != null && Configuration["Recruit:UseGovSignIn"]
+            if (Configuration["RecruitConfiguration:UseGovSignIn"] != null && Configuration["RecruitConfiguration:UseGovSignIn"]
                     .Equals("true", StringComparison.CurrentCultureIgnoreCase))
             {
-                services.AddAndConfigureGovUkAuthentication(Configuration, $"{typeof(AddServiceRegistrationExtension).Assembly.GetName().Name}.Auth", typeof(EmployerAccountPostAuthenticationClaimsHandler));
-
+                services.AddTransient<ICustomClaims, EmployerAccountPostAuthenticationClaimsHandler>();
+                services.AddAndConfigureGovUkAuthentication(Configuration, $"{typeof(Startup).Assembly.GetName().Name}.Auth", typeof(EmployerAccountPostAuthenticationClaimsHandler));
+                services.AddAuthorizationService();
             }
 
             else
