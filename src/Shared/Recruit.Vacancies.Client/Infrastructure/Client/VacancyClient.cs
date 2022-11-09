@@ -11,6 +11,7 @@ using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Responses;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Employer;
@@ -291,7 +292,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return _apprenticeshipProgrammesProvider.GetApprenticeshipProgrammeAsync(programmeId);
         }
 
-        public Task<IEnumerable<string>> GetEmployerIdentifiersAsync(string userId, string email)
+        public Task<GetUserAccountsResponse> GetEmployerIdentifiersAsync(string userId, string email)
         {
             return _employerAccountProvider.GetEmployerIdentifiersAsync(userId, email);
         }
