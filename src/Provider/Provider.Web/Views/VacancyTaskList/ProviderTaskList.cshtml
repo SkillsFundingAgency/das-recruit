@@ -48,46 +48,25 @@
                     </span>
                 </h2>
                 <ul class="das-task-list__items">
-                    
+
+                <li class="das-task-list__item">
+                    <span>
+                            <a class="govuk-link govuk-link--no-visited-state" asp-all-route-data="@Model.RouteDictionary" asp-route="@RouteNames.ConfirmSelectedLegalEntityEmployer_Get">
+                            Name of employer
+                        </a>
+                    </span>
+                </li>
                     <li class="das-task-list__item">
                         <span>
-                            @if (Model.TaskListSectionOneState == VacancyTaskListSectionState.NotStarted)
-                            {
-                                <a class="govuk-link govuk-link--no-visited-state" asp-all-route-data="@Model.RouteDictionary" asp-route="@RouteNames.CreateVacancy_Get" asp-route-employerAccountId="@Model.AccountId">
-                                    Vacancy title
-                                </a>
-                            }
-                            else
-                            {
-                                <a class="govuk-link govuk-link--no-visited-state" asp-all-route-data="@Model.RouteDictionary" asp-route="@RouteNames.Title_Get">
-                                    Vacancy title
-                                </a>
-                            }
+                            <a class="govuk-link govuk-link--no-visited-state" asp-all-route-data="@Model.RouteDictionary" asp-route="@RouteNames.Title_Get">
+                                Vacancy title
+                            </a>
                         </span>
                     </li>
-                    @if (Model.AccountLegalEntityCount > 1)
-                    {
-                        <li class="das-task-list__item">
-                            <span>
-                                @if (string.IsNullOrEmpty(Model.Title))
-                                {
-                                    <span class="das-task-list__task-name">
-                                        Name of employer
-                                    </span>
-                                }
-                                else
-                                {
-                                    <a class="govuk-link govuk-link--no-visited-state" asp-all-route-data="@Model.RouteDictionary" asp-route="@RouteNames.LegalEntity_Get">
-                                        Name of employer
-                                    </a>
-                                }
-                            </span>
-                        </li>
-                    }
                     <li class="das-task-list__item">
                         @if (_serviceParameters.VacancyType == VacancyType.Apprenticeship)
                         {
-                            if (!Model.HasSelectedLegalEntity)
+                            if (!Model.HasSelectedLegalEntity || string.IsNullOrEmpty(Model.Title))
                             {
                                 <span class="das-task-list__task-name">
                                     Training course
@@ -102,7 +81,7 @@
                         }
                         else
                         {
-                            if (!Model.HasSelectedLegalEntity)
+                            if (!Model.HasSelectedLegalEntity|| string.IsNullOrEmpty(Model.Title))
                             {
                                 <span class="das-task-list__task-name">
                                     Traineeship sector
@@ -516,5 +495,10 @@
                 </ul>
             </li>
         </ol>
+
+        <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+
+        <p class="govuk-heading-s">No longer need this vacancy?</p>
+        <a asp-route="@RouteNames.DeleteVacancy_Get" asp-all-route-data="@Model.RouteDictionary" class="govuk-button govuk-button--warning" esfa-automation="delete-button">Delete vacancy</a>
     </div>
 </div>

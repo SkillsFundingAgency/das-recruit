@@ -47,6 +47,8 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
                 SourceOrigin = message.Origin,
                 SourceType = SourceType.New,
                 EmployerAccountId = message.EmployerAccountId,
+                AccountLegalEntityPublicHashedId = message.AccountLegalEntityPublicHashedId,
+                LegalEntityName = message.LegalEntityName,
                 TrainingProvider = new TrainingProvider { Ukprn = message.Ukprn },
                 Status = VacancyStatus.Draft,
                 CreatedDate = now,
