@@ -7,7 +7,7 @@
 }
 
 @section BackLink {
-    <a asp-route="@RouteNames.Dashboard_Get" asp-route-ukprn="@Model.Ukprn" class="govuk-back-link">Back</a>
+    <a asp-route="@RouteNames.Vacancies_Get" asp-route-ukprn="@Model.Ukprn" class="govuk-back-link">Back</a>
 }
 
 
@@ -66,8 +66,10 @@
     <a asp-show="@Model.CanShowEditVacancyLink" asp-route="@RouteNames.VacancyEditDates_Get" asp-all-route-data="@Model.RouteDictionary" class="govuk-link">Edit vacancy dates</a>
     <a asp-show="@Model.CanShowCloseVacancyLink" asp-route="@RouteNames.CloseVacancy_Get" asp-all-route-data="@Model.RouteDictionary" class="govuk-link">Close vacancy</a>
     <a asp-show="@Model.CanShowDeleteVacancyLink" asp-route="@RouteNames.DeleteVacancy_Get" asp-all-route-data="@Model.RouteDictionary" class="govuk-link">Delete vacancy</a>
+    
 </div>
 
+<hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
 
 <div asp-show="@Model.CanShowVacancyAnalytics">
     <h2 class="govuk-heading-l govuk-!-margin-top-9">Vacancy analytics
