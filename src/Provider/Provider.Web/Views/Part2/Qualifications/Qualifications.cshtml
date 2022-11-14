@@ -69,15 +69,9 @@
         </p>
 
         <div class="govuk-button-group">
-            <esfaFeatureEnabled name="@FeatureNames.ProviderTaskList">
-                <a asp-show="@(!Model.IsTaskListCompleted)" asp-route="@RouteNames.FutureProspects_Get" asp-all-route-data="@Model.RouteDictionary"  class="govuk-button">Save and continue</a>
-                <a asp-show="@Model.IsTaskListCompleted" asp-route="@RouteNames.ProviderCheckYourAnswersGet" asp-all-route-data="@Model.RouteDictionary" class="govuk-button">Save and continue</a>
-                <a asp-route="@RouteNames.Dashboard_Get" asp-route-ukprn="@Model.Ukprn" class="govuk-link govuk-link--no-visited-state">Cancel</a>
-            </esfaFeatureEnabled>
-            <esfaFeatureDisabled name="@FeatureNames.ProviderTaskList">
-                <a asp-route="@RouteNames.Vacancy_Preview_Get" asp-all-route-data="@Model.RouteDictionary" class="govuk-button">Preview</a>    
-            </esfaFeatureDisabled>
-            
+            <a asp-show="@(!Model.IsTaskListCompleted)" asp-route="@RouteNames.FutureProspects_Get" asp-all-route-data="@Model.RouteDictionary"  class="govuk-button">Save and continue</a>
+            <a asp-show="@Model.IsTaskListCompleted" asp-route="@RouteNames.ProviderCheckYourAnswersGet" asp-all-route-data="@Model.RouteDictionary" class="govuk-button">Save and continue</a>
+            <a asp-route="@RouteNames.Dashboard_Get" asp-route-ukprn="@Model.Ukprn" class="govuk-link govuk-link--no-visited-state">Cancel</a>
         </div>
     </div>
 </div>
