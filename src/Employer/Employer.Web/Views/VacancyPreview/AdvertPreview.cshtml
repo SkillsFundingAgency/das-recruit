@@ -7,7 +7,7 @@
 @model VacancyPreviewViewModel
 
 @section BackLink {
-  <a asp-route="@RouteNames.EmployerCheckYourAnswersGet" esfa-automation="link-back" class="govuk-back-link">Back to check your answers</a>
+  <a asp-route="@RouteNames.EmployerCheckYourAnswersGet" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Back to check your answers</a>
 }
 
 <h1 class="govuk-heading-xl">Preview your advert</h1>
@@ -15,7 +15,7 @@
 <partial name="_vacancyApprenticeshipPreview" model="@Model" />    
 
 
-<form asp-route="@RouteNames.EmployerCheckYourAnswersSubmitPost" method="post">
+<form asp-route="@RouteNames.EmployerCheckYourAnswersSubmitPost" asp-all-route-data="@Model.RouteDictionary" method="post">
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
       <h2 class="govuk-heading-m">Now submit your advert</h2>
@@ -32,16 +32,16 @@
         <button class="govuk-button" data-module="govuk-button">
           Submit advert
         </button>
-        <a asp-route="@RouteNames.EmployerCheckYourAnswersGet" class="govuk-button govuk-button--secondary">Change your advert</a>
+        <a asp-route="@RouteNames.EmployerCheckYourAnswersGet" asp-all-route-data="@Model.RouteDictionary" class="govuk-button govuk-button--secondary">Change your advert</a>
       </div>
     </div>
   </div>
 </form>
 <div asp-show="@Model.CanDelete" class="govuk-grid-row">
   <div class="govuk-grid-column-two-thirds">
-  <p class="govuk-body">
-    <a asp-route="@RouteNames.DeleteVacancy_Get" class="govuk-link govuk-link--no-visited-state" esfa-automation="delete-button">Delete advert</a>
-  </p>
+      <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">  
+      <p class="govuk-heading-s">No longer need this advert?</p>
+      <a asp-route="@RouteNames.DeleteVacancy_Get" asp-all-route-data="@Model.RouteDictionary" class="govuk-button govuk-button--warning" esfa-automation="delete-button">Delete advert</a>
   </div>
 </div>
 

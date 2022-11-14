@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi
 {
     public class OuterApiConfiguration

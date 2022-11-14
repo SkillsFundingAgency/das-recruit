@@ -1,24 +1,27 @@
 using System;
 using System.Text.RegularExpressions;
+using FluentValidation;
 using FluentValidation.Validators;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomValidators
 {
-    internal class FreeTextValidator : PropertyValidator, IRegularExpressionValidator 
+    internal class FreeTextValidator <T, TProperty> : PropertyValidator<T, TProperty>, IRegularExpressionValidator 
     {
-		private readonly Regex _regex;
+        public override string Name => "FreeTextValidator";
 
-		private const string ValidCharactersExpression = @"^[a-zA-Z0-9\u0080-\uFFA7?$@#()""'!,+\-=_:;.&€£*%\s\/\[\]]*$";
+        private Regex _regex;
 
-		internal FreeTextValidator() : base("{PropertyName} must contain valid characters")
+        private const string ValidCharactersExpression = @"^[a-zA-Z0-9\u0080-\uFFA7?$@#()""'!,+\-=_:;.&€£*%\s\/\[\]]*$";
+
+        protected override string GetDefaultMessageTemplate(string errorCode) 
         {
-			_regex = CreateRegEx();
-		}
+            return base.GetDefaultMessageTemplate("{PropertyName} must contain valid characters");
+        }
 
-		protected override bool IsValid(PropertyValidatorContext context) {
-			if (context.PropertyValue == null) return true;
-
-			if (!_regex.IsMatch((string)context.PropertyValue)) {
+		public override bool IsValid(ValidationContext<T> context, TProperty PropertyValue) {
+			if (PropertyValue == null) return true;
+            _regex = CreateRegEx();
+			if (!_regex.IsMatch(PropertyValue as string ?? string.Empty)) {
 				return false;
 			}
 
@@ -41,5 +44,5 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomVali
 
             return new Regex(ValidCharactersExpression, RegexOptions.IgnoreCase);
 		}
-	}
+    }
 }

@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Shared.Web.Mappers;
 using Esfa.Recruit.Shared.Web.ViewModels;
@@ -216,8 +215,9 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview
             viewModel.WorkExperienceProvidedSectionState = GetSectionState(viewModel, new[]{ FieldIdentifiers.WorkExperience}, true, modelState, vm => vm.WorkExperience);
         }
 
+        public int AccountCount { get; set; }
         public int AccountLegalEntityCount { get ; set ; }
-        
+
         public VacancyTaskListSectionState TaskListSectionOneState => SetTaskListSectionState();
 
         public VacancyTaskListSectionState TaskListSectionTwoState => SetTaskListSectionTwoState();
@@ -232,6 +232,7 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview
         {
             if (TitleSectionState == VacancyPreviewSectionState.Valid
                 && (VacancyType.GetValueOrDefault() == Vacancies.Client.Domain.Entities.VacancyType.Apprenticeship ? HasProgramme : HasRoute)
+                && !string.IsNullOrEmpty(Title)
                 && HasSelectedLegalEntity
                 && HasShortDescription
                 && HasTrainingDescription
@@ -240,7 +241,7 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview
                 return VacancyTaskListSectionState.Completed;
             }
             
-            if (TitleSectionState == VacancyPreviewSectionState.Valid)
+            if (HasSelectedLegalEntity)
             {
                 return VacancyTaskListSectionState.InProgress;    
             }

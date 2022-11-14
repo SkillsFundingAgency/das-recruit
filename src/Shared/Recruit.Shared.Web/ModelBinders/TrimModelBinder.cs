@@ -20,8 +20,7 @@ namespace Esfa.Recruit.Shared.Web.ModelBinders
             }
             var valueProviderResult = bindingContext.ValueProvider.GetValue(bindingContext.ModelName);
 
-            if (valueProviderResult != null &&
-                valueProviderResult.FirstValue is string str &&
+            if (valueProviderResult.FirstValue is string str &&
                 !string.IsNullOrWhiteSpace(str))
             {
                 bindingContext.Result = ModelBindingResult.Success(str.Trim());

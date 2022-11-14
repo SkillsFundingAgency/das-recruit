@@ -1,16 +1,12 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.UnitTests.Employer.Web.HardMocks;
 using Esfa.Recruit.Employer.Web;
 using Esfa.Recruit.Employer.Web.Orchestrators.Part1;
-using Esfa.Recruit.Employer.Web.ViewModels.Part1.Dates;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.Duration;
-using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Shared.Web.FeatureToggle;
 using Esfa.Recruit.Shared.Web.Mappers;
 using Esfa.Recruit.Shared.Web.Services;
-using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;

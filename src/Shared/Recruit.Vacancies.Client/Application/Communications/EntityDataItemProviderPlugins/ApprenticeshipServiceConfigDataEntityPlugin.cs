@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using Communication.Types;
 using Communication.Types.Interfaces;
 using Esfa.Recruit.Client.Application.Communications;
-using Esfa.Recruit.Vacancies.Client.Application.Communications;
 using Microsoft.Extensions.Options;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.Communications.EntityDataItemProviderPlugins

@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using Esfa.Recruit.Vacancies.Client.Application.Commands;
+﻿using Esfa.Recruit.Vacancies.Client.Application.Commands;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using MediatR;
 using System.Threading;
@@ -11,7 +10,6 @@ using Esfa.Recruit.Vacancies.Client.Domain.Events;
 using FluentValidation;
 using Microsoft.Extensions.Logging;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Projections;
-using Communication.Types;
 using Esfa.Recruit.Vacancies.Client.Application.Communications;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.StorageQueue;
 

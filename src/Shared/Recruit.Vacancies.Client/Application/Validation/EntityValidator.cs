@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.Exceptions;
 using FluentValidation;
 using FluentValidation.Results;
@@ -16,7 +17,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation
 
         public void ValidateAndThrow(T entity, TRules rules)
         {
-            var validationResult = ValidateEntity(entity, rules);
+            var validationResult = ValidateEntity(entity, rules).Result;
 
             if (validationResult.HasErrors)
             {
@@ -26,16 +27,16 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation
 
         public EntityValidationResult Validate(T entity, TRules rules)
         {
-            return ValidateEntity(entity, rules);
+            return ValidateEntity(entity, rules).Result;
         }
 
-        private EntityValidationResult ValidateEntity(T entity, TRules rules)
+        private async Task<EntityValidationResult> ValidateEntity(T entity, TRules rules)
         {
             var context = new ValidationContext<T>(entity);
 
             context.RootContextData.Add(ValidationConstants.ValidationsRulesKey, rules);
 
-            var fluentResult = _validator.Validate(context);
+            var fluentResult = await _validator.ValidateAsync(context);
 
             if (!fluentResult.IsValid)
             {

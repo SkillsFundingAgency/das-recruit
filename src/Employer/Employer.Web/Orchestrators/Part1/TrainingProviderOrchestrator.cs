@@ -64,6 +64,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 
             var vm = new SelectTrainingProviderViewModel
             {
+                VacancyId = vrm.VacancyId,
+                EmployerAccountId = vrm.EmployerAccountId,
                 Title = vacancy.Title,
                 TrainingProviders = trainingProviders.Select(t => FormatSuggestion(t.ProviderName, t.Ukprn)),
                 PageInfo = _utility.GetPartOnePageInfo(vacancy),

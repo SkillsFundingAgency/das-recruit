@@ -1,4 +1,3 @@
-using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore;

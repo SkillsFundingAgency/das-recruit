@@ -41,6 +41,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             var vm = new DatesViewModel
             {
                 VacancyId = vacancy.Id,
+                EmployerAccountId = vrm.EmployerAccountId,
                 IsDisabilityConfident = vacancy.IsDisabilityConfident,
                 PageInfo = _utility.GetPartOnePageInfo(vacancy),
                 CurrentYear = _timeProvider.Now.Year,

@@ -37,7 +37,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.ViewModels.Preview
         
         [Test, MoqAutoData]
         public async Task Then_If_Section_Started_And_Has_Title_Then_Set_To_In_Progress(
-            string title,
+            string accountLegalEntityPublicHashedId,
             TrainingProvider trainingProvider,
             DisplayVacancyViewModelMapper mapper)
         {
@@ -45,7 +45,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.ViewModels.Preview
             {
                 Id = Guid.NewGuid(),
                 TrainingProvider = trainingProvider,
-                Title = title,
+                AccountLegalEntityPublicHashedId = accountLegalEntityPublicHashedId,
                 VacancyType = VacancyType.Traineeship
             };
             var model = new VacancyPreviewViewModel();

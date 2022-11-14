@@ -11,7 +11,6 @@ using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Microsoft.Extensions.Logging;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
-using NWebsec.AspNetCore.Middleware.Middleware;
 using ErrorMessages = Esfa.Recruit.Shared.Web.ViewModels.ErrorMessages;
 
 namespace Esfa.Recruit.Provider.Web.Orchestrators

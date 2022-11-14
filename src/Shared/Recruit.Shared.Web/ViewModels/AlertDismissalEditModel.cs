@@ -8,5 +8,6 @@ namespace Esfa.Recruit.Shared.Web.ViewModels
         public long Ukprn { get; set; }
         public string AlertType { get; set; }
         public string ReturnUrl { get; set; }
+        public string EmployerAccountId { get; set; }
     }
 }

@@ -59,8 +59,8 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
         {
             var vacancyTask = _utility.GetAuthorisedVacancyForEditAsync(routeModel, RouteNames.ProviderTaskListGet);
             var programmesTask = _vacancyClient.GetActiveApprenticeshipProgrammesAsync();
-            
-            await Task.WhenAll(vacancyTask, programmesTask);
+            var editVacancyInfoTask = _providerVacancyClient.GetProviderEditVacancyInfoAsync(routeModel.Ukprn);
+            await Task.WhenAll(vacancyTask, programmesTask, editVacancyInfoTask);
 
             var employerInfo =
                 await _providerVacancyClient.GetProviderEmployerVacancyDataAsync(routeModel.Ukprn,
@@ -92,6 +92,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             }
 
             vm.AccountLegalEntityCount = employerInfo.LegalEntities.Count;
+            vm.AccountCount = editVacancyInfoTask.Result.Employers.Count();
             return vm;
         }
 
@@ -100,9 +101,11 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             var employerInfo =
                 await _providerVacancyClient.GetProviderEmployerVacancyDataAsync(vrm.Ukprn,
                     employerAccountId);
+            var editVacancyInfo = await _providerVacancyClient.GetProviderEditVacancyInfoAsync(vrm.Ukprn);
 
             var createVacancyTaskListModel = new VacancyPreviewViewModel
             {
+                AccountCount = editVacancyInfo.Employers.Count(),
                 AccountLegalEntityCount = employerInfo.LegalEntities.Count,
                 AccountId = employerAccountId,
                 Ukprn = vrm.Ukprn,

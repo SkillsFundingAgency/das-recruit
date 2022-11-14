@@ -11,7 +11,6 @@ using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using MongoDB.Driver;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 {
@@ -74,7 +73,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
                 });
             }
             
-            _logger.LogInformation("Closed {orphanedVacancies.Count} orphaned live vacancies", numberClosed);
+            _logger.LogInformation("Closed {closedCount} orphaned live vacancies", orphanedVacancies.Count);
             
             return Unit.Value;
         }

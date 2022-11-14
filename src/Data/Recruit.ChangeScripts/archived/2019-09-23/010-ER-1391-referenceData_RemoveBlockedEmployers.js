@@ -1,1 +1,0 @@
-﻿db.referenceData.remove({ "_id" : "BlockedEmployers" });

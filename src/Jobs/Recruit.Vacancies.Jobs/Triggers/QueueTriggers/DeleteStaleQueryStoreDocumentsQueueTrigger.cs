@@ -6,7 +6,6 @@ using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Application.Queues.Messages;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Employer;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Provider;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Vacancy;

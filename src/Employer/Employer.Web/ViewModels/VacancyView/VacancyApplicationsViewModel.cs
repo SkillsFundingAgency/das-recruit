@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyApplications;
 
 namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyManage
 {
-    public class VacancyApplicationsViewModel
+    public class VacancyApplicationsViewModel : VacancyRouteModel
     {
         public List<VacancyApplication> Applications { get; internal set; }
 

@@ -1,9 +1,9 @@
-﻿using Esfa.Recruit.Employer.Web.ViewModels.Part1;
+﻿using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Shared.Web.ViewModels;
 
 namespace Esfa.Recruit.Employer.Web.ViewModels.LegalEntityAgreement
 {
-    public class LegalEntityAgreementSoftStopViewModel
+    public class LegalEntityAgreementSoftStopViewModel : VacancyRouteModel
     {
         public bool HasLegalEntityAgreement { get; set; }
         public string LegalEntityName { get; set; }

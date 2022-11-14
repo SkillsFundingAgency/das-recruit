@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using Esfa.Recruit.Employer.Web.Mappings;
 using Esfa.Recruit.Employer.Web.ViewModels;
-using Esfa.Recruit.Employer.Web.ViewModels.Part2.VacancyDescription;
 using Esfa.Recruit.Shared.Web.Mappers;
 using Esfa.Recruit.Shared.Web.ViewModels;
 using Esfa.Recruit.Vacancies.Client.Application.Services;

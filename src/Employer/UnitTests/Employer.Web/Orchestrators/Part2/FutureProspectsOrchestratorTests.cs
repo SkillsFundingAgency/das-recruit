@@ -40,6 +40,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part2
             var response = await orchestrator.GetViewModel(vacancyRouteModel);
 
             response.VacancyId.Should().Be(vacancy.Id);
+            response.EmployerAccountId.Should().Be(vacancy.EmployerAccountId.ToUpper());
             response.Title.Should().Be(vacancy.Title);
             response.FutureProspects.Should().Be(vacancy.OutcomeDescription);
             response.IsTaskListCompleted.Should().Be(isTaskListCompleted);
@@ -71,6 +72,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part2
             var response = await orchestrator.GetViewModel(vacancyRouteModel);
 
             response.VacancyId.Should().Be(vacancy.Id);
+            response.EmployerAccountId.Should().Be(vacancy.EmployerAccountId.ToUpper());
             response.Title.Should().Be(vacancy.Title);
             response.FutureProspects.Should().Be(vacancy.OutcomeDescription);
             response.IsTaskListCompleted.Should().Be(isTaskListCompleted);

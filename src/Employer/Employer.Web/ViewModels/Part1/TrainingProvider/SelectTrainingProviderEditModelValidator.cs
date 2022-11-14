@@ -11,7 +11,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.TrainingProvider
                       m.SelectionType == TrainingProviderSelectionType.Ukprn, () =>
             {
                 RuleFor(m => m.Ukprn)
-                    .Cascade(CascadeMode.StopOnFirstFailure)
+                    .Cascade(CascadeMode.Stop)
                     .NotEmpty()
                     .WithMessage(ValidationMessages.TrainingProviderValidationMessages.UkprnNotEmpty)
                     .Matches(ValidationConstants.UkprnRegex.ToString())
@@ -21,7 +21,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.TrainingProvider
             When(m => m.SelectionType == TrainingProviderSelectionType.TrainingProviderSearch, () =>
             {
                 RuleFor(m => m.TrainingProviderSearch)
-                    .Cascade(CascadeMode.StopOnFirstFailure)
+                    .Cascade(CascadeMode.Stop)
                     .NotEmpty()
                     .WithMessage(ValidationMessages.TrainingProviderValidationMessages.TrainingProviderSearchNotEmpty);
             });

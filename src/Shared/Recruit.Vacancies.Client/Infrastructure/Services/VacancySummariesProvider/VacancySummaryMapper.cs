@@ -1,4 +1,3 @@
-using System;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummariesProvider
