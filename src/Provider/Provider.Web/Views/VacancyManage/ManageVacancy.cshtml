@@ -7,7 +7,7 @@
 }
 
 @section BackLink {
-    <a asp-route="@RouteNames.Dashboard_Get" asp-route-ukprn="@Model.Ukprn" class="govuk-back-link">Return to dashboard</a>
+    <a asp-route="@RouteNames.Vacancies_Get" asp-route-ukprn="@Model.Ukprn" class="govuk-back-link">Back</a>
 }
 
 
@@ -66,10 +66,12 @@
     <a asp-show="@Model.CanShowEditVacancyLink" asp-route="@RouteNames.VacancyEditDates_Get" asp-all-route-data="@Model.RouteDictionary" class="govuk-link">Edit vacancy dates</a>
     <a asp-show="@Model.CanShowCloseVacancyLink" asp-route="@RouteNames.CloseVacancy_Get" asp-all-route-data="@Model.RouteDictionary" class="govuk-link">Close vacancy</a>
     <a asp-show="@Model.CanShowDeleteVacancyLink" asp-route="@RouteNames.DeleteVacancy_Get" asp-all-route-data="@Model.RouteDictionary" class="govuk-link">Delete vacancy</a>
+    
 </div>
 
 
 <div asp-show="@Model.CanShowVacancyAnalytics">
+    <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
     <h2 class="govuk-heading-l govuk-!-margin-top-9">Vacancy analytics
         <span asp-show="@Model.HasAnalytics" class="govuk-caption-l">Showing stats from @Model.AnalyticsSummary.PeriodCaption</span>
     </h2>
@@ -79,13 +81,15 @@
         <partial asp-show="@Model.IsApplyThroughFaaVacancy" name="@RecruitPartialNames.ApplyThroughFaaVacancyAnalytics" for="AnalyticsSummary" />
         <partial asp-show="@Model.IsApplyThroughExternalApplicationSiteVacancy" name="@RecruitPartialNames.ApplyThroughExternalApplicationSiteVacancyAnalytics" for="AnalyticsSummary" />
     </div>
+    
 </div>
 
 
 
 <div asp-show="@(Model.IsApplyThroughFaaVacancy || Model.IsApplyThroughFatVacancy)">
+    <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
     <h2 class="govuk-heading-l  govuk-!-margin-top-6">Manage applications</h2>
-    <partial asp-show="@Model.HasApplications" name="@PartialNames.VacancyApplicationsTable" for="Applications" />
+    <partial asp-show="@Model.HasApplications" name="@PartialNames.VacancyApplicationsTable" for="Applications"/>
     <p asp-show="@Model.HasNoApplications" class="govuk-body govuk-!-margin-bottom-0">Candidate applications for this @(isApprenticeshipVacancyType ? "apprenticeship" : "traineeship") will appear here.</p>
 </div>
 
