@@ -4,6 +4,10 @@
     ViewBag.Title = "Manage advert";
 }
 
+@section BackLink {
+    <a asp-route="@RouteNames.Vacancies_Get" asp-route-employerAccountId="@Model.EmployerAccountId" class="govuk-back-link">Back</a>
+}
+
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
         <div asp-show="Model.HasVacancyClosedInfoMessage" class="govuk-notification-banner govuk-notification-banner--success" role="alert" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
@@ -58,9 +62,15 @@
     <dt class="das-definition-list__title das-definition-list__title--spacer">Possible start date</dt>
     <dd class="das-definition-list__definition das-definition-list__definition--spacer">@Model.PossibleStartDate</dd>
 
-    <dt class="das-definition-list__title das-definition-list__title--spacer" asp-show="@Model.IsDisabilityConfident">Disability confident</dt>
-    <dd class="das-definition-list__definition das-definition-list__definition--spacer" asp-show="@Model.IsDisabilityConfident">Yes</dd>
-
+    <dt class="das-definition-list__title das-definition-list__title--spacer">Disability confident</dt>
+    @if (@Model.IsDisabilityConfident)
+    {
+        <dd class="das-definition-list__definition das-definition-list__definition--spacer">Yes</dd>
+    }
+    else
+    {
+        <dd class="das-definition-list__definition das-definition-list__definition--spacer">No</dd>
+    }
 </dl>
 
 <div class="govuk-button-group">
@@ -72,6 +82,7 @@
 </div>
 
 <div asp-show="@Model.CanShowVacancyAnalytics">
+    <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
     <h2 class="govuk-heading-l govuk-!-margin-top-9">
         Advert analytics
         <span asp-show="@Model.HasAnalytics" class="govuk-caption-l">Showing stats from @Model.AnalyticsSummary.PeriodCaption</span>
@@ -82,16 +93,13 @@
         <partial asp-show="@Model.IsApplyThroughFaaVacancy" name="@RecruitPartialNames.ApplyThroughFaaVacancyAnalytics" for="AnalyticsSummary" />
         <partial asp-show="@Model.IsApplyThroughExternalApplicationSiteVacancy" name="@RecruitPartialNames.ApplyThroughExternalApplicationSiteVacancyAnalytics" for="AnalyticsSummary" />
     </div>
+    
 </div>
 
 <div asp-show="@Model.IsApplyThroughFaaVacancy">
+    <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
     <h2 class="govuk-heading-l govuk-!-margin-top-6">Manage applications</h2>
-    <partial asp-show="@Model.HasApplications" name="@PartialNames.VacancyApplicationsTable" for="Applications" />
+    <partial asp-show="@Model.HasApplications" name="@PartialNames.VacancyApplicationsTable" for="Applications"/>
     <p asp-show="@Model.HasNoApplications" class="govuk-body govuk-!-margin-bottom-0">Candidate applications for this apprenticeship will appear here.</p>
 </div>
 
-<div class="govuk-body">
-    <div class="govuk-!-margin-top-6">
-        <a asp-route="@RouteNames.Vacancies_Get" asp-route-employerAccountId="@Model.EmployerAccountId" class="govuk-link">Return to dashboard</a>
-    </div>
-</div>
