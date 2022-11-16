@@ -7,8 +7,11 @@
     ViewBag.Title = "What qualifications would you like the applicant to have?";
 }
 
+
 @section BackLink {
 
+    <a asp-route="@Model.BackRoute" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Back</a>
+ 
 }
 
 
