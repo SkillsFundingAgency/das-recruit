@@ -58,13 +58,15 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
             var setPage = requestedPageNo.HasValue ? requestedPageNo.Value : 1;
 
 
-            var vm = new LegalEntityAndEmployerViewModel
+                var vm = new LegalEntityAndEmployerViewModel
             {
                 Employers = editVacancyInfo.Employers.Select(e => new EmployerViewModel { Id = e.EmployerAccountId, Name = e.Name}),
                 Organisations = GetLegalEntityAndEmployerViewModels(accountLegalEntities).OrderBy(a => a.EmployerName),
                 TotalNumberOfLegalEntities = accountLegalEntities.Count(),
                 SearchTerm = searchTerm,
                 VacancyId = vrm.VacancyId,
+                SortByNameType = sortByType,
+                SortByAscDesc = sortOrder,
                 Ukprn = vrm.Ukprn
             };
 
@@ -72,6 +74,13 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
                 .Where(le => string.IsNullOrEmpty(searchTerm) || le.EmployerName.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) || le.AccountLegalEntityName.Contains(searchTerm, StringComparison.OrdinalIgnoreCase))
                 .OrderBy(v => v.EmployerName)
                 .ToList();
+
+
+
+            if (sortByType.ToString() == "EmployerName" && sortOrder.ToString() == "Ascending")
+                sortOrder.ToString() = "Descending";
+
+
 
             vm.NoOfSearchResults = filteredLegalEntities.Count();
 

@@ -45,18 +45,8 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.Part1.LegalEntityAndEmployer
         public bool HasPreviouslyPersistedLegalEntity => !string.IsNullOrEmpty(SelectedOrganisationId);
         public bool IsTaskListCompleted { get; set; }
         public string EmployerAccountId { get; set; }
-
-        public enum SortByType
-        {
-            EmployerName,
-            LegalEntityName
-        }
-
-        public enum SortOrder
-        {
-            Ascending,
-            Decending
-        }
+        public SortByType SortByNameType { get; set; }
+        public SortOrder SortByAscDesc { get; set; }
 
     }
 
@@ -73,5 +63,16 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.Part1.LegalEntityAndEmployer
         public string AccountLegalEntityName { get; set; }
         public string EmployerName { get; set; }
         public string EmployerAccountId { get; set; }
+    }
+    public enum SortByType
+    {
+        EmployerName,
+        LegalEntityName
+    }
+
+    public enum SortOrder
+    {
+        Ascending,
+        Descending
     }
 }
