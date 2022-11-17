@@ -205,7 +205,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part2
             var cancelRoute = RouteNames.Qualifications_Get;
             var backRoute = RouteNames.Qualifications_Get;
             
-            if (!vacancy.Qualifications?.Any() != null && !vacancy.Qualifications.Any())
+            if (vacancy.Qualifications?.Any() == null || !vacancy.Qualifications.Any())
             {
                 cancelRoute = RouteNames.Dashboard_Get;
                 backRoute = RouteNames.Skills_Get;
