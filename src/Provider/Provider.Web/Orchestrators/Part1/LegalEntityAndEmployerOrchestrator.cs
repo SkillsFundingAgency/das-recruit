@@ -45,7 +45,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
             _utility = utility;
         }
 
-        public async Task<LegalEntityAndEmployerViewModel> GetLegalEntityAndEmployerViewModelAsync(VacancyRouteModel vrm, string searchTerm, int? requestedPageNo, string sortOrder, string sortByType)
+        public async Task<LegalEntityAndEmployerViewModel> GetLegalEntityAndEmployerViewModelAsync(VacancyRouteModel vrm, string searchTerm, int? requestedPageNo, SortOrder? sortOrder = null, SortByType? sortByType = null)
         {
             var editVacancyInfo = await _providerVacancyClient.GetProviderEditVacancyInfoAsync(vrm.Ukprn);
 
@@ -58,7 +58,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
             var setPage = requestedPageNo.HasValue ? requestedPageNo.Value : 1;
 
 
-                var vm = new LegalEntityAndEmployerViewModel
+            var vm = new LegalEntityAndEmployerViewModel
             {
                 Employers = editVacancyInfo.Employers.Select(e => new EmployerViewModel { Id = e.EmployerAccountId, Name = e.Name}),
                 Organisations = GetLegalEntityAndEmployerViewModels(accountLegalEntities).OrderBy(a => a.EmployerName),
@@ -70,26 +70,27 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
                 Ukprn = vrm.Ukprn
             };
 
-            var filteredLegalEntities = vm.Organisations
-                .Where(le => string.IsNullOrEmpty(searchTerm) || le.EmployerName.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) || le.AccountLegalEntityName.Contains(searchTerm, StringComparison.OrdinalIgnoreCase))
-                .OrderBy(v => v.EmployerName)
-                .ToList();
+            var filterOrgs = vm.Organisations
+                .Where(le => string.IsNullOrEmpty(searchTerm) || le.EmployerName.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) || le.AccountLegalEntityName.Contains(searchTerm, StringComparison.OrdinalIgnoreCase));
+                
+            var filterAndOrdered = filterOrgs.OrderBy(c =>
+                {
+                    if (sortByType is SortByType.LegalEntityName)
+                    {
+                        return c.AccountLegalEntityName;
+                    }
+                    return c.EmployerName;
+                }).ToList();  
+                
 
+            vm.NoOfSearchResults = filterAndOrdered.Count();
 
-
-            if (sortByType.ToString() == "EmployerName" && sortOrder.ToString() == "Ascending")
-                sortOrder.ToString() = "Descending";
-
-
-
-            vm.NoOfSearchResults = filteredLegalEntities.Count();
-
-            var filteredLegalEntitiesTotal = filteredLegalEntities.Count();
+            var filteredLegalEntitiesTotal = filterAndOrdered.Count();
             var totalNumberOfPages = PagingHelper.GetTotalNoOfPages(MaxLegalEntitiesPerPage, filteredLegalEntitiesTotal);
 
             setPage = GetPageNo(setPage, totalNumberOfPages);
 
-            SetFilteredOrganisationsForPage(setPage, vm, filteredLegalEntities);
+            SetFilteredOrganisationsForPage(setPage, vm, filterAndOrdered);
             SetPager(searchTerm, setPage, vm, filteredLegalEntitiesTotal);
 
             return vm;

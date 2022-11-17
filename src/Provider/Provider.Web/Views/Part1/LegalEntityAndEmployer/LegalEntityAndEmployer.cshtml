@@ -1,3 +1,6 @@
+@using Esfa.Recruit.Provider.Web.ViewModels.Part1.LegalEntityAndEmployer
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using Esfa.Recruit.Shared.Web.TagHelpers
 @model Esfa.Recruit.Provider.Web.ViewModels.Part1.LegalEntityAndEmployer.LegalEntityAndEmployerViewModel;
 
 @{
@@ -69,14 +72,14 @@
         {   
             <form method="POST" asp-route="@RouteNames.LegalEntityEmployer_Post" asp-all-route-data="@Model.RouteDictionary">
                     <input type="hidden" asp-for="VacancyId"/>
-                    <table class="govuk-table das-table--condensed das-table--responsive" data-module="das-table-sort">
+                    <table class="govuk-table das-table--condensed das-table--responsive" >
                             <thead class="govuk-table__head">
                             <tr class="govuk-table__row">
-                                <th class="govuk-table__header das-table--double-arrows" scope="col">
-                                    <a href="#" class="govuk-link das-table__sort">Employer</a>
+                                <th class="govuk-table__header  das-table--double-arrows" scope="col">
+                                    <a asp-route="@(Model.VacancyId==null?RouteNames.LegalEntityEmployer_Get:RouteNames.LegalEntityEmployerChange_Get)" asp-route-sortByType="@SortByType.EmployerName" asp-route-ukprn="@Model.Ukprn" asp-route-vacancyId="@Model.VacancyId"  class="govuk-link  das-table__sort">Employer</a>
                                 </th>
                                 <th class="govuk-table__header das-table--double-arrows" scope="col">
-                                    <a href="#" class="govuk-link das-table__sort">Account Name</a>
+                                    <a asp-route="@(Model.VacancyId==null?RouteNames.LegalEntityEmployer_Get:RouteNames.LegalEntityEmployerChange_Get)" asp-route-sortByType="@SortByType.LegalEntityName" asp-route-ukprn="@Model.Ukprn" asp-route-vacancyId="@Model.VacancyId"  class="govuk-link  das-table__sort">Account Name</a>
                                 </th>
                                 <th class="govuk-table__header" scope="col">Agreement ID</th>
                                 <th class="govuk-table__header" scope="col"></th>

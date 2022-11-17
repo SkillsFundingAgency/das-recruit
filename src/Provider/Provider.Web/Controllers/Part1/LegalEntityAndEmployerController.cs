@@ -38,7 +38,12 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
         [HttpGet("{VacancyId}/change-employer-legal-entity", Name = RouteNames.LegalEntityEmployerChange_Get)]
         public async Task<IActionResult> LegalEntityAndEmployer(VacancyRouteModel vrm, [FromQuery]string searchTerm, [FromQuery]int? page, [FromQuery] string sortOrder, [FromQuery] string sortByType)
         {
-            var vm = await _orchestrator.GetLegalEntityAndEmployerViewModelAsync(vrm, searchTerm, page, sortOrder, sortByType);
+
+            Enum.TryParse<SortOrder>(sortOrder, out var outputSort);
+            Enum.TryParse<SortByType>(sortByType, out var outputSortByType);
+            
+            
+            var vm = await _orchestrator.GetLegalEntityAndEmployerViewModelAsync(vrm, searchTerm, page, outputSort, outputSortByType);
 
             if (vm.HasOnlyOneOrganisation)
             {

@@ -27,7 +27,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part1.Legal
 
             Assert.ThrowsAsync<MissingPermissionsException>(() =>
                 orchestrator.GetLegalEntityAndEmployerViewModelAsync(vacancyRouteModel,
-                    "", 1));
+                    "", 1, SortOrder.Ascending, SortByType.EmployerName));
         }
 
 
