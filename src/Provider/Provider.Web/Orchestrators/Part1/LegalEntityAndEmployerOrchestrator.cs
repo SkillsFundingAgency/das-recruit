@@ -16,6 +16,7 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelationship;
 using Microsoft.Extensions.Logging;
+using static Esfa.Recruit.Provider.Web.ViewModels.Part1.LegalEntityAndEmployer.LegalEntityAndEmployerViewModel;
 using EmployerViewModel = Esfa.Recruit.Provider.Web.ViewModels.Part1.LegalEntityAndEmployer.EmployerViewModel;
 
 namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
@@ -44,7 +45,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
             _utility = utility;
         }
 
-        public async Task<LegalEntityAndEmployerViewModel> GetLegalEntityAndEmployerViewModelAsync(VacancyRouteModel vrm, string searchTerm, int? requestedPageNo)
+        public async Task<LegalEntityAndEmployerViewModel> GetLegalEntityAndEmployerViewModelAsync(VacancyRouteModel vrm, string searchTerm, int? requestedPageNo, string sortOrder, string sortByType)
         {
             var editVacancyInfo = await _providerVacancyClient.GetProviderEditVacancyInfoAsync(vrm.Ukprn);
 

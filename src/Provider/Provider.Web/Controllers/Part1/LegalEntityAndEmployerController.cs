@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Provider.Web.Configuration;
@@ -35,9 +36,9 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
 
         [HttpGet("employer-legal-entity", Name = RouteNames.LegalEntityEmployer_Get)]
         [HttpGet("{VacancyId}/change-employer-legal-entity", Name = RouteNames.LegalEntityEmployerChange_Get)]
-        public async Task<IActionResult> LegalEntityAndEmployer(VacancyRouteModel vrm, [FromQuery]string searchTerm, [FromQuery]int? page)
+        public async Task<IActionResult> LegalEntityAndEmployer(VacancyRouteModel vrm, [FromQuery]string searchTerm, [FromQuery]int? page, [FromQuery] string sortOrder, [FromQuery] string sortByType)
         {
-            var vm = await _orchestrator.GetLegalEntityAndEmployerViewModelAsync(vrm, searchTerm, page);
+            var vm = await _orchestrator.GetLegalEntityAndEmployerViewModelAsync(vrm, searchTerm, page, sortOrder, sortByType);
 
             if (vm.HasOnlyOneOrganisation)
             {
