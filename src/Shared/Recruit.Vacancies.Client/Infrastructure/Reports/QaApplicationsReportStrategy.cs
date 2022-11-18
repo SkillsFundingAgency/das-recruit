@@ -201,6 +201,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Reports
             {
                 result.InsertAt(result.IndexOfName(Column.ProgrammeId),
                     new BsonElement(Column.StandardOrFramework, (BsonValue)"unknown"));
+                result.InsertAt(result.IndexOfName(Column.StandardOrFramework),
+                    new BsonElement("level", (BsonValue)"unknown"));
                 result.Remove(Column.ProgrammeId);
                 return;
             }
