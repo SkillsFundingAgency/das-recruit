@@ -46,7 +46,7 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.Part1.LegalEntityAndEmployer
         public bool IsTaskListCompleted { get; set; }
         public string EmployerAccountId { get; set; }
         public SortByType? SortByNameType { get; set; }
-        public SortOrder? SortByAscDesc { get; set; }
+        public SortOrder? SortByAscDesc = SortOrder.Descending;
 
     }
 

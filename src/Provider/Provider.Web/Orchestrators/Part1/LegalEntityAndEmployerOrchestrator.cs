@@ -72,16 +72,43 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
 
             var filterOrgs = vm.Organisations
                 .Where(le => string.IsNullOrEmpty(searchTerm) || le.EmployerName.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) || le.AccountLegalEntityName.Contains(searchTerm, StringComparison.OrdinalIgnoreCase));
+
+            List<OrganisationsViewModel> filterAndOrdered = new List<OrganisationsViewModel>();
+
+            if (sortOrder is SortOrder.Ascending)
+            {
                 
-            var filterAndOrdered = filterOrgs.OrderBy(c =>
-                {
-                    if (sortByType is SortByType.LegalEntityName)
+               filterAndOrdered = filterOrgs.OrderBy(c =>
                     {
-                        return c.AccountLegalEntityName;
-                    }
-                    return c.EmployerName;
-                }).ToList();  
-                
+                        if (sortByType is SortByType.LegalEntityName)
+                        {
+                            sortOrder = SortOrder.Descending;
+                            return c.AccountLegalEntityName;
+                        }
+                        sortOrder = SortOrder.Descending;
+                        return c.EmployerName;
+                    }).ToList();
+
+
+            }
+
+            else
+            { 
+            filterAndOrdered = filterOrgs.OrderByDescending(c =>
+            {
+                if (sortByType is SortByType.LegalEntityName)
+                {
+                    sortOrder = SortOrder.Ascending;
+                    return c.AccountLegalEntityName;
+                }
+                sortOrder = SortOrder.Ascending;
+                return c.EmployerName;
+            }).ToList();                
+
+            }
+
+
+
 
             vm.NoOfSearchResults = filterAndOrdered.Count();
 
