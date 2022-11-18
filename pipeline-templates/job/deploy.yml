@@ -2,6 +2,7 @@ parameters:
   Environment:
   ServiceConnection:
   AppRoleAssignmentsServiceConnection:
+  AADGroupObjectIdArray:
 
 jobs:
 - deployment: DeployInfrastructure
