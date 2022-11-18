@@ -77,8 +77,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
 
             if (sortOrder is SortOrder.Ascending)
             {
-                
-               filterAndOrdered = filterOrgs.OrderBy(c =>
+                filterAndOrdered = filterOrgs.OrderBy(c =>
                     {
                         if (sortByType is SortByType.LegalEntityName)
                         {
@@ -88,22 +87,20 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
                         sortOrder = SortOrder.Descending;
                         return c.EmployerName;
                     }).ToList();
-
-
             }
 
             else
             { 
-            filterAndOrdered = filterOrgs.OrderByDescending(c =>
-            {
-                if (sortByType is SortByType.LegalEntityName)
+                filterAndOrdered = filterOrgs.OrderByDescending(c =>
                 {
+                    if (sortByType is SortByType.LegalEntityName)
+                    {
+                        sortOrder = SortOrder.Ascending;
+                        return c.AccountLegalEntityName;
+                    }
                     sortOrder = SortOrder.Ascending;
-                    return c.AccountLegalEntityName;
-                }
-                sortOrder = SortOrder.Ascending;
-                return c.EmployerName;
-            }).ToList();                
+                    return c.EmployerName;
+                }).ToList();                
 
             }
 
