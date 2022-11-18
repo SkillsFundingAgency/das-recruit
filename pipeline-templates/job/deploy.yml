@@ -69,7 +69,7 @@ jobs:
             ResourceName: $(JobsAppServiceName)
             Tenant: $(Tenant)
             AADGroupObjectIdArray: ${{ parameters.AADGroupObjectIdArray }}
-            IsMultiRepoCheckout: true
+            IsMultiRepoCheckout: false
         - template: azure-pipelines-templates/deploy/step/webjob-deploy.yml@das-platform-building-blocks
           parameters:
             ServiceConnection: ${{ parameters.ServiceConnection }}
@@ -143,7 +143,7 @@ jobs:
             ResourceName: $(ProviderAppServiceName)
             Tenant: $(Tenant)
             AADGroupObjectIdArray: ${{ parameters.AADGroupObjectIdArray }}
-            IsMultiRepoCheckout: true
+            IsMultiRepoCheckout: false
         - template: azure-pipelines-templates/deploy/step/app-deploy.yml@das-platform-building-blocks
           parameters:
             ServiceConnection: ${{ parameters.ServiceConnection }}
@@ -172,7 +172,7 @@ jobs:
             ResourceName: $(TraineeshipProviderAppServiceName)
             Tenant: $(Tenant)
             AADGroupObjectIdArray: ${{ parameters.AADGroupObjectIdArray }}
-            IsMultiRepoCheckout: true
+            IsMultiRepoCheckout: false
         - template: azure-pipelines-templates/deploy/step/app-deploy.yml@das-platform-building-blocks
           parameters:
             ServiceConnection: ${{ parameters.ServiceConnection }}
