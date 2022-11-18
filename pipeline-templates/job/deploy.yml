@@ -167,7 +167,7 @@ jobs:
         - template: azure-pipelines-templates/deploy/step/app-role-assignments.yml@das-platform-building-blocks
           parameters:
             ServiceConnection: ${{ parameters.AppRoleAssignmentsServiceConnection }}
-            ResourceName: $(ProviderAppServiceName)
+            ResourceName: $(TraineeshipProviderAppServiceName)
             Tenant: $(Tenant)
             AADGroupObjectIdArray: ${{ parameters.AADGroupObjectIdArray }}
             IsMultiRepoCheckout: true
