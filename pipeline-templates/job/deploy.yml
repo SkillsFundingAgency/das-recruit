@@ -1,6 +1,7 @@
 parameters:
   Environment:
   ServiceConnection:
+  AppRoleAssignmentsServiceConnection:
 
 jobs:
 - deployment: DeployInfrastructure
