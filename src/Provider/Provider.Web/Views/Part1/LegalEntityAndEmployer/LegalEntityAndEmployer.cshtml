@@ -78,10 +78,10 @@
                             <thead class="govuk-table__head">
                             <tr class="govuk-table__row">
                                 <th class="govuk-table__header  das-table--double-arrows" scope="col">
-                                <a asp-route="@(Model.VacancyId==null?RouteNames.LegalEntityEmployer_Get:RouteNames.LegalEntityEmployerChange_Get)" asp-route-sortByType="@SortByType.EmployerName" asp-route-ukprn="@Model.Ukprn" asp-route-vacancyId="@Model.VacancyId" asp-route-sortbyOrder="@Model.SortByAscDesc">Employer</a>
+                                <a asp-route="@(Model.VacancyId==null?RouteNames.LegalEntityEmployer_Get:RouteNames.LegalEntityEmployerChange_Get)" asp-route-sortByType="@SortByType.EmployerName" asp-route-ukprn="@Model.Ukprn" asp-route-vacancyId="@Model.VacancyId" asp-route-sortOrder="@Model.SortByAscDesc" asp-route-searchTerm="@Model.SearchTerm">Employer</a>
                                 </th>
                                 <th class="govuk-table__header das-table--double-arrows" scope="col">
-                                <a asp-route="@(Model.VacancyId==null?RouteNames.LegalEntityEmployer_Get:RouteNames.LegalEntityEmployerChange_Get)" asp-route-sortByType="@SortByType.LegalEntityName" asp-route-ukprn="@Model.Ukprn" asp-route-vacancyId="@Model.VacancyId" asp-route-sortbyOrder="@Model.SortByAscDesc">Account Name</a>
+                                <a asp-route="@(Model.VacancyId==null?RouteNames.LegalEntityEmployer_Get:RouteNames.LegalEntityEmployerChange_Get)" asp-route-sortByType="@SortByType.LegalEntityName" asp-route-ukprn="@Model.Ukprn" asp-route-vacancyId="@Model.VacancyId" asp-route-sortOrder="@Model.SortByAscDesc" asp-route-searchTerm="@Model.SearchTerm">Account Name</a>
                                 </th>
                                 <th class="govuk-table__header" scope="col">Agreement ID</th>
                                 <th class="govuk-table__header" scope="col"></th>
