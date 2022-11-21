@@ -34,7 +34,7 @@
             <form asp-route="@RouteNames.Vacancies_Get" asp-all-route-data="@vacancyRouteModel.RouteDictionary" method="get" autocomplete="off">
                 <div class="govuk-form-group">
                     <label for="search-input" class="govuk-label">
-                        Search by advert title or reference number
+                        Search by vacancy title or reference number
                     </label>
                     <div class="das-search-form__group">
                         <input id="search-input" name="searchTerm" title="Search" class="govuk-input das-search-form__input app-vacancy-autocomplete" type="text" maxlength="200" data-apiurl="@vacanciesSearchSuggestionsEndpointUrl" />

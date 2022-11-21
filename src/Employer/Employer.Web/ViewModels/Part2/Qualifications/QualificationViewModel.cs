@@ -27,5 +27,6 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Part2.Qualifications
 
         public bool IsTaskListCompleted { get ; set ; }
         public string PostRoute { get; set; }
+        public string BackRoute { get; set; }
     }
 }

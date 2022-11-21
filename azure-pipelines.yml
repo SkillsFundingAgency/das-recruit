@@ -51,6 +51,8 @@ stages:
     parameters:
       Environment: AT
       ServiceConnection: SFA-DAS-DevTest-ARM
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
+      AADGroupObjectIdArray: $(AdminAADGroupObjectId),$(DevAADGroupObjectId)
 
 - stage: Deploy_TEST
   dependsOn: Build
@@ -64,6 +66,8 @@ stages:
     parameters:
       Environment: TEST
       ServiceConnection: SFA-DAS-DevTest-ARM
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
+      AADGroupObjectIdArray: $(AdminAADGroupObjectId),$(DevAADGroupObjectId)
 
 - stage: Deploy_TEST2
   dependsOn: Build
@@ -77,6 +81,8 @@ stages:
     parameters:
       Environment: TEST2
       ServiceConnection: SFA-DAS-DevTest-ARM
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
+      AADGroupObjectIdArray: $(AdminAADGroupObjectId),$(DevAADGroupObjectId)
 
 - stage: Deploy_PP
   dependsOn: Build
@@ -90,6 +96,8 @@ stages:
     parameters:
       Environment: PP
       ServiceConnection: SFA-DIG-PreProd-ARM
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
+      AADGroupObjectIdArray: $(AdminAADGroupObjectId),$(DevAADGroupObjectId)
 
 - stage: Deploy_PROD
   dependsOn: Build
@@ -103,6 +111,7 @@ stages:
     parameters:
       Environment: PROD
       ServiceConnection: SFA-DIG-Prod-ARM
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
 
 - stage: Deploy_MO
   dependsOn: Build
@@ -116,6 +125,8 @@ stages:
     parameters:
       Environment: MO
       ServiceConnection: SFA-ASM-ModelOffice-ARM
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
+      AADGroupObjectIdArray: $(AdminAADGroupObjectId),$(DevAADGroupObjectId)
 
 - stage: Deploy_DEMO
   dependsOn: Build
@@ -129,3 +140,5 @@ stages:
     parameters:
       Environment: DEMO
       ServiceConnection: SFA-DAS-DevTest-ARM
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-CDS
+      AADGroupObjectIdArray: $(AdminAADGroupObjectId),$(DevAADGroupObjectId)
