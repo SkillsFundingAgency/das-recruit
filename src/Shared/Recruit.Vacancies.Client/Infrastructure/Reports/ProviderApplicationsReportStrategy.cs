@@ -179,13 +179,15 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Reports
         private async Task SetRoute(BsonDocument result)
         {
             var routeId = result[ColumnRoute].AsString;
-            if (!string.IsNullOrEmpty(routeId) && int.TryParse(routeId,out var routeIdResult))
+            var routeName = "";
+            if (!string.IsNullOrEmpty(routeId) && int.TryParse(routeId, out var routeIdResult))
             {
                 var route = await _apprenticeshipRouteProvider.GetApprenticeshipRouteAsync(routeIdResult);
-            
-                result.InsertAt(result.IndexOfName(ColumnRoute),
-                    new BsonElement(ColumnRouteName, (BsonValue)route?.Route ?? BsonNull.Value));    
+                routeName = route?.Route;
             }
+            
+            result.InsertAt(result.IndexOfName(ColumnRoute),
+                new BsonElement(ColumnRouteName, (BsonValue)routeName ?? BsonNull.Value));    
             
             result.Remove(ColumnRoute);
         }
@@ -195,6 +197,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Reports
             
             if (string.IsNullOrEmpty(programmeId))
             {
+                result.InsertAt(result.IndexOfName(ColumnProgramme),
+                    new BsonElement(ColumnStandard, BsonNull.Value));
+
+                result.InsertAt(result.IndexOfName(ColumnProgramme),
+                    new BsonElement(ColumnStandardStatus, BsonNull.Value));
                 result.Remove(ColumnProgramme);
                 return;
             }
