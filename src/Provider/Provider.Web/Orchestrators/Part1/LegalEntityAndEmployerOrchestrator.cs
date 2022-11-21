@@ -73,43 +73,28 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
             var filterOrgs = vm.Organisations
                 .Where(le => string.IsNullOrEmpty(searchTerm) || le.EmployerName.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) || le.AccountLegalEntityName.Contains(searchTerm, StringComparison.OrdinalIgnoreCase));
 
-            List<OrganisationsViewModel> filterAndOrdered = new List<OrganisationsViewModel>();
+            List<OrganisationsViewModel> filterAndOrdered;
 
             if (sortOrder is SortOrder.Ascending)
             {
                 filterAndOrdered = filterOrgs.OrderBy(c =>
                     {
-                        if (sortByType is SortByType.LegalEntityName)
-                        {
-                            sortOrder = SortOrder.Descending;
-                            return c.AccountLegalEntityName;
-                        }
                         sortOrder = SortOrder.Descending;
-                        return c.EmployerName;
+                        return sortByType is SortByType.LegalEntityName ? c.AccountLegalEntityName : c.EmployerName;
                     }).ToList();
             }
-
             else
             { 
                 filterAndOrdered = filterOrgs.OrderByDescending(c =>
                 {
-                    if (sortByType is SortByType.LegalEntityName)
-                    {
-                        sortOrder = SortOrder.Ascending;
-                        return c.AccountLegalEntityName;
-                    }
                     sortOrder = SortOrder.Ascending;
-                    return c.EmployerName;
-                }).ToList();                
-
+                    return sortByType is SortByType.LegalEntityName ? c.AccountLegalEntityName : c.EmployerName;
+                }).ToList();
             }
 
+            vm.NoOfSearchResults = filterAndOrdered.Count;
 
-
-
-            vm.NoOfSearchResults = filterAndOrdered.Count();
-
-            var filteredLegalEntitiesTotal = filterAndOrdered.Count();
+            var filteredLegalEntitiesTotal = filterAndOrdered.Count;
             var totalNumberOfPages = PagingHelper.GetTotalNoOfPages(MaxLegalEntitiesPerPage, filteredLegalEntitiesTotal);
 
             setPage = GetPageNo(setPage, totalNumberOfPages);

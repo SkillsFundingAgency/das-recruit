@@ -43,13 +43,15 @@
             </div>
         </details>
         
-        <form method="GET" asp-route="@(Model.VacancyId==null?RouteNames.LegalEntityEmployer_Get:RouteNames.LegalEntityEmployerChange_Get)" asp-all-route-data="@Model.RouteDictionary">
+        <form method="GET" asp-route="@(Model.VacancyId == null ? RouteNames.LegalEntityEmployer_Get : RouteNames.LegalEntityEmployerChange_Get)" asp-all-route-data="@Model.RouteDictionary">
+            <input type="hidden" asp-for="SortByNameType"/>
+            <input type="hidden" asp-for="SortByAscDesc"/>
             <div class="govuk-form-group">
                 <label class="govuk-label" asp-for="SearchTerm">
                     Search employer name or account name
                 </label>
                 <div class="das-search-form__group">
-                    <input asp-for="SearchTerm" class="govuk-input das-search-form__input" maxlength="100" title="Search" />
+                    <input asp-for="SearchTerm" class="govuk-input das-search-form__input" maxlength="100" title="Search"/>
                     <div class="das-search-form__button-wrap">
                         <button class="govuk-button das-search-form__button" type="submit">Search</button>
                     </div>
@@ -57,15 +59,15 @@
                 @if (!string.IsNullOrEmpty(Model.SearchTerm))
                 {
                     <p class="govuk-body govuk-!-margin-top-1">
-                        <a class="govuk-link govuk-link--no-visited-state" asp-route="@(Model.VacancyId==null?RouteNames.LegalEntityEmployer_Get:RouteNames.LegalEntityEmployerChange_Get)" asp-all-route-data="@Model.RouteDictionary">Clear search</a>
+                        <a class="govuk-link govuk-link--no-visited-state" asp-route="@(Model.VacancyId == null ? RouteNames.LegalEntityEmployer_Get : RouteNames.LegalEntityEmployerChange_Get)" asp-all-route-data="@Model.RouteDictionary">Clear search</a>
                     </p>
                     @if (Model.NoOfSearchResults == 0)
                     {
                         <p class="govuk-body">@Model.SearchResultsCaption </p>
                     }
-                    
+
                 }
-                
+
             </div>
         </form>
         @if (Model.NoOfSearchResults != 0)
