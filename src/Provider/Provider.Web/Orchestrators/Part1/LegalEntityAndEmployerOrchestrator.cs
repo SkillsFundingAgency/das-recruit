@@ -92,10 +92,14 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
                 }).ToList();
             }
 
+
             vm.NoOfSearchResults = filterAndOrdered.Count;
 
             var filteredLegalEntitiesTotal = filterAndOrdered.Count;
             var totalNumberOfPages = PagingHelper.GetTotalNoOfPages(MaxLegalEntitiesPerPage, filteredLegalEntitiesTotal);
+
+            vm.SortByNameType = sortByType;
+            vm.SortByAscDesc = sortOrder;
 
             setPage = GetPageNo(setPage, totalNumberOfPages);
 
