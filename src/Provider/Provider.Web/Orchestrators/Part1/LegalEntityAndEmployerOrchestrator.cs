@@ -16,6 +16,7 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelationship;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 using static Esfa.Recruit.Provider.Web.ViewModels.Part1.LegalEntityAndEmployer.LegalEntityAndEmployerViewModel;
 using EmployerViewModel = Esfa.Recruit.Provider.Web.ViewModels.Part1.LegalEntityAndEmployer.EmployerViewModel;
 
@@ -29,7 +30,9 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
         private readonly IProviderRelationshipsService _providerRelationshipsService;
         private readonly IRecruitVacancyClient _recruitVacancyClient;
         private readonly IUtility _utility;
-        private const int MaxLegalEntitiesPerPage = 25;
+        //private const int MaxLegalEntitiesPerPage = 25;
+        private const int MaxLegalEntitiesPerPage = 5;
+
 
         public LegalEntityAndEmployerOrchestrator(
             IProviderVacancyClient providerVacancyClient,
@@ -89,6 +92,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
 
             vm.NoOfSearchResults = filterAndOrdered.Count;
 
+
             var filteredLegalEntitiesTotal = filterAndOrdered.Count;
             var totalNumberOfPages = PagingHelper.GetTotalNoOfPages(MaxLegalEntitiesPerPage, filteredLegalEntitiesTotal);
 
@@ -98,7 +102,17 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
             setPage = GetPageNo(setPage, totalNumberOfPages);
 
             SetFilteredOrganisationsForPage(setPage, vm, filterAndOrdered);
-            SetPager(searchTerm, setPage, vm, filteredLegalEntitiesTotal);
+
+            var routeParams = new Dictionary<string, string>();
+            if (!searchTerm.IsNullOrEmpty())
+                routeParams.Add(nameof(searchTerm), searchTerm);
+
+
+            routeParams.Add("sortOrder", sortOrder.ToString());
+            routeParams.Add("sortName", sortByType.ToString());
+
+            SetPager(routeParams, setPage, vm, filteredLegalEntitiesTotal);
+
 
             return vm;
         }
@@ -208,7 +222,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
             return page;
         }
 
-        private void SetPager(string searchTerm, int page, LegalEntityAndEmployerViewModel vm, int filteredLegalEntitiesTotal)
+        private void SetPager(Dictionary<string, string> routeParams, int page, LegalEntityAndEmployerViewModel vm, int filteredLegalEntitiesTotal)
         {
             var pager = new PagerViewModel(
                 filteredLegalEntitiesTotal,
@@ -216,10 +230,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
                 page,
                 "Showing {0} to {1} of {2} organisations",
                 RouteNames.LegalEntity_Get,
-                new Dictionary<string, string>
-                {
-                    { nameof(searchTerm), searchTerm }
-                });
+                routeParams);
 
             vm.Pager = pager;
         }
