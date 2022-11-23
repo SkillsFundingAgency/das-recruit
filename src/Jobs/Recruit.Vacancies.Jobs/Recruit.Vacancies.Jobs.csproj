@@ -27,6 +27,7 @@
     <PackageReference Include="SFA.DAS.Configuration" Version="3.0.84" />
     <PackageReference Include="SFA.DAS.Configuration.AzureTableStorage" Version="3.0.84" />
     <PackageReference Include="SFA.DAS.Encoding" Version="1.1.76" />
+    <PackageReference Include="SFA.DAS.GovUK.Auth" Version="0.2.203" />
     <PackageReference Include="SFA.DAS.Http" Version="3.2.69" />
     <PackageReference Include="SFA.DAS.NLog.Targets.Redis" Version="1.2.1" />
     <PackageReference Include="SFA.DAS.Notifications.Api.Client" Version="2.2.210" />

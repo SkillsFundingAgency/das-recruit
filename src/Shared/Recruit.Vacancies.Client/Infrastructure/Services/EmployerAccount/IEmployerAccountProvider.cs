@@ -7,7 +7,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount
 {
     public interface IEmployerAccountProvider
     {
-        Task<IEnumerable<string>> GetEmployerIdentifiersAsync(string userId);
+        Task<GetUserAccountsResponse> GetEmployerIdentifiersAsync(string userId, string email);
         Task<IEnumerable<LegalEntity>> GetEmployerLegalEntitiesAsync(string accountId);
         Task<string> GetEmployerAccountPublicHashedIdAsync(long accountId);
         Task<IEnumerable<AccountLegalEntity>> GetLegalEntitiesConnectedToAccountAsync(string accountId);
