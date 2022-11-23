@@ -110,6 +110,8 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
 
             routeParams.Add("sortOrder", sortOrder.ToString());
             routeParams.Add("sortName", sortByType.ToString());
+            routeParams.Add("ukprn", vrm.Ukprn.ToString());
+            routeParams.Add("vacancyId", vrm.VacancyId.ToString());
 
             SetPager(routeParams, setPage, vm, filteredLegalEntitiesTotal);
 
