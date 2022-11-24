@@ -150,7 +150,8 @@ namespace Esfa.Recruit.Employer.Web.Configuration
             IRecruitVacancyClient vacancyClient)
         {
             var userId = ctx.Principal.GetUserId();
-            var accounts = await vacancyClient.GetEmployerIdentifiersAsync(userId);
+            var email = ctx.Principal.GetEmailAddress();
+            var accounts = await vacancyClient.GetEmployerIdentifiersAsync(userId, email);
             var accountsAsJson = JsonConvert.SerializeObject(accounts);
             var associatedAccountsClaim = new Claim(EmployerRecruitClaims.AccountsClaimsTypeIdentifier, accountsAsJson, JsonClaimValueTypes.Json);
 
@@ -162,5 +163,7 @@ namespace Esfa.Recruit.Employer.Web.Configuration
             var user = ctx.Principal.ToVacancyUser();
             return vacancyClient.UserSignedInAsync(user, UserType.Employer);
         }
+
+
     }
 }

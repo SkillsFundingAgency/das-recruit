@@ -224,6 +224,8 @@ namespace Esfa.Recruit.Employer.Web
             if (!string.IsNullOrWhiteSpace(linksConfig?.EmployerRecruitmentApiUrl))
                 destinations.Add(linksConfig.EmployerRecruitmentApiUrl);
             
+            destinations.Add("https://oidc.integration.account.gov.uk");
+            
             return destinations.ToArray();
         }
     }
