@@ -109,11 +109,17 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
 
 
             routeParams.Add("sortOrder", sortOrder.ToString());
-            routeParams.Add("sortName", sortByType.ToString());
+            routeParams.Add("sortByType", sortByType.ToString());
             routeParams.Add("ukprn", vrm.Ukprn.ToString());
-            routeParams.Add("vacancyId", vrm.VacancyId.ToString());
+            var routeName = RouteNames.LegalEntityEmployer_Get;
+            if (vrm.VacancyId != null)
+            {
+                routeName = RouteNames.LegalEntityEmployerChange_Get;
+                routeParams.Add("vacancyId", vrm.VacancyId.ToString());    
+            }
+            
 
-            SetPager(routeParams, setPage, vm, filteredLegalEntitiesTotal);
+            SetPager(routeParams, setPage, vm, filteredLegalEntitiesTotal, routeName);
 
 
             return vm;
@@ -224,14 +230,14 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
             return page;
         }
 
-        private void SetPager(Dictionary<string, string> routeParams, int page, LegalEntityAndEmployerViewModel vm, int filteredLegalEntitiesTotal)
+        private void SetPager(Dictionary<string, string> routeParams, int page, LegalEntityAndEmployerViewModel vm, int filteredLegalEntitiesTotal, string routeName)
         {
             var pager = new PagerViewModel(
                 filteredLegalEntitiesTotal,
                 MaxLegalEntitiesPerPage,
                 page,
                 "Showing {0} to {1} of {2} organisations",
-                RouteNames.LegalEntity_Get,
+                routeName,
                 routeParams);
 
             vm.Pager = pager;
