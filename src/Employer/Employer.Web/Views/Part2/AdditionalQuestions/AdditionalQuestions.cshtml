@@ -1,0 +1,53 @@
+﻿@model Esfa.Recruit.Employer.Web.ViewModels.Part2.AdditionalQuestions.AdditionalQuestionsViewModel
+@{ 
+    ViewBag.Vpv = "/recruitment/employer/additional-questions";
+    ViewBag.Title = "Additional questions";
+    ViewBag.ZenDeskLabel = "recruit-additional-questions";
+}
+
+
+@section BackLink {
+    <a asp-show="@(!Model.IsTaskListCompleted)" asp-route="@RouteNames.Qualifications_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Back</a>
+    <a asp-show="@Model.IsTaskListCompleted" asp-route="@RouteNames.EmployerCheckYourAnswersGet" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Back</a>
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState }' />
+        <partial name="@PartialNames.ReviewSummary" for="Review" />
+        
+        <h1 class="govuk-heading-xl">
+            Do you have any questions you would like to ask applicants? (optional)
+        </h1>
+        <p class="govuk-body">Applicants will answer these questions if they apply through <a href="@Model.FindAnApprenticeshipUrl" class="govuk-body govuk-link" rel="noopener" target="_blank">Find an apprenticeship (opens in a new tab)</a>.</p>
+        <p class="govuk-body">For example, why do you want to work for this company? What interests you about this role?</p>
+
+
+        <form asp-route="@RouteNames.AdditionalQuestions_Post" asp-all-route-data="@Model.RouteDictionary">
+            <div esfa-validation-marker-for="AdditionalQuestion1" class="govuk-form-group">
+                <label asp-for="AdditionalQuestion1" class="govuk-label govuk-label--s">Question 1 (optional)</label>
+                <span esfa-validation-message-for="AdditionalQuestion1" class="govuk-error-message"></span>
+                <input asp-for="AdditionalQuestion1" class="govuk-input govuk-!-width-two-thirds" maxlength="250" />
+            </div>
+            <div esfa-validation-marker-for="AdditionalQuestion2" class="govuk-form-group">
+                <label asp-for="AdditionalQuestion2" class="govuk-label govuk-label--s">Question 2 (optional)</label>
+                <span esfa-validation-message-for="AdditionalQuestion2" class="govuk-error-message"></span>
+                <input asp-for="AdditionalQuestion2" class="govuk-input govuk-!-width-two-thirds" maxlength="250" />
+            </div>
+
+            <div class="govuk-button-group">
+                <button type="submit" esfa-automation="btn-continue" class="govuk-button save-button">Save and continue</button>
+                <a asp-show="@(!Model.IsTaskListCompleted)" asp-route="@RouteNames.Dashboard_Get" asp-route-employerAccountId="@Model.EmployerAccountId" class="govuk-link govuk-link--no-visited-state">Cancel</a>
+                <a asp-show="@Model.IsTaskListCompleted" asp-route="@RouteNames.EmployerCheckYourAnswersGet" asp-all-route-data="@Model.RouteDictionary" esfa-automation="cancel" class="govuk-link govuk-link--no-visited-state">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section FooterJS 
+{
+    <script src="/lib/tinymce-4.9.2/tinymce.min.js" no-cdn></script>
+    <script nws-csp-add-nonce="true">
+        initializeHtmlEditors();
+    </script>
+}
