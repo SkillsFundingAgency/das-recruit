@@ -383,11 +383,11 @@
                 <span class="das-task-list__section-number">5. </span> 
                 <span class="das-task-list__section-heading">Application</span>
                 <span class="das-task-list__section-status">
-                        @if(Model.TaskListSectionFourState == VacancyTaskListSectionState.InProgress)
+                        @if(Model.TaskListSectionFiveState == VacancyTaskListSectionState.InProgress)
                         {
                             <strong class="govuk-tag govuk-tag--blue das-task-list__section-tag">In progress</strong>
                         }
-                        else if (Model.TaskListSectionFourState == VacancyTaskListSectionState.Completed)
+                        else if (Model.TaskListSectionFiveState == VacancyTaskListSectionState.Completed)
                         {
                             <strong class="govuk-tag das-task-list__section-tag">Completed</strong>    
                         }
