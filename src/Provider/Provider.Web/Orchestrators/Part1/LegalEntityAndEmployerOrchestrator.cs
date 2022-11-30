@@ -30,9 +30,8 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
         private readonly IProviderRelationshipsService _providerRelationshipsService;
         private readonly IRecruitVacancyClient _recruitVacancyClient;
         private readonly IUtility _utility;
-        //private const int MaxLegalEntitiesPerPage = 25;
-        private const int MaxLegalEntitiesPerPage = 5;
-
+        private const int MaxLegalEntitiesPerPage = 25;
+        
 
         public LegalEntityAndEmployerOrchestrator(
             IProviderVacancyClient providerVacancyClient,
