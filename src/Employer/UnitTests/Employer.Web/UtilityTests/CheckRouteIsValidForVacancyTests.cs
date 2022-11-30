@@ -69,7 +69,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.UtilityTests
         [InlineData(RouteNames.NumberOfPositions_Get, false)]
         [InlineData(RouteNames.NumberOfPositions_Post, false)]
         [InlineData("any other route", true)]
-        public void ShouldRedirectToTrainingProvider(string route, bool shouldRedirect)
+        public void ShouldRedirectToEmployer(string route, bool shouldRedirect)
         {
             var vacancy = new Vacancy
             {
@@ -81,7 +81,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.UtilityTests
                 NumberOfPositions = null
             };
 
-            CheckRouteIsValidForVacancyTest(vacancy, route, shouldRedirect, RouteNames.TrainingProvider_Select_Get);
+            CheckRouteIsValidForVacancyTest(vacancy, route, shouldRedirect, RouteNames.Employer_Get);
         }
 
         [Theory]
@@ -99,7 +99,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.UtilityTests
         [InlineData(RouteNames.Employer_Get, false)]
         [InlineData(RouteNames.Employer_Post, false)]
         [InlineData("any other route", true)]
-        public void ShouldRedirectToEmployer(string route, bool shouldRedirect)
+        public void ShouldRedirectToEmployer_again(string route, bool shouldRedirect)
         {
             var vacancy = new Vacancy
             {
@@ -114,21 +114,6 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.UtilityTests
         }
 
         [Theory]
-        [InlineData(RouteNames.Title_Get, false)]
-        [InlineData(RouteNames.Title_Post, false)]
-        [InlineData(RouteNames.Training_Get, false)]
-        [InlineData(RouteNames.Training_Post, false)]
-        [InlineData(RouteNames.Training_Confirm_Get, false)]
-        [InlineData(RouteNames.Training_Confirm_Post, false)]
-        [InlineData(RouteNames.Training_First_Time_Get, false)]
-        [InlineData(RouteNames.Training_First_Time_Post, false)]
-        [InlineData(RouteNames.Training_Help_Get, false)]
-        [InlineData(RouteNames.TrainingProvider_Select_Get, false)]
-        [InlineData(RouteNames.TrainingProvider_Select_Post, false)]
-        [InlineData(RouteNames.TrainingProvider_Confirm_Get, false)]
-        [InlineData(RouteNames.TrainingProvider_Confirm_Post, false)]
-        [InlineData(RouteNames.NumberOfPositions_Get, false)]
-        [InlineData(RouteNames.NumberOfPositions_Post, false)]
         [InlineData(RouteNames.ShortDescription_Get, false, true)]
         [InlineData(RouteNames.ShortDescription_Post, false, true)]
         [InlineData(RouteNames.VacancyDescription_Index_Get, false, true)]
@@ -157,8 +142,10 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.UtilityTests
         [InlineData(RouteNames.EmployerContactDetails_Get, false, true)]
         [InlineData(RouteNames.ApplicationProcess_Post, false, true)]
         [InlineData(RouteNames.ApplicationProcess_Get, false, true)]
+        [InlineData(RouteNames.AdditionalQuestions_Get, false, true)]
+        [InlineData(RouteNames.AdditionalQuestions_Post, false, true)]
         [InlineData("any other route", true)]
-        public void ShouldRedirectToNumberOfPositions(string route, bool shouldRedirect, bool enableTaskList = false)
+        public void ShouldRedirectEmployer(string route, bool shouldRedirect, bool enableTaskList = false)
         {
             var vacancy = new Vacancy {
                 EmployerAccountId = "EMPLOYER ACCOUNT ID",
@@ -169,7 +156,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.UtilityTests
                 NumberOfPositions = null,
             };
 
-            CheckRouteIsValidForVacancyTest(vacancy, route, shouldRedirect, RouteNames.NumberOfPositions_Get, enableTaskList);
+            CheckRouteIsValidForVacancyTest(vacancy, route, shouldRedirect, RouteNames.Employer_Get, enableTaskList);
         }
 
         [Theory]
