@@ -99,6 +99,8 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part1.Legal
 
             actual.Organisations.Should().BeInDescendingOrder(x => x.AccountLegalEntityName);
             actual.SortByAscDesc.Should().Be(SortOrder.Ascending);
+            actual.Pager.OtherRouteValues["sortOrder"].Should().Be(SortOrder.Descending.ToString());
+            actual.Pager.OtherRouteValues["sortByType"].Should().Be(SortByType.LegalEntityName.ToString());
         }
 
         [Test, MoqAutoData]
@@ -116,6 +118,8 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part1.Legal
 
             actual.Organisations.Should().BeInAscendingOrder(x => x.AccountLegalEntityName);
             actual.SortByAscDesc.Should().Be(SortOrder.Descending);
+            actual.Pager.OtherRouteValues["sortOrder"].Should().Be(SortOrder.Ascending.ToString());
+            actual.Pager.OtherRouteValues["sortByType"].Should().Be(SortByType.LegalEntityName.ToString());
         }
     }
 

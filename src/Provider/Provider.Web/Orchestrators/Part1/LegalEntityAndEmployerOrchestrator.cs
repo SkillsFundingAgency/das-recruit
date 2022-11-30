@@ -78,12 +78,12 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
 
             if (sortOrder is SortOrder.Ascending)
             {
-                sortOrder = SortOrder.Descending;
+                vm.SortByAscDesc = SortOrder.Descending;
                 filterAndOrdered = filterOrgs.OrderBy(c => sortByType is SortByType.LegalEntityName ? c.AccountLegalEntityName : c.EmployerName).ToList();
             }
             else
             { 
-                sortOrder = SortOrder.Ascending;
+                vm.SortByAscDesc = SortOrder.Ascending;
                 filterAndOrdered = filterOrgs.OrderByDescending(c => sortByType is SortByType.LegalEntityName ? c.AccountLegalEntityName : c.EmployerName).ToList();
             }
 
@@ -95,7 +95,6 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
             var totalNumberOfPages = PagingHelper.GetTotalNoOfPages(MaxLegalEntitiesPerPage, filteredLegalEntitiesTotal);
 
             vm.SortByNameType = sortByType;
-            vm.SortByAscDesc = sortOrder;
 
             setPage = GetPageNo(setPage, totalNumberOfPages);
 
