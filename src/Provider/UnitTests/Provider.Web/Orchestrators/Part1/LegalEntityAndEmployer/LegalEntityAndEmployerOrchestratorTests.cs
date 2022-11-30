@@ -27,7 +27,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part1.Legal
 
             Assert.ThrowsAsync<MissingPermissionsException>(() =>
                 orchestrator.GetLegalEntityAndEmployerViewModelAsync(vacancyRouteModel,
-                    "", 1));
+                    "", 1, SortOrder.Ascending, SortByType.EmployerName));
         }
 
 
@@ -49,5 +49,79 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part1.Legal
             actual.Ukprn.Should().Be(vacancyRouteModel.Ukprn);
         }
 
+
+        [Test, MoqAutoData]
+        public async Task When_Ordered_By_Employer_Name_in_Descending_Order(
+                VacancyRouteModel vacancyRouteModel,
+                ProviderEditVacancyInfo providerEditVacancyInfo,
+                [Frozen] Mock<IProviderVacancyClient> providerVacancyClient,
+                LegalEntityAndEmployerOrchestrator orchestrator)
+        {
+            providerVacancyClient.Setup(x => x.GetProviderEditVacancyInfoAsync(vacancyRouteModel.Ukprn))
+                .ReturnsAsync(providerEditVacancyInfo);
+
+            var actual = await orchestrator.GetLegalEntityAndEmployerViewModelAsync(vacancyRouteModel,
+                "", 1, SortOrder.Descending, SortByType.EmployerName);
+
+            actual.Organisations.Should().BeInDescendingOrder(x => x.EmployerName);
+            actual.SortByAscDesc.Should().Be(SortOrder.Ascending);
+        }
+
+        [Test, MoqAutoData]
+        public async Task When_Ordered_By_Employer_Name_in_Ascending_Order(
+            VacancyRouteModel vacancyRouteModel,
+            ProviderEditVacancyInfo providerEditVacancyInfo,
+            [Frozen] Mock<IProviderVacancyClient> providerVacancyClient,
+            LegalEntityAndEmployerOrchestrator orchestrator)
+        {
+            providerVacancyClient.Setup(x => x.GetProviderEditVacancyInfoAsync(vacancyRouteModel.Ukprn))
+                .ReturnsAsync(providerEditVacancyInfo);
+
+            var actual = await orchestrator.GetLegalEntityAndEmployerViewModelAsync(vacancyRouteModel,
+                "", 1, SortOrder.Ascending, SortByType.EmployerName);
+
+            actual.Organisations.Should().BeInAscendingOrder(x => x.EmployerName);
+            actual.SortByAscDesc.Should().Be(SortOrder.Descending);
+        }
+
+        [Test, MoqAutoData]
+        public async Task When_Ordered_By_Legal_Entity_in_Descending_Order(
+            VacancyRouteModel vacancyRouteModel,
+            ProviderEditVacancyInfo providerEditVacancyInfo,
+            [Frozen] Mock<IProviderVacancyClient> providerVacancyClient,
+            LegalEntityAndEmployerOrchestrator orchestrator)
+        {
+            providerVacancyClient.Setup(x => x.GetProviderEditVacancyInfoAsync(vacancyRouteModel.Ukprn))
+                .ReturnsAsync(providerEditVacancyInfo);
+
+            var actual = await orchestrator.GetLegalEntityAndEmployerViewModelAsync(vacancyRouteModel,
+                "", 1, SortOrder.Descending, SortByType.LegalEntityName);
+
+            actual.Organisations.Should().BeInDescendingOrder(x => x.AccountLegalEntityName);
+            actual.SortByAscDesc.Should().Be(SortOrder.Ascending);
+            actual.Pager.OtherRouteValues["sortOrder"].Should().Be(SortOrder.Descending.ToString());
+            actual.Pager.OtherRouteValues["sortByType"].Should().Be(SortByType.LegalEntityName.ToString());
+        }
+
+        [Test, MoqAutoData]
+        public async Task When_Ordered_By_Legal_Entity_in_Ascending_Order(
+            VacancyRouteModel vacancyRouteModel,
+            ProviderEditVacancyInfo providerEditVacancyInfo,
+            [Frozen] Mock<IProviderVacancyClient> providerVacancyClient,
+            LegalEntityAndEmployerOrchestrator orchestrator)
+        {
+            providerVacancyClient.Setup(x => x.GetProviderEditVacancyInfoAsync(vacancyRouteModel.Ukprn))
+                .ReturnsAsync(providerEditVacancyInfo);
+
+            var actual = await orchestrator.GetLegalEntityAndEmployerViewModelAsync(vacancyRouteModel,
+                "", 1, SortOrder.Ascending, SortByType.LegalEntityName);
+
+            actual.Organisations.Should().BeInAscendingOrder(x => x.AccountLegalEntityName);
+            actual.SortByAscDesc.Should().Be(SortOrder.Descending);
+            actual.Pager.OtherRouteValues["sortOrder"].Should().Be(SortOrder.Ascending.ToString());
+            actual.Pager.OtherRouteValues["sortByType"].Should().Be(SortByType.LegalEntityName.ToString());
+        }
     }
+
+
 }
