@@ -124,6 +124,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
             {
                 ValidateQualifications();
                 ValidateDescription();
+                ValidateAdditionalQuestions();
             }
 
             ValidateTrainingDescription();
@@ -694,6 +695,31 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                 .RunCondition(VacancyRuleSet.Description);
         }
 
+        private void ValidateAdditionalQuestions()
+        {
+            RuleFor(x => x.AdditionalQuestion1)
+                .MaximumLength(250)
+                    .WithMessage("Question 1 must not exceed 250 characters")
+                    .WithErrorCode("321")
+                    .WithState(_ => VacancyRuleSet.AdditionalQuestion1)
+                .ProfanityCheck(_profanityListProvider)
+                    .WithMessage("Questions must not contain a restricted word")
+                    .WithErrorCode("322")
+                    .WithState(_ => VacancyRuleSet.AdditionalQuestion1)
+                    .RunCondition(VacancyRuleSet.AdditionalQuestion1);
+            
+            RuleFor(x => x.AdditionalQuestion2)
+                .MaximumLength(250)
+                    .WithMessage("Question 2 must not exceed 250 characters")
+                    .WithErrorCode("331")
+                    .WithState(_ => VacancyRuleSet.AdditionalQuestion2)
+                .ProfanityCheck(_profanityListProvider)
+                    .WithMessage("Questions must not contain a restricted word")
+                    .WithErrorCode("332")
+                    .WithState(_ => VacancyRuleSet.AdditionalQuestion2)
+                    .RunCondition(VacancyRuleSet.AdditionalQuestion2);
+        }
+
         private void ValidateTrainingDescription()
         {
             RuleFor(x => x.TrainingDescription)
@@ -929,7 +955,6 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
             RuleFor(x => x)
                 .TrainingProviderVacancyMustHaveEmployerPermission(_providerRelationshipService)
                 .RunCondition(VacancyRuleSet.TrainingProvider);
-                //.WithState(_ => VacancyRuleSet.TrainingProvider);
         }
 
         private void ValidateStartDateClosingDate()

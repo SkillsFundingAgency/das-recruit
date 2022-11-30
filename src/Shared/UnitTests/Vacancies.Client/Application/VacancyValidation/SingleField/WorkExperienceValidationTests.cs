@@ -46,7 +46,7 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation.
         }
 
         [Fact]
-        public void TrainingDescriptionMustNotBeLongerThanMaxLength()
+        public void WorkExperienceMustNotBeLongerThanMaxLength()
         {
             var vacancy = new Vacancy 
             {
@@ -66,7 +66,7 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation.
         [InlineData("<p><br></p><ul><li>item1</li><li>item2</li></ul>", true)]
         [InlineData("<script>alert('not allowed')</script>", false)]
         [InlineData("<p>`</p>", false)]
-        public void TrainingDescriptionMustContainValidHtml(string actual, bool expectedResult)
+        public void WorkExperienceMustContainValidHtml(string actual, bool expectedResult)
         {
             var vacancy = new Vacancy
             {
@@ -94,7 +94,7 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation.
         [InlineData("some text dang")]
         [InlineData("some text drat")]
         [InlineData("some text balderdash")]
-        public void TrainingDescription_ShouldFailIfContainsWordsFromTheProfanityList(string freeText)
+        public void WorkExperience_ShouldFailIfContainsWordsFromTheProfanityList(string freeText)
         {
             var vacancy = new Vacancy()
             {
@@ -113,7 +113,7 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation.
         [InlineData("some textdang")]
         [InlineData("some textdrat")]
         [InlineData("some textbalderdash")]
-        public void TrainingDescription_Should_Not_FailIfContainsWordsFromTheProfanityList(string freeText)
+        public void WorkExperience_Should_Not_FailIfContainsWordsFromTheProfanityList(string freeText)
         {
             var vacancy = new Vacancy()
             {
