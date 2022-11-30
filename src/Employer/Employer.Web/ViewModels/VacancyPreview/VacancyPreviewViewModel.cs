@@ -304,10 +304,11 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview
                 return VacancyTaskListSectionState.Completed;
             }
 
-            return VacancyTaskListSectionState.InProgress;
+            return VacancyTaskListSectionState.NotStarted;
         }
 
         public bool HasSelectedEmployerNameOption => EmployerNameOption != null;
+
         public ValidationSummaryViewModel ValidationErrors { get; set; } = new ValidationSummaryViewModel();
 
         private VacancyPreviewSectionState GetSectionState(VacancyPreviewViewModel vm, IEnumerable<string> reviewFieldIndicators, bool requiresAll, ModelStateDictionary modelState, params Expression<Func<VacancyPreviewViewModel, object>>[] sectionProperties)
