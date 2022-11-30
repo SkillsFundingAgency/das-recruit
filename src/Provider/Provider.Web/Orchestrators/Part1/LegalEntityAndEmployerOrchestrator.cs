@@ -17,7 +17,6 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVa
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelationship;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
-using static Esfa.Recruit.Provider.Web.ViewModels.Part1.LegalEntityAndEmployer.LegalEntityAndEmployerViewModel;
 using EmployerViewModel = Esfa.Recruit.Provider.Web.ViewModels.Part1.LegalEntityAndEmployer.EmployerViewModel;
 
 namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
