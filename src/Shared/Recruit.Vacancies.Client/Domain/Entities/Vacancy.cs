@@ -160,6 +160,8 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
         /// </summary>
         public int? RouteId { get; set; }
         public string WorkExperience { get; set; }
+        public string AdditionalQuestion1 { get; set; }
+        public string AdditionalQuestion2 { get; set; }
         public bool? HasChosenProviderContactDetails { get; set; }
     }
 }
