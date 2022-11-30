@@ -401,7 +401,7 @@
                 <li class="das-task-list__item">
                     @if (Model.TaskListSectionFourState == VacancyTaskListSectionState.Completed)
                     {
-                        <a class="govuk-link govuk-link--no-visited-state" asp-route="#" asp-all-route-data="@Model.RouteDictionary">
+                        <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.AdditionalQuestions_Get" asp-all-route-data="@Model.RouteDictionary">
                                 Questions for applicants
                         </a>   
                     }
