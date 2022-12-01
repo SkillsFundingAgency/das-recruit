@@ -17,11 +17,11 @@ using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using FluentValidation.AspNetCore;
 using Microsoft.Extensions.Logging;
-using Esfa.Recruit.Shared.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Filters;
 using Esfa.Recruit.Shared.Web.Extensions;
-using Esfa.Recruit.Shared.Web.FeatureToggle;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.Extensions.Hosting;
 
 namespace Esfa.Recruit.Employer.Web.Configuration
 {
@@ -44,7 +44,7 @@ namespace Esfa.Recruit.Employer.Web.Configuration
             services.AddTransient<IAuthorizationHandler, EmployerAccountHandler>();
         }
 
-        public static void AddMvcService(this IServiceCollection services, IHostingEnvironment hostingEnvironment, bool isAuthEnabled, ILoggerFactory loggerFactory, IFeature featureToggle)
+        public static void AddMvcService(this IServiceCollection services, IWebHostEnvironment hostingEnvironment, bool isAuthEnabled, ILoggerFactory loggerFactory)
         {
             services.AddAntiforgery(options =>
             {
@@ -53,7 +53,7 @@ namespace Esfa.Recruit.Employer.Web.Configuration
                 options.HeaderName = "X-XSRF-TOKEN";
             });
             services.Configure<CookieTempDataProviderOptions>(options => options.Cookie.Name = CookieNames.RecruitTempData);
-            services.AddSingleton<ITempDataProvider, CookieTempDataProvider>();                                    
+            services.AddSingleton<ITempDataProvider, CookieTempDataProvider>();
             services.AddMvc(opts =>
                 {
                     opts.EnableEndpointRouting = false;
@@ -84,13 +84,12 @@ namespace Esfa.Recruit.Employer.Web.Configuration
                     opts.Filters.AddService<GoogleAnalyticsFilter>();
                     opts.Filters.AddService<ZendeskApiFilter>();
                     opts.AddTrimModelBinderProvider(loggerFactory);
-            })
-            .AddNewtonsoftJson()
-            .AddFluentValidation()
-            .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
+                })
+                .AddNewtonsoftJson();
+            services.AddFluentValidationAutoValidation();
         }
 
-        public static void AddAuthenticationService(this IServiceCollection services, AuthenticationConfiguration authConfig, IEmployerVacancyClient vacancyClient, IRecruitVacancyClient recruitClient, IHostingEnvironment hostingEnvironment)
+        public static void AddAuthenticationService(this IServiceCollection services, AuthenticationConfiguration authConfig)
         {
             JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 
@@ -102,14 +101,9 @@ namespace Esfa.Recruit.Employer.Web.Configuration
             .AddCookie("Cookies", options =>
             {
                 options.Cookie.Name = CookieNames.RecruitData;
-
-                if (!hostingEnvironment.IsDevelopment())
-                {
-                    options.Cookie.SecurePolicy = Microsoft.AspNetCore.Http.CookieSecurePolicy.Always;
-                    options.SlidingExpiration = true;
-                    options.ExpireTimeSpan = TimeSpan.FromMinutes(AuthenticationConfiguration.SessionTimeoutMinutes);
-                }
-
+                options.Cookie.SecurePolicy = Microsoft.AspNetCore.Http.CookieSecurePolicy.Always;
+                options.SlidingExpiration = true;
+                options.ExpireTimeSpan = TimeSpan.FromMinutes(AuthenticationConfiguration.SessionTimeoutMinutes);
                 options.AccessDeniedPath = "/Error/403";
             })
             .AddOpenIdConnect("oidc", options =>
@@ -125,12 +119,6 @@ namespace Esfa.Recruit.Employer.Web.Configuration
                 options.Scope.Add("profile");
                 options.UsePkce = false;
                 
-                options.Events.OnTokenValidated = async (ctx) =>
-                {
-                    await PopulateAccountsClaim(ctx, recruitClient);
-                    await HandleUserSignedIn(ctx, recruitClient);
-                };
-
                 options.Events.OnRemoteFailure = ctx =>
                 {
                     if (ctx.Failure.Message.Contains("Correlation failed"))
@@ -145,6 +133,16 @@ namespace Esfa.Recruit.Employer.Web.Configuration
                     return Task.CompletedTask;
                 };
             });
+            services
+                .AddOptions<OpenIdConnectOptions>("oidc")
+                .Configure<IRecruitVacancyClient>((options, recruitVacancyClient) =>
+                {
+                    options.Events.OnTokenValidated = async (ctx) =>
+                    {
+                        await PopulateAccountsClaim(ctx, recruitVacancyClient);
+                        await HandleUserSignedIn(ctx, recruitVacancyClient);
+                    };
+                });
         }
 
         private static async Task PopulateAccountsClaim(
@@ -152,8 +150,9 @@ namespace Esfa.Recruit.Employer.Web.Configuration
             IRecruitVacancyClient vacancyClient)
         {
             var userId = ctx.Principal.GetUserId();
-            var accounts = await vacancyClient.GetEmployerIdentifiersAsync(userId);
-            var accountsAsJson = JsonConvert.SerializeObject(accounts);
+            var email = ctx.Principal.GetEmailAddress();
+            var accounts = await vacancyClient.GetEmployerIdentifiersAsync(userId, email);
+            var accountsAsJson = JsonConvert.SerializeObject(accounts.UserAccounts.Select(c=>c.AccountId).ToList());
             var associatedAccountsClaim = new Claim(EmployerRecruitClaims.AccountsClaimsTypeIdentifier, accountsAsJson, JsonClaimValueTypes.Json);
 
             ctx.Principal.Identities.First().AddClaim(associatedAccountsClaim);
@@ -164,5 +163,7 @@ namespace Esfa.Recruit.Employer.Web.Configuration
             var user = ctx.Principal.ToVacancyUser();
             return vacancyClient.UserSignedInAsync(user, UserType.Employer);
         }
+
+
     }
 }

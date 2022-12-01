@@ -10,15 +10,7 @@
 
 @section BackLink {
     <esfaFeatureEnabled name="@FeatureNames.ProviderTaskList">
-        @if (Model.HasMoreThanOneLegalEntity)
-        {
-            <a asp-route="@RouteNames.LegalEntity_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Back</a>    
-        }
-        else
-        {
-            <a asp-route="@RouteNames.Title_Get"  asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Back</a>
-        }
-        
+        <a asp-route="@RouteNames.Title_Get"  asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Back</a>
     </esfaFeatureEnabled>
     <esfaFeatureDisabled name="@FeatureNames.ProviderTaskList">
         <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Title_Get"  asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Back</a>    

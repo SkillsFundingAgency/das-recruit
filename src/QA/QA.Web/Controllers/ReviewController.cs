@@ -24,7 +24,7 @@ namespace Esfa.Recruit.Qa.Web.Controllers
         public async Task<IActionResult> Review([FromRoute] Guid reviewId) 
         {
             var vm = await _orchestrator.GetReviewViewModelAsync(reviewId, User.GetVacancyUser());
-
+          
             return View(vm);
         }
 

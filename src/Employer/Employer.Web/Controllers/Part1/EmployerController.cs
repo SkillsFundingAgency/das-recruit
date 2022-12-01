@@ -2,7 +2,6 @@
 using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Extensions;
-using Esfa.Recruit.Employer.Web.Models;
 using Esfa.Recruit.Employer.Web.Orchestrators.Part1;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.Employer;
@@ -19,7 +18,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
         private readonly EmployerOrchestrator _orchestrator;
         private readonly IFeature _feature;
 
-        public EmployerController(EmployerOrchestrator orchestrator, IHostingEnvironment hostingEnvironment, IFeature feature)
+        public EmployerController(EmployerOrchestrator orchestrator, IWebHostEnvironment hostingEnvironment, IFeature feature)
             : base(hostingEnvironment)
         {
             _orchestrator = orchestrator;
@@ -49,10 +48,10 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
                     info = vm.VacancyEmployerInfoModel;
                     await _orchestrator.SetAccountLegalEntityPublicId(vrm,info, User.ToVacancyUser());
                     
-                    return  RedirectToRoute(RouteNames.Training_Get, new { Wizard = wizard });
+                    return  RedirectToRoute(RouteNames.Training_Get, new { Wizard = wizard, vrm.VacancyId, vrm.EmployerAccountId  });
                 }
                 
-                return RedirectToRoute(RouteNames.EmployerName_Get, new {Wizard = wizard});
+                return RedirectToRoute(RouteNames.EmployerName_Get, new {Wizard = wizard, vrm.VacancyId, vrm.EmployerAccountId});
             }
 
             vm.Pager.OtherRouteValues.Add(nameof(wizard), wizard);
@@ -93,21 +92,16 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
 
             SetVacancyEmployerInfoCookie(info);
             await _orchestrator.SetAccountLegalEntityPublicId(m,info, User.ToVacancyUser());
-
-            if (_feature.IsFeatureEnabled(FeatureNames.EmployerTaskList))
-            {
-                return wizard 
-                    ? RedirectToRoute(RouteNames.Training_Get, new { Wizard = wizard }) 
-                    : RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet);
-            }
             
-            return RedirectToRoute(RouteNames.EmployerName_Get, new {Wizard = wizard});
+            return wizard 
+                ? RedirectToRoute(RouteNames.Training_Get, new { wizard, m.VacancyId, m.EmployerAccountId }) 
+                : RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet, new { m.VacancyId, m.EmployerAccountId });
         }
 
         [HttpGet("employer-cancel", Name = RouteNames.Employer_Cancel)]
         public IActionResult Cancel(VacancyRouteModel vrm, [FromQuery] bool wizard)
         {
-            return CancelAndRedirect(wizard);
+            return CancelAndRedirect(wizard, vrm);
         }
     }
 }

@@ -29,11 +29,12 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
         private readonly ITimeProvider _timeProvider;
         private readonly IFaaService _faaService;
         private readonly ICommunicationQueueService _communicationQueueService;
+        private readonly IQueryStoreReader _queryStoreReader;
 
         public VacancyClosedEventHandler(
             ILogger<VacancyClosedEventHandler> logger, IQueryStoreWriter queryStore,
             IVacancyRepository repository, IReferenceDataReader referenceDataReader, ITimeProvider timeProvider,
-            IFaaService faaService, ICommunicationQueueService communicationQueueService)
+            IFaaService faaService, ICommunicationQueueService communicationQueueService, IQueryStoreReader queryStoreReader)
         {
             _logger = logger;
             _queryStore = queryStore;
@@ -42,6 +43,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
             _timeProvider = timeProvider;
             _faaService = faaService;
             _communicationQueueService = communicationQueueService;
+            _queryStoreReader = queryStoreReader;
         }
 
         public async Task Handle(VacancyClosedEvent notification, CancellationToken cancellationToken)
@@ -65,9 +67,17 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
             var programmeTask = _referenceDataReader.GetReferenceData<ApprenticeshipProgrammes>();
 
             await Task.WhenAll(vacancyTask, programmeTask);
-
             var vacancy = vacancyTask.Result;
-            var programme = vacancy.VacancyType.GetValueOrDefault() == VacancyType.Apprenticeship ? programmeTask.Result.Data.Single(p => p.Id == vacancy.ProgrammeId) : null;
+            
+            var queryResult = await _queryStoreReader.GetClosedVacancy(vacancy.VacancyReference.Value);
+
+            if (queryResult != null)
+            {
+                _logger.LogInformation($"Vacancy {vacancy.VacancyReference} already closed. Skipping notification.");
+                return;
+            }
+            
+            var programme = vacancy.VacancyType.GetValueOrDefault() == VacancyType.Apprenticeship ? programmeTask.Result.Data.FirstOrDefault(p => p.Id == vacancy.ProgrammeId) : null;
 
             await _queryStore.UpdateClosedVacancyAsync(vacancy.ToVacancyProjectionBase<ClosedVacancy>(programme, () => QueryViewType.ClosedVacancy.GetIdValue(vacancy.VacancyReference.ToString()), _timeProvider));
 

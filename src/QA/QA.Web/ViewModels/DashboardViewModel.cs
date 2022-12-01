@@ -9,6 +9,7 @@ namespace Esfa.Recruit.Qa.Web.ViewModels
         public int TotalVacanciesBrokenSla { get; set; }
         public int TotalVacanciesResubmitted { get; set; }
 
+        public int TotalVacanciesSubmittedTwelveToTwentyFourHours { get; set; }
         public string DashboardMessage { get; set; }
 
         public string SearchTerm { get; set; }

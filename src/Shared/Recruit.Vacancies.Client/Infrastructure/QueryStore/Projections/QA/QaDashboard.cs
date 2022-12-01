@@ -13,5 +13,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.QA
         public int TotalVacanciesBrokenSla { get; set; }
         public int TotalVacanciesResubmitted { get; set; }
         public List<VacancyReview> SearchResults { get; set; }
+        public int TotalVacanciesSubmittedTwelveTwentyFourHours { get; set; }
     }
 }

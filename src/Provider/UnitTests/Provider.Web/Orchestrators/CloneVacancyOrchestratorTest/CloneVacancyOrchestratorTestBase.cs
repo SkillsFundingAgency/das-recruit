@@ -1,13 +1,10 @@
 using System;
-using System.Collections.Generic;
 using Esfa.Recruit.Provider.Web;
 using Esfa.Recruit.Provider.Web.Orchestrators;
 using Esfa.Recruit.Provider.Web.RouteModel;
-using Esfa.Recruit.Shared.Web.FeatureToggle;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
 using Microsoft.Extensions.Logging;
 using Moq;
 
@@ -49,7 +46,7 @@ namespace Esfa.Recruit.UnitTests.Provider.Web.Orchestrators.CloneVacancyOrchestr
             recruitClientMock
                 .Setup(c => c.GetVacancyAsync(It.IsAny<Guid>()))
                 .ReturnsAsync(vacancy);
-            var utility = new Utility(recruitClientMock.Object, Mock.Of<IFeature>());
+            var utility = new Utility(recruitClientMock.Object);
 
             return new CloneVacancyOrchestrator(recruitClientMock.Object,
                 timeProviderMock.Object, loggerMock.Object, utility);

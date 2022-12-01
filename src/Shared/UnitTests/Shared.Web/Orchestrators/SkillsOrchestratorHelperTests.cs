@@ -19,7 +19,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Shared.Web.Orchestrators
         {
             var helper = new SkillsOrchestratorHelper(GetBaseSkills);
 
-            var vm = new SkillsViewModelBase();
+            var vm = new TestSkillsViewModel();
             var draftSkills = new List<string>
             {
                 "1-Custom Skill 2",
@@ -62,7 +62,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Shared.Web.Orchestrators
         {
             var helper = new SkillsOrchestratorHelper(GetBaseSkills);
 
-            var vm = new SkillsViewModelBase();
+            var vm = new TestSkillsViewModel();
             var vacancy = new Vacancy
             {
                 Skills = new List<string>
@@ -174,5 +174,11 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Shared.Web.Orchestrators
                 "Physical fitness"
             };
         }
+    }
+
+    public class TestSkillsViewModel : ISkillsViewModel
+    {
+        public List<SkillViewModel> Column1Checkboxes { get; set; }
+        public List<SkillViewModel> Column2Checkboxes { get; set; }
     }
 }

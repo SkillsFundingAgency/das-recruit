@@ -31,17 +31,15 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part1
         }
 
         [Theory]
-        [InlineData("31/12/2021", "01/01/2001", false, new string[] { FieldIdentifiers.ClosingDate }, new string[] { FieldIdentifiers.PossibleStartDate, FieldIdentifiers.DisabilityConfident})]
-        [InlineData("01/01/2001", "31/12/2021", false, new string[] { FieldIdentifiers.PossibleStartDate }, new string[] { FieldIdentifiers.ClosingDate, FieldIdentifiers.DisabilityConfident })]
-        [InlineData("01/01/2001", "01/01/2001", true, new string[] { FieldIdentifiers.DisabilityConfident }, new string[] { FieldIdentifiers.ClosingDate, FieldIdentifiers.PossibleStartDate })]
-        [InlineData("01/01/2001", "01/01/2001", false, new string[] { }, new string[] { FieldIdentifiers.ClosingDate, FieldIdentifiers.PossibleStartDate, FieldIdentifiers.DisabilityConfident })]
-        [InlineData("31/12/2021", "31/12/2021", true, new string[] { FieldIdentifiers.ClosingDate, FieldIdentifiers.PossibleStartDate, FieldIdentifiers.DisabilityConfident }, new string[] { })]
-        public async Task WhenUpdated_ShouldFlagFieldIndicators(string closingDate, string startDate, bool isDisablityConfident, string[] setFieldIdentifers, string [] unsetFieldIdentifiers)
+        [InlineData("31/12/2021", "01/01/2001", new string[] { FieldIdentifiers.ClosingDate }, new string[] { FieldIdentifiers.PossibleStartDate })]
+        [InlineData("01/01/2001", "31/12/2021", new string[] { FieldIdentifiers.PossibleStartDate }, new string[] { FieldIdentifiers.ClosingDate })]
+        [InlineData("01/01/2001", "01/01/2001", new string[] {  }, new string[] { FieldIdentifiers.ClosingDate, FieldIdentifiers.PossibleStartDate })]
+        [InlineData("31/12/2021", "31/12/2021", new string[] { FieldIdentifiers.ClosingDate, FieldIdentifiers.PossibleStartDate }, new string[] { })]
+        public async Task WhenUpdated_ShouldFlagFieldIndicators(string closingDate, string startDate, string[] setFieldIdentifers, string [] unsetFieldIdentifiers)
         {
             _fixture
                 .WithClosingDate("01/01/2001")
                 .WithStartDate("01/01/2001")
-                .WithDisabilityConfident(false)
                 .Setup();
 
             var closingDateTime = DateTime.ParseExact(closingDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
@@ -56,8 +54,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part1
                 ClosingYear = closingDateTime.Year.ToString(),
                 StartDay = startDateTime.Day.ToString(),
                 StartMonth = startDateTime.Month.ToString(),
-                StartYear = startDateTime.Year.ToString(),
-                IsDisabilityConfident = isDisablityConfident
+                StartYear = startDateTime.Year.ToString()
             };
 
             await _fixture.PostDatesEditModelAsync(datesEditModel);
@@ -90,12 +87,6 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part1
             public DatesOrchestratorTestsFixture WithStartDate(string startDate)
             {
                 Vacancy.StartDate = startDate.AsDateTimeUk()?.ToUniversalTime();
-                return this;
-            }
-
-            public DatesOrchestratorTestsFixture WithDisabilityConfident(bool isDisablityConfident)
-            {
-                Vacancy.DisabilityConfident = isDisablityConfident ? DisabilityConfident.Yes : DisabilityConfident.No;
                 return this;
             }
 

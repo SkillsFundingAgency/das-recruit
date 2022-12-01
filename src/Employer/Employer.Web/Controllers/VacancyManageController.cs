@@ -19,11 +19,11 @@ namespace Esfa.Recruit.Employer.Web.Controllers
     public class VacancyManageController : Controller
     {
         private readonly VacancyManageOrchestrator _orchestrator;
-        private readonly IHostingEnvironment _hostingEnvironment;
+        private readonly IWebHostEnvironment _hostingEnvironment;
         private readonly IUtility _utility;
         private readonly IFeature _feature;
 
-        public VacancyManageController(VacancyManageOrchestrator orchestrator, IHostingEnvironment hostingEnvironment, IUtility utility, IFeature feature)
+        public VacancyManageController(VacancyManageOrchestrator orchestrator, IWebHostEnvironment hostingEnvironment, IUtility utility, IFeature feature)
         {
             _orchestrator = orchestrator;
             _hostingEnvironment = hostingEnvironment;
@@ -66,7 +66,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
 
             if (vacancy.Status != VacancyStatus.Live)
             {
-                return RedirectToRoute(RouteNames.DisplayVacancy_Get);
+                return RedirectToRoute(RouteNames.DisplayVacancy_Get, new {vrm.VacancyId, vrm.EmployerAccountId});
             }
 
             var parsedClosingDate = Request.Cookies.GetProposedClosingDate(vacancy.Id);
@@ -84,7 +84,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
 
             if (!response.Success)
             {
-                return RedirectToRoute(RouteNames.VacancyEditDates_Get);
+                return RedirectToRoute(RouteNames.VacancyEditDates_Get, new {m.VacancyId, m.EmployerAccountId});
             }
 
             var vacancy = await _orchestrator.GetVacancy(m);
@@ -92,7 +92,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
 
             EnsureProposedChangesCookiesAreCleared(m.VacancyId);
 
-            return RedirectToRoute(RouteNames.Vacancies_Get);
+            return RedirectToRoute(RouteNames.Vacancies_Get, new {m.VacancyId, m.EmployerAccountId});
         }
 
         [HttpGet("cancel-vacancy-changes", Name = RouteNames.CancelVacancyChanges_Get)]
@@ -100,7 +100,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         {
             EnsureProposedChangesCookiesAreCleared(vrm.VacancyId);
             
-            return RedirectToRoute(RouteNames.Vacancies_Get);
+            return RedirectToRoute(RouteNames.Vacancies_Get, new {vrm.VacancyId, vrm.EmployerAccountId});
         }
 
         private void EnsureProposedChangesCookiesAreCleared(Guid vacancyId)
@@ -111,26 +111,11 @@ namespace Esfa.Recruit.Employer.Web.Controllers
 
         private IActionResult HandleRedirectOfEditableVacancy(Vacancy vacancy)
         {
-            if (_feature.IsFeatureEnabled(FeatureNames.EmployerTaskList))
+            if (_utility.IsTaskListCompleted(vacancy))
             {
-                if (_utility.IsTaskListCompleted(vacancy))
-                {
-                    return RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet);
-                }
-                return RedirectToRoute(RouteNames.EmployerTaskListGet);
+                return RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet, new {VacancyId = vacancy.Id, vacancy.EmployerAccountId});
             }
-            
-            if (_utility.VacancyHasCompletedPartOne(vacancy))
-            {
-                if (_utility.VacancyHasStartedPartTwo(vacancy) == false)
-                    return RedirectToRoute(RouteNames.Part1Complete_Get);
-
-                return RedirectToRoute(RouteNames.Vacancy_Preview_Get);
-            }
-
-            var resumeRouteName = _utility.GetPermittedRoutesForVacancy(vacancy).Last();
-
-            return RedirectToRoute(resumeRouteName);
+            return RedirectToRoute(RouteNames.EmployerTaskListGet, new {VacancyId = vacancy.Id, vacancy.EmployerAccountId});
         }
     }
 }

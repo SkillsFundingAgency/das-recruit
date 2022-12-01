@@ -34,8 +34,8 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.ViewModels.Preview
         }
 
         [Test, MoqAutoData]
-        public async Task Then_If_Section_Started_And_Has_Title_Then_Set_To_In_Progress(
-            string title,
+        public async Task Then_If_Section_Started_And_Has_LegalEntity_Then_Set_To_In_Progress(
+            string accountLegalEntityPublicHashedId,
             TrainingProvider trainingProvider,
             DisplayVacancyViewModelMapper mapper)
         {
@@ -43,7 +43,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.ViewModels.Preview
             {
                 Id = Guid.NewGuid(),
                 TrainingProvider = trainingProvider,
-                Title = title
+                AccountLegalEntityPublicHashedId = accountLegalEntityPublicHashedId
             };
             var model = new VacancyPreviewViewModel();
             await mapper.MapFromVacancyAsync(model, vacancy);
@@ -51,11 +51,34 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.ViewModels.Preview
 
             model.TaskListSectionOneState.Should().Be(VacancyTaskListSectionState.InProgress);
         }
+        [Test, MoqAutoData]
+        public async Task Then_If_Has_Title_And_AccountLegalEntityPublicHashedId_Then_In_Progress(
+            string title,
+            string accountLegalEntityPublicHashedId,
+            TrainingProvider trainingProvider,
+            ApprenticeshipProgramme programme,
+            DisplayVacancyViewModelMapper mapper)
+        {
+            var vacancy = new Vacancy
+            {
+                Id = Guid.NewGuid(),
+                TrainingProvider = trainingProvider,
+                Title = title,
+                AccountLegalEntityPublicHashedId = accountLegalEntityPublicHashedId
+            };
+            var model = new VacancyPreviewViewModel();
+            await mapper.MapFromVacancyAsync(model, vacancy);
+            
+            model.SetSectionStates(model, new ModelStateDictionary());
+
+            model.TaskListSectionOneState.Should().Be(VacancyTaskListSectionState.InProgress);
+        }
         
         [Test, MoqAutoData]
-        public async Task Then_If_Has_Title_Training_And_Course_Then_In_Progress(
+        public async Task Then_If_Has_Title_Training_And_AccountLegalEntityPublicHashedId_Then_In_Progress(
             string title,
             string programmeId,
+            string accountLegalEntityPublicHashedId,
             TrainingProvider trainingProvider,
             ApprenticeshipProgramme programme,
             [Frozen] Mock<IRecruitVacancyClient> recruitVacancyClient,
@@ -67,6 +90,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.ViewModels.Preview
                 Id = Guid.NewGuid(),
                 TrainingProvider = trainingProvider,
                 Title = title,
+                AccountLegalEntityPublicHashedId = accountLegalEntityPublicHashedId,
                 ProgrammeId = programmeId
             };
             var model = new VacancyPreviewViewModel();
@@ -82,6 +106,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.ViewModels.Preview
             string title,
             string programmeId,
             string shortDescription,
+            string accountLegalEntityPublicHashedId,
             TrainingProvider trainingProvider,
             ApprenticeshipProgramme programme,
             [Frozen] Mock<IRecruitVacancyClient> recruitVacancyClient,
@@ -94,39 +119,8 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.ViewModels.Preview
                 TrainingProvider = trainingProvider,
                 Title = title,
                 ProgrammeId = programmeId,
-                ShortDescription = shortDescription
-            };
-            var model = new VacancyPreviewViewModel();
-            await mapper.MapFromVacancyAsync(model, vacancy);
-            
-            model.SetSectionStates(model, new ModelStateDictionary());
-
-            model.TaskListSectionOneState.Should().Be(VacancyTaskListSectionState.InProgress);
-        }
-        
-        [Test, MoqAutoData]
-        public async Task Then_If_Has_Title_Course_ShortDescription_And_Descriptions_Then_InProgress(
-            string title,
-            string programmeId,
-            string description,
-            string shortDescription,
-            string trainingDescription,
-            TrainingProvider trainingProvider,
-            ApprenticeshipProgramme programme,
-            [Frozen] Mock<IRecruitVacancyClient> recruitVacancyClient,
-            DisplayVacancyViewModelMapper mapper)
-        {
-            recruitVacancyClient.Setup(x => x.GetApprenticeshipProgrammeAsync(programmeId)).ReturnsAsync(programme);
-            
-            var vacancy = new Vacancy
-            {
-                Id = Guid.NewGuid(),
-                TrainingProvider = trainingProvider,
-                Title = title,
-                ProgrammeId = programmeId,
-                Description = description,
-                TrainingDescription = trainingDescription,
-                ShortDescription = shortDescription
+                ShortDescription = shortDescription,
+                AccountLegalEntityPublicHashedId = accountLegalEntityPublicHashedId,
             };
             var model = new VacancyPreviewViewModel();
             await mapper.MapFromVacancyAsync(model, vacancy);

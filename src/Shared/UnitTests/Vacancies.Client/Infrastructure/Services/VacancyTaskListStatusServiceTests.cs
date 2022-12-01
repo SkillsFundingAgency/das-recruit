@@ -1,6 +1,5 @@
 ﻿using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Interfaces;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.Services;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummariesProvider;
 using FluentAssertions;
 using Moq;
@@ -45,10 +44,20 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
         }
         
         [Test, MoqAutoData]
-        public void When_Traineeship_And_No_EmployerDescription_Then_TaskList_Not_Completed(VacancyTaskListStatusService service, Mock<ITaskListVacancy> vacancy)
+        public void When_Traineeship_And_Not_Viewed_Provider_Contact_Details_Is_Null_Then_TaskList_Not_Completed(VacancyTaskListStatusService service, Mock<ITaskListVacancy> vacancy)
         {
             vacancy.Object.VacancyType = VacancyType.Traineeship;
-            vacancy.Object.EmployerDescription = null;
+            vacancy.Object.HasChosenProviderContactDetails = null;
+            
+            bool result = service.IsTaskListCompleted(vacancy.Object);
+
+            result.Should().BeFalse();
+        }
+        [Test, MoqAutoData]
+        public void When_Traineeship_And_Not_Viewed_Provider_Contact_Details_Then_TaskList_Not_Completed(VacancyTaskListStatusService service, Mock<ITaskListVacancy> vacancy)
+        {
+            vacancy.Object.VacancyType = VacancyType.Traineeship;
+            vacancy.Object.HasChosenProviderContactDetails = false;
             
             bool result = service.IsTaskListCompleted(vacancy.Object);
 
@@ -56,9 +65,10 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
         }
         
         [Test, MoqAutoData]
-        public void When_Traineeship_And_Has_EmployerDescription_Then_TaskList_Completed(VacancyTaskListStatusService service, Mock<ITaskListVacancy> vacancy)
+        public void When_Traineeship_And_Has_ViewedProviderContactDetails_Then_TaskList_Completed(VacancyTaskListStatusService service, Mock<ITaskListVacancy> vacancy)
         {
             vacancy.Object.VacancyType = VacancyType.Traineeship;
+            vacancy.Object.HasChosenProviderContactDetails = true;
             
             bool result = service.IsTaskListCompleted(vacancy.Object);
 

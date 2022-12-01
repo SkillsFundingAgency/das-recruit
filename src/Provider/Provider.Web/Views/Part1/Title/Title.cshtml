@@ -37,7 +37,7 @@
                     }
                     else
                     {
-                        <p class="govuk-body">Use a title that relates to the traineeship, this will help it get found in the Find a traineeship search..</p>
+                        <p class="govuk-body">Use a title that relates to the traineeship, this will help it get found in the Find a traineeship search.</p>
                         <span class="govuk-hint">Must include the word 'trainee' or 'traineeship'</span>
                     }
                     
@@ -51,13 +51,8 @@
             </div>
             <div class="govuk-button-group">
                 <button type="submit" class="govuk-button save-button">@Model.PageInfo.SubmitButtonText</button>
-                <esfaFeatureEnabled name="@FeatureNames.ProviderTaskList">
-                    <a asp-route="@RouteNames.Dashboard_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-cancel" class="govuk-link govuk-link--no-visited-state">Cancel</a>
-                </esfaFeatureEnabled>
-                <esfaFeatureDisabled name="@FeatureNames.ProviderTaskList">
-                    <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Vacancies_Get" asp-all-route-data="@Model.RouteDictionary" class="govuk-link govuk-link--no-visited-state">Cancel</a>
-                    <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.Vacancy_Preview_Get" asp-all-route-data="@Model.RouteDictionary" asp-fragment="@Anchors.TitleSection" class="govuk-link govuk-link--no-visited-state">Cancel</a>
-                </esfaFeatureDisabled>
+                <a asp-route="@RouteNames.Dashboard_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-cancel" class="govuk-link govuk-link--no-visited-state">Cancel</a>
+                
             </div>
             
         </form>

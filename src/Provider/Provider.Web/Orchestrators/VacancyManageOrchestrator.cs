@@ -6,7 +6,6 @@ using Esfa.Recruit.Provider.Web.Mappings;
 using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Provider.Web.ViewModels.VacancyManage;
 using Esfa.Recruit.Provider.Web.ViewModels.VacancyView;
-using Esfa.Recruit.Shared.Web.Configuration;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Shared.Web.FeatureToggle;
 using Esfa.Recruit.Shared.Web.Helpers;
@@ -82,19 +81,19 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
 
             if (vacancy.LiveDate >= _systemConfig.ShowAnalyticsForVacanciesApprovedAfterDate)
             {
-                var vacancyApplicationsTask = _client.GetVacancyApplicationsAsync(vacancy.VacancyReference.Value.ToString());
+                var vacancyApplicationsTask = _client.GetVacancyApplicationsAsync(vacancy.VacancyReference.Value);
                 var vacancyAnalyticsTask = _client.GetVacancyAnalyticsSummaryAsync(vacancy.VacancyReference.Value);
 
                 await Task.WhenAll(vacancyApplicationsTask, vacancyAnalyticsTask);
 
-                applications = vacancyApplicationsTask.Result?.Applications ?? new List<VacancyApplication>();
+                applications = vacancyApplicationsTask.Result ?? new List<VacancyApplication>();
                 var analyticsSummary = vacancyAnalyticsTask.Result ?? new VacancyAnalyticsSummary();
                 viewModel.AnalyticsSummary = VacancyAnalyticsSummaryMapper.MapToVacancyAnalyticsSummaryViewModel(analyticsSummary, vacancy.LiveDate.GetValueOrDefault());
             }
             else
             {
-                var vacancyApplications = await _client.GetVacancyApplicationsAsync(vacancy.VacancyReference.Value.ToString());
-                applications = vacancyApplications?.Applications ?? new List<VacancyApplication>();
+                var vacancyApplications = await _client.GetVacancyApplicationsAsync(vacancy.VacancyReference.Value);
+                applications = vacancyApplications ?? new List<VacancyApplication>();
             }
 
             viewModel.Applications = new VacancyApplicationsViewModel

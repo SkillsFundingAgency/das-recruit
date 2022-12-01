@@ -1,16 +1,12 @@
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
-using Esfa.Recruit.Vacancies.Client.Application.Rules;
 using Esfa.Recruit.Vacancies.Client.Application.Rules.BaseRules;
 using Esfa.Recruit.Vacancies.Client.Application.Rules.VacancyRules;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using Esfa.Recruit.UnitTests.Vacancies.Client.Application.Rules.VacancyRules;
 using FluentAssertions;
-using Microsoft.Azure.Amqp.Serialization;
 using Moq;
 using Xunit;
 

@@ -64,7 +64,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
                     }
 
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     _logger.LogError("Error while processing employer account: {employerAccountId} and Account LegalEntityPublicHashed id: {accountLegalEntityPublicHashedId}", message.EmployerAccountId, accountLegalEntityPublicHashedId);
                     throw;

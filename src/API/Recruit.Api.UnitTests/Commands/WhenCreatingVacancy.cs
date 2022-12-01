@@ -52,7 +52,7 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Commands
             CreateVacancyCommandHandler handler)
         {
             command.ValidateOnly = false;
-            command.VacancyUserDetails.Email = null;
+            command.Vacancy.OwnerType = OwnerType.Provider;
             
             await handler.Handle(command, CancellationToken.None);
             
@@ -73,6 +73,8 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Commands
             recruitVacancyClient.Verify(x=>x.Validate(command.Vacancy, VacancyRuleSet.All), Times.Once);
             recruitVacancyClient.Verify(x=>x.Validate(It.Is<Vacancy>(c=>c.OwnerType == OwnerType.Employer), VacancyRuleSet.All), Times.Once);
         }
+
+
 
         [Test, MoqAutoData]
         public async Task Then_If_Not_Valid_Then_Returns_Response_With_Errors(
@@ -197,6 +199,7 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Commands
             CreateVacancyCommandHandler handler)
         {
             command.ValidateOnly = false;
+            command.Vacancy.OwnerType = OwnerType.Provider;
             vacancyClient.Setup(x => x.Validate(It.IsAny<Vacancy>(), VacancyRuleSet.All))
                 .Returns(new EntityValidationResult());
             command.VacancyUserDetails.Email = string.Empty;
@@ -227,7 +230,7 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Commands
             CreateVacancyCommandHandler handler)
         {
             command.ValidateOnly = false;
-            command.VacancyUserDetails.Email = null;
+            command.Vacancy.OwnerType = OwnerType.Provider;
             vacancy.Id = command.Vacancy.Id;
             vacancy.ProgrammeId = command.Vacancy.ProgrammeId;
             trainingProviderService.Setup(x => x.GetProviderAsync(command.VacancyUserDetails.Ukprn.Value))
@@ -270,7 +273,7 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Commands
             CreateVacancyCommandHandler handler)
         {
             command.ValidateOnly = false;
-            command.VacancyUserDetails.Email = null;
+            command.Vacancy.OwnerType = OwnerType.Provider;
             vacancy.Id = command.Vacancy.Id;
             vacancy.ProgrammeId = command.Vacancy.ProgrammeId;
             trainingProviderService.Setup(x => x.GetProviderAsync(command.VacancyUserDetails.Ukprn.Value))
@@ -324,6 +327,7 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Commands
             CreateVacancyCommandHandler handler)
         {
             command.ValidateOnly = false;
+            vacancy.OwnerType = OwnerType.Employer;
             vacancy.Id = command.Vacancy.Id;
             vacancy.ProgrammeId = command.Vacancy.ProgrammeId;
             trainingProviderService.Setup(x => x.GetProviderAsync(command.VacancyUserDetails.Ukprn.Value))

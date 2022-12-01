@@ -11,13 +11,14 @@ using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
 using Esfa.Recruit.Shared.Web.Orchestrators;
 using Esfa.Recruit.Shared.Web.Extensions;
+using Esfa.Recruit.Shared.Web.Helpers;
 using ErrMsg = Esfa.Recruit.Shared.Web.ViewModels.ErrorMessages;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators
 {
     public class EditVacancyDatesOrchestrator : EntityValidatingOrchestrator<Vacancy, EditVacancyDatesEditModel>
     {
-        private const VacancyRuleSet ValdationRules = VacancyRuleSet.ClosingDate | VacancyRuleSet.StartDate | VacancyRuleSet.TrainingProgramme | VacancyRuleSet.StartDateEndDate | VacancyRuleSet.TrainingExpiryDate | VacancyRuleSet.MinimumWage;
+        private const VacancyRuleSet ValidationRules = VacancyRuleSet.ClosingDate | VacancyRuleSet.StartDate | VacancyRuleSet.TrainingProgramme | VacancyRuleSet.StartDateEndDate | VacancyRuleSet.TrainingExpiryDate | VacancyRuleSet.MinimumWage;
         private readonly IRecruitVacancyClient _vacancyClient;
         private readonly ITimeProvider _timeProvider;
         private readonly IUtility _utility;
@@ -61,6 +62,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 
             var vm = new EditVacancyDatesViewModel
             {
+                VacancyId = vacancy.Id,
+                EmployerAccountId = vacancy.EmployerAccountId,
                 ClosingDay = $"{vacancy.ClosingDate.Value.Day:00}",
                 ClosingMonth = $"{vacancy.ClosingDate.Value.Month:00}",
                 ClosingYear = $"{vacancy.ClosingDate.Value.Year}",
@@ -71,7 +74,9 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 
                 CurrentYear = _timeProvider.Now.Year,
 
-                ProgrammeName = programmes.First(p => p.Id == vacancy.ProgrammeId).Title
+                ProgrammeName = programmes.FirstOrDefault(p => p.Id == vacancy.ProgrammeId)?.Title ?? "",
+                
+                Title = vacancy.Title
             };
 
             var resp = new OrchestratorResponse<EditVacancyDatesViewModel>(vm);
@@ -110,7 +115,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             return resp.Data;
         }
 
-        public async Task<OrchestratorResponse> PostEditVacancyDatesEditModelAsync(EditVacancyDatesEditModel m)
+        public async Task<OrchestratorResponse> PostEditVacancyDatesEditModelAsync(EditVacancyDatesEditModel m, VacancyUser user)
         {
             var vacancy = await GetVacancyAsync(m);
 
@@ -119,10 +124,17 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             if (proposedClosingDate < vacancy.ClosingDate)
                 return new OrchestratorResponse(_proposedClosingDateMustBeNewerError);
 
+            var proposedVacancyStartDate = m.StartDate.AsDateTimeUk()?.ToUniversalTime();
+            
             vacancy.ClosingDate = proposedClosingDate;
-            vacancy.StartDate = m.StartDate.AsDateTimeUk()?.ToUniversalTime();
+            vacancy.StartDate = proposedVacancyStartDate;
+            var updateKind = VacancyHelper.DetermineLiveUpdateKind(vacancy, proposedClosingDate, proposedVacancyStartDate);
 
-            return new OrchestratorResponse(_vacancyClient.Validate(vacancy, ValdationRules));
+            return await ValidateAndExecute(
+                vacancy, 
+                v => _vacancyClient.Validate(v, ValidationRules),
+                v => _vacancyClient.UpdatePublishedVacancyAsync(vacancy, user, updateKind)
+            );
         }
 
         protected override EntityToViewModelPropertyMappings<Vacancy, EditVacancyDatesEditModel> DefineMappings()

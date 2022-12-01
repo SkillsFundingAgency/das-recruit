@@ -43,5 +43,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
         public string TrainingProviderName { get; set; }
         public bool IsTraineeship { get; set; }
         public VacancyType? VacancyType { get; set; }
+        public bool? HasChosenProviderContactDetails { get; set; }
     }
 }

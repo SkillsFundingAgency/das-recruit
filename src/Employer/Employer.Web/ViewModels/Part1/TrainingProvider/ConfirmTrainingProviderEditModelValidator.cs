@@ -8,7 +8,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.TrainingProvider
         public ConfirmTrainingProviderEditModelValidator()
         {
             RuleFor(m => m.Ukprn)
-                .Cascade(CascadeMode.StopOnFirstFailure)
+                .Cascade(CascadeMode.Stop)
                 .NotEmpty()
                 .WithMessage("The UKPRN field is required")
                 .Matches(ValidationConstants.UkprnRegex.ToString())

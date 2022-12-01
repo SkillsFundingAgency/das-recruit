@@ -1,6 +1,5 @@
 ﻿@using Esfa.Recruit.Provider.Web.ViewModels.Part2.Qualifications
 @using Esfa.Recruit.Shared.Web.Mappers
-@using Esfa.Recruit.Vacancies.Client.Domain.Entities
 @model QualificationViewModel
 
 @{
@@ -8,8 +7,11 @@
     ViewBag.Title = "What qualifications would you like the applicant to have?";
 }
 
+
 @section BackLink {
 
+    <a asp-route="@Model.BackRoute" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Back</a>
+ 
 }
 
 
@@ -83,12 +85,6 @@
 
     <div class="govuk-button-group">
         <button type="submit" esfa-automation="btn-continue" class="govuk-button save-button">Save and continue</button>
-        <esfaFeatureEnabled>
-            <a asp-route="@RouteNames.Dashboard_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-cancel" class="govuk-link govuk-link--no-visited-state">Cancel</a>
-        </esfaFeatureEnabled>
-        <esfaFeatureDisabled>
-            <a asp-route="@Model.CancelRoute" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-cancel" class="govuk-link govuk-link--no-visited-state">Cancel</a>    
-        </esfaFeatureDisabled>
-        
+        <a asp-route="@Model.CancelRoute" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-cancel" class="govuk-link govuk-link--no-visited-state">Cancel</a>            
     </div>
 </form>

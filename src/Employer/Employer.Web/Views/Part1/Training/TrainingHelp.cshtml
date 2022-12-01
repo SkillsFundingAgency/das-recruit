@@ -1,11 +1,12 @@
 ﻿@using Microsoft.Extensions.Options
+@model Esfa.Recruit.Employer.Web.RouteModel.VacancyRouteModel
 @inject IOptions<ExternalLinksConfiguration> externalLinks
 @{ 
     ViewBag.Title = "Find apprenticeship training";
     ViewBag.Vpv = "/recruitment/employer/page-part1-training-help";
 }
 
-<a asp-route="@RouteNames.Training_First_Time_Get" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
+<a asp-route="@RouteNames.Training_First_Time_Get" asp-all-route-data="@Model.RouteDictionary" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
@@ -24,12 +25,7 @@
         <a class="govuk-button" href="@externalLinks.Value.FindApprenticeshipTrainingUrl">Find apprenticeship training</a>
 
         <div class="govuk-body">
-            <esfaFeatureEnabled name="@FeatureNames.EmployerTaskList">
-                <a asp-route="@RouteNames.Dashboard_Get" class="govuk-link" esfa-automation="cancel-link">Return to dashboard</a>
-            </esfaFeatureEnabled>
-            <esfaFeatureDisabled name="@FeatureNames.EmployerTaskList">
-                <a asp-route="@RouteNames.Vacancies_Get" class="govuk-link">Return to dashboard</a>
-            </esfaFeatureDisabled>
+            <a asp-route="@RouteNames.Dashboard_Get" asp-route-employerAccountId="@Model.EmployerAccountId" class="govuk-link" esfa-automation="cancel-link">Return to dashboard</a>
         </div>
     </div>
 </div>

@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Responses;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyAnalytics;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyApplications;
 
@@ -22,7 +23,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         Task UpdateDraftVacancyAsync(Vacancy vacancy, VacancyUser user);
         Task<IEnumerable<IApprenticeshipProgramme>> GetActiveApprenticeshipProgrammesAsync();
         Task<IApprenticeshipProgramme> GetApprenticeshipProgrammeAsync(string programmeId);
-        Task<VacancyApplications> GetVacancyApplicationsAsync(string vacancyReference);
+        Task<List<VacancyApplication>> GetVacancyApplicationsAsync(long vacancyReference);
         Task UpdatePublishedVacancyAsync(Vacancy vacancy, VacancyUser user, LiveUpdateKind updateKind);
         Task<Guid> CloneVacancyAsync(Guid vacancyId, VacancyUser user, SourceOrigin sourceOrigin, DateTime startDate, DateTime closingDate);
         Task<string> GetEmployerNameAsync(Vacancy vacancy);
@@ -34,7 +35,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         Task<UserNotificationPreferences> GetUserNotificationPreferencesAsync(string vacancyUserId);
         Task UpdateUserNotificationPreferencesAsync(UserNotificationPreferences preferences);
         EntityValidationResult ValidateUserNotificationPreferences(UserNotificationPreferences preferences);
-        Task<IEnumerable<string>> GetEmployerIdentifiersAsync(string userId);
+        Task<GetUserAccountsResponse> GetEmployerIdentifiersAsync(string userId, string email);
         EntityValidationResult ValidateQualification(Qualification qualification);
         Task CloseVacancyAsync(Guid vacancyId, VacancyUser user, ClosureReason reason);
         Task<IApprenticeshipRoute> GetRoute(int? routeId);

@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections;
@@ -140,6 +139,13 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
             return providerInfo?.Employers.FirstOrDefault(e => e.EmployerAccountId == employerAccountId);
         }
 
+        public async Task<IEnumerable<EmployerInfo>> GetProviderEmployerVacancyDatasAsync(long ukprn, IList<string> employerAccountIds)
+        {
+            var key = QueryViewType.EditVacancyInfo.GetIdValue(ukprn);
+            var providerInfo = await _queryStore.GetAsync<ProviderEditVacancyInfo>(QueryViewType.EditVacancyInfo.TypeName, key);
+            return providerInfo?.Employers.Where(e => employerAccountIds.Contains(e.EmployerAccountId));
+        }
+
         public Task<VacancyApplications> GetVacancyApplicationsAsync(string vacancyReference)
         {
             var key = QueryViewType.VacancyApplications.GetIdValue(vacancyReference);
@@ -158,6 +164,12 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
             return _queryStore.DeleteAsync<LiveVacancy>(QueryViewType.LiveVacancy.TypeName, liveVacancyId);
         }
 
+        public Task<ClosedVacancy> GetClosedVacancy(long vacancyReference)
+        {
+            var key = QueryViewType.ClosedVacancy.GetIdValue(vacancyReference.ToString());
+            return _queryStore.GetAsync<ClosedVacancy>(QueryViewType.ClosedVacancy.TypeName, key);
+        }
+
         public Task<long> DeleteAllLiveVacancies()
         {
             return _queryStore.DeleteAllAsync<LiveVacancy>(QueryViewType.LiveVacancy.TypeName);
@@ -166,6 +178,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
         public Task<long> DeleteAllClosedVacancies()
         {
             return _queryStore.DeleteAllAsync<ClosedVacancy>(QueryViewType.ClosedVacancy.TypeName);
+        }
+
+        public Task<IEnumerable<LiveVacancy>> GetLiveExpiredVacancies(DateTime closingDate)
+        {
+            return _queryStore.GetAllLiveExpired(closingDate);
         }
 
         public Task UpdateVacancyApplicationsAsync(VacancyApplications vacancyApplications)

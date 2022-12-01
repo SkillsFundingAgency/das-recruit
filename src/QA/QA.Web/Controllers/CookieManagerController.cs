@@ -1,4 +1,3 @@
-using System.Text.RegularExpressions;
 using Esfa.Recruit.Qa.Web.Configuration;
 using Esfa.Recruit.Qa.Web.Configuration.Routing;
 using Esfa.Recruit.QA.Web.Configuration;
@@ -10,10 +9,10 @@ namespace Esfa.Recruit.QA.Web.Controllers
 {
     public class CookieManagerController : Controller
     {
-        private readonly IHostingEnvironment _hostingEnvironment;
+        private readonly IWebHostEnvironment _hostingEnvironment;
         private readonly ITimeProvider _timeProvider;
 
-        public CookieManagerController(IHostingEnvironment hostingEnvironment, ITimeProvider timeProvider)
+        public CookieManagerController(IWebHostEnvironment hostingEnvironment, ITimeProvider timeProvider)
         {
             _hostingEnvironment = hostingEnvironment;
             _timeProvider = timeProvider;

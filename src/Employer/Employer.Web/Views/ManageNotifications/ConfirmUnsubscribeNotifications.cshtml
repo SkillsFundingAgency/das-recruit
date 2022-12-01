@@ -7,7 +7,7 @@
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         <partial name=@PartialNames.ValidationSummary model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState }' />
-        <form method="post">
+        <form method="post" asp-route-employerAccountId="@Model.EmployerAccountId">
             <div esfa-validation-marker-for="ConfirmUnsubscribe" class="govuk-form-group">
                 <fieldset class="govuk-fieldset">
                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">

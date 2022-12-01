@@ -46,6 +46,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
 
             var vm = new QualificationsViewModel
             {
+                VacancyId = vacancy.Id,
+                EmployerAccountId = vacancy.EmployerAccountId,
                 Title = vacancy.Title,
                 Qualifications = qualifications.Select(q => new QualificationEditModel
                 {
@@ -74,6 +76,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
             await Task.WhenAll(vacancyTask, allQualificationsTask);
 
             var vm = GetQualificationViewModel(vacancyTask.Result, allQualificationsTask.Result);
+            vm.PostRoute = RouteNames.Qualification_Add_Post;
 
             return vm;
         }
@@ -93,10 +96,12 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
 
             var qualificationToEdit = vacancy.Qualifications[index];
 
+            vm.Index = index;
             vm.QualificationType = qualificationToEdit.QualificationType;
             vm.Subject = qualificationToEdit.Subject;
             vm.Grade = qualificationToEdit.Grade;
             vm.Weighting = qualificationToEdit.Weighting;
+            vm.PostRoute = RouteNames.Qualification_Edit_Post;
             
             return vm;
         }
@@ -205,30 +210,22 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
         private QualificationViewModel GetQualificationViewModel(Vacancy vacancy, IList<string> allQualifications)
         {
             var cancelRoute = RouteNames.Qualifications_Get;
-            if (!vacancy.Qualifications?.Any() ?? false)
+            var backRoute = RouteNames.Qualifications_Get;
+            
+            if (vacancy.Qualifications?.Any() == null || !vacancy.Qualifications.Any())
             {
-                if (_feature.IsFeatureEnabled(FeatureNames.EmployerTaskList))
-                {
-                    if (_utility.IsTaskListCompleted(vacancy))
-                    {
-                        cancelRoute = RouteNames.EmployerCheckYourAnswersGet;
-                    }
-                    else
-                    {
-                        cancelRoute = RouteNames.Dashboard_Get;
-                    }
-                }
-                else
-                {
-                    cancelRoute = RouteNames.Vacancy_Preview_Get;
-                }
+                cancelRoute = RouteNames.Dashboard_Get;
+                backRoute = RouteNames.Skills_Get;
             }
             
             var vm = new QualificationViewModel
             {
+                VacancyId = vacancy.Id,
+                EmployerAccountId = vacancy.EmployerAccountId,
                 Title = vacancy.Title,
                 QualificationTypes = allQualifications,
-                CancelRoute = cancelRoute
+                CancelRoute = cancelRoute,
+                BackRoute = backRoute
             };
 
             return vm;

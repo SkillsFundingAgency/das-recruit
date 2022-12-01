@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Provider.Web.ViewModels.Reports.ReportDashboard;
+using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Microsoft.Extensions.Logging;
@@ -12,16 +13,18 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Reports
     public class ReportDashboardOrchestrator : ReportOrchestratorBase
     {
         private readonly IProviderVacancyClient _vacancyClient;
+        private readonly ServiceParameters _serviceParameters;
 
-        public ReportDashboardOrchestrator(ILogger<ReportDashboardOrchestrator> logger, IProviderVacancyClient vacancyClient)
+        public ReportDashboardOrchestrator(ILogger<ReportDashboardOrchestrator> logger, IProviderVacancyClient vacancyClient, ServiceParameters serviceParameters)
         :base(logger, vacancyClient)
         {
             _vacancyClient = vacancyClient;
+            _serviceParameters = serviceParameters;
         }
 
         public async Task<ReportsDashboardViewModel> GetDashboardViewModel(long ukprn)
         {
-            var reports = await _vacancyClient.GetReportsForProviderAsync(ukprn);
+            var reports = await _vacancyClient.GetReportsForProviderAsync(ukprn, _serviceParameters.VacancyType.GetValueOrDefault());
 
             var vm = new ReportsDashboardViewModel 
             {
@@ -50,9 +53,11 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Reports
 
             var stream = new MemoryStream();
 
-            _vacancyClient.WriteReportAsCsv(stream, report);
+            var writeReportTask = _vacancyClient.WriteReportAsCsv(stream, report);
 
-            await _vacancyClient.IncrementReportDownloadCountAsync(report.Id);
+            var incrementReportDownloadCountTask = _vacancyClient.IncrementReportDownloadCountAsync(report.Id);
+
+            await Task.WhenAll(writeReportTask, incrementReportDownloadCountTask);
 
             return new ReportDownloadViewModel {
                 Content = stream,

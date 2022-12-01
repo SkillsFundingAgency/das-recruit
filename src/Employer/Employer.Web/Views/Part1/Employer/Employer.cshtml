@@ -7,13 +7,8 @@
 }
 
 @section BackLink {
-    <esfaFeatureEnabled name="@FeatureNames.EmployerTaskList">
-        <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Title_Get" asp-route-wizard="@Model.PageInfo.IsWizard" esfa-automation="link-back" class="govuk-back-link">Back</a>
-        <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.EmployerCheckYourAnswersGet" asp-route-wizard="@Model.PageInfo.IsWizard" esfa-automation="link-back" class="govuk-back-link">Back</a>
-    </esfaFeatureEnabled>
-    <esfaFeatureDisabled name="@FeatureNames.EmployerTaskList">
-        <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.NumberOfPositions_Get" asp-route-wizard="@Model.PageInfo.IsWizard" esfa-automation="link-back" class="govuk-back-link">Back</a>
-    </esfaFeatureDisabled>
+    <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Title_Get" asp-all-route-data="@Model.RouteDictionary" asp-route-wizard="@Model.PageInfo.IsWizard" esfa-automation="link-back" class="govuk-back-link">Back</a>
+    <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.EmployerCheckYourAnswersGet" asp-all-route-data="@Model.RouteDictionary" asp-route-wizard="@Model.PageInfo.IsWizard" esfa-automation="link-back" class="govuk-back-link">Back</a>
 }
 
 <div class="govuk-grid-row">
@@ -26,7 +21,7 @@
 
         <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">Which organisation is this advert for?</h1>
 
-        <form asp-show="@Model.CanShowSearchPanel" method="GET" asp-route="@RouteNames.Employer_Get" asp-route-wizard="@Model.PageInfo.IsWizard">
+        <form asp-show="@Model.CanShowSearchPanel" method="GET" asp-route="@RouteNames.Employer_Get" asp-all-route-data="@Model.RouteDictionary" asp-route-wizard="@Model.PageInfo.IsWizard">
             <div class="govuk-form-group">
                 <label class="govuk-label" asp-for="SearchTerm">
                     Search for the organisation
@@ -38,12 +33,12 @@
                     </div>
                 </div>
                 <p class="govuk-body govuk-!-margin-top-1">
-                    <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.Employer_Get">Clear search</a>
+                    <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.Employer_Get" asp-all-route-data="@Model.RouteDictionary">Clear search</a>
                 </p>
             </div>
         </form>
 
-        <form asp-route="@RouteNames.Employer_Post" asp-route-wizard="@Model.PageInfo.IsWizard">
+        <form asp-route="@RouteNames.Employer_Post" asp-all-route-data="@Model.RouteDictionary" asp-route-wizard="@Model.PageInfo.IsWizard">
             
             <div esfa-validation-marker-for="SelectedOrganisationId" class="govuk-form-group">
                 <fieldset class="govuk-fieldset">
@@ -93,13 +88,9 @@
 
             <div class="govuk-button-group">
                 <button type="submit" class="govuk-button save-button" esfa-automation="continue-button">Save and continue</button>
-                <esfaFeatureEnabled name="@FeatureNames.EmployerTaskList">
-                    <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Dashboard_Get" class="govuk-link govuk-link--no-visited-state">Cancel</a>
-                    <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.EmployerCheckYourAnswersGet" class="govuk-link govuk-link--no-visited-state">Cancel</a>
-                </esfaFeatureEnabled>
-                <esfaFeatureDisabled name="@FeatureNames.EmployerTaskList">
-                    <a asp-route="@RouteNames.EmployerName_Cancel" asp-route-wizard="@Model.PageInfo.IsWizard" class="govuk-link govuk-link--no-visited-state">Cancel</a>    
-                </esfaFeatureDisabled>
+                <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Dashboard_Get" asp-route-employerAccountId="@Model.EmployerAccountId" class="govuk-link govuk-link--no-visited-state">Cancel</a>
+                <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.EmployerCheckYourAnswersGet" asp-all-route-data="@Model.RouteDictionary" class="govuk-link govuk-link--no-visited-state">Cancel</a>
+
             </div>
 
         </form>

@@ -1,5 +1,4 @@
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
-using Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent;
 using Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation;
 using FluentAssertions;
 using FluentValidation;
@@ -72,7 +71,7 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application
         {
             RuleFor(x => x.TestProperty)
                 .GreaterThan(5)
-                .WithRuleId((long)TestEntityRules.All);
+                .WithState(_ => (long)TestEntityRules.All);
         }
     }
 }

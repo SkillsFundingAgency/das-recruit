@@ -33,7 +33,8 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.HardMocks
                 {
                     Ukprn = TrainingProviderUkprn
                 },
-                Wage = new Wage { Duration = 1, WageType = WageType.FixedWage }
+                Wage = new Wage { Duration = 1, WageType = WageType.FixedWage },
+                HasChosenProviderContactDetails = false
             };
         }
 

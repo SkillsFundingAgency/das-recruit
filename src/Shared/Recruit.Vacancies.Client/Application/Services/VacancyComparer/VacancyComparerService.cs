@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
-using Esfa.QA.Core.Extensions;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using SFA.DAS.EAS.Account.Api.Types;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.Services.VacancyComparer
 {

@@ -15,7 +15,6 @@ using Esfa.Recruit.Vacancies.Jobs.ExternalSystemEventHandlers;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Moq;
-using SFA.DAS.EAS.Account.Api.Types;
 using SFA.DAS.Encoding;
 using SFA.DAS.ProviderRelationships.Messages.Events;
 using SFA.DAS.ProviderRelationships.Types.Models;

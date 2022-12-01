@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Threading.Tasks;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.Configuration;
+using Azure.Storage.Queues;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.TableStore;
 using Esfa.Recruit.Vacancies.Client.Ioc;
@@ -55,13 +55,15 @@ namespace Esfa.Recruit.Vacancies.Jobs
                         configHost.SetBasePath(Directory.GetCurrentDirectory());  
                         configHost.AddEnvironmentVariables();
 #if DEBUG
-                        configHost.AddJsonFile("appSettings.json", optional: false)
+                        configHost.AddJsonFile("appSettings.json", true)
                             .AddJsonFile($"appSettings.Development.json", true);               
 #endif
                     })  
                     .ConfigureWebJobs(b =>
                     {
                         b.AddAzureStorageCoreServices()
+                            //.AddAzureStorageBlobs()
+                            //.AddAzureStorageQueues()
                             .AddAzureStorage()
                             .AddTimers();
                     })
@@ -86,6 +88,11 @@ namespace Esfa.Recruit.Vacancies.Jobs
                         b.AddConsole();
                         b.AddNLog();
                         b.ConfigureRecruitLogging();
+                        string instrumentationKey = context.Configuration["APPINSIGHTS_INSTRUMENTATIONKEY"];
+                        if (!string.IsNullOrEmpty(instrumentationKey))
+                        {
+                            b.AddApplicationInsights(o => o.InstrumentationKey = instrumentationKey);
+                        }
                     })
                     .ConfigureServices((context, services) =>
                     {
@@ -104,7 +111,7 @@ namespace Esfa.Recruit.Vacancies.Jobs
                         services.ConfigureJobServices(context.Configuration);
 
                         services.AddDasNServiceBus(context.Configuration);
-                        services.AddApplicationInsightsTelemetry(context.Configuration);
+                        services.AddApplicationInsightsTelemetryWorkerService(context.Configuration);
                     })
                     .UseConsoleLifetime();
         }

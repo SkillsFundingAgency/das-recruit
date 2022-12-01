@@ -42,23 +42,17 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part2
                 response.AddErrorsToModelState(ModelState);
             }
             
-            
             if (!ModelState.IsValid)
             {
                 return View(vm);
             }
-
-            if (_feature.IsFeatureEnabled(FeatureNames.EmployerTaskList))
+            
+            if (vm.IsTaskListCompleted)
             {
-                if (vm.IsTaskListCompleted)
-                {
-                    return RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet);
-                }
-                
-                return RedirectToRoute(RouteNames.EmployerTaskListGet);
+                return RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet, new {m.VacancyId, m.EmployerAccountId});
             }
-
-            return RedirectToRoute(RouteNames.Vacancy_Preview_Get);
-        }
+            
+            return RedirectToRoute(RouteNames.EmployerTaskListGet, new {m.VacancyId, m.EmployerAccountId});
+            }
     }
 }

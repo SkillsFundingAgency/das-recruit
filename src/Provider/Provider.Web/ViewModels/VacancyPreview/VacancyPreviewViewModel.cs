@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Shared.Web.Mappers;
 using Esfa.Recruit.Shared.Web.ViewModels;
@@ -103,6 +102,8 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview
         public bool ShowIncompleteSections => ((HasIncompleteMandatorySections || HasIncompleteOptionalSections) && !Review.HasBeenReviewed) || HasSoftValidationErrors;
         public ReviewSummaryViewModel Review { get; set; } = new ReviewSummaryViewModel();
 
+        public ValidationSummaryViewModel ValidationErrors { get; set; } = new ValidationSummaryViewModel(); 
+        
         public string SubmitButtonText => RequiresEmployerReview && VacancyType.GetValueOrDefault() == Vacancies.Client.Domain.Entities.VacancyType.Apprenticeship
             ? Status == VacancyStatus.Rejected
                 ? "Resubmit vacancy to employer"
@@ -214,21 +215,24 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview
             viewModel.WorkExperienceProvidedSectionState = GetSectionState(viewModel, new[]{ FieldIdentifiers.WorkExperience}, true, modelState, vm => vm.WorkExperience);
         }
 
+        public int AccountCount { get; set; }
         public int AccountLegalEntityCount { get ; set ; }
-        
+
         public VacancyTaskListSectionState TaskListSectionOneState => SetTaskListSectionState();
 
         public VacancyTaskListSectionState TaskListSectionTwoState => SetTaskListSectionTwoState();
         public VacancyTaskListSectionState TaskListSectionThreeState => SetTaskListSectionThreeState();
         public VacancyTaskListSectionState TaskListSectionFourState => SetTaskListSectionFourState();
         public string AccountId { get; set; }
-        
+        public bool CanShowVacancyClonedStatusHeader => !string.IsNullOrEmpty(VacancyClonedInfoMessage);
+        public string VacancyClonedInfoMessage { get; set; }
 
 
         private VacancyTaskListSectionState SetTaskListSectionState()
         {
             if (TitleSectionState == VacancyPreviewSectionState.Valid
                 && (VacancyType.GetValueOrDefault() == Vacancies.Client.Domain.Entities.VacancyType.Apprenticeship ? HasProgramme : HasRoute)
+                && !string.IsNullOrEmpty(Title)
                 && HasSelectedLegalEntity
                 && HasShortDescription
                 && HasTrainingDescription
@@ -237,7 +241,7 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview
                 return VacancyTaskListSectionState.Completed;
             }
             
-            if (TitleSectionState == VacancyPreviewSectionState.Valid)
+            if (HasSelectedLegalEntity)
             {
                 return VacancyTaskListSectionState.InProgress;    
             }

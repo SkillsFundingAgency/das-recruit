@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Esfa.Recruit.UnitTests.Vacancies.Client.Application.Rules.VacancyRules;
+﻿using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.Rules;
 using Esfa.Recruit.Vacancies.Client.Application.Rules.VacancyRules;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;

@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Communication.Types
+﻿namespace Communication.Types
 {
     public enum DeliveryChannel
     {

@@ -20,11 +20,11 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 
         public async Task<Unit> Handle(UpdateUserAccountCommand message, CancellationToken cancellationToken)
         {
-            var accounts = await _client.GetEmployerIdentifiersAsync(message.IdamsUserId);
+            var accounts = await _client.GetEmployerIdentifiersAsync(message.IdamsUserId, string.Empty);
 
             var user = await _client.GetUsersDetailsAsync(message.IdamsUserId);
 
-            user.EmployerAccountIds = accounts.ToList();
+            user.EmployerAccountIds = accounts.UserAccounts.Select(c=>c.AccountId).ToList();
 
             await _userRepository.UpsertUserAsync(user);
             

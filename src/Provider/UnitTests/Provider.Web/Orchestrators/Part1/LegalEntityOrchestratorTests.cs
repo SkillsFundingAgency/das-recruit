@@ -5,11 +5,9 @@ using System.Threading.Tasks;
 using AutoFixture.NUnit3;
 using Esfa.Recruit.Provider.Web;
 using Esfa.Recruit.Provider.Web.Configuration.Routing;
-using Esfa.Recruit.Provider.Web.Models;
 using Esfa.Recruit.Provider.Web.Orchestrators.Part1;
 using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Provider.Web.ViewModels.Part1.LegalEntity;
-using Esfa.Recruit.Shared.Web.FeatureToggle;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
@@ -75,7 +73,7 @@ namespace Esfa.Recruit.UnitTests.Provider.Web.Orchestrators.Part1
             _mockVacancyClient = new Mock<IRecruitVacancyClient>();
             _testVacancy = GetTestVacancy();
             _mockVacancyClient.Setup(x => x.GetVacancyAsync(It.IsAny<Guid>())).ReturnsAsync(_testVacancy);
-            _orchestrator = new LegalEntityOrchestrator(_mockClient.Object, Mock.Of<IRecruitVacancyClient>(), _mockLogger.Object, new Utility(_mockVacancyClient.Object,Mock.Of<IFeature>()));
+            _orchestrator = new LegalEntityOrchestrator(_mockClient.Object, Mock.Of<IRecruitVacancyClient>(), _mockLogger.Object, new Utility(_mockVacancyClient.Object));
         }
 
         [Fact]

@@ -2,7 +2,7 @@ using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
 namespace Esfa.Recruit.Employer.Web.ViewModels.ManageNotifications
 {
-    public class ManageNotificationsViewModel
+    public class ManageNotificationsViewModel : ManageNotificationsRouteModel
     {
         public bool IsVacancyRejectedSelected { get; set; }
         public bool IsVacancySentForEmployerReviewSelected { get; set; }

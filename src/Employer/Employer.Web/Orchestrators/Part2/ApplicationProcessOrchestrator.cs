@@ -41,6 +41,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
 
             var vm = new ApplicationProcessViewModel
             {
+                VacancyId = vacancy.Id,
+                EmployerAccountId = vacancy.EmployerAccountId,
                 Title = vacancy.Title,
                 FindAnApprenticeshipUrl = _externalLinks.FindAnApprenticeshipUrl,
                 ApplicationMethod = vacancy.ApplicationMethod,

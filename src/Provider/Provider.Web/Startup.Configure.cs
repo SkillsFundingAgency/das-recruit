@@ -11,13 +11,14 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Logging;
+using Microsoft.Extensions.Hosting;
 
 namespace Esfa.Recruit.Provider.Web
 {
     public partial class Startup
     {
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IOptions<ExternalLinksConfiguration> externalLinks, IApplicationLifetime applicationLifetime, ILogger<Startup> logger)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IOptions<ExternalLinksConfiguration> externalLinks, IHostApplicationLifetime applicationLifetime, ILogger<Startup> logger)
         {
             var cultureInfo = new CultureInfo("en-GB");
 
@@ -135,7 +136,7 @@ namespace Esfa.Recruit.Provider.Web
                         "https://*.zendesk.com",
                         "https://*.zdassets.com",
                         "https://dc.services.visualstudio.com",
-                        "https://www.google-analytics.com",
+                        "https://*.google-analytics.com",
                         "wss://*.zendesk.com",
                         "wss://*.zopim.com",
                         "https://*.rcrsv.io")
@@ -203,15 +204,6 @@ namespace Esfa.Recruit.Provider.Web
 
             if (!string.IsNullOrWhiteSpace(linksConfig?.ProviderApprenticeshipSiteUrl))
                 destinations.Add(linksConfig.ProviderApprenticeshipSiteUrl);
-
-            if (!string.IsNullOrWhiteSpace(linksConfig?.ProviderApprenticeshipSiteFeedbackUrl))
-                destinations.Add(linksConfig.ProviderApprenticeshipSiteFeedbackUrl);
-
-            if (!string.IsNullOrWhiteSpace(linksConfig?.CommitmentsSiteUrl))
-                destinations.Add(linksConfig.CommitmentsSiteUrl);
-
-            if (!string.IsNullOrWhiteSpace(linksConfig?.ReservationsSiteUrl))
-                destinations.Add(linksConfig.ReservationsSiteUrl);
 
             if (!string.IsNullOrWhiteSpace(linksConfig?.ProviderRecruitmentApiUrl))
                 destinations.Add(linksConfig.ProviderRecruitmentApiUrl);
