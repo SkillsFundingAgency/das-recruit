@@ -32,4 +32,36 @@ public class WhenBuildingVacancyPreviewViewModelSectionFiveState
 
         model.TaskListSectionFiveState.Should().Be(VacancyTaskListSectionState.NotStarted);
     }
+
+    [Test, MoqAutoData]
+    public async Task Then_The_Section_State_Is_Set_To_Not_Started_If_Section_Four_Is_Complete_But_Additional_Questions_Not_Saved(
+        Vacancy vacancy,
+        [Frozen] Mock<IRecruitVacancyClient> recruitVacancyClient,
+        DisplayVacancyViewModelMapper mapper)
+    {
+        vacancy.HasSubmittedAdditionalQuestions = false;
+
+        var model = new VacancyPreviewViewModel();
+
+        await mapper.MapFromVacancyAsync(model, vacancy);
+        model.SetSectionStates(model, new ModelStateDictionary());
+
+        model.TaskListSectionFiveState.Should().Be(VacancyTaskListSectionState.NotStarted);
+    }
+
+    [Test, MoqAutoData]
+    public async Task Then_The_Section_State_Is_Set_To_Completed_If_Additional_Questions_Saved(
+        Vacancy vacancy,
+        [Frozen] Mock<IRecruitVacancyClient> recruitVacancyClient,
+        DisplayVacancyViewModelMapper mapper)
+    {
+        vacancy.HasSubmittedAdditionalQuestions = true;
+
+        var model = new VacancyPreviewViewModel();
+
+        await mapper.MapFromVacancyAsync(model, vacancy);
+        model.SetSectionStates(model, new ModelStateDictionary());
+
+        model.TaskListSectionFiveState.Should().Be(VacancyTaskListSectionState.Completed);
+    }
 }
