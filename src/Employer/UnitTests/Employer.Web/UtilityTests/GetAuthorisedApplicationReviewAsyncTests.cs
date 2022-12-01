@@ -39,7 +39,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.UtilityTests
                 Id = _vacancyId
             });
 
-            _utility = new Utility(_mockVacancyClient.Object, Mock.Of<IFeature>());
+            _utility = new Utility(_mockVacancyClient.Object);
         }
 
         [Fact]
