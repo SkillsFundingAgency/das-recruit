@@ -18,7 +18,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.UtilityTests
         [InlineData(RouteNames.Title_Get, false)]
         [InlineData(RouteNames.Title_Post, false)]
         [InlineData("any other route", true)]
-        public void ShouldRedirectToTitle(string route, bool shouldRedirect)
+        public void ShouldRedirectToEmployerName(string route, bool shouldRedirect)
         {
             var vacancy = new Vacancy
             {
@@ -26,7 +26,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.UtilityTests
                 Id = Guid.Parse("84af954e-5baf-4942-897d-d00180a0839e")
             };
 
-            CheckRouteIsValidForVacancyTest(vacancy, route, shouldRedirect, RouteNames.Title_Get);
+            CheckRouteIsValidForVacancyTest(vacancy, route, shouldRedirect, RouteNames.EmployerName_Get);
         }
 
         [Theory]
@@ -69,7 +69,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.UtilityTests
         [InlineData(RouteNames.NumberOfPositions_Get, false)]
         [InlineData(RouteNames.NumberOfPositions_Post, false)]
         [InlineData("any other route", true)]
-        public void ShouldRedirectToEmployer(string route, bool shouldRedirect)
+        public void And_No_NumberOfPositions_ShouldRedirectToEmployer(string route, bool shouldRedirect)
         {
             var vacancy = new Vacancy
             {
@@ -99,7 +99,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.UtilityTests
         [InlineData(RouteNames.Employer_Get, false)]
         [InlineData(RouteNames.Employer_Post, false)]
         [InlineData("any other route", true)]
-        public void ShouldRedirectToEmployer_again(string route, bool shouldRedirect)
+        public void And_Has_NumberOfPositions_ShouldRedirectToEmployer(string route, bool shouldRedirect)
         {
             var vacancy = new Vacancy
             {
@@ -384,9 +384,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.UtilityTests
         
         private void CheckRouteIsValidForVacancyTest(Vacancy vacancy, string route, bool shouldRedirect, string expectedRedirectRoute, bool enableTaskList = false)
         {
-            var featureMock = new Mock<IFeature>();
-            featureMock.Setup(x=>x.IsFeatureEnabled(FeatureNames.EmployerTaskList)).Returns(enableTaskList);
-            var utility = new Utility(Mock.Of<IRecruitVacancyClient>(), featureMock.Object);
+            var utility = new Utility(Mock.Of<IRecruitVacancyClient>());
             if (!shouldRedirect)
             {
                 utility.CheckRouteIsValidForVacancy(vacancy, route);

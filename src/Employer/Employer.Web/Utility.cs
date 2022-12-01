@@ -49,12 +49,10 @@ namespace Esfa.Recruit.Employer.Web
     public class Utility : VacancyTaskListStatusService, IUtility
     {
         private readonly IRecruitVacancyClient _vacancyClient;
-        private readonly IFeature _feature;
 
-        public Utility (IRecruitVacancyClient vacancyClient, IFeature feature)
+        public Utility (IRecruitVacancyClient vacancyClient)
         {
             _vacancyClient = vacancyClient;
-            _feature = feature;
         }
         
         public async Task<Vacancy> GetAuthorisedVacancyForEditAsync(VacancyRouteModel vrm, string routeName)
@@ -122,19 +120,16 @@ namespace Esfa.Recruit.Employer.Web
 
             validRoutes.AddRange(new [] {RouteNames.Title_Post, RouteNames.Title_Get});
 
-            if (_feature.IsFeatureEnabled(FeatureNames.EmployerTaskList))
+            validRoutes.AddRange( new[]
             {
-                validRoutes.AddRange( new[]
-                {
-                    RouteNames.EmployerTaskListGet,
-                    RouteNames.EmployerCheckYourAnswersGet,
-                    RouteNames.Employer_Post,
-                    RouteNames.Employer_Get,
-                    RouteNames.EmployerName_Post,
-                    RouteNames.EmployerName_Get,
-                });
-            }
-            
+                RouteNames.EmployerTaskListGet,
+                RouteNames.EmployerCheckYourAnswersGet,
+                RouteNames.Employer_Post,
+                RouteNames.Employer_Get,
+                RouteNames.EmployerName_Post,
+                RouteNames.EmployerName_Get,
+            });
+
             if (string.IsNullOrWhiteSpace(vacancy.Title))
                 return validRoutes;
 
@@ -199,11 +194,8 @@ namespace Esfa.Recruit.Employer.Web
                 RouteNames.ApplicationProcess_Post,
                 RouteNames.ApplicationProcess_Get,
                 RouteNames.AdditionalQuestions_Get,
-                RouteNames.AdditionalQuestions_Post
-            });
-            
-            validRoutes.AddRange(new[] 
-            {
+                RouteNames.AdditionalQuestions_Post,
+
                 RouteNames.LegalEntityAgreement_SoftStop_Get,
                 RouteNames.Location_Get, 
                 RouteNames.Location_Post,
@@ -235,12 +227,7 @@ namespace Esfa.Recruit.Employer.Web
 
         public bool VacancyHasCompletedPartOne(Vacancy vacancy)
         {
-            if (_feature.IsFeatureEnabled(FeatureNames.EmployerTaskList))
-            {
-                return vacancy.ApplicationMethod != null;
-            }
-            
-            return GetPermittedRoutesForVacancy(vacancy) == null;
+            return vacancy.ApplicationMethod != null;
         }
 
         public bool VacancyHasStartedPartTwo(Vacancy vacancy)

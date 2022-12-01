@@ -45,7 +45,7 @@ namespace Esfa.Recruit.UnitTests.Employer.Web.Orchestrators.CloneVacancyOrchestr
                 .Setup(c => c.GetVacancyAsync(It.IsAny<Guid>()))
                 .ReturnsAsync(vacancy);
 
-            var utility = new Utility(recruitClientMock.Object, Mock.Of<IFeature>());
+            var utility = new Utility(recruitClientMock.Object);
 
             return new CloneVacancyOrchestrator(recruitClientMock.Object,
                 timeProviderMock.Object, loggerMock.Object, utility);
