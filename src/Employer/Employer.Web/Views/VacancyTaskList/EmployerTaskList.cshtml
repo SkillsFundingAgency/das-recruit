@@ -383,11 +383,7 @@
                 <span class="das-task-list__section-number">5. </span> 
                 <span class="das-task-list__section-heading">Application</span>
                 <span class="das-task-list__section-status">
-                        @if(Model.TaskListSectionFiveState == VacancyTaskListSectionState.InProgress)
-                        {
-                            <strong class="govuk-tag govuk-tag--blue das-task-list__section-tag">In progress</strong>
-                        }
-                        else if (Model.TaskListSectionFiveState == VacancyTaskListSectionState.Completed)
+                        @if (Model.TaskListSectionFiveState == VacancyTaskListSectionState.Completed)
                         {
                             <strong class="govuk-tag das-task-list__section-tag">Completed</strong>    
                         }
@@ -422,11 +418,7 @@
                     <span class="das-task-list__section-number">6. </span> 
                     <span class="das-task-list__section-heading">Check and submit your advert</span>
                     <span class="das-task-list__section-status">
-                        @if(Model.TaskListSectionFourState == VacancyTaskListSectionState.Completed)
-                        {
-                            <strong class="govuk-tag govuk-tag--blue das-task-list__section-tag">In progress</strong>
-                        }
-                        else if (Model.Status == VacancyStatus.Submitted)
+                        @if (Model.Status == VacancyStatus.Submitted)
                         {
                             <strong class="govuk-tag das-task-list__section-tag">Completed</strong>    
                         }
@@ -438,7 +430,7 @@
                 </h2>
                 <ul class="das-task-list__items">
                     <li class="das-task-list__item">
-                        @if (Model.TaskListSectionFourState == VacancyTaskListSectionState.Completed)
+                        @if (Model.TaskListSectionFiveState == VacancyTaskListSectionState.Completed)
                         {
                             <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.EmployerCheckYourAnswersGet" asp-all-route-data="@Model.RouteDictionary">
                                 Check your answers and submit your advert
