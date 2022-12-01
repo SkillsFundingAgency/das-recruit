@@ -18,9 +18,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                     return vacancy.HasChosenProviderContactDetails ?? false;
                 }
             }
-
+            else if (vacancy.OwnerType == OwnerType.Employer)
+            {
+                return vacancy.HasSubmittedAdditionalQuestions;
+            }
                 
-
             return false;
         }
     }
