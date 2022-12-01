@@ -14,7 +14,7 @@ using SFA.DAS.Testing.AutoFixture;
 
 namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.VacancyPreview
 {
-    public class WhenBuildingVacancyPreviewViewModel
+    public class WhenGettingSectionOneState
     {
         [Test, MoqAutoData]
         public async Task Then_The_Section_State_Is_Set(

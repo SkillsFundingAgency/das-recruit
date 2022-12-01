@@ -40,13 +40,14 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview
         public VacancyPreviewSectionState WageTextSectionState { get; internal set; }
         public VacancyPreviewSectionState DescriptionsSectionState { get; internal set; }
         public VacancyPreviewSectionState WorkingWeekSectionState { get; internal set; }
+        public VacancyPreviewSectionState QuestionForApplicantSectionState1 { get; internal set; }
+        public VacancyPreviewSectionState QuestionForApplicantSectionState2 { get; internal set; }
 
         public EntityValidationResult SoftValidationErrors { get; internal set; }
         public bool CanHideValidationSummary { get; internal set; }
 
         public bool HasWage { get; internal set; }
         public bool HasProgramme { get; internal set; }
-
         public bool CanShowReference { get; set; }
         public bool HasIncompleteVacancyDescription => !HasVacancyDescription;
         public bool HasIncompleteShortDescription => !HasShortDescription;
@@ -165,8 +166,9 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview
         public VacancyTaskListSectionState TaskListSectionTwoState => SetTaskListSectionTwoState();
         public VacancyTaskListSectionState TaskListSectionThreeState => SetTaskListSectionThreeState();
         public VacancyTaskListSectionState TaskListSectionFourState => SetTaskListSectionFourState();
-        
-        
+        public VacancyTaskListSectionState TaskListSectionFiveState => SetTaskListSectionFiveState();
+
+
         public int AccountLegalEntityCount { get ; set ; }
 
 
@@ -197,6 +199,9 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview
             viewModel.ProviderSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.Provider }, true, modelState,vm => vm.ProviderName);
             viewModel.TrainingSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.Training }, true, modelState,vm => vm.TrainingType, vm => vm.TrainingTitle);
             viewModel.DisabilityConfidentSectionState = GetSectionState(viewModel, new[]{ FieldIdentifiers.DisabilityConfident}, true, modelState,vm => vm.IsDisabilityConfident);
+            viewModel.QuestionForApplicantSectionState1 = GetSectionState(viewModel, new[] { FieldIdentifiers.AdditionalQuestion1 }, true, modelState, vm => vm.QuestionForApplicantSectionState1);
+            viewModel.QuestionForApplicantSectionState2 = GetSectionState(viewModel, new[] { FieldIdentifiers.AdditionalQuestion2 }, true, modelState, vm => vm.QuestionForApplicantSectionState2);
+
         }
 
         private VacancyTaskListSectionState SetTaskListSectionState()
@@ -290,7 +295,25 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview
             return VacancyTaskListSectionState.InProgress;
         }
 
+        private VacancyTaskListSectionState SetTaskListSectionFiveState()
+        {
+            if (TaskListSectionFourState != VacancyTaskListSectionState.Completed)
+            {
+                return VacancyTaskListSectionState.NotStarted;
+            }
+
+            if (HasSubmittedAdditionalQuestions
+                && QuestionForApplicantSectionState1 == VacancyPreviewSectionState.Valid
+                && QuestionForApplicantSectionState2 == VacancyPreviewSectionState.Valid)
+            {
+                return VacancyTaskListSectionState.Completed;
+            }
+
+            return VacancyTaskListSectionState.NotStarted;
+        }
+
         public bool HasSelectedEmployerNameOption => EmployerNameOption != null;
+
         public ValidationSummaryViewModel ValidationErrors { get; set; } = new ValidationSummaryViewModel();
 
         private VacancyPreviewSectionState GetSectionState(VacancyPreviewViewModel vm, IEnumerable<string> reviewFieldIndicators, bool requiresAll, ModelStateDictionary modelState, params Expression<Func<VacancyPreviewViewModel, object>>[] sectionProperties)

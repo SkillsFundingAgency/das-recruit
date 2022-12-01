@@ -84,6 +84,9 @@ namespace Esfa.Recruit.Employer.Web.Mappings
             vm.TransferredProviderName = vacancy.TransferInfo?.ProviderName;
             vm.TransferredOnDate = vacancy.TransferInfo?.TransferredDate.AsGdsDate();
             vm.EmployerNameOption = vacancy.EmployerNameOption;
+            vm.AdditionalQuestion1 = vacancy.AdditionalQuestion1;
+            vm.AdditionalQuestion2 = vacancy.AdditionalQuestion2;
+            vm.HasSubmittedAdditionalQuestions = vacancy.HasSubmittedAdditionalQuestions;
             
             if (vacancy.EmployerLocation != null)
             {
