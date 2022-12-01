@@ -7,5 +7,6 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Interfaces
         ApplicationMethod? ApplicationMethod { get; set; }
         VacancyType? VacancyType { get; set; }
         bool? HasChosenProviderContactDetails { get; set; }
+        bool HasSubmittedAdditionalQuestions { get; set; }
     }
 }
