@@ -47,6 +47,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview
 
         public bool HasWage { get; internal set; }
         public bool HasProgramme { get; internal set; }
+        public bool HasSubmittedAdditionalQuestions { get; set; }
 
         public bool CanShowReference { get; set; }
         public bool HasIncompleteVacancyDescription => !HasVacancyDescription;
@@ -299,7 +300,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview
                 return VacancyTaskListSectionState.NotStarted;
             }
 
-            if (QuestionsForApplicantSectionState == VacancyPreviewSectionState.Valid)
+            if (HasSubmittedAdditionalQuestions)
             {
                 return VacancyTaskListSectionState.Completed;
             }
