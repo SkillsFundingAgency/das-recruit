@@ -128,6 +128,9 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part1.Legal
             utility.Setup(x =>
                     x.GetAuthorisedVacancyForEditAsync(vacancyRouteModel, RouteNames.ConfirmLegalEntityEmployer_Get))
                 .ReturnsAsync(vacancy);
+            utility
+                .Setup(x => x.IsTaskListCompleted(vacancy))
+                .Returns(false);
             
             employerInfo.EmployerAccountId = vacancy.EmployerAccountId;
             employerInfo.LegalEntities.Last().AccountLegalEntityPublicHashedId = vacancy.AccountLegalEntityPublicHashedId;
