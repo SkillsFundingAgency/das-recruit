@@ -40,7 +40,8 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview
         public VacancyPreviewSectionState WageTextSectionState { get; internal set; }
         public VacancyPreviewSectionState DescriptionsSectionState { get; internal set; }
         public VacancyPreviewSectionState WorkingWeekSectionState { get; internal set; }
-        public VacancyPreviewSectionState QuestionsForApplicantSectionState { get; internal set; }
+        public VacancyPreviewSectionState QuestionForApplicantSectionState1 { get; internal set; }
+        public VacancyPreviewSectionState QuestionForApplicantSectionState2 { get; internal set; }
 
         public EntityValidationResult SoftValidationErrors { get; internal set; }
         public bool CanHideValidationSummary { get; internal set; }
@@ -198,6 +199,9 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview
             viewModel.ProviderSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.Provider }, true, modelState,vm => vm.ProviderName);
             viewModel.TrainingSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.Training }, true, modelState,vm => vm.TrainingType, vm => vm.TrainingTitle);
             viewModel.DisabilityConfidentSectionState = GetSectionState(viewModel, new[]{ FieldIdentifiers.DisabilityConfident}, true, modelState,vm => vm.IsDisabilityConfident);
+            viewModel.QuestionForApplicantSectionState1 = GetSectionState(viewModel, new[] { FieldIdentifiers.AdditionalQuestion1 }, true, modelState, vm => vm.QuestionForApplicantSectionState1);
+            viewModel.QuestionForApplicantSectionState2 = GetSectionState(viewModel, new[] { FieldIdentifiers.AdditionalQuestion2 }, true, modelState, vm => vm.QuestionForApplicantSectionState2);
+
         }
 
         private VacancyTaskListSectionState SetTaskListSectionState()
@@ -298,7 +302,9 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview
                 return VacancyTaskListSectionState.NotStarted;
             }
 
-            if (HasSubmittedAdditionalQuestions)
+            if (HasSubmittedAdditionalQuestions
+                && QuestionForApplicantSectionState1 == VacancyPreviewSectionState.Valid
+                && QuestionForApplicantSectionState2 == VacancyPreviewSectionState.Valid)
             {
                 return VacancyTaskListSectionState.Completed;
             }

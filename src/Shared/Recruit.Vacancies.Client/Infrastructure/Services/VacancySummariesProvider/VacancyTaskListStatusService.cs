@@ -9,7 +9,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
         {
             if(vacancy.VacancyType.GetValueOrDefault() == VacancyType.Apprenticeship)
             {
-                return vacancy.HasSubmittedAdditionalQuestions = true;
+                return vacancy.ApplicationMethod != null;
             }
             if (vacancy.VacancyType == VacancyType.Traineeship)
             {
