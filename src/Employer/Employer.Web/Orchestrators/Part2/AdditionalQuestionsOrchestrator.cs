@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Interfaces;
 using Esfa.Recruit.Employer.Web.Mappings;
@@ -11,6 +12,7 @@ using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2;
 
@@ -18,16 +20,19 @@ public class AdditionalQuestionsOrchestrator : VacancyValidatingOrchestrator<Add
 {
     private readonly IRecruitVacancyClient _vacancyClient;
     private readonly IReviewSummaryService _reviewSummaryService;
+    private readonly IOptions<ExternalLinksConfiguration> _options;
     private readonly IUtility _utility;
     
     public AdditionalQuestionsOrchestrator(
         IRecruitVacancyClient vacancyClient,
         ILogger<AdditionalQuestionsOrchestrator> logger,
         IReviewSummaryService reviewSummaryService,
+        IOptions<ExternalLinksConfiguration> options,
         IUtility utility) : base(logger)
     {
         _vacancyClient = vacancyClient;
         _reviewSummaryService = reviewSummaryService;
+        _options = options;
         _utility = utility;
     }
     
@@ -40,7 +45,8 @@ public class AdditionalQuestionsOrchestrator : VacancyValidatingOrchestrator<Add
             VacancyId = vacancy.Id,
             EmployerAccountId = vacancy.EmployerAccountId,
             AdditionalQuestion1 = vacancy.AdditionalQuestion1,
-            AdditionalQuestion2 = vacancy.AdditionalQuestion2
+            AdditionalQuestion2 = vacancy.AdditionalQuestion2,
+            FindAnApprenticeshipUrl = _options.Value.FindAnApprenticeshipUrl
         };
             
         if (vacancy.Status == VacancyStatus.Referred)
@@ -57,6 +63,8 @@ public class AdditionalQuestionsOrchestrator : VacancyValidatingOrchestrator<Add
     public async Task<OrchestratorResponse> PostEditModel(AdditionalQuestionsEditModel editModel, VacancyUser user)
     {
         var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(editModel, RouteNames.AdditionalQuestions_Post);
+        
+        vacancy.HasSubmittedAdditionalQuestions = true;
             
         SetVacancyWithEmployerReviewFieldIndicators(
             vacancy.AdditionalQuestion1,

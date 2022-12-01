@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
+using Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web;
+using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Orchestrators.Part2;
 using Esfa.Recruit.Employer.Web.RouteModel;
@@ -13,6 +15,7 @@ using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using FluentAssertions;
+using Microsoft.Extensions.Options;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Testing.AutoFixture;
@@ -27,6 +30,7 @@ public class AdditionalQuestionsOrchestratorTests
             Vacancy vacancy,
             bool isTaskListCompleted,
             [Frozen] Mock<IUtility> mockUtility,
+            [Frozen] Mock<IOptions<ExternalLinksConfiguration>> mockConfig,
             AdditionalQuestionsOrchestrator orchestrator)
         {
             vacancy.Status = VacancyStatus.Draft;
@@ -43,6 +47,7 @@ public class AdditionalQuestionsOrchestratorTests
             response.EmployerAccountId.Should().Be(vacancy.EmployerAccountId.ToUpper());
             response.AdditionalQuestion1.Should().Be(vacancy.AdditionalQuestion1);
             response.AdditionalQuestion2.Should().Be(vacancy.AdditionalQuestion2);
+            response.FindAnApprenticeshipUrl.Should().Be(mockConfig.Object.Value.FindAnApprenticeshipUrl);
             response.IsTaskListCompleted.Should().Be(isTaskListCompleted);
             response.Review.Should().BeEquivalentTo(new ReviewSummaryViewModel());
         }
@@ -111,7 +116,7 @@ public class AdditionalQuestionsOrchestratorTests
             AdditionalQuestionsEditModel editModel,
             VacancyUser vacancyUser,
             Vacancy vacancy,
-            EntityValidationResult validationResult,
+            EntityValidationResult validationResultWithErrors,
             AdditionalQuestionsViewModel viewModel,
             [Frozen] Mock<IUtility> mockUtility,
             [Frozen] Mock<IRecruitVacancyClient> mockRecruitVacancyClient,
@@ -123,7 +128,7 @@ public class AdditionalQuestionsOrchestratorTests
                 .ReturnsAsync(vacancy);
             mockRecruitVacancyClient
                 .Setup(client => client.Validate(vacancy, VacancyRuleSet.AdditionalQuestion1 | VacancyRuleSet.AdditionalQuestion2))
-                .Returns(validationResult);
+                .Returns(validationResultWithErrors);
 
             var response = await orchestrator.PostEditModel(editModel, vacancyUser);
 
