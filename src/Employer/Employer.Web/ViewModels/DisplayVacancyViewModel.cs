@@ -56,6 +56,10 @@ namespace Esfa.Recruit.Employer.Web.ViewModels
         public string WageText { get; internal set; }
         public string WorkingWeekDescription { get; internal set; }
         public string AccountLegalEntityPublicHashedId { get ; set ; }
+        public string AdditionalQuestion1 { get; internal set; }
+        public string AdditionalQuestion2 { get; internal set; }
+        public bool HasSubmittedAdditionalQuestions { get; internal set; }
+        
         public bool HasClosingDate => !string.IsNullOrWhiteSpace(ClosingDate);
 
         public bool HasShortDescription => !string.IsNullOrWhiteSpace(ShortDescription);
