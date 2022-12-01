@@ -36,7 +36,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
         }
 
         [Test, MoqAutoData]
-        public void When_Null_VacancyType_And_Employer_Ownertype_And_Has_AdditionalQuestions_Then_TaskList_Completed(VacancyTaskListStatusService service, Mock<ITaskListVacancy> vacancy)
+        public void When_Null_VacancyType_And_Employer_OwnerType_And_Has_AdditionalQuestions_Then_TaskList_Completed(VacancyTaskListStatusService service, Mock<ITaskListVacancy> vacancy)
         {
             vacancy.Object.OwnerType = OwnerType.Employer;
             vacancy.Object.VacancyType = null;
