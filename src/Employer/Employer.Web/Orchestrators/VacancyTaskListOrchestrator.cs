@@ -67,6 +67,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             vm.SoftValidationErrors = GetSoftValidationErrors(vacancy);
             vm.VacancyId = vrm.VacancyId;
             vm.EmployerAccountId = vrm.EmployerAccountId;
+            vm.HasSubmittedAdditionalQuestions = vacancy.HasSubmittedAdditionalQuestions;
             
             if (programme != null)
             {
