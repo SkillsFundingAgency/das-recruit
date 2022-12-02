@@ -1,6 +1,4 @@
-﻿using System.Runtime.InteropServices.ObjectiveC;
-using Esfa.Recruit.Employer.Web.ViewModels;
-using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+﻿using Esfa.Recruit.Employer.Web.ViewModels;
 
 namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.DisplayVacancy;
 
