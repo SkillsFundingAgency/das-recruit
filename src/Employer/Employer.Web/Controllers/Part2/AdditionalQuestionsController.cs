@@ -29,14 +29,15 @@ public class AdditionalQuestionsController : Controller
     [HttpPost("additional-questions", Name = RouteNames.AdditionalQuestions_Post)]
     public async Task<IActionResult> AdditionalQuestions(AdditionalQuestionsEditModel m)
     {
+        var vm = await _orchestrator.GetViewModel(m);
+        
         var response = await _orchestrator.PostEditModel(m, User.ToVacancyUser());
 
         if (!response.Success)
         {
             response.AddErrorsToModelState(ModelState);
         }
-            
-        var vm = await _orchestrator.GetViewModel(m);
+
         if (!ModelState.IsValid)
         {
             return View(vm);
