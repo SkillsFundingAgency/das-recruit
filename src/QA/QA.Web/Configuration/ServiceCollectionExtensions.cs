@@ -40,7 +40,8 @@ namespace Esfa.Recruit.Qa.Web.Configuration
                         sharedOptions.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
                         sharedOptions.DefaultChallengeScheme = WsFederationDefaults.AuthenticationScheme;
                         sharedOptions.DefaultSignOutScheme = WsFederationDefaults.AuthenticationScheme;
-                    }).AddWsFederation(options =>
+                    })
+                    .AddWsFederation(options =>
                     {
                         options.Wtrealm = authConfig.Wtrealm;
                         options.MetadataAddress = authConfig.MetaDataAddress;
