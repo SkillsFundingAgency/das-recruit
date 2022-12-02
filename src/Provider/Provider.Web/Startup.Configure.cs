@@ -184,7 +184,6 @@ namespace Esfa.Recruit.Provider.Web
             app.UseRootRedirect(externalLinks.Value.ProviderApprenticeshipSiteUrl);
 
             app.UseXDownloadOptions();
-            app.UseXRobotsTag(options => options.NoIndex().NoFollow());
 
             app.UseNoCacheHttpHeaders(); // Effectively forces the browser to always request dynamic pages
             app.UseRouting();

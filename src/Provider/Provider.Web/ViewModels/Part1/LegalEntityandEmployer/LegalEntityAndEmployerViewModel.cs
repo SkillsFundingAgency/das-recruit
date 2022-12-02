@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Esfa.Recruit.Provider.Web.Models;
 using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Shared.Web.ViewModels;
@@ -44,6 +45,9 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.Part1.LegalEntityAndEmployer
         public bool HasPreviouslyPersistedLegalEntity => !string.IsNullOrEmpty(SelectedOrganisationId);
         public bool IsTaskListCompleted { get; set; }
         public string EmployerAccountId { get; set; }
+        public SortByType? SortByNameType { get; set; }
+        public SortOrder? SortByAscDesc = SortOrder.Descending;
+
     }
 
 
@@ -59,5 +63,16 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.Part1.LegalEntityAndEmployer
         public string AccountLegalEntityName { get; set; }
         public string EmployerName { get; set; }
         public string EmployerAccountId { get; set; }
+    }
+    public enum SortByType
+    {
+        EmployerName,
+        LegalEntityName
+    }
+
+    public enum SortOrder
+    {
+        Ascending,
+        Descending
     }
 }

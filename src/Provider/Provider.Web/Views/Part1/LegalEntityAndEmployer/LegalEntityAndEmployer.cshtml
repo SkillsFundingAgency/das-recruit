@@ -1,3 +1,6 @@
+@using Esfa.Recruit.Provider.Web.ViewModels.Part1.LegalEntityAndEmployer
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using Esfa.Recruit.Shared.Web.TagHelpers
 @model Esfa.Recruit.Provider.Web.ViewModels.Part1.LegalEntityAndEmployer.LegalEntityAndEmployerViewModel;
 
 @{
@@ -18,16 +21,13 @@
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-
-        
-
         <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }'/>
-
         <partial name="@PartialNames.ReviewSummary" for="Review" />
         
         <h1 class="govuk-heading-xl">
             Which employer do you want to create a vacancy for?
         </h1>
+
         <details class="govuk-details" data-module="govuk-details">
             <summary class="govuk-details__summary">
                 <span class="govuk-details__summary-text">
@@ -35,18 +35,20 @@
                 </span>
             </summary>
             <div class="govuk-details__text">
-                    <p class="govuk-body"> The employer is not listed because you do not have permission to create a vacancy for them.</p>
-                    <p class="govuk-body"> You'll need to contact them to give you permission in the 'training provider permissions' section of their Apprenticeship service account.</p>
+                <p class="govuk-body"> The employer is not listed because you do not have permission to create a vacancy for them.</p>
+                <p class="govuk-body"> You'll need to contact them to give you permission in the 'training provider permissions' section of their Apprenticeship service account.</p>
             </div>
         </details>
         
-        <form method="GET" asp-route="@(Model.VacancyId==null?RouteNames.LegalEntityEmployer_Get:RouteNames.LegalEntityEmployerChange_Get)" asp-all-route-data="@Model.RouteDictionary">
+        <form method="GET" asp-route="@(Model.VacancyId == null ? RouteNames.LegalEntityEmployer_Get : RouteNames.LegalEntityEmployerChange_Get)" asp-all-route-data="@Model.RouteDictionary">
+            <input type="hidden" asp-for="SortByNameType"/>
+            <input type="hidden" asp-for="SortByAscDesc"/>
             <div class="govuk-form-group">
                 <label class="govuk-label" asp-for="SearchTerm">
                     Search employer name or account name
                 </label>
                 <div class="das-search-form__group">
-                    <input asp-for="SearchTerm" class="govuk-input das-search-form__input" maxlength="100" title="Search" />
+                    <input asp-for="SearchTerm" class="govuk-input das-search-form__input" maxlength="100" title="Search"/>
                     <div class="das-search-form__button-wrap">
                         <button class="govuk-button das-search-form__button" type="submit">Search</button>
                     </div>
@@ -54,84 +56,83 @@
                 @if (!string.IsNullOrEmpty(Model.SearchTerm))
                 {
                     <p class="govuk-body govuk-!-margin-top-1">
-                        <a class="govuk-link govuk-link--no-visited-state" asp-route="@(Model.VacancyId==null?RouteNames.LegalEntityEmployer_Get:RouteNames.LegalEntityEmployerChange_Get)" asp-all-route-data="@Model.RouteDictionary">Clear search</a>
+                        <a class="govuk-link govuk-link--no-visited-state" asp-route="@(Model.VacancyId == null ? RouteNames.LegalEntityEmployer_Get : RouteNames.LegalEntityEmployerChange_Get)" asp-all-route-data="@Model.RouteDictionary">Clear search</a>
                     </p>
                     @if (Model.NoOfSearchResults == 0)
                     {
                         <p class="govuk-body">@Model.SearchResultsCaption </p>
                     }
-                    
                 }
-                
             </div>
         </form>
+
         @if (Model.NoOfSearchResults != 0)
         {   
             <form method="POST" asp-route="@RouteNames.LegalEntityEmployer_Post" asp-all-route-data="@Model.RouteDictionary">
-                    <input type="hidden" asp-for="VacancyId"/>
-                    <table class="govuk-table das-table--condensed das-table--responsive" data-module="das-table-sort">
-                            <thead class="govuk-table__head">
-                            <tr class="govuk-table__row">
-                                <th class="govuk-table__header das-table--double-arrows" scope="col">
-                                    <a href="#" class="govuk-link das-table__sort">Employer</a>
-                                </th>
-                                <th class="govuk-table__header das-table--double-arrows" scope="col">
-                                    <a href="#" class="govuk-link das-table__sort">Account Name</a>
-                                </th>
-                                <th class="govuk-table__header" scope="col">Agreement ID</th>
-                                <th class="govuk-table__header" scope="col"></th>
-                            </tr>
-                            </thead>
-                            <tbody class="govuk-table__body">
-                            @foreach (var organisation in @Model.Organisations)
-                            {
-                                <tr class="govuk-table__row">
-                                    <td class="govuk-table__cell" data-label="Employer">
-                                        <div>@organisation.EmployerName</div>
-                                    </td>
-                                    <td class="govuk-table__cell" data-label="Legal Entity">
-                                        <div>@organisation.AccountLegalEntityName </div>
-                                    </td>
-                                    <td class="govuk-table__cell" data-label="Agreement Id">
-                                        <div>@organisation.Id </div>
-                                    </td>
-                                    <td class="govuk-table__cell" data-label="Select Employer and Legal Entity">
-                                        <button type="submit" name="selectedOrganisationId" value="@($"{organisation.Id}|{organisation.EmployerAccountId}")" id="select-@organisation.Id" class="das-button--inline-link">Select<span class="govuk-visually-hidden"> @organisation.AccountLegalEntityName</span></button>
-                                    </td>
-                                </tr>
+                <input type="hidden" asp-for="VacancyId"/>
+                <table class="govuk-table das-table--condensed das-table--responsive" >
+                    <thead class="govuk-table__head">
+                        <tr class="govuk-table__row">
+                            @{
+                                var sortClass = Model.SortByAscDesc == SortOrder.Descending ? "das-table__sort--asc" : "das-table__sort--desc";
                             }
-                            </tbody>
-                        </table>
+                            <th class="govuk-table__header @(Model.SortByNameType == SortByType.EmployerName ? "" : "das-table--double-arrows") das-table-cell-width-35" scope="col">
+                                <a class="govuk-link das-table__sort @(Model.SortByNameType == SortByType.EmployerName ? sortClass : "")" asp-route="@(Model.VacancyId==null?RouteNames.LegalEntityEmployer_Get:RouteNames.LegalEntityEmployerChange_Get)" asp-route-sortByType="@SortByType.EmployerName" asp-route-ukprn="@Model.Ukprn" asp-route-vacancyId="@Model.VacancyId" asp-route-sortOrder="@Model.SortByAscDesc" asp-route-searchTerm="@Model.SearchTerm">Employer</a>
+                            </th>
+                            <th class="govuk-table__header @(Model.SortByNameType == SortByType.LegalEntityName ? "" : "das-table--double-arrows") das-table-cell-width-35" scope="col">
+                                <a class="govuk-link das-table__sort @(Model.SortByNameType == SortByType.LegalEntityName ? sortClass : "")" asp-route="@(Model.VacancyId==null?RouteNames.LegalEntityEmployer_Get:RouteNames.LegalEntityEmployerChange_Get)" asp-route-sortByType="@SortByType.LegalEntityName" asp-route-ukprn="@Model.Ukprn" asp-route-vacancyId="@Model.VacancyId" asp-route-sortOrder="@Model.SortByAscDesc" asp-route-searchTerm="@Model.SearchTerm">Account Name</a>
+                            </th>
+                            <th class="govuk-table__header das-table-cell-width-20" scope="col">Agreement ID</th>
+                            <th class="govuk-table__header das-table-cell-width-10" scope="col"></th>
+                        </tr>
+                    </thead>
+                    <tbody class="govuk-table__body">
+                    @foreach (var organisation in @Model.Organisations)
+                    {
+                        <tr class="govuk-table__row">
+                            <td class="govuk-table__cell" data-label="Employer">
+                                <div>@organisation.EmployerName</div>
+                            </td>
+                            <td class="govuk-table__cell" data-label="Legal Entity">
+                                <div>@organisation.AccountLegalEntityName </div>
+                            </td>
+                            <td class="govuk-table__cell" data-label="Agreement Id">
+                                <div>@organisation.Id </div>
+                            </td>
+                            <td class="govuk-table__cell govuk-table__cell--numeric" data-label="Select Employer and Legal Entity">
+                                <button type="submit" name="selectedOrganisationId" value="@($"{organisation.Id}|{organisation.EmployerAccountId}")" id="select-@organisation.Id" class="das-button--inline-link">Select<span class="govuk-visually-hidden"> @organisation.AccountLegalEntityName</span></button>
+                            </td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
             </form>
         }
 
-        
-        
-            <nav role="navigation" aria-label="Pagination" asp-show="@Model.Pager.ShowPager" >
-                <div class="das-pagination__summary">
-                    @Model.Pager.Caption
-                </div>
-                <ul class="das-pagination">
-                    <li class="das-pagination__item" asp-show="@Model.Pager.ShowPrevious">
+        <nav role="navigation" aria-label="Pagination" asp-show="@Model.Pager.ShowPager" >
+            <div class="das-pagination__summary">
+                @Model.Pager.Caption
+            </div>
+            <ul class="das-pagination">
+                <li class="das-pagination__item" asp-show="@Model.Pager.ShowPrevious">
                     <a class="das-pagination__link" asp-route="@Model.Pager.RouteName" asp-all-route-data="@Model.Pager.PreviousPageRouteData" aria-label="Previous page">Previous</a>
+                </li>
+                @for (var pageIndex = 1; pageIndex <= Model.Pager.TotalPages; pageIndex++)
+                {
+                    <li class="das-pagination__item">
+                        @if (pageIndex == Model.Pager.CurrentPage) {
+                            <a class="das-pagination__link current" asp-route="@Model.Pager.RouteName" asp-all-route-data="@Model.Pager.GetRouteData(pageIndex)" aria-current="true" aria-label="Page @pageIndex, current page">@pageIndex</a>
+                        } 
+                        else 
+                        {
+                            <a class="das-pagination__link asp-route="  asp-route="@Model.Pager.RouteName" asp-all-route-data="@Model.Pager.GetRouteData(pageIndex)" aria-label="Page @pageIndex">@pageIndex</a>
+                        }
                     </li>
-                    @for (var pageIndex = 1; pageIndex <= Model.Pager.TotalPages; pageIndex++)
-                    {
-                        <li class="das-pagination__item">
-                            @if (pageIndex == Model.Pager.CurrentPage) {
-                                <a class="das-pagination__link current" asp-route="@Model.Pager.RouteName" asp-all-route-data="@Model.Pager.GetRouteData(pageIndex)" aria-current="true" aria-label="Page @pageIndex, current page">@pageIndex</a>
-                            } 
-                            else 
-                            {
-                                <a class="das-pagination__link asp-route="  asp-route="@Model.Pager.RouteName" asp-all-route-data="@Model.Pager.GetRouteData(pageIndex)" aria-label="Page @pageIndex">@pageIndex</a>
-                            }
-                        </li>
-                    }
-                    <li class="das-pagination__item" asp-show="@Model.Pager.ShowNext">
-                    <a class="das-pagination__link"  asp-route="@Model.Pager.RouteName" asp-all-route-data="@Model.Pager.NextPageRouteData" aria-label="Next page">Next</a>
-                    </li>
-                </ul>
-            </nav>
-
+                }
+                <li class="das-pagination__item" asp-show="@Model.Pager.ShowNext">
+                    <a class="das-pagination__link" asp-route="@Model.Pager.RouteName" asp-all-route-data="@Model.Pager.NextPageRouteData" aria-label="Next page">Next</a>
+                </li>
+            </ul>
+        </nav>
     </div>
 </div>
