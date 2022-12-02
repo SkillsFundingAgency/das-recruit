@@ -60,31 +60,13 @@ namespace Esfa.Recruit.Employer.Web.ViewModels
         private string _additionalQuestion1;
         public string AdditionalQuestion1 
         { 
-            get
-            {
-                if (string.IsNullOrWhiteSpace(_additionalQuestion1))
-                    return null;
-                
-                if (!_additionalQuestion1.EndsWith("?"))
-                    return _additionalQuestion1.TrimEnd() + "?";
-                
-                return _additionalQuestion1;
-            }
+            get { return BuildAdditionalQuestionText(_additionalQuestion1); }
             set { _additionalQuestion1 = value; }
         }
         private string _additionalQuestion2;
         public string AdditionalQuestion2 
         { 
-            get
-            {
-                if (string.IsNullOrWhiteSpace(_additionalQuestion2))
-                    return null;
-                
-                if (!_additionalQuestion2.EndsWith("?"))
-                    return _additionalQuestion2.TrimEnd() + "?";
-                
-                return _additionalQuestion2;
-            }
+            get { return BuildAdditionalQuestionText(_additionalQuestion2); }
             set { _additionalQuestion2 = value; }
         }
         public bool HasSubmittedAdditionalQuestions { get; internal set; }
