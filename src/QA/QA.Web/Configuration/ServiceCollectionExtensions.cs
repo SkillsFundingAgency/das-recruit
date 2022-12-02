@@ -15,6 +15,8 @@ using Microsoft.Extensions.Logging;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.QA.Web.Filters;
 using FluentValidation;
+using Microsoft.Extensions.Configuration;
+using SFA.DAS.DfESignIn.Auth.AppStart;
 
 namespace Esfa.Recruit.Qa.Web.Configuration
 {
@@ -22,31 +24,39 @@ namespace Esfa.Recruit.Qa.Web.Configuration
     {
         private const int SessionTimeoutMinutes = 30;
 
-        public static void AddAuthenticationService(this IServiceCollection services, AuthenticationConfiguration authConfig)
+        public static void AddAuthenticationService(this IServiceCollection services, AuthenticationConfiguration authConfig, IConfiguration config)
         {
-            services.AddAuthentication(sharedOptions =>
+            // Condition to check if the DfeSignIn is allowed.
+            if (authConfig.UseDfeSignIn)
             {
-                sharedOptions.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                sharedOptions.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                sharedOptions.DefaultChallengeScheme = WsFederationDefaults.AuthenticationScheme;
-                sharedOptions.DefaultSignOutScheme = WsFederationDefaults.AuthenticationScheme;
-            })
-            .AddWsFederation(options =>
+                // Register DfeSignIn authentication services to the AspNetCore Authentication Options.
+                services.AddAndConfigureDfESignInAuthentication(config, $"{CookieNames.QaData}", null);
+            }
+            else
             {
-                options.Wtrealm = authConfig.Wtrealm;
-                options.MetadataAddress = authConfig.MetaDataAddress;
-                options.UseTokenLifetime = false;
-                //options.CallbackPath = "/";
-                //options.SkipUnrecognizedRequests = true;
-            })
-            .AddCookie(options =>
-            {
-                options.Cookie.Name = CookieNames.QaData;
-                options.Cookie.SecurePolicy = Microsoft.AspNetCore.Http.CookieSecurePolicy.Always;
-                options.AccessDeniedPath = RoutePaths.AccessDeniedPath;
-                options.SlidingExpiration = true;
-                options.ExpireTimeSpan = TimeSpan.FromMinutes(SessionTimeoutMinutes);
-            });
+                services.AddAuthentication(sharedOptions =>
+                    {
+                        sharedOptions.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                        sharedOptions.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                        sharedOptions.DefaultChallengeScheme = WsFederationDefaults.AuthenticationScheme;
+                        sharedOptions.DefaultSignOutScheme = WsFederationDefaults.AuthenticationScheme;
+                    }).AddWsFederation(options =>
+                    {
+                        options.Wtrealm = authConfig.Wtrealm;
+                        options.MetadataAddress = authConfig.MetaDataAddress;
+                        options.UseTokenLifetime = false;
+                        //options.CallbackPath = "/";
+                        //options.SkipUnrecognizedRequests = true;
+                    })
+                    .AddCookie(options =>
+                    {
+                        options.Cookie.Name = CookieNames.QaData;
+                        options.Cookie.SecurePolicy = Microsoft.AspNetCore.Http.CookieSecurePolicy.Always;
+                        options.AccessDeniedPath = RoutePaths.AccessDeniedPath;
+                        options.SlidingExpiration = true;
+                        options.ExpireTimeSpan = TimeSpan.FromMinutes(SessionTimeoutMinutes);
+                    });
+            }
         }
 
         public static void AddAuthorizationService(this IServiceCollection services, AuthorizationConfiguration legacyAuthorizationConfig, AuthorizationConfiguration authorizationConfig)
