@@ -454,10 +454,10 @@
         <h2 class="govuk-heading-m">Application</h2>
         <dl class="app-summary-list govuk-!-margin-bottom-9">
             <field-review-message field-name="@FieldIdentifiers.AdditionalQuestion1" model="@Model"></field-review-message>
-            <div class="app-summary-list__row" field-review-marker="AdditionalQuestion1">
+            <div class="app-summary-list__row app-summary-list__row--no-border" field-review-marker="AdditionalQuestion1">
                 <dt class="app-summary-list__key" id="additionalQuestion1">Question 1</dt>
                 <dd class="app-summary-list__value">
-                    @Model.AdditionalQuestion1
+                    @(Model.HasAdditionalQuestion1 ? Model.AdditionalQuestion1 : "None")
                     <field-review-tag class="govuk-tag--orange" field-name="@FieldIdentifiers.AdditionalQuestion1" tag-name="strong" model="@Model"/>
                 </dd>
                 <dd class="app-summary-list__actions">
@@ -468,7 +468,7 @@
             <div class="app-summary-list__row" field-review-marker="AdditionalQuestion2">
                 <dt class="app-summary-list__key" id="additionalQuestion2">Question 2</dt>
                 <dd class="app-summary-list__value">
-                    @Model.AdditionalQuestion2
+                    @(Model.HasAdditionalQuestion2 ? Model.AdditionalQuestion2 : "None")
                     <field-review-tag class="govuk-tag--orange" field-name="@FieldIdentifiers.AdditionalQuestion2" tag-name="strong" model="@Model"/>
                 </dd>
                 <dd class="app-summary-list__actions">
