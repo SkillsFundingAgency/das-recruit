@@ -7,12 +7,14 @@ using Esfa.Recruit.Shared.Web.Middleware;
 using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Authentication.WsFederation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Rewrite;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using SFA.DAS.DfESignIn.Auth.Configuration;
 
 namespace Esfa.Recruit.Qa.Web
 {
@@ -75,19 +77,28 @@ namespace Esfa.Recruit.Qa.Web
             app.UseReferrerPolicy(opts => opts.NoReferrer());
             app.UseXXssProtection(opts => opts.EnabledWithBlockMode());
 
-            app.UseRedirectValidation(opts => {
+            app.UseRedirectValidation(opts =>
+            {
                 opts.AllowSameHostRedirectsToHttps();
-                opts.AllowedDestinations(GetAllowableDestinations(_authenticationConfig, _externalLinks));
+                opts.AllowedDestinations(GetAllowableDestinations(_authenticationConfig, _externalLinks, _dfEOidcConfig));
             }); //Register this earlier if there's middleware that might redirect.
 
             app.UseAuthentication();
 
+            
             app.Use(async (context, next) => {
                 if (context.Request.Path.Equals("/signout"))
                 {
-                    // Redirects
+                    // Get the AuthScheme based on the DfeSignIn config/property.
+                    string authScheme =
+                        _authenticationConfig.UseDfeSignIn
+                            ? OpenIdConnectDefaults.AuthenticationScheme
+                            : WsFederationDefaults.AuthenticationScheme;
+
                     await context.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-                    await context.SignOutAsync(WsFederationDefaults.AuthenticationScheme, new AuthenticationProperties()
+                    
+                    // Redirects
+                    await context.SignOutAsync(authScheme, new AuthenticationProperties
                     {
                         RedirectUri = "/"
                     });
@@ -116,7 +127,7 @@ namespace Esfa.Recruit.Qa.Web
 
         }
 
-        private static string[] GetAllowableDestinations(AuthenticationConfiguration authConfig, ExternalLinksConfiguration linksConfig)
+        private static string[] GetAllowableDestinations(AuthenticationConfiguration authConfig, ExternalLinksConfiguration linksConfig, DfEOidcConfiguration dfeConfig)
         {
             var destinations = new List<string>();
             
@@ -125,6 +136,10 @@ namespace Esfa.Recruit.Qa.Web
 
             if (!string.IsNullOrWhiteSpace(linksConfig?.StaffIdamsUrl))
                 destinations.Add(linksConfig.StaffIdamsUrl);
+            
+            // Add DfeSignIn BaseUrl to the safe list. 
+            if(!string.IsNullOrWhiteSpace(dfeConfig.BaseUrl))
+                destinations.Add(dfeConfig.BaseUrl);
 
             return destinations.ToArray();
         }
