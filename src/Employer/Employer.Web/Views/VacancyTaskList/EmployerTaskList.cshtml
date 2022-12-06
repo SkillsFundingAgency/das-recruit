@@ -412,13 +412,16 @@
             </ul>
         </li>
         
-
         <li>
                 <h2 class="das-task-list__section">
                     <span class="das-task-list__section-number">6. </span> 
                     <span class="das-task-list__section-heading">Check and submit your advert</span>
                     <span class="das-task-list__section-status">
-                        @if (Model.Status == VacancyStatus.Submitted)
+                        @if(Model.TaskListSectionFiveState == VacancyTaskListSectionState.Completed)
+                        {
+                            <strong class="govuk-tag govuk-tag--blue das-task-list__section-tag">In progress</strong>
+                        }
+                        else if (Model.Status == VacancyStatus.Submitted)
                         {
                             <strong class="govuk-tag das-task-list__section-tag">Completed</strong>    
                         }
