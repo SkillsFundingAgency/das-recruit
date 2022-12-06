@@ -196,8 +196,7 @@ namespace Esfa.Recruit.Employer.Web
                 builder.MapControllerRoute("default", RoutePaths.AccountRoutePath);
             });
             app.UseXDownloadOptions();
-            app.UseXRobotsTag(options => options.NoIndex().NoFollow());
-
+            
             app.UseNoCacheHttpHeaders(); // Effectively forces the browser to always request dynamic pages
 
         }

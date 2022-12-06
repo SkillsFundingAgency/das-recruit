@@ -16,6 +16,7 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelationship;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 using EmployerViewModel = Esfa.Recruit.Provider.Web.ViewModels.Part1.LegalEntityAndEmployer.EmployerViewModel;
 
 namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
@@ -29,6 +30,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
         private readonly IRecruitVacancyClient _recruitVacancyClient;
         private readonly IUtility _utility;
         private const int MaxLegalEntitiesPerPage = 25;
+        
 
         public LegalEntityAndEmployerOrchestrator(
             IProviderVacancyClient providerVacancyClient,
@@ -44,7 +46,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
             _utility = utility;
         }
 
-        public async Task<LegalEntityAndEmployerViewModel> GetLegalEntityAndEmployerViewModelAsync(VacancyRouteModel vrm, string searchTerm, int? requestedPageNo)
+        public async Task<LegalEntityAndEmployerViewModel> GetLegalEntityAndEmployerViewModelAsync(VacancyRouteModel vrm, string searchTerm, int? requestedPageNo, SortOrder? sortOrder = null, SortByType? sortByType = null)
         {
             var editVacancyInfo = await _providerVacancyClient.GetProviderEditVacancyInfoAsync(vrm.Ukprn);
 
@@ -64,23 +66,58 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
                 TotalNumberOfLegalEntities = accountLegalEntities.Count(),
                 SearchTerm = searchTerm,
                 VacancyId = vrm.VacancyId,
+                SortByNameType = sortByType,
+                SortByAscDesc = sortOrder,
                 Ukprn = vrm.Ukprn
             };
 
-            var filteredLegalEntities = vm.Organisations
-                .Where(le => string.IsNullOrEmpty(searchTerm) || le.EmployerName.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) || le.AccountLegalEntityName.Contains(searchTerm, StringComparison.OrdinalIgnoreCase))
-                .OrderBy(v => v.EmployerName)
-                .ToList();
+            var filterOrgs = vm.Organisations
+                .Where(le => string.IsNullOrEmpty(searchTerm) || le.EmployerName.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) || le.AccountLegalEntityName.Contains(searchTerm, StringComparison.OrdinalIgnoreCase));
 
-            vm.NoOfSearchResults = filteredLegalEntities.Count();
+            List<OrganisationsViewModel> filterAndOrdered;
 
-            var filteredLegalEntitiesTotal = filteredLegalEntities.Count();
+            if (sortOrder is SortOrder.Ascending)
+            {
+                vm.SortByAscDesc = SortOrder.Descending;
+                filterAndOrdered = filterOrgs.OrderBy(c => sortByType is SortByType.LegalEntityName ? c.AccountLegalEntityName : c.EmployerName).ToList();
+            }
+            else
+            { 
+                vm.SortByAscDesc = SortOrder.Ascending;
+                filterAndOrdered = filterOrgs.OrderByDescending(c => sortByType is SortByType.LegalEntityName ? c.AccountLegalEntityName : c.EmployerName).ToList();
+            }
+
+
+            vm.NoOfSearchResults = filterAndOrdered.Count;
+
+
+            var filteredLegalEntitiesTotal = filterAndOrdered.Count;
             var totalNumberOfPages = PagingHelper.GetTotalNoOfPages(MaxLegalEntitiesPerPage, filteredLegalEntitiesTotal);
+
+            vm.SortByNameType = sortByType;
 
             setPage = GetPageNo(setPage, totalNumberOfPages);
 
-            SetFilteredOrganisationsForPage(setPage, vm, filteredLegalEntities);
-            SetPager(searchTerm, setPage, vm, filteredLegalEntitiesTotal);
+            SetFilteredOrganisationsForPage(setPage, vm, filterAndOrdered);
+
+            var routeParams = new Dictionary<string, string>();
+            if (!searchTerm.IsNullOrEmpty())
+                routeParams.Add(nameof(searchTerm), searchTerm);
+
+
+            routeParams.Add("sortOrder", sortOrder.ToString());
+            routeParams.Add("sortByType", sortByType.ToString());
+            routeParams.Add("ukprn", vrm.Ukprn.ToString());
+            var routeName = RouteNames.LegalEntityEmployer_Get;
+            if (vrm.VacancyId != null)
+            {
+                routeName = RouteNames.LegalEntityEmployerChange_Get;
+                routeParams.Add("vacancyId", vrm.VacancyId.ToString());    
+            }
+            
+
+            SetPager(routeParams, setPage, vm, filteredLegalEntitiesTotal, routeName);
+
 
             return vm;
         }
@@ -190,18 +227,15 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
             return page;
         }
 
-        private void SetPager(string searchTerm, int page, LegalEntityAndEmployerViewModel vm, int filteredLegalEntitiesTotal)
+        private void SetPager(Dictionary<string, string> routeParams, int page, LegalEntityAndEmployerViewModel vm, int filteredLegalEntitiesTotal, string routeName)
         {
             var pager = new PagerViewModel(
                 filteredLegalEntitiesTotal,
                 MaxLegalEntitiesPerPage,
                 page,
                 "Showing {0} to {1} of {2} organisations",
-                RouteNames.LegalEntity_Get,
-                new Dictionary<string, string>
-                {
-                    { nameof(searchTerm), searchTerm }
-                });
+                routeName,
+                routeParams);
 
             vm.Pager = pager;
         }
