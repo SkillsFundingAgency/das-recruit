@@ -67,7 +67,6 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             vm.SoftValidationErrors = GetSoftValidationErrors(vacancy);
             vm.VacancyId = vrm.VacancyId;
             vm.EmployerAccountId = vrm.EmployerAccountId;
-            vm.HasSubmittedAdditionalQuestions = vacancy.HasSubmittedAdditionalQuestions;
             
             if (programme != null)
             {
@@ -196,6 +195,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             mappings.Add(e => e.ApplicationUrl, vm => vm.ApplicationUrl);
             mappings.Add(e => e.TrainingProvider, vm => vm.ProviderName);
             mappings.Add(e => e.TrainingProvider.Ukprn, vm => vm.ProviderName);
+            mappings.Add(e => e.AdditionalQuestion1, vm => vm.AdditionalQuestion1);
+            mappings.Add(e => e.AdditionalQuestion2, vm => vm.AdditionalQuestion2);
 
             return mappings;
         }
