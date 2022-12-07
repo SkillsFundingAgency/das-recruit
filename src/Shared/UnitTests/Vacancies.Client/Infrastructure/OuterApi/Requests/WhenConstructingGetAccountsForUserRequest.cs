@@ -15,7 +15,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
             var actual = new GetUserAccountsRequest(userId, email);
             
             //Assert
-            actual.GetUrl.Should().Be($"users/{userId}/accounts?email={HttpUtility.UrlEncode(email)}");
+            actual.GetUrl.Should().Be($"accountusers/{userId}/accounts?email={HttpUtility.UrlEncode(email)}");
         }
     }
 }
