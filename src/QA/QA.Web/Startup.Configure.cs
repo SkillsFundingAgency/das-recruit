@@ -96,7 +96,7 @@ namespace Esfa.Recruit.Qa.Web
                             : WsFederationDefaults.AuthenticationScheme;
 
                     await context.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-                    
+
                     // Redirects
                     await context.SignOutAsync(authScheme, new AuthenticationProperties
                     {
@@ -130,16 +130,27 @@ namespace Esfa.Recruit.Qa.Web
         private static string[] GetAllowableDestinations(AuthenticationConfiguration authConfig, ExternalLinksConfiguration linksConfig, DfEOidcConfiguration dfeConfig)
         {
             var destinations = new List<string>();
-            
-            if (!string.IsNullOrWhiteSpace(authConfig?.MetaDataAddress))
-                destinations.Add(ExtractAuthHost(authConfig));
 
-            if (!string.IsNullOrWhiteSpace(linksConfig?.StaffIdamsUrl))
-                destinations.Add(linksConfig.StaffIdamsUrl);
-            
-            // Add DfeSignIn BaseUrl to the safe list. 
-            if(!string.IsNullOrWhiteSpace(dfeConfig.BaseUrl))
-                destinations.Add(dfeConfig.BaseUrl);
+            switch (authConfig.UseDfeSignIn)
+            {
+                case false:
+                    {
+                        if (!string.IsNullOrWhiteSpace(authConfig?.MetaDataAddress))
+                            destinations.Add(ExtractAuthHost(authConfig));
+
+                        if (!string.IsNullOrWhiteSpace(linksConfig?.StaffIdamsUrl))
+                            destinations.Add(linksConfig.StaffIdamsUrl);
+                        break;
+                    }
+                case true:
+                default:
+                    {
+                        // Add DfeSignIn BaseUrl to the safe list. 
+                        if (!string.IsNullOrWhiteSpace(dfeConfig.BaseUrl))
+                            destinations.Add(dfeConfig.BaseUrl);
+                        break;
+                    }
+            }
 
             return destinations.ToArray();
         }

@@ -1,21 +1,20 @@
 using System;
 using System.Linq;
 using Esfa.Recruit.Qa.Web.Configuration.Routing;
-using FluentValidation.AspNetCore;
 using Esfa.Recruit.Qa.Web.Security;
+using Esfa.Recruit.QA.Web.Filters;
+using Esfa.Recruit.Shared.Web.Extensions;
+using FluentValidation;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.WsFederation;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Net.Http.Headers;
-using Microsoft.Extensions.Logging;
-using Esfa.Recruit.Shared.Web.Extensions;
-using Esfa.Recruit.QA.Web.Filters;
-using FluentValidation;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Microsoft.Net.Http.Headers;
 using SFA.DAS.DfESignIn.Auth.AppStart;
 
 namespace Esfa.Recruit.Qa.Web.Configuration
@@ -30,7 +29,7 @@ namespace Esfa.Recruit.Qa.Web.Configuration
             if (authConfig.UseDfeSignIn)
             {
                 // Register DfeSignIn authentication services to the AspNetCore Authentication Options.
-                services.AddAndConfigureDfESignInAuthentication(config, $"{CookieNames.QaData}", null);
+                services.AddAndConfigureDfESignInAuthentication(config, $"{CookieNames.QaData}");
             }
             else
             {
