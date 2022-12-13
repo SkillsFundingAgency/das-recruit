@@ -143,7 +143,6 @@ namespace Esfa.Recruit.Qa.Web
                         break;
                     }
                 case true:
-                default:
                     {
                         // Add DfeSignIn BaseUrl to the safe list. 
                         if (!string.IsNullOrWhiteSpace(dfeConfig.BaseUrl))

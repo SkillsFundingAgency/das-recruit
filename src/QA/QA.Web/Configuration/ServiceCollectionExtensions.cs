@@ -16,6 +16,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Net.Http.Headers;
 using SFA.DAS.DfESignIn.Auth.AppStart;
+using SFA.DAS.DfESignIn.Auth.Constants;
 
 namespace Esfa.Recruit.Qa.Web.Configuration
 {
@@ -66,19 +67,24 @@ namespace Esfa.Recruit.Qa.Web.Configuration
                 options.AddPolicy(AuthorizationPolicyNames.QaUserPolicyName, policy =>
                 {
                     policy.RequireAuthenticatedUser();
-                    policy.RequireAssertion(context => 
-                        context.User.HasClaim(legacyAuthorizationConfig.ClaimType, legacyAuthorizationConfig.UserClaimValue) 
-                        || context.User.HasClaim(legacyAuthorizationConfig.ClaimType, legacyAuthorizationConfig.TeamLeadClaimValue) 
+                    policy.RequireAssertion(context =>
+                        context.User.HasClaim(legacyAuthorizationConfig.ClaimType, legacyAuthorizationConfig.UserClaimValue)
+                        || context.User.HasClaim(legacyAuthorizationConfig.ClaimType, legacyAuthorizationConfig.TeamLeadClaimValue)
                         || context.User.HasClaim(authorizationConfig.ClaimType, authorizationConfig.UserClaimValue)
                         || context.User.HasClaim(authorizationConfig.ClaimType, authorizationConfig.TeamLeadClaimValue)
+                        // including the DfESignIn service role URI in the authorization policy.
+                        || context.User.HasClaim(CustomClaimsIdentity.Service, authorizationConfig.UserClaimValue) 
+                        || context.User.HasClaim(CustomClaimsIdentity.Service, authorizationConfig.TeamLeadClaimValue)
                     );
                 });
                 options.AddPolicy(AuthorizationPolicyNames.TeamLeadUserPolicyName, policy =>
                 {
                     policy.RequireAuthenticatedUser();
-                    policy.RequireAssertion(context => 
+                    policy.RequireAssertion(context =>
                         context.User.HasClaim(legacyAuthorizationConfig.ClaimType, legacyAuthorizationConfig.TeamLeadClaimValue)
                         || context.User.HasClaim(authorizationConfig.ClaimType, authorizationConfig.TeamLeadClaimValue)
+                        // including the DfESignIn service role URI in the authorization policy.
+                        || context.User.HasClaim(CustomClaimsIdentity.Service, authorizationConfig.TeamLeadClaimValue)
                     );
                 });
             });
