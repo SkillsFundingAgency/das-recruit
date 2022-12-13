@@ -1,4 +1,5 @@
 ﻿using Esfa.Recruit.Provider.Web.Filters;
+using Esfa.Recruit.Provider.Web.Interfaces;
 using Esfa.Recruit.Provider.Web.Mappings;
 using Esfa.Recruit.Provider.Web.Orchestrators;
 using Esfa.Recruit.Shared.Web.Configuration;
@@ -125,6 +126,7 @@ namespace Esfa.Recruit.Provider.Web.Configuration
             services.AddTransient<FutureProspectsOrchestrator>();
             services.AddTransient<WorkExperienceOrchestrator>();
             services.AddTransient<TraineeSectorOrchestrator>();
+            services.AddTransient<IAdditionalQuestionsOrchestrator, AdditionalQuestionsOrchestrator>();
         }
 
         private static void RegisterMapperDeps(IServiceCollection services)
