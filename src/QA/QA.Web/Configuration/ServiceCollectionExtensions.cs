@@ -26,10 +26,11 @@ namespace Esfa.Recruit.Qa.Web.Configuration
 
         public static void AddAuthenticationService(this IServiceCollection services, AuthenticationConfiguration authConfig, IConfiguration config)
         {
-            // Condition to check if the DfeSignIn is allowed.
-            if (authConfig.UseDfeSignIn)
+            // condition to check if the DfeSignIn is allowed.
+            bool isDfESignInAllowed = config.GetValue<bool>("UseDfeSignIn");
+            if (isDfESignInAllowed)
             {
-                // Register DfeSignIn authentication services to the AspNetCore Authentication Options.
+                // register DfeSignIn authentication services to the AspNetCore Authentication Options.
                 services.AddAndConfigureDfESignInAuthentication(config, $"{CookieNames.QaData}");
             }
             else

@@ -80,7 +80,11 @@ namespace Esfa.Recruit.Qa.Web
             app.UseRedirectValidation(opts =>
             {
                 opts.AllowSameHostRedirectsToHttps();
-                opts.AllowedDestinations(GetAllowableDestinations(_authenticationConfig, _externalLinks, _dfEOidcConfig));
+                opts.AllowedDestinations(GetAllowableDestinations(
+                    _authenticationConfig,
+                    _externalLinks,
+                    _isDfESignInAllowed,
+                    _dfEOidcConfig));
             }); //Register this earlier if there's middleware that might redirect.
 
             app.UseAuthentication();
@@ -91,7 +95,7 @@ namespace Esfa.Recruit.Qa.Web
                 {
                     // Get the AuthScheme based on the DfeSignIn config/property.
                     string authScheme =
-                        _authenticationConfig.UseDfeSignIn
+                        _isDfESignInAllowed
                             ? OpenIdConnectDefaults.AuthenticationScheme
                             : WsFederationDefaults.AuthenticationScheme;
 
@@ -127,14 +131,20 @@ namespace Esfa.Recruit.Qa.Web
 
         }
 
-        private static string[] GetAllowableDestinations(AuthenticationConfiguration authConfig, ExternalLinksConfiguration linksConfig, DfEOidcConfiguration dfeConfig)
+        private static string[] GetAllowableDestinations(
+            AuthenticationConfiguration authConfig,
+            ExternalLinksConfiguration linksConfig,
+            bool isDfESignInAllowed,
+            DfEOidcConfiguration dfeConfig)
         {
             var destinations = new List<string>();
 
-            switch (authConfig.UseDfeSignIn)
+            // check if the DfESignIn is allowed.
+            switch (isDfESignInAllowed)
             {
                 case false:
                     {
+                        // add WsFederation base url to the whitelist/safe list. 
                         if (!string.IsNullOrWhiteSpace(authConfig?.MetaDataAddress))
                             destinations.Add(ExtractAuthHost(authConfig));
 
@@ -144,7 +154,7 @@ namespace Esfa.Recruit.Qa.Web
                     }
                 case true:
                     {
-                        // Add DfeSignIn BaseUrl to the safe list. 
+                        // add DfeSignIn base url to the whitelist/safe list. 
                         if (!string.IsNullOrWhiteSpace(dfeConfig.BaseUrl))
                             destinations.Add(dfeConfig.BaseUrl);
                         break;
