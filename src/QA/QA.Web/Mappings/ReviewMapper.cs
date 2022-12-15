@@ -331,6 +331,7 @@ namespace Esfa.Recruit.Qa.Web.Mappings
                 vm.IsVacancyDeleted = currentVacancyResult.IsDeleted;
                 vm.AdditionalQuestion1 = vacancy.AdditionalQuestion1;
                 vm.AdditionalQuestion2 = vacancy.AdditionalQuestion2;
+                vm.HasAdditionalQueations = vacancy.HasSubmittedAdditionalQuestions;
             }
             catch (NullReferenceException ex)
             {

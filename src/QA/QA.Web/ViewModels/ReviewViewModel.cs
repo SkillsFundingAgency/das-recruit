@@ -66,6 +66,7 @@ namespace Esfa.Recruit.Qa.Web.ViewModels
         public ManualQaOutcome? ManualOutcome { get; set; }
         public string AdditionalQuestion1 { get; internal set; }
         public string AdditionalQuestion2 { get; internal set; }
+        public bool HasAdditionalQueations { get; internal set; }
 
         public bool IsAnonymous => EmployerNameOption == EmployerNameOption.Anonymous;
         public bool IsApproved => ManualOutcome.GetValueOrDefault() == ManualQaOutcome.Approved;
