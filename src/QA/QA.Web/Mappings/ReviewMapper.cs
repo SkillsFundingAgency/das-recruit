@@ -86,7 +86,9 @@ namespace Esfa.Recruit.Qa.Web.Mappings
             { FieldIdResolver.ToFieldId(v => v.ProviderContact.Phone), new []{FieldIdentifiers.ProviderContact}},
             { FieldIdResolver.ToFieldId(v => v.ApplicationInstructions), new [] {FieldIdentifiers.ApplicationInstructions }},
             { FieldIdResolver.ToFieldId(v => v.ApplicationMethod), new [] {FieldIdentifiers.ApplicationMethod} },
-            { FieldIdResolver.ToFieldId(v => v.ApplicationUrl), new []{FieldIdentifiers.ApplicationUrl} }
+            { FieldIdResolver.ToFieldId(v => v.ApplicationUrl), new []{FieldIdentifiers.ApplicationUrl} },
+            { FieldIdResolver.ToFieldId(v => v.AdditionalQuestion1), new []{FieldIdentifiers.AdditionalQuestion1} },
+            { FieldIdResolver.ToFieldId(v => v.AdditionalQuestion2), new []{FieldIdentifiers.AdditionalQuestion2} }
         };
 
         private static List<FieldIdentifierViewModel> GetFieldIndicators(VacancyType vacancyType)
@@ -142,7 +144,11 @@ namespace Esfa.Recruit.Qa.Web.Mappings
                     new FieldIdentifierViewModel
                         { FieldIdentifier = FieldIdentifiers.ApplicationUrl, Text = "Apply now web address" },
                     new FieldIdentifierViewModel
-                        { FieldIdentifier = FieldIdentifiers.ApplicationInstructions, Text = "Application process" }
+                        { FieldIdentifier = FieldIdentifiers.ApplicationInstructions, Text = "Application process" },
+                    new FieldIdentifierViewModel
+                        { FieldIdentifier = FieldIdentifiers.AdditionalQuestion1, Text = "Additional Question 1" },
+                    new FieldIdentifierViewModel
+                        { FieldIdentifier = FieldIdentifiers.AdditionalQuestion2, Text = "Additional Question 2" }
                 };
             }
             else
