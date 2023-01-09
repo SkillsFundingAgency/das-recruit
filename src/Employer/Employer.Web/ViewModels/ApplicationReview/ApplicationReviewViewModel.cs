@@ -33,7 +33,9 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.ApplicationReview;
         public List<TrainingCoursesViewModel> TrainingCourses { get; set; }
         public List<WorkExperienceViewModel> WorkExperiences { get; set; }
         public string AdditionalQuestion1 { get; set; }
+        public string AdditionalAnswer1 { get; set; }
         public string AdditionalQuestion2 { get; set; }
+        public string AdditionalAnswer2 { get; set; }
 
         public bool HasNoQualifications => Qualifications.Any() == false;
         public bool HasNoTrainingCourses => TrainingCourses.Any() == false;
@@ -41,7 +43,8 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.ApplicationReview;
         public bool HasSkills => Skills.Any();
         public bool HasNoSkills => !HasSkills;
 
-        public bool HasAdditionalQuestions => !AdditionalQuestion1.IsNullOrEmpty() || !AdditionalQuestion2.IsNullOrEmpty();
+        public bool HasAdditionalQuestions => !AdditionalQuestion1.IsNullOrEmpty();
+        public bool HasAdditionalSecondQuestion => !AdditionalQuestion2.IsNullOrEmpty();
         public bool HasNoSupportRequirements => string.IsNullOrWhiteSpace(Support);
         public bool CanNotChangeOutcome => (Status == ApplicationReviewStatus.Successful || Status == ApplicationReviewStatus.Unsuccessful);
         public bool CanChangeOutcome => !CanNotChangeOutcome;
