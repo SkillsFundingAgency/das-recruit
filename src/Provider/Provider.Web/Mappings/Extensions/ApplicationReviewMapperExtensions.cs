@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Shared.Web.Extensions;
@@ -35,6 +35,8 @@ namespace Esfa.Recruit.Provider.Web.Mappings.Extensions
                 HobbiesAndInterests = r.Application.HobbiesAndInterests,
                 Improvements = r.Application.Improvements,
                 Phone = r.Application.Phone,
+                AdditionalQuestionAnswer1 = r.Application.AdditionalQuestion1,
+                AdditionalQuestionAnswer2 = r.Application.AdditionalQuestion2,
                 Qualifications = r.Application.Qualifications?.Select(q =>
                     new QualificationViewModel
                     {

@@ -90,7 +90,7 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.Rules.VacancyRules
             var outcome = await rule.EvaluateAsync(entity);
 
             Assert.True(outcome.HasDetails);
-            Assert.Equal(17, outcome.Details.Count());
+            Assert.Equal(19, outcome.Details.Count());
 
             Assert.All(outcome.Details, a =>
             {

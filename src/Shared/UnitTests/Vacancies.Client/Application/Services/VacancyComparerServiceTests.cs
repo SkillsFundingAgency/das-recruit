@@ -64,6 +64,8 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.Services
             result.Fields.Single(f => f.FieldName == FieldIdResolver.ToFieldId(v => v.Wage.WageType)).AreEqual.Should().Be(expectedAreEqual);
             result.Fields.Single(f => f.FieldName == FieldIdResolver.ToFieldId(v => v.Wage.FixedWageYearlyAmount)).AreEqual.Should().Be(expectedAreEqual);
             result.Fields.Single(f => f.FieldName == FieldIdResolver.ToFieldId(v => v.Wage.Duration)).AreEqual.Should().Be(expectedAreEqual);
+            result.Fields.Single(f => f.FieldName == FieldIdResolver.ToFieldId(v => v.AdditionalQuestion1)).AreEqual.Should().Be(expectedAreEqual);
+            result.Fields.Single(f => f.FieldName == FieldIdResolver.ToFieldId(v => v.AdditionalQuestion2)).AreEqual.Should().Be(expectedAreEqual);
         }
 
         private static Vacancy CreateVacancy()
@@ -119,7 +121,9 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.Services
                     FixedWageYearlyAmount = 1000.00m,
                     Duration = 1,
                     DurationUnit = DurationUnit.Month
-                }
+                },
+                AdditionalQuestion1 = "Additional question",
+                AdditionalQuestion2 = "Additional question 2",
             };
         }
 
@@ -176,7 +180,9 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.Services
                     FixedWageYearlyAmount = 2000.00m,
                     Duration = 2,
                     DurationUnit = DurationUnit.Year
-                }
+                },
+                AdditionalQuestion1 = "Additional question CHANGED",
+                AdditionalQuestion2 = "Additional question CHANGED",
             };
         }
 
@@ -207,7 +213,9 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.Services
                 Title = null,
                 TrainingDescription = null,
                 TrainingProvider = null,
-                Wage = null
+                Wage = null,
+                AdditionalQuestion1 = null,
+                AdditionalQuestion2 = null
             };
         }
     }

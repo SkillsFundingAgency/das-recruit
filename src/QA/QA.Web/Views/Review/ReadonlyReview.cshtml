@@ -2,314 +2,346 @@
 @model ReviewViewModel
 <div class="review-container">
 
-    <partial name="_ReviewHeader" />
+<partial name="_ReviewHeader"/>
 
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-full">
-            <div asp-show="@Model.IsVacancyDeleted" class="govuk-error-summary" role="alert" aria-labelledby="error-summary-title" tabindex="-1">
-                <h2 class="govuk-error-summary__title govuk-!-margin-bottom-0" id="error-summary-title">
-                    This vacancy has been deleted by the @Model.Owner and is read only
-                </h2>
-            </div>
-            <div>
-                <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">@Model.PageTitle</h1>
-                <p class="govuk-body">
-                    Reviewed by @Model.ReviewerName <br>
-                    Returned to @Model.Owner on @Model.ReviewedDateDay at @Model.ReviewedDateTime
-                </p>
-            </div>
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+        <div asp-show="@Model.IsVacancyDeleted" class="govuk-error-summary" role="alert" aria-labelledby="error-summary-title" tabindex="-1">
+            <h2 class="govuk-error-summary__title govuk-!-margin-bottom-0" id="error-summary-title">
+                This vacancy has been deleted by the @Model.Owner and is read only
+            </h2>
+        </div>
+        <div>
+            <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">@Model.PageTitle</h1>
+            <p class="govuk-body">
+                Reviewed by @Model.ReviewerName <br>
+                Returned to @Model.Owner on @Model.ReviewedDateDay at @Model.ReviewedDateTime
+            </p>
         </div>
     </div>
+</div>
 
-    <div asp-hide="@Model.IsApproved" class="govuk-grid-row">
-        <div class="govuk-grid-column-two-thirds">
-            <partial name="_ReviewSummaryPartial" for="Review" />
+<div asp-hide="@Model.IsApproved" class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <partial name="_ReviewSummaryPartial" for="Review"/>
+    </div>
+</div>
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <div id="@Anchors.Title">
+            <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">
+                @Model.Title
+                <span class="govuk-caption-xl">@Model.EmployerName</span>
+            </h1>
         </div>
     </div>
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-two-thirds">
-            <div id="@Anchors.Title">
-                <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">
-                    @Model.Title
-                    <span class="govuk-caption-xl">@Model.EmployerName</span>
-                </h1>
-            </div>
+</div>
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <div id="@Anchors.ShortDescription">
+            <h3 class="govuk-heading-s govuk-!-margin-top-0">Brief overview</h3>
+            <p class="govuk-body">@Model.ShortDescription</p>
         </div>
     </div>
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-two-thirds">
-            <div id="@Anchors.ShortDescription">
-                <h3 class="govuk-heading-s govuk-!-margin-top-0">Brief overview</h3>
-                <p class="govuk-body">@Model.ShortDescription</p>
-            </div>
-        </div>
-        <div class="govuk-grid-column-one-third">
-            <div id="@Anchors.ClosingDate">
-                <h3 class="govuk-heading-s govuk-!-margin-top-0">Closing Date</h3>
-                <p class="govuk-body">@Model.ClosingDate</p>
-            </div>
+    <div class="govuk-grid-column-one-third">
+        <div id="@Anchors.ClosingDate">
+            <h3 class="govuk-heading-s govuk-!-margin-top-0">Closing Date</h3>
+            <p class="govuk-body">@Model.ClosingDate</p>
         </div>
     </div>
-    <div class="govuk-grid-row" id="@Anchors.ApprenticeshipSummarySection">
-        <div class="govuk-grid-column-full">
-            <h2 class="govuk-heading-l">Apprenticeship summary</h2>
-        </div>
+</div>
+<div class="govuk-grid-row" id="@Anchors.ApprenticeshipSummarySection">
+    <div class="govuk-grid-column-full">
+        <h2 class="govuk-heading-l">Apprenticeship summary</h2>
     </div>
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-one-third">
-            <ul class="govuk-list">
-                <li>
-                    <div id="@Anchors.YearlyWage">
-                        <h3 class="govuk-heading-s">Annual wage</h3>
-                        <p class="govuk-body">@Model.WageText</p>
-                        <p class="govuk-body">@Model.WageInfo</p>
-                    </div>
-                </li>
-                <li>
-                    <div id="@Anchors.WorkingWeek">
-                        <h3 class="govuk-heading-s">Working week</h3>
-                        <p class="govuk-body">@Model.WorkingWeekDescription</p>
-                        <p class="govuk-body">Total hours per week: @Model.HoursPerWeek</p>
-                    </div>
-                </li>
-                <li>
-                    <div id="@Anchors.ExpectedDuration">
-                        <h3 class="govuk-heading-s">Expected duration</h3>
-                        <p class="govuk-body">@Model.ExpectedDuration</p>
-                    </div>
-                </li>
-                <li>
-                    <div id="@Anchors.PossibleStartDate">
-                        <h3 class="govuk-heading-s">Possible start date</h3>
-                        <p class="govuk-body">@Model.PossibleStartDate</p>
-                    </div>
-                </li>
-                <li>
-                    <div id="@Anchors.TrainingLevel">
-                        <h3 class="govuk-heading-s">Apprenticeship level</h3>
-                        <p class="govuk-body">
-                            @Model.TrainingLevel<br />
-                            @Model.EducationLevelName
-                        </p>
-                    </div>
-                </li>
-                <li>
-                    <h3 class="govuk-heading-s">Reference number</h3>
-                    <p class="govuk-body">@Model.VacancyReferenceNumber</p>
-                </li>
-                <li>
-                    <div id="@Anchors.NumberOfPositions">
-                        <h3 class="govuk-heading-s">Positions</h3>
-                        <p class="govuk-body">@Model.NumberOfPositionsCaption</p>
-                    </div>
-                </li>
-            </ul>
-        </div>
-        <div class="govuk-grid-column-two-thirds vacancy-descriptions">
-            <div id="@Anchors.VacancyDescription">
-                <h3 class="govuk-heading-s">What will the apprentice be doing?</h3>
-                <div class="govuk-body">@Html.Raw(Model.VacancyDescription)</div>
-            </div>
-            <div id="@Anchors.TrainingDescription">
-                <h3 class="govuk-heading-s">What training will the apprentice take and what qualification will the apprentice get at the end?</h3>
-                <div class="govuk-body">@Html.Raw(Model.TrainingDescription)</div>
-            </div>
-            <div id="@Anchors.OutcomeDescription">
-                <h3 class="govuk-heading-s">What is the expected career progression after this apprenticeship?</h3>
-                <div class="govuk-body">@Html.Raw(Model.OutcomeDescription)</div>
-            </div>
-        </div>
-    </div>
-    <div class="govuk-grid-row" id="@Anchors.RequirementsAndProspectsSection">
-        <div class="govuk-grid-column-full">
-            <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
-        </div>
-    </div>
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-full">
-            <h2 class="govuk-heading-l">Requirements and prospects</h2>
-        </div>
-    </div>
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-one-half">
-            <div id="@Anchors.Skills">
-                <h3 class="govuk-heading-s">Desired skills and personal qualities</h3>
-                <p class="govuk-body">@string.Join(", ", Model.Skills)</p>
-            </div>
-        </div>
-        <div class="govuk-grid-column-one-half">
-            <div id="@Anchors.ThingsToConsider">
-                <h3 class="govuk-heading-s">Things to consider (optional)</h3>
-                <p class="govuk-body">@Model.ThingsToConsider</p>
-            </div>
-        </div>
-    </div>
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-full">
-            <div id="@Anchors.Qualifications">
-                <h3 class="govuk-heading-s">Qualifications</h3>
-                <p class="govuk-body">
-                    @foreach (var qualification in Model.Qualifications)
-                    {
-                        @qualification<br />
-                    }
-                </p>
-            </div>
-        </div>
-    </div>
-    <div class="govuk-grid-row" id="@Anchors.RequirementsAndProspectsSection">
-        <div class="govuk-grid-column-full">
-            <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
-        </div>
-    </div>
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-full">
-            <h2 class="govuk-heading-l">About the employer</h2>
-        </div>
-    </div>
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-two-thirds">
-            <div id="@Anchors.EmployerDescription">
-                <h3 class="govuk-heading-s">Description</h3>
-                <p class="govuk-body">@Model.EmployerDescription</p>
-            </div>
-            <div id="@Anchors.EmployerName">
-                <h3 class="govuk-heading-s">Employer</h3>
-                <p class="govuk-body">@Model.EmployerName</p>
-
-                <div asp-show="@Model.IsAnonymous" class="govuk-inset-text">
-                    <h3 class="govuk-heading-s">Reason for being anonymous (does not show on vacancy)</h3>
-                    <p>@Model.AnonymousReason</p>
+</div>
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-one-third">
+        <ul class="govuk-list">
+            <li>
+                <div id="@Anchors.YearlyWage">
+                    <h3 class="govuk-heading-s">Annual wage</h3>
+                    <p class="govuk-body">@Model.WageText</p>
+                    <p class="govuk-body">@Model.WageInfo</p>
                 </div>
-            </div>
-            <div id="@Anchors.DisabilityConfident">
-                <h3 class="govuk-heading-s">Disability Confident (optional)</h3>
-                <img asp-show="@Model.IsDisabilityConfident" src="~/img/disability-confident_545x172.png" class="disability-confident-logo" alt="A logo confirming that the employer is registered as disability confident" />
-                <p class="govuk-body" asp-show="@Model.IsNotDisabilityConfident">This vacancy is not Disability Confident</p>
-            </div>
-            <div id="@Anchors.EmployerWebsiteUrl">
-                <h3 class="govuk-heading-s">Website (optional)</h3>
-                <div asp-show="@Model.IsAnonymous" class="govuk-hint">Website will not be shown as the employer is anonymous</div>
-                <a href="@Model.EmployerWebsiteUrl" class="govuk-link govuk-link--no-visited-state" target="_blank" rel="noopener noreferrer">@Model.EmployerWebsiteUrl</a>
-            </div>
+            </li>
+            <li>
+                <div id="@Anchors.WorkingWeek">
+                    <h3 class="govuk-heading-s">Working week</h3>
+                    <p class="govuk-body">@Model.WorkingWeekDescription</p>
+                    <p class="govuk-body">Total hours per week: @Model.HoursPerWeek</p>
+                </div>
+            </li>
+            <li>
+                <div id="@Anchors.ExpectedDuration">
+                    <h3 class="govuk-heading-s">Expected duration</h3>
+                    <p class="govuk-body">@Model.ExpectedDuration</p>
+                </div>
+            </li>
+            <li>
+                <div id="@Anchors.PossibleStartDate">
+                    <h3 class="govuk-heading-s">Possible start date</h3>
+                    <p class="govuk-body">@Model.PossibleStartDate</p>
+                </div>
+            </li>
+            <li>
+                <div id="@Anchors.TrainingLevel">
+                    <h3 class="govuk-heading-s">Apprenticeship level</h3>
+                    <p class="govuk-body">
+                        @Model.TrainingLevel<br/>
+                        @Model.EducationLevelName
+                    </p>
+                </div>
+            </li>
+            <li>
+                <h3 class="govuk-heading-s">Reference number</h3>
+                <p class="govuk-body">@Model.VacancyReferenceNumber</p>
+            </li>
+            <li>
+                <div id="@Anchors.NumberOfPositions">
+                    <h3 class="govuk-heading-s">Positions</h3>
+                    <p class="govuk-body">@Model.NumberOfPositionsCaption</p>
+                </div>
+            </li>
+        </ul>
+    </div>
+    <div class="govuk-grid-column-two-thirds vacancy-descriptions">
+        <div id="@Anchors.VacancyDescription">
+            <h3 class="govuk-heading-s">What will the apprentice be doing?</h3>
+            <div class="govuk-body">@Html.Raw(Model.VacancyDescription)</div>
         </div>
-        <div class="govuk-grid-column-one-third">
-            <div asp-show="@Model.IsEmployerVacancy" id="@Anchors.EmployerContact">
-                <h3 class="govuk-heading-s">Contact details (optional)</h3>
-                <p class="govuk-body">@Model.EmployerContactName</p>
-                <p class="govuk-body">@Model.EmployerContactEmail</p>
-                <p class="govuk-body">@Model.EmployerContactTelephone</p>
-            </div>
+        <div id="@Anchors.TrainingDescription">
+            <h3 class="govuk-heading-s">What training will the apprentice take and what qualification will the apprentice get at the end?</h3>
+            <div class="govuk-body">@Html.Raw(Model.TrainingDescription)</div>
+        </div>
+        <div id="@Anchors.OutcomeDescription">
+            <h3 class="govuk-heading-s">What is the expected career progression after this apprenticeship?</h3>
+            <div class="govuk-body">@Html.Raw(Model.OutcomeDescription)</div>
         </div>
     </div>
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-one-half">
-            <div id="@Anchors.EmployerAddress">
-                <h3 class="govuk-heading-s">Location</h3>
-                <ul class="govuk-list">
-                    @foreach (var addrLine in Model.EmployerAddressElements)
-                    {
-                        <li>@addrLine</li>
-                    }
-                </ul>
-            </div>
-        </div>
-        <div class="govuk-grid-column-one-half">
-            <img id="static-map" src="@Model.MapUrl" alt="Location map" />
+</div>
+<div class="govuk-grid-row" id="@Anchors.RequirementsAndProspectsSection">
+    <div class="govuk-grid-column-full">
+        <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+    </div>
+</div>
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+        <h2 class="govuk-heading-l">Requirements and prospects</h2>
+    </div>
+</div>
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-one-half">
+        <div id="@Anchors.Skills">
+            <h3 class="govuk-heading-s">Desired skills and personal qualities</h3>
+            <p class="govuk-body">@string.Join(", ", Model.Skills)</p>
         </div>
     </div>
-    <div class="govuk-grid-row" id="@Anchors.RequirementsAndProspectsSection">
-        <div class="govuk-grid-column-full">
-            <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+    <div class="govuk-grid-column-one-half">
+        <div id="@Anchors.ThingsToConsider">
+            <h3 class="govuk-heading-s">Things to consider (optional)</h3>
+            <p class="govuk-body">@Model.ThingsToConsider</p>
         </div>
     </div>
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-full">
-            <h2 class="govuk-heading-l">Training</h2>
-        </div>
-    </div>
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-two-thirds">
-            <div id="@Anchors.Provider">
-                <h3 class="govuk-heading-s">Training provider</h3>
-                <p class="govuk-body">@Model.ProviderName</p>
-            </div>
-            <div asp-show="@Model.IsProviderVacancy" id="@Anchors.ProviderContact">
-                <h3 class="govuk-heading-s">Contact details (optional)</h3>
-                <p class="govuk-body">@Model.ProviderContactName</p>
-                <p class="govuk-body">@Model.ProviderContactEmail</p>
-                <p class="govuk-body">@Model.ProviderContactTelephone</p>
-            </div>
-        </div>
-        <div class="govuk-grid-column-one-third">
-            <div id="@Anchors.Training">
-                <h3 class="govuk-heading-s">Apprenticeship @Model.TrainingType</h3>
-                <p class="govuk-body">
-                    @Model.TrainingTitle<br />
-                    @Model.EducationLevelName
-                </p>
-            </div>
-        </div>
-    </div>
-    <div class="govuk-grid-row" id="@Anchors.RequirementsAndProspectsSection">
-        <div class="govuk-grid-column-full">
-            <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
-        </div>
-    </div>
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-full">
-            <h2 class="govuk-heading-l" id="@FieldIdentifiers.ApplicationMethod">Application process</h2>
-        </div>
-    </div>
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-full" id="@Anchors.ApplicationMethod">
-            <p class="govuk-body" asp-show="@Model.HasSpecifiedThroughFaaApplicationMethod">
-                Candidates will apply through the Find an apprenticeship service
-            </p>
-            <p class="govuk-body" asp-show="@Model.HasSpecifiedThroughExternalApplicationSiteMethod">
-                Candidates will apply through the employer's website
-            </p>
-
-            <div asp-show="@Model.HasApplicationUrl" id="@Anchors.ApplicationUrl">
-                <h2 class="govuk-heading-s">Employer's application website</h2>
-                <a href="@Model.ApplicationUrl" class="govuk-link govuk-link--no-visited-state" target="_blank" rel="noopener noreferrer">@Model.ApplicationUrl</a>
-            </div>
-            <div asp-show="@Model.HasApplicationInstructions" id="@Anchors.ApplicationInstructions">
-                <h2 class="govuk-heading-s">Employer's application instructions (optional)</h2>
-                <p class="govuk-body">@Model.ApplicationInstructions</p>
-            </div>
-        </div>
-    </div>
-    <div class="govuk-grid-row" id="@Anchors.RequirementsAndProspectsSection">
-        <div class="govuk-grid-column-full">
-            <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
-        </div>
-    </div>
-
-    <partial name="_ReviewHistories" for="ReviewHistories" />
-
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-full">
-            <h2 class="govuk-heading-m">Reviewer's Comments</h2>
-            <ul class="govuk-list govuk-!-margin-bottom-6">
-                @foreach (var automatedQaResult in Model.AutomatedQaResults.Where(r => r.Checked))
+</div>
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+        <div id="@Anchors.Qualifications">
+            <h3 class="govuk-heading-s">Qualifications</h3>
+            <p class="govuk-body">
+                @foreach (var qualification in Model.Qualifications)
                 {
-                    <li>@automatedQaResult.Text</li>
+                    @qualification<br/>
+                }
+            </p>
+        </div>
+    </div>
+</div>
+<div class="govuk-grid-row" id="@Anchors.RequirementsAndProspectsSection">
+    <div class="govuk-grid-column-full">
+        <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+    </div>
+</div>
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+        <h2 class="govuk-heading-l">About the employer</h2>
+    </div>
+</div>
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <div id="@Anchors.EmployerDescription">
+            <h3 class="govuk-heading-s">Description</h3>
+            <p class="govuk-body">@Model.EmployerDescription</p>
+        </div>
+        <div id="@Anchors.EmployerName">
+            <h3 class="govuk-heading-s">Employer</h3>
+            <p class="govuk-body">@Model.EmployerName</p>
+
+            <div asp-show="@Model.IsAnonymous" class="govuk-inset-text">
+                <h3 class="govuk-heading-s">Reason for being anonymous (does not show on vacancy)</h3>
+                <p>@Model.AnonymousReason</p>
+            </div>
+        </div>
+        <div id="@Anchors.DisabilityConfident">
+            <h3 class="govuk-heading-s">Disability Confident (optional)</h3>
+            <img asp-show="@Model.IsDisabilityConfident" src="~/img/disability-confident_545x172.png" class="disability-confident-logo" alt="A logo confirming that the employer is registered as disability confident"/>
+            <p class="govuk-body" asp-show="@Model.IsNotDisabilityConfident">This vacancy is not Disability Confident</p>
+        </div>
+        <div id="@Anchors.EmployerWebsiteUrl">
+            <h3 class="govuk-heading-s">Website (optional)</h3>
+            <div asp-show="@Model.IsAnonymous" class="govuk-hint">Website will not be shown as the employer is anonymous</div>
+            <a href="@Model.EmployerWebsiteUrl" class="govuk-link govuk-link--no-visited-state" target="_blank" rel="noopener noreferrer">@Model.EmployerWebsiteUrl</a>
+        </div>
+    </div>
+    <div class="govuk-grid-column-one-third">
+        <div asp-show="@Model.IsEmployerVacancy" id="@Anchors.EmployerContact">
+            <h3 class="govuk-heading-s">Contact details (optional)</h3>
+            <p class="govuk-body">@Model.EmployerContactName</p>
+            <p class="govuk-body">@Model.EmployerContactEmail</p>
+            <p class="govuk-body">@Model.EmployerContactTelephone</p>
+        </div>
+    </div>
+</div>
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-one-half">
+        <div id="@Anchors.EmployerAddress">
+            <h3 class="govuk-heading-s">Location</h3>
+            <ul class="govuk-list">
+                @foreach (var addrLine in Model.EmployerAddressElements)
+                {
+                    <li>@addrLine</li>
                 }
             </ul>
-            <p class="govuk-body app-preserve-line-breaks">@Model.ReviewerComment</p>
         </div>
     </div>
+    <div class="govuk-grid-column-one-half">
+        <img id="static-map" src="@Model.MapUrl" alt="Location map"/>
+    </div>
+</div>
+<div class="govuk-grid-row" id="@Anchors.RequirementsAndProspectsSection">
+    <div class="govuk-grid-column-full">
+        <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+    </div>
+</div>
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+        <h2 class="govuk-heading-l">Training</h2>
+    </div>
+</div>
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <div id="@Anchors.Provider">
+            <h3 class="govuk-heading-s">Training provider</h3>
+            <p class="govuk-body">@Model.ProviderName</p>
+        </div>
+        <div asp-show="@Model.IsProviderVacancy" id="@Anchors.ProviderContact">
+            <h3 class="govuk-heading-s">Contact details (optional)</h3>
+            <p class="govuk-body">@Model.ProviderContactName</p>
+            <p class="govuk-body">@Model.ProviderContactEmail</p>
+            <p class="govuk-body">@Model.ProviderContactTelephone</p>
+        </div>
+    </div>
+    <div class="govuk-grid-column-one-third">
+        <div id="@Anchors.Training">
+            <h3 class="govuk-heading-s">Apprenticeship @Model.TrainingType</h3>
+            <p class="govuk-body">
+                @Model.TrainingTitle<br/>
+                @Model.EducationLevelName
+            </p>
+        </div>
+    </div>
+</div>
+<div class="govuk-grid-row" id="@Anchors.RequirementsAndProspectsSection">
+    <div class="govuk-grid-column-full">
+        <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+    </div>
+</div>
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+        <h2 class="govuk-heading-l" id="@FieldIdentifiers.ApplicationMethod">Application process</h2>
+    </div>
+</div>
 
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-full" id="@Anchors.ApplicationMethod">
+        <p class="govuk-body" asp-show="@Model.HasSpecifiedThroughFaaApplicationMethod">
+            Candidates will apply through the Find an apprenticeship service
+        </p>
+        <p class="govuk-body" asp-show="@Model.HasSpecifiedThroughExternalApplicationSiteMethod">
+            Candidates will apply through the employer's website
+        </p>
+
+        <div asp-show="@Model.HasApplicationUrl" id="@Anchors.ApplicationUrl">
+            <h2 class="govuk-heading-s">Employer's application website</h2>
+            <a href="@Model.ApplicationUrl" class="govuk-link govuk-link--no-visited-state" target="_blank" rel="noopener noreferrer">@Model.ApplicationUrl</a>
+        </div>
+        <div asp-show="@Model.HasApplicationInstructions" id="@Anchors.ApplicationInstructions">
+            <h2 class="govuk-heading-s">Employer's application instructions (optional)</h2>
+            <p class="govuk-body">@Model.ApplicationInstructions</p>
+        </div>
+    </div>
+</div>
+
+
+    <div class="govuk-grid-row" id="@Anchors.RequirementsAndProspectsSection">
+        <div class="govuk-grid-column-full">
+            <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+        </div>
+    </div>
+@if (@Model.HasAdditionalQuestions)
+{
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-full">
-            <div class="govuk-form-group inline">
-                <div class="govuk-form-group govuk-!-margin-top-6">
-                    <a asp-route="@RouteNames.Dashboard_Index_Get" class="govuk-button">Back</a>
-                </div>
+            <h2 class="govuk-heading-l">Additional Questions</h2>
+        </div>
+    </div>
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-one-third">
+            <div class="@Model.AdditionalQuestion1" id="@FieldIdentifiers.AdditionalQuestion1">
+                <h3 class="govuk-heading-s">Question 1</h3>
+                <p class="govuk-body">
+                    @Model.AdditionalQuestion1
+                </p>
+
+            </div>
+            <div class="@Model.AdditionalQuestion2" id="@FieldIdentifiers.AdditionalQuestion2">
+                <h3 class="govuk-heading-s">Question 2</h3>
+                <p class="govuk-body">
+                    @Model.AdditionalQuestion2
+                </p>
             </div>
         </div>
     </div>
+    <div class="govuk-grid-row" id="@Anchors.RequirementsAndProspectsSection">
+        <div class="govuk-grid-column-full">
+            <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+        </div>
+    </div>
+}
+<partial name="_ReviewHistories" for="ReviewHistories"/>
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+        <h2 class="govuk-heading-m">Reviewer's Comments</h2>
+        <ul class="govuk-list govuk-!-margin-bottom-6">
+            @foreach (var automatedQaResult in Model.AutomatedQaResults.Where(r => r.Checked))
+            {
+                <li>@automatedQaResult.Text</li>
+            }
+        </ul>
+        <p class="govuk-body app-preserve-line-breaks">@Model.ReviewerComment</p>
+    </div>
+</div>
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+        <div class="govuk-form-group inline">
+            <div class="govuk-form-group govuk-!-margin-top-6">
+                <a asp-route="@RouteNames.Dashboard_Index_Get" class="govuk-button">Back</a>
+            </div>
+        </div>
+    </div>
+</div>
 
 </div>
 <script nws-csp-add-nonce="true">
