@@ -8,7 +8,7 @@ namespace Esfa.Recruit.Provider.Web.Mappings.Extensions
 {
 	public static class ApplicationReviewMapperExtensions
     {
-        public static ApplicationReviewViewModel ToViewModel(this ApplicationReview r)
+        public static ApplicationReviewViewModel ToViewModel(this ApplicationReview r, Vacancy vacancy)
         {
             return new ApplicationReviewViewModel
             {
@@ -37,6 +37,8 @@ namespace Esfa.Recruit.Provider.Web.Mappings.Extensions
                 Phone = r.Application.Phone,
                 AdditionalQuestionAnswer1 = r.Application.AdditionalQuestion1,
                 AdditionalQuestionAnswer2 = r.Application.AdditionalQuestion2,
+                AdditionalQuestion1 = vacancy.AdditionalQuestion1,
+                AdditionalQuestion2 = vacancy.AdditionalQuestion2,
                 Qualifications = r.Application.Qualifications?.Select(q =>
                     new QualificationViewModel
                     {

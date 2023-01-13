@@ -25,11 +25,12 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
 
         public async Task<ApplicationReviewViewModel> GetApplicationReviewViewModelAsync(ApplicationReviewRouteModel rm)
         {
+            var vacancy = await GetVacancy(rm);
             var applicationReview = await _utility.GetAuthorisedApplicationReviewAsync(rm);
 
             if (applicationReview.IsWithdrawn)
                 throw new ApplicationWithdrawnException($"Application has been withdrawn. ApplicationReviewId:{applicationReview.Id}", rm.VacancyId.Value);
-            var viewModel = applicationReview.ToViewModel();
+            var viewModel = applicationReview.ToViewModel(vacancy);
             viewModel.Ukprn = rm.Ukprn;
             viewModel.VacancyId = rm.VacancyId;
             viewModel.ApplicationReviewId = rm.ApplicationReviewId;
@@ -90,6 +91,14 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
                 Ukprn = rm.Ukprn,
                 VacancyId = rm.VacancyId
             };
-        }        
+        }
+        public async Task<Vacancy> GetVacancy(VacancyRouteModel vrm)
+        {
+            var vacancy = await _client.GetVacancyAsync(vrm.VacancyId.GetValueOrDefault());
+
+            _utility.CheckAuthorisedAccess(vacancy, vrm.Ukprn);
+
+            return vacancy;
+        }
     }
 }
