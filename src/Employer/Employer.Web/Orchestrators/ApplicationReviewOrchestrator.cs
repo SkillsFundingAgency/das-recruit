@@ -24,7 +24,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 
         public async Task<ApplicationReviewViewModel> GetApplicationReviewViewModelAsync(ApplicationReviewRouteModel rm)
         {
-            var vacancy = await GetVacancy(rm);
+            var vacancy = await _client.GetVacancyAsync(rm.VacancyId);
             var applicationReview = await _utility.GetAuthorisedApplicationReviewAsync(rm);
            
             if (applicationReview.IsWithdrawn)
@@ -89,14 +89,6 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
                 Outcome = rm.Outcome,
                 Name = applicationReviewVm.Name                
             };
-        }
-        public async Task<Vacancy> GetVacancy(VacancyRouteModel vrm)
-        {
-            var vacancy = await _client.GetVacancyAsync(vrm.VacancyId);
-
-            _utility.CheckAuthorisedAccess(vacancy, vrm.EmployerAccountId);
-
-            return vacancy;
         }
     }
 }
