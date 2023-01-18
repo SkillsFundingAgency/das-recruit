@@ -13,7 +13,7 @@ public class AdditionalQuestion1Tests : VacancyValidationTestsBase
     {
         var vacancy = new Vacancy 
         {
-            AdditionalQuestion1 = "a valid AdditionalQuestion1"
+            AdditionalQuestion1 = "a valid AdditionalQuestion1?"
         };
 
         var result = Validator.Validate(vacancy, VacancyRuleSet.AdditionalQuestion1);
@@ -27,7 +27,7 @@ public class AdditionalQuestion1Tests : VacancyValidationTestsBase
     {
         var vacancy = new Vacancy 
         {
-            AdditionalQuestion1 = new string('a', 251)
+            AdditionalQuestion1 = new string('?', 251 )
         };
 
         var result = Validator.Validate(vacancy, VacancyRuleSet.AdditionalQuestion1);
@@ -40,10 +40,10 @@ public class AdditionalQuestion1Tests : VacancyValidationTestsBase
     }
     
     [Theory]
-    [InlineData("some text bother")]
-    [InlineData("some text dang")]
-    [InlineData("some text drat")]
-    [InlineData("some text balderdash")]
+    [InlineData("some text bother?")]
+    [InlineData("some text dang?")]
+    [InlineData("some text drat?")]
+    [InlineData("some text balderdash?")]
     public void AdditionalQuestion1_ShouldFailIfContainsWordsFromTheProfanityList(string freeText)
     {
         var vacancy = new Vacancy()
@@ -59,10 +59,10 @@ public class AdditionalQuestion1Tests : VacancyValidationTestsBase
     }
 
     [Theory]
-    [InlineData("some textbother")]
-    [InlineData("some textdang")]
-    [InlineData("some textdrat")]
-    [InlineData("some textbalderdash")]
+    [InlineData("some textbother?")]
+    [InlineData("some textdang?")]
+    [InlineData("some textdrat?")]
+    [InlineData("some textbalderdash?")]
     public void AdditionalQuestion1_Should_Not_FailIfContainsWordsFromTheProfanityList(string freeText)
     {
         var vacancy = new Vacancy()
@@ -72,5 +72,40 @@ public class AdditionalQuestion1Tests : VacancyValidationTestsBase
 
         var result = Validator.Validate(vacancy, VacancyRuleSet.AdditionalQuestion1);
         result.HasErrors.Should().BeFalse();
+    }
+
+    [Theory]
+    [InlineData("some text?")]
+    [InlineData("some text?")]
+    [InlineData("some text?")]
+    [InlineData("some text?")]
+    public void AdditionalQuestion1_MustContainQuestionMark(string freeText)
+    {
+        var vacancy = new Vacancy()
+        {
+            AdditionalQuestion1 = freeText
+        };
+
+        var result = Validator.Validate(vacancy, VacancyRuleSet.AdditionalQuestion1);
+        result.HasErrors.Should().BeFalse();
+    }
+
+    [Theory]
+    [InlineData("some text")]
+    [InlineData("some text")]
+    [InlineData("some text")]
+    [InlineData("some text")]
+    public void AdditionalQuestion1_ShouldHaveErrorsIfDoesNotHaveQuestionMark(string freeText)
+    {
+        var vacancy = new Vacancy()
+        {
+            AdditionalQuestion1 = freeText
+        };
+
+        var result = Validator.Validate(vacancy, VacancyRuleSet.AdditionalQuestion1);
+        result.HasErrors.Should().BeTrue();
+        result.Errors[0].PropertyName.Should().Be(nameof(vacancy.AdditionalQuestion1));
+        result.Errors.Count.Should().Be(1);
+        result.Errors[0].ErrorCode.Should().Be("340");
     }
 }
