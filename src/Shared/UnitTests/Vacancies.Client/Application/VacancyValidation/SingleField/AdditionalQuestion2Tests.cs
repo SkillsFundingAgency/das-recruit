@@ -8,12 +8,15 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
 
 public class AdditionalQuestion2Tests : VacancyValidationTestsBase
 {
-    [Fact]
-    public void NoErrorsWhenWorkExperienceFieldIsValid()
+    [Theory]
+    [InlineData("a valid AdditionalQuestion1?")]
+    [InlineData("a valid? AdditionalQuestion1")]
+    [InlineData("")]
+    public void NoErrorsWhenAdditionalQuestion2FieldIsValid(string text)
     {
         var vacancy = new Vacancy 
         {
-            AdditionalQuestion2 = "a valid AdditionalQuestion1?"
+            AdditionalQuestion2 = text
         };
 
         var result = Validator.Validate(vacancy, VacancyRuleSet.AdditionalQuestion2);
@@ -40,10 +43,10 @@ public class AdditionalQuestion2Tests : VacancyValidationTestsBase
     }
     
     [Theory]
-    [InlineData("some text bother")]
-    [InlineData("some text dang")]
-    [InlineData("some text drat")]
-    [InlineData("some text balderdash")]
+    [InlineData("some text bother?")]
+    [InlineData("some text dang?")]
+    [InlineData("some text? drat")]
+    [InlineData("some text? balderdash")]
     public void AdditionalQuestion2ShouldFailIfContainsWordsFromTheProfanityList(string freeText)
     {
         var vacancy = new Vacancy()
@@ -59,10 +62,10 @@ public class AdditionalQuestion2Tests : VacancyValidationTestsBase
     }
 
     [Theory]
-    [InlineData("some textbother")]
-    [InlineData("some textdang")]
-    [InlineData("some textdrat")]
-    [InlineData("some textbalderdash")]
+    [InlineData("some textbother?")]
+    [InlineData("some textdang?")]
+    [InlineData("some textdrat?")]
+    [InlineData("some textbalderdash?")]
     public void AdditionalQuestion2_Should_Not_FailIfContainsWordsFromTheProfanityList(string freeText)
     {
         var vacancy = new Vacancy()

@@ -8,15 +8,18 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
 
 public class AdditionalQuestion1Tests : VacancyValidationTestsBase
 {
-    [Fact]
-    public void NoErrorsWhenWorkExperienceFieldIsValid()
+    [Theory]
+    [InlineData("a valid AdditionalQuestion1?")]
+    [InlineData("a valid? AdditionalQuestion1")]
+    [InlineData("")]
+    public void NoErrorsWhenAdditionalQuestion1FieldIsValid(string text)
     {
         var vacancy = new Vacancy 
         {
-            AdditionalQuestion1 = "a valid AdditionalQuestion1?"
+            AdditionalQuestion1 = text
         };
 
-        var result = Validator.Validate(vacancy, VacancyRuleSet.AdditionalQuestion1);
+        var result = Validator.Validate(vacancy, VacancyRuleSet.AdditionalQuestion2);
 
         result.HasErrors.Should().BeFalse();
         result.Errors.Should().HaveCount(0);
