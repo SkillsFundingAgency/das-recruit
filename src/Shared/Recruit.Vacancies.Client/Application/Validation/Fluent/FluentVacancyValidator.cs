@@ -1,4 +1,5 @@
 using System;
+using System.Text.RegularExpressions;
 using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Application.Services;
@@ -97,10 +98,12 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
             ValidateShortDescription();
             ValidateClosingDate();
             ValidateStartDate();
+            
 
             if (IsApprenticeshipVacancy)
             {
                 ValidateTrainingProgramme();
+                ValidateAdditionalQuestions();
             }
             else
             {
@@ -337,6 +340,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                 .WithState(_=>VacancyRuleSet.ShortDescription)
                 .RunCondition(VacancyRuleSet.ShortDescription);
         }
+
 
         private void ValidateClosingDate()
         {
@@ -706,18 +710,28 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                     .WithMessage("Questions must not contain a restricted word")
                     .WithErrorCode("322")
                     .WithState(_ => VacancyRuleSet.AdditionalQuestion1)
-                    .RunCondition(VacancyRuleSet.AdditionalQuestion1);
-            
+                .Matches(ValidationConstants.ContainsQuestionMark)
+                    .WithMessage("Question 1 must include a question mark (�?�)")   
+                    .WithErrorCode("340")
+                    .WithState(_ => VacancyRuleSet.AdditionalQuestion1)
+                .RunCondition(VacancyRuleSet.AdditionalQuestion1);
+
+
+
             RuleFor(x => x.AdditionalQuestion2)
                 .MaximumLength(250)
-                    .WithMessage("Question 2 must not exceed 250 characters")
-                    .WithErrorCode("331")
-                    .WithState(_ => VacancyRuleSet.AdditionalQuestion2)
+                .WithMessage("Question 2 must not exceed 250 characters")
+                .WithErrorCode("331")
+                .WithState(_ => VacancyRuleSet.AdditionalQuestion2)
                 .ProfanityCheck(_profanityListProvider)
-                    .WithMessage("Questions must not contain a restricted word")
-                    .WithErrorCode("332")
-                    .WithState(_ => VacancyRuleSet.AdditionalQuestion2)
-                    .RunCondition(VacancyRuleSet.AdditionalQuestion2);
+                .WithMessage("Questions must not contain a restricted word")
+                .WithErrorCode("332")
+                .WithState(_ => VacancyRuleSet.AdditionalQuestion2)
+                .Matches(ValidationConstants.ContainsQuestionMark)
+                .WithMessage("Question 2 must include a question mark (�?�)")
+                .WithErrorCode("340")
+                .WithState(_ => VacancyRuleSet.AdditionalQuestion2)
+                .RunCondition(VacancyRuleSet.AdditionalQuestion2);
         }
 
         private void ValidateTrainingDescription()

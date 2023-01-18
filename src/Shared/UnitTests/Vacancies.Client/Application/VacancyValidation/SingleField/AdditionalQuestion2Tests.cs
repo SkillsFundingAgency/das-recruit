@@ -13,7 +13,7 @@ public class AdditionalQuestion2Tests : VacancyValidationTestsBase
     {
         var vacancy = new Vacancy 
         {
-            AdditionalQuestion2 = "a valid AdditionalQuestion1"
+            AdditionalQuestion2 = "a valid AdditionalQuestion1?"
         };
 
         var result = Validator.Validate(vacancy, VacancyRuleSet.AdditionalQuestion2);
@@ -27,7 +27,7 @@ public class AdditionalQuestion2Tests : VacancyValidationTestsBase
     {
         var vacancy = new Vacancy 
         {
-            AdditionalQuestion2 = new string('a', 251)
+            AdditionalQuestion2 = new string('?', 251)
         };
 
         var result = Validator.Validate(vacancy, VacancyRuleSet.AdditionalQuestion2);

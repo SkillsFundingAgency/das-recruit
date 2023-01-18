@@ -257,7 +257,9 @@ namespace Esfa.Recruit.Employer.Web
             var vacancy = _vacancyClient.GetVacancyAsync(rm.VacancyId);
 
             await Task.WhenAll(applicationReview, vacancy);
-            
+
+            applicationReview.Result.AdditionalQuestion1 = vacancy.Result.AdditionalQuestion1;
+            applicationReview.Result.AdditionalQuestion2 = vacancy.Result.AdditionalQuestion2;
             try
             {
                 CheckAuthorisedAccess(vacancy.Result, rm.EmployerAccountId);
