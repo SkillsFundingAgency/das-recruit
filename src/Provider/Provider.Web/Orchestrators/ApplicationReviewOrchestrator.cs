@@ -25,12 +25,11 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
 
         public async Task<ApplicationReviewViewModel> GetApplicationReviewViewModelAsync(ApplicationReviewRouteModel rm)
         {
-            var vacancy = await _client.GetVacancyAsync(rm.VacancyId.Value);
             var applicationReview = await _utility.GetAuthorisedApplicationReviewAsync(rm);
 
             if (applicationReview.IsWithdrawn)
                 throw new ApplicationWithdrawnException($"Application has been withdrawn. ApplicationReviewId:{applicationReview.Id}", rm.VacancyId.Value);
-            var viewModel = applicationReview.ToViewModel(vacancy);
+            var viewModel = applicationReview.ToViewModel();
             viewModel.Ukprn = rm.Ukprn;
             viewModel.VacancyId = rm.VacancyId;
             viewModel.ApplicationReviewId = rm.ApplicationReviewId;
