@@ -98,11 +98,12 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
             ValidateShortDescription();
             ValidateClosingDate();
             ValidateStartDate();
-            ValidateAdditionalQuestions();
+            
 
             if (IsApprenticeshipVacancy)
             {
                 ValidateTrainingProgramme();
+                ValidateAdditionalQuestions();
             }
             else
             {
@@ -710,7 +711,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                     .WithErrorCode("322")
                     .WithState(_ => VacancyRuleSet.AdditionalQuestion1)
                 .Matches(ValidationConstants.ContainsQuestionMark)
-                    .WithMessage("Question 1 must include a question mark (‘?’)")   
+                    .WithMessage("Question 1 must include a question mark (ï¿½?ï¿½)")   
                     .WithErrorCode("340")
                     .WithState(_ => VacancyRuleSet.AdditionalQuestion1)
                 .RunCondition(VacancyRuleSet.AdditionalQuestion1);
@@ -727,7 +728,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                 .WithErrorCode("332")
                 .WithState(_ => VacancyRuleSet.AdditionalQuestion2)
                 .Matches(ValidationConstants.ContainsQuestionMark)
-                .WithMessage("Question 2 must include a question mark (‘?’)")
+                .WithMessage("Question 2 must include a question mark (ï¿½?ï¿½)")
                 .WithErrorCode("340")
                 .WithState(_ => VacancyRuleSet.AdditionalQuestion2)
                 .RunCondition(VacancyRuleSet.AdditionalQuestion2);
