@@ -15,6 +15,5 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation
         public static Regex PhoneNumberRegex => new Regex(@"^[0-9+\s-()]{8,16}$");
         public static Regex ContainsApprenticeOrApprenticeshipRegex = new Regex(@"(^|\s)(apprentice(ship)?)(\s|$)", RegexOptions.IgnoreCase);
         public static Regex ContainsTraineeOrTraineeshipRegex = new Regex(@"(^|\s)(trainee(ship)?)(\s|$)", RegexOptions.IgnoreCase);
-        public static Regex ContainsQuestionMark = new Regex("\\?");
     }
 }
