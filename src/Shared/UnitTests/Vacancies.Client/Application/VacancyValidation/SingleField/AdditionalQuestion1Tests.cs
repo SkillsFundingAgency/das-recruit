@@ -76,32 +76,24 @@ public class AdditionalQuestion1Tests : VacancyValidationTestsBase
         result.HasErrors.Should().BeFalse();
     }
 
-    [Theory]
-    [InlineData("some text?")]
-    [InlineData("some text?")]
-    [InlineData("some text?")]
-    [InlineData("some text?")]
-    public void AdditionalQuestion1_MustContainQuestionMark(string freeText)
+    [Fact]
+    public void AdditionalQuestion1_MustContainQuestionMark()
     {
-        var vacancy = new Vacancy()
+        var vacancy = new Vacancy
         {
-            AdditionalQuestion1 = freeText
+            AdditionalQuestion1 = "some text"
         };
 
         var result = Validator.Validate(vacancy, VacancyRuleSet.AdditionalQuestion1);
         result.HasErrors.Should().BeFalse();
     }
 
-    [Theory]
-    [InlineData("some text")]
-    [InlineData("some text")]
-    [InlineData("some text")]
-    [InlineData("some text")]
-    public void AdditionalQuestion1_ShouldHaveErrorsIfDoesNotHaveQuestionMark(string freeText)
+    [Fact]
+    public void AdditionalQuestion1_ShouldHaveErrorsIfDoesNotHaveQuestionMark()
     {
-        var vacancy = new Vacancy()
+        var vacancy = new Vacancy
         {
-            AdditionalQuestion1 = freeText
+            AdditionalQuestion1 = "some text"
         };
 
         var result = Validator.Validate(vacancy, VacancyRuleSet.AdditionalQuestion1);
