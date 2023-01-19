@@ -20,7 +20,6 @@ public class AdditionalQuestion1Tests : VacancyValidationTestsBase
         };
 
         var result = Validator.Validate(vacancy, VacancyRuleSet.AdditionalQuestion2);
-
         result.HasErrors.Should().BeFalse();
         result.Errors.Should().HaveCount(0);
     }

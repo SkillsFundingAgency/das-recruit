@@ -10,7 +10,7 @@ public class AdditionalQuestion2Tests : VacancyValidationTestsBase
 {
     [Theory]
     [InlineData("a valid AdditionalQuestion1?")]
-    [InlineData("a valid? AdditionalQuestion1")]
+    [InlineData("a valid? AdditionalQuestion1?")]
     [InlineData("")]
     public void NoErrorsWhenAdditionalQuestion2FieldIsValid(string text)
     {
@@ -75,5 +75,40 @@ public class AdditionalQuestion2Tests : VacancyValidationTestsBase
 
         var result = Validator.Validate(vacancy, VacancyRuleSet.AdditionalQuestion2);
         result.HasErrors.Should().BeFalse();
+    }
+
+    [Theory]
+    [InlineData("some text?")]
+    [InlineData("some text?")]
+    [InlineData("some text?")]
+    [InlineData("some text?")]
+    public void AdditionalQuestion2_MustContainQuestionMark(string freeText)
+    {
+        var vacancy = new Vacancy()
+        {
+            AdditionalQuestion2 = freeText
+        };
+
+        var result = Validator.Validate(vacancy, VacancyRuleSet.AdditionalQuestion2);
+        result.HasErrors.Should().BeFalse();
+    }
+
+    [Theory]
+    [InlineData("some text")]
+    [InlineData("some text")]
+    [InlineData("some text")]
+    [InlineData("some text")]
+    public void AdditionalQuestion2_ShouldHaveErrorsIfDoesNotHaveQuestionMark(string freeText)
+    {
+        var vacancy = new Vacancy()
+        {
+            AdditionalQuestion2 = freeText
+        };
+
+        var result = Validator.Validate(vacancy, VacancyRuleSet.AdditionalQuestion2);
+        result.HasErrors.Should().BeTrue();
+        result.Errors[0].PropertyName.Should().Be(nameof(vacancy.AdditionalQuestion2));
+        result.Errors.Count.Should().Be(1);
+        result.Errors[0].ErrorCode.Should().Be("340");
     }
 }
