@@ -81,7 +81,7 @@ public class AdditionalQuestion1Tests : VacancyValidationTestsBase
     {
         var vacancy = new Vacancy
         {
-            AdditionalQuestion1 = "some text"
+            AdditionalQuestion1 = "some text?"
         };
 
         var result = Validator.Validate(vacancy, VacancyRuleSet.AdditionalQuestion1);
