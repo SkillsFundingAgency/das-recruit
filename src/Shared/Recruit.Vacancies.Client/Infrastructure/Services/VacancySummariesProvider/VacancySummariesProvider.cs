@@ -51,15 +51,18 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
             var builder = new VacancySummaryAggQueryBuilder();
             var aggPipelines = builder.GetAggregateQueryPipelineDashboard(match);
             var applicationAggPipeline = builder.GetAggregateQueryPipelineDashboardApplications(match);
+            var closingSoonAggPipeline = builder.GetAggregateQueryPipelineVacanciesClosingSoonDashboard(match);
             var dashboardValuesTask =  RunDashboardAggPipelineQuery(aggPipelines);
             var applicationDashboardValuesTask = RunApplicationsDashboardAggPipelineQuery(applicationAggPipeline);
+            var closingSoonDashboardValuesTask = RunApplicationsDashboardAggPipelineQuery(closingSoonAggPipeline);
 
-            await Task.WhenAll(dashboardValuesTask, applicationDashboardValuesTask);
+            await Task.WhenAll(dashboardValuesTask, applicationDashboardValuesTask, closingSoonDashboardValuesTask);
             
             return new VacancyDashboard
             {
                 VacancyStatusDashboard = dashboardValuesTask.Result,
-                VacancyApplicationsDashboard = applicationDashboardValuesTask.Result
+                VacancyApplicationsDashboard = applicationDashboardValuesTask.Result,
+                VacanciesClosingSoonWithNoApplications = closingSoonDashboardValuesTask.Result.FirstOrDefault()?.StatusCount ?? 0
             };
         }
         public async Task<VacancyDashboard> GetEmployerOwnedVacancyDashboardByEmployerAccountIdAsync(string employerAccountId, VacancyType vacancyType)
@@ -267,7 +270,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                     var aggResults = await collection.AggregateAsync<VacancyApplicationsDashboardResponseDto>(pipeline);
                     return await aggResults.ToListAsync();
                 },
-                new Context(nameof(RunDashboardAggPipelineQuery)));
+                new Context(nameof(RunApplicationsDashboardAggPipelineQuery)));
 
             return vacancyDashboard.Select(VacancyDashboardApplicationsMapper.MapFromVacancyApplicationsDashboardResponseDto).ToList();
         }
