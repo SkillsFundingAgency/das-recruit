@@ -40,7 +40,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Controllers.Part2
         }
         
         [Test, MoqAutoData]
-        public async Task When_Calling_Post_And_Not_Success_Then_Returns_AdditionalQuestions_View_With_ModelState(
+        public async Task When_Calling_Post_And_Not_Success_Then_Returns_AdditionalQuestions_View_With_ModelState_And_Values_Set_From_Form(
             AdditionalQuestionsEditModel editModel,
             OrchestratorResponse orchestratorResponse,
             AdditionalQuestionsViewModel viewModel,
@@ -59,6 +59,9 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Controllers.Part2
 
             response.Should().NotBeNull();
             response!.Model.Should().Be(viewModel);
+            var actualModel = response.Model as AdditionalQuestionsViewModel;
+            actualModel!.AdditionalQuestion1.Should().Be(editModel.AdditionalQuestion1);
+            actualModel!.AdditionalQuestion2.Should().Be(editModel.AdditionalQuestion2);
         }
         
         [Test, MoqAutoData]

@@ -40,6 +40,8 @@ public class AdditionalQuestionsController : Controller
 
         if (!ModelState.IsValid)
         {
+            vm.AdditionalQuestion1 = m.AdditionalQuestion1;
+            vm.AdditionalQuestion2 = m.AdditionalQuestion2;
             return View(vm);
         }
             
