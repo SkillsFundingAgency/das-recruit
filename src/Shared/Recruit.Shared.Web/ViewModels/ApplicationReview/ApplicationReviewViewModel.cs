@@ -56,7 +56,7 @@ namespace Esfa.Recruit.Shared.Web.ViewModels.ApplicationReview
         public string AdditionalQuestionAnswer2 { get; set; }
         public string AdditionalQuestion1 { get; set; }
         public string AdditionalQuestion2 { get; set; }
-        public bool HasAdditionalQuestions => !AdditionalQuestion1.IsNullOrEmpty();
+        public bool HasAdditionalQuestions => !AdditionalQuestion1.IsNullOrEmpty() || !AdditionalQuestion2.IsNullOrEmpty();
         public bool HasAdditionalSecondQuestion => !AdditionalQuestion2.IsNullOrEmpty();
     }
 }
