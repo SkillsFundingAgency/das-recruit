@@ -461,6 +461,80 @@
                     
                 </ul>
             </li>
+            @if (_serviceParameters.VacancyType == VacancyType.Apprenticeship)
+            {
+            <li>
+                <h2 class="das-task-list__section">
+                    <span class="das-task-list__section-number">5. </span> 
+                    <span class="das-task-list__section-heading">Application</span>
+                    <span class="das-task-list__section-status">
+                            @if (Model.TaskListSectionFiveState == VacancyTaskListSectionState.Completed)
+                            {
+                                <strong class="govuk-tag das-task-list__section-tag">Completed</strong>    
+                            }
+                            else
+                            {
+                                <strong class="govuk-tag govuk-tag--grey das-task-list__section-tag">Not started</strong>
+                            }
+                        </span>
+                </h2>
+                <ul class="das-task-list__items">
+                    <li class="das-task-list__item">
+                        @if (Model.TaskListSectionFourState == VacancyTaskListSectionState.Completed)
+                        {
+                            <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.AdditionalQuestions_Get" asp-all-route-data="@Model.RouteDictionary">
+                                    Questions for applicants
+                            </a>   
+                        }
+                        else
+                        {
+                            <span>
+                                    Questions for applicants
+                            </span>    
+                        }
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <h2 class="das-task-list__section">
+                    <span class="das-task-list__section-number">6. </span> 
+                    <span class="das-task-list__section-heading">Check and submit your vacancy</span>
+                    <span class="das-task-list__section-status">
+                        @if(Model.TaskListSectionFiveState == VacancyTaskListSectionState.Completed)
+                        {
+                            <strong class="govuk-tag govuk-tag--blue das-task-list__section-tag">In progress</strong>
+                        }
+                        else if (Model.Status == VacancyStatus.Submitted)
+                        {
+                            <strong class="govuk-tag das-task-list__section-tag">Completed</strong>    
+                        }
+                        else
+                        {
+                            <strong class="govuk-tag govuk-tag--grey das-task-list__section-tag">Not started</strong>
+                        }
+                    </span>
+                </h2>
+                <ul class="das-task-list__items">
+                    <li class="das-task-list__item">
+                        @if (Model.TaskListSectionFiveState == VacancyTaskListSectionState.Completed)
+                        {
+                            <a class="govuk-link govuk-link--no-visited-state" asp-all-route-data="@Model.RouteDictionary" asp-route="@RouteNames.ProviderCheckYourAnswersGet">
+                                Check your answers and submit your vacancy
+                            </a>   
+                        }
+                        else
+                        {
+                            <span>
+                                Check your answers and submit your vacancy
+                            </span>    
+                        }
+                        
+                    </li>
+                </ul>
+            </li>
+            }
+            else
+            {
             <li>
                 <h2 class="das-task-list__section">
                     <span class="das-task-list__section-number">5. </span> 
@@ -494,10 +568,10 @@
                                 Check your answers and submit your vacancy
                             </span>    
                         }
-                        
                     </li>
                 </ul>
-            </li>
+            </li>    
+            }
         </ol>
 
         <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">

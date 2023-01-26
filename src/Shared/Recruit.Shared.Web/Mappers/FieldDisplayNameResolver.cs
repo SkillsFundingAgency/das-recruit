@@ -48,7 +48,9 @@ namespace Esfa.Recruit.Shared.Web.Mappers
             { FieldIdResolver.ToFieldId(v => v.Wage.DurationUnit), "Duration unit" },
             { FieldIdResolver.ToFieldId(v => v.ProviderContact.Email), "Provider contact email" },
             { FieldIdResolver.ToFieldId(v => v.ProviderContact.Name), "Provider contact name" },
-            { FieldIdResolver.ToFieldId(v => v.ProviderContact.Phone), "Provider contact phone" }
+            { FieldIdResolver.ToFieldId(v => v.ProviderContact.Phone), "Provider contact phone" },
+            { FieldIdResolver.ToFieldId(v => v.AdditionalQuestion1), "Additional Question 1" },
+            { FieldIdResolver.ToFieldId(v => v.AdditionalQuestion2), "Additional Question 2" },
         };
         
         public static string Resolve(string fieldId)

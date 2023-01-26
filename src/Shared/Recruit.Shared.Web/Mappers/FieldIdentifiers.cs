@@ -38,5 +38,7 @@
         public const string WorkingWeekHours = nameof(WorkingWeekHours);
         public const string WorkingWeekDescription = nameof(WorkingWeekDescription);
         public const string WorkExperience = "WorkExperience";
+        public const string AdditionalQuestion1 = "AdditionalQuestion1";
+        public const string AdditionalQuestion2 = "AdditionalQuestion2";
     }
 }
