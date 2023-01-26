@@ -36,6 +36,10 @@ namespace Esfa.Recruit.Employer.Web.Mappings.Extensions
                 HobbiesAndInterests = r.Application.HobbiesAndInterests,
                 Improvements = r.Application.Improvements,
                 Phone = r.Application.Phone,
+                AdditionalAnswer1= r.Application.AdditionalQuestion1,
+                AdditionalAnswer2 = r.Application.AdditionalQuestion2,
+                AdditionalQuestion1 = r.AdditionalQuestion1,
+                AdditionalQuestion2 = r.AdditionalQuestion2,
                 Qualifications = r.Application.Qualifications?.Select(q =>
                     new QualificationViewModel
                     {

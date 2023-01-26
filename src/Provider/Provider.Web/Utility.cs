@@ -95,6 +95,9 @@ namespace Esfa.Recruit.Provider.Web
         {
             var applicationReview = await _vacancyClient.GetApplicationReviewAsync(rm.ApplicationReviewId);
             var vacancy = await _vacancyClient.GetVacancyAsync(rm.VacancyId.GetValueOrDefault());
+
+            applicationReview.AdditionalQuestion1 = vacancy.AdditionalQuestion1;
+            applicationReview.AdditionalQuestion2 = vacancy.AdditionalQuestion2;
             try
             {
                 CheckAuthorisedAccess(vacancy, rm.Ukprn);

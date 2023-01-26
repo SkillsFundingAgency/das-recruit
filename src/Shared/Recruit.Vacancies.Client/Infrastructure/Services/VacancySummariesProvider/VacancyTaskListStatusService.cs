@@ -7,16 +7,22 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
     {
         public bool IsTaskListCompleted(ITaskListVacancy vacancy)
         {
-            if(vacancy.VacancyType.GetValueOrDefault() == VacancyType.Apprenticeship)
+            if (vacancy.OwnerType == OwnerType.Provider)
             {
-                return vacancy.ApplicationMethod != null;
+                if (vacancy.VacancyType.GetValueOrDefault() == VacancyType.Apprenticeship)
+                {
+                    return vacancy.HasSubmittedAdditionalQuestions;
+                }
+                if (vacancy.VacancyType == VacancyType.Traineeship)
+                {
+                    return vacancy.HasChosenProviderContactDetails ?? false;
+                }
             }
-            if (vacancy.VacancyType == VacancyType.Traineeship)
+            else if (vacancy.OwnerType == OwnerType.Employer)
             {
-                return vacancy.HasChosenProviderContactDetails ?? false;
+                return vacancy.HasSubmittedAdditionalQuestions;
             }
                 
-
             return false;
         }
     }
