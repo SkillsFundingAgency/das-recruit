@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.ViewModels.ManageNotifications;
 using Esfa.Recruit.Shared.Web.Orchestrators;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
@@ -11,6 +12,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
     public class ManageNotificationsOrchestrator : EntityValidatingOrchestrator<UserNotificationPreferences, ManageNotificationsEditModel>
     {
         private readonly IRecruitVacancyClient _recruitVacancyClient;
+        private readonly RecruitConfiguration _recruitConfiguration;
 
         private const string NotificationTypesIsRequiredForTheFirstTime = "Select when you want to receive emails about your adverts and applications";
         private readonly EntityValidationResult _notificationTypeIsRequiredForTheFirstTime = new EntityValidationResult
@@ -31,6 +33,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
         public async Task<ManageNotificationsViewModel> GetManageNotificationsViewModelAsync(VacancyUser vacancyUser, string employerAccountId)
         {
             var preferences = await _recruitVacancyClient.GetUserNotificationPreferencesAsync(vacancyUser.UserId);
+            
 
             return GetViewModelFromDomainModel(preferences, employerAccountId);
         }
@@ -101,7 +104,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
                 IsApplicationSubmittedSelected = (preferences.NotificationTypes & NotificationTypes.ApplicationSubmitted) == NotificationTypes.ApplicationSubmitted,
                 IsVacancySentForEmployerReviewSelected = (preferences.NotificationTypes & NotificationTypes.VacancySentForReview) == NotificationTypes.VacancySentForReview,
                 NotificationFrequency = preferences.NotificationFrequency,
-                NotificationScope = preferences.NotificationScope
+                NotificationScope = preferences.NotificationScope,
+                UseGovSignIn = _recruitConfiguration.UseGovSignIn
             };
         }
 
