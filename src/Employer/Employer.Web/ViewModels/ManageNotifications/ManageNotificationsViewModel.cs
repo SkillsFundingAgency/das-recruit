@@ -12,5 +12,6 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.ManageNotifications
         public NotificationScope? NotificationScope { get; set; }
         public bool HasAnySubscription => IsVacancyRejectedSelected || IsVacancyClosingSoonSelected || IsApplicationSubmittedSelected || IsVacancySentForEmployerReviewSelected;     
         public bool UseGovSignIn { get; set; }
+        public bool EnvironmentIsProd { get; set; }
     }
 }
