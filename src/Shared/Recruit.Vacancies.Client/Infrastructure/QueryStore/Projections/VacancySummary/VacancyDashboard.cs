@@ -7,6 +7,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections
     {
         public List<VacancyStatusDashboard> VacancyStatusDashboard { get; set; }
         public List<VacancyApplicationsDashboard> VacancyApplicationsDashboard { get; set; }
+        public int VacanciesClosingSoonWithNoApplications { get; set; }
     }
 
     public class VacancyStatusDashboard
