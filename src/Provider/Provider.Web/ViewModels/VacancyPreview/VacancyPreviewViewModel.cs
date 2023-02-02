@@ -46,6 +46,8 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview
         public VacancyPreviewSectionState WorkingWeekHoursSectionState { get; internal set; }
         public VacancyPreviewSectionState WorkingWeekDescriptionSectionState { get; internal set; }
         public VacancyPreviewSectionState WageAdditionalInfoSectionState { get; internal set; }
+        public VacancyPreviewSectionState AdditionalQuestion1SectionState { get; internal set; }
+        public VacancyPreviewSectionState AdditionalQuestion2SectionState { get; internal set; }
 
         public EntityValidationResult SoftValidationErrors { get; internal set; }
         public bool CanHideValidationSummary { get; internal set; }
@@ -213,6 +215,8 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview
             viewModel.TrainingSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.Training }, true, modelState, vm => vm.TrainingType, vm => vm.TrainingTitle);
             viewModel.DisabilityConfidentSectionState = GetSectionState(viewModel, new[]{ FieldIdentifiers.DisabilityConfident}, true, modelState, vm => vm.IsDisabilityConfident);
             viewModel.WorkExperienceProvidedSectionState = GetSectionState(viewModel, new[]{ FieldIdentifiers.WorkExperience}, true, modelState, vm => vm.WorkExperience);
+            viewModel.AdditionalQuestion1SectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.AdditionalQuestion1 }, true, modelState, vm => vm.AdditionalQuestion1SectionState);
+            viewModel.AdditionalQuestion2SectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.AdditionalQuestion2 }, true, modelState, vm => vm.AdditionalQuestion2SectionState);
         }
 
         public int AccountCount { get; set; }
@@ -223,6 +227,7 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview
         public VacancyTaskListSectionState TaskListSectionTwoState => SetTaskListSectionTwoState();
         public VacancyTaskListSectionState TaskListSectionThreeState => SetTaskListSectionThreeState();
         public VacancyTaskListSectionState TaskListSectionFourState => SetTaskListSectionFourState();
+        public VacancyTaskListSectionState TaskListSectionFiveState => SetTaskListSectionFiveState();
         public string AccountId { get; set; }
         public bool CanShowVacancyClonedStatusHeader => !string.IsNullOrEmpty(VacancyClonedInfoMessage);
         public string VacancyClonedInfoMessage { get; set; }
@@ -314,6 +319,23 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview
             }
             
             return VacancyTaskListSectionState.InProgress;
+        }
+        
+        private VacancyTaskListSectionState SetTaskListSectionFiveState()
+        {
+            if (TaskListSectionFourState != VacancyTaskListSectionState.Completed)
+            {
+                return VacancyTaskListSectionState.NotStarted;
+            }
+
+            if (HasSubmittedAdditionalQuestions
+                && AdditionalQuestion1SectionState == VacancyPreviewSectionState.Valid
+                && AdditionalQuestion2SectionState == VacancyPreviewSectionState.Valid)
+            {
+                return VacancyTaskListSectionState.Completed;
+            }
+
+            return VacancyTaskListSectionState.NotStarted;
         }
         
         private VacancyPreviewSectionState GetSectionState(VacancyPreviewViewModel vm, IEnumerable<string> reviewFieldIndicators, bool requiresAll, ModelStateDictionary modelState,  params Expression<Func<VacancyPreviewViewModel, object>>[] sectionProperties)

@@ -44,7 +44,9 @@ namespace Esfa.Recruit.Shared.Web.Mappers
             { FieldIdentifiers.Training, "Training requires edit" },
             { FieldIdentifiers.ApplicationMethod, "Application method requires edit" },
             { FieldIdentifiers.ApplicationUrl, "Apply now web address requires edit" },
-            { FieldIdentifiers.ApplicationInstructions, "Application process requires edit" }
+            { FieldIdentifiers.ApplicationInstructions, "Application process requires edit" },
+            { FieldIdentifiers.AdditionalQuestion1, "Additional question 1 requires edit" },
+            { FieldIdentifiers.AdditionalQuestion2, "Additional question 2 requires edit" },
         };
         
         private IDictionary<string, string> ManualQaMessagesForTraineeship => new Dictionary<string, string> 

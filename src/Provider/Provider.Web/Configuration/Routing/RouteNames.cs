@@ -89,6 +89,8 @@
         public const string Duration_Post = "Duration_Post";
         public const string Wage_Get = "Wage_Get";
         public const string Wage_Post = "Wage_Post";
+        public const string AdditionalQuestions_Get = nameof(AdditionalQuestions_Get);
+        public const string AdditionalQuestions_Post = nameof(AdditionalQuestions_Post);
         public const string ApplicationReview_Get = "ApplicationReview_Get";
         public const string ApplicationReview_Post = "ApplicationReview_Post";
         public const string ApplicationReviewConfirmation_Get = "ApplicationReviewConfirmation_Get";

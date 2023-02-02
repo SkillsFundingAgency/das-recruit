@@ -118,6 +118,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                 }
             }
         ]";
+
+         private string DashboardNoApplicationCountMatchClause = @"{ '$match' :{ 'candidateApplicationReview' : null, 'status':'Live'  }}"; 
+         
         private string DashboardPipeline = @"[
             {
                 '$project': {
@@ -435,6 +438,27 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                 pipeline.Insert(0, employerReviewMatch);
             }
             pipeline.Insert(0, vacanciesMatchClause);
+            var pipelineDefinition = pipeline.Values.Select(p => p.ToBsonDocument()).ToArray();
+
+            return pipelineDefinition;
+        }
+
+        public BsonDocument[] GetAggregateQueryPipelineVacanciesClosingSoonDashboard(BsonDocument vacanciesMatchClause,
+            BsonDocument employerReviewMatch = null)
+        {
+            var pipeline = BsonSerializer.Deserialize<BsonArray>(DashboardApplicationsPipeline);
+            var insertLine = 3;
+            if (employerReviewMatch != null)
+            {
+                pipeline.Insert(0, employerReviewMatch);
+                insertLine++;
+            }
+            pipeline.Insert(0, vacanciesMatchClause);
+
+            var matchPipeline = BsonSerializer.Deserialize<BsonDocument>(DashboardNoApplicationCountMatchClause);
+            
+            pipeline.Insert(insertLine, matchPipeline);
+            
             var pipelineDefinition = pipeline.Values.Select(p => p.ToBsonDocument()).ToArray();
 
             return pipelineDefinition;

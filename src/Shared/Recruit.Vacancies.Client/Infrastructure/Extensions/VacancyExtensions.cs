@@ -67,6 +67,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Extensions
             projectedVacancy.RouteId = vacancy.RouteId;
             projectedVacancy.WorkExperience = vacancy.WorkExperience;
             projectedVacancy.VacancyType = vacancy.VacancyType.GetValueOrDefault();
+
+            projectedVacancy.AdditionalQuestion1 = vacancy.AdditionalQuestion1;
+            projectedVacancy.AdditionalQuestion2 = vacancy.AdditionalQuestion2;
             
             return projectedVacancy;
         }
