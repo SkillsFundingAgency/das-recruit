@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Orchestrators;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
@@ -6,13 +7,16 @@ using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Moq;
 using Xunit;
+using Microsoft.Extensions.Configuration;
 
 namespace Esfa.Recruit.UnitTests.Employer.Web.Orchestrators.ManageNotificationsOrchestratorTests
 {
     public class GetManageNotificationsViewModelAsyncTests
     {
         private readonly Mock<IRecruitVacancyClient> _recruitVacancyClientMock = new Mock<IRecruitVacancyClient>();
-        
+        private readonly Mock<IConfiguration> _iConfigurationMock = new Mock<IConfiguration>();
+        public const string EmployerAccountId = "EmployerAccountId";
+
 
         [Fact]
         public async Task WhenUserPreferencesAreNotSet()
@@ -59,7 +63,7 @@ namespace Esfa.Recruit.UnitTests.Employer.Web.Orchestrators.ManageNotificationsO
         private ManageNotificationsOrchestrator GetSut()
         {
             var _loggerMock = new Mock<ILogger<ManageNotificationsOrchestrator>>();
-            return new ManageNotificationsOrchestrator(_loggerMock.Object, _recruitVacancyClientMock.Object);
+            return new ManageNotificationsOrchestrator(_loggerMock.Object, new RecruitConfiguration(EmployerAccountId), _iConfigurationMock.Object, _recruitVacancyClientMock.Object);
         }
     }
 }
