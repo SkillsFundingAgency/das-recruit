@@ -33,7 +33,20 @@ namespace Esfa.Recruit.UnitTests.Employer.Web.Orchestrators.ManageNotificationsO
             result.IsVacancySentForEmployerReviewSelected.Should().BeFalse();
             result.NotificationFrequency.Should().BeNull();
             result.NotificationScope.Should().BeNull();
+            result.EnvironmentIsProd.Should().BeTrue();
         }
+        
+        [Fact]
+        public async Task WhenUserPreferencesAreNotSet_For_Non_Prod()
+        {
+            var employerAccountId = "ABC123";
+            _recruitVacancyClientMock.Setup(c => c.GetUserNotificationPreferencesAsync(It.IsAny<string>())).ReturnsAsync(new UserNotificationPreferences());
+            var sut = GetSut(false);
+            var result = await sut.GetManageNotificationsViewModelAsync(new VacancyUser(), employerAccountId);
+
+            result.EnvironmentIsProd.Should().BeFalse();
+        }
+
 
         [Theory]
         [InlineData(NotificationTypes.None, false, false, false, false)]
@@ -60,9 +73,10 @@ namespace Esfa.Recruit.UnitTests.Employer.Web.Orchestrators.ManageNotificationsO
             result.IsVacancySentForEmployerReviewSelected.Should().Be(expectIsVacancySentForReviewSelected);
         }
 
-        private ManageNotificationsOrchestrator GetSut()
+        private ManageNotificationsOrchestrator GetSut(bool isProd = true)
         {
             var _loggerMock = new Mock<ILogger<ManageNotificationsOrchestrator>>();
+            _iConfigurationMock.Setup(x=>x["EnvironmentName"]).Returns(isProd?"Prod":"test");
             return new ManageNotificationsOrchestrator(_loggerMock.Object, new RecruitConfiguration(EmployerAccountId), _iConfigurationMock.Object, _recruitVacancyClientMock.Object);
         }
     }
