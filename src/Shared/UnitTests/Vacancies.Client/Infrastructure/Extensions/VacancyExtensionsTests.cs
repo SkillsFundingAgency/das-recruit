@@ -132,6 +132,9 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
             p.EmployerLocation.Latitude.Should().Be(v.EmployerLocation.Latitude);
             p.EmployerLocation.Longitude.Should().Be(v.EmployerLocation.Longitude);
 
+            p.AdditionalQuestion1.Should().Be(v.AdditionalQuestion1);
+            p.AdditionalQuestion2.Should().Be(v.AdditionalQuestion2);
+
             var projectionSkills = p.Skills.ToList();
             for (var i = 0; i < projectionSkills.Count; i++)
             {

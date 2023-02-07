@@ -53,7 +53,9 @@ namespace Esfa.Recruit.Provider.Web.Mappings
                 new ReviewFieldIndicatorViewModel(FieldIdentifiers.ApplicationInstructions, Anchors.ApplicationInstructions),
                 new ReviewFieldIndicatorViewModel(FieldIdentifiers.EmployerName, Anchors.AboutEmployerSection),
                 new ReviewFieldIndicatorViewModel(FieldIdentifiers.WorkExperience, Anchors.WorkExperience),
-                new ReviewFieldIndicatorViewModel(FieldIdentifiers.TraineeRoute, Anchors.TraineeSector)
+                new ReviewFieldIndicatorViewModel(FieldIdentifiers.TraineeRoute, Anchors.TraineeSector),
+                new ReviewFieldIndicatorViewModel(FieldIdentifiers.AdditionalQuestion1, Anchors.AdditionalQuestion1),
+                new ReviewFieldIndicatorViewModel(FieldIdentifiers.AdditionalQuestion2, Anchors.AdditionalQuestion2),
             };
 
             var mappings =  new Dictionary<string, IEnumerable<string>>
@@ -95,7 +97,9 @@ namespace Esfa.Recruit.Provider.Web.Mappings
                 { FieldIdResolver.ToFieldId(v => v.ApplicationMethod), new [] { FieldIdentifiers.ApplicationMethod} },
                 { FieldIdResolver.ToFieldId(v => v.ApplicationUrl), new []{ FieldIdentifiers.ApplicationUrl} },
                 { FieldIdResolver.ToFieldId(v => v.WorkExperience), new []{ FieldIdentifiers.WorkExperience} },
-                { FieldIdResolver.ToFieldId(v => v.RouteId), new []{ FieldIdentifiers.TraineeRoute} }
+                { FieldIdResolver.ToFieldId(v => v.RouteId), new []{ FieldIdentifiers.TraineeRoute} },
+                { FieldIdResolver.ToFieldId(v => v.AdditionalQuestion1), new []{ FieldIdentifiers.AdditionalQuestion1} },
+                { FieldIdResolver.ToFieldId(v => v.AdditionalQuestion2), new []{ FieldIdentifiers.AdditionalQuestion2} }
             };
 
             return new ReviewFieldMappingLookupsForPage(vms, mappings);
@@ -420,6 +424,23 @@ namespace Esfa.Recruit.Provider.Web.Mappings
             var mappings = new Dictionary<string, IEnumerable<string>>
             {
                 { FieldIdResolver.ToFieldId(v => v.RouteId), new []{ FieldIdentifiers.TraineeRoute } }
+            };
+
+            return new ReviewFieldMappingLookupsForPage(vms, mappings);
+        }
+        
+        public static ReviewFieldMappingLookupsForPage GetAdditionalQuestionsFieldIndicators()
+        {
+            var vms = new List<ReviewFieldIndicatorViewModel>
+            {
+                new(FieldIdentifiers.AdditionalQuestion1, Anchors.AdditionalQuestion1),
+                new(FieldIdentifiers.AdditionalQuestion2, Anchors.AdditionalQuestion2)
+            };
+
+            var mappings =  new Dictionary<string, IEnumerable<string>>
+            {
+                { FieldIdResolver.ToFieldId(v => v.AdditionalQuestion1), new []{ FieldIdentifiers.AdditionalQuestion1} },
+                { FieldIdResolver.ToFieldId(v => v.AdditionalQuestion2), new []{ FieldIdentifiers.AdditionalQuestion2} }
             };
 
             return new ReviewFieldMappingLookupsForPage(vms, mappings);

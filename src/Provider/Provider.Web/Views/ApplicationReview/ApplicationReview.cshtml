@@ -170,9 +170,25 @@
             @Html.Raw(string.Join(", ", Model.Skills.Select(s => Html.Encode(s))))
         </p>
 
-        <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+    <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+    
+    @if (Model.HasAdditionalQuestions)
+    {
+        <h2 class="govuk-heading-l govuk-!-margin-top-6">Additional Questions</h2>
+        <h3 class="govuk-heading-s">@Model.AdditionalQuestion1</h3>
+        <p class="govuk-body">@Model.AdditionalQuestionAnswer1</p>
 
-        <h3 class="govuk-heading-s">Do you have a learning difficulty, disability or health problem?</h3>
+        @if (Model.HasAdditionalSecondQuestion)
+        {
+            <h3 class="govuk-heading-s">@Model.AdditionalQuestion2</h3>
+            <p class="govuk-body">@Model.AdditionalQuestionAnswer2</p>
+        }
+        <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+    }
+
+
+        <h2 class="govuk-heading-l govuk-!-margin-top-6">Equality questions</h2>
+    <h3 class="govuk-heading-s">Do you have a learning difficulty, disability or health problem?</h3>
         <p class="govuk-body">@Model.DisabilityStatus.GetDisplayName()</p>
 
         <h3 class="govuk-heading-s">Is there anything we can do to support your interview?</h3>

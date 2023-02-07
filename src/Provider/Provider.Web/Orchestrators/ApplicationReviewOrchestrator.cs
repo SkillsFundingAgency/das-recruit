@@ -90,6 +90,6 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
                 Ukprn = rm.Ukprn,
                 VacancyId = rm.VacancyId
             };
-        }        
+        }
     }
 }

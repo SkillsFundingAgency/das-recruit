@@ -8,6 +8,7 @@ using Esfa.Recruit.Employer.Web.ViewModels.Part1.Title;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.Training;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.TrainingProvider;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.Wage;
+using Esfa.Recruit.Employer.Web.ViewModels.Part2.AdditionalQuestions;
 using Esfa.Recruit.Employer.Web.ViewModels.Part2.FutureProspects;
 using Esfa.Recruit.Employer.Web.ViewModels.Part2.ShortDescription;
 using Esfa.Recruit.Employer.Web.ViewModels.Part2.VacancyDescription;
@@ -48,7 +49,9 @@ namespace Esfa.Recruit.Employer.Web.Mappings
                 new ReviewFieldIndicatorViewModel(FieldIdentifiers.ApplicationMethod, Anchors.ApplicationMethod),
                 new ReviewFieldIndicatorViewModel(FieldIdentifiers.ApplicationUrl, Anchors.ApplicationUrl),
                 new ReviewFieldIndicatorViewModel(FieldIdentifiers.ApplicationInstructions, Anchors.ApplicationInstructions),
-                new ReviewFieldIndicatorViewModel(FieldIdentifiers.EmployerName, Anchors.AboutEmployerSection)
+                new ReviewFieldIndicatorViewModel(FieldIdentifiers.EmployerName, Anchors.AboutEmployerSection),
+                new ReviewFieldIndicatorViewModel(FieldIdentifiers.AdditionalQuestion1, Anchors.AdditionalQuestion1),
+                new ReviewFieldIndicatorViewModel(FieldIdentifiers.AdditionalQuestion2, Anchors.AdditionalQuestion2),
             };
 
             var mappings =  new Dictionary<string, IEnumerable<string>>
@@ -89,7 +92,9 @@ namespace Esfa.Recruit.Employer.Web.Mappings
                 { FieldIdResolver.ToFieldId(v => v.TrainingProvider.Ukprn) , new []{ FieldIdentifiers.Provider} },
                 { FieldIdResolver.ToFieldId(v => v.ApplicationInstructions), new [] { FieldIdentifiers.ApplicationInstructions }},
                 { FieldIdResolver.ToFieldId(v => v.ApplicationMethod), new [] { FieldIdentifiers.ApplicationMethod} },
-                { FieldIdResolver.ToFieldId(v => v.ApplicationUrl), new []{ FieldIdentifiers.ApplicationUrl} }
+                { FieldIdResolver.ToFieldId(v => v.ApplicationUrl), new []{ FieldIdentifiers.ApplicationUrl} },
+                { FieldIdResolver.ToFieldId(v => v.AdditionalQuestion1), new []{ FieldIdentifiers.AdditionalQuestion1} },
+                { FieldIdResolver.ToFieldId(v => v.AdditionalQuestion2), new []{ FieldIdentifiers.AdditionalQuestion2} }
             };
 
             return new ReviewFieldMappingLookupsForPage(vms, mappings);
@@ -390,6 +395,23 @@ namespace Esfa.Recruit.Employer.Web.Mappings
             var mappings =  new Dictionary<string, IEnumerable<string>>
             {
                 { FieldIdResolver.ToFieldId(v => v.OutcomeDescription), new []{ FieldIdentifiers.OutcomeDescription} }
+            };
+
+            return new ReviewFieldMappingLookupsForPage(vms, mappings);
+        }
+        
+        public static ReviewFieldMappingLookupsForPage GetAdditionalQuestionsFieldIndicators()
+        {
+            var vms = new List<ReviewFieldIndicatorViewModel>
+            {
+                new(FieldIdentifiers.AdditionalQuestion1, Anchors.AdditionalQuestion1),
+                new(FieldIdentifiers.AdditionalQuestion2, Anchors.AdditionalQuestion2)
+            };
+
+            var mappings =  new Dictionary<string, IEnumerable<string>>
+            {
+                { FieldIdResolver.ToFieldId(v => v.AdditionalQuestion1), new []{ FieldIdentifiers.AdditionalQuestion1} },
+                { FieldIdResolver.ToFieldId(v => v.AdditionalQuestion2), new []{ FieldIdentifiers.AdditionalQuestion2} }
             };
 
             return new ReviewFieldMappingLookupsForPage(vms, mappings);

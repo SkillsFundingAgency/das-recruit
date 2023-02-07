@@ -14,7 +14,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.UtilityTests
         private Utility _utility;
         public VacancyHasStartedPartTwoTests ()
         {
-            _utility = new Utility(Mock.Of<IRecruitVacancyClient>(), Mock.Of<IFeature>());
+            _utility = new Utility(Mock.Of<IRecruitVacancyClient>());
         }
         [Fact]
         public void ShouldReturnTrueIfAnyPartTwoFieldsAreCompleted()

@@ -232,8 +232,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
                                                  + dashboardApplications.Where(c=>c.Status == VacancyStatus.Closed).Sum(x=>x.NoOfSuccessfulApplications),
                 NumberOfUnsuccessfulApplications = dashboardApplications.Where(c=>c.Status == VacancyStatus.Live).Sum(x=>x.NoOfUnsuccessfulApplications) 
                                                    + dashboardApplications.Where(c=>c.Status == VacancyStatus.Closed).Sum(x=>x.NoOfUnsuccessfulApplications),
-                NumberClosingSoon =dashboardApplications.FirstOrDefault(c=>c.Status == VacancyStatus.Live && c.ClosingSoon && (c.NoOfNewApplications != 0 || c.NoOfSuccessfulApplications != 0 || c.NoOfUnsuccessfulApplications != 0))?.StatusCount ?? 0,
-                NumberClosingSoonWithNoApplications =dashboardApplications.FirstOrDefault(c=>c.Status == VacancyStatus.Live && c.ClosingSoon && c.NoOfNewApplications == 0 && c.NoOfSuccessfulApplications == 0 && c.NoOfUnsuccessfulApplications == 0)?.StatusCount ?? 0
+                NumberClosingSoon =dashboard.FirstOrDefault(c=>c.Status == VacancyStatus.Live && c.ClosingSoon)?.StatusCount ?? 0,
+                NumberClosingSoonWithNoApplications =dashboardValue.VacanciesClosingSoonWithNoApplications
             };
         }
 
