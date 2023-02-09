@@ -9,6 +9,7 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.EditVacancyDates
         public string ClosingDay { get; set; }
         public string ClosingMonth { get; set; }
         public string ClosingYear { get; set; }
+        public string Title { get; set; }
 
         [TypeOfDate(ErrorMessage = ErrMsg.TypeOfDate.ClosingDate)]
         public string ClosingDate

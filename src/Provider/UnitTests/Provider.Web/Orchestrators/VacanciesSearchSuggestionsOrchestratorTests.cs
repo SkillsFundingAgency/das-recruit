@@ -10,6 +10,8 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections;
 using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using Esfa.Recruit.Vacancies.Client.Application.Configuration;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
 namespace Esfa.Recruit.UnitTests.Provider.Web.Orchestrators
 {
@@ -18,10 +20,7 @@ namespace Esfa.Recruit.UnitTests.Provider.Web.Orchestrators
         private readonly Mock<IProviderVacancyClient> _mockClient = new Mock<IProviderVacancyClient>();
         const long Ukprn = 1234;
 
-        const string VacancyReferenceRegex = @"^VAC\d{10}$";
-
-        private VacancySummary[] _testVacancies = new[] 
-        {
+        private readonly VacancySummary[] _testVacancies = {
             new VacancySummary(){Title="The quick brown", LegalEntityName="20th Century Fox", VacancyReference=1000000101},
             new VacancySummary(){Title="fox jumped over", LegalEntityName="20th Century Fox", VacancyReference=1000000102},
             new VacancySummary(){Title="the lazy dog", LegalEntityName="Black & Brown Ltd", CreatedDate=DateTime.Now, VacancyReference=1000000103},
@@ -32,119 +31,53 @@ namespace Esfa.Recruit.UnitTests.Provider.Web.Orchestrators
             new VacancySummary(){Title="in this century", LegalEntityName="The quick Brown ltd", VacancyReference=1000000108}
         };
 
-        [Fact]
-        public async Task WhenTermIsTiny_ThenReturnEmptyList()
+        [Theory]
+        [InlineData(VacancyType.Apprenticeship, "x", true)]
+        [InlineData(VacancyType.Traineeship, "x", true)]
+        [InlineData(VacancyType.Apprenticeship, "xx", true)]
+        [InlineData(VacancyType.Traineeship, "xx", true)]
+        [InlineData(VacancyType.Apprenticeship, "xxx", false)]
+        [InlineData(VacancyType.Traineeship, "xxx", false)]
+        public async Task When_The_Search_Term_Is_Less_Than_The_Minimum_Search_Threshold_Then_Empty_List_Returned(VacancyType vacancyType, string searchTerm, bool shouldBeEmptyList)
         {
-            var orch = GetSut(_testVacancies);
-            var result = await orch.GetSearchSuggestionsAsync("x", Ukprn); 
-            result.Any().Should().BeFalse();
+            var orch = GetSut(_testVacancies, vacancyType, searchTerm);
+            var result = await orch.GetSearchSuggestionsAsync(searchTerm, Ukprn); 
+            result.Any().Should().Be(!shouldBeEmptyList);
         }
 
-        [Fact]
-        public async Task WhenTermHasNoMatch_ThenReturnEmptyList()
-        {
-            var orch = GetSut(_testVacancies);
-            var result = await orch.GetSearchSuggestionsAsync("xxx", Ukprn);
-            result.Any().Should().BeFalse();
-        }
-
-        [Fact]
-        public async Task ShouldIgnoreNullLegalEntityName()
-        {
-            var orch = GetSut(_testVacancies);
-            var result = await orch.GetSearchSuggestionsAsync("fox", Ukprn);
-            result.Count().Should().Be(6);
-            result.Any(s => s.Equals("fox jumped over")).Should().BeTrue();
-            result.Any(s => s.Equals("fox is brown")).Should().BeTrue();
-            result.Any(s => s.Equals("Fox 20th Century")).Should().BeTrue();
-            result.Any(s => s.Equals("20th Century Fox")).Should().BeTrue();
-            result.Any(s => s.Equals("the lazy fox")).Should().BeTrue();
-            result.Any(s => s.Equals("The quick brown fox")).Should().BeTrue();
-        }
-
-        [Fact]
-        public async Task ShouldListLatestOnTop()
-        {
-            var orch = GetSut(_testVacancies);
-            var result = await orch.GetSearchSuggestionsAsync("lazy", Ukprn);
-            result.Count().Should().Be(2);
-            result.First().Should().Contain("the lazy dog");
-            result.Last().Should().Contain("the lazy fox");
-        }
-
-        [Fact]
-        public async Task ShouldMatchTitleAndNameThatContainsTheSearchTerm()
-        {
-            var orch = GetSut(_testVacancies);
-            var result = await orch.GetSearchSuggestionsAsync("century", Ukprn);
-            result.Count().Should().Be(3);
-            result.Any(s => s.Equals("Fox 20th Century")).Should().BeTrue();
-            result.Any(s => s.Equals("20th Century Fox")).Should().BeTrue();
-            result.Any(s => s.Equals("in this century")).Should().BeTrue();
-        }
-
-        [Fact]
-        public async Task ShouldReturnDistinctMatchingTitleAndNameList()
-        {
-            var orch = GetSut(_testVacancies);
-            var result = await orch.GetSearchSuggestionsAsync("the quick", Ukprn);
-            result.Count().Should().Be(3);
-            result.Any(s => s.Equals("The quick brown")).Should().BeTrue();
-            result.Any(s => s.Equals("The quick brown fox")).Should().BeTrue();
-            result.Any(s => s.Equals("The quick Brown ltd")).Should().BeTrue();
-        }
-        
-        [Fact]
-        public async Task WhenTermMatchesMoreThan50Title_ThenLegalEntityNameWillBeFilteredOut()
+        [Theory]
+        [InlineData(VacancyType.Apprenticeship)]
+        [InlineData(VacancyType.Traineeship)]
+        public async Task WhenTermMatchesMoreThan50Title_ThenLegalEntityNameWillBeFilteredOut(VacancyType vacancyType)
         {
             var LegalEntityName = "20th Century Fox";
             var searchTerm = "fox";
-            var orch = GetSut(GenerateVacancySummaries(100, LegalEntityName, searchTerm));
+            var orch = GetSut(GenerateVacancySummaries(100, LegalEntityName, searchTerm), vacancyType, searchTerm);
             var result = await orch.GetSearchSuggestionsAsync(searchTerm, Ukprn);
             result.Count().Should().Be(VacanciesSearchSuggestionsOrchestrator.MaxRowsInResult);
             result.Any(s => s.Equals(LegalEntityName)).Should().BeFalse();
         }
 
-        [Fact]
-        public async Task WhenTermMatchesVacancyReference_ThenListVacancyReferences()
-        {            
-            var LegalEntityName = "Exotic Vacations limited";
-            var orch = GetSut(GenerateVacancySummaries(100, LegalEntityName, "vac"));
-            var result = await orch.GetSearchSuggestionsAsync("vac1", Ukprn);
-            result.Count().Should().Be(VacanciesSearchSuggestionsOrchestrator.MaxRowsInResult);
-            result.Any(s => s.Equals(LegalEntityName)).Should().BeFalse();
-            result.All(s => Regex.IsMatch(s, VacancyReferenceRegex)).Should().BeTrue();
-            result.First().Should().Be("VAC1000000151");
-            result.Last().Should().Be("VAC1000000200");
-        }
 
-        [Fact]
-        public async Task WhenTermMatchesTitleAndName_ThenReturnMaxAllowedRowsOnly()
+        private VacanciesSearchSuggestionsOrchestrator GetSut(IEnumerable<VacancySummary> vacancies, VacancyType vacancyType, string searchTerm)
         {
-            var orch = GetSut(GenerateVacancySummaries(20, "vac", "vac"));
-            var result = await orch.GetSearchSuggestionsAsync("vac", Ukprn);
-            result.Count().Should().Be(VacanciesSearchSuggestionsOrchestrator.MaxRowsInResult);
-            result.Count(c => Regex.IsMatch(c, VacancyReferenceRegex)).Should().Be(10);
-        }
-
-        private VacanciesSearchSuggestionsOrchestrator GetSut(IEnumerable<VacancySummary> vacancies)
-        {
+            var serviceParameters = new ServiceParameters(vacancyType.ToString());
             var dashboard = new ProviderDashboard()
             {
                 Vacancies = vacancies
             };
             
-            _mockClient.Setup(c => c.GetDashboardAsync(It.IsAny<long>(), false)).ReturnsAsync(dashboard);
-            return new VacanciesSearchSuggestionsOrchestrator(_mockClient.Object);
+            _mockClient.Setup(c => c.GetDashboardAsync(Ukprn, vacancyType, 1, null,searchTerm)).ReturnsAsync(dashboard);
+            return new VacanciesSearchSuggestionsOrchestrator(_mockClient.Object, serviceParameters);
         }
 
-        private IEnumerable<VacancySummary> GenerateVacancySummaries(int count, string LegalEntityName, string term)
+        private IEnumerable<VacancySummary> GenerateVacancySummaries(int count, string legalEntityName, string term)
         {
             return Enumerable.Range(1, count)
                 .Select(r => new VacancySummary() 
                 { 
                     Title = $"{term} {Guid.NewGuid()}",
-                    LegalEntityName = $"{LegalEntityName} {Guid.NewGuid()}", VacancyReference = 1000000100 + r,
+                    LegalEntityName = $"{legalEntityName} {Guid.NewGuid()}", VacancyReference = 1000000100 + r,
                     CreatedDate = DateTime.Now.AddSeconds(r) 
                 });
         }

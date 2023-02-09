@@ -1,11 +1,12 @@
+using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 using Esfa.Recruit.Vacancies.Client.Application.Commands;
+using Esfa.Recruit.Vacancies.Client.Application.Configuration;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Ioc;
 using MediatR;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -28,6 +29,19 @@ namespace SFA.DAS.Recruit.Api
             services.Configure<ConnectionStrings>(Configuration.GetSection("ConnectionStrings"));
             services.Configure<RecruitConfiguration>(Configuration.GetSection("Recruit"));
             services.Configure<AzureActiveDirectoryConfiguration>(Configuration.GetSection("AzureAd"));
+
+            services.AddScoped(provider => {
+                var httpContext = provider.GetRequiredService<IHttpContextAccessor>().HttpContext;
+
+                if (httpContext.Request.RouteValues["Controller"].ToString()!.Equals("Vacancies", StringComparison.CurrentCultureIgnoreCase)
+                   && (httpContext.Request.RouteValues["Action"].ToString()!.Equals("CreateTraineeship", StringComparison.CurrentCultureIgnoreCase)
+                   || httpContext.Request.RouteValues["Action"].ToString()!.Equals("ValidateTraineeship", StringComparison.CurrentCultureIgnoreCase)))
+                {
+                    return new ServiceParameters(VacancyType.Traineeship.ToString());
+                }
+                return new ServiceParameters(VacancyType.Apprenticeship.ToString());
+            });
+
 
             var azureAdConfig = Configuration
                 .GetSection("AzureAd")
@@ -63,13 +77,10 @@ namespace SFA.DAS.Recruit.Api
                     }
                     o.Conventions.Add(new ApiExplorerGroupPerVersionConvention());
                 })
-                .SetCompatibilityVersion(CompatibilityVersion.Version_3_0)
                 .AddJsonOptions(options =>
                 {
-                    options.JsonSerializerOptions.IgnoreNullValues = true;
+                    options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
                 });
-
-            services.AddApplicationInsightsTelemetry(Configuration["APPINSIGHTS_INSTRUMENTATIONKEY"]);
             
             services.AddSwaggerGen(c =>
             {

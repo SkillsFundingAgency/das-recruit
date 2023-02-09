@@ -45,17 +45,11 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part2
             {
                 return View(vm);
             }
-
-            if (_feature.IsFeatureEnabled(FeatureNames.EmployerTaskList))
-            {
-                if (vm.IsTaskListCompleted)
-                {
-                    return RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet);
-                }
-                return RedirectToRoute(RouteNames.VacancyDescription_Index_Get);    
-            }
             
-            return RedirectToRoute(RouteNames.Vacancy_Preview_Get);
+            return RedirectToRoute(vm.IsTaskListCompleted 
+                ? RouteNames.EmployerCheckYourAnswersGet 
+                : RouteNames.VacancyDescription_Index_Get, 
+                new {m.VacancyId, m.EmployerAccountId});
         }
     }
 }

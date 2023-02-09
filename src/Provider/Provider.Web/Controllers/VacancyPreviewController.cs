@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Esfa.Recruit.Provider.Web.Configuration;
 using Esfa.Recruit.Provider.Web.Configuration.Routing;
@@ -12,8 +9,9 @@ using Esfa.Recruit.Provider.Web.Orchestrators;
 using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview;
 using Esfa.Recruit.Shared.Web.Extensions;
-using Esfa.Recruit.Shared.Web.Mappers;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
+using Esfa.Recruit.Vacancies.Client.Application.Configuration;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -23,10 +21,12 @@ namespace Esfa.Recruit.Provider.Web.Controllers
     public class VacancyPreviewController : Controller
     {
         private readonly VacancyPreviewOrchestrator _orchestrator;
+        private readonly ServiceParameters _serviceParameters;
 
-        public VacancyPreviewController(VacancyPreviewOrchestrator orchestrator)
+        public VacancyPreviewController(VacancyPreviewOrchestrator orchestrator, ServiceParameters serviceParameters)
         {
             _orchestrator = orchestrator;
+            _serviceParameters = serviceParameters;
         }
 
         [HttpGet("preview", Name = RouteNames.Vacancy_Preview_Get)]
@@ -97,7 +97,8 @@ namespace Esfa.Recruit.Provider.Web.Controllers
 
             viewModel.CanHideValidationSummary = true;
 
-            return View(viewModel);
+            var isApprenticeship = _serviceParameters.VacancyType.GetValueOrDefault() == VacancyType.Apprenticeship;
+            return View(isApprenticeship ? ViewNames.AdvertPreview : ViewNames.AdvertPreviewTraineeship, viewModel);
         }
 
         private void AddSoftValidationErrorsToModelState(VacancyPreviewViewModel viewModel)

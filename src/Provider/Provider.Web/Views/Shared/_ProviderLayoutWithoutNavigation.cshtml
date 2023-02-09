@@ -1,18 +1,13 @@
-﻿@using Esfa.Recruit.Provider.Web.Configuration
-@using Esfa.Recruit.Provider.Web.Configuration.Routing
-@using Esfa.Recruit.Provider.Web.Views
-@using Esfa.Recruit.Shared.Web.Configuration
-@functions
+﻿@functions
 {
-public string GetTitle()
-{
-    const string defaultTitle = "Recruit an Apprentice";
-    if (ViewBag.Title != null)
-        return $"{defaultTitle} | {ViewBag.Title}";
+    public string GetTitle()
+    {
+        const string defaultTitle = "Recruit an Apprentice";
+        if (ViewBag.Title != null)
+            return $"{defaultTitle} | {ViewBag.Title}";
 
-    return defaultTitle;
-}
-    
+        return defaultTitle;
+    }
 }
 
 @{
@@ -20,9 +15,7 @@ public string GetTitle()
     var userId = ViewBag.GaData?.UserId != null ? ViewBag.GaData.UserId : null;
     var ukprn = ViewBag.GaData?.UkPrn != null ? ViewBag.GaData.UkPrn : null;
     var isAuthenticated = User.Identity.IsAuthenticated ? "True" : "False";
-}}
-
-
+}
 
 <!DOCTYPE html>
 <html lang="en" class="govuk-template">

@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Esfa.Recruit.Provider.Web.Orchestrators.Reports;
 using Esfa.Recruit.Provider.Web.ViewModels.Reports;
 using Esfa.Recruit.Provider.Web.ViewModels.Reports.ProviderApplicationsReport;
+using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
@@ -47,14 +48,14 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Reports
                 fromDateUtc,
                 toDateUtc.AddDays(1).AddTicks(-1), 
                 user,
-                expectedReportName), 
+                expectedReportName, VacancyType.Traineeship), 
                 Times.Once);
         }
 
         [Theory]
         [InlineData("1", "2", "2018", "20", "2", "2019")] //GMT
         [InlineData("1", "4", "2018", "20", "4", "2019")] //BST
-        public async Task PostCreateViewModelAsync_ShouldUseCustomTimespan(string fromDay, string fromMonth, string fromYear, string toDay, string toMonth, string toYear)
+        public async Task PostCreateViewModelAsync_ShouldUseCustomTimespan_With_Correct_VacancyType(string fromDay, string fromMonth, string fromYear, string toDay, string toMonth, string toYear)
         {
             
             long ukprn = 12345678;
@@ -87,10 +88,10 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Reports
                     fromDateUtc,
                     toDateUtc.AddDays(1).AddTicks(-1),
                     user,
-                    expectedReportName),
+                    expectedReportName, VacancyType.Traineeship),
                 Times.Once);
         }
-
+        
         private ProviderApplicationsReportOrchestrator GetOrchestrator(IProviderVacancyClient client, string todayDate)
         {
             var timeProvider = new Mock<ITimeProvider>();
@@ -99,7 +100,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Reports
             timeProvider.Setup(t => t.Today).Returns(today);
             timeProvider.Setup(t => t.NextDay).Returns(today.AddDays(1));
 
-            return new ProviderApplicationsReportOrchestrator(client, timeProvider.Object);
+            return new ProviderApplicationsReportOrchestrator(client, timeProvider.Object, new ServiceParameters("Traineeship"));
         }
     }
 }

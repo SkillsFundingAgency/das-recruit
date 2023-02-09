@@ -1,10 +1,11 @@
 using System.Linq;
+using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Shared.Web.ViewModels;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
 namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyManage
 {
-    public class ManageVacancyViewModel
+    public class ManageVacancyViewModel : VacancyRouteModel
     {
         public string Title { get; internal set; }
         public VacancyStatus Status { get; internal set; }
@@ -24,6 +25,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyManage
 
         public bool CanShowEditVacancyLink { get; internal set; }
         public bool CanShowCloseVacancyLink { get; internal set; }
+        public bool CanShowDeleteLink { get; internal set; }
         public string VacancyClosedInfoMessage { get; internal set; }
         public string ApplicationReviewStatusHeaderInfoMessage { get; internal set; }
         public string TransferredProviderName { get; internal set; }

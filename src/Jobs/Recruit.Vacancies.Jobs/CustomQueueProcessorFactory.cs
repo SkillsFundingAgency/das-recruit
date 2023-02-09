@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Microsoft.Azure.WebJobs.Host.Queues;
 
 namespace Esfa.Recruit.Vacancies.Jobs
@@ -7,7 +8,7 @@ namespace Esfa.Recruit.Vacancies.Jobs
         public QueueProcessor Create(QueueProcessorFactoryContext context)
         {
             context.Queue.CreateIfNotExistsAsync().Wait();
-
+        
             // return the default processor
             return new QueueProcessor(context);
         }

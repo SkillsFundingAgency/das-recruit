@@ -1,4 +1,4 @@
-﻿@using Esfa.Recruit.Employer.Web.ViewModels.VacancyManage
+@using Esfa.Recruit.Employer.Web.ViewModels.VacancyManage
 @model VacancyApplicationsViewModel
 <table class="govuk-table responsive">
     <thead class="govuk-table__head">
@@ -16,7 +16,9 @@
             foreach (var application in applicationStatusGroup)
             {
                 <tr class="govuk-table__row" asp-show="@application.IsNotWithdrawn">
-                    <td class="govuk-table__cell" data-label="Name"><a asp-route="@RouteNames.ApplicationReview_Get" asp-route-applicationReviewId="@application.ApplicationReviewId" class="govuk-link">@application.CandidateName</a></td>
+                    <td class="govuk-table__cell" data-label="Name">
+                        <a data-label="application_review" asp-route="@RouteNames.ApplicationReview_Get" asp-route-employerAccountId="@Model.EmployerAccountId" asp-route-vacancyId="@Model.VacancyId"  asp-route-applicationReviewId="@application.ApplicationReviewId" class="govuk-link">@application.CandidateName</a>
+                    </td>
                     <td class="govuk-table__cell" data-label="Application ID">@application.GetFriendlyId()</td>
                     <td class="govuk-table__cell" data-label="Status">@application.Status.GetDisplayName()</td>
                     <td class="govuk-table__cell" data-label="Date applied">@application.SubmittedDate.AsGdsDate()</td>

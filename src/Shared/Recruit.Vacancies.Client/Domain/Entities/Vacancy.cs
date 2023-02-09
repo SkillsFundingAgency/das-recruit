@@ -1,9 +1,10 @@
 using System;
 using System.Collections.Generic;
+using Esfa.Recruit.Vacancies.Client.Domain.Interfaces;
 
 namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
 {
-    public class Vacancy
+    public class Vacancy : ITaskListVacancy
     {
         public Guid Id { get; set; }
         public string EmployerAccountId { get; set; }
@@ -73,10 +74,10 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
         /// <summary>
         /// We can only delete draft vacancies that have not been deleted
         /// </summary>
-        public bool CanDelete => (Status == VacancyStatus.Draft ||
+        public bool CanDelete => ((Status == VacancyStatus.Draft ||
                                   Status == VacancyStatus.Referred ||
-                                  Status == VacancyStatus.Rejected)
-                                 && IsDeleted == false;
+                                  Status == VacancyStatus.Rejected )
+                                 && IsDeleted == false) || (Status == VacancyStatus.Submitted && ClosingDate <= DateTime.UtcNow && !IsDeleted);
         /// <summary>
         /// We can only edit draft & referred & rejected vacancies that have not been deleted
         /// </summary>
@@ -148,5 +149,20 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
         /// Should the vacancy be geocoded using the outcode part of the postcode
         /// </summary>
         public bool GeocodeUsingOutcode => IsAnonymous;
+        
+        /// <summary>
+        /// Type of Vacancy being created, either Apprenticeship or Traineeship. Set by application startup.
+        /// </summary>
+        public VacancyType? VacancyType { get; set; }
+
+        /// <summary>
+        /// If traineeship vacancy then this must be populated
+        /// </summary>
+        public int? RouteId { get; set; }
+        public string WorkExperience { get; set; }
+        public string AdditionalQuestion1 { get; set; }
+        public string AdditionalQuestion2 { get; set; }
+        public bool HasSubmittedAdditionalQuestions { get; set; }
+        public bool? HasChosenProviderContactDetails { get; set; }
     }
 }

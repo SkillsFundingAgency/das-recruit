@@ -68,5 +68,6 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.Dates
         public bool CanShowTrainingErrorHint { get; set; }
         public bool CanShowTrainingHint => HasTrainingEffectiveToDate && CanShowTrainingErrorHint == false;
         public EntityValidationResult SoftValidationErrors { get; set; }
+        public string Title { get; set; }
     }
 }

@@ -1,6 +1,4 @@
-﻿
-@using Esfa.Recruit.Vacancies.Client.Domain.Entities
-@using Esfa.Recruit.Provider.Web.RouteModel;
+﻿@using Esfa.Recruit.Provider.Web.RouteModel;
 @model VacanciesViewModel
 @{
     ViewBag.GaData.Vpv = "/recruitment/provider/page-vacancies";
@@ -28,25 +26,35 @@
     <p class="das-notification__body">@Model.WarningMessage</p>
 </div>
 
-<div asp-show="Model.HasInfo" class="das-notification das-notification--information">
-    <p class="das-notification__body">@Model.InfoMessage</p>
+
+<div asp-show="Model.HasInfo" class="govuk-notification-banner govuk-notification-banner--success" role="alert" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
+  <div class="govuk-notification-banner__header">
+    <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
+      Success
+    </h2>
+  </div>
+  <div class="govuk-notification-banner__content">
+    <h3 class="govuk-notification-banner__heading">
+        @Model.InfoMessage        
+    </h3>
+  </div>
 </div>
 
 @section BackLink
 {
-    <a asp-route="@RouteNames.Dashboard_Get" asp-route-ukprn="@Model.Ukprn" esfa-automation="link-back" class="govuk-back-link">Return to dashboard</a>
+    <a asp-route="@RouteNames.Dashboard_Get" asp-route-ukprn="@Model.Ukprn" esfa-automation="link-back" class="govuk-back-link">Return to your dashboard</a>
 }
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-one-half">
-        <h1 class="govuk-heading-xl">Vacancies</h1>
+        <h1 class="govuk-heading-xl">Your vacancies</h1>
     </div>
     <div class="govuk-grid-column-one-half">
         <esfaFeatureEnabled name="@FeatureNames.ProviderTaskList">
-            <a asp-route="@RouteNames.CreateVacancyStart" asp-route-ukprn="@Model.Ukprn" class="govuk-button das-float-right govuk-!-margin-bottom-6" esfa-automation="create-vacancy">Create vacancy</a>
+            <a asp-route="@RouteNames.CreateVacancyStart" asp-route-ukprn="@Model.Ukprn" class="govuk-button das-float-right govuk-!-margin-bottom-6" esfa-automation="create-vacancy">Create a vacancy</a>
         </esfaFeatureEnabled>
         <esfaFeatureDisabled name="@FeatureNames.ProviderTaskList">
-            <a asp-route="@RouteNames.Employer_Get" asp-route-ukprn="@Model.Ukprn" class="govuk-button das-float-right govuk-!-margin-bottom-6" esfa-automation="create-vacancy">Create vacancy</a>    
+            <a asp-route="@RouteNames.LegalEntityEmployer_Get" asp-route-ukprn="@Model.Ukprn" class="govuk-button das-float-right govuk-!-margin-bottom-6" esfa-automation="create-vacancy">Create a vacancy</a>    
         </esfaFeatureDisabled>
     </div>
 </div>
@@ -61,11 +69,11 @@
                         <option value="@FilteringOptions.All">all vacancies</option>
                         <option value="@FilteringOptions.Live">live vacancies</option>
                         <option value="@FilteringOptions.Referred">rejected vacancies</option>
-                        @if (Model.HasEmployerReviewPermission)
+                        @if (Model.HasEmployerReviewPermission && _serviceParameters.VacancyType.GetValueOrDefault() == VacancyType.Apprenticeship)
                         {
                             <option value="@FilteringOptions.Review">pending employer review</option>   
                         }
-                        <option value="@FilteringOptions.Submitted">pending review</option>
+                        <option value="@FilteringOptions.Submitted">vacancies pending DfE review</option>
                         <option value="@FilteringOptions.Draft">draft vacancies</option>
                         <option value="@FilteringOptions.Closed">closed vacancies</option>
                     </optgroup>
@@ -82,10 +90,10 @@
         <div class="govuk-grid-column-two-thirds">
             <div class="govuk-form-group">
                 <label for="search-input" class="govuk-label">
-                    Search adverts
+                    Search by vacancy title, reference number or employer
                 </label>
                 <div class="das-search-form__group">
-                    <input id="search-input" asp-for="SearchTerm" title="Search" placeholder="Search by advert title, reference number or employer" class="govuk-input das-search-form__input app-vacancy-autocomplete" type="text" maxlength="200" data-apiurl="@vacanciesSearchSuggestionsEndpointUrl">
+                    <input id="search-input" asp-for="SearchTerm" title="Search" class="govuk-input das-search-form__input app-vacancy-autocomplete" type="text" maxlength="200" data-apiurl="@vacanciesSearchSuggestionsEndpointUrl">
                     <div class="das-search-form__button-wrap">
                         <button class="govuk-button das-search-form__button" type="submit">
                             Search
@@ -98,7 +106,7 @@
 </form>
 
 <h3 class="govuk-heading-m">
-    @Model.ResultsHeading <a asp-show="@Model.IsFiltered" asp-route="@RouteNames.Vacancies_Get" asp-route-ukprn="@Model.Ukprn" asp-route-filter="All" class="govuk-!-font-weight-regular govuk-link govuk-!-font-size-19">Show all vacancies</a>
+    @Model.ResultsHeading <a asp-show="@Model.IsFiltered" asp-route="@RouteNames.Vacancies_Get" asp-route-ukprn="@Model.Ukprn" asp-route-filter="All" class="govuk-!-font-weight-regular govuk-link govuk-link--no-visited-state govuk-!-margin-left-1 govuk-!-font-size-19">Show all vacancies</a>
 </h3>
 
 <p asp-hide="@Model.ShowResultsTable" class="govuk-body">No vacancies match the criteria</p>
@@ -107,47 +115,58 @@
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-full">
             <table class="govuk-table das-table--condensed das-table--responsive">
-                <caption class="govuk-visually-hidden">Your vacancies</caption>
+                <caption class="govuk-visually-hidden">Your draft vacancies</caption>
                 <thead class="govuk-table__head">
                     <tr class="govuk-table__row">
-                        <th class="govuk-table__header" scope="col">Vacancy</th>
+                        <th class="govuk-table__header" scope="col">Vacancy title</th>
                         <th class="govuk-table__header" scope="col">Employer</th>
+                        <th class="govuk-table__header" scope="col">Vacancy reference number</th>
                         <th class="govuk-table__header" scope="col">Applications</th>
-                        <th class="govuk-table__header" scope="col">Closing</th>
+                        <th class="govuk-table__header" scope="col">Closing date</th>
                         <th class="govuk-table__header" scope="col">Status</th>
-                        <th class="govuk-table__header" scope="col">&nbsp;</th>
+                        <th class="govuk-table__header govuk-table__header--numeric govuk-!-padding-right-0" scope="col">Action</th>
                     </tr>
                 </thead>
                 <tbody class="govuk-table__body">
                     @foreach (var vacancy in Model.Vacancies)
-        {
-                        <tr class="govuk-table__row">
-                            <td class="govuk-table__cell" data-label="Vacancy title">
-                                <div>@vacancy.Title</div>
-                                <span asp-show="@vacancy.HasVacancyReference"><span>VAC</span>@vacancy.VacancyReference</span>
-                            </td>
-                            <td class="govuk-table__cell" data-label="Employer">
-                                <span>@vacancy.EmployerName</span>
-                            </td>
-                            <td asp-show="@vacancy.CanShowVacancyApplicationsCount" class="govuk-table__cell" data-label="Applications">
-                                <span asp-show="@vacancy.HasNoApplications">0</span>
-                                <span asp-show="@vacancy.HasApplications">@vacancy.NoOfApplications</span>
-                                <span asp-show="@vacancy.HasNewApplications" class="govuk-!-font-weight-bold"> (@vacancy.NoOfNewApplications new)</span>
-                            </td>
-                            <td asp-hide="@vacancy.CanShowVacancyApplicationsCount" class="govuk-table__cell" data-label="Applications">-</td>
-                            <td class="govuk-table__cell" data-label="Closing date"><span>@vacancy.ClosingDate?.AsGdsDate()</span></td>
-                            <td class="govuk-table__cell" data-label="Status">
-                                <span class="govuk-tag app-tag app-tag--@vacancy.Status.ToString().ToLower()">@vacancy.Status.GetDisplayName(UserType.Provider)</span></td>
-                            <td class="govuk-table__cell govuk-table__cell--numeric" data-label="Action">
-                                <a asp-show="@vacancy.IsNotSubmittable" asp-route="@RouteNames.VacancyManage_Get" asp-route-ukprn="@Model.Ukprn" asp-route-vacancyId="@vacancy.Id" class="govuk-link">@GetLinkText(vacancy) <span class="govuk-visually-hidden">@vacancy.Title</span></a>
-                                <esfaFeatureDisabled name="@FeatureNames.ProviderTaskList">
-                                    <a asp-show="@vacancy.IsSubmittable" asp-route="@RouteNames.DisplayVacancy_Get" asp-route-ukprn="@Model.Ukprn" asp-route-vacancyId="@vacancy.Id" class="govuk-link">@GetLinkText(vacancy) <span class="govuk-visually-hidden">@vacancy.Title</span></a>    
-                                </esfaFeatureDisabled>
-                                <esfaFeatureEnabled name="@FeatureNames.ProviderTaskList">
-                                    <a asp-show="@vacancy.IsSubmittable" asp-route="@RouteNames.ProviderTaskListGet" asp-route-ukprn="@Model.Ukprn" asp-route-vacancyId="@vacancy.Id" class="govuk-link">@GetLinkText(vacancy) <span class="govuk-visually-hidden">@vacancy.Title</span></a>
-                                </esfaFeatureEnabled>
-                            </td>
-                        </tr>
+                    {
+                    <tr class="govuk-table__row">
+                        <td class="govuk-table__cell" data-label="Vacancy title">
+                            <div>@vacancy.Title</div>
+                        </td>
+                        <td class="govuk-table__cell" data-label="Employer">
+                            <span>@vacancy.EmployerName</span>
+                        </td>
+                        <td class="govuk-table__cell" data-label="Vacancy reference number">
+                            <span asp-show="@vacancy.HasVacancyReference"><span>VAC</span>@vacancy.VacancyReference</span>
+                        </td>
+                        <td asp-show="@vacancy.CanShowVacancyApplicationsCount" class="govuk-table__cell" data-label="Applications">
+                            <span asp-show="@vacancy.HasNoApplications">0</span>
+                            <span asp-show="@vacancy.HasApplications">@vacancy.NoOfApplications</span>
+                            <span asp-show="@vacancy.HasNewApplications" class="govuk-!-font-weight-bold"> (@vacancy.NoOfNewApplications new)</span>
+                        </td>
+                        <td asp-hide="@vacancy.CanShowVacancyApplicationsCount" class="govuk-table__cell" data-label="Applications">-</td>
+                        <td class="govuk-table__cell" data-label="Closing date"><span>@vacancy.ClosingDate?.AsGdsDate()</span></td>
+                        <td class="govuk-table__cell" data-label="Status">
+                            <span class="govuk-tag app-tag app-tag--@vacancy.Status.ToString().ToLower()">@vacancy.Status.GetDisplayName(UserType.Provider)</span>
+                        </td>
+                        <td class="govuk-table__cell govuk-table__cell--numeric" data-label="Action">
+                            <a id="manage-@vacancy.Id" asp-show="@vacancy.IsNotSubmittable" asp-route="@RouteNames.VacancyManage_Get" asp-route-ukprn="@Model.Ukprn" asp-route-vacancyId="@vacancy.Id" class="govuk-link">@GetLinkText(vacancy) <span class="govuk-visually-hidden">@vacancy.Title</span></a>
+                            <esfaFeatureDisabled name="@FeatureNames.ProviderTaskList">
+                                <a id="preview-@vacancy.Id" asp-show="@vacancy.IsSubmittable" asp-route="@RouteNames.DisplayVacancy_Get" asp-route-ukprn="@Model.Ukprn" asp-route-vacancyId="@vacancy.Id" class="govuk-link">@GetLinkText(vacancy) <span class="govuk-visually-hidden">@vacancy.Title</span></a>
+                            </esfaFeatureDisabled>
+                            <esfaFeatureEnabled name="@FeatureNames.ProviderTaskList">
+                                @if (vacancy.Status == VacancyStatus.Referred || vacancy.Status == VacancyStatus.Rejected || vacancy.IsTaskListCompleted)
+                                {
+                                    <a id="task-list-@vacancy.Id" asp-show="@vacancy.IsSubmittable" asp-route="@RouteNames.ProviderCheckYourAnswersGet" asp-route-ukprn="@Model.Ukprn" asp-route-vacancyId="@vacancy.Id" class="govuk-link">@GetLinkText(vacancy) <span class="govuk-visually-hidden">@vacancy.Title</span></a> 
+                                }
+                                else
+                                {
+                                    <a id="task-list-@vacancy.Id" asp-show="@vacancy.IsSubmittable" asp-route="@RouteNames.ProviderTaskListGet" asp-route-ukprn="@Model.Ukprn" asp-route-vacancyId="@vacancy.Id" class="govuk-link">@GetLinkText(vacancy) <span class="govuk-visually-hidden">@vacancy.Title</span></a>
+                                }
+                            </esfaFeatureEnabled>
+                        </td>
+                    </tr>
                     }
                 </tbody>
             </table>

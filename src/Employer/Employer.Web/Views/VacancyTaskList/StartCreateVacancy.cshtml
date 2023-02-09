@@ -1,5 +1,5 @@
 
-@model Esfa.Recruit.Employer.Web.ViewModels.Dashboard.DashboardViewModel
+@model Esfa.Recruit.Employer.Web.RouteModel.VacancyRouteModel
 
 @{  
     ViewBag.Vpv = "/recruitment/employer/start-create-advert";
@@ -9,7 +9,7 @@
 
 @section BackLink
 {
-    <a asp-route="@RouteNames.Dashboard_Get" class="govuk-back-link">Back</a>
+    <a asp-route="@RouteNames.Dashboard_Get" asp-route-employerAccountId="@Model.EmployerAccountId" class="govuk-back-link">Back</a>
 }
 
-<partial name="_NoVacanciesContent" />
+<partial name="_NoVacanciesContent" model="@Model" />

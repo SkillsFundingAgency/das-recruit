@@ -10,7 +10,6 @@ using Esfa.Recruit.Vacancies.Client.Domain.Events;
 using FluentValidation;
 using Microsoft.Extensions.Logging;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Projections;
-using Communication.Types;
 using Esfa.Recruit.Vacancies.Client.Application.Communications;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.StorageQueue;
 
@@ -25,7 +24,6 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
         private readonly AbstractValidator<VacancyReview> _vacancyReviewValidator;
         private readonly ITimeProvider _timeProvider;
         private readonly IBlockedOrganisationQuery _blockedOrganisationQuery;
-        private readonly IEmployerDashboardProjectionService _dashboardService;
         private readonly ICommunicationQueueService _communicationQueueService;
 
         public ApproveVacancyReviewCommandHandler(ILogger<ApproveVacancyReviewCommandHandler> logger,
@@ -35,7 +33,6 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
                                         AbstractValidator<VacancyReview> vacancyReviewValidator,
                                         ITimeProvider timeProvider,
                                         IBlockedOrganisationQuery blockedOrganisationQuery, 
-                                        IEmployerDashboardProjectionService dashboardService,
                                         ICommunicationQueueService communicationQueueService)
         {
             _logger = logger;
@@ -45,7 +42,6 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             _vacancyReviewValidator = vacancyReviewValidator;
             _timeProvider = timeProvider;
             _blockedOrganisationQuery = blockedOrganisationQuery;
-            _dashboardService = dashboardService;
             _communicationQueueService = communicationQueueService;
         }
 
@@ -67,7 +63,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             review.ClosedDate = _timeProvider.Now;
             review.ManualQaComment = message.ManualQaComment;
             review.ManualQaFieldIndicators = message.ManualQaFieldIndicators;
-
+            review.ManualQaFieldEditIndicators = message.ManualQaFieldEditIndicators;
             foreach (var automatedQaOutcomeIndicator in review.AutomatedQaOutcomeIndicators)
             {
                 automatedQaOutcomeIndicator.IsReferred = message.SelectedAutomatedQaRuleOutcomeIds
@@ -84,7 +80,6 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             {
                 await CloseVacancyAsync(vacancy, closureReason.Value);
                 await SendNotificationToEmployerAsync(vacancy.TrainingProvider.Ukprn.GetValueOrDefault(), vacancy.EmployerAccountId);
-                await _dashboardService.ReBuildDashboardAsync(vacancy.EmployerAccountId);
                 return Unit.Value;
             }
 

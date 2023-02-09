@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Orchestrators;
@@ -22,7 +23,8 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Vacancies
         public async Task WhenHaveOver25Vacancies_ShouldShowPager()
         {
             var vacancies = new List<VacancySummary>();
-            for (var i = 1; i <= 27; i++)
+            int totalVacancies = 27;
+            for (var i = 26; i <= totalVacancies; i++)
             {
                 vacancies.Add(new VacancySummary
                 {
@@ -31,7 +33,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Vacancies
                 });
             }
 
-            var orch = GetOrchestrator(vacancies);
+            var orch = GetOrchestrator(vacancies, 2, FilteringOptions.Submitted, string.Empty, 27);
 
             var vm = await orch.GetVacanciesViewModelAsync(EmployerAccountId, "Submitted", 2, new VacancyUser(), string.Empty);
 
@@ -56,7 +58,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Vacancies
                 });
             }
 
-            var orch = GetOrchestrator(vacancies);
+            var orch = GetOrchestrator(vacancies, 2, FilteringOptions.Submitted, string.Empty, 25);
 
             var vm = await orch.GetVacanciesViewModelAsync(EmployerAccountId, "Submitted", 2, new VacancyUser(), string.Empty);
 
@@ -67,55 +69,13 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Vacancies
             vm.Vacancies.Count.Should().Be(25);
         }
 
-        [Fact]
-        public async Task SearchFilterResults_ShouldReturnSingleVacancy()
-        {
-            var searchTerm = "VacancyTitle_22";
-            var vacancies = new List<VacancySummary>();
-            for (var i = 1; i <= 25; i++)
-            {
-                vacancies.Add(new VacancySummary
-                {
-                    Title = "VacancyTitle_" + i,
-                    Status = VacancyStatus.Submitted
-                });
-            }
 
-            var orch = GetOrchestrator(vacancies);
-            var vm = await orch.GetVacanciesViewModelAsync(EmployerAccountId, "Submitted", 2, new VacancyUser(), searchTerm);
-            vm.ShowResultsTable.Should().BeTrue();
-            vm.Vacancies.Count.Should().Be(1);
-            vm.Vacancies.FirstOrDefault().Title.Should().BeEquivalentTo(searchTerm);
-        }
-
-        [Fact] 
-        public async Task SearchFilterResults_ShouldReturnAllMatchingVacancies()
-        {
-            var searchTerm = "VacancyTitle_";
-            var vacancies = new List<VacancySummary>();
-            for (var i = 1; i <= 25; i++)
-            {
-                vacancies.Add(new VacancySummary
-                {
-                    Title = "VacancyTitle_" + i,
-                    Status = VacancyStatus.Submitted
-                });
-            }
-
-            var orch = GetOrchestrator(vacancies);
-            var vm = await orch.GetVacanciesViewModelAsync(EmployerAccountId, "Submitted", 2, new VacancyUser(), searchTerm);
-            vm.ShowResultsTable.Should().BeTrue();
-            vm.Vacancies.Count.Should().Be(vacancies.Count);
-            vm.Vacancies.All(x => x.Title.Contains(searchTerm));
-        }
-
-
-        private VacanciesOrchestrator GetOrchestrator(List<VacancySummary> vacancies)
+        private VacanciesOrchestrator GetOrchestrator(List<VacancySummary> vacancies, int page, FilteringOptions status, string searchTerm, int totalVacancies )
         {
             var timeProviderMock = new Mock<ITimeProvider>();
 
             var clientMock = new Mock<IEmployerVacancyClient>();
-            clientMock.Setup(c => c.GetDashboardAsync(EmployerAccountId, true))
+            clientMock.Setup(c => c.GetDashboardAsync(EmployerAccountId,page, status, searchTerm))
                 .Returns(Task.FromResult(new EmployerDashboard
                 {
                     Vacancies = vacancies
@@ -123,10 +83,12 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Vacancies
             
             var recruitClientMock = new Mock<IRecruitVacancyClient>();
             recruitClientMock.Setup(c => c.GetUsersDetailsAsync(It.IsAny<string>())).ReturnsAsync(new User());
-
+            clientMock.Setup(x => x.GetVacancyCount(EmployerAccountId, VacancyType.Apprenticeship, FilteringOptions.Submitted, string.Empty))
+                .ReturnsAsync(totalVacancies);
+            
             var alertsFactoryMock = new Mock<IEmployerAlertsViewModelFactory>();
 
-            return new VacanciesOrchestrator(clientMock.Object, timeProviderMock.Object, recruitClientMock.Object, alertsFactoryMock.Object);
+            return new VacanciesOrchestrator(clientMock.Object, recruitClientMock.Object, alertsFactoryMock.Object);
         }
     }
 }

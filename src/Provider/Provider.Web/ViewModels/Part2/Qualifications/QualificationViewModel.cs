@@ -24,5 +24,7 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.Part2.Qualifications
             nameof(Grade),
             nameof(Weighting)
         };
+
+        public string BackRoute { get; set; }
     }
 }

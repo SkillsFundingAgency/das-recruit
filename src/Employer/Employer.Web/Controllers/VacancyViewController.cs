@@ -4,7 +4,6 @@ using Esfa.Recruit.Employer.Web.Orchestrators;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Esfa.Recruit.Employer.Web.Controllers
@@ -31,8 +30,8 @@ namespace Esfa.Recruit.Employer.Web.Controllers
                 return HandleRedirectOfEditableVacancy(vacancy);
             }
 
-            var m = await _orchestrator.GetVacancyDisplayViewModelAsync(vacancy);
-            return View(m.ViewName, m.ViewModel);
+            var vm = await _orchestrator.GetFullVacancyDisplayViewModelAsync(vacancy);
+            return View(ViewNames.FullVacancyView, vm);
         }
 
         [HttpGet("view", Name = RouteNames.DisplayFullVacancy_Get)]
@@ -51,14 +50,11 @@ namespace Esfa.Recruit.Employer.Web.Controllers
 
         private IActionResult HandleRedirectOfEditableVacancy(Vacancy vacancy)
         {
-            if (_utility.VacancyHasCompletedPartOne(vacancy))
+            if (_utility.IsTaskListCompleted(vacancy))
             {
-                return RedirectToRoute(RouteNames.Vacancy_Preview_Get);
+                return RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet, new {vacancyId = vacancy.Id, vacancy.EmployerAccountId});
             }
-
-            var resumeRouteName = _utility.GetPermittedRoutesForVacancy(vacancy).Last();
-
-            return RedirectToRoute(resumeRouteName, new { wizard = "true" });
+            return RedirectToRoute(RouteNames.EmployerTaskListGet, new {vacancyId = vacancy.Id, vacancy.EmployerAccountId});
         }
     }
 }

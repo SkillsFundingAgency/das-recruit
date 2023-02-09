@@ -3,24 +3,32 @@
 @{ ViewBag.Vpv = "/recruitment/employer/reject-job-advert";
 ViewBag.Title = "Are you sure you want to reject this job advert?"; }
 
-<a asp-route="@RouteNames.Vacancy_Preview_Get" asp-route-submittoefsa="false" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
+@section BackLink {
+    <esfaFeatureDisabled name="@FeatureNames.EmployerTaskList">
+        <a asp-route="@RouteNames.Vacancy_Preview_Get" asp-all-route-data="@Model.RouteDictionary" asp-route-submittoefsa="false" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
+    </esfaFeatureDisabled>
+    <esfaFeatureEnabled name="@FeatureNames.EmployerTaskList">
+        <a asp-route="@RouteNames.EmployerCheckYourAnswersGet" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Back to check your answers</a>
+    </esfaFeatureEnabled>
+    
+}
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState }' />
-        <div>
-            <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">
-                Are you sure you want to reject this job advert?
-            </h1>
-        </div>
-        <p class="govuk-body">This job advert will go back to @Model.TrainingProviderName.</p>
-        <div class="govuk-inset-text">
-            <p class="govuk-!-font-weight-bold">Rejection reason</p>
-            <p>@Model.RejectionReason</p>
-        </div>
-        <form asp-route="@RouteNames.RejectJobAdvert_Post">
+        <form asp-route="@RouteNames.RejectJobAdvert_Post"  asp-all-route-data="@Model.RouteDictionary">
             <div esfa-validation-marker-for="RejectJobAdvert" class="govuk-form-group">
                 <fieldset class="govuk-fieldset">
+                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
+                        <h1 class="govuk-fieldset__heading">
+                            Are you sure you want to reject this job advert?
+                        </h1>
+                    </legend>
+                    <p class="govuk-body">This job advert will go back to @Model.TrainingProviderName.</p>
+                    <div class="govuk-inset-text">
+                        <p class="govuk-!-font-weight-bold">Rejection reason</p>
+                        <p>@Model.RejectionReason</p>
+                    </div>
                     <span esfa-validation-message-for="RejectJobAdvert" class="govuk-error-message"></span>
                     <div class="govuk-radios">
                         <div class="govuk-radios__item">
@@ -34,9 +42,7 @@ ViewBag.Title = "Are you sure you want to reject this job advert?"; }
                     </div>
                 </fieldset>
             </div>
-            <div class="govuk-form-group">
-                <input type="submit" value="Continue" class="govuk-button" />
-            </div>
+            <input type="submit" value="Continue" class="govuk-button" />
         </form>
     </div>
 </div>

@@ -5,10 +5,10 @@ using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Provider.Web.ViewModels.EditVacancyDates;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Hosting;
-using System;
 using Esfa.Recruit.Provider.Web.Configuration;
 using Esfa.Recruit.Provider.Web.Extensions;
 using Esfa.Recruit.Shared.Web.Extensions;
+using Esfa.Recruit.Shared.Web.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 
 namespace Esfa.Recruit.Provider.Web.Controllers
@@ -18,9 +18,9 @@ namespace Esfa.Recruit.Provider.Web.Controllers
     public class EditVacancyDatesController : Controller
     {
         private readonly EditVacancyDatesOrchestrator _orchestrator;
-        private readonly IHostingEnvironment _hostingEnvironment;
+        private readonly IWebHostEnvironment _hostingEnvironment;
 
-        public EditVacancyDatesController(EditVacancyDatesOrchestrator orchestrator, IHostingEnvironment hostingEnvironment)
+        public EditVacancyDatesController(EditVacancyDatesOrchestrator orchestrator, IWebHostEnvironment hostingEnvironment)
         {
             _orchestrator = orchestrator;
             _hostingEnvironment = hostingEnvironment;
@@ -48,7 +48,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
         [HttpPost("edit-dates", Name = RouteNames.VacancyEditDates_Post)]
         public async Task<IActionResult> EditVacancyDates(EditVacancyDatesEditModel m)
         {
-            var response = await _orchestrator.PostEditVacancyDatesEditModelAsync(m);
+            var response = await _orchestrator.PostEditVacancyDatesEditModelAsync(m, User.ToVacancyUser());
 
             if (!response.Success)
             {
@@ -60,11 +60,11 @@ namespace Esfa.Recruit.Provider.Web.Controllers
                 var vm = await _orchestrator.GetEditVacancyDatesViewModelAsync(m);
                 return View(vm);
             }
+            
+            TempData.Add(TempDataKeys.VacanciesInfoMessage, string.Format(InfoMessages.VacancyUpdated, m.Title));
 
-            Response.Cookies.SetProposedClosingDate(_hostingEnvironment, m.VacancyId.GetValueOrDefault(), DateTime.Parse(m.ClosingDate));
-            Response.Cookies.SetProposedStartDate(_hostingEnvironment, m.VacancyId.GetValueOrDefault(), DateTime.Parse(m.StartDate));
 
-            return RedirectToRoute(RouteNames.VacancyEdit_Get, new {m.Ukprn, m.VacancyId});
+            return RedirectToRoute(RouteNames.Vacancies_Get, new {m.Ukprn});
         }
     }
 }

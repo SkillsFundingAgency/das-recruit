@@ -4,6 +4,7 @@
     {
         StringType,
         DateType,
-        DateTimeType
+        DateTimeType,
+        ArrayType
     }
 }

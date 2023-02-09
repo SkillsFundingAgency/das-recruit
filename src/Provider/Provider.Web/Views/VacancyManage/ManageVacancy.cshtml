@@ -3,10 +3,11 @@
 @{ 
     ViewBag.GaData.Vpv = "/recruitment/provider/page-manage-vacancy";
     ViewBag.Title = "Manage vacancy";
+    var isApprenticeshipVacancyType = _serviceParameters.VacancyType.GetValueOrDefault() == VacancyType.Apprenticeship;
 }
 
 @section BackLink {
-    <a asp-route="@RouteNames.Dashboard_Get" asp-route-ukprn="@Model.Ukprn" class="govuk-back-link">Return to dashboard</a>
+    <a asp-route="@RouteNames.Vacancies_Get" asp-route-ukprn="@Model.Ukprn" class="govuk-back-link">Back</a>
 }
 
 
@@ -23,9 +24,20 @@
         <p asp-show="@Model.IsWithdrawn" class="govuk-inset-text">
             This vacancy has issues and was closed on @Model.WithdrawnDate.
         </p>
-        <div asp-show="Model.HasVacancyClosedInfoMessage" class="info-summary govuk-!-margin-bottom-0">
-            <p class="govuk-body">@Model.VacancyClosedInfoMessage</p>
-            <p class="govuk-body">The vacancy will be unpublished from the Find an apprenticeship service within the next hour.</p>
+    </div>
+    <div class="govuk-grid-column-full">
+        <div asp-show="Model.HasVacancyClosedInfoMessage" class="govuk-notification-banner govuk-notification-banner--success" role="alert" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
+            <div class="govuk-notification-banner__header">
+                <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
+                    Success
+                </h2>
+            </div>
+            <div class="govuk-notification-banner__content">
+                <h3 class="govuk-notification-banner__heading">
+                    @Model.VacancyClosedInfoMessage
+                </h3>
+                <p class="govuk-body">The vacancy will be unpublished from @(isApprenticeshipVacancyType ? "Find an apprenticeship" : "Find a traineeship") within the next hour.</p>
+            </div>
         </div>
     </div>
 </div>
@@ -49,13 +61,17 @@
 
 
 <div class="govuk-button-group">
-    <a asp-route="@RouteNames.DisplayFullVacancy_Get" asp-all-route-data="@Model.RouteDictionary" class="govuk-link" target="_blank">View vacancy</a>
+    <a asp-route="@RouteNames.DisplayFullVacancy_Get" asp-all-route-data="@Model.RouteDictionary" class="govuk-link">View vacancy</a>
     <a asp-show="@Model.CanShowCloneVacancyLink" asp-route="@RouteNames.CloneVacancy_Get" asp-all-route-data="@Model.RouteDictionary" class="govuk-link">Clone vacancy</a>
-    <a asp-show="@Model.CanShowEditVacancyLink" asp-route="@RouteNames.VacancyEdit_Get" asp-all-route-data="@Model.RouteDictionary" class="govuk-link">Edit vacancy</a>
+    <a asp-show="@Model.CanShowEditVacancyLink" asp-route="@RouteNames.VacancyEditDates_Get" asp-all-route-data="@Model.RouteDictionary" class="govuk-link">Edit vacancy dates</a>
     <a asp-show="@Model.CanShowCloseVacancyLink" asp-route="@RouteNames.CloseVacancy_Get" asp-all-route-data="@Model.RouteDictionary" class="govuk-link">Close vacancy</a>
+    <a asp-show="@Model.CanShowDeleteVacancyLink" asp-route="@RouteNames.DeleteVacancy_Get" asp-all-route-data="@Model.RouteDictionary" class="govuk-link">Delete vacancy</a>
+    
 </div>
 
+
 <div asp-show="@Model.CanShowVacancyAnalytics">
+    <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
     <h2 class="govuk-heading-l govuk-!-margin-top-9">Vacancy analytics
         <span asp-show="@Model.HasAnalytics" class="govuk-caption-l">Showing stats from @Model.AnalyticsSummary.PeriodCaption</span>
     </h2>
@@ -65,11 +81,15 @@
         <partial asp-show="@Model.IsApplyThroughFaaVacancy" name="@RecruitPartialNames.ApplyThroughFaaVacancyAnalytics" for="AnalyticsSummary" />
         <partial asp-show="@Model.IsApplyThroughExternalApplicationSiteVacancy" name="@RecruitPartialNames.ApplyThroughExternalApplicationSiteVacancyAnalytics" for="AnalyticsSummary" />
     </div>
+    
 </div>
 
-<div asp-show="@Model.IsApplyThroughFaaVacancy">
+
+
+<div asp-show="@(Model.IsApplyThroughFaaVacancy || Model.IsApplyThroughFatVacancy)">
+    <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
     <h2 class="govuk-heading-l  govuk-!-margin-top-6">Manage applications</h2>
-    <partial asp-show="@Model.HasApplications" name="@PartialNames.VacancyApplicationsTable" for="Applications" />
-    <p asp-show="@Model.HasNoApplications" class="govuk-body govuk-!-margin-bottom-0">Candidate applications for this apprenticeship will appear here.</p>
+    <partial asp-show="@Model.HasApplications" name="@PartialNames.VacancyApplicationsTable" for="Applications"/>
+    <p asp-show="@Model.HasNoApplications" class="govuk-body govuk-!-margin-bottom-0">Candidate applications for this @(isApprenticeshipVacancyType ? "apprenticeship" : "traineeship") will appear here.</p>
 </div>
 

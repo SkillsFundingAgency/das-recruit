@@ -27,14 +27,17 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part2
         }
 
         [Theory]
-        [InlineData("has a new value", "has a value", new string[] { FieldIdentifiers.EmployerDescription }, new string[] { FieldIdentifiers.EmployerWebsiteUrl})]
-        [InlineData("has a value", "has a new value", new string[] { FieldIdentifiers.EmployerWebsiteUrl }, new string[] { FieldIdentifiers.EmployerDescription })]
-        [InlineData("has a new value", "has a new value", new string[] { FieldIdentifiers.EmployerDescription, FieldIdentifiers.EmployerWebsiteUrl }, new string[] { })]
-        public async Task WhenUpdated_ShouldFlagFieldIndicators(string employerDescription, string employerWebSiteUrl, string[] setFieldIdentifers, string [] unsetFieldIdentifiers)
+        [InlineData("has a new value", "has a value", false, new string[] { FieldIdentifiers.EmployerDescription }, new string[] { FieldIdentifiers.EmployerWebsiteUrl, FieldIdentifiers.DisabilityConfident})]
+        [InlineData("has a value", "has a new value", false, new string[] { FieldIdentifiers.EmployerWebsiteUrl }, new string[] { FieldIdentifiers.EmployerDescription, FieldIdentifiers.DisabilityConfident })]
+        [InlineData("has a value", "has a value", true, new string[] { FieldIdentifiers.DisabilityConfident }, new string[] { FieldIdentifiers.EmployerDescription, FieldIdentifiers.EmployerWebsiteUrl })]
+        [InlineData("has a value", "has a value", false, new string[] {  }, new string[] { FieldIdentifiers.EmployerDescription, FieldIdentifiers.EmployerWebsiteUrl, FieldIdentifiers.DisabilityConfident })]
+        [InlineData("has a new value", "has a new value", true, new string[] { FieldIdentifiers.EmployerDescription, FieldIdentifiers.EmployerWebsiteUrl, FieldIdentifiers.DisabilityConfident }, new string[] {  })]
+        public async Task WhenUpdated_ShouldFlagFieldIndicators(string employerDescription, string employerWebSiteUrl, bool isDisabilityConfident, string[] setFieldIdentifers, string [] unsetFieldIdentifiers)
         {
             _fixture
                 .WithEmployerDescription("has a value")
                 .WithEmployerWebsiteUrl("has a value")
+                .WithDisabilityConfident(DisabilityConfident.No)
                 .Setup();
 
             var aboutEmployerEditModel = new AboutEmployerEditModel
@@ -42,7 +45,8 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part2
                 EmployerAccountId = _fixture.Vacancy.EmployerAccountId,
                 VacancyId = _fixture.Vacancy.Id,
                 EmployerDescription = employerDescription,
-                EmployerWebsiteUrl = employerWebSiteUrl
+                EmployerWebsiteUrl = employerWebSiteUrl,
+                IsDisabilityConfident = isDisabilityConfident
             };
 
             await _fixture.PostAboutEmployerEditModelAsync(aboutEmployerEditModel);
@@ -79,6 +83,12 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part2
                 Vacancy.EmployerWebsiteUrl = employerWebsiteUrl;
                 return this;
             }
+            
+            public AboutEmployerOrchestratorTestsFixture WithDisabilityConfident(DisabilityConfident disabilityConfident)
+            {
+                Vacancy.DisabilityConfident = disabilityConfident;
+                return this;
+            }
 
             public void Setup()
             {
@@ -88,7 +98,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part2
                 MockRecruitVacancyClient.Setup(x => x.UpdateDraftVacancyAsync(It.IsAny<Vacancy>(), User));
                 MockRecruitVacancyClient.Setup(x => x.UpdateEmployerProfileAsync(It.IsAny<EmployerProfile>(), User));
 
-                var utility = new Utility(MockRecruitVacancyClient.Object, Mock.Of<IFeature>());
+                var utility = new Utility(MockRecruitVacancyClient.Object);
                 
                 Sut = new AboutEmployerOrchestrator(MockRecruitVacancyClient.Object, Mock.Of<ILogger<AboutEmployerOrchestrator>>(), Mock.Of<IReviewSummaryService>(), utility);
             }
@@ -114,7 +124,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part2
             public void VerifyEmployerReviewFieldIndicators(string fieldIdentifier, bool value)
             {
                 Vacancy.EmployerReviewFieldIndicators
-                    .Where(p => p.FieldIdentifier == fieldIdentifier).Single()
+                    .Single(p => p.FieldIdentifier == fieldIdentifier)
                     .Should().NotBeNull().And
                     .Match<EmployerReviewFieldIndicator>((x) => x.IsChangeRequested == value);
             }

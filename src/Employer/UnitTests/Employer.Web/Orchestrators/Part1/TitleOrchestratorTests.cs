@@ -1,8 +1,10 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.UnitTests.Employer.Web.HardMocks;
 using Esfa.Recruit.Employer.Web;
 using Esfa.Recruit.Employer.Web.Orchestrators.Part1;
+using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.Title;
 using Esfa.Recruit.Shared.Web.FeatureToggle;
 using Esfa.Recruit.Shared.Web.Mappers;
@@ -48,6 +50,24 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part1
             _fixture.VerifyEmployerReviewFieldIndicators(FieldIdentifiers.Title, fieldIndicatorSet);
         }
 
+        [Fact]
+        public async Task Then_The_Count_Is_Retrieved()
+        {
+            _fixture
+                .WithTitle("this is a value")
+                .Setup();
+            
+            var model = new VacancyRouteModel
+            {
+                VacancyId = Guid.Parse("84af954e-5baf-4942-897d-d00180a0839e"),
+                EmployerAccountId = "EMPLOYER ACCOUNT ID"
+            };
+            
+            await _fixture.GetTitleEditModel(model);
+
+            _fixture.VerifyVacancyTotalRetrieved(model.EmployerAccountId);
+        }
+
         public class TitleOrchestratorTestsFixture
         {
             private const VacancyRuleSet ValidationRules = VacancyRuleSet.Title;
@@ -76,7 +96,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part1
                 MockRecruitVacancyClient.Setup(x => x.Validate(Vacancy, ValidationRules)).Returns(new EntityValidationResult());
                 MockRecruitVacancyClient.Setup(x => x.UpdateDraftVacancyAsync(It.IsAny<Vacancy>(), User));
                 MockRecruitVacancyClient.Setup(x => x.UpdateEmployerProfileAsync(It.IsAny<EmployerProfile>(), User));
-                var utility = new Utility(MockRecruitVacancyClient.Object, Mock.Of<IFeature>());
+                var utility = new Utility(MockRecruitVacancyClient.Object);
                 
                 Sut = new TitleOrchestrator(MockClient.Object, MockRecruitVacancyClient.Object, Mock.Of<ILogger<TitleOrchestrator>>(), 
                     Mock.Of<IReviewSummaryService>(), Mock.Of<ITrainingProviderService>(), utility);
@@ -87,12 +107,22 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part1
                 await Sut.PostTitleEditModelAsync(model, User);
             }
 
+            public async Task GetTitleEditModel(VacancyRouteModel model)
+            {
+                await Sut.GetTitleViewModelAsync(model);
+            }
+
             public void VerifyEmployerReviewFieldIndicators(string fieldIdentifier, bool value)
             {
                 Vacancy.EmployerReviewFieldIndicators
                     .Where(p => p.FieldIdentifier == fieldIdentifier).Single()
                     .Should().NotBeNull().And
                     .Match<EmployerReviewFieldIndicator>((x) => x.IsChangeRequested == value);
+            }
+
+            public void VerifyVacancyTotalRetrieved(string employerAccountId)
+            {
+                MockClient.Verify(x=>x.GetVacancyCount(employerAccountId, VacancyType.Apprenticeship, null, null), Times.Once);   
             }
 
             public Mock<IEmployerVacancyClient> MockClient { get; set; }

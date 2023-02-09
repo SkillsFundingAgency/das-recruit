@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Qa.Web.Exceptions;
@@ -29,9 +30,12 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
         public async Task<Guid?> SubmitReviewAsync(ReviewEditModel m, VacancyUser user)
         {
             var review = await _vacancyClient.GetVacancyReviewAsync(m.ReviewId);
+            
             await EnsureUserIsAssignedAsync(review, user.UserId);
 
-            var manualQaFieldIndicators = _mapper.GetManualQaFieldIndicators(m);
+            var vacancy = await _vacancyClient.GetVacancyAsync(review.VacancyReference);
+                
+            var manualQaFieldIndicators = _mapper.GetManualQaFieldIndicators(m, review.VacancySnapshot.VacancyType.GetValueOrDefault());
             var selectedAutomatedQaRuleOutcomeIds = m.SelectedAutomatedQaResults.Select(Guid.Parse).ToList();
 
             if (m.IsRefer)
@@ -40,8 +44,15 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
             }
             else
             {
+                var manualQaFieldEditIndicator = PopulateManualQaFieldEditIndicators(review, m, vacancy);
+
+                if (manualQaFieldEditIndicator.Any())
+                {
+                    await _vacancyClient.UpdateDraftVacancyAsync(vacancy, user);
+                }
+                
                 await _messaging.SendCommandAsync(
-                    new ApproveVacancyReviewCommand(m.ReviewId, m.ReviewerComment, manualQaFieldIndicators, selectedAutomatedQaRuleOutcomeIds));
+                    new ApproveVacancyReviewCommand(m.ReviewId, m.ReviewerComment, manualQaFieldIndicators, selectedAutomatedQaRuleOutcomeIds, manualQaFieldEditIndicator));
             }
 
             var nextVacancyReviewId = await AssignNextVacancyReviewAsync(user);
@@ -67,6 +78,11 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
 
             var vm = await _mapper.Map(review);
 
+            if(!string.IsNullOrEmpty(vm?.EmployerWebsiteUrl) && !vm.EmployerWebsiteUrl.StartsWith("http", true, null))
+            {
+                vm.EmployerWebsiteUrl = "https://" + $"{vm.EmployerWebsiteUrl}";
+            }
+
             return vm;
         }
 
@@ -78,6 +94,16 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
                 throw new NotFoundException($"Unable to find review with id: {reviewId}");
 
             var vm = await _mapper.Map(review);
+
+            if (!string.IsNullOrEmpty(vm?.EmployerWebsiteUrl) && !vm.EmployerWebsiteUrl.StartsWith("http", true, null))
+            {
+                vm.EmployerWebsiteUrl = "https://" + $"{vm.EmployerWebsiteUrl}";
+            }
+
+            if (!string.IsNullOrEmpty(vm?.ApplicationUrl) && !vm.ApplicationUrl.StartsWith("http", true, null))
+            {
+                vm.ApplicationUrl = "https://" + $"{vm.ApplicationUrl}";
+            }
 
             return vm;
         }
@@ -141,6 +167,75 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
         public Task UnassignVacancyReviewAsync(Guid reviewId)
         {
             return _vacancyClient.UnassignVacancyReviewAsync(reviewId);
+        }
+
+        private List<ManualQaFieldEditIndicator> PopulateManualQaFieldEditIndicators(VacancyReview review,
+            ReviewEditModel m, Vacancy vacancy)
+        {
+            var manualQaFieldEditIndicator = new List<ManualQaFieldEditIndicator>();
+            if (review.VacancySnapshot.OutcomeDescription != m.OutcomeDescription)
+            {
+                manualQaFieldEditIndicator.Add(new ManualQaFieldEditIndicator
+                {
+                    FieldIdentifier = nameof(m.OutcomeDescription),
+                    BeforeEdit = review.VacancySnapshot.OutcomeDescription,
+                    AfterEdit = m.OutcomeDescription
+                });
+                vacancy.OutcomeDescription = m.OutcomeDescription;
+            }
+            if (review.VacancySnapshot.TrainingDescription != m.TrainingDescription)
+            {
+                manualQaFieldEditIndicator.Add(new ManualQaFieldEditIndicator
+                {
+                    FieldIdentifier = nameof(m.TrainingDescription),
+                    BeforeEdit = review.VacancySnapshot.TrainingDescription,
+                    AfterEdit = m.TrainingDescription
+                });
+                vacancy.TrainingDescription = m.TrainingDescription;
+            }
+            if (review.VacancySnapshot.ShortDescription != m.ShortDescription)
+            {
+                manualQaFieldEditIndicator.Add(new ManualQaFieldEditIndicator
+                {
+                    FieldIdentifier = nameof(m.ShortDescription),
+                    BeforeEdit = review.VacancySnapshot.ShortDescription,
+                    AfterEdit = m.ShortDescription
+                });
+                vacancy.ShortDescription = m.ShortDescription;
+            }
+            if (review.VacancySnapshot.Description != m.VacancyDescription)
+            {
+                manualQaFieldEditIndicator.Add(new ManualQaFieldEditIndicator
+                {
+                    FieldIdentifier = nameof(m.VacancyDescription),
+                    BeforeEdit = review.VacancySnapshot.Description,
+                    AfterEdit = m.VacancyDescription
+                });
+                vacancy.Description = m.VacancyDescription;
+            }
+            if (review.VacancySnapshot.Wage.WorkingWeekDescription != m.WorkingWeekDescription)
+            {
+                manualQaFieldEditIndicator.Add(new ManualQaFieldEditIndicator
+                {
+                    FieldIdentifier = nameof(m.WorkingWeekDescription),
+                    BeforeEdit = review.VacancySnapshot.Wage.WorkingWeekDescription,
+                    AfterEdit = m.WorkingWeekDescription
+                });
+                vacancy.Wage.WorkingWeekDescription = m.WorkingWeekDescription;
+            }
+
+            if (review.VacancySnapshot.WorkExperience != m.WorkExperience)
+            {
+                manualQaFieldEditIndicator.Add(new ManualQaFieldEditIndicator
+                {
+                    FieldIdentifier = nameof(m.WorkExperience),
+                    BeforeEdit = review.VacancySnapshot.WorkExperience,
+                    AfterEdit = m.WorkExperience
+                });
+                vacancy.WorkExperience = m.WorkExperience;
+            }
+
+            return manualQaFieldEditIndicator;
         }
     }
 }

@@ -10,7 +10,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount
 {
-    internal class EmployerAccountProvider : IEmployerAccountProvider
+    public class EmployerAccountProvider : IEmployerAccountProvider
     {
         private readonly ILogger<EmployerAccountProvider> _logger;
         private readonly IOuterApiClient _outerApiClient;
@@ -21,13 +21,13 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount
             _outerApiClient = outerApiClient;
         }
 
-        public async Task<IEnumerable<string>> GetEmployerIdentifiersAsync(string userId)
+        public async Task<GetUserAccountsResponse> GetEmployerIdentifiersAsync(string userId, string email)
         {
             try
             {
-                var accounts = await _outerApiClient.Get<GetUserAccountsResponse>(new GetUserAccountsRequest(userId));
+                var response = await _outerApiClient.Get<GetUserAccountsResponse>(new GetUserAccountsRequest(userId, email));
                 
-                return accounts.HashedAccountIds.ToList();
+                return response;
             }
             catch (Exception ex)
             {

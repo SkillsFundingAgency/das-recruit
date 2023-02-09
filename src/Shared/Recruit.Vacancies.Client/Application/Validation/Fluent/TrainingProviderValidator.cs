@@ -16,17 +16,17 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                 .NotEmpty()
                     .WithMessage("You must enter a training provider")
                     .WithErrorCode(ErrorCodes.TrainingProviderUkprnNotEmpty)
+                .WithState(_=>ruleId)
                 .Length(UkprnLength)
                     .WithMessage($"The UKPRN is {UkprnLength} digits")
                     .WithErrorCode(ErrorCodes.TrainingProviderUkprnMustBeCorrectLength)
-                .WithRuleId(ruleId);
+                .WithState(_ => ruleId);
 
             When(tp => tp.Ukprn.ToString().Length == UkprnLength, () =>
             {
                 RuleFor(tp => tp)
                     .TrainingProviderMustExistInRoatp(trainingProviderSummaryProvider)
-                    .TrainingProviderMustNotBeBlocked(blockedOrganisationRepo)
-                    .WithRuleId(ruleId);
+                    .TrainingProviderMustNotBeBlocked(blockedOrganisationRepo);
             });
         }
     }

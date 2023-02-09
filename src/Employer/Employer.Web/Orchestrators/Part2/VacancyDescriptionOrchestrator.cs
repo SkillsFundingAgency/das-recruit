@@ -15,7 +15,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
 {
     public class VacancyDescriptionOrchestrator : VacancyValidatingOrchestrator<VacancyDescriptionEditModel>
     {
-        private const VacancyRuleSet ValidationRules = VacancyRuleSet.Description | VacancyRuleSet.TrainingDescription | VacancyRuleSet.OutcomeDescription;
+        private const VacancyRuleSet ValidationRules = VacancyRuleSet.Description | VacancyRuleSet.TrainingDescription;
         private readonly IRecruitVacancyClient _vacancyClient;
         private readonly IReviewSummaryService _reviewSummaryService;
         private readonly IUtility _utility;
@@ -37,20 +37,22 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
 
             var vm = new VacancyDescriptionViewModel
             {
+                VacancyId = vacancy.Id,
+                EmployerAccountId = vacancy.EmployerAccountId,
                 Title = vacancy.Title,
                 VacancyDescription = vacancy.Description,
                 TrainingDescription = vacancy.TrainingDescription,
-                OutcomeDescription = vacancy.OutcomeDescription,
-                IsTaskListCompleted = _utility.TaskListCompleted(vacancy)
+                IsTaskListCompleted = _utility.IsTaskListCompleted(vacancy)
             };
 
             if (vacancy.Status == VacancyStatus.Referred)
             {
-                vm.Review = await _reviewSummaryService.GetReviewSummaryViewModelAsync(vacancy.VacancyReference.Value,
+                vm.Review = await _reviewSummaryService.GetReviewSummaryViewModelAsync(
+                    vacancy.VacancyReference.Value,
                     ReviewFieldMappingLookups.GetVacancyDescriptionFieldIndicators());
             }
             
-            vm.IsTaskListCompleted = _utility.TaskListCompleted(vacancy);
+            vm.IsTaskListCompleted = _utility.IsTaskListCompleted(vacancy);
             
             return vm;
         }
@@ -61,7 +63,6 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
 
             vm.VacancyDescription = m.VacancyDescription;
             vm.TrainingDescription = m.TrainingDescription;
-            vm.OutcomeDescription = m.OutcomeDescription;
 
             return vm;
         }
@@ -82,12 +83,6 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
                 vacancy,
                 (v) => { return v.TrainingDescription = m.TrainingDescription; });
 
-            SetVacancyWithEmployerReviewFieldIndicators(
-                vacancy.OutcomeDescription,
-                FieldIdResolver.ToFieldId(v => v.OutcomeDescription),
-                vacancy,
-                (v) => { return v.OutcomeDescription = m.OutcomeDescription; });
-
             return await ValidateAndExecute(
                 vacancy,
                 v => _vacancyClient.Validate(v, ValidationRules),
@@ -101,7 +96,6 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
 
             mappings.Add(e => e.Description, vm => vm.VacancyDescription);
             mappings.Add(e => e.TrainingDescription, vm => vm.TrainingDescription);
-            mappings.Add(e => e.OutcomeDescription, vm => vm.OutcomeDescription);
 
             return mappings;
         }

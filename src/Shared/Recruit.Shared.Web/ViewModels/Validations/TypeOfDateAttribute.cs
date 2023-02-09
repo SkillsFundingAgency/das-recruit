@@ -1,9 +1,7 @@
-﻿using System.Globalization;
-using Esfa.Recruit.Shared.Web.Extensions;
+﻿using Esfa.Recruit.Shared.Web.Extensions;
 
 namespace Esfa.Recruit.Shared.Web.ViewModels.Validations
 {
-    using System;
     using System.ComponentModel.DataAnnotations;
 
     public class TypeOfDateAttribute : ValidationAttribute

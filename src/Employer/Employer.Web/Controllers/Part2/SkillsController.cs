@@ -15,12 +15,10 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part2
     public class SkillsController : Controller
     {
         private readonly SkillsOrchestrator _orchestrator;
-        private readonly IFeature _feature;
 
-        public SkillsController(SkillsOrchestrator orchestrator, IFeature feature)
+        public SkillsController(SkillsOrchestrator orchestrator)
         {
             _orchestrator = orchestrator;
-            _feature = feature;
         }
 
         [HttpGet("skills", Name = RouteNames.Skills_Get)]
@@ -51,18 +49,14 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part2
             if (!string.IsNullOrEmpty(m.AddCustomSkillAction))
             {
                 TempData[TempDataKeys.Skills] = m.Skills;
-                return RedirectToRoute(RouteNames.Skills_Get);
+                return RedirectToRoute(RouteNames.Skills_Get, new {vrm.VacancyId, vrm.EmployerAccountId});
             }
-
-            if (_feature.IsFeatureEnabled(FeatureNames.EmployerTaskList))
+            
+            if (vm.IsTaskListCompleted)
             {
-                if (vm.IsTaskListCompleted)
-                {
-                    return RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet);
-                }
-                return RedirectToRoute(RouteNames.Qualifications_Get);
+                return RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet, new {vrm.VacancyId, vrm.EmployerAccountId});
             }
-            return RedirectToRoute(RouteNames.Vacancy_Preview_Get);
+            return RedirectToRoute(RouteNames.Qualifications_Get, new {vrm.VacancyId, vrm.EmployerAccountId});
         }
     }
 }

@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Esfa.Recruit.Shared.Web.ViewModels.ApplicationReview
 {
-    public class ApplicationReviewViewModel 
+    public class ApplicationReviewViewModel
     {
         public string AddressLine1 { get; set; }
         public string AddressLine2 { get; set; }
@@ -51,5 +52,11 @@ namespace Esfa.Recruit.Shared.Web.ViewModels.ApplicationReview
         public long Ukprn { get; set; }
         public Guid? VacancyId { get; set; }
         public Guid ApplicationReviewId { get; set; }
+        public string AdditionalQuestionAnswer1 { get; set; }
+        public string AdditionalQuestionAnswer2 { get; set; }
+        public string AdditionalQuestion1 { get; set; }
+        public string AdditionalQuestion2 { get; set; }
+        public bool HasAdditionalQuestions => !AdditionalQuestion1.IsNullOrEmpty() || !AdditionalQuestion2.IsNullOrEmpty();
+        public bool HasAdditionalSecondQuestion => !AdditionalQuestion2.IsNullOrEmpty();
     }
 }

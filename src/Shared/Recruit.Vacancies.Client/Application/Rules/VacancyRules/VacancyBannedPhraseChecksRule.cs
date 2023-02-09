@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
@@ -41,10 +42,14 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Rules.VacancyRules
             outcomes.AddRange(BannedPhraseCheck(() => subject.TrainingDescription));
             outcomes.AddRange(BannedPhraseCheck(() => subject.OutcomeDescription));
             outcomes.AddRange(BannedPhraseCheck(() => subject.ThingsToConsider));
-            outcomes.AddRange(BannedPhraseCheck(() => subject.Skills.ToDelimitedString(","), "Skills"));
-            outcomes.AddRange(BannedPhraseCheck(() => 
-                subject.Qualifications.SelectMany(q => new [] {q.Grade, q.Subject}).ToDelimitedString(",")
-                , "Qualifications"));
+            outcomes.AddRange(BannedPhraseCheck(() => subject.AdditionalQuestion1));
+            outcomes.AddRange(BannedPhraseCheck(() => subject.AdditionalQuestion2));
+            if (subject.Skills != null)
+                outcomes.AddRange(BannedPhraseCheck(() => subject.Skills.ToDelimitedString(","), "Skills"));
+            if (subject.Qualifications != null)
+                outcomes.AddRange(BannedPhraseCheck(() => 
+                    subject.Qualifications.SelectMany(q => new [] {q.Grade, q.Subject}).ToDelimitedString(",")
+                    , "Qualifications"));
             outcomes.AddRange(BannedPhraseCheck(() => subject.EmployerDescription));
 
             if (subject.EmployerContact != null)

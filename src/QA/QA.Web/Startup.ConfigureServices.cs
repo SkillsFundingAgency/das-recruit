@@ -27,14 +27,14 @@ namespace Esfa.Recruit.Qa.Web
     public partial class Startup
     {
         private readonly IConfiguration _configuration;
-        private readonly IHostingEnvironment _hostingEnvironment;
+        private readonly IWebHostEnvironment _hostingEnvironment;
         private readonly AuthenticationConfiguration _authenticationConfig;
         private readonly AuthorizationConfiguration _legacyAuthorizationConfig;
         private readonly AuthorizationConfiguration _authorizationConfig;
         private readonly ExternalLinksConfiguration _externalLinks;
         private readonly ILoggerFactory _loggerFactory;
 
-        public Startup(IConfiguration configuration, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        public Startup(IConfiguration configuration, IWebHostEnvironment env, ILoggerFactory loggerFactory)
         {
             var configBuilder = new ConfigurationBuilder()
                 .AddConfiguration(configuration)
@@ -69,9 +69,6 @@ namespace Esfa.Recruit.Qa.Web
         public void ConfigureServices(IServiceCollection services)
         {
             services.Configure<ApplicationInsightsConfiguration>(_configuration.GetSection("ApplicationInsights"));
-
-            //A service provider for resolving services configured in IoC
-            var sp = services.BuildServiceProvider();
 
             // Routing has to come before adding Mvc
             services.AddRouting(opt =>
@@ -122,6 +119,8 @@ namespace Esfa.Recruit.Qa.Web
                 return svc.GetAsync<QaRecruitSystemConfiguration>("QaRecruitSystem").Result;
             });
 
+            services.AddSingleton(new ServiceParameters("Apprenticeship"));
+            
             services.Configure<RazorViewEngineOptions>(o =>
             {
                 o.ViewLocationFormats.Add("/Views/Reports/{1}/{0}" + RazorViewEngine.ViewExtension);

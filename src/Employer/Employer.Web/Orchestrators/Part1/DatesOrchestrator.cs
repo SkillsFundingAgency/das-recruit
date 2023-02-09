@@ -41,9 +41,11 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             var vm = new DatesViewModel
             {
                 VacancyId = vacancy.Id,
+                EmployerAccountId = vrm.EmployerAccountId,
                 IsDisabilityConfident = vacancy.IsDisabilityConfident,
                 PageInfo = _utility.GetPartOnePageInfo(vacancy),
-                CurrentYear = _timeProvider.Now.Year
+                CurrentYear = _timeProvider.Now.Year,
+                Title = vacancy.Title
             };
 
             if (vacancy.ClosingDate.HasValue)
@@ -91,8 +93,6 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             vm.StartMonth = m.StartMonth;
             vm.StartYear = m.StartYear;
 
-            vm.IsDisabilityConfident = m.IsDisabilityConfident;
-
             return vm;
         }
 
@@ -118,14 +118,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                     return v.StartDate = m.StartDate.AsDateTimeUk()?.ToUniversalTime();
                 });
 
-            SetVacancyWithEmployerReviewFieldIndicators(
-                vacancy.DisabilityConfident,
-                FieldIdResolver.ToFieldId(v => v.DisabilityConfident),
-                vacancy,
-                (v) =>
-                {
-                    return v.DisabilityConfident = m.IsDisabilityConfident ? DisabilityConfident.Yes : DisabilityConfident.No;
-                });
+            
 
             return await ValidateAndExecute(
                 vacancy, 

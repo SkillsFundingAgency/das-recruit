@@ -8,6 +8,7 @@ using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Microsoft.Extensions.Logging;
 
@@ -33,6 +34,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
 
             var vm = new EmployerContactDetailsViewModel
             {
+                VacancyId = vacancy.Id,
+                EmployerAccountId = vacancy.EmployerAccountId,
                 Title = vacancy.Title,
                 EmployerContactName = vacancy.EmployerContact?.Name,
                 EmployerContactEmail = vacancy.EmployerContact?.Email,
@@ -46,7 +49,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
                     ReviewFieldMappingLookups.GetEmployerContactDetailsFieldIndicators());
             }
             
-            vm.IsTaskListCompleted = _utility.TaskListCompleted(vacancy);
+            vm.IsTaskListCompleted = _utility.IsTaskListCompleted(vacancy);
             
             return vm;
         }

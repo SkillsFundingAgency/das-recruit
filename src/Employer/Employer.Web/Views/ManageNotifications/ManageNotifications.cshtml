@@ -14,8 +14,8 @@
 
         <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">Manage your emails</h1>
 
-        <form method="post">
-            <div esfa-validation-marker-for="HasAnySubscription" class="govuk-form-group">
+        <form method="post" asp-route-employerAccountId="@Model.EmployerAccountId">
+            <div esfa-validation-marker-for="HasAnySubscription" class="govuk-form-group" data-module="govuk-checkboxes">
                 <fieldset class="govuk-fieldset" aria-describedby="when-conditional-hint">
                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
                         <h2 class="govuk-fieldset__heading">
@@ -114,12 +114,12 @@
             </div>
             
             <p asp-show="@Model.HasAnySubscription" class="govuk-body">
-                <a asp-route="@RouteNames.ConfirmUnsubscribeNotifications_Get" class="govuk-link">Unsubscribe from all emails about adverts and applications</a>
+                <a asp-route="@RouteNames.ConfirmUnsubscribeNotifications_Get" asp-route-employerAccountId="@Model.EmployerAccountId" class="govuk-link">Unsubscribe from all emails about adverts and applications</a>
             </p>
 
             <div class="govuk-button-group">
                 <button class="govuk-button submit" type="submit">Save and continue</button>
-                <a asp-route="@RouteNames.Dashboard_Get" class="govuk-link govuk-link--no-visited-state">Return to dashboard</a>
+                <a asp-route="@RouteNames.Dashboard_Get" asp-route-employerAccountId="@Model.EmployerAccountId" class="govuk-link govuk-link--no-visited-state">Return to dashboard</a>
             </div>
         </form>
     </div>

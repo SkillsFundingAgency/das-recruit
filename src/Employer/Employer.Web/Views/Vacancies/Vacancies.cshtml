@@ -27,16 +27,25 @@
         <div asp-show="Model.HasWarning" class="warning-summary govuk-!-margin-bottom-0">
             <p>@Model.WarningMessage</p>
         </div>
-        <div asp-show="Model.HasInfo" class="info-summary govuk-!-margin-bottom-0">
-            <p>@Model.InfoMessage</p>
-        </div>
     </div>
+</div>
+<div asp-show="Model.HasInfo" class="govuk-notification-banner govuk-notification-banner--success" role="alert" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
+  <div class="govuk-notification-banner__header">
+    <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
+      Success
+    </h2>
+  </div>
+  <div class="govuk-notification-banner__content">
+    <h3 class="govuk-notification-banner__heading">
+        @Model.InfoMessage        
+    </h3>
+  </div>
 </div>
 
 @section BackLink
 {
-    <a asp-hide="@Model.ShowReferredFromMaBackLink" asp-route="@RouteNames.Dashboard_Get" esfa-automation="link-back" class="govuk-back-link">Return to dashboard</a>
-    <a asp-show="@Model.ShowReferredFromMaBackLink" asp-route="@RouteNames.Dashboard_Account_Home" esfa-automation="link-back" class="govuk-back-link">Return to home</a>
+    <a asp-hide="@Model.ShowReferredFromMaBackLink" asp-route="@RouteNames.Dashboard_Get" asp-route-employerAccountId="@Model.EmployerAccountId" esfa-automation="link-back" class="govuk-back-link">Return to dashboard</a>
+    <a asp-show="@Model.ShowReferredFromMaBackLink" asp-route="@RouteNames.Dashboard_Account_Home" asp-route-employerAccountId="@Model.EmployerAccountId" esfa-automation="link-back" class="govuk-back-link">Return to home</a>
 }
 
 <div class="govuk-grid-row">
@@ -44,16 +53,11 @@
         <h1 class="govuk-heading-l govuk-!-margin-bottom-6">Your adverts</h1>
     </div>
     <div class="govuk-grid-column-one-half ">
-        <esfaFeatureEnabled name="@FeatureNames.EmployerTaskList">
-            <a asp-route="@RouteNames.CreateVacancyStart" class="govuk-button das-float-right govuk-!-margin-bottom-6" esfa-automation="create-vacancy">Create an advert</a>
-        </esfaFeatureEnabled>
-        <esfaFeatureDisabled name="@FeatureNames.EmployerTaskList">
-            <a asp-route="@RouteNames.CreateVacancyOptions_Get" class="govuk-button das-float-right govuk-!-margin-bottom-6" esfa-automation="create-vacancy">Create an advert</a>
-        </esfaFeatureDisabled>
+       <a asp-route="@RouteNames.CreateVacancyStart" asp-route-employerAccountId="@Model.EmployerAccountId" class="govuk-button das-float-right govuk-!-margin-bottom-6" esfa-automation="create-vacancy">Create an advert</a>
     </div>
 </div>
 
-<form method="get" autocomplete="off">
+<form method="get" autocomplete="off" asp-route-employerAccountId="@Model.EmployerAccountId" >
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-one-third">
             <div class="govuk-form-group">
@@ -82,10 +86,10 @@
         <div class="govuk-grid-column-two-thirds">
             <div class="govuk-form-group">
                 <label for="search-input" class="govuk-label">
-                    Search adverts
+                        Search by advert title or reference number
                 </label>
                 <div class="das-search-form__group">
-                    <input id="search-input" asp-for="SearchTerm" title="Search" placeholder="Search by advert title, reference number or employer" class="govuk-input das-search-form__input app-vacancy-autocomplete" type="text" maxlength="200" data-apiurl="@vacanciesSearchSuggestionsEndpointUrl">
+                    <input id="search-input" asp-for="SearchTerm" title="Search" class="govuk-input das-search-form__input app-vacancy-autocomplete" type="text" maxlength="200" data-apiurl="@vacanciesSearchSuggestionsEndpointUrl">
                     <div class="das-search-form__button-wrap">
                         <button class="govuk-button das-search-form__button" type="submit">
                             Search
@@ -98,7 +102,7 @@
 </form>
 
 <h3 class="govuk-heading-m">
-    @Model.ResultsHeading <a asp-show="@Model.IsFiltered" asp-route="@RouteNames.Vacancies_Get" asp-route-filter="All" class="govuk-!-font-weight-regular govuk-!-font-size-19 govuk-link govuk-link--no-visited-state">Show all adverts</a>
+    @Model.ResultsHeading <a asp-show="@Model.IsFiltered" asp-route="@RouteNames.Vacancies_Get" asp-route-employerAccountId="@Model.EmployerAccountId" asp-route-filter="All" class="govuk-!-font-weight-regular govuk-!-font-size-19 govuk-link govuk-link--no-visited-state">Show all adverts</a>
 </h3>
 
 <p asp-hide="@Model.ShowResultsTable" class="govuk-body">No adverts match the criteria</p>
@@ -145,14 +149,15 @@
                                 <span class="govuk-tag app-tag app-tag--@vacancy.Status.ToString().ToLower()">@vacancy.Status.GetDisplayName(UserType.Employer)</span>
                             </td>
                             <td class="govuk-table__cell" data-label="Action">
-                                <a asp-show="@vacancy.IsNotSubmittable" asp-route="@RouteNames.VacancyManage_Get" asp-route-vacancyId="@vacancy.Id" class="govuk-link">Manage</a>
-                                <esfaFeatureEnabled name="@FeatureNames.EmployerTaskList">
-                                    <a asp-show="@vacancy.IsSubmittable" asp-route="@RouteNames.EmployerTaskListGet" asp-route-vacancyId="@vacancy.Id" class="govuk-link">@GetLinkText(vacancy)</a>
-                                </esfaFeatureEnabled>
-                                <esfaFeatureDisabled name="@FeatureNames.EmployerTaskList">
-                                    <a asp-show="@vacancy.IsSubmittable" asp-route="@RouteNames.DisplayVacancy_Get" asp-route-vacancyId="@vacancy.Id" class="govuk-link">@GetLinkText(vacancy)</a>    
-                                </esfaFeatureDisabled>
-                                
+                                <a id="manage-@vacancy.Id" asp-show="@vacancy.IsNotSubmittable" asp-route="@RouteNames.VacancyManage_Get" asp-route-employerAccountId="@Model.EmployerAccountId" asp-route-vacancyId="@vacancy.Id" class="govuk-link">Manage</a>
+                                @if (vacancy.Status == VacancyStatus.Referred || vacancy.Status == VacancyStatus.Rejected || vacancy.Status == VacancyStatus.Review || vacancy.IsTaskListCompleted)
+                                {
+                                    <a id="task-list-@vacancy.Id" asp-show="@vacancy.IsSubmittable" asp-route="@RouteNames.EmployerCheckYourAnswersGet" asp-route-employerAccountId="@Model.EmployerAccountId" asp-route-vacancyId="@vacancy.Id" class="govuk-link">@GetLinkText(vacancy)</a>
+                                }
+                                else
+                                {
+                                    <a id="preview-@vacancy.Id" asp-show="@vacancy.IsSubmittable" asp-route="@RouteNames.EmployerTaskListGet" asp-route-employerAccountId="@Model.EmployerAccountId" asp-route-vacancyId="@vacancy.Id" class="govuk-link">@GetLinkText(vacancy)</a>    
+                                }
                             </td>
                         </tr>
                     }
@@ -164,22 +169,22 @@
                 </div>
                 <ul class="das-pagination">
                     <li class="das-pagination__item" asp-show="@Model.Pager.ShowPrevious">
-                    <a class="das-pagination__link" asp-route="@Model.Pager.RouteName" asp-all-route-data="@Model.Pager.PreviousPageRouteData" aria-label="Previous page">Previous</a>
+                    <a class="das-pagination__link" asp-route="@Model.Pager.RouteName" asp-route-employerAccountId="@Model.EmployerAccountId" asp-all-route-data="@Model.Pager.PreviousPageRouteData" aria-label="Previous page">Previous</a>
                     </li>
                     @for (var pageIndex = 1; pageIndex <= Model.Pager.TotalPages; pageIndex++)
                     {
                         <li class="das-pagination__item">
                             @if (pageIndex == Model.Pager.CurrentPage) {
-                                <a class="das-pagination__link current" asp-route="@Model.Pager.RouteName" asp-all-route-data="@Model.Pager.GetRouteData(pageIndex)" aria-current="true" aria-label="Page @pageIndex, current page">@pageIndex</a>
+                                <a class="das-pagination__link current" asp-route="@Model.Pager.RouteName" asp-route-employerAccountId="@Model.EmployerAccountId" asp-all-route-data="@Model.Pager.GetRouteData(pageIndex)" aria-current="true" aria-label="Page @pageIndex, current page">@pageIndex</a>
                             } 
                             else 
                             {
-                                <a class="das-pagination__link asp-route="  asp-route="@Model.Pager.RouteName" asp-all-route-data="@Model.Pager.GetRouteData(pageIndex)" aria-label="Page @pageIndex">@pageIndex</a>
+                                <a class="das-pagination__link asp-route="  asp-route="@Model.Pager.RouteName" asp-route-employerAccountId="@Model.EmployerAccountId" asp-all-route-data="@Model.Pager.GetRouteData(pageIndex)" aria-label="Page @pageIndex">@pageIndex</a>
                             }
                         </li>
                     }
                     <li class="das-pagination__item" asp-show="@Model.Pager.ShowNext">
-                    <a class="das-pagination__link"  asp-route="@Model.Pager.RouteName" asp-all-route-data="@Model.Pager.NextPageRouteData" aria-label="Next page">Next</a>
+                    <a class="das-pagination__link"  asp-route="@Model.Pager.RouteName" asp-route-employerAccountId="@Model.EmployerAccountId" asp-all-route-data="@Model.Pager.NextPageRouteData" aria-label="Next page">Next</a>
                     </li>
                 </ul>
             </nav>

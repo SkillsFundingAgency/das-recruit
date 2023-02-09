@@ -18,7 +18,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
         private readonly LocationOrchestrator _orchestrator;
         private readonly IFeature _feature;
 
-        public LocationController(LocationOrchestrator orchestrator, IHostingEnvironment hostingEnvironment, IFeature feature)
+        public LocationController(LocationOrchestrator orchestrator, IWebHostEnvironment hostingEnvironment, IFeature feature)
             : base(hostingEnvironment)
         {
             _orchestrator = orchestrator;
@@ -74,24 +74,16 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
             }
 
             DeleteVacancyEmployerInfoCookie();
-
-            if (_feature.IsFeatureEnabled(FeatureNames.EmployerTaskList))
-            {
-                return wizard 
-                    ? RedirectToRoute(RouteNames.EmployerTaskListGet, new { Wizard = wizard }) 
-                    : RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet);
-            }
             
-            IActionResult result = wizard
-                ? RedirectToRoute(RouteNames.Dates_Get)
-                : RedirectToRoute(RouteNames.Vacancy_Preview_Get);
-            return result;
+            return wizard 
+                ? RedirectToRoute(RouteNames.EmployerTaskListGet, new {model.VacancyId, model.EmployerAccountId, wizard}) 
+                : RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet, new {model.VacancyId, model.EmployerAccountId});
         }
 
         [HttpGet("location-cancel", Name = RouteNames.Location_Cancel)]
         public IActionResult Cancel(VacancyRouteModel vrm, [FromQuery] bool wizard)
         {
-            return CancelAndRedirect(wizard);
+            return CancelAndRedirect(wizard, vrm);
         }
 
         [HttpGet("location/GetAddresses")]

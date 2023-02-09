@@ -1,5 +1,6 @@
 using System;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Vacancies.Client.Domain.Interfaces;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummariesProvider
 {
@@ -11,7 +12,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
         public int NoOfUnsuccessfulApplications { get; set; }
     }
 
-    internal class VacancySummaryDetails
+    internal class VacancySummaryDetails :  ITaskListVacancy
     {
         public Guid VacancyGuid { get; set; }
         public long? VacancyReference { get; set; }
@@ -19,6 +20,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
         public string LegalEntityName { get; set; }
         public string EmployerAccountId { get; set; }
         public string EmployerName { get; set; }
+        
+        public string EmployerDescription { get; set; }
         public long? Ukprn { get; set; }
         public DateTime? CreatedDate { get; set; }
         public VacancyStatus Status { get; set; }
@@ -38,5 +41,10 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
         public DateTime? TransferInfoTransferredDate { get; set; }
         public TransferReason? TransferInfoReason { get; set; }
         public string TrainingProviderName { get; set; }
+        public bool IsTraineeship { get; set; }
+        public VacancyType? VacancyType { get; set; }
+        public bool? HasChosenProviderContactDetails { get; set; }
+        public bool HasSubmittedAdditionalQuestions { get; set; }
+        public OwnerType OwnerType { get; set; }
     }
 }

@@ -1,9 +1,5 @@
 /* Dashboard */
 
-body {
-    background: red;
-}
-
 .app-card {
     border: 1px solid #bfc1c3;
     height: 100%;
@@ -140,6 +136,130 @@ body {
     padding-left: 15px;
 }
 
+/* Check your answers */
+
+.app-summary-list {
+    font-family: "GDS Transport",arial,sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 1.25;
+    color: #0b0c0c;
+    margin: 0 0 0 -15px;
+}
+
+@media (min-width: 40.0625em) {
+    .app-summary-list {
+        font-size: 19px;
+        line-height: 1.3;
+    }
+}
+
+.app-summary-list__row {
+    padding-left: 15px;
+    margin-bottom: 15px;
+}
+
+@media (min-width: 40.0625em) {
+    .app-summary-list__row {
+        display: flex;
+        flex-direction: row;
+        margin-bottom: 10px;
+    }
+}
+
+.app-summary-list__row--error {
+    border-left: 5px solid #d4351c;
+    padding-left: 10px;
+}
+
+.app-summary-list__key {
+    padding-bottom: 5px;
+    font-weight: 700;
+}
+
+@media (min-width: 40.0625em) {
+    .app-summary-list__key {
+        flex-basis: 30%;
+        padding-right: 20px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #b1b4b6;
+    }
+}
+
+.app-summary-list__value {
+    margin: 0;
+    padding-bottom: 10px;
+}
+
+@media (min-width: 40.0625em) {
+    .app-summary-list__value {
+        flex-basis: 50%;
+        padding-right: 20px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #b1b4b6;
+    }
+}
+
+.app-summary-list__actions {
+    margin: 0 0 15px;
+    padding: 0 0 15px;
+    border-bottom: 1px solid #b1b4b6;
+}
+
+@media (min-width: 40.0625em) {
+    .app-summary-list__actions {
+        flex-basis: 20%;
+        text-align: right;
+        padding-bottom: 10px;
+        margin-bottom: 0;
+    }
+}
+
+.app-summary-list__row--no-border .app-summary-list__key, 
+.app-summary-list__row--no-border .app-summary-list__value, 
+.app-summary-list__row--no-border .app-summary-list__actions {
+    border-bottom: none;
+}
+
+.app-summary-list__error-message {
+    border-left: 5px solid #d4351c;
+    margin: 0;
+    padding: 0 10px 10px;
+    color: #d4351c;
+    font-weight: 700;
+    display: block;
+}
+
+.app-summary-list__error-message:empty {
+    display: none;
+}
+
+/* Analytics styles for vacancies */
+
+.app-analytics {
+    background: #f3f2f1;
+}
+
+.app-analytics__heading {
+    padding: 5px 10px;
+    background: #ddd;
+    margin: 0;
+}
+
+.app-analytics__data {
+    padding: 10px;
+    font-weight: 700;
+    margin: 0;
+}
+
+.app-analytics__summary {
+    border-top: 1px solid #ccc;
+    padding: 5px 10px;
+}
+
+
 /* Local overrides to the das-task-list component */
 
 .das-task-list__section {
@@ -165,6 +285,19 @@ body {
     display: table-cell;
 }
 
+/* User generated content */
+
+.app-ugc-wrap > ul {
+    margin: 0;
+    padding-left: 20px;
+    list-style-type: disc;
+}
+
+.app-preserve-line-breaks {
+    white-space: pre-line;
+}
+
+
 /* Tinymce */
 
 .mce-tinymce {
@@ -185,6 +318,9 @@ span.govuk-error-message:empty {
 
 .app-disability-confident-logo {
     width: 150px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    display: inline-block;
 }
 
 /*** JQuery UI autocomplete styles ***/
@@ -201,9 +337,9 @@ span.govuk-error-message:empty {
     overflow-y: auto;
     padding: 0;
     position: absolute;
-  }
-  
-  .ui-autocomplete .ui-menu-item {
+}
+
+.ui-autocomplete .ui-menu-item {
     font-family: "GDS Transport",arial,sans-serif;
     -webkit-font-smoothing: antialiased;
     border-bottom: solid #bfc1c3;
@@ -213,33 +349,89 @@ span.govuk-error-message:empty {
     font-size:19px;
     padding:4px;
     position: relative;
-  }
-  
-  @media (max-width: 640px) {
+}
+
+@media (max-width: 640px) {
     .ui-autocomplete .ui-menu-item {
         font-size:16px
     }
-  }
-  
-  .ui-autocomplete .ui-menu-item > * {
+}
+
+.ui-autocomplete .ui-menu-item > * {
     pointer-events: none;
-  }
-  
-  .ui-autocomplete .ui-menu-item:first-of-type {
+}
+
+.ui-autocomplete .ui-menu-item:first-of-type {
     border-top-width: 0;
-  }
-  
-  .ui-autocomplete .ui-menu-item:last-of-type {
+}
+
+.ui-autocomplete .ui-menu-item:last-of-type {
     border-bottom-width: 0;
-  }
-  
-  .ui-autocomplete .ui-menu-item:nth-child(odd){
+}
+
+.ui-autocomplete .ui-menu-item:nth-child(odd){
     background-color: #fafafa;
-  }
-  
-  .ui-autocomplete .ui-menu-item:hover{
+}
+
+.ui-autocomplete .ui-menu-item:hover{
     background-color: #1d70b8;
     border-color: #1d70b8;
     color: #fff;
     outline: 0;
-  }
+}
+
+/* Traineeships */
+
+.app-account-header--traineeships {
+    background: #3f8082;
+    padding: 10px 0;
+}
+
+.app-header__heading {
+    color: #fff;
+    margin: 0;
+}
+
+@media (min-width: 40.0625em) {
+    .app-header__heading {
+        float: left;
+    }
+}
+
+.app-header__nav {
+    padding: 10px 0 5px;
+    margin: 0 -10px;
+}
+
+@media (min-width: 40.0625em) {
+    .app-header__nav {
+        float: right;
+        padding: 0;
+    }
+}
+
+.app-header__navigation {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.app-header__navigation-item {
+    display: inline-block;
+    padding: 0 5px;
+}
+
+.app-header__link,
+.app-header__link:link,
+.app-header__link:visited {
+    color: #fff;
+    padding: 2px 5px;
+}
+
+.app-header__link:hover {
+    text-decoration: none;
+}
+
+.app-header__link:focus {
+    color: #0b0c0c;
+}

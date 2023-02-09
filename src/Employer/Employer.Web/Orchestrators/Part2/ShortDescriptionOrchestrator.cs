@@ -34,6 +34,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
             var vm = new ShortDescriptionViewModel
             {
                 VacancyId = vacancy.Id,
+                EmployerAccountId = vacancy.EmployerAccountId,
                 ShortDescription = vacancy.ShortDescription,
                 Title = vacancy.Title
             };
@@ -44,7 +45,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
                     ReviewFieldMappingLookups.GetShortDescriptionReviewFieldIndicators());
             }
             
-            vm.IsTaskListCompleted = _utility.TaskListCompleted(vacancy);
+            vm.IsTaskListCompleted = _utility.IsTaskListCompleted(vacancy);
 
             return vm;
         }

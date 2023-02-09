@@ -11,9 +11,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
     public interface IEmployerVacancyClient
     {
         Task<Guid> CreateVacancyAsync(string title, string employerAccountId, VacancyUser user, TrainingProvider provider = null, string programmeId = null);
-        Task GenerateDashboard(string employerAccountId);
         Task DeleteVacancyAsync(Guid vacancyId, VacancyUser user);
-        Task<EmployerDashboard> GetDashboardAsync(string employerAccountId, bool createIfNonExistent = false);
+        Task<Vacancy> GetVacancyAsync(Guid vacancyId);
+        Task<EmployerDashboard> GetDashboardAsync(string employerAccountId,int page, FilteringOptions? status = null, string searchTerm = null);
         Task<EmployerEditVacancyInfo> GetEditVacancyInfoAsync(string employerAccountId);
         Task<IEnumerable<LegalEntity>> GetEmployerLegalEntitiesAsync(string employerAccountId);
         Task SetupEmployerAsync(string employerAccountId);
@@ -23,5 +23,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         EntityValidationResult ValidateQualification(Qualification qualification);
 
         Task CreateEmployerApiVacancy(Guid id, string title, string employerAccountId, VacancyUser user, TrainingProvider provider, string programmeId);
+        Task<long> GetVacancyCount(string employerAccountId, VacancyType vacancyType, FilteringOptions? filteringOptions, string searchTerm);
+        Task<EmployerDashboardSummary> GetDashboardSummary(string employerAccountId);
     }
 }

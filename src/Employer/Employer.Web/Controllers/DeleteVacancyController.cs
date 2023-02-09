@@ -6,6 +6,8 @@ using Esfa.Recruit.Employer.Web.Orchestrators;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels.DeleteVacancy;
 using Esfa.Recruit.Shared.Web.FeatureToggle;
+using Esfa.Recruit.Shared.Web.ViewModels;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Esfa.Recruit.Employer.Web.Controllers
@@ -14,12 +16,10 @@ namespace Esfa.Recruit.Employer.Web.Controllers
     public class DeleteVacancyController : Controller
     {
         private readonly DeleteVacancyOrchestrator _orchestrator;
-        private readonly IFeature _feature;
 
-        public DeleteVacancyController(DeleteVacancyOrchestrator orchestrator, IFeature feature)
+        public DeleteVacancyController(DeleteVacancyOrchestrator orchestrator)
         {
             _orchestrator = orchestrator;
-            _feature = feature;
         }
 
         [HttpGet("delete", Name = RouteNames.DeleteVacancy_Get)]
@@ -38,16 +38,17 @@ namespace Esfa.Recruit.Employer.Web.Controllers
 
             if (!m.ConfirmDeletion.Value)
             {
-                if (_feature.IsFeatureEnabled(FeatureNames.EmployerTaskList))
+                if (m.Status == VacancyStatus.Draft)
                 {
-                    return RedirectToRoute(RouteNames.VacancyAdvertPreview);
+                    return RedirectToRoute(RouteNames.EmployerTaskListGet, new {m.VacancyId, m.EmployerAccountId});
                 }
-                return RedirectToRoute(RouteNames.Vacancy_Preview_Get);
+                return RedirectToRoute(RouteNames.Vacancies_Get, new {m.VacancyId, m.EmployerAccountId});
             }
 
-            await _orchestrator.DeleteVacancyAsync(m, User.ToVacancyUser());
+            var vm = await _orchestrator.DeleteVacancyAsync(m, User.ToVacancyUser());
+            TempData.Add(TempDataKeys.DashboardInfoMessage, string.Format(InfoMessages.AdvertDeleted, vm.VacancyReference, vm.Title));
             
-            return RedirectToRoute(RouteNames.Vacancies_Get);
+            return RedirectToRoute(RouteNames.Vacancies_Get, new {m.EmployerAccountId});
         }
 
         private async Task<IActionResult> GetDeleteVacancyConfirmationView(VacancyRouteModel vrm)

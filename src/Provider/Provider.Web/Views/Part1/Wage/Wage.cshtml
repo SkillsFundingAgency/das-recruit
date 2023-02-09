@@ -1,5 +1,4 @@
 @using Esfa.Recruit.Shared.Web.Mappers
-@using Esfa.Recruit.Vacancies.Client.Domain.Entities
 @using Microsoft.Extensions.Options
 @model Esfa.Recruit.Provider.Web.ViewModels.Part1.Wage.WageViewModel
 @inject IOptions<ExternalLinksConfiguration> externalLinks
@@ -36,7 +35,7 @@
                         <a href="@externalLinks.Value.NationalMinimumWageRates" rel="noopener" target="_blank" class="govuk-link govuk-link--no-visited-state">View the National Minimum Wage for apprentices (opens in a new tab).</a>
                     </div>
                     <span esfa-validation-message-for="WageType" class="govuk-error-message"></span>
-                    <div class="govuk-radios govuk-radios--conditional" data-module="radios">
+                    <div class="govuk-radios govuk-radios--conditional" data-module="govuk-radios">
                         <div class="govuk-radios__item">
                             <input asp-for="WageType" value="@WageType.NationalMinimumWage" type="radio" class="govuk-radios__input" id="wage-type-national-minimum-wage" data-aria-controls="wage-type-national-minimum-wage-panel">
                             <label for="wage-type-national-minimum-wage" class="govuk-label govuk-radios__label">National Minimum Wage</label>

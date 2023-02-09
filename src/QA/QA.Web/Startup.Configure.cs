@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Esfa.Recruit.Qa.Web.Configuration;
 using Esfa.Recruit.Qa.Web.Configuration.Routing;
 using Esfa.Recruit.Qa.Web.Security;
@@ -11,12 +12,13 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Rewrite;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Hosting;
 
 namespace Esfa.Recruit.Qa.Web
 {
     public partial class Startup
     {
-        public void Configure(ILogger<Startup> logger, IApplicationBuilder app, IHostingEnvironment env, IApplicationLifetime applicationLifetime)
+        public void Configure(ILogger<Startup> logger, IApplicationBuilder app, IWebHostEnvironment env, IHostApplicationLifetime applicationLifetime)
         {
             applicationLifetime.ApplicationStarted.Register(() => logger.LogInformation("Host fully started"));
             applicationLifetime.ApplicationStopping.Register(() => logger.LogInformation("Host shutting down...waiting to complete requests."));
@@ -98,6 +100,13 @@ namespace Esfa.Recruit.Qa.Web
 
             app.UseStaticFiles();
 
+            app.UseRouting();
+            app.UseAuthorization();
+            app.UseEndpoints(builder =>
+            {
+                builder.MapControllerRoute("default", RoutePaths.VacancyReviewsRoutePath);
+            });
+            
              //Registered after static files, to set headers for dynamic content.
             app.UseXfo(xfo => xfo.Deny());
             app.UseXDownloadOptions();
@@ -105,20 +114,27 @@ namespace Esfa.Recruit.Qa.Web
 
             app.UseNoCacheHttpHeaders(); // Affectively forces the browser to always request dynamic pages
 
-            app.UseMvc();
         }
 
         private static string[] GetAllowableDestinations(AuthenticationConfiguration authConfig, ExternalLinksConfiguration linksConfig)
         {
             var destinations = new List<string>();
-
+            
             if (!string.IsNullOrWhiteSpace(authConfig?.MetaDataAddress))
-                destinations.Add(authConfig.MetaDataAddress);
+                destinations.Add(ExtractAuthHost(authConfig));
 
             if (!string.IsNullOrWhiteSpace(linksConfig?.StaffIdamsUrl))
                 destinations.Add(linksConfig.StaffIdamsUrl);
 
             return destinations.ToArray();
+        }
+        
+        private static string ExtractAuthHost(AuthenticationConfiguration authConfig)
+        {
+            var metaDataAddress = new Uri(authConfig.MetaDataAddress);
+            var authHost = new UriBuilder(metaDataAddress.Scheme, metaDataAddress.Host).ToString();
+
+            return authHost;
         }
     }
 }

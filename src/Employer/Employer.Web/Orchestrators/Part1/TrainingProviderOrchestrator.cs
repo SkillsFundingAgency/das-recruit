@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Mappings;
 using Esfa.Recruit.Employer.Web.Models;
@@ -28,6 +30,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
         private readonly ITrainingProviderSummaryProvider _trainingProviderSummaryProvider;
         private readonly ITrainingProviderService _trainingProviderService;
         private readonly IUtility _utility;
+        private readonly RecruitConfiguration _recruitConfiguration;
 
         public TrainingProviderOrchestrator(
             IRecruitVacancyClient vacancyClient,
@@ -35,7 +38,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             IReviewSummaryService reviewSummaryService,
             ITrainingProviderSummaryProvider trainingProviderSummarayProvider,
             ITrainingProviderService trainingProviderService,
-            IUtility utility
+            IUtility utility,
+            RecruitConfiguration recruitConfiguration
             ) : base(logger)
         {
             _vacancyClient = vacancyClient;
@@ -43,6 +47,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             _trainingProviderSummaryProvider = trainingProviderSummarayProvider;
             _trainingProviderService = trainingProviderService;
             _utility = utility;
+            _recruitConfiguration = recruitConfiguration;
         }
 
         public async Task<SelectTrainingProviderViewModel> GetSelectTrainingProviderViewModelAsync(VacancyRouteModel vrm, long? ukprn = null)
@@ -59,6 +64,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 
             var vm = new SelectTrainingProviderViewModel
             {
+                VacancyId = vrm.VacancyId,
+                EmployerAccountId = vrm.EmployerAccountId,
                 Title = vacancy.Title,
                 TrainingProviders = trainingProviders.Select(t => FormatSuggestion(t.ProviderName, t.Ukprn)),
                 PageInfo = _utility.GetPartOnePageInfo(vacancy),
@@ -80,7 +87,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
         {
             var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(m, RouteNames.TrainingProvider_Select_Post);
 
-            var providerSummary = await GetProviderFromModelAsync(m);
+            var providerSummary = await GetProviderFromModelAsync(m, vacancy.EmployerAccountId);
 
             TrainingProvider provider = null;
             if (providerSummary != null)
@@ -165,11 +172,12 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             return await _trainingProviderSummaryProvider.GetAsync(ukprnAsLong);
         }
 
-        private async Task<TrainingProviderSummary> GetProviderFromModelAsync(SelectTrainingProviderEditModel model)
+        private async Task<TrainingProviderSummary> GetProviderFromModelAsync(SelectTrainingProviderEditModel model, string employerAccountId)
         {
             if (model.SelectionType == TrainingProviderSelectionType.TrainingProviderSearch)
             {
-                if (model.TrainingProviderSearch.EndsWith(EsfaTestTrainingProvider.Ukprn.ToString()))
+                if (employerAccountId.Equals(_recruitConfiguration.EmployerAccountId, StringComparison.CurrentCultureIgnoreCase) 
+                    && model.TrainingProviderSearch.EndsWith(EsfaTestTrainingProvider.Ukprn.ToString()))
                     return await GetProviderAsync(EsfaTestTrainingProvider.Ukprn.ToString());
 
                 var allProviders = await _trainingProviderSummaryProvider.FindAllAsync();

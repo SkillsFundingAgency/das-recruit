@@ -52,6 +52,12 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part2
                     return View(viewModel);
                 }
             }
+            else
+            {
+                m.ProviderContactEmail = null;
+                m.ProviderContactName = null;
+                m.ProviderContactPhone = null;
+            }
             
             var response = await _orchestrator.PostProviderContactDetailsEditModelAsync(m, User.ToVacancyUser());
 

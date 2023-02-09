@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Shared.Web.Mappers;
 using Esfa.Recruit.Shared.Web.ViewModels;
@@ -41,12 +40,21 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview
         public VacancyPreviewSectionState DescriptionsSectionState { get; internal set; }
         public VacancyPreviewSectionState WorkingWeekSectionState { get; internal set; }
         public VacancyPreviewSectionState FutureProspectsSectionState { get; internal set; }
+        public VacancyPreviewSectionState WorkExperienceProvidedSectionState { get; internal set; }
+        public VacancyPreviewSectionState TrainingDescriptionSectionState { get; internal set; }
+        public VacancyPreviewSectionState VacancyDescriptionSectionState { get; internal set; }
+        public VacancyPreviewSectionState WorkingWeekHoursSectionState { get; internal set; }
+        public VacancyPreviewSectionState WorkingWeekDescriptionSectionState { get; internal set; }
+        public VacancyPreviewSectionState WageAdditionalInfoSectionState { get; internal set; }
+        public VacancyPreviewSectionState AdditionalQuestion1SectionState { get; internal set; }
+        public VacancyPreviewSectionState AdditionalQuestion2SectionState { get; internal set; }
 
         public EntityValidationResult SoftValidationErrors { get; internal set; }
         public bool CanHideValidationSummary { get; internal set; }
 
         public bool HasWage { get; internal set; }
         public bool HasProgramme => !string.IsNullOrEmpty(TrainingTitle);
+        public bool HasRoute => !string.IsNullOrEmpty(RouteTitle);
         public bool CanShowReference { get; set; }
 
         public bool HasIncompleteVacancyDescription => !HasVacancyDescription;
@@ -96,7 +104,9 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview
         public bool ShowIncompleteSections => ((HasIncompleteMandatorySections || HasIncompleteOptionalSections) && !Review.HasBeenReviewed) || HasSoftValidationErrors;
         public ReviewSummaryViewModel Review { get; set; } = new ReviewSummaryViewModel();
 
-        public string SubmitButtonText => RequiresEmployerReview
+        public ValidationSummaryViewModel ValidationErrors { get; set; } = new ValidationSummaryViewModel(); 
+        
+        public string SubmitButtonText => RequiresEmployerReview && VacancyType.GetValueOrDefault() == Vacancies.Client.Domain.Entities.VacancyType.Apprenticeship
             ? Status == VacancyStatus.Rejected
                 ? "Resubmit vacancy to employer"
                 : "Send to employer"
@@ -178,12 +188,17 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview
             viewModel.ShortDescriptionSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.ShortDescription }, true, modelState, vm => vm.ShortDescription);
             viewModel.ClosingDateSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.ClosingDate }, true, modelState, vm => vm.ClosingDate);
             viewModel.WorkingWeekSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.WorkingWeek }, true, modelState, vm => vm.HoursPerWeek, vm => vm.WorkingWeekDescription);
+            viewModel.WorkingWeekHoursSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.WorkingWeekHours }, true, modelState, vm => vm.HoursPerWeek);
+            viewModel.WorkingWeekDescriptionSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.WorkingWeekDescription }, true, modelState, vm => vm.WorkingWeekDescription);
             viewModel.WageTextSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.Wage }, true, modelState, vm => vm.HasWage, vm => vm.WageText);
+            viewModel.WageAdditionalInfoSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.WageAdditionalInfo }, true, modelState, vm => vm.WageText);
             viewModel.ExpectedDurationSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.ExpectedDuration }, true, modelState, vm => vm.ExpectedDuration);
             viewModel.PossibleStartDateSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.PossibleStartDate }, true, modelState, vm => vm.PossibleStartDate);
             viewModel.TrainingLevelSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.TrainingLevel }, true, modelState, vm => vm.HasProgramme, vm => vm.TrainingLevel);
             viewModel.NumberOfPositionsSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.NumberOfPositions }, true, modelState, vm => vm.NumberOfPositions);
             viewModel.DescriptionsSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.VacancyDescription, FieldIdentifiers.TrainingDescription, FieldIdentifiers.OutcomeDescription }, true, modelState, vm => vm.VacancyDescription, vm => vm.TrainingDescription, vm => vm.OutcomeDescription);
+            viewModel.VacancyDescriptionSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.VacancyDescription }, true, modelState, vm => vm.VacancyDescription);
+            viewModel.TrainingDescriptionSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.TrainingDescription }, true, modelState, vm => vm.TrainingDescription);
             viewModel.FutureProspectsSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.OutcomeDescription }, true, modelState,  vm => vm.OutcomeDescription);
             viewModel.SkillsSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.Skills }, true, modelState, vm => vm.Skills);
             viewModel.QualificationsSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.Qualifications }, true, modelState, vm => vm.Qualifications);
@@ -199,31 +214,39 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview
             viewModel.ProviderContactSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.ProviderContact }, false, modelState, vm => vm.ProviderContactName, vm => vm.ProviderContactEmail, vm => vm.ProviderContactTelephone);
             viewModel.TrainingSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.Training }, true, modelState, vm => vm.TrainingType, vm => vm.TrainingTitle);
             viewModel.DisabilityConfidentSectionState = GetSectionState(viewModel, new[]{ FieldIdentifiers.DisabilityConfident}, true, modelState, vm => vm.IsDisabilityConfident);
+            viewModel.WorkExperienceProvidedSectionState = GetSectionState(viewModel, new[]{ FieldIdentifiers.WorkExperience}, true, modelState, vm => vm.WorkExperience);
+            viewModel.AdditionalQuestion1SectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.AdditionalQuestion1 }, true, modelState, vm => vm.AdditionalQuestion1SectionState);
+            viewModel.AdditionalQuestion2SectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.AdditionalQuestion2 }, true, modelState, vm => vm.AdditionalQuestion2SectionState);
         }
-        
+
+        public int AccountCount { get; set; }
         public int AccountLegalEntityCount { get ; set ; }
-        
+
         public VacancyTaskListSectionState TaskListSectionOneState => SetTaskListSectionState();
 
         public VacancyTaskListSectionState TaskListSectionTwoState => SetTaskListSectionTwoState();
         public VacancyTaskListSectionState TaskListSectionThreeState => SetTaskListSectionThreeState();
         public VacancyTaskListSectionState TaskListSectionFourState => SetTaskListSectionFourState();
+        public VacancyTaskListSectionState TaskListSectionFiveState => SetTaskListSectionFiveState();
         public string AccountId { get; set; }
-        
+        public bool CanShowVacancyClonedStatusHeader => !string.IsNullOrEmpty(VacancyClonedInfoMessage);
+        public string VacancyClonedInfoMessage { get; set; }
+
 
         private VacancyTaskListSectionState SetTaskListSectionState()
         {
             if (TitleSectionState == VacancyPreviewSectionState.Valid
-                && HasProgramme
+                && (VacancyType.GetValueOrDefault() == Vacancies.Client.Domain.Entities.VacancyType.Apprenticeship ? HasProgramme : HasRoute)
+                && !string.IsNullOrEmpty(Title)
                 && HasSelectedLegalEntity
                 && HasShortDescription
                 && HasTrainingDescription
-                && HasVacancyDescription)
+                && (VacancyType.GetValueOrDefault() == Vacancies.Client.Domain.Entities.VacancyType.Traineeship || HasVacancyDescription))
             {
                 return VacancyTaskListSectionState.Completed;
             }
             
-            if (TitleSectionState == VacancyPreviewSectionState.Valid)
+            if (HasSelectedLegalEntity)
             {
                 return VacancyTaskListSectionState.InProgress;    
             }
@@ -238,7 +261,8 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview
                 return VacancyTaskListSectionState.NotStarted;
             } 
             
-            if (WageTextSectionState == VacancyPreviewSectionState.Valid
+            if ((VacancyType.GetValueOrDefault() == Vacancies.Client.Domain.Entities.VacancyType.Traineeship || WageTextSectionState == VacancyPreviewSectionState.Valid)
+                && (VacancyType.GetValueOrDefault() == Vacancies.Client.Domain.Entities.VacancyType.Apprenticeship || WorkExperienceProvidedSectionState == VacancyPreviewSectionState.Valid)
                 && ExpectedDurationSectionState == VacancyPreviewSectionState.Valid
                 && ClosingDateSectionState == VacancyPreviewSectionState.Valid
                 && PossibleStartDateSectionState == VacancyPreviewSectionState.Valid
@@ -261,7 +285,9 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview
                 return VacancyTaskListSectionState.NotStarted;
             } 
             
-            if (HasSkills && HasQualifications && HasOutcomeDescription)
+            if (HasSkills 
+                && (VacancyType.GetValueOrDefault() == Vacancies.Client.Domain.Entities.VacancyType.Traineeship || HasQualifications) 
+                && HasOutcomeDescription)
             {
                 return VacancyTaskListSectionState.Completed;
             }
@@ -286,13 +312,30 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview
             }
             
             if (HasSelectedEmployerNameOption
-                && ApplicationMethodSectionState == VacancyPreviewSectionState.Valid
+                && (VacancyType.GetValueOrDefault() == Vacancies.Client.Domain.Entities.VacancyType.Traineeship || ApplicationMethodSectionState == VacancyPreviewSectionState.Valid)
                 && EmployerDescriptionSectionState == VacancyPreviewSectionState.Valid)
             {
                 return VacancyTaskListSectionState.Completed;
             }
             
             return VacancyTaskListSectionState.InProgress;
+        }
+        
+        private VacancyTaskListSectionState SetTaskListSectionFiveState()
+        {
+            if (TaskListSectionFourState != VacancyTaskListSectionState.Completed)
+            {
+                return VacancyTaskListSectionState.NotStarted;
+            }
+
+            if (HasSubmittedAdditionalQuestions
+                && AdditionalQuestion1SectionState == VacancyPreviewSectionState.Valid
+                && AdditionalQuestion2SectionState == VacancyPreviewSectionState.Valid)
+            {
+                return VacancyTaskListSectionState.Completed;
+            }
+
+            return VacancyTaskListSectionState.NotStarted;
         }
         
         private VacancyPreviewSectionState GetSectionState(VacancyPreviewViewModel vm, IEnumerable<string> reviewFieldIndicators, bool requiresAll, ModelStateDictionary modelState,  params Expression<Func<VacancyPreviewViewModel, object>>[] sectionProperties)

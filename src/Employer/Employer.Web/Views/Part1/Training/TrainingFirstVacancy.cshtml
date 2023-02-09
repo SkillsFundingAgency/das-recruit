@@ -6,13 +6,13 @@
 }
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-        <a asp-route="@RouteNames.Title_Get" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
+        <a asp-route="@RouteNames.Title_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link govuk-!-margin-top-0 govuk-!-margin-bottom-6">Back</a>
 
         <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState }' />
 
         <h1 class="govuk-heading-xl">Have you already found apprenticeship training?</h1>
         <p class="govuk-body">If you’re looking to take on apprentices, you’ll need to provide training through a registered provider. If you haven't found training yet, we can help you to find it.</p>
-        <form asp-route="@RouteNames.Training_First_Time_Post" novalidate>
+        <form asp-route="@RouteNames.Training_First_Time_Post" asp-all-route-data="@Model.RouteDictionary" novalidate>
             <fieldset class="govuk-fieldset">
                 <div class="govuk-radios" data-module="radios">
                     <div class="govuk-radios__item">
@@ -33,12 +33,7 @@
             <div class=" govuk-form-grou govuk-!-margin-top-8">
                 <input type="submit" value="Save and continue" esfa-automation="btn-continue" class="govuk-button" />
                 <div class="govuk-body">
-                    <esfaFeatureEnabled name="@FeatureNames.EmployerTaskList">
-                        <a asp-route="@RouteNames.Dashboard_Get" class="govuk-link" esfa-automation="cancel-link">Cancel</a>
-                    </esfaFeatureEnabled>
-                    <esfaFeatureDisabled name="@FeatureNames.EmployerTaskList">
-                        <a asp-route="@RouteNames.Vacancies_Get" class="govuk-link">Cancel</a>
-                    </esfaFeatureDisabled>
+                    <a asp-route="@RouteNames.Dashboard_Get" asp-route-employerAccountId="@Model.EmployerAccountId" class="govuk-link" esfa-automation="cancel-link">Cancel</a>
                 </div>
             </div>
         </form>

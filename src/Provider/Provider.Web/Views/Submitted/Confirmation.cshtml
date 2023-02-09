@@ -14,11 +14,9 @@
             <h1 asp-show="@Model.IsResubmit" class="govuk-panel__title">
                 Vacancy resubmitted for approval
             </h1>
-            <div class="govuk-panel__body">
-                <p asp-show="@Model.HasVacancyReference">
-                    The vacancy reference number is <br>
-                    <strong class="govuk-!-font-weight-bold">VAC@(Model.VacancyReference)</strong>
-                </p>
+            <div class="govuk-panel__body" asp-show="@Model.HasVacancyReference">
+                The vacancy reference number is <br>
+                <strong class="govuk-!-font-weight-bold">VAC@(Model.VacancyReference)</strong>
             </div>
         </div>
 
@@ -26,7 +24,14 @@
 
         <p class="govuk-body">We’ll check the vacancy and tell you within 24 hours if you need to make any edits. If the vacancy is not approved, we’ll let you know on the dashboard what changes you’ll need to make. <a asp-route="@RouteNames.ManageNotifications_Get" asp-route-ukprn="@Model.Ukprn" class="govuk-link">Manage your recruitment emails</a> if you'd rather get an email.</p>
         
-        <p class="govuk-body">When we approve your advert, it will appear on the <a href="@ExternalLinks.Value.FindAnApprenticeshipUrl" class="govuk-link" target="_blank">Find an apprenticeship service (opens in a new tab)</a>.</p>
+        @if (_serviceParameters.VacancyType == VacancyType.Apprenticeship)
+        {
+            <p class="govuk-body">When we approve your advert, it will appear on the <a href="@ExternalLinks.Value.FindAnApprenticeshipUrl" class="govuk-link" target="_blank">Find an apprenticeship service (opens in a new tab)</a>.</p>
+        } 
+        else 
+        {
+            <p class="govuk-body">When we approve your vacancy, it will appear on <a href="@ExternalLinks.Value.FindATraineeshipUrl" class="govuk-link" target="_blank">Find a traineeship (opens in a new tab)</a>.</p>
+        }
 
         <p class="govuk-body">
             <esfaFeatureEnabled name="@FeatureNames.ProviderTaskList">

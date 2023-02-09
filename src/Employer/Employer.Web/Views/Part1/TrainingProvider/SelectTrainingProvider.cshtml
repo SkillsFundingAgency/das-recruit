@@ -12,13 +12,8 @@
 }
 
 @section BackLink {
-    <esfaFeatureEnabled name="@FeatureNames.EmployerTaskList">
-        <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Training_Get" asp-route-wizard="@Model.PageInfo.IsWizard" esfa-automation="link-back" class="govuk-back-link">Back</a>
-        <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.EmployerCheckYourAnswersGet" asp-route-wizard="@Model.PageInfo.IsWizard" esfa-automation="link-back" class="govuk-back-link">Back</a>
-    </esfaFeatureEnabled>
-    <esfaFeatureDisabled name="@FeatureNames.EmployerTaskList">
-        <a asp-show="@Model.PageInfo.IsWizard" asp-route="@Model.BackLinkRoute" esfa-automation="link-back" class="govuk-back-link">Back</a>    
-    </esfaFeatureDisabled>
+    <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Training_Get" asp-all-route-data="@Model.RouteDictionary" asp-route-wizard="@Model.PageInfo.IsWizard" esfa-automation="link-back" class="govuk-back-link">Back</a>
+    <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.EmployerCheckYourAnswersGet" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Back</a>
 }
 
 <div class="govuk-grid-row">
@@ -29,7 +24,7 @@
             <span class="govuk-caption-l">@Model.Title</span>
             Enter the name of the training provider or UKPRN
         </h1>
-        <form asp-route="@RouteNames.TrainingProvider_Select_Post" asp-route-wizard="@Model.PageInfo.IsWizard" novalidate>
+        <form asp-route="@RouteNames.TrainingProvider_Select_Post" asp-all-route-data="@Model.RouteDictionary" asp-route-wizard="@Model.PageInfo.IsWizard" novalidate>
 
             <p class="govuk-body">
                 You'll need to use a registered training provider who offers
@@ -53,7 +48,7 @@
                 <span esfa-validation-message-for="TrainingProviderSearch" class="govuk-error-message"></span>
                 <input asp-for="TrainingProviderSearch" type="text" class="govuk-input app-provider-autocomplete" />
                 <p class="govuk-body govuk-!-margin-top-1">
-                    <a asp-route="@RouteNames.TrainingProvider_Select_Get" asp-route-clear="true" asp-route-wizard="@Model.PageInfo.IsWizard" class="govuk-link govuk-link--no-visited-state">Clear search</a>
+                    <a asp-route="@RouteNames.TrainingProvider_Select_Get" asp-all-route-data="@Model.RouteDictionary" asp-route-clear="true" asp-route-wizard="@Model.PageInfo.IsWizard" class="govuk-link govuk-link--no-visited-state">Clear search</a>
                 </p>
             </div>
      
@@ -72,20 +67,8 @@
                 <input type="hidden" name="@nameof(SelectTrainingProviderEditModel.SelectionType)" id="selection-type" value="@TrainingProviderSelectionType.Ukprn" />
                 <input type="submit" value="Save and continue" esfa-automation="btn-continue" class="govuk-button" />
                 <div class="govuk-body">
-                    <span asp-show="@Model.ReferredFromSavedFavourites">
-                        <a href="@_externalLinks.Value.EmployerFavouritesUrl" class="govuk-link" esfa-automation="cancel-link">Cancel</a>
-                        @*<a asp-show="@Model.PageInfo.IsNotWizard" href="@_externalLinksHelper.EmployerFavouritesAccounts" asp-fragment="@Anchors.TrainingProviderSection" class="govuk-link" esfa-automation="cancel-link">Cancel</a>*@
-                    </span>
-                    <span asp-hide="@Model.ReferredFromSavedFavourites">
-                        <esfaFeatureEnabled name="@FeatureNames.EmployerTaskList">
-                            <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Dashboard_Get" class="govuk-link govuk-link--no-visited-state" esfa-automation="cancel-link">Cancel</a>
-                            <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.EmployerCheckYourAnswersGet" class="govuk-link govuk-link--no-visited-state" esfa-automation="cancel-link">Cancel</a>
-                        </esfaFeatureEnabled>
-                        <esfaFeatureDisabled name="@FeatureNames.EmployerTaskList">
-                            <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Vacancies_Get" class="govuk-link govuk-link--no-visited-state" esfa-automation="cancel-link">Cancel</a>
-                            <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.Vacancy_Preview_Get" asp-fragment="@Anchors.TrainingProviderSection" class="govuk-link govuk-link--no-visited-state" esfa-automation="cancel-link">Cancel</a>
-                        </esfaFeatureDisabled>
-                    </span>
+                    <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Dashboard_Get" asp-route-employerAccountId="@Model.EmployerAccountId" class="govuk-link govuk-link--no-visited-state" esfa-automation="cancel-link">Cancel</a>
+                    <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.EmployerCheckYourAnswersGet" asp-all-route-data="@Model.RouteDictionary" class="govuk-link govuk-link--no-visited-state" esfa-automation="cancel-link">Cancel</a>
                 </div>
             </div>
         </form>

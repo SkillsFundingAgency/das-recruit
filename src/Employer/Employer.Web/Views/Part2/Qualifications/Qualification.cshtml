@@ -9,10 +9,7 @@
 }
 
 @section BackLink {
-    <esfaFeatureEnabled name="@FeatureNames.EmployerTaskList">
-        <a asp-show="@(!Model.IsTaskListCompleted)" asp-route="@RouteNames.Qualifications_Get" esfa-automation="link-back" class="govuk-back-link">Back</a>
-        <a asp-show="@Model.IsTaskListCompleted" asp-route="@RouteNames.EmployerCheckYourAnswersGet" esfa-automation="link-back" class="govuk-back-link">Back</a>
-    </esfaFeatureEnabled>
+    <a asp-route="@Model.BackRoute" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Back</a>
 }
         
 <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }' />
@@ -27,7 +24,7 @@
 </p>
 
 
-<form method="post">
+<form asp-route="@Model.PostRoute" asp-all-route-data="@Model.RouteDictionary" asp-route-index="@Model.Index" method="post">
     <div esfa-validation-marker-for="QualificationType" class="govuk-form-group">
         <label asp-for="QualificationType" class="govuk-label" id="@Anchors.QualificationsHeading">Add qualifications applicants should have</label>
         <span esfa-validation-message-for="QualificationType" class="govuk-error-message"></span>
@@ -80,7 +77,7 @@
 
     <div class="govuk-button-group">
         <button type="submit" esfa-automation="btn-continue" class="govuk-button save-button">Save and continue</button>
-        <a asp-route="@Model.CancelRoute" esfa-automation="link-cancel" class="govuk-link govuk-link--no-visited-state">Cancel</a>
+        <a asp-route="@Model.CancelRoute" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-cancel" class="govuk-link govuk-link--no-visited-state">Cancel</a>
     </div>
 
 </form>

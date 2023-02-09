@@ -1,37 +1,42 @@
+@using Esfa.Recruit.Vacancies.Client.Application.Configuration
+@using Esfa.Recruit.Vacancies.Client.Domain.Entities
 @model Esfa.Recruit.Shared.Web.ViewModels.VacancyAnalyticsSummaryViewModel
-<div class="govuk-grid-column-two-thirds">
-    <div class="govuk-grid-row">
-        <div class="analytics--block govuk-grid-column-one-half">
-            <h3 class="analytics--header govuk-heading-s">Appeared in search</h3>
-            <div class="analytics--summary">
-                <div class="analytics--numeric">@Model.NoOfTimesAppearedInSearch<span class="govuk-visually-hidden">times</span></div>
-                <p asp-show="@Model.HasNoOfTimesAppearedInSearchIncreasedOverLastSevenDays"><span class="govuk-!-font-weight-bold">+@Model.NoOfTimesAppearedInSearchOverLastSevenDays</span> increase <span class="govuk-visually-hidden"> in the last 7 days</span></p>
-                <p asp-hide="@Model.HasNoOfTimesAppearedInSearchIncreasedOverLastSevenDays"><span class="govuk-!-font-weight-bold">No</span> increase</p>
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-one-third">
+        <div class="app-analytics">
+            <h3 class="govuk-heading-s app-analytics__heading">Appeared in search</h3>
+            <div class="govuk-body govuk-!-font-size-48 app-analytics__data">@Model.NoOfTimesAppearedInSearch<span class="govuk-visually-hidden">times</span></div>
+            <div class="govuk-body app-analytics__summary" asp-show="@Model.HasNoOfTimesAppearedInSearchIncreasedOverLastSevenDays"><span class="govuk-!-font-weight-bold">+@Model.NoOfTimesAppearedInSearchOverLastSevenDays</span> increase <span class="govuk-visually-hidden"> in the last 7 days</span></div>
+            <div class="govuk-body app-analytics__summary" asp-hide="@Model.HasNoOfTimesAppearedInSearchIncreasedOverLastSevenDays"><span class="govuk-!-font-weight-bold">No</span> increase</div>
+        </div>
+    </div>
+    <div class="govuk-grid-column-one-third">
+        <div class="app-analytics">
+            <h3 class="govuk-heading-s app-analytics__heading">Total times viewed</h3>
+            <div class="govuk-body govuk-!-font-size-48 app-analytics__data">@Model.NoOfTimesViewed</div>
+            <div class="govuk-body app-analytics__summary" asp-show="@Model.HasNoOfTimesViewedIncreasedOverLastSevenDays"><span class="govuk-!-font-weight-bold">+@Model.NoOfTimesViewedOverLastSevenDays</span> increase <span class="govuk-visually-hidden"> in the last 7 days</span></div>
+            <div class="govuk-body app-analytics__summary" asp-hide="@Model.HasNoOfTimesViewedIncreasedOverLastSevenDays"><span class="govuk-!-font-weight-bold">No</span> increase</div>
+        </div>
+    </div>
+</div>
+<div class="govuk-grid-row">
+    @if (_serviceParameters.VacancyType.GetValueOrDefault() == VacancyType.Apprenticeship)
+    {
+        <div class="govuk-grid-column-one-third">
+            <div class="app-analytics">
+                <h3 class="govuk-heading-s app-analytics__heading">Total applications started</h3>
+                <div class="govuk-body govuk-!-font-size-48 app-analytics__data">@Model.NoOfApplicationsStarted</div>
+                <div class="govuk-body app-analytics__summary" asp-show="@Model.HasNoOfApplicationsStartedIncreasedOverLastSevenDays"><span class="govuk-!-font-weight-bold">+@Model.NoOfApplicationsStartedOverLastSevenDays</span> increase <span class="govuk-visually-hidden"> in the last 7 days</span></div>
+                <div class="govuk-body app-analytics__summary" asp-hide="@Model.HasNoOfApplicationsStartedIncreasedOverLastSevenDays"><span class="govuk-!-font-weight-bold">No</span> increase</div>
             </div>
         </div>
-        <div class="analytics--block govuk-grid-column-one-half">
-            <h3 class="analytics--header govuk-heading-s">Total times viewed</h3>
-            <div class="analytics--summary">
-                <div class="analytics--numeric">@Model.NoOfTimesViewed</div>
-                <p asp-show="@Model.HasNoOfTimesViewedIncreasedOverLastSevenDays"><span class="govuk-!-font-weight-bold">+@Model.NoOfTimesViewedOverLastSevenDays</span> increase <span class="govuk-visually-hidden"> in the last 7 days</span></p>
-                <p asp-hide="@Model.HasNoOfTimesViewedIncreasedOverLastSevenDays"><span class="govuk-!-font-weight-bold">No</span> increase</p>
-            </div>
-        </div>
-        <div class="analytics--block govuk-grid-column-one-half">
-            <h3 class="analytics--header govuk-heading-s">Total applications started</h3>
-            <div class="analytics--summary">
-                <div class="analytics--numeric">@Model.NoOfApplicationsStarted</div>
-                <p asp-show="@Model.HasNoOfApplicationsStartedIncreasedOverLastSevenDays"><span class="govuk-!-font-weight-bold">+@Model.NoOfApplicationsStartedOverLastSevenDays</span> increase <span class="govuk-visually-hidden"> in the last 7 days</span></p>
-                <p asp-hide="@Model.HasNoOfApplicationsStartedIncreasedOverLastSevenDays"><span class="govuk-!-font-weight-bold">No</span> increase</p>
-            </div>
-        </div>
-        <div class="analytics--block govuk-grid-column-one-half">
-            <h3 class="analytics--header govuk-heading-s">Total applications submitted</h3>
-            <div class="analytics--summary">
-                <div class="analytics--numeric">@Model.NoOfApplicationsSubmitted</div>
-                <p asp-show="@Model.HasNoOfApplicationsSubmittedIncreasedOverLastSevenDays"><span class="govuk-!-font-weight-bold">+@Model.NoOfApplicationsSubmittedOverLastSevenDays</span> increase <span class="govuk-visually-hidden"> in the last 7 days</span></p>
-                <p asp-hide="@Model.HasNoOfApplicationsSubmittedIncreasedOverLastSevenDays"><span class="govuk-!-font-weight-bold">No</span> increase</p>
-            </div>
+    }
+    <div class="govuk-grid-column-one-third">
+        <div class="app-analytics">
+            <h3 class="govuk-heading-s app-analytics__heading">Total applications submitted</h3>
+            <div class="govuk-body govuk-!-font-size-48 app-analytics__data">@Model.NoOfApplicationsSubmitted</div>
+            <div class="govuk-body app-analytics__summary" asp-show="@Model.HasNoOfApplicationsSubmittedIncreasedOverLastSevenDays"><span class="govuk-!-font-weight-bold">+@Model.NoOfApplicationsSubmittedOverLastSevenDays</span> increase <span class="govuk-visually-hidden"> in the last 7 days</span></div>
+            <div class="govuk-body app-analytics__summary" asp-hide="@Model.HasNoOfApplicationsSubmittedIncreasedOverLastSevenDays"><span class="govuk-!-font-weight-bold">No</span> increase</div>
         </div>
     </div>
 </div>

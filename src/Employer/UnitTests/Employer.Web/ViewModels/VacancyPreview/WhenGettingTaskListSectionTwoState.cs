@@ -163,12 +163,13 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.VacancyPreview
         {
             return new Vacancy
             {
+                Id = new Guid(),
+                EmployerAccountId = "employerAccountId",
                 Title = "title",
                 ProgrammeId = "programmeId",
                 Description = "description",
                 TrainingDescription = "trainingDescription",
                 ShortDescription = "shortDescription",
-                OutcomeDescription = "outcomeDescription",
                 TrainingProvider = new Vacancies.Client.Domain.Entities.TrainingProvider
                 {
                     Address = new Address(),

@@ -35,10 +35,11 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             _utility = utility;
         }
 
-        public TitleViewModel GetTitleViewModel()
+        public TitleViewModel GetTitleViewModel(string employerAccountId)
         {
             var vm = new TitleViewModel
             {
+                EmployerAccountId = employerAccountId,
                 PageInfo = new PartOnePageInfoViewModel()
             };
             return vm;
@@ -46,15 +47,16 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 
         public async Task<TitleViewModel> GetTitleViewModelAsync(VacancyRouteModel vrm)
         {
-            var dashboard = await _client.GetDashboardAsync(vrm.EmployerAccountId);
+            var vacancyCount = await _client.GetVacancyCount(vrm.EmployerAccountId, VacancyType.Apprenticeship, null, null);
             
             var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.Title_Get);
             var vm = new TitleViewModel
             {
                 VacancyId = vacancy.Id,
+                EmployerAccountId = vrm.EmployerAccountId,
                 Title = vacancy.Title,
                 PageInfo = _utility.GetPartOnePageInfo(vacancy),
-                HasCloneableVacancies = dashboard.CloneableVacancies.Any()
+                HasCloneableVacancies = vacancyCount > 0
             };
             
             if (vacancy.Status == VacancyStatus.Referred)
@@ -77,7 +79,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             }
             else
             {
-                vm = GetTitleViewModel();
+                vm = GetTitleViewModel(m.EmployerAccountId);
             }
 
             vm.Title = m.Title;

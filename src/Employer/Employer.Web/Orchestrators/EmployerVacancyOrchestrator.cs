@@ -1,10 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators
 {
@@ -24,8 +22,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 
         public async Task<bool> HasNoVacancies(string employerAccountId)
         {
-            var dashboard = await _employerVacancyClient.GetDashboardAsync(employerAccountId, createIfNonExistent: true);
-            return !dashboard.Vacancies.Any();
+            var vacancyCount = await _employerVacancyClient.GetVacancyCount(employerAccountId, VacancyType.Apprenticeship, null, null);
+            return vacancyCount == 0;
         }
 
         public async Task<TrainingProviderSummary> GetProviderUkprn(string ukprn)

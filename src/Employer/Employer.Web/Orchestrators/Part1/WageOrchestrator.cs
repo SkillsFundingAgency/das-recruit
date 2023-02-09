@@ -43,6 +43,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             
             var vm = new WageViewModel
             {
+                VacancyId = vacancy.Id,
+                EmployerAccountId = vacancy.EmployerAccountId,
                 WageType = vacancy.Wage?.WageType,
                 FixedWageYearlyAmount = vacancy.Wage?.FixedWageYearlyAmount?.AsMoney(),
                 WageAdditionalInformation = vacancy.Wage?.WageAdditionalInformation,

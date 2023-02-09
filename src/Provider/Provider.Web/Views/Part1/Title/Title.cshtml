@@ -30,10 +30,20 @@
             <input type="hidden" name="EmployerAccountId" value="@Model.EmployerAccountId" />
             <div class="govuk-character-count" data-module="govuk-character-count" data-maxlength="100">
                 <div esfa-validation-marker-for="Title" class="govuk-form-group">
-                    <p class="govuk-body">Use a title that relates to the apprenticeship training for this vacancy, this will help it get found in the Find an apprenticeship search.</p>
-                    <span class="govuk-hint">Must include the word 'apprentice' or 'apprenticeship'</span>
+                    @if (_serviceParameters.VacancyType == VacancyType.Apprenticeship)
+                    {
+                        <p class="govuk-body">Use a title that relates to the apprenticeship training for this vacancy, this will help it get found in the Find an apprenticeship search.</p>
+                        <span class="govuk-hint">Must include the word 'apprentice' or 'apprenticeship'</span>
+                    }
+                    else
+                    {
+                        <p class="govuk-body">Use a title that relates to the traineeship, this will help it get found in the Find a traineeship search.</p>
+                        <span class="govuk-hint">Must include the word 'trainee' or 'traineeship'</span>
+                    }
+                    
+                    
                     <span esfa-validation-message-for="Title" class="govuk-error-message"></span>
-                    <input asp-for="Title" class="govuk-input govuk-js-character-count" type="text"  aria-describedby="Title-info Title-hint" />
+                    <input asp-for="Title" class="govuk-input govuk-js-character-count" type="text" aria-describedby="Title-info Title-hint"/>
                     <div id="Title-info" class="govuk-hint govuk-character-count__message" aria-live="polite">
                         You can enter up to 100 characters
                     </div>
@@ -41,13 +51,8 @@
             </div>
             <div class="govuk-button-group">
                 <button type="submit" class="govuk-button save-button">@Model.PageInfo.SubmitButtonText</button>
-                <esfaFeatureEnabled name="@FeatureNames.ProviderTaskList">
-                    <a asp-route="@RouteNames.Dashboard_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-cancel" class="govuk-link govuk-link--no-visited-state">Cancel</a>
-                </esfaFeatureEnabled>
-                <esfaFeatureDisabled name="@FeatureNames.ProviderTaskList">
-                    <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Vacancies_Get" asp-all-route-data="@Model.RouteDictionary" class="govuk-link govuk-link--no-visited-state">Cancel</a>
-                    <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.Vacancy_Preview_Get" asp-all-route-data="@Model.RouteDictionary" asp-fragment="@Anchors.TitleSection" class="govuk-link govuk-link--no-visited-state">Cancel</a>
-                </esfaFeatureDisabled>
+                <a asp-route="@RouteNames.Dashboard_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-cancel" class="govuk-link govuk-link--no-visited-state">Cancel</a>
+                
             </div>
             
         </form>

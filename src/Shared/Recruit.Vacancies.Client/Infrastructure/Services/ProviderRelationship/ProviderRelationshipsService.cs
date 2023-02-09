@@ -7,12 +7,10 @@ using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Domain.Models;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount;
-using Esfa.Recruit.Vacancies.Client.Domain.Models;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
-using SFA.DAS.EAS.Account.Api.Client;
 using SFA.DAS.Http;
 using SFA.DAS.Http.TokenGenerators;
 
@@ -39,13 +37,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelation
 
             return await GetEmployerInfosAsync(providerPermissions);
         }
-
-        public async Task<IEnumerable<EmployerInfo>> GetLegalEntitiesForProviderAsync(string accountHashedId, OperationType operation)
-        {
-            var providerPermissions = await GetProviderPermissionsAsync(accountHashedId, operation);
-            
-            return await GetEmployerInfosAsync(providerPermissions);
-        }      
 
         public async Task<bool> HasProviderGotEmployersPermissionAsync(long ukprn, string accountHashedId, string accountLegalEntityPublicHashedId, OperationType operation)
         {
@@ -98,11 +89,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelation
                 }
                 catch (HttpRequestException ex)
                 {
-                    _logger.LogError(ex, "Error trying to retrieve legal entities.", null);
+                    _logger.LogError(ex, "Error trying to retrieve legal entities.");
                 }
                 catch (JsonReaderException ex)
                 {
-                    _logger.LogError(ex, $"Couldn't deserialise {nameof(ProviderPermissions)}.", null);
+                    _logger.LogError(ex, $"Couldn't deserialise {nameof(ProviderPermissions)}.");
                 }
 
                 return new ProviderPermissions { AccountProviderLegalEntities = Enumerable.Empty<LegalEntityDto>() };
@@ -130,11 +121,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelation
                 }
                 catch (HttpRequestException ex)
                 {
-                    _logger.LogError(ex, "Error trying to retrieve legal entities.", null);
+                    _logger.LogError(ex, "Error trying to retrieve legal entities.");
                 }
                 catch (JsonReaderException ex)
                 {
-                    _logger.LogError(ex, $"Couldn't deserialise {nameof(ProviderPermissions)}.", null);
+                    _logger.LogError(ex, $"Couldn't deserialise {nameof(ProviderPermissions)}.");
                 }
 
                 return new ProviderPermissions { AccountProviderLegalEntities = Enumerable.Empty<LegalEntityDto>() };
@@ -155,6 +146,20 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelation
                     throw new Exception($"Failed to revoke provider {ukprn} permission for account legal entity {accountLegalEntityPublicHashedId} response code: {response.StatusCode}");
                 }
             }
+        }
+
+        public async Task<bool> CheckProviderHasPermissions(long ukprn, OperationType operationType)
+        {
+            var result = await GetProviderPermissionsAsync(ukprn, operationType);
+
+            return result.AccountProviderLegalEntities.Any();
+        }
+
+        public async Task<bool> CheckEmployerHasPermissions(string accountHashedId, OperationType operationType)
+        {
+            var result = await GetProviderPermissionsAsync(accountHashedId, operationType);
+
+            return result.AccountProviderLegalEntities.Any();
         }
 
 
@@ -204,7 +209,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelation
 
             var httpClient = new HttpClientBuilder()
                 .WithDefaultHeaders()
-                .WithBearerAuthorisationHeader(new AzureADBearerTokenGenerator(configuration))
+                .WithBearerAuthorisationHeader(new AzureActiveDirectoryBearerTokenGenerator(configuration))
                 .Build();
 
             httpClient.BaseAddress = new Uri(configuration.ApiBaseUrl);

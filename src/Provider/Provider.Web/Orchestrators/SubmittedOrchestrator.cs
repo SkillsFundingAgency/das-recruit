@@ -1,5 +1,4 @@
-﻿using Esfa.Recruit.Provider.Web.ViewModels;
-using Esfa.Recruit.Provider.Web.ViewModels.Submitted;
+﻿using Esfa.Recruit.Provider.Web.ViewModels.Submitted;
 using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using System.Threading.Tasks;

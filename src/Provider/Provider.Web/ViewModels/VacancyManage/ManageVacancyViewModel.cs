@@ -24,6 +24,7 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.VacancyManage
         public bool CanShowEditVacancyLink { get; internal set; }
         public bool CanShowCloseVacancyLink { get; internal set; }
         public bool CanShowCloneVacancyLink { get; internal set; }
+        public bool CanShowDeleteVacancyLink { get; internal set; }
         public string VacancyClosedInfoMessage { get; internal set; }
         public bool HasVacancyClosedInfoMessage => !string.IsNullOrEmpty(VacancyClosedInfoMessage);
         public string ApplicationReviewStatusHeaderInfoMessage { get; internal set; }
@@ -37,5 +38,6 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.VacancyManage
         public bool IsVacancyClosed => Status == VacancyStatus.Closed;
         public string WithdrawnDate { get; internal set; }
         public bool IsWithdrawn => !string.IsNullOrEmpty(WithdrawnDate);
+        public bool IsApplyThroughFatVacancy { get; internal set; }
     }
 }

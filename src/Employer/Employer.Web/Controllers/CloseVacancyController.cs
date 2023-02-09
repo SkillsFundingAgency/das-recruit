@@ -31,20 +31,19 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         {
             if (!ModelState.IsValid)
             {
-                var vrm = new VacancyRouteModel { VacancyId = m.VacancyId, EmployerAccountId = m.EmployerAccountId };
-                return await GetCloseVacancyConfirmationView(vrm);
+                return await GetCloseVacancyConfirmationView(m);
             }
 
             if (!m.ConfirmClose.Value)
             {
-                return RedirectToRoute(RouteNames.VacancyManage_Get);
+                return RedirectToRoute(RouteNames.VacancyManage_Get, new {m.VacancyId, m.EmployerAccountId});
             }
 
             var response = await _orchestrator.CloseVacancyAsync(m, User.ToVacancyUser());
 
-            TempData.Add(TempDataKeys.VacancyClosedMessage, string.Format(InfoMessages.VacancyClosed, response.Data.VacancyReference, response.Data.Title));
+            TempData.Add(TempDataKeys.VacancyClosedMessage, string.Format(InfoMessages.AdvertClosed, response.Data.VacancyReference, response.Data.Title));
 
-            return RedirectToRoute(RouteNames.VacancyManage_Get);
+            return RedirectToRoute(RouteNames.VacancyManage_Get, new {m.VacancyId, m.EmployerAccountId});
         }
 
         private async Task<IActionResult> GetCloseVacancyConfirmationView(VacancyRouteModel vrm)

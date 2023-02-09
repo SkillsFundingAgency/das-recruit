@@ -15,12 +15,10 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part2
     public class VacancyDescriptionController : Controller
     {
         private readonly VacancyDescriptionOrchestrator _orchestrator;
-        private readonly IFeature _feature;
 
-        public VacancyDescriptionController(VacancyDescriptionOrchestrator orchestrator, IFeature feature)
+        public VacancyDescriptionController(VacancyDescriptionOrchestrator orchestrator)
         {
             _orchestrator = orchestrator;
-            _feature = feature;
         }
 
         [HttpGet("vacancy-description", Name = RouteNames.VacancyDescription_Index_Get)]
@@ -45,17 +43,12 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part2
             {
                 return View(vm);
             }
-
-            if (_feature.IsFeatureEnabled(FeatureNames.EmployerTaskList))
-            {
-                if (vm.IsTaskListCompleted)
-                {
-                    return RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet);
-                }
-                return RedirectToRoute(RouteNames.EmployerTaskListGet);
-            }
             
-            return RedirectToRoute(RouteNames.Vacancy_Preview_Get);
+            if (vm.IsTaskListCompleted)
+            {
+                return RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet, new {m.VacancyId, m.EmployerAccountId});
+            }
+            return RedirectToRoute(RouteNames.EmployerTaskListGet, new {m.VacancyId, m.EmployerAccountId});
         }
     }
 }

@@ -54,9 +54,6 @@
         public const string Location_Post = "Location_Post";
         public const string Location_Cancel = "Location_Cancel";
 
-        public const string CreateVacancyOptions_Get = "CreateVacancyOptions_Get";
-        public const string CreateVacancyOptions_Post = "CreateVacancyOptions_Post";
-
         public const string CreateVacancy_Get = "CreateVacancy_Get";
         public const string CreateVacancy_Post = "CreateVacancy_Post";
 
@@ -112,8 +109,6 @@
         public const string VacancyDescription_Index_Get = "VacancyDescription_Index_Get";
         public const string VacancyDescription_Index_Post = "VacancyDescription_Index_Post";
 
-        public const string Part1Complete_Get = "Part1Complete_Get";
-
         public const string Skills_Get = "Skills_Get";
         public const string Skills_Post = "Skills_Post";
 
@@ -124,6 +119,12 @@
         public const string Qualification_Edit_Post = "Qualification_Edit_Post";
         public const string Qualification_Delete_Post = "Qualification_Delete_Post";
 
+        public const string FutureProspects_Get = nameof(FutureProspects_Get);
+        public const string FutureProspects_Post = nameof(FutureProspects_Post);
+        
+        public const string AdditionalQuestions_Get = nameof(AdditionalQuestions_Get);
+        public const string AdditionalQuestions_Post = nameof(AdditionalQuestions_Post);
+        
         public const string ApplicationReview_Get = "ApplicationReview_Get";
         public const string ApplicationReview_Post = "ApplicationReview_Post";
         public const string ApplicationReviewConfirmation_Get = "ApplicationReviewConfirmation_Get";
@@ -147,7 +148,6 @@
         public const string NotificationsUpdatedAcknowledgement_Get = "NotificationsUpdatedAcknowledgement_Get";
         public const string NotificationUnsubscribedAcknowledgement_Get = "NotificationUnsubscribedAcknowledgement_Get";
 
-        public const string EmployerFavourites = "EmployerFavourites";
         public const string YourTrainingProviderPermission = "YourTrainingProviderPermission";
 
         public const string ApproveJobAdvert_Get = "ApproveJobAdvert_Get";
@@ -160,6 +160,8 @@
         public const string EmployerTaskListGet = "employer-tasklist-get";
         public const string EmployerTaskListCreateGet = "employer-tasklist-create-get";
         public const string EmployerCheckYourAnswersGet = "employer-check-your-answers-get";
+        public const string EmployerCheckYourAnswersPost = "employer-check-your-answers-post";
+        public const string EmployerCheckYourAnswersSubmitPost = "employer-check-your-answers-submit-post";
         public const string VacancyAdvertPreview = "employer-advert-preview";
         public const string CreateVacancyStart = "employer-vacancy-start";
     }

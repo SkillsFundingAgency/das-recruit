@@ -4,12 +4,13 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using StackExchange.Redis;
+using Microsoft.Extensions.Hosting;
 
 namespace Esfa.Recruit.Shared.Web.Extensions
 {
     public static class DataProtectionStartupExtensions
     {
-        public static IServiceCollection AddDataProtection(this IServiceCollection services, IConfiguration configuration, IHostingEnvironment environment, string applicationName)
+        public static IServiceCollection AddDataProtection(this IServiceCollection services, IConfiguration configuration, IWebHostEnvironment environment, string applicationName)
         {
             if (!environment.IsDevelopment())
             {

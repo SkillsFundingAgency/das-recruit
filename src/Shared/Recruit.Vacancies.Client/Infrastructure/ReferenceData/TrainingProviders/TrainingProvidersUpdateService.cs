@@ -6,7 +6,6 @@ using Esfa.Recruit.Vacancies.Client.Application.Services.ReferenceData;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Requests;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Responses;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.ApprenticeshipProgrammes;
 using Microsoft.Extensions.Logging;
 using Polly;
 

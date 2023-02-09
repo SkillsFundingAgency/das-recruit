@@ -16,5 +16,12 @@ namespace Esfa.Recruit.Qa.Web.ViewModels
         public string ReviewerComment { get; set; }
 
         public bool IsRefer => SelectedFieldIdentifiers.Any() || SelectedAutomatedQaResults.Any();
+        
+        public string ShortDescription { get; set; }
+        public string WorkingWeekDescription { get; set; }
+        public string VacancyDescription { get; set; }
+        public string TrainingDescription { get; set; }
+        public string OutcomeDescription { get; set; }
+        public string WorkExperience { get; set; }
     }
 }

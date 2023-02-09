@@ -35,10 +35,9 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             if (provider == null && programme == null)
             {
                 if (await _employerVacancyOrchestrator.HasNoVacancies(employerAccountId))
-                    return RedirectToRoute(RouteNames.Dashboard_Get);
-                return RedirectToRoute(RouteNames.CreateVacancyOptions_Get);
+                    return RedirectToRoute(RouteNames.Dashboard_Get, new {employerAccountId});
             }
-            return RedirectToRoute(RouteNames.CreateVacancy_Get);
+            return RedirectToRoute(RouteNames.CreateVacancyStart, new {employerAccountId});
         }
 
         private void ManageTempData(TrainingProviderSummary provider, IApprenticeshipProgramme programme)
@@ -59,10 +58,10 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         }
 
         [HttpGet("employer-manage-vacancy", Name = RouteNames.EmployerManageVacancy_Get)]
-        public IActionResult ManageVacancy()
+        public IActionResult ManageVacancy([FromRoute] string employerAccountId)
         {
             TempData[TempDataKeys.ReferredFromMa] = true;
-            return RedirectToRoute(RouteNames.Vacancies_Get);
+            return RedirectToRoute(RouteNames.Vacancies_Get, new {employerAccountId});
         }        
     }
 }

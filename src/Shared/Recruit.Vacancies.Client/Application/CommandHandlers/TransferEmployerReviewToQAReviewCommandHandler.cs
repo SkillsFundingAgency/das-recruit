@@ -9,7 +9,6 @@ using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Microsoft.Extensions.Logging;
-using Esfa.Recruit.Vacancies.Client.Application.Services;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 {

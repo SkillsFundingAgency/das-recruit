@@ -3,6 +3,7 @@ using System.Linq;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Shared.Web.ViewModels.ApplicationReview;
+using ApplicationReviewViewModel = Esfa.Recruit.Employer.Web.ViewModels.ApplicationReview.ApplicationReviewViewModel;
 
 namespace Esfa.Recruit.Employer.Web.Mappings.Extensions
 {
@@ -35,6 +36,10 @@ namespace Esfa.Recruit.Employer.Web.Mappings.Extensions
                 HobbiesAndInterests = r.Application.HobbiesAndInterests,
                 Improvements = r.Application.Improvements,
                 Phone = r.Application.Phone,
+                AdditionalAnswer1= r.Application.AdditionalQuestion1,
+                AdditionalAnswer2 = r.Application.AdditionalQuestion2,
+                AdditionalQuestion1 = r.AdditionalQuestion1,
+                AdditionalQuestion2 = r.AdditionalQuestion2,
                 Qualifications = r.Application.Qualifications?.Select(q =>
                     new QualificationViewModel
                     {

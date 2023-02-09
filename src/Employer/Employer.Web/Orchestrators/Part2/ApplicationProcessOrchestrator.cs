@@ -41,6 +41,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
 
             var vm = new ApplicationProcessViewModel
             {
+                VacancyId = vacancy.Id,
+                EmployerAccountId = vacancy.EmployerAccountId,
                 Title = vacancy.Title,
                 FindAnApprenticeshipUrl = _externalLinks.FindAnApprenticeshipUrl,
                 ApplicationMethod = vacancy.ApplicationMethod,
@@ -54,7 +56,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
                     ReviewFieldMappingLookups.GetApplicationProcessFieldIndicators());
             }
             
-            vm.IsTaskListCompleted = _utility.TaskListCompleted(vacancy);
+            vm.IsTaskListCompleted = _utility.IsTaskListCompleted(vacancy);
 
             return vm;
         }

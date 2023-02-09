@@ -10,7 +10,6 @@ using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.QA;
 using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
-using System.Collections.Generic;
 
 namespace Esfa.Recruit.Qa.Web.Orchestrators
 {
@@ -97,7 +96,8 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
             {
                 TotalVacanciesForReview = dashboard.TotalVacanciesForReview,
                 TotalVacanciesBrokenSla = dashboard.TotalVacanciesBrokenSla,
-                TotalVacanciesResubmitted = dashboard.TotalVacanciesResubmitted
+                TotalVacanciesResubmitted = dashboard.TotalVacanciesResubmitted,
+                TotalVacanciesSubmittedTwelveToTwentyFourHours = dashboard.TotalVacanciesSubmittedTwelveTwentyFourHours
             };
 
             return vm;

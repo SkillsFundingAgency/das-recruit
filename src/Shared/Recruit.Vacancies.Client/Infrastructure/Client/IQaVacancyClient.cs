@@ -13,6 +13,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         Task<QaDashboard> GetDashboardAsync();
         Task<Vacancy> GetVacancyAsync(long vacancyReference);
         Task<IApprenticeshipProgramme> GetApprenticeshipProgrammeAsync(string programmeId);
+        Task<IApprenticeshipRoute> GetRoute(int? routeId);
         Task<VacancyReview> GetVacancyReviewAsync(Guid reviewId);
         Task ReferVacancyReviewAsync(Guid reviewId, string manualQaComment, List<ManualQaFieldIndicator> manualQaFieldIndicators, List<Guid> automatedQaRuleOutcomeIds);
         Task<Qualifications> GetCandidateQualificationsAsync();
@@ -32,7 +33,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         Task<Guid> CreateApplicationsReportAsync(DateTime fromDate, DateTime toDate, VacancyUser user, string reportName);
         Task<List<ReportSummary>> GetReportsAsync();
         Task<Report> GetReportAsync(Guid reportId);
-        void WriteReportAsCsv(Stream stream, Report report);
+        Task  WriteReportAsCsv(Stream stream, Report report);
         Task IncrementReportDownloadCountAsync(Guid reportId);
+        Task UpdateDraftVacancyAsync(Vacancy vacancy, VacancyUser user);
     }
 }

@@ -55,6 +55,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 
             var vm = new EmployerViewModel
             {
+                VacancyId = vrm.VacancyId,
+                EmployerAccountId = vrm.EmployerAccountId,
                 TotalNumberOfLegalEntities = legalEntities.Count(),
                 PageInfo = _utility.GetPartOnePageInfo(vacancy),
                 SearchTerm = searchTerm,
@@ -86,9 +88,10 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             SetPager(searchTerm, setPage, vm, filteredLegalEntitiesTotal);
             vm.Page = setPage;
 
-            vm.VacancyEmployerInfoModel = new VacancyEmployerInfoModel()
+            vm.VacancyEmployerInfoModel = new VacancyEmployerInfoModel
             {
                 VacancyId = vacancy.Id,
+                EmployerAccountId = vrm.EmployerAccountId,
                 AccountLegalEntityPublicHashedId = vacancy.AccountLegalEntityPublicHashedId 
             };
 

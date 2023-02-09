@@ -4,7 +4,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
 {
     internal static class VacancySummaryMapper
     {
-        internal static VacancySummary MapFromVacancySummaryAggQueryResponseDto(VacancySummaryAggQueryResponseDto src)
+        internal static VacancySummary MapFromVacancySummaryAggQueryResponseDto(VacancySummaryAggQueryResponseDto src, bool isTaskListCompleted)
         {
             var vacSummaryDetail = src.Id;
 
@@ -38,6 +38,10 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                 NoOfNewApplications = src.NoOfNewApplications,
                 NoOfSuccessfulApplications = src.NoOfSuccessfulApplications,
                 NoOfUnsuccessfulApplications = src.NoOfUnsuccessfulApplications,
+                IsTraineeship = vacSummaryDetail.IsTraineeship,
+                VacancyType = vacSummaryDetail.VacancyType,
+                IsTaskListCompleted = isTaskListCompleted,
+                HasChosenProviderContactDetails = vacSummaryDetail.HasChosenProviderContactDetails
             };
 
             return vacancySummary;

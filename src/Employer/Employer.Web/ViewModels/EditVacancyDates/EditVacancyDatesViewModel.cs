@@ -1,8 +1,9 @@
 using System.Collections.Generic;
+using Esfa.Recruit.Employer.Web.RouteModel;
 
 namespace Esfa.Recruit.Employer.Web.ViewModels.EditVacancyDates
 {
-    public class EditVacancyDatesViewModel
+    public class EditVacancyDatesViewModel : VacancyRouteModel
     {
         public string ClosingDay { get; set; }
         public string ClosingMonth { get; set; }
@@ -49,5 +50,6 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.EditVacancyDates
         };
 
         public int CurrentYear { get; set; }
+        public string Title { get; set; }
     }
 }

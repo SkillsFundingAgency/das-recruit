@@ -37,7 +37,8 @@ namespace Esfa.Recruit.Provider.Web.Mappings
 
         public async Task MapFromVacancyAsync(DisplayVacancyViewModel vm, Vacancy vacancy)
         {
-            var programme = await _vacancyClient.GetApprenticeshipProgrammeAsync(vacancy.ProgrammeId);
+            var programme = vacancy.VacancyType.GetValueOrDefault() == VacancyType.Apprenticeship ? await _vacancyClient.GetApprenticeshipProgrammeAsync(vacancy.ProgrammeId) : null;
+            var route = vacancy.VacancyType.GetValueOrDefault() == VacancyType.Traineeship ? await _vacancyClient.GetRoute(vacancy.RouteId) : null;
             var employer = await _client.GetProviderEmployerVacancyDataAsync(vacancy.TrainingProvider.Ukprn.Value, vacancy.EmployerAccountId);
 
             var allQualifications = await _vacancyClient.GetCandidateQualificationsAsync();
@@ -60,6 +61,7 @@ namespace Esfa.Recruit.Provider.Web.Mappings
             vm.EmployerRejectedReason = vacancy.EmployerRejectedReason;
             vm.EmployerReviewFieldIndicators = vacancy.EmployerReviewFieldIndicators;
             vm.FindAnApprenticeshipUrl = _externalLinksConfiguration.FindAnApprenticeshipUrl;
+            vm.FindATraineeshipUrl = _externalLinksConfiguration.FindATraineeshipUrl;
             vm.IsAnonymous = vacancy.IsAnonymous;
             vm.NumberOfPositions = vacancy.NumberOfPositions?.ToString();
             vm.NumberOfPositionsCaption = vacancy.NumberOfPositions.HasValue
@@ -84,6 +86,9 @@ namespace Esfa.Recruit.Provider.Web.Mappings
             vm.IsDisabilityConfident = vacancy.IsDisabilityConfident;
             vm.AccountLegalEntityPublicHashedId = vacancy.AccountLegalEntityPublicHashedId;
             vm.EmployerNameOption = vacancy.EmployerNameOption;
+            vm.AdditionalQuestion1 = vacancy.AdditionalQuestion1;
+            vm.AdditionalQuestion2 = vacancy.AdditionalQuestion2;
+            vm.HasSubmittedAdditionalQuestions = vacancy.HasSubmittedAdditionalQuestions;
 
             if (vacancy.EmployerLocation != null)
             {
@@ -104,11 +109,21 @@ namespace Esfa.Recruit.Provider.Web.Mappings
                 vm.ExpectedDuration = (vacancy.Wage.DurationUnit.HasValue && vacancy.Wage.Duration.HasValue)
                     ? vacancy.Wage.DurationUnit.Value.GetDisplayName().ToQuantity(vacancy.Wage.Duration.Value)
                     : null;
-                vm.HoursPerWeek = $"{vacancy.Wage.WeeklyHours:0.##}";
+                vm.HoursPerWeek = $"{vacancy.Wage.WeeklyHours:0.##} hours a week";
                 vm.WageInfo = vacancy.Wage.WageAdditionalInformation;
                 vm.WageText = vacancy.StartDate.HasValue ? vacancy.Wage.ToText(vacancy.StartDate) : null;
                 vm.WorkingWeekDescription = vacancy.Wage.WorkingWeekDescription;
             }
+
+            if (route != null)
+            {
+                vm.RouteId = route.Id;
+                vm.RouteTitle = route.Route;
+            }
+
+            vm.WorkExperience = vacancy.WorkExperience;
+
+            vm.VacancyType = vacancy.VacancyType;
         }
     }
 }

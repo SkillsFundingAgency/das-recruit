@@ -1,7 +1,6 @@
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Requests;
 using FluentAssertions;
 using NUnit.Framework;
-using Xunit;
 
 namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructure.OuterApi.Requests
 {

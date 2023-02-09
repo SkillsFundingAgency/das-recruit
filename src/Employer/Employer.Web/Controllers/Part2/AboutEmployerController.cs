@@ -2,7 +2,6 @@
 using Esfa.Recruit.Employer.Web.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
-using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Extensions;
 using Esfa.Recruit.Employer.Web.Orchestrators.Part2;
 using Esfa.Recruit.Employer.Web.RouteModel;
@@ -44,17 +43,12 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part2
             {
                 return View(vm);
             }
-
-            if (_feature.IsFeatureEnabled(FeatureNames.EmployerTaskList))
-            {
-                if (!vm.IsTaskListCompleted)
-                {
-                    return RedirectToRoute(RouteNames.EmployerContactDetails_Get);
-                }
-                return RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet);
-            }
             
-            return RedirectToRoute(RouteNames.Vacancy_Preview_Get);
+            if (!vm.IsTaskListCompleted)
+            {
+                return RedirectToRoute(RouteNames.EmployerContactDetails_Get, new {m.VacancyId, m.EmployerAccountId});
+            }
+            return RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet, new {m.VacancyId, m.EmployerAccountId});
         }
     }
 }

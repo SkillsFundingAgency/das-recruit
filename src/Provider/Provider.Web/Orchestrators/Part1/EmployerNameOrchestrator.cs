@@ -11,7 +11,6 @@ using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Shared.Web.Models;
 using Esfa.Recruit.Shared.Web.Orchestrators;
 using Esfa.Recruit.Shared.Web.Services;
-using Esfa.Recruit.Shared.Web.ViewModels;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
@@ -81,7 +80,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
                     ReviewFieldMappingLookups.GetEmployerNameReviewFieldIndicators());
             }
 
-            vm.IsTaskListCompleted = _utility.TaskListCompleted(vacancy);
+            vm.IsTaskListCompleted = _utility.IsTaskListCompleted(vacancy);
 
             return vm;
         }

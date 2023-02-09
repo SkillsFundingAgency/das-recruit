@@ -6,6 +6,8 @@ using Esfa.Recruit.Provider.Web.Orchestrators.Part2;
 using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Shared.Web.FeatureToggle;
+using Esfa.Recruit.Vacancies.Client.Application.Configuration;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SkillsEditModel = Esfa.Recruit.Provider.Web.ViewModels.Part2.Skills.SkillsEditModel;
@@ -18,11 +20,13 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part2
     {
         private readonly SkillsOrchestrator _orchestrator;
         private readonly IFeature _feature;
+        private readonly ServiceParameters _serviceParameters;
 
-        public SkillsController(SkillsOrchestrator orchestrator, IFeature feature)
+        public SkillsController(SkillsOrchestrator orchestrator, IFeature feature, ServiceParameters serviceParameters)
         {
             _orchestrator = orchestrator;
             _feature = feature;
+            _serviceParameters = serviceParameters;
         }
 
         [HttpGet("skills", Name = RouteNames.Skills_Get)]
@@ -60,7 +64,12 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part2
             {
                 if (!vm.IsTaskListCompleted)
                 {
-                    return RedirectToRoute(RouteNames.Qualifications_Get, new {vrm.Ukprn, vrm.VacancyId});
+                    if (_serviceParameters.VacancyType == VacancyType.Apprenticeship)
+                    {
+                        return RedirectToRoute(RouteNames.Qualifications_Get, new {vrm.Ukprn, vrm.VacancyId});    
+                    }
+                    
+                    return RedirectToRoute(RouteNames.FutureProspects_Get, new {vrm.Ukprn, vrm.VacancyId});
                 }
                 return RedirectToRoute(RouteNames.ProviderCheckYourAnswersGet, new {vrm.Ukprn, vrm.VacancyId});
                 

@@ -33,9 +33,11 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
             
             var vm = new ConsiderationsViewModel
             {
+                VacancyId = vacancy.Id,
+                EmployerAccountId = vacancy.EmployerAccountId,
                 Title = vacancy.Title,
                 ThingsToConsider = vacancy.ThingsToConsider,
-                IsTaskListCompleted = _utility.TaskListCompleted(vacancy)
+                IsTaskListCompleted = _utility.IsTaskListCompleted(vacancy)
             };
 
             if (vacancy.Status == VacancyStatus.Referred)

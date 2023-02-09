@@ -32,13 +32,14 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
 
             var vm = new DeleteViewModel
             {
-                Title = vacancy.Title
+                Title = vacancy.Title,
+                Status = vacancy.Status
             };
 
             return vm;
         }
 
-        public async Task DeleteVacancyAsync(DeleteEditModel m, VacancyUser user)
+        public async Task<DeleteViewModel> DeleteVacancyAsync(DeleteEditModel m, VacancyUser user)
         {
             var vacancy = await _vacancyClient.GetVacancyAsync(m.VacancyId.Value);
 
@@ -47,7 +48,14 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             if (!vacancy.CanDelete)
                 throw new InvalidStateException(string.Format(ErrorMessages.VacancyNotAvailableForEditing, vacancy.Title));
 
+            var vm = new DeleteViewModel
+            {
+                Title = vacancy.Title,
+                Status = vacancy.Status,
+                VacancyReference = vacancy.VacancyReference
+            };
             await _client.DeleteVacancyAsync(vacancy.Id, user);
+            return vm;
         }
     }
 }
