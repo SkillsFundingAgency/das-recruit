@@ -76,7 +76,7 @@ namespace Esfa.Recruit.UnitTests.Employer.Web.Orchestrators.ManageNotificationsO
         private ManageNotificationsOrchestrator GetSut(bool isProd = true)
         {
             var _loggerMock = new Mock<ILogger<ManageNotificationsOrchestrator>>();
-            _iConfigurationMock.Setup(x=>x["EnvironmentName"]).Returns(isProd?"Prod":"test");
+            _iConfigurationMock.Setup(x=>x["Environment"]).Returns(isProd?"Prod":"test");
             return new ManageNotificationsOrchestrator(_loggerMock.Object, new RecruitConfiguration(EmployerAccountId), _iConfigurationMock.Object, _recruitVacancyClientMock.Object);
         }
     }

@@ -121,7 +121,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
                 NotificationFrequency = preferences.NotificationFrequency,
                 NotificationScope = preferences.NotificationScope,
                 UseGovSignIn = _recruitConfiguration.UseGovSignIn,
-                EnvironmentIsProd = _configuration["EnvironmentName"].Equals("Prod", StringComparison.CurrentCultureIgnoreCase)
+                EnvironmentIsProd = _configuration["Environment"].Equals("Prod", StringComparison.CurrentCultureIgnoreCase)
             };
         }
 
