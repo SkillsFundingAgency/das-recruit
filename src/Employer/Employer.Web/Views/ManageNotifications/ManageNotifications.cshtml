@@ -16,22 +16,7 @@
         
         @if (Model.UseGovSignIn)
         {
-            <p class="govuk-body">These updates will be sent to the email address you use for 
-                @if (Model.EnvironmentIsProd)
-                {
-                    <a asp-route="https://home.account.gov.uk/settings " target="_blank" class="govuk-link govuk-link--no-visited-state">your GOV.UK One Login (opens in new tab).
-                    </a>
-                }
-                else
-                {
-                    @if (Model.EnvironmentIsProd)
-                    {
-                        <a asp-route="https://home.integration.account.gov.uk/settings " target="_blank" class="govuk-link govuk-link--no-visited-state">
-                            your GOV.UK One Login (opens in new tab).
-                        </a>
-                    }
-                }
-            </p>
+            <p class="govuk-body">These updates will be sent to the email address you use for <a href="@(Model.EnvironmentIsProd ? "https://home.account.gov.uk/settings" : "https://home.integration.account.gov.uk/settings")" target="_blank" class="govuk-link govuk-link--no-visited-state">your GOV.UK One Login (opens in new tab)</a>.</p>
         }
         
         

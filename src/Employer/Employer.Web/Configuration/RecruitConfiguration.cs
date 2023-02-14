@@ -2,8 +2,9 @@ namespace Employer.Web.Configuration
 {
     public class RecruitConfiguration
     {
-        public RecruitConfiguration(string employerAccountId)
+        public RecruitConfiguration(string employerAccountId, bool useGovSignIn)
         {
+            UseGovSignIn = useGovSignIn;
             EmployerAccountId = employerAccountId;
         }
         public string EmployerAccountId { get; set; }

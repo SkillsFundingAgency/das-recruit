@@ -1,4 +1,5 @@
-﻿using Employer.Web.Configuration;
+﻿using System;
+using Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Filters;
 using Esfa.Recruit.Employer.Web.Interfaces;
 using Esfa.Recruit.Employer.Web.Mappings;
@@ -63,7 +64,8 @@ namespace Esfa.Recruit.Employer.Web.Configuration
 
         private static void RegisterServiceDeps(IServiceCollection services, IConfiguration configuration)
         {
-            services.AddSingleton(new RecruitConfiguration(configuration.GetValue<string>("RecruitConfiguration:EmployerAccountId")));
+            services.AddSingleton(new RecruitConfiguration(configuration.GetValue<string>("RecruitConfiguration:EmployerAccountId"), configuration["RecruitConfiguration:UseGovSignIn"] != null && configuration["RecruitConfiguration:UseGovSignIn"]
+                .Equals("true", StringComparison.CurrentCultureIgnoreCase)));
             services.AddTransient<IGeocodeImageService>(_ => new GoogleMapsGeocodeImageService(configuration.GetValue<string>("RecruitConfiguration:GoogleMapsPrivateKey")));
             services.AddTransient<IReviewSummaryService, ReviewSummaryService>();
             services.AddTransient<ILegalEntityAgreementService, LegalEntityAgreementService>();
