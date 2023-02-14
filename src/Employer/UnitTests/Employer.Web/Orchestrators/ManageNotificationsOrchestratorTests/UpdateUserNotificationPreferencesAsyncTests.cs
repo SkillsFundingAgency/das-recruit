@@ -36,7 +36,7 @@ namespace UnitTests.Employer.Web.Orchestrators.ManageNotificationsOrchestratorTe
         
         var _loggerMock = new Mock<ILogger<ManageNotificationsOrchestrator>>();
         
-            return new ManageNotificationsOrchestrator(_loggerMock.Object, new RecruitConfiguration(EmployerAccountId), _iConfigurationMock.Object, _recruitVacancyClientMock.Object);
+            return new ManageNotificationsOrchestrator(_loggerMock.Object, new RecruitConfiguration(EmployerAccountId, false), _iConfigurationMock.Object, _recruitVacancyClientMock.Object);
         }
     }
 }
