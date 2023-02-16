@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Orchestrators;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
@@ -6,13 +7,16 @@ using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Moq;
 using Xunit;
+using Microsoft.Extensions.Configuration;
 
 namespace Esfa.Recruit.UnitTests.Employer.Web.Orchestrators.ManageNotificationsOrchestratorTests
 {
     public class GetManageNotificationsViewModelAsyncTests
     {
         private readonly Mock<IRecruitVacancyClient> _recruitVacancyClientMock = new Mock<IRecruitVacancyClient>();
-        
+        private readonly Mock<IConfiguration> _iConfigurationMock = new Mock<IConfiguration>();
+        public const string EmployerAccountId = "EmployerAccountId";
+
 
         [Fact]
         public async Task WhenUserPreferencesAreNotSet()
@@ -29,7 +33,21 @@ namespace Esfa.Recruit.UnitTests.Employer.Web.Orchestrators.ManageNotificationsO
             result.IsVacancySentForEmployerReviewSelected.Should().BeFalse();
             result.NotificationFrequency.Should().BeNull();
             result.NotificationScope.Should().BeNull();
+            result.EnvironmentIsProd.Should().BeTrue();
         }
+        
+        [Fact]
+        public async Task WhenUserPreferencesAreNotSet_For_Non_Prod()
+        {
+            var employerAccountId = "ABC123";
+            _recruitVacancyClientMock.Setup(c => c.GetUserNotificationPreferencesAsync(It.IsAny<string>())).ReturnsAsync(new UserNotificationPreferences());
+            var sut = GetSut(false, false);
+            var result = await sut.GetManageNotificationsViewModelAsync(new VacancyUser(), employerAccountId);
+
+            result.EnvironmentIsProd.Should().BeFalse();
+            result.UseGovSignIn.Should().BeFalse();
+        }
+
 
         [Theory]
         [InlineData(NotificationTypes.None, false, false, false, false)]
@@ -54,12 +72,15 @@ namespace Esfa.Recruit.UnitTests.Employer.Web.Orchestrators.ManageNotificationsO
             result.IsVacancyClosingSoonSelected.Should().Be(expectedIsVacancyClosingSoonSelected);
             result.IsVacancyRejectedSelected.Should().Be(expectedIsVacancyRejectedSelected);
             result.IsVacancySentForEmployerReviewSelected.Should().Be(expectIsVacancySentForReviewSelected);
+            result.EnvironmentIsProd.Should().BeTrue();
+            result.UseGovSignIn.Should().BeTrue();
         }
 
-        private ManageNotificationsOrchestrator GetSut()
+        private ManageNotificationsOrchestrator GetSut(bool isProd = true, bool isGovSign = true)
         {
             var _loggerMock = new Mock<ILogger<ManageNotificationsOrchestrator>>();
-            return new ManageNotificationsOrchestrator(_loggerMock.Object, _recruitVacancyClientMock.Object);
+            _iConfigurationMock.Setup(x=>x["Environment"]).Returns(isProd?"Prod":"test");
+            return new ManageNotificationsOrchestrator(_loggerMock.Object, new RecruitConfiguration(EmployerAccountId, isGovSign), _iConfigurationMock.Object, _recruitVacancyClientMock.Object);
         }
     }
 }
