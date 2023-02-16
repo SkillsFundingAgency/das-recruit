@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using Microsoft.IdentityModel.Tokens;
 
 namespace Esfa.Recruit.Shared.Web.ViewModels.ApplicationReview
 {
@@ -56,7 +55,7 @@ namespace Esfa.Recruit.Shared.Web.ViewModels.ApplicationReview
         public string AdditionalQuestionAnswer2 { get; set; }
         public string AdditionalQuestion1 { get; set; }
         public string AdditionalQuestion2 { get; set; }
-        public bool HasAdditionalQuestions => !AdditionalQuestion1.IsNullOrEmpty() || !AdditionalQuestion2.IsNullOrEmpty();
-        public bool HasAdditionalSecondQuestion => !AdditionalQuestion2.IsNullOrEmpty();
+        public bool HasAdditionalQuestions => !string.IsNullOrEmpty(AdditionalQuestion1) || !string.IsNullOrEmpty(AdditionalQuestion2);
+        public bool HasAdditionalSecondQuestion => !string.IsNullOrEmpty(AdditionalQuestion2);
     }
 }
