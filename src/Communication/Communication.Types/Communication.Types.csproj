@@ -23,7 +23,6 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
-    <PackageReference Include="SFA.DAS.GovUK.Auth" Version="0.2.203" />
   </ItemGroup>
 
 </Project>
