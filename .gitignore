@@ -302,3 +302,5 @@ internal-nlog.txt
 
 src/**/**/appsettings.Development.json
 
+
+setup/containermongo/data/
