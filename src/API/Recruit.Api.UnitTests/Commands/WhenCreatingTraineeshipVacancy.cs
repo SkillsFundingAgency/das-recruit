@@ -194,6 +194,8 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Commands
                   && c.SubmittedDate == timeNow
                   && c.LastUpdatedDate == timeNow
                   && c.TrainingProvider == provider
+                  && c.AdditionalQuestion1 == command.Vacancy.AdditionalQuestion1
+                  && c.AdditionalQuestion2 == command.Vacancy.AdditionalQuestion2
                 )), Times.Once);
         }
 
