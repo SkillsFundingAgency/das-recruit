@@ -94,7 +94,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
             return vm;
         }
 
-        public async Task<OrchestratorResponse<Guid>> PostTitleEditModelAsync(VacancyRouteModel vrm, TitleEditModel model, VacancyUser user, long ukprn)
+        public virtual async Task<OrchestratorResponse<Guid>> PostTitleEditModelAsync(VacancyRouteModel vrm, TitleEditModel model, VacancyUser user, long ukprn)
         {
             if (model.VacancyId.HasValue) 
             {
