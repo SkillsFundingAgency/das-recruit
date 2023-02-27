@@ -200,6 +200,8 @@ namespace SFA.DAS.Recruit.Api.Commands
             
             draftVacancyFromRequest.LastUpdatedDate = now;
             draftVacancyFromRequest.LastUpdatedByUser = request.VacancyUserDetails;
+            draftVacancyFromRequest.AdditionalQuestion1 = request.Vacancy.AdditionalQuestion1;
+            draftVacancyFromRequest.AdditionalQuestion2 = request.Vacancy.AdditionalQuestion2;
             return draftVacancyFromRequest;
         }
 
