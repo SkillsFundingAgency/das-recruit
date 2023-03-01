@@ -19,7 +19,7 @@
     <PackageReference Include="NWebsec.AspNetCore.Mvc.TagHelpers" Version="3.0.0" />
     <PackageReference Include="SFA.DAS.Configuration.AzureTableStorage" Version="3.0.84" />
     <PackageReference Include="SFA.DAS.NLog.Targets.Redis" Version="1.2.1" />
-    <PackageReference Include="SFA.DAS.Provider.Shared.UI" Version="2.0.23" />
+    <PackageReference Include="SFA.DAS.Provider.Shared.UI" Version="2.0.24" />
     <PackageReference Include="SFA.DAS.ProviderUrlHelper" Version="17267.0.542" />
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.21.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.WsFederation" Version="6.0.8" />
