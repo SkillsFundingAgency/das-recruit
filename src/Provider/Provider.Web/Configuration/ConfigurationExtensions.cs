@@ -20,6 +20,7 @@ using Esfa.Recruit.Provider.Web.Middleware;
 using System.Threading.Tasks;
 using Esfa.Recruit.Provider.Web.Extensions;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Microsoft.Extensions.Configuration;
 using SFA.DAS.Provider.Shared.UI;
 using SFA.DAS.Provider.Shared.UI.Startup;
 
@@ -81,7 +82,7 @@ namespace Esfa.Recruit.Provider.Web.Configuration
             services.AddTransient<IAuthorizationHandler, VacancyTypeRequirementHandler>();
         }
 
-        public static void AddMvcService(this IServiceCollection services, IWebHostEnvironment hostingEnvironment, ILoggerFactory loggerFactory)
+        public static void AddMvcService(this IServiceCollection services, IWebHostEnvironment hostingEnvironment, ILoggerFactory loggerFactory, IConfiguration configuration)
         {
             services.AddAntiforgery(options =>
             {
@@ -91,6 +92,8 @@ namespace Esfa.Recruit.Provider.Web.Configuration
             });
             services.Configure<CookieTempDataProviderOptions>(options => options.Cookie.Name = CookieNames.RecruitTempData);
             services.AddSingleton<ITempDataProvider, CookieTempDataProvider>();
+
+            bool useDfESignIn = configuration.GetSection("UseDfESignIn").Get<bool>();
 
             services.AddMvc(opts =>
                 {
@@ -116,6 +119,7 @@ namespace Esfa.Recruit.Provider.Web.Configuration
             .EnableCookieBanner()
             .EnableGoogleAnalytics()
             .EnableCsp()
+            .SetDfESignInConfiguration(useDfESignIn)
             .SetDefaultNavigationSection(NavigationSection.Recruit);
             services.AddFluentValidationAutoValidation();
         }
