@@ -65,7 +65,7 @@ namespace Esfa.Recruit.Provider.Web
                 o.ViewLocationFormats.Add("/Views/Reports/{1}/{0}" + RazorViewEngine.ViewExtension);
             });
 
-            services.AddMvcService(_hostingEnvironment, _loggerFactory);
+            services.AddMvcService(_hostingEnvironment, _loggerFactory, _configuration);
             services.AddDataProtection(_configuration, _hostingEnvironment, applicationName: "das-provider-recruit-web");
 
             services.AddApplicationInsightsTelemetry(_configuration);
