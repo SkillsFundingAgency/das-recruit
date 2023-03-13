@@ -27,6 +27,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                 '$project': {
                     'status': 1,
                     'appStatus': '$candidateApplicationReview.status',
+                    'isApplicationWithdrawn': '$candidateApplicationReview.isWithdrawn',
                     'vacancyType': 1,
                     'isTraineeship' :1,
                     'closingDate' : 1
@@ -46,6 +47,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                         }
                     }
                 }
+            },
+            { 
+                '$match' : { 
+                    'appStatus':{ $ne: 'withdrawn'} 
+                            }
             },
             {
                 '$project': {
