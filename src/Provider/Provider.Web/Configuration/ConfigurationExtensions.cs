@@ -118,7 +118,6 @@ namespace Esfa.Recruit.Provider.Web.Configuration
             ).AddNewtonsoftJson()
             .EnableCookieBanner()
             .EnableGoogleAnalytics()
-            .EnableCsp()
             .SetDfESignInConfiguration(useDfESignIn)
             .SetDefaultNavigationSection(NavigationSection.Recruit);
             services.AddFluentValidationAutoValidation();
