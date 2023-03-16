@@ -22,6 +22,7 @@ using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.Extensions.Hosting;
+using SFA.DAS.GovUK.Auth.Authentication;
 
 namespace Esfa.Recruit.Employer.Web.Configuration
 {
@@ -38,10 +39,13 @@ namespace Esfa.Recruit.Employer.Web.Configuration
                     policy.RequireAuthenticatedUser();
                     policy.RequireClaim(EmployerRecruitClaims.AccountsClaimsTypeIdentifier);
                     policy.Requirements.Add(new EmployerAccountRequirement());
+                    policy.Requirements.Add(new AccountActiveRequirement());
                 });
             });
 
             services.AddTransient<IAuthorizationHandler, EmployerAccountHandler>();
+            //TODO can be deleted once gov login is enabled as included in its container registration
+            services.AddTransient<IAuthorizationHandler, AccountActiveAuthorizationHandler>();
         }
 
         public static void AddMvcService(this IServiceCollection services, IWebHostEnvironment hostingEnvironment, bool isAuthEnabled, ILoggerFactory loggerFactory)
