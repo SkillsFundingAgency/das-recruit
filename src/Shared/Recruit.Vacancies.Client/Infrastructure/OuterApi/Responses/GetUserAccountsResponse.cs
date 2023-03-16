@@ -6,6 +6,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Responses
     public class GetUserAccountsResponse
     {
         [JsonProperty]
+        public bool IsSuspended { get; set; }
+        [JsonProperty]
         public string EmployerUserId { get; set; }
         [JsonProperty]
         public string FirstName { get; set; }

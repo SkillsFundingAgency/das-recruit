@@ -29,6 +29,7 @@ public class WhenGettingClaims
         [Frozen] Mock<IRecruitVacancyClient> recruitVacancyClient,
         EmployerAccountPostAuthenticationClaimsHandler handler)
     {
+        getUserAccountsResponse.IsSuspended = false;
         var context = ArrangeTokenValidatedContext(userId, email);
         recruitVacancyClient.Setup(x => x.GetEmployerIdentifiersAsync(userId, email))
             .ReturnsAsync(getUserAccountsResponse);
@@ -40,6 +41,25 @@ public class WhenGettingClaims
                 JsonConvert.SerializeObject(getUserAccountsResponse.UserAccounts.Select(c => c.AccountId).ToList()));
         actual.FirstOrDefault(c => c.Type.Equals(EmployerRecruitClaims.IdamsUserIdClaimTypeIdentifier)).Value
             .Should().Be(getUserAccountsResponse.EmployerUserId);
+        actual.FirstOrDefault(c => c.Type.Equals(ClaimTypes.AuthorizationDecision))?.Value?.Should().BeNullOrEmpty();
+    }
+    [Test, MoqAutoData]
+    public async Task Then_The_Suspended_Claim_Is_Set_If_True(
+        string userId, 
+        string email,
+        GetUserAccountsResponse getUserAccountsResponse,
+        [Frozen] Mock<IRecruitVacancyClient> recruitVacancyClient,
+        EmployerAccountPostAuthenticationClaimsHandler handler)
+    {
+        getUserAccountsResponse.IsSuspended = true;
+        var context = ArrangeTokenValidatedContext(userId, email);
+        recruitVacancyClient.Setup(x => x.GetEmployerIdentifiersAsync(userId, email))
+            .ReturnsAsync(getUserAccountsResponse);
+
+        var actual = await handler.GetClaims(context);
+
+        actual.FirstOrDefault(c => c.Type.Equals(ClaimTypes.AuthorizationDecision)).Value
+            .Should().Be("Suspended");
     }
     
     private TokenValidatedContext ArrangeTokenValidatedContext(string nameIdentifier, string emailAddress)
