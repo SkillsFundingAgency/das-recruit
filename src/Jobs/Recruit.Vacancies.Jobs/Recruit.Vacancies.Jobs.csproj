@@ -32,7 +32,7 @@
     <PackageReference Include="SFA.DAS.Notifications.Api.Client" Version="2.2.210" />
     <PackageReference Include="SFA.DAS.Notifications.Api.Types" Version="2.2.210" />
     <PackageReference Include="SFA.DAS.ProviderRelationships.Messages" Version="4.0.19" />
-    <PackageReference Include="System.Data.SqlClient" Version="4.8.3" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.8.5" />
     <PackageReference Include="SFA.DAS.NServiceBus" Version="17.0.49" />
     <PackageReference Include="SFA.DAS.EmployerAccounts.Messages" Version="1.6.3163" />
 
