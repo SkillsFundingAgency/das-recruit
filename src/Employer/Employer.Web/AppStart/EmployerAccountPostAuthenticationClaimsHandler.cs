@@ -27,12 +27,13 @@ public class EmployerAccountPostAuthenticationClaimsHandler : ICustomClaims
         var email = ctx.Principal.Claims
             .First(c => c.Type.Equals(ClaimTypes.Email))
             .Value;
-    
-
         var accounts = await _vacancyClient.GetEmployerIdentifiersAsync(userId, email);
         var accountsAsJson = JsonConvert.SerializeObject(accounts.UserAccounts.Select(c=>c.AccountId).ToList());
-        var associatedAccountsClaim = new Claim(EmployerRecruitClaims.AccountsClaimsTypeIdentifier, accountsAsJson, JsonClaimValueTypes.Json);
-        
-        return new List<Claim> { associatedAccountsClaim, new Claim(EmployerRecruitClaims.IdamsUserIdClaimTypeIdentifier,accounts.EmployerUserId) };
+
+        return new List<Claim>
+        {
+            new Claim(EmployerRecruitClaims.AccountsClaimsTypeIdentifier, accountsAsJson, JsonClaimValueTypes.Json), 
+            new Claim(EmployerRecruitClaims.IdamsUserIdClaimTypeIdentifier,accounts.EmployerUserId),
+        };
     }
 }
