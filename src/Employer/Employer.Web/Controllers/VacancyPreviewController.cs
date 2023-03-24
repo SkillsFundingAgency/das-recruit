@@ -8,12 +8,15 @@ using Esfa.Recruit.Employer.Web.Extensions;
 using Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.Configuration;
+using Esfa.Recruit.Employer.Web.Middleware;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Shared.Web.FeatureToggle;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Esfa.Recruit.Employer.Web.Controllers
 {
     [Route(RoutePaths.AccountVacancyRoutePath)]
+    [Authorize(Policy = nameof(PolicyNames.HasEmployerOwnerAccount))]
     public class VacancyPreviewController : Controller
     {
         private readonly VacancyPreviewOrchestrator _orchestrator;
