@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Authorization;
 using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Interfaces;
+using Esfa.Recruit.Employer.Web.Models;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
