@@ -18,6 +18,7 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using FluentValidation.AspNetCore;
 using Microsoft.Extensions.Logging;
 using Esfa.Recruit.Employer.Web.Filters;
+using Esfa.Recruit.Employer.Web.Interfaces;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
@@ -27,21 +28,31 @@ namespace Esfa.Recruit.Employer.Web.Configuration
 {
     public static class ConfigurationExtensions
     {
-        private const string HasEmployerAccountPolicyName = "HasEmployerAccount";
-
         public static void AddAuthorizationService(this IServiceCollection services)
         {
+            services.AddHttpContextAccessor();
+            services.AddTransient<IEmployerAccountAuthorizationHandler, EmployerAccountAuthorizationHandler>();
+            services.AddSingleton<IAuthorizationHandler, EmployerAccountOwnerAuthorizationHandler>();
+            services.AddTransient<IAuthorizationHandler, EmployerAccountHandler>();
             services.AddAuthorization(options =>
             {
-                options.AddPolicy(HasEmployerAccountPolicyName, policy =>
-                {
-                    policy.RequireAuthenticatedUser();
-                    policy.RequireClaim(EmployerRecruitClaims.AccountsClaimsTypeIdentifier);
-                    policy.Requirements.Add(new EmployerAccountRequirement());
-                });
+                // default authorization policy for all controller actions.
+                options.AddPolicy(
+                    PolicyNames.HasEmployerAccountPolicyName, policy =>
+                    {
+                        policy.RequireClaim(EmployerRecruitClaims.AccountsClaimsTypeIdentifier);
+                        policy.Requirements.Add(new EmployerAccountRequirement());
+                        policy.RequireAuthenticatedUser();
+                    });
+                // authorization policy for controller actions more specific for admin/owner roles.
+                options.AddPolicy(
+                    PolicyNames.HasEmployerOwnerAccount, policy =>
+                    {
+                        policy.RequireClaim(EmployerRecruitClaims.AccountsClaimsTypeIdentifier);
+                        policy.Requirements.Add(new EmployerAccountOwnerRequirement());
+                        policy.RequireAuthenticatedUser();
+                    });
             });
-
-            services.AddTransient<IAuthorizationHandler, EmployerAccountHandler>();
         }
 
         public static void AddMvcService(this IServiceCollection services, IWebHostEnvironment hostingEnvironment, bool isAuthEnabled, ILoggerFactory loggerFactory)
@@ -68,7 +79,7 @@ namespace Esfa.Recruit.Employer.Web.Configuration
                     }
                     else
                     {
-                        opts.Filters.Add(new AuthorizeFilter(HasEmployerAccountPolicyName));
+                        opts.Filters.Add(new AuthorizeFilter(PolicyNames.HasEmployerAccountPolicyName));
                     }
 
                     var jsonInputFormatters = opts.InputFormatters.OfType<NewtonsoftJsonInputFormatter>();
