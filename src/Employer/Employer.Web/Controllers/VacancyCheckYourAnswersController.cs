@@ -3,16 +3,19 @@ using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Extensions;
+using Esfa.Recruit.Employer.Web.Middleware;
 using Esfa.Recruit.Employer.Web.Orchestrators;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels.Preview;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Shared.Web.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Esfa.Recruit.Employer.Web.Controllers
 {
     [Route(RoutePaths.AccountVacancyRoutePath)]
+    [Authorize(Policy = nameof(PolicyNames.HasEmployerOwnerAccount))]
     public class VacancyCheckYourAnswersController : Controller
     {
         private readonly VacancyTaskListOrchestrator _orchestrator;

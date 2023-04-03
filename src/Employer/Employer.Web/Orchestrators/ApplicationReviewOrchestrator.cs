@@ -88,6 +88,6 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
                 Outcome = rm.Outcome,
                 Name = applicationReviewVm.Name                
             };
-        }        
+        }
     }
 }

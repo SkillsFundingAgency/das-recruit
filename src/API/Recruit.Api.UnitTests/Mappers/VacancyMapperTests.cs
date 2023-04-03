@@ -33,6 +33,8 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Mappers
             actual.CreatedByUser.Should().BeEquivalentTo(request.User);
             actual.OwnerType.Should().HaveSameValueAs(request.AccountType.Value);
             actual.Wage.DurationUnit.Should().Be(Esfa.Recruit.Vacancies.Client.Domain.Entities.DurationUnit.Month);
+            actual.AdditionalQuestion1.Should().Be(request.AdditionalQuestion1);
+            actual.AdditionalQuestion2.Should().Be(request.AdditionalQuestion2);
         }
     }
 }

@@ -122,6 +122,9 @@
         public const string FutureProspects_Get = nameof(FutureProspects_Get);
         public const string FutureProspects_Post = nameof(FutureProspects_Post);
         
+        public const string AdditionalQuestions_Get = nameof(AdditionalQuestions_Get);
+        public const string AdditionalQuestions_Post = nameof(AdditionalQuestions_Post);
+        
         public const string ApplicationReview_Get = "ApplicationReview_Get";
         public const string ApplicationReview_Post = "ApplicationReview_Post";
         public const string ApplicationReviewConfirmation_Get = "ApplicationReviewConfirmation_Get";

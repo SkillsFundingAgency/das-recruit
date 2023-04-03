@@ -230,7 +230,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part1
                 MockRecruitVacancyClient.Setup(x => x.UpdateDraftVacancyAsync(It.IsAny<Vacancy>(), User));
                 MockRecruitVacancyClient.Setup(x => x.UpdateEmployerProfileAsync(It.IsAny<EmployerProfile>(), User));
                 MockAddressesClient.Setup(x => x.GetAddresses(It.IsAny<string>())).ReturnsAsync(AddressesListResponse);
-                var utility = new Utility(MockRecruitVacancyClient.Object, Mock.Of<IFeature>());
+                var utility = new Utility(MockRecruitVacancyClient.Object);
                 Sut = new LocationOrchestrator(MockClient.Object, MockRecruitVacancyClient.Object, Mock.Of<ILogger<LocationOrchestrator>>(),
                   Mock.Of<IReviewSummaryService>(), MockAddressesClient.Object, utility);
             }

@@ -51,5 +51,11 @@ namespace Esfa.Recruit.Shared.Web.ViewModels.ApplicationReview
         public long Ukprn { get; set; }
         public Guid? VacancyId { get; set; }
         public Guid ApplicationReviewId { get; set; }
+        public string AdditionalQuestionAnswer1 { get; set; }
+        public string AdditionalQuestionAnswer2 { get; set; }
+        public string AdditionalQuestion1 { get; set; }
+        public string AdditionalQuestion2 { get; set; }
+        public bool HasAdditionalQuestions => !string.IsNullOrEmpty(AdditionalQuestion1) || !string.IsNullOrEmpty(AdditionalQuestion2);
+        public bool HasAdditionalSecondQuestion => !string.IsNullOrEmpty(AdditionalQuestion2);
     }
 }

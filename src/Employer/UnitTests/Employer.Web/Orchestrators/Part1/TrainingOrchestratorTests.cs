@@ -90,7 +90,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part1
                             new LegalEntity()
                         }
                     });
-                var utility = new Utility(MockRecruitVacancyClient.Object, Mock.Of<IFeature>());
+                var utility = new Utility(MockRecruitVacancyClient.Object);
                 
                 Sut = new TrainingOrchestrator(MockClient.Object, MockRecruitVacancyClient.Object, Mock.Of<ILogger<TrainingOrchestrator>>(), 
                     Mock.Of<IReviewSummaryService>(), utility, MockEmployerVacancyClient.Object);

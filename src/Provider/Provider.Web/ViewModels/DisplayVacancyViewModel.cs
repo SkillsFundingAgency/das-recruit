@@ -58,6 +58,19 @@ namespace Esfa.Recruit.Provider.Web.ViewModels
         public int RouteId { get; set; }
         public string RouteTitle { get; set; }
         public string WorkExperience { get; set; }
+        private string _additionalQuestion1;
+        public string AdditionalQuestion1 
+        { 
+            get { return BuildAdditionalQuestionText(_additionalQuestion1); }
+            set { _additionalQuestion1 = value; }
+        }
+        private string _additionalQuestion2;
+        public string AdditionalQuestion2 
+        { 
+            get { return BuildAdditionalQuestionText(_additionalQuestion2); }
+            set { _additionalQuestion2 = value; }
+        }
+        public bool HasSubmittedAdditionalQuestions { get; internal set; }
 
         public bool HasClosingDate => !string.IsNullOrWhiteSpace(ClosingDate);
 
@@ -117,6 +130,8 @@ namespace Esfa.Recruit.Provider.Web.ViewModels
         public bool HasSpecifiedThroughExternalApplicationMethod => HasApplicationMethod && ApplicationMethod.Value == Esfa.Recruit.Vacancies.Client.Domain.Entities.ApplicationMethod.ThroughExternalApplicationSite;
         public bool HasApplicationInstructions => !string.IsNullOrWhiteSpace(ApplicationInstructions);
         public bool HasApplicationUrl => !string.IsNullOrWhiteSpace(ApplicationUrl);
+        public bool HasAdditionalQuestion1 => !string.IsNullOrWhiteSpace(AdditionalQuestion1);
+        public bool HasAdditionalQuestion2 => !string.IsNullOrWhiteSpace(AdditionalQuestion2);
 
         public bool ShowGeneralApplicationProcessSectionTitle => ApplicationMethod == null || ApplicationMethod.Value != Esfa.Recruit.Vacancies.Client.Domain.Entities.ApplicationMethod.ThroughExternalApplicationSite;
 
@@ -124,5 +139,16 @@ namespace Esfa.Recruit.Provider.Web.ViewModels
         public bool HasSelectedLegalEntity => !string.IsNullOrEmpty(AccountLegalEntityPublicHashedId);
         public EmployerNameOption? EmployerNameOption { get; set; }
         public VacancyType? VacancyType { get; set; }
+        
+        private string BuildAdditionalQuestionText(string additionalQuestion)
+        {
+            if (string.IsNullOrWhiteSpace(additionalQuestion))
+                return null;
+                
+            if (!additionalQuestion.EndsWith("?"))
+                return additionalQuestion.TrimEnd() + "?";
+                
+            return additionalQuestion;
+        }
     }
 }

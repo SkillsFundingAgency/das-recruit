@@ -18,5 +18,7 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
         public DateTime? WithdrawnDate { get; set; }
         public bool CanReview => IsWithdrawn == false;
         public bool CanWithdraw => IsWithdrawn == false;
+        public string AdditionalQuestion1 { get; set; }
+        public string AdditionalQuestion2 { get; set; }
     }
 }
