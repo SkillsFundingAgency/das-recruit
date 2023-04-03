@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Esfa.Recruit.Qa.Web.Configuration;
 using Esfa.Recruit.Qa.Web.Configuration.Routing;
 using Esfa.Recruit.Qa.Web.Security;
@@ -89,7 +90,6 @@ namespace Esfa.Recruit.Qa.Web
 
             app.UseAuthentication();
 
-            
             app.Use(async (context, next) => {
                 if (context.Request.Path.Equals("/signout"))
                 {
@@ -104,7 +104,7 @@ namespace Esfa.Recruit.Qa.Web
                     // Redirects
                     await context.SignOutAsync(authScheme, new AuthenticationProperties
                     {
-                        RedirectUri = "/"
+                        RedirectUri = "/home"
                     });
 
                     return;
@@ -116,13 +116,20 @@ namespace Esfa.Recruit.Qa.Web
             app.UseStaticFiles();
 
             app.UseRouting();
+
             app.UseAuthorization();
-            app.UseEndpoints(builder =>
+
+            app.UseEndpoints(endpoints =>
             {
-                builder.MapControllerRoute("default", RoutePaths.VacancyReviewsRoutePath);
+                endpoints.MapDefaultControllerRoute();
+
+                endpoints.MapGet("/", context =>
+                {
+                    return Task.Run(() => context.Response.Redirect("/home"));
+                });
             });
-            
-             //Registered after static files, to set headers for dynamic content.
+
+            //Registered after static files, to set headers for dynamic content.
             app.UseXfo(xfo => xfo.Deny());
             app.UseXDownloadOptions();
             app.UseXRobotsTag(options => options.NoIndex().NoFollow());
