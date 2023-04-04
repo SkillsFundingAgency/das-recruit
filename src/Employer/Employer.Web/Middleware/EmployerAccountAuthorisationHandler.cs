@@ -72,7 +72,10 @@ public class EmployerAccountAuthorizationHandler : IEmployerAccountAuthorization
         userClaim.Subject?.AddClaim(associatedAccountsClaim);
 
         // read the employer Identifier from the accounts.
-        if (accountIdFromUrl != null) employerIdentifier = employerAccounts[accountIdFromUrl];
+        if (accountIdFromUrl != null)
+        {
+            employerIdentifier = employerAccounts[accountIdFromUrl];
+        }
 
         return CheckUserRoleForAccess(employerIdentifier, allowAllUserRoles);
     }

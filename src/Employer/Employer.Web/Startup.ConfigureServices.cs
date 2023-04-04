@@ -78,6 +78,8 @@ namespace Esfa.Recruit.Employer.Web
             services.AddControllersWithViews().AddRazorRuntimeCompilation();
 #endif
 
+            services.AddTransient<IStubAuthenticationService, StubAuthenticationService>();//TODO remove after gov go live
+            
             if (Configuration["RecruitConfiguration:UseGovSignIn"] != null && Configuration["RecruitConfiguration:UseGovSignIn"]
                     .Equals("true", StringComparison.CurrentCultureIgnoreCase))
             {

@@ -35,6 +35,8 @@ namespace Esfa.Recruit.Employer.Web.Configuration
             services.AddTransient<IEmployerAccountAuthorizationHandler, EmployerAccountAuthorizationHandler>();
             services.AddSingleton<IAuthorizationHandler, EmployerAccountOwnerAuthorizationHandler>();
             services.AddTransient<IAuthorizationHandler, EmployerAccountHandler>();
+            services.AddTransient<IAuthorizationHandler, AccountActiveAuthorizationHandler>();
+            
             services.AddAuthorization(options =>
             {
                 // default authorization policy for all controller actions.
@@ -57,8 +59,6 @@ namespace Esfa.Recruit.Employer.Web.Configuration
                     });
                     
             });
-            services.AddTransient<IAuthorizationHandler, EmployerAccountHandler>();
-            services.AddTransient<IAuthorizationHandler, AccountActiveAuthorizationHandler>();
         }
 
         public static void AddMvcService(this IServiceCollection services, IWebHostEnvironment hostingEnvironment, bool isAuthEnabled, ILoggerFactory loggerFactory)
@@ -169,7 +169,7 @@ namespace Esfa.Recruit.Employer.Web.Configuration
             var userId = ctx.Principal.GetUserId();
             var email = ctx.Principal.GetEmailAddress();
             var accounts = await vacancyClient.GetEmployerIdentifiersAsync(userId, email);
-            var accountsAsJson = JsonConvert.SerializeObject(accounts.UserAccounts.Select(c=>c.AccountId).ToList());
+            string accountsAsJson = JsonConvert.SerializeObject(accounts.UserAccounts.ToDictionary(k => k.AccountId));
             var associatedAccountsClaim = new Claim(EmployerRecruitClaims.AccountsClaimsTypeIdentifier, accountsAsJson, JsonClaimValueTypes.Json);
 
             ctx.Principal.Identities.First().AddClaim(associatedAccountsClaim);
