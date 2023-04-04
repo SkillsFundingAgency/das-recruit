@@ -1,0 +1,44 @@
+@using System.Security.Claims
+@using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Responses
+@using Newtonsoft.Json
+
+@{
+    ViewBag.Title = "title";
+    Layout = "_Layout";
+    var accounts = JsonConvert.DeserializeObject<Dictionary<string, EmployerIdentifier>>(
+        User.Claims.FirstOrDefault(c => c.Type.Equals(EmployerRecruitClaims.AccountsClaimsTypeIdentifier))?.Value)
+        .Select(c => c.Value)
+        .ToList();
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-xl">
+            You've signed in
+        </h1>
+
+        <p>Id: @User.Claims.FirstOrDefault(c=>c.Type.Equals(ClaimTypes.NameIdentifier))?.Value</p>
+        <p>Email: @User.Claims.FirstOrDefault(c=>c.Type.Equals(ClaimTypes.Email))?.Value</p>
+        <table class="govuk-table">
+            <thead class="govuk-table__head">
+            <tr class="govuk-table__row">
+                <th scope="col" class="govuk-table__header">Account ID</th>
+                <th scope="col" class="govuk-table__header">Role</th>
+                <th scope="col" class="govuk-table__header">Employer name</th>
+            </tr>
+            </thead>
+            <tbody class="govuk-table__body">
+            @foreach (var account in accounts)
+            {
+                <tr class="govuk-table__row">
+                    <td class="govuk-table__cell">@account.AccountId</td>
+                    <td class="govuk-table__cell">@account.Role</td>
+                    <td class="govuk-table__cell">@account.EmployerName</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    
+   
+    </div>
+</div>
