@@ -37,7 +37,6 @@ namespace Esfa.Recruit.Employer.Web
         private static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
                 .UseStartup<Startup>()
-                .UseUrls("https://localhost:5020")
                 .UseNLog()
                 .ConfigureLogging(b => b.ConfigureRecruitLogging());
 
