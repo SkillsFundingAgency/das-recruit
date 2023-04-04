@@ -159,7 +159,7 @@
                     <h3 class="govuk-heading-m app-card__heading">
                         <span class="app-card__stat">@Model.NoOfNewApplications</span>
                         <a asp-route="@RouteNames.Vacancies_Get" asp-route-ukprn="@Model.Ukprn"  asp-route-filter="@FilteringOptions.NewApplications" class="govuk-link  govuk-link--no-visited-state">
-                            Live @Model.ApplicationTextLive
+                            New @Model.ApplicationTextLive
                         </a>
                     </h3>
                     @if (_serviceParameters.VacancyType == VacancyType.Apprenticeship)
