@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using Esfa.Recruit.Employer.Web.AppStart;
 using Esfa.Recruit.Employer.Web.Configuration;
+using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Razor;
@@ -9,6 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.Configuration.AzureTableStorage;
+using SFA.DAS.Employer.Shared.UI;
 using SFA.DAS.GovUK.Auth.AppStart;
 using SFA.DAS.GovUK.Auth.Services;
 
@@ -86,6 +88,7 @@ namespace Esfa.Recruit.Employer.Web
                 services.AddTransient<ICustomClaims, EmployerAccountPostAuthenticationClaimsHandler>();
                 services.AddAndConfigureGovUkAuthentication(Configuration, $"{typeof(Startup).Assembly.GetName().Name}.Auth", typeof(EmployerAccountPostAuthenticationClaimsHandler));
                 services.AddAuthorizationService();
+                services.AddMaMenuConfiguration(RouteNames.Logout_Get, Configuration["ResourceEnvironmentName"]);
             }
 
             else
@@ -95,6 +98,7 @@ namespace Esfa.Recruit.Employer.Web
                     services.AddAuthenticationService(AuthConfig);
                     services.AddAuthorizationService();
                 }
+                services.AddMaMenuConfiguration(RouteNames.Logout_Get, AuthConfig.ClientId, Configuration["ResourceEnvironmentName"]);
             }
 
 

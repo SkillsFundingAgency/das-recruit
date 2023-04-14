@@ -23,6 +23,7 @@ using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.Extensions.Hosting;
+using SFA.DAS.Employer.Shared.UI;
 using SFA.DAS.GovUK.Auth.Authentication;
 
 namespace Esfa.Recruit.Employer.Web.Configuration
@@ -101,7 +102,7 @@ namespace Esfa.Recruit.Employer.Web.Configuration
                     opts.Filters.AddService<GoogleAnalyticsFilter>();
                     opts.Filters.AddService<ZendeskApiFilter>();
                     opts.AddTrimModelBinderProvider(loggerFactory);
-                })
+                }).SetDefaultNavigationSection(NavigationSection.RecruitHome)
                 .AddNewtonsoftJson();
             services.AddFluentValidationAutoValidation();
         }
