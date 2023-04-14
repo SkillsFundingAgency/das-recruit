@@ -37,6 +37,7 @@
 
         <!--[if !IE 8]><!-->
         <link href="css/main.css" rel="stylesheet" />
+        <link asp-append-version="true" rel="stylesheet" media="screen" href="/css/app.css" no-cdn />
         <!--<![endif]-->
 
         <meta property="og:image" content="assets/images/govuk-opengraph-image.png">
@@ -67,7 +68,7 @@
         </partial>
 
         <div class="govuk-width-container">
-            @RenderSection("breadcrumb", required: false)
+            @RenderSection(RazorSections.BackLink, required: false)
             <main class="govuk-main-wrapper" id="main-content" role="main">
                 @RenderBody()
             </main>
@@ -75,11 +76,17 @@
 
         @* ReSharper disable once Mvc.PartialViewNotResolved *@
         <partial name="_Footer" model="@footerModel"/>
+        @await RenderSectionAsync("FooterPreJS", required: false)
         <script src="/libs/govuk-frontend/all.js"></script>
-        <script>
+        <script src="/js/das-all.js"></script>
+        <script src="/libs/accessible-autocomplete/accessible-autocomplete.min.js"></script>
+        <script src="/js/app.min.js"></script>
+        <script nws-csp-add-nonce="true">
             window.GOVUKFrontend.initAll();
             window.DASFrontend.initAll();
         </script>
-        @RenderSection("javascript", required: false)
+        <script asp-append-version="true" src="/javascripts/application.js" no-cdn></script>
+        @await RenderSectionAsync(RazorSections.FooterJS, required: false)
+        
     </body>
 </html>
