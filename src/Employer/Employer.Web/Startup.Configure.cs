@@ -226,7 +226,14 @@ namespace Esfa.Recruit.Employer.Web
                 destinations.Add(linksConfig.EmployerRecruitmentApiUrl);
             
             destinations.Add("https://oidc.integration.account.gov.uk");
+            destinations.Add("https://oidc.account.gov.uk");
             destinations.Add("".GetSignedOutRedirectUrl(configuration["ResourceEnvironmentName"]));
+            var stubSignInRedirectUrl = RedirectExtension.GetStubSignInRedirectUrl(configuration["ResourceEnvironmentName"]);
+            if (!string.IsNullOrEmpty(stubSignInRedirectUrl))
+            {
+                destinations.Add(stubSignInRedirectUrl);    
+            }
+            
             
             return destinations.ToArray();
         }
