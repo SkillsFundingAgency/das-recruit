@@ -1,5 +1,8 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -32,13 +35,16 @@ public class ServiceController : Controller
     [HttpPost]
     [Route("SignIn-Stub")]
     [AllowAnonymous]
-    public IActionResult SigninStubPost()
+    public async Task<IActionResult> SigninStubPost()
     {
-        _stubAuthenticationService?.AddStubEmployerAuth(Response.Cookies, new StubAuthUserDetails
+        var claims = await _stubAuthenticationService.GetStubSignInClaims(new StubAuthUserDetails
         {
             Email = _config["StubEmail"],
             Id = _config["StubId"]
         });
+
+        await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claims,
+            new AuthenticationProperties());
 
         return RedirectToRoute("Signed-in-stub");
     }

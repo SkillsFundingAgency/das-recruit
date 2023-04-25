@@ -86,7 +86,7 @@ namespace Esfa.Recruit.Employer.Web
                     .Equals("true", StringComparison.CurrentCultureIgnoreCase))
             {
                 services.AddTransient<ICustomClaims, EmployerAccountPostAuthenticationClaimsHandler>();
-                services.AddAndConfigureGovUkAuthentication(Configuration, $"{typeof(Startup).Assembly.GetName().Name}.Auth", typeof(EmployerAccountPostAuthenticationClaimsHandler));
+                services.AddAndConfigureGovUkAuthentication(Configuration, typeof(EmployerAccountPostAuthenticationClaimsHandler), "", "/service/SignIn-Stub");
                 services.AddAuthorizationService();
                 services.AddMaMenuConfiguration(RouteNames.Logout_Get, Configuration["ResourceEnvironmentName"]);
             }
@@ -102,7 +102,7 @@ namespace Esfa.Recruit.Employer.Web
             }
 
 
-            services.AddDataProtection(Configuration, HostingEnvironment, applicationName: "das-employer-recruit-web");
+            services.AddDataProtection(Configuration, HostingEnvironment, applicationName: "das-employer");
         }
     }
 }
