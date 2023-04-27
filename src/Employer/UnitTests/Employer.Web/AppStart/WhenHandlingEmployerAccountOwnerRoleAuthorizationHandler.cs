@@ -17,38 +17,38 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.AppStart
     {
         [Test, MoqAutoData]
         public async Task Then_Returns_Succeeded_If_Employer_Is_Authorized_For_Any_Role(
-            EmployerAccountOwnerRequirement requirement,
+            EmployerAccountOwnerOrTransactorRequirement orTransactorRequirement,
             [Frozen] Mock<IHttpContextAccessor> httpContextAccessor,
             [Frozen] Mock<IEmployerAccountAuthorizationHandler> handler,
-            EmployerAccountOwnerAuthorizationHandler authorizationHandler)
+            EmployerAccountOwnerOrTransactorAuthorizationHandler orTransactorAuthorizationHandler)
         {
             //Arrange
-            var context = new AuthorizationHandlerContext(new[] { requirement }, new ClaimsPrincipal(), null);
+            var context = new AuthorizationHandlerContext(new[] { orTransactorRequirement }, new ClaimsPrincipal(), null);
             var httpContext = new DefaultHttpContext(new FeatureCollection());
             httpContextAccessor.Setup(x => x.HttpContext).Returns(httpContext);
-            handler.Setup(x => x.IsEmployerAuthorized(context, false)).ReturnsAsync(true);
+            handler.Setup(x => x.IsEmployerAuthorized(context, EmployerUserRole.Transactor)).ReturnsAsync(true);
 
             //Act
-            await authorizationHandler.HandleAsync(context);
+            await orTransactorAuthorizationHandler.HandleAsync(context);
 
             //Assert
             context.HasSucceeded.Should().BeTrue();
         }
         [Test, MoqAutoData]
         public async Task Then_Returns_Failed_If_Employer_Is_Not_Authorized_For_Any_Role(
-            EmployerAccountOwnerRequirement requirement,
+            EmployerAccountOwnerOrTransactorRequirement orTransactorRequirement,
             [Frozen] Mock<IHttpContextAccessor> httpContextAccessor,
             [Frozen] Mock<IEmployerAccountAuthorizationHandler> handler,
-            EmployerAccountOwnerAuthorizationHandler authorizationHandler)
+            EmployerAccountOwnerOrTransactorAuthorizationHandler orTransactorAuthorizationHandler)
         {
             //Arrange
-            var context = new AuthorizationHandlerContext(new[] { requirement }, new ClaimsPrincipal(), null);
+            var context = new AuthorizationHandlerContext(new[] { orTransactorRequirement }, new ClaimsPrincipal(), null);
             var httpContext = new DefaultHttpContext(new FeatureCollection());
             httpContextAccessor.Setup(x => x.HttpContext).Returns(httpContext);
-            handler.Setup(x => x.IsEmployerAuthorized(context, true)).ReturnsAsync(false);
+            handler.Setup(x => x.IsEmployerAuthorized(context, EmployerUserRole.Transactor)).ReturnsAsync(false);
 
             //Act
-            await authorizationHandler.HandleAsync(context);
+            await orTransactorAuthorizationHandler.HandleAsync(context);
 
             //Assert
             context.HasSucceeded.Should().BeFalse();

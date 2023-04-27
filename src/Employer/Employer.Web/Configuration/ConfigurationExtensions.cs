@@ -32,7 +32,7 @@ namespace Esfa.Recruit.Employer.Web.Configuration
         {
             services.AddHttpContextAccessor();
             services.AddTransient<IEmployerAccountAuthorizationHandler, EmployerAccountAuthorizationHandler>();
-            services.AddSingleton<IAuthorizationHandler, EmployerAccountOwnerAuthorizationHandler>();
+            services.AddSingleton<IAuthorizationHandler, EmployerAccountOwnerOrTransactorAuthorizationHandler>();
             services.AddTransient<IAuthorizationHandler, EmployerAccountHandler>();
             services.AddAuthorization(options =>
             {
@@ -46,10 +46,10 @@ namespace Esfa.Recruit.Employer.Web.Configuration
                     });
                 // authorization policy for controller actions more specific for admin/owner roles.
                 options.AddPolicy(
-                    PolicyNames.HasEmployerOwnerAccount, policy =>
+                    PolicyNames.HasEmployerOwnerOrTransactorAccount, policy =>
                     {
                         policy.RequireClaim(EmployerRecruitClaims.AccountsClaimsTypeIdentifier);
-                        policy.Requirements.Add(new EmployerAccountOwnerRequirement());
+                        policy.Requirements.Add(new EmployerAccountOwnerOrTransactorRequirement());
                         policy.RequireAuthenticatedUser();
                     });
             });
