@@ -28,7 +28,7 @@ public class EmployerAccountPostAuthenticationClaimsHandler : ICustomClaims
             .First(c => c.Type.Equals(ClaimTypes.Email))
             .Value;
         var accounts = await _vacancyClient.GetEmployerIdentifiersAsync(userId, email);
-        var accountsAsJson = JsonConvert.SerializeObject(accounts.UserAccounts.Select(c=>c.AccountId).ToList());
+        var accountsAsJson = JsonConvert.SerializeObject(accounts.UserAccounts.ToDictionary(k => k.AccountId));
 
         return new List<Claim>
         {

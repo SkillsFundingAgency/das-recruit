@@ -163,7 +163,8 @@ namespace Esfa.Recruit.Employer.Web.Configuration
             var userId = ctx.Principal.GetUserId();
             var email = ctx.Principal.GetEmailAddress();
             var accounts = await vacancyClient.GetEmployerIdentifiersAsync(userId, email);
-            var accountsAsJson = JsonConvert.SerializeObject(accounts.UserAccounts.Select(c=>c.AccountId).ToList());
+            var accountsAsJson = JsonConvert.SerializeObject(accounts.UserAccounts.ToDictionary(k => k.AccountId));
+            
             var associatedAccountsClaim = new Claim(EmployerRecruitClaims.AccountsClaimsTypeIdentifier, accountsAsJson, JsonClaimValueTypes.Json);
 
             ctx.Principal.Identities.First().AddClaim(associatedAccountsClaim);
