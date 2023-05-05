@@ -4,23 +4,30 @@ using Esfa.Recruit.Qa.Web.Configuration.Routing;
 using Esfa.Recruit.Qa.Web.Extensions;
 using Esfa.Recruit.Qa.Web.Orchestrators;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 
 namespace Esfa.Recruit.Qa.Web.Controllers
 {
     public class DashboardController : Controller
     {
         private readonly DashboardOrchestrator _orchestrator;
+        private readonly IConfiguration _configuration;
 
-        public DashboardController(DashboardOrchestrator orchestrator)
+        public DashboardController(DashboardOrchestrator orchestrator, IConfiguration configuration)
         {
             _orchestrator = orchestrator;
+            _configuration = configuration;
         }
 
         [HttpGet(Name = RouteNames.Dashboard_Index_Get)]
         public async Task<IActionResult> Index([FromQuery]string searchTerm)
         {
-            // if the user is not authenticated, redirect them back to start now page.
-            if (User.Identity is { IsAuthenticated: false }) return RedirectToAction("Index", "Home");
+            bool isDfESignInAllowed = _configuration.GetValue<bool>("UseDfeSignIn");
+            if (isDfESignInAllowed && User.Identity is { IsAuthenticated: false })
+            {
+                // if the user is not authenticated, redirect them back to start now page.
+                return RedirectToAction("Index", "Home");
+            }
 
             var vm = await _orchestrator.GetDashboardViewModelAsync(searchTerm, User);
 
