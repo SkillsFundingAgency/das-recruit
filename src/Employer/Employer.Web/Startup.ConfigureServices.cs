@@ -82,7 +82,7 @@ namespace Esfa.Recruit.Employer.Web
                     .Equals("true", StringComparison.CurrentCultureIgnoreCase))
             {
                 services.AddTransient<ICustomClaims, EmployerAccountPostAuthenticationClaimsHandler>();
-                services.AddAndConfigureGovUkAuthentication(Configuration, $"{typeof(Startup).Assembly.GetName().Name}.Auth", typeof(EmployerAccountPostAuthenticationClaimsHandler));
+                services.AddAndConfigureGovUkAuthentication(Configuration, $"{typeof(Startup).Assembly.GetName().Name}.Auth", typeof(EmployerAccountPostAuthenticationClaimsHandler), "/home/signout");
                 services.AddAuthorizationService();
             }
 

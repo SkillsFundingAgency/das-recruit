@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Esfa.Recruit.Employer.Web.Controllers
 {
     [Route(RoutePaths.AccountRoutePath)]
-    [Authorize(Policy = nameof(PolicyNames.HasEmployerOwnerAccount))]
+    [Authorize(Policy = nameof(PolicyNames.HasEmployerOwnerOrTransactorAccount))]
     public class VacancyTaskListController : Controller
     {
         private readonly VacancyTaskListOrchestrator _orchestrator;
