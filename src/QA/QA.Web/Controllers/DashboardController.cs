@@ -16,9 +16,12 @@ namespace Esfa.Recruit.Qa.Web.Controllers
             _orchestrator = orchestrator;
         }
 
-        [HttpGet("/", Name = RouteNames.Dashboard_Index_Get)]
+        [HttpGet(Name = RouteNames.Dashboard_Index_Get)]
         public async Task<IActionResult> Index([FromQuery]string searchTerm)
         {
+            // if the user is not authenticated, redirect them back to start now page.
+            if (User.Identity is { IsAuthenticated: false }) return RedirectToAction("Index", "Home");
+
             var vm = await _orchestrator.GetDashboardViewModelAsync(searchTerm, User);
 
             vm.DashboardMessage = TempData[TempDataKeys.DashboardMessage]?.ToString();

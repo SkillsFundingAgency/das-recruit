@@ -1,0 +1,18 @@
+﻿@{
+    ViewBag.Title = "Vacancy QA";
+    ViewBag.ShowNav = false;
+}
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-l">Apprenticeship service vacancy QA</h1>
+        <p class="govuk-body">Apprenticeship service QA agents can use this service to:</p>
+        <ul class="govuk-list govuk-list--bullet govuk-!-margin-left-4">
+            <li>review and approve vacancies</li>
+            <li>close vacancies</li>
+            <li>remove training providers from Recruit an apprentice</li>
+            <li>create reports for vacancies</li>
+        </ul>
+        <p class="govuk-body">You’ll need a DfE Sign-in account to use this service. If you don’t have a DfE Sign-in account, you can create one at the next step.</p>
+        <a asp-route="@RouteNames.Dashboard_Next_Vacancy_Post" class="govuk-button govuk-button--start">Start now</a>
+    </div>
+</div>
