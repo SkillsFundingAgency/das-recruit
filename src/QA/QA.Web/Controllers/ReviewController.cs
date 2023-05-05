@@ -23,6 +23,9 @@ namespace Esfa.Recruit.Qa.Web.Controllers
         [HttpGet(Name = RouteNames.Vacancy_Review_Get)]
         public async Task<IActionResult> Review([FromRoute] Guid reviewId) 
         {
+            // if the user is not authenticated, redirect them back to start now page.
+            if (User.Identity is {IsAuthenticated: false}) return RedirectToAction("Index", "Home");
+
             var vm = await _orchestrator.GetReviewViewModelAsync(reviewId, User.GetVacancyUser());
           
             return View(vm);

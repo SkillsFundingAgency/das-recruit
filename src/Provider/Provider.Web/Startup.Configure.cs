@@ -50,118 +50,7 @@ namespace Esfa.Recruit.Provider.Web
             }
 
             // Add Content Security Policy           
-            app.UseCsp(options => options
-                .DefaultSources(s =>
-                {
-                    s.Self()
-                        .CustomSources(
-                        "https://*.zdassets.com",
-                        "https://*.zendesk.com",
-                        "wss://*.zendesk.com",
-                        "wss://*.zopim.com",
-                        "https://*.rcrsv.io"
-                        );
-                    //s.UnsafeInline();
-                })
-                .StyleSources(s =>
-                  { 
-                      s.Self()
-                      .CustomSources("https://www.googletagmanager.com/",
-                                      "https://www.tagmanager.google.com/",
-                                      "https://tagmanager.google.com/",
-                                      "https://fonts.googleapis.com/",
-                                      "https://*.zdassets.com",
-                                      "https://*.zendesk.com",
-                                      "wss://*.zendesk.com",
-                                      "wss://*.zopim.com",
-                                      "https://*.rcrsv.io",
-                                        "https://das-at-frnt-end.azureedge.net", 
-                                        "https://das-test-frnt-end.azureedge.net", 
-                                        "https://das-test2-frnt-end.azureedge.net",
-                                        "https://das-demo-frnt-end.azureedge.net", 
-                                        "https://das-pp-frnt-end.azureedge.net",
-                                        "https://das-prd-frnt-end.azureedge.net"
-                                      );
-                      
-                      //Google tag manager uses inline styles when administering tags. This is done on PREPROD only
-                      //TinyMCE uses inline styles
-                      s.UnsafeInline();
-                    }
-                )
-                .ScriptSources(s =>
-                {
-                    s.Self()
-                        .CustomSources("https://az416426.vo.msecnd.net/scripts/a/ai.0.js",
-                                    "*.google-analytics.com",
-                                    "*.googleapis.com",
-                                    "*.googletagmanager.com/",
-                                    "https://tagmanager.google.com",
-                                    "https://www.tagmanager.google.com/",                                    
-                                    "https://*.zdassets.com",
-                                    "https://*.zendesk.com",
-                                    "wss://*.zendesk.com",
-                                    "wss://*.zopim.com",
-                                    "https://*.zopim.com",
-                                    "https://*.rcrsv.io",
-                                    "https://das-at-frnt-end.azureedge.net", 
-                                    "https://das-test-frnt-end.azureedge.net", 
-                                    "https://das-test2-frnt-end.azureedge.net",
-                                    "https://das-demo-frnt-end.azureedge.net", 
-                                    "https://das-pp-frnt-end.azureedge.net",
-                                    "https://das-prd-frnt-end.azureedge.net");
-
-                    //Google tag manager uses inline scripts when administering tags. This is done on PREPROD only
-                        if (env.IsEnvironment(EnvironmentNames.PREPROD))
-                        {
-                            s.UnsafeInline();
-                            s.UnsafeEval();
-                        }
-                })
-                .FontSources(s =>
-                    s.Self()
-                    .CustomSources("data:",
-                                    "https://fonts.gstatic.com",
-                                    "https://fonts.googleapis.com/",
-                                    "https://assets-ukdoe.rcrsv.io/",
-                                    "https://das-at-frnt-end.azureedge.net", 
-                                    "https://das-test-frnt-end.azureedge.net", 
-                                    "https://das-test2-frnt-end.azureedge.net",
-                                    "https://das-demo-frnt-end.azureedge.net", 
-                                    "https://das-pp-frnt-end.azureedge.net",
-                                    "https://das-prd-frnt-end.azureedge.net")
-                )
-                .ConnectSources(s =>
-                    s.Self()
-                    .CustomSources(
-                        "https://*.zendesk.com",
-                        "https://*.zdassets.com",
-                        "https://dc.services.visualstudio.com",
-                        "https://*.google-analytics.com",
-                        "wss://*.zendesk.com",
-                        "wss://*.zopim.com",
-                        "https://*.rcrsv.io")
-                )
-                .ImageSources(s =>
-                    s.Self()
-                    .CustomSources("https://maps.googleapis.com",
-                                    "*.google-analytics.com",
-                                    "*.googletagmanager.com/",
-                                    "https://ssl.gstatic.com",
-                                    "https://www.gstatic.com/",
-                                    "https://*.zopim.io",
-                                    "https://*.zdassets.com",
-                                    "https://*.zendesk.com",
-                                    "wss://*.zendesk.com",
-                                    "wss://*.zopim.com",
-                                    "https://das-at-frnt-end.azureedge.net", 
-                                    "https://das-test-frnt-end.azureedge.net", 
-                                    "https://das-test2-frnt-end.azureedge.net",
-                                    "https://das-demo-frnt-end.azureedge.net", 
-                                    "https://das-pp-frnt-end.azureedge.net",
-                                    "https://das-prd-frnt-end.azureedge.net",
-                                    "data:")
-                )
-                .ReportUris(r => r.Uris("/ContentPolicyReport/Report")));
+            //AddCsp(app, env);
 
             //Registered before static files to always set header
             app.UseXContentTypeOptions();
@@ -192,6 +81,122 @@ namespace Esfa.Recruit.Provider.Web
             {
                 builder.MapControllerRoute("default", RoutePaths.AccountRoutePath);
             });
+        }
+
+        private static void AddCsp(IApplicationBuilder app, IWebHostEnvironment env)
+        {
+            app.UseCsp(options => options
+                .DefaultSources(s =>
+                {
+                    s.Self()
+                        .CustomSources(
+                            "https://*.zdassets.com",
+                            "https://*.zendesk.com",
+                            "wss://*.zendesk.com",
+                            "wss://*.zopim.com",
+                            "https://*.rcrsv.io"
+                        );
+                    //s.UnsafeInline();
+                })
+                .StyleSources(s =>
+                    {
+                        s.Self()
+                            .CustomSources("https://www.googletagmanager.com/",
+                                "https://www.tagmanager.google.com/",
+                                "https://tagmanager.google.com/",
+                                "https://fonts.googleapis.com/",
+                                "https://*.zdassets.com",
+                                "https://*.zendesk.com",
+                                "wss://*.zendesk.com",
+                                "wss://*.zopim.com",
+                                "https://*.rcrsv.io",
+                                "https://das-at-frnt-end.azureedge.net",
+                                "https://das-test-frnt-end.azureedge.net",
+                                "https://das-test2-frnt-end.azureedge.net",
+                                "https://das-demo-frnt-end.azureedge.net",
+                                "https://das-pp-frnt-end.azureedge.net",
+                                "https://das-prd-frnt-end.azureedge.net"
+                            );
+
+                        //Google tag manager uses inline styles when administering tags. This is done on PREPROD only
+                        //TinyMCE uses inline styles
+                        s.UnsafeInline();
+                    }
+                )
+                .ScriptSources(s =>
+                {
+                    s.Self()
+                        .CustomSources("https://az416426.vo.msecnd.net/scripts/a/ai.0.js",
+                            "*.google-analytics.com",
+                            "*.googleapis.com",
+                            "*.googletagmanager.com/",
+                            "https://tagmanager.google.com",
+                            "https://www.tagmanager.google.com/",
+                            "https://*.zdassets.com",
+                            "https://*.zendesk.com",
+                            "wss://*.zendesk.com",
+                            "wss://*.zopim.com",
+                            "https://*.zopim.com",
+                            "https://*.rcrsv.io",
+                            "https://das-at-frnt-end.azureedge.net",
+                            "https://das-test-frnt-end.azureedge.net",
+                            "https://das-test2-frnt-end.azureedge.net",
+                            "https://das-demo-frnt-end.azureedge.net",
+                            "https://das-pp-frnt-end.azureedge.net",
+                            "https://das-prd-frnt-end.azureedge.net");
+
+                    //Google tag manager uses inline scripts when administering tags. This is done on PREPROD only
+                    if (env.IsEnvironment(EnvironmentNames.PREPROD))
+                    {
+                        s.UnsafeInline();
+                        s.UnsafeEval();
+                    }
+                })
+                .FontSources(s =>
+                    s.Self()
+                        .CustomSources("data:",
+                            "https://fonts.gstatic.com",
+                            "https://fonts.googleapis.com/",
+                            "https://assets-ukdoe.rcrsv.io/",
+                            "https://das-at-frnt-end.azureedge.net",
+                            "https://das-test-frnt-end.azureedge.net",
+                            "https://das-test2-frnt-end.azureedge.net",
+                            "https://das-demo-frnt-end.azureedge.net",
+                            "https://das-pp-frnt-end.azureedge.net",
+                            "https://das-prd-frnt-end.azureedge.net")
+                )
+                .ConnectSources(s =>
+                    s.Self()
+                        .CustomSources(
+                            "https://*.zendesk.com",
+                            "https://*.zdassets.com",
+                            "https://dc.services.visualstudio.com",
+                            "https://*.google-analytics.com",
+                            "wss://*.zendesk.com",
+                            "wss://*.zopim.com",
+                            "https://*.rcrsv.io")
+                )
+                .ImageSources(s =>
+                    s.Self()
+                        .CustomSources("https://maps.googleapis.com",
+                            "*.google-analytics.com",
+                            "*.googletagmanager.com/",
+                            "https://ssl.gstatic.com",
+                            "https://www.gstatic.com/",
+                            "https://*.zopim.io",
+                            "https://*.zdassets.com",
+                            "https://*.zendesk.com",
+                            "wss://*.zendesk.com",
+                            "wss://*.zopim.com",
+                            "https://das-at-frnt-end.azureedge.net",
+                            "https://das-test-frnt-end.azureedge.net",
+                            "https://das-test2-frnt-end.azureedge.net",
+                            "https://das-demo-frnt-end.azureedge.net",
+                            "https://das-pp-frnt-end.azureedge.net",
+                            "https://das-prd-frnt-end.azureedge.net",
+                            "data:")
+                )
+                .ReportUris(r => r.Uris("/ContentPolicyReport/Report")));
         }
 
         private static string[] GetAllowableDestinations(AuthenticationConfiguration authConfig, ExternalLinksConfiguration linksConfig)
