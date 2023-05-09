@@ -18,7 +18,7 @@ using InfoMsg = Esfa.Recruit.Shared.Web.ViewModels.InfoMessages;
 namespace Esfa.Recruit.Employer.Web.Controllers
 {
     [Route(RoutePaths.AccountVacancyRoutePath)]
-    [Authorize(Policy = nameof(PolicyNames.HasEmployerOwnerAccount))]
+    [Authorize(Policy = nameof(PolicyNames.HasEmployerOwnerOrTransactorAccount))]
     public class VacancyManageController : Controller
     {
         private readonly VacancyManageOrchestrator _orchestrator;

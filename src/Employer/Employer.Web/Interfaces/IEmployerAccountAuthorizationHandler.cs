@@ -1,16 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using System.Threading.Tasks;
+using Esfa.Recruit.Employer.Web.Middleware;
 
 namespace Esfa.Recruit.Employer.Web.Interfaces
 {
     public interface IEmployerAccountAuthorizationHandler
     {
-        /// <summary>
-        /// Contract to validate if the logged in user is authorized and got right roles associated.
-        /// </summary>
-        /// <param name="context">AuthorizationHandlerContext.</param>
-        /// <param name="allowAllUserRoles">Boolean.</param>
-        /// <returns>boolean.</returns>
-        Task<bool> IsEmployerAuthorized(AuthorizationHandlerContext context, bool allowAllUserRoles);
+        Task<bool> IsEmployerAuthorized(AuthorizationHandlerContext context, EmployerUserRole minimumAllowedRole);
     }
 }

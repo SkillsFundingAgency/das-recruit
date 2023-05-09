@@ -9,11 +9,11 @@ public static class PolicyNames
             return nameof(HasEmployerAccountPolicyName);
         }
     }
-    public static string HasEmployerOwnerAccount
+    public static string HasEmployerOwnerOrTransactorAccount
     {
         get
         {
-            return nameof(HasEmployerOwnerAccount);
+            return nameof(HasEmployerOwnerOrTransactorAccount);
         }
     }
 }

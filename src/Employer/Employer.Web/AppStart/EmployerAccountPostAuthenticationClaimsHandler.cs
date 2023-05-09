@@ -31,8 +31,7 @@ public class EmployerAccountPostAuthenticationClaimsHandler : ICustomClaims
             .Value;
         var accounts = await _vacancyClient.GetEmployerIdentifiersAsync(userId, email);
         
-        var accountsAsJson = JsonConvert.SerializeObject(accounts.UserAccounts.ToDictionary(k => k.AccountId));
-        
+        var accountsAsJson = JsonConvert.SerializeObject(accounts.UserAccounts.ToDictionary(k => k.AccountId));        
         
         if (accounts.IsSuspended)
         {
