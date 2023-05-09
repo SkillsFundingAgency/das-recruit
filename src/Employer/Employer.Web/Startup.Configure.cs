@@ -8,8 +8,10 @@ using System.Collections.Generic;
 using System.Globalization;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Microsoft.ApplicationInsights.Extensibility;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Logging;
 using Microsoft.Extensions.Hosting;
+using SFA.DAS.GovUK.Auth.Extensions;
 
 
 namespace Esfa.Recruit.Employer.Web
@@ -17,7 +19,7 @@ namespace Esfa.Recruit.Employer.Web
     public partial class Startup
     {
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IOptions<ExternalLinksConfiguration> externalLinks, IHostApplicationLifetime applicationLifetime, ILogger<Startup> logger)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IOptions<ExternalLinksConfiguration> externalLinks, IHostApplicationLifetime applicationLifetime, ILogger<Startup> logger, IConfiguration config)
         {
             var cultureInfo = new CultureInfo("en-GB");
 
@@ -183,7 +185,7 @@ namespace Esfa.Recruit.Employer.Web
             app.UseRedirectValidation(opts =>
             {
                 opts.AllowSameHostRedirectsToHttps();
-                opts.AllowedDestinations(GetAllowableDestinations(AuthConfig, externalLinks.Value));
+                opts.AllowedDestinations(GetAllowableDestinations(AuthConfig, externalLinks.Value, config));
             }); //Register this earlier if there's middleware that might redirect.
 
             // Redirect requests to root to the MA site.
@@ -201,7 +203,7 @@ namespace Esfa.Recruit.Employer.Web
 
         }
 
-        private static string[] GetAllowableDestinations(AuthenticationConfiguration authConfig, ExternalLinksConfiguration linksConfig)
+        private static string[] GetAllowableDestinations(AuthenticationConfiguration authConfig, ExternalLinksConfiguration linksConfig, IConfiguration configuration)
         {
             var destinations = new List<string>();
 
@@ -224,6 +226,7 @@ namespace Esfa.Recruit.Employer.Web
                 destinations.Add(linksConfig.EmployerRecruitmentApiUrl);
             
             destinations.Add("https://oidc.integration.account.gov.uk");
+            destinations.Add("".GetSignedOutRedirectUrl(configuration["ResourceEnvironmentName"]));
             
             return destinations.ToArray();
         }

@@ -3,7 +3,6 @@ using System.IO;
 using Esfa.Recruit.Employer.Web.AppStart;
 using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Shared.Web.Extensions;
-using Esfa.Recruit.Shared.Web.FeatureToggle;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.Extensions.Configuration;
@@ -79,6 +78,8 @@ namespace Esfa.Recruit.Employer.Web
             services.AddControllersWithViews().AddRazorRuntimeCompilation();
 #endif
 
+            services.AddTransient<IStubAuthenticationService, StubAuthenticationService>();//TODO remove after gov go live
+            
             if (Configuration["RecruitConfiguration:UseGovSignIn"] != null && Configuration["RecruitConfiguration:UseGovSignIn"]
                     .Equals("true", StringComparison.CurrentCultureIgnoreCase))
             {

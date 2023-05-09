@@ -38,7 +38,7 @@ public class WhenGettingClaims
 
         actual.FirstOrDefault(c => c.Type.Equals(EmployerRecruitClaims.AccountsClaimsTypeIdentifier)).Value
             .Should().Be(
-                JsonConvert.SerializeObject(getUserAccountsResponse.UserAccounts.Select(c => c.AccountId).ToList()));
+                JsonConvert.SerializeObject(getUserAccountsResponse.UserAccounts.ToDictionary(c => c.AccountId)));
         actual.FirstOrDefault(c => c.Type.Equals(EmployerRecruitClaims.IdamsUserIdClaimTypeIdentifier)).Value
             .Should().Be(getUserAccountsResponse.EmployerUserId);
         actual.FirstOrDefault(c => c.Type.Equals(ClaimTypes.AuthorizationDecision))?.Value?.Should().BeNullOrEmpty();
