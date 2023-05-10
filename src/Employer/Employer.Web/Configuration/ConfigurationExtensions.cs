@@ -23,6 +23,8 @@ using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.Extensions.Hosting;
+using SFA.DAS.Employer.Shared.UI;
+using SFA.DAS.GovUK.Auth.Authentication;
 
 namespace Esfa.Recruit.Employer.Web.Configuration
 {
@@ -34,6 +36,8 @@ namespace Esfa.Recruit.Employer.Web.Configuration
             services.AddTransient<IEmployerAccountAuthorizationHandler, EmployerAccountAuthorizationHandler>();
             services.AddSingleton<IAuthorizationHandler, EmployerAccountOwnerOrTransactorAuthorizationHandler>();
             services.AddTransient<IAuthorizationHandler, EmployerAccountHandler>();
+            services.AddTransient<IAuthorizationHandler, AccountActiveAuthorizationHandler>();
+            
             services.AddAuthorization(options =>
             {
                 // default authorization policy for all controller actions.
@@ -43,6 +47,7 @@ namespace Esfa.Recruit.Employer.Web.Configuration
                         policy.RequireClaim(EmployerRecruitClaims.AccountsClaimsTypeIdentifier);
                         policy.Requirements.Add(new EmployerAccountRequirement());
                         policy.RequireAuthenticatedUser();
+                        policy.Requirements.Add(new AccountActiveRequirement());
                     });
                 // authorization policy for controller actions more specific for admin/owner roles.
                 options.AddPolicy(
@@ -51,7 +56,9 @@ namespace Esfa.Recruit.Employer.Web.Configuration
                         policy.RequireClaim(EmployerRecruitClaims.AccountsClaimsTypeIdentifier);
                         policy.Requirements.Add(new EmployerAccountOwnerOrTransactorRequirement());
                         policy.RequireAuthenticatedUser();
+                        policy.Requirements.Add(new AccountActiveRequirement());
                     });
+                    
             });
         }
 
@@ -95,7 +102,7 @@ namespace Esfa.Recruit.Employer.Web.Configuration
                     opts.Filters.AddService<GoogleAnalyticsFilter>();
                     opts.Filters.AddService<ZendeskApiFilter>();
                     opts.AddTrimModelBinderProvider(loggerFactory);
-                })
+                }).SetDefaultNavigationSection(NavigationSection.RecruitHome)
                 .AddNewtonsoftJson();
             services.AddFluentValidationAutoValidation();
         }
@@ -164,7 +171,7 @@ namespace Esfa.Recruit.Employer.Web.Configuration
             var email = ctx.Principal.GetEmailAddress();
             var accounts = await vacancyClient.GetEmployerIdentifiersAsync(userId, email);
             var accountsAsJson = JsonConvert.SerializeObject(accounts.UserAccounts.ToDictionary(k => k.AccountId));
-            
+
             var associatedAccountsClaim = new Claim(EmployerRecruitClaims.AccountsClaimsTypeIdentifier, accountsAsJson, JsonClaimValueTypes.Json);
 
             ctx.Principal.Identities.First().AddClaim(associatedAccountsClaim);

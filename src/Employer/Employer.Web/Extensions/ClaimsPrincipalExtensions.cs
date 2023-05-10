@@ -4,6 +4,7 @@ using Esfa.Recruit.Employer.Web.Configuration;
 using System.Security.Claims;
 using Esfa.Recruit.Employer.Web.Models;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Responses;
 using Newtonsoft.Json;
 
 namespace Esfa.Recruit.Employer.Web.Extensions
@@ -32,8 +33,8 @@ namespace Esfa.Recruit.Employer.Web.Extensions
             if (string.IsNullOrEmpty(employerAccountClaim?.Value))
                 return Enumerable.Empty<string>();
             
-            var employerAccounts = JsonConvert.DeserializeObject<Dictionary<string, EmployerUserAccountItem>>(employerAccountClaim.Value);
-            return employerAccounts.Select(c=>c.Value.EncodedAccountId);
+            var employerAccounts = JsonConvert.DeserializeObject<Dictionary<string, EmployerIdentifier>>(employerAccountClaim.Value).Keys.Select(c=>c).ToList();
+            return employerAccounts;
         }
 
         public static VacancyUser ToVacancyUser(this ClaimsPrincipal user)

@@ -59,10 +59,10 @@ public class EmployerAccountAuthorizationHandler : IEmployerAccountAuthorization
 
         EmployerUserAccountItem employerIdentifier = null;
 
-        if (employerAccounts != null)
+        // read the employer Identifier from the accounts.
+        if (accountIdFromUrl != null)
         {
-            employerIdentifier = employerAccounts.ContainsKey(accountIdFromUrl) 
-                ? employerAccounts[accountIdFromUrl] : null;
+            employerIdentifier = employerAccounts[accountIdFromUrl];
         }
 
         if (employerAccounts == null || !employerAccounts.ContainsKey(accountIdFromUrl))

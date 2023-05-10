@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
@@ -31,8 +32,17 @@ namespace Esfa.Recruit.Employer.Web.Controllers
                 var authenticationProperties = new AuthenticationProperties();
                 authenticationProperties.Parameters.Clear();
                 authenticationProperties.Parameters.Add("id_token",idToken);
-                return SignOut(
-                    authenticationProperties, CookieAuthenticationDefaults.AuthenticationScheme, OpenIdConnectDefaults.AuthenticationScheme);
+                var schemes = new List<string>
+                {
+                    CookieAuthenticationDefaults.AuthenticationScheme
+                };
+                _ = bool.TryParse(_configuration["StubAuth"], out var stubAuth);
+                if (!stubAuth)
+                {
+                    schemes.Add(OpenIdConnectDefaults.AuthenticationScheme);
+                }
+            
+                return SignOut(authenticationProperties, schemes.ToArray());
             }
             
             
