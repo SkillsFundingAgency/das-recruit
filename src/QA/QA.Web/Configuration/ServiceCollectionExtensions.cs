@@ -23,6 +23,7 @@ namespace Esfa.Recruit.Qa.Web.Configuration
     public static class ServiceCollectionExtensions
     {
         private const int SessionTimeoutMinutes = 30;
+        private const string DfESignInClientName = "QA";
 
         public static void AddAuthenticationService(this IServiceCollection services, AuthenticationConfiguration authConfig, IConfiguration config)
         {
@@ -31,7 +32,7 @@ namespace Esfa.Recruit.Qa.Web.Configuration
             if (isDfESignInAllowed)
             {
                 // register DfeSignIn authentication services to the AspNetCore Authentication Options.
-                services.AddAndConfigureDfESignInAuthentication(config, $"{CookieNames.QaData}", typeof(CustomServiceRole));
+                services.AddAndConfigureDfESignInAuthentication(config, $"{CookieNames.QaData}", typeof(CustomServiceRole), DfESignInClientName);
             }
             else
             {
