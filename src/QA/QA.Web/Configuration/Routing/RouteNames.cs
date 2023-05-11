@@ -6,6 +6,7 @@
         public const string ApplicationsReportCreate_Post = "ApplicationsReportCreate_Post";
         public const string Dashboard_Index_Get = "Dashboard_Index_Get";
         public const string Dashboard_Next_Vacancy_Post = "Dashboard_Next_Vacancy_Post";
+        public const string Dashboard_Next_Vacancy_Get = "Dashboard_Next_Vacancy_Get";
         public const string DismissOutageMessage_Post = "DismissOutageMessage_Post";
         public const string ReportConfirmation_Get = "ReportConfirmation_Get";
         public const string ReportDashboard_DownloadCsv = "ReportDashboard_DownloadCsv";
