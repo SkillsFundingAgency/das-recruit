@@ -89,6 +89,7 @@
 <div asp-show="@(Model.IsApplyThroughFaaVacancy || Model.IsApplyThroughFatVacancy)">
     <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
     <h2 class="govuk-heading-l  govuk-!-margin-top-6">Manage applications</h2>
+    <a asp-route="@RouteNames.ApplicationReviewsToShareWithEmployer_Get" asp-all-route-data="@Model.RouteDictionary" class="govuk-link govuk-!-margin-bottom-2">Share multiple applications with employer</a>
     <partial asp-show="@Model.HasApplications" name="@PartialNames.VacancyApplicationsTable" for="Applications"/>
     <p asp-show="@Model.HasNoApplications" class="govuk-body govuk-!-margin-bottom-0">Candidate applications for this @(isApprenticeshipVacancyType ? "apprenticeship" : "traineeship") will appear here.</p>
 </div>
