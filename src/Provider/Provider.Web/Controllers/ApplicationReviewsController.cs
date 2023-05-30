@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using Esfa.Recruit.Provider.Web.Configuration;
 using Esfa.Recruit.Provider.Web.Configuration.Routing;
 using Esfa.Recruit.Provider.Web.Orchestrators;
 using Esfa.Recruit.Provider.Web.RouteModel;
@@ -19,8 +20,9 @@ namespace Esfa.Recruit.Provider.Web.Controllers
         [HttpGet("", Name = RouteNames.ApplicationReviewsToShareWithEmployer_Get)]
         public async Task<IActionResult> ApplicationReviews(VacancyRouteModel rm)
         {
-            var vm = await _orchestrator.GetApplicationReviewsToShareWithEmployerViewModelAsync(rm);
-            return View(vm);
+            var viewModel = await _orchestrator.GetApplicationReviewsToShareWithEmployerViewModelAsync(rm);
+
+            return View(viewModel);
         }
     }
 }
