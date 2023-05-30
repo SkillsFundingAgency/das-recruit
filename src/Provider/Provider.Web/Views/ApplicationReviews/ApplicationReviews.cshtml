@@ -1,13 +1,51 @@
 ﻿@using System.Net
+@using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyApplications;
 @model Esfa.Recruit.Provider.Web.ViewModels.ApplicationReviews.ShareMultipleApplicationReviewsViewModel
 
 <div class="govuk-grid-row"> 
     <div class="govuk-grid-column-two-thirds">
 
-        TBC: Share Applications
+            <table class="govuk-table">
 
-         <h2 class="govuk-heading-l govuk-!-margin-top-9">Vacancy Id
-            <span class="govuk-caption-l">Showing applications for @Model.VacancyId</span>
-        </h2>
+              <thead class="govuk-table__head">
+                <tr class="govuk-table__row">
+
+                    <th scope="col" class="govuk-table__header app-custom-class">
+                        <div class="govuk-checkboxes govuk-checkboxes--small" data-module="govuk-checkboxes">
+                            <div class="govuk-checkboxes__item">
+                                @Html.CheckBoxFor(model => model.SelectedAllApplications)
+                            </div>
+                        </div>
+                    </th>
+                    
+                    <th scope="col" class="govuk-table__header app-custom-class">Name</th>
+                    <th scope="col" class="govuk-table__header app-custom-class">Application ID</th>
+                    <th scope="col" class="govuk-table__header app-custom-class">Status</th>
+                    <th scope="col" class="govuk-table__header app-custom-class">Date Applied</th>
+                </tr>
+              </thead>
+
+              <tbody class="govuk-table__body">
+
+                @foreach (VacancyApplication vacancyApplication in Model.VacancyApplications)
+                {
+                <tr class="govuk-table__row">
+
+                    <td class="govuk-checkboxes govuk-checkboxes--small" data-module="govuk-checkboxes">
+
+                    </td>
+
+                    <td class="govuk-table__cell">@vacancyApplication.CandidateName</td>
+                    <td class="govuk-table__cell">@vacancyApplication.ApplicationReviewId</td>
+                    <td class="govuk-table__cell">@vacancyApplication.Status</td>
+                    <td class="govuk-table__cell">@vacancyApplication.SubmittedDate</td>
+                </tr>
+                }
+              </tbody>
+
+            </table>
+
+
+
     </div>
 </div>

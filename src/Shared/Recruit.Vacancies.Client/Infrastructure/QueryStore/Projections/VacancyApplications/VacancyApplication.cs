@@ -43,7 +43,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Va
                 SubmittedDate = applicationReview.SubmittedDate,
                 ApplicationReviewId = applicationReview.Id,
                 IsWithdrawn = applicationReview.IsWithdrawn,
-                DisabilityStatus = ApplicationReviewDisabilityStatus.Unknown
+                DisabilityStatus = ApplicationReviewDisabilityStatus.Unknown,
+                Selected = false
             };
 
             if (applicationReview.IsWithdrawn == false)
@@ -55,5 +56,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Va
             }
             return projection;
         }
+
+        public bool Selected { get; set; }
     }
 }
