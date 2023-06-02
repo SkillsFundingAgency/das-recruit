@@ -5,9 +5,11 @@
 <div class="govuk-grid-row"> 
     <div class="govuk-grid-column-two-thirds">
 
-            <table class="govuk-table">
+          <form method="post" asp-route=""  asp-route-ukprn="todo">
+            <div class="govuk-form-group">
+                <fieldset class="govuk-fieldset">
 
-                <form method="post" asp-route=""  asp-route-ukprn="todo">
+                    <table class="govuk-table">
 
                         <thead class="govuk-table__head">
                             <tr class="govuk-table__row">
@@ -49,9 +51,13 @@
                             }
                         </tbody>
 
-                    </form>
-            </table>
+                    </table>
 
-        <button class="govuk-button submit" type="submit">Save and continue</button>
+                 </fieldset>
+             </div>
+
+             <button class="govuk-button submit" type="submit">Save and continue</button>
+
+           </form>
     </div>
 </div>
