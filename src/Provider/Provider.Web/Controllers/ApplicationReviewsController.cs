@@ -3,6 +3,7 @@ using Esfa.Recruit.Provider.Web.Configuration;
 using Esfa.Recruit.Provider.Web.Configuration.Routing;
 using Esfa.Recruit.Provider.Web.Orchestrators;
 using Esfa.Recruit.Provider.Web.RouteModel;
+using Esfa.Recruit.Provider.Web.ViewModels.ApplicationReview;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Esfa.Recruit.Provider.Web.Controllers
@@ -23,6 +24,19 @@ namespace Esfa.Recruit.Provider.Web.Controllers
             var viewModel = await _orchestrator.GetApplicationReviewsToShareWithEmployerViewModelAsync(rm);
 
             return View(viewModel);
+        }
+
+        [HttpPost("", Name = RouteNames.ApplicationReviewsToShare_Post)]
+        public async Task<IActionResult> ApplicationReviewsToShare(ApplicationReviewsToShareRouteModel rm)
+        {
+            if (!ModelState.IsValid)
+            {
+                // todo
+            }
+
+            // reroute to ApplicationReviewsToShareConfirmation action passing on an ApplicationReviewsToShareRouteModel
+
+            return View();
         }
     }
 }
