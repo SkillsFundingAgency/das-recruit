@@ -7,45 +7,51 @@
 
             <table class="govuk-table">
 
-              <thead class="govuk-table__head">
-                <tr class="govuk-table__row">
+                <form method="post" asp-route=""  asp-route-ukprn="todo">
 
-                    <th scope="col" class="govuk-table__header app-custom-class">
-                        <div class="govuk-checkboxes govuk-checkboxes--small" data-module="govuk-checkboxes">
-                            <div class="govuk-checkboxes__item">
-                                @Html.CheckBoxFor(model => model.SelectedAllApplications)
-                            </div>
-                        </div>
-                    </th>
-                    
-                    <th scope="col" class="govuk-table__header app-custom-class">Name</th>
-                    <th scope="col" class="govuk-table__header app-custom-class">Application ID</th>
-                    <th scope="col" class="govuk-table__header app-custom-class">Status</th>
-                    <th scope="col" class="govuk-table__header app-custom-class">Date Applied</th>
-                </tr>
-              </thead>
+                        <thead class="govuk-table__head">
+                            <tr class="govuk-table__row">
 
-              <tbody class="govuk-table__body">
+                                <th scope="col" class="govuk-table__header app-custom-class">
+                                    <div class="govuk-checkboxes govuk-checkboxes--small" data-module="govuk-checkboxes">
+                                        <div class="govuk-checkboxes__item">
+                                            <input asp-for="SelectedAllApplications" class="govuk-checkboxes__input" id="select-all-applications-true" type="checkbox" value="false">
+                                        </div>
+                                    </div>
+                                </th>
 
-                @foreach (VacancyApplication vacancyApplication in Model.VacancyApplications)
-                {
-                <tr class="govuk-table__row">
+                                <th scope="col" class="govuk-table__header app-custom-class">Name</th>
+                                <th scope="col" class="govuk-table__header app-custom-class">Application ID</th>
+                                <th scope="col" class="govuk-table__header app-custom-class">Status</th>
+                                <th scope="col" class="govuk-table__header app-custom-class">Date Applied</th>
+                            </tr>
+                        </thead>
 
-                    <td class="govuk-checkboxes govuk-checkboxes--small" data-module="govuk-checkboxes">
+                        <tbody class="govuk-table__body">
 
-                    </td>
+                            @foreach (VacancyApplication vacancyApplication in Model.VacancyApplications)
+                            {
+                                <tr class="govuk-table__row">
 
-                    <td class="govuk-table__cell">@vacancyApplication.CandidateName</td>
-                    <td class="govuk-table__cell">@vacancyApplication.ApplicationReviewId</td>
-                    <td class="govuk-table__cell">@vacancyApplication.Status</td>
-                    <td class="govuk-table__cell">@vacancyApplication.SubmittedDate</td>
-                </tr>
-                }
-              </tbody>
+                                    <td class="govuk-table__cell">
+                                        <div class="govuk-checkboxes govuk-checkboxes--small" data-module="govuk-checkboxes">
+                                            <div class="govuk-checkboxes__item">
+                                                <input asp-for="@vacancyApplication.Selected" class="govuk-checkboxes__input" id="@vacancyApplication.ApplicationReviewId" type="checkbox" value="false">
+                                            </div>
+                                        </div>
+                                    </td>
 
+                                    <td class="govuk-table__cell">@vacancyApplication.CandidateName</td>
+                                    <td class="govuk-table__cell">@vacancyApplication.ApplicationReviewId</td>
+                                    <td class="govuk-table__cell">@vacancyApplication.Status</td>
+                                    <td class="govuk-table__cell">@vacancyApplication.SubmittedDate</td>
+                                </tr>
+                            }
+                        </tbody>
+
+                    </form>
             </table>
 
-
-
+        <button class="govuk-button submit" type="submit">Save and continue</button>
     </div>
 </div>
