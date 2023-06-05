@@ -95,6 +95,7 @@
         public const string ApplicationReview_Post = "ApplicationReview_Post";
         public const string ApplicationReviewConfirmation_Get = "ApplicationReviewConfirmation_Get";
         public const string ApplicationReviewConfirmation_Post = "ApplicationReviewConfirmation_Post";
+        public const string ApplicationReviewsToShareWithEmployer_Get = "ApplicationReviewsToShareWithEmployer_Get";
         public const string Dashboard_Get = "Dashboard_Get";
         public const string VacanciesSearchSuggestions_Get = "VacanciesSearchSuggestions_Get";
         public const string ManageNotifications_Get = "ManageNotifications_Get";
