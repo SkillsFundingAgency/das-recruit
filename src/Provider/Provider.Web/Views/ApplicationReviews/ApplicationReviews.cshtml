@@ -1,32 +1,45 @@
 ﻿@using System.Net
-@using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyApplications;
+@using Esfa.Recruit.Provider.Web.TagHelpers
+@using Esfa.Recruit.Vacancies.Client.Domain.Extensions
+@using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyApplications
 @model Esfa.Recruit.Provider.Web.ViewModels.ApplicationReviews.ShareMultipleApplicationReviewsViewModel
 
 <div class="govuk-grid-row"> 
     <div class="govuk-grid-column-two-thirds">
 
-        <form method="post" asp-route="@RouteNames.ApplicationReviewsToShare_Post" asp-route-vacancyId="@Model.VacancyId">
+        @if (Model.VacancyApplications.Any())
+        {
+        <form method="post" id="share_applications_actions_form">
             <div class="govuk-form-group" id="ApplicationsToShare">
                 <fieldset class="govuk-fieldset">
-                    <legend class="govuk-visually-hidden">Select the applications that you want to share</legend>
-                    <table class="govuk-table" data-checkboxes-select-all>
+                    
+                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                        <h1 class="govuk-fieldset__heading">
+                        Share Applications
+                        </h1>
+                    </legend>
+                    <div id="share-multiple-applications-checkbox-hint" class="govuk-hint">
+                        Select the applications that you want to reject
+                    </div>
 
-                        <thead class="govuk-table__head" aria-label="Share applications">
+                    <table class="govuk-table" aria-label="Share applications" data-checkboxes-select-all>
+
+                        <thead class="govuk-table__head">
                             <tr class="govuk-table__row">
                                 <th scope="col" class="govuk-table__header das-table-cell-width-5" data-checkboxes-select-all-cell>
 
                                 </th>
-                                <th scope="col" class="govuk-table__header das-table-cell-width-20">
-                                    <sortable-column column-name="Applicant" column-label="Applicant" default="false" default-order="Ascending"></sortable-column>
+                                <th scope="col" class="govuk-table__header das-table-cell-width-25">
+                                    <sortable-column column-name="Name" column-label="Name" default="false" default-order="Ascending"></sortable-column>
                                 </th>
                                 <th scope="col" class="govuk-table__header das-table-cell-width-15">
-                                    <sortable-column column-name="ApplicationID" column-label="ApplicationID" default="false" default-order="Ascending"></sortable-column>
+                                    <sortable-column column-name="ApplicationID" column-label="Application ID" default="false" default-order="Ascending"></sortable-column>
                                 </th>
                                 <th scope="col" class="govuk-table__header status das-table-cell-width-15">
                                     <sortable-column column-name="Status" column-label="Status" default="false" default-order="Descending"></sortable-column>
                                 </th>
                                 <th scope="col" class="govuk-table__header">
-                                    <sortable-column column-name="DateApplied" column-label="Applicant" default="false" default-order="Ascending"></sortable-column>
+                                    <sortable-column column-name="DateApplied" column-label="Date Applied" default="false" default-order="Ascending"></sortable-column>
                                 </th>
                             </tr>
                         </thead>
@@ -48,10 +61,10 @@
                                                 </div>
                                             
                                         </td>
-                                        <td class="govuk-table__cell" data-label="Name">@vacancyApplication.CandidateName</td>
-                                        <td class="govuk-table__cell" data-label="Application ID">@vacancyApplication.GetFriendlyId()</td>
-                                        <td class="govuk-table__cell" data-label="Status">@vacancyApplication.Status.GetDisplayName()</td>
-                                        <td class="govuk-table__cell" data-label="Date applied">@vacancyApplication.SubmittedDate.AsGdsDate()</td>
+                                        <td class="govuk-table__cell">@vacancyApplication.CandidateName</td>
+                                        <td class="govuk-table__cell">@vacancyApplication.GetFriendlyId()</td>
+                                        <td class="govuk-table__cell"><strong class="@vacancyApplication.Status.GetCssClassForApplicationReviewStatus()">@vacancyApplication.Status.GetDisplayName()</strong></td>
+                                        <td class="govuk-table__cell">@vacancyApplication.SubmittedDate.AsGdsDate()</td>
                                     </tr>
                                 }
                             }
@@ -62,8 +75,14 @@
                  </fieldset>
              </div>
 
-             <button class="govuk-button submit" type="submit">Save and continue</button>
+             <button class="govuk-button submit" type="submit">Continue</button>
 
            </form>
+        } 
+        else 
+        {
+            <div> There are no applications for this vacancy yet.
+            </div>
+        }
     </div>
 </div>

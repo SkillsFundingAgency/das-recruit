@@ -23,6 +23,7 @@ using Esfa.Recruit.Provider.Web.Services;
 using Esfa.Recruit.Provider.Web.TagHelpers;
 using Esfa.Recruit.Shared.Web.Orchestrators;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 
 namespace Esfa.Recruit.Provider.Web.Configuration
 {
@@ -70,6 +71,7 @@ namespace Esfa.Recruit.Provider.Web.Configuration
             services.AddTransient<IProviderAlertsViewModelFactory, ProviderAlertsViewModelFactory>();
             services.AddTransient<ITrainingProviderAgreementService, TrainingProviderAgreementService>();
             services.AddTransient<IUtility, Utility>();
+            services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
 
             services.AddTransient<IFieldReviewHelper, FieldReviewHelper>();
         }

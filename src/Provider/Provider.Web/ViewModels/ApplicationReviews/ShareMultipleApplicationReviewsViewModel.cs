@@ -7,7 +7,7 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.ApplicationReviews
 {
     public class ShareMultipleApplicationReviewsViewModel : ShareMultipleApplicationsPostRequest
     {
-        public Guid? VacancyId { get; set; }
+        public Guid VacancyId { get; set; }
         public long VacancyReference { get; set; }
         public bool SelectedAllApplications { get; set; }
         public List<VacancyApplication> VacancyApplications { get; set; }
