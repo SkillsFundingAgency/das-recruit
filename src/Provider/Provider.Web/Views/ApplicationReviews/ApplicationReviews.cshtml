@@ -6,7 +6,7 @@
     <div class="govuk-grid-column-two-thirds">
 
         <form method="post" asp-route="@RouteNames.ApplicationReviewsToShare_Post" asp-route-vacancyId="@Model.VacancyId">
-            <div class="govuk-form-group">
+            <div class="govuk-form-group" id="ApplicationsToShare">
                 <fieldset class="govuk-fieldset">
                     <legend class="govuk-visually-hidden">Select the applications that you want to share</legend>
                     <table class="govuk-table" data-checkboxes-select-all>
@@ -48,10 +48,10 @@
                                                 </div>
                                             
                                         </td>
-                                        <td class="govuk-table__cell">@vacancyApplication.CandidateName</td>
-                                        <td class="govuk-table__cell">@vacancyApplication.ApplicationReviewId</td>
-                                        <td class="govuk-table__cell">@vacancyApplication.Status</td>
-                                        <td class="govuk-table__cell">@vacancyApplication.SubmittedDate</td>
+                                        <td class="govuk-table__cell" data-label="Name">@vacancyApplication.CandidateName</td>
+                                        <td class="govuk-table__cell" data-label="Application ID">@vacancyApplication.GetFriendlyId()</td>
+                                        <td class="govuk-table__cell" data-label="Status">@vacancyApplication.Status.GetDisplayName()</td>
+                                        <td class="govuk-table__cell" data-label="Date applied">@vacancyApplication.SubmittedDate.AsGdsDate()</td>
                                     </tr>
                                 }
                             }

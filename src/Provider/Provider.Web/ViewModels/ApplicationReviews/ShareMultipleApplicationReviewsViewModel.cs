@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace Esfa.Recruit.Provider.Web.ViewModels.ApplicationReviews
 {
-    public class ShareMultipleApplicationReviewsViewModel
+    public class ShareMultipleApplicationReviewsViewModel : ShareMultipleApplicationsPostRequest
     {
         public Guid? VacancyId { get; set; }
         public long VacancyReference { get; set; }

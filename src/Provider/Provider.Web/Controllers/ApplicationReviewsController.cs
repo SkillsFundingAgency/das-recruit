@@ -4,6 +4,7 @@ using Esfa.Recruit.Provider.Web.Configuration.Routing;
 using Esfa.Recruit.Provider.Web.Orchestrators;
 using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Provider.Web.ViewModels.ApplicationReview;
+using Esfa.Recruit.Provider.Web.ViewModels.ApplicationReviews;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Esfa.Recruit.Provider.Web.Controllers
@@ -27,7 +28,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
         }
 
         [HttpPost("", Name = RouteNames.ApplicationReviewsToShare_Post)]
-        public async Task<IActionResult> ApplicationReviewsToShare(ApplicationReviewsToShareRouteModel rm)
+        public async Task<IActionResult> ApplicationReviewsToShare(ShareMultipleApplicationsPostRequest rm)
         {
             if (!ModelState.IsValid)
             {
