@@ -5,6 +5,7 @@ using Esfa.Recruit.Provider.Web.Orchestrators;
 using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Provider.Web.ViewModels.ApplicationReview;
 using Esfa.Recruit.Provider.Web.ViewModels.ApplicationReviews;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Esfa.Recruit.Provider.Web.Controllers
@@ -19,7 +20,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
             _orchestrator = orchestrator;
         }
 
-        [HttpGet("", Name = RouteNames.ApplicationReviewsToShareWithEmployer_Get)]
+        [HttpGet("", Name = RouteNames.ApplicationReviewsToShare_Get)]
         public async Task<IActionResult> ApplicationReviews(VacancyRouteModel rm)
         {
             var viewModel = await _orchestrator.GetApplicationReviewsToShareWithEmployerViewModelAsync(rm);
@@ -27,17 +28,22 @@ namespace Esfa.Recruit.Provider.Web.Controllers
             return View(viewModel);
         }
 
+        // The Continue button is hit when multiple applications slected via the checkbox
+        // this redirects to a GET ApplicationRevewsToShareConfirmation
         [HttpPost("", Name = RouteNames.ApplicationReviewsToShare_Post)]
-        public async Task<IActionResult> ApplicationReviewsToShare(ShareMultipleApplicationsPostRequest rm)
+        [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+        public IActionResult ApplicationReviewsToShare(ApplicationReviewsToShareRouteModel rm)
         {
-            if (!ModelState.IsValid)
-            {
-                // todo
-            }
+            return RedirectToAction(nameof(ApplicationReviewsToShareConfirmation), new { rm.ApplicationsToShare, rm.Ukprn, rm.VacancyId });
+        }
 
-            // reroute to ApplicationReviewsToShareConfirmation action passing on an ApplicationReviewsToShareRouteModel
-
-            return View();
+        // GET ApplicationReviewsToShareConfirmation
+        // To hold the list of ApplicationReviewIds that need their Status changed to SHARED
+        [HttpGet("share", Name = RouteNames.ApplicationReviewsToShareConfirmation_Get)]
+        public async Task<IActionResult> ApplicationReviewsToShareConfirmation(ShareMultipleApplicationsPostRequest request)
+        {
+            var shareApplicationsConfirmationViewModel = await _orchestrator.GetApplicationReviewsToShareConfirmationViewModel(request);
+            return View(shareApplicationsConfirmationViewModel);
         }
     }
 }

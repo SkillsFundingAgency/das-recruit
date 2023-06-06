@@ -1,16 +1,14 @@
-﻿using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyApplications;
-using Microsoft.AspNetCore.Mvc;
+﻿using Esfa.Recruit.Provider.Web.RouteModel;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyApplications;
 using System;
 using System.Collections.Generic;
 
 namespace Esfa.Recruit.Provider.Web.ViewModels.ApplicationReviews
 {
-    public class ShareMultipleApplicationReviewsViewModel : ShareMultipleApplicationsPostRequest
+    public class ShareMultipleApplicationReviewsViewModel : ApplicationReviewsToShareRouteModel
     {
-        public Guid VacancyId { get; set; }
         public long VacancyReference { get; set; }
-        public long Ukprn { get; set; }
-        public bool SelectedAllApplications { get; set; }
+        public bool SelectedAllApplications { get; set; } // tbc if needed
         public List<VacancyApplication> VacancyApplications { get; set; }
     }
 }

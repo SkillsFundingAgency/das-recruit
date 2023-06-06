@@ -1,6 +1,9 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Provider.Web.ViewModels.ApplicationReviews;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 
 namespace Esfa.Recruit.Provider.Web.Orchestrators
@@ -26,6 +29,18 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
                 Ukprn = rm.Ukprn,
                 VacancyReference = vacancy.VacancyReference.Value,
                 VacancyApplications = applicationReviews
+            };
+        }
+
+        public async Task<ShareMultipleApplicationReviewsConfirmationViewModel> GetApplicationReviewsToShareConfirmationViewModel(ShareMultipleApplicationsPostRequest request)
+        {
+            var applicationReviewsToShare = await _vacancyClient.GetVacancyApplicationsForSelectedIdsAsync(request.ApplicationsToShare);
+
+            return new ShareMultipleApplicationReviewsConfirmationViewModel
+            {
+                VacancyId = request.VacancyId,
+                Ukprn = request.Ukprn,
+                ApplicationReviewsToShare = applicationReviewsToShare
             };
         }
     }
