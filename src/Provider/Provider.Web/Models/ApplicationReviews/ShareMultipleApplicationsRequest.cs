@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using Esfa.Recruit.Provider.Web.RouteModel;
 
-namespace Esfa.Recruit.Provider.Web.ViewModels.ApplicationReviews
+namespace Esfa.Recruit.Provider.Web.Models.ApplicationReviews
 {
-    public class ShareMultipleApplicationsPostRequest : VacancyRouteModel
+    public class ShareMultipleApplicationsRequest : VacancyRouteModel
     {
         public List<Guid> ApplicationsToShare { get; set; }
     }
