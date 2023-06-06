@@ -12,6 +12,7 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Extensions
                 case ApplicationReviewStatus.New: return "govuk-tag govuk-tag--blue";
                 case ApplicationReviewStatus.Successful: return "govuk-tag govuk-tag--green";
                 case ApplicationReviewStatus.Unsuccessful: return "govuk-tag govuk-tag--red";
+                case ApplicationReviewStatus.InReview: return "govuk-tag govuk-tag--turquoise";
 
                 default:
                     return string.Empty;

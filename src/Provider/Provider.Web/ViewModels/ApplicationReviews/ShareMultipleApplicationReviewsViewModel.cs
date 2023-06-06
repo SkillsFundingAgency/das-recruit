@@ -9,6 +9,7 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.ApplicationReviews
     {
         public Guid VacancyId { get; set; }
         public long VacancyReference { get; set; }
+        public long Ukprn { get; set; }
         public bool SelectedAllApplications { get; set; }
         public List<VacancyApplication> VacancyApplications { get; set; }
     }

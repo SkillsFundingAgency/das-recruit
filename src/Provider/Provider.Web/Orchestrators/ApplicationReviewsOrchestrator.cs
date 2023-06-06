@@ -23,6 +23,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             return new ShareMultipleApplicationReviewsViewModel
             {
                 VacancyId = vacancy.Id,
+                Ukprn = rm.Ukprn,
                 VacancyReference = vacancy.VacancyReference.Value,
                 VacancyApplications = applicationReviews
             };
