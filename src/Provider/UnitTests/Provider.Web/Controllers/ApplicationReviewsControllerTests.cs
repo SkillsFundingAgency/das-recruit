@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using System;
+using Esfa.Recruit.Provider.Web.Models.ApplicationReviews;
 
 namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
 {
@@ -112,6 +113,37 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
             Assert.AreEqual("ApplicationReviewsToShareConfirmation", redirectResult.ActionName);
             Assert.AreEqual(_vacancyId, redirectResult.RouteValues["VacancyId"]);
             Assert.AreEqual(_ukprn, redirectResult.RouteValues["Ukprn"]);
+        }
+
+        [Test]
+        public async Task GET_ApplicationReviewsToShareConfirmation_ReturnsViewModelWithCorrectNumberOfApplications()
+        {
+            // Arrange
+            var request = _fixture.Create<ShareMultipleApplicationsRequest>();
+            var vacancyApplication1 = _fixture.Create<VacancyApplication>();
+            var vacancyApplication2 = _fixture.Create<VacancyApplication>();
+            var vacancyApplications = new List<VacancyApplication> { };
+            vacancyApplications.Add(vacancyApplication1);
+            vacancyApplications.Add(vacancyApplication2);
+
+            _orchestrator.Setup(o =>
+                    o.GetApplicationReviewsToShareConfirmationViewModel(It.Is<ShareMultipleApplicationsRequest>(y => y == request)))
+                .ReturnsAsync(new ShareMultipleApplicationReviewsConfirmationViewModel
+                {
+                    VacancyId = request.VacancyId,
+                    Ukprn = request.Ukprn,
+                    ApplicationReviewsToShare = vacancyApplications
+                });
+
+            // Act
+            var result = await _controller.ApplicationReviewsToShareConfirmation(request) as ViewResult;
+
+            // Assert
+            var actual = result.Model as ShareMultipleApplicationReviewsConfirmationViewModel;
+            Assert.IsNotEmpty(actual.ApplicationReviewsToShare);
+            Assert.That(actual.ApplicationReviewsToShare.Count(), Is.EqualTo(2));
+            Assert.AreEqual(actual.Ukprn, request.Ukprn);
+            Assert.AreEqual(actual.VacancyId, request.VacancyId);
         }
     }
 }
