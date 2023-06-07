@@ -22,7 +22,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
         [HttpGet("", Name = RouteNames.ApplicationReviewsToShare_Get)]
         public async Task<IActionResult> ApplicationReviews(VacancyRouteModel rm)
         {
-            var viewModel = await _orchestrator.GetApplicationReviewsToShareWithEmployerViewModelAsync(rm);
+            var viewModel = await _orchestrator.GetApplicationReviewsToShareViewModelAsync(rm);
 
             return View(viewModel);
         }

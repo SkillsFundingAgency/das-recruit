@@ -47,7 +47,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
             vacancyApplications.Add(vacancyApplication2);
 
             _orchestrator.Setup(o =>
-                    o.GetApplicationReviewsToShareWithEmployerViewModelAsync(It.Is<VacancyRouteModel>(y => y == routeModel)))
+                    o.GetApplicationReviewsToShareViewModelAsync(It.Is<VacancyRouteModel>(y => y == routeModel)))
                 .ReturnsAsync(new ShareMultipleApplicationReviewsViewModel
                 {
                     VacancyId = routeModel.VacancyId,
@@ -73,7 +73,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
             var routeModel = _fixture.Create<VacancyRouteModel>();
 
             _orchestrator.Setup(o =>
-                    o.GetApplicationReviewsToShareWithEmployerViewModelAsync(It.Is<VacancyRouteModel>(y => y == routeModel)))
+                    o.GetApplicationReviewsToShareViewModelAsync(It.Is<VacancyRouteModel>(y => y == routeModel)))
                 .ReturnsAsync(new ShareMultipleApplicationReviewsViewModel
                 {
                     VacancyId = routeModel.VacancyId,
