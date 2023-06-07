@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Qa.Web.Configuration.Routing;
 using Esfa.Recruit.Qa.Web.Extensions;
@@ -36,8 +37,12 @@ namespace Esfa.Recruit.Qa.Web.Controllers
         {
             if (ModelState.IsValid == false)
             {
-                var vm = await _orchestrator.GetReviewViewModelAsync(model, User.GetVacancyUser());
-                return View("Review", vm);
+                if (model.SelectedAutomatedQaResults.Any() && model.SelectedFieldIdentifiers.Any())
+                {
+                    var vm = await _orchestrator.GetReviewViewModelAsync(model, User.GetVacancyUser());
+                    return View("Review", vm);    
+                }
+                ModelState.ClearValidationState(nameof(ReviewEditModel.ReviewerComment));
             }
 
             var nextVacancyReviewId = await _orchestrator.SubmitReviewAsync(model, User.GetVacancyUser());
