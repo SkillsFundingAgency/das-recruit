@@ -12,9 +12,9 @@ namespace Esfa.Recruit.Provider.Web.Controllers
     [Route(RoutePaths.AccountApplicationReviewsRoutePath)]
     public class ApplicationReviewsController : Controller
     {
-        private readonly ApplicationReviewsOrchestrator _orchestrator;
+        private readonly IApplicationReviewsOrchestrator _orchestrator;
 
-        public ApplicationReviewsController(ApplicationReviewsOrchestrator orchestrator)
+        public ApplicationReviewsController(IApplicationReviewsOrchestrator orchestrator)
         {
             _orchestrator = orchestrator;
         }

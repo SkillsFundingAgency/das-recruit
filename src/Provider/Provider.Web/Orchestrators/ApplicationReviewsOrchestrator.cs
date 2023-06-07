@@ -6,7 +6,13 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 
 namespace Esfa.Recruit.Provider.Web.Orchestrators
 {
-    public class ApplicationReviewsOrchestrator
+    public interface IApplicationReviewsOrchestrator
+    {
+        Task<ShareMultipleApplicationReviewsViewModel> GetApplicationReviewsToShareWithEmployerViewModelAsync(VacancyRouteModel rm);
+        Task<ShareMultipleApplicationReviewsConfirmationViewModel> GetApplicationReviewsToShareConfirmationViewModel(ShareMultipleApplicationsRequest request);
+    }
+
+    public class ApplicationReviewsOrchestrator : IApplicationReviewsOrchestrator
     {
         private readonly IRecruitVacancyClient _vacancyClient;
 
