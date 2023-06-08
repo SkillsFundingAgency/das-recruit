@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Esfa.Recruit.Provider.Web.Configuration;
 using Esfa.Recruit.Provider.Web.Configuration.Routing;
+using Esfa.Recruit.Provider.Web.Extensions;
 using Esfa.Recruit.Provider.Web.Models.ApplicationReviews;
 using Esfa.Recruit.Provider.Web.Orchestrators;
 using Esfa.Recruit.Provider.Web.RouteModel;
@@ -41,6 +42,15 @@ namespace Esfa.Recruit.Provider.Web.Controllers
         {
             var shareApplicationsConfirmationViewModel = await _orchestrator.GetApplicationReviewsToShareConfirmationViewModel(request);
             return View(shareApplicationsConfirmationViewModel);
+        }
+
+        [HttpPost("share", Name = RouteNames.ApplicationReviewsToShareConfirmation_Post)]
+        [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+        public async Task<IActionResult> ApplicationReviewsToShareConfirmation(ShareMultipleApplicationsPostRequest request)
+        {
+            await _orchestrator.PostApplicationReviewsStatusConfirmationAsync(request, User.ToVacancyUser());
+            // todo: redirect to Manage Vacancy Page with banner
+            return View();
         }
     }
 }

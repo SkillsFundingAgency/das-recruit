@@ -41,5 +41,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         Task CloseVacancyAsync(Guid vacancyId, VacancyUser user, ClosureReason reason);
         Task<IApprenticeshipRoute> GetRoute(int? routeId);
         Task<IEnumerable<IApprenticeshipRoute>> GetApprenticeshipRoutes();
+        Task SetApplicationReviewsShared(IEnumerable<VacancyApplication> applicationReviewIds, VacancyUser user);
     }
 }

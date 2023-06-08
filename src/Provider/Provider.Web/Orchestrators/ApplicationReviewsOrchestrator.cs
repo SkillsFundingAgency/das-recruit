@@ -2,6 +2,7 @@
 using Esfa.Recruit.Provider.Web.Models.ApplicationReviews;
 using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Provider.Web.ViewModels.ApplicationReviews;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 
 namespace Esfa.Recruit.Provider.Web.Orchestrators
@@ -10,6 +11,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
     {
         Task<ShareMultipleApplicationReviewsViewModel> GetApplicationReviewsToShareViewModelAsync(VacancyRouteModel rm);
         Task<ShareMultipleApplicationReviewsConfirmationViewModel> GetApplicationReviewsToShareConfirmationViewModel(ShareMultipleApplicationsRequest request);
+        Task PostApplicationReviewsStatusConfirmationAsync(ShareMultipleApplicationsPostRequest request, VacancyUser user);
     }
 
     public class ApplicationReviewsOrchestrator : IApplicationReviewsOrchestrator
@@ -46,6 +48,11 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
                 Ukprn = request.Ukprn,
                 ApplicationReviewsToShare = applicationReviewsToShare
             };
+        }
+
+        public async Task PostApplicationReviewsStatusConfirmationAsync(ShareMultipleApplicationsPostRequest request, VacancyUser user)
+        {
+            await _vacancyClient.SetApplicationReviewsShared(request.ApplicationReviewsToShare, user);
         }
     }
 }

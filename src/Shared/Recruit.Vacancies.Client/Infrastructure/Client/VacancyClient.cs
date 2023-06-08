@@ -355,11 +355,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return _messaging.SendCommandAsync(command);
         }
 
-        public Task SetApplicationReviewsShared(IEnumerable<Guid> applicationReviewIds, VacancyUser user)
+        public Task SetApplicationReviewsShared(IEnumerable<VacancyApplication> applicationReviews, VacancyUser user)
         {
             var command = new ApplicationReviewsSharedCommand
             {
-                ApplicationReviewIds = applicationReviewIds,
+                ApplicationReviews = applicationReviews,
                 User = user
             };
 
