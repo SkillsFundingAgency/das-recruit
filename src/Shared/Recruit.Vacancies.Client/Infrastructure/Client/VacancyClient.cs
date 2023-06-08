@@ -355,6 +355,17 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return _messaging.SendCommandAsync(command);
         }
 
+        public Task SetApplicationReviewsShared(IEnumerable<Guid> applicationReviewIds, VacancyUser user)
+        {
+            var command = new ApplicationReviewsSharedCommand
+            {
+                ApplicationReviewIds = applicationReviewIds,
+                User = user
+            };
+
+            return _messaging.SendCommandAsync(command);
+        }
+
         public Task<EmployerProfile> GetEmployerProfileAsync(string employerAccountId, string accountLegalEntityPublicHashedId)
         {
             return _employerProfileRepository.GetAsync(employerAccountId, accountLegalEntityPublicHashedId);

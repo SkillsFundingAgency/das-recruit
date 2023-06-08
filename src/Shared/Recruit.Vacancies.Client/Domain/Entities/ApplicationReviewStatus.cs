@@ -5,6 +5,7 @@
         New,
         Successful,
         Unsuccessful,
+        Shared,
         InReview
     }
 }

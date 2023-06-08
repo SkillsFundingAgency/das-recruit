@@ -88,6 +88,21 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
                 new Context(nameof(UpdateAsync)));
         }
 
+        public async Task<UpdateResult> UpdateApplicationReviewsAsync(IEnumerable<Guid> applicationReviewIds, VacancyUser user, DateTime updatedDate, ApplicationReviewStatus status)
+        {
+            var filter = Builders<ApplicationReview>.Filter.In(Id, applicationReviewIds);
+            var collection = GetCollection<ApplicationReview>();
+
+            var updateDef = new UpdateDefinitionBuilder<ApplicationReview>()
+                                .Set(appRev => appRev.Status, status)
+                                .Set(appRev => appRev.StatusUpdatedBy, user)
+                                .Set(appRev => appRev.StatusUpdatedDate, updatedDate);
+
+            return await RetryPolicy.Execute(_ =>
+                collection.UpdateManyAsync(filter, updateDef),
+            new Context(nameof(UpdateApplicationReviewsAsync)));
+        }
+
         public async Task<List<T>> GetForVacancyAsync<T>(long vacancyReference)
         {
             var filter = Builders<T>.Filter.Eq(VacancyReference, vacancyReference);
