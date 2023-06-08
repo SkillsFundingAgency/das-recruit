@@ -6,10 +6,12 @@ using Esfa.Recruit.Provider.Web.Orchestrators;
 using Esfa.Recruit.Provider.Web.RouteModel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.FeatureManagement.Mvc;
 
 namespace Esfa.Recruit.Provider.Web.Controllers
 {
     [Route(RoutePaths.AccountApplicationReviewsRoutePath)]
+    [FeatureGate(FeatureNames.ShareApplicationsFeature)]
     public class ApplicationReviewsController : Controller
     {
         private readonly IApplicationReviewsOrchestrator _orchestrator;
