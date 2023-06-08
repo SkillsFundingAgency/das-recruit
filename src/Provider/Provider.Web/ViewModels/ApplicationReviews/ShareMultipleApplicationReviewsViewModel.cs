@@ -8,7 +8,6 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.ApplicationReviews
     public class ShareMultipleApplicationReviewsViewModel : ApplicationReviewsToShareRouteModel
     {
         public long VacancyReference { get; set; }
-        public bool SelectedAllApplications { get; set; } // tbc if needed
         public List<VacancyApplication> VacancyApplications { get; set; }
     }
 }
