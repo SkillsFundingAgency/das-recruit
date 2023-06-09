@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Linq;
+using System.Threading.Tasks;
 using Esfa.Recruit.Provider.Web.Models.ApplicationReviews;
 using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Provider.Web.ViewModels.ApplicationReviews;
@@ -46,7 +47,8 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             {
                 VacancyId = request.VacancyId,
                 Ukprn = request.Ukprn,
-                ApplicationReviewsToShare = applicationReviewsToShare
+                ApplicationReviewsToShare = applicationReviewsToShare,
+                ApplicationReviewIdsToShare = applicationReviewsToShare.Select(x => x.ApplicationReviewId).ToList()
             };
         }
 

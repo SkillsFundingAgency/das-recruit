@@ -5,6 +5,7 @@ using Esfa.Recruit.Provider.Web.Extensions;
 using Esfa.Recruit.Provider.Web.Models.ApplicationReviews;
 using Esfa.Recruit.Provider.Web.Orchestrators;
 using Esfa.Recruit.Provider.Web.RouteModel;
+using Esfa.Recruit.Provider.Web.ViewModels.ApplicationReview;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.FeatureManagement.Mvc;
@@ -48,9 +49,15 @@ namespace Esfa.Recruit.Provider.Web.Controllers
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public async Task<IActionResult> ApplicationReviewsToShareConfirmation(ShareMultipleApplicationsPostRequest request)
         {
-            await _orchestrator.PostApplicationReviewsStatusConfirmationAsync(request, User.ToVacancyUser());
-            // todo: redirect to Manage Vacancy Page with banner
-            return View();
+            if (request.ShareApplicationsConfirmed) 
+            {
+                await _orchestrator.PostApplicationReviewsStatusConfirmationAsync(request, User.ToVacancyUser());
+                // REDIRECT TO MANAGE VACANCY PAGE with a boolean flag to show banner
+                return RedirectToRoute(RouteNames.VacancyManage_Get, new { request.Ukprn, request.VacancyId });
+            }
+
+            // REDIRECT TO MANAGE VACANCY PAGE without the boolean flag
+            return RedirectToRoute(RouteNames.VacancyManage_Get, new { request.Ukprn, request.VacancyId });
         }
     }
 }
