@@ -1,11 +1,18 @@
 ﻿using System.Threading.Tasks;
+using Esfa.Recruit.Provider.Web.Models.ApplicationReviews;
 using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Provider.Web.ViewModels.ApplicationReviews;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 
 namespace Esfa.Recruit.Provider.Web.Orchestrators
 {
-    public class ApplicationReviewsOrchestrator
+    public interface IApplicationReviewsOrchestrator
+    {
+        Task<ShareMultipleApplicationReviewsViewModel> GetApplicationReviewsToShareViewModelAsync(VacancyRouteModel rm);
+        Task<ShareMultipleApplicationReviewsConfirmationViewModel> GetApplicationReviewsToShareConfirmationViewModel(ShareMultipleApplicationsRequest request);
+    }
+
+    public class ApplicationReviewsOrchestrator : IApplicationReviewsOrchestrator
     {
         private readonly IRecruitVacancyClient _vacancyClient;
 
@@ -14,7 +21,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             _vacancyClient = client;
         }
 
-        public async Task<ShareMultipleApplicationReviewsViewModel> GetApplicationReviewsToShareWithEmployerViewModelAsync(VacancyRouteModel rm)
+        public async Task<ShareMultipleApplicationReviewsViewModel> GetApplicationReviewsToShareViewModelAsync(VacancyRouteModel rm)
         {
             var vacancy = await _vacancyClient.GetVacancyAsync(rm.VacancyId.GetValueOrDefault());
 
@@ -23,8 +30,21 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             return new ShareMultipleApplicationReviewsViewModel
             {
                 VacancyId = vacancy.Id,
+                Ukprn = rm.Ukprn,
                 VacancyReference = vacancy.VacancyReference.Value,
                 VacancyApplications = applicationReviews
+            };
+        }
+
+        public async Task<ShareMultipleApplicationReviewsConfirmationViewModel> GetApplicationReviewsToShareConfirmationViewModel(ShareMultipleApplicationsRequest request)
+        {
+            var applicationReviewsToShare = await _vacancyClient.GetVacancyApplicationsForSelectedIdsAsync(request.ApplicationsToShare);
+
+            return new ShareMultipleApplicationReviewsConfirmationViewModel
+            {
+                VacancyId = request.VacancyId,
+                Ukprn = request.Ukprn,
+                ApplicationReviewsToShare = applicationReviewsToShare
             };
         }
     }

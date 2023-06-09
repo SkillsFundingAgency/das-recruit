@@ -33,7 +33,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Va
         public ApplicationReviewDisabilityStatus DisabilityStatus { get; set; }
         public bool IsWithdrawn { get; set; }
         public bool IsNotWithdrawn => !IsWithdrawn;
-        
+        public bool Selected { get; set; }
+        public bool StatusNewOrReview => Status is ApplicationReviewStatus.New || Status is ApplicationReviewStatus.InReview;
+
         public static implicit operator VacancyApplication(ApplicationReview applicationReview)
         {
             var projection = new VacancyApplication
@@ -43,7 +45,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Va
                 SubmittedDate = applicationReview.SubmittedDate,
                 ApplicationReviewId = applicationReview.Id,
                 IsWithdrawn = applicationReview.IsWithdrawn,
-                DisabilityStatus = ApplicationReviewDisabilityStatus.Unknown
+                DisabilityStatus = ApplicationReviewDisabilityStatus.Unknown,
+                Selected = false
             };
 
             if (applicationReview.IsWithdrawn == false)

@@ -23,6 +23,7 @@ using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Microsoft.Extensions.Configuration;
 using SFA.DAS.Provider.Shared.UI;
 using SFA.DAS.Provider.Shared.UI.Startup;
+using Microsoft.FeatureManagement;
 
 namespace Esfa.Recruit.Provider.Web.Configuration
 {
@@ -121,6 +122,7 @@ namespace Esfa.Recruit.Provider.Web.Configuration
             .SetDfESignInConfiguration(useDfESignIn)
             .SetDefaultNavigationSection(NavigationSection.Recruit);
             services.AddFluentValidationAutoValidation();
+            services.AddFeatureManagement(configuration.GetSection("Features"));
         }
 
         public static void AddAuthenticationService(this IServiceCollection services, AuthenticationConfiguration authConfig)

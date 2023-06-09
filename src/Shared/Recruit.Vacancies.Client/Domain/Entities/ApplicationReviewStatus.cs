@@ -4,6 +4,7 @@
     {
         New,
         Successful,
-        Unsuccessful
+        Unsuccessful,
+        InReview
     }
 }
