@@ -47,8 +47,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             {
                 VacancyId = request.VacancyId,
                 Ukprn = request.Ukprn,
-                ApplicationReviewsToShare = applicationReviewsToShare,
-                ApplicationReviewIdsToShare = applicationReviewsToShare.Select(x => x.ApplicationReviewId).ToList()
+                ApplicationReviewsToShare = applicationReviewsToShare
             };
         }
 
