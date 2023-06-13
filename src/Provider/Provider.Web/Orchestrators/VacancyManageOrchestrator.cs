@@ -49,7 +49,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
         }
 
         public async Task<ManageVacancyViewModel> GetManageVacancyViewModel(Vacancy vacancy,
-            VacancyRouteModel vacancyRouteModel)
+            ManageVacancyRouteModel vacancyRouteModel)
         {
             var viewModel = new ManageVacancyViewModel
             {
@@ -57,7 +57,8 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
                 Status = vacancy.Status,
                 VacancyReference = vacancy.VacancyReference.Value.ToString(),
                 Ukprn = vacancyRouteModel.Ukprn,
-                VacancyId = vacancyRouteModel.VacancyId
+                VacancyId = vacancyRouteModel.VacancyId,
+                CanShowApplicationSharedBanner = vacancyRouteModel.SharedApplicationsBanner
             };
 
             viewModel.ClosingDate = viewModel.Status == VacancyStatus.Closed ? vacancy.ClosedDate?.AsGdsDate() : vacancy.ClosingDate?.AsGdsDate();

@@ -24,7 +24,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
         }
 
         [HttpGet("manage", Name = RouteNames.VacancyManage_Get)]
-        public async Task<IActionResult> ManageVacancy(VacancyRouteModel vrm)
+        public async Task<IActionResult> ManageVacancy(ManageVacancyRouteModel vrm)
         {
             var vacancy = await _orchestrator.GetVacancy(vrm);
 
