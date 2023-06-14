@@ -17,6 +17,11 @@ using Esfa.Recruit.Provider.Web.Configuration;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
 using Esfa.Recruit.Provider.Web.Configuration.Routing;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using System.Net.Http;
+using Microsoft.Azure.Amqp.Transaction;
+using Esfa.Recruit.Shared.Web.ViewModels;
+using static Esfa.Recruit.Vacancies.Client.Application.Communications.CommunicationConstants.DataItemKeys;
 
 namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
 {
@@ -34,20 +39,20 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
             _fixture = new Fixture();
             _orchestrator = new Mock<IApplicationReviewsOrchestrator>();
             _vacancyId = Guid.NewGuid();
-            _ukprn = 10000234;
+            _ukprn = 10000234;          
             var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
             {
                 new Claim(ProviderRecruitClaims.IdamsUserUkprnClaimsTypeIdentifier, _ukprn.ToString()),
             }));
+            var httpContext = new DefaultHttpContext();
+            var tempData = new TempDataDictionary(httpContext, Mock.Of<ITempDataProvider>());
             _controller = new ApplicationReviewsController(_orchestrator.Object)
             {
-                ControllerContext = new ControllerContext
-                {
-                    HttpContext = new DefaultHttpContext
-                    {
-                        User = user
-                    }
-                }
+                TempData = tempData
+            };
+            _controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext { User = user }
             };
         }
 
@@ -163,22 +168,23 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
         }
 
         [Test]
-        public async Task POST_ApplicationReviewsToShareConfirmation_RedirectsToActionWithCorrectRouteDataAndBannerTrue()
+        public async Task POST_ApplicationReviewsToShareConfirmation_MultipleApplicationsShared_RedirectsToActionWithBannerSharedMultiple()
         {
             // Arrange
-            var showBanner = true;
-            var request = _fixture
-                .Build<ShareMultipleApplicationsPostRequest>()
-                .With(x => x.VacancyId, _vacancyId)
-                .With(x => x.Ukprn, _ukprn)
-                .With(x => x.ShareApplicationsConfirmed, showBanner)
-                .Create();
+            var shareApplicationsConfirmed = true;
             var vacancyUser = _fixture.Create<VacancyUser>();
             var vacancyApplication1 = _fixture.Create<VacancyApplication>();
             var vacancyApplication2 = _fixture.Create<VacancyApplication>();
             var vacancyApplications = new List<VacancyApplication> { };
             vacancyApplications.Add(vacancyApplication1);
             vacancyApplications.Add(vacancyApplication2);
+            var request = _fixture
+                .Build<ShareMultipleApplicationsPostRequest>()
+                .With(x => x.VacancyId, _vacancyId)
+                .With(x => x.Ukprn, _ukprn)
+                .With(x => x.ApplicationReviewsToShare, vacancyApplications)
+                .With(x =>x.ShareApplicationsConfirmed, shareApplicationsConfirmed)
+                .Create();
 
             _orchestrator.Setup(o =>
                     o.PostApplicationReviewsStatusConfirmationAsync(It.Is<ShareMultipleApplicationsPostRequest>(y => y == request), vacancyUser))
@@ -194,19 +200,57 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
             Assert.AreEqual(RouteNames.VacancyManage_Get, redirectResult.RouteName);
             Assert.AreEqual(_vacancyId, redirectResult.RouteValues["VacancyId"]);
             Assert.AreEqual(_ukprn, redirectResult.RouteValues["Ukprn"]);
-            Assert.AreEqual(showBanner, redirectResult.RouteValues["SharedApplicationsBanner"]);
+            Assert.IsTrue(_controller.TempData.ContainsKey(TempDataKeys.SharedMultipleApplicationsHeader));
+            Assert.IsFalse(_controller.TempData.ContainsKey(TempDataKeys.SharedSingleApplicationsHeader));
+            Assert.AreEqual(InfoMessages.SharedMultipleApplicationsBannerHeader, _controller.TempData[TempDataKeys.SharedMultipleApplicationsHeader]);
         }
 
         [Test]
-        public async Task POST_ApplicationReviewsToShareConfirmation_RedirectsToActionWithCorrectRouteDataAndBannerFalse()
+        public async Task POST_ApplicationReviewsToShareConfirmation_SingleApplicationsShared_RedirectsToActionWithBannerSharedSingle()
         {
             // Arrange
-            var showBanner = false;
+            var shareApplicationsConfirmed = true;
+            var vacancyUser = _fixture.Create<VacancyUser>();
+            var vacancyApplication1 = _fixture.Create<VacancyApplication>();
+            var vacancyApplications = new List<VacancyApplication> { };
+            vacancyApplications.Add(vacancyApplication1);
             var request = _fixture
                 .Build<ShareMultipleApplicationsPostRequest>()
                 .With(x => x.VacancyId, _vacancyId)
                 .With(x => x.Ukprn, _ukprn)
-                .With(x => x.ShareApplicationsConfirmed, showBanner)
+                .With(x => x.ApplicationReviewsToShare, vacancyApplications)
+                .With(x => x.ShareApplicationsConfirmed, shareApplicationsConfirmed)
+                .Create();
+
+            _orchestrator.Setup(o =>
+                    o.PostApplicationReviewsStatusConfirmationAsync(It.Is<ShareMultipleApplicationsPostRequest>(y => y == request), vacancyUser))
+                .Returns(Task.CompletedTask);
+
+            // Act
+            var actionResult = await _controller.ApplicationReviewsToShareConfirmation(request);
+            var redirectResult = actionResult as RedirectToRouteResult;
+
+            // Assert
+            Assert.NotNull(actionResult);
+            Assert.NotNull(redirectResult);
+            Assert.AreEqual(RouteNames.VacancyManage_Get, redirectResult.RouteName);
+            Assert.AreEqual(_vacancyId, redirectResult.RouteValues["VacancyId"]);
+            Assert.AreEqual(_ukprn, redirectResult.RouteValues["Ukprn"]);
+            Assert.IsTrue(_controller.TempData.ContainsKey(TempDataKeys.SharedSingleApplicationsHeader));
+            Assert.IsFalse(_controller.TempData.ContainsKey(TempDataKeys.SharedMultipleApplicationsHeader));
+            Assert.AreEqual(string.Format(InfoMessages.SharedSingleApplicationsBannerHeader, vacancyApplication1.CandidateName), _controller.TempData[TempDataKeys.SharedSingleApplicationsHeader]);
+        }
+
+        [Test]
+        public async Task POST_ApplicationReviewsToShareConfirmation_NoApplicationsShared_RedirectsToActionWithNoTempDataForBanner()
+        {
+            // Arrange
+            var shareApplicationsConfirmed = false;
+            var request = _fixture
+                .Build<ShareMultipleApplicationsPostRequest>()
+                .With(x => x.VacancyId, _vacancyId)
+                .With(x => x.Ukprn, _ukprn)
+                .With(x => x.ShareApplicationsConfirmed, shareApplicationsConfirmed)
                 .Create();
 
             // Act
@@ -219,7 +263,8 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
             Assert.AreEqual(RouteNames.VacancyManage_Get, redirectResult.RouteName);
             Assert.AreEqual(_vacancyId, redirectResult.RouteValues["VacancyId"]);
             Assert.AreEqual(_ukprn, redirectResult.RouteValues["Ukprn"]);
-            Assert.IsNull(redirectResult.RouteValues["SharedApplicationsBanner"]);
+            Assert.IsFalse(_controller.TempData.ContainsKey(TempDataKeys.SharedMultipleApplicationsHeader));
+            Assert.IsFalse(_controller.TempData.ContainsKey(TempDataKeys.SharedSingleApplicationsHeader));
         }
     }
 }
