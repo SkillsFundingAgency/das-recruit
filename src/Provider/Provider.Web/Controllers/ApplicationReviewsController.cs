@@ -1,11 +1,13 @@
 ﻿using System.Threading.Tasks;
 using Esfa.Recruit.Provider.Web.Configuration;
 using Esfa.Recruit.Provider.Web.Configuration.Routing;
+using Esfa.Recruit.Provider.Web.Extensions;
 using Esfa.Recruit.Provider.Web.Models.ApplicationReviews;
 using Esfa.Recruit.Provider.Web.Orchestrators;
 using Esfa.Recruit.Provider.Web.RouteModel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.FeatureManagement.Mvc;
 
 namespace Esfa.Recruit.Provider.Web.Controllers
@@ -41,6 +43,19 @@ namespace Esfa.Recruit.Provider.Web.Controllers
         {
             var shareApplicationsConfirmationViewModel = await _orchestrator.GetApplicationReviewsToShareConfirmationViewModel(request);
             return View(shareApplicationsConfirmationViewModel);
+        }
+
+        [HttpPost("share", Name = RouteNames.ApplicationReviewsToShareConfirmation_Post)]
+        [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+        public async Task<IActionResult> ApplicationReviewsToShareConfirmation(ShareMultipleApplicationsPostRequest request)
+        {
+            if (request.ShareApplicationsConfirmed) 
+            {
+                await _orchestrator.PostApplicationReviewsStatusConfirmationAsync(request, User.ToVacancyUser());
+                return RedirectToRoute(RouteNames.VacancyManage_Get, new { request.Ukprn, request.VacancyId, SharedApplicationsBanner = request.ShareApplicationsConfirmed });
+            }
+
+            return RedirectToRoute(RouteNames.VacancyManage_Get, new { request.Ukprn, request.VacancyId });
         }
     }
 }

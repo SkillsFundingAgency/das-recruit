@@ -39,5 +39,6 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.VacancyManage
         public string WithdrawnDate { get; internal set; }
         public bool IsWithdrawn => !string.IsNullOrEmpty(WithdrawnDate);
         public bool IsApplyThroughFatVacancy { get; internal set; }
+        public bool CanShowApplicationSharedBanner { get; internal set; }
     }
 }

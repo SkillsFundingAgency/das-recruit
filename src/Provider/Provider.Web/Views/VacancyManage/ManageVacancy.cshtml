@@ -13,6 +13,11 @@
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds govuk-!-margin-bottom-6">
+        <div asp-show="@Model.CanShowApplicationSharedBanner" class="das-notification das-notification--information">
+            <p class="das-notification__body">
+                Here is a placeholder for the confirmation banner.
+            </p>
+        </div>
         <div asp-show="@Model.CanShowApplicationReviewStatusHeader" class="das-notification das-notification--information">
             <p class="das-notification__body">
                 @Model.ApplicationReviewStatusHeaderInfoMessage

@@ -3,9 +3,9 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Vacanc
 using System;
 using System.Collections.Generic;
 
-namespace Esfa.Recruit.Provider.Web.ViewModels.ApplicationReviews
+namespace Esfa.Recruit.Provider.Web.Models.ApplicationReviews
 {
-    public class ShareMultipleApplicationReviewsConfirmationViewModel : VacancyRouteModel
+    public class ShareMultipleApplicationsPostRequest : VacancyRouteModel
     {
         public IList<VacancyApplication> ApplicationReviewsToShare { get; set; }
         public bool ShareApplicationsConfirmed { get; set; }
