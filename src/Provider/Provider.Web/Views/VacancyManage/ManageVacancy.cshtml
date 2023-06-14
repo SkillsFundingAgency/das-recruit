@@ -14,35 +14,19 @@
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds govuk-!-margin-bottom-6">
 
-        <div asp-show="@Model.CanShowMultipleApplicationSharedBanner" class="govuk-notification-banner govuk-notification-banner--success" role="alert"
+        <div asp-show="@Model.CanShowApplicationsSharedBanner" class="govuk-notification-banner govuk-notification-banner--success" role="alert"
                 aria-labelledby="govuk-notification-banner-title"
                 data-module="govuk-notification-banner">
             <div class="govuk-notification-banner__header">
-                <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
+                <h2 class="govuk-notification-banner__title">
                     Done
                 </h2>
             </div>
             <div class="govuk-notification-banner__content">
                 <h3 class="govuk-notification-banner__heading">
-                    Multiple applications shared with employer.
+                    @Model.SharedApplicationsBannerHeader
                 </h3>
-                <p class="govuk-body">These applications have been sent to the employer's apprenticeship service account.</p>
-            </div>
-        </div>
-
-        <div asp-show="@Model.CanShowSingleApplicationSharedBanner" class="govuk-notification-banner govuk-notification-banner--success" role="alert"
-                aria-labelledby="govuk-notification-banner-title"
-                data-module="govuk-notification-banner">
-            <div class="govuk-notification-banner__header">
-                <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
-                    Done
-                </h2>
-            </div>
-            <div class="govuk-notification-banner__content">
-                <h3 class="govuk-notification-banner__heading">
-                    @Model.SharedApplications.First().CandidateName's application shared with Employer.
-                </h3>
-                <p class="govuk-body">This application has been sent to the employer's apprenticeship service account.</p>
+                <p class="govuk-body">@Model.SharedApplicationsBannerMessage</p>
             </div>
         </div>
 
