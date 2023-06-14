@@ -58,7 +58,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
                 VacancyReference = vacancy.VacancyReference.Value.ToString(),
                 Ukprn = vacancyRouteModel.Ukprn,
                 VacancyId = vacancyRouteModel.VacancyId,
-                CanShowApplicationSharedBanner = vacancyRouteModel.SharedApplicationsBanner
+                SharedApplications = vacancyRouteModel.SharedApplications
             };
 
             viewModel.ClosingDate = viewModel.Status == VacancyStatus.Closed ? vacancy.ClosedDate?.AsGdsDate() : vacancy.ClosingDate?.AsGdsDate();

@@ -52,7 +52,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
             if (request.ShareApplicationsConfirmed) 
             {
                 await _orchestrator.PostApplicationReviewsStatusConfirmationAsync(request, User.ToVacancyUser());
-                return RedirectToRoute(RouteNames.VacancyManage_Get, new { request.Ukprn, request.VacancyId, SharedApplicationsBanner = request.ShareApplicationsConfirmed });
+                return RedirectToRoute(RouteNames.VacancyManage_Get, new { request.Ukprn, request.VacancyId, SharedApplications = request.ApplicationReviewsToShare });
             }
 
             return RedirectToRoute(RouteNames.VacancyManage_Get, new { request.Ukprn, request.VacancyId });

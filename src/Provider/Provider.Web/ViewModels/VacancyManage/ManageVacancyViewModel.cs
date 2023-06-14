@@ -1,8 +1,10 @@
+using System.Collections.Generic;
 using System.Linq;
 using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Provider.Web.ViewModels.VacancyView;
 using Esfa.Recruit.Shared.Web.ViewModels;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyApplications;
 
 namespace Esfa.Recruit.Provider.Web.ViewModels.VacancyManage
 {
@@ -39,6 +41,8 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.VacancyManage
         public string WithdrawnDate { get; internal set; }
         public bool IsWithdrawn => !string.IsNullOrEmpty(WithdrawnDate);
         public bool IsApplyThroughFatVacancy { get; internal set; }
-        public bool CanShowApplicationSharedBanner { get; internal set; }
+        public bool CanShowSingleApplicationSharedBanner => SharedApplications?.Count() == 1;
+        public bool CanShowMultipleApplicationSharedBanner => SharedApplications?.Count() > 1;
+        public IList<VacancyApplication> SharedApplications { get; internal set; }
     }
 }
