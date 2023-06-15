@@ -19,5 +19,13 @@ namespace Esfa.Recruit.Shared.Web.ViewModels
         public const string AdvertCloned = "Advert succesfully cloned";
 
         public const string ApplicationReviewStatusHeader = "{0} application has been marked as {1}";
+
+        public const string SharedMultipleApplicationsBannerHeader = "Multiple applications shared with employer.";
+
+        public const string SharedMultipleApplicationsBannerMessage = "These applications have been sent to the employer's apprenticeship service account.";
+
+        public const string SharedSingleApplicationsBannerHeader = "{0}'s application shared with employer"; 
+
+        public const string SharedSingleApplicationsBannerMessage = "This application has been sent to the employer's apprenticeship service account.";
     }
 }

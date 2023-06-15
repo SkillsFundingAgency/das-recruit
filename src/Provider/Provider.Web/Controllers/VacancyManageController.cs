@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using Esfa.Recruit.Provider.Web.Configuration;
 using Esfa.Recruit.Provider.Web.Configuration.Routing;
-using Esfa.Recruit.Provider.Web.Extensions;
 using Esfa.Recruit.Provider.Web.Orchestrators;
 using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
@@ -24,7 +23,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
         }
 
         [HttpGet("manage", Name = RouteNames.VacancyManage_Get)]
-        public async Task<IActionResult> ManageVacancy(ManageVacancyRouteModel vrm)
+        public async Task<IActionResult> ManageVacancy(VacancyRouteModel vrm)
         {
             var vacancy = await _orchestrator.GetVacancy(vrm);
 
@@ -40,6 +39,18 @@ namespace Esfa.Recruit.Provider.Web.Controllers
 
             if (TempData.ContainsKey(TempDataKeys.ApplicationReviewStatusInfoMessage))
                 viewModel.ApplicationReviewStatusHeaderInfoMessage = TempData[TempDataKeys.ApplicationReviewStatusInfoMessage].ToString();
+
+            if (TempData.ContainsKey(TempDataKeys.SharedMultipleApplicationsHeader))
+            {
+                viewModel.SharedApplicationsBannerHeader = TempData[TempDataKeys.SharedMultipleApplicationsHeader].ToString();
+                viewModel.SharedApplicationsBannerMessage = InfoMsg.SharedMultipleApplicationsBannerMessage;
+            }
+
+            if (TempData.ContainsKey(TempDataKeys.SharedSingleApplicationsHeader)) 
+            {
+                viewModel.SharedApplicationsBannerHeader = TempData[TempDataKeys.SharedSingleApplicationsHeader].ToString();
+                viewModel.SharedApplicationsBannerMessage = InfoMsg.SharedSingleApplicationsBannerMessage;
+            }
 
             return View(viewModel);
         }

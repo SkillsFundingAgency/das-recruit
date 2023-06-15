@@ -7,7 +7,7 @@ namespace Esfa.Recruit.Provider.Web.Models.ApplicationReviews
 {
     public class ShareMultipleApplicationsPostRequest : VacancyRouteModel
     {
-        public IList<VacancyApplication> ApplicationReviewsToShare { get; set; }
+        public List<VacancyApplication> ApplicationReviewsToShare { get; set; }
         public bool ShareApplicationsConfirmed { get; set; }
     }
 }
