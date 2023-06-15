@@ -39,16 +39,6 @@ namespace Esfa.Recruit.Provider.Web.Controllers
                 var vm = await _orchestrator.GetApplicationReviewViewModelAsync(applicationReviewEditModel);
                 return View(vm);
             }
-
-            // need a switch on Outcome
-
-            // Shared
-            // Redirect to ApplicationReviewsConfirmation
-
-            // Review OR 
-            // POST
-
-            // Successful OR Unsuccessful
             TempData[TempDateARModel] = JsonConvert.SerializeObject(applicationReviewEditModel);
             return RedirectToRoute(RouteNames.ApplicationReviewConfirmation_Get, new {applicationReviewEditModel.ApplicationReviewId, applicationReviewEditModel.VacancyId, applicationReviewEditModel.Ukprn});
         }
