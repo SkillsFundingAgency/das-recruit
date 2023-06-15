@@ -6,6 +6,7 @@
         Successful,
         Unsuccessful,
         Shared,
-        InReview
+        InReview,
+        Interviewing
     }
 }
