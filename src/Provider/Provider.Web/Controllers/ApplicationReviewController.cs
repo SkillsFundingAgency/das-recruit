@@ -6,6 +6,7 @@ using Esfa.Recruit.Provider.Web.Orchestrators;
 using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Provider.Web.ViewModels.ApplicationReview;
 using Esfa.Recruit.Shared.Web.ViewModels;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -39,8 +40,18 @@ namespace Esfa.Recruit.Provider.Web.Controllers
                 var vm = await _orchestrator.GetApplicationReviewViewModelAsync(applicationReviewEditModel);
                 return View(vm);
             }
-            TempData[TempDateARModel] = JsonConvert.SerializeObject(applicationReviewEditModel);
-            return RedirectToRoute(RouteNames.ApplicationReviewConfirmation_Get, new {applicationReviewEditModel.ApplicationReviewId, applicationReviewEditModel.VacancyId, applicationReviewEditModel.Ukprn});
+
+            switch (applicationReviewEditModel.Outcome.Value)
+            {
+                case ApplicationReviewStatus.InReview:
+                    var candidateName = await _orchestrator.PostApplicationReviewStatusChangeModelAsync(applicationReviewEditModel, User.ToVacancyUser());
+                    TempData.Add(TempDataKeys.InReviewApplicationHeader, string.Format(InfoMessages.InReviewApplicationBannerHeader, candidateName));
+                    return RedirectToRoute(RouteNames.VacancyManage_Get, new { applicationReviewEditModel.VacancyId, applicationReviewEditModel.Ukprn });
+
+                default: // Successful OR Unsuccessful
+                    TempData[TempDateARModel] = JsonConvert.SerializeObject(applicationReviewEditModel);
+                    return RedirectToRoute(RouteNames.ApplicationReviewConfirmation_Get, new { applicationReviewEditModel.ApplicationReviewId, applicationReviewEditModel.VacancyId, applicationReviewEditModel.Ukprn });
+            }            
         }
 
         [HttpGet("status", Name = RouteNames.ApplicationReviewConfirmation_Get)]
@@ -67,7 +78,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
 
             if (applicationReviewStatusConfirmationEditModel.CanNotifyCandidate)
             {
-                var candidateName = await _orchestrator.PostApplicationReviewConfirmationEditModelAsync(applicationReviewStatusConfirmationEditModel, User.ToVacancyUser());
+                var candidateName = await _orchestrator.PostApplicationReviewStatusChangeModelAsync(applicationReviewStatusConfirmationEditModel, User.ToVacancyUser());
                 TempData.Add(TempDataKeys.ApplicationReviewStatusInfoMessage, string.Format(InfoMessages.ApplicationReviewStatusHeader, candidateName, applicationReviewStatusConfirmationEditModel.Outcome.ToString().ToLower()));
                 return RedirectToRoute(RouteNames.VacancyManage_Get, new {applicationReviewStatusConfirmationEditModel.VacancyId, applicationReviewStatusConfirmationEditModel.Ukprn});
             }

@@ -46,12 +46,15 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             return vm;
         }
 
-        public async Task<string> PostApplicationReviewConfirmationEditModelAsync(ApplicationReviewStatusConfirmationEditModel m, VacancyUser user)
+        public async Task<string> PostApplicationReviewStatusChangeModelAsync(ApplicationReviewStatusChangeModel m, VacancyUser user)
         {
             var applicationReview = await _utility.GetAuthorisedApplicationReviewAsync(m);
 
             switch (m.Outcome.Value)
             {
+                case ApplicationReviewStatus.InReview:
+                    await _client.SetApplicationReviewToInReview(applicationReview.Id, user);
+                    break;
                 case ApplicationReviewStatus.Successful:
                     await _client.SetApplicationReviewSuccessful(applicationReview.Id, user);
                     break;

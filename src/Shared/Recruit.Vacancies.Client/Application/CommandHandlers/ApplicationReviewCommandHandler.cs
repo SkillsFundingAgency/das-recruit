@@ -15,7 +15,8 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 {
     public class ApplicationReviewCommandHandler : 
         IRequestHandler<ApplicationReviewSuccessfulCommand, Unit>,
-        IRequestHandler<ApplicationReviewUnsuccessfulCommand, Unit>
+        IRequestHandler<ApplicationReviewUnsuccessfulCommand, Unit>,
+        IRequestHandler<ApplicationReviewToInReviewCommand, Unit>
     {
         private readonly ILogger<ApplicationReviewCommandHandler> _logger;        
         private readonly IApplicationReviewRepository _applicationReviewRepository;
@@ -48,6 +49,13 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
         {
             _logger.LogInformation("Setting application review:{applicationReviewId} to unsuccessful", message.ApplicationReviewId);
             await Handle(message.ApplicationReviewId, message.User, ApplicationReviewStatus.Unsuccessful, message.CandidateFeedback);
+            return Unit.Value;
+        }
+
+        public async Task<Unit> Handle(ApplicationReviewToInReviewCommand message, CancellationToken cancellationToken)
+        {
+            _logger.LogInformation("Setting application review:{applicationReviewId} to in review", message.ApplicationReviewId);
+            await Handle(message.ApplicationReviewId, message.User, ApplicationReviewStatus.InReview);
             return Unit.Value;
         }
 

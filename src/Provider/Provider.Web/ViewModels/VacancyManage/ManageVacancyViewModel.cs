@@ -41,8 +41,8 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.VacancyManage
         public string WithdrawnDate { get; internal set; }
         public bool IsWithdrawn => !string.IsNullOrEmpty(WithdrawnDate);
         public bool IsApplyThroughFatVacancy { get; internal set; }
-        public string SharedApplicationsBannerHeader { get; internal set; }
-        public string SharedApplicationsBannerMessage { get; internal set; }
-        public bool CanShowApplicationsSharedBanner => !string.IsNullOrEmpty(SharedApplicationsBannerHeader);
+        public string ApplicationReviewStatusChangeBannerHeader { get; internal set; }
+        public string ApplicationReviewStatusChangeBannerMessage { get; internal set; }
+        public bool CanShowApplicationsStatusChangeBanner => !string.IsNullOrEmpty(ApplicationReviewStatusChangeBannerHeader);
     }
 }

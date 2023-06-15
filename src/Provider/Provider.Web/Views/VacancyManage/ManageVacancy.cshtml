@@ -14,7 +14,7 @@
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds govuk-!-margin-bottom-6">
 
-        <div asp-show="@Model.CanShowApplicationsSharedBanner" class="govuk-notification-banner govuk-notification-banner--success" role="alert"
+        <div asp-show="@Model.CanShowApplicationsStatusChangeBanner" class="govuk-notification-banner govuk-notification-banner--success" role="alert"
                 aria-labelledby="govuk-notification-banner-title"
                 data-module="govuk-notification-banner">
             <div class="govuk-notification-banner__header">
@@ -24,9 +24,9 @@
             </div>
             <div class="govuk-notification-banner__content">
                 <h3 class="govuk-notification-banner__heading">
-                    @Model.SharedApplicationsBannerHeader
+                    @Model.ApplicationReviewStatusChangeBannerHeader
                 </h3>
-                <p class="govuk-body">@Model.SharedApplicationsBannerMessage</p>
+                <p class="govuk-body">@Model.ApplicationReviewStatusChangeBannerMessage</p>
             </div>
         </div>
 
