@@ -42,14 +42,19 @@ namespace Esfa.Recruit.Provider.Web.Controllers
 
             if (TempData.ContainsKey(TempDataKeys.SharedMultipleApplicationsHeader))
             {
-                viewModel.SharedApplicationsBannerHeader = TempData[TempDataKeys.SharedMultipleApplicationsHeader].ToString();
-                viewModel.SharedApplicationsBannerMessage = InfoMsg.SharedMultipleApplicationsBannerMessage;
+                viewModel.ApplicationReviewStatusChangeBannerHeader = TempData[TempDataKeys.SharedMultipleApplicationsHeader].ToString();
+                viewModel.ApplicationReviewStatusChangeBannerMessage = InfoMsg.SharedMultipleApplicationsBannerMessage;
             }
 
             if (TempData.ContainsKey(TempDataKeys.SharedSingleApplicationsHeader)) 
             {
-                viewModel.SharedApplicationsBannerHeader = TempData[TempDataKeys.SharedSingleApplicationsHeader].ToString();
-                viewModel.SharedApplicationsBannerMessage = InfoMsg.SharedSingleApplicationsBannerMessage;
+                viewModel.ApplicationReviewStatusChangeBannerHeader = TempData[TempDataKeys.SharedSingleApplicationsHeader].ToString();
+                viewModel.ApplicationReviewStatusChangeBannerMessage = InfoMsg.SharedSingleApplicationsBannerMessage;
+            }
+
+            if (TempData.ContainsKey(TempDataKeys.InReviewApplicationHeader))
+            {
+                viewModel.ApplicationReviewStatusChangeBannerHeader = TempData[TempDataKeys.InReviewApplicationHeader].ToString();
             }
 
             return View(viewModel);
