@@ -50,23 +50,8 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
         {
             var applicationReview = await _utility.GetAuthorisedApplicationReviewAsync(m);
 
-            switch (m.Outcome.Value)
-            {
-                case ApplicationReviewStatus.InReview:
-                    await _client.SetApplicationReviewToInReview(applicationReview.Id, user);
-                    break;
-                case ApplicationReviewStatus.Interviewing:
-                    await _client.SetApplicationReviewToInterviewing(applicationReview.Id, user);
-                    break;
-                case ApplicationReviewStatus.Successful:
-                    await _client.SetApplicationReviewSuccessful(applicationReview.Id, user);
-                    break;
-                case ApplicationReviewStatus.Unsuccessful:
-                    await _client.SetApplicationReviewUnsuccessful(applicationReview.Id, m.CandidateFeedback, user);
-                    break;
-                default:
-                    throw new ArgumentException("Unhandled ApplicationReviewStatus");
-            }
+            await _client.SetApplicationReviewStatus(applicationReview.Id, m.Outcome, m.CandidateFeedback, user);
+
             return applicationReview.Application.FullName;
         }
 
