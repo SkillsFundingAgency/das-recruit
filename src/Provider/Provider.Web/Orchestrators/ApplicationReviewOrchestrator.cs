@@ -55,6 +55,9 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
                 case ApplicationReviewStatus.InReview:
                     await _client.SetApplicationReviewToInReview(applicationReview.Id, user);
                     break;
+                case ApplicationReviewStatus.Interviewing:
+                    await _client.SetApplicationReviewToInterviewing(applicationReview.Id, user);
+                    break;
                 case ApplicationReviewStatus.Successful:
                     await _client.SetApplicationReviewSuccessful(applicationReview.Id, user);
                     break;

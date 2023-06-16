@@ -366,6 +366,17 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return _messaging.SendCommandAsync(command);
         }
 
+        public Task SetApplicationReviewToInterviewing(Guid applicationReviewId, VacancyUser user)
+        {
+            var command = new ApplicationReviewInterviewingCommand
+            {
+                ApplicationReviewId = applicationReviewId,
+                User = user
+            };
+
+            return _messaging.SendCommandAsync(command);
+        }
+
         public Task SetApplicationReviewsShared(IEnumerable<VacancyApplication> applicationReviews, VacancyUser user)
         {
             var command = new ApplicationReviewsSharedCommand

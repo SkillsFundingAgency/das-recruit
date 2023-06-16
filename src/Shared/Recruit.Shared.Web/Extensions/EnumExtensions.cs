@@ -65,7 +65,7 @@ namespace Esfa.Recruit.Shared.Web.Extensions
             { FilteringOptions.Referred, "Rejected" },
             { FilteringOptions.Transferred, "Transferred from provider" },
             { QualificationWeighting.Desired, "Desirable" },
-            { ApplicationReviewStatus.InReview, "IN REVIEW" }
+            { ApplicationReviewStatus.InReview, "in review" }
         };
 
         private static readonly Dictionary<Enum, string> DisplayNamesEmployer = new Dictionary<Enum, string>
