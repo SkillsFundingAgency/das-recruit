@@ -48,10 +48,14 @@ namespace Esfa.Recruit.Provider.Web.Controllers
                     TempData.Add(TempDataKeys.InReviewApplicationHeader, string.Format(InfoMessages.InReviewApplicationBannerHeader, candidateName));
                     return RedirectToRoute(RouteNames.VacancyManage_Get, new { applicationReviewEditModel.VacancyId, applicationReviewEditModel.Ukprn });
 
-                default: // Successful OR Unsuccessful
+                case ApplicationReviewStatus.Successful: case ApplicationReviewStatus.Unsuccessful:
                     TempData[TempDateARModel] = JsonConvert.SerializeObject(applicationReviewEditModel);
                     return RedirectToRoute(RouteNames.ApplicationReviewConfirmation_Get, new { applicationReviewEditModel.ApplicationReviewId, applicationReviewEditModel.VacancyId, applicationReviewEditModel.Ukprn });
-            }            
+
+                default:
+                    var vm = await _orchestrator.GetApplicationReviewViewModelAsync(applicationReviewEditModel);
+                    return View(vm);
+            }
         }
 
         [HttpGet("status", Name = RouteNames.ApplicationReviewConfirmation_Get)]
