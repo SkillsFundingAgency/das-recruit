@@ -10,7 +10,16 @@ using Esfa.Recruit.Proivder.Web.Exceptions;
 
 namespace Esfa.Recruit.Provider.Web.Orchestrators
 {
-    public class ApplicationReviewOrchestrator
+    public interface IApplicationReviewOrchestrator
+    {
+        Task<ApplicationReviewViewModel> GetApplicationReviewViewModelAsync(ApplicationReviewRouteModel rm);
+        Task<ApplicationReviewViewModel> GetApplicationReviewViewModelAsync(ApplicationReviewEditModel m);
+        Task<string> PostApplicationReviewStatusChangeModelAsync(ApplicationReviewStatusChangeModel m, VacancyUser user);
+        Task<ApplicationStatusConfirmationViewModel> GetApplicationStatusConfirmationViewModelAsync(ApplicationReviewStatusConfirmationEditModel applicationReviewStatusConfirmationEditModel);
+        Task<ApplicationStatusConfirmationViewModel> GetApplicationStatusConfirmationViewModelAsync(ApplicationReviewEditModel rm);
+    }
+
+    public class ApplicationReviewOrchestrator : IApplicationReviewOrchestrator
     {
         private readonly IEmployerVacancyClient _client;
         private readonly IRecruitVacancyClient _vacancyClient;
@@ -50,24 +59,12 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
         {
             var applicationReview = await _utility.GetAuthorisedApplicationReviewAsync(m);
 
-            switch (m.Outcome.Value)
-            {
-                case ApplicationReviewStatus.InReview:
-                    await _client.SetApplicationReviewToInReview(applicationReview.Id, user);
-                    break;
-                case ApplicationReviewStatus.Successful:
-                    await _client.SetApplicationReviewSuccessful(applicationReview.Id, user);
-                    break;
-                case ApplicationReviewStatus.Unsuccessful:
-                    await _client.SetApplicationReviewUnsuccessful(applicationReview.Id, m.CandidateFeedback, user);
-                    break;
-                default:
-                    throw new ArgumentException("Unhandled ApplicationReviewStatus");
-            }
+            await _client.SetApplicationReviewStatus(applicationReview.Id, m.Outcome, m.CandidateFeedback, user);
+
             return applicationReview.Application.FullName;
         }
 
-        internal async Task<ApplicationStatusConfirmationViewModel> GetApplicationStatusConfirmationViewModelAsync(ApplicationReviewStatusConfirmationEditModel applicationReviewStatusConfirmationEditModel)
+        public async Task<ApplicationStatusConfirmationViewModel> GetApplicationStatusConfirmationViewModelAsync(ApplicationReviewStatusConfirmationEditModel applicationReviewStatusConfirmationEditModel)
         {
             await _utility.GetAuthorisedApplicationReviewAsync(applicationReviewStatusConfirmationEditModel);
 

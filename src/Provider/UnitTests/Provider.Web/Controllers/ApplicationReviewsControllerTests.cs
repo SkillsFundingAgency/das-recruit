@@ -172,7 +172,6 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
         {
             // Arrange
             var shareApplicationsConfirmed = true;
-            var vacancyUser = _fixture.Create<VacancyUser>();
             var vacancyApplication1 = _fixture.Create<VacancyApplication>();
             var vacancyApplication2 = _fixture.Create<VacancyApplication>();
             var vacancyApplications = new List<VacancyApplication> { };
@@ -187,7 +186,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
                 .Create();
 
             _orchestrator.Setup(o =>
-                    o.PostApplicationReviewsStatusConfirmationAsync(It.Is<ShareMultipleApplicationsPostRequest>(y => y == request), vacancyUser))
+                    o.PostApplicationReviewsStatusConfirmationAsync(It.Is<ShareMultipleApplicationsPostRequest>(y => y == request), It.IsAny<VacancyUser>()))
                 .Returns(Task.CompletedTask);
 
             // Act
@@ -210,7 +209,6 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
         {
             // Arrange
             var shareApplicationsConfirmed = true;
-            var vacancyUser = _fixture.Create<VacancyUser>();
             var vacancyApplication1 = _fixture.Create<VacancyApplication>();
             var vacancyApplications = new List<VacancyApplication> { };
             vacancyApplications.Add(vacancyApplication1);
@@ -223,7 +221,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
                 .Create();
 
             _orchestrator.Setup(o =>
-                    o.PostApplicationReviewsStatusConfirmationAsync(It.Is<ShareMultipleApplicationsPostRequest>(y => y == request), vacancyUser))
+                    o.PostApplicationReviewsStatusConfirmationAsync(It.Is<ShareMultipleApplicationsPostRequest>(y => y == request), It.IsAny<VacancyUser>()))
                 .Returns(Task.CompletedTask);
 
             // Act

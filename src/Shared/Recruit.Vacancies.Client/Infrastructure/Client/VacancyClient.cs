@@ -355,9 +355,34 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return _messaging.SendCommandAsync(command);
         }
 
-        public Task SetApplicationReviewToInReview(Guid applicationReviewId, VacancyUser user)
+        public Task SetApplicationReviewStatus(Guid applicationReviewId, ApplicationReviewStatus? outcome, string candidateFeedback, VacancyUser user)
         {
-            var command = new ApplicationReviewToInReviewCommand
+            var command = new ApplicationReviewStatusEditCommand
+            {
+                ApplicationReviewId = applicationReviewId,
+                Outcome = outcome,
+                CandidateFeedback = candidateFeedback,
+                User = user
+            };
+
+            return _messaging.SendCommandAsync(command);
+        }
+
+        public Task SetApplicationReviewToInReview(Guid applicationReviewId, ApplicationReviewStatus? outcome, VacancyUser user)
+        {
+            var command = new ApplicationReviewStatusEditCommand
+            {
+                ApplicationReviewId = applicationReviewId,
+                Outcome = outcome,
+                User = user
+            };
+
+            return _messaging.SendCommandAsync(command);
+        }
+
+        public Task SetApplicationReviewToInterviewing(Guid applicationReviewId, VacancyUser user)
+        {
+            var command = new ApplicationReviewInterviewingCommand
             {
                 ApplicationReviewId = applicationReviewId,
                 User = user
