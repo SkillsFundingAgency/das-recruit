@@ -10,7 +10,16 @@ using Esfa.Recruit.Proivder.Web.Exceptions;
 
 namespace Esfa.Recruit.Provider.Web.Orchestrators
 {
-    public class ApplicationReviewOrchestrator
+    public interface IApplicationReviewOrchestrator
+    {
+        Task<ApplicationReviewViewModel> GetApplicationReviewViewModelAsync(ApplicationReviewRouteModel rm);
+        Task<ApplicationReviewViewModel> GetApplicationReviewViewModelAsync(ApplicationReviewEditModel m);
+        Task<string> PostApplicationReviewStatusChangeModelAsync(ApplicationReviewStatusChangeModel m, VacancyUser user);
+        Task<ApplicationStatusConfirmationViewModel> GetApplicationStatusConfirmationViewModelAsync(ApplicationReviewStatusConfirmationEditModel applicationReviewStatusConfirmationEditModel);
+        Task<ApplicationStatusConfirmationViewModel> GetApplicationStatusConfirmationViewModelAsync(ApplicationReviewEditModel rm);
+    }
+
+    public class ApplicationReviewOrchestrator : IApplicationReviewOrchestrator
     {
         private readonly IEmployerVacancyClient _client;
         private readonly IRecruitVacancyClient _vacancyClient;
@@ -55,7 +64,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             return applicationReview.Application.FullName;
         }
 
-        internal async Task<ApplicationStatusConfirmationViewModel> GetApplicationStatusConfirmationViewModelAsync(ApplicationReviewStatusConfirmationEditModel applicationReviewStatusConfirmationEditModel)
+        public async Task<ApplicationStatusConfirmationViewModel> GetApplicationStatusConfirmationViewModelAsync(ApplicationReviewStatusConfirmationEditModel applicationReviewStatusConfirmationEditModel)
         {
             await _utility.GetAuthorisedApplicationReviewAsync(applicationReviewStatusConfirmationEditModel);
 
