@@ -7,9 +7,9 @@
     <div class="govuk-grid-column-full">
 
         <h1 class="govuk-heading-l govuk-!-margin-bottom-6">
-            Share multiple applications
+            @Model.ShareApplicationHeaderTitle
         </h1>
-        <p>
+        <p asp-show="@Model.SharingMultipleApplications">
             You will share these applications:
         </p>
         <div class="govuk-inset-text">

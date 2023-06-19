@@ -1,7 +1,10 @@
+using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Esfa.Recruit.Provider.Web.Configuration;
 using Esfa.Recruit.Provider.Web.Configuration.Routing;
 using Esfa.Recruit.Provider.Web.Extensions;
+using Esfa.Recruit.Provider.Web.Models.ApplicationReviews;
 using Esfa.Recruit.Provider.Web.Orchestrators;
 using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Provider.Web.ViewModels.ApplicationReview;
@@ -44,6 +47,18 @@ namespace Esfa.Recruit.Provider.Web.Controllers
 
             switch (applicationReviewEditModel.Outcome.Value)
             {
+                case ApplicationReviewStatus.Shared:
+                    var shareApplicationsModel = new ShareMultipleApplicationsRequest 
+                    {
+                        Ukprn = applicationReviewEditModel.Ukprn,
+                        VacancyId = applicationReviewEditModel.VacancyId,
+                        ApplicationsToShare = new List<Guid> 
+                        {
+                            applicationReviewEditModel.ApplicationReviewId
+                        }
+                    };
+                    return RedirectToRoute(RouteNames.ApplicationReviewsToShareConfirmation_Get, shareApplicationsModel);
+
                 case ApplicationReviewStatus.InReview: case ApplicationReviewStatus.Interviewing:
                     var candidateName = await _orchestrator.PostApplicationReviewStatusChangeModelAsync(applicationReviewEditModel, User.ToVacancyUser());
                     TempData.Add(TempDataKeys.ApplicationStatusChangedHeader, string.Format(InfoMessages.ApplicationStatusChangeBannerHeader, candidateName, applicationReviewEditModel.Outcome.GetDisplayName().ToLower()));
