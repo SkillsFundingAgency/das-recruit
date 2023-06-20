@@ -48,7 +48,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
             switch (applicationReviewEditModel.Outcome.Value)
             {
                 case ApplicationReviewStatus.Shared:
-                    var shareApplicationsModel = new ShareMultipleApplicationsRequest 
+                    var shareApplicationsModel = new ShareApplicationReviewsRequest 
                     {
                         Ukprn = applicationReviewEditModel.Ukprn,
                         VacancyId = applicationReviewEditModel.VacancyId,

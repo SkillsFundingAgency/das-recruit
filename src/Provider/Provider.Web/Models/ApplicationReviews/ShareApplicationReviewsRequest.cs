@@ -4,7 +4,7 @@ using Esfa.Recruit.Provider.Web.RouteModel;
 
 namespace Esfa.Recruit.Provider.Web.Models.ApplicationReviews
 {
-    public class ShareMultipleApplicationsRequest : VacancyRouteModel
+    public class ShareApplicationReviewsRequest : VacancyRouteModel
     {
         public List<Guid> ApplicationsToShare { get; set; }
     }

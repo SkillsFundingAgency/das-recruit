@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace Esfa.Recruit.Provider.Web.Models.ApplicationReviews
 {
-    public class ShareMultipleApplicationsPostRequest : VacancyRouteModel
+    public class ShareApplicationReviewsPostRequest : VacancyRouteModel
     {
         public List<VacancyApplication> ApplicationReviewsToShare { get; set; }
         public bool ShareApplicationsConfirmed { get; set; }
