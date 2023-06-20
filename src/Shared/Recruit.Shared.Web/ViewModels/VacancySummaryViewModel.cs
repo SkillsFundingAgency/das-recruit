@@ -21,7 +21,7 @@ namespace Esfa.Recruit.Shared.Web.ViewModels
         public int NoOfNewApplications { get; set; }
         public int NoOfSuccessfulApplications { get; set; }
         public int NoOfUnsuccessfulApplications { get; set; }
-
+        public int NoOfSharedApplications { get; set; }
         public bool HasVacancyReference => VacancyReference.HasValue;
         public bool HasNoVacancyReference => !HasVacancyReference;
         public bool CanShowVacancyApplicationsCount => (Status== VacancyStatus.Live || Status == VacancyStatus.Closed) 
