@@ -54,7 +54,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public async Task<IActionResult> ApplicationReviewsToShareConfirmation(ShareApplicationReviewsPostRequest request)
         {
-            if (request.ShareApplicationsConfirmed) 
+            if ((bool)request.ShareApplicationsConfirmed) 
             {
                 await _orchestrator.PostApplicationReviewsStatusConfirmationAsync(request, User.ToVacancyUser());
                 SetSharedApplicationsBannerMessageViaTempData(request.ApplicationReviewsToShare);

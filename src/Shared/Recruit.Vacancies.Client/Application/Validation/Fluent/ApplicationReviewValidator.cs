@@ -14,6 +14,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
         public const string CandidateFeedbackNull = "You must not provide feedback for a successful application";
         public const string NotifyCandidateRequired = "You must select one option";
         public const string CandidateFeedbackProfanityPhrases = "Feedback must not contain a banned word or phrase.";
+        public const string ShareConfirmationRequired = "You must select an option.";
 
         public ApplicationReviewValidator()
         {

@@ -9,6 +9,9 @@
         <h1 class="govuk-heading-l govuk-!-margin-bottom-6">
             @Model.ShareApplicationHeaderTitle
         </h1>
+
+        <partial name="@PartialNames.ValidationShareApplications" model='new ValidationShareApplicationsViewModel { ModelState = ViewData.ModelState }' />
+
         <p asp-show="@Model.SharingMultipleApplications">
             You will share these applications:
         </p>
@@ -48,32 +51,34 @@
         <form method="post" id="share_applications_confirm_form" asp-route="@RouteNames.ApplicationReviewsToShareConfirmation_Post" asp-route-ukprn="@Model.Ukprn" asp-route-vacancyId="@Model.VacancyId">
             
             <div class="govuk-form-group" das-highlight-error-for="ApplicationReviewsToShare" error-class="govuk-form-group--error" id="ApplicationReviewsToShare">
-                <fieldset class="govuk-fieldset">
-                    
-                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
-                        <h1 class="govuk-fieldset__heading">
-                        Do you want to share these applications?
-                        </h1>
-                    </legend>
+                <div esfa-validation-marker-for="ShareApplicationsConfirmed" class="govuk-form-group">
+                    <fieldset class="govuk-fieldset">
+                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                            <h1 class="govuk-fieldset__heading">
+                            Do you want to share these applications?
+                            </h1>
+                        </legend>
 
-                    @for (var i = 0; i < Model.ApplicationReviewsToShare.Count(); i++)
-                    {
-                            <div class="govuk-!-display-none">
-                            @Html.EditorFor(x => x.ApplicationReviewsToShare[i])
-                        </div>
-                    }
+                        @for (var i = 0; i < Model.ApplicationReviewsToShare.Count(); i++)
+                        {
+                                <div class="govuk-!-display-none">
+                                @Html.EditorFor(x => x.ApplicationReviewsToShare[i])
+                            </div>
+                        }
 
-                    <div class="govuk-radios">
-                        <div class="govuk-radios__item">
-                            <input asp-for="ShareApplicationsConfirmed" class="govuk-radios__input" id="share-applications-confirm-yes" type="radio" value="true">
-                            <label for="share-applications-confirm-yes" class="govuk-label govuk-radios__label">Yes</label>
+                        <span esfa-validation-message-for="ShareApplicationsConfirmed" class="govuk-error-message"></span>
+                        <div class="govuk-radios">
+                            <div class="govuk-radios__item">
+                                <input asp-for="ShareApplicationsConfirmed" class="govuk-radios__input" id="share-applications-confirm-yes" type="radio" value="true">
+                                <label for="share-applications-confirm-yes" class="govuk-label govuk-radios__label">Yes</label>
+                            </div>
+                            <div class="govuk-radios__item">
+                                <input asp-for="ShareApplicationsConfirmed" class="govuk-radios__input" id="share-applications-confirm-no" type="radio" value="false">
+                                <label for="share-applications-confirm-no" class="govuk-label govuk-radios__label">No</label>
+                            </div>
                         </div>
-                        <div class="govuk-radios__item">
-                            <input asp-for="ShareApplicationsConfirmed" class="govuk-radios__input" id="share-applications-confirm-no" type="radio" value="false">
-                            <label for="share-applications-confirm-no" class="govuk-label govuk-radios__label">No</label>
-                        </div>
-                    </div>
-                </fieldset>
+                    </fieldset>
+                </div>
             </div>
              <div class="govuk-button-group">
                 <button class="govuk-button submit" data-module="govuk-button" id="share-applications-confirm" type="submit">Confirm</button>

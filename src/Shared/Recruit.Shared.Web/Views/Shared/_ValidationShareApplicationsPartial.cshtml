@@ -1,0 +1,10 @@
+﻿@using Microsoft.AspNetCore.Mvc.ModelBinding;
+@model ValidationShareApplicationsViewModel
+
+@if (!Model.ModelState.IsValid) {
+<div class="govuk-error-summary" role="alert" data-valmsg-summary="true" tabindex="-1">
+    <h2 class="govuk-error-summary__title">
+        There is a problem
+    </h2>
+</div>
+}
