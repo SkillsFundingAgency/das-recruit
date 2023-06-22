@@ -3,6 +3,7 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Vacanc
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Esfa.Recruit.Shared.Web.ViewModels;
 
 namespace Esfa.Recruit.Provider.Web.ViewModels.ApplicationReviews
 {
@@ -12,5 +13,6 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.ApplicationReviews
         public bool? ShareApplicationsConfirmed { get; set; }
         public string ShareApplicationHeaderTitle => ApplicationReviewsToShare.Count() == 1 ? "Share an application" : "Share multiple applications";
         public bool SharingMultipleApplications => ApplicationReviewsToShare.Count() > 1 ? true : false;
+        public ValidationSummaryViewModel ValidationErrors { get; set; } = new ValidationSummaryViewModel();
     }
 }

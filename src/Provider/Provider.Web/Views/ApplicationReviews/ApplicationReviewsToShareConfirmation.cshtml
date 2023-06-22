@@ -10,7 +10,7 @@
             @Model.ShareApplicationHeaderTitle
         </h1>
 
-        <partial name="@PartialNames.ValidationShareApplications" model='new ValidationShareApplicationsViewModel { ModelState = ViewData.ModelState }' />
+        <partial name="@PartialNames.ValidationSummary" model=@Model.ValidationErrors />
 
         <p asp-show="@Model.SharingMultipleApplications">
             You will share these applications:

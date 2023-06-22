@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Esfa.Recruit.Provider.Web.Models.ApplicationReviews;
 using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Provider.Web.ViewModels.ApplicationReviews;
+using Esfa.Recruit.Shared.Web.ViewModels;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 
@@ -48,7 +49,8 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
                 VacancyId = request.VacancyId,
                 Ukprn = request.Ukprn,
                 ApplicationReviewsToShare = applicationReviewsToShare,
-                ShareApplicationsConfirmed = null
+                ShareApplicationsConfirmed = null,
+                ValidationErrors = new ValidationSummaryViewModel()
             };
         }
 

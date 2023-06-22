@@ -14,7 +14,6 @@ namespace Esfa.Recruit.Provider.Web.Views
         public const string ZenDeskApi = RecruitPartialNames.ZenDeskApi;        
         public const string Pager = RecruitPartialNames.Pager;
         public const string ValidationSummary = RecruitPartialNames.ValidationSummary;
-        public const string ValidationShareApplications = RecruitPartialNames.ValidationShareApplications;
         public const string ReviewSummary = "_ReviewSummaryPartial";
         public const string EditVacancyPartial = "_EditVacancyPartial";
         public const string VacancyApplicationsTable = "_VacancyApplicationsTablePartial";

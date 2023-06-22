@@ -1,7 +1,7 @@
 ﻿@using Microsoft.AspNetCore.Mvc.ModelBinding;
 @model ValidationSummaryViewModel
 
-@if (!Model.ModelState.IsValid) {
+@if (Model.ModelState != null && !Model.ModelState.IsValid) {
 <div class="govuk-error-summary" role="alert" data-valmsg-summary="true" tabindex="-1">
     <h2 class="govuk-error-summary__title">
         There is a problem
