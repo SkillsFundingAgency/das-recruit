@@ -11,8 +11,8 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
     public interface IApplicationReviewsOrchestrator
     {
         Task<ShareMultipleApplicationReviewsViewModel> GetApplicationReviewsToShareViewModelAsync(VacancyRouteModel rm);
-        Task<ShareMultipleApplicationReviewsConfirmationViewModel> GetApplicationReviewsToShareConfirmationViewModel(ShareMultipleApplicationsRequest request);
-        Task PostApplicationReviewsStatusConfirmationAsync(ShareMultipleApplicationsPostRequest request, VacancyUser user);
+        Task<ShareMultipleApplicationReviewsConfirmationViewModel> GetApplicationReviewsToShareConfirmationViewModel(ShareApplicationReviewsRequest request);
+        Task PostApplicationReviewsStatusConfirmationAsync(ShareApplicationReviewsPostRequest request, VacancyUser user);
     }
 
     public class ApplicationReviewsOrchestrator : IApplicationReviewsOrchestrator
@@ -39,7 +39,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             };
         }
 
-        public async Task<ShareMultipleApplicationReviewsConfirmationViewModel> GetApplicationReviewsToShareConfirmationViewModel(ShareMultipleApplicationsRequest request)
+        public async Task<ShareMultipleApplicationReviewsConfirmationViewModel> GetApplicationReviewsToShareConfirmationViewModel(ShareApplicationReviewsRequest request)
         {
             var applicationReviewsToShare = await _vacancyClient.GetVacancyApplicationsForSelectedIdsAsync(request.ApplicationsToShare);
 
@@ -51,7 +51,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             };
         }
 
-        public async Task PostApplicationReviewsStatusConfirmationAsync(ShareMultipleApplicationsPostRequest request, VacancyUser user)
+        public async Task PostApplicationReviewsStatusConfirmationAsync(ShareApplicationReviewsPostRequest request, VacancyUser user)
         {
             await _vacancyClient.SetApplicationReviewsShared(request.ApplicationReviewsToShare, user);
         }

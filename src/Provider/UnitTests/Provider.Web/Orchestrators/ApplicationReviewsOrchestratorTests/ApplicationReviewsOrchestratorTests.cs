@@ -65,7 +65,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Application
         public async Task GetApplicationReviewsToShareConfirmationViewModel_ReturnsViewModelWithCorrectData()
         {
             // Arrange
-            var request = _fixture.Create<ShareMultipleApplicationsRequest>();
+            var request = _fixture.Create<ShareApplicationReviewsRequest>();
             var vacancyApplication1 = _fixture.Create<VacancyApplication>();
             var vacancyApplication2 = _fixture.Create<VacancyApplication>();
             var vacancyApplications = new List<VacancyApplication> { };

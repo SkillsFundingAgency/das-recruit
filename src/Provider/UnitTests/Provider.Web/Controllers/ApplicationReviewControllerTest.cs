@@ -16,10 +16,7 @@ using Esfa.Recruit.Provider.Web.Configuration.Routing;
 using Esfa.Recruit.Shared.Web.ViewModels;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Provider.Web.Extensions;
-using Esfa.Recruit.Provider.Web.ViewModels.ApplicationReviews;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyApplications;
 using Esfa.Recruit.Shared.Web.ViewModels.ApplicationReview;
-using System.Linq;
 
 namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
 {
@@ -150,6 +147,29 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
             Assert.AreEqual(_vacancyId, redirectResult.RouteValues["VacancyId"]);
             Assert.AreEqual(_ukprn, redirectResult.RouteValues["Ukprn"]);
             Assert.AreEqual(_applicationReviewId, redirectResult.RouteValues["ApplicationReviewId"]);
+        }
+
+        [Test]
+        public async Task POST_ApplicationReview_StatusShared_RedirectsToShareApplicationConfirmationAction()
+        {
+            // Arrange
+            var editModel = _fixture.Build<ApplicationReviewEditModel>()
+                .With(x => x.Outcome, ApplicationReviewStatus.Shared)
+                .With(x => x.VacancyId, _vacancyId)
+                .With(x => x.Ukprn, _ukprn)
+                .With(x => x.ApplicationReviewId, _applicationReviewId)
+                .Create();
+
+            // Act
+            var redirectResult = await _controller.ApplicationReview(editModel) as RedirectToRouteResult;
+
+            // Assert
+            Assert.NotNull(redirectResult);
+            Assert.AreEqual(RouteNames.ApplicationReviewsToShareConfirmation_Get, redirectResult.RouteName);
+            Assert.AreEqual(_vacancyId, redirectResult.RouteValues["VacancyId"]);
+            Assert.AreEqual(_ukprn, redirectResult.RouteValues["Ukprn"]);
+            Assert.NotNull(redirectResult.RouteValues["ApplicationsToShare"]);
+            Assert.That(redirectResult.RouteValues["ApplicationsToShare"], Has.Count.EqualTo(1));
         }
 
         [Test]

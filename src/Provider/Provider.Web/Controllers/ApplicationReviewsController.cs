@@ -44,7 +44,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
         }
 
         [HttpGet("share", Name = RouteNames.ApplicationReviewsToShareConfirmation_Get)]
-        public async Task<IActionResult> ApplicationReviewsToShareConfirmation(ShareMultipleApplicationsRequest request)
+        public async Task<IActionResult> ApplicationReviewsToShareConfirmation(ShareApplicationReviewsRequest request)
         {
             var shareApplicationsConfirmationViewModel = await _orchestrator.GetApplicationReviewsToShareConfirmationViewModel(request);
             return View(shareApplicationsConfirmationViewModel);
@@ -52,7 +52,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
 
         [HttpPost("share", Name = RouteNames.ApplicationReviewsToShareConfirmation_Post)]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-        public async Task<IActionResult> ApplicationReviewsToShareConfirmation(ShareMultipleApplicationsPostRequest request)
+        public async Task<IActionResult> ApplicationReviewsToShareConfirmation(ShareApplicationReviewsPostRequest request)
         {
             if (request.ShareApplicationsConfirmed) 
             {
