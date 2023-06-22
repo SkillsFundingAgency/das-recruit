@@ -1,8 +1,7 @@
-﻿using Esfa.Recruit.Shared.Web.ViewModels.ApplicationReview;
-using Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent;
+﻿using Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent;
 using FluentValidation;
 
-namespace Esfa.Recruit.Shared.Web.ViewModels.Validations.Fluent
+namespace Esfa.Recruit.Provider.Web.Models.ApplicationReviews
 {
     public class ShareApplicationReviewsPostRequestValidator : AbstractValidator<IApplicationReviewsShareModel>
     {
