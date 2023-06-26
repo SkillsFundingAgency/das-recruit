@@ -18,7 +18,9 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.Dashboard
         public int VacancyCountReview => ProviderDashboardSummary.Review;
         public int VacancyCountSubmitted => ProviderDashboardSummary.Submitted;
         public int NoOfNewApplications => ProviderDashboardSummary.NumberOfNewApplications;
+        public int NumberOfReviewedApplications => ProviderDashboardSummary.NumberOfReviewedApplications;
         public bool ShowAllApplications => ProviderDashboardSummary.HasApplications;
+        public string ApplicationTextReviewedApplication => "Employer reviewed applications".ToQuantity(NumberOfReviewedApplications, ShowQuantityAs.None);
         public string ApplicationTextLive => "application".ToQuantity(NoOfNewApplications, ShowQuantityAs.None);
         public int NoOfVacanciesClosingSoon => ProviderDashboardSummary.NumberClosingSoon;
         public string VacancyTextClosingSoon => "vacancy".ToQuantity(NoOfVacanciesClosingSoon, ShowQuantityAs.None);
