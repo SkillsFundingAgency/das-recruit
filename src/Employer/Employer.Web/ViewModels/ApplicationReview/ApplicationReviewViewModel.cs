@@ -57,6 +57,9 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.ApplicationReview;
         {
             nameof(Outcome)
         };
+        public bool ShowAnonymisedApplicantDetails => (Status == ApplicationReviewStatus.Shared || Status == ApplicationReviewStatus.Unsuccessful);
+        public bool HideRadioButtons => (Status == ApplicationReviewStatus.Interviewing || Status == ApplicationReviewStatus.Unsuccessful);
+        public bool IsApplicationUnsuccessful => Status == ApplicationReviewStatus.Unsuccessful;
         public bool IsApplicationShared => Status == ApplicationReviewStatus.Shared;
         public bool IsApplicationInterviewing => Status == ApplicationReviewStatus.Interviewing;
         public string FormHeaderText => (Status == ApplicationReviewStatus.Shared) ? "Do you want to interview this applicant?" : "Outcome";

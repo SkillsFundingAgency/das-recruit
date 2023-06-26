@@ -23,16 +23,18 @@
 
         <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }' />
 
-        <div asp-show="@Model.IsApplicationShared">
+        <div asp-show="@Model.ShowAnonymisedApplicantDetails">
             <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">Application ID: @Model.FriendlyId</h1>
-
+        </div>
+        
+        <div asp-show="@Model.IsApplicationShared">
             <h2 class="govuk-heading-l govuk-!-margin-bottom-5">Contact Details</h2>
              <p class="govuk-body">
                  You'll be able to see this applicant's name and contact details if you decide to interview them.
              </p>
         </div>
 
-         <div asp-hide="@Model.IsApplicationShared">
+         <div asp-hide="@Model.ShowAnonymisedApplicantDetails">
 
              <h1 class="govuk-heading-xl govuk-!-margin-bottom-4">@Model.Name</h1>
              <p class="govuk-body govuk-!-margin-bottom-6">
@@ -229,7 +231,7 @@
             <a asp-route="@RouteNames.VacancyManage_Get" asp-route-employerAccountId="@Model.EmployerAccountId" class="govuk-button">Return to advert</a>
         </div>
 
-        <form asp-show="@Model.CanChangeOutcome" asp-hide="@Model.IsApplicationInterviewing" asp-route="@RouteNames.ApplicationReview_Post" asp-all-route-data="@Model.ApplicationRouteDictionary" class="govuk-!-margin-top-6">
+        <form asp-show="@Model.CanChangeOutcome" asp-hide="@Model.HideRadioButtons" asp-route="@RouteNames.ApplicationReview_Post" asp-all-route-data="@Model.ApplicationRouteDictionary" class="govuk-!-margin-top-6">
             <div esfa-validation-marker-for="Outcome" class="govuk-form-group">
                 <fieldset class="govuk-fieldset">
                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
@@ -279,6 +281,14 @@
         <div asp-show="@Model.IsApplicationInterviewing">
             <h2 class="govuk-heading-l govuk-!-margin-top-6">Your response to your training provider.</h2>
             <p class="govuk-body">Yes, I want to interview this applicant.</p>
+        </div>
+
+        <div asp-show="@Model.IsApplicationUnsuccessful">
+            <h2 class="govuk-heading-l govuk-!-margin-top-6">Your response to your training provider.</h2>
+            <p class="govuk-body">No, I don't want to interview this applicant.</p>
+            <div class="govuk-inset-text">
+                @Model.CandidateFeedback
+            </div>
         </div>
     </>
 </div>
