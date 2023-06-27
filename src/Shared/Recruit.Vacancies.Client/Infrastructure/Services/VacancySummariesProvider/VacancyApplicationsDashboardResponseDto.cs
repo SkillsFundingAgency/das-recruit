@@ -8,6 +8,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
         public int NoOfNewApplications { get; set; }
         public int NoOfSuccessfulApplications { get; set; }
         public int NoOfUnsuccessfulApplications { get; set; }
+        public int NoOfSharedApplications { get; set; }
         public int StatusCount { get; set; }
     }
     

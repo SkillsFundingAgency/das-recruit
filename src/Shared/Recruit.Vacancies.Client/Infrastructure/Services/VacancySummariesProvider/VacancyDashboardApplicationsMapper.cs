@@ -12,6 +12,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                 NoOfNewApplications = src.NoOfNewApplications,
                 NoOfSuccessfulApplications = src.NoOfSuccessfulApplications,
                 NoOfUnsuccessfulApplications = src.NoOfUnsuccessfulApplications,
+                NoOfSharedApplications = src.NoOfSharedApplications,
                 ClosingSoon = src.Id.ClosingSoon,
                 StatusCount = src.StatusCount
             };

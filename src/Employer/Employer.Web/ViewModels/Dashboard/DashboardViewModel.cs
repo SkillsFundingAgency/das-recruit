@@ -31,6 +31,8 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Dashboard
         public bool HasNewApplications => NoOfNewApplications > 0;
         public int NoOfSharedApplications => EmployerDashboardSummary.NumberOfSharedApplications;
         public bool HasSharedApplications => NoOfSharedApplications > 0;
+        public string SharedApplicationsText => "application".ToQuantity(NoOfSharedApplications, ShowQuantityAs.None);
+        public bool ShowAllSharedApplications => HasSharedApplications;
         public bool ShowAllApplications => EmployerDashboardSummary.HasApplications;
         public string ApplicationTextLive => "application".ToQuantity(NoOfNewApplications, ShowQuantityAs.None);
         public int NoOfVacanciesClosingSoon => EmployerDashboardSummary.NumberClosingSoon;
