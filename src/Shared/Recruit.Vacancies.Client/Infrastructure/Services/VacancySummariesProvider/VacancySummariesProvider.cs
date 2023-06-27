@@ -91,20 +91,30 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                     BuildEmployerReviewMatch()
                 }
             };
+            var liveVacanciesMatch = new BsonDocument
+            {
+                {
+                    "$match",
+                    BuildLiveVacanciesMatch()
+                }
+            };
             var builder = new VacancySummaryAggQueryBuilder();
             var aggPipelines = builder.GetAggregateQueryPipelineDashboard(match,employerReviewMatch);
             var applicationAggPipeline = builder.GetAggregateQueryPipelineDashboardApplications(match, employerReviewMatch);
+            var sharedApplicationAggPipeline = builder.GetAggregateQueryPipelineDashboardApplications(match, liveVacanciesMatch);
             var closingSoonAggPipeline = builder.GetAggregateQueryPipelineVacanciesClosingSoonDashboard(match, employerReviewMatch);
             
             var dashboardValuesTask = RunDashboardAggPipelineQuery(aggPipelines);
             var applicationDashboardValuesTask = RunApplicationsDashboardAggPipelineQuery(applicationAggPipeline);
+            var sharedApplicationDashboardValuesTask = RunSharedApplicationsDashboardAggPipelineQuery(sharedApplicationAggPipeline);
             var closingSoonDashboardValuesTask = RunApplicationsDashboardAggPipelineQuery(closingSoonAggPipeline);
             
-            await Task.WhenAll(dashboardValuesTask, applicationDashboardValuesTask, closingSoonDashboardValuesTask);
+            await Task.WhenAll(dashboardValuesTask, applicationDashboardValuesTask, sharedApplicationDashboardValuesTask, closingSoonDashboardValuesTask);
             return new VacancyDashboard
             {
                 VacancyStatusDashboard = dashboardValuesTask.Result,
                 VacancyApplicationsDashboard = applicationDashboardValuesTask.Result,
+                VacancySharedApplicationsDashboard = sharedApplicationDashboardValuesTask.Result,
                 VacanciesClosingSoonWithNoApplications = closingSoonDashboardValuesTask.Result.FirstOrDefault()?.StatusCount ?? 0
             };
         }
@@ -278,6 +288,22 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
             return vacancyDashboard.Select(VacancyDashboardApplicationsMapper.MapFromVacancyApplicationsDashboardResponseDto).ToList();
         }
 
+        private async Task<List<VacancySharedApplicationsDashboard>> RunSharedApplicationsDashboardAggPipelineQuery(
+           BsonDocument[] pipeline)
+        {
+            var db = GetDatabase();
+            var collection = db.GetCollection<BsonDocument>(MongoDbCollectionNames.Vacancies);
+
+            var vacancyDashboard = await RetryPolicy.Execute(async context =>
+            {
+                var aggResults = await collection.AggregateAsync<VacancySharedApplicationsDashboardResponseDto>(pipeline);
+                return await aggResults.ToListAsync();
+            },
+                new Context(nameof(RunSharedApplicationsDashboardAggPipelineQuery)));
+
+            return vacancyDashboard.Select(VacancyDashboardSharedApplicationsMapper.MapFromVacancySharedApplicationsDashboardResponseDto).ToList();
+        }
+
         private async Task<long> RunAggPipelineCountQuery(BsonDocument[] pipeline)
         {
             var db = GetDatabase();
@@ -350,7 +376,21 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
             
             return document;
         }
-        
+
+        private static BsonDocument BuildLiveVacanciesMatch()
+        {
+            var document = new BsonDocument
+            {
+                {"$or", new BsonArray
+                {
+                    new BsonDocument{{"ownerType","Employer"}},
+                    new BsonDocument{ {"$and",new BsonArray{ new BsonDocument{{"ownerType","Provider"}},new BsonDocument{{"status","Live"}}}} }
+                }}
+            };
+
+            return document;
+        }
+
         private static BsonDocument BuildBsonDocumentFilterValues(long? ukprn, string employerAccountId, FilteringOptions? status, BsonArray bsonArray, VacancyType? vacancyType)
         {
             var document = new BsonDocument
