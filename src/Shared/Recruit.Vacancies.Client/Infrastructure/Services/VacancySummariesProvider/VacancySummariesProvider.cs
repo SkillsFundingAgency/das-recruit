@@ -349,6 +349,12 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                     case FilteringOptions.AllApplications:
                         document.Add("noOfApplications", new BsonDocument {{"$gt", 0}});
                         break;
+                    case FilteringOptions.NewSharedApplications:
+                        document.Add("noOfSharedApplications", new BsonDocument { { "$gt", 0 } });
+                        break;
+                    case FilteringOptions.AllSharedApplications:
+                        document.Add("noOfAllSharedApplications", new BsonDocument { { "$gt", 0 } });
+                        break;
                     case FilteringOptions.ClosingSoonWithNoApplications:
                         document.Add("noOfApplications", 0);
                         break;
@@ -439,6 +445,12 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                         break;
                     case FilteringOptions.Transferred:
                         document.Add("transferInfo.transferredDate", new BsonDocument {{"$nin", new BsonArray {BsonNull.Value}}});
+                        break;
+                    case FilteringOptions.NewSharedApplications:
+                        document.Add("ownerType", "Provider");
+                        break;
+                    case FilteringOptions.AllSharedApplications:
+                        document.Add("ownerType", "Provider");
                         break;
                 }
                 
