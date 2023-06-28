@@ -96,7 +96,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                     },
                     'isReviewed': {
                         '$cond': {
-                            'if': {'$eq': [ '$appStatus', 'Reviewed']},
+                            'if': {'$eq': [ '$appStatus', 'EmployerReviewed']},
                             'then': 1,
                             'else': 0
                         }
