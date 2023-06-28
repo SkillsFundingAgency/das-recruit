@@ -89,7 +89,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
                 Live = dashboard.Where(c => c.Status == VacancyStatus.Live).Sum(c => c.StatusCount),
                 Submitted = dashboard.SingleOrDefault(c => c.Status == VacancyStatus.Submitted)?.StatusCount ?? 0,
                 NumberOfNewApplications = dashboardApplications.Where(c => c.Status == VacancyStatus.Live || c.Status == VacancyStatus.Closed).Sum(x => x.NoOfNewApplications),
-                NumberOfReviewedApplications = dashboardApplications.Where(c => c.Status == VacancyStatus.Live || c.Status == VacancyStatus.Closed).Sum(x => x.NumberOfReviewedApplications),
+                NumberOfEmployerReviewedApplications = dashboardApplications.Where(c => c.Status == VacancyStatus.Live || c.Status == VacancyStatus.Closed).Sum(x => x.NumberOfEmployerReviewedApplications),
                 NumberOfSuccessfulApplications = dashboardApplications.Where(c => c.Status == VacancyStatus.Live && !c.ClosingSoon).Sum(x => x.NoOfSuccessfulApplications)
                                                  + dashboardApplications.Where(c => c.Status == VacancyStatus.Closed && !c.ClosingSoon).Sum(x => x.NoOfSuccessfulApplications),
                 NumberOfUnsuccessfulApplications = dashboardApplications.Where(c => c.Status == VacancyStatus.Live && !c.ClosingSoon).Sum(x => x.NoOfUnsuccessfulApplications)

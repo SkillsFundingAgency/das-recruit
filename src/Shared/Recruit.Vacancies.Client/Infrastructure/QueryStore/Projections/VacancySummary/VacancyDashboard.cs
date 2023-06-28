@@ -21,7 +21,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections
     {
         public VacancyStatus Status { get; set; }
         public int NoOfNewApplications { get; set; }
-        public int NumberOfReviewedApplications { get; set; }
+        public int NumberOfEmployerReviewedApplications { get; set; }
         public int NoOfSuccessfulApplications { get; set; }
         public int NoOfUnsuccessfulApplications { get; set; }
         public bool ClosingSoon { get; set; }

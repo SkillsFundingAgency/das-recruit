@@ -15,7 +15,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Pr
         public int NumberOfVacancies => Closed + Draft + Review + Referred + Live + Submitted;
         public int NumberClosingSoon { get; set; }
         public int NumberOfNewApplications { get; set; }
-        public int NumberOfReviewedApplications { get; set; }
+        public int NumberOfEmployerReviewedApplications { get; set; }
         public int NumberOfSuccessfulApplications { get; set; }
         public int NumberOfUnsuccessfulApplications { get; set; }
         public int NumberClosingSoonWithNoApplications { get; set; }

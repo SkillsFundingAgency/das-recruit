@@ -94,9 +94,14 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                             'else': 0
                         }
                     },
-                    'isReviewed': {
+                    'isEmployerReviewed': {
                         '$cond': {
-                            'if': {'$eq': [ '$appStatus', 'EmployerReviewed']},
+                            'if': {
+                                '$or': [
+                                    { '$eq': ['$appStatus', 'InReview'] },
+                                    { '$eq': ['$appStatus', 'Interviewing'] }
+                                ]
+                            },
                             'then': 1,
                             'else': 0
                         }
@@ -123,8 +128,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                     'noOfSuccessfulApplications': {
                         '$sum': '$isSuccessful'
                     },
-                    'noOfReviewedApplications': {
-                        '$sum': '$isReviewed'
+                    'noOfEmployerReviewedApplications': {
+                        '$sum': '$isEmployerReviewed'
                     },
                     'noOfUnsuccessfulApplications': {
                         '$sum': '$isUnsuccessful'
@@ -401,11 +406,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
             var pipeline = BsonSerializer.Deserialize<BsonArray>(Pipeline);
             if (secondaryMatch != null)
             {
-                pipeline.Insert(pipeline.Count-1, secondaryMatch);    
+                pipeline.Insert(pipeline.Count - 1, secondaryMatch);
             }
 
-            pipeline.Insert(pipeline.Count, new BsonDocument {{"$skip", (pageNumber-1) * 25}});
-            pipeline.Insert(pipeline.Count, new BsonDocument {{"$limit",25}});
+            pipeline.Insert(pipeline.Count, new BsonDocument { { "$skip", (pageNumber - 1) * 25 } });
+            pipeline.Insert(pipeline.Count, new BsonDocument { { "$limit", 25 } });
             if (employerReviewMatch != null)
             {
                 pipeline.Insert(0, employerReviewMatch);
@@ -420,8 +425,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
         public static BsonDocument[] GetAggregateQueryPipelineDocumentCount(BsonDocument vacanciesMatchClause, BsonDocument secondaryMatch, BsonDocument employerReviewMatch = null)
         {
             var pipeline = BsonSerializer.Deserialize<BsonArray>(Pipeline);
-            pipeline.Insert(pipeline.Count-1, secondaryMatch);
-            pipeline.Insert(pipeline.Count, new BsonDocument {{"$count","total"}});
+            pipeline.Insert(pipeline.Count - 1, secondaryMatch);
+            pipeline.Insert(pipeline.Count, new BsonDocument { { "$count", "total" } });
             if (employerReviewMatch != null)
             {
                 pipeline.Insert(0, employerReviewMatch);
