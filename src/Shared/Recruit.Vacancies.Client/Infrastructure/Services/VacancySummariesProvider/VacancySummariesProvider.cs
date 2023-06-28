@@ -95,7 +95,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
             {
                 {
                     "$match",
-                    BuildLiveVacanciesMatch()
+                    BuildSharedApplicationsVacanciesMatch()
                 }
             };
             var builder = new VacancySummaryAggQueryBuilder();
@@ -377,14 +377,14 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
             return document;
         }
 
-        private static BsonDocument BuildLiveVacanciesMatch()
+        private static BsonDocument BuildSharedApplicationsVacanciesMatch()
         {
             var document = new BsonDocument
             {
-                {"$or", new BsonArray
+                {"$and", new BsonArray
                 {
-                    new BsonDocument{{"ownerType","Employer"}},
-                    new BsonDocument{ {"$and",new BsonArray{ new BsonDocument{{"ownerType","Provider"}},new BsonDocument{{"status","Live"}}}} }
+                    new BsonDocument{{"ownerType","Provider"}},
+                    new BsonDocument{{"$or", new BsonArray{ new BsonDocument{{"status", "Live"}}, new BsonDocument{{"status","Closed"}} }} }
                 }}
             };
 
