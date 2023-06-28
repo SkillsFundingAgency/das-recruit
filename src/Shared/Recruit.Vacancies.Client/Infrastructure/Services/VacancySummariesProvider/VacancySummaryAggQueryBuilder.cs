@@ -98,8 +98,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                         '$cond': {
                             'if': {
                                 '$or': [
-                                    { '$eq': ['$appStatus', 'InReview'] },
-                                    { '$eq': ['$appStatus', 'Interviewing'] }
+                                    { '$eq': ['$appStatus', 'EmployerInterviewing'] },
+                                    { '$eq': ['$appStatus', 'EmployerUnsuccessful'] }
                                 ]
                             },
                             'then': 1,
