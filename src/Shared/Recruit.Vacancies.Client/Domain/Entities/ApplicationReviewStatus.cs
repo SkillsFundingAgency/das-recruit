@@ -7,6 +7,7 @@
         Unsuccessful,
         Shared,
         InReview,
-        Interviewing
+        Interviewing,
+        EmployerInterviewing
     }
 }
