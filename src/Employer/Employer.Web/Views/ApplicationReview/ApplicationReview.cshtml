@@ -223,7 +223,7 @@
 
         <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
 
-        <div asp-show="@Model.CanNotChangeOutcome">
+        <div asp-show="@Model.IsOutcomeSuccessul">
             <h3 class="govuk-heading-l govuk-!-margin-top-6">Outcome</h3>
             <p class="govuk-body">@Model.Status.Value.GetDisplayName()</p>
             <p class="govuk-body">@Model.CandidateFeedback</p>
