@@ -218,7 +218,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             
             var dashboard = dashboardValue.VacancyStatusDashboard;
             var dashboardApplications = dashboardValue.VacancyApplicationsDashboard;
-            
+            var dashboardSharedApplications = dashboardValue.VacancySharedApplicationsDashboard;
+
             return new EmployerDashboardSummary
             {
                 Closed = dashboard.FirstOrDefault(c=>c.Status == VacancyStatus.Closed)?.StatusCount ?? 0,
@@ -232,8 +233,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
                                                  + dashboardApplications.Where(c=>c.Status == VacancyStatus.Closed).Sum(x=>x.NoOfSuccessfulApplications),
                 NumberOfUnsuccessfulApplications = dashboardApplications.Where(c=>c.Status == VacancyStatus.Live).Sum(x=>x.NoOfUnsuccessfulApplications) 
                                                    + dashboardApplications.Where(c=>c.Status == VacancyStatus.Closed).Sum(x=>x.NoOfUnsuccessfulApplications),
+                NumberOfSharedApplications = dashboardSharedApplications.Where(c => c.Status == VacancyStatus.Live || c.Status == VacancyStatus.Closed).Sum(x => x.NoOfSharedApplications),
                 NumberClosingSoon =dashboard.FirstOrDefault(c=>c.Status == VacancyStatus.Live && c.ClosingSoon)?.StatusCount ?? 0,
-                NumberClosingSoonWithNoApplications =dashboardValue.VacanciesClosingSoonWithNoApplications
+                NumberClosingSoonWithNoApplications = dashboardValue.VacanciesClosingSoonWithNoApplications
             };
         }
 

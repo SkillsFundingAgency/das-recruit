@@ -100,6 +100,13 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                             'then': 1,
                             'else': 0
                         }
+                    },
+                    'isShared': {
+                        '$cond': {
+                            'if': {'$eq': [ '$appStatus', 'Shared']},
+                            'then': 1,
+                            'else': 0
+                        }
                     }
                 }
             },
@@ -118,6 +125,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                     },
                     'noOfUnsuccessfulApplications': {
                         '$sum': '$isUnsuccessful'
+                    },
+                    'noOfSharedApplications': {
+                        '$sum': '$isShared'
                     },
                     'statusCount' : { '$sum' : 1 }
                     
@@ -334,6 +344,13 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                             'then': 1,
                             'else': 0
                         }
+                    },
+                    'isShared': {
+                        '$cond': {
+                            'if': {'$eq': [ '$appStatus', 'Shared']},
+                            'then': 1,
+                            'else': 0
+                        }
                     }
                 }
             },
@@ -376,6 +393,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                     },
                     'noOfUnsuccessfulApplications': {
                         '$sum': '$isUnsuccessful'
+                    },
+                    'noOfSharedApplications': {
+                        '$sum': '$isShared'
                     },
                     'noOfApplications': {
                          '$sum' :{'$add': ['$isUnsuccessful','$isSuccessful'] }

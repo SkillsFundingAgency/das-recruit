@@ -18,4 +18,17 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
         }
     
     }
+
+    internal static class VacancyDashboardSharedApplicationsMapper
+    {
+        internal static VacancySharedApplicationsDashboard MapFromVacancySharedApplicationsDashboardResponseDto(VacancySharedApplicationsDashboardResponseDto src)
+        {
+            return new VacancySharedApplicationsDashboard
+            {
+                Status = src.Id.Status,
+                NoOfSharedApplications = src.NoOfSharedApplications
+            };
+        }
+
+    }
 }

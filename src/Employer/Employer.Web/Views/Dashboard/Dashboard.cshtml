@@ -158,7 +158,28 @@
             </div>
         </div>
     </div>
+
     <div class="govuk-grid-row app-card__row">
+        <div class="govuk-grid-column-one-third">
+            <div class="app-card">
+                <div class="app-card__content">
+                    <h3 class="govuk-heading-m app-card__heading">
+                        <span class="app-card__stat">@Model.NoOfSharedApplications</span>
+                        <a asp-route="@RouteNames.Vacancies_Get" asp-route-employerAccountId="@Model.EmployerAccountId" asp-route-filter="@FilteringOptions.Shared" class="govuk-link govuk-link--no-visited-state">
+                            New @FilteringOptions.Shared @Model.SharedApplicationsText
+                        </a>
+                    </h3>
+                    <span class="govuk-body app-card__description">Applications your training provider needs feedback on.</span>
+                    <ul class="app-card__tasks govuk-list" asp-show="@Model.ShowAllSharedApplications">
+                        <li>
+                            <a class="govuk-link ga-track-anchor-click" asp-route="@RouteNames.Vacancies_Get" asp-route-employerAccountId="@Model.EmployerAccountId" asp-route-filter="TODO" data-ga-event-category="link - click">
+                                View all shared applications
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
         <div class="govuk-grid-column-one-third">
             <div class="app-card">
                 <div class="app-card__content">
