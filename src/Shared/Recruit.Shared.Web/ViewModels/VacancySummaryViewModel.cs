@@ -21,6 +21,7 @@ namespace Esfa.Recruit.Shared.Web.ViewModels
         public int NoOfNewApplications { get; set; }
         public int NoOfSuccessfulApplications { get; set; }
         public int NoOfUnsuccessfulApplications { get; set; }
+        public int NoOfSharedApplications { get; set; }
 
         public bool HasVacancyReference => VacancyReference.HasValue;
         public bool HasNoVacancyReference => !HasVacancyReference;
@@ -35,7 +36,7 @@ namespace Esfa.Recruit.Shared.Web.ViewModels
 
         public bool IsSubmittable => Status == VacancyStatus.Draft || Status == VacancyStatus.Referred || Status == VacancyStatus.Rejected;
         public bool IsNotSubmittable => !IsSubmittable;
-        public int NoOfApplications => NoOfNewApplications + NoOfSuccessfulApplications + NoOfUnsuccessfulApplications;
+        public int NoOfApplications => NoOfNewApplications + NoOfSuccessfulApplications + NoOfUnsuccessfulApplications + NoOfSharedApplications;
         public bool IsTaskListCompleted { get; set; }
     }
 }

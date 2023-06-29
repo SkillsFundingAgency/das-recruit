@@ -171,7 +171,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                     BuildBsonDocumentFilterValues(null,employerAccountId, status, bsonArray, vacancyType)
                 }
             };
-            var employerReviewMatch = status != FilteringOptions.NewSharedApplications ?
+            var employerReviewMatch = (status != FilteringOptions.NewSharedApplications && status != FilteringOptions.AllSharedApplications )?
                 new BsonDocument
                 {
                     {

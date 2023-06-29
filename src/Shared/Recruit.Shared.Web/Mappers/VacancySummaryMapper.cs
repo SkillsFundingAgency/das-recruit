@@ -17,6 +17,7 @@ namespace Esfa.Recruit.Shared.Web.Mappers
                 Status = vacancySummary.Status,
                 NoOfNewApplications = vacancySummary.NoOfNewApplications,
                 NoOfSuccessfulApplications = vacancySummary.NoOfSuccessfulApplications,
+                NoOfSharedApplications = vacancySummary.NoOfSharedApplications,
                 NoOfUnsuccessfulApplications = vacancySummary.NoOfUnsuccessfulApplications,
                 ClosingDate = vacancySummary.ClosedDate ?? vacancySummary.ClosingDate,
                 ApplicationMethod = vacancySummary.ApplicationMethod,
