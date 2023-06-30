@@ -141,13 +141,18 @@
                                 <span asp-show="@vacancy.HasNoVacancyReference">Not available</span>
                             </td>
                             <td asp-show="@vacancy.CanShowVacancyApplicationsCount" class="govuk-table__cell" data-label="Applications">
-                                <span asp-show="@vacancy.HasNoApplications">0</span>
-                                <span asp-show="@vacancy.HasApplications">@vacancy.NoOfApplications</span>
+                                <!-- New Counts-->
                                 <div asp-show="@Model.ShowNewApplicationCounts">
+                                    <span asp-show="@vacancy.HasNoApplications">0</span>
+                                    <span asp-show="@vacancy.HasApplications">@vacancy.NoOfApplications</span>
                                     <span asp-show="@vacancy.HasNewApplications" class="govuk-!-font-weight-bold"> (@vacancy.NoOfNewApplications new)</span>
                                 </div>
+
+                                <!-- New Counts-->
                                 <div asp-show="@Model.ShowSharedApplicationCounts">
-                                    <span asp-show="@vacancy.HasNewApplications" class="govuk-!-font-weight-bold"> (@vacancy.NoOfSharedApplications shared)</span>
+                                    <span asp-show="@vacancy.HasNoSharedApplications">0</span>
+                                    <span asp-show="@vacancy.HasSharedApplications">@vacancy.NoOfAllSharedApplications</span>
+                                    <span asp-show="@vacancy.HasNewSharedApplications" class="govuk-!-font-weight-bold"> (@vacancy.NoOfSharedApplications new)</span>
                                 </div>
                             </td>
                             <td asp-hide="@vacancy.CanShowVacancyApplicationsCount" class="govuk-table__cell" data-label="Applications">-</td>

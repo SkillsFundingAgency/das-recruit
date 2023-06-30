@@ -39,6 +39,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                 NoOfSuccessfulApplications = src.NoOfSuccessfulApplications,
                 NoOfUnsuccessfulApplications = src.NoOfUnsuccessfulApplications,
                 NoOfSharedApplications = src.NoOfSharedApplications,
+                NoOfAllSharedApplications = src.NoOfAllSharedApplications,
                 IsTraineeship = vacSummaryDetail.IsTraineeship,
                 VacancyType = vacSummaryDetail.VacancyType,
                 IsTaskListCompleted = isTaskListCompleted,
