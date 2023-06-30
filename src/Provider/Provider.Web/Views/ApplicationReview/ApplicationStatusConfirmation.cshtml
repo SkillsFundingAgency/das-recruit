@@ -4,15 +4,15 @@
     var vacancyType = _serviceParameters.VacancyType.GetValueOrDefault() == VacancyType.Apprenticeship ? "apprenticeship" : "traineeship";
 }
 
-<div class="govuk-grid-row">    
+<div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-        <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }' />        
+        <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }' />
         <div asp-show="@Model.ShowStatusSuccessful">
             <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">
-                Are you sure you want to tell this applicant that they have been accepted?
+                Are you sure you want to make @Model.Name's application successful?
             </h1>
             <p>
-                This will notify @Model.Name to say that they have been accepted for this @vacancyType.
+                This will notify @Model.Name that they have been offered this apprenticeship.
             </p>
         </div>
         <div asp-show="@Model.ShowStatusUnSuccessful">
@@ -32,11 +32,8 @@
                     <p class="govuk-body">@Model.CandidateFeedback</p>
                 </div>
             </details>
-        </div>           
-        <div class="govuk-inset-text">
-            <p>This action cannot be undone.</p>
         </div>
-        <form asp-route="@RouteNames.ApplicationReviewConfirmation_Post"  asp-route-applicationReviewId="@Model.ApplicationReviewId" asp-route-ukprn="@Model.Ukprn" asp-route-vacancyId="@Model.VacancyId" >
+        <form asp-route="@RouteNames.ApplicationReviewConfirmation_Post" asp-route-applicationReviewId="@Model.ApplicationReviewId" asp-route-ukprn="@Model.Ukprn" asp-route-vacancyId="@Model.VacancyId">
             @Html.HiddenFor(model => model.Outcome)
             @Html.HiddenFor(model => model.CandidateFeedback)
             @Html.HiddenFor(model => model.Name)
@@ -46,17 +43,24 @@
                     <div class="govuk-radios">
                         <div class="govuk-radios__item">
                             <input asp-for="NotifyCandidate" class="govuk-radios__input" id="notify-candidate-yes" type="radio" value="true">
-                            <label for="notify-candidate-yes" class="govuk-label govuk-radios__label">Yes, notify the applicant</label>
+                            <label for="notify-candidate-yes" class="govuk-label govuk-radios__label">@Model.YesMessageText</label>
                         </div>
                         <div class="govuk-radios__item">
                             <input asp-for="NotifyCandidate" class="govuk-radios__input" id="notify-candidate-no" type="radio" value="false">
-                            <label for="notify-candidate-no" class="govuk-label govuk-radios__label">No</label>
+                            <label for="notify-candidate-no" class="govuk-label govuk-radios__label">@Model.NoMessageText</label>
                         </div>
                     </div>
                 </fieldset>
             </div>
+            <div class="govuk-warning-text">
+                <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+                <strong class="govuk-warning-text__text">
+                    <span class="govuk-warning-text__assistive">Warning</span>
+                    This action cannot be undone.
+                </strong>
+            </div>
             <div class="govuk-form-group">
-                <input type="submit" value="Continue" class="govuk-button" />
+                <input type="submit" value="Confirm" class="govuk-button" />
             </div>
         </form>
     </div>

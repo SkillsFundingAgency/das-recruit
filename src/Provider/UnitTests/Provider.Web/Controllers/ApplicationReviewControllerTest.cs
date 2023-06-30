@@ -200,5 +200,26 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
             Assert.AreEqual(actual.VacancyId, editModel.VacancyId);
             Assert.AreEqual(actual.ApplicationReviewId, editModel.ApplicationReviewId);
         }
+
+        [Test]
+        public async Task POST_ApplicationStatusConfirmation_RedirectsToManageApplicationsPage()
+        {
+            // Arrange
+            var editModel = _fixture.Build<ApplicationReviewStatusConfirmationEditModel>()
+                .With(x => x.Outcome, ApplicationReviewStatus.Successful)
+                .With(x => x.VacancyId, _vacancyId)
+                .With(x => x.Ukprn, _ukprn)
+                .With(x => x.ApplicationReviewId, _applicationReviewId)
+                .Create();
+
+            // Act
+            var redirectResult = await _controller.ApplicationStatusConfirmation(editModel) as RedirectToRouteResult;
+
+            // Assert
+            Assert.NotNull(redirectResult);
+            Assert.AreEqual(RouteNames.VacancyManage_Get, redirectResult.RouteName);
+            Assert.AreEqual(_vacancyId, redirectResult.RouteValues["VacancyId"]);
+            Assert.AreEqual(_ukprn, redirectResult.RouteValues["Ukprn"]);
+        }
     }
 }
