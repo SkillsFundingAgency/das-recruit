@@ -35,11 +35,11 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             _utility = utility;
         }
 
-        public async Task<Vacancy> GetVacancy(VacancyRouteModel vrm)
+        public async Task<Vacancy> GetVacancy(VacancyRouteModel vrm, bool vacancySharedByProvider = false)
         {
             var vacancy = await _client.GetVacancyAsync(vrm.VacancyId);
 
-            _utility.CheckAuthorisedAccess(vacancy, vrm.EmployerAccountId);
+            _utility.CheckAuthorisedAccess(vacancy, vrm.EmployerAccountId, vacancySharedByProvider);
 
             return vacancy;
         }
