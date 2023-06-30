@@ -59,6 +59,6 @@ namespace Esfa.Recruit.Shared.Web.ViewModels.ApplicationReview
         public bool HasAdditionalSecondQuestion => !string.IsNullOrEmpty(AdditionalQuestion2);
         public bool CanShowRadioButtonReview => Status == ApplicationReviewStatus.New;
         public bool CanShowRadioButtonShared => (Status == ApplicationReviewStatus.New || Status == ApplicationReviewStatus.InReview);
-        public bool CanShowRadioButtonInterviewing => (Status == ApplicationReviewStatus.New || Status == ApplicationReviewStatus.InReview || Status == ApplicationReviewStatus.Shared);
+        public bool CanShowRadioButtonInterviewing => (Status == ApplicationReviewStatus.New || Status == ApplicationReviewStatus.InReview || Status == ApplicationReviewStatus.Shared || Status == ApplicationReviewStatus.EmployerInterviewing);
     }
 }
