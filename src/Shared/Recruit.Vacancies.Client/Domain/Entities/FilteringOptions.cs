@@ -14,6 +14,7 @@
         AllApplications,
         ClosingSoon,
         ClosingSoonWithNoApplications,
-        Transferred
+        Transferred,
+        ReviewedApplications
     }
 }

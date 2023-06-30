@@ -7,6 +7,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
         public VacancyApplicationsDashboardDto Id { get; set; }
         public int NoOfNewApplications { get; set; }
         public int NoOfSuccessfulApplications { get; set; }
+        public int NoOfEmployerReviewedApplications { get; set; }
         public int NoOfUnsuccessfulApplications { get; set; }
         public int StatusCount { get; set; }
     }
