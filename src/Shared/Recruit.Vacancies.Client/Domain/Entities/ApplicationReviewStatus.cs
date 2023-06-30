@@ -8,6 +8,7 @@
         Shared,
         InReview,
         Interviewing,
-        EmployerInterviewing
+        EmployerInterviewing,
+        EmployerUnsuccessful
     }
 }
