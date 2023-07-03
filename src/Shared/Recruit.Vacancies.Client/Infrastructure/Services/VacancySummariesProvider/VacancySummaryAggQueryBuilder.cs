@@ -94,6 +94,18 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                             'else': 0
                         }
                     },
+                    'isEmployerReviewed': {
+                        '$cond': {
+                            'if': {
+                                '$or': [
+                                    { '$eq': ['$appStatus', 'EmployerInterviewing'] },
+                                    { '$eq': ['$appStatus', 'EmployerUnsuccessful'] }
+                                ]
+                            },
+                            'then': 1,
+                            'else': 0
+                        }
+                    },
                     'isUnsuccessful': {
                         '$cond': {
                             'if': {'$eq': [ '$appStatus', 'Unsuccessful']},
@@ -123,11 +135,17 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                     'noOfSuccessfulApplications': {
                         '$sum': '$isSuccessful'
                     },
+                    'noOfEmployerReviewedApplications': {
+                        '$sum': '$isEmployerReviewed'
+                    },
                     'noOfUnsuccessfulApplications': {
                         '$sum': '$isUnsuccessful'
                     },
                     'noOfSharedApplications': {
                         '$sum': '$isShared'
+                    },
+                    'noOfAllSharedApplications': {
+                        '$sum' :{'$add': ['$isShared','$isEmployerReviewed'] }
                     },
                     'statusCount' : { '$sum' : 1 }
                     
@@ -338,6 +356,18 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                             'else': 0
                         }
                     },
+                    'isEmployerReviewed': {
+                        '$cond': {
+                            'if': {
+                                '$or': [
+                                    { '$eq': ['$appStatus', 'EmployerInterviewing'] },
+                                    { '$eq': ['$appStatus', 'EmployerUnsuccessful'] }
+                                ]
+                            },
+                            'then': 1,
+                            'else': 0
+                        }
+                    },
                     'isUnsuccessful': {
                         '$cond': {
                             'if': {'$eq': [ '$appStatus', 'Unsuccessful']},
@@ -391,11 +421,17 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                     'noOfSuccessfulApplications': {
                         '$sum': '$isSuccessful'
                     },
+                    'noOfEmployerReviewedApplications': {
+                        '$sum': '$isEmployerReviewed'
+                    },
                     'noOfUnsuccessfulApplications': {
                         '$sum': '$isUnsuccessful'
                     },
                     'noOfSharedApplications': {
                         '$sum': '$isShared'
+                    },
+                    'noOfAllSharedApplications': {
+                        '$sum' :{'$add': ['$isShared','$isEmployerReviewed'] }
                     },
                     'noOfApplications': {
                          '$sum' :{'$add': ['$isUnsuccessful','$isSuccessful'] }

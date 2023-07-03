@@ -620,7 +620,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         
         public async Task<long> GetVacancyCount(string employerAccountId, VacancyType vacancyType, FilteringOptions? filteringOptions, string searchTerm)
         {
-            return await _vacancySummariesQuery.VacancyCount(null, employerAccountId, vacancyType, filteringOptions, searchTerm, OwnerType.Employer);
+            var ownerType = (filteringOptions == FilteringOptions.NewSharedApplications || filteringOptions == FilteringOptions.AllSharedApplications) ? OwnerType.Provider : OwnerType.Employer;
+            return await _vacancySummariesQuery.VacancyCount(null, employerAccountId, vacancyType, filteringOptions, searchTerm, ownerType);
         }
     }
 }

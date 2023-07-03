@@ -78,6 +78,8 @@
                         <option value="@FilteringOptions.ClosingSoonWithNoApplications">closing soon with no applications</option>
                         <option value="@FilteringOptions.ClosingSoon">closing soon</option>
                         <option value="@FilteringOptions.Transferred">transferred from provider</option>
+                        <option value="@FilteringOptions.NewSharedApplications">with new shared applications</option>
+                        <option value="@FilteringOptions.AllSharedApplications">with shared applications</option>
                     </optgroup>
                 </select>
                 <button type="submit" id="filter-submit" class="das-button-filter das-button-secondary govuk-button govuk-!-margin-top-3">Filter</button>
@@ -139,9 +141,19 @@
                                 <span asp-show="@vacancy.HasNoVacancyReference">Not available</span>
                             </td>
                             <td asp-show="@vacancy.CanShowVacancyApplicationsCount" class="govuk-table__cell" data-label="Applications">
-                                <span asp-show="@vacancy.HasNoApplications">0</span>
-                                <span asp-show="@vacancy.HasApplications">@vacancy.NoOfApplications</span>
-                                <span asp-show="@vacancy.HasNewApplications" class="govuk-!-font-weight-bold"> (@vacancy.NoOfNewApplications new)</span>
+                                <!-- New Counts-->
+                                <div asp-show="@Model.ShowNewApplicationCounts">
+                                    <span asp-show="@vacancy.HasNoApplications">0</span>
+                                    <span asp-show="@vacancy.HasApplications">@vacancy.NoOfApplications</span>
+                                    <span asp-show="@vacancy.HasNewApplications" class="govuk-!-font-weight-bold"> (@vacancy.NoOfNewApplications new)</span>
+                                </div>
+
+                                <!-- New Counts-->
+                                <div asp-show="@Model.ShowSharedApplicationCounts">
+                                    <span asp-show="@vacancy.HasNoSharedApplications">0</span>
+                                    <span asp-show="@vacancy.HasSharedApplications">@vacancy.NoOfAllSharedApplications</span>
+                                    <span asp-show="@vacancy.HasNewSharedApplications" class="govuk-!-font-weight-bold"> (@vacancy.NoOfSharedApplications new)</span>
+                                </div>
                             </td>
                             <td asp-hide="@vacancy.CanShowVacancyApplicationsCount" class="govuk-table__cell" data-label="Applications">-</td>
                             <td class="govuk-table__cell" data-label="Closing date"><span>@vacancy.ClosingDate?.AsGdsDate()</span></td>
