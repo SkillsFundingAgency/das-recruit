@@ -60,6 +60,8 @@ namespace Esfa.Recruit.Shared.Web.Extensions
             { FilteringOptions.ClosingSoonWithNoApplications, "closing soon without applications" },
             { FilteringOptions.AllApplications, "with applications" },
             { FilteringOptions.NewApplications, "with new applications" },
+            { FilteringOptions.NewSharedApplications, "with new shared applications" },
+            { FilteringOptions.AllSharedApplications, "with shared applications" },
             { FilteringOptions.Review, "Pending employer review" },
             { FilteringOptions.Submitted, "Pending DfE review" },
             { FilteringOptions.Referred, "Rejected" },

@@ -30,7 +30,8 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Dashboard
                 Live = 6,
                 NumberClosingSoonWithNoApplications = 2,
                 NumberClosingSoon = 4,
-                NumberOfNewApplications = 3
+                NumberOfNewApplications = 3,
+                NumberOfSharedApplications = 2
             });
 
             var actualDashboard = await dashboardOrchestrator.GetDashboardViewModelAsync(EmployerAccountId, _user);
@@ -40,6 +41,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Dashboard
             actualDashboard.NoOfVacanciesClosingSoonWithNoApplications.Should().Be(2);
             actualDashboard.NoOfVacanciesClosingSoon.Should().Be(4);
             actualDashboard.NoOfNewApplications.Should().Be(3);
+            actualDashboard.NoOfSharedApplications.Should().Be(2);
             actualDashboard.Alerts.Should().NotBeNull();
             actualDashboard.HasEmployerReviewPermission.Should().BeTrue();
         }
