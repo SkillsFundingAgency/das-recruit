@@ -16,5 +16,6 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyManage
             .ToList();
 
         public bool ShowDisability { get; internal set; }
+        public bool VacancySharedByProvier { get; internal set; }
     }
 }

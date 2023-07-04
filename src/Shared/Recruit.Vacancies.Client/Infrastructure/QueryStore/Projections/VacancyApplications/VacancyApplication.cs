@@ -35,6 +35,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Va
         public bool IsNotWithdrawn => !IsWithdrawn;
         public bool Selected { get; set; }
         public bool StatusNewOrReview => Status is ApplicationReviewStatus.New || Status is ApplicationReviewStatus.InReview;
+        public bool ShowCandidateName => Status is ApplicationReviewStatus.EmployerInterviewing;
+        public bool ShowApplicantID => !ShowCandidateName;
 
         public static implicit operator VacancyApplication(ApplicationReview applicationReview)
         {
