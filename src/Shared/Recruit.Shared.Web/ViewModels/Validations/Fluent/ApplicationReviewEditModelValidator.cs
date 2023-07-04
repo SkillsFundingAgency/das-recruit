@@ -21,6 +21,8 @@ namespace Esfa.Recruit.Shared.Web.ViewModels.Validations.Fluent
                     .WithMessage(ApplicationReviewValidator.CandidateFeedbackRequired)
                     .MaximumLength(ApplicationReviewValidator.CandidateFeedbackMaxLength)
                     .WithMessage(string.Format(ApplicationReviewValidator.CandidateFeedbackLength, ApplicationReviewValidator.CandidateFeedbackMaxLength))
+                    .Must(ApplicationReviewValidator.BeWithinMaxWordsOrEmpty)
+                    .WithMessage(string.Format(ApplicationReviewValidator.CandidateFeedbackWordsLength, ApplicationReviewValidator.CandidateFeedbackMaxWordLength))
                     .ValidFreeTextCharacters()
                     .WithMessage(ApplicationReviewValidator.CandidateFeedbackFreeTextCharacters)
                     .ProfanityCheck(profanityListProvider)

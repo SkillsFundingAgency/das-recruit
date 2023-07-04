@@ -47,7 +47,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
 
         public async Task<ApplicationReviewViewModel> GetApplicationReviewViewModelAsync(ApplicationReviewEditModel m)
         {
-            var vm = await GetApplicationReviewViewModelAsync((ApplicationReviewRouteModel) m);
+            var vm = await GetApplicationReviewViewModelAsync((ApplicationReviewRouteModel)m);
 
             vm.Outcome = m.Outcome;
             vm.CandidateFeedback = m.CandidateFeedback;
@@ -70,7 +70,8 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
 
             var applicationReview = await _utility.GetAuthorisedApplicationReviewAsync(applicationReviewStatusConfirmationEditModel);
 
-            return new ApplicationStatusConfirmationViewModel {
+            return new ApplicationStatusConfirmationViewModel
+            {
                 CandidateFeedback = applicationReviewStatusConfirmationEditModel.CandidateFeedback,
                 Outcome = applicationReviewStatusConfirmationEditModel.Outcome,
                 ApplicationReviewId = applicationReviewStatusConfirmationEditModel.ApplicationReviewId,
@@ -82,8 +83,11 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
         {
             var applicationReviewVm = await GetApplicationReviewViewModelAsync((ApplicationReviewRouteModel)rm);
 
-            return new ApplicationStatusConfirmationViewModel {
+            return new ApplicationStatusConfirmationViewModel
+            {
                 CandidateFeedback = rm.CandidateFeedback,
+                FriendlyId = applicationReviewVm.FriendlyId,
+                Status = applicationReviewVm.Status,
                 Outcome = rm.Outcome,
                 ApplicationReviewId = rm.ApplicationReviewId,
                 Name = applicationReviewVm.Name,
