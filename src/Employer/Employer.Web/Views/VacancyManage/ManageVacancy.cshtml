@@ -99,7 +99,8 @@
 <div asp-show="@Model.IsApplyThroughFaaVacancy">
     <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
     <h2 class="govuk-heading-l govuk-!-margin-top-6">Manage applications</h2>
-    <partial asp-show="@Model.HasApplications" name="@PartialNames.VacancyApplicationsTable" for="Applications"/>
+    <partial asp-show="@Model.ShowApplicationsTable" name="@PartialNames.VacancyApplicationsTable" for="Applications" />
+    <partial asp-show="@Model.ShowSharedApplicationsTable" name="@PartialNames.VacancySharedApplicationsTable" for="Applications" />
     <p asp-show="@Model.HasNoApplications" class="govuk-body govuk-!-margin-bottom-0">Candidate applications for this apprenticeship will appear here.</p>
 </div>
 
