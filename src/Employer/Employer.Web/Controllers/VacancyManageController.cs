@@ -46,7 +46,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
                 return HandleRedirectOfEditableVacancy(vacancy);
             }
 
-            var viewModel = await _orchestrator.GetManageVacancyViewModel(vacancy);
+            var viewModel = await _orchestrator.GetManageVacancyViewModel(vacancy, vacancySharedByProvider);
 
             if (TempData.ContainsKey(TempDataKeys.VacancyClosedMessage))
                 viewModel.VacancyClosedInfoMessage = TempData[TempDataKeys.VacancyClosedMessage].ToString();

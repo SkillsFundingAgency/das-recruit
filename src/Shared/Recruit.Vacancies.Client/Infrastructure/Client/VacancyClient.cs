@@ -11,6 +11,7 @@ using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Extensions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Responses;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
@@ -314,10 +315,15 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return _applicationReviewRepository.GetAsync(applicationReviewId);
         }
 
-        public async Task<List<VacancyApplication>> GetVacancyApplicationsAsync(long vacancyReference)
+        public async Task<List<VacancyApplication>> GetVacancyApplicationsAsync(long vacancyReference, bool vacancySharedByProvider)
         {
             var applicationReviews =
                 await _applicationReviewRepository.GetForVacancyAsync<ApplicationReview>(vacancyReference);
+
+            if (vacancySharedByProvider) 
+            {
+                applicationReviews = applicationReviews.Where(x => x.Status.GetSharedApplicationReviewStatusesForEmployer().Any(status => status.Equals(x.Status))).ToList();
+            }
 
             return applicationReviews == null 
                 ? new List<VacancyApplication>() 
