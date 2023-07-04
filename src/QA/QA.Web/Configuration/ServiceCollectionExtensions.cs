@@ -24,6 +24,7 @@ namespace Esfa.Recruit.Qa.Web.Configuration
     {
         private const int SessionTimeoutMinutes = 30;
         private const string DfESignInClientName = "QA";
+        private const string SignedOutCallBackPath = "/signout";
 
         public static void AddAuthenticationService(this IServiceCollection services, AuthenticationConfiguration authConfig, IConfiguration config)
         {
@@ -32,7 +33,7 @@ namespace Esfa.Recruit.Qa.Web.Configuration
             if (isDfESignInAllowed)
             {
                 // register DfeSignIn authentication services to the AspNetCore Authentication Options.
-                services.AddAndConfigureDfESignInAuthentication(config, $"{CookieNames.QaData}", typeof(CustomServiceRole), DfESignInClientName);
+                services.AddAndConfigureDfESignInAuthentication(config, $"{CookieNames.QaData}", typeof(CustomServiceRole), DfESignInClientName, SignedOutCallBackPath);
             }
             else
             {

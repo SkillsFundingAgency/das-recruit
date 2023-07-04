@@ -1,4 +1,5 @@
 ﻿using SFA.DAS.DfESignIn.Auth.Constants;
+using SFA.DAS.DfESignIn.Auth.Enums;
 using SFA.DAS.DfESignIn.Auth.Interfaces;
 
 namespace Esfa.Recruit.Qa.Web.Security
@@ -13,6 +14,14 @@ namespace Esfa.Recruit.Qa.Web.Security
             get
             {
                 return CustomClaimsIdentity.Service;
+            }
+        }
+
+        public CustomServiceRoleValueType RoleValueType
+        {
+            get
+            {
+                return CustomServiceRoleValueType.Name;
             }
         }
     }
