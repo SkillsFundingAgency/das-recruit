@@ -31,6 +31,7 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Extensions
                 case ApplicationReviewStatus.Shared: return "govuk-tag govuk-tag--blue";
                 case ApplicationReviewStatus.Interviewing: return "govuk-tag govuk-tag--purple";
                 case ApplicationReviewStatus.EmployerInterviewing: return "govuk-tag govuk-tag--purple";
+                case ApplicationReviewStatus.EmployerUnsuccessful: return "govuk-tag govuk-tag--orange";
 
                 default:
                     return string.Empty;
