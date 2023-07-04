@@ -117,6 +117,22 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
             return result;
         }
 
+        public async Task<List<ApplicationReview>> GetForSharedVacancyAsync(long vacancyReference)
+        {
+            var statuses = GetSharedApplicationReviewStatusesForEmployer();
+            var filterBuilder = Builders<ApplicationReview>.Filter;
+            var filter = filterBuilder.Eq(VacancyReference, vacancyReference) & filterBuilder.In(appRev => appRev.Status, statuses);
+            var collection = GetCollection<ApplicationReview>();
+
+            var result = await RetryPolicy.Execute(_ =>
+                collection.Find(filter)
+                .Project<ApplicationReview>(GetProjection<ApplicationReview>())
+                .ToListAsync(),
+            new Context(nameof(GetForVacancyAsync)));
+
+            return result;
+        }
+
         public async Task<List<ApplicationReview>> GetForCandidateAsync(Guid candidateId)
         {
             var filter = Builders<ApplicationReview>.Filter.Eq(CandidateId, candidateId);
@@ -177,6 +193,16 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
                     { "_id", 0 },
                     { FieldName, 1 }
                 })
+            };
+        }
+
+        private static IEnumerable<ApplicationReviewStatus> GetSharedApplicationReviewStatusesForEmployer()
+        {
+            return new List<ApplicationReviewStatus>()
+            {
+                ApplicationReviewStatus.EmployerInterviewing,
+                ApplicationReviewStatus.EmployerUnsuccessful,
+                ApplicationReviewStatus.Shared
             };
         }
     }

@@ -317,13 +317,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 
         public async Task<List<VacancyApplication>> GetVacancyApplicationsAsync(long vacancyReference, bool vacancySharedByProvider)
         {
-            var applicationReviews =
-                await _applicationReviewRepository.GetForVacancyAsync<ApplicationReview>(vacancyReference);
-
-            if (vacancySharedByProvider) 
-            {
-                applicationReviews = applicationReviews.Where(x => x.Status.GetSharedApplicationReviewStatusesForEmployer().Any(status => status.Equals(x.Status))).ToList();
-            }
+            var applicationReviews = vacancySharedByProvider
+                ? await _applicationReviewRepository.GetForSharedVacancyAsync(vacancyReference) 
+                : await _applicationReviewRepository.GetForVacancyAsync<ApplicationReview>(vacancyReference);
 
             return applicationReviews == null 
                 ? new List<VacancyApplication>() 
