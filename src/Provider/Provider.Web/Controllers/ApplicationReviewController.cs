@@ -48,23 +48,25 @@ namespace Esfa.Recruit.Provider.Web.Controllers
             switch (applicationReviewEditModel.Outcome.Value)
             {
                 case ApplicationReviewStatus.Shared:
-                    var shareApplicationsModel = new ShareApplicationReviewsRequest 
+                    var shareApplicationsModel = new ShareApplicationReviewsRequest
                     {
                         Ukprn = applicationReviewEditModel.Ukprn,
                         VacancyId = applicationReviewEditModel.VacancyId,
-                        ApplicationsToShare = new List<Guid> 
+                        ApplicationsToShare = new List<Guid>
                         {
                             applicationReviewEditModel.ApplicationReviewId
                         }
                     };
                     return RedirectToRoute(RouteNames.ApplicationReviewsToShareConfirmation_Get, shareApplicationsModel);
 
-                case ApplicationReviewStatus.InReview: case ApplicationReviewStatus.Interviewing:
+                case ApplicationReviewStatus.InReview:
+                case ApplicationReviewStatus.Interviewing:
                     var candidateName = await _orchestrator.PostApplicationReviewStatusChangeModelAsync(applicationReviewEditModel, User.ToVacancyUser());
                     TempData.Add(TempDataKeys.ApplicationStatusChangedHeader, string.Format(InfoMessages.ApplicationStatusChangeBannerHeader, candidateName, applicationReviewEditModel.Outcome.GetDisplayName().ToLower()));
                     return RedirectToRoute(RouteNames.VacancyManage_Get, new { applicationReviewEditModel.VacancyId, applicationReviewEditModel.Ukprn });
 
-                case ApplicationReviewStatus.Successful: case ApplicationReviewStatus.Unsuccessful:
+                case ApplicationReviewStatus.Successful:
+                case ApplicationReviewStatus.Unsuccessful:
                     TempData[TempDateARModel] = JsonConvert.SerializeObject(applicationReviewEditModel);
                     return RedirectToRoute(RouteNames.ApplicationReviewConfirmation_Get, new { applicationReviewEditModel.ApplicationReviewId, applicationReviewEditModel.VacancyId, applicationReviewEditModel.Ukprn });
 
@@ -83,7 +85,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
                 var applicationStatusConfirmationViewModel = await _orchestrator.GetApplicationStatusConfirmationViewModelAsync(applicationReviewEditViewModel);
                 return View(applicationStatusConfirmationViewModel);
             }
-            return RedirectToRoute(RouteNames.ApplicationReview_Get, new {applicationReviewEditModel.ApplicationReviewId, applicationReviewEditModel.VacancyId, applicationReviewEditModel.Ukprn});
+            return RedirectToRoute(RouteNames.ApplicationReview_Get, new { applicationReviewEditModel.ApplicationReviewId, applicationReviewEditModel.VacancyId, applicationReviewEditModel.Ukprn });
         }
 
         [HttpPost("status", Name = RouteNames.ApplicationReviewConfirmation_Post)]
@@ -100,9 +102,8 @@ namespace Esfa.Recruit.Provider.Web.Controllers
             {
                 var candidateName = await _orchestrator.PostApplicationReviewStatusChangeModelAsync(applicationReviewStatusConfirmationEditModel, User.ToVacancyUser());
                 TempData.Add(TempDataKeys.ApplicationReviewStatusInfoMessage, string.Format(InfoMessages.ApplicationReviewStatusHeader, candidateName, applicationReviewStatusConfirmationEditModel.Outcome.ToString().ToLower()));
-                return RedirectToRoute(RouteNames.VacancyManage_Get, new {applicationReviewStatusConfirmationEditModel.VacancyId, applicationReviewStatusConfirmationEditModel.Ukprn});
             }
-            return RedirectToRoute(RouteNames.ApplicationReview_Get, new {applicationReviewStatusConfirmationEditModel.ApplicationReviewId, applicationReviewStatusConfirmationEditModel.VacancyId, applicationReviewStatusConfirmationEditModel.Ukprn});
+            return RedirectToRoute(RouteNames.VacancyManage_Get, new { applicationReviewStatusConfirmationEditModel.VacancyId, applicationReviewStatusConfirmationEditModel.Ukprn });
         }
     }
 }

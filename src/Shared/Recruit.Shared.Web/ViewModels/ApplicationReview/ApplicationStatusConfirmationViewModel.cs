@@ -18,6 +18,15 @@ namespace Esfa.Recruit.Shared.Web.ViewModels.ApplicationReview
 
         public bool ShowStatusSuccessful => Outcome.Value == ApplicationReviewStatus.Successful;
         public bool ShowStatusUnSuccessful => Outcome.Value == ApplicationReviewStatus.Unsuccessful;
+        public string YesMessageText => ShowStatusSuccessful
+            ?
+            "Yes, make this application successful and notify the applicant"
+            :
+            ShowStatusUnSuccessful
+                ? "Yes, notify the applicant"
+                :
+                "Yes";
+        public string NoMessageText => ShowStatusSuccessful ? "No, do not make this application successful" : "No";
         public long Ukprn { get; set; }
         public Guid? VacancyId { get; set; }
     }
