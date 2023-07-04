@@ -88,7 +88,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
                 new Context(nameof(UpdateAsync)));
         }
 
-        public async Task<UpdateResult> UpdateApplicationReviewsAsync(IEnumerable<Guid> applicationReviewIds, VacancyUser user, DateTime updatedDate, ApplicationReviewStatus status)
+        public async Task<UpdateResult> UpdateApplicationReviewsAsync(IEnumerable<Guid> applicationReviewIds, VacancyUser user, DateTime updatedDate, ApplicationReviewStatus status, DateTime sharedDate)
         {
             var filter = Builders<ApplicationReview>.Filter.In(Id, applicationReviewIds);
             var collection = GetCollection<ApplicationReview>();
@@ -97,6 +97,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
                                 .Set(appRev => appRev.Status, status)
                                 .Set(appRev => appRev.StatusUpdatedBy, user)
                                 .Set(appRev => appRev.StatusUpdatedDate, updatedDate);
+
+            if (status.Equals(ApplicationReviewStatus.Shared))
+                updateDef.Set(appRev => appRev.DateSharedWithEmployer, sharedDate);
 
             return await RetryPolicy.Execute(_ =>
                 collection.UpdateManyAsync(filter, updateDef),
