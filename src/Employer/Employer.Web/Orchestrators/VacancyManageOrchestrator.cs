@@ -95,7 +95,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
                 Applications = applications,
                 ShowDisability = vacancy.IsDisabilityConfident,
                 VacancyId = vacancy.Id,
-                EmployerAccountId = vacancy.EmployerAccountId
+                EmployerAccountId = vacancy.EmployerAccountId,
+                UserType = UserType.Employer
             };
 
             return viewModel;

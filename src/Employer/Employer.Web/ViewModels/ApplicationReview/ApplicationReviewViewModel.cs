@@ -46,6 +46,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.ApplicationReview;
         public bool HasAdditionalQuestions => !AdditionalQuestion1.IsNullOrEmpty() || !AdditionalQuestion2.IsNullOrEmpty();
         public bool HasAdditionalSecondQuestion => !AdditionalQuestion2.IsNullOrEmpty();
         public bool HasNoSupportRequirements => string.IsNullOrWhiteSpace(Support);
+        public bool IsOutcomeSuccessul => Status == ApplicationReviewStatus.Successful;
         public bool CanNotChangeOutcome => (Status == ApplicationReviewStatus.Successful || Status == ApplicationReviewStatus.Unsuccessful);
         public bool CanChangeOutcome => !CanNotChangeOutcome;
         public bool ShowDisabilityStatusAlert => DisabilityStatus == ApplicationReviewDisabilityStatus.Yes;
@@ -57,4 +58,13 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.ApplicationReview;
         {
             nameof(Outcome)
         };
-    }
+        public bool ShowAnonymisedApplicantDetails => (Status == ApplicationReviewStatus.Shared || Status == ApplicationReviewStatus.Unsuccessful);
+        public bool HideRadioButtons => (Status == ApplicationReviewStatus.EmployerInterviewing || Status == ApplicationReviewStatus.Unsuccessful);
+        public bool IsApplicationUnsuccessful => Status == ApplicationReviewStatus.Unsuccessful;
+        public bool IsApplicationShared => Status == ApplicationReviewStatus.Shared;
+        public bool IsApplicationEmployerInterviewing => Status == ApplicationReviewStatus.EmployerInterviewing;
+        public string FormHeaderText => (Status == ApplicationReviewStatus.Shared) ? "Do you want to interview this applicant?" : "Outcome";
+        public string FormRadioButtonNoText => (Status == ApplicationReviewStatus.Shared) ? "No" : "Unsuccessful";
+        public string FormRadioButtonNoFeedbackText => (Status == ApplicationReviewStatus.Shared) ? "Explain why you don't want to interview this applicant. Your comments will be sent to your training provider, who will then give feedback to the applicant."
+        : "Explain why the application has been unsuccessful, your comments will be sent to the candidate.";
+}

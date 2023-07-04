@@ -20,5 +20,21 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Extensions
                     return string.Empty;
             }
         }
+
+        public static string GetCssClassForApplicationReviewStatusForEmployer(this ApplicationReviewStatus status)
+        {
+            switch (status)
+            {
+                case ApplicationReviewStatus.New: return "govuk-tag govuk-tag--blue";
+                case ApplicationReviewStatus.Successful: return "govuk-tag govuk-tag--green";
+                case ApplicationReviewStatus.Unsuccessful: return "govuk-tag govuk-tag--red";
+                case ApplicationReviewStatus.Shared: return "govuk-tag govuk-tag--blue";
+                case ApplicationReviewStatus.Interviewing: return "govuk-tag govuk-tag--purple";
+                case ApplicationReviewStatus.EmployerInterviewing: return "govuk-tag govuk-tag--purple";
+
+                default:
+                    return string.Empty;
+            }
+        }
     }
 }

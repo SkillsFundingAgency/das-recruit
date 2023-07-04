@@ -76,6 +76,8 @@ namespace Esfa.Recruit.Shared.Web.Extensions
             { VacancyStatus.Submitted, "Pending review" },
             { FilteringOptions.Review, "Ready for review" },
             { FilteringOptions.Submitted, "Pending review" },
+            { ApplicationReviewStatus.EmployerInterviewing, "Interviewing" },
+            { ApplicationReviewStatus.Shared, "Response Needed" }
         };
 
         private static readonly Dictionary<Enum, string> DisplayNamesProvider = new Dictionary<Enum, string>
