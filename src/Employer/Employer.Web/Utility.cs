@@ -40,7 +40,7 @@ namespace Esfa.Recruit.Employer.Web
         bool VacancyHasCompletedPartOne(Vacancy vacancy);
         bool VacancyHasStartedPartTwo(Vacancy vacancy);
         PartOnePageInfoViewModel GetPartOnePageInfo(Vacancy vacancy);
-        Task<ApplicationReview> GetAuthorisedApplicationReviewAsync(ApplicationReviewRouteModel rm);
+        Task<ApplicationReview> GetAuthorisedApplicationReviewAsync(ApplicationReviewRouteModel rm, bool vacancySharedByProvider = false);
 
         Task UpdateEmployerProfile(VacancyEmployerInfoModel employerInfoModel, 
             EmployerProfile employerProfile, Address address, VacancyUser user);
@@ -251,7 +251,7 @@ namespace Esfa.Recruit.Employer.Web
             };
         }
 
-        public async Task<ApplicationReview> GetAuthorisedApplicationReviewAsync(ApplicationReviewRouteModel rm)
+        public async Task<ApplicationReview> GetAuthorisedApplicationReviewAsync(ApplicationReviewRouteModel rm, bool vacancySharedByProvider = false)
         {
             var applicationReview = _vacancyClient.GetApplicationReviewAsync(rm.ApplicationReviewId);
             var vacancy = _vacancyClient.GetVacancyAsync(rm.VacancyId);
@@ -262,7 +262,7 @@ namespace Esfa.Recruit.Employer.Web
             applicationReview.Result.AdditionalQuestion2 = vacancy.Result.AdditionalQuestion2;
             try
             {
-                CheckAuthorisedAccess(vacancy.Result, rm.EmployerAccountId, false);
+                CheckAuthorisedAccess(vacancy.Result, rm.EmployerAccountId, vacancySharedByProvider);
                 return applicationReview.Result;
             }
             catch (Exception)

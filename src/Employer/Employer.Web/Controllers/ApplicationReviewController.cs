@@ -23,9 +23,9 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         }
 
         [HttpGet("", Name = RouteNames.ApplicationReview_Get)]
-        public async Task<IActionResult> ApplicationReview(ApplicationReviewRouteModel rm)
+        public async Task<IActionResult> ApplicationReview(ApplicationReviewRouteModel rm, [FromQuery] bool vacancySharedByProvider)
         {
-            var vm = await _orchestrator.GetApplicationReviewViewModelAsync(rm);
+            var vm = await _orchestrator.GetApplicationReviewViewModelAsync(rm, vacancySharedByProvider);
             return View(vm);
         }
 

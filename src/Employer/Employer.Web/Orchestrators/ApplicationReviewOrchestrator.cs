@@ -22,9 +22,9 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             _utility = utility;
         }
 
-        public async Task<ApplicationReviewViewModel> GetApplicationReviewViewModelAsync(ApplicationReviewRouteModel rm)
+        public async Task<ApplicationReviewViewModel> GetApplicationReviewViewModelAsync(ApplicationReviewRouteModel rm, bool vacancySharedByProvider = false)
         {
-            var applicationReview = await _utility.GetAuthorisedApplicationReviewAsync(rm);
+            var applicationReview = await _utility.GetAuthorisedApplicationReviewAsync(rm, vacancySharedByProvider);
            
             if (applicationReview.IsWithdrawn)
                 throw new ApplicationWithdrawnException($"Application has been withdrawn. ApplicationReviewId:{applicationReview.Id}", rm.VacancyId);

@@ -38,6 +38,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Va
         public bool ShowCandidateName => Status is ApplicationReviewStatus.EmployerInterviewing;
         public bool ShowApplicantID => !ShowCandidateName;
         public DateTime? DateSharedWithEmployer { get; set; }
+        public bool IsSharedApplication => DateSharedWithEmployer.HasValue;
 
         public static implicit operator VacancyApplication(ApplicationReview applicationReview)
         {
