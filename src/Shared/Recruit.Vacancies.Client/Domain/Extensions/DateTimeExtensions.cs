@@ -14,6 +14,11 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Extensions
             return date.ToString(DisplayDateFormat);
         }
 
+        public static string AsGdsDate(this DateTime? date)
+        {
+            return date?.ToString(DisplayDateFormat);
+        }
+
         public static string AsGdsDateTime(this DateTime date)
         {
             return $"{date.ToString(DateTimeDisplayFormat)}{date.ToString("tt").ToLower()}";

@@ -52,7 +52,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Va
                 DisabilityStatus = ApplicationReviewDisabilityStatus.Unknown,
                 Selected = false,
                 DateSharedWithEmployer = applicationReview.DateSharedWithEmployer
-            };
+        };
 
             if (applicationReview.IsWithdrawn == false)
             {
