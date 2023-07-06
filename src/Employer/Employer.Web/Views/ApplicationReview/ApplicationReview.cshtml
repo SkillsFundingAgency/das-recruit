@@ -231,7 +231,7 @@
             <a asp-route="@RouteNames.VacancyManage_Get" asp-route-employerAccountId="@Model.EmployerAccountId" class="govuk-button">Return to advert</a>
         </div>
 
-        <form asp-show="@Model.CanChangeOutcome" asp-hide="@Model.HideRadioButtons" asp-route="@RouteNames.ApplicationReview_Post" asp-all-route-data="@Model.ApplicationRouteDictionary" class="govuk-!-margin-top-6">
+        <form asp-show="@Model.CanChangeOutcome" asp-hide="@Model.HideRadioButtons" asp-route="@RouteNames.ApplicationReview_Post" asp-all-route-data="@Model.ApplicationRouteDictionary" asp-route-vacancySharedByProvider=@Model.IsApplicationShared class="govuk-!-margin-top-6">
             <div esfa-validation-marker-for="Outcome" class="govuk-form-group">
                 <fieldset class="govuk-fieldset">
                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
@@ -243,7 +243,7 @@
                     <span esfa-validation-message-for="Outcome" class="govuk-error-message"></span>
                     <div class="govuk-radios govuk-radios--conditional" data-module="radios">
                         <div class="govuk-radios__item" asp-show="@Model.IsApplicationShared">
-                            <input asp-for="Outcome" class="govuk-radios__input" id="outcome-interviewing" type="radio" value="@ApplicationReviewStatus.Interviewing.ToString()" checked="@(Model.Outcome == ApplicationReviewStatus.Interviewing ? "checked" : null)">
+                            <input asp-for="Outcome" class="govuk-radios__input" id="outcome-interviewing" type="radio" value="@ApplicationReviewStatus.EmployerInterviewing.ToString()" checked="@(Model.Outcome == ApplicationReviewStatus.EmployerInterviewing ? "checked" : null)">
                             <label for="outcome-interviewing" class="govuk-label govuk-radios__label">Yes</label>
                             <div id="sign-in-item-hint" class="govuk-hint govuk-radios__hint">
                               You'll be able to see the applicant's name and contact details.

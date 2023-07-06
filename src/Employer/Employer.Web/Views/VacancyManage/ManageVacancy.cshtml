@@ -98,14 +98,29 @@
 </div>
 
 <div asp-show="@Model.IsApplyThroughFaaVacancy">
+    <div asp-show="@Model.ShowSharedApplications" class="govuk-grid-column-full">
+        <div asp-show="Model.CanShowApplicationReviewStatusHeader" class="govuk-notification-banner govuk-notification-banner--success" role="alert" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
+            <div class="govuk-notification-banner__header">
+                <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
+                    Done
+                </h2>
+            </div>
+            <div class="govuk-notification-banner__content">
+                <h3 class="govuk-notification-banner__heading">
+                    @Model.ApplicationReviewStatusHeaderInfoMessage
+                </h3>
+                <p class="govuk-body">The applicant’s contact details are now shown in their application. Your response has been sent to your training provider.</p>
+            </div>
+        </div>
+    </div>
     <div asp-show="@Model.ShowEmployerApplications">
         <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
     </div>
     <h2 asp-show="@Model.ShowEmployerApplications" class="govuk-heading-l govuk-!-margin-top-6">Manage applications</h2>
     <h2 asp-show="@Model.ShowSharedApplications" class="govuk-heading-l govuk-!-margin-top-6">Shared applications</h2>
     <p asp-show="@Model.ShowSharedApplications" class="govuk-body govuk-!-margin-bottom-4 govuk-!-margin-top-4">Each application is anonymised. If you decide to interview the applicant, you will be able to see their name and contact information.</p>
-    <partial asp-show="@Model.ShowEmployerApplications" name="@PartialNames.VacancyApplicationsTable" for="Applications" />
-    <partial asp-show="@Model.ShowSharedApplications" name="@PartialNames.VacancySharedApplicationsTable" for="Applications" />
+    <partial asp-show="@Model.ShowEmployerApplications" name="@PartialNames.VacancyApplicationsTable" for="Applications"/>
+    <partial asp-show="@Model.ShowSharedApplications" name="@PartialNames.VacancySharedApplicationsTable" for="Applications"/>
     <p asp-show="@Model.HasNoApplications" class="govuk-body govuk-!-margin-bottom-0">Candidate applications for this apprenticeship will appear here.</p>
 </div>
 
