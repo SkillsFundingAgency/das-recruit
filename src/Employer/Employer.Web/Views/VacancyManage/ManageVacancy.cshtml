@@ -27,7 +27,7 @@
     <div class="govuk-grid-column-two-thirds govuk-!-margin-bottom-6">
         <div asp-show="@Model.CanShowApplicationReviewStatusHeader" class="das-notification das-notification--information">
             <p class="das-notification__body">
-                @Model.ApplicationReviewStatusHeaderInfoMessage
+                @Model.EmployerReviewedApplicationHeaderMessage
             </p>
         </div>
         <h1 class="govuk-heading-xl govuk-!-margin-top-6 govuk-!-margin-bottom-6" id="vacancy-header">
@@ -107,9 +107,9 @@
             </div>
             <div class="govuk-notification-banner__content">
                 <h3 class="govuk-notification-banner__heading">
-                    @Model.ApplicationReviewStatusHeaderInfoMessage
+                    @Model.EmployerReviewedApplicationHeaderMessage
                 </h3>
-                <p class="govuk-body">The applicant’s contact details are now shown in their application. Your response has been sent to your training provider.</p>
+                <p class="govuk-body">@Model.EmployerReviewedApplicationBodyMessage</p>
             </div>
         </div>
     </div>

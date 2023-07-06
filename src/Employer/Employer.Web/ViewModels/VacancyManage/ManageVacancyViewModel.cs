@@ -29,11 +29,12 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyManage
         public bool CanShowCloseVacancyLink { get; internal set; }
         public bool CanShowDeleteLink { get; internal set; }
         public string VacancyClosedInfoMessage { get; internal set; }
-        public string ApplicationReviewStatusHeaderInfoMessage { get; internal set; }
+        public string EmployerReviewedApplicationHeaderMessage { get; internal set; }
+        public string EmployerReviewedApplicationBodyMessage { get; internal set; }
         public string TransferredProviderName { get; internal set; }
         public string TransferredOnDate { get; internal set; }
         public bool HasVacancyClosedInfoMessage => !string.IsNullOrEmpty(VacancyClosedInfoMessage);
-        public bool CanShowApplicationReviewStatusHeader => !string.IsNullOrEmpty(ApplicationReviewStatusHeaderInfoMessage);
+        public bool CanShowApplicationReviewStatusHeader => !string.IsNullOrEmpty(EmployerReviewedApplicationHeaderMessage);
 
         public VacancyAnalyticsSummaryViewModel AnalyticsSummary { get; internal set; }
 
