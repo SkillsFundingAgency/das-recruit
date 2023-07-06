@@ -38,24 +38,35 @@ namespace Esfa.Recruit.Employer.Web.Controllers
                 var vm = await _orchestrator.GetApplicationReviewViewModelAsync(editModel);
                 return View(vm);
             }
+
+            if (vacancySharedByProvider)
+            {
+                var candidateInfo = await _orchestrator.PostApplicationReviewEditModelAsync(editModel, User.ToVacancyUser(), vacancySharedByProvider);
+                TempData.Add(TempDataKeys.ApplicationReviewStatusInfoMessage,
+                    editModel.Outcome == ApplicationReviewStatus.EmployerInterviewing
+                        ? string.Format(InfoMessages.ApplicationEmployerReviewStatusHeader, candidateInfo.FriendlyId, candidateInfo.Name)
+                        : "TODO");
+                return RedirectToRoute( RouteNames.VacancyManage_Get, new { editModel.EmployerAccountId, editModel.VacancyId, vacancySharedByProvider });
+            }
+
             TempData[TempDataARModel] = JsonConvert.SerializeObject(editModel);
-            return RedirectToRoute(RouteNames.ApplicationReviewConfirmation_Get, new { editModel.VacancyId, editModel.EmployerAccountId, editModel.ApplicationReviewId, vacancySharedByProvider });
+            return RedirectToRoute(RouteNames.ApplicationReviewConfirmation_Get, new { editModel.VacancyId, editModel.EmployerAccountId, editModel.ApplicationReviewId });
         }
 
         [HttpGet("status", Name = RouteNames.ApplicationReviewConfirmation_Get)]
-        public async Task<IActionResult> ApplicationStatusConfirmation(ApplicationReviewEditModel editModel, [FromQuery] bool vacancySharedByProvider)
+        public async Task<IActionResult> ApplicationStatusConfirmation(ApplicationReviewEditModel editModel)
         {
             if (TempData[TempDataARModel] is string model)
             {
                 var applicationReviewEditViewModel = JsonConvert.DeserializeObject<ApplicationReviewEditModel>(model);
-                var applicationStatusConfirmationViewModel = await _orchestrator.GetApplicationStatusConfirmationViewModelAsync(applicationReviewEditViewModel, vacancySharedByProvider);
+                var applicationStatusConfirmationViewModel = await _orchestrator.GetApplicationStatusConfirmationViewModelAsync(applicationReviewEditViewModel);
                 return View(applicationStatusConfirmationViewModel);
             }
-            return RedirectToRoute(RouteNames.ApplicationReview_Get, new { editModel.VacancyId, editModel.EmployerAccountId, editModel.ApplicationReviewId, vacancySharedByProvider });
+            return RedirectToRoute(RouteNames.ApplicationReview_Get, new { editModel.VacancyId, editModel.EmployerAccountId, editModel.ApplicationReviewId });
         }
 
         [HttpPost("status", Name = RouteNames.ApplicationReviewConfirmation_Post)]
-        public async Task<IActionResult> ApplicationStatusConfirmation(ApplicationReviewStatusConfirmationEditModel editModel, [FromQuery] bool vacancySharedByProvider)
+        public async Task<IActionResult> ApplicationStatusConfirmation(ApplicationReviewStatusConfirmationEditModel editModel)
         {
             if (!ModelState.IsValid)
             {
@@ -65,14 +76,9 @@ namespace Esfa.Recruit.Employer.Web.Controllers
 
             if (editModel.CanNotifyCandidate)
             {
-                var vm = await _orchestrator.PostApplicationReviewConfirmationEditModelAsync(editModel, User.ToVacancyUser(), vacancySharedByProvider);
-
-                TempData.Add(TempDataKeys.ApplicationReviewStatusInfoMessage,
-                    editModel.Outcome == ApplicationReviewStatus.EmployerInterviewing
-                        ? string.Format(InfoMessages.ApplicationEmployerReviewStatusHeader, vm.FriendlyId, vm.Name) 
-                        : string.Format(InfoMessages.ApplicationReviewStatusHeader, vm.Name, editModel.Outcome.ToString().ToLower()));
-
-                return RedirectToRoute(RouteNames.VacancyManage_Get, new { editModel.VacancyId, editModel.EmployerAccountId, vacancySharedByProvider });
+                var candidateName = await _orchestrator.PostApplicationReviewConfirmationEditModelAsync(editModel, User.ToVacancyUser());
+                TempData.Add(TempDataKeys.ApplicationReviewStatusInfoMessage, string.Format(InfoMessages.ApplicationReviewStatusHeader, candidateName, editModel.Outcome.ToString().ToLower()));
+                return RedirectToRoute(RouteNames.VacancyManage_Get, new { editModel.VacancyId, editModel.EmployerAccountId });
             }
             return RedirectToRoute(RouteNames.ApplicationReview_Get, new { editModel.VacancyId, editModel.EmployerAccountId, editModel.ApplicationReviewId });
         }

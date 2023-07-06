@@ -47,23 +47,28 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             return vm;
         }
 
-        public async Task<ApplicationStatusConfirmationViewModel> PostApplicationReviewConfirmationEditModelAsync(ApplicationReviewStatusConfirmationEditModel m, VacancyUser user, bool vacancySharedByProvider = false)
+        public async Task<string> PostApplicationReviewConfirmationEditModelAsync(ApplicationReviewStatusConfirmationEditModel m, VacancyUser user)
+        {
+            var applicationReview = await _utility.GetAuthorisedApplicationReviewAsync(m);
+
+            await _client.SetApplicationReviewStatus(applicationReview.Id, m.Outcome, m.CandidateFeedback, user);
+
+            return applicationReview.Application.FullName;
+        }
+
+        public async Task<ApplicationReviewCandidateInfo> PostApplicationReviewEditModelAsync(ApplicationReviewEditModel m, VacancyUser user, bool vacancySharedByProvider = false)
         {
             var applicationReview = await _utility.GetAuthorisedApplicationReviewAsync(m, vacancySharedByProvider);
 
             await _client.SetApplicationReviewStatus(applicationReview.Id, m.Outcome, m.CandidateFeedback, user);
 
-            return new ApplicationStatusConfirmationViewModel
+            return new ApplicationReviewCandidateInfo()
             {
-                EmployerAccountId = m.EmployerAccountId,
-                VacancyId = m.VacancyId,
-                ApplicationReviewId = m.ApplicationReviewId,
+                ApplicationReviewId = applicationReview.Id,
                 FriendlyId = applicationReview.GetFriendlyId(),
-                CandidateFeedback = m.CandidateFeedback,
-                Outcome = m.Outcome,
                 Name = applicationReview.Application.FullName
             };
-        }                
+        }
 
         public async Task<ApplicationStatusConfirmationViewModel> GetApplicationStatusConfirmationViewModelAsync(ApplicationReviewStatusConfirmationEditModel m)
         {            
@@ -80,9 +85,9 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             };
         }
 
-        public async Task<ApplicationStatusConfirmationViewModel> GetApplicationStatusConfirmationViewModelAsync(ApplicationReviewEditModel rm, bool vacancySharedByProvider = false)
+        public async Task<ApplicationStatusConfirmationViewModel> GetApplicationStatusConfirmationViewModelAsync(ApplicationReviewEditModel rm)
         {
-            var applicationReviewVm = await GetApplicationReviewViewModelAsync((ApplicationReviewRouteModel) rm, vacancySharedByProvider);
+            var applicationReviewVm = await GetApplicationReviewViewModelAsync((ApplicationReviewRouteModel) rm);
             
             return new ApplicationStatusConfirmationViewModel {                
                 CandidateFeedback = rm.CandidateFeedback,                
