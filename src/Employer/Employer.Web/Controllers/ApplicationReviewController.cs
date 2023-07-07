@@ -15,10 +15,10 @@ namespace Esfa.Recruit.Employer.Web.Controllers
     [Route(RoutePaths.AccountApplicationReviewRoutePath)]
     public class ApplicationReviewController : Controller
     {
-        private readonly ApplicationReviewOrchestrator _orchestrator;
+        private readonly IApplicationReviewOrchestrator _orchestrator;
         private const string TempDataARModel = "ApplicationReviewEditModel";
 
-        public ApplicationReviewController(ApplicationReviewOrchestrator orchestrator)
+        public ApplicationReviewController(IApplicationReviewOrchestrator orchestrator)
         {
             _orchestrator = orchestrator;
         }
