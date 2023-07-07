@@ -38,6 +38,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Va
         public bool ShowCandidateName => Status is ApplicationReviewStatus.EmployerInterviewing;
         public bool ShowApplicantID => !ShowCandidateName;
         public DateTime? DateSharedWithEmployer { get; set; }
+        public DateTime? ReviewedDate { get; set; }
         public bool IsSharedApplication => DateSharedWithEmployer.HasValue;
 
         public static implicit operator VacancyApplication(ApplicationReview applicationReview)
@@ -51,8 +52,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Va
                 IsWithdrawn = applicationReview.IsWithdrawn,
                 DisabilityStatus = ApplicationReviewDisabilityStatus.Unknown,
                 Selected = false,
-                DateSharedWithEmployer = applicationReview.DateSharedWithEmployer
-        };
+                DateSharedWithEmployer = applicationReview.DateSharedWithEmployer,
+                ReviewedDate = applicationReview.ReviewedDate
+};
 
             if (applicationReview.IsWithdrawn == false)
             {

@@ -21,5 +21,6 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
         public string AdditionalQuestion1 { get; set; }
         public string AdditionalQuestion2 { get; set; }
         public DateTime? DateSharedWithEmployer { get; set; }
+        public DateTime? ReviewedDate { get; set; }
     }
 }

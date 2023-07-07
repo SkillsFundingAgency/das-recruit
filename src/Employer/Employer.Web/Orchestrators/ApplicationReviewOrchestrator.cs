@@ -6,12 +6,23 @@ using Esfa.Recruit.Employer.Web.ViewModels.ApplicationReview;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Employer.Web.Exceptions;
+using Esfa.Recruit.Shared.Web.Extensions;
 using ApplicationReviewViewModel = Esfa.Recruit.Employer.Web.ViewModels.ApplicationReview.ApplicationReviewViewModel;
 using ApplicationStatusConfirmationViewModel = Esfa.Recruit.Employer.Web.ViewModels.ApplicationReview.ApplicationStatusConfirmationViewModel;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators
 {
-    public class ApplicationReviewOrchestrator
+    public interface IApplicationReviewOrchestrator
+    {
+        Task<ApplicationReviewViewModel> GetApplicationReviewViewModelAsync(ApplicationReviewRouteModel rm, bool vacancySharedByProvider = false);
+        Task<ApplicationReviewViewModel> GetApplicationReviewViewModelAsync(ApplicationReviewEditModel m);
+        Task<string> PostApplicationReviewConfirmationEditModelAsync(ApplicationReviewStatusConfirmationEditModel m, VacancyUser user);
+        Task<ApplicationReviewCandidateInfo> PostApplicationReviewEditModelAsync(ApplicationReviewEditModel m, VacancyUser user, bool vacancySharedByProvider = false);
+        Task<ApplicationStatusConfirmationViewModel> GetApplicationStatusConfirmationViewModelAsync(ApplicationReviewStatusConfirmationEditModel m);
+        Task<ApplicationStatusConfirmationViewModel> GetApplicationStatusConfirmationViewModelAsync(ApplicationReviewEditModel rm);
+    }
+
+    public class ApplicationReviewOrchestrator : IApplicationReviewOrchestrator
     {
         private readonly IEmployerVacancyClient _client;
         private readonly IUtility _utility;
@@ -53,7 +64,21 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             await _client.SetApplicationReviewStatus(applicationReview.Id, m.Outcome, m.CandidateFeedback, user);
 
             return applicationReview.Application.FullName;
-        }                
+        }
+
+        public async Task<ApplicationReviewCandidateInfo> PostApplicationReviewEditModelAsync(ApplicationReviewEditModel m, VacancyUser user, bool vacancySharedByProvider = false)
+        {
+            var applicationReview = await _utility.GetAuthorisedApplicationReviewAsync(m, vacancySharedByProvider);
+
+            await _client.SetApplicationReviewStatus(applicationReview.Id, m.Outcome, m.CandidateFeedback, user);
+
+            return new ApplicationReviewCandidateInfo()
+            {
+                ApplicationReviewId = applicationReview.Id,
+                FriendlyId = applicationReview.GetFriendlyId(),
+                Name = applicationReview.Application.FullName
+            };
+        }
 
         public async Task<ApplicationStatusConfirmationViewModel> GetApplicationStatusConfirmationViewModelAsync(ApplicationReviewStatusConfirmationEditModel m)
         {            

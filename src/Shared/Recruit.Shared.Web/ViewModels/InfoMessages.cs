@@ -20,6 +20,8 @@ namespace Esfa.Recruit.Shared.Web.ViewModels
 
         public const string ApplicationReviewStatusHeader = "{0} application has been marked as {1}";
 
+        public const string ApplicationEmployerReviewStatusHeader = "You want to interview applicant {0}. The applicant is now listed as {1}.";
+
         public const string SharedMultipleApplicationsBannerHeader = "Multiple applications shared with employer.";
 
         public const string SharedMultipleApplicationsBannerMessage = "These applications have been sent to the employer's apprenticeship service account.";
