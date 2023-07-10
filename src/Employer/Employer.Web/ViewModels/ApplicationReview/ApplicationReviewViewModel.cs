@@ -63,7 +63,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.ApplicationReview;
         public bool IsApplicationEmployerUnsuccessful => Status == ApplicationReviewStatus.EmployerUnsuccessful;
         public bool IsApplicationShared => Status == ApplicationReviewStatus.Shared;
         public bool IsApplicationEmployerInterviewing => Status == ApplicationReviewStatus.EmployerInterviewing;
-        public bool IsApplicationSharedByProvider => (Status == ApplicationReviewStatus.Shared || Status == ApplicationReviewStatus.EmployerInterviewing || Status == ApplicationReviewStatus.EmployerUnsuccessful);
+        public bool IsApplicationSharedByProvider => DateSharedWithEmployer.HasValue;
         public string FormHeaderText => (Status == ApplicationReviewStatus.Shared) ? "Do you want to interview this applicant?" : "Outcome";
         public string FormRadioButtonNoText => (Status == ApplicationReviewStatus.Shared) ? "No" : "Unsuccessful";
         public string FormRadioButtonNoFeedbackText => (Status == ApplicationReviewStatus.Shared) ? "Explain why you don't want to interview this applicant. Your comments will be sent to your training provider, who will then give feedback to the applicant."
