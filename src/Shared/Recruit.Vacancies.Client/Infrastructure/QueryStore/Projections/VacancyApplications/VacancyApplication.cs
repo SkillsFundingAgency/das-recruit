@@ -1,5 +1,6 @@
 ﻿using System;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyApplications
 {
@@ -40,6 +41,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Va
         public DateTime? DateSharedWithEmployer { get; set; }
         public DateTime? ReviewedDate { get; set; }
         public bool IsSharedApplication => DateSharedWithEmployer.HasValue;
+        public string DateReviewedText => !string.IsNullOrEmpty(ReviewedDate.ToString()) ? ReviewedDate.AsGdsDate() : "Not Reviewed";
 
         public static implicit operator VacancyApplication(ApplicationReview applicationReview)
         {

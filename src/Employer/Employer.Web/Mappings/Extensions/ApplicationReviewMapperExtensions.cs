@@ -53,6 +53,7 @@ namespace Esfa.Recruit.Employer.Web.Mappings.Extensions
                 Status = r.Status,
                 Strengths = r.Application.Strengths,
                 Support = r.Application.Support,
+                DateSharedWithEmployer = r.DateSharedWithEmployer,
                 WorkExperiences = r.Application.WorkExperiences?.Select(w => new WorkExperienceViewModel
                 {
                     FromDate = w.FromDate,

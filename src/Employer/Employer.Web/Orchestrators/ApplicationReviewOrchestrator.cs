@@ -12,7 +12,7 @@ using ApplicationStatusConfirmationViewModel = Esfa.Recruit.Employer.Web.ViewMod
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators
 {
-    public interface IApplicationReviewOrchestrator
+    public interface IApplicationReviewOrchestrator 
     {
         Task<ApplicationReviewViewModel> GetApplicationReviewViewModelAsync(ApplicationReviewRouteModel rm, bool vacancySharedByProvider = false);
         Task<ApplicationReviewViewModel> GetApplicationReviewViewModelAsync(ApplicationReviewEditModel m);

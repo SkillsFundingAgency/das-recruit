@@ -44,8 +44,14 @@ namespace Esfa.Recruit.Employer.Web.Controllers
                 var candidateInfo = await _orchestrator.PostApplicationReviewEditModelAsync(editModel, User.ToVacancyUser(), vacancySharedByProvider);
                 TempData.Add(TempDataKeys.ApplicationReviewStatusInfoMessage,
                     editModel.Outcome == ApplicationReviewStatus.EmployerInterviewing
-                        ? string.Format(InfoMessages.ApplicationEmployerReviewStatusHeader, candidateInfo.FriendlyId, candidateInfo.Name)
-                        : "TODO");
+                        ? string.Format(InfoMessages.ApplicationEmployerInterviewingHeader, candidateInfo.FriendlyId, candidateInfo.Name)
+                        : string.Format(InfoMessages.ApplicationEmployerUnsuccessfulHeader, candidateInfo.FriendlyId));
+
+                TempData.Add(TempDataKeys.ApplicationReviewedInfoMessage,
+                    editModel.Outcome == ApplicationReviewStatus.EmployerInterviewing
+                        ? string.Format(InfoMessages.ApplicationEmployerInterviewingBody)
+                        : string.Format(InfoMessages.ApplicationEmployerUnsuccessfulBody));
+
                 return RedirectToRoute( RouteNames.VacancyManage_Get, new { editModel.EmployerAccountId, editModel.VacancyId, vacancySharedByProvider });
             }
 

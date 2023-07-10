@@ -231,7 +231,7 @@
             <a asp-route="@RouteNames.VacancyManage_Get" asp-route-employerAccountId="@Model.EmployerAccountId" class="govuk-button">Return to advert</a>
         </div>
 
-        <form asp-show="@Model.CanChangeOutcome" asp-hide="@Model.HideRadioButtons" asp-route="@RouteNames.ApplicationReview_Post" asp-all-route-data="@Model.ApplicationRouteDictionary" asp-route-vacancySharedByProvider=@Model.IsApplicationShared class="govuk-!-margin-top-6">
+        <form asp-show="@Model.CanChangeOutcome" asp-hide="@Model.HideRadioButtons" asp-route="@RouteNames.ApplicationReview_Post" asp-all-route-data="@Model.ApplicationRouteDictionary" asp-route-vacancySharedByProvider=@Model.IsApplicationSharedByProvider class="govuk-!-margin-top-6">
             <div esfa-validation-marker-for="Outcome" class="govuk-form-group">
                 <fieldset class="govuk-fieldset">
                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
@@ -242,21 +242,30 @@
                     </div>
                     <span esfa-validation-message-for="Outcome" class="govuk-error-message"></span>
                     <div class="govuk-radios govuk-radios--conditional" data-module="radios">
+
                         <div class="govuk-radios__item" asp-show="@Model.IsApplicationShared">
                             <input asp-for="Outcome" class="govuk-radios__input" id="outcome-interviewing" type="radio" value="@ApplicationReviewStatus.EmployerInterviewing.ToString()" checked="@(Model.Outcome == ApplicationReviewStatus.EmployerInterviewing ? "checked" : null)">
                             <label for="outcome-interviewing" class="govuk-label govuk-radios__label">Yes</label>
                             <div id="sign-in-item-hint" class="govuk-hint govuk-radios__hint">
-                              You'll be able to see the applicant's name and contact details.
+                                You'll be able to see the applicant's name and contact details.
                             </div>
                         </div>
+
                         <div class="govuk-radios__item" asp-hide="@Model.IsApplicationShared">
                             <input asp-for="Outcome" class="govuk-radios__input" id="outcome-successful" type="radio" value="@ApplicationReviewStatus.Successful.ToString()" checked="@(Model.Outcome == ApplicationReviewStatus.Successful ? "checked" : null)">
                             <label for="outcome-successful" class="govuk-label govuk-radios__label">Successful</label>
                         </div>
-                        <div class="govuk-radios__item">
+
+                        <div class="govuk-radios__item" asp-show="@Model.IsApplicationShared">
+                            <input asp-for="Outcome" class="govuk-radios__input" id="outcome-unsuccessful" type="radio" value="@ApplicationReviewStatus.EmployerUnsuccessful.ToString()" checked="@(Model.Outcome == ApplicationReviewStatus.EmployerUnsuccessful ? "checked" : null)" data-aria-controls="unsuccessful-candidate-feedback">
+                            <label for="outcome-unsuccessful" class="govuk-label govuk-radios__label">@Model.FormRadioButtonNoText</label>
+                        </div>
+
+                        <div class="govuk-radios__item" asp-hide="@Model.IsApplicationShared">
                             <input asp-for="Outcome" class="govuk-radios__input" id="outcome-unsuccessful" type="radio" value="@ApplicationReviewStatus.Unsuccessful.ToString()" checked="@(Model.Outcome == ApplicationReviewStatus.Unsuccessful ? "checked" : null)" data-aria-controls="unsuccessful-candidate-feedback">
                             <label for="outcome-unsuccessful" class="govuk-label govuk-radios__label">@Model.FormRadioButtonNoText</label>
                         </div>
+
                         <div esfa-validation-marker-for="CandidateFeedback" id="unsuccessful-candidate-feedback" class="govuk-radios__conditional govuk-radios__conditional--hidden">
                             <div class="govuk-form-group">
                                 <label asp-for="CandidateFeedback" class="govuk-label govuk-!-font-weight-bold">Feedback</label>
@@ -283,7 +292,7 @@
             <p class="govuk-body">Yes, I want to interview this applicant.</p>
         </div>
 
-        <div asp-show="@Model.IsApplicationUnsuccessful">
+        <div asp-show="@Model.IsApplicationEmployerUnsuccessful">
             <h2 class="govuk-heading-l govuk-!-margin-top-6">Your response to your training provider.</h2>
             <p class="govuk-body">No, I don't want to interview this applicant.</p>
             <div class="govuk-inset-text">
