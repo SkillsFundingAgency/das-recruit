@@ -257,7 +257,7 @@
                         </div>
 
                         <div class="govuk-radios__item" asp-show="@Model.IsApplicationShared">
-                            <input asp-for="Outcome" class="govuk-radios__input" id="outcome-unsuccessful" type="radio" value="@ApplicationReviewStatus.EmployerUnsuccessful.ToString()" checked="@(Model.Outcome == ApplicationReviewStatus.EmployerUnsuccessful ? "checked" : null)" data-aria-controls="unsuccessful-candidate-feedback">
+                            <input asp-for="Outcome" class="govuk-radios__input" id="outcome-employer-unsuccessful" type="radio" value="@ApplicationReviewStatus.EmployerUnsuccessful.ToString()" checked="@(Model.Outcome == ApplicationReviewStatus.EmployerUnsuccessful ? "checked" : null)" data-aria-controls="unsuccessful-candidate-feedback">
                             <label for="outcome-unsuccessful" class="govuk-label govuk-radios__label">@Model.FormRadioButtonNoText</label>
                         </div>
 
@@ -281,9 +281,9 @@
             <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
 
             <div class="govuk-button-group hide-print">
-                <button type="submit" class="govuk-button">Save</button>
+                <button type="submit" class="govuk-button">Confirm</button>
 
-                <a asp-route="@RouteNames.VacancyManage_Get" asp-all-route-data="@Model.RouteDictionary" class="govuk-link govuk-link--no-visited-state">Cancel</a>
+                <a asp-route="@RouteNames.VacancyManage_Get" asp-route-vacancyId="@Model.VacancyId" asp-route-employerAccountId="@Model.EmployerAccountId" asp-all-route-data="@Model.RouteDictionary"  asp-route-vacancySharedByProvider="@Model.IsApplicationSharedByProvider" class="govuk-link govuk-link--no-visited-state">Cancel</a>
             </div>
         </form>
 

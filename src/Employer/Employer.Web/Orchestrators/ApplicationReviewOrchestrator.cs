@@ -15,7 +15,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
     public interface IApplicationReviewOrchestrator 
     {
         Task<ApplicationReviewViewModel> GetApplicationReviewViewModelAsync(ApplicationReviewRouteModel rm, bool vacancySharedByProvider = false);
-        Task<ApplicationReviewViewModel> GetApplicationReviewViewModelAsync(ApplicationReviewEditModel m);
+        Task<ApplicationReviewViewModel> GetApplicationReviewViewModelAsync(ApplicationReviewEditModel m, bool vacancySharedByProvider = false);
         Task<string> PostApplicationReviewConfirmationEditModelAsync(ApplicationReviewStatusConfirmationEditModel m, VacancyUser user);
         Task<ApplicationReviewCandidateInfo> PostApplicationReviewEditModelAsync(ApplicationReviewEditModel m, VacancyUser user, bool vacancySharedByProvider = false);
         Task<ApplicationStatusConfirmationViewModel> GetApplicationStatusConfirmationViewModelAsync(ApplicationReviewStatusConfirmationEditModel m);
@@ -47,9 +47,9 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             return viewModel;
         }
 
-        public async Task<ApplicationReviewViewModel> GetApplicationReviewViewModelAsync(ApplicationReviewEditModel m)
+        public async Task<ApplicationReviewViewModel> GetApplicationReviewViewModelAsync(ApplicationReviewEditModel m, bool vacancySharedByProvider = false)
         {
-            var vm = await GetApplicationReviewViewModelAsync((ApplicationReviewRouteModel) m);
+            var vm = await GetApplicationReviewViewModelAsync((ApplicationReviewRouteModel) m, vacancySharedByProvider);
 
             vm.Outcome = m.Outcome;
             vm.CandidateFeedback = m.CandidateFeedback;

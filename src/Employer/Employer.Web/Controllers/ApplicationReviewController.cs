@@ -35,7 +35,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         {
             if (!ModelState.IsValid)
             {
-                var vm = await _orchestrator.GetApplicationReviewViewModelAsync(editModel);
+                var vm = await _orchestrator.GetApplicationReviewViewModelAsync(editModel, vacancySharedByProvider);
                 return View(vm);
             }
 
