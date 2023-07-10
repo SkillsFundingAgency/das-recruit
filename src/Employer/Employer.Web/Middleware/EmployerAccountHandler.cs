@@ -33,7 +33,10 @@ namespace Esfa.Recruit.Employer.Web.Middleware
 
                     if (employerAccounts.Contains(accountIdFromUrl))
                     {
-                        mvcContext.HttpContext.Items.Add(ContextItemKeys.EmployerIdentifier, accountIdFromUrl);
+                        if (!mvcContext.HttpContext.Items.ContainsKey(ContextItemKeys.EmployerIdentifier))
+                        {
+                            mvcContext.HttpContext.Items.Add(ContextItemKeys.EmployerIdentifier, accountIdFromUrl);
+                        }
 
                         await EnsureEmployerIsSetup(mvcContext.HttpContext, accountIdFromUrl);
                         
