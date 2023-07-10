@@ -39,6 +39,15 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 
             var dashboard = dashboardTask.Result;
             var userDetails = userDetailsTask.Result;
+
+            if (userDetails == null)
+            {
+                var userOuter = await _client.GetEmployerIdentifiersAsync(user.UserId, user.Email);
+                user.Name = $"{userOuter.FirstName} {userOuter.LastName}";
+                await _client.UserSignedInAsync(user, UserType.Employer);
+                userDetails = await _client.GetUsersDetailsAsync(user.UserId);
+            }
+            
             var providerPermissions = providerTask.Result;
 
 

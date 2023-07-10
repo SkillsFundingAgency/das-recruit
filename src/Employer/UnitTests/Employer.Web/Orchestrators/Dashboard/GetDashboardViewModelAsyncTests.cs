@@ -7,6 +7,7 @@ using Esfa.Recruit.Employer.Web.ViewModels.Alerts;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Models;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Responses;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Employer;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelationship;
 using FluentAssertions;
@@ -21,6 +22,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Dashboard
         private const string UserId = "user id";
 
         private readonly VacancyUser _user = new VacancyUser { UserId = UserId };
+        private Mock<IRecruitVacancyClient> _clientMock;
 
         [Fact]
         public async Task WhenHasVacancies_ShouldReturnViewModelAsync()
@@ -58,6 +60,20 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Dashboard
             actualDashboard.Alerts.Should().NotBeNull();
         }
 
+        [Fact]
+        public async Task WhenUserNotExists_ThenCreated()
+        {
+            var dashboardOrchestrator = GetSut(new EmployerDashboardSummary());
+            
+            await dashboardOrchestrator.GetDashboardViewModelAsync(EmployerAccountId, new VacancyUser{UserId = "unknown", Email = "unknown"});
+            
+            _clientMock.Verify(x=>x.UserSignedInAsync(It.Is<VacancyUser>(c=>
+                c.Name.Equals("First Last")
+                && c.Email.Equals("unknown")
+                && c.UserId.Equals("unknown")
+                ), UserType.Employer), Times.Once);
+        }
+
         private DashboardOrchestrator GetSut(EmployerDashboardSummary dashboardSummary)
         {
             var vacancyClientMock = new Mock<IEmployerVacancyClient>();
@@ -70,16 +86,26 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Dashboard
 
             var userDetails = new User();
 
-            var clientMock = new Mock<IRecruitVacancyClient>();
-            clientMock.Setup(c => c.GetUsersDetailsAsync(UserId))
+            _clientMock = new Mock<IRecruitVacancyClient>();
+            _clientMock.Setup(c => c.GetUsersDetailsAsync(UserId))
                 .ReturnsAsync(userDetails);
+            
+            _clientMock.SetupSequence(c => c.GetUsersDetailsAsync("unknown"))
+                .ReturnsAsync((User) null)
+                .ReturnsAsync(userDetails);
+
+            _clientMock.Setup(x => x.GetEmployerIdentifiersAsync("unknown", "unknown")).ReturnsAsync(new GetUserAccountsResponse
+            {
+                FirstName = "First",
+                LastName = "Last"
+            });
 
             var alertsViewModel = new AlertsViewModel(null, null, null, null);
             var alertsFactoryMock = new Mock<IEmployerAlertsViewModelFactory>();
             alertsFactoryMock.Setup(a => a.Create(EmployerAccountId, userDetails))
                 .ReturnsAsync(alertsViewModel);
 
-            var dashboardOrchestrator = new DashboardOrchestrator(vacancyClientMock.Object, clientMock.Object, alertsFactoryMock.Object, permissionServiceMock.Object);
+            var dashboardOrchestrator = new DashboardOrchestrator(vacancyClientMock.Object, _clientMock.Object, alertsFactoryMock.Object, permissionServiceMock.Object);
 
             return dashboardOrchestrator;
         }
