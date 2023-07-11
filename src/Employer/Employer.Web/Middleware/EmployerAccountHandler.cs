@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Extensions;
+using Esfa.Recruit.Employer.Web.Interfaces;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
@@ -15,39 +16,42 @@ namespace Esfa.Recruit.Employer.Web.Middleware
     {
         private readonly IWebHostEnvironment _hostingEnvironment;
         private readonly IEmployerVacancyClient _client;
+        private readonly IEmployerAccountAuthorizationHandler _handler;
 
-        public EmployerAccountHandler(IWebHostEnvironment hostingEnvironment, IEmployerVacancyClient client)
+        public EmployerAccountHandler(IWebHostEnvironment hostingEnvironment, IEmployerVacancyClient client, IEmployerAccountAuthorizationHandler handler)
         {
             _hostingEnvironment = hostingEnvironment;
             _client = client;
+            _handler = handler;
         }
 
         protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context, EmployerAccountRequirement requirement)
         {
+            
+            if (!await _handler.IsEmployerAuthorized(context, EmployerUserRole.Viewer))
+            {
+                return;
+            }
+            
             if (context.Resource is AuthorizationFilterContext mvcContext && mvcContext.RouteData.Values.ContainsKey(RouteValues.EmployerAccountId))
             {
-                if (context.User.HasClaim(c => c.Type.Equals(EmployerRecruitClaims.AccountsClaimsTypeIdentifier)))
+                var accountIdFromUrl = mvcContext.RouteData.Values[RouteValues.EmployerAccountId].ToString().ToUpper();
+                var employerAccounts = context.User.GetEmployerAccounts();
+
+                if (employerAccounts.Contains(accountIdFromUrl))
                 {
-                    var accountIdFromUrl = mvcContext.RouteData.Values[RouteValues.EmployerAccountId].ToString().ToUpper();
-                    var employerAccounts = context.User.GetEmployerAccounts();
-
-                    if (employerAccounts.Contains(accountIdFromUrl))
+                    if (!mvcContext.HttpContext.Items.ContainsKey(ContextItemKeys.EmployerIdentifier))
                     {
-                        if (!mvcContext.HttpContext.Items.ContainsKey(ContextItemKeys.EmployerIdentifier))
-                        {
-                            mvcContext.HttpContext.Items.Add(ContextItemKeys.EmployerIdentifier, accountIdFromUrl);
-                        }
-
-                        await EnsureEmployerIsSetup(mvcContext.HttpContext, accountIdFromUrl);
-                        
-                        context.Succeed(requirement);
+                        mvcContext.HttpContext.Items.Add(ContextItemKeys.EmployerIdentifier, accountIdFromUrl);
                     }
+
+                    await EnsureEmployerIsSetup(mvcContext.HttpContext, accountIdFromUrl);
                 }
+            
             }
-            else
-            {
-                context.Succeed(requirement);
-            }
+            
+            context.Succeed(requirement);
+            
         }
 
         private async Task EnsureEmployerIsSetup(HttpContext context, string employerAccountId)
