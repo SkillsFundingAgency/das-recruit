@@ -51,7 +51,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             var employerData = getEmployerDataTask.Result;
             var vacancy = getVacancyTask.Result;
 
-            if (!employerData.LegalEntities.Any())
+            if (employerData?.LegalEntities == null || !employerData.LegalEntities.Any())
             {
                 await _client.SetupEmployerAsync(vrm.EmployerAccountId);
                 employerData = await _client.GetEditVacancyInfoAsync(vrm.EmployerAccountId);
