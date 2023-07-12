@@ -14,7 +14,7 @@ namespace Esfa.Recruit.Shared.Web.ViewModels.Validations.Fluent
                 .NotNull()
                 .WithMessage(ApplicationReviewValidator.OutcomeRequired);
 
-            When(x => x.Outcome == ApplicationReviewStatus.Unsuccessful, () =>
+            When(x => (x.Outcome == ApplicationReviewStatus.Unsuccessful || x.Outcome == ApplicationReviewStatus.EmployerUnsuccessful), () =>
             {
                 RuleFor(x => x.CandidateFeedback)
                     .NotEmpty()
