@@ -101,7 +101,19 @@ namespace Esfa.Recruit.Provider.Web.Controllers
             if (applicationReviewStatusConfirmationEditModel.CanNotifyCandidate)
             {
                 var candidateName = await _orchestrator.PostApplicationReviewStatusChangeModelAsync(applicationReviewStatusConfirmationEditModel, User.ToVacancyUser());
-                TempData.Add(TempDataKeys.ApplicationReviewStatusInfoMessage, string.Format(InfoMessages.ApplicationReviewStatusHeader, candidateName, applicationReviewStatusConfirmationEditModel.Outcome.ToString().ToLower()));
+
+                switch (applicationReviewStatusConfirmationEditModel.Outcome)
+                {
+                    case ApplicationReviewStatus.Successful:
+                        TempData.Add(TempDataKeys.ApplicationReviewSuccessStatusInfoMessage, string.Format(InfoMessages.ApplicationReviewSuccessStatusHeader, candidateName));
+                        break;
+                    case ApplicationReviewStatus.Unsuccessful:
+                        TempData.Add(TempDataKeys.ApplicationReviewUnSuccessStatusInfoMessage, string.Format(InfoMessages.ApplicationReviewUnSuccessStatusHeader, candidateName));
+                        break;
+                    default:
+                        TempData.Add(TempDataKeys.ApplicationReviewStatusInfoMessage, string.Format(InfoMessages.ApplicationReviewStatusHeader, candidateName, applicationReviewStatusConfirmationEditModel.Outcome.ToString().ToLower()));
+                        break;
+                }
             }
             return RedirectToRoute(RouteNames.VacancyManage_Get, new { applicationReviewStatusConfirmationEditModel.VacancyId, applicationReviewStatusConfirmationEditModel.Ukprn });
         }
