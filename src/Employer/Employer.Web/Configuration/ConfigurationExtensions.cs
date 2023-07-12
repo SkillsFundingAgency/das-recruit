@@ -44,7 +44,6 @@ namespace Esfa.Recruit.Employer.Web.Configuration
                 options.AddPolicy(
                     PolicyNames.HasEmployerAccountPolicyName, policy =>
                     {
-                        policy.RequireClaim(EmployerRecruitClaims.AccountsClaimsTypeIdentifier);
                         policy.Requirements.Add(new EmployerAccountRequirement());
                         policy.RequireAuthenticatedUser();
                         policy.Requirements.Add(new AccountActiveRequirement());
@@ -53,7 +52,6 @@ namespace Esfa.Recruit.Employer.Web.Configuration
                 options.AddPolicy(
                     PolicyNames.HasEmployerOwnerOrTransactorAccount, policy =>
                     {
-                        policy.RequireClaim(EmployerRecruitClaims.AccountsClaimsTypeIdentifier);
                         policy.Requirements.Add(new EmployerAccountOwnerOrTransactorRequirement());
                         policy.RequireAuthenticatedUser();
                         policy.Requirements.Add(new AccountActiveRequirement());
