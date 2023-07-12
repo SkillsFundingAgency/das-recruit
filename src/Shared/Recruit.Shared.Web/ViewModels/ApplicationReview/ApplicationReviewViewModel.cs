@@ -38,16 +38,19 @@ namespace Esfa.Recruit.Shared.Web.ViewModels.ApplicationReview
         public bool HasNoSupportRequirements => string.IsNullOrWhiteSpace(Support);
         public bool CanNotChangeOutcome => (Status == ApplicationReviewStatus.Successful || Status == ApplicationReviewStatus.Unsuccessful);
         public bool CanChangeOutcome => !CanNotChangeOutcome;
+        public bool CanChangeOutcomeEmployerUnsuccessful => !CanNotChangeOutcome && Status == ApplicationReviewStatus.EmployerUnsuccessful;
+        public bool CanChangeOutcomeDefault => !CanNotChangeOutcome && Status != ApplicationReviewStatus.EmployerUnsuccessful;
         public bool ShowDisabilityStatusAlert => DisabilityStatus == ApplicationReviewDisabilityStatus.Yes;
 
         public ApplicationReviewStatus? Outcome { get; set; }
         public string CandidateFeedback { get; set; }
+        public string EmployerFeedback { get; set; }
 
         public IList<string> OrderedFieldNames => new List<string>
         {
             nameof(Outcome)
         };
-        
+
         public long Ukprn { get; set; }
         public Guid? VacancyId { get; set; }
         public Guid ApplicationReviewId { get; set; }
