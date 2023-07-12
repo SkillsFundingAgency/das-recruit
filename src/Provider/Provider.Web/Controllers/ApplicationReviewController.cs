@@ -108,7 +108,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
                         TempData.Add(TempDataKeys.ApplicationReviewSuccessStatusInfoMessage, string.Format(InfoMessages.ApplicationReviewSuccessStatusHeader, candidateName));
                         break;
                     case ApplicationReviewStatus.Unsuccessful:
-                        TempData.Add(TempDataKeys.ApplicationReviewUnSuccessStatusInfoMessage, string.Format(InfoMessages.ApplicationReviewUnSuccessStatusHeader, candidateName));
+                        TempData.Add(TempDataKeys.ApplicationReviewUnsuccessStatusInfoMessage, string.Format(InfoMessages.ApplicationReviewUnsuccessStatusHeader, candidateName));
                         break;
                     default:
                         TempData.Add(TempDataKeys.ApplicationReviewStatusInfoMessage, string.Format(InfoMessages.ApplicationReviewStatusHeader, candidateName, applicationReviewStatusConfirmationEditModel.Outcome.ToString().ToLower()));

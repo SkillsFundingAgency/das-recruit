@@ -42,12 +42,12 @@ namespace Esfa.Recruit.Provider.Web.Controllers
 
             if (TempData.ContainsKey(TempDataKeys.ApplicationReviewSuccessStatusInfoMessage))
             {
-                viewModel.ApplicationReviewStatusHeaderMessage = TempData[TempDataKeys.ApplicationReviewSuccessStatusInfoMessage].ToString();
+                viewModel.ApplicationReviewStatusChangeBannerHeader = TempData[TempDataKeys.ApplicationReviewSuccessStatusInfoMessage].ToString();
                 viewModel.ApplicationReviewStatusChangeBannerMessage = InfoMsg.ApplicationReviewSuccessStatusBannerMessage;
             }
 
-            if (TempData.ContainsKey(TempDataKeys.ApplicationReviewUnSuccessStatusInfoMessage))
-                viewModel.ApplicationReviewStatusHeaderMessage = TempData[TempDataKeys.ApplicationReviewUnSuccessStatusInfoMessage].ToString();
+            if (TempData.ContainsKey(TempDataKeys.ApplicationReviewUnsuccessStatusInfoMessage))
+                viewModel.ApplicationReviewStatusChangeBannerHeader = TempData[TempDataKeys.ApplicationReviewUnsuccessStatusInfoMessage].ToString();
 
             if (TempData.ContainsKey(TempDataKeys.SharedMultipleApplicationsHeader))
             {

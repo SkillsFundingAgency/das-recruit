@@ -268,8 +268,8 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
             Assert.AreEqual(RouteNames.VacancyManage_Get, redirectResult.RouteName);
             Assert.AreEqual(_vacancyId, redirectResult.RouteValues["VacancyId"]);
             Assert.AreEqual(_ukprn, redirectResult.RouteValues["Ukprn"]);
-            Assert.IsTrue(_controller.TempData.ContainsKey(TempDataKeys.ApplicationReviewUnSuccessStatusInfoMessage));
-            Assert.AreEqual(string.Format(InfoMessages.ApplicationReviewUnSuccessStatusHeader, _candidateName), _controller.TempData[TempDataKeys.ApplicationReviewUnSuccessStatusInfoMessage]);
+            Assert.IsTrue(_controller.TempData.ContainsKey(TempDataKeys.ApplicationReviewUnsuccessStatusInfoMessage));
+            Assert.AreEqual(string.Format(InfoMessages.ApplicationReviewUnsuccessStatusHeader, _candidateName), _controller.TempData[TempDataKeys.ApplicationReviewUnsuccessStatusInfoMessage]);
         }
     }
 }

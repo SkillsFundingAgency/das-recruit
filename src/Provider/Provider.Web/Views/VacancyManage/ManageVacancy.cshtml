@@ -30,24 +30,6 @@
             </div>
         </div>
 
-        <div asp-show="@Model.CanShowApplicationReviewStatusHeaderMessage" class="govuk-notification-banner govuk-notification-banner--success" role="alert"
-             aria-labelledby="govuk-notification-banner-title"
-             data-module="govuk-notification-banner">
-            <div class="govuk-notification-banner__header">
-                <h2 class="govuk-notification-banner__title">
-                    Done
-                </h2>
-            </div>
-            <div class="govuk-notification-banner__content">
-                <h3 class="govuk-notification-banner__heading">
-                    @Model.ApplicationReviewStatusHeaderMessage
-                </h3>
-                @if (!string.IsNullOrEmpty(@Model.ApplicationReviewStatusChangeBannerMessage))
-                {
-                    <p class="govuk-body">@Model.ApplicationReviewStatusChangeBannerMessage</p>
-                }
-            </div>
-        </div>
         <div asp-show="@Model.CanShowApplicationReviewStatusHeader" class="das-notification das-notification--information">
             <p class="das-notification__body">
                 @Model.ApplicationReviewStatusHeaderInfoMessage
