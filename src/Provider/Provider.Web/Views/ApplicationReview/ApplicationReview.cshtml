@@ -2,7 +2,7 @@
 @model Esfa.Recruit.Shared.Web.ViewModels.ApplicationReview.ApplicationReviewViewModel
 
 @section BackLink {
-    <a asp-route="@RouteNames.VacancyManage_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Back</a>
+    <a asp-route="@RouteNames.VacancyManage_Get" asp-route-ukprn="@Model.Ukprn" asp-route-vacancyId="@Model.VacancyId" esfa-automation="link-back" class="govuk-back-link">Back</a>
 }
 
 <div class="govuk-grid-row">
@@ -212,12 +212,13 @@
         <form asp-show="@Model.CanChangeOutcome" asp-route="@RouteNames.ApplicationReview_Post"
               asp-route-applicationReviewId="@Model.ApplicationReviewId" asp-route-ukprn="@Model.Ukprn" asp-route-vacancyId="@Model.VacancyId"
               class="govuk-!-margin-top-6">
+
             <div asp-show="@Model.CanChangeOutcomeEmployerUnsuccessful" esfa-validation-marker-for="Outcome" class="govuk-form-group">
                 <fieldset class="govuk-fieldset">
                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
                         <h2 class="govuk-heading-l govuk-!-margin-top-6">Make this application unsuccessful</h2>
                         <h3 class="govuk-heading-s">Employer's response</h3>
-                        <p class="govuk-body">The employer does not want to interview this applicant. They wrote:</p>
+                        <p class="govuk-body">The employer <span class="govuk-!-font-weight-bold">does not want to interview</span> this applicant. They wrote:</p>
                         <div class="govuk-details__text">
                             <p class="govuk-body">@Model.EmployerFeedback</p>
                         </div>
@@ -227,10 +228,10 @@
                     <div esfa-validation-marker-for="CandidateFeedback" id="Employer-unsuccessful-candidate-feedback" class="govuk-form-group">
                         <div class="govuk-character-count"
                              id="conditional-contact-3" data-module="govuk-character-count" data-maxwords="200">
-                            <label asp-for="CandidateFeedback" class="govuk-label govuk-!-font-weight-bold">Respond to the applicant</label>
+                            <label asp-for="CandidateFeedback" class="govuk-label govuk-!-font-weight-bold govuk-!-margin-bottom-4">Respond to the applicant</label>
                             <span esfa-validation-message-for="CandidateFeedback" class="govuk-error-message"></span>
                             <span class="govuk-hint">Help the applicant understand why their application was unsuccessful. Your comment will be sent to the applicant.</span>
-                            <textarea asp-for="CandidateFeedback" class="govuk-textarea govuk-js-character-count" id="CandidateFeedbackEmployerUnsuccessful" name="CandidateFeedback" rows="6"></textarea>
+                            <textarea asp-for="CandidateFeedback" class="govuk-textarea govuk-js-character-count govuk-!-margin-top-4" id="CandidateFeedbackEmployerUnsuccessful" name="CandidateFeedback" rows="6"></textarea>
                             <div id="CandidateFeedbackEmployerUnsuccessful-info" class="govuk-hint govuk-character-count__message">
                                 You have 200 words remaining
                             </div>
