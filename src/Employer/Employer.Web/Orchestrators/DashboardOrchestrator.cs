@@ -47,6 +47,11 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
                 await _client.UserSignedInAsync(user, UserType.Employer);
                 userDetails = await _client.GetUsersDetailsAsync(user.UserId);
             }
+
+            if (!dashboard.HasVacancies)
+            {
+                await _vacancyClient.SetupEmployerAsync(employerAccountId);
+            }
             
             var providerPermissions = providerTask.Result;
 
