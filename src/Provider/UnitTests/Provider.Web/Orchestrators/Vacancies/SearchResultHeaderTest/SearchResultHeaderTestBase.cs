@@ -51,7 +51,8 @@ namespace Esfa.Recruit.UnitTests.Provider.Web.Orchestrators.Vacancies.SearchResu
                         VacancyReference = 1000000100 + r,
                         CreatedDate = DateTime.Now,
                         ClosingDate = TimeProvider.Object.Today.AddDays(ClosingSoonDays),
-                        NoOfNewApplications = count
+                        NoOfNewApplications = count,
+                        NoOfEmployerReviewedApplications = count
                     });
         }
 
