@@ -142,9 +142,14 @@
                             <span asp-show="@vacancy.HasVacancyReference"><span>VAC</span>@vacancy.VacancyReference</span>
                         </td>
                         <td asp-show="@vacancy.CanShowVacancyApplicationsCount" class="govuk-table__cell" data-label="Applications">
-                            <span asp-show="@vacancy.HasNoApplications">0</span>
-                            <span asp-show="@vacancy.HasApplications">@vacancy.NoOfApplications</span>
-                            <span asp-show="@vacancy.HasNewApplications" class="govuk-!-font-weight-bold"> (@vacancy.NoOfNewApplications new)</span>
+                            <div asp-show="@Model.ShowNewApplicationCounts">
+                                <span asp-show="@vacancy.HasNoApplications">0</span>
+                                <span asp-show="@vacancy.HasApplications">@vacancy.NoOfApplications</span>
+                                <span asp-show="@vacancy.HasNewApplications" class="govuk-!-font-weight-bold">(@vacancy.NoOfNewApplications new)</span>
+                            </div>
+                            <div asp-show="@Model.ShowEmployerReviewedApplicationCounts">
+                                <span asp-show="@vacancy.HasEmployerReviewedApplications">@vacancy.NoOfEmployerReviewedApplications reviewed</span>
+                            </div>
                         </td>
                         <td asp-hide="@vacancy.CanShowVacancyApplicationsCount" class="govuk-table__cell" data-label="Applications">-</td>
                         <td class="govuk-table__cell" data-label="Closing date"><span>@vacancy.ClosingDate?.AsGdsDate()</span></td>
