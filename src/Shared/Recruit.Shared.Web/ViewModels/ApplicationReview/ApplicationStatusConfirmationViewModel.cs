@@ -28,10 +28,17 @@ namespace Esfa.Recruit.Shared.Web.ViewModels.ApplicationReview
             "Yes, make this application successful and notify the applicant"
             :
             ShowStatusUnSuccessful
-                ? "Yes, notify the applicant"
+                ? "Yes, make this application unsuccessful and notify the applicant"
                 :
                 "Yes";
-        public string NoMessageText => ShowStatusSuccessful ? "No, do not make this application successful" : "No";
+        public string NoMessageText => ShowStatusSuccessful
+            ?
+            "No, do not make this application successful"
+            :
+            ShowStatusUnSuccessful
+                ? "No, do not make this application unsuccessful"
+                :
+                "No";
         public long Ukprn { get; set; }
         public Guid? VacancyId { get; set; }
     }

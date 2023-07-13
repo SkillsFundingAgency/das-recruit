@@ -278,18 +278,10 @@
                             </div>
                         </div>
                         <div class="govuk-radios__item">
-                            <input asp-for="Outcome" class="govuk-radios__input" id="outcome-unsuccessful" type="radio" value="@ApplicationReviewStatus.Unsuccessful.ToString()" checked="@(Model.Outcome == ApplicationReviewStatus.Unsuccessful ? "checked" : null)" data-aria-controls="unsuccessful-candidate-feedback">
+                            <input asp-for="Outcome" class="govuk-radios__input" id="outcome-unsuccessful" type="radio" value="@ApplicationReviewStatus.TempUnsuccessful.ToString()" checked="@(Model.Outcome == ApplicationReviewStatus.TempUnsuccessful ? "checked" : null)" data-aria-controls="unsuccessful-candidate-feedback">
                             <label for="outcome-unsuccessful" class="govuk-label govuk-radios__label">Make unsuccessful and give feedback</label>
                             <div class="govuk-hint govuk-radios__hint" id="radio-status-unsuccessful">
                                 Send a notification to the applicant telling them they won't be offered this apprenticeship.
-                            </div>
-                        </div>
-                        <div esfa-validation-marker-for="CandidateFeedback" id="unsuccessful-candidate-feedback" class="govuk-radios__conditional govuk-radios__conditional--hidden">
-                            <div class="govuk-form-group">
-                                <label asp-for="CandidateFeedback" class="govuk-label govuk-!-font-weight-bold">Feedback</label>
-                                <span esfa-validation-message-for="CandidateFeedback" class="govuk-error-message"></span>
-                                <span class="govuk-hint">Explain why the application has been unsuccessful, your comments will be sent to the candidate.</span>
-                                <textarea asp-for="CandidateFeedback" class="govuk-textarea" cols="20" size="12"></textarea>
                             </div>
                         </div>
                     </div>

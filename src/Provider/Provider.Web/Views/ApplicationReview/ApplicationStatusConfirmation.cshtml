@@ -20,22 +20,16 @@
             </p>
         </div>
         <div asp-show="@Model.ShowStatusUnSuccessful">
-            <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">
-                Are you sure you want to tell this applicant that they have not been accepted?
+            <h1 class="govuk-heading-l govuk-!-margin-bottom-6">
+                Are you sure you want to make @Model.Name's application unsuccessful?
             </h1>
             <p>
-                This will notify @Model.Name to say that they have not been accepted for this @vacancyType.
+                This will notify @Model.Name that they won't be offered the @vacancyType.
             </p>
-            <details class="govuk-details">
-                <summary class="govuk-details__summary">
-                    <span class="govuk-details__summary-text">
-                        View your message to the applicant
-                    </span>
-                </summary>
-                <div class="govuk-details__text">
-                    <p class="govuk-body">@Model.CandidateFeedback</p>
-                </div>
-            </details>
+            <h2 class="govuk-heading-s">Your message to the applicant</h2>
+            <div class="govuk-details__text govuk-!-margin-bottom-6">
+                <p class="govuk-body">@Model.CandidateFeedback</p>
+            </div>
         </div>
         <div asp-show="@Model.ShowStatusEmployerUnSuccessful">
             <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">
