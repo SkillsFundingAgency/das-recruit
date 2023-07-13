@@ -25,6 +25,14 @@ namespace Esfa.Recruit.Shared.Web.ViewModels
         public const string ApplicationReviewSuccessStatusBannerMessage = "Now notify the other applicants they have been unsuccessful.";
 
         public const string ApplicationReviewUnsuccessStatusHeader = "{0}'s application made unsuccessful.";
+      
+        public const string ApplicationEmployerInterviewingHeader = "You want to interview applicant {0}. The applicant is now listed as {1}.";
+
+        public const string ApplicationEmployerInterviewingBody= "The applicant’s contact details are now shown in their application. Your response has been sent to your training provider.";
+
+        public const string ApplicationEmployerUnsuccessfulHeader = "{0}  made unsuccessful.";
+
+        public const string ApplicationEmployerUnsuccessfulBody = "Your response has been sent to your training provider.";
 
         public const string SharedMultipleApplicationsBannerHeader = "Multiple applications shared with employer.";
 

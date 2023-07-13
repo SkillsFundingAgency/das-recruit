@@ -60,7 +60,7 @@ public class EmployerAccountAuthorizationHandler : IEmployerAccountAuthorization
         EmployerUserAccountItem employerIdentifier = null;
 
         // read the employer Identifier from the accounts.
-        if (accountIdFromUrl != null)
+        if (accountIdFromUrl != null && employerAccounts.ContainsKey(accountIdFromUrl))
         {
             employerIdentifier = employerAccounts[accountIdFromUrl];
         }

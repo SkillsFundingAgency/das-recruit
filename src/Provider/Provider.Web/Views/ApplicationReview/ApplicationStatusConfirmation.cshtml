@@ -5,7 +5,7 @@
 }
 
 @section BackLink {
-    <a asp-route="@RouteNames.VacancyManage_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Back</a>
+    <a asp-route="@RouteNames.VacancyManage_Get" asp-route-ukprn="@Model.Ukprn" asp-route-vacancyId="@Model.VacancyId" esfa-automation="link-back" class="govuk-back-link">Back</a>
 }
 
 <div class="govuk-grid-row">

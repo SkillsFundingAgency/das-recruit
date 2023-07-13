@@ -1,0 +1,38 @@
+@using Esfa.Recruit.Employer.Web.ViewModels.VacancyManage
+@model VacancyApplicationsViewModel
+<table class="govuk-table responsive">
+    <thead class="govuk-table__head">
+        <tr class="govuk-table__row">
+            <th class="govuk-table__header">Applicant</th>
+            <th class="govuk-table__header">Response</th>
+            <th class="govuk-table__header">Date reviewed</th>
+            <th class="govuk-table__header">Date shared</th>
+            <th asp-show="@Model.ShowDisability" class="govuk-table__header">Disability</th>
+        </tr>
+    </thead>
+    <tbody class="govuk-table__body">
+        @foreach (var applicationStatusGroup in Model.OrderedApplications)
+        {
+            foreach (var application in applicationStatusGroup)
+            {
+                <tr class="govuk-table__row" asp-show="@application.IsNotWithdrawn">
+                    <td class="govuk-table__cell" data-label="Applicant">
+                        <a asp-show="@application.ShowCandidateName" data-label="application_review" asp-route="@RouteNames.ApplicationReview_Get" asp-route-employerAccountId="@Model.EmployerAccountId" asp-route-vacancyId="@Model.VacancyId" asp-route-applicationReviewId="@application.ApplicationReviewId" asp-route-vacancySharedByProvider=@application.IsSharedApplication class="govuk-link">@application.CandidateName</a>
+                        <a asp-show="@application.ShowApplicantID" data-label="application_review" asp-route="@RouteNames.ApplicationReview_Get" asp-route-employerAccountId="@Model.EmployerAccountId" asp-route-vacancyId="@Model.VacancyId" asp-route-applicationReviewId="@application.ApplicationReviewId" asp-route-vacancySharedByProvider=@application.IsSharedApplication class="govuk-link">@application.GetFriendlyId()</a>
+                    </td>
+                    <td class="govuk-table__cell" data-label="Response"><strong class="@application.Status.GetCssClassForApplicationReviewStatusForEmployer()">@application.Status.GetDisplayName(Model.UserType)</strong></td>
+                    <td class="govuk-table__cell" data-label="Date reviewed">@application.DateReviewedText</td>
+                    <td class="govuk-table__cell" data-label="Date shared">@application.DateSharedWithEmployer.AsGdsDate()</td>
+                    <td class="govuk-table__cell" data-label="Disability" asp-show="@Model.ShowDisability">@application.DisabilityStatus.GetDisplayName()</td>
+                </tr>
+                <tr class="govuk-table__row" asp-show="@application.IsWithdrawn">
+                    <td class="govuk-table__cell" data-label="Applicant">@application.GetFriendlyId()</td>
+                    <td class="govuk-table__cell" data-label="Response">Withdrawn</td>
+                    <td class="govuk-table__cell" data-label="Date reviewed">@application.DateReviewedText</td>
+                                    <td class="govuk-table__cell" data-label="Date shared">@application.DateSharedWithEmployer.AsGdsDate()</td>
+                    <td class="govuk-table__cell" data-label="Disability" asp-show="@Model.ShowDisability">No longer applies</td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>

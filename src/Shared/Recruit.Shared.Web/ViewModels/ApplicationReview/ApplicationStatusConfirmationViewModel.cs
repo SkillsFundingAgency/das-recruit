@@ -34,20 +34,5 @@ namespace Esfa.Recruit.Shared.Web.ViewModels.ApplicationReview
         public string NoMessageText => ShowStatusSuccessful ? "No, do not make this application successful" : "No";
         public long Ukprn { get; set; }
         public Guid? VacancyId { get; set; }
-        public Dictionary<string, string> RouteDictionary
-        {
-            get
-            {
-                var routeDictionary = new Dictionary<string, string>
-                {
-                    {"Ukprn", Ukprn.ToString()}
-                };
-                if (VacancyId != null)
-                {
-                    routeDictionary.Add("VacancyId", VacancyId.ToString());
-                }
-                return routeDictionary;
-            }
-        }
     }
 }
