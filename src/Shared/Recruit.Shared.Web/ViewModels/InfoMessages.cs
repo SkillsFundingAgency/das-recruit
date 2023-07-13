@@ -20,6 +20,12 @@ namespace Esfa.Recruit.Shared.Web.ViewModels
 
         public const string ApplicationReviewStatusHeader = "{0} application has been marked as {1}";
 
+        public const string ApplicationReviewSuccessStatusHeader = "{0}'s application made successful.";
+
+        public const string ApplicationReviewSuccessStatusBannerMessage = "Now notify the other applicants they have been unsuccessful.";
+
+        public const string ApplicationReviewUnsuccessStatusHeader = "{0}'s application made unsuccessful.";
+      
         public const string ApplicationEmployerInterviewingHeader = "You want to interview applicant {0}. The applicant is now listed as {1}.";
 
         public const string ApplicationEmployerInterviewingBody= "The applicant’s contact details are now shown in their application. Your response has been sent to your training provider.";
