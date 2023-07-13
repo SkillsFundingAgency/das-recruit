@@ -85,6 +85,8 @@ namespace Esfa.Recruit.Shared.Web.Extensions
         {
             { FilteringOptions.Review, "Pending employer review" },
             { FilteringOptions.Submitted, "Pending DfE review" },
+            { ApplicationReviewStatus.EmployerInterviewing, "Employer Reviewed" },
+            { ApplicationReviewStatus.EmployerUnsuccessful, "Employer Reviewed" }
         };
     }
 }
