@@ -435,3 +435,12 @@ span.govuk-error-message:empty {
 .app-header__link:focus {
     color: #0b0c0c;
 }
+
+.app-select-all-table .govuk-checkboxes--small {
+    margin-top: -7px;
+    margin-left: 7px;
+}
+
+.app-checkboxes__select-all label {
+    padding: 0
+}

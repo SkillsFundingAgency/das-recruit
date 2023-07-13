@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using MongoDB.Driver;
 
 namespace Esfa.Recruit.Vacancies.Client.Domain.Repositories
 {
@@ -13,5 +14,7 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Repositories
         Task UpdateAsync(ApplicationReview applicationReview);
         Task HardDelete(Guid applicationReviewId);
         Task<List<T>> GetForVacancyAsync<T>(long vacancyReference);
+        Task<List<T>> GetAllForSelectedIdsAsync<T>(List<Guid> applicationReviewIds);
+        Task<UpdateResult> UpdateApplicationReviewsAsync(IEnumerable<Guid> applicationReviewIds, VacancyUser user, DateTime updatedDate, ApplicationReviewStatus status);
     }
 }
