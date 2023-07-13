@@ -10,7 +10,7 @@ using Moq;
 
 namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation
 {
-    public class ApplicationReviewFeedBackModeTests
+    public class ApplicationReviewFeedBackModelTests
     {
         public class ShouldRequireCandiateFeedbackIfUnsuccessfulTestData : TheoryData<string, string>
         {
