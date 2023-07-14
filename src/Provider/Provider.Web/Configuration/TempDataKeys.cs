@@ -11,5 +11,8 @@
         public const string VacancyClosedMessage = "VacancyClosedMessage";
         public const string ApplicationReviewStatusInfoMessage = "ApplicationReviewStatus_InfoMessage";
         public const string VacancyPreviewInfoMessage = "VacancyPreviewInfoMessage";
+        public const string SharedMultipleApplicationsHeader = "SharedMultipleApplicationsHeader_InfoMessage";
+        public const string SharedSingleApplicationsHeader = "SharedSingleApplicationsHeader_InfoMessage";
+        public const string ApplicationStatusChangedHeader = "ApplicationStatusChangedHeader_InfoMessage";
     }
 }

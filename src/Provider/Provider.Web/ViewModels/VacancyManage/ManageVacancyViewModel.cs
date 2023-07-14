@@ -1,8 +1,10 @@
+using System.Collections.Generic;
 using System.Linq;
 using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Provider.Web.ViewModels.VacancyView;
 using Esfa.Recruit.Shared.Web.ViewModels;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyApplications;
 
 namespace Esfa.Recruit.Provider.Web.ViewModels.VacancyManage
 {
@@ -33,11 +35,15 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.VacancyManage
         public VacancyAnalyticsSummaryViewModel AnalyticsSummary { get; internal set; }
 
         public bool CanShowVacancyAnalytics => IsVacancyLive || IsVacancyClosed;
+        public bool CanShowShareMultipleApplicationsLink => (IsVacancyLive || IsVacancyClosed) && HasApplications;
         public bool HasAnalytics => AnalyticsSummary != null;
         public bool IsVacancyLive => Status == VacancyStatus.Live;
         public bool IsVacancyClosed => Status == VacancyStatus.Closed;
         public string WithdrawnDate { get; internal set; }
         public bool IsWithdrawn => !string.IsNullOrEmpty(WithdrawnDate);
         public bool IsApplyThroughFatVacancy { get; internal set; }
+        public string ApplicationReviewStatusChangeBannerHeader { get; internal set; }
+        public string ApplicationReviewStatusChangeBannerMessage { get; internal set; }
+        public bool CanShowApplicationsStatusChangeBanner => !string.IsNullOrEmpty(ApplicationReviewStatusChangeBannerHeader);
     }
 }
