@@ -89,6 +89,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Application
             var vacancyUser = _fixture.Create<VacancyUser>();
 
             var applicationReview = _fixture.Create<ApplicationReview>();
+            applicationReview.IsWithdrawn = false;
 
             _utility.Setup(x => x.GetAuthorisedApplicationReviewAsync(model))
                 .ReturnsAsync(applicationReview);
