@@ -27,6 +27,7 @@ namespace Esfa.Recruit.Shared.Web.ViewModels.ApplicationReview
         public ApplicationReviewStatus? Status { get; set; }
         public string Strengths { get; set; }
         public string Support { get; set; }
+        public bool NavigateToFeedBackPage { get; set; }
         public List<TrainingCoursesViewModel> TrainingCourses { get; set; }
         public List<WorkExperienceViewModel> WorkExperiences { get; set; }
 

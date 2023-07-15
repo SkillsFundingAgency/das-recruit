@@ -5,7 +5,6 @@
         New,
         Successful,
         Unsuccessful,
-        TempUnsuccessful,
         Shared,
         InReview,
         Interviewing,

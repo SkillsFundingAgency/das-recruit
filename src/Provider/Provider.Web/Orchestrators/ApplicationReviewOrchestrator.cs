@@ -96,7 +96,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             return new ApplicationReviewFeedBackViewModel
             {
                 CandidateFeedback = rm.CandidateFeedback,
-                Outcome = rm.Outcome == ApplicationReviewStatus.TempUnsuccessful ? ApplicationReviewStatus.Unsuccessful : rm.Outcome,
+                Outcome = rm.Outcome,
                 ApplicationReviewId = rm.ApplicationReviewId,
                 Name = applicationReviewVm.Name,
                 Ukprn = rm.Ukprn,

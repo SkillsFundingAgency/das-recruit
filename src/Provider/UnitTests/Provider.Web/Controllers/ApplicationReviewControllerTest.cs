@@ -115,6 +115,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
                 .With(x => x.Outcome, ApplicationReviewStatus.Successful)
                 .With(x => x.VacancyId, _vacancyId)
                 .With(x => x.Ukprn, _ukprn)
+                .With(x => x.NavigateToFeedBackPage, false)
                 .With(x => x.ApplicationReviewId, _applicationReviewId)
                 .Create();
 
@@ -137,6 +138,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
                 .With(x => x.Outcome, ApplicationReviewStatus.Unsuccessful)
                 .With(x => x.VacancyId, _vacancyId)
                 .With(x => x.Ukprn, _ukprn)
+                .With(x => x.NavigateToFeedBackPage, false)
                 .With(x => x.ApplicationReviewId, _applicationReviewId)
                 .Create();
 
@@ -282,7 +284,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
             var editModel = new ApplicationReviewEditModel
             {
                 CandidateFeedback = "This is the candidate's feedback.",
-                Outcome = ApplicationReviewStatus.TempUnsuccessful,
+                Outcome = ApplicationReviewStatus.Unsuccessful,
                 ApplicationReviewId = Guid.NewGuid(),
                 Ukprn = 123456,
                 VacancyId = Guid.NewGuid()
