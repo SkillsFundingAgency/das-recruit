@@ -130,7 +130,29 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
         }
 
         [Test]
-        public async Task POST_ApplicationReview_StatusUnsuccessful_RedirectsToApplicationReviewConfirmation()
+        public async Task POST_ApplicationReview_StatusEmployerUnsuccessful_RedirectsToApplicationReviewConfirmation()
+        {
+            // Arrange
+            var editModel = _fixture.Build<ApplicationReviewEditModel>()
+                .With(x => x.Outcome, ApplicationReviewStatus.EmployerUnsuccessful)
+                .With(x => x.VacancyId, _vacancyId)
+                .With(x => x.Ukprn, _ukprn)
+                .With(x => x.ApplicationReviewId, _applicationReviewId)
+                .Create();
+
+            // Act
+            var redirectResult = await _controller.ApplicationReview(editModel) as RedirectToRouteResult;
+
+            // Assert
+            Assert.NotNull(redirectResult);
+            Assert.AreEqual(RouteNames.ApplicationReviewConfirmation_Get, redirectResult.RouteName);
+            Assert.AreEqual(_vacancyId, redirectResult.RouteValues["VacancyId"]);
+            Assert.AreEqual(_ukprn, redirectResult.RouteValues["Ukprn"]);
+            Assert.AreEqual(_applicationReviewId, redirectResult.RouteValues["ApplicationReviewId"]);
+        }
+
+        [Test]
+        public async Task POST_ApplicationReview_StatusUnsuccessful_RedirectsToApplicationReviewFeedBack()
         {
             // Arrange
             var editModel = _fixture.Build<ApplicationReviewEditModel>()
@@ -145,7 +167,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
 
             // Assert
             Assert.NotNull(redirectResult);
-            Assert.AreEqual(RouteNames.ApplicationReviewConfirmation_Get, redirectResult.RouteName);
+            Assert.AreEqual(RouteNames.ApplicationReviewFeedBack_Get, redirectResult.RouteName);
             Assert.AreEqual(_vacancyId, redirectResult.RouteValues["VacancyId"]);
             Assert.AreEqual(_ukprn, redirectResult.RouteValues["Ukprn"]);
             Assert.AreEqual(_applicationReviewId, redirectResult.RouteValues["ApplicationReviewId"]);
