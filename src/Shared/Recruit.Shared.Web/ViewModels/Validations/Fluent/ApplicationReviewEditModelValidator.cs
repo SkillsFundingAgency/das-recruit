@@ -10,15 +10,11 @@ namespace Esfa.Recruit.Shared.Web.ViewModels.Validations.Fluent
     {
         public ApplicationReviewEditModelValidator(IProfanityListProvider profanityListProvider)
         {
-            When(
-                x => (!x.NavigateToFeedBackPage), () =>
-                {
-                    RuleFor(x => x.Outcome)
-                        .NotNull()
-                        .WithMessage(ApplicationReviewValidator.OutcomeRequired);
-                });
+            RuleFor(x => x.Outcome)
+                .NotNull()
+                .WithMessage(ApplicationReviewValidator.OutcomeRequired);
 
-            When(x => (x.Outcome == ApplicationReviewStatus.Unsuccessful || x.Outcome == ApplicationReviewStatus.EmployerUnsuccessful) && !x.NavigateToFeedBackPage, () =>
+            When(x => x.Outcome == ApplicationReviewStatus.EmployerUnsuccessful, () =>
             {
                 RuleFor(x => x.CandidateFeedback)
                     .NotEmpty()

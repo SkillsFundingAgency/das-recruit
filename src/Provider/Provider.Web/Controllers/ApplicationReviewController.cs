@@ -45,11 +45,6 @@ namespace Esfa.Recruit.Provider.Web.Controllers
                 return View(vm);
             }
 
-            if (applicationReviewEditModel.NavigateToFeedBackPage)
-            {
-                applicationReviewEditModel.Outcome ??= ApplicationReviewStatus.Unsuccessful;
-            }
-
             switch (applicationReviewEditModel.Outcome.Value)
             {
                 case ApplicationReviewStatus.Shared:
@@ -69,15 +64,17 @@ namespace Esfa.Recruit.Provider.Web.Controllers
                     var candidateName = await _orchestrator.PostApplicationReviewStatusChangeModelAsync(applicationReviewEditModel, User.ToVacancyUser());
                     TempData.Add(TempDataKeys.ApplicationStatusChangedHeader, string.Format(InfoMessages.ApplicationStatusChangeBannerHeader, candidateName, applicationReviewEditModel.Outcome.GetDisplayName().ToLower()));
                     return RedirectToRoute(RouteNames.VacancyManage_Get, new { applicationReviewEditModel.VacancyId, applicationReviewEditModel.Ukprn });
-
+                
+                case ApplicationReviewStatus.EmployerUnsuccessful:
+                    TempData[TempDateARModel] = JsonConvert.SerializeObject(applicationReviewEditModel);
+                    applicationReviewEditModel.Outcome = ApplicationReviewStatus.Unsuccessful;
+                    return RedirectToRoute(RouteNames.ApplicationReviewConfirmation_Get, new { applicationReviewEditModel.ApplicationReviewId, applicationReviewEditModel.VacancyId, applicationReviewEditModel.Ukprn });
+                
                 case ApplicationReviewStatus.Successful:
                 case ApplicationReviewStatus.Unsuccessful:
                     TempData[TempDateARModel] = JsonConvert.SerializeObject(applicationReviewEditModel);
-                    if (applicationReviewEditModel.NavigateToFeedBackPage)
-                    {
-                        return RedirectToRoute(RouteNames.ApplicationReviewFeedBack_Get, new { applicationReviewEditModel.ApplicationReviewId, applicationReviewEditModel.VacancyId, applicationReviewEditModel.Ukprn });
-                    }
-                    return RedirectToRoute(RouteNames.ApplicationReviewConfirmation_Get, new { applicationReviewEditModel.ApplicationReviewId, applicationReviewEditModel.VacancyId, applicationReviewEditModel.Ukprn });
+                    return RedirectToRoute(RouteNames.ApplicationReviewFeedBack_Get, new { applicationReviewEditModel.ApplicationReviewId, applicationReviewEditModel.VacancyId, applicationReviewEditModel.Ukprn });
+
                 default:
                     var vm = await _orchestrator.GetApplicationReviewViewModelAsync(applicationReviewEditModel);
                     return View(vm);
