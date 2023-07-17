@@ -115,7 +115,6 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
                 .With(x => x.Outcome, ApplicationReviewStatus.Successful)
                 .With(x => x.VacancyId, _vacancyId)
                 .With(x => x.Ukprn, _ukprn)
-                .With(x => x.NavigateToFeedBackPage, false)
                 .With(x => x.ApplicationReviewId, _applicationReviewId)
                 .Create();
 
@@ -138,7 +137,6 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
                 .With(x => x.Outcome, ApplicationReviewStatus.Unsuccessful)
                 .With(x => x.VacancyId, _vacancyId)
                 .With(x => x.Ukprn, _ukprn)
-                .With(x => x.NavigateToFeedBackPage, false)
                 .With(x => x.ApplicationReviewId, _applicationReviewId)
                 .Create();
 

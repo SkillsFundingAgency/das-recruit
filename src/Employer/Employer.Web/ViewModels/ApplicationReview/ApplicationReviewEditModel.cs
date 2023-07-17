@@ -8,6 +8,5 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.ApplicationReview
     {
         public ApplicationReviewStatus? Outcome { get; set; }
         public string CandidateFeedback { get; set; }
-        public bool NavigateToFeedBackPage { get; set; }
     }
 }
