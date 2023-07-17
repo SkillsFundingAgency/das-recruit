@@ -95,6 +95,7 @@
         public const string ApplicationReview_Post = "ApplicationReview_Post";
         public const string ApplicationReviewConfirmation_Get = "ApplicationReviewConfirmation_Get";
         public const string ApplicationReviewConfirmation_Post = "ApplicationReviewConfirmation_Post";
+        public const string ApplicationReviewsToUnsuccessful_Get = "ApplicationReviewsToUnsuccessful_Get";
         public const string ApplicationReviewsToShare_Get = "ApplicationReviewsToShare_Get";
         public const string ApplicationReviewsToShareConfirmation_Get = "ApplicationReviewsToShareConfirmation_Get";
         public const string ApplicationReviewsToShare_Post = "ApplicationReviewsToShare_Post";
