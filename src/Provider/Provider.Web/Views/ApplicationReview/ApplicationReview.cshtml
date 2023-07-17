@@ -246,6 +246,7 @@
                         <h3 class="govuk-fieldset__heading">What do you want to do with this application?</h3>
                     </legend>
                     <span esfa-validation-message-for="Outcome" class="govuk-error-message"></span>
+                    <input type="hidden" asp-for="NavigateToFeedbackPage" value="true"/>
                     <div class="govuk-radios govuk-radios--conditional" data-module="govuk-radios">
                         <esfaFeatureEnabled name="@FeatureNames.ShareApplicationsFeature">
                             <div asp-show="@Model.CanShowRadioButtonReview" class="govuk-radios__item">
