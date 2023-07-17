@@ -19,7 +19,7 @@
                 This will notify @Model.Name that they have been offered this @vacancyType.
             </p>
         </div>
-        <div asp-show="@Model.ShowStatusUnSuccessful">
+        <div asp-show="@Model.ShowStatusUnsuccessful">
             <h1 class="govuk-heading-l govuk-!-margin-bottom-6">
                 Are you sure you want to make @Model.Name's application unsuccessful?
             </h1>
@@ -31,7 +31,7 @@
                 <p class="govuk-body">@Model.CandidateFeedback</p>
             </div>
         </div>
-        <div asp-show="@Model.ShowStatusEmployerUnSuccessful">
+        <div asp-show="@Model.ShowStatusEmployerUnsuccessful">
             <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">
                 Make this application unsuccessful
             </h1>
@@ -54,7 +54,7 @@
             @Html.HiddenFor(model => model.Name)
             <div esfa-validation-marker-for="NotifyCandidate" class="govuk-form-group">
                 <fieldset class="govuk-fieldset">
-                    <legend asp-show="@Model.ShowStatusEmployerUnSuccessful" class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                    <legend asp-show="@Model.ShowStatusEmployerUnsuccessful" class="govuk-fieldset__legend govuk-fieldset__legend--l">
                         <h3 class="govuk-fieldset__heading">Do you want to make this application unsuccessful?</h3>
                     </legend>
                     <span esfa-validation-message-for="NotifyCandidate" class="govuk-error-message"></span>

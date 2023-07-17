@@ -18,16 +18,16 @@ namespace Esfa.Recruit.Shared.Web.ViewModels.ApplicationReview
         };
 
         public bool ShowStatusSuccessful => Outcome.Value == ApplicationReviewStatus.Successful;
-        public bool ShowStatusUnSuccessful => Outcome.Value == ApplicationReviewStatus.Unsuccessful &&
+        public bool ShowStatusUnsuccessful => Outcome.Value == ApplicationReviewStatus.Unsuccessful &&
                                               Status != ApplicationReviewStatus.EmployerUnsuccessful;
-        public bool ShowStatusEmployerUnSuccessful => Outcome.Value == ApplicationReviewStatus.Unsuccessful &&
+        public bool ShowStatusEmployerUnsuccessful => Outcome.Value == ApplicationReviewStatus.Unsuccessful &&
                                                       Status == ApplicationReviewStatus.EmployerUnsuccessful;
         public ApplicationReviewStatus? Status { get; set; }
         public string YesMessageText => ShowStatusSuccessful
             ?
             "Yes, make this application successful and notify the applicant"
             :
-            ShowStatusUnSuccessful
+            ShowStatusUnsuccessful
                 ? "Yes, make this application unsuccessful and notify the applicant"
                 :
                 "Yes";
@@ -35,7 +35,7 @@ namespace Esfa.Recruit.Shared.Web.ViewModels.ApplicationReview
             ?
             "No, do not make this application successful"
             :
-            ShowStatusUnSuccessful
+            ShowStatusUnsuccessful
                 ? "No, do not make this application unsuccessful"
                 :
                 "No";
