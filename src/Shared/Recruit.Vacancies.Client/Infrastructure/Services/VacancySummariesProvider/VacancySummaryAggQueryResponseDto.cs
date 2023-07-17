@@ -12,6 +12,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
         public int NoOfUnsuccessfulApplications { get; set; }
         public int NoOfSharedApplications { get; set; }
         public int NoOfAllSharedApplications { get; set; }
+        public int NoOfEmployerReviewedApplications { get; set; }
     }
 
     internal class VacancySummaryDetails :  ITaskListVacancy
