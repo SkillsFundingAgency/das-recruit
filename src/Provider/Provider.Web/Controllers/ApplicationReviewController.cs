@@ -66,8 +66,8 @@ namespace Esfa.Recruit.Provider.Web.Controllers
                     return RedirectToRoute(RouteNames.VacancyManage_Get, new { applicationReviewEditModel.VacancyId, applicationReviewEditModel.Ukprn });
                 
                 case ApplicationReviewStatus.EmployerUnsuccessful:
-                    TempData[TempDateARModel] = JsonConvert.SerializeObject(applicationReviewEditModel);
                     applicationReviewEditModel.Outcome = ApplicationReviewStatus.Unsuccessful;
+                    TempData[TempDateARModel] = JsonConvert.SerializeObject(applicationReviewEditModel);
                     return RedirectToRoute(RouteNames.ApplicationReviewConfirmation_Get, new { applicationReviewEditModel.ApplicationReviewId, applicationReviewEditModel.VacancyId, applicationReviewEditModel.Ukprn });
                 
                 case ApplicationReviewStatus.Successful:
