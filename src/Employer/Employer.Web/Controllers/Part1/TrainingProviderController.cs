@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
@@ -22,6 +23,14 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
         private readonly IFeature _feature;
         private const string InvalidUkprnMessageFormat = "The UKPRN {0} is not valid or the associated provider is not active";
         private const string InvalidSearchTerm = "Please enter a training provider name or UKPRN";
+        private const string InvalidTrainingProvider = "Enter the name or UKPRN of a training provider who is registered to deliver apprenticeship training";
+        private readonly EntityValidationResult _invalidTrainingProviderSelected = new()
+        {
+            Errors = new[]
+            {
+                new EntityValidationError(105, nameof(SelectTrainingProviderEditModel.TrainingProviderSearch), InvalidTrainingProvider, ErrorCodes.TrainingProviderMustBeMainOrEmployerProfile)
+            }
+        };
 
         public TrainingProviderController(TrainingProviderOrchestrator orchestrator, IFeature feature)
         {
@@ -61,6 +70,14 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
             if (ModelState.IsValid)
             {
                 var response = await _orchestrator.PostSelectTrainingProviderAsync(m, User.ToVacancyUser());
+
+                // additional check to validate the Training Provider as a Main or Employer Profile by given UkPrn.
+                bool isValidTrainingProvider = await _orchestrator.IsProviderMainOrEmployerProfile(m.Ukprn);
+                if (!isValidTrainingProvider)
+                {
+                    response.Success = false;
+                    response.Errors = _invalidTrainingProviderSelected;
+                }
 
                 if (response.Success)
                 {
@@ -133,7 +150,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
                         continue;
                     }
                     
-                    if (error.ErrorCode == ErrorCodes.TrainingProviderMustNotBeBlocked)
+                    if (error.ErrorCode is ErrorCodes.TrainingProviderMustNotBeBlocked or ErrorCodes.TrainingProviderMustBeMainOrEmployerProfile)
                     {
                         AddProviderBlockedErrorToModelState(selectionType, error);
                         continue;

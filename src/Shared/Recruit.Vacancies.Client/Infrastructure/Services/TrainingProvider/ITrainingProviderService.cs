@@ -7,5 +7,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider
     {
         Task<Domain.Entities.TrainingProvider> GetProviderAsync(long ukprn);
         Task<IEnumerable<Domain.Entities.TrainingProvider>> FindAllAsync();
+        Task<bool> IsProviderMainOrEmployerProfile(long ukprn);
     }
 }
