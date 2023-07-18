@@ -32,6 +32,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
         public async Task<IActionResult> ApplicationReview(ApplicationReviewRouteModel rm)
         {
             var vm = await _orchestrator.GetApplicationReviewViewModelAsync(rm);
+            vm.CandidateFeedback = string.Empty;
             return View(vm);
         }
 
