@@ -44,6 +44,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             viewModel.Ukprn = rm.Ukprn;
             viewModel.VacancyId = rm.VacancyId;
             viewModel.ApplicationReviewId = rm.ApplicationReviewId;
+            viewModel.CandidateFeedback = string.Empty;
             return viewModel;
         }
 
