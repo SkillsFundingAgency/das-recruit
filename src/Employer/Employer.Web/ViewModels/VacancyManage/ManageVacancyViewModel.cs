@@ -24,6 +24,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyManage
         public bool HasNoApplications => Applications.Applications == null || Applications.Applications?.Any() == false;
         public bool ShowEmployerApplications => HasApplications && !Applications.VacancySharedByProvier;
         public bool ShowSharedApplications => HasApplications && Applications.VacancySharedByProvier;
+        public bool CanShowMultipleApplicationsUnsuccessfulLink => (IsVacancyLive || IsVacancyClosed) && HasApplications;
 
         public bool CanShowEditVacancyLink { get; internal set; }
         public bool CanShowCloseVacancyLink { get; internal set; }

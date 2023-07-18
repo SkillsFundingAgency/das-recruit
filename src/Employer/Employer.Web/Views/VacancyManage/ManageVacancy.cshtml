@@ -118,6 +118,12 @@
     </div>
     <h2 asp-show="@Model.ShowEmployerApplications" class="govuk-heading-l govuk-!-margin-top-6">Manage applications</h2>
     <h2 asp-show="@Model.ShowSharedApplications" class="govuk-heading-l govuk-!-margin-top-6">Shared applications</h2>
+    <esfaFeatureEnabled name="@FeatureNames.MultipleApplicationsManagament">
+        <!-- to clarify if this link is for the shared vacancies or/and the Employer-owned vacancies -->
+        <p asp-show="@Model.ShowSharedApplications" class="govuk-body" asp-show="@Model.CanShowMultipleApplicationsUnsuccessfulLink">
+            <a asp-route="@RouteNames.ApplicationReviewsToUnsuccessful_Get" asp-all-route-data="@Model.RouteDictionary" class="govuk-link govuk-!-margin-top-2 govuk-!-margin-bottom-4">Make multiple applications unsuccessful</a>
+        </p>
+    </esfaFeatureEnabled>
     <p asp-show="@Model.ShowSharedApplications" class="govuk-body govuk-!-margin-bottom-4 govuk-!-margin-top-4">Each application is anonymised. If you decide to interview the applicant, you will be able to see their name and contact information.</p>
     <partial asp-show="@Model.ShowEmployerApplications" name="@PartialNames.VacancyApplicationsTable" for="Applications"/>
     <partial asp-show="@Model.ShowSharedApplications" name="@PartialNames.VacancySharedApplicationsTable" for="Applications"/>
