@@ -13,6 +13,23 @@
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds govuk-!-margin-bottom-6">
+
+        <div asp-show="@Model.CanShowApplicationsStatusChangeBanner" class="govuk-notification-banner govuk-notification-banner--success" role="alert"
+                aria-labelledby="govuk-notification-banner-title"
+                data-module="govuk-notification-banner">
+            <div class="govuk-notification-banner__header">
+                <h2 class="govuk-notification-banner__title">
+                    Done
+                </h2>
+            </div>
+            <div class="govuk-notification-banner__content">
+                <h3 class="govuk-notification-banner__heading">
+                    @Model.ApplicationReviewStatusChangeBannerHeader
+                </h3>
+                <p class="govuk-body">@Model.ApplicationReviewStatusChangeBannerMessage</p>
+            </div>
+        </div>
+
         <div asp-show="@Model.CanShowApplicationReviewStatusHeader" class="das-notification das-notification--information">
             <p class="das-notification__body">
                 @Model.ApplicationReviewStatusHeaderInfoMessage
@@ -89,7 +106,11 @@
 <div asp-show="@(Model.IsApplyThroughFaaVacancy || Model.IsApplyThroughFatVacancy)">
     <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
     <h2 class="govuk-heading-l  govuk-!-margin-top-6">Manage applications</h2>
+    <esfaFeatureEnabled name="@FeatureNames.ShareApplicationsFeature">
+        <p class="govuk-body" asp-show="@Model.CanShowShareMultipleApplicationsLink">
+            <a asp-route="@RouteNames.ApplicationReviewsToShare_Get" asp-all-route-data="@Model.RouteDictionary" class="govuk-link govuk-!-margin-top-2 govuk-!-margin-bottom-4">Share multiple applications with employer</a>
+        </p>    
+    </esfaFeatureEnabled>
     <partial asp-show="@Model.HasApplications" name="@PartialNames.VacancyApplicationsTable" for="Applications"/>
     <p asp-show="@Model.HasNoApplications" class="govuk-body govuk-!-margin-bottom-0">Candidate applications for this @(isApprenticeshipVacancyType ? "apprenticeship" : "traineeship") will appear here.</p>
 </div>
-

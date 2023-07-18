@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using Esfa.Recruit.Provider.Web.Configuration;
 using Esfa.Recruit.Provider.Web.Configuration.Routing;
-using Esfa.Recruit.Provider.Web.Extensions;
 using Esfa.Recruit.Provider.Web.Orchestrators;
 using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
@@ -40,6 +39,23 @@ namespace Esfa.Recruit.Provider.Web.Controllers
 
             if (TempData.ContainsKey(TempDataKeys.ApplicationReviewStatusInfoMessage))
                 viewModel.ApplicationReviewStatusHeaderInfoMessage = TempData[TempDataKeys.ApplicationReviewStatusInfoMessage].ToString();
+
+            if (TempData.ContainsKey(TempDataKeys.SharedMultipleApplicationsHeader))
+            {
+                viewModel.ApplicationReviewStatusChangeBannerHeader = TempData[TempDataKeys.SharedMultipleApplicationsHeader].ToString();
+                viewModel.ApplicationReviewStatusChangeBannerMessage = InfoMsg.SharedMultipleApplicationsBannerMessage;
+            }
+
+            if (TempData.ContainsKey(TempDataKeys.SharedSingleApplicationsHeader)) 
+            {
+                viewModel.ApplicationReviewStatusChangeBannerHeader = TempData[TempDataKeys.SharedSingleApplicationsHeader].ToString();
+                viewModel.ApplicationReviewStatusChangeBannerMessage = InfoMsg.SharedSingleApplicationsBannerMessage;
+            }
+
+            if (TempData.ContainsKey(TempDataKeys.ApplicationStatusChangedHeader))
+            {
+                viewModel.ApplicationReviewStatusChangeBannerHeader = TempData[TempDataKeys.ApplicationStatusChangedHeader].ToString();
+            }
 
             return View(viewModel);
         }

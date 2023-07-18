@@ -14,8 +14,7 @@ using Microsoft.Extensions.Logging;
 namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 {
     public class ApplicationReviewCommandHandler : 
-        IRequestHandler<ApplicationReviewSuccessfulCommand, Unit>,
-        IRequestHandler<ApplicationReviewUnsuccessfulCommand, Unit>
+        IRequestHandler<ApplicationReviewStatusEditCommand, Unit>
     {
         private readonly ILogger<ApplicationReviewCommandHandler> _logger;        
         private readonly IApplicationReviewRepository _applicationReviewRepository;
@@ -37,37 +36,24 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             _applicationReviewValidator = applicationReviewValidator;
         }
 
-        public async Task<Unit> Handle(ApplicationReviewSuccessfulCommand message, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(ApplicationReviewStatusEditCommand message, CancellationToken cancellationToke)
         {
-            _logger.LogInformation("Setting application review:{applicationReviewId} to successful", message.ApplicationReviewId);
-            await Handle(message.ApplicationReviewId, message.User, ApplicationReviewStatus.Successful);
-            return Unit.Value; 
-        }
-
-        public async Task<Unit> Handle(ApplicationReviewUnsuccessfulCommand message, CancellationToken cancellationToken)
-        {
-            _logger.LogInformation("Setting application review:{applicationReviewId} to unsuccessful", message.ApplicationReviewId);
-            await Handle(message.ApplicationReviewId, message.User, ApplicationReviewStatus.Unsuccessful, message.CandidateFeedback);
-            return Unit.Value;
-        }
-
-        private async Task Handle(Guid applicationReviewId, VacancyUser user, ApplicationReviewStatus status, string candidateFeedback = null)
-        {
-            var applicationReview = await _applicationReviewRepository.GetAsync(applicationReviewId);
+            var applicationReview = await _applicationReviewRepository.GetAsync(message.ApplicationReviewId);
 
             if(applicationReview.CanReview == false)
             {
                 _logger.LogWarning("Cannot review ApplicationReviewId:{applicationReviewId} as not in correct state", applicationReview.Id);
-                return;
+                return Unit.Value;
             }
 
-            applicationReview.Status = status;
-            applicationReview.CandidateFeedback = candidateFeedback;
+            applicationReview.Status = message.Outcome.Value;
+            applicationReview.CandidateFeedback = message.CandidateFeedback;
             applicationReview.StatusUpdatedDate = _timeProvider.Now;
-            applicationReview.StatusUpdatedBy = user;
+            applicationReview.StatusUpdatedBy = message.User;
 
             Validate(applicationReview);
-            
+            _logger.LogInformation("Setting application review:{applicationReviewId} to {status}", message.ApplicationReviewId, message.Outcome.Value);
+
             await _applicationReviewRepository.UpdateAsync(applicationReview);
 
             await _messaging.PublishEvent(new ApplicationReviewedEvent
@@ -77,6 +63,8 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
                 CandidateFeedback = applicationReview.CandidateFeedback,
                 CandidateId = applicationReview.CandidateId
             });
+
+            return Unit.Value;
         }
 
         private void Validate(ApplicationReview applicationReview)

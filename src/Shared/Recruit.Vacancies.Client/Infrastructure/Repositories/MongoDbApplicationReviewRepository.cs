@@ -49,6 +49,20 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
             return result;
         }
 
+        public async Task<List<T>> GetAllForSelectedIdsAsync<T>(List<Guid> applicationReviewIds)
+        {
+            var filter = Builders<T>.Filter.In(Id, applicationReviewIds);
+            var collection = GetCollection<T>();
+
+            var result = await RetryPolicy.Execute(_ =>
+                collection.Find(filter)
+                .Project<T>(GetProjection<T>())
+                .ToListAsync(),
+            new Context(nameof(GetAllForSelectedIdsAsync)));
+
+            return result;
+        }
+
         public async Task<ApplicationReview> GetAsync(long vacancyReference, Guid candidateId)
         {
             var builder = Builders<ApplicationReview>.Filter;
@@ -72,6 +86,21 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
             return RetryPolicy.Execute(_ =>
                 collection.ReplaceOneAsync(filter, applicationReview),
                 new Context(nameof(UpdateAsync)));
+        }
+
+        public async Task<UpdateResult> UpdateApplicationReviewsAsync(IEnumerable<Guid> applicationReviewIds, VacancyUser user, DateTime updatedDate, ApplicationReviewStatus status)
+        {
+            var filter = Builders<ApplicationReview>.Filter.In(Id, applicationReviewIds);
+            var collection = GetCollection<ApplicationReview>();
+
+            var updateDef = new UpdateDefinitionBuilder<ApplicationReview>()
+                                .Set(appRev => appRev.Status, status)
+                                .Set(appRev => appRev.StatusUpdatedBy, user)
+                                .Set(appRev => appRev.StatusUpdatedDate, updatedDate);
+
+            return await RetryPolicy.Execute(_ =>
+                collection.UpdateManyAsync(filter, updateDef),
+            new Context(nameof(UpdateApplicationReviewsAsync)));
         }
 
         public async Task<List<T>> GetForVacancyAsync<T>(long vacancyReference)
