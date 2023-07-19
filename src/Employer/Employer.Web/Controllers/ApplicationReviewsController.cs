@@ -4,6 +4,7 @@ using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Orchestrators;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.FeatureManagement.Mvc;
 
 namespace Esfa.Recruit.Employer.Web.Controllers
 {
@@ -17,6 +18,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             _orchestrator = orchestrator;
         }
 
+        [FeatureGate(FeatureNames.MultipleApplicationsManagement)]
         [HttpGet("", Name = RouteNames.ApplicationReviewsToUnsuccessful_Get)]
         public async Task<IActionResult> ApplicationReviewsToUnsuccessful(VacancyRouteModel rm)
         {

@@ -24,6 +24,7 @@ using FluentValidation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.FeatureManagement;
 
 namespace Esfa.Recruit.Employer.Web.Configuration
 {
@@ -46,6 +47,7 @@ namespace Esfa.Recruit.Employer.Web.Configuration
             services.Configure<ZenDeskConfiguration>(configuration.GetSection("ZenDesk"));
 
             services.AddFeatureToggle();
+            services.AddFeatureManagement(configuration.GetSection("Features"));
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>(); // Used by NLog to log out traceidentifier value.
             
