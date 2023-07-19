@@ -37,6 +37,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
         }
 
         [HttpGet("Unsuccessful", Name = RouteNames.ApplicationReviewsToUnsuccessful_Get)]
+        [FeatureGate(FeatureNames.MultipleApplicationsManagement)]
         public IActionResult ApplicationReviewsToUnsuccessful(VacancyRouteModel rm)
         {
             return View();
