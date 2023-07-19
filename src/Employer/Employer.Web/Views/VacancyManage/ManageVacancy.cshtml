@@ -118,9 +118,8 @@
     </div>
     <h2 asp-show="@Model.ShowEmployerApplications" class="govuk-heading-l govuk-!-margin-top-6">Manage applications</h2>
     <h2 asp-show="@Model.ShowSharedApplications" class="govuk-heading-l govuk-!-margin-top-6">Shared applications</h2>
-    <esfaFeatureEnabled name="@FeatureNames.MultipleApplicationsManagament">
-        <!-- to clarify if this link is for the shared vacancies or/and the Employer-owned vacancies -->
-        <p asp-show="@Model.ShowSharedApplications" class="govuk-body" asp-show="@Model.CanShowMultipleApplicationsUnsuccessfulLink">
+    <esfaFeatureEnabled name="@FeatureNames.MultipleApplicationsManagement">
+        <p class="govuk-body" asp-show="@Model.CanShowMultipleApplicationsUnsuccessfulLink">
             <a asp-route="@RouteNames.ApplicationReviewsToUnsuccessful_Get" asp-all-route-data="@Model.RouteDictionary" class="govuk-link govuk-!-margin-top-2 govuk-!-margin-bottom-4">Make multiple applications unsuccessful</a>
         </p>
     </esfaFeatureEnabled>
@@ -129,4 +128,3 @@
     <partial asp-show="@Model.ShowSharedApplications" name="@PartialNames.VacancySharedApplicationsTable" for="Applications"/>
     <p asp-show="@Model.HasNoApplications" class="govuk-body govuk-!-margin-bottom-0">Candidate applications for this apprenticeship will appear here.</p>
 </div>
-
