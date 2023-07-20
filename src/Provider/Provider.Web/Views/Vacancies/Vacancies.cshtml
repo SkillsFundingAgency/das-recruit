@@ -82,7 +82,9 @@
                         <option value="@FilteringOptions.AllApplications">with applications</option>
                         <option value="@FilteringOptions.ClosingSoonWithNoApplications">closing soon with no applications</option>
                         <option value="@FilteringOptions.ClosingSoon">closing soon</option>
-                        <option value="@FilteringOptions.EmployerReviewedApplications">with employer-reviewed applications</option>
+                        <esfaFeatureEnabled name="@FeatureNames.ShareApplicationsFeature">
+                            <option value="@FilteringOptions.EmployerReviewedApplications">with employer-reviewed applications</option>
+                        </esfaFeatureEnabled>
                     </optgroup>
                 </select>
                 <button type="submit" id="filter-submit" class="das-button-filter das-button-secondary govuk-button govuk-!-margin-top-3">Filter</button>
