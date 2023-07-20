@@ -143,15 +143,17 @@ namespace Esfa.Recruit.Provider.Web.Controllers
                 return ProviderAccessRevoked();
             }
 
-            var serviceClaims = User.FindAll(ProviderRecruitClaims.IdamsUserServiceTypeClaimTypeIdentifier);
-
+            var serviceClaims = User.FindAll(ProviderRecruitClaims.IdamsUserServiceTypeClaimTypeIdentifier).ToList();
+            serviceClaims.AddRange(User.FindAll(ProviderRecruitClaims.DfEUserServiceTypeClaimTypeIdentifier).ToList());
+            
             if (!serviceClaims.Any(claim => claim.Value.IsServiceClaim()))
             {
                 _logger.LogInformation("User does not have service claim.");
                 return Redirect(_externalLinks.ProviderApprenticeshipSiteUrl);
             }
 
-            var ukprnClaim = User.FindFirst(ProviderRecruitClaims.IdamsUserUkprnClaimsTypeIdentifier);
+            var ukprnClaim = User.FindFirst(ProviderRecruitClaims.IdamsUserUkprnClaimsTypeIdentifier) 
+                             ?? User.FindFirst(ProviderRecruitClaims.DfEUkprnClaimsTypeIdentifier);
             if (!string.IsNullOrEmpty(ukprnClaim.Value))
             {
                 var ukprn = long.Parse(ukprnClaim.Value);
