@@ -34,6 +34,33 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Application
         }
 
         [Test]
+        public async Task GetApplicationReviewsToUnsuccessfulViewModelAsync_ReturnsViewModelWithCorrectData()
+        {
+            // Arrange
+            var routeModel = _fixture.Create<VacancyRouteModel>();
+            var vacancy = _fixture.Create<Vacancy>();
+            var vacancyApplication1 = _fixture.Create<VacancyApplication>();
+            var vacancyApplication2 = _fixture.Create<VacancyApplication>();
+            var vacancyApplications = new List<VacancyApplication> { };
+            vacancyApplications.Add(vacancyApplication1);
+            vacancyApplications.Add(vacancyApplication2);
+
+            _vacancyClient.Setup(x => x.GetVacancyAsync(routeModel.VacancyId.GetValueOrDefault()))
+                .ReturnsAsync(vacancy);
+            _vacancyClient.Setup(x => x.GetVacancyApplicationsAsync(vacancy.VacancyReference.Value, false))
+                .ReturnsAsync(vacancyApplications);
+
+            // Act
+            var viewModel = await _orchestrator.GetApplicationReviewsToUnsuccessfulViewModelAsync(routeModel);
+
+            // Assert
+            Assert.IsNotEmpty(viewModel.VacancyApplications);
+            Assert.That(viewModel.VacancyApplications.Count(), Is.EqualTo(vacancyApplications.Count()));
+            Assert.AreEqual(viewModel.Ukprn, routeModel.Ukprn);
+            Assert.AreEqual(viewModel.VacancyId, vacancy.Id);
+        }
+
+        [Test]
         public async Task GetApplicationReviewsToShareViewModelAsync_ReturnsViewModelWithCorrectData()
         {
             // Arrange

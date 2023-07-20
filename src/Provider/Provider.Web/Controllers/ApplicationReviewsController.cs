@@ -8,6 +8,7 @@ using Esfa.Recruit.Provider.Web.Models.ApplicationReviews;
 using Esfa.Recruit.Provider.Web.Orchestrators;
 using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Provider.Web.ViewModels.ApplicationReview;
+using Esfa.Recruit.Provider.Web.ViewModels.ApplicationReviews;
 using Esfa.Recruit.Shared.Web.ViewModels;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyApplications;
 using Microsoft.AspNetCore.Authorization;
@@ -27,6 +28,37 @@ namespace Esfa.Recruit.Provider.Web.Controllers
             _orchestrator = orchestrator;
         }
 
+        [HttpGet("Unsuccessful", Name = RouteNames.ApplicationReviewsToUnsuccessful_Get)]
+        [FeatureGate(FeatureNames.MultipleApplicationsManagement)]
+        public async Task<IActionResult> ApplicationReviewsToUnsuccessful(VacancyRouteModel rm)
+        {
+            var viewModel = await _orchestrator.GetApplicationReviewsToUnsuccessfulViewModelAsync(rm);
+
+            return View(viewModel);
+        }
+
+        [HttpPost("Unsuccessful", Name = RouteNames.ApplicationReviewsToUnsuccessful_Post)]
+        [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+        [FeatureGate(FeatureNames.MultipleApplicationsManagement)]
+        public IActionResult ApplicationReviewsToUnsuccessful(ApplicationReviewsToUnSuccessfulRequest request)
+        {
+            return RedirectToAction(nameof(ApplicationReviewsToUnsuccessfulFeedBack), new { request.ApplicationsToUnSuccessful, request.Ukprn, request.VacancyId });
+        }
+
+        [HttpGet("UnsuccessfulFeedback", Name = RouteNames.ApplicationReviewsToUnSuccessfulFeedback_Get)]
+        [FeatureGate(FeatureNames.MultipleApplicationsManagement)]
+        public IActionResult ApplicationReviewsToUnsuccessfulFeedBack(ApplicationReviewsToUnSuccessfulRouteModel request)
+        {
+            var applicationReviewsToUnsuccessfulFeedBackViewModel = new ApplicationReviewsToUnsuccessfulFeedBackViewModel
+            {
+                VacancyId = request.VacancyId,
+                Ukprn = request.Ukprn,
+                ApplicationsToUnSuccessful = request.ApplicationsToUnSuccessful
+            };
+
+            return View(applicationReviewsToUnsuccessfulFeedBackViewModel);
+        }
+
         [HttpGet("", Name = RouteNames.ApplicationReviewsToShare_Get)]
         [FeatureGate(FeatureNames.ShareApplicationsFeature)]
         public async Task<IActionResult> ApplicationReviewsToShare(VacancyRouteModel rm)
@@ -34,13 +66,6 @@ namespace Esfa.Recruit.Provider.Web.Controllers
             var viewModel = await _orchestrator.GetApplicationReviewsToShareViewModelAsync(rm);
 
             return View(viewModel);
-        }
-
-        [HttpGet("Unsuccessful", Name = RouteNames.ApplicationReviewsToUnsuccessful_Get)]
-        [FeatureGate(FeatureNames.MultipleApplicationsManagement)]
-        public IActionResult ApplicationReviewsToUnsuccessful(VacancyRouteModel rm)
-        {
-            return View();
         }
 
         [HttpPost("", Name = RouteNames.ApplicationReviewsToShare_Post)]
