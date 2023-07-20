@@ -14,7 +14,8 @@ namespace Esfa.Recruit.Provider.Web.Extensions
 
         public static string GetEmailAddress(this ClaimsPrincipal user)
         {
-            return user.FindFirstValue(ProviderRecruitClaims.IdamsUserEmailClaimTypeIdentifier);
+            return user.FindFirstValue(ProviderRecruitClaims.IdamsUserEmailClaimTypeIdentifier) 
+                   ?? user.FindFirstValue("email");
         }
 
         public static string GetUserName(this ClaimsPrincipal user)
