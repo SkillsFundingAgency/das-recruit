@@ -18,7 +18,6 @@ using Microsoft.FeatureManagement.Mvc;
 namespace Esfa.Recruit.Provider.Web.Controllers
 {
     [Route(RoutePaths.AccountApplicationReviewsRoutePath)]
-    [FeatureGate(FeatureNames.ShareApplicationsFeature)]
     public class ApplicationReviewsController : Controller
     {
         private readonly IApplicationReviewsOrchestrator _orchestrator;
@@ -29,21 +28,31 @@ namespace Esfa.Recruit.Provider.Web.Controllers
         }
 
         [HttpGet("", Name = RouteNames.ApplicationReviewsToShare_Get)]
-        public async Task<IActionResult> ApplicationReviews(VacancyRouteModel rm)
+        [FeatureGate(FeatureNames.ShareApplicationsFeature)]
+        public async Task<IActionResult> ApplicationReviewsToShare(VacancyRouteModel rm)
         {
             var viewModel = await _orchestrator.GetApplicationReviewsToShareViewModelAsync(rm);
 
             return View(viewModel);
         }
 
+        [HttpGet("Unsuccessful", Name = RouteNames.ApplicationReviewsToUnsuccessful_Get)]
+        [FeatureGate(FeatureNames.MultipleApplicationsManagement)]
+        public IActionResult ApplicationReviewsToUnsuccessful(VacancyRouteModel rm)
+        {
+            return View();
+        }
+
         [HttpPost("", Name = RouteNames.ApplicationReviewsToShare_Post)]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+        [FeatureGate(FeatureNames.ShareApplicationsFeature)]
         public IActionResult ApplicationReviewsToShare(ApplicationReviewsToShareRouteModel rm)
         {
             return RedirectToAction(nameof(ApplicationReviewsToShareConfirmation), new { rm.ApplicationsToShare, rm.Ukprn, rm.VacancyId });
         }
 
         [HttpGet("share", Name = RouteNames.ApplicationReviewsToShareConfirmation_Get)]
+        [FeatureGate(FeatureNames.ShareApplicationsFeature)]
         public async Task<IActionResult> ApplicationReviewsToShareConfirmation(ShareApplicationReviewsRequest request)
         {
             var shareApplicationsConfirmationViewModel = await _orchestrator.GetApplicationReviewsToShareConfirmationViewModel(request);
@@ -52,9 +61,10 @@ namespace Esfa.Recruit.Provider.Web.Controllers
 
         [HttpPost("share", Name = RouteNames.ApplicationReviewsToShareConfirmation_Post)]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+        [FeatureGate(FeatureNames.ShareApplicationsFeature)]
         public async Task<IActionResult> ApplicationReviewsToShareConfirmation(ShareApplicationReviewsPostRequest request)
         {
-            if (request.ShareApplicationsConfirmed) 
+            if (request.ShareApplicationsConfirmed)
             {
                 await _orchestrator.PostApplicationReviewsStatusConfirmationAsync(request, User.ToVacancyUser());
                 SetSharedApplicationsBannerMessageViaTempData(request.ApplicationReviewsToShare);
@@ -69,7 +79,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
             if (!sharedApplications.Any())
                 return;
 
-            if (sharedApplications.Count() == 1) 
+            if (sharedApplications.Count() == 1)
             {
                 TempData.Add(TempDataKeys.SharedSingleApplicationsHeader, string.Format(InfoMessages.SharedSingleApplicationsBannerHeader, sharedApplications.First().CandidateName));
                 return;

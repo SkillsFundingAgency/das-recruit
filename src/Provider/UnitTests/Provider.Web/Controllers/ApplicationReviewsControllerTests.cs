@@ -77,7 +77,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
                 });
 
             // Act
-            var result = await _controller.ApplicationReviews(routeModel) as ViewResult;
+            var result = await _controller.ApplicationReviewsToShare(routeModel) as ViewResult;
 
             // Assert
             var actual = result.Model as ShareMultipleApplicationReviewsViewModel;
@@ -103,7 +103,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
                 });
 
             // Act
-            var result = await _controller.ApplicationReviews(routeModel) as ViewResult;
+            var result = await _controller.ApplicationReviewsToShare(routeModel) as ViewResult;
 
             // Assert
             var actual = result.Model as ShareMultipleApplicationReviewsViewModel;
