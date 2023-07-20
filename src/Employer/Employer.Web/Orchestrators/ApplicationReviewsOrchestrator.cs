@@ -27,7 +27,10 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 
             return new MakeMultipleApplicationReviewsUnsuccessfulViewModel
             {
-                // todo
+                VacancyId = vacancy.Id,
+                EmployerAccountId = vacancy.EmployerAccountId,
+                VacancyReference = vacancy.VacancyReference.Value,
+                VacancyApplications = applicationReviews
             };
         }
     }
