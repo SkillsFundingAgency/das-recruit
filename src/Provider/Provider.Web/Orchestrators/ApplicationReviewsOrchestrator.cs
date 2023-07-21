@@ -10,6 +10,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
 {
     public interface IApplicationReviewsOrchestrator
     {
+        Task<ApplicationReviewsToUnsuccessfulViewModel> GetApplicationReviewsToUnsuccessfulViewModelAsync(VacancyRouteModel rm);
         Task<ShareMultipleApplicationReviewsViewModel> GetApplicationReviewsToShareViewModelAsync(VacancyRouteModel rm);
         Task<ShareMultipleApplicationReviewsConfirmationViewModel> GetApplicationReviewsToShareConfirmationViewModel(ShareApplicationReviewsRequest request);
         Task PostApplicationReviewsStatusConfirmationAsync(ShareApplicationReviewsPostRequest request, VacancyUser user);
@@ -22,6 +23,20 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
         public ApplicationReviewsOrchestrator(IRecruitVacancyClient client)
         {
             _vacancyClient = client;
+        }
+
+        public async Task<ApplicationReviewsToUnsuccessfulViewModel> GetApplicationReviewsToUnsuccessfulViewModelAsync(VacancyRouteModel rm)
+        {
+            var vacancy = await _vacancyClient.GetVacancyAsync(rm.VacancyId.GetValueOrDefault());
+
+            var applicationReviews = await _vacancyClient.GetVacancyApplicationsAsync(vacancy.VacancyReference.Value);
+
+            return new ApplicationReviewsToUnsuccessfulViewModel
+            {
+                VacancyId = vacancy.Id,
+                Ukprn = rm.Ukprn,
+                VacancyApplications = applicationReviews
+            };
         }
 
         public async Task<ShareMultipleApplicationReviewsViewModel> GetApplicationReviewsToShareViewModelAsync(VacancyRouteModel rm)

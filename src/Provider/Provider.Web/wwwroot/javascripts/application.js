@@ -190,7 +190,6 @@ $('input[name="ApplicationsToShare"]').change(function () {
     }
 });
 
-
 // Legacy JavaScript from DAS
 var sfa;
 sfa = sfa || {};
