@@ -31,39 +31,47 @@ namespace Esfa.Recruit.Provider.Web.Configuration
     {
         private const int SessionTimeoutMinutes = 30;
 
-        public static void AddAuthorizationService(this IServiceCollection services)
+        public static void AddAuthorizationService(this IServiceCollection services, bool useDfESignIn)
         {
+            var ukPrnClaimName = useDfESignIn
+                ? ProviderRecruitClaims.DfEUkprnClaimsTypeIdentifier
+                : ProviderRecruitClaims.IdamsUserUkprnClaimsTypeIdentifier;
+            
+            var serviceClaimName = useDfESignIn
+                ? ProviderRecruitClaims.DfEUserServiceTypeClaimTypeIdentifier
+                : ProviderRecruitClaims.IdamsUserServiceTypeClaimTypeIdentifier;
+            
             services.AddAuthorization(options =>
             {
                 options.AddPolicy(PolicyNames.ProviderPolicyName, policy =>
                 {
                     policy.RequireAuthenticatedUser();
-                    policy.RequireClaim(ProviderRecruitClaims.IdamsUserUkprnClaimsTypeIdentifier);
-                    policy.RequireClaim(ProviderRecruitClaims.IdamsUserServiceTypeClaimTypeIdentifier);
+                    policy.RequireClaim(ukPrnClaimName);
+                    policy.RequireClaim(serviceClaimName);
                     policy.Requirements.Add(new ProviderAccountRequirement());
                 });
 
                 options.AddPolicy(PolicyNames.HasContributorOrAbovePermission, policy =>
                 {
                     policy.RequireAuthenticatedUser();
-                    policy.RequireClaim(ProviderRecruitClaims.IdamsUserUkprnClaimsTypeIdentifier);
-                    policy.RequireClaim(ProviderRecruitClaims.IdamsUserServiceTypeClaimTypeIdentifier);
+                    policy.RequireClaim(ukPrnClaimName);
+                    policy.RequireClaim(serviceClaimName);
                     policy.Requirements.Add(new MinimumServiceClaimRequirement(ServiceClaim.DAC));
                 });
 
                 options.AddPolicy(PolicyNames.HasContributorWithApprovalOrAbovePermission, policy =>
                 {
                     policy.RequireAuthenticatedUser();
-                    policy.RequireClaim(ProviderRecruitClaims.IdamsUserUkprnClaimsTypeIdentifier);
-                    policy.RequireClaim(ProviderRecruitClaims.IdamsUserServiceTypeClaimTypeIdentifier);
+                    policy.RequireClaim(ukPrnClaimName);
+                    policy.RequireClaim(serviceClaimName);
                     policy.Requirements.Add(new MinimumServiceClaimRequirement(ServiceClaim.DAB));
                 });
 
                 options.AddPolicy(PolicyNames.HasAccountOwnerPermission, policy =>
                 {
                     policy.RequireAuthenticatedUser();
-                    policy.RequireClaim(ProviderRecruitClaims.IdamsUserUkprnClaimsTypeIdentifier);
-                    policy.RequireClaim(ProviderRecruitClaims.IdamsUserServiceTypeClaimTypeIdentifier);
+                    policy.RequireClaim(ukPrnClaimName);
+                    policy.RequireClaim(serviceClaimName);
                     policy.Requirements.Add(new MinimumServiceClaimRequirement(ServiceClaim.DAA));
                 });
                 
