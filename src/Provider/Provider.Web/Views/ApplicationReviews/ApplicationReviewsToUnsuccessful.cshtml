@@ -46,7 +46,7 @@
                         <tbody class="govuk-table__body">
                             @{
                                 foreach (VacancyApplication vacancyApplication in Model.VacancyApplications.OrderBy(v => v.SubmittedDate))
-                                                {
+                                {
                                     <tr class="govuk-table__row" asp-show="@vacancyApplication.StatusToMakeUnsuccessful">
                                         <td class="govuk-table__cell">
 
