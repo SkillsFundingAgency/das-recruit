@@ -190,15 +190,6 @@ $('input[name="ApplicationsToShare"]').change(function () {
     }
 });
 
-$('input[name="ApplicationsToUnSuccessful"]').change(function () {
-    if ($('input[name="ApplicationsToUnSuccessful"]:checked').length > 0) {
-        $('#applications-action').prop('disabled', false);
-    } else {
-        console.log("0 selected");
-        $('#applications-action').prop('disabled', true);
-    }
-});
-
 // Legacy JavaScript from DAS
 var sfa;
 sfa = sfa || {};
