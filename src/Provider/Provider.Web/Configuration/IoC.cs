@@ -24,6 +24,7 @@ using Esfa.Recruit.Provider.Web.TagHelpers;
 using Esfa.Recruit.Shared.Web.Orchestrators;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Esfa.Recruit.Provider.Web.ViewModels.Validations.Fluent;
 
 namespace Esfa.Recruit.Provider.Web.Configuration
 {
@@ -79,6 +80,7 @@ namespace Esfa.Recruit.Provider.Web.Configuration
         private static void RegisterFluentValidators(IServiceCollection services)
         {
             services.AddSingleton<IValidator<ApplicationReviewEditModel>, ApplicationReviewEditModelValidator>();
+            services.AddSingleton<IValidator<ApplicationReviewFeedBackViewModel>, ApplicationReviewFeedBackModelValidator>();
             services.AddSingleton<IValidator<ApplicationReviewStatusConfirmationEditModel>, ApplicationReviewStatusConfirmationEditModelValidator>();
             services.AddSingleton<IValidator<ProviderApplicationsReportCreateEditModel>, ProviderApplicationsReportCreateEditModelValidator>();
         }

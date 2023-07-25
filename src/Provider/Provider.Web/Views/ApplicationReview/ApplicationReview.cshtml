@@ -213,7 +213,7 @@
               asp-route-applicationReviewId="@Model.ApplicationReviewId" asp-route-ukprn="@Model.Ukprn" asp-route-vacancyId="@Model.VacancyId"
               class="govuk-!-margin-top-6">
 
-            <div asp-show="@Model.CanChangeOutcomeEmployerUnsuccessful" esfa-validation-marker-for="Outcome" class="govuk-form-group">
+            <div asp-show="@Model.IsStatusEmployerUnsuccessful" esfa-validation-marker-for="Outcome" class="govuk-form-group">
                 <fieldset class="govuk-fieldset">
                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
                         <h2 class="govuk-heading-l govuk-!-margin-top-6">Make this application unsuccessful</h2>
@@ -223,7 +223,7 @@
                             <p class="govuk-body">@Model.EmployerFeedback</p>
                         </div>
                     </legend>
-                    <input asp-for="Outcome" class="govuk-radios__input" id="Employer-outcome-unsuccessful" type="hidden" value="@ApplicationReviewStatus.Unsuccessful.ToString()" data-aria-controls="unsuccessful-candidate-feedback">
+                    <input asp-for="Outcome" class="govuk-radios__input" id="Employer-outcome-unsuccessful" type="hidden" value="@ApplicationReviewStatus.EmployerUnsuccessful.ToString()" data-aria-controls="unsuccessful-candidate-feedback">
                     <span esfa-validation-message-for="Outcome" class="govuk-error-message"></span>
                     <div esfa-validation-marker-for="CandidateFeedback" id="Employer-unsuccessful-candidate-feedback" class="govuk-form-group">
                         <div class="govuk-character-count"
@@ -240,12 +240,13 @@
                 </fieldset>
             </div>
 
-            <div asp-show="@Model.CanChangeOutcomeDefault" esfa-validation-marker-for="Outcome" class="govuk-form-group">
+            <div asp-hide="@Model.IsStatusEmployerUnsuccessful" esfa-validation-marker-for="Outcome" class="govuk-form-group">
                 <fieldset class="govuk-fieldset">
                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
                         <h3 class="govuk-fieldset__heading">What do you want to do with this application?</h3>
                     </legend>
                     <span esfa-validation-message-for="Outcome" class="govuk-error-message"></span>
+                    <input type="hidden" asp-for="NavigateToFeedbackPage" value="true"/>
                     <div class="govuk-radios govuk-radios--conditional" data-module="govuk-radios">
                         <esfaFeatureEnabled name="@FeatureNames.ShareApplicationsFeature">
                             <div asp-show="@Model.CanShowRadioButtonReview" class="govuk-radios__item">
@@ -278,18 +279,10 @@
                             </div>
                         </div>
                         <div class="govuk-radios__item">
-                            <input asp-for="Outcome" class="govuk-radios__input" id="outcome-unsuccessful" type="radio" value="@ApplicationReviewStatus.Unsuccessful.ToString()" checked="@(Model.Outcome == ApplicationReviewStatus.Unsuccessful ? "checked" : null)" data-aria-controls="unsuccessful-candidate-feedback">
+                            <input asp-for="Outcome" class="govuk-radios__input" id="outcome-unsuccessful" type="radio" value="@ApplicationReviewStatus.Unsuccessful.ToString()" checked="@(Model.Outcome == ApplicationReviewStatus.Unsuccessful ? "checked" : null)">
                             <label for="outcome-unsuccessful" class="govuk-label govuk-radios__label">Make unsuccessful and give feedback</label>
                             <div class="govuk-hint govuk-radios__hint" id="radio-status-unsuccessful">
                                 Send a notification to the applicant telling them they won't be offered this apprenticeship.
-                            </div>
-                        </div>
-                        <div esfa-validation-marker-for="CandidateFeedback" id="unsuccessful-candidate-feedback" class="govuk-radios__conditional govuk-radios__conditional--hidden">
-                            <div class="govuk-form-group">
-                                <label asp-for="CandidateFeedback" class="govuk-label govuk-!-font-weight-bold">Feedback</label>
-                                <span esfa-validation-message-for="CandidateFeedback" class="govuk-error-message"></span>
-                                <span class="govuk-hint">Explain why the application has been unsuccessful, your comments will be sent to the candidate.</span>
-                                <textarea asp-for="CandidateFeedback" class="govuk-textarea" cols="20" size="12"></textarea>
                             </div>
                         </div>
                     </div>

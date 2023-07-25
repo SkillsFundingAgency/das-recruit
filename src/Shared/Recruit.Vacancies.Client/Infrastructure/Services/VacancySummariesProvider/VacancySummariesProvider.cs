@@ -368,6 +368,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                     case FilteringOptions.AllSharedApplications:
                         document.Add("noOfAllSharedApplications", new BsonDocument { { "$gt", 0 } });
                         break;
+                    case FilteringOptions.EmployerReviewedApplications:
+                        document.Add("noOfEmployerReviewedApplications", new BsonDocument { { "$gt", 0 } });
+                        break;
                     case FilteringOptions.ClosingSoonWithNoApplications:
                         document.Add("noOfApplications", 0);
                         break;
