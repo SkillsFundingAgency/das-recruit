@@ -1,6 +1,7 @@
 ﻿@model Esfa.Recruit.Shared.Web.ViewModels.ApplicationReview.ApplicationStatusConfirmationViewModel
-
 @{
+    ViewBag.GaData.Vpv = "/recruitment/provider/page-application-status-confirmation";
+    ViewBag.Title = "Review Application Confirmation";
     var vacancyType = _serviceParameters.VacancyType.GetValueOrDefault() == VacancyType.Apprenticeship ? "apprenticeship" : "traineeship";
 }
 
