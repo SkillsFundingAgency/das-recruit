@@ -16,5 +16,9 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.VacancyView
             .ToList();
 
         public bool ShowDisability { get; internal set; }
+
+        public bool CanShowShareMultipleApplicationsLink =>
+            Applications?.Any(app => app.Status == ApplicationReviewStatus.New || app.Status == ApplicationReviewStatus.InReview) ?? false;
+
     }
 }
