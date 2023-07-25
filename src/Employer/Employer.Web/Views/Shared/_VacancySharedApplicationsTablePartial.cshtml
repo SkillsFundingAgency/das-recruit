@@ -15,7 +15,7 @@
         {
             foreach (var application in applicationStatusGroup)
             {
-                <tr class="govuk-table__row" asp-show="@application.IsNotWithdrawn">
+                <tr class="govuk-table__row" asp-show="@application.IsNotWithdrawnAndShared">
                     <td class="govuk-table__cell" data-label="Applicant">
                         <a asp-show="@application.ShowCandidateName" data-label="application_review" asp-route="@RouteNames.ApplicationReview_Get" asp-route-employerAccountId="@Model.EmployerAccountId" asp-route-vacancyId="@Model.VacancyId" asp-route-applicationReviewId="@application.ApplicationReviewId" asp-route-vacancySharedByProvider=@application.IsSharedApplication class="govuk-link">@application.CandidateName</a>
                         <a asp-show="@application.ShowApplicantID" data-label="application_review" asp-route="@RouteNames.ApplicationReview_Get" asp-route-employerAccountId="@Model.EmployerAccountId" asp-route-vacancyId="@Model.VacancyId" asp-route-applicationReviewId="@application.ApplicationReviewId" asp-route-vacancySharedByProvider=@application.IsSharedApplication class="govuk-link">@application.GetFriendlyId()</a>
@@ -25,7 +25,7 @@
                     <td class="govuk-table__cell" data-label="Date shared">@application.DateSharedWithEmployer.AsGdsDate()</td>
                     <td class="govuk-table__cell" data-label="Disability" asp-show="@Model.ShowDisability">@application.DisabilityStatus.GetDisplayName()</td>
                 </tr>
-                <tr class="govuk-table__row" asp-show="@application.IsWithdrawn">
+                        <tr class="govuk-table__row" asp-show="@application.IsWithdrawnAndShared">
                     <td class="govuk-table__cell" data-label="Applicant">@application.GetFriendlyId()</td>
                     <td class="govuk-table__cell" data-label="Response">Withdrawn</td>
                     <td class="govuk-table__cell" data-label="Date reviewed">@application.DateReviewedText</td>

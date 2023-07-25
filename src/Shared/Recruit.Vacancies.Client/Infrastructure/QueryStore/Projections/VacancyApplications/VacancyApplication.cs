@@ -34,6 +34,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Va
         public ApplicationReviewDisabilityStatus DisabilityStatus { get; set; }
         public bool IsWithdrawn { get; set; }
         public bool IsNotWithdrawn => !IsWithdrawn;
+        public bool IsNotWithdrawnAndShared => !IsWithdrawn && IsSharedApplication;
+        public bool IsWithdrawnAndShared => IsWithdrawn && IsSharedApplication;
         public bool Selected { get; set; }
         public bool StatusNewOrReview => Status is ApplicationReviewStatus.New || Status is ApplicationReviewStatus.InReview;
         public bool ShowCandidateName => Status is ApplicationReviewStatus.EmployerInterviewing;
