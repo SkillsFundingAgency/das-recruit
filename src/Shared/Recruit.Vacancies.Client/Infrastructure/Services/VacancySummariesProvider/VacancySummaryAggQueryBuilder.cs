@@ -119,6 +119,13 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                             'then': 1,
                             'else': 0
                         }
+                    },
+                    'isSharedWithEmployer': {
+                        '$cond': {
+                            'if': {'$ne': [ '$dateSharedWithEmployer', null]},
+                            'then': 1,
+                            'else': 0
+                        }
                     }
                 }
             },
@@ -145,7 +152,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                         '$sum': '$isShared'
                     },
                     'noOfAllSharedApplications': {
-                        '$sum' :{'$add': ['$isShared','$isEmployerReviewed'] }
+                        '$sum' :{'$add': ['$isSharedWithEmployer'] }
                     },
                     'statusCount' : { '$sum' : 1 }
                     
@@ -381,6 +388,13 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                             'then': 1,
                             'else': 0
                         }
+                    },
+                    'isSharedWithEmployer': {
+                        '$cond': {
+                            'if': {'$ne': [ '$dateSharedWithEmployer', null]},
+                            'then': 1,
+                            'else': 0
+                        }
                     }
                 }
             },
@@ -431,7 +445,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                         '$sum': '$isShared'
                     },
                     'noOfAllSharedApplications': {
-                        '$sum' :{'$add': ['$isShared','$isEmployerReviewed'] }
+                        '$sum' :{'$add': ['$isSharedWithEmployer'] }
                     },
                     'noOfApplications': {
                          '$sum' :{'$add': ['$isUnsuccessful','$isSuccessful'] }
