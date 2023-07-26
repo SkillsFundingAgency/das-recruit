@@ -1,6 +1,7 @@
 ﻿using Esfa.Recruit.Provider.Web.Filters;
 using Esfa.Recruit.Provider.Web.Interfaces;
 using Esfa.Recruit.Provider.Web.Mappings;
+using Esfa.Recruit.Provider.Web.Models.ApplicationReviews;
 using Esfa.Recruit.Provider.Web.Orchestrators;
 using Esfa.Recruit.Shared.Web.Configuration;
 using Esfa.Recruit.Shared.Web.Mappers;
@@ -80,6 +81,7 @@ namespace Esfa.Recruit.Provider.Web.Configuration
         private static void RegisterFluentValidators(IServiceCollection services)
         {
             services.AddSingleton<IValidator<ApplicationReviewEditModel>, ApplicationReviewEditModelValidator>();
+            services.AddSingleton<IValidator<ApplicationReviewsToUnSuccessfulRequest>, ApplicationReviewsToUnsuccessfulModelValidator>();
             services.AddSingleton<IValidator<ApplicationReviewFeedBackViewModel>, ApplicationReviewFeedBackModelValidator>();
             services.AddSingleton<IValidator<ApplicationReviewStatusConfirmationEditModel>, ApplicationReviewStatusConfirmationEditModelValidator>();
             services.AddSingleton<IValidator<ProviderApplicationsReportCreateEditModel>, ProviderApplicationsReportCreateEditModelValidator>();
