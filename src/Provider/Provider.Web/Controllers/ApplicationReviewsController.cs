@@ -29,7 +29,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
         }
 
         [HttpGet("", Name = RouteNames.ApplicationReviewsToShare_Get)]
-        public async Task<IActionResult> ApplicationReviews(VacancyRouteModel rm)
+        public async Task<IActionResult> ApplicationReviewsToShare(VacancyRouteModel rm)
         {
             var viewModel = await _orchestrator.GetApplicationReviewsToShareViewModelAsync(rm);
 
@@ -38,8 +38,14 @@ namespace Esfa.Recruit.Provider.Web.Controllers
 
         [HttpPost("", Name = RouteNames.ApplicationReviewsToShare_Post)]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-        public IActionResult ApplicationReviewsToShare(ApplicationReviewsToShareRouteModel rm)
+        public async Task<IActionResult> ApplicationReviewsToShare(ApplicationReviewsToShareRouteModel rm)
         {
+            if (!ModelState.IsValid)
+            {
+                var vm = await _orchestrator.GetApplicationReviewsToShareViewModelAsync(rm);
+                return View(vm);
+            }
+
             return RedirectToAction(nameof(ApplicationReviewsToShareConfirmation), new { rm.ApplicationsToShare, rm.Ukprn, rm.VacancyId });
         }
 

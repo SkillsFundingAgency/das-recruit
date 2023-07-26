@@ -180,16 +180,6 @@ if (selectAllCheckboxes) {
   var selectAllFormControl = new SelectAllCheckboxes(selectAllCheckboxes);
 }
 
-// Share Applications Continue Button Conditionally Disabled Based On CheckBox Selections
-$('input[name="ApplicationsToShare"]').change(function () {
-    if ($('input[name="ApplicationsToShare"]:checked').length > 0) {
-        $('#applications-action').prop('disabled', false);
-    } else {
-        console.log("0 selected");
-        $('#applications-action').prop('disabled', true);
-    }
-});
-
 
 // Legacy JavaScript from DAS
 var sfa;
