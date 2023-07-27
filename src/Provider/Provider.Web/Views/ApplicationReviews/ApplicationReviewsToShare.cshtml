@@ -14,7 +14,7 @@
 <div class="govuk-grid-row"> 
     <div class="govuk-grid-column-full">
         <form method="post" id="share_applications_actions_form" asp-route="@RouteNames.ApplicationReviewsToShare_Post" asp-route-ukprn="@Model.Ukprn" asp-route-vacancyId="@Model.VacancyId">
-            <div class="govuk-form-group" das-highlight-error-for="ApplicationsToShare" error-class="govuk-form-group--error" id="ApplicationsToShare">
+            <div class="govuk-form-group" id="ApplicationsToShare">
                 <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState}' />
                     <fieldset class="govuk-fieldset">
                     
