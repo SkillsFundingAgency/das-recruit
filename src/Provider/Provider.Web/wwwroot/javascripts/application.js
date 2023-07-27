@@ -148,8 +148,7 @@ function SelectAllCheckboxes(selectAllCheckboxes) {
         checkbox.type = "checkbox";
         checkbox.className = "govuk-checkboxes__input";
         checkbox.id = selectAllID;
-        checkbox.name = "ApplicationsToShare"
-        checkbox.addEventListener('click', this.toggleCheckboxes.bind(this))
+     checkbox.addEventListener('click', this.toggleCheckboxes.bind(this))
     var label = document.createElement('label');
         label.htmlFor = selectAllID;
         label.className = "govuk-label govuk-checkboxes__label";
