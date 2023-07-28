@@ -32,8 +32,14 @@ namespace Esfa.Recruit.Employer.Web.Controllers
 
         [FeatureGate(FeatureNames.MultipleApplicationsManagement)]
         [HttpPost("unsuccessful", Name = RouteNames.ApplicationReviewsToUnsuccessful_Post)]
-        public IActionResult ApplicationReviewsToShare(ApplicationReviewsToUnsuccessfulRouteModel rm)
+        public async Task<IActionResult> ApplicationReviewsToUnsuccessfulAsync(ApplicationReviewsToUnsuccessfulRouteModel rm)
         {
+            if (!ModelState.IsValid)
+            {
+                var viewModel = await _orchestrator.GetApplicationReviewsToUnsuccessfulViewModelAsync(rm);
+                return View(viewModel);
+            }
+
             return RedirectToAction(nameof(ApplicationReviewsToUnsuccessfulConfirmation), new { rm.ApplicationsToUnsuccessful, rm.EmployerAccountId, rm.VacancyId });
         }
 
