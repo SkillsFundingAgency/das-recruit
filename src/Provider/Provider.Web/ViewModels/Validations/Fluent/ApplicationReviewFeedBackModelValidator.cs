@@ -1,4 +1,5 @@
-﻿using Esfa.Recruit.Provider.Web.ViewModels.ApplicationReview;
+﻿using Esfa.Recruit.Shared.Web.Models;
+using Esfa.Recruit.Shared.Web.ViewModels.ApplicationReview;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
@@ -6,7 +7,7 @@ using FluentValidation;
 
 namespace Esfa.Recruit.Provider.Web.ViewModels.Validations.Fluent
 {
-    public class ApplicationReviewFeedBackModelValidator : AbstractValidator<ApplicationReviewFeedBackViewModel>
+    public class ApplicationReviewFeedBackModelValidator : AbstractValidator<IApplicationReviewEditModel>
     {
         public ApplicationReviewFeedBackModelValidator(IProfanityListProvider profanityListProvider)
         {
@@ -18,7 +19,12 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.Validations.Fluent
             {
                 RuleFor(x => x.CandidateFeedback)
                     .NotEmpty()
-                    .WithMessage(ApplicationReviewValidator.CandidateFeedbackRequired)
+                    .WithMessage(x =>
+                        x.TargetView == NavigationTarget.MultipleApplicationsUnsuccessfulConfirmation
+                            ? x.IsMultipleApplications
+                                ? ApplicationReviewValidator.CandidateFeedbackRequiredForMultipleApplications
+                                : ApplicationReviewValidator.CandidateFeedbackRequiredForSingleApplication
+                            : ApplicationReviewValidator.CandidateFeedbackRequired)
                     .MaximumLength(ApplicationReviewValidator.CandidateFeedbackMaxLength)
                     .WithMessage(string.Format(ApplicationReviewValidator.CandidateFeedbackLength, ApplicationReviewValidator.CandidateFeedbackMaxLength))
                     .Must(ApplicationReviewValidator.BeWithinMaxWordsOrEmpty)

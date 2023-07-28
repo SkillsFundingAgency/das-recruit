@@ -9,12 +9,15 @@ using Esfa.Recruit.Provider.Web.Orchestrators;
 using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Provider.Web.ViewModels.ApplicationReview;
 using Esfa.Recruit.Provider.Web.ViewModels.ApplicationReviews;
+using Esfa.Recruit.Shared.Web.Models;
 using Esfa.Recruit.Shared.Web.ViewModels;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyApplications;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.FeatureManagement.Mvc;
+using Newtonsoft.Json;
 
 namespace Esfa.Recruit.Provider.Web.Controllers
 {
@@ -22,6 +25,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
     public class ApplicationReviewsController : Controller
     {
         private readonly IApplicationReviewsOrchestrator _orchestrator;
+        private const string TempApplicationsToUnSuccessful = "ApplicationsToUnSuccessful";
 
         public ApplicationReviewsController(IApplicationReviewsOrchestrator orchestrator)
         {
@@ -53,10 +57,40 @@ namespace Esfa.Recruit.Provider.Web.Controllers
             {
                 VacancyId = request.VacancyId,
                 Ukprn = request.Ukprn,
-                ApplicationsToUnSuccessful = request.ApplicationsToUnSuccessful
+                ApplicationsToUnSuccessful = request.ApplicationsToUnSuccessful,
+                Outcome = ApplicationReviewStatus.Unsuccessful,
+                TargetView = NavigationTarget.MultipleApplicationsUnsuccessfulConfirmation
             };
-
             return View(applicationReviewsToUnsuccessfulFeedBackViewModel);
+        }
+
+        [HttpPost("unsuccessful-feedback", Name = RouteNames.ApplicationReviewsToUnSuccessfulFeedback_Post)]
+        [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+        [FeatureGate(FeatureNames.MultipleApplicationsManagement)]
+        public IActionResult ApplicationReviewsToUnsuccessfulFeedBack(ApplicationReviewsToUnsuccessfulFeedBackViewModel request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(request);
+            }
+            TempData[TempApplicationsToUnSuccessful] = JsonConvert.SerializeObject(request);
+            return RedirectToAction(nameof(ApplicationReviewsToUnSuccessfulConfirmation), new { request.Ukprn, request.VacancyId });
+        }
+
+        [HttpGet("unsuccessful-confirmation", Name = RouteNames.ApplicationReviewsToUnSuccessfulConfirmation_Get)]
+        [FeatureGate(FeatureNames.ShareApplicationsFeature)]
+        public async Task<IActionResult> ApplicationReviewsToUnSuccessfulConfirmation(ApplicationReviewsToUnSuccessfulRouteModel request)
+        {
+
+            if (TempData[TempApplicationsToUnSuccessful] is string model)
+            {
+                var applicationReviewsStatusChangeModel = JsonConvert.DeserializeObject<ApplicationReviewsStatusChangeModel>(model);
+                var applicationReviewsToUnSuccessfulConfirmationViewModel = await _orchestrator.GetApplicationReviewsToUnSuccessfulConfirmationViewModel(applicationReviewsStatusChangeModel);
+                return View(applicationReviewsToUnSuccessfulConfirmationViewModel);
+            }
+
+            return RedirectToAction(nameof(ApplicationReviewsToUnsuccessful), new { request.Ukprn, request.VacancyId });
+
         }
 
         [HttpGet("", Name = RouteNames.ApplicationReviewsToShare_Get)]

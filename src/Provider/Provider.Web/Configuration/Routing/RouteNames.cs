@@ -97,10 +97,14 @@
         public const string ApplicationReviewConfirmation_Post = "ApplicationReviewConfirmation_Post";
         public const string ApplicationReviewFeedBack_Get = "ApplicationReviewFeedBack_Get";
         public const string ApplicationReviewFeedBack_Post = "ApplicationReviewFeedBack_Post";
+
         public const string ApplicationReviewsToUnsuccessful_Get = "ApplicationReviewsToUnsuccessful_Get";
         public const string ApplicationReviewsToUnsuccessful_Post = "ApplicationReviewsToUnsuccessful_Post";
         public const string ApplicationReviewsToUnSuccessfulFeedback_Get = "ApplicationReviewsToUnSuccessfulFeedback_Get";
-
+        public const string ApplicationReviewsToUnSuccessfulFeedback_Post = "ApplicationReviewsToUnSuccessfulFeedback_Post";
+        public const string ApplicationReviewsToUnSuccessfulConfirmation_Get = "ApplicationReviewsToUnSuccessfulConfirmation_Get";
+        public const string ApplicationReviewsToUnSuccessfulConfirmation_Post = "ApplicationReviewsToUnSuccessfulConfirmation_Post";
+        
         public const string ApplicationReviewsToShare_Get = "ApplicationReviewsToShare_Get";
         public const string ApplicationReviewsToShareConfirmation_Get = "ApplicationReviewsToShareConfirmation_Get";
         public const string ApplicationReviewsToShare_Post = "ApplicationReviewsToShare_Post";

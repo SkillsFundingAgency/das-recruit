@@ -2,6 +2,10 @@
 @using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyApplications
 @model Esfa.Recruit.Provider.Web.ViewModels.ApplicationReviews.ApplicationReviewsToUnsuccessfulViewModel
 
+@{
+    ViewBag.GaData.Vpv = "/recruitment/provider/page-application-reviews-to-make-multiple-unsuccessful";
+    ViewBag.Title = "Make Multiple Applications Unsuccessful";
+}
 
 @section BackLink {
     <a asp-route="@RouteNames.VacancyManage_Get" asp-route-ukprn="@Model.Ukprn" asp-route-vacancyId="@Model.VacancyId" esfa-automation="link-back" class="govuk-back-link">Back</a>
