@@ -81,7 +81,6 @@ namespace Esfa.Recruit.Provider.Web.Controllers
         [FeatureGate(FeatureNames.ShareApplicationsFeature)]
         public async Task<IActionResult> ApplicationReviewsToUnSuccessfulConfirmation(ApplicationReviewsToUnSuccessfulRouteModel request)
         {
-
             if (TempData[TempApplicationsToUnSuccessful] is string model)
             {
                 var applicationReviewsStatusChangeModel = JsonConvert.DeserializeObject<ApplicationReviewsStatusChangeModel>(model);
@@ -90,7 +89,6 @@ namespace Esfa.Recruit.Provider.Web.Controllers
             }
 
             return RedirectToAction(nameof(ApplicationReviewsToUnsuccessful), new { request.Ukprn, request.VacancyId });
-
         }
 
         [HttpGet("", Name = RouteNames.ApplicationReviewsToShare_Get)]
