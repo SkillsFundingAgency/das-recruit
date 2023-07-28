@@ -78,7 +78,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
         }
 
         [HttpGet("unsuccessful-confirmation", Name = RouteNames.ApplicationReviewsToUnSuccessfulConfirmation_Get)]
-        [FeatureGate(FeatureNames.ShareApplicationsFeature)]
+        [FeatureGate(FeatureNames.MultipleApplicationsManagement)]
         public async Task<IActionResult> ApplicationReviewsToUnSuccessfulConfirmation(ApplicationReviewsToUnSuccessfulRouteModel request)
         {
             if (TempData[TempApplicationsToUnSuccessful] is string model)

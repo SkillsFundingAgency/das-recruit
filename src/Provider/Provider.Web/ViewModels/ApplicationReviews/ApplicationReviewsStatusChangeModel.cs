@@ -10,7 +10,7 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.ApplicationReviews
         public ApplicationReviewStatus? Outcome { get; set; }
         public string CandidateFeedback { get; set; }
         public bool NavigateToFeedbackPage { get; set; }
-        public bool IsMultipleApplications
+        public virtual bool IsMultipleApplications
         {
             get => ApplicationsToUnSuccessful != null && ApplicationsToUnSuccessful.Count > 1;
         }
