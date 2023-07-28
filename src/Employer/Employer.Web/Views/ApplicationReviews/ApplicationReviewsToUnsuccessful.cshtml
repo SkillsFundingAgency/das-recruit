@@ -1,15 +1,14 @@
-﻿@model Esfa.Recruit.Employer.Web.ViewModels.ApplicationReviews.MakeMultipleApplicationReviewsUnsuccessfulViewModel
+﻿@model Esfa.Recruit.Employer.Web.ViewModels.ApplicationReviews.ApplicationReviewsUnsuccessfulViewModel
 @using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyApplications
+@{ 
+    ViewBag.Vpv = "/recruitment/employer/page-application-reviews-to-unsuccessful";
+    ViewBag.Title = "Make applications unsuccessful";
+}
+@section BackLink {
+    <a asp-route="@RouteNames.VacancyManage_Get" asp-route-employerAccountId="@Model.EmployerAccountId" asp-route-vacancyId="@Model.VacancyId" esfa-automation="link-back" class="govuk-back-link">Back</a>
+}
 
 <div class="govuk-grid-row">
-    <div class="govuk-grid-column-full">
-        <h1 class="govuk-heading-l govuk-!-margin-bottom-6">
-            Make multiple applications unsuccessful - Employer
-        </h1>
-    </div>
-</div>
-
-<div class="govuk-grid-row"> 
     <div class="govuk-grid-column-full">
         <form method="post" id="multiple_applications_unsuccessful_actions_form" asp-route="todo">
             <div class="govuk-form-group" das-highlight-error-for="ApplicationsToUnsuccessful" error-class="govuk-form-group--error" id="ApplicationsToUnsuccessful">
@@ -21,7 +20,7 @@
                     </h1>
                 </legend>
                 <div id="share-multiple-applications-checkbox-hint" class="govuk-hint">
-                    Select the applications that are unsuccessful.
+                    Select the applications that are unsuccessful. This will notify the applicants that they won't be offered the apprenticeship.
                 </div>
 
                 <table class="govuk-table" aria-label="Unsuccessful applications" data-checkboxes-select-all>
@@ -79,7 +78,7 @@
             <div class="govuk-grid-row">
             <div class="govuk-grid-column-full">
                 <div class="govuk-button-group">
-                    <button class="govuk-button submit" data-module="govuk-button" id="applications-action" type="submit" disabled>Continue</button>
+                    <button class="govuk-button submit" data-module="govuk-button" id="applications-unsuccessful-action" type="submit">Continue</button>
                 </div>
             </div>
         </div>

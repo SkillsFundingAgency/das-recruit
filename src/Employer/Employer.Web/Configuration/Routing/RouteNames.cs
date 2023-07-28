@@ -131,6 +131,8 @@
         public const string ApplicationReviewConfirmation_Post = "ApplicationReviewConfirmation_Post";
 
         public const string ApplicationReviewsToUnsuccessful_Get = "ApplicationReviewsToUnsuccessful_Get";
+        public const string ApplicationReviewsToUnsuccessful_Post = "ApplicationReviewsToUnsuccessful_Post";
+        public const string ApplicationReviewsToUnsuccessfulConfirmation_Get = "ApplicationReviewsToUnsuccessfulConfirmation_Get";
 
         public const string VacancyManage_Get = "VacancyManage_Get";
         public const string VacancyEdit_Get = "VacancyEdit_Get";
