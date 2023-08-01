@@ -114,7 +114,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
         }
 
         [Test]
-        public void POST_ApplicationReviewsToUnsuccessful_RedirectsToAction()
+        public async Task POST_ApplicationReviewsToUnsuccessful_RedirectsToAction()
         {
             // Arrange
             var listOfApplicationReviews = new List<Guid>();
@@ -125,7 +125,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
                 .Create();
 
             // Act
-            var actionResult = _controller.ApplicationReviewsToUnsuccessful(request);
+            var actionResult =await _controller.ApplicationReviewsToUnsuccessful(request);
 
             var redirectResult = actionResult as RedirectToActionResult;
             // Assert
