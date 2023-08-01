@@ -10,7 +10,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
 {
     public interface IApplicationReviewsOrchestrator
     {
-        Task<ApplicationReviewsToUnsuccessfulConfirmationViewModel> GetApplicationReviewsToUnsuccessfulConfirmationViewModel(ApplicationReviewsToUnsuccessfulModel request);
+        Task<ApplicationReviewsToUnsuccessfulConfirmationViewModel> GetApplicationReviewsToUnsuccessfulConfirmationViewModel(ApplicationReviewsToUnsuccessfulRouteModel request);
         Task<ApplicationReviewsToUnsuccessfulViewModel> GetApplicationReviewsToUnsuccessfulViewModelAsync(VacancyRouteModel rm);
         Task<ShareMultipleApplicationReviewsViewModel> GetApplicationReviewsToShareViewModelAsync(VacancyRouteModel rm);
         Task<ShareMultipleApplicationReviewsConfirmationViewModel> GetApplicationReviewsToShareConfirmationViewModel(ShareApplicationReviewsRequest request);
@@ -26,7 +26,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             _vacancyClient = client;
         }
 
-        public async Task<ApplicationReviewsToUnsuccessfulConfirmationViewModel> GetApplicationReviewsToUnsuccessfulConfirmationViewModel(ApplicationReviewsToUnsuccessfulModel request)
+        public async Task<ApplicationReviewsToUnsuccessfulConfirmationViewModel> GetApplicationReviewsToUnsuccessfulConfirmationViewModel(ApplicationReviewsToUnsuccessfulRouteModel request)
         {
             var applicationsToUnsuccessful = await _vacancyClient.GetVacancyApplicationsForSelectedIdsAsync(request.ApplicationsToUnsuccessful);
 

@@ -63,7 +63,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Application
         [Test]
         public async Task GetApplicationReviewsToUnsuccessfulConfirmationViewModel_ReturnsViewModelWithCorrectData()
         {
-            var request = _fixture.Create<ApplicationReviewsToUnsuccessfulModel>();
+            var request = _fixture.Create<ApplicationReviewsToUnsuccessfulRouteModel>();
             var vacancyApplication1 = _fixture.Create<VacancyApplication>();
             var vacancyApplication2 = _fixture.Create<VacancyApplication>();
             var vacancyApplications = new List<VacancyApplication> { };

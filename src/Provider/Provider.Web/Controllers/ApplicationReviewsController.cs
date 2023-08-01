@@ -25,7 +25,6 @@ namespace Esfa.Recruit.Provider.Web.Controllers
     public class ApplicationReviewsController : Controller
     {
         private readonly IApplicationReviewsOrchestrator _orchestrator;
-        private const string TempApplicationsToUnsuccessful = "ApplicationsToUnsuccessful";
 
         public ApplicationReviewsController(IApplicationReviewsOrchestrator orchestrator)
         {
@@ -58,8 +57,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
                 VacancyId = request.VacancyId,
                 Ukprn = request.Ukprn,
                 ApplicationsToUnsuccessful = request.ApplicationsToUnsuccessful,
-                Outcome = ApplicationReviewStatus.Unsuccessful,
-                TargetView = NavigationTarget.MultipleApplicationsUnsuccessfulConfirmation
+                Outcome = ApplicationReviewStatus.Unsuccessful
             };
             return View(applicationReviewsToUnsuccessfulFeedbackViewModel);
         }
@@ -73,22 +71,17 @@ namespace Esfa.Recruit.Provider.Web.Controllers
             {
                 return View(request);
             }
-            TempData[TempApplicationsToUnsuccessful] = JsonConvert.SerializeObject(request);
-            return RedirectToAction(nameof(ApplicationReviewsToUnsuccessfulConfirmation), new { request.Ukprn, request.VacancyId });
+
+            return RedirectToAction(nameof(ApplicationReviewsToUnsuccessfulConfirmation), new { request.Outcome, 
+                request.ApplicationsToUnsuccessful, request.CandidateFeedback, request.IsMultipleApplications, request.Ukprn, request.VacancyId });
         }
 
         [HttpGet("unsuccessful-confirmation", Name = RouteNames.ApplicationReviewsToUnsuccessfulConfirmation_Get)]
         [FeatureGate(FeatureNames.MultipleApplicationsManagement)]
         public async Task<IActionResult> ApplicationReviewsToUnsuccessfulConfirmation(ApplicationReviewsToUnsuccessfulRouteModel request)
         {
-            if (TempData[TempApplicationsToUnsuccessful] is string model)
-            {
-                var applicationReviewsToUnsuccessfulModel = JsonConvert.DeserializeObject<ApplicationReviewsToUnsuccessfulModel>(model);
-                var applicationReviewsToUnsuccessfulConfirmationViewModel = await _orchestrator.GetApplicationReviewsToUnsuccessfulConfirmationViewModel(applicationReviewsToUnsuccessfulModel);
-                return View(applicationReviewsToUnsuccessfulConfirmationViewModel);
-            }
-
-            return RedirectToAction(nameof(ApplicationReviewsToUnsuccessful), new { request.Ukprn, request.VacancyId });
+            var applicationReviewsToUnsuccessfulConfirmationViewModel = await _orchestrator.GetApplicationReviewsToUnsuccessfulConfirmationViewModel(request);
+            return View(applicationReviewsToUnsuccessfulConfirmationViewModel);
         }
 
         [HttpGet("", Name = RouteNames.ApplicationReviewsToShare_Get)]
