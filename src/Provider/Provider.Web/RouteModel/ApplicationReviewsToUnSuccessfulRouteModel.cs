@@ -3,8 +3,8 @@ using System.Collections.Generic;
 
 namespace Esfa.Recruit.Provider.Web.RouteModel
 {
-    public class ApplicationReviewsToUnSuccessfulRouteModel : VacancyRouteModel
+    public class ApplicationReviewsToUnsuccessfulRouteModel : VacancyRouteModel
     {
-        public List<Guid> ApplicationsToUnSuccessful { get; set; }
+        public List<Guid> ApplicationsToUnsuccessful { get; set; }
     }
 }

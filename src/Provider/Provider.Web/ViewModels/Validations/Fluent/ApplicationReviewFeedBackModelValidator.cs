@@ -7,9 +7,9 @@ using FluentValidation;
 
 namespace Esfa.Recruit.Provider.Web.ViewModels.Validations.Fluent
 {
-    public class ApplicationReviewFeedBackModelValidator : AbstractValidator<IApplicationReviewEditModel>
+    public class ApplicationReviewFeedbackModelValidator : AbstractValidator<IApplicationReviewEditModel>
     {
-        public ApplicationReviewFeedBackModelValidator(IProfanityListProvider profanityListProvider)
+        public ApplicationReviewFeedbackModelValidator(IProfanityListProvider profanityListProvider)
         {
             RuleFor(x => x.Outcome)
                 .NotNull()

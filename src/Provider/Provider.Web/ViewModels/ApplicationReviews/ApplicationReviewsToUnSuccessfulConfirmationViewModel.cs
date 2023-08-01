@@ -3,8 +3,8 @@ using System.Collections.Generic;
 
 namespace Esfa.Recruit.Provider.Web.ViewModels.ApplicationReviews
 {
-    public class ApplicationReviewsToUnSuccessfulConfirmationViewModel : ApplicationReviewsStatusChangeModel
+    public class ApplicationReviewsToUnsuccessfulConfirmationViewModel : ApplicationReviewsToUnsuccessfulModel
     {
-        public new IList<VacancyApplication> ApplicationsToUnSuccessful { get; set; }
+        public new IList<VacancyApplication> ApplicationsToUnsuccessful { get; set; }
     }
 }

@@ -5,14 +5,14 @@ using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
 namespace Esfa.Recruit.Provider.Web.ViewModels.ApplicationReviews
 {
-    public class ApplicationReviewsStatusChangeModel : ApplicationReviewsToUnSuccessfulRouteModel, IApplicationReviewEditModel
+    public class ApplicationReviewsToUnsuccessfulModel : ApplicationReviewsToUnsuccessfulRouteModel, IApplicationReviewEditModel
     {
         public ApplicationReviewStatus? Outcome { get; set; }
         public string CandidateFeedback { get; set; }
         public bool NavigateToFeedbackPage { get; set; }
         public virtual bool IsMultipleApplications
         {
-            get => ApplicationsToUnSuccessful != null && ApplicationsToUnSuccessful.Count > 1;
+            get => ApplicationsToUnsuccessful != null && ApplicationsToUnsuccessful.Count > 1;
         }
         public NavigationTarget TargetView { get; set; }
     }

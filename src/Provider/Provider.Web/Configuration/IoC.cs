@@ -81,8 +81,8 @@ namespace Esfa.Recruit.Provider.Web.Configuration
         private static void RegisterFluentValidators(IServiceCollection services)
         {
             services.AddSingleton<IValidator<ApplicationReviewEditModel>, ApplicationReviewEditModelValidator>();
-            services.AddSingleton<IValidator<ApplicationReviewFeedBackViewModel>, ApplicationReviewFeedBackModelValidator>();
-            services.AddSingleton<IValidator<ApplicationReviewsToUnsuccessfulFeedBackViewModel>, ApplicationReviewFeedBackModelValidator>();
+            services.AddSingleton<IValidator<ApplicationReviewFeedbackViewModel>, ApplicationReviewFeedbackModelValidator>();
+            services.AddSingleton<IValidator<ApplicationReviewsToUnsuccessfulFeedbackViewModel>, ApplicationReviewFeedbackModelValidator>();
             services.AddSingleton<IValidator<ApplicationReviewStatusConfirmationEditModel>, ApplicationReviewStatusConfirmationEditModelValidator>();
             services.AddSingleton<IValidator<ProviderApplicationsReportCreateEditModel>, ProviderApplicationsReportCreateEditModelValidator>();
         }

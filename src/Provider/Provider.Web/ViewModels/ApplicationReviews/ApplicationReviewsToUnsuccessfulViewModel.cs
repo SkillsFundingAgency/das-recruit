@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace Esfa.Recruit.Provider.Web.ViewModels.ApplicationReviews
 {
-    public class ApplicationReviewsToUnsuccessfulViewModel : ApplicationReviewsToUnSuccessfulRouteModel
+    public class ApplicationReviewsToUnsuccessfulViewModel : ApplicationReviewsToUnsuccessfulRouteModel
     {
         public List<VacancyApplication> VacancyApplications { get; set; }
     }
