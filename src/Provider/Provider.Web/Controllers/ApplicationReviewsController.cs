@@ -43,14 +43,14 @@ namespace Esfa.Recruit.Provider.Web.Controllers
         [HttpPost("unsuccessful", Name = RouteNames.ApplicationReviewsToUnsuccessful_Post)]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         [FeatureGate(FeatureNames.MultipleApplicationsManagement)]
-        public async Task<IActionResult> ApplicationReviewsToUnsuccessful(ApplicationReviewsToUnSuccessfulRequest request)
+        public async Task<IActionResult> ApplicationReviewsToUnsuccessful(ApplicationReviewsToUnsuccessfulRequest request)
         {
             if (!ModelState.IsValid)
             {
                 var viewModel = await _orchestrator.GetApplicationReviewsToUnsuccessfulViewModelAsync(request);
                 return View(viewModel);
             }
-            return RedirectToAction(nameof(ApplicationReviewsToUnsuccessfulFeedBack), new { request.ApplicationsToUnSuccessful, request.Ukprn, request.VacancyId });
+            return RedirectToAction(nameof(ApplicationReviewsToUnsuccessfulFeedback), new { request.ApplicationsToUnsuccessful, request.Ukprn, request.VacancyId });
         }
 
         [HttpGet("unsuccessful-feedback", Name = RouteNames.ApplicationReviewsToUnsuccessfulFeedback_Get)]
