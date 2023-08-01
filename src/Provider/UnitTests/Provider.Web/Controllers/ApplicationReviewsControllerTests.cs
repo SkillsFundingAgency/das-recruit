@@ -220,7 +220,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
             var actual = result.Model as ApplicationReviewsToUnSuccessfulConfirmationViewModel;
 
             Assert.IsNotNull(actual);
-            Assert.AreEqual("SomeValue",actual.CandidateFeedback);
+            Assert.AreEqual("SomeValue", actual.CandidateFeedback);
         }
 
         [Test]
@@ -243,7 +243,39 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
             Assert.AreEqual(routeModel.Ukprn, result.RouteValues["Ukprn"]);
             Assert.AreEqual(routeModel.VacancyId, result.RouteValues["VacancyId"]);
         }
- 
+
+
+        [Test]
+        public async Task POST_ApplicationReviewsToUnSuccessfulConfirmation_RedirectsToAction()
+        {
+            var applicationsToUnSuccessfulConfirmed = true;
+            var vacancyApplication1 = _fixture.Create<VacancyApplication>();
+            var vacancyApplication2 = _fixture.Create<VacancyApplication>();
+            var vacancyApplications = new List<VacancyApplication> { };
+            vacancyApplications.Add(vacancyApplication1);
+            vacancyApplications.Add(vacancyApplication2);
+            var request = _fixture
+                .Build<ApplicationReviewsToUnSuccessfulConfirmationViewModel>()
+                .With(x => x.VacancyId, _vacancyId)
+                .With(x => x.Ukprn, _ukprn)
+                .With(x => x.ApplicationsToUnSuccessful, vacancyApplications)
+                .With(x => x.ApplicationsToUnSuccessfulConfirmed, applicationsToUnSuccessfulConfirmed)
+                .Create();
+
+            _orchestrator.Setup(o =>
+                    o.PostApplicationReviewsToUnSuccessfulStatusConfirmationAsync(It.Is<ApplicationReviewsToUnSuccessfulConfirmationViewModel>(y => y == request), It.IsAny<VacancyUser>()))
+                .Returns(Task.CompletedTask);
+
+            var actionResult = await _controller.ApplicationReviewsToUnsuccessfulConfirmation(request);
+            var redirectResult = actionResult as RedirectToRouteResult;
+
+            Assert.NotNull(actionResult);
+            Assert.NotNull(redirectResult);
+            Assert.AreEqual(RouteNames.VacancyManage_Get, redirectResult.RouteName);
+            Assert.AreEqual(_vacancyId, redirectResult.RouteValues["VacancyId"]);
+            Assert.AreEqual(_ukprn, redirectResult.RouteValues["Ukprn"]);
+        }
+
         [Test]
         public async Task GET_ApplicationReviews_ReturnsViewAndModelWith2Applications()
         {

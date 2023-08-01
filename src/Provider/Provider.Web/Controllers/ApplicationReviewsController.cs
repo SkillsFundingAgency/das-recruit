@@ -78,7 +78,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
         }
 
         [HttpGet("unsuccessful-confirmation", Name = RouteNames.ApplicationReviewsToUnSuccessfulConfirmation_Get)]
-        [FeatureGate(FeatureNames.ShareApplicationsFeature)]
+        [FeatureGate(FeatureNames.MultipleApplicationsManagement)]
         public async Task<IActionResult> ApplicationReviewsToUnSuccessfulConfirmation(ApplicationReviewsToUnSuccessfulRouteModel request)
         {
             if (TempData[TempApplicationsToUnSuccessful] is string model)
@@ -89,6 +89,25 @@ namespace Esfa.Recruit.Provider.Web.Controllers
             }
 
             return RedirectToAction(nameof(ApplicationReviewsToUnsuccessful), new { request.Ukprn, request.VacancyId });
+        }
+
+        [HttpPost("unsuccessful-confirmation", Name = RouteNames.ApplicationReviewsToUnSuccessfulConfirmation_Post)]
+        [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+        [FeatureGate(FeatureNames.MultipleApplicationsManagement)]
+        public async Task<IActionResult> ApplicationReviewsToUnsuccessfulConfirmation(ApplicationReviewsToUnSuccessfulConfirmationViewModel request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(request);
+            }
+
+            if (request.ApplicationsToUnSuccessfulConfirmed.HasValue)
+            {
+                await _orchestrator.PostApplicationReviewsToUnSuccessfulStatusConfirmationAsync(request, User.ToVacancyUser());
+                return RedirectToRoute(RouteNames.VacancyManage_Get, new { request.Ukprn, request.VacancyId });
+            }
+
+            return RedirectToRoute(RouteNames.VacancyManage_Get, new { request.Ukprn, request.VacancyId });
         }
 
         [HttpGet("", Name = RouteNames.ApplicationReviewsToShare_Get)]

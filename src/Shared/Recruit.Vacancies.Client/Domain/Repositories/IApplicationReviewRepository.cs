@@ -16,6 +16,6 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Repositories
         Task<List<T>> GetForVacancyAsync<T>(long vacancyReference);
         Task<List<ApplicationReview>> GetForSharedVacancyAsync(long vacancyReference);
         Task<List<T>> GetAllForSelectedIdsAsync<T>(List<Guid> applicationReviewIds);
-        Task<UpdateResult> UpdateApplicationReviewsAsync(IEnumerable<Guid> applicationReviewIds, VacancyUser user, DateTime updatedDate, ApplicationReviewStatus status);
+        Task<UpdateResult> UpdateApplicationReviewsAsync(IEnumerable<Guid> applicationReviewIds, VacancyUser user, DateTime updatedDate, ApplicationReviewStatus status, string candidateFeedback);
     }
 }

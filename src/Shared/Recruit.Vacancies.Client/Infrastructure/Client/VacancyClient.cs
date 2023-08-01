@@ -406,6 +406,18 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return _messaging.SendCommandAsync(command);
         }
 
+        public Task SetApplicationReviewsToUnsuccessful(IEnumerable<VacancyApplication> applicationReviewsToUnSuccessful, string candidateFeedback, VacancyUser user)
+        {
+            var command = new ApplicationReviewsToUnSuccessfulCommand()
+            {
+                ApplicationReviews = applicationReviewsToUnSuccessful,
+                CandidateFeedback = candidateFeedback,
+                User = user
+            };
+
+            return _messaging.SendCommandAsync(command);
+        }
+
         public Task<EmployerProfile> GetEmployerProfileAsync(string employerAccountId, string accountLegalEntityPublicHashedId)
         {
             return _employerProfileRepository.GetAsync(employerAccountId, accountLegalEntityPublicHashedId);
