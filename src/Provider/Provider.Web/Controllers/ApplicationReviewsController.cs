@@ -9,12 +9,15 @@ using Esfa.Recruit.Provider.Web.Orchestrators;
 using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Provider.Web.ViewModels.ApplicationReview;
 using Esfa.Recruit.Provider.Web.ViewModels.ApplicationReviews;
+using Esfa.Recruit.Shared.Web.Models;
 using Esfa.Recruit.Shared.Web.ViewModels;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyApplications;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.FeatureManagement.Mvc;
+using Newtonsoft.Json;
 
 namespace Esfa.Recruit.Provider.Web.Controllers
 {
@@ -40,28 +43,50 @@ namespace Esfa.Recruit.Provider.Web.Controllers
         [HttpPost("unsuccessful", Name = RouteNames.ApplicationReviewsToUnsuccessful_Post)]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         [FeatureGate(FeatureNames.MultipleApplicationsManagement)]
-        public async Task<IActionResult> ApplicationReviewsToUnsuccessful(ApplicationReviewsToUnSuccessfulRequest request)
+        public async Task<IActionResult> ApplicationReviewsToUnsuccessful(ApplicationReviewsToUnsuccessfulRequest request)
         {
             if (!ModelState.IsValid)
             {
                 var viewModel = await _orchestrator.GetApplicationReviewsToUnsuccessfulViewModelAsync(request);
                 return View(viewModel);
             }
-            return RedirectToAction(nameof(ApplicationReviewsToUnsuccessfulFeedBack), new { request.ApplicationsToUnSuccessful, request.Ukprn, request.VacancyId });
+            return RedirectToAction(nameof(ApplicationReviewsToUnsuccessfulFeedback), new { request.ApplicationsToUnsuccessful, request.Ukprn, request.VacancyId });
         }
 
-        [HttpGet("unsuccessful-feedback", Name = RouteNames.ApplicationReviewsToUnSuccessfulFeedback_Get)]
+        [HttpGet("unsuccessful-feedback", Name = RouteNames.ApplicationReviewsToUnsuccessfulFeedback_Get)]
         [FeatureGate(FeatureNames.MultipleApplicationsManagement)]
-        public IActionResult ApplicationReviewsToUnsuccessfulFeedBack(ApplicationReviewsToUnSuccessfulRouteModel request)
+        public IActionResult ApplicationReviewsToUnsuccessfulFeedback(ApplicationReviewsToUnsuccessfulRouteModel request)
         {
-            var applicationReviewsToUnsuccessfulFeedBackViewModel = new ApplicationReviewsToUnsuccessfulFeedBackViewModel
+            var applicationReviewsToUnsuccessfulFeedbackViewModel = new ApplicationReviewsToUnsuccessfulFeedbackViewModel
             {
                 VacancyId = request.VacancyId,
                 Ukprn = request.Ukprn,
-                ApplicationsToUnSuccessful = request.ApplicationsToUnSuccessful
+                ApplicationsToUnsuccessful = request.ApplicationsToUnsuccessful,
+                Outcome = ApplicationReviewStatus.Unsuccessful
             };
+            return View(applicationReviewsToUnsuccessfulFeedbackViewModel);
+        }
 
-            return View(applicationReviewsToUnsuccessfulFeedBackViewModel);
+        [HttpPost("unsuccessful-feedback", Name = RouteNames.ApplicationReviewsToUnsuccessfulFeedback_Post)]
+        [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+        [FeatureGate(FeatureNames.MultipleApplicationsManagement)]
+        public IActionResult ApplicationReviewsToUnsuccessfulFeedback(ApplicationReviewsToUnsuccessfulFeedbackViewModel request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(request);
+            }
+
+            return RedirectToAction(nameof(ApplicationReviewsToUnsuccessfulConfirmation), new { request.Outcome, 
+                request.ApplicationsToUnsuccessful, request.CandidateFeedback, request.IsMultipleApplications, request.Ukprn, request.VacancyId });
+        }
+
+        [HttpGet("unsuccessful-confirmation", Name = RouteNames.ApplicationReviewsToUnsuccessfulConfirmation_Get)]
+        [FeatureGate(FeatureNames.MultipleApplicationsManagement)]
+        public async Task<IActionResult> ApplicationReviewsToUnsuccessfulConfirmation(ApplicationReviewsToUnsuccessfulRouteModel request)
+        {
+            var applicationReviewsToUnsuccessfulConfirmationViewModel = await _orchestrator.GetApplicationReviewsToUnsuccessfulConfirmationViewModel(request);
+            return View(applicationReviewsToUnsuccessfulConfirmationViewModel);
         }
 
         [HttpGet("", Name = RouteNames.ApplicationReviewsToShare_Get)]

@@ -119,7 +119,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
             // Arrange
             var listOfApplicationReviews = new List<Guid>();
             var request = _fixture
-                .Build<ApplicationReviewsToUnSuccessfulRequest>()
+                .Build<ApplicationReviewsToUnsuccessfulRequest>()
                 .With(x => x.VacancyId, _vacancyId)
                 .With(x => x.Ukprn, _ukprn)
                 .Create();
@@ -131,7 +131,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
             // Assert
             Assert.NotNull(actionResult);
             Assert.NotNull(redirectResult);
-            Assert.AreEqual("ApplicationReviewsToUnsuccessfulFeedBack", redirectResult.ActionName);
+            Assert.AreEqual("ApplicationReviewsToUnsuccessfulFeedback", redirectResult.ActionName);
             Assert.AreEqual(_vacancyId, redirectResult.RouteValues["VacancyId"]);
             Assert.AreEqual(_ukprn, redirectResult.RouteValues["Ukprn"]);
         }
@@ -139,21 +139,21 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
         [Test]
         public void GET_ApplicationReviewsToUnsuccessfulFeedback_ReturnsViewAndModelWithNoApplications()
         {
-            var routeModel = _fixture.Create<ApplicationReviewsToUnSuccessfulRouteModel>();
+            var routeModel = _fixture.Create<ApplicationReviewsToUnsuccessfulRouteModel>();
 
-            var result =  _controller.ApplicationReviewsToUnsuccessfulFeedBack(routeModel);
-            
+            var result = _controller.ApplicationReviewsToUnsuccessfulFeedback(routeModel);
+
             var viewResult = (ViewResult)result;
-            var model = viewResult.Model as ApplicationReviewsToUnsuccessfulFeedBackViewModel;
+            var model = viewResult.Model as ApplicationReviewsToUnsuccessfulFeedbackViewModel;
 
             Assert.IsNotNull(model);
             Assert.AreEqual(routeModel.Ukprn, model.Ukprn);
             Assert.AreEqual(routeModel.VacancyId, model.VacancyId);
-            Assert.IsNotNull(model.ApplicationsToUnSuccessful);
+            Assert.IsNotNull(model.ApplicationsToUnsuccessful);
         }
 
         [Test]
-        public async Task GET_ApplicationReviewsToUnsuccessfulFeedBack_ReturnsViewModelWithCorrectNumberOfApplications()
+        public async Task GET_ApplicationReviewsToUnsuccessfulFeedback_ReturnsViewModelWithCorrectNumberOfApplications()
         {
             // Arrange
             var request = _fixture.Create<ShareApplicationReviewsRequest>();
@@ -183,6 +183,24 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
             Assert.AreEqual(actual.VacancyId, request.VacancyId);
         }
 
+        [Test]
+        public void POST_ApplicationReviewsToUnsuccessfulFeedback_RedirectToConfirmation()
+        {
+            var request = _fixture
+                .Build<ApplicationReviewsToUnsuccessfulFeedbackViewModel>()
+                .With(x => x.CandidateFeedback, "abc")
+                .With(x => x.VacancyId, _vacancyId)
+                .With(x => x.Ukprn, _ukprn)
+                .Create();
+
+            var result = _controller.ApplicationReviewsToUnsuccessfulFeedback(request) as RedirectToActionResult;
+
+            Assert.IsNotNull(result);
+            Assert.AreEqual("ApplicationReviewsToUnsuccessfulConfirmation", result.ActionName);
+            Assert.AreEqual(_ukprn, result.RouteValues["Ukprn"]);
+            Assert.AreEqual(_vacancyId, result.RouteValues["VacancyId"]);
+        }
+ 
         [Test]
         public async Task GET_ApplicationReviews_ReturnsViewAndModelWith2Applications()
         {

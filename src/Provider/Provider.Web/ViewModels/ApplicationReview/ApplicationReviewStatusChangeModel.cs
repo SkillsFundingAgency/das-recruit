@@ -1,4 +1,5 @@
 ﻿using Esfa.Recruit.Provider.Web.RouteModel;
+using Esfa.Recruit.Shared.Web.Models;
 using Esfa.Recruit.Shared.Web.ViewModels.ApplicationReview;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 

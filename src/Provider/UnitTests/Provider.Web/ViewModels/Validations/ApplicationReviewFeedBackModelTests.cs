@@ -10,7 +10,7 @@ using Moq;
 
 namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation
 {
-    public class ApplicationReviewFeedBackModelTests
+    public class ApplicationReviewFeedbackModelTests
     {
         public class ShouldRequireCandiateFeedbackIfUnsuccessfulTestData : TheoryData<string, string>
         {
@@ -32,13 +32,13 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation
         {
             var profanityListProvider = Mock.Of<IProfanityListProvider>();
 
-            var m = new ApplicationReviewFeedBackViewModel
+            var m = new ApplicationReviewFeedbackViewModel
             {
                 Outcome = ApplicationReviewStatus.Unsuccessful,
                 CandidateFeedback = candidateFeedback
             };
 
-            var validator = new ApplicationReviewFeedBackModelValidator(profanityListProvider);
+            var validator = new ApplicationReviewFeedbackModelValidator(profanityListProvider);
 
             var result = validator.Validate(m);
 
@@ -51,13 +51,13 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation
         public void CandidateFeedback_WithinMaxWords_ShouldPassValidation()
         {
             var profanityListProvider = Mock.Of<IProfanityListProvider>();
-            var m = new ApplicationReviewFeedBackViewModel
+            var m = new ApplicationReviewFeedbackViewModel
             {
                 Outcome = ApplicationReviewStatus.Unsuccessful,
                 CandidateFeedback = "This is a sample feedback within the word limit."
             };
 
-            var validator = new ApplicationReviewFeedBackModelValidator(profanityListProvider);
+            var validator = new ApplicationReviewFeedbackModelValidator(profanityListProvider);
 
             var result = validator.Validate(m);
 
@@ -68,13 +68,13 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation
         public void CandidateFeedback_ExceedsMaxWords_ShouldFailValidation()
         {
             var profanityListProvider = Mock.Of<IProfanityListProvider>();
-            var m = new ApplicationReviewFeedBackViewModel
+            var m = new ApplicationReviewFeedbackViewModel
             {
                 Outcome = ApplicationReviewStatus.Unsuccessful,
                 CandidateFeedback = string.Join(" ", Enumerable.Repeat("word", ApplicationReviewValidator.CandidateFeedbackMaxWordLength + 1))
             };
 
-            var validator = new ApplicationReviewFeedBackModelValidator(profanityListProvider);
+            var validator = new ApplicationReviewFeedbackModelValidator(profanityListProvider);
 
             var result = validator.Validate(m);
 
@@ -87,13 +87,13 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation
         public void CandidateFeedback_ExceedsMaxCharacters_ShouldFailValidation()
         {
             var profanityListProvider = Mock.Of<IProfanityListProvider>();
-            var m = new ApplicationReviewFeedBackViewModel
+            var m = new ApplicationReviewFeedbackViewModel
             {
                 Outcome = ApplicationReviewStatus.Unsuccessful,
                 CandidateFeedback = new string('W', ApplicationReviewValidator.CandidateFeedbackMaxLength + 1)
             };
 
-            var validator = new ApplicationReviewFeedBackModelValidator(profanityListProvider);
+            var validator = new ApplicationReviewFeedbackModelValidator(profanityListProvider);
 
             var result = validator.Validate(m);
 
@@ -108,13 +108,13 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation
         public void ApplicationReviewShouldBeValid(ApplicationReviewStatus status, string feedback)
         {
             var profanityListProvider = Mock.Of<IProfanityListProvider>();
-            var m = new ApplicationReviewFeedBackViewModel
+            var m = new ApplicationReviewFeedbackViewModel
             {
                 Outcome = status,
                 CandidateFeedback = feedback
             };
 
-            var validator = new ApplicationReviewFeedBackModelValidator(profanityListProvider);
+            var validator = new ApplicationReviewFeedbackModelValidator(profanityListProvider);
 
             var result = validator.Validate(m);
 

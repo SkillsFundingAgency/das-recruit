@@ -5,9 +5,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Esfa.Recruit.Provider.Web.Models.ApplicationReviews
 {
-    public class ApplicationReviewsToUnSuccessfulRequest : VacancyRouteModel
+    public class ApplicationReviewsToUnsuccessfulRequest : VacancyRouteModel
     {
-        [BindProperty(Name = "ApplicationsToShare")]
-        public List<Guid> ApplicationsToUnSuccessful { get; set; }
+        public List<Guid> ApplicationsToUnsuccessful { get; set; }
     }
 }

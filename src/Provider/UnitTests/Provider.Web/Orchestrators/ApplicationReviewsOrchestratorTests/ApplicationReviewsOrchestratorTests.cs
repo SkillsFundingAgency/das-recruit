@@ -61,6 +61,27 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Application
         }
 
         [Test]
+        public async Task GetApplicationReviewsToUnsuccessfulConfirmationViewModel_ReturnsViewModelWithCorrectData()
+        {
+            var request = _fixture.Create<ApplicationReviewsToUnsuccessfulRouteModel>();
+            var vacancyApplication1 = _fixture.Create<VacancyApplication>();
+            var vacancyApplication2 = _fixture.Create<VacancyApplication>();
+            var vacancyApplications = new List<VacancyApplication> { };
+            vacancyApplications.Add(vacancyApplication1);
+            vacancyApplications.Add(vacancyApplication2);
+
+            _vacancyClient.Setup(x => x.GetVacancyApplicationsForSelectedIdsAsync(request.ApplicationsToUnsuccessful))
+                .ReturnsAsync(vacancyApplications);
+
+            var viewModel = await _orchestrator.GetApplicationReviewsToUnsuccessfulConfirmationViewModel(request);
+
+            Assert.IsNotEmpty(viewModel.ApplicationsToUnsuccessful);
+            Assert.That(viewModel.ApplicationsToUnsuccessful.Count(), Is.EqualTo(vacancyApplications.Count()));
+            Assert.AreEqual(viewModel.Ukprn, request.Ukprn);
+            Assert.AreEqual(viewModel.VacancyId, request.VacancyId);
+        }
+
+        [Test]
         public async Task GetApplicationReviewsToShareViewModelAsync_ReturnsViewModelWithCorrectData()
         {
             // Arrange
