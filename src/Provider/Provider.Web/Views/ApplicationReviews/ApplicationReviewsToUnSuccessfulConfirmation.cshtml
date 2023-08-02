@@ -1,5 +1,5 @@
 ﻿@using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyApplications
-@model Esfa.Recruit.Provider.Web.ViewModels.ApplicationReviews.ApplicationReviewsToUnSuccessfulConfirmationViewModel
+@model Esfa.Recruit.Provider.Web.ViewModels.ApplicationReviews.ApplicationReviewsToUnsuccessfulConfirmationViewModel
 
 @section BackLink {
     <a asp-route="@RouteNames.ApplicationReviewsToUnsuccessful_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Back</a>
@@ -17,7 +17,7 @@
             </p>
             <div class="govuk-details__text govuk-!-margin-bottom-6">
                 @{
-                    foreach (VacancyApplication vacancyApplication in Model.ApplicationsToUnSuccessful)
+                    foreach (VacancyApplication vacancyApplication in Model.ApplicationsToUnsuccessful)
                     {
                         <p class="govuk-!-margin-top-2 govuk-!-margin-bottom-2 govuk-!-margin-left-2">@vacancyApplication.CandidateName: @vacancyApplication.GetFriendlyId()</p>
                     }
@@ -31,11 +31,11 @@
             </div>
         </div>
 
-        <form method="post" id="applicationReviewsToUnSuccessful_applications_confirm_form" asp-route="@RouteNames.ApplicationReviewsToUnSuccessfulConfirmation_Post" asp-route-ukprn="@Model.Ukprn" asp-route-vacancyId="@Model.VacancyId">
+        <form method="post" id="applicationReviewsToUnSuccessful_applications_confirm_form" asp-route="@RouteNames.ApplicationReviewsToUnsuccessfulConfirmation_Post" asp-route-ukprn="@Model.Ukprn" asp-route-vacancyId="@Model.VacancyId">
             @Html.HiddenFor(model => model.Outcome)
             @Html.HiddenFor(model => model.CandidateFeedback)
             <div esfa-validation-marker-for="ApplicationsToUnSuccessfulConfirmed" class="govuk-form-group">
-                <div class="govuk-form-group" das-highlight-error-for="ApplicationsToUnSuccessful" error-class="govuk-form-group--error" id="applicationReviewsToUnSuccessful">
+                <div class="govuk-form-group" das-highlight-error-for="ApplicationsToUnsuccessful" error-class="govuk-form-group--error" id="applicationReviewsToUnSuccessful">
                     <fieldset class="govuk-fieldset">
 
                         <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
@@ -44,10 +44,10 @@
                             </h1>
                         </legend>
 
-                        @for (var i = 0; i < Model.ApplicationsToUnSuccessful.Count(); i++)
+                        @for (var i = 0; i < Model.ApplicationsToUnsuccessful.Count(); i++)
                         {
                             <div class="govuk-!-display-none">
-                                @Html.EditorFor(x => x.ApplicationsToUnSuccessful[i])
+                                @Html.EditorFor(x => x.ApplicationsToUnsuccessful[i])
                             </div>
                         }
                         <span esfa-validation-message-for="ApplicationsToUnSuccessfulConfirmed" class="govuk-error-message"></span>

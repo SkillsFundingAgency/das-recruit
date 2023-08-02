@@ -25,7 +25,6 @@ namespace Esfa.Recruit.Provider.Web.Controllers
     public class ApplicationReviewsController : Controller
     {
         private readonly IApplicationReviewsOrchestrator _orchestrator;
-        private const string TempApplicationsToUnSuccessful = "ApplicationsToUnSuccessful";
 
         public ApplicationReviewsController(IApplicationReviewsOrchestrator orchestrator)
         {
@@ -44,57 +43,56 @@ namespace Esfa.Recruit.Provider.Web.Controllers
         [HttpPost("unsuccessful", Name = RouteNames.ApplicationReviewsToUnsuccessful_Post)]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         [FeatureGate(FeatureNames.MultipleApplicationsManagement)]
-        public IActionResult ApplicationReviewsToUnsuccessful(ApplicationReviewsToUnSuccessfulRequest request)
+        public async Task<IActionResult> ApplicationReviewsToUnsuccessful(ApplicationReviewsToUnsuccessfulRequest request)
         {
-            return RedirectToAction(nameof(ApplicationReviewsToUnsuccessfulFeedBack), new { request.ApplicationsToUnSuccessful, request.Ukprn, request.VacancyId });
+            if (!ModelState.IsValid)
+            {
+                var viewModel = await _orchestrator.GetApplicationReviewsToUnsuccessfulViewModelAsync(request);
+                return View(viewModel);
+            }
+            return RedirectToAction(nameof(ApplicationReviewsToUnsuccessfulFeedback), new { request.ApplicationsToUnsuccessful, request.Ukprn, request.VacancyId });
         }
 
-        [HttpGet("unsuccessful-feedback", Name = RouteNames.ApplicationReviewsToUnSuccessfulFeedback_Get)]
+        [HttpGet("unsuccessful-feedback", Name = RouteNames.ApplicationReviewsToUnsuccessfulFeedback_Get)]
         [FeatureGate(FeatureNames.MultipleApplicationsManagement)]
-        public IActionResult ApplicationReviewsToUnsuccessfulFeedBack(ApplicationReviewsToUnSuccessfulRouteModel request)
+        public IActionResult ApplicationReviewsToUnsuccessfulFeedback(ApplicationReviewsToUnsuccessfulRouteModel request)
         {
-            var applicationReviewsToUnsuccessfulFeedBackViewModel = new ApplicationReviewsToUnsuccessfulFeedBackViewModel
+            var applicationReviewsToUnsuccessfulFeedbackViewModel = new ApplicationReviewsToUnsuccessfulFeedbackViewModel
             {
                 VacancyId = request.VacancyId,
                 Ukprn = request.Ukprn,
-                ApplicationsToUnSuccessful = request.ApplicationsToUnSuccessful,
-                Outcome = ApplicationReviewStatus.Unsuccessful,
-                TargetView = NavigationTarget.MultipleApplicationsUnsuccessfulConfirmation
+                ApplicationsToUnsuccessful = request.ApplicationsToUnsuccessful,
+                Outcome = ApplicationReviewStatus.Unsuccessful
             };
-            return View(applicationReviewsToUnsuccessfulFeedBackViewModel);
+            return View(applicationReviewsToUnsuccessfulFeedbackViewModel);
         }
 
-        [HttpPost("unsuccessful-feedback", Name = RouteNames.ApplicationReviewsToUnSuccessfulFeedback_Post)]
+        [HttpPost("unsuccessful-feedback", Name = RouteNames.ApplicationReviewsToUnsuccessfulFeedback_Post)]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         [FeatureGate(FeatureNames.MultipleApplicationsManagement)]
-        public IActionResult ApplicationReviewsToUnsuccessfulFeedBack(ApplicationReviewsToUnsuccessfulFeedBackViewModel request)
+        public IActionResult ApplicationReviewsToUnsuccessfulFeedback(ApplicationReviewsToUnsuccessfulFeedbackViewModel request)
         {
             if (!ModelState.IsValid)
             {
                 return View(request);
             }
-            TempData[TempApplicationsToUnSuccessful] = JsonConvert.SerializeObject(request);
-            return RedirectToAction(nameof(ApplicationReviewsToUnSuccessfulConfirmation), new { request.Ukprn, request.VacancyId });
+
+            return RedirectToAction(nameof(ApplicationReviewsToUnsuccessfulConfirmation), new { request.Outcome, 
+                request.ApplicationsToUnsuccessful, request.CandidateFeedback, request.IsMultipleApplications, request.Ukprn, request.VacancyId });
         }
 
-        [HttpGet("unsuccessful-confirmation", Name = RouteNames.ApplicationReviewsToUnSuccessfulConfirmation_Get)]
+        [HttpGet("unsuccessful-confirmation", Name = RouteNames.ApplicationReviewsToUnsuccessfulConfirmation_Get)]
         [FeatureGate(FeatureNames.MultipleApplicationsManagement)]
-        public async Task<IActionResult> ApplicationReviewsToUnSuccessfulConfirmation(ApplicationReviewsToUnSuccessfulRouteModel request)
+        public async Task<IActionResult> ApplicationReviewsToUnsuccessfulConfirmation(ApplicationReviewsToUnsuccessfulRouteModel request)
         {
-            if (TempData[TempApplicationsToUnSuccessful] is string model)
-            {
-                var applicationReviewsStatusChangeModel = JsonConvert.DeserializeObject<ApplicationReviewsStatusChangeModel>(model);
-                var applicationReviewsToUnSuccessfulConfirmationViewModel = await _orchestrator.GetApplicationReviewsToUnSuccessfulConfirmationViewModel(applicationReviewsStatusChangeModel);
-                return View(applicationReviewsToUnSuccessfulConfirmationViewModel);
-            }
-
-            return RedirectToAction(nameof(ApplicationReviewsToUnsuccessful), new { request.Ukprn, request.VacancyId });
+            var applicationReviewsToUnsuccessfulConfirmationViewModel = await _orchestrator.GetApplicationReviewsToUnsuccessfulConfirmationViewModel(request);
+            return View(applicationReviewsToUnsuccessfulConfirmationViewModel);
         }
 
-        [HttpPost("unsuccessful-confirmation", Name = RouteNames.ApplicationReviewsToUnSuccessfulConfirmation_Post)]
+        [HttpPost("unsuccessful-confirmation", Name = RouteNames.ApplicationReviewsToUnsuccessfulConfirmation_Post)]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         [FeatureGate(FeatureNames.MultipleApplicationsManagement)]
-        public async Task<IActionResult> ApplicationReviewsToUnsuccessfulConfirmation(ApplicationReviewsToUnSuccessfulConfirmationViewModel request)
+        public async Task<IActionResult> ApplicationReviewsToUnsuccessfulConfirmation(ApplicationReviewsToUnsuccessfulConfirmationViewModel request)
         {
             if (!ModelState.IsValid)
             {

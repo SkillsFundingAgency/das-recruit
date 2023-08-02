@@ -114,24 +114,24 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
         }
 
         [Test]
-        public void POST_ApplicationReviewsToUnsuccessful_RedirectsToAction()
+        public async Task POST_ApplicationReviewsToUnsuccessful_RedirectsToAction()
         {
             // Arrange
             var listOfApplicationReviews = new List<Guid>();
             var request = _fixture
-                .Build<ApplicationReviewsToUnSuccessfulRequest>()
+                .Build<ApplicationReviewsToUnsuccessfulRequest>()
                 .With(x => x.VacancyId, _vacancyId)
                 .With(x => x.Ukprn, _ukprn)
                 .Create();
 
             // Act
-            var actionResult = _controller.ApplicationReviewsToUnsuccessful(request);
+            var actionResult =await _controller.ApplicationReviewsToUnsuccessful(request);
 
             var redirectResult = actionResult as RedirectToActionResult;
             // Assert
             Assert.NotNull(actionResult);
             Assert.NotNull(redirectResult);
-            Assert.AreEqual("ApplicationReviewsToUnsuccessfulFeedBack", redirectResult.ActionName);
+            Assert.AreEqual("ApplicationReviewsToUnsuccessfulFeedback", redirectResult.ActionName);
             Assert.AreEqual(_vacancyId, redirectResult.RouteValues["VacancyId"]);
             Assert.AreEqual(_ukprn, redirectResult.RouteValues["Ukprn"]);
         }
@@ -139,21 +139,21 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
         [Test]
         public void GET_ApplicationReviewsToUnsuccessfulFeedback_ReturnsViewAndModelWithNoApplications()
         {
-            var routeModel = _fixture.Create<ApplicationReviewsToUnSuccessfulRouteModel>();
+            var routeModel = _fixture.Create<ApplicationReviewsToUnsuccessfulRouteModel>();
 
-            var result = _controller.ApplicationReviewsToUnsuccessfulFeedBack(routeModel);
+            var result = _controller.ApplicationReviewsToUnsuccessfulFeedback(routeModel);
 
             var viewResult = (ViewResult)result;
-            var model = viewResult.Model as ApplicationReviewsToUnsuccessfulFeedBackViewModel;
+            var model = viewResult.Model as ApplicationReviewsToUnsuccessfulFeedbackViewModel;
 
             Assert.IsNotNull(model);
             Assert.AreEqual(routeModel.Ukprn, model.Ukprn);
             Assert.AreEqual(routeModel.VacancyId, model.VacancyId);
-            Assert.IsNotNull(model.ApplicationsToUnSuccessful);
+            Assert.IsNotNull(model.ApplicationsToUnsuccessful);
         }
 
         [Test]
-        public async Task GET_ApplicationReviewsToUnsuccessfulFeedBack_ReturnsViewModelWithCorrectNumberOfApplications()
+        public async Task GET_ApplicationReviewsToUnsuccessfulFeedback_ReturnsViewModelWithCorrectNumberOfApplications()
         {
             // Arrange
             var request = _fixture.Create<ShareApplicationReviewsRequest>();
@@ -184,66 +184,39 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
         }
 
         [Test]
-        public void POST_ApplicationReviewsToUnsuccessfulFeedBack_RedirectToConfirmation()
+        public void POST_ApplicationReviewsToUnsuccessfulFeedback_RedirectToConfirmation()
         {
             var request = _fixture
-                .Build<ApplicationReviewsToUnsuccessfulFeedBackViewModel>()
+                .Build<ApplicationReviewsToUnsuccessfulFeedbackViewModel>()
                 .With(x => x.CandidateFeedback, "abc")
                 .With(x => x.VacancyId, _vacancyId)
                 .With(x => x.Ukprn, _ukprn)
                 .Create();
 
-            var result = _controller.ApplicationReviewsToUnsuccessfulFeedBack(request) as RedirectToActionResult;
+            var result = _controller.ApplicationReviewsToUnsuccessfulFeedback(request) as RedirectToActionResult;
 
             Assert.IsNotNull(result);
-            Assert.AreEqual("ApplicationReviewsToUnSuccessfulConfirmation", result.ActionName);
+            Assert.AreEqual("ApplicationReviewsToUnsuccessfulConfirmation", result.ActionName);
             Assert.AreEqual(_ukprn, result.RouteValues["Ukprn"]);
             Assert.AreEqual(_vacancyId, result.RouteValues["VacancyId"]);
         }
 
         [Test]
-        public async Task GET_ApplicationReviewsToUnSuccessfulConfirmation_WithTempData_RedirectToConfirmationView()
+        public async Task GET_ApplicationReviewsToUnSuccessfulConfirmation_RedirectToConfirmationView()
         {
-            var mockTempData = new Mock<ITempDataDictionary>();
-            mockTempData.SetupGet(t => t[It.IsAny<string>()]).Returns("{\"CandidateFeedback\": \"SomeValue\"}");
-
             _orchestrator.Setup(o =>
-                    o.GetApplicationReviewsToUnSuccessfulConfirmationViewModel(It.IsAny<ApplicationReviewsStatusChangeModel>()))
-                .ReturnsAsync(new ApplicationReviewsToUnSuccessfulConfirmationViewModel { CandidateFeedback = "SomeValue" });
+                    o.GetApplicationReviewsToUnsuccessfulConfirmationViewModel(It.IsAny<ApplicationReviewsToUnsuccessfulRouteModel>()))
+                .ReturnsAsync(new ApplicationReviewsToUnsuccessfulConfirmationViewModel { CandidateFeedback = "SomeValue" });
 
-            _controller.TempData = mockTempData.Object;
+            var routeModel = _fixture.Create<ApplicationReviewsToUnsuccessfulRouteModel>();
 
-            var routeModel = _fixture.Create<ApplicationReviewsToUnSuccessfulRouteModel>();
+            var result = await _controller.ApplicationReviewsToUnsuccessfulConfirmation(routeModel) as ViewResult;
 
-            var result = await _controller.ApplicationReviewsToUnSuccessfulConfirmation(routeModel) as ViewResult;
-
-            var actual = result.Model as ApplicationReviewsToUnSuccessfulConfirmationViewModel;
+            var actual = result.Model as ApplicationReviewsToUnsuccessfulConfirmationViewModel;
 
             Assert.IsNotNull(actual);
             Assert.AreEqual("SomeValue", actual.CandidateFeedback);
         }
-
-        [Test]
-        public async Task GET_ApplicationReviewsToUnSuccessfulConfirmation_WithoutTempData_RedirectToUnsuccessfulView()
-        {
-            var mockTempData = new Mock<ITempDataDictionary>();
-
-            _orchestrator.Setup(o =>
-                    o.GetApplicationReviewsToUnSuccessfulConfirmationViewModel(It.IsAny<ApplicationReviewsStatusChangeModel>()))
-                .ReturnsAsync(new ApplicationReviewsToUnSuccessfulConfirmationViewModel { CandidateFeedback = "SomeValue" });
-
-            _controller.TempData = mockTempData.Object;
-
-            var routeModel = _fixture.Create<ApplicationReviewsToUnSuccessfulRouteModel>();
-
-            var result = await _controller.ApplicationReviewsToUnSuccessfulConfirmation(routeModel) as RedirectToActionResult;
-
-            Assert.IsNotNull(result);
-            Assert.AreEqual("ApplicationReviewsToUnsuccessful", result.ActionName);
-            Assert.AreEqual(routeModel.Ukprn, result.RouteValues["Ukprn"]);
-            Assert.AreEqual(routeModel.VacancyId, result.RouteValues["VacancyId"]);
-        }
-
 
         [Test]
         public async Task POST_ApplicationReviewsToUnSuccessfulConfirmation_RedirectsToAction()
@@ -255,15 +228,15 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
             vacancyApplications.Add(vacancyApplication1);
             vacancyApplications.Add(vacancyApplication2);
             var request = _fixture
-                .Build<ApplicationReviewsToUnSuccessfulConfirmationViewModel>()
+                .Build<ApplicationReviewsToUnsuccessfulConfirmationViewModel>()
                 .With(x => x.VacancyId, _vacancyId)
                 .With(x => x.Ukprn, _ukprn)
-                .With(x => x.ApplicationsToUnSuccessful, vacancyApplications)
+                .With(x => x.ApplicationsToUnsuccessful, vacancyApplications)
                 .With(x => x.ApplicationsToUnSuccessfulConfirmed, applicationsToUnSuccessfulConfirmed)
                 .Create();
 
             _orchestrator.Setup(o =>
-                    o.PostApplicationReviewsToUnSuccessfulStatusConfirmationAsync(It.Is<ApplicationReviewsToUnSuccessfulConfirmationViewModel>(y => y == request), It.IsAny<VacancyUser>()))
+                    o.PostApplicationReviewsToUnSuccessfulStatusConfirmationAsync(It.Is<ApplicationReviewsToUnsuccessfulConfirmationViewModel>(y => y == request), It.IsAny<VacancyUser>()))
                 .Returns(Task.CompletedTask);
 
             var actionResult = await _controller.ApplicationReviewsToUnsuccessfulConfirmation(request);

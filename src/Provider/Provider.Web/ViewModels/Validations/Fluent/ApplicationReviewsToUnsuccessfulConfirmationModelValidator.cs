@@ -5,7 +5,7 @@ using FluentValidation;
 
 namespace Esfa.Recruit.Provider.Web.ViewModels.Validations.Fluent
 {
-    public class ApplicationReviewsToUnsuccessfulConfirmationModelValidator : AbstractValidator<ApplicationReviewsToUnSuccessfulConfirmationViewModel>
+    public class ApplicationReviewsToUnsuccessfulConfirmationModelValidator : AbstractValidator<ApplicationReviewsToUnsuccessfulConfirmationViewModel>
     {
         public ApplicationReviewsToUnsuccessfulConfirmationModelValidator(IProfanityListProvider profanityListProvider)
         {

@@ -1,6 +1,6 @@
 ﻿@using Esfa.Recruit.Shared.Web.TagHelpers
 @using Microsoft.AspNetCore.Mvc.TagHelpers
-@model Esfa.Recruit.Provider.Web.ViewModels.ApplicationReviews.ApplicationReviewsToUnsuccessfulFeedBackViewModel
+@model Esfa.Recruit.Provider.Web.ViewModels.ApplicationReviews.ApplicationReviewsToUnsuccessfulFeedbackViewModel
 
 @{
     ViewBag.GaData.Vpv = "/recruitment/provider/page-application-reviews-to-make-multiple-unsuccessful-feedback";
@@ -16,17 +16,15 @@
         <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState}' />
         <div>
             <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">
-                @Model.ApplicationsToUnSuccessfulFeedbackHeaderTitle
+                @Model.ApplicationsToUnsuccessfulFeedbackHeaderTitle
             </h1>
         </div>
-        <form asp-route="@RouteNames.ApplicationReviewsToUnSuccessfulFeedback_Post" asp-route-ukprn="@Model.Ukprn" asp-route-vacancyId="@Model.VacancyId">
+        <form asp-route="@RouteNames.ApplicationReviewsToUnsuccessfulFeedback_Post" asp-route-ukprn="@Model.Ukprn" asp-route-vacancyId="@Model.VacancyId">
             @Html.HiddenFor(model => model.Outcome)
-            @Html.HiddenFor(model => model.IsMultipleApplications)
-            @Html.HiddenFor(model => model.TargetView)
-            @for (var i = 0; i < Model.ApplicationsToUnSuccessful.Count(); i++)
+            @for (var i = 0; i < Model.ApplicationsToUnsuccessful.Count(); i++)
             {
                 <div class="govuk-!-display-none">
-                    @Html.EditorFor(x => x.ApplicationsToUnSuccessful[i])
+                    @Html.EditorFor(x => x.ApplicationsToUnsuccessful[i])
                 </div>
             }
 
@@ -34,7 +32,7 @@
                 <div class="govuk-character-count"
                      id="conditional-contact-3" data-module="govuk-character-count" data-maxwords="200">
                     <span esfa-validation-message-for="CandidateFeedback" class="govuk-error-message"></span>
-                    <span class="govuk-hint">@Model.ApplicationsToUnSuccessfulFeedbackDescription</span>
+                    <span class="govuk-hint">@Model.ApplicationsToUnsuccessfulFeedbackDescription</span>
                     <textarea asp-for="CandidateFeedback" class="govuk-textarea govuk-js-character-count" id="CandidateFeedbackMultipleUnsuccessful" name="CandidateFeedback" rows="6"></textarea>
                     <div id="CandidateFeedbackMultipleUnsuccessful-info" class="govuk-hint govuk-character-count__message">
                         You have 200 words remaining

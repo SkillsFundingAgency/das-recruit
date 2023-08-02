@@ -1,15 +1,16 @@
-﻿using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyApplications;
+﻿using Esfa.Recruit.Provider.Web.RouteModel;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyApplications;
 using System.Collections.Generic;
 
 namespace Esfa.Recruit.Provider.Web.ViewModels.ApplicationReviews
 {
-    public class ApplicationReviewsToUnSuccessfulConfirmationViewModel : ApplicationReviewsStatusChangeModel
+    public class ApplicationReviewsToUnsuccessfulConfirmationViewModel : ApplicationReviewsToUnsuccessfulRouteModel
     {
-        public new IList<VacancyApplication> ApplicationsToUnSuccessful { get; set; }
+        public new IList<VacancyApplication> ApplicationsToUnsuccessful { get; set; }
         public bool? ApplicationsToUnSuccessfulConfirmed { get; set; }
         public override bool IsMultipleApplications
         {
-            get => ApplicationsToUnSuccessful != null && ApplicationsToUnSuccessful.Count > 1;
+            get => ApplicationsToUnsuccessful != null && ApplicationsToUnsuccessful.Count > 1;
         }
         public string ApplicationsToUnSuccessfulFeedbackHeaderTitle => IsMultipleApplications ? "Make multiple applications unsuccessful" : "Make application unsuccessful";
         public string ApplicationsToUnSuccessfulHeaderDescription =>

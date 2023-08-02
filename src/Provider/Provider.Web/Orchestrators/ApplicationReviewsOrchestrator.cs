@@ -10,12 +10,12 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
 {
     public interface IApplicationReviewsOrchestrator
     {
-        Task<ApplicationReviewsToUnSuccessfulConfirmationViewModel> GetApplicationReviewsToUnSuccessfulConfirmationViewModel(ApplicationReviewsStatusChangeModel request);
+        Task<ApplicationReviewsToUnsuccessfulConfirmationViewModel> GetApplicationReviewsToUnsuccessfulConfirmationViewModel(ApplicationReviewsToUnsuccessfulRouteModel request);
         Task<ApplicationReviewsToUnsuccessfulViewModel> GetApplicationReviewsToUnsuccessfulViewModelAsync(VacancyRouteModel rm);
         Task<ShareMultipleApplicationReviewsViewModel> GetApplicationReviewsToShareViewModelAsync(VacancyRouteModel rm);
         Task<ShareMultipleApplicationReviewsConfirmationViewModel> GetApplicationReviewsToShareConfirmationViewModel(ShareApplicationReviewsRequest request);
         Task PostApplicationReviewsStatusConfirmationAsync(ShareApplicationReviewsPostRequest request, VacancyUser user);
-        Task PostApplicationReviewsToUnSuccessfulStatusConfirmationAsync(ApplicationReviewsToUnSuccessfulConfirmationViewModel request, VacancyUser user);
+        Task PostApplicationReviewsToUnSuccessfulStatusConfirmationAsync(ApplicationReviewsToUnsuccessfulConfirmationViewModel request, VacancyUser user);
     }
 
     public class ApplicationReviewsOrchestrator : IApplicationReviewsOrchestrator
@@ -27,15 +27,15 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             _vacancyClient = client;
         }
 
-        public async Task<ApplicationReviewsToUnSuccessfulConfirmationViewModel> GetApplicationReviewsToUnSuccessfulConfirmationViewModel(ApplicationReviewsStatusChangeModel request)
+        public async Task<ApplicationReviewsToUnsuccessfulConfirmationViewModel> GetApplicationReviewsToUnsuccessfulConfirmationViewModel(ApplicationReviewsToUnsuccessfulRouteModel request)
         {
-            var applicationsToUnSuccessful = await _vacancyClient.GetVacancyApplicationsForSelectedIdsAsync(request.ApplicationsToUnSuccessful);
+            var applicationsToUnsuccessful = await _vacancyClient.GetVacancyApplicationsForSelectedIdsAsync(request.ApplicationsToUnsuccessful);
 
-            return new ApplicationReviewsToUnSuccessfulConfirmationViewModel
+            return new ApplicationReviewsToUnsuccessfulConfirmationViewModel
             {
                 VacancyId = request.VacancyId,
                 Ukprn = request.Ukprn,
-                ApplicationsToUnSuccessful = applicationsToUnSuccessful,
+                ApplicationsToUnsuccessful= applicationsToUnsuccessful,
                 CandidateFeedback = request.CandidateFeedback
             };
         }
@@ -86,9 +86,9 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             await _vacancyClient.SetApplicationReviewsShared(request.ApplicationReviewsToShare, user);
         }
 
-        public async Task PostApplicationReviewsToUnSuccessfulStatusConfirmationAsync(ApplicationReviewsToUnSuccessfulConfirmationViewModel request, VacancyUser user)
+        public async Task PostApplicationReviewsToUnSuccessfulStatusConfirmationAsync(ApplicationReviewsToUnsuccessfulConfirmationViewModel request, VacancyUser user)
         {
-            await _vacancyClient.SetApplicationReviewsToUnsuccessful(request.ApplicationsToUnSuccessful, request.CandidateFeedback, user);
+            await _vacancyClient.SetApplicationReviewsToUnsuccessful(request.ApplicationsToUnsuccessful, request.CandidateFeedback, user);
         }
 
     }

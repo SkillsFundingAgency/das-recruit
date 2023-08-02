@@ -2,7 +2,7 @@
 
 namespace Esfa.Recruit.Provider.Web.ViewModels.ApplicationReview
 {
-    public class ApplicationReviewFeedBackViewModel : ApplicationReviewStatusChangeModel
+    public class ApplicationReviewFeedbackViewModel : ApplicationReviewStatusChangeModel
     {
         public string Name { get; set; }
         public IList<string> OrderedFieldNames => new List<string>
