@@ -26,8 +26,13 @@
                 <span esfa-validation-message-for="ApplicationsToUnsuccessful" class="govuk-error-message"></span>
                 <div esfa-validation-marker-for="ApplicationsToUnsuccessful" id="Multiple-unsuccessful-candidate-feedback" class="govuk-form-group">
                     <table class="govuk-table" aria-label="Unsuccessful applications" data-checkboxes-select-all>
-
-                        <partial name="@PartialNames.MultipleApplicationsTableHeader" />
+                        <thead class="govuk-table__head">
+                            <tr class="govuk-table__row">
+                                <th scope="col" class="govuk-table__header das-table-cell-width-4" data-checkboxes-select-all-cell>
+                                </th>
+                                <partial name="@PartialNames.MultipleApplicationsTableHeader" />
+                            </tr>
+                        </thead>
 
                         <tbody class="govuk-table__body">
                                 @{
