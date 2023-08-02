@@ -36,6 +36,7 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.VacancyManage
 
         public bool CanShowVacancyAnalytics => IsVacancyLive || IsVacancyClosed;
         public bool CanShowShareMultipleApplicationsLink => (IsVacancyLive || IsVacancyClosed) && HasApplications;
+        public bool CanMultipleApplicationsUnsuccessfulLink => (IsVacancyLive || IsVacancyClosed) && HasApplications;
         public bool HasAnalytics => AnalyticsSummary != null;
         public bool IsVacancyLive => Status == VacancyStatus.Live;
         public bool IsVacancyClosed => Status == VacancyStatus.Closed;

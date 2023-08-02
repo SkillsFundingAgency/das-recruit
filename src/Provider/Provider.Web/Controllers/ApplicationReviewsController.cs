@@ -8,6 +8,7 @@ using Esfa.Recruit.Provider.Web.Models.ApplicationReviews;
 using Esfa.Recruit.Provider.Web.Orchestrators;
 using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Provider.Web.ViewModels.ApplicationReview;
+using Esfa.Recruit.Provider.Web.ViewModels.ApplicationReviews;
 using Esfa.Recruit.Shared.Web.ViewModels;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyApplications;
 using Microsoft.AspNetCore.Authorization;
@@ -18,7 +19,6 @@ using Microsoft.FeatureManagement.Mvc;
 namespace Esfa.Recruit.Provider.Web.Controllers
 {
     [Route(RoutePaths.AccountApplicationReviewsRoutePath)]
-    [FeatureGate(FeatureNames.ShareApplicationsFeature)]
     public class ApplicationReviewsController : Controller
     {
         private readonly IApplicationReviewsOrchestrator _orchestrator;
@@ -28,8 +28,45 @@ namespace Esfa.Recruit.Provider.Web.Controllers
             _orchestrator = orchestrator;
         }
 
+        [HttpGet("unsuccessful", Name = RouteNames.ApplicationReviewsToUnsuccessful_Get)]
+        [FeatureGate(FeatureNames.MultipleApplicationsManagement)]
+        public async Task<IActionResult> ApplicationReviewsToUnsuccessful(VacancyRouteModel rm)
+        {
+            var viewModel = await _orchestrator.GetApplicationReviewsToUnsuccessfulViewModelAsync(rm);
+
+            return View(viewModel);
+        }
+
+        [HttpPost("unsuccessful", Name = RouteNames.ApplicationReviewsToUnsuccessful_Post)]
+        [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+        [FeatureGate(FeatureNames.MultipleApplicationsManagement)]
+        public async Task<IActionResult> ApplicationReviewsToUnsuccessful(ApplicationReviewsToUnSuccessfulRequest request)
+        {
+            if (!ModelState.IsValid)
+            {
+                var viewModel = await _orchestrator.GetApplicationReviewsToUnsuccessfulViewModelAsync(request);
+                return View(viewModel);
+            }
+            return RedirectToAction(nameof(ApplicationReviewsToUnsuccessfulFeedBack), new { request.ApplicationsToUnSuccessful, request.Ukprn, request.VacancyId });
+        }
+
+        [HttpGet("unsuccessful-feedback", Name = RouteNames.ApplicationReviewsToUnSuccessfulFeedback_Get)]
+        [FeatureGate(FeatureNames.MultipleApplicationsManagement)]
+        public IActionResult ApplicationReviewsToUnsuccessfulFeedBack(ApplicationReviewsToUnSuccessfulRouteModel request)
+        {
+            var applicationReviewsToUnsuccessfulFeedBackViewModel = new ApplicationReviewsToUnsuccessfulFeedBackViewModel
+            {
+                VacancyId = request.VacancyId,
+                Ukprn = request.Ukprn,
+                ApplicationsToUnSuccessful = request.ApplicationsToUnSuccessful
+            };
+
+            return View(applicationReviewsToUnsuccessfulFeedBackViewModel);
+        }
+
         [HttpGet("", Name = RouteNames.ApplicationReviewsToShare_Get)]
-        public async Task<IActionResult> ApplicationReviews(VacancyRouteModel rm)
+        [FeatureGate(FeatureNames.ShareApplicationsFeature)]
+        public async Task<IActionResult> ApplicationReviewsToShare(VacancyRouteModel rm)
         {
             var viewModel = await _orchestrator.GetApplicationReviewsToShareViewModelAsync(rm);
 
@@ -38,12 +75,14 @@ namespace Esfa.Recruit.Provider.Web.Controllers
 
         [HttpPost("", Name = RouteNames.ApplicationReviewsToShare_Post)]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+        [FeatureGate(FeatureNames.ShareApplicationsFeature)]
         public IActionResult ApplicationReviewsToShare(ApplicationReviewsToShareRouteModel rm)
         {
             return RedirectToAction(nameof(ApplicationReviewsToShareConfirmation), new { rm.ApplicationsToShare, rm.Ukprn, rm.VacancyId });
         }
 
         [HttpGet("share", Name = RouteNames.ApplicationReviewsToShareConfirmation_Get)]
+        [FeatureGate(FeatureNames.ShareApplicationsFeature)]
         public async Task<IActionResult> ApplicationReviewsToShareConfirmation(ShareApplicationReviewsRequest request)
         {
             var shareApplicationsConfirmationViewModel = await _orchestrator.GetApplicationReviewsToShareConfirmationViewModel(request);
@@ -52,9 +91,10 @@ namespace Esfa.Recruit.Provider.Web.Controllers
 
         [HttpPost("share", Name = RouteNames.ApplicationReviewsToShareConfirmation_Post)]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
+        [FeatureGate(FeatureNames.ShareApplicationsFeature)]
         public async Task<IActionResult> ApplicationReviewsToShareConfirmation(ShareApplicationReviewsPostRequest request)
         {
-            if (request.ShareApplicationsConfirmed) 
+            if (request.ShareApplicationsConfirmed)
             {
                 await _orchestrator.PostApplicationReviewsStatusConfirmationAsync(request, User.ToVacancyUser());
                 SetSharedApplicationsBannerMessageViaTempData(request.ApplicationReviewsToShare);
@@ -69,7 +109,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
             if (!sharedApplications.Any())
                 return;
 
-            if (sharedApplications.Count() == 1) 
+            if (sharedApplications.Count() == 1)
             {
                 TempData.Add(TempDataKeys.SharedSingleApplicationsHeader, string.Format(InfoMessages.SharedSingleApplicationsBannerHeader, sharedApplications.First().CandidateName));
                 return;

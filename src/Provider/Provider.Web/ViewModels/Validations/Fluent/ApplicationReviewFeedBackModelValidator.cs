@@ -1,20 +1,20 @@
-﻿using Esfa.Recruit.Shared.Web.ViewModels.ApplicationReview;
+﻿using Esfa.Recruit.Provider.Web.ViewModels.ApplicationReview;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using FluentValidation;
 
-namespace Esfa.Recruit.Shared.Web.ViewModels.Validations.Fluent
+namespace Esfa.Recruit.Provider.Web.ViewModels.Validations.Fluent
 {
-    public class ApplicationReviewEditModelValidator : AbstractValidator<IApplicationReviewEditModel>
+    public class ApplicationReviewFeedBackModelValidator : AbstractValidator<ApplicationReviewFeedBackViewModel>
     {
-        public ApplicationReviewEditModelValidator(IProfanityListProvider profanityListProvider)
+        public ApplicationReviewFeedBackModelValidator(IProfanityListProvider profanityListProvider)
         {
             RuleFor(x => x.Outcome)
                 .NotNull()
                 .WithMessage(ApplicationReviewValidator.OutcomeRequired);
 
-            When(x => x.Outcome == ApplicationReviewStatus.EmployerUnsuccessful || (x.Outcome == ApplicationReviewStatus.Unsuccessful && !x.NavigateToFeedbackPage), () =>
+            When(x => x.Outcome == ApplicationReviewStatus.Unsuccessful, () =>
             {
                 RuleFor(x => x.CandidateFeedback)
                     .NotEmpty()

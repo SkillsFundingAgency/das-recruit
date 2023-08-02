@@ -66,6 +66,7 @@ namespace Esfa.Recruit.Shared.Web.Extensions
             { FilteringOptions.Submitted, "Pending DfE review" },
             { FilteringOptions.Referred, "Rejected" },
             { FilteringOptions.Transferred, "Transferred from provider" },
+            { FilteringOptions.EmployerReviewedApplications, "with employer-reviewed applications" },
             { QualificationWeighting.Desired, "Desirable" },
             { ApplicationReviewStatus.InReview, "in review" }
         };

@@ -39,7 +39,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
             _fixture = new Fixture();
             _orchestrator = new Mock<IApplicationReviewsOrchestrator>();
             _vacancyId = Guid.NewGuid();
-            _ukprn = 10000234;          
+            _ukprn = 10000234;
             var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
             {
                 new Claim(ProviderRecruitClaims.IdamsUserUkprnClaimsTypeIdentifier, _ukprn.ToString()),
@@ -54,6 +54,133 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
             {
                 HttpContext = new DefaultHttpContext { User = user }
             };
+        }
+
+        [Test]
+        public async Task GET_ApplicationReviewsToUnsuccessful_ReturnsViewAndModelWith2Applications()
+        {
+            // Arrange
+            var routeModel = _fixture.Create<VacancyRouteModel>();
+            var vacancyApplication1 = _fixture.Create<VacancyApplication>();
+            var vacancyApplication2 = _fixture.Create<VacancyApplication>();
+            var vacancyApplications = new List<VacancyApplication> { };
+            vacancyApplications.Add(vacancyApplication1);
+            vacancyApplications.Add(vacancyApplication2);
+
+            _orchestrator.Setup(o =>
+                    o.GetApplicationReviewsToUnsuccessfulViewModelAsync(It.Is<VacancyRouteModel>(y => y == routeModel)))
+                .ReturnsAsync(new ApplicationReviewsToUnsuccessfulViewModel
+                {
+                    VacancyId = routeModel.VacancyId,
+                    Ukprn = routeModel.Ukprn,
+                    VacancyApplications = vacancyApplications
+                });
+
+            // Act
+            var result = await _controller.ApplicationReviewsToUnsuccessful(routeModel) as ViewResult;
+
+            // Assert
+            var actual = result.Model as ApplicationReviewsToUnsuccessfulViewModel;
+            Assert.IsNotEmpty(actual.VacancyApplications);
+            Assert.That(actual.VacancyApplications.Count(), Is.EqualTo(2));
+            Assert.AreEqual(actual.Ukprn, routeModel.Ukprn);
+            Assert.AreEqual(actual.VacancyId, routeModel.VacancyId);
+        }
+
+        [Test]
+        public async Task GET_ApplicationReviewsToUnsuccessful_ReturnsViewAndModelWithNoApplications()
+        {
+            // Arrange
+            var routeModel = _fixture.Create<VacancyRouteModel>();
+
+            _orchestrator.Setup(o =>
+                    o.GetApplicationReviewsToUnsuccessfulViewModelAsync(It.Is<VacancyRouteModel>(y => y == routeModel)))
+                .ReturnsAsync(new ApplicationReviewsToUnsuccessfulViewModel
+                {
+                    VacancyId = routeModel.VacancyId,
+                    Ukprn = routeModel.Ukprn,
+                    VacancyApplications = new List<VacancyApplication>()
+                });
+
+            // Act
+            var result = await _controller.ApplicationReviewsToUnsuccessful(routeModel) as ViewResult;
+
+            // Assert
+            var actual = result.Model as ApplicationReviewsToUnsuccessfulViewModel;
+            Assert.IsEmpty(actual.VacancyApplications);
+            Assert.That(actual.VacancyApplications.Count(), Is.EqualTo(0));
+            Assert.AreEqual(actual.Ukprn, routeModel.Ukprn);
+            Assert.AreEqual(actual.VacancyId, routeModel.VacancyId);
+        }
+
+        [Test]
+        public async Task POST_ApplicationReviewsToUnsuccessful_RedirectsToAction()
+        {
+            // Arrange
+            var listOfApplicationReviews = new List<Guid>();
+            var request = _fixture
+                .Build<ApplicationReviewsToUnSuccessfulRequest>()
+                .With(x => x.VacancyId, _vacancyId)
+                .With(x => x.Ukprn, _ukprn)
+                .Create();
+
+            // Act
+            var actionResult =await _controller.ApplicationReviewsToUnsuccessful(request);
+
+            var redirectResult = actionResult as RedirectToActionResult;
+            // Assert
+            Assert.NotNull(actionResult);
+            Assert.NotNull(redirectResult);
+            Assert.AreEqual("ApplicationReviewsToUnsuccessfulFeedBack", redirectResult.ActionName);
+            Assert.AreEqual(_vacancyId, redirectResult.RouteValues["VacancyId"]);
+            Assert.AreEqual(_ukprn, redirectResult.RouteValues["Ukprn"]);
+        }
+
+        [Test]
+        public void GET_ApplicationReviewsToUnsuccessfulFeedback_ReturnsViewAndModelWithNoApplications()
+        {
+            var routeModel = _fixture.Create<ApplicationReviewsToUnSuccessfulRouteModel>();
+
+            var result =  _controller.ApplicationReviewsToUnsuccessfulFeedBack(routeModel);
+            
+            var viewResult = (ViewResult)result;
+            var model = viewResult.Model as ApplicationReviewsToUnsuccessfulFeedBackViewModel;
+
+            Assert.IsNotNull(model);
+            Assert.AreEqual(routeModel.Ukprn, model.Ukprn);
+            Assert.AreEqual(routeModel.VacancyId, model.VacancyId);
+            Assert.IsNotNull(model.ApplicationsToUnSuccessful);
+        }
+
+        [Test]
+        public async Task GET_ApplicationReviewsToUnsuccessfulFeedBack_ReturnsViewModelWithCorrectNumberOfApplications()
+        {
+            // Arrange
+            var request = _fixture.Create<ShareApplicationReviewsRequest>();
+            var vacancyApplication1 = _fixture.Create<VacancyApplication>();
+            var vacancyApplication2 = _fixture.Create<VacancyApplication>();
+            var vacancyApplications = new List<VacancyApplication> { };
+            vacancyApplications.Add(vacancyApplication1);
+            vacancyApplications.Add(vacancyApplication2);
+
+            _orchestrator.Setup(o =>
+                    o.GetApplicationReviewsToShareConfirmationViewModel(It.Is<ShareApplicationReviewsRequest>(y => y == request)))
+                .ReturnsAsync(new ShareMultipleApplicationReviewsConfirmationViewModel
+                {
+                    VacancyId = request.VacancyId,
+                    Ukprn = request.Ukprn,
+                    ApplicationReviewsToShare = vacancyApplications
+                });
+
+            // Act
+            var result = await _controller.ApplicationReviewsToShareConfirmation(request) as ViewResult;
+
+            // Assert
+            var actual = result.Model as ShareMultipleApplicationReviewsConfirmationViewModel;
+            Assert.IsNotEmpty(actual.ApplicationReviewsToShare);
+            Assert.That(actual.ApplicationReviewsToShare.Count(), Is.EqualTo(2));
+            Assert.AreEqual(actual.Ukprn, request.Ukprn);
+            Assert.AreEqual(actual.VacancyId, request.VacancyId);
         }
 
         [Test]
@@ -77,7 +204,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
                 });
 
             // Act
-            var result = await _controller.ApplicationReviews(routeModel) as ViewResult;
+            var result = await _controller.ApplicationReviewsToShare(routeModel) as ViewResult;
 
             // Assert
             var actual = result.Model as ShareMultipleApplicationReviewsViewModel;
@@ -103,7 +230,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
                 });
 
             // Act
-            var result = await _controller.ApplicationReviews(routeModel) as ViewResult;
+            var result = await _controller.ApplicationReviewsToShare(routeModel) as ViewResult;
 
             // Assert
             var actual = result.Model as ShareMultipleApplicationReviewsViewModel;
@@ -182,7 +309,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
                 .With(x => x.VacancyId, _vacancyId)
                 .With(x => x.Ukprn, _ukprn)
                 .With(x => x.ApplicationReviewsToShare, vacancyApplications)
-                .With(x =>x.ShareApplicationsConfirmed, shareApplicationsConfirmed)
+                .With(x => x.ShareApplicationsConfirmed, shareApplicationsConfirmed)
                 .Create();
 
             _orchestrator.Setup(o =>
