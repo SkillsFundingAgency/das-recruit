@@ -315,10 +315,9 @@ function nodeListForEach(nodes, callback) {
   }
 }
 
-// Select-all Checkboxes
-
-function SelectAllCheckboxes(selectAllCheckboxes) {
-    this.checkBoxesWrap = selectAllCheckboxes;
+// Multiple Applications Unsuccessful Selections
+function MultipleUnsuccessfulSelectAll(allApplications) {
+    this.checkBoxesWrap = allApplications;
     this.checkBoxesWrap.classList.add('app-select-all-table');
     this.checkBoxes = this.checkBoxesWrap.querySelectorAll('input[type="checkbox"]');
     this.label = this.checkBoxesWrap.dataset.checkboxesSelectAllLabel || "Select all";
@@ -329,58 +328,58 @@ function SelectAllCheckboxes(selectAllCheckboxes) {
     this.updateSelectAllCheckbox();
 }
 
-SelectAllCheckboxes.prototype.updateSelectAllCheckbox = function () {
+MultipleUnsuccessfulSelectAll.prototype.updateSelectAllCheckbox = function () {
     var checkbox = this.selectAllCheckBox.querySelector('input');
     checkbox.checked = this.areAllTheCheckboxesChecked();
 }
 
-SelectAllCheckboxes.prototype.areAllTheCheckboxesChecked = function () {
-    var noOfChecked = 0;
+MultipleUnsuccessfulSelectAll.prototype.areAllTheCheckboxesChecked = function () {
+    var numberOfSelections = 0;
     for (var i = 0; i < this.checkBoxes.length; i++) {
         if (this.checkBoxes[i].checked) {
-            noOfChecked++
+            numberOfSelections++
         }
     }
-    return noOfChecked === this.checkBoxes.length
+    return numberOfSelections === this.checkBoxes.length
 }
 
-SelectAllCheckboxes.prototype.createSelectAll = function () {
-    var selectAllID = "app-checkbox-select-all"
-    var divParent = document.createElement('div');
-    divParent.className = "govuk-checkboxes--small"
-    var div = document.createElement('div');
-    div.className = "govuk-checkboxes__item app-checkboxes__select-all"
-    var checkbox = document.createElement('input');
-    checkbox.type = "checkbox";
-    checkbox.className = "govuk-checkboxes__input";
-    checkbox.id = selectAllID;
-    checkbox.addEventListener('click', this.toggleCheckboxes.bind(this))
-    var label = document.createElement('label');
-    label.htmlFor = selectAllID;
-    label.className = "govuk-label govuk-checkboxes__label";
-    var span = document.createElement('span')
-    span.className = "govuk-visually-hidden"
-    span.innerText = this.label;
-    var tableCell = this.checkBoxesWrap.querySelector('[data-checkboxes-select-all-cell]')
+MultipleUnsuccessfulSelectAll.prototype.createSelectAll = function () {
+    var allSelectionIDs = "app-checkbox-select-all"
+    var divParentElement = document.createElement('div');
+    divParentElement.className = "govuk-checkboxes--small"
+    var divElement = document.createElement('div');
+    divElement.className = "govuk-checkboxes__item app-checkboxes__select-all"
+    var checkboxElement = document.createElement('input');
+    checkboxElement.type = "checkbox";
+    checkboxElement.className = "govuk-checkboxes__input";
+    checkboxElement.id = allSelectionIDs;
+    checkboxElement.addEventListener('click', this.toggleCheckboxes.bind(this))
+    var labelElement = document.createElement('label');
+    labelElement.htmlFor = allSelectionIDs;
+    labelElement.className = "govuk-label govuk-checkboxes__label";
+    var spanElement = document.createElement('span')
+    spanElement.className = "govuk-visually-hidden"
+    spanElement.innerText = this.label;
+    var cellEl = this.checkBoxesWrap.querySelector('[data-checkboxes-select-all-cell]')
 
-    label.appendChild(span);
-    div.appendChild(checkbox);
-    div.appendChild(label);
-    divParent.appendChild(div)
+    labelElement.appendChild(spanElement);
+    divElement.appendChild(checkboxElement);
+    divElement.appendChild(labelElement);
+    divParentElement.appendChild(divElement)
 
-    this.selectAllCheckBox = divParent;
-    tableCell.insertBefore(this.selectAllCheckBox, tableCell.childNodes[0]);
+    this.selectAllCheckBox = divParentElement;
+    cellEl.insertBefore(this.selectAllCheckBox, cellEl.childNodes[0]);
 }
 
-SelectAllCheckboxes.prototype.toggleCheckboxes = function (e) {
-    var selectAllChecked = e.target.checked;
-    var checkboxes = this.checkBoxesWrap.querySelectorAll('input[type="checkbox"]');
-    for (var i = 0; i < checkboxes.length; i++) {
-        checkboxes[i].checked = selectAllChecked;
+MultipleUnsuccessfulSelectAll.prototype.toggleCheckboxes = function (e) {
+    var allSelections = e.target.checked;
+    var selections = this.checkBoxesWrap.querySelectorAll('input[type="checkbox"]');
+    for (var i = 0; i < selections.length; i++) {
+        selections[i].checked = allSelections;
     }
 }
 
-var selectAllCheckboxes = document.querySelector('[data-checkboxes-select-all]')
-if (selectAllCheckboxes) {
-    var selectAllFormControl = new SelectAllCheckboxes(selectAllCheckboxes);
+var multipleUnsuccessfulSelectAll = document.querySelector('[data-checkboxes-select-all]')
+if (multipleUnsuccessfulSelectAll) {
+    var multipleUnsuccessfulSelectAllFormControl = new MultipleUnsuccessfulSelectAll(multipleUnsuccessfulSelectAll);
 }
