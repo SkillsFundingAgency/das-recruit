@@ -24,6 +24,7 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.FAA;
 using Esfa.Recruit.Vacancies.Client.Ioc;
 using FluentValidation;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.FeatureManagement;
@@ -77,6 +78,7 @@ namespace Esfa.Recruit.Employer.Web.Configuration
             services.AddTransient<IEmployerAlertsViewModelFactory, EmployerAlertsViewModelFactory>();
             services.AddTransient<IUtility, Utility>();
             services.AddTransient<IFieldReviewHelper, FieldReviewHelper>();
+            services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
         }
 
         private static void RegisterFluentValidators(IServiceCollection services)
