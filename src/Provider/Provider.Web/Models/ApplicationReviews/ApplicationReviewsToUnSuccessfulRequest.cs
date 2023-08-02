@@ -7,7 +7,6 @@ namespace Esfa.Recruit.Provider.Web.Models.ApplicationReviews
 {
     public class ApplicationReviewsToUnsuccessfulRequest : VacancyRouteModel
     {
-        [BindProperty(Name = "ApplicationsToShare")]
         public List<Guid> ApplicationsToUnsuccessful { get; set; }
     }
 }
