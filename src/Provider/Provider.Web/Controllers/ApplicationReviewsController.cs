@@ -61,8 +61,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
             {
                 VacancyId = request.VacancyId,
                 Ukprn = request.Ukprn,
-                ApplicationsToUnsuccessful = request.ApplicationsToUnsuccessful,
-                Outcome = ApplicationReviewStatus.Unsuccessful
+                ApplicationsToUnsuccessful = request.ApplicationsToUnsuccessful
             };
             return View(applicationReviewsToUnsuccessfulFeedbackViewModel);
         }
@@ -77,7 +76,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
                 return View(request);
             }
 
-            return RedirectToAction(nameof(ApplicationReviewsToUnsuccessfulConfirmation), new { request.Outcome, 
+            return RedirectToAction(nameof(ApplicationReviewsToUnsuccessfulConfirmation), new {
                 request.ApplicationsToUnsuccessful, request.CandidateFeedback, request.IsMultipleApplications, request.Ukprn, request.VacancyId });
         }
 
