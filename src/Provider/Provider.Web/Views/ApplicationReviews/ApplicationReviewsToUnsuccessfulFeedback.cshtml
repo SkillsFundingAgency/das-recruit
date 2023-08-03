@@ -20,7 +20,7 @@
             </h1>
         </div>
         <form asp-route="@RouteNames.ApplicationReviewsToUnsuccessfulFeedback_Post" asp-route-ukprn="@Model.Ukprn" asp-route-vacancyId="@Model.VacancyId">
-            @Html.HiddenFor(model => model.Outcome)
+
             @for (var i = 0; i < Model.ApplicationsToUnsuccessful.Count(); i++)
             {
                 <div class="govuk-!-display-none">
@@ -29,17 +29,16 @@
             }
 
             <div esfa-validation-marker-for="CandidateFeedback" id="Multiple-unsuccessful-candidate-feedback" class="govuk-form-group">
-                <div class="govuk-character-count"
-                     id="conditional-contact-3" data-module="govuk-character-count" data-maxwords="200">
+                <div class="govuk-character-count" id="provider-character-count" data-module="govuk-character-count" data-maxwords="200">
                     <span esfa-validation-message-for="CandidateFeedback" class="govuk-error-message"></span>
                     <span class="govuk-hint">@Model.ApplicationsToUnsuccessfulFeedbackDescription</span>
-                    <textarea asp-for="CandidateFeedback" class="govuk-textarea govuk-js-character-count" id="CandidateFeedbackMultipleUnsuccessful" name="CandidateFeedback" rows="6"></textarea>
-                    <div id="CandidateFeedbackMultipleUnsuccessful-info" class="govuk-hint govuk-character-count__message">
+                    <textarea asp-for="CandidateFeedback" class="govuk-textarea govuk-js-character-count" id="provider-multiple-candidate-feedback" name="CandidateFeedback" rows="6"></textarea>
+                    <div id="provider-multiple-candidate-feedback-info" class="govuk-hint govuk-character-count__message">
                         You have 200 words remaining
                     </div>
                 </div>
             </div>
-            <div class="govuk-form-group">
+            <div id="provider-multiple-candidate-feedback-confirm" class="govuk-form-group">
                 <input type="submit" value="Confirm" class="govuk-button" />
             </div>
         </form>
