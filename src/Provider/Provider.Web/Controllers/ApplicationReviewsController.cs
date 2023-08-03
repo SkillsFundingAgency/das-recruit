@@ -100,7 +100,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
 
             if (request.ApplicationsToUnsuccessfulConfirmed)
             {
-                await _orchestrator.PostApplicationReviewsToUnsuccessfulStatusConfirmationAsync(request, User.ToVacancyUser());
+                await _orchestrator.PostApplicationReviewsToUnsuccessfulAsync(request, User.ToVacancyUser());
                 return RedirectToRoute(RouteNames.VacancyManage_Get, new { request.Ukprn, request.VacancyId });
             }
 
@@ -145,7 +145,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
         {
             if (request.ShareApplicationsConfirmed)
             {
-                await _orchestrator.PostApplicationReviewsStatusConfirmationAsync(request, User.ToVacancyUser());
+                await _orchestrator.PostApplicationReviewsToSharedAsync(request, User.ToVacancyUser());
                 SetSharedApplicationsBannerMessageViaTempData(request.ApplicationReviewsToShare);
                 return RedirectToRoute(RouteNames.VacancyManage_Get, new { request.Ukprn, request.VacancyId });
             }

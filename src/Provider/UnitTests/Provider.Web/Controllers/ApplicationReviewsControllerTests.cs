@@ -236,7 +236,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
                 .Create();
 
             _orchestrator.Setup(o =>
-                    o.PostApplicationReviewsToUnsuccessfulStatusConfirmationAsync(It.Is<ApplicationReviewsToUnsuccessfulConfirmationViewModel>(y => y == request), It.IsAny<VacancyUser>()))
+                    o.PostApplicationReviewsToUnsuccessfulAsync(It.Is<ApplicationReviewsToUnsuccessfulConfirmationViewModel>(y => y == request), It.IsAny<VacancyUser>()))
                 .Returns(Task.CompletedTask);
 
             var actionResult = await _controller.ApplicationReviewsToUnsuccessfulConfirmation(request);
@@ -379,7 +379,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
                 .Create();
 
             _orchestrator.Setup(o =>
-                    o.PostApplicationReviewsStatusConfirmationAsync(It.Is<ShareApplicationReviewsPostRequest>(y => y == request), It.IsAny<VacancyUser>()))
+                    o.PostApplicationReviewsToSharedAsync(It.Is<ShareApplicationReviewsPostRequest>(y => y == request), It.IsAny<VacancyUser>()))
                 .Returns(Task.CompletedTask);
 
             // Act
@@ -414,7 +414,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
                 .Create();
 
             _orchestrator.Setup(o =>
-                    o.PostApplicationReviewsStatusConfirmationAsync(It.Is<ShareApplicationReviewsPostRequest>(y => y == request), It.IsAny<VacancyUser>()))
+                    o.PostApplicationReviewsToSharedAsync(It.Is<ShareApplicationReviewsPostRequest>(y => y == request), It.IsAny<VacancyUser>()))
                 .Returns(Task.CompletedTask);
 
             // Act
