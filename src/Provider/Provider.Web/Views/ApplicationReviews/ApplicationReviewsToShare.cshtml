@@ -1,5 +1,5 @@
 ﻿@using System.Net
-@using Esfa.Recruit.Provider.Web.TagHelpers
+@using Esfa.Recruit.Shared.Web.TagHelpers
 @using Esfa.Recruit.Vacancies.Client.Domain.Extensions
 @using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyApplications
 @model Esfa.Recruit.Provider.Web.ViewModels.ApplicationReviews.ShareMultipleApplicationReviewsViewModel
@@ -20,24 +20,11 @@
                 </div>
 
                 <table class="govuk-table" aria-label="Share applications" data-checkboxes-select-all>
-
                     <thead class="govuk-table__head">
                         <tr class="govuk-table__row">
                             <th scope="col" class="govuk-table__header das-table-cell-width-4" data-checkboxes-select-all-cell>
-
                             </th>
-                            <th scope="col" class="govuk-table__header das-table-cell-width-38">
-                                <sortable-column column-name="Name" column-label="Name" default="false" default-order="Ascending"></sortable-column>
-                            </th>
-                            <th scope="col" class="govuk-table__header das-table-cell-width-25">
-                                <sortable-column column-name="ApplicationID" column-label="Application ID" default="false" default-order="Ascending"></sortable-column>
-                            </th>
-                            <th scope="col" class="govuk-table__header status">
-                                <sortable-column column-name="Status" column-label="Status" default="false" default-order="Descending"></sortable-column>
-                            </th>
-                                <th scope="col" class="govuk-table__header das-table-cell-width-18">
-                                <sortable-column column-name="DateApplied" column-label="Date Applied" default="false" default-order="Ascending"></sortable-column>
-                            </th>
+                            <partial name="@PartialNames.MultipleApplicationsTableHeader" />
                         </tr>
                     </thead>
 

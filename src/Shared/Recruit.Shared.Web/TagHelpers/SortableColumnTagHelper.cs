@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Razor.TagHelpers;
 using System;
 using System.Text;
 
-namespace Esfa.Recruit.Provider.Web.TagHelpers
+namespace Esfa.Recruit.Shared.Web.TagHelpers
 {
     [HtmlTargetElement("sortable-column")]
     public class SortableColumnTagHelper : TagHelper
