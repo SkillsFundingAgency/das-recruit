@@ -10,13 +10,13 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Vacanc
 using MediatR;
 namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 {
-    public class ApplicationReviewsToUnsuccessfulCommandHandler :
-        IRequestHandler<ApplicationReviewsToUnsuccessfulCommand, Unit>
+    public class ApplicationReviewsUnsuccessfulCommandHandler :
+        IRequestHandler<ApplicationReviewsUnsuccessfulCommand, Unit>
     {
         private readonly IApplicationReviewRepository _applicationReviewRepository;
         private readonly ITimeProvider _timeProvider;
 
-        public ApplicationReviewsToUnsuccessfulCommandHandler(
+        public ApplicationReviewsUnsuccessfulCommandHandler(
             IApplicationReviewRepository applicationReviewRepository,
             ITimeProvider timeProvider)
         {
@@ -24,13 +24,13 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             _timeProvider = timeProvider;
         }
 
-        public async Task<Unit> Handle(ApplicationReviewsToUnsuccessfulCommand command, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(ApplicationReviewsUnsuccessfulCommand command, CancellationToken cancellationToken)
         {
             await Handle(command.ApplicationReviews, command.User, ApplicationReviewStatus.Unsuccessful, command.CandidateFeedback);
             return Unit.Value;
         }
 
-        private async Task Handle(IEnumerable<VacancyApplication> applicationReviews, VacancyUser user, ApplicationReviewStatus status,string candidateFeedback)
+        private async Task Handle(IEnumerable<VacancyApplication> applicationReviews, VacancyUser user, ApplicationReviewStatus status, string candidateFeedback)
         {
             var applicationReviewIds = applicationReviews.Where(x => x.IsNotWithdrawn).Select(x => x.ApplicationReviewId);
 

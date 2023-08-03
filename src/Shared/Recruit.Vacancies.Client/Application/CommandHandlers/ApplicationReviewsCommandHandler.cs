@@ -35,7 +35,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
         {
             var applicationReviewIds = applicationReviews.Where(x => x.IsNotWithdrawn).Select(x => x.ApplicationReviewId);
 
-            await _applicationReviewRepository.UpdateApplicationReviewsAsync(applicationReviewIds, user, _timeProvider.Now, status,string.Empty);
+            await _applicationReviewRepository.UpdateApplicationReviewsAsync(applicationReviewIds, user, _timeProvider.Now, status);
         }
     }
 }

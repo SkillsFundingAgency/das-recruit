@@ -83,7 +83,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
 
         [HttpGet("unsuccessful-confirmation", Name = RouteNames.ApplicationReviewsToUnsuccessfulConfirmation_Get)]
         [FeatureGate(FeatureNames.MultipleApplicationsManagement)]
-        public async Task<IActionResult> ApplicationReviewsToUnsuccessfulConfirmation(ApplicationReviewsToUnsuccessfulRouteModel request)
+        public async Task<IActionResult> ApplicationReviewsUnsuccessfulConfirmation(ApplicationReviewsToUnsuccessfulRouteModel request)
         {
             var applicationReviewsToUnsuccessfulConfirmationViewModel = await _orchestrator.GetApplicationReviewsToUnsuccessfulConfirmationViewModel(request);
             return View(applicationReviewsToUnsuccessfulConfirmationViewModel);
@@ -99,7 +99,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
                 return View(request);
             }
 
-            if (request.ApplicationsToUnsuccessfulConfirmed.HasValue)
+            if (request.ApplicationsToUnsuccessfulConfirmed)
             {
                 await _orchestrator.PostApplicationReviewsToUnsuccessfulStatusConfirmationAsync(request, User.ToVacancyUser());
                 return RedirectToRoute(RouteNames.VacancyManage_Get, new { request.Ukprn, request.VacancyId });

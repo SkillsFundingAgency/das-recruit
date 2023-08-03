@@ -51,7 +51,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
 
             await client.SetApplicationReviewsToUnsuccessful(applicationReviewsToUnsuccessful, candidateFeedback, user);
 
-            messaging.Verify(x => x.SendCommandAsync(It.Is<ApplicationReviewsToUnsuccessfulCommand>(c =>
+            messaging.Verify(x => x.SendCommandAsync(It.Is<ApplicationReviewsUnsuccessfulCommand>(c =>
                 c.CandidateFeedback.Equals(candidateFeedback) &&
                 c.ApplicationReviews.Equals(applicationReviewsToUnsuccessful)
             )));

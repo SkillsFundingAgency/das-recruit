@@ -7,7 +7,7 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.ApplicationReviews
     public class ApplicationReviewsToUnsuccessfulConfirmationViewModel : ApplicationReviewsToUnsuccessfulRouteModel
     {
         public new IList<VacancyApplication> ApplicationsToUnsuccessful { get; set; }
-        public bool? ApplicationsToUnsuccessfulConfirmed { get; set; }
+        public bool ApplicationsToUnsuccessfulConfirmed { get; set; }
         public override bool IsMultipleApplications
         {
             get => ApplicationsToUnsuccessful != null && ApplicationsToUnsuccessful.Count > 1;

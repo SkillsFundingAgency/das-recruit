@@ -90,6 +90,5 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
         {
             await _vacancyClient.SetApplicationReviewsToUnsuccessful(request.ApplicationsToUnsuccessful, request.CandidateFeedback, user);
         }
-
     }
 }
