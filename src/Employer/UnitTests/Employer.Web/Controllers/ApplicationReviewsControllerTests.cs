@@ -15,6 +15,12 @@ using Esfa.Recruit.Employer.Web.Controllers;
 using Esfa.Recruit.Employer.Web.Orchestrators;
 using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.ViewModels.ApplicationReviews;
+using Esfa.Recruit.Vacancies.Client.Application.Providers;
+using Esfa.Recruit.Shared.Web.ViewModels.Validations.Fluent;
+using FluentAssertions;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent;
+using FluentValidation;
 
 namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Controllers
 {
@@ -27,6 +33,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Controllers
         private Guid _applicationReviewId;
         private Guid _applicationReviewIdTwo;
         private string _employerAccountId;
+        protected Mock<IProfanityListProvider> _mockProfanityListProvider;
 
         [SetUp]
         public void Setup()
@@ -37,6 +44,8 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Controllers
             _applicationReviewId = Guid.NewGuid();
             _applicationReviewIdTwo = Guid.NewGuid();
             _employerAccountId = "ADGFHAS";
+            _mockProfanityListProvider = new Mock<IProfanityListProvider>();
+            _mockProfanityListProvider.Setup(x => x.GetProfanityListAsync()).Returns(GetProfanityListAsync());
             var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
             {
                 new Claim(EmployerRecruitClaims.IdamsUserIdClaimTypeIdentifier, _applicationReviewId.ToString()),
@@ -202,6 +211,59 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Controllers
             Assert.AreEqual(routeModel.EmployerAccountId, actual.EmployerAccountId);
             Assert.AreEqual("Give feedback to the unsuccessful applicant", actual.ApplicationsToUnsuccessfulFeedbackHeaderTitle);
             Assert.AreEqual("Your feedback will be sent to the applicant you have selected as unsuccessful.", actual.ApplicationsToUnsuccessfulFeedbackDescription);
+        }
+
+        [Test]
+        public void POST_ApplicationReviewsFeedback_RedirectsToAction()
+        {
+            // Arrange
+            var listOfApplicationReviews = new List<Guid>();
+            listOfApplicationReviews.Add(_applicationReviewId);
+            var request = _fixture
+                .Build<ApplicationReviewsFeedbackViewModel>()
+                .With(x => x.VacancyId, _vacancyId)
+                .With(x => x.EmployerAccountId, _employerAccountId)
+                .With(x => x.ApplicationsToUnsuccessful, listOfApplicationReviews)
+                .Create();
+
+            // Act
+            var redirectResult = _controller.ApplicationReviewsFeedback(request) as RedirectToActionResult;
+
+            // Assert
+            Assert.NotNull(redirectResult);
+            Assert.AreEqual("ApplicationReviewsToUnsuccessfulConfirmation", redirectResult.ActionName);
+            Assert.AreEqual(_vacancyId, redirectResult.RouteValues["VacancyId"]);
+            Assert.AreEqual(_employerAccountId, redirectResult.RouteValues["EmployerAccountId"]);
+        }
+
+        [Test]
+        public void POST_ApplicationReviewsFeedback_NoCandidateFeedbackValidationError()
+        {
+            // Arrange
+            var listOfApplicationReviews = new List<Guid>();
+            listOfApplicationReviews.Add(_applicationReviewId);
+            var request = _fixture
+                .Build<ApplicationReviewsToUnsuccessfulRouteModel>()
+                .With(x => x.VacancyId, _vacancyId)
+                .With(x => x.EmployerAccountId, _employerAccountId)
+                .With(x => x.ApplicationsToUnsuccessful, listOfApplicationReviews)
+                .With(x => x.Outcome, ApplicationReviewStatus.Unsuccessful)
+                .With(x => x.CandidateFeedback, "")
+                .Create();
+            var validator = new ApplicationReviewsFeedbackModelValidator(_mockProfanityListProvider.Object);
+
+            // Act
+            var result = validator.Validate(request);
+
+            // Assert
+            result.IsValid.Should().BeFalse();
+            result.Errors.Count.Should().Be(1);
+            result.Errors[0].ErrorMessage.Should().Be(ApplicationReviewValidator.CandidateFeedbackRequiredForSingleApplication);
+        }
+
+        public Task<IEnumerable<string>> GetProfanityListAsync()
+        {
+            return Task.FromResult<IEnumerable<string>>(new[] { "bother", "dang", "balderdash", "drat" });
         }
     }
 }
