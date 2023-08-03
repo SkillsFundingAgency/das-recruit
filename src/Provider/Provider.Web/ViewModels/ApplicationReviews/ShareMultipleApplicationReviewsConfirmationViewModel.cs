@@ -12,5 +12,6 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.ApplicationReviews
         public bool ShareApplicationsConfirmed { get; set; }
         public string ShareApplicationHeaderTitle => ApplicationReviewsToShare.Count() == 1 ? "Share an application" : "Share multiple applications";
         public bool SharingMultipleApplications => ApplicationReviewsToShare.Count() > 1 ? true : false;
+        public string ShareApplicationConfirmationText => SharingMultipleApplications ? "Do you want to share these applications?" : "Do you want to share this application?";
     }
 }

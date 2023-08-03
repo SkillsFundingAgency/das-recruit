@@ -1,7 +1,13 @@
 ﻿@using System.Net
 @using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyApplications
 @model Esfa.Recruit.Provider.Web.ViewModels.ApplicationReviews.ShareMultipleApplicationReviewsConfirmationViewModel
-
+@{
+    ViewBag.GaData.Vpv = "/recruitment/provider/page-application-reviews-to-share-confirmation";
+    ViewBag.Title = "Share Applications Confirmation";
+}
+@section BackLink {
+    <a asp-route="@RouteNames.ApplicationReviewsToShare_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Back</a>
+}
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
@@ -79,7 +85,7 @@
                     
                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
                         <h1 class="govuk-fieldset__heading">
-                        Do you want to share these applications?
+                            @Model.ShareApplicationConfirmationText
                         </h1>
                     </legend>
 

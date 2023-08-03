@@ -1,8 +1,11 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System;
+using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Orchestrators;
 using Esfa.Recruit.Employer.Web.RouteModel;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.FeatureManagement.Mvc;
 
@@ -19,10 +22,33 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         }
 
         [FeatureGate(FeatureNames.MultipleApplicationsManagement)]
-        [HttpGet("", Name = RouteNames.ApplicationReviewsToUnsuccessful_Get)]
+        [HttpGet("unsuccessful", Name = RouteNames.ApplicationReviewsToUnsuccessful_Get)]
         public async Task<IActionResult> ApplicationReviewsToUnsuccessful(VacancyRouteModel rm)
         {
             var viewModel = await _orchestrator.GetApplicationReviewsToUnsuccessfulViewModelAsync(rm);
+
+            return View(viewModel);
+        }
+
+        [FeatureGate(FeatureNames.MultipleApplicationsManagement)]
+        [HttpPost("unsuccessful", Name = RouteNames.ApplicationReviewsToUnsuccessful_Post)]
+        public async Task<IActionResult> ApplicationReviewsToUnsuccessfulAsync(ApplicationReviewsToUnsuccessfulRouteModel rm)
+        {
+            if (!ModelState.IsValid)
+            {
+                var viewModel = await _orchestrator.GetApplicationReviewsToUnsuccessfulViewModelAsync(rm);
+                return View(viewModel);
+            }
+
+            return RedirectToAction(nameof(ApplicationReviewsToUnsuccessfulConfirmation), new { rm.ApplicationsToUnsuccessful, rm.EmployerAccountId, rm.VacancyId });
+        }
+
+
+        [FeatureGate(FeatureNames.MultipleApplicationsManagement)]
+        [HttpGet("unsuccessful-confirmation", Name = RouteNames.ApplicationReviewsToUnsuccessfulConfirmation_Get)]
+        public async Task<IActionResult> ApplicationReviewsToUnsuccessfulConfirmation(ApplicationReviewsToUnsuccessfulConfirmationRouteModel rm)
+        {
+            var viewModel = await _orchestrator.GetApplicationReviewsToUnsuccessfulConfirmationViewModelAsync(rm);
 
             return View(viewModel);
         }

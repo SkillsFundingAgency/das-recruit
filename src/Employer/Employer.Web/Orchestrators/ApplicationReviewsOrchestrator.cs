@@ -7,7 +7,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 {
     public interface IApplicationReviewsOrchestrator
     {
-        Task<MakeMultipleApplicationReviewsUnsuccessfulViewModel> GetApplicationReviewsToUnsuccessfulViewModelAsync(VacancyRouteModel rm);
+        Task<ApplicationReviewsUnsuccessfulViewModel> GetApplicationReviewsToUnsuccessfulViewModelAsync(VacancyRouteModel rm);
+        Task<ApplicationReviewsUnsuccessfulConfirmationViewModel> GetApplicationReviewsToUnsuccessfulConfirmationViewModelAsync(ApplicationReviewsToUnsuccessfulConfirmationRouteModel rm);
     }
 
     public class ApplicationReviewsOrchestrator : IApplicationReviewsOrchestrator
@@ -19,15 +20,27 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             _vacancyClient = client;
         }
 
-        public async Task<MakeMultipleApplicationReviewsUnsuccessfulViewModel> GetApplicationReviewsToUnsuccessfulViewModelAsync(VacancyRouteModel rm)
+        public async Task<ApplicationReviewsUnsuccessfulViewModel> GetApplicationReviewsToUnsuccessfulViewModelAsync(VacancyRouteModel rm)
         {
             var vacancy = await _vacancyClient.GetVacancyAsync(rm.VacancyId);
 
             var applicationReviews = await _vacancyClient.GetVacancyApplicationsAsync(vacancy.VacancyReference.Value);
 
-            return new MakeMultipleApplicationReviewsUnsuccessfulViewModel
+            return new ApplicationReviewsUnsuccessfulViewModel
             {
-                // todo
+                VacancyId = vacancy.Id,
+                EmployerAccountId = vacancy.EmployerAccountId,
+                VacancyReference = vacancy.VacancyReference.Value,
+                VacancyApplications = applicationReviews
+            };
+        }
+
+        public async Task<ApplicationReviewsUnsuccessfulConfirmationViewModel> GetApplicationReviewsToUnsuccessfulConfirmationViewModelAsync(ApplicationReviewsToUnsuccessfulConfirmationRouteModel rm)
+        {
+            // todo
+
+            return new ApplicationReviewsUnsuccessfulConfirmationViewModel
+            {
             };
         }
     }

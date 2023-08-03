@@ -281,7 +281,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
         }
 
         [Test]
-        public async Task GET_ApplicationReviews_ReturnsViewAndModelWithNoApplications()
+        public async Task GET_ApplicationReviewsToShare_ReturnsViewAndModelWithNoApplications()
         {
             // Arrange
             var routeModel = _fixture.Create<VacancyRouteModel>();
@@ -307,7 +307,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
         }
 
         [Test]
-        public void POST_ApplicationReviewsToShare_RedirectsToAction()
+        public async Task POST_ApplicationReviewsToShare_RedirectsToAction()
         {
             // Arrange
             var listOfApplicationReviews = new List<Guid>();
@@ -318,7 +318,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
              .Create();
 
             // Act
-            var actionResult = _controller.ApplicationReviewsToShare(request);
+            var actionResult = await _controller.ApplicationReviewsToShare(request);
             var redirectResult = actionResult as RedirectToActionResult;
 
             // Assert

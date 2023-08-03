@@ -10,6 +10,7 @@ namespace Esfa.Recruit.Employer.Web.Views
         public const string GoogleTagManagerHead = RecruitPartialNames.GoogleTagManagerHead;
         public const string GoogleAnalyticsInfo = RecruitPartialNames.GoogleAnalyticsInfo;
         public const string GoogleTagManagerBody = RecruitPartialNames.GoogleTagManagerBody;
+        public const string MultipleApplicationsTableHeader = RecruitPartialNames.MultipleApplicationsTableHeader;
         public const string EditVacancyPartial = "_EditVacancyPartial";        
         public const string NonEditableVacancyDisplay = "_NonEditableVacancyDisplayPartial";
         public const string VacancyApplicationsTable = "_VacancyApplicationsTablePartial";
