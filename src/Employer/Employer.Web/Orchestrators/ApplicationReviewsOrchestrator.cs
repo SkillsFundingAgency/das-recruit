@@ -9,7 +9,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
     public interface IApplicationReviewsOrchestrator
     {
         Task<ApplicationReviewsToUnsuccessfulViewModel> GetApplicationReviewsToUnsuccessfulViewModelAsync(VacancyRouteModel rm);
-        Task<ApplicationReviewsToUnsuccessfulConfirmationViewModel> GetApplicationReviewsToUnsuccessfulConfirmationViewModelAsync(ApplicationReviewsToUnsuccessfulConfirmationRouteModel rm);
+        Task<ApplicationReviewsToUnsuccessfulConfirmationViewModel> GetApplicationReviewsToUnsuccessfulConfirmationViewModelAsync(ApplicationReviewsToUnsuccessfulRouteModel rm);
         ApplicationReviewsFeedbackViewModel GetApplicationReviewsFeedbackViewModel(ApplicationReviewsToUnsuccessfulRouteModel rm);
     }
 
@@ -47,12 +47,16 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             };
         }
 
-        public async Task<ApplicationReviewsToUnsuccessfulConfirmationViewModel> GetApplicationReviewsToUnsuccessfulConfirmationViewModelAsync(ApplicationReviewsToUnsuccessfulConfirmationRouteModel rm)
+        public async Task<ApplicationReviewsToUnsuccessfulConfirmationViewModel> GetApplicationReviewsToUnsuccessfulConfirmationViewModelAsync(ApplicationReviewsToUnsuccessfulRouteModel rm)
         {
-            // todo
+            var vacancyApplicationsToUnsuccessful = await _vacancyClient.GetVacancyApplicationsForSelectedIdsAsync(rm.ApplicationsToUnsuccessful);
 
             return new ApplicationReviewsToUnsuccessfulConfirmationViewModel
             {
+                VacancyId = rm.VacancyId,
+                EmployerAccountId = rm.EmployerAccountId,
+                VacancyApplicationsToUnsuccessful = vacancyApplicationsToUnsuccessful,
+                CandidateFeedback = rm.CandidateFeedback
             };
         }
     }
