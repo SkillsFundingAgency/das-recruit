@@ -103,6 +103,14 @@ namespace Esfa.Recruit.Provider.Web.Controllers
         [FeatureGate(FeatureNames.ShareApplicationsFeature)]
         public IActionResult ApplicationReviewsToShare(ApplicationReviewsToShareRouteModel rm)
         {
+        public async Task<IActionResult> ApplicationReviewsToShare(ApplicationReviewsToShareRouteModel rm)
+        {
+            if (!ModelState.IsValid)
+            {
+                var vm = await _orchestrator.GetApplicationReviewsToShareViewModelAsync(rm);
+                return View(vm);
+            }
+
             return RedirectToAction(nameof(ApplicationReviewsToShareConfirmation), new { rm.ApplicationsToShare, rm.Ukprn, rm.VacancyId });
         }
 

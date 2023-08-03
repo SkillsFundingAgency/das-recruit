@@ -9,8 +9,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
         public const int CandidateFeedbackMaxLength = 5000;
         public const int CandidateFeedbackMaxWordLength = 200;
 
-        public const string OutcomeRequired = "You must select either successful or unsuccessful";
-        public const string ApplicationReviewsToUnsuccessful = "You need to select at least one application before continuing";
+        public const string OutcomeRequired = "You must select one option before continuing";  
         public const string CandidateFeedbackRequired = "You must say why the application was unsuccessful";
         public const string CandidateFeedbackRequiredForSingleApplication = "You must say why the application has been unsuccessful";
         public const string CandidateFeedbackRequiredForMultipleApplications = "You must say why the applications have been unsuccessful";
@@ -20,6 +19,8 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
         public const string CandidateFeedbackNull = "You must not provide feedback for a successful application";
         public const string NotifyCandidateRequired = "You must select one option";
         public const string CandidateFeedbackProfanityPhrases = "Feedback must not contain a banned word or phrase.";
+        public const string ApplicationReviewsToShare = "You need to select at least one application before continuing";
+        public const string ApplicationReviewsToUnsuccessful = "You need to select at least one application before continuing";
 
         public ApplicationReviewValidator()
         {

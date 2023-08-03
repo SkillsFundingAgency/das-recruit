@@ -1,6 +1,9 @@
 ﻿@using System.Net
 @model Esfa.Recruit.Shared.Web.ViewModels.ApplicationReview.ApplicationReviewViewModel
-
+@{
+    ViewBag.GaData.Vpv = "/recruitment/provider/page-application-review";
+    ViewBag.Title = "Review application";
+}
 @section BackLink {
     <a asp-route="@RouteNames.VacancyManage_Get" asp-route-ukprn="@Model.Ukprn" asp-route-vacancyId="@Model.VacancyId" esfa-automation="link-back" class="govuk-back-link">Back</a>
 }
