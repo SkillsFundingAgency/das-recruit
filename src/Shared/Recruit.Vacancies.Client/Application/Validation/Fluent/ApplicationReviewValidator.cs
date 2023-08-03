@@ -22,7 +22,6 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
         public const string NotifyCandidateRequired = "You must select one option";
         public const string CandidateFeedbackProfanityPhrases = "Feedback must not contain a banned word or phrase.";
         public const string ApplicationReviewsToShare = "You need to select at least one application before continuing";
-        public const string ApplicationReviewsToUnsuccessful = "You need to select at least one application before continuing";
 
         public ApplicationReviewValidator()
         {
