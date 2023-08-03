@@ -20,7 +20,7 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.VacancyView
         public bool CanShowShareMultipleApplicationsLink =>
             Applications?.Any(app => app.Status == ApplicationReviewStatus.New || app.Status == ApplicationReviewStatus.InReview) ?? false;
 
-        public bool CanMultipleApplicationsUnsuccessfulLink =>
+        public bool CanShowMultipleApplicationsUnsuccessfulLink =>
           Applications?.Any(app => app.Status != ApplicationReviewStatus.Successful && app.Status != ApplicationReviewStatus.Unsuccessful) ?? false;
     }
 }
