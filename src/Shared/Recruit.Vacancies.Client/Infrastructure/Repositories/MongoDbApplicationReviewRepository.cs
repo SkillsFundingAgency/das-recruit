@@ -88,20 +88,25 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
                 new Context(nameof(UpdateAsync)));
         }
 
-        public async Task<UpdateResult> UpdateApplicationReviewsAsync(IEnumerable<Guid> applicationReviewIds, VacancyUser user, DateTime updatedDate, ApplicationReviewStatus status)
+        public async Task<UpdateResult> UpdateApplicationReviewsAsync(IEnumerable<Guid> applicationReviewIds, VacancyUser user, DateTime updatedDate, ApplicationReviewStatus status, string candidateFeedback)
         {
             var filter = Builders<ApplicationReview>.Filter.In(Id, applicationReviewIds);
             var collection = GetCollection<ApplicationReview>();
 
-            DateTime? sharedDate = null;
-            if (status.Equals(ApplicationReviewStatus.Shared))
-                sharedDate = updatedDate;
-
             var updateDef = new UpdateDefinitionBuilder<ApplicationReview>()
-                                .Set(appRev => appRev.Status, status)
-                                .Set(appRev => appRev.StatusUpdatedBy, user)
-                                .Set(appRev => appRev.StatusUpdatedDate, updatedDate)
-                                .Set(appRev => appRev.DateSharedWithEmployer, sharedDate);
+                .Set(appRev => appRev.Status, status)
+                .Set(appRev => appRev.StatusUpdatedBy, user)
+                .Set(appRev => appRev.StatusUpdatedDate, updatedDate);
+
+            if (status == ApplicationReviewStatus.Unsuccessful && !string.IsNullOrEmpty(candidateFeedback))
+            {
+                updateDef = updateDef.Set(x => x.CandidateFeedback, candidateFeedback);
+            }
+
+            if (status.Equals(ApplicationReviewStatus.Shared))
+            {
+                updateDef = updateDef.Set(appRev => appRev.DateSharedWithEmployer, updatedDate);
+            }
 
             return await RetryPolicy.Execute(_ =>
                 collection.UpdateManyAsync(filter, updateDef),
@@ -181,7 +186,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
         {
             const string FieldName = "vacancyReference";
 
-            return new []
+            return new[]
             {
                 new BsonDocument().Add("$group", new BsonDocument
                 {
