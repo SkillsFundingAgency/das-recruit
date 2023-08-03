@@ -109,7 +109,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Controllers
         }
 
         [Test]
-        public async Task POST_ApplicationReviewsToUnsuccessful_RedirectsToAction()
+        public async Task POST_ApplicationReviewsToUnsuccessfulAsync_RedirectsToAction()
         {
             // Arrange
             var listOfApplicationReviews = new List<Guid>();
@@ -126,7 +126,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Controllers
 
             // Assert
             Assert.NotNull(redirectResult);
-            Assert.AreEqual("ApplicationReviewsToUnsuccessfulConfirmation", redirectResult.ActionName);
+            Assert.AreEqual("ApplicationReviewsFeedback", redirectResult.ActionName);
             Assert.AreEqual(_vacancyId, redirectResult.RouteValues["VacancyId"]);
             Assert.AreEqual(_employerAccountId, redirectResult.RouteValues["EmployerAccountId"]);
         }
