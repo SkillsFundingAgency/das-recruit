@@ -64,7 +64,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Controllers
 
             _orchestrator.Setup(o =>
                     o.GetApplicationReviewsToUnsuccessfulViewModelAsync(It.Is<VacancyRouteModel>(y => y == routeModel)))
-                .ReturnsAsync(new ApplicationReviewsUnsuccessfulViewModel
+                .ReturnsAsync(new ApplicationReviewsToUnsuccessfulViewModel
                 {
                     VacancyId = routeModel.VacancyId,
                     EmployerAccountId = routeModel.EmployerAccountId,
@@ -75,7 +75,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Controllers
             var result = await _controller.ApplicationReviewsToUnsuccessful(routeModel) as ViewResult;
 
             // Assert
-            var actual = result.Model as ApplicationReviewsUnsuccessfulViewModel;
+            var actual = result.Model as ApplicationReviewsToUnsuccessfulViewModel;
             Assert.IsNotEmpty(actual.VacancyApplications);
             Assert.That(actual.VacancyApplications.Count(), Is.EqualTo(2));
             Assert.AreEqual(actual.VacancyId, routeModel.VacancyId);
@@ -90,7 +90,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Controllers
 
             _orchestrator.Setup(o =>
                     o.GetApplicationReviewsToUnsuccessfulViewModelAsync(It.Is<VacancyRouteModel>(y => y == routeModel)))
-                .ReturnsAsync(new ApplicationReviewsUnsuccessfulViewModel
+                .ReturnsAsync(new ApplicationReviewsToUnsuccessfulViewModel
                 {
                     VacancyId = routeModel.VacancyId,
                     EmployerAccountId = routeModel.EmployerAccountId,
@@ -101,7 +101,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Controllers
             var result = await _controller.ApplicationReviewsToUnsuccessful(routeModel) as ViewResult;
 
             // Assert
-            var actual = result.Model as ApplicationReviewsUnsuccessfulViewModel;
+            var actual = result.Model as ApplicationReviewsToUnsuccessfulViewModel;
             Assert.IsEmpty(actual.VacancyApplications);
             Assert.That(actual.VacancyApplications.Count(), Is.EqualTo(0));
             Assert.AreEqual(actual.VacancyId, routeModel.VacancyId);

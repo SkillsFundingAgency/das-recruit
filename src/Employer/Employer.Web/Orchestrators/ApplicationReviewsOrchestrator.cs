@@ -1,5 +1,6 @@
 ﻿using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels.ApplicationReviews;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using System.Threading.Tasks;
 
@@ -7,8 +8,9 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 {
     public interface IApplicationReviewsOrchestrator
     {
-        Task<ApplicationReviewsUnsuccessfulViewModel> GetApplicationReviewsToUnsuccessfulViewModelAsync(VacancyRouteModel rm);
-        Task<ApplicationReviewsUnsuccessfulConfirmationViewModel> GetApplicationReviewsToUnsuccessfulConfirmationViewModelAsync(ApplicationReviewsToUnsuccessfulConfirmationRouteModel rm);
+        Task<ApplicationReviewsToUnsuccessfulViewModel> GetApplicationReviewsToUnsuccessfulViewModelAsync(VacancyRouteModel rm);
+        Task<ApplicationReviewsToUnsuccessfulConfirmationViewModel> GetApplicationReviewsToUnsuccessfulConfirmationViewModelAsync(ApplicationReviewsToUnsuccessfulConfirmationRouteModel rm);
+        ApplicationReviewsFeedbackViewModel GetApplicationReviewsFeedbackViewModel(ApplicationReviewsToUnsuccessfulRouteModel rm);
     }
 
     public class ApplicationReviewsOrchestrator : IApplicationReviewsOrchestrator
@@ -20,13 +22,13 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             _vacancyClient = client;
         }
 
-        public async Task<ApplicationReviewsUnsuccessfulViewModel> GetApplicationReviewsToUnsuccessfulViewModelAsync(VacancyRouteModel rm)
+        public async Task<ApplicationReviewsToUnsuccessfulViewModel> GetApplicationReviewsToUnsuccessfulViewModelAsync(VacancyRouteModel rm)
         {
             var vacancy = await _vacancyClient.GetVacancyAsync(rm.VacancyId);
 
             var applicationReviews = await _vacancyClient.GetVacancyApplicationsAsync(vacancy.VacancyReference.Value);
 
-            return new ApplicationReviewsUnsuccessfulViewModel
+            return new ApplicationReviewsToUnsuccessfulViewModel
             {
                 VacancyId = vacancy.Id,
                 EmployerAccountId = vacancy.EmployerAccountId,
@@ -34,12 +36,22 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
                 VacancyApplications = applicationReviews
             };
         }
+        public ApplicationReviewsFeedbackViewModel GetApplicationReviewsFeedbackViewModel(ApplicationReviewsToUnsuccessfulRouteModel rm)
+        {
+            return new ApplicationReviewsFeedbackViewModel
+            {
+                VacancyId = rm.VacancyId,
+                EmployerAccountId = rm.EmployerAccountId,
+                ApplicationsToUnsuccessful = rm.ApplicationsToUnsuccessful,
+                Outcome = ApplicationReviewStatus.Unsuccessful
+            };
+        }
 
-        public async Task<ApplicationReviewsUnsuccessfulConfirmationViewModel> GetApplicationReviewsToUnsuccessfulConfirmationViewModelAsync(ApplicationReviewsToUnsuccessfulConfirmationRouteModel rm)
+        public async Task<ApplicationReviewsToUnsuccessfulConfirmationViewModel> GetApplicationReviewsToUnsuccessfulConfirmationViewModelAsync(ApplicationReviewsToUnsuccessfulConfirmationRouteModel rm)
         {
             // todo
 
-            return new ApplicationReviewsUnsuccessfulConfirmationViewModel
+            return new ApplicationReviewsToUnsuccessfulConfirmationViewModel
             {
             };
         }
