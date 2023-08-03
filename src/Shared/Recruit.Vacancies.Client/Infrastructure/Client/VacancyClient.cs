@@ -406,11 +406,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return _messaging.SendCommandAsync(command);
         }
 
-        public Task SetApplicationReviewsToUnsuccessful(IEnumerable<VacancyApplication> applicationReviewsToUnSuccessful, string candidateFeedback, VacancyUser user)
+        public Task SetApplicationReviewsToUnsuccessful(IEnumerable<VacancyApplication> applicationReviewsToUnsuccessful, string candidateFeedback, VacancyUser user)
         {
-            var command = new ApplicationReviewsToUnSuccessfulCommand()
+            var command = new ApplicationReviewsToUnsuccessfulCommand()
             {
-                ApplicationReviews = applicationReviewsToUnSuccessful,
+                ApplicationReviews = applicationReviewsToUnsuccessful,
                 CandidateFeedback = candidateFeedback,
                 User = user
             };

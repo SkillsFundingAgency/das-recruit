@@ -9,9 +9,9 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.Validations.Fluent
     {
         public ApplicationReviewsToUnsuccessfulConfirmationModelValidator(IProfanityListProvider profanityListProvider)
         {
-            RuleFor(x => x.ApplicationsToUnSuccessfulConfirmed)
+            RuleFor(x => x.ApplicationsToUnsuccessfulConfirmed)
                 .NotNull()
-                .WithMessage(ApplicationReviewValidator.ApplicationsToUnSuccessfulConfirmationRequired);
+                .WithMessage(ApplicationReviewValidator.ApplicationsToUnsuccessfulConfirmationRequired);
         }
     }
 }

@@ -99,9 +99,9 @@ namespace Esfa.Recruit.Provider.Web.Controllers
                 return View(request);
             }
 
-            if (request.ApplicationsToUnSuccessfulConfirmed.HasValue)
+            if (request.ApplicationsToUnsuccessfulConfirmed.HasValue)
             {
-                await _orchestrator.PostApplicationReviewsToUnSuccessfulStatusConfirmationAsync(request, User.ToVacancyUser());
+                await _orchestrator.PostApplicationReviewsToUnsuccessfulStatusConfirmationAsync(request, User.ToVacancyUser());
                 return RedirectToRoute(RouteNames.VacancyManage_Get, new { request.Ukprn, request.VacancyId });
             }
 

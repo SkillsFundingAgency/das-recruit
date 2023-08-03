@@ -202,7 +202,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
         }
 
         [Test]
-        public async Task GET_ApplicationReviewsToUnSuccessfulConfirmation_RedirectToConfirmationView()
+        public async Task GET_ApplicationReviewsToUnsuccessfulConfirmation_RedirectToConfirmationView()
         {
             _orchestrator.Setup(o =>
                     o.GetApplicationReviewsToUnsuccessfulConfirmationViewModel(It.IsAny<ApplicationReviewsToUnsuccessfulRouteModel>()))
@@ -219,9 +219,9 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
         }
 
         [Test]
-        public async Task POST_ApplicationReviewsToUnSuccessfulConfirmation_RedirectsToAction()
+        public async Task POST_ApplicationReviewsToUnsuccessfulConfirmation_RedirectsToAction()
         {
-            var applicationsToUnSuccessfulConfirmed = true;
+            var applicationsToUnsuccessfulConfirmed = true;
             var vacancyApplication1 = _fixture.Create<VacancyApplication>();
             var vacancyApplication2 = _fixture.Create<VacancyApplication>();
             var vacancyApplications = new List<VacancyApplication> { };
@@ -232,11 +232,11 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
                 .With(x => x.VacancyId, _vacancyId)
                 .With(x => x.Ukprn, _ukprn)
                 .With(x => x.ApplicationsToUnsuccessful, vacancyApplications)
-                .With(x => x.ApplicationsToUnSuccessfulConfirmed, applicationsToUnSuccessfulConfirmed)
+                .With(x => x.ApplicationsToUnsuccessfulConfirmed, applicationsToUnsuccessfulConfirmed)
                 .Create();
 
             _orchestrator.Setup(o =>
-                    o.PostApplicationReviewsToUnSuccessfulStatusConfirmationAsync(It.Is<ApplicationReviewsToUnsuccessfulConfirmationViewModel>(y => y == request), It.IsAny<VacancyUser>()))
+                    o.PostApplicationReviewsToUnsuccessfulStatusConfirmationAsync(It.Is<ApplicationReviewsToUnsuccessfulConfirmationViewModel>(y => y == request), It.IsAny<VacancyUser>()))
                 .Returns(Task.CompletedTask);
 
             var actionResult = await _controller.ApplicationReviewsToUnsuccessfulConfirmation(request);

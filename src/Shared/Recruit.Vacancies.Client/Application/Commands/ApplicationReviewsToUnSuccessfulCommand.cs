@@ -6,7 +6,7 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Vacanc
 
 namespace Esfa.Recruit.Vacancies.Client.Application.Commands
 {
-    public class ApplicationReviewsToUnSuccessfulCommand : ICommand, IRequest<Unit>
+    public class ApplicationReviewsToUnsuccessfulCommand : ICommand, IRequest<Unit>
     {
         public IEnumerable<VacancyApplication> ApplicationReviews { get; set; }
         public string CandidateFeedback { get; set; }

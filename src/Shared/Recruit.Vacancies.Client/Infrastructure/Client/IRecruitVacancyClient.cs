@@ -42,6 +42,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         Task<IApprenticeshipRoute> GetRoute(int? routeId);
         Task<IEnumerable<IApprenticeshipRoute>> GetApprenticeshipRoutes();
         Task SetApplicationReviewsShared(IEnumerable<VacancyApplication> applicationReviewIds, VacancyUser user);
-        Task SetApplicationReviewsToUnsuccessful(IEnumerable<VacancyApplication> applicationReviewsToUnSuccessful, string candidateFeedback, VacancyUser user);
+        Task SetApplicationReviewsToUnsuccessful(IEnumerable<VacancyApplication> applicationReviewsToUnsuccessful, string candidateFeedback, VacancyUser user);
     }
 }

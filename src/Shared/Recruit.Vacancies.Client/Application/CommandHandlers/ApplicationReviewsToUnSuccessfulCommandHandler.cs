@@ -10,13 +10,13 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Vacanc
 using MediatR;
 namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 {
-    public class ApplicationReviewsToUnSuccessfulCommandHandler :
-        IRequestHandler<ApplicationReviewsToUnSuccessfulCommand, Unit>
+    public class ApplicationReviewsToUnsuccessfulCommandHandler :
+        IRequestHandler<ApplicationReviewsToUnsuccessfulCommand, Unit>
     {
         private readonly IApplicationReviewRepository _applicationReviewRepository;
         private readonly ITimeProvider _timeProvider;
 
-        public ApplicationReviewsToUnSuccessfulCommandHandler(
+        public ApplicationReviewsToUnsuccessfulCommandHandler(
             IApplicationReviewRepository applicationReviewRepository,
             ITimeProvider timeProvider)
         {
@@ -24,7 +24,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             _timeProvider = timeProvider;
         }
 
-        public async Task<Unit> Handle(ApplicationReviewsToUnSuccessfulCommand command, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(ApplicationReviewsToUnsuccessfulCommand command, CancellationToken cancellationToken)
         {
             await Handle(command.ApplicationReviews, command.User, ApplicationReviewStatus.Unsuccessful, command.CandidateFeedback);
             return Unit.Value;
