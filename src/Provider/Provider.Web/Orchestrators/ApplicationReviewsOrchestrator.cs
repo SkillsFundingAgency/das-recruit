@@ -14,7 +14,8 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
         Task<ApplicationReviewsToUnsuccessfulViewModel> GetApplicationReviewsToUnsuccessfulViewModelAsync(VacancyRouteModel rm);
         Task<ShareMultipleApplicationReviewsViewModel> GetApplicationReviewsToShareViewModelAsync(VacancyRouteModel rm);
         Task<ShareMultipleApplicationReviewsConfirmationViewModel> GetApplicationReviewsToShareConfirmationViewModel(ShareApplicationReviewsRequest request);
-        Task PostApplicationReviewsStatusConfirmationAsync(ShareApplicationReviewsPostRequest request, VacancyUser user);
+        Task PostApplicationReviewsToSharedAsync(ShareApplicationReviewsPostRequest request, VacancyUser user);
+        Task PostApplicationReviewsToUnsuccessfulAsync(ApplicationReviewsToUnsuccessfulConfirmationViewModel request, VacancyUser user);
     }
 
     public class ApplicationReviewsOrchestrator : IApplicationReviewsOrchestrator
@@ -34,7 +35,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             {
                 VacancyId = request.VacancyId,
                 Ukprn = request.Ukprn,
-                ApplicationsToUnsuccessful = applicationsToUnsuccessful,
+                ApplicationsToUnsuccessful= applicationsToUnsuccessful,
                 CandidateFeedback = request.CandidateFeedback
             };
         }
@@ -80,9 +81,14 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             };
         }
 
-        public async Task PostApplicationReviewsStatusConfirmationAsync(ShareApplicationReviewsPostRequest request, VacancyUser user)
+        public async Task PostApplicationReviewsToSharedAsync(ShareApplicationReviewsPostRequest request, VacancyUser user)
         {
             await _vacancyClient.SetApplicationReviewsShared(request.ApplicationReviewsToShare, user);
+        }
+
+        public async Task PostApplicationReviewsToUnsuccessfulAsync(ApplicationReviewsToUnsuccessfulConfirmationViewModel request, VacancyUser user)
+        {
+            await _vacancyClient.SetApplicationReviewsToUnsuccessful(request.ApplicationsToUnsuccessful, request.CandidateFeedback, user);
         }
     }
 }

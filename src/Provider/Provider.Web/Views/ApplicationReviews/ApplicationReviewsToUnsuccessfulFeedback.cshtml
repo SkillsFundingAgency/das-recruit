@@ -20,7 +20,6 @@
             </h1>
         </div>
         <form asp-route="@RouteNames.ApplicationReviewsToUnsuccessfulFeedback_Post" asp-route-ukprn="@Model.Ukprn" asp-route-vacancyId="@Model.VacancyId">
-            @Html.HiddenFor(model => model.Outcome)
             @for (var i = 0; i < Model.ApplicationsToUnsuccessful.Count(); i++)
             {
                 <div class="govuk-!-display-none">
