@@ -101,8 +101,6 @@ namespace Esfa.Recruit.Provider.Web.Controllers
         [HttpPost("", Name = RouteNames.ApplicationReviewsToShare_Post)]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         [FeatureGate(FeatureNames.ShareApplicationsFeature)]
-        public IActionResult ApplicationReviewsToShare(ApplicationReviewsToShareRouteModel rm)
-        {
         public async Task<IActionResult> ApplicationReviewsToShare(ApplicationReviewsToShareRouteModel rm)
         {
             if (!ModelState.IsValid)
