@@ -37,7 +37,6 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
                 )));
         }
 
-        
         [Test, MoqAutoData]
         public async Task Then_The_Parameters_Are_Passed_To_The_ApplicationReviewsToUnsuccessful_Command_And_Handled([Frozen] Mock<IMessaging> messaging, VacancyClient client)
         {
