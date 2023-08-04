@@ -7,5 +7,14 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.ApplicationReviews
     public class ApplicationReviewsToUnsuccessfulConfirmationViewModel : ApplicationReviewsToUnsuccessfulRouteModel
     {
         public IList<VacancyApplication> VacancyApplicationsToUnsuccessful { get; set; }
+        public bool? ApplicationsUnsuccessfulConfirmed { get; set; }
+        public override bool IsMultipleApplications
+        {
+            get => VacancyApplicationsToUnsuccessful != null && VacancyApplicationsToUnsuccessful.Count > 1;
+        }
+        public string ApplicationReviewsFeedbackHeaderTitle => IsMultipleApplications ? "Make multiple applications unsuccessful" : "Make application unsuccessful";
+        public string ApplicationReviewsFeedbackHeaderDescription => IsMultipleApplications ? "You will make these applications unsuccessful:" : "You will make this application unsuccessful:";
+        public string ApplicationsReviewsFeedbackNotificationMessage => IsMultipleApplications ? "These applicants will be notified with this message:" : "This applicant will be notified with this message:";
+        public string ApplicationsReviewsFeedbackLegendMessage => IsMultipleApplications ? "Do you want to make these applications unsuccessful?" : "Do you want to make this application unsuccessful?";
     }
 }
