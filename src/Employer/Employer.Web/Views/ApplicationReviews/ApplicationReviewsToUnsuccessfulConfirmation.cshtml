@@ -13,10 +13,10 @@
         <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState}' />
         <div>
             <h1 id="applications-to-unsuccessful-title" class="govuk-heading-xl govuk-!-margin-bottom-6">
-                @Model.ApplicationReviewsFeedbackHeaderTitle
+                @Model.ApplicationReviewsConfirmationHeaderTitle
             </h1>
             <p id="applications-to-unsuccessful-description">
-                @Model.ApplicationReviewsFeedbackHeaderDescription
+                @Model.ApplicationReviewsConfirmationHeaderDescription
             </p>
             <div id="applications-to-unsuccessful-listing" class="govuk-details__text govuk-!-margin-bottom-6">
                 @{
@@ -27,7 +27,7 @@
                 }
             </div>
             <p>
-                @Model.ApplicationsReviewsFeedbackNotificationMessage
+                @Model.ApplicationsReviewsConfirmationNotificationMessage
             </p>
             <div class="govuk-details__text govuk-!-margin-bottom-6">
                 <p id="candidate-feedback-confirm-text" class="govuk-body">@Model.CandidateFeedback</p>
@@ -40,7 +40,7 @@
                 <div class="govuk-form-group" das-highlight-error-for="VacancyApplicationsToUnsuccessful" error-class="govuk-form-group--error" id="employer-applications-to-unsuccessful-confirm-group">
                     <fieldset class="govuk-fieldset">
                         <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
-                            <h1 class="govuk-fieldset__heading">@Model.ApplicationsReviewsFeedbackLegendMessage</h1>
+                            <h1 class="govuk-fieldset__heading">@Model.ApplicationsReviewsConfirmationLegendMessage</h1>
                         </legend>
                         @for (var i = 0; i < Model.VacancyApplicationsToUnsuccessful.Count(); i++)
                         {

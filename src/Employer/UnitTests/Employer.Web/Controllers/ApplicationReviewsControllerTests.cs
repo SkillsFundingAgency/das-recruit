@@ -21,6 +21,8 @@ using FluentAssertions;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent;
 using FluentValidation;
+using Esfa.Recruit.Employer.Web.Configuration.Routing;
+using static Microsoft.ApplicationInsights.MetricDimensionNames.TelemetryContext;
 
 namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Controllers
 {
@@ -259,6 +261,147 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Controllers
             result.IsValid.Should().BeFalse();
             result.Errors.Count.Should().Be(1);
             result.Errors[0].ErrorMessage.Should().Be(ApplicationReviewValidator.CandidateFeedbackRequiredForSingleApplication);
+        }
+
+        [Test]
+        public async Task GET_ApplicationReviewsToUnsuccessfulConfirmation_ReturnsViewModelWithMultipleApplicationsText()
+        {
+            // Arrange
+            var listOfApplicationReviews = new List<Guid>();
+            listOfApplicationReviews.Add(_applicationReviewId);
+            listOfApplicationReviews.Add(_applicationReviewIdTwo);
+
+            var vacancyApplication1 = _fixture.Create<VacancyApplication>();
+            var vacancyApplication2 = _fixture.Create<VacancyApplication>();
+            var vacancyApplications = new List<VacancyApplication> { };
+            vacancyApplications.Add(vacancyApplication1);
+            vacancyApplications.Add(vacancyApplication2);
+
+            var routeModel = _fixture
+                .Build<ApplicationReviewsToUnsuccessfulRouteModel>()
+                .With(x => x.VacancyId, _vacancyId)
+                .With(x => x.EmployerAccountId, _employerAccountId)
+                .With(x => x.ApplicationsToUnsuccessful, listOfApplicationReviews)
+                .Create();
+
+            _orchestrator.Setup(o =>
+                    o.GetApplicationReviewsToUnsuccessfulConfirmationViewModelAsync(It.Is<ApplicationReviewsToUnsuccessfulRouteModel>(y => y == routeModel)))
+                .ReturnsAsync(new ApplicationReviewsToUnsuccessfulConfirmationViewModel
+                {
+                    VacancyId = routeModel.VacancyId,
+                    EmployerAccountId = routeModel.EmployerAccountId,
+                    VacancyApplicationsToUnsuccessful = vacancyApplications
+                });
+
+            // Act
+            var result = await _controller.ApplicationReviewsToUnsuccessfulConfirmation(routeModel) as ViewResult;
+
+            // Assert
+            var actual = result.Model as ApplicationReviewsToUnsuccessfulConfirmationViewModel;
+            Assert.IsNotEmpty(actual.VacancyApplicationsToUnsuccessful);
+            Assert.That(actual.VacancyApplicationsToUnsuccessful.Count(), Is.EqualTo(2));
+            Assert.AreEqual(routeModel.VacancyId, actual.VacancyId);
+            Assert.AreEqual(routeModel.EmployerAccountId, actual.EmployerAccountId);
+            Assert.AreEqual("Make multiple applications unsuccessful", actual.ApplicationReviewsConfirmationHeaderTitle);
+            Assert.AreEqual("You will make these applications unsuccessful:", actual.ApplicationReviewsConfirmationHeaderDescription);
+            Assert.AreEqual("These applicants will be notified with this message:", actual.ApplicationsReviewsConfirmationNotificationMessage);
+            Assert.AreEqual("Do you want to make these applications unsuccessful?", actual.ApplicationsReviewsConfirmationLegendMessage);
+        }
+
+        [Test]
+        public async Task GET_ApplicationReviewsToUnsuccessfulConfirmation_ReturnsViewModelWithSingleApplicationsText()
+        {
+            // Arrange
+            var listOfApplicationReviews = new List<Guid>();
+            listOfApplicationReviews.Add(_applicationReviewId);
+
+            var vacancyApplication1 = _fixture.Create<VacancyApplication>();
+            var vacancyApplications = new List<VacancyApplication> { };
+            vacancyApplications.Add(vacancyApplication1);
+
+            var routeModel = _fixture
+                .Build<ApplicationReviewsToUnsuccessfulRouteModel>()
+                .With(x => x.VacancyId, _vacancyId)
+                .With(x => x.EmployerAccountId, _employerAccountId)
+                .With(x => x.ApplicationsToUnsuccessful, listOfApplicationReviews)
+                .Create();
+
+            _orchestrator.Setup(o =>
+                    o.GetApplicationReviewsToUnsuccessfulConfirmationViewModelAsync(It.Is<ApplicationReviewsToUnsuccessfulRouteModel>(y => y == routeModel)))
+                .ReturnsAsync(new ApplicationReviewsToUnsuccessfulConfirmationViewModel
+                {
+                    VacancyId = routeModel.VacancyId,
+                    EmployerAccountId = routeModel.EmployerAccountId,
+                    VacancyApplicationsToUnsuccessful = vacancyApplications
+                });
+
+            // Act
+            var result = await _controller.ApplicationReviewsToUnsuccessfulConfirmation(routeModel) as ViewResult;
+
+            // Assert
+            var actual = result.Model as ApplicationReviewsToUnsuccessfulConfirmationViewModel;
+            Assert.IsNotEmpty(actual.VacancyApplicationsToUnsuccessful);
+            Assert.That(actual.VacancyApplicationsToUnsuccessful.Count(), Is.EqualTo(1));
+            Assert.AreEqual(routeModel.VacancyId, actual.VacancyId);
+            Assert.AreEqual(routeModel.EmployerAccountId, actual.EmployerAccountId);
+            Assert.AreEqual("Make application unsuccessful", actual.ApplicationReviewsConfirmationHeaderTitle);
+            Assert.AreEqual("You will make this application unsuccessful:", actual.ApplicationReviewsConfirmationHeaderDescription);
+            Assert.AreEqual("This applicant will be notified with this message:", actual.ApplicationsReviewsConfirmationNotificationMessage);
+            Assert.AreEqual("Do you want to make this application unsuccessful?", actual.ApplicationsReviewsConfirmationLegendMessage);
+        }
+
+        [Test]
+        public async Task POST_ApplicationReviewsToUnsuccessfulConfirmation_NoSelected_RedirectsToManageVacancy()
+        {
+            // Arrange
+            var vacancyApplication1 = _fixture.Create<VacancyApplication>();
+            var vacancyApplications = new List<VacancyApplication> { };
+            vacancyApplications.Add(vacancyApplication1);
+            var request = _fixture
+                .Build<ApplicationReviewsToUnsuccessfulConfirmationViewModel>()
+                .With(x => x.VacancyId, _vacancyId)
+                .With(x => x.EmployerAccountId, _employerAccountId)
+                .With(x => x.VacancyApplicationsToUnsuccessful, vacancyApplications)
+                .With(x => x.ApplicationsUnsuccessfulConfirmed, false)
+                .Create();
+
+            // Act
+            var redirectResult = await _controller.ApplicationReviewsToUnsuccessfulConfirmation(request) as RedirectToRouteResult;
+
+            // Assert
+            Assert.NotNull(redirectResult);
+            Assert.AreEqual(RouteNames.VacancyManage_Get, redirectResult.RouteName);
+            Assert.AreEqual(_vacancyId, redirectResult.RouteValues["VacancyId"]);
+            Assert.AreEqual(_employerAccountId, redirectResult.RouteValues["EmployerAccountId"]);
+        }
+
+        [Test]
+        public async Task POST_ApplicationReviewsToUnsuccessfulConfirmation_YesSelected_RedirectsToManageVacancy()
+        {
+            // Arrange
+            var vacancyApplication1 = _fixture.Create<VacancyApplication>();
+            var vacancyApplications = new List<VacancyApplication> { };
+            vacancyApplications.Add(vacancyApplication1);
+            var request = _fixture
+                .Build<ApplicationReviewsToUnsuccessfulConfirmationViewModel>()
+                .With(x => x.VacancyId, _vacancyId)
+                .With(x => x.EmployerAccountId, _employerAccountId)
+                .With(x => x.VacancyApplicationsToUnsuccessful, vacancyApplications)
+                .With(x => x.ApplicationsUnsuccessfulConfirmed, true)
+            .Create();
+
+            _orchestrator.Setup(o =>
+                    o.PostApplicationReviewsToUnsuccessfulAsync(It.Is<ApplicationReviewsToUnsuccessfulConfirmationViewModel>(y => y == request), It.IsAny<VacancyUser>()))
+                .Returns(Task.CompletedTask);
+
+            // Act
+            var redirectResult = await _controller.ApplicationReviewsToUnsuccessfulConfirmation(request) as RedirectToRouteResult;
+
+            // Assert
+            Assert.NotNull(redirectResult);
+            Assert.AreEqual(RouteNames.VacancyManage_Get, redirectResult.RouteName);
+            Assert.AreEqual(_vacancyId, redirectResult.RouteValues["VacancyId"]);
+            Assert.AreEqual(_employerAccountId, redirectResult.RouteValues["EmployerAccountId"]);
         }
 
         public Task<IEnumerable<string>> GetProfanityListAsync()
