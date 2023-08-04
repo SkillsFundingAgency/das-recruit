@@ -4,9 +4,8 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Vacanc
 
 namespace Esfa.Recruit.Employer.Web.ViewModels.ApplicationReviews
 {
-    public class ApplicationReviewsUnsuccessfulViewModel : ApplicationReviewsToUnsuccessfulRouteModel
+    public class ApplicationReviewsToUnsuccessfulConfirmationViewModel : ApplicationReviewsToUnsuccessfulRouteModel
     {
-        public long VacancyReference { get; set; }
-        public List<VacancyApplication> VacancyApplications { get; set; }
+        public IList<VacancyApplication> VacancyApplicationsToUnsuccessful { get; set; }
     }
 }
