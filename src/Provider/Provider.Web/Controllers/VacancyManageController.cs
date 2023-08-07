@@ -40,13 +40,22 @@ namespace Esfa.Recruit.Provider.Web.Controllers
             if (TempData.ContainsKey(TempDataKeys.ApplicationReviewStatusInfoMessage))
                 viewModel.ApplicationReviewStatusHeaderInfoMessage = TempData[TempDataKeys.ApplicationReviewStatusInfoMessage].ToString();
 
+            if (TempData.ContainsKey(TempDataKeys.ApplicationReviewSuccessStatusInfoMessage))
+            {
+                viewModel.ApplicationReviewStatusChangeBannerHeader = TempData[TempDataKeys.ApplicationReviewSuccessStatusInfoMessage].ToString();
+                viewModel.ApplicationReviewStatusChangeBannerMessage = InfoMsg.ApplicationReviewSuccessStatusBannerMessage;
+            }
+
+            if (TempData.ContainsKey(TempDataKeys.ApplicationReviewUnsuccessStatusInfoMessage))
+                viewModel.ApplicationReviewStatusChangeBannerHeader = TempData[TempDataKeys.ApplicationReviewUnsuccessStatusInfoMessage].ToString();
+
             if (TempData.ContainsKey(TempDataKeys.SharedMultipleApplicationsHeader))
             {
                 viewModel.ApplicationReviewStatusChangeBannerHeader = TempData[TempDataKeys.SharedMultipleApplicationsHeader].ToString();
                 viewModel.ApplicationReviewStatusChangeBannerMessage = InfoMsg.SharedMultipleApplicationsBannerMessage;
             }
 
-            if (TempData.ContainsKey(TempDataKeys.SharedSingleApplicationsHeader)) 
+            if (TempData.ContainsKey(TempDataKeys.SharedSingleApplicationsHeader))
             {
                 viewModel.ApplicationReviewStatusChangeBannerHeader = TempData[TempDataKeys.SharedSingleApplicationsHeader].ToString();
                 viewModel.ApplicationReviewStatusChangeBannerMessage = InfoMsg.SharedSingleApplicationsBannerMessage;
@@ -65,9 +74,9 @@ namespace Esfa.Recruit.Provider.Web.Controllers
         {
             if (_utility.IsTaskListCompleted(vacancy))
             {
-                return RedirectToRoute(RouteNames.ProviderCheckYourAnswersGet, new {vacancy.TrainingProvider.Ukprn, vacancyId = vacancy.Id});
+                return RedirectToRoute(RouteNames.ProviderCheckYourAnswersGet, new { vacancy.TrainingProvider.Ukprn, vacancyId = vacancy.Id });
             }
-            return RedirectToRoute(RouteNames.ProviderTaskListGet, new {vacancy.TrainingProvider.Ukprn, vacancyId = vacancy.Id});
+            return RedirectToRoute(RouteNames.ProviderTaskListGet, new { vacancy.TrainingProvider.Ukprn, vacancyId = vacancy.Id });
         }
     }
 }

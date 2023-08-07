@@ -30,5 +30,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Vacancies
         public bool ShowResultsTable => Vacancies.Any();
         public bool IsFiltered => Filter != FilteringOptions.All;
         public bool ShowReferredFromMaBackLink { get; set; }
+        public bool ShowSharedApplicationCounts => (Filter == FilteringOptions.NewSharedApplications || Filter == FilteringOptions.AllSharedApplications);
+        public bool ShowNewApplicationCounts => !ShowSharedApplicationCounts;
     }
 }

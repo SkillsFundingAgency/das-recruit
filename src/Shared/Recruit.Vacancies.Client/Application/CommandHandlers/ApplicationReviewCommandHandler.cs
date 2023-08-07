@@ -51,6 +51,11 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             applicationReview.StatusUpdatedDate = _timeProvider.Now;
             applicationReview.StatusUpdatedBy = message.User;
 
+            if (applicationReview.Status == ApplicationReviewStatus.EmployerInterviewing || applicationReview.Status == ApplicationReviewStatus.EmployerUnsuccessful)
+            {
+                applicationReview.ReviewedDate = _timeProvider.Now;
+            }
+
             Validate(applicationReview);
             _logger.LogInformation("Setting application review:{applicationReviewId} to {status}", message.ApplicationReviewId, message.Outcome.Value);
 

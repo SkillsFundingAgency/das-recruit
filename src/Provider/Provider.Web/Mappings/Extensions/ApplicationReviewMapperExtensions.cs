@@ -6,7 +6,7 @@ using Esfa.Recruit.Shared.Web.ViewModels.ApplicationReview;
 
 namespace Esfa.Recruit.Provider.Web.Mappings.Extensions
 {
-	public static class ApplicationReviewMapperExtensions
+    public static class ApplicationReviewMapperExtensions
     {
         public static ApplicationReviewViewModel ToViewModel(this ApplicationReview r)
         {
@@ -27,6 +27,7 @@ namespace Esfa.Recruit.Provider.Web.Mappings.Extensions
                 AddressLine3 = r.Application.AddressLine3,
                 AddressLine4 = r.Application.AddressLine4,
                 CandidateFeedback = r.CandidateFeedback,
+                EmployerFeedback = r.CandidateFeedback,
                 DisabilityStatus = r.Application.DisabilityStatus ?? ApplicationReviewDisabilityStatus.Unknown,
                 EducationFromYear = r.Application.EducationFromYear,
                 EducationInstitution = r.Application.EducationInstitution,

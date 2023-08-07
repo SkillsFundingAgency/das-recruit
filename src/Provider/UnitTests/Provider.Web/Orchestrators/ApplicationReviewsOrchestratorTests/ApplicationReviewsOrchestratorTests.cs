@@ -47,7 +47,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Application
 
             _vacancyClient.Setup(x => x.GetVacancyAsync(routeModel.VacancyId.GetValueOrDefault()))
                 .ReturnsAsync(vacancy);
-            _vacancyClient.Setup(x => x.GetVacancyApplicationsAsync(vacancy.VacancyReference.Value))
+            _vacancyClient.Setup(x => x.GetVacancyApplicationsAsync(vacancy.VacancyReference.Value, false))
                 .ReturnsAsync(vacancyApplications);
 
             // Act

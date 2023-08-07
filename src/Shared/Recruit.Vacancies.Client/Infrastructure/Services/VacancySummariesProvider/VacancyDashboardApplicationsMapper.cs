@@ -11,11 +11,25 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                 Status = src.Id.Status,
                 NoOfNewApplications = src.NoOfNewApplications,
                 NoOfSuccessfulApplications = src.NoOfSuccessfulApplications,
+                NumberOfEmployerReviewedApplications = src.NoOfEmployerReviewedApplications,
                 NoOfUnsuccessfulApplications = src.NoOfUnsuccessfulApplications,
                 ClosingSoon = src.Id.ClosingSoon,
                 StatusCount = src.StatusCount
             };
         }
     
+    }
+
+    internal static class VacancyDashboardSharedApplicationsMapper
+    {
+        internal static VacancySharedApplicationsDashboard MapFromVacancySharedApplicationsDashboardResponseDto(VacancySharedApplicationsDashboardResponseDto src)
+        {
+            return new VacancySharedApplicationsDashboard
+            {
+                Status = src.Id.Status,
+                NoOfSharedApplications = src.NoOfSharedApplications
+            };
+        }
+
     }
 }

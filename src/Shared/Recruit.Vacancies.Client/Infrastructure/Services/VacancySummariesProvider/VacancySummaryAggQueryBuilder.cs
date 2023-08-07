@@ -8,7 +8,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
 {
     public class VacancySummaryAggQueryBuilder
     {
-         private string DashboardApplicationsPipeline = @"[
+        private string DashboardApplicationsPipeline = @"[
             {
                 '$lookup': {
                     'from': 'applicationReviews',
@@ -94,9 +94,28 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                             'else': 0
                         }
                     },
+                    'isEmployerReviewed': {
+                        '$cond': {
+                            'if': {
+                                '$or': [
+                                    { '$eq': ['$appStatus', 'EmployerInterviewing'] },
+                                    { '$eq': ['$appStatus', 'EmployerUnsuccessful'] }
+                                ]
+                            },
+                            'then': 1,
+                            'else': 0
+                        }
+                    },
                     'isUnsuccessful': {
                         '$cond': {
                             'if': {'$eq': [ '$appStatus', 'Unsuccessful']},
+                            'then': 1,
+                            'else': 0
+                        }
+                    },
+                    'isShared': {
+                        '$cond': {
+                            'if': {'$eq': [ '$appStatus', 'Shared']},
                             'then': 1,
                             'else': 0
                         }
@@ -116,8 +135,17 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                     'noOfSuccessfulApplications': {
                         '$sum': '$isSuccessful'
                     },
+                    'noOfEmployerReviewedApplications': {
+                        '$sum': '$isEmployerReviewed'
+                    },
                     'noOfUnsuccessfulApplications': {
                         '$sum': '$isUnsuccessful'
+                    },
+                    'noOfSharedApplications': {
+                        '$sum': '$isShared'
+                    },
+                    'noOfAllSharedApplications': {
+                        '$sum' :{'$add': ['$isShared','$isEmployerReviewed'] }
                     },
                     'statusCount' : { '$sum' : 1 }
                     
@@ -125,8 +153,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
             }
         ]";
 
-         private string DashboardNoApplicationCountMatchClause = @"{ '$match' :{ 'candidateApplicationReview' : null, 'status':'Live'  }}"; 
-         
+        private string DashboardNoApplicationCountMatchClause = @"{ '$match' :{ 'candidateApplicationReview' : null, 'status':'Live'  }}";
+
         private string DashboardPipeline = @"[
             {
                 '$project': {
@@ -192,7 +220,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                 }
             }
         ]";
-        
+
         private const string Pipeline = @"[
             {
                 '$lookup': {
@@ -328,9 +356,28 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                             'else': 0
                         }
                     },
+                    'isEmployerReviewed': {
+                        '$cond': {
+                            'if': {
+                                '$or': [
+                                    { '$eq': ['$appStatus', 'EmployerInterviewing'] },
+                                    { '$eq': ['$appStatus', 'EmployerUnsuccessful'] }
+                                ]
+                            },
+                            'then': 1,
+                            'else': 0
+                        }
+                    },
                     'isUnsuccessful': {
                         '$cond': {
                             'if': {'$eq': [ '$appStatus', 'Unsuccessful']},
+                            'then': 1,
+                            'else': 0
+                        }
+                    },
+                    'isShared': {
+                        '$cond': {
+                            'if': {'$eq': [ '$appStatus', 'Shared']},
                             'then': 1,
                             'else': 0
                         }
@@ -374,8 +421,17 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                     'noOfSuccessfulApplications': {
                         '$sum': '$isSuccessful'
                     },
+                    'noOfEmployerReviewedApplications': {
+                        '$sum': '$isEmployerReviewed'
+                    },
                     'noOfUnsuccessfulApplications': {
                         '$sum': '$isUnsuccessful'
+                    },
+                    'noOfSharedApplications': {
+                        '$sum': '$isShared'
+                    },
+                    'noOfAllSharedApplications': {
+                        '$sum' :{'$add': ['$isShared','$isEmployerReviewed'] }
                     },
                     'noOfApplications': {
                          '$sum' :{'$add': ['$isUnsuccessful','$isSuccessful'] }
@@ -391,11 +447,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
             var pipeline = BsonSerializer.Deserialize<BsonArray>(Pipeline);
             if (secondaryMatch != null)
             {
-                pipeline.Insert(pipeline.Count-1, secondaryMatch);    
+                pipeline.Insert(pipeline.Count - 1, secondaryMatch);
             }
-            
-            pipeline.Insert(pipeline.Count, new BsonDocument {{"$skip", (pageNumber-1) * 25}});
-            pipeline.Insert(pipeline.Count, new BsonDocument {{"$limit",25}});
+
+            pipeline.Insert(pipeline.Count, new BsonDocument { { "$skip", (pageNumber - 1) * 25 } });
+            pipeline.Insert(pipeline.Count, new BsonDocument { { "$limit", 25 } });
             if (employerReviewMatch != null)
             {
                 pipeline.Insert(0, employerReviewMatch);
@@ -410,8 +466,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
         public static BsonDocument[] GetAggregateQueryPipelineDocumentCount(BsonDocument vacanciesMatchClause, BsonDocument secondaryMatch, BsonDocument employerReviewMatch = null)
         {
             var pipeline = BsonSerializer.Deserialize<BsonArray>(Pipeline);
-            pipeline.Insert(pipeline.Count-1, secondaryMatch);
-            pipeline.Insert(pipeline.Count, new BsonDocument {{"$count","total"}});
+            pipeline.Insert(pipeline.Count - 1, secondaryMatch);
+            pipeline.Insert(pipeline.Count, new BsonDocument { { "$count", "total" } });
             if (employerReviewMatch != null)
             {
                 pipeline.Insert(0, employerReviewMatch);
@@ -422,8 +478,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
 
             return pipelineDefinition;
         }
-        
-        public BsonDocument[] GetAggregateQueryPipelineDashboard(BsonDocument vacanciesMatchClause, BsonDocument employerReviewMatch = null)         
+
+        public BsonDocument[] GetAggregateQueryPipelineDashboard(BsonDocument vacanciesMatchClause, BsonDocument employerReviewMatch = null)
         {
             var pipeline = BsonSerializer.Deserialize<BsonArray>(DashboardPipeline);
             if (employerReviewMatch != null)
@@ -462,13 +518,13 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
             pipeline.Insert(0, vacanciesMatchClause);
 
             var matchPipeline = BsonSerializer.Deserialize<BsonDocument>(DashboardNoApplicationCountMatchClause);
-            
+
             pipeline.Insert(insertLine, matchPipeline);
-            
+
             var pipelineDefinition = pipeline.Values.Select(p => p.ToBsonDocument()).ToArray();
 
             return pipelineDefinition;
         }
-        
+
     }
 }
