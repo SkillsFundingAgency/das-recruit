@@ -46,5 +46,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyManage
         public bool IsTransferred => string.IsNullOrWhiteSpace(TransferredProviderName) == false && string.IsNullOrWhiteSpace(TransferredOnDate) == false;
         public bool CanClone { get; internal set; }
         public string ViewBagTitle => ShowEmployerApplications ? "Manage Advert" : "Shared applications";
+        public string ApplicationReviewsUnsuccessfulBannerHeader { get; internal set; }
+        public bool CanShowApplicationsUnsuccessfulBanner => !string.IsNullOrEmpty(ApplicationReviewsUnsuccessfulBannerHeader);
     }
 }

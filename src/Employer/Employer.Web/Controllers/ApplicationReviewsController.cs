@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.FeatureManagement.Mvc;
 using Esfa.Recruit.Employer.Web.ViewModels.ApplicationReviews;
 using Esfa.Recruit.Employer.Web.Extensions;
+using Esfa.Recruit.Shared.Web.ViewModels;
 
 namespace Esfa.Recruit.Employer.Web.Controllers
 {
@@ -95,10 +96,16 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             if (rm.ApplicationsUnsuccessfulConfirmed == true)
             {
                 await _orchestrator.PostApplicationReviewsToUnsuccessfulAsync(rm, User.ToVacancyUser());
+                SetApplicationsReviewsToUnsuccessfulBannerMessage();
                 return RedirectToRoute(RouteNames.VacancyManage_Get, new { rm.EmployerAccountId, rm.VacancyId });
             }
 
             return RedirectToRoute(RouteNames.VacancyManage_Get, new { rm.EmployerAccountId, rm.VacancyId });
+        }
+        private void SetApplicationsReviewsToUnsuccessfulBannerMessage()
+        {
+            TempData.Add(TempDataKeys.ApplicationReviewsUnsuccessfulInfoMessage, InfoMessages.ApplicationsToUnsuccessfulBannerHeader);
+            return;
         }
     }
 }
