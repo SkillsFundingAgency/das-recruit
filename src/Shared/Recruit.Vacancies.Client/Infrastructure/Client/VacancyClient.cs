@@ -11,6 +11,7 @@ using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Extensions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Responses;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
@@ -218,7 +219,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             
             var dashboard = dashboardValue.VacancyStatusDashboard;
             var dashboardApplications = dashboardValue.VacancyApplicationsDashboard;
-            
+            var dashboardSharedApplications = dashboardValue.VacancySharedApplicationsDashboard;
+
             return new EmployerDashboardSummary
             {
                 Closed = dashboard.FirstOrDefault(c=>c.Status == VacancyStatus.Closed)?.StatusCount ?? 0,
@@ -232,8 +234,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
                                                  + dashboardApplications.Where(c=>c.Status == VacancyStatus.Closed).Sum(x=>x.NoOfSuccessfulApplications),
                 NumberOfUnsuccessfulApplications = dashboardApplications.Where(c=>c.Status == VacancyStatus.Live).Sum(x=>x.NoOfUnsuccessfulApplications) 
                                                    + dashboardApplications.Where(c=>c.Status == VacancyStatus.Closed).Sum(x=>x.NoOfUnsuccessfulApplications),
+                NumberOfSharedApplications = dashboardSharedApplications.Where(c => c.Status == VacancyStatus.Live || c.Status == VacancyStatus.Closed).Sum(x => x.NoOfSharedApplications),
                 NumberClosingSoon =dashboard.FirstOrDefault(c=>c.Status == VacancyStatus.Live && c.ClosingSoon)?.StatusCount ?? 0,
-                NumberClosingSoonWithNoApplications =dashboardValue.VacanciesClosingSoonWithNoApplications
+                NumberClosingSoonWithNoApplications = dashboardValue.VacanciesClosingSoonWithNoApplications
             };
         }
 
@@ -312,10 +315,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return _applicationReviewRepository.GetAsync(applicationReviewId);
         }
 
-        public async Task<List<VacancyApplication>> GetVacancyApplicationsAsync(long vacancyReference)
+        public async Task<List<VacancyApplication>> GetVacancyApplicationsAsync(long vacancyReference, bool vacancySharedByProvider = false)
         {
-            var applicationReviews =
-                await _applicationReviewRepository.GetForVacancyAsync<ApplicationReview>(vacancyReference);
+            var applicationReviews = vacancySharedByProvider
+                ? await _applicationReviewRepository.GetForSharedVacancyAsync(vacancyReference) 
+                : await _applicationReviewRepository.GetForVacancyAsync<ApplicationReview>(vacancyReference);
 
             return applicationReviews == null 
                 ? new List<VacancyApplication>() 
@@ -618,7 +622,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         
         public async Task<long> GetVacancyCount(string employerAccountId, VacancyType vacancyType, FilteringOptions? filteringOptions, string searchTerm)
         {
-            return await _vacancySummariesQuery.VacancyCount(null, employerAccountId, vacancyType, filteringOptions, searchTerm, OwnerType.Employer);
+            var ownerType = (filteringOptions == FilteringOptions.NewSharedApplications || filteringOptions == FilteringOptions.AllSharedApplications) ? OwnerType.Provider : OwnerType.Employer;
+            return await _vacancySummariesQuery.VacancyCount(null, employerAccountId, vacancyType, filteringOptions, searchTerm, ownerType);
         }
     }
 }
