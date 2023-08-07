@@ -15,6 +15,7 @@
         public const string VacancyPreviewInfoMessage = "VacancyPreviewInfoMessage";
         public const string SharedMultipleApplicationsHeader = "SharedMultipleApplicationsHeader_InfoMessage";
         public const string SharedSingleApplicationsHeader = "SharedSingleApplicationsHeader_InfoMessage";
+        public const string ApplicationsToUnsuccessfulHeader = "ApplicationsToUnsuccessfulHeader_InfoMessage";
         public const string ApplicationStatusChangedHeader = "ApplicationStatusChangedHeader_InfoMessage";
     }
 }

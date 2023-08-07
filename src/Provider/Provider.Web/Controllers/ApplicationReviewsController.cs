@@ -101,6 +101,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
             if (request.ApplicationsToUnsuccessfulConfirmed == true)
             {
                 await _orchestrator.PostApplicationReviewsToUnsuccessfulAsync(request, User.ToVacancyUser());
+                SetApplicationsToUnsuccessfulBannerMessageViaTempData(request.ApplicationsToUnsuccessful);
                 return RedirectToRoute(RouteNames.VacancyManage_Get, new { request.Ukprn, request.VacancyId });
             }
 
@@ -151,6 +152,14 @@ namespace Esfa.Recruit.Provider.Web.Controllers
             }
 
             return RedirectToRoute(RouteNames.VacancyManage_Get, new { request.Ukprn, request.VacancyId });
+        }
+        private void SetApplicationsToUnsuccessfulBannerMessageViaTempData(IList<VacancyApplication> applicationsToUnsuccessful)
+        {
+            if (!applicationsToUnsuccessful.Any())
+                return;
+
+            TempData.Add(TempDataKeys.ApplicationsToUnsuccessfulHeader, InfoMessages.ApplicationsToUnsuccessfulBannerHeader);
+            return;
         }
 
         private void SetSharedApplicationsBannerMessageViaTempData(List<VacancyApplication> sharedApplications)
