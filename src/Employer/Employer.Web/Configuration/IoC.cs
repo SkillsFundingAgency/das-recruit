@@ -90,6 +90,7 @@ namespace Esfa.Recruit.Employer.Web.Configuration
             services.AddSingleton<IValidator<SelectTrainingProviderEditModel>, SelectTrainingProviderEditModelValidator>();
             services.AddSingleton<IValidator<ConfirmTrainingProviderEditModel>, ConfirmTrainingProviderEditModelValidator>();
             services.AddSingleton<IValidator<ApplicationReviewsFeedbackViewModel>, ApplicationReviewsFeedbackModelValidator>();
+            services.AddSingleton<IValidator<ApplicationReviewsToUnsuccessfulConfirmationViewModel>, ApplicationReviewsToUnsuccessfulConfirmationViewModelValidator>();
         }
 
         private static void RegisterOrchestratorDeps(IServiceCollection services)

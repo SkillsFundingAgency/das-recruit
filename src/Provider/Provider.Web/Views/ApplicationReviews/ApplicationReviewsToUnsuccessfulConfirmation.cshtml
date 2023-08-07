@@ -34,10 +34,10 @@
             </div>
         </div>
 
-        <form method="post" id="applicationReviewsToUnsuccessful_applications_confirm_form" asp-route="@RouteNames.ApplicationReviewsToUnsuccessfulConfirmation_Post" asp-route-ukprn="@Model.Ukprn" asp-route-vacancyId="@Model.VacancyId">
+        <form method="post" id="provider-applications-to-unsuccessful-confirm-form" asp-route="@RouteNames.ApplicationReviewsToUnsuccessfulConfirmation_Post" asp-route-ukprn="@Model.Ukprn" asp-route-vacancyId="@Model.VacancyId">
             @Html.HiddenFor(model => model.CandidateFeedback)
             <div esfa-validation-marker-for="ApplicationsToUnsuccessfulConfirmed" class="govuk-form-group">
-                <div class="govuk-form-group" das-highlight-error-for="ApplicationsToUnsuccessful" error-class="govuk-form-group--error" id="applicationReviewsToUnsuccessful">
+                <div class="govuk-form-group" das-highlight-error-for="ApplicationsToUnsuccessful" error-class="govuk-form-group--error" id="provider-applications-to-unsuccessful-confirm-form">
                     <fieldset class="govuk-fieldset">
 
                         <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
@@ -55,12 +55,12 @@
                         <span esfa-validation-message-for="ApplicationsToUnsuccessfulConfirmed" class="govuk-error-message"></span>
                         <div class="govuk-radios">
                             <div class="govuk-radios__item">
-                                <input asp-for="ApplicationsToUnsuccessfulConfirmed" class="govuk-radios__input" id="applicationReviewsToUnsuccessful-applications-confirm-yes" type="radio" value="true">
-                                <label for="applicationReviewsToUnsuccessful-applications-confirm-yes" class="govuk-label govuk-radios__label">Yes</label>
+                                <input asp-for="ApplicationsToUnsuccessfulConfirmed" class="govuk-radios__input" id="applications-to-unsuccessful-confirm-yes" type="radio" value="true">
+                                <label for="applications-to-unsuccessful-confirm-yes" class="govuk-label govuk-radios__label">Yes</label>
                             </div>
                             <div class="govuk-radios__item">
-                                <input asp-for="ApplicationsToUnsuccessfulConfirmed" class="govuk-radios__input" id="applicationReviewsToUnsuccessful-applications-confirm-no" type="radio" value="false">
-                                <label for="applicationReviewsToUnsuccessful-applications-confirm-no" class="govuk-label govuk-radios__label">No</label>
+                                <input asp-for="ApplicationsToUnsuccessfulConfirmed" class="govuk-radios__input" id="applications-to-unsuccessful-confirm-no" type="radio" value="false">
+                                <label for="applications-to-unsuccessful-confirm-no" class="govuk-label govuk-radios__label">No</label>
                             </div>
                         </div>
                     </fieldset>
@@ -74,7 +74,7 @@
                 </strong>
             </div>
             <div class="govuk-button-group">
-                <button class="govuk-button submit" data-module="govuk-button" id="applicationReviewsToUnsuccessful-applications-confirm" type="submit">Confirm</button>
+                <button class="govuk-button submit" data-module="govuk-button" id="provider-applications-to-unsuccessful-confirm" type="submit">Confirm</button>
             </div>
         </form>
 

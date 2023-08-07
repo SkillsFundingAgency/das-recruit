@@ -39,7 +39,7 @@
                                 @{
                                     foreach (VacancyApplication vacancyApplication in Model.VacancyApplications)
                                     {
-                                            <tr class="govuk-table__row">
+                                        <tr class="govuk-table__row" asp-show="@vacancyApplication.CanMakeUnsuccessful">
                                                 <td class="govuk-table__cell">
 
                                                     <div class="govuk-checkboxes govuk-checkboxes--small" das-highlight-error-for="@vacancyApplication.ApplicationReviewId" error-class="govuk-form-group--error">
