@@ -1,4 +1,5 @@
-﻿using Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent;
+﻿using System.Linq;
+using Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using FluentAssertions;
 using Xunit;
@@ -56,6 +57,58 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation
             result.IsValid.Should().BeFalse();
             result.Errors.Count.Should().Be(1);
             result.Errors[0].ErrorMessage.Should().Be(ApplicationReviewValidator.CandidateFeedbackNull);
+        }
+
+        [Fact]
+        public void CandidateFeedback_WithinMaxWords_ShouldPassValidation()
+        {
+            var m = new ApplicationReview
+            {
+                Status = ApplicationReviewStatus.Unsuccessful,
+                CandidateFeedback = "This is a sample feedback within the word limit."
+            };
+
+            var validator = new ApplicationReviewValidator();
+
+            var result = validator.Validate(m);
+
+            result.IsValid.Should().BeTrue();
+        }
+
+        [Fact]
+        public void CandidateFeedback_ExceedsMaxWords_ShouldFailValidation()
+        {
+            var m = new ApplicationReview
+            {
+                Status = ApplicationReviewStatus.Unsuccessful,
+                CandidateFeedback = string.Join(" ", Enumerable.Repeat("word", ApplicationReviewValidator.CandidateFeedbackMaxWordLength + 1))
+            };
+
+            var validator = new ApplicationReviewValidator();
+
+            var result = validator.Validate(m);
+
+            result.IsValid.Should().BeFalse();
+            result.Errors.Count.Should().Be(1);
+            result.Errors[0].ErrorMessage.Should().Be(string.Format(ApplicationReviewValidator.CandidateFeedbackWordsLength, ApplicationReviewValidator.CandidateFeedbackMaxWordLength));
+        }
+
+        [Fact]
+        public void CandidateFeedback_ExceedsMaxCharacters_ShouldFailValidation()
+        {
+            var m = new ApplicationReview
+            {
+                Status = ApplicationReviewStatus.Unsuccessful,
+                CandidateFeedback = new string('W', ApplicationReviewValidator.CandidateFeedbackMaxLength + 1)
+            };
+
+            var validator = new ApplicationReviewValidator();
+
+            var result = validator.Validate(m);
+
+            result.IsValid.Should().BeFalse();
+            result.Errors.Count.Should().Be(1);
+            result.Errors[0].ErrorMessage.Should().Be(string.Format(ApplicationReviewValidator.CandidateFeedbackLength, ApplicationReviewValidator.CandidateFeedbackMaxLength));
         }
 
         [Theory]

@@ -16,7 +16,9 @@ using Esfa.Recruit.Provider.Web.Configuration.Routing;
 using Esfa.Recruit.Shared.Web.ViewModels;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Provider.Web.Extensions;
+using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Shared.Web.ViewModels.ApplicationReview;
+using Newtonsoft.Json;
 
 namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
 {
@@ -128,7 +130,29 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
         }
 
         [Test]
-        public async Task POST_ApplicationReview_StatusUnsuccessful_RedirectsToApplicationReviewConfirmation()
+        public async Task POST_ApplicationReview_StatusEmployerUnsuccessful_RedirectsToApplicationReviewConfirmation()
+        {
+            // Arrange
+            var editModel = _fixture.Build<ApplicationReviewEditModel>()
+                .With(x => x.Outcome, ApplicationReviewStatus.EmployerUnsuccessful)
+                .With(x => x.VacancyId, _vacancyId)
+                .With(x => x.Ukprn, _ukprn)
+                .With(x => x.ApplicationReviewId, _applicationReviewId)
+                .Create();
+
+            // Act
+            var redirectResult = await _controller.ApplicationReview(editModel) as RedirectToRouteResult;
+
+            // Assert
+            Assert.NotNull(redirectResult);
+            Assert.AreEqual(RouteNames.ApplicationReviewConfirmation_Get, redirectResult.RouteName);
+            Assert.AreEqual(_vacancyId, redirectResult.RouteValues["VacancyId"]);
+            Assert.AreEqual(_ukprn, redirectResult.RouteValues["Ukprn"]);
+            Assert.AreEqual(_applicationReviewId, redirectResult.RouteValues["ApplicationReviewId"]);
+        }
+
+        [Test]
+        public async Task POST_ApplicationReview_StatusUnsuccessful_RedirectsToApplicationReviewFeedBack()
         {
             // Arrange
             var editModel = _fixture.Build<ApplicationReviewEditModel>()
@@ -143,7 +167,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
 
             // Assert
             Assert.NotNull(redirectResult);
-            Assert.AreEqual(RouteNames.ApplicationReviewConfirmation_Get, redirectResult.RouteName);
+            Assert.AreEqual(RouteNames.ApplicationReviewFeedBack_Get, redirectResult.RouteName);
             Assert.AreEqual(_vacancyId, redirectResult.RouteValues["VacancyId"]);
             Assert.AreEqual(_ukprn, redirectResult.RouteValues["Ukprn"]);
             Assert.AreEqual(_applicationReviewId, redirectResult.RouteValues["ApplicationReviewId"]);
@@ -199,6 +223,170 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
             Assert.AreEqual(actual.Ukprn, editModel.Ukprn);
             Assert.AreEqual(actual.VacancyId, editModel.VacancyId);
             Assert.AreEqual(actual.ApplicationReviewId, editModel.ApplicationReviewId);
+        }
+
+        [Test]
+        public async Task POST_ApplicationStatusConfirmation_RedirectsToManageApplicationsPage()
+        {
+            // Arrange
+            var editModel = _fixture.Build<ApplicationReviewStatusConfirmationEditModel>()
+                .With(x => x.Outcome, ApplicationReviewStatus.Successful)
+                .With(x => x.VacancyId, _vacancyId)
+                .With(x => x.Ukprn, _ukprn)
+                .With(x => x.ApplicationReviewId, _applicationReviewId)
+                .Create();
+
+            // Act
+            var redirectResult = await _controller.ApplicationStatusConfirmation(editModel) as RedirectToRouteResult;
+
+            // Assert
+            Assert.NotNull(redirectResult);
+            Assert.AreEqual(RouteNames.VacancyManage_Get, redirectResult.RouteName);
+            Assert.AreEqual(_vacancyId, redirectResult.RouteValues["VacancyId"]);
+            Assert.AreEqual(_ukprn, redirectResult.RouteValues["Ukprn"]);
+        }
+
+        [Test]
+        public async Task POST_ApplicationStatusConfirmation_StatusSuccessful_RedirectsToManageApplicationsPage()
+        {
+            //Arrange
+            var editModel = _fixture.Build<ApplicationReviewStatusConfirmationEditModel>()
+                .With(x => x.Outcome, ApplicationReviewStatus.Successful)
+                .With(x => x.VacancyId, _vacancyId)
+                .With(x => x.Ukprn, _ukprn)
+                .With(x => x.ApplicationReviewId, _applicationReviewId)
+                .Create();
+            _orchestrator.Setup(o => o.PostApplicationReviewStatusChangeModelAsync(It.Is<ApplicationReviewStatusConfirmationEditModel>(y => y == editModel), It.IsAny<VacancyUser>()))
+                .ReturnsAsync(_candidateName);
+
+            // Act
+            var redirectResult = await _controller.ApplicationStatusConfirmation(editModel) as RedirectToRouteResult;
+
+            // Assert
+            Assert.NotNull(redirectResult);
+            Assert.AreEqual(RouteNames.VacancyManage_Get, redirectResult.RouteName);
+            Assert.AreEqual(_vacancyId, redirectResult.RouteValues["VacancyId"]);
+            Assert.AreEqual(_ukprn, redirectResult.RouteValues["Ukprn"]);
+            Assert.IsTrue(_controller.TempData.ContainsKey(TempDataKeys.ApplicationReviewSuccessStatusInfoMessage));
+            Assert.AreEqual(string.Format(InfoMessages.ApplicationReviewSuccessStatusHeader, _candidateName), _controller.TempData[TempDataKeys.ApplicationReviewSuccessStatusInfoMessage]);
+        }
+
+        [Test]
+        public async Task POST_ApplicationStatusConfirmation_StatusUnSuccessful_RedirectsToManageApplicationsPage()
+        {
+            //Arrange
+            var editModel = _fixture.Build<ApplicationReviewStatusConfirmationEditModel>()
+                .With(x => x.Outcome, ApplicationReviewStatus.Unsuccessful)
+                .With(x => x.VacancyId, _vacancyId)
+                .With(x => x.Ukprn, _ukprn)
+                .With(x => x.ApplicationReviewId, _applicationReviewId)
+                .Create();
+            _orchestrator.Setup(o => o.PostApplicationReviewStatusChangeModelAsync(It.Is<ApplicationReviewStatusConfirmationEditModel>(y => y == editModel), It.IsAny<VacancyUser>()))
+                .ReturnsAsync(_candidateName);
+
+            // Act
+            var redirectResult = await _controller.ApplicationStatusConfirmation(editModel) as RedirectToRouteResult;
+
+            // Assert
+            Assert.NotNull(redirectResult);
+            Assert.AreEqual(RouteNames.VacancyManage_Get, redirectResult.RouteName);
+            Assert.AreEqual(_vacancyId, redirectResult.RouteValues["VacancyId"]);
+            Assert.AreEqual(_ukprn, redirectResult.RouteValues["Ukprn"]);
+            Assert.IsTrue(_controller.TempData.ContainsKey(TempDataKeys.ApplicationReviewUnsuccessStatusInfoMessage));
+            Assert.AreEqual(string.Format(InfoMessages.ApplicationReviewUnsuccessStatusHeader, _candidateName), _controller.TempData[TempDataKeys.ApplicationReviewUnsuccessStatusInfoMessage]);
+        }
+
+        [Test]
+        public async Task GET_ApplicationFeedback_WithTempData_ReturnsViewWithViewModel()
+        {
+            string TempDataARModel = "ApplicationReviewEditModel";
+
+            var editModel = new ApplicationReviewEditModel
+            {
+                CandidateFeedback = "This is the candidate's feedback.",
+                Outcome = ApplicationReviewStatus.Unsuccessful,
+                ApplicationReviewId = Guid.NewGuid(),
+                Ukprn = 123456,
+                VacancyId = Guid.NewGuid()
+            };
+
+            var applicationReviewFeedBackViewModel = new ApplicationReviewFeedBackViewModel
+            {
+                Name = "John Doe"
+            };
+
+            var routeModel = new Mock<ApplicationReviewRouteModel>();
+
+            _orchestrator.Setup(o => o.GetApplicationReviewFeedBackViewModelAsync(It.IsAny<ApplicationReviewEditModel>()))
+                .ReturnsAsync(applicationReviewFeedBackViewModel);
+
+            _controller.TempData[TempDataARModel] = JsonConvert.SerializeObject(editModel);
+
+            var result = await _controller.ApplicationFeedback(routeModel.Object);
+
+            Assert.IsInstanceOf<ViewResult>(result);
+            var viewResult = (ViewResult)result;
+            var viewModel = (ApplicationReviewFeedBackViewModel)viewResult.Model;
+
+            Assert.AreEqual(applicationReviewFeedBackViewModel.CandidateFeedback, viewModel.CandidateFeedback);
+            Assert.AreEqual(applicationReviewFeedBackViewModel.ApplicationReviewId, viewModel.ApplicationReviewId);
+            Assert.AreEqual(applicationReviewFeedBackViewModel.Name, viewModel.Name);
+            Assert.AreEqual(applicationReviewFeedBackViewModel.Ukprn, viewModel.Ukprn);
+            Assert.AreEqual(applicationReviewFeedBackViewModel.VacancyId, viewModel.VacancyId);
+        }
+
+        [Test]
+        public async Task GET_ApplicationFeedback_WithoutTempData_ReturnsRedirectToRouteResult()
+        {
+            var applicationReviewFeedBackViewModel = new ApplicationReviewFeedBackViewModel
+            {
+                Name = "John Doe"
+            };
+
+            var routeModel = new ApplicationReviewRouteModel
+            {
+                ApplicationReviewId = Guid.NewGuid(),
+                Ukprn = 123456,
+                VacancyId = Guid.NewGuid()
+            };
+
+            _orchestrator.Setup(o => o.GetApplicationReviewFeedBackViewModelAsync(It.IsAny<ApplicationReviewEditModel>()))
+                .ReturnsAsync(applicationReviewFeedBackViewModel);
+
+            var result = await _controller.ApplicationFeedback(routeModel);
+
+            Assert.IsInstanceOf<RedirectToRouteResult>(result);
+            var redirectToRouteResult = (RedirectToRouteResult)result;
+
+            Assert.AreEqual(RouteNames.ApplicationReview_Get, redirectToRouteResult.RouteName);
+            Assert.AreEqual(routeModel.ApplicationReviewId, redirectToRouteResult.RouteValues["ApplicationReviewId"]);
+            Assert.AreEqual(routeModel.VacancyId, redirectToRouteResult.RouteValues["VacancyId"]);
+            Assert.AreEqual(routeModel.Ukprn, redirectToRouteResult.RouteValues["Ukprn"]);
+        }
+
+        [Test]
+        public async Task POST_ApplicationFeedback_ReturnsRedirectToRouteResult()
+        {
+            var tempDataMock = new Mock<ITempDataDictionary>();
+
+            _orchestrator.Setup(o => o.GetApplicationReviewFeedBackViewModelAsync(It.IsAny<ApplicationReviewFeedBackViewModel>()))
+                .ReturnsAsync("Name");
+
+            var applicationReviewFeedBackViewModel = new ApplicationReviewFeedBackViewModel
+            {
+                ApplicationReviewId = Guid.NewGuid(),
+                VacancyId = Guid.NewGuid(),
+                Ukprn = 1234
+            };
+
+            var result = await _controller.ApplicationFeedback(applicationReviewFeedBackViewModel);
+
+            Assert.IsInstanceOf<RedirectToRouteResult>(result);
+            var redirectResult = (RedirectToRouteResult)result;
+            Assert.AreEqual(RouteNames.ApplicationReviewConfirmation_Get, redirectResult.RouteName);
+            Assert.AreEqual(applicationReviewFeedBackViewModel.ApplicationReviewId, redirectResult.RouteValues["ApplicationReviewId"]);
+            Assert.AreEqual(applicationReviewFeedBackViewModel.VacancyId, redirectResult.RouteValues["VacancyId"]);
+            Assert.AreEqual(applicationReviewFeedBackViewModel.Ukprn, redirectResult.RouteValues["Ukprn"]);
         }
     }
 }

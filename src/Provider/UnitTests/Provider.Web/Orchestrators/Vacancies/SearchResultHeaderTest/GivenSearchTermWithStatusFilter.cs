@@ -45,6 +45,7 @@ namespace Esfa.Recruit.UnitTests.Provider.Web.Orchestrators.Vacancies.SearchResu
         [InlineData("2 closed vacancies", FilteringOptions.Closed, "", 2, VacancyStatus.Closed)]
         [InlineData("2 vacancies closing soon with 'nurse'", FilteringOptions.ClosingSoon, "nurse", 2, VacancyStatus.Live)]
         [InlineData("0 vacancies closing soon without applications with 'nurse'", FilteringOptions.ClosingSoonWithNoApplications, "nurse", 0, VacancyStatus.Live)]
+        [InlineData("2 vacancies with employer-reviewed applications with 'nurse'", FilteringOptions.EmployerReviewedApplications, "nurse", 2, VacancyStatus.Live)]
         public async Task WhenThereIsMoreThanOneVacancy_WithFilters(string expectedMessage, FilteringOptions filter, string searchTerm, int count, VacancyStatus status)
         {
             var sut = GetSut(GenerateVacancySummaries(count, searchTerm, searchTerm, status), filter, searchTerm);

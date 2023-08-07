@@ -22,5 +22,7 @@ namespace Esfa.Recruit.Provider.Web.ViewModels
         public bool HasEmployerReviewPermission { get; set; }
         public long Ukprn { get; set; }
         public int TotalVacancies { get; set; }
+        public bool ShowEmployerReviewedApplicationCounts => Filter == FilteringOptions.EmployerReviewedApplications;
+        public bool ShowNewApplicationCounts => !ShowEmployerReviewedApplicationCounts;
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyApplications
 {
@@ -35,6 +36,12 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Va
         public bool IsNotWithdrawn => !IsWithdrawn;
         public bool Selected { get; set; }
         public bool StatusNewOrReview => Status is ApplicationReviewStatus.New || Status is ApplicationReviewStatus.InReview;
+        public bool ShowCandidateName => Status is ApplicationReviewStatus.EmployerInterviewing;
+        public bool ShowApplicantID => !ShowCandidateName;
+        public DateTime? DateSharedWithEmployer { get; set; }
+        public DateTime? ReviewedDate { get; set; }
+        public bool IsSharedApplication => DateSharedWithEmployer.HasValue;
+        public string DateReviewedText => !string.IsNullOrEmpty(ReviewedDate.ToString()) ? ReviewedDate.AsGdsDate() : "Not Reviewed";
 
         public static implicit operator VacancyApplication(ApplicationReview applicationReview)
         {
@@ -46,8 +53,10 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Va
                 ApplicationReviewId = applicationReview.Id,
                 IsWithdrawn = applicationReview.IsWithdrawn,
                 DisabilityStatus = ApplicationReviewDisabilityStatus.Unknown,
-                Selected = false
-            };
+                Selected = false,
+                DateSharedWithEmployer = applicationReview.DateSharedWithEmployer,
+                ReviewedDate = applicationReview.ReviewedDate
+};
 
             if (applicationReview.IsWithdrawn == false)
             {

@@ -10,6 +10,7 @@ public class ApplicationStatusConfirmationViewModel : ApplicationReviewRouteMode
     public ApplicationReviewStatus? Outcome { get; set; }
     public string CandidateFeedback { get; set; }   
     public bool? NotifyCandidate { get; set; }
+    public string FriendlyId { get; set; }
     public IList<string> OrderedFieldNames => new List<string>
     {
         nameof(Outcome)

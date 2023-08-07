@@ -91,20 +91,30 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                     BuildEmployerReviewMatch()
                 }
             };
+            var liveVacanciesMatch = new BsonDocument
+            {
+                {
+                    "$match",
+                    BuildSharedApplicationsVacanciesMatch()
+                }
+            };
             var builder = new VacancySummaryAggQueryBuilder();
             var aggPipelines = builder.GetAggregateQueryPipelineDashboard(match,employerReviewMatch);
             var applicationAggPipeline = builder.GetAggregateQueryPipelineDashboardApplications(match, employerReviewMatch);
+            var sharedApplicationAggPipeline = builder.GetAggregateQueryPipelineDashboardApplications(match, liveVacanciesMatch);
             var closingSoonAggPipeline = builder.GetAggregateQueryPipelineVacanciesClosingSoonDashboard(match, employerReviewMatch);
             
             var dashboardValuesTask = RunDashboardAggPipelineQuery(aggPipelines);
             var applicationDashboardValuesTask = RunApplicationsDashboardAggPipelineQuery(applicationAggPipeline);
+            var sharedApplicationDashboardValuesTask = RunSharedApplicationsDashboardAggPipelineQuery(sharedApplicationAggPipeline);
             var closingSoonDashboardValuesTask = RunApplicationsDashboardAggPipelineQuery(closingSoonAggPipeline);
             
-            await Task.WhenAll(dashboardValuesTask, applicationDashboardValuesTask, closingSoonDashboardValuesTask);
+            await Task.WhenAll(dashboardValuesTask, applicationDashboardValuesTask, sharedApplicationDashboardValuesTask, closingSoonDashboardValuesTask);
             return new VacancyDashboard
             {
                 VacancyStatusDashboard = dashboardValuesTask.Result,
                 VacancyApplicationsDashboard = applicationDashboardValuesTask.Result,
+                VacancySharedApplicationsDashboard = sharedApplicationDashboardValuesTask.Result,
                 VacanciesClosingSoonWithNoApplications = closingSoonDashboardValuesTask.Result.FirstOrDefault()?.StatusCount ?? 0
             };
         }
@@ -161,13 +171,20 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                     BuildBsonDocumentFilterValues(null,employerAccountId, status, bsonArray, vacancyType)
                 }
             };
-            var employerReviewMatch = new BsonDocument
-            {
+            var employerReviewMatch = (status != FilteringOptions.NewSharedApplications && status != FilteringOptions.AllSharedApplications )?
+                new BsonDocument
                 {
-                    "$match",
-                    BuildEmployerReviewMatch()
-                }
-            };
+                    {
+                        "$match",
+                        BuildEmployerReviewMatch()
+                    }
+                } : new BsonDocument
+                {
+                    {
+                        "$match",
+                        BuildSharedApplicationsVacanciesMatch()
+                    }
+                };
             var secondaryMath = new BsonDocument
             {
                 {
@@ -240,8 +257,14 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                         "$match",
                         BuildEmployerReviewMatch()
                     }
-                } : null;
-            
+                } : new BsonDocument
+                {
+                    {
+                        "$match",
+                        BuildSharedApplicationsVacanciesMatch()
+                    }
+                };
+
             var aggPipeline = VacancySummaryAggQueryBuilder.GetAggregateQueryPipelineDocumentCount(match,secondaryMath, employerReviewMatch);
 
             return await RunAggPipelineCountQuery(aggPipeline);
@@ -276,6 +299,22 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                 new Context(nameof(RunApplicationsDashboardAggPipelineQuery)));
 
             return vacancyDashboard.Select(VacancyDashboardApplicationsMapper.MapFromVacancyApplicationsDashboardResponseDto).ToList();
+        }
+
+        private async Task<List<VacancySharedApplicationsDashboard>> RunSharedApplicationsDashboardAggPipelineQuery(
+           BsonDocument[] pipeline)
+        {
+            var db = GetDatabase();
+            var collection = db.GetCollection<BsonDocument>(MongoDbCollectionNames.Vacancies);
+
+            var vacancyDashboard = await RetryPolicy.Execute(async context =>
+            {
+                var aggResults = await collection.AggregateAsync<VacancySharedApplicationsDashboardResponseDto>(pipeline);
+                return await aggResults.ToListAsync();
+            },
+                new Context(nameof(RunSharedApplicationsDashboardAggPipelineQuery)));
+
+            return vacancyDashboard.Select(VacancyDashboardSharedApplicationsMapper.MapFromVacancySharedApplicationsDashboardResponseDto).ToList();
         }
 
         private async Task<long> RunAggPipelineCountQuery(BsonDocument[] pipeline)
@@ -323,6 +362,15 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                     case FilteringOptions.AllApplications:
                         document.Add("noOfApplications", new BsonDocument {{"$gt", 0}});
                         break;
+                    case FilteringOptions.NewSharedApplications:
+                        document.Add("noOfSharedApplications", new BsonDocument { { "$gt", 0 } });
+                        break;
+                    case FilteringOptions.AllSharedApplications:
+                        document.Add("noOfAllSharedApplications", new BsonDocument { { "$gt", 0 } });
+                        break;
+                    case FilteringOptions.EmployerReviewedApplications:
+                        document.Add("noOfEmployerReviewedApplications", new BsonDocument { { "$gt", 0 } });
+                        break;
                     case FilteringOptions.ClosingSoonWithNoApplications:
                         document.Add("noOfApplications", 0);
                         break;
@@ -350,7 +398,21 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
             
             return document;
         }
-        
+
+        private static BsonDocument BuildSharedApplicationsVacanciesMatch()
+        {
+            var document = new BsonDocument
+            {
+                {"$and", new BsonArray
+                {
+                    new BsonDocument{{"ownerType","Provider"}},
+                    new BsonDocument{{"$or", new BsonArray{ new BsonDocument{{"status", "Live"}}, new BsonDocument{{"status","Closed"}} }} }
+                }}
+            };
+
+            return document;
+        }
+
         private static BsonDocument BuildBsonDocumentFilterValues(long? ukprn, string employerAccountId, FilteringOptions? status, BsonArray bsonArray, VacancyType? vacancyType)
         {
             var document = new BsonDocument
@@ -399,6 +461,16 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                         break;
                     case FilteringOptions.Transferred:
                         document.Add("transferInfo.transferredDate", new BsonDocument {{"$nin", new BsonArray {BsonNull.Value}}});
+                        break;
+                    case FilteringOptions.NewSharedApplications:
+                    case FilteringOptions.AllSharedApplications:
+                        var vacancyStatuses = new BsonArray
+                        {
+                            VacancyStatus.Live.ToString(),
+                            VacancyStatus.Closed.ToString()
+                        };
+                        document.Add("status", new BsonDocument{{"$in", vacancyStatuses }});
+                        document.Add("ownerType", "Provider");
                         break;
                 }
                 

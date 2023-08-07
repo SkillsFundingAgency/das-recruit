@@ -21,6 +21,9 @@ namespace Esfa.Recruit.Shared.Web.ViewModels
         public int NoOfNewApplications { get; set; }
         public int NoOfSuccessfulApplications { get; set; }
         public int NoOfUnsuccessfulApplications { get; set; }
+        public int NoOfSharedApplications { get; set; }
+        public int NoOfAllSharedApplications { get; set; }
+        public int NoOfEmployerReviewedApplications { get; set; }
 
         public bool HasVacancyReference => VacancyReference.HasValue;
         public bool HasNoVacancyReference => !HasVacancyReference;
@@ -30,6 +33,10 @@ namespace Esfa.Recruit.Shared.Web.ViewModels
         public bool HasApplications => NoOfApplications > 0;
         public bool HasNoApplications => !HasApplications;
         public bool HasNewApplications => NoOfNewApplications > 0;
+        public bool HasSharedApplications => NoOfAllSharedApplications > 0;
+        public bool HasNoSharedApplications => !HasSharedApplications;
+        public bool HasNewSharedApplications => NoOfSharedApplications > 0;
+        public bool HasEmployerReviewedApplications => NoOfEmployerReviewedApplications > 0;
         public bool IsLive => Status == VacancyStatus.Live;
         public bool IsNotLive => !IsLive;
 
