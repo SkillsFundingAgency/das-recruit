@@ -157,9 +157,14 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
         {
             var review = await _vacancyClient.GetVacancyReviewAsync(reviewId);
 
+            if (review == null)
+            {
+                return null;
+            }
+
             return new UnassignReviewViewModel()
             {
-                AdvisorName = review.ReviewedByUser.Name,
+                AdvisorName = review.ReviewedByUser?.Name,
                 Title = review.Title
             };
         }
