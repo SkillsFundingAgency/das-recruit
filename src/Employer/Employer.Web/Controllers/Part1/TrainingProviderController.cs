@@ -72,7 +72,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
                 var response = await _orchestrator.PostSelectTrainingProviderAsync(m, User.ToVacancyUser());
 
                 // additional check to validate the Training Provider as a Main or Employer Profile by given UkPrn.
-                bool isValidTrainingProvider = await _orchestrator.IsProviderMainOrEmployerProfile(m.Ukprn);
+                bool isValidTrainingProvider = await _orchestrator.IsProviderMainOrEmployerProfile(Convert.ToString(response.Data.FoundTrainingProviderUkprn));
                 if (!isValidTrainingProvider)
                 {
                     response.Success = false;
