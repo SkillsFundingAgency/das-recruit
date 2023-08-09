@@ -315,6 +315,19 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return _applicationReviewRepository.GetAsync(applicationReviewId);
         }
 
+        // SORTED
+        public async Task<List<VacancyApplication>> GetVacancyApplicationsSortedAsync(long vacancyReference, SortColumn? sortColumn, SortOrder? sortOrder, bool vacancySharedByProvider = false)
+        {
+            var applicationReviews = vacancySharedByProvider
+                ? await _applicationReviewRepository.GetForSharedVacancyAsync(vacancyReference) // TODO: GetForSharedVacancySortedAsync
+                : await _applicationReviewRepository.GetForVacancySortedAsync(vacancyReference, sortColumn, sortOrder);
+
+            return applicationReviews == null
+                ? new List<VacancyApplication>()
+                : applicationReviews.Select(c => (VacancyApplication)c).ToList();
+        }
+
+        // UNSORTED
         public async Task<List<VacancyApplication>> GetVacancyApplicationsAsync(long vacancyReference, bool vacancySharedByProvider = false)
         {
             var applicationReviews = vacancySharedByProvider

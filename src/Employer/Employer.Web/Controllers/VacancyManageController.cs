@@ -35,7 +35,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         }
 
         [HttpGet("manage", Name = RouteNames.VacancyManage_Get)]
-        public async Task<IActionResult> ManageVacancy(VacancyRouteModel vrm, [FromQuery] bool vacancySharedByProvider)
+        public async Task<IActionResult> ManageVacancy(ManageVacancyRouteModel vrm, [FromQuery] bool vacancySharedByProvider)
         {
             EnsureProposedChangesCookiesAreCleared(vrm.VacancyId);
 
@@ -46,7 +46,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
                 return HandleRedirectOfEditableVacancy(vacancy);
             }
 
-            var viewModel = await _orchestrator.GetManageVacancyViewModel(vacancy, vacancySharedByProvider);
+            var viewModel = await _orchestrator.GetManageVacancyViewModel(vacancy, vrm.SortColumn, vrm.SortOrder, vacancySharedByProvider);
 
             if (TempData.ContainsKey(TempDataKeys.VacancyClosedMessage))
                 viewModel.VacancyClosedInfoMessage = TempData[TempDataKeys.VacancyClosedMessage].ToString();
