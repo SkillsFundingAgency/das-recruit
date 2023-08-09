@@ -10,6 +10,7 @@ using Esfa.Recruit.Vacancies.Client.Domain.Models;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.TrainingProviders;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider
 {
@@ -58,6 +59,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider
         public async Task<bool> IsProviderMainOrEmployerProfile(long ukprn)
         {
             var provider = await _getTrainingProviderDetails.GetTrainingProvider(ukprn);
+
+            _logger.LogTrace("Getting Provider Details from GetTrainingProviderDetails. UkPrn:" + JsonConvert.SerializeObject(provider));
+
             return provider?.ProviderType.Id 
                 is (short) ProviderTypeIdentifier.MainProvider 
                 or (short) ProviderTypeIdentifier.EmployerProvider;
