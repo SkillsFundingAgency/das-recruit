@@ -60,7 +60,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider
         {
             var provider = await _getTrainingProviderDetails.GetTrainingProvider(ukprn);
 
-            _logger.LogTrace("Getting Provider Details from GetTrainingProviderDetails. UkPrn:" + JsonConvert.SerializeObject(provider));
+            _logger.LogError("Getting Provider Details from GetTrainingProviderDetails. UkPrn:" + JsonConvert.SerializeObject(provider));
 
             return provider?.ProviderType.Id 
                 is (short) ProviderTypeIdentifier.MainProvider 

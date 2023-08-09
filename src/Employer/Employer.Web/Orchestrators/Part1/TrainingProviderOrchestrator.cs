@@ -176,7 +176,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 
         public async Task<bool> IsProviderMainOrEmployerProfile(string ukprn)
         {
-            _logger.LogTrace("Getting Provider Details from TrainingProviderService. UkPrn:" + ukprn);
+            _logger.LogError("Getting Provider Details from TrainingProviderService. UkPrn:" + ukprn);
 
             if (long.TryParse(ukprn, out var ukprnAsLong) == false)
                 return false;
