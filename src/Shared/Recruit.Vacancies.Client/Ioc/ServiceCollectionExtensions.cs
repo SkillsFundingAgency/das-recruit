@@ -118,7 +118,6 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
             services.AddTransient<ICache, Cache>();
             services.AddTransient<IHtmlSanitizerService, HtmlSanitizerService>();
             services.AddTransient<IEmployerService, EmployerService>();
-            services.AddTransient<IGetTrainingProviderDetails, GetTrainingProviderDetails>();
 
             //Reporting Service
             services.AddTransient<ICsvBuilder, CsvBuilder>();

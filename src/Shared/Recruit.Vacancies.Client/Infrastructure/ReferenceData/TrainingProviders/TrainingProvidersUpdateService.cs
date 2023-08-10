@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.Services.ReferenceData;
+using Esfa.Recruit.Vacancies.Client.Domain.Models;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Requests;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Responses;
@@ -29,34 +31,35 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.TrainingPro
         
         public async Task UpdateProviders()
         {
-            
             try
             {
-                var providersTask = await GetProviders();
-                
+                var providersTask = await GetMainAndEmployerProviders();
+
                 await _referenceDataWriter.UpsertReferenceData(new TrainingProviders {
                     Data = providersTask.ToList()
                 });
             }
             catch (Exception e)
             {
-                
                 _logger.LogError(e, "Failed to get providers from api");
-            
                 throw;
             }
         }
-        
-        private async Task<IEnumerable<TrainingProvider>> GetProviders()
+
+        [assembly: InternalsVisibleTo("Esfa.Recruit.Employer.UnitTests")]
+        internal async Task<IEnumerable<TrainingProvider>> GetMainAndEmployerProviders()
         {
-            _logger.LogTrace("Getting Providers from Outer Api");
+            _logger.LogTrace("Getting All Main and Employer Providers from Outer Api");
 
             var retryPolicy = GetApiRetryPolicy();
 
-            var result = await retryPolicy.Execute(context => _outerApiClient.Get<GetProvidersResponse>(new GetProvidersRequest()), new Dictionary<string, object>() {{ "apiCall", "Providers" }});
+            var result = await retryPolicy.Execute(context => _outerApiClient.Get<GetTrainingProvidersResponse>(new GetTrainingProvidersRequest()), new Dictionary<string, object>() { { "apiCall", "Providers" } });
 
-            return result.Providers.Select(c=>(TrainingProvider)c);
-
+            return result.Providers
+                .Where(fil =>
+                    fil.ProviderTypeId.Equals((short)ProviderTypeIdentifier.MainProvider) ||
+                    fil.ProviderTypeId.Equals((short)ProviderTypeIdentifier.EmployerProvider))
+                .Select(c => (TrainingProvider)c);
         }
 
         private Polly.Retry.RetryPolicy GetApiRetryPolicy()

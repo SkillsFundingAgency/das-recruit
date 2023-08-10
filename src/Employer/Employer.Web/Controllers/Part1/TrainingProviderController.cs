@@ -21,16 +21,8 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
     {
         private readonly TrainingProviderOrchestrator _orchestrator;
         private readonly IFeature _feature;
-        private const string InvalidUkprnMessageFormat = "The UKPRN {0} is not valid or the associated provider is not active";
+        private const string InvalidUkprnMessageFormat = "Enter the name or UKPRN of a training provider who is registered to deliver apprenticeship training";
         private const string InvalidSearchTerm = "Please enter a training provider name or UKPRN";
-        private const string InvalidTrainingProvider = "Enter the name or UKPRN of a training provider who is registered to deliver apprenticeship training";
-        private readonly EntityValidationResult _invalidTrainingProviderSelected = new()
-        {
-            Errors = new[]
-            {
-                new EntityValidationError(105, nameof(SelectTrainingProviderEditModel.TrainingProviderSearch), InvalidTrainingProvider, ErrorCodes.TrainingProviderMustBeMainOrEmployerProfile)
-            }
-        };
 
         public TrainingProviderController(TrainingProviderOrchestrator orchestrator, IFeature feature)
         {
@@ -70,14 +62,6 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
             if (ModelState.IsValid)
             {
                 var response = await _orchestrator.PostSelectTrainingProviderAsync(m, User.ToVacancyUser());
-
-                // additional check to validate the Training Provider as a Main or Employer Profile by given UkPrn.
-                bool isValidTrainingProvider = await _orchestrator.IsProviderMainOrEmployerProfile(Convert.ToString(response.Data.FoundTrainingProviderUkprn));
-                if (!isValidTrainingProvider)
-                {
-                    response.Success = false;
-                    response.Errors = _invalidTrainingProviderSelected;
-                }
 
                 if (response.Success)
                 {

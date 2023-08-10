@@ -174,16 +174,6 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             return await _trainingProviderSummaryProvider.GetAsync(ukprnAsLong);
         }
 
-        public async Task<bool> IsProviderMainOrEmployerProfile(string ukprn)
-        {
-            _logger.LogError("Getting Provider Details from TrainingProviderService. UkPrn:" + ukprn);
-
-            if (long.TryParse(ukprn, out var ukprnAsLong) == false)
-                return false;
-
-            return await _trainingProviderService.IsProviderMainOrEmployerProfile(ukprnAsLong);
-        }
-
         private async Task<TrainingProviderSummary> GetProviderFromModelAsync(SelectTrainingProviderEditModel model, string employerAccountId)
         {
             if (model.SelectionType == TrainingProviderSelectionType.TrainingProviderSearch)

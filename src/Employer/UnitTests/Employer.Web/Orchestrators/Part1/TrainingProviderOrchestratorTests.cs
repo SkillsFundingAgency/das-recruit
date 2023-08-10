@@ -203,59 +203,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part1
 
             result.Data.FoundTrainingProviderUkprn.Should().BeNull();
         }
-
-        [Theory]
-        [InlineData("1.5")]
-        [InlineData("ABC123")]
-        public async Task Then_The_IsProviderMainOrEmployer_Return_False_When_Given_InvalidUkPrn(string ukprn)
-        {
-            //arrange 
-            var fixture = new TrainingProviderOrchestratorTestsFixture();
-            fixture
-                .WithVacacny(
-                    new Vacancy
-                    {
-                        Id = fixture.VacancyId,
-                        EmployerAccountId = TrainingProviderOrchestratorTestsFixture.EmployerAccountId,
-                        TrainingProvider = new TrainingProvider(),
-                        Title = "specified for route validation",
-                        ProgrammeId = "specified for route validation"
-                    })
-                .Setup();
-
-            //sut
-            bool result = await fixture.Sut.IsProviderMainOrEmployerProfile(ukprn);
-
-            //assert
-            result.Should().BeFalse();
-        }
-
-        [Theory]
-        [InlineData("88888888")]
-        [InlineData("88888889")]
-        public async Task Then_The_IsProviderMainOrEmployer_Return_True_When_Given_ValidUkPrn(string ukprn)
-        {
-            //arrange 
-            var fixture = new TrainingProviderOrchestratorTestsFixture();
-            fixture
-                .WithVacacny(
-                    new Vacancy
-                    {
-                        Id = fixture.VacancyId,
-                        EmployerAccountId = TrainingProviderOrchestratorTestsFixture.EmployerAccountId,
-                        TrainingProvider = new TrainingProvider(),
-                        Title = "specified for route validation",
-                        ProgrammeId = "specified for route validation"
-                    })
-                .Setup();
-
-            //sut
-            bool result = await fixture.Sut.IsProviderMainOrEmployerProfile(ukprn);
-
-            //assert
-            result.Should().BeTrue();
-        }
-
+       
         public class TrainingProviderOrchestratorTestsFixture
         {
             private const VacancyRuleSet ValidationRules = VacancyRuleSet.TrainingProvider;
@@ -324,9 +272,6 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part1
                     {
                         Ukprn = EsfaTestTrainingProvider.Ukprn
                     });
-
-                MockTrainingProviderService.Setup(s => s.IsProviderMainOrEmployerProfile(It.IsAny<long>()))
-                    .ReturnsAsync(true);
                 
                 var utility = new Utility(MockRecruitVacancyClient.Object);
                 
