@@ -144,7 +144,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
             {
                 var sortedResult = result.AsQueryable()
                     .Sort((SortColumn)sortColumn, (SortOrder)sortOrder);
-                result = (List<ApplicationReview>)sortedResult;
+                result = sortedResult.ToList();
             }
 
             return result;
