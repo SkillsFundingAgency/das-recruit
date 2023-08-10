@@ -3,18 +3,7 @@
 <table class="govuk-table responsive">
     <thead class="govuk-table__head">
         <tr class="govuk-table__row">
-            <th scope="col" class="govuk-table__header das-table-cell-width-25">
-                <sortable-column column-name="Name" column-label="Name" default="false" default-order="Descending"></sortable-column>
-            </th>
-            <th scope="col" class="govuk-table__header">
-                <sortable-column column-name="ApplicationID" column-label="Application ID" default="false" default-order="Ascending"></sortable-column>
-            </th>
-            <th scope="col" class="govuk-table__header">
-                <sortable-column column-name="Status" column-label="Status" default="false" default-order="Ascending"></sortable-column>
-            </th>
-            <th scope="col" class="govuk-table__header">
-                <sortable-column column-name="DateApplied" column-label="Date Applied" default="false" default-order="Ascending"></sortable-column>
-            </th>
+            <partial name="@PartialNames.MultipleApplicationsTableHeader" />
             <th scope="col" asp-show="@Model.ShowDisability" class="govuk-table__header">Disability</th>
         </tr>
     </thead>
