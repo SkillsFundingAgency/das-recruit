@@ -3,10 +3,7 @@
 <table class="govuk-table responsive">
     <thead class="govuk-table__head">
         <tr class="govuk-table__row">
-            <th class="govuk-table__header">Applicant</th>
-            <th class="govuk-table__header">Response</th>
-            <th class="govuk-table__header">Date reviewed</th>
-            <th class="govuk-table__header">Date shared</th>
+            <partial name="@PartialNames.MultipleApplicationsTableHeader" />
             <th asp-show="@Model.ShowDisability" class="govuk-table__header">Disability</th>
         </tr>
     </thead>

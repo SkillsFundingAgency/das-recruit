@@ -139,7 +139,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
                 .ToListAsync(),
             new Context(nameof(GetForVacancyAsync)));
 
-            // Review if Application Reviews are included
             if (sortColumn != null && sortOrder != null) 
             {
                 var sortedResult = result.AsQueryable()
@@ -162,6 +161,29 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
                 .Project<ApplicationReview>(GetProjection<ApplicationReview>())
                 .ToListAsync(),
             new Context(nameof(GetForVacancyAsync)));
+
+            return result;
+        }
+
+        public async Task<List<ApplicationReview>> GetForSharedVacancySortedAsync(long vacancyReference, SortColumn? sortColumn, SortOrder? sortOrder)
+        {
+            var statuses = GetSharedApplicationReviewStatusesForEmployer();
+            var filterBuilder = Builders<ApplicationReview>.Filter;
+            var filter = filterBuilder.Eq(VacancyReference, vacancyReference) & filterBuilder.In(appRev => appRev.Status, statuses);
+            var collection = GetCollection<ApplicationReview>();
+
+            var result = await RetryPolicy.Execute(_ =>
+                collection.Find(filter)
+                .Project<ApplicationReview>(GetProjection<ApplicationReview>())
+                .ToListAsync(),
+            new Context(nameof(GetForVacancyAsync)));
+
+            if (sortColumn != null && sortOrder != null)
+            {
+                var sortedResult = result.AsQueryable()
+                    .Sort((SortColumn)sortColumn, (SortOrder)sortOrder);
+                result = sortedResult.ToList();
+            }
 
             return result;
         }
