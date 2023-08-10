@@ -23,6 +23,7 @@ using Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent;
 using FluentValidation;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using static Microsoft.ApplicationInsights.MetricDimensionNames.TelemetryContext;
+using Esfa.Recruit.Shared.Web.ViewModels;
 
 namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Controllers
 {
@@ -373,6 +374,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Controllers
             Assert.AreEqual(RouteNames.VacancyManage_Get, redirectResult.RouteName);
             Assert.AreEqual(_vacancyId, redirectResult.RouteValues["VacancyId"]);
             Assert.AreEqual(_employerAccountId, redirectResult.RouteValues["EmployerAccountId"]);
+            Assert.IsFalse(_controller.TempData.ContainsKey(TempDataKeys.ApplicationReviewsUnsuccessfulInfoMessage));
         }
 
         [Test]
@@ -402,6 +404,8 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Controllers
             Assert.AreEqual(RouteNames.VacancyManage_Get, redirectResult.RouteName);
             Assert.AreEqual(_vacancyId, redirectResult.RouteValues["VacancyId"]);
             Assert.AreEqual(_employerAccountId, redirectResult.RouteValues["EmployerAccountId"]);
+            Assert.IsTrue(_controller.TempData.ContainsKey(TempDataKeys.ApplicationReviewsUnsuccessfulInfoMessage));
+            Assert.AreEqual(InfoMessages.ApplicationsToUnsuccessfulBannerHeader, _controller.TempData[TempDataKeys.ApplicationReviewsUnsuccessfulInfoMessage]);
         }
 
         public Task<IEnumerable<string>> GetProfanityListAsync()
