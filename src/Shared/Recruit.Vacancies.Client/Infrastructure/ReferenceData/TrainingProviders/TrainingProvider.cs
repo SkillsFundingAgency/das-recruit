@@ -29,9 +29,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.TrainingPro
 
         public static implicit operator TrainingProviderAddress(ProviderAddress source)
         {
-            if (source is null)
-                return new TrainingProviderAddress();
-
             string address3 = source.Address3;
             if (!string.IsNullOrEmpty(source.Address4))
             {
