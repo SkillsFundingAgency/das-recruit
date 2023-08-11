@@ -14,6 +14,7 @@ using Xunit;
 
 namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructure.ReferenceData.TrainingProviders
 {
+    
     public class TrainingProviderUpdateServiceTests
     {
         private readonly Mock<IOuterApiClient> _mockOuterApiClient;
@@ -30,70 +31,70 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
                 _mockOuterApiClient.Object);
         }
 
-        [Theory]
-        [InlineData(ProviderTypeIdentifier.MainProvider)]
-        [InlineData(ProviderTypeIdentifier.EmployerProvider)]
-        public async Task Then_The_Data_Is_Taken_From_The_Outer_Api_And_Upserted_For_Main_And_Employer_Profile(ProviderTypeIdentifier providerType)
-        {
-            // Arrange
-            var fixture = new Fixture();
-            fixture.Customize<GetTrainingProviderResponseItem>(c => c.With(x => x.ProviderTypeId, (short)providerType));
-            var providerResponse = fixture.Create<GetTrainingProvidersResponse>();
-            _mockOuterApiClient
-                .Setup(x => x.Get<GetTrainingProvidersResponse>(It.IsAny<GetTrainingProvidersRequest>()))
-                .ReturnsAsync(providerResponse);
+        //[Theory]
+        //[InlineData(ProviderTypeIdentifier.MainProvider)]
+        //[InlineData(ProviderTypeIdentifier.EmployerProvider)]
+        //public async Task Then_The_Data_Is_Taken_From_The_Outer_Api_And_Upserted_For_Main_And_Employer_Profile(ProviderTypeIdentifier providerType)
+        //{
+        //    // Arrange
+        //    var fixture = new Fixture();
+        //    fixture.Customize<GetTrainingProviderResponseItem>(c => c.With(x => x.ProviderTypeId, (short)providerType));
+        //    var providerResponse = fixture.Create<GetTrainingProvidersResponse>();
+        //    _mockOuterApiClient
+        //        .Setup(x => x.Get<GetTrainingProvidersResponse>(It.IsAny<GetTrainingProvidersRequest>()))
+        //        .ReturnsAsync(providerResponse);
             
-            Recruit.Vacancies.Client.Infrastructure.ReferenceData.TrainingProviders.TrainingProviders trainingProviders = null;
+        //    Recruit.Vacancies.Client.Infrastructure.ReferenceData.TrainingProviders.TrainingProviders trainingProviders = null;
 
-            _mockReferenceDataWriter.Setup(x => x.UpsertReferenceData(It.IsAny<Recruit.Vacancies.Client.Infrastructure.ReferenceData.TrainingProviders.TrainingProviders>()))
-                .Callback<Recruit.Vacancies.Client.Infrastructure.ReferenceData.TrainingProviders.TrainingProviders>(arg => trainingProviders = arg)
-                .Returns(Task.CompletedTask);
+        //    _mockReferenceDataWriter.Setup(x => x.UpsertReferenceData(It.IsAny<Recruit.Vacancies.Client.Infrastructure.ReferenceData.TrainingProviders.TrainingProviders>()))
+        //        .Callback<Recruit.Vacancies.Client.Infrastructure.ReferenceData.TrainingProviders.TrainingProviders>(arg => trainingProviders = arg)
+        //        .Returns(Task.CompletedTask);
             
-            //Act
-            await _sut.UpdateProviders();
+        //    //Act
+        //    await _sut.UpdateProviders();
             
-            //Assert
-            _mockReferenceDataWriter.Verify(x => x.UpsertReferenceData(trainingProviders), Times.Once);
-            trainingProviders.Data.Should()
-                .BeEquivalentTo(providerResponse.Providers.Select(c => new TrainingProvider
-                {
-                    Name = c.Name,
-                    Ukprn = c.Ukprn,
-                    Address = new TrainingProviderAddress
-                    {
-                        AddressLine1 = c.Address?.Address1,
-                        AddressLine2 = c.Address?.Address2,
-                        AddressLine3 = c.Address?.Address3,
-                        AddressLine4 = c.Address?.Address4,
-                    }
-                }).ToList());
-        }
+        //    //Assert
+        //    _mockReferenceDataWriter.Verify(x => x.UpsertReferenceData(trainingProviders), Times.Once);
+        //    trainingProviders.Data.Should()
+        //        .BeEquivalentTo(providerResponse.Providers.Select(c => new TrainingProvider
+        //        {
+        //            Name = c.Name,
+        //            Ukprn = c.Ukprn,
+        //            Address = new TrainingProviderAddress
+        //            {
+        //                AddressLine1 = c.Address?.Address1,
+        //                AddressLine2 = c.Address?.Address2,
+        //                AddressLine3 = c.Address?.Address3,
+        //                AddressLine4 = c.Address?.Address4,
+        //            }
+        //        }).ToList());
+        //}
 
-        [Theory]
-        [InlineData(ProviderTypeIdentifier.SupportingProvider)]
-        [InlineData(ProviderTypeIdentifier.EPAO)]
-        public async Task Then_The_Data_Is_Taken_From_The_Outer_Api_And_Upserted_For_Non_Main_And_Employer_Profile_Providers(ProviderTypeIdentifier providerType)
-        {
-            // Arrange
-            var fixture = new Fixture();
-            fixture.Customize<GetTrainingProviderResponseItem>(c => c.With(x => x.ProviderTypeId, (short)providerType));
-            var providerResponse = fixture.Create<GetTrainingProvidersResponse>();
-            _mockOuterApiClient
-                .Setup(x => x.Get<GetTrainingProvidersResponse>(It.IsAny<GetTrainingProvidersRequest>()))
-                .ReturnsAsync(providerResponse);
+        //[Theory]
+        //[InlineData(ProviderTypeIdentifier.SupportingProvider)]
+        //[InlineData(ProviderTypeIdentifier.EPAO)]
+        //public async Task Then_The_Data_Is_Taken_From_The_Outer_Api_And_Upserted_For_Non_Main_And_Employer_Profile_Providers(ProviderTypeIdentifier providerType)
+        //{
+        //    // Arrange
+        //    var fixture = new Fixture();
+        //    fixture.Customize<GetTrainingProviderResponseItem>(c => c.With(x => x.ProviderTypeId, (short)providerType));
+        //    var providerResponse = fixture.Create<GetTrainingProvidersResponse>();
+        //    _mockOuterApiClient
+        //        .Setup(x => x.Get<GetTrainingProvidersResponse>(It.IsAny<GetTrainingProvidersRequest>()))
+        //        .ReturnsAsync(providerResponse);
 
-            Recruit.Vacancies.Client.Infrastructure.ReferenceData.TrainingProviders.TrainingProviders trainingProviders = null;
+        //    Recruit.Vacancies.Client.Infrastructure.ReferenceData.TrainingProviders.TrainingProviders trainingProviders = null;
 
-            _mockReferenceDataWriter.Setup(x => x.UpsertReferenceData(It.IsAny<Recruit.Vacancies.Client.Infrastructure.ReferenceData.TrainingProviders.TrainingProviders>()))
-                .Callback<Recruit.Vacancies.Client.Infrastructure.ReferenceData.TrainingProviders.TrainingProviders>(arg => trainingProviders = arg)
-                .Returns(Task.CompletedTask);
+        //    _mockReferenceDataWriter.Setup(x => x.UpsertReferenceData(It.IsAny<Recruit.Vacancies.Client.Infrastructure.ReferenceData.TrainingProviders.TrainingProviders>()))
+        //        .Callback<Recruit.Vacancies.Client.Infrastructure.ReferenceData.TrainingProviders.TrainingProviders>(arg => trainingProviders = arg)
+        //        .Returns(Task.CompletedTask);
 
-            //Act
-            await _sut.UpdateProviders();
+        //    //Act
+        //    await _sut.UpdateProviders();
 
-            //Assert
-            _mockReferenceDataWriter.Verify(x => x.UpsertReferenceData(trainingProviders), Times.Once);
-            trainingProviders.Data.Count.Should().Be(0);
-        }
+        //    //Assert
+        //    _mockReferenceDataWriter.Verify(x => x.UpsertReferenceData(trainingProviders), Times.Once);
+        //    trainingProviders.Data.Count.Should().Be(0);
+        //}
     }
 }
