@@ -134,7 +134,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
                         continue;
                     }
                     
-                    if (error.ErrorCode is ErrorCodes.TrainingProviderMustNotBeBlocked or ErrorCodes.TrainingProviderMustBeMainOrEmployerProfile)
+                    if (error.ErrorCode is ErrorCodes.TrainingProviderMustNotBeBlocked)
                     {
                         AddProviderBlockedErrorToModelState(selectionType, error);
                         continue;
