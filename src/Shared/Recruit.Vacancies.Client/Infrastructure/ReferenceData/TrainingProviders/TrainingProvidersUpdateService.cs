@@ -56,10 +56,10 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.TrainingPro
 
             var result = await retryPolicy.Execute(context => _outerApiClient.Get<GetTrainingProvidersResponse>(new GetTrainingProvidersRequest()), new Dictionary<string, object>() { { "apiCall", "Providers" } });
 
-            _logger.LogTrace("Sample Data count from Remote API" + result.RegisteredProviders.Count());
-            _logger.LogTrace("Sample Data from Remote API" + JsonConvert.SerializeObject(result.RegisteredProviders.FirstOrDefault()));
+            _logger.LogTrace("Sample Data count from Remote API" + result.Providers.Count());
+            _logger.LogTrace("Sample Data from Remote API" + JsonConvert.SerializeObject(result.Providers.FirstOrDefault()));
 
-            return result.RegisteredProviders
+            return result.Providers
                 .Where(fil =>
                     fil.ProviderTypeId.Equals((short)ProviderTypeIdentifier.MainProvider) ||
                     fil.ProviderTypeId.Equals((short)ProviderTypeIdentifier.EmployerProvider))

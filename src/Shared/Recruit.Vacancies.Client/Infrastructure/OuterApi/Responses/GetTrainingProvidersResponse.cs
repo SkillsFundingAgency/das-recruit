@@ -5,17 +5,23 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Responses
 {
     public class GetTrainingProvidersResponse
     {
-        [JsonProperty("registeredProviders")]
-        public IEnumerable<GetTrainingProviderResponseItem> RegisteredProviders { get; set; }
+        [JsonProperty("providers")]
+        public IEnumerable<GetTrainingProviderResponseItem> Providers { get; set; }
     }
 
     public class GetTrainingProviderResponseItem
     {
+        [JsonProperty("name")]
         public string Name { get; set; }
+        [JsonProperty("ukprn")]
         public long Ukprn { get; set; }
+        [JsonProperty("phone")]
+        public string Phone { get; set; }
+        [JsonProperty("providerTypeId")]
         public int ProviderTypeId { get; set; }
 
-        [JsonProperty(nameof(Address))]
+
+        [JsonProperty("address")]
         public ProviderAddress Address { get; set; }
     }
 }
