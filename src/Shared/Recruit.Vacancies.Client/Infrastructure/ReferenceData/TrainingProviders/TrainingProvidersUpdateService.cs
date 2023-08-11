@@ -9,6 +9,7 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Requests;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Responses;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using Polly;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.TrainingProviders
@@ -55,7 +56,10 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.TrainingPro
 
             var result = await retryPolicy.Execute(context => _outerApiClient.Get<GetTrainingProvidersResponse>(new GetTrainingProvidersRequest()), new Dictionary<string, object>() { { "apiCall", "Providers" } });
 
-            return result.Providers
+            _logger.LogTrace("Sample Data count from Remote API" + result.RegisteredProviders.Count());
+            _logger.LogTrace("Sample Data from Remote API" + JsonConvert.SerializeObject(result.RegisteredProviders.FirstOrDefault()));
+
+            return result.RegisteredProviders
                 .Where(fil =>
                     fil.ProviderTypeId.Equals((short)ProviderTypeIdentifier.MainProvider) ||
                     fil.ProviderTypeId.Equals((short)ProviderTypeIdentifier.EmployerProvider))

@@ -29,8 +29,10 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.TrainingPro
 
         public static implicit operator TrainingProviderAddress(ProviderAddress source)
         {
+            if (source is null)
+                return new TrainingProviderAddress();
 
-            var address3 = source.Address3;
+            string address3 = source.Address3;
             if (!string.IsNullOrEmpty(source.Address4))
             {
                 if (!string.IsNullOrEmpty(address3))
@@ -42,7 +44,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.TrainingPro
                     address3 = source.Address4;
                 }
             }
-            
+
             return new TrainingProviderAddress
             {
                 AddressLine1 = source.Address1,

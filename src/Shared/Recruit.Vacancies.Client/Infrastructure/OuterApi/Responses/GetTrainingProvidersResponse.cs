@@ -6,7 +6,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Responses
     public class GetTrainingProvidersResponse
     {
         [JsonProperty("registeredProviders")]
-        public IEnumerable<GetTrainingProviderResponseItem> Providers { get; set; }
+        public IEnumerable<GetTrainingProviderResponseItem> RegisteredProviders { get; set; }
     }
 
     public class GetTrainingProviderResponseItem
