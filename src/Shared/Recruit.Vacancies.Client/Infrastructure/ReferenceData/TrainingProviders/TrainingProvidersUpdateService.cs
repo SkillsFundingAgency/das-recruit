@@ -59,7 +59,18 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.TrainingPro
                 .Where(fil =>
                     fil.ProviderTypeId.Equals((short)ProviderTypeIdentifier.MainProvider) ||
                     fil.ProviderTypeId.Equals((short)ProviderTypeIdentifier.EmployerProvider))
-                .Select(c => (TrainingProvider)c);
+                .Select(c => new TrainingProvider
+                {
+                    Name = c.Name,
+                    Ukprn = c.Ukprn,
+                    Address = new TrainingProviderAddress
+                    {
+                        AddressLine1 = c.Address?.Address1,
+                        AddressLine2 = c.Address?.Address2,
+                        AddressLine3 = c.Address?.Address3,
+                        AddressLine4 = c.Address?.Address4,
+                    }
+                });
         }
 
         private Polly.Retry.RetryPolicy GetApiRetryPolicy()

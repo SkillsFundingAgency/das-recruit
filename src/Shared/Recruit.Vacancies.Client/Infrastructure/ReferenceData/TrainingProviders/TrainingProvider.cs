@@ -18,16 +18,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.TrainingPro
                 Address = source.Address
             };
         }
-
-        public static implicit operator TrainingProvider(GetTrainingProviderResponseItem source)
-        {
-            return new TrainingProvider
-            {
-                Name = source.Name,
-                Ukprn = source.Ukprn,
-                Address = source.Address
-            };
-        }
     }
     public class TrainingProviderAddress : IAddress
     {
