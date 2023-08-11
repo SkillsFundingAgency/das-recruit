@@ -11,6 +11,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Responses
     {
         public string Name { get; set; }
         public long Ukprn { get; set; }
+        public int ProviderTypeId { get; set; }
         public ProviderAddress Address { get; set; }
     }
 

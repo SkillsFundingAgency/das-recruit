@@ -82,11 +82,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.TrainingPro
 
             var result = await retryPolicy.Execute(context => _outerApiClient.Get<GetProvidersResponse>(new GetProvidersRequest()), new Dictionary<string, object>() { { "apiCall", "Providers" } });
 
-            _logger.LogTrace("Call count from Outer API: " + result.Providers.Count());
-            _logger.LogTrace("Call from Outer API: " + JsonConvert.SerializeObject(result.Providers.FirstOrDefault()));
-
-            return result.Providers.Select(c => (TrainingProvider)c);
-
+            return result.Providers
+                .Where(fil =>
+                    fil.ProviderTypeId.Equals((short)ProviderTypeIdentifier.MainProvider) ||
+                    fil.ProviderTypeId.Equals((short)ProviderTypeIdentifier.EmployerProvider))
+                .Select(c => (TrainingProvider)c);
         }
 
         private Polly.Retry.RetryPolicy GetApiRetryPolicy()
