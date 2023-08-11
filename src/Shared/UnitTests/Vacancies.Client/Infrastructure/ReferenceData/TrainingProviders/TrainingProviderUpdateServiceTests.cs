@@ -55,7 +55,18 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
             //Assert
             _mockReferenceDataWriter.Verify(x => x.UpsertReferenceData(trainingProviders), Times.Once);
             trainingProviders.Data.Should()
-                .BeEquivalentTo(providerResponse.Providers.Select(c => (TrainingProvider) c).ToList());
+                .BeEquivalentTo(providerResponse.Providers.Select(c => new TrainingProvider
+                {
+                    Name = c.Name,
+                    Ukprn = c.Ukprn,
+                    Address = new TrainingProviderAddress
+                    {
+                        AddressLine1 = c.Address?.Address1,
+                        AddressLine2 = c.Address?.Address2,
+                        AddressLine3 = c.Address?.Address3,
+                        AddressLine4 = c.Address?.Address4,
+                    }
+                }).ToList());
         }
 
         [Theory]
