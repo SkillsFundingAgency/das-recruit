@@ -34,7 +34,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.TrainingPro
         {
             try
             {
-                var providersTask = await GetMainAndEmployerProviders();
+                var providersTask = await GetProviders();//GetMainAndEmployerProviders();
 
                 await _referenceDataWriter.UpsertReferenceData(new TrainingProviders {
                     Data = providersTask.ToList()
@@ -72,6 +72,21 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.TrainingPro
                         AddressLine4 = c.Address?.Address4,
                     }
                 });
+        }
+
+        private async Task<IEnumerable<TrainingProvider>> GetProviders()
+        {
+            _logger.LogTrace("Getting Providers from Outer Api");
+
+            var retryPolicy = GetApiRetryPolicy();
+
+            var result = await retryPolicy.Execute(context => _outerApiClient.Get<GetProvidersResponse>(new GetProvidersRequest()), new Dictionary<string, object>() { { "apiCall", "Providers" } });
+
+            _logger.LogTrace("Call count from Outer API: " + result.Providers.Count());
+            _logger.LogTrace("Call from Outer API: " + JsonConvert.SerializeObject(result.Providers.FirstOrDefault()));
+
+            return result.Providers.Select(c => (TrainingProvider)c);
+
         }
 
         private Polly.Retry.RetryPolicy GetApiRetryPolicy()
