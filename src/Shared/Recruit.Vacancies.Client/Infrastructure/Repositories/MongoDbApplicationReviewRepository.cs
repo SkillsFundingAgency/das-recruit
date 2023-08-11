@@ -140,7 +140,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
             new Context(nameof(GetForVacancyAsync)));
 
             // Review if Application Reviews are included
-            if (sortColumn != null && sortOrder != null) 
+            if (sortColumn != SortColumn.Default && sortOrder != SortOrder.Default) 
             {
                 var sortedResult = result.AsQueryable()
                     .Sort((SortColumn)sortColumn, (SortOrder)sortOrder);
