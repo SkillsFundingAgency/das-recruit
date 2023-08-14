@@ -272,6 +272,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                     'trainingProviderName': '$trainingProvider.name',
                     'vacancyType': 1,
                     'isApplicationWithdrawn': '$candidateApplicationReview.isWithdrawn',
+                    'dateSharedWithEmployer': '$candidateApplicationReview.dateSharedWithEmployer',
                     'hasChosenProviderContactDetails' : 1,
                     'isTraineeship' :1
                 }
@@ -304,6 +305,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                     'transferInfoReason': 1,
                     'trainingProviderName': 1,
                     'vacancyType': 1,
+                    'dateSharedWithEmployer': 1,
                     'hasChosenProviderContactDetails' : 1,
                     'isTraineeship': {
                         '$cond': {
@@ -391,9 +393,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                     },
                     'isSharedWithEmployer': {
                         '$cond': {
-                            'if': {'$ne': [ '$dateSharedWithEmployer', null]},
-                            'then': 1,
-                            'else': 0
+                            'if': {'$eq': [ '$dateSharedWithEmployer', undefined]},
+                            'then': 0,
+                            'else': 1
                         }
                     }
                 }
