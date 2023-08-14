@@ -44,7 +44,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             return vacancy;
         }
 
-        public async Task<ManageVacancyViewModel> GetManageVacancyViewModel(Vacancy vacancy, SortColumn? sortColumn, SortOrder? sortOrder, bool vacancySharedByProvider)
+        public async Task<ManageVacancyViewModel> GetManageVacancyViewModel(Vacancy vacancy, SortColumn sortColumn, SortOrder sortOrder, bool vacancySharedByProvider)
         {
             var viewModel = new ManageVacancyViewModel();
 

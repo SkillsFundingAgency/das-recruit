@@ -128,7 +128,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
             return result;
         }
 
-        public async Task<List<ApplicationReview>> GetForVacancySortedAsync(long vacancyReference, SortColumn? sortColumn, SortOrder? sortOrder)
+        public async Task<List<ApplicationReview>> GetForVacancySortedAsync(long vacancyReference, SortColumn sortColumn, SortOrder sortOrder)
         {
             var filter = Builders<ApplicationReview>.Filter.Eq(VacancyReference, vacancyReference);
             var collection = GetCollection<ApplicationReview>();
@@ -139,7 +139,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
                 .ToListAsync(),
             new Context(nameof(GetForVacancyAsync)));
 
-            // Review if Application Reviews are included
             if (sortColumn != SortColumn.Default && sortOrder != SortOrder.Default) 
             {
                 var sortedResult = result.AsQueryable()

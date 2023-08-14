@@ -39,25 +39,25 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Extensions
             return applications.OrderBy(x => x.Status == ApplicationReviewStatus.Successful ? 0
                 : x.Status == ApplicationReviewStatus.New ? 1
                 : x.Status == ApplicationReviewStatus.Shared ? 2
-                : x.Status == ApplicationReviewStatus.EmployerInterviewing ? 3
-                : x.Status == ApplicationReviewStatus.Interviewing ? 3
-                : x.Status == ApplicationReviewStatus.InReview ? 4
-                : x.Status == ApplicationReviewStatus.EmployerUnsuccessful ? 5
-                : x.Status == ApplicationReviewStatus.Unsuccessful ? 5
-                : 6);
+                : x.Status == ApplicationReviewStatus.InReview ? 3
+                : x.Status == ApplicationReviewStatus.Interviewing ? 4
+                : x.Status == ApplicationReviewStatus.EmployerInterviewing ? 5
+                : x.Status == ApplicationReviewStatus.EmployerUnsuccessful ? 6
+                : x.Status == ApplicationReviewStatus.Unsuccessful ? 7
+                : 8);
         }
 
         private static IOrderedQueryable<ApplicationReview> OrderByStatusDescending(this IQueryable<ApplicationReview> applications)
         {
-            return applications.OrderByDescending(x => x.Status == ApplicationReviewStatus.Unsuccessful ? 0
-                : x.Status == ApplicationReviewStatus.EmployerUnsuccessful ? 0
-                : x.Status == ApplicationReviewStatus.InReview ? 1
-                : x.Status == ApplicationReviewStatus.Interviewing ? 2
-                : x.Status == ApplicationReviewStatus.EmployerInterviewing ? 2
-                : x.Status == ApplicationReviewStatus.Shared ? 3
-                : x.Status == ApplicationReviewStatus.New ? 4
-                : x.Status == ApplicationReviewStatus.Successful ? 5
-                : 6);
+            return applications.OrderByDescending(x => x.Status == ApplicationReviewStatus.Successful ? 0
+                : x.Status == ApplicationReviewStatus.New ? 1
+                : x.Status == ApplicationReviewStatus.Shared ? 2
+                : x.Status == ApplicationReviewStatus.InReview ? 3
+                : x.Status == ApplicationReviewStatus.Interviewing ? 4
+                : x.Status == ApplicationReviewStatus.EmployerInterviewing ? 5
+                : x.Status == ApplicationReviewStatus.EmployerUnsuccessful ? 6
+                : x.Status == ApplicationReviewStatus.Unsuccessful ? 7
+                : 8);
         }
     }
 }

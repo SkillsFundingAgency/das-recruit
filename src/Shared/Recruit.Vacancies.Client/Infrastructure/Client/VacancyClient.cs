@@ -316,7 +316,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         }
 
         // SORTED
-        public async Task<List<VacancyApplication>> GetVacancyApplicationsSortedAsync(long vacancyReference, SortColumn? sortColumn, SortOrder? sortOrder, bool vacancySharedByProvider = false)
+        public async Task<List<VacancyApplication>> GetVacancyApplicationsSortedAsync(long vacancyReference, SortColumn sortColumn, SortOrder sortOrder, bool vacancySharedByProvider = false)
         {
             var applicationReviews = vacancySharedByProvider
                 ? await _applicationReviewRepository.GetForSharedVacancyAsync(vacancyReference) // TODO: GetForSharedVacancySortedAsync
