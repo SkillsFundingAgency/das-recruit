@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.Services.ReferenceData;
 using Esfa.Recruit.Vacancies.Client.Domain.Models;
@@ -9,7 +8,6 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Requests;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Responses;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using Polly;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.TrainingProviders
@@ -34,7 +32,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.TrainingPro
         {
             try
             {
-                var providersTask = await GetProviders();//GetMainAndEmployerProviders();
+                var providersTask = await GetProviders();
 
                 await _referenceDataWriter.UpsertReferenceData(new TrainingProviders {
                     Data = providersTask.ToList()
@@ -47,33 +45,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.TrainingPro
             }
         }
 
-        [assembly: InternalsVisibleTo("Esfa.Recruit.Employer.UnitTests")]
-        internal async Task<IEnumerable<TrainingProvider>> GetMainAndEmployerProviders()
-        {
-            _logger.LogTrace("Getting All Main and Employer Providers from Outer Api");
-
-            var retryPolicy = GetApiRetryPolicy();
-
-            var result = await retryPolicy.Execute(context => _outerApiClient.Get<GetTrainingProvidersResponse>(new GetTrainingProvidersRequest()), new Dictionary<string, object>() { { "apiCall", "Providers" } });
-
-            return result.Providers
-                .Where(fil =>
-                    fil.ProviderTypeId.Equals((short)ProviderTypeIdentifier.MainProvider) ||
-                    fil.ProviderTypeId.Equals((short)ProviderTypeIdentifier.EmployerProvider))
-                .Select(c => new TrainingProvider
-                {
-                    Name = c.Name,
-                    Ukprn = c.Ukprn,
-                    Address = new TrainingProviderAddress
-                    {
-                        AddressLine1 = c.Address?.Address1,
-                        AddressLine2 = c.Address?.Address2,
-                        AddressLine3 = c.Address?.Address3,
-                        AddressLine4 = c.Address?.Address4,
-                    }
-                });
-        }
-
         private async Task<IEnumerable<TrainingProvider>> GetProviders()
         {
             _logger.LogTrace("Getting Providers from Outer Api");
@@ -82,6 +53,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.TrainingPro
 
             var result = await retryPolicy.Execute(context => _outerApiClient.Get<GetProvidersResponse>(new GetProvidersRequest()), new Dictionary<string, object>() { { "apiCall", "Providers" } });
 
+            // logic to filter only Training provider with Main & Employer Profiles.
             return result.Providers
                 .Where(fil =>
                     fil.ProviderTypeId.Equals((short)ProviderTypeIdentifier.MainProvider) ||
