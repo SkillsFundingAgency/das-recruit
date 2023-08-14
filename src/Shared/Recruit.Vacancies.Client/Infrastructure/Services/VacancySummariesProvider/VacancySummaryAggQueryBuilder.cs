@@ -39,6 +39,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                 '$project': {
                     'status': 1,
                     'appStatus': { '$cond' : [ { '$eq': ['$isApplicationWithdrawn', true] }, 'withdrawn', '$appStatus' ]},
+                    'hasCandidateFeedback': '$candidateApplicationReview.candidateFeedback',
                     'dateSharedWithEmployer': '$candidateApplicationReview.dateSharedWithEmployer',
                     'vacancyType': 1,
                     'closingDate' : 1,
@@ -53,13 +54,15 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
             },
             { 
                 '$match' : { 
-                    'appStatus':{ $ne: 'withdrawn'} 
+                    'appStatus':{ $ne: 'withdrawn'},
+                    'hasCandidateFeedback': '$candidateApplicationReview.candidateFeedback',
                             }
             },
             {
                 '$project': {
                     'status': 1,
                     'vacancyType': 1,
+                    'hasCandidateFeedback': '$candidateApplicationReview.candidateFeedback',
                     'closingSoon' : {
                         '$cond': {
                             'if': {'$lte':[
@@ -126,8 +129,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                     'isSharedWithEmployer': {
                         '$cond': {
                             'if': {'$ne': ['$hasCandidateFeedback', '']},
-                            'then': 1,
-                            'else': 0
+                            'then': 0,
+                            'else': 1
                         }
                     }
                 }
@@ -274,9 +277,10 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                     'transferInfoReason': '$transferInfo.reason',
                     'trainingProviderName': '$trainingProvider.name',
                     'vacancyType': 1,
-                    'isApplicationWithdrawn': '$candidateApplicationReview.isWithdrawn',
                     'hasCandidateFeedback': '$candidateApplicationReview.candidateFeedback',
                     'hasChosenProviderContactDetails' : 1,
+                    'dateSharedWithEmployer': '$candidateApplicationReview.dateSharedWithEmployer',
+                    'isApplicationWithdrawn': '$candidateApplicationReview.isWithdrawn',
                     'isTraineeship' :1
                 }
             },
@@ -288,6 +292,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                     'title': 1,
                     'status': 1,
                     'appStatus': { '$cond' : [ { '$eq': ['$isApplicationWithdrawn', true] }, 'withdrawn', '$appStatus' ]},
+                    'hasCandidateFeedback': 1,
                     'legalEntityName': 1,
                     'employerAccountId': 1,
                     'employerName': 1,
@@ -309,6 +314,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                     'trainingProviderName': 1,
                     'vacancyType': 1,
                     'hasChosenProviderContactDetails' : 1,
+                    'dateSharedWithEmployer': 1,
+                    'isApplicationWithdrawn': 1,
                     'isTraineeship': {
                         '$cond': {
                             'if': {'$eq': [ '$vacancyType', 'Traineeship']},
@@ -345,7 +352,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                     'transferInfoReason': 1,
                     'trainingProviderName': 1,
                     'vacancyType': 1,
-                    'hasCandidateFeedback': '$candidateApplicationReview.candidateFeedback',
                     'isTraineeship': {
                         '$cond': {
                             'if': {'$eq': [ '$vacancyType', 'Traineeship']},
@@ -396,9 +402,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                     },
                     'isSharedWithEmployer': {
                         '$cond': {
-                            'if': {'$ne': ['$hasCandidateFeedback', '']},
-                            'then': 1,
-                            'else': 0
+                            'if': {'$eq': ['$dateSharedWithEmployer', undefined]},
+                            'then': 0,
+                            'else': 1
                         }
                     }
                 }
