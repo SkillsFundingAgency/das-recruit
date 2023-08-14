@@ -26,7 +26,6 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
     {
         private const VacancyRuleSet ValidationRules = VacancyRuleSet.TrainingProvider;
         private readonly IRecruitVacancyClient _vacancyClient;
-        private readonly ILogger<TrainingProviderOrchestrator> _logger;
         private readonly IReviewSummaryService _reviewSummaryService;
         private readonly ITrainingProviderSummaryProvider _trainingProviderSummaryProvider;
         private readonly ITrainingProviderService _trainingProviderService;
@@ -44,7 +43,6 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             ) : base(logger)
         {
             _vacancyClient = vacancyClient;
-            _logger = logger;
             _reviewSummaryService = reviewSummaryService;
             _trainingProviderSummaryProvider = trainingProviderSummarayProvider;
             _trainingProviderService = trainingProviderService;
