@@ -52,7 +52,10 @@
                                                         </div>
 
                                                 </td>
-                                                <td class="govuk-table__cell"><a asp-route="todo" class="govuk-link">@vacancyApplication.CandidateName</a></td>
+                                                <td class="govuk-table__cell">
+                                                    <a data-label="application_review" asp-route="@RouteNames.ApplicationReview_Get" asp-route-employerAccountId="@Model.EmployerAccountId" asp-route-vacancyId="@Model.VacancyId" 
+                                                    asp-route-applicationReviewId="@vacancyApplication.ApplicationReviewId" class="govuk-link">@vacancyApplication.CandidateName</a>
+                                                </td>
                                                 <td class="govuk-table__cell">@vacancyApplication.GetFriendlyId()</td>
                                                 <td class="govuk-table__cell"><strong class="@vacancyApplication.Status.GetCssClassForApplicationReviewStatus()">@vacancyApplication.Status.GetDisplayName()</strong></td>
                                                 <td class="govuk-table__cell">@vacancyApplication.SubmittedDate.AsGdsDate()</td>
