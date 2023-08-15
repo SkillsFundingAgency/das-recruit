@@ -161,6 +161,24 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
             return result;
         }
 
+        public async Task<List<ApplicationReview>> GetForSharedVacancySortedAsync(long vacancyReference, SortColumn sortColumn, SortOrder sortOrder)
+        {
+            var filterBuilder = Builders<ApplicationReview>.Filter;
+            var filter = filterBuilder.Eq(VacancyReference, vacancyReference) & filterBuilder.Ne(appRev => appRev.DateSharedWithEmployer, null);
+            var collection = GetCollection<ApplicationReview>();
+
+            var result = await RetryPolicy.Execute(_ =>
+                collection.Find(filter)
+                .Project<ApplicationReview>(GetProjection<ApplicationReview>())
+                .ToListAsync(),
+            new Context(nameof(GetForVacancyAsync)));
+
+            var sortedResult = result.AsQueryable()
+                .Sort(sortColumn, sortOrder, true);
+
+            return sortedResult.ToList();
+        }
+
         public async Task<List<ApplicationReview>> GetForCandidateAsync(Guid candidateId)
         {
             var filter = Builders<ApplicationReview>.Filter.Eq(CandidateId, candidateId);
