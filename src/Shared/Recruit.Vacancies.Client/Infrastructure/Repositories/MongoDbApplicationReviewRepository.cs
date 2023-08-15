@@ -139,14 +139,10 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
                 .ToListAsync(),
             new Context(nameof(GetForVacancyAsync)));
 
-            if (sortColumn != SortColumn.Default && sortOrder != SortOrder.Default) 
-            {
-                var sortedResult = result.AsQueryable()
-                    .Sort((SortColumn)sortColumn, (SortOrder)sortOrder);
-                result = sortedResult.ToList();
-            }
+            var sortedResult = result.AsQueryable()
+                .Sort(sortColumn, sortOrder);
 
-            return result;
+            return sortedResult.ToList();
         }
 
         public async Task<List<ApplicationReview>> GetForSharedVacancyAsync(long vacancyReference)
