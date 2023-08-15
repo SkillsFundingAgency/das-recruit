@@ -1,4 +1,4 @@
-﻿@model Esfa.Recruit.Provider.Web.ViewModels.ApplicationReview.ApplicationReviewFeedBackViewModel
+﻿@model Esfa.Recruit.Provider.Web.ViewModels.ApplicationReview.ApplicationReviewFeedbackViewModel
 @{
     ViewBag.GaData.Vpv = "/recruitment/provider/page-application-feedback";
     ViewBag.Title = "Application Feedback";
@@ -15,7 +15,7 @@
                 Give feedback to @Model.Name
             </h1>
         </div>
-        <form asp-route="@RouteNames.ApplicationReviewFeedBack_Post" asp-route-applicationReviewId="@Model.ApplicationReviewId" asp-route-ukprn="@Model.Ukprn" asp-route-vacancyId="@Model.VacancyId">
+        <form asp-route="@RouteNames.ApplicationReviewFeedback_Post" asp-route-applicationReviewId="@Model.ApplicationReviewId" asp-route-ukprn="@Model.Ukprn" asp-route-vacancyId="@Model.VacancyId">
             @Html.HiddenFor(model => model.Outcome)
             @Html.HiddenFor(model => model.Name)
             <span esfa-validation-message-for="Outcome" class="govuk-error-message"></span>

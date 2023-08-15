@@ -1,0 +1,82 @@
+﻿@using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyApplications
+@model Esfa.Recruit.Provider.Web.ViewModels.ApplicationReviews.ApplicationReviewsToUnsuccessfulConfirmationViewModel
+@{
+    ViewBag.GaData.Vpv = "/recruitment/provider/page-application-reviews-to-unsuccessful-confirmation";
+    ViewBag.Title = "Make Applications Unsuccessful Confirmation";
+}
+@section BackLink {
+    <a asp-route="@RouteNames.ApplicationReviewsToUnsuccessful_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Back</a>
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+        <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState}' />
+        <div>
+            <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">
+                @Model.ApplicationsToUnsuccessfulFeedbackHeaderTitle
+            </h1>
+            <p>
+                @Model.ApplicationsToUnsuccessfulHeaderDescription
+            </p>
+            <div class="govuk-details__text govuk-!-margin-bottom-6">
+                @{
+                    foreach (VacancyApplication vacancyApplication in Model.ApplicationsToUnsuccessful)
+                    {
+                        <p class="govuk-!-margin-top-2 govuk-!-margin-bottom-2 govuk-!-margin-left-2">@vacancyApplication.CandidateName: @vacancyApplication.GetFriendlyId()</p>
+                    }
+                }
+            </div>
+            <p>
+                @Model.ApplicationsToUnsuccessfulNotificationMessage
+            </p>
+            <div class="govuk-details__text govuk-!-margin-bottom-6">
+                <p class="govuk-body">@Model.CandidateFeedback</p>
+            </div>
+        </div>
+
+        <form method="post" id="provider-applications-to-unsuccessful-confirm-form" asp-route="@RouteNames.ApplicationReviewsToUnsuccessfulConfirmation_Post" asp-route-ukprn="@Model.Ukprn" asp-route-vacancyId="@Model.VacancyId">
+            @Html.HiddenFor(model => model.CandidateFeedback)
+            <div esfa-validation-marker-for="ApplicationsToUnsuccessfulConfirmed" class="govuk-form-group">
+                <div class="govuk-form-group" das-highlight-error-for="ApplicationsToUnsuccessful" error-class="govuk-form-group--error" id="provider-applications-to-unsuccessful-confirm-form">
+                    <fieldset class="govuk-fieldset">
+
+                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                            <h1 class="govuk-fieldset__heading">
+                                @Model.LegendMessage
+                            </h1>
+                        </legend>
+
+                        @for (var i = 0; i < Model.ApplicationsToUnsuccessful.Count(); i++)
+                        {
+                            <div class="govuk-!-display-none">
+                                @Html.EditorFor(x => x.ApplicationsToUnsuccessful[i])
+                            </div>
+                        }
+                        <span esfa-validation-message-for="ApplicationsToUnsuccessfulConfirmed" class="govuk-error-message"></span>
+                        <div class="govuk-radios">
+                            <div class="govuk-radios__item">
+                                <input asp-for="ApplicationsToUnsuccessfulConfirmed" class="govuk-radios__input" id="applications-to-unsuccessful-confirm-yes" type="radio" value="true">
+                                <label for="applications-to-unsuccessful-confirm-yes" class="govuk-label govuk-radios__label">Yes</label>
+                            </div>
+                            <div class="govuk-radios__item">
+                                <input asp-for="ApplicationsToUnsuccessfulConfirmed" class="govuk-radios__input" id="applications-to-unsuccessful-confirm-no" type="radio" value="false">
+                                <label for="applications-to-unsuccessful-confirm-no" class="govuk-label govuk-radios__label">No</label>
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+            </div>
+            <div class="govuk-warning-text">
+                <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+                <strong class="govuk-warning-text__text">
+                    <span class="govuk-warning-text__assistive">Warning</span>
+                    You cannot undo this action.
+                </strong>
+            </div>
+            <div class="govuk-button-group">
+                <button class="govuk-button submit" data-module="govuk-button" id="provider-applications-to-unsuccessful-confirm" type="submit">Confirm</button>
+            </div>
+        </form>
+
+    </div>
+</div>

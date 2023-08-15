@@ -1,0 +1,84 @@
+﻿@using System.Net
+@using Esfa.Recruit.Shared.Web.TagHelpers
+@using Esfa.Recruit.Vacancies.Client.Domain.Extensions
+@using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyApplications
+@model Esfa.Recruit.Provider.Web.ViewModels.ApplicationReviews.ShareMultipleApplicationReviewsViewModel
+@{
+    ViewBag.GaData.Vpv = "/recruitment/provider/page-application-reviews-to-share";
+    ViewBag.Title = "Share Applications";
+}
+@section BackLink {
+        <a asp-route="@RouteNames.VacancyManage_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Back</a>
+}
+
+<div class="govuk-grid-row"> 
+    <div class="govuk-grid-column-full">
+        <form method="post" id="share_applications_actions_form" asp-route="@RouteNames.ApplicationReviewsToShare_Post" asp-route-ukprn="@Model.Ukprn" asp-route-vacancyId="@Model.VacancyId">
+            <div class="govuk-form-group" id="ApplicationsToShare">
+                <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState}' />
+                    <fieldset class="govuk-fieldset">
+                    
+                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                            <h1 class="govuk-fieldset__heading">
+                            Share Applications
+                            </h1>
+                        </legend>
+                        <div id="share-multiple-applications-checkbox-hint" class="govuk-hint">
+                            Select the applications that you want to share.
+                        </div>
+                        <span esfa-validation-message-for="ApplicationsToShare" class="govuk-error-message"></span>
+                        <div esfa-validation-marker-for="ApplicationsToShare" id="Multiple-unsuccessful-candidate-feedback" class="govuk-form-group">
+
+                            <table class="govuk-table" aria-label="Share applications" data-checkboxes-select-all>
+
+                                <thead class="govuk-table__head">
+                                    <tr class="govuk-table__row">
+                                        <th scope="col" class="govuk-table__header das-table-cell-width-4" data-checkboxes-select-all-cell>
+
+                                        </th>
+                            <partial name="@PartialNames.MultipleApplicationsTableHeader" />
+                                    </tr>
+                                </thead>
+
+                                <tbody class="govuk-table__body">
+                                    @{
+                                        foreach (VacancyApplication vacancyApplication in Model.VacancyApplications)
+                                        {
+                                            <tr class="govuk-table__row" asp-show="@vacancyApplication.StatusNewOrReview">
+                                                <td class="govuk-table__cell">
+
+                                                    <div class="govuk-checkboxes govuk-checkboxes--small" das-highlight-error-for="@vacancyApplication.ApplicationReviewId" error-class="govuk-form-group--error">
+                                                            <div class="govuk-checkboxes__item">
+                                                            <input class="govuk-checkboxes__input" id="application_select_@vacancyApplication.ApplicationReviewId" error-class="govuk-input--error" name="ApplicationsToShare" type="checkbox" value="@vacancyApplication.ApplicationReviewId">
+                                                            <label class="govuk-label govuk-checkboxes__label" for="application_select_@vacancyApplication.ApplicationReviewId">
+                                                                    <span class="govuk-visually-hidden">@vacancyApplication.ApplicationReviewId</span>
+                                                                </label>
+                                                            </div>
+                                                        </div>
+                                            
+                                                </td>
+                                                <td class="govuk-table__cell"><a asp-route="@RouteNames.ApplicationReview_Get" asp-route-ukprn="@Model.Ukprn" asp-route-vacancyId="@Model.VacancyId" asp-route-applicationReviewId="@vacancyApplication.ApplicationReviewId" class="govuk-link">@vacancyApplication.CandidateName</a></td>
+                                                <td class="govuk-table__cell">@vacancyApplication.GetFriendlyId()</td>
+                                                <td class="govuk-table__cell"><strong class="@vacancyApplication.Status.GetCssClassForApplicationReviewStatus()">@vacancyApplication.Status.GetDisplayName(UserType.Provider)</strong></td>
+                                                <td class="govuk-table__cell">@vacancyApplication.SubmittedDate.AsGdsDate()</td>
+                                            </tr>
+                                        }
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+
+                        </fieldset>
+                    </div>
+
+            <div class="govuk-grid-row">
+            <div class="govuk-grid-column-full">
+                <div class="govuk-button-group">
+                    <button class="govuk-button submit" data-module="govuk-button" id="applications-to-share-action" type="submit">Continue</button>
+                </div>
+            </div>
+        </div>
+
+        </form>
+    </div>
+</div>
