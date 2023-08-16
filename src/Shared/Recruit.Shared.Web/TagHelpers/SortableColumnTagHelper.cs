@@ -29,7 +29,7 @@ namespace Esfa.Recruit.Shared.Web.TagHelpers
         public SortOrder DefaultSortOrder { get; set; }
 
         [HtmlAttributeName("shared-vacancy")]
-        public bool? SharedVacancy { get; set; }
+        public bool? VacancySharedByProvider { get; set; }
 
         [ViewContext]
         [HtmlAttributeNotBound]
@@ -56,7 +56,7 @@ namespace Esfa.Recruit.Shared.Web.TagHelpers
                 SearchTerm = GetSearchTermFromQueryString(),
                 SortColumn = ColumnName,
                 SortOrder = isSortColumn ? sortOrder.Reverse().ToString() : DefaultSortOrder.ToString(),
-                SharedVacancy
+                VacancySharedByProvider = GetSharedVacancyFromQueryString()
             };
 
             var href = _urlHelper.Action(action, controller, values);
@@ -114,6 +114,17 @@ namespace Esfa.Recruit.Shared.Web.TagHelpers
             }
 
             return string.Empty;
+        }
+
+        private bool? GetSharedVacancyFromQueryString()
+        {
+            if (ViewContext.HttpContext.Request.Query.ContainsKey("vacancySharedByProvider"))
+            {
+                var shared = ViewContext.HttpContext.Request.Query["vacancySharedByProvider"].ToString().Equals("True");
+                return shared;
+            }
+
+            return null;
         }
     }
 }
