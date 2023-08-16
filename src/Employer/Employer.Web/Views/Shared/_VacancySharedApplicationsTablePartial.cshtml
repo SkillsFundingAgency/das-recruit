@@ -4,16 +4,16 @@
     <thead class="govuk-table__head">
         <tr class="govuk-table__row">
             <th scope="col" class="govuk-table__header das-table-cell-width-38 das-table--double-arrows">
-                <sortable-column column-name="Applicant" column-label="Applicant" default="false" default-order="Ascending"></sortable-column>
+                <sortable-column column-name="Applicant" column-label="Applicant" default="false" default-order="Ascending" shared-vacancy="true"></sortable-column>
             </th>
             <th scope="col" class="govuk-table__header das-table-cell-width-25 das-table--double-arrows">
-                <sortable-column column-name="Response" column-label="Response" default="false" default-order="Ascending"></sortable-column>
+                <sortable-column column-name="Response" column-label="Response" default="false" default-order="Ascending" shared-vacancy="true"></sortable-column>
             </th>
             <th scope="col" class="govuk-table__header status das-table--double-arrows">
-                <sortable-column column-name="DateReviewed" column-label="Date reviewed" default="false" default-order="Descending"></sortable-column>
+                <sortable-column column-name="DateReviewed" column-label="Date reviewed" default="false" default-order="Descending" shared-vacancy="true"></sortable-column>
             </th>
             <th scope="col" class="govuk-table__header das-table-cell-width-18 das-table--double-arrows">
-                <sortable-column column-name="DateShared" column-label="Date shared" default="false" default-order="Ascending"></sortable-column>
+                <sortable-column column-name="DateShared" column-label="Date shared" default="false" default-order="Ascending" shared-vacancy="true"></sortable-column>
             </th>
             <th asp-show="@Model.ShowDisability" class="govuk-table__header">Disability</th>
         </tr>

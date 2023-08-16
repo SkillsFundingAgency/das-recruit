@@ -28,6 +28,9 @@ namespace Esfa.Recruit.Shared.Web.TagHelpers
         [HtmlAttributeName("default-order")]
         public SortOrder DefaultSortOrder { get; set; }
 
+        [HtmlAttributeName("shared-vacancy")]
+        public bool? SharedVacancy { get; set; }
+
         [ViewContext]
         [HtmlAttributeNotBound]
         public ViewContext ViewContext { get; set; }
@@ -52,7 +55,8 @@ namespace Esfa.Recruit.Shared.Web.TagHelpers
             {
                 SearchTerm = GetSearchTermFromQueryString(),
                 SortColumn = ColumnName,
-                SortOrder = isSortColumn ? sortOrder.Reverse().ToString() : DefaultSortOrder.ToString()
+                SortOrder = isSortColumn ? sortOrder.Reverse().ToString() : DefaultSortOrder.ToString(),
+                SharedVacancy
             };
 
             var href = _urlHelper.Action(action, controller, values);
