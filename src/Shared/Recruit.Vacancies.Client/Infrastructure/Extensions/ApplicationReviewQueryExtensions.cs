@@ -51,23 +51,23 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Extensions
 
         private static IOrderedQueryable<ApplicationReview> OrderByResponseDescending(this IQueryable<ApplicationReview> applications)
         {
-            return applications.OrderBy(x => x.Status == ApplicationReviewStatus.Unsuccessful ? 0
-               : x.Status == ApplicationReviewStatus.EmployerUnsuccessful ? 0
-               : x.Status == ApplicationReviewStatus.Successful ? 2
-               : x.Status == ApplicationReviewStatus.EmployerInterviewing ? 3
-               : x.Status == ApplicationReviewStatus.Interviewing ? 3
-               : x.Status == ApplicationReviewStatus.InReview ? 4
-               : x.Status == ApplicationReviewStatus.Shared ? 5
-               : x.Status == ApplicationReviewStatus.New ? 6
-               : 7).ThenBy(x => x.ReviewedDate);
+            return (IOrderedQueryable<ApplicationReview>)applications.OrderBy(x => x.Status == ApplicationReviewStatus.New ? 0
+              : x.Status == ApplicationReviewStatus.Shared ? 1 : 2)
+                .ThenBy(x => x.DateSharedWithEmployer)
+                .ThenBy(x => x.Status == ApplicationReviewStatus.Interviewing ? 3
+              : x.Status == ApplicationReviewStatus.EmployerInterviewing ? 3
+              : x.Status == ApplicationReviewStatus.Successful ? 5
+              : x.Status == ApplicationReviewStatus.EmployerUnsuccessful ? 6
+              : x.Status == ApplicationReviewStatus.Unsuccessful ? 6
+              : 8).ThenBy(x => x.ReviewedDate).Reverse();
         }
 
         private static IOrderedQueryable<ApplicationReview> OrderByResponse(this IQueryable<ApplicationReview> applications)
         {
             return applications.OrderBy(x => x.Status == ApplicationReviewStatus.New ? 0
-              : x.Status == ApplicationReviewStatus.Shared ? 1
-              : x.Status == ApplicationReviewStatus.InReview ? 2
-              : x.Status == ApplicationReviewStatus.Interviewing ? 3
+              : x.Status == ApplicationReviewStatus.Shared ? 1 : 2)
+                .ThenBy(x => x.DateSharedWithEmployer)
+                .ThenBy(x => x.Status == ApplicationReviewStatus.Interviewing ? 3
               : x.Status == ApplicationReviewStatus.EmployerInterviewing ? 3
               : x.Status == ApplicationReviewStatus.Successful ? 5
               : x.Status == ApplicationReviewStatus.EmployerUnsuccessful ? 6
@@ -78,39 +78,38 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Extensions
 
         private static IOrderedQueryable<ApplicationReview> OrderByDefault(this IQueryable<ApplicationReview> applications)
         {
-            return applications.OrderBy(x => x.SubmittedDate).ThenBy(x => x.Status == ApplicationReviewStatus.New ? 0
-                : x.Status == ApplicationReviewStatus.Shared ? 1
+            return applications.OrderBy(x => x.SubmittedDate).ThenBy(x => x.Status == ApplicationReviewStatus.EmployerInterviewing ? 0
+                : x.Status == ApplicationReviewStatus.EmployerUnsuccessful ? 1
                 : x.Status == ApplicationReviewStatus.InReview ? 2
                 : x.Status == ApplicationReviewStatus.Interviewing ? 3
-                : x.Status == ApplicationReviewStatus.EmployerInterviewing ? 4
-                : x.Status == ApplicationReviewStatus.EmployerUnsuccessful ? 5
+                : x.Status == ApplicationReviewStatus.New ? 4
+                : x.Status == ApplicationReviewStatus.Shared ? 5
                 : x.Status == ApplicationReviewStatus.Successful ? 6
                 : x.Status == ApplicationReviewStatus.Unsuccessful ? 7
                 : 8);
         }
-
         private static IOrderedQueryable<ApplicationReview> OrderByStatus(this IQueryable<ApplicationReview> applications)
         {
-            return applications.OrderBy(x => x.Status == ApplicationReviewStatus.Successful ? 0
-                : x.Status == ApplicationReviewStatus.New ? 1
-                : x.Status == ApplicationReviewStatus.Shared ? 2
-                : x.Status == ApplicationReviewStatus.InReview ? 3
-                : x.Status == ApplicationReviewStatus.Interviewing ? 4
-                : x.Status == ApplicationReviewStatus.EmployerInterviewing ? 5
-                : x.Status == ApplicationReviewStatus.EmployerUnsuccessful ? 6
+            return applications.OrderBy(x => x.Status == ApplicationReviewStatus.EmployerInterviewing ? 0
+                : x.Status == ApplicationReviewStatus.EmployerUnsuccessful ? 1
+                : x.Status == ApplicationReviewStatus.InReview ? 2
+                : x.Status == ApplicationReviewStatus.Interviewing ? 3
+                : x.Status == ApplicationReviewStatus.New ? 4
+                : x.Status == ApplicationReviewStatus.Shared ? 5
+                : x.Status == ApplicationReviewStatus.Successful ? 6
                 : x.Status == ApplicationReviewStatus.Unsuccessful ? 7
                 : 8);
         }
 
         private static IOrderedQueryable<ApplicationReview> OrderByStatusDescending(this IQueryable<ApplicationReview> applications)
         {
-            return applications.OrderByDescending(x => x.Status == ApplicationReviewStatus.Successful ? 0
-                : x.Status == ApplicationReviewStatus.New ? 1
-                : x.Status == ApplicationReviewStatus.Shared ? 2
-                : x.Status == ApplicationReviewStatus.InReview ? 3
-                : x.Status == ApplicationReviewStatus.Interviewing ? 4
-                : x.Status == ApplicationReviewStatus.EmployerInterviewing ? 5
-                : x.Status == ApplicationReviewStatus.EmployerUnsuccessful ? 6
+            return applications.OrderByDescending(x => x.Status == ApplicationReviewStatus.EmployerInterviewing ? 0
+                : x.Status == ApplicationReviewStatus.EmployerUnsuccessful ? 1
+                : x.Status == ApplicationReviewStatus.InReview ? 2
+                : x.Status == ApplicationReviewStatus.Interviewing ? 3
+                : x.Status == ApplicationReviewStatus.New ? 4
+                : x.Status == ApplicationReviewStatus.Shared ? 5
+                : x.Status == ApplicationReviewStatus.Successful ? 6
                 : x.Status == ApplicationReviewStatus.Unsuccessful ? 7
                 : 8);
         }
