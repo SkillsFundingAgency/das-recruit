@@ -44,7 +44,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             return vacancy;
         }
 
-        public async Task<ManageVacancyViewModel> GetManageVacancyViewModel(Vacancy vacancy, bool vacancySharedByProvider)
+        public async Task<ManageVacancyViewModel> GetManageVacancyViewModel(Vacancy vacancy, SortColumn sortColumn, SortOrder sortOrder, bool vacancySharedByProvider)
         {
             var viewModel = new ManageVacancyViewModel();
 
@@ -75,7 +75,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 
             if (vacancy.LiveDate >= _systemConfig.ShowAnalyticsForVacanciesApprovedAfterDate)
             {
-                var vacancyApplicationsTask = _client.GetVacancyApplicationsAsync(vacancy.VacancyReference.Value, vacancySharedByProvider);
+                var vacancyApplicationsTask = _client.GetVacancyApplicationsSortedAsync(vacancy.VacancyReference.Value, sortColumn, sortOrder, vacancySharedByProvider);
                 var vacancyAnalyticsTask = _client.GetVacancyAnalyticsSummaryAsync(vacancy.VacancyReference.Value);
 
                 await Task.WhenAll(vacancyApplicationsTask, vacancyAnalyticsTask);
@@ -86,7 +86,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             }
             else
             {
-                var vacancyApplications = await _client.GetVacancyApplicationsAsync(vacancy.VacancyReference.Value, vacancySharedByProvider);
+                var vacancyApplications = await _client.GetVacancyApplicationsSortedAsync(vacancy.VacancyReference.Value, sortColumn, sortOrder, vacancySharedByProvider);
                 applications = vacancyApplications ?? new List<VacancyApplication>();
             }
 

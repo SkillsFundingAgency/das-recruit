@@ -10,6 +10,7 @@ using MongoDB.Bson;
 using MongoDB.Driver;
 using Polly;
 using System.Linq;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Extensions;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
 {
@@ -125,6 +126,23 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
             new Context(nameof(GetForVacancyAsync)));
 
             return result;
+        }
+
+        public async Task<List<ApplicationReview>> GetForVacancySortedAsync(long vacancyReference, SortColumn sortColumn, SortOrder sortOrder)
+        {
+            var filter = Builders<ApplicationReview>.Filter.Eq(VacancyReference, vacancyReference);
+            var collection = GetCollection<ApplicationReview>();
+
+            var result = await RetryPolicy.Execute(_ =>
+                collection.Find(filter)
+                .Project<ApplicationReview>(GetProjection<ApplicationReview>())
+                .ToListAsync(),
+            new Context(nameof(GetForVacancyAsync)));
+
+            var sortedResult = result.AsQueryable()
+                .Sort(sortColumn, sortOrder);
+
+            return sortedResult.ToList();
         }
 
         public async Task<List<ApplicationReview>> GetForSharedVacancyAsync(long vacancyReference)

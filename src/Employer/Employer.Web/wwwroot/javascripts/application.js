@@ -257,6 +257,38 @@ function setEditorMaxLength(element, tinyMceEditor) {
     characterCount(element, innerTextLength);
 }
 
+function tableClassToggleForDoubleArrows() {
+    var sortLinks = document.querySelectorAll(".das-table__sort");
+
+    if (sortLinks.length > 0) {
+        for (var a = 0; a < sortLinks.length; a++) {
+            var sortLink = sortLinks[a]
+
+            sortLink.parentNode.classList.add("das-table--double-arrows")
+        }
+    }
+
+    var sortLinkAsc = document.querySelectorAll(".das-table__sort--asc");
+    if (sortLinkAsc.length > 0) {
+        for (var a = 0; a < sortLinkAsc.length; a++) {
+            var sortLinkA = sortLinkAsc[a]
+
+            sortLinkA.parentNode.classList.remove("das-table--double-arrows")
+        }
+    }
+
+    var sortLinkDesc = document.querySelectorAll(".das-table__sort--desc");
+    if (sortLinkDesc.length > 0) {
+        for (var a = 0; a < sortLinkDesc.length; a++) {
+            var sortLinkD = sortLinkDesc[a]
+
+            sortLinkD.parentNode.classList.remove("das-table--double-arrows")
+        }
+    }
+}
+
+tableClassToggleForDoubleArrows();
+
 $(function () {
 
     // Dirty forms handling
