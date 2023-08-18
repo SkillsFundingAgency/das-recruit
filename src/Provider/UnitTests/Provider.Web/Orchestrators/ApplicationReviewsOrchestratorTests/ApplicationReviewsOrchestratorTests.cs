@@ -47,11 +47,11 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Application
 
             _vacancyClient.Setup(x => x.GetVacancyAsync(routeModel.VacancyId.GetValueOrDefault()))
                 .ReturnsAsync(vacancy);
-            _vacancyClient.Setup(x => x.GetVacancyApplicationsAsync(vacancy.VacancyReference.Value, false))
+            _vacancyClient.Setup(x => x.GetVacancyApplicationsSortedAsync(vacancy.VacancyReference.Value, It.IsAny<SortColumn>(), It.IsAny<SortOrder>(), false))
                 .ReturnsAsync(vacancyApplications);
 
             // Act
-            var viewModel = await _orchestrator.GetApplicationReviewsToUnsuccessfulViewModelAsync(routeModel);
+            var viewModel = await _orchestrator.GetApplicationReviewsToUnsuccessfulViewModelAsync(routeModel, SortColumn.Name, SortOrder.Descending);
 
             // Assert
             Assert.IsNotEmpty(viewModel.VacancyApplications);

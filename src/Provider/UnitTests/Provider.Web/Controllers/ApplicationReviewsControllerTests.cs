@@ -68,7 +68,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
             vacancyApplications.Add(vacancyApplication2);
 
             _orchestrator.Setup(o =>
-                    o.GetApplicationReviewsToUnsuccessfulViewModelAsync(It.Is<VacancyRouteModel>(y => y == routeModel)))
+                    o.GetApplicationReviewsToUnsuccessfulViewModelAsync(It.Is<VacancyRouteModel>(y => y == routeModel), It.IsAny<SortColumn>(), It.IsAny<SortOrder>()))
                 .ReturnsAsync(new ApplicationReviewsToUnsuccessfulViewModel
                 {
                     VacancyId = routeModel.VacancyId,
@@ -77,7 +77,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
                 });
 
             // Act
-            var result = await _controller.ApplicationReviewsToUnsuccessful(routeModel) as ViewResult;
+            var result = await _controller.ApplicationReviewsToUnsuccessful(routeModel, "Name", "Ascending") as ViewResult;
 
             // Assert
             var actual = result.Model as ApplicationReviewsToUnsuccessfulViewModel;
@@ -94,7 +94,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
             var routeModel = _fixture.Create<VacancyRouteModel>();
 
             _orchestrator.Setup(o =>
-                    o.GetApplicationReviewsToUnsuccessfulViewModelAsync(It.Is<VacancyRouteModel>(y => y == routeModel)))
+                    o.GetApplicationReviewsToUnsuccessfulViewModelAsync(It.Is<VacancyRouteModel>(y => y == routeModel), It.IsAny<SortColumn>(), It.IsAny<SortOrder>()))
                 .ReturnsAsync(new ApplicationReviewsToUnsuccessfulViewModel
                 {
                     VacancyId = routeModel.VacancyId,
@@ -103,7 +103,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
                 });
 
             // Act
-            var result = await _controller.ApplicationReviewsToUnsuccessful(routeModel) as ViewResult;
+            var result = await _controller.ApplicationReviewsToUnsuccessful(routeModel, "Name", "Ascending") as ViewResult;
 
             // Assert
             var actual = result.Model as ApplicationReviewsToUnsuccessfulViewModel;
@@ -125,7 +125,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
                 .Create();
 
             // Act
-            var actionResult =await _controller.ApplicationReviewsToUnsuccessful(request);
+            var actionResult =await _controller.ApplicationReviewsToUnsuccessful(request, "Name", "Ascending");
 
             var redirectResult = actionResult as RedirectToActionResult;
             // Assert
