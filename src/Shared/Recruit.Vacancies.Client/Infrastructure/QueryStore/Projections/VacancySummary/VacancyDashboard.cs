@@ -7,6 +7,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections
     {
         public List<VacancyStatusDashboard> VacancyStatusDashboard { get; set; }
         public List<VacancyApplicationsDashboard> VacancyApplicationsDashboard { get; set; }
+        public List<VacancySharedApplicationsDashboard> VacancySharedApplicationsDashboard { get; set; }
         public int VacanciesClosingSoonWithNoApplications { get; set; }
     }
 
@@ -21,9 +22,16 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections
     {
         public VacancyStatus Status { get; set; }
         public int NoOfNewApplications { get; set; }
+        public int NumberOfEmployerReviewedApplications { get; set; }
         public int NoOfSuccessfulApplications { get; set; }
         public int NoOfUnsuccessfulApplications { get; set; }
         public bool ClosingSoon { get; set; }
         public int StatusCount { get; set; }
+    }
+
+    public class VacancySharedApplicationsDashboard
+    {
+        public VacancyStatus Status { get; set; }
+        public int NoOfSharedApplications { get; set; }
     }
 }

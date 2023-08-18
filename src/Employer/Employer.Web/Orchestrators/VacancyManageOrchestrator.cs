@@ -35,16 +35,16 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             _utility = utility;
         }
 
-        public async Task<Vacancy> GetVacancy(VacancyRouteModel vrm)
+        public async Task<Vacancy> GetVacancy(VacancyRouteModel vrm, bool vacancySharedByProvider = false)
         {
             var vacancy = await _client.GetVacancyAsync(vrm.VacancyId);
 
-            _utility.CheckAuthorisedAccess(vacancy, vrm.EmployerAccountId);
+            _utility.CheckAuthorisedAccess(vacancy, vrm.EmployerAccountId, vacancySharedByProvider);
 
             return vacancy;
         }
 
-        public async Task<ManageVacancyViewModel> GetManageVacancyViewModel(Vacancy vacancy)
+        public async Task<ManageVacancyViewModel> GetManageVacancyViewModel(Vacancy vacancy, bool vacancySharedByProvider)
         {
             var viewModel = new ManageVacancyViewModel();
 
@@ -75,7 +75,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 
             if (vacancy.LiveDate >= _systemConfig.ShowAnalyticsForVacanciesApprovedAfterDate)
             {
-                var vacancyApplicationsTask = _client.GetVacancyApplicationsAsync(vacancy.VacancyReference.Value);
+                var vacancyApplicationsTask = _client.GetVacancyApplicationsAsync(vacancy.VacancyReference.Value, vacancySharedByProvider);
                 var vacancyAnalyticsTask = _client.GetVacancyAnalyticsSummaryAsync(vacancy.VacancyReference.Value);
 
                 await Task.WhenAll(vacancyApplicationsTask, vacancyAnalyticsTask);
@@ -86,7 +86,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             }
             else
             {
-                var vacancyApplications = await _client.GetVacancyApplicationsAsync(vacancy.VacancyReference.Value);
+                var vacancyApplications = await _client.GetVacancyApplicationsAsync(vacancy.VacancyReference.Value, vacancySharedByProvider);
                 applications = vacancyApplications ?? new List<VacancyApplication>();
             }
 
@@ -95,7 +95,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
                 Applications = applications,
                 ShowDisability = vacancy.IsDisabilityConfident,
                 VacancyId = vacancy.Id,
-                EmployerAccountId = vacancy.EmployerAccountId
+                EmployerAccountId = vacancy.EmployerAccountId,
+                VacancySharedByProvier = vacancySharedByProvider
             };
 
             return viewModel;

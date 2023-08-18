@@ -23,7 +23,7 @@ namespace Esfa.Recruit.Employer.Web
         Task<Vacancy> GetAuthorisedVacancyForEditAsync(VacancyRouteModel vrm, string routeName);
         Task<Vacancy> GetAuthorisedVacancyAsync(VacancyRouteModel vrm, string routeName);
         void CheckCanEdit(Vacancy vacancy);
-        void CheckAuthorisedAccess(Vacancy vacancy, string employerAccountId);
+        void CheckAuthorisedAccess(Vacancy vacancy, string employerAccountId, bool vacancySharedByProvider = false);
         void CheckRouteIsValidForVacancy(Vacancy vacancy, string currentRouteName);
 
         /// <summary>
@@ -40,7 +40,7 @@ namespace Esfa.Recruit.Employer.Web
         bool VacancyHasCompletedPartOne(Vacancy vacancy);
         bool VacancyHasStartedPartTwo(Vacancy vacancy);
         PartOnePageInfoViewModel GetPartOnePageInfo(Vacancy vacancy);
-        Task<ApplicationReview> GetAuthorisedApplicationReviewAsync(ApplicationReviewRouteModel rm);
+        Task<ApplicationReview> GetAuthorisedApplicationReviewAsync(ApplicationReviewRouteModel rm, bool vacancySharedByProvider = false);
 
         Task UpdateEmployerProfile(VacancyEmployerInfoModel employerInfoModel, 
             EmployerProfile employerProfile, Address address, VacancyUser user);
@@ -82,11 +82,11 @@ namespace Esfa.Recruit.Employer.Web
                     vacancy.Title));
         }
 
-        public void CheckAuthorisedAccess(Vacancy vacancy, string employerAccountId)
+        public void CheckAuthorisedAccess(Vacancy vacancy, string employerAccountId, bool vacancySharedByProvider = false)
         {
             if (!vacancy.EmployerAccountId.Equals(employerAccountId, StringComparison.OrdinalIgnoreCase))
                 throw new AuthorisationException(string.Format(ExceptionMessages.VacancyUnauthorisedAccess, employerAccountId, vacancy.EmployerAccountId, vacancy.Title, vacancy.Id));
-            if (!vacancy.CanEmployerAndProviderCollabarate && vacancy.OwnerType != OwnerType.Employer)
+            if (!vacancy.CanEmployerAndProviderCollabarate && vacancy.OwnerType != OwnerType.Employer && !vacancySharedByProvider)
                 throw new AuthorisationException(string.Format(ExceptionMessages.UserIsNotTheOwner, OwnerType.Employer));
         }
 
@@ -251,7 +251,7 @@ namespace Esfa.Recruit.Employer.Web
             };
         }
 
-        public async Task<ApplicationReview> GetAuthorisedApplicationReviewAsync(ApplicationReviewRouteModel rm)
+        public async Task<ApplicationReview> GetAuthorisedApplicationReviewAsync(ApplicationReviewRouteModel rm, bool vacancySharedByProvider = false)
         {
             var applicationReview = _vacancyClient.GetApplicationReviewAsync(rm.ApplicationReviewId);
             var vacancy = _vacancyClient.GetVacancyAsync(rm.VacancyId);
@@ -262,7 +262,7 @@ namespace Esfa.Recruit.Employer.Web
             applicationReview.Result.AdditionalQuestion2 = vacancy.Result.AdditionalQuestion2;
             try
             {
-                CheckAuthorisedAccess(vacancy.Result, rm.EmployerAccountId);
+                CheckAuthorisedAccess(vacancy.Result, rm.EmployerAccountId, vacancySharedByProvider);
                 return applicationReview.Result;
             }
             catch (Exception)

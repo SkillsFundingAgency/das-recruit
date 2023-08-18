@@ -43,7 +43,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Application
                 {
                     Id = model.ApplicationReviewId,
                     CandidateFeedback = model.CandidateFeedback,
-                    Application = new Application 
+                    Application = new Application
                     {
                         FirstName = "Jack",
                         LastName = "Sparrow"
@@ -58,6 +58,53 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Application
             // Assert
             Assert.IsNotNull(applicantFullName);
             Assert.AreEqual("Jack Sparrow", applicantFullName);
+        }
+
+        [Test]
+        public async Task GetApplicationReviewFeedBackViewModelAsync_ReturnsCandidateName()
+        {
+            var model = _fixture.Create<ApplicationReviewFeedBackViewModel>();
+            var routeModel = _fixture.Create<VacancyRouteModel>();
+            var vacancyUser = _fixture.Create<VacancyUser>();
+
+            var applicationReview = _fixture.Create<ApplicationReview>();
+
+            _utility.Setup(x => x.GetAuthorisedApplicationReviewAsync(model))
+                .ReturnsAsync(applicationReview);
+
+            _employerVacancyClient.Setup(x => x.SetApplicationReviewStatus(model.ApplicationReviewId, model.Outcome, model.CandidateFeedback, vacancyUser))
+                .Returns(Task.CompletedTask);
+
+            string result = await _orchestrator.GetApplicationReviewFeedBackViewModelAsync(model);
+
+            Assert.IsNotNull(result);
+            Assert.AreEqual(applicationReview.Application.FullName, result);
+        }
+
+        [Test]
+        public async Task GetApplicationReviewFeedBackViewModelAsync_ReturnsCandidateInfo()
+        {
+            var model = _fixture.Create<ApplicationReviewEditModel>();
+            var routeModel = _fixture.Create<VacancyRouteModel>();
+            var vacancyUser = _fixture.Create<VacancyUser>();
+
+            var applicationReview = _fixture.Create<ApplicationReview>();
+            applicationReview.IsWithdrawn = false;
+
+            _utility.Setup(x => x.GetAuthorisedApplicationReviewAsync(model))
+                .ReturnsAsync(applicationReview);
+
+            _employerVacancyClient.Setup(x => x.SetApplicationReviewStatus(model.ApplicationReviewId, model.Outcome, model.CandidateFeedback, vacancyUser))
+                .Returns(Task.CompletedTask);
+
+            var result = await _orchestrator.GetApplicationReviewFeedBackViewModelAsync(model);
+
+            Assert.IsNotNull(result);
+            Assert.AreEqual(applicationReview.Application.FullName, result.Name);
+            Assert.AreEqual(model.ApplicationReviewId, result.ApplicationReviewId);
+            Assert.AreEqual(model.Ukprn, result.Ukprn);
+            Assert.AreEqual(model.VacancyId, result.VacancyId);
+            Assert.AreEqual(model.CandidateFeedback, result.CandidateFeedback);
         }
     }
 }

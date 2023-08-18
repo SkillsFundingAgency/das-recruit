@@ -14,7 +14,7 @@ using Microsoft.Extensions.Logging;
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 {
     public partial class VacancyClient : IProviderVacancyClient
-    {              
+    {
         public async Task<Guid> CreateVacancyAsync(string employerAccountId,
             long ukprn, string title, VacancyUser user, string accountLegalEntityPublicHashedId, string legalEntityName)
         {
@@ -40,7 +40,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         public async Task CreateProviderApiVacancy(Guid id, string title, string employerAccountId, VacancyUser user)
         {
             var command = new CreateProviderOwnedVacancyCommand(
-                id, 
+                id,
                 SourceOrigin.Api,
                 user.Ukprn.Value,
                 employerAccountId,
@@ -50,9 +50,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
                 null,
                 null
             );
-            
+
             await _messaging.SendCommandAsync(command);
-            
+
             await AssignVacancyNumber(id);
         }
 
@@ -69,7 +69,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             await Task.WhenAll(dashboardTask, transferredVacanciesTask);
 
             var dashboardValue = dashboardTask.Result;
-            var transferredVacancies = transferredVacanciesTask.Result.Select(t => 
+            var transferredVacancies = transferredVacanciesTask.Result.Select(t =>
                 new ProviderDashboardTransferredVacancy
                 {
                     LegalEntityName = t.LegalEntityName,
@@ -79,36 +79,37 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 
             var dashboard = dashboardValue.VacancyStatusDashboard;
             var dashboardApplications = dashboardValue.VacancyApplicationsDashboard;
-            
+
             return new ProviderDashboardSummary
             {
-                Closed = dashboard.FirstOrDefault(c=>c.Status == VacancyStatus.Closed)?.StatusCount ?? 0,
-                Draft = dashboard.SingleOrDefault(c=>c.Status == VacancyStatus.Draft)?.StatusCount ?? 0,
-                Review = dashboard.SingleOrDefault(c=>c.Status == VacancyStatus.Review)?.StatusCount ?? 0,
-                Referred = (dashboard.SingleOrDefault(c=>c.Status == VacancyStatus.Referred)?.StatusCount ?? 0) + (dashboard.SingleOrDefault(c=>c.Status == VacancyStatus.Rejected)?.StatusCount ?? 0),
-                Live = dashboard.Where(c=>c.Status == VacancyStatus.Live).Sum(c=>c.StatusCount),
-                Submitted = dashboard.SingleOrDefault(c=>c.Status == VacancyStatus.Submitted)?.StatusCount ?? 0,
-                NumberOfNewApplications = dashboardApplications.Where(c=>c.Status == VacancyStatus.Live || c.Status == VacancyStatus.Closed).Sum(x=>x.NoOfNewApplications),
-                NumberOfSuccessfulApplications = dashboardApplications.Where(c=>c.Status == VacancyStatus.Live && !c.ClosingSoon).Sum(x=>x.NoOfSuccessfulApplications) 
-                                                 + dashboardApplications.Where(c=>c.Status == VacancyStatus.Closed && !c.ClosingSoon).Sum(x=>x.NoOfSuccessfulApplications),
-                NumberOfUnsuccessfulApplications = dashboardApplications.Where(c=>c.Status == VacancyStatus.Live && !c.ClosingSoon).Sum(x=>x.NoOfUnsuccessfulApplications) 
-                                                   + dashboardApplications.Where(c=>c.Status == VacancyStatus.Closed && !c.ClosingSoon).Sum(x=>x.NoOfUnsuccessfulApplications),
-                NumberClosingSoon = dashboard.FirstOrDefault(c=>c.Status == VacancyStatus.Live && c.ClosingSoon)?.StatusCount ?? 0,
-                NumberClosingSoonWithNoApplications =dashboardValue.VacanciesClosingSoonWithNoApplications,
+                Closed = dashboard.FirstOrDefault(c => c.Status == VacancyStatus.Closed)?.StatusCount ?? 0,
+                Draft = dashboard.SingleOrDefault(c => c.Status == VacancyStatus.Draft)?.StatusCount ?? 0,
+                Review = dashboard.SingleOrDefault(c => c.Status == VacancyStatus.Review)?.StatusCount ?? 0,
+                Referred = (dashboard.SingleOrDefault(c => c.Status == VacancyStatus.Referred)?.StatusCount ?? 0) + (dashboard.SingleOrDefault(c => c.Status == VacancyStatus.Rejected)?.StatusCount ?? 0),
+                Live = dashboard.Where(c => c.Status == VacancyStatus.Live).Sum(c => c.StatusCount),
+                Submitted = dashboard.SingleOrDefault(c => c.Status == VacancyStatus.Submitted)?.StatusCount ?? 0,
+                NumberOfNewApplications = dashboardApplications.Where(c => c.Status == VacancyStatus.Live || c.Status == VacancyStatus.Closed).Sum(x => x.NoOfNewApplications),
+                NumberOfEmployerReviewedApplications = dashboardApplications.Where(c => c.Status == VacancyStatus.Live || c.Status == VacancyStatus.Closed).Sum(x => x.NumberOfEmployerReviewedApplications),
+                NumberOfSuccessfulApplications = dashboardApplications.Where(c => c.Status == VacancyStatus.Live && !c.ClosingSoon).Sum(x => x.NoOfSuccessfulApplications)
+                                                 + dashboardApplications.Where(c => c.Status == VacancyStatus.Closed && !c.ClosingSoon).Sum(x => x.NoOfSuccessfulApplications),
+                NumberOfUnsuccessfulApplications = dashboardApplications.Where(c => c.Status == VacancyStatus.Live && !c.ClosingSoon).Sum(x => x.NoOfUnsuccessfulApplications)
+                                                   + dashboardApplications.Where(c => c.Status == VacancyStatus.Closed && !c.ClosingSoon).Sum(x => x.NoOfUnsuccessfulApplications),
+                NumberClosingSoon = dashboard.FirstOrDefault(c => c.Status == VacancyStatus.Live && c.ClosingSoon)?.StatusCount ?? 0,
+                NumberClosingSoonWithNoApplications = dashboardValue.VacanciesClosingSoonWithNoApplications,
                 TransferredVacancies = transferredVacancies
             };
         }
-        
+
         public async Task<ProviderDashboard> GetDashboardAsync(long ukprn, VacancyType vacancyType,int page, FilteringOptions? status = null, string searchTerm = null)
         {
             var vacancySummariesTasks = _vacancySummariesQuery.GetProviderOwnedVacancySummariesByUkprnAsync(ukprn, vacancyType, page, status, searchTerm);
             var transferredVacanciesTasks = _vacancySummariesQuery.GetTransferredFromProviderAsync(ukprn, vacancyType);
-            
+
             await Task.WhenAll(vacancySummariesTasks, transferredVacanciesTasks);
 
             var vacancySummaries = vacancySummariesTasks.Result
                 .Where(c=>vacancyType == VacancyType.Traineeship ? c.IsTraineeship : !c.IsTraineeship).ToList();
-            var transferredVacancies = transferredVacanciesTasks.Result.Select(t => 
+            var transferredVacancies = transferredVacanciesTasks.Result.Select(t =>
                 new ProviderDashboardTransferredVacancy
                 {
                     LegalEntityName = t.LegalEntityName,
@@ -120,7 +121,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             {
                 await UpdateWithTrainingProgrammeInfo(summary);
             }
-            
+
             return new ProviderDashboard
             {
                 Id = vacancyType == VacancyType.Apprenticeship ? QueryViewType.ProviderDashboard.GetIdValue(ukprn) :  QueryViewType.ProviderTraineeshipDashboard.GetIdValue(ukprn),
@@ -198,7 +199,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         {
             return _reportRepository.IncrementReportDownloadCountAsync(reportId);
         }
-        
+
         private async Task UpdateWithTrainingProgrammeInfo(VacancySummary summary)
         {
             if (summary.ProgrammeId != null)

@@ -17,6 +17,8 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
         Task<string> PostApplicationReviewStatusChangeModelAsync(ApplicationReviewStatusChangeModel m, VacancyUser user);
         Task<ApplicationStatusConfirmationViewModel> GetApplicationStatusConfirmationViewModelAsync(ApplicationReviewStatusConfirmationEditModel applicationReviewStatusConfirmationEditModel);
         Task<ApplicationStatusConfirmationViewModel> GetApplicationStatusConfirmationViewModelAsync(ApplicationReviewEditModel rm);
+        Task<string> GetApplicationReviewFeedBackViewModelAsync(ApplicationReviewFeedBackViewModel applicationReviewFeedBackViewModel);
+        Task<ApplicationReviewFeedBackViewModel> GetApplicationReviewFeedBackViewModelAsync(ApplicationReviewEditModel rm);
     }
 
     public class ApplicationReviewOrchestrator : IApplicationReviewOrchestrator
@@ -42,12 +44,13 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             viewModel.Ukprn = rm.Ukprn;
             viewModel.VacancyId = rm.VacancyId;
             viewModel.ApplicationReviewId = rm.ApplicationReviewId;
+            viewModel.CandidateFeedback = string.Empty;
             return viewModel;
         }
 
         public async Task<ApplicationReviewViewModel> GetApplicationReviewViewModelAsync(ApplicationReviewEditModel m)
         {
-            var vm = await GetApplicationReviewViewModelAsync((ApplicationReviewRouteModel) m);
+            var vm = await GetApplicationReviewViewModelAsync((ApplicationReviewRouteModel)m);
 
             vm.Outcome = m.Outcome;
             vm.CandidateFeedback = m.CandidateFeedback;
@@ -70,11 +73,35 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
 
             var applicationReview = await _utility.GetAuthorisedApplicationReviewAsync(applicationReviewStatusConfirmationEditModel);
 
-            return new ApplicationStatusConfirmationViewModel {
+            return new ApplicationStatusConfirmationViewModel
+            {
                 CandidateFeedback = applicationReviewStatusConfirmationEditModel.CandidateFeedback,
                 Outcome = applicationReviewStatusConfirmationEditModel.Outcome,
                 ApplicationReviewId = applicationReviewStatusConfirmationEditModel.ApplicationReviewId,
                 Name = applicationReview.Application.FullName
+            };
+        }
+        public async Task<string> GetApplicationReviewFeedBackViewModelAsync(ApplicationReviewFeedBackViewModel applicationReviewFeedBackViewModel)
+        {
+            await _utility.GetAuthorisedApplicationReviewAsync(applicationReviewFeedBackViewModel);
+
+            var applicationReview = await _utility.GetAuthorisedApplicationReviewAsync(applicationReviewFeedBackViewModel);
+
+            return applicationReview.Application.FullName;
+        }
+
+        public async Task<ApplicationReviewFeedBackViewModel> GetApplicationReviewFeedBackViewModelAsync(ApplicationReviewEditModel rm)
+        {
+            var applicationReviewVm = await GetApplicationReviewViewModelAsync((ApplicationReviewRouteModel)rm);
+
+            return new ApplicationReviewFeedBackViewModel
+            {
+                CandidateFeedback = rm.CandidateFeedback,
+                Outcome = rm.Outcome,
+                ApplicationReviewId = rm.ApplicationReviewId,
+                Name = applicationReviewVm.Name,
+                Ukprn = rm.Ukprn,
+                VacancyId = rm.VacancyId
             };
         }
 
@@ -82,8 +109,11 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
         {
             var applicationReviewVm = await GetApplicationReviewViewModelAsync((ApplicationReviewRouteModel)rm);
 
-            return new ApplicationStatusConfirmationViewModel {
+            return new ApplicationStatusConfirmationViewModel
+            {
                 CandidateFeedback = rm.CandidateFeedback,
+                FriendlyId = applicationReviewVm.FriendlyId,
+                Status = applicationReviewVm.Status,
                 Outcome = rm.Outcome,
                 ApplicationReviewId = rm.ApplicationReviewId,
                 Name = applicationReviewVm.Name,

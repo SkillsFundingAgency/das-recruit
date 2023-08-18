@@ -13,6 +13,7 @@ namespace Esfa.Recruit.Employer.Web.Views
         public const string EditVacancyPartial = "_EditVacancyPartial";        
         public const string NonEditableVacancyDisplay = "_NonEditableVacancyDisplayPartial";
         public const string VacancyApplicationsTable = "_VacancyApplicationsTablePartial";
+        public const string VacancySharedApplicationsTable = "_VacancySharedApplicationsTablePartial";
         public const string VacancySummaryDisplay = "_VacancySummaryDisplayPartial";
         public const string ValidationSummary = RecruitPartialNames.ValidationSummary;
         public const string ReviewSummary = "_ReviewSummaryPartial";
