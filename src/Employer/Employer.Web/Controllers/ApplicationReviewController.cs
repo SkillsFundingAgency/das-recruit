@@ -55,6 +55,21 @@ namespace Esfa.Recruit.Employer.Web.Controllers
                 return RedirectToRoute( RouteNames.VacancyManage_Get, new { editModel.EmployerAccountId, editModel.VacancyId, vacancySharedByProvider });
             }
 
+            if (editModel.Outcome == ApplicationReviewStatus.InReview || editModel.Outcome == ApplicationReviewStatus.Interviewing)
+            {
+                var applicationReviewStatusEditModel = new ApplicationReviewStatusConfirmationEditModel 
+                {
+                    ApplicationReviewId = editModel.ApplicationReviewId,
+                    VacancyId = editModel.VacancyId,
+                    EmployerAccountId = editModel.EmployerAccountId,
+                    CandidateFeedback = editModel.CandidateFeedback,
+                    Outcome = editModel.Outcome,
+                };
+                var candidateName = await _orchestrator.PostApplicationReviewConfirmationEditModelAsync(applicationReviewStatusEditModel, User.ToVacancyUser());
+                TempData.Add(TempDataKeys.ApplicationReviewStatusChangeInfoMessage, string.Format(InfoMessages.ApplicationStatusChangeBannerHeader, candidateName, editModel.Outcome.ToString().ToLower()));
+                return RedirectToRoute(RouteNames.VacancyManage_Get, new { editModel.VacancyId, editModel.EmployerAccountId });
+            }
+
             TempData[TempDataARModel] = JsonConvert.SerializeObject(editModel);
             return RedirectToRoute(RouteNames.ApplicationReviewConfirmation_Get, new { editModel.VacancyId, editModel.EmployerAccountId, editModel.ApplicationReviewId });
         }

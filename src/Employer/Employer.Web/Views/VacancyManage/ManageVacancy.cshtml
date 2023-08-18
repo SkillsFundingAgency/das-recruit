@@ -38,6 +38,21 @@
                 </h3>
             </div>
         </div>
+
+        <div asp-show="@Model.CanShowApplicationStatusChangeBanner" class="govuk-notification-banner govuk-notification-banner--success" role="alert"
+             aria-labelledby="govuk-notification-banner-title"
+             data-module="govuk-notification-banner">
+            <div class="govuk-notification-banner__header">
+                <h2 class="govuk-notification-banner__title">
+                    Done
+                </h2>
+            </div>
+            <div class="govuk-notification-banner__content">
+                <h3 class="govuk-notification-banner__heading">
+                    @Model.ApplicationStatusChangeHeaderMessage
+                </h3>
+            </div>
+        </div>
     </div>
     <div class="govuk-grid-column-two-thirds govuk-!-margin-bottom-6">
         <div asp-show="@Model.CanShowApplicationReviewStatusHeader" class="das-notification das-notification--information">
