@@ -242,7 +242,7 @@
                     </div>
                     <span esfa-validation-message-for="Outcome" class="govuk-error-message"></span>
                     <div class="govuk-radios govuk-radios--conditional" data-module="radios">
-
+                        <!-- Shared Options -->
                         <div class="govuk-radios__item" asp-show="@Model.IsApplicationShared">
                             <input asp-for="Outcome" class="govuk-radios__input" id="outcome-interviewing" type="radio" value="@ApplicationReviewStatus.EmployerInterviewing.ToString()" checked="@(Model.Outcome == ApplicationReviewStatus.EmployerInterviewing ? "checked" : null)">
                             <label for="outcome-interviewing" class="govuk-label govuk-radios__label">Yes</label>
@@ -250,20 +250,39 @@
                                 You'll be able to see the applicant's name and contact details.
                             </div>
                         </div>
-
-                        <div class="govuk-radios__item" asp-hide="@Model.IsApplicationShared">
-                            <input asp-for="Outcome" class="govuk-radios__input" id="outcome-successful" type="radio" value="@ApplicationReviewStatus.Successful.ToString()" checked="@(Model.Outcome == ApplicationReviewStatus.Successful ? "checked" : null)">
-                            <label for="outcome-successful" class="govuk-label govuk-radios__label">Successful</label>
-                        </div>
-
                         <div class="govuk-radios__item" asp-show="@Model.IsApplicationShared">
                             <input asp-for="Outcome" class="govuk-radios__input" id="outcome-employer-unsuccessful" type="radio" value="@ApplicationReviewStatus.EmployerUnsuccessful.ToString()" checked="@(Model.Outcome == ApplicationReviewStatus.EmployerUnsuccessful ? "checked" : null)" data-aria-controls="unsuccessful-candidate-feedback">
                             <label for="outcome-unsuccessful" class="govuk-label govuk-radios__label">@Model.FormRadioButtonNoText</label>
                         </div>
 
+                         <!-- Not Shared Options-->
+                        <div class="govuk-radios__item" asp-hide="@Model.IsApplicationShared">
+                            <input asp-for="Outcome" class="govuk-radios__input" id="outcome-reviewed" type="radio" value="@ApplicationReviewStatus.InReview.ToString()" checked="@(Model.Outcome == ApplicationReviewStatus.InReview ? "checked" : null)">
+                            <label for="outcome-reviewed" class="govuk-label govuk-radios__label">Review</label>
+                            <div class="govuk-hint govuk-radios__hint" id="radio-status-reviewed">
+                                Change this application's status to 'in review' and make a decision later. Does not notify the applicant.
+                            </div>
+                        </div>
+                        <div class="govuk-radios__item" asp-hide="@Model.IsApplicationShared">
+                            <input asp-for="Outcome" class="govuk-radios__input" id="outcome-interviewing" type="radio" value="@ApplicationReviewStatus.Interviewing.ToString()" checked="@(Model.Outcome == ApplicationReviewStatus.Interviewing ? "checked" : null)">
+                            <label for="outcome-interviewing" class="govuk-label govuk-radios__label">Mark application for interviewing with the employer</label>
+                            <div class="govuk-hint govuk-radios__hint" id="radio-status-interviewing">
+                                Change this application's status to 'interviewing' because the employer will interview this applicant. Does not notify the applicant.
+                            </div>
+                        </div>
+                        <div class="govuk-radios__item" asp-hide="@Model.IsApplicationShared">
+                            <input asp-for="Outcome" class="govuk-radios__input" id="outcome-successful" type="radio" value="@ApplicationReviewStatus.Successful.ToString()" checked="@(Model.Outcome == ApplicationReviewStatus.Successful ? "checked" : null)">
+                            <label for="outcome-successful" class="govuk-label govuk-radios__label">Make successful</label>
+                            <div class="govuk-hint govuk-radios__hint" id="radio-status-successful">
+                                Send a notification to the applicant offering them this apprenticeship.
+                            </div>
+                        </div>
                         <div class="govuk-radios__item" asp-hide="@Model.IsApplicationShared">
                             <input asp-for="Outcome" class="govuk-radios__input" id="outcome-unsuccessful" type="radio" value="@ApplicationReviewStatus.Unsuccessful.ToString()" checked="@(Model.Outcome == ApplicationReviewStatus.Unsuccessful ? "checked" : null)" data-aria-controls="unsuccessful-candidate-feedback">
-                            <label for="outcome-unsuccessful" class="govuk-label govuk-radios__label">@Model.FormRadioButtonNoText</label>
+                            <label for="outcome-unsuccessful" class="govuk-label govuk-radios__label">Make unsuccessful and give feedback</label>
+                            <div class="govuk-hint govuk-radios__hint" id="radio-status-unsuccessful">
+                                Send a notification to the applicant telling them they won't be offered this apprenticeship.
+                            </div>
                         </div>
                         <div esfa-validation-marker-for="CandidateFeedback" id="unsuccessful-candidate-feedback" class="govuk-radios__conditional govuk-radios__conditional--hidden">
                             <div class="govuk-character-count" id="conditional-contact-3" data-module="govuk-character-count" data-maxwords="200">
