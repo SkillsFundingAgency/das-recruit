@@ -263,7 +263,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
             vacancyApplications.Add(vacancyApplication2);
 
             _orchestrator.Setup(o =>
-                    o.GetApplicationReviewsToShareViewModelAsync(It.Is<VacancyRouteModel>(y => y == routeModel)))
+                    o.GetApplicationReviewsToShareViewModelAsync(It.Is<VacancyRouteModel>(y => y == routeModel), It.IsAny<SortColumn>(), It.IsAny<SortOrder>()))
                 .ReturnsAsync(new ShareMultipleApplicationReviewsViewModel
                 {
                     VacancyId = routeModel.VacancyId,
@@ -272,7 +272,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
                 });
 
             // Act
-            var result = await _controller.ApplicationReviewsToShare(routeModel) as ViewResult;
+            var result = await _controller.ApplicationReviewsToShare(routeModel, "Name", "Ascending") as ViewResult;
 
             // Assert
             var actual = result.Model as ShareMultipleApplicationReviewsViewModel;
@@ -289,7 +289,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
             var routeModel = _fixture.Create<VacancyRouteModel>();
 
             _orchestrator.Setup(o =>
-                    o.GetApplicationReviewsToShareViewModelAsync(It.Is<VacancyRouteModel>(y => y == routeModel)))
+                    o.GetApplicationReviewsToShareViewModelAsync(It.Is<VacancyRouteModel>(y => y == routeModel), It.IsAny<SortColumn>(), It.IsAny<SortOrder>()))
                 .ReturnsAsync(new ShareMultipleApplicationReviewsViewModel
                 {
                     VacancyId = routeModel.VacancyId,
@@ -298,7 +298,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
                 });
 
             // Act
-            var result = await _controller.ApplicationReviewsToShare(routeModel) as ViewResult;
+            var result = await _controller.ApplicationReviewsToShare(routeModel, "Name", "Ascending") as ViewResult;
 
             // Assert
             var actual = result.Model as ShareMultipleApplicationReviewsViewModel;
@@ -320,7 +320,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
              .Create();
 
             // Act
-            var actionResult = await _controller.ApplicationReviewsToShare(request);
+            var actionResult = await _controller.ApplicationReviewsToShare(request, "Name", "Ascending");
             var redirectResult = actionResult as RedirectToActionResult;
 
             // Assert
