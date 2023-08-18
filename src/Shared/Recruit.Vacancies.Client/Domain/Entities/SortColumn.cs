@@ -6,6 +6,10 @@
         Name,
         ApplicationID,
         Status,
-        DateApplied
+        DateApplied,
+        Applicant,
+        Response,
+        DateReviewed,
+        DateShared
     }
 }

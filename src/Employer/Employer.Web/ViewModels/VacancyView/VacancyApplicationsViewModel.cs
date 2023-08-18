@@ -10,13 +10,6 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyManage
     {
         public IEnumerable<VacancyApplication> Applications { get; internal set; }
         public UserType UserType { get; internal set; }
-
-        // to be removed
-        public IList<IGrouping<ApplicationReviewStatus, VacancyApplication>> OrderedApplications => Applications.OrderByDescending(app => app.SubmittedDate)
-            .GroupBy(app => app.Status)
-            .OrderBy(g => g.Key)
-            .ToList();
-
         public bool ShowDisability { get; internal set; }
         public bool VacancySharedByProvier { get; internal set; }
         public bool CanShowMultipleApplicationsUnsuccessfulLink =>
