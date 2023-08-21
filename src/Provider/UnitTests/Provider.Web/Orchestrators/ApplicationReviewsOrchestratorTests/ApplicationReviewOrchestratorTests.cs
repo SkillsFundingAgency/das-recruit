@@ -50,7 +50,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Application
                     }
                 });
             _employerVacancyClient.Setup(x => x.SetApplicationReviewStatus(model.ApplicationReviewId, model.Outcome, model.CandidateFeedback, vacancyUser))
-                .Returns(Task.CompletedTask);
+                .ReturnsAsync(false);
 
             // Act
             var applicantFullName = await _orchestrator.PostApplicationReviewStatusChangeModelAsync(model, vacancyUser);
@@ -73,7 +73,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Application
                 .ReturnsAsync(applicationReview);
 
             _employerVacancyClient.Setup(x => x.SetApplicationReviewStatus(model.ApplicationReviewId, model.Outcome, model.CandidateFeedback, vacancyUser))
-                .Returns(Task.CompletedTask);
+                .ReturnsAsync(false);
 
             string result = await _orchestrator.GetApplicationReviewFeedbackViewModelAsync(model);
 
@@ -95,7 +95,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Application
                 .ReturnsAsync(applicationReview);
 
             _employerVacancyClient.Setup(x => x.SetApplicationReviewStatus(model.ApplicationReviewId, model.Outcome, model.CandidateFeedback, vacancyUser))
-                .Returns(Task.CompletedTask);
+                .ReturnsAsync(false);
 
             var result = await _orchestrator.GetApplicationReviewFeedbackViewModelAsync(model);
 

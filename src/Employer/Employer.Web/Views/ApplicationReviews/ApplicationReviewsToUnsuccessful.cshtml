@@ -11,6 +11,23 @@
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
+
+        <div asp-show="@Model.CanShowPositionsFilledBanner" class="govuk-notification-banner govuk-notification-banner--success" role="alert"
+             aria-labelledby="govuk-notification-banner-title"
+             data-module="govuk-notification-banner">
+            <div class="govuk-notification-banner__header">
+                <h2 class="govuk-notification-banner__title">
+                    Done
+                </h2>
+            </div>
+            <div class="govuk-notification-banner__content">
+                <h3 class="govuk-notification-banner__heading">
+                    @Model.PositionsFilledBannerHeader
+                </h3>
+                <p class="govuk-body">@Model.PositionsFilledBannerBody</p>
+            </div>
+        </div>
+
         <form method="post" id="multiple_applications_unsuccessful_actions_form" asp-route="todo">
             <div class="govuk-form-group" id="ApplicationsToUnsuccessful">
             <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState}' />

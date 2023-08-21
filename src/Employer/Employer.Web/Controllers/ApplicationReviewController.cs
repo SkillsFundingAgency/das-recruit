@@ -99,7 +99,6 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             if (editModel.CanNotifyCandidate)
             {
                 var statusInfo = await _orchestrator.PostApplicationReviewConfirmationEditModelAsync(editModel, User.ToVacancyUser());
-                TempData.Add(TempDataKeys.ApplicationReviewStatusInfoMessage, string.Format(InfoMessages.ApplicationReviewStatusHeader, statusInfo.CandidateName, editModel.Outcome.ToString().ToLower()));
 
                 if (statusInfo.PositionsFilled) 
                 {
@@ -108,6 +107,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
                     return RedirectToRoute(RouteNames.ApplicationReviewsToUnsuccessful_Get, new { editModel.VacancyId, editModel.EmployerAccountId });
                 }
 
+                TempData.Add(TempDataKeys.ApplicationReviewStatusChangeInfoMessage, string.Format(InfoMessages.ApplicationReviewStatusHeader, statusInfo.CandidateName, editModel.Outcome.ToString().ToLower()));
                 return RedirectToRoute(RouteNames.VacancyManage_Get, new { editModel.VacancyId, editModel.EmployerAccountId });
             }
             return RedirectToRoute(RouteNames.ApplicationReview_Get, new { editModel.VacancyId, editModel.EmployerAccountId, editModel.ApplicationReviewId });

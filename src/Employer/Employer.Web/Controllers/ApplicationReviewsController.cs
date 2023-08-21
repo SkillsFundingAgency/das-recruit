@@ -11,6 +11,7 @@ using Microsoft.FeatureManagement.Mvc;
 using Esfa.Recruit.Employer.Web.ViewModels.ApplicationReviews;
 using Esfa.Recruit.Employer.Web.Extensions;
 using Esfa.Recruit.Shared.Web.ViewModels;
+using InfoMsg = Esfa.Recruit.Shared.Web.ViewModels.InfoMessages;
 
 namespace Esfa.Recruit.Employer.Web.Controllers
 {
@@ -29,6 +30,12 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         public async Task<IActionResult> ApplicationReviewsToUnsuccessful(VacancyRouteModel rm)
         {
             var viewModel = await _orchestrator.GetApplicationReviewsToUnsuccessfulViewModelAsync(rm);
+
+            if (TempData.ContainsKey(TempDataKeys.ApplicationReviewStatusInfoMessage)) 
+            {
+                viewModel.PositionsFilledBannerHeader = TempData[TempDataKeys.ApplicationReviewStatusInfoMessage].ToString();
+                viewModel.PositionsFilledBannerBody = InfoMsg.ApplicationReviewSuccessStatusBannerMessage;
+            }
 
             return View(viewModel);
         }
