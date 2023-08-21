@@ -72,7 +72,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             }
 
             TempData[TempDataARModel] = JsonConvert.SerializeObject(editModel);
-            return RedirectToRoute(RouteNames.ApplicationReviewConfirmation_Get, new { editModel.VacancyId, editModel.EmployerAccountId, editModel.ApplicationReviewId });
+            return RedirectToRoute(RouteNames.ApplicationReviewConfirmation_Get, new { editModel.VacancyId, editModel.EmployerAccountId, editModel.ApplicationReviewId, editModel.Outcome });
         }
 
         [HttpGet("status", Name = RouteNames.ApplicationReviewConfirmation_Get)]
