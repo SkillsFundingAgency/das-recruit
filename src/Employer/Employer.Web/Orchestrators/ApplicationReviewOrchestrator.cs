@@ -61,11 +61,11 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
         {
             var applicationReview = await _utility.GetAuthorisedApplicationReviewAsync(m);
 
-            var positionsFilled = await _client.SetApplicationReviewStatus(applicationReview.Id, m.Outcome, m.CandidateFeedback, user);
+            var shouldMakeOthersUnsuccessful = await _client.SetApplicationReviewStatus(applicationReview.Id, m.Outcome, m.CandidateFeedback, user);
 
             var applicationReviewStatusUpdateInfo = new ApplicationReviewStatusUpdateInfo 
             {
-                PositionsFilled = positionsFilled,
+                ShouldMakeOthersUnsuccessful = shouldMakeOthersUnsuccessful,
                 CandidateName = applicationReview.Application.FullName
             };
 

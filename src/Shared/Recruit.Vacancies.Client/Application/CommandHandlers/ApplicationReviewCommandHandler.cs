@@ -63,7 +63,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             _logger.LogInformation("Setting application review:{applicationReviewId} to {status}", message.ApplicationReviewId, message.Outcome.Value);
 
             await _applicationReviewRepository.UpdateAsync(applicationReview);
-
+            
             await _messaging.PublishEvent(new ApplicationReviewedEvent
             {
                 Status = applicationReview.Status,
@@ -72,21 +72,9 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
                 CandidateId = applicationReview.CandidateId
             });
 
-            // if Successful
-            var positionsFilled = false;
-            if (message.Outcome == ApplicationReviewStatus.Successful) 
-            {
-                var vacancy = await _vacancyRepository.GetVacancyAsync(applicationReview.VacancyReference);
+            var shouldMakeOthersUnsuccessful = await CheckForPositionsFilledAsync(message.Outcome, applicationReview.VacancyReference);
 
-                var successfulApplications = await _applicationReviewRepository.GetByStatusAsync(applicationReview.VacancyReference, ApplicationReviewStatus.Successful);
-
-                if (vacancy.NumberOfPositions == successfulApplications.Count)
-                {
-                    positionsFilled = true;
-                }
-            }
-
-            return positionsFilled;
+            return shouldMakeOthersUnsuccessful;
         }
 
         private void Validate(ApplicationReview applicationReview)
@@ -96,6 +84,28 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             {
                 throw new ValidationException(validationResult.Errors);
             }
+        }
+
+        private async Task<bool> CheckForPositionsFilledAsync(ApplicationReviewStatus? status, long vacancyReference)
+        {
+            var shouldMakeOthersUnsuccessful = false;
+            if (status == ApplicationReviewStatus.Successful)
+            {
+                var vacancy = await _vacancyRepository.GetVacancyAsync(vacancyReference);
+
+                var successfulApplications = await _applicationReviewRepository.GetByStatusAsync(vacancyReference, ApplicationReviewStatus.Successful);
+
+                if (vacancy.NumberOfPositions <= successfulApplications.Count)
+                {
+                    var newApplications = await _applicationReviewRepository.GetByStatusAsync(vacancyReference, ApplicationReviewStatus.New);
+                    var interviewingApplications = await _applicationReviewRepository.GetByStatusAsync(vacancyReference, ApplicationReviewStatus.Interviewing);
+                    var inReviewApplications = await _applicationReviewRepository.GetByStatusAsync(vacancyReference, ApplicationReviewStatus.InReview);
+                    var applicationsToMakeUnsuccessful = newApplications.Count + interviewingApplications.Count + inReviewApplications.Count;
+                    shouldMakeOthersUnsuccessful = (applicationsToMakeUnsuccessful > 0) ? true : false;
+                }
+            }
+
+            return shouldMakeOthersUnsuccessful;
         }
     }
 }

@@ -100,10 +100,9 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             {
                 var statusInfo = await _orchestrator.PostApplicationReviewConfirmationEditModelAsync(editModel, User.ToVacancyUser());
 
-                if (statusInfo.PositionsFilled) 
+                if (statusInfo.ShouldMakeOthersUnsuccessful) 
                 {
                     TempData.Add(TempDataKeys.ApplicationReviewStatusInfoMessage, string.Format(InfoMessages.ApplicationReviewSuccessStatusHeader, statusInfo.CandidateName));
-                    // add second message
                     return RedirectToRoute(RouteNames.ApplicationReviewsToUnsuccessful_Get, new { editModel.VacancyId, editModel.EmployerAccountId });
                 }
 

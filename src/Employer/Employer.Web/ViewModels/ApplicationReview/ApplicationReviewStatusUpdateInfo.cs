@@ -3,6 +3,6 @@
     public class ApplicationReviewStatusUpdateInfo
     {
         public string CandidateName { get; set; }
-        public bool PositionsFilled { get; set; }
+        public bool ShouldMakeOthersUnsuccessful { get; set; }
     }
 }
