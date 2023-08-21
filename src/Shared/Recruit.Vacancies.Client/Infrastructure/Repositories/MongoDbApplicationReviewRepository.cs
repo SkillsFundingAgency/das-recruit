@@ -50,6 +50,23 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
             return result;
         }
 
+        public async Task<List<ApplicationReview>> GetByStatusAsync(long vacancyReference, ApplicationReviewStatus status)
+        {
+            var builder = Builders<ApplicationReview>.Filter;
+            var filter = builder.Eq(r => r.VacancyReference, vacancyReference) &
+                         builder.Eq(r => r.Status, status);
+
+            var collection = GetCollection<ApplicationReview>();
+
+            var result = await RetryPolicy.Execute(_ =>
+              collection.Find(filter)
+              .Project<ApplicationReview>(GetProjection<ApplicationReview>())
+              .ToListAsync(),
+              new Context(nameof(GetByStatusAsync)));
+
+            return result;
+        }
+
         public async Task<List<T>> GetAllForSelectedIdsAsync<T>(List<Guid> applicationReviewIds)
         {
             var filter = Builders<T>.Filter.In(Id, applicationReviewIds);

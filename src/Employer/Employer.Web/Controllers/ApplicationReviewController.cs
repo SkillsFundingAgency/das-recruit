@@ -66,8 +66,8 @@ namespace Esfa.Recruit.Employer.Web.Controllers
                     CandidateFeedback = editModel.CandidateFeedback,
                     Outcome = editModel.Outcome,
                 };
-                var candidateName = await _orchestrator.PostApplicationReviewConfirmationEditModelAsync(applicationReviewStatusEditModel, User.ToVacancyUser());
-                TempData.Add(TempDataKeys.ApplicationReviewStatusChangeInfoMessage, string.Format(InfoMessages.ApplicationStatusChangeBannerHeader, candidateName, editModel.Outcome.GetDisplayName().ToLower()));
+                var statusInfo = await _orchestrator.PostApplicationReviewConfirmationEditModelAsync(applicationReviewStatusEditModel, User.ToVacancyUser());
+                TempData.Add(TempDataKeys.ApplicationReviewStatusChangeInfoMessage, string.Format(InfoMessages.ApplicationStatusChangeBannerHeader, statusInfo.CandidateName, editModel.Outcome.GetDisplayName().ToLower()));
                 return RedirectToRoute(RouteNames.VacancyManage_Get, new { editModel.VacancyId, editModel.EmployerAccountId });
             }
 
@@ -98,8 +98,16 @@ namespace Esfa.Recruit.Employer.Web.Controllers
 
             if (editModel.CanNotifyCandidate)
             {
-                var candidateName = await _orchestrator.PostApplicationReviewConfirmationEditModelAsync(editModel, User.ToVacancyUser());
-                TempData.Add(TempDataKeys.ApplicationReviewStatusInfoMessage, string.Format(InfoMessages.ApplicationReviewStatusHeader, candidateName, editModel.Outcome.ToString().ToLower()));
+                var statusInfo = await _orchestrator.PostApplicationReviewConfirmationEditModelAsync(editModel, User.ToVacancyUser());
+                TempData.Add(TempDataKeys.ApplicationReviewStatusInfoMessage, string.Format(InfoMessages.ApplicationReviewStatusHeader, statusInfo.CandidateName, editModel.Outcome.ToString().ToLower()));
+
+                if (statusInfo.PositionsFilled) 
+                {
+                    TempData.Add(TempDataKeys.ApplicationReviewStatusInfoMessage, string.Format(InfoMessages.ApplicationReviewSuccessStatusHeader, statusInfo.CandidateName));
+                    // add second message
+                    return RedirectToRoute(RouteNames.ApplicationReviewsToUnsuccessful_Get, new { editModel.VacancyId, editModel.EmployerAccountId });
+                }
+
                 return RedirectToRoute(RouteNames.VacancyManage_Get, new { editModel.VacancyId, editModel.EmployerAccountId });
             }
             return RedirectToRoute(RouteNames.ApplicationReview_Get, new { editModel.VacancyId, editModel.EmployerAccountId, editModel.ApplicationReviewId });
