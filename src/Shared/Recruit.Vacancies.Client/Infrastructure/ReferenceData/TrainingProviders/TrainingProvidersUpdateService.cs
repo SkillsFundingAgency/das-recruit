@@ -53,11 +53,13 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.TrainingPro
 
             var result = await retryPolicy.Execute(context => _outerApiClient.Get<GetProvidersResponse>(new GetProvidersRequest()), new Dictionary<string, object>() { { "apiCall", "Providers" } });
 
-            // logic to filter only Training provider with Main & Employer Profiles.
+            // logic to filter only Training provider with Main & Employer Profiles and Status Id not equal to "Not Currently Starting New Apprentices"
             return result.Providers
                 .Where(fil =>
                     fil.ProviderTypeId.Equals((short)ProviderTypeIdentifier.MainProvider) ||
                     fil.ProviderTypeId.Equals((short)ProviderTypeIdentifier.EmployerProvider))
+                .Where(fil => 
+                    fil.StatusId != (short)ProviderStatusType.ActiveButNotTakingOnApprentices)
                 .Select(c => (TrainingProvider)c);
         }
 
