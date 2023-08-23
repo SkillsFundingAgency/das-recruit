@@ -8,7 +8,6 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Requests;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Responses;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using Polly;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.TrainingProviders
@@ -54,19 +53,13 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.TrainingPro
 
             var result = await retryPolicy.Execute(context => _outerApiClient.Get<GetProvidersResponse>(new GetProvidersRequest()), new Dictionary<string, object>() { { "apiCall", "Providers" } });
 
-            _logger.LogTrace("Result from Outer Api:" + JsonConvert.SerializeObject(result.Providers.Where(fil => fil.Ukprn == 10015927)));
-
             // logic to filter only Training provider with Main & Employer Profiles and Status Id not equal to "Not Currently Starting New Apprentices"
-            var tempResult = result.Providers
+            return result.Providers
                 .Where(fil =>
                     (fil.ProviderTypeId.Equals((short)ProviderTypeIdentifier.MainProvider) ||
                     fil.ProviderTypeId.Equals((short)ProviderTypeIdentifier.EmployerProvider)) && 
                     !fil.StatusId.Equals((short)ProviderStatusType.ActiveButNotTakingOnApprentices))
-                .Select(c => (TrainingProvider)c).ToList();
-
-            _logger.LogTrace("Result from after filter:" + JsonConvert.SerializeObject(tempResult.Where(fil => fil.Ukprn == 10015927)));
-
-            return tempResult;
+                .Select(c => (TrainingProvider)c);
         }
 
         private Polly.Retry.RetryPolicy GetApiRetryPolicy()
