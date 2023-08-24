@@ -7,6 +7,7 @@ using Esfa.Recruit.Provider.Web.Configuration;
 using Esfa.Recruit.Provider.Web.Configuration.Routing;
 using Esfa.Recruit.Provider.Web.Exceptions;
 using Esfa.Recruit.Provider.Web.Extensions;
+using Esfa.Recruit.Provider.Web.Models.Error;
 using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Provider.Web.ViewModels;
 using Esfa.Recruit.Provider.Web.ViewModels.Error;
@@ -17,6 +18,7 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.Exceptions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
@@ -29,24 +31,31 @@ namespace Esfa.Recruit.Provider.Web.Controllers
         private readonly ExternalLinksConfiguration _externalLinks;
         private readonly IRecruitVacancyClient _vacancyClient;
         private readonly ITrainingProviderSummaryProvider _trainingProviderSummaryProvider;
+        private readonly IConfiguration _configuration;
 
-        public ErrorController(ILogger<ErrorController> logger, IOptions<ExternalLinksConfiguration> externalLinks, IRecruitVacancyClient vacancyClient, ITrainingProviderSummaryProvider trainingProviderSummaryProvider)
+        public ErrorController(ILogger<ErrorController> logger, IOptions<ExternalLinksConfiguration> externalLinks, IRecruitVacancyClient vacancyClient, ITrainingProviderSummaryProvider trainingProviderSummaryProvider, IConfiguration configuration)
         {
             _logger = logger;
             _externalLinks = externalLinks.Value;
             _vacancyClient = vacancyClient;
             _trainingProviderSummaryProvider = trainingProviderSummaryProvider;
+            _configuration = configuration;
         }
 
         [Route("error/{id?}")]
         public IActionResult Error(int id)
         {
             ViewBag.IsErrorPage = true; // Used by layout to show/hide elements.
+            bool useDfESignIn = _configuration["UseDfESignIn"] != null && _configuration["UseDfESignIn"]
+                .Equals("true", StringComparison.CurrentCultureIgnoreCase);
 
             switch (id)
             {
                 case 403:
-                    return AccessDenied();
+                    return AccessDenied(new Error403ViewModel(_configuration["ResourceEnvironmentName"])
+                    {
+                        UseDfESignIn = useDfESignIn
+                    });
                 case 404:
                     return PageNotFound();
                 default:
@@ -99,7 +108,12 @@ namespace Esfa.Recruit.Provider.Web.Controllers
 
                 if (exception is AuthorisationException)
                 {
-                    return AccessDenied();
+                    bool useDfESignIn = _configuration["UseDfESignIn"] != null && _configuration["UseDfESignIn"]
+                        .Equals("true", StringComparison.CurrentCultureIgnoreCase);
+                    return AccessDenied(new Error403ViewModel(_configuration["ResourceEnvironmentName"])
+                    {
+                        UseDfESignIn = useDfESignIn
+                    });
                 }
 
                 if (exception is ReportNotFoundException)
@@ -136,7 +150,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
             return View(ViewNames.MissingPermissions, vm);
         }
 
-        private IActionResult AccessDenied()
+        private IActionResult AccessDenied(Error403ViewModel viewModel)
         {
             if (TempData.ContainsKey(TempDataKeys.IsBlockedProvider) && (bool)TempData.Peek(TempDataKeys.IsBlockedProvider))
             {
@@ -177,7 +191,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
             }
 
             Response.StatusCode = (int)HttpStatusCode.Unauthorized;
-            return View(ViewNames.AccessDenied);
+            return View(ViewNames.AccessDenied, viewModel);
         }
 
         private IActionResult ProviderAccessRevoked()

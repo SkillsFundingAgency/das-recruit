@@ -6,8 +6,29 @@
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-        <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">You do not have permission to access this page</h1>
-        <p class="govuk-body">If you think you should have permission to access this page or want to confirm what permissions you have, contact an IdAMS super user.</p>
-        <p><a asp-route="@RouteNames.Dashboard_Account_Home" class="govuk-link govuk-link--no-visited-state">Go back to homepage</a></p>
+        @if(Model.UseDfESignIn){
+            <div class="hgroup">
+                <h1 class="govuk-heading-xl">
+                    You need a different permission level to view this page
+                </h1>
+            </div>
+            <div class="inner">
+                <p>
+                    To continue, you’ll need to get the permission level of your DfE Sign-in account changed.
+                </p>
+                <p>
+                    The DfE Sign-in approver inside your organisation can do this for you. You can find out who your approver is under <a href="@Model.HelpPageLink" target="_blank" rel="noopener noreferrer">the organisation section of your DfE Sign-in account.</a>
+                </p>
+                <p>
+                    If you came here by mistake, go back to the <a asp-route="@RouteNames.Dashboard_Account_Home" class="govuk-link govuk-link--no-visited-state">homepage of Manage apprenticeships for training providers.</a>
+                </p>
+            </div>
+        }
+        else
+        {
+            <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">You do not have permission to access this page</h1>
+            <p class="govuk-body">If you think you should have permission to access this page or want to confirm what permissions you have, contact an IdAMS super user.</p>
+            <p><a asp-route="@RouteNames.Dashboard_Account_Home" class="govuk-link govuk-link--no-visited-state">Go back to homepage</a></p>
+        }
     </div>
 </div>
