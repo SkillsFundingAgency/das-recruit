@@ -33,6 +33,12 @@ namespace Esfa.Recruit.Provider.Web.Controllers
         {
             var viewModel = await _orchestrator.GetApplicationReviewsToUnsuccessfulViewModelAsync(rm);
 
+            if (TempData.ContainsKey(TempDataKeys.ApplicationReviewStatusInfoMessage))
+            {
+                viewModel.ShouldMakeOthersUnsuccessfulBannerHeader = TempData[TempDataKeys.ApplicationReviewStatusInfoMessage].ToString();
+                viewModel.ShouldMakeOthersUnsuccessfulBannerBody = InfoMessages.ApplicationReviewSuccessStatusBannerMessage;
+            }
+
             return View(viewModel);
         }
 

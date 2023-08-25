@@ -53,11 +53,12 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Application
                 .ReturnsAsync(false);
 
             // Act
-            var applicantFullName = await _orchestrator.PostApplicationReviewStatusChangeModelAsync(model, vacancyUser);
+            var applicationReviewStatusChangeInfo = await _orchestrator.PostApplicationReviewStatusChangeModelAsync(model, vacancyUser);
 
             // Assert
-            Assert.IsNotNull(applicantFullName);
-            Assert.AreEqual("Jack Sparrow", applicantFullName);
+            Assert.IsNotNull(applicationReviewStatusChangeInfo);
+            Assert.AreEqual("Jack Sparrow", applicationReviewStatusChangeInfo.CandidateName);
+            Assert.AreEqual(false, applicationReviewStatusChangeInfo.ShouldMakeOthersUnsuccessful);
         }
 
         [Test]
