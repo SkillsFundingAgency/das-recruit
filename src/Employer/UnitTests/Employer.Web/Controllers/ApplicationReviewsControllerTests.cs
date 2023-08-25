@@ -137,7 +137,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Controllers
                 .Create();
 
             // Act
-            var redirectResult = await _controller.ApplicationReviewsToUnsuccessfulAsync(request, "Name", "Ascending") as RedirectToActionResult;
+            var redirectResult = await _controller.ApplicationReviewsToUnsuccessfulAsync(request) as RedirectToActionResult;
 
             // Assert
             Assert.NotNull(redirectResult);

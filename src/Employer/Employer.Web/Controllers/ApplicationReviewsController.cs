@@ -39,14 +39,11 @@ namespace Esfa.Recruit.Employer.Web.Controllers
 
         [FeatureGate(FeatureNames.MultipleApplicationsManagement)]
         [HttpPost("unsuccessful", Name = RouteNames.ApplicationReviewsToUnsuccessful_Post)]
-        public async Task<IActionResult> ApplicationReviewsToUnsuccessfulAsync(ApplicationReviewsToUnsuccessfulRouteModel rm, [FromQuery] string sortColumn, [FromQuery] string sortOrder)
+        public async Task<IActionResult> ApplicationReviewsToUnsuccessfulAsync(ApplicationReviewsToUnsuccessfulRouteModel rm)
         {
-            Enum.TryParse<SortOrder>(sortOrder, out var outputSortOrder);
-            Enum.TryParse<SortColumn>(sortColumn, out var outputSortColumn);
-
             if (!ModelState.IsValid)
             {
-                var viewModel = await _orchestrator.GetApplicationReviewsToUnsuccessfulViewModelAsync(rm, outputSortColumn, outputSortOrder);
+                var viewModel = await _orchestrator.GetApplicationReviewsToUnsuccessfulViewModelAsync(rm, rm.SortColumn, rm.SortOrder);
                 return View(viewModel);
             }
 
