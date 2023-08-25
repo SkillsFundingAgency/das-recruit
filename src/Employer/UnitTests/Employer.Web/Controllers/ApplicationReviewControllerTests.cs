@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Moq;
 using Esfa.Recruit.Employer.Web.Orchestrators;
+using Esfa.Recruit.Employer.Web.RouteModel;
 
 namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Controllers
 {
@@ -56,6 +57,105 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Controllers
             {
                 HttpContext = new DefaultHttpContext { User = user }
             };
+        }
+
+        [Test]
+        public async Task GET_ApplicationReview_ApplicationNew_CanShowRadioButtonReviewAndInterviewingTrue()
+        {
+            // Arrange
+            var expectedCanShowRadioButtonReview = true;
+            var expectedCanShowRadioButtonInterviewing = true;
+            var vacancySharedByProvider = false;
+            var routeModel = _fixture.Build<ApplicationReviewRouteModel>()
+                .With(x => x.ApplicationReviewId, _applicationReviewId)
+                .With(x => x.VacancyId, _vacancyId)
+                .With(x => x.EmployerAccountId, _employerAccountId)
+                .Create();
+
+            _orchestrator.Setup(o => o.GetApplicationReviewViewModelAsync(It.Is<ApplicationReviewRouteModel>(y => y == routeModel), vacancySharedByProvider))
+                .ReturnsAsync(new ApplicationReviewViewModel 
+                {
+                    ApplicationReviewId = _applicationReviewId,
+                    VacancyId = _vacancyId,
+                    EmployerAccountId = _employerAccountId,
+                    Status = ApplicationReviewStatus.New
+                });
+
+            // Act
+            var result = await _controller.ApplicationReview(routeModel, vacancySharedByProvider) as ViewResult;
+
+            // Assert
+            var actual = result.Model as ApplicationReviewViewModel;
+            Assert.AreEqual(actual.VacancyId, routeModel.VacancyId);
+            Assert.AreEqual(actual.EmployerAccountId, routeModel.EmployerAccountId);
+            Assert.AreEqual(expectedCanShowRadioButtonReview, actual.CanShowRadioButtonReview);
+            Assert.AreEqual(expectedCanShowRadioButtonInterviewing, actual.CanShowRadioButtonInterviewing);
+        }
+
+        [Test]
+        public async Task GET_ApplicationReview_ApplicationInReview_CanShowRadioButtonReviewFalseAndCanShowRadioButtonInterviewingTrue()
+        {
+            // Arrange
+            var expectedCanShowRadioButtonReview = false;
+            var expectedCanShowRadioButtonInterviewing = true;
+            var vacancySharedByProvider = false;
+            var routeModel = _fixture.Build<ApplicationReviewRouteModel>()
+                .With(x => x.ApplicationReviewId, _applicationReviewId)
+                .With(x => x.VacancyId, _vacancyId)
+                .With(x => x.EmployerAccountId, _employerAccountId)
+                .Create();
+
+            _orchestrator.Setup(o => o.GetApplicationReviewViewModelAsync(It.Is<ApplicationReviewRouteModel>(y => y == routeModel), vacancySharedByProvider))
+                .ReturnsAsync(new ApplicationReviewViewModel
+                {
+                    ApplicationReviewId = _applicationReviewId,
+                    VacancyId = _vacancyId,
+                    EmployerAccountId = _employerAccountId,
+                    Status = ApplicationReviewStatus.InReview
+                });
+
+            // Act
+            var result = await _controller.ApplicationReview(routeModel, vacancySharedByProvider) as ViewResult;
+
+            // Assert
+            var actual = result.Model as ApplicationReviewViewModel;
+            Assert.AreEqual(actual.VacancyId, routeModel.VacancyId);
+            Assert.AreEqual(actual.EmployerAccountId, routeModel.EmployerAccountId);
+            Assert.AreEqual(expectedCanShowRadioButtonReview, actual.CanShowRadioButtonReview);
+            Assert.AreEqual(expectedCanShowRadioButtonInterviewing, actual.CanShowRadioButtonInterviewing);
+        }
+
+        [Test]
+        public async Task GET_ApplicationReview_Applicationunsuccessful_CanShowRadioButtonReviewAndInterviewingFalse()
+        {
+            // Arrange
+            var expectedCanShowRadioButtonReview = false;
+            var expectedCanShowRadioButtonInterviewing = false;
+            var vacancySharedByProvider = false;
+            var routeModel = _fixture.Build<ApplicationReviewRouteModel>()
+                .With(x => x.ApplicationReviewId, _applicationReviewId)
+                .With(x => x.VacancyId, _vacancyId)
+                .With(x => x.EmployerAccountId, _employerAccountId)
+                .Create();
+
+            _orchestrator.Setup(o => o.GetApplicationReviewViewModelAsync(It.Is<ApplicationReviewRouteModel>(y => y == routeModel), vacancySharedByProvider))
+                .ReturnsAsync(new ApplicationReviewViewModel
+                {
+                    ApplicationReviewId = _applicationReviewId,
+                    VacancyId = _vacancyId,
+                    EmployerAccountId = _employerAccountId,
+                    Status = ApplicationReviewStatus.Unsuccessful
+                });
+
+            // Act
+            var result = await _controller.ApplicationReview(routeModel, vacancySharedByProvider) as ViewResult;
+
+            // Assert
+            var actual = result.Model as ApplicationReviewViewModel;
+            Assert.AreEqual(actual.VacancyId, routeModel.VacancyId);
+            Assert.AreEqual(actual.EmployerAccountId, routeModel.EmployerAccountId);
+            Assert.AreEqual(expectedCanShowRadioButtonReview, actual.CanShowRadioButtonReview);
+            Assert.AreEqual(expectedCanShowRadioButtonInterviewing, actual.CanShowRadioButtonInterviewing);
         }
 
         [Test]
