@@ -114,9 +114,12 @@ namespace Esfa.Recruit.Provider.Web.Controllers
 
         [HttpGet("", Name = RouteNames.ApplicationReviewsToShare_Get)]
         [FeatureGate(FeatureNames.ShareApplicationsFeature)]
-        public async Task<IActionResult> ApplicationReviewsToShare(VacancyRouteModel rm)
+        public async Task<IActionResult> ApplicationReviewsToShare(VacancyRouteModel rm, [FromQuery] string sortColumn, [FromQuery] string sortOrder)
         {
-            var viewModel = await _orchestrator.GetApplicationReviewsToShareViewModelAsync(rm);
+            Enum.TryParse<SortOrder>(sortOrder, out var outputSortOrder);
+            Enum.TryParse<SortColumn>(sortColumn, out var outputSortColumn);
+
+            var viewModel = await _orchestrator.GetApplicationReviewsToShareViewModelAsync(rm, outputSortColumn, outputSortOrder);
 
             return View(viewModel);
         }
@@ -124,11 +127,14 @@ namespace Esfa.Recruit.Provider.Web.Controllers
         [HttpPost("", Name = RouteNames.ApplicationReviewsToShare_Post)]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         [FeatureGate(FeatureNames.ShareApplicationsFeature)]
-        public async Task<IActionResult> ApplicationReviewsToShare(ApplicationReviewsToShareRouteModel rm)
+        public async Task<IActionResult> ApplicationReviewsToShare(ApplicationReviewsToShareRouteModel rm, [FromQuery] string sortColumn, [FromQuery] string sortOrder)
         {
+            Enum.TryParse<SortOrder>(sortOrder, out var outputSortOrder);
+            Enum.TryParse<SortColumn>(sortColumn, out var outputSortColumn);
+
             if (!ModelState.IsValid)
             {
-                var vm = await _orchestrator.GetApplicationReviewsToShareViewModelAsync(rm);
+                var vm = await _orchestrator.GetApplicationReviewsToShareViewModelAsync(rm, outputSortColumn, outputSortOrder);
                 return View(vm);
             }
 
