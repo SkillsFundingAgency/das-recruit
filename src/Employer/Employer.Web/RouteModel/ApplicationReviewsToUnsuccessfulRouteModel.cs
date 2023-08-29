@@ -14,5 +14,8 @@ namespace Esfa.Recruit.Employer.Web.RouteModel
         {
             get => ApplicationsToUnsuccessful != null && ApplicationsToUnsuccessful.Count > 1;
         }
+
+        public SortColumn SortColumn { get; set; }
+        public SortOrder SortOrder { get; set; }
     }
 }
