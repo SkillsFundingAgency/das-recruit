@@ -11,6 +11,7 @@ using Microsoft.FeatureManagement.Mvc;
 using Esfa.Recruit.Employer.Web.ViewModels.ApplicationReviews;
 using Esfa.Recruit.Employer.Web.Extensions;
 using Esfa.Recruit.Shared.Web.ViewModels;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
 namespace Esfa.Recruit.Employer.Web.Controllers
 {
@@ -26,20 +27,26 @@ namespace Esfa.Recruit.Employer.Web.Controllers
 
         [FeatureGate(FeatureNames.MultipleApplicationsManagement)]
         [HttpGet("unsuccessful", Name = RouteNames.ApplicationReviewsToUnsuccessful_Get)]
-        public async Task<IActionResult> ApplicationReviewsToUnsuccessful(VacancyRouteModel rm)
+        public async Task<IActionResult> ApplicationReviewsToUnsuccessful(VacancyRouteModel rm, [FromQuery] string sortColumn, [FromQuery] string sortOrder)
         {
-            var viewModel = await _orchestrator.GetApplicationReviewsToUnsuccessfulViewModelAsync(rm);
+            Enum.TryParse<SortOrder>(sortOrder, out var outputSortOrder);
+            Enum.TryParse<SortColumn>(sortColumn, out var outputSortColumn);
+
+            var viewModel = await _orchestrator.GetApplicationReviewsToUnsuccessfulViewModelAsync(rm, outputSortColumn, outputSortOrder);
 
             return View(viewModel);
         }
 
         [FeatureGate(FeatureNames.MultipleApplicationsManagement)]
         [HttpPost("unsuccessful", Name = RouteNames.ApplicationReviewsToUnsuccessful_Post)]
-        public async Task<IActionResult> ApplicationReviewsToUnsuccessfulAsync(ApplicationReviewsToUnsuccessfulRouteModel rm)
+        public async Task<IActionResult> ApplicationReviewsToUnsuccessfulAsync(ApplicationReviewsToUnsuccessfulRouteModel rm, [FromQuery] string sortColumn, [FromQuery] string sortOrder)
         {
+            Enum.TryParse<SortOrder>(sortOrder, out var outputSortOrder);
+            Enum.TryParse<SortColumn>(sortColumn, out var outputSortColumn);
+
             if (!ModelState.IsValid)
             {
-                var viewModel = await _orchestrator.GetApplicationReviewsToUnsuccessfulViewModelAsync(rm);
+                var viewModel = await _orchestrator.GetApplicationReviewsToUnsuccessfulViewModelAsync(rm, outputSortColumn, outputSortOrder);
                 return View(viewModel);
             }
 

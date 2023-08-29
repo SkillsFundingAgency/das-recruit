@@ -11,7 +11,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
     public interface IApplicationReviewsOrchestrator
     {
         Task<ApplicationReviewsToUnsuccessfulConfirmationViewModel> GetApplicationReviewsToUnsuccessfulConfirmationViewModel(ApplicationReviewsToUnsuccessfulRouteModel request);
-        Task<ApplicationReviewsToUnsuccessfulViewModel> GetApplicationReviewsToUnsuccessfulViewModelAsync(VacancyRouteModel rm);
+        Task<ApplicationReviewsToUnsuccessfulViewModel> GetApplicationReviewsToUnsuccessfulViewModelAsync(VacancyRouteModel rm, SortColumn sortColumn, SortOrder sortOrder);
         Task<ShareMultipleApplicationReviewsViewModel> GetApplicationReviewsToShareViewModelAsync(VacancyRouteModel rm);
         Task<ShareMultipleApplicationReviewsConfirmationViewModel> GetApplicationReviewsToShareConfirmationViewModel(ShareApplicationReviewsRequest request);
         Task PostApplicationReviewsToSharedAsync(ShareApplicationReviewsPostRequest request, VacancyUser user);
@@ -40,11 +40,11 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             };
         }
 
-        public async Task<ApplicationReviewsToUnsuccessfulViewModel> GetApplicationReviewsToUnsuccessfulViewModelAsync(VacancyRouteModel rm)
+        public async Task<ApplicationReviewsToUnsuccessfulViewModel> GetApplicationReviewsToUnsuccessfulViewModelAsync(VacancyRouteModel rm, SortColumn sortColumn, SortOrder sortOrder)
         {
             var vacancy = await _vacancyClient.GetVacancyAsync(rm.VacancyId.GetValueOrDefault());
 
-            var applicationReviews = await _vacancyClient.GetVacancyApplicationsAsync(vacancy.VacancyReference.Value);
+            var applicationReviews = await _vacancyClient.GetVacancyApplicationsSortedAsync(vacancy.VacancyReference.Value, sortColumn, sortOrder);
 
             return new ApplicationReviewsToUnsuccessfulViewModel
             {
