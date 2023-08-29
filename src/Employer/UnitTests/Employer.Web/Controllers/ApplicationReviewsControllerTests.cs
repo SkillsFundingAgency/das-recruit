@@ -67,34 +67,38 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Controllers
         }
 
         [Test]
-        public async Task GET_ApplicationReviewsToUnsuccessful_ReturnsViewAndModelWith2Applications()
+        public async Task GET_ApplicationReviewsToUnsuccessful_ReturnsViewAndModelWith3SortedApplications()
         {
             // Arrange
             var routeModel = _fixture.Create<VacancyRouteModel>();
-            var vacancyApplication1 = _fixture.Create<VacancyApplication>();
-            var vacancyApplication2 = _fixture.Create<VacancyApplication>();
-            var vacancyApplications = new List<VacancyApplication> { };
-            vacancyApplications.Add(vacancyApplication1);
-            vacancyApplications.Add(vacancyApplication2);
+            var applicationReview1 = _fixture.Create<ApplicationReview>();
+            var applicationReview2 = _fixture.Create<ApplicationReview>();
+            var applicationReview3 = _fixture.Create<ApplicationReview>();
+            var applications = new List<ApplicationReview> { };
+            applications.Add(applicationReview1);
+            applications.Add(applicationReview2);
+            applications.Add(applicationReview3);
 
             _orchestrator.Setup(o =>
-                    o.GetApplicationReviewsToUnsuccessfulViewModelAsync(It.Is<VacancyRouteModel>(y => y == routeModel), It.IsAny<SortColumn>(), It.IsAny<SortOrder>()))
+                    o.GetApplicationReviewsToUnsuccessfulViewModelAsync(It.Is<VacancyRouteModel>(y => y == routeModel), It.Is<SortColumn>(x => x.Equals(SortColumn.DateApplied)), It.Is<SortOrder>(x => x.Equals(SortOrder.Descending))))
                 .ReturnsAsync(new ApplicationReviewsToUnsuccessfulViewModel
                 {
                     VacancyId = routeModel.VacancyId,
                     EmployerAccountId = routeModel.EmployerAccountId,
-                    VacancyApplications = vacancyApplications
+                    VacancyApplications = applications.AsQueryable().Sort(SortColumn.DateApplied, SortOrder.Descending, false).Select(c => (VacancyApplication)c).ToList()
                 });
 
             // Act
-            var result = await _controller.ApplicationReviewsToUnsuccessful(routeModel, "Name", "Ascending") as ViewResult;
+            var result = await _controller.ApplicationReviewsToUnsuccessful(routeModel, "DateApplied", "Descending") as ViewResult;
 
             // Assert
             var actual = result.Model as ApplicationReviewsToUnsuccessfulViewModel;
             Assert.IsNotEmpty(actual.VacancyApplications);
-            Assert.That(actual.VacancyApplications.Count(), Is.EqualTo(2));
+            Assert.That(actual.VacancyApplications.Count(), Is.EqualTo(3));
             Assert.AreEqual(actual.VacancyId, routeModel.VacancyId);
             Assert.AreEqual(actual.EmployerAccountId, routeModel.EmployerAccountId);
+            Assert.That(actual.VacancyApplications[0].SubmittedDate, Is.GreaterThan(actual.VacancyApplications[1].SubmittedDate));
+            Assert.That(actual.VacancyApplications[1].SubmittedDate, Is.GreaterThan(actual.VacancyApplications[2].SubmittedDate));
         }
 
         [Test]
@@ -104,7 +108,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Controllers
             var routeModel = _fixture.Create<VacancyRouteModel>();
 
             _orchestrator.Setup(o =>
-                    o.GetApplicationReviewsToUnsuccessfulViewModelAsync(It.Is<VacancyRouteModel>(y => y == routeModel), It.IsAny<SortColumn>(), It.IsAny<SortOrder>()))
+                    o.GetApplicationReviewsToUnsuccessfulViewModelAsync(It.Is<VacancyRouteModel>(y => y == routeModel), It.Is<SortColumn>(x => x.Equals(SortColumn.Name)), It.Is<SortOrder>(x => x.Equals(SortOrder.Ascending))))
                 .ReturnsAsync(new ApplicationReviewsToUnsuccessfulViewModel
                 {
                     VacancyId = routeModel.VacancyId,
@@ -124,6 +128,41 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Controllers
         }
 
         [Test]
+        public async Task GET_ApplicationReviewsToUnsuccessful_InvalidEnums_ReturnsViewModelWithDefaultOrder()
+        {
+            // Arrange
+            var routeModel = _fixture.Create<VacancyRouteModel>();
+            var applicationReview1 = _fixture.Create<ApplicationReview>();
+            var applicationReview2 = _fixture.Create<ApplicationReview>();
+            var applicationReview3 = _fixture.Create<ApplicationReview>();
+            var applications = new List<ApplicationReview> { };
+            applications.Add(applicationReview1);
+            applications.Add(applicationReview2);
+            applications.Add(applicationReview3);
+
+            _orchestrator.Setup(o =>
+            o.GetApplicationReviewsToUnsuccessfulViewModelAsync(It.Is<VacancyRouteModel>(y => y == routeModel), It.Is<SortColumn>(x => x.Equals(SortColumn.Default)), It.Is<SortOrder>(x => x.Equals(SortOrder.Default))))
+                .ReturnsAsync(new ApplicationReviewsToUnsuccessfulViewModel
+                {
+                    VacancyId = routeModel.VacancyId,
+                    EmployerAccountId = routeModel.EmployerAccountId,
+                    VacancyApplications = applications.AsQueryable().Sort(SortColumn.Default, SortOrder.Default, false).Select(c => (VacancyApplication)c).ToList()
+                });
+
+            // Act
+            var result = await _controller.ApplicationReviewsToUnsuccessful(routeModel, "InvalidSortColumn", "InvalidSortOrder") as ViewResult;
+
+            // Assert
+            var actual = result.Model as ApplicationReviewsToUnsuccessfulViewModel;
+            Assert.IsNotEmpty(actual.VacancyApplications);
+            Assert.That(actual.VacancyApplications.Count(), Is.EqualTo(3));
+            Assert.AreEqual(actual.VacancyId, routeModel.VacancyId);
+            Assert.AreEqual(actual.EmployerAccountId, routeModel.EmployerAccountId);
+            Assert.That(actual.VacancyApplications[1].SubmittedDate, Is.GreaterThan(actual.VacancyApplications[0].SubmittedDate));
+            Assert.That(actual.VacancyApplications[2].SubmittedDate, Is.GreaterThan(actual.VacancyApplications[1].SubmittedDate));
+        }
+
+        [Test]
         public async Task POST_ApplicationReviewsToUnsuccessfulAsync_RedirectsToAction()
         {
             // Arrange
@@ -137,7 +176,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Controllers
                 .Create();
 
             // Act
-            var redirectResult = await _controller.ApplicationReviewsToUnsuccessfulAsync(request) as RedirectToActionResult;
+            var redirectResult = await _controller.ApplicationReviewsToUnsuccessfulAsync(request,"Name", "Ascending") as RedirectToActionResult;
 
             // Assert
             Assert.NotNull(redirectResult);
