@@ -13,10 +13,10 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyManage
         public string ClosingDate { get; internal set; }
         public string WithdrawnDate { get; internal set;}
         public string PossibleStartDate { get; internal set; }
-        public string AnalyticsAvailableAfterApprovalDate { get; internal set; }
+        public string AnalyticsAvailableAfterApprovalDate { get; internal set; } // to go
         public bool IsDisabilityConfident { get; internal set; }
         public bool IsApplyThroughFaaVacancy { get; internal set; }
-        public bool IsApplyThroughExternalApplicationSiteVacancy => !IsApplyThroughFaaVacancy;
+        public bool IsApplyThroughExternalApplicationSiteVacancy => !IsApplyThroughFaaVacancy; // to go
         public bool IsWithdrawn => string.IsNullOrEmpty(WithdrawnDate) == false;
         public bool IsClosedBlockedByQa { get; set; }
         public VacancyApplicationsViewModel Applications { get; internal set; }
