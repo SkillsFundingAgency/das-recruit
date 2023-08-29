@@ -7,7 +7,6 @@ using Esfa.Recruit.Provider.Web.Configuration;
 using Esfa.Recruit.Provider.Web.Configuration.Routing;
 using Esfa.Recruit.Provider.Web.Exceptions;
 using Esfa.Recruit.Provider.Web.Extensions;
-using Esfa.Recruit.Provider.Web.Models.Error;
 using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Provider.Web.ViewModels;
 using Esfa.Recruit.Provider.Web.ViewModels.Error;
@@ -18,7 +17,6 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.Exceptions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
@@ -31,31 +29,24 @@ namespace Esfa.Recruit.Provider.Web.Controllers
         private readonly ExternalLinksConfiguration _externalLinks;
         private readonly IRecruitVacancyClient _vacancyClient;
         private readonly ITrainingProviderSummaryProvider _trainingProviderSummaryProvider;
-        private readonly IConfiguration _configuration;
 
-        public ErrorController(ILogger<ErrorController> logger, IOptions<ExternalLinksConfiguration> externalLinks, IRecruitVacancyClient vacancyClient, ITrainingProviderSummaryProvider trainingProviderSummaryProvider, IConfiguration configuration)
+        public ErrorController(ILogger<ErrorController> logger, IOptions<ExternalLinksConfiguration> externalLinks, IRecruitVacancyClient vacancyClient, ITrainingProviderSummaryProvider trainingProviderSummaryProvider)
         {
             _logger = logger;
             _externalLinks = externalLinks.Value;
             _vacancyClient = vacancyClient;
             _trainingProviderSummaryProvider = trainingProviderSummaryProvider;
-            _configuration = configuration;
         }
 
         [Route("error/{id?}")]
         public IActionResult Error(int id)
         {
             ViewBag.IsErrorPage = true; // Used by layout to show/hide elements.
-            bool useDfESignIn = _configuration["UseDfESignIn"] != null && _configuration["UseDfESignIn"]
-                .Equals("true", StringComparison.CurrentCultureIgnoreCase);
 
             switch (id)
             {
                 case 403:
-                    return AccessDenied(new Error403ViewModel(_configuration["ResourceEnvironmentName"])
-                    {
-                        UseDfESignIn = useDfESignIn
-                    });
+                    return AccessDenied();
                 case 404:
                     return PageNotFound();
                 default:
@@ -108,12 +99,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
 
                 if (exception is AuthorisationException)
                 {
-                    bool useDfESignIn = _configuration["UseDfESignIn"] != null && _configuration["UseDfESignIn"]
-                        .Equals("true", StringComparison.CurrentCultureIgnoreCase);
-                    return AccessDenied(new Error403ViewModel(_configuration["ResourceEnvironmentName"])
-                    {
-                        UseDfESignIn = useDfESignIn
-                    });
+                    return AccessDenied();
                 }
 
                 if (exception is ReportNotFoundException)
@@ -150,7 +136,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
             return View(ViewNames.MissingPermissions, vm);
         }
 
-        private IActionResult AccessDenied(Error403ViewModel viewModel)
+        private IActionResult AccessDenied()
         {
             if (TempData.ContainsKey(TempDataKeys.IsBlockedProvider) && (bool)TempData.Peek(TempDataKeys.IsBlockedProvider))
             {
@@ -159,14 +145,14 @@ namespace Esfa.Recruit.Provider.Web.Controllers
 
             var serviceClaims = User.FindAll(ProviderRecruitClaims.IdamsUserServiceTypeClaimTypeIdentifier).ToList();
             serviceClaims.AddRange(User.FindAll(ProviderRecruitClaims.DfEUserServiceTypeClaimTypeIdentifier).ToList());
-            
+
             if (!serviceClaims.Any(claim => claim.Value.IsServiceClaim()))
             {
                 _logger.LogInformation("User does not have service claim.");
                 return Redirect(_externalLinks.ProviderApprenticeshipSiteUrl);
             }
 
-            var ukprnClaim = User.FindFirst(ProviderRecruitClaims.IdamsUserUkprnClaimsTypeIdentifier) 
+            var ukprnClaim = User.FindFirst(ProviderRecruitClaims.IdamsUserUkprnClaimsTypeIdentifier)
                              ?? User.FindFirst(ProviderRecruitClaims.DfEUkprnClaimsTypeIdentifier);
             if (!string.IsNullOrEmpty(ukprnClaim.Value))
             {
@@ -175,7 +161,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
                 try
                 {
                     var provider = _trainingProviderSummaryProvider.GetAsync(ukprn).Result;
-                    
+
                     ukprnIsNotListedInRoatp = provider == null;
                 }
                 catch (Exception)
@@ -191,7 +177,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
             }
 
             Response.StatusCode = (int)HttpStatusCode.Unauthorized;
-            return View(ViewNames.AccessDenied, viewModel);
+            return View(ViewNames.AccessDenied);
         }
 
         private IActionResult ProviderAccessRevoked()
@@ -227,7 +213,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
 
         private void AddDashboardMessage(string message)
         {
-            if(TempData.ContainsKey(TempDataKeys.VacanciesErrorMessage))
+            if (TempData.ContainsKey(TempDataKeys.VacanciesErrorMessage))
                 _logger.LogError($"Dashboard message already set in {nameof(ErrorController)}. Existing message:{TempData[TempDataKeys.VacanciesErrorMessage]}. New message:{message}");
 
             TempData[TempDataKeys.VacanciesErrorMessage] = message;
