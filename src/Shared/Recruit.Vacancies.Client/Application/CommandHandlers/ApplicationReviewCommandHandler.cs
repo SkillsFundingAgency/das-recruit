@@ -64,14 +64,13 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 
             await _applicationReviewRepository.UpdateAsync(applicationReview);
             
-            /*
             await _messaging.PublishEvent(new ApplicationReviewedEvent
             {
                 Status = applicationReview.Status,
                 VacancyReference = applicationReview.VacancyReference,
                 CandidateFeedback = applicationReview.CandidateFeedback,
                 CandidateId = applicationReview.CandidateId
-            });*/
+            });
 
             var shouldMakeOthersUnsuccessful = await CheckForPositionsFilledAsync(message.Outcome, applicationReview.VacancyReference);
 
