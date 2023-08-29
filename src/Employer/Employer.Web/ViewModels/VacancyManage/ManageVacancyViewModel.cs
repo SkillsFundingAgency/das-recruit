@@ -36,6 +36,8 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyManage
         public string TransferredOnDate { get; internal set; }
         public bool HasVacancyClosedInfoMessage => !string.IsNullOrEmpty(VacancyClosedInfoMessage);
         public bool CanShowApplicationReviewStatusHeader => !string.IsNullOrEmpty(EmployerReviewedApplicationHeaderMessage);
+        public string ApplicationStatusChangeHeaderMessage { get; internal set; }
+        public bool CanShowApplicationStatusChangeBanner => !string.IsNullOrEmpty(ApplicationStatusChangeHeaderMessage);
 
         public VacancyAnalyticsSummaryViewModel AnalyticsSummary { get; internal set; }
 
