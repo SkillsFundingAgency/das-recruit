@@ -256,8 +256,12 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Controllers
                 .With(x => x.NotifyCandidate, false)
                 .Create();
 
-            _orchestrator.Setup(o => o.PostApplicationReviewConfirmationEditModelAsync(It.Is<ApplicationReviewStatusConfirmationEditModel>(y => y == confirmationEditModel), It.IsAny<VacancyUser>()))
-                .ReturnsAsync(_candidateInfo.Name);
+            _orchestrator.Setup(o => o.PostApplicationReviewConfirmationEditModelAsync(It.IsAny<ApplicationReviewStatusConfirmationEditModel>(), It.IsAny<VacancyUser>()))
+                .ReturnsAsync(new ApplicationReviewStatusUpdateInfo
+                {
+                    CandidateName = _candidateInfo.Name,
+                    ShouldMakeOthersUnsuccessful = false
+                });
 
             // Act
             var redirectResult = await _controller.ApplicationReview(editModel, vacancySharedByProvider) as RedirectToRouteResult;

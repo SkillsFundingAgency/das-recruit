@@ -68,7 +68,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
                     NotifyCandidate = false
                 };
 
-                var statusInfo = await _orchestrator.PostApplicationReviewConfirmationEditModelAsync(applicationReviewStatusEditModel, User.ToVacancyUser());
+                var statusInfo = await _orchestrator.PostApplicationReviewConfirmationEditModelAsync(confirmationEditModel, User.ToVacancyUser());
                 TempData.Add(TempDataKeys.ApplicationReviewStatusChangeInfoMessage, string.Format(InfoMessages.ApplicationStatusChangeBannerHeader, statusInfo.CandidateName, editModel.Outcome.GetDisplayName().ToLower()));
                 return RedirectToRoute(RouteNames.VacancyManage_Get, new { editModel.VacancyId, editModel.EmployerAccountId });
             }
