@@ -125,9 +125,11 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
             vacancyApplications.Add(vacancyApplication1);
             vacancyApplications.Add(vacancyApplication2);
             _controller.TempData.Add(TempDataKeys.ApplicationReviewStatusInfoMessage, string.Format(InfoMessages.ApplicationReviewSuccessStatusHeader, "Jack Sparrow"));
+            var sortOrder = SortOrder.Descending;
+            var sortColumn = SortColumn.Name;
 
             _orchestrator.Setup(o =>
-                    o.GetApplicationReviewsToUnsuccessfulViewModelAsync(It.Is<VacancyRouteModel>(y => y == routeModel)))
+                    o.GetApplicationReviewsToUnsuccessfulViewModelAsync(It.Is<VacancyRouteModel>(y => y == routeModel), It.Is<SortColumn>(x => x.Equals(sortColumn)), It.Is<SortOrder>(x => x.Equals(sortOrder))))
                 .ReturnsAsync(new ApplicationReviewsToUnsuccessfulViewModel
                 {
                     VacancyId = routeModel.VacancyId,
@@ -136,7 +138,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
                 });
 
             // Act
-            var result = await _controller.ApplicationReviewsToUnsuccessful(routeModel) as ViewResult;
+            var result = await _controller.ApplicationReviewsToUnsuccessful(routeModel, sortColumn.ToString(), sortOrder.ToString()) as ViewResult;
 
             // Assert
             var actual = result.Model as ApplicationReviewsToUnsuccessfulViewModel;
