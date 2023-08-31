@@ -5,7 +5,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyAnalytics
 {
     public class VacancyAnalyticsViewModel : VacancyRouteModel
     {
-        public string VacancyReference { get; internal set; }
+        public long VacancyReference { get; internal set; }
         public VacancyAnalyticsSummaryViewModel AnalyticsSummary { get; internal set; }
         public string ViewBagTitle => "Vacancy Analytics";
         public bool HasAnalytics => AnalyticsSummary != null;

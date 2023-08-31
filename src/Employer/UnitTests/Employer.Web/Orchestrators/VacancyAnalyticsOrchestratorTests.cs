@@ -8,6 +8,7 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyAnalytics;
 using Moq;
 using NUnit.Framework;
+using System;
 using System.Threading.Tasks;
 
 namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators
@@ -19,6 +20,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators
         private Mock<IUtility> _utility;
         private Mock<EmployerRecruitSystemConfiguration> _systemConfig;    
         private IVacancyAnalyticsOrchestrator _orchestrator;
+        private Guid _vacancyId;
 
         [SetUp]
         public void Setup()
@@ -28,14 +30,19 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators
             _utility = new Mock<IUtility>();
             _systemConfig = new Mock<EmployerRecruitSystemConfiguration>();
             _orchestrator = new VacancyAnalyticsOrchestrator(_vacancyClient.Object, _systemConfig.Object, _utility.Object);
+            _vacancyId = Guid.NewGuid();
         }
 
         [Test]
         public async Task GetVacancyAnalytics_ReturnsCorrectVacancyAnalytics()
         {
             // Arrange
-            var vacancyRouteModel = _fixture.Create<VacancyRouteModel>();
-            var vacancy = _fixture.Create<Vacancy>();
+            var vacancyRouteModel = _fixture.Build<VacancyRouteModel>()
+                .With(x => x.VacancyId, _vacancyId)
+                .Create();
+            var vacancy = _fixture.Build<Vacancy>()
+                .With(x => x.Id, _vacancyId)
+                .Create();
             var vacancyAnalyticsSummary = _fixture.Create<VacancyAnalyticsSummary>();
 
             _vacancyClient.Setup(x => x.GetVacancyAsync(vacancyRouteModel.VacancyId))
@@ -47,6 +54,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators
             var viewModel = await _orchestrator.GetVacancyAnalytics(vacancyRouteModel);
 
             // Assert
+            Assert.AreEqual(_vacancyId, viewModel.VacancyId);
             Assert.IsNotNull(viewModel.AnalyticsSummary);
             Assert.AreEqual(vacancyAnalyticsSummary.NoOfApprenticeshipSearches, viewModel.AnalyticsSummary.NoOfTimesAppearedInSearch);
             Assert.AreEqual(vacancyAnalyticsSummary.NoOfApprenticeshipApplicationsCreated, viewModel.AnalyticsSummary.NoOfApplicationsStarted);
@@ -79,8 +87,12 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators
         public async Task GetVacancyAnalytics_NoVacancyAnalytics_ReturnsVacancyAnalyticsWithZeroValues()
         {
             // Arrange
-            var vacancyRouteModel = _fixture.Create<VacancyRouteModel>();
-            var vacancy = _fixture.Create<Vacancy>();
+            var vacancyRouteModel = _fixture.Build<VacancyRouteModel>()
+                .With(x => x.VacancyId, _vacancyId)
+                .Create();
+            var vacancy = _fixture.Build<Vacancy>()
+                .With(x => x.Id, _vacancyId)
+                .Create();
 
             _vacancyClient.Setup(x => x.GetVacancyAsync(vacancyRouteModel.VacancyId))
                 .ReturnsAsync(vacancy);
@@ -91,6 +103,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators
             var viewModel = await _orchestrator.GetVacancyAnalytics(vacancyRouteModel);
 
             // Assert
+            Assert.AreEqual(_vacancyId, viewModel.VacancyId);
             Assert.IsNotNull(viewModel.AnalyticsSummary);
             Assert.AreEqual(0, viewModel.AnalyticsSummary.NoOfTimesAppearedInSearch);
             Assert.AreEqual(0, viewModel.AnalyticsSummary.NoOfApplicationsStarted);

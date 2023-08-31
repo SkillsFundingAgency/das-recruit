@@ -41,6 +41,9 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             viewModel.AnalyticsSummary = VacancyAnalyticsSummaryMapper.MapToVacancyAnalyticsSummaryViewModel(analyticsSummary, vacancy.LiveDate.GetValueOrDefault());
             viewModel.AnalyticsAvailableAfterApprovalDate = _systemConfig.ShowAnalyticsForVacanciesApprovedAfterDate.AsGdsDate();
             viewModel.IsApplyThroughFaaVacancy = vacancy.ApplicationMethod == ApplicationMethod.ThroughFindAnApprenticeship;
+            viewModel.VacancyReference = vacancy.VacancyReference.Value;
+            viewModel.VacancyId = vacancy.Id;
+            viewModel.EmployerAccountId = vrm.EmployerAccountId;
 
             return viewModel;
         }
