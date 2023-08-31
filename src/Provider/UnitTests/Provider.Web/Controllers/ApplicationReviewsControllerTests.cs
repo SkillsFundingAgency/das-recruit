@@ -115,6 +115,42 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
         }
 
         [Test]
+        public async Task GET_ApplicationReviewsToUnsuccessful_SetsViewModelBannerViaTempData()
+        {
+            // Arrange
+            var routeModel = _fixture.Create<VacancyRouteModel>();
+            var vacancyApplication1 = _fixture.Create<VacancyApplication>();
+            var vacancyApplication2 = _fixture.Create<VacancyApplication>();
+            var vacancyApplications = new List<VacancyApplication> { };
+            vacancyApplications.Add(vacancyApplication1);
+            vacancyApplications.Add(vacancyApplication2);
+            _controller.TempData.Add(TempDataKeys.ApplicationReviewStatusInfoMessage, string.Format(InfoMessages.ApplicationReviewSuccessStatusHeader, "Jack Sparrow"));
+            var sortOrder = SortOrder.Descending;
+            var sortColumn = SortColumn.Name;
+
+            _orchestrator.Setup(o =>
+                    o.GetApplicationReviewsToUnsuccessfulViewModelAsync(It.Is<VacancyRouteModel>(y => y == routeModel), It.Is<SortColumn>(x => x.Equals(sortColumn)), It.Is<SortOrder>(x => x.Equals(sortOrder))))
+                .ReturnsAsync(new ApplicationReviewsToUnsuccessfulViewModel
+                {
+                    VacancyId = routeModel.VacancyId,
+                    Ukprn = routeModel.Ukprn,
+                    VacancyApplications = vacancyApplications
+                });
+
+            // Act
+            var result = await _controller.ApplicationReviewsToUnsuccessful(routeModel, sortColumn.ToString(), sortOrder.ToString()) as ViewResult;
+
+            // Assert
+            var actual = result.Model as ApplicationReviewsToUnsuccessfulViewModel;
+            Assert.IsNotEmpty(actual.VacancyApplications);
+            Assert.That(actual.VacancyApplications.Count(), Is.EqualTo(2));
+            Assert.AreEqual(actual.Ukprn, routeModel.Ukprn);
+            Assert.AreEqual(actual.VacancyId, routeModel.VacancyId);
+            Assert.AreEqual(actual.ShouldMakeOthersUnsuccessfulBannerHeader, _controller.TempData[TempDataKeys.ApplicationReviewStatusInfoMessage].ToString());
+            Assert.AreEqual(actual.ShouldMakeOthersUnsuccessfulBannerBody, InfoMessages.ApplicationReviewSuccessStatusBannerMessage);
+        }
+
+        [Test]
         public async Task GET_ApplicationReviewsToUnsuccessful_InvalidEnumValues_DefaultSortingAppliedAscendingSubmittedDate()
         {
             // Arrange

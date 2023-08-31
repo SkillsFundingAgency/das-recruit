@@ -100,7 +100,9 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
                     var newApplications = await _applicationReviewRepository.GetByStatusAsync(vacancyReference, ApplicationReviewStatus.New);
                     var interviewingApplications = await _applicationReviewRepository.GetByStatusAsync(vacancyReference, ApplicationReviewStatus.Interviewing);
                     var inReviewApplications = await _applicationReviewRepository.GetByStatusAsync(vacancyReference, ApplicationReviewStatus.InReview);
-                    var applicationsToMakeUnsuccessful = newApplications.Count + interviewingApplications.Count + inReviewApplications.Count;
+                    var employerInterviewingApplications = await _applicationReviewRepository.GetByStatusAsync(vacancyReference, ApplicationReviewStatus.EmployerInterviewing);
+                    var employerUnsuccessflApplications = await _applicationReviewRepository.GetByStatusAsync(vacancyReference, ApplicationReviewStatus.EmployerUnsuccessful);
+                    var applicationsToMakeUnsuccessful = newApplications.Count + interviewingApplications.Count + inReviewApplications.Count + employerInterviewingApplications.Count + employerUnsuccessflApplications.Count;
                     shouldMakeOthersUnsuccessful = (applicationsToMakeUnsuccessful > 0) ? true : false;
                 }
             }

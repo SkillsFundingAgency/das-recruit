@@ -46,7 +46,6 @@ namespace Esfa.Recruit.Provider.Web.Controllers
             if (TempData.ContainsKey(TempDataKeys.ApplicationReviewSuccessStatusInfoMessage))
             {
                 viewModel.ApplicationReviewStatusChangeBannerHeader = TempData[TempDataKeys.ApplicationReviewSuccessStatusInfoMessage].ToString();
-                viewModel.ApplicationReviewStatusChangeBannerMessage = InfoMsg.ApplicationReviewSuccessStatusBannerMessage;
             }
 
             if (TempData.ContainsKey(TempDataKeys.ApplicationReviewUnsuccessStatusInfoMessage))
