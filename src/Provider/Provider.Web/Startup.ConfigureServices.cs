@@ -91,7 +91,7 @@ namespace Esfa.Recruit.Provider.Web
                     typeof(CustomServiceRole),
                     "ProviderRoATP",
                     "/signout",
-                    "/dashboard");    
+                    "");    
             }
             else
             {

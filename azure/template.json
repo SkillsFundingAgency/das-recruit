@@ -695,6 +695,10 @@
                   "value": "[reference(concat('provider-recruit-app-insights-', parameters('utcValue'))).outputs.InstrumentationKey.value]"
                 },
                 {
+                  "name": "ResourceEnvironmentName",
+                  "value": "[toUpper(parameters('resourceEnvironmentName'))]"
+                },
+                {
                   "name": "Environment",
                   "value": "[toUpper(parameters('environmentName'))]"
                 },
