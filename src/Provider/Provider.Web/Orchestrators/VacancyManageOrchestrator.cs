@@ -61,7 +61,6 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             };
 
             viewModel.ClosingDate = viewModel.Status == VacancyStatus.Closed ? vacancy.ClosedDate?.AsGdsDate() : vacancy.ClosingDate?.AsGdsDate();
-            viewModel.AnalyticsAvailableAfterApprovalDate = _systemConfig.ShowAnalyticsForVacanciesApprovedAfterDate.AsGdsDate();
             viewModel.PossibleStartDate = vacancy.StartDate?.AsGdsDate();
             viewModel.IsDisabilityConfident = vacancy.IsDisabilityConfident;
             viewModel.IsApplyThroughFaaVacancy = vacancy.ApplicationMethod == ApplicationMethod.ThroughFindAnApprenticeship;
@@ -76,25 +75,8 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
                 viewModel.WithdrawnDate = vacancy.ClosedDate?.AsGdsDate();
             }
 
-
-            var applications = new List<VacancyApplication>();
-
-            if (vacancy.LiveDate >= _systemConfig.ShowAnalyticsForVacanciesApprovedAfterDate)
-            {
-                var vacancyApplicationsTask = _client.GetVacancyApplicationsSortedAsync(vacancy.VacancyReference.Value, sortColumn, sortOrder);
-                var vacancyAnalyticsTask = _client.GetVacancyAnalyticsSummaryAsync(vacancy.VacancyReference.Value);
-
-                await Task.WhenAll(vacancyApplicationsTask, vacancyAnalyticsTask);
-
-                applications = vacancyApplicationsTask.Result ?? new List<VacancyApplication>();
-                var analyticsSummary = vacancyAnalyticsTask.Result ?? new VacancyAnalyticsSummary();
-                viewModel.AnalyticsSummary = VacancyAnalyticsSummaryMapper.MapToVacancyAnalyticsSummaryViewModel(analyticsSummary, vacancy.LiveDate.GetValueOrDefault());
-            }
-            else
-            {
-                var vacancyApplications = await _client.GetVacancyApplicationsSortedAsync(vacancy.VacancyReference.Value, sortColumn, sortOrder);
-                applications = vacancyApplications ?? new List<VacancyApplication>();
-            }
+            var vacancyApplications = await _client.GetVacancyApplicationsSortedAsync(vacancy.VacancyReference.Value, sortColumn, sortOrder);
+            var applications = vacancyApplications ?? new List<VacancyApplication>();
 
             viewModel.Applications = new VacancyApplicationsViewModel
             {
