@@ -17,6 +17,7 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.Exceptions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
@@ -29,18 +30,21 @@ namespace Esfa.Recruit.Provider.Web.Controllers
         private readonly ExternalLinksConfiguration _externalLinks;
         private readonly IRecruitVacancyClient _vacancyClient;
         private readonly ITrainingProviderSummaryProvider _trainingProviderSummaryProvider;
+        private readonly IConfiguration _configuration;
 
-        public ErrorController(ILogger<ErrorController> logger, IOptions<ExternalLinksConfiguration> externalLinks, IRecruitVacancyClient vacancyClient, ITrainingProviderSummaryProvider trainingProviderSummaryProvider)
+        public ErrorController(ILogger<ErrorController> logger, IOptions<ExternalLinksConfiguration> externalLinks, IRecruitVacancyClient vacancyClient, ITrainingProviderSummaryProvider trainingProviderSummaryProvider, IConfiguration configuration)
         {
             _logger = logger;
             _externalLinks = externalLinks.Value;
             _vacancyClient = vacancyClient;
             _trainingProviderSummaryProvider = trainingProviderSummaryProvider;
+            _configuration = configuration;
         }
 
         [Route("error/{id?}")]
         public IActionResult Error(int id)
         {
+            
             ViewBag.IsErrorPage = true; // Used by layout to show/hide elements.
 
             switch (id)
@@ -177,7 +181,14 @@ namespace Esfa.Recruit.Provider.Web.Controllers
             }
 
             Response.StatusCode = (int)HttpStatusCode.Unauthorized;
-            return View(ViewNames.AccessDenied);
+
+            bool useDfESignIn = _configuration["UseDfESignIn"] != null && _configuration["UseDfESignIn"]
+                .Equals("true", StringComparison.CurrentCultureIgnoreCase);
+
+            return View(ViewNames.AccessDenied, new Error403ViewModel(_configuration["ResourceEnvironmentName"])
+            {
+                UseDfESignIn = useDfESignIn
+            });
         }
 
         private IActionResult ProviderAccessRevoked()
