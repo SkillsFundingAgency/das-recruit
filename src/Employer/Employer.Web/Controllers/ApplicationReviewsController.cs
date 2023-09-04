@@ -107,15 +107,20 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             if (rm.ApplicationsUnsuccessfulConfirmed == true)
             {
                 await _orchestrator.PostApplicationReviewsToUnsuccessfulAsync(rm, User.ToVacancyUser());
-                SetApplicationsReviewsToUnsuccessfulBannerMessage();
+                SetApplicationsReviewsToUnsuccessfulBannerMessage(rm);
                 return RedirectToRoute(RouteNames.VacancyManage_Get, new { rm.EmployerAccountId, rm.VacancyId });
             }
 
             return RedirectToRoute(RouteNames.VacancyManage_Get, new { rm.EmployerAccountId, rm.VacancyId });
         }
-        private void SetApplicationsReviewsToUnsuccessfulBannerMessage()
+        private void SetApplicationsReviewsToUnsuccessfulBannerMessage(ApplicationReviewsToUnsuccessfulConfirmationViewModel model)
         {
-            TempData.Add(TempDataKeys.ApplicationReviewsUnsuccessfulInfoMessage, InfoMessages.ApplicationsToUnsuccessfulBannerHeader);
+            if (model.IsMultipleApplications) 
+            {
+                TempData.Add(TempDataKeys.ApplicationReviewsUnsuccessfulInfoMessage, InfoMsg.ApplicationsToUnsuccessfulBannerHeader);
+                return;
+            }
+            TempData.Add(TempDataKeys.ApplicationReviewsUnsuccessfulInfoMessage, string.Format(InfoMsg.ApplicationReviewUnsuccessStatusHeader, model.VacancyApplicationsToUnsuccessful[0].CandidateName));
             return;
         }
     }
