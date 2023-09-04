@@ -84,6 +84,7 @@
         public const string VacancyDescription_Index_Post = "VacancyDescription_Index_Post";
         public const string VacancyEditDates_Get = "VacancyEditDates_Get";
         public const string VacancyEditDates_Post = "VacancyEditDates_Post";
+        public const string VacancyAnalytics_Get = "VacancyAnalytics_Get";
         public const string VacancyManage_Get = "VacancyManage_Get";
         public const string Duration_Get = "Duration_Get";
         public const string Duration_Post = "Duration_Post";

@@ -15,10 +15,8 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.VacancyManage
         public string VacancyReference { get; internal set; }
         public string ClosingDate { get; internal set; }
         public string PossibleStartDate { get; internal set; }
-        public string AnalyticsAvailableAfterApprovalDate { get; internal set; }
         public bool IsDisabilityConfident { get; internal set; }
         public bool IsApplyThroughFaaVacancy { get; internal set; }
-        public bool IsApplyThroughExternalApplicationSiteVacancy => !IsApplyThroughFaaVacancy;
 
         public VacancyApplicationsViewModel Applications { get; internal set; }
         public bool HasApplications => Applications.Applications.Any();
@@ -32,12 +30,9 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.VacancyManage
         public string ApplicationReviewStatusHeaderInfoMessage { get; internal set; }
         public bool CanShowApplicationReviewStatusHeader => !string.IsNullOrEmpty(ApplicationReviewStatusHeaderInfoMessage);
 
-        public VacancyAnalyticsSummaryViewModel AnalyticsSummary { get; internal set; }
-
         public bool CanShowVacancyAnalytics => IsVacancyLive || IsVacancyClosed;
         public bool CanShowShareMultipleApplicationsLink => (IsVacancyLive || IsVacancyClosed) && Applications.CanShowShareMultipleApplicationsLink;
         public bool CanShowMultipleApplicationsUnsuccessfulLink => (IsVacancyLive || IsVacancyClosed) && Applications.CanShowMultipleApplicationsUnsuccessfulLink;
-        public bool HasAnalytics => AnalyticsSummary != null;
         public bool IsVacancyLive => Status == VacancyStatus.Live;
         public bool IsVacancyClosed => Status == VacancyStatus.Closed;
         public string WithdrawnDate { get; internal set; }
