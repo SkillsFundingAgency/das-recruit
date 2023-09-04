@@ -173,6 +173,11 @@ namespace Esfa.Recruit.Provider.Web.Controllers
         {
             if (!applicationsToUnsuccessful.Any())
                 return;
+            else if (applicationsToUnsuccessful.Count.Equals(1))
+            {
+                TempData.Add(TempDataKeys.ApplicationsToUnsuccessfulHeader, string.Format(InfoMessages.ApplicationReviewUnsuccessStatusHeader, applicationsToUnsuccessful[0].CandidateName));
+                return;
+            }
 
             TempData.Add(TempDataKeys.ApplicationsToUnsuccessfulHeader, InfoMessages.ApplicationsToUnsuccessfulBannerHeader);
             return;
