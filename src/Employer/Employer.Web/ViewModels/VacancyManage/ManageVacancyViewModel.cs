@@ -13,10 +13,8 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyManage
         public string ClosingDate { get; internal set; }
         public string WithdrawnDate { get; internal set;}
         public string PossibleStartDate { get; internal set; }
-        public string AnalyticsAvailableAfterApprovalDate { get; internal set; }
         public bool IsDisabilityConfident { get; internal set; }
         public bool IsApplyThroughFaaVacancy { get; internal set; }
-        public bool IsApplyThroughExternalApplicationSiteVacancy => !IsApplyThroughFaaVacancy;
         public bool IsWithdrawn => string.IsNullOrEmpty(WithdrawnDate) == false;
         public bool IsClosedBlockedByQa { get; set; }
         public VacancyApplicationsViewModel Applications { get; internal set; }
@@ -39,10 +37,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyManage
         public string ApplicationStatusChangeHeaderMessage { get; internal set; }
         public bool CanShowApplicationStatusChangeBanner => !string.IsNullOrEmpty(ApplicationStatusChangeHeaderMessage);
 
-        public VacancyAnalyticsSummaryViewModel AnalyticsSummary { get; internal set; }
-
         public bool CanShowVacancyAnalytics => IsVacancyLive || IsVacancyClosed;
-        public bool HasAnalytics => AnalyticsSummary != null;
         public bool IsVacancyLive => Status == VacancyStatus.Live;
         public bool IsVacancyClosed => Status == VacancyStatus.Closed;
         public bool IsTransferred => string.IsNullOrWhiteSpace(TransferredProviderName) == false && string.IsNullOrWhiteSpace(TransferredOnDate) == false;
