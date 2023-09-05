@@ -287,7 +287,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
         }
 
         [Test]
-        public async Task POST_ApplicationReviewsToUnsuccessfulConfirmation_RedirectsToAction()
+        public async Task POST_ApplicationReviewsToUnsuccessfulConfirmation_MultipleApplicationsUnsuccessful_RedirectsToAction()
         {
             var applicationsToUnsuccessfulConfirmed = true;
             var vacancyApplication1 = _fixture.Create<VacancyApplication>();
@@ -317,6 +317,37 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
             Assert.AreEqual(_ukprn, redirectResult.RouteValues["Ukprn"]);
             Assert.IsTrue(_controller.TempData.ContainsKey(TempDataKeys.ApplicationsToUnsuccessfulHeader));
             Assert.AreEqual(InfoMessages.ApplicationsToUnsuccessfulBannerHeader, _controller.TempData[TempDataKeys.ApplicationsToUnsuccessfulHeader]);
+        }
+
+        [Test]
+        public async Task POST_ApplicationReviewsToUnsuccessfulConfirmation_SingleApplicationsUnsuccessful_RedirectsToAction()
+        {
+            var applicationsToUnsuccessfulConfirmed = true;
+            var vacancyApplication1 = _fixture.Create<VacancyApplication>();
+            var vacancyApplications = new List<VacancyApplication> { };
+            vacancyApplications.Add(vacancyApplication1);
+            var request = _fixture
+                .Build<ApplicationReviewsToUnsuccessfulConfirmationViewModel>()
+                .With(x => x.VacancyId, _vacancyId)
+                .With(x => x.Ukprn, _ukprn)
+                .With(x => x.ApplicationsToUnsuccessful, vacancyApplications)
+                .With(x => x.ApplicationsToUnsuccessfulConfirmed, applicationsToUnsuccessfulConfirmed)
+                .Create();
+
+            _orchestrator.Setup(o =>
+                    o.PostApplicationReviewsToUnsuccessfulAsync(It.Is<ApplicationReviewsToUnsuccessfulConfirmationViewModel>(y => y == request), It.IsAny<VacancyUser>()))
+                .Returns(Task.CompletedTask);
+
+            var actionResult = await _controller.ApplicationReviewsToUnsuccessfulConfirmation(request);
+            var redirectResult = actionResult as RedirectToRouteResult;
+
+            Assert.NotNull(actionResult);
+            Assert.NotNull(redirectResult);
+            Assert.AreEqual(RouteNames.VacancyManage_Get, redirectResult.RouteName);
+            Assert.AreEqual(_vacancyId, redirectResult.RouteValues["VacancyId"]);
+            Assert.AreEqual(_ukprn, redirectResult.RouteValues["Ukprn"]);
+            Assert.IsTrue(_controller.TempData.ContainsKey(TempDataKeys.ApplicationsToUnsuccessfulHeader));
+            Assert.AreEqual(string.Format(InfoMessages.ApplicationReviewUnsuccessStatusHeader, vacancyApplication1.CandidateName), _controller.TempData[TempDataKeys.ApplicationsToUnsuccessfulHeader]);
         }
 
         [Test]

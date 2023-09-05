@@ -59,7 +59,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Va
                 Selected = false,
                 DateSharedWithEmployer = applicationReview.DateSharedWithEmployer,
                 ReviewedDate = applicationReview.ReviewedDate
-};
+            };
 
             if (applicationReview.IsWithdrawn == false)
             {

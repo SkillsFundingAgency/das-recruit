@@ -420,12 +420,45 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Controllers
         }
 
         [Test]
-        public async Task POST_ApplicationReviewsToUnsuccessfulConfirmation_YesSelected_RedirectsToManageVacancy()
+        public async Task POST_ApplicationReviewsToUnsuccessfulConfirmation_YesSelected_SingleApplication_RedirectsToManageVacancy()
         {
             // Arrange
             var vacancyApplication1 = _fixture.Create<VacancyApplication>();
             var vacancyApplications = new List<VacancyApplication> { };
             vacancyApplications.Add(vacancyApplication1);
+            var request = _fixture
+                .Build<ApplicationReviewsToUnsuccessfulConfirmationViewModel>()
+                .With(x => x.VacancyId, _vacancyId)
+                .With(x => x.EmployerAccountId, _employerAccountId)
+                .With(x => x.VacancyApplicationsToUnsuccessful, vacancyApplications)
+                .With(x => x.ApplicationsUnsuccessfulConfirmed, true)
+            .Create();
+
+            _orchestrator.Setup(o =>
+                    o.PostApplicationReviewsToUnsuccessfulAsync(It.Is<ApplicationReviewsToUnsuccessfulConfirmationViewModel>(y => y == request), It.IsAny<VacancyUser>()))
+                .Returns(Task.CompletedTask);
+
+            // Act
+            var redirectResult = await _controller.ApplicationReviewsToUnsuccessfulConfirmation(request) as RedirectToRouteResult;
+
+            // Assert
+            Assert.NotNull(redirectResult);
+            Assert.AreEqual(RouteNames.VacancyManage_Get, redirectResult.RouteName);
+            Assert.AreEqual(_vacancyId, redirectResult.RouteValues["VacancyId"]);
+            Assert.AreEqual(_employerAccountId, redirectResult.RouteValues["EmployerAccountId"]);
+            Assert.IsTrue(_controller.TempData.ContainsKey(TempDataKeys.ApplicationReviewsUnsuccessfulInfoMessage));
+            Assert.AreEqual(string.Format(InfoMessages.ApplicationReviewUnsuccessStatusHeader, vacancyApplication1.CandidateName), _controller.TempData[TempDataKeys.ApplicationReviewsUnsuccessfulInfoMessage]);
+        }
+
+        [Test]
+        public async Task POST_ApplicationReviewsToUnsuccessfulConfirmation_YesSelected_MultipleApplications_RedirectsToManageVacancy()
+        {
+            // Arrange
+            var vacancyApplication1 = _fixture.Create<VacancyApplication>();
+            var vacancyApplication2 = _fixture.Create<VacancyApplication>();
+            var vacancyApplications = new List<VacancyApplication> { };
+            vacancyApplications.Add(vacancyApplication1);
+            vacancyApplications.Add(vacancyApplication2);
             var request = _fixture
                 .Build<ApplicationReviewsToUnsuccessfulConfirmationViewModel>()
                 .With(x => x.VacancyId, _vacancyId)
