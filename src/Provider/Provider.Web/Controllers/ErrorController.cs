@@ -149,14 +149,14 @@ namespace Esfa.Recruit.Provider.Web.Controllers
 
             var serviceClaims = User.FindAll(ProviderRecruitClaims.IdamsUserServiceTypeClaimTypeIdentifier).ToList();
             serviceClaims.AddRange(User.FindAll(ProviderRecruitClaims.DfEUserServiceTypeClaimTypeIdentifier).ToList());
-            
+
             if (!serviceClaims.Any(claim => claim.Value.IsServiceClaim()))
             {
                 _logger.LogInformation("User does not have service claim.");
                 return Redirect(_externalLinks.ProviderApprenticeshipSiteUrl);
             }
 
-            var ukprnClaim = User.FindFirst(ProviderRecruitClaims.IdamsUserUkprnClaimsTypeIdentifier) 
+            var ukprnClaim = User.FindFirst(ProviderRecruitClaims.IdamsUserUkprnClaimsTypeIdentifier)
                              ?? User.FindFirst(ProviderRecruitClaims.DfEUkprnClaimsTypeIdentifier);
             if (!string.IsNullOrEmpty(ukprnClaim.Value))
             {
@@ -165,7 +165,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
                 try
                 {
                     var provider = _trainingProviderSummaryProvider.GetAsync(ukprn).Result;
-                    
+
                     ukprnIsNotListedInRoatp = provider == null;
                 }
                 catch (Exception)
@@ -224,7 +224,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
 
         private void AddDashboardMessage(string message)
         {
-            if(TempData.ContainsKey(TempDataKeys.VacanciesErrorMessage))
+            if (TempData.ContainsKey(TempDataKeys.VacanciesErrorMessage))
                 _logger.LogError($"Dashboard message already set in {nameof(ErrorController)}. Existing message:{TempData[TempDataKeys.VacanciesErrorMessage]}. New message:{message}");
 
             TempData[TempDataKeys.VacanciesErrorMessage] = message;
