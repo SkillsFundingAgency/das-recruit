@@ -39,6 +39,8 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
         {
             var applicationReview = await _utility.GetAuthorisedApplicationReviewAsync(rm);
 
+            var vacancy = await _vacancyClient.GetVacancyAsync(rm.VacancyId.Value);
+
             if (applicationReview.IsWithdrawn)
                 throw new ApplicationWithdrawnException($"Application has been withdrawn. ApplicationReviewId:{applicationReview.Id}", rm.VacancyId.Value);
             var viewModel = applicationReview.ToViewModel();
@@ -46,6 +48,8 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             viewModel.VacancyId = rm.VacancyId;
             viewModel.ApplicationReviewId = rm.ApplicationReviewId;
             viewModel.CandidateFeedback = string.Empty;
+            viewModel.VacancyTitle = vacancy.Title;
+
             return viewModel;
         }
 

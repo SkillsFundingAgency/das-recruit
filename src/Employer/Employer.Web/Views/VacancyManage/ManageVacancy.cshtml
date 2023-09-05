@@ -141,8 +141,9 @@
     <div asp-show="@Model.ShowEmployerApplications">
         <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
     </div>
+    <span asp-show="@Model.ShowSharedApplications" class="govuk-caption-l">@Model.Title</span>
     <h2 asp-show="@Model.ShowEmployerApplications" class="govuk-heading-l govuk-!-margin-top-6">Manage applications</h2>
-    <h2 asp-show="@Model.ShowSharedApplications" class="govuk-heading-l govuk-!-margin-top-6">Shared applications</h2>
+    <h2 asp-show="@Model.ShowSharedApplications" class="govuk-heading-l">Shared applications</h2>
     <esfaFeatureEnabled name="@FeatureNames.MultipleApplicationsManagement">
         <p class="govuk-body" asp-show="@Model.CanShowMultipleApplicationsUnsuccessfulLink">
             <a asp-route="@RouteNames.ApplicationReviewsToUnsuccessful_Get" asp-all-route-data="@Model.RouteDictionary" class="govuk-link govuk-!-margin-top-2 govuk-!-margin-bottom-4">Make multiple applications unsuccessful</a>
