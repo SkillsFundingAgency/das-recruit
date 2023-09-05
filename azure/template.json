@@ -173,6 +173,7 @@
     "apiConfigNames": "SFA.DAS.Recruit.Api",
     "providerWebConfigNames": "SFA.DAS.Recruit.Provider,SFA.DAS.Provider.DfeSignIn",
     "traineeshipWebConfigNames": "SFA.DAS.Recruit.Traineeship.Provider,SFA.DAS.Provider.DfeSignIn",
+    "qaConfigNames": "SFA.DAS.Recruit.QA,SFA.DAS.Provider.DfeSignIn",
     "jobsConfigNames": "SFA.DAS.Recruit.Jobs,SFA.DAS.Encoding"
   },
   "resources": [
@@ -618,6 +619,14 @@
                 {
                   "name": "Cdn:Url",
                   "value": "[parameters('cdnUrl')]"
+                },
+                {
+                  "name": "ResourceEnvironmentName",
+                  "value": "[toUpper(parameters('resourceEnvironmentName'))]"
+                },
+                {
+                  "name": "ConfigNames",
+                  "value": "[variables('qaConfigNames')]"
                 }
               ]
             }
@@ -804,6 +813,10 @@
                 {
                   "name": "ConfigNames",
                   "value": "[variables('traineeshipWebConfigNames')]"
+                },
+                {
+                  "name": "ResourceEnvironmentName",
+                  "value": "[toUpper(parameters('resourceEnvironmentName'))]"
                 }
               ]
             }
