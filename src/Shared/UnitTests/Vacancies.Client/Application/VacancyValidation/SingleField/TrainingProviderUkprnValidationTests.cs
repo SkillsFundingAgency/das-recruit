@@ -19,6 +19,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
             };
 
             MockTrainingProviderSummaryProvider.Setup(p => p.GetAsync(12345678)).ReturnsAsync(new TrainingProviderSummary());
+            MockTrainingProviderSummaryProvider.Setup(p => p.IsTrainingProviderMainOrEmployerProfile(12345678)).ReturnsAsync(true);
 
             var result = Validator.Validate(vacancy, VacancyRuleSet.TrainingProvider);
 
@@ -37,9 +38,11 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
             var result = Validator.Validate(vacancy, VacancyRuleSet.TrainingProvider);
 
             result.HasErrors.Should().BeTrue();
-            result.Errors.Should().HaveCount(1);
+            result.Errors.Should().HaveCount(2);
             result.Errors[0].PropertyName.Should().Be(nameof(vacancy.TrainingProvider));
             result.Errors[0].ErrorCode.Should().Be(ErrorCodes.TrainingProviderMustExist);
+            result.Errors[1].PropertyName.Should().Be(nameof(vacancy.TrainingProvider));
+            result.Errors[1].ErrorCode.Should().Be(ErrorCodes.TrainingProviderMustBeMainOrEmployerProfile);
             result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.TrainingProvider);
         }
 
@@ -52,6 +55,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
             };
 
             MockTrainingProviderSummaryProvider.Setup(p => p.GetAsync(12345678)).ReturnsAsync(new TrainingProviderSummary());
+            MockTrainingProviderSummaryProvider.Setup(p => p.IsTrainingProviderMainOrEmployerProfile(12345678)).ReturnsAsync(true);
 
             MockBlockedOrganisationRepo.Setup(b => b.GetByOrganisationIdAsync("12345678"))
                 .ReturnsAsync(new BlockedOrganisation {BlockedStatus = BlockedStatus.Blocked});
@@ -62,6 +66,26 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
             result.Errors.Should().HaveCount(1);
             result.Errors[0].PropertyName.Should().Be(nameof(vacancy.TrainingProvider));
             result.Errors[0].ErrorCode.Should().Be(ErrorCodes.TrainingProviderMustNotBeBlocked);
+            result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.TrainingProvider);
+        }
+
+        [Fact]
+        public void ErrorIfTrainingProviderIsNotMainOrEmployerProfile()
+        {
+            var vacancy = new Vacancy
+            {
+                TrainingProvider = new TrainingProvider { Ukprn = 12345678 }
+            };
+
+            MockTrainingProviderSummaryProvider.Setup(p => p.GetAsync(12345678)).ReturnsAsync(new TrainingProviderSummary());
+            MockTrainingProviderSummaryProvider.Setup(p => p.IsTrainingProviderMainOrEmployerProfile(12345678)).ReturnsAsync(false);
+
+            var result = Validator.Validate(vacancy, VacancyRuleSet.TrainingProvider);
+
+            result.HasErrors.Should().BeTrue();
+            result.Errors.Should().HaveCount(1);
+            result.Errors[0].PropertyName.Should().Be(nameof(vacancy.TrainingProvider));
+            result.Errors[0].ErrorCode.Should().Be(ErrorCodes.TrainingProviderMustBeMainOrEmployerProfile);
             result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.TrainingProvider);
         }
 
@@ -134,6 +158,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
             };
 
             MockTrainingProviderSummaryProvider.Setup(p => p.GetAsync(ukprn)).ReturnsAsync(new TrainingProviderSummary());
+            MockTrainingProviderSummaryProvider.Setup(p => p.IsTrainingProviderMainOrEmployerProfile(ukprn)).ReturnsAsync(true);
 
             MockProviderRelationshipsService.Setup(p => p.HasProviderGotEmployersPermissionAsync(ukprn, employerAccountId, accountLegalEntityPublicHashedId, OperationType.Recruitment))
                 .ReturnsAsync(false);
@@ -163,6 +188,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
             };
 
             MockTrainingProviderSummaryProvider.Setup(p => p.GetAsync(ukprn)).ReturnsAsync(new TrainingProviderSummary());
+            MockTrainingProviderSummaryProvider.Setup(p => p.IsTrainingProviderMainOrEmployerProfile(ukprn)).ReturnsAsync(true);
 
             MockProviderRelationshipsService.Setup(p => p.HasProviderGotEmployersPermissionAsync(ukprn, employerAccountId, accountLegalEntityPublicHashedId, OperationType.Recruitment))
                 .ReturnsAsync(true);
