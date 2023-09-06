@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.Cache;
 using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.TrainingProviders;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider;
@@ -23,8 +24,9 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
             var referenceDataReader = new Mock<IReferenceDataReader>();
             var cache = new Mock<ICache>();
             var timeProvider = new Mock<ITimeProvider>();
+            var outerApiClient = new Mock<IOuterApiClient>();
 
-            var sut = new TrainingProviderService(loggerMock.Object, referenceDataReader.Object, cache.Object, timeProvider.Object);
+            var sut = new TrainingProviderService(loggerMock.Object, referenceDataReader.Object, cache.Object, timeProvider.Object, outerApiClient.Object);
 
             var provider = await sut.GetProviderAsync(EsfaTestTrainingProvider.Ukprn);
 
@@ -44,6 +46,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
             var referenceDataReader = new Mock<IReferenceDataReader>();
             var cache = new Mock<ICache>();
             var timeProvider = new Mock<ITimeProvider>();
+            var outerApiClient = new Mock<IOuterApiClient>();
             var trainingProvider = new TrainingProvider
             {
                 Ukprn = ukprn,
@@ -68,7 +71,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
                     It.IsAny<Func<Task<TrainingProviders>>>() ))
                 .ReturnsAsync(providers);
 
-            var sut = new TrainingProviderService(loggerMock.Object, referenceDataReader.Object, cache.Object, timeProvider.Object);
+            var sut = new TrainingProviderService(loggerMock.Object, referenceDataReader.Object, cache.Object, timeProvider.Object, outerApiClient.Object);
 
             var provider = await sut.GetProviderAsync(ukprn);
 
