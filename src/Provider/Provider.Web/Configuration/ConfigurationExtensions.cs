@@ -24,6 +24,7 @@ using Microsoft.Extensions.Configuration;
 using SFA.DAS.Provider.Shared.UI;
 using SFA.DAS.Provider.Shared.UI.Startup;
 using Microsoft.FeatureManagement;
+using SFA.DAS.Validation.Mvc.Extensions;
 
 namespace Esfa.Recruit.Provider.Web.Configuration
 {
@@ -98,6 +99,7 @@ namespace Esfa.Recruit.Provider.Web.Configuration
 
             services.AddMvc(opts =>
                 {
+                    opts.AddValidation();
                     opts.EnableEndpointRouting = false;
                     opts.Filters.Add(new AuthorizeFilter(PolicyNames.ProviderPolicyName));
 
