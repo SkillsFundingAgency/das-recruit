@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using Esfa.Recruit.Provider.Web.Configuration;
 using Esfa.Recruit.Shared.Web.Extensions;
@@ -7,6 +8,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.Configuration.AzureTableStorage;
+using SFA.DAS.DfESignIn.Auth.AppStart;
+using SFA.DAS.DfESignIn.Auth.Configuration;
 using SFA.DAS.Provider.Shared.UI.Startup;
 
 namespace Esfa.Recruit.Provider.Web
@@ -43,6 +46,9 @@ namespace Esfa.Recruit.Provider.Web
 
             _configuration =  configBuilder.Build();
             _authConfig = _configuration.GetSection("Authentication").Get<AuthenticationConfiguration>();
+            
+            _dfEOidcConfig = _configuration.GetSection("DfEOidcConfiguration").Get<DfEOidcConfiguration>(); // read the configuration from SFA.DAS.Provider.DfeSignIn
+            _isDfESignInAllowed = _configuration.GetValue<bool>("UseDfeSignIn"); // read the UseDfeSignIn property from SFA.DAS.Recruit.QA configuration.
             _loggerFactory = loggerFactory;
         }
         
@@ -76,8 +82,23 @@ namespace Esfa.Recruit.Provider.Web
             services.AddControllersWithViews().AddRazorRuntimeCompilation();
     #endif
 
-            services.AddAuthenticationService(_authConfig);
-            services.AddAuthorizationService();            
+            bool useDfESignIn = _configuration["UseDfESignIn"] != null && _configuration["UseDfESignIn"].Equals("true", StringComparison.CurrentCultureIgnoreCase);
+            if (useDfESignIn)
+            {
+                services.AddAndConfigureDfESignInAuthentication(
+                    _configuration,
+                    "SFA.DAS.ProviderApprenticeshipService",
+                    typeof(CustomServiceRole),
+                    "ProviderRoATP",
+                    "/signout",
+                    "");    
+            }
+            else
+            {
+                services.AddAuthenticationService(_authConfig);    
+            }
+            
+            services.AddAuthorizationService(useDfESignIn);            
         }
     }
 }
