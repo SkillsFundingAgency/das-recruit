@@ -172,6 +172,7 @@
     "apiAppServiceName": "[concat(variables('resourceNamePrefix'), 'api-as')]",
     "apiConfigNames": "SFA.DAS.Recruit.Api",
     "providerWebConfigNames": "SFA.DAS.Recruit.Provider,SFA.DAS.Provider.DfeSignIn",
+    "employerWebConfigNames": "SFA.DAS.Recruit.Employer,SFA.DAS.Employer.GovSignIn",
     "traineeshipWebConfigNames": "SFA.DAS.Recruit.Traineeship.Provider,SFA.DAS.Provider.DfeSignIn",
     "qaConfigNames": "SFA.DAS.Recruit.QA,SFA.DAS.Provider.DfeSignIn",
     "jobsConfigNames": "SFA.DAS.Recruit.Jobs,SFA.DAS.Encoding"
@@ -532,6 +533,10 @@
                 {
                     "name": "StubAuth",
                     "value": "[parameters('stubAuth')]"
+                },
+                {
+                  "name": "ConfigNames",
+                  "value": "[variables('employerWebConfigNames')]"
                 }
               ]
             }
