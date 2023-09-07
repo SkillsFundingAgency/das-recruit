@@ -110,6 +110,7 @@
         public const string ApplicationReviewsToShare_Post = "ApplicationReviewsToShare_Post";
         public const string ApplicationReviewsToShareConfirmation_Post = "ApplicationReviewsToShareConfirmation_Post";
         public const string Dashboard_Get = "Dashboard_Get";
+        public const string PasDashboard_Get = "PasDashboard_Get";
         public const string VacanciesSearchSuggestions_Get = "VacanciesSearchSuggestions_Get";
         public const string ManageNotifications_Get = "ManageNotifications_Get";
         public const string ManageNotifications_Post = "ManageNotifications_Post";

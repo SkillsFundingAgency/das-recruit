@@ -8,6 +8,7 @@ using Esfa.Recruit.Employer.Web.Extensions;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Configuration;
 
 namespace Esfa.Recruit.Employer.Web.Controllers
@@ -21,6 +22,8 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         {
             _configuration = configuration;
         }
+        
+        [AllowAnonymous]
         [HttpGet, Route("logout", Name = RouteNames.Logout_Get)]
         public async Task<IActionResult> Logout()
         {
