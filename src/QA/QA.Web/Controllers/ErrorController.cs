@@ -4,6 +4,7 @@ using Esfa.Recruit.Qa.Web.Configuration;
 using Esfa.Recruit.Qa.Web.Configuration.Routing;
 using Esfa.Recruit.Qa.Web.Exceptions;
 using Esfa.Recruit.Qa.Web.ViewModels;
+using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Exceptions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Diagnostics;
@@ -57,6 +58,7 @@ namespace Esfa.Recruit.Qa.Web.Controllers
                         return PageNotFound();
 
                     case UnassignedVacancyReviewException _:
+                    case InvalidStateException _:
                         TempData.Add(TempDataKeys.DashboardMessage, exception.Message);
                         return RedirectToRoute(RouteNames.Dashboard_Index_Get);
 
