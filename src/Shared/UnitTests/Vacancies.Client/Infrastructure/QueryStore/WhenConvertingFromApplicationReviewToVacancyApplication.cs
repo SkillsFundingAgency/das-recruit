@@ -26,7 +26,10 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
             actual.FirstName.Should().Be(source.Application.FirstName);
             actual.LastName.Should().Be(source.Application.LastName);
             actual.DateOfBirth.Should().Be(source.Application.BirthDate);
-            actual.DisabilityStatus.Should().Be(actual.DisabilityStatus);
+            actual.DisabilityStatus.Should().Be(ApplicationReviewDisabilityStatus.Unknown);
+            actual.DateSharedWithEmployer.Should().Be(source.DateSharedWithEmployer);
+            actual.ReviewedDate.Should().Be(source.ReviewedDate);
+            actual.HasEverBeenEmployerInterviewing.Should().Be(source.HasEverBeenEmployerInterviewing);
         }
 
         [Test, AutoData]
