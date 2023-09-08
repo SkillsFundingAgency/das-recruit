@@ -73,9 +73,6 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Application
             _utility.Setup(x => x.GetAuthorisedApplicationReviewAsync(model))
                 .ReturnsAsync(applicationReview);
 
-            _employerVacancyClient.Setup(x => x.SetApplicationReviewStatus(model.ApplicationReviewId, model.Outcome, model.CandidateFeedback, vacancyUser))
-                .ReturnsAsync(false);
-
             string result = await _orchestrator.GetApplicationReviewFeedbackViewModelAsync(model);
 
             Assert.IsNotNull(result);
@@ -85,18 +82,22 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Application
         [Test]
         public async Task GetApplicationReviewFeedbackViewModelAsync_ReturnsCandidateInfo()
         {
-            var model = _fixture.Create<ApplicationReviewEditModel>();
             var routeModel = _fixture.Create<VacancyRouteModel>();
+            var model = _fixture.Build<ApplicationReviewEditModel>()
+                .With(x => x.VacancyId, routeModel.VacancyId)
+                .Create();
             var vacancyUser = _fixture.Create<VacancyUser>();
+            var vacancy = _fixture.Build<Vacancy>()
+                .With(x => x.Id, routeModel.VacancyId)
+                .Create();
 
             var applicationReview = _fixture.Create<ApplicationReview>();
             applicationReview.IsWithdrawn = false;
 
             _utility.Setup(x => x.GetAuthorisedApplicationReviewAsync(model))
                 .ReturnsAsync(applicationReview);
-
-            _employerVacancyClient.Setup(x => x.SetApplicationReviewStatus(model.ApplicationReviewId, model.Outcome, model.CandidateFeedback, vacancyUser))
-                .ReturnsAsync(false);
+            _recruitVacancyClient.Setup(x => x.GetVacancyAsync(routeModel.VacancyId.Value))
+                .ReturnsAsync(vacancy);
 
             var result = await _orchestrator.GetApplicationReviewFeedbackViewModelAsync(model);
 
