@@ -28,4 +28,8 @@
     <ProjectReference Include="..\Employer.Web\Employer.Web.csproj" />
     <ProjectReference Include="..\..\Shared\Recruit.Vacancies.Client\Recruit.Vacancies.Client.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Recruit.Vacancies.Client\Application\" />
+    <Folder Include="Recruit.Vacancies.Client\Infrastructure\ReferenceData\" />
+  </ItemGroup>
 </Project>
