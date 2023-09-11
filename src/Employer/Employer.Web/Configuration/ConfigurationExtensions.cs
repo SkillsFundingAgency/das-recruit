@@ -25,6 +25,7 @@ using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.Extensions.Hosting;
 using SFA.DAS.Employer.Shared.UI;
 using SFA.DAS.GovUK.Auth.Authentication;
+using SFA.DAS.Validation.Mvc.Extensions;
 
 namespace Esfa.Recruit.Employer.Web.Configuration
 {
@@ -72,6 +73,7 @@ namespace Esfa.Recruit.Employer.Web.Configuration
             services.AddSingleton<ITempDataProvider, CookieTempDataProvider>();
             services.AddMvc(opts =>
                 {
+                    opts.AddValidation();
                     opts.EnableEndpointRouting = false;
                     if (!hostingEnvironment.IsDevelopment())
                     {

@@ -30,6 +30,7 @@
     <PackageReference Include="SFA.DAS.Employer.Shared.UI" Version="17.1.44" />
     <PackageReference Include="SFA.DAS.GovUK.Auth" Version="17.1.49" />
     <PackageReference Include="SFA.DAS.NLog.Targets.Redis" Version="1.2.1" />
+	<PackageReference Include="SFA.DAS.Validation.Mvc" Version="6.0.30" />
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.21.0" />
     <PackageReference Include="StackExchange.Redis" Version="2.6.48" />
     <PackageReference Include="System.IO.FileSystem.AccessControl" Version="5.0.0" />
