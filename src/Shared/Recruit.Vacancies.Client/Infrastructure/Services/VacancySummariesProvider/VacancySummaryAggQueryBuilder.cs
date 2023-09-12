@@ -125,9 +125,15 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                     },
                     'isSharedWithEmployer': {
                         '$cond': {
-                            'if': {'$eq': [ '$dateSharedWithEmployer', null]},
-                            'then': 0,
-                            'else': 1
+                            'if': {
+                                '$and': [
+                                    { '$ne': ['$dateSharedWithEmployer', null] },
+                                    { '$ne': ['$dateSharedWithEmployer', undefined] },
+                                    { '$ne': ['$dateSharedWithEmployer', ''] }
+                                ]
+                            },
+                            'then': 1,
+                            'else': 0
                         }
                     }
                 }
@@ -155,7 +161,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                         '$sum': '$isShared'
                     },
                     'noOfAllSharedApplications': {
-                        '$sum' :{'$add': ['$isSharedWithEmployer'] }
+                        '$sum': '$isSharedWithEmployer'
                     },
                     'statusCount' : { '$sum' : 1 }
                     
@@ -396,9 +402,15 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                     },
                     'isSharedWithEmployer': {
                         '$cond': {
-                            'if': {'$eq': [ '$dateSharedWithEmployer', null]},
-                            'then': 0,
-                            'else': 1
+                            'if': {
+                                '$and': [
+                                    { '$ne': ['$dateSharedWithEmployer', null] },
+                                    { '$ne': ['$dateSharedWithEmployer', undefined] },
+                                    { '$ne': ['$dateSharedWithEmployer', ''] }
+                                ]
+                            },
+                            'then': 1,
+                            'else': 0
                         }
                     }
                 }
@@ -450,7 +462,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                         '$sum': '$isShared'
                     },
                     'noOfAllSharedApplications': {
-                        '$sum' :{'$add': ['$isSharedWithEmployer'] }
+                        '$sum': '$isSharedWithEmployer'
                     },
                     'noOfApplications': {
                          '$sum' :{'$add': ['$isUnsuccessful','$isSuccessful'] }
