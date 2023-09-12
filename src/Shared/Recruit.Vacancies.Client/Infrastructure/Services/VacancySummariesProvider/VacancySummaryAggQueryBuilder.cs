@@ -127,6 +127,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                         '$cond': {
                             'if': {
                                 '$and': [
+                                    { 'dateSharedWithEmployer': ['$exists', true] },
                                     { '$ne': ['$dateSharedWithEmployer', null] },
                                     { '$ne': ['$dateSharedWithEmployer', undefined] },
                                     { '$ne': ['$dateSharedWithEmployer', ''] }
@@ -404,6 +405,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                         '$cond': {
                             'if': {
                                 '$and': [
+                                    { 'dateSharedWithEmployer': ['$exists', true] },
                                     { '$ne': ['$dateSharedWithEmployer', null] },
                                     { '$ne': ['$dateSharedWithEmployer', undefined] },
                                     { '$ne': ['$dateSharedWithEmployer', ''] }
