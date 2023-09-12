@@ -44,6 +44,8 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation
                 .ReturnsAsync(true);
             MockTrainingProviderSummaryProvider.Setup(x => x.GetAsync(vacancy.TrainingProvider.Ukprn.Value))
                 .ReturnsAsync(new TrainingProviderSummary());
+            MockTrainingProviderSummaryProvider.Setup(x => x.IsTrainingProviderMainOrEmployerProfile(vacancy.TrainingProvider.Ukprn.Value))
+                .ReturnsAsync(true);
 
             var result = Validator.Validate(vacancy, VacancyRuleSet.All);
             

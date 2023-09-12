@@ -203,7 +203,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part1
 
             result.Data.FoundTrainingProviderUkprn.Should().BeNull();
         }
-
+       
         public class TrainingProviderOrchestratorTestsFixture
         {
             private const VacancyRuleSet ValidationRules = VacancyRuleSet.TrainingProvider;

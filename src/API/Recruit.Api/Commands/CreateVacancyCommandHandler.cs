@@ -29,6 +29,7 @@ namespace SFA.DAS.Recruit.Api.Commands
         private readonly IMessaging _messaging;
         private readonly ITimeProvider _timeProvider;
         private readonly ITrainingProviderService _trainingProviderService;
+        private readonly ITrainingProviderSummaryProvider _trainingProviderSummaryProvider;
         private readonly IProviderVacancyClient _providerVacancyClient;
         private readonly IProviderRelationshipsService _providerRelationshipsService;
         private readonly ILogger<CreateVacancyCommandHandler> _logger;
@@ -40,6 +41,7 @@ namespace SFA.DAS.Recruit.Api.Commands
             IMessaging messaging,
             ITimeProvider timeProvider,
             ITrainingProviderService trainingProviderService,
+            ITrainingProviderSummaryProvider trainingProviderSummaryProvider,
             IProviderVacancyClient providerVacancyClient,
             IProviderRelationshipsService providerRelationshipsService,
             ILogger<CreateVacancyCommandHandler> logger)
@@ -50,6 +52,7 @@ namespace SFA.DAS.Recruit.Api.Commands
             _messaging = messaging;
             _timeProvider = timeProvider;
             _trainingProviderService = trainingProviderService;
+            _trainingProviderSummaryProvider = trainingProviderSummaryProvider;
             _providerVacancyClient = providerVacancyClient;
             _providerRelationshipsService = providerRelationshipsService;
             _logger = logger;
@@ -73,9 +76,28 @@ namespace SFA.DAS.Recruit.Api.Commands
                 };
             }
 
+            // additional check to validate the given Training Provider is a Main or Employer Profile with Status not equal to "Not Currently Starting New Apprentices".
+            bool isValidTrainingProviderProfile =
+                await _trainingProviderSummaryProvider.IsTrainingProviderMainOrEmployerProfile(request.VacancyUserDetails.Ukprn.Value);
+
+            if (!isValidTrainingProviderProfile)
+            {
+                return new CreateVacancyCommandResponse
+                {
+                    ResultCode = ResponseCode.InvalidRequest,
+                    ValidationErrors = new List<DetailedValidationError>
+                    {
+                        new DetailedValidationError
+                        {
+                            Field = nameof(request.VacancyUserDetails.Ukprn), Message = "UKPRN of a training provider must be registered to deliver apprenticeship training"
+                        }
+                    }.Cast<object>().ToList()
+                };
+            }
+
             request.Vacancy.TrainingProvider = trainingProvider;
 
-              var result = _recruitVacancyClient.Validate(request.Vacancy, VacancyRuleSet.All);
+            var result = _recruitVacancyClient.Validate(request.Vacancy, VacancyRuleSet.All);
 
             if (result.HasErrors)
             {
