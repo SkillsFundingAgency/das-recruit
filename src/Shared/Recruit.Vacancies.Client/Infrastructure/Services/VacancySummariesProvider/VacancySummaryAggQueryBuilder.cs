@@ -125,14 +125,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                     },
                     'isSharedWithEmployer': {
                         '$cond': {
-                            'if': {
-                                '$and': [
-                                    { 'dateSharedWithEmployer': ['$exists', true] },
-                                    { '$ne': ['$dateSharedWithEmployer', null] },
-                                    { '$ne': ['$dateSharedWithEmployer', undefined] },
-                                    { '$ne': ['$dateSharedWithEmployer', ''] }
-                                ]
-                            },
+                            'if': {'$gte': [ '$dateSharedWithEmployer', '2022-07-07T03:45:20.389Z'] },
                             'then': 1,
                             'else': 0
                         }
