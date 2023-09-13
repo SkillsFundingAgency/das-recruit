@@ -32,11 +32,6 @@ namespace Esfa.Recruit.Provider.Web.Controllers
         [HttpPost("delete", Name = RouteNames.DeleteVacancy_Post)]
         public async Task<IActionResult> Delete(DeleteEditModel m)
         {
-            if (!ModelState.IsValid)
-            {
-                return await GetDeleteVacancyConfirmationView(m);
-            }
-
             if (!m.ConfirmDeletion.Value)
             {
                 if (m.Status == VacancyStatus.Draft)

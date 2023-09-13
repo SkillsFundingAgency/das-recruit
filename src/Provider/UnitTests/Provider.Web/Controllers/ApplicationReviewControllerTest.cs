@@ -419,7 +419,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
         }
 
         [Test]
-        public async Task POST_ApplicationFeedback_ReturnsRedirectToRouteResult()
+        public void POST_ApplicationFeedback_ReturnsRedirectToRouteResult()
         {
             var tempDataMock = new Mock<ITempDataDictionary>();
 
@@ -433,7 +433,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
                 Ukprn = 1234
             };
 
-            var result = await _controller.ApplicationFeedback(applicationReviewFeedbackViewModel);
+            var result =  _controller.ApplicationFeedback(applicationReviewFeedbackViewModel);
 
             Assert.IsInstanceOf<RedirectToRouteResult>(result);
             var redirectResult = (RedirectToRouteResult)result;

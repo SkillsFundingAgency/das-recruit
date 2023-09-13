@@ -46,12 +46,6 @@
                             </h1>
                         </legend>
 
-                        @for (var i = 0; i < Model.ApplicationsToUnsuccessful.Count(); i++)
-                        {
-                            <div class="govuk-!-display-none">
-                                @Html.EditorFor(x => x.ApplicationsToUnsuccessful[i])
-                            </div>
-                        }
                         <span esfa-validation-message-for="ApplicationsToUnsuccessfulConfirmed" class="govuk-error-message"></span>
                         <div class="govuk-radios">
                             <div class="govuk-radios__item">

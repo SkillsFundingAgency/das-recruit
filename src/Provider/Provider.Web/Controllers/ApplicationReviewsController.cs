@@ -16,6 +16,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.FeatureManagement.Mvc;
+using Newtonsoft.Json;
 
 namespace Esfa.Recruit.Provider.Web.Controllers
 {
@@ -23,6 +24,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
     public class ApplicationReviewsController : Controller
     {
         private readonly IApplicationReviewsOrchestrator _orchestrator;
+        private const string TempRouteValue = "TempRouteValue";
 
         public ApplicationReviewsController(IApplicationReviewsOrchestrator orchestrator)
         {
@@ -50,16 +52,11 @@ namespace Esfa.Recruit.Provider.Web.Controllers
         [HttpPost("unsuccessful", Name = RouteNames.ApplicationReviewsToUnsuccessful_Post)]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         [FeatureGate(FeatureNames.MultipleApplicationsManagement)]
-        public async Task<IActionResult> ApplicationReviewsToUnsuccessful(ApplicationReviewsToUnsuccessfulRequest request, [FromQuery] string sortColumn, [FromQuery] string sortOrder)
+        public IActionResult ApplicationReviewsToUnsuccessful(ApplicationReviewsToUnsuccessfulRequest request, [FromQuery] string sortColumn, [FromQuery] string sortOrder)
         {
             Enum.TryParse<SortOrder>(sortOrder, out var outputSortOrder);
             Enum.TryParse<SortColumn>(sortColumn, out var outputSortColumn);
 
-            if (!ModelState.IsValid)
-            {
-                var viewModel = await _orchestrator.GetApplicationReviewsToUnsuccessfulViewModelAsync(request, outputSortColumn, outputSortOrder);
-                return View(viewModel);
-            }
             return RedirectToAction(nameof(ApplicationReviewsToUnsuccessfulFeedback), new { request.ApplicationsToUnsuccessful, request.Ukprn, request.VacancyId });
         }
 
@@ -67,6 +64,13 @@ namespace Esfa.Recruit.Provider.Web.Controllers
         [FeatureGate(FeatureNames.MultipleApplicationsManagement)]
         public IActionResult ApplicationReviewsToUnsuccessfulFeedback(ApplicationReviewsToUnsuccessfulRouteModel request)
         {
+            if (request.ApplicationsToUnsuccessful == null && TempData[TempRouteValue] is Guid[] tempList)
+            {
+                request.ApplicationsToUnsuccessful = tempList.ToList();
+            }
+
+            TempData[TempRouteValue] = request.ApplicationsToUnsuccessful;
+
             var applicationReviewsToUnsuccessfulFeedbackViewModel = new ApplicationReviewsToUnsuccessfulFeedbackViewModel
             {
                 VacancyId = request.VacancyId,
@@ -81,20 +85,29 @@ namespace Esfa.Recruit.Provider.Web.Controllers
         [FeatureGate(FeatureNames.MultipleApplicationsManagement)]
         public IActionResult ApplicationReviewsToUnsuccessfulFeedback(ApplicationReviewsToUnsuccessfulFeedbackViewModel request)
         {
-            if (!ModelState.IsValid)
+            return RedirectToAction(nameof(ApplicationReviewsToUnsuccessfulConfirmation), new
             {
-                return View(request);
-            }
-
-            return RedirectToAction(nameof(ApplicationReviewsToUnsuccessfulConfirmation), new {
-                request.ApplicationsToUnsuccessful, request.CandidateFeedback, request.IsMultipleApplications, request.Ukprn, request.VacancyId });
+                request.ApplicationsToUnsuccessful,
+                request.CandidateFeedback,
+                request.IsMultipleApplications,
+                request.Ukprn,
+                request.VacancyId
+            });
         }
 
         [HttpGet("unsuccessful-confirmation", Name = RouteNames.ApplicationReviewsToUnsuccessfulConfirmation_Get)]
         [FeatureGate(FeatureNames.MultipleApplicationsManagement)]
         public async Task<IActionResult> ApplicationReviewsToUnsuccessfulConfirmation(ApplicationReviewsToUnsuccessfulRouteModel request)
         {
+            if (request.ApplicationsToUnsuccessful == null && string.IsNullOrEmpty(request.CandidateFeedback) && TempData[TempRouteValue] is string model)
+            {
+                var obj = JsonConvert.DeserializeObject<TempRouteValue>(model);
+                request.ApplicationsToUnsuccessful = obj.ApplicationsToUnsuccessfulIds;
+                request.CandidateFeedback = obj.Feedback;
+            }
+
             var applicationReviewsToUnsuccessfulConfirmationViewModel = await _orchestrator.GetApplicationReviewsToUnsuccessfulConfirmationViewModel(request);
+            TempData[TempRouteValue] = JsonConvert.SerializeObject(new { ApplicationsToUnsuccessfulIds = request.ApplicationsToUnsuccessful, Feedback = request.CandidateFeedback, ApplicationsToUnsuccessfulItems = applicationReviewsToUnsuccessfulConfirmationViewModel.ApplicationsToUnsuccessful });
             return View(applicationReviewsToUnsuccessfulConfirmationViewModel);
         }
 
@@ -103,9 +116,10 @@ namespace Esfa.Recruit.Provider.Web.Controllers
         [FeatureGate(FeatureNames.MultipleApplicationsManagement)]
         public async Task<IActionResult> ApplicationReviewsToUnsuccessfulConfirmation(ApplicationReviewsToUnsuccessfulConfirmationViewModel request)
         {
-            if (!ModelState.IsValid)
+            if (TempData[TempRouteValue] is string model)
             {
-                return View(request);
+                var obj = JsonConvert.DeserializeObject<TempRouteValue>(model);
+                request.ApplicationsToUnsuccessful = obj.ApplicationsToUnsuccessfulItems;
             }
 
             if (request.ApplicationsToUnsuccessfulConfirmed == true)
@@ -133,16 +147,10 @@ namespace Esfa.Recruit.Provider.Web.Controllers
         [HttpPost("", Name = RouteNames.ApplicationReviewsToShare_Post)]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         [FeatureGate(FeatureNames.ShareApplicationsFeature)]
-        public async Task<IActionResult> ApplicationReviewsToShare(ApplicationReviewsToShareRouteModel rm, [FromQuery] string sortColumn, [FromQuery] string sortOrder)
+        public IActionResult ApplicationReviewsToShare(ApplicationReviewsToShareRouteModel rm, [FromQuery] string sortColumn, [FromQuery] string sortOrder)
         {
             Enum.TryParse<SortOrder>(sortOrder, out var outputSortOrder);
             Enum.TryParse<SortColumn>(sortColumn, out var outputSortColumn);
-
-            if (!ModelState.IsValid)
-            {
-                var vm = await _orchestrator.GetApplicationReviewsToShareViewModelAsync(rm, outputSortColumn, outputSortOrder);
-                return View(vm);
-            }
 
             return RedirectToAction(nameof(ApplicationReviewsToShareConfirmation), new { rm.ApplicationsToShare, rm.Ukprn, rm.VacancyId });
         }
@@ -197,5 +205,11 @@ namespace Esfa.Recruit.Provider.Web.Controllers
             TempData.Add(TempDataKeys.SharedMultipleApplicationsHeader, InfoMessages.SharedMultipleApplicationsBannerHeader);
             return;
         }
+    }
+    public class TempRouteValue
+    {
+        public List<Guid> ApplicationsToUnsuccessfulIds { get; set; }
+        public string Feedback { get; set; }
+        public IList<VacancyApplication> ApplicationsToUnsuccessfulItems { get; set; }
     }
 }

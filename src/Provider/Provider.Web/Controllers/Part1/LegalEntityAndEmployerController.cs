@@ -13,6 +13,7 @@ using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Esfa.Recruit.Provider.Web.ViewModels.Part1.LegalEntityAndEmployer;
+using Newtonsoft.Json;
 using StructureMap.Query;
 
 namespace Esfa.Recruit.Provider.Web.Controllers.Part1
@@ -92,8 +93,17 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
         [HttpGet("{VacancyId}/confirm-selected-legal-entity", Name = RouteNames.ConfirmSelectedLegalEntityEmployer_Get)]
         public async Task<IActionResult> ConfirmEmployerLegalEntitySelection(VacancyRouteModel vacancyRouteModel,[FromQuery] string selectedId)
         {
+            if (vacancyRouteModel.VacancyId == null && string.IsNullOrEmpty(selectedId) && TempData["TempRouteValue"] is string model)
+            {
+                var obj = JsonConvert.DeserializeObject<TempRouteValue>(model);
+                selectedId = obj.SelectedId;
+                vacancyRouteModel.VacancyId = obj.VacancyId;
+            }
+
             var employerAccountLegalEntityId = selectedId?.Split('|')[0];
             var employerAccountId = selectedId?.Split('|')[1];
+            TempData["TempRouteValue"] = JsonConvert.SerializeObject(new { VacancyId = vacancyRouteModel.VacancyId, SelectedId = selectedId });
+            
             var viewModel = await _orchestrator.GetConfirmLegalEntityViewModel(vacancyRouteModel, employerAccountId, employerAccountLegalEntityId);
             
             return View(viewModel);
@@ -102,22 +112,6 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
         [HttpPost("confirm-employer-legal-entity", Name = RouteNames.ConfirmLegalEntityEmployer_Post)]
         public async Task<IActionResult> ConfirmEmployerLegalEntitySelection(ConfirmLegalEntityAndEmployerEditModel model)
         {
-
-            if (!ModelState.IsValid)
-            {
-                return View(new ConfirmLegalEntityAndEmployerViewModel
-                {
-                    EmployerName = model.EmployerName,
-                    EmployerAccountId = model.EmployerAccountId,
-                    AccountLegalEntityName = model.AccountLegalEntityName,
-                    AccountLegalEntityPublicHashedId = model.AccountLegalEntityPublicHashedId,
-                    Ukprn = model.Ukprn,
-                    VacancyId = model.VacancyId,
-                    CancelLinkRoute = model.CancelLinkRoute,
-                    BackLinkRoute = model.BackLinkRoute
-                });
-            }
-
             if (model.HasConfirmedEmployer.HasValue && !model.HasConfirmedEmployer.Value)
             {
                 var routeName = model.VacancyId != null
@@ -146,5 +140,10 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
                                 model.Ukprn
                             });
         }
+    }
+    public class TempRouteValue
+    {
+        public Guid? VacancyId { get; set; }
+        public string SelectedId { get; set; }
     }
 }

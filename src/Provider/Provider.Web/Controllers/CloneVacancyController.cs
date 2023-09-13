@@ -43,12 +43,6 @@ namespace Esfa.Recruit.Provider.Web.Controllers
         [HttpPost("clone-dates-question", Name = RouteNames.CloneVacancyDatesQuestion_Post)]
         public async Task<IActionResult> CloneVacancyDatesQuestion(CloneVacancyDatesQuestionEditModel model)
         {
-            if (!ModelState.IsValid)
-            {
-                var vm = await _orchestrator.GetCloneVacancyDatesQuestionViewModelAsync(model);
-                return View(vm);
-            }
-
             if (model.HasConfirmedClone == true)
             {
                 var newVacancyId = await _orchestrator.PostCloneVacancyWithSameDates(model, User.ToVacancyUser());

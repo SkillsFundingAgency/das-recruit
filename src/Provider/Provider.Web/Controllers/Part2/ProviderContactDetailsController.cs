@@ -35,12 +35,6 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part2
         [HttpPost("provider-contact-details", Name = RouteNames.ProviderContactDetails_Post)]
         public async Task<IActionResult> ProviderContactDetails(ProviderContactDetailsEditModel m)
         {      
-            if (!ModelState.IsValid)
-            {
-                var viewModel = await _orchestrator.GetProviderContactDetailsViewModelAsync(m);    
-                return View(viewModel);
-            }
-
             if (m.AddContactDetails.GetValueOrDefault())
             {
                 if (string.IsNullOrEmpty(m.ProviderContactEmail) 
