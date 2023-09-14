@@ -8,6 +8,7 @@ using Esfa.Recruit.Employer.Web.ViewModels.Part1.Wage;
 using Microsoft.AspNetCore.Mvc;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Shared.Web.FeatureToggle;
+using Microsoft.FeatureManagement.Mvc;
 
 namespace Esfa.Recruit.Employer.Web.Controllers.Part1
 {
@@ -52,7 +53,14 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
             {
                 return RedirectToRoute(RouteNames.NumberOfPositions_Get, new {m.VacancyId, m.EmployerAccountId, wizard});    
             }
-            return RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet, new {m.VacancyId, m.EmployerAccountId});
+
+        [FeatureGate(FeatureNames.CompetitiveSalary)]
+        [HttpGet("competitive-wage", Name = RouteNames.SetCompetitivePayRate_Get)]
+        public async Task<IActionResult> CompetitiveSalary(VacancyRouteModel vrm, [FromQuery] string wizard = "true")
+        {
+            var vm = await _orchestrator.GetCompetitiveWageViewModelAsync(vrm);
+            vm.PageInfo.SetWizard(wizard);
+            return View(vm);
         }
     }
 }

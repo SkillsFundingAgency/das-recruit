@@ -150,6 +150,8 @@
 
         public const string YourTrainingProviderPermission = "YourTrainingProviderPermission";
 
+        public const string SetCompetitivePayRate_Get = "SetCompetitivePayRate_Get";
+
         public const string ApproveJobAdvert_Get = "ApproveJobAdvert_Get";
         public const string ApproveJobAdvert_Post = "ApproveJobAdvert_Post";
         public const string RejectJobAdvert_Get = "RejectJobAdvert_Get";

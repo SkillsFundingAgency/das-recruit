@@ -119,6 +119,15 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             );
         }
 
+        public async Task<CompetitiveWageViewModel> GetCompetitiveWageViewModelAsync(VacancyRouteModel vrm)
+        {
+            var vm = await GetWageViewModelAsync(vrm);
+            var competitiveSalaryViewModel = (CompetitiveWageViewModel)vm;
+            competitiveSalaryViewModel.CompetitiveSalaryType = CompetitiveSalaryType.NationalMinimumWageOrAbove;
+
+            return competitiveSalaryViewModel;
+        }
+
         private string GetMinimumWageYearlyText(SFA.DAS.VacancyServices.Wage.WageType wageType, decimal? weeklyHours, DateTime startDate)
         {
             return WagePresenter.GetDisplayText(wageType, WageUnit.Annually, new WageDetails
