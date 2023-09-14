@@ -125,7 +125,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                     },
                     'isSharedWithEmployer': {
                         '$cond': {
-                            'if': {'$gte': [ '$dateSharedWithEmployer', '2022-07-07T03:45:20.389Z'] },
+                            'if': {'$gte': [ '$dateSharedWithEmployer', '1900-01-01T01:00:00.389Z'] },
                             'then': 1,
                             'else': 0
                         }
@@ -396,7 +396,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                     },
                     'isSharedWithEmployer': {
                         '$cond': {
-                            'if': {'$gte': [ '$dateSharedWithEmployer', '2022-07-07T03:45:20.389Z'] },
+                            'if': {'$gte': [ '$dateSharedWithEmployer', '1900-01-01T01:00:00.389Z'] },
                             'then': 1,
                             'else': 0
                         }
