@@ -28,6 +28,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                     'status': 1,
                     'appStatus': '$candidateApplicationReview.status',
                     'isApplicationWithdrawn': '$candidateApplicationReview.isWithdrawn',
+                    'dateSharedWithEmployer': '$candidateApplicationReview.dateSharedWithEmployer',
                     'vacancyType': 1,
                     'isTraineeship' :1,
                     'closingDate' : 1
@@ -39,6 +40,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                     'appStatus': { '$cond' : [ { '$eq': ['$isApplicationWithdrawn', true] }, 'withdrawn', '$appStatus' ]},
                     'vacancyType': 1,
                     'closingDate' : 1,
+                    'dateSharedWithEmployer': 1,
                     'isTraineeship': {
                         '$cond': {
                             'if': {'$eq': [ '$vacancyType', 'Traineeship']},
@@ -57,6 +59,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                 '$project': {
                     'status': 1,
                     'vacancyType': 1,
+                    'dateSharedWithEmployer': 1,
                     'closingSoon' : {
                         '$cond': {
                             'if': {'$lte':[
@@ -122,7 +125,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                     },
                     'isSharedWithEmployer': {
                         '$cond': {
-                            'if': {'$ne': [ '$dateSharedWithEmployer', null]},
+                            'if': {'$gte': [ '$dateSharedWithEmployer', '1900-01-01T01:00:00.389Z'] },
                             'then': 1,
                             'else': 0
                         }
@@ -152,7 +155,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                         '$sum': '$isShared'
                     },
                     'noOfAllSharedApplications': {
-                        '$sum' :{'$add': ['$isSharedWithEmployer'] }
+                        '$sum': '$isSharedWithEmployer'
                     },
                     'statusCount' : { '$sum' : 1 }
                     
@@ -393,9 +396,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                     },
                     'isSharedWithEmployer': {
                         '$cond': {
-                            'if': {'$eq': [ '$dateSharedWithEmployer', undefined]},
-                            'then': 0,
-                            'else': 1
+                            'if': {'$gte': [ '$dateSharedWithEmployer', '1900-01-01T01:00:00.389Z'] },
+                            'then': 1,
+                            'else': 0
                         }
                     }
                 }
@@ -447,7 +450,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                         '$sum': '$isShared'
                     },
                     'noOfAllSharedApplications': {
-                        '$sum' :{'$add': ['$isSharedWithEmployer'] }
+                        '$sum': '$isSharedWithEmployer'
                     },
                     'noOfApplications': {
                          '$sum' :{'$add': ['$isUnsuccessful','$isSuccessful'] }
