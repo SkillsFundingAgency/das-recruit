@@ -36,9 +36,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
         {
             if (!ModelState.IsValid)
             {
-                var vm = await _orchestrator.GetWageViewModelAsync(m);
-                vm.PageInfo.SetWizard(wizard);
-                return View(vm);
+                return await HandleDefaultView(m, wizard);
             }
 
             switch (m.WageType)
@@ -56,9 +54,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
 
                     if (!ModelState.IsValid)
                     {
-                        var vm = await _orchestrator.GetWageViewModelAsync(m);
-                        vm.PageInfo.SetWizard(wizard);
-                        return View(vm);
+                        return await HandleDefaultView(m, wizard);
                     }
 
                     return RedirectToRoute(RouteNames.AddExtraInformation_Get, new { m.VacancyId, m.EmployerAccountId, wizard });
@@ -66,9 +62,14 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
                 case WageType.CompetitiveSalary:
                     return RedirectToRoute(RouteNames.SetCompetitivePayRate_Get, new { m.VacancyId, m.EmployerAccountId, wizard });
                 default:
-                    var resp = await _orchestrator.GetWageViewModelAsync(m);
-                    return View(resp);
+                    return await HandleDefaultView(m, wizard);
             }
+        }
+        async Task<IActionResult> HandleDefaultView(WageEditModel m, bool wizard)
+        {
+            var vm = await _orchestrator.GetWageViewModelAsync(m);
+            vm.PageInfo.SetWizard(wizard);
+            return View(vm);
         }
     }
 }
