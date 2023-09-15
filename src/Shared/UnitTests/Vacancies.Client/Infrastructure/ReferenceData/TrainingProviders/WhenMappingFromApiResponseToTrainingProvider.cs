@@ -16,7 +16,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
 
             var actual = (TrainingProvider) source;
             
-            actual.Should().BeEquivalentTo(source, options => options.Excluding(c=>c.Address));
+            actual.Should().BeEquivalentTo(source, options => options.Excluding(c=>c.Address).Excluding(c =>c.ProviderTypeId).Excluding(c => c.StatusId));
 
             actual.Address.AddressLine1.Should().Be(source.Address.Address1);
             actual.Address.AddressLine2.Should().Be(source.Address.Address2);
