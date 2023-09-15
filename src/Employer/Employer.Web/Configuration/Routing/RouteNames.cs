@@ -157,6 +157,10 @@
         public const string JobAdvertConfirmation_Get = "JobAdvertConfirmation_Get";
         public const string EmployerRecruitmentApi = "employer-recruitment-api";
 
+        public const string CustomWage_Get = "CustomWage_Get";
+        public const string SetCompetitivePayRate_Get = "SetCompetitivePayRate_Get";
+        public const string AddExtraInformation_Get = "AddExtraInformation_Get";
+
         public const string EmployerTaskListGet = "employer-tasklist-get";
         public const string EmployerTaskListCreateGet = "employer-tasklist-create-get";
         public const string EmployerCheckYourAnswersGet = "employer-check-your-answers-get";
