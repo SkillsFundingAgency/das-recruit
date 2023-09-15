@@ -37,6 +37,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
             if (!ModelState.IsValid)
             {
                 var vm = await _orchestrator.GetWageViewModelAsync(m);
+                vm.PageInfo.SetWizard(wizard);
                 return View(vm);
             }
 
