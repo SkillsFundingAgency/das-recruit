@@ -1,0 +1,67 @@
+﻿@using Esfa.Recruit.Vacancies.Client.Domain.Entities
+@using Microsoft.Extensions.Options
+@model Esfa.Recruit.Employer.Web.ViewModels.Part1.Wage.CompetitiveWageViewModel
+@inject IOptions<ExternalLinksConfiguration> externalLinks
+@{
+    ViewBag.Vpv = "/recruitment/employer/page-part1-competitive-salary";
+    ViewBag.Title = "Competitive Salary";
+    ViewBag.ZenDeskLabel = "recruit-competitive-salary";
+}
+
+@section BackLink {
+    <a asp-route="@RouteNames.Wage_Get" asp-all-route-data="@Model.RouteDictionary" asp-route-wizard="@Model.PageInfo.IsWizard" esfa-automation="link-back" class="govuk-back-link">Back</a>
+}
+
+<main class="govuk-main-wrapper " id="main-content" role="main">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+
+            <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }' />
+
+            <form asp-route="@RouteNames.SetCompetitivePayRate_Post" asp-all-route-data="@Model.RouteDictionary" novalidate>
+
+                <div esfa-validation-marker-for="WageType" class="govuk-form-group">
+                    <fieldset class="govuk-fieldset">
+                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
+                            <h1 class="govuk-fieldset__heading">
+                                How much will your competitive salary pay?
+                            </h1>
+                        </legend>
+                        <span esfa-validation-message-for="CompetitiveSalaryType" class="govuk-error-message"></span>
+
+                        <div class="govuk-radios govuk-radios--conditional" data-module="radios">
+
+                            <div class="govuk-radios__item">
+                                <input asp-for="CompetitiveSalaryType" value="@CompetitiveSalaryType.NationalMinimumWageOrAbove" type="radio" class="govuk-radios__input" id="competitive-salary-type-national-minimum-wage-or-above" aria-describedby="competitive-salary-type-national-minimum-wage-or-above-hint">
+                                <label for="competitive-salary-type-national-minimum-wage-or-above" class="govuk-label govuk-radios__label">
+                                    National Minimum Wage or above
+                                </label>
+                                <div id="competitive-salary-type-national-minimum-wage-or-above-hint" class="govuk-hint govuk-radios__hint">
+                                    Depending on the applicant's age, a minimum of @Model.ApprenticeshipMinimumWageYearly to @Model.NationalMinimumWageYearly
+                                </div>
+                            </div>
+
+                             <div class="govuk-radios__item">
+                                <input asp-for="CompetitiveSalaryType" value="@CompetitiveSalaryType.BetweenNationalMinimumWageForApprenticesAndNationalMinimumWage" type="radio" class="govuk-radios__input" id="competitive-salary-type-between" aria-describedby="competitive-salary-type-between-hint">
+                                <label for="competitive-salary-type-between" class="govuk-label govuk-radios__label">
+                                    Between National Minimum Wage for apprentices and National Minimum Wage
+                                </label>
+                                <div id="competitive-salary-type-between-hint" class="govuk-hint govuk-radios__hint">
+                                    @Model.ApprenticeshipMinimumWageYearly for all apprentices for the first year
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </fieldset>
+                </div>
+
+                <div class="govuk-button-group">
+                    <button type="submit" class="govuk-button save-button" esfa-automation="continue-button">Save and continue</button>
+                    <a asp-route="@RouteNames.Wage_Get" asp-all-route-data="@Model.RouteDictionary" asp-route-wizard="@Model.PageInfo.IsWizard" class="govuk-link govuk-link--no-visited-state">Cancel</a>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</main>

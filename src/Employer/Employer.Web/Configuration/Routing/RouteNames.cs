@@ -150,14 +150,17 @@
 
         public const string YourTrainingProviderPermission = "YourTrainingProviderPermission";
 
-        public const string SetCompetitivePayRate_Get = "SetCompetitivePayRate_Get";
-
         public const string ApproveJobAdvert_Get = "ApproveJobAdvert_Get";
         public const string ApproveJobAdvert_Post = "ApproveJobAdvert_Post";
         public const string RejectJobAdvert_Get = "RejectJobAdvert_Get";
         public const string RejectJobAdvert_Post = "RejectJobAdvert_Post";
         public const string JobAdvertConfirmation_Get = "JobAdvertConfirmation_Get";
         public const string EmployerRecruitmentApi = "employer-recruitment-api";
+
+        public const string CustomWage_Get = "CustomWage_Get";
+        public const string SetCompetitivePayRate_Get = "SetCompetitivePayRate_Get";
+        public const string SetCompetitivePayRate_Post = "SetCompetitivePayRate_Post";
+        public const string AddExtraInformation_Get = "AddExtraInformation_Get";
 
         public const string EmployerTaskListGet = "employer-tasklist-get";
         public const string EmployerTaskListCreateGet = "employer-tasklist-create-get";

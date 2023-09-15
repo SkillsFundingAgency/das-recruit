@@ -122,10 +122,28 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
         public async Task<CompetitiveWageViewModel> GetCompetitiveWageViewModelAsync(VacancyRouteModel vrm)
         {
             var vm = await GetWageViewModelAsync(vrm);
-            var competitiveSalaryViewModel = (CompetitiveWageViewModel)vm;
-            competitiveSalaryViewModel.CompetitiveSalaryType = CompetitiveSalaryType.NationalMinimumWageOrAbove;
 
-            return competitiveSalaryViewModel;
+            var competitiveWageViewModel= new CompetitiveWageViewModel
+            {
+                VacancyId = vm.VacancyId,
+                EmployerAccountId = vm.EmployerAccountId,
+                WageType = vm.WageType,
+                FixedWageYearlyAmount = vm.FixedWageYearlyAmount,
+                WageAdditionalInformation = vm.WageAdditionalInformation,
+                MinimumWageStartFrom = vm.MinimumWageStartFrom,
+                NationalMinimumWageLowerBoundHourly = vm.NationalMinimumWageLowerBoundHourly,
+                NationalMinimumWageUpperBoundHourly = vm.NationalMinimumWageUpperBoundHourly,
+                NationalMinimumWageYearly = vm.NationalMinimumWageYearly,
+                ApprenticeshipMinimumWageHourly = vm.ApprenticeshipMinimumWageHourly,
+                ApprenticeshipMinimumWageYearly = vm.ApprenticeshipMinimumWageYearly,
+                WeeklyHours = vm.WeeklyHours,
+                PageInfo = vm.PageInfo,
+                Review = vm.Review
+            };
+
+            competitiveWageViewModel.CompetitiveSalaryType = CompetitiveSalaryType.NationalMinimumWageOrAbove;
+
+            return competitiveWageViewModel;
         }
 
         private string GetMinimumWageYearlyText(SFA.DAS.VacancyServices.Wage.WageType wageType, decimal? weeklyHours, DateTime startDate)
