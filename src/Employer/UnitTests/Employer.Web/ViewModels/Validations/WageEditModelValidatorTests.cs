@@ -5,14 +5,14 @@ using FluentValidation.TestHelper;
 using NUnit.Framework;
 
 namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.Validations;
-public class WageViewModelValidatorTests
+public class WageEditModelValidatorTests
 {
-    private WageViewModelValidator _validator;
+    private WageEditModelValidator _validator;
 
     [SetUp]
     public void SetUp()
     {
-        _validator = new WageViewModelValidator();
+        _validator = new WageEditModelValidator();
     }
 
     [Test]
@@ -23,7 +23,7 @@ public class WageViewModelValidatorTests
         var result = _validator.TestValidate(wageEditModel);
 
         result.ShouldHaveValidationErrorFor(x => x.WageType)
-                 .WithErrorMessage(WageViewModelValidator.WageTypeRequired);
+                 .WithErrorMessage(WageEditModelValidator.WageTypeRequired);
     }
 
     [Test]

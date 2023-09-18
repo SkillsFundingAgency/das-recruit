@@ -3,10 +3,10 @@ using FluentValidation;
 
 namespace Esfa.Recruit.Employer.Web.ViewModels.Validations
 {
-    public class WageViewModelValidator : AbstractValidator<WageEditModel>
+    public class WageEditModelValidator : AbstractValidator<WageEditModel>
     {
         public const string WageTypeRequired = "Select how much the apprentice will be paid";
-        public WageViewModelValidator()
+        public WageEditModelValidator()
         {
             RuleFor(x => x.WageType)
                 .NotNull()
