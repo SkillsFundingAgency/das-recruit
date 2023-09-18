@@ -25,11 +25,13 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
         Task<WageViewModel> GetWageViewModelAsync(WageEditModel m);
         Task<OrchestratorResponse> PostWageEditModelAsync(WageEditModel m, VacancyUser user);
         Task<CompetitiveWageViewModel> GetCompetitiveWageViewModelAsync(VacancyRouteModel vrm);
+        Task<OrchestratorResponse> PostCompetitiveWageEditModelAsync(CompetitiveWageEditModel m, VacancyUser user);
     }
 
     public class WageOrchestrator : VacancyValidatingOrchestrator<WageEditModel>, IWageOrchestrator
     {
         private const VacancyRuleSet ValidationRules = VacancyRuleSet.Wage | VacancyRuleSet.MinimumWage;
+        private const VacancyRuleSet CompetitiveValidationRules = VacancyRuleSet.CompetitiveWage;
         private readonly IRecruitVacancyClient _vacancyClient;
         private readonly IReviewSummaryService _reviewSummaryService;
         private readonly IMinimumWageProvider _minimumWageProvider;
@@ -152,6 +154,38 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             competitiveWageViewModel.CompetitiveSalaryType = CompetitiveSalaryType.NationalMinimumWageOrAbove;
 
             return competitiveWageViewModel;
+        }
+
+        public async Task<OrchestratorResponse> PostCompetitiveWageEditModelAsync(CompetitiveWageEditModel m, VacancyUser user)
+        {
+            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(m, RouteNames.SetCompetitivePayRate_Post);
+
+            if (vacancy.Wage == null)
+                vacancy.Wage = new Wage();
+
+            SetVacancyWithEmployerReviewFieldIndicators(
+                vacancy.Wage.WageType,
+                FieldIdResolver.ToFieldId(v => v.Wage.WageType),
+                vacancy,
+                (v) =>
+                {
+                    return v.Wage.WageType = m.WageType;
+                });
+
+            SetVacancyWithEmployerReviewFieldIndicators(
+                vacancy.Wage.CompetitiveSalaryType,
+                FieldIdResolver.ToFieldId(v => v.Wage.CompetitiveSalaryType),
+                vacancy,
+                (v) =>
+                {
+                    return v.Wage.CompetitiveSalaryType = m.CompetitiveSalaryType;
+                });
+
+            return await ValidateAndExecute(
+                vacancy,
+                v => _vacancyClient.Validate(v, CompetitiveValidationRules),
+                v => _vacancyClient.UpdateDraftVacancyAsync(vacancy, user)
+            );
         }
 
         private string GetMinimumWageYearlyText(SFA.DAS.VacancyServices.Wage.WageType wageType, decimal? weeklyHours, DateTime startDate)

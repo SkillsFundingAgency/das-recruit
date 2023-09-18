@@ -149,11 +149,13 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Controllers.Part1
         }
 
         [Test, MoqAutoData]
-        public void POST_CompetitiveSalary_RedirectsToAddExtraInformation()
+        public async Task POST_CompetitiveSalary_RedirectsToAddExtraInformation()
         {
             var editModel = _fixture.Create<CompetitiveWageEditModel>();
+            _orchestrator.Setup(x => x.PostCompetitiveWageEditModelAsync(It.Is<CompetitiveWageEditModel>(x => x == editModel), It.IsAny<VacancyUser>()))
+                .ReturnsAsync(new OrchestratorResponse(true));
 
-            var redirectResult = _controller.CompetitiveSalary(editModel) as RedirectToRouteResult;
+            var redirectResult = await _controller.CompetitiveSalary(editModel) as RedirectToRouteResult;
 
             Assert.NotNull(redirectResult);
             Assert.AreEqual(RouteNames.AddExtraInformation_Get, redirectResult.RouteName);

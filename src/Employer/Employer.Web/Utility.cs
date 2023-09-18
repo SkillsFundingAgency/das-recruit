@@ -202,7 +202,10 @@ namespace Esfa.Recruit.Employer.Web
                 RouteNames.EmployerName_Post, 
                 RouteNames.EmployerName_Get, 
                 RouteNames.Employer_Post, 
-                RouteNames.Employer_Get
+                RouteNames.Employer_Get,
+
+                RouteNames.SetCompetitivePayRate_Get,
+                RouteNames.SetCompetitivePayRate_Post
             });
 
             if (string.IsNullOrWhiteSpace(vacancy.LegalEntityName) 
