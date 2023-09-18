@@ -49,7 +49,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
 
             if (wizard)
             {
-                return RedirectToRoute(RouteNames.NumberOfPositions_Get, new { m.VacancyId, m.EmployerAccountId, wizard });
+                return RedirectToRoute(RouteNames.AddExtraInformation_Get, new { m.VacancyId, m.EmployerAccountId, wizard });
             }
             return RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet, new { m.VacancyId, m.EmployerAccountId });
         }
