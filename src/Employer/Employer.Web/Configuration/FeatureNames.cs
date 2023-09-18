@@ -7,5 +7,7 @@
         public const string EmployerTaskList = nameof(EmployerTaskList);
 
         public const string ShareApplicationsFeature = nameof(ShareApplicationsFeature);
+
+        public const string CompetitiveSalary = nameof(CompetitiveSalary);
     }
 }
