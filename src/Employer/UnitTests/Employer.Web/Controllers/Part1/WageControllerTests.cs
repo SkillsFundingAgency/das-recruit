@@ -17,6 +17,7 @@ using Microsoft.AspNetCore.Http;
 using SFA.DAS.Testing.AutoFixture;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using AutoFixture;
+using Esfa.Recruit.Employer.Web.RouteModel.Wage;
 
 namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Controllers.Part1
 {
@@ -134,7 +135,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Controllers.Part1
         }
 
         [Test, MoqAutoData]
-        public async Task CompetitiveSalary_ReturnsViewModel()
+        public async Task GET_CompetitiveSalary_ReturnsViewModel()
         {
             var rm = _fixture.Create<VacancyRouteModel>();
             var vm = _fixture.Create<CompetitiveWageViewModel>();
@@ -145,6 +146,21 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Controllers.Part1
 
             result.Should().NotBeNull();
             result!.Model.Should().Be(vm);
+        }
+
+        [Test, MoqAutoData]
+        public void POST_CompetitiveSalary_RedirectsToAddExtraInformation()
+        {
+            var editModel = _fixture.Create<CompetitiveWageEditModel>();
+
+            var redirectResult = _controller.CompetitiveSalary(editModel) as RedirectToRouteResult;
+
+            Assert.NotNull(redirectResult);
+            Assert.AreEqual(RouteNames.AddExtraInformation_Get, redirectResult.RouteName);
+            Assert.AreEqual(editModel.VacancyId, redirectResult.RouteValues["VacancyId"]);
+            Assert.AreEqual(editModel.EmployerAccountId, redirectResult.RouteValues["EmployerAccountId"]);
+            Assert.AreEqual(editModel.WageType, redirectResult.RouteValues["WageType"]);
+            Assert.AreEqual(editModel.CompetitiveSalaryType, redirectResult.RouteValues["CompetitiveSalaryType"]);
         }
     }
 }
