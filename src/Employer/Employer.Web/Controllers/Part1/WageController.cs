@@ -73,7 +73,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
             }
         }
 
-        //[FeatureGate(FeatureNames.CompetitiveSalary)]
+        [FeatureGate(FeatureNames.CompetitiveSalary)]
         [HttpGet("competitive-wage", Name = RouteNames.SetCompetitivePayRate_Get)]
         public async Task<IActionResult> CompetitiveSalary(VacancyRouteModel vrm)
         {
@@ -81,7 +81,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
             return View(vm);
         }
 
-        //[FeatureGate(FeatureNames.CompetitiveSalary)]
+        [FeatureGate(FeatureNames.CompetitiveSalary)]
         [HttpPost("competitive-wage", Name = RouteNames.SetCompetitivePayRate_Post)]
         public IActionResult CompetitiveSalary(CompetitiveWageEditModel m)
         {
@@ -89,7 +89,6 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
             return RedirectToRoute(RouteNames.AddExtraInformation_Get, new { m.VacancyId, m.EmployerAccountId, m.WageType, m.CompetitiveSalaryType });
         }
 
-        //[FeatureGate(FeatureNames.CompetitiveSalary)]
         [HttpGet("extra-information-wage", Name = RouteNames.AddExtraInformation_Get)]
         public async Task<IActionResult> AdditionalInformation(WageExtraInformationRouteModel vrm, [FromQuery] string wizard = "true")
         {
