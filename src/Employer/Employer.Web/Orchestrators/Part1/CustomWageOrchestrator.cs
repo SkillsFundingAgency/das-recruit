@@ -70,8 +70,6 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
         public async Task<CustomWageViewModel> GetCustomWageViewModelAsync(CustomWageEditModel m)
         {
             var vm = await GetCustomWageViewModelAsync((VacancyRouteModel)m);
-
-            vm.WageType = m.WageType;
             vm.FixedWageYearlyAmount = m.FixedWageYearlyAmount;
             
             return vm;
@@ -121,10 +119,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
         protected override EntityToViewModelPropertyMappings<Vacancy, CustomWageEditModel> DefineMappings()
         {
             var mappings = new EntityToViewModelPropertyMappings<Vacancy, CustomWageEditModel>();
-
-            mappings.Add(e => e.Wage.WageType, vm => vm.WageType);
             mappings.Add(e => e.Wage.FixedWageYearlyAmount, vm => vm.FixedWageYearlyAmount);
-
             return mappings;
         }
     }

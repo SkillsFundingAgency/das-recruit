@@ -7,8 +7,6 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.CustomWage
 {
     public class CustomWageEditModel : VacancyRouteModel
     {
-        public WageType? WageType { get; set; }
-
         [TypeOfMoney(ErrorMessage = ErrMsg.TypeOfMoney.FixedWageYearlyAmount)]
         public string FixedWageYearlyAmount { get; set; }
     }

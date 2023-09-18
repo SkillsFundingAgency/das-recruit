@@ -5,7 +5,6 @@ using Esfa.Recruit.Employer.Web.Extensions;
 using Esfa.Recruit.Employer.Web.Orchestrators.Part1;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.CustomWage;
-using Esfa.Recruit.Employer.Web.ViewModels.Part1.Wage;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Microsoft.AspNetCore.Mvc;
 
@@ -14,7 +13,6 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
     [Route(RoutePaths.AccountVacancyRoutePath)]
     public class CustomWageController : Controller
     {
-        //todo: new orch?
         private readonly CustomWageOrchestrator _orchestrator;
         private readonly IFeature _feature;
 
