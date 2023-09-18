@@ -19,7 +19,15 @@ using WageType = Esfa.Recruit.Vacancies.Client.Domain.Entities.WageType;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 {
-    public class WageOrchestrator : VacancyValidatingOrchestrator<WageEditModel>
+    public interface IWageOrchestrator
+    {
+        Task<WageViewModel> GetWageViewModelAsync(VacancyRouteModel vrm);
+        Task<WageViewModel> GetWageViewModelAsync(WageEditModel m);
+        Task<OrchestratorResponse> PostWageEditModelAsync(WageEditModel m, VacancyUser user);
+        Task<CompetitiveWageViewModel> GetCompetitiveWageViewModelAsync(VacancyRouteModel vrm);
+    }
+
+    public class WageOrchestrator : VacancyValidatingOrchestrator<WageEditModel>, IWageOrchestrator
     {
         private const VacancyRuleSet ValidationRules = VacancyRuleSet.Wage | VacancyRuleSet.MinimumWage;
         private readonly IRecruitVacancyClient _vacancyClient;

@@ -17,10 +17,10 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
     [Route(RoutePaths.AccountVacancyRoutePath)]
     public class WageController : Controller
     {
-        private readonly WageOrchestrator _orchestrator;
+        private readonly IWageOrchestrator _orchestrator;
         private readonly IFeature _feature;
 
-        public WageController(WageOrchestrator orchestrator, IFeature feature)
+        public WageController(IWageOrchestrator orchestrator, IFeature feature)
         {
             _orchestrator = orchestrator;
             _feature = feature;
