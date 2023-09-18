@@ -32,6 +32,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Controllers.Part1
         {
             _orchestrator = new Mock<IWageOrchestrator>();
             _fixture = new Fixture();
+          
             var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
             {
                 new Claim(EmployerRecruitClaims.IdamsUserIdClaimTypeIdentifier, Guid.NewGuid().ToString()),
@@ -119,7 +120,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Controllers.Part1
         {
             var orchestratorResponse = new OrchestratorResponse(false);
             orchestratorResponse.Errors.Errors.Add(new EntityValidationError(123, "Test.PropertyName", "Test.ErrorMessage", "Test.ErrorCode"));
-
+          
             _orchestrator.Setup(orchestrator => orchestrator.GetWageViewModelAsync(It.IsAny<WageEditModel>()))
                         .ReturnsAsync(viewModel);
 

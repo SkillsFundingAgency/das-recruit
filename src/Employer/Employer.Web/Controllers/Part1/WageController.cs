@@ -1,5 +1,4 @@
 using System.Threading.Tasks;
-using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Extensions;
 using Esfa.Recruit.Employer.Web.Orchestrators.Part1;
@@ -25,7 +24,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
             _orchestrator = orchestrator;
             _feature = feature;
         }
-        
+
         [HttpGet("wage", Name = RouteNames.Wage_Get)]
         public async Task<IActionResult> Wage(VacancyRouteModel vrm, [FromQuery] string wizard = "true")
         {
@@ -39,8 +38,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
         {
             if (!ModelState.IsValid)
             {
-                var vm = await _orchestrator.GetWageViewModelAsync(m);
-                return View(vm);
+                return await HandleDefaultView(m, wizard);
             }
 
             switch (m.WageType)
@@ -58,9 +56,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
 
                     if (!ModelState.IsValid)
                     {
-                        var vm = await _orchestrator.GetWageViewModelAsync(m);
-                        vm.PageInfo.SetWizard(wizard);
-                        return View(vm);
+                        return await HandleDefaultView(m, wizard);
                     }
 
                     return RedirectToRoute(RouteNames.AddExtraInformation_Get, new { m.VacancyId, m.EmployerAccountId, wizard });
@@ -68,8 +64,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
                 case WageType.CompetitiveSalary:
                     return RedirectToRoute(RouteNames.SetCompetitivePayRate_Get, new { m.VacancyId, m.EmployerAccountId, wizard });
                 default:
-                    var resp = await _orchestrator.GetWageViewModelAsync(m);
-                    return View(resp);
+                    return await HandleDefaultView(m, wizard);
             }
         }
 
@@ -109,6 +104,13 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
             //var vm = await _orchestrator.GetExtraInformationViewModelAsync(vrm);
             //vm.PageInfo.SetWizard(wizard);
             return View();
+        }
+        
+        private async Task<IActionResult> HandleDefaultView(WageEditModel m, bool wizard)
+        {
+            var vm = await _orchestrator.GetWageViewModelAsync(m);
+            vm.PageInfo.SetWizard(wizard);
+            return View(vm);
         }
     }
 }
