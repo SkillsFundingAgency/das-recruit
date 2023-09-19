@@ -174,6 +174,8 @@ namespace Esfa.Recruit.Employer.Web
                 RouteNames.Duration_Get,
                 RouteNames.Wage_Post, 
                 RouteNames.Wage_Get,
+                RouteNames.CustomWage_Post,
+                RouteNames.CustomWage_Get,
                 RouteNames.Skills_Post,
                 RouteNames.Skills_Get,
                 RouteNames.Qualification_Add_Post,
