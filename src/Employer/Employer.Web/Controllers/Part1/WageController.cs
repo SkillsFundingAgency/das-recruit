@@ -84,6 +84,12 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
         [HttpPost("competitive-wage", Name = RouteNames.SetCompetitivePayRate_Post)]
         public async Task<IActionResult> CompetitiveSalary(CompetitiveWageEditModel m)
         {
+            if (!ModelState.IsValid)
+            {
+                var vm = await _orchestrator.GetCompetitiveWageViewModelAsync(m);
+                return View(vm);
+            }
+
             m.WageType = WageType.CompetitiveSalary;
 
             var response = await _orchestrator.PostCompetitiveWageEditModelAsync(m, User.ToVacancyUser());
@@ -91,12 +97,6 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
             if (!response.Success)
             {
                 response.AddErrorsToModelState(ModelState);
-            }
-
-            if (!ModelState.IsValid)
-            {
-                var vm = await _orchestrator.GetWageViewModelAsync(m);
-                return View(vm);
             }
 
             return RedirectToRoute(RouteNames.AddExtraInformation_Get, new { m.VacancyId, m.EmployerAccountId, m.WageType, m.CompetitiveSalaryType });

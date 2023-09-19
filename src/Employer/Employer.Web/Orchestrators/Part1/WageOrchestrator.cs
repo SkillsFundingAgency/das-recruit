@@ -121,6 +121,15 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                 {
                     return v.Wage.WageAdditionalInformation = m.WageAdditionalInformation;
                 });
+            
+            SetVacancyWithEmployerReviewFieldIndicators(
+                vacancy.Wage.CompetitiveSalaryType,
+                FieldIdResolver.ToFieldId(v => v.Wage.CompetitiveSalaryType),
+                vacancy,
+                (v) =>
+                {
+                    return v.Wage.CompetitiveSalaryType = null;
+                });
 
             return await ValidateAndExecute(
                 vacancy, 
@@ -131,6 +140,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 
         public async Task<CompetitiveWageViewModel> GetCompetitiveWageViewModelAsync(VacancyRouteModel vrm)
         {
+            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.SetCompetitivePayRate_Get);
+
             var vm = await GetWageViewModelAsync(vrm);
 
             var competitiveWageViewModel= new CompetitiveWageViewModel
@@ -148,10 +159,9 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                 ApprenticeshipMinimumWageYearly = vm.ApprenticeshipMinimumWageYearly,
                 WeeklyHours = vm.WeeklyHours,
                 PageInfo = vm.PageInfo,
-                Review = vm.Review
+                Review = vm.Review,
+                CompetitiveSalaryType = vacancy.Wage.CompetitiveSalaryType
             };
-
-            competitiveWageViewModel.CompetitiveSalaryType = CompetitiveSalaryType.NationalMinimumWageOrAbove;
 
             return competitiveWageViewModel;
         }

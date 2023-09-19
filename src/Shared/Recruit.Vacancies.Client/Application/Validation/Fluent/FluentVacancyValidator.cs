@@ -114,6 +114,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                 ValidateWorkingWeek();
                 ValidateWeeklyHours();
                 ValidateWage();
+                CompetitiveWageValidation();
             }
             else
             {
@@ -993,6 +994,17 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                 RuleFor(x => x)
                     .FixedWageMustBeGreaterThanApprenticeshipMinimumWage(_minimumWageService)
                 .RunCondition(VacancyRuleSet.MinimumWage);
+            });
+        }
+
+        private void CompetitiveWageValidation()
+        {
+            When(x => x.Wage != null && x.Wage.WageType == WageType.CompetitiveSalary, () =>
+            {
+                RuleFor(x => x.Wage.CompetitiveSalaryType)
+                .NotNull()
+                .WithMessage("Select how much the apprentice will be paid")
+                .RunCondition(VacancyRuleSet.CompetitiveWage);
             });
         }
 
