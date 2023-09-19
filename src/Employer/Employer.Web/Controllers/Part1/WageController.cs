@@ -10,6 +10,7 @@ using Esfa.Recruit.Shared.Web.FeatureToggle;
 using Microsoft.FeatureManagement.Mvc;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Employer.Web.RouteModel.Wage;
+using Esfa.Recruit.Employer.Web.Configuration;
 
 namespace Esfa.Recruit.Employer.Web.Controllers.Part1
 {
