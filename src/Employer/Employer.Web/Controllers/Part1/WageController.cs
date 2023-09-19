@@ -34,9 +34,26 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
         [HttpPost("wage", Name = RouteNames.Wage_Post)]
         public async Task<IActionResult> Wage(WageEditModel m, [FromQuery] bool wizard)
         {
+            var vm = await _orchestrator.GetWageViewModelAsync((VacancyRouteModel)m);
+
             if (!ModelState.IsValid)
             {
-                return await HandleDefaultView(m, wizard);
+                return HandleDefaultView(vm, wizard, m.WageType);
+            }
+
+            if (vm.WageType != m.WageType)
+            {
+                var response = await _orchestrator.PostWageEditModelAsync(m, User.ToVacancyUser());
+
+                if (!response.Success)
+                {
+                    response.AddErrorsToModelState(ModelState);
+                }
+
+                if (!ModelState.IsValid)
+                {
+                    return HandleDefaultView(vm, wizard, m.WageType);
+                }
             }
 
             switch (m.WageType)
@@ -44,30 +61,16 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
                 case WageType.FixedWage:
                     return RedirectToRoute(RouteNames.CustomWage_Get, new { m.VacancyId, m.EmployerAccountId, wizard });
                 case WageType.NationalMinimumWage or WageType.NationalMinimumWageForApprentices:
-
-                    var response = await _orchestrator.PostWageEditModelAsync(m, User.ToVacancyUser());
-
-                    if (!response.Success)
-                    {
-                        response.AddErrorsToModelState(ModelState);
-                    }
-
-                    if (!ModelState.IsValid)
-                    {
-                        return await HandleDefaultView(m, wizard);
-                    }
-
                     return RedirectToRoute(RouteNames.AddExtraInformation_Get, new { m.VacancyId, m.EmployerAccountId, wizard });
-
                 case WageType.CompetitiveSalary:
                     return RedirectToRoute(RouteNames.SetCompetitivePayRate_Get, new { m.VacancyId, m.EmployerAccountId, wizard });
                 default:
-                    return await HandleDefaultView(m, wizard);
+                    return HandleDefaultView(vm, wizard, m.WageType);
             }
         }
-        async Task<IActionResult> HandleDefaultView(WageEditModel m, bool wizard)
+        IActionResult HandleDefaultView(WageViewModel vm, bool wizard, WageType? wageType)
         {
-            var vm = await _orchestrator.GetWageViewModelAsync(m);
+            vm.WageType = wageType;
             vm.PageInfo.SetWizard(wizard);
             return View(vm);
         }
