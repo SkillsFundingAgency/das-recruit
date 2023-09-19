@@ -9,6 +9,7 @@ using Esfa.Recruit.Employer.Web.Controllers.Part1;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Moq;
 using Esfa.Recruit.Employer.Web.Orchestrators.Part1;
+using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.Wage;
 using Esfa.Recruit.Shared.Web.Orchestrators;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
@@ -45,11 +46,18 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Controllers.Part1
             };
         }
 
-        [Test]
-        public async Task WageType_FixedWage_RedirectsToCustomWage()
+        [Test, MoqAutoData]
+        public async Task WageType_FixedWage_RedirectsToCustomWage(WageViewModel viewModel)
         {
-            _orchestrator.Setup(orchestrator => orchestrator.GetWageViewModelAsync(It.IsAny<WageEditModel>()))
-                .ReturnsAsync(new WageViewModel());
+            viewModel.WageType = WageType.CompetitiveSalary;
+
+            var orchestratorResponse = new OrchestratorResponse(true);
+
+            _orchestrator.Setup(orchestrator => orchestrator.GetWageViewModelAsync(It.IsAny<VacancyRouteModel>()))
+                .ReturnsAsync(viewModel);
+
+            _orchestrator.Setup(orchestrator => orchestrator.PostWageEditModelAsync(It.IsAny<WageEditModel>(), It.IsAny<VacancyUser>()))
+                .ReturnsAsync(orchestratorResponse);
 
             var wageEditModel = new WageEditModel { WageType = WageType.FixedWage };
 
@@ -58,11 +66,18 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Controllers.Part1
             Assert.AreEqual(RouteNames.CustomWage_Get, redirectResult.RouteName);
         }
 
-        [Test]
-        public async Task WageType_CompetitiveSalary_RedirectsToSetCompetitivePayRate()
+        [Test, MoqAutoData]
+        public async Task WageType_CompetitiveSalary_RedirectsToSetCompetitivePayRate(WageViewModel viewModel)
         {
-            _orchestrator.Setup(orchestrator => orchestrator.GetWageViewModelAsync(It.IsAny<WageEditModel>()))
-                .ReturnsAsync(new WageViewModel());
+            viewModel.WageType = WageType.FixedWage;
+
+            var orchestratorResponse = new OrchestratorResponse(true);
+
+            _orchestrator.Setup(orchestrator => orchestrator.GetWageViewModelAsync(It.IsAny<VacancyRouteModel>()))
+                .ReturnsAsync(viewModel);
+
+            _orchestrator.Setup(orchestrator => orchestrator.PostWageEditModelAsync(It.IsAny<WageEditModel>(), It.IsAny<VacancyUser>()))
+                .ReturnsAsync(orchestratorResponse);
 
             var wageEditModel = new WageEditModel { WageType = WageType.CompetitiveSalary };
 
@@ -71,10 +86,15 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Controllers.Part1
             Assert.AreEqual(RouteNames.SetCompetitivePayRate_Get, redirectResult.RouteName);
         }
 
-        [Test]
-        public async Task WageType_NationalMinimumWage_RedirectsToAddExtraInformation()
+        [Test, MoqAutoData]
+        public async Task WageType_NationalMinimumWage_RedirectsToAddExtraInformation(WageViewModel viewModel)
         {
+            viewModel.WageType = WageType.FixedWage;
+
             var orchestratorResponse = new OrchestratorResponse(true);
+
+            _orchestrator.Setup(orchestrator => orchestrator.GetWageViewModelAsync(It.IsAny<VacancyRouteModel>()))
+                .ReturnsAsync(viewModel);
 
             _orchestrator.Setup(orchestrator => orchestrator.PostWageEditModelAsync(It.IsAny<WageEditModel>(), It.IsAny<VacancyUser>()))
                 .ReturnsAsync(orchestratorResponse);
@@ -86,10 +106,14 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Controllers.Part1
             Assert.AreEqual(RouteNames.AddExtraInformation_Get, redirectResult.RouteName);
         }
 
-        [Test]
-        public async Task WageType_NationalMinimumWageForApprentices_RedirectsToAddExtraInformation()
+        [Test, MoqAutoData]
+        public async Task WageType_NationalMinimumWageForApprentices_RedirectsToAddExtraInformation(WageViewModel viewModel)
         {
+            viewModel.WageType = WageType.FixedWage;
             var orchestratorResponse = new OrchestratorResponse(true);
+
+            _orchestrator.Setup(orchestrator => orchestrator.GetWageViewModelAsync(It.IsAny<VacancyRouteModel>()))
+                .ReturnsAsync(viewModel);
 
             _orchestrator.Setup(orchestrator => orchestrator.PostWageEditModelAsync(It.IsAny<WageEditModel>(), It.IsAny<VacancyUser>()))
                 .ReturnsAsync(orchestratorResponse);
@@ -104,7 +128,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Controllers.Part1
         [Test, MoqAutoData]
         public async Task WageType_Invalid_ReturnsView(WageViewModel viewModel)
         {
-            _orchestrator.Setup(orchestrator => orchestrator.GetWageViewModelAsync(It.IsAny<WageEditModel>()))
+            _orchestrator.Setup(orchestrator => orchestrator.GetWageViewModelAsync(It.IsAny<VacancyRouteModel>()))
                 .ReturnsAsync(viewModel);
             _controller.ModelState.AddModelError("PropertyName", "Error Message");
             var wageEditModel = new WageEditModel();
@@ -118,10 +142,11 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Controllers.Part1
         [Test, MoqAutoData]
         public async Task Errors_ReturnsView(WageViewModel viewModel)
         {
+            viewModel.WageType = WageType.FixedWage;
             var orchestratorResponse = new OrchestratorResponse(false);
             orchestratorResponse.Errors.Errors.Add(new EntityValidationError(123, "Test.PropertyName", "Test.ErrorMessage", "Test.ErrorCode"));
-          
-            _orchestrator.Setup(orchestrator => orchestrator.GetWageViewModelAsync(It.IsAny<WageEditModel>()))
+           
+            _orchestrator.Setup(orchestrator => orchestrator.GetWageViewModelAsync(It.IsAny<VacancyRouteModel>()))
                         .ReturnsAsync(viewModel);
 
             _orchestrator.Setup(orchestrator => orchestrator.PostWageEditModelAsync(It.IsAny<WageEditModel>(), It.IsAny<VacancyUser>()))
