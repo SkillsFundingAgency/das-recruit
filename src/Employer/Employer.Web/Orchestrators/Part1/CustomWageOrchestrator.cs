@@ -45,7 +45,6 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             {
                 VacancyId = vacancy.Id,
                 EmployerAccountId = vacancy.EmployerAccountId,
-                WageType = vacancy.Wage?.WageType,
                 FixedWageYearlyAmount = vacancy.Wage?.FixedWageYearlyAmount?.AsMoney(),
                 WageAdditionalInformation = vacancy.Wage?.WageAdditionalInformation,
                 MinimumWageStartFrom = wagePeriod.ValidFrom.ToDayMonthYearString(),

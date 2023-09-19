@@ -2,15 +2,12 @@
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Shared.Web.ViewModels;
 using Esfa.Recruit.Shared.Web.ViewModels.Validations;
-using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using ErrMsg = Esfa.Recruit.Shared.Web.ViewModels.ValidationMessages.WageValidationMessages;
 
 namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.CustomWage
 {
     public class CustomWageViewModel : VacancyRouteModel
     {
-        public WageType? WageType { get; set; }
-
         [TypeOfMoney(ErrorMessage = ErrMsg.TypeOfMoney.FixedWageYearlyAmount)]
         public string FixedWageYearlyAmount { get; set; }
 
@@ -28,7 +25,6 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.CustomWage
 
         public IList<string> OrderedFieldNames => new List<string>
         {
-            nameof(WageType),
             nameof(FixedWageYearlyAmount),
             nameof(WageAdditionalInformation)
         };

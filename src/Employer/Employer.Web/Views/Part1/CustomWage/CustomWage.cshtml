@@ -1,6 +1,4 @@
-﻿@using Esfa.Recruit.Shared.Web.Mappers
-@using Esfa.Recruit.Vacancies.Client.Domain.Entities
-@using Microsoft.Extensions.Options
+﻿@using Microsoft.Extensions.Options
 @model Esfa.Recruit.Employer.Web.ViewModels.Part1.CustomWage.CustomWageViewModel
 @inject IOptions<ExternalLinksConfiguration> externalLinks
 @{ 
@@ -22,7 +20,7 @@
 
         <form asp-route="@RouteNames.CustomWage_Post" asp-all-route-data="@Model.RouteDictionary" asp-route-wizard="@Model.PageInfo.IsWizard" novalidate>
         
-            <div esfa-validation-marker-for="WageType" class="govuk-form-group">
+                <div esfa-validation-marker-for="FixedWageYearlyAmount" class="govuk-form-group">
                 <fieldset class="govuk-fieldset">
                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
                         <h1 class="govuk-fieldset__heading">
@@ -32,12 +30,8 @@
             
                     <p class="govuk-body govuk-hint">
                         From @Model.MinimumWageStartFrom, <a href="@externalLinks.Value.NationalMinimumWageRates" rel="noopener" target="_blank" class="govuk-link">National Minimum Wage for apprentices (opens in a new tab)​</a> is @Model.ApprenticeshipMinimumWageHourly an hour.<br /><br />
-                        You must pay more than this figure. Since your apprenticeship will be @Model.WeeklyHours a week, you'll need to pay a yearly wage of at least @Model.ApprenticeshipMinimumWageYearly.
+                        You must pay more than this figure. Since your apprenticeship will be @Model.WeeklyHours hours a week, you'll need to set a wage that's more than @Model.ApprenticeshipMinimumWageYearly.
                     </p>
-                
-                        <label class="govuk-label govuk-!-font-weight-bold">
-                        How much will the apprentice be paid?
-                    </label>
 
                     <span esfa-validation-message-for="FixedWageYearlyAmount" class="govuk-error-message"></span>
                     <div class="govuk-input__wrapper">
