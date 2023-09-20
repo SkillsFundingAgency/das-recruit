@@ -51,23 +51,14 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Extensions
 
         private static IOrderedQueryable<ApplicationReview> OrderByResponseDescending(this IQueryable<ApplicationReview> applications)
         {
-            return (IOrderedQueryable<ApplicationReview>)applications.OrderBy(x => x.Status == ApplicationReviewStatus.New ? 0
-              : x.Status == ApplicationReviewStatus.Shared ? 1 : 2)
-                .ThenBy(x => x.DateSharedWithEmployer)
-                .ThenBy(x => x.Status == ApplicationReviewStatus.Interviewing ? 3
-              : x.Status == ApplicationReviewStatus.EmployerInterviewing ? 3
-              : x.Status == ApplicationReviewStatus.Successful ? 5
-              : x.Status == ApplicationReviewStatus.EmployerUnsuccessful ? 6
-              : x.Status == ApplicationReviewStatus.Unsuccessful ? 6
-              : 8).ThenBy(x => x.ReviewedDate).Reverse();
+            return (IOrderedQueryable<ApplicationReview>)applications.OrderByResponse().Reverse();
         }
 
         private static IOrderedQueryable<ApplicationReview> OrderByResponse(this IQueryable<ApplicationReview> applications)
         {
             return applications.OrderBy(x => x.Status == ApplicationReviewStatus.New ? 0
-              : x.Status == ApplicationReviewStatus.Shared ? 1 : 2)
-                .ThenBy(x => x.DateSharedWithEmployer)
-                .ThenBy(x => x.Status == ApplicationReviewStatus.Interviewing ? 3
+              : x.Status == ApplicationReviewStatus.Shared ? 1
+              : x.Status == ApplicationReviewStatus.Interviewing ? 3
               : x.Status == ApplicationReviewStatus.EmployerInterviewing ? 3
               : x.Status == ApplicationReviewStatus.Successful ? 5
               : x.Status == ApplicationReviewStatus.EmployerUnsuccessful ? 6
