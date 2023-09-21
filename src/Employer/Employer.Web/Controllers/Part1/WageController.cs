@@ -9,7 +9,6 @@ using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Shared.Web.FeatureToggle;
 using Microsoft.FeatureManagement.Mvc;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using Esfa.Recruit.Employer.Web.RouteModel.Wage;
 using Esfa.Recruit.Employer.Web.Configuration;
 
 namespace Esfa.Recruit.Employer.Web.Controllers.Part1
@@ -103,13 +102,49 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
         }
 
         [HttpGet("extra-information-wage", Name = RouteNames.AddExtraInformation_Get)]
-        public async Task<IActionResult> AdditionalInformation(WageExtraInformationRouteModel vrm, [FromQuery] string wizard = "true")
+        public async Task<IActionResult> AdditionalInformation(VacancyRouteModel vrm, [FromQuery] string wizard = "true")
         {
-            //var vm = await _orchestrator.GetExtraInformationViewModelAsync(vrm);
-            //vm.PageInfo.SetWizard(wizard);
-            return View();
+            var vm = await _orchestrator.GetExtraInformationViewModelAsync(vrm);
+            vm.PageInfo.SetWizard(wizard);
+            return View(vm);
         }
-        
+
+        [HttpPost("extra-information-wage", Name = RouteNames.AddExtraInformation_Post)]
+        public async Task<IActionResult> AdditionalInformation(WageExtraInformationViewModel vrm, [FromQuery] bool wizard)
+        {
+            if (!ModelState.IsValid)
+            {
+                return await HandleAdditionalInformationDefaultView(vrm, wizard);
+            }
+
+            var response = await _orchestrator.PostExtraInformationEditModelAsync(vrm, User.ToVacancyUser());
+
+            if (!response.Success)
+            {
+                response.AddErrorsToModelState(ModelState);
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return await HandleAdditionalInformationDefaultView(vrm, wizard);
+            }
+
+            if (wizard)
+
+            {
+                return RedirectToRoute(RouteNames.NumberOfPositions_Get, new { vrm.VacancyId, vrm.EmployerAccountId, wizard });
+            }
+            return RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet, new { vrm.VacancyId, vrm.EmployerAccountId });
+        }
+
+        async Task<IActionResult> HandleAdditionalInformationDefaultView(WageExtraInformationViewModel vrm, bool wizard)
+        {
+            var vm = await _orchestrator.GetExtraInformationViewModelAsync(vrm);
+            vm.WageAdditionalInformation = vrm.WageAdditionalInformation;
+            vm.PageInfo.SetWizard(wizard);
+            return View(vm);
+        }
+
         IActionResult HandleDefaultView(WageViewModel vm, bool wizard, WageType? wageType)
         {
             vm.WageType = wageType;
