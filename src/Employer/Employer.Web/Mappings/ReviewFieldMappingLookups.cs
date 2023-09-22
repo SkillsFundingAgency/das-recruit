@@ -66,6 +66,7 @@ namespace Esfa.Recruit.Employer.Web.Mappings
                 { FieldIdResolver.ToFieldId(v => v.Wage.WageAdditionalInformation), new []{ FieldIdentifiers.Wage}},
                 { FieldIdResolver.ToFieldId(v => v.Wage.WageType),  new[]{ FieldIdentifiers.Wage}},
                 { FieldIdResolver.ToFieldId(v => v.Wage.FixedWageYearlyAmount), new []{ FieldIdentifiers.Wage }},
+                { FieldIdResolver.ToFieldId(v => v.Wage.CompetitiveSalaryType),  new[]{ FieldIdentifiers.CompetitiveSalaryType}},
                 { FieldIdResolver.ToFieldId(v => v.Wage.Duration), new []{ FieldIdentifiers.ExpectedDuration }},
                 { FieldIdResolver.ToFieldId(v => v.Wage.DurationUnit), new []{ FieldIdentifiers.ExpectedDuration }},
                 { FieldIdResolver.ToFieldId(v => v.StartDate), new []{ FieldIdentifiers.PossibleStartDate} },

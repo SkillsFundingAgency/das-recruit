@@ -198,6 +198,9 @@ namespace Esfa.Recruit.Employer.Web
                 RouteNames.AdditionalQuestions_Get,
                 RouteNames.AdditionalQuestions_Post,
 
+                RouteNames.SetCompetitivePayRate_Get,
+                RouteNames.SetCompetitivePayRate_Post,
+
                 RouteNames.LegalEntityAgreement_SoftStop_Get,
                 RouteNames.Location_Get, 
                 RouteNames.Location_Post,
