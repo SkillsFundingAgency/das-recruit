@@ -28,6 +28,32 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part1
         }
 
         [Theory]
+        [InlineData(WageType.FixedWage, 10000, "this is a value", true)]
+        [InlineData(WageType.NationalMinimumWage, 10000, "this is a value", true)]
+        [InlineData(WageType.NationalMinimumWageForApprentices, 11000, "this is a value", true)]
+        [InlineData(WageType.CompetitiveSalary, 10000, "this is a new value", true)]
+        public async Task WhenAdditionalInformationUpdated_ShouldFlagFieldIndicators(WageType wageType, decimal fixedWageYearlyAmmount, string wageAddtionalInformation, bool fieldIndicatorSet)
+        {
+            _fixture
+                .WithWageType(wageType)
+                .WithFixedWageYearlyAmount(fixedWageYearlyAmmount)
+                .Setup();
+
+            var wageExtraInformationViewModel = new WageExtraInformationViewModel
+            {
+                EmployerAccountId = _fixture.Vacancy.EmployerAccountId,
+                VacancyId = _fixture.Vacancy.Id,
+                WageType = wageType,
+                FixedWageYearlyAmount = fixedWageYearlyAmmount.ToString(),
+                WageAdditionalInformation = wageAddtionalInformation
+            };
+
+            await _fixture.PostExtraInformationEditModelAsync(wageExtraInformationViewModel);
+
+            _fixture.VerifyEmployerReviewFieldIndicators(FieldIdentifiers.Wage, fieldIndicatorSet);
+        }
+
+        [Theory]
         [InlineData(WageType.FixedWage, 10000, "this is a value", false)]
         [InlineData(WageType.NationalMinimumWage, 10000, "this is a value", true)]
         [InlineData(WageType.FixedWage, 11000, "this is a value", true)]
@@ -103,6 +129,11 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part1
             public async Task PostWageEditModelAsync(WageEditModel model)
             {
                 await Sut.PostWageEditModelAsync(model, User);
+            }
+
+            public async Task PostExtraInformationEditModelAsync(WageExtraInformationViewModel model)
+            {
+                await Sut.PostExtraInformationEditModelAsync(model, User);
             }
 
             public void VerifyEmployerReviewFieldIndicators(string[] setFieldIdentifiers, string[] unsetFieldIdentifiers)

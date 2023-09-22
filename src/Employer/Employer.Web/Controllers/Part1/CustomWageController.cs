@@ -25,8 +25,8 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
         [HttpGet("custom-wage", Name = RouteNames.CustomWage_Get)]
         public async Task<IActionResult> CustomWage(VacancyRouteModel vrm, [FromQuery] string wizard = "true")
         {
-           var vm = await _orchestrator.GetCustomWageViewModelAsync(vrm);
-           vm.PageInfo.SetWizard(wizard);
+            var vm = await _orchestrator.GetCustomWageViewModelAsync(vrm);
+            vm.PageInfo.SetWizard(wizard);
             return View(vm);
         }
 
@@ -47,11 +47,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
                 return View(vm);
             }
 
-            if (wizard)
-            {
-                return RedirectToRoute(RouteNames.AddExtraInformation_Get, new { m.VacancyId, m.EmployerAccountId, wizard });
-            }
-            return RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet, new { m.VacancyId, m.EmployerAccountId });
+            return RedirectToRoute(RouteNames.AddExtraInformation_Get, new { m.VacancyId, m.EmployerAccountId, wizard });
         }
     }
 }
