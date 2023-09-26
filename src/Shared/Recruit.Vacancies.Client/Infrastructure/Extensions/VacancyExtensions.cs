@@ -123,6 +123,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Extensions
                 DurationUnit = wage.DurationUnit.Value.ToString(),
                 FixedWageYearlyAmount = wage.FixedWageYearlyAmount,
                 WageAdditionalInformation = wage.WageAdditionalInformation,
+                CompetitiveSalaryType = wage.CompetitiveSalaryType.ToString(),
                 WageType = wage.WageType?.ToString(),
                 WeeklyHours = wage.WeeklyHours ?? 0,
                 WorkingWeekDescription = wage.WorkingWeekDescription

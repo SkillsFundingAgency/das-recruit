@@ -1,4 +1,5 @@
-﻿namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Vacancy
+﻿using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Vacancy
 {
     public class Wage
     {
@@ -15,5 +16,6 @@
         public decimal? FixedWageYearlyAmount { get; set; }
 
         public string WageAdditionalInformation { get; set; }
+        public string CompetitiveSalaryType { get; set; }
     }
 }
