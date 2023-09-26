@@ -35,6 +35,9 @@ namespace Esfa.Recruit.Shared.Web.Extensions
                                .GetDisplayText(SFA.DAS.VacancyServices.Wage.WageType.ApprenticeshipMinimum, WageUnit.Annually, wageDetails)
                                .AsWholeMoneyAmount();
                     break;
+                case WageType.CompetitiveSalary:
+                    wageText = "Competitive";
+                    break;
                 default:
                     wageText = wage.WageType?.GetDisplayName();
                     break;

@@ -79,6 +79,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             vm.SoftValidationErrors = GetSoftValidationErrors(vacancy);
             vm.EducationLevelName =
                 EducationLevelNumberHelper.GetEducationLevelNameOrDefault(programme.EducationLevelNumber, programme.ApprenticeshipLevel);
+            vm.WageType = vacancy.Wage?.WageType;
+            vm.CompetitiveSalaryType = vacancy.Wage?.CompetitiveSalaryType;
 
             if (programme != null) vm.ApprenticeshipLevel = programme.ApprenticeshipLevel;
 

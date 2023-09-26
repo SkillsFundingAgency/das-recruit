@@ -55,6 +55,9 @@ namespace Esfa.Recruit.Employer.Web.ViewModels
         public string WageInfo { get; internal set; }
         public string WageText { get; internal set; }
         public string WorkingWeekDescription { get; internal set; }
+        public WageType? WageType { get; internal set; }
+        public CompetitiveSalaryType? CompetitiveSalaryType { get; internal set; }
+        public bool HasCompetitiveSalaryType => WageType.HasValue && WageType.Value == Recruit.Vacancies.Client.Domain.Entities.WageType.CompetitiveSalary;
         public string AccountLegalEntityPublicHashedId { get ; set ; }
 
         private string _additionalQuestion1;
