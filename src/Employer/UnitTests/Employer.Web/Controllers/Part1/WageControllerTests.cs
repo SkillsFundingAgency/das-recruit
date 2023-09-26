@@ -16,6 +16,7 @@ using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using SFA.DAS.Testing.AutoFixture;
+using AutoFixture;
 
 namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Controllers.Part1
 {
@@ -23,12 +24,14 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Controllers.Part1
     {
         private Mock<IWageOrchestrator> _orchestrator;
         private WageController _controller;
+        private Fixture _fixture;
 
         [SetUp]
         public void Setup()
         {
             _orchestrator = new Mock<IWageOrchestrator>();
-
+            _fixture = new Fixture();
+          
             var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
             {
                 new Claim(EmployerRecruitClaims.IdamsUserIdClaimTypeIdentifier, Guid.NewGuid().ToString()),
@@ -39,6 +42,65 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Controllers.Part1
             {
                 HttpContext = new DefaultHttpContext { User = user }
             };
+        }
+
+        [Test, MoqAutoData]
+        public async Task AdditionalInformation_ValidModel_SuccessfulRedirect(WageExtraInformationViewModel viewModel)
+        {
+            var orchestratorResponse = new OrchestratorResponse(true);
+
+            _orchestrator.Setup(orchestrator => orchestrator.PostExtraInformationEditModelAsync(It.IsAny<WageExtraInformationViewModel>(), It.IsAny<VacancyUser>()))
+                .ReturnsAsync(orchestratorResponse);
+
+            var redirectResult = await _controller.AdditionalInformation(viewModel, true) as RedirectToRouteResult;
+
+            Assert.NotNull(redirectResult);
+            Assert.AreEqual(RouteNames.NumberOfPositions_Get, redirectResult.RouteName);
+        }
+
+        [Test, MoqAutoData]
+        public async Task AdditionalInformation_Invalid_ReturnsView(WageExtraInformationViewModel viewModel)
+        {
+            _orchestrator.Setup(orchestrator => orchestrator.GetExtraInformationViewModelAsync(It.IsAny<VacancyRouteModel>()))
+                .ReturnsAsync(viewModel);
+
+            _controller.ModelState.AddModelError("PropertyName", "Error Message");
+
+            var result = await _controller.AdditionalInformation(viewModel, true) as ViewResult;
+
+            result.Should().NotBeNull();
+            result!.Model.Should().Be(viewModel);
+        }
+
+        [Test, MoqAutoData]
+        public async Task Errors_ReturnsView(WageExtraInformationViewModel viewModel)
+        {
+            var orchestratorResponse = new OrchestratorResponse(false);
+            orchestratorResponse.Errors.Errors.Add(new EntityValidationError(123, "Test.PropertyName", "Test.ErrorMessage", "Test.ErrorCode"));
+
+            _orchestrator.Setup(orchestrator => orchestrator.GetExtraInformationViewModelAsync(It.IsAny<VacancyRouteModel>()))
+                .ReturnsAsync(viewModel);
+
+            _orchestrator.Setup(orchestrator => orchestrator.PostExtraInformationEditModelAsync(It.IsAny<WageExtraInformationViewModel>(), It.IsAny<VacancyUser>()))
+                .ReturnsAsync(orchestratorResponse);
+
+            var result = await _controller.AdditionalInformation(viewModel, true) as ViewResult;
+
+            result.Should().NotBeNull();
+            result!.Model.Should().Be(viewModel);
+        }
+
+        [Test, MoqAutoData]
+        public async Task AdditionalInformation_Get_ReturnsViewModel(WageExtraInformationViewModel viewModel, VacancyRouteModel vacancyRouteModel)
+        {
+            _orchestrator.Setup(orchestrator => orchestrator.GetExtraInformationViewModelAsync(It.IsAny<VacancyRouteModel>()))
+                        .ReturnsAsync(viewModel);
+
+            var result = await _controller.AdditionalInformation(vacancyRouteModel, "true");
+
+            Assert.IsInstanceOf<ViewResult>(result);
+            var viewResult = (ViewResult)result;
+            Assert.AreEqual(viewModel, viewResult.Model);
         }
 
         [Test, MoqAutoData]
@@ -153,6 +215,37 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Controllers.Part1
 
             result.Should().NotBeNull();
             result!.Model.Should().Be(viewModel);
+        }
+
+        [Test, MoqAutoData]
+        public async Task GET_CompetitiveSalary_ReturnsViewModel()
+        {
+            var rm = _fixture.Create<VacancyRouteModel>();
+            var vm = _fixture.Create<CompetitiveWageViewModel>();
+            _orchestrator.Setup(orchestrator => orchestrator.GetCompetitiveWageViewModelAsync(It.Is<VacancyRouteModel>(x => x == rm)))
+                .ReturnsAsync(vm);
+
+            var result = await _controller.CompetitiveSalary(rm) as ViewResult;
+
+            result.Should().NotBeNull();
+            result!.Model.Should().Be(vm);
+        }
+
+        [Test, MoqAutoData]
+        public async Task POST_CompetitiveSalary_RedirectsToAddExtraInformation()
+        {
+            var editModel = _fixture.Create<CompetitiveWageEditModel>();
+            _orchestrator.Setup(x => x.PostCompetitiveWageEditModelAsync(It.Is<CompetitiveWageEditModel>(x => x == editModel), It.IsAny<VacancyUser>()))
+                .ReturnsAsync(new OrchestratorResponse(true));
+
+            var redirectResult = await _controller.CompetitiveSalary(editModel) as RedirectToRouteResult;
+
+            Assert.NotNull(redirectResult);
+            Assert.AreEqual(RouteNames.AddExtraInformation_Get, redirectResult.RouteName);
+            Assert.AreEqual(editModel.VacancyId, redirectResult.RouteValues["VacancyId"]);
+            Assert.AreEqual(editModel.EmployerAccountId, redirectResult.RouteValues["EmployerAccountId"]);
+            Assert.AreEqual(editModel.WageType, redirectResult.RouteValues["WageType"]);
+            Assert.AreEqual(editModel.CompetitiveSalaryType, redirectResult.RouteValues["CompetitiveSalaryType"]);
         }
     }
 }
