@@ -19,6 +19,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyManage
         public bool IsClosedBlockedByQa { get; set; }
         public VacancyApplicationsViewModel Applications { get; internal set; }
         public bool HasApplications => Applications.Applications.Any();
+        public int ApplicationCount => Applications?.Applications.Count() ?? 0;
         public bool HasNoApplications => Applications.Applications == null || Applications.Applications?.Any() == false;
         public bool ShowEmployerApplications => !Applications.VacancySharedByProvier;
         public bool ShowSharedApplications => HasApplications && Applications.VacancySharedByProvier;
