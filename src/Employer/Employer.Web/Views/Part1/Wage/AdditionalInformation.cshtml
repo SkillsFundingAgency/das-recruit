@@ -18,7 +18,7 @@
 
             <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }' />
 
-            <form asp-route="@RouteNames.AddExtraInformation_Post" asp-all-route-data="@Model.RouteDictionary" novalidate>
+            <form asp-route="@RouteNames.AddExtraInformation_Post" asp-all-route-data="@Model.RouteDictionary" asp-route-wizard="@Model.PageInfo.IsWizard" novalidate>
                 @Html.HiddenFor(model => model.WageType)
                 <div esfa-validation-marker-for="WageAdditionalInformation" class="govuk-form-group">
                     <fieldset class="govuk-fieldset" aria-describedby="extra-info-hint">
