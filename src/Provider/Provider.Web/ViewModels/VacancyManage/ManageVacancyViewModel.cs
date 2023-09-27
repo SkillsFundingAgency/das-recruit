@@ -13,6 +13,7 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.VacancyManage
         public string Title { get; internal set; }
         public VacancyStatus Status { get; internal set; }
         public string VacancyReference { get; internal set; }
+        public string EmployerName { get; internal set; }
         public string ClosingDate { get; internal set; }
         public string PossibleStartDate { get; internal set; }
         public bool IsDisabilityConfident { get; internal set; }
@@ -21,6 +22,7 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.VacancyManage
         public VacancyApplicationsViewModel Applications { get; internal set; }
         public bool HasApplications => Applications.Applications.Any();
         public bool HasNoApplications => Applications.Applications == null || Applications.Applications?.Any() == false;
+        public int ApplicationCount => Applications?.Applications.Count() ?? 0;
         public bool CanShowEditVacancyLink { get; internal set; }
         public bool CanShowCloseVacancyLink { get; internal set; }
         public bool CanShowCloneVacancyLink { get; internal set; }

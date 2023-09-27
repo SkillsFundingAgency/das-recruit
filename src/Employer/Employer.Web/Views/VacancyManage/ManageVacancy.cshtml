@@ -6,7 +6,6 @@
     ViewBag.Vpv = "/recruitment/employer/page-manage-vacancy";
     ViewBag.Title = @Model.ViewBagTitle;
 }
-@inject IOptions<ExternalLinksConfiguration> externalLinks;
 
 @section BackLink {
     <a asp-route="@RouteNames.Vacancies_Get" asp-route-employerAccountId="@Model.EmployerAccountId" class="govuk-back-link">Back</a>
@@ -68,7 +67,7 @@
             @Model.Title
         </h1>
         <h2 class="govuk-heading-l govuk-!-margin-top-6 govuk-!-margin-bottom-6" id="vacancy-header">
-            Vacancy reference: @Model.Title
+            Vacancy reference: @Model.VacancyReference
 
         </h2>
         <p asp-show="@Model.IsTransferred" class="govuk-inset-text">
