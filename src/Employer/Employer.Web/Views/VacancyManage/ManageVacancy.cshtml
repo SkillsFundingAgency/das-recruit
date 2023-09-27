@@ -63,13 +63,10 @@
                 @Model.EmployerReviewedApplicationHeaderMessage
             </p>
         </div>
-        <h1 class="govuk-heading-xl govuk-!-margin-top-6 govuk-!-margin-bottom-6" id="vacancy-header">
-            @Model.Title
-        </h1>
-        <h2 class="govuk-heading-l govuk-!-margin-top-6 govuk-!-margin-bottom-6" id="vacancy-header">
-            Vacancy reference: @Model.VacancyReference
 
-        </h2>
+        <h1 class="govuk-heading-l">@Model.Title</h1>
+        <p class="govuk-body-l">Vacancy reference: VAC@(Model.VacancyReference)</p>
+
         <p asp-show="@Model.IsTransferred" class="govuk-inset-text">
             This advert was created by
             <span class="govuk-!-font-weight-bold">@Model.TransferredProviderName</span>
@@ -88,12 +85,10 @@
 </div>
 
 <div asp-show="@Model.ShowEmployerApplications">
-    <h2 class="govuk-heading-l govuk-!-margin-top-6 govuk-!-margin-bottom-6" id="vacancy-header">
-        Advert Summary
-    </h2>
+    <h2 class="govuk-heading-m">Advert Summary</h2>
     <dl class="das-definition-list das-definition-list--table">
         <dt class="das-definition-list__title das-definition-list__title--spacer">Status</dt>
-        <dd class="das-definition-list__definition das-definition-list__definition--spacer">@Model.Status.GetDisplayName()</dd>
+        <dd class="das-definition-list__definition das-definition-list__definition--spacer"><strong class="govuk-tag govuk-tag--green">@Model.Status.GetDisplayName()</strong></dd>
         <dt class="das-definition-list__title das-definition-list__title--spacer">Closing date</dt>
         <dd class="das-definition-list__definition das-definition-list__definition--spacer">@Model.ClosingDate</dd>
 
@@ -111,15 +106,18 @@
 
     <div asp-show="@Model.CanShowVacancyAnalytics">
         <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
-        <h2 class="govuk-heading-l govuk-!-margin-top-9">
+        <h2 class="govuk-heading-m">
             Advert analytics
         </h2>
         <p>To see how many people have looked at your advert, <a asp-route="@RouteNames.VacancyAnalytics_Get" asp-all-route-data="@Model.RouteDictionary" class="govuk-link">view advert analytics</a>.</p>
     </div>
 </div>
-<h2 class="govuk-heading-l govuk-!-margin-top-9">
-    Applications (@Model.ApplicationCount)
-</h2>
+<div>
+    <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
+    <h2 class="govuk-heading-m">
+        Applications (@Model.ApplicationCount)
+    </h2>
+</div>
 <div asp-show="@Model.IsApplyThroughFaaVacancy">
     <div asp-show="@Model.ShowSharedApplications" class="govuk-grid-column-full">
         <div asp-show="Model.CanShowApplicationReviewStatusHeader" class="govuk-notification-banner govuk-notification-banner--success" role="alert" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
@@ -136,9 +134,7 @@
             </div>
         </div>
     </div>
-    <div asp-show="@Model.ShowEmployerApplications">
-        <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
-    </div>
+
     <span asp-show="@Model.ShowSharedApplications" class="govuk-caption-l">@Model.Title</span>
     <h2 asp-show="@Model.ShowSharedApplications" class="govuk-heading-l">Shared applications</h2>
     <esfaFeatureEnabled name="@FeatureNames.MultipleApplicationsManagement">
@@ -146,12 +142,12 @@
             <a asp-route="@RouteNames.ApplicationReviewsToUnsuccessful_Get" asp-all-route-data="@Model.RouteDictionary" class="govuk-link govuk-!-margin-top-2 govuk-!-margin-bottom-4">Make multiple applications unsuccessful</a>
         </p>
     </esfaFeatureEnabled>
-
-    <p class="govuk-body govuk-hint">
-        <label asp-show="@Model.IsDisabilityConfident" class="govuk-label govuk-checkboxes__label">You are signed up to the <a href="https://www.gov.uk/government/collections/disability-confident-campaign" class="govuk-link" rel="noopener" target="_blank" title="Disability Confident employer scheme and guidance (opens in new tab)">Disability Confident scheme (opens in new tab)</a></label>
-    </p>
-
-
+    <a asp-route="@RouteNames.ApplicationReviewsToUnsuccessful_Get" asp-all-route-data="@Model.RouteDictionary" class="govuk-link govuk-!-margin-top-2 govuk-!-margin-bottom-4">Make multiple applications unsuccessful</a>
+</div>
+<p class="govuk-body govuk-hint">
+    <label asp-show="@Model.IsDisabilityConfident" class="govuk-label govuk-inset-text">You are signed up to the <a href="https://www.gov.uk/government/collections/disability-confident-campaign" class="govuk-link" rel="noopener" target="_blank" title="Disability Confident employer scheme and guidance (opens in new tab)">Disability Confident scheme (opens in new tab)</a>.</label>
+</p>
+<div asp-show="@Model.IsApplyThroughFaaVacancy">
     <p asp-show="@Model.ShowSharedApplications" class="govuk-body govuk-!-margin-bottom-4 govuk-!-margin-top-4">Each application is anonymised. If you decide to interview the applicant, you will be able to see their name and contact information.</p>
     <partial asp-show="@Model.ShowEmployerApplications" name="@PartialNames.VacancyApplicationsTable" for="Applications" />
     <partial asp-show="@Model.ShowSharedApplications" name="@PartialNames.VacancySharedApplicationsTable" for="Applications" />
