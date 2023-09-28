@@ -188,7 +188,7 @@
             <div class="app-summary-list__row app-summary-list__row--no-border" field-review-marker="WageText">
                 <dt class="app-summary-list__key" id="@FieldIdentifiers.Wage">Pay rate</dt>
                 <dd id="YearlyWage"  class="app-summary-list__value">
-                    @Model.WageText a year
+                    @Model.WageText
                     <field-review-tag class="govuk-tag--orange" field-name="@FieldIdentifiers.Wage" tag-name="strong" model="@Model"/>
                 </dd>
                 <dd class="app-summary-list__actions">
@@ -200,8 +200,28 @@
             <div class="app-summary-list__row" field-review-marker="WageInfo">
                 <dt class="app-summary-list__key" id="@FieldIdentifiers.WageAdditionalInfo">Extra information about pay (optional)</dt>
                 <dd class="app-summary-list__value">
-                    @(Model.HasWageInfo ? Model.WageInfo : "None")
+                    @if (Model.HasWageInfo)
+                    {
+                        <text>
+                            @Model.WageInfo
+                        </text>
+                        <br/><br/>
+                    }
+                    else
+                    {
+                        if (!@Model.HasCompetitiveSalaryType)
+                        {
+                            <text>None</text>
+                            <br/><br/>
+                        }
+                    }
                     <field-review-tag class="govuk-tag--orange" field-name="@FieldIdentifiers.WageAdditionalInfo" tag-name="strong" model="@Model"/>
+                    @if (Model.HasCompetitiveSalaryType)
+                    {
+                        <text>
+                            @Model.CompetitiveSalaryType.GetDisplayName()
+                        </text>
+                    }
                 </dd>
                 <dd class="app-summary-list__actions">
                     

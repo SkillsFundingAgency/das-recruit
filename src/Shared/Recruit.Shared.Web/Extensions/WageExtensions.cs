@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
 using SFA.DAS.VacancyServices.Wage;
@@ -22,18 +23,22 @@ namespace Esfa.Recruit.Shared.Web.Extensions
             {
                 case WageType.FixedWage:
                     wageText = WagePresenter
-                               .GetDisplayText(SFA.DAS.VacancyServices.Wage.WageType.Custom, WageUnit.Annually, wageDetails)
-                               .AsWholeMoneyAmount();
+                        .GetDisplayText(SFA.DAS.VacancyServices.Wage.WageType.Custom, WageUnit.Annually, wageDetails)
+                        .AsWholeMoneyAmount()
+                        .AsPerYear();
+
                     break;
                 case WageType.NationalMinimumWage:
                     wageText = WagePresenter
                                .GetDisplayText(SFA.DAS.VacancyServices.Wage.WageType.NationalMinimum, WageUnit.Annually, wageDetails)
-                               .AsWholeMoneyAmount();
+                               .AsWholeMoneyAmount()
+                               .AsPerYear();
                     break;
                 case WageType.NationalMinimumWageForApprentices:
                     wageText = WagePresenter
                                .GetDisplayText(SFA.DAS.VacancyServices.Wage.WageType.ApprenticeshipMinimum, WageUnit.Annually, wageDetails)
-                               .AsWholeMoneyAmount();
+                               .AsWholeMoneyAmount()
+                               .AsPerYear();
                     break;
                 case WageType.CompetitiveSalary:
                     wageText = "Competitive";
