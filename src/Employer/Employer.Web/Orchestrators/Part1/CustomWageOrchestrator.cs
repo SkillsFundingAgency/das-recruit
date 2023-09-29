@@ -40,7 +40,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.Wage_Get);
 
             var wagePeriod = _minimumWageProvider.GetWagePeriod(vacancy.StartDate.Value);
-            
+
             var vm = new CustomWageViewModel
             {
                 VacancyId = vacancy.Id,
@@ -70,7 +70,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
         {
             var vm = await GetCustomWageViewModelAsync((VacancyRouteModel)m);
             vm.FixedWageYearlyAmount = m.FixedWageYearlyAmount;
-            
+
             return vm;
         }
 
@@ -80,6 +80,16 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 
             if (vacancy.Wage == null)
                 vacancy.Wage = new Wage();
+
+            if (vacancy.Wage.WageType != WageType.FixedWage)
+                SetVacancyWithEmployerReviewFieldIndicators(
+                    vacancy.Wage.WageAdditionalInformation,
+                    FieldIdResolver.ToFieldId(v => v.Wage.WageAdditionalInformation),
+                    vacancy,
+                    (v) =>
+                    {
+                        return v.Wage.WageAdditionalInformation = null;
+                    });
 
             SetVacancyWithEmployerReviewFieldIndicators(
                 vacancy.Wage.WageType,

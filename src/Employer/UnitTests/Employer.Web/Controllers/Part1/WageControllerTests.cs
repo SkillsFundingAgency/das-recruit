@@ -31,7 +31,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Controllers.Part1
         {
             _orchestrator = new Mock<IWageOrchestrator>();
             _fixture = new Fixture();
-          
+
             var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
             {
                 new Claim(EmployerRecruitClaims.IdamsUserIdClaimTypeIdentifier, Guid.NewGuid().ToString()),
@@ -202,7 +202,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Controllers.Part1
             viewModel.WageType = WageType.FixedWage;
             var orchestratorResponse = new OrchestratorResponse(false);
             orchestratorResponse.Errors.Errors.Add(new EntityValidationError(123, "Test.PropertyName", "Test.ErrorMessage", "Test.ErrorCode"));
-           
+
             _orchestrator.Setup(orchestrator => orchestrator.GetWageViewModelAsync(It.IsAny<VacancyRouteModel>()))
                         .ReturnsAsync(viewModel);
 
@@ -231,21 +231,27 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Controllers.Part1
             result!.Model.Should().Be(vm);
         }
 
-        [Test, MoqAutoData]
+        [Test]
         public async Task POST_CompetitiveSalary_RedirectsToAddExtraInformation()
         {
             var editModel = _fixture.Create<CompetitiveWageEditModel>();
+            var vm = _fixture.Create<CompetitiveWageViewModel>();
+
+            vm.WageType = WageType.FixedWage;
+            editModel.WageType = WageType.CompetitiveSalary;
+
+            _orchestrator.Setup(o => o.GetCompetitiveWageViewModelAsync(It.IsAny<CompetitiveWageEditModel>()))
+                .ReturnsAsync(vm);
+
             _orchestrator.Setup(x => x.PostCompetitiveWageEditModelAsync(It.Is<CompetitiveWageEditModel>(x => x == editModel), It.IsAny<VacancyUser>()))
                 .ReturnsAsync(new OrchestratorResponse(true));
 
-            var redirectResult = await _controller.CompetitiveSalary(editModel) as RedirectToRouteResult;
+            var redirectResult = await _controller.CompetitiveSalary(editModel, false) as RedirectToRouteResult;
 
             Assert.NotNull(redirectResult);
             Assert.AreEqual(RouteNames.AddExtraInformation_Get, redirectResult.RouteName);
             Assert.AreEqual(editModel.VacancyId, redirectResult.RouteValues["VacancyId"]);
             Assert.AreEqual(editModel.EmployerAccountId, redirectResult.RouteValues["EmployerAccountId"]);
-            Assert.AreEqual(editModel.WageType, redirectResult.RouteValues["WageType"]);
-            Assert.AreEqual(editModel.CompetitiveSalaryType, redirectResult.RouteValues["CompetitiveSalaryType"]);
         }
     }
 }

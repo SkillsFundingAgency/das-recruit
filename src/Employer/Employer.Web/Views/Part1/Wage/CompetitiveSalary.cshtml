@@ -20,35 +20,38 @@
 
             <form asp-route="@RouteNames.SetCompetitivePayRate_Post" asp-all-route-data="@Model.RouteDictionary" novalidate>
 
-                <div esfa-validation-marker-for="CompetitiveSalaryType" class="govuk-form-group">
+                <div esfa-validation-marker-for="IsSalaryAboveNationalMinimumWage" class="govuk-form-group">
                     <fieldset class="govuk-fieldset">
                         <legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
                             <h1 class="govuk-fieldset__heading">
-                                How much will your competitive salary pay?
+                                Set as competitive?
                             </h1>
                         </legend>
-                        <span esfa-validation-message-for="CompetitiveSalaryType" class="govuk-error-message"></span>
+                        <p class="govuk-body">
+                            You can only set a wage as competitive if you're paying more than
+                            <a href="https://www.gov.uk/national-minimum-wage-rates" rel="noopener" target="_blank"> ​National Minimum Wage (opens in a new tab) </a>.
+                        </p>
+
+                        <span esfa-validation-message-for="IsSalaryAboveNationalMinimumWage" class="govuk-error-message"></span>
+
+                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                            Is the salary above National Minimum Wage?
+                        </legend>
 
                         <div class="govuk-radios govuk-radios--conditional" data-module="radios">
 
                             <div class="govuk-radios__item">
-                                <input asp-for="CompetitiveSalaryType" value="@CompetitiveSalaryType.NationalMinimumWageOrAbove" type="radio" class="govuk-radios__input" id="competitive-salary-type-national-minimum-wage-or-above" aria-describedby="competitive-salary-type-national-minimum-wage-or-above-hint">
+                                <input asp-for="IsSalaryAboveNationalMinimumWage" value="true" type="radio" class="govuk-radios__input" id="competitive-salary-type-national-minimum-wage-or-above" aria-describedby="competitive-salary-type-national-minimum-wage-or-above-hint">
                                 <label for="competitive-salary-type-national-minimum-wage-or-above" class="govuk-label govuk-radios__label">
-                                    National Minimum Wage or above
+                                    Yes
                                 </label>
-                                <div id="competitive-salary-type-national-minimum-wage-or-above-hint" class="govuk-hint govuk-radios__hint">
-                                    Depending on the applicant's age, a minimum of @Model.NationalMinimumWageYearly
-                                </div>
                             </div>
 
-                             <div class="govuk-radios__item">
-                                <input asp-for="CompetitiveSalaryType" value="@CompetitiveSalaryType.BetweenNationalMinimumWageForApprenticesAndNationalMinimumWage" type="radio" class="govuk-radios__input" id="competitive-salary-type-between" aria-describedby="competitive-salary-type-between-hint">
+                            <div class="govuk-radios__item">
+                                <input asp-for="IsSalaryAboveNationalMinimumWage" value="false" type="radio" class="govuk-radios__input" id="competitive-salary-type-between" aria-describedby="competitive-salary-type-between-hint">
                                 <label for="competitive-salary-type-between" class="govuk-label govuk-radios__label">
-                                    Between National Minimum Wage for apprentices and National Minimum Wage
+                                    No
                                 </label>
-                                <div id="competitive-salary-type-between-hint" class="govuk-hint govuk-radios__hint">
-                                    @Model.ApprenticeshipMinimumWageYearly for all apprentices for the first year
-                                </div>
                             </div>
 
                         </div>
