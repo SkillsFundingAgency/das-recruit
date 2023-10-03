@@ -16,6 +16,5 @@
 
         public string WageAdditionalInformation { get; set; }
 
-        public CompetitiveSalaryType? CompetitiveSalaryType { get; set; }
     }
 }

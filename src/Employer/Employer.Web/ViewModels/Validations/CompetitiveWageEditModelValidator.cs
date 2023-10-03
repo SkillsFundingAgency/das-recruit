@@ -5,12 +5,12 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Validations
 {
     public class CompetitiveWageEditModelValidator : AbstractValidator<CompetitiveWageEditModel>
     {
-        public const string CompetitiveWageTypeRequired = "Select how much the apprentice will be paid";
+        public const string IsSalaryAboveNationalMinimumWageRequired = "Select if the salary is above National Minimum Wage";
         public CompetitiveWageEditModelValidator()
         {
-            RuleFor(x => x.CompetitiveSalaryType)
+            RuleFor(x => x.IsSalaryAboveNationalMinimumWage)
                 .NotNull()
-                .WithMessage(CompetitiveWageTypeRequired);
+                .WithMessage(IsSalaryAboveNationalMinimumWageRequired);
         }
     }
 }
