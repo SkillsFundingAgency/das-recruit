@@ -87,7 +87,7 @@ namespace Esfa.Recruit.Employer.Web.Mappings
             vm.AdditionalQuestion1 = vacancy.AdditionalQuestion1;
             vm.AdditionalQuestion2 = vacancy.AdditionalQuestion2;
             vm.HasSubmittedAdditionalQuestions = vacancy.HasSubmittedAdditionalQuestions;
-            
+
             if (vacancy.EmployerLocation != null)
             {
                 if (vacancy.EmployerLocation != null)
@@ -110,6 +110,7 @@ namespace Esfa.Recruit.Employer.Web.Mappings
                     : null;
                 vm.HoursPerWeek = $"{vacancy.Wage.WeeklyHours:0.##}";
                 vm.WageInfo = vacancy.Wage.WageAdditionalInformation;
+                vm.WageType = vacancy.Wage.WageType;
                 vm.WageText = vacancy.StartDate.HasValue ? vacancy.Wage.ToText(vacancy.StartDate) : null;
                 vm.WorkingWeekDescription = vacancy.Wage.WorkingWeekDescription;
             }
