@@ -17,22 +17,28 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Net.Http.Headers;
 using SFA.DAS.DfESignIn.Auth.AppStart;
 using SFA.DAS.DfESignIn.Auth.Constants;
+using SFA.DAS.DfESignIn.Auth.Enums;
 
 namespace Esfa.Recruit.Qa.Web.Configuration
 {
     public static class ServiceCollectionExtensions
     {
         private const int SessionTimeoutMinutes = 30;
-        private const string DfESignInClientName = "QA";
 
         public static void AddAuthenticationService(this IServiceCollection services, AuthenticationConfiguration authConfig, IConfiguration config)
         {
             // condition to check if the DfeSignIn is allowed.
-            bool isDfESignInAllowed = config.GetValue<bool>("UseDfeSignIn");
+            bool isDfESignInAllowed = config.GetValue<bool>("UseDfESignIn");
             if (isDfESignInAllowed)
             {
                 // register DfeSignIn authentication services to the AspNetCore Authentication Options.
-                services.AddAndConfigureDfESignInAuthentication(config, $"{CookieNames.QaData}", typeof(CustomServiceRole), DfESignInClientName);
+                services.AddAndConfigureDfESignInAuthentication(
+                    config, 
+                    $"{CookieNames.QaData}",
+                    typeof(CustomServiceRole),
+                    ClientName.Qa,
+                    "/signout",
+                    "");
             }
             else
             {
