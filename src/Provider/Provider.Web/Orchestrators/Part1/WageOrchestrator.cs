@@ -19,7 +19,14 @@ using Esfa.Recruit.Vacancies.Client.Application.Services;
 
 namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
 {
-    public class WageOrchestrator : VacancyValidatingOrchestrator<WageEditModel>
+    public interface IWageOrchestrator
+    {
+        Task<WageViewModel> GetWageViewModelAsync(VacancyRouteModel vrm);
+        Task<WageViewModel> GetWageViewModelAsync(WageEditModel m);
+        Task<OrchestratorResponse> PostWageEditModelAsync(WageEditModel m, VacancyUser user);
+    }
+
+    public class WageOrchestrator : VacancyValidatingOrchestrator<WageEditModel>, IWageOrchestrator
     {
         private const VacancyRuleSet ValidationRules = VacancyRuleSet.Wage | VacancyRuleSet.MinimumWage;
         private readonly IRecruitVacancyClient _vacancyClient;

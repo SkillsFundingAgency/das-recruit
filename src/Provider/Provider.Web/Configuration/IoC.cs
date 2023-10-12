@@ -26,6 +26,7 @@ using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Esfa.Recruit.Provider.Web.ViewModels.Validations.Fluent;
 using Esfa.Recruit.Provider.Web.RouteModel;
+using Esfa.Recruit.Provider.Web.ViewModels.Part1.Wage;
 
 namespace Esfa.Recruit.Provider.Web.Configuration
 {
@@ -81,6 +82,7 @@ namespace Esfa.Recruit.Provider.Web.Configuration
         private static void RegisterFluentValidators(IServiceCollection services)
         {
             services.AddSingleton<IValidator<ApplicationReviewEditModel>, ApplicationReviewEditModelValidator>();
+            services.AddSingleton<IValidator<WageEditModel>, WageEditModelValidator>();
             services.AddSingleton<IValidator<ApplicationReviewFeedBackViewModel>, ApplicationReviewFeedBackModelValidator>();
             services.AddSingleton<IValidator<ApplicationReviewStatusConfirmationEditModel>, ApplicationReviewStatusConfirmationEditModelValidator>();
             services.AddSingleton<IValidator<ProviderApplicationsReportCreateEditModel>, ProviderApplicationsReportCreateEditModelValidator>();
@@ -112,7 +114,7 @@ namespace Esfa.Recruit.Provider.Web.Configuration
             services.AddTransient<VacancyManageOrchestrator>();
             services.AddTransient<VacancyPreviewOrchestrator>();
             services.AddTransient<VacancyViewOrchestrator>();
-            services.AddTransient<WageOrchestrator>();
+            services.AddTransient<IWageOrchestrator, WageOrchestrator>();
             services.AddTransient<CloseVacancyOrchestrator>();
             services.AddTransient<EditVacancyDatesOrchestrator>();
             services.AddTransient<IApplicationReviewOrchestrator , ApplicationReviewOrchestrator>();

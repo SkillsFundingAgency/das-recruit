@@ -35,56 +35,37 @@
                         <a href="@externalLinks.Value.NationalMinimumWageRates" rel="noopener" target="_blank" class="govuk-link govuk-link--no-visited-state">View the National Minimum Wage for apprentices (opens in a new tab).</a>
                     </div>
                     <span esfa-validation-message-for="WageType" class="govuk-error-message"></span>
-                    <div class="govuk-radios govuk-radios--conditional" data-module="govuk-radios">
+                    <div class="govuk-radios govuk-radios--conditional" data-module="radios">
+                        <div class="govuk-radios__item">
+                            <input asp-for="WageType" value="@WageType.FixedWage" type="radio" class="govuk-radios__input" id="wage-type-fixed" data-aria-controls="custom-wage-fixed-panel">
+                            <label for="wage-type-fixed" class="govuk-label govuk-radios__label">Set wage yourself</label>
+                            <p class="govuk-body govuk-hint govuk-radios__hint">
+                                This must be more than the National Minimum Wage for apprentices
+                            </p>
+                        </div>
                         <div class="govuk-radios__item">
                             <input asp-for="WageType" value="@WageType.NationalMinimumWage" type="radio" class="govuk-radios__input" id="wage-type-national-minimum-wage" data-aria-controls="wage-type-national-minimum-wage-panel">
                             <label for="wage-type-national-minimum-wage" class="govuk-label govuk-radios__label">National Minimum Wage</label>
-                        </div>
-                        <div id="wage-type-national-minimum-wage-panel" class="govuk-radios__conditional govuk-radios__conditional--hidden">
-                            <div class="govuk-form-group">
-                                <p class="govuk-body">
-                                    <span class="govuk-hint">
-                                        From @Model.MinimumWageStartFrom, the National Minimum Wage is between @Model.NationalMinimumWageLowerBoundHourly and @Model.NationalMinimumWageUpperBoundHourly an hour, depending on the candidate's age.<br><br>
-                                        On the vacancy, this will be displayed as a yearly wage of @(Model.NationalMinimumWageYearly).
-                                    </span>
-                                </p>
-                            </div>
+                            <p class="govuk-body govuk-hint govuk-radios__hint">
+                                Displayed as a yearly wage of @Model.NationalMinimumWageYearly
+                            </p>
                         </div>
                         <div class="govuk-radios__item">
                             <input asp-for="WageType" value="@WageType.NationalMinimumWageForApprentices" type="radio" class="govuk-radios__input" id="wage-type-national-minimum-wage-for-apprentices" data-aria-controls="wage-type-national-minimum-wage-for-apprentices-panel">
                             <label for="wage-type-national-minimum-wage-for-apprentices" class="govuk-label govuk-radios__label">National Minimum Wage for apprentices</label>
+                            <p class="govuk-body govuk-hint govuk-radios__hint">
+                                Displayed as a yearly wage of @Model.ApprenticeshipMinimumWageYearly
+                            </p>
                         </div>
-                        <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="wage-type-national-minimum-wage-for-apprentices-panel">
-                            <div class="govuk-form-group">
-                                <p class="govuk-body">
-                                    <span class="govuk-hint">
-                                        From @Model.MinimumWageStartFrom, the National Minimum Wage for apprentices is @Model.ApprenticeshipMinimumWageHourly an hour.<br><br>
-                                        On the vacancy, this will be displayed as a yearly wage of @Model.ApprenticeshipMinimumWageYearly.
-                                    </span>
+                        <esfaFeatureEnabled name="@FeatureNames.CompetitiveSalary">
+                            <div class="govuk-radios__item">
+                                <input asp-for="WageType" value="@WageType.CompetitiveSalary" type="radio" class="govuk-radios__input" id="wage-type-set-as-competitive" data-aria-controls="wage-type-set-as-competitive-panel">
+                                <label for="wage-type-set-as-competitive" class="govuk-label govuk-radios__label">Set as competitive</label>
+                                <p class="govuk-body govuk-hint govuk-radios__hint">
+                                    Not providing a salary may limit applications for this apprenticeship
                                 </p>
                             </div>
-                        </div>
-                        <div class="govuk-radios__item">
-                            <input asp-for="WageType" value="@WageType.FixedWage" type="radio" class="govuk-radios__input" id="wage-type-fixed" data-aria-controls="custom-wage-fixed-panel">
-                            <label for="wage-type-fixed" class="govuk-label govuk-radios__label">Set wage yourself</label>
-                        </div>
-                        <div id="custom-wage-fixed-panel" class="govuk-radios__conditional govuk-radios__conditional--hidden">
-                             <div esfa-validation-marker-for="FixedWageYearlyAmount" class="govuk-form-group">
-                                <label asp-for="FixedWageYearlyAmount" class="govuk-visually-hidden">Yearly wage</label>
-                                <p class="govuk-body govuk-hint">
-                                    This must be more than the <a href="@externalLinks.Value.NationalMinimumWageRates" rel="noopener" target="_blank" class="govuk-link govuk-link--no-visited-state">National Minimum Wage for apprentices (opens in a new tab)​</a>.
-                                </p>
-                                <p class="govuk-body govuk-hint">
-                                    From @Model.MinimumWageStartFrom, the National Minimum Wage for apprentices is @Model.ApprenticeshipMinimumWageHourly an hour.<br /><br />
-                                    Based on @Model.WeeklyHours working hours a week, you'll need to pay a yearly wage of at least <span class="govuk-!-font-weight-bold">@Model.ApprenticeshipMinimumWageYearly</span>.
-                                </p>
-                                <span esfa-validation-message-for="FixedWageYearlyAmount" class="govuk-error-message"></span>
-                                <div class="govuk-input__wrapper">
-                                    <input asp-for="FixedWageYearlyAmount" class="govuk-input govuk-!-width-one-quarter" type="text">
-                                    <div class="govuk-input__suffix" aria-hidden="true">yearly</div>
-                                </div>
-                            </div>
-                        </div>
+                        </esfaFeatureEnabled>
                     </div>
                 </fieldset>
             </div>

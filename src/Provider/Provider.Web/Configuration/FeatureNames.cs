@@ -8,5 +8,6 @@
         public const string ShowRecruitmentApiLink = nameof(ShowRecruitmentApiLink);
         public const string ProviderTaskList = nameof(ProviderTaskList);
         public const string ShareApplicationsFeature = nameof(ShareApplicationsFeature);
+        public const string CompetitiveSalary = nameof(CompetitiveSalary);
     }
 }
