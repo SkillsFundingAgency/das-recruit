@@ -23,17 +23,23 @@ namespace Esfa.Recruit.Shared.Web.Extensions
                 case WageType.FixedWage:
                     wageText = WagePresenter
                                .GetDisplayText(SFA.DAS.VacancyServices.Wage.WageType.Custom, WageUnit.Annually, wageDetails)
-                               .AsWholeMoneyAmount();
+                               .AsWholeMoneyAmount()
+                               .AsPerYear();
                     break;
                 case WageType.NationalMinimumWage:
                     wageText = WagePresenter
                                .GetDisplayText(SFA.DAS.VacancyServices.Wage.WageType.NationalMinimum, WageUnit.Annually, wageDetails)
-                               .AsWholeMoneyAmount();
+                               .AsWholeMoneyAmount()
+                               .AsPerYear();
                     break;
                 case WageType.NationalMinimumWageForApprentices:
                     wageText = WagePresenter
                                .GetDisplayText(SFA.DAS.VacancyServices.Wage.WageType.ApprenticeshipMinimum, WageUnit.Annually, wageDetails)
-                               .AsWholeMoneyAmount();
+                               .AsWholeMoneyAmount()
+                               .AsPerYear();
+                    break;
+                case WageType.CompetitiveSalary:
+                    wageText = "Competitive";
                     break;
                 default:
                     wageText = wage.WageType?.GetDisplayName();
