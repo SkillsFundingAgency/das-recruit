@@ -26,6 +26,26 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part1
             _fixture = new WageOrchestratorTestsFixture();
         }
 
+        [Fact]
+        public async Task WhenCompetitiveSalaryUpdated_ShouldFlagFieldIndicators()
+        {
+            _fixture
+                .Setup();
+
+            _fixture.SetCompetitiveValidationRule();
+
+            var wageExtraInformationViewModel = new CompetitiveWageEditModel()
+            {
+                Ukprn = (long)_fixture.Vacancy.TrainingProvider.Ukprn,
+                VacancyId = _fixture.Vacancy.Id,
+                WageType = WageType.CompetitiveSalary
+            };
+
+            await _fixture.PostExtraInformationEditModelAsync(wageExtraInformationViewModel);
+
+            _fixture.VerifyProviderReviewFieldIndicators(FieldIdentifiers.Wage, true);
+        }
+
         [Theory]
         [InlineData(WageType.FixedWage, 10000, "this is a value", false)]
         [InlineData(WageType.NationalMinimumWage, 10000, "this is a value", true)]
@@ -56,9 +76,10 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part1
         public class WageOrchestratorTestsFixture
         {
             private const VacancyRuleSet ValidationRules = VacancyRuleSet.Wage | VacancyRuleSet.MinimumWage;
+            private const VacancyRuleSet CompetitiveValidationRules = VacancyRuleSet.CompetitiveWage;
             public VacancyUser User { get; }
             public Vacancy Vacancy { get; }
-            public WageOrchestrator Sut {get; private set;}
+            public WageOrchestrator Sut { get; private set; }
 
             public WageOrchestratorTestsFixture()
             {
@@ -94,13 +115,23 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part1
                 MockRecruitVacancyClient.Setup(x => x.UpdateDraftVacancyAsync(It.IsAny<Vacancy>(), User));
                 MockRecruitVacancyClient.Setup(x => x.UpdateEmployerProfileAsync(It.IsAny<EmployerProfile>(), User));
 
-                Sut = new WageOrchestrator(MockRecruitVacancyClient.Object, Mock.Of<ILogger<WageOrchestrator>>(), 
+                Sut = new WageOrchestrator(MockRecruitVacancyClient.Object, Mock.Of<ILogger<WageOrchestrator>>(),
                     Mock.Of<IReviewSummaryService>(), Mock.Of<IMinimumWageProvider>(), new Utility(MockRecruitVacancyClient.Object));
+            }
+
+            public void SetCompetitiveValidationRule()
+            {
+                MockRecruitVacancyClient.Setup(x => x.Validate(Vacancy, CompetitiveValidationRules)).Returns(new EntityValidationResult()); ;
             }
 
             public async Task PostWageEditModelAsync(WageEditModel model)
             {
                 await Sut.PostWageEditModelAsync(model, User);
+            }
+
+            public async Task PostExtraInformationEditModelAsync(CompetitiveWageEditModel model)
+            {
+                await Sut.PostCompetitiveWageEditModelAsync(model, User);
             }
 
             public void VerifyEmployerReviewFieldIndicators(string[] setFieldIdentifiers, string[] unsetFieldIdentifiers)
