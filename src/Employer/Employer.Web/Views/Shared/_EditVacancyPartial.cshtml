@@ -175,7 +175,9 @@
             </div>
             <div asp-show="@Model.HasSpecifiedThroughExternalApplicationMethod">
                 <p class="govuk-body">This apprenticeship requires you to apply through the employer's website.</p>
-                <p class="govuk-body">@Model.ApplicationUrl</p>
+                <p class="govuk-body">
+                    <span class="das-breakable">@Model.ApplicationUrl</span>
+                </p>
             </div>
             <div asp-show="@Model.HasApplicationInstructions">
                 <p  class="govuk-body">
