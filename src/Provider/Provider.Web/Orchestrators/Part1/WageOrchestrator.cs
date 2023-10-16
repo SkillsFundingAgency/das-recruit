@@ -30,8 +30,8 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
 
     public class WageOrchestrator : VacancyValidatingOrchestrator<WageEditModel>, IWageOrchestrator
     {
-        private const VacancyRuleSet ValidationRules = VacancyRuleSet.Wage | VacancyRuleSet.MinimumWage;
         private const VacancyRuleSet CompetitiveValidationRules = VacancyRuleSet.CompetitiveWage;
+        private const VacancyRuleSet ValidationRules = VacancyRuleSet.Wage;
         private readonly IRecruitVacancyClient _vacancyClient;
         private readonly IReviewSummaryService _reviewSummaryService;
         private readonly IMinimumWageProvider _minimumWageProvider;
