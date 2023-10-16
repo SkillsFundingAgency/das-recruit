@@ -835,7 +835,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                     .WithMessage("Enter a link where candidates can apply")
                     .WithErrorCode("85")
                 .WithState(_ => VacancyRuleSet.ApplicationMethod)
-                .MaximumLength(200)
+                .MaximumLength(2000)
                     .WithMessage("The website address must not exceed {MaxLength} characters")
                     .WithErrorCode("84")
                 .WithState(_ => VacancyRuleSet.ApplicationMethod)
