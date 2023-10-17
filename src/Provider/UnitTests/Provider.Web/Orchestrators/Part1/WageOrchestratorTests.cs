@@ -36,7 +36,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part1
 
             var wageExtraInformationViewModel = new CompetitiveWageEditModel()
             {
-                Ukprn = (long)_fixture.Vacancy.TrainingProvider.Ukprn,
+                Ukprn = _fixture.Vacancy.TrainingProvider.Ukprn.Value,
                 VacancyId = _fixture.Vacancy.Id,
                 WageType = WageType.CompetitiveSalary
             };
