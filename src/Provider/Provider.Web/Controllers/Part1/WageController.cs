@@ -86,6 +86,13 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
                     ? RedirectToRoute(RouteNames.ProviderCheckYourAnswersGet, new {m.VacancyId, m.Ukprn}) 
                     : RedirectToRoute(RouteNames.Vacancy_Preview_Get, new {m.VacancyId, m.Ukprn});
         }
+
+        [HttpGet("extra-information-wage", Name = RouteNames.AddExtraInformation_Get)]
+        public async Task<IActionResult> AdditionalInformation(VacancyRouteModel vrm, [FromQuery] string wizard = "true")
+        {
+            return View();
+        }
+
         IActionResult HandleDefaultView(WageViewModel vm, bool wizard, WageType? wageType)
         {
             vm.WageType = wageType;
