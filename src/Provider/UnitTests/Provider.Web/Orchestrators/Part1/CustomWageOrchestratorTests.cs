@@ -45,7 +45,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part1
 
             await _fixture.PostCustomWageEditModelAsync(wageEditModel);
 
-            _fixture.VerifyEmployerReviewFieldIndicators(FieldIdentifiers.Wage, fieldIndicatorSet);
+            _fixture.VerifyProviderReviewFieldIndicators(FieldIdentifiers.Wage, fieldIndicatorSet);
         }
 
         public class CustomWageOrchestratorTestsFixture
@@ -57,7 +57,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part1
 
             public CustomWageOrchestratorTestsFixture()
             {
-                MockClient = new Mock<IEmployerVacancyClient>();
+                MockClient = new Mock<IProviderVacancyClient>();
                 MockRecruitVacancyClient = new Mock<IRecruitVacancyClient>();
 
                 User = VacancyOrchestratorTestData.GetVacancyUser();
@@ -81,7 +81,6 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part1
                 MockRecruitVacancyClient.Setup(x => x.GetVacancyAsync(Vacancy.Id)).ReturnsAsync(Vacancy);
                 MockRecruitVacancyClient.Setup(x => x.Validate(Vacancy, ValidationRules)).Returns(new EntityValidationResult());
                 MockRecruitVacancyClient.Setup(x => x.UpdateDraftVacancyAsync(It.IsAny<Vacancy>(), User));
-                MockRecruitVacancyClient.Setup(x => x.UpdateEmployerProfileAsync(It.IsAny<EmployerProfile>(), User));
                 var utility = new Utility(MockRecruitVacancyClient.Object);
                 
                 Sut = new CustomWageOrchestrator(MockRecruitVacancyClient.Object, Mock.Of<ILogger<WageOrchestrator>>(), 
@@ -93,7 +92,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part1
                 await Sut.PostCustomWageEditModelAsync(model, User);
             }
 
-            public void VerifyEmployerReviewFieldIndicators(string fieldIdentifier, bool value)
+            public void VerifyProviderReviewFieldIndicators(string fieldIdentifier, bool value)
             {
                 Vacancy.ProviderReviewFieldIndicators
                     .Where(p => p.FieldIdentifier == fieldIdentifier).Single()
@@ -101,7 +100,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part1
                     .Match<ProviderReviewFieldIndicator>((x) => x.IsChangeRequested == value);
             }
 
-            public Mock<IEmployerVacancyClient> MockClient { get; set; }
+            public Mock<IProviderVacancyClient> MockClient { get; set; }
             public Mock<IRecruitVacancyClient> MockRecruitVacancyClient { get; set; }
         }
     }
