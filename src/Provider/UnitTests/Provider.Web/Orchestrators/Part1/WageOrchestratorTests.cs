@@ -75,8 +75,9 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part1
 
         public class WageOrchestratorTestsFixture
         {
-            private const VacancyRuleSet ValidationRules = VacancyRuleSet.Wage | VacancyRuleSet.MinimumWage;
             private const VacancyRuleSet CompetitiveValidationRules = VacancyRuleSet.CompetitiveWage;
+            private const VacancyRuleSet ValidationRules = VacancyRuleSet.Wage;
+
             public VacancyUser User { get; }
             public Vacancy Vacancy { get; }
             public WageOrchestrator Sut { get; private set; }
