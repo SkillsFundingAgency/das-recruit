@@ -38,7 +38,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part1
 
             var wageEditModel = new CustomWageEditModel
             {
-                Ukprn = (long)_fixture.Vacancy.TrainingProvider.Ukprn,
+                Ukprn = _fixture.Vacancy.TrainingProvider.Ukprn.Value,
                 VacancyId = _fixture.Vacancy.Id,
                 FixedWageYearlyAmount = fixedWageYearlyAmount.ToString()
             };
