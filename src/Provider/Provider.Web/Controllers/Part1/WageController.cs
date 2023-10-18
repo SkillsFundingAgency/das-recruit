@@ -46,42 +46,33 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
                 return HandleDefaultView(vm, wizard, m.WageType);
             }
 
-            if (_feature.IsFeatureEnabled(FeatureNames.ProviderTaskList))
+            switch (m.WageType)
             {
-                switch (m.WageType)
-                {
-                    case WageType.FixedWage:
-                        return RedirectToRoute(RouteNames.CustomWage_Get, new { m.VacancyId, m.Ukprn, wizard });
-                    case WageType.NationalMinimumWage or WageType.NationalMinimumWageForApprentices:
+                case WageType.FixedWage:
+                    return RedirectToRoute(RouteNames.CustomWage_Get, new { m.VacancyId, m.Ukprn, wizard });
+                case WageType.NationalMinimumWage or WageType.NationalMinimumWageForApprentices:
 
-                        if (vm.WageType != m.WageType)
+                    if (vm.WageType != m.WageType)
+                    {
+                        var response = await _orchestrator.PostWageEditModelAsync(m, User.ToVacancyUser());
+
+                        if (!response.Success)
                         {
-                            var response = await _orchestrator.PostWageEditModelAsync(m, User.ToVacancyUser());
-
-                            if (!response.Success)
-                            {
-                                response.AddErrorsToModelState(ModelState);
-                            }
-
-                            if (!ModelState.IsValid)
-                            {
-                                return HandleDefaultView(vm, wizard, m.WageType);
-                            }
+                            response.AddErrorsToModelState(ModelState);
                         }
-                        return RedirectToRoute(RouteNames.AddExtraInformation_Get, new { m.VacancyId, m.Ukprn, wizard });
 
-                    case WageType.CompetitiveSalary:
-                        return RedirectToRoute(RouteNames.SetCompetitivePayRate_Get, new { m.VacancyId, m.Ukprn, wizard });
-                    default:
-                        return HandleDefaultView(vm, wizard, m.WageType);
-                }
+                        if (!ModelState.IsValid)
+                        {
+                            return HandleDefaultView(vm, wizard, m.WageType);
+                        }
+                    }
+                    return RedirectToRoute(RouteNames.AddExtraInformation_Get, new { m.VacancyId, m.Ukprn, wizard });
+
+                case WageType.CompetitiveSalary:
+                    return RedirectToRoute(RouteNames.SetCompetitivePayRate_Get, new { m.VacancyId, m.Ukprn, wizard });
+                default:
+                    return HandleDefaultView(vm, wizard, m.WageType);
             }
-
-            return wizard
-                ? RedirectToRoute(RouteNames.Part1Complete_Get, new { m.VacancyId, m.Ukprn })
-                : _feature.IsFeatureEnabled(FeatureNames.ProviderTaskList)
-                    ? RedirectToRoute(RouteNames.ProviderCheckYourAnswersGet, new { m.VacancyId, m.Ukprn })
-                    : RedirectToRoute(RouteNames.Vacancy_Preview_Get, new { m.VacancyId, m.Ukprn });
         }
 
         [FeatureGate(FeatureNames.CompetitiveSalary)]
