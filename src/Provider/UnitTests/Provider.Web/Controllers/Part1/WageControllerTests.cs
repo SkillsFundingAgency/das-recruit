@@ -56,13 +56,16 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers.Part1
         {
             var orchestratorResponse = new OrchestratorResponse(true);
 
+            _feature.Setup(x => x.IsFeatureEnabled(It.IsAny<string>()))
+                .Returns(true);
+
             _orchestrator.Setup(orchestrator => orchestrator.PostExtraInformationEditModelAsync(It.IsAny<WageExtraInformationViewModel>(), It.IsAny<VacancyUser>()))
                 .ReturnsAsync(orchestratorResponse);
 
             var redirectResult = await _controller.AdditionalInformation(viewModel, true) as RedirectToRouteResult;
 
             Assert.NotNull(redirectResult);
-            Assert.AreEqual(RouteNames.Part1Complete_Get, redirectResult.RouteName);
+            Assert.AreEqual(RouteNames.NumberOfPositions_Get, redirectResult.RouteName);
         }
 
         [Test, MoqAutoData]
