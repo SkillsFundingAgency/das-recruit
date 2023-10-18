@@ -23,6 +23,8 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
     {
         Task<WageViewModel> GetWageViewModelAsync(VacancyRouteModel vrm);
         Task<WageViewModel> GetWageViewModelAsync(WageEditModel m);
+        Task<OrchestratorResponse> PostExtraInformationEditModelAsync(WageExtraInformationViewModel m, VacancyUser user);
+        Task<WageExtraInformationViewModel> GetExtraInformationViewModelAsync(VacancyRouteModel vrm);
         Task<OrchestratorResponse> PostWageEditModelAsync(WageEditModel m, VacancyUser user);
     }
 
@@ -42,6 +44,45 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
             _reviewSummaryService = reviewSummaryService;
             _minimumWageProvider = minimumWageProvider;
             _utility = utility;
+        }
+
+        public async Task<OrchestratorResponse> PostExtraInformationEditModelAsync(WageExtraInformationViewModel m, VacancyUser user)
+        {
+            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(m, RouteNames.AddExtraInformation_Post);
+
+            if (vacancy.Wage == null)
+                vacancy.Wage = new Wage();
+
+            SetVacancyWithProviderReviewFieldIndicators(
+                vacancy.Wage.WageAdditionalInformation,
+                FieldIdResolver.ToFieldId(v => v.Wage.WageAdditionalInformation),
+                vacancy,
+                (v) =>
+                {
+                    return v.Wage.WageAdditionalInformation = m.WageAdditionalInformation;
+                });
+
+            return await ValidateAndExecute(
+                vacancy,
+                v => _vacancyClient.Validate(v, ValidationRules),
+                v => _vacancyClient.UpdateDraftVacancyAsync(vacancy, user)
+            );
+        }
+
+        public async Task<WageExtraInformationViewModel> GetExtraInformationViewModelAsync(VacancyRouteModel vrm)
+        {
+            var vm = await GetWageViewModelAsync(vrm);
+
+            var wageExtraInformationViewModel = new WageExtraInformationViewModel
+            {
+                VacancyId = vm.VacancyId,
+                PageInfo = vm.PageInfo,
+                WageType = vm.WageType,
+                WageAdditionalInformation = vm.WageAdditionalInformation,
+                Ukprn = vm.Ukprn,
+            };
+
+            return wageExtraInformationViewModel;
         }
 
         public async Task<WageViewModel> GetWageViewModelAsync(VacancyRouteModel vrm)

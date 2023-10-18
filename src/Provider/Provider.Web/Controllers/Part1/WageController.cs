@@ -26,7 +26,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
             _orchestrator = orchestrator;
             _feature = feature;
         }
-        
+
         [HttpGet("wage", Name = RouteNames.Wage_Get)]
         public async Task<IActionResult> Wage(VacancyRouteModel vrm, [FromQuery] string wizard = "true")
         {
@@ -77,20 +77,67 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
                             return HandleDefaultView(vm, wizard, m.WageType);
                     }
                 }
-                return RedirectToRoute(RouteNames.ProviderCheckYourAnswersGet, new {m.VacancyId, m.Ukprn});
+                return RedirectToRoute(RouteNames.ProviderCheckYourAnswersGet, new { m.VacancyId, m.Ukprn });
             }
 
             return wizard
-                ? RedirectToRoute(RouteNames.Part1Complete_Get,new { m.VacancyId, m.Ukprn })
+                ? RedirectToRoute(RouteNames.Part1Complete_Get, new { m.VacancyId, m.Ukprn })
                 : _feature.IsFeatureEnabled(FeatureNames.ProviderTaskList)
-                    ? RedirectToRoute(RouteNames.ProviderCheckYourAnswersGet, new {m.VacancyId, m.Ukprn}) 
-                    : RedirectToRoute(RouteNames.Vacancy_Preview_Get, new {m.VacancyId, m.Ukprn});
+                    ? RedirectToRoute(RouteNames.ProviderCheckYourAnswersGet, new { m.VacancyId, m.Ukprn })
+                    : RedirectToRoute(RouteNames.Vacancy_Preview_Get, new { m.VacancyId, m.Ukprn });
         }
 
         [HttpGet("extra-information-wage", Name = RouteNames.AddExtraInformation_Get)]
         public async Task<IActionResult> AdditionalInformation(VacancyRouteModel vrm, [FromQuery] string wizard = "true")
         {
-            return View();
+            var vm = await _orchestrator.GetExtraInformationViewModelAsync(vrm);
+            vm.PageInfo.SetWizard(wizard);
+            return View(vm);
+        }
+
+        [HttpPost("extra-information-wage", Name = RouteNames.AddExtraInformation_Post)]
+        public async Task<IActionResult> AdditionalInformation(WageExtraInformationViewModel vrm, [FromQuery] bool wizard)
+        {
+            if (!ModelState.IsValid)
+            {
+                return await HandleAdditionalInformationDefaultView(vrm, wizard);
+            }
+
+            var response = await _orchestrator.PostExtraInformationEditModelAsync(vrm, User.ToVacancyUser());
+
+            if (!response.Success)
+            {
+                response.AddErrorsToModelState(ModelState);
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return await HandleAdditionalInformationDefaultView(vrm, wizard);
+            }
+
+            if (_feature.IsFeatureEnabled(FeatureNames.ProviderTaskList))
+            {
+                if (wizard)
+                {
+                    return RedirectToRoute(RouteNames.NumberOfPositions_Get, new { Wizard = true, vrm.VacancyId, vrm.Ukprn });
+                }
+
+                return RedirectToRoute(RouteNames.ProviderCheckYourAnswersGet, new { vrm.VacancyId, vrm.Ukprn });
+            }
+
+            return wizard
+                ? RedirectToRoute(RouteNames.Part1Complete_Get, new { vrm.VacancyId, vrm.Ukprn })
+                : _feature.IsFeatureEnabled(FeatureNames.ProviderTaskList)
+                    ? RedirectToRoute(RouteNames.ProviderCheckYourAnswersGet, new { vrm.VacancyId, vrm.Ukprn })
+                    : RedirectToRoute(RouteNames.Vacancy_Preview_Get, new { vrm.VacancyId, vrm.Ukprn });
+        }
+
+        async Task<IActionResult> HandleAdditionalInformationDefaultView(WageExtraInformationViewModel vrm, bool wizard)
+        {
+            var vm = await _orchestrator.GetExtraInformationViewModelAsync(vrm);
+            vm.WageAdditionalInformation = vrm.WageAdditionalInformation;
+            vm.PageInfo.SetWizard(wizard);
+            return View(vm);
         }
 
         IActionResult HandleDefaultView(WageViewModel vm, bool wizard, WageType? wageType)

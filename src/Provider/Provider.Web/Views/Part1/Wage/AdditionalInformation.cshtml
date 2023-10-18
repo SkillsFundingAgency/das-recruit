@@ -1,1 +1,66 @@
-﻿ToDo
+﻿@using Microsoft.Extensions.Options
+@using Esfa.Recruit.Shared.Web.Mappers
+@model Esfa.Recruit.Provider.Web.ViewModels.Part1.Wage.WageExtraInformationViewModel
+@inject IOptions<ExternalLinksConfiguration> externalLinks
+@{
+    ViewBag.Vpv = "/recruitment/provider/page-part1-additional-information";
+    ViewBag.Title = "Additional-Information";
+    ViewBag.ZenDeskLabel = "recruit-additional-information";
+}
+
+@section BackLink {
+    <esfaFeatureEnabled name="@FeatureNames.ProviderTaskList">
+        <a asp-route="@Model.RouteName" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Back</a>
+    </esfaFeatureEnabled>
+    <esfaFeatureDisabled name="@FeatureNames.ProviderTaskList">
+        <a asp-show="@Model.PageInfo.IsWizard" asp-all-route-data="@Model.RouteDictionary" asp-route="@RouteNames.Wage_Get" esfa-automation="link-back" class="govuk-back-link">Back</a>
+    </esfaFeatureDisabled>
+}
+
+<main class="govuk-main-wrapper " id="main-content" role="main">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+
+            <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }' />
+
+            <form asp-route="@RouteNames.AddExtraInformation_Post" asp-all-route-data="@Model.RouteDictionary" asp-route-wizard="@Model.PageInfo.IsWizard" novalidate>
+                @Html.HiddenFor(model => model.WageType)
+                <div esfa-validation-marker-for="WageAdditionalInformation" class="govuk-form-group">
+                    <fieldset class="govuk-fieldset" aria-describedby="extra-info-hint">
+                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
+                            <h1 class="govuk-fieldset__heading">
+                                Extra information about pay (optional)
+                            </h1>
+                        </legend>
+                        <span esfa-validation-message-for="WageAdditionalInformation" class="govuk-error-message"></span>
+
+                        <div id="extra-info-hint" class="govuk-hint">
+                            For example bonus schemes, performance increases or benefits
+                        </div>
+                        <div class="govuk-character-count" data-module="govuk-character-count" data-minlength="50"
+                             data-maxlength="250">
+                            <textarea asp-for="WageAdditionalInformation" class="govuk-textarea govuk-!-width-three-quarters govuk-js-character-count"
+                                      id="WageAdditionalInformation" name="WageAdditionalInformation" rows="5"></textarea>
+                            <div id="WageAdditionalInformation-info" class="govuk-hint govuk-character-count__message"
+                                 aria-live="polite">
+                                You can enter up to 250 characters
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+
+                <div class="govuk-button-group">
+                    <button type="submit" class="govuk-button save-button" esfa-automation="continue-button">Continue</button>
+                    <esfaFeatureEnabled name="@FeatureNames.ProviderTaskList">
+                        <a asp-route="@RouteNames.Dashboard_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-cancel" class="govuk-link govuk-link--no-visited-state">Cancel</a>
+                    </esfaFeatureEnabled>
+                    <esfaFeatureDisabled name="@FeatureNames.ProviderTaskList">
+                        <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Vacancies_Get" asp-all-route-data="@Model.RouteDictionary" class="govuk-link govuk-link--no-visited-state">Cancel</a>
+                        <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.Vacancy_Preview_Get" asp-all-route-data="@Model.RouteDictionary" asp-fragment="@Anchors.ApprenticeshipSummarySection" class="govuk-link govuk-link--no-visited-state">Cancel</a>
+                    </esfaFeatureDisabled>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</main>
