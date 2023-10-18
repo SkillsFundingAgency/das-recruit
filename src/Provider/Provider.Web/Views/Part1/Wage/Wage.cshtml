@@ -23,17 +23,12 @@
         <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }' />
         <partial name="@PartialNames.ReviewSummary" for="Review" />
         <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">
-            <span class="govuk-caption-xl">@Model.Title</span>
             How much will the apprentice be paid?
         </h1>
         <form asp-route="@RouteNames.Wage_Post" asp-route-vacancyId="@Model.VacancyId" asp-route-ukprn="@Model.Ukprn" asp-route-wizard="@Model.PageInfo.IsWizard" novalidate>
 
             <div esfa-validation-marker-for="WageType" class="govuk-form-group">
                 <fieldset class="govuk-fieldset">
-                    <div class="govuk-body">
-                        Pay will show as a yearly figure on your vacancy.
-                        <a href="@externalLinks.Value.NationalMinimumWageRates" rel="noopener" target="_blank" class="govuk-link govuk-link--no-visited-state">View the National Minimum Wage for apprentices (opens in a new tab).</a>
-                    </div>
                     <span esfa-validation-message-for="WageType" class="govuk-error-message"></span>
                     <div class="govuk-radios govuk-radios--conditional" data-module="radios">
                         <div class="govuk-radios__item">
