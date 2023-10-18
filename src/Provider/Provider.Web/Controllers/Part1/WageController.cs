@@ -26,7 +26,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
             _orchestrator = orchestrator;
             _feature = feature;
         }
-        
+
         [HttpGet("wage", Name = RouteNames.Wage_Get)]
         public async Task<IActionResult> Wage(VacancyRouteModel vrm, [FromQuery] string wizard = "true")
         {
@@ -72,6 +72,12 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
                 default:
                     return HandleDefaultView(vm, wizard, m.WageType);
             }
+        }
+
+        [HttpGet("extra-information-wage", Name = RouteNames.AddExtraInformation_Get)]
+        public async Task<IActionResult> AdditionalInformation(VacancyRouteModel vrm, [FromQuery] string wizard = "true")
+        {
+            return View();
         }
 
         IActionResult HandleDefaultView(WageViewModel vm, bool wizard, WageType? wageType)
