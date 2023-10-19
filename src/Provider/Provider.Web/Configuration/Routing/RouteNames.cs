@@ -133,5 +133,6 @@
         public const string CustomWage_Post = "CustomWage_Post";
         public const string SetCompetitivePayRate_Get = "SetCompetitivePayRate_Get";
         public const string AddExtraInformation_Get = "AddExtraInformation_Get";
+        public const string SetCompetitivePayRate_Post = "SetCompetitivePayRate_Post";
     }
 }

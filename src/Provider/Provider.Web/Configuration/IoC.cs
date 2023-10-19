@@ -35,9 +35,9 @@ namespace Esfa.Recruit.Provider.Web.Configuration
         public static void AddIoC(this IServiceCollection services, IConfiguration configuration)
         {
             var serviceParameters = new ServiceParameters(configuration[$"RecruitConfiguration:{nameof(VacancyType)}"]);
-            
+
             services.AddSingleton(serviceParameters);
-            
+
             services.AddRecruitStorageClient(configuration);
 
             //Configuration
@@ -81,6 +81,7 @@ namespace Esfa.Recruit.Provider.Web.Configuration
 
         private static void RegisterFluentValidators(IServiceCollection services)
         {
+            services.AddSingleton<IValidator<CompetitiveWageEditModel>, CompetitiveWageEditModelValidator>();
             services.AddSingleton<IValidator<ApplicationReviewEditModel>, ApplicationReviewEditModelValidator>();
             services.AddSingleton<IValidator<WageEditModel>, WageEditModelValidator>();
             services.AddSingleton<IValidator<ApplicationReviewFeedBackViewModel>, ApplicationReviewFeedBackModelValidator>();
@@ -118,7 +119,7 @@ namespace Esfa.Recruit.Provider.Web.Configuration
             services.AddTransient<ICustomWageOrchestrator,CustomWageOrchestrator>();
             services.AddTransient<CloseVacancyOrchestrator>();
             services.AddTransient<EditVacancyDatesOrchestrator>();
-            services.AddTransient<IApplicationReviewOrchestrator , ApplicationReviewOrchestrator>();
+            services.AddTransient<IApplicationReviewOrchestrator, ApplicationReviewOrchestrator>();
             services.AddTransient<IApplicationReviewsOrchestrator, ApplicationReviewsOrchestrator>();
             services.AddTransient<CloneVacancyOrchestrator>();
             services.AddTransient<DeleteVacancyOrchestrator>();
