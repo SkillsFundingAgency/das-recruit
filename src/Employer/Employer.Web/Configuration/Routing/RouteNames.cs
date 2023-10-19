@@ -69,6 +69,15 @@
         public const string Wage_Get = "Wage_Get";
         public const string Wage_Post = "Wage_Post";
 
+        public const string CustomWage_Get = "CustomWage_Get";
+        public const string CustomWage_Post = "CustomWage_Post";
+
+        public const string SetCompetitivePayRate_Get = "SetCompetitivePayRate_Get";
+        public const string SetCompetitivePayRate_Post = "SetCompetitivePayRate_Post";
+        
+        public const string AddExtraInformation_Get = "AddExtraInformation_Get";
+        public const string AddExtraInformation_Post = "AddExtraInformation_Post";
+
         public const string ShortDescription_Get = "ShortDescription_Get";
         public const string ShortDescription_Post = "ShortDescription_Post";
 

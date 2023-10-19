@@ -1,0 +1,69 @@
+﻿@using Esfa.Recruit.Vacancies.Client.Domain.Entities
+@using Microsoft.Extensions.Options
+@model Esfa.Recruit.Employer.Web.ViewModels.Part1.Wage.CompetitiveWageViewModel
+@inject IOptions<ExternalLinksConfiguration> externalLinks
+@{
+    ViewBag.Vpv = "/recruitment/employer/page-part1-competitive-salary";
+    ViewBag.Title = "Competitive Salary";
+    ViewBag.ZenDeskLabel = "recruit-competitive-salary";
+}
+
+@section BackLink {
+    <a asp-route="@RouteNames.Wage_Get" asp-all-route-data="@Model.RouteDictionary" asp-route-wizard="@Model.PageInfo.IsWizard" esfa-automation="link-back" class="govuk-back-link">Back</a>
+}
+
+<main class="govuk-main-wrapper " id="main-content" role="main">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+
+            <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }' />
+
+            <form asp-route="@RouteNames.SetCompetitivePayRate_Post" asp-all-route-data="@Model.RouteDictionary" novalidate>
+
+                <div esfa-validation-marker-for="IsSalaryAboveNationalMinimumWage" class="govuk-form-group">
+                    <fieldset class="govuk-fieldset">
+                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
+                            <h1 class="govuk-fieldset__heading">
+                                Set as competitive?
+                            </h1>
+                        </legend>
+                        <p class="govuk-body">
+                            You can only set a wage as competitive if you're paying more than <a href="https://www.gov.uk/national-minimum-wage-rates" rel="noopener" target="_blank"> ​National Minimum Wage (opens in a new tab) </a>.
+                        </p>
+
+                        <span esfa-validation-message-for="IsSalaryAboveNationalMinimumWage" class="govuk-error-message"></span>
+
+                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                            Is the salary above National Minimum Wage?
+                        </legend>
+
+                        <div class="govuk-radios govuk-radios--conditional" data-module="radios">
+
+                            <div class="govuk-radios__item">
+                                <input asp-for="IsSalaryAboveNationalMinimumWage" value="true" type="radio" class="govuk-radios__input" id="competitive-salary-type-national-minimum-wage-or-above" aria-describedby="competitive-salary-type-national-minimum-wage-or-above-hint">
+                                <label for="competitive-salary-type-national-minimum-wage-or-above" class="govuk-label govuk-radios__label">
+                                    Yes
+                                </label>
+                            </div>
+
+                            <div class="govuk-radios__item">
+                                <input asp-for="IsSalaryAboveNationalMinimumWage" value="false" type="radio" class="govuk-radios__input" id="competitive-salary-type-between" aria-describedby="competitive-salary-type-between-hint">
+                                <label for="competitive-salary-type-between" class="govuk-label govuk-radios__label">
+                                    No
+                                </label>
+                            </div>
+
+                        </div>
+
+                    </fieldset>
+                </div>
+
+                <div class="govuk-button-group">
+                    <button type="submit" class="govuk-button save-button" esfa-automation="continue-button">Save and continue</button>
+                    <a asp-route="@RouteNames.Dashboard_Get" asp-all-route-data="@Model.RouteDictionary" class="govuk-link govuk-link--no-visited-state">Cancel</a>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</main>
