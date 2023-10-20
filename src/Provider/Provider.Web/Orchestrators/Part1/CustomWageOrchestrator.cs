@@ -77,7 +77,6 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
         {
             var vm = await GetCustomWageViewModelAsync((VacancyRouteModel)m);
             vm.FixedWageYearlyAmount = m.FixedWageYearlyAmount;
-
             return vm;
         }
 
