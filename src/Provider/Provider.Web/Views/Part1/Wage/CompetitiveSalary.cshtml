@@ -1,0 +1,78 @@
+﻿@using Esfa.Recruit.Shared.Web.Mappers
+@using Esfa.Recruit.Shared.Web.TagHelpers
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model Esfa.Recruit.Provider.Web.ViewModels.Part1.Wage.CompetitiveWageViewModel
+@{
+    ViewBag.Vpv = "/recruitment/provider/page-part1-competitive-salary";
+    ViewBag.Title = "Competitive Salary";
+    ViewBag.ZenDeskLabel = "recruit-competitive-salary";
+}
+
+@section BackLink {
+    <esfaFeatureEnabled name="@FeatureNames.ProviderTaskList">
+        <a asp-route="@RouteNames.Wage_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Back</a>
+    </esfaFeatureEnabled>
+    <esfaFeatureDisabled name="@FeatureNames.ProviderTaskList">
+        <a asp-show="@Model.PageInfo.IsWizard" asp-all-route-data="@Model.RouteDictionary" asp-route="@RouteNames.Wage_Get" esfa-automation="link-back" class="govuk-back-link">Back</a>
+    </esfaFeatureDisabled>
+}
+
+<main class="govuk-main-wrapper " id="main-content" role="main">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+
+            <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }' />
+
+            <h1 class="govuk-heading-xl">
+                Set as competitive
+            </h1>
+
+            <p class="govuk-body">You can only set a wage as competitive if you're paying more than <a href="https://www.gov.uk/national-minimum-wage-rates" rel="noopener" target="_blank"> ​National Minimum Wage (opens in a new tab)​</a>.</p>
+
+            <form asp-route="@RouteNames.SetCompetitivePayRate_Post" asp-all-route-data="@Model.RouteDictionary" novalidate>
+
+                <div esfa-validation-marker-for="IsSalaryAboveNationalMinimumWage" class="govuk-form-group">
+                    <fieldset class="govuk-fieldset">
+
+                        <span esfa-validation-message-for="IsSalaryAboveNationalMinimumWage" class="govuk-error-message"></span>
+
+                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                            Is the salary above National Minimum Wage?
+                        </legend>
+
+                        <div class="govuk-radios govuk-radios--conditional" data-module="radios">
+
+                            <div class="govuk-radios__item">
+                                <input asp-for="IsSalaryAboveNationalMinimumWage" value="true" type="radio" class="govuk-radios__input" id="competitive-salary-type-national-minimum-wage-or-above" aria-describedby="competitive-salary-type-national-minimum-wage-or-above-hint">
+                                <label for="competitive-salary-type-national-minimum-wage-or-above" class="govuk-label govuk-radios__label">
+                                    Yes
+                                </label>
+                            </div>
+
+                            <div class="govuk-radios__item">
+                                <input asp-for="IsSalaryAboveNationalMinimumWage" value="false" type="radio" class="govuk-radios__input" id="competitive-salary-type-between" aria-describedby="competitive-salary-type-between-hint">
+                                <label for="competitive-salary-type-between" class="govuk-label govuk-radios__label">
+                                    No
+                                </label>
+                            </div>
+
+                        </div>
+
+                    </fieldset>
+                </div>
+
+                <div class="govuk-button-group">
+                    <button type="submit" class="govuk-button save-button" esfa-automation="continue-button">Save and continue</button>
+                    <esfaFeatureEnabled name="@FeatureNames.ProviderTaskList">
+                        <a asp-route="@RouteNames.Dashboard_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-cancel" class="govuk-link govuk-link--no-visited-state">Cancel</a>
+                    </esfaFeatureEnabled>
+                    <esfaFeatureDisabled name="@FeatureNames.ProviderTaskList">
+                        <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Vacancies_Get" asp-all-route-data="@Model.RouteDictionary" class="govuk-link govuk-link--no-visited-state">Cancel</a>
+                        <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.Vacancy_Preview_Get" asp-all-route-data="@Model.RouteDictionary" asp-fragment="@Anchors.ApprenticeshipSummarySection" class="govuk-link govuk-link--no-visited-state">Cancel</a>
+                    </esfaFeatureDisabled>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</main>

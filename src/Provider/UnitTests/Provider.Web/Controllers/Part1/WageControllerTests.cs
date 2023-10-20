@@ -34,6 +34,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers.Part1
             _orchestrator = new Mock<IWageOrchestrator>();
 
             _fixture = new Fixture();
+
             _ukprn = 10000234;
 
             _feature = new Mock<IFeature>();
@@ -99,6 +100,42 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers.Part1
                 .ReturnsAsync(orchestratorResponse);
 
             var result = await _controller.AdditionalInformation(viewModel, true) as ViewResult;
+        } 
+         
+        public async Task GET_CompetitiveSalary_ReturnsViewModel()
+        {
+            var rm = _fixture.Create<VacancyRouteModel>();
+            var vm = _fixture.Create<CompetitiveWageViewModel>();
+            _orchestrator.Setup(orchestrator => orchestrator.GetCompetitiveWageViewModelAsync(It.Is<VacancyRouteModel>(x => x == rm)))
+                .ReturnsAsync(vm);
+
+            var result = await _controller.CompetitiveSalary(rm, true) as ViewResult;
+
+            result.Should().NotBeNull();
+            result!.Model.Should().Be(vm);
+        }
+
+        [Test]
+        public async Task POST_CompetitiveSalary_RedirectsToAddExtraInformation()
+        {
+            var editModel = _fixture.Create<CompetitiveWageEditModel>();
+            var vm = _fixture.Create<CompetitiveWageViewModel>();
+
+            vm.WageType = WageType.FixedWage;
+            editModel.WageType = WageType.CompetitiveSalary;
+
+            _orchestrator.Setup(o => o.GetCompetitiveWageViewModelAsync(It.IsAny<CompetitiveWageEditModel>()))
+                .ReturnsAsync(vm);
+
+            _orchestrator.Setup(x => x.PostCompetitiveWageEditModelAsync(It.Is<CompetitiveWageEditModel>(x => x == editModel), It.IsAny<VacancyUser>()))
+                .ReturnsAsync(new OrchestratorResponse(true));
+
+            var redirectResult = await _controller.CompetitiveSalary(editModel, false) as RedirectToRouteResult;
+
+            Assert.NotNull(redirectResult);
+            Assert.AreEqual(RouteNames.AddExtraInformation_Get, redirectResult.RouteName);
+            Assert.AreEqual(editModel.VacancyId, redirectResult.RouteValues["VacancyId"]);
+            Assert.AreEqual(editModel.Ukprn, redirectResult.RouteValues["Ukprn"]);
         }
 
         [Test, MoqAutoData]
@@ -194,4 +231,3 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers.Part1
         }
     }
 }
-

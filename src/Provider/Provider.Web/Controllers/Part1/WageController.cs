@@ -10,6 +10,7 @@ using Esfa.Recruit.Shared.Web.FeatureToggle;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.FeatureManagement.Mvc;
 
 namespace Esfa.Recruit.Provider.Web.Controllers.Part1
 {
@@ -73,6 +74,46 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
                 default:
                     return HandleDefaultView(vm, wizard, m.WageType);
             }
+        }
+
+        [FeatureGate(FeatureNames.CompetitiveSalary)]
+        [HttpGet("competitive-wage", Name = RouteNames.SetCompetitivePayRate_Get)]
+        public async Task<IActionResult> CompetitiveSalary(VacancyRouteModel vrm, [FromQuery] bool wizard)
+        {
+            var vm = await _orchestrator.GetCompetitiveWageViewModelAsync(vrm);
+            vm.PageInfo.SetWizard(wizard);
+            return View(vm);
+        }
+
+        [FeatureGate(FeatureNames.CompetitiveSalary)]
+        [HttpPost("competitive-wage", Name = RouteNames.SetCompetitivePayRate_Post)]
+        public async Task<IActionResult> CompetitiveSalary(CompetitiveWageEditModel m, [FromQuery] bool wizard)
+        {
+            var vm = await _orchestrator.GetCompetitiveWageViewModelAsync(m);
+
+            if (!ModelState.IsValid)
+            {
+                return View(vm);
+            }
+
+            if (m.IsSalaryAboveNationalMinimumWage.HasValue && m.IsSalaryAboveNationalMinimumWage.Value)
+            {
+                m.WageType = WageType.CompetitiveSalary;
+
+                if (vm.WageType != m.WageType)
+                {
+                    var response = await _orchestrator.PostCompetitiveWageEditModelAsync(m, User.ToVacancyUser());
+
+                    if (!response.Success)
+                    {
+                        response.AddErrorsToModelState(ModelState);
+                    }
+                }
+
+                return RedirectToRoute(RouteNames.AddExtraInformation_Get, new { m.VacancyId, m.Ukprn, wizard });
+            }
+
+            return RedirectToRoute(RouteNames.Wage_Get, new { m.VacancyId, m.Ukprn, wizard });
         }
 
         [HttpGet("extra-information-wage", Name = RouteNames.AddExtraInformation_Get)]

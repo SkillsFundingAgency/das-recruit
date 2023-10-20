@@ -26,6 +26,26 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part1
             _fixture = new WageOrchestratorTestsFixture();
         }
 
+        [Fact]
+        public async Task WhenCompetitiveSalaryUpdated_ShouldFlagFieldIndicators()
+        {
+            _fixture
+                .Setup();
+
+            _fixture.SetCompetitiveValidationRule();
+
+            var wageExtraInformationViewModel = new CompetitiveWageEditModel()
+            {
+                Ukprn = _fixture.Vacancy.TrainingProvider.Ukprn.Value,
+                VacancyId = _fixture.Vacancy.Id,
+                WageType = WageType.CompetitiveSalary
+            };
+
+            await _fixture.PostExtraInformationEditModelAsync(wageExtraInformationViewModel);
+
+            _fixture.VerifyProviderReviewFieldIndicators(FieldIdentifiers.Wage, true);
+        }
+
         [Theory]
         [InlineData(WageType.FixedWage, "this is a value", true)]
         [InlineData(WageType.NationalMinimumWage, "this is a value", true)]
@@ -79,7 +99,9 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part1
 
         public class WageOrchestratorTestsFixture
         {
+            private const VacancyRuleSet CompetitiveValidationRules = VacancyRuleSet.CompetitiveWage;
             private const VacancyRuleSet ValidationRules = VacancyRuleSet.Wage;
+
             public VacancyUser User { get; }
             public Vacancy Vacancy { get; }
             public WageOrchestrator Sut { get; private set; }
@@ -125,12 +147,22 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part1
             {
                 await Sut.PostExtraInformationEditModelAsync(model, User);
             }
+          
+            public void SetCompetitiveValidationRule()
+            {
+                MockRecruitVacancyClient.Setup(x => x.Validate(Vacancy, CompetitiveValidationRules)).Returns(new EntityValidationResult()); ;
+            }
 
             public async Task PostWageEditModelAsync(WageEditModel model)
             {
                 await Sut.PostWageEditModelAsync(model, User);
             }
 
+            public async Task PostExtraInformationEditModelAsync(CompetitiveWageEditModel model)
+            {
+                await Sut.PostCompetitiveWageEditModelAsync(model, User);
+            }
+  
             public void VerifyProviderReviewFieldIndicators(string[] setFieldIdentifiers, string[] unsetFieldIdentifiers)
             {
                 foreach (var fieldIdentifier in setFieldIdentifiers)
