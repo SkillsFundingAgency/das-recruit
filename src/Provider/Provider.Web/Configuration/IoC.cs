@@ -83,6 +83,7 @@ namespace Esfa.Recruit.Provider.Web.Configuration
         {
             services.AddSingleton<IValidator<CompetitiveWageEditModel>, CompetitiveWageEditModelValidator>();
             services.AddSingleton<IValidator<ApplicationReviewEditModel>, ApplicationReviewEditModelValidator>();
+            services.AddSingleton<IValidator<WageExtraInformationViewModel>, WageExtraInformationModelValidator>();
             services.AddSingleton<IValidator<WageEditModel>, WageEditModelValidator>();
             services.AddSingleton<IValidator<ApplicationReviewFeedBackViewModel>, ApplicationReviewFeedBackModelValidator>();
             services.AddSingleton<IValidator<ApplicationReviewStatusConfirmationEditModel>, ApplicationReviewStatusConfirmationEditModelValidator>();
