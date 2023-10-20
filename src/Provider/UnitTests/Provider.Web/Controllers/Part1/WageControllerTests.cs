@@ -53,7 +53,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers.Part1
         }
 
         [Test, MoqAutoData]
-        public async Task AdditionalInformation_ValidModel_SuccessfulRedirect(WageExtraInformationViewModel viewModel)
+        public async Task POST_AdditionalInformation_ValidModel_SuccessfulRedirect(WageExtraInformationViewModel viewModel)
         {
             var orchestratorResponse = new OrchestratorResponse(true);
 
@@ -70,7 +70,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers.Part1
         }
 
         [Test, MoqAutoData]
-        public async Task AdditionalInformation_Invalid_ReturnsView(WageExtraInformationViewModel viewModel)
+        public async Task POST_AdditionalInformation_Invalid_ReturnsView(WageExtraInformationViewModel viewModel)
         {
             _orchestrator.Setup(orchestrator => orchestrator.GetExtraInformationViewModelAsync(It.IsAny<VacancyRouteModel>()))
                 .ReturnsAsync(viewModel);
@@ -84,7 +84,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers.Part1
         }
 
         [Test, MoqAutoData]
-        public async Task Errors_ReturnsView(WageExtraInformationViewModel viewModel)
+        public async Task POST_AdditionalInformation_Errors_ReturnsView(WageExtraInformationViewModel viewModel)
         {
             var orchestratorResponse = new OrchestratorResponse(false);
             orchestratorResponse.Errors.Errors.Add(new EntityValidationError(123, "Test.PropertyName",
@@ -100,6 +100,9 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers.Part1
                 .ReturnsAsync(orchestratorResponse);
 
             var result = await _controller.AdditionalInformation(viewModel, true) as ViewResult;
+
+            result.Should().NotBeNull();
+            result!.Model.Should().Be(viewModel);
         } 
          
         public async Task GET_CompetitiveSalary_ReturnsViewModel()
@@ -139,7 +142,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers.Part1
         }
 
         [Test, MoqAutoData]
-        public async Task WageType_FixedWage_RedirectsToCustomWage(WageViewModel viewModel)
+        public async Task POST_Wage_FixedWage_RedirectsToCustomWage(WageViewModel viewModel)
         {
             _feature.Setup(feat => feat.IsFeatureEnabled("ProviderTaskList"))
                  .Returns(true);
@@ -154,7 +157,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers.Part1
         }
 
         [Test, MoqAutoData]
-        public async Task WageType_CompetitiveSalary_RedirectsToSetCompetitivePayRate(WageViewModel viewModel)
+        public async Task POST_Wage_CompetitiveSalary_RedirectsToSetCompetitivePayRate(WageViewModel viewModel)
         {
             _feature.Setup(feat => feat.IsFeatureEnabled("ProviderTaskList"))
                 .Returns(true);
@@ -168,7 +171,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers.Part1
         }
 
         [Test, MoqAutoData]
-        public async Task WageType_NationalMinimumWage_RedirectsToAddExtraInformation(WageViewModel viewModel)
+        public async Task POST_Wage_NationalMinimumWage_RedirectsToAddExtraInformation(WageViewModel viewModel)
         {
             var orchestratorResponse = new OrchestratorResponse(true);
             _orchestrator.Setup(orchestrator => orchestrator.GetWageViewModelAsync(It.IsAny<VacancyRouteModel>()))
@@ -185,7 +188,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers.Part1
         }
 
         [Test, MoqAutoData]
-        public async Task WageType_NationalMinimumWageForApprentices_RedirectsToAddExtraInformation(WageViewModel viewModel)
+        public async Task POST_Wage_NationalMinimumWageForApprentices_RedirectsToAddExtraInformation(WageViewModel viewModel)
         {
             _orchestrator.Setup(orchestrator => orchestrator.GetWageViewModelAsync(It.IsAny<VacancyRouteModel>()))
                 .ReturnsAsync(viewModel);
@@ -203,7 +206,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers.Part1
         }
 
         [Test, MoqAutoData]
-        public async Task WageType_InvalidWageType_ReturnsView(WageViewModel viewModel)
+        public async Task POST_Wage_InvalidWageType_ReturnsView(WageViewModel viewModel)
         {
             _orchestrator.Setup(orchestrator => orchestrator.GetWageViewModelAsync(It.IsAny<VacancyRouteModel>()))
                 .ReturnsAsync(viewModel);
@@ -218,7 +221,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers.Part1
 
 
         [Test, MoqAutoData]
-        public async Task AdditionalInformation_Get_ReturnsViewModel(WageExtraInformationViewModel viewModel, VacancyRouteModel vacancyRouteModel)
+        public async Task GET_AdditionalInformation_ReturnsViewModel(WageExtraInformationViewModel viewModel, VacancyRouteModel vacancyRouteModel)
         {
             _orchestrator.Setup(orchestrator => orchestrator.GetExtraInformationViewModelAsync(It.IsAny<VacancyRouteModel>()))
                         .ReturnsAsync(viewModel);
