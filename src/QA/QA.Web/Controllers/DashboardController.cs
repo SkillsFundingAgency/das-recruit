@@ -24,7 +24,7 @@ namespace Esfa.Recruit.Qa.Web.Controllers
         [Route("",Name = RouteNames.Dashboard_Index_Get)]
         public async Task<IActionResult> Index([FromQuery]string searchTerm)
         {
-            bool isDfESignInAllowed = _configuration.GetValue<bool>("UseDfeSignIn");
+            bool isDfESignInAllowed = _configuration.GetValue<bool>("UseDfESignIn");
             if (isDfESignInAllowed && User.Identity is { IsAuthenticated: false })
             {
                 // if the user is not authenticated, redirect them back to start now page.

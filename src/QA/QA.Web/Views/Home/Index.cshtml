@@ -1,4 +1,5 @@
-﻿@{
+﻿@model Esfa.Recruit.Qa.Web.ViewModels.Home.HomeIndexViewModel
+@{
     ViewBag.Title = "Vacancy QA";
     ViewBag.ShowNav = false;
 }
@@ -12,7 +13,12 @@
             <li>remove training providers from Recruit an apprentice</li>
             <li>create reports for vacancies</li>
         </ul>
-        <p class="govuk-body">You’ll need a DfE Sign-in account to use this service. If you don’t have a DfE Sign-in account, you can create one at the next step.</p>
+        @if (Model.UseDfESignIn)
+        {
+            <p class="govuk-body">
+                You’ll need a DfE Sign-in account to use this service. If you don’t have a DfE Sign-in account, you can create one at the next step.
+            </p>
+        }
         <a asp-route="@RouteNames.Dashboard_Next_Vacancy_Post" class="govuk-button govuk-button--start">Start now</a>
     </div>
 </div>

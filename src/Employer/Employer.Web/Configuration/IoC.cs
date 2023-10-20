@@ -12,6 +12,7 @@ using Esfa.Recruit.Employer.Web.TagHelpers;
 using Esfa.Recruit.Employer.Web.ViewModels.ApplicationReview;
 using Esfa.Recruit.Employer.Web.ViewModels.ApplicationReviews;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.TrainingProvider;
+using Esfa.Recruit.Employer.Web.ViewModels.Part1.Wage;
 using Esfa.Recruit.Employer.Web.ViewModels.Validations;
 using Esfa.Recruit.Shared.Web.Configuration;
 using Esfa.Recruit.Shared.Web.Mappers;
@@ -85,6 +86,9 @@ namespace Esfa.Recruit.Employer.Web.Configuration
         private static void RegisterFluentValidators(IServiceCollection services)
         {
             services.AddSingleton<IValidator<ApplicationReviewEditModel>, ApplicationReviewEditModelValidator>();
+            services.AddSingleton<IValidator<WageExtraInformationViewModel>, WageExtraInformationModelValidator>();
+            services.AddSingleton<IValidator<WageEditModel>, WageEditModelValidator>();
+            services.AddSingleton<IValidator<CompetitiveWageEditModel>, CompetitiveWageEditModelValidator>();
             services.AddSingleton<IValidator<ApplicationReviewStatusConfirmationEditModel>, ApplicationReviewStatusConfirmationEditModelValidator>();
             services.AddSingleton<IValidator<ApplicationReviewsToUnsuccessfulRouteModel>, ApplicationReviewsToUnsuccessfulRouteModelValidator>();
             services.AddSingleton<IValidator<SelectTrainingProviderEditModel>, SelectTrainingProviderEditModelValidator>();
@@ -115,7 +119,8 @@ namespace Esfa.Recruit.Employer.Web.Configuration
             services.AddTransient<ShortDescriptionOrchestrator>();
             services.AddTransient<TrainingOrchestrator>();
             services.AddTransient<VacancyDescriptionOrchestrator>();
-            services.AddTransient<WageOrchestrator>();
+            services.AddTransient<IWageOrchestrator, WageOrchestrator>();
+            services.AddTransient<CustomWageOrchestrator>();
             services.AddTransient<SkillsOrchestrator>();
             services.AddTransient<QualificationsOrchestrator>();
             services.AddTransient<VacancyManageOrchestrator>();
