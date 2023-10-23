@@ -55,7 +55,6 @@ namespace Esfa.Recruit.Provider.Web.ViewModels
         public string WageText { get; internal set; }
         public WageType? WageType { get; internal set; }
         public string WorkingWeekDescription { get; internal set; }
-        public WageType? WageType { get; internal set; }
         public bool HasCompetitiveSalaryType => WageType.HasValue && WageType.Value == Vacancies.Client.Domain.Entities.WageType.CompetitiveSalary;
         public string AccountLegalEntityPublicHashedId { get; internal set; }
         public int RouteId { get; set; }
@@ -73,7 +72,6 @@ namespace Esfa.Recruit.Provider.Web.ViewModels
             get { return BuildAdditionalQuestionText(_additionalQuestion2); }
             set { _additionalQuestion2 = value; }
         }
-        public bool HasCompetitiveSalaryType => WageType.HasValue && WageType.Value == Recruit.Vacancies.Client.Domain.Entities.WageType.CompetitiveSalary;
         public bool HasSubmittedAdditionalQuestions { get; internal set; }
 
         public bool HasClosingDate => !string.IsNullOrWhiteSpace(ClosingDate);
