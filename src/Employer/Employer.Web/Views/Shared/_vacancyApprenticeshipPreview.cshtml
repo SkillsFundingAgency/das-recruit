@@ -37,8 +37,11 @@
     <div class="govuk-grid-column-one-third">
 
       <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Annual wage</h3>
-      <p asp-show="@Model.HasWageText" class="govuk-body">@Model.WageText</p>
-      <p asp-show="@Model.HasWageInfo" class="govuk-body">@Model.WageInfo</p>
+        <p asp-show="@Model.HasWageText" class="govuk-body">@Model.WageText</p>
+        
+        <p asp-show="@Model.HasCompetitiveSalaryType" class="govuk-body">@Model.WageType.GetDisplayName()</p>
+        <p asp-show="@Model.HasWageInfo" class="govuk-body">@Model.WageInfo</p>
+       
 
       <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Working week</h3>
       <p asp-show="@Model.HasWorkingWeekDescription" class="govuk-body">@Model.WorkingWeekDescription</p>

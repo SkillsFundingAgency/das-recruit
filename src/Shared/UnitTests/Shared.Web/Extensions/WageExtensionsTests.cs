@@ -19,7 +19,7 @@ namespace Esfa.Recruit.Shared.Web.UnitTests.Extensions
 
             var actual = wage.ToText(null);
 
-            actual.Should().Be("£12,345,678.91");
+            actual.Should().Be("£12,345,678.91 a year");
         }
 
         [Fact]
@@ -33,7 +33,7 @@ namespace Esfa.Recruit.Shared.Web.UnitTests.Extensions
 
             var actual = wage.ToText(new DateTime(2018, 5, 1));
 
-            actual.Should().Be("£8,202.01 to £15,290.89");
+            actual.Should().Be("£8,202.01 to £15,290.89 a year");
         }
 
         [Fact]
@@ -47,7 +47,20 @@ namespace Esfa.Recruit.Shared.Web.UnitTests.Extensions
 
             var actual = wage.ToText(new DateTime(2018, 5, 1));
 
-            actual.Should().Be("£7,225.58");
+            actual.Should().Be("£7,225.58 a year");
+        }
+
+        [Fact]
+        public void ShouldReturnCompetitiveSalaryText()
+        {
+            var wage = new Wage
+            {
+                WageType = WageType.CompetitiveSalary
+            };
+
+            var actual = wage.ToText(new DateTime(2026, 5, 1));
+
+            actual.Should().Be("Competitive");
         }
     }
 }
