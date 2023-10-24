@@ -1,19 +1,39 @@
-﻿@{
-    ViewBag.Title = "Access denied";
+﻿@model Esfa.Recruit.Qa.Web.Models.Error.Error403ViewModel
+@{
+    ViewBag.Title = "You aren't approved – Apprenticeship service vacancy QA";
     ViewBag.ShowNav = false;
 }
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         <header class="page-header group">
-            <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">Access denied</h1>
+            <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">You aren't approved to view this page</h1>
         </header>
         <div class="article-container">
             <article role="article" class="group">
                 <div class="inner">
-                    <p class="govuk-body">This page is not available to you. If you need access to this page, please ask your team leader</p>
-                    <p>
-                        <a href="/signout" class="govuk-button">Sign out</a>
+                    <p class="govuk-body">
+                        To view this page, you need:
                     </p>
+                    <ul class="govuk-list govuk-list--bullet">
+                        <li>approval to use this service</li>
+                        <li>the correct service role to access this page</li>
+                    </ul>
+                    @if (Model.UseDfESignIn)
+                    {
+                        <p class="govuk-body">
+                            You can <a href="@Model.HelpPageLink" target="_blank" rel="noopener noreferrer">request access to this service in your DfE Sign-in.</a> You can also use this link to request a higher service role.
+                        </p>
+                        <p class="govuk-body">
+                            The DfE Sign-in approver inside your organisation will need to approve your request.
+                        </p>
+                    }
+                    else
+                    {
+                        <p class="govuk-body">This page is not available to you. If you need access to this page, please ask your team leader</p>
+                        <p>
+                            <a href="/signout" class="govuk-button">Sign out</a>
+                        </p>  
+                    }
                 </div>
             </article>
         </div>
