@@ -438,7 +438,7 @@
                 <dd class="app-summary-list__value">
                     @if (Model.ApplicationMethod == ApplicationMethod.ThroughExternalApplicationSite)
                     {
-                        @Model.ApplicationUrl
+                        <span class="das-breakable">@Model.ApplicationUrl</span>
                     }
                     else
                     {

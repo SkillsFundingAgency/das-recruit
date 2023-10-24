@@ -273,7 +273,9 @@
 
         <div asp-show="@Model.HasApplicationUrl" id="@Anchors.ApplicationUrl">
             <h2 class="govuk-heading-s">Employer's application website</h2>
-            <a href="@Model.ApplicationUrl" class="govuk-link govuk-link--no-visited-state" target="_blank" rel="noopener noreferrer">@Model.ApplicationUrl</a>
+            <a href="@Model.ApplicationUrl" class="govuk-link govuk-link--no-visited-state das-breakable" target="_blank" rel="noopener noreferrer">
+                @Model.ApplicationUrl
+            </a>
         </div>
         <div asp-show="@Model.HasApplicationInstructions" id="@Anchors.ApplicationInstructions">
             <h2 class="govuk-heading-s">Employer's application instructions (optional)</h2>
