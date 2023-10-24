@@ -40,13 +40,6 @@ namespace Esfa.Recruit.Provider.Web.Middleware
                     break;
             }
 
-            if (!context.User.HasClaim(c => c.Type.Equals(ProviderRecruitClaims.DfEUkprnClaimsTypeIdentifier)
-                || !context.User.HasClaim(c => c.Type.Equals(ProviderRecruitClaims.IdamsUserUkprnClaimsTypeIdentifier))))
-            {
-                context.Fail();
-                return;
-            }
-
             string claimValue = context.User.FindFirst(c => c.Type.Equals(ProviderRecruitClaims.DfEUkprnClaimsTypeIdentifier))?.Value
                 ?? context.User.FindFirst(c => c.Type.Equals(ProviderRecruitClaims.IdamsUserUkprnClaimsTypeIdentifier))?.Value;
 
