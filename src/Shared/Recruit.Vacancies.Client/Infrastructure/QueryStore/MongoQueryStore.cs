@@ -153,7 +153,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
             return result.DeletedCount;
         }
 
-        public async Task<IEnumerable<LiveVacancy>> GetAllLiveVacancies()
+        public async Task<IEnumerable<LiveVacancy>> GetAllLiveVacancies(int numberToGet)
         {
             var builderFilter = Builders<LiveVacancy>.Filter;
             var filter = builderFilter.Gt(identifier => identifier.ClosingDate, DateTime.UtcNow);
@@ -164,7 +164,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
             var collection = GetCollection<LiveVacancy>();
 
             var result = await RetryPolicy.Execute(_ =>
-                    collection.Find(filter).Sort(sort).Project<LiveVacancy>(GetProjection<LiveVacancy>()).ToListAsync(),
+                    collection.Find(filter).Sort(sort).Limit(numberToGet).Project<LiveVacancy>(GetProjection<LiveVacancy>()).ToListAsync(),
                 new Context(nameof(GetAllLiveVacancies)));
 
             return result;

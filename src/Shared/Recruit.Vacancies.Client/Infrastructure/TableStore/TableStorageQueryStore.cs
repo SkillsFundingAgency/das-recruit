@@ -90,7 +90,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.TableStore
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<LiveVacancy>> GetAllLiveVacancies()
+        public Task<IEnumerable<LiveVacancy>> GetAllLiveVacancies(int numberToGet)
         {
             throw new NotImplementedException();
         }

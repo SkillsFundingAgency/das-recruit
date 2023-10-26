@@ -3,6 +3,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore;
 using MediatR;
+using SFA.DAS.Recruit.Api.Helpers;
+using SFA.DAS.Recruit.Api.Models;
 
 namespace SFA.DAS.Recruit.Api.Queries;
 
@@ -17,14 +19,20 @@ public class GetLiveVacanciesQueryHandler : IRequestHandler<GetLiveVacanciesQuer
 
     public async Task<GetLiveVacanciesQueryResponse> Handle(GetLiveVacanciesQuery request, CancellationToken cancellationToken)
     {
-        var queryResult = await _queryStoreReader.GetAllLiveVacancies();
+        var liveVacanciesToFetch = request.PageSize * request.PageNumber;
 
-        if (queryResult == null) { return new GetLiveVacanciesQueryResponse { ResultCode = Models.ResponseCode.NotFound }; }
+        var queryResult = liveVacanciesToFetch > 1000 ? await _queryStoreReader.GetAllLiveVacancies(1000) : await _queryStoreReader.GetAllLiveVacancies(liveVacanciesToFetch);
 
-        //var numberResults = queryResult.ToList().Count();
+        if (queryResult == null) { return new GetLiveVacanciesQueryResponse { ResultCode = ResponseCode.NotFound }; }
 
-        return new GetLiveVacanciesQueryResponse { ResultCode = Models.ResponseCode.Success, Data = queryResult.ToList() };
+        var totalLiveVacancies = queryResult.Count();
+        var pageNo = PagingHelper.GetRequestedPageNo(request.PageNumber, request.PageSize, totalLiveVacancies);
+        var totalPages = PagingHelper.GetTotalNoOfPages(request.PageSize, totalLiveVacancies);
 
-        // implement paging
+        return new GetLiveVacanciesQueryResponse
+        {
+            ResultCode = ResponseCode.Success,
+            Data = new LiveVacanciesSummary(queryResult, request.PageSize, pageNo, totalLiveVacancies, totalPages)
+        };
     }
 }

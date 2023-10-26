@@ -266,9 +266,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
             return _queryStore.GetAsync<BlockedProviderOrganisations>(QueryViewType.BlockedProviderOrganisations.GetIdValue());
         }
 
-        public Task<IEnumerable<LiveVacancy>> GetAllLiveVacancies()
+        public Task<IEnumerable<LiveVacancy>> GetAllLiveVacancies(int numberToGet)
         {
-            return _queryStore.GetAllLiveVacancies();
+            return _queryStore.GetAllLiveVacancies(numberToGet);
         }
     }
 }

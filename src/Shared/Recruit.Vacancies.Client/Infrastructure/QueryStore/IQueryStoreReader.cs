@@ -27,6 +27,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
         Task<BlockedProviderOrganisations> GetBlockedProvidersAsync();
         Task<IEnumerable<LiveVacancy>> GetLiveExpiredVacancies(DateTime closingDate);
         Task<ClosedVacancy> GetClosedVacancy(long vacancyReference);
-        Task<IEnumerable<LiveVacancy>> GetAllLiveVacancies();
+        Task<IEnumerable<LiveVacancy>> GetAllLiveVacancies(int numberToGet);
     }
 }
