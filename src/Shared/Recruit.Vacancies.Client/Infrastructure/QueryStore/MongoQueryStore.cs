@@ -152,5 +152,22 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
 
             return result.DeletedCount;
         }
+
+        public async Task<IEnumerable<LiveVacancy>> GetAllLiveVacancies()
+        {
+            var builderFilter = Builders<LiveVacancy>.Filter;
+            var filter = builderFilter.Gt(identifier => identifier.ClosingDate, DateTime.UtcNow);
+
+            var builderSort = Builders<LiveVacancy>.Sort;
+            var sort = builderSort.Descending(identifier => identifier.ClosingDate);
+
+            var collection = GetCollection<LiveVacancy>();
+
+            var result = await RetryPolicy.Execute(_ =>
+                    collection.Find(filter).Sort(sort).Project<LiveVacancy>(GetProjection<LiveVacancy>()).ToListAsync(),
+                new Context(nameof(GetAllLiveVacancies)));
+
+            return result;
+        }
     }
 }
