@@ -20,8 +20,7 @@ public class GetAllLiveVacanciesQueryHandlerTests
     private Mock<IQueryStoreReader> _mockQueryStoreReader;
     private IEnumerable<LiveVacancy> liveVacancies;
 
-    [SetUp]
-    public async Task GetVacanciesQueryHandlerTests()
+    public GetAllLiveVacanciesQueryHandlerTests()
     {
         _mockQueryStoreReader = new Mock<IQueryStoreReader>();
 
