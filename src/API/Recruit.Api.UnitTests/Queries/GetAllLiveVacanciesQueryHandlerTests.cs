@@ -12,6 +12,7 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using AutoFixture;
+using System.Linq;
 
 namespace SFA.DAS.Recruit.Api.UnitTests.Queries;
 public class GetAllLiveVacanciesQueryHandlerTests
@@ -27,7 +28,8 @@ public class GetAllLiveVacanciesQueryHandlerTests
         var liveVacanciesSummaryFixture = new Fixture();
         liveVacancies = liveVacanciesSummaryFixture.Build<LiveVacancy>().CreateMany(10);
 
-        _mockQueryStoreReader.Setup(x => x.GetAllLiveVacancies(10)).ReturnsAsync(liveVacancies);
+        _mockQueryStoreReader.Setup(x => x.GetAllLiveVacancies(0, 10)).ReturnsAsync(liveVacancies);
+        _mockQueryStoreReader.Setup(x => x.GetAllLiveVacanciesCount()).ReturnsAsync(liveVacancies.Count());
 
         _sut = new GetLiveVacanciesQueryHandler(_mockQueryStoreReader.Object);
     }
@@ -44,7 +46,7 @@ public class GetAllLiveVacanciesQueryHandlerTests
             actual.Data.As<LiveVacanciesSummary>().Vacancies.Should().BeEquivalentTo(liveVacancies);
             actual.Data.As<LiveVacanciesSummary>().PageNo.Should().Be(query.PageNumber);
             actual.Data.As<LiveVacanciesSummary>().PageSize.Should().Be(query.PageSize);
-            actual.Data.As<LiveVacanciesSummary>().TotalResults.Should().Be(10);
+            actual.Data.As<LiveVacanciesSummary>().TotalLiveVacancies.Should().Be(10);
             actual.Data.As<LiveVacanciesSummary>().TotalPages.Should().Be(1);
             actual.ResultCode.Should().Be(ResponseCode.Success);
         }
@@ -55,11 +57,15 @@ public class GetAllLiveVacanciesQueryHandlerTests
             GetLiveVacanciesQuery query,
             [Frozen] Mock<IQueryStoreReader> mockQueryStoreReader)
     {
-        mockQueryStoreReader.Setup(x => x.GetAllLiveVacancies(It.IsAny<int>())).ReturnsAsync(() => null);
+        mockQueryStoreReader.Setup(x => x.GetAllLiveVacancies(It.IsAny<int>(), It.IsAny<int>())).ReturnsAsync(() => null);
         var handler = new GetLiveVacanciesQueryHandler(mockQueryStoreReader.Object);
 
         var actual = await handler.Handle(query, CancellationToken.None);
 
-        actual.ResultCode.Should().Be(ResponseCode.NotFound);
+        using (new AssertionScope())
+        {
+            actual.ResultCode.Should().Be(ResponseCode.Success);
+            actual.Data.Should().BeEquivalentTo(Enumerable.Empty<LiveVacancy>());
+        }
     }
 }

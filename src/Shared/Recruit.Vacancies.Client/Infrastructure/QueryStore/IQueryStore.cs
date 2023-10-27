@@ -20,6 +20,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
 
         Task<long> DeleteAllAsync<T>(string typeName) where T : QueryProjectionBase;
         Task<IEnumerable<LiveVacancy>> GetAllLiveExpired(DateTime? closingDate);
-        Task<IEnumerable<LiveVacancy>> GetAllLiveVacancies(int numberToGet);
+        Task<IEnumerable<LiveVacancy>> GetAllLiveVacancies(int vacanciesToSkip, int vacanciesToGet);
+        Task<long> GetAllLiveVacanciesCount();
     }
 }
