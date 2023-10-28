@@ -17,7 +17,7 @@ public class LiveVacanciesController : ApiControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> Get([FromQuery] uint pageSize = 100, uint pageNo = 1)
+    public async Task<IActionResult> Get([FromQuery] uint pageSize = 100, [FromQuery] uint pageNo = 1)
     {
         var resp = await _mediator.Send(new GetLiveVacanciesQuery((int)pageSize, (int)pageNo));
         return GetApiResponse(resp);

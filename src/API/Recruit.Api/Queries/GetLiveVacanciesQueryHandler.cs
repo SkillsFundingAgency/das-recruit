@@ -20,12 +20,16 @@ public class GetLiveVacanciesQueryHandler : IRequestHandler<GetLiveVacanciesQuer
 
     public async Task<GetLiveVacanciesQueryResponse> Handle(GetLiveVacanciesQuery request, CancellationToken cancellationToken)
     {
-        var vacanciesToSkipCount = request.PageNumber < 2 ? 0 : (request.PageNumber - 1) * request.PageSize;
-        var vacanciesToGetCount = (request.PageNumber * request.PageSize) - vacanciesToSkipCount;
+        var vacanciesToGetCount = request.PageSize > 1000 ? 1000 : request.PageSize;
+        var vacanciesToSkipCount = request.PageNumber < 2 ? 0 : (request.PageNumber - 1) * vacanciesToGetCount;
+        
 
-        var queryResult = vacanciesToGetCount > 1000 ? await _queryStoreReader.GetAllLiveVacancies(vacanciesToSkipCount, 1000) : await _queryStoreReader.GetAllLiveVacancies(vacanciesToSkipCount, vacanciesToGetCount);
+        var queryResult = await _queryStoreReader.GetAllLiveVacancies(vacanciesToSkipCount, vacanciesToGetCount);
 
-        if (queryResult == null) { return new GetLiveVacanciesQueryResponse { ResultCode = ResponseCode.Success, Data = Enumerable.Empty<LiveVacancy>() }; }
+        if (queryResult == null)
+        {
+            return new GetLiveVacanciesQueryResponse { ResultCode = ResponseCode.Success, Data = Enumerable.Empty<LiveVacancy>() };
+        }
 
         var totalLiveVacanciesReturned = queryResult.Count();
         var liveVacanciesCount = await _queryStoreReader.GetAllLiveVacanciesCount();
