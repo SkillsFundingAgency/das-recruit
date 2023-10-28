@@ -122,6 +122,7 @@ namespace Esfa.Recruit.Provider.Web
                                 "https://das-test2-frnt-end.azureedge.net",
                                 "https://das-demo-frnt-end.azureedge.net",
                                 "https://das-pp-frnt-end.azureedge.net",
+                                "https://das-mo-frnt-end.azureedge.net",
                                 "https://das-prd-frnt-end.azureedge.net",
                                 "https://*.signin.education.gov.uk"
                             );
@@ -151,6 +152,7 @@ namespace Esfa.Recruit.Provider.Web
                             "https://das-test2-frnt-end.azureedge.net",
                             "https://das-demo-frnt-end.azureedge.net",
                             "https://das-pp-frnt-end.azureedge.net",
+                            "https://das-mo-frnt-end.azureedge.net",
                             "https://das-prd-frnt-end.azureedge.net",
                             "https://*.signin.education.gov.uk");
 
@@ -172,6 +174,7 @@ namespace Esfa.Recruit.Provider.Web
                             "https://das-test2-frnt-end.azureedge.net",
                             "https://das-demo-frnt-end.azureedge.net",
                             "https://das-pp-frnt-end.azureedge.net",
+                            "https://das-mo-frnt-end.azureedge.net",
                             "https://*.signin.education.gov.uk",
                             "https://das-prd-frnt-end.azureedge.net")
                 )
@@ -204,6 +207,7 @@ namespace Esfa.Recruit.Provider.Web
                             "https://das-test2-frnt-end.azureedge.net",
                             "https://das-demo-frnt-end.azureedge.net",
                             "https://das-pp-frnt-end.azureedge.net",
+                            "https://das-mo-frnt-end.azureedge.net",
                             "https://das-prd-frnt-end.azureedge.net",
                             "https://*.signin.education.gov.uk",
                             "data:")
