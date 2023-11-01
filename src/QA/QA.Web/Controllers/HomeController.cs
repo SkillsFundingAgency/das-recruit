@@ -21,8 +21,8 @@ namespace Esfa.Recruit.Qa.Web.Controllers
         {
             bool isDfESignInAllowed = _configuration.GetValue<bool>("UseDfESignIn");
 
-            // if the user is authenticated, then redirect the user to dashboard.
-            if (isDfESignInAllowed && User.Identity is { IsAuthenticated: true }) return RedirectToAction("Index", "Dashboard");
+            // if the DfESignIn toggle off or user is authenticated, then redirect the user to dashboard.
+            if (!isDfESignInAllowed || User.Identity is { IsAuthenticated: true }) return RedirectToAction("Index", "Dashboard");
 
             return View(new HomeIndexViewModel
             {
