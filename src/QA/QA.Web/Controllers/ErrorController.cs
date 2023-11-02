@@ -3,12 +3,14 @@ using System.Net;
 using Esfa.Recruit.Qa.Web.Configuration;
 using Esfa.Recruit.Qa.Web.Configuration.Routing;
 using Esfa.Recruit.Qa.Web.Exceptions;
+using Esfa.Recruit.Qa.Web.Models.Error;
 using Esfa.Recruit.Qa.Web.ViewModels;
 using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Exceptions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Qa.Web.Controllers
@@ -17,10 +19,12 @@ namespace Esfa.Recruit.Qa.Web.Controllers
     public class ErrorController : Controller
     {
         private readonly ILogger<ErrorController> _logger;
+        private readonly IConfiguration _configuration;
 
-        public ErrorController(ILogger<ErrorController> logger)
+        public ErrorController(ILogger<ErrorController> logger, IConfiguration configuration)
         {
             _logger = logger;
+            _configuration = configuration;
         }
 
         [Route("error/{id?}")]
@@ -79,8 +83,12 @@ namespace Esfa.Recruit.Qa.Web.Controllers
 
         private IActionResult AccessDenied()
         {
-            Response.StatusCode = (int)HttpStatusCode.Unauthorized;
-            return View(ViewNames.AccessDenied);
+            bool isDfESignInAllowed = _configuration.GetValue<bool>("UseDfESignIn");
+            Response.StatusCode = (int) HttpStatusCode.Forbidden;
+            return View(ViewNames.AccessDenied, new Error403ViewModel(_configuration.GetValue<string>("ResourceEnvironmentName"))
+            {
+                UseDfESignIn = isDfESignInAllowed
+            });
         }
 
         private IActionResult PageNotFound()
