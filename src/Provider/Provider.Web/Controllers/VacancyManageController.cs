@@ -55,6 +55,11 @@ namespace Esfa.Recruit.Provider.Web.Controllers
                 viewModel.ApplicationReviewStatusChangeBannerMessage = InfoMsg.SharedMultipleApplicationsBannerMessage;
             }
 
+            if (TempData.ContainsKey(TempDataKeys.ApplicationsToUnsuccessfulHeader))
+            {
+                viewModel.ApplicationReviewStatusChangeBannerHeader = TempData[TempDataKeys.ApplicationsToUnsuccessfulHeader].ToString();
+            }
+
             if (TempData.ContainsKey(TempDataKeys.SharedSingleApplicationsHeader))
             {
                 viewModel.ApplicationReviewStatusChangeBannerHeader = TempData[TempDataKeys.SharedSingleApplicationsHeader].ToString();

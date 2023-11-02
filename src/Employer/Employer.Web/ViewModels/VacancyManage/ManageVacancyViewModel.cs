@@ -24,6 +24,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyManage
         public bool HasNoApplications => Applications.Applications == null || Applications.Applications?.Any() == false;
         public bool ShowEmployerApplications => !Applications.VacancySharedByProvier;
         public bool ShowSharedApplications => HasApplications && Applications.VacancySharedByProvier;
+        public bool CanShowMultipleApplicationsUnsuccessfulLink => (IsVacancyLive || IsVacancyClosed) && Applications.CanShowMultipleApplicationsUnsuccessfulLink && ShowEmployerApplications;
 
         public bool CanShowEditVacancyLink { get; internal set; }
         public bool CanShowCloseVacancyLink { get; internal set; }
@@ -45,5 +46,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyManage
         public bool IsTransferred => string.IsNullOrWhiteSpace(TransferredProviderName) == false && string.IsNullOrWhiteSpace(TransferredOnDate) == false;
         public bool CanClone { get; internal set; }
         public string ViewBagTitle => ShowEmployerApplications ? "Manage Advert" : "Shared applications";
+        public string ApplicationReviewsUnsuccessfulBannerHeader { get; internal set; }
+        public bool CanShowApplicationsUnsuccessfulBanner => !string.IsNullOrEmpty(ApplicationReviewsUnsuccessfulBannerHeader);
     }
 }

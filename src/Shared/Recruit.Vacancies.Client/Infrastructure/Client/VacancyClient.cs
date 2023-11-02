@@ -336,29 +336,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
                 : applicationReviews.Select(c => (VacancyApplication)c).ToList();
         }
 
-        public Task SetApplicationReviewSuccessful(Guid applicationReviewId, VacancyUser user)
-        {
-            var command = new ApplicationReviewSuccessfulCommand
-            {
-                ApplicationReviewId = applicationReviewId,
-                User = user
-            };
-
-            return _messaging.SendCommandAsync(command);
-        }
-
-        public Task SetApplicationReviewUnsuccessful(Guid applicationReviewId, string candidateFeedback, VacancyUser user)
-        {
-            var command = new ApplicationReviewUnsuccessfulCommand
-            {
-                ApplicationReviewId = applicationReviewId,
-                CandidateFeedback = candidateFeedback,
-                User = user
-            };
-
-            return _messaging.SendCommandAsync(command);
-        }
-
         public Task SetApplicationReviewStatus(Guid applicationReviewId, ApplicationReviewStatus? outcome, string candidateFeedback, VacancyUser user)
         {
             var command = new ApplicationReviewStatusEditCommand
@@ -372,34 +349,23 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return _messaging.SendCommandAsync(command);
         }
 
-        public Task SetApplicationReviewToInReview(Guid applicationReviewId, ApplicationReviewStatus? outcome, VacancyUser user)
-        {
-            var command = new ApplicationReviewStatusEditCommand
-            {
-                ApplicationReviewId = applicationReviewId,
-                Outcome = outcome,
-                User = user
-            };
-
-            return _messaging.SendCommandAsync(command);
-        }
-
-        public Task SetApplicationReviewToInterviewing(Guid applicationReviewId, VacancyUser user)
-        {
-            var command = new ApplicationReviewInterviewingCommand
-            {
-                ApplicationReviewId = applicationReviewId,
-                User = user
-            };
-
-            return _messaging.SendCommandAsync(command);
-        }
-
         public Task SetApplicationReviewsShared(IEnumerable<VacancyApplication> applicationReviews, VacancyUser user)
         {
             var command = new ApplicationReviewsSharedCommand
             {
                 ApplicationReviews = applicationReviews,
+                User = user
+            };
+
+            return _messaging.SendCommandAsync(command);
+        }
+
+        public Task SetApplicationReviewsToUnsuccessful(IEnumerable<VacancyApplication> applicationReviewsToUnsuccessful, string candidateFeedback, VacancyUser user)
+        {
+            var command = new ApplicationReviewsUnsuccessfulCommand()
+            {
+                ApplicationReviews = applicationReviewsToUnsuccessful,
+                CandidateFeedback = candidateFeedback,
                 User = user
             };
 

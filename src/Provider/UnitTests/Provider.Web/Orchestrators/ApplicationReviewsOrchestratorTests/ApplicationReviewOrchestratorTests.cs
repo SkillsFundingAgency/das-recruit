@@ -61,9 +61,9 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Application
         }
 
         [Test]
-        public async Task GetApplicationReviewFeedBackViewModelAsync_ReturnsCandidateName()
+        public async Task GetApplicationReviewFeedbackViewModelAsync_ReturnsCandidateName()
         {
-            var model = _fixture.Create<ApplicationReviewFeedBackViewModel>();
+            var model = _fixture.Create<ApplicationReviewFeedbackViewModel>();
             var routeModel = _fixture.Create<VacancyRouteModel>();
             var vacancyUser = _fixture.Create<VacancyUser>();
 
@@ -75,14 +75,14 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Application
             _employerVacancyClient.Setup(x => x.SetApplicationReviewStatus(model.ApplicationReviewId, model.Outcome, model.CandidateFeedback, vacancyUser))
                 .Returns(Task.CompletedTask);
 
-            string result = await _orchestrator.GetApplicationReviewFeedBackViewModelAsync(model);
+            string result = await _orchestrator.GetApplicationReviewFeedbackViewModelAsync(model);
 
             Assert.IsNotNull(result);
             Assert.AreEqual(applicationReview.Application.FullName, result);
         }
 
         [Test]
-        public async Task GetApplicationReviewFeedBackViewModelAsync_ReturnsCandidateInfo()
+        public async Task GetApplicationReviewFeedbackViewModelAsync_ReturnsCandidateInfo()
         {
             var model = _fixture.Create<ApplicationReviewEditModel>();
             var routeModel = _fixture.Create<VacancyRouteModel>();
@@ -97,7 +97,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Application
             _employerVacancyClient.Setup(x => x.SetApplicationReviewStatus(model.ApplicationReviewId, model.Outcome, model.CandidateFeedback, vacancyUser))
                 .Returns(Task.CompletedTask);
 
-            var result = await _orchestrator.GetApplicationReviewFeedBackViewModelAsync(model);
+            var result = await _orchestrator.GetApplicationReviewFeedbackViewModelAsync(model);
 
             Assert.IsNotNull(result);
             Assert.AreEqual(applicationReview.Application.FullName, result.Name);
