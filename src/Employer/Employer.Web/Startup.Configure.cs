@@ -84,6 +84,7 @@ namespace Esfa.Recruit.Employer.Web
                                     "https://das-test2-frnt-end.azureedge.net",
                                     "https://das-demo-frnt-end.azureedge.net", 
                                     "https://das-pp-frnt-end.azureedge.net",
+                                    "https://das-mo-frnt-end.azureedge.net",
                                     "https://das-prd-frnt-end.azureedge.net"
                                     );
 
@@ -112,6 +113,7 @@ namespace Esfa.Recruit.Employer.Web
                                     "https://das-test2-frnt-end.azureedge.net",
                                     "https://das-demo-frnt-end.azureedge.net", 
                                     "https://das-pp-frnt-end.azureedge.net",
+                                    "https://das-mo-frnt-end.azureedge.net",
                                     "https://das-prd-frnt-end.azureedge.net"
                                     );
 
@@ -130,6 +132,7 @@ namespace Esfa.Recruit.Employer.Web
                                     "https://das-test2-frnt-end.azureedge.net",
                                     "https://das-demo-frnt-end.azureedge.net", 
                                     "https://das-pp-frnt-end.azureedge.net",
+                                    "https://das-mo-frnt-end.azureedge.net",
                                     "https://das-prd-frnt-end.azureedge.net"
                                     )
                 )
@@ -161,6 +164,7 @@ namespace Esfa.Recruit.Employer.Web
                                     "https://das-test2-frnt-end.azureedge.net",
                                     "https://das-demo-frnt-end.azureedge.net", 
                                     "https://das-pp-frnt-end.azureedge.net",
+                                    "https://das-mo-frnt-end.azureedge.net",
                                     "https://das-prd-frnt-end.azureedge.net",
                                     "data:")
                 )

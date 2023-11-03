@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.Commands;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Vacancies.Client.Domain.Events;
+using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyApplications;
 using MediatR;
@@ -12,7 +14,8 @@ using MediatR;
 namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 {
     public class ApplicationReviewsCommandHandler :
-        IRequestHandler<ApplicationReviewsSharedCommand, Unit>
+        IRequestHandler<ApplicationReviewsSharedCommand, Unit>,
+        IRequestHandler<ApplicationReviewsUnsuccessfulCommand, Unit>
     {
         private readonly IApplicationReviewRepository _applicationReviewRepository;
         private readonly ITimeProvider _timeProvider;
@@ -31,11 +34,17 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             return Unit.Value;
         }
 
-        private async Task Handle(IEnumerable<VacancyApplication> applicationReviews, VacancyUser user, ApplicationReviewStatus status)
+        public async Task<Unit> Handle(ApplicationReviewsUnsuccessfulCommand command, CancellationToken cancellationToken)
+        {
+            await Handle(command.ApplicationReviews, command.User, ApplicationReviewStatus.Unsuccessful, command.CandidateFeedback);
+            return Unit.Value;
+        }
+
+        private async Task Handle(IEnumerable<VacancyApplication> applicationReviews, VacancyUser user, ApplicationReviewStatus status, string candidateFeedback = null)
         {
             var applicationReviewIds = applicationReviews.Where(x => x.IsNotWithdrawn).Select(x => x.ApplicationReviewId);
 
-            await _applicationReviewRepository.UpdateApplicationReviewsAsync(applicationReviewIds, user, _timeProvider.Now, status);
+            await _applicationReviewRepository.UpdateApplicationReviewsAsync(applicationReviewIds, user, _timeProvider.Now, status, candidateFeedback);
         }
     }
 }

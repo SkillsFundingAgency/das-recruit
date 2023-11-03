@@ -1,0 +1,45 @@
+﻿@using Esfa.Recruit.Shared.Web.TagHelpers
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model Esfa.Recruit.Employer.Web.ViewModels.ApplicationReviews.ApplicationReviewsFeedbackViewModel
+
+@{
+    ViewBag.GaData.Vpv = "/recruitment/employer/page-application-reviews-feedback";
+    ViewBag.Title = "Make Multiple Applications Unsuccessful Feedback";
+}
+
+@section BackLink {
+    <a asp-route="@RouteNames.ApplicationReviewsToUnsuccessful_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Back</a>
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState}' />
+        <div>
+            <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">
+                @Model.ApplicationsToUnsuccessfulFeedbackHeaderTitle
+            </h1>
+        </div>
+        <form asp-route="@RouteNames.ApplicationReviewsToUnsuccessfulFeedback_Post" asp-route-employerAccountId="@Model.EmployerAccountId" asp-route-vacancyId="@Model.VacancyId">
+            @for (var i = 0; i < Model.ApplicationsToUnsuccessful.Count(); i++)
+            {
+                <div class="govuk-!-display-none govuk-!-margin-bottom-0">
+                    @Html.EditorFor(x => x.ApplicationsToUnsuccessful[i])
+                </div>
+            }
+            <div esfa-validation-marker-for="CandidateFeedback" id="Multiple-unsuccessful-candidate-feedback" class="govuk-form-group">
+                <div class="govuk-character-count"
+                     id="employer-character-count" data-module="govuk-character-count" data-maxwords="200">
+                    <span esfa-validation-message-for="CandidateFeedback" class="govuk-error-message"></span>
+                    <span class="govuk-hint">@Model.ApplicationsToUnsuccessfulFeedbackDescription</span>
+                    <textarea asp-for="CandidateFeedback" class="govuk-textarea govuk-js-character-count" id="employer-multiple-candidate-feedback" name="CandidateFeedback" rows="6"></textarea>
+                    <div id="employer-multiple-candidate-feedback-info" class="govuk-hint govuk-character-count__message">
+                        You have 200 words remaining
+                    </div>
+                </div>
+            </div>
+            <div class="govuk-form-group" id="employer-multiple-candidate-feedback-confirm">
+                <input class="govuk-button" type="submit" value="Confirm" />
+            </div>
+        </form>
+    </div>
+</div>
