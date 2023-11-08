@@ -25,6 +25,8 @@ using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.Extensions.Hosting;
 using SFA.DAS.Employer.Shared.UI;
 using SFA.DAS.GovUK.Auth.Authentication;
+using Microsoft.FeatureManagement;
+using Microsoft.Extensions.Configuration;
 
 namespace Esfa.Recruit.Employer.Web.Configuration
 {
@@ -60,7 +62,7 @@ namespace Esfa.Recruit.Employer.Web.Configuration
             });
         }
 
-        public static void AddMvcService(this IServiceCollection services, IWebHostEnvironment hostingEnvironment, bool isAuthEnabled, ILoggerFactory loggerFactory)
+        public static void AddMvcService(this IServiceCollection services, IWebHostEnvironment hostingEnvironment, bool isAuthEnabled, ILoggerFactory loggerFactory, IConfiguration configuration)
         {
             services.AddAntiforgery(options =>
             {
@@ -103,6 +105,7 @@ namespace Esfa.Recruit.Employer.Web.Configuration
                 }).SetDefaultNavigationSection(NavigationSection.RecruitHome)
                 .AddNewtonsoftJson();
             services.AddFluentValidationAutoValidation();
+            services.AddFeatureManagement(configuration.GetSection("Features"));
         }
 
         public static void AddAuthenticationService(this IServiceCollection services, AuthenticationConfiguration authConfig)

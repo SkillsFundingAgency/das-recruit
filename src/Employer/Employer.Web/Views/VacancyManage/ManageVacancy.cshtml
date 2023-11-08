@@ -23,6 +23,21 @@
                 <p class="govuk-body">The advert will be unpublished from the Find an apprenticeship service within the next hour.</p>
             </div>
         </div>
+
+        <div asp-show="@Model.CanShowApplicationsUnsuccessfulBanner" class="govuk-notification-banner govuk-notification-banner--success" role="alert"
+             aria-labelledby="govuk-notification-banner-title"
+             data-module="govuk-notification-banner">
+            <div class="govuk-notification-banner__header">
+                <h2 class="govuk-notification-banner__title">
+                    Done
+                </h2>
+            </div>
+            <div class="govuk-notification-banner__content">
+                <h3 class="govuk-notification-banner__heading">
+                    @Model.ApplicationReviewsUnsuccessfulBannerHeader
+                </h3>
+            </div>
+        </div>
     </div>
     <div class="govuk-grid-column-two-thirds govuk-!-margin-bottom-6">
         <div asp-show="@Model.CanShowApplicationReviewStatusHeader" class="das-notification das-notification--information">
@@ -118,9 +133,13 @@
     </div>
     <h2 asp-show="@Model.ShowEmployerApplications" class="govuk-heading-l govuk-!-margin-top-6">Manage applications</h2>
     <h2 asp-show="@Model.ShowSharedApplications" class="govuk-heading-l govuk-!-margin-top-6">Shared applications</h2>
+    <esfaFeatureEnabled name="@FeatureNames.MultipleApplicationsManagement">
+        <p class="govuk-body" asp-show="@Model.CanShowMultipleApplicationsUnsuccessfulLink">
+            <a asp-route="@RouteNames.ApplicationReviewsToUnsuccessful_Get" asp-all-route-data="@Model.RouteDictionary" class="govuk-link govuk-!-margin-top-2 govuk-!-margin-bottom-4">Make multiple applications unsuccessful</a>
+        </p>
+    </esfaFeatureEnabled>
     <p asp-show="@Model.ShowSharedApplications" class="govuk-body govuk-!-margin-bottom-4 govuk-!-margin-top-4">Each application is anonymised. If you decide to interview the applicant, you will be able to see their name and contact information.</p>
     <partial asp-show="@Model.ShowEmployerApplications" name="@PartialNames.VacancyApplicationsTable" for="Applications"/>
     <partial asp-show="@Model.ShowSharedApplications" name="@PartialNames.VacancySharedApplicationsTable" for="Applications"/>
     <p asp-show="@Model.HasNoApplications" class="govuk-body govuk-!-margin-bottom-0">Candidate applications for this apprenticeship will appear here.</p>
 </div>
-

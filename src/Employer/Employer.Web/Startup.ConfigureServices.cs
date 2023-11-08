@@ -72,7 +72,7 @@ namespace Esfa.Recruit.Employer.Web
 
             services.AddHealthChecks();
             
-            services.AddMvcService(HostingEnvironment, _isAuthEnabled, _loggerFactory);
+            services.AddMvcService(HostingEnvironment, _isAuthEnabled, _loggerFactory, Configuration);
 
             services.AddApplicationInsightsTelemetry(Configuration);
 

@@ -49,6 +49,7 @@ namespace Esfa.Recruit.Shared.Web.Extensions
             { WageType.FixedWage, "Fixed wage" },
             { WageType.NationalMinimumWage, "National Minimum Wage" },
             { WageType.NationalMinimumWageForApprentices, "National Minimum Wage for apprentices" },
+            { WageType.CompetitiveSalary, "This pay rate is above National Minimum Wage" },
             { ManualQaOutcome.Referred, "Edits required" },
             { ReviewStatus.UnderReview, "Under review" },
             { VacancyStatus.Rejected, "Rejected by employer" },

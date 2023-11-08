@@ -2,6 +2,8 @@ using System;
 using System.IO;
 using Esfa.Recruit.Provider.Web.Configuration;
 using Esfa.Recruit.Shared.Web.Extensions;
+using Esfa.Recruit.Vacancies.Client.Application.Configuration;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.Extensions.Configuration;
@@ -10,6 +12,7 @@ using Microsoft.Extensions.Logging;
 using SFA.DAS.Configuration.AzureTableStorage;
 using SFA.DAS.DfESignIn.Auth.AppStart;
 using SFA.DAS.DfESignIn.Auth.Configuration;
+using SFA.DAS.DfESignIn.Auth.Enums;
 using SFA.DAS.Provider.Shared.UI.Startup;
 
 namespace Esfa.Recruit.Provider.Web
@@ -82,15 +85,22 @@ namespace Esfa.Recruit.Provider.Web
             services.AddControllersWithViews().AddRazorRuntimeCompilation();
     #endif
 
+            var serviceParameters = new ServiceParameters(_configuration[$"RecruitConfiguration:{nameof(VacancyType)}"]);
             bool useDfESignIn = _configuration["UseDfESignIn"] != null && _configuration["UseDfESignIn"].Equals("true", StringComparison.CurrentCultureIgnoreCase);
             if (useDfESignIn)
             {
+                var providerType = ClientName.TraineeshipRoatp;
+                if (serviceParameters.VacancyType == VacancyType.Apprenticeship)
+                {
+                    providerType = ClientName.ProviderRoatp;
+                }
                 services.AddAndConfigureDfESignInAuthentication(
                     _configuration,
                     "SFA.DAS.ProviderApprenticeshipService",
                     typeof(CustomServiceRole),
-                    "ProviderRoATP",
-                    "/signout");    
+                    providerType,
+                    "/signout",
+                    "");    
             }
             else
             {

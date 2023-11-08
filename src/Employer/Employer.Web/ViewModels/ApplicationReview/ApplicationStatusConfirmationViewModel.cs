@@ -17,5 +17,5 @@ public class ApplicationStatusConfirmationViewModel : ApplicationReviewRouteMode
     };
 
     public bool ShowStatusSuccessful => Outcome.Value == ApplicationReviewStatus.Successful;
-    public bool ShowStatusUnSuccessful => Outcome.Value == ApplicationReviewStatus.Unsuccessful;
+    public bool ShowStatusUnsuccessful => Outcome.Value == ApplicationReviewStatus.Unsuccessful;
 }

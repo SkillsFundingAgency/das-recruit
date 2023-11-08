@@ -172,7 +172,9 @@
     "apiAppServiceName": "[concat(variables('resourceNamePrefix'), 'api-as')]",
     "apiConfigNames": "SFA.DAS.Recruit.Api",
     "providerWebConfigNames": "SFA.DAS.Recruit.Provider,SFA.DAS.Provider.DfeSignIn",
+    "employerWebConfigNames": "SFA.DAS.Recruit.Employer,SFA.DAS.Employer.GovSignIn",
     "traineeshipWebConfigNames": "SFA.DAS.Recruit.Traineeship.Provider,SFA.DAS.Provider.DfeSignIn",
+    "qaConfigNames": "SFA.DAS.Recruit.QA,SFA.DAS.Provider.DfeSignIn",
     "jobsConfigNames": "SFA.DAS.Recruit.Jobs,SFA.DAS.Encoding"
   },
   "resources": [
@@ -531,6 +533,10 @@
                 {
                     "name": "StubAuth",
                     "value": "[parameters('stubAuth')]"
+                },
+                {
+                  "name": "ConfigNames",
+                  "value": "[variables('employerWebConfigNames')]"
                 }
               ]
             }
@@ -618,6 +624,14 @@
                 {
                   "name": "Cdn:Url",
                   "value": "[parameters('cdnUrl')]"
+                },
+                {
+                  "name": "ResourceEnvironmentName",
+                  "value": "[toUpper(parameters('resourceEnvironmentName'))]"
+                },
+                {
+                  "name": "ConfigNames",
+                  "value": "[variables('qaConfigNames')]"
                 }
               ]
             }
@@ -693,6 +707,10 @@
                 {
                   "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
                   "value": "[reference(concat('provider-recruit-app-insights-', parameters('utcValue'))).outputs.InstrumentationKey.value]"
+                },
+                {
+                  "name": "ResourceEnvironmentName",
+                  "value": "[toUpper(parameters('resourceEnvironmentName'))]"
                 },
                 {
                   "name": "Environment",
@@ -800,6 +818,10 @@
                 {
                   "name": "ConfigNames",
                   "value": "[variables('traineeshipWebConfigNames')]"
+                },
+                {
+                  "name": "ResourceEnvironmentName",
+                  "value": "[toUpper(parameters('resourceEnvironmentName'))]"
                 }
               ]
             }

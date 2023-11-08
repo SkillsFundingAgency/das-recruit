@@ -57,6 +57,11 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             if (TempData.ContainsKey(TempDataKeys.ApplicationReviewedInfoMessage))
                 viewModel.EmployerReviewedApplicationBodyMessage = TempData[TempDataKeys.ApplicationReviewedInfoMessage].ToString();
 
+            if (TempData.ContainsKey(TempDataKeys.ApplicationReviewsUnsuccessfulInfoMessage))
+            {
+                viewModel.ApplicationReviewsUnsuccessfulBannerHeader = TempData[TempDataKeys.ApplicationReviewsUnsuccessfulInfoMessage].ToString();
+            }
+
             return View(viewModel);
         }
 

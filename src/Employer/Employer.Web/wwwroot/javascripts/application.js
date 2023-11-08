@@ -314,3 +314,72 @@ function nodeListForEach(nodes, callback) {
       callback.call(window, nodes[i], i, nodes);
   }
 }
+
+// Multiple Applications Unsuccessful Selections
+function MultipleUnsuccessfulSelectAll(allApplications) {
+    this.checkBoxesWrap = allApplications;
+    this.checkBoxesWrap.classList.add('app-select-all-table');
+    this.checkBoxes = this.checkBoxesWrap.querySelectorAll('input[type="checkbox"]');
+    this.label = this.checkBoxesWrap.dataset.checkboxesSelectAllLabel || "Select all";
+    for (var i = 0; i < this.checkBoxes.length; i++) {
+        this.checkBoxes[i].addEventListener('click', this.updateSelectAllCheckbox.bind(this))
+    }
+    this.createSelectAll();
+    this.updateSelectAllCheckbox();
+}
+
+MultipleUnsuccessfulSelectAll.prototype.updateSelectAllCheckbox = function () {
+    var checkbox = this.selectAllCheckBox.querySelector('input');
+    checkbox.checked = this.areAllTheCheckboxesChecked();
+}
+
+MultipleUnsuccessfulSelectAll.prototype.areAllTheCheckboxesChecked = function () {
+    var numberOfSelections = 0;
+    for (var i = 0; i < this.checkBoxes.length; i++) {
+        if (this.checkBoxes[i].checked) {
+            numberOfSelections++
+        }
+    }
+    return numberOfSelections === this.checkBoxes.length
+}
+
+MultipleUnsuccessfulSelectAll.prototype.createSelectAll = function () {
+    var allSelectionIDs = "app-checkbox-select-all"
+    var divParentElement = document.createElement('div');
+    divParentElement.className = "govuk-checkboxes--small"
+    var divElement = document.createElement('div');
+    divElement.className = "govuk-checkboxes__item app-checkboxes__select-all"
+    var checkboxElement = document.createElement('input');
+    checkboxElement.type = "checkbox";
+    checkboxElement.className = "govuk-checkboxes__input";
+    checkboxElement.id = allSelectionIDs;
+    checkboxElement.addEventListener('click', this.toggleCheckboxes.bind(this))
+    var labelElement = document.createElement('label');
+    labelElement.htmlFor = allSelectionIDs;
+    labelElement.className = "govuk-label govuk-checkboxes__label";
+    var spanElement = document.createElement('span')
+    spanElement.className = "govuk-visually-hidden"
+    spanElement.innerText = this.label;
+    var cellEl = this.checkBoxesWrap.querySelector('[data-checkboxes-select-all-cell]')
+
+    labelElement.appendChild(spanElement);
+    divElement.appendChild(checkboxElement);
+    divElement.appendChild(labelElement);
+    divParentElement.appendChild(divElement)
+
+    this.selectAllCheckBox = divParentElement;
+    cellEl.insertBefore(this.selectAllCheckBox, cellEl.childNodes[0]);
+}
+
+MultipleUnsuccessfulSelectAll.prototype.toggleCheckboxes = function (e) {
+    var allSelections = e.target.checked;
+    var selections = this.checkBoxesWrap.querySelectorAll('input[type="checkbox"]');
+    for (var i = 0; i < selections.length; i++) {
+        selections[i].checked = allSelections;
+    }
+}
+
+var multipleUnsuccessfulSelectAll = document.querySelector('[data-checkboxes-select-all]')
+if (multipleUnsuccessfulSelectAll) {
+    var multipleUnsuccessfulSelectAllFormControl = new MultipleUnsuccessfulSelectAll(multipleUnsuccessfulSelectAll);
+}

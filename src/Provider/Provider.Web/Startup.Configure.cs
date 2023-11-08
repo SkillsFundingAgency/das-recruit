@@ -8,6 +8,7 @@ using Esfa.Recruit.Shared.Web.Middleware;
 using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Logging;
@@ -22,7 +23,7 @@ namespace Esfa.Recruit.Provider.Web
         private readonly bool _isDfESignInAllowed;
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IOptions<ExternalLinksConfiguration> externalLinks, IHostApplicationLifetime applicationLifetime, ILogger<Startup> logger)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IOptions<ExternalLinksConfiguration> externalLinks, IHostApplicationLifetime applicationLifetime, ILogger<Startup> logger, IConfiguration config)
         {
             var cultureInfo = new CultureInfo("en-GB");
 
@@ -67,10 +68,11 @@ namespace Esfa.Recruit.Provider.Web
 
             //Registered after static files, to set headers for dynamic content.
             app.UseXfo(xfo => xfo.Deny());
-            app.UseRedirectValidation(opts => 
+            app.UseRedirectValidation(opts =>
             {
+                string sharedUiDashboardUrl = _configuration["ProviderSharedUIConfiguration:DashboardUrl"];
                 opts.AllowSameHostRedirectsToHttps();
-                opts.AllowedDestinations(GetAllowableDestinations(_authConfig, externalLinks.Value,_dfEOidcConfig));
+                opts.AllowedDestinations(GetAllowableDestinations(_authConfig, externalLinks.Value, _dfEOidcConfig, sharedUiDashboardUrl));
             }); //Register this earlier if there's middleware that might redirect.
 
             // Redirect requests to root of the provider site.
@@ -120,6 +122,7 @@ namespace Esfa.Recruit.Provider.Web
                                 "https://das-test2-frnt-end.azureedge.net",
                                 "https://das-demo-frnt-end.azureedge.net",
                                 "https://das-pp-frnt-end.azureedge.net",
+                                "https://das-mo-frnt-end.azureedge.net",
                                 "https://das-prd-frnt-end.azureedge.net",
                                 "https://*.signin.education.gov.uk"
                             );
@@ -149,6 +152,7 @@ namespace Esfa.Recruit.Provider.Web
                             "https://das-test2-frnt-end.azureedge.net",
                             "https://das-demo-frnt-end.azureedge.net",
                             "https://das-pp-frnt-end.azureedge.net",
+                            "https://das-mo-frnt-end.azureedge.net",
                             "https://das-prd-frnt-end.azureedge.net",
                             "https://*.signin.education.gov.uk");
 
@@ -170,6 +174,7 @@ namespace Esfa.Recruit.Provider.Web
                             "https://das-test2-frnt-end.azureedge.net",
                             "https://das-demo-frnt-end.azureedge.net",
                             "https://das-pp-frnt-end.azureedge.net",
+                            "https://das-mo-frnt-end.azureedge.net",
                             "https://*.signin.education.gov.uk",
                             "https://das-prd-frnt-end.azureedge.net")
                 )
@@ -202,6 +207,7 @@ namespace Esfa.Recruit.Provider.Web
                             "https://das-test2-frnt-end.azureedge.net",
                             "https://das-demo-frnt-end.azureedge.net",
                             "https://das-pp-frnt-end.azureedge.net",
+                            "https://das-mo-frnt-end.azureedge.net",
                             "https://das-prd-frnt-end.azureedge.net",
                             "https://*.signin.education.gov.uk",
                             "data:")
@@ -209,7 +215,7 @@ namespace Esfa.Recruit.Provider.Web
                 .ReportUris(r => r.Uris("/ContentPolicyReport/Report")));
         }
 
-        private static string[] GetAllowableDestinations(AuthenticationConfiguration authConfig, ExternalLinksConfiguration linksConfig, DfEOidcConfiguration dfEOidcConfiguration)
+        private static string[] GetAllowableDestinations(AuthenticationConfiguration authConfig, ExternalLinksConfiguration linksConfig, DfEOidcConfiguration dfEOidcConfiguration, string sharedUiDashboardUrl)
         {
             var destinations = new List<string>();
 
@@ -224,7 +230,10 @@ namespace Esfa.Recruit.Provider.Web
             
             if(!string.IsNullOrWhiteSpace(dfEOidcConfiguration.BaseUrl))
                 destinations.Add(dfEOidcConfiguration.BaseUrl);
-            
+
+            if (!string.IsNullOrWhiteSpace(sharedUiDashboardUrl))
+                destinations.Add(sharedUiDashboardUrl);
+
             return destinations.ToArray();
         }
 
