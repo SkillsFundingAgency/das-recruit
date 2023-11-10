@@ -90,6 +90,15 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.TableStore
             throw new NotImplementedException();
         }
 
+        public Task<IEnumerable<LiveVacancy>> GetAllLiveVacancies(int vacanciesToSkip, int vacanciesToGet)
+        {
+            throw new NotImplementedException();
+        }
+        public Task<long> GetAllLiveVacanciesCount()
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task DeleteAsync<T>(string typeName, string key) where T : QueryProjectionBase
         {
             var retrieveOperation = TableOperation.Retrieve<QueryEntity>(typeName, key);

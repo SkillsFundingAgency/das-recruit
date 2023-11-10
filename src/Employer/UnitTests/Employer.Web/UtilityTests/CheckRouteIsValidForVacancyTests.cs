@@ -98,6 +98,8 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.UtilityTests
         [InlineData(RouteNames.NumberOfPositions_Post, false)]
         [InlineData(RouteNames.Employer_Get, false)]
         [InlineData(RouteNames.Employer_Post, false)]
+        [InlineData(RouteNames.SetCompetitivePayRate_Get, false)]
+        [InlineData(RouteNames.SetCompetitivePayRate_Post, false)]
         [InlineData("any other route", true)]
         public void And_Has_NumberOfPositions_ShouldRedirectToEmployer(string route, bool shouldRedirect)
         {
