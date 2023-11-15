@@ -1,4 +1,5 @@
-﻿using Esfa.Recruit.Provider.Web.ViewModels.ApplicationReview;
+﻿using Esfa.Recruit.Shared.Web.Models;
+using Esfa.Recruit.Shared.Web.ViewModels.ApplicationReview;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
@@ -6,9 +7,9 @@ using FluentValidation;
 
 namespace Esfa.Recruit.Provider.Web.ViewModels.Validations.Fluent
 {
-    public class ApplicationReviewFeedBackModelValidator : AbstractValidator<ApplicationReviewFeedBackViewModel>
+    public class ApplicationReviewFeedbackModelValidator : AbstractValidator<IApplicationReviewEditModel>
     {
-        public ApplicationReviewFeedBackModelValidator(IProfanityListProvider profanityListProvider)
+        public ApplicationReviewFeedbackModelValidator(IProfanityListProvider profanityListProvider)
         {
             RuleFor(x => x.Outcome)
                 .NotNull()

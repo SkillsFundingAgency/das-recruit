@@ -66,7 +66,7 @@ namespace Esfa.Recruit.Qa.Web
             _authorizationConfig = _configuration.GetSection("Authorization").Get<AuthorizationConfiguration>();
             _externalLinks = _configuration.GetSection("ExternalLinks").Get<ExternalLinksConfiguration>();
             _dfEOidcConfig = _configuration.GetSection("DfEOidcConfiguration").Get<DfEOidcConfiguration>(); // read the configuration from SFA.DAS.Provider.DfeSignIn
-            _isDfESignInAllowed = _configuration.GetValue<bool>("UseDfeSignIn"); // read the UseDfeSignIn property from SFA.DAS.Recruit.QA configuration.
+            _isDfESignInAllowed = _configuration.GetValue<bool>("UseDfESignIn"); // read the UseDfESignIn property from SFA.DAS.Recruit.QA configuration.
             _loggerFactory = loggerFactory;
         }
 

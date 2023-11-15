@@ -40,6 +40,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation
         RouteId = 1L << 31,
         AdditionalQuestion1 = 1L << 32,
         AdditionalQuestion2 = 1L << 33,
+        CompetitiveWage = 1L << 34,
         All = ~None,
     }
 }

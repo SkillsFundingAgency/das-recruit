@@ -49,6 +49,7 @@ namespace Esfa.Recruit.Provider.Web.Configuration
                     policy.RequireClaim(ukPrnClaimName);
                     policy.RequireClaim(serviceClaimName);
                     policy.Requirements.Add(new ProviderAccountRequirement());
+                    policy.Requirements.Add(new TrainingProviderAllRolesRequirement());
                 });
 
                 options.AddPolicy(PolicyNames.HasContributorOrAbovePermission, policy =>
@@ -57,6 +58,7 @@ namespace Esfa.Recruit.Provider.Web.Configuration
                     policy.RequireClaim(ukPrnClaimName);
                     policy.RequireClaim(serviceClaimName);
                     policy.Requirements.Add(new MinimumServiceClaimRequirement(ServiceClaim.DAC));
+                    policy.Requirements.Add(new TrainingProviderAllRolesRequirement());
                 });
 
                 options.AddPolicy(PolicyNames.HasContributorWithApprovalOrAbovePermission, policy =>
@@ -65,6 +67,7 @@ namespace Esfa.Recruit.Provider.Web.Configuration
                     policy.RequireClaim(ukPrnClaimName);
                     policy.RequireClaim(serviceClaimName);
                     policy.Requirements.Add(new MinimumServiceClaimRequirement(ServiceClaim.DAB));
+                    policy.Requirements.Add(new TrainingProviderAllRolesRequirement());
                 });
 
                 options.AddPolicy(PolicyNames.HasAccountOwnerPermission, policy =>
@@ -73,6 +76,7 @@ namespace Esfa.Recruit.Provider.Web.Configuration
                     policy.RequireClaim(ukPrnClaimName);
                     policy.RequireClaim(serviceClaimName);
                     policy.Requirements.Add(new MinimumServiceClaimRequirement(ServiceClaim.DAA));
+                    policy.Requirements.Add(new TrainingProviderAllRolesRequirement());
                 });
                 
                 options.AddPolicy(PolicyNames.IsTraineeshipWeb, policy =>
@@ -89,6 +93,8 @@ namespace Esfa.Recruit.Provider.Web.Configuration
             services.AddTransient<IAuthorizationHandler, ProviderAccountHandler>();
             services.AddTransient<IAuthorizationHandler, MinimumServiceClaimRequirementHandler>();
             services.AddTransient<IAuthorizationHandler, VacancyTypeRequirementHandler>();
+            services.AddSingleton<ITrainingProviderAuthorizationHandler, TrainingProviderAuthorizationHandler>();
+            services.AddSingleton<IAuthorizationHandler, TrainingProviderAllRolesAuthorizationHandler>();
         }
 
         public static void AddMvcService(this IServiceCollection services, IWebHostEnvironment hostingEnvironment, ILoggerFactory loggerFactory, IConfiguration configuration)
