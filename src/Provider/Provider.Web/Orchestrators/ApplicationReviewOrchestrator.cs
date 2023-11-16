@@ -17,8 +17,8 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
         Task<string> PostApplicationReviewStatusChangeModelAsync(ApplicationReviewStatusChangeModel m, VacancyUser user);
         Task<ApplicationStatusConfirmationViewModel> GetApplicationStatusConfirmationViewModelAsync(ApplicationReviewStatusConfirmationEditModel applicationReviewStatusConfirmationEditModel);
         Task<ApplicationStatusConfirmationViewModel> GetApplicationStatusConfirmationViewModelAsync(ApplicationReviewEditModel rm);
-        Task<string> GetApplicationReviewFeedBackViewModelAsync(ApplicationReviewFeedBackViewModel applicationReviewFeedBackViewModel);
-        Task<ApplicationReviewFeedBackViewModel> GetApplicationReviewFeedBackViewModelAsync(ApplicationReviewEditModel rm);
+        Task<string> GetApplicationReviewFeedbackViewModelAsync(ApplicationReviewFeedbackViewModel applicationReviewFeedbackViewModel);
+        Task<ApplicationReviewFeedbackViewModel> GetApplicationReviewFeedbackViewModelAsync(ApplicationReviewEditModel rm);
     }
 
     public class ApplicationReviewOrchestrator : IApplicationReviewOrchestrator
@@ -81,20 +81,20 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
                 Name = applicationReview.Application.FullName
             };
         }
-        public async Task<string> GetApplicationReviewFeedBackViewModelAsync(ApplicationReviewFeedBackViewModel applicationReviewFeedBackViewModel)
+        public async Task<string> GetApplicationReviewFeedbackViewModelAsync(ApplicationReviewFeedbackViewModel applicationReviewFeedbackViewModel)
         {
-            await _utility.GetAuthorisedApplicationReviewAsync(applicationReviewFeedBackViewModel);
+            await _utility.GetAuthorisedApplicationReviewAsync(applicationReviewFeedbackViewModel);
 
-            var applicationReview = await _utility.GetAuthorisedApplicationReviewAsync(applicationReviewFeedBackViewModel);
+            var applicationReview = await _utility.GetAuthorisedApplicationReviewAsync(applicationReviewFeedbackViewModel);
 
             return applicationReview.Application.FullName;
         }
 
-        public async Task<ApplicationReviewFeedBackViewModel> GetApplicationReviewFeedBackViewModelAsync(ApplicationReviewEditModel rm)
+        public async Task<ApplicationReviewFeedbackViewModel> GetApplicationReviewFeedbackViewModelAsync(ApplicationReviewEditModel rm)
         {
             var applicationReviewVm = await GetApplicationReviewViewModelAsync((ApplicationReviewRouteModel)rm);
 
-            return new ApplicationReviewFeedBackViewModel
+            return new ApplicationReviewFeedbackViewModel
             {
                 CandidateFeedback = rm.CandidateFeedback,
                 Outcome = rm.Outcome,

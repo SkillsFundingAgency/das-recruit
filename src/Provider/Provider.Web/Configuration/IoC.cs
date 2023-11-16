@@ -1,6 +1,7 @@
 ﻿using Esfa.Recruit.Provider.Web.Filters;
 using Esfa.Recruit.Provider.Web.Interfaces;
 using Esfa.Recruit.Provider.Web.Mappings;
+using Esfa.Recruit.Provider.Web.Models.ApplicationReviews;
 using Esfa.Recruit.Provider.Web.Orchestrators;
 using Esfa.Recruit.Shared.Web.Configuration;
 using Esfa.Recruit.Shared.Web.Mappers;
@@ -21,6 +22,7 @@ using Esfa.Recruit.Vacancies.Client.Ioc;
 using FluentValidation;
 using Esfa.Recruit.Provider.Web.Services;
 using Esfa.Recruit.Provider.Web.TagHelpers;
+using Esfa.Recruit.Provider.Web.ViewModels.ApplicationReviews;
 using Esfa.Recruit.Shared.Web.Orchestrators;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
@@ -83,9 +85,15 @@ namespace Esfa.Recruit.Provider.Web.Configuration
         {
             services.AddSingleton<IValidator<CompetitiveWageEditModel>, CompetitiveWageEditModelValidator>();
             services.AddSingleton<IValidator<ApplicationReviewEditModel>, ApplicationReviewEditModelValidator>();
+
             services.AddSingleton<IValidator<WageExtraInformationViewModel>, WageExtraInformationModelValidator>();
             services.AddSingleton<IValidator<WageEditModel>, WageEditModelValidator>();
-            services.AddSingleton<IValidator<ApplicationReviewFeedBackViewModel>, ApplicationReviewFeedBackModelValidator>();
+
+            services.AddSingleton<IValidator<ApplicationReviewFeedbackViewModel>, ApplicationReviewFeedbackModelValidator>();
+            services.AddSingleton<IValidator<ApplicationReviewsToUnsuccessfulFeedbackViewModel>, ApplicationReviewsFeedbackModelValidator>();
+            services.AddSingleton<IValidator<ApplicationReviewsToUnsuccessfulRequest>, ApplicationReviewsToUnsuccessfulModelValidator>();
+            services.AddSingleton<IValidator<ApplicationReviewsToUnsuccessfulConfirmationViewModel>, ApplicationReviewsToUnsuccessfulConfirmationModelValidator>();
+
             services.AddSingleton<IValidator<ApplicationReviewStatusConfirmationEditModel>, ApplicationReviewStatusConfirmationEditModelValidator>();
             services.AddSingleton<IValidator<ProviderApplicationsReportCreateEditModel>, ProviderApplicationsReportCreateEditModelValidator>();
             services.AddSingleton<IValidator<ApplicationReviewsToShareRouteModel>, ApplicationReviewsToShareModelValidator>();
