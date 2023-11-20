@@ -78,6 +78,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             vm.CanShowDraftHeader = vacancy.Status == VacancyStatus.Draft;
             vm.SoftValidationErrors = GetSoftValidationErrors(vacancy);
             vm.RequiresEmployerReview = hasProviderReviewPermission;
+            vm.WageType = vacancy.Wage?.WageType;
 
             if (programme != null) vm.ApprenticeshipLevel = programme.ApprenticeshipLevel;
             

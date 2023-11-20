@@ -1,0 +1,67 @@
+﻿@using Microsoft.Extensions.Options
+@using Esfa.Recruit.Shared.Web.Mappers
+@using Esfa.Recruit.Shared.Web.TagHelpers
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model Esfa.Recruit.Provider.Web.ViewModels.Part1.CustomWage.CustomWageViewModel
+@inject IOptions<ExternalLinksConfiguration> externalLinks
+@{ 
+    ViewBag.Vpv = "/recruitment/provider/page-part1-custom-wage";
+    ViewBag.Title = "Set wage yourself";
+    ViewBag.ZenDeskLabel = "recruit-set-wage-yourself";
+}
+
+@section BackLink {
+    <esfaFeatureEnabled name="@FeatureNames.ProviderTaskList">
+        <a asp-route="@RouteNames.Wage_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Back</a>
+    </esfaFeatureEnabled>
+    <esfaFeatureDisabled name="@FeatureNames.ProviderTaskList">
+        <a asp-show="@Model.PageInfo.IsWizard" asp-all-route-data="@Model.RouteDictionary" asp-route="@RouteNames.Wage_Get" esfa-automation="link-back" class="govuk-back-link">Back</a>
+    </esfaFeatureDisabled>
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+        <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }' />
+        <partial name="@PartialNames.ReviewSummary" for="Review" />
+
+        <form asp-route="@RouteNames.CustomWage_Post" asp-all-route-data="@Model.RouteDictionary" asp-route-wizard="@Model.PageInfo.IsWizard" novalidate>
+        
+                <div esfa-validation-marker-for="FixedWageYearlyAmount" class="govuk-form-group">
+                <fieldset class="govuk-fieldset">
+                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
+                        <h1 class="govuk-fieldset__heading">
+                            Set wage yourself
+                        </h1>
+                    </legend>
+            
+                    <p class="govuk-body govuk-hint">
+                        From @Model.MinimumWageStartFrom, <a href="@externalLinks.Value.NationalMinimumWageRates" rel="noopener" target="_blank" class="govuk-link">National Minimum Wage for apprentices (opens in a new tab)​</a> is @Model.ApprenticeshipMinimumWageHourly an hour.<br /><br />
+                        You must pay more than this figure. Since your apprenticeship will be @Model.WeeklyHours hours a week, you'll need to set a wage that's more than @Model.ApprenticeshipMinimumWageYearly.
+                    </p>
+
+                    <span esfa-validation-message-for="FixedWageYearlyAmount" class="govuk-error-message"></span>
+                    <div class="govuk-input__wrapper">
+                        <div class="govuk-input__prefix" aria-hidden="true">£</div>
+                        <input asp-for="FixedWageYearlyAmount" class="govuk-input govuk-!-width-one-quarter" type="text">
+                        <div class="govuk-input__suffix" aria-hidden="true">yearly</div>
+                    </div>
+
+                </fieldset>
+            </div>
+            
+            <div class="govuk-button-group">
+                <button type="submit" class="govuk-button save-button" esfa-automation="continue-button">@Model.PageInfo.SubmitButtonText</button>
+                <esfaFeatureEnabled name="@FeatureNames.ProviderTaskList">
+                    <a asp-route="@RouteNames.Dashboard_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-cancel" class="govuk-link govuk-link--no-visited-state">Cancel</a>
+                </esfaFeatureEnabled>
+                <esfaFeatureDisabled name="@FeatureNames.ProviderTaskList">
+                    <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Vacancies_Get" asp-all-route-data="@Model.RouteDictionary" class="govuk-link govuk-link--no-visited-state">Cancel</a>
+                    <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.Vacancy_Preview_Get" asp-all-route-data="@Model.RouteDictionary" asp-fragment="@Anchors.ApprenticeshipSummarySection" class="govuk-link govuk-link--no-visited-state">Cancel</a>
+                </esfaFeatureDisabled>
+            </div>
+
+        </form>
+
+    </div>
+</div>
