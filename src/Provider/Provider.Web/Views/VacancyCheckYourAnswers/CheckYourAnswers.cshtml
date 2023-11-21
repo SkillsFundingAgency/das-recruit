@@ -347,8 +347,22 @@
                 <div class="app-summary-list__row" field-review-marker="WageInfo">
                     <dt class="app-summary-list__key" id="@FieldIdentifiers.WageAdditionalInfo">Extra information about pay (optional)</dt>
                     <dd class="app-summary-list__value">
-                        @(Model.HasWageInfo ? Model.WageInfo : "None")
-                        <review-field class="govuk-tag--purple" field-name="@FieldIdentifiers.WageAdditionalInfo" tag-name="strong" model="@Model"/>
+                        @if (Model.HasCompetitiveSalaryType)
+                        {
+                            <text>
+                                @Model.WageType.GetDisplayName()
+                            </text>
+                            <br />
+
+                            <br />
+                        }
+
+                        @if (Model.HasWageInfo)
+                        {
+                            <text>
+                                @Model.WageInfo
+                            </text>
+                        }
                     </dd>
                     <dd class="app-summary-list__actions">
                         
