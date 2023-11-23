@@ -26,6 +26,50 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part1
             _fixture = new WageOrchestratorTestsFixture();
         }
 
+        [Fact]
+        public async Task WhenCompetitiveSalaryUpdated_ShouldFlagFieldIndicators()
+        {
+            _fixture
+                .Setup();
+
+            _fixture.SetCompetitiveValidationRule();
+
+            var wageExtraInformationViewModel = new CompetitiveWageEditModel()
+            {
+                Ukprn = _fixture.Vacancy.TrainingProvider.Ukprn.Value,
+                VacancyId = _fixture.Vacancy.Id,
+                WageType = WageType.CompetitiveSalary
+            };
+
+            await _fixture.PostExtraInformationEditModelAsync(wageExtraInformationViewModel);
+
+            _fixture.VerifyProviderReviewFieldIndicators(FieldIdentifiers.Wage, true);
+        }
+
+        [Theory]
+        [InlineData(WageType.FixedWage, "this is a value", true)]
+        [InlineData(WageType.NationalMinimumWage, "this is a value", true)]
+        [InlineData(WageType.NationalMinimumWageForApprentices, "this is a value", true)]
+        [InlineData(WageType.CompetitiveSalary, "this is a new value", true)]
+        public async Task WhenAdditionalInformationUpdated_ShouldFlagFieldIndicators(WageType wageType, string wageAddtionalInformation, bool fieldIndicatorSet)
+        {
+            _fixture
+                .WithWageType(wageType)
+                .Setup();
+
+            var wageExtraInformationViewModel = new WageExtraInformationViewModel
+            {
+                Ukprn = _fixture.Vacancy.TrainingProvider.Ukprn.Value,
+                VacancyId = _fixture.Vacancy.Id,
+                WageType = wageType,
+                WageAdditionalInformation = wageAddtionalInformation
+            };
+
+            await _fixture.PostExtraInformationEditModelAsync(wageExtraInformationViewModel);
+
+            _fixture.VerifyProviderReviewFieldIndicators(FieldIdentifiers.Wage, fieldIndicatorSet);
+        }
+
         [Theory]
         [InlineData(WageType.FixedWage, 10000, "this is a value", false)]
         [InlineData(WageType.NationalMinimumWage, 10000, "this is a value", true)]
@@ -55,10 +99,12 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part1
 
         public class WageOrchestratorTestsFixture
         {
-            private const VacancyRuleSet ValidationRules = VacancyRuleSet.Wage | VacancyRuleSet.MinimumWage;
+            private const VacancyRuleSet CompetitiveValidationRules = VacancyRuleSet.CompetitiveWage;
+            private const VacancyRuleSet ValidationRules = VacancyRuleSet.Wage;
+
             public VacancyUser User { get; }
             public Vacancy Vacancy { get; }
-            public WageOrchestrator Sut {get; private set;}
+            public WageOrchestrator Sut { get; private set; }
 
             public WageOrchestratorTestsFixture()
             {
@@ -92,10 +138,19 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part1
                 MockRecruitVacancyClient.Setup(x => x.GetVacancyAsync(Vacancy.Id)).ReturnsAsync(Vacancy);
                 MockRecruitVacancyClient.Setup(x => x.Validate(Vacancy, ValidationRules)).Returns(new EntityValidationResult());
                 MockRecruitVacancyClient.Setup(x => x.UpdateDraftVacancyAsync(It.IsAny<Vacancy>(), User));
-                MockRecruitVacancyClient.Setup(x => x.UpdateEmployerProfileAsync(It.IsAny<EmployerProfile>(), User));
 
-                Sut = new WageOrchestrator(MockRecruitVacancyClient.Object, Mock.Of<ILogger<WageOrchestrator>>(), 
+                Sut = new WageOrchestrator(MockRecruitVacancyClient.Object, Mock.Of<ILogger<WageOrchestrator>>(),
                     Mock.Of<IReviewSummaryService>(), Mock.Of<IMinimumWageProvider>(), new Utility(MockRecruitVacancyClient.Object));
+            }
+
+            public async Task PostExtraInformationEditModelAsync(WageExtraInformationViewModel model)
+            {
+                await Sut.PostExtraInformationEditModelAsync(model, User);
+            }
+          
+            public void SetCompetitiveValidationRule()
+            {
+                MockRecruitVacancyClient.Setup(x => x.Validate(Vacancy, CompetitiveValidationRules)).Returns(new EntityValidationResult()); ;
             }
 
             public async Task PostWageEditModelAsync(WageEditModel model)
@@ -103,7 +158,12 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part1
                 await Sut.PostWageEditModelAsync(model, User);
             }
 
-            public void VerifyEmployerReviewFieldIndicators(string[] setFieldIdentifiers, string[] unsetFieldIdentifiers)
+            public async Task PostExtraInformationEditModelAsync(CompetitiveWageEditModel model)
+            {
+                await Sut.PostCompetitiveWageEditModelAsync(model, User);
+            }
+  
+            public void VerifyProviderReviewFieldIndicators(string[] setFieldIdentifiers, string[] unsetFieldIdentifiers)
             {
                 foreach (var fieldIdentifier in setFieldIdentifiers)
                 {
