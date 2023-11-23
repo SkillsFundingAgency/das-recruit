@@ -348,8 +348,8 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                     .WithMessage("Enter an application closing date")
                     .WithErrorCode("16")
                 .WithState(_ => VacancyRuleSet.ClosingDate)
-                .GreaterThan(v => _timeProvider.Now.Date.AddDays(1).AddTicks(-1))
-                    .WithMessage("Closing date should be at least 1 day in the future.")
+                .GreaterThan(v => _timeProvider.Now.Date.AddDays(14).AddTicks(-1))
+                    .WithMessage("Closing date should be at least 14 days in the future.")
                     .WithErrorCode("18")
                 .WithState(_ => VacancyRuleSet.ClosingDate)
                 .RunCondition(VacancyRuleSet.ClosingDate);
