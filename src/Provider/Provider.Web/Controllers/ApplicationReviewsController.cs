@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Provider.Web.Configuration;
@@ -9,6 +10,7 @@ using Esfa.Recruit.Provider.Web.Orchestrators;
 using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Provider.Web.ViewModels.ApplicationReviews;
 using Esfa.Recruit.Shared.Web.ViewModels;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyApplications;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -29,9 +31,18 @@ namespace Esfa.Recruit.Provider.Web.Controllers
 
         [HttpGet("unsuccessful", Name = RouteNames.ApplicationReviewsToUnsuccessful_Get)]
         [FeatureGate(FeatureNames.MultipleApplicationsManagement)]
-        public async Task<IActionResult> ApplicationReviewsToUnsuccessful(VacancyRouteModel rm)
+        public async Task<IActionResult> ApplicationReviewsToUnsuccessful(VacancyRouteModel rm, [FromQuery] string sortColumn, [FromQuery] string sortOrder)
         {
-            var viewModel = await _orchestrator.GetApplicationReviewsToUnsuccessfulViewModelAsync(rm);
+            Enum.TryParse<SortOrder>(sortOrder, out var outputSortOrder);
+            Enum.TryParse<SortColumn>(sortColumn, out var outputSortColumn);
+
+            var viewModel = await _orchestrator.GetApplicationReviewsToUnsuccessfulViewModelAsync(rm, outputSortColumn, outputSortOrder);
+
+            if (TempData.ContainsKey(TempDataKeys.ApplicationReviewStatusInfoMessage))
+            {
+                viewModel.ShouldMakeOthersUnsuccessfulBannerHeader = TempData[TempDataKeys.ApplicationReviewStatusInfoMessage].ToString();
+                viewModel.ShouldMakeOthersUnsuccessfulBannerBody = InfoMessages.ApplicationReviewSuccessStatusBannerMessage;
+            }
 
             return View(viewModel);
         }
@@ -39,11 +50,14 @@ namespace Esfa.Recruit.Provider.Web.Controllers
         [HttpPost("unsuccessful", Name = RouteNames.ApplicationReviewsToUnsuccessful_Post)]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         [FeatureGate(FeatureNames.MultipleApplicationsManagement)]
-        public async Task<IActionResult> ApplicationReviewsToUnsuccessful(ApplicationReviewsToUnsuccessfulRequest request)
+        public async Task<IActionResult> ApplicationReviewsToUnsuccessful(ApplicationReviewsToUnsuccessfulRequest request, [FromQuery] string sortColumn, [FromQuery] string sortOrder)
         {
+            Enum.TryParse<SortOrder>(sortOrder, out var outputSortOrder);
+            Enum.TryParse<SortColumn>(sortColumn, out var outputSortColumn);
+
             if (!ModelState.IsValid)
             {
-                var viewModel = await _orchestrator.GetApplicationReviewsToUnsuccessfulViewModelAsync(request);
+                var viewModel = await _orchestrator.GetApplicationReviewsToUnsuccessfulViewModelAsync(request, outputSortColumn, outputSortOrder);
                 return View(viewModel);
             }
             return RedirectToAction(nameof(ApplicationReviewsToUnsuccessfulFeedback), new { request.ApplicationsToUnsuccessful, request.Ukprn, request.VacancyId });
@@ -106,9 +120,12 @@ namespace Esfa.Recruit.Provider.Web.Controllers
 
         [HttpGet("", Name = RouteNames.ApplicationReviewsToShare_Get)]
         [FeatureGate(FeatureNames.ShareApplicationsFeature)]
-        public async Task<IActionResult> ApplicationReviewsToShare(VacancyRouteModel rm)
+        public async Task<IActionResult> ApplicationReviewsToShare(VacancyRouteModel rm, [FromQuery] string sortColumn, [FromQuery] string sortOrder)
         {
-            var viewModel = await _orchestrator.GetApplicationReviewsToShareViewModelAsync(rm);
+            Enum.TryParse<SortOrder>(sortOrder, out var outputSortOrder);
+            Enum.TryParse<SortColumn>(sortColumn, out var outputSortColumn);
+
+            var viewModel = await _orchestrator.GetApplicationReviewsToShareViewModelAsync(rm, outputSortColumn, outputSortOrder);
 
             return View(viewModel);
         }
@@ -116,11 +133,14 @@ namespace Esfa.Recruit.Provider.Web.Controllers
         [HttpPost("", Name = RouteNames.ApplicationReviewsToShare_Post)]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         [FeatureGate(FeatureNames.ShareApplicationsFeature)]
-        public async Task<IActionResult> ApplicationReviewsToShare(ApplicationReviewsToShareRouteModel rm)
+        public async Task<IActionResult> ApplicationReviewsToShare(ApplicationReviewsToShareRouteModel rm, [FromQuery] string sortColumn, [FromQuery] string sortOrder)
         {
+            Enum.TryParse<SortOrder>(sortOrder, out var outputSortOrder);
+            Enum.TryParse<SortColumn>(sortColumn, out var outputSortColumn);
+
             if (!ModelState.IsValid)
             {
-                var vm = await _orchestrator.GetApplicationReviewsToShareViewModelAsync(rm);
+                var vm = await _orchestrator.GetApplicationReviewsToShareViewModelAsync(rm, outputSortColumn, outputSortOrder);
                 return View(vm);
             }
 
@@ -153,6 +173,11 @@ namespace Esfa.Recruit.Provider.Web.Controllers
         {
             if (!applicationsToUnsuccessful.Any())
                 return;
+            else if (applicationsToUnsuccessful.Count.Equals(1))
+            {
+                TempData.Add(TempDataKeys.ApplicationsToUnsuccessfulHeader, string.Format(InfoMessages.ApplicationReviewUnsuccessStatusHeader, applicationsToUnsuccessful[0].CandidateName));
+                return;
+            }
 
             TempData.Add(TempDataKeys.ApplicationsToUnsuccessfulHeader, InfoMessages.ApplicationsToUnsuccessfulBannerHeader);
             return;

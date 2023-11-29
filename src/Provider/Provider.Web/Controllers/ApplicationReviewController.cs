@@ -61,8 +61,8 @@ namespace Esfa.Recruit.Provider.Web.Controllers
 
                 case ApplicationReviewStatus.InReview:
                 case ApplicationReviewStatus.Interviewing:
-                    var candidateName = await _orchestrator.PostApplicationReviewStatusChangeModelAsync(applicationReviewEditModel, User.ToVacancyUser());
-                    TempData.Add(TempDataKeys.ApplicationStatusChangedHeader, string.Format(InfoMessages.ApplicationStatusChangeBannerHeader, candidateName, applicationReviewEditModel.Outcome.GetDisplayName().ToLower()));
+                    var statusChangeInfo = await _orchestrator.PostApplicationReviewStatusChangeModelAsync(applicationReviewEditModel, User.ToVacancyUser());
+                    TempData.Add(TempDataKeys.ApplicationStatusChangedHeader, string.Format(InfoMessages.ApplicationStatusChangeBannerHeader, statusChangeInfo.CandidateName, applicationReviewEditModel.Outcome.GetDisplayName().ToLower()));
                     return RedirectToRoute(RouteNames.VacancyManage_Get, new { applicationReviewEditModel.VacancyId, applicationReviewEditModel.Ukprn });
 
                 case ApplicationReviewStatus.Successful:
@@ -123,32 +123,38 @@ namespace Esfa.Recruit.Provider.Web.Controllers
 
         [HttpPost("status", Name = RouteNames.ApplicationReviewConfirmation_Post)]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-        public async Task<IActionResult> ApplicationStatusConfirmation(ApplicationReviewStatusConfirmationEditModel applicationReviewStatusConfirmationEditModel)
+        public async Task<IActionResult> ApplicationStatusConfirmation(ApplicationReviewStatusConfirmationEditModel editModel)
         {
             if (!ModelState.IsValid)
             {
-                var vm = await _orchestrator.GetApplicationStatusConfirmationViewModelAsync(applicationReviewStatusConfirmationEditModel);
+                var vm = await _orchestrator.GetApplicationStatusConfirmationViewModelAsync(editModel);
                 return View(vm);
             }
 
-            if (applicationReviewStatusConfirmationEditModel.CanNotifyCandidate)
+            if (editModel.CanNotifyCandidate)
             {
-                var candidateName = await _orchestrator.PostApplicationReviewStatusChangeModelAsync(applicationReviewStatusConfirmationEditModel, User.ToVacancyUser());
+                var statusChangeInfo = await _orchestrator.PostApplicationReviewStatusChangeModelAsync(editModel, User.ToVacancyUser());
 
-                switch (applicationReviewStatusConfirmationEditModel.Outcome)
+                if (statusChangeInfo.ShouldMakeOthersUnsuccessful)
+                {
+                    TempData.Add(TempDataKeys.ApplicationReviewStatusInfoMessage, string.Format(InfoMessages.ApplicationReviewSuccessStatusHeader, statusChangeInfo.CandidateName));
+                    return RedirectToRoute(RouteNames.ApplicationReviewsToUnsuccessful_Get, new { editModel.VacancyId, editModel.Ukprn });
+                }
+
+                switch (editModel.Outcome)
                 {
                     case ApplicationReviewStatus.Successful:
-                        TempData.Add(TempDataKeys.ApplicationReviewSuccessStatusInfoMessage, string.Format(InfoMessages.ApplicationReviewSuccessStatusHeader, candidateName));
+                        TempData.Add(TempDataKeys.ApplicationReviewSuccessStatusInfoMessage, string.Format(InfoMessages.ApplicationReviewSuccessStatusHeader, statusChangeInfo.CandidateName));
                         break;
                     case ApplicationReviewStatus.Unsuccessful:
-                        TempData.Add(TempDataKeys.ApplicationReviewUnsuccessStatusInfoMessage, string.Format(InfoMessages.ApplicationReviewUnsuccessStatusHeader, candidateName));
+                        TempData.Add(TempDataKeys.ApplicationReviewUnsuccessStatusInfoMessage, string.Format(InfoMessages.ApplicationReviewUnsuccessStatusHeader, statusChangeInfo.CandidateName));
                         break;
                     default:
-                        TempData.Add(TempDataKeys.ApplicationReviewStatusInfoMessage, string.Format(InfoMessages.ApplicationReviewStatusHeader, candidateName, applicationReviewStatusConfirmationEditModel.Outcome.ToString().ToLower()));
+                        TempData.Add(TempDataKeys.ApplicationReviewStatusInfoMessage, string.Format(InfoMessages.ApplicationReviewStatusHeader, statusChangeInfo.CandidateName, editModel.Outcome.ToString().ToLower()));
                         break;
                 }
             }
-            return RedirectToRoute(RouteNames.VacancyManage_Get, new { applicationReviewStatusConfirmationEditModel.VacancyId, applicationReviewStatusConfirmationEditModel.Ukprn });
+            return RedirectToRoute(RouteNames.VacancyManage_Get, new { editModel.VacancyId, editModel.Ukprn });
         }
     }
 }

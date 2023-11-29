@@ -23,8 +23,11 @@ namespace Esfa.Recruit.Provider.Web.Controllers
         }
 
         [HttpGet("manage", Name = RouteNames.VacancyManage_Get)]
-        public async Task<IActionResult> ManageVacancy(VacancyRouteModel vrm)
+        public async Task<IActionResult> ManageVacancy(VacancyRouteModel vrm, [FromQuery] string sortColumn, [FromQuery] string sortOrder)
         {
+            Enum.TryParse<SortOrder>(sortOrder, out var outputSortOrder);
+            Enum.TryParse<SortColumn>(sortColumn, out var outputSortColumn);
+
             var vacancy = await _orchestrator.GetVacancy(vrm);
 
             if (vacancy.CanEdit)
@@ -32,7 +35,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
                 return HandleRedirectOfEditableVacancy(vacancy);
             }
 
-            var viewModel = await _orchestrator.GetManageVacancyViewModel(vacancy, vrm);
+            var viewModel = await _orchestrator.GetManageVacancyViewModel(vacancy, vrm, outputSortColumn, outputSortOrder);
 
             if (TempData.ContainsKey(TempDataKeys.VacancyClosedMessage))
                 viewModel.VacancyClosedInfoMessage = TempData[TempDataKeys.VacancyClosedMessage].ToString();
@@ -43,7 +46,6 @@ namespace Esfa.Recruit.Provider.Web.Controllers
             if (TempData.ContainsKey(TempDataKeys.ApplicationReviewSuccessStatusInfoMessage))
             {
                 viewModel.ApplicationReviewStatusChangeBannerHeader = TempData[TempDataKeys.ApplicationReviewSuccessStatusInfoMessage].ToString();
-                viewModel.ApplicationReviewStatusChangeBannerMessage = InfoMsg.ApplicationReviewSuccessStatusBannerMessage;
             }
 
             if (TempData.ContainsKey(TempDataKeys.ApplicationReviewUnsuccessStatusInfoMessage))

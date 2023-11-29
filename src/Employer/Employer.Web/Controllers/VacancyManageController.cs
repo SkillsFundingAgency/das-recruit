@@ -35,9 +35,12 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         }
 
         [HttpGet("manage", Name = RouteNames.VacancyManage_Get)]
-        public async Task<IActionResult> ManageVacancy(VacancyRouteModel vrm, [FromQuery] bool vacancySharedByProvider)
+        public async Task<IActionResult> ManageVacancy(ManageVacancyRouteModel vrm, [FromQuery] string sortColumn, [FromQuery] string sortOrder, [FromQuery] bool vacancySharedByProvider)
         {
             EnsureProposedChangesCookiesAreCleared(vrm.VacancyId);
+
+            Enum.TryParse<SortOrder>(sortOrder, out var outputSortOrder);
+            Enum.TryParse<SortColumn>(sortColumn, out var outputSortColumn);
 
             var vacancy = await _orchestrator.GetVacancy(vrm, vacancySharedByProvider);
 
@@ -46,16 +49,19 @@ namespace Esfa.Recruit.Employer.Web.Controllers
                 return HandleRedirectOfEditableVacancy(vacancy);
             }
 
-            var viewModel = await _orchestrator.GetManageVacancyViewModel(vacancy, vacancySharedByProvider);
+            var viewModel = await _orchestrator.GetManageVacancyViewModel(vacancy, outputSortColumn, outputSortOrder, vacancySharedByProvider);
 
             if (TempData.ContainsKey(TempDataKeys.VacancyClosedMessage))
                 viewModel.VacancyClosedInfoMessage = TempData[TempDataKeys.VacancyClosedMessage].ToString();
 
             if (TempData.ContainsKey(TempDataKeys.ApplicationReviewStatusInfoMessage))
                 viewModel.EmployerReviewedApplicationHeaderMessage = TempData[TempDataKeys.ApplicationReviewStatusInfoMessage].ToString();
-
+            
             if (TempData.ContainsKey(TempDataKeys.ApplicationReviewedInfoMessage))
                 viewModel.EmployerReviewedApplicationBodyMessage = TempData[TempDataKeys.ApplicationReviewedInfoMessage].ToString();
+
+            if (TempData.ContainsKey(TempDataKeys.ApplicationReviewStatusChangeInfoMessage))
+                viewModel.ApplicationStatusChangeHeaderMessage = TempData[TempDataKeys.ApplicationReviewStatusChangeInfoMessage].ToString();
 
             if (TempData.ContainsKey(TempDataKeys.ApplicationReviewsUnsuccessfulInfoMessage))
             {

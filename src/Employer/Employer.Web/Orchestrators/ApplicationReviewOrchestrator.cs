@@ -16,7 +16,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
     {
         Task<ApplicationReviewViewModel> GetApplicationReviewViewModelAsync(ApplicationReviewRouteModel rm, bool vacancySharedByProvider = false);
         Task<ApplicationReviewViewModel> GetApplicationReviewViewModelAsync(ApplicationReviewEditModel m, bool vacancySharedByProvider = false);
-        Task<string> PostApplicationReviewConfirmationEditModelAsync(ApplicationReviewStatusConfirmationEditModel m, VacancyUser user);
+        Task<ApplicationReviewStatusUpdateInfo> PostApplicationReviewConfirmationEditModelAsync(ApplicationReviewStatusConfirmationEditModel m, VacancyUser user);
         Task<ApplicationReviewCandidateInfo> PostApplicationReviewEditModelAsync(ApplicationReviewEditModel m, VacancyUser user, bool vacancySharedByProvider = false);
         Task<ApplicationStatusConfirmationViewModel> GetApplicationStatusConfirmationViewModelAsync(ApplicationReviewStatusConfirmationEditModel m);
         Task<ApplicationStatusConfirmationViewModel> GetApplicationStatusConfirmationViewModelAsync(ApplicationReviewEditModel rm);
@@ -57,13 +57,19 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             return vm;
         }
 
-        public async Task<string> PostApplicationReviewConfirmationEditModelAsync(ApplicationReviewStatusConfirmationEditModel m, VacancyUser user)
+        public async Task<ApplicationReviewStatusUpdateInfo> PostApplicationReviewConfirmationEditModelAsync(ApplicationReviewStatusConfirmationEditModel m, VacancyUser user)
         {
             var applicationReview = await _utility.GetAuthorisedApplicationReviewAsync(m);
 
-            await _client.SetApplicationReviewStatus(applicationReview.Id, m.Outcome, m.CandidateFeedback, user);
+            var shouldMakeOthersUnsuccessful = await _client.SetApplicationReviewStatus(applicationReview.Id, m.Outcome, m.CandidateFeedback, user);
 
-            return applicationReview.Application.FullName;
+            var applicationReviewStatusUpdateInfo = new ApplicationReviewStatusUpdateInfo 
+            {
+                ShouldMakeOthersUnsuccessful = shouldMakeOthersUnsuccessful,
+                CandidateName = applicationReview.Application.FullName
+            };
+
+            return applicationReviewStatusUpdateInfo;
         }
 
         public async Task<ApplicationReviewCandidateInfo> PostApplicationReviewEditModelAsync(ApplicationReviewEditModel m, VacancyUser user, bool vacancySharedByProvider = false)

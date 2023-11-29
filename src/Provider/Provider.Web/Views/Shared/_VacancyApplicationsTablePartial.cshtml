@@ -2,33 +2,27 @@
 <table class="govuk-table das-table--responsive">
     <thead class="govuk-table__head">
         <tr class="govuk-table__row">
-            <th class="govuk-table__header" scope="col">Name</th>
-            <th class="govuk-table__header" scope="col">Application ID</th>
-            <th class="govuk-table__header" scope="col">Status</th>
-            <th class="govuk-table__header" scope="col">Date applied</th>
+            <partial name="@PartialNames.MultipleApplicationsTableHeader" />
             <th asp-show="@Model.ShowDisability" class="govuk-table__header" scope="col">Disability</th>
         </tr>
     </thead>
     <tbody class="govuk-table__body">
-        @foreach (var applicationStatusGroup in Model.OrderedApplications)
+        @foreach (var application in Model.Applications)
         {
-            foreach (var application in applicationStatusGroup)
-            {
-                <tr class="govuk-table__row" asp-show="@application.IsNotWithdrawn">
-                    <td class="govuk-table__cell" data-label="Name"><a asp-route="@RouteNames.ApplicationReview_Get"  asp-route-ukprn="@Model.Ukprn" asp-route-vacancyId="@Model.VacancyId" asp-route-applicationReviewId="@application.ApplicationReviewId" class="govuk-link">@application.CandidateName</a></td>
-                    <td class="govuk-table__cell" data-label="Application ID">@application.GetFriendlyId()</td>
-                    <td class="govuk-table__cell" data-label="Status"><strong class="@application.Status.GetCssClassForApplicationReviewStatus()">@application.Status.GetDisplayName(UserType.Provider)</strong></td>
-                    <td class="govuk-table__cell" data-label="Date applied">@application.SubmittedDate.AsGdsDate()</td>
-                    <td class="govuk-table__cell" data-label="Disability" asp-show="@Model.ShowDisability">@application.DisabilityStatus.GetDisplayName()</td>
-                </tr>
-                <tr  class="govuk-table__row" asp-show="@application.IsWithdrawn">
-                    <td class="govuk-table__cell" data-label="Name">Application withdrawn by candidate</td>
-                    <td class="govuk-table__cell" data-label="Application ID">@application.GetFriendlyId()</td>
-                    <td class="govuk-table__cell" data-label="Status">Withdrawn</td>
-                    <td class="govuk-table__cell" data-label="Date applied">@application.SubmittedDate.AsGdsDate()</td>
-                    <td class="govuk-table__cell" data-label="Disability" asp-show="@Model.ShowDisability">No longer applies</td>
-                </tr>
-            }
-        }
+            <tr class="govuk-table__row" asp-show="@application.IsNotWithdrawn">
+                <td class="govuk-table__cell" data-label="Name"><a asp-route="@RouteNames.ApplicationReview_Get"  asp-route-ukprn="@Model.Ukprn" asp-route-vacancyId="@Model.VacancyId" asp-route-applicationReviewId="@application.ApplicationReviewId" class="govuk-link">@application.CandidateName</a></td>
+                <td class="govuk-table__cell" data-label="Application ID">@application.GetFriendlyId()</td>
+                <td class="govuk-table__cell" data-label="Status"><strong class="@application.Status.GetCssClassForApplicationReviewStatus()">@application.Status.GetDisplayName(UserType.Provider)</strong></td>
+                <td class="govuk-table__cell" data-label="Date Applied">@application.SubmittedDate.AsGdsDate()</td>
+                <td class="govuk-table__cell" data-label="Disability" asp-show="@Model.ShowDisability">@application.DisabilityStatus.GetDisplayName()</td>
+            </tr>
+            <tr  class="govuk-table__row" asp-show="@application.IsWithdrawn">
+                <td class="govuk-table__cell" data-label="Name">Application withdrawn by candidate</td>
+                <td class="govuk-table__cell" data-label="Application ID">@application.GetFriendlyId()</td>
+                <td class="govuk-table__cell" data-label="Status">Withdrawn</td>
+                <td class="govuk-table__cell" data-label="Date Applied">@application.SubmittedDate.AsGdsDate()</td>
+                <td class="govuk-table__cell" data-label="Disability" asp-show="@Model.ShowDisability">No longer applies</td>
+            </tr>
+         }
     </tbody>
 </table>

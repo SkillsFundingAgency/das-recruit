@@ -38,6 +38,9 @@
         <h1 class="govuk-heading-xl govuk-!-margin-top-6 govuk-!-margin-bottom-6" id="vacancy-header">
             Manage vacancy
         </h1>
+        <span class="govuk-caption-l">@Model.EmployerName</span>
+        <h1 class="govuk-heading-l">@Model.Title</h1>
+        <p class="govuk-body-l">Vacancy reference: VAC@(Model.VacancyReference)</p>
         <p asp-show="@Model.IsWithdrawn" class="govuk-inset-text">
             This vacancy has issues and was closed on @Model.WithdrawnDate.
         </p>
@@ -59,23 +62,16 @@
     </div>
 </div>
 
+<h2 class="govuk-heading-m">Vacancy summary</h2>
 <dl class="das-definition-list das-definition-list--table">
     <dt class="das-definition-list__title das-definition-list__title--spacer">Status</dt>
-    <dd class="das-definition-list__definition das-definition-list__definition--spacer">@Model.Status.GetDisplayName()</dd>
-    <dt class="das-definition-list__title das-definition-list__title--spacer">Vacancy title</dt>
-    <dd class="das-definition-list__definition das-definition-list__definition--spacer">@Model.Title</dd>
-    <dt class="das-definition-list__title das-definition-list__title--spacer">Vacancy reference</dt>
-    <dd class="das-definition-list__definition das-definition-list__definition--spacer"><span>VAC</span>@Model.VacancyReference</dd>
+    <dd class="das-definition-list__definition das-definition-list__definition--spacer"><strong class="govuk-tag govuk-tag--green">@Model.Status.GetDisplayName() </strong></dd>
     <dt class="das-definition-list__title das-definition-list__title--spacer">Closing date</dt>
     <dd class="das-definition-list__definition das-definition-list__definition--spacer">@Model.ClosingDate</dd>
     <dt class="das-definition-list__title das-definition-list__title--spacer">Possible start date</dt>
     <dd class="das-definition-list__definition das-definition-list__definition--spacer">@Model.PossibleStartDate</dd>
 
-    <dt class="das-definition-list__title das-definition-list__title--spacer" asp-show="@Model.IsDisabilityConfident">Disability confident</dt>
-    <dd class="das-definition-list__definition das-definition-list__definition--spacer" asp-show="@Model.IsDisabilityConfident">Yes</dd>
-
 </dl>
-
 
 <div class="govuk-button-group">
     <a asp-route="@RouteNames.DisplayFullVacancy_Get" asp-all-route-data="@Model.RouteDictionary" class="govuk-link">View vacancy</a>
@@ -86,27 +82,21 @@
 
 </div>
 
-
 <div asp-show="@Model.CanShowVacancyAnalytics">
     <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
-    <h2 class="govuk-heading-l govuk-!-margin-top-9">
+    <h2 class="govuk-heading-m govuk-!-margin-top-0">
         Vacancy analytics
-        <span asp-show="@Model.HasAnalytics" class="govuk-caption-l">Showing stats from @Model.AnalyticsSummary.PeriodCaption</span>
     </h2>
-    <p asp-show="@Model.HasAnalytics" class="govuk-body">Analytics show the total amount and the change from the previous 7 days</p>
-    <p asp-hide="@Model.HasAnalytics" class="govuk-body">Data is only available for vacancies published after @Model.AnalyticsAvailableAfterApprovalDate.</p>
-    <div asp-show="@Model.HasAnalytics">
-        <partial asp-show="@Model.IsApplyThroughFaaVacancy" name="@RecruitPartialNames.ApplyThroughFaaVacancyAnalytics" for="AnalyticsSummary" />
-        <partial asp-show="@Model.IsApplyThroughExternalApplicationSiteVacancy" name="@RecruitPartialNames.ApplyThroughExternalApplicationSiteVacancyAnalytics" for="AnalyticsSummary" />
-    </div>
-
+    <p>To see how many people have looked at your vacancy, <a asp-route="@RouteNames.VacancyAnalytics_Get" asp-all-route-data="@Model.RouteDictionary" class="govuk-link">view vacancy analytics</a>.</p>
 </div>
 
-
-
-<div asp-show="@(Model.IsApplyThroughFaaVacancy || Model.IsApplyThroughFatVacancy)">
+<div>
     <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
-    <h2 class="govuk-heading-l  govuk-!-margin-top-6">Manage applications</h2>
+    <h2 class="govuk-heading-m">
+        Applications (@Model.ApplicationCount)
+    </h2>
+</div>
+<div asp-show="@(Model.IsApplyThroughFaaVacancy || Model.IsApplyThroughFatVacancy)">
     <esfaFeatureEnabled name="@FeatureNames.ShareApplicationsFeature">
         <p class="govuk-body" asp-show="@Model.CanShowShareMultipleApplicationsLink">
             <a asp-route="@RouteNames.ApplicationReviewsToShare_Get" asp-all-route-data="@Model.RouteDictionary" class="govuk-link govuk-!-margin-top-2 govuk-!-margin-bottom-4">Share multiple applications with employer</a>
@@ -117,6 +107,13 @@
             <a asp-route="@RouteNames.ApplicationReviewsToUnsuccessful_Get" asp-all-route-data="@Model.RouteDictionary" class="govuk-link govuk-!-margin-top-2 govuk-!-margin-bottom-4">Make multiple applications unsuccessful</a>
         </p>
     </esfaFeatureEnabled>
+</div>
+
+<p class="govuk-body govuk-hint">
+    <label asp-show="@Model.IsDisabilityConfident" class="govuk-label govuk-inset-text">@Model.EmployerName is signed up to the <a href="https://www.gov.uk/government/collections/disability-confident-campaign" class="govuk-link" rel="noopener" target="_blank" title="Disability Confident employer scheme and guidance (opens in new tab)">Disability Confident scheme (opens in new tab)</a>.</label>
+</p>
+
+<div asp-show="@(Model.IsApplyThroughFaaVacancy || Model.IsApplyThroughFatVacancy)">
     <partial asp-show="@Model.HasApplications" name="@PartialNames.VacancyApplicationsTable" for="Applications" />
     <p asp-show="@Model.HasNoApplications" class="govuk-body govuk-!-margin-bottom-0">Candidate applications for this @(isApprenticeshipVacancyType ? "apprenticeship" : "traineeship") will appear here.</p>
 </div>

@@ -6,6 +6,7 @@ using Esfa.Recruit.Employer.Web.Orchestrators;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels.ApplicationReview;
 using Esfa.Recruit.Shared.Web.ViewModels;
+using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -55,8 +56,25 @@ namespace Esfa.Recruit.Employer.Web.Controllers
                 return RedirectToRoute( RouteNames.VacancyManage_Get, new { editModel.EmployerAccountId, editModel.VacancyId, vacancySharedByProvider });
             }
 
+            if (editModel.Outcome == ApplicationReviewStatus.InReview || editModel.Outcome == ApplicationReviewStatus.Interviewing)
+            {
+                var confirmationEditModel = new ApplicationReviewStatusConfirmationEditModel 
+                {
+                    ApplicationReviewId = editModel.ApplicationReviewId,
+                    VacancyId = editModel.VacancyId,
+                    EmployerAccountId = editModel.EmployerAccountId,
+                    CandidateFeedback = editModel.CandidateFeedback,
+                    Outcome = editModel.Outcome,
+                    NotifyCandidate = false
+                };
+
+                var statusInfo = await _orchestrator.PostApplicationReviewConfirmationEditModelAsync(confirmationEditModel, User.ToVacancyUser());
+                TempData.Add(TempDataKeys.ApplicationReviewStatusChangeInfoMessage, string.Format(InfoMessages.ApplicationStatusChangeBannerHeader, statusInfo.CandidateName, editModel.Outcome.GetDisplayName().ToLower()));
+                return RedirectToRoute(RouteNames.VacancyManage_Get, new { editModel.VacancyId, editModel.EmployerAccountId });
+            }
+
             TempData[TempDataARModel] = JsonConvert.SerializeObject(editModel);
-            return RedirectToRoute(RouteNames.ApplicationReviewConfirmation_Get, new { editModel.VacancyId, editModel.EmployerAccountId, editModel.ApplicationReviewId });
+            return RedirectToRoute(RouteNames.ApplicationReviewConfirmation_Get, new { editModel.VacancyId, editModel.EmployerAccountId, editModel.ApplicationReviewId, editModel.Outcome });
         }
 
         [HttpGet("status", Name = RouteNames.ApplicationReviewConfirmation_Get)]
@@ -82,8 +100,15 @@ namespace Esfa.Recruit.Employer.Web.Controllers
 
             if (editModel.CanNotifyCandidate)
             {
-                var candidateName = await _orchestrator.PostApplicationReviewConfirmationEditModelAsync(editModel, User.ToVacancyUser());
-                TempData.Add(TempDataKeys.ApplicationReviewStatusInfoMessage, string.Format(InfoMessages.ApplicationReviewStatusHeader, candidateName, editModel.Outcome.ToString().ToLower()));
+                var statusInfo = await _orchestrator.PostApplicationReviewConfirmationEditModelAsync(editModel, User.ToVacancyUser());
+
+                if (statusInfo.ShouldMakeOthersUnsuccessful) 
+                {
+                    TempData.Add(TempDataKeys.ApplicationReviewStatusInfoMessage, string.Format(InfoMessages.ApplicationReviewSuccessStatusHeader, statusInfo.CandidateName));
+                    return RedirectToRoute(RouteNames.ApplicationReviewsToUnsuccessful_Get, new { editModel.VacancyId, editModel.EmployerAccountId });
+                }
+
+                TempData.Add(TempDataKeys.ApplicationReviewStatusChangeInfoMessage, string.Format(InfoMessages.ApplicationReviewStatusHeader, statusInfo.CandidateName, editModel.Outcome.ToString().ToLower()));
                 return RedirectToRoute(RouteNames.VacancyManage_Get, new { editModel.VacancyId, editModel.EmployerAccountId });
             }
             return RedirectToRoute(RouteNames.ApplicationReview_Get, new { editModel.VacancyId, editModel.EmployerAccountId, editModel.ApplicationReviewId });

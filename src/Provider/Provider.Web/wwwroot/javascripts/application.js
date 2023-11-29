@@ -523,3 +523,35 @@ var tableSort = function() {
   if (document.querySelector('[data-module="das-table-sort"]')) {
     tableSort();
   }
+
+function tableClassDoubleArrowsToggle() {
+    var sortableLinks = document.querySelectorAll(".das-table__sort");
+
+    if (sortableLinks.length > 0) {
+        for (var a = 0; a < sortableLinks.length; a++) {
+            var sortableLink = sortableLinks[a]
+
+            sortableLink.parentNode.classList.add("das-table--double-arrows")
+        }
+    }
+
+    var sortableLinkAsc = document.querySelectorAll(".das-table__sort--asc");
+    if (sortableLinkAsc.length > 0) {
+        for (var a = 0; a < sortableLinkAsc.length; a++) {
+            var sortableLinkA = sortableLinkAsc[a]
+
+            sortableLinkA.parentNode.classList.remove("das-table--double-arrows")
+        }
+    }
+
+    var sortableLinkDesc = document.querySelectorAll(".das-table__sort--desc");
+    if (sortableLinkDesc.length > 0) {
+        for (var a = 0; a < sortableLinkDesc.length; a++) {
+            var sortableLinkD = sortableLinkDesc[a]
+
+            sortableLinkD.parentNode.classList.remove("das-table--double-arrows")
+        }
+    }
+}
+
+tableClassDoubleArrowsToggle()
