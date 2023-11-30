@@ -15,170 +15,190 @@
             <p class="govuk-body">This applicant has stated that they have either a learning difficulty, disability or medical condition.</p>
         </div>
 
-        <h1 class="govuk-heading-xl govuk-!-margin-bottom-0">@Model.Name</h1>
-        <p class="govuk-body govuk-!-margin-bottom-6">
-            <span class="govuk-!-font-weight-bold">Application ID: </span>@Model.FriendlyId
-        </p>
-
         <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }' />
 
-        <div class="panel panel-border-narrow">
-            <p class="govuk-body">
-                @Html.Raw(
-                string.Join("<br>",
-                new[]
-                {
-                @Model.Name,
-                @Model.AddressLine1,
-                @Model.AddressLine2,
-                @Model.AddressLine3,
-                @Model.AddressLine4,
-                @Model.Postcode
-                }.Where(s => !string.IsNullOrWhiteSpace(s))
-                .Select(WebUtility.HtmlEncode)))
-            </p>
-            <p class="govuk-body">
-                @Model.Phone
-                <br> <a class="govuk-link" href="mailto:@Model.Email">@Model.Email</a>
-            </p>
-        </div>
-
-        <h2 class="govuk-heading-l govuk-!-margin-top-6">About you</h2>
-
-        <div class="govuk-form-group">
-            <span class="govuk-label govuk-!-font-weight-bold">What are your main strengths?</span>
-            <span class="govuk-body">@Model.Strengths</span>
-        </div>
-        <div class="govuk-form-group">
-            <span class="govuk-label govuk-!-font-weight-bold">What skills would you like to improve during this @(_serviceParameters.VacancyType.GetValueOrDefault() == VacancyType.Apprenticeship ? "apprenticeship" : "traineeship")?</span>
-            <span class="govuk-body">@Model.Improvements</span>
-        </div>
-        <div class="govuk-form-group">
-            <span class="govuk-label govuk-!-font-weight-bold">What are your hobbies and interests?</span>
-            <span class="govuk-body">@Model.HobbiesAndInterests</span>
-        </div>
+        <section>
+            <span class="govuk-caption-l">@Model.VacancyTitle</span>
+            <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">@Model.Name</h1>
+            <p class="govuk-body-l">Application ID: @Model.FriendlyId</p>
+            <h2 class="govuk-heading-l">Contact Details</h2>
+            <div class="panel panel-border-narrow">
+                <p class="govuk-body">
+                    @Html.Raw(
+                    string.Join("<br>",
+                    new[]
+                    {
+                    @Model.Name,
+                    @Model.AddressLine1,
+                    @Model.AddressLine2,
+                    @Model.AddressLine3,
+                    @Model.AddressLine4,
+                    @Model.Postcode
+                    }.Where(s => !string.IsNullOrWhiteSpace(s))
+                    .Select(WebUtility.HtmlEncode)))
+                </p>
+                <p class="govuk-body">
+                    @Model.Phone
+                    <br> <a class="govuk-link" href="mailto:@Model.Email">@Model.Email</a>
+                </p>
+            </div>
+        </section>
 
         <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
 
-        <h2 class="govuk-heading-l govuk-!-margin-top-6">Education</h2>
+        <!-- ABOUT YOU -->
+        <section>
+            <h2 class="govuk-heading-l govuk-!-margin-top-6">About you</h2>
 
-        <h3 class="govuk-heading-s">Name of most recent school/college</h3>
-        <p class="govuk-body">@Model.EducationInstitution</p>
+            <div class="govuk-form-group">
+                <span class="govuk-label govuk-!-font-weight-bold">What are your main strengths?</span>
+                <span class="govuk-body">@Model.Strengths</span>
+            </div>
+            <div class="govuk-form-group">
+                <span class="govuk-label govuk-!-font-weight-bold">What skills would you like to improve during this @(_serviceParameters.VacancyType.GetValueOrDefault() == VacancyType.Apprenticeship ? "apprenticeship" : "traineeship")?</span>
+                <span class="govuk-body">@Model.Improvements</span>
+            </div>
+            <div class="govuk-form-group">
+                <span class="govuk-label govuk-!-font-weight-bold">What are your hobbies and interests?</span>
+                <span class="govuk-body">@Model.HobbiesAndInterests</span>
+            </div>
+        </section>
 
-        <table class="govuk-table">
-            <caption class="govuk-table__caption">Years attended</caption>
-            <thead class="govuk-table__head">
-                <tr class="govuk-table__row">
-                    <th class="govuk-table__header">Started</th>
-                    <th class="govuk-table__header">Finished</th>
-                </tr>
-            </thead>
-            <tbody class="govuk-table__body">
-                <tr class="govuk-table__row">
-                    <td class="govuk-table__cell">@Model.EducationFromYear</td>
-                    <td class="govuk-table__cell">@Model.EducationToYear</td>
-                </tr>
-            </tbody>
-        </table>
+        <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
 
-        <h2 class="govuk-heading-l govuk-!-margin-top-6">Qualifications</h2>
+        <!-- EDUCATION -->
+        <section>
+            <h2 class="govuk-heading-l govuk-!-margin-top-6">Education</h2>
 
-        <p asp-show="@Model.HasNoQualifications" class="govuk-body">I don't have any qualifications</p>
-        <hr asp-show="@Model.HasNoQualifications" class="govuk-section-break govuk-section-break--l govuk-section-break--visible" />
-
-        @foreach (var group in Model.Qualifications.GroupBy(item => item.QualificationType))
-        {
+            <h3 class="govuk-heading-s">Name of most recent school/college</h3>
+            <p class="govuk-body">@Model.EducationInstitution</p>
 
             <table class="govuk-table">
-                <caption class="govuk-table__caption">@Html.Encode(group.Key)</caption>
+                <caption class="govuk-table__caption">Years attended</caption>
                 <thead class="govuk-table__head">
                     <tr class="govuk-table__row">
-                        <th class="govuk-table__header govuk-!-width-one-half">Subject</th>
-                        <th class="govuk-table__header govuk-!-width-one-quarter">Grade</th>
-                        <th class="govuk-table__header govuk-!-width-one-quarter">Year</th>
+                        <th class="govuk-table__header">Started</th>
+                        <th class="govuk-table__header">Finished</th>
                     </tr>
                 </thead>
                 <tbody class="govuk-table__body">
-                    @foreach (var item in group)
+                    <tr class="govuk-table__row">
+                        <td class="govuk-table__cell">@Model.EducationFromYear</td>
+                        <td class="govuk-table__cell">@Model.EducationToYear</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- QUALIFICATIONS -->
+        <section>
+            <h2 class="govuk-heading-l govuk-!-margin-top-6">Qualifications</h2>
+
+            <p asp-show="@Model.HasNoQualifications" class="govuk-body">I don't have any qualifications</p>
+            <hr asp-show="@Model.HasNoQualifications" class="govuk-section-break govuk-section-break--l govuk-section-break--visible" />
+
+            @foreach (var group in Model.Qualifications.GroupBy(item => item.QualificationType))
+            {
+
+                <table class="govuk-table">
+                    <caption class="govuk-table__caption">@Html.Encode(group.Key)</caption>
+                    <thead class="govuk-table__head">
+                        <tr class="govuk-table__row">
+                            <th class="govuk-table__header govuk-!-width-one-half">Subject</th>
+                            <th class="govuk-table__header govuk-!-width-one-quarter">Grade</th>
+                            <th class="govuk-table__header govuk-!-width-one-quarter">Year</th>
+                        </tr>
+                    </thead>
+                    <tbody class="govuk-table__body">
+                        @foreach (var item in group)
+                        {
+                            <tr class="govuk-table__row">
+                                <td class="govuk-table__cell">@item.Subject</td>
+                                <td class="govuk-table__cell">@item.Grade <span asp-show="@item.IsPredicted">(Predicted)</span></td>
+                                <td class="govuk-table__cell">@item.Year</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+        </section>
+
+        <section>
+            <h2 class="govuk-heading-l govuk-!-margin-top-6">Work experience</h2>
+
+            <p asp-show="@Model.HasNoWorkExperience">I don't have any work experience</p>
+
+            <table asp-hide="@Model.HasNoWorkExperience" class="govuk-table">
+                <thead class="govuk-table__head">
+                    <tr class="govuk-table__row">
+                        <th class="govuk-table__header govuk-!-width-one-half">Work experience</th>
+                        <th class="govuk-table__header govuk-!-width-one-quarter">From</th>
+                        <th class="govuk-table__header govuk-!-width-one-quarter">To</th>
+                    </tr>
+                </thead>
+                <tbody class="govuk-table__body">
+                    @foreach (var experience in Model.WorkExperiences)
                     {
                         <tr class="govuk-table__row">
-                            <td class="govuk-table__cell">@item.Subject</td>
-                            <td class="govuk-table__cell">@item.Grade <span asp-show="@item.IsPredicted">(Predicted)</span></td>
-                            <td class="govuk-table__cell">@item.Year</td>
+                            <td class="govuk-table__cell">
+                                @experience.Employer - @experience.JobTitle
+                                <div>@experience.Description</div>
+                            </td>
+                            <td class="govuk-table__cell">@experience.FromDateAsText</td>
+                            <td class="govuk-table__cell">@experience.ToDateAsText</td>
                         </tr>
                     }
                 </tbody>
             </table>
-        }
-
-        <h2 class="govuk-heading-l govuk-!-margin-top-6">Work experience</h2>
-
-        <p asp-show="@Model.HasNoWorkExperience">I don't have any work experience</p>
-
-        <table asp-hide="@Model.HasNoWorkExperience" class="govuk-table">
-            <thead class="govuk-table__head">
-                <tr class="govuk-table__row">
-                    <th class="govuk-table__header govuk-!-width-one-half">Work experience</th>
-                    <th class="govuk-table__header govuk-!-width-one-quarter">From</th>
-                    <th class="govuk-table__header govuk-!-width-one-quarter">To</th>
-                </tr>
-            </thead>
-            <tbody class="govuk-table__body">
-                @foreach (var experience in Model.WorkExperiences)
-                {
-                    <tr class="govuk-table__row">
-                        <td class="govuk-table__cell">
-                            @experience.Employer - @experience.JobTitle
-                            <div>@experience.Description</div>
-                        </td>
-                        <td class="govuk-table__cell">@experience.FromDateAsText</td>
-                        <td class="govuk-table__cell">@experience.ToDateAsText</td>
-                    </tr>
-                }
-            </tbody>
-        </table>
+        </section>
 
         <hr asp-show="@Model.HasNoWorkExperience" class="govuk-section-break govuk-section-break--l govuk-section-break--visible" />
 
-        <h2 class="govuk-heading-l govuk-!-margin-top-6">Training courses</h2>
+        <section>
+            <h2 class="govuk-heading-l govuk-!-margin-top-6">Training courses</h2>
 
-        <p asp-show="@Model.HasNoTrainingCourses">I have not been on any training courses</p>
+            <p asp-show="@Model.HasNoTrainingCourses">I have not been on any training courses</p>
 
-        <table asp-hide="@Model.HasNoTrainingCourses" class="govuk-table">
-            <thead class="govuk-table__head">
-                <tr class="govuk-table__row">
-                    <th class="govuk-table__header govuk-!-width-one-half">Training course</th>
-                    <th class="govuk-table__header govuk-!-width-one-quarter">From</th>
-                    <th class="govuk-table__header govuk-!-width-one-quarter">To</th>
-                </tr>
-            </thead>
-            <tbody class="govuk-table__body">
-
-                @foreach (var trainingCourse in Model.TrainingCourses)
-                {
+            <table asp-hide="@Model.HasNoTrainingCourses" class="govuk-table">
+                <thead class="govuk-table__head">
                     <tr class="govuk-table__row">
-                        <td class="govuk-table__cell">
-                            @trainingCourse.Provider - @trainingCourse.Title
-                        </td>
-                        <td class="govuk-table__cell">@trainingCourse.FromDateAsText</td>
-                        <td class="govuk-table__cell">@trainingCourse.ToDateAsText</td>
+                        <th class="govuk-table__header govuk-!-width-one-half">Training course</th>
+                        <th class="govuk-table__header govuk-!-width-one-quarter">From</th>
+                        <th class="govuk-table__header govuk-!-width-one-quarter">To</th>
                     </tr>
-                }
-            </tbody>
-        </table>
+                </thead>
+                <tbody class="govuk-table__body">
+
+                    @foreach (var trainingCourse in Model.TrainingCourses)
+                    {
+                        <tr class="govuk-table__row">
+                            <td class="govuk-table__cell">
+                                @trainingCourse.Provider - @trainingCourse.Title
+                            </td>
+                            <td class="govuk-table__cell">@trainingCourse.FromDateAsText</td>
+                            <td class="govuk-table__cell">@trainingCourse.ToDateAsText</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </section>
 
         <hr asp-show="@Model.HasNoTrainingCourses" class="govuk-section-break govuk-section-break--l govuk-section-break--visible" />
 
-        <h2 class="govuk-heading-l govuk-!-margin-top-6">Skills the Employer wants</h2>
+        <!-- SKILLS -->
+        <section>
+            <h2 class="govuk-heading-l govuk-!-margin-top-6">Skills the Employer wants</h2>
 
-        <p asp-show="@Model.HasNoSkills" class="govuk-body">I don't have the skills the employer wants</p>
+            <p asp-show="@Model.HasNoSkills" class="govuk-body">I don't have the skills the employer wants</p>
 
-        <p asp-show="@Model.HasSkills" class="govuk-body">
-            @Html.Raw(string.Join(", ", Model.Skills.Select(s => Html.Encode(s))))
-        </p>
+            <p asp-show="@Model.HasSkills" class="govuk-body">
+                @Html.Raw(string.Join(", ", Model.Skills.Select(s => Html.Encode(s))))
+            </p>
+        </section>
 
         <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
 
+        <section>
         @if (Model.HasAdditionalQuestions)
         {
             <h2 class="govuk-heading-l govuk-!-margin-top-6">Additional Questions</h2>
@@ -192,11 +212,13 @@
             }
             <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
         }
+        </section>
 
-
-        <h2 class="govuk-heading-l govuk-!-margin-top-6">Equality questions</h2>
-        <h3 class="govuk-heading-s">Do you have a learning difficulty, disability or health problem?</h3>
-        <p class="govuk-body">@Model.DisabilityStatus.GetDisplayName()</p>
+        <section>
+            <h2 class="govuk-heading-l govuk-!-margin-top-6">Equality questions</h2>
+            <h3 class="govuk-heading-s">Do you have a learning difficulty, disability or health problem?</h3>
+            <p class="govuk-body">@Model.DisabilityStatus.GetDisplayName()</p>
+        </section>
 
         <h3 class="govuk-heading-s">Is there anything we can do to support your interview?</h3>
         <p class="govuk-body" asp-show="@Model.HasNoSupportRequirements">I don't have any interview support requirements</p>

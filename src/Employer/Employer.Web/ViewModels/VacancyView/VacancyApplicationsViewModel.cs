@@ -8,14 +8,8 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyManage
 {
     public class VacancyApplicationsViewModel : VacancyRouteModel
     {
-        public List<VacancyApplication> Applications { get; internal set; }
+        public IEnumerable<VacancyApplication> Applications { get; internal set; }
         public UserType UserType { get; internal set; }
-
-        public IList<IGrouping<ApplicationReviewStatus, VacancyApplication>> OrderedApplications => Applications.OrderByDescending(app => app.SubmittedDate)
-            .GroupBy(app => app.Status)
-            .OrderBy(g => g.Key)
-            .ToList();
-
         public bool ShowDisability { get; internal set; }
         public bool VacancySharedByProvier { get; internal set; }
         public bool CanShowMultipleApplicationsUnsuccessfulLink =>

@@ -38,7 +38,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators
             _utility.Setup(x => x.GetAuthorisedApplicationReviewAsync(model, false))
                 .ReturnsAsync(applicationReview);
             _employerVacancyClient.Setup(x => x.SetApplicationReviewStatus(model.ApplicationReviewId, model.Outcome, model.CandidateFeedback, vacancyUser))
-                .Returns(Task.CompletedTask);
+                .ReturnsAsync(false);
 
             var result = await _orchestrator.PostApplicationReviewEditModelAsync(model, vacancyUser);
 

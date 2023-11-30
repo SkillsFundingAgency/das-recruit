@@ -7,6 +7,7 @@ using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Shared.Web.ViewModels.ApplicationReview;
 using Esfa.Recruit.Proivder.Web.Exceptions;
+using Esfa.Recruit.Provider.Web.Models;
 
 namespace Esfa.Recruit.Provider.Web.Orchestrators
 {
@@ -14,7 +15,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
     {
         Task<ApplicationReviewViewModel> GetApplicationReviewViewModelAsync(ApplicationReviewRouteModel rm);
         Task<ApplicationReviewViewModel> GetApplicationReviewViewModelAsync(ApplicationReviewEditModel m);
-        Task<string> PostApplicationReviewStatusChangeModelAsync(ApplicationReviewStatusChangeModel m, VacancyUser user);
+        Task<ApplicationReviewStatusChangeInfo> PostApplicationReviewStatusChangeModelAsync(ApplicationReviewStatusChangeModel m, VacancyUser user);
         Task<ApplicationStatusConfirmationViewModel> GetApplicationStatusConfirmationViewModelAsync(ApplicationReviewStatusConfirmationEditModel applicationReviewStatusConfirmationEditModel);
         Task<ApplicationStatusConfirmationViewModel> GetApplicationStatusConfirmationViewModelAsync(ApplicationReviewEditModel rm);
         Task<string> GetApplicationReviewFeedbackViewModelAsync(ApplicationReviewFeedbackViewModel applicationReviewFeedbackViewModel);
@@ -38,6 +39,8 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
         {
             var applicationReview = await _utility.GetAuthorisedApplicationReviewAsync(rm);
 
+            var vacancy = await _vacancyClient.GetVacancyAsync(rm.VacancyId.Value);
+
             if (applicationReview.IsWithdrawn)
                 throw new ApplicationWithdrawnException($"Application has been withdrawn. ApplicationReviewId:{applicationReview.Id}", rm.VacancyId.Value);
             var viewModel = applicationReview.ToViewModel();
@@ -45,6 +48,8 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             viewModel.VacancyId = rm.VacancyId;
             viewModel.ApplicationReviewId = rm.ApplicationReviewId;
             viewModel.CandidateFeedback = string.Empty;
+            viewModel.VacancyTitle = vacancy.Title;
+
             return viewModel;
         }
 
@@ -58,13 +63,19 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             return vm;
         }
 
-        public async Task<string> PostApplicationReviewStatusChangeModelAsync(ApplicationReviewStatusChangeModel m, VacancyUser user)
+        public async Task<ApplicationReviewStatusChangeInfo> PostApplicationReviewStatusChangeModelAsync(ApplicationReviewStatusChangeModel m, VacancyUser user)
         {
             var applicationReview = await _utility.GetAuthorisedApplicationReviewAsync(m);
 
-            await _client.SetApplicationReviewStatus(applicationReview.Id, m.Outcome, m.CandidateFeedback, user);
+            var shouldMakeOthersUnsuccessful = await _client.SetApplicationReviewStatus(applicationReview.Id, m.Outcome, m.CandidateFeedback, user);
 
-            return applicationReview.Application.FullName;
+            var applicationReviewStatusChangeInfo = new ApplicationReviewStatusChangeInfo
+            {
+                ShouldMakeOthersUnsuccessful = shouldMakeOthersUnsuccessful,
+                CandidateName = applicationReview.Application.FullName
+            };
+
+            return applicationReviewStatusChangeInfo;
         }
 
         public async Task<ApplicationStatusConfirmationViewModel> GetApplicationStatusConfirmationViewModelAsync(ApplicationReviewStatusConfirmationEditModel applicationReviewStatusConfirmationEditModel)

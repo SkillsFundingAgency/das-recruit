@@ -17,7 +17,7 @@ namespace Esfa.Recruit.Shared.Web.TagHelpers
         private const string CssClass = "govuk-link das-table__sort";
 
         [HtmlAttributeName("column-name")]
-        public SortColumn ColumnName { get; set; }
+        public string ColumnName { get; set; }
 
         [HtmlAttributeName("column-label")]
         public string Label { get; set; }
@@ -27,6 +27,9 @@ namespace Esfa.Recruit.Shared.Web.TagHelpers
 
         [HtmlAttributeName("default-order")]
         public SortOrder DefaultSortOrder { get; set; }
+
+        [HtmlAttributeName("shared-vacancy")]
+        public bool? VacancySharedByProvider { get; set; }
 
         [ViewContext]
         [HtmlAttributeNotBound]
@@ -44,18 +47,19 @@ namespace Esfa.Recruit.Shared.Web.TagHelpers
             var action = ViewContext.RouteData.Values["action"] as string;
             var controller = ViewContext.RouteData.Values["controller"] as string;
 
-            var sortColumn = GetSortColumnFromQueryString();
+            var sortColumn = GetColumnFromQueryString();
             var sortOrder = GetSortOrderFromQueryString();
-            var isSortColumn = sortColumn == ColumnName || (sortColumn == SortColumn.Default && IsDefault);
+            var isSortColumn = sortColumn == ColumnName || (string.IsNullOrWhiteSpace(sortColumn) && IsDefault);
 
             var values = new
             {
                 SearchTerm = GetSearchTermFromQueryString(),
                 SortColumn = ColumnName,
-                SortOrder = isSortColumn ? sortOrder.Reverse().ToString() : DefaultSortOrder.ToString()
+                SortOrder = isSortColumn ? sortOrder.Reverse().ToString() : DefaultSortOrder.ToString(),
+                VacancySharedByProvider = GetSharedVacancyFromQueryString()
             };
 
-            var href = _urlHelper.Action(action, controller, values, null, null, null);
+            var href = _urlHelper.Action(action, controller, values);
 
             var sortOrderCssSuffix = string.Empty;
             if (isSortColumn)
@@ -73,26 +77,33 @@ namespace Esfa.Recruit.Shared.Web.TagHelpers
             output.TagName = "";
             output.PostContent.SetHtmlContent(content.ToString());
             output.Attributes.Clear();
+
         }
 
         private SortOrder GetSortOrderFromQueryString()
         {
-            if (ViewContext.HttpContext.Request.Query.TryGetValue("SortOrder", out var sortOrderValue) && Enum.TryParse<SortOrder>(sortOrderValue, true, out var parsedSortOrder))
+            if (ViewContext.HttpContext.Request.Query.ContainsKey("SortOrder"))
             {
-                return parsedSortOrder;
+                if (ViewContext.HttpContext.Request.Query.TryGetValue("SortOrder", out var sortOrderValue))
+                {
+                    if (Enum.TryParse<SortOrder>(sortOrderValue, true, out var parsedSortOrder))
+                    {
+                        return parsedSortOrder;
+                    }
+                }
             }
 
             return DefaultSortOrder;
         }
 
-        private SortColumn GetSortColumnFromQueryString()
+        private string GetColumnFromQueryString()
         {
-            if (ViewContext.HttpContext.Request.Query.TryGetValue("SortColumn", out var sortColumn) && Enum.TryParse<SortColumn>(sortColumn, true, out var parsedSortColumn))
+            if (ViewContext.HttpContext.Request.Query.ContainsKey("SortColumn"))
             {
-                return parsedSortColumn;
+                return ViewContext.HttpContext.Request.Query["SortColumn"];
             }
 
-            return SortColumn.Default;
+            return string.Empty;
         }
 
         private string GetSearchTermFromQueryString()
@@ -104,6 +115,16 @@ namespace Esfa.Recruit.Shared.Web.TagHelpers
 
             return string.Empty;
         }
+
+        private bool? GetSharedVacancyFromQueryString()
+        {
+            if (ViewContext.HttpContext.Request.Query.ContainsKey("vacancySharedByProvider"))
+            {
+                var shared = ViewContext.HttpContext.Request.Query["vacancySharedByProvider"].ToString().Equals("True");
+                return shared;
+            }
+
+            return null;
+        }
     }
 }
-

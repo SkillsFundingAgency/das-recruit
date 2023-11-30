@@ -44,7 +44,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             return vacancy;
         }
 
-        public async Task<ManageVacancyViewModel> GetManageVacancyViewModel(Vacancy vacancy, bool vacancySharedByProvider)
+        public async Task<ManageVacancyViewModel> GetManageVacancyViewModel(Vacancy vacancy, SortColumn sortColumn, SortOrder sortOrder, bool vacancySharedByProvider)
         {
             var viewModel = new ManageVacancyViewModel();
 
@@ -54,7 +54,6 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             viewModel.Status = vacancy.Status;
             viewModel.VacancyReference = vacancy.VacancyReference.Value.ToString();
             viewModel.ClosingDate = viewModel.Status == VacancyStatus.Closed ? vacancy.ClosedDate?.AsGdsDate() : vacancy.ClosingDate?.AsGdsDate();
-            viewModel.AnalyticsAvailableAfterApprovalDate = _systemConfig.ShowAnalyticsForVacanciesApprovedAfterDate.AsGdsDate();
             viewModel.PossibleStartDate = vacancy.StartDate?.AsGdsDate();
             viewModel.IsDisabilityConfident = vacancy.IsDisabilityConfident;
             viewModel.IsApplyThroughFaaVacancy = vacancy.ApplicationMethod == ApplicationMethod.ThroughFindAnApprenticeship;
@@ -71,24 +70,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
                 viewModel.WithdrawnDate = vacancy.ClosedDate?.AsGdsDate();
             }
 
-            var applications = new List<VacancyApplication>();
-
-            if (vacancy.LiveDate >= _systemConfig.ShowAnalyticsForVacanciesApprovedAfterDate)
-            {
-                var vacancyApplicationsTask = _client.GetVacancyApplicationsAsync(vacancy.VacancyReference.Value, vacancySharedByProvider);
-                var vacancyAnalyticsTask = _client.GetVacancyAnalyticsSummaryAsync(vacancy.VacancyReference.Value);
-
-                await Task.WhenAll(vacancyApplicationsTask, vacancyAnalyticsTask);
-
-                applications = vacancyApplicationsTask.Result ?? new List<VacancyApplication>();
-                var analyticsSummary = vacancyAnalyticsTask.Result ?? new VacancyAnalyticsSummary();
-                viewModel.AnalyticsSummary = VacancyAnalyticsSummaryMapper.MapToVacancyAnalyticsSummaryViewModel(analyticsSummary, vacancy.LiveDate.GetValueOrDefault());
-            }
-            else
-            {
-                var vacancyApplications = await _client.GetVacancyApplicationsAsync(vacancy.VacancyReference.Value, vacancySharedByProvider);
-                applications = vacancyApplications ?? new List<VacancyApplication>();
-            }
+            var vacancyApplicationsTask = await _client.GetVacancyApplicationsSortedAsync(vacancy.VacancyReference.Value, sortColumn, sortOrder, vacancySharedByProvider);
+            var applications = vacancyApplicationsTask ?? new List<VacancyApplication>();
 
             viewModel.Applications = new VacancyApplicationsViewModel
             {

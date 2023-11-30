@@ -8,5 +8,8 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.ApplicationReviews
     {
         public long VacancyReference { get; set; }
         public List<VacancyApplication> VacancyApplications { get; set; }
+        public string PositionsFilledBannerHeader { get; set; }
+        public string PositionsFilledBannerBody { get; set; }
+        public bool CanShowPositionsFilledBanner => !string.IsNullOrEmpty(PositionsFilledBannerHeader);
     }
 }

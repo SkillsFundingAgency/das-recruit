@@ -10,6 +10,7 @@ using MongoDB.Bson;
 using MongoDB.Driver;
 using Polly;
 using System.Linq;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Extensions;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
 {
@@ -45,6 +46,23 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
             var result = await RetryPolicy.Execute(_ =>
                 collection.Find(filter).SingleOrDefaultAsync(),
                 new Context(nameof(GetAsync)));
+
+            return result;
+        }
+
+        public async Task<List<ApplicationReview>> GetByStatusAsync(long vacancyReference, ApplicationReviewStatus status)
+        {
+            var builder = Builders<ApplicationReview>.Filter;
+            var filter = builder.Eq(r => r.VacancyReference, vacancyReference) &
+                         builder.Eq(r => r.Status, status);
+
+            var collection = GetCollection<ApplicationReview>();
+
+            var result = await RetryPolicy.Execute(_ =>
+              collection.Find(filter)
+              .Project<ApplicationReview>(GetProjection<ApplicationReview>())
+              .ToListAsync(),
+              new Context(nameof(GetByStatusAsync)));
 
             return result;
         }
@@ -127,6 +145,23 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
             return result;
         }
 
+        public async Task<List<ApplicationReview>> GetForVacancySortedAsync(long vacancyReference, SortColumn sortColumn, SortOrder sortOrder)
+        {
+            var filter = Builders<ApplicationReview>.Filter.Eq(VacancyReference, vacancyReference);
+            var collection = GetCollection<ApplicationReview>();
+
+            var result = await RetryPolicy.Execute(_ =>
+                collection.Find(filter)
+                .Project<ApplicationReview>(GetProjection<ApplicationReview>())
+                .ToListAsync(),
+            new Context(nameof(GetForVacancyAsync)));
+
+            var sortedResult = result.AsQueryable()
+                .Sort(sortColumn, sortOrder);
+
+            return sortedResult.ToList();
+        }
+
         public async Task<List<ApplicationReview>> GetForSharedVacancyAsync(long vacancyReference)
         {
             var filterBuilder = Builders<ApplicationReview>.Filter;
@@ -140,6 +175,24 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
             new Context(nameof(GetForVacancyAsync)));
 
             return result;
+        }
+
+        public async Task<List<ApplicationReview>> GetForSharedVacancySortedAsync(long vacancyReference, SortColumn sortColumn, SortOrder sortOrder)
+        {
+            var filterBuilder = Builders<ApplicationReview>.Filter;
+            var filter = filterBuilder.Eq(VacancyReference, vacancyReference) & filterBuilder.Ne(appRev => appRev.DateSharedWithEmployer, null);
+            var collection = GetCollection<ApplicationReview>();
+
+            var result = await RetryPolicy.Execute(_ =>
+                collection.Find(filter)
+                .Project<ApplicationReview>(GetProjection<ApplicationReview>())
+                .ToListAsync(),
+            new Context(nameof(GetForVacancyAsync)));
+
+            var sortedResult = result.AsQueryable()
+                .Sort(sortColumn, sortOrder, true);
+
+            return sortedResult.ToList();
         }
 
         public async Task<List<ApplicationReview>> GetForCandidateAsync(Guid candidateId)

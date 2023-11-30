@@ -315,6 +315,17 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return _applicationReviewRepository.GetAsync(applicationReviewId);
         }
 
+        public async Task<List<VacancyApplication>> GetVacancyApplicationsSortedAsync(long vacancyReference, SortColumn sortColumn, SortOrder sortOrder, bool vacancySharedByProvider = false)
+        {
+            var applicationReviews = vacancySharedByProvider
+                ? await _applicationReviewRepository.GetForSharedVacancySortedAsync(vacancyReference, sortColumn, sortOrder)
+                : await _applicationReviewRepository.GetForVacancySortedAsync(vacancyReference, sortColumn, sortOrder);
+
+            return applicationReviews == null
+                ? new List<VacancyApplication>()
+                : applicationReviews.Select(c => (VacancyApplication)c).ToList();
+        }
+
         public async Task<List<VacancyApplication>> GetVacancyApplicationsAsync(long vacancyReference, bool vacancySharedByProvider = false)
         {
             var applicationReviews = vacancySharedByProvider
@@ -336,7 +347,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
                 : applicationReviews.Select(c => (VacancyApplication)c).ToList();
         }
 
-        public Task SetApplicationReviewStatus(Guid applicationReviewId, ApplicationReviewStatus? outcome, string candidateFeedback, VacancyUser user)
+        public Task<bool> SetApplicationReviewStatus(Guid applicationReviewId, ApplicationReviewStatus? outcome, string candidateFeedback, VacancyUser user)
         {
             var command = new ApplicationReviewStatusEditCommand
             {
@@ -346,7 +357,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
                 User = user
             };
 
-            return _messaging.SendCommandAsync(command);
+            return _messaging.SendStatusCommandAsync(command);
         }
 
         public Task SetApplicationReviewsShared(IEnumerable<VacancyApplication> applicationReviews, VacancyUser user)
