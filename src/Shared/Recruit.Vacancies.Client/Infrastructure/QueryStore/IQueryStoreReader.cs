@@ -29,5 +29,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
         Task<ClosedVacancy> GetClosedVacancy(long vacancyReference);
         Task<IEnumerable<LiveVacancy>> GetAllLiveVacancies(int vacanciesToSkip, int vacanciesToGet);
         Task<long> GetAllLiveVacanciesCount();
+        Task<LiveVacancy> GetLiveVacancy(long vacancyReference);
     }
 }

@@ -22,4 +22,12 @@ public class LiveVacanciesController : ApiControllerBase
         var resp = await _mediator.Send(new GetLiveVacanciesQuery((int)pageSize, (int)pageNo));
         return GetApiResponse(resp);
     }
+
+    [HttpGet]
+    [Route("{vacancyReference}")]
+    public async Task<IActionResult> Get([FromRoute] long vacancyReference)
+    {
+        var resp = await _mediator.Send(new GetLiveVacancyQuery(vacancyReference));
+        return GetApiResponse(resp);
+    }
 }

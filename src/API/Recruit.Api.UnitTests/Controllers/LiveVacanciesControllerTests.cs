@@ -37,4 +37,27 @@ public class LiveVacanciesControllerTests
             actualResult.Should().BeEquivalentTo(items);
         }
     }
+
+    [Test, MoqAutoData]
+    public async Task When_Getting_Live_Vacancy_Then_Query_Is_Created_And_Live_Vacancy_Returned(
+        long vacancyId,
+        LiveVacancy vacancy,
+        GetLiveVacancyQueryResponse response,
+        [Frozen] Mock<IMediator> mockMediator,
+        [Greedy] LiveVacanciesController controller)
+    {
+        response.Data = vacancy;
+        mockMediator
+            .Setup(x => x.Send(It.Is<GetLiveVacancyQuery>(q => q.VacancyReference == vacancyId), CancellationToken.None))
+            .ReturnsAsync(response);
+
+        var actual = await controller.Get(vacancyId) as OkObjectResult;
+
+        using (new AssertionScope())
+        {
+            Assert.IsNotNull(actual);
+            var actualResult = actual.Value as LiveVacancy;
+            actualResult.Should().BeEquivalentTo(vacancy);
+        }
+    }
 }

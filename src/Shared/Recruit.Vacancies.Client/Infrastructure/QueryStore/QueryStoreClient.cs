@@ -275,5 +275,10 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
         {
             return _queryStore.GetAllLiveVacanciesCount();
         }
+
+        public Task<LiveVacancy> GetLiveVacancy(long vacancyReference)
+        {
+            return _queryStore.GetLiveVacancy(vacancyReference);
+        }
     }
 }
