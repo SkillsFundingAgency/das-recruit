@@ -16,7 +16,7 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Queries
     public class GetLiveVacancyQueryHandlerTests
     {
         [Test, MoqAutoData]
-        public async Task Then_The_Live_Vacancies_Are_Returned(
+        public async Task Then_The_Live_Vacancy_Is_Returned(
             GetLiveVacancyQuery query,
             LiveVacancy liveVacancy,
             [Frozen] Mock<IQueryStoreReader> queryStoreReader,
