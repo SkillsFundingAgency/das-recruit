@@ -55,15 +55,15 @@ namespace SFA.DAS.Recruit.Api.Mappers
                     WageAdditionalInformation = request.Wage.WageAdditionalInformation,
                     FixedWageYearlyAmount = request.Wage.FixedWageYearlyAmount,
                     ApprenticeMinimumWage = request.Wage.WageType == Models.WageType.FixedWage ? request.Wage.FixedWageYearlyAmount
-                        : NationalMinimumWageService.GetAnnualRates(request.StartDate, request.Wage.WeeklyHours).Between18AndUnder21NationalMinimumWage,
+                        : NationalMinimumWageService.GetAnnualRates(request.StartDate, request.Wage.WeeklyHours).ApprenticeMinimumWage,
                     Under18NationalMinimumWage = request.Wage.WageType == Models.WageType.FixedWage ? request.Wage.FixedWageYearlyAmount
-                        : NationalMinimumWageService.GetAnnualRates(request.StartDate, request.Wage.WeeklyHours).Between18AndUnder21NationalMinimumWage,
+                        : NationalMinimumWageService.GetAnnualRates(request.StartDate, request.Wage.WeeklyHours).Under18NationalMinimumWage,
                     Between18AndUnder21NationalMinimumWage = request.Wage.WageType == Models.WageType.FixedWage ? request.Wage.FixedWageYearlyAmount 
                         : NationalMinimumWageService.GetAnnualRates(request.StartDate, request.Wage.WeeklyHours).Between18AndUnder21NationalMinimumWage,
                     Between21AndUnder25NationalMinimumWage = request.Wage.WageType == Models.WageType.FixedWage ? request.Wage.FixedWageYearlyAmount
-                        : NationalMinimumWageService.GetAnnualRates(request.StartDate, request.Wage.WeeklyHours).Between18AndUnder21NationalMinimumWage,
+                        : NationalMinimumWageService.GetAnnualRates(request.StartDate, request.Wage.WeeklyHours).Between21AndUnder25NationalMinimumWage,
                     Over25NationalMinimumWage = request.Wage.WageType == Models.WageType.FixedWage ? request.Wage.FixedWageYearlyAmount
-                        : NationalMinimumWageService.GetAnnualRates(request.StartDate, request.Wage.WeeklyHours).Between18AndUnder21NationalMinimumWage
+                        : NationalMinimumWageService.GetAnnualRates(request.StartDate, request.Wage.WeeklyHours).Over25NationalMinimumWage
                 },
                 ShortDescription = request.ShortDescription,
                 NumberOfPositions = request.NumberOfPositions,
