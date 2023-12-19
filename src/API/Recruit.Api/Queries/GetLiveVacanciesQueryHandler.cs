@@ -44,16 +44,27 @@ public class GetLiveVacanciesQueryHandler : IRequestHandler<GetLiveVacanciesQuer
                 vacancy.Wage.Between21AndUnder25NationalMinimumWage = vacancy.Wage.FixedWageYearlyAmount;
                 vacancy.Wage.Over25NationalMinimumWage = vacancy.Wage.FixedWageYearlyAmount;
             }
+            else if (vacancy.Wage.WageType == WageType.NationalMinimumWageForApprentices.ToString())
+            {
+                var weeklyHours = (int)decimal.Round(vacancy.Wage.WeeklyHours, MidpointRounding.AwayFromZero);
+                var rates = NationalMinimumWageService.GetAnnualRates(vacancy.StartDate, weeklyHours);
+
+                vacancy.Wage.ApprenticeMinimumWage = rates.ApprenticeMinimumWage;
+                vacancy.Wage.Under18NationalMinimumWage = rates.ApprenticeMinimumWage;
+                vacancy.Wage.Between18AndUnder21NationalMinimumWage = rates.ApprenticeMinimumWage;
+                vacancy.Wage.Between21AndUnder25NationalMinimumWage = rates.ApprenticeMinimumWage;
+                vacancy.Wage.Over25NationalMinimumWage = rates.ApprenticeMinimumWage;
+            }
             else
             {
                 var weeklyHours = (int) decimal.Round(vacancy.Wage.WeeklyHours, MidpointRounding.AwayFromZero);
+                var rates = NationalMinimumWageService.GetAnnualRates(vacancy.StartDate, weeklyHours);
 
-                vacancy.Wage.ApprenticeMinimumWage =
-                    NationalMinimumWageService.GetAnnualRates(vacancy.StartDate, weeklyHours).ApprenticeMinimumWage;
-                vacancy.Wage.Under18NationalMinimumWage = NationalMinimumWageService.GetAnnualRates(vacancy.StartDate, weeklyHours).Under18NationalMinimumWage;
-                vacancy.Wage.Between18AndUnder21NationalMinimumWage = NationalMinimumWageService.GetAnnualRates(vacancy.StartDate, weeklyHours).Between18AndUnder21NationalMinimumWage;
-                vacancy.Wage.Between21AndUnder25NationalMinimumWage = NationalMinimumWageService.GetAnnualRates(vacancy.StartDate, weeklyHours).Between21AndUnder25NationalMinimumWage;
-                vacancy.Wage.Over25NationalMinimumWage = NationalMinimumWageService.GetAnnualRates(vacancy.StartDate, weeklyHours).Over25NationalMinimumWage;
+                vacancy.Wage.ApprenticeMinimumWage = rates.ApprenticeMinimumWage;
+                vacancy.Wage.Under18NationalMinimumWage = rates.Under18NationalMinimumWage;
+                vacancy.Wage.Between18AndUnder21NationalMinimumWage = rates.Between18AndUnder21NationalMinimumWage;
+                vacancy.Wage.Between21AndUnder25NationalMinimumWage = rates.Between21AndUnder25NationalMinimumWage;
+                vacancy.Wage.Over25NationalMinimumWage = rates.Over25NationalMinimumWage;
             }
         }
 
