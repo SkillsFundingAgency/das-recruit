@@ -60,7 +60,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Extensions
             projectedVacancy.TrainingDescription = vacancy.TrainingDescription;
             projectedVacancy.TrainingProvider = vacancy.TrainingProvider.ToProjection();
             projectedVacancy.VacancyReference = vacancy.VacancyReference.GetValueOrDefault();
-            projectedVacancy.Wage = vacancy.Wage.ToProjection(vacancy.StartDate ?? DateTime.UtcNow);
+            projectedVacancy.Wage = vacancy.Wage.ToProjection();
             projectedVacancy.EducationLevelNumber = programme?.EducationLevelNumber;
 
             projectedVacancy.AccountPublicHashedId = vacancy.EmployerAccountId;
@@ -117,7 +117,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Extensions
             };
         }
 
-        public static ProjectionWage ToProjection(this Wage wage, DateTime startDate)
+        public static ProjectionWage ToProjection(this Wage wage)
         {
             return new ProjectionWage
             {
@@ -127,17 +127,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Extensions
                 WageAdditionalInformation = wage.WageAdditionalInformation,
                 WageType = wage.WageType?.ToString(),
                 WeeklyHours = wage.WeeklyHours ?? 0,
-                WorkingWeekDescription = wage.WorkingWeekDescription,
-                ApprenticeMinimumWage = wage.WageType == WageType.FixedWage  ? wage.FixedWageYearlyAmount
-                    : NationalMinimumWageService.GetAnnualRates(startDate, wage.WeeklyHours ?? 0).ApprenticeMinimumWage,
-                Under18NationalMinimumWage = wage.WageType == WageType.FixedWage ? wage.FixedWageYearlyAmount
-                    : NationalMinimumWageService.GetAnnualRates(startDate, wage.WeeklyHours ?? 0).Under18NationalMinimumWage,
-                Between18AndUnder21NationalMinimumWage = wage.WageType == WageType.FixedWage ? wage.FixedWageYearlyAmount
-                    : NationalMinimumWageService.GetAnnualRates(startDate, wage.WeeklyHours ?? 0).Between18AndUnder21NationalMinimumWage,
-                Between21AndUnder25NationalMinimumWage = wage.WageType == WageType.FixedWage ? wage.FixedWageYearlyAmount
-                    : NationalMinimumWageService.GetAnnualRates(startDate, wage.WeeklyHours ?? 0).Between21AndUnder25NationalMinimumWage,
-                Over25NationalMinimumWage = wage.WageType == WageType.FixedWage ? wage.FixedWageYearlyAmount
-                    : NationalMinimumWageService.GetAnnualRates(startDate, wage.WeeklyHours ?? 0).Over25NationalMinimumWage
+                WorkingWeekDescription = wage.WorkingWeekDescription
             };
         }
     }
