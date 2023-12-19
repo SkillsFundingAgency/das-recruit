@@ -1,9 +1,7 @@
 using System;
 using System.Linq;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using Microsoft.IdentityModel.Tokens;
 using SFA.DAS.Recruit.Api.Models;
-using SFA.DAS.VacancyServices.Wage;
 using ApplicationMethod = Esfa.Recruit.Vacancies.Client.Domain.Entities.ApplicationMethod;
 using DurationUnit = Esfa.Recruit.Vacancies.Client.Domain.Entities.DurationUnit;
 using EmployerNameOption = Esfa.Recruit.Vacancies.Client.Domain.Entities.EmployerNameOption;
@@ -53,17 +51,7 @@ namespace SFA.DAS.Recruit.Api.Mappers
                     Duration = request.Wage.Duration,
                     DurationUnit = Enum.Parse<DurationUnit>(request.Wage.DurationUnit.ToString(), true),
                     WageAdditionalInformation = request.Wage.WageAdditionalInformation,
-                    FixedWageYearlyAmount = request.Wage.FixedWageYearlyAmount,
-                    ApprenticeMinimumWage = request.Wage.WageType == Models.WageType.FixedWage ? request.Wage.FixedWageYearlyAmount
-                        : NationalMinimumWageService.GetAnnualRates(request.StartDate, request.Wage.WeeklyHours).ApprenticeMinimumWage,
-                    Under18NationalMinimumWage = request.Wage.WageType == Models.WageType.FixedWage ? request.Wage.FixedWageYearlyAmount
-                        : NationalMinimumWageService.GetAnnualRates(request.StartDate, request.Wage.WeeklyHours).Under18NationalMinimumWage,
-                    Between18AndUnder21NationalMinimumWage = request.Wage.WageType == Models.WageType.FixedWage ? request.Wage.FixedWageYearlyAmount 
-                        : NationalMinimumWageService.GetAnnualRates(request.StartDate, request.Wage.WeeklyHours).Between18AndUnder21NationalMinimumWage,
-                    Between21AndUnder25NationalMinimumWage = request.Wage.WageType == Models.WageType.FixedWage ? request.Wage.FixedWageYearlyAmount
-                        : NationalMinimumWageService.GetAnnualRates(request.StartDate, request.Wage.WeeklyHours).Between21AndUnder25NationalMinimumWage,
-                    Over25NationalMinimumWage = request.Wage.WageType == Models.WageType.FixedWage ? request.Wage.FixedWageYearlyAmount
-                        : NationalMinimumWageService.GetAnnualRates(request.StartDate, request.Wage.WeeklyHours).Over25NationalMinimumWage
+                    FixedWageYearlyAmount = request.Wage.FixedWageYearlyAmount
                 },
                 ShortDescription = request.ShortDescription,
                 NumberOfPositions = request.NumberOfPositions,

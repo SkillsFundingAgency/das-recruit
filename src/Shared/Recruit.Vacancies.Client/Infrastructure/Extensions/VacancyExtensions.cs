@@ -6,6 +6,7 @@ using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Vacancy;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.ApprenticeshipProgrammes;
+using SFA.DAS.VacancyServices.Wage;
 using Address = Esfa.Recruit.Vacancies.Client.Domain.Entities.Address;
 using ProjectionAddress = Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Vacancy.Address;
 using ProjectionQualification = Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Vacancy.Qualification;
@@ -14,6 +15,7 @@ using ProjectionWage = Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.P
 using Qualification = Esfa.Recruit.Vacancies.Client.Domain.Entities.Qualification;
 using TrainingProvider = Esfa.Recruit.Vacancies.Client.Domain.Entities.TrainingProvider;
 using Wage = Esfa.Recruit.Vacancies.Client.Domain.Entities.Wage;
+using WageType = Esfa.Recruit.Vacancies.Client.Domain.Entities.WageType;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Extensions
 {
@@ -58,7 +60,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Extensions
             projectedVacancy.TrainingDescription = vacancy.TrainingDescription;
             projectedVacancy.TrainingProvider = vacancy.TrainingProvider.ToProjection();
             projectedVacancy.VacancyReference = vacancy.VacancyReference.GetValueOrDefault();
-            projectedVacancy.Wage = vacancy.Wage.ToProjection();
+            projectedVacancy.Wage = vacancy.Wage.ToProjection(vacancy.StartDate ?? DateTime.UtcNow);
             projectedVacancy.EducationLevelNumber = programme?.EducationLevelNumber;
 
             projectedVacancy.AccountPublicHashedId = vacancy.EmployerAccountId;
@@ -115,7 +117,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Extensions
             };
         }
 
-        public static ProjectionWage ToProjection(this Wage wage)
+        public static ProjectionWage ToProjection(this Wage wage, DateTime startDate)
         {
             return new ProjectionWage
             {
@@ -125,7 +127,17 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Extensions
                 WageAdditionalInformation = wage.WageAdditionalInformation,
                 WageType = wage.WageType?.ToString(),
                 WeeklyHours = wage.WeeklyHours ?? 0,
-                WorkingWeekDescription = wage.WorkingWeekDescription
+                WorkingWeekDescription = wage.WorkingWeekDescription,
+                ApprenticeMinimumWage = wage.WageType == WageType.FixedWage  ? wage.FixedWageYearlyAmount
+                    : NationalMinimumWageService.GetAnnualRates(startDate, wage.WeeklyHours ?? 0).ApprenticeMinimumWage,
+                Under18NationalMinimumWage = wage.WageType == WageType.FixedWage ? wage.FixedWageYearlyAmount
+                    : NationalMinimumWageService.GetAnnualRates(startDate, wage.WeeklyHours ?? 0).Under18NationalMinimumWage,
+                Between18AndUnder21NationalMinimumWage = wage.WageType == WageType.FixedWage ? wage.FixedWageYearlyAmount
+                    : NationalMinimumWageService.GetAnnualRates(startDate, wage.WeeklyHours ?? 0).Between18AndUnder21NationalMinimumWage,
+                Between21AndUnder25NationalMinimumWage = wage.WageType == WageType.FixedWage ? wage.FixedWageYearlyAmount
+                    : NationalMinimumWageService.GetAnnualRates(startDate, wage.WeeklyHours ?? 0).Between21AndUnder25NationalMinimumWage,
+                Over25NationalMinimumWage = wage.WageType == WageType.FixedWage ? wage.FixedWageYearlyAmount
+                    : NationalMinimumWageService.GetAnnualRates(startDate, wage.WeeklyHours ?? 0).Over25NationalMinimumWage
             };
         }
     }
