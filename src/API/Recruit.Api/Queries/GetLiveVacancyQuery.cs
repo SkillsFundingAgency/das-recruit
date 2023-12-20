@@ -1,6 +1,7 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
+using SFA.DAS.Recruit.Api.Extensions;
 using SFA.DAS.Recruit.Api.Models;
 using IQueryStoreReader = Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.IQueryStoreReader;
 
@@ -33,6 +34,8 @@ namespace SFA.DAS.Recruit.Api.Queries
         public async Task<GetLiveVacancyQueryResponse> Handle(GetLiveVacancyQuery request, CancellationToken cancellationToken)
         {
             var queryResult = await _queryStoreReader.GetLiveVacancy(request.VacancyReference);
+
+            queryResult.AddMinimumWageData();
 
             return new GetLiveVacancyQueryResponse
             {

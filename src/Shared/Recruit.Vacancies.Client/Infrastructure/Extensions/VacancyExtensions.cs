@@ -6,6 +6,7 @@ using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Vacancy;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.ApprenticeshipProgrammes;
+using SFA.DAS.VacancyServices.Wage;
 using Address = Esfa.Recruit.Vacancies.Client.Domain.Entities.Address;
 using ProjectionAddress = Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Vacancy.Address;
 using ProjectionQualification = Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Vacancy.Qualification;
@@ -14,6 +15,7 @@ using ProjectionWage = Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.P
 using Qualification = Esfa.Recruit.Vacancies.Client.Domain.Entities.Qualification;
 using TrainingProvider = Esfa.Recruit.Vacancies.Client.Domain.Entities.TrainingProvider;
 using Wage = Esfa.Recruit.Vacancies.Client.Domain.Entities.Wage;
+using WageType = Esfa.Recruit.Vacancies.Client.Domain.Entities.WageType;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Extensions
 {
