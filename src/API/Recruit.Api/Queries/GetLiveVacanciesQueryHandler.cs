@@ -1,9 +1,11 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Vacancy;
 using MediatR;
+using SFA.DAS.Recruit.Api.Extensions;
 using SFA.DAS.Recruit.Api.Helpers;
 using SFA.DAS.Recruit.Api.Models;
 
@@ -22,7 +24,6 @@ public class GetLiveVacanciesQueryHandler : IRequestHandler<GetLiveVacanciesQuer
     {
         var vacanciesToGetCount = request.PageSize > 1000 ? 1000 : request.PageSize;
         var vacanciesToSkipCount = request.PageNumber < 2 ? 0 : (request.PageNumber - 1) * vacanciesToGetCount;
-        
 
         var queryResult = await _queryStoreReader.GetAllLiveVacancies(vacanciesToSkipCount, vacanciesToGetCount);
 
@@ -30,6 +31,8 @@ public class GetLiveVacanciesQueryHandler : IRequestHandler<GetLiveVacanciesQuer
         {
             return new GetLiveVacanciesQueryResponse { ResultCode = ResponseCode.Success, Data = Enumerable.Empty<LiveVacancy>() };
         }
+
+        queryResult.ToList().ForEach(x => x.AddMinimumWageData());
 
         var totalLiveVacanciesReturned = queryResult.Count();
         var liveVacanciesCount = await _queryStoreReader.GetAllLiveVacanciesCount();
