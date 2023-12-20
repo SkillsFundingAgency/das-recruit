@@ -42,6 +42,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.NServiceBus
 
                     return Endpoint.Start(endpointConfiguration).GetAwaiter().GetResult();
                 })
+                .AddSingleton<IMessageSession>(p => p.GetService<IEndpointInstance>())
                 .AddHostedService<NServiceBusHostedService>();
         }
     }
