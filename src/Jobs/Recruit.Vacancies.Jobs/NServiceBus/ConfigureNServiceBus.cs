@@ -25,12 +25,12 @@ namespace Esfa.Recruit.Vacancies.Jobs.NServiceBus
                     if (!string.IsNullOrEmpty(serviceBusConfiguration.ConnectionString))
                     {
                         endpointConfiguration.UseAzureServiceBusTransport(serviceBusConfiguration.ConnectionString,
-                            r => { });
+                            r => { r.AddRouting(); });
                         endpointConfiguration.UseLicense(serviceBusConfiguration.NServiceBusLicense);
                     }
                     else
                     {
-                        endpointConfiguration.UseLearningTransport();
+                        endpointConfiguration.UseLearningTransport(r => { r.AddRouting(); });
                     }
                     
                     endpointConfiguration.UseErrorQueue($"{RecruitVacanciesJobs}-errors")
@@ -42,6 +42,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.NServiceBus
 
                     return Endpoint.Start(endpointConfiguration).GetAwaiter().GetResult();
                 })
+                .AddSingleton<IMessageSession>(p => p.GetService<IEndpointInstance>())
                 .AddHostedService<NServiceBusHostedService>();
         }
     }
