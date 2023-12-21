@@ -29,8 +29,7 @@
     <PackageReference Include="SFA.DAS.Encoding" Version="1.1.76" />
     <PackageReference Include="SFA.DAS.Http" Version="3.2.69" />
     <PackageReference Include="SFA.DAS.NLog.Targets.Redis" Version="1.2.1" />
-    <PackageReference Include="SFA.DAS.Notifications.Api.Client" Version="2.2.210" />
-    <PackageReference Include="SFA.DAS.Notifications.Api.Types" Version="2.2.210" />
+    <PackageReference Include="SFA.DAS.Notifications.Messages" Version="3.0.10" />
     <PackageReference Include="SFA.DAS.ProviderRelationships.Messages" Version="4.0.19" />
     <PackageReference Include="System.Data.SqlClient" Version="4.8.5" />
     <PackageReference Include="SFA.DAS.NServiceBus" Version="17.0.49" />

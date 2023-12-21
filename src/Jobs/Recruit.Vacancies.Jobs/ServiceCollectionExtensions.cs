@@ -20,8 +20,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.Http;
 using SFA.DAS.Http.TokenGenerators;
-using SFA.DAS.Notifications.Api.Client;
-using SFA.DAS.Notifications.Api.Client.Configuration;
 using Communication.Core;
 using Communication.Types.Interfaces;
 using Esfa.Recruit.Vacancies.Client.Application.Communications;
@@ -73,6 +71,8 @@ namespace Esfa.Recruit.Vacancies.Jobs
             services.AddScoped<TransferVacanciesFromProviderJob>();
             services.AddScoped<TransferVacancyToLegalEntityJob>();
 
+            services.AddScoped<INotificationService, NotificationService>();
+            
             // Domain Event Queue Handlers
 
             // Vacancy
@@ -104,7 +104,6 @@ namespace Esfa.Recruit.Vacancies.Jobs
             services.AddScoped<IDomainEventHandler<IEvent>, DeleteCandidateHandler>();
 
             RegisterCommunicationsService(services, configuration);
-            RegisterDasNotifications(services, configuration);
             RegisterDasEncodingService(services, configuration);
             
             var serviceParameters = new ServiceParameters("Apprenticeships");
@@ -142,21 +141,6 @@ namespace Esfa.Recruit.Vacancies.Jobs
             services.AddTransient<ICompositeDataItemProvider, ApplicationsSubmittedCompositeDataItemPlugin>();
 
             services.Configure<CommunicationsConfiguration>(configuration.GetSection("CommunicationsConfiguration"));
-        }
-
-        private static void RegisterDasNotifications(IServiceCollection services, IConfiguration configuration)
-        {
-            var notificationsConfig = new NotificationsApiClientConfiguration();
-            configuration.GetSection(nameof(NotificationsApiClientConfiguration)).Bind(notificationsConfig);
-
-            var jwtToken = new JwtBearerTokenGenerator(notificationsConfig);
-
-            var httpClient = new HttpClientBuilder()
-                .WithBearerAuthorisationHeader(jwtToken)
-                .WithDefaultHeaders()
-                .Build();
-
-            services.AddTransient<INotificationsApi>(sp => new NotificationsApi(httpClient, notificationsConfig));
         }
 
         private static void RegisterDasEncodingService(IServiceCollection services, IConfiguration configuration)
