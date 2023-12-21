@@ -71,6 +71,8 @@ namespace Esfa.Recruit.Vacancies.Jobs
             services.AddScoped<TransferVacanciesFromProviderJob>();
             services.AddScoped<TransferVacancyToLegalEntityJob>();
 
+            services.AddScoped<INotificationService, NotificationService>();
+            
             // Domain Event Queue Handlers
 
             // Vacancy
