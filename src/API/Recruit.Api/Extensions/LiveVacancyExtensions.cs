@@ -12,14 +12,17 @@ namespace SFA.DAS.Recruit.Api.Extensions
     {
         public static void AddWageData(this LiveVacancy vacancy)
         {
-            var wage = new Esfa.Recruit.Vacancies.Client.Domain.Entities.Wage
+            if (vacancy.Wage.WageType != null)
             {
-                FixedWageYearlyAmount = vacancy.Wage.FixedWageYearlyAmount,
-                WageType = Enum.Parse<Esfa.Recruit.Vacancies.Client.Domain.Entities.WageType>(vacancy.Wage.WageType),
-                WeeklyHours = vacancy.Wage.WeeklyHours
-            };
+                var wage = new Esfa.Recruit.Vacancies.Client.Domain.Entities.Wage
+                {
+                    FixedWageYearlyAmount = vacancy.Wage.FixedWageYearlyAmount,
+                    WageType = Enum.Parse<Esfa.Recruit.Vacancies.Client.Domain.Entities.WageType>(vacancy.Wage.WageType),
+                    WeeklyHours = vacancy.Wage.WeeklyHours
+                };
 
-            vacancy.Wage.WageText = wage.ToDisplayText(vacancy.StartDate);
+                vacancy.Wage.WageText = wage.ToDisplayText(vacancy.StartDate);
+            }
 
             if (vacancy.Wage.WageType == WageType.FixedWage.ToString())
             {
