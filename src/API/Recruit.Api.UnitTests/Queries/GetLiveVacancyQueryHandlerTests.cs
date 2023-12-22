@@ -22,6 +22,8 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Queries
             [Frozen] Mock<IQueryStoreReader> queryStoreReader,
             GetLiveVacancyQueryHandler handler)
         {
+            liveVacancy.Wage.WageType = WageType.FixedWage.ToString();
+
             queryStoreReader.Setup(x => x.GetLiveVacancy(It.Is<long>(r => r == query.VacancyReference)))
                 .ReturnsAsync(liveVacancy);
 

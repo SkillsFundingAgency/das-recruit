@@ -28,6 +28,8 @@ public class GetAllLiveVacanciesQueryHandlerTests
         [Frozen] Mock<IQueryStoreReader> queryStoreReader,
         GetLiveVacanciesQueryHandler handler)
     {
+        liveVacancies.ForEach(x => x.Wage.WageType = WageType.FixedWage.ToString());
+
         query.PageSize = pageSize;
         query.PageNumber = (int)pageNumber;
         queryStoreReader.Setup(x => x.GetAllLiveVacancies(query.PageSize * (query.PageNumber - 1), query.PageSize)).ReturnsAsync(liveVacancies);
@@ -47,6 +49,8 @@ public class GetAllLiveVacanciesQueryHandlerTests
         [Frozen] Mock<IQueryStoreReader> queryStoreReader,
         GetLiveVacanciesQueryHandler handler)
     {
+        liveVacancies.ForEach(x => x.Wage.WageType = WageType.FixedWage.ToString());
+
         query.PageSize = 1001;
         query.PageNumber = (int)pageNumber;
         queryStoreReader.Setup(x => x.GetAllLiveVacancies(1000 * (query.PageNumber - 1), 1000)).ReturnsAsync(liveVacancies);

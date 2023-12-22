@@ -1,14 +1,26 @@
 ﻿using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Vacancy;
+using SFA.DAS.Recruit.Api.Helpers;
 using SFA.DAS.VacancyServices.Wage;
 using System;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
 using WageType = SFA.DAS.Recruit.Api.Models.WageType;
 
 namespace SFA.DAS.Recruit.Api.Extensions
 {
     public static class LiveVacancyExtensions
     {
-        public static void AddMinimumWageData(this LiveVacancy vacancy)
+        public static void AddWageData(this LiveVacancy vacancy)
         {
+            var wage = new Esfa.Recruit.Vacancies.Client.Domain.Entities.Wage
+            {
+                FixedWageYearlyAmount = vacancy.Wage.FixedWageYearlyAmount,
+                WageType = Enum.Parse<Esfa.Recruit.Vacancies.Client.Domain.Entities.WageType>(vacancy.Wage.WageType),
+                WeeklyHours = vacancy.Wage.WeeklyHours
+            };
+
+            vacancy.Wage.WageText = wage.ToDisplayText(vacancy.StartDate);
+
             if (vacancy.Wage.WageType == WageType.FixedWage.ToString())
             {
                 vacancy.Wage.ApprenticeMinimumWage = vacancy.Wage.FixedWageYearlyAmount;
