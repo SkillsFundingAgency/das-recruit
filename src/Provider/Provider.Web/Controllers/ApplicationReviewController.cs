@@ -10,9 +10,11 @@ using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Provider.Web.ViewModels.ApplicationReview;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Shared.Web.ViewModels;
+using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 
 namespace Esfa.Recruit.Provider.Web.Controllers
@@ -21,16 +23,28 @@ namespace Esfa.Recruit.Provider.Web.Controllers
     public class ApplicationReviewController : Controller
     {
         private readonly IApplicationReviewOrchestrator _orchestrator;
+        private readonly ServiceParameters _serviceParameters;
+        private readonly IConfiguration _configuration;
         private const string TempDateARModel = "ApplicationReviewEditModel";
 
-        public ApplicationReviewController(IApplicationReviewOrchestrator orchestrator)
+        public ApplicationReviewController(IApplicationReviewOrchestrator orchestrator, ServiceParameters serviceParameters, IConfiguration configuration)
         {
             _orchestrator = orchestrator;
+            _serviceParameters = serviceParameters;
+            _configuration = configuration;
         }
 
         [HttpGet("", Name = RouteNames.ApplicationReview_Get)]
         public async Task<IActionResult> ApplicationReview(ApplicationReviewRouteModel rm)
         {
+            if (_serviceParameters.VacancyType == VacancyType.Traineeship 
+                && DateTime.TryParse(_configuration["TraineeshipCutOffDate"], out var traineeshipCutOffDate))
+            {
+                if (traineeshipCutOffDate != DateTime.MinValue && traineeshipCutOffDate < DateTime.UtcNow)
+                {
+                    return RedirectPermanent(_configuration["ProviderSharedUIConfiguration:DashboardUrl"]);
+                }
+            }
             var vm = await _orchestrator.GetApplicationReviewViewModelAsync(rm);
             return View(vm);
         }

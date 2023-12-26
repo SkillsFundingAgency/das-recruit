@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Esfa.Recruit.Provider.Web.Configuration.Routing;
@@ -9,7 +10,10 @@ using Esfa.Recruit.Provider.Web.ViewModels.CloneVacancy;
 using Esfa.Recruit.Provider.Web.Extensions;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Shared.Web.ViewModels;
+using Esfa.Recruit.Vacancies.Client.Application.Configuration;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Configuration;
 
 namespace Esfa.Recruit.Provider.Web.Controllers
 {
@@ -18,14 +22,28 @@ namespace Esfa.Recruit.Provider.Web.Controllers
     public class CloneVacancyController : Controller
     {
         private readonly CloneVacancyOrchestrator _orchestrator;
-        public CloneVacancyController(CloneVacancyOrchestrator orchestrator)
+        private readonly ServiceParameters _serviceParameters;
+        private readonly IConfiguration _configuration;
+
+        public CloneVacancyController(CloneVacancyOrchestrator orchestrator, ServiceParameters serviceParameters, IConfiguration configuration)
         {
             _orchestrator = orchestrator;
+            _serviceParameters = serviceParameters;
+            _configuration = configuration;
         }
 
         [HttpGet("clone", Name = RouteNames.CloneVacancy_Get)]
         public async Task<IActionResult> Clone(VacancyRouteModel vrm)
         {
+            if (_serviceParameters.VacancyType == VacancyType.Traineeship 
+                && DateTime.TryParse(_configuration["TraineeshipCutOffDate"], out var traineeshipCutOffDate))
+            {
+                if (traineeshipCutOffDate != DateTime.MinValue && traineeshipCutOffDate < DateTime.UtcNow)
+                {
+                    return RedirectPermanent(_configuration["ProviderSharedUIConfiguration:DashboardUrl"]);
+                }
+            }
+            
             var vacancy = await _orchestrator.GetCloneableAuthorisedVacancyAsync(vrm);
 
             return _orchestrator.IsNewDatesRequired(vacancy) 
