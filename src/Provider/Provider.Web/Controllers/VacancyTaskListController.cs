@@ -35,7 +35,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
             {
                 if (traineeshipCutOffDate != DateTime.MinValue && traineeshipCutOffDate < DateTime.UtcNow)
                 {
-                    return RedirectPermanent(_configuration["ProviderSharedUIConfiguration:DashboardUrl"]);
+                    return RedirectPermanent($"{_configuration["ProviderSharedUIConfiguration:DashboardUrl"]}account");
                 }
             }
             
@@ -50,7 +50,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
             {
                 if (traineeshipCutOffDate != DateTime.MinValue && traineeshipCutOffDate < DateTime.UtcNow)
                 {
-                    return RedirectPermanent(_configuration["ProviderSharedUIConfiguration:DashboardUrl"]);
+                    return RedirectPermanent($"{_configuration["ProviderSharedUIConfiguration:DashboardUrl"]}account");
                 }
             }
             
@@ -69,7 +69,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
             {
                 if (traineeshipCutOffDate != DateTime.MinValue && traineeshipCutOffDate < DateTime.UtcNow)
                 {
-                    return RedirectPermanent(_configuration["ProviderSharedUIConfiguration:DashboardUrl"]);
+                    return RedirectPermanent($"{_configuration["ProviderSharedUIConfiguration:DashboardUrl"]}account");
                 }
             }
             
