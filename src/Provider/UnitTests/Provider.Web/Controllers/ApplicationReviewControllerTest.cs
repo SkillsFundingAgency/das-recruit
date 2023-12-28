@@ -20,6 +20,8 @@ using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Shared.Web.ViewModels.ApplicationReview;
 using Newtonsoft.Json;
 using Esfa.Recruit.Provider.Web.Models;
+using Esfa.Recruit.Vacancies.Client.Application.Configuration;
+using Microsoft.Extensions.Configuration;
 
 namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
 {
@@ -48,7 +50,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
             }));
             var httpContext = new DefaultHttpContext();
             var tempData = new TempDataDictionary(httpContext, Mock.Of<ITempDataProvider>());
-            _controller = new ApplicationReviewController(_orchestrator.Object)
+            _controller = new ApplicationReviewController(_orchestrator.Object, new ServiceParameters("Apprenticeships"), Mock.Of<IConfiguration>())
             {
                 TempData = tempData
             };

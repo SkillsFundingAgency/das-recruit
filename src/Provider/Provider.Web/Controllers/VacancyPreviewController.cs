@@ -14,6 +14,7 @@ using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 
 namespace Esfa.Recruit.Provider.Web.Controllers
 {
@@ -22,16 +23,23 @@ namespace Esfa.Recruit.Provider.Web.Controllers
     {
         private readonly VacancyPreviewOrchestrator _orchestrator;
         private readonly ServiceParameters _serviceParameters;
+        private readonly IConfiguration _configuration;
 
-        public VacancyPreviewController(VacancyPreviewOrchestrator orchestrator, ServiceParameters serviceParameters)
+        public VacancyPreviewController(VacancyPreviewOrchestrator orchestrator, ServiceParameters serviceParameters, IConfiguration configuration)
         {
             _orchestrator = orchestrator;
             _serviceParameters = serviceParameters;
+            _configuration = configuration;
         }
 
         [HttpGet("preview", Name = RouteNames.Vacancy_Preview_Get)]
         public async Task<IActionResult> VacancyPreview(VacancyRouteModel vrm)
         {
+            if (IsTraineeshipsDisabled())
+            {
+                return RedirectPermanent($"{_configuration["ProviderSharedUIConfiguration:DashboardUrl"]}account");
+            }
+            
             var viewModel = await _orchestrator.GetVacancyPreviewViewModelAsync(vrm);
 
             if (TempData.ContainsKey(TempDataKeys.VacancyPreviewInfoMessage))
@@ -87,6 +95,11 @@ namespace Esfa.Recruit.Provider.Web.Controllers
         [HttpGet("advert-preview", Name = RouteNames.Vacancy_Advert_Preview_Get)]
         public async Task<IActionResult> AdvertPreview(VacancyRouteModel vrm)
         {
+            if (IsTraineeshipsDisabled())
+            {
+                return RedirectPermanent($"{_configuration["ProviderSharedUIConfiguration:DashboardUrl"]}account");
+            }
+            
             var viewModel = await _orchestrator.GetVacancyPreviewViewModelAsync(vrm);
 
             if (TempData.ContainsKey(TempDataKeys.VacancyPreviewInfoMessage))
@@ -110,6 +123,19 @@ namespace Esfa.Recruit.Provider.Web.Controllers
             {
                 ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
             }
+        }
+        
+        private bool IsTraineeshipsDisabled()
+        {
+            if (_serviceParameters.VacancyType == VacancyType.Traineeship 
+                && DateTime.TryParse(_configuration["TraineeshipCutOffDate"], out var traineeshipCutOffDate))
+            {
+                if (traineeshipCutOffDate != DateTime.MinValue && traineeshipCutOffDate < DateTime.UtcNow)
+                {
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }
