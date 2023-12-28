@@ -30,13 +30,9 @@ namespace Esfa.Recruit.Provider.Web.Controllers
         [HttpGet("create/start", Name=RouteNames.CreateVacancyStart)]
         public IActionResult StartVacancyCreate(VacancyRouteModel vrm)
         {
-            if (_serviceParameters.VacancyType == VacancyType.Traineeship 
-                && DateTime.TryParse(_configuration["TraineeshipCutOffDate"], out var traineeshipCutOffDate))
+            if (IsTraineeshipsDisabled())
             {
-                if (traineeshipCutOffDate != DateTime.MinValue && traineeshipCutOffDate < DateTime.UtcNow)
-                {
-                    return RedirectPermanent($"{_configuration["ProviderSharedUIConfiguration:DashboardUrl"]}account");
-                }
+                return RedirectPermanent($"{_configuration["ProviderSharedUIConfiguration:DashboardUrl"]}account");
             }
             
             return View("StartCreateVacancy", vrm);
@@ -45,13 +41,9 @@ namespace Esfa.Recruit.Provider.Web.Controllers
         [HttpGet("create/task-list", Name = RouteNames.ProviderTaskListCreateGet)]
         public async Task<IActionResult> CreateProviderTaskList(VacancyRouteModel vrm, [FromQuery] string employerAccountId)
         {
-            if (_serviceParameters.VacancyType == VacancyType.Traineeship 
-                && DateTime.TryParse(_configuration["TraineeshipCutOffDate"], out var traineeshipCutOffDate))
+            if (IsTraineeshipsDisabled())
             {
-                if (traineeshipCutOffDate != DateTime.MinValue && traineeshipCutOffDate < DateTime.UtcNow)
-                {
-                    return RedirectPermanent($"{_configuration["ProviderSharedUIConfiguration:DashboardUrl"]}account");
-                }
+                return RedirectPermanent($"{_configuration["ProviderSharedUIConfiguration:DashboardUrl"]}account");
             }
             
             var viewModel = await _orchestrator.GetCreateVacancyTaskListModel(vrm, employerAccountId);
@@ -64,13 +56,9 @@ namespace Esfa.Recruit.Provider.Web.Controllers
         
         public async Task<IActionResult> ProviderTaskList(VacancyRouteModel vrm)
         {
-            if (_serviceParameters.VacancyType == VacancyType.Traineeship 
-                && DateTime.TryParse(_configuration["TraineeshipCutOffDate"], out var traineeshipCutOffDate))
+            if (IsTraineeshipsDisabled())
             {
-                if (traineeshipCutOffDate != DateTime.MinValue && traineeshipCutOffDate < DateTime.UtcNow)
-                {
-                    return RedirectPermanent($"{_configuration["ProviderSharedUIConfiguration:DashboardUrl"]}account");
-                }
+                return RedirectPermanent($"{_configuration["ProviderSharedUIConfiguration:DashboardUrl"]}account");
             }
             
             var viewModel = await _orchestrator.GetVacancyTaskListModel(vrm); 
@@ -82,6 +70,19 @@ namespace Esfa.Recruit.Provider.Web.Controllers
             }
             
             return View(viewModel);
+        }
+        
+        private bool IsTraineeshipsDisabled()
+        {
+            if (_serviceParameters.VacancyType == VacancyType.Traineeship 
+                && DateTime.TryParse(_configuration["TraineeshipCutOffDate"], out var traineeshipCutOffDate))
+            {
+                if (traineeshipCutOffDate != DateTime.MinValue && traineeshipCutOffDate < DateTime.UtcNow)
+                {
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }

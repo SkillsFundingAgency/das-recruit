@@ -20,13 +20,9 @@ namespace Esfa.Recruit.Provider.Web.Controllers
         [HttpGet("traineeship-help", Name = RouteNames.TraineeshipHelp)]
         public IActionResult Help()
         {
-            if (_serviceParameters.VacancyType == VacancyType.Traineeship 
-                && DateTime.TryParse(_configuration["TraineeshipCutOffDate"], out var traineeshipCutOffDate))
+            if (IsTraineeshipsDisabled())
             {
-                if (traineeshipCutOffDate != DateTime.MinValue && traineeshipCutOffDate < DateTime.UtcNow)
-                {
-                    return RedirectPermanent($"{_configuration["ProviderSharedUIConfiguration:DashboardUrl"]}account");
-                }
+                return RedirectPermanent($"{_configuration["ProviderSharedUIConfiguration:DashboardUrl"]}account");
             }
             
             return View();
@@ -35,13 +31,9 @@ namespace Esfa.Recruit.Provider.Web.Controllers
         [HttpGet("traineeship-privacy", Name = RouteNames.TraineeshipPrivacy)]
         public IActionResult Privacy()
         {
-            if (_serviceParameters.VacancyType == VacancyType.Traineeship 
-                && DateTime.TryParse(_configuration["TraineeshipCutOffDate"], out var traineeshipCutOffDate))
+            if (IsTraineeshipsDisabled())
             {
-                if (traineeshipCutOffDate != DateTime.MinValue && traineeshipCutOffDate < DateTime.UtcNow)
-                {
-                    return RedirectPermanent($"{_configuration["ProviderSharedUIConfiguration:DashboardUrl"]}account");
-                }
+                return RedirectPermanent($"{_configuration["ProviderSharedUIConfiguration:DashboardUrl"]}account");
             }
             return View();
         }
@@ -49,27 +41,22 @@ namespace Esfa.Recruit.Provider.Web.Controllers
         [HttpGet("traineeship-terms-and-conditions", Name = RouteNames.TraineeshipTermsAndConditions)]
         public IActionResult TermsAndConditions()
         {
-            if (_serviceParameters.VacancyType == VacancyType.Traineeship 
-                && DateTime.TryParse(_configuration["TraineeshipCutOffDate"], out var traineeshipCutOffDate))
+            if (IsTraineeshipsDisabled())
             {
-                if (traineeshipCutOffDate != DateTime.MinValue && traineeshipCutOffDate < DateTime.UtcNow)
-                {
-                    return RedirectPermanent($"{_configuration["ProviderSharedUIConfiguration:DashboardUrl"]}account");
-                }
+                return RedirectPermanent($"{_configuration["ProviderSharedUIConfiguration:DashboardUrl"]}account");
             }
+            
             return View();
         }
+
+        
         
         [HttpGet("traineeship-cookies", Name = RouteNames.TraineeshipCookies)]
         public IActionResult Cookies()
         {
-            if (_serviceParameters.VacancyType == VacancyType.Traineeship 
-                && DateTime.TryParse(_configuration["TraineeshipCutOffDate"], out var traineeshipCutOffDate))
+            if (IsTraineeshipsDisabled())
             {
-                if (traineeshipCutOffDate != DateTime.MinValue && traineeshipCutOffDate < DateTime.UtcNow)
-                {
-                    return RedirectPermanent($"{_configuration["ProviderSharedUIConfiguration:DashboardUrl"]}account");
-                }
+                return RedirectPermanent($"{_configuration["ProviderSharedUIConfiguration:DashboardUrl"]}account");
             }
             return View();
         }
@@ -77,15 +64,24 @@ namespace Esfa.Recruit.Provider.Web.Controllers
         [HttpGet("traineeship-cookies-details", Name = RouteNames.TraineeshipCookiesDetails)]
         public IActionResult CookiesDetails()
         {
+            if (IsTraineeshipsDisabled())
+            {
+                return RedirectPermanent($"{_configuration["ProviderSharedUIConfiguration:DashboardUrl"]}account");
+            }
+            return View();
+        }
+        
+        private bool IsTraineeshipsDisabled()
+        {
             if (_serviceParameters.VacancyType == VacancyType.Traineeship 
                 && DateTime.TryParse(_configuration["TraineeshipCutOffDate"], out var traineeshipCutOffDate))
             {
                 if (traineeshipCutOffDate != DateTime.MinValue && traineeshipCutOffDate < DateTime.UtcNow)
                 {
-                    return RedirectPermanent($"{_configuration["ProviderSharedUIConfiguration:DashboardUrl"]}account");
+                    return true;
                 }
             }
-            return View();
+            return false;
         }
     }
 }
