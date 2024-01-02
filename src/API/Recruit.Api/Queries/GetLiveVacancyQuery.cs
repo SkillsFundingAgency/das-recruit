@@ -35,7 +35,7 @@ namespace SFA.DAS.Recruit.Api.Queries
         {
             var queryResult = await _queryStoreReader.GetLiveVacancy(request.VacancyReference);
 
-            queryResult.AddMinimumWageData();
+            queryResult.AddWageData();
 
             return new GetLiveVacancyQueryResponse
             {
