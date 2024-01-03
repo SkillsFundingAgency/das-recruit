@@ -32,7 +32,7 @@ public class GetLiveVacanciesQueryHandler : IRequestHandler<GetLiveVacanciesQuer
             return new GetLiveVacanciesQueryResponse { ResultCode = ResponseCode.Success, Data = Enumerable.Empty<LiveVacancy>() };
         }
 
-        queryResult.ToList().ForEach(x => x.AddMinimumWageData());
+        queryResult.ToList().ForEach(x => x.AddWageData());
 
         var totalLiveVacanciesReturned = queryResult.Count();
         var liveVacanciesCount = await _queryStoreReader.GetAllLiveVacanciesCount();
