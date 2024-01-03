@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo;
@@ -156,7 +157,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
         public async Task<IEnumerable<LiveVacancy>> GetAllLiveVacancies(int vacanciesToSkip, int vacanciesToGet)
         {
             var builderFilter = Builders<LiveVacancy>.Filter;
-            var filter = builderFilter.Gt(identifier => identifier.ClosingDate, DateTime.UtcNow);
+            var filter = builderFilter.Gt(identifier => identifier.ClosingDate, DateTime.UtcNow)
+                & builderFilter.Ne(identifier => identifier.ViewType, "ClosedVacancy");
 
             var builderSort = Builders<LiveVacancy>.Sort;
             var sort = builderSort.Descending(identifier => identifier.ClosingDate);
