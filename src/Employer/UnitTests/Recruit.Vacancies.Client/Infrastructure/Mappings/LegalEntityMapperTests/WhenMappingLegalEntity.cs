@@ -3,12 +3,14 @@ using AutoFixture;
 using FluentAssertions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Responses;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
+using NUnit.Framework;
 
 namespace UnitTests.Recruit.Vacancies.Client.Infrastructure.Mappings.LegalEntityMapperTests
 {
     public class WhenMappingLegalEntity
     {
-        [Fact]
+        [Test]
         public void ThenReturnsCorrectlyPolulatedLegalEntity()
         {
             // Arrange
@@ -32,7 +34,7 @@ namespace UnitTests.Recruit.Vacancies.Client.Infrastructure.Mappings.LegalEntity
             actual.HasLegalEntityAgreement.Should().Be(expected.HasLegalAgreement);
         }
 
-        [Fact]
+        [Test]
         public void ThenMapsAddress()
         {
             // Arrange
@@ -52,6 +54,23 @@ namespace UnitTests.Recruit.Vacancies.Client.Infrastructure.Mappings.LegalEntity
             actual.Address.AddressLine3.Should().Be("Coventry");
             actual.Address.AddressLine4.Should().BeNullOrEmpty();
             actual.Address.Postcode.Should().Be("CV1 2WT");
+        }
+        
+        [Test]
+        public void Then_Does_Not_Error_If_No_Address()
+        {
+            // Arrange
+            var fixture = new Fixture();
+            var expected = fixture
+                .Build<AccountLegalEntity>()
+                .Create();
+            expected.Address = null;
+
+            // Act
+            var actual = LegalEntityMapper.MapFromAccountApiLegalEntity(expected);
+
+            // Assert
+            actual.Address.Should().BeEquivalentTo(new Address());
         }
     }
 }
