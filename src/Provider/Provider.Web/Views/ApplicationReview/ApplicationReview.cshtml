@@ -226,6 +226,13 @@
 
         <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
 
+        <section asp-show="@Model.IsStatusEmployerInterviewing">
+            <h2 class="govuk-heading-l">Progress this application</h2>
+            <h3 class="govuk-heading-m">Employer's response</h3>
+            <p class="govuk-body">The employer <span class="govuk-!-font-weight-bold">wants to interview</span> this applicant.</p>
+            <hr class="govuk-section-break govuk-section-break--l govuk-section-break--not visible">
+        </section>
+
         <div asp-show="@Model.CanNotChangeOutcome">
             <h3 class="govuk-heading-l govuk-!-margin-top-6">Outcome</h3>
             <p class="govuk-body">@Model.Status.Value.GetDisplayName()</p>

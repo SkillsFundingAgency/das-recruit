@@ -40,6 +40,7 @@ namespace Esfa.Recruit.Shared.Web.ViewModels.ApplicationReview
         public bool CanNotChangeOutcome => (Status == ApplicationReviewStatus.Successful || Status == ApplicationReviewStatus.Unsuccessful);
         public bool CanChangeOutcome => !CanNotChangeOutcome;
         public bool IsStatusEmployerUnsuccessful => Status == ApplicationReviewStatus.EmployerUnsuccessful;
+        public bool IsStatusEmployerInterviewing => Status == ApplicationReviewStatus.EmployerInterviewing;
         public bool ShowDisabilityStatusAlert => DisabilityStatus == ApplicationReviewDisabilityStatus.Yes;
 
         public ApplicationReviewStatus? Outcome { get; set; }
