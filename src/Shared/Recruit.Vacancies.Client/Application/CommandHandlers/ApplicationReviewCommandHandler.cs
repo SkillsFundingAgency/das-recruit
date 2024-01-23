@@ -68,14 +68,17 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             _logger.LogInformation("Setting application review:{applicationReviewId} to {status}", message.ApplicationReviewId, message.Outcome.Value);
 
             await _applicationReviewRepository.UpdateAsync(applicationReview);
-            
-            await _messaging.PublishEvent(new ApplicationReviewedEvent
+
+            if (applicationReview.Status != ApplicationReviewStatus.EmployerInterviewing && applicationReview.Status != ApplicationReviewStatus.EmployerUnsuccessful)
             {
-                Status = applicationReview.Status,
-                VacancyReference = applicationReview.VacancyReference,
-                CandidateFeedback = applicationReview.CandidateFeedback,
-                CandidateId = applicationReview.CandidateId
-            });
+                await _messaging.PublishEvent(new ApplicationReviewedEvent
+                {
+                    Status = applicationReview.Status,
+                    VacancyReference = applicationReview.VacancyReference,
+                    CandidateFeedback = applicationReview.CandidateFeedback,
+                    CandidateId = applicationReview.CandidateId
+                });
+            }
 
             var shouldMakeOthersUnsuccessful = await CheckForPositionsFilledAsync(message.Outcome, applicationReview.VacancyReference);
 
