@@ -119,6 +119,7 @@ namespace Esfa.Recruit.Employer.Web.Configuration
             services.AddTransient<ShortDescriptionOrchestrator>();
             services.AddTransient<TrainingOrchestrator>();
             services.AddTransient<VacancyDescriptionOrchestrator>();
+            services.AddTransient<VacancyWorkDescriptionOrchestrator>();
             services.AddTransient<IWageOrchestrator, WageOrchestrator>();
             services.AddTransient<CustomWageOrchestrator>();
             services.AddTransient<SkillsOrchestrator>();

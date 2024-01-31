@@ -118,6 +118,9 @@
         public const string VacancyDescription_Index_Get = "VacancyDescription_Index_Get";
         public const string VacancyDescription_Index_Post = "VacancyDescription_Index_Post";
 
+        public const string VacancyWorkDescription_Index_Get = "VacancyWorkDescription_Index_Get";
+        public const string VacancyWorkDescription_Index_Post = "VacancyWorkDescription_Index_Post";
+        
         public const string Skills_Get = "Skills_Get";
         public const string Skills_Post = "Skills_Post";
 
