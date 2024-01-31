@@ -1,6 +1,7 @@
 using System;
 using System.Text.RegularExpressions;
 using Esfa.Recruit.Vacancies.Client.Application.Configuration;
+using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Application.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomValidators.VacancyValidators;
@@ -22,6 +23,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
         private readonly IBlockedOrganisationQuery _blockedOrganisationRepo;
         private readonly IProfanityListProvider _profanityListProvider;
         private readonly IProviderRelationshipsService _providerRelationshipService;
+        private readonly IFeature _feature;
         private readonly ServiceParameters _serviceParameters;
 
         public FluentVacancyValidator(
@@ -34,6 +36,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
             IBlockedOrganisationQuery blockedOrganisationRepo,
             IProfanityListProvider profanityListProvider,
             IProviderRelationshipsService providerRelationshipService,
+            IFeature feature,
             ServiceParameters serviceParameters)
         {
             _timeProvider = timeProvider;
@@ -45,6 +48,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
             _blockedOrganisationRepo = blockedOrganisationRepo;
             _profanityListProvider = profanityListProvider;
             _providerRelationshipService = providerRelationshipService;
+            _feature = feature;
             _serviceParameters = serviceParameters;
 
             SingleFieldValidations();
@@ -678,21 +682,24 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
 
         private void ValidateDescription()
         {
+            var isFaaV2Enabled = _feature.IsFeatureEnabled("FaaV2Improvements");
+            var messageText = isFaaV2Enabled ? "will do at work" : "will be doing";
+            
             RuleFor(x => x.Description)
                 .NotEmpty()
-                    .WithMessage($"Enter what the {ApplicantContext} will be doing")
+                    .WithMessage($"Enter what the {ApplicantContext} {messageText}")
                     .WithErrorCode("53")
                 .WithState(_ => VacancyRuleSet.Description)
                 .MaximumLength(4000)
-                    .WithMessage($"What the {ApplicantContext} will be doing must not exceed {{MaxLength}} characters")
+                    .WithMessage($"What the {ApplicantContext} {messageText} must not exceed {{MaxLength}} characters")
                     .WithErrorCode("7")
                 .WithState(_ => VacancyRuleSet.Description)
                 .ValidHtmlCharacters(_htmlSanitizerService)
-                    .WithMessage($"What the {ApplicantContext} will be doing contains some invalid characters")
+                    .WithMessage($"What the {ApplicantContext} {messageText} contains some invalid characters")
                     .WithErrorCode("6")
                 .WithState(_ => VacancyRuleSet.Description)
                 .ProfanityCheck(_profanityListProvider)
-                .WithMessage($"What the {ApplicantContext} will be doing must not contain a banned word or phrase.")
+                .WithMessage($"What the {ApplicantContext} {messageText} must not contain a banned word or phrase.")
                 .WithErrorCode("609")
                 .WithState(_ => VacancyRuleSet.Description)
                 .RunCondition(VacancyRuleSet.Description);

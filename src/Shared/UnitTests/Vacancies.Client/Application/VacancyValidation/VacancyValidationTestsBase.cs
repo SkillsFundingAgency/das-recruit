@@ -1,5 +1,6 @@
 ﻿using Esfa.Recruit.UnitTests.Vacancies.Client.Application.Rules.VacancyRules;
 using Esfa.Recruit.Vacancies.Client.Application.Configuration;
+using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Application.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
@@ -26,7 +27,7 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation
         protected readonly Mock<IProviderRelationshipsService> MockProviderRelationshipsService;
         protected ServiceParameters ServiceParameters;
         protected ITimeProvider TimeProvider;
-
+        protected readonly Mock<IFeature> Feature;
 
         protected VacancyValidationTestsBase()
         {
@@ -42,7 +43,10 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation
             MockProviderRelationshipsService = new Mock<IProviderRelationshipsService>();
             ServiceParameters = new ServiceParameters("Apprenticeship");
             TimeProvider = new CurrentUtcTimeProvider();
+            Feature = new Mock<IFeature>();
         }
+
+        
 
         protected IEntityValidator<Vacancy, VacancyRuleSet> Validator
         {
@@ -51,7 +55,7 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation
                 var fluentValidator = new FluentVacancyValidator(TimeProvider, MockMinimumWageService.Object, 
                     MockApprenticeshipProgrammeProvider.Object, MockQualificationsProvider.Object, SanitizerService, 
                     MockTrainingProviderSummaryProvider.Object, MockBlockedOrganisationRepo.Object,
-                    MockProfanityListProvider, MockProviderRelationshipsService.Object, ServiceParameters);
+                    MockProfanityListProvider, MockProviderRelationshipsService.Object,Feature.Object, ServiceParameters);
                 return new EntityValidator<Vacancy, VacancyRuleSet>(fluentValidator);
             }
         }
