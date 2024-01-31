@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
+using Microsoft.Extensions.Configuration;
 
 namespace Esfa.Recruit.Shared.Web.FeatureToggle
 {
