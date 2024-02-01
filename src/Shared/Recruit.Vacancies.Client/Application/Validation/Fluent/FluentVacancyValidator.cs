@@ -699,7 +699,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                     .WithErrorCode("6")
                 .WithState(_ => VacancyRuleSet.Description)
                 .ProfanityCheck(_profanityListProvider)
-                .WithMessage($"What the {ApplicantContext} {messageText} must not contain a banned word or phrase.")
+                .WithMessage($"What the {ApplicantContext} {messageText} must not contain a banned word or phrase")
                 .WithErrorCode("609")
                 .WithState(_ => VacancyRuleSet.Description)
                 .RunCondition(VacancyRuleSet.Description);

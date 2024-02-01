@@ -29,6 +29,7 @@
         public const string Title = "Title";
         public const string Training = "Training";
         public const string TrainingDescription = "TrainingDescription";
+        public const string AdditionalTrainingDescription = "AdditionalTrainingDescription";
         public const string TrainingLevel = "TrainingLevel";
         public const string TraineeRoute = nameof(TraineeRoute);
         public const string VacancyDescription = "VacancyDescription";

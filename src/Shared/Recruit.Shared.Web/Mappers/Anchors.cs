@@ -25,6 +25,7 @@
         public const string NumberOfPositions = "NumberOfPositions";
         public const string VacancyDescription = "VacancyDescription";
         public const string TrainingDescription = "TrainingDescription";
+        public const string AdditionalTrainingDescription = "AdditionalrainingDescription";
         public const string OutcomeDescription = "OutcomeDescription";
         public const string Skills = "Skills";
         public const string Qualifications = "Qualifications";
