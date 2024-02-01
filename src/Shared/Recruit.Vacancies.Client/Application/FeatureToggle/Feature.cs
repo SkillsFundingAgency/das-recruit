@@ -1,7 +1,6 @@
-﻿using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 
-namespace Esfa.Recruit.Shared.Web.FeatureToggle
+namespace Esfa.Recruit.Vacancies.Client.Application.FeatureToggle
 {
     public class Feature : IFeature
     {
@@ -16,7 +15,7 @@ namespace Esfa.Recruit.Shared.Web.FeatureToggle
             if (string.IsNullOrWhiteSpace(featureValue))
                 return false;
 
-            return bool.Parse(featureValue);
+            return bool.Parse((string)featureValue);
         }
     }
 }
