@@ -46,10 +46,13 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part2
             {
                 return View(vm);
             }
+
+            string vacancyDescriptionIndexGet = _feature.IsFeatureEnabled(FeatureNames.FaaV2Improvements) 
+                ? RouteNames.VacancyWorkDescription_Index_Get : RouteNames.VacancyDescription_Index_Get;
             
             return RedirectToRoute(vm.IsTaskListCompleted 
                 ? RouteNames.EmployerCheckYourAnswersGet 
-                : RouteNames.VacancyDescription_Index_Get, 
+                : vacancyDescriptionIndexGet, 
                 new {m.VacancyId, m.EmployerAccountId});
         }
     }
