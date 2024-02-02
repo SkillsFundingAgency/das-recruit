@@ -61,11 +61,6 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part2
                 vm.VacancyDescription = vacancy.Description;
             }
 
-            if (!_feature.IsFeatureEnabled(FeatureNames.ProviderTaskList))
-            {
-                vm.OutcomeDescription = vacancy.OutcomeDescription;
-            }
-
             if (vacancy.Status == VacancyStatus.Referred)
             {
                 vm.Review = await _reviewSummaryService.GetReviewSummaryViewModelAsync(vacancy.VacancyReference.Value,
@@ -86,10 +81,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part2
                 vm.VacancyDescription = m.VacancyDescription;
             }
             vm.TrainingDescription = m.TrainingDescription;
-            if (!_feature.IsFeatureEnabled(FeatureNames.ProviderTaskList))
-            {
-                vm.OutcomeDescription = m.OutcomeDescription;
-            }
+            
             return vm;
         }
 
