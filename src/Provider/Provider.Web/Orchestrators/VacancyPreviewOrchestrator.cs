@@ -185,6 +185,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             mappings.Add(e => e.NumberOfPositions, vm => vm.NumberOfPositions);
             mappings.Add(e => e.Description, vm => vm.VacancyDescription);
             mappings.Add(e => e.TrainingDescription, vm => vm.TrainingDescription);
+            mappings.Add(e => e.AdditionalTrainingDescription, vm => vm.AdditionalTrainingDescription);
             mappings.Add(e => e.OutcomeDescription, vm => vm.OutcomeDescription);
             mappings.Add(e => e.Skills, vm => vm.Skills);
             mappings.Add(e => e.Qualifications, vm => vm.Qualifications);

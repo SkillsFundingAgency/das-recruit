@@ -79,6 +79,7 @@ namespace Esfa.Recruit.Provider.Web.Mappings
             vm.ThingsToConsider = vacancy.ThingsToConsider;
             vm.Title = vacancy.Title;
             vm.TrainingDescription = vacancy.TrainingDescription;
+            vm.AdditionalTrainingDescription = vacancy.AdditionalTrainingDescription;
             vm.VacancyDescription = vacancy.Description;
             vm.VacancyReferenceNumber = vacancy.VacancyReference.HasValue
                                         ? $"VAC{vacancy.VacancyReference}"

@@ -108,7 +108,6 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.ViewModels.Preview
         public async Task Then_If_Has_Title_Organisation_Sector_ShortDescription_And_Descriptions_Then_Completed(
             string title,
             string programmeId,
-            string description,
             string shortDescription,
             string trainingDescription,
             string accountLegalEntityPublicHashedId,
