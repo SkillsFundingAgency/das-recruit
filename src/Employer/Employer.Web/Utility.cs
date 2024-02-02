@@ -167,6 +167,8 @@ namespace Esfa.Recruit.Employer.Web
                 RouteNames.ShortDescription_Post,
                 RouteNames.VacancyDescription_Index_Post,
                 RouteNames.VacancyDescription_Index_Get,
+                RouteNames.VacancyHowTheApprenticeWillTrain_Index_Get,
+                RouteNames.VacancyHowTheApprenticeWillTrain_Index_Post,
                 RouteNames.VacancyWorkDescription_Index_Post,
                 RouteNames.VacancyWorkDescription_Index_Get,
                 RouteNames.Dates_Post, 
