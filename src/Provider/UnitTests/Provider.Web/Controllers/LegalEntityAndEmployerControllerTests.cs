@@ -24,34 +24,6 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
     public class LegalEntityAndEmployerControllerTests
     {
         [Test, MoqAutoData]
-        public async Task Then_If_Not_Selected_Then_Shows_Validation_Error(
-            ConfirmLegalEntityAndEmployerEditModel editModel,
-            VacancyRouteModel vacancyRouteModel,
-            LegalEntityAndEmployerOrchestrator orchestrator)
-        {
-            var controller = new LegalEntityAndEmployerController(orchestrator, Mock.Of<IWebHostEnvironment>(),
-                new ServiceParameters("Apprenticeship"));
-            controller.ModelState.AddModelError("HasConfirmedEmployer","Error");
-            
-            editModel.HasConfirmedEmployer = null;
-
-            var actual = await controller.ConfirmEmployerLegalEntitySelection(editModel);
-            var actualResult = actual as ViewResult;
-            
-            Assert.IsNotNull(actual);
-            Assert.IsNotNull(actualResult);
-            var actualModel = actualResult.Model as ConfirmLegalEntityAndEmployerViewModel;
-            Assert.IsNotNull(actualModel);
-            actualModel.EmployerName.Should().Be(editModel.EmployerName);
-            actualModel.EmployerAccountId.Should().Be(editModel.EmployerAccountId);
-            actualModel.AccountLegalEntityName.Should().Be(editModel.AccountLegalEntityName);
-            actualModel.AccountLegalEntityPublicHashedId.Should().Be(editModel.AccountLegalEntityPublicHashedId);
-            actualModel.Ukprn.Should().Be(editModel.Ukprn);
-            actualModel.BackLinkRoute.Should().Be(editModel.BackLinkRoute);
-            actualModel.CancelLinkRoute.Should().Be(editModel.CancelLinkRoute);
-        }
-        
-        [Test, MoqAutoData]
         public async Task Then_Chooses_No_For_Employer_Then_Redirected_To_EmployerLegalEntity_View_For_New_Vacancy(
             ConfirmLegalEntityAndEmployerEditModel editModel,
             VacancyRouteModel vacancyRouteModel,

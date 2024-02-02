@@ -29,13 +29,6 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Reports
         [HttpPost("create", Name = RouteNames.ProviderApplicationsReportCreate_Post)]
         public async Task<IActionResult> Create(ProviderApplicationsReportCreateEditModel m)
         {
-            if (ModelState.IsValid == false)
-            {
-                var vm = _orchestrator.GetCreateViewModel(m);
-
-                return View(vm);
-            }
-
             var reportId = await _orchestrator.PostCreateViewModelAsync(m, User.ToVacancyUser());
 
             return RedirectToRoute(RouteNames.ReportConfirmation_Get, new ReportRouteModel{ReportId = reportId, Ukprn = m.Ukprn});

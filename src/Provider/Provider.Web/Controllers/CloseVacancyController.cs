@@ -31,12 +31,6 @@ namespace Esfa.Recruit.Provider.Web.Controllers
         [HttpPost("close", Name = RouteNames.CloseVacancy_Post)]
         public async Task<IActionResult> Close(CloseEditModel m)
         {
-            if (!ModelState.IsValid)
-            {
-                var vrm = new VacancyRouteModel { VacancyId = m.VacancyId, Ukprn = m.Ukprn };
-                return await GetCloseVacancyConfirmationView(vrm);
-            }
-
             if (m.ConfirmClose != null && !m.ConfirmClose.Value)
             {
                 return RedirectToRoute(RouteNames.VacancyManage_Get, new {m.Ukprn, m.VacancyId});

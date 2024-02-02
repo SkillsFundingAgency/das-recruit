@@ -60,9 +60,6 @@ namespace Esfa.Recruit.Provider.Web.Controllers
         [HttpPost("notifications-unsubscribe", Name = RouteNames.ConfirmUnsubscribeNotifications_Post)]
         public async Task<IActionResult> ConfirmUnsubscribeNotifications(ConfirmUnsubscribeNotificationsEditModel model)
         {
-            if(!ModelState.IsValid)
-                return View(new ConfirmUnsubscribeNotificationsViewModel(model.Ukprn));
-
             if(model.ConfirmUnsubscribe == false)
                 return RedirectToRoute(RouteNames.ManageNotifications_Get, new {ukprn = User.GetUkprn().ToString()});
 

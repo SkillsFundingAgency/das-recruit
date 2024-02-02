@@ -180,7 +180,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
         }
 
         [Test]
-        public async Task POST_ApplicationReviewsToUnsuccessful_RedirectsToAction()
+        public void POST_ApplicationReviewsToUnsuccessful_RedirectsToAction()
         {
             // Arrange
             var applicationReviewIds = new List<Guid> { Guid.NewGuid(), Guid.NewGuid() };
@@ -192,7 +192,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
                 .Create();
 
             // Act
-            var actionResult =await _controller.ApplicationReviewsToUnsuccessful(request, "Name", "Ascending");
+            var actionResult = _controller.ApplicationReviewsToUnsuccessful(request, "Name", "Ascending");
 
             var redirectResult = actionResult as RedirectToActionResult;
             // Assert
@@ -437,7 +437,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
         }
 
         [Test]
-        public async Task POST_ApplicationReviewsToShare_RedirectsToAction()
+        public void POST_ApplicationReviewsToShare_RedirectsToAction()
         {
             // Arrange
             var listOfApplicationReviews = new List<Guid>();
@@ -448,7 +448,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
              .Create();
 
             // Act
-            var actionResult = await _controller.ApplicationReviewsToShare(request, "Name", "Ascending");
+            var actionResult = _controller.ApplicationReviewsToShare(request, "Name", "Ascending");
             var redirectResult = actionResult as RedirectToActionResult;
 
             // Assert

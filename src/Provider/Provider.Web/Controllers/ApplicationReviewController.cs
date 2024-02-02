@@ -53,12 +53,6 @@ namespace Esfa.Recruit.Provider.Web.Controllers
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public async Task<IActionResult> ApplicationReview(ApplicationReviewEditModel applicationReviewEditModel)
         {
-            if (!ModelState.IsValid)
-            {
-                var vm = await _orchestrator.GetApplicationReviewViewModelAsync(applicationReviewEditModel);
-                return View(vm);
-            }
-
             switch (applicationReviewEditModel.Outcome.Value)
             {
                 case ApplicationReviewStatus.Shared:
@@ -104,6 +98,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
             if (TempData[TempDateARModel] is string model)
             {
                 var applicationReviewEditViewModel = JsonConvert.DeserializeObject<ApplicationReviewEditModel>(model);
+                TempData[TempDateARModel] = JsonConvert.SerializeObject(applicationReviewEditViewModel);
                 var applicationReviewFeedbackViewModel = await _orchestrator.GetApplicationReviewFeedbackViewModelAsync(applicationReviewEditViewModel);
                 return View(applicationReviewFeedbackViewModel);
             }
@@ -112,14 +107,8 @@ namespace Esfa.Recruit.Provider.Web.Controllers
 
         [HttpPost("feedback", Name = RouteNames.ApplicationReviewFeedback_Post)]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-        public async Task<IActionResult> ApplicationFeedback(ApplicationReviewFeedbackViewModel applicationReviewFeedbackEditModel)
+        public IActionResult ApplicationFeedback(ApplicationReviewFeedbackViewModel applicationReviewFeedbackEditModel)
         {
-            if (!ModelState.IsValid)
-            {
-                applicationReviewFeedbackEditModel.Name = await _orchestrator.GetApplicationReviewFeedbackViewModelAsync(applicationReviewFeedbackEditModel);
-                return View(applicationReviewFeedbackEditModel);
-            }
-
             TempData[TempDateARModel] = JsonConvert.SerializeObject(applicationReviewFeedbackEditModel);
             return RedirectToRoute(RouteNames.ApplicationReviewConfirmation_Get, new { applicationReviewFeedbackEditModel.ApplicationReviewId, applicationReviewFeedbackEditModel.VacancyId, applicationReviewFeedbackEditModel.Ukprn });
         }
@@ -129,6 +118,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
             if (TempData[TempDateARModel] is string model)
             {
                 var applicationReviewEditViewModel = JsonConvert.DeserializeObject<ApplicationReviewEditModel>(model);
+                TempData[TempDateARModel] = JsonConvert.SerializeObject(applicationReviewEditViewModel);
                 var applicationStatusConfirmationViewModel = await _orchestrator.GetApplicationStatusConfirmationViewModelAsync(applicationReviewEditViewModel);
                 return View(applicationStatusConfirmationViewModel);
             }
@@ -139,12 +129,6 @@ namespace Esfa.Recruit.Provider.Web.Controllers
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public async Task<IActionResult> ApplicationStatusConfirmation(ApplicationReviewStatusConfirmationEditModel editModel)
         {
-            if (!ModelState.IsValid)
-            {
-                var vm = await _orchestrator.GetApplicationStatusConfirmationViewModelAsync(editModel);
-                return View(vm);
-            }
-
             if (editModel.CanNotifyCandidate)
             {
                 var statusChangeInfo = await _orchestrator.PostApplicationReviewStatusChangeModelAsync(editModel, User.ToVacancyUser());
