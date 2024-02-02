@@ -119,6 +119,11 @@ namespace Esfa.Recruit.Qa.Web.Mappings
                     },
                     new FieldIdentifierViewModel
                     {
+                        FieldIdentifier = FieldIdentifiers.AdditionalTrainingDescription,
+                        Text = "Additional training information (optional)"
+                    },
+                    new FieldIdentifierViewModel
+                    {
                         FieldIdentifier = FieldIdentifiers.OutcomeDescription,
                         Text = "What is the expected career progression after this apprenticeship?"
                     },
@@ -287,6 +292,7 @@ namespace Esfa.Recruit.Qa.Web.Mappings
                 vm.ThingsToConsider = vacancy.ThingsToConsider;
                 vm.Title = vacancy.Title;
                 vm.TrainingDescription = vacancy.TrainingDescription;
+                vm.AdditionalTrainingDescription = vacancy.AdditionalTrainingDescription;
                 vm.VacancyDescription = vacancy.Description;
                 vm.VacancyReferenceNumber = $"VAC{vacancy.VacancyReference}";
                 if (programme != null)
