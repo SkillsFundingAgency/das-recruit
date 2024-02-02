@@ -187,12 +187,14 @@
                             {
                                 <dd class="app-summary-list__value">
                                     Training schedule hasn't been agreed yet
-                                    </dd>
+                                </dd>
                             }
                             else
                             {
                                 <dd class="app-summary-list__value">
-                                    @Model.TrainingDescription
+                                    <div class="app-ugc-wrap">
+                                        @Html.Raw(Model.TrainingDescription)
+                                    </div>
                                 </dd>
                             }
                             
