@@ -7,7 +7,7 @@
 
 @section BackLink
 {
-    <a asp-show="@(!Model.IsTaskListCompleted)" asp-route="@RouteNames.ShortDescription_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Back</a>
+    <a asp-show="@(!Model.IsTaskListCompleted)" asp-route="@RouteNames.VacancyWorkDescription_Index_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Back</a>
     <a asp-show="@Model.IsTaskListCompleted" asp-route="@RouteNames.EmployerCheckYourAnswersGet" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Back</a>
 }
 
@@ -17,7 +17,7 @@
         <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }' />
         <partial name="@PartialNames.ReviewSummary" for="Review" />
 
-        <h1 class="govuk-heading-xl govuk-!-margin-bottom-2">
+        <h1 class="govuk-heading-xl">
             <span class="govuk-caption-l">@Model.Title</span>
             How the apprentice will train
         </h1>
@@ -35,7 +35,7 @@
                      If you don’t enter anything, we’ll display a message saying that the training schedule hasn't been agreed yet.
                  </div>
                  <span esfa-validation-message-for="TrainingDescription" class="govuk-error-message"></span>
-                 <textarea asp-for="TrainingDescription" class="govuk-textarea govuk-js-character-count" rows="5" maxlength="4000" ></textarea>
+                 <textarea asp-for="TrainingDescription" class="govuk-textarea html-editor" rows="5" maxlength="4000" ></textarea>
              </div>
              
              <div esfa-validation-marker-for="AdditionalTrainingDescription" class="govuk-form-group">
@@ -47,7 +47,7 @@
                  </ul>
                  <p class="govuk-body">Don’t include what the training course will teach. We’ll automatically display the skills an apprentice will learn during this course.</p>
                  <span esfa-validation-message-for="AdditionalTrainingDescription" class="govuk-error-message"></span>
-                 <textarea asp-for="AdditionalTrainingDescription" class="govuk-textarea govuk-js-character-count" rows="5" maxlength="4000" ></textarea>
+                 <textarea asp-for="AdditionalTrainingDescription" class="govuk-textarea html-editor" rows="5" maxlength="4000" ></textarea>
              </div>
 
              <div class="govuk-button-group">
