@@ -129,24 +129,59 @@
                             </a>
                         }
                     </li>
-                    <li class="das-task-list__item">
+                    
                         @if (_serviceParameters.VacancyType == VacancyType.Apprenticeship)
                         {
-                            @if (Model.ShortDescriptionSectionState == VacancyPreviewSectionState.Incomplete)
-                            {
-                                <span>
-                                    Tasks and training details
-                                </span>
-                            }
-                            else
-                            {
-                                <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.VacancyDescription_Index_Get" asp-all-route-data="@Model.RouteDictionary">
-                                    Tasks and training details
-                                </a>
-                            }
+                            <esfaFeatureDisabled name="@FeatureNames.FaaV2Improvements">
+                                <li class="das-task-list__item">
+                                @if (Model.ShortDescriptionSectionState == VacancyPreviewSectionState.Incomplete)
+                                {
+                                    <span>
+                                        Tasks and training details
+                                    </span>
+                                }
+                                else
+                                {
+                                    <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.VacancyDescription_Index_Get" asp-all-route-data="@Model.RouteDictionary">
+                                        Tasks and training details
+                                    </a>
+                                }
+                                </li>
+                            </esfaFeatureDisabled>
+                            <esfaFeatureEnabled name="@FeatureNames.FaaV2Improvements">
+                                <li class="das-task-list__item">
+                                @if (Model.ShortDescriptionSectionState == VacancyPreviewSectionState.Incomplete)
+                                {
+                                    <span>
+                                        What the apprentice will do at work
+                                    </span>
+                                }
+                                else
+                                {
+                                    <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.VacancyWorkDescription_Index_Get" asp-all-route-data="@Model.RouteDictionary">
+                                        What the apprentice will do at work
+                                    </a>
+                                }
+                                </li>
+                                <li class="das-task-list__item">
+                                @if (Model.DescriptionsSectionState == VacancyPreviewSectionState.Incomplete)
+                                {
+                                    <span>
+                                        How the apprentice will train
+                                    </span>
+                                }
+                                else
+                                {
+                                    <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.VacancyHowTheApprenticeWillTrain_Index_Get" asp-all-route-data="@Model.RouteDictionary">
+                                        How the apprentice will train
+                                    </a>
+                                }
+                                </li>
+                            </esfaFeatureEnabled>
                         }
                         else
                         {
+                            <li class="das-task-list__item">
                             @if (Model.ShortDescriptionSectionState == VacancyPreviewSectionState.Incomplete)
                             {
                                 <span>
@@ -159,9 +194,8 @@
                                     Training provided
                                 </a>
                             }
+                            </li>
                         }
-                        
-                    </li>
                 </ul>
             </li>
             <li>
