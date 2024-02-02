@@ -42,7 +42,7 @@ public class VacancyWorkDescriptionOrchestrator : VacancyValidatingOrchestrator<
         {
             vm.Review = await _reviewSummaryService.GetReviewSummaryViewModelAsync(
                 vacancy.VacancyReference.Value,
-                ReviewFieldMappingLookups.GetVacancyDescriptionFieldIndicators());
+                ReviewFieldMappingLookups.GetWhatWillTheApprenticeDoAtWorkDescriptionFieldIndicators());
         }
             
         vm.IsTaskListCompleted = _utility.IsTaskListCompleted(vacancy);

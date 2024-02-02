@@ -270,6 +270,20 @@ namespace Esfa.Recruit.Employer.Web.Mappings
 
             return new ReviewFieldMappingLookupsForPage(vms, mappings);
         }
+        public static ReviewFieldMappingLookupsForPage GetWhatWillTheApprenticeDoAtWorkDescriptionFieldIndicators()
+        {
+            var vms = new List<ReviewFieldIndicatorViewModel>
+            {
+                new ReviewFieldIndicatorViewModel(FieldIdentifiers.VacancyDescription, nameof(VacancyDescriptionEditModel.VacancyDescription)),
+            };
+
+            var mappings = new Dictionary<string, IEnumerable<string>>
+            {
+                { FieldIdResolver.ToFieldId(v => v.Description), new []{ FieldIdentifiers.VacancyDescription} },
+            };
+
+            return new ReviewFieldMappingLookupsForPage(vms, mappings);
+        }
 
         public static ReviewFieldMappingLookupsForPage GetSkillsFieldIndicators()
         {
