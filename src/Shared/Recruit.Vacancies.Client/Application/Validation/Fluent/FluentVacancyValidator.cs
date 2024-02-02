@@ -133,7 +133,15 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                 ValidateAdditionalQuestions();
             }
 
-            ValidateTrainingDescription();
+            if (_feature.IsFeatureEnabled("FaaV2Improvements"))
+            {
+                ValidateHowTheApprenticeWillTrain();
+            }
+            else
+            {
+                ValidateTrainingDescription();    
+            }
+            
             ValidateOutcomeDescription();
             ValidateApplicationMethod();
             ValidateEmployerContactDetails();
@@ -774,6 +782,45 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                 .WithErrorCode("610")
                 .WithState(_ => VacancyRuleSet.TrainingDescription)
                 .RunCondition(VacancyRuleSet.TrainingDescription);
+        }
+        private void ValidateHowTheApprenticeWillTrain()
+        {
+            When(x => !string.IsNullOrEmpty(x.TrainingDescription), () =>
+            {
+                RuleFor(x => x.TrainingDescription)
+                    .MaximumLength(4000)
+                    .WithMessage("The apprentice’s training schedule must not exceed 4000 characters")
+                    .WithErrorCode("321")
+                    .WithState(_ => VacancyRuleSet.TrainingDescription)
+                    .ProfanityCheck(_profanityListProvider)
+                    .WithMessage("he apprentice’s training schedule must not contain a restricted word")
+                    .WithErrorCode("322")
+                    .WithState(_ => VacancyRuleSet.TrainingDescription)
+                    .ValidHtmlCharacters(_htmlSanitizerService)
+                    .WithMessage("The apprentice’s training schedule contains some invalid characters")
+                    .WithErrorCode("346")
+                    .WithState(_ => VacancyRuleSet.TrainingDescription)
+                    .RunCondition(VacancyRuleSet.TrainingDescription);
+            });
+
+
+            When(x => !string.IsNullOrEmpty(x.AdditionalTrainingDescription), () =>
+            {
+                RuleFor(x => x.AdditionalTrainingDescription)
+                    .MaximumLength(4000)
+                    .WithMessage("Any additional training information must not exceed 4000 characters")
+                    .WithErrorCode("341")
+                    .WithState(_ => VacancyRuleSet.AdditionalTrainingDescription)
+                    .ProfanityCheck(_profanityListProvider)
+                    .WithMessage("Any additional training information must not contain a restricted word")
+                    .WithErrorCode("342")
+                    .WithState(_ => VacancyRuleSet.AdditionalTrainingDescription)
+                    .ValidHtmlCharacters(_htmlSanitizerService)
+                    .WithMessage("Any additional training information contains some invalid characters")
+                    .WithErrorCode("344")
+                    .WithState(_ => VacancyRuleSet.AdditionalTrainingDescription)
+                    .RunCondition(VacancyRuleSet.AdditionalTrainingDescription);
+            });
         }
 
         private void ValidateOutcomeDescription()

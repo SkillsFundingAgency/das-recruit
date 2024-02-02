@@ -44,6 +44,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels
         public string ThingsToConsider { get; internal set; }
         public string Title { get; internal set; }
         public string TrainingDescription { get; internal set; }
+        public string AdditionalTrainingDescription { get; internal set; }
         public string TrainingTitle { get; internal set; }
         public string TrainingType { get; internal set; }
         public string TrainingLevel { get; internal set; }

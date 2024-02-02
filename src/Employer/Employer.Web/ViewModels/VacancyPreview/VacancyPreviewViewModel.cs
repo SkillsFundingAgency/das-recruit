@@ -143,6 +143,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview
             nameof(NumberOfPositions),
             nameof(VacancyDescription),
             nameof(TrainingDescription),
+            nameof(AdditionalTrainingDescription),
             nameof(OutcomeDescription),
             nameof(Skills),
             nameof(Qualifications),
