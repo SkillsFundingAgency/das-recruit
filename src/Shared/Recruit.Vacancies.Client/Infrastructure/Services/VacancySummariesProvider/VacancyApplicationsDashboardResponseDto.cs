@@ -16,6 +16,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
     {
         public VacancyApplicationsDashboardDto Id { get; set; }
         public int NoOfSharedApplications { get; set; }
+        public int NoOfAllSharedApplications { get; set; }
     }
 
 

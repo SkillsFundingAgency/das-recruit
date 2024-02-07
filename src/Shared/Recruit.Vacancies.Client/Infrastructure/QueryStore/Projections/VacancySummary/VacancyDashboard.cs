@@ -33,5 +33,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections
     {
         public VacancyStatus Status { get; set; }
         public int NoOfSharedApplications { get; set; }
+        public int NoOfAllSharedApplications { get; set; }
     }
 }
