@@ -38,7 +38,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="6.0.8" />
     <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks" Version="6.0.8" />
     <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions" Version="6.0.8" />
-	<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.22.1" />
+	<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.34.0" />
 	<PackageReference Include="Microsoft.FeatureManagement.AspNetCore" Version="2.5.1" />
 
   </ItemGroup>
