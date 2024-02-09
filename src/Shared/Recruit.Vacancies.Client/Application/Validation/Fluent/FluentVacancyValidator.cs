@@ -793,7 +793,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                     .WithErrorCode("321")
                     .WithState(_ => VacancyRuleSet.TrainingDescription)
                     .ProfanityCheck(_profanityListProvider)
-                    .WithMessage("he apprentice’s training schedule must not contain a restricted word")
+                    .WithMessage("The apprentice’s training schedule must not contain a restricted word")
                     .WithErrorCode("322")
                     .WithState(_ => VacancyRuleSet.TrainingDescription)
                     .ValidHtmlCharacters(_htmlSanitizerService)

@@ -47,7 +47,9 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.ApplicationReview;
         public bool HasAdditionalSecondQuestion => !AdditionalQuestion2.IsNullOrEmpty();
         public bool HasNoSupportRequirements => string.IsNullOrWhiteSpace(Support);
         public bool IsOutcomeSuccessul => Status == ApplicationReviewStatus.Successful;
-        public bool CanNotChangeOutcome => (Status == ApplicationReviewStatus.Successful || Status == ApplicationReviewStatus.Unsuccessful);
+    public bool CanNotChangeOutcome => (IsApplicationSharedByProvider) ? 
+        (Status == ApplicationReviewStatus.Successful || Status == ApplicationReviewStatus.Unsuccessful || Status == ApplicationReviewStatus.EmployerInterviewing || Status == ApplicationReviewStatus.EmployerUnsuccessful || Status == ApplicationReviewStatus.Interviewing)
+        : (Status == ApplicationReviewStatus.Successful || Status == ApplicationReviewStatus.Unsuccessful);
         public bool CanChangeOutcome => !CanNotChangeOutcome;
         public bool ShowDisabilityStatusAlert => DisabilityStatus == ApplicationReviewDisabilityStatus.Yes;
 
@@ -62,7 +64,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.ApplicationReview;
         public bool HideRadioButtons => (Status == ApplicationReviewStatus.EmployerInterviewing || Status == ApplicationReviewStatus.EmployerUnsuccessful);
         public bool IsApplicationEmployerUnsuccessful => Status == ApplicationReviewStatus.EmployerUnsuccessful;
         public bool IsApplicationShared => Status == ApplicationReviewStatus.Shared;
-        public bool IsApplicationEmployerInterviewing => Status == ApplicationReviewStatus.EmployerInterviewing;
+        public bool IsApplicationInterviewing => (Status == ApplicationReviewStatus.EmployerInterviewing || Status == ApplicationReviewStatus.Interviewing);
         public bool IsApplicationSharedByProvider => DateSharedWithEmployer.HasValue;
         public bool CanShowRadioButtonReview => Status == ApplicationReviewStatus.New;
         public bool CanShowRadioButtonInterviewing => (Status == ApplicationReviewStatus.New || Status == ApplicationReviewStatus.InReview);

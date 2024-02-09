@@ -27,7 +27,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
             return new VacancySharedApplicationsDashboard
             {
                 Status = src.Id.Status,
-                NoOfSharedApplications = src.NoOfSharedApplications
+                NoOfSharedApplications = src.NoOfSharedApplications,
+                NoOfAllSharedApplications = src.NoOfAllSharedApplications
             };
         }
 
