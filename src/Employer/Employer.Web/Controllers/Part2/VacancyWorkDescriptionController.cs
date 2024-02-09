@@ -43,6 +43,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part2
             var vm = await _orchestrator.GetVacancyDescriptionViewModelAsync(m);
             if (!ModelState.IsValid)
             {
+                vm.VacancyDescription = m.VacancyDescription;
                 return View(vm);
             }
             
