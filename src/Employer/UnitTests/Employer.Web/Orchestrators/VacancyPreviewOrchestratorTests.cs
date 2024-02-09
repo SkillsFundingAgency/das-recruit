@@ -15,7 +15,6 @@ using Moq;
 using Xunit;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web;
-using Esfa.Recruit.Shared.Web.FeatureToggle;
 
 namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators
 {

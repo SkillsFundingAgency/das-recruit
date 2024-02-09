@@ -16,7 +16,7 @@ using Microsoft.AspNetCore.Http;
 using SFA.DAS.Testing.AutoFixture;
 using AutoFixture;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
-using Esfa.Recruit.Shared.Web.FeatureToggle;
+using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
 
 namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers.Part1
 {

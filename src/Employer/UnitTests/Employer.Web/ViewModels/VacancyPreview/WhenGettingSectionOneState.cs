@@ -198,5 +198,39 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.VacancyPreview
 
             model.TaskListSectionOneState.Should().Be(VacancyTaskListSectionState.Completed);
         }
+        
+        [Test, MoqAutoData]
+        public async Task Then_If_Has_Title_Training_Provider_ShortDescription_And_Description_Then_Completed_For_Faa_V2(
+            string employerAccountId,
+            string title,
+            string programmeId,
+            string description,
+            string shortDescription,
+            string trainingDescription,
+            string accountLegalEntityPublicHashedId,
+            Vacancies.Client.Domain.Entities.TrainingProvider provider,
+            ApprenticeshipProgramme programme,
+            [Frozen] Mock<IRecruitVacancyClient> recruitVacancyClient,
+            DisplayVacancyViewModelMapper mapper)
+        {
+            recruitVacancyClient.Setup(x => x.GetApprenticeshipProgrammeAsync(programmeId)).ReturnsAsync(programme);
+            var vacancy = new Vacancy
+            {
+                Id = Guid.NewGuid(),
+                EmployerAccountId = employerAccountId,
+                Title = title,
+                ProgrammeId = programmeId,
+                Description = description,
+                ShortDescription = shortDescription,
+                TrainingProvider = provider,
+                AccountLegalEntityPublicHashedId = accountLegalEntityPublicHashedId 
+            };
+            var model = new VacancyPreviewViewModel();
+            await mapper.MapFromVacancyAsync(model, vacancy);
+            
+            model.SetSectionStates(model, new ModelStateDictionary(), true);
+
+            model.TaskListSectionOneState.Should().Be(VacancyTaskListSectionState.Completed);
+        }
     }
 }

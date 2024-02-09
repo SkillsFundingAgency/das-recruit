@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using Esfa.Recruit.Employer.Web;
-using Esfa.Recruit.Shared.Web.FeatureToggle;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using FluentAssertions;

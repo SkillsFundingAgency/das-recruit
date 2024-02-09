@@ -10,7 +10,6 @@ using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Exceptions;
 using Esfa.Recruit.Employer.Web.Models;
 using Esfa.Recruit.Employer.Web.RouteModel;
-using Esfa.Recruit.Shared.Web.FeatureToggle;
 using Esfa.Recruit.Shared.Web.Models;
 using Esfa.Recruit.Shared.Web.ViewModels;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
@@ -168,6 +167,10 @@ namespace Esfa.Recruit.Employer.Web
                 RouteNames.ShortDescription_Post,
                 RouteNames.VacancyDescription_Index_Post,
                 RouteNames.VacancyDescription_Index_Get,
+                RouteNames.VacancyHowTheApprenticeWillTrain_Index_Get,
+                RouteNames.VacancyHowTheApprenticeWillTrain_Index_Post,
+                RouteNames.VacancyWorkDescription_Index_Post,
+                RouteNames.VacancyWorkDescription_Index_Get,
                 RouteNames.Dates_Post, 
                 RouteNames.Dates_Get,
                 RouteNames.Duration_Post, 

@@ -65,6 +65,7 @@ namespace SFA.DAS.Recruit.Api.Mappers
                 AnonymousReason = request.AnonymousReason,
                 EmployerDescription = request.EmployerDescription,
                 TrainingDescription = request.TrainingDescription,
+                AdditionalTrainingDescription = request.AdditionalTrainingDescription,
                 Skills = request.Skills,
                 DisabilityConfident = (DisabilityConfident)request.DisabilityConfident,
                 ThingsToConsider = request.ThingsToConsider,

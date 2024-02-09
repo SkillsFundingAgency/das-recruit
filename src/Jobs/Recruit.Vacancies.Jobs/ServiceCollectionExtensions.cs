@@ -29,6 +29,7 @@ using System.Collections.Generic;
 using System.Data;
 using SFA.DAS.Encoding;
 using Esfa.Recruit.Vacancies.Client.Application.Communications.ParticipantResolverPlugins;
+using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
 using Recruit.Vacancies.Client.Application.Communications.CompositeDataItemProviderPlugins;
 using Esfa.Recruit.Vacancies.Jobs.Jobs;
 
@@ -109,6 +110,8 @@ namespace Esfa.Recruit.Vacancies.Jobs
             var serviceParameters = new ServiceParameters("Apprenticeships");
             
             services.AddSingleton(serviceParameters);
+
+            services.AddSingleton<IFeature, Feature>();
         }
 
         private static void RegisterCommunicationsService(IServiceCollection services, IConfiguration configuration)

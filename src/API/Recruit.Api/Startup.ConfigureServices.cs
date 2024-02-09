@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text.Json.Serialization;
 using Esfa.Recruit.Vacancies.Client.Application.Commands;
 using Esfa.Recruit.Vacancies.Client.Application.Configuration;
+using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Ioc;
 using MediatR;
@@ -57,6 +58,7 @@ namespace SFA.DAS.Recruit.Api
 
             services.AddSingleton<IVacancySummaryMapper, VacancySummaryMapper>();
             services.AddSingleton<IQueryStoreReader, QueryStoreClient>();
+            services.AddSingleton<IFeature, Feature>();
 
             services.AddRecruitStorageClient(Configuration);
             

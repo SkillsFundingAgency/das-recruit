@@ -130,6 +130,9 @@ namespace Esfa.Recruit.Qa.Web
             {
                 o.ViewLocationFormats.Add("/Views/Reports/{1}/{0}" + RazorViewEngine.ViewExtension);
             });
+            
+            services.AddFeatureToggle();
+            
         }
     }
 }

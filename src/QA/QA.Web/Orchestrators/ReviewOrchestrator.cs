@@ -198,6 +198,16 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
                 });
                 vacancy.TrainingDescription = m.TrainingDescription;
             }
+            if (review.VacancySnapshot.AdditionalTrainingDescription != m.AdditionalTrainingDescription)
+            {
+                manualQaFieldEditIndicator.Add(new ManualQaFieldEditIndicator
+                {
+                    FieldIdentifier = nameof(m.AdditionalTrainingDescription),
+                    BeforeEdit = review.VacancySnapshot.AdditionalTrainingDescription,
+                    AfterEdit = m.AdditionalTrainingDescription
+                });
+                vacancy.AdditionalTrainingDescription = m.AdditionalTrainingDescription;
+            }
             if (review.VacancySnapshot.ShortDescription != m.ShortDescription)
             {
                 manualQaFieldEditIndicator.Add(new ManualQaFieldEditIndicator

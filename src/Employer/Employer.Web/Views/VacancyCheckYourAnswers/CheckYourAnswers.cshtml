@@ -132,33 +132,94 @@
 
                 </dd>
             </div>
-            <field-review-message field-name="@FieldIdentifiers.VacancyDescription" model="@Model"></field-review-message>
-            <div class="app-summary-list__row app-summary-list__row--no-border" field-review-marker="VacancyDescription">
-                <dt class="app-summary-list__key" id="@FieldIdentifiers.VacancyDescription">What will the apprentice be doing?</dt>
-                <dd class="app-summary-list__value">
-                    <div class="app-ugc-wrap">
-                        @Html.Raw(Model.VacancyDescription)
-                    </div>
-                    <field-review-tag class="govuk-tag--orange" field-name="@FieldIdentifiers.VacancyDescription" tag-name="strong" model="@Model" />
-                </dd>
-                <dd class="app-summary-list__actions">
-                    <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.VacancyDescription_Index_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="change-description">Change<span class="govuk-visually-hidden"> about the apprenticeship</span></a>
-
-                </dd>
-            </div>
-            <field-review-message field-name="@FieldIdentifiers.TrainingDescription" model="@Model"></field-review-message>
-            <div class="app-summary-list__row" field-review-marker="TrainingDescription">
-                <dt class="app-summary-list__key" id="@FieldIdentifiers.TrainingDescription">Training and qualification levels</dt>
-                <dd class="app-summary-list__value">
-                    <div class="app-ugc-wrap">
-                        @Html.Raw(Model.TrainingDescription)
-                    </div>
-                    <field-review-tag class="govuk-tag--orange" field-name="@FieldIdentifiers.TrainingDescription" tag-name="strong" model="@Model" />
-                </dd>
-                <dd class="app-summary-list__actions">
-
-                </dd>
-            </div>
+            
+            <esfaFeatureDisabled name="@FeatureNames.FaaV2Improvements">
+                <field-review-message field-name="@FieldIdentifiers.VacancyDescription" model="@Model"></field-review-message>
+                <div class="app-summary-list__row app-summary-list__row--no-border" field-review-marker="VacancyDescription">
+                    <dt class="app-summary-list__key" id="@FieldIdentifiers.VacancyDescription">What will the apprentice be doing?</dt>
+                    <dd class="app-summary-list__value">
+                        <div class="app-ugc-wrap">
+                            @Html.Raw(Model.VacancyDescription)
+                        </div>
+                        <field-review-tag class="govuk-tag--orange" field-name="@FieldIdentifiers.VacancyDescription" tag-name="strong" model="@Model" />
+                    </dd>
+                    <dd class="app-summary-list__actions">
+                        <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.VacancyDescription_Index_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="change-description">Change<span class="govuk-visually-hidden"> about the apprenticeship</span></a>
+    
+                    </dd>
+                </div>
+                <field-review-message field-name="@FieldIdentifiers.TrainingDescription" model="@Model"></field-review-message>
+                <div class="app-summary-list__row" field-review-marker="TrainingDescription">
+                    <dt class="app-summary-list__key" id="@FieldIdentifiers.TrainingDescription">Training and qualification levels</dt>
+                    <dd class="app-summary-list__value">
+                        <div class="app-ugc-wrap">
+                            @Html.Raw(Model.TrainingDescription)
+                        </div>
+                        <field-review-tag class="govuk-tag--orange" field-name="@FieldIdentifiers.TrainingDescription" tag-name="strong" model="@Model" />
+                    </dd>
+                    <dd class="app-summary-list__actions">
+    
+                    </dd>
+                </div>
+            </esfaFeatureDisabled>
+            <esfaFeatureEnabled name="@FeatureNames.FaaV2Improvements">
+                <field-review-message field-name="@FieldIdentifiers.VacancyDescription" model="@Model"></field-review-message>
+                <div class="app-summary-list__row" field-review-marker="VacancyDescription">
+                    <dt class="app-summary-list__key" id="@FieldIdentifiers.VacancyDescription">What will the apprentice do at work?</dt>
+                    <dd class="app-summary-list__value">
+                        <div class="app-ugc-wrap">
+                            @Html.Raw(Model.VacancyDescription)
+                        </div>
+                        <field-review-tag class="govuk-tag--orange" field-name="@FieldIdentifiers.VacancyDescription" tag-name="strong" model="@Model" />
+                    </dd>
+                    <dd class="app-summary-list__actions">
+                        <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.VacancyWorkDescription_Index_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="change-description">Change<span class="govuk-visually-hidden"> what the apprentice will do at work</span></a>
+        
+                    </dd>
+                </div>
+                
+                <field-review-message field-name="@FieldIdentifiers.TrainingDescription" model="@Model"></field-review-message>
+                <div class="app-summary-list__row app-summary-list__row--no-border" field-review-marker="TrainingDescription">
+                    <dt class="app-summary-list__key" id="@FieldIdentifiers.TrainingDescription">The apprentice's training schedule (optional)</dt>
+                    
+                        
+                            @if (string.IsNullOrEmpty(Model.TrainingDescription))
+                            {
+                                <dd class="app-summary-list__value">
+                                    Training schedule hasn't been agreed yet
+                                </dd>
+                            }
+                            else
+                            {
+                                <dd class="app-summary-list__value">
+                                    <div class="app-ugc-wrap">
+                                        @Html.Raw(Model.TrainingDescription)
+                                    </div>
+                                </dd>
+                            }
+                            
+                        <field-review-tag class="govuk-tag--orange" field-name="@FieldIdentifiers.TrainingDescription" tag-name="strong" model="@Model" />
+                    
+                    <dd class="app-summary-list__actions">
+                        <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.VacancyHowTheApprenticeWillTrain_Index_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="change-description">Change<span class="govuk-visually-hidden"> how the apprentice will train</span></a>     
+                    </dd>
+                </div>
+                <field-review-message field-name="@FieldIdentifiers.AdditionalTrainingDescription" model="@Model"></field-review-message>
+                <div class="app-summary-list__row app-summary-list__row--no-border" field-review-marker="AdditionalTrainingDescription">
+                    <dt class="app-summary-list__key" id="@FieldIdentifiers.AdditionalTrainingDescription">Additional training information (optional)</dt>
+                    <dd class="app-summary-list__value">
+                        <div class="app-ugc-wrap">
+                            @Html.Raw(Model.AdditionalTrainingDescription)
+                        </div>
+                        <field-review-tag class="govuk-tag--orange" field-name="@FieldIdentifiers.AdditionalTrainingDescription" tag-name="strong" model="@Model" />
+                    </dd>
+                    <dd class="app-summary-list__actions">
+    
+                    </dd>
+                </div>
+            </esfaFeatureEnabled>
+            
+            
         </dl>
         <h2 class="govuk-heading-m">Employment details</h2>
         <dl class="app-summary-list govuk-!-margin-bottom-9">

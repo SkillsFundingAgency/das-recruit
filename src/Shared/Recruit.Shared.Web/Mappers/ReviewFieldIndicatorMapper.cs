@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Esfa.Recruit.Shared.Web.RuleTemplates;
 using Esfa.Recruit.Shared.Web.ViewModels;
+using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
 namespace Esfa.Recruit.Shared.Web.Mappers
@@ -10,10 +11,12 @@ namespace Esfa.Recruit.Shared.Web.Mappers
     public sealed class ReviewFieldIndicatorMapper
     {
         private readonly IRuleMessageTemplateRunner _ruleTemplateRunner;
+        private readonly bool _faaV2FeatureEnabled;
 
-        public ReviewFieldIndicatorMapper(IRuleMessageTemplateRunner ruleTemplateRunner)
+        public ReviewFieldIndicatorMapper(IRuleMessageTemplateRunner ruleTemplateRunner, IFeature feature)
         {
             _ruleTemplateRunner = ruleTemplateRunner;
+            _faaV2FeatureEnabled = feature.IsFeatureEnabled("FaaV2Improvements");
         }
 
         private IDictionary<string, string> ManualQaMessagesForApprenticeship => new Dictionary<string, string> 
@@ -27,8 +30,9 @@ namespace Esfa.Recruit.Shared.Web.Mappers
             { FieldIdentifiers.PossibleStartDate, "Possible start date requires edit" },
             { FieldIdentifiers.TrainingLevel, "Apprenticeship level requires edit" },
             { FieldIdentifiers.NumberOfPositions, "Positions requires edit" },
-            { FieldIdentifiers.VacancyDescription, "What will the apprentice be doing requires edit" },
-            { FieldIdentifiers.TrainingDescription, "What training will the apprentice take and what qualification will the apprentice get at the end requires edit" },
+            { FieldIdentifiers.VacancyDescription, _faaV2FeatureEnabled ?"What will the apprentice do at work requires edit":"What will the apprentice be doing requires edit" },
+            { FieldIdentifiers.TrainingDescription, _faaV2FeatureEnabled ?"The apprentice's training schedule requires edit":"What training will the apprentice take and what qualification will the apprentice get at the end requires edit" },
+            { FieldIdentifiers.AdditionalTrainingDescription, "Additional training information requires edit" },
             { FieldIdentifiers.OutcomeDescription, "What is the expected career progression after this apprenticeship requires edit" },
             { FieldIdentifiers.Skills, "Skills requires edit" },
             { FieldIdentifiers.Qualifications, "Qualifications requires edit" },

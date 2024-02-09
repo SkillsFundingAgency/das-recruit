@@ -6,7 +6,7 @@ using Esfa.Recruit.Employer.Web.Orchestrators.Part2;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels.Part2.ShortDescription;
 using Esfa.Recruit.Shared.Web.Extensions;
-using Esfa.Recruit.Shared.Web.FeatureToggle;
+using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Esfa.Recruit.Employer.Web.Controllers.Part2
@@ -45,10 +45,13 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part2
             {
                 return View(vm);
             }
+
+            string vacancyDescriptionIndexGet = _feature.IsFeatureEnabled(FeatureNames.FaaV2Improvements) 
+                ? RouteNames.VacancyWorkDescription_Index_Get : RouteNames.VacancyDescription_Index_Get;
             
             return RedirectToRoute(vm.IsTaskListCompleted 
                 ? RouteNames.EmployerCheckYourAnswersGet 
-                : RouteNames.VacancyDescription_Index_Get, 
+                : vacancyDescriptionIndexGet, 
                 new {m.VacancyId, m.EmployerAccountId});
         }
     }

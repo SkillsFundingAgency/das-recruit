@@ -61,6 +61,7 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
         public string ThingsToConsider { get; set; }
         public string Title { get; set; }
         public string TrainingDescription { get; set; }
+        public string AdditionalTrainingDescription { get; set; }
         public TrainingProvider TrainingProvider { get; set; }
         public Wage Wage { get; set; }
         public ClosureReason? ClosureReason { get; set; }

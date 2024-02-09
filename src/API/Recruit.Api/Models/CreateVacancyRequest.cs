@@ -23,6 +23,7 @@ namespace SFA.DAS.Recruit.Api.Models
         public string LegalEntityName { get ; set ; }
         public string EmployerDescription { get ; set ; }
         public string TrainingDescription { get ; set ; }
+        public string AdditionalTrainingDescription { get ; set ; }
         
         public CreateVacancyAddress Address { get; set; }
         public CreateVacancyWage Wage { get; set; }
