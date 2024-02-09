@@ -42,7 +42,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Dashboard
         public string VacancyTextClosingSoonWithNoApplications => "advert".ToQuantity(NoOfVacanciesClosingSoonWithNoApplications, ShowQuantityAs.None);
         public bool ShowNoOfVacanciesClosingSoon => NoOfVacanciesClosingSoon > 0;
         public bool ShowNoOfVacanciesClosingSoonWithNoApplications => NoOfVacanciesClosingSoonWithNoApplications > 0;
-        public bool HasAnyVacancies => EmployerDashboardSummary.HasVacancies;
+        public bool HasAnyVacancies => (EmployerDashboardSummary.HasVacancies || EmployerDashboardSummary.HasAnySharedVacancy);
         public int NumberOfVacancies => EmployerDashboardSummary.NumberOfVacancies;
         public bool FromMaHome { get; set; }
         public bool HasEmployerReviewPermission { get; set; }
