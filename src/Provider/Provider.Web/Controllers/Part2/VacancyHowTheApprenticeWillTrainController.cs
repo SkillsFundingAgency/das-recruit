@@ -39,6 +39,8 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part2
             var vm = await _orchestrator.GetVacancyDescriptionViewModelAsync(m);
             if (!ModelState.IsValid)
             {
+                vm.AdditionalTrainingDescription = m.AdditionalTrainingDescription;
+                vm.TrainingDescription = m.TrainingDescription;
                 return View(vm);
             }
             

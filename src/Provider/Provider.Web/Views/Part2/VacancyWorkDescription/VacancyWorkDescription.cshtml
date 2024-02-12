@@ -25,7 +25,7 @@
         <form asp-route="@RouteNames.VacancyWorkDescription_Index_Post" asp-all-route-data="@Model.RouteDictionary">
 
             <div esfa-validation-marker-for="VacancyDescription" class="govuk-form-group">
-                <label asp-for="VacancyDescription" class="govuk-label">List the tasks an apprentice will do on a normal day while working.</label>
+                <label asp-for="VacancyDescription" class="govuk-label govuk-!-margin-bottom-5">List the tasks an apprentice will do on a normal day while working.</label>
                 <div class="govuk-hint">You must write your answer as bullet points. Include at least three bullet points </div>
                 <span esfa-validation-message-for="VacancyDescription" class="govuk-error-message"></span>
                 <textarea asp-for="VacancyDescription" class="govuk-textarea html-editor" rows="5" maxlength="4000" ></textarea>
