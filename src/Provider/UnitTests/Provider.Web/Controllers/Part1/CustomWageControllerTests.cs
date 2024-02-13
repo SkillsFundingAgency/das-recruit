@@ -73,10 +73,10 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers.Part1
 
             var redirectResult = await _controller.CustomWage(editModel, false) as RedirectToRouteResult;
 
-            Assert.NotNull(redirectResult);
-            Assert.AreEqual(RouteNames.AddExtraInformation_Get, redirectResult.RouteName);
-            Assert.AreEqual(editModel.VacancyId, redirectResult.RouteValues["VacancyId"]);
-            Assert.AreEqual(editModel.Ukprn, redirectResult.RouteValues["Ukprn"]);
+            Assert.That(redirectResult, Is.Not.Null);
+            Assert.That(RouteNames.AddExtraInformation_Get, Is.EqualTo(redirectResult.RouteName));
+            Assert.That(editModel.VacancyId, Is.EqualTo(redirectResult.RouteValues["VacancyId"]));
+            Assert.That(editModel.Ukprn, Is.EqualTo(redirectResult.RouteValues["Ukprn"]));
         }
     }
 }

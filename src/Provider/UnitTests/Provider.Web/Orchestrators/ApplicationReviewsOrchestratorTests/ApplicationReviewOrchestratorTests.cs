@@ -56,9 +56,9 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Application
             var applicationReviewStatusChangeInfo = await _orchestrator.PostApplicationReviewStatusChangeModelAsync(model, vacancyUser);
 
             // Assert
-            Assert.IsNotNull(applicationReviewStatusChangeInfo);
-            Assert.AreEqual("Jack Sparrow", applicationReviewStatusChangeInfo.CandidateName);
-            Assert.AreEqual(false, applicationReviewStatusChangeInfo.ShouldMakeOthersUnsuccessful);
+            Assert.That(applicationReviewStatusChangeInfo, Is.Not.Null);
+            Assert.That("Jack Sparrow", Is.EqualTo(applicationReviewStatusChangeInfo.CandidateName));
+            Assert.That(applicationReviewStatusChangeInfo.ShouldMakeOthersUnsuccessful, Is.False);
         }
 
         [Test]
@@ -75,8 +75,8 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Application
 
             string result = await _orchestrator.GetApplicationReviewFeedbackViewModelAsync(model);
 
-            Assert.IsNotNull(result);
-            Assert.AreEqual(applicationReview.Application.FullName, result);
+            Assert.That(result, Is.Not.Null);
+            Assert.That(applicationReview.Application.FullName, Is.EqualTo(result));
         }
 
         [Test]
@@ -101,12 +101,12 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Application
 
             var result = await _orchestrator.GetApplicationReviewFeedbackViewModelAsync(model);
 
-            Assert.IsNotNull(result);
-            Assert.AreEqual(applicationReview.Application.FullName, result.Name);
-            Assert.AreEqual(model.ApplicationReviewId, result.ApplicationReviewId);
-            Assert.AreEqual(model.Ukprn, result.Ukprn);
-            Assert.AreEqual(model.VacancyId, result.VacancyId);
-            Assert.AreEqual(model.CandidateFeedback, result.CandidateFeedback);
+            Assert.That(result, Is.Not.Null);
+            Assert.That(applicationReview.Application.FullName, Is.EqualTo(result.Name));
+            Assert.That(model.ApplicationReviewId, Is.EqualTo(result.ApplicationReviewId));
+            Assert.That(model.Ukprn, Is.EqualTo(result.Ukprn));
+            Assert.That(model.VacancyId, Is.EqualTo(result.VacancyId));
+            Assert.That(model.CandidateFeedback, Is.EqualTo(result.CandidateFeedback));
         }
     }
 }

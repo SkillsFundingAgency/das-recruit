@@ -59,10 +59,10 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Application
             var viewModel = await _orchestrator.GetApplicationReviewsToUnsuccessfulViewModelAsync(routeModel, sortColumn, sortOrder);
 
             // Assert
-            Assert.IsNotEmpty(viewModel.VacancyApplications);
+            Assert.That(viewModel.VacancyApplications, Is.Not.Empty);
             Assert.That(viewModel.VacancyApplications.Count(), Is.EqualTo(applications.Count()));
-            Assert.AreEqual(viewModel.Ukprn, routeModel.Ukprn);
-            Assert.AreEqual(viewModel.VacancyId, vacancy.Id);
+            Assert.That(viewModel.Ukprn, Is.EqualTo(routeModel.Ukprn));
+            Assert.That(viewModel.VacancyId, Is.EqualTo(vacancy.Id));
             Assert.That(viewModel.VacancyApplications[0].SubmittedDate, Is.GreaterThan(viewModel.VacancyApplications[1].SubmittedDate));
             Assert.That(viewModel.VacancyApplications[1].SubmittedDate, Is.GreaterThan(viewModel.VacancyApplications[2].SubmittedDate));
         }
@@ -82,10 +82,10 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Application
 
             var viewModel = await _orchestrator.GetApplicationReviewsToUnsuccessfulConfirmationViewModel(request);
 
-            Assert.IsNotEmpty(viewModel.ApplicationsToUnsuccessful);
+            Assert.That(viewModel.ApplicationsToUnsuccessful, Is.Not.Empty);
             Assert.That(viewModel.ApplicationsToUnsuccessful.Count(), Is.EqualTo(vacancyApplications.Count()));
-            Assert.AreEqual(viewModel.Ukprn, request.Ukprn);
-            Assert.AreEqual(viewModel.VacancyId, request.VacancyId);
+            Assert.That(viewModel.Ukprn, Is.EqualTo(request.Ukprn));
+            Assert.That(viewModel.VacancyId, Is.EqualTo(request.VacancyId));
         }
 
         [Test]
@@ -109,11 +109,11 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Application
             var viewModel = await _orchestrator.GetApplicationReviewsToShareViewModelAsync(routeModel, SortColumn.Name, SortOrder.Ascending);
 
             // Assert
-            Assert.IsNotEmpty(viewModel.VacancyApplications);
+            Assert.That(viewModel.VacancyApplications, Is.Not.Empty);
             Assert.That(viewModel.VacancyApplications.Count(), Is.EqualTo(vacancyApplications.Count()));
-            Assert.AreEqual(viewModel.Ukprn, routeModel.Ukprn);
-            Assert.AreEqual(viewModel.VacancyId, vacancy.Id);
-            Assert.AreEqual(viewModel.VacancyReference, vacancy.VacancyReference);
+            Assert.That(viewModel.Ukprn, Is.EqualTo(routeModel.Ukprn));
+            Assert.That(viewModel.VacancyId, Is.EqualTo(vacancy.Id));
+            Assert.That(viewModel.VacancyReference, Is.EqualTo(vacancy.VacancyReference));
         }
 
         [Test]
@@ -134,10 +134,10 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Application
             var viewModel = await _orchestrator.GetApplicationReviewsToShareConfirmationViewModel(request);
 
             // Assert
-            Assert.IsNotEmpty(viewModel.ApplicationReviewsToShare);
+            Assert.That(viewModel.ApplicationReviewsToShare, Is.Not.Empty);
             Assert.That(viewModel.ApplicationReviewsToShare.Count(), Is.EqualTo(vacancyApplications.Count()));
-            Assert.AreEqual(viewModel.Ukprn, request.Ukprn);
-            Assert.AreEqual(viewModel.VacancyId, request.VacancyId);
+            Assert.That(viewModel.Ukprn, Is.EqualTo(request.Ukprn));
+            Assert.That(viewModel.VacancyId, Is.EqualTo(request.VacancyId));
         }
     }
 }

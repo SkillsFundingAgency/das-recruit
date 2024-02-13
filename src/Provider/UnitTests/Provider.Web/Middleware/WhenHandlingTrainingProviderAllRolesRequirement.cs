@@ -38,8 +38,8 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Middleware
             await authorizationHandler.HandleAsync(context);
 
             //Assert
-            Assert.IsFalse(context.HasSucceeded);
-            Assert.IsTrue(context.HasFailed);
+            Assert.That(context.HasSucceeded, Is.False);
+            Assert.That(context.HasFailed, Is.True);
         }
 
         [Test, MoqAutoData]
@@ -60,8 +60,8 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Middleware
             await authorizationHandler.HandleAsync(context);
 
             //Assert
-            Assert.IsFalse(context.HasSucceeded);
-            Assert.IsTrue(context.HasFailed);
+            Assert.That(context.HasSucceeded, Is.False);
+            Assert.That(context.HasFailed, Is.True);
         }
 
         [Test, MoqAutoData]
@@ -115,8 +115,8 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Middleware
             await authorizationHandler.HandleAsync(context);
 
             //Assert
-            Assert.IsTrue(context.HasSucceeded);
-            Assert.IsFalse(context.HasFailed);
+            Assert.That(context.HasSucceeded, Is.True);
+            Assert.That(context.HasFailed, Is.False);
         }
     }
 }

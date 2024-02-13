@@ -65,8 +65,8 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers.Part1
 
             var redirectResult = await _controller.AdditionalInformation(viewModel, true) as RedirectToRouteResult;
 
-            Assert.NotNull(redirectResult);
-            Assert.AreEqual(RouteNames.NumberOfPositions_Get, redirectResult.RouteName);
+            Assert.That(redirectResult, Is.Not.Null);
+            Assert.That(RouteNames.NumberOfPositions_Get, Is.EqualTo(redirectResult.RouteName));
         }
 
         [Test, MoqAutoData]
@@ -135,10 +135,10 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers.Part1
 
             var redirectResult = await _controller.CompetitiveSalary(editModel, false) as RedirectToRouteResult;
 
-            Assert.NotNull(redirectResult);
-            Assert.AreEqual(RouteNames.AddExtraInformation_Get, redirectResult.RouteName);
-            Assert.AreEqual(editModel.VacancyId, redirectResult.RouteValues["VacancyId"]);
-            Assert.AreEqual(editModel.Ukprn, redirectResult.RouteValues["Ukprn"]);
+            Assert.That(redirectResult, Is.Not.Null);
+            Assert.That(RouteNames.AddExtraInformation_Get, Is.EqualTo(redirectResult.RouteName));
+            Assert.That(editModel.VacancyId, Is.EqualTo(redirectResult.RouteValues["VacancyId"]));
+            Assert.That(editModel.Ukprn, Is.EqualTo(redirectResult.RouteValues["Ukprn"]));
         }
 
         [Test, MoqAutoData]
@@ -152,8 +152,8 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers.Part1
 
             var redirectResult = await _controller.Wage(wageEditModel, true) as RedirectToRouteResult;
 
-            Assert.NotNull(redirectResult);
-            Assert.AreEqual(RouteNames.CustomWage_Get, redirectResult.RouteName);
+            Assert.That(redirectResult, Is.Not.Null);
+            Assert.That(RouteNames.CustomWage_Get, Is.EqualTo(redirectResult.RouteName));
         }
 
         [Test, MoqAutoData]
@@ -166,8 +166,8 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers.Part1
             var wageEditModel = new WageEditModel { WageType = WageType.CompetitiveSalary };
 
             var redirectResult = await _controller.Wage(wageEditModel, true) as RedirectToRouteResult;
-            Assert.NotNull(redirectResult);
-            Assert.AreEqual(RouteNames.SetCompetitivePayRate_Get, redirectResult.RouteName);
+            Assert.That(redirectResult, Is.Not.Null);
+            Assert.That(RouteNames.SetCompetitivePayRate_Get, Is.EqualTo(redirectResult.RouteName));
         }
 
         [Test, MoqAutoData]
@@ -183,8 +183,8 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers.Part1
             var wageEditModel = new WageEditModel { WageType = WageType.NationalMinimumWage };
 
             var redirectResult = await _controller.Wage(wageEditModel, true) as RedirectToRouteResult;
-            Assert.NotNull(redirectResult);
-            Assert.AreEqual(RouteNames.AddExtraInformation_Get, redirectResult.RouteName);
+            Assert.That(redirectResult, Is.Not.Null);
+            Assert.That(RouteNames.AddExtraInformation_Get, Is.EqualTo(redirectResult.RouteName));
         }
 
         [Test, MoqAutoData]
@@ -201,8 +201,8 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers.Part1
             var wageEditModel = new WageEditModel { WageType = WageType.NationalMinimumWageForApprentices };
 
             var redirectResult = await _controller.Wage(wageEditModel, true) as RedirectToRouteResult;
-            Assert.NotNull(redirectResult);
-            Assert.AreEqual(RouteNames.AddExtraInformation_Get, redirectResult.RouteName);
+            Assert.That(redirectResult, Is.Not.Null);
+            Assert.That(RouteNames.AddExtraInformation_Get, Is.EqualTo(redirectResult.RouteName));
         }
 
         [Test, MoqAutoData]
@@ -228,9 +228,9 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers.Part1
 
             var result = await _controller.AdditionalInformation(vacancyRouteModel, "true");
 
-            Assert.IsInstanceOf<ViewResult>(result);
+            Assert.That(result, Is.InstanceOf<ViewResult>());
             var viewResult = (ViewResult)result;
-            Assert.AreEqual(viewModel, viewResult.Model);
+            Assert.That(viewModel, Is.EqualTo(viewResult.Model));
         }
     }
 }
