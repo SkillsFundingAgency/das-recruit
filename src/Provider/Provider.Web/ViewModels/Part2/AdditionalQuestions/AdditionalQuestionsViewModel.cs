@@ -9,5 +9,5 @@ public class AdditionalQuestionsViewModel : VacancyRouteModel
     public string AdditionalQuestion2 { get; internal set; }
     public ReviewSummaryViewModel Review { get; set; } = new();
     public bool IsTaskListCompleted { get ; set ; }
-    public string? FindAnApprenticeshipUrl { get; set; }
+    public string FindAnApprenticeshipUrl { get; set; }
 }

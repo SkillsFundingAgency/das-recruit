@@ -144,5 +144,11 @@
         public const string SetCompetitivePayRate_Post = "SetCompetitivePayRate_Post";
         public const string AddExtraInformation_Get = "AddExtraInformation_Get";
         public const string AddExtraInformation_Post = "AddExtraInformation_Post";
+        
+        public const string VacancyWorkDescription_Index_Get = "VacancyWorkDescription_Index_Get";
+        public const string VacancyWorkDescription_Index_Post = "VacancyWorkDescription_Index_Post";
+        
+        public const string VacancyHowTheApprenticeWillTrain_Index_Get = "VacancyHowTheApprenticeWillTrain_Index_Post";
+        public const string VacancyHowTheApprenticeWillTrain_Index_Post = "VacancyHowTheApprenticeWillTrain_Index_Post";
     }
 }

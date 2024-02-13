@@ -163,6 +163,7 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview
             nameof(NumberOfPositions),
             nameof(VacancyDescription),
             nameof(TrainingDescription),
+            nameof(AdditionalTrainingDescription),
             nameof(OutcomeDescription),
             nameof(Skills),
             nameof(Qualifications),
@@ -182,7 +183,7 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview
             nameof(TrainingTitle)
         };
         
-        public void SetSectionStates(VacancyPreviewViewModel viewModel, ModelStateDictionary modelState)
+        public void SetSectionStates(VacancyPreviewViewModel viewModel, ModelStateDictionary modelState, bool isFaaV2Enabled = false)
         {
             viewModel.TitleSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.Title }, true, modelState, vm => vm.Title);
             viewModel.ShortDescriptionSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.ShortDescription }, true, modelState, vm => vm.ShortDescription);
@@ -196,7 +197,19 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview
             viewModel.PossibleStartDateSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.PossibleStartDate }, true, modelState, vm => vm.PossibleStartDate);
             viewModel.TrainingLevelSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.TrainingLevel }, true, modelState, vm => vm.HasProgramme, vm => vm.TrainingLevel);
             viewModel.NumberOfPositionsSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.NumberOfPositions }, true, modelState, vm => vm.NumberOfPositions);
-            viewModel.DescriptionsSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.VacancyDescription, FieldIdentifiers.TrainingDescription, FieldIdentifiers.OutcomeDescription }, true, modelState, vm => vm.VacancyDescription, vm => vm.TrainingDescription, vm => vm.OutcomeDescription);
+
+
+            if (viewModel.VacancyType == Vacancies.Client.Domain.Entities.VacancyType.Traineeship)
+            {
+                viewModel.DescriptionsSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.TrainingDescription }, true, modelState,  vm => vm.TrainingDescription);    
+            }
+            else
+            {
+                viewModel.DescriptionsSectionState = isFaaV2Enabled ? 
+                    GetSectionState(viewModel, new[] { FieldIdentifiers.VacancyDescription }, true, modelState,vm => vm.VacancyDescription) 
+                    : GetSectionState(viewModel, new[] { FieldIdentifiers.VacancyDescription, FieldIdentifiers.TrainingDescription }, true, modelState,vm => vm.VacancyDescription, vm => vm.TrainingDescription);    
+            }
+            
             viewModel.VacancyDescriptionSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.VacancyDescription }, true, modelState, vm => vm.VacancyDescription);
             viewModel.TrainingDescriptionSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.TrainingDescription }, true, modelState, vm => vm.TrainingDescription);
             viewModel.FutureProspectsSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.OutcomeDescription }, true, modelState,  vm => vm.OutcomeDescription);
@@ -231,8 +244,7 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview
         public string AccountId { get; set; }
         public bool CanShowVacancyClonedStatusHeader => !string.IsNullOrEmpty(VacancyClonedInfoMessage);
         public string VacancyClonedInfoMessage { get; set; }
-
-
+        
         private VacancyTaskListSectionState SetTaskListSectionState()
         {
             if (TitleSectionState == VacancyPreviewSectionState.Valid
@@ -240,7 +252,7 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview
                 && !string.IsNullOrEmpty(Title)
                 && HasSelectedLegalEntity
                 && HasShortDescription
-                && HasTrainingDescription
+                && DescriptionsSectionState == VacancyPreviewSectionState.Valid
                 && (VacancyType.GetValueOrDefault() == Vacancies.Client.Domain.Entities.VacancyType.Traineeship || HasVacancyDescription))
             {
                 return VacancyTaskListSectionState.Completed;
