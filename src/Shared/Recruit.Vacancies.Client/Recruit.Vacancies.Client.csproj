@@ -33,6 +33,7 @@
     <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="8.0.0" />
     <PackageReference Include="MongoDB.Driver" Version="2.23.1" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="NServiceBus" Version="7.2.3" />
     <PackageReference Include="RestSharp" Version="108.0.1" />
     <PackageReference Include="SFA.DAS.Account.Api.Client" Version="1.6.3100" />
     <PackageReference Include="SFA.DAS.Http" Version="3.2.69" />

@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Microsoft.Extensions.Logging;
+using NServiceBus;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 {
@@ -16,17 +17,20 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
         private readonly IVacancyRepository _repository;
         private readonly IMessaging _messaging;
         private readonly ITimeProvider _timeProvider;
+        private readonly IMessageSession _messageSession;
 
         public UpdateLiveVacancyCommandHandler(
             ILogger<UpdateLiveVacancyCommandHandler> logger,
             IVacancyRepository repository,
             IMessaging messaging,
-            ITimeProvider timeProvider)
+            ITimeProvider timeProvider, 
+            IMessageSession messageSession)
         {
             _logger = logger;
             _repository = repository;
             _messaging = messaging;
             _timeProvider = timeProvider;
+            _messageSession = messageSession;
         }
 
         public async Task<Unit> Handle(UpdateLiveVacancyCommand message, CancellationToken cancellationToken)
@@ -48,12 +52,13 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
                 VacancyId = message.Vacancy.Id
             });
 
-            await _messaging.PublishEvent(new LiveVacancyUpdatedEvent
+            var liveVacancyUpdatedEvent = new LiveVacancyUpdatedEvent
             {
                 VacancyId = message.Vacancy.Id,
                 VacancyReference = message.Vacancy.VacancyReference.Value,
                 UpdateKind = message.UpdateKind
-            });
+            };
+            await Task.WhenAll(_messaging.PublishEvent(liveVacancyUpdatedEvent), _messageSession.Publish(liveVacancyUpdatedEvent));
             
             return Unit.Value;
         }

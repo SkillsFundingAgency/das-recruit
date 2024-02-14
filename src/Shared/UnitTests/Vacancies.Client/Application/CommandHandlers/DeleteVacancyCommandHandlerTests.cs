@@ -11,6 +11,7 @@ using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using Microsoft.Extensions.Logging;
 using Moq;
+using NServiceBus;
 using Xunit;
 
 namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.CommandHandlers
@@ -20,6 +21,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.C
         private readonly Mock<ILogger<DeleteVacancyCommandHandler>> _mockLogger = new Mock<ILogger<DeleteVacancyCommandHandler>>();
         private readonly Mock<IVacancyRepository> _mockVacancyRepository = new Mock<IVacancyRepository>();
         private readonly Mock<IMessaging> _mockMessaging = new Mock<IMessaging>();
+        private readonly Mock<IMessageSession> _mockMessageSession = new Mock<IMessageSession>();
         private readonly Mock<ITimeProvider> _mockTimeProvider = new Mock<ITimeProvider>();
 
         [Theory]
@@ -36,6 +38,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.C
             await sut.Handle(fixture.Create<DeleteVacancyCommand>(), new CancellationToken());
             _mockVacancyRepository.Verify(m => m.UpdateAsync(It.IsAny<Vacancy>()), Times.Never);
             _mockMessaging.Verify(m => m.PublishEvent(It.IsAny<VacancyDeletedEvent>()), Times.Never);
+            _mockMessageSession.Verify(m => m.Publish(It.IsAny<VacancyDeletedEvent>(), It.IsAny<PublishOptions>()), Times.Never);
         }
 
         [Fact]
@@ -48,6 +51,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.C
             await sut.Handle(fixture.Create<DeleteVacancyCommand>(), new CancellationToken());
             _mockVacancyRepository.Verify(m => m.UpdateAsync(It.IsAny<Vacancy>()), Times.Never);
             _mockMessaging.Verify(m => m.PublishEvent(It.IsAny<VacancyDeletedEvent>()), Times.Never);
+            _mockMessageSession.Verify(m => m.Publish(It.IsAny<VacancyDeletedEvent>(), It.IsAny<PublishOptions>()), Times.Never);
         }
 
         [Fact]
@@ -59,6 +63,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.C
             await sut.Handle(fixture.Create<DeleteVacancyCommand>(), new CancellationToken());
             _mockVacancyRepository.Verify(m => m.UpdateAsync(It.IsAny<Vacancy>()), Times.Never);
             _mockMessaging.Verify(m => m.PublishEvent(It.IsAny<VacancyDeletedEvent>()), Times.Never);
+            _mockMessageSession.Verify(m => m.Publish(It.IsAny<VacancyDeletedEvent>(), It.IsAny<PublishOptions>()), Times.Never);
         }
 
         [Fact]
@@ -77,6 +82,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.C
             await sut.Handle(command, new CancellationToken());
             _mockVacancyRepository.Verify(m => m.UpdateAsync(It.Is<Vacancy>(v => v.DeletedByUser == null && v.LastUpdatedByUser == user)));
             _mockMessaging.Verify(m => m.PublishEvent(It.IsAny<VacancyDeletedEvent>()));
+            _mockMessageSession.Verify(m => m.Publish(It.IsAny<VacancyDeletedEvent>(), It.IsAny<PublishOptions>()));
         }
 
         [Fact]
@@ -95,12 +101,13 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.C
             await sut.Handle(command, new CancellationToken());
             _mockVacancyRepository.Verify(m => m.UpdateAsync(It.Is<Vacancy>(v => v.DeletedByUser == deletedByUser && v.LastUpdatedByUser == deletedByUser)));
             _mockMessaging.Verify(m => m.PublishEvent(It.IsAny<VacancyDeletedEvent>()));
+            _mockMessageSession.Verify(m => m.Publish(It.IsAny<VacancyDeletedEvent>(), It.IsAny<PublishOptions>()));
         }
 
         private DeleteVacancyCommandHandler GetSut()
         {
             return new DeleteVacancyCommandHandler(
-                _mockLogger.Object, _mockVacancyRepository.Object, _mockMessaging.Object, _mockTimeProvider.Object);
+                _mockLogger.Object, _mockVacancyRepository.Object, _mockMessaging.Object, _mockTimeProvider.Object, _mockMessageSession.Object);
         }
     }
 }
