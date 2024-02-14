@@ -17,20 +17,17 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
         private readonly IVacancyRepository _repository;
         private readonly IMessaging _messaging;
         private readonly ITimeProvider _timeProvider;
-        private readonly IMessageSession _messageSession;
 
         public DeleteVacancyCommandHandler(
             ILogger<DeleteVacancyCommandHandler> logger,
             IVacancyRepository repository, 
             IMessaging messaging, 
-            ITimeProvider timeProvider, 
-            IMessageSession messageSession)
+            ITimeProvider timeProvider)
         {
             _logger = logger;
             _repository = repository;
             _messaging = messaging;
             _timeProvider = timeProvider;
-            _messageSession = messageSession;
         }
 
         public async Task<Unit> Handle(DeleteVacancyCommand message, CancellationToken cancellationToken)
@@ -65,13 +62,10 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 
             await _repository.UpdateAsync(vacancy);
 
-            var vacancyDeletedEvent = new VacancyDeletedEvent
+            await _messaging.PublishEvent(new VacancyDeletedEvent
             {
                 VacancyId = vacancy.Id
-            };
-
-            await Task.WhenAll(_messaging.PublishEvent(vacancyDeletedEvent),
-                _messageSession.Publish(vacancyDeletedEvent));
+            });
             
             return Unit.Value;
         }

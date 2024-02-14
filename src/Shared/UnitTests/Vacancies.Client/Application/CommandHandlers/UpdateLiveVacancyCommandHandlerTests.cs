@@ -24,7 +24,6 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.CommandHandlers
         private Mock<ITimeProvider> _mockTimeProvider;
         private UpdateLiveVacancyCommandHandler _handler;
         private Guid _vacancyId = Guid.NewGuid();
-        private readonly Mock<IMessageSession> _mockMessageSession;
 
         [Theory]
         [InlineData(LiveUpdateKind.ClosingDate)]
@@ -45,12 +44,6 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.CommandHandlers
                         && p.VacancyId == _vacancyId
                         && p.VacancyReference == updatedVacancy.VacancyReference
                     )));
-            _mockMessageSession
-                .Verify(x => x.Publish(
-                    It.Is<LiveVacancyUpdatedEvent>(p =>
-                        p.VacancyId == _vacancyId
-                        && p.VacancyReference == updatedVacancy.VacancyReference
-                    ), It.IsAny<PublishOptions>()));
         }
 
         [Theory]
@@ -66,14 +59,12 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.CommandHandlers
             await _handler.Handle(message, CancellationToken.None);
 
             _mockMessaging.Verify(x => x.PublishEvent(It.IsAny<LiveVacancyClosingDateChangedEvent>()), Times.Never);
-            _mockMessageSession.Verify(x => x.Publish(It.IsAny<LiveVacancyClosingDateChangedEvent>(), It.IsAny<PublishOptions>()), Times.Never);
         }
 
         public UpdateLiveVacancyCommandHandlerTests()
         {
             _mockLogger = new Mock<ILogger<UpdateLiveVacancyCommandHandler>>();
             _mockMessaging = new Mock<IMessaging>();
-            _mockMessageSession = new Mock<IMessageSession>();
             _mockRepository = new Mock<IVacancyRepository>();
             _mockTimeProvider = new Mock<ITimeProvider>();
             _mockTimeProvider
@@ -84,7 +75,7 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.CommandHandlers
                 _mockLogger.Object,
                 _mockRepository.Object,
                 _mockMessaging.Object,
-                _mockTimeProvider.Object,_mockMessageSession.Object);
+                _mockTimeProvider.Object);
         }
 
         private Vacancy CreateVacancy()
