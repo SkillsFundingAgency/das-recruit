@@ -21,7 +21,6 @@ namespace Esfa.Recruit.Employer.Web
         private readonly bool _isAuthEnabled = true;
         private IConfiguration Configuration { get; }
         private IWebHostEnvironment HostingEnvironment { get; }
-        private AuthenticationConfiguration AuthConfig { get; }
 
         private readonly ILoggerFactory _loggerFactory;
 
@@ -49,7 +48,6 @@ namespace Esfa.Recruit.Employer.Web
 
             Configuration =  configBuilder.Build();
             HostingEnvironment = env;
-            AuthConfig = Configuration.GetSection("Authentication").Get<AuthenticationConfiguration>();
             _loggerFactory = loggerFactory;
         }
         
@@ -79,28 +77,13 @@ namespace Esfa.Recruit.Employer.Web
 #if DEBUG
             services.AddControllersWithViews().AddRazorRuntimeCompilation();
 #endif
-
-            services.AddTransient<IStubAuthenticationService, StubAuthenticationService>();//TODO remove after gov go live
             
-            if (Configuration["RecruitConfiguration:UseGovSignIn"] != null && Configuration["RecruitConfiguration:UseGovSignIn"]
-                    .Equals("true", StringComparison.CurrentCultureIgnoreCase))
-            {
-                services.AddTransient<ICustomClaims, EmployerAccountPostAuthenticationClaimsHandler>();
-                services.AddAndConfigureGovUkAuthentication(Configuration, typeof(EmployerAccountPostAuthenticationClaimsHandler), "", "/services/SignIn-Stub");
+            services.AddTransient<ICustomClaims, EmployerAccountPostAuthenticationClaimsHandler>();
+            services.AddAndConfigureGovUkAuthentication(Configuration, typeof(EmployerAccountPostAuthenticationClaimsHandler), "", "/services/SignIn-Stub");
 
-                services.AddAuthorizationService();
-                services.AddMaMenuConfiguration(RouteNames.Logout_Get, Configuration["ResourceEnvironmentName"]);
-            }
-
-            else
-            {
-                if (_isAuthEnabled)
-                {
-                    services.AddAuthenticationService(AuthConfig);
-                    services.AddAuthorizationService();
-                }
-                services.AddMaMenuConfiguration(RouteNames.Logout_Get, AuthConfig.ClientId, Configuration["ResourceEnvironmentName"]);
-            }
+            services.AddAuthorizationService();
+            services.AddMaMenuConfiguration(RouteNames.Logout_Get, Configuration["ResourceEnvironmentName"]);
+        
 
 
             services.AddDataProtection(Configuration, HostingEnvironment, applicationName: "das-employer");
