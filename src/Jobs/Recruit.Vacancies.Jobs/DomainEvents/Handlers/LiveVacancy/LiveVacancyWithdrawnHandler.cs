@@ -6,7 +6,7 @@ using NServiceBus;
 
 namespace Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.LiveVacancy;
 
-public class LiveVacancyWithdrawnHandler : DomainEventHandler, IDomainEventHandler<VacancyDeletedEvent>
+public class LiveVacancyWithdrawnHandler : DomainEventHandler, IDomainEventHandler<VacancyClosedEvent>
 {
     private readonly ILogger<LiveVacancyWithdrawnHandler> _logger;
     private readonly IMessageSession _messageSession;
@@ -19,15 +19,15 @@ public class LiveVacancyWithdrawnHandler : DomainEventHandler, IDomainEventHandl
 
     public async Task HandleAsync(string eventPayload)
     {
-        var @event = DeserializeEvent<VacancyDeletedEvent>(eventPayload);
+        var @event = DeserializeEvent<VacancyClosedEvent>(eventPayload);
 
         try
         {
-            _logger.LogInformation($"Processing {nameof(VacancyDeletedEvent)} to publish to NServiceBus");
+            _logger.LogInformation($"Processing {nameof(VacancyClosedEvent)} to publish to NServiceBus");
 
             await _messageSession.Publish(@event);
 
-            _logger.LogInformation($"Finished processing {nameof(VacancyDeletedEvent)} to publish to NServiceBus");
+            _logger.LogInformation($"Finished processing {nameof(VacancyClosedEvent)} to publish to NServiceBus");
         }
         catch (Exception ex)
         {

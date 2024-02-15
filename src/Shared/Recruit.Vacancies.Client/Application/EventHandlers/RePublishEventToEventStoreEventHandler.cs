@@ -22,7 +22,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.EventHandlers
                                             INotificationHandler<ProviderBlockedEvent>,
                                             INotificationHandler<ProviderBlockedOnLegalEntityEvent>,
                                             INotificationHandler<ProviderBlockedOnVacancyEvent>,
-                                            INotificationHandler<VacancyDeletedEvent>,
+                                            INotificationHandler<VacancyClosedEvent>,
                                             INotificationHandler<LiveVacancyUpdatedEvent>
     {
         private readonly ILogger<RePublishEventToEventStoreEventHandler> _logger;
@@ -73,7 +73,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.EventHandlers
         public Task Handle(ProviderBlockedOnVacancyEvent notification, CancellationToken cancellationToken)
             => HandleUsingEventStore(notification);
 
-        public Task Handle(VacancyDeletedEvent notification, CancellationToken cancellationToken)
+        public Task Handle(VacancyClosedEvent notification, CancellationToken cancellationToken)
             => HandleUsingEventStore(notification);
 
         public Task Handle(LiveVacancyUpdatedEvent notification, CancellationToken cancellationToken)
