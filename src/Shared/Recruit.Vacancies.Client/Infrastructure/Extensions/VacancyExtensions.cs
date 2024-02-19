@@ -72,6 +72,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Extensions
 
             projectedVacancy.AdditionalQuestion1 = vacancy.AdditionalQuestion1;
             projectedVacancy.AdditionalQuestion2 = vacancy.AdditionalQuestion2;
+
+            projectedVacancy.OwnerType = vacancy.OwnerType;
             
             return projectedVacancy;
         }
