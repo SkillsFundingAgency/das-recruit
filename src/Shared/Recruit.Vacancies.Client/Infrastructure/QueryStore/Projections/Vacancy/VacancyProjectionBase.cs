@@ -51,6 +51,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Va
         public VacancyType? VacancyType { get; set; }
         public string AdditionalQuestion1 { get; set; }
         public string AdditionalQuestion2 { get; set; }
-        public OwnerType OwnerType { get; set; }
+        public string OwnerType { get; set; }
     }
 }
