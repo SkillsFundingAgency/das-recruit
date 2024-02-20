@@ -1,13 +1,7 @@
-using System.Security.Claims;
 using System.Threading.Tasks;
-using Esfa.Recruit.Provider.Web.Configuration;
 using Esfa.Recruit.Provider.Web.Controllers;
-using Esfa.Recruit.Provider.Web.Orchestrators;
-using Esfa.Recruit.Provider.Web.ViewModels.Dashboard;
 using Esfa.Recruit.Vacancies.Client.Application.Configuration;
-using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using FluentAssertions;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Moq;
@@ -29,7 +23,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
 
             var actual = await  controller.Dashboard() as RedirectResult;
 
-            Assert.IsNotNull(actual);
+            Assert.That(actual, Is.Not.Null);
             actual.Permanent.Should().BeTrue();
             actual.Url.Should().Be($"{testUrl}account");
         }

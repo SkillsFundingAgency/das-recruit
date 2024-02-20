@@ -45,7 +45,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
         }
         
         [Fact]
-        public void Then_If_It_Is_Not_Successful_An_Exception_Is_Thrown()
+        public async Task Then_If_It_Is_Not_Successful_An_Exception_Is_Thrown()
         {
             //Arrange
             var key = "123-abc-567";
@@ -62,9 +62,9 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
             var httpMessageHandler = MessageHandler.SetupMessageHandlerMock(response, $"{config.BaseUrl}{getTestRequest.GetUrl}", config.Key);
             var client = new HttpClient(httpMessageHandler.Object);
             var apiClient = new OuterApiClient(client, mockConfig.Object);
-            
+
             //Act Assert
-            Assert.ThrowsAsync<HttpRequestException>(() => apiClient.Get<List<string>>(getTestRequest));
+            await Assert.ThrowsAsync<HttpRequestException>(() => apiClient.Get<List<string>>(getTestRequest));
             
         }
 

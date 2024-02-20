@@ -276,7 +276,7 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
 
         private static void RegisterMediatR(IServiceCollection services)
         {
-            services.AddMediatR(typeof(CreateEmployerOwnedVacancyCommandHandler).Assembly);
+            services.AddMediatR(configuration => configuration.RegisterServicesFromAssembly(typeof(CreateEmployerOwnedVacancyCommandHandler).Assembly));
             services
                 .AddTransient<IMessaging, MediatrMessaging>()
                 .AddTransient(typeof(IPipelineBehavior<,>), typeof(RequestPerformanceBehaviour<,>));

@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
-using Esfa.Recruit.Vacancies.Client.Application.Commands;
 using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
@@ -15,6 +14,7 @@ using Microsoft.OpenApi.Models;
 using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.Api.Common.Infrastructure;
+using SFA.DAS.Recruit.Api.Commands;
 using SFA.DAS.Recruit.Api.Configuration;
 using SFA.DAS.Recruit.Api.Mappers;
 using SFA.DAS.Recruit.Api.Services;
@@ -54,7 +54,7 @@ namespace SFA.DAS.Recruit.Api
             };
             services.AddAuthentication(azureAdConfig, policies);
 
-            services.AddMediatR(typeof(Startup).Assembly, typeof(CreateApplicationReviewCommand).Assembly);
+            services.AddMediatR(configuration => configuration.RegisterServicesFromAssembly(typeof(CreateVacancyCommand).Assembly));
 
             services.AddSingleton<IVacancySummaryMapper, VacancySummaryMapper>();
             services.AddSingleton<IQueryStoreReader, QueryStoreClient>();

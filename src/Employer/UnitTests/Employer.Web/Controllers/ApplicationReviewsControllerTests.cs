@@ -93,10 +93,10 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Controllers
 
             // Assert
             var actual = result.Model as ApplicationReviewsToUnsuccessfulViewModel;
-            Assert.IsNotEmpty(actual.VacancyApplications);
+            Assert.That(actual.VacancyApplications, Is.Not.Empty);
             Assert.That(actual.VacancyApplications.Count(), Is.EqualTo(3));
-            Assert.AreEqual(actual.VacancyId, routeModel.VacancyId);
-            Assert.AreEqual(actual.EmployerAccountId, routeModel.EmployerAccountId);
+            Assert.That(actual.VacancyId, Is.EqualTo(routeModel.VacancyId));
+            Assert.That(actual.EmployerAccountId, Is.EqualTo(routeModel.EmployerAccountId));
             Assert.That(actual.VacancyApplications[0].SubmittedDate, Is.GreaterThan(actual.VacancyApplications[1].SubmittedDate));
             Assert.That(actual.VacancyApplications[1].SubmittedDate, Is.GreaterThan(actual.VacancyApplications[2].SubmittedDate));
         }
@@ -121,10 +121,10 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Controllers
 
             // Assert
             var actual = result.Model as ApplicationReviewsToUnsuccessfulViewModel;
-            Assert.IsEmpty(actual.VacancyApplications);
+            Assert.That(actual.VacancyApplications, Is.Empty);
             Assert.That(actual.VacancyApplications.Count(), Is.EqualTo(0));
-            Assert.AreEqual(actual.VacancyId, routeModel.VacancyId);
-            Assert.AreEqual(actual.EmployerAccountId, routeModel.EmployerAccountId);
+            Assert.That(actual.VacancyId, Is.EqualTo(routeModel.VacancyId));
+            Assert.That(actual.EmployerAccountId, Is.EqualTo(routeModel.EmployerAccountId));
         }
 
         [Test]
@@ -154,10 +154,10 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Controllers
 
             // Assert
             var actual = result.Model as ApplicationReviewsToUnsuccessfulViewModel;
-            Assert.IsNotEmpty(actual.VacancyApplications);
+            Assert.That(actual.VacancyApplications, Is.Not.Empty);
             Assert.That(actual.VacancyApplications.Count(), Is.EqualTo(3));
-            Assert.AreEqual(actual.VacancyId, routeModel.VacancyId);
-            Assert.AreEqual(actual.EmployerAccountId, routeModel.EmployerAccountId);
+            Assert.That(actual.VacancyId, Is.EqualTo(routeModel.VacancyId));
+            Assert.That(actual.EmployerAccountId, Is.EqualTo(routeModel.EmployerAccountId));
             Assert.That(actual.VacancyApplications[1].SubmittedDate, Is.GreaterThan(actual.VacancyApplications[0].SubmittedDate));
             Assert.That(actual.VacancyApplications[2].SubmittedDate, Is.GreaterThan(actual.VacancyApplications[1].SubmittedDate));
         }
@@ -181,10 +181,10 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Controllers
             var redirectResult = await _controller.ApplicationReviewsToUnsuccessfulAsync(request) as RedirectToActionResult;
 
             // Assert
-            Assert.NotNull(redirectResult);
-            Assert.AreEqual("ApplicationReviewsFeedback", redirectResult.ActionName);
-            Assert.AreEqual(_vacancyId, redirectResult.RouteValues["VacancyId"]);
-            Assert.AreEqual(_employerAccountId, redirectResult.RouteValues["EmployerAccountId"]);
+            Assert.That(redirectResult, Is.Not.Null);
+            Assert.That("ApplicationReviewsFeedback", Is.EqualTo(redirectResult.ActionName));
+            Assert.That(_vacancyId, Is.EqualTo(redirectResult.RouteValues["VacancyId"]));
+            Assert.That(_employerAccountId, Is.EqualTo(redirectResult.RouteValues["EmployerAccountId"]));
         }
 
         [Test]
@@ -215,12 +215,12 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Controllers
 
             // Assert
             var actual = result.Model as ApplicationReviewsFeedbackViewModel;
-            Assert.IsNotEmpty(actual.ApplicationsToUnsuccessful);
+            Assert.That(actual.ApplicationsToUnsuccessful, Is.Not.Empty);
             Assert.That(actual.ApplicationsToUnsuccessful.Count(), Is.EqualTo(2));
-            Assert.AreEqual(routeModel.VacancyId, actual.VacancyId);
-            Assert.AreEqual(routeModel.EmployerAccountId, actual.EmployerAccountId);
-            Assert.AreEqual("Give feedback to unsuccessful applicants", actual.ApplicationsToUnsuccessfulFeedbackHeaderTitle);
-            Assert.AreEqual("Your feedback will be sent to all applicants you have selected as unsuccessful.", actual.ApplicationsToUnsuccessfulFeedbackDescription); 
+            Assert.That(routeModel.VacancyId, Is.EqualTo(actual.VacancyId));
+            Assert.That(routeModel.EmployerAccountId, Is.EqualTo(actual.EmployerAccountId));
+            Assert.That("Give feedback to unsuccessful applicants", Is.EqualTo(actual.ApplicationsToUnsuccessfulFeedbackHeaderTitle));
+            Assert.That("Your feedback will be sent to all applicants you have selected as unsuccessful.", Is.EqualTo(actual.ApplicationsToUnsuccessfulFeedbackDescription)); 
         }
 
         [Test]
@@ -250,12 +250,12 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Controllers
 
             // Assert
             var actual = result.Model as ApplicationReviewsFeedbackViewModel;
-            Assert.IsNotEmpty(actual.ApplicationsToUnsuccessful);
+            Assert.That(actual.ApplicationsToUnsuccessful, Is.Not.Empty);
             Assert.That(actual.ApplicationsToUnsuccessful.Count(), Is.EqualTo(1));
-            Assert.AreEqual(routeModel.VacancyId, actual.VacancyId);
-            Assert.AreEqual(routeModel.EmployerAccountId, actual.EmployerAccountId);
-            Assert.AreEqual("Give feedback to the unsuccessful applicant", actual.ApplicationsToUnsuccessfulFeedbackHeaderTitle);
-            Assert.AreEqual("Your feedback will be sent to the applicant you have selected as unsuccessful.", actual.ApplicationsToUnsuccessfulFeedbackDescription);
+            Assert.That(routeModel.VacancyId, Is.EqualTo(actual.VacancyId));
+            Assert.That(routeModel.EmployerAccountId, Is.EqualTo(actual.EmployerAccountId));
+            Assert.That("Give feedback to the unsuccessful applicant", Is.EqualTo(actual.ApplicationsToUnsuccessfulFeedbackHeaderTitle));
+            Assert.That("Your feedback will be sent to the applicant you have selected as unsuccessful.", Is.EqualTo(actual.ApplicationsToUnsuccessfulFeedbackDescription));
         }
 
         [Test]
@@ -275,10 +275,10 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Controllers
             var redirectResult = _controller.ApplicationReviewsFeedback(request) as RedirectToActionResult;
 
             // Assert
-            Assert.NotNull(redirectResult);
-            Assert.AreEqual("ApplicationReviewsToUnsuccessfulConfirmation", redirectResult.ActionName);
-            Assert.AreEqual(_vacancyId, redirectResult.RouteValues["VacancyId"]);
-            Assert.AreEqual(_employerAccountId, redirectResult.RouteValues["EmployerAccountId"]);
+            Assert.That(redirectResult, Is.Not.Null);
+            Assert.That("ApplicationReviewsToUnsuccessfulConfirmation", Is.EqualTo(redirectResult.ActionName));
+            Assert.That(_vacancyId, Is.EqualTo(redirectResult.RouteValues["VacancyId"]));
+            Assert.That(_employerAccountId, Is.EqualTo(redirectResult.RouteValues["EmployerAccountId"]));
         }
 
         [Test]
@@ -341,14 +341,14 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Controllers
 
             // Assert
             var actual = result.Model as ApplicationReviewsToUnsuccessfulConfirmationViewModel;
-            Assert.IsNotEmpty(actual.VacancyApplicationsToUnsuccessful);
+            Assert.That(actual.VacancyApplicationsToUnsuccessful, Is.Not.Empty);
             Assert.That(actual.VacancyApplicationsToUnsuccessful.Count(), Is.EqualTo(2));
-            Assert.AreEqual(routeModel.VacancyId, actual.VacancyId);
-            Assert.AreEqual(routeModel.EmployerAccountId, actual.EmployerAccountId);
-            Assert.AreEqual("Make multiple applications unsuccessful", actual.ApplicationReviewsConfirmationHeaderTitle);
-            Assert.AreEqual("You will make these applications unsuccessful:", actual.ApplicationReviewsConfirmationHeaderDescription);
-            Assert.AreEqual("These applicants will be notified with this message:", actual.ApplicationsReviewsConfirmationNotificationMessage);
-            Assert.AreEqual("Do you want to make these applications unsuccessful?", actual.ApplicationsReviewsConfirmationLegendMessage);
+            Assert.That(routeModel.VacancyId, Is.EqualTo(actual.VacancyId));
+            Assert.That(routeModel.EmployerAccountId, Is.EqualTo(actual.EmployerAccountId));
+            Assert.That("Make multiple applications unsuccessful", Is.EqualTo(actual.ApplicationReviewsConfirmationHeaderTitle));
+            Assert.That("You will make these applications unsuccessful:", Is.EqualTo(actual.ApplicationReviewsConfirmationHeaderDescription));
+            Assert.That("These applicants will be notified with this message:", Is.EqualTo(actual.ApplicationsReviewsConfirmationNotificationMessage));
+            Assert.That("Do you want to make these applications unsuccessful?", Is.EqualTo(actual.ApplicationsReviewsConfirmationLegendMessage));
         }
 
         [Test]
@@ -383,14 +383,14 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Controllers
 
             // Assert
             var actual = result.Model as ApplicationReviewsToUnsuccessfulConfirmationViewModel;
-            Assert.IsNotEmpty(actual.VacancyApplicationsToUnsuccessful);
+            Assert.That(actual.VacancyApplicationsToUnsuccessful, Is.Not.Empty);
             Assert.That(actual.VacancyApplicationsToUnsuccessful.Count(), Is.EqualTo(1));
-            Assert.AreEqual(routeModel.VacancyId, actual.VacancyId);
-            Assert.AreEqual(routeModel.EmployerAccountId, actual.EmployerAccountId);
-            Assert.AreEqual("Make application unsuccessful", actual.ApplicationReviewsConfirmationHeaderTitle);
-            Assert.AreEqual("You will make this application unsuccessful:", actual.ApplicationReviewsConfirmationHeaderDescription);
-            Assert.AreEqual("This applicant will be notified with this message:", actual.ApplicationsReviewsConfirmationNotificationMessage);
-            Assert.AreEqual("Do you want to make this application unsuccessful?", actual.ApplicationsReviewsConfirmationLegendMessage);
+            Assert.That(routeModel.VacancyId, Is.EqualTo(actual.VacancyId));
+            Assert.That(routeModel.EmployerAccountId, Is.EqualTo(actual.EmployerAccountId));
+            Assert.That("Make application unsuccessful", Is.EqualTo(actual.ApplicationReviewsConfirmationHeaderTitle));
+            Assert.That("You will make this application unsuccessful:", Is.EqualTo(actual.ApplicationReviewsConfirmationHeaderDescription));
+            Assert.That("This applicant will be notified with this message:", Is.EqualTo(actual.ApplicationsReviewsConfirmationNotificationMessage));
+            Assert.That("Do you want to make this application unsuccessful?", Is.EqualTo(actual.ApplicationsReviewsConfirmationLegendMessage));
         }
 
         [Test]
@@ -412,11 +412,11 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Controllers
             var redirectResult = await _controller.ApplicationReviewsToUnsuccessfulConfirmation(request) as RedirectToRouteResult;
 
             // Assert
-            Assert.NotNull(redirectResult);
-            Assert.AreEqual(RouteNames.VacancyManage_Get, redirectResult.RouteName);
-            Assert.AreEqual(_vacancyId, redirectResult.RouteValues["VacancyId"]);
-            Assert.AreEqual(_employerAccountId, redirectResult.RouteValues["EmployerAccountId"]);
-            Assert.IsFalse(_controller.TempData.ContainsKey(TempDataKeys.ApplicationReviewsUnsuccessfulInfoMessage));
+            Assert.That(redirectResult, Is.Not.Null);
+            Assert.That(RouteNames.VacancyManage_Get, Is.EqualTo(redirectResult.RouteName));
+            Assert.That(_vacancyId, Is.EqualTo(redirectResult.RouteValues["VacancyId"]));
+            Assert.That(_employerAccountId, Is.EqualTo(redirectResult.RouteValues["EmployerAccountId"]));
+            Assert.That(_controller.TempData.ContainsKey(TempDataKeys.ApplicationReviewsUnsuccessfulInfoMessage), Is.False);
         }
 
         [Test]
@@ -442,12 +442,12 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Controllers
             var redirectResult = await _controller.ApplicationReviewsToUnsuccessfulConfirmation(request) as RedirectToRouteResult;
 
             // Assert
-            Assert.NotNull(redirectResult);
-            Assert.AreEqual(RouteNames.VacancyManage_Get, redirectResult.RouteName);
-            Assert.AreEqual(_vacancyId, redirectResult.RouteValues["VacancyId"]);
-            Assert.AreEqual(_employerAccountId, redirectResult.RouteValues["EmployerAccountId"]);
-            Assert.IsTrue(_controller.TempData.ContainsKey(TempDataKeys.ApplicationReviewsUnsuccessfulInfoMessage));
-            Assert.AreEqual(string.Format(InfoMessages.ApplicationReviewUnsuccessStatusHeader, vacancyApplication1.CandidateName), _controller.TempData[TempDataKeys.ApplicationReviewsUnsuccessfulInfoMessage]);
+            Assert.That(redirectResult, Is.Not.Null);
+            Assert.That(RouteNames.VacancyManage_Get, Is.EqualTo(redirectResult.RouteName));
+            Assert.That(_vacancyId, Is.EqualTo(redirectResult.RouteValues["VacancyId"]));
+            Assert.That(_employerAccountId, Is.EqualTo(redirectResult.RouteValues["EmployerAccountId"]));
+            Assert.That(_controller.TempData.ContainsKey(TempDataKeys.ApplicationReviewsUnsuccessfulInfoMessage), Is.True);
+            Assert.That(string.Format(InfoMessages.ApplicationReviewUnsuccessStatusHeader, vacancyApplication1.CandidateName), Is.EqualTo(_controller.TempData[TempDataKeys.ApplicationReviewsUnsuccessfulInfoMessage]));
         }
 
         [Test]
@@ -475,12 +475,12 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Controllers
             var redirectResult = await _controller.ApplicationReviewsToUnsuccessfulConfirmation(request) as RedirectToRouteResult;
 
             // Assert
-            Assert.NotNull(redirectResult);
-            Assert.AreEqual(RouteNames.VacancyManage_Get, redirectResult.RouteName);
-            Assert.AreEqual(_vacancyId, redirectResult.RouteValues["VacancyId"]);
-            Assert.AreEqual(_employerAccountId, redirectResult.RouteValues["EmployerAccountId"]);
-            Assert.IsTrue(_controller.TempData.ContainsKey(TempDataKeys.ApplicationReviewsUnsuccessfulInfoMessage));
-            Assert.AreEqual(InfoMessages.ApplicationsToUnsuccessfulBannerHeader, _controller.TempData[TempDataKeys.ApplicationReviewsUnsuccessfulInfoMessage]);
+            Assert.That(redirectResult, Is.Not.Null);
+            Assert.That(RouteNames.VacancyManage_Get, Is.EqualTo(redirectResult.RouteName));
+            Assert.That(_vacancyId, Is.EqualTo(redirectResult.RouteValues["VacancyId"]));
+            Assert.That(_employerAccountId, Is.EqualTo(redirectResult.RouteValues["EmployerAccountId"]));
+            Assert.That(_controller.TempData.ContainsKey(TempDataKeys.ApplicationReviewsUnsuccessfulInfoMessage), Is.True);
+            Assert.That(InfoMessages.ApplicationsToUnsuccessfulBannerHeader, Is.EqualTo(_controller.TempData[TempDataKeys.ApplicationReviewsUnsuccessfulInfoMessage]));
         }
 
         public Task<IEnumerable<string>> GetProfanityListAsync()

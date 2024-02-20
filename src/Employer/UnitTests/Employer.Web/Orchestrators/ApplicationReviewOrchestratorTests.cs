@@ -42,9 +42,9 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators
 
             var result = await _orchestrator.PostApplicationReviewEditModelAsync(model, vacancyUser);
 
-            Assert.AreEqual(applicationReview.Id, result.ApplicationReviewId);
-            Assert.AreEqual(applicationReview.GetFriendlyId(), result.FriendlyId);
-            Assert.AreEqual(applicationReview.Application.FullName, result.Name);
+            Assert.That(applicationReview.Id, Is.EqualTo(result.ApplicationReviewId));
+            Assert.That(applicationReview.GetFriendlyId(), Is.EqualTo(result.FriendlyId));
+            Assert.That(applicationReview.Application.FullName, Is.EqualTo(result.Name));
         }
     }
 }

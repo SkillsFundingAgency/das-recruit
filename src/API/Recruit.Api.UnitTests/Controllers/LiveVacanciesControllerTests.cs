@@ -32,7 +32,7 @@ public class LiveVacanciesControllerTests
 
         using (new AssertionScope())
         {
-            Assert.IsNotNull(actual);
+            Assert.That(actual, Is.Not.Null);
             var actualResult = actual.Value as List<LiveVacancy>;
             actualResult.Should().BeEquivalentTo(items);
         }
@@ -55,7 +55,7 @@ public class LiveVacanciesControllerTests
 
         using (new AssertionScope())
         {
-            Assert.IsNotNull(actual);
+            Assert.That(actual, Is.Not.Null);
             var actualResult = actual.Value as LiveVacancy;
             actualResult.Should().BeEquivalentTo(vacancy);
         }

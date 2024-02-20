@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
   <PropertyGroup>
-	  <TargetFramework>net6.0</TargetFramework>
+	  <TargetFramework>net8.0</TargetFramework>
     <RootNamespace>Esfa.Recruit.Shared.Web</RootNamespace>
     <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
   </PropertyGroup>
@@ -9,8 +9,10 @@
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics" Version="2.2.0" />
     <PackageReference Include="NWebsec.AspNetCore.Mvc.TagHelpers" Version="3.0.0" />    
     <PackageReference Include="SFA.DAS.VacancyServices.Wage" Version="1.0.30" />    
-    <PackageReference Include="StackExchange.Redis" Version="2.6.48" />
-    <PackageReference Include="Microsoft.AspNetCore.DataProtection.StackExchangeRedis" Version="6.0.8" />
+    <PackageReference Include="StackExchange.Redis" Version="2.7.17" />
+    <PackageReference Include="Microsoft.AspNetCore.DataProtection.StackExchangeRedis" Version="8.0.2" />
+    <PackageReference Include="System.Security.Cryptography.Xml" Version="8.0.0" />
+    <PackageReference Include="System.Text.RegularExpressions" Version="4.3.1" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Recruit.Vacancies.Client\Recruit.Vacancies.Client.csproj" />

@@ -67,10 +67,10 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Controllers
 
             var actual = await controller.Create(id, request, userEmail, ukprn) as CreatedResult;
 
-            NUnit.Framework.Assert.NotNull(actual);
+            Assert.That(actual, Is.Not.Null);
             actual.StatusCode.Should().Be((int)HttpStatusCode.Created);
             var actualResult = actual.Value as long?;
-            Assert.NotNull(actualResult);
+            Assert.That(actualResult, Is.Not.Null);
             actualResult.Value.Should().Be((long)response.Data);
         }
 
@@ -97,10 +97,10 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Controllers
 
             var actual = await controller.CreateTraineeship(id, request, userEmail, ukprn) as CreatedResult;
 
-            Assert.NotNull(actual);
+            Assert.That(actual, Is.Not.Null);
             actual.StatusCode.Should().Be((int)HttpStatusCode.Created);
             var actualResult = actual.Value as long?;
-            Assert.NotNull(actualResult);
+            Assert.That(actualResult, Is.Not.Null);
             actualResult.Value.Should().Be((long)response.Data);
         }
 
@@ -128,10 +128,10 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Controllers
 
             var actual = await controller.Validate(id, request, userEmail, ukprn) as CreatedResult;
 
-            Assert.NotNull(actual);
+            Assert.That(actual, Is.Not.Null);
             actual.StatusCode.Should().Be((int)HttpStatusCode.Created);
             var actualResult = actual.Value as long?;
-            Assert.NotNull(actualResult);
+            Assert.That(actualResult, Is.Not.Null);
             actualResult.Value.Should().Be((long)response.Data);
         }
 
@@ -159,10 +159,10 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Controllers
 
             var actual = await controller.ValidateTraineeship(id, request, userEmail, ukprn) as CreatedResult;
 
-            Assert.NotNull(actual);
+            Assert.That(actual, Is.Not.Null);
             actual.StatusCode.Should().Be((int)HttpStatusCode.Created);
             var actualResult = actual.Value as long?;
-            Assert.NotNull(actualResult);
+            Assert.That(actualResult, Is.Not.Null);
             actualResult.Value.Should().Be((long)response.Data);
         }
 
