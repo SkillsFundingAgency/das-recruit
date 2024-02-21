@@ -12,45 +12,62 @@
     <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.EmployerCheckYourAnswersGet" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Back</a>
 }
 
-<main class="govuk-main-wrapper " id="main-content" role="main">
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-two-thirds">
 
-            <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }' />
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
 
-            <form asp-route="@RouteNames.AddExtraInformation_Post" asp-all-route-data="@Model.RouteDictionary" asp-route-wizard="@Model.PageInfo.IsWizard" novalidate>
-                @Html.HiddenFor(model => model.WageType)
-                <div esfa-validation-marker-for="WageAdditionalInformation" class="govuk-form-group">
-                    <fieldset class="govuk-fieldset" aria-describedby="extra-info-hint">
-                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
-                            <h1 class="govuk-fieldset__heading">
-                                Extra information about pay (optional)
-                            </h1>
-                        </legend>
-                        <span esfa-validation-message-for="WageAdditionalInformation" class="govuk-error-message"></span>
-
-                        <div id="extra-info-hint" class="govuk-hint">
-                            For example bonus schemes, performance increases or benefits
+        <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }' />
+        <h1 class="govuk-heading-xl">
+            <span class="govuk-caption-l">@Model.Title</span>
+            <esfaFeatureEnabled name="@FeatureNames.FaaV2Improvements">
+                Extra information about pay and benefits (optional)
+            </esfaFeatureEnabled>
+            <esfaFeatureDisabled name="@FeatureNames.FaaV2Improvements">
+                Extra information about pay (optional)   
+            </esfaFeatureDisabled>
+        </h1>
+        <form asp-route="@RouteNames.AddExtraInformation_Post" asp-all-route-data="@Model.RouteDictionary" asp-route-wizard="@Model.PageInfo.IsWizard" novalidate>
+            @Html.HiddenFor(model => model.WageType)
+            <div esfa-validation-marker-for="WageAdditionalInformation" class="govuk-form-group">
+                
+                    <span esfa-validation-message-for="WageAdditionalInformation" class="govuk-error-message"></span>
+                    <label asp-for="WageAdditionalInformation" class="govuk-label govuk-!-font-weight-bold govuk-!-margin-bottom-5">Information about pay (optional)</label>
+                    <div id="extra-info-hint" class="govuk-hint">
+                        Mention anything that affects this apprenticeship’s wage. For example, a planned salary increase. This will be displayed next to the annual wage 
+                    </div>
+                    <div class="govuk-character-count" data-module="govuk-character-count" data-minlength="50"
+                         data-maxlength="250">
+                        <textarea asp-for="WageAdditionalInformation" class="govuk-textarea govuk-!-width-three-quarters govuk-js-character-count"
+                                  id="WageAdditionalInformation" name="WageAdditionalInformation" rows="5"></textarea>
+                        <div id="WageAdditionalInformation-info" class="govuk-hint govuk-character-count__message"
+                             aria-live="polite">
+                            You can enter up to 250 characters
                         </div>
-                        <div class="govuk-character-count" data-module="govuk-character-count" data-minlength="50"
-                             data-maxlength="250">
-                            <textarea asp-for="WageAdditionalInformation" class="govuk-textarea govuk-!-width-three-quarters govuk-js-character-count"
-                                      id="WageAdditionalInformation" name="WageAdditionalInformation" rows="5"></textarea>
-                            <div id="WageAdditionalInformation-info" class="govuk-hint govuk-character-count__message"
-                                 aria-live="polite">
-                                You can enter up to 250 characters
-                            </div>
+                    </div>
+            </div>
+            <esfaFeatureEnabled name="@FeatureNames.FaaV2Improvements">
+                <div esfa-validation-marker-for="CompanyBenefitsInformation" class="govuk-form-group">
+                    <span esfa-validation-message-for="CompanyBenefitsInformation" class="govuk-error-message"></span>
+                    <label asp-for="CompanyBenefitsInformation" class="govuk-label govuk-!-font-weight-bold govuk-!-margin-bottom-5">Company benefits (optional)</label>
+                    <div id="extra-info-hint" class="govuk-hint">Mention benefits your company offers. For example, you pay for a gym membership. This will be displayed in the section about your company </div>
+                    <div class="govuk-character-count" data-module="govuk-character-count" data-minlength="50"data-maxlength="250">
+                        <textarea asp-for="CompanyBenefitsInformation" class="govuk-textarea govuk-!-width-three-quarters govuk-js-character-count"
+                                   id="CompanyBenefitsInformation" name="CompanyBenefitsInformation" rows="5"></textarea>
+                        <div id="CompanyBenefitsInformation-info" class="govuk-hint govuk-character-count__message"
+                             aria-live="polite">
+                            You can enter up to 250 characters
                         </div>
-                    </fieldset>
-                </div>
+                    </div>
+                </div>    
+            </esfaFeatureEnabled>
+            
 
-                <div class="govuk-button-group">
-                    <button type="submit" class="govuk-button save-button" esfa-automation="continue-button">Continue</button>
-                    <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Dashboard_Get" asp-route-employerAccountId="@Model.EmployerAccountId" class="govuk-link govuk-link--no-visited-state">Cancel</a>
-                    <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.EmployerCheckYourAnswersGet" asp-all-route-data="@Model.RouteDictionary" class="govuk-link govuk-link--no-visited-state">Cancel</a>
-                </div>
-            </form>
+            <div class="govuk-button-group">
+                <button type="submit" class="govuk-button save-button" esfa-automation="continue-button">Continue</button>
+                <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Dashboard_Get" asp-route-employerAccountId="@Model.EmployerAccountId" class="govuk-link govuk-link--no-visited-state">Cancel</a>
+                <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.EmployerCheckYourAnswersGet" asp-all-route-data="@Model.RouteDictionary" class="govuk-link govuk-link--no-visited-state">Cancel</a>
+            </div>
+        </form>
 
-        </div>
     </div>
-</main>
+</div>

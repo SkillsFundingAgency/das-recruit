@@ -209,11 +209,26 @@
                         }
                     </li>
                     <li class="das-task-list__item">
+                        <esfaFeatureEnabled name="@FeatureNames.FaaV2Improvements">
+                            @if (Model.ExpectedDurationSectionState == VacancyPreviewSectionState.Incomplete)
+                            {
+                                <span class="das-task-list__task-name">
+                                    Pay rate and benefits
+                                </span>
+                            }
+                            else
+                            {
+                                <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.Wage_Get" asp-all-route-data="@Model.RouteDictionary">
+                                    Pay rate and benefits
+                                </a>
+                            }
+                        </esfaFeatureEnabled>
+                        <esfaFeatureDisabled name="@FeatureNames.FaaV2Improvements">
                         @if (Model.ExpectedDurationSectionState == VacancyPreviewSectionState.Incomplete)
                         {
                             <span class="das-task-list__task-name">
                                 Pay rate
-                            </span>    
+                            </span>
                         }
                         else
                         {
@@ -221,6 +236,7 @@
                                 Pay rate
                             </a>
                         }
+                        </esfaFeatureDisabled>
                     </li>
                     <li class="das-task-list__item">
                         @if (Model.WageTextSectionState == VacancyPreviewSectionState.Incomplete)
