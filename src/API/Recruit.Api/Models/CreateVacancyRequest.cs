@@ -62,6 +62,7 @@ namespace SFA.DAS.Recruit.Api.Models
         
         public WageType WageType { get; set; }
         public DurationUnit DurationUnit { get; set; }
+        public string CompanyBenefitsInformation { get; set; }
     }
 
     public class CreateVacancyQualification
