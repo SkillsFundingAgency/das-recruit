@@ -629,18 +629,34 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
 
                 RuleFor(x => x.Wage.WageAdditionalInformation)
                     .MaximumLength(250)
-                        .WithMessage("Extra information about pay must not exceed {MaxLength} characters")
+                        .WithMessage("Information about pay must be {MaxLength} characters or less")
                         .WithErrorCode("44")
                     .WithState(_ => VacancyRuleSet.Wage)
                     .ValidFreeTextCharacters()
-                        .WithMessage("Additional pay information contains some invalid characters")
+                        .WithMessage("Information about pay contains some invalid characters")
                         .WithErrorCode("45")
                     .WithState(_ => VacancyRuleSet.Wage)
                     .ProfanityCheck(_profanityListProvider)
-                    .WithMessage("Additional pay information must not contain a banned word or phrase.")
+                    .WithMessage("Information about pay must not contain a banned word or phrase")
                     .WithErrorCode("607")
                     .WithState(_ => VacancyRuleSet.Wage)
                     .RunCondition(VacancyRuleSet.Wage);
+               
+                RuleFor(x => x.Wage.CompanyBenefitsInformation)
+                    .MaximumLength(250)
+                    .WithMessage("Company benefits must be {MaxLength} characters or less")
+                    .WithErrorCode("44")
+                    .WithState(_ => VacancyRuleSet.Wage)
+                    .ValidFreeTextCharacters()
+                    .WithMessage("Company benefits contains some invalid characters")
+                    .WithErrorCode("45")
+                    .WithState(_ => VacancyRuleSet.Wage)
+                    .ProfanityCheck(_profanityListProvider)
+                    .WithMessage("Company benefits must not contain a banned word or phrase")
+                    .WithErrorCode("607")
+                    .WithState(_ => VacancyRuleSet.Wage)
+                    .RunCondition(VacancyRuleSet.Wage);
+                
             });
         }
 
