@@ -62,6 +62,14 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                 {
                     return v.Wage.WageAdditionalInformation = m.WageAdditionalInformation;
                 });
+            SetVacancyWithEmployerReviewFieldIndicators(
+                vacancy.Wage.CompanyBenefitsInformation,
+                FieldIdResolver.ToFieldId(v => v.Wage.CompanyBenefitsInformation),
+                vacancy,
+                (v) =>
+                {
+                    return v.Wage.CompanyBenefitsInformation = m.CompanyBenefitsInformation;
+                });
 
             return await ValidateAndExecute(
                 vacancy,
@@ -81,8 +89,10 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                 PageInfo = vm.PageInfo,
                 WageType = vm.WageType,
                 WageAdditionalInformation = vm.WageAdditionalInformation,
+                CompanyBenefitsInformation = vm.CompanyBenefitsInformation,
+                Title = vm.Title,
             };
-
+            
             return wageExtraInformationViewModel;
         }
 
@@ -106,13 +116,15 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                 ApprenticeshipMinimumWageHourly = wagePeriod.ApprenticeshipMinimumWage.ToString("C"),
                 ApprenticeshipMinimumWageYearly = GetMinimumWageYearlyText(SFA.DAS.VacancyServices.Wage.WageType.ApprenticeshipMinimum, vacancy.Wage?.WeeklyHours, vacancy.StartDate.Value),
                 WeeklyHours = vacancy.Wage.WeeklyHours.Value,
-                PageInfo = _utility.GetPartOnePageInfo(vacancy)
+                PageInfo = _utility.GetPartOnePageInfo(vacancy),
+                Title = vacancy.Title,
+                CompanyBenefitsInformation = vacancy.Wage?.CompanyBenefitsInformation
             };
 
             if (vacancy.Status == VacancyStatus.Referred)
             {
                 vm.Review = await _reviewSummaryService.GetReviewSummaryViewModelAsync(vacancy.VacancyReference.Value,
-                    ReviewFieldMappingLookups.GetWageReviewFieldIndicators());
+                    ReviewFieldMappingLookups.GetAdditionalWageInformationFieldIndicators());
             }
 
             return vm;
@@ -163,6 +175,15 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                     return v.Wage.WageAdditionalInformation = m.WageAdditionalInformation;
                 });
 
+            SetVacancyWithEmployerReviewFieldIndicators(
+                vacancy.Wage.CompanyBenefitsInformation,
+                FieldIdResolver.ToFieldId(v => v.Wage.CompanyBenefitsInformation),
+                vacancy,
+                (v) =>
+                {
+                    return v.Wage.CompanyBenefitsInformation = m.CompanyBenefitsInformation;
+                });
+            
             return await ValidateAndExecute(
                 vacancy,
                 v => _vacancyClient.Validate(v, ValidationRules),
@@ -255,6 +276,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             mappings.Add(e => e.Wage.WageType, vm => vm.WageType);
             mappings.Add(e => e.Wage.FixedWageYearlyAmount, vm => vm.FixedWageYearlyAmount);
             mappings.Add(e => e.Wage.WageAdditionalInformation, vm => vm.WageAdditionalInformation);
+            mappings.Add(e => e.Wage.CompanyBenefitsInformation, vm => vm.CompanyBenefitsInformation);
 
             return mappings;
         }
