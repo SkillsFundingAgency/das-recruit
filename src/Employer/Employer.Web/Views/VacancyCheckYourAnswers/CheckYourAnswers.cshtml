@@ -318,45 +318,70 @@
 
                 </dd>
             </div>
-            <field-review-message field-name="@FieldIdentifiers.WageAdditionalInfo"
-                model="@Model"></field-review-message>
-            <div class="app-summary-list__row app-summary-list__row--no-border" field-review-marker="WageInfo">
-
-                <dt class="app-summary-list__key" id="@FieldIdentifiers.WageAdditionalInfo">Extra information about pay
-                    (optional)</dt>
-                <dd class="app-summary-list__value">
-                    @if (Model.HasCompetitiveSalaryType)
-                    {
-                        @:@Model.WageType.GetDisplayName()
-                        <br />
-
-                        <br />
-                    }
-                    <field-review-tag class="govuk-tag--orange" field-name="@FieldIdentifiers.WageAdditionalInfo"
-                        tag-name="strong" model="@Model" />
-                    @if (Model.HasWageInfo)
-                    {
-
-                        @:@Model.WageInfo
-
-                    }
-
-                </dd>
-                <dd class="app-summary-list__actions">
-
-                </dd>
-            </div>
+            <field-review-message field-name="@FieldIdentifiers.WageAdditionalInfo" model="@Model"></field-review-message>
+            <esfaFeatureDisabled name="@FeatureNames.FaaV2Improvements">
+                <div class="app-summary-list__row" field-review-marker="WageInfo">
+                    <dt class="app-summary-list__key" id="@FieldIdentifiers.WageAdditionalInfo">Extra information about pay (optional)</dt>
+                    <dd class="app-summary-list__value">
+                        @if (Model.HasCompetitiveSalaryType)
+                        {
+                            @:@Model.WageType.GetDisplayName()
+                            <br />
+    
+                            <br />
+                        }
+                        <field-review-tag class="govuk-tag--orange" field-name="@FieldIdentifiers.WageAdditionalInfo"
+                            tag-name="strong" model="@Model" />
+                        @if (Model.HasWageInfo)
+                        {
+    
+                            @:@Model.WageInfo
+    
+                        }
+    
+                    </dd>
+                    <dd class="app-summary-list__actions">
+    
+                    </dd>
+                </div>
+            </esfaFeatureDisabled>
+            
             <esfaFeatureEnabled name="@FeatureNames.FaaV2Improvements">
+                <div class="app-summary-list__row app-summary-list__row--no-border" field-review-marker="WageInfo">
+                    <dt class="app-summary-list__key" id="@FieldIdentifiers.WageAdditionalInfo">Extra information about pay
+                        (optional)</dt>
+                    <dd class="app-summary-list__value">
+                        @if (Model.HasCompetitiveSalaryType)
+                        {
+                            @:@Model.WageType.GetDisplayName()
+                            <br />
+    
+                            <br />
+                        }
+                        <field-review-tag class="govuk-tag--orange" field-name="@FieldIdentifiers.WageAdditionalInfo"
+                            tag-name="strong" model="@Model" />
+                        @if (Model.HasWageInfo)
+                        {
+    
+                            @:@Model.WageInfo
+    
+                        }
+    
+                    </dd>
+                    <dd class="app-summary-list__actions">
+    
+                    </dd>
+                </div>
                 <field-review-message field-name="@FieldIdentifiers.CompanyBenefitsInformation"
-                    model="@Model"></field-review-message>
+                                      model="@Model"></field-review-message>
                 <div class="app-summary-list__row" field-review-marker="CompanyBenefitsInformation">
                     <dt class="app-summary-list__key" id="@FieldIdentifiers.CompanyBenefitsInformation">Company benefits
                         (optional)</dt>
                     <dd id="CompanyBenefitsInformation" class="app-summary-list__value">
                         @Model.CompanyBenefitsInformation
                         <field-review-tag class="govuk-tag--orange"
-                            field-name="@FieldIdentifiers.CompanyBenefitsInformation" tag-name="strong"
-                            model="@Model" />
+                                          field-name="@FieldIdentifiers.CompanyBenefitsInformation" tag-name="strong"
+                                          model="@Model"/>
                     </dd>
                     <dd class="app-summary-list__actions"></dd>
                 </div>
