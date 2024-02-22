@@ -17,6 +17,7 @@
     <div class="govuk-grid-column-two-thirds">
 
         <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }' />
+        <partial name="@PartialNames.ReviewSummary" for="Review" />
         <h1 class="govuk-heading-xl">
             <span class="govuk-caption-l">@Model.Title</span>
             <esfaFeatureEnabled name="@FeatureNames.FaaV2Improvements">

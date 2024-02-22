@@ -91,6 +91,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                 WageAdditionalInformation = vm.WageAdditionalInformation,
                 CompanyBenefitsInformation = vm.CompanyBenefitsInformation,
                 Title = vm.Title,
+                Review = vm.Review
             };
             
             return wageExtraInformationViewModel;
