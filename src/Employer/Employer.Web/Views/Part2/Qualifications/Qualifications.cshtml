@@ -9,31 +9,39 @@
     <a asp-show="@Model.IsTaskListCompleted" asp-route="@RouteNames.EmployerCheckYourAnswersGet" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Back</a>
 }
 
-<div class="govuk-grid-row">
-    <div class="govuk-grid-column-three-quarters">
+<partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState }' />
 
-        <div asp-show="Model.HasInfo" class="info-summary">
-            <p class="govuk-body">@Model.InfoMessage</p>
-        </div>
+@if (!Model.Qualifications.Any())
+{
+    <partial name="_EmptyQualifications", model="Model" />
+}
+else
+{
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-three-quarters">
 
-        <partial name="@PartialNames.ReviewSummary" for="Review" />
+            <div asp-show="Model.HasInfo" class="info-summary">
+                <p class="govuk-body">@Model.InfoMessage</p>
+            </div>
 
-        <h1 class="govuk-heading-xl">
-            <span class="govuk-caption-l">@Model.Title</span>
-            Qualifications
-        </h1>
+            <partial name="@PartialNames.ReviewSummary" for="Review"/>
 
-        <table class="govuk-table">
-            <caption class="govuk-visually-hidden">Your qualification requirements</caption>
-            <thead>
+            <h1 class="govuk-heading-xl">
+                <span class="govuk-caption-l">@Model.Title</span>
+                Qualifications
+            </h1>
+
+            <table class="govuk-table">
+                <caption class="govuk-visually-hidden">Your qualification requirements</caption>
+                <thead>
                 <tr>
                     <th class="govuk-table__header" scope="col">Qualification</th>
                     <th class="govuk-table__header" scope="col">Grade</th>
                     <th class="govuk-table__header" scope="col">Essential or desirable</th>
                     <th class="govuk-table__header" scope="col"><span class="govuk-visually-hidden">Action</span></th>
                 </tr>
-            </thead>
-            <tbody>
+                </thead>
+                <tbody>
 
                 @for (var i = 0; i < Model.Qualifications.Count; i++)
                 {
@@ -51,24 +59,26 @@
                         </td>
                         <td class="govuk-table__cell">
                             <form asp-route="@RouteNames.Qualification_Delete_Post" asp-all-route-data="@Model.RouteDictionary" class="govuk-!-display-inline">
-                                <input type="hidden" name="index" value="@i" />
+                                <input type="hidden" name="index" value="@i"/>
                                 <button type="submit" class="das-button--inline-link">Remove</button>
                             </form>
                             <a asp-route="@RouteNames.Qualification_Edit_Get" asp-all-route-data="@Model.RouteDictionary" asp-route-index="@i" class="govuk-link govuk-!-margin-left-1">Edit</a>
                         </td>
                     </tr>
                 }
-            </tbody>
-        </table>
+                </tbody>
+            </table>
 
-        <div class="govuk-button-group">
-            <a asp-route="@RouteNames.Qualification_Add_Get" asp-all-route-data="@Model.RouteDictionary" class="govuk-link govuk-link--no-visited-state">Add another qualification</a>
-        </div>
+            <div class="govuk-button-group">
+                <a asp-route="@RouteNames.Qualification_Add_Get" asp-all-route-data="@Model.RouteDictionary" class="govuk-link govuk-link--no-visited-state">Add another qualification</a>
+            </div>
 
-    
-        <div class="govuk-button-group">
-            <a asp-show="@(!Model.IsTaskListCompleted)" asp-route="@RouteNames.FutureProspects_Get" asp-all-route-data="@Model.RouteDictionary" class="govuk-button">Save and continue</a>
-            <a asp-show="@Model.IsTaskListCompleted" asp-route="@RouteNames.EmployerCheckYourAnswersGet" asp-all-route-data="@Model.RouteDictionary" class="govuk-button">Save and continue</a>
+
+            <div class="govuk-button-group">
+                <a asp-show="@(!Model.IsTaskListCompleted)" asp-route="@RouteNames.FutureProspects_Get" asp-all-route-data="@Model.RouteDictionary" class="govuk-button">Save and continue</a>
+                <a asp-show="@Model.IsTaskListCompleted" asp-route="@RouteNames.EmployerCheckYourAnswersGet" asp-all-route-data="@Model.RouteDictionary" class="govuk-button">Save and continue</a>
+            </div>
         </div>
     </div>
-</div>
+}
+
