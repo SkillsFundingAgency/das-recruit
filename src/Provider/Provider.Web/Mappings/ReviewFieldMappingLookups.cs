@@ -31,6 +31,7 @@ namespace Esfa.Recruit.Provider.Web.Mappings
                 new ReviewFieldIndicatorViewModel(FieldIdentifiers.ClosingDate, Anchors.ClosingDate),
                 new ReviewFieldIndicatorViewModel(FieldIdentifiers.WorkingWeek, Anchors.WorkingWeek),
                 new ReviewFieldIndicatorViewModel(FieldIdentifiers.Wage, Anchors.YearlyWage),
+                new ReviewFieldIndicatorViewModel(FieldIdentifiers.CompanyBenefitsInformation, Anchors.CompanyBenefitsInformation),
                 new ReviewFieldIndicatorViewModel(FieldIdentifiers.ExpectedDuration, Anchors.ExpectedDuration),
                 new ReviewFieldIndicatorViewModel(FieldIdentifiers.PossibleStartDate, Anchors.PossibleStartDate),
                 new ReviewFieldIndicatorViewModel(FieldIdentifiers.TrainingLevel, Anchors.TrainingLevel),
@@ -69,6 +70,7 @@ namespace Esfa.Recruit.Provider.Web.Mappings
                 { FieldIdResolver.ToFieldId(v => v.Wage.WeeklyHours), new []{ FieldIdentifiers.WorkingWeek} },
                 { FieldIdResolver.ToFieldId(v => v.Wage.WorkingWeekDescription), new []{ FieldIdentifiers.WorkingWeek} },
                 { FieldIdResolver.ToFieldId(v => v.Wage.WageAdditionalInformation), new []{ FieldIdentifiers.Wage}},
+                { FieldIdResolver.ToFieldId(v => v.Wage.CompanyBenefitsInformation), new []{ FieldIdentifiers.CompanyBenefitsInformation}},
                 { FieldIdResolver.ToFieldId(v => v.Wage.WageType),  new[]{ FieldIdentifiers.Wage}},
                 { FieldIdResolver.ToFieldId(v => v.Wage.FixedWageYearlyAmount), new []{ FieldIdentifiers.Wage }},
                 { FieldIdResolver.ToFieldId(v => v.Wage.Duration), new []{ FieldIdentifiers.ExpectedDuration }},
@@ -199,7 +201,8 @@ namespace Esfa.Recruit.Provider.Web.Mappings
             var vms = new List<ReviewFieldIndicatorViewModel>
             {
                 new ReviewFieldIndicatorViewModel(FieldIdentifiers.Wage, Anchors.WageTypeHeading),
-                new ReviewFieldIndicatorViewModel(FieldIdentifiers.WageAdditionalInfo, nameof(WageEditModel.WageAdditionalInformation))
+                new ReviewFieldIndicatorViewModel(FieldIdentifiers.WageAdditionalInfo, nameof(WageEditModel.WageAdditionalInformation)),
+                new ReviewFieldIndicatorViewModel(FieldIdentifiers.CompanyBenefitsInformation, nameof(WageEditModel.CompanyBenefitsInformation))
             };
 
             var mappings =  new Dictionary<string, IEnumerable<string>>
@@ -207,6 +210,7 @@ namespace Esfa.Recruit.Provider.Web.Mappings
                 { FieldIdResolver.ToFieldId(v => v.Wage.WeeklyHours), new []{ FieldIdentifiers.WorkingWeek} },
                 { FieldIdResolver.ToFieldId(v => v.Wage.WorkingWeekDescription), new []{ FieldIdentifiers.WorkingWeek} },
                 { FieldIdResolver.ToFieldId(v => v.Wage.WageAdditionalInformation), new []{ FieldIdentifiers.WageAdditionalInfo }},
+                { FieldIdResolver.ToFieldId(v => v.Wage.CompanyBenefitsInformation), new []{ FieldIdentifiers.CompanyBenefitsInformation }},
                 { FieldIdResolver.ToFieldId(v => v.Wage.WageType),  new[]{ FieldIdentifiers.Wage}},
                 { FieldIdResolver.ToFieldId(v => v.Wage.FixedWageYearlyAmount), new []{ FieldIdentifiers.Wage }},
                 { FieldIdResolver.ToFieldId(v => v.Wage.Duration), new []{ FieldIdentifiers.ExpectedDuration }},

@@ -9,58 +9,63 @@
 }
 
 @section BackLink {
-    <esfaFeatureEnabled name="@FeatureNames.ProviderTaskList">
-        <a asp-route="@Model.RouteName" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Back</a>
-    </esfaFeatureEnabled>
-    <esfaFeatureDisabled name="@FeatureNames.ProviderTaskList">
-        <a asp-show="@Model.PageInfo.IsWizard" asp-all-route-data="@Model.RouteDictionary" asp-route="@RouteNames.Wage_Get" esfa-automation="link-back" class="govuk-back-link">Back</a>
-    </esfaFeatureDisabled>
+    <a asp-route="@Model.RouteName" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Back</a>
 }
 
-<main class="govuk-main-wrapper " id="main-content" role="main">
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-two-thirds">
 
-            <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }' />
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
 
-            <form asp-route="@RouteNames.AddExtraInformation_Post" asp-all-route-data="@Model.RouteDictionary" asp-route-wizard="@Model.PageInfo.IsWizard" novalidate>
-                @Html.HiddenFor(model => model.WageType)
-                <div esfa-validation-marker-for="WageAdditionalInformation" class="govuk-form-group">
-                    <fieldset class="govuk-fieldset" aria-describedby="extra-info-hint">
-                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
-                            <h1 class="govuk-fieldset__heading">
-                                Extra information about pay (optional)
-                            </h1>
-                        </legend>
-                        <span esfa-validation-message-for="WageAdditionalInformation" class="govuk-error-message"></span>
+        <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }' />
+        <partial name="@PartialNames.ReviewSummary" for="Review" />
+        <h1 class="govuk-heading-xl">
+            <span class="govuk-caption-l">@Model.Title</span>
+            <esfaFeatureEnabled name="@FeatureNames.FaaV2Improvements">
+                Extra information about pay and benefits (optional)
+            </esfaFeatureEnabled>
+            <esfaFeatureDisabled name="@FeatureNames.FaaV2Improvements">
+                Extra information about pay (optional)   
+            </esfaFeatureDisabled>
+        </h1>
 
-                        <div id="extra-info-hint" class="govuk-hint">
-                            For example bonus schemes, performance increases or benefits
-                        </div>
-                        <div class="govuk-character-count" data-module="govuk-character-count" data-minlength="50"
-                             data-maxlength="250">
-                            <textarea asp-for="WageAdditionalInformation" class="govuk-textarea govuk-!-width-three-quarters govuk-js-character-count"
-                                      id="WageAdditionalInformation" name="WageAdditionalInformation" rows="5"></textarea>
-                            <div id="WageAdditionalInformation-info" class="govuk-hint govuk-character-count__message"
-                                 aria-live="polite">
-                                You can enter up to 250 characters
-                            </div>
-                        </div>
-                    </fieldset>
+        <form asp-route="@RouteNames.AddExtraInformation_Post" asp-all-route-data="@Model.RouteDictionary" asp-route-wizard="@Model.PageInfo.IsWizard" novalidate>
+            @Html.HiddenFor(model => model.WageType)
+            <div esfa-validation-marker-for="WageAdditionalInformation" class="govuk-form-group">
+                <span esfa-validation-message-for="WageAdditionalInformation" class="govuk-error-message"></span>
+                <label asp-for="WageAdditionalInformation" class="govuk-label govuk-!-font-weight-bold govuk-!-margin-bottom-5">Information about pay (optional)</label>
+                <div id="extra-info-hint" class="govuk-hint">
+                    Mention anything that affects this apprenticeship’s wage. For example, a planned salary increase. This will be displayed next to the annual wage 
                 </div>
-
-                <div class="govuk-button-group">
-                    <button type="submit" class="govuk-button save-button" esfa-automation="continue-button">Continue</button>
-                    <esfaFeatureEnabled name="@FeatureNames.ProviderTaskList">
-                        <a asp-route="@RouteNames.Dashboard_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-cancel" class="govuk-link govuk-link--no-visited-state">Cancel</a>
-                    </esfaFeatureEnabled>
-                    <esfaFeatureDisabled name="@FeatureNames.ProviderTaskList">
-                        <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Vacancies_Get" asp-all-route-data="@Model.RouteDictionary" class="govuk-link govuk-link--no-visited-state">Cancel</a>
-                        <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.Vacancy_Preview_Get" asp-all-route-data="@Model.RouteDictionary" asp-fragment="@Anchors.ApprenticeshipSummarySection" class="govuk-link govuk-link--no-visited-state">Cancel</a>
-                    </esfaFeatureDisabled>
+                <div class="govuk-character-count" data-module="govuk-character-count" data-minlength="50"
+                     data-maxlength="250">
+                    <textarea asp-for="WageAdditionalInformation" class="govuk-textarea govuk-!-width-three-quarters govuk-js-character-count"
+                              id="WageAdditionalInformation" name="WageAdditionalInformation" rows="5"></textarea>
+                    <div id="WageAdditionalInformation-info" class="govuk-hint govuk-character-count__message"
+                         aria-live="polite">
+                        You can enter up to 250 characters
+                    </div>
                 </div>
-            </form>
+            </div>
+            <esfaFeatureEnabled name="@FeatureNames.FaaV2Improvements">
+                <div esfa-validation-marker-for="CompanyBenefitsInformation" class="govuk-form-group">
+                    <span esfa-validation-message-for="CompanyBenefitsInformation" class="govuk-error-message"></span>
+                    <label asp-for="CompanyBenefitsInformation" class="govuk-label govuk-!-font-weight-bold govuk-!-margin-bottom-5">Company benefits (optional)</label>
+                    <div id="extra-info-hint" class="govuk-hint">Mention benefits your company offers. For example, you pay for a gym membership. This will be displayed in the section about your company </div>
+                    <div class="govuk-character-count" data-module="govuk-character-count" data-minlength="50"data-maxlength="250">
+                        <textarea asp-for="CompanyBenefitsInformation" class="govuk-textarea govuk-!-width-three-quarters govuk-js-character-count"
+                                   id="CompanyBenefitsInformation" name="CompanyBenefitsInformation" rows="5"></textarea>
+                        <div id="CompanyBenefitsInformation-info" class="govuk-hint govuk-character-count__message"
+                             aria-live="polite">
+                            You can enter up to 250 characters
+                        </div>
+                    </div>
+                </div>    
+            </esfaFeatureEnabled>
+            <div class="govuk-button-group">
+                <button type="submit" class="govuk-button save-button" esfa-automation="continue-button">Continue</button>
+                <a asp-route="@RouteNames.Dashboard_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-cancel" class="govuk-link govuk-link--no-visited-state">Cancel</a>
+            </div>
+        </form>
 
-        </div>
     </div>
-</main>
+</div>
