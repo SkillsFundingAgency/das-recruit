@@ -188,7 +188,7 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation.
 
             result.HasErrors.Should().BeTrue();
             result.Errors.Should().HaveCount(1);
-            result.Errors[0].PropertyName.Should().Be($"{nameof(vacancy.Wage)}.{nameof(vacancy.Wage.WageAdditionalInformation)}");
+            result.Errors[0].PropertyName.Should().Be($"{nameof(vacancy.Wage)}.{nameof(vacancy.Wage.CompanyBenefitsInformation)}");
             result.Errors[0].ErrorCode.Should().Be("45");
             result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.Wage);
         }
