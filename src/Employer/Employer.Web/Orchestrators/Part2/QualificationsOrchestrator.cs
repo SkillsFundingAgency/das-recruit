@@ -49,6 +49,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
                 VacancyId = vacancy.Id,
                 EmployerAccountId = vacancy.EmployerAccountId,
                 Title = vacancy.Title,
+                AddQualificationRequirement = vacancy.HasOptedToAddQualifications,
                 Qualifications = qualifications.Select(q => new QualificationEditModel
                 {
                     Subject = q.Subject,
@@ -66,6 +67,12 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
             vm.IsTaskListCompleted = _utility.IsTaskListCompleted(vacancy);
             
             return vm;
+        }
+
+        public async Task<OrchestratorResponse> PostAddQualificationEditModel(AddQualificationsEditModel m, VacancyUser user)
+        {
+            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(m, RouteNames.Qualifications_Get);
+            return await UpdateVacancyWithAddQualifications(vacancy, m, user);
         }
 
         public async Task<QualificationViewModel> GetQualificationViewModelForAddAsync(VacancyRouteModel vrm)
@@ -263,6 +270,21 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
                     SyncErrorsAndModel(result.Errors, m);
                     return result;
                 },
+                v => _vacancyClient.UpdateDraftVacancyAsync(v, user));
+        }
+
+        private async Task<OrchestratorResponse> UpdateVacancyWithAddQualifications(Vacancy vacancy,
+            AddQualificationsEditModel m, VacancyUser user)
+        {
+            SetVacancyWithEmployerReviewFieldIndicators(
+                vacancy.HasOptedToAddQualifications,
+                FieldIdResolver.ToFieldId(v => v.HasOptedToAddQualifications),
+                vacancy,
+                (v) => { return v.HasOptedToAddQualifications = m.AddQualificationRequirement; });
+
+            return await ValidateAndExecute(
+                vacancy,
+                v => _vacancyClient.Validate(v, VacancyRuleSet.None),
                 v => _vacancyClient.UpdateDraftVacancyAsync(v, user));
         }
 

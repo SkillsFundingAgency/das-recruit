@@ -28,6 +28,7 @@
         public const string AdditionalTrainingDescription = "AdditionalrainingDescription";
         public const string OutcomeDescription = "OutcomeDescription";
         public const string Skills = "Skills";
+        public const string HasOptedToAddQualifications = "HasOptedToAddQualifications";
         public const string Qualifications = "Qualifications";
         public const string ThingsToConsider = "ThingsToConsider";
         public const string EmployerDescription = "EmployerDescription";

@@ -8,5 +8,6 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Part2.Qualifications
     {
         [Required(ErrorMessage = ValMsg.ValidationMessages.QualificationsConfirmationMessages.SelectionRequired)]
         public bool? AddQualificationRequirement { get; set; }
+        public bool IsTaskListCompleted { get; set; }
     }
 }

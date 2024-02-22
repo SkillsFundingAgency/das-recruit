@@ -45,18 +45,16 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part2
                 return View(vm);
             }
 
+            await _orchestrator.PostAddQualificationEditModel(m, User.ToVacancyUser());
+
             if (m.AddQualificationRequirement is true)
             {
                 return RedirectToRoute(RouteNames.Qualification_Add_Get, new { m.VacancyId, m.EmployerAccountId });
             }
 
-            if (m.AddQualificationRequirement is false)
-            {
-                //todo: back somewhere?
-                return RedirectToRoute(RouteNames.Qualification_Add_Get, new { m.VacancyId, m.EmployerAccountId });
-            }
-
-            throw new InvalidOperationException();
+            return RedirectToRoute(m.IsTaskListCompleted
+                ? RouteNames.EmployerCheckYourAnswersGet
+                : RouteNames.FutureProspects_Get, new { m.VacancyId, m.EmployerAccountId });
         }
 
         [HttpGet("qualifications/add", Name = RouteNames.Qualification_Add_Get)]
