@@ -274,6 +274,21 @@
                      @if (_serviceParameters.VacancyType == VacancyType.Apprenticeship)
                      {
                          <li class="das-task-list__item">
+                             <esfaFeatureEnabled name="@FeatureNames.FaaV2Improvements">
+                                 @if (Model.ExpectedDurationSectionState == VacancyPreviewSectionState.Incomplete)
+                                 {
+                                     <span class="das-task-list__task-name">
+                                         Pay rate and benefits
+                                     </span>
+                                 }
+                                 else
+                                 {
+                                     <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.Wage_Get" asp-all-route-data="@Model.RouteDictionary">
+                                         Pay rate and benefits
+                                     </a>
+                                 }
+                             </esfaFeatureEnabled>
+                             <esfaFeatureDisabled name="@FeatureNames.FaaV2Improvements">
                              @if (Model.ExpectedDurationSectionState == VacancyPreviewSectionState.Incomplete)
                              {
                                  <span class="das-task-list__task-name">
@@ -282,10 +297,11 @@
                              }
                              else
                              {
-                                 <a class="govuk-link govuk-link--no-visited-state" asp-all-route-data="@Model.RouteDictionary" asp-route="@RouteNames.Wage_Get">
+                                 <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.Wage_Get" asp-all-route-data="@Model.RouteDictionary">
                                      Pay rate
                                  </a>
                              }
+                             </esfaFeatureDisabled>
                          </li>
                      }
                     <li class="das-task-list__item">

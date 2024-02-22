@@ -112,6 +112,7 @@ namespace Esfa.Recruit.Provider.Web.Mappings
                     : null;
                 vm.HoursPerWeek = $"{vacancy.Wage.WeeklyHours:0.##} hours a week";
                 vm.WageInfo = vacancy.Wage.WageAdditionalInformation;
+                vm.CompanyBenefitsInformation = vacancy.Wage.CompanyBenefitsInformation;
                 vm.WageType = vacancy.Wage.WageType;
                 vm.WageText = vacancy.StartDate.HasValue ? vacancy.Wage.ToText(vacancy.StartDate) : null;
                 vm.WorkingWeekDescription = vacancy.Wage.WorkingWeekDescription;
