@@ -189,7 +189,7 @@ namespace Esfa.Recruit.Employer.Web
             app.UseRedirectValidation(opts =>
             {
                 opts.AllowSameHostRedirectsToHttps();
-                opts.AllowedDestinations(GetAllowableDestinations(AuthConfig, externalLinks.Value, config));
+                opts.AllowedDestinations(GetAllowableDestinations(externalLinks.Value, config));
             }); //Register this earlier if there's middleware that might redirect.
 
             // Redirect requests to root to the MA site.
@@ -207,21 +207,15 @@ namespace Esfa.Recruit.Employer.Web
 
         }
 
-        private static string[] GetAllowableDestinations(AuthenticationConfiguration authConfig, ExternalLinksConfiguration linksConfig, IConfiguration configuration)
+        private static string[] GetAllowableDestinations(ExternalLinksConfiguration linksConfig, IConfiguration configuration)
         {
             var destinations = new List<string>();
-
-            if (!string.IsNullOrWhiteSpace(authConfig?.Authority))
-                destinations.Add(authConfig.Authority.Replace("identity", string.Empty));
 
             if (!string.IsNullOrWhiteSpace(linksConfig?.ManageApprenticeshipSiteUrl))
                 destinations.Add(linksConfig?.ManageApprenticeshipSiteUrl);
 
             if (!string.IsNullOrWhiteSpace(linksConfig?.CommitmentsSiteUrl))
                 destinations.Add(linksConfig?.CommitmentsSiteUrl);
-
-            if (!string.IsNullOrWhiteSpace(linksConfig?.EmployerFavouritesUrl))
-                destinations.Add(linksConfig.EmployerFavouritesUrl);
 
             if (!string.IsNullOrWhiteSpace(linksConfig?.TrainingProviderPermissionUrl))
                 destinations.Add(linksConfig.TrainingProviderPermissionUrl);

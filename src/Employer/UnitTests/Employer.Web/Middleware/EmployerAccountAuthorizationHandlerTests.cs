@@ -87,46 +87,6 @@ public class EmployerAccountAuthorizationHandlerTests
     }
 
     [Test, MoqAutoData]
-    public async Task Then_If_Not_In_Context_Claims_EmployerAccountService_Checked_And_True_Returned_If_Exists(
-        string accountId,
-        string userId,
-        string email,
-        EmployerIdentifier employerIdentifier,
-        EmployerAccountOwnerOrTransactorRequirement ownerRequirement,
-        [Frozen] Mock<IHttpContextAccessor> httpContextAccessor,
-        [Frozen] Mock<IEmployerAccountProvider> employerAccountService,
-        [Frozen] Mock<IConfiguration> configuration,
-        EmployerAccountAuthorizationHandler authorizationHandler)
-    {
-        //Arrange
-        configuration.Setup(x=>x["UseGovSignIn"]).Returns("false");
-        employerIdentifier.AccountId = accountId.ToUpper();
-        employerIdentifier.Role = "Owner";
-        employerAccountService.Setup(x => x.GetEmployerIdentifiersAsync(userId, email))
-            .ReturnsAsync(new GetUserAccountsResponse
-            {
-                UserAccounts = new List<EmployerIdentifier>{ employerIdentifier }
-            });
-        
-        var userClaim = new Claim(EmployerRecruitClaims.IdamsUserIdClaimTypeIdentifier, userId);
-        var employerAccounts = new Dictionary<string, EmployerIdentifier>{{employerIdentifier.AccountId, employerIdentifier}};
-        var employerAccountClaim = new Claim(EmployerRecruitClaims.AccountsClaimsTypeIdentifier, JsonConvert.SerializeObject(employerAccounts));
-        var claimsPrinciple = new ClaimsPrincipal(new[] {new ClaimsIdentity(new[] {employerAccountClaim, userClaim, new Claim(ClaimTypes.Email, email)})});
-        var context = new AuthorizationHandlerContext(new[] {ownerRequirement}, claimsPrinciple, null);
-        var responseMock = new FeatureCollection();
-        var httpContext = new DefaultHttpContext(responseMock);
-        httpContext.Request.RouteValues.Add(RouteValueKeys.EmployerAccountHashedId, accountId.ToUpper());
-        httpContextAccessor.Setup(x => x.HttpContext).Returns(httpContext);
-        
-        //Act
-        var actual = await authorizationHandler.IsEmployerAuthorized(context, EmployerUserRole.Owner);
-
-        //Assert
-        actual.Should().BeTrue();
-        
-    }
-
-    [Test, MoqAutoData]
     public async Task Then_If_Not_In_Context_Claims_EmployerAccountService_Checked_And_True_Returned_If_Exists_For_GovSignIn(
         string accountId,
         string userId,
@@ -135,11 +95,9 @@ public class EmployerAccountAuthorizationHandlerTests
         EmployerAccountOwnerOrTransactorRequirement ownerRequirement,
         [Frozen] Mock<IHttpContextAccessor> httpContextAccessor,
         [Frozen] Mock<IEmployerAccountProvider> employerAccountService,
-        [Frozen] Mock<IConfiguration> configuration,
         EmployerAccountAuthorizationHandler authorizationHandler)
     {
         //Arrange
-        configuration.Setup(x=>x["UseGovSignIn"]).Returns("true");
         employerIdentifier.AccountId = accountId.ToUpper();
         employerIdentifier.Role = "Owner";
         employerAccountService.Setup(x => x.GetEmployerIdentifiersAsync(userId, email))
@@ -260,11 +218,9 @@ public class EmployerAccountAuthorizationHandlerTests
         EmployerIdentifier employerIdentifier,
         EmployerAccountOwnerOrTransactorRequirement ownerRequirement,
         [Frozen] Mock<IHttpContextAccessor> httpContextAccessor,
-        [Frozen] Mock<IConfiguration> forecastingConfiguration,
         EmployerAccountAuthorizationHandler authorizationHandler)
     {
         //Arrange
-        forecastingConfiguration.Setup(x=>x["UseGovSignIn"]).Returns("true");
         employerIdentifier.Role = "Viewer-Owner-Transactor";
         employerIdentifier.AccountId = employerIdentifier.AccountId.ToUpper();
         var employerAccounts = new Dictionary<string, EmployerIdentifier>{{employerIdentifier.AccountId, employerIdentifier}};
