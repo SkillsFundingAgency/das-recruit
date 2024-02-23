@@ -235,6 +235,27 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
                 BackRoute = backRoute
             };
 
+            foreach (var qualification in allQualifications)
+            {
+                var q = new QualificationViewModel.Qualification
+                {
+                    Name = qualification,
+                    Data = ""
+                };
+
+                if (qualification == "BTEC or equivalent")
+                {
+                    q.Data = "conditional-level";
+                }
+
+                if (qualification == "Other")
+                {
+                    q.Data = "conditional-qualification-name";
+                }
+
+                vm.Qualifications.Add(q);
+            }
+
             return vm;
         }
 

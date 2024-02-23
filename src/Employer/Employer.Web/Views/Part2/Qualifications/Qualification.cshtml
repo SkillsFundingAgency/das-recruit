@@ -4,7 +4,7 @@
 @model QualificationViewModel
 @{ 
     ViewBag.Vpv = "/recruitment/employer/page-part2-qualification";
-    ViewBag.Title = "What qualifications would you like the applicant to have?";
+    ViewBag.Title = "Add a qualification";
     ViewBag.ZenDeskLabel = "recruit-what-qualifications-would-you-like-the-applicant-to-have";
 }
 
@@ -31,9 +31,9 @@
         <select asp-for="QualificationType" class="govuk-select">
             <option value="">Select from list</option>
 
-            @foreach (var qualificationType in Model.QualificationTypes)
+            @foreach (var qualificationType in Model.Qualifications)
             {
-                <option value="@qualificationType" selected="@(Model.QualificationType == @qualificationType)">@qualificationType</option>
+                <option value="@qualificationType.Name" data-aria-controls="@qualificationType.Data" selected="@(Model.QualificationType == @qualificationType.Name)">@qualificationType.Name</option>
             }
         </select>
     </div>
