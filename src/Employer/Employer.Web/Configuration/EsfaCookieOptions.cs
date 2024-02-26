@@ -18,7 +18,7 @@ namespace Esfa.Recruit.Employer.Web.Configuration
 
         public static CookieOptions GetSessionLifetimeHttpCookieOption(IWebHostEnvironment env) =>
             GetDefaultHttpCookieOption(env)
-            .WithExpiryTime(DateTimeOffset.UtcNow.AddMinutes(AuthenticationConfiguration.SessionTimeoutMinutes));
+            .WithExpiryTime(DateTimeOffset.UtcNow.AddMinutes(30));
 
         public static CookieOptions GetSingleDayLifetimeHttpCookieOption(IWebHostEnvironment env, ITimeProvider timeProvider) =>
             GetDefaultHttpCookieOption(env)
