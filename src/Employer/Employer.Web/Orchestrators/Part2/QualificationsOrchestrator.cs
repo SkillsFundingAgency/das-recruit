@@ -224,7 +224,11 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
                 cancelRoute = RouteNames.Dashboard_Get;
                 backRoute = RouteNames.Skills_Get;
             }
-            
+
+            allQualifications.Remove("NVQ or SVQ Level 1 or equivalent");
+            allQualifications.Remove("NVQ or SVQ Level 2 or equivalent");
+            allQualifications.Remove("NVQ or SVQ Level 3 or equivalent");
+
             var vm = new QualificationViewModel
             {
                 VacancyId = vacancy.Id,
@@ -245,16 +249,19 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
 
                 if (qualification == "BTEC or equivalent")
                 {
-                    q.Data = "conditional-level";
+                    q.Data = "conditional-btec";
                 }
 
                 if (qualification == "Other")
                 {
-                    q.Data = "conditional-qualification-name";
+                    q.Data = "conditional-other";
                 }
 
                 vm.Qualifications.Add(q);
             }
+
+            //todo: source this from somewhere
+            vm.Levels = new List<int> { 1, 2, 3, 4, 5, 6, 7 };
 
             return vm;
         }
