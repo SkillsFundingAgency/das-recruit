@@ -33,7 +33,8 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.Part1.Wage
         {
             nameof(WageType),
             nameof(FixedWageYearlyAmount),
-            nameof(WageAdditionalInformation)
+            nameof(WageAdditionalInformation),
+            nameof(CompanyBenefitsInformation)
         };
 
         public PartOnePageInfoViewModel PageInfo { get; set; }

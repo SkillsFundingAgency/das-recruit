@@ -481,5 +481,22 @@ namespace Esfa.Recruit.Provider.Web.Mappings
 
             return new ReviewFieldMappingLookupsForPage(vms, mappings);
         }
+        
+        public static ReviewFieldMappingLookupsForPage GetAdditionalWageInformationFieldIndicators()
+        {
+            var vms = new List<ReviewFieldIndicatorViewModel>
+            {
+                new(FieldIdentifiers.WageAdditionalInfo, Anchors.WageAdditionalInformation),
+                new(FieldIdentifiers.CompanyBenefitsInformation, Anchors.CompanyBenefitsInformation)
+            };
+
+            var mappings = new Dictionary<string, IEnumerable<string>>
+            {
+                { FieldIdResolver.ToFieldId(v => v.Wage.WageAdditionalInformation), new []{ FieldIdentifiers.WageAdditionalInfo} },
+                { FieldIdResolver.ToFieldId(v => v.Wage.CompanyBenefitsInformation), new []{ FieldIdentifiers.CompanyBenefitsInformation} }
+            };
+
+            return new ReviewFieldMappingLookupsForPage(vms, mappings);
+        }
     }
 }

@@ -195,7 +195,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
             if (vacancy.Status == VacancyStatus.Referred)
             {
                 vm.Review = await _reviewSummaryService.GetReviewSummaryViewModelAsync(vacancy.VacancyReference.Value,
-                    ReviewFieldMappingLookups.GetWageReviewFieldIndicators());
+                    ReviewFieldMappingLookups.GetAdditionalWageInformationFieldIndicators());
             }
 
             return vm;
