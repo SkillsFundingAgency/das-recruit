@@ -1,4 +1,6 @@
-﻿@using SFA.DAS.Employer.Shared.UI.Models
+﻿@using Microsoft.Extensions.Configuration
+@inject IConfiguration Configuration
+@using SFA.DAS.Employer.Shared.UI.Models
 @using WebEssentials.AspNetCore.CdnTagHelpers
 @using Microsoft.AspNetCore.Mvc.TagHelpers
 @using NWebsec.AspNetCore.Mvc.TagHelpers
@@ -22,71 +24,72 @@
 }
 <!DOCTYPE html>
 <html lang="en" class="govuk-template">
-    <head>
-        <meta charset="utf-8" />
-        <title>@GetTitle()</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="theme-color" content="#0b0c0c" />
 
-        <link rel="shortcut icon" href="assets/images/favicon.ico" type="image/x-icon" />
-        <link rel="mask-icon" href="assets/images/govuk-mask-icon.svg" color="#0b0c0c"/>
-        <link rel="apple-touch-icon" sizes="180x180" href="assets/images/govuk-apple-touch-icon-180x180.png"/>
-        <link rel="apple-touch-icon" sizes="167x167" href="assets/images/govuk-apple-touch-icon-167x167.png"/>
-        <link rel="apple-touch-icon" sizes="152x152" href="assets/images/govuk-apple-touch-icon-152x152.png"/>
-        <link rel="apple-touch-icon" href="assets/images/govuk-apple-touch-icon.png"/>
+<head>
+    <meta charset="utf-8" />
+    <title>@GetTitle()</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#0b0c0c" />
+    <link rel="icon" sizes="48x48" href="/assets/images/favicon.ico" />
+    <link rel="icon" sizes="any" href="/assets/images/favicon.svg" type="image/svg+xml" />
+    <link rel="mask-icon" href="/assets/images/govuk-icon-mask.svg" color="#0b0c0c" />
+    <link rel="apple-touch-icon" href="/assets/images/govuk-icon-180.png" />
+    <link href="css/main.css" rel="stylesheet" />
+    <link asp-append-version="true" rel="stylesheet" media="screen" href="/css/app.css" no-cdn />
 
-        <!--[if !IE 8]><!-->
-        <link href="css/main.css" rel="stylesheet" />
-        <link asp-append-version="true" rel="stylesheet" media="screen" href="/css/app.css" no-cdn />
-        <!--<![endif]-->
+    <partial name="@PartialNames.ApplicationInsights" />
+    <script src="/libs/jquery/jquery.min.js"></script>
+    <script src="@Url.Content("/lib/jquery-are-you-sure/jquery.are-you-sure.js")" no-cdn></script>
+    <partial name="@PartialNames.GoogleAnalyticsInfo" />
+    <partial name="@PartialNames.GoogleTagManagerHead" />
+    <script nws-csp-add-nonce="true">
+        window.EsfaRecruit = {};
+    </script>
+    @await RenderSectionAsync(RazorSections.HeadJS, required: false)
+    <partial name="@PartialNames.ZenDeskWidget" />
+    <partial name="@PartialNames.ZenDeskApi" />
+</head>
 
-        <meta property="og:image" content="assets/images/govuk-opengraph-image.png">
-        <partial name="@PartialNames.ApplicationInsights" />
-        <script src="/libs/jquery/jquery.min.js"></script>
-        <script src="@Url.Content("/lib/jquery-are-you-sure/jquery.are-you-sure.js")" no-cdn></script>
-        <partial name="@PartialNames.GoogleAnalyticsInfo" />
-        <partial name="@PartialNames.GoogleTagManagerHead" />
-        <script nws-csp-add-nonce="true">
-            window.EsfaRecruit = {};
-        </script>
-        @await RenderSectionAsync(RazorSections.HeadJS, required: false)
-        <partial name="@PartialNames.ZenDeskWidget" />
-        <partial name="@PartialNames.ZenDeskApi" />
-    </head>
-    <body class="govuk-template__body ">
-        <partial name="@PartialNames.GoogleTagManagerBody" />
-        <script nws-csp-add-nonce="true">
-                    document.body.className = ((document.body.className) ? document.body.className + ' js-enabled' : 'js-enabled');
-                </script>
-        <a href="#main-content" class="govuk-skip-link">Skip to main content</a>
+<body class="govuk-template__body ">
+    <partial name="@PartialNames.GoogleTagManagerBody" />
+    <script nws-csp-add-nonce="true">
+        document.body.className += ' js-enabled' + ('noModule' in HTMLScriptElement.prototype ? ' govuk-frontend-supported' : '');
+    </script>
+    <a href="#main-content" class="govuk-skip-link">Skip to main content</a>
 
+    @* ReSharper disable once Mvc.PartialViewNotResolved *@
+    <partial name="_Header">
         @* ReSharper disable once Mvc.PartialViewNotResolved *@
-        <partial name="_Header">
-            @* ReSharper disable once Mvc.PartialViewNotResolved *@
-            <partial name="_Menu" model="@accountId">
-            </partial>
+        <partial name="_Menu" model="@accountId">
         </partial>
+    </partial>
 
-        <div class="govuk-width-container">
-            @RenderSection(RazorSections.BackLink, required: false)
-            <main class="govuk-main-wrapper" id="main-content" role="main">
-                @RenderBody()
-            </main>
-        </div>
+    <div class="govuk-width-container">
+        @RenderSection(RazorSections.BackLink, required: false)
+        <main class="govuk-main-wrapper" id="main-content" role="main">
+            @RenderBody()
+        </main>
+    </div>
 
-        @* ReSharper disable once Mvc.PartialViewNotResolved *@
-        <partial name="_Footer" model="@footerModel"/>
-        @await RenderSectionAsync("FooterPreJS", required: false)
-        <script src="/libs/govuk-frontend/all.js"></script>
-        <script src="/js/das-all.js"></script>
-        <script src="/libs/accessible-autocomplete/accessible-autocomplete.min.js"></script>
-        <script src="/js/app.min.js"></script>
-        <script nws-csp-add-nonce="true">
-            window.GOVUKFrontend.initAll();
-            window.DASFrontend.initAll();
-        </script>
-        <script asp-append-version="true" src="/javascripts/application.js" no-cdn></script>
-        @await RenderSectionAsync(RazorSections.FooterJS, required: false)
-        
-    </body>
+    @* ReSharper disable once Mvc.PartialViewNotResolved *@
+    <partial name="_Footer" model="@footerModel" />
+    @await RenderSectionAsync("FooterPreJS", required: false)
+    <script type="module" src="/libs/govuk-frontend/govuk-frontend.min.js"></script>
+    <script type="module" nws-csp-add-nonce="true">
+        import {
+            initAll
+        } from '@Configuration["cdn:url"]/libs/govuk-frontend/govuk-frontend.min.js'
+        initAll()
+    </script>
+    <script src="/js/das-all.js"></script>
+    <script src="/libs/accessible-autocomplete/accessible-autocomplete.min.js"></script>
+    <script src="/js/app.min.js"></script>
+    <script nws-csp-add-nonce="true">
+        window.DASFrontend.initAll();
+    </script>
+    <script asp-append-version="true" src="/javascripts/application.js" no-cdn></script>
+    @await RenderSectionAsync(RazorSections.FooterJS, required: false)
+
+</body>
+
 </html>
