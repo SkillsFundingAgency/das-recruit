@@ -238,6 +238,16 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
                 });
                 vacancy.Wage.WorkingWeekDescription = m.WorkingWeekDescription;
             }
+            if (review.VacancySnapshot.Wage.CompanyBenefitsInformation != m.CompanyBenefitsInformation)
+            {
+                manualQaFieldEditIndicator.Add(new ManualQaFieldEditIndicator
+                {
+                    FieldIdentifier = nameof(m.CompanyBenefitsInformation),
+                    BeforeEdit = review.VacancySnapshot.Wage.CompanyBenefitsInformation,
+                    AfterEdit = m.CompanyBenefitsInformation
+                });
+                vacancy.Wage.CompanyBenefitsInformation = m.CompanyBenefitsInformation;
+            }
 
             if (review.VacancySnapshot.WorkExperience != m.WorkExperience)
             {

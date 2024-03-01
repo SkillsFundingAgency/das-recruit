@@ -165,6 +165,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
         {
             var vm = await _orchestrator.GetExtraInformationViewModelAsync(vrm);
             vm.WageAdditionalInformation = vrm.WageAdditionalInformation;
+            vm.CompanyBenefitsInformation = vrm.CompanyBenefitsInformation;
             vm.PageInfo.SetWizard(wizard);
             return View(vm);
         }

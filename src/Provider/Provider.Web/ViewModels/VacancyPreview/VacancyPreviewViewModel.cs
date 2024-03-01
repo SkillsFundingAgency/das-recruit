@@ -156,6 +156,7 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview
             nameof(HoursPerWeek),
             nameof(WageText),
             nameof(WageInfo),
+            nameof(CompanyBenefitsInformation),
             nameof(ExpectedDuration),
             nameof(PossibleStartDate),
             nameof(HasProgramme),

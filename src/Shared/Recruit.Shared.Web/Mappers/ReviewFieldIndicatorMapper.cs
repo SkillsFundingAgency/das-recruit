@@ -25,6 +25,7 @@ namespace Esfa.Recruit.Shared.Web.Mappers
             { FieldIdentifiers.ShortDescription, "Brief overview requires edit" },
             { FieldIdentifiers.ClosingDate, "Closing date requires edit" },
             { FieldIdentifiers.Wage, "Annual wage requires edit" },
+            { FieldIdentifiers.CompanyBenefitsInformation, "Company benefits requires edit" },
             { FieldIdentifiers.WorkingWeek, "Working week requires edit" },
             { FieldIdentifiers.ExpectedDuration, "Expected duration requires edit" },
             { FieldIdentifiers.PossibleStartDate, "Possible start date requires edit" },
