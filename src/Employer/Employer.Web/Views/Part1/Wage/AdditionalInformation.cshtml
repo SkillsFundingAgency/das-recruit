@@ -1,9 +1,8 @@
-﻿@using Microsoft.Extensions.Options
-@model Esfa.Recruit.Employer.Web.ViewModels.Part1.Wage.WageExtraInformationViewModel
-@inject IOptions<ExternalLinksConfiguration> externalLinks
+﻿@model Esfa.Recruit.Employer.Web.ViewModels.Part1.Wage.WageExtraInformationViewModel
+
 @{
     ViewBag.Vpv = "/recruitment/employer/page-part1-additional-information";
-    ViewBag.Title = "Additional-Information";
+    ViewBag.Title = "Extra information about pay and benefits";
     ViewBag.ZenDeskLabel = "recruit-additional-information";
 }
 
@@ -64,7 +63,7 @@
             
 
             <div class="govuk-button-group">
-                <button type="submit" class="govuk-button save-button" esfa-automation="continue-button">Continue</button>
+                <button type="submit" class="govuk-button save-button" esfa-automation="continue-button">Save and continue</button>
                 <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Dashboard_Get" asp-route-employerAccountId="@Model.EmployerAccountId" class="govuk-link govuk-link--no-visited-state">Cancel</a>
                 <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.EmployerCheckYourAnswersGet" asp-all-route-data="@Model.RouteDictionary" class="govuk-link govuk-link--no-visited-state">Cancel</a>
             </div>
