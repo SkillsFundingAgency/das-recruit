@@ -41,7 +41,7 @@
                 <span class="govuk-!-font-weight-bold">Application ID: </span>@Model.FriendlyId
             </p>
 
-            <div class="das-highlight">
+            <div class="das-highlight govuk-!-padding-0">
                 <p class="govuk-body">
                     @Html.Raw(
                     string.Join("<br>",
@@ -313,7 +313,7 @@
             <p class="govuk-body">Yes, I want to interview this applicant.</p>
         </div>
 
-        <div asp-show="@Model.IsApplicationEmployerUnsuccessful">
+        <div asp-show="@Model.IsApplicationUnsuccessful">
             <h2 class="govuk-heading-l govuk-!-margin-top-6">Your response to your training provider.</h2>
             <p class="govuk-body">No, I don't want to interview this applicant.</p>
             <div class="govuk-inset-text">
