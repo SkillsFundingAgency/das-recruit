@@ -5,6 +5,11 @@
     ViewBag.Vpv = "/recruitment/employer/page-application-review";
     ViewBag.Title = "Review application";
 }
+@section BackLink {
+    <a asp-route="@RouteNames.VacancyManage_Get" asp-route-vacancyId="@Model.VacancyId" asp-route-employerAccountId="@Model.EmployerAccountId" asp-route-vacancySharedByProvider="@Model.IsApplicationSharedByProvider" esfa-automation="link-back" class="govuk-back-link">Back</a>
+}
+
+
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
 
@@ -23,12 +28,14 @@
 
         <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }' />
 
+        <span class="govuk-caption-l">@Model.VacancyTitle</span>
+
         <div asp-show="@Model.ShowAnonymisedApplicantDetails">
-            <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">Application ID: @Model.FriendlyId</h1>
+            <h1 class="govuk-heading-l govuk-!-margin-bottom-5">Application ID: @Model.FriendlyId</h1>
         </div>
 
         <div asp-show="@Model.IsApplicationShared">
-            <h2 class="govuk-heading-l govuk-!-margin-bottom-5">Contact Details</h2>
+            <h2 class="govuk-heading-m govuk-!-margin-bottom-5">Contact Details</h2>
             <p class="govuk-body">
                 You'll be able to see this applicant's name and contact details if you decide to interview them.
             </p>
@@ -37,10 +44,10 @@
         <div asp-hide="@Model.ShowAnonymisedApplicantDetails">
 
             <h1 class="govuk-heading-xl govuk-!-margin-bottom-4">@Model.Name</h1>
-            <p class="govuk-body govuk-!-margin-bottom-6">
-                <span class="govuk-!-font-weight-bold">Application ID: </span>@Model.FriendlyId
+            <p class="govuk-body govuk-!-margin-bottom-5">
+                Application ID: @Model.FriendlyId
             </p>
-
+            <h2 class="govuk-heading-m govuk-!-margin-bottom-3">Contact Details</h2>
             <div class="das-highlight govuk-!-padding-0">
                 <p class="govuk-body">
                     @Html.Raw(
@@ -63,7 +70,7 @@
             </div>
         </div>
 
-        <h2 class="govuk-heading-l govuk-!-margin-top-6">About you</h2>
+        <h2 class="govuk-heading-l govuk-!-margin-top-1">About you</h2>
 
         <div class="govuk-form-group">
             <span class="govuk-label govuk-!-font-weight-bold">What are your main strengths?</span>
@@ -290,7 +297,7 @@
                                 <span esfa-validation-message-for="CandidateFeedback" class="govuk-error-message"></span>
                                 <span class="govuk-hint">@Model.FormRadioButtonNoFeedbackText</span>
                                 <textarea asp-for="CandidateFeedback" class="govuk-textarea govuk-js-character-count govuk-!-margin-top-4" id="CandidateFeedback" name="CandidateFeedback" rows="6"></textarea>
-                                <div id="CandidateFeedbackEmployerUnsuccessful-info" class="govuk-hint govuk-character-count__message">
+                                <div id="CandidateFeedback-info" class="govuk-hint govuk-character-count__message">
                                     You have 200 words remaining
                                 </div>
                             </div>
@@ -309,7 +316,7 @@
         </form>
 
         <div asp-show="@Model.IsApplicationInterviewing">
-            <h2 class="govuk-heading-l govuk-!-margin-top-6">Your response to your training provider.</h2>
+            <h2 class="govuk-heading-l govuk-!-margin-top-6">Your response to your training provider</h2>
             <p class="govuk-body">Yes, I want to interview this applicant.</p>
         </div>
 

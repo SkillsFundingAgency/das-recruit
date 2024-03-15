@@ -10,6 +10,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.ApplicationReview;
 
     public class ApplicationReviewViewModel : ApplicationReviewRouteModel
     {
+        public string VacancyTitle { get; set; }
         public string AddressLine1 { get; set; }
         public string AddressLine2 { get; set; }
         public string AddressLine3 { get; set; }
