@@ -10,6 +10,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.ApplicationReview;
 
     public class ApplicationReviewViewModel : ApplicationReviewRouteModel
     {
+        public string VacancyTitle { get; set; }
         public string AddressLine1 { get; set; }
         public string AddressLine2 { get; set; }
         public string AddressLine3 { get; set; }
@@ -60,9 +61,9 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.ApplicationReview;
         {
             nameof(Outcome)
         };
-        public bool ShowAnonymisedApplicantDetails => (Status == ApplicationReviewStatus.Shared || Status == ApplicationReviewStatus.EmployerUnsuccessful);
+        public bool ShowAnonymisedApplicantDetails => (Status == ApplicationReviewStatus.Shared || Status == ApplicationReviewStatus.EmployerUnsuccessful || Status == ApplicationReviewStatus.Unsuccessful);
         public bool HideRadioButtons => (Status == ApplicationReviewStatus.EmployerInterviewing || Status == ApplicationReviewStatus.EmployerUnsuccessful);
-        public bool IsApplicationEmployerUnsuccessful => Status == ApplicationReviewStatus.EmployerUnsuccessful;
+        public bool IsApplicationUnsuccessful => (Status == ApplicationReviewStatus.EmployerUnsuccessful || Status == ApplicationReviewStatus.Unsuccessful);
         public bool IsApplicationShared => Status == ApplicationReviewStatus.Shared;
         public bool IsApplicationInterviewing => (Status == ApplicationReviewStatus.EmployerInterviewing || Status == ApplicationReviewStatus.Interviewing);
         public bool IsApplicationSharedByProvider => DateSharedWithEmployer.HasValue;
