@@ -44,7 +44,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Va
         public DateTime? DateSharedWithEmployer { get; set; }
         public DateTime? ReviewedDate { get; set; }
         public bool IsSharedApplication => DateSharedWithEmployer.HasValue;
-        public string DateReviewedText => !string.IsNullOrEmpty(ReviewedDate.ToString()) ? ReviewedDate.AsGdsDate() : "Not Reviewed";
+        public string DateReviewedText => !string.IsNullOrEmpty(ReviewedDate.ToString()) ? ReviewedDate.AsGdsDate() : "Not reviewed";
         public bool? HasEverBeenEmployerInterviewing { get; set; }
 
         public static implicit operator VacancyApplication(ApplicationReview applicationReview)
