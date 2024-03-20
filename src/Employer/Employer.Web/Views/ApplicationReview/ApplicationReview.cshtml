@@ -35,11 +35,13 @@
         </div>
 
         <div asp-show="@Model.IsApplicationShared">
-            <h2 class="govuk-heading-m govuk-!-margin-bottom-5">Contact Details</h2>
+            <h2 class="govuk-heading-m govuk-!-margin-bottom-5">Contact details</h2>
             <p class="govuk-body">
                 You'll be able to see this applicant's name and contact details if you decide to interview them.
             </p>
         </div>
+
+        <hr asp-show="@Model.IsApplicationShared" class="govuk-section-break govuk-section-break--l govuk-section-break--visible" />
 
         <div asp-hide="@Model.ShowAnonymisedApplicantDetails">
 
@@ -47,13 +49,13 @@
             <p class="govuk-body govuk-!-margin-bottom-5">
                 Application ID: @Model.FriendlyId
             </p>
-            <h2 class="govuk-heading-m govuk-!-margin-bottom-3">Contact Details</h2>
-            <div class="das-highlight govuk-!-padding-0">
+            <h2 class="govuk-heading-m govuk-!-margin-bottom-3">Contact details</h2>
+            <div class="govuk-!-padding-0">
                 <p class="govuk-body">
                     @Html.Raw(
-                    string.Join("<br>",
-                    new[]
-                    {
+                             string.Join("<br>",
+                             new[]
+                             {
                     @Model.Name,
                     @Model.AddressLine1,
                     @Model.AddressLine2,
@@ -61,7 +63,7 @@
                     @Model.AddressLine4,
                     @Model.Postcode
                     }.Where(s => !string.IsNullOrWhiteSpace(s))
-                    .Select(WebUtility.HtmlEncode)))
+                             .Select(WebUtility.HtmlEncode)))
                 </p>
                 <p class="govuk-body govuk-!-margin-bottom-0">
                     @Model.Phone
@@ -69,6 +71,8 @@
                 </p>
             </div>
         </div>
+
+        <hr asp-hide="@Model.ShowAnonymisedApplicantDetails" class="govuk-section-break govuk-section-break--l govuk-section-break--visible" />
 
         <h2 class="govuk-heading-l govuk-!-margin-top-1">About you</h2>
 
@@ -262,7 +266,7 @@
                             <label for="outcome-unsuccessful" class="govuk-label govuk-radios__label">@Model.FormRadioButtonNoText</label>
                         </div>
 
-                         <!-- Not Shared Options-->
+                        <!-- Not Shared Options-->
                         <div class="govuk-radios__item" asp-show="Model.CanShowRadioButtonReview">
                             <input asp-for="Outcome" class="govuk-radios__input" id="outcome-reviewed" type="radio" value="@ApplicationReviewStatus.InReview.ToString()" checked="@(Model.Outcome == ApplicationReviewStatus.InReview ? "checked" : null)">
                             <label for="outcome-reviewed" class="govuk-label govuk-radios__label">Review</label>
@@ -321,7 +325,7 @@
         </div>
 
         <div asp-show="@Model.IsApplicationUnsuccessful">
-            <h2 class="govuk-heading-l govuk-!-margin-top-6">Your response to your training provider.</h2>
+            <h2 class="govuk-heading-l govuk-!-margin-top-6">Your response to your training provider</h2>
             <p class="govuk-body">No, I don't want to interview this applicant.</p>
             <div class="govuk-inset-text">
                 @Model.CandidateFeedback
