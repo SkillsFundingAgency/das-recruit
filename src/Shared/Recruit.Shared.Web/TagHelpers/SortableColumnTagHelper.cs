@@ -67,6 +67,8 @@ namespace Esfa.Recruit.Shared.Web.TagHelpers
                 sortOrderCssSuffix = sortOrder == SortOrder.Ascending ? "das-table__sort--asc" : "das-table__sort--desc";
             }
 
+            href += "#applications";
+
             var ariaSort = sortOrder.ToString().ToLower();
 
             var content = new StringBuilder();
