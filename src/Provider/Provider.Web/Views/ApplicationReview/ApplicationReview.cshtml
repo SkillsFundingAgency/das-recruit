@@ -233,10 +233,19 @@
             <hr class="govuk-section-break govuk-section-break--l govuk-section-break--not visible">
         </section>
 
-        <div asp-show="@Model.CanNotChangeOutcome">
+        <div asp-show="@Model.IsApplicationSuccessful">
             <h3 class="govuk-heading-l govuk-!-margin-top-6">Outcome</h3>
             <p class="govuk-body">@Model.Status.Value.GetDisplayName()</p>
             <p class="govuk-body">@Model.CandidateFeedback</p>
+
+            <a asp-route="@RouteNames.VacancyManage_Get" asp-route-ukprn="@Model.Ukprn" asp-route-vacancyId="@Model.VacancyId" class="govuk-button">Return to vacancy</a>
+        </div>
+
+        <div asp-show="@Model.IsApplicationUnsuccessful">
+            <h3 class="govuk-heading-l govuk-!-margin-top-6">Outcome</h3>
+            <strong class="govuk-tag govuk-tag--red">@Model.Status.GetDisplayName()</strong>
+            <div class="govuk-body">The applicant was notified with this message:</div>
+            <div class="govuk-inset-text">@Model.CandidateFeedback</div>
 
             <a asp-route="@RouteNames.VacancyManage_Get" asp-route-ukprn="@Model.Ukprn" asp-route-vacancyId="@Model.VacancyId" class="govuk-button">Return to vacancy</a>
         </div>
