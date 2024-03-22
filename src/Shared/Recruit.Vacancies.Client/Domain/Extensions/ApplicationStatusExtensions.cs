@@ -12,7 +12,7 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Extensions
                 case ApplicationReviewStatus.New: return "govuk-tag govuk-tag--blue";
                 case ApplicationReviewStatus.Successful: return "govuk-tag govuk-tag--green";
                 case ApplicationReviewStatus.Unsuccessful: return "govuk-tag govuk-tag--red";
-                case ApplicationReviewStatus.Shared: return "govuk-tag govuk-tag--blue";
+                case ApplicationReviewStatus.Shared: return "govuk-tag govuk-tag--yellow";
                 case ApplicationReviewStatus.InReview: return "govuk-tag govuk-tag--turquoise";
                 case ApplicationReviewStatus.Interviewing: return "govuk-tag govuk-tag--purple";
                 case ApplicationReviewStatus.EmployerInterviewing: return "govuk-tag govuk-tag--pink";
@@ -29,7 +29,7 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Extensions
                 case ApplicationReviewStatus.New: return "govuk-tag govuk-tag--blue";
                 case ApplicationReviewStatus.Successful: return "govuk-tag govuk-tag--green";
                 case ApplicationReviewStatus.Unsuccessful: return "govuk-tag govuk-tag--red";
-                case ApplicationReviewStatus.Shared: return "govuk-tag govuk-tag--yellow";
+                case ApplicationReviewStatus.Shared: return "govuk-tag govuk-tag--blue";
                 case ApplicationReviewStatus.InReview: return "govuk-tag govuk-tag--turquoise";
                 case ApplicationReviewStatus.Interviewing: return "govuk-tag govuk-tag--purple";
                 case ApplicationReviewStatus.EmployerInterviewing: return "govuk-tag govuk-tag--purple";
