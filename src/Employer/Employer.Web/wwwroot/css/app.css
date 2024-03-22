@@ -364,3 +364,7 @@ span.govuk-error-message:empty {
     color: #fff;
     outline: 0;
   }
+
+.das-definition-list--table .das-definition-list__title:after {
+    content: "" !important;
+}
