@@ -48,6 +48,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             viewModel.VacancyId = rm.VacancyId;
             viewModel.ApplicationReviewId = rm.ApplicationReviewId;
             viewModel.CandidateFeedback = applicationReview.CandidateFeedback;
+            viewModel.EmployerFeedback = applicationReview.EmployerFeedback;
             viewModel.VacancyTitle = vacancy.Title;
 
             return viewModel;
