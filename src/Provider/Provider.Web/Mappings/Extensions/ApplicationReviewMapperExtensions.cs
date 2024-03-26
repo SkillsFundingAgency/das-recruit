@@ -27,7 +27,7 @@ namespace Esfa.Recruit.Provider.Web.Mappings.Extensions
                 AddressLine3 = r.Application.AddressLine3,
                 AddressLine4 = r.Application.AddressLine4,
                 CandidateFeedback = r.CandidateFeedback,
-                EmployerFeedback = r.CandidateFeedback,
+                EmployerFeedback = r.EmployerFeedback,
                 DisabilityStatus = r.Application.DisabilityStatus ?? ApplicationReviewDisabilityStatus.Unknown,
                 EducationFromYear = r.Application.EducationFromYear,
                 EducationInstitution = r.Application.EducationInstitution,
