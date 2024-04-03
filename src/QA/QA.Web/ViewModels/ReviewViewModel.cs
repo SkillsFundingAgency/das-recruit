@@ -115,6 +115,7 @@ namespace Esfa.Recruit.Qa.Web.ViewModels
         public string VacancyDescriptionClass => GetFieldIdentifierCssClass(FieldIdentifier.VacancyDescription);
         public string WageClass => GetFieldIdentifierCssClass(FieldIdentifier.Wage);
         public string WorkingWeekClass => GetFieldIdentifierCssClass(FieldIdentifier.WorkingWeek);
+        public string CompanyBenefitsInformationClass => GetFieldIdentifierCssClass(FieldIdentifier.CompanyBenefitsInformation);
         public bool HasAutomatedQaResults => AutomatedQaResults.Any();
         public string PageTitle { get; set; }        
         public bool IsVacancyDeleted { get; set; }

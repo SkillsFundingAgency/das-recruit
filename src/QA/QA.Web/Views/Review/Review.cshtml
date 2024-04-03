@@ -128,12 +128,23 @@
                             <div class="@Model.WageClass" id="@FieldIdentifiers.Wage">
                                 <h3 class="govuk-heading-s">Annual wage</h3>
                                 <p class="govuk-body">@Model.WageText</p>
+                                <h3 class="govuk-heading-s">Information about pay (optional)</h3>
                                 <p class="govuk-body">@Model.WageInfo</p>
+                                
                                 <esfa-review-checkbox asp-for="SelectedFieldIdentifiers"
                                                       asp-value="@FieldIdentifiers.Wage"
                                                       asp-items="@Model.FieldIdentifiers"></esfa-review-checkbox>
                             </div>
                         </li>
+                        <esfaFeatureEnabled name="FaaV2Improvements">
+                            <li>
+                                <h3 class="govuk-heading-s">Company benefits (optional)</h3>
+                                <p class="govuk-body">@Model.CompanyBenefitsInformation</p>
+                                <esfa-review-checkbox asp-for="SelectedFieldIdentifiers"
+                                                      asp-value="@FieldIdentifiers.CompanyBenefitsInformation"
+                                                      asp-items="@Model.FieldIdentifiers"></esfa-review-checkbox>
+                            </li>
+                        </esfaFeatureEnabled>
                         <li>
                             <div class="@Model.WorkingWeekClass" id="@FieldIdentifiers.WorkingWeek" data-module="govuk-character-count" data-maxlength="250">
                                 <h3 class="govuk-heading-s">Working week</h3>

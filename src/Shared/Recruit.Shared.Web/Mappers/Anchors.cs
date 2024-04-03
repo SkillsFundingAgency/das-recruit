@@ -50,6 +50,8 @@
 
         //Wage
         public const string WageTypeHeading = "WageTypeHeading";
+        public const string WageAdditionalInformation = "WageAdditionalInformation";
+        public const string CompanyBenefitsInformation = "CompanyBenefitsInformation";
 
         //Skills
         public const string SkillsHeading = "SkillsHeading";

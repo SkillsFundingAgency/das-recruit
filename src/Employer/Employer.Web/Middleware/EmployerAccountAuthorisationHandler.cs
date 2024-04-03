@@ -22,14 +22,12 @@ public class EmployerAccountAuthorizationHandler : IEmployerAccountAuthorization
 {
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IEmployerAccountProvider _accountsService;
-    private readonly IConfiguration _configuration;
     private readonly ILogger<EmployerAccountAuthorizationHandler> _logger;
 
-    public EmployerAccountAuthorizationHandler(IHttpContextAccessor httpContextAccessor, IEmployerAccountProvider accountsService, IConfiguration configuration, ILogger<EmployerAccountAuthorizationHandler> logger)
+    public EmployerAccountAuthorizationHandler(IHttpContextAccessor httpContextAccessor, IEmployerAccountProvider accountsService, ILogger<EmployerAccountAuthorizationHandler> logger)
     {
         _httpContextAccessor = httpContextAccessor;
         _accountsService = accountsService;
-        _configuration = configuration;
         _logger = logger;
     }
     
@@ -67,20 +65,11 @@ public class EmployerAccountAuthorizationHandler : IEmployerAccountAuthorization
 
         if (employerAccounts == null || !employerAccounts.ContainsKey(accountIdFromUrl))
         {
-            string requiredIdClaim = EmployerRecruitClaims.IdamsUserIdClaimTypeIdentifier;
-
-            if (_configuration["RecruitConfiguration:UseGovSignIn"] != null
-                && _configuration["RecruitConfiguration:UseGovSignIn"]
-                    .Equals("true", StringComparison.CurrentCultureIgnoreCase))
-            {
-                requiredIdClaim = ClaimTypes.NameIdentifier;
-            }
-            
-            if (!context.User.HasClaim(c => c.Type.Equals(requiredIdClaim)))
+            if (!context.User.HasClaim(c => c.Type.Equals(ClaimTypes.NameIdentifier)))
                 return false;
             
             var userClaim = context.User.Claims
-                .First(c => c.Type.Equals(requiredIdClaim));
+                .First(c => c.Type.Equals(ClaimTypes.NameIdentifier));
 
             var email = context.User.Claims.FirstOrDefault(c => c.Type.Equals(ClaimTypes.Email))?.Value;
 

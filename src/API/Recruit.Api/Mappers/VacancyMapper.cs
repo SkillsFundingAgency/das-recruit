@@ -51,7 +51,8 @@ namespace SFA.DAS.Recruit.Api.Mappers
                     Duration = request.Wage.Duration,
                     DurationUnit = Enum.Parse<DurationUnit>(request.Wage.DurationUnit.ToString(), true),
                     WageAdditionalInformation = request.Wage.WageAdditionalInformation,
-                    FixedWageYearlyAmount = request.Wage.FixedWageYearlyAmount
+                    FixedWageYearlyAmount = request.Wage.FixedWageYearlyAmount,
+                    CompanyBenefitsInformation = request.Wage.CompanyBenefitsInformation
                 },
                 ShortDescription = request.ShortDescription,
                 NumberOfPositions = request.NumberOfPositions,

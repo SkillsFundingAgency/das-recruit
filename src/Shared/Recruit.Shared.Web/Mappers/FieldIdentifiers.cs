@@ -42,5 +42,6 @@
         public const string WorkExperience = "WorkExperience";
         public const string AdditionalQuestion1 = "AdditionalQuestion1";
         public const string AdditionalQuestion2 = "AdditionalQuestion2";
+        public const string CompanyBenefitsInformation = nameof(CompanyBenefitsInformation);
     }
 }

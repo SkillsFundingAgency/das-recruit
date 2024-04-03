@@ -103,6 +103,7 @@ namespace Esfa.Recruit.Qa.Web.Mappings
                     new FieldIdentifierViewModel { FieldIdentifier = FieldIdentifiers.ClosingDate, Text = "Closing date" },
                     new FieldIdentifierViewModel { FieldIdentifier = FieldIdentifiers.WorkingWeek, Text = "Working week" },
                     new FieldIdentifierViewModel { FieldIdentifier = FieldIdentifiers.Wage, Text = "Annual wage" },
+                    new FieldIdentifierViewModel { FieldIdentifier = FieldIdentifiers.CompanyBenefitsInformation, Text = "Company Benefits" },
                     new FieldIdentifierViewModel
                         { FieldIdentifier = FieldIdentifiers.ExpectedDuration, Text = "Expected duration" },
                     new FieldIdentifierViewModel
@@ -316,6 +317,7 @@ namespace Esfa.Recruit.Qa.Web.Mappings
                         ? vacancy.Wage.ToText(vacancy.StartDate)
                         : null;
                     vm.WorkingWeekDescription = vacancy.Wage.WorkingWeekDescription;
+                    vm.CompanyBenefitsInformation = vacancy.Wage.CompanyBenefitsInformation;
                 }
                 vm.WorkExperience = vacancy.WorkExperience;
                 vm.VacancyType = vacancy.VacancyType;

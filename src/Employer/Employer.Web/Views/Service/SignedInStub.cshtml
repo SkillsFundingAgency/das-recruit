@@ -25,6 +25,7 @@
                 <th scope="col" class="govuk-table__header">Account ID</th>
                 <th scope="col" class="govuk-table__header">Role</th>
                 <th scope="col" class="govuk-table__header">Employer name</th>
+                <th scope="col" class="govuk-table__header">Dashboard</th>
             </tr>
             </thead>
             <tbody class="govuk-table__body">
@@ -34,6 +35,7 @@
                     <td class="govuk-table__cell">@account.AccountId</td>
                     <td class="govuk-table__cell">@account.Role</td>
                     <td class="govuk-table__cell">@account.EmployerName</td>
+                    <td class="govuk-table__cell"><a asp-route="@RouteNames.Dashboard_Get" asp-route-employerAccountId="@account.AccountId">Dashboard</a></td>
                 </tr>
             }
             </tbody>
