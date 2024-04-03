@@ -235,8 +235,18 @@
 
         <div asp-show="@Model.CanNotChangeOutcome">
             <h3 class="govuk-heading-l govuk-!-margin-top-6">Outcome</h3>
-            <p class="govuk-body">@Model.Status.Value.GetDisplayName()</p>
-            <p class="govuk-body">@Model.CandidateFeedback</p>
+            <div asp-show="@Model.Status != ApplicationReviewStatus.Unsuccessful">
+                <p class="govuk-body">@Model.Status.Value.GetDisplayName()</p>
+            </div>
+            <div asp-show="@Model.Status == ApplicationReviewStatus.Unsuccessful">
+                <p class ="govuk-body"><strong class="govuk-tag govuk-tag--red">@Model.Status.Value.GetDisplayName()</strong></p>
+                <p class="govuk-body">The applicant was notified with this message:</p>
+                <p class="govuk-inset-text">@Model.CandidateFeedback</p>
+
+                <h3 class="govuk-heading-m">Employer's response</h3>
+                <p class="govuk-body">The employer <span class="govuk-!-font-weight-bold">does not want to interview</span> this applicant. They wrote:</p>
+                <p class="govuk-inset-text">@Model.EmployerFeedback</p>
+            </div>
 
             <a asp-route="@RouteNames.VacancyManage_Get" asp-route-ukprn="@Model.Ukprn" asp-route-vacancyId="@Model.VacancyId" class="govuk-button">Return to vacancy</a>
         </div>
