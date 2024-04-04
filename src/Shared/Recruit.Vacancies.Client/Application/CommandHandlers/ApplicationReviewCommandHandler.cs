@@ -64,6 +64,11 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
                 applicationReview.HasEverBeenEmployerInterviewing = true;
             }
 
+            if (applicationReview.Status == ApplicationReviewStatus.EmployerUnsuccessful)
+            {
+                applicationReview.EmployerFeedback = message.CandidateFeedback;
+            }
+
             Validate(applicationReview);
             _logger.LogInformation("Setting application review:{applicationReviewId} to {status}", message.ApplicationReviewId, message.Outcome.Value);
 
