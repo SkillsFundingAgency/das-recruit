@@ -239,7 +239,7 @@
                 <p class="govuk-body">@Model.Status.Value.GetDisplayName()</p>
             </div>
             <div asp-show="@Model.Status == ApplicationReviewStatus.Unsuccessful">
-                <p class ="govuk-body"><strong class="govuk-tag govuk-tag--red">@Model.Status.Value.GetDisplayName()</strong></p>
+                <p class="govuk-body"><strong class="govuk-tag govuk-tag--red">@Model.Status.Value.GetDisplayName()</strong></p>
                 <p class="govuk-body">The applicant was notified with this message:</p>
                 <p class="govuk-inset-text">@Model.CandidateFeedback</p>
 
@@ -253,7 +253,7 @@
 
         <div asp-show="@Model.IsApplicationUnsuccessful">
             <h3 class="govuk-heading-l govuk-!-margin-top-6">Outcome</h3>
-            <strong class="govuk-tag govuk-tag--red">@Model.Status.GetDisplayName()</strong>
+            <strong class="govuk-tag govuk-tag--red govuk-!-margin-bottom-3">@Model.Status.GetDisplayName()</strong>
             <div class="govuk-body">The applicant was notified with this message:</div>
             <div class="govuk-inset-text">@Model.CandidateFeedback</div>
 
