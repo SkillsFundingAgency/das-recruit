@@ -17,8 +17,6 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Part2.Qualifications
         public string OtherQualificationName { get; set; }
         public int? Level { get; set; }
 
-        public IList<int> Levels { get; set; }
-
         public string Subject { get; set; }
         public string Grade { get; set; }
         public QualificationWeighting? Weighting { get; set; }
@@ -27,7 +25,9 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Part2.Qualifications
         public IList<string> OrderedFieldNames => new List<string>
         {
             nameof(QualificationType),
+            nameof(OtherQualificationName),
             nameof(Subject),
+            nameof(Level),
             nameof(Grade),
             nameof(Weighting)
         };
