@@ -49,10 +49,13 @@
             <span esfa-validation-message-for="Level" class="govuk-error-message"></span>
             <select asp-for="Level" class="govuk-select">
                 <option value="">Select from list</option>
-                @foreach (var level in Model.Levels)
-                {
-                    <option value="@level" selected="@(Model.Level == @level)">@level</option>
-                }
+                    <!option value="1" selected="@(Model.Level.ToString() == "1")">1</!option>
+                    <!option value="2" selected="@(Model.Level.ToString() == "2")">2</!option>
+                    <!option value="3" selected="@(Model.Level.ToString() == "3")">3</!option>
+                    <!option value="4" selected="@(Model.Level.ToString() == "4")">4</!option>
+                    <!option value="5" selected="@(Model.Level.ToString() == "5")">5</!option>
+                    <!option value="6" selected="@(Model.Level.ToString() == "6")">6</!option>
+                    <!option value="7" selected="@(Model.Level.ToString() == "7")">7</!option>
             </select>
             </div>
     </div>
