@@ -104,6 +104,7 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.Services
                 {
                     new Qualification{QualificationType = "qualification type 1", Subject = "subject 1", Grade = "grade 1", Weighting = QualificationWeighting.Desired},
                     new Qualification{QualificationType = "qualification type 2", Subject = "subject 2", Grade = "grade 2", Weighting = QualificationWeighting.Essential},
+                    new Qualification{QualificationType = "qualification type 3", Level = 1, Subject = "subject 2", Grade = "grade 2", Weighting = QualificationWeighting.Essential},
                 },
                 ShortDescription = "short description",
                 Skills = new List<string> { "skill 1", "skill 2" },
