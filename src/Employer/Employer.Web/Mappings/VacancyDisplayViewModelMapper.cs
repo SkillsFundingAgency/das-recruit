@@ -6,6 +6,7 @@ using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Shared.Web.Helpers;
 using Esfa.Recruit.Shared.Web.Orchestrators;
 using Esfa.Recruit.Shared.Web.Services;
+using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
@@ -21,15 +22,18 @@ namespace Esfa.Recruit.Employer.Web.Mappings
         private readonly IGeocodeImageService _mapService;
         private readonly ExternalLinksConfiguration _externalLinksConfiguration;
         private readonly IRecruitVacancyClient _vacancyClient;
+        private readonly IFeature _feature;
 
         public DisplayVacancyViewModelMapper(
                 IGeocodeImageService mapService,
                 IOptions<ExternalLinksConfiguration> externalLinksOptions,
-                IRecruitVacancyClient vacancyClient)
+                IRecruitVacancyClient vacancyClient,
+                IFeature feature)
         {
             _mapService = mapService;
             _externalLinksConfiguration = externalLinksOptions.Value;
             _vacancyClient = vacancyClient;
+            _feature = feature;
         }
 
         public async Task MapFromVacancyAsync(DisplayVacancyViewModel vm, Vacancy vacancy)
@@ -69,7 +73,7 @@ namespace Esfa.Recruit.Employer.Web.Mappings
             vm.PostedDate = vacancy.CreatedDate?.AsGdsDate();
             vm.ProviderName = vacancy.TrainingProvider?.Name;
             vm.ProviderReviewFieldIndicators = vacancy.ProviderReviewFieldIndicators;
-            vm.Qualifications = vacancy.Qualifications.SortQualifications(allQualifications).AsText();
+            vm.Qualifications = vacancy.Qualifications.SortQualifications(allQualifications).AsText(_feature.IsFeatureEnabled(FeatureNames.FaaV2Improvements));
             vm.ShortDescription = vacancy.ShortDescription;
             vm.Skills = vacancy.Skills ?? Enumerable.Empty<string>();
             vm.ThingsToConsider = vacancy.ThingsToConsider;

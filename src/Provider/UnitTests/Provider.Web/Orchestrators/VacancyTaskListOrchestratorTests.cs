@@ -10,6 +10,7 @@ using Esfa.Recruit.Provider.Web.Orchestrators;
 using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview;
 using Esfa.Recruit.Shared.Web.Services;
+using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Models;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
@@ -70,7 +71,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators
             externalLinksConfiguration.Object.Value.FindAnApprenticeshipUrl = findAnApprenticeshipUrl;
             var expectedViewModel = new VacancyPreviewViewModel();
             var mapper = new DisplayVacancyViewModelMapper(Mock.Of<IGeocodeImageService>(),
-                externalLinksConfiguration.Object, recruitVacancyClient.Object, providerVacancyClient.Object);
+                externalLinksConfiguration.Object, recruitVacancyClient.Object, providerVacancyClient.Object,Mock.Of<IFeature>());
 
             var viewModel = await orchestrator.GetVacancyTaskListModel(routeModel);
 
@@ -118,6 +119,5 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators
             viewModel.AccountLegalEntityCount.Should().Be(employerInfo.LegalEntities.Count);
             viewModel.AccountCount.Should().Be(providerEditVacancyInfo.Employers.Count());
         }
-        
     }
 }
