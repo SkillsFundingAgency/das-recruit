@@ -74,6 +74,7 @@ namespace Esfa.Recruit.Employer.Web.Mappings
             vm.ProviderName = vacancy.TrainingProvider?.Name;
             vm.ProviderReviewFieldIndicators = vacancy.ProviderReviewFieldIndicators;
             vm.Qualifications = vacancy.Qualifications.SortQualifications(allQualifications).AsText(_feature.IsFeatureEnabled(FeatureNames.FaaV2Improvements));
+            vm.HasOptedToAddQualifications = vacancy.HasOptedToAddQualifications;
             vm.ShortDescription = vacancy.ShortDescription;
             vm.Skills = vacancy.Skills ?? Enumerable.Empty<string>();
             vm.ThingsToConsider = vacancy.ThingsToConsider;
