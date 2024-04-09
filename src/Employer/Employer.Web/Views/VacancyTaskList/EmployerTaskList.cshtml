@@ -318,7 +318,7 @@
                         }
                     </li>
                     <li class="das-task-list__item">
-                        @if (Model.QualificationsSectionState == VacancyPreviewSectionState.Incomplete)
+                        @if (Model.HasOptedToAddQualifications is true && ( Model.QualificationsSectionState == VacancyPreviewSectionState.Incomplete))
                         {
                             <span>
                                 Future prospects
