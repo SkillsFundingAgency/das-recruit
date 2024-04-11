@@ -9,8 +9,11 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.Part2.Qualifications
         public string Title { get; internal set; }
 
         public IList<string> QualificationTypes { get; set; }
+        public IList<Qualification> Qualifications { get; set; } = new List<Qualification>();
 
         public string QualificationType { get; set; }
+        public string OtherQualificationName { get; set; }
+        public int? Level { get; set; }
         public string Subject { get; set; }
         public string Grade { get; set; }
         public QualificationWeighting? Weighting { get; set; }
@@ -20,11 +23,20 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.Part2.Qualifications
         public IList<string> OrderedFieldNames => new List<string>
         {
             nameof(QualificationType),
+            nameof(OtherQualificationName),
             nameof(Subject),
+            nameof(Level),
             nameof(Grade),
             nameof(Weighting)
         };
 
         public string BackRoute { get; set; }
+        public bool IsFaaV2Enabled { get; set; }
+
+        public class Qualification
+        {
+            public string Name { get; set; }
+            public string Data { get; set; }
+        }
     }
 }
