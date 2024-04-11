@@ -17,5 +17,6 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Part2.Qualifications
         public bool IsTaskListCompleted { get ; set ; }
 
         public bool? AddQualificationRequirement { get; set; }
+        public bool IsFaaV2Enabled { get; set; }
     }
 }

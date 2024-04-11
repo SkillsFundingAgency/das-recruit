@@ -56,7 +56,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
                     Grade = q.Grade,
                     Level = q.Level,
                     OtherQualificationName = q.OtherQualificationName
-                }).ToList()
+                }).ToList(),
+                IsFaaV2Enabled = _feature.IsFeatureEnabled(FeatureNames.FaaV2Improvements)
             };
 
             if (vacancy.Status == VacancyStatus.Referred)
@@ -238,7 +239,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
                 Title = vacancy.Title,
                 QualificationTypes = allQualifications,
                 CancelRoute = cancelRoute,
-                BackRoute = backRoute
+                BackRoute = backRoute,
+                IsFaaV2Enabled = _feature.IsFeatureEnabled(FeatureNames.FaaV2Improvements)
             };
 
             foreach (var qualification in allQualifications)
