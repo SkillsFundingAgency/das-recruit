@@ -17,32 +17,37 @@
     }
 }
 
+@if (!Model.Qualifications.Any() && Model.IsFaaV2Enabled)
+{
+    <partial name="_EmptyQualifications", model="Model" />
+}
+else
+{
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-three-quarters">
 
-<div class="govuk-grid-row">
-    <div class="govuk-grid-column-three-quarters">
+            <div asp-show="Model.HasInfo" class="das-notification das-notification--information">
+                <p class="das-notification__body">@Model.InfoMessage</p>
+            </div>
 
-        <div asp-show="Model.HasInfo" class="das-notification das-notification--information">
-            <p class="das-notification__body">@Model.InfoMessage</p>
-        </div>
+            <partial name="@PartialNames.ReviewSummary" for="Review"/>
 
-        <partial name="@PartialNames.ReviewSummary" for="Review" />
+            <h1 class="govuk-heading-xl">
+                <span class="govuk-caption-xl">@Model.Title</span>
+                Qualifications
+            </h1>
 
-        <h1 class="govuk-heading-xl">
-            <span class="govuk-caption-xl">@Model.Title</span>
-            Qualifications
-        </h1>
-
-        <table class="govuk-table">
-            <caption class="govuk-visually-hidden">Your qualification requirements</caption>
-            <thead>
+            <table class="govuk-table">
+                <caption class="govuk-visually-hidden">Your qualification requirements</caption>
+                <thead>
                 <tr>
                     <th class="govuk-table__header" scope="col">Qualification</th>
                     <th class="govuk-table__header" scope="col">Grade</th>
                     <th class="govuk-table__header" scope="col">Essential or desirable</th>
                     <th class="govuk-table__header" scope="col"><span class="govuk-visually-hidden">Action</span></th>
                 </tr>
-            </thead>
-            <tbody>
+                </thead>
+                <tbody>
 
                 @for (var i = 0; i < Model.Qualifications.Count; i++)
                 {
@@ -60,25 +65,26 @@
                         </td>
                         <td class="govuk-table__cell">
                             <form asp-route="@RouteNames.Qualification_Delete_Post" asp-all-route-data="@Model.RouteDictionary" class="govuk-!-display-inline">
-                                <input type="hidden" name="index" value="@i" />
+                                <input type="hidden" name="index" value="@i"/>
                                 <button type="submit" class="das-button--inline-link">Remove</button>
                             </form>
                             <a asp-route="@RouteNames.Qualification_Edit_Get" asp-route-ukprn="@Model.Ukprn" asp-route-vacancyId="@Model.VacancyId" asp-route-index="@i" class="govuk-link govuk-!-margin-left-1">Edit</a>
                         </td>
                     </tr>
                 }
-            </tbody>
-        </table>
+                </tbody>
+            </table>
 
-        <p class="govuk-body">
-            <a asp-route="@RouteNames.Qualification_Add_Get" asp-all-route-data="@Model.RouteDictionary" class="govuk-link govuk-link--no-visited-state">Add another qualification</a>
-        </p>
+            <p class="govuk-body">
+                <a asp-route="@RouteNames.Qualification_Add_Get" asp-all-route-data="@Model.RouteDictionary" class="govuk-link govuk-link--no-visited-state">Add another qualification</a>
+            </p>
 
-        <div class="govuk-button-group">
-            <a asp-show="@(!Model.IsTaskListCompleted)" asp-route="@RouteNames.FutureProspects_Get" asp-all-route-data="@Model.RouteDictionary"  class="govuk-button">Save and continue</a>
-            <a asp-show="@Model.IsTaskListCompleted" asp-route="@RouteNames.ProviderCheckYourAnswersGet" asp-all-route-data="@Model.RouteDictionary" class="govuk-button">Save and continue</a>
-            <a asp-show="@(!Model.IsTaskListCompleted)" asp-route="@RouteNames.Dashboard_Get" asp-route-ukprn="@Model.Ukprn" class="govuk-link govuk-link--no-visited-state">Cancel</a>
-            <a asp-show="@(Model.IsTaskListCompleted)" asp-route="@RouteNames.ProviderCheckYourAnswersGet" asp-all-route-data="@Model.RouteDictionary" class="govuk-link govuk-link--no-visited-state">Cancel</a>
+            <div class="govuk-button-group">
+                <a asp-show="@(!Model.IsTaskListCompleted)" asp-route="@RouteNames.FutureProspects_Get" asp-all-route-data="@Model.RouteDictionary" class="govuk-button">Save and continue</a>
+                <a asp-show="@Model.IsTaskListCompleted" asp-route="@RouteNames.ProviderCheckYourAnswersGet" asp-all-route-data="@Model.RouteDictionary" class="govuk-button">Save and continue</a>
+                <a asp-show="@(!Model.IsTaskListCompleted)" asp-route="@RouteNames.Dashboard_Get" asp-route-ukprn="@Model.Ukprn" class="govuk-link govuk-link--no-visited-state">Cancel</a>
+                <a asp-show="@(Model.IsTaskListCompleted)" asp-route="@RouteNames.ProviderCheckYourAnswersGet" asp-all-route-data="@Model.RouteDictionary" class="govuk-link govuk-link--no-visited-state">Cancel</a>
+            </div>
         </div>
     </div>
-</div>
+}
