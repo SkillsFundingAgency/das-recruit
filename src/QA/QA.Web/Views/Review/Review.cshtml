@@ -367,10 +367,18 @@
                 <div class="@Model.QualificationsClass" id="@FieldIdentifiers.Qualifications">
                     <h3 class="govuk-heading-s">Qualifications</h3>
                     <p class="govuk-body">
-                        @foreach (var qualification in Model.Qualifications)
+                        @if (Model.Qualifications.Any())
                         {
-                            @qualification<br />
+                            foreach (var qualification in Model.Qualifications)
+                            {
+                                @qualification<br/>
+                            }
                         }
+                        else
+                        {
+                            @:You don’t need any qualifications to apply for this apprenticeship.
+                        }
+                        
                     </p>
                     <esfa-review-checkbox asp-for="SelectedFieldIdentifiers"
                                           asp-value="@FieldIdentifiers.Qualifications"
