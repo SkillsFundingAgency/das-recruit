@@ -398,8 +398,7 @@
                         </li>    
                     }
                     <li class="das-task-list__item">
-                        @if ((_serviceParameters.VacancyType == VacancyType.Apprenticeship && Model.QualificationsSectionState == VacancyPreviewSectionState.Incomplete)
-                            ||(_serviceParameters.VacancyType == VacancyType.Traineeship && Model.SkillsSectionState == VacancyPreviewSectionState.Incomplete))
+                        @if (Model.HasOptedToAddQualifications is true && ( Model.QualificationsSectionState == VacancyPreviewSectionState.Incomplete))
                         {
                             <span>
                                 Future prospects
