@@ -15,7 +15,7 @@ public class ApprenticeshipServiceUnsubscribeDataEntityPlugIn : IEntityDataItemP
 {
     private readonly CommunicationsConfiguration _communicationsConfiguration;
     private readonly IVacancyRepository _vacancyRepository;
-    public string EntityType => CommunicationConstants.EntityTypes.ApprenticeshipServiceUrl;
+    public string EntityType => CommunicationConstants.EntityTypes.ApprenticeshipServiceUnsubscribeUrl;
     public ApprenticeshipServiceUnsubscribeDataEntityPlugIn(IVacancyRepository vacancyRepository, IOptions<CommunicationsConfiguration> communicationsConfiguration)
     {
         _vacancyRepository = vacancyRepository;
