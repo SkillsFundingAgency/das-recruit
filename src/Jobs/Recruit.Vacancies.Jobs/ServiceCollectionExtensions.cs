@@ -138,6 +138,7 @@ namespace Esfa.Recruit.Vacancies.Jobs
             services.AddTransient<IUserPreferencesProvider, UserPreferencesProviderPlugin>();
             services.AddTransient<ITemplateIdProvider, TemplateIdProviderPlugin>();
             services.AddTransient<IEntityDataItemProvider, VacancyDataEntityPlugin>();
+            services.AddTransient<IEntityDataItemProvider, ApprenticeshipServiceUnsubscribeDataEntityPlugIn>();
             services.AddTransient<IEntityDataItemProvider, ApprenticeshipServiceUrlDataEntityPlugin>();
             services.AddTransient<IEntityDataItemProvider, ApprenticeshipServiceConfigDataEntityPlugin>();
             services.AddTransient<IEntityDataItemProvider, ProviderDataEntityPlugin>();
