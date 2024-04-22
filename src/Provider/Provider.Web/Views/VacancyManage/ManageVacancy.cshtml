@@ -35,9 +35,9 @@
                 @Model.ApplicationReviewStatusHeaderInfoMessage
             </p>
         </div>
-        <span class="govuk-caption-xl">@Model.EmployerName</span>
-        <h1 class="govuk-heading-xl">@Model.Title</h1>
-        <p class="govuk-body-xl">Vacancy reference: VAC@(Model.VacancyReference)</p>
+        <span class="govuk-caption-l">@Model.EmployerName</span>
+        <h1 class="govuk-heading-l">@Model.Title</h1>
+        <p class="govuk-body-l">Vacancy reference: VAC@(Model.VacancyReference)</p>
         <p asp-show="@Model.IsWithdrawn" class="govuk-inset-text">
             This vacancy has issues and was closed on @Model.WithdrawnDate.
         </p>
