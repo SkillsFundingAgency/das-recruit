@@ -41,7 +41,7 @@
 
             @foreach (var qualificationType in Model.Qualifications)
             {
-                <option value="@qualificationType" data-aria-controls="@qualificationType.Data" selected="@(Model.QualificationType == @qualificationType.Name)">@qualificationType.Name</option>
+                <option value="@qualificationType.Name" data-aria-controls="@qualificationType.Data" selected="@(Model.QualificationType == @qualificationType.Name)">@qualificationType.Name</option>
             }
         </select>
     </div>

@@ -111,8 +111,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
             {
                 RuleFor(x => x.Level)
                     .NotEmpty()
-                    .NotNull()
-                    .WithMessage("Enter the level")
+                    .WithMessage("Enter the BTEC level")
                     .WithErrorCode("1115")
                     .WithState(_ => ruleId);
             });
