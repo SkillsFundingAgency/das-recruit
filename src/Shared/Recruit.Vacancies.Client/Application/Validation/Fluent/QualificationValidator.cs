@@ -102,8 +102,26 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
             {
                 RuleFor(x => x.Grade)
                     .Matches("[1-9]")
+                    .MaximumLength(1)
                         .WithMessage("GCSEs must include the 1-9 grading system")
                         .WithErrorCode("115")
+                    .WithState(_ => ruleId);
+            });
+            When(x => x.QualificationType != null && x.QualificationType.Contains("BTEC"), () =>
+            {
+                RuleFor(x => x.Level)
+                    .NotEmpty()
+                    .NotNull()
+                    .WithMessage("Enter the level")
+                    .WithErrorCode("1115")
+                    .WithState(_ => ruleId);
+            });
+            When(x => x.QualificationType != null && x.QualificationType.Contains("Other"), () =>
+            {
+                RuleFor(x => x.OtherQualificationName)
+                    .NotEmpty()
+                    .WithMessage("Enter the name of the qualification")
+                    .WithErrorCode("2115")
                     .WithState(_ => ruleId);
             });
 

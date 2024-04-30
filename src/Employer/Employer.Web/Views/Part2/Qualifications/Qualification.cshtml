@@ -16,12 +16,12 @@
 <partial name="@PartialNames.ValidationSummary"
     model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }' />
 
-<h1 class="govuk-heading-xl">
+<h1 class="govuk-heading-xl govuk-!-margin-bottom-5">
     <span class="govuk-caption-l">@Model.Title</span>
     @ViewBag.Title
 </h1>
 
-<p class="govuk-hint govuk-!-margin-bottom-6">
+<p class="govuk-hint  govuk-!-margin-bottom-5">
     <a class="govuk-link govuk-link--no-visited-state" target="_blank"
         href="https://www.gov.uk/what-different-qualification-levels-mean/list-of-qualification-levels" rel="noopener">
         What's the GCSE grading system? (opens in a new tab)</a>
@@ -33,7 +33,7 @@
     <div esfa-validation-marker-for="QualificationType" class="govuk-form-group">
         <label asp-for="QualificationType" class="govuk-label" id="@Anchors.QualificationsHeading">Type of qualification</label>
         <span esfa-validation-message-for="QualificationType" class="govuk-error-message"></span>
-        <select asp-for="QualificationType" class="govuk-select" data-select-conditional-reveal="true">
+        <select asp-for="QualificationType" class="govuk-select" data-select-conditional-reveal="true" id="error-message-QualificationType">
             <option value="">Select from list</option>
             @foreach (var qualificationType in Model.Qualifications)
             {
