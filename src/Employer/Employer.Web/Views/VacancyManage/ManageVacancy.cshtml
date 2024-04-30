@@ -63,9 +63,8 @@
                 @Model.EmployerReviewedApplicationHeaderMessage
             </p>
         </div>
-
         <h1 class="govuk-heading-l">@Model.Title</h1>
-        <p class="govuk-body-l">Vacancy reference: VAC@(Model.VacancyReference)</p>
+        <p class="govuk-body-l">Advert reference: VAC@(Model.VacancyReference)</p>
 
         <p asp-show="@Model.IsTransferred" class="govuk-inset-text">
             This advert was created by
@@ -85,10 +84,10 @@
 </div>
 
 <div asp-show="@Model.ShowEmployerApplications">
-    <h2 class="govuk-heading-m">Advert Summary</h2>
+    <h2 class="govuk-heading-m">Advert summary</h2>
     <dl class="das-definition-list das-definition-list--table">
         <dt class="das-definition-list__title das-definition-list__title--spacer">Status</dt>
-        <dd class="das-definition-list__definition das-definition-list__definition--spacer"><strong class="govuk-tag govuk-tag--green">@Model.Status.GetDisplayName()</strong></dd>
+        <dd class="das-definition-list__definition das-definition-list__definition--spacer"><strong class="govuk-tag app-tag--@Model.Status.ToString().ToLower()">@Model.Status.GetDisplayName()</strong></dd>
         <dt class="das-definition-list__title das-definition-list__title--spacer">Closing date</dt>
         <dd class="das-definition-list__definition das-definition-list__definition--spacer">@Model.ClosingDate</dd>
 
@@ -113,8 +112,7 @@
     </div>
 </div>
 <div>
-    <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
-    <h2 class="govuk-heading-m">
+    <h2 asp-show="@Model.ShowEmployerApplications" class="govuk-heading-m">
         Applications (@Model.ApplicationCount)
     </h2>
 </div>
