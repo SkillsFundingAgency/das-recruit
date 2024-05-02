@@ -25,7 +25,10 @@ namespace SFA.DAS.Recruit.Api.Queries
 
             return new GetClosedVacanciesByReferenceQueryResponse
             {
-                Data = queryResult,
+                Data = new ClosedVacanciesSummary
+                {
+                    Vacancies = queryResult
+                },
                 ResultCode = queryResult == null ? ResponseCode.NotFound : ResponseCode.Success
             };
         }

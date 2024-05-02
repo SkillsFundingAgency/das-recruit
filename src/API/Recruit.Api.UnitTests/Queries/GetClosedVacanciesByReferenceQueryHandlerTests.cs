@@ -28,7 +28,7 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Queries
 
             var actual = await handler.Handle(query, CancellationToken.None);
 
-            actual.Data.Should().BeEquivalentTo(closedVacancies);
+            actual.Data.Should().BeEquivalentTo(new ClosedVacanciesSummary{Vacancies = closedVacancies });
             actual.ResultCode = ResponseCode.Success;
         }
     }
