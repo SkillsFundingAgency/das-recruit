@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using FluentValidation;
@@ -11,8 +12,8 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
     /// </summary>
     internal class QualificationValidator : QualificationValidatorBase
     {
-        public QualificationValidator(IQualificationsProvider qualificationsProvider, IProfanityListProvider profanityListProvider)
-            : base(qualificationsProvider,profanityListProvider)
+        public QualificationValidator(IQualificationsProvider qualificationsProvider, IProfanityListProvider profanityListProvider, IFeature feature)
+            : base(qualificationsProvider,profanityListProvider, feature)
         {
         }
     }
@@ -24,8 +25,8 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
     /// </summary>
     internal class VacancyQualificationsValidator : QualificationValidatorBase
     {
-        public VacancyQualificationsValidator(long ruleId, IQualificationsProvider qualificationsProvider, IProfanityListProvider profanityListProvider)
-            : base(ruleId, qualificationsProvider,profanityListProvider)
+        public VacancyQualificationsValidator(long ruleId, IQualificationsProvider qualificationsProvider, IProfanityListProvider profanityListProvider, IFeature feature)
+            : base(ruleId, qualificationsProvider,profanityListProvider,feature)
         {
         }
     }
@@ -38,14 +39,16 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
     /// </summary>
     internal class QualificationValidatorBase : AbstractValidator<Qualification>
     {
+        private readonly IFeature _feature;
         private readonly IList<string> _qualificationTypes;
 
-        public QualificationValidatorBase(IQualificationsProvider qualificationsProvider, IProfanityListProvider profanityListProvider)
-            : this(0, qualificationsProvider, profanityListProvider)
+        public QualificationValidatorBase(IQualificationsProvider qualificationsProvider, IProfanityListProvider profanityListProvider, IFeature feature)
+            : this(0, qualificationsProvider, profanityListProvider, feature)
         {
+            _feature = feature;
         }
 
-        public QualificationValidatorBase(long ruleId, IQualificationsProvider qualificationsProvider, IProfanityListProvider profanityListProvider)
+        public QualificationValidatorBase(long ruleId, IQualificationsProvider qualificationsProvider, IProfanityListProvider profanityListProvider, IFeature feature)
         {
             _qualificationTypes = qualificationsProvider.GetQualificationsAsync().Result ?? new List<string>();
             
@@ -112,22 +115,26 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                     .WithErrorCode("115")
                     .WithState(_ => ruleId);
             });
-            When(x => x.QualificationType != null && x.QualificationType.Contains("BTEC"), () =>
+            if (feature.IsFeatureEnabled("FaaV2Improvements"))
             {
-                RuleFor(x => x.Level)
-                    .NotEmpty()
-                    .WithMessage("Enter the BTEC level")
-                    .WithErrorCode("1115")
-                    .WithState(_ => ruleId);
-            });
-            When(x => x.QualificationType != null && x.QualificationType.Contains("Other"), () =>
-            {
-                RuleFor(x => x.OtherQualificationName)
-                    .NotEmpty()
-                    .WithMessage("Enter the name of the qualification")
-                    .WithErrorCode("2115")
-                    .WithState(_ => ruleId);
-            });
+                When(x => x.QualificationType != null && x.QualificationType.Contains("BTEC"), () =>
+                {
+                    RuleFor(x => x.Level)
+                        .NotEmpty()
+                        .WithMessage("Select your BTEC level")
+                        .WithErrorCode("1115")
+                        .WithState(_ => ruleId);
+                });
+                When(x => x.QualificationType != null && x.QualificationType.Contains("Other"), () =>
+                {
+                    RuleFor(x => x.OtherQualificationName)
+                        .NotEmpty()
+                        .WithMessage("Enter the name of the qualification")
+                        .WithErrorCode("2115")
+                        .WithState(_ => ruleId);
+                });
+            }
+            
 
             RuleFor(x => x.Weighting)
                 .NotEmpty()

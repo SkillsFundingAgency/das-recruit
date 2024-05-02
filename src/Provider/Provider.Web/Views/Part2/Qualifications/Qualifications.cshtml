@@ -16,7 +16,7 @@
         <a asp-route="@RouteNames.Skills_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Back</a>
     }
 }
-
+<partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState }' />
 @if (!Model.Qualifications.Any() && Model.IsFaaV2Enabled)
 {
     <partial name="_EmptyQualifications", model="Model" />
