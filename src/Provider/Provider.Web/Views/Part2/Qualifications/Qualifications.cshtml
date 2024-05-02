@@ -52,10 +52,12 @@ else
                 @for (var i = 0; i < Model.Qualifications.Count; i++)
                 {
                     var qualification = Model.Qualifications[i];
+                    var additionalText = !string.IsNullOrEmpty(qualification.OtherQualificationName) ? $" ({qualification.OtherQualificationName})" :"";
+                    var levelText = qualification.Level.HasValue ? $" (Level {qualification.Level})":"";
 
                     <tr class="govuk-table__row">
                         <td class="govuk-table__cell">
-                            @qualification.QualificationType in @qualification.Subject
+                            @qualification.QualificationType@levelText@additionalText in @qualification.Subject
                         </td>
                         <td class="govuk-table__cell">
                             @qualification.Grade

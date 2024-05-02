@@ -324,7 +324,12 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part2
             return qualification switch
             {
                 "GCSE or equivalent" => "GCSE",
+                "GCSE" => "GCSE",
                 "A Level or equivalent" => "A Level",
+                "A Level" => "A Level",
+                "T Level" => "T Level",
+                "BTEC" => "BTEC",
+                "Degree" => "Degree",
                 "BTEC or equivalent" => "BTEC",
                 _ => "Other"
             };
