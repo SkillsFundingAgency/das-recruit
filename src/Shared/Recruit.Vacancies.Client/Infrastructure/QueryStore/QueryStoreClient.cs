@@ -170,6 +170,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
             return _queryStore.GetAsync<ClosedVacancy>(QueryViewType.ClosedVacancy.TypeName, key);
         }
 
+        public async Task<IEnumerable<ClosedVacancy>> GetClosedVacancies(IList<long> vacancyReferences)
+        {
+            return await _queryStore.GetClosedVacancies(vacancyReferences);
+        }
+
         public Task<long> DeleteAllLiveVacancies()
         {
             return _queryStore.DeleteAllAsync<LiveVacancy>(QueryViewType.LiveVacancy.TypeName);

@@ -11,6 +11,8 @@ using SFA.DAS.Recruit.Api.Queries;
 using SFA.DAS.Testing.AutoFixture;
 using System.Threading;
 using System.Threading.Tasks;
+using SFA.DAS.Recruit.Api.Models;
+using System.Collections.Generic;
 
 namespace SFA.DAS.Recruit.Api.UnitTests.Controllers;
 public class ClosedVacanciesControllerTests
@@ -35,6 +37,29 @@ public class ClosedVacanciesControllerTests
             Assert.That(actual, Is.Not.Null);
             var actualResult = actual.Value as ClosedVacancy;
             actualResult.Should().BeEquivalentTo(vacancy);
+        }
+    }
+
+    [Test, MoqAutoData]
+    public async Task When_Getting_Closed_Vacancies_Then_Query_Is_Created_And_Closed_Vacancies_Returned(
+        GetClosedVacanciesByReferenceRequest request,
+        List<ClosedVacancy> vacancies,
+        GetClosedVacanciesByReferenceQueryResponse response,
+        [Frozen] Mock<IMediator> mockMediator,
+        [Greedy] ClosedVacanciesController controller)
+    {
+        response.Data = vacancies;
+        mockMediator
+            .Setup(x => x.Send(It.Is<GetClosedVacanciesByReferenceQuery>(q => q.VacancyReferences == request.VacancyReferences), CancellationToken.None))
+            .ReturnsAsync(response);
+
+        var actual = await controller.GetByVacancyReferences(request) as OkObjectResult;
+
+        using (new AssertionScope())
+        {
+            Assert.That(actual, Is.Not.Null);
+            var actualResult = actual.Value as List<ClosedVacancy>;
+            actualResult.Should().BeEquivalentTo(vacancies);
         }
     }
 }

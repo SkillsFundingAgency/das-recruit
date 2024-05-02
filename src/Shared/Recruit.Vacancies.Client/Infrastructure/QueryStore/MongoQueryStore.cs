@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Vacancy;
+using Microsoft.Azure.Amqp.Framing;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
@@ -166,6 +167,24 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
 
             var result = await RetryPolicy.Execute(_ =>
                     collection.Find(filter).Sort(sort).Skip(vacanciesToSkip).Limit(vacanciesToGet).Project<LiveVacancy>(GetProjection<LiveVacancy>()).ToListAsync(),
+                new Context(nameof(GetAllLiveVacancies)));
+
+            return result;
+        }
+
+        public async Task<IEnumerable<ClosedVacancy>> GetClosedVacancies(IList<long> vacancyReferences)
+        {
+            var builderFilter = Builders<ClosedVacancy>.Filter;
+            var filter = builderFilter.Eq(identifier => identifier.ViewType, "ClosedVacancy");
+            filter &= builderFilter.In<long>(identifier => identifier.VacancyReference, vacancyReferences);
+
+            var builderSort = Builders<ClosedVacancy>.Sort;
+            var sort = builderSort.Descending(identifier => identifier.ClosingDate);
+
+            var collection = GetCollection<ClosedVacancy>();
+
+            var result = await RetryPolicy.Execute(_ =>
+                    collection.Find(filter).Sort(sort).Project<ClosedVacancy>(GetProjection<ClosedVacancy>()).ToListAsync(),
                 new Context(nameof(GetAllLiveVacancies)));
 
             return result;
