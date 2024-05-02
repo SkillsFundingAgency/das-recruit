@@ -33,7 +33,9 @@ public class ApplicationsController : ApiControllerBase
             Improvements = candidateApplication.Improvements,
             Phone = candidateApplication.Phone,
             Postcode = candidateApplication.Postcode,
+            AdditionalQuestion1Text = candidateApplication.AdditionalQuestion1?.QuestionText,
             AdditionalQuestion1 = candidateApplication.AdditionalQuestion1?.AnswerText,
+            AdditionalQuestion2Text = candidateApplication.AdditionalQuestion2?.QuestionText,
             AdditionalQuestion2 = candidateApplication.AdditionalQuestion2?.AnswerText,
             AddressLine1 = candidateApplication.AddressLine1,
             AddressLine2 = candidateApplication.AddressLine2,
@@ -43,8 +45,9 @@ public class ApplicationsController : ApiControllerBase
             FirstName = candidateApplication.FirstName,
             LastName = candidateApplication.LastName,
             CandidateId = candidateId,
-            HobbiesAndInterests = candidateApplication.HobbiesAndInterests,
+            ApplicationId = candidateApplication.ApplicationId,
             Strengths = candidateApplication.Strengths,
+            WhatIsYourInterest = candidateApplication.WhatIsYourInterest,
             WorkExperiences = candidateApplication.WorkExperiences.Select(c=> new ApplicationWorkExperience
             {
                 Description = c.Description,
@@ -53,7 +56,7 @@ public class ApplicationsController : ApiControllerBase
                 FromDate = c.FromDate,
                 ToDate = c.ToDate ?? DateTime.MinValue
             }).ToList(),
-            Jobs = candidateApplication.WorkExperiences.Select(c=> new ApplicationJob
+            Jobs = candidateApplication.Jobs.Select(c=> new ApplicationJob
             {
                 Description = c.Description,
                 Employer = c.Employer,
@@ -67,7 +70,8 @@ public class ApplicationsController : ApiControllerBase
                 Subject = c.Subject,
                 Year = 0,
                 IsPredicted = c.IsPredicted ?? false,
-                QualificationType = c.QualificationType
+                QualificationType = c.QualificationType,
+                AdditionalInformation = c.AdditionalInformation
             }).ToList(),
             VacancyReference = Convert.ToInt64(candidateApplication.VacancyReference),
             TrainingCourses = candidateApplication.TrainingCourses.Select(c=> new ApplicationTrainingCourse

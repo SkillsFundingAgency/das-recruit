@@ -31,6 +31,7 @@ public class CandidateApplication
     public List<WorkHistory> Jobs { get; set; }
     public AdditionalQuestion? AdditionalQuestion1 { get; set; }
     public AdditionalQuestion? AdditionalQuestion2 { get; set; }
+    public string WhatIsYourInterest { get; set; }
 }
 
 public class ApplicationQualification

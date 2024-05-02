@@ -49,6 +49,7 @@ public class ApplicationsControllerTests
                 && c.Application.FirstName == request.FirstName
                 && c.Application.LastName == request.LastName
                 && c.Application.CandidateId == candidateId
+                && c.Application.ApplicationId == request.ApplicationId
                 && c.Application.HobbiesAndInterests == request.HobbiesAndInterests
                 && c.Application.Strengths == request.Strengths
                 && c.Application.Support == request.Support

@@ -70,6 +70,7 @@ namespace SFA.DAS.Recruit.Api.Models
         public string QualificationType { get; set; }
         public string Subject { get; set; }
         public string Grade { get; set; }
+        public string Level { get; set; }
         public QualificationWeighting Weighting { get; set; }
     }
     
