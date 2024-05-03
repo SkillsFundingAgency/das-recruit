@@ -39,7 +39,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Va
         public bool Selected { get; set; }
         public bool StatusNewOrReview => Status is ApplicationReviewStatus.New || Status is ApplicationReviewStatus.InReview;
         public bool CanMakeUnsuccessful => (Status != ApplicationReviewStatus.Successful && Status != ApplicationReviewStatus.Unsuccessful);
-        public bool ShowCandidateName => HasEverBeenEmployerInterviewing.HasValue && (HasEverBeenEmployerInterviewing == true);
+        public bool ShowCandidateName => (HasEverBeenEmployerInterviewing.HasValue && (HasEverBeenEmployerInterviewing == true)) || (Status == ApplicationReviewStatus.Successful);
         public bool ShowApplicantID => !ShowCandidateName;
         public DateTime? DateSharedWithEmployer { get; set; }
         public DateTime? ReviewedDate { get; set; }
