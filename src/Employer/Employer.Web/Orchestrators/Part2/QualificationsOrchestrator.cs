@@ -22,16 +22,14 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
 {
     public class QualificationsOrchestrator : VacancyValidatingOrchestrator<QualificationEditModel>
     {
-        private readonly IEmployerVacancyClient _client;
         private readonly IRecruitVacancyClient _vacancyClient;
         private readonly IReviewSummaryService _reviewSummaryService;
         private readonly IUtility _utility;
         private readonly IFeature _feature;
 
-        public QualificationsOrchestrator(IEmployerVacancyClient client, IRecruitVacancyClient vacancyClient, ILogger<QualificationsOrchestrator> logger, IReviewSummaryService reviewSummaryService, IUtility utility, IFeature feature)
+        public QualificationsOrchestrator(IRecruitVacancyClient vacancyClient, ILogger<QualificationsOrchestrator> logger, IReviewSummaryService reviewSummaryService, IUtility utility, IFeature feature)
             : base(logger)
         {
-            _client = client;
             _reviewSummaryService = reviewSummaryService;
             _utility = utility;
             _feature = feature;
@@ -49,12 +47,15 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
                 VacancyId = vacancy.Id,
                 EmployerAccountId = vacancy.EmployerAccountId,
                 Title = vacancy.Title,
+                AddQualificationRequirement = vacancy.HasOptedToAddQualifications,
                 Qualifications = qualifications.Select(q => new QualificationEditModel
                 {
                     Subject = q.Subject,
                     QualificationType = q.QualificationType,
                     Weighting = q.Weighting,
-                    Grade = q.Grade
+                    Grade = q.Grade,
+                    Level = q.Level,
+                    OtherQualificationName = q.OtherQualificationName
                 }).ToList()
             };
 
@@ -66,6 +67,12 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
             vm.IsTaskListCompleted = _utility.IsTaskListCompleted(vacancy);
             
             return vm;
+        }
+
+        public async Task<OrchestratorResponse> PostAddQualificationEditModel(AddQualificationsEditModel m, VacancyUser user)
+        {
+            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(m, RouteNames.Qualifications_Get);
+            return await UpdateVacancyWithAddQualifications(vacancy, m, user);
         }
 
         public async Task<QualificationViewModel> GetQualificationViewModelForAddAsync(VacancyRouteModel vrm)
@@ -97,10 +104,14 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
             var qualificationToEdit = vacancy.Qualifications[index];
 
             vm.Index = index;
-            vm.QualificationType = qualificationToEdit.QualificationType;
+            var qualificationNameType = _feature.IsFeatureEnabled(FeatureNames.FaaV2Improvements) ? MapToV2Qualification(qualificationToEdit.QualificationType) : qualificationToEdit.QualificationType;
+            vm.QualificationType = qualificationNameType;
             vm.Subject = qualificationToEdit.Subject;
             vm.Grade = qualificationToEdit.Grade;
             vm.Weighting = qualificationToEdit.Weighting;
+            vm.Level = qualificationToEdit.Level;
+            vm.OtherQualificationName = _feature.IsFeatureEnabled(FeatureNames.FaaV2Improvements) && qualificationNameType.Equals("Other") && string.IsNullOrEmpty(qualificationToEdit.OtherQualificationName)
+                ? qualificationToEdit.QualificationType : qualificationToEdit.OtherQualificationName;
             vm.PostRoute = RouteNames.Qualification_Edit_Post;
             
             return vm;
@@ -148,6 +159,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
                 Grade = qualification.Grade,
                 Subject = qualification.Subject,
                 Weighting = qualification.Weighting,
+                Level = qualification.Level,
+                OtherQualificationName = qualification.OtherQualificationName
             };
 
             return await UpdateVacancyWithQualificationAsync(vacancy, currentQualification, qualification, m, user);
@@ -217,7 +230,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
                 cancelRoute = RouteNames.Dashboard_Get;
                 backRoute = RouteNames.Skills_Get;
             }
-            
+
             var vm = new QualificationViewModel
             {
                 VacancyId = vacancy.Id,
@@ -228,6 +241,30 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
                 BackRoute = backRoute
             };
 
+            foreach (var qualification in allQualifications)
+            {
+                var q = new QualificationViewModel.Qualification
+                {
+                    Name = qualification,
+                    Data = ""
+                };
+
+                if (_feature.IsFeatureEnabled(FeatureNames.FaaV2Improvements))
+                {
+                    if (qualification == "BTEC")
+                    {
+                        q.Data = "conditional-btec";
+                    }
+
+                    if (qualification == "Other")
+                    {
+                        q.Data = "conditional-other";
+                    }
+                }
+                
+                vm.Qualifications.Add(q);
+            }
+
             return vm;
         }
 
@@ -237,6 +274,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
             vm.Subject = m.Subject;
             vm.Grade = m.Grade;
             vm.Weighting = m.Weighting;
+            vm.Level = m.Level;
         }
 
         private async Task<OrchestratorResponse> UpdateVacancyWithQualificationAsync(Vacancy vacancy, Qualification currentQualification, Qualification qualification, QualificationEditModel m, VacancyUser user)
@@ -250,6 +288,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
                     qualification.Grade = m.Grade;
                     qualification.Subject = m.Subject;
                     qualification.Weighting = m.Weighting;
+                    qualification.Level = m.Level;
+                    qualification.OtherQualificationName = m.OtherQualificationName;
                     return qualification;
                 });
 
@@ -266,6 +306,32 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part2
                 v => _vacancyClient.UpdateDraftVacancyAsync(v, user));
         }
 
+        private async Task<OrchestratorResponse> UpdateVacancyWithAddQualifications(Vacancy vacancy,
+            AddQualificationsEditModel m, VacancyUser user)
+        {
+            SetVacancyWithEmployerReviewFieldIndicators(
+                vacancy.HasOptedToAddQualifications,
+                FieldIdResolver.ToFieldId(v => v.HasOptedToAddQualifications),
+                vacancy,
+                (v) => { return v.HasOptedToAddQualifications = m.AddQualificationRequirement; });
+
+            return await ValidateAndExecute(
+                vacancy,
+                v => _vacancyClient.Validate(v, VacancyRuleSet.None),
+                v => _vacancyClient.UpdateDraftVacancyAsync(v, user));
+        }
+
+        private static string MapToV2Qualification(string qualification)
+        {
+            return qualification switch
+            {
+                "GCSE or equivalent" => "GCSE",
+                "A Level or equivalent" => "A Level",
+                "BTEC or equivalent" => "BTEC",
+                _ => "Other"
+            };
+        }
+        
         protected override EntityToViewModelPropertyMappings<Vacancy, QualificationEditModel> DefineMappings()
         {
             return null;
