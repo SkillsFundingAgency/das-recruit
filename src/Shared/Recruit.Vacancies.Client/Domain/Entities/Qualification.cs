@@ -19,8 +19,7 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
             return QualificationType.Equals(other.QualificationType) &&
                    Subject.Equals(other.Subject) &&
                    Grade.Equals(other.Grade) &&
-                   Weighting.Equals(other.Weighting) &&
-                   Level != null || Level.Equals(other.Level);
+                   Weighting.Equals(other.Weighting);
         }
     }
 }
