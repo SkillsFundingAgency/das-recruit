@@ -28,7 +28,8 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         public async Task<IActionResult> ApplicationReview(ApplicationReviewRouteModel rm, [FromQuery] bool vacancySharedByProvider)
         {
             var vm = await _orchestrator.GetApplicationReviewViewModelAsync(rm, vacancySharedByProvider);
-            return View(vm);
+            var viewName = vm.IsFaaV2Application ? "ApplicationReviewV2" : "ApplicationReview";
+            return View(viewName, vm);
         }
 
         [HttpPost("", Name = RouteNames.ApplicationReview_Post)]
@@ -37,7 +38,8 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             if (!ModelState.IsValid)
             {
                 var vm = await _orchestrator.GetApplicationReviewViewModelAsync(editModel, vacancySharedByProvider);
-                return View(vm);
+                var viewName = vm.IsFaaV2Application ? "ApplicationReviewV2" : "ApplicationReview";
+                return View(viewName, vm);
             }
 
             if (vacancySharedByProvider)
