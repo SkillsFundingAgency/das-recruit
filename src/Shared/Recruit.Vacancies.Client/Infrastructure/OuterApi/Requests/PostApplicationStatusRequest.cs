@@ -4,8 +4,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Requests;
 
 public class PostApplicationStatusRequest(Guid candidateId, Guid applicationId, PostApplicationStatus postApplicationStatus) : IPostApiRequest
 {
-    public string PostUrl => $"candidates/{candidateId}applications/{applicationId}/status";
-    public object Data { get; set; }= postApplicationStatus;
+    public string PostUrl => $"candidates/{candidateId}/applications/{applicationId}";
+    public object Data { get; set; } = postApplicationStatus;
 }
 
 public class PostApplicationStatus

@@ -9,6 +9,7 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
         public string Subject { get; set; }
         public string Grade { get; set; }
         public QualificationWeighting? Weighting { get; set; }
+        public string Level { get; set; }
         
         public bool Equals(Qualification other)
         {
@@ -18,7 +19,8 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
             return QualificationType.Equals(other.QualificationType) &&
                    Subject.Equals(other.Subject) &&
                    Grade.Equals(other.Grade) &&
-                   Weighting.Equals(other.Weighting);
+                   Weighting.Equals(other.Weighting) &&
+                   Level != null || Level.Equals(other.Level);
         }
     }
 }
