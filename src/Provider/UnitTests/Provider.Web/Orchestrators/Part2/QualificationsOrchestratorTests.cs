@@ -3,11 +3,14 @@ using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Provider.UnitTests.Provider.Web.HardMocks;
 using Esfa.Recruit.Provider.Web;
+using Esfa.Recruit.Provider.Web.Configuration;
 using Esfa.Recruit.Provider.Web.Orchestrators.Part2;
 using Esfa.Recruit.Provider.Web.RouteModel;
+using Esfa.Recruit.Provider.Web.ViewModels.Part2.Qualifications;
 using Esfa.Recruit.Shared.Web.Mappers;
 using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Shared.Web.ViewModels.Qualifications;
+using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
@@ -266,6 +269,36 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part2
 
             fixture.VerifyProviderReviewFieldIndicators(FieldIdentifiers.Qualifications, true);
         }
+        [Theory]
+        [InlineData(0,"GCSE",null)]
+        [InlineData(1,"A Level",null)]
+        [InlineData(2,"BTEC",null)]
+        [InlineData(3,"Other","AS Level or equivalent")]
+        [InlineData(4,"Other","NVQ")]
+        public async Task WhenCallingGetQualificationViewModelForEditAsync_ThenMappedForV2(int index, string expectedQualificationName, string? expectedOtherQualificationName)
+        {
+            var fixture = new QualificationsOrchestratorTestsFixture();
+
+            fixture
+                .WithQualfication("Mathematics", "A", "GCSE or equivalent", QualificationWeighting.Desired)
+                .WithQualfication("Mathematics", "A", "A Level or equivalent", QualificationWeighting.Desired)
+                .WithQualfication("Mathematics", "A", "BTEC or equivalent", QualificationWeighting.Desired)
+                .WithQualfication("Mathematics", "A", "AS Level or equivalent", QualificationWeighting.Desired)
+                .WithQualfication("Mathematics", "A", "NVQ", QualificationWeighting.Desired)
+                .IsFaaV2()
+                .Setup();
+
+            var result = await fixture.GetQualificationForEdit(new VacancyRouteModel
+                {
+                    Ukprn = fixture.Vacancy.TrainingProvider.Ukprn.Value,
+                    VacancyId = fixture.Vacancy.Id
+                },
+                index: index);
+
+            result.QualificationType.Should().Be(expectedQualificationName);
+            result.OtherQualificationName.Should().Be(expectedOtherQualificationName);
+        }
+
 
         private QualificationEditModel FromQualification(Qualification qualification)
         {
@@ -288,6 +321,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part2
             {
                 MockClient = new Mock<IProviderVacancyClient>();
                 MockRecruitVacancyClient = new Mock<IRecruitVacancyClient>();
+                FeatureMock = new Mock<IFeature>();
 
                 User = VacancyOrchestratorTestData.GetVacancyUser();
                 Vacancy = VacancyOrchestratorTestData.GetPart1CompleteVacancy();
@@ -321,7 +355,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part2
 
                 MockRecruitVacancyClient.Setup(x => x.UpdateEmployerProfileAsync(It.IsAny<EmployerProfile>(), User));
 
-                Sut = new QualificationsOrchestrator(MockRecruitVacancyClient.Object, Mock.Of<ILogger<QualificationsOrchestrator>>(), Mock.Of<IReviewSummaryService>(), new Utility(MockRecruitVacancyClient.Object));
+                Sut = new QualificationsOrchestrator(MockRecruitVacancyClient.Object, Mock.Of<ILogger<QualificationsOrchestrator>>(), Mock.Of<IReviewSummaryService>(), new Utility(MockRecruitVacancyClient.Object), FeatureMock.Object);
             }
 
             public async Task PostQualificationEditModelForAddAsync(VacancyRouteModel vacancyRouteModel, QualificationEditModel model)
@@ -337,6 +371,11 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part2
             public async Task DeleteQualificationAsync(VacancyRouteModel vacancyRouteModel, int index)
             {
                 await Sut.DeleteQualificationAsync(vacancyRouteModel, index, User);
+            }
+            
+            public async Task<QualificationViewModel> GetQualificationForEdit(VacancyRouteModel vacancyRouteModel, int index)
+            {
+                return await Sut.GetQualificationViewModelForEditAsync(vacancyRouteModel, index);
             }
 
             public void VerifyAddQualificationToDraftVacancy(int count, Qualification qualification)
@@ -367,6 +406,11 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part2
             {
                 MockRecruitVacancyClient.Verify(x => x.UpdateDraftVacancyAsync(Vacancy, User), Times.Once);
             }
+            public QualificationsOrchestratorTestsFixture IsFaaV2()
+            {
+                FeatureMock.Setup(x => x.IsFeatureEnabled(FeatureNames.FaaV2Improvements)).Returns(true);
+                return this;
+            }
 
             private bool ContainEquivalentOf<T>(List<T> collection, T expected)
             {
@@ -376,6 +420,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part2
 
             public Mock<IProviderVacancyClient> MockClient { get; set; }
             public Mock<IRecruitVacancyClient> MockRecruitVacancyClient { get; set; }
+            public Mock<IFeature> FeatureMock { get; set; }
         }
     }
 }

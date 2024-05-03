@@ -88,12 +88,20 @@
                 }
             </ul>
             <h3 class="govuk-heading-s govuk-!-margin-bottom-1">Qualifications</h3>
-            <ul class="govuk-list govuk-list--bullet">
-                @foreach (var qualification in Model.Qualifications)
-                {
-                    <li>@qualification</li>
-                }
-            </ul>
+            @if (Model.Qualifications.Any())
+            {
+                <ul class="govuk-list govuk-list--bullet">
+                    @foreach (var qualification in Model.Qualifications)
+                    {
+                        <li>@qualification</li>
+                    }
+                </ul>
+            }
+            else
+            {
+                @:You don’t need any qualifications to apply for this apprenticeship.
+            }
+            
         </div>
         <div class="govuk-grid-column-one-half">
             <h3 asp-show="@Model.HasThingsToConsider" class="govuk-heading-s govuk-!-margin-bottom-1">Things to consider</h3>

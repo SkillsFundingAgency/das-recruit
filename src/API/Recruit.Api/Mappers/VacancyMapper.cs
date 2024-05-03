@@ -41,7 +41,8 @@ namespace SFA.DAS.Recruit.Api.Mappers
                             Subject = c.Subject,
                             Weighting = (QualificationWeighting?)c.Weighting,
                             QualificationType = c.QualificationType,
-                            Level = c.Level
+                            Level = c.Level,
+                            OtherQualificationName = c.OtherQualificationName
                         })
                     .ToList(),
                 Wage = new Wage

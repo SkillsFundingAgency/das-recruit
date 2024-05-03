@@ -181,7 +181,8 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.CommandHandlers
                 {nameof(Vacancy.HasChosenProviderContactDetails), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.Cloned)},
                 {nameof(Vacancy.AdditionalQuestion1), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.Cloned)},
                 {nameof(Vacancy.AdditionalQuestion2), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.Cloned)},
-                {nameof(Vacancy.HasSubmittedAdditionalQuestions), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.Cloned)}
+                {nameof(Vacancy.HasSubmittedAdditionalQuestions), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.Cloned)},
+                {nameof(Vacancy.HasOptedToAddQualifications), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.Cloned)}
             };
 
             foreach (var property in typeof(Vacancy).GetProperties())

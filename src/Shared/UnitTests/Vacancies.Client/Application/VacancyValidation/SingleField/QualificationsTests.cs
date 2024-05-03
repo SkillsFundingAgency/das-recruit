@@ -12,6 +12,7 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation.
         public QualificationsTests()
         {
             MockQualificationsProvider.Setup(q => q.GetQualificationsAsync()).ReturnsAsync(new List<string>{"type"});
+            Feature.Setup(x => x.IsFeatureEnabled("FaaV2Improvements")).Returns(true);
         }
 
         [Fact]
@@ -23,7 +24,38 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation.
             result.HasErrors.Should().BeFalse();
             result.Errors.Should().HaveCount(0);
         }
+        
+        [Fact]
+        public void HasNoErrorWhenOptedNotToAddQualifications()
+        {
+            var vacancy = new Vacancy
+            {
+                Qualifications = null,
+                HasOptedToAddQualifications = false
+            };
 
+            var result = Validator.Validate(vacancy, VacancyRuleSet.Qualifications);
+
+            result.HasErrors.Should().BeFalse();
+            result.Errors.Should().HaveCount(0);
+        }
+        
+        [Fact]
+        public void HasErrorWhenOptedNotToAddQualificationsNotForFaaV2Feature()
+        {
+            Feature.Setup(x => x.IsFeatureEnabled("FaaV2Improvements")).Returns(false);
+            var vacancy = new Vacancy
+            {
+                Qualifications = null,
+                HasOptedToAddQualifications = false
+            };
+
+            var result = Validator.Validate(vacancy, VacancyRuleSet.Qualifications);
+
+            result.HasErrors.Should().BeTrue();
+            result.Errors.Should().HaveCount(1);
+        }
+        
         public static IEnumerable<object[]> NullOrZeroQualificationCollection =>
             new List<object[]>
             {
@@ -37,7 +69,8 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation.
         {
             var vacancy = new Vacancy
             {
-                Qualifications = qualifications
+                Qualifications = qualifications,
+                HasOptedToAddQualifications = true
             };
 
             var result = Validator.Validate(vacancy, VacancyRuleSet.Qualifications);
@@ -161,7 +194,8 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation.
 
             return new Vacancy
             {
-                Qualifications = new List<Qualification> { qualification }
+                Qualifications = new List<Qualification> { qualification },
+                HasOptedToAddQualifications = true
             };
         }
         

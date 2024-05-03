@@ -510,12 +510,19 @@
                 <div class="app-summary-list__row" field-review-marker="Qualifications">
                     <dt class="app-summary-list__key" id="@FieldIdentifiers.Qualifications">Qualifications required</dt>
                     <dd class="app-summary-list__value">
-                        <ul class="govuk-list govuk-list--bullet">
-                            @foreach (var qual in Model.Qualifications)
-                            {
-                                <li>@qual</li>
-                            }
-                        </ul>
+                        @if (Model.HasOptedToAddQualifications is false)
+                        {
+                            @:You don’t need any qualifications to apply for this apprenticeship.
+                        }
+                        else
+                        {
+                            <ul class="govuk-list govuk-list--bullet">
+                                @foreach (var qual in Model.Qualifications)
+                                {
+                                    <li>@qual</li>
+                                }
+                            </ul>
+                        }
                         <review-field class="govuk-tag--purple" field-name="@FieldIdentifiers.Qualifications" tag-name="strong" model="@Model"/>
                     </dd>
                     <dd class="app-summary-list__actions">
