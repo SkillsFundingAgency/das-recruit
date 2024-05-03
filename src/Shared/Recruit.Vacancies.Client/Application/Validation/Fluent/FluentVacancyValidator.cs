@@ -712,7 +712,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
             RuleForEach(x => x.Qualifications)
                 .NotEmpty()
                 .SetValidator(new VacancyQualificationsValidator((long)VacancyRuleSet.Qualifications,
-                    _qualificationsProvider, _profanityListProvider))
+                    _qualificationsProvider, _profanityListProvider, _feature))
                 .RunCondition(VacancyRuleSet.Qualifications)
                 .WithState(_ => VacancyRuleSet.Qualifications);
         }

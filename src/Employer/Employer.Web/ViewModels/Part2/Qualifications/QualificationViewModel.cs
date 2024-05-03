@@ -26,8 +26,8 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Part2.Qualifications
         {
             nameof(QualificationType),
             nameof(OtherQualificationName),
-            nameof(Subject),
             nameof(Level),
+            nameof(Subject),
             nameof(Grade),
             nameof(Weighting)
         };
@@ -35,6 +35,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Part2.Qualifications
         public bool IsTaskListCompleted { get ; set ; }
         public string PostRoute { get; set; }
         public string BackRoute { get; set; }
+        public bool IsFaaV2Enabled { get; set; }
 
         public class Qualification
         {

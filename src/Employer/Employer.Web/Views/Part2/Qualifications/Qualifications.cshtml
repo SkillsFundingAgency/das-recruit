@@ -11,7 +11,7 @@
 
 <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState }' />
 
-@if (!Model.Qualifications.Any())
+@if (!Model.Qualifications.Any() && Model.IsFaaV2Enabled)
 {
     <partial name="_EmptyQualifications", model="Model" />
 }
@@ -20,7 +20,7 @@ else
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-three-quarters">
 
-            <div asp-show="Model.HasInfo" class="info-summary">
+            <div asp-show="Model.HasInfo" class="das-notification das-notification--information">
                 <p class="govuk-body">@Model.InfoMessage</p>
             </div>
 
@@ -79,6 +79,8 @@ else
             <div class="govuk-button-group">
                 <a asp-show="@(!Model.IsTaskListCompleted)" asp-route="@RouteNames.FutureProspects_Get" asp-all-route-data="@Model.RouteDictionary" class="govuk-button">Save and continue</a>
                 <a asp-show="@Model.IsTaskListCompleted" asp-route="@RouteNames.EmployerCheckYourAnswersGet" asp-all-route-data="@Model.RouteDictionary" class="govuk-button">Save and continue</a>
+                <a asp-show="@(!Model.IsTaskListCompleted)" asp-route="@RouteNames.Dashboard_Get" asp-all-route-data="@Model.RouteDictionary" class="govuk-link govuk-link--no-visited-state">Cancel</a>
+                <a asp-show="@(Model.IsTaskListCompleted)" asp-route="@RouteNames.EmployerCheckYourAnswersGet" asp-all-route-data="@Model.RouteDictionary" class="govuk-link govuk-link--no-visited-state">Cancel</a>
             </div>
         </div>
     </div>
