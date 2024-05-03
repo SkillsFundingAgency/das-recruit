@@ -24,8 +24,8 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.Part2.Qualifications
         {
             nameof(QualificationType),
             nameof(OtherQualificationName),
-            nameof(Subject),
             nameof(Level),
+            nameof(Subject),
             nameof(Grade),
             nameof(Weighting)
         };
