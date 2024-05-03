@@ -16,7 +16,7 @@ public class WhenConstructingPostApplicationStatusRequest
     {
         var actual = new PostApplicationStatusRequest(candidateId, applicationId, postApplicationStatus);
 
-        actual.PostUrl.Should().Be($"candidates/{candidateId}applications/{applicationId}/status");
+        actual.PostUrl.Should().Be($"candidates/{candidateId}/applications/{applicationId}");
         ((PostApplicationStatus)actual.Data).Should().BeEquivalentTo(postApplicationStatus);
     }
 }
