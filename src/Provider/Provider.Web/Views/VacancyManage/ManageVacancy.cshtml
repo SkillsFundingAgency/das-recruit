@@ -12,7 +12,7 @@
 
 
 <div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds govuk-!-margin-bottom-6">
+    <div class="govuk-grid-column-two-thirds">
 
         <div asp-show="@Model.CanShowApplicationsStatusChangeBanner" class="govuk-notification-banner govuk-notification-banner--success" role="alert"
              aria-labelledby="govuk-notification-banner-title"
@@ -57,59 +57,80 @@
             </div>
         </div>
     </div>
+
+    <div class="govuk-grid-column-two-thirds">
+        <h2 class="govuk-heading-m">Vacancy summary</h2>
+        <dl class="govuk-summary-list">
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    Status
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    <strong class="govuk-tag govuk-tag--green">@Model.Status.GetDisplayName() </strong>
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                    <a asp-show="@Model.CanShowCloseVacancyLink" asp-route="@RouteNames.CloseVacancy_Get" asp-all-route-data="@Model.RouteDictionary" class="govuk-link">Change</a>
+                </dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    Closing date
+                    <br>
+                    <br>
+                    Possible start date
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    @Model.ClosingDate
+                    <br>
+                    <br>
+                    @Model.PossibleStartDate
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                    <a asp-show="@Model.CanShowEditVacancyLink" asp-route="@RouteNames.VacancyEditDates_Get" asp-all-route-data="@Model.RouteDictionary" class="govuk-link">Change</a>
+                </dd>
+            </div>
+        </dl>
+
+        <div class="govuk-button-group">
+            <a asp-route="@RouteNames.DisplayFullVacancy_Get" asp-all-route-data="@Model.RouteDictionary" class="govuk-link">View vacancy</a>
+            <a asp-show="@Model.CanShowCloneVacancyLink" asp-route="@RouteNames.CloneVacancy_Get" asp-all-route-data="@Model.RouteDictionary" class="govuk-link">Clone vacancy</a>
+            <a asp-show="@Model.CanShowDeleteVacancyLink" asp-route="@RouteNames.DeleteVacancy_Get" asp-all-route-data="@Model.RouteDictionary" class="govuk-link">Delete vacancy</a>
+        </div>
+        <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
+        <div asp-show="@Model.CanShowVacancyAnalytics">
+            <h2 class="govuk-heading-m govuk-!-margin-top-0">
+                Vacancy analytics
+            </h2>
+            <p>To see how many people have looked at your vacancy, <a asp-route="@RouteNames.VacancyAnalytics_Get" asp-all-route-data="@Model.RouteDictionary" class="govuk-link">view vacancy analytics</a>.</p>
+        </div>
+        <hr asp-show="@Model.CanShowVacancyAnalytics" class="govuk-section-break govuk-section-break--xl govuk-section-break--visible" />
+    </div>
 </div>
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <div>
+            <h2 class="govuk-heading-m">
+                Applications (@Model.ApplicationCount)
+            </h2>
+        </div>
+        <div asp-show="@(Model.IsApplyThroughFaaVacancy || Model.IsApplyThroughFatVacancy)">
+            <esfaFeatureEnabled name="@FeatureNames.ShareApplicationsFeature">
+                <p class="govuk-body" asp-show="@Model.CanShowShareMultipleApplicationsLink">
+                    <a asp-route="@RouteNames.ApplicationReviewsToShare_Get" asp-all-route-data="@Model.RouteDictionary" class="govuk-link govuk-!-margin-top-2 govuk-!-margin-bottom-4">Share multiple applications with employer</a>
+                </p>
+            </esfaFeatureEnabled>
+            <esfaFeatureEnabled name="@FeatureNames.MultipleApplicationsManagement">
+                <p class="govuk-body" asp-show="@Model.CanShowMultipleApplicationsUnsuccessfulLink">
+                    <a asp-route="@RouteNames.ApplicationReviewsToUnsuccessful_Get" asp-all-route-data="@Model.RouteDictionary" class="govuk-link govuk-!-margin-top-2 govuk-!-margin-bottom-4">Make multiple applications unsuccessful</a>
+                </p>
+            </esfaFeatureEnabled>
+        </div>
 
-<h2 class="govuk-heading-m">Vacancy summary</h2>
-<dl class="das-definition-list das-definition-list--table">
-    <dt class="das-definition-list__title das-definition-list__title--spacer">Status</dt>
-    <dd class="das-definition-list__definition das-definition-list__definition--spacer"><strong class="govuk-tag govuk-tag--green">@Model.Status.GetDisplayName() </strong></dd>
-    <dt class="das-definition-list__title das-definition-list__title--spacer">Closing date</dt>
-    <dd class="das-definition-list__definition das-definition-list__definition--spacer">@Model.ClosingDate</dd>
-    <dt class="das-definition-list__title das-definition-list__title--spacer">Possible start date</dt>
-    <dd class="das-definition-list__definition das-definition-list__definition--spacer">@Model.PossibleStartDate</dd>
-
-</dl>
-
-<div class="govuk-button-group">
-    <a asp-route="@RouteNames.DisplayFullVacancy_Get" asp-all-route-data="@Model.RouteDictionary" class="govuk-link">View vacancy</a>
-    <a asp-show="@Model.CanShowCloneVacancyLink" asp-route="@RouteNames.CloneVacancy_Get" asp-all-route-data="@Model.RouteDictionary" class="govuk-link">Clone vacancy</a>
-    <a asp-show="@Model.CanShowEditVacancyLink" asp-route="@RouteNames.VacancyEditDates_Get" asp-all-route-data="@Model.RouteDictionary" class="govuk-link">Edit vacancy dates</a>
-    <a asp-show="@Model.CanShowCloseVacancyLink" asp-route="@RouteNames.CloseVacancy_Get" asp-all-route-data="@Model.RouteDictionary" class="govuk-link">Close vacancy</a>
-    <a asp-show="@Model.CanShowDeleteVacancyLink" asp-route="@RouteNames.DeleteVacancy_Get" asp-all-route-data="@Model.RouteDictionary" class="govuk-link">Delete vacancy</a>
-
-</div>
-
-<div asp-show="@Model.CanShowVacancyAnalytics">
-    <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
-    <h2 class="govuk-heading-m govuk-!-margin-top-0">
-        Vacancy analytics
-    </h2>
-    <p>To see how many people have looked at your vacancy, <a asp-route="@RouteNames.VacancyAnalytics_Get" asp-all-route-data="@Model.RouteDictionary" class="govuk-link">view vacancy analytics</a>.</p>
-</div>
-
-<div>
-    <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
-    <h2 class="govuk-heading-m">
-        Applications (@Model.ApplicationCount)
-    </h2>
-</div>
-<div asp-show="@(Model.IsApplyThroughFaaVacancy || Model.IsApplyThroughFatVacancy)">
-    <esfaFeatureEnabled name="@FeatureNames.ShareApplicationsFeature">
-        <p class="govuk-body" asp-show="@Model.CanShowShareMultipleApplicationsLink">
-            <a asp-route="@RouteNames.ApplicationReviewsToShare_Get" asp-all-route-data="@Model.RouteDictionary" class="govuk-link govuk-!-margin-top-2 govuk-!-margin-bottom-4">Share multiple applications with employer</a>
+        <p class="govuk-body govuk-hint">
+            <label asp-show="@Model.IsDisabilityConfident" class="govuk-label govuk-inset-text">@Model.EmployerName is signed up to the <a href="https://www.gov.uk/government/collections/disability-confident-campaign" class="govuk-link" rel="noopener" target="_blank" title="Disability Confident employer scheme and guidance (opens in new tab)">Disability Confident scheme (opens in new tab)</a>.</label>
         </p>
-    </esfaFeatureEnabled>
-    <esfaFeatureEnabled name="@FeatureNames.MultipleApplicationsManagement">
-        <p class="govuk-body" asp-show="@Model.CanShowMultipleApplicationsUnsuccessfulLink">
-            <a asp-route="@RouteNames.ApplicationReviewsToUnsuccessful_Get" asp-all-route-data="@Model.RouteDictionary" class="govuk-link govuk-!-margin-top-2 govuk-!-margin-bottom-4">Make multiple applications unsuccessful</a>
-        </p>
-    </esfaFeatureEnabled>
+    </div>
 </div>
-
-<p class="govuk-body govuk-hint">
-    <label asp-show="@Model.IsDisabilityConfident" class="govuk-label govuk-inset-text">@Model.EmployerName is signed up to the <a href="https://www.gov.uk/government/collections/disability-confident-campaign" class="govuk-link" rel="noopener" target="_blank" title="Disability Confident employer scheme and guidance (opens in new tab)">Disability Confident scheme (opens in new tab)</a>.</label>
-</p>
-
 <div asp-show="@(Model.IsApplyThroughFaaVacancy || Model.IsApplyThroughFatVacancy)">
     <partial asp-show="@Model.HasApplications" name="@PartialNames.VacancyApplicationsTable" for="Applications" />
     <p asp-show="@Model.HasNoApplications" class="govuk-body govuk-!-margin-bottom-0">Candidate applications for this @(isApprenticeshipVacancyType ? "apprenticeship" : "traineeship") will appear here.</p>
