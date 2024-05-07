@@ -54,6 +54,7 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
         public ContactDetail ProviderContact { get; set; }
         public List<ProviderReviewFieldIndicator> ProviderReviewFieldIndicators { get; set; }
         public string ProgrammeId { get; set; }
+        public bool? HasOptedToAddQualifications { get; set; }
         public List<Qualification> Qualifications { get; set; }
         public string ShortDescription { get; set; }
         public List<string> Skills { get; set; }

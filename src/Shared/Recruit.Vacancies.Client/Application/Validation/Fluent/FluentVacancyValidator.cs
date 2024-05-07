@@ -690,16 +690,29 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
 
         private void ValidateQualifications()
         {
+            if (!_feature.IsFeatureEnabled("FaaV2Improvements"))
+            {
+                ValidateListOfQualifications();
+            }
+            else
+            {
+                When(c => c.HasOptedToAddQualifications is true, ValidateListOfQualifications);    
+            }
+            
+        }
+
+        private void ValidateListOfQualifications()
+        {
             RuleFor(x => x.Qualifications)
                 .Must(q => q != null && q.Count > 0)
-                    .WithMessage("You must add a qualification")
-                    .WithErrorCode("52")
+                .WithMessage("You must add a qualification")
+                .WithErrorCode("52")
                 .WithState(_ => VacancyRuleSet.Qualifications)
                 .RunCondition(VacancyRuleSet.Qualifications);
             RuleForEach(x => x.Qualifications)
                 .NotEmpty()
                 .SetValidator(new VacancyQualificationsValidator((long)VacancyRuleSet.Qualifications,
-                    _qualificationsProvider, _profanityListProvider))
+                    _qualificationsProvider, _profanityListProvider, _feature))
                 .RunCondition(VacancyRuleSet.Qualifications)
                 .WithState(_ => VacancyRuleSet.Qualifications);
         }

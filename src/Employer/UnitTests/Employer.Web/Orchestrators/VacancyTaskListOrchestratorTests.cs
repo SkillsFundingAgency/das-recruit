@@ -10,6 +10,7 @@ using Esfa.Recruit.Employer.Web.Orchestrators;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview;
 using Esfa.Recruit.Shared.Web.Services;
+using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
@@ -58,7 +59,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators
             externalLinksConfiguration.Object.Value.FindAnApprenticeshipUrl = findAnApprenticeshipUrl;
             var expectedViewModel = new VacancyPreviewViewModel();
             var mapper = new DisplayVacancyViewModelMapper(Mock.Of<IGeocodeImageService>(),
-                externalLinksConfiguration.Object, recruitVacancyClient.Object);
+                externalLinksConfiguration.Object, recruitVacancyClient.Object, Mock.Of<IFeature>());
             await mapper.MapFromVacancyAsync(expectedViewModel, vacancy);
             expectedViewModel.VacancyId = routeModel.VacancyId;
             expectedViewModel.EmployerAccountId = routeModel.EmployerAccountId;
@@ -79,6 +80,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators
                 .Excluding(c=>c.AccountLegalEntityCount)
                 .Excluding(c=>c.HasSelectedEmployerNameOption)
                 .Excluding(c=>c.HasSoftValidationErrors)
+                .Excluding(c=>c.Qualifications)
             );
             viewModel.ApprenticeshipLevel.Should().Be(programme.ApprenticeshipLevel);
             viewModel.AccountLegalEntityCount.Should().Be(legalEntities.Count);
