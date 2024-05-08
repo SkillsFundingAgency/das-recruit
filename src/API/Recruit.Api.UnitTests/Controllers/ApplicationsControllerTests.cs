@@ -62,4 +62,19 @@ public class ApplicationsControllerTests
                 )),
             Times.Once);
     }
+
+    [Test, MoqAutoData]
+    public async Task Then_The_Withdraw_Request_Is_Handled_And_MediatrEvent_Published(
+        Guid candidateId,
+        long vacancyRef,
+        [Frozen] Mock<IMessaging> messaging,
+        [Greedy]ApplicationsController controller)
+    {
+        var actual = await controller.Withdraw(candidateId, vacancyRef) as CreatedResult;
+
+        actual.Should().NotBeNull();
+        messaging.Verify(x => x.PublishEvent(It.Is<ApplicationWithdrawnEvent>(c =>
+            c.VacancyReference == vacancyRef
+            && c.CandidateId == candidateId)), Times.Once);
+    }
 }

@@ -24,7 +24,8 @@ namespace Esfa.Recruit.Vacancies.Client.Application.EventHandlers
                                             INotificationHandler<ProviderBlockedOnVacancyEvent>,
                                             INotificationHandler<VacancyClosedEvent>,
                                             INotificationHandler<LiveVacancyUpdatedEvent>,
-                                            INotificationHandler<ApplicationSubmittedEvent>
+                                            INotificationHandler<ApplicationSubmittedEvent>,
+                                            INotificationHandler<ApplicationWithdrawnEvent>
     {
         private readonly ILogger<RePublishEventToEventStoreEventHandler> _logger;
         private readonly IEventStore _eventStore;
@@ -81,12 +82,13 @@ namespace Esfa.Recruit.Vacancies.Client.Application.EventHandlers
             => HandleUsingEventStore(notification);
         public Task Handle(ApplicationSubmittedEvent notification, CancellationToken cancellationToken)
             => HandleUsingEventStore(notification);
+        public Task Handle(ApplicationWithdrawnEvent notification, CancellationToken cancellationToken)
+            => HandleUsingEventStore(notification);
         private async Task HandleUsingEventStore(IEvent @event)
         {
             _logger.LogInformation("Re-publishing event {eventType} to event store", @event.GetType().Name);
 
             await _eventStore.Add(@event);
         }
-
     }
 }

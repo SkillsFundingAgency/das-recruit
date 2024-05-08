@@ -90,4 +90,16 @@ public class ApplicationsController : ApiControllerBase
         });
         return Created();
     }
+
+    [HttpPost]
+    [Route("{candidateId}/withdraw/{vacancyRef}")]
+    public async Task<IActionResult> Withdraw([FromRoute] Guid candidateId, [FromRoute] long vacancyRef)
+    {
+        await _messaging.PublishEvent(new ApplicationWithdrawnEvent
+        {
+            CandidateId = candidateId,
+            VacancyReference = vacancyRef
+        });
+        return Created();
+    }
 }
