@@ -218,5 +218,20 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
 
             return result;
         }
+        
+        public async Task<LiveVacancy> GetLiveExpiredVacancy(long vacancyReference)
+        {
+            var builderFilter = Builders<LiveVacancy>.Filter;
+            var filter = builderFilter.Eq(identifier => identifier.ViewType, "LiveVacancy");
+            filter &= builderFilter.Eq(identifier => identifier.VacancyReference, vacancyReference);
+
+            var collection = GetCollection<LiveVacancy>();
+
+            var result = await RetryPolicy.Execute(_ =>
+                    collection.Find(filter).Project<LiveVacancy>(GetProjection<LiveVacancy>()).SingleOrDefaultAsync(),
+                new Context(nameof(GetLiveVacancy)));
+
+            return result;
+        }
     }
 }

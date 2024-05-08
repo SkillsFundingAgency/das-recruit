@@ -21,11 +21,16 @@ namespace SFA.DAS.Recruit.Api.Queries
     {
         public async Task<GetClosedVacancyQueryResponse> Handle(GetClosedVacancyQuery request, CancellationToken cancellationToken)
         {
-            var queryResult = await queryStoreReader.GetClosedVacancy(request.VacancyReference);
-
+            object closedQueryResult = null;
+            var queryResult = await queryStoreReader.GetLiveExpiredVacancy(request.VacancyReference);
+            if (queryResult == null)
+            {
+                closedQueryResult = await queryStoreReader.GetClosedVacancy(request.VacancyReference);    
+            }
+            
             return new GetClosedVacancyQueryResponse
             {
-                Data = queryResult,
+                Data = queryResult ?? closedQueryResult,
                 ResultCode = queryResult == null ? ResponseCode.NotFound : ResponseCode.Success
             };
         }

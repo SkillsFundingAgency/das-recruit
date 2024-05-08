@@ -18,13 +18,30 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Queries
         [Test, MoqAutoData]
         public async Task Then_The_Closed_Vacancy_Is_Returned(
             GetClosedVacancyQuery query,
+            LiveVacancy closedVacancy,
+            [Frozen] Mock<IQueryStoreReader> queryStoreReader,
+            GetClosedVacancyQueryHandler handler)
+        {
+            queryStoreReader.Setup(x => x.GetLiveExpiredVacancy(It.Is<long>(r => r == query.VacancyReference)))
+                .ReturnsAsync(closedVacancy);
+
+            var actual = await handler.Handle(query, CancellationToken.None);
+
+            actual.Data.Should().BeEquivalentTo(closedVacancy);
+            actual.ResultCode = ResponseCode.Success;
+        }
+        [Test, MoqAutoData]
+        public async Task Then_If_The_LiveExpired_Vacancy_Is_Not_Returned_Closed_Vacancy_Is_Returned(
+            GetClosedVacancyQuery query,
             ClosedVacancy closedVacancy,
             [Frozen] Mock<IQueryStoreReader> queryStoreReader,
             GetClosedVacancyQueryHandler handler)
         {
+            queryStoreReader.Setup(x => x.GetLiveExpiredVacancy(It.Is<long>(r => r == query.VacancyReference)))
+                .ReturnsAsync((LiveVacancy)null);
             queryStoreReader.Setup(x => x.GetClosedVacancy(It.Is<long>(r => r == query.VacancyReference)))
                 .ReturnsAsync(closedVacancy);
-
+            
             var actual = await handler.Handle(query, CancellationToken.None);
 
             actual.Data.Should().BeEquivalentTo(closedVacancy);
