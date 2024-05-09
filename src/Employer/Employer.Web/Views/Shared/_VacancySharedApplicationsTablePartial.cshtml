@@ -29,15 +29,13 @@
                 <td class="govuk-table__cell" data-label="Response"><strong class="@application.Status.GetCssClassForApplicationReviewStatusForEmployer()">@application.Status.GetDisplayName(Model.UserType)</strong></td>
                 <td class="govuk-table__cell" data-label="Date reviewed">@application.DateReviewedText</td>
                 <td class="govuk-table__cell" data-label="Date shared">@application.DateSharedWithEmployer.AsGdsDate()</td>
-                <td class="govuk-table__cell" data-label="Disability" asp-show="@Model.ShowDisability">@application.DisabilityStatus.GetDisplayName()</td>
             </tr>
             <tr class="govuk-table__row" asp-show="@application.IsWithdrawn">
                 <td class="govuk-table__cell" data-label="Applicant">@application.GetFriendlyId()</td>
                 <td class="govuk-table__cell" data-label="Response">Withdrawn</td>
                 <td class="govuk-table__cell" data-label="Date reviewed">@application.DateReviewedText</td>
-                                <td class="govuk-table__cell" data-label="Date shared">@application.DateSharedWithEmployer.AsGdsDate()</td>
-                <td class="govuk-table__cell" data-label="Disability" asp-show="@Model.ShowDisability">No longer applies</td>
+                <td class="govuk-table__cell" data-label="Date shared">@application.DateSharedWithEmployer.AsGdsDate()</td>
             </tr>
-         }
+        }
     </tbody>
 </table>
