@@ -175,7 +175,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
         public async Task<IEnumerable<ClosedVacancy>> GetClosedVacancies(IList<long> vacancyReferences)
         {
             var builderFilter = Builders<ClosedVacancy>.Filter;
-            var filter = builderFilter.Eq(identifier => identifier.ViewType, "ClosedVacancy");
+            var filter = builderFilter.In<string>(identifier => identifier.ViewType, new List<string>{"ClosedVacancy", "LiveVacancy"});
             filter &= builderFilter.In<long>(identifier => identifier.VacancyReference, vacancyReferences);
 
             var builderSort = Builders<ClosedVacancy>.Sort;
