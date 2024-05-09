@@ -45,12 +45,14 @@
 
         <div asp-hide="@Model.ShowAnonymisedApplicantDetails">
 
-            <h1 class="govuk-heading-xl govuk-!-margin-bottom-4">@Model.Name</h1>
-            <p class="govuk-body govuk-!-margin-bottom-5">
+            <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">@Model.Name</h1>
+            <p class="govuk-body-l">
                 Application ID: @Model.FriendlyId
             </p>
-            <h2 class="govuk-heading-l govuk-!-margin-bottom-3">Contact details</h2>
-            <div class="govuk-!-padding-0">
+
+            <h2 class="govuk-heading-l">Contact details</h2>
+
+            <div class="panel panel-border-narrow">
                 <p class="govuk-body">
                     @Html.Raw(
                              string.Join("<br>",
