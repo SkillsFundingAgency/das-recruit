@@ -24,7 +24,7 @@ namespace SFA.DAS.Recruit.Api.Queries
         {
             var queryResult = await queryStoreReader.GetVacancyAsync(request.VacancyReference);
 
-            if (queryResult.Status != VacancyStatus.Closed)
+            if (queryResult.Status is not (VacancyStatus.Closed or VacancyStatus.Live))
             {
                 queryResult = null;
             }

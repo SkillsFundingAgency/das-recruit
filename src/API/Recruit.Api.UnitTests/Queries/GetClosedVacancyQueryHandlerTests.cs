@@ -16,14 +16,17 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Queries
     [TestFixture]
     public class GetClosedVacancyQueryHandlerTests
     {
-        [Test, MoqAutoData]
+        [Test]
+        [MoqInlineAutoData(VacancyStatus.Closed)]
+        [MoqInlineAutoData(VacancyStatus.Live)]
         public async Task Then_The_Closed_Vacancy_Is_Returned(
+            VacancyStatus status,
             GetClosedVacancyQuery query,
             Vacancy closedVacancy,
             [Frozen] Mock<IVacancyQuery> queryStoreReader,
             GetClosedVacancyQueryHandler handler)
         {
-            closedVacancy.Status = VacancyStatus.Closed;
+            closedVacancy.Status = status;
             queryStoreReader.Setup(x => x.GetVacancyAsync(It.Is<long>(r => r == query.VacancyReference)))
                 .ReturnsAsync(closedVacancy);
 

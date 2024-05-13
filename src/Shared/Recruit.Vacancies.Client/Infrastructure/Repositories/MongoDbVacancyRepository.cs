@@ -76,7 +76,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
         {
             var collection = GetCollection<Vacancy>();
             var builderFilter = Builders<Vacancy>.Filter;
-            var filter =  builderFilter.Eq("status", VacancyStatus.Closed.ToString()) 
+            var filter =  builderFilter.In<string>("status", new List<string>{VacancyStatus.Closed.ToString(),VacancyStatus.Live.ToString()}) 
                           & builderFilter.In<long>(identifier => identifier.VacancyReference.Value, vacancyReferences);
             
             var result = await RetryPolicy.Execute(async _ =>
