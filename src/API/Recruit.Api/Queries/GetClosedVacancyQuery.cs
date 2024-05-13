@@ -1,8 +1,9 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using MediatR;
 using SFA.DAS.Recruit.Api.Models;
-using IQueryStoreReader = Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.IQueryStoreReader;
 
 
 namespace SFA.DAS.Recruit.Api.Queries
@@ -16,21 +17,21 @@ namespace SFA.DAS.Recruit.Api.Queries
     {
     }
 
-    public class GetClosedVacancyQueryHandler(IQueryStoreReader queryStoreReader)
+    public class GetClosedVacancyQueryHandler(IVacancyQuery queryStoreReader)
         : IRequestHandler<GetClosedVacancyQuery, GetClosedVacancyQueryResponse>
     {
         public async Task<GetClosedVacancyQueryResponse> Handle(GetClosedVacancyQuery request, CancellationToken cancellationToken)
         {
-            object closedQueryResult = null;
-            var queryResult = await queryStoreReader.GetLiveExpiredVacancy(request.VacancyReference);
-            if (queryResult == null)
+            var queryResult = await queryStoreReader.GetVacancyAsync(request.VacancyReference);
+
+            if (queryResult.Status != VacancyStatus.Closed)
             {
-                closedQueryResult = await queryStoreReader.GetClosedVacancy(request.VacancyReference);    
+                queryResult = null;
             }
             
             return new GetClosedVacancyQueryResponse
             {
-                Data = queryResult ?? closedQueryResult,
+                Data = queryResult,
                 ResultCode = queryResult == null ? ResponseCode.NotFound : ResponseCode.Success
             };
         }

@@ -2,6 +2,8 @@
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Vacancy;
 using FluentAssertions;
@@ -19,11 +21,11 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Queries
         [Test, MoqAutoData]
         public async Task Then_The_Closed_Vacancies_Are_Returned(
             GetClosedVacanciesByReferenceQuery query,
-            List<ClosedVacancy> closedVacancies,
-            [Frozen] Mock<IQueryStoreReader> queryStoreReader,
+            List<Vacancy> closedVacancies,
+            [Frozen] Mock<IVacancyQuery> queryStoreReader,
             GetClosedVacanciesByReferenceQueryHandler handler)
         {
-            queryStoreReader.Setup(x => x.GetClosedVacancies(It.Is<List<long>>(r => r == query.VacancyReferences)))
+            queryStoreReader.Setup(x => x.FindClosedVacancies(It.Is<List<long>>(r => r == query.VacancyReferences)))
                 .ReturnsAsync(closedVacancies);
 
             var actual = await handler.Handle(query, CancellationToken.None);

@@ -1,7 +1,8 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Vacancy;
 using FluentAssertions;
 using Moq;
@@ -18,11 +19,12 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Queries
         [Test, MoqAutoData]
         public async Task Then_The_Closed_Vacancy_Is_Returned(
             GetClosedVacancyQuery query,
-            LiveVacancy closedVacancy,
-            [Frozen] Mock<IQueryStoreReader> queryStoreReader,
+            Vacancy closedVacancy,
+            [Frozen] Mock<IVacancyQuery> queryStoreReader,
             GetClosedVacancyQueryHandler handler)
         {
-            queryStoreReader.Setup(x => x.GetLiveExpiredVacancy(It.Is<long>(r => r == query.VacancyReference)))
+            closedVacancy.Status = VacancyStatus.Closed;
+            queryStoreReader.Setup(x => x.GetVacancyAsync(It.Is<long>(r => r == query.VacancyReference)))
                 .ReturnsAsync(closedVacancy);
 
             var actual = await handler.Handle(query, CancellationToken.None);
@@ -31,21 +33,21 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Queries
             actual.ResultCode = ResponseCode.Success;
         }
         [Test, MoqAutoData]
-        public async Task Then_If_The_LiveExpired_Vacancy_Is_Not_Returned_Closed_Vacancy_Is_Returned(
+        public async Task Then_If_The_Vacancy_Is_Not_Closed_Null_Returned(
+            Vacancy vacancy,
             GetClosedVacancyQuery query,
             ClosedVacancy closedVacancy,
-            [Frozen] Mock<IQueryStoreReader> queryStoreReader,
+            [Frozen] Mock<IVacancyQuery> queryStoreReader,
             GetClosedVacancyQueryHandler handler)
         {
-            queryStoreReader.Setup(x => x.GetLiveExpiredVacancy(It.Is<long>(r => r == query.VacancyReference)))
-                .ReturnsAsync((LiveVacancy)null);
-            queryStoreReader.Setup(x => x.GetClosedVacancy(It.Is<long>(r => r == query.VacancyReference)))
-                .ReturnsAsync(closedVacancy);
+            vacancy.Status = VacancyStatus.Draft;
+            queryStoreReader.Setup(x => x.GetVacancyAsync(It.Is<long>(r => r == query.VacancyReference)))
+                .ReturnsAsync(vacancy);
             
             var actual = await handler.Handle(query, CancellationToken.None);
 
-            actual.Data.Should().BeEquivalentTo(closedVacancy);
-            actual.ResultCode = ResponseCode.Success;
+            actual.Data.Should().BeNull();
+            actual.ResultCode = ResponseCode.NotFound;
         }
     }
 }
