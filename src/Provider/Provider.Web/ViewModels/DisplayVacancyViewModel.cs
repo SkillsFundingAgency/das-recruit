@@ -41,6 +41,7 @@ namespace Esfa.Recruit.Provider.Web.ViewModels
         public string ProviderContactTelephone { get; internal set; }
         public string ProviderName { get; internal set; }
         public IEnumerable<string> Qualifications { get; internal set; }
+        public bool? HasOptedToAddQualifications { get; internal set; }
         public string ShortDescription { get; internal set; }
         public IEnumerable<string> Skills { get; internal set; }
         public string ThingsToConsider { get; internal set; }
@@ -144,6 +145,7 @@ namespace Esfa.Recruit.Provider.Web.ViewModels
         public EmployerNameOption? EmployerNameOption { get; set; }
         public VacancyType? VacancyType { get; set; }
         
+
         private string BuildAdditionalQuestionText(string additionalQuestion)
         {
             if (string.IsNullOrWhiteSpace(additionalQuestion))
