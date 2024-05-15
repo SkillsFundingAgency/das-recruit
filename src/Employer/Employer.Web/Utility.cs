@@ -271,6 +271,7 @@ namespace Esfa.Recruit.Employer.Web
 
             applicationReview.Result.AdditionalQuestion1 = vacancy.Result.AdditionalQuestion1;
             applicationReview.Result.AdditionalQuestion2 = vacancy.Result.AdditionalQuestion2;
+            applicationReview.Result.VacancyTitle = vacancy.Result.Title;
             try
             {
                 CheckAuthorisedAccess(vacancy.Result, rm.EmployerAccountId, vacancySharedByProvider);

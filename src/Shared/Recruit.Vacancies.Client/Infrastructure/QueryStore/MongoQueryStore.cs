@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Vacancy;
+using Microsoft.Azure.Amqp.Framing;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
@@ -171,6 +172,24 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
             return result;
         }
 
+        public async Task<IEnumerable<ClosedVacancy>> GetClosedVacancies(IList<long> vacancyReferences)
+        {
+            var builderFilter = Builders<ClosedVacancy>.Filter;
+            var filter = builderFilter.In<string>(identifier => identifier.ViewType, new List<string>{"ClosedVacancy", "LiveVacancy"});
+            filter &= builderFilter.In<long>(identifier => identifier.VacancyReference, vacancyReferences);
+
+            var builderSort = Builders<ClosedVacancy>.Sort;
+            var sort = builderSort.Descending(identifier => identifier.ClosingDate);
+
+            var collection = GetCollection<ClosedVacancy>();
+
+            var result = await RetryPolicy.Execute(_ =>
+                    collection.Find(filter).Sort(sort).Project<ClosedVacancy>(GetProjection<ClosedVacancy>()).ToListAsync(),
+                new Context(nameof(GetAllLiveVacancies)));
+
+            return result;
+        }
+
         public async Task<long> GetAllLiveVacanciesCount()
         {
             var builderFilter = Builders<LiveVacancy>.Filter;
@@ -190,6 +209,21 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
             var builderFilter = Builders<LiveVacancy>.Filter;
             var filter = builderFilter.Eq(identifier => identifier.VacancyReference, vacancyReference)
                          & builderFilter.Gt(identifier => identifier.ClosingDate, DateTime.UtcNow);
+
+            var collection = GetCollection<LiveVacancy>();
+
+            var result = await RetryPolicy.Execute(_ =>
+                    collection.Find(filter).Project<LiveVacancy>(GetProjection<LiveVacancy>()).SingleOrDefaultAsync(),
+                new Context(nameof(GetLiveVacancy)));
+
+            return result;
+        }
+        
+        public async Task<LiveVacancy> GetLiveExpiredVacancy(long vacancyReference)
+        {
+            var builderFilter = Builders<LiveVacancy>.Filter;
+            var filter = builderFilter.Eq(identifier => identifier.ViewType, "LiveVacancy");
+            filter &= builderFilter.Eq(identifier => identifier.VacancyReference, vacancyReference);
 
             var collection = GetCollection<LiveVacancy>();
 

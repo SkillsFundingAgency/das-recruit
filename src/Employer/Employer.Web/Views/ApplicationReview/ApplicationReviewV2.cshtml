@@ -1,0 +1,362 @@
+@using System.Net
+@using Esfa.Recruit.Vacancies.Client.Domain.Entities
+@model Esfa.Recruit.Employer.Web.ViewModels.ApplicationReview.ApplicationReviewViewModel
+@{
+    ViewBag.Vpv = "/recruitment/employer/page-application-review";
+    ViewBag.Title = "Review application";
+}
+
+@section BackLink {
+    <a asp-route="@RouteNames.VacancyManage_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Back</a>
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+
+
+    <div asp-show="@Model.ShowDisabilityStatusAlert"  class="govuk-notification-banner" role="region" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
+        <div class="govuk-notification-banner__header">
+            <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
+                Important
+            </h2>
+        </div>
+        <div class="govuk-notification-banner__content">
+            <p class="govuk-notification-banner__heading">
+                This applicant has applied under the Disability Confident scheme.
+            </p>
+        </div>
+    </div>
+    
+    <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }' />
+
+    <span class="govuk-caption-l govuk-!-margin-bottom-0">@Model.VacancyTitle</span>
+    <div asp-hide="@Model.ShowAnonymisedApplicantDetails">
+        <h1 class="govuk-heading-l govuk-!-margin-bottom-5">@Model.Name</h1>
+    </div>
+        <p>Application ID: @Model.FriendlyId</p>
+
+    <div asp-show="@Model.IsApplicationShared">
+        <h2 class="govuk-heading-l govuk-!-margin-bottom-5">Contact Details</h2>
+        <p class="govuk-body">
+            You'll be able to see this applicant's name and contact details if you decide to interview them.
+        </p>
+    </div>
+    <div asp-hide="@Model.ShowAnonymisedApplicantDetails">
+    <h2 class="govuk-heading-m">Personal details</h2>
+
+        <dl class="govuk-summary-list govuk-summary-list--no-border">
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    Address
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    @Html.Raw(
+                        string.Join("<br>",
+                            new[]
+                                {
+                                    @Model.Name,
+                                    @Model.AddressLine1,
+                                    @Model.AddressLine2,
+                                    @Model.AddressLine3,
+                                    @Model.AddressLine4,
+                                    @Model.Postcode
+                                }.Where(s => !string.IsNullOrWhiteSpace(s))
+                                .Select(WebUtility.HtmlEncode)))
+                </dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    Phone number
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    @Model.Phone
+                </dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    Email address
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    @Model.Email
+                </dd>
+            </div>
+        </dl>
+    </div>
+        <hr class="govuk-section-break govuk-section-break--visible govuk-section-break--l" />
+
+        <h2 class="govuk-heading-m">School, college and university qualifications</h2>
+        <p asp-show="@Model.HasNoQualifications" class="govuk-body">The applicant didn't add any school, college or university qualifications.</p>
+        
+        @foreach (var qualificationType in Model.QualificationTypes.OrderBy(c=>c.Order))
+        {
+            
+            foreach (var qualification in Model.QualificationGroups.Where(c => c.QualificationType.Equals(qualificationType.QualificationType, StringComparison.CurrentCultureIgnoreCase)))
+            {
+                <div class="govuk-summary-card">
+                
+                        
+                    <div class="govuk-summary-card__title-wrapper">
+                        <h3 class="govuk-summary-card__title">
+                            @qualificationType.HeaderName
+                        </h3>
+                    </div>
+                    <div class="govuk-summary-card__content">
+                        <dl class="govuk-summary-list">
+                        @foreach (var qual in qualification.Qualifications)
+                        {
+                            <div class="govuk-summary-list__row">
+                                <dt class="govuk-summary-list__key">
+                                    @qual.Subject
+                                    @if (qualification.ShowAdditionalInformation)
+                                    {
+                                        <p class="govuk-body govuk-!-margin-top-1 govuk-hint">@qual.AdditionalInformation</p>
+                                    }
+                                    @if (qualification.ShowLevel is true)
+                                    {
+                                        <p class="govuk-body govuk-!-margin-top-1 govuk-!-font-weight-bold">(Level @qual.AdditionalInformation)</p>
+                                    }
+                                </dt>
+                                <dd class="govuk-summary-list__value">
+                                    @qual.Grade
+                                </dd>
+                            </div>
+                        }
+                        </dl>
+                    </div>
+                </div>
+            }
+        }
+        
+        
+        <hr class="govuk-section-break govuk-section-break--visible govuk-section-break--xl" />
+        <h2 class="govuk-heading-m">Training courses</h2>
+        <p asp-show="@Model.HasNoTrainingCourses" class="govuk-body">The applicant didn't add any training courses.</p>
+        @foreach (var course in Model.TrainingCourses)
+        {
+            <div class="govuk-summary-card">
+                <div class="govuk-summary-card__title-wrapper">
+                    <h3 class="govuk-summary-card__title">
+                        @course.Title
+                    </h3>
+                </div>
+                <div class="govuk-summary-card__content">
+                    <dl class="govuk-summary-list">
+                        <!-- List item -->
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key">
+                                Year
+                            </dt>
+                            <dd class="govuk-summary-list__value">
+                                @course.ToDate.Year
+                            </dd>
+                        </div>
+
+                    </dl>
+                </div>
+            </div>
+        }
+
+
+        <hr class="govuk-section-break govuk-section-break--visible govuk-section-break--xl" />
+        <h2 class="govuk-heading-m">Jobs</h2>
+        <p asp-show="@Model.HasNoJobs" class="govuk-body">The applicant didn't add any jobs.</p>
+        @foreach (var job in Model.Jobs)
+        {
+            <div class="govuk-summary-card">
+                <div class="govuk-summary-card__title-wrapper">
+                    <h3 class="govuk-summary-card__title">
+                        @job.Employer, @job.JobTitle
+                    </h3>
+                </div>
+                <div class="govuk-summary-card__content">
+                    <dl class="govuk-summary-list">
+                        <!-- List item -->
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key">
+                                Responsibilities
+                            </dt>
+                            <dd class="govuk-summary-list__value">
+                                <p>@job.Description</p>
+                            </dd>
+                        </div>
+                        <!-- List item -->
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key">
+                                Dates
+                            </dt>
+                            <dd class="govuk-summary-list__value">
+                                @job.FromDate.ToMonthNameYearString(false) @job.ToDate.ToMonthNameYearString(true)
+                            </dd>
+                        </div>
+
+                    </dl>
+                </div>
+            </div>
+        }
+        <!-- Card -->
+        
+        <!-- End Card -->
+
+        <hr class="govuk-section-break govuk-section-break--visible govuk-section-break--xl" />
+        <h2 class="govuk-heading-m">Volunteering and work experience</h2>
+        <p asp-show="@Model.HasNoJobs" class="govuk-body">The applicant didn't add any volunteering or work experience.</p>
+        @foreach (var workExperience in Model.WorkExperiences)
+        {
+            <div class="govuk-summary-card">
+                <div class="govuk-summary-card__title-wrapper">
+                    <h3 class="govuk-summary-card__title">
+                        @workExperience.Employer @workExperience.JobTitle
+                    </h3>
+                </div>
+                <div class="govuk-summary-card__content">
+                    <dl class="govuk-summary-list">
+                        <!-- List item -->
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key">
+                                Responsibilities
+                            </dt>
+                            <dd class="govuk-summary-list__value">
+                                <p>@workExperience.Description</p>
+                            </dd>
+                        </div>
+                        <!-- List item -->
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key">
+                                Dates
+                            </dt>
+                            <dd class="govuk-summary-list__value">
+                                @workExperience.FromDate.ToMonthNameYearString(false) @workExperience.ToDate.ToMonthNameYearString(true)
+                            </dd>
+                        </div>
+                    </dl>
+                </div>
+            </div>
+        }
+
+        <hr class="govuk-section-break govuk-section-break--visible govuk-section-break--xl" />
+
+        <h2 class="govuk-heading-m">Application questions</h2>
+        <h3 class="govuk-heading-s govuk-!-margin-bottom-2">What are your skills and strengths?</h3>
+        <p>@Model.Strengths</p>
+        <h3 class="govuk-heading-s govuk-!-margin-bottom-2">What interests you about this apprenticeship?</h3>
+        <p>@Model.WhatIsYourInterest</p>
+        @if (!string.IsNullOrEmpty(Model.AdditionalQuestion1))
+        {
+            <h3 class="govuk-heading-s govuk-!-margin-bottom-2">@Model.AdditionalQuestion1</h3>
+            <p>@Model.AdditionalAnswer1</p>    
+        }
+        @if (!string.IsNullOrEmpty(Model.AdditionalQuestion2))
+        {
+            <h3 class="govuk-heading-s govuk-!-margin-bottom-2">@Model.AdditionalQuestion2</h3>
+            <p>@Model.AdditionalAnswer2</p>    
+        }
+
+        <hr class="govuk-section-break govuk-section-break--visible govuk-section-break--xl" />
+
+        <h2 class="govuk-heading-m">Get support at an interview</h2>
+        <dl class="govuk-summary-list govuk-summary-list--no-border">
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    Do you want to request support at an
+                    interview?
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    @(!string.IsNullOrEmpty(Model.Support) ? Model.Support : "No, I don't need support or I'll discuss it if I get an interview")
+                </dd>
+            </div>
+        </dl>
+
+        <hr class="govuk-section-break govuk-section-break--visible govuk-section-break--xl" />
+
+        <div asp-show="@Model.IsOutcomeSuccessul">
+            <h3 class="govuk-heading-l govuk-!-margin-top-6">Outcome</h3>
+            <p class="govuk-body">@Model.Status.Value.GetDisplayName()</p>
+            <p class="govuk-body">@Model.CandidateFeedback</p>
+
+            <a asp-route="@RouteNames.VacancyManage_Get" asp-route-employerAccountId="@Model.EmployerAccountId" class="govuk-button">Return to advert</a>
+        </div>
+        <form asp-show="@Model.CanChangeOutcome" asp-hide="@Model.HideRadioButtons" asp-route="@RouteNames.ApplicationReview_Post" asp-all-route-data="@Model.ApplicationRouteDictionary" asp-route-vacancySharedByProvider=@Model.IsApplicationSharedByProvider class="govuk-!-margin-top-6">
+                <div class="govuk-form-group">
+                    <fieldset class="govuk-fieldset">
+                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                            <h2 class="govuk-fieldset__heading">
+                                What do you want to do with this application?
+                            </h2>
+                        </legend>
+                        <div id="sign-in-hint" class="govuk-hint" asp-show="@Model.IsApplicationShared">
+                                                Your response will be shared with your training provider.
+                        </div>
+                        <span esfa-validation-message-for="Outcome" class="govuk-error-message"></span>
+                        <div class="govuk-radios govuk-radios--conditional" data-module="radios">
+                            <!-- Shared Options -->
+                            <div class="govuk-radios__item" asp-show="@Model.IsApplicationShared">
+                                <input asp-for="Outcome" class="govuk-radios__input" id="outcome-interviewing" type="radio" value="@ApplicationReviewStatus.EmployerInterviewing.ToString()" checked="@(Model.Outcome == ApplicationReviewStatus.EmployerInterviewing ? "checked" : null)">
+                                <label for="outcome-interviewing" class="govuk-label govuk-radios__label">Yes</label>
+                                <div id="sign-in-item-hint" class="govuk-hint govuk-radios__hint">
+                                    You'll be able to see the applicant's name and contact details.
+                                </div>
+                            </div>
+                            <div class="govuk-radios__item" asp-show="@Model.IsApplicationShared">
+                                <input asp-for="Outcome" class="govuk-radios__input" id="outcome-employer-unsuccessful" type="radio" value="@ApplicationReviewStatus.EmployerUnsuccessful.ToString()" checked="@(Model.Outcome == ApplicationReviewStatus.EmployerUnsuccessful ? "checked" : null)" data-aria-controls="unsuccessful-candidate-feedback">
+                                <label for="outcome-unsuccessful" class="govuk-label govuk-radios__label">@Model.FormRadioButtonNoText</label>
+                            </div>
+    
+                             <!-- Not Shared Options-->
+                            <div class="govuk-radios__item" asp-show="Model.CanShowRadioButtonReview">
+                                <input asp-for="Outcome" class="govuk-radios__input" id="outcome-reviewed" type="radio" value="@ApplicationReviewStatus.InReview.ToString()" checked="@(Model.Outcome == ApplicationReviewStatus.InReview ? "checked" : null)">
+                                <label for="outcome-reviewed" class="govuk-label govuk-radios__label">Review</label>
+                                <div class="govuk-hint govuk-radios__hint" id="radio-status-reviewed">
+                                    Change this application's status to 'in review' and make a decision later. Does not notify the applicant.
+                                </div>
+                            </div>
+                            <div class="govuk-radios__item" asp-show="@Model.CanShowRadioButtonInterviewing">
+                                <input asp-for="Outcome" class="govuk-radios__input" id="outcome-interviewing" type="radio" value="@ApplicationReviewStatus.Interviewing.ToString()" checked="@(Model.Outcome == ApplicationReviewStatus.Interviewing ? "checked" : null)">
+                                <label for="outcome-interviewing" class="govuk-label govuk-radios__label">Mark application for interviewing with the employer</label>
+                                <div class="govuk-hint govuk-radios__hint" id="radio-status-interviewing">
+                                    Change this application's status to 'interviewing' because the employer will interview this applicant. Does not notify the applicant.
+                                </div>
+                            </div>
+                            <div class="govuk-radios__item" asp-hide="@Model.IsApplicationShared">
+                                <input asp-for="Outcome" class="govuk-radios__input" id="outcome-successful" type="radio" value="@ApplicationReviewStatus.Successful.ToString()" checked="@(Model.Outcome == ApplicationReviewStatus.Successful ? "checked" : null)">
+                                <label for="outcome-successful" class="govuk-label govuk-radios__label">Make successful</label>
+                                <div class="govuk-hint govuk-radios__hint" id="radio-status-successful">
+                                    Send a notification to the applicant offering them this apprenticeship.
+                                </div>
+                            </div>
+                            <div class="govuk-radios__item" asp-hide="@Model.IsApplicationShared">
+                                <input asp-for="Outcome" class="govuk-radios__input" id="outcome-unsuccessful" type="radio" value="@ApplicationReviewStatus.Unsuccessful.ToString()" checked="@(Model.Outcome == ApplicationReviewStatus.Unsuccessful ? "checked" : null)" data-aria-controls="unsuccessful-candidate-feedback">
+                                <label for="outcome-unsuccessful" class="govuk-label govuk-radios__label">Make unsuccessful and give feedback</label>
+                                <div class="govuk-hint govuk-radios__hint" id="radio-status-unsuccessful">
+                                    Send a notification to the applicant telling them they won't be offered this apprenticeship.
+                                </div>
+                            </div>
+                            <div esfa-validation-marker-for="CandidateFeedback" id="unsuccessful-candidate-feedback" class="govuk-radios__conditional govuk-radios__conditional--hidden">
+                                <div class="govuk-character-count" id="conditional-contact-3" data-module="govuk-character-count" data-maxwords="200">
+                                    <label asp-for="CandidateFeedback" class="govuk-label govuk-!-font-weight-bold">Feedback</label>
+                                    <span esfa-validation-message-for="CandidateFeedback" class="govuk-error-message"></span>
+                                    <span class="govuk-hint">@Model.FormRadioButtonNoFeedbackText</span>
+                                    <textarea asp-for="CandidateFeedback" class="govuk-textarea govuk-js-character-count govuk-!-margin-top-4" id="CandidateFeedback" name="CandidateFeedback" rows="6"></textarea>
+                                    <div id="CandidateFeedbackEmployerUnsuccessful-info" class="govuk-hint govuk-character-count__message">
+                                        You have 200 words remaining
+                                    </div>
+                                </div>
+                            </div>
+                            </div>
+                    </fieldset>
+                </div>
+
+                <div class="govuk-button-group hide-print">
+                    <button type="submit" class="govuk-button">Continue</button>
+
+                    <a asp-route="@RouteNames.VacancyManage_Get" asp-route-vacancyId="@Model.VacancyId" asp-route-employerAccountId="@Model.EmployerAccountId" asp-all-route-data="@Model.RouteDictionary" asp-route-vacancySharedByProvider="@Model.IsApplicationSharedByProvider" class="govuk-link govuk-link--no-visited-state">Cancel</a>
+                </div>
+        </form>
+    </div>
+    <script nws-csp-add-nonce="true">
+        $(function () {
+            var showHideContent = new GOVUK.ShowHideContent();
+            showHideContent.init();
+        });
+    </script>
+</div>
