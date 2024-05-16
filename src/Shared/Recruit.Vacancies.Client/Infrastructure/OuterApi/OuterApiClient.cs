@@ -1,6 +1,7 @@
 using System;
 using System.Net;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
@@ -45,6 +46,18 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi
             return default;
         }
 
+        public async Task Post(IPostApiRequest request)
+        {
+            var stringContent = new StringContent(JsonConvert.SerializeObject(request.Data), Encoding.UTF8, "application/json");
+            var requestMessage = new HttpRequestMessage(HttpMethod.Post, request.PostUrl)
+            {
+                Content = stringContent,
+            };
+            AddHeaders(requestMessage);
+            var response = await _httpClient.SendAsync(requestMessage).ConfigureAwait(false);
+            response.EnsureSuccessStatusCode();
+        }
+
         private void AddHeaders(HttpRequestMessage httpRequestMessage)
         {
             httpRequestMessage.Headers.Add("Ocp-Apim-Subscription-Key", _config.Key);
@@ -55,5 +68,12 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi
     public interface IGetApiRequest
     {
         string GetUrl { get; }
+    }
+
+    public interface IPostApiRequest
+    {
+        [JsonIgnore]
+        string PostUrl { get; }
+        object Data { get; set; }
     }
 }

@@ -46,7 +46,8 @@ namespace Esfa.Recruit.Provider.Web.Controllers
                 }
             }
             var vm = await _orchestrator.GetApplicationReviewViewModelAsync(rm);
-            return View(vm);
+            var viewName = vm.IsFaaV2Application ? "ApplicationReviewV2" : "ApplicationReview";
+            return View(viewName, vm);
         }
 
         [HttpPost("", Name = RouteNames.ApplicationReview_Post)]
@@ -56,7 +57,8 @@ namespace Esfa.Recruit.Provider.Web.Controllers
             if (!ModelState.IsValid)
             {
                 var vm = await _orchestrator.GetApplicationReviewViewModelAsync(applicationReviewEditModel);
-                return View(vm);
+                var viewName = vm.IsFaaV2Application ? "ApplicationReviewV2" : "ApplicationReview";
+                return View(viewName, vm);
             }
 
             switch (applicationReviewEditModel.Outcome.Value)

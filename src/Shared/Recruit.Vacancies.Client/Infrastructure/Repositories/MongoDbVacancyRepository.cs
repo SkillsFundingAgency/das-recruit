@@ -72,6 +72,20 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
             return result;
         }
 
+        public async Task<IList<Vacancy>> FindClosedVacancies(IList<long> vacancyReferences)
+        {
+            var collection = GetCollection<Vacancy>();
+            var builderFilter = Builders<Vacancy>.Filter;
+            var filter =  builderFilter.In<string>("status", new List<string>{VacancyStatus.Closed.ToString(),VacancyStatus.Live.ToString()}) 
+                          & builderFilter.In<long>(identifier => identifier.VacancyReference.Value, vacancyReferences);
+            
+            var result = await RetryPolicy.Execute(async _ =>
+                    await collection.Find(filter).ToListAsync(),
+                new Context(nameof(FindVacancy)));
+
+            return result;
+        }
+
         public async Task<IEnumerable<T>> GetVacanciesByEmployerAccountAsync<T>(string employerAccountId)
         {
             var builder = Builders<T>.Filter;

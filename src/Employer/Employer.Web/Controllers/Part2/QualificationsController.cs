@@ -1,12 +1,18 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
+using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Extensions;
 using Esfa.Recruit.Employer.Web.Orchestrators.Part2;
 using Esfa.Recruit.Employer.Web.RouteModel;
+using Esfa.Recruit.Employer.Web.ViewModels.Part2.Qualifications;
 using Microsoft.AspNetCore.Mvc;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Shared.Web.ViewModels.Qualifications;
+using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
+using FluentValidation;
+using FluentValidation.AspNetCore;
 
 namespace Esfa.Recruit.Employer.Web.Controllers.Part2
 {
@@ -15,18 +21,20 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part2
     {
         private const string QualificationDeletedTempDataKey = "QualificationDeletedTempDataKey";
         private readonly QualificationsOrchestrator _orchestrator;
+        private readonly IFeature _feature;
 
-        public QualificationsController(QualificationsOrchestrator orchestrator)
+        public QualificationsController(QualificationsOrchestrator orchestrator, IFeature feature)
         {
             _orchestrator = orchestrator;
+            _feature = feature;
         }
 
         [HttpGet("qualifications", Name = RouteNames.Qualifications_Get)]
         public async Task<IActionResult> Qualifications(VacancyRouteModel vrm)
         {
             var vm = await _orchestrator.GetQualificationsViewModelAsync(vrm);
-
-            if (vm.Qualifications.Any() == false)
+            
+            if (!_feature.IsFeatureEnabled(FeatureNames.FaaV2Improvements) && vm.Qualifications.Any() == false)
             {
                 TempData.Remove(QualificationDeletedTempDataKey);
                 return RedirectToRoute(RouteNames.Qualification_Add_Get,new {vrm.VacancyId, vrm.EmployerAccountId});
@@ -36,6 +44,27 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part2
                 vm.InfoMessage = "Successfully removed qualification";
 
             return View(vm);
+        }
+
+        [HttpPost("qualifications", Name = RouteNames.Qualifications_Get)]
+        public async Task<IActionResult> Qualifications(AddQualificationsEditModel m)
+        {
+            if (!ModelState.IsValid)
+            {
+                var vm = await _orchestrator.GetQualificationsViewModelAsync(m);
+                return View(vm);
+            }
+
+            await _orchestrator.PostAddQualificationEditModel(m, User.ToVacancyUser());
+
+            if (m.AddQualificationRequirement is true)
+            {
+                return RedirectToRoute(RouteNames.Qualification_Add_Get, new { m.VacancyId, m.EmployerAccountId });
+            }
+
+            return RedirectToRoute(m.IsTaskListCompleted
+                ? RouteNames.EmployerCheckYourAnswersGet
+                : RouteNames.FutureProspects_Get, new { m.VacancyId, m.EmployerAccountId });
         }
 
         [HttpGet("qualifications/add", Name = RouteNames.Qualification_Add_Get)]

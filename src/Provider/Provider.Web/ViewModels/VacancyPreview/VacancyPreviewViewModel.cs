@@ -15,6 +15,12 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview
 {
     public class VacancyPreviewViewModel : DisplayVacancyViewModel 
     {
+        private readonly bool _isFaaV2Enabled;
+
+        public VacancyPreviewViewModel(bool IsFaaV2Enabled = false)
+        {
+            _isFaaV2Enabled = IsFaaV2Enabled;
+        }
         public VacancyPreviewSectionState ApplicationInstructionsSectionState { get; internal set; }
         public VacancyPreviewSectionState ApplicationMethodSectionState { get; internal set; }
         public VacancyPreviewSectionState ApplicationUrlSectionState { get; internal set; }
@@ -30,6 +36,7 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview
         public VacancyPreviewSectionState ProviderContactSectionState { get; internal set; }
         public VacancyPreviewSectionState ProviderSectionState { get; internal set; }
         public VacancyPreviewSectionState QualificationsSectionState { get; internal set; }
+        public VacancyPreviewSectionState HasOptedToAddQualificationsSectionState { get; internal set; }
         public VacancyPreviewSectionState ShortDescriptionSectionState { get; internal set; }
         public VacancyPreviewSectionState SkillsSectionState { get; internal set; }
         public VacancyPreviewSectionState TitleSectionState { get; internal set; }
@@ -216,6 +223,7 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview
             viewModel.FutureProspectsSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.OutcomeDescription }, true, modelState,  vm => vm.OutcomeDescription);
             viewModel.SkillsSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.Skills }, true, modelState, vm => vm.Skills);
             viewModel.QualificationsSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.Qualifications }, true, modelState, vm => vm.Qualifications);
+            viewModel.HasOptedToAddQualificationsSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.HasOptedToAddQualifications }, true, modelState,vm => vm.HasOptedToAddQualifications);
             viewModel.ThingsToConsiderSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.ThingsToConsider }, true, modelState, vm => vm.ThingsToConsider);
             viewModel.EmployerNameSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.EmployerName }, true, modelState, vm => vm.EmployerName);
             viewModel.EmployerDescriptionSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.EmployerDescription }, true, modelState, vm => vm.EmployerDescription);
@@ -299,7 +307,8 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview
             } 
             
             if (HasSkills 
-                && (VacancyType.GetValueOrDefault() == Vacancies.Client.Domain.Entities.VacancyType.Traineeship || HasQualifications) 
+                && (VacancyType.GetValueOrDefault() == Vacancies.Client.Domain.Entities.VacancyType.Traineeship 
+                    || CheckQualificationSectionStatus()) 
                 && HasOutcomeDescription)
             {
                 return VacancyTaskListSectionState.Completed;
@@ -311,6 +320,18 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview
             }
             return VacancyTaskListSectionState.NotStarted;
         }
+        
+        private bool CheckQualificationSectionStatus()
+        {
+            if (!_isFaaV2Enabled)
+            {
+                return QualificationsSectionState == VacancyPreviewSectionState.Valid;
+            }
+
+            return (HasOptedToAddQualifications is false || (HasOptedToAddQualifications is true 
+                                                             && QualificationsSectionState == VacancyPreviewSectionState.Valid));
+        }
+        
         private VacancyTaskListSectionState SetTaskListSectionFourState()
         {
             if (TaskListSectionThreeState != VacancyTaskListSectionState.Completed)

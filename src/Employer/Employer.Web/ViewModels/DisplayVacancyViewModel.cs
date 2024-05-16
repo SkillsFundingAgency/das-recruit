@@ -111,7 +111,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels
 
         public bool HasSkills => Skills != null && Skills.Any();
 
-        public bool HasQualifications => Qualifications != null && Qualifications.Any();
+        public bool HasQualifications => HasOptedToAddQualifications is false || (Qualifications != null && Qualifications.Any());
 
         public bool HasThingsToConsider => !string.IsNullOrWhiteSpace(ThingsToConsider);
 
@@ -144,7 +144,8 @@ namespace Esfa.Recruit.Employer.Web.ViewModels
         public bool HasSelectedLegalEntity => !string.IsNullOrEmpty(AccountLegalEntityPublicHashedId);
         
         public EmployerNameOption? EmployerNameOption { get; set; }
-        
+        public bool? HasOptedToAddQualifications { get; set; }
+
 
         private string BuildAdditionalQuestionText(string additionalQuestion)
         {

@@ -23,5 +23,6 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
         public DateTime? DateSharedWithEmployer { get; set; }
         public DateTime? ReviewedDate { get; set; }
         public bool? HasEverBeenEmployerInterviewing { get; set; }
+        public string VacancyTitle { get; set; }
     }
 }

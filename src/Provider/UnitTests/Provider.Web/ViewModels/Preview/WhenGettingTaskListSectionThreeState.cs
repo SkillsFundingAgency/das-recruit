@@ -2,8 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoFixture;
+using AutoFixture.NUnit3;
+using Esfa.Recruit.Provider.Web.Configuration;
 using Esfa.Recruit.Provider.Web.Mappings;
 using Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview;
+using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.ApprenticeshipProgrammes;
@@ -89,6 +92,30 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.ViewModels.Preview
             model.TaskListSectionTwoState.Should().Be(VacancyTaskListSectionState.Completed);
             model.TaskListSectionThreeState.Should().Be(VacancyTaskListSectionState.InProgress);
         }
+        
+        [Test, MoqAutoData]
+        public async Task Then_If_There_Are_Skills_And_Opted_Not_To_Add_Qualifications_And_FutureProspects_Added_Section_Set_To_Complete(
+            string outcomeDescription,
+            List<string> skills,
+            List<Qualification> qualifications,
+            Mock<IRecruitVacancyClient> recruitVacancyClient,
+            [Frozen] Mock<IFeature> feature,
+            DisplayVacancyViewModelMapper mapper)
+        {
+            feature.Setup(x => x.IsFeatureEnabled(FeatureNames.FaaV2Improvements)).Returns(true);
+            var vacancy = GetVacancySectionOneAndTwoComplete(recruitVacancyClient);
+            vacancy.Skills = skills;
+            vacancy.Qualifications = null;
+            vacancy.OutcomeDescription = outcomeDescription;
+            vacancy.HasOptedToAddQualifications = false;
+            var model = new VacancyPreviewViewModel(true);
+            
+            await mapper.MapFromVacancyAsync(model, vacancy);
+            model.SetSectionStates(model, new ModelStateDictionary());
+
+            model.TaskListSectionThreeState.Should().Be(VacancyTaskListSectionState.Completed);
+        }
+        
         
         [Test, MoqAutoData]
         public async Task Then_The_Section_State_Is_Completed_When_Has_Skills_Qualifications_FutureProspects(
