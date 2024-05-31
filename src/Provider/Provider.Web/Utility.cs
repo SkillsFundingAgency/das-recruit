@@ -98,6 +98,7 @@ namespace Esfa.Recruit.Provider.Web
 
             applicationReview.AdditionalQuestion1 = vacancy.AdditionalQuestion1;
             applicationReview.AdditionalQuestion2 = vacancy.AdditionalQuestion2;
+            applicationReview.VacancyTitle = vacancy.Title;
             try
             {
                 CheckAuthorisedAccess(vacancy, rm.Ukprn);

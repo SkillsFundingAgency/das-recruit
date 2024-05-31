@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
 {
@@ -11,7 +11,6 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
         public int? Level { get; set; }
         public QualificationWeighting? Weighting { get; set; }
         public string OtherQualificationName { get; set; }
-
         public bool Equals(Qualification other)
         {
             if (other == null)
