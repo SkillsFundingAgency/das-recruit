@@ -77,7 +77,6 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.ApplicationReview;
         public string FormRadioButtonNoFeedbackText => (Status == ApplicationReviewStatus.Shared) ? "Explain why you don't want to interview this applicant. Your comments will be sent to your training provider, who will then give feedback to the applicant."
         : "Explain why the application has been unsuccessful, your comments will be sent to the candidate.";
         public DateTime? DateSharedWithEmployer { get; set; }
-        public string? VacancyTitle { get; set; }
         public bool IsFaaV2Application { get; set; }
         public string WhatIsYourInterest { get; set; }
         public List<QualificationTypeDisplay> QualificationTypes
