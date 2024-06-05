@@ -43,7 +43,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators
             _logger = new Mock<ILogger<VacancyManageOrchestrator>>();
             _geocodeImageService = new Mock<IGeocodeImageService>();
             _externalLinksConfig = new Mock<IOptions<ExternalLinksConfiguration>>();
-            _vacancyDisplayMapper = new DisplayVacancyViewModelMapper(_geocodeImageService.Object, _externalLinksConfig.Object, _vacancyClient.Object,Mock.Of<IFeature>());
+            _vacancyDisplayMapper = new DisplayVacancyViewModelMapper(_geocodeImageService.Object, _externalLinksConfig.Object, _vacancyClient.Object, Mock.Of<IFeature>());
             _orchestrator = new VacancyManageOrchestrator(_logger.Object, _vacancyDisplayMapper, _vacancyClient.Object, _systemConfig.Object, _utility.Object);
             _vacancyId = Guid.NewGuid();
         }
@@ -62,11 +62,13 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators
                 .With(x => x.HasEverBeenEmployerInterviewing, true)
                 .With(x => x.FirstName, "Jack")
                 .With(x => x.LastName, "Sparrow")
+                .With(x => x.Status, ApplicationReviewStatus.Interviewing)
                 .Create();
             var vacancyApplication2 = _fixture.Build<VacancyApplication>()
                 .With(x => x.HasEverBeenEmployerInterviewing, false)
                 .With(x => x.FirstName, "Jamie")
                 .With(x => x.LastName, "Vardy")
+                .With(x => x.Status, ApplicationReviewStatus.Interviewing)
                 .Create();
             vacancyApplications.Add(vacancyApplication1);
             vacancyApplications.Add(vacancyApplication2);

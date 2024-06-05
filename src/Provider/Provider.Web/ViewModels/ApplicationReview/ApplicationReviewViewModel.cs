@@ -45,6 +45,9 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.ApplicationReview
         public bool IsStatusEmployerUnsuccessful => Status == ApplicationReviewStatus.EmployerUnsuccessful;
         public bool IsStatusEmployerInterviewing => Status == ApplicationReviewStatus.EmployerInterviewing;
         public bool ShowDisabilityStatusAlert => DisabilityStatus == ApplicationReviewDisabilityStatus.Yes;
+        public bool IsApplicationUnsuccessful => Status == ApplicationReviewStatus.Unsuccessful;
+        public bool IsApplicationSuccessful => Status == ApplicationReviewStatus.Successful;
+
 
         public ApplicationReviewStatus? Outcome { get; set; }
         public string CandidateFeedback { get; set; }

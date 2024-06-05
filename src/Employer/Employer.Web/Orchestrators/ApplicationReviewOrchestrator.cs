@@ -25,24 +25,29 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
     public class ApplicationReviewOrchestrator : IApplicationReviewOrchestrator
     {
         private readonly IEmployerVacancyClient _client;
+        private readonly IRecruitVacancyClient _vacancyClient;
         private readonly IUtility _utility;
 
-        public ApplicationReviewOrchestrator(IEmployerVacancyClient client, IUtility utility)
+        public ApplicationReviewOrchestrator(IEmployerVacancyClient client, IRecruitVacancyClient vacancyClient, IUtility utility)
         {
             _client = client;
+            _vacancyClient = vacancyClient;
             _utility = utility;
         }
 
         public async Task<ApplicationReviewViewModel> GetApplicationReviewViewModelAsync(ApplicationReviewRouteModel rm, bool vacancySharedByProvider = false)
         {
             var applicationReview = await _utility.GetAuthorisedApplicationReviewAsync(rm, vacancySharedByProvider);
-           
+
+            var vacancy = await _vacancyClient.GetVacancyAsync(rm.VacancyId);
+
             if (applicationReview.IsWithdrawn)
                 throw new ApplicationWithdrawnException($"Application has been withdrawn. ApplicationReviewId:{applicationReview.Id}", rm.VacancyId);
 
             var viewModel = applicationReview.ToViewModel();
             viewModel.EmployerAccountId = rm.EmployerAccountId;
             viewModel.VacancyId = rm.VacancyId;
+            viewModel.VacancyTitle = vacancy.Title;
             viewModel.ApplicationReviewId = rm.ApplicationReviewId;
             return viewModel;
         }

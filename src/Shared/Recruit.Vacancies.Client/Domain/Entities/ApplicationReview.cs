@@ -14,6 +14,7 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
         public DateTime? StatusUpdatedDate { get; set; }
         public VacancyUser StatusUpdatedBy { get;set; }
         public string CandidateFeedback { get; set; }
+        public string EmployerFeedback { get; set; }
         public bool IsWithdrawn { get; set; }
         public DateTime? WithdrawnDate { get; set; }
         public bool CanReview => IsWithdrawn == false;

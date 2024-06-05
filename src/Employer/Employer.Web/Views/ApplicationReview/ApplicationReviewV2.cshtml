@@ -312,9 +312,9 @@
                             </div>
                             <div class="govuk-radios__item" asp-show="@Model.CanShowRadioButtonInterviewing">
                                 <input asp-for="Outcome" class="govuk-radios__input" id="outcome-interviewing" type="radio" value="@ApplicationReviewStatus.Interviewing.ToString()" checked="@(Model.Outcome == ApplicationReviewStatus.Interviewing ? "checked" : null)">
-                                <label for="outcome-interviewing" class="govuk-label govuk-radios__label">Mark application for interviewing with the employer</label>
+                                <label for="outcome-interviewing" class="govuk-label govuk-radios__label">Mark application for interviewing</label>
                                 <div class="govuk-hint govuk-radios__hint" id="radio-status-interviewing">
-                                    Change this application's status to 'interviewing' because the employer will interview this applicant. Does not notify the applicant.
+                                Change this application's status to 'interviewing' because you want to interview this applicant. Does not notify the applicant.
                                 </div>
                             </div>
                             <div class="govuk-radios__item" asp-hide="@Model.IsApplicationShared">
