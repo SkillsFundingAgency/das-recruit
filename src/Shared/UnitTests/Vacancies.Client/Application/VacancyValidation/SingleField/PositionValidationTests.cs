@@ -1,4 +1,5 @@
 using System;
+using System.Text;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using FluentAssertions;
@@ -62,11 +63,25 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation.
         }
 
         [Fact]
+        public void NoErrorsWhenShortDescriptionAreValid()
+        {
+            var vacancy = new Vacancy
+            {
+                ShortDescription = GenerateParagraph(350)
+            };
+
+            var result = Validator.Validate(vacancy, VacancyRuleSet.ShortDescription);
+
+            result.HasErrors.Should().BeFalse();
+            result.Errors.Should().HaveCount(0);
+        }
+
+        [Fact]
         public void ShortDescriptionMustNotBeMoreThan350Characters()
         {
             var vacancy = new Vacancy
             {
-                ShortDescription = new String('a', 351)
+                ShortDescription = GenerateParagraph(351)
             };
 
             var result = Validator.Validate(vacancy, VacancyRuleSet.ShortDescription);
@@ -148,6 +163,22 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation.
 
             var result = Validator.Validate(vacancy, VacancyRuleSet.ShortDescription);
             result.HasErrors.Should().BeFalse();
+        }
+
+        private static string GenerateParagraph(int wordCount)
+        {
+            string[] words = ["the", "quick", "brown", "fox", "jumps", "over", "lazy", "dog", "and", "then", "runs", "away", "from", "angry", "farmer", "who", "chases", "it", "with", "a", "stick", "but", "fox", "is", "too", "fast", "for", "him", "to", "catch", "so", "gives", "up", "and", "returns", "home", "to", "sleep", "under", "tree", "in", "yard"
+            ];
+
+            StringBuilder paragraph = new StringBuilder();
+            Random random = new Random();
+
+            for (int i = 0; i < wordCount; i++)
+            {
+                paragraph.Append(words[random.Next(words.Length)]).Append(" ");
+            }
+
+            return paragraph.ToString().Trim();
         }
     }
 }
