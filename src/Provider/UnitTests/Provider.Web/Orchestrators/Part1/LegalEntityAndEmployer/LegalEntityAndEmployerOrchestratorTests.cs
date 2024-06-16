@@ -163,7 +163,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part1.Legal
 
 
             actual.Organisations.Should().HaveCount(2);
-            actual.TotalNumberOfLegalEntities.Should().Be(2);
+            actual.TotalNumberOfLegalEntities.Should().Be(employerInfo.Sum(c=>c.LegalEntities.Count()));
             actual.Organisations.First().AccountLegalEntityName.Should().Be("ESFA  LTD");
         }
     }
