@@ -7,6 +7,7 @@ using Esfa.Recruit.Vacancies.Client.Application.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomValidators.VacancyValidators;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Extensions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelationship;
 using FluentValidation;
 
@@ -333,7 +334,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                 .WithMessage($"Enter a short description of the {VacancyContext}")
                     .WithErrorCode("12")
                 .WithState(_ => VacancyRuleSet.ShortDescription)
-                .MaximumLength(350)
+                .Must(x => x.GetWordCount() <= 350)
                     .WithMessage($"Summary of the {VacancyContext} must not exceed {{MaxLength}} characters")
                     .WithErrorCode("13")
                 .WithState(_ => VacancyRuleSet.ShortDescription)
