@@ -136,12 +136,20 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part1.Legal
             employerInfo.Add(new EmployerInfo
             {
                 Name = "ESFA  LTD",
-                LegalEntities = new List<LegalEntity>{new LegalEntity
-                {
-                    Name = "ESFA  LTD",
-                    HasLegalEntityAgreement = true,
-                    AccountLegalEntityPublicHashedId = "ABC123"
-                }}
+                LegalEntities = new List<LegalEntity>{
+                    new LegalEntity
+                    {
+                        Name = "ESFA  LTD",
+                        HasLegalEntityAgreement = true,
+                        AccountLegalEntityPublicHashedId = "ABC123"
+                    },
+                    new LegalEntity
+                    {
+                        Name = "ESFA  LTD",
+                        HasLegalEntityAgreement = true,
+                        AccountLegalEntityPublicHashedId = "ABC456"
+                    }
+                }
             });
             providerEditVacancyInfo.Employers = employerInfo;
             providerVacancyClient.Setup(x => x.GetProviderEmployerVacancyDatasAsync(vacancyRouteModel.Ukprn,
@@ -154,7 +162,8 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part1.Legal
                 "ESFA LTD", 1, SortOrder.Descending, SortByType.LegalEntityName);
 
 
-            actual.Organisations.Should().HaveCount(1);
+            actual.Organisations.Should().HaveCount(2);
+            actual.TotalNumberOfLegalEntities.Should().Be(employerInfo.Sum(c=>c.LegalEntities.Count()));
             actual.Organisations.First().AccountLegalEntityName.Should().Be("ESFA  LTD");
         }
     }

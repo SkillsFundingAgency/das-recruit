@@ -39,7 +39,7 @@
                 </fieldset>
             </div>
             <div class="govuk-button-group">
-                <button class="govuk-button">Save and continue</button>
+                <button class="govuk-button save-button" type="submit" data-automation="btn-continue">Save and continue</button>
                 <a asp-show="@(!Model.IsTaskListCompleted)" asp-route="@RouteNames.Dashboard_Get" asp-route-employerAccountId="@Model.EmployerAccountId" class="govuk-link govuk-link--no-visited-state">Cancel</a>
                 <a asp-show="@Model.IsTaskListCompleted" asp-route="@RouteNames.EmployerCheckYourAnswersGet" asp-all-route-data="@Model.RouteDictionary" esfa-automation="cancel" class="govuk-link govuk-link--no-visited-state">Cancel</a>
             </div>
