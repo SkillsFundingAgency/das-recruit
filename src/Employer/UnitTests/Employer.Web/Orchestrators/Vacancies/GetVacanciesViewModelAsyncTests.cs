@@ -99,6 +99,51 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Vacancies
         }
 
         [Fact]
+        public async Task WhenFilterOptionsAllApplications_ShouldHaveHasNew_Closed_ApplicationsAndShowApplicationsCounts()
+        {
+            const FilteringOptions filterOption = FilteringOptions.AllApplications;
+            var vacancies = new List<VacancySummary>();
+            for (int i = 1; i <= 3; i++)
+            {
+                vacancies.Add(new VacancySummary
+                {
+                    Title = i.ToString(),
+                    Status = VacancyStatus.Live,
+                    EmployerAccountId = EmployerAccountId,
+                    NoOfAllSharedApplications = 1,
+                    NoOfSharedApplications = 1
+                });
+                vacancies.Add(new VacancySummary
+                {
+                    Title = i.ToString(),
+                    Status = VacancyStatus.Closed,
+                    EmployerAccountId = EmployerAccountId,
+                    NoOfAllSharedApplications = 1,
+                    NoOfSharedApplications = 1
+                });
+                vacancies.Add(new VacancySummary
+                {
+                    Title = i.ToString(),
+                    Status = VacancyStatus.Submitted,
+                    EmployerAccountId = EmployerAccountId,
+                    NoOfAllSharedApplications = 1,
+                    NoOfSharedApplications = 1
+                });
+            }
+
+            var orchestrator = GetOrchestrator(vacancies, 1, filterOption, string.Empty, 3);
+
+            var vm = await orchestrator.GetVacanciesViewModelAsync(EmployerAccountId, "AllApplications", 1, new VacancyUser(), string.Empty);
+
+            vm.Vacancies.Count.Should().Be(9);
+            vm.Vacancies.All(x => x.HasNewApplications).Should().BeFalse();
+            vm.Vacancies.All(x => x.Status is VacancyStatus.Live or VacancyStatus.Closed or VacancyStatus.Submitted).Should().BeTrue();
+            vm.Filter.Should().Be(filterOption);
+            vm.ShowSharedApplicationCounts.Should().BeFalse();
+            vm.ShowNewApplicationCounts.Should().BeTrue();
+        }
+
+        [Fact]
         public async Task WhenFilterOptionsNewApplications_ShouldHaveNoSharedApplicationsAndSharedApplicationCountsNotToShow()
         {
             var filterOption = FilteringOptions.NewApplications;
