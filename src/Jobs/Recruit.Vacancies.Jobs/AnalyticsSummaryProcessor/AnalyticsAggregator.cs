@@ -1,13 +1,12 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Requests;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Responses;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyAnalytics;
-using MongoDB.Driver.Linq;
-using SFA.DAS.NServiceBus.Services;
 
 namespace Esfa.Recruit.Vacancies.Jobs.AnalyticsSummaryProcessor;
 
@@ -15,11 +14,11 @@ public interface IAnalyticsAggregator
 {
     Task<VacancyAnalyticsSummary> GetVacancyAnalyticEventSummaryAsync(long vacancyReference);
 }
-public class AnalyticsAggregator(IOuterApiClient apiClient, IDateTimeService dateTimeService, IQueryStoreReader queryStoreReader, IQueryStoreWriter queryStoreWriter) : IAnalyticsAggregator
+public class AnalyticsAggregator(IOuterApiClient apiClient, ITimeProvider timeProvider, IQueryStoreReader queryStoreReader, IQueryStoreWriter queryStoreWriter) : IAnalyticsAggregator
 {
     public async Task<VacancyAnalyticsSummary> GetVacancyAnalyticEventSummaryAsync(long vacancyReference)
     {
-        var endDate = dateTimeService.UtcNow;
+        var endDate = timeProvider.Now;
         var startDate = new DateTime(endDate.Year, endDate.Month, endDate.Day);
         var apiResponse = await apiClient.Get<GetVacancyMetricResponse>(
             new GetVacancyMetricsRequest(vacancyReference, startDate, endDate));

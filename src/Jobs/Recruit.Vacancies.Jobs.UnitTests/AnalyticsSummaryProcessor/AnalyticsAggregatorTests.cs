@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
+using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Requests;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Responses;
@@ -12,7 +13,6 @@ using Esfa.Recruit.Vacancies.Jobs.AnalyticsSummaryProcessor;
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.NServiceBus.Services;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace Recruit.Vacancies.Jobs.UnitTests.AnalyticsSummaryProcessor;
@@ -26,12 +26,12 @@ public class AnalyticsAggregatorTests
         VacancyAnalytics summary,
         [Frozen] Mock<IQueryStoreReader> queryStoreReader,
         [Frozen] Mock<IQueryStoreWriter> queryStoreWriter,
-        [Frozen] Mock<IDateTimeService> dateTimeService,
+        [Frozen] Mock<ITimeProvider> dateTimeService,
         [Frozen] Mock<IOuterApiClient> apiClient,
         AnalyticsAggregator analyticsAggregator)
     {
         summary.AnalyticsDate = new DateTime(2024, 11, 30);
-        dateTimeService.Setup(x => x.UtcNow)
+        dateTimeService.Setup(x => x.Now)
             .Returns(new DateTime(2024, 11, 30, 12, 00, 00));
         var expectedGetUrl = new GetVacancyMetricsRequest(vacancyReference, 
             new DateTime(2024, 11, 30, 00, 00, 00),
@@ -77,7 +77,7 @@ public class AnalyticsAggregatorTests
         VacancyAnalytics summary7,
         [Frozen] Mock<IQueryStoreReader> queryStoreReader,
         [Frozen] Mock<IQueryStoreWriter> queryStoreWriter,
-        [Frozen] Mock<IDateTimeService> dateTimeService,
+        [Frozen] Mock<ITimeProvider> dateTimeService,
         [Frozen] Mock<IOuterApiClient> apiClient,
         AnalyticsAggregator analyticsAggregator)
     {
@@ -88,7 +88,7 @@ public class AnalyticsAggregatorTests
         summary5.AnalyticsDate = new DateTime(2024, 11, 25);
         summary6.AnalyticsDate = new DateTime(2024, 11, 24);
         summary7.AnalyticsDate = new DateTime(2024, 11, 23);
-        dateTimeService.Setup(x => x.UtcNow)
+        dateTimeService.Setup(x => x.Now)
             .Returns(new DateTime(2024, 11, 30, 12, 00, 00));
         var expectedGetUrl = new GetVacancyMetricsRequest(vacancyReference, 
             new DateTime(2024, 11, 30, 00, 00, 00),
