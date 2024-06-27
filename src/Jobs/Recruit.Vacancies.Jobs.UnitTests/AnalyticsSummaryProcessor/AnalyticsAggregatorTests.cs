@@ -177,4 +177,26 @@ public class AnalyticsAggregatorTests
         actual.NoOfApprenticeshipSavedSevenDaysAgo.Should().Be(0);
         actual.NoOfApprenticeshipSavedSearchAlertsSevenDaysAgo.Should().Be(0);
     }
+
+    [Test, MoqAutoData]
+    public async Task Then_The_Vacancies_Are_Returned_With_Analytics_For_The_Past_Hour(
+        GetVacanciesWithMetricsResponse apiResponse,
+        [Frozen] Mock<ITimeProvider> dateTimeService,
+        [Frozen] Mock<IOuterApiClient> apiClient,
+        AnalyticsAggregator analyticsAggregator)
+    {
+        dateTimeService.Setup(x => x.Now)
+            .Returns(new DateTime(2024, 11, 30, 12, 00, 00));
+        var expectedGetUrl = new GetListOfVacanciesWithMetricsRequest( 
+            new DateTime(2024, 11, 30, 11, 00, 00),
+            new DateTime(2024, 11, 30, 12, 00, 00));
+        apiClient.Setup(c =>
+                c.Get<GetVacanciesWithMetricsResponse>(
+                    It.Is<GetListOfVacanciesWithMetricsRequest>(x => x.GetUrl == expectedGetUrl.GetUrl)))
+            .ReturnsAsync(apiResponse);
+
+        var actual = await analyticsAggregator.GetVacanciesWithAnalyticsInThePastHour();
+
+        actual.Should().BeEquivalentTo(apiResponse.Vacancies);
+    }
 }

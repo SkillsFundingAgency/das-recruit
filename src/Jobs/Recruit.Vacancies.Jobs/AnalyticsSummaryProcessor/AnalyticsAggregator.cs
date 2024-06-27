@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
@@ -13,6 +14,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.AnalyticsSummaryProcessor;
 public interface IAnalyticsAggregator
 {
     Task<VacancyAnalyticsSummary> GetVacancyAnalyticEventSummaryAsync(long vacancyReference);
+    Task<List<long>> GetVacanciesWithAnalyticsInThePastHour();
 }
 public class AnalyticsAggregator(IOuterApiClient apiClient, ITimeProvider timeProvider, IQueryStoreReader queryStoreReader, IQueryStoreWriter queryStoreWriter) : IAnalyticsAggregator
 {
@@ -113,5 +115,15 @@ public class AnalyticsAggregator(IOuterApiClient apiClient, ITimeProvider timePr
             NoOfApprenticeshipApplicationsSubmittedOneDayAgo = oneDayAgoTotals.Sum(c=>c.ApplicationSubmittedCount)
         };
 
+    }
+
+    public async Task<List<long>> GetVacanciesWithAnalyticsInThePastHour()
+    {
+        var endDate = timeProvider.Now;
+        var startDate = new DateTime(endDate.Year, endDate.Month, endDate.Day, endDate.Hour -1, 0,0);
+        var apiResponse = await apiClient.Get<GetVacanciesWithMetricsResponse>(
+            new GetListOfVacanciesWithMetricsRequest(startDate, endDate));
+
+        return apiResponse.Vacancies;
     }
 }
