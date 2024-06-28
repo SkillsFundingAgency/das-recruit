@@ -61,6 +61,12 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
             return _queryStore.GetAsync<VacancyAnalyticsSummary>(QueryViewType.VacancyAnalyticsSummary.TypeName, key);
         }
 
+        public Task<VacancyAnalyticsSummaryV2> GetVacancyAnalyticsSummaryV2Async(long vacancyReference)
+        {
+            var key = QueryViewType.VacancyAnalyticsSummaryV2.GetIdValue(vacancyReference);
+
+            return _queryStore.GetAsync<VacancyAnalyticsSummaryV2>(QueryViewType.VacancyAnalyticsSummaryV2.TypeName, key);
+        }
         public Task<BlockedProviderOrganisations> GetBlockedProviders()
         {
             var key = QueryViewType.BlockedProviderOrganisations.GetIdValue();
@@ -232,6 +238,14 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
         public async Task UpsertVacancyAnalyticSummaryAsync(VacancyAnalyticsSummary summary)
         {
             summary.Id = QueryViewType.VacancyAnalyticsSummary.GetIdValue(summary.VacancyReference.ToString());
+            summary.LastUpdated = _timeProvider.Now;
+
+            await _queryStore.UpsertAsync(summary);
+        }
+        
+        public async Task UpsertVacancyAnalyticSummaryV2Async(VacancyAnalyticsSummaryV2 summary)
+        {
+            summary.Id = QueryViewType.VacancyAnalyticsSummaryV2.GetIdValue(summary.VacancyReference.ToString());
             summary.LastUpdated = _timeProvider.Now;
 
             await _queryStore.UpsertAsync(summary);

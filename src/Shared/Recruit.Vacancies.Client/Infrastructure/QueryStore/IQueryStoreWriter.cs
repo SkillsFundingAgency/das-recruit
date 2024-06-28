@@ -31,5 +31,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
         Task UpsertVacancyAnalyticSummaryAsync(VacancyAnalyticsSummary summary);
         Task UpdateBlockedProviders(IEnumerable<BlockedOrganisationSummary> blockedProviders);
         Task UpdateBlockedEmployers(IEnumerable<BlockedOrganisationSummary> blockedEmployers);
+        Task UpsertVacancyAnalyticSummaryV2Async(VacancyAnalyticsSummaryV2 summary);
     }
 }
