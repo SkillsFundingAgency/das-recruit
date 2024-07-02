@@ -276,11 +276,20 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
             return _queryStore.GetAllLiveVacancies(vacanciesToSkip, vacanciesToGet);
         }
 
+        public Task<IEnumerable<LiveVacancy>> GetAllLiveVacanciesOnClosingDate(int vacanciesToSkip, int vacanciesToGet, DateTime closingDate)
+        {
+            return _queryStore.GetAllLiveVacanciesOnClosingDate(vacanciesToSkip, vacanciesToGet, closingDate);
+        }
+
         public Task<long> GetAllLiveVacanciesCount()
         {
             return _queryStore.GetAllLiveVacanciesCount();
         }
 
+        public Task<long> GetAllLiveVacanciesOnClosingDateCount(DateTime closingDate)
+        {
+            return _queryStore.GetAllLiveVacanciesOnClosingDateCount(closingDate);
+        }
         public Task<LiveVacancy> GetLiveVacancy(long vacancyReference)
         {
             return _queryStore.GetLiveVacancy(vacancyReference);
