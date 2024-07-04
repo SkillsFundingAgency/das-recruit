@@ -172,6 +172,25 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
             return result;
         }
 
+        public async Task<IEnumerable<LiveVacancy>> GetAllLiveVacanciesOnClosingDate(int vacanciesToSkip, int vacanciesToGet, DateTime closingDate)
+        {
+            var builderFilter = Builders<LiveVacancy>.Filter;
+            var filter = builderFilter.Gte(identifier => identifier.ClosingDate, closingDate.Date)
+                         & builderFilter.Lt(identifier => identifier.ClosingDate, closingDate.AddDays(1).Date)
+                         & builderFilter.Ne(identifier => identifier.ViewType, "ClosedVacancy");
+
+            var builderSort = Builders<LiveVacancy>.Sort;
+            var sort = builderSort.Descending(identifier => identifier.ClosingDate);
+
+            var collection = GetCollection<LiveVacancy>();
+
+            var result = await RetryPolicy.Execute(_ =>
+                    collection.Find(filter).Sort(sort).Skip(vacanciesToSkip).Limit(vacanciesToGet).Project<LiveVacancy>(GetProjection<LiveVacancy>()).ToListAsync(),
+                new Context(nameof(GetAllLiveVacancies)));
+
+            return result;
+        }
+        
         public async Task<IEnumerable<ClosedVacancy>> GetClosedVacancies(IList<long> vacancyReferences)
         {
             var builderFilter = Builders<ClosedVacancy>.Filter;
@@ -194,6 +213,22 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
         {
             var builderFilter = Builders<LiveVacancy>.Filter;
             var filter = builderFilter.Gt(identifier => identifier.ClosingDate, DateTime.UtcNow);
+
+            var collection = GetCollection<LiveVacancy>();
+
+            var result = await RetryPolicy.Execute(_ =>
+                    collection.CountDocumentsAsync(filter),
+                new Context(nameof(GetAllLiveVacancies)));
+
+            return result;
+        }
+
+        public async Task<long> GetAllLiveVacanciesOnClosingDateCount(DateTime closingDate)
+        {
+            var builderFilter = Builders<LiveVacancy>.Filter;
+            var filter = builderFilter.Gte(identifier => identifier.ClosingDate, closingDate.Date)
+                         & builderFilter.Lt(identifier => identifier.ClosingDate, closingDate.AddDays(1).Date)
+                         & builderFilter.Ne(identifier => identifier.ViewType, "ClosedVacancy");
 
             var collection = GetCollection<LiveVacancy>();
 
