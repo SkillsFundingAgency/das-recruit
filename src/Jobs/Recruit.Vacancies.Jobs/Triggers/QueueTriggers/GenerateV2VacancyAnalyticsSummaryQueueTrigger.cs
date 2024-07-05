@@ -14,14 +14,14 @@ namespace Esfa.Recruit.Vacancies.Jobs.Triggers.QueueTriggers;
 
 public class GenerateV2VacancyAnalyticsSummaryQueueTrigger
 {
-    private readonly ILogger<GenerateVacancyAnalyticsSummaryQueueTrigger> _logger;
+    private readonly ILogger<GenerateV2VacancyAnalyticsSummaryQueueTrigger> _logger;
     private readonly RecruitWebJobsSystemConfiguration _jobsConfig;
     private readonly IAnalyticsAggregator _analyticsAggregator;
     private readonly IQueryStoreWriter _qsWriter;
         
     private string JobName => GetType().Name;
 
-    public GenerateV2VacancyAnalyticsSummaryQueueTrigger(ILogger<GenerateVacancyAnalyticsSummaryQueueTrigger> logger, RecruitWebJobsSystemConfiguration jobsConfig,
+    public GenerateV2VacancyAnalyticsSummaryQueueTrigger(ILogger<GenerateV2VacancyAnalyticsSummaryQueueTrigger> logger, RecruitWebJobsSystemConfiguration jobsConfig,
         IQueryStoreWriter qsWriter,IAnalyticsAggregator analyticsAggregator)
     {
         _logger = logger;
@@ -41,7 +41,7 @@ public class GenerateV2VacancyAnalyticsSummaryQueueTrigger
 
         var eventItem = JsonConvert.DeserializeObject<VacancyAnalyticsQueueMessage>(message);
 
-        _logger.LogInformation($"Starting populating V2 vacancy analytics summary for vacancy reference {eventItem.VacancyReference} into query store.");
+        _logger.LogInformation("Starting populating V2 vacancy analytics summary for vacancy reference {eventItem.VacancyReference} into query store.");
 
         try
         {
