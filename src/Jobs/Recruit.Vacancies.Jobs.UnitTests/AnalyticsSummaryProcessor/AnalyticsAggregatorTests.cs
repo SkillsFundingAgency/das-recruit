@@ -64,7 +64,46 @@ public class AnalyticsAggregatorTests
         actual.NoOfApprenticeshipApplicationsSubmitted.Should().Be(apiResponse.ApplicationSubmittedCount);
         actual.NoOfApprenticeshipDetailsViews.Should().Be(apiResponse.ViewsCount);
     }
-    
+     [Test, MoqAutoData]
+    public async Task Then_The_Vacancy_Metrics_Are_Returned_And_New_Created_If_Not_Exists(
+        long vacancyReference,
+        GetVacancyMetricResponse apiResponse,
+        VacancyAnalytics summary,
+        [Frozen] Mock<IQueryStoreReader> queryStoreReader,
+        [Frozen] Mock<IQueryStoreWriter> queryStoreWriter,
+        [Frozen] Mock<ITimeProvider> dateTimeService,
+        [Frozen] Mock<IOuterApiClient> apiClient,
+        AnalyticsAggregator analyticsAggregator)
+    {
+        summary.AnalyticsDate = new DateTime(2024, 11, 30);
+        dateTimeService.Setup(x => x.Now)
+            .Returns(new DateTime(2024, 11, 30, 12, 00, 00));
+        var expectedGetUrl = new GetVacancyMetricsRequest(vacancyReference, 
+            new DateTime(2024, 11, 30, 00, 00, 00),
+            new DateTime(2024, 11, 30, 12, 00, 00));
+        apiClient.Setup(c =>
+                c.Get<GetVacancyMetricResponse>(
+                    It.Is<GetVacancyMetricsRequest>(x => x.GetUrl == expectedGetUrl.GetUrl)))
+            .ReturnsAsync(apiResponse);
+        queryStoreReader.Setup(x => x.GetVacancyAnalyticsSummaryV2Async(vacancyReference)).ReturnsAsync((VacancyAnalyticsSummaryV2)null);
+
+        var actual = await analyticsAggregator.GetVacancyAnalyticEventSummaryAsync(vacancyReference);
+
+        queryStoreWriter.Verify(
+            x => x.UpsertVacancyAnalyticSummaryV2Async(It.Is<VacancyAnalyticsSummaryV2>(c =>
+                c.VacancyAnalytics.First(a=>a.AnalyticsDate == new DateTime(2024, 11, 30)).ViewsCount == apiResponse.ViewsCount
+                && c.VacancyAnalytics.First(a=>a.AnalyticsDate == new DateTime(2024, 11, 30)).ApplicationStartedCount == apiResponse.ApplicationStartedCount
+                && c.VacancyAnalytics.First(a=>a.AnalyticsDate == new DateTime(2024, 11, 30)).ApplicationSubmittedCount == apiResponse.ApplicationSubmittedCount
+                && c.VacancyAnalytics.First(a=>a.AnalyticsDate == new DateTime(2024, 11, 30)).SearchResultsCount == apiResponse.SearchResultsCount)), Times.Once);
+
+        actual.VacancyReference.Should().Be(vacancyReference);
+        actual.NoOfApprenticeshipSaved.Should().Be(0);
+        actual.NoOfApprenticeshipSavedSearchAlerts.Should().Be(0);
+        actual.NoOfApprenticeshipSearches.Should().Be(apiResponse.SearchResultsCount);
+        actual.NoOfApprenticeshipApplicationsCreated.Should().Be(apiResponse.ApplicationStartedCount);
+        actual.NoOfApprenticeshipApplicationsSubmitted.Should().Be(apiResponse.ApplicationSubmittedCount);
+        actual.NoOfApprenticeshipDetailsViews.Should().Be(apiResponse.ViewsCount);
+    }   
     [Test, MoqAutoData]
     public async Task Then_The_VacancySummary_Returns_All_Totals(
         long vacancyReference,

@@ -26,7 +26,16 @@ public class AnalyticsAggregator(IOuterApiClient apiClient, ITimeProvider timePr
             new GetVacancyMetricsRequest(vacancyReference, startDate, endDate));
 
         var metrics = await queryStoreReader.GetVacancyAnalyticsSummaryV2Async(vacancyReference);
-        if (metrics.VacancyAnalytics.FirstOrDefault(c=>c.AnalyticsDate == startDate)!= null)
+        if (metrics == null)
+        {
+            metrics =new VacancyAnalyticsSummaryV2
+            {
+                VacancyReference = vacancyReference,
+                ViewType = nameof(VacancyAnalyticsSummaryV2),
+                VacancyAnalytics = new List<VacancyAnalytics>()
+            };
+        }
+        if (metrics?.VacancyAnalytics?.FirstOrDefault(c=>c.AnalyticsDate == startDate)!= null)
         {
             metrics.VacancyAnalytics.First(c=>c.AnalyticsDate == startDate).ApplicationStartedCount = apiResponse.ApplicationStartedCount;
             metrics.VacancyAnalytics.First(c=>c.AnalyticsDate == startDate).ViewsCount = apiResponse.ViewsCount;
