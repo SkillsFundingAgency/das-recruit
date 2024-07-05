@@ -13,6 +13,6 @@ public class WhenConstructingGetVacancyMetricsRequest
     {
         var actual = new GetVacancyMetricsRequest(vacancyReference, startDate, endDate);
 
-        actual.GetUrl.Should().Be($"metrics/vacancy/{vacancyReference}?startDate={startDate}&endDate={endDate}");
+        actual.GetUrl.Should().Be($"metrics/vacancies/{vacancyReference}?startDate={startDate:yyyy-MM-ddTHH:mm:ss}&endDate={endDate:yyyy-MM-ddTHH:mm:ss}");
     }
 }

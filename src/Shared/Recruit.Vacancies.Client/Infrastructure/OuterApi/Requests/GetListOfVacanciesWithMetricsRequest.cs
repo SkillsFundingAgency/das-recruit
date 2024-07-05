@@ -12,5 +12,5 @@ public class GetListOfVacanciesWithMetricsRequest : IGetApiRequest
         _endDate = endDate;
     }
 
-    public string GetUrl => $"metrics/vacancy?startDate={_startDate}&endDate={_endDate}";
+    public string GetUrl => $"metrics/vacancies?startDate={_startDate:yyyy-MM-ddTHH:mm:ss}&endDate={_endDate:yyyy-MM-ddTHH:mm:ss}";
 }
