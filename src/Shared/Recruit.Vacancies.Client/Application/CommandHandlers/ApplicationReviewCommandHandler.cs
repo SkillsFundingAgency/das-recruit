@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.Commands;
@@ -88,6 +88,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             await _outerApiClient.Post(new PostApplicationStatusRequest(applicationReview.Application.CandidateId,
                 applicationReview.Application.ApplicationId, new PostApplicationStatus
                 {
+                    VacancyReference = applicationReview.VacancyReference,
                     Status = applicationReview.Status.ToString(),
                     CandidateFeedback = applicationReview.CandidateFeedback
                 }));
