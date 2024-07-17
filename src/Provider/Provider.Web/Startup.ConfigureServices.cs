@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using Esfa.Recruit.Provider.Web.Configuration;
 using Esfa.Recruit.Shared.Web.Extensions;
@@ -13,6 +14,7 @@ using SFA.DAS.Configuration.AzureTableStorage;
 using SFA.DAS.DfESignIn.Auth.AppStart;
 using SFA.DAS.DfESignIn.Auth.Configuration;
 using SFA.DAS.DfESignIn.Auth.Enums;
+using SFA.DAS.Encoding;
 using SFA.DAS.Provider.Shared.UI.Startup;
 
 namespace Esfa.Recruit.Provider.Web
@@ -108,6 +110,15 @@ namespace Esfa.Recruit.Provider.Web
             }
             
             services.AddAuthorizationService(useDfESignIn);            
+            RegisterDasEncodingService(services, _configuration);
+        }
+        
+        private static void RegisterDasEncodingService(IServiceCollection services, IConfiguration configuration)
+        {
+            var dasEncodingConfig = new EncodingConfig { Encodings = new List<Encoding>() };
+            configuration.GetSection(nameof(dasEncodingConfig.Encodings)).Bind(dasEncodingConfig.Encodings);
+            services.AddSingleton(dasEncodingConfig);
+            services.AddSingleton<IEncodingService, EncodingService>();
         }
     }
 }
