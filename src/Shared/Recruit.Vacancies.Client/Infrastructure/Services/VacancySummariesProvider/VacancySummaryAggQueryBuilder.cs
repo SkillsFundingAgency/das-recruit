@@ -453,7 +453,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                         '$sum': '$isSharedWithEmployer'
                     },
                     'noOfApplications': {
-                         '$sum' :{'$add': ['$isUnsuccessful','$isSuccessful'] }
+                         '$sum' :{'$add': ['$isNew','$isUnsuccessful','$isSuccessful'] }
                     }
                 }
             },
