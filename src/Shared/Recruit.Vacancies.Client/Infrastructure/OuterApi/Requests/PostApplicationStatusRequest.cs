@@ -12,4 +12,5 @@ public class PostApplicationStatus
 {
     public string Status { get; set; }
     public string CandidateFeedback { get; set; }
+    public long VacancyReference { get; set; }
 }
