@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.Commands;
@@ -74,16 +74,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 
             await _applicationReviewRepository.UpdateAsync(applicationReview);
 
-            if (applicationReview.Application.IsFaaV2Application)
-            {
-                await _outerApiClient.Post(new PostApplicationStatusRequest(applicationReview.Application.CandidateId,
-                    applicationReview.Application.ApplicationId, new PostApplicationStatus
-                    {
-                        Status = applicationReview.Status.ToString(),
-                        CandidateFeedback = applicationReview.CandidateFeedback
-                    }));
-            }
-            else
+            if (!applicationReview.Application.IsFaaV2Application)
             {
                 await _messaging.PublishEvent(new ApplicationReviewedEvent
                 {
@@ -93,6 +84,14 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
                     CandidateId = applicationReview.CandidateId
                 });    
             }
+            
+            await _outerApiClient.Post(new PostApplicationStatusRequest(applicationReview.Application.CandidateId,
+                applicationReview.Application.ApplicationId, new PostApplicationStatus
+                {
+                    VacancyReference = applicationReview.VacancyReference,
+                    Status = applicationReview.Status.ToString(),
+                    CandidateFeedback = applicationReview.CandidateFeedback
+                }));
             
 
             var shouldMakeOthersUnsuccessful = await CheckForPositionsFilledAsync(message.Outcome, applicationReview.VacancyReference);
