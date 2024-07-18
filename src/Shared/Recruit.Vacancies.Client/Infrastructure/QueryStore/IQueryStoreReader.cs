@@ -34,5 +34,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
         Task<long> GetAllLiveVacanciesOnClosingDateCount(DateTime closingDate);
         Task<LiveVacancy> GetLiveVacancy(long vacancyReference);
         Task<LiveVacancy> GetLiveExpiredVacancy(long vacancyReference);
+        Task<VacancyAnalyticsSummaryV2> GetVacancyAnalyticsSummaryV2Async(long vacancyReference);
     }
 }
