@@ -63,7 +63,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
             {
                 Employers = editVacancyInfo.Employers.Select(e => new EmployerViewModel { Id = e.EmployerAccountId, Name = e.Name}),
                 Organisations = GetLegalEntityAndEmployerViewModels(accountLegalEntities).OrderBy(a => a.EmployerName),
-                TotalNumberOfLegalEntities = accountLegalEntities.Count(),
+                TotalNumberOfLegalEntities = accountLegalEntities.Sum(c=>c.LegalEntities.Count),
                 SearchTerm = searchTerm,
                 VacancyId = vrm.VacancyId,
                 SortByNameType = sortByType,
