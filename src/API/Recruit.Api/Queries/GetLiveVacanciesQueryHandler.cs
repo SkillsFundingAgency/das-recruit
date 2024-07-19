@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Vacancy;
 using MediatR;
+using Microsoft.Extensions.Logging;
 using SFA.DAS.Recruit.Api.Extensions;
 using SFA.DAS.Recruit.Api.Helpers;
 using SFA.DAS.Recruit.Api.Models;
@@ -13,11 +15,13 @@ namespace SFA.DAS.Recruit.Api.Queries;
 
 public class GetLiveVacanciesQueryHandler : IRequestHandler<GetLiveVacanciesQuery, GetLiveVacanciesQueryResponse>
 {
+    private readonly ILogger<GetLiveVacanciesQueryHandler> _logger;
     private readonly IQueryStoreReader _queryStoreReader;
 
-    public GetLiveVacanciesQueryHandler(IQueryStoreReader queryStoreReader)
+    public GetLiveVacanciesQueryHandler(IQueryStoreReader queryStoreReader, ILogger<GetLiveVacanciesQueryHandler> logger)
     {
         _queryStoreReader = queryStoreReader;
+        _logger = logger;
     }
 
     public async Task<GetLiveVacanciesQueryResponse> Handle(GetLiveVacanciesQuery request, CancellationToken cancellationToken)
@@ -32,7 +36,17 @@ public class GetLiveVacanciesQueryHandler : IRequestHandler<GetLiveVacanciesQuer
             return new GetLiveVacanciesQueryResponse { ResultCode = ResponseCode.Success, Data = Enumerable.Empty<LiveVacancy>() };
         }
 
-        queryResult.ToList().ForEach(x => x.AddWageData());
+        foreach (var vacancy in queryResult.ToList())
+        {
+            if (vacancy.Wage != null)
+            {
+                vacancy.AddWageData();
+            }
+            else
+            {
+                _logger.LogWarning($"Unable to add Wage information for vacancy {vacancy.VacancyReference}");
+            }
+        }
 
         var totalLiveVacanciesReturned = queryResult.Count();
         var liveVacanciesCount = await _queryStoreReader.GetAllLiveVacanciesCount();
