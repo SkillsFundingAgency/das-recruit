@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using SFA.DAS.Recruit.Api.Extensions;
 using SFA.DAS.Recruit.Api.Models;
 using IQueryStoreReader = Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.IQueryStoreReader;
@@ -43,20 +44,35 @@ namespace SFA.DAS.Recruit.Api.Queries
 
             if (queryResult == null)
             {
-                _logger.LogError($"Wage for vacancy {request.VacancyReference} is null");
-                throw new InvalidOperationException($"Wage for vacancy {request.VacancyReference} is null");
+                return new GetLiveVacancyQueryResponse
+                {
+                    Data = null,
+                    ResultCode = ResponseCode.NotFound
+                };
             }
 
             if (queryResult.Wage == null)
             {
                 _logger.LogError($"Wage for vacancy {request.VacancyReference} is null");
-                throw new InvalidOperationException($"Wage for vacancy {request.VacancyReference} is null");
+                return new GetLiveVacancyQueryResponse
+                {
+                    Data = null,
+                    ResultCode = ResponseCode.NotFound
+                };
             }
 
             _logger.LogInformation($"Adding wage data to vacancy {request.VacancyReference}");
-            _logger.LogInformation($"Wage type for vacancy {request.VacancyReference} is  {queryResult.Wage.WageType}");
+            var wageObject = JsonConvert.SerializeObject(queryResult.Wage);
+            _logger.LogInformation($"Wage object: {wageObject}");
 
-            queryResult.AddWageData();
+            try
+            {
+                queryResult.AddWageData();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error adding wage data to vacancy {request.VacancyReference}");
+            }
 
             return new GetLiveVacancyQueryResponse
             {

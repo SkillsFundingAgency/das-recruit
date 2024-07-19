@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using SFA.DAS.Configuration.AzureTableStorage;
 
 namespace SFA.DAS.Recruit.Api
@@ -14,6 +15,7 @@ namespace SFA.DAS.Recruit.Api
         {
             var config = new ConfigurationBuilder()
                 .AddConfiguration(configuration)
+                .AddApplicationInsightsSettings(configuration["APPINSIGHTS_INSTRUMENTATIONKEY"])
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddEnvironmentVariables();
 #if DEBUG
