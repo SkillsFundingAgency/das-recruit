@@ -85,4 +85,23 @@ public class LiveVacanciesControllerTests
             actualResult.Should().BeEquivalentTo(vacancy);
         }
     }
+
+    [Test, MoqAutoData]
+    public async Task When_Getting_Total_Positions_Available_Then_Count_Is_Returned(
+        GetTotalPositionsAvailableQueryResult response,
+        [Frozen] Mock<IMediator> mockMediator,
+        [Greedy] LiveVacanciesController controller)
+    {
+        mockMediator
+            .Setup(x => x.Send(It.IsAny<GetTotalPositionsAvailableQuery>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(response);
+
+        var actual = await controller.GetTotalPositionsAvailable() as OkObjectResult;
+
+        using (new AssertionScope())
+        {
+            Assert.That(actual, Is.Not.Null);
+            actual.Value.Should().BeEquivalentTo(response.Data);
+        }
+    }
 }

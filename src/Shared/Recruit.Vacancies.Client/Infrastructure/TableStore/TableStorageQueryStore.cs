@@ -105,6 +105,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.TableStore
             throw new NotImplementedException();
         }
 
+        public Task<long> GetTotalPositionsAvailableCount()
+        {
+            throw new NotImplementedException();
+        }
+
         public Task<long> GetAllLiveVacanciesOnClosingDateCount(DateTime closingDate)
         {
             throw new NotImplementedException();

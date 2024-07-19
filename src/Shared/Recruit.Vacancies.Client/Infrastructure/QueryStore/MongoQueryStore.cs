@@ -1,14 +1,15 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Vacancy;
-using Microsoft.Azure.Amqp.Framing;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
+using MongoDB.Driver.Linq;
 using Polly;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
@@ -221,6 +222,12 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
                 new Context(nameof(GetAllLiveVacancies)));
 
             return result;
+        }
+
+        public async Task<long> GetTotalPositionsAvailableCount()
+        {
+            var collection = GetCollection<LiveVacancy>();
+            return collection.AsQueryable().Where(x=> x.ClosingDate>=DateTime.UtcNow).Sum(x => x.NumberOfPositions);
         }
 
         public async Task<long> GetAllLiveVacanciesOnClosingDateCount(DateTime closingDate)
