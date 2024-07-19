@@ -53,17 +53,8 @@ namespace SFA.DAS.Recruit.Api.Queries
 
             if (queryResult.Wage == null)
             {
-                _logger.LogError($"Wage for vacancy {request.VacancyReference} is null");
-                return new GetLiveVacancyQueryResponse
-                {
-                    Data = null,
-                    ResultCode = ResponseCode.NotFound
-                };
+                throw new InvalidOperationException($"Wage for vacancy {request.VacancyReference} is null");
             }
-
-            _logger.LogInformation($"Adding wage data to vacancy {request.VacancyReference}");
-            var wageObject = JsonConvert.SerializeObject(queryResult.Wage);
-            _logger.LogInformation($"Wage object: {wageObject}");
 
             try
             {
