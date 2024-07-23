@@ -99,6 +99,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Extensions
 
         public static IEnumerable<ProjectionQualification> ToProjection(this List<Qualification> qualifications)
         {
+            if (qualifications == null) return [];
+
             return qualifications.Select(q => new ProjectionQualification
             {
                 QualificationType = q.QualificationType,
