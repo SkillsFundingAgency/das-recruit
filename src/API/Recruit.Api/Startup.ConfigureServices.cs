@@ -59,7 +59,7 @@ namespace SFA.DAS.Recruit.Api
             services.AddSingleton<IVacancySummaryMapper, VacancySummaryMapper>();
             services.AddSingleton<IQueryStoreReader, QueryStoreClient>();
             services.AddSingleton<IFeature, Feature>();
-            RegisterDasEncodingService(services, configuration);
+            RegisterDasEncodingService(services, Configuration);
 
             services.AddRecruitStorageClient(Configuration);
             
