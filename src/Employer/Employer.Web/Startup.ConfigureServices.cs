@@ -89,16 +89,7 @@ namespace Esfa.Recruit.Employer.Web
 
 
             services.AddDataProtection(Configuration, HostingEnvironment, applicationName: "das-employer");
-            
-            RegisterDasEncodingService(services, Configuration);
-        }
-        
-        private static void RegisterDasEncodingService(IServiceCollection services, IConfiguration configuration)
-        {
-            var dasEncodingConfig = new EncodingConfig { Encodings = new List<Encoding>() };
-            configuration.GetSection(nameof(dasEncodingConfig.Encodings)).Bind(dasEncodingConfig.Encodings);
-            services.AddSingleton(dasEncodingConfig);
-            services.AddSingleton<IEncodingService, EncodingService>();
+            services.AddDasEncoding(Configuration);
         }
     }
 }

@@ -109,16 +109,8 @@ namespace Esfa.Recruit.Provider.Web
                 services.AddAuthenticationService(_authConfig);    
             }
             
-            services.AddAuthorizationService(useDfESignIn);            
-            RegisterDasEncodingService(services, _configuration);
-        }
-        
-        private static void RegisterDasEncodingService(IServiceCollection services, IConfiguration configuration)
-        {
-            var dasEncodingConfig = new EncodingConfig { Encodings = new List<Encoding>() };
-            configuration.GetSection(nameof(dasEncodingConfig.Encodings)).Bind(dasEncodingConfig.Encodings);
-            services.AddSingleton(dasEncodingConfig);
-            services.AddSingleton<IEncodingService, EncodingService>();
+            services.AddAuthorizationService(useDfESignIn);
+            services.AddDasEncoding(_configuration);
         }
     }
 }
