@@ -300,6 +300,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
             return _queryStore.GetAllLiveVacanciesCount();
         }
 
+        public Task<long> GetTotalPositionsAvailableCount()
+        {
+            return _queryStore.GetTotalPositionsAvailableCount();
+        }
+
         public Task<long> GetAllLiveVacanciesOnClosingDateCount(DateTime closingDate)
         {
             return _queryStore.GetAllLiveVacanciesOnClosingDateCount(closingDate);
