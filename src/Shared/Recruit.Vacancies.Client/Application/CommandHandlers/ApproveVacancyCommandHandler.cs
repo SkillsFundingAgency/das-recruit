@@ -40,6 +40,8 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             
             var vacancy = await _repository.GetVacancyAsync(message.VacancyReference);
 
+            _logger.LogInformation($"Vacancy reference {message.VacancyReference} has a Company Benefits info of: [{vacancy.Wage.CompanyBenefitsInformation}]");
+
             if (!vacancy.CanApprove)
             {
                 _logger.LogWarning($"Unable to approve vacancy {{vacancyReference}} due to vacancy having a status of {vacancy.Status}.", vacancy.VacancyReference);
