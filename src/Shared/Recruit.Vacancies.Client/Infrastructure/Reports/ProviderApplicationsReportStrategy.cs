@@ -59,7 +59,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Reports
                     'Telephone' : { $ifNull: ['$ar.application.phone', null]},
                     'Email' : { $ifNull: ['$ar.application.email', null]}, 
                     'School' : { $ifNull: ['$ar.application.educationInstitution', null]},
-                    'Date_of_Birth' : { $ifNull: ['$ar.application.birthDate', null]},
+                    'Date_of_Birth' : { $ifNull: ['$ar.application.dateOfBirth', null]},
                     'Vacancy_Reference_Number' : '$vacancyReference',
                     'Vacancy_Title' : '$title',
                     'Programme' : { $ifNull: ['$programmeId', null]},
