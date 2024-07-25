@@ -155,11 +155,11 @@
       "defaultValue": "[utcNow('yyMMddHHmmss')]"
     },
     "stubAuth": {
-        "type": "string"
+      "type": "string"
     },
     "minimumTlsVersion": {
-            "type": "string",
-            "defaultValue": "TLS1_2"
+      "type": "string",
+      "defaultValue": "TLS1_2"
     }
   },
   "variables": {
