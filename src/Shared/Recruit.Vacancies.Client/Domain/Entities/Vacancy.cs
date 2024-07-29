@@ -66,7 +66,7 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
             }
             set
             {
-                if (value != null) _shortDescription = value.Replace(Environment.NewLine, string.Empty);
+                if (value != null) _shortDescription = value.Replace(Environment.NewLine, " ");
             }
         }
 
