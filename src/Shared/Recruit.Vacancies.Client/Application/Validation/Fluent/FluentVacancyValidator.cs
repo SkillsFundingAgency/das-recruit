@@ -334,7 +334,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                 .WithMessage($"Enter a short description of the {VacancyContext}")
                     .WithErrorCode("12")
                 .WithState(_ => VacancyRuleSet.ShortDescription)
-                .Must(x => x.GetWordCount() <= 350)
+                .MaximumLength(350)
                     .WithMessage($"Summary of the {VacancyContext} must not exceed {{MaxLength}} characters")
                     .WithErrorCode("13")
                 .WithState(_ => VacancyRuleSet.ShortDescription)
