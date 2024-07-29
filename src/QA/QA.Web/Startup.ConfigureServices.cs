@@ -132,7 +132,7 @@ namespace Esfa.Recruit.Qa.Web
             });
             
             services.AddFeatureToggle();
-            
+            services.AddDasEncoding(_configuration);
         }
     }
 }
