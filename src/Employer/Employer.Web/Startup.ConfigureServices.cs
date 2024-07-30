@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using Esfa.Recruit.Employer.Web.AppStart;
 using Esfa.Recruit.Employer.Web.Configuration;
@@ -11,6 +12,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.Configuration.AzureTableStorage;
 using SFA.DAS.Employer.Shared.UI;
+using SFA.DAS.Encoding;
 using SFA.DAS.GovUK.Auth.AppStart;
 using SFA.DAS.GovUK.Auth.Services;
 
@@ -87,6 +89,7 @@ namespace Esfa.Recruit.Employer.Web
 
 
             services.AddDataProtection(Configuration, HostingEnvironment, applicationName: "das-employer");
+            services.AddDasEncoding(Configuration);
         }
     }
 }
