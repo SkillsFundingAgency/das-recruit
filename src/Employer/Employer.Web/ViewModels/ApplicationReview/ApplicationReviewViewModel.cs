@@ -10,6 +10,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.ApplicationReview;
 
     public class ApplicationReviewViewModel : ApplicationReviewRouteModel
     {
+        public string VacancyTitle { get; set; }
         public string AddressLine1 { get; set; }
         public string AddressLine2 { get; set; }
         public string AddressLine3 { get; set; }
@@ -63,9 +64,9 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.ApplicationReview;
         {
             nameof(Outcome)
         };
-        public bool ShowAnonymisedApplicantDetails => (Status == ApplicationReviewStatus.Shared || Status == ApplicationReviewStatus.EmployerUnsuccessful);
+        public bool ShowAnonymisedApplicantDetails => (Status == ApplicationReviewStatus.Shared || Status == ApplicationReviewStatus.EmployerUnsuccessful || Status == ApplicationReviewStatus.Unsuccessful);
         public bool HideRadioButtons => (Status == ApplicationReviewStatus.EmployerInterviewing || Status == ApplicationReviewStatus.EmployerUnsuccessful);
-        public bool IsApplicationEmployerUnsuccessful => Status == ApplicationReviewStatus.EmployerUnsuccessful;
+        public bool IsApplicationUnsuccessful => (Status == ApplicationReviewStatus.EmployerUnsuccessful || Status == ApplicationReviewStatus.Unsuccessful);
         public bool IsApplicationShared => Status == ApplicationReviewStatus.Shared;
         public bool IsApplicationInterviewing => (Status == ApplicationReviewStatus.EmployerInterviewing || Status == ApplicationReviewStatus.Interviewing);
         public bool IsApplicationSharedByProvider => DateSharedWithEmployer.HasValue;
@@ -76,7 +77,6 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.ApplicationReview;
         public string FormRadioButtonNoFeedbackText => (Status == ApplicationReviewStatus.Shared) ? "Explain why you don't want to interview this applicant. Your comments will be sent to your training provider, who will then give feedback to the applicant."
         : "Explain why the application has been unsuccessful, your comments will be sent to the candidate.";
         public DateTime? DateSharedWithEmployer { get; set; }
-        public string? VacancyTitle { get; set; }
         public bool IsFaaV2Application { get; set; }
         public string WhatIsYourInterest { get; set; }
         public List<QualificationTypeDisplay> QualificationTypes

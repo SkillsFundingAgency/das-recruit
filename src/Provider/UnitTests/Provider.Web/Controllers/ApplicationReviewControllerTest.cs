@@ -17,11 +17,11 @@ using Esfa.Recruit.Shared.Web.ViewModels;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Provider.Web.Extensions;
 using Esfa.Recruit.Provider.Web.RouteModel;
-using Esfa.Recruit.Shared.Web.ViewModels.ApplicationReview;
 using Newtonsoft.Json;
 using Esfa.Recruit.Provider.Web.Models;
 using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Microsoft.Extensions.Configuration;
+using ApplicationReviewViewModel = Esfa.Recruit.Provider.Web.ViewModels.ApplicationReview.ApplicationReviewViewModel;
 
 namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
 {
