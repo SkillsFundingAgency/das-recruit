@@ -81,7 +81,8 @@ public class ApplicationsController : ApiControllerBase
             }).ToList(),
             Support = candidateApplication.Support,
             DisabilityStatus = disabilityConfidentStatus,
-            IsFaaV2Application = true
+            IsFaaV2Application = true,
+            BirthDate = candidateApplication.DateOfBirth
         };
         await _messaging.PublishEvent(new ApplicationSubmittedEvent
         {

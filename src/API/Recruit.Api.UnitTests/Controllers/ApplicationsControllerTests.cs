@@ -59,6 +59,7 @@ public class ApplicationsControllerTests
                 && c.Application.WorkExperiences.FirstOrDefault().JobTitle == request.WorkExperiences.FirstOrDefault().JobTitle
                 && c.Application.WorkExperiences.FirstOrDefault().FromDate == request.WorkExperiences.FirstOrDefault().FromDate
                 && c.Application.WorkExperiences.FirstOrDefault().Employer == request.WorkExperiences.FirstOrDefault().Employer
+                && c.Application.BirthDate == request.DateOfBirth
                 )),
             Times.Once);
     }
