@@ -35,6 +35,7 @@ public class ApplicationsControllerTests
         messaging.Verify(x => x.PublishEvent(It.Is<ApplicationSubmittedEvent>(c => 
                 c.Application.IsFaaV2Application
                 && c.Application.VacancyReference == vacancyRef
+                && c.Application.BirthDate == request.DateOfBirth
                 && c.Application.Email == request.Email
                 && c.Application.Improvements == request.Improvements
                 && c.Application.Phone == request.Phone

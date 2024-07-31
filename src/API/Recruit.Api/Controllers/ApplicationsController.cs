@@ -29,6 +29,7 @@ public class ApplicationsController : ApiControllerBase
             out var disabilityConfidentStatus);
         var application = new Application
         {
+            BirthDate = candidateApplication.DateOfBirth,
             Email = candidateApplication.Email,
             Improvements = candidateApplication.Improvements,
             Phone = candidateApplication.Phone,
