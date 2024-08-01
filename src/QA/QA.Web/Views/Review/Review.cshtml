@@ -139,7 +139,7 @@
                         <esfaFeatureEnabled name="FaaV2Improvements">
                             <li>
                                 <h3 class="govuk-heading-s">Company benefits (optional)</h3>
-                                <p class="govuk-body">@Model.CompanyBenefitsInformation</p>
+                                <textarea class="govuk-textarea govuk-js-character-count" asp-for="CompanyBenefitsInformation" rows="5" data-val-length-max="250"></textarea>
                                 <esfa-review-checkbox asp-for="SelectedFieldIdentifiers"
                                                       asp-value="@FieldIdentifiers.CompanyBenefitsInformation"
                                                       asp-items="@Model.FieldIdentifiers"></esfa-review-checkbox>
