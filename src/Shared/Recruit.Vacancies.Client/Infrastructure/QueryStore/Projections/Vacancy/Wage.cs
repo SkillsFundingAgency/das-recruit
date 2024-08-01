@@ -25,5 +25,6 @@
 
         public decimal? Over25NationalMinimumWage { get; set; }
         public string WageText { get; set; }
+        public string CompanyBenefitsInformation { get; set; }
     }
 }

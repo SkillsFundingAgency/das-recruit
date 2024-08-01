@@ -29,7 +29,7 @@ public class GetLiveVacanciesOnDateQueryHandler : IRequestHandler<GetLiveVacanci
             return new GetLiveVacanciesOnDateQueryResult { ResultCode = ResponseCode.Success, Data = Enumerable.Empty<LiveVacancy>() };
         }
         
-        queryResult.ToList().ForEach(x => x.AddWageData());
+        queryResult.ToList().ForEach(x => x?.AddWageData());
 
         var totalLiveVacanciesReturned = queryResult.Count();
         var liveVacanciesCount = await _queryStoreReader.GetAllLiveVacanciesOnClosingDateCount(request.ClosingDate);
