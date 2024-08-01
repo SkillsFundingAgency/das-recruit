@@ -5,6 +5,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Responses;
 
 public class GetVacanciesWithMetricsResponse
 {
-    [JsonProperty("vacancies")]
-    public List<long> Vacancies { get; set; }
+    [JsonProperty("vacancyMetrics")]
+    public List<GetVacancyMetricResponse> VacancyMetrics { get; set; }
 }
