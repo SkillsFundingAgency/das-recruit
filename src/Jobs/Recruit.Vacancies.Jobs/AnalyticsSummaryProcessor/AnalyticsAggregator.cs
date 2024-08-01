@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
+using Esfa.Recruit.Vacancies.Client.Application.Queues.Messages;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Requests;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Responses;
@@ -13,44 +14,43 @@ namespace Esfa.Recruit.Vacancies.Jobs.AnalyticsSummaryProcessor;
 
 public interface IAnalyticsAggregator
 {
-    Task<VacancyAnalyticsSummary> GetVacancyAnalyticEventSummaryAsync(long vacancyReference);
-    Task<List<long>> GetVacanciesWithAnalyticsInThePastHour();
+    Task<VacancyAnalyticsSummary> GetVacancyAnalyticEventSummaryAsync(VacancyAnalyticsV2QueueMessage vacancyAnalyticsV2QueueMessage);
+    Task<List<GetVacancyMetricResponse>> GetVacanciesWithAnalyticsInThePastHour();
 }
 public class AnalyticsAggregator(IOuterApiClient apiClient, ITimeProvider timeProvider, IQueryStoreReader queryStoreReader, IQueryStoreWriter queryStoreWriter) : IAnalyticsAggregator
 {
-    public async Task<VacancyAnalyticsSummary> GetVacancyAnalyticEventSummaryAsync(long vacancyReference)
+    public async Task<VacancyAnalyticsSummary> GetVacancyAnalyticEventSummaryAsync(VacancyAnalyticsV2QueueMessage vacancyAnalyticsV2QueueMessage)
     {
         var endDate = timeProvider.Now;
         var startDate = new DateTime(endDate.Year, endDate.Month, endDate.Day);
-        var apiResponse = await apiClient.Get<GetVacancyMetricResponse>(
-            new GetVacancyMetricsRequest(vacancyReference, startDate, endDate));
+        
 
-        var metrics = await queryStoreReader.GetVacancyAnalyticsSummaryV2Async(vacancyReference);
+        var metrics = await queryStoreReader.GetVacancyAnalyticsSummaryV2Async(vacancyAnalyticsV2QueueMessage.VacancyReference);
         if (metrics == null)
         {
-            metrics =new VacancyAnalyticsSummaryV2
+            metrics = new VacancyAnalyticsSummaryV2
             {
-                VacancyReference = vacancyReference,
+                VacancyReference = vacancyAnalyticsV2QueueMessage.VacancyReference,
                 ViewType = nameof(VacancyAnalyticsSummaryV2),
                 VacancyAnalytics = new List<VacancyAnalytics>()
             };
         }
         if (metrics?.VacancyAnalytics?.FirstOrDefault(c=>c.AnalyticsDate == startDate)!= null)
         {
-            metrics.VacancyAnalytics.First(c=>c.AnalyticsDate == startDate).ApplicationStartedCount = apiResponse.ApplicationStartedCount;
-            metrics.VacancyAnalytics.First(c=>c.AnalyticsDate == startDate).ViewsCount = apiResponse.ViewsCount;
-            metrics.VacancyAnalytics.First(c=>c.AnalyticsDate == startDate).ApplicationSubmittedCount = apiResponse.ApplicationSubmittedCount;
-            metrics.VacancyAnalytics.First(c=>c.AnalyticsDate == startDate).SearchResultsCount = apiResponse.SearchResultsCount;
+            metrics.VacancyAnalytics.First(c=>c.AnalyticsDate == startDate).ApplicationStartedCount = vacancyAnalyticsV2QueueMessage.ApplicationStartedCount;
+            metrics.VacancyAnalytics.First(c=>c.AnalyticsDate == startDate).ViewsCount = vacancyAnalyticsV2QueueMessage.ViewsCount;
+            metrics.VacancyAnalytics.First(c=>c.AnalyticsDate == startDate).ApplicationSubmittedCount = vacancyAnalyticsV2QueueMessage.ApplicationSubmittedCount;
+            metrics.VacancyAnalytics.First(c=>c.AnalyticsDate == startDate).SearchResultsCount = vacancyAnalyticsV2QueueMessage.SearchResultsCount;
         }
         else
         {
             metrics.VacancyAnalytics.Add(new VacancyAnalytics
             {
                 AnalyticsDate = startDate,
-                ApplicationStartedCount = apiResponse.ApplicationStartedCount,
-                ViewsCount = apiResponse.ViewsCount,
-                ApplicationSubmittedCount = apiResponse.ApplicationSubmittedCount,
-                SearchResultsCount = apiResponse.SearchResultsCount
+                ApplicationStartedCount = vacancyAnalyticsV2QueueMessage.ApplicationStartedCount,
+                ViewsCount = vacancyAnalyticsV2QueueMessage.ViewsCount,
+                ApplicationSubmittedCount = vacancyAnalyticsV2QueueMessage.ApplicationSubmittedCount,
+                SearchResultsCount = vacancyAnalyticsV2QueueMessage.SearchResultsCount
             });
         }
 
@@ -66,7 +66,7 @@ public class AnalyticsAggregator(IOuterApiClient apiClient, ITimeProvider timePr
         
         return new VacancyAnalyticsSummary
         {
-            VacancyReference = vacancyReference,
+            VacancyReference = vacancyAnalyticsV2QueueMessage.VacancyReference,
             NoOfApprenticeshipSearches = metrics.VacancyAnalytics.Sum(c=>c.SearchResultsCount),
             NoOfApprenticeshipSearchesSevenDaysAgo = sevenDaysAgoTotals.Sum(c=>c.SearchResultsCount),
             NoOfApprenticeshipSearchesSixDaysAgo = sixDaysAgoTotals.Sum(c=>c.SearchResultsCount),
@@ -126,13 +126,13 @@ public class AnalyticsAggregator(IOuterApiClient apiClient, ITimeProvider timePr
 
     }
 
-    public async Task<List<long>> GetVacanciesWithAnalyticsInThePastHour()
+    public async Task<List<GetVacancyMetricResponse>> GetVacanciesWithAnalyticsInThePastHour()
     {
         var endDate = timeProvider.Now;
         var startDate = new DateTime(endDate.Year, endDate.Month, endDate.Day, endDate.Hour -1, 0,0);
         var apiResponse = await apiClient.Get<GetVacanciesWithMetricsResponse>(
             new GetListOfVacanciesWithMetricsRequest(startDate, endDate));
 
-        return apiResponse.Vacancies;
+        return apiResponse.VacancyMetrics;
     }
 }
