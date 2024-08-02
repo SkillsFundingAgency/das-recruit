@@ -6,6 +6,7 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
 {
     public class Vacancy : ITaskListVacancy
     {
+        private string _shortDescription;
         public Guid Id { get; set; }
         public string EmployerAccountId { get; set; }
         public long? VacancyReference { get; set; }
@@ -56,7 +57,19 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
         public string ProgrammeId { get; set; }
         public bool? HasOptedToAddQualifications { get; set; }
         public List<Qualification> Qualifications { get; set; }
-        public string ShortDescription { get; set; }
+
+        public string ShortDescription  
+        {
+            get
+            {
+                return _shortDescription;
+            }
+            set
+            {
+                if (value != null) _shortDescription = value.Replace(Environment.NewLine, " ");
+            }
+        }
+
         public List<string> Skills { get; set; }
         public DateTime? StartDate { get; set; }
         public string ThingsToConsider { get; set; }
