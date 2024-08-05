@@ -25,12 +25,16 @@ public class UpdateVacancyAnalyticsTimeTrigger
     {
         _logger.LogInformation($"Timer trigger {this.GetType().Name} fired");
 
-        var vacancies = await _analyticsAggregator.GetVacanciesWithAnalyticsInThePastHour();
-        foreach (long vacancy in vacancies)
+        var vacancyMetrics = await _analyticsAggregator.GetVacanciesWithAnalyticsInThePastHour();
+        foreach (var vacancyMetric in vacancyMetrics)
         {
             await _queue.AddMessageAsync(new VacancyAnalyticsV2QueueMessage
             {
-                VacancyReference = vacancy
+                VacancyReference = vacancyMetric.VacancyReference,
+                ViewsCount = vacancyMetric.ViewsCount,
+                ApplicationSubmittedCount = vacancyMetric.ApplicationSubmittedCount,
+                SearchResultsCount = vacancyMetric.SearchResultsCount,
+                ApplicationStartedCount = vacancyMetric.ApplicationStartedCount
             });
         }
     }

@@ -39,13 +39,13 @@ public class GenerateV2VacancyAnalyticsSummaryQueueTrigger
             return;
         }
 
-        var eventItem = JsonConvert.DeserializeObject<VacancyAnalyticsQueueMessage>(message);
+        var eventItem = JsonConvert.DeserializeObject<VacancyAnalyticsV2QueueMessage>(message);
 
         _logger.LogInformation("Starting populating V2 vacancy analytics summary for vacancy reference {eventItem.VacancyReference} into query store.");
 
         try
         {
-            var vacancyAnalyticSummary = await _analyticsAggregator.GetVacancyAnalyticEventSummaryAsync(eventItem.VacancyReference);
+            var vacancyAnalyticSummary = await _analyticsAggregator.GetVacancyAnalyticEventSummaryAsync(eventItem);
 
             await _qsWriter.UpsertVacancyAnalyticSummaryAsync(vacancyAnalyticSummary);
 
