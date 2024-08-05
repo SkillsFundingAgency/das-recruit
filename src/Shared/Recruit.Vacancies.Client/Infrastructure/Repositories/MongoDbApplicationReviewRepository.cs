@@ -206,6 +206,18 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
 
             return result;
         }
+        
+        public async Task<List<ApplicationReview>> GetWithoutDateOfBirthAsync()
+        {
+            var filter = Builders<ApplicationReview>.Filter.Eq(review => review.Application.BirthDate, DateTime.MinValue);
+            var collection = GetCollection<ApplicationReview>();
+
+            var result = await RetryPolicy.Execute(_ =>
+                    collection.Find(filter).Limit(1000).ToListAsync(),
+                new Context(nameof(GetForCandidateAsync)));
+
+            return result;
+        }
 
         public Task HardDelete(Guid applicationReviewId)
         {
