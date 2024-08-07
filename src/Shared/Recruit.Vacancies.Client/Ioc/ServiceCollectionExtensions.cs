@@ -54,6 +54,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using SFA.DAS.EAS.Account.Api.Client;
+using SFA.DAS.Http.MessageHandlers;
+using SFA.DAS.Http.TokenGenerators;
 using VacancyRuleSet = Esfa.Recruit.Vacancies.Client.Application.Rules.VacancyRules.VacancyRuleSet;
 
 namespace Esfa.Recruit.Vacancies.Client.Ioc
@@ -82,8 +84,14 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
 
         private static void RegisterProviderRelationshipsClient(IServiceCollection services, IConfiguration configuration)
         {
-            services.Configure<ProviderRelationshipApiConfiguration>(configuration.GetSection("ProviderRelationshipsApiConfiguration"));
-            services.AddTransient<IProviderRelationshipsService, ProviderRelationshipsService>();
+            var config = configuration.GetSection("ProviderRelationshipsApiConfiguration").Get<ProviderRelationshipApiConfiguration>();
+            services
+                .AddHttpClient<IProviderRelationshipsService, ProviderRelationshipsService>(options =>
+                {
+                    options.BaseAddress = new Uri(config.ApiBaseUrl);
+                    options.DefaultRequestHeaders.Add("X-Version", "1.0");
+                })
+                .AddHttpMessageHandler(() => new ManagedIdentityHeadersHandler(new ManagedIdentityTokenGenerator(config)));
         }
 
         private static void RegisterAccountApiClientDeps(IServiceCollection services)
