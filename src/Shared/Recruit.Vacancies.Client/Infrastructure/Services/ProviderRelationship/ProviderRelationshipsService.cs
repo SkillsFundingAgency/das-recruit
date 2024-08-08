@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
@@ -36,7 +37,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelation
 
             var response = await _httpClient.PostAsync("/permissions/revoke", stringContent);
 
-            if (!response.IsSuccessStatusCode)
+            if (!response.IsSuccessStatusCode || response.StatusCode != HttpStatusCode.NotModified)
             {
                 throw new InvalidOperationException($"Failed to revoke provider {ukprn} permission for account legal entity {accountLegalEntityPublicHashedId} response code: {response.StatusCode}");
             }
