@@ -20,6 +20,7 @@ using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Configuration;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.EventStore;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.HttpRequestHandlers;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Messaging;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi;
@@ -89,8 +90,8 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
                 .AddHttpClient<IProviderRelationshipsService, ProviderRelationshipsService>(options =>
                 {
                     options.BaseAddress = new Uri(config.ApiBaseUrl);
-                    options.DefaultRequestHeaders.Add("X-Version", "1.0");
                 })
+                .AddHttpMessageHandler(() => new VersionHeaderHandler())
                 .AddHttpMessageHandler(() => new ManagedIdentityHeadersHandler(new ManagedIdentityTokenGenerator(config)));
         }
 
