@@ -43,16 +43,16 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelation
             }
         }
 
-        public async Task<IEnumerable<EmployerInfo>> GetLegalEntitiesForProviderAsync(long ukprn, OperationType operation)
+        public async Task<IEnumerable<EmployerInfo>> GetLegalEntitiesForProviderAsync(long ukprn, OperationType operationType)
         {
-            var providerPermissions = await GetProviderPermissionsByUkprn(ukprn, operation);
+            var providerPermissions = await GetProviderPermissionsByUkprn(ukprn, operationType);
 
             return await GetEmployerInfosAsync(providerPermissions);
         }
 
-        public async Task<bool> HasProviderGotEmployersPermissionAsync(long ukprn, string accountHashedId, string accountLegalEntityPublicHashedId, OperationType operation)
+        public async Task<bool> HasProviderGotEmployersPermissionAsync(long ukprn, string accountPublicHashedId, string accountLegalEntityPublicHashedId, OperationType operationType)
         {
-            var permittedLegalEntities = await GetProviderPermissionsforEmployer(ukprn, accountHashedId, operation);
+            var permittedLegalEntities = await GetProviderPermissionsforEmployer(ukprn, accountPublicHashedId, operationType);
 
             if (permittedLegalEntities.Count == 0) return false;
 
@@ -83,9 +83,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelation
             return result.AccountProviderLegalEntities.Any();
         }
 
-        private async Task<List<LegalEntityDto>> GetProviderPermissionsforEmployer(long ukprn, string accountHashedId, OperationType operation)
+        private async Task<List<LegalEntityDto>> GetProviderPermissionsforEmployer(long ukprn, string accountHashedId, OperationType operationType)
         {
-            var providerPermissions = await GetProviderPermissionsByUkprn(ukprn, operation);
+            var providerPermissions = await GetProviderPermissionsByUkprn(ukprn, operationType);
 
             var permittedLegalEntities = providerPermissions.AccountProviderLegalEntities
                 .Where(l => l.AccountHashedId == accountHashedId)
@@ -94,15 +94,29 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelation
             return permittedLegalEntities;
         }
 
-        private async Task<ProviderPermissions> GetProviderPermissionsByUkprn(long ukprn, OperationType operation)
+        private async Task<ProviderPermissions> GetProviderPermissionsByUkprn(long ukprn, OperationType operationType)
         {
-            var queryData = new { Ukprn = ukprn, Operation = operation.ToString() };
+            int operation = ConvertOperation(operationType);
+            var queryData = new { Ukprn = ukprn, Operations = operation.ToString() };
             return await GetProviderPermissions(queryData);
         }
 
-        private async Task<ProviderPermissions> GetProviderPermissionsByAccountHashedId(string accountHashedId, OperationType operation)
+        private static int ConvertOperation(OperationType operationType)
         {
-            var queryData = new { AccountHashedId = accountHashedId, Operation = operation.ToString() };
+            // In PR API the operations are expected as int and the enum is incorrect in here
+            // hence we have convert to correct ints expected by PR
+            return operationType switch
+            {
+                OperationType.Recruitment => 1,
+                OperationType.RecruitmentRequiresReview => 2,
+                _ => -1
+            };
+        }
+
+        private async Task<ProviderPermissions> GetProviderPermissionsByAccountHashedId(string accountHashedId, OperationType operationType)
+        {
+            var operation = ConvertOperation(operationType);
+            var queryData = new { AccountHashedId = accountHashedId, Operations = operation.ToString() };
             return await GetProviderPermissions(queryData);
         }
 
