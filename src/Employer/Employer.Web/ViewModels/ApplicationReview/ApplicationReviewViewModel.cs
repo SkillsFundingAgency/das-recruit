@@ -47,8 +47,8 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.ApplicationReview;
         public bool HasSkills => Skills.Any();
         public bool HasNoSkills => !HasSkills;
 
-        public bool HasAdditionalQuestions => !AdditionalQuestion1.IsNullOrEmpty() || !AdditionalQuestion2.IsNullOrEmpty();
-        public bool HasAdditionalSecondQuestion => !AdditionalQuestion2.IsNullOrEmpty();
+        public bool HasAdditionalQuestions => !string.IsNullOrEmpty(AdditionalQuestion1) || !string.IsNullOrEmpty(AdditionalQuestion2);
+        public bool HasAdditionalSecondQuestion => !string.IsNullOrEmpty(AdditionalQuestion2);
         public bool HasNoSupportRequirements => string.IsNullOrWhiteSpace(Support);
         public bool IsOutcomeSuccessul => Status == ApplicationReviewStatus.Successful;
     public bool CanNotChangeOutcome => (IsApplicationSharedByProvider) ? 

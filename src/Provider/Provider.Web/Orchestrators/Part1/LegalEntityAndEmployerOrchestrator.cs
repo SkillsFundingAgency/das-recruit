@@ -103,7 +103,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
             SetFilteredOrganisationsForPage(setPage, vm, filterAndOrdered);
 
             var routeParams = new Dictionary<string, string>();
-            if (!searchTerm.IsNullOrEmpty())
+            if (!string.IsNullOrEmpty(searchTerm))
                 routeParams.Add(nameof(searchTerm), searchTerm);
 
 

@@ -111,6 +111,13 @@ jobs:
     runOnce:
       deploy:
         steps:
+        - template: azure-pipelines-templates/deploy/step/app-role-assignments.yml@das-platform-building-blocks
+          parameters:
+            ServiceConnection: ${{ parameters.AppRoleAssignmentsServiceConnection }}
+            ResourceName: $(ApiAppServiceName)
+            Tenant: $(Tenant)
+            AADGroupObjectIdArray: ${{ parameters.AADGroupObjectIdArray }}
+            IsMultiRepoCheckout: false
         - template: azure-pipelines-templates/deploy/step/app-deploy.yml@das-platform-building-blocks
           parameters:
             ServiceConnection: ${{ parameters.ServiceConnection }}
@@ -133,6 +140,13 @@ jobs:
     runOnce:
       deploy:
         steps:
+        - template: azure-pipelines-templates/deploy/step/app-role-assignments.yml@das-platform-building-blocks
+          parameters:
+            ServiceConnection: ${{ parameters.AppRoleAssignmentsServiceConnection }}
+            ResourceName: $(EmployerAppServiceName)
+            Tenant: $(Tenant)
+            AADGroupObjectIdArray: ${{ parameters.AADGroupObjectIdArray }}
+            IsMultiRepoCheckout: false
         - template: azure-pipelines-templates/deploy/step/app-deploy.yml@das-platform-building-blocks
           parameters:
             ServiceConnection: ${{ parameters.ServiceConnection }}
