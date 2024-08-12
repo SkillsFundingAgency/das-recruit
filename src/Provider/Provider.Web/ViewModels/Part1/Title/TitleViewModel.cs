@@ -15,9 +15,6 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.Part1.Title
         };
         public PartOnePageInfoViewModel PageInfo { get; set; }
         public string FormPostRouteName => VacancyId.HasValue ? RouteNames.Title_Post : RouteNames.CreateVacancy_Post;
-        public bool HasAnyVacancies { get; set; }
         public ReviewSummaryViewModel Review { get; set; } = new ReviewSummaryViewModel();
-        public string BackLink =>
-            HasAnyVacancies ? RouteNames.Vacancies_Get : RouteNames.CreateVacancy_Get;
     }
 }
