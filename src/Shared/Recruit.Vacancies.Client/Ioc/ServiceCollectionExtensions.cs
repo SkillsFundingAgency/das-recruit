@@ -86,6 +86,11 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
         private static void RegisterProviderRelationshipsClient(IServiceCollection services, IConfiguration configuration)
         {
             var config = configuration.GetSection("ProviderRelationshipsApiConfiguration").Get<ProviderRelationshipApiConfiguration>();
+            if (config == null)
+            {
+                services.AddTransient<IProviderRelationshipsService, ProviderRelationshipsService>();
+                return;
+            }
             services
                 .AddHttpClient<IProviderRelationshipsService, ProviderRelationshipsService>(options =>
                 {
