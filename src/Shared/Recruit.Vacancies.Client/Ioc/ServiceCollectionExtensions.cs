@@ -80,12 +80,12 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
             AddValidation(services);
             AddRules(services);
             RegisterMediatR(services);
-            RegisterProviderRelationshipsClient(services, configuration);
         }
 
-        private static void RegisterProviderRelationshipsClient(IServiceCollection services, IConfiguration configuration)
+        public static void RegisterProviderRelationshipsClient(this IServiceCollection services, IConfiguration configuration)
         {
             var config = configuration.GetSection("ProviderRelationshipsApiConfiguration").Get<ProviderRelationshipApiConfiguration>();
+            if (config == null) return; // QA does not need this service
             services
                 .AddHttpClient<IProviderRelationshipsService, ProviderRelationshipsService>(options =>
                 {
