@@ -113,7 +113,7 @@ paths:
 components:
   responses:
     searchResult:
-      description: The specified resource was not found
+      description: The search results response to the consumer
       content:
         application/json:
           schema:
