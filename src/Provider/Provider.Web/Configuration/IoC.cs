@@ -3,32 +3,32 @@ using Esfa.Recruit.Provider.Web.Interfaces;
 using Esfa.Recruit.Provider.Web.Mappings;
 using Esfa.Recruit.Provider.Web.Models.ApplicationReviews;
 using Esfa.Recruit.Provider.Web.Orchestrators;
-using Esfa.Recruit.Provider.Web.Orchestrators.Part1;
-using Esfa.Recruit.Provider.Web.Orchestrators.Part2;
-using Esfa.Recruit.Provider.Web.Orchestrators.Reports;
-using Esfa.Recruit.Provider.Web.RouteModel;
-using Esfa.Recruit.Provider.Web.Services;
-using Esfa.Recruit.Provider.Web.TagHelpers;
-using Esfa.Recruit.Provider.Web.ViewModels.ApplicationReview;
-using Esfa.Recruit.Provider.Web.ViewModels.ApplicationReviews;
-using Esfa.Recruit.Provider.Web.ViewModels.Part1.Wage;
-using Esfa.Recruit.Provider.Web.ViewModels.Reports.ProviderApplicationsReport;
-using Esfa.Recruit.Provider.Web.ViewModels.Validations.Fluent;
 using Esfa.Recruit.Shared.Web.Configuration;
 using Esfa.Recruit.Shared.Web.Mappers;
-using Esfa.Recruit.Shared.Web.Orchestrators;
 using Esfa.Recruit.Shared.Web.RuleTemplates;
 using Esfa.Recruit.Shared.Web.Services;
-using Esfa.Recruit.Shared.Web.ViewModels.Validations.Fluent;
 using Esfa.Recruit.Vacancies.Client.Application.Configuration;
-using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.FAA;
-using Esfa.Recruit.Vacancies.Client.Ioc;
-using FluentValidation;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Esfa.Recruit.Provider.Web.Orchestrators.Part1;
+using Esfa.Recruit.Provider.Web.Orchestrators.Part2;
+using Esfa.Recruit.Provider.Web.ViewModels.ApplicationReview;
+using Esfa.Recruit.Shared.Web.ViewModels.Validations.Fluent;
+using Esfa.Recruit.Provider.Web.Orchestrators.Reports;
+using Esfa.Recruit.Provider.Web.ViewModels.Reports.ProviderApplicationsReport;
+using Esfa.Recruit.Vacancies.Client.Ioc;
+using FluentValidation;
+using Esfa.Recruit.Provider.Web.Services;
+using Esfa.Recruit.Provider.Web.TagHelpers;
+using Esfa.Recruit.Provider.Web.ViewModels.ApplicationReviews;
+using Esfa.Recruit.Shared.Web.Orchestrators;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Esfa.Recruit.Provider.Web.ViewModels.Validations.Fluent;
+using Esfa.Recruit.Provider.Web.RouteModel;
+using Esfa.Recruit.Provider.Web.ViewModels.Part1.Wage;
 
 namespace Esfa.Recruit.Provider.Web.Configuration
 {
@@ -41,7 +41,6 @@ namespace Esfa.Recruit.Provider.Web.Configuration
             services.AddSingleton(serviceParameters);
 
             services.AddRecruitStorageClient(configuration);
-            services.RegisterProviderRelationshipsClient(configuration);
 
             //Configuration
             services.Configure<ApplicationInsightsConfiguration>(configuration.GetSection("ApplicationInsights"));
@@ -126,7 +125,7 @@ namespace Esfa.Recruit.Provider.Web.Configuration
             services.AddTransient<VacancyPreviewOrchestrator>();
             services.AddTransient<VacancyViewOrchestrator>();
             services.AddTransient<IWageOrchestrator, WageOrchestrator>();
-            services.AddTransient<ICustomWageOrchestrator, CustomWageOrchestrator>();
+            services.AddTransient<ICustomWageOrchestrator,CustomWageOrchestrator>();
             services.AddTransient<CloseVacancyOrchestrator>();
             services.AddTransient<EditVacancyDatesOrchestrator>();
             services.AddTransient<IApplicationReviewOrchestrator, ApplicationReviewOrchestrator>();

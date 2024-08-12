@@ -37,10 +37,9 @@ namespace Esfa.Recruit.Employer.Web.Configuration
         public static void AddIoC(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddRecruitStorageClient(configuration);
-            services.RegisterProviderRelationshipsClient(configuration);
 
             services.AddSingleton(new ServiceParameters(VacancyType.Apprenticeship.ToString()));
-
+            
             //Configuration
             services.Configure<ApplicationInsightsConfiguration>(configuration.GetSection("ApplicationInsights"));
             services.Configure<ExternalLinksConfiguration>(configuration.GetSection("ExternalLinks"));
@@ -54,7 +53,7 @@ namespace Esfa.Recruit.Employer.Web.Configuration
             services.AddFeatureManagement(configuration.GetSection("Features"));
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>(); // Used by NLog to log out traceidentifier value.
-
+            
             RegisterServiceDeps(services, configuration);
 
             RegisterFluentValidators(services);
@@ -157,7 +156,7 @@ namespace Esfa.Recruit.Employer.Web.Configuration
 
         private static void RegisterDynamicConfigurationDeps(IServiceCollection services)
         {
-            services.AddSingleton(x =>
+            services.AddSingleton(x => 
             {
                 var svc = x.GetService<IConfigurationReader>();
                 return svc.GetAsync<EmployerRecruitSystemConfiguration>("EmployerRecruitSystem").Result;

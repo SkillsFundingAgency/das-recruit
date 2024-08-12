@@ -31,8 +31,7 @@ namespace SFA.DAS.Recruit.Api
             services.Configure<RecruitConfiguration>(Configuration.GetSection("Recruit"));
             services.Configure<AzureActiveDirectoryConfiguration>(Configuration.GetSection("AzureAd"));
 
-            services.AddScoped(provider =>
-            {
+            services.AddScoped(provider => {
                 var httpContext = provider.GetRequiredService<IHttpContextAccessor>().HttpContext;
 
                 if (httpContext.Request.RouteValues["Controller"].ToString()!.Equals("Vacancies", StringComparison.CurrentCultureIgnoreCase)
@@ -48,7 +47,7 @@ namespace SFA.DAS.Recruit.Api
             var azureAdConfig = Configuration
                 .GetSection("AzureAd")
                 .Get<AzureActiveDirectoryConfiguration>();
-
+            
             var policies = new Dictionary<string, string>
             {
                 {PolicyNames.Default, "Default"},
@@ -63,8 +62,7 @@ namespace SFA.DAS.Recruit.Api
             RegisterDasEncodingService(services, Configuration);
 
             services.AddRecruitStorageClient(Configuration);
-            services.RegisterProviderRelationshipsClient(Configuration);
-
+            
             MongoDbConventions.RegisterMongoConventions();
 
             services.AddHealthChecks()
@@ -86,14 +84,14 @@ namespace SFA.DAS.Recruit.Api
                 {
                     options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
                 });
-
+            
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "RecruitAPI", Version = "v1" });
-
+                
             });
         }
-
+        
         private static void RegisterDasEncodingService(IServiceCollection services, IConfiguration configuration)
         {
             var dasEncodingConfig = new EncodingConfig { Encodings = [] };
