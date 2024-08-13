@@ -182,35 +182,6 @@ jobs:
             AppServiceName: $(ProviderAppServiceName)
             DeploymentPackagePath: $(Pipeline.Workspace)/Recruit/Provider.Web.Zip
 
-- deployment: DeployTraineeshipProviderWeb
-  dependsOn:
-  - DeployInfrastructure
-  - DeployApi
-  workspace:
-    clean: all
-  pool:
-    name: DAS - Continuous Deployment Agents
-  variables:
-    TraineeshipProviderAppServiceName: $[ dependencies.DeployInfrastructure.outputs['DeployInfrastructure.ArmOutputs${{ parameters.Environment }}.TraineeshipProviderAppServiceName'] ]
-    ResourceGroupName: $[ dependencies.DeployInfrastructure.outputs['DeployInfrastructure.ArmOutputs${{ parameters.Environment }}.ResourceGroupName'] ]
-  environment: ${{ parameters.Environment }}
-  strategy:
-    runOnce:
-      deploy:
-        steps:
-        - template: azure-pipelines-templates/deploy/step/app-role-assignments.yml@das-platform-building-blocks
-          parameters:
-            ServiceConnection: ${{ parameters.AppRoleAssignmentsServiceConnection }}
-            ResourceName: $(TraineeshipProviderAppServiceName)
-            Tenant: $(Tenant)
-            AADGroupObjectIdArray: ${{ parameters.AADGroupObjectIdArray }}
-            IsMultiRepoCheckout: false
-        - template: azure-pipelines-templates/deploy/step/app-deploy.yml@das-platform-building-blocks
-          parameters:
-            ServiceConnection: ${{ parameters.ServiceConnection }}
-            AppServiceName: $(TraineeshipProviderAppServiceName)
-            DeploymentPackagePath: $(Pipeline.Workspace)/Recruit/Provider.Web.Zip
-
 - deployment: DeployQAWeb
   dependsOn:
   - DeployInfrastructure
