@@ -48,7 +48,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
         {
             var applicationReview = await _applicationReviewRepository.GetAsync(message.ApplicationReviewId);
 
-            if(applicationReview.CanReview == false)
+            if (applicationReview.CanReview == false)
             {
                 _logger.LogWarning("Cannot review ApplicationReviewId:{applicationReviewId} as not in correct state", applicationReview.Id);
                 return false;
@@ -79,7 +79,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 
             await _applicationReviewRepository.UpdateAsync(applicationReview);
 
-            if (!applicationReview.Application.IsFaaV2Application)
+            if (!applicationReview.Application.IsFaaV2Application && (applicationReview.Status == ApplicationReviewStatus.Successful || applicationReview.Status == ApplicationReviewStatus.Unsuccessful))
             {
                 await _messaging.PublishEvent(new ApplicationReviewedEvent
                 {
