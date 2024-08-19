@@ -55,41 +55,6 @@ paths:
         '200':
           $ref: '#/components/responses/searchResult'            
   
-  /employers/{employerId}/candidates/{candidateId}/status/{status}:
-    patch:
-      summary: Sets the status of the candidate
-      parameters:
-        - name: employerId
-          in: path
-          required: true
-          description: The employer id to return
-          schema:
-            type : string
-        - name: candidateId
-          in: path
-          required: true
-          description: Parameter description in CommonMark or HTML.
-          schema:
-            type : string
-        - name: status
-          in: path
-          required: true
-          description: The status to update the candidate to
-          schema:
-            $ref:  "#/components/schemas/candidateStatus"
-      responses: 
-        '200':
-          description: OK
-          headers:
-            Location:
-              description: The URI of the resource being updated
-              schema:
-                type: string
-        
-        '401':
-          $ref: '#/components/responses/unauthorized'
-        '404':
-          $ref: '#/components/responses/notFound'
   /employers/{employerId}/candidates/{candidateId}:
     get:
       summary: Returns a candidate by their unique id
