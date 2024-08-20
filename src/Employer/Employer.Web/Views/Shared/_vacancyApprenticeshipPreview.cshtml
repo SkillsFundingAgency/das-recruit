@@ -8,7 +8,7 @@
     <p class="govuk-body-l faa-vacancy__organisation">@Model.EmployerName</p>
     <p class="govuk-body-l faa-vacancy__location">
         <span itemprop="jobLocation">
-            {Model.WorkLocation.City}, {Model.WorkLocation.Postcode}
+            @Model.EmployerAddressElements.SkipLast(1).LastOrDefault(), @Model.EmployerAddressElements.LastOrDefault()
         </span>
     </p>
     <p class="govuk-body faa-vacancy__closing-date">Closes on @Model.ClosingDate</p>
@@ -87,15 +87,19 @@
                             @Model.WageText
                             <p class="govuk-body govuk-!-font-size-16 govuk-!-margin-0">
                                 <a href="https://www.gov.uk/national-minimum-wage-rates" class="govuk-link"
-                                    rel="noreferrer noopener" target="_blank">
+                                   rel="noreferrer noopener" target="_blank">
                                     Minimum wage rates (opens in new
                                     tab)
                                 </a>
                             </p>
-                            <p class="govuk-body govuk-!-padding-top-3">
-                                The pay may be negotiated and may rise after a probation period
-                                has been successfully completed.
-                            </p>
+                            @if (Model.HasWageInfo)
+                            {
+                                <p class="govuk-body govuk-!-padding-top-3">
+                                    The pay may be negotiated and may rise after a probation period
+                                    has been successfully completed.
+                                </p>    
+                            }
+                            
                         </dd>
                     </div>
                     <div class="govuk-summary-list__row">
@@ -178,7 +182,7 @@
                 <p>@Model.ProviderName</p>
                 <h3 class="govuk-heading-s">Your training course</h3>
                 <p class="govuk-body govuk-!-margin-bottom-1">@Model.TrainingTitle</p>
-                <p class="gov-body das-!-color-dark-grey">Equal to {COURSE_MAPPER}</p>
+                <p class="gov-body das-!-color-dark-grey">Equal to @Model.EducationLevelName</p>
                 <details class="govuk-details govuk-!-margin-top-0" data-module="govuk-details">
                     <summary class="govuk-details__summary">
                         <span class="govuk-details__summary-text">
@@ -186,7 +190,22 @@
                         </span>
                     </summary>
                     <div class="govuk-details__text">
-                        {COURSE_CONTENTS}
+                        @if (Model.CourseSkills is { Count: > 0 })
+                        {
+                            foreach (var skills in Model.CourseSkills)
+                            {
+                                <li>@skills</li>
+                                <div class="govuk-!-padding-bottom-3"></div>
+                            }
+                        }
+                        @if (Model.CourseCoreDuties is { Count: > 0 })
+                        {
+                            foreach (var skills in Model.CourseCoreDuties)
+                            {
+                                <li>@skills</li>
+                                <div class="govuk-!-padding-bottom-3"></div>
+                            }
+                        }
                     </div>
                 </details>
                 <h3 class="govuk-heading-s">Your training plan</h3>
@@ -205,7 +224,6 @@
             </section>
             <section class="faa-vacancy__section" id="requirements">
                 <h2 class="govuk-heading-m">Requirements</h2>
-                {QUALIFICATIONS_NEED_SPLITTING}
                 @if (Model.Qualifications.Any())
                 {
                     <h3 class="govuk-heading-s">Essential qualifications</h3>
@@ -215,6 +233,16 @@
                             <li>@qualification</li>
                         }
                     </ul>
+                }
+                @if (Model.QualificationsDesired.Any())
+                {
+                <h3 class="govuk-heading-s">Desired qualifications</h3>
+                <ul class="govuk-list govuk-list--bullet">
+                    @foreach (var qualification in Model.QualificationsDesired)
+                    {
+                    <li>@qualification</li>
+                    }
+                </ul>
                 }
                 <p class="govuk-body">
                     Let the company know about other relevant qualifications and industry experience you have. They can
@@ -277,7 +305,14 @@
                 <p>
                     The contact for this apprenticeship is:
                 </p>
-                {CONTACT_DETAILS}
+                <p class="govuk-body govuk-!-margin-bottom-0">@Model.EmployerName</p>
+                <p class="govuk-body govuk-!-margin-bottom-0">@Model.EmployerContactName</p>
+                <p class="govuk-body govuk-!-margin-bottom-0">@Model.EmployerContactEmail</p>
+                <p class="govuk-body">@Model.EmployerContactTelephone</p>
+                <p class="govuk-body govuk-!-margin-top-4">
+                    The reference code for this apprenticeship is
+                    @Model.VacancyReferenceNumber.
+                </p>
             </section>
             <section class="faa-vacancy__section faa-vacancy__section--last" id="apply">
                 <h2 class="govuk-heading-m">Apply now</h2>
