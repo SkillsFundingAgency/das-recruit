@@ -16,6 +16,10 @@ public class ApprenticeshipStandard
 
     public static implicit operator ApprenticeshipStandard(GetVacancyPreviewApiResponse source)
     {
+        if (source == null)
+        {
+            return null;
+        }
         return new ApprenticeshipStandard
         {
             ApprenticeshipLevel = source.ApprenticeshipLevel,
