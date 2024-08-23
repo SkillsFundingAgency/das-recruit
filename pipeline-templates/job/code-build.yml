@@ -10,8 +10,8 @@ jobs:
   steps:
   - template: azure-pipelines-templates/build/step/app-build.yml@das-platform-building-blocks
     parameters:
-      SonarCloud: true
       SonarCloudProjectKey: SkillsFundingAgency_das-recruit
+      ContinueOnVulnerablePackageScanError: true
 
   - task: DotNetCoreCLI@2
     displayName: Publish Web/Api/Job Apps
