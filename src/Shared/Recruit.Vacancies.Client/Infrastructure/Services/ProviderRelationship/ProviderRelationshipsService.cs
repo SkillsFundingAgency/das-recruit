@@ -43,9 +43,14 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelation
             }
         }
 
-        public async Task<IEnumerable<EmployerInfo>> GetLegalEntitiesForProviderAsync(long ukprn, OperationType operationType)
+        public async Task<IEnumerable<EmployerInfo>> GetLegalEntitiesForProviderAsync(long ukprn, params OperationType[] operationTypes)
         {
-            var providerPermissions = await GetProviderPermissionsByUkprn(ukprn, operationType);
+            var operations = operationTypes.Select(o => ConvertOperation(o));
+            var _operations = string.Join('&', operations.Select(o => $"operations={o}"));
+
+            var uri = new Uri($"accountproviderlegalentities?ukprn={ukprn}&{_operations}", UriKind.Relative);
+
+            var providerPermissions = await GetPermissionData(uri);
 
             return await GetEmployerInfosAsync(providerPermissions);
         }
@@ -123,7 +128,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelation
         private async Task<ProviderPermissions> GetProviderPermissions(object queryData)
         {
             var uri = new Uri(AddQueryString("/accountproviderlegalentities", queryData), UriKind.Relative);
+            return await GetPermissionData(uri);
+        }
 
+        private async Task<ProviderPermissions> GetPermissionData(Uri uri)
+        {
             try
             {
                 var response = await _httpClient.GetAsync(uri);
