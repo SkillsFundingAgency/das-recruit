@@ -28,7 +28,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelation
             _logger = logger;
             _employerAccountProvider = employerAccountProvider;
             _httpClient = httpClient;
-
         }
 
         public async Task RevokeProviderPermissionToRecruitAsync(long ukprn, string accountLegalEntityPublicHashedId)
@@ -96,33 +95,32 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelation
 
         private async Task<ProviderPermissions> GetProviderPermissionsByUkprn(long ukprn, OperationType operationType)
         {
-            int operation = ConvertOperation(operationType);
-            var queryData = new { Ukprn = ukprn, Operations = operation.ToString() };
+            var queryData = InitialiseQueryDataWithOperation(operationType);
+            queryData.Add(new("Ukprn", ukprn.ToString()));
             return await GetProviderPermissions(queryData);
-        }
-
-        private static int ConvertOperation(OperationType operationType)
-        {
-            // In PR API the operations are expected as int and the enum is incorrect in here
-            // hence we have convert to correct ints expected by PR
-            return operationType switch
-            {
-                OperationType.Recruitment => 1,
-                OperationType.RecruitmentRequiresReview => 2,
-                _ => -1
-            };
         }
 
         private async Task<ProviderPermissions> GetProviderPermissionsByAccountHashedId(string accountHashedId, OperationType operationType)
         {
-            var operation = ConvertOperation(operationType);
-            var queryData = new { AccountHashedId = accountHashedId, Operations = operation.ToString() };
+            var queryData = InitialiseQueryDataWithOperation(operationType);
+            queryData.Add(new("AccountHashedId", accountHashedId));
             return await GetProviderPermissions(queryData);
         }
 
-        private async Task<ProviderPermissions> GetProviderPermissions(object queryData)
+        private List<KeyValuePair<string, string>> InitialiseQueryDataWithOperation(OperationType operationType)
         {
-            var uri = new Uri(AddQueryString("/accountproviderlegalentities", queryData), UriKind.Relative);
+            var queryData = new List<KeyValuePair<string, string>>();
+            queryData.Add(new KeyValuePair<string, string>("Operations", operationType.ToString()));
+            if (operationType == OperationType.RecruitmentRequiresReview)
+            {
+                queryData.Add(new KeyValuePair<string, string>("Operations", OperationType.Recruitment.ToString()));
+            }
+            return queryData;
+        }
+
+        private async Task<ProviderPermissions> GetProviderPermissions(List<KeyValuePair<string, string>> queryData)
+        {
+            var uri = new Uri(QueryHelpers.AddQueryString("/accountproviderlegalentities", queryData), UriKind.Relative);
 
             try
             {
@@ -187,12 +185,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelation
                 employerInfos.Add(employerInfo);
             }
             return employerInfos;
-        }
-
-        private string AddQueryString(string uri, object queryData)
-        {
-            var queryDataDictionary = queryData.GetType().GetProperties().ToDictionary(x => x.Name, x => x.GetValue(queryData)?.ToString() ?? string.Empty);
-            return QueryHelpers.AddQueryString(uri, queryDataDictionary);
         }
     }
 }
