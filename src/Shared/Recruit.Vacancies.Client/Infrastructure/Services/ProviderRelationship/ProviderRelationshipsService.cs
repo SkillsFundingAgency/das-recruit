@@ -16,6 +16,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelation
 {
     public class ProviderRelationshipsService : IProviderRelationshipsService
     {
+        private const string OperationsQueryStringKey = "Operations";
+        private const string UkprnQueryStringKey = "Ukprn";
         private readonly ILogger<ProviderRelationshipsService> _logger;
         private readonly IEmployerAccountProvider _employerAccountProvider;
         private readonly HttpClient _httpClient;
@@ -51,7 +53,16 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelation
 
         public async Task<bool> HasProviderGotEmployersPermissionAsync(long ukprn, string accountPublicHashedId, string accountLegalEntityPublicHashedId, OperationType operationType)
         {
-            var permittedLegalEntities = await GetProviderPermissionsforEmployer(ukprn, accountPublicHashedId, operationType);
+            var queryData = new List<KeyValuePair<string, string>>
+            {
+                new(OperationsQueryStringKey, operationType.ToString()),
+                new(UkprnQueryStringKey, ukprn.ToString())
+            };
+            var providerPermissions = await GetProviderPermissions(queryData);
+
+            var permittedLegalEntities = providerPermissions.AccountProviderLegalEntities
+                .Where(l => l.AccountHashedId == accountPublicHashedId)
+                .ToList();
 
             if (permittedLegalEntities.Count == 0) return false;
 
@@ -82,21 +93,10 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelation
             return result.AccountProviderLegalEntities.Any();
         }
 
-        private async Task<List<LegalEntityDto>> GetProviderPermissionsforEmployer(long ukprn, string accountHashedId, OperationType operationType)
-        {
-            var providerPermissions = await GetProviderPermissionsByUkprn(ukprn, operationType);
-
-            var permittedLegalEntities = providerPermissions.AccountProviderLegalEntities
-                .Where(l => l.AccountHashedId == accountHashedId)
-                .ToList();
-
-            return permittedLegalEntities;
-        }
-
         private async Task<ProviderPermissions> GetProviderPermissionsByUkprn(long ukprn, OperationType operationType)
         {
             var queryData = InitialiseQueryDataWithOperation(operationType);
-            queryData.Add(new("Ukprn", ukprn.ToString()));
+            queryData.Add(new(UkprnQueryStringKey, ukprn.ToString()));
             return await GetProviderPermissions(queryData);
         }
 
@@ -110,10 +110,10 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelation
         private static List<KeyValuePair<string, string>> InitialiseQueryDataWithOperation(OperationType operationType)
         {
             var queryData = new List<KeyValuePair<string, string>>();
-            queryData.Add(new KeyValuePair<string, string>("Operations", operationType.ToString()));
+            queryData.Add(new KeyValuePair<string, string>(OperationsQueryStringKey, operationType.ToString()));
             if (operationType == OperationType.RecruitmentRequiresReview)
             {
-                queryData.Add(new KeyValuePair<string, string>("Operations", OperationType.Recruitment.ToString()));
+                queryData.Add(new KeyValuePair<string, string>(OperationsQueryStringKey, OperationType.Recruitment.ToString()));
             }
             return queryData;
         }
