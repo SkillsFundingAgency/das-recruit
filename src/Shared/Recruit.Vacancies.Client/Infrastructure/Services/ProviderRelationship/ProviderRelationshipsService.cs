@@ -107,7 +107,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelation
             return await GetProviderPermissions(queryData);
         }
 
-        private List<KeyValuePair<string, string>> InitialiseQueryDataWithOperation(OperationType operationType)
+        private static List<KeyValuePair<string, string>> InitialiseQueryDataWithOperation(OperationType operationType)
         {
             var queryData = new List<KeyValuePair<string, string>>();
             queryData.Add(new KeyValuePair<string, string>("Operations", operationType.ToString()));

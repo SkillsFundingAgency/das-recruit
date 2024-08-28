@@ -53,7 +53,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomVali
                     {
                         ErrorCode = "49",
                         CustomState = VacancyRuleSet.MinimumWage,
-                        PropertyName = $"{nameof(Wage)}.{nameof(Wage.FixedWageYearlyAmount)}"  
+                        PropertyName = $"{nameof(Wage)}.{nameof(Wage.FixedWageYearlyAmount)}"
                     };
                     context.AddFailure(failure);
                 }
@@ -100,7 +100,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomVali
                         PropertyName = nameof(Vacancy.ProgrammeId),
                     };
                     context.AddFailure(failure);
-                    
+
                 }
             });
         }
@@ -120,18 +120,18 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomVali
                     };
                     context.AddFailure(failure);
                 }
-                
+
                 var allProgrammes = await apprenticeshipProgrammesProvider.GetApprenticeshipProgrammesAsync();
 
                 var matchingProgramme = allProgrammes.SingleOrDefault(x => x.Id.Equals(vacancy.ProgrammeId, StringComparison.InvariantCultureIgnoreCase));
 
                 if ((matchingProgramme.LastDateStarts != null && matchingProgramme.LastDateStarts < vacancy.StartDate) ||
-                    (matchingProgramme.EffectiveTo !=null && matchingProgramme.EffectiveTo < vacancy.StartDate))
+                    (matchingProgramme.EffectiveTo != null && matchingProgramme.EffectiveTo < vacancy.StartDate))
                 {
-                    var dateToDisplay = matchingProgramme.LastDateStarts.HasValue 
+                    var dateToDisplay = matchingProgramme.LastDateStarts.HasValue
                         ? matchingProgramme.LastDateStarts.Value.AsGdsDate()
                         : matchingProgramme.EffectiveTo.Value.AsGdsDate();
-                    
+
                     var message = $"Start date must be on or before {dateToDisplay} as this is the last day for new starters for the training course you have selected. If you don’t want to change the start date, you can change the training course.";
                     var failure = new ValidationFailure(string.Empty, message)
                     {
@@ -187,10 +187,10 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomVali
                 if (trainingProvider.Ukprn != null)
                 {
                     var organisation = await blockedOrganisationRep.GetByOrganisationIdAsync(trainingProvider.Ukprn.Value.ToString());
-                    if(organisation == null || organisation.BlockedStatus != BlockedStatus.Blocked)
+                    if (organisation == null || organisation.BlockedStatus != BlockedStatus.Blocked)
                         return;
                 }
-                
+
                 var failure = new ValidationFailure(nameof(Vacancy.TrainingProvider), $"{trainingProvider.Name} can no longer be used as a training provider")
                 {
                     ErrorCode = ErrorCodes.TrainingProviderMustNotBeBlocked,
@@ -207,11 +207,11 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomVali
                 if (vacancy.OwnerType != OwnerType.Provider)
                     return;
 
-                var hasPermission = await providerRelationshipService.HasProviderGotEmployersPermissionAsync(vacancy.TrainingProvider.Ukprn.Value, vacancy.EmployerAccountId, vacancy.AccountLegalEntityPublicHashedId, OperationType.Recruitment);
 
+                var hasPermission = await providerRelationshipService.HasProviderGotEmployersPermissionAsync(vacancy.TrainingProvider.Ukprn.Value, vacancy.EmployerAccountId, vacancy.AccountLegalEntityPublicHashedId, OperationType.RecruitmentRequiresReview);
                 if (hasPermission)
                     return;
-                
+
                 var failure = new ValidationFailure(string.Empty, "Training provider does not have permission to create vacancies for this employer")
                 {
                     ErrorCode = ErrorCodes.TrainingProviderMustHaveEmployerPermission,
@@ -224,12 +224,12 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomVali
 
         internal static IRuleBuilderOptions<Vacancy, T> RunCondition<T>(this IRuleBuilderOptions<Vacancy, T> context, VacancyRuleSet condition)
         {
-            return context.Configure(c=>c.ApplyCondition(x => x.CanRunValidator(condition)));
+            return context.Configure(c => c.ApplyCondition(x => x.CanRunValidator(condition)));
         }
-        
+
         internal static IRuleBuilderInitial<Vacancy, T> RunCondition<T>(this IRuleBuilderInitial<Vacancy, T> context, VacancyRuleSet condition)
         {
-            return context.Configure(c=>c.ApplyCondition(x => x.CanRunValidator(condition)));
+            return context.Configure(c => c.ApplyCondition(x => x.CanRunValidator(condition)));
         }
 
         private static bool CanRunValidator<T>(this ValidationContext<T> context, VacancyRuleSet validationToCheck)

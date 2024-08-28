@@ -58,7 +58,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
             MockTrainingProviderSummaryProvider.Setup(p => p.IsTrainingProviderMainOrEmployerProfile(12345678)).ReturnsAsync(true);
 
             MockBlockedOrganisationRepo.Setup(b => b.GetByOrganisationIdAsync("12345678"))
-                .ReturnsAsync(new BlockedOrganisation {BlockedStatus = BlockedStatus.Blocked});
+                .ReturnsAsync(new BlockedOrganisation { BlockedStatus = BlockedStatus.Blocked });
 
             var result = Validator.Validate(vacancy, VacancyRuleSet.TrainingProvider);
 
@@ -190,7 +190,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
             MockTrainingProviderSummaryProvider.Setup(p => p.GetAsync(ukprn)).ReturnsAsync(new TrainingProviderSummary());
             MockTrainingProviderSummaryProvider.Setup(p => p.IsTrainingProviderMainOrEmployerProfile(ukprn)).ReturnsAsync(true);
 
-            MockProviderRelationshipsService.Setup(p => p.HasProviderGotEmployersPermissionAsync(ukprn, employerAccountId, accountLegalEntityPublicHashedId, OperationType.Recruitment))
+            MockProviderRelationshipsService.Setup(p => p.HasProviderGotEmployersPermissionAsync(ukprn, employerAccountId, accountLegalEntityPublicHashedId, OperationType.RecruitmentRequiresReview))
                 .ReturnsAsync(true);
 
             var result = Validator.Validate(vacancy, VacancyRuleSet.TrainingProvider);

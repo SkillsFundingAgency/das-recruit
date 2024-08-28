@@ -39,13 +39,13 @@ namespace Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Provider
             {
                 _logger.LogInformation($"Processing {nameof(SetupProviderEvent)} for Ukprn: {{Ukprn}}", eventData.Ukprn);
 
-                var employerInfosTask = _providerRelationshipService.GetLegalEntitiesForProviderAsync(eventData.Ukprn, OperationType.Recruitment);
+                var employerInfosTask = _providerRelationshipService.GetLegalEntitiesForProviderAsync(eventData.Ukprn, OperationType.RecruitmentRequiresReview);
                 var providerAgreementTask = _pasAccountProvider.HasAgreementAsync(eventData.Ukprn);
 
                 await Task.WhenAll(employerInfosTask, providerAgreementTask);
 
                 var employerInfos = employerInfosTask.Result;
-                
+
                 foreach (var employerInfo in employerInfos)
                 {
                     await _client.SetupEmployerAsync(employerInfo.EmployerAccountId);
