@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo;
@@ -379,7 +380,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
 
             if (!string.IsNullOrEmpty(searchTerm))
             {
-                document.Add("_id.searchField", new BsonRegularExpression($"/{searchTerm.ToLower()}/"));
+                document.Add("_id.searchField", new BsonRegularExpression($"/{Regex.Escape(searchTerm.ToLower())}/"));
             }
 
             return document;

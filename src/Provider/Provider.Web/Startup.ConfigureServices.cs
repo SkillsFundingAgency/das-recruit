@@ -77,7 +77,7 @@ namespace Esfa.Recruit.Provider.Web
             });
 
             services.AddMvcService(_hostingEnvironment, _loggerFactory, _configuration);
-            services.AddDataProtection(_configuration, _hostingEnvironment, applicationName: "das-provider-recruit-web");
+            services.AddDataProtection(_configuration, _hostingEnvironment, applicationName: "das-provider");
 
             services.AddApplicationInsightsTelemetry(_configuration);
 
