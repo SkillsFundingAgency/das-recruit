@@ -79,6 +79,13 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 
             await _applicationReviewRepository.UpdateAsync(applicationReview);
 
+            if (applicationReview.Status is not (ApplicationReviewStatus.Successful or ApplicationReviewStatus.Unsuccessful))
+            {
+                return false;
+            }
+
+            var vacancy = await _vacancyRepository.GetVacancyAsync(applicationReview.VacancyReference);
+            
             if (!applicationReview.Application.IsFaaV2Application)
             {
                 await _messaging.PublishEvent(new ApplicationReviewedEvent
@@ -95,13 +102,14 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
                 {
                     VacancyReference = applicationReview.VacancyReference,
                     Status = applicationReview.Status.ToString(),
-                    CandidateFeedback = applicationReview.CandidateFeedback
+                    CandidateFeedback = applicationReview.CandidateFeedback,
+                    VacancyTitle = vacancy.Title,
+                    VacancyEmployerName = vacancy.EmployerName,
+                    VacancyCity = vacancy.EmployerLocation.AddressLine4 ?? vacancy.EmployerLocation.AddressLine3 ?? vacancy.EmployerLocation.AddressLine2 ?? vacancy.EmployerLocation.AddressLine1 ?? "Unknown",
+                    VacancyPostcode = vacancy.EmployerLocation.Postcode
                 }));
             
-
-            var shouldMakeOthersUnsuccessful = await CheckForPositionsFilledAsync(message.Outcome, applicationReview.VacancyReference);
-
-            return shouldMakeOthersUnsuccessful;
+            return await CheckForPositionsFilledAsync(message.Outcome,vacancy, applicationReview.VacancyReference);
         }
 
         private void Validate(ApplicationReview applicationReview)
@@ -113,12 +121,12 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             }
         }
 
-        private async Task<bool> CheckForPositionsFilledAsync(ApplicationReviewStatus? status, long vacancyReference)
+        private async Task<bool> CheckForPositionsFilledAsync(ApplicationReviewStatus? status, Vacancy vacancy, long vacancyReference)
         {
             var shouldMakeOthersUnsuccessful = false;
             if (status == ApplicationReviewStatus.Successful)
             {
-                var vacancy = await _vacancyRepository.GetVacancyAsync(vacancyReference);
+                
 
                 var successfulApplications = await _applicationReviewRepository.GetByStatusAsync(vacancyReference, ApplicationReviewStatus.Successful);
 
