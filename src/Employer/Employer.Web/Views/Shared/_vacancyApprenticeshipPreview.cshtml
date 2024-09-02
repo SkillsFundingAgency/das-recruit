@@ -95,11 +95,16 @@
                             @if (Model.HasWageInfo)
                             {
                                 <p class="govuk-body govuk-!-padding-top-3">
-                                    The pay may be negotiated and may rise after a probation period
-                                    has been successfully completed.
+                                    @Html.Raw(Model.WageInfo)
                                 </p>    
                             }
-                            
+                            else
+                            {
+                            <p class="govuk-body govuk-!-padding-top-3">
+                                    The pay may be negotiated and may rise after a probation period
+                                    has been successfully completed.
+                                </p>
+                            }
                         </dd>
                     </div>
                     <div class="govuk-summary-list__row">
@@ -221,6 +226,13 @@
                 {
                     <p>@Html.Raw(Model.TrainingDescription)</p>
                 }
+                @if (!string.IsNullOrEmpty(Model.AdditionalTrainingDescription))
+                {
+                    <h3 class="govuk-heading-s">More training information</h3>
+                    <p class="govuk-body">
+                        @Html.Raw(Model.AdditionalTrainingDescription)
+                    </p>
+                }
             </section>
             <section class="faa-vacancy__section" id="requirements">
                 <h2 class="govuk-heading-m">Requirements</h2>
@@ -274,7 +286,15 @@
                     </p>
                 }
 
-
+                @if (!string.IsNullOrEmpty(Model.CompanyBenefitsInformation))
+                {
+                    <h3 class="govuk-heading-s">Company Benefits</h3>
+                    <p class="govuk-body">
+                        @Html.Raw(Model.CompanyBenefitsInformation)    
+                    </p>
+                }
+                
+                
                 @if (Model.IsDisabilityConfident)
                 {
                     <h3 class="govuk-heading-s">Disability Confident</h3>
