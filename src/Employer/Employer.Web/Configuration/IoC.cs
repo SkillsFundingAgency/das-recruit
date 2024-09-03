@@ -1,5 +1,4 @@
-﻿using System;
-using Employer.Web.Configuration;
+﻿using Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Filters;
 using Esfa.Recruit.Employer.Web.Interfaces;
 using Esfa.Recruit.Employer.Web.Mappings;
@@ -46,7 +45,6 @@ namespace Esfa.Recruit.Employer.Web.Configuration
             services.Configure<ExternalLinksConfiguration>(configuration.GetSection("ExternalLinks"));
             services.AddSingleton<ManageApprenticeshipsLinkHelper>();
 
-            services.Configure<AuthenticationConfiguration>(configuration.GetSection("Authentication"));
             services.Configure<GoogleAnalyticsConfiguration>(configuration.GetSection("GoogleAnalytics"));
             services.Configure<FaaConfiguration>(configuration.GetSection("FaaConfiguration"));
             services.Configure<ZenDeskConfiguration>(configuration.GetSection("ZenDesk"));
@@ -71,8 +69,7 @@ namespace Esfa.Recruit.Employer.Web.Configuration
 
         private static void RegisterServiceDeps(IServiceCollection services, IConfiguration configuration)
         {
-            services.AddSingleton(new RecruitConfiguration(configuration.GetValue<string>("RecruitConfiguration:EmployerAccountId"), configuration["RecruitConfiguration:UseGovSignIn"] != null && configuration["RecruitConfiguration:UseGovSignIn"]
-                .Equals("true", StringComparison.CurrentCultureIgnoreCase)));
+            services.AddSingleton(new RecruitConfiguration(configuration.GetValue<string>("RecruitConfiguration:EmployerAccountId")));
             services.AddTransient<IGeocodeImageService>(_ => new GoogleMapsGeocodeImageService(configuration.GetValue<string>("RecruitConfiguration:GoogleMapsPrivateKey")));
             services.AddTransient<IReviewSummaryService, ReviewSummaryService>();
             services.AddTransient<ILegalEntityAgreementService, LegalEntityAgreementService>();
@@ -86,7 +83,6 @@ namespace Esfa.Recruit.Employer.Web.Configuration
         private static void RegisterFluentValidators(IServiceCollection services)
         {
             services.AddSingleton<IValidator<ApplicationReviewEditModel>, ApplicationReviewEditModelValidator>();
-            services.AddSingleton<IValidator<WageExtraInformationViewModel>, WageExtraInformationModelValidator>();
             services.AddSingleton<IValidator<WageEditModel>, WageEditModelValidator>();
             services.AddSingleton<IValidator<CompetitiveWageEditModel>, CompetitiveWageEditModelValidator>();
             services.AddSingleton<IValidator<ApplicationReviewStatusConfirmationEditModel>, ApplicationReviewStatusConfirmationEditModelValidator>();
@@ -119,6 +115,8 @@ namespace Esfa.Recruit.Employer.Web.Configuration
             services.AddTransient<ShortDescriptionOrchestrator>();
             services.AddTransient<TrainingOrchestrator>();
             services.AddTransient<VacancyDescriptionOrchestrator>();
+            services.AddTransient<VacancyWorkDescriptionOrchestrator>();
+            services.AddTransient<VacancyHowWillTheApprenticeTrainOrchestrator>();
             services.AddTransient<IWageOrchestrator, WageOrchestrator>();
             services.AddTransient<CustomWageOrchestrator>();
             services.AddTransient<SkillsOrchestrator>();

@@ -5,6 +5,11 @@
     ViewBag.Vpv = "/recruitment/employer/page-application-review";
     ViewBag.Title = "Review application";
 }
+@section BackLink {
+    <a asp-route="@RouteNames.VacancyManage_Get" asp-route-vacancyId="@Model.VacancyId" asp-route-employerAccountId="@Model.EmployerAccountId" asp-route-vacancySharedByProvider="@Model.IsApplicationSharedByProvider" esfa-automation="link-back" class="govuk-back-link">Back</a>
+}
+
+
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
 
@@ -23,30 +28,36 @@
 
         <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }' />
 
+        <span class="govuk-caption-l">@Model.VacancyTitle</span>
+
         <div asp-show="@Model.ShowAnonymisedApplicantDetails">
-            <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">Application ID: @Model.FriendlyId</h1>
+            <h1 class="govuk-heading-l govuk-!-margin-bottom-5">Application ID: @Model.FriendlyId</h1>
         </div>
 
         <div asp-show="@Model.IsApplicationShared">
-            <h2 class="govuk-heading-l govuk-!-margin-bottom-5">Contact Details</h2>
+            <h2 class="govuk-heading-l govuk-!-margin-bottom-5">Contact details</h2>
             <p class="govuk-body">
                 You'll be able to see this applicant's name and contact details if you decide to interview them.
             </p>
         </div>
 
+        <hr asp-show="@Model.IsApplicationShared" class="govuk-section-break govuk-section-break--l govuk-section-break--visible" />
+
         <div asp-hide="@Model.ShowAnonymisedApplicantDetails">
 
-            <h1 class="govuk-heading-xl govuk-!-margin-bottom-4">@Model.Name</h1>
-            <p class="govuk-body govuk-!-margin-bottom-6">
-                <span class="govuk-!-font-weight-bold">Application ID: </span>@Model.FriendlyId
+            <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">@Model.Name</h1>
+            <p class="govuk-body-l">
+                Application ID: @Model.FriendlyId
             </p>
 
-            <div class="das-highlight">
+            <h2 class="govuk-heading-l">Contact details</h2>
+
+            <div class="panel panel-border-narrow">
                 <p class="govuk-body">
                     @Html.Raw(
-                    string.Join("<br>",
-                    new[]
-                    {
+                             string.Join("<br>",
+                             new[]
+                             {
                     @Model.Name,
                     @Model.AddressLine1,
                     @Model.AddressLine2,
@@ -54,7 +65,7 @@
                     @Model.AddressLine4,
                     @Model.Postcode
                     }.Where(s => !string.IsNullOrWhiteSpace(s))
-                    .Select(WebUtility.HtmlEncode)))
+                             .Select(WebUtility.HtmlEncode)))
                 </p>
                 <p class="govuk-body govuk-!-margin-bottom-0">
                     @Model.Phone
@@ -63,7 +74,9 @@
             </div>
         </div>
 
-        <h2 class="govuk-heading-l govuk-!-margin-top-6">About you</h2>
+        <hr asp-hide="@Model.ShowAnonymisedApplicantDetails" class="govuk-section-break govuk-section-break--l govuk-section-break--visible" />
+
+        <h2 class="govuk-heading-l govuk-!-margin-top-1">About you</h2>
 
         <div class="govuk-form-group">
             <span class="govuk-label govuk-!-font-weight-bold">What are your main strengths?</span>
@@ -255,7 +268,7 @@
                             <label for="outcome-unsuccessful" class="govuk-label govuk-radios__label">@Model.FormRadioButtonNoText</label>
                         </div>
 
-                         <!-- Not Shared Options-->
+                        <!-- Not Shared Options-->
                         <div class="govuk-radios__item" asp-show="Model.CanShowRadioButtonReview">
                             <input asp-for="Outcome" class="govuk-radios__input" id="outcome-reviewed" type="radio" value="@ApplicationReviewStatus.InReview.ToString()" checked="@(Model.Outcome == ApplicationReviewStatus.InReview ? "checked" : null)">
                             <label for="outcome-reviewed" class="govuk-label govuk-radios__label">Review</label>
@@ -265,9 +278,9 @@
                         </div>
                         <div class="govuk-radios__item" asp-show="@Model.CanShowRadioButtonInterviewing">
                             <input asp-for="Outcome" class="govuk-radios__input" id="outcome-interviewing" type="radio" value="@ApplicationReviewStatus.Interviewing.ToString()" checked="@(Model.Outcome == ApplicationReviewStatus.Interviewing ? "checked" : null)">
-                            <label for="outcome-interviewing" class="govuk-label govuk-radios__label">Mark application for interviewing with the employer</label>
+                            <label for="outcome-interviewing" class="govuk-label govuk-radios__label">Mark application for interviewing</label>
                             <div class="govuk-hint govuk-radios__hint" id="radio-status-interviewing">
-                                Change this application's status to 'interviewing' because the employer will interview this applicant. Does not notify the applicant.
+                                Change this application's status to 'interviewing' because you want to interview this applicant. Does not notify the applicant.
                             </div>
                         </div>
                         <div class="govuk-radios__item" asp-hide="@Model.IsApplicationShared">
@@ -290,7 +303,7 @@
                                 <span esfa-validation-message-for="CandidateFeedback" class="govuk-error-message"></span>
                                 <span class="govuk-hint">@Model.FormRadioButtonNoFeedbackText</span>
                                 <textarea asp-for="CandidateFeedback" class="govuk-textarea govuk-js-character-count govuk-!-margin-top-4" id="CandidateFeedback" name="CandidateFeedback" rows="6"></textarea>
-                                <div id="CandidateFeedbackEmployerUnsuccessful-info" class="govuk-hint govuk-character-count__message">
+                                <div id="CandidateFeedback-info" class="govuk-hint govuk-character-count__message">
                                     You have 200 words remaining
                                 </div>
                             </div>
@@ -308,19 +321,19 @@
             </div>
         </form>
 
-        <div asp-show="@Model.IsApplicationEmployerInterviewing">
-            <h2 class="govuk-heading-l govuk-!-margin-top-6">Your response to your training provider.</h2>
+        <div asp-show="@Model.IsApplicationInterviewing">
+            <h2 class="govuk-heading-l govuk-!-margin-top-6">Your response to your training provider</h2>
             <p class="govuk-body">Yes, I want to interview this applicant.</p>
         </div>
 
-        <div asp-show="@Model.IsApplicationEmployerUnsuccessful">
-            <h2 class="govuk-heading-l govuk-!-margin-top-6">Your response to your training provider.</h2>
+        <div asp-show="@Model.IsApplicationUnsuccessful">
+            <h2 class="govuk-heading-l govuk-!-margin-top-6">Your response to your training provider</h2>
             <p class="govuk-body">No, I don't want to interview this applicant.</p>
             <div class="govuk-inset-text">
                 @Model.CandidateFeedback
             </div>
         </div>
-        </>
+        
     </div>
 
     <script nws-csp-add-nonce="true">
@@ -329,3 +342,4 @@
             showHideContent.init();
         });
     </script>
+</div>

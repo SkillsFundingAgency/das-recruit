@@ -8,6 +8,7 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Shared.Web.ViewModels.ApplicationReview;
 using Esfa.Recruit.Proivder.Web.Exceptions;
 using Esfa.Recruit.Provider.Web.Models;
+using ApplicationReviewViewModel = Esfa.Recruit.Provider.Web.ViewModels.ApplicationReview.ApplicationReviewViewModel;
 
 namespace Esfa.Recruit.Provider.Web.Orchestrators
 {
@@ -47,7 +48,8 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             viewModel.Ukprn = rm.Ukprn;
             viewModel.VacancyId = rm.VacancyId;
             viewModel.ApplicationReviewId = rm.ApplicationReviewId;
-            viewModel.CandidateFeedback = string.Empty;
+            viewModel.CandidateFeedback = applicationReview.CandidateFeedback;
+            viewModel.EmployerFeedback = applicationReview.EmployerFeedback;
             viewModel.VacancyTitle = vacancy.Title;
 
             return viewModel;

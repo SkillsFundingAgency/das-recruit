@@ -65,7 +65,14 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
                 {
                     return v.Wage.WageAdditionalInformation = m.WageAdditionalInformation;
                 });
-
+            SetVacancyWithProviderReviewFieldIndicators(
+                vacancy.Wage.CompanyBenefitsInformation,
+                FieldIdResolver.ToFieldId(v => v.Wage.CompanyBenefitsInformation),
+                vacancy,
+                (v) =>
+                {
+                    return v.Wage.CompanyBenefitsInformation = m.CompanyBenefitsInformation;
+                });
             return await ValidateAndExecute(
                 vacancy,
                 v => _vacancyClient.Validate(v, ValidationRules),
@@ -84,6 +91,9 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
                 WageType = vm.WageType,
                 WageAdditionalInformation = vm.WageAdditionalInformation,
                 Ukprn = vm.Ukprn,
+                CompanyBenefitsInformation = vm.CompanyBenefitsInformation,
+                Title = vm.Title,
+                Review = vm.Review
             };
 
             return wageExtraInformationViewModel;
@@ -150,7 +160,6 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
                 {
                     return v.Wage.WageAdditionalInformation = m.WageAdditionalInformation;
                 });
-
             return await ValidateAndExecute(
                 vacancy,
                 v => _vacancyClient.Validate(v, CompetitiveValidationRules),
@@ -179,13 +188,14 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
                 WeeklyHours = vacancy.Wage.WeeklyHours.Value,
                 PageInfo = _utility.GetPartOnePageInfo(vacancy),
                 Ukprn = vrm.Ukprn,
-                VacancyId = vrm.VacancyId
+                VacancyId = vrm.VacancyId,
+                CompanyBenefitsInformation = vacancy.Wage?.CompanyBenefitsInformation
             };
 
             if (vacancy.Status == VacancyStatus.Referred)
             {
                 vm.Review = await _reviewSummaryService.GetReviewSummaryViewModelAsync(vacancy.VacancyReference.Value,
-                    ReviewFieldMappingLookups.GetWageReviewFieldIndicators());
+                    ReviewFieldMappingLookups.GetAdditionalWageInformationFieldIndicators());
             }
 
             return vm;
@@ -235,6 +245,14 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
                 {
                     return v.Wage.WageAdditionalInformation = m.WageAdditionalInformation;
                 });
+            SetVacancyWithProviderReviewFieldIndicators(
+                vacancy.Wage.CompanyBenefitsInformation,
+                FieldIdResolver.ToFieldId(v => v.Wage.CompanyBenefitsInformation),
+                vacancy,
+                (v) =>
+                {
+                    return v.Wage.CompanyBenefitsInformation = m.CompanyBenefitsInformation;
+                });
 
             return await ValidateAndExecute(
                 vacancy,
@@ -259,6 +277,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
             mappings.Add(e => e.Wage.WageType, vm => vm.WageType);
             mappings.Add(e => e.Wage.FixedWageYearlyAmount, vm => vm.FixedWageYearlyAmount);
             mappings.Add(e => e.Wage.WageAdditionalInformation, vm => vm.WageAdditionalInformation);
+            mappings.Add(e => e.Wage.CompanyBenefitsInformation, vm => vm.CompanyBenefitsInformation);
 
             return mappings;
         }

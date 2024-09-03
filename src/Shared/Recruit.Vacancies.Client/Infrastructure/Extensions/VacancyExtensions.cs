@@ -72,6 +72,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Extensions
 
             projectedVacancy.AdditionalQuestion1 = vacancy.AdditionalQuestion1;
             projectedVacancy.AdditionalQuestion2 = vacancy.AdditionalQuestion2;
+
+            projectedVacancy.AdditionalTrainingDescription = vacancy.AdditionalTrainingDescription;
             
             return projectedVacancy;
         }
@@ -99,6 +101,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Extensions
 
         public static IEnumerable<ProjectionQualification> ToProjection(this List<Qualification> qualifications)
         {
+            if (qualifications == null) return [];
+
             return qualifications.Select(q => new ProjectionQualification
             {
                 QualificationType = q.QualificationType,
@@ -127,7 +131,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Extensions
                 WageAdditionalInformation = wage.WageAdditionalInformation,
                 WageType = wage.WageType?.ToString(),
                 WeeklyHours = wage.WeeklyHours ?? 0,
-                WorkingWeekDescription = wage.WorkingWeekDescription
+                WorkingWeekDescription = wage.WorkingWeekDescription,
+                CompanyBenefitsInformation = wage.CompanyBenefitsInformation
             };
         }
     }

@@ -6,7 +6,7 @@ using Esfa.Recruit.Provider.Web.Orchestrators.Part1;
 using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Provider.Web.ViewModels.Part1.Wage;
 using Esfa.Recruit.Shared.Web.Extensions;
-using Esfa.Recruit.Shared.Web.FeatureToggle;
+using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -165,6 +165,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
         {
             var vm = await _orchestrator.GetExtraInformationViewModelAsync(vrm);
             vm.WageAdditionalInformation = vrm.WageAdditionalInformation;
+            vm.CompanyBenefitsInformation = vrm.CompanyBenefitsInformation;
             vm.PageInfo.SetWizard(wizard);
             return View(vm);
         }

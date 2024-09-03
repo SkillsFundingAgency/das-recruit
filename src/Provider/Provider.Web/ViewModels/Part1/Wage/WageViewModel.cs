@@ -24,6 +24,8 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.Part1.Wage
         public string ApprenticeshipMinimumWageHourly { get; set; }
         public string ApprenticeshipMinimumWageYearly { get; set; }
         public decimal WeeklyHours { get; set; }
+        
+        public string CompanyBenefitsInformation { get; set; }
 
         public ReviewSummaryViewModel Review { get; set; } = new ReviewSummaryViewModel();
         
@@ -31,7 +33,8 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.Part1.Wage
         {
             nameof(WageType),
             nameof(FixedWageYearlyAmount),
-            nameof(WageAdditionalInformation)
+            nameof(WageAdditionalInformation),
+            nameof(CompanyBenefitsInformation)
         };
 
         public PartOnePageInfoViewModel PageInfo { get; set; }

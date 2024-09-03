@@ -33,29 +33,8 @@ namespace Esfa.Recruit.Vacancies.Jobs.Triggers.QueueTriggers
         public async Task GenerateVacancyAnalyticsSummaryAsync([QueueTrigger(QueueNames.GenerateVacancyAnalyticsQueueName, Connection = "QueueStorage")]
             string message, TextWriter log)
         {
-            if (_jobsConfig.DisabledJobs.Contains(JobName))
-            {
-                _logger.LogDebug($"{JobName} is disabled, skipping ...");
-                return;
-            }
-
-            var eventItem = JsonConvert.DeserializeObject<VacancyAnalyticsQueueMessage>(message);
-
-            _logger.LogInformation($"Starting populating new vacancy analytics summary for vacancy reference {eventItem.VacancyReference} into query store.");
-
-            try
-            {
-                var vacancyAnalyticSummary = await _analyticsStore.GetVacancyAnalyticEventSummaryAsync(eventItem.VacancyReference);
-
-                await _qsWriter.UpsertVacancyAnalyticSummaryAsync(vacancyAnalyticSummary);
-
-                _logger.LogInformation("Successfully finished populating new vacancy analytics summary for vacancy reference {eventItem.VacancyReference} into query store.");
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Unable to populate new vacancy analytics summaries.");
-                throw;
-            }
+        
+            _logger.LogDebug($"{JobName} is disabled, skipping ...");
         }
     }
 }

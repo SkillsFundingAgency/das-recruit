@@ -40,7 +40,9 @@ namespace SFA.DAS.Recruit.Api.Mappers
                             Grade = c.Grade,
                             Subject = c.Subject,
                             Weighting = (QualificationWeighting?)c.Weighting,
-                            QualificationType = c.QualificationType
+                            QualificationType = c.QualificationType,
+                            Level = c.Level,
+                            OtherQualificationName = c.OtherQualificationName
                         })
                     .ToList(),
                 Wage = new Wage
@@ -51,7 +53,8 @@ namespace SFA.DAS.Recruit.Api.Mappers
                     Duration = request.Wage.Duration,
                     DurationUnit = Enum.Parse<DurationUnit>(request.Wage.DurationUnit.ToString(), true),
                     WageAdditionalInformation = request.Wage.WageAdditionalInformation,
-                    FixedWageYearlyAmount = request.Wage.FixedWageYearlyAmount
+                    FixedWageYearlyAmount = request.Wage.FixedWageYearlyAmount,
+                    CompanyBenefitsInformation = request.Wage.CompanyBenefitsInformation
                 },
                 ShortDescription = request.ShortDescription,
                 NumberOfPositions = request.NumberOfPositions,
@@ -65,6 +68,7 @@ namespace SFA.DAS.Recruit.Api.Mappers
                 AnonymousReason = request.AnonymousReason,
                 EmployerDescription = request.EmployerDescription,
                 TrainingDescription = request.TrainingDescription,
+                AdditionalTrainingDescription = request.AdditionalTrainingDescription,
                 Skills = request.Skills,
                 DisabilityConfident = (DisabilityConfident)request.DisabilityConfident,
                 ThingsToConsider = request.ThingsToConsider,

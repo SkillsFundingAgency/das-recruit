@@ -27,17 +27,20 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.BankHoliday
         {
             var client = new RestClient(BankHolidayConfiguration.Url);
             var request = new RestRequest();
-            var response = await client.ExecuteAsync<BankHolidays.BankHolidaysData>(request);
-           
+            var response = await client.ExecuteAsync(request);
+            
+            
             if (!response.IsSuccessful)
                 throw new Exception($"Error getting list of bank holidays from url:{BankHolidayConfiguration.Url}. Error:{response.ErrorMessage}");
 
-            if (!response.Data.EnglandAndWales.Events.Any())
+            var bankHolidayData = JsonConvert.DeserializeObject<BankHolidays.BankHolidaysData>(response.Content);
+            
+            if (!bankHolidayData.EnglandAndWales.Events.Any())
                 throw new Exception($"Expected a non-empty list of bank holidays from url:{BankHolidayConfiguration.Url}");
 
             var bankHolidaysFromApi = new BankHolidays
             {
-                Data = response.Data             
+                Data = bankHolidayData             
             };
 
             if (await HasBankHolidayDataChanged(bankHolidaysFromApi))

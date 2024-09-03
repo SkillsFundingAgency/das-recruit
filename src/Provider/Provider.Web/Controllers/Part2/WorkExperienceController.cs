@@ -43,6 +43,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part2
             var vm = await _orchestrator.GetWorkExperienceViewModelAsync(editModel);
             if (!ModelState.IsValid)
             {
+                vm.WorkExperience = editModel.WorkExperience;
                 return View(vm);
             }
             

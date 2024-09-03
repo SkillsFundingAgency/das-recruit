@@ -5,8 +5,10 @@ using Esfa.Recruit.Provider.Web.Configuration.Routing;
 using Esfa.Recruit.Provider.Web.Extensions;
 using Esfa.Recruit.Provider.Web.Orchestrators.Part2;
 using Esfa.Recruit.Provider.Web.RouteModel;
+using Esfa.Recruit.Provider.Web.ViewModels.Part2.Qualifications;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Shared.Web.ViewModels.Qualifications;
+using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,10 +20,12 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part2
     {
         private const string QualificationDeletedTempDataKey = "QualificationDeletedTempDataKey";
         private readonly QualificationsOrchestrator _orchestrator;
+        private readonly IFeature _feature;
 
-        public QualificationsController(QualificationsOrchestrator orchestrator)
+        public QualificationsController(QualificationsOrchestrator orchestrator, IFeature feature)
         {
             _orchestrator = orchestrator;
+            _feature = feature;
         }
 
         [HttpGet("qualifications", Name = RouteNames.Qualifications_Get)]
@@ -29,7 +33,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part2
         {
             var vm = await _orchestrator.GetQualificationsViewModelAsync(vrm);
 
-            if (vm.Qualifications.Any() == false)
+            if (!_feature.IsFeatureEnabled(FeatureNames.FaaV2Improvements) && vm.Qualifications.Any() == false)
             {
                 TempData.Remove(QualificationDeletedTempDataKey);
                 return RedirectToRoute(RouteNames.Qualification_Add_Get, new {vrm.VacancyId, vrm.Ukprn});
@@ -39,6 +43,27 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part2
                 vm.InfoMessage = "Successfully removed qualification";
 
             return View(vm);
+        }
+        
+        [HttpPost("qualifications", Name = RouteNames.Qualifications_Get)]
+        public async Task<IActionResult> Qualifications(AddQualificationsEditModel m)
+        {
+            if (!ModelState.IsValid)
+            {
+                var vm = await _orchestrator.GetQualificationsViewModelAsync(m);
+                return View(vm);
+            }
+
+            await _orchestrator.PostAddQualificationEditModel(m, User.ToVacancyUser());
+
+            if (m.AddQualificationRequirement is true)
+            {
+                return RedirectToRoute(RouteNames.Qualification_Add_Get, new { m.VacancyId, m.Ukprn });
+            }
+
+            return RedirectToRoute(m.IsTaskListCompleted
+                ? RouteNames.ProviderCheckYourAnswersGet
+                : RouteNames.FutureProspects_Get, new { m.VacancyId, m.Ukprn });
         }
 
         [HttpGet("qualifications/add", Name = RouteNames.Qualification_Add_Get)]

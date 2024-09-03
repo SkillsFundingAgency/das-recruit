@@ -25,8 +25,10 @@
         public const string NumberOfPositions = "NumberOfPositions";
         public const string VacancyDescription = "VacancyDescription";
         public const string TrainingDescription = "TrainingDescription";
+        public const string AdditionalTrainingDescription = "AdditionalrainingDescription";
         public const string OutcomeDescription = "OutcomeDescription";
         public const string Skills = "Skills";
+        public const string HasOptedToAddQualifications = "HasOptedToAddQualifications";
         public const string Qualifications = "Qualifications";
         public const string ThingsToConsider = "ThingsToConsider";
         public const string EmployerDescription = "EmployerDescription";
@@ -48,6 +50,8 @@
 
         //Wage
         public const string WageTypeHeading = "WageTypeHeading";
+        public const string WageAdditionalInformation = "WageAdditionalInformation";
+        public const string CompanyBenefitsInformation = "CompanyBenefitsInformation";
 
         //Skills
         public const string SkillsHeading = "SkillsHeading";

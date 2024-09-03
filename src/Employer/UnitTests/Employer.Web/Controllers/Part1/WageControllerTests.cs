@@ -37,7 +37,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Controllers.Part1
                 new Claim(EmployerRecruitClaims.IdamsUserIdClaimTypeIdentifier, Guid.NewGuid().ToString()),
             }));
 
-            _controller = new WageController(_orchestrator.Object, null);
+            _controller = new WageController(_orchestrator.Object);
             _controller.ControllerContext = new ControllerContext
             {
                 HttpContext = new DefaultHttpContext { User = user }
@@ -54,8 +54,8 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Controllers.Part1
 
             var redirectResult = await _controller.AdditionalInformation(viewModel, true) as RedirectToRouteResult;
 
-            Assert.NotNull(redirectResult);
-            Assert.AreEqual(RouteNames.NumberOfPositions_Get, redirectResult.RouteName);
+            Assert.That(redirectResult, Is.Not.Null);
+            Assert.That(RouteNames.NumberOfPositions_Get, Is.EqualTo(redirectResult.RouteName));
         }
 
         [Test, MoqAutoData]
@@ -98,9 +98,9 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Controllers.Part1
 
             var result = await _controller.AdditionalInformation(vacancyRouteModel, "true");
 
-            Assert.IsInstanceOf<ViewResult>(result);
+            Assert.That(result, Is.AssignableTo<ViewResult>());
             var viewResult = (ViewResult)result;
-            Assert.AreEqual(viewModel, viewResult.Model);
+            Assert.That(viewModel, Is.EqualTo(viewResult.Model));
         }
 
         [Test, MoqAutoData]
@@ -119,8 +119,8 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Controllers.Part1
             var wageEditModel = new WageEditModel { WageType = WageType.FixedWage };
 
             var redirectResult = await _controller.Wage(wageEditModel, false) as RedirectToRouteResult;
-            Assert.NotNull(redirectResult);
-            Assert.AreEqual(RouteNames.CustomWage_Get, redirectResult.RouteName);
+            Assert.That(redirectResult, Is.Not.Null);
+            Assert.That(RouteNames.CustomWage_Get, Is.EqualTo(redirectResult.RouteName));
         }
 
         [Test, MoqAutoData]
@@ -139,8 +139,8 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Controllers.Part1
             var wageEditModel = new WageEditModel { WageType = WageType.CompetitiveSalary };
 
             var redirectResult = await _controller.Wage(wageEditModel, false) as RedirectToRouteResult;
-            Assert.NotNull(redirectResult);
-            Assert.AreEqual(RouteNames.SetCompetitivePayRate_Get, redirectResult.RouteName);
+            Assert.That(redirectResult, Is.Not.Null);
+            Assert.That(RouteNames.SetCompetitivePayRate_Get, Is.EqualTo(redirectResult.RouteName));
         }
 
         [Test, MoqAutoData]
@@ -159,8 +159,8 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Controllers.Part1
             var wageEditModel = new WageEditModel { WageType = WageType.NationalMinimumWage };
 
             var redirectResult = await _controller.Wage(wageEditModel, false) as RedirectToRouteResult;
-            Assert.NotNull(redirectResult);
-            Assert.AreEqual(RouteNames.AddExtraInformation_Get, redirectResult.RouteName);
+            Assert.That(redirectResult, Is.Not.Null);
+            Assert.That(RouteNames.AddExtraInformation_Get, Is.EqualTo(redirectResult.RouteName));
         }
 
         [Test, MoqAutoData]
@@ -178,8 +178,8 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Controllers.Part1
             var wageEditModel = new WageEditModel { WageType = WageType.NationalMinimumWageForApprentices };
 
             var redirectResult = await _controller.Wage(wageEditModel, false) as RedirectToRouteResult;
-            Assert.NotNull(redirectResult);
-            Assert.AreEqual(RouteNames.AddExtraInformation_Get, redirectResult.RouteName);
+            Assert.That(redirectResult, Is.Not.Null);
+            Assert.That(RouteNames.AddExtraInformation_Get, Is.EqualTo(redirectResult.RouteName));
         }
 
         [Test, MoqAutoData]
@@ -248,10 +248,10 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Controllers.Part1
 
             var redirectResult = await _controller.CompetitiveSalary(editModel, false) as RedirectToRouteResult;
 
-            Assert.NotNull(redirectResult);
-            Assert.AreEqual(RouteNames.AddExtraInformation_Get, redirectResult.RouteName);
-            Assert.AreEqual(editModel.VacancyId, redirectResult.RouteValues["VacancyId"]);
-            Assert.AreEqual(editModel.EmployerAccountId, redirectResult.RouteValues["EmployerAccountId"]);
+            Assert.That(redirectResult, Is.Not.Null);
+            Assert.That(RouteNames.AddExtraInformation_Get, Is.EqualTo(redirectResult.RouteName));
+            Assert.That(editModel.VacancyId, Is.EqualTo(redirectResult.RouteValues["VacancyId"]));
+            Assert.That(editModel.EmployerAccountId, Is.EqualTo(redirectResult.RouteValues["EmployerAccountId"]));
         }
     }
 }

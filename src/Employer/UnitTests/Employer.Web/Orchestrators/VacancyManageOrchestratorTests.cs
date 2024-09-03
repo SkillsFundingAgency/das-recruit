@@ -16,6 +16,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
 
 namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators
 {
@@ -42,7 +43,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators
             _logger = new Mock<ILogger<VacancyManageOrchestrator>>();
             _geocodeImageService = new Mock<IGeocodeImageService>();
             _externalLinksConfig = new Mock<IOptions<ExternalLinksConfiguration>>();
-            _vacancyDisplayMapper = new DisplayVacancyViewModelMapper(_geocodeImageService.Object, _externalLinksConfig.Object, _vacancyClient.Object);
+            _vacancyDisplayMapper = new DisplayVacancyViewModelMapper(_geocodeImageService.Object, _externalLinksConfig.Object, _vacancyClient.Object, Mock.Of<IFeature>());
             _orchestrator = new VacancyManageOrchestrator(_logger.Object, _vacancyDisplayMapper, _vacancyClient.Object, _systemConfig.Object, _utility.Object);
             _vacancyId = Guid.NewGuid();
         }
@@ -61,11 +62,13 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators
                 .With(x => x.HasEverBeenEmployerInterviewing, true)
                 .With(x => x.FirstName, "Jack")
                 .With(x => x.LastName, "Sparrow")
+                .With(x => x.Status, ApplicationReviewStatus.Interviewing)
                 .Create();
             var vacancyApplication2 = _fixture.Build<VacancyApplication>()
                 .With(x => x.HasEverBeenEmployerInterviewing, false)
                 .With(x => x.FirstName, "Jamie")
                 .With(x => x.LastName, "Vardy")
+                .With(x => x.Status, ApplicationReviewStatus.Interviewing)
                 .Create();
             vacancyApplications.Add(vacancyApplication1);
             vacancyApplications.Add(vacancyApplication2);
@@ -78,19 +81,19 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators
             var viewModel = await _orchestrator.GetManageVacancyViewModel(vacancy, sortColumn, sortOrder, vacancyShared);
 
             // Assert
-            Assert.AreEqual(_vacancyId, viewModel.VacancyId);
-            Assert.AreEqual(vacancy.EmployerAccountId.ToUpperInvariant(), viewModel.EmployerAccountId);
-            Assert.AreEqual(vacancy.Title, viewModel.Title);
-            Assert.AreEqual(vacancy.Status, viewModel.Status);
-            Assert.AreEqual(vacancy.CanExtendStartAndClosingDates, viewModel.CanShowEditVacancyLink);
-            Assert.AreEqual(vacancy.IsDisabilityConfident, viewModel.IsDisabilityConfident);
-            Assert.AreEqual(vacancyApplications.Count, viewModel.Applications.Applications.Count());
-            Assert.AreEqual(vacancyApplications[0].CandidateName, viewModel.Applications.Applications.First().CandidateName);
-            Assert.IsTrue(viewModel.Applications.Applications.First().ShowCandidateName);
-            Assert.IsFalse(viewModel.Applications.Applications.First().ShowApplicantID);
-            Assert.AreEqual(vacancyApplications[1].CandidateName, viewModel.Applications.Applications.ElementAt(1).CandidateName);
-            Assert.IsFalse(viewModel.Applications.Applications.ElementAt(1).ShowCandidateName);
-            Assert.IsTrue(viewModel.Applications.Applications.ElementAt(1).ShowApplicantID);
+            Assert.That(_vacancyId, Is.EqualTo(viewModel.VacancyId));
+            Assert.That(vacancy.EmployerAccountId.ToUpperInvariant(), Is.EqualTo(viewModel.EmployerAccountId));
+            Assert.That(vacancy.Title, Is.EqualTo(viewModel.Title));
+            Assert.That(vacancy.Status, Is.EqualTo(viewModel.Status));
+            Assert.That(vacancy.CanExtendStartAndClosingDates, Is.EqualTo(viewModel.CanShowEditVacancyLink));
+            Assert.That(vacancy.IsDisabilityConfident, Is.EqualTo(viewModel.IsDisabilityConfident));
+            Assert.That(vacancyApplications.Count, Is.EqualTo(viewModel.Applications.Applications.Count()));
+            Assert.That(vacancyApplications[0].CandidateName, Is.EqualTo(viewModel.Applications.Applications.First().CandidateName));
+            Assert.That(viewModel.Applications.Applications.First().ShowCandidateName, Is.True);
+            Assert.That(viewModel.Applications.Applications.First().ShowApplicantID, Is.False);
+            Assert.That(vacancyApplications[1].CandidateName, Is.EqualTo(viewModel.Applications.Applications.ElementAt(1).CandidateName));
+            Assert.That(viewModel.Applications.Applications.ElementAt(1).ShowCandidateName, Is.False);
+            Assert.That(viewModel.Applications.Applications.ElementAt(1).ShowApplicantID, Is.True);
 
         }
 

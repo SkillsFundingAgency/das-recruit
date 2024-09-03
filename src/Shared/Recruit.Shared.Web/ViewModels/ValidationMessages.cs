@@ -64,5 +64,11 @@ namespace Esfa.Recruit.Shared.Web.ViewModels
         {
             public const string SelectionRequired = "Select yes if you want to stop receiving emails about adverts and applications";
         }
+
+
+        public static class QualificationsConfirmationMessages
+        {
+            public const string SelectionRequired = "Select if you want to add any qualification requirements";
+        }
     }
 }

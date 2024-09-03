@@ -22,15 +22,10 @@
         public const string Dashboard_Get = "Dashboard_Get";
 
         public const string Vacancies_Get = "Dashboard_Index_Get";
-        public const string Dashboard_ChangePassword = "Dashboard_ChangePassword";
-        public const string Dashboard_ChangeEmail = "Dashboard_ChangeEmail";
         
         public const string Dashboard_AccountsRename = "Dashboard_AccountsRename";
         public const string Dashboard_AccountsFinance = "Dashboard_AccountsFinance";
-        public const string Dashboard_AccountsApprentices = "Dashboard_AccountsApprentices";
-        public const string Dashboard_AccountsTeams = "Dashboard_AccountsTeams";
         public const string Dashboard_AccountsAgreements = "Dashboard_AccountsAgreements";
-        public const string Dashboard_AccountsSchemes = "Dashboard_AccountsSchemes";
         public const string Dashboard_Account_Home = "Dashboard_Account_Home";
 
         public const string DismissCloningMethodChangingMessage_Post = "DismissCloningMethodChangingMessage_Post";
@@ -118,6 +113,12 @@
         public const string VacancyDescription_Index_Get = "VacancyDescription_Index_Get";
         public const string VacancyDescription_Index_Post = "VacancyDescription_Index_Post";
 
+        public const string VacancyWorkDescription_Index_Get = "VacancyWorkDescription_Index_Get";
+        public const string VacancyWorkDescription_Index_Post = "VacancyWorkDescription_Index_Post";
+        
+        public const string VacancyHowTheApprenticeWillTrain_Index_Get = "VacancyHowTheApprenticeWillTrain_Index_Post";
+        public const string VacancyHowTheApprenticeWillTrain_Index_Post = "VacancyHowTheApprenticeWillTrain_Index_Post";
+        
         public const string Skills_Get = "Skills_Get";
         public const string Skills_Post = "Skills_Post";
 
@@ -155,8 +156,6 @@
 
         public const string SubmitVacancyChanges_Post = "SubmitVacancyChanges_Post";
         public const string CancelVacancyChanges_Get = "CancelVacancyChanges_Get";
-
-        public const string BlockedEmployer_Get = "BlockedEmployer_Get";
 
         public const string ManageNotifications_Get = "ManageNotifications_Get";
         public const string ManageNotifications_Post = "ManageNotifications_Post";

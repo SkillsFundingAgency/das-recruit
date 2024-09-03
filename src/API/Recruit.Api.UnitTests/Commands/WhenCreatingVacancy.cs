@@ -50,8 +50,12 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Commands
         public async Task Then_The_Command_Is_Validated_For_ProviderOwner(
             CreateVacancyCommand command,
             [Frozen]Mock<IRecruitVacancyClient> recruitVacancyClient,
+            [Frozen]Mock<ITrainingProviderSummaryProvider> trainingProviderSummaryProvider,
             CreateVacancyCommandHandler handler)
         {
+            trainingProviderSummaryProvider
+                .Setup(x => x.IsTrainingProviderMainOrEmployerProfile(command.VacancyUserDetails.Ukprn.Value))
+                .ReturnsAsync(true);
             command.ValidateOnly = false;
             command.Vacancy.OwnerType = OwnerType.Provider;
             
@@ -65,8 +69,12 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Commands
         public async Task Then_The_Command_Is_Validated_For_EmployerOwner(
             CreateVacancyCommand command,
             [Frozen]Mock<IRecruitVacancyClient> recruitVacancyClient,
+            [Frozen]Mock<ITrainingProviderSummaryProvider> trainingProviderSummaryProvider,
             CreateVacancyCommandHandler handler)
         {   
+            trainingProviderSummaryProvider
+                .Setup(x => x.IsTrainingProviderMainOrEmployerProfile(command.VacancyUserDetails.Ukprn.Value))
+                .ReturnsAsync(true);
             command.ValidateOnly = false;
             
             await handler.Handle(command, CancellationToken.None);
@@ -82,8 +90,12 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Commands
             EntityValidationError entityValidationError,
             CreateVacancyCommand command,
             [Frozen]Mock<IRecruitVacancyClient> recruitVacancyClient,
+            [Frozen]Mock<ITrainingProviderSummaryProvider> trainingProviderSummaryProvider,
             CreateVacancyCommandHandler handler)
         {
+            trainingProviderSummaryProvider
+                .Setup(x => x.IsTrainingProviderMainOrEmployerProfile(command.VacancyUserDetails.Ukprn.Value))
+                .ReturnsAsync(true);
             command.ValidateOnly = false;
             var entityValidationResult = new EntityValidationResult{Errors = new List<EntityValidationError>{entityValidationError}};
             recruitVacancyClient.Setup(x => x.Validate(It.IsAny<Vacancy>(), VacancyRuleSet.All))
@@ -180,9 +192,13 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Commands
             CreateVacancyCommand command,
             [Frozen]Mock<IEmployerVacancyClient> recruitVacancyClient,
             [Frozen]Mock<IRecruitVacancyClient> vacancyClient,
+            [Frozen]Mock<ITrainingProviderSummaryProvider> trainingProviderSummaryProvider,
             CreateVacancyCommandHandler handler)
         {
             command.ValidateOnly = false;
+            trainingProviderSummaryProvider
+                .Setup(x => x.IsTrainingProviderMainOrEmployerProfile(command.VacancyUserDetails.Ukprn.Value))
+                .ReturnsAsync(true);
             vacancyClient.Setup(x => x.Validate(It.IsAny<Vacancy>(), VacancyRuleSet.All))
                 .Returns(new EntityValidationResult());
             recruitVacancyClient.Setup(x => x.CreateEmployerApiVacancy(It.IsAny<Guid>(), It.IsAny<string>(),
@@ -203,8 +219,12 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Commands
             CreateVacancyCommand command,
             [Frozen]Mock<IProviderVacancyClient> recruitVacancyClient,
             [Frozen]Mock<IRecruitVacancyClient> vacancyClient,
+            [Frozen]Mock<ITrainingProviderSummaryProvider> trainingProviderSummaryProvider,
             CreateVacancyCommandHandler handler)
         {
+            trainingProviderSummaryProvider
+                .Setup(x => x.IsTrainingProviderMainOrEmployerProfile(command.VacancyUserDetails.Ukprn.Value))
+                .ReturnsAsync(true);
             command.ValidateOnly = false;
             command.Vacancy.OwnerType = OwnerType.Provider;
             vacancyClient.Setup(x => x.Validate(It.IsAny<Vacancy>(), VacancyRuleSet.All))

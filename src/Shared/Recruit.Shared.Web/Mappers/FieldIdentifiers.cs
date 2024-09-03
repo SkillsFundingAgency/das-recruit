@@ -22,6 +22,7 @@
         public const string PossibleStartDate = "PossibleStartDate";
         public const string Provider = "Provider";
         public const string ProviderContact = "ProviderContact";
+        public const string HasOptedToAddQualifications = "HasOptedToAddQualifications";
         public const string Qualifications = "Qualifications";
         public const string ShortDescription = "ShortDescription";
         public const string Skills = "Skills";
@@ -29,6 +30,7 @@
         public const string Title = "Title";
         public const string Training = "Training";
         public const string TrainingDescription = "TrainingDescription";
+        public const string AdditionalTrainingDescription = "AdditionalTrainingDescription";
         public const string TrainingLevel = "TrainingLevel";
         public const string TraineeRoute = nameof(TraineeRoute);
         public const string VacancyDescription = "VacancyDescription";
@@ -40,5 +42,6 @@
         public const string WorkExperience = "WorkExperience";
         public const string AdditionalQuestion1 = "AdditionalQuestion1";
         public const string AdditionalQuestion2 = "AdditionalQuestion2";
+        public const string CompanyBenefitsInformation = nameof(CompanyBenefitsInformation);
     }
 }

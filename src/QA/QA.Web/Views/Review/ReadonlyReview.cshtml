@@ -106,14 +106,31 @@
         </ul>
     </div>
     <div class="govuk-grid-column-two-thirds vacancy-descriptions">
-        <div id="@Anchors.VacancyDescription">
-            <h3 class="govuk-heading-s">What will the apprentice be doing?</h3>
-            <div class="govuk-body">@Html.Raw(Model.VacancyDescription)</div>
-        </div>
-        <div id="@Anchors.TrainingDescription">
-            <h3 class="govuk-heading-s">What training will the apprentice take and what qualification will the apprentice get at the end?</h3>
-            <div class="govuk-body">@Html.Raw(Model.TrainingDescription)</div>
-        </div>
+        <esfaFeatureDisabled name="FaaV2Improvements">
+            <div id="@Anchors.VacancyDescription">
+                <h3 class="govuk-heading-s">What will the apprentice be doing?</h3>
+                <div class="govuk-body">@Html.Raw(Model.VacancyDescription)</div>
+            </div>
+            <div id="@Anchors.TrainingDescription">
+                <h3 class="govuk-heading-s">What training will the apprentice take and what qualification will the apprentice get at the end?</h3>
+                <div class="govuk-body">@Html.Raw(Model.TrainingDescription)</div>
+            </div>
+        </esfaFeatureDisabled>
+        <esfaFeatureEnabled name="FaaV2Improvements">
+            <div id="@Anchors.VacancyDescription">
+                <h3 class="govuk-heading-s">What will the apprentice do at work?</h3>
+                <div class="govuk-body">@Html.Raw(Model.VacancyDescription)</div>
+            </div>
+            <div id="@Anchors.TrainingDescription">
+                <h3 class="govuk-heading-s">The apprentice's training schedule (optional)</h3>
+                <div class="govuk-body">@Html.Raw(Model.TrainingDescription)</div>
+            </div>
+            <div id="@Anchors.AdditionalTrainingDescription">
+                <h3 class="govuk-heading-s">Additional training information (optional)</h3>
+                <div class="govuk-body">@Html.Raw(Model.AdditionalTrainingDescription)</div>
+            </div>
+        </esfaFeatureEnabled>
+
         <div id="@Anchors.OutcomeDescription">
             <h3 class="govuk-heading-s">What is the expected career progression after this apprenticeship?</h3>
             <div class="govuk-body">@Html.Raw(Model.OutcomeDescription)</div>

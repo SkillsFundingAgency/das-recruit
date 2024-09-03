@@ -41,11 +41,13 @@ namespace Esfa.Recruit.Provider.Web.ViewModels
         public string ProviderContactTelephone { get; internal set; }
         public string ProviderName { get; internal set; }
         public IEnumerable<string> Qualifications { get; internal set; }
+        public bool? HasOptedToAddQualifications { get; internal set; }
         public string ShortDescription { get; internal set; }
         public IEnumerable<string> Skills { get; internal set; }
         public string ThingsToConsider { get; internal set; }
         public string Title { get; internal set; }
         public string TrainingDescription { get; internal set; }
+        public string AdditionalTrainingDescription { get; internal set; }
         public string TrainingTitle { get; internal set; }
         public string TrainingType { get; internal set; }
         public string TrainingLevel { get; internal set; }
@@ -53,6 +55,7 @@ namespace Esfa.Recruit.Provider.Web.ViewModels
         public string VacancyReferenceNumber { get; internal set; }
         public string WageInfo { get; internal set; }
         public string WageText { get; internal set; }
+        public string CompanyBenefitsInformation { get; internal set; }
         public WageType? WageType { get; internal set; }
         public string WorkingWeekDescription { get; internal set; }
         public bool HasCompetitiveSalaryType => WageType.HasValue && WageType.Value == Vacancies.Client.Domain.Entities.WageType.CompetitiveSalary;
@@ -142,6 +145,7 @@ namespace Esfa.Recruit.Provider.Web.ViewModels
         public EmployerNameOption? EmployerNameOption { get; set; }
         public VacancyType? VacancyType { get; set; }
         
+
         private string BuildAdditionalQuestionText(string additionalQuestion)
         {
             if (string.IsNullOrWhiteSpace(additionalQuestion))

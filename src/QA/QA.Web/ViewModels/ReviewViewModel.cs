@@ -109,11 +109,13 @@ namespace Esfa.Recruit.Qa.Web.ViewModels
         public string TitleClass => GetFieldIdentifierCssClass(FieldIdentifier.Title);
         public string TrainingClass => GetFieldIdentifierCssClass(FieldIdentifier.Training);
         public string TrainingDescriptionClass => GetFieldIdentifierCssClass(FieldIdentifier.TrainingDescription);
+        public string AdditionalTrainingDescriptionClass => GetFieldIdentifierCssClass(FieldIdentifier.AdditionalTrainingDescription);
         public string TrainingLevelClass => GetFieldIdentifierCssClass(FieldIdentifier.TrainingLevel);
         public string TraineeRouteClass => GetFieldIdentifierCssClass(FieldIdentifier.TraineeRoute);
         public string VacancyDescriptionClass => GetFieldIdentifierCssClass(FieldIdentifier.VacancyDescription);
         public string WageClass => GetFieldIdentifierCssClass(FieldIdentifier.Wage);
         public string WorkingWeekClass => GetFieldIdentifierCssClass(FieldIdentifier.WorkingWeek);
+        public string CompanyBenefitsInformationClass => GetFieldIdentifierCssClass(FieldIdentifier.CompanyBenefitsInformation);
         public bool HasAutomatedQaResults => AutomatedQaResults.Any();
         public string PageTitle { get; set; }        
         public bool IsVacancyDeleted { get; set; }

@@ -21,7 +21,11 @@ namespace Esfa.Recruit.Vacancies.Client.Application.EventHandlers
                                             INotificationHandler<VacancyReviewCreatedEvent>,
                                             INotificationHandler<ProviderBlockedEvent>,
                                             INotificationHandler<ProviderBlockedOnLegalEntityEvent>,
-                                            INotificationHandler<ProviderBlockedOnVacancyEvent>
+                                            INotificationHandler<ProviderBlockedOnVacancyEvent>,
+                                            INotificationHandler<VacancyClosedEvent>,
+                                            INotificationHandler<LiveVacancyUpdatedEvent>,
+                                            INotificationHandler<ApplicationSubmittedEvent>,
+                                            INotificationHandler<ApplicationWithdrawnEvent>
     {
         private readonly ILogger<RePublishEventToEventStoreEventHandler> _logger;
         private readonly IEventStore _eventStore;
@@ -71,6 +75,15 @@ namespace Esfa.Recruit.Vacancies.Client.Application.EventHandlers
         public Task Handle(ProviderBlockedOnVacancyEvent notification, CancellationToken cancellationToken)
             => HandleUsingEventStore(notification);
 
+        public Task Handle(VacancyClosedEvent notification, CancellationToken cancellationToken)
+            => HandleUsingEventStore(notification);
+
+        public Task Handle(LiveVacancyUpdatedEvent notification, CancellationToken cancellationToken)
+            => HandleUsingEventStore(notification);
+        public Task Handle(ApplicationSubmittedEvent notification, CancellationToken cancellationToken)
+            => HandleUsingEventStore(notification);
+        public Task Handle(ApplicationWithdrawnEvent notification, CancellationToken cancellationToken)
+            => HandleUsingEventStore(notification);
         private async Task HandleUsingEventStore(IEvent @event)
         {
             _logger.LogInformation("Re-publishing event {eventType} to event store", @event.GetType().Name);

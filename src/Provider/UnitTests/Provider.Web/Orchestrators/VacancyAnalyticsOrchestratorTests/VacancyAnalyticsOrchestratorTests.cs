@@ -54,34 +54,34 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.VacancyAnal
             var viewModel = await _orchestrator.GetVacancyAnalytics(vacancyRouteModel);
 
             // Assert
-            Assert.AreEqual(_ukprn, viewModel.Ukprn);
-            Assert.AreEqual(_vacancyId, viewModel.VacancyId);
-            Assert.IsNotNull(viewModel.AnalyticsSummary);
-            Assert.AreEqual(vacancyAnalyticsSummary.NoOfApprenticeshipSearches, viewModel.AnalyticsSummary.NoOfTimesAppearedInSearch);
-            Assert.AreEqual(vacancyAnalyticsSummary.NoOfApprenticeshipApplicationsCreated, viewModel.AnalyticsSummary.NoOfApplicationsStarted);
-            Assert.AreEqual(vacancyAnalyticsSummary.NoOfApprenticeshipApplicationsSubmitted, viewModel.AnalyticsSummary.NoOfApplicationsSubmitted);
-            Assert.AreEqual(vacancyAnalyticsSummary.NoOfApprenticeshipDetailsViews, viewModel.AnalyticsSummary.NoOfTimesViewed);
-            Assert.AreEqual((vacancyAnalyticsSummary.NoOfApprenticeshipSearchesSevenDaysAgo
+            Assert.That(_ukprn, Is.EqualTo(viewModel.Ukprn));
+            Assert.That(_vacancyId, Is.EqualTo(viewModel.VacancyId));
+            Assert.That(viewModel.AnalyticsSummary, Is.Not.Null);
+            Assert.That(vacancyAnalyticsSummary.NoOfApprenticeshipSearches, Is.EqualTo(viewModel.AnalyticsSummary.NoOfTimesAppearedInSearch));
+            Assert.That(vacancyAnalyticsSummary.NoOfApprenticeshipApplicationsCreated, Is.EqualTo(viewModel.AnalyticsSummary.NoOfApplicationsStarted));
+            Assert.That(vacancyAnalyticsSummary.NoOfApprenticeshipApplicationsSubmitted, Is.EqualTo(viewModel.AnalyticsSummary.NoOfApplicationsSubmitted));
+            Assert.That(vacancyAnalyticsSummary.NoOfApprenticeshipDetailsViews, Is.EqualTo(viewModel.AnalyticsSummary.NoOfTimesViewed));
+            Assert.That((vacancyAnalyticsSummary.NoOfApprenticeshipSearchesSevenDaysAgo
                 + vacancyAnalyticsSummary.NoOfApprenticeshipSearchesSixDaysAgo
                 + vacancyAnalyticsSummary.NoOfApprenticeshipSearchesFiveDaysAgo
                 + vacancyAnalyticsSummary.NoOfApprenticeshipSearchesFourDaysAgo
                 + vacancyAnalyticsSummary.NoOfApprenticeshipSearchesThreeDaysAgo
                 + vacancyAnalyticsSummary.NoOfApprenticeshipSearchesTwoDaysAgo
-                + vacancyAnalyticsSummary.NoOfApprenticeshipSearchesOneDayAgo), viewModel.AnalyticsSummary.NoOfTimesAppearedInSearchOverLastSevenDays);
-            Assert.AreEqual((vacancyAnalyticsSummary.NoOfApprenticeshipApplicationsCreatedSevenDaysAgo
+                + vacancyAnalyticsSummary.NoOfApprenticeshipSearchesOneDayAgo), Is.EqualTo(viewModel.AnalyticsSummary.NoOfTimesAppearedInSearchOverLastSevenDays));
+            Assert.That((vacancyAnalyticsSummary.NoOfApprenticeshipApplicationsCreatedSevenDaysAgo
                 + vacancyAnalyticsSummary.NoOfApprenticeshipApplicationsCreatedSixDaysAgo
                 + vacancyAnalyticsSummary.NoOfApprenticeshipApplicationsCreatedFiveDaysAgo
                 + vacancyAnalyticsSummary.NoOfApprenticeshipApplicationsCreatedFourDaysAgo
                 + vacancyAnalyticsSummary.NoOfApprenticeshipApplicationsCreatedThreeDaysAgo
                 + vacancyAnalyticsSummary.NoOfApprenticeshipApplicationsCreatedTwoDaysAgo
-                + vacancyAnalyticsSummary.NoOfApprenticeshipApplicationsCreatedOneDayAgo), viewModel.AnalyticsSummary.NoOfApplicationsStartedOverLastSevenDays);
-            Assert.AreEqual((vacancyAnalyticsSummary.NoOfApprenticeshipDetailsViewsOneDayAgo
+                + vacancyAnalyticsSummary.NoOfApprenticeshipApplicationsCreatedOneDayAgo), Is.EqualTo(viewModel.AnalyticsSummary.NoOfApplicationsStartedOverLastSevenDays));
+            Assert.That((vacancyAnalyticsSummary.NoOfApprenticeshipDetailsViewsOneDayAgo
                 + vacancyAnalyticsSummary.NoOfApprenticeshipDetailsViewsTwoDaysAgo
                 + vacancyAnalyticsSummary.NoOfApprenticeshipDetailsViewsThreeDaysAgo
                 + vacancyAnalyticsSummary.NoOfApprenticeshipDetailsViewsFourDaysAgo
                 + vacancyAnalyticsSummary.NoOfApprenticeshipDetailsViewsFiveDaysAgo
                 + vacancyAnalyticsSummary.NoOfApprenticeshipDetailsViewsSixDaysAgo
-                + vacancyAnalyticsSummary.NoOfApprenticeshipDetailsViewsSevenDaysAgo), viewModel.AnalyticsSummary.NoOfTimesViewedOverLastSevenDays);
+                + vacancyAnalyticsSummary.NoOfApprenticeshipDetailsViewsSevenDaysAgo), Is.EqualTo(viewModel.AnalyticsSummary.NoOfTimesViewedOverLastSevenDays));
         }
 
         [Test]
@@ -105,16 +105,16 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.VacancyAnal
             var viewModel = await _orchestrator.GetVacancyAnalytics(vacancyRouteModel);
 
             // Assert
-            Assert.AreEqual(_ukprn, viewModel.Ukprn);
-            Assert.AreEqual(_vacancyId, viewModel.VacancyId);
-            Assert.IsNotNull(viewModel.AnalyticsSummary);
-            Assert.AreEqual(0, viewModel.AnalyticsSummary.NoOfTimesAppearedInSearch);
-            Assert.AreEqual(0, viewModel.AnalyticsSummary.NoOfApplicationsStarted);
-            Assert.AreEqual(0, viewModel.AnalyticsSummary.NoOfApplicationsSubmitted);
-            Assert.AreEqual(0, viewModel.AnalyticsSummary.NoOfTimesViewed);
-            Assert.AreEqual(0, viewModel.AnalyticsSummary.NoOfTimesAppearedInSearchOverLastSevenDays);
-            Assert.AreEqual(0, viewModel.AnalyticsSummary.NoOfApplicationsStartedOverLastSevenDays);
-            Assert.AreEqual(0, viewModel.AnalyticsSummary.NoOfTimesViewedOverLastSevenDays);
+            Assert.That(_ukprn, Is.EqualTo(viewModel.Ukprn));
+            Assert.That(_vacancyId, Is.EqualTo(viewModel.VacancyId));
+            Assert.That(viewModel.AnalyticsSummary, Is.Not.Null);
+            Assert.That(0, Is.EqualTo(viewModel.AnalyticsSummary.NoOfTimesAppearedInSearch));
+            Assert.That(0, Is.EqualTo(viewModel.AnalyticsSummary.NoOfApplicationsStarted));
+            Assert.That(0, Is.EqualTo(viewModel.AnalyticsSummary.NoOfApplicationsSubmitted));
+            Assert.That(0, Is.EqualTo(viewModel.AnalyticsSummary.NoOfTimesViewed));
+            Assert.That(0, Is.EqualTo(viewModel.AnalyticsSummary.NoOfTimesAppearedInSearchOverLastSevenDays));
+            Assert.That(0, Is.EqualTo(viewModel.AnalyticsSummary.NoOfApplicationsStartedOverLastSevenDays));
+            Assert.That(0, Is.EqualTo(viewModel.AnalyticsSummary.NoOfTimesViewedOverLastSevenDays));
         }
     }
 }

@@ -7,7 +7,7 @@ using Esfa.Recruit.Employer.Web.Orchestrators.Part2;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels.Part2.VacancyDescription;
 using Esfa.Recruit.Shared.Web.Extensions;
-using Esfa.Recruit.Shared.Web.FeatureToggle;
+using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
 
 namespace Esfa.Recruit.Employer.Web.Controllers.Part2
 {
@@ -15,6 +15,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part2
     public class VacancyDescriptionController : Controller
     {
         private readonly VacancyDescriptionOrchestrator _orchestrator;
+        private readonly IFeature _feature;
 
         public VacancyDescriptionController(VacancyDescriptionOrchestrator orchestrator)
         {
@@ -43,6 +44,8 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part2
             {
                 return View(vm);
             }
+            
+            //if isFaaV2ImprovementsEnabled - need to redirect to new page.
             
             if (vm.IsTaskListCompleted)
             {

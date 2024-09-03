@@ -6,7 +6,6 @@ using Esfa.Recruit.Employer.Web;
 using Esfa.Recruit.Employer.Web.Orchestrators.Part1;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.Title;
-using Esfa.Recruit.Shared.Web.FeatureToggle;
 using Esfa.Recruit.Shared.Web.Mappers;
 using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
@@ -48,24 +47,6 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part1
             await _fixture.PostTitleEditModelAsync(titleEditModel);
 
             _fixture.VerifyEmployerReviewFieldIndicators(FieldIdentifiers.Title, fieldIndicatorSet);
-        }
-
-        [Fact]
-        public async Task Then_The_Count_Is_Retrieved()
-        {
-            _fixture
-                .WithTitle("this is a value")
-                .Setup();
-            
-            var model = new VacancyRouteModel
-            {
-                VacancyId = Guid.Parse("84af954e-5baf-4942-897d-d00180a0839e"),
-                EmployerAccountId = "EMPLOYER ACCOUNT ID"
-            };
-            
-            await _fixture.GetTitleEditModel(model);
-
-            _fixture.VerifyVacancyTotalRetrieved(model.EmployerAccountId);
         }
 
         public class TitleOrchestratorTestsFixture

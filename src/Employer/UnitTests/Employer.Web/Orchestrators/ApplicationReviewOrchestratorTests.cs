@@ -15,6 +15,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators
     {
         private Fixture _fixture;
         private Mock<IEmployerVacancyClient> _employerVacancyClient;
+        private Mock<IRecruitVacancyClient> _vacancyClient;
         private Mock<IUtility> _utility;
         private ApplicationReviewOrchestrator _orchestrator;
 
@@ -23,8 +24,9 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators
         {
             _fixture = new Fixture();
             _employerVacancyClient = new Mock<IEmployerVacancyClient>();
+            _vacancyClient = new Mock<IRecruitVacancyClient>();
             _utility = new Mock<IUtility>();
-            _orchestrator = new ApplicationReviewOrchestrator(_employerVacancyClient.Object, _utility.Object);
+            _orchestrator = new ApplicationReviewOrchestrator(_employerVacancyClient.Object, _vacancyClient.Object, _utility.Object);
         }
 
         [Test]
@@ -32,19 +34,21 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators
         {
             var model = _fixture.Create<ApplicationReviewEditModel>();
             var vacancyUser = _fixture.Create<VacancyUser>();
+            var vacancy = _fixture.Create<Vacancy>();
 
             var applicationReview = _fixture.Create<ApplicationReview>();
 
             _utility.Setup(x => x.GetAuthorisedApplicationReviewAsync(model, false))
                 .ReturnsAsync(applicationReview);
+            //_vacancyClient.SetUp(x => x.GetVacancyAsync(vacancy.Id)).ReturnsAsync(vacancy);
             _employerVacancyClient.Setup(x => x.SetApplicationReviewStatus(model.ApplicationReviewId, model.Outcome, model.CandidateFeedback, vacancyUser))
                 .ReturnsAsync(false);
 
             var result = await _orchestrator.PostApplicationReviewEditModelAsync(model, vacancyUser);
 
-            Assert.AreEqual(applicationReview.Id, result.ApplicationReviewId);
-            Assert.AreEqual(applicationReview.GetFriendlyId(), result.FriendlyId);
-            Assert.AreEqual(applicationReview.Application.FullName, result.Name);
+            Assert.That(applicationReview.Id, Is.EqualTo(result.ApplicationReviewId));
+            Assert.That(applicationReview.GetFriendlyId(), Is.EqualTo(result.FriendlyId));
+            Assert.That(applicationReview.Application.FullName, Is.EqualTo(result.Name));
         }
     }
 }

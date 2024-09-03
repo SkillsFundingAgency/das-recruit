@@ -13,7 +13,6 @@ using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Esfa.Recruit.Provider.Web.ViewModels.Part1.LegalEntityAndEmployer;
-using StructureMap.Query;
 
 namespace Esfa.Recruit.Provider.Web.Controllers.Part1
 {

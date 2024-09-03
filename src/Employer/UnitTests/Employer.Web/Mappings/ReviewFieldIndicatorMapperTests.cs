@@ -3,9 +3,11 @@ using System.Linq;
 using Esfa.Recruit.Employer.Web.Mappings;
 using Esfa.Recruit.Shared.Web.Mappers;
 using Esfa.Recruit.Shared.Web.RuleTemplates;
+using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
 using Esfa.Recruit.Vacancies.Client.Application.Rules;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using FluentAssertions;
+using Moq;
 using Xunit;
 
 namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Mappings
@@ -41,7 +43,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Mappings
                     }
                 );
 
-            var sut = new ReviewFieldIndicatorMapper(new RuleMessageTemplateRunner());
+            var sut = new ReviewFieldIndicatorMapper(new RuleMessageTemplateRunner(), Mock.Of<IFeature>());
 
             var review = new VacancyReview
             {
@@ -116,7 +118,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Mappings
                     }
                 );
 
-            var sut = new ReviewFieldIndicatorMapper(new RuleMessageTemplateRunner());
+            var sut = new ReviewFieldIndicatorMapper(new RuleMessageTemplateRunner(), Mock.Of<IFeature>());
 
             var review = new VacancyReview
             {

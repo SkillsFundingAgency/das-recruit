@@ -8,7 +8,6 @@ using Esfa.Recruit.Employer.Web;
 using Esfa.Recruit.Employer.Web.Models;
 using Esfa.Recruit.Employer.Web.Orchestrators.Part1;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.TrainingProvider;
-using Esfa.Recruit.Shared.Web.FeatureToggle;
 using Esfa.Recruit.Shared.Web.Mappers;
 using Esfa.Recruit.Shared.Web.Orchestrators;
 using Esfa.Recruit.Shared.Web.Services;
@@ -276,7 +275,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part1
                 var utility = new Utility(MockRecruitVacancyClient.Object);
                 
                 Sut = new TrainingProviderOrchestrator(MockRecruitVacancyClient.Object, Mock.Of<ILogger<TrainingProviderOrchestrator>>(), 
-                    Mock.Of<IReviewSummaryService>(), MockTrainingProviderSummaryProvider.Object, MockTrainingProviderService.Object, utility, new RecruitConfiguration(EmployerAccountId, false));
+                    Mock.Of<IReviewSummaryService>(), MockTrainingProviderSummaryProvider.Object, MockTrainingProviderService.Object, utility, new RecruitConfiguration(EmployerAccountId));
             }
 
             public async Task<OrchestratorResponse<PostSelectTrainingProviderResult>> PostSelectTrainingProviderAsync(SelectTrainingProviderEditModel model)

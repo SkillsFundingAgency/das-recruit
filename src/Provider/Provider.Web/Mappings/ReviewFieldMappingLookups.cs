@@ -31,15 +31,18 @@ namespace Esfa.Recruit.Provider.Web.Mappings
                 new ReviewFieldIndicatorViewModel(FieldIdentifiers.ClosingDate, Anchors.ClosingDate),
                 new ReviewFieldIndicatorViewModel(FieldIdentifiers.WorkingWeek, Anchors.WorkingWeek),
                 new ReviewFieldIndicatorViewModel(FieldIdentifiers.Wage, Anchors.YearlyWage),
+                new ReviewFieldIndicatorViewModel(FieldIdentifiers.CompanyBenefitsInformation, Anchors.CompanyBenefitsInformation),
                 new ReviewFieldIndicatorViewModel(FieldIdentifiers.ExpectedDuration, Anchors.ExpectedDuration),
                 new ReviewFieldIndicatorViewModel(FieldIdentifiers.PossibleStartDate, Anchors.PossibleStartDate),
                 new ReviewFieldIndicatorViewModel(FieldIdentifiers.TrainingLevel, Anchors.TrainingLevel),
                 new ReviewFieldIndicatorViewModel(FieldIdentifiers.NumberOfPositions, Anchors.NumberOfPositions),
                 new ReviewFieldIndicatorViewModel(FieldIdentifiers.VacancyDescription, Anchors.VacancyDescription),
                 new ReviewFieldIndicatorViewModel(FieldIdentifiers.TrainingDescription, Anchors.TrainingDescription),
+                new ReviewFieldIndicatorViewModel(FieldIdentifiers.AdditionalTrainingDescription, Anchors.AdditionalTrainingDescription),
                 new ReviewFieldIndicatorViewModel(FieldIdentifiers.OutcomeDescription, Anchors.OutcomeDescription),
                 new ReviewFieldIndicatorViewModel(FieldIdentifiers.Skills, Anchors.Skills),
                 new ReviewFieldIndicatorViewModel(FieldIdentifiers.Qualifications, Anchors.Qualifications),
+                new ReviewFieldIndicatorViewModel(FieldIdentifiers.HasOptedToAddQualifications, Anchors.HasOptedToAddQualifications),
                 new ReviewFieldIndicatorViewModel(FieldIdentifiers.ThingsToConsider, Anchors.ThingsToConsider),
                 new ReviewFieldIndicatorViewModel(FieldIdentifiers.EmployerDescription, Anchors.EmployerDescription),
                 new ReviewFieldIndicatorViewModel(FieldIdentifiers.DisabilityConfident, Anchors.DisabilityConfident),
@@ -68,6 +71,7 @@ namespace Esfa.Recruit.Provider.Web.Mappings
                 { FieldIdResolver.ToFieldId(v => v.Wage.WeeklyHours), new []{ FieldIdentifiers.WorkingWeek} },
                 { FieldIdResolver.ToFieldId(v => v.Wage.WorkingWeekDescription), new []{ FieldIdentifiers.WorkingWeek} },
                 { FieldIdResolver.ToFieldId(v => v.Wage.WageAdditionalInformation), new []{ FieldIdentifiers.Wage}},
+                { FieldIdResolver.ToFieldId(v => v.Wage.CompanyBenefitsInformation), new []{ FieldIdentifiers.CompanyBenefitsInformation}},
                 { FieldIdResolver.ToFieldId(v => v.Wage.WageType),  new[]{ FieldIdentifiers.Wage}},
                 { FieldIdResolver.ToFieldId(v => v.Wage.FixedWageYearlyAmount), new []{ FieldIdentifiers.Wage }},
                 { FieldIdResolver.ToFieldId(v => v.Wage.Duration), new []{ FieldIdentifiers.ExpectedDuration }},
@@ -78,9 +82,11 @@ namespace Esfa.Recruit.Provider.Web.Mappings
                 { FieldIdResolver.ToFieldId(v => v.NumberOfPositions), new []{ FieldIdentifiers.NumberOfPositions} },
                 { FieldIdResolver.ToFieldId(v => v.Description), new []{ FieldIdentifiers.VacancyDescription} },
                 { FieldIdResolver.ToFieldId(v => v.TrainingDescription), new []{ FieldIdentifiers.TrainingDescription} },
+                { FieldIdResolver.ToFieldId(v => v.AdditionalTrainingDescription), new []{ FieldIdentifiers.AdditionalTrainingDescription} },
                 { FieldIdResolver.ToFieldId(v => v.OutcomeDescription), new []{ FieldIdentifiers.OutcomeDescription} },
                 { FieldIdResolver.ToFieldId(v => v.Skills), new []{ FieldIdentifiers.Skills} },
                 { FieldIdResolver.ToFieldId(v => v.Qualifications), new []{ FieldIdentifiers.Qualifications} },
+                { FieldIdResolver.ToFieldId(v => v.HasOptedToAddQualifications), new []{ FieldIdentifiers.HasOptedToAddQualifications } },
                 { FieldIdResolver.ToFieldId(v => v.ThingsToConsider), new []{ FieldIdentifiers.ThingsToConsider} },
                 { FieldIdResolver.ToFieldId(v => v.EmployerDescription), new [] { FieldIdentifiers.EmployerDescription }},
                 { FieldIdResolver.ToFieldId(v => v.DisabilityConfident), new []{ FieldIdentifiers.DisabilityConfident} },
@@ -197,7 +203,8 @@ namespace Esfa.Recruit.Provider.Web.Mappings
             var vms = new List<ReviewFieldIndicatorViewModel>
             {
                 new ReviewFieldIndicatorViewModel(FieldIdentifiers.Wage, Anchors.WageTypeHeading),
-                new ReviewFieldIndicatorViewModel(FieldIdentifiers.WageAdditionalInfo, nameof(WageEditModel.WageAdditionalInformation))
+                new ReviewFieldIndicatorViewModel(FieldIdentifiers.WageAdditionalInfo, nameof(WageEditModel.WageAdditionalInformation)),
+                new ReviewFieldIndicatorViewModel(FieldIdentifiers.CompanyBenefitsInformation, nameof(WageEditModel.CompanyBenefitsInformation))
             };
 
             var mappings =  new Dictionary<string, IEnumerable<string>>
@@ -205,6 +212,7 @@ namespace Esfa.Recruit.Provider.Web.Mappings
                 { FieldIdResolver.ToFieldId(v => v.Wage.WeeklyHours), new []{ FieldIdentifiers.WorkingWeek} },
                 { FieldIdResolver.ToFieldId(v => v.Wage.WorkingWeekDescription), new []{ FieldIdentifiers.WorkingWeek} },
                 { FieldIdResolver.ToFieldId(v => v.Wage.WageAdditionalInformation), new []{ FieldIdentifiers.WageAdditionalInfo }},
+                { FieldIdResolver.ToFieldId(v => v.Wage.CompanyBenefitsInformation), new []{ FieldIdentifiers.CompanyBenefitsInformation }},
                 { FieldIdResolver.ToFieldId(v => v.Wage.WageType),  new[]{ FieldIdentifiers.Wage}},
                 { FieldIdResolver.ToFieldId(v => v.Wage.FixedWageYearlyAmount), new []{ FieldIdentifiers.Wage }},
                 { FieldIdResolver.ToFieldId(v => v.Wage.Duration), new []{ FieldIdentifiers.ExpectedDuration }},
@@ -441,6 +449,53 @@ namespace Esfa.Recruit.Provider.Web.Mappings
             {
                 { FieldIdResolver.ToFieldId(v => v.AdditionalQuestion1), new []{ FieldIdentifiers.AdditionalQuestion1} },
                 { FieldIdResolver.ToFieldId(v => v.AdditionalQuestion2), new []{ FieldIdentifiers.AdditionalQuestion2} }
+            };
+
+            return new ReviewFieldMappingLookupsForPage(vms, mappings);
+        }
+        public static ReviewFieldMappingLookupsForPage GetWhatWillTheApprenticeDoAtWorkDescriptionFieldIndicators()
+        {
+            var vms = new List<ReviewFieldIndicatorViewModel>
+            {
+                new ReviewFieldIndicatorViewModel(FieldIdentifiers.VacancyDescription, nameof(VacancyDescriptionEditModel.VacancyDescription)),
+            };
+
+            var mappings = new Dictionary<string, IEnumerable<string>>
+            {
+                { FieldIdResolver.ToFieldId(v => v.Description), new []{ FieldIdentifiers.VacancyDescription} },
+            };
+
+            return new ReviewFieldMappingLookupsForPage(vms, mappings);
+        }
+        public static ReviewFieldMappingLookupsForPage GetTrainingDescriptionFieldIndicators()
+        {
+            var vms = new List<ReviewFieldIndicatorViewModel>
+            {
+                new(FieldIdentifiers.TrainingDescription, Anchors.TrainingDescription),
+                new(FieldIdentifiers.AdditionalTrainingDescription, Anchors.AdditionalTrainingDescription)
+            };
+
+            var mappings = new Dictionary<string, IEnumerable<string>>
+            {
+                { FieldIdResolver.ToFieldId(v => v.TrainingDescription), new []{ FieldIdentifiers.TrainingDescription} },
+                { FieldIdResolver.ToFieldId(v => v.AdditionalTrainingDescription), new []{ FieldIdentifiers.AdditionalTrainingDescription} }
+            };
+
+            return new ReviewFieldMappingLookupsForPage(vms, mappings);
+        }
+        
+        public static ReviewFieldMappingLookupsForPage GetAdditionalWageInformationFieldIndicators()
+        {
+            var vms = new List<ReviewFieldIndicatorViewModel>
+            {
+                new(FieldIdentifiers.WageAdditionalInfo, Anchors.WageAdditionalInformation),
+                new(FieldIdentifiers.CompanyBenefitsInformation, Anchors.CompanyBenefitsInformation)
+            };
+
+            var mappings = new Dictionary<string, IEnumerable<string>>
+            {
+                { FieldIdResolver.ToFieldId(v => v.Wage.WageAdditionalInformation), new []{ FieldIdentifiers.WageAdditionalInfo} },
+                { FieldIdResolver.ToFieldId(v => v.Wage.CompanyBenefitsInformation), new []{ FieldIdentifiers.CompanyBenefitsInformation} }
             };
 
             return new ReviewFieldMappingLookupsForPage(vms, mappings);

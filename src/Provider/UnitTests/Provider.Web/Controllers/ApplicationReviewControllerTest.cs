@@ -17,11 +17,11 @@ using Esfa.Recruit.Shared.Web.ViewModels;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Provider.Web.Extensions;
 using Esfa.Recruit.Provider.Web.RouteModel;
-using Esfa.Recruit.Shared.Web.ViewModels.ApplicationReview;
 using Newtonsoft.Json;
 using Esfa.Recruit.Provider.Web.Models;
 using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Microsoft.Extensions.Configuration;
+using ApplicationReviewViewModel = Esfa.Recruit.Provider.Web.ViewModels.ApplicationReview.ApplicationReviewViewModel;
 
 namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
 {
@@ -81,12 +81,12 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
             var redirectResult = await _controller.ApplicationReview(editModel) as RedirectToRouteResult;
 
             // Assert
-            Assert.NotNull(redirectResult);
-            Assert.AreEqual(RouteNames.VacancyManage_Get, redirectResult.RouteName);
-            Assert.AreEqual(_vacancyId, redirectResult.RouteValues["VacancyId"]);
-            Assert.AreEqual(_ukprn, redirectResult.RouteValues["Ukprn"]);
-            Assert.IsTrue(_controller.TempData.ContainsKey(TempDataKeys.ApplicationStatusChangedHeader));
-            Assert.AreEqual(string.Format(InfoMessages.ApplicationStatusChangeBannerHeader, _candidateName, editModel.Outcome.GetDisplayName().ToLower()), _controller.TempData[TempDataKeys.ApplicationStatusChangedHeader]);
+            Assert.That(redirectResult, Is.Not.Null);
+            Assert.That(RouteNames.VacancyManage_Get, Is.EqualTo(redirectResult.RouteName));
+            Assert.That(_vacancyId, Is.EqualTo(redirectResult.RouteValues["VacancyId"]));
+            Assert.That(_ukprn, Is.EqualTo(redirectResult.RouteValues["Ukprn"]));
+            Assert.That(_controller.TempData.ContainsKey(TempDataKeys.ApplicationStatusChangedHeader), Is.True);
+            Assert.That(string.Format(InfoMessages.ApplicationStatusChangeBannerHeader, _candidateName, editModel.Outcome.GetDisplayName().ToLower()), Is.EqualTo(_controller.TempData[TempDataKeys.ApplicationStatusChangedHeader]));
         }
 
 
@@ -110,12 +110,12 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
             var redirectResult = await _controller.ApplicationReview(editModel) as RedirectToRouteResult;
 
             // Assert
-            Assert.NotNull(redirectResult);
-            Assert.AreEqual(RouteNames.VacancyManage_Get, redirectResult.RouteName);
-            Assert.AreEqual(_vacancyId, redirectResult.RouteValues["VacancyId"]);
-            Assert.AreEqual(_ukprn, redirectResult.RouteValues["Ukprn"]);
-            Assert.IsTrue(_controller.TempData.ContainsKey(TempDataKeys.ApplicationStatusChangedHeader));
-            Assert.AreEqual(string.Format(InfoMessages.ApplicationStatusChangeBannerHeader, _candidateName, editModel.Outcome.GetDisplayName().ToLower()), _controller.TempData[TempDataKeys.ApplicationStatusChangedHeader]);
+            Assert.That(redirectResult, Is.Not.Null);
+            Assert.That(RouteNames.VacancyManage_Get, Is.EqualTo(redirectResult.RouteName));
+            Assert.That(_vacancyId, Is.EqualTo(redirectResult.RouteValues["VacancyId"]));
+            Assert.That(_ukprn, Is.EqualTo(redirectResult.RouteValues["Ukprn"]));
+            Assert.That(_controller.TempData.ContainsKey(TempDataKeys.ApplicationStatusChangedHeader), Is.True);
+            Assert.That(string.Format(InfoMessages.ApplicationStatusChangeBannerHeader, _candidateName, editModel.Outcome.GetDisplayName().ToLower()), Is.EqualTo(_controller.TempData[TempDataKeys.ApplicationStatusChangedHeader]));
         }
 
         [Test]
@@ -133,11 +133,11 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
             var redirectResult = await _controller.ApplicationReview(editModel) as RedirectToRouteResult;
 
             // Assert
-            Assert.NotNull(redirectResult);
-            Assert.AreEqual(RouteNames.ApplicationReviewConfirmation_Get, redirectResult.RouteName);
-            Assert.AreEqual(_vacancyId, redirectResult.RouteValues["VacancyId"]);
-            Assert.AreEqual(_ukprn, redirectResult.RouteValues["Ukprn"]);
-            Assert.AreEqual(_applicationReviewId, redirectResult.RouteValues["ApplicationReviewId"]);
+            Assert.That(redirectResult, Is.Not.Null);
+            Assert.That(RouteNames.ApplicationReviewConfirmation_Get, Is.EqualTo(redirectResult.RouteName));
+            Assert.That(_vacancyId, Is.EqualTo(redirectResult.RouteValues["VacancyId"]));
+            Assert.That(_ukprn, Is.EqualTo(redirectResult.RouteValues["Ukprn"]));
+            Assert.That(_applicationReviewId, Is.EqualTo(redirectResult.RouteValues["ApplicationReviewId"]));
         }
 
         [Test]
@@ -155,11 +155,11 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
             var redirectResult = await _controller.ApplicationReview(editModel) as RedirectToRouteResult;
 
             // Assert
-            Assert.NotNull(redirectResult);
-            Assert.AreEqual(RouteNames.ApplicationReviewConfirmation_Get, redirectResult.RouteName);
-            Assert.AreEqual(_vacancyId, redirectResult.RouteValues["VacancyId"]);
-            Assert.AreEqual(_ukprn, redirectResult.RouteValues["Ukprn"]);
-            Assert.AreEqual(_applicationReviewId, redirectResult.RouteValues["ApplicationReviewId"]);
+            Assert.That(redirectResult, Is.Not.Null);
+            Assert.That(RouteNames.ApplicationReviewConfirmation_Get, Is.EqualTo(redirectResult.RouteName));
+            Assert.That(_vacancyId, Is.EqualTo(redirectResult.RouteValues["VacancyId"]));
+            Assert.That(_ukprn, Is.EqualTo(redirectResult.RouteValues["Ukprn"]));
+            Assert.That(_applicationReviewId, Is.EqualTo(redirectResult.RouteValues["ApplicationReviewId"]));
         }
 
         [Test]
@@ -177,11 +177,11 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
             var redirectResult = await _controller.ApplicationReview(editModel) as RedirectToRouteResult;
 
             // Assert
-            Assert.NotNull(redirectResult);
-            Assert.AreEqual(RouteNames.ApplicationReviewFeedback_Get, redirectResult.RouteName);
-            Assert.AreEqual(_vacancyId, redirectResult.RouteValues["VacancyId"]);
-            Assert.AreEqual(_ukprn, redirectResult.RouteValues["Ukprn"]);
-            Assert.AreEqual(_applicationReviewId, redirectResult.RouteValues["ApplicationReviewId"]);
+            Assert.That(redirectResult, Is.Not.Null);
+            Assert.That(RouteNames.ApplicationReviewFeedback_Get, Is.EqualTo(redirectResult.RouteName));
+            Assert.That(_vacancyId, Is.EqualTo(redirectResult.RouteValues["VacancyId"]));
+            Assert.That(_ukprn, Is.EqualTo(redirectResult.RouteValues["Ukprn"]));
+            Assert.That(_applicationReviewId, Is.EqualTo(redirectResult.RouteValues["ApplicationReviewId"]));
         }
 
         [Test]
@@ -199,11 +199,11 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
             var redirectResult = await _controller.ApplicationReview(editModel) as RedirectToRouteResult;
 
             // Assert
-            Assert.NotNull(redirectResult);
-            Assert.AreEqual(RouteNames.ApplicationReviewsToShareConfirmation_Get, redirectResult.RouteName);
-            Assert.AreEqual(_vacancyId, redirectResult.RouteValues["VacancyId"]);
-            Assert.AreEqual(_ukprn, redirectResult.RouteValues["Ukprn"]);
-            Assert.NotNull(redirectResult.RouteValues["ApplicationsToShare"]);
+            Assert.That(redirectResult, Is.Not.Null);
+            Assert.That(RouteNames.ApplicationReviewsToShareConfirmation_Get, Is.EqualTo(redirectResult.RouteName));
+            Assert.That(_vacancyId, Is.EqualTo(redirectResult.RouteValues["VacancyId"]));
+            Assert.That(_ukprn, Is.EqualTo(redirectResult.RouteValues["Ukprn"]));
+            Assert.That(redirectResult.RouteValues["ApplicationsToShare"], Is.Not.Null);
             Assert.That(redirectResult.RouteValues["ApplicationsToShare"], Has.Count.EqualTo(1));
         }
 
@@ -231,9 +231,9 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
 
             // Assert
             var actual = viewResult.Model as ApplicationReviewViewModel;
-            Assert.AreEqual(actual.Ukprn, editModel.Ukprn);
-            Assert.AreEqual(actual.VacancyId, editModel.VacancyId);
-            Assert.AreEqual(actual.ApplicationReviewId, editModel.ApplicationReviewId);
+            Assert.That(actual.Ukprn, Is.EqualTo(editModel.Ukprn));
+            Assert.That(actual.VacancyId, Is.EqualTo(editModel.VacancyId));
+            Assert.That(actual.ApplicationReviewId, Is.EqualTo(editModel.ApplicationReviewId));
         }
 
         [Test]
@@ -257,12 +257,12 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
             var redirectResult = await _controller.ApplicationStatusConfirmation(editModel) as RedirectToRouteResult;
 
             // Assert
-            Assert.NotNull(redirectResult);
-            Assert.AreEqual(RouteNames.VacancyManage_Get, redirectResult.RouteName);
-            Assert.AreEqual(_vacancyId, redirectResult.RouteValues["VacancyId"]);
-            Assert.AreEqual(_ukprn, redirectResult.RouteValues["Ukprn"]);
-            Assert.IsTrue(_controller.TempData.ContainsKey(TempDataKeys.ApplicationReviewStatusInfoMessage));
-            Assert.AreEqual(string.Format(InfoMessages.ApplicationReviewStatusHeader, _candidateName, editModel.Outcome.ToString().ToLower()), _controller.TempData[TempDataKeys.ApplicationReviewStatusInfoMessage]);
+            Assert.That(redirectResult, Is.Not.Null);
+            Assert.That(RouteNames.VacancyManage_Get, Is.EqualTo(redirectResult.RouteName));
+            Assert.That(_vacancyId, Is.EqualTo(redirectResult.RouteValues["VacancyId"]));
+            Assert.That(_ukprn, Is.EqualTo(redirectResult.RouteValues["Ukprn"]));
+            Assert.That(_controller.TempData.ContainsKey(TempDataKeys.ApplicationReviewStatusInfoMessage), Is.True);
+            Assert.That(string.Format(InfoMessages.ApplicationReviewStatusHeader, _candidateName, editModel.Outcome.ToString().ToLower()), Is.EqualTo(_controller.TempData[TempDataKeys.ApplicationReviewStatusInfoMessage]));
         }
 
         [Test]
@@ -286,12 +286,12 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
             var redirectResult = await _controller.ApplicationStatusConfirmation(editModel) as RedirectToRouteResult;
 
             // Assert
-            Assert.NotNull(redirectResult);
-            Assert.AreEqual(RouteNames.VacancyManage_Get, redirectResult.RouteName);
-            Assert.AreEqual(_vacancyId, redirectResult.RouteValues["VacancyId"]);
-            Assert.AreEqual(_ukprn, redirectResult.RouteValues["Ukprn"]);
-            Assert.IsTrue(_controller.TempData.ContainsKey(TempDataKeys.ApplicationReviewSuccessStatusInfoMessage));
-            Assert.AreEqual(string.Format(InfoMessages.ApplicationReviewSuccessStatusHeader, _candidateName), _controller.TempData[TempDataKeys.ApplicationReviewSuccessStatusInfoMessage]);
+            Assert.That(redirectResult, Is.Not.Null);
+            Assert.That(RouteNames.VacancyManage_Get, Is.EqualTo(redirectResult.RouteName));
+            Assert.That(_vacancyId, Is.EqualTo(redirectResult.RouteValues["VacancyId"]));
+            Assert.That(_ukprn, Is.EqualTo(redirectResult.RouteValues["Ukprn"]));
+            Assert.That(_controller.TempData.ContainsKey(TempDataKeys.ApplicationReviewSuccessStatusInfoMessage), Is.True);
+            Assert.That(string.Format(InfoMessages.ApplicationReviewSuccessStatusHeader, _candidateName), Is.EqualTo(_controller.TempData[TempDataKeys.ApplicationReviewSuccessStatusInfoMessage]));
         }
 
         [Test]
@@ -315,12 +315,12 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
             var redirectResult = await _controller.ApplicationStatusConfirmation(editModel) as RedirectToRouteResult;
 
             // Assert
-            Assert.NotNull(redirectResult);
-            Assert.AreEqual(RouteNames.VacancyManage_Get, redirectResult.RouteName);
-            Assert.AreEqual(_vacancyId, redirectResult.RouteValues["VacancyId"]);
-            Assert.AreEqual(_ukprn, redirectResult.RouteValues["Ukprn"]);
-            Assert.IsTrue(_controller.TempData.ContainsKey(TempDataKeys.ApplicationReviewUnsuccessStatusInfoMessage));
-            Assert.AreEqual(string.Format(InfoMessages.ApplicationReviewUnsuccessStatusHeader, _candidateName), _controller.TempData[TempDataKeys.ApplicationReviewUnsuccessStatusInfoMessage]);
+            Assert.That(redirectResult, Is.Not.Null);
+            Assert.That(RouteNames.VacancyManage_Get, Is.EqualTo(redirectResult.RouteName));
+            Assert.That(_vacancyId, Is.EqualTo(redirectResult.RouteValues["VacancyId"]));
+            Assert.That(_ukprn, Is.EqualTo(redirectResult.RouteValues["Ukprn"]));
+            Assert.That(_controller.TempData.ContainsKey(TempDataKeys.ApplicationReviewUnsuccessStatusInfoMessage), Is.True);
+            Assert.That(string.Format(InfoMessages.ApplicationReviewUnsuccessStatusHeader, _candidateName), Is.EqualTo(_controller.TempData[TempDataKeys.ApplicationReviewUnsuccessStatusInfoMessage]));
         }
 
         [Test]
@@ -344,12 +344,12 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
             var redirectResult = await _controller.ApplicationStatusConfirmation(editModel) as RedirectToRouteResult;
 
             // Assert
-            Assert.NotNull(redirectResult);
-            Assert.AreEqual(RouteNames.ApplicationReviewsToUnsuccessful_Get, redirectResult.RouteName);
-            Assert.AreEqual(_vacancyId, redirectResult.RouteValues["VacancyId"]);
-            Assert.AreEqual(_ukprn, redirectResult.RouteValues["Ukprn"]);
-            Assert.IsTrue(_controller.TempData.ContainsKey(TempDataKeys.ApplicationReviewStatusInfoMessage));
-            Assert.AreEqual(string.Format(InfoMessages.ApplicationReviewSuccessStatusHeader, _candidateName), _controller.TempData[TempDataKeys.ApplicationReviewStatusInfoMessage]);
+            Assert.That(redirectResult, Is.Not.Null);
+            Assert.That(RouteNames.ApplicationReviewsToUnsuccessful_Get, Is.EqualTo(redirectResult.RouteName));
+            Assert.That(_vacancyId, Is.EqualTo(redirectResult.RouteValues["VacancyId"]));
+            Assert.That(_ukprn, Is.EqualTo(redirectResult.RouteValues["Ukprn"]));
+            Assert.That(_controller.TempData.ContainsKey(TempDataKeys.ApplicationReviewStatusInfoMessage), Is.True);
+            Assert.That(string.Format(InfoMessages.ApplicationReviewSuccessStatusHeader, _candidateName), Is.EqualTo(_controller.TempData[TempDataKeys.ApplicationReviewStatusInfoMessage]));
         }
 
         [Test]
@@ -380,15 +380,15 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
 
             var result = await _controller.ApplicationFeedback(routeModel.Object);
 
-            Assert.IsInstanceOf<ViewResult>(result);
+            Assert.That(result, Is.InstanceOf<ViewResult>());
             var viewResult = (ViewResult)result;
             var viewModel = (ApplicationReviewFeedbackViewModel)viewResult.Model;
 
-            Assert.AreEqual(applicationReviewFeedbackViewModel.CandidateFeedback, viewModel.CandidateFeedback);
-            Assert.AreEqual(applicationReviewFeedbackViewModel.ApplicationReviewId, viewModel.ApplicationReviewId);
-            Assert.AreEqual(applicationReviewFeedbackViewModel.Name, viewModel.Name);
-            Assert.AreEqual(applicationReviewFeedbackViewModel.Ukprn, viewModel.Ukprn);
-            Assert.AreEqual(applicationReviewFeedbackViewModel.VacancyId, viewModel.VacancyId);
+            Assert.That(applicationReviewFeedbackViewModel.CandidateFeedback, Is.EqualTo(viewModel.CandidateFeedback));
+            Assert.That(applicationReviewFeedbackViewModel.ApplicationReviewId, Is.EqualTo(viewModel.ApplicationReviewId));
+            Assert.That(applicationReviewFeedbackViewModel.Name, Is.EqualTo(viewModel.Name));
+            Assert.That(applicationReviewFeedbackViewModel.Ukprn, Is.EqualTo(viewModel.Ukprn));
+            Assert.That(applicationReviewFeedbackViewModel.VacancyId, Is.EqualTo(viewModel.VacancyId));
         }
 
         [Test]
@@ -411,13 +411,13 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
 
             var result = await _controller.ApplicationFeedback(routeModel);
 
-            Assert.IsInstanceOf<RedirectToRouteResult>(result);
+            Assert.That(result, Is.InstanceOf<RedirectToRouteResult>());
             var redirectToRouteResult = (RedirectToRouteResult)result;
 
-            Assert.AreEqual(RouteNames.ApplicationReview_Get, redirectToRouteResult.RouteName);
-            Assert.AreEqual(routeModel.ApplicationReviewId, redirectToRouteResult.RouteValues["ApplicationReviewId"]);
-            Assert.AreEqual(routeModel.VacancyId, redirectToRouteResult.RouteValues["VacancyId"]);
-            Assert.AreEqual(routeModel.Ukprn, redirectToRouteResult.RouteValues["Ukprn"]);
+            Assert.That(RouteNames.ApplicationReview_Get, Is.EqualTo(redirectToRouteResult.RouteName));
+            Assert.That(routeModel.ApplicationReviewId, Is.EqualTo(redirectToRouteResult.RouteValues["ApplicationReviewId"]));
+            Assert.That(routeModel.VacancyId, Is.EqualTo(redirectToRouteResult.RouteValues["VacancyId"]));
+            Assert.That(routeModel.Ukprn, Is.EqualTo(redirectToRouteResult.RouteValues["Ukprn"]));
         }
 
         [Test]
@@ -437,12 +437,12 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
 
             var result = await _controller.ApplicationFeedback(applicationReviewFeedbackViewModel);
 
-            Assert.IsInstanceOf<RedirectToRouteResult>(result);
+            Assert.That(result, Is.InstanceOf<RedirectToRouteResult>());
             var redirectResult = (RedirectToRouteResult)result;
-            Assert.AreEqual(RouteNames.ApplicationReviewConfirmation_Get, redirectResult.RouteName);
-            Assert.AreEqual(applicationReviewFeedbackViewModel.ApplicationReviewId, redirectResult.RouteValues["ApplicationReviewId"]);
-            Assert.AreEqual(applicationReviewFeedbackViewModel.VacancyId, redirectResult.RouteValues["VacancyId"]);
-            Assert.AreEqual(applicationReviewFeedbackViewModel.Ukprn, redirectResult.RouteValues["Ukprn"]);
+            Assert.That(RouteNames.ApplicationReviewConfirmation_Get, Is.EqualTo(redirectResult.RouteName));
+            Assert.That(applicationReviewFeedbackViewModel.ApplicationReviewId, Is.EqualTo(redirectResult.RouteValues["ApplicationReviewId"]));
+            Assert.That(applicationReviewFeedbackViewModel.VacancyId, Is.EqualTo(redirectResult.RouteValues["VacancyId"]));
+            Assert.That(applicationReviewFeedbackViewModel.Ukprn, Is.EqualTo(redirectResult.RouteValues["Ukprn"]));
         }
     }
 }

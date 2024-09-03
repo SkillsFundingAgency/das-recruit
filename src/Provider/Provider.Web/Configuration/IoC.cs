@@ -86,7 +86,6 @@ namespace Esfa.Recruit.Provider.Web.Configuration
             services.AddSingleton<IValidator<CompetitiveWageEditModel>, CompetitiveWageEditModelValidator>();
             services.AddSingleton<IValidator<ApplicationReviewEditModel>, ApplicationReviewEditModelValidator>();
 
-            services.AddSingleton<IValidator<WageExtraInformationViewModel>, WageExtraInformationModelValidator>();
             services.AddSingleton<IValidator<WageEditModel>, WageEditModelValidator>();
 
             services.AddSingleton<IValidator<ApplicationReviewFeedbackViewModel>, ApplicationReviewFeedbackModelValidator>();
@@ -148,6 +147,8 @@ namespace Esfa.Recruit.Provider.Web.Configuration
             services.AddTransient<WorkExperienceOrchestrator>();
             services.AddTransient<TraineeSectorOrchestrator>();
             services.AddTransient<IAdditionalQuestionsOrchestrator, AdditionalQuestionsOrchestrator>();
+            services.AddTransient<VacancyWorkDescriptionOrchestrator>();
+            services.AddTransient<VacancyHowWillTheApprenticeTrainOrchestrator>();
         }
 
         private static void RegisterMapperDeps(IServiceCollection services)

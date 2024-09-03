@@ -44,6 +44,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels
         public string ThingsToConsider { get; internal set; }
         public string Title { get; internal set; }
         public string TrainingDescription { get; internal set; }
+        public string AdditionalTrainingDescription { get; internal set; }
         public string TrainingTitle { get; internal set; }
         public string TrainingType { get; internal set; }
         public string TrainingLevel { get; internal set; }
@@ -55,6 +56,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels
         public string WageInfo { get; internal set; }
         public string WageText { get; internal set; }
         public string WorkingWeekDescription { get; internal set; }
+        public string CompanyBenefitsInformation { get; internal set; }
         public WageType? WageType { get; internal set; }
         public bool HasCompetitiveSalaryType => WageType.HasValue && WageType.Value == Recruit.Vacancies.Client.Domain.Entities.WageType.CompetitiveSalary;
         public string AccountLegalEntityPublicHashedId { get ; set ; }
@@ -109,7 +111,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels
 
         public bool HasSkills => Skills != null && Skills.Any();
 
-        public bool HasQualifications => Qualifications != null && Qualifications.Any();
+        public bool HasQualifications => HasOptedToAddQualifications is false || (Qualifications != null && Qualifications.Any());
 
         public bool HasThingsToConsider => !string.IsNullOrWhiteSpace(ThingsToConsider);
 
@@ -142,6 +144,8 @@ namespace Esfa.Recruit.Employer.Web.ViewModels
         public bool HasSelectedLegalEntity => !string.IsNullOrEmpty(AccountLegalEntityPublicHashedId);
         
         public EmployerNameOption? EmployerNameOption { get; set; }
+        public bool? HasOptedToAddQualifications { get; set; }
+
 
         private string BuildAdditionalQuestionText(string additionalQuestion)
         {

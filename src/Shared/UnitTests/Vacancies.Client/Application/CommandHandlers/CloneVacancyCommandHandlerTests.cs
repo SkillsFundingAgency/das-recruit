@@ -168,6 +168,7 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.CommandHandlers
                 {nameof(Vacancy.ThingsToConsider), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.Cloned)},
                 {nameof(Vacancy.Title), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.Cloned)},
                 {nameof(Vacancy.TrainingDescription), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.Cloned)},
+                {nameof(Vacancy.AdditionalTrainingDescription), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.Cloned)},
                 {nameof(Vacancy.TrainingProvider), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.Cloned)},
                 {nameof(Vacancy.Wage), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.Cloned)},
                 {nameof(Vacancy.ClosureReason), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.IsNull)},
@@ -180,7 +181,8 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.CommandHandlers
                 {nameof(Vacancy.HasChosenProviderContactDetails), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.Cloned)},
                 {nameof(Vacancy.AdditionalQuestion1), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.Cloned)},
                 {nameof(Vacancy.AdditionalQuestion2), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.Cloned)},
-                {nameof(Vacancy.HasSubmittedAdditionalQuestions), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.Cloned)}
+                {nameof(Vacancy.HasSubmittedAdditionalQuestions), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.Cloned)},
+                {nameof(Vacancy.HasOptedToAddQualifications), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.Cloned)}
             };
 
             foreach (var property in typeof(Vacancy).GetProperties())

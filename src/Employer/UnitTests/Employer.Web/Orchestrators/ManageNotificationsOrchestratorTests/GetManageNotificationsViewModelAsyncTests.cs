@@ -41,11 +41,10 @@ namespace Esfa.Recruit.UnitTests.Employer.Web.Orchestrators.ManageNotificationsO
         {
             var employerAccountId = "ABC123";
             _recruitVacancyClientMock.Setup(c => c.GetUserNotificationPreferencesAsync(It.IsAny<string>())).ReturnsAsync(new UserNotificationPreferences());
-            var sut = GetSut(false, false);
+            var sut = GetSut(false);
             var result = await sut.GetManageNotificationsViewModelAsync(new VacancyUser(), employerAccountId);
 
             result.EnvironmentIsProd.Should().BeFalse();
-            result.UseGovSignIn.Should().BeFalse();
         }
 
 
@@ -73,14 +72,13 @@ namespace Esfa.Recruit.UnitTests.Employer.Web.Orchestrators.ManageNotificationsO
             result.IsVacancyRejectedSelected.Should().Be(expectedIsVacancyRejectedSelected);
             result.IsVacancySentForEmployerReviewSelected.Should().Be(expectIsVacancySentForReviewSelected);
             result.EnvironmentIsProd.Should().BeTrue();
-            result.UseGovSignIn.Should().BeTrue();
         }
 
-        private ManageNotificationsOrchestrator GetSut(bool isProd = true, bool isGovSign = true)
+        private ManageNotificationsOrchestrator GetSut(bool isProd = true)
         {
             var _loggerMock = new Mock<ILogger<ManageNotificationsOrchestrator>>();
             _iConfigurationMock.Setup(x=>x["Environment"]).Returns(isProd?"Prod":"test");
-            return new ManageNotificationsOrchestrator(_loggerMock.Object, new RecruitConfiguration(EmployerAccountId, isGovSign), _iConfigurationMock.Object, _recruitVacancyClientMock.Object);
+            return new ManageNotificationsOrchestrator(_loggerMock.Object, new RecruitConfiguration(EmployerAccountId), _iConfigurationMock.Object, _recruitVacancyClientMock.Object);
         }
     }
 }

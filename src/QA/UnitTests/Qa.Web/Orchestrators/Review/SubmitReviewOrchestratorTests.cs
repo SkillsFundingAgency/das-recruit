@@ -48,7 +48,9 @@ namespace UnitTests.Qa.Web.Orchestrators.Review
             qaVacancyClient.Verify(x=>x.UpdateDraftVacancyAsync(It.Is<Vacancy>(c=>
                 c.OutcomeDescription == editModel.OutcomeDescription
                 && c.TrainingDescription == editModel.TrainingDescription
+                && c.AdditionalTrainingDescription == editModel.AdditionalTrainingDescription
                 && c.Wage.WorkingWeekDescription == editModel.WorkingWeekDescription
+                && c.Wage.CompanyBenefitsInformation == editModel.CompanyBenefitsInformation
                 && c.ShortDescription == editModel.ShortDescription
                 && c.Description == editModel.VacancyDescription
                 && c.WorkExperience == editModel.WorkExperience
@@ -89,9 +91,11 @@ namespace UnitTests.Qa.Web.Orchestrators.Review
                 c.ReviewId.Equals(editModel.ReviewId)
                 && c.ManualQaFieldEditIndicators.SingleOrDefault(x=>x.FieldIdentifier.Equals(nameof(editModel.OutcomeDescription))) != null
                 && c.ManualQaFieldEditIndicators.SingleOrDefault(x=>x.FieldIdentifier.Equals(nameof(editModel.TrainingDescription))) != null
+                && c.ManualQaFieldEditIndicators.SingleOrDefault(x=>x.FieldIdentifier.Equals(nameof(editModel.AdditionalTrainingDescription))) != null
                 && c.ManualQaFieldEditIndicators.SingleOrDefault(x=>x.FieldIdentifier.Equals(nameof(editModel.ShortDescription))) != null
                 && c.ManualQaFieldEditIndicators.SingleOrDefault(x=>x.FieldIdentifier.Equals(nameof(editModel.VacancyDescription))) != null
                 && c.ManualQaFieldEditIndicators.SingleOrDefault(x=>x.FieldIdentifier.Equals(nameof(editModel.WorkingWeekDescription))) != null
+                && c.ManualQaFieldEditIndicators.SingleOrDefault(x=>x.FieldIdentifier.Equals(nameof(editModel.CompanyBenefitsInformation))) != null
                 && c.ManualQaFieldEditIndicators.SingleOrDefault(x=>x.FieldIdentifier.Equals(nameof(editModel.WorkExperience))) != null
                 )), Times.Once);
             

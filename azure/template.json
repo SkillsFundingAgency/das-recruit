@@ -155,7 +155,11 @@
       "defaultValue": "[utcNow('yyMMddHHmmss')]"
     },
     "stubAuth": {
-        "type": "string"
+      "type": "string"
+    },
+    "minimumTlsVersion": {
+      "type": "string",
+      "defaultValue": "TLS1_2"
     }
   },
   "variables": {
@@ -170,11 +174,11 @@
     "webjobAppServiceName": "[concat(variables('resourceNamePrefix'), '-webjob-as')]",
     "storageAccountName": "[toLower(concat('das', parameters('resourceEnvironmentName'), parameters('serviceName'), 'str'))]",
     "apiAppServiceName": "[concat(variables('resourceNamePrefix'), 'api-as')]",
-    "apiConfigNames": "SFA.DAS.Recruit.Api",
-    "providerWebConfigNames": "SFA.DAS.Recruit.Provider,SFA.DAS.Provider.DfeSignIn",
-    "employerWebConfigNames": "SFA.DAS.Recruit.Employer,SFA.DAS.Employer.GovSignIn",
+    "apiConfigNames": "SFA.DAS.Recruit.Api,SFA.DAS.Encoding",
+    "providerWebConfigNames": "SFA.DAS.Recruit.Provider,SFA.DAS.Provider.DfeSignIn,SFA.DAS.Encoding",
+    "employerWebConfigNames": "SFA.DAS.Recruit.Employer,SFA.DAS.Employer.GovSignIn,SFA.DAS.Encoding",
     "traineeshipWebConfigNames": "SFA.DAS.Recruit.Traineeship.Provider,SFA.DAS.Provider.DfeSignIn",
-    "qaConfigNames": "SFA.DAS.Recruit.QA,SFA.DAS.Provider.DfeSignIn",
+    "qaConfigNames": "SFA.DAS.Recruit.QA,SFA.DAS.Provider.DfeSignIn,SFA.DAS.Encoding",
     "jobsConfigNames": "SFA.DAS.Recruit.Jobs,SFA.DAS.Encoding"
   },
   "resources": [
@@ -855,7 +859,10 @@
           },
           "allowSharedKeyAccess": {
             "value": true
-          }
+          },
+          "minimumTlsVersion": {
+            "value": "[parameters('minimumTlsVersion')]"
+        }
         }
       },
       "dependsOn": [

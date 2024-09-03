@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Geocode.Responses;
 using FluentAssertions;
+using Microsoft.Azure.Amqp.Framing;
 using Microsoft.Extensions.Options;
 using Moq;
 using Moq.Protected;
@@ -33,7 +34,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
                 Content = new StringContent(JsonConvert.SerializeObject(testObject)),
                 StatusCode = HttpStatusCode.Accepted
             };
-            var httpMessageHandler = MessageHandler.SetupMessageHandlerMock(response, $"{config.BaseUrl}{getTestRequest.GetUrl}", config.Key);
+            var httpMessageHandler = MessageHandler.SetupMessageHandlerMock(response, $"{config.BaseUrl}{getTestRequest.GetUrl}", config.Key,HttpMethod.Get);
             var client = new HttpClient(httpMessageHandler.Object);
             var apiClient = new OuterApiClient(client, mockConfig.Object);
 
@@ -45,7 +46,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
         }
         
         [Fact]
-        public void Then_If_It_Is_Not_Successful_An_Exception_Is_Thrown()
+        public async Task Then_If_It_Is_Not_Successful_An_Exception_Is_Thrown()
         {
             //Arrange
             var key = "123-abc-567";
@@ -59,12 +60,12 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
                 StatusCode = HttpStatusCode.BadRequest
             };
             
-            var httpMessageHandler = MessageHandler.SetupMessageHandlerMock(response, $"{config.BaseUrl}{getTestRequest.GetUrl}", config.Key);
+            var httpMessageHandler = MessageHandler.SetupMessageHandlerMock(response, $"{config.BaseUrl}{getTestRequest.GetUrl}", config.Key,HttpMethod.Get);
             var client = new HttpClient(httpMessageHandler.Object);
             var apiClient = new OuterApiClient(client, mockConfig.Object);
-            
+
             //Act Assert
-            Assert.ThrowsAsync<HttpRequestException>(() => apiClient.Get<List<string>>(getTestRequest));
+            await Assert.ThrowsAsync<HttpRequestException>(() => apiClient.Get<List<string>>(getTestRequest));
             
         }
 
@@ -83,7 +84,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
                 StatusCode = HttpStatusCode.NotFound
             };
 
-            var httpMessageHandler = MessageHandler.SetupMessageHandlerMock(response, $"{config.BaseUrl}{getTestRequest.GetUrl}", config.Key);
+            var httpMessageHandler = MessageHandler.SetupMessageHandlerMock(response, $"{config.BaseUrl}{getTestRequest.GetUrl}", config.Key,HttpMethod.Get);
             var client = new HttpClient(httpMessageHandler.Object);
             var apiClient = new OuterApiClient(client, mockConfig.Object);
 
@@ -99,16 +100,17 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
             public string GetUrl => "test-url/get";
         }
     }
+
     public static class MessageHandler
     {
-        public static Mock<HttpMessageHandler> SetupMessageHandlerMock(HttpResponseMessage response, string url, string key)
+        public static Mock<HttpMessageHandler> SetupMessageHandlerMock(HttpResponseMessage response, string url, string key, HttpMethod method)
         {
             var httpMessageHandler = new Mock<HttpMessageHandler>();
             httpMessageHandler.Protected()
                 .Setup<Task<HttpResponseMessage>>(
                     "SendAsync",
                     ItExpr.Is<HttpRequestMessage>(c =>
-                        c.Method.Equals(HttpMethod.Get)
+                        c.Method.Equals(method)
                         && c.Headers.Contains("Ocp-Apim-Subscription-Key")
                         && c.Headers.GetValues("Ocp-Apim-Subscription-Key").First().Equals(key)
                         && c.Headers.Contains("X-Version")

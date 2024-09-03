@@ -20,6 +20,7 @@ using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Configuration;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.EventStore;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.HttpRequestHandlers;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Messaging;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi;
@@ -54,6 +55,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using SFA.DAS.EAS.Account.Api.Client;
+using SFA.DAS.Http.MessageHandlers;
+using SFA.DAS.Http.TokenGenerators;
 using VacancyRuleSet = Esfa.Recruit.Vacancies.Client.Application.Rules.VacancyRules.VacancyRuleSet;
 
 namespace Esfa.Recruit.Vacancies.Client.Ioc
@@ -82,8 +85,19 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
 
         private static void RegisterProviderRelationshipsClient(IServiceCollection services, IConfiguration configuration)
         {
-            services.Configure<ProviderRelationshipApiConfiguration>(configuration.GetSection("ProviderRelationshipsApiConfiguration"));
-            services.AddTransient<IProviderRelationshipsService, ProviderRelationshipsService>();
+            var config = configuration.GetSection("ProviderRelationshipsApiConfiguration").Get<ProviderRelationshipApiConfiguration>();
+            if (config == null)
+            {
+                services.AddTransient<IProviderRelationshipsService, ProviderRelationshipsService>();
+                return;
+            }
+            services
+                .AddHttpClient<IProviderRelationshipsService, ProviderRelationshipsService>(options =>
+                {
+                    options.BaseAddress = new Uri(config.ApiBaseUrl);
+                })
+                .AddHttpMessageHandler(() => new VersionHeaderHandler())
+                .AddHttpMessageHandler(() => new ManagedIdentityHeadersHandler(new ManagedIdentityTokenGenerator(config)));
         }
 
         private static void RegisterAccountApiClientDeps(IServiceCollection services)
@@ -276,7 +290,7 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
 
         private static void RegisterMediatR(IServiceCollection services)
         {
-            services.AddMediatR(typeof(CreateEmployerOwnedVacancyCommandHandler).Assembly);
+            services.AddMediatR(configuration => configuration.RegisterServicesFromAssembly(typeof(CreateEmployerOwnedVacancyCommandHandler).Assembly));
             services
                 .AddTransient<IMessaging, MediatrMessaging>()
                 .AddTransient(typeof(IPipelineBehavior<,>), typeof(RequestPerformanceBehaviour<,>));

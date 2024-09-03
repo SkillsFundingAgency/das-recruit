@@ -1,11 +1,13 @@
 using System;
 using System.Text.RegularExpressions;
 using Esfa.Recruit.Vacancies.Client.Application.Configuration;
+using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Application.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomValidators.VacancyValidators;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Extensions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelationship;
 using FluentValidation;
 
@@ -22,6 +24,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
         private readonly IBlockedOrganisationQuery _blockedOrganisationRepo;
         private readonly IProfanityListProvider _profanityListProvider;
         private readonly IProviderRelationshipsService _providerRelationshipService;
+        private readonly IFeature _feature;
         private readonly ServiceParameters _serviceParameters;
 
         public FluentVacancyValidator(
@@ -34,6 +37,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
             IBlockedOrganisationQuery blockedOrganisationRepo,
             IProfanityListProvider profanityListProvider,
             IProviderRelationshipsService providerRelationshipService,
+            IFeature feature,
             ServiceParameters serviceParameters)
         {
             _timeProvider = timeProvider;
@@ -45,6 +49,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
             _blockedOrganisationRepo = blockedOrganisationRepo;
             _profanityListProvider = profanityListProvider;
             _providerRelationshipService = providerRelationshipService;
+            _feature = feature;
             _serviceParameters = serviceParameters;
 
             SingleFieldValidations();
@@ -129,7 +134,15 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                 ValidateAdditionalQuestions();
             }
 
-            ValidateTrainingDescription();
+            if (_feature.IsFeatureEnabled("FaaV2Improvements"))
+            {
+                ValidateHowTheApprenticeWillTrain();
+            }
+            else
+            {
+                ValidateTrainingDescription();    
+            }
+            
             ValidateOutcomeDescription();
             ValidateApplicationMethod();
             ValidateEmployerContactDetails();
@@ -617,18 +630,34 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
 
                 RuleFor(x => x.Wage.WageAdditionalInformation)
                     .MaximumLength(250)
-                        .WithMessage("Extra information about pay must not exceed {MaxLength} characters")
+                        .WithMessage("Information about pay must be {MaxLength} characters or less")
                         .WithErrorCode("44")
                     .WithState(_ => VacancyRuleSet.Wage)
                     .ValidFreeTextCharacters()
-                        .WithMessage("Additional pay information contains some invalid characters")
+                        .WithMessage("Information about pay contains some invalid characters")
                         .WithErrorCode("45")
                     .WithState(_ => VacancyRuleSet.Wage)
                     .ProfanityCheck(_profanityListProvider)
-                    .WithMessage("Additional pay information must not contain a banned word or phrase.")
+                    .WithMessage("Information about pay must not contain a banned word or phrase")
                     .WithErrorCode("607")
                     .WithState(_ => VacancyRuleSet.Wage)
                     .RunCondition(VacancyRuleSet.Wage);
+               
+                RuleFor(x => x.Wage.CompanyBenefitsInformation)
+                    .MaximumLength(250)
+                    .WithMessage("Company benefits must be {MaxLength} characters or less")
+                    .WithErrorCode("44")
+                    .WithState(_ => VacancyRuleSet.Wage)
+                    .ValidFreeTextCharacters()
+                    .WithMessage("Company benefits contains some invalid characters")
+                    .WithErrorCode("45")
+                    .WithState(_ => VacancyRuleSet.Wage)
+                    .ProfanityCheck(_profanityListProvider)
+                    .WithMessage("Company benefits must not contain a banned word or phrase")
+                    .WithErrorCode("607")
+                    .WithState(_ => VacancyRuleSet.Wage)
+                    .RunCondition(VacancyRuleSet.Wage);
+                
             });
         }
 
@@ -662,37 +691,53 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
 
         private void ValidateQualifications()
         {
+            if (!_feature.IsFeatureEnabled("FaaV2Improvements"))
+            {
+                ValidateListOfQualifications();
+            }
+            else
+            {
+                When(c => c.HasOptedToAddQualifications is true, ValidateListOfQualifications);    
+            }
+            
+        }
+
+        private void ValidateListOfQualifications()
+        {
             RuleFor(x => x.Qualifications)
                 .Must(q => q != null && q.Count > 0)
-                    .WithMessage("You must add a qualification")
-                    .WithErrorCode("52")
+                .WithMessage("You must add a qualification")
+                .WithErrorCode("52")
                 .WithState(_ => VacancyRuleSet.Qualifications)
                 .RunCondition(VacancyRuleSet.Qualifications);
             RuleForEach(x => x.Qualifications)
                 .NotEmpty()
                 .SetValidator(new VacancyQualificationsValidator((long)VacancyRuleSet.Qualifications,
-                    _qualificationsProvider, _profanityListProvider))
+                    _qualificationsProvider, _profanityListProvider, _feature))
                 .RunCondition(VacancyRuleSet.Qualifications)
                 .WithState(_ => VacancyRuleSet.Qualifications);
         }
 
         private void ValidateDescription()
         {
+            var isFaaV2Enabled = _feature.IsFeatureEnabled("FaaV2Improvements");
+            var messageText = isFaaV2Enabled ? "will do at work" : "will be doing";
+            
             RuleFor(x => x.Description)
                 .NotEmpty()
-                    .WithMessage($"Enter what the {ApplicantContext} will be doing")
+                    .WithMessage($"Enter what the {ApplicantContext} {messageText}")
                     .WithErrorCode("53")
                 .WithState(_ => VacancyRuleSet.Description)
                 .MaximumLength(4000)
-                    .WithMessage($"What the {ApplicantContext} will be doing must not exceed {{MaxLength}} characters")
+                    .WithMessage($"What the {ApplicantContext} {messageText} must not exceed {{MaxLength}} characters")
                     .WithErrorCode("7")
                 .WithState(_ => VacancyRuleSet.Description)
                 .ValidHtmlCharacters(_htmlSanitizerService)
-                    .WithMessage($"What the {ApplicantContext} will be doing contains some invalid characters")
+                    .WithMessage($"What the {ApplicantContext} {messageText} contains some invalid characters")
                     .WithErrorCode("6")
                 .WithState(_ => VacancyRuleSet.Description)
                 .ProfanityCheck(_profanityListProvider)
-                .WithMessage($"What the {ApplicantContext} will be doing must not contain a banned word or phrase.")
+                .WithMessage($"What the {ApplicantContext} {messageText} must not contain a banned word or phrase")
                 .WithErrorCode("609")
                 .WithState(_ => VacancyRuleSet.Description)
                 .RunCondition(VacancyRuleSet.Description);
@@ -767,6 +812,45 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                 .WithErrorCode("610")
                 .WithState(_ => VacancyRuleSet.TrainingDescription)
                 .RunCondition(VacancyRuleSet.TrainingDescription);
+        }
+        private void ValidateHowTheApprenticeWillTrain()
+        {
+            When(x => !string.IsNullOrEmpty(x.TrainingDescription), () =>
+            {
+                RuleFor(x => x.TrainingDescription)
+                    .MaximumLength(4000)
+                    .WithMessage("The apprentice’s training schedule must not exceed 4000 characters")
+                    .WithErrorCode("321")
+                    .WithState(_ => VacancyRuleSet.TrainingDescription)
+                    .ProfanityCheck(_profanityListProvider)
+                    .WithMessage("The apprentice’s training schedule must not contain a restricted word")
+                    .WithErrorCode("322")
+                    .WithState(_ => VacancyRuleSet.TrainingDescription)
+                    .ValidHtmlCharacters(_htmlSanitizerService)
+                    .WithMessage("The apprentice’s training schedule contains some invalid characters")
+                    .WithErrorCode("346")
+                    .WithState(_ => VacancyRuleSet.TrainingDescription)
+                    .RunCondition(VacancyRuleSet.TrainingDescription);
+            });
+
+
+            When(x => !string.IsNullOrEmpty(x.AdditionalTrainingDescription), () =>
+            {
+                RuleFor(x => x.AdditionalTrainingDescription)
+                    .MaximumLength(4000)
+                    .WithMessage("Any additional training information must not exceed 4000 characters")
+                    .WithErrorCode("341")
+                    .WithState(_ => VacancyRuleSet.AdditionalTrainingDescription)
+                    .ProfanityCheck(_profanityListProvider)
+                    .WithMessage("Any additional training information must not contain a restricted word")
+                    .WithErrorCode("342")
+                    .WithState(_ => VacancyRuleSet.AdditionalTrainingDescription)
+                    .ValidHtmlCharacters(_htmlSanitizerService)
+                    .WithMessage("Any additional training information contains some invalid characters")
+                    .WithErrorCode("344")
+                    .WithState(_ => VacancyRuleSet.AdditionalTrainingDescription)
+                    .RunCondition(VacancyRuleSet.AdditionalTrainingDescription);
+            });
         }
 
         private void ValidateOutcomeDescription()

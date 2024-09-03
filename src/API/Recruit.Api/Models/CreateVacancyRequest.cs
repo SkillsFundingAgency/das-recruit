@@ -23,6 +23,7 @@ namespace SFA.DAS.Recruit.Api.Models
         public string LegalEntityName { get ; set ; }
         public string EmployerDescription { get ; set ; }
         public string TrainingDescription { get ; set ; }
+        public string AdditionalTrainingDescription { get ; set ; }
         
         public CreateVacancyAddress Address { get; set; }
         public CreateVacancyWage Wage { get; set; }
@@ -61,6 +62,7 @@ namespace SFA.DAS.Recruit.Api.Models
         
         public WageType WageType { get; set; }
         public DurationUnit DurationUnit { get; set; }
+        public string CompanyBenefitsInformation { get; set; }
     }
 
     public class CreateVacancyQualification
@@ -68,6 +70,8 @@ namespace SFA.DAS.Recruit.Api.Models
         public string QualificationType { get; set; }
         public string Subject { get; set; }
         public string Grade { get; set; }
+        public string OtherQualificationName { get; set; }
+        public int? Level { get; set; }
         public QualificationWeighting Weighting { get; set; }
     }
     

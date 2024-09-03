@@ -1,183 +1,220 @@
+@using Microsoft.Extensions.Configuration
+@inject IConfiguration Configuration
 
-    <!DOCTYPE html>
-    <html lang="en" class="govuk-template ">
-    <head>
-        <!-- Google Tag Manager -->
-        <script nws-csp-add-nonce="true">
-            (function (w, d, s, l, i) {
-                w[l] = w[l] || []; w[l].push({
-                    'gtm.start':
-                        new Date().getTime(), event: 'gtm.js'
-                }); var f = d.getElementsByTagName(s)[0],
-                    j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : ''; j.async = true; j.src =
+<!DOCTYPE html>
+<html lang="en" class="govuk-template ">
+
+<head>
+    <!-- Google Tag Manager -->
+    <script nws-csp-add-nonce="true">
+        (function (w, d, s, l, i) {
+            w[l] = w[l] || []; w[l].push({
+                'gtm.start':
+                    new Date().getTime(), event: 'gtm.js'
+            }); var f = d.getElementsByTagName(s)[0],
+                j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : ''; j.async = true; j.src =
                     'https://www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f);
-            })(window, document, 'script', 'dataLayer', 'GTM-TD56SF5');
-        </script>
-        <!-- End Google Tag Manager -->
-        <meta charset="utf-8" />
-        <title>@ViewData["Title"]</title>
-        <meta name="description" content="@(ViewData["Description"] ?? "")">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="theme-color" content="#0b0c0c" />
-        <link rel="shortcut icon" href="/assets/images/favicon.ico" type="image/x-icon" />
-        <link rel="mask-icon" href="/assets/images/govuk-mask-icon.svg" color="#0b0c0c" />
-        <link rel="apple-touch-icon" sizes="180x180" href="/assets/images/govuk-apple-touch-icon-180x180.png" />
-        <link rel="apple-touch-icon" sizes="167x167" href="/assets/images/govuk-apple-touch-icon-167x167.png" />
-        <link rel="apple-touch-icon" sizes="152x152" href="/assets/images/govuk-apple-touch-icon-152x152.png" />
-        <link rel="apple-touch-icon" href="/assets/images/govuk-apple-touch-icon.png" />
-        <!--[if !IE 8]><!-->
-        <link href="/css/main.css" rel="stylesheet" />
-        <link href="/css/app.css" rel="stylesheet" no-cdn />
-        @RenderSection("Styles", false)
-        <!--<![endif]-->
-        <meta property="og:image" content="/assets/images/govuk-opengraph-image.png" />
-    </head>
-    <body class="govuk-template__body">
+        })(window, document, 'script', 'dataLayer', 'GTM-TD56SF5');
+    </script>
+    <!-- End Google Tag Manager -->
+    <meta charset="utf-8" />
+    <title>@ViewData["Title"]</title>
+    <meta name="description" content="@(ViewData["Description"] ?? "")">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#0b0c0c" />
+    <link rel="icon" sizes="48x48" href="/assets/images/favicon.ico" />
+    <link rel="icon" sizes="any" href="/assets/images/favicon.svg" type="image/svg+xml" />
+    <link rel="mask-icon" href="/assets/images/govuk-icon-mask.svg" color="#0b0c0c" />
+    <link rel="apple-touch-icon" href="/assets/images/govuk-icon-180.png" />
 
-        <!-- Google Tag Manager (noscript) -->
-        <noscript>
-            <iframe title="google tag manager" src="https://www.googletagmanager.com/ns.html?id=GTM-TD56SF5"
-                    height="0" width="0" style="display: none; visibility: hidden">
-            </iframe>
-        </noscript>
-        <!-- End Google Tag Manager (noscript) -->
+    <link href="/css/main.css" rel="stylesheet" />
+    <link href="/css/app.css" rel="stylesheet" no-cdn />
+    @RenderSection("Styles", false)
 
-        <script nws-csp-add-nonce="true">
-            document.body.className = ((document.body.className) ? document.body.className + ' js-enabled' : 'js-enabled');
-        </script>
+</head>
 
-        <a href="#main-content" class="govuk-skip-link">Skip to main content</a>
-            
-        <div data-module="cookie-banner" role="region" aria-label="cookie banner" class="das-cookie-banner__wrap">
-            <div class="das-cookie-banner">
-                <div class="das-cookie-banner__wrapper govuk-width-container">
-                    <div class="govuk-grid-row">
-                        <div class="govuk-grid-column-two-thirds">
-                            <h2 class="govuk-heading-m das-cookie-banner__header">Tell us whether you accept cookies</h2>
-                            <p class="das-cookie-banner__message">We use <a asp-route="@RouteNames.TraineeshipCookiesDetails" class="govuk-link govuk-link--no-visited-state">cookies to collect information</a> about how you use this service. We use this information to make the service work as well as possible and improve this service.</p>
-                            <div class="das-cookie-banner__buttons">
-                                <div class="das-cookie-banner__button-wrap das-cookie-banner__button-accept">
-                                    <button class="govuk-button das-cookie-banner__button" type="submit" data-accept-cookies="true">Accept all cookies</button>
-                                </div>
-                                <div class="das-cookie-banner__button-wrap das-cookie-banner__button-settings">
-                                    <a asp-route="@RouteNames.TraineeshipCookies" class="govuk-button das-cookie-banner__button" role="button" id="btn-cookie-settings">Set cookie preferences</a>
-                                </div>
+<body class="govuk-template__body">
+
+    <!-- Google Tag Manager (noscript) -->
+    <noscript>
+        <iframe title="google tag manager" src="https://www.googletagmanager.com/ns.html?id=GTM-TD56SF5" height="0"
+            width="0" style="display: none; visibility: hidden">
+        </iframe>
+    </noscript>
+    <!-- End Google Tag Manager (noscript) -->
+
+    <script nws-csp-add-nonce="true">
+        document.body.className += ' js-enabled' + ('noModule' in HTMLScriptElement.prototype ? ' govuk-frontend-supported' : '');
+    </script>
+
+    <a href="#main-content" class="govuk-skip-link">Skip to main content</a>
+
+    <div data-module="cookie-banner" role="region" aria-label="cookie banner" class="das-cookie-banner__wrap">
+        <div class="das-cookie-banner">
+            <div class="das-cookie-banner__wrapper govuk-width-container">
+                <div class="govuk-grid-row">
+                    <div class="govuk-grid-column-two-thirds">
+                        <h2 class="govuk-heading-m das-cookie-banner__header">Tell us whether you accept cookies</h2>
+                        <p class="das-cookie-banner__message">We use <a
+                                asp-route="@RouteNames.TraineeshipCookiesDetails"
+                                class="govuk-link govuk-link--no-visited-state">cookies to collect information</a> about
+                            how you use this service. We use this information to make the service work as well as
+                            possible and improve this service.</p>
+                        <div class="das-cookie-banner__buttons">
+                            <div class="das-cookie-banner__button-wrap das-cookie-banner__button-accept">
+                                <button class="govuk-button das-cookie-banner__button" type="submit"
+                                    data-accept-cookies="true">Accept all cookies</button>
+                            </div>
+                            <div class="das-cookie-banner__button-wrap das-cookie-banner__button-settings">
+                                <a asp-route="@RouteNames.TraineeshipCookies"
+                                    class="govuk-button das-cookie-banner__button" role="button"
+                                    id="btn-cookie-settings">Set cookie preferences</a>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="das-cookie-banner__confirmation govuk-width-container" tabindex="-1">
-                    <p class="das-cookie-banner__confirmation-message">
-                        You've accepted all cookies. You can <a asp-external-controller="cookies" class="govuk-link" id="link-cookie-settings">change your cookie settings</a> at any time.
-                    </p>
-                    <button class="das-cookie-banner__hide-button" data-hide-cookie-banner="true" id="btn-hide-cookie-banner">Hide</button>
-                </div>
             </div>
-        </div>
-        <header class="govuk-header das-header--no-border" role="banner" data-module="header">
-            <div class="govuk-header__container govuk-width-container">
-                <div class="govuk-header__logo">
-                    <a href="https://www.gov.uk" class="govuk-header__link govuk-header__link--homepage">
-                        <span class="govuk-header__logotype">
-                            <svg role="presentation" focusable="false" class="govuk-header__logotype-crown" xmlns="http://www.w3.org/2000/svg" viewbox="0 0 132 97" height="32" width="36">
-                                <path fill="currentColor" fill-rule="evenodd" d="M25 30.2c3.5 1.5 7.7-.2 9.1-3.7 1.5-3.6-.2-7.8-3.9-9.2-3.6-1.4-7.6.3-9.1 3.9-1.4 3.5.3 7.5 3.9 9zM9 39.5c3.6 1.5 7.8-.2 9.2-3.7 1.5-3.6-.2-7.8-3.9-9.1-3.6-1.5-7.6.2-9.1 3.8-1.4 3.5.3 7.5 3.8 9zM4.4 57.2c3.5 1.5 7.7-.2 9.1-3.8 1.5-3.6-.2-7.7-3.9-9.1-3.5-1.5-7.6.3-9.1 3.8-1.4 3.5.3 7.6 3.9 9.1zm38.3-21.4c3.5 1.5 7.7-.2 9.1-3.8 1.5-3.6-.2-7.7-3.9-9.1-3.6-1.5-7.6.3-9.1 3.8-1.3 3.6.4 7.7 3.9 9.1zm64.4-5.6c-3.6 1.5-7.8-.2-9.1-3.7-1.5-3.6.2-7.8 3.8-9.2 3.6-1.4 7.7.3 9.2 3.9 1.3 3.5-.4 7.5-3.9 9zm15.9 9.3c-3.6 1.5-7.7-.2-9.1-3.7-1.5-3.6.2-7.8 3.7-9.1 3.6-1.5 7.7.2 9.2 3.8 1.5 3.5-.3 7.5-3.8 9zm4.7 17.7c-3.6 1.5-7.8-.2-9.2-3.8-1.5-3.6.2-7.7 3.9-9.1 3.6-1.5 7.7.3 9.2 3.8 1.3 3.5-.4 7.6-3.9 9.1zM89.3 35.8c-3.6 1.5-7.8-.2-9.2-3.8-1.4-3.6.2-7.7 3.9-9.1 3.6-1.5 7.7.3 9.2 3.8 1.4 3.6-.3 7.7-3.9 9.1zM69.7 17.7l8.9 4.7V9.3l-8.9 2.8c-.2-.3-.5-.6-.9-.9L72.4 0H59.6l3.5 11.2c-.3.3-.6.5-.9.9l-8.8-2.8v13.1l8.8-4.7c.3.3.6.7.9.9l-5 15.4v.1c-.2.8-.4 1.6-.4 2.4 0 4.1 3.1 7.5 7 8.1h.2c.3 0 .7.1 1 .1.4 0 .7 0 1-.1h.2c4-.6 7.1-4.1 7.1-8.1 0-.8-.1-1.7-.4-2.4V34l-5.1-15.4c.4-.2.7-.6 1-.9zM66 92.8c16.9 0 32.8 1.1 47.1 3.2 4-16.9 8.9-26.7 14-33.5l-9.6-3.4c1 4.9 1.1 7.2 0 10.2-1.5-1.4-3-4.3-4.2-8.7L108.6 76c2.8-2 5-3.2 7.5-3.3-4.4 9.4-10 11.9-13.6 11.2-4.3-.8-6.3-4.6-5.6-7.9 1-4.7 5.7-5.9 8-.5 4.3-8.7-3-11.4-7.6-8.8 7.1-7.2 7.9-13.5 2.1-21.1-8 6.1-8.1 12.3-4.5 20.8-4.7-5.4-12.1-2.5-9.5 6.2 3.4-5.2 7.9-2 7.2 3.1-.6 4.3-6.4 7.8-13.5 7.2-10.3-.9-10.9-8-11.2-13.8 2.5-.5 7.1 1.8 11 7.3L80.2 60c-4.1 4.4-8 5.3-12.3 5.4 1.4-4.4 8-11.6 8-11.6H55.5s6.4 7.2 7.9 11.6c-4.2-.1-8-1-12.3-5.4l1.4 16.4c3.9-5.5 8.5-7.7 10.9-7.3-.3 5.8-.9 12.8-11.1 13.8-7.2.6-12.9-2.9-13.5-7.2-.7-5 3.8-8.3 7.1-3.1 2.7-8.7-4.6-11.6-9.4-6.2 3.7-8.5 3.6-14.7-4.6-20.8-5.8 7.6-5 13.9 2.2 21.1-4.7-2.6-11.9.1-7.7 8.8 2.3-5.5 7.1-4.2 8.1.5.7 3.3-1.3 7.1-5.7 7.9-3.5.7-9-1.8-13.5-11.2 2.5.1 4.7 1.3 7.5 3.3l-4.7-15.4c-1.2 4.4-2.7 7.2-4.3 8.7-1.1-3-.9-5.3 0-10.2l-9.5 3.4c5 6.9 9.9 16.7 14 33.5 14.8-2.1 30.8-3.2 47.7-3.2z"></path>
-                                <image src="/assets/images/govuk-logotype-crown.png" class="govuk-header__logotype-crown-fallback-image"></image>
-                            </svg>
-                            <span class="govuk-header__logotype-text">
-                                GOV.UK
-                            </span>
-                        </span>
-                    </a>
-                </div>
-                <div class="govuk-header__content">
-                    <a asp-route="@RouteNames.Dashboard_Get" asp-route-ukprn="@User.GetUkprn()" class="govuk-header__link govuk-header__link--service-name">
-                        Manage traineeships
-                    </a>
-                </div>
-            </div>
-        </header>
-
-        @if (Context.User.Identity.IsAuthenticated)
-        {
-            <div class="das-account-header app-account-header--traineeships">
-                <div class="govuk-width-container">
-                    <p class="govuk-heading-s app-header__heading">Your training provider account</p>
-                    <nav class="app-header__nav">
-                        <ul id="app-nav" class="app-header__navigation">
-                            <li class="app-header__navigation-item">
-                                <a class="govuk-link app-header__link" href="/" id="traineeships-header-link-profile">
-                                    @Context.User.Identity.Name
-                                </a>
-                            </li>
-                            <li class="app-header__navigation-item">
-                                <a class="govuk-link app-header__link" asp-Route="provider-signout" id="traineeships-header-link-signout">
-                                    Sign out
-                                </a>
-                            </li>
-                        </ul>
-                    </nav>
-                </div>
-            </div>
-        }
-
-        <div class="govuk-width-container">
-            <div class="govuk-phase-banner">
-                <p class="govuk-phase-banner__content">
-                    <strong class="govuk-tag govuk-phase-banner__content__tag ">
-                        beta
-                    </strong>
-                    <span class="govuk-phase-banner__text">
-                        This is a new service
-                    </span>
+            <div class="das-cookie-banner__confirmation govuk-width-container" tabindex="-1">
+                <p class="das-cookie-banner__confirmation-message">
+                    You've accepted all cookies. You can <a asp-external-controller="cookies" class="govuk-link"
+                        id="link-cookie-settings">change your cookie settings</a> at any time.
                 </p>
+                <button class="das-cookie-banner__hide-button" data-hide-cookie-banner="true"
+                    id="btn-hide-cookie-banner">Hide</button>
             </div>
-            @RenderSection("BackLink", required: false)
-            <main class="govuk-main-wrapper " id="main-content" role="main">
-                @RenderBody()
-            </main>
         </div>
-        <footer class="govuk-footer " role="contentinfo">
-            <div class="govuk-width-container ">
-                <div class="govuk-footer__meta">
-                    <div class="govuk-footer__meta-item govuk-footer__meta-item--grow">
-                        <h2 class="govuk-visually-hidden">Support links</h2>
-                        <ul class="govuk-footer__inline-list">
-                            <li class="govuk-footer__inline-list-item"><a class="govuk-footer__link" asp-route="@RouteNames.TraineeshipHelp">Help</a></li>
-                            <li class="govuk-footer__inline-list-item"><a class="govuk-footer__link" href="https://www.surveymonkey.co.uk/r/accessmylevysurvey" target="_blank" rel="noopener" aria-label="Give feedback">Feedback </a></li>
-                            <li class="govuk-footer__inline-list-item"><a class="govuk-footer__link" asp-route="@RouteNames.TraineeshipPrivacy">Privacy</a></li>
-                            <li class="govuk-footer__inline-list-item"><a class="govuk-footer__link" asp-route="@RouteNames.TraineeshipCookies">Cookies</a></li>
-                            <li class="govuk-footer__inline-list-item"><a class="govuk-footer__link" asp-route="@RouteNames.TraineeshipTermsAndConditions">Terms of use</a></li>
-                            <li class="govuk-footer__inline-list-item">Built by the <a href="https://www.gov.uk/government/organisations/education-and-skills-funding-agency" target="_blank" rel="noopener" class="govuk-footer__link">Education and Skills Funding Agency</a></li>
-                        </ul>
-                        <svg role="presentation" focusable="false" class="govuk-footer__licence-logo" xmlns="http://www.w3.org/2000/svg" viewbox="0 0 483.2 195.7" height="17" width="41">
-                            <path fill="currentColor" d="M421.5 142.8V.1l-50.7 32.3v161.1h112.4v-50.7zm-122.3-9.6A47.12 47.12 0 0 1 221 97.8c0-26 21.1-47.1 47.1-47.1 16.7 0 31.4 8.7 39.7 21.8l42.7-27.2A97.63 97.63 0 0 0 268.1 0c-36.5 0-68.3 20.1-85.1 49.7A98 98 0 0 0 97.8 0C43.9 0 0 43.9 0 97.8s43.9 97.8 97.8 97.8c36.5 0 68.3-20.1 85.1-49.7a97.76 97.76 0 0 0 149.6 25.4l19.4 22.2h3v-87.8h-80l24.3 27.5zM97.8 145c-26 0-47.1-21.1-47.1-47.1s21.1-47.1 47.1-47.1 47.2 21 47.2 47S123.8 145 97.8 145" />
+    </div>
+    <header class="govuk-header das-header--no-border" role="banner" data-module="header">
+        <div class="govuk-header__container govuk-width-container">
+            <div class="govuk-header__logo">
+                <a href="https://www.gov.uk" class="govuk-header__link govuk-header__link--homepage">
+                    <span class="govuk-header__logotype">
+                        <svg role="presentation" focusable="false" class="govuk-header__logotype-crown"
+                            xmlns="http://www.w3.org/2000/svg" viewbox="0 0 132 97" height="32" width="36">
+                            <path fill="currentColor" fill-rule="evenodd"
+                                d="M25 30.2c3.5 1.5 7.7-.2 9.1-3.7 1.5-3.6-.2-7.8-3.9-9.2-3.6-1.4-7.6.3-9.1 3.9-1.4 3.5.3 7.5 3.9 9zM9 39.5c3.6 1.5 7.8-.2 9.2-3.7 1.5-3.6-.2-7.8-3.9-9.1-3.6-1.5-7.6.2-9.1 3.8-1.4 3.5.3 7.5 3.8 9zM4.4 57.2c3.5 1.5 7.7-.2 9.1-3.8 1.5-3.6-.2-7.7-3.9-9.1-3.5-1.5-7.6.3-9.1 3.8-1.4 3.5.3 7.6 3.9 9.1zm38.3-21.4c3.5 1.5 7.7-.2 9.1-3.8 1.5-3.6-.2-7.7-3.9-9.1-3.6-1.5-7.6.3-9.1 3.8-1.3 3.6.4 7.7 3.9 9.1zm64.4-5.6c-3.6 1.5-7.8-.2-9.1-3.7-1.5-3.6.2-7.8 3.8-9.2 3.6-1.4 7.7.3 9.2 3.9 1.3 3.5-.4 7.5-3.9 9zm15.9 9.3c-3.6 1.5-7.7-.2-9.1-3.7-1.5-3.6.2-7.8 3.7-9.1 3.6-1.5 7.7.2 9.2 3.8 1.5 3.5-.3 7.5-3.8 9zm4.7 17.7c-3.6 1.5-7.8-.2-9.2-3.8-1.5-3.6.2-7.7 3.9-9.1 3.6-1.5 7.7.3 9.2 3.8 1.3 3.5-.4 7.6-3.9 9.1zM89.3 35.8c-3.6 1.5-7.8-.2-9.2-3.8-1.4-3.6.2-7.7 3.9-9.1 3.6-1.5 7.7.3 9.2 3.8 1.4 3.6-.3 7.7-3.9 9.1zM69.7 17.7l8.9 4.7V9.3l-8.9 2.8c-.2-.3-.5-.6-.9-.9L72.4 0H59.6l3.5 11.2c-.3.3-.6.5-.9.9l-8.8-2.8v13.1l8.8-4.7c.3.3.6.7.9.9l-5 15.4v.1c-.2.8-.4 1.6-.4 2.4 0 4.1 3.1 7.5 7 8.1h.2c.3 0 .7.1 1 .1.4 0 .7 0 1-.1h.2c4-.6 7.1-4.1 7.1-8.1 0-.8-.1-1.7-.4-2.4V34l-5.1-15.4c.4-.2.7-.6 1-.9zM66 92.8c16.9 0 32.8 1.1 47.1 3.2 4-16.9 8.9-26.7 14-33.5l-9.6-3.4c1 4.9 1.1 7.2 0 10.2-1.5-1.4-3-4.3-4.2-8.7L108.6 76c2.8-2 5-3.2 7.5-3.3-4.4 9.4-10 11.9-13.6 11.2-4.3-.8-6.3-4.6-5.6-7.9 1-4.7 5.7-5.9 8-.5 4.3-8.7-3-11.4-7.6-8.8 7.1-7.2 7.9-13.5 2.1-21.1-8 6.1-8.1 12.3-4.5 20.8-4.7-5.4-12.1-2.5-9.5 6.2 3.4-5.2 7.9-2 7.2 3.1-.6 4.3-6.4 7.8-13.5 7.2-10.3-.9-10.9-8-11.2-13.8 2.5-.5 7.1 1.8 11 7.3L80.2 60c-4.1 4.4-8 5.3-12.3 5.4 1.4-4.4 8-11.6 8-11.6H55.5s6.4 7.2 7.9 11.6c-4.2-.1-8-1-12.3-5.4l1.4 16.4c3.9-5.5 8.5-7.7 10.9-7.3-.3 5.8-.9 12.8-11.1 13.8-7.2.6-12.9-2.9-13.5-7.2-.7-5 3.8-8.3 7.1-3.1 2.7-8.7-4.6-11.6-9.4-6.2 3.7-8.5 3.6-14.7-4.6-20.8-5.8 7.6-5 13.9 2.2 21.1-4.7-2.6-11.9.1-7.7 8.8 2.3-5.5 7.1-4.2 8.1.5.7 3.3-1.3 7.1-5.7 7.9-3.5.7-9-1.8-13.5-11.2 2.5.1 4.7 1.3 7.5 3.3l-4.7-15.4c-1.2 4.4-2.7 7.2-4.3 8.7-1.1-3-.9-5.3 0-10.2l-9.5 3.4c5 6.9 9.9 16.7 14 33.5 14.8-2.1 30.8-3.2 47.7-3.2z">
+                            </path>
+                            <image src="/assets/images/govuk-logotype-crown.png"
+                                class="govuk-header__logotype-crown-fallback-image"></image>
                         </svg>
-                        <span class="govuk-footer__licence-description">
-                            All content is available under the
-                            <a class="govuk-footer__link" href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/" rel="license">Open Government Licence v3.0</a>, except where otherwise stated
+                        <span class="govuk-header__logotype-text">
+                            GOV.UK
                         </span>
-                    </div>
-                    <div class="govuk-footer__meta-item">
-                        <a class="govuk-footer__link govuk-footer__copyright-logo" href="https://www.nationalarchives.gov.uk/information-management/re-using-public-sector-information/uk-government-licensing-framework/crown-copyright/">© Crown copyright</a>
-                    </div>
+                    </span>
+                </a>
+            </div>
+            <div class="govuk-header__content">
+                <a asp-route="@RouteNames.Dashboard_Get" asp-route-ukprn="@User.GetUkprn()"
+                    class="govuk-header__link govuk-header__link--service-name">
+                    Manage traineeships
+                </a>
+            </div>
+        </div>
+    </header>
+
+    @if (Context.User.Identity.IsAuthenticated)
+    {
+        <div class="das-account-header app-account-header--traineeships">
+            <div class="govuk-width-container">
+                <p class="govuk-heading-s app-header__heading">Your training provider account</p>
+                <nav class="app-header__nav">
+                    <ul id="app-nav" class="app-header__navigation">
+                        <li class="app-header__navigation-item">
+                            <a class="govuk-link app-header__link" href="/" id="traineeships-header-link-profile">
+                                @Context.User.Identity.Name
+                            </a>
+                        </li>
+                        <li class="app-header__navigation-item">
+                            <a class="govuk-link app-header__link" asp-Route="provider-signout"
+                                id="traineeships-header-link-signout">
+                                Sign out
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    }
+
+    <div class="govuk-width-container">
+        <div class="govuk-phase-banner">
+            <p class="govuk-phase-banner__content">
+                <strong class="govuk-tag govuk-phase-banner__content__tag ">
+                    beta
+                </strong>
+                <span class="govuk-phase-banner__text">
+                    This is a new service
+                </span>
+            </p>
+        </div>
+        @RenderSection("BackLink", required: false)
+        <main class="govuk-main-wrapper " id="main-content" role="main">
+            @RenderBody()
+        </main>
+    </div>
+    <footer class="govuk-footer " role="contentinfo">
+        <div class="govuk-width-container ">
+            <div class="govuk-footer__meta">
+                <div class="govuk-footer__meta-item govuk-footer__meta-item--grow">
+                    <h2 class="govuk-visually-hidden">Support links</h2>
+                    <ul class="govuk-footer__inline-list">
+                        <li class="govuk-footer__inline-list-item"><a class="govuk-footer__link"
+                                asp-route="@RouteNames.TraineeshipHelp">Help</a></li>
+                        <li class="govuk-footer__inline-list-item"><a class="govuk-footer__link"
+                                href="https://www.surveymonkey.co.uk/r/accessmylevysurvey" target="_blank"
+                                rel="noopener" aria-label="Give feedback">Feedback </a></li>
+                        <li class="govuk-footer__inline-list-item"><a class="govuk-footer__link"
+                                asp-route="@RouteNames.TraineeshipPrivacy">Privacy</a></li>
+                        <li class="govuk-footer__inline-list-item"><a class="govuk-footer__link"
+                                asp-route="@RouteNames.TraineeshipCookies">Cookies</a></li>
+                        <li class="govuk-footer__inline-list-item"><a class="govuk-footer__link"
+                                asp-route="@RouteNames.TraineeshipTermsAndConditions">Terms of use</a></li>
+                        <li class="govuk-footer__inline-list-item">Built by the <a
+                                href="https://www.gov.uk/government/organisations/education-and-skills-funding-agency"
+                                target="_blank" rel="noopener" class="govuk-footer__link">Education and Skills Funding
+                                Agency</a></li>
+                    </ul>
+                    <svg role="presentation" focusable="false" class="govuk-footer__licence-logo"
+                        xmlns="http://www.w3.org/2000/svg" viewbox="0 0 483.2 195.7" height="17" width="41">
+                        <path fill="currentColor"
+                            d="M421.5 142.8V.1l-50.7 32.3v161.1h112.4v-50.7zm-122.3-9.6A47.12 47.12 0 0 1 221 97.8c0-26 21.1-47.1 47.1-47.1 16.7 0 31.4 8.7 39.7 21.8l42.7-27.2A97.63 97.63 0 0 0 268.1 0c-36.5 0-68.3 20.1-85.1 49.7A98 98 0 0 0 97.8 0C43.9 0 0 43.9 0 97.8s43.9 97.8 97.8 97.8c36.5 0 68.3-20.1 85.1-49.7a97.76 97.76 0 0 0 149.6 25.4l19.4 22.2h3v-87.8h-80l24.3 27.5zM97.8 145c-26 0-47.1-21.1-47.1-47.1s21.1-47.1 47.1-47.1 47.2 21 47.2 47S123.8 145 97.8 145" />
+                    </svg>
+                    <span class="govuk-footer__licence-description">
+                        All content is available under the
+                        <a class="govuk-footer__link"
+                            href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/"
+                            rel="license">Open Government Licence v3.0</a>, except where otherwise stated
+                    </span>
+                </div>
+                <div class="govuk-footer__meta-item">
+                    <a class="govuk-footer__link govuk-footer__copyright-logo"
+                        href="https://www.nationalarchives.gov.uk/information-management/re-using-public-sector-information/uk-government-licensing-framework/crown-copyright/">©
+                        Crown copyright</a>
                 </div>
             </div>
-        </footer>
-        
+        </div>
+    </footer>
 
-        <script src="/libs/govuk-frontend/all.js"></script>
-        <script src="/libs/jquery/jquery.min.js"></script>
-        <script src="/js/das-all.js"></script>
-        <script src="/js/app.min.js"></script>
+    <script type="module" src="/libs/govuk-frontend/govuk-frontend.min.js"></script>
+    <script type="module" nws-csp-add-nonce="true">
+        import {
+            initAll
+        } from '@Configuration["cdn:url"]/libs/govuk-frontend/govuk-frontend.min.js'
+        initAll()
+    </script>
 
-        <script src="/lib/jquery-are-you-sure/jquery.are-you-sure.js" no-cdn></script>
-        <script src="libs/accessible-autocomplete/accessible-autocomplete.min.js"></script>
-        <script src="/javascripts/application.js" no-cdn></script>
+    <script src="/libs/jquery/jquery.min.js"></script>
+    <script src="/js/das-all.js"></script>
+    <script src="/js/app.min.js"></script>
 
-        <script nws-csp-add-nonce="true">
-            window.GOVUKFrontend.initAll();
-            window.DASFrontend.initAll();
-        </script>
-        @RenderSection("FooterJS", required: false)
-    </body>
+    <script src="/lib/jquery-are-you-sure/jquery.are-you-sure.js" no-cdn></script>
+    <script src="libs/accessible-autocomplete/accessible-autocomplete.min.js"></script>
+    <script src="/javascripts/application.js" no-cdn></script>
+
+    <script nws-csp-add-nonce="true">
+        window.DASFrontend.initAll();
+    </script>
+    @RenderSection("FooterJS", required: false)
+</body>
+
 </html>

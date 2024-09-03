@@ -13,6 +13,7 @@ namespace Esfa.Recruit.Employer.Web.Mappings.Extensions
         {
             return new ApplicationReviewViewModel
             {
+                VacancyTitle = r.VacancyTitle,
                 Email = r.Application.Email,
                 Name = r.Application.FullName,
                 TrainingCourses = r.Application.TrainingCourses?.Select(c => new TrainingCoursesViewModel
@@ -35,11 +36,12 @@ namespace Esfa.Recruit.Employer.Web.Mappings.Extensions
                 FriendlyId = r.GetFriendlyId(),
                 HobbiesAndInterests = r.Application.HobbiesAndInterests,
                 Improvements = r.Application.Improvements,
+                WhatIsYourInterest = r.Application.WhatIsYourInterest,
                 Phone = r.Application.Phone,
-                AdditionalAnswer1= r.Application.AdditionalQuestion1,
+                AdditionalAnswer1 = r.Application.AdditionalQuestion1,
                 AdditionalAnswer2 = r.Application.AdditionalQuestion2,
-                AdditionalQuestion1 = r.AdditionalQuestion1,
-                AdditionalQuestion2 = r.AdditionalQuestion2,
+                AdditionalQuestion1 = r.Application.IsFaaV2Application ? r.Application.AdditionalQuestion1Text : r.AdditionalQuestion1,
+                AdditionalQuestion2 = r.Application.IsFaaV2Application ? r.Application.AdditionalQuestion2Text : r.AdditionalQuestion2,
                 Qualifications = r.Application.Qualifications?.Select(q =>
                     new QualificationViewModel
                     {
@@ -47,7 +49,8 @@ namespace Esfa.Recruit.Employer.Web.Mappings.Extensions
                         IsPredicted = q.IsPredicted,
                         QualificationType = q.QualificationType,
                         Subject = q.Subject,
-                        Year = q.Year
+                        Year = q.Year,
+                        AdditionalInformation = q.AdditionalInformation
                     }).ToList() ?? new List<QualificationViewModel>(),
                 Skills = r.Application.Skills ?? new List<string>(),
                 Status = r.Status,
@@ -61,9 +64,19 @@ namespace Esfa.Recruit.Employer.Web.Mappings.Extensions
                     Employer = w.Employer,
                     Description = w.Description,
                     JobTitle = w.JobTitle
-                }).ToList() ?? new List<WorkExperienceViewModel>()
+                }).ToList() ?? new List<WorkExperienceViewModel>(),
+                Jobs = r.Application.Jobs?.Select(w => new WorkExperienceViewModel
+                {
+                    FromDate = w.FromDate,
+                    ToDate = w.ToDate,
+                    Employer = w.Employer,
+                    Description = w.Description,
+                    JobTitle = w.JobTitle
+                }).ToList() ?? new List<WorkExperienceViewModel>(),
+                IsFaaV2Application = r.Application.IsFaaV2Application
             };
         }
+        
     }
 }
 
