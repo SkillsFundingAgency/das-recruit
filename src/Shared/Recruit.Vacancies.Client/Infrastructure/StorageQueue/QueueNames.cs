@@ -32,5 +32,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.StorageQueue
         public const string DataMigrationQueueName = "data-migration";
         public const string CommunicationsHouseKeepingQueueName = "communications-house-keeping-queue";
         public const string UpdateProvidersQueueName = "update-providers-queue";
+        public const string UpdateProviderInfoQueueName = "update-provider-info-queue";
     }
 }
