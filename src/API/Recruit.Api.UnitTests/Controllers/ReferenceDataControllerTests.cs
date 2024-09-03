@@ -30,7 +30,7 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Controllers
             
             var actual = await controller.GetCandidateSkills() as OkObjectResult;
 
-            Assert.IsNotNull(actual);
+            Assert.That(actual, Is.Not.Null);
             var actualResult = actual.Value as List<string>;
             actualResult.Should().BeEquivalentTo(items);
         }
@@ -49,7 +49,7 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Controllers
 
             var actual = await controller.GetCandidateQualifications() as OkObjectResult;
 
-            Assert.IsNotNull(actual);
+            Assert.That(actual, Is.Not.Null);
             var actualResult = actual.Value as List<string>;
             actualResult.Should().BeEquivalentTo(items);
         }

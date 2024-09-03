@@ -2,9 +2,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Requests
 {
     public class GetAccountLegalEntitiesRequest : IGetApiRequest
     {
-        private readonly string _accountId;
+        private readonly long _accountId;
 
-        public GetAccountLegalEntitiesRequest(string accountId)
+        public GetAccountLegalEntitiesRequest(long accountId)
         {
             _accountId = accountId;
         }

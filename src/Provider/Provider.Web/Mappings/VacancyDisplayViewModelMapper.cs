@@ -6,6 +6,7 @@ using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Shared.Web.Helpers;
 using Esfa.Recruit.Shared.Web.Orchestrators;
 using Esfa.Recruit.Shared.Web.Services;
+using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
@@ -22,17 +23,20 @@ namespace Esfa.Recruit.Provider.Web.Mappings
         private readonly ExternalLinksConfiguration _externalLinksConfiguration;
         private readonly IRecruitVacancyClient _vacancyClient;
         private readonly IProviderVacancyClient _client;
+        private readonly IFeature _feature;
 
         public DisplayVacancyViewModelMapper(
                 IGeocodeImageService mapService,
                 IOptions<ExternalLinksConfiguration> externalLinksOptions,
                 IRecruitVacancyClient vacancyClient,
-                IProviderVacancyClient client)
+                IProviderVacancyClient client,
+                IFeature feature)
         {
             _mapService = mapService;
             _externalLinksConfiguration = externalLinksOptions.Value;
             _vacancyClient = vacancyClient;
             _client = client;
+            _feature = feature;
         }
 
         public async Task MapFromVacancyAsync(DisplayVacancyViewModel vm, Vacancy vacancy)
@@ -73,12 +77,14 @@ namespace Esfa.Recruit.Provider.Web.Mappings
             vm.ProviderContactEmail = vacancy.ProviderContact?.Email;
             vm.ProviderContactTelephone = vacancy.ProviderContact?.Phone;
             vm.ProviderName = vacancy.TrainingProvider?.Name;
-            vm.Qualifications = vacancy.Qualifications.SortQualifications(allQualifications).AsText();
+            vm.Qualifications = vacancy.Qualifications.SortQualifications(allQualifications).AsText(_feature.IsFeatureEnabled(FeatureNames.FaaV2Improvements));
+            vm.HasOptedToAddQualifications = !_feature.IsFeatureEnabled(FeatureNames.FaaV2Improvements) ? true : vacancy.HasOptedToAddQualifications;
             vm.ShortDescription = vacancy.ShortDescription;
             vm.Skills = vacancy.Skills ?? Enumerable.Empty<string>();
             vm.ThingsToConsider = vacancy.ThingsToConsider;
             vm.Title = vacancy.Title;
             vm.TrainingDescription = vacancy.TrainingDescription;
+            vm.AdditionalTrainingDescription = vacancy.AdditionalTrainingDescription;
             vm.VacancyDescription = vacancy.Description;
             vm.VacancyReferenceNumber = vacancy.VacancyReference.HasValue
                                         ? $"VAC{vacancy.VacancyReference}"
@@ -86,6 +92,9 @@ namespace Esfa.Recruit.Provider.Web.Mappings
             vm.IsDisabilityConfident = vacancy.IsDisabilityConfident;
             vm.AccountLegalEntityPublicHashedId = vacancy.AccountLegalEntityPublicHashedId;
             vm.EmployerNameOption = vacancy.EmployerNameOption;
+            vm.AdditionalQuestion1 = vacancy.AdditionalQuestion1;
+            vm.AdditionalQuestion2 = vacancy.AdditionalQuestion2;
+            vm.HasSubmittedAdditionalQuestions = vacancy.HasSubmittedAdditionalQuestions;
 
             if (vacancy.EmployerLocation != null)
             {
@@ -108,6 +117,8 @@ namespace Esfa.Recruit.Provider.Web.Mappings
                     : null;
                 vm.HoursPerWeek = $"{vacancy.Wage.WeeklyHours:0.##} hours a week";
                 vm.WageInfo = vacancy.Wage.WageAdditionalInformation;
+                vm.CompanyBenefitsInformation = vacancy.Wage.CompanyBenefitsInformation;
+                vm.WageType = vacancy.Wage.WageType;
                 vm.WageText = vacancy.StartDate.HasValue ? vacancy.Wage.ToText(vacancy.StartDate) : null;
                 vm.WorkingWeekDescription = vacancy.Wage.WorkingWeekDescription;
             }

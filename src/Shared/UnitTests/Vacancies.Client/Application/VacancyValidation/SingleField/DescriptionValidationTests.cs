@@ -21,12 +21,15 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation.
             result.HasErrors.Should().BeFalse();
             result.Errors.Should().HaveCount(0);
         }
-
+        
         [Theory]
-        [InlineData(null)]
-        [InlineData("")]
-        public void DescriptionMustNotBeEmpty(string description)
+        [InlineData(null,true, "will do at work")]
+        [InlineData(null,false,"will be doing")]
+        [InlineData("",true,"will do at work")]
+        [InlineData("",false,"will be doing")]
+        public void DescriptionMustNotBeEmpty(string description,bool featureEnabled, string errorMessage)
         {
+            Feature.Setup(x => x.IsFeatureEnabled("FaaV2Improvements")).Returns(featureEnabled);
             var vacancy = new Vacancy 
             {
                 Description = description
@@ -39,6 +42,7 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation.
             result.Errors[0].PropertyName.Should().Be(nameof(vacancy.Description));
             result.Errors[0].ErrorCode.Should().Be("53");
             result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.Description);
+            result.Errors[0].ErrorMessage.Should().Contain(errorMessage);
         }
 
         [Fact]

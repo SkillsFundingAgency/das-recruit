@@ -150,5 +150,68 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation.
             result.Errors[0].ErrorCode.Should().Be("44");
             result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.Wage);
         }
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        public void WageCompanyBenefitsInfoIsOptional(string descriptionValue)
+        {
+            var vacancy = new Vacancy
+            {
+                Wage = new Wage
+                {
+                    WageType = WageType.NationalMinimumWage,
+                    CompanyBenefitsInformation = descriptionValue
+                }
+            };
+
+            var result = Validator.Validate(vacancy, VacancyRuleSet.Wage);
+
+            result.HasErrors.Should().BeFalse();
+            result.Errors.Should().HaveCount(0);
+        }
+
+        [Theory]
+        [InlineData("<")]
+        [InlineData(">")]
+        public void WageCompanyBenefitsInfoMustContainValidCharacters(string invalidCharacter)
+        {
+            var vacancy = new Vacancy
+            {
+                Wage = new Wage
+                {
+                    WageType = WageType.NationalMinimumWage,
+                    CompanyBenefitsInformation = new String('a', 50) + invalidCharacter + new String('a', 50)
+                }
+            };
+
+            var result = Validator.Validate(vacancy, VacancyRuleSet.Wage);
+
+            result.HasErrors.Should().BeTrue();
+            result.Errors.Should().HaveCount(1);
+            result.Errors[0].PropertyName.Should().Be($"{nameof(vacancy.Wage)}.{nameof(vacancy.Wage.CompanyBenefitsInformation)}");
+            result.Errors[0].ErrorCode.Should().Be("45");
+            result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.Wage);
+        }
+
+        [Fact]
+        public void WageCompanyBenefitsInfoMustBeLessThan251Characters()
+        {
+            var vacancy = new Vacancy
+            {
+                Wage = new Wage
+                {
+                    WageType = WageType.NationalMinimumWage,
+                    CompanyBenefitsInformation = new string('a', 252)
+                }
+            };
+
+            var result = Validator.Validate(vacancy, VacancyRuleSet.Wage);
+
+            result.HasErrors.Should().BeTrue();
+            result.Errors.Should().HaveCount(1);
+            result.Errors[0].PropertyName.Should().Be($"{nameof(vacancy.Wage)}.{nameof(vacancy.Wage.CompanyBenefitsInformation)}");
+            result.Errors[0].ErrorCode.Should().Be("44");
+            result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.Wage);
+        }
     }
 }

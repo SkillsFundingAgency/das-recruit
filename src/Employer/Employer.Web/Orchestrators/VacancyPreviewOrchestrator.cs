@@ -12,6 +12,7 @@ using Esfa.Recruit.Shared.Web.Helpers;
 using Esfa.Recruit.Shared.Web.Orchestrators;
 using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Commands;
+using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
@@ -35,17 +36,18 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
         private readonly ILegalEntityAgreementService _legalEntityAgreementService;
         private readonly IMessaging _messaging;
         private readonly IUtility _utility;
+        private readonly IFeature _feature;
         private readonly ExternalLinksConfiguration _externalLinksConfiguration;
 
         public VacancyPreviewOrchestrator(
             IRecruitVacancyClient vacancyClient,
             ILogger<VacancyPreviewOrchestrator> logger,
-            DisplayVacancyViewModelMapper vacancyDisplayMapper, 
-            IReviewSummaryService reviewSummaryService, 
+            DisplayVacancyViewModelMapper vacancyDisplayMapper,
+            IReviewSummaryService reviewSummaryService,
             ILegalEntityAgreementService legalEntityAgreementService,
             IMessaging messaging,
             IOptions<ExternalLinksConfiguration> externalLinksOptions,
-            IUtility utility) : base(logger)
+            IUtility utility, IFeature feature) : base(logger)
         {
             _vacancyClient = vacancyClient;
             _vacancyDisplayMapper = vacancyDisplayMapper;
@@ -53,6 +55,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             _legalEntityAgreementService = legalEntityAgreementService;
             _messaging = messaging;
             _utility = utility;
+            _feature = feature;
             _externalLinksConfiguration = externalLinksOptions.Value;
         }
 
@@ -66,7 +69,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             var vacancy = vacancyTask.Result;
             var programme = programmesTask.Result.SingleOrDefault(p => p.Id == vacancy.ProgrammeId);
 
-            var vm = new VacancyPreviewViewModel();
+            var vm = new VacancyPreviewViewModel(_feature.IsFeatureEnabled(FeatureNames.FaaV2Improvements));
             await _vacancyDisplayMapper.MapFromVacancyAsync(vm, vacancy);
 
             vm.VacancyId = vacancy.Id;
@@ -79,28 +82,29 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             vm.SoftValidationErrors = GetSoftValidationErrors(vacancy);
             vm.EducationLevelName =
                 EducationLevelNumberHelper.GetEducationLevelNameOrDefault(programme.EducationLevelNumber, programme.ApprenticeshipLevel);
+            vm.WageType = vacancy.Wage?.WageType;
 
             if (programme != null) vm.ApprenticeshipLevel = programme.ApprenticeshipLevel;
 
             if (vacancy.Status == VacancyStatus.Referred)
             {
-                vm.Review = await _reviewSummaryService.GetReviewSummaryViewModelAsync(vacancy.VacancyReference.Value, 
+                vm.Review = await _reviewSummaryService.GetReviewSummaryViewModelAsync(vacancy.VacancyReference.Value,
                     ReviewFieldMappingLookups.GetPreviewReviewFieldIndicators());
             }
-            
+
             return vm;
         }
-        
+
         public async Task<OrchestratorResponse<SubmitVacancyResponse>> SubmitVacancyAsync(SubmitEditModel m, VacancyUser user)
         {
             var vacancy = await _utility.GetAuthorisedVacancyAsync(m, RouteNames.Preview_Submit_Post);
-            
+
             if (!vacancy.CanSubmit)
                 throw new InvalidStateException(string.Format(ErrMsg.VacancyNotAvailableForEditing, vacancy.Title));
 
             var employerDescriptionTask = _vacancyClient.GetEmployerDescriptionAsync(vacancy);
             var employerNameTask = _vacancyClient.GetEmployerNameAsync(vacancy);
-            
+
             await Task.WhenAll(employerDescriptionTask, employerNameTask);
 
             vacancy.EmployerDescription = employerDescriptionTask.Result;
@@ -111,7 +115,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
                 v => ValidateVacancy(v, SubmitValidationRules),
                 v => SubmitActionAsync(v, user)
                 );
-        } 
+        }
 
         private EntityValidationResult ValidateVacancy(Vacancy vacancy, VacancyRuleSet rules)
         {
@@ -131,7 +135,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             if (response.HasLegalEntityAgreement == false)
                 return response;
 
-            var command = new SubmitVacancyCommand(vacancy.Id, user,OwnerType.Employer, vacancy.EmployerDescription);
+            var command = new SubmitVacancyCommand(vacancy.Id, user, OwnerType.Employer, vacancy.EmployerDescription);
 
             await _messaging.SendCommandAsync(command);
 
@@ -147,7 +151,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 
             await _messaging.SendCommandAsync(command);
 
-            return new  RejectVacancyResponse { IsRejected = true };
+            return new RejectVacancyResponse { IsRejected = true };
         }
 
         public async Task ClearRejectedVacancyReason(SubmitReviewModel m, VacancyUser user)
@@ -196,7 +200,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 
             if (!vacancy.CanReject)
                 throw new InvalidStateException(string.Format(ErrMsg.VacancyNotAvailableForReject, vacancy.Title));
-            
+
             return await ValidateAndExecute(
                vacancy,
                v => ValidateVacancy(v, RejectValidationRules),
@@ -206,17 +210,17 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 
         public async Task<JobAdvertConfirmationViewModel> GetVacancyConfirmationJobAdvertAsync(VacancyRouteModel vrm)
         {
-            var vacancy = await _vacancyClient.GetVacancyAsync(vrm.VacancyId);            
+            var vacancy = await _vacancyClient.GetVacancyAsync(vrm.VacancyId);
 
             var vm = new JobAdvertConfirmationViewModel
-            {                 
+            {
                 Title = vacancy.Title,
                 VacancyReference = vacancy.VacancyReference?.ToString(),
                 ApprovedJobAdvert = vacancy.Status == VacancyStatus.Submitted,
                 RejectedJobAdvert = vacancy.Status == VacancyStatus.Rejected,
                 TrainingProviderName = vacancy.TrainingProvider.Name,
                 FindAnApprenticeshipUrl = _externalLinksConfiguration.FindAnApprenticeshipUrl
-            };        
+            };
 
             return vm;
         }
@@ -268,6 +272,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             mappings.Add(e => e.NumberOfPositions, vm => vm.NumberOfPositions);
             mappings.Add(e => e.Description, vm => vm.VacancyDescription);
             mappings.Add(e => e.TrainingDescription, vm => vm.TrainingDescription);
+            mappings.Add(e => e.AdditionalTrainingDescription, vm => vm.AdditionalTrainingDescription);
             mappings.Add(e => e.OutcomeDescription, vm => vm.OutcomeDescription);
             mappings.Add(e => e.Skills, vm => vm.Skills);
             mappings.Add(e => e.Qualifications, vm => vm.Qualifications);

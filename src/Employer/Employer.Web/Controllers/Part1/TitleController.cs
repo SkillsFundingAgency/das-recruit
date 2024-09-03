@@ -7,7 +7,6 @@ using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.Title;
 using Microsoft.AspNetCore.Mvc;
 using Esfa.Recruit.Shared.Web.Extensions;
-using Esfa.Recruit.Shared.Web.FeatureToggle;
 
 
 namespace Esfa.Recruit.Employer.Web.Controllers.Part1

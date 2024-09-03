@@ -25,6 +25,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
             int liveCount,
             int submittedCount,
             int numberOfNewApplications,
+            int numberOfEmployerReviewedApplications,
             int numberOfUnsuccessfulApplications,
             int numberOfSuccessfulApplications,
             int closedSuccessfulApplications,
@@ -39,12 +40,11 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
         {
             var vacancyApplicationsDashboard = new List<VacancyApplicationsDashboard>
             {
-                new VacancyApplicationsDashboard { Status = VacancyStatus.Closed, StatusCount = closedCount, NoOfNewApplications = numberOfNewApplications, NoOfSuccessfulApplications = closedSuccessfulApplications, NoOfUnsuccessfulApplications = closedUnsuccessfulApplications},
+                new VacancyApplicationsDashboard { Status = VacancyStatus.Closed, StatusCount = closedCount, NoOfNewApplications = numberOfNewApplications,NumberOfEmployerReviewedApplications=numberOfEmployerReviewedApplications, NoOfSuccessfulApplications = closedSuccessfulApplications, NoOfUnsuccessfulApplications = closedUnsuccessfulApplications},
                 new VacancyApplicationsDashboard { Status = VacancyStatus.Closed, StatusCount = closedCount, NoOfSuccessfulApplications = closedSuccessfulApplications, NoOfUnsuccessfulApplications = closedUnsuccessfulApplications},
-                new VacancyApplicationsDashboard { Status = VacancyStatus.Live,ClosingSoon = false, StatusCount = liveCount, NoOfNewApplications = numberOfNewApplications, NoOfSuccessfulApplications = numberOfSuccessfulApplications,NoOfUnsuccessfulApplications = numberOfUnsuccessfulApplications},
-                new VacancyApplicationsDashboard { Status = VacancyStatus.Live,ClosingSoon = false, StatusCount = liveCount, NoOfNewApplications = numberOfNewApplications, NoOfSuccessfulApplications = numberOfSuccessfulApplications,NoOfUnsuccessfulApplications = numberOfUnsuccessfulApplications},
-                new VacancyApplicationsDashboard { Status = VacancyStatus.Live,ClosingSoon = true, StatusCount = closingSoon, NoOfNewApplications = numberOfNewApplications},
-                new VacancyApplicationsDashboard { Status = VacancyStatus.Live,ClosingSoon = true, StatusCount = closingSoonNoApplications},
+                new VacancyApplicationsDashboard { Status = VacancyStatus.Live,ClosingSoon = false,NumberOfEmployerReviewedApplications=numberOfEmployerReviewedApplications, StatusCount = liveCount, NoOfNewApplications = numberOfNewApplications, NoOfSuccessfulApplications = numberOfSuccessfulApplications,NoOfUnsuccessfulApplications = numberOfUnsuccessfulApplications},
+                new VacancyApplicationsDashboard { Status = VacancyStatus.Live,ClosingSoon = false,NumberOfEmployerReviewedApplications=numberOfEmployerReviewedApplications, StatusCount = liveCount, NoOfNewApplications = numberOfNewApplications, NoOfSuccessfulApplications = numberOfSuccessfulApplications,NoOfUnsuccessfulApplications = numberOfUnsuccessfulApplications},
+                new VacancyApplicationsDashboard { Status = VacancyStatus.Live,ClosingSoon = true,NumberOfEmployerReviewedApplications=numberOfEmployerReviewedApplications, StatusCount = closingSoon, NoOfNewApplications = numberOfNewApplications}
             };
             
             var vacancyDashboards =new List<VacancyStatusDashboard>
@@ -57,16 +57,15 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
                 new VacancyStatusDashboard { Status = VacancyStatus.Rejected, StatusCount = rejectedCount },
                 new VacancyStatusDashboard { Status = VacancyStatus.Submitted, StatusCount = submittedCount },
                 new VacancyStatusDashboard { Status = VacancyStatus.Live,ClosingSoon = false, StatusCount = liveCount},
-                new VacancyStatusDashboard { Status = VacancyStatus.Live,ClosingSoon = false, StatusCount = liveCount},
-                new VacancyStatusDashboard { Status = VacancyStatus.Live,ClosingSoon = true, StatusCount = closingSoon},
-                new VacancyStatusDashboard { Status = VacancyStatus.Live,ClosingSoon = true, StatusCount = closingSoonNoApplications },
+                new VacancyStatusDashboard { Status = VacancyStatus.Live,ClosingSoon = true, StatusCount = closingSoon}
             };
             
             
             vacanciesSummaryProvider.Setup(x => x.GetProviderOwnedVacancyDashboardByUkprnAsync(ukprn, vacancyType)).ReturnsAsync(new VacancyDashboard
             {
                 VacancyApplicationsDashboard = vacancyApplicationsDashboard,
-                VacancyStatusDashboard = vacancyDashboards
+                VacancyStatusDashboard = vacancyDashboards,
+                VacanciesClosingSoonWithNoApplications = closingSoonNoApplications
             });
             
             var actual = await vacancyClient.GetDashboardSummary(ukprn, vacancyType);
@@ -75,8 +74,9 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
             actual.Draft.Should().Be(draftCount);
             actual.Review.Should().Be(reviewCount);
             actual.Referred.Should().Be(referredCount + rejectedCount);
-            actual.Live.Should().Be(liveCount*2 + closingSoon + closingSoonNoApplications);
+            actual.Live.Should().Be(liveCount + closingSoon);
             actual.NumberOfNewApplications.Should().Be(numberOfNewApplications*4);
+            actual.NumberOfEmployerReviewedApplications.Should().Be(numberOfEmployerReviewedApplications * 4);
             actual.NumberOfUnsuccessfulApplications.Should().Be(numberOfUnsuccessfulApplications*2 + closedUnsuccessfulApplications*2);
             actual.NumberOfSuccessfulApplications.Should().Be(numberOfSuccessfulApplications*2 + closedSuccessfulApplications*2);
             actual.NumberClosingSoon.Should().Be(closingSoon);
@@ -85,7 +85,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
             actual.HasVacancies.Should().BeTrue();
             actual.HasOneVacancy.Should().BeFalse();
             actual.HasApplications.Should().BeTrue();
-            actual.NumberOfVacancies.Should().Be(closedCount + draftCount + reviewCount + referredCount + rejectedCount + submittedCount + liveCount + liveCount + closingSoon + closingSoonNoApplications);
+            actual.NumberOfVacancies.Should().Be(closedCount + draftCount + reviewCount + referredCount + rejectedCount + submittedCount + liveCount + closingSoon);
         }
 
         [Test, MoqAutoData]

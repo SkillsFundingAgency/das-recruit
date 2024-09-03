@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Esfa.Recruit.Shared.Web.RuleTemplates;
 using Esfa.Recruit.Shared.Web.ViewModels;
+using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
 namespace Esfa.Recruit.Shared.Web.Mappers
@@ -10,10 +11,12 @@ namespace Esfa.Recruit.Shared.Web.Mappers
     public sealed class ReviewFieldIndicatorMapper
     {
         private readonly IRuleMessageTemplateRunner _ruleTemplateRunner;
+        private readonly bool _faaV2FeatureEnabled;
 
-        public ReviewFieldIndicatorMapper(IRuleMessageTemplateRunner ruleTemplateRunner)
+        public ReviewFieldIndicatorMapper(IRuleMessageTemplateRunner ruleTemplateRunner, IFeature feature)
         {
             _ruleTemplateRunner = ruleTemplateRunner;
+            _faaV2FeatureEnabled = feature.IsFeatureEnabled("FaaV2Improvements");
         }
 
         private IDictionary<string, string> ManualQaMessagesForApprenticeship => new Dictionary<string, string> 
@@ -22,13 +25,15 @@ namespace Esfa.Recruit.Shared.Web.Mappers
             { FieldIdentifiers.ShortDescription, "Brief overview requires edit" },
             { FieldIdentifiers.ClosingDate, "Closing date requires edit" },
             { FieldIdentifiers.Wage, "Annual wage requires edit" },
+            { FieldIdentifiers.CompanyBenefitsInformation, "Company benefits requires edit" },
             { FieldIdentifiers.WorkingWeek, "Working week requires edit" },
             { FieldIdentifiers.ExpectedDuration, "Expected duration requires edit" },
             { FieldIdentifiers.PossibleStartDate, "Possible start date requires edit" },
             { FieldIdentifiers.TrainingLevel, "Apprenticeship level requires edit" },
             { FieldIdentifiers.NumberOfPositions, "Positions requires edit" },
-            { FieldIdentifiers.VacancyDescription, "What will the apprentice be doing requires edit" },
-            { FieldIdentifiers.TrainingDescription, "What training will the apprentice take and what qualification will the apprentice get at the end requires edit" },
+            { FieldIdentifiers.VacancyDescription, _faaV2FeatureEnabled ?"What will the apprentice do at work requires edit":"What will the apprentice be doing requires edit" },
+            { FieldIdentifiers.TrainingDescription, _faaV2FeatureEnabled ?"The apprentice's training schedule requires edit":"What training will the apprentice take and what qualification will the apprentice get at the end requires edit" },
+            { FieldIdentifiers.AdditionalTrainingDescription, "Additional training information requires edit" },
             { FieldIdentifiers.OutcomeDescription, "What is the expected career progression after this apprenticeship requires edit" },
             { FieldIdentifiers.Skills, "Skills requires edit" },
             { FieldIdentifiers.Qualifications, "Qualifications requires edit" },
@@ -44,7 +49,9 @@ namespace Esfa.Recruit.Shared.Web.Mappers
             { FieldIdentifiers.Training, "Training requires edit" },
             { FieldIdentifiers.ApplicationMethod, "Application method requires edit" },
             { FieldIdentifiers.ApplicationUrl, "Apply now web address requires edit" },
-            { FieldIdentifiers.ApplicationInstructions, "Application process requires edit" }
+            { FieldIdentifiers.ApplicationInstructions, "Application process requires edit" },
+            { FieldIdentifiers.AdditionalQuestion1, "Additional question 1 requires edit" },
+            { FieldIdentifiers.AdditionalQuestion2, "Additional question 2 requires edit" },
         };
         
         private IDictionary<string, string> ManualQaMessagesForTraineeship => new Dictionary<string, string> 

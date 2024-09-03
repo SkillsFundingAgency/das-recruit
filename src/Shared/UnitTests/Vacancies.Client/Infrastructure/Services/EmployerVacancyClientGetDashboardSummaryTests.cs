@@ -15,7 +15,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
     public class EmployerVacancyClientGetDashboardSummaryTests
     {
         [Test, MoqAutoData]
-        public async Task Then_Maps_Statuses_To_ProviderDashboardSummary(
+        public async Task Then_Maps_Statuses_To_EmployerDashboardSummary(
             int closedCount,
             int draftCount,
             int reviewCount,
@@ -25,6 +25,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
             int numberOfNewApplications,
             int numberOfUnsuccessfulApplications,
             int numberOfSuccessfulApplications,
+            int numberOfSharedApplications,
             int closedSuccessfulApplications,
             int closedUnsuccessfulApplications,
             int closingSoon,
@@ -41,10 +42,15 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
                 new VacancyApplicationsDashboard { Status = VacancyStatus.Closed, StatusCount = closedCount, NoOfSuccessfulApplications = closedSuccessfulApplications, NoOfUnsuccessfulApplications = closedUnsuccessfulApplications},
                 new VacancyApplicationsDashboard { Status = VacancyStatus.Live,ClosingSoon = false, StatusCount = liveCount, NoOfNewApplications = numberOfNewApplications, NoOfSuccessfulApplications = numberOfSuccessfulApplications,NoOfUnsuccessfulApplications = numberOfUnsuccessfulApplications},
                 new VacancyApplicationsDashboard { Status = VacancyStatus.Live,ClosingSoon = false, StatusCount = liveCount, NoOfNewApplications = numberOfNewApplications, NoOfSuccessfulApplications = numberOfSuccessfulApplications,NoOfUnsuccessfulApplications = numberOfUnsuccessfulApplications},
-                new VacancyApplicationsDashboard { Status = VacancyStatus.Live,ClosingSoon = true, StatusCount = closingSoon, NoOfNewApplications = numberOfNewApplications},
-                new VacancyApplicationsDashboard { Status = VacancyStatus.Live,ClosingSoon = true, StatusCount = closingSoonNoApplications},
+                new VacancyApplicationsDashboard { Status = VacancyStatus.Live,ClosingSoon = true, StatusCount = closingSoon, NoOfNewApplications = numberOfNewApplications}
             };
-            
+
+            var vacancySharedApplicationsDashboard = new List<VacancySharedApplicationsDashboard>
+            {
+                new VacancySharedApplicationsDashboard { Status = VacancyStatus.Live, NoOfSharedApplications = numberOfSharedApplications},
+                new VacancySharedApplicationsDashboard { Status = VacancyStatus.Closed, NoOfSharedApplications = numberOfSharedApplications}
+            };
+
             var vacancyDashboards =new List<VacancyStatusDashboard>
             {
                 new VacancyStatusDashboard { Status = VacancyStatus.Closed, StatusCount = closedCount},
@@ -55,14 +61,14 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
                 new VacancyStatusDashboard { Status = VacancyStatus.Rejected, StatusCount = rejectedCount },
                 new VacancyStatusDashboard { Status = VacancyStatus.Submitted, StatusCount = submittedCount },
                 new VacancyStatusDashboard { Status = VacancyStatus.Live,ClosingSoon = false, StatusCount = liveCount},
-                new VacancyStatusDashboard { Status = VacancyStatus.Live,ClosingSoon = false, StatusCount = liveCount},
                 new VacancyStatusDashboard { Status = VacancyStatus.Live,ClosingSoon = true, StatusCount = closingSoon},
-                new VacancyStatusDashboard { Status = VacancyStatus.Live,ClosingSoon = true, StatusCount = closingSoonNoApplications },
             };
             vacanciesSummaryProvider.Setup(x => x.GetEmployerOwnedVacancyDashboardByEmployerAccountIdAsync(employerAccountId, vacancyType)).ReturnsAsync(new VacancyDashboard
             {
                 VacancyApplicationsDashboard = vacancyApplicationsDashboard,
-                VacancyStatusDashboard = vacancyDashboards
+                VacancyStatusDashboard = vacancyDashboards,
+                VacanciesClosingSoonWithNoApplications = closingSoonNoApplications,
+                VacancySharedApplicationsDashboard = vacancySharedApplicationsDashboard
             });
             
             var actual = await vacancyClient.GetDashboardSummary(employerAccountId);
@@ -71,17 +77,17 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
             actual.Draft.Should().Be(draftCount);
             actual.Review.Should().Be(reviewCount);
             actual.Referred.Should().Be(referredCount + rejectedCount);
-            actual.Live.Should().Be(liveCount*2 + closingSoon + closingSoonNoApplications);
+            actual.Live.Should().Be(liveCount + closingSoon);
             actual.NumberOfNewApplications.Should().Be(numberOfNewApplications*4);
             actual.NumberOfUnsuccessfulApplications.Should().Be(numberOfUnsuccessfulApplications*2 + closedUnsuccessfulApplications*2);
             actual.NumberOfSuccessfulApplications.Should().Be(numberOfSuccessfulApplications*2 + closedSuccessfulApplications*2);
+            actual.NumberOfSharedApplications.Should().Be(numberOfSharedApplications * 2);
             actual.NumberClosingSoon.Should().Be(closingSoon);
             actual.NumberClosingSoonWithNoApplications.Should().Be(closingSoonNoApplications);
-
             actual.HasVacancies.Should().BeTrue();
             actual.HasOneVacancy.Should().BeFalse();
             actual.HasApplications.Should().BeTrue();
-            actual.NumberOfVacancies.Should().Be(closedCount + draftCount + reviewCount + referredCount + rejectedCount + submittedCount + liveCount + liveCount + closingSoon + closingSoonNoApplications);
+            actual.NumberOfVacancies.Should().Be(closedCount + draftCount + reviewCount + referredCount + rejectedCount + submittedCount + liveCount + closingSoon);
         }
 
         [Test, MoqAutoData]
@@ -94,7 +100,8 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
             vacanciesSummaryProvider.Setup(x => x.GetEmployerOwnedVacancyDashboardByEmployerAccountIdAsync(employerAccountId, vacancyType)).ReturnsAsync(new VacancyDashboard
             {
                 VacancyApplicationsDashboard = new List<VacancyApplicationsDashboard>(),
-                VacancyStatusDashboard = new List<VacancyStatusDashboard>()
+                VacancyStatusDashboard = new List<VacancyStatusDashboard>(),
+                VacancySharedApplicationsDashboard = new List<VacancySharedApplicationsDashboard>()
             });
             
             var actual = await vacancyClient.GetDashboardSummary(employerAccountId);
@@ -116,7 +123,8 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
             vacanciesSummaryProvider.Setup(x => x.GetEmployerOwnedVacancyDashboardByEmployerAccountIdAsync(employerAccountId, vacancyType)).ReturnsAsync(new VacancyDashboard
             {
                 VacancyApplicationsDashboard = new List<VacancyApplicationsDashboard>(),
-                VacancyStatusDashboard = new List<VacancyStatusDashboard>()
+                VacancyStatusDashboard = new List<VacancyStatusDashboard>(),
+                VacancySharedApplicationsDashboard = new List<VacancySharedApplicationsDashboard>()
             });
             
             var actual = await vacancyClient.GetDashboardSummary(employerAccountId);

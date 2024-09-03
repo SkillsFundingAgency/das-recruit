@@ -157,9 +157,14 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
         {
             var review = await _vacancyClient.GetVacancyReviewAsync(reviewId);
 
+            if (review == null)
+            {
+                return null;
+            }
+
             return new UnassignReviewViewModel()
             {
-                AdvisorName = review.ReviewedByUser.Name,
+                AdvisorName = review.ReviewedByUser?.Name,
                 Title = review.Title
             };
         }
@@ -193,6 +198,16 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
                 });
                 vacancy.TrainingDescription = m.TrainingDescription;
             }
+            if (review.VacancySnapshot.AdditionalTrainingDescription != m.AdditionalTrainingDescription)
+            {
+                manualQaFieldEditIndicator.Add(new ManualQaFieldEditIndicator
+                {
+                    FieldIdentifier = nameof(m.AdditionalTrainingDescription),
+                    BeforeEdit = review.VacancySnapshot.AdditionalTrainingDescription,
+                    AfterEdit = m.AdditionalTrainingDescription
+                });
+                vacancy.AdditionalTrainingDescription = m.AdditionalTrainingDescription;
+            }
             if (review.VacancySnapshot.ShortDescription != m.ShortDescription)
             {
                 manualQaFieldEditIndicator.Add(new ManualQaFieldEditIndicator
@@ -222,6 +237,16 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
                     AfterEdit = m.WorkingWeekDescription
                 });
                 vacancy.Wage.WorkingWeekDescription = m.WorkingWeekDescription;
+            }
+            if (review.VacancySnapshot.Wage.CompanyBenefitsInformation != m.CompanyBenefitsInformation)
+            {
+                manualQaFieldEditIndicator.Add(new ManualQaFieldEditIndicator
+                {
+                    FieldIdentifier = nameof(m.CompanyBenefitsInformation),
+                    BeforeEdit = review.VacancySnapshot.Wage.CompanyBenefitsInformation,
+                    AfterEdit = m.CompanyBenefitsInformation
+                });
+                vacancy.Wage.CompanyBenefitsInformation = m.CompanyBenefitsInformation;
             }
 
             if (review.VacancySnapshot.WorkExperience != m.WorkExperience)

@@ -13,7 +13,9 @@
         <partial name=@PartialNames.ValidationSummary model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState }' />
 
         <h1 class="govuk-heading-l govuk-!-margin-bottom-6">Manage your emails</h1>
-
+        
+        <p class="govuk-body">These updates will be sent to the email address you use for <a href="@(Model.EnvironmentIsProd ? "https://home.account.gov.uk/settings" : "https://home.integration.account.gov.uk/settings")" target="_blank" class="govuk-link govuk-link--no-visited-state">your GOV.UK One Login (opens in new tab)</a>.</p>
+        
         <form method="post" asp-route-employerAccountId="@Model.EmployerAccountId">
             <div esfa-validation-marker-for="HasAnySubscription" class="govuk-form-group" data-module="govuk-checkboxes">
                 <fieldset class="govuk-fieldset" aria-describedby="when-conditional-hint">

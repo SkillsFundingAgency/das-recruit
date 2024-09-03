@@ -57,9 +57,9 @@ public class DeleteVacancyControllerTests
 
         var actual = await controller.Delete(model) as RedirectToRouteResult;
 
-        Assert.IsNotNull(actual);
+        Assert.That(actual, Is.Not.Null);
         actual.RouteName.Should().Be(RouteNames.Vacancies_Get);
-        Assert.IsTrue(controller.TempData.ContainsKey(TempDataKeys.DashboardInfoMessage));
-        Assert.AreEqual(string.Format(InfoMessages.AdvertDeleted, vacancy.VacancyReference, vacancy.Title), controller.TempData[TempDataKeys.DashboardInfoMessage]);
+        Assert.That(controller.TempData.ContainsKey(TempDataKeys.DashboardInfoMessage), Is.True);
+        Assert.That(string.Format(InfoMessages.AdvertDeleted, vacancy.VacancyReference, vacancy.Title), Is.EqualTo(controller.TempData[TempDataKeys.DashboardInfoMessage]));
     }
 }

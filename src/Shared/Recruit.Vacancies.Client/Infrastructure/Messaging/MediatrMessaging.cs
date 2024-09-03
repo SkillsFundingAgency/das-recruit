@@ -13,6 +13,13 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Messaging
             _mediator = mediator;
         }
 
+        public async Task<bool> SendStatusCommandAsync(ICommand command)
+        {
+            var request = command as IRequest<bool>;
+
+            return await _mediator.Send(request);
+        }
+
         public async Task SendCommandAsync(ICommand command)
         {
             var request = command as IRequest<Unit>;

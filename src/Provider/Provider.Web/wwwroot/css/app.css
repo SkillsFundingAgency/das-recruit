@@ -1,437 +1,448 @@
 /* Dashboard */
 
 .app-card {
-    border: 1px solid #bfc1c3;
-    height: 100%;
-    margin-bottom: 20px;
+  border: 1px solid #bfc1c3;
+  height: 100%;
+  margin-bottom: 20px;
 }
 
 @media (min-width: 40.0625em) {
-    .app-card {
-        margin-bottom: 0;
-    }
+  .app-card {
+    margin-bottom: 0;
+  }
 }
 
 .app-card--inactive {
-    background-color: #f8f8f8;
+  background-color: #f8f8f8;
 }
 
 .app-card__heading {
-    margin-bottom: 10px;
-    font-size: 19px;
-    font-size: 1.1875rem;
-    line-height: 1.31579;
+  margin-bottom: 10px;
+  font-size: 19px;
+  font-size: 1.1875rem;
+  line-height: 1.31579;
 }
 
 @media (min-width: 40.0625em) {
-    .app-card__stat {
-        display: block;
-        font-size: 32px;
-        font-size: 2rem;
-        line-height: 1.25;
-    }
+  .app-card__stat {
+    display: block;
+    font-size: 32px;
+    font-size: 2rem;
+    line-height: 1.25;
+  }
 }
 
 .app-card__content {
-    padding: 20px;
+  padding: 20px;
 }
 
 .app-card__description {
-    margin-bottom: 0;
-    font-size: 16px;
-    font-size: 1rem;
-    line-height: 1.25;
+  margin-bottom: 0;
+  font-size: 16px;
+  font-size: 1rem;
+  line-height: 1.25;
 }
 
 @media (min-width: 40.0625em) {
-    .app-card__row {
-        display: flex;
-        margin-bottom: 30px;
-    }
+  .app-card__row {
+    display: flex;
+    margin-bottom: 30px;
+  }
 }
 
 .app-card__tasks {
-    margin-top: 15px;
-    margin-bottom: 0;
-    font-size: 16px;
-    font-size: 1rem;
-    line-height: 1.25;
+  margin-top: 15px;
+  margin-bottom: 0;
+  font-size: 16px;
+  font-size: 1rem;
+  line-height: 1.25;
 }
 
 /* Status Tags */
 
 .app-tag {
-    font-size: inherit;
+  font-size: inherit;
 }
 
 .app-tag--draft {
-    color: #383f43;
-    background: #eeefef;
+  color: #383f43;
+  background: #eeefef;
 }
 
 .app-tag--submitted {
-    color: #6e3619;
-    background: #fcd6c3;
+  color: #6e3619;
+  background: #fcd6c3;
 }
 
 .app-tag--referred {
-    color: #942514;
-    background: #f6d7d2;
+  color: #942514;
+  background: #f6d7d2;
 }
 
 .app-tag--approved {
-    color: #005a30;
-    background: #cce2d8;
+  color: #005a30;
+  background: #cce2d8;
 }
 
 .app-tag--live {
-    color: #005a30;
-    background: #cce2d8;
+  color: #005a30;
+  background: #cce2d8;
 }
 
 .app-tag--closed {
-    color: #383f43;
-    background: #eeefef;
+  color: #383f43;
+  background: #eeefef;
 }
 
 .app-tag--transferred {
-    color: #144e81;
-    background: #d2e2f1;
+  color: #144e81;
+  background: #d2e2f1;
 }
 
 /* Vacancy preview */
 
 .app-preview-wrap {
-    border: 1px solid #b1b4b6;
-    padding: 20px;
-    margin-bottom: 20px;
+  border: 1px solid #b1b4b6;
+  padding: 20px;
+  margin-bottom: 20px;
 }
 
 @media (min-width: 40.0625em) {
-    .app-preview-wrap {
-        padding: 40px;
-        margin-bottom: 40px;
-    }
+  .app-preview-wrap {
+    padding: 40px;
+    margin-bottom: 40px;
+  }
 }
 
 .app-preview-map {
-    max-width: 100%;
+  max-width: 100%;
 }
 
 .app-preview-section--empty {
-    border-left: 5px solid #1d70b8;
-    min-height: 80px;
-    padding-left: 15px;
+  border-left: 5px solid #1d70b8;
+  min-height: 80px;
+  padding-left: 15px;
 }
 
 .app-preview-section--error {
-    border-left: 5px solid #d4351c;
-    min-height: 80px;
-    padding-left: 15px;
+  border-left: 5px solid #d4351c;
+  min-height: 80px;
+  padding-left: 15px;
 }
 
 .app-preview-section--review {
-    border-left: 5px solid #f47738;
-    min-height: 80px;
-    padding-left: 15px;
+  border-left: 5px solid #f47738;
+  min-height: 80px;
+  padding-left: 15px;
 }
 
 /* Check your answers */
 
 .app-summary-list {
-    font-family: "GDS Transport",arial,sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    font-weight: 400;
-    font-size: 16px;
-    line-height: 1.25;
-    color: #0b0c0c;
-    margin: 0 0 0 -15px;
+  font-family: "GDS Transport", arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1.25;
+  color: #0b0c0c;
+  margin: 0 0 0 -15px;
 }
 
 @media (min-width: 40.0625em) {
-    .app-summary-list {
-        font-size: 19px;
-        line-height: 1.3;
-    }
+  .app-summary-list {
+    font-size: 19px;
+    line-height: 1.3;
+  }
 }
 
 .app-summary-list__row {
-    padding-left: 15px;
-    margin-bottom: 15px;
+  padding-left: 15px;
+  margin-bottom: 15px;
 }
 
 @media (min-width: 40.0625em) {
-    .app-summary-list__row {
-        display: flex;
-        flex-direction: row;
-        margin-bottom: 10px;
-    }
+  .app-summary-list__row {
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 10px;
+  }
 }
 
 .app-summary-list__row--error {
-    border-left: 5px solid #d4351c;
-    padding-left: 10px;
+  border-left: 5px solid #d4351c;
+  padding-left: 10px;
 }
 
 .app-summary-list__key {
-    padding-bottom: 5px;
-    font-weight: 700;
+  padding-bottom: 5px;
+  font-weight: 700;
 }
 
 @media (min-width: 40.0625em) {
-    .app-summary-list__key {
-        flex-basis: 30%;
-        padding-right: 20px;
-        padding-bottom: 10px;
-        border-bottom: 1px solid #b1b4b6;
-    }
+  .app-summary-list__key {
+    flex-basis: 30%;
+    padding-right: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #b1b4b6;
+  }
 }
 
 .app-summary-list__value {
-    margin: 0;
-    padding-bottom: 10px;
+  margin: 0;
+  padding-bottom: 10px;
 }
 
 @media (min-width: 40.0625em) {
-    .app-summary-list__value {
-        flex-basis: 50%;
-        padding-right: 20px;
-        padding-bottom: 10px;
-        border-bottom: 1px solid #b1b4b6;
-    }
+  .app-summary-list__value {
+    flex-basis: 50%;
+    padding-right: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #b1b4b6;
+  }
 }
 
 .app-summary-list__actions {
-    margin: 0 0 15px;
-    padding: 0 0 15px;
-    border-bottom: 1px solid #b1b4b6;
+  margin: 0 0 15px;
+  padding: 0 0 15px;
+  border-bottom: 1px solid #b1b4b6;
 }
 
 @media (min-width: 40.0625em) {
-    .app-summary-list__actions {
-        flex-basis: 20%;
-        text-align: right;
-        padding-bottom: 10px;
-        margin-bottom: 0;
-    }
+  .app-summary-list__actions {
+    flex-basis: 20%;
+    text-align: right;
+    padding-bottom: 10px;
+    margin-bottom: 0;
+  }
 }
 
-.app-summary-list__row--no-border .app-summary-list__key, 
-.app-summary-list__row--no-border .app-summary-list__value, 
+.app-summary-list__row--no-border .app-summary-list__key,
+.app-summary-list__row--no-border .app-summary-list__value,
 .app-summary-list__row--no-border .app-summary-list__actions {
-    border-bottom: none;
+  border-bottom: none;
 }
 
 .app-summary-list__error-message {
-    border-left: 5px solid #d4351c;
-    margin: 0;
-    padding: 0 10px 10px;
-    color: #d4351c;
-    font-weight: 700;
-    display: block;
+  border-left: 5px solid #d4351c;
+  margin: 0;
+  padding: 0 10px 10px;
+  color: #d4351c;
+  font-weight: 700;
+  display: block;
 }
 
 .app-summary-list__error-message:empty {
-    display: none;
+  display: none;
 }
 
 /* Analytics styles for vacancies */
 
 .app-analytics {
-    background: #f3f2f1;
+  background: #f3f2f1;
 }
 
 .app-analytics__heading {
-    padding: 5px 10px;
-    background: #ddd;
-    margin: 0;
+  padding: 5px 10px;
+  background: #ddd;
+  margin: 0;
 }
 
 .app-analytics__data {
-    padding: 10px;
-    font-weight: 700;
-    margin: 0;
+  padding: 10px;
+  font-weight: 700;
+  margin: 0;
 }
 
 .app-analytics__summary {
-    border-top: 1px solid #ccc;
-    padding: 5px 10px;
+  border-top: 1px solid #ccc;
+  padding: 5px 10px;
 }
-
 
 /* Local overrides to the das-task-list component */
 
 .das-task-list__section {
-    width: 100%;
+  width: 100%;
 }
 
 .das-task-list__section-number {
-    width: 20px;
+  width: 20px;
 }
 
 @media (min-width: 40.0625em) {
-    .das-task-list__section-number {
-        width: 30px;
-    }
+  .das-task-list__section-number {
+    width: 30px;
+  }
 }
 
 .das-task-list__section-heading {
-    display: table-cell;
+  display: table-cell;
 }
 
 .das-task-list__section-status {
-    text-align: right;
-    display: table-cell;
+  text-align: right;
+  display: table-cell;
 }
 
 /* User generated content */
 
 .app-ugc-wrap > ul {
-    margin: 0;
-    padding-left: 20px;
-    list-style-type: disc;
+  margin: 0;
+  padding-left: 20px;
+  list-style-type: disc;
 }
 
 .app-preserve-line-breaks {
-    white-space: pre-line;
+  white-space: pre-line;
 }
-
 
 /* Tinymce */
 
 .mce-tinymce {
-    border: 2px solid #0b0c0c !important;
+  border: 2px solid #0b0c0c !important;
 }
 
 /* Hide error message spans if empty  */
 
 span.govuk-error-message:empty {
-    display: none;
+  display: none;
+}
+
+.js-enabled .app-select__panel--hidden {
+  display: none;
 }
 
 /* Fix the height of autocomplete */
 
 .autocomplete__input {
-    height: 40px;
+  height: 40px;
 }
 
 .app-disability-confident-logo {
-    width: 150px;
-    margin-top: 10px;
-    margin-bottom: 10px;
-    display: inline-block;
+  width: 150px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  display: inline-block;
 }
 
 /*** JQuery UI autocomplete styles ***/
 
 .ui-autocomplete {
-    background-color: #fff;
-    border: 2px solid #0b0c0c;
-    color: #34384b;
-    cursor: default;
-    margin: 0;
-    max-height: 342px;
-    max-width: 100%;
-    overflow-x: hidden;
-    overflow-y: auto;
-    padding: 0;
-    position: absolute;
+  background-color: #fff;
+  border: 2px solid #0b0c0c;
+  color: #34384b;
+  cursor: default;
+  margin: 0;
+  max-height: 342px;
+  max-width: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+  padding: 0;
+  position: absolute;
 }
 
 .ui-autocomplete .ui-menu-item {
-    font-family: "GDS Transport",arial,sans-serif;
-    -webkit-font-smoothing: antialiased;
-    border-bottom: solid #bfc1c3;
-    border-width: 1px 0;
-    cursor: pointer;
-    display: block;
-    font-size:19px;
-    padding:4px;
-    position: relative;
+  font-family: "GDS Transport", arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  border-bottom: solid #bfc1c3;
+  border-width: 1px 0;
+  cursor: pointer;
+  display: block;
+  font-size: 19px;
+  padding: 4px;
+  position: relative;
 }
 
 @media (max-width: 640px) {
-    .ui-autocomplete .ui-menu-item {
-        font-size:16px
-    }
+  .ui-autocomplete .ui-menu-item {
+    font-size: 16px;
+  }
 }
 
 .ui-autocomplete .ui-menu-item > * {
-    pointer-events: none;
+  pointer-events: none;
 }
 
 .ui-autocomplete .ui-menu-item:first-of-type {
-    border-top-width: 0;
+  border-top-width: 0;
 }
 
 .ui-autocomplete .ui-menu-item:last-of-type {
-    border-bottom-width: 0;
+  border-bottom-width: 0;
 }
 
-.ui-autocomplete .ui-menu-item:nth-child(odd){
-    background-color: #fafafa;
+.ui-autocomplete .ui-menu-item:nth-child(odd) {
+  background-color: #fafafa;
 }
 
-.ui-autocomplete .ui-menu-item:hover{
-    background-color: #1d70b8;
-    border-color: #1d70b8;
-    color: #fff;
-    outline: 0;
+.ui-autocomplete .ui-menu-item:hover {
+  background-color: #1d70b8;
+  border-color: #1d70b8;
+  color: #fff;
+  outline: 0;
 }
 
 /* Traineeships */
 
 .app-account-header--traineeships {
-    background: #3f8082;
-    padding: 10px 0;
+  background: #3f8082;
+  padding: 10px 0;
 }
 
 .app-header__heading {
-    color: #fff;
-    margin: 0;
+  color: #fff;
+  margin: 0;
 }
 
 @media (min-width: 40.0625em) {
-    .app-header__heading {
-        float: left;
-    }
+  .app-header__heading {
+    float: left;
+  }
 }
 
 .app-header__nav {
-    padding: 10px 0 5px;
-    margin: 0 -10px;
+  padding: 10px 0 5px;
+  margin: 0 -10px;
 }
 
 @media (min-width: 40.0625em) {
-    .app-header__nav {
-        float: right;
-        padding: 0;
-    }
+  .app-header__nav {
+    float: right;
+    padding: 0;
+  }
 }
 
 .app-header__navigation {
-    list-style: none;
-    padding: 0;
-    margin: 0;
+  list-style: none;
+  padding: 0;
+  margin: 0;
 }
 
 .app-header__navigation-item {
-    display: inline-block;
-    padding: 0 5px;
+  display: inline-block;
+  padding: 0 5px;
 }
 
 .app-header__link,
 .app-header__link:link,
 .app-header__link:visited {
-    color: #fff;
-    padding: 2px 5px;
+  color: #fff;
+  padding: 2px 5px;
 }
 
 .app-header__link:hover {
-    text-decoration: none;
+  text-decoration: none;
 }
 
 .app-header__link:focus {
-    color: #0b0c0c;
+  color: #0b0c0c;
+}
+
+.app-select-all-table .govuk-checkboxes--small {
+  margin-top: -7px;
+  margin-left: 7px;
+}
+
+.app-checkboxes__select-all label {
+  padding: 0;
 }

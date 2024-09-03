@@ -58,8 +58,8 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
 
             await controller.Delete(model);
 
-            Assert.IsTrue(controller.TempData.ContainsKey(TempDataKeys.VacanciesInfoMessage));
-            Assert.AreEqual(string.Format(InfoMessages.VacancyDeleted, vacancy.VacancyReference, vacancy.Title), controller.TempData[TempDataKeys.VacanciesInfoMessage]);
+            Assert.That(controller.TempData.ContainsKey(TempDataKeys.VacanciesInfoMessage), Is.True);
+            Assert.That(string.Format(InfoMessages.VacancyDeleted, vacancy.VacancyReference, vacancy.Title), Is.EqualTo(controller.TempData[TempDataKeys.VacanciesInfoMessage]));
         }
     }
 }

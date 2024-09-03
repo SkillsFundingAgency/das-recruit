@@ -6,6 +6,7 @@ using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Vacancy;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.ApprenticeshipProgrammes;
+using SFA.DAS.VacancyServices.Wage;
 using Address = Esfa.Recruit.Vacancies.Client.Domain.Entities.Address;
 using ProjectionAddress = Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Vacancy.Address;
 using ProjectionQualification = Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Vacancy.Qualification;
@@ -14,6 +15,7 @@ using ProjectionWage = Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.P
 using Qualification = Esfa.Recruit.Vacancies.Client.Domain.Entities.Qualification;
 using TrainingProvider = Esfa.Recruit.Vacancies.Client.Domain.Entities.TrainingProvider;
 using Wage = Esfa.Recruit.Vacancies.Client.Domain.Entities.Wage;
+using WageType = Esfa.Recruit.Vacancies.Client.Domain.Entities.WageType;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Extensions
 {
@@ -67,6 +69,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Extensions
             projectedVacancy.RouteId = vacancy.RouteId;
             projectedVacancy.WorkExperience = vacancy.WorkExperience;
             projectedVacancy.VacancyType = vacancy.VacancyType.GetValueOrDefault();
+
+            projectedVacancy.AdditionalQuestion1 = vacancy.AdditionalQuestion1;
+            projectedVacancy.AdditionalQuestion2 = vacancy.AdditionalQuestion2;
+
+            projectedVacancy.AdditionalTrainingDescription = vacancy.AdditionalTrainingDescription;
             
             return projectedVacancy;
         }
@@ -94,6 +101,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Extensions
 
         public static IEnumerable<ProjectionQualification> ToProjection(this List<Qualification> qualifications)
         {
+            if (qualifications == null) return [];
+
             return qualifications.Select(q => new ProjectionQualification
             {
                 QualificationType = q.QualificationType,
@@ -122,7 +131,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Extensions
                 WageAdditionalInformation = wage.WageAdditionalInformation,
                 WageType = wage.WageType?.ToString(),
                 WeeklyHours = wage.WeeklyHours ?? 0,
-                WorkingWeekDescription = wage.WorkingWeekDescription
+                WorkingWeekDescription = wage.WorkingWeekDescription,
+                CompanyBenefitsInformation = wage.CompanyBenefitsInformation
             };
         }
     }

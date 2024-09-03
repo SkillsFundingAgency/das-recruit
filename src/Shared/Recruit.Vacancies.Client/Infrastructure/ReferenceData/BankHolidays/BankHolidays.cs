@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using MongoDB.Bson.Serialization.Attributes;
+using Newtonsoft.Json;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.BankHolidays
 {    
@@ -39,10 +40,12 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.BankHoliday
 
         public class BankHolidaysData
         {
+            [JsonProperty("england-and-wales")]
             [BsonElement("england-and-wales")]
             public EnglandAndWales EnglandAndWales { get; set; }
             [BsonElement("scotland")]
             public Scotland Scotland { get; set; }
+            [JsonProperty("northern-ireland")]
             [BsonElement("northern-ireland")]
             public NorthernIreland NorthernIreland { get; set; }
         }

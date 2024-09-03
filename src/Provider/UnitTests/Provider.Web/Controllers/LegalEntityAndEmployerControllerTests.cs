@@ -38,10 +38,10 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
             var actual = await controller.ConfirmEmployerLegalEntitySelection(editModel);
             var actualResult = actual as ViewResult;
             
-            Assert.IsNotNull(actual);
-            Assert.IsNotNull(actualResult);
+            Assert.That(actual, Is.Not.Null);
+            Assert.That(actualResult, Is.Not.Null);
             var actualModel = actualResult.Model as ConfirmLegalEntityAndEmployerViewModel;
-            Assert.IsNotNull(actualModel);
+            Assert.That(actualModel, Is.Not.Null);
             actualModel.EmployerName.Should().Be(editModel.EmployerName);
             actualModel.EmployerAccountId.Should().Be(editModel.EmployerAccountId);
             actualModel.AccountLegalEntityName.Should().Be(editModel.AccountLegalEntityName);

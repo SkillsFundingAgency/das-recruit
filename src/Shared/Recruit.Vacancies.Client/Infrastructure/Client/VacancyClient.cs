@@ -218,7 +218,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             
             var dashboard = dashboardValue.VacancyStatusDashboard;
             var dashboardApplications = dashboardValue.VacancyApplicationsDashboard;
-            
+            var dashboardSharedApplications = dashboardValue.VacancySharedApplicationsDashboard;
+
             return new EmployerDashboardSummary
             {
                 Closed = dashboard.FirstOrDefault(c=>c.Status == VacancyStatus.Closed)?.StatusCount ?? 0,
@@ -232,8 +233,10 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
                                                  + dashboardApplications.Where(c=>c.Status == VacancyStatus.Closed).Sum(x=>x.NoOfSuccessfulApplications),
                 NumberOfUnsuccessfulApplications = dashboardApplications.Where(c=>c.Status == VacancyStatus.Live).Sum(x=>x.NoOfUnsuccessfulApplications) 
                                                    + dashboardApplications.Where(c=>c.Status == VacancyStatus.Closed).Sum(x=>x.NoOfUnsuccessfulApplications),
-                NumberClosingSoon =dashboardApplications.FirstOrDefault(c=>c.Status == VacancyStatus.Live && c.ClosingSoon && (c.NoOfNewApplications != 0 || c.NoOfSuccessfulApplications != 0 || c.NoOfUnsuccessfulApplications != 0))?.StatusCount ?? 0,
-                NumberClosingSoonWithNoApplications =dashboardApplications.FirstOrDefault(c=>c.Status == VacancyStatus.Live && c.ClosingSoon && c.NoOfNewApplications == 0 && c.NoOfSuccessfulApplications == 0 && c.NoOfUnsuccessfulApplications == 0)?.StatusCount ?? 0
+                NumberOfSharedApplications = dashboardSharedApplications.Where(c => c.Status == VacancyStatus.Live || c.Status == VacancyStatus.Closed).Sum(x => x.NoOfSharedApplications),
+                NumberOfAllSharedApplications = dashboardSharedApplications.Where(c => c.Status == VacancyStatus.Live || c.Status == VacancyStatus.Closed).Sum(x => x.NoOfAllSharedApplications),
+                NumberClosingSoon =dashboard.FirstOrDefault(c=>c.Status == VacancyStatus.Live && c.ClosingSoon)?.StatusCount ?? 0,
+                NumberClosingSoonWithNoApplications = dashboardValue.VacanciesClosingSoonWithNoApplications
             };
         }
 
@@ -312,32 +315,67 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return _applicationReviewRepository.GetAsync(applicationReviewId);
         }
 
-        public async Task<List<VacancyApplication>> GetVacancyApplicationsAsync(long vacancyReference)
+        public async Task<List<VacancyApplication>> GetVacancyApplicationsSortedAsync(long vacancyReference, SortColumn sortColumn, SortOrder sortOrder, bool vacancySharedByProvider = false)
         {
-            var applicationReviews =
-                await _applicationReviewRepository.GetForVacancyAsync<ApplicationReview>(vacancyReference);
+            var applicationReviews = vacancySharedByProvider
+                ? await _applicationReviewRepository.GetForSharedVacancySortedAsync(vacancyReference, sortColumn, sortOrder)
+                : await _applicationReviewRepository.GetForVacancySortedAsync(vacancyReference, sortColumn, sortOrder);
+
+            return applicationReviews == null
+                ? new List<VacancyApplication>()
+                : applicationReviews.Select(c => (VacancyApplication)c).ToList();
+        }
+
+        public async Task<List<VacancyApplication>> GetVacancyApplicationsAsync(long vacancyReference, bool vacancySharedByProvider = false)
+        {
+            var applicationReviews = vacancySharedByProvider
+                ? await _applicationReviewRepository.GetForSharedVacancyAsync(vacancyReference) 
+                : await _applicationReviewRepository.GetForVacancyAsync<ApplicationReview>(vacancyReference);
 
             return applicationReviews == null 
                 ? new List<VacancyApplication>() 
                 : applicationReviews.Select(c=>(VacancyApplication)c).ToList();
         }
 
-        public Task SetApplicationReviewSuccessful(Guid applicationReviewId, VacancyUser user)
+        public async Task<List<VacancyApplication>> GetVacancyApplicationsForSelectedIdsAsync(List<Guid> applicationReviewIds)
         {
-            var command = new ApplicationReviewSuccessfulCommand
+            var applicationReviews =
+                await _applicationReviewRepository.GetAllForSelectedIdsAsync<ApplicationReview>(applicationReviewIds);
+
+            return applicationReviews == null
+                ? new List<VacancyApplication>()
+                : applicationReviews.Select(c => (VacancyApplication)c).ToList();
+        }
+
+        public Task<bool> SetApplicationReviewStatus(Guid applicationReviewId, ApplicationReviewStatus? outcome, string candidateFeedback, VacancyUser user)
+        {
+            var command = new ApplicationReviewStatusEditCommand
             {
                 ApplicationReviewId = applicationReviewId,
+                Outcome = outcome,
+                CandidateFeedback = candidateFeedback,
+                User = user
+            };
+
+            return _messaging.SendStatusCommandAsync(command);
+        }
+
+        public Task SetApplicationReviewsShared(IEnumerable<VacancyApplication> applicationReviews, VacancyUser user)
+        {
+            var command = new ApplicationReviewsSharedCommand
+            {
+                ApplicationReviews = applicationReviews,
                 User = user
             };
 
             return _messaging.SendCommandAsync(command);
         }
 
-        public Task SetApplicationReviewUnsuccessful(Guid applicationReviewId, string candidateFeedback, VacancyUser user)
+        public Task SetApplicationReviewsToUnsuccessful(IEnumerable<VacancyApplication> applicationReviewsToUnsuccessful, string candidateFeedback, VacancyUser user)
         {
-            var command = new ApplicationReviewUnsuccessfulCommand
+            var command = new ApplicationReviewsUnsuccessfulCommand()
             {
-                ApplicationReviewId = applicationReviewId,
+                ApplicationReviews = applicationReviewsToUnsuccessful,
                 CandidateFeedback = candidateFeedback,
                 User = user
             };
@@ -561,7 +599,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         
         public async Task<long> GetVacancyCount(string employerAccountId, VacancyType vacancyType, FilteringOptions? filteringOptions, string searchTerm)
         {
-            return await _vacancySummariesQuery.VacancyCount(null, employerAccountId, vacancyType, filteringOptions, searchTerm, OwnerType.Employer);
+            var ownerType = (filteringOptions == FilteringOptions.NewSharedApplications || filteringOptions == FilteringOptions.AllSharedApplications) ? OwnerType.Provider : OwnerType.Employer;
+            return await _vacancySummariesQuery.VacancyCount(null, employerAccountId, vacancyType, filteringOptions, searchTerm, ownerType);
         }
     }
 }

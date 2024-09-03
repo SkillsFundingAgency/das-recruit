@@ -1,0 +1,26 @@
+﻿@model Esfa.Recruit.Employer.Web.ViewModels.VacancyAnalytics.VacancyAnalyticsViewModel
+@{
+    ViewBag.Vpv = "/recruitment/employer/page-vacancy-analytics";
+    ViewBag.Title = @Model.ViewBagTitle;
+}
+
+@section BackLink {
+    <a asp-route="@RouteNames.VacancyManage_Get" asp-all-route-data="@Model.RouteDictionary" class="govuk-back-link">Back</a>
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">    
+        <div>
+            <h2 class="govuk-heading-l govuk-!-margin-top-1">
+                Advert analytics
+            </h2>
+            <p asp-show="@Model.HasAnalytics" class="govuk-body">Showing stats from @Model.AnalyticsSummary.PeriodCaption.</p>
+            <p asp-show="@Model.HasAnalytics" class="govuk-body">Analytics show the total amount and the change from the previous 7 days.</p>
+            <p asp-hide="@Model.HasAnalytics" class="govuk-body">Data is only available for vacancies published after @Model.AnalyticsAvailableAfterApprovalDate.</p>
+            <div asp-show="@Model.HasAnalytics">
+                <partial asp-show="@Model.IsApplyThroughFaaVacancy" name="@RecruitPartialNames.ApplyThroughFaaVacancyAnalytics" for="AnalyticsSummary" />
+                <partial asp-show="@Model.IsApplyThroughExternalApplicationSiteVacancy" name="@RecruitPartialNames.ApplyThroughExternalApplicationSiteVacancyAnalytics" for="AnalyticsSummary" />
+            </div>
+        </div>
+    </div>
+</div>

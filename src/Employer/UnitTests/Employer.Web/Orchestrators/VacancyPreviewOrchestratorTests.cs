@@ -15,7 +15,7 @@ using Moq;
 using Xunit;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web;
-using Esfa.Recruit.Shared.Web.FeatureToggle;
+using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
 
 namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators
 {
@@ -71,18 +71,18 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators
 
             var geocodeImageService = new Mock<IGeocodeImageService>();
             var externalLinks = new Mock<IOptions<ExternalLinksConfiguration>>();
-            var mapper = new DisplayVacancyViewModelMapper(geocodeImageService.Object, externalLinks.Object, _mockRecruitVacancyClient.Object);
+            var mapper = new DisplayVacancyViewModelMapper(geocodeImageService.Object, externalLinks.Object, _mockRecruitVacancyClient.Object,Mock.Of<IFeature>());
 
             var legalEntityAgreement = new Mock<ILegalEntityAgreementService>();
             legalEntityAgreement.Setup(l => l.HasLegalEntityAgreementAsync(vacancy.EmployerAccountId, vacancy.AccountLegalEntityPublicHashedId))
                 .ReturnsAsync(hasLegalEntityAgreement);
-            var utility = new Utility(_mockRecruitVacancyClient.Object, Mock.Of<IFeature>());
+            var utility = new Utility(_mockRecruitVacancyClient.Object);
             
             var sut = new VacancyPreviewOrchestrator(_mockRecruitVacancyClient.Object,
                                                     Mock.Of<ILogger<VacancyPreviewOrchestrator>>(), mapper,
                                                     _mockReviewSummaryService.Object, legalEntityAgreement.Object,
                                                     _mockmessaging.Object,
-                                                    Mock.Of<IOptions<ExternalLinksConfiguration>>(), utility);
+                                                    Mock.Of<IOptions<ExternalLinksConfiguration>>(), utility, Mock.Of<IFeature>());
 
 
             //Act
@@ -128,15 +128,15 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators
 
             var geocodeImageService = new Mock<IGeocodeImageService>();
             var externalLinks = new Mock<IOptions<ExternalLinksConfiguration>>();
-            var mapper = new DisplayVacancyViewModelMapper(geocodeImageService.Object, externalLinks.Object, _mockRecruitVacancyClient.Object);
+            var mapper = new DisplayVacancyViewModelMapper(geocodeImageService.Object, externalLinks.Object, _mockRecruitVacancyClient.Object,Mock.Of<IFeature>());
             var legalEntityAgreement = new Mock<ILegalEntityAgreementService>();            
-            var utility = new Utility(_mockRecruitVacancyClient.Object, Mock.Of<IFeature>());
+            var utility = new Utility(_mockRecruitVacancyClient.Object);
             
             var sut = new VacancyPreviewOrchestrator(_mockRecruitVacancyClient.Object,
                                                     Mock.Of<ILogger<VacancyPreviewOrchestrator>>(), mapper,
                                                     _mockReviewSummaryService.Object, legalEntityAgreement.Object,
                                                     _mockmessaging.Object,
-                                                    Mock.Of<IOptions<ExternalLinksConfiguration>>(), utility);
+                                                    Mock.Of<IOptions<ExternalLinksConfiguration>>(), utility, Mock.Of<IFeature>());
 
             //Act
             var response = await sut.RejectJobAdvertAsync(rejectJobAdvertViewModel, user);

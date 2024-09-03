@@ -1,12 +1,20 @@
+using System;
+using System.Collections.Generic;
 using System.IO;
 using Esfa.Recruit.Provider.Web.Configuration;
 using Esfa.Recruit.Shared.Web.Extensions;
+using Esfa.Recruit.Vacancies.Client.Application.Configuration;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.Configuration.AzureTableStorage;
+using SFA.DAS.DfESignIn.Auth.AppStart;
+using SFA.DAS.DfESignIn.Auth.Configuration;
+using SFA.DAS.DfESignIn.Auth.Enums;
+using SFA.DAS.Encoding;
 using SFA.DAS.Provider.Shared.UI.Startup;
 
 namespace Esfa.Recruit.Provider.Web
@@ -43,6 +51,9 @@ namespace Esfa.Recruit.Provider.Web
 
             _configuration =  configBuilder.Build();
             _authConfig = _configuration.GetSection("Authentication").Get<AuthenticationConfiguration>();
+            
+            _dfEOidcConfig = _configuration.GetSection("DfEOidcConfiguration").Get<DfEOidcConfiguration>(); // read the configuration from SFA.DAS.Provider.DfeSignIn
+            _isDfESignInAllowed = _configuration.GetValue<bool>("UseDfeSignIn"); // read the UseDfeSignIn property from SFA.DAS.Recruit.QA configuration.
             _loggerFactory = loggerFactory;
         }
         
@@ -65,8 +76,8 @@ namespace Esfa.Recruit.Provider.Web
                 o.ViewLocationFormats.Add("/Views/Reports/{1}/{0}" + RazorViewEngine.ViewExtension);
             });
 
-            services.AddMvcService(_hostingEnvironment, _loggerFactory);
-            services.AddDataProtection(_configuration, _hostingEnvironment, applicationName: "das-provider-recruit-web");
+            services.AddMvcService(_hostingEnvironment, _loggerFactory, _configuration);
+            services.AddDataProtection(_configuration, _hostingEnvironment, applicationName: "das-provider");
 
             services.AddApplicationInsightsTelemetry(_configuration);
 
@@ -76,8 +87,30 @@ namespace Esfa.Recruit.Provider.Web
             services.AddControllersWithViews().AddRazorRuntimeCompilation();
     #endif
 
-            services.AddAuthenticationService(_authConfig);
-            services.AddAuthorizationService();            
+            var serviceParameters = new ServiceParameters(_configuration[$"RecruitConfiguration:{nameof(VacancyType)}"]);
+            bool useDfESignIn = _configuration["UseDfESignIn"] != null && _configuration["UseDfESignIn"].Equals("true", StringComparison.CurrentCultureIgnoreCase);
+            if (useDfESignIn)
+            {
+                var providerType = ClientName.TraineeshipRoatp;
+                if (serviceParameters.VacancyType == VacancyType.Apprenticeship)
+                {
+                    providerType = ClientName.ProviderRoatp;
+                }
+                services.AddAndConfigureDfESignInAuthentication(
+                    _configuration,
+                    "SFA.DAS.ProviderApprenticeshipService",
+                    typeof(CustomServiceRole),
+                    providerType,
+                    "/signout",
+                    "");    
+            }
+            else
+            {
+                services.AddAuthenticationService(_authConfig);    
+            }
+            
+            services.AddAuthorizationService(useDfESignIn);
+            services.AddDasEncoding(_configuration);
         }
     }
 }

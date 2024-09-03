@@ -7,7 +7,6 @@ using Esfa.Recruit.Employer.Web;
 using Esfa.Recruit.Employer.Web.Orchestrators.Part1;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.Dates;
 using Esfa.Recruit.Shared.Web.Extensions;
-using Esfa.Recruit.Shared.Web.FeatureToggle;
 using Esfa.Recruit.Shared.Web.Mappers;
 using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
@@ -97,7 +96,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part1
                 MockRecruitVacancyClient.Setup(x => x.UpdateDraftVacancyAsync(It.IsAny<Vacancy>(), User));
                 MockRecruitVacancyClient.Setup(x => x.UpdateEmployerProfileAsync(It.IsAny<EmployerProfile>(), User));
 
-                var utility = new Utility(MockRecruitVacancyClient.Object, Mock.Of<IFeature>());
+                var utility = new Utility(MockRecruitVacancyClient.Object);
 
                 Sut = new DatesOrchestrator(MockRecruitVacancyClient.Object, Mock.Of<ILogger<DatesOrchestrator>>(), 
                     Mock.Of<ITimeProvider>(),Mock.Of<IReviewSummaryService>(), Mock.Of<IApprenticeshipProgrammeProvider>(), utility);

@@ -41,13 +41,11 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
         public async Task<TitleViewModel> GetTitleViewModelForNewVacancyAsync(string employerAccountId, long ukprn)
         {
             await ValidateEmployerAccountIdAsync(ukprn, employerAccountId);
-            var vacancyCount = await _providerVacancyClient.GetVacancyCount(ukprn, _serviceParameters.VacancyType.GetValueOrDefault(), null, string.Empty);
             var vm = new TitleViewModel
             {
                 EmployerAccountId = employerAccountId,
                 Ukprn = ukprn,
-                PageInfo = new PartOnePageInfoViewModel(),
-                HasAnyVacancies = vacancyCount > 0
+                PageInfo = new PartOnePageInfoViewModel()
             };
             return vm;
         }
@@ -56,15 +54,13 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
         {
             var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.Title_Get);
             var ukprn = vacancy.TrainingProvider.Ukprn.GetValueOrDefault();
-            var vacancyCount = await _providerVacancyClient.GetVacancyCount(ukprn, _serviceParameters.VacancyType.GetValueOrDefault(), null, string.Empty);
             var vm = new TitleViewModel
             {
                 VacancyId = vacancy.Id,
                 Title = vacancy.Title,
                 PageInfo = _utility.GetPartOnePageInfo(vacancy),
                 Ukprn = ukprn,
-                EmployerAccountId = vacancy.EmployerAccountId,
-                HasAnyVacancies = vacancyCount > 0
+                EmployerAccountId = vacancy.EmployerAccountId
             };
 
             if (vacancy.Status == VacancyStatus.Referred)
@@ -94,7 +90,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
             return vm;
         }
 
-        public async Task<OrchestratorResponse<Guid>> PostTitleEditModelAsync(VacancyRouteModel vrm, TitleEditModel model, VacancyUser user, long ukprn)
+        public virtual async Task<OrchestratorResponse<Guid>> PostTitleEditModelAsync(VacancyRouteModel vrm, TitleEditModel model, VacancyUser user, long ukprn)
         {
             if (model.VacancyId.HasValue) 
             {

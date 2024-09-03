@@ -1,17 +1,22 @@
+using System;
 using System.Threading.Tasks;
+using Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.ViewModels.ManageNotifications;
 using Esfa.Recruit.Shared.Web.Orchestrators;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Configuration;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators 
 {
     public class ManageNotificationsOrchestrator : EntityValidatingOrchestrator<UserNotificationPreferences, ManageNotificationsEditModel>
     {
         private readonly IRecruitVacancyClient _recruitVacancyClient;
-
+        private readonly RecruitConfiguration _recruitConfiguration;
+        private IConfiguration _configuration;
+        
         private const string NotificationTypesIsRequiredForTheFirstTime = "Select when you want to receive emails about your adverts and applications";
         private readonly EntityValidationResult _notificationTypeIsRequiredForTheFirstTime = new EntityValidationResult
         {
@@ -22,15 +27,21 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
         };
 
         public ManageNotificationsOrchestrator(
-            ILogger<ManageNotificationsOrchestrator> logger, 
+            ILogger<ManageNotificationsOrchestrator> logger,
+            RecruitConfiguration recruitConfiguration,
+            IConfiguration configuration,
             IRecruitVacancyClient recruitVacancyClient) : base(logger)
         {
             _recruitVacancyClient = recruitVacancyClient;
+            _configuration = configuration;
+            _recruitConfiguration = recruitConfiguration;
         }
-        
+
+
         public async Task<ManageNotificationsViewModel> GetManageNotificationsViewModelAsync(VacancyUser vacancyUser, string employerAccountId)
         {
             var preferences = await _recruitVacancyClient.GetUserNotificationPreferencesAsync(vacancyUser.UserId);
+            
 
             return GetViewModelFromDomainModel(preferences, employerAccountId);
         }
@@ -93,15 +104,23 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 
         private ManageNotificationsViewModel GetViewModelFromDomainModel(UserNotificationPreferences preferences, string employerAccountId)
         {
+
             return new ManageNotificationsViewModel
             {
                 EmployerAccountId = employerAccountId,
-                IsVacancyRejectedSelected = (preferences.NotificationTypes & NotificationTypes.VacancyRejected) == NotificationTypes.VacancyRejected,
-                IsVacancyClosingSoonSelected = (preferences.NotificationTypes & NotificationTypes.VacancyClosingSoon) == NotificationTypes.VacancyClosingSoon,
-                IsApplicationSubmittedSelected = (preferences.NotificationTypes & NotificationTypes.ApplicationSubmitted) == NotificationTypes.ApplicationSubmitted,
-                IsVacancySentForEmployerReviewSelected = (preferences.NotificationTypes & NotificationTypes.VacancySentForReview) == NotificationTypes.VacancySentForReview,
+                IsVacancyRejectedSelected = (preferences.NotificationTypes & NotificationTypes.VacancyRejected) ==
+                                            NotificationTypes.VacancyRejected,
+                IsVacancyClosingSoonSelected = (preferences.NotificationTypes & NotificationTypes.VacancyClosingSoon) ==
+                                               NotificationTypes.VacancyClosingSoon,
+                IsApplicationSubmittedSelected =
+                    (preferences.NotificationTypes & NotificationTypes.ApplicationSubmitted) ==
+                    NotificationTypes.ApplicationSubmitted,
+                IsVacancySentForEmployerReviewSelected =
+                    (preferences.NotificationTypes & NotificationTypes.VacancySentForReview) ==
+                    NotificationTypes.VacancySentForReview,
                 NotificationFrequency = preferences.NotificationFrequency,
-                NotificationScope = preferences.NotificationScope
+                NotificationScope = preferences.NotificationScope,
+                EnvironmentIsProd = _configuration["Environment"].Equals("Prod", StringComparison.CurrentCultureIgnoreCase)
             };
         }
 

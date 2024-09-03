@@ -10,11 +10,12 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.VacancyView
     {
         public List<VacancyApplication> Applications { get; internal set; }
 
-        public IList<IGrouping<ApplicationReviewStatus, VacancyApplication>> OrderedApplications => Applications.OrderByDescending(app => app.SubmittedDate)
-            .GroupBy(app => app.Status)
-            .OrderBy(g => g.Key)
-            .ToList();
-
         public bool ShowDisability { get; internal set; }
+
+        public bool CanShowShareMultipleApplicationsLink =>
+            Applications?.Any(app => app.Status == ApplicationReviewStatus.New || app.Status == ApplicationReviewStatus.InReview) ?? false;
+
+        public bool CanShowMultipleApplicationsUnsuccessfulLink =>
+          Applications?.Any(app => app.Status != ApplicationReviewStatus.Successful && app.Status != ApplicationReviewStatus.Unsuccessful) ?? false;
     }
 }

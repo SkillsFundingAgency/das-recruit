@@ -1,11 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
-using Esfa.Recruit.Vacancies.Client.Application.Commands;
 using Esfa.Recruit.Vacancies.Client.Application.Configuration;
+using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Ioc;
-using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -14,6 +13,8 @@ using Microsoft.OpenApi.Models;
 using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.Api.Common.Infrastructure;
+using SFA.DAS.Encoding;
+using SFA.DAS.Recruit.Api.Commands;
 using SFA.DAS.Recruit.Api.Configuration;
 using SFA.DAS.Recruit.Api.Mappers;
 using SFA.DAS.Recruit.Api.Services;
@@ -53,10 +54,12 @@ namespace SFA.DAS.Recruit.Api
             };
             services.AddAuthentication(azureAdConfig, policies);
 
-            services.AddMediatR(typeof(Startup).Assembly, typeof(CreateApplicationReviewCommand).Assembly);
+            services.AddMediatR(configuration => configuration.RegisterServicesFromAssembly(typeof(CreateVacancyCommand).Assembly));
 
             services.AddSingleton<IVacancySummaryMapper, VacancySummaryMapper>();
             services.AddSingleton<IQueryStoreReader, QueryStoreClient>();
+            services.AddSingleton<IFeature, Feature>();
+            RegisterDasEncodingService(services, Configuration);
 
             services.AddRecruitStorageClient(Configuration);
             
@@ -87,6 +90,14 @@ namespace SFA.DAS.Recruit.Api
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "RecruitAPI", Version = "v1" });
                 
             });
+        }
+        
+        private static void RegisterDasEncodingService(IServiceCollection services, IConfiguration configuration)
+        {
+            var dasEncodingConfig = new EncodingConfig { Encodings = [] };
+            configuration.GetSection(nameof(dasEncodingConfig.Encodings)).Bind(dasEncodingConfig.Encodings);
+            services.AddSingleton(dasEncodingConfig);
+            services.AddSingleton<IEncodingService, EncodingService>();
         }
     }
 }

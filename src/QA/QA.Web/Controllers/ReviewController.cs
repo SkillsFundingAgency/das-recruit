@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Qa.Web.Configuration.Routing;
 using Esfa.Recruit.Qa.Web.Extensions;
@@ -23,6 +24,9 @@ namespace Esfa.Recruit.Qa.Web.Controllers
         [HttpGet(Name = RouteNames.Vacancy_Review_Get)]
         public async Task<IActionResult> Review([FromRoute] Guid reviewId) 
         {
+            // if the user is not authenticated, redirect them back to start now page.
+            if (User.Identity is {IsAuthenticated: false}) return RedirectToAction("Index", "Home");
+
             var vm = await _orchestrator.GetReviewViewModelAsync(reviewId, User.GetVacancyUser());
           
             return View(vm);
@@ -33,8 +37,12 @@ namespace Esfa.Recruit.Qa.Web.Controllers
         {
             if (ModelState.IsValid == false)
             {
-                var vm = await _orchestrator.GetReviewViewModelAsync(model, User.GetVacancyUser());
-                return View("Review", vm);
+                if (model.SelectedAutomatedQaResults.Any() || model.SelectedFieldIdentifiers.Any() || model.IsRefer)
+                {
+                    var vm = await _orchestrator.GetReviewViewModelAsync(model, User.GetVacancyUser());
+                    return View("Review", vm);    
+                }
+                ModelState.ClearValidationState(nameof(ReviewEditModel.ReviewerComment));
             }
 
             var nextVacancyReviewId = await _orchestrator.SubmitReviewAsync(model, User.GetVacancyUser());
@@ -50,6 +58,10 @@ namespace Esfa.Recruit.Qa.Web.Controllers
         public async Task<IActionResult> UnassignReview([FromRoute] Guid reviewId)
         {
             var unassignReviewVM = await _orchestrator.GetUnassignReviewViewModelAsync(reviewId);
+            if (unassignReviewVM == null)
+            {
+                return RedirectToRoute(RouteNames.Dashboard_Index_Get);
+            }
             return View(unassignReviewVM);
         }
 
@@ -57,11 +69,16 @@ namespace Esfa.Recruit.Qa.Web.Controllers
         [HttpPost("unassign", Name = RouteNames.Vacancy_Review_Unassign_Post)]
         public async Task<IActionResult> UnassignReview(UnassignReviewEditModel model)
         {
-            var unassignReviewVM = await _orchestrator.GetUnassignReviewViewModelAsync(model.ReviewId);
+            
             if (!ModelState.IsValid)
-                return View(unassignReviewVM);
+            {
+                var unasignReviewViewModel = await _orchestrator.GetUnassignReviewViewModelAsync(model.ReviewId);
+                return View(unasignReviewViewModel);
+            }
+                
             if (model.ConfirmUnassign.GetValueOrDefault())
                 await _orchestrator.UnassignVacancyReviewAsync(model.ReviewId);
+            
             return RedirectToRoute(RouteNames.Dashboard_Index_Get);
         }
 

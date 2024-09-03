@@ -90,6 +90,46 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.TableStore
             throw new NotImplementedException();
         }
 
+        public Task<IEnumerable<LiveVacancy>> GetAllLiveVacancies(int vacanciesToSkip, int vacanciesToGet)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<LiveVacancy>> GetAllLiveVacanciesOnClosingDate(int vacanciesToSkip, int vacanciesToGet, DateTime closingDate)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<long> GetAllLiveVacanciesCount()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<long> GetTotalPositionsAvailableCount()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<long> GetAllLiveVacanciesOnClosingDateCount(DateTime closingDate)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<LiveVacancy> GetLiveVacancy(long vacancyReference)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<LiveVacancy> GetLiveExpiredVacancy(long vacancyReference)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<ClosedVacancy>> GetClosedVacancies(IList<long> vacancyReferences)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task DeleteAsync<T>(string typeName, string key) where T : QueryProjectionBase
         {
             var retrieveOperation = TableOperation.Retrieve<QueryEntity>(typeName, key);

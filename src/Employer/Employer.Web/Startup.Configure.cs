@@ -8,8 +8,10 @@ using System.Collections.Generic;
 using System.Globalization;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Microsoft.ApplicationInsights.Extensibility;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Logging;
 using Microsoft.Extensions.Hosting;
+using SFA.DAS.GovUK.Auth.Extensions;
 
 
 namespace Esfa.Recruit.Employer.Web
@@ -17,7 +19,7 @@ namespace Esfa.Recruit.Employer.Web
     public partial class Startup
     {
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IOptions<ExternalLinksConfiguration> externalLinks, IHostApplicationLifetime applicationLifetime, ILogger<Startup> logger)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IOptions<ExternalLinksConfiguration> externalLinks, IHostApplicationLifetime applicationLifetime, ILogger<Startup> logger, IConfiguration config)
         {
             var cultureInfo = new CultureInfo("en-GB");
 
@@ -82,6 +84,7 @@ namespace Esfa.Recruit.Employer.Web
                                     "https://das-test2-frnt-end.azureedge.net",
                                     "https://das-demo-frnt-end.azureedge.net", 
                                     "https://das-pp-frnt-end.azureedge.net",
+                                    "https://das-mo-frnt-end.azureedge.net",
                                     "https://das-prd-frnt-end.azureedge.net"
                                     );
 
@@ -110,6 +113,7 @@ namespace Esfa.Recruit.Employer.Web
                                     "https://das-test2-frnt-end.azureedge.net",
                                     "https://das-demo-frnt-end.azureedge.net", 
                                     "https://das-pp-frnt-end.azureedge.net",
+                                    "https://das-mo-frnt-end.azureedge.net",
                                     "https://das-prd-frnt-end.azureedge.net"
                                     );
 
@@ -128,6 +132,7 @@ namespace Esfa.Recruit.Employer.Web
                                     "https://das-test2-frnt-end.azureedge.net",
                                     "https://das-demo-frnt-end.azureedge.net", 
                                     "https://das-pp-frnt-end.azureedge.net",
+                                    "https://das-mo-frnt-end.azureedge.net",
                                     "https://das-prd-frnt-end.azureedge.net"
                                     )
                 )
@@ -159,6 +164,7 @@ namespace Esfa.Recruit.Employer.Web
                                     "https://das-test2-frnt-end.azureedge.net",
                                     "https://das-demo-frnt-end.azureedge.net", 
                                     "https://das-pp-frnt-end.azureedge.net",
+                                    "https://das-mo-frnt-end.azureedge.net",
                                     "https://das-prd-frnt-end.azureedge.net",
                                     "data:")
                 )
@@ -183,7 +189,7 @@ namespace Esfa.Recruit.Employer.Web
             app.UseRedirectValidation(opts =>
             {
                 opts.AllowSameHostRedirectsToHttps();
-                opts.AllowedDestinations(GetAllowableDestinations(AuthConfig, externalLinks.Value));
+                opts.AllowedDestinations(GetAllowableDestinations(externalLinks.Value, config));
             }); //Register this earlier if there's middleware that might redirect.
 
             // Redirect requests to root to the MA site.
@@ -201,21 +207,15 @@ namespace Esfa.Recruit.Employer.Web
 
         }
 
-        private static string[] GetAllowableDestinations(AuthenticationConfiguration authConfig, ExternalLinksConfiguration linksConfig)
+        private static string[] GetAllowableDestinations(ExternalLinksConfiguration linksConfig, IConfiguration configuration)
         {
             var destinations = new List<string>();
-
-            if (!string.IsNullOrWhiteSpace(authConfig?.Authority))
-                destinations.Add(authConfig.Authority.Replace("identity", string.Empty));
 
             if (!string.IsNullOrWhiteSpace(linksConfig?.ManageApprenticeshipSiteUrl))
                 destinations.Add(linksConfig?.ManageApprenticeshipSiteUrl);
 
             if (!string.IsNullOrWhiteSpace(linksConfig?.CommitmentsSiteUrl))
                 destinations.Add(linksConfig?.CommitmentsSiteUrl);
-
-            if (!string.IsNullOrWhiteSpace(linksConfig?.EmployerFavouritesUrl))
-                destinations.Add(linksConfig.EmployerFavouritesUrl);
 
             if (!string.IsNullOrWhiteSpace(linksConfig?.TrainingProviderPermissionUrl))
                 destinations.Add(linksConfig.TrainingProviderPermissionUrl);
@@ -224,6 +224,14 @@ namespace Esfa.Recruit.Employer.Web
                 destinations.Add(linksConfig.EmployerRecruitmentApiUrl);
             
             destinations.Add("https://oidc.integration.account.gov.uk");
+            destinations.Add("https://oidc.account.gov.uk");
+            destinations.Add("".GetSignedOutRedirectUrl(configuration["ResourceEnvironmentName"]));
+            var stubSignInRedirectUrl = RedirectExtension.GetStubSignInRedirectUrl("",configuration["ResourceEnvironmentName"]);
+            if (!string.IsNullOrEmpty(stubSignInRedirectUrl))
+            {
+                destinations.Add(stubSignInRedirectUrl);    
+            }
+            
             
             return destinations.ToArray();
         }

@@ -26,5 +26,9 @@ namespace Esfa.Recruit.Provider.Web.ViewModels
         {
             public const string HasFoundTraining = "Please select an option to continue.";
         }
+        public static class QualificationsConfirmationMessages
+        {
+            public const string SelectionRequired = "Select if you want to add any qualification requirements";
+        }
     }
 }

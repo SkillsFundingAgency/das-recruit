@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.Commands;
@@ -50,6 +51,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
 
         public async Task Handle(VacancyPublishedEvent notification, CancellationToken cancellationToken)
         {
+            _logger.LogInformation("Handling VacancyPublishedEvent vacancy {vacancyId}.", notification.VacancyId);
+
             var vacancyTask = _repository.GetVacancyAsync(notification.VacancyId);
             var programmeTask = _referenceDataReader.GetReferenceData<ApprenticeshipProgrammes>();
 
@@ -59,7 +62,17 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
             var programme = vacancy.VacancyType.GetValueOrDefault() == VacancyType.Apprenticeship ? programmeTask.Result.Data.Single(p => p.Id == vacancy.ProgrammeId) : null;
 
             var liveVacancy = vacancy.ToVacancyProjectionBase<LiveVacancy>(programme, () => QueryViewType.LiveVacancy.GetIdValue(vacancy.VacancyReference.ToString()), _timeProvider);
-            await _queryStoreWriter.UpdateLiveVacancyAsync(liveVacancy);
+            _logger.LogInformation("Updating LiveVacancy in query store for vacancy {vacancyId} reference {vacancyReference}.", liveVacancy.VacancyId, liveVacancy.VacancyReference);
+
+            try
+            {
+                await _queryStoreWriter.UpdateLiveVacancyAsync(liveVacancy);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error handling VacancyPublishedEvent vacancy {vacancyId}.", notification.VacancyId);
+                throw;
+            }
         }
     }
 }

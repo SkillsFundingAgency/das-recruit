@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Microsoft.Extensions.Logging;
+using NServiceBus;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 {
@@ -48,12 +49,13 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
                 VacancyId = message.Vacancy.Id
             });
 
-            await _messaging.PublishEvent(new LiveVacancyUpdatedEvent
+            var liveVacancyUpdatedEvent = new LiveVacancyUpdatedEvent
             {
                 VacancyId = message.Vacancy.Id,
                 VacancyReference = message.Vacancy.VacancyReference.Value,
                 UpdateKind = message.UpdateKind
-            });
+            };
+            await _messaging.PublishEvent(liveVacancyUpdatedEvent);
             
             return Unit.Value;
         }

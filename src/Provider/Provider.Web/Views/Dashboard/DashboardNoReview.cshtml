@@ -10,6 +10,27 @@
     var vacanciesSearchSuggestionsEndpointUrl = @Url.RouteUrl(RouteNames.VacanciesSearchSuggestions_Get, vacancyRouteModel.RouteDictionary, Context.Request.Scheme);
 }
 
+
+    <div asp-show="@(_serviceParameters.VacancyType is VacancyType.Traineeship)" class="govuk-notification-banner govuk-notification-banner--information" role="alert" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
+        <div class="govuk-notification-banner__header">
+            <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
+                Important
+            </h2>
+        </div>
+        <div class="govuk-notification-banner__content">
+            <h3>
+                Find a traineeship will now close on 31 December 2023.
+            </h3>
+            <p>
+                After this date, you will not be able to advertise your traineeship courses on GOV.UK.
+            </p>
+            <p>
+                Read <a href="https://www.gov.uk/guidance/traineeship-information-for-training-providers" target="_blank" rel="noreferrer">traineeship information for training providers</a> and learn more about how traineeships are changing.
+            </p>
+        </div>
+    </div>
+
+
 <partial asp-hide="@Model.HasAnyVacancies" name="_ProviderNoVacanciesContent" model="@vacancyRouteModel" />
 
 <div asp-show="@Model.HasAnyVacancies">
@@ -138,7 +159,7 @@
                     <h3 class="govuk-heading-m app-card__heading">
                         <span class="app-card__stat">@Model.NoOfNewApplications</span>
                         <a asp-route="@RouteNames.Vacancies_Get" asp-route-ukprn="@Model.Ukprn"  asp-route-filter="@FilteringOptions.NewApplications" class="govuk-link  govuk-link--no-visited-state">
-                            Live @Model.ApplicationTextLive
+                            New @Model.ApplicationTextLive
                         </a>
                     </h3>
                     @if (_serviceParameters.VacancyType == VacancyType.Apprenticeship)

@@ -56,6 +56,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Application
                 CommunicationConstants.ServiceName);
             communicationRequest.AddEntity(CommunicationConstants.EntityTypes.Vacancy, vacancyReference);
             communicationRequest.AddEntity(CommunicationConstants.EntityTypes.ApprenticeshipServiceUrl, vacancyReference);
+            communicationRequest.AddEntity(CommunicationConstants.EntityTypes.ApprenticeshipServiceUnsubscribeUrl, vacancyReference);
             return communicationRequest;
         }
     }

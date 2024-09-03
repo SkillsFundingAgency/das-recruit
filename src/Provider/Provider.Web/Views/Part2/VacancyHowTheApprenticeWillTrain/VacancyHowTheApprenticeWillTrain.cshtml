@@ -1,0 +1,68 @@
+﻿@model Esfa.Recruit.Provider.Web.ViewModels.Part2.VacancyHowTheApprenticeWillTrain.VacancyHowTheApprenticeWillTrainModel
+@{ 
+    ViewBag.Vpv = "/recruitment/employer/page-part2-vacancy-how-the-apprentice-will-train";
+    ViewBag.Title = "How the apprentice will train";
+    ViewBag.ZenDeskLabel = "recruit-description-of-the-apprenticeship";
+}
+
+@section BackLink
+{
+    <a asp-show="@(!Model.IsTaskListCompleted)" asp-route="@RouteNames.VacancyWorkDescription_Index_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Back</a>
+    <a asp-show="@Model.IsTaskListCompleted" asp-route="@RouteNames.ProviderCheckYourAnswersGet" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Back</a>
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        
+        <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }' />
+        <partial name="@PartialNames.ReviewSummary" for="Review" />
+
+        <h1 class="govuk-heading-xl">
+            <span class="govuk-caption-l">@Model.Title</span>
+            How the apprentice will train
+        </h1>
+
+         <form asp-route="@RouteNames.VacancyHowTheApprenticeWillTrain_Index_Post" asp-all-route-data="@Model.RouteDictionary">
+        
+             <div esfa-validation-marker-for="TrainingDescription" class="govuk-form-group">
+                 <label asp-for="TrainingDescription" class="govuk-label govuk-!-font-weight-bold govuk-!-margin-bottom-5">The apprentice’s training schedule (optional)</label>
+                 <p class="govuk-body">If you’ve agreed the apprentice’s training, include:</p>
+                 <ul class="govuk-list govuk-list--bullet">
+                     <li>where training will take place (at work or at a college - if it involves travelling somewhere else, include the address if you can)</li>
+                     <li>how often training will be</li>
+                 </ul>
+                 <div class="govuk-inset-text govuk-body">
+                     If you don’t enter anything, we’ll display a message saying that the training schedule hasn't been agreed yet.
+                 </div>
+                 <span esfa-validation-message-for="TrainingDescription" class="govuk-error-message"></span>
+                 <textarea asp-for="TrainingDescription" class="govuk-textarea html-editor" rows="5" maxlength="4000" ></textarea>
+             </div>
+             
+             <div esfa-validation-marker-for="AdditionalTrainingDescription" class="govuk-form-group">
+                 <label asp-for="AdditionalTrainingDescription" class="govuk-label govuk-!-font-weight-bold govuk-!-margin-bottom-5">Additional training information (optional)</label>
+                 <p class="govuk-body">This could include:</p>
+                 <ul class="govuk-list govuk-list--bullet">
+                     <li>further information about the training provider</li>
+                     <li>how the training course will be structured</li>
+                 </ul>
+                 <p class="govuk-body">Don’t include what the training course will teach. We’ll automatically display the skills an apprentice will learn during this course.</p>
+                 <span esfa-validation-message-for="AdditionalTrainingDescription" class="govuk-error-message"></span>
+                 <textarea asp-for="AdditionalTrainingDescription" class="govuk-textarea html-editor" rows="5" maxlength="4000" ></textarea>
+             </div>
+
+             <div class="govuk-button-group">
+                <input type="submit" value="Save and continue" esfa-automation="btn-continue" class="govuk-button save-button" />
+                <a asp-show="@(!Model.IsTaskListCompleted)" asp-route="@RouteNames.Dashboard_Get" asp-route-ukprn="@Model.Ukprn" class="govuk-link govuk-link--no-visited-state">Cancel</a>
+                <a asp-show="@Model.IsTaskListCompleted" asp-route="@RouteNames.ProviderCheckYourAnswersGet" asp-all-route-data="@Model.RouteDictionary" esfa-automation="cancel" class="govuk-link govuk-link--no-visited-state">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section FooterJS 
+{
+    <script src="/lib/tinymce-4.9.2/tinymce.min.js" no-cdn></script>
+    <script nws-csp-add-nonce="true">
+        initializeHtmlEditors();
+    </script>
+}

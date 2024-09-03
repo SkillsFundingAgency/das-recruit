@@ -1,10 +1,12 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
 using Esfa.Recruit.Provider.Web.Exceptions;
 using Esfa.Recruit.Provider.Web.Orchestrators.Part1;
 using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Provider.Web.ViewModels.Part1.LegalEntityAndEmployer;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
 using FluentAssertions;
@@ -120,6 +122,49 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part1.Legal
             actual.SortByAscDesc.Should().Be(SortOrder.Descending);
             actual.Pager.OtherRouteValues["sortOrder"].Should().Be(SortOrder.Ascending.ToString());
             actual.Pager.OtherRouteValues["sortByType"].Should().Be(SortByType.LegalEntityName.ToString());
+        }
+        
+        
+        [Test, MoqAutoData]
+        public async Task When_Searching_Then_Results_Are_Returned_And_WhiteSpace_Removed(
+            VacancyRouteModel vacancyRouteModel,
+            ProviderEditVacancyInfo providerEditVacancyInfo,
+            List<EmployerInfo> employerInfo,
+            [Frozen] Mock<IProviderVacancyClient> providerVacancyClient,
+            LegalEntityAndEmployerOrchestrator orchestrator)
+        {
+            employerInfo.Add(new EmployerInfo
+            {
+                Name = "ESFA  LTD",
+                LegalEntities = new List<LegalEntity>{
+                    new LegalEntity
+                    {
+                        Name = "ESFA  LTD",
+                        HasLegalEntityAgreement = true,
+                        AccountLegalEntityPublicHashedId = "ABC123"
+                    },
+                    new LegalEntity
+                    {
+                        Name = "ESFA  LTD",
+                        HasLegalEntityAgreement = true,
+                        AccountLegalEntityPublicHashedId = "ABC456"
+                    }
+                }
+            });
+            providerEditVacancyInfo.Employers = employerInfo;
+            providerVacancyClient.Setup(x => x.GetProviderEmployerVacancyDatasAsync(vacancyRouteModel.Ukprn,
+                It.IsAny<IList<string>>())).ReturnsAsync(employerInfo);
+            
+            providerVacancyClient.Setup(x => x.GetProviderEditVacancyInfoAsync(vacancyRouteModel.Ukprn))
+                .ReturnsAsync(providerEditVacancyInfo);
+
+            var actual = await orchestrator.GetLegalEntityAndEmployerViewModelAsync(vacancyRouteModel,
+                "ESFA LTD", 1, SortOrder.Descending, SortByType.LegalEntityName);
+
+
+            actual.Organisations.Should().HaveCount(2);
+            actual.TotalNumberOfLegalEntities.Should().Be(employerInfo.Sum(c=>c.LegalEntities.Count()));
+            actual.Organisations.First().AccountLegalEntityName.Should().Be("ESFA  LTD");
         }
     }
 

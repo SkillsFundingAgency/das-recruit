@@ -1,4 +1,3 @@
-using System;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -6,45 +5,55 @@ using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Net.Http.Headers;
-using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
-using Esfa.Recruit.Employer.Web.Extensions;
 using Esfa.Recruit.Employer.Web.Middleware;
-using Newtonsoft.Json;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using FluentValidation.AspNetCore;
 using Microsoft.Extensions.Logging;
 using Esfa.Recruit.Employer.Web.Filters;
+using Esfa.Recruit.Employer.Web.Interfaces;
 using Esfa.Recruit.Shared.Web.Extensions;
-using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.Extensions.Hosting;
+using SFA.DAS.Employer.Shared.UI;
+using SFA.DAS.GovUK.Auth.Authentication;
+using Microsoft.FeatureManagement;
+using Microsoft.Extensions.Configuration;
 
 namespace Esfa.Recruit.Employer.Web.Configuration
 {
     public static class ConfigurationExtensions
     {
-        private const string HasEmployerAccountPolicyName = "HasEmployerAccount";
-
         public static void AddAuthorizationService(this IServiceCollection services)
         {
+            services.AddHttpContextAccessor();
+            services.AddTransient<IEmployerAccountAuthorizationHandler, EmployerAccountAuthorizationHandler>();
+            services.AddSingleton<IAuthorizationHandler, EmployerAccountOwnerOrTransactorAuthorizationHandler>();
+            services.AddTransient<IAuthorizationHandler, EmployerAccountHandler>();
+            services.AddTransient<IAuthorizationHandler, AccountActiveAuthorizationHandler>();
+            
             services.AddAuthorization(options =>
             {
-                options.AddPolicy(HasEmployerAccountPolicyName, policy =>
-                {
-                    policy.RequireAuthenticatedUser();
-                    policy.RequireClaim(EmployerRecruitClaims.AccountsClaimsTypeIdentifier);
-                    policy.Requirements.Add(new EmployerAccountRequirement());
-                });
+                // default authorization policy for all controller actions.
+                options.AddPolicy(
+                    PolicyNames.HasEmployerAccountPolicyName, policy =>
+                    {
+                        policy.Requirements.Add(new EmployerAccountRequirement());
+                        policy.RequireAuthenticatedUser();
+                        policy.Requirements.Add(new AccountActiveRequirement());
+                    });
+                // authorization policy for controller actions more specific for admin/owner roles.
+                options.AddPolicy(
+                    PolicyNames.HasEmployerOwnerOrTransactorAccount, policy =>
+                    {
+                        policy.Requirements.Add(new EmployerAccountOwnerOrTransactorRequirement());
+                        policy.RequireAuthenticatedUser();
+                        policy.Requirements.Add(new AccountActiveRequirement());
+                    });
+                    
             });
-
-            services.AddTransient<IAuthorizationHandler, EmployerAccountHandler>();
         }
 
-        public static void AddMvcService(this IServiceCollection services, IWebHostEnvironment hostingEnvironment, bool isAuthEnabled, ILoggerFactory loggerFactory)
+        public static void AddMvcService(this IServiceCollection services, IWebHostEnvironment hostingEnvironment, bool isAuthEnabled, ILoggerFactory loggerFactory, IConfiguration configuration)
         {
             services.AddAntiforgery(options =>
             {
@@ -68,7 +77,7 @@ namespace Esfa.Recruit.Employer.Web.Configuration
                     }
                     else
                     {
-                        opts.Filters.Add(new AuthorizeFilter(HasEmployerAccountPolicyName));
+                        opts.Filters.Add(new AuthorizeFilter(PolicyNames.HasEmployerAccountPolicyName));
                     }
 
                     var jsonInputFormatters = opts.InputFormatters.OfType<NewtonsoftJsonInputFormatter>();
@@ -84,86 +93,10 @@ namespace Esfa.Recruit.Employer.Web.Configuration
                     opts.Filters.AddService<GoogleAnalyticsFilter>();
                     opts.Filters.AddService<ZendeskApiFilter>();
                     opts.AddTrimModelBinderProvider(loggerFactory);
-                })
+                }).SetDefaultNavigationSection(NavigationSection.RecruitHome)
                 .AddNewtonsoftJson();
             services.AddFluentValidationAutoValidation();
+            services.AddFeatureManagement(configuration.GetSection("Features"));
         }
-
-        public static void AddAuthenticationService(this IServiceCollection services, AuthenticationConfiguration authConfig)
-        {
-            JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
-
-            services.AddAuthentication(options =>
-            {
-                options.DefaultScheme = "Cookies";
-                options.DefaultChallengeScheme = "oidc";
-            })
-            .AddCookie("Cookies", options =>
-            {
-                options.Cookie.Name = CookieNames.RecruitData;
-                options.Cookie.SecurePolicy = Microsoft.AspNetCore.Http.CookieSecurePolicy.Always;
-                options.SlidingExpiration = true;
-                options.ExpireTimeSpan = TimeSpan.FromMinutes(AuthenticationConfiguration.SessionTimeoutMinutes);
-                options.AccessDeniedPath = "/Error/403";
-            })
-            .AddOpenIdConnect("oidc", options =>
-            {
-                options.SignInScheme = "Cookies";
-
-                options.Authority = authConfig.Authority;
-                options.MetadataAddress = authConfig.MetaDataAddress;
-                options.RequireHttpsMetadata = false;
-                options.ResponseType = "code";
-                options.ClientId = authConfig.ClientId;
-                options.ClientSecret = authConfig.ClientSecret;
-                options.Scope.Add("profile");
-                options.UsePkce = false;
-                
-                options.Events.OnRemoteFailure = ctx =>
-                {
-                    if (ctx.Failure.Message.Contains("Correlation failed"))
-                    {
-                        var logger = services.BuildServiceProvider().GetRequiredService<ILoggerFactory>().CreateLogger<Startup>();
-                        logger.LogDebug("Correlation Cookie was invalid - probably timed-out");
-
-                        ctx.Response.Redirect("/");
-                        ctx.HandleResponse();
-                    }
-
-                    return Task.CompletedTask;
-                };
-            });
-            services
-                .AddOptions<OpenIdConnectOptions>("oidc")
-                .Configure<IRecruitVacancyClient>((options, recruitVacancyClient) =>
-                {
-                    options.Events.OnTokenValidated = async (ctx) =>
-                    {
-                        await PopulateAccountsClaim(ctx, recruitVacancyClient);
-                        await HandleUserSignedIn(ctx, recruitVacancyClient);
-                    };
-                });
-        }
-
-        private static async Task PopulateAccountsClaim(
-            Microsoft.AspNetCore.Authentication.OpenIdConnect.TokenValidatedContext ctx, 
-            IRecruitVacancyClient vacancyClient)
-        {
-            var userId = ctx.Principal.GetUserId();
-            var email = ctx.Principal.GetEmailAddress();
-            var accounts = await vacancyClient.GetEmployerIdentifiersAsync(userId, email);
-            var accountsAsJson = JsonConvert.SerializeObject(accounts.UserAccounts.Select(c=>c.AccountId).ToList());
-            var associatedAccountsClaim = new Claim(EmployerRecruitClaims.AccountsClaimsTypeIdentifier, accountsAsJson, JsonClaimValueTypes.Json);
-
-            ctx.Principal.Identities.First().AddClaim(associatedAccountsClaim);
-        }
-
-        private static Task HandleUserSignedIn(Microsoft.AspNetCore.Authentication.OpenIdConnect.TokenValidatedContext ctx, IRecruitVacancyClient vacancyClient)
-        {
-            var user = ctx.Principal.ToVacancyUser();
-            return vacancyClient.UserSignedInAsync(user, UserType.Employer);
-        }
-
-
     }
 }

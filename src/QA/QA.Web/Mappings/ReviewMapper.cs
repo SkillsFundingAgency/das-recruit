@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Qa.Web.ViewModels;
+using Esfa.Recruit.Shared.Web.Configuration;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Shared.Web.Helpers;
 using Esfa.Recruit.Shared.Web.Mappers;
 using Esfa.Recruit.Shared.Web.Orchestrators;
 using Esfa.Recruit.Shared.Web.RuleTemplates;
 using Esfa.Recruit.Shared.Web.Services;
+using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
 using Esfa.Recruit.Vacancies.Client.Application.Services;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
@@ -28,12 +30,14 @@ namespace Esfa.Recruit.Qa.Web.Mappings
         private readonly Lazy<IList<string>> _qualifications;
         private readonly IRuleMessageTemplateRunner _ruleTemplateRunner;
         private readonly IReviewSummaryService _reviewSummaryService;
+        private readonly IFeature _feature;
 
         public ReviewMapper(ILogger<ReviewMapper> logger,
                     IQaVacancyClient vacancyClient,
                     IGeocodeImageService mapService,
                     IRuleMessageTemplateRunner ruleTemplateRunner,
-                    IReviewSummaryService reviewSummaryService)
+                    IReviewSummaryService reviewSummaryService,
+                    IFeature feature)
         {
             _logger = logger;
             _vacancyClient = vacancyClient;
@@ -41,6 +45,7 @@ namespace Esfa.Recruit.Qa.Web.Mappings
             _qualifications = new Lazy<IList<string>>(() => _vacancyClient.GetCandidateQualificationsAsync().Result.QualificationTypes);
             _ruleTemplateRunner = ruleTemplateRunner;
             _reviewSummaryService = reviewSummaryService;
+            _feature = feature;
         }
 
         private static readonly Dictionary<string, IEnumerable<string>> ReviewFields = new Dictionary<string, IEnumerable<string>>
@@ -86,7 +91,9 @@ namespace Esfa.Recruit.Qa.Web.Mappings
             { FieldIdResolver.ToFieldId(v => v.ProviderContact.Phone), new []{FieldIdentifiers.ProviderContact}},
             { FieldIdResolver.ToFieldId(v => v.ApplicationInstructions), new [] {FieldIdentifiers.ApplicationInstructions }},
             { FieldIdResolver.ToFieldId(v => v.ApplicationMethod), new [] {FieldIdentifiers.ApplicationMethod} },
-            { FieldIdResolver.ToFieldId(v => v.ApplicationUrl), new []{FieldIdentifiers.ApplicationUrl} }
+            { FieldIdResolver.ToFieldId(v => v.ApplicationUrl), new []{FieldIdentifiers.ApplicationUrl} },
+            { FieldIdResolver.ToFieldId(v => v.AdditionalQuestion1), new []{FieldIdentifiers.AdditionalQuestion1} },
+            { FieldIdResolver.ToFieldId(v => v.AdditionalQuestion2), new []{FieldIdentifiers.AdditionalQuestion2} }
         };
 
         private static List<FieldIdentifierViewModel> GetFieldIndicators(VacancyType vacancyType)
@@ -101,6 +108,7 @@ namespace Esfa.Recruit.Qa.Web.Mappings
                     new FieldIdentifierViewModel { FieldIdentifier = FieldIdentifiers.ClosingDate, Text = "Closing date" },
                     new FieldIdentifierViewModel { FieldIdentifier = FieldIdentifiers.WorkingWeek, Text = "Working week" },
                     new FieldIdentifierViewModel { FieldIdentifier = FieldIdentifiers.Wage, Text = "Annual wage" },
+                    new FieldIdentifierViewModel { FieldIdentifier = FieldIdentifiers.CompanyBenefitsInformation, Text = "Company Benefits" },
                     new FieldIdentifierViewModel
                         { FieldIdentifier = FieldIdentifiers.ExpectedDuration, Text = "Expected duration" },
                     new FieldIdentifierViewModel
@@ -114,6 +122,11 @@ namespace Esfa.Recruit.Qa.Web.Mappings
                     {
                         FieldIdentifier = FieldIdentifiers.TrainingDescription,
                         Text = "What training will the apprentice take and what qualification will the apprentice get at the end?"
+                    },
+                    new FieldIdentifierViewModel
+                    {
+                        FieldIdentifier = FieldIdentifiers.AdditionalTrainingDescription,
+                        Text = "Additional training information (optional)"
                     },
                     new FieldIdentifierViewModel
                     {
@@ -142,7 +155,11 @@ namespace Esfa.Recruit.Qa.Web.Mappings
                     new FieldIdentifierViewModel
                         { FieldIdentifier = FieldIdentifiers.ApplicationUrl, Text = "Apply now web address" },
                     new FieldIdentifierViewModel
-                        { FieldIdentifier = FieldIdentifiers.ApplicationInstructions, Text = "Application process" }
+                        { FieldIdentifier = FieldIdentifiers.ApplicationInstructions, Text = "Application process" },
+                    new FieldIdentifierViewModel
+                        { FieldIdentifier = FieldIdentifiers.AdditionalQuestion1, Text = "Additional Question 1" },
+                    new FieldIdentifierViewModel
+                        { FieldIdentifier = FieldIdentifiers.AdditionalQuestion2, Text = "Additional Question 2" }
                 };
             }
             else
@@ -274,13 +291,14 @@ namespace Esfa.Recruit.Qa.Web.Mappings
                 vm.ProviderContactEmail = vacancy.ProviderContact?.Email;
                 vm.ProviderContactTelephone= vacancy.ProviderContact?.Phone;
                 vm.ProviderName = vacancy.TrainingProvider.Name;
-                vm.Qualifications = vacancy.Qualifications.SortQualifications(_qualifications.Value).AsText();
+                vm.Qualifications = vacancy.Qualifications.SortQualifications(_qualifications.Value).AsText(_feature.IsFeatureEnabled("FaaV2Improvements"));
                 vm.ShortDescription = vacancy.ShortDescription;
                 vm.Skills = vacancy.Skills ?? Enumerable.Empty<string>();
                 vm.OwnerType = vacancy.OwnerType;
                 vm.ThingsToConsider = vacancy.ThingsToConsider;
                 vm.Title = vacancy.Title;
                 vm.TrainingDescription = vacancy.TrainingDescription;
+                vm.AdditionalTrainingDescription = vacancy.AdditionalTrainingDescription;
                 vm.VacancyDescription = vacancy.Description;
                 vm.VacancyReferenceNumber = $"VAC{vacancy.VacancyReference}";
                 if (programme != null)
@@ -304,6 +322,7 @@ namespace Esfa.Recruit.Qa.Web.Mappings
                         ? vacancy.Wage.ToText(vacancy.StartDate)
                         : null;
                     vm.WorkingWeekDescription = vacancy.Wage.WorkingWeekDescription;
+                    vm.CompanyBenefitsInformation = vacancy.Wage.CompanyBenefitsInformation;
                 }
                 vm.WorkExperience = vacancy.WorkExperience;
                 vm.VacancyType = vacancy.VacancyType;
@@ -329,6 +348,9 @@ namespace Esfa.Recruit.Qa.Web.Mappings
 
                 vm.AutomatedQaResults = GetAutomatedQaResultViewModel(review);
                 vm.IsVacancyDeleted = currentVacancyResult.IsDeleted;
+                vm.AdditionalQuestion1 = vacancy.AdditionalQuestion1;
+                vm.AdditionalQuestion2 = vacancy.AdditionalQuestion2;
+                vm.HasAdditionalQuestions = vacancy.HasSubmittedAdditionalQuestions;
             }
             catch (NullReferenceException ex)
             {

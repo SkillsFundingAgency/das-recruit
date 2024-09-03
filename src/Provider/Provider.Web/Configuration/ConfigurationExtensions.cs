@@ -20,8 +20,10 @@ using Esfa.Recruit.Provider.Web.Middleware;
 using System.Threading.Tasks;
 using Esfa.Recruit.Provider.Web.Extensions;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Microsoft.Extensions.Configuration;
 using SFA.DAS.Provider.Shared.UI;
 using SFA.DAS.Provider.Shared.UI.Startup;
+using Microsoft.FeatureManagement;
 
 namespace Esfa.Recruit.Provider.Web.Configuration
 {
@@ -29,40 +31,52 @@ namespace Esfa.Recruit.Provider.Web.Configuration
     {
         private const int SessionTimeoutMinutes = 30;
 
-        public static void AddAuthorizationService(this IServiceCollection services)
+        public static void AddAuthorizationService(this IServiceCollection services, bool useDfESignIn)
         {
+            var ukPrnClaimName = useDfESignIn
+                ? ProviderRecruitClaims.DfEUkprnClaimsTypeIdentifier
+                : ProviderRecruitClaims.IdamsUserUkprnClaimsTypeIdentifier;
+            
+            var serviceClaimName = useDfESignIn
+                ? ProviderRecruitClaims.DfEUserServiceTypeClaimTypeIdentifier
+                : ProviderRecruitClaims.IdamsUserServiceTypeClaimTypeIdentifier;
+            
             services.AddAuthorization(options =>
             {
                 options.AddPolicy(PolicyNames.ProviderPolicyName, policy =>
                 {
                     policy.RequireAuthenticatedUser();
-                    policy.RequireClaim(ProviderRecruitClaims.IdamsUserUkprnClaimsTypeIdentifier);
-                    policy.RequireClaim(ProviderRecruitClaims.IdamsUserServiceTypeClaimTypeIdentifier);
+                    policy.RequireClaim(ukPrnClaimName);
+                    policy.RequireClaim(serviceClaimName);
                     policy.Requirements.Add(new ProviderAccountRequirement());
+                    policy.Requirements.Add(new TrainingProviderAllRolesRequirement());
                 });
 
                 options.AddPolicy(PolicyNames.HasContributorOrAbovePermission, policy =>
                 {
                     policy.RequireAuthenticatedUser();
-                    policy.RequireClaim(ProviderRecruitClaims.IdamsUserUkprnClaimsTypeIdentifier);
-                    policy.RequireClaim(ProviderRecruitClaims.IdamsUserServiceTypeClaimTypeIdentifier);
+                    policy.RequireClaim(ukPrnClaimName);
+                    policy.RequireClaim(serviceClaimName);
                     policy.Requirements.Add(new MinimumServiceClaimRequirement(ServiceClaim.DAC));
+                    policy.Requirements.Add(new TrainingProviderAllRolesRequirement());
                 });
 
                 options.AddPolicy(PolicyNames.HasContributorWithApprovalOrAbovePermission, policy =>
                 {
                     policy.RequireAuthenticatedUser();
-                    policy.RequireClaim(ProviderRecruitClaims.IdamsUserUkprnClaimsTypeIdentifier);
-                    policy.RequireClaim(ProviderRecruitClaims.IdamsUserServiceTypeClaimTypeIdentifier);
+                    policy.RequireClaim(ukPrnClaimName);
+                    policy.RequireClaim(serviceClaimName);
                     policy.Requirements.Add(new MinimumServiceClaimRequirement(ServiceClaim.DAB));
+                    policy.Requirements.Add(new TrainingProviderAllRolesRequirement());
                 });
 
                 options.AddPolicy(PolicyNames.HasAccountOwnerPermission, policy =>
                 {
                     policy.RequireAuthenticatedUser();
-                    policy.RequireClaim(ProviderRecruitClaims.IdamsUserUkprnClaimsTypeIdentifier);
-                    policy.RequireClaim(ProviderRecruitClaims.IdamsUserServiceTypeClaimTypeIdentifier);
+                    policy.RequireClaim(ukPrnClaimName);
+                    policy.RequireClaim(serviceClaimName);
                     policy.Requirements.Add(new MinimumServiceClaimRequirement(ServiceClaim.DAA));
+                    policy.Requirements.Add(new TrainingProviderAllRolesRequirement());
                 });
                 
                 options.AddPolicy(PolicyNames.IsTraineeshipWeb, policy =>
@@ -79,9 +93,11 @@ namespace Esfa.Recruit.Provider.Web.Configuration
             services.AddTransient<IAuthorizationHandler, ProviderAccountHandler>();
             services.AddTransient<IAuthorizationHandler, MinimumServiceClaimRequirementHandler>();
             services.AddTransient<IAuthorizationHandler, VacancyTypeRequirementHandler>();
+            services.AddSingleton<ITrainingProviderAuthorizationHandler, TrainingProviderAuthorizationHandler>();
+            services.AddSingleton<IAuthorizationHandler, TrainingProviderAllRolesAuthorizationHandler>();
         }
 
-        public static void AddMvcService(this IServiceCollection services, IWebHostEnvironment hostingEnvironment, ILoggerFactory loggerFactory)
+        public static void AddMvcService(this IServiceCollection services, IWebHostEnvironment hostingEnvironment, ILoggerFactory loggerFactory, IConfiguration configuration)
         {
             services.AddAntiforgery(options =>
             {
@@ -91,6 +107,8 @@ namespace Esfa.Recruit.Provider.Web.Configuration
             });
             services.Configure<CookieTempDataProviderOptions>(options => options.Cookie.Name = CookieNames.RecruitTempData);
             services.AddSingleton<ITempDataProvider, CookieTempDataProvider>();
+
+            bool useDfESignIn = configuration.GetSection("UseDfESignIn").Get<bool>();
 
             services.AddMvc(opts =>
                 {
@@ -115,9 +133,10 @@ namespace Esfa.Recruit.Provider.Web.Configuration
             ).AddNewtonsoftJson()
             .EnableCookieBanner()
             .EnableGoogleAnalytics()
-            .EnableCsp()
+            .SetDfESignInConfiguration(useDfESignIn)
             .SetDefaultNavigationSection(NavigationSection.Recruit);
             services.AddFluentValidationAutoValidation();
+            services.AddFeatureManagement(configuration.GetSection("Features"));
         }
 
         public static void AddAuthenticationService(this IServiceCollection services, AuthenticationConfiguration authConfig)

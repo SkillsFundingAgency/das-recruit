@@ -49,6 +49,7 @@ namespace Esfa.Recruit.Shared.Web.Extensions
             { WageType.FixedWage, "Fixed wage" },
             { WageType.NationalMinimumWage, "National Minimum Wage" },
             { WageType.NationalMinimumWageForApprentices, "National Minimum Wage for apprentices" },
+            { WageType.CompetitiveSalary, "This pay rate is above National Minimum Wage." },
             { ManualQaOutcome.Referred, "Edits required" },
             { ReviewStatus.UnderReview, "Under review" },
             { VacancyStatus.Rejected, "Rejected by employer" },
@@ -60,11 +61,15 @@ namespace Esfa.Recruit.Shared.Web.Extensions
             { FilteringOptions.ClosingSoonWithNoApplications, "closing soon without applications" },
             { FilteringOptions.AllApplications, "with applications" },
             { FilteringOptions.NewApplications, "with new applications" },
+            { FilteringOptions.NewSharedApplications, "with new shared applications" },
+            { FilteringOptions.AllSharedApplications, "with shared applications" },
             { FilteringOptions.Review, "Pending employer review" },
             { FilteringOptions.Submitted, "Pending DfE review" },
             { FilteringOptions.Referred, "Rejected" },
             { FilteringOptions.Transferred, "Transferred from provider" },
-            { QualificationWeighting.Desired, "Desirable" }
+            { FilteringOptions.EmployerReviewedApplications, "with employer-reviewed applications" },
+            { QualificationWeighting.Desired, "Desirable" },
+            { ApplicationReviewStatus.InReview, "In review" }
         };
 
         private static readonly Dictionary<Enum, string> DisplayNamesEmployer = new Dictionary<Enum, string>
@@ -73,12 +78,17 @@ namespace Esfa.Recruit.Shared.Web.Extensions
             { VacancyStatus.Submitted, "Pending review" },
             { FilteringOptions.Review, "Ready for review" },
             { FilteringOptions.Submitted, "Pending review" },
+            { ApplicationReviewStatus.EmployerInterviewing, "Interviewing" },
+            { ApplicationReviewStatus.Shared, "Response Needed" },
+            { ApplicationReviewStatus.EmployerUnsuccessful, "Unsuccessful" }
         };
 
         private static readonly Dictionary<Enum, string> DisplayNamesProvider = new Dictionary<Enum, string>
         {
             { FilteringOptions.Review, "Pending employer review" },
             { FilteringOptions.Submitted, "Pending DfE review" },
+            { ApplicationReviewStatus.EmployerInterviewing, "Employer reviewed" },
+            { ApplicationReviewStatus.EmployerUnsuccessful, "Employer reviewed" }
         };
     }
 }

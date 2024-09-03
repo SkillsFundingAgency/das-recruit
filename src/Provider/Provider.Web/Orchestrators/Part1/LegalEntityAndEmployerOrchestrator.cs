@@ -63,7 +63,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
             {
                 Employers = editVacancyInfo.Employers.Select(e => new EmployerViewModel { Id = e.EmployerAccountId, Name = e.Name}),
                 Organisations = GetLegalEntityAndEmployerViewModels(accountLegalEntities).OrderBy(a => a.EmployerName),
-                TotalNumberOfLegalEntities = accountLegalEntities.Count(),
+                TotalNumberOfLegalEntities = accountLegalEntities.Sum(c=>c.LegalEntities.Count),
                 SearchTerm = searchTerm,
                 VacancyId = vrm.VacancyId,
                 SortByNameType = sortByType,
@@ -72,7 +72,9 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
             };
 
             var filterOrgs = vm.Organisations
-                .Where(le => string.IsNullOrEmpty(searchTerm) || le.EmployerName.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) || le.AccountLegalEntityName.Contains(searchTerm, StringComparison.OrdinalIgnoreCase));
+                .Where(le => string.IsNullOrEmpty(searchTerm) || 
+                             le.EmployerName.Replace(" ","").Contains(searchTerm.Replace(" ",""), StringComparison.OrdinalIgnoreCase) || 
+                             le.AccountLegalEntityName.Replace(" ","").Contains(searchTerm.Replace(" ",""), StringComparison.OrdinalIgnoreCase));
 
             List<OrganisationsViewModel> filterAndOrdered;
 
@@ -101,7 +103,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
             SetFilteredOrganisationsForPage(setPage, vm, filterAndOrdered);
 
             var routeParams = new Dictionary<string, string>();
-            if (!searchTerm.IsNullOrEmpty())
+            if (!string.IsNullOrEmpty(searchTerm))
                 routeParams.Add(nameof(searchTerm), searchTerm);
 
 

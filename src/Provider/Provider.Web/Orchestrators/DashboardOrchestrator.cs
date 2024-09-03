@@ -34,8 +34,9 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             _serviceParameters = serviceParameters;
         }
 
-        public async Task<DashboardViewModel> GetDashboardViewModelAsync(VacancyUser user)
+        public virtual async Task<DashboardViewModel> GetDashboardViewModelAsync(VacancyUser user)
         {
+            await _client.UserSignedInAsync(user, UserType.Provider);
             var serviceParametersVacancyType = _serviceParameters.VacancyType.GetValueOrDefault();
             var dashboardTask = _vacancyClient.GetDashboardSummary(user.Ukprn.Value, serviceParametersVacancyType);
             var userDetailsTask = _client.GetUsersDetailsAsync(user.UserId);

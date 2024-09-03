@@ -8,7 +8,6 @@ using Esfa.Recruit.Employer.Web;
 using Esfa.Recruit.Employer.Web.Models;
 using Esfa.Recruit.Employer.Web.Orchestrators.Part1;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.TrainingProvider;
-using Esfa.Recruit.Shared.Web.FeatureToggle;
 using Esfa.Recruit.Shared.Web.Mappers;
 using Esfa.Recruit.Shared.Web.Orchestrators;
 using Esfa.Recruit.Shared.Web.Services;
@@ -203,7 +202,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part1
 
             result.Data.FoundTrainingProviderUkprn.Should().BeNull();
         }
-
+       
         public class TrainingProviderOrchestratorTestsFixture
         {
             private const VacancyRuleSet ValidationRules = VacancyRuleSet.TrainingProvider;
@@ -273,7 +272,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part1
                         Ukprn = EsfaTestTrainingProvider.Ukprn
                     });
                 
-                var utility = new Utility(MockRecruitVacancyClient.Object, Mock.Of<IFeature>());
+                var utility = new Utility(MockRecruitVacancyClient.Object);
                 
                 Sut = new TrainingProviderOrchestrator(MockRecruitVacancyClient.Object, Mock.Of<ILogger<TrainingProviderOrchestrator>>(), 
                     Mock.Of<IReviewSummaryService>(), MockTrainingProviderSummaryProvider.Object, MockTrainingProviderService.Object, utility, new RecruitConfiguration(EmployerAccountId));

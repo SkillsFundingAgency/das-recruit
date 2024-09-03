@@ -8,7 +8,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
 {
     public class VacancySummaryAggQueryBuilder
     {
-         private string DashboardApplicationsPipeline = @"[
+        private string DashboardApplicationsPipeline = @"[
             {
                 '$lookup': {
                     'from': 'applicationReviews',
@@ -27,6 +27,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                 '$project': {
                     'status': 1,
                     'appStatus': '$candidateApplicationReview.status',
+                    'isApplicationWithdrawn': '$candidateApplicationReview.isWithdrawn',
+                    'dateSharedWithEmployer': '$candidateApplicationReview.dateSharedWithEmployer',
                     'vacancyType': 1,
                     'isTraineeship' :1,
                     'closingDate' : 1
@@ -38,6 +40,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                     'appStatus': { '$cond' : [ { '$eq': ['$isApplicationWithdrawn', true] }, 'withdrawn', '$appStatus' ]},
                     'vacancyType': 1,
                     'closingDate' : 1,
+                    'dateSharedWithEmployer': 1,
                     'isTraineeship': {
                         '$cond': {
                             'if': {'$eq': [ '$vacancyType', 'Traineeship']},
@@ -47,10 +50,16 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                     }
                 }
             },
+            { 
+                '$match' : { 
+                    'appStatus':{ $ne: 'withdrawn'} 
+                            }
+            },
             {
                 '$project': {
                     'status': 1,
                     'vacancyType': 1,
+                    'dateSharedWithEmployer': 1,
                     'closingSoon' : {
                         '$cond': {
                             'if': {'$lte':[
@@ -88,9 +97,35 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                             'else': 0
                         }
                     },
+                    'isEmployerReviewed': {
+                        '$cond': {
+                            'if': {
+                                '$or': [
+                                    { '$eq': ['$appStatus', 'EmployerInterviewing'] },
+                                    { '$eq': ['$appStatus', 'EmployerUnsuccessful'] }
+                                ]
+                            },
+                            'then': 1,
+                            'else': 0
+                        }
+                    },
                     'isUnsuccessful': {
                         '$cond': {
                             'if': {'$eq': [ '$appStatus', 'Unsuccessful']},
+                            'then': 1,
+                            'else': 0
+                        }
+                    },
+                    'isShared': {
+                        '$cond': {
+                            'if': {'$eq': [ '$appStatus', 'Shared']},
+                            'then': 1,
+                            'else': 0
+                        }
+                    },
+                    'isSharedWithEmployer': {
+                        '$cond': {
+                            'if': {'$gte': [ '$dateSharedWithEmployer', '1900-01-01T01:00:00.389Z'] },
                             'then': 1,
                             'else': 0
                         }
@@ -110,14 +145,26 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                     'noOfSuccessfulApplications': {
                         '$sum': '$isSuccessful'
                     },
+                    'noOfEmployerReviewedApplications': {
+                        '$sum': '$isEmployerReviewed'
+                    },
                     'noOfUnsuccessfulApplications': {
                         '$sum': '$isUnsuccessful'
+                    },
+                    'noOfSharedApplications': {
+                        '$sum': '$isShared'
+                    },
+                    'noOfAllSharedApplications': {
+                        '$sum': '$isSharedWithEmployer'
                     },
                     'statusCount' : { '$sum' : 1 }
                     
                 }
             }
         ]";
+
+        private string DashboardNoApplicationCountMatchClause = @"{ '$match' :{ 'candidateApplicationReview' : null, 'status':'Live'  }}";
+
         private string DashboardPipeline = @"[
             {
                 '$project': {
@@ -183,7 +230,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                 }
             }
         ]";
-        
+
         private const string Pipeline = @"[
             {
                 '$lookup': {
@@ -228,6 +275,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                     'trainingProviderName': '$trainingProvider.name',
                     'vacancyType': 1,
                     'isApplicationWithdrawn': '$candidateApplicationReview.isWithdrawn',
+                    'dateSharedWithEmployer': '$candidateApplicationReview.dateSharedWithEmployer',
                     'hasChosenProviderContactDetails' : 1,
                     'isTraineeship' :1
                 }
@@ -260,6 +308,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                     'transferInfoReason': 1,
                     'trainingProviderName': 1,
                     'vacancyType': 1,
+                    'dateSharedWithEmployer': 1,
                     'hasChosenProviderContactDetails' : 1,
                     'isTraineeship': {
                         '$cond': {
@@ -319,9 +368,35 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                             'else': 0
                         }
                     },
+                    'isEmployerReviewed': {
+                        '$cond': {
+                            'if': {
+                                '$or': [
+                                    { '$eq': ['$appStatus', 'EmployerInterviewing'] },
+                                    { '$eq': ['$appStatus', 'EmployerUnsuccessful'] }
+                                ]
+                            },
+                            'then': 1,
+                            'else': 0
+                        }
+                    },
                     'isUnsuccessful': {
                         '$cond': {
                             'if': {'$eq': [ '$appStatus', 'Unsuccessful']},
+                            'then': 1,
+                            'else': 0
+                        }
+                    },
+                    'isShared': {
+                        '$cond': {
+                            'if': {'$eq': [ '$appStatus', 'Shared']},
+                            'then': 1,
+                            'else': 0
+                        }
+                    },
+                    'isSharedWithEmployer': {
+                        '$cond': {
+                            'if': {'$gte': [ '$dateSharedWithEmployer', '1900-01-01T01:00:00.389Z'] },
                             'then': 1,
                             'else': 0
                         }
@@ -365,11 +440,20 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                     'noOfSuccessfulApplications': {
                         '$sum': '$isSuccessful'
                     },
+                    'noOfEmployerReviewedApplications': {
+                        '$sum': '$isEmployerReviewed'
+                    },
                     'noOfUnsuccessfulApplications': {
                         '$sum': '$isUnsuccessful'
                     },
+                    'noOfSharedApplications': {
+                        '$sum': '$isShared'
+                    },
+                    'noOfAllSharedApplications': {
+                        '$sum': '$isSharedWithEmployer'
+                    },
                     'noOfApplications': {
-                         '$sum' :{'$add': ['$isUnsuccessful','$isSuccessful'] }
+                         '$sum' :{'$add': ['$isNew','$isUnsuccessful','$isSuccessful'] }
                     }
                 }
             },
@@ -382,11 +466,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
             var pipeline = BsonSerializer.Deserialize<BsonArray>(Pipeline);
             if (secondaryMatch != null)
             {
-                pipeline.Insert(pipeline.Count-1, secondaryMatch);    
+                pipeline.Insert(pipeline.Count - 1, secondaryMatch);
             }
-            
-            pipeline.Insert(pipeline.Count, new BsonDocument {{"$skip", (pageNumber-1) * 25}});
-            pipeline.Insert(pipeline.Count, new BsonDocument {{"$limit",25}});
+
+            pipeline.Insert(pipeline.Count, new BsonDocument { { "$skip", (pageNumber - 1) * 25 } });
+            pipeline.Insert(pipeline.Count, new BsonDocument { { "$limit", 25 } });
             if (employerReviewMatch != null)
             {
                 pipeline.Insert(0, employerReviewMatch);
@@ -401,8 +485,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
         public static BsonDocument[] GetAggregateQueryPipelineDocumentCount(BsonDocument vacanciesMatchClause, BsonDocument secondaryMatch, BsonDocument employerReviewMatch = null)
         {
             var pipeline = BsonSerializer.Deserialize<BsonArray>(Pipeline);
-            pipeline.Insert(pipeline.Count-1, secondaryMatch);
-            pipeline.Insert(pipeline.Count, new BsonDocument {{"$count","total"}});
+            pipeline.Insert(pipeline.Count - 1, secondaryMatch);
+            pipeline.Insert(pipeline.Count, new BsonDocument { { "$count", "total" } });
             if (employerReviewMatch != null)
             {
                 pipeline.Insert(0, employerReviewMatch);
@@ -413,8 +497,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
 
             return pipelineDefinition;
         }
-        
-        public BsonDocument[] GetAggregateQueryPipelineDashboard(BsonDocument vacanciesMatchClause, BsonDocument employerReviewMatch = null)         
+
+        public BsonDocument[] GetAggregateQueryPipelineDashboard(BsonDocument vacanciesMatchClause, BsonDocument employerReviewMatch = null)
         {
             var pipeline = BsonSerializer.Deserialize<BsonArray>(DashboardPipeline);
             if (employerReviewMatch != null)
@@ -439,6 +523,27 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
 
             return pipelineDefinition;
         }
-        
+
+        public BsonDocument[] GetAggregateQueryPipelineVacanciesClosingSoonDashboard(BsonDocument vacanciesMatchClause,
+            BsonDocument employerReviewMatch = null)
+        {
+            var pipeline = BsonSerializer.Deserialize<BsonArray>(DashboardApplicationsPipeline);
+            var insertLine = 3;
+            if (employerReviewMatch != null)
+            {
+                pipeline.Insert(0, employerReviewMatch);
+                insertLine++;
+            }
+            pipeline.Insert(0, vacanciesMatchClause);
+
+            var matchPipeline = BsonSerializer.Deserialize<BsonDocument>(DashboardNoApplicationCountMatchClause);
+
+            pipeline.Insert(insertLine, matchPipeline);
+
+            var pipelineDefinition = pipeline.Values.Select(p => p.ToBsonDocument()).ToArray();
+
+            return pipelineDefinition;
+        }
+
     }
 }

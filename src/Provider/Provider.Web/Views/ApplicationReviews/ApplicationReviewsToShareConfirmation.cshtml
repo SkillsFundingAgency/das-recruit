@@ -1,0 +1,117 @@
+﻿@using System.Net
+@using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyApplications
+@model Esfa.Recruit.Provider.Web.ViewModels.ApplicationReviews.ShareMultipleApplicationReviewsConfirmationViewModel
+@{
+    ViewBag.GaData.Vpv = "/recruitment/provider/page-application-reviews-to-share-confirmation";
+    ViewBag.Title = "Share Applications Confirmation";
+}
+@section BackLink {
+    <a asp-route="@RouteNames.ApplicationReviewsToShare_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Back</a>
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+
+        <h1 class="govuk-heading-l govuk-!-margin-bottom-6">
+            @Model.ShareApplicationHeaderTitle
+        </h1>
+        <p asp-show="@Model.SharingMultipleApplications">
+            You will share these applications:
+        </p>
+        <div class="govuk-inset-text">
+            @{
+                foreach (VacancyApplication vacancyApplication in Model.ApplicationReviewsToShare)
+                {
+                    <p class="govuk-!-margin-top-2 govuk-!-margin-bottom-2 govuk-!-margin-left-2">@vacancyApplication.CandidateName: @vacancyApplication.GetFriendlyId()</p>
+                }
+            }
+        </div>
+
+         <h2 class="govuk-heading-m govuk-!-margin-bottom-4">
+            What happens next
+        </h2>
+        <div asp-show="@Model.SharingMultipleApplications">
+            <p class="govuk-body">
+            You will be notified when the employer decides whether they want to interview an applicant or not.
+            </p>
+
+            <h3 class="govuk-heading-s govuk-!-margin-bottom-4">
+                What the employer will need to do
+            </h3>
+             <p class="govuk-body">
+                The employer will find these shared applications in the <span class="govuk-!-font-weight-bold">Your apprenticeship adverts</span> section of their apprenticeship service account.
+            </p>
+            <p class="govuk-body">
+                They'll be asked whether they want to interview each applicant. When making their decision, they'll see an anonymised version of each application with the applicants' names and contact details removed.
+            </p>
+
+            <h3 class="govuk-heading-s govuk-!-margin-bottom-4">
+                If the employer is organising their own interviews
+            </h3>
+             <p class="govuk-body">
+                After an employer selects to interview an applicant, they'll be able to see the applicant's name and contact details for themselves. 
+            </p>
+        </div>
+
+         <div asp-hide="@Model.SharingMultipleApplications">
+              <p class="govuk-body">
+            You'll be notified when the employer decides whether they want to interview this applicant or not.
+            </p>
+
+            <h3 class="govuk-heading-s govuk-!-margin-bottom-4">
+                What the employer will need to do
+            </h3>
+             <p class="govuk-body">
+                The employer will find this shared application in the <span class="govuk-!-font-weight-bold">Your apprenticeship adverts</span> section of their apprenticeship service account.
+            </p>
+            <p class="govuk-body">
+                They'll be asked whether they want to interview the applicant. When making their decision, they'll see an anonymised version of this application with the applicant's name and contact details removed.
+            </p>
+
+            <h3 class="govuk-heading-s govuk-!-margin-bottom-4">
+                If the employer is organising their own interviews
+            </h3>
+             <p class="govuk-body">
+                After an employer selects to interview this applicant, they'll be able to see the applicant's name and contact details for themselves. 
+            </p>
+        </div>
+
+         
+
+        <form method="post" id="share_applications_confirm_form" asp-route="@RouteNames.ApplicationReviewsToShareConfirmation_Post" asp-route-ukprn="@Model.Ukprn" asp-route-vacancyId="@Model.VacancyId">
+            
+            <div class="govuk-form-group" das-highlight-error-for="ApplicationReviewsToShare" error-class="govuk-form-group--error" id="ApplicationReviewsToShare">
+                <fieldset class="govuk-fieldset">
+                    
+                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                        <h1 class="govuk-fieldset__heading">
+                            @Model.ShareApplicationConfirmationText
+                        </h1>
+                    </legend>
+
+                    @for (var i = 0; i < Model.ApplicationReviewsToShare.Count(); i++)
+                    {
+                            <div class="govuk-!-display-none">
+                            @Html.EditorFor(x => x.ApplicationReviewsToShare[i])
+                        </div>
+                    }
+
+                    <div class="govuk-radios">
+                        <div class="govuk-radios__item">
+                            <input asp-for="ShareApplicationsConfirmed" class="govuk-radios__input" id="share-applications-confirm-yes" type="radio" value="true">
+                            <label for="share-applications-confirm-yes" class="govuk-label govuk-radios__label">Yes</label>
+                        </div>
+                        <div class="govuk-radios__item">
+                            <input asp-for="ShareApplicationsConfirmed" class="govuk-radios__input" id="share-applications-confirm-no" type="radio" value="false">
+                            <label for="share-applications-confirm-no" class="govuk-label govuk-radios__label">No</label>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+             <div class="govuk-button-group">
+                <button class="govuk-button submit" data-module="govuk-button" id="share-applications-confirm" type="submit">Confirm</button>
+            </div>
+        </form>
+
+    </div>
+</div>

@@ -162,6 +162,24 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomVali
             });
         }
 
+        internal static IRuleBuilderInitial<TrainingProvider, TrainingProvider> TrainingProviderMustBeMainOrEmployerProfile(this IRuleBuilder<TrainingProvider, TrainingProvider> ruleBuilder, ITrainingProviderSummaryProvider trainingProviderSummaryProvider)
+        {
+            return (IRuleBuilderInitial<TrainingProvider, TrainingProvider>)ruleBuilder.CustomAsync(async (trainingProvider, context, _) =>
+            {
+                if (trainingProvider.Ukprn.HasValue && await trainingProviderSummaryProvider.IsTrainingProviderMainOrEmployerProfile(trainingProvider.Ukprn.Value))
+                {
+                    return;
+                }
+
+                var failure = new ValidationFailure(nameof(Vacancy.TrainingProvider), "UKPRN of a training provider must be registered to deliver apprenticeship training")
+                {
+                    ErrorCode = ErrorCodes.TrainingProviderMustBeMainOrEmployerProfile,
+                    CustomState = VacancyRuleSet.TrainingProvider
+                };
+                context.AddFailure(failure);
+            });
+        }
+
         internal static IRuleBuilderInitial<TrainingProvider, TrainingProvider> TrainingProviderMustNotBeBlocked(this IRuleBuilder<TrainingProvider, TrainingProvider> ruleBuilder, IBlockedOrganisationQuery blockedOrganisationRep)
         {
             return (IRuleBuilderInitial<TrainingProvider, TrainingProvider>)ruleBuilder.CustomAsync(async (trainingProvider, context, cancellationToken) =>

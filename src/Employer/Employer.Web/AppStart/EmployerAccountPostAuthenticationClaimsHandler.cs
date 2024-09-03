@@ -1,9 +1,10 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration;
+using Esfa.Recruit.Employer.Web.Models;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Newtonsoft.Json;
@@ -21,18 +22,26 @@ public class EmployerAccountPostAuthenticationClaimsHandler : ICustomClaims
     }
     public async Task<IEnumerable<Claim>> GetClaims(TokenValidatedContext ctx)
     {
+        var claims = new List<Claim>();
         var userId = ctx.Principal.Claims
             .First(c => c.Type.Equals(ClaimTypes.NameIdentifier))
             .Value;
         var email = ctx.Principal.Claims
             .First(c => c.Type.Equals(ClaimTypes.Email))
             .Value;
-    
-
         var accounts = await _vacancyClient.GetEmployerIdentifiersAsync(userId, email);
-        var accountsAsJson = JsonConvert.SerializeObject(accounts.UserAccounts.Select(c=>c.AccountId).ToList());
-        var associatedAccountsClaim = new Claim(EmployerRecruitClaims.AccountsClaimsTypeIdentifier, accountsAsJson, JsonClaimValueTypes.Json);
         
-        return new List<Claim> { associatedAccountsClaim, new Claim(EmployerRecruitClaims.IdamsUserIdClaimTypeIdentifier,accounts.EmployerUserId) };
+        var accountsAsJson = JsonConvert.SerializeObject(accounts.UserAccounts.ToDictionary(k => k.AccountId));        
+        
+        if (accounts.IsSuspended)
+        {
+            claims.Add(new Claim(ClaimTypes.AuthorizationDecision, "Suspended"));
+        }
+        
+        claims.Add(new Claim(EmployerRecruitClaims.IdamsUserIdClaimTypeIdentifier,accounts.EmployerUserId));
+        claims.Add(new Claim(EmployerRecruitClaims.AccountsClaimsTypeIdentifier, accountsAsJson, JsonClaimValueTypes.Json));
+        
+        return claims;
+             
     }
 }

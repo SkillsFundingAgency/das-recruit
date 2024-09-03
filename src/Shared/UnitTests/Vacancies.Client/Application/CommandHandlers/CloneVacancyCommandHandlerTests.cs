@@ -168,6 +168,7 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.CommandHandlers
                 {nameof(Vacancy.ThingsToConsider), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.Cloned)},
                 {nameof(Vacancy.Title), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.Cloned)},
                 {nameof(Vacancy.TrainingDescription), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.Cloned)},
+                {nameof(Vacancy.AdditionalTrainingDescription), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.Cloned)},
                 {nameof(Vacancy.TrainingProvider), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.Cloned)},
                 {nameof(Vacancy.Wage), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.Cloned)},
                 {nameof(Vacancy.ClosureReason), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.IsNull)},
@@ -177,7 +178,11 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.CommandHandlers
                 {nameof(Vacancy.VacancyType), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.Cloned)},
                 {nameof(Vacancy.WorkExperience), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.Cloned)},
                 {nameof(Vacancy.RouteId), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.Cloned)},
-                {nameof(Vacancy.HasChosenProviderContactDetails), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.Cloned)}
+                {nameof(Vacancy.HasChosenProviderContactDetails), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.Cloned)},
+                {nameof(Vacancy.AdditionalQuestion1), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.Cloned)},
+                {nameof(Vacancy.AdditionalQuestion2), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.Cloned)},
+                {nameof(Vacancy.HasSubmittedAdditionalQuestions), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.Cloned)},
+                {nameof(Vacancy.HasOptedToAddQualifications), (o, c, s) => AssertProperty(o, c, s, CloneAssertType.Cloned)}
             };
 
             foreach (var property in typeof(Vacancy).GetProperties())
@@ -243,6 +248,9 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.CommandHandlers
             vacancy.Status = VacancyStatus.Live;
             vacancy.Wage.DurationUnit = DurationUnit.Year;
             vacancy.Wage.WageType = WageType.NationalMinimumWage;
+            vacancy.AdditionalQuestion1 = nameof(Vacancy.AdditionalQuestion1);
+            vacancy.AdditionalQuestion2 = nameof(Vacancy.AdditionalQuestion2);
+            vacancy.HasSubmittedAdditionalQuestions = true;
 
             return vacancy;
         }

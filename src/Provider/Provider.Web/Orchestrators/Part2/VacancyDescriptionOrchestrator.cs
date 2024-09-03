@@ -4,10 +4,10 @@ using Esfa.Recruit.Provider.Web.Configuration.Routing;
 using Esfa.Recruit.Provider.Web.Mappings;
 using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Provider.Web.ViewModels.Part2.VacancyDescription;
-using Esfa.Recruit.Shared.Web.FeatureToggle;
 using Esfa.Recruit.Shared.Web.Orchestrators;
 using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Configuration;
+using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
 using Esfa.Recruit.Vacancies.Client.Application.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
@@ -61,11 +61,6 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part2
                 vm.VacancyDescription = vacancy.Description;
             }
 
-            if (!_feature.IsFeatureEnabled(FeatureNames.ProviderTaskList))
-            {
-                vm.OutcomeDescription = vacancy.OutcomeDescription;
-            }
-
             if (vacancy.Status == VacancyStatus.Referred)
             {
                 vm.Review = await _reviewSummaryService.GetReviewSummaryViewModelAsync(vacancy.VacancyReference.Value,
@@ -86,10 +81,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part2
                 vm.VacancyDescription = m.VacancyDescription;
             }
             vm.TrainingDescription = m.TrainingDescription;
-            if (!_feature.IsFeatureEnabled(FeatureNames.ProviderTaskList))
-            {
-                vm.OutcomeDescription = m.OutcomeDescription;
-            }
+            
             return vm;
         }
 

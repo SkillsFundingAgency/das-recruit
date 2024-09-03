@@ -10,7 +10,7 @@
             <span class="govuk-warning-text__icon das-warning-text__icon--top" aria-hidden="true">!</span>
 
             <span class="govuk-warning-text__assistive">Warning</span>
-            <p>
+            <p> 
                 <strong class="govuk-warning-text__text">
                     @Model.LegalEntityName does not have an accepted agreement with the 
                     Department for Education (DfE). Without an accepted agreement,
@@ -19,14 +19,13 @@
             </p>
             <p>
                 <strong class="govuk-warning-text__text">
-                    Only account owners can accept DfE agreements. If you’re not sure who the owner is, you can
-                    <a asp-route="@RouteNames.Dashboard_AccountsAgreements" asp-route-employerAccountId="@Model.EmployerAccountId"  class="govuk-link">check your team details.</a>
+                    Only someone with the authority for your organisation can accept the agreement.
                 </strong>
             </p>
         </div>
         <div class="govuk-button-group">
-            <a asp-route="@RouteNames.Dashboard_AccountsAgreements" asp-route-employerAccountId="@Model.EmployerAccountId" class="govuk-button">Review agreement</a>
-            <a asp-route="@RouteNames.Location_Get" asp-all-route-data="@Model.RouteDictionary" class="govuk-link govuk-link--no-visited-state">Continue anyway</a>
+            <a asp-route="@RouteNames.Dashboard_AccountsAgreements" asp-route-employerAccountId="@Model.EmployerAccountId" class="govuk-button">View agreement</a>
+            <a asp-route="@RouteNames.Location_Get" asp-all-route-data="@Model.RouteDictionary" class="govuk-button govuk-button--secondary">Save draft and continue</a>
         </div>
     </div>
 </div>
