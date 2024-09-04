@@ -147,7 +147,6 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview
         public bool WageRequiresEdit => IsEditRequired(FieldIdentifiers.Wage);
         public bool WorkingWeekRequiresEdit => IsEditRequired(FieldIdentifiers.WorkingWeek);
         public bool HasSelectedEmployerNameOption => EmployerNameOption != null;
-        public ApprenticeshipLevel ApprenticeshipLevel { get; set; }
         private bool IsEditRequired(string fieldIdentifier)
         {
             return Review.FieldIndicators.Any(f => f.ReviewFieldIdentifier == fieldIdentifier);
