@@ -79,7 +79,12 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 
             await _applicationReviewRepository.UpdateAsync(applicationReview);
 
-            if (!applicationReview.Application.IsFaaV2Application && (applicationReview.Status == ApplicationReviewStatus.Successful || applicationReview.Status == ApplicationReviewStatus.Unsuccessful))
+            if (applicationReview.Status is not (ApplicationReviewStatus.Successful or ApplicationReviewStatus.Unsuccessful))
+            {
+                return false;
+            }
+
+            if (!applicationReview.Application.IsFaaV2Application)
             {
                 await _messaging.PublishEvent(new ApplicationReviewedEvent
                 {
