@@ -1,0 +1,6 @@
+{
+  "ConnectionStrings": {
+    "WebJobsDashboard": "http://localhost:10000/devstoreaccount1/Configuration",
+    "WebJobsStorage": "http://localhost:10000/devstoreaccount1/Configuration"
+  }
+}

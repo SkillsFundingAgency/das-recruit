@@ -34,8 +34,6 @@ namespace Esfa.Recruit.Employer.Web
 
             if (env.IsDevelopment())
             {
-                var configuration = (TelemetryConfiguration)app.ApplicationServices.GetService(typeof(TelemetryConfiguration));
-                configuration.DisableTelemetry = true;
                 app.UseDeveloperExceptionPage();
             }
             else
