@@ -1,4 +1,6 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
+using Esfa.Recruit.Qa.Web.AppStart;
 using Esfa.Recruit.Qa.Web.Configuration;
 using Esfa.Recruit.Qa.Web.Mappings;
 using Esfa.Recruit.Qa.Web.Orchestrators;
@@ -13,6 +15,8 @@ using Esfa.Recruit.Shared.Web.Mappers;
 using Esfa.Recruit.Shared.Web.RuleTemplates;
 using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Configuration;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.TableStore;
 using Esfa.Recruit.Vacancies.Client.Ioc;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -36,8 +40,9 @@ namespace Esfa.Recruit.Qa.Web
         private readonly DfEOidcConfiguration _dfEOidcConfig;
         private readonly bool _isDfESignInAllowed = false;
         private readonly ILoggerFactory _loggerFactory;
+        private readonly ILogger<Startup> _logger;
 
-        public Startup(IConfiguration configuration, IWebHostEnvironment env, ILoggerFactory loggerFactory)
+        public Startup(IConfiguration configuration, IWebHostEnvironment env, ILoggerFactory loggerFactory, ILogger<Startup> logger)
         {
             var configBuilder = new ConfigurationBuilder()
                 .AddConfiguration(configuration)
@@ -68,12 +73,14 @@ namespace Esfa.Recruit.Qa.Web
             _dfEOidcConfig = _configuration.GetSection("DfEOidcConfiguration").Get<DfEOidcConfiguration>(); // read the configuration from SFA.DAS.Provider.DfeSignIn
             _isDfESignInAllowed = _configuration.GetValue<bool>("UseDfESignIn"); // read the UseDfESignIn property from SFA.DAS.Recruit.QA configuration.
             _loggerFactory = loggerFactory;
+            _logger = logger;
         }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.Configure<ApplicationInsightsConfiguration>(_configuration.GetSection("ApplicationInsights"));
+            services.AddOpenTelemetryRegistration(_configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"]!);
 
             // Routing has to come before adding Mvc
             services.AddRouting(opt =>
@@ -94,7 +101,6 @@ namespace Esfa.Recruit.Qa.Web
                 }
             );
 
-            services.AddApplicationInsightsTelemetry(_configuration);
             services.AddAuthenticationService(_authenticationConfig, _configuration);
             services.AddAuthorizationService(_legacyAuthorizationConfig, _authorizationConfig);
 
@@ -133,6 +139,24 @@ namespace Esfa.Recruit.Qa.Web
             
             services.AddFeatureToggle();
             services.AddDasEncoding(_configuration);
+
+            CheckInfrastructure(services);
+        }
+
+        private void CheckInfrastructure(IServiceCollection services)
+        {
+            try
+            {
+                var serviceProvider = services.BuildServiceProvider();
+                var collectionChecker = (MongoDbCollectionChecker)serviceProvider.GetService(typeof(MongoDbCollectionChecker));
+                collectionChecker?.EnsureCollectionsExist();
+                var storageTableChecker = (QueryStoreTableChecker)serviceProvider.GetService(typeof(QueryStoreTableChecker));
+                storageTableChecker?.EnsureQueryStoreTableExist();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error checking infrastructure");
+            }
         }
     }
 }
