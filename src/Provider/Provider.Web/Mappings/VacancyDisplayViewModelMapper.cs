@@ -7,6 +7,7 @@ using Esfa.Recruit.Shared.Web.Helpers;
 using Esfa.Recruit.Shared.Web.Orchestrators;
 using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
+using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
@@ -23,6 +24,7 @@ namespace Esfa.Recruit.Provider.Web.Mappings
         private readonly ExternalLinksConfiguration _externalLinksConfiguration;
         private readonly IRecruitVacancyClient _vacancyClient;
         private readonly IProviderVacancyClient _client;
+        private readonly IApprenticeshipProgrammeProvider _apprenticeshipProgrammeProvider;
         private readonly IFeature _feature;
 
         public DisplayVacancyViewModelMapper(
@@ -30,25 +32,32 @@ namespace Esfa.Recruit.Provider.Web.Mappings
                 IOptions<ExternalLinksConfiguration> externalLinksOptions,
                 IRecruitVacancyClient vacancyClient,
                 IProviderVacancyClient client,
+                IApprenticeshipProgrammeProvider apprenticeshipProgrammeProvider,
                 IFeature feature)
         {
             _mapService = mapService;
             _externalLinksConfiguration = externalLinksOptions.Value;
             _vacancyClient = vacancyClient;
             _client = client;
+            _apprenticeshipProgrammeProvider = apprenticeshipProgrammeProvider;
             _feature = feature;
         }
 
         public async Task MapFromVacancyAsync(DisplayVacancyViewModel vm, Vacancy vacancy)
         {
-            var programme = vacancy.VacancyType.GetValueOrDefault() == VacancyType.Apprenticeship ? await _vacancyClient.GetApprenticeshipProgrammeAsync(vacancy.ProgrammeId) : null;
+            ApprenticeshipStandard programme = null;
+            if (int.TryParse(vacancy.ProgrammeId, out var standardId))
+            {
+                programme = await _apprenticeshipProgrammeProvider.GetApprenticeshipStandardVacancyPreviewData(standardId);    
+            }
+            
             var route = vacancy.VacancyType.GetValueOrDefault() == VacancyType.Traineeship ? await _vacancyClient.GetRoute(vacancy.RouteId) : null;
             var employer = await _client.GetProviderEmployerVacancyDataAsync(vacancy.TrainingProvider.Ukprn.Value, vacancy.EmployerAccountId);
 
             var allQualifications = await _vacancyClient.GetCandidateQualificationsAsync();
 
             vm.Status = vacancy.Status;
-            vm.AccountName = employer.Name;
+            vm.AccountName = employer?.Name;
             vm.ApplicationMethod = vacancy.ApplicationMethod;
             vm.ApplicationInstructions = vacancy.ApplicationInstructions;
             vm.ApplicationUrl = vacancy.ApplicationUrl;
@@ -77,7 +86,8 @@ namespace Esfa.Recruit.Provider.Web.Mappings
             vm.ProviderContactEmail = vacancy.ProviderContact?.Email;
             vm.ProviderContactTelephone = vacancy.ProviderContact?.Phone;
             vm.ProviderName = vacancy.TrainingProvider?.Name;
-            vm.Qualifications = vacancy.Qualifications.SortQualifications(allQualifications).AsText(_feature.IsFeatureEnabled(FeatureNames.FaaV2Improvements));
+            vm.Qualifications = vacancy.Qualifications?.Where(c=>c.Weighting == QualificationWeighting.Essential).SortQualifications(allQualifications).AsText(_feature.IsFeatureEnabled(FeatureNames.FaaV2Improvements));
+            vm.QualificationsDesired = vacancy.Qualifications?.Where(c=>c.Weighting == QualificationWeighting.Desired).SortQualifications(allQualifications).AsText(_feature.IsFeatureEnabled(FeatureNames.FaaV2Improvements));
             vm.HasOptedToAddQualifications = !_feature.IsFeatureEnabled(FeatureNames.FaaV2Improvements) ? true : vacancy.HasOptedToAddQualifications;
             vm.ShortDescription = vacancy.ShortDescription;
             vm.Skills = vacancy.Skills ?? Enumerable.Empty<string>();
@@ -103,11 +113,16 @@ namespace Esfa.Recruit.Provider.Web.Mappings
                 vm.EmployerAddressElements = vacancy.EmployerAddressForDisplay();
             }
 
-            if (programme != null)
+            if (vacancy.ProgrammeId != null && programme != null)
             {
                 vm.TrainingTitle = programme.Title;
                 vm.TrainingType = programme.ApprenticeshipType.GetDisplayName();
                 vm.TrainingLevel = programme.ApprenticeshipLevel.GetDisplayName();
+                vm.CourseCoreDuties = programme.CoreDuties;
+                vm.CourseSkills = programme.Skills;
+                vm.StandardPageUrl = programme.StandardPageUrl;
+                vm.OverviewOfRole = programme.OverviewOfRole;
+                vm.ApprenticeshipLevel = programme.ApprenticeshipLevel;
             }
 
             if (vacancy.Wage != null)

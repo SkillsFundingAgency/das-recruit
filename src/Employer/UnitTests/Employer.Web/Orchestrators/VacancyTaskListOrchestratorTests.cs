@@ -11,10 +11,10 @@ using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview;
 using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
+using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.ApprenticeshipProgrammes;
 using FluentAssertions;
 using Microsoft.Extensions.Options;
 using Moq;
@@ -28,38 +28,39 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators
         [Test, MoqAutoData]
         public async Task Then_The_Vacancy_Is_Retrieved_And_Mapped(
             string findAnApprenticeshipUrl,
+            int standardId,
             VacancyRouteModel routeModel,
-            ApprenticeshipProgramme programme,
+            ApprenticeshipStandard standard,
             Vacancy vacancy,
             List<LegalEntity> legalEntities,
             [Frozen] Mock<IOptions<ExternalLinksConfiguration>> externalLinksConfiguration,
             [Frozen] Mock<IUtility> utility,
             [Frozen] Mock<IRecruitVacancyClient> recruitVacancyClient,
             [Frozen] Mock<IEmployerVacancyClient> employerVacancyClient,
+            [Frozen] Mock<IApprenticeshipProgrammeProvider> outerApiClient,
             VacancyTaskListOrchestrator orchestrator)
         {
             //arrange
+            vacancy.ProgrammeId = standardId.ToString();
             vacancy.EmployerLocation = null;
             vacancy.EmployerNameOption = EmployerNameOption.RegisteredName;
-            programme.Id = vacancy.ProgrammeId;
-            programme.EducationLevelNumber = 3;
-            programme.ApprenticeshipLevel = ApprenticeshipLevel.Higher;
+            
+            standard.EducationLevelNumber = 3;
+            standard.ApprenticeshipLevel = ApprenticeshipLevel.Higher;
             employerVacancyClient.Setup(x => x.GetEmployerLegalEntitiesAsync(routeModel.EmployerAccountId))
                 .ReturnsAsync(legalEntities);
             utility.Setup(x => x.GetAuthorisedVacancyForEditAsync(It.Is<VacancyRouteModel>(
                     c => c.VacancyId.Equals(routeModel.VacancyId) &&
                          c.EmployerAccountId.Equals(routeModel.EmployerAccountId)), RouteNames.EmployerTaskListGet))
                 .ReturnsAsync(vacancy);
-            recruitVacancyClient.Setup(x => x.GetActiveApprenticeshipProgrammesAsync())
-                .ReturnsAsync(new List<ApprenticeshipProgramme>{ programme});
-            recruitVacancyClient.Setup(x => x.GetApprenticeshipProgrammeAsync(programme.Id))
-                .ReturnsAsync(programme);
+            outerApiClient.Setup(x=>x.GetApprenticeshipStandardVacancyPreviewData(standardId)).ReturnsAsync(standard);
+            
             recruitVacancyClient.Setup(x => x.GetEmployerDescriptionAsync(vacancy)).ReturnsAsync(vacancy.EmployerDescription);
             recruitVacancyClient.Setup(x => x.GetEmployerNameAsync(vacancy)).ReturnsAsync(vacancy.EmployerName);
             externalLinksConfiguration.Object.Value.FindAnApprenticeshipUrl = findAnApprenticeshipUrl;
             var expectedViewModel = new VacancyPreviewViewModel();
             var mapper = new DisplayVacancyViewModelMapper(Mock.Of<IGeocodeImageService>(),
-                externalLinksConfiguration.Object, recruitVacancyClient.Object, Mock.Of<IFeature>());
+                externalLinksConfiguration.Object, recruitVacancyClient.Object, outerApiClient.Object, Mock.Of<IFeature>());
             await mapper.MapFromVacancyAsync(expectedViewModel, vacancy);
             expectedViewModel.VacancyId = routeModel.VacancyId;
             expectedViewModel.EmployerAccountId = routeModel.EmployerAccountId;
@@ -82,7 +83,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators
                 .Excluding(c=>c.HasSoftValidationErrors)
                 .Excluding(c=>c.Qualifications)
             );
-            viewModel.ApprenticeshipLevel.Should().Be(programme.ApprenticeshipLevel);
+            viewModel.ApprenticeshipLevel.Should().Be(standard.ApprenticeshipLevel);
             viewModel.AccountLegalEntityCount.Should().Be(legalEntities.Count);
             viewModel.HasSelectedEmployerNameOption.Should().BeTrue();
         }
