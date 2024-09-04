@@ -2,6 +2,7 @@ using System.Threading.Tasks;
 using AutoFixture.NUnit3;
 using Esfa.Recruit.Employer.Web.Mappings;
 using Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview;
+using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using FluentAssertions;
@@ -55,9 +56,15 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.VacancyPreview
         [Test, MoqAutoData]
         public async Task Then_Section_State_Is_Set_To_In_Progress_If_Employer_Name_Set(
             Vacancy vacancy,
+            int standardId,
+            ApprenticeshipStandard standard,
+            [Frozen] Mock<IApprenticeshipProgrammeProvider> apprenticeshipProgrammeProvider,
             [Frozen] Mock<IRecruitVacancyClient> recruitVacancyClient,
             DisplayVacancyViewModelMapper mapper)
         {
+            apprenticeshipProgrammeProvider.Setup(x => x.GetApprenticeshipStandardVacancyPreviewData(standardId))
+                .ReturnsAsync(standard);
+            vacancy.ProgrammeId = standardId.ToString();
             vacancy.ApplicationMethod = null;
             vacancy.EmployerDescription = null;
             
@@ -73,10 +80,15 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.VacancyPreview
         [Test, MoqAutoData]
         public async Task Then_Section_State_Is_Set_To_In_Progress_If_Employer_Name_And_Description_Set(
             Vacancy vacancy,
+            int standardId,
+            ApprenticeshipStandard standard,
+            [Frozen] Mock<IApprenticeshipProgrammeProvider> apprenticeshipProgrammeProvider,
             [Frozen] Mock<IRecruitVacancyClient> recruitVacancyClient,
             DisplayVacancyViewModelMapper mapper)
         {
-            
+            apprenticeshipProgrammeProvider.Setup(x => x.GetApprenticeshipStandardVacancyPreviewData(standardId))
+                .ReturnsAsync(standard);
+            vacancy.ProgrammeId = standardId.ToString();
             vacancy.ApplicationMethod = null;
             
             var model = new VacancyPreviewViewModel();
@@ -90,9 +102,15 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.VacancyPreview
         [Test, MoqAutoData]
         public async Task Then_Section_State_Is_Set_To_Complete_With_Employer_Name_Description_And_ApplicationMethod_Set(
                 Vacancy vacancy,
+                int standardId,
+                ApprenticeshipStandard standard,
+                [Frozen] Mock<IApprenticeshipProgrammeProvider> apprenticeshipProgrammeProvider,
                 [Frozen] Mock<IRecruitVacancyClient> recruitVacancyClient,
                 DisplayVacancyViewModelMapper mapper)
         {
+            apprenticeshipProgrammeProvider.Setup(x => x.GetApprenticeshipStandardVacancyPreviewData(standardId))
+                .ReturnsAsync(standard);
+            vacancy.ProgrammeId = standardId.ToString();
             vacancy.EmployerNameOption = EmployerNameOption.RegisteredName;
             var model = new VacancyPreviewViewModel();
             

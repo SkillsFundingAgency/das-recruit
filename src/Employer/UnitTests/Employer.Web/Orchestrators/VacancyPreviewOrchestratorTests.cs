@@ -16,6 +16,7 @@ using Xunit;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web;
 using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
+using Esfa.Recruit.Vacancies.Client.Application.Providers;
 
 namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators
 {
@@ -71,7 +72,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators
 
             var geocodeImageService = new Mock<IGeocodeImageService>();
             var externalLinks = new Mock<IOptions<ExternalLinksConfiguration>>();
-            var mapper = new DisplayVacancyViewModelMapper(geocodeImageService.Object, externalLinks.Object, _mockRecruitVacancyClient.Object,Mock.Of<IFeature>());
+            var mapper = new DisplayVacancyViewModelMapper(geocodeImageService.Object, externalLinks.Object, _mockRecruitVacancyClient.Object, Mock.Of<IApprenticeshipProgrammeProvider>(), Mock.Of<IFeature>());
 
             var legalEntityAgreement = new Mock<ILegalEntityAgreementService>();
             legalEntityAgreement.Setup(l => l.HasLegalEntityAgreementAsync(vacancy.EmployerAccountId, vacancy.AccountLegalEntityPublicHashedId))
@@ -128,7 +129,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators
 
             var geocodeImageService = new Mock<IGeocodeImageService>();
             var externalLinks = new Mock<IOptions<ExternalLinksConfiguration>>();
-            var mapper = new DisplayVacancyViewModelMapper(geocodeImageService.Object, externalLinks.Object, _mockRecruitVacancyClient.Object,Mock.Of<IFeature>());
+            var mapper = new DisplayVacancyViewModelMapper(geocodeImageService.Object, externalLinks.Object, _mockRecruitVacancyClient.Object,Mock.Of<IApprenticeshipProgrammeProvider>(),Mock.Of<IFeature>());
             var legalEntityAgreement = new Mock<ILegalEntityAgreementService>();            
             var utility = new Utility(_mockRecruitVacancyClient.Object);
             
