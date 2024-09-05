@@ -131,7 +131,6 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview
                 }.Count(s => s == VacancyPreviewSectionState.Incomplete || s == VacancyPreviewSectionState.InvalidIncomplete);
 
         public string IncompleteRequiredSectionText => "section".ToQuantity(IncompleteRequiredSectionCount, ShowQuantityAs.None);
-        public ApprenticeshipLevel ApprenticeshipLevel { get; set; }
 
         public IList<string> OrderedFieldNames => new List<string>
         {
