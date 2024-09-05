@@ -4,7 +4,7 @@
 @model DisplayVacancyViewModel
 
 <div class="app-preview-wrap">
-    <h1 class="govuk-heading-l faa-vacancy__title">@Model.Title</h1>
+    <h1 id="previewTitle" class="govuk-heading-l faa-vacancy__title">@Model.Title</h1>
     <p class="govuk-body-l faa-vacancy__organisation">@Model.EmployerName</p>
     <p class="govuk-body-l faa-vacancy__location">
         <span itemprop="jobLocation">
