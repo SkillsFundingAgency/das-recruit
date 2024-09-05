@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
 
@@ -46,12 +46,16 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Va
         public bool IsSharedApplication => DateSharedWithEmployer.HasValue;
         public string DateReviewedText => !string.IsNullOrEmpty(ReviewedDate.ToString()) ? ReviewedDate.AsGdsDate() : "Not reviewed";
         public bool? HasEverBeenEmployerInterviewing { get; set; }
+        public long VacancyReference { get; set; }
 
+        public Guid ApplicationId { get; set; }
         public static implicit operator VacancyApplication(ApplicationReview applicationReview)
         {
             var projection = new VacancyApplication
             {
                 CandidateId = applicationReview.CandidateId,
+                ApplicationId = applicationReview.Application.ApplicationId,
+                VacancyReference = applicationReview.Application.VacancyReference,
                 Status = applicationReview.Status,
                 SubmittedDate = applicationReview.SubmittedDate,
                 ApplicationReviewId = applicationReview.Id,
