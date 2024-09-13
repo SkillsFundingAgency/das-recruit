@@ -232,6 +232,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
         ]";
 
         private const string Pipeline = @"[
+            { '$sort' : { 'createdDate' : -1} },
             {
                 '$lookup': {
                     'from': 'applicationReviews',
@@ -456,24 +457,25 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                          '$sum' :{'$add': ['$isNew','$isUnsuccessful','$isSuccessful'] }
                     }
                 }
-            },
-            { '$sort' : { '_id.createdDate' : -1} }
+            }
             
         ]";
 
         public static BsonDocument[] GetAggregateQueryPipeline(BsonDocument vacanciesMatchClause, int pageNumber, BsonDocument secondaryMatch, BsonDocument employerReviewMatch = null)
         {
             var pipeline = BsonSerializer.Deserialize<BsonArray>(Pipeline);
-            if (secondaryMatch != null)
-            {
-                pipeline.Insert(pipeline.Count - 1, secondaryMatch);
-            }
+            
 
-            pipeline.Insert(pipeline.Count, new BsonDocument { { "$skip", (pageNumber - 1) * 25 } });
-            pipeline.Insert(pipeline.Count, new BsonDocument { { "$limit", 25 } });
+            pipeline.Insert(0, new BsonDocument { { "$limit", 25 } });
+            pipeline.Insert(0, new BsonDocument { { "$skip", (pageNumber - 1) * 25 } });
+            
             if (employerReviewMatch != null)
             {
                 pipeline.Insert(0, employerReviewMatch);
+            }
+            if (secondaryMatch != null)
+            {
+                pipeline.Insert(0, secondaryMatch);
             }
             pipeline.Insert(0, vacanciesMatchClause);
 
