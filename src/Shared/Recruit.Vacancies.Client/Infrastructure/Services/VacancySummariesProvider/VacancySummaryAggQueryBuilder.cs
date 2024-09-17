@@ -232,7 +232,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
         ]";
 
         private const string Pipeline = @"[
-            { '$sort' : { 'createdDate' : -1} },
             {
                 '$lookup': {
                     'from': 'applicationReviews',
@@ -240,13 +239,14 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                     'foreignField': 'vacancyReference',
                     'as': 'candidateApplicationReview'
                 }
-            },
+            },        
             {
                 '$unwind': {
                     'path': '$candidateApplicationReview',
                     'preserveNullAndEmptyArrays': true
                 }
-            },
+            },    
+            { '$sort' : { 'createdDate' : -1} },
             {
                 '$project': {
                     'vacancyGuid': '$_id',
@@ -466,16 +466,16 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
             var pipeline = BsonSerializer.Deserialize<BsonArray>(Pipeline);
             
 
-            pipeline.Insert(0, new BsonDocument { { "$limit", 25 } });
-            pipeline.Insert(0, new BsonDocument { { "$skip", (pageNumber - 1) * 25 } });
+            pipeline.Insert(2, new BsonDocument { { "$limit", 25 } });
+            pipeline.Insert(2, new BsonDocument { { "$skip", (pageNumber - 1) * 25 } });
             
             if (employerReviewMatch != null)
             {
-                pipeline.Insert(0, employerReviewMatch);
+                pipeline.Insert(2, employerReviewMatch);
             }
             if (secondaryMatch != null)
             {
-                pipeline.Insert(0, secondaryMatch);
+                pipeline.Insert(2, secondaryMatch);
             }
             pipeline.Insert(0, vacanciesMatchClause);
 

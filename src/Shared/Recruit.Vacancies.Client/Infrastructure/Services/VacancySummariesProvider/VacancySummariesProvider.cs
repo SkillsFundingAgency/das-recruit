@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -352,32 +353,43 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
         private static BsonDocument BuildSecondaryBsonDocumentFilter(FilteringOptions? filteringOptions, string searchTerm)
         {
             var document = new BsonDocument();
-
+            
             if (filteringOptions.HasValue)
             {
+                var bsonArray = new BsonArray();
                 switch (filteringOptions)
                 {
                     case FilteringOptions.NewApplications:
-                        document.Add("noOfNewApplications", new BsonDocument {{"$gt", 0}});
+                        bsonArray.Add(ApplicationReviewStatus.New.ToString());
                         break;
                     case FilteringOptions.AllApplications:
-                        document.Add("noOfApplications", new BsonDocument {{"$gt", 0}});
+                        bsonArray.Add(ApplicationReviewStatus.New.ToString());
+                        bsonArray.Add(ApplicationReviewStatus.Unsuccessful.ToString());
+                        bsonArray.Add(ApplicationReviewStatus.Successful.ToString());
                         break;
                     case FilteringOptions.NewSharedApplications:
-                        document.Add("noOfSharedApplications", new BsonDocument { { "$gt", 0 } });
+                        bsonArray.Add(ApplicationReviewStatus.Shared.ToString());
                         break;
                     case FilteringOptions.AllSharedApplications:
-                        document.Add("noOfAllSharedApplications", new BsonDocument { { "$gt", 0 } });
+                        document.Add("$dateSharedWithEmployer", new BsonDocument { { "$gt", "1900-01-01T01:00:00.389Z" } });
                         break;
                     case FilteringOptions.EmployerReviewedApplications:
-                        document.Add("noOfEmployerReviewedApplications", new BsonDocument { { "$gt", 0 } });
+                        bsonArray.Add(ApplicationReviewStatus.EmployerUnsuccessful.ToString());
+                        bsonArray.Add(ApplicationReviewStatus.EmployerInterviewing.ToString());
                         break;
                     case FilteringOptions.ClosingSoonWithNoApplications:
-                        document.Add("noOfApplications", 0);
+                        document.Add("candidateApplicationReview",  BsonNull.Value ); 
+                        document.Add("closingDate",  new BsonDocument{{"$lte",$"ISODate(" + DateTime.UtcNow.AddDays(5).ToString("o", CultureInfo.InvariantCulture) + ")"}}); 
                         break;
                 }
-            }
 
+                if (bsonArray.Count > 0)
+                {
+                    document.Add("candidateApplicationReview.status", new BsonDocument { { "$in", bsonArray } });    
+                }
+                
+            }
+            
             if (!string.IsNullOrEmpty(searchTerm))
             {
                 var bsonArray = new BsonArray
