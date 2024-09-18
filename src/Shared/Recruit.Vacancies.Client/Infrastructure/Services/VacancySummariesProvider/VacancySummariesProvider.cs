@@ -252,22 +252,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                 }
             };
 
-            var employerReviewMatch = ownerType == OwnerType.Employer ? 
-                new BsonDocument
-                {
-                    {
-                        "$match",
-                        BuildEmployerReviewMatch()
-                    }
-                } : new BsonDocument
-                {
-                    {
-                        "$match",
-                        BuildSharedApplicationsVacanciesMatch()
-                    }
-                };
-
-            var aggPipeline = VacancySummaryAggQueryBuilder.GetAggregateQueryPipelineDocumentCount(match,secondaryMath, employerReviewMatch);
+            var aggPipeline = VacancySummaryAggQueryBuilder.GetAggregateQueryPipelineDocumentCount(match,secondaryMath);
 
             return await RunAggPipelineCountQuery(aggPipeline);
         }
