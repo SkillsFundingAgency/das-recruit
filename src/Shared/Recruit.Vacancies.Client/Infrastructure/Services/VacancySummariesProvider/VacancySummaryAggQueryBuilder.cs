@@ -246,7 +246,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                     'preserveNullAndEmptyArrays': true
                 }
             },    
-            { '$sort' : { 'createdDate' : -1} },
             {
                 '$project': {
                     'vacancyGuid': '$_id',
@@ -457,8 +456,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                          '$sum' :{'$add': ['$isNew','$isUnsuccessful','$isSuccessful'] }
                     }
                 }
-            }
-            
+            },
+            { '$sort' : { 'createdDate' : -1} }
         ]";
 
         public static BsonDocument[] GetAggregateQueryPipeline(BsonDocument vacanciesMatchClause, int pageNumber, BsonDocument secondaryMatch, BsonDocument employerReviewMatch = null)
@@ -466,9 +465,10 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
             var pipeline = BsonSerializer.Deserialize<BsonArray>(Pipeline);
             
 
-            pipeline.Insert(2, new BsonDocument { { "$limit", 25 } });
-            pipeline.Insert(2, new BsonDocument { { "$skip", (pageNumber - 1) * 25 } });
             
+            pipeline.Insert(pipeline.Count-1, new BsonDocument { { "$skip", (pageNumber - 1) * 25 } });
+            pipeline.Insert(pipeline.Count-1, new BsonDocument { { "$limit", 25 } });
+
             if (employerReviewMatch != null)
             {
                 pipeline.Insert(2, employerReviewMatch);
