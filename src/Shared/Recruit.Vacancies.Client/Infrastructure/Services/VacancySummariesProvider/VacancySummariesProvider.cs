@@ -363,14 +363,14 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                         bsonArray.Add(ApplicationReviewStatus.EmployerInterviewing.ToString());
                         break;
                     case FilteringOptions.ClosingSoonWithNoApplications:
-                        document.Add("candidateApplicationReview",  BsonNull.Value ); 
-                        document.Add("closingDate",  new BsonDocument{{"$lte",$"ISODate(" + DateTime.UtcNow.AddDays(5).ToString("o", CultureInfo.InvariantCulture) + ")"}}); 
+                        document.Add("candidateApplicationReview",  BsonNull.Value );  
                         break;
                 }
 
                 if (bsonArray.Count > 0)
                 {
                     document.Add("candidateApplicationReview.status", new BsonDocument { { "$in", bsonArray } });    
+                    document.Add("candidateApplicationReview.isWithdrawn", new BsonDocument { { "$in", new BsonArray([false, BsonNull.Value]) } });    
                 }
                 
             }
@@ -467,7 +467,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                     case FilteringOptions.ClosingSoonWithNoApplications:
                         document.Add("status", VacancyStatus.Live.ToString());
                         document.Add("closingDate", new BsonDocument {{"$lte",BsonDateTime.Create(DateTime.UtcNow.AddDays(ClosingSoonDays))}});
-                        document.Add("applicationMethod", vacancyType == VacancyType.Apprenticeship ? ApplicationMethod.ThroughFindAnApprenticeship:ApplicationMethod.ThroughFindATraineeship);
+                        document.Add("applicationMethod", vacancyType == VacancyType.Apprenticeship ? ApplicationMethod.ThroughFindAnApprenticeship.ToString():ApplicationMethod.ThroughFindATraineeship.ToString());
                         break;
                     case FilteringOptions.Transferred:
                         document.Add("transferInfo.transferredDate", new BsonDocument {{"$nin", new BsonArray {BsonNull.Value}}});

@@ -487,7 +487,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
         public static BsonDocument[] GetAggregateQueryPipelineDocumentCount(BsonDocument vacanciesMatchClause, BsonDocument secondaryMatch)
         {
             var pipeline = BsonSerializer.Deserialize<BsonArray>(Pipeline);
-            pipeline.Insert(pipeline.Count - 1, secondaryMatch);
+            pipeline.Insert(2, secondaryMatch);
             pipeline.Insert(pipeline.Count, new BsonDocument { { "$count", "total" } });
             
             pipeline.Insert(0, vacanciesMatchClause);
