@@ -5,6 +5,8 @@ using Esfa.Recruit.Employer.Web.AppStart;
 using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Shared.Web.Extensions;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.TableStore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.Extensions.Configuration;
@@ -25,8 +27,9 @@ namespace Esfa.Recruit.Employer.Web
         private IWebHostEnvironment HostingEnvironment { get; }
 
         private readonly ILoggerFactory _loggerFactory;
+        private readonly ILogger<Startup> _logger;
 
-        public Startup(IConfiguration config, IWebHostEnvironment env, ILoggerFactory loggerFactory)
+        public Startup(IConfiguration config, IWebHostEnvironment env, ILoggerFactory loggerFactory, ILogger<Startup> logger)
         {
             var configBuilder = new ConfigurationBuilder()
                 .AddConfiguration(config)
@@ -51,11 +54,13 @@ namespace Esfa.Recruit.Employer.Web
             Configuration =  configBuilder.Build();
             HostingEnvironment = env;
             _loggerFactory = loggerFactory;
+            _logger = logger;
         }
         
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddOpenTelemetryRegistration(Configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"]!);
             services.AddIoC(Configuration);
 
             // Routing has to come before adding Mvc
@@ -74,8 +79,6 @@ namespace Esfa.Recruit.Employer.Web
             
             services.AddMvcService(HostingEnvironment, _isAuthEnabled, _loggerFactory, Configuration);
 
-            services.AddApplicationInsightsTelemetry(Configuration);
-
 #if DEBUG
             services.AddControllersWithViews().AddRazorRuntimeCompilation();
 #endif
@@ -90,6 +93,24 @@ namespace Esfa.Recruit.Employer.Web
 
             services.AddDataProtection(Configuration, HostingEnvironment, applicationName: "das-employer");
             services.AddDasEncoding(Configuration);
+
+            CheckInfrastructure(services);
+        }
+
+        private void CheckInfrastructure(IServiceCollection services)
+        {
+            try
+            {
+                var serviceProvider = services.BuildServiceProvider();
+                var collectionChecker = (MongoDbCollectionChecker)serviceProvider.GetService(typeof(MongoDbCollectionChecker));
+                collectionChecker?.EnsureCollectionsExist();
+                var storageTableChecker = (QueryStoreTableChecker)serviceProvider.GetService(typeof(QueryStoreTableChecker));
+                storageTableChecker?.EnsureQueryStoreTableExist();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error checking infrastructure");
+            }
         }
     }
 }
