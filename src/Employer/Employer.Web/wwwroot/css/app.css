@@ -312,60 +312,279 @@ span.govuk-error-message:empty {
 /*** JQuery UI autocomplete styles ***/
 
 .ui-autocomplete {
-    background-color: #fff;
-    border: 2px solid #0b0c0c;
-    color: #34384b;
-    cursor: default;
-    margin: 0;
-    max-height: 342px;
-    max-width: 100%;
-    overflow-x: hidden;
-    overflow-y: auto;
-    padding: 0;
-    position: absolute;
-  }
-  
+  background-color: #fff;
+  border: 2px solid #0b0c0c;
+  color: #34384b;
+  cursor: default;
+  margin: 0;
+  max-height: 342px;
+  max-width: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+  padding: 0;
+  position: absolute;
+}
+
+.ui-autocomplete .ui-menu-item {
+  font-family: "GDS Transport", arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  border-bottom: solid #bfc1c3;
+  border-width: 1px 0;
+  cursor: pointer;
+  display: block;
+  font-size: 19px;
+  padding: 4px;
+  position: relative;
+}
+
+@media (max-width: 640px) {
   .ui-autocomplete .ui-menu-item {
-    font-family: "GDS Transport",arial,sans-serif;
-    -webkit-font-smoothing: antialiased;
-    border-bottom: solid #bfc1c3;
-    border-width: 1px 0;
-    cursor: pointer;
-    display: block;
-    font-size:19px;
-    padding:4px;
-    position: relative;
+    font-size: 16px;
   }
-  
-  @media (max-width: 640px) {
-    .ui-autocomplete .ui-menu-item {
-        font-size:16px
-    }
-  }
-  
-  .ui-autocomplete .ui-menu-item > * {
-    pointer-events: none;
-  }
-  
-  .ui-autocomplete .ui-menu-item:first-of-type {
-    border-top-width: 0;
-  }
-  
-  .ui-autocomplete .ui-menu-item:last-of-type {
-    border-bottom-width: 0;
-  }
-  
-  .ui-autocomplete .ui-menu-item:nth-child(odd){
-    background-color: #fafafa;
-  }
-  
-  .ui-autocomplete .ui-menu-item:hover{
-    background-color: #1d70b8;
-    border-color: #1d70b8;
-    color: #fff;
-    outline: 0;
-  }
+}
+
+.ui-autocomplete .ui-menu-item > * {
+  pointer-events: none;
+}
+
+.ui-autocomplete .ui-menu-item:first-of-type {
+  border-top-width: 0;
+}
+
+.ui-autocomplete .ui-menu-item:last-of-type {
+  border-bottom-width: 0;
+}
+
+.ui-autocomplete .ui-menu-item:nth-child(odd) {
+  background-color: #fafafa;
+}
+
+.ui-autocomplete .ui-menu-item:hover {
+  background-color: #1d70b8;
+  border-color: #1d70b8;
+  color: #fff;
+  outline: 0;
+}
 
 .das-definition-list--table .das-definition-list__title:after {
-    content: "" !important;
+  content: "" !important;
+}
+
+/* FAA Vacancy preview */
+
+.faa-vacancy__title {
+  margin-bottom: 10px;
+}
+
+.faa-vacancy__organisation {
+  margin-bottom: 0;
+}
+
+.faa-vacancy__location {
+  margin-bottom: 30px;
+  color: #505a5f;
+}
+
+.faa-vacancy__closing-date {
+  margin: 0;
+}
+
+.faa-vacancy__section {
+  border-bottom: 1px solid #b1b4b6;
+  padding-bottom: 35px;
+  margin-bottom: 30px;
+  padding-top: 20px;
+}
+
+.faa-vacancy__section--last {
+  border-bottom: none;
+  padding-bottom: 0;
+  margin-bottom: 0;
+}
+
+.faa-vacancy__section--first {
+  border-bottom: none !important;
+  padding-bottom: 10px;
+  margin-bottom: 10px;
+}
+
+.faa-vacancy-actions {
+  margin: 20px 0;
+  display: flex;
+  flex-direction: column;
+}
+
+@media (min-width: 40.0625em) {
+  .faa-vacancy-actions {
+    flex-direction: row;
+  }
+}
+
+.faa-vacancy-actions__link {
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+}
+
+@media (min-width: 40.0625em) {
+  .faa-vacancy-actions__link {
+    margin-right: 15px;
+  }
+}
+
+.faa-vacancy-actions__icon {
+  max-height: 1em;
+  min-width: 1em;
+  margin-right: 5px;
+}
+
+.faa-vacancy__section > p:not([class]) {
+  color: inherit;
+}
+
+.faa-vacancy__section > p:empty {
+  display: none;
+}
+
+.faa-vacancy__section > ul:not([class]) {
+  font-family: "GDS Transport", arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-weight: 400;
+  font-size: 1rem;
+  line-height: 1.25;
+  color: #0b0c0c;
+  margin-top: 0;
+  margin-bottom: 15px;
+  padding-left: 0;
+  list-style-type: none;
+}
+
+.faa-vacancy__section > ul:not([class]) {
+  color: inherit;
+}
+
+@media print {
+  .faa-vacancy__section > ul:not([class]),
+  .govuk-list,
+  .faa-vacancy__section > ol:not([class]) {
+    font-family: sans-serif;
+  }
+}
+
+@media (min-width: 40.0625em) {
+  .faa-vacancy__section > ul:not([class]),
+  .govuk-list,
+  .faa-vacancy__section > ol:not([class]) {
+    font-size: 1.1875rem;
+    line-height: 1.3157894737;
+  }
+}
+
+@media print {
+  .faa-vacancy__section > ul:not([class]),
+  .govuk-list,
+  .faa-vacancy__section > ol:not([class]) {
+    font-size: 14pt;
+    line-height: 1.15;
+  }
+}
+
+@media print {
+  .faa-vacancy__section > ul:not([class]),
+  .govuk-list,
+  .faa-vacancy__section > ol:not([class]) {
+    color: #000;
+  }
+}
+
+@media (min-width: 40.0625em) {
+  .faa-vacancy__section > ul:not([class]),
+  .govuk-list,
+  .faa-vacancy__section > ol:not([class]) {
+    margin-bottom: 20px;
+  }
+}
+
+.faa-vacancy__section > ul:not([class]) .faa-vacancy__section > ul:not([class]),
+.faa-vacancy__section > ol:not([class]) .faa-vacancy__section > ul:not([class]),
+.faa-vacancy__section > ul:not([class]) .govuk-list,
+.faa-vacancy__section > ul:not([class]) .faa-vacancy__section > ol:not([class]),
+.faa-vacancy__section > ol:not([class]) .govuk-list,
+.faa-vacancy__section
+  > ol:not([class])
+  .faa-vacancy__section
+  > ol:not([class]) {
+  margin-top: 10px;
+}
+
+.faa-vacancy__section > ul:not([class]) > li,
+.faa-vacancy__section > ol:not([class]) > li {
+  margin-bottom: 5px;
+}
+
+.faa-vacancy__section > ul:not([class]) {
+  padding-left: 20px;
+  list-style-type: disc;
+}
+
+.faa-vacancy__section > ol:not([class]) {
+  padding-left: 20px;
+  list-style-type: decimal;
+}
+
+.faa-vacancy__section > ul:not([class]) > li,
+.faa-vacancy__section > ol:not([class]) > li {
+  margin-bottom: 0;
+}
+
+@media (min-width: 40.0625em) {
+  .faa-vacancy__section > ul:not([class]) > li,
+  .faa-vacancy__section > ol:not([class]) > li {
+    margin-bottom: 5px;
+  }
+}
+
+.faa-vacancy__section > ul > li > p,
+.faa-vacancy__section > ol > li > p {
+  margin: 0;
+}
+
+.faa-vacancy__section > ol:not([class]) {
+  color: inherit;
+}
+
+.faa-disability-confident--srp {
+  width: 130px;
+  display: block;
+  margin-bottom: 20px;
+}
+
+@media (min-width: 40.0625em) {
+  .faa-contents {
+    position: sticky;
+    top: 10px;
+  }
+}
+
+.faa-contents__list {
+  margin-top: -10px;
+  margin-bottom: 20px;
+}
+
+.faa-contents__list > li {
+  margin-bottom: 10px;
+}
+
+.faa-contents__list-item {
+  margin-left: 25px;
+  padding-right: 25px;
+}
+
+.faa-contents__list-item:before {
+  color: #0b0c0c;
+  content: "—";
+  margin-left: -25px;
+  padding-right: 5px;
 }
