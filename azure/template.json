@@ -144,6 +144,10 @@
     "sharedSQLServerName": {
       "type": "string"
     },
+    "logAnalyticsSubscriptionId": {
+      "type": "string",
+      "defaultValue": "[subscription().subscriptionId]"
+    },
     "logAnalyticsWorkspaceName": {
       "type": "string"
     },
@@ -207,6 +211,9 @@
           },
           "attachedService": {
             "value": "[variables('employerRecruitAppServiceName')]"
+          },
+          "logAnalyticsWorkspaceId": {
+            "value": "[resourceId(parameters('logAnalyticsSubscriptionId'),parameters('sharedManagementResourceGroup'),'Microsoft.OperationalInsights/workspaces',parameters('logAnalyticsWorkspaceName'))]"
           }
         }
       },
@@ -231,6 +238,9 @@
           },
           "attachedService": {
             "value": "[variables('qaAppServiceName')]"
+          },
+          "logAnalyticsWorkspaceId": {
+            "value": "[resourceId(parameters('logAnalyticsSubscriptionId'),parameters('sharedManagementResourceGroup'),'Microsoft.OperationalInsights/workspaces',parameters('logAnalyticsWorkspaceName'))]"
           }
         }
       },
@@ -255,6 +265,9 @@
           },
           "attachedService": {
             "value": "[variables('providerRecruitAppServiceName')]"
+          },
+          "logAnalyticsWorkspaceId": {
+            "value": "[resourceId(parameters('logAnalyticsSubscriptionId'),parameters('sharedManagementResourceGroup'),'Microsoft.OperationalInsights/workspaces',parameters('logAnalyticsWorkspaceName'))]"
           }
         }
       },
@@ -279,6 +292,9 @@
           },
           "attachedService": {
             "value": "[variables('traineeshipProviderAppServiceName')]"
+          },
+          "logAnalyticsWorkspaceId": {
+            "value": "[resourceId(parameters('logAnalyticsSubscriptionId'),parameters('sharedManagementResourceGroup'),'Microsoft.OperationalInsights/workspaces',parameters('logAnalyticsWorkspaceName'))]"
           }
         }
       },
@@ -303,6 +319,9 @@
           },
           "attachedService": {
             "value": "[variables('webjobAppServiceName')]"
+          },
+          "logAnalyticsWorkspaceId": {
+            "value": "[resourceId(parameters('logAnalyticsSubscriptionId'),parameters('sharedManagementResourceGroup'),'Microsoft.OperationalInsights/workspaces',parameters('logAnalyticsWorkspaceName'))]"
           }
         }
       },
@@ -515,8 +534,8 @@
                   "value": "[parameters('configurationStorageConnectionString')]"
                 },
                 {
-                  "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
-                  "value": "[reference(concat('employer-recruit-app-insights-', parameters('utcValue'))).outputs.InstrumentationKey.value]"
+                  "name": "APPLICATIONINSIGHTS_CONNECTION_STRING",
+                  "value": "[reference(concat('employer-recruit-app-insights-', parameters('utcValue'))).outputs.ConnectionString.value]"
                 },
                 {
                   "name": "Environment",
@@ -614,8 +633,8 @@
                   "value": "[parameters('configurationStorageConnectionString')]"
                 },
                 {
-                  "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
-                  "value": "[reference(concat('qa-app-insights-', parameters('utcValue'))).outputs.InstrumentationKey.value]"
+                  "name": "APPLICATIONINSIGHTS_CONNECTION_STRING",
+                  "value": "[reference(concat('qa-app-insights-', parameters('utcValue'))).outputs.ConnectionString.value]"
                 },
                 {
                   "name": "Environment",
@@ -709,8 +728,8 @@
                   "value": "[parameters('configurationStorageConnectionString')]"
                 },
                 {
-                  "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
-                  "value": "[reference(concat('provider-recruit-app-insights-', parameters('utcValue'))).outputs.InstrumentationKey.value]"
+                  "name": "APPLICATIONINSIGHTS_CONNECTION_STRING",
+                  "value": "[reference(concat('provider-recruit-app-insights-', parameters('utcValue'))).outputs.ConnectionString.value]"
                 },
                 {
                   "name": "ResourceEnvironmentName",
@@ -804,8 +823,8 @@
                   "value": "[parameters('configurationStorageConnectionString')]"
                 },
                 {
-                  "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
-                  "value": "[reference(concat('traineeship-recruit-app-insights-', parameters('utcValue'))).outputs.InstrumentationKey.value]"
+                  "name": "APPLICATIONINSIGHTS_CONNECTION_STRING",
+                  "value": "[reference(concat('traineeship-recruit-app-insights-', parameters('utcValue'))).outputs.ConnectionString.value]"
                 },
                 {
                   "name": "Environment",
@@ -1018,8 +1037,8 @@
                   "value": "[variables('jobsConfigNames')]"
                 },
                 {
-                  "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
-                  "value": "[reference(concat('webjob-recruit-app-insights-', parameters('utcValue'))).outputs.InstrumentationKey.value]"
+                  "name": "APPLICATIONINSIGHTS_CONNECTION_STRING",
+                  "value": "[reference(concat('webjob-recruit-app-insights-', parameters('utcValue'))).outputs.ConnectionString.value]"
                 }
               ]
             }
@@ -1117,6 +1136,9 @@
           },
           "attachedService": {
             "value": "[variables('apiAppServiceName')]"
+          },
+          "logAnalyticsWorkspaceId": {
+            "value": "[resourceId(parameters('logAnalyticsSubscriptionId'),parameters('sharedManagementResourceGroup'),'Microsoft.OperationalInsights/workspaces',parameters('logAnalyticsWorkspaceName'))]"
           }
         }
       },
@@ -1156,8 +1178,8 @@
                   "value": "[parameters('configurationStorageConnectionString')]"
                 },
                 {
-                  "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
-                  "value": "[reference(concat('api-application-insights-', parameters('utcValue'))).outputs.InstrumentationKey.value]"
+                  "name": "APPLICATIONINSIGHTS_CONNECTION_STRING",
+                  "value": "[reference(concat('api-application-insights-', parameters('utcValue'))).outputs.ConnectionString.value]"
                 },
                 {
                   "name": "Environment",

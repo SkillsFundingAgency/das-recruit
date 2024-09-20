@@ -380,9 +380,21 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
 
             if (!string.IsNullOrEmpty(searchTerm))
             {
-                document.Add("_id.searchField", new BsonRegularExpression($"/{Regex.Escape(searchTerm.ToLower())}/"));
+                var bsonArray = new BsonArray
+                {
+                    new BsonDocument{{"title",new BsonRegularExpression(Regex.Escape(searchTerm.ToLower()),"i" )}},
+                    new BsonDocument{{"legalEntityName",new BsonRegularExpression(Regex.Escape(searchTerm.ToLower()),"i" )}}
+                };
+                if (long.TryParse(searchTerm.Replace("vac","", StringComparison.CurrentCultureIgnoreCase), out var vacancyRef))
+                {
+                    bsonArray.Add(new BsonDocument{{"vacancyReference",vacancyRef}});
+                }
+                document.AddRange( new BsonDocument
+                {
+                    {"$or", bsonArray}
+                });
             }
-
+            
             return document;
         }
 
