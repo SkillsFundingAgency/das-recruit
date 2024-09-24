@@ -251,8 +251,22 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                     BuildSecondaryBsonDocumentFilter(filteringOptions, searchTerm)
                 }
             };
+            var employerReviewMatch = (filteringOptions != FilteringOptions.NewSharedApplications && filteringOptions != FilteringOptions.AllSharedApplications )?
+                new BsonDocument
+                {
+                    {
+                        "$match",
+                        BuildEmployerReviewMatch()
+                    }
+                } : new BsonDocument
+                {
+                    {
+                        "$match",
+                        BuildSharedApplicationsVacanciesMatch()
+                    }
+                };
 
-            var aggPipeline = VacancySummaryAggQueryBuilder.GetAggregateQueryPipelineDocumentCount(match,secondaryMath);
+            var aggPipeline = VacancySummaryAggQueryBuilder.GetAggregateQueryPipelineDocumentCount(match,secondaryMath, string.IsNullOrEmpty(employerAccountId) ? null: employerReviewMatch);
 
             return await RunAggPipelineCountQuery(aggPipeline);
         }
