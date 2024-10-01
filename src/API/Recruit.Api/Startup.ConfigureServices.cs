@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
+using Azure.Monitor.OpenTelemetry.AspNetCore;
 using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
@@ -69,7 +70,15 @@ namespace SFA.DAS.Recruit.Api
                     .AddMongoDb(Configuration.GetConnectionString("MongoDb"))
                     .AddApplicationInsightsPublisher();
 
-            services.AddApplicationInsightsTelemetry();
+            services.AddApplicationInsightsTelemetry(Configuration);
+            if (!string.IsNullOrEmpty(Configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"]!))
+            {
+                // This service will collect and send telemetry data to Azure Monitor.
+                services.AddOpenTelemetry().UseAzureMonitor(options =>
+                {
+                    options.ConnectionString = Configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"]!;
+                });
+            }
 
             services
                 .AddMvc(o =>
