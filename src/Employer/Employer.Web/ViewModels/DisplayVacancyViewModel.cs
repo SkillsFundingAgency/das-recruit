@@ -46,6 +46,8 @@ namespace Esfa.Recruit.Employer.Web.ViewModels
         public string TrainingDescription { get; internal set; }
         public string AdditionalTrainingDescription { get; internal set; }
         public string TrainingTitle { get; internal set; }
+        public List<string> CourseCoreDuties { get; internal set; } = [];
+        public List<string> CourseSkills { get; internal set; } = [];
         public string TrainingType { get; internal set; }
         public string TrainingLevel { get; internal set; }
         public string TransferredProviderName { get; internal set; }
@@ -145,7 +147,10 @@ namespace Esfa.Recruit.Employer.Web.ViewModels
         
         public EmployerNameOption? EmployerNameOption { get; set; }
         public bool? HasOptedToAddQualifications { get; set; }
-
+        public IEnumerable<string> QualificationsDesired { get; set; }
+        public string StandardPageUrl { get; set; }
+        public string OverviewOfRole { get; set; }
+        public ApprenticeshipLevel? ApprenticeshipLevel { get; set; }
 
         private string BuildAdditionalQuestionText(string additionalQuestion)
         {

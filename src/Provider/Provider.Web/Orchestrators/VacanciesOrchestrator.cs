@@ -89,7 +89,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
                 Pager = pager,
                 Filter = filteringOption,
                 SearchTerm = searchTerm,
-                ResultsHeading = VacancyFilterHeadingHelper.GetFilterHeading(Constants.VacancyTerm, vacancies.Count, filteringOption, searchTerm, UserType.Provider),
+                ResultsHeading = VacancyFilterHeadingHelper.GetFilterHeading(Constants.VacancyTerm, totalItems, filteringOption, searchTerm, UserType.Provider),
                 Alerts = alerts,
                 HasEmployerReviewPermission = providerPermissions,
                 Ukprn = user.Ukprn.Value,

@@ -62,16 +62,15 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
         public async Task<VacancyPreviewViewModel> GetVacancyTaskListModel(VacancyRouteModel routeModel)
         {
             var vacancyTask = _utility.GetAuthorisedVacancyForEditAsync(routeModel, RouteNames.ProviderTaskListGet);
-            var programmesTask = _vacancyClient.GetActiveApprenticeshipProgrammesAsync();
+            
             var editVacancyInfoTask = _providerVacancyClient.GetProviderEditVacancyInfoAsync(routeModel.Ukprn);
-            await Task.WhenAll(vacancyTask, programmesTask, editVacancyInfoTask);
+            await Task.WhenAll(vacancyTask, editVacancyInfoTask);
 
             var employerInfo =
                 await _providerVacancyClient.GetProviderEmployerVacancyDataAsync(routeModel.Ukprn,
                     vacancyTask.Result.EmployerAccountId);
             
             var vacancy = vacancyTask.Result;
-            var programme = programmesTask.Result.SingleOrDefault(p => p.Id == vacancy.ProgrammeId);
             var hasProviderReviewPermission = await _providerRelationshipsService.HasProviderGotEmployersPermissionAsync(routeModel.Ukprn, vacancy.EmployerAccountId, vacancy.AccountLegalEntityPublicHashedId, OperationType.RecruitmentRequiresReview);
             
             var vm = new VacancyPreviewViewModel(_feature.IsFeatureEnabled(FeatureNames.FaaV2Improvements));
@@ -85,17 +84,12 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             vm.VacancyId = routeModel.VacancyId;
             vm.RequiresEmployerReview = hasProviderReviewPermission;
             
-            if (programme != null)
-            {
-                vm.ApprenticeshipLevel = programme.ApprenticeshipLevel;
-            }
-            
             if (vacancy.Status == VacancyStatus.Referred)
             {
                 vm.Review = await _reviewSummaryService.GetReviewSummaryViewModelAsync(vacancy.VacancyReference.Value, ReviewFieldMappingLookups.GetPreviewReviewFieldIndicators());
             }
 
-            vm.AccountLegalEntityCount = employerInfo.LegalEntities.Count;
+            vm.AccountLegalEntityCount = employerInfo?.LegalEntities.Count ?? 0;
             vm.AccountCount = editVacancyInfoTask.Result.Employers.Count();
             return vm;
         }

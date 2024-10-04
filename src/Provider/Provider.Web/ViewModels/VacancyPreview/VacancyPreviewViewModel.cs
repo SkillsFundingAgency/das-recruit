@@ -147,7 +147,6 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview
         public bool WageRequiresEdit => IsEditRequired(FieldIdentifiers.Wage);
         public bool WorkingWeekRequiresEdit => IsEditRequired(FieldIdentifiers.WorkingWeek);
         public bool HasSelectedEmployerNameOption => EmployerNameOption != null;
-        public ApprenticeshipLevel ApprenticeshipLevel { get; set; }
         private bool IsEditRequired(string fieldIdentifier)
         {
             return Review.FieldIndicators.Any(f => f.ReviewFieldIdentifier == fieldIdentifier);
@@ -222,7 +221,7 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview
             viewModel.TrainingDescriptionSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.TrainingDescription }, true, modelState, vm => vm.TrainingDescription);
             viewModel.FutureProspectsSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.OutcomeDescription }, true, modelState,  vm => vm.OutcomeDescription);
             viewModel.SkillsSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.Skills }, true, modelState, vm => vm.Skills);
-            viewModel.QualificationsSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.Qualifications }, true, modelState, vm => vm.Qualifications);
+            viewModel.QualificationsSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.Qualifications }, false, modelState, vm => vm.Qualifications, vm => vm.QualificationsDesired);
             viewModel.HasOptedToAddQualificationsSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.HasOptedToAddQualifications }, true, modelState,vm => vm.HasOptedToAddQualifications);
             viewModel.ThingsToConsiderSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.ThingsToConsider }, true, modelState, vm => vm.ThingsToConsider);
             viewModel.EmployerNameSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.EmployerName }, true, modelState, vm => vm.EmployerName);

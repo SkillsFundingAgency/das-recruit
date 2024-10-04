@@ -1,8 +1,10 @@
 using System;
 using System.Threading.Tasks;
 using AutoFixture;
+using AutoFixture.NUnit3;
 using Esfa.Recruit.Provider.Web.Mappings;
 using Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview;
+using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.ApprenticeshipProgrammes;
@@ -18,10 +20,10 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.ViewModels.Preview
     {
         [Test, MoqAutoData]
         public async Task Then_The_Section_State_Is_Not_Started_When_Section_One_Complete(
-            Mock<IRecruitVacancyClient> recruitVacancyClient,
+            [Frozen] Mock<IApprenticeshipProgrammeProvider> apprenticeshipProgrammeProvider,
             DisplayVacancyViewModelMapper mapper)
         {
-            var vacancy = GetVacancySectionOneComplete(recruitVacancyClient);
+            var vacancy = GetVacancySectionOneComplete(apprenticeshipProgrammeProvider);
             
             var model = new VacancyPreviewViewModel();
             
@@ -34,10 +36,10 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.ViewModels.Preview
         
         [Test, MoqAutoData]
         public async Task Then_The_Section_State_Is_Not_Started_When_Section_One_InProgress(
-            Mock<IRecruitVacancyClient> recruitVacancyClient,
+            [Frozen] Mock<IApprenticeshipProgrammeProvider> apprenticeshipProgrammeProvider,
             DisplayVacancyViewModelMapper mapper)
         {
-            var vacancy = GetVacancySectionOneComplete(recruitVacancyClient);
+            var vacancy = GetVacancySectionOneComplete(apprenticeshipProgrammeProvider);
             vacancy.ShortDescription = "";
             
             var model = new VacancyPreviewViewModel();
@@ -51,10 +53,10 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.ViewModels.Preview
 
         [Test, MoqAutoData]
         public async Task Then_The_Section_Is_Set_To_In_Progress_When_Dates_Set(
-            Mock<IRecruitVacancyClient> recruitVacancyClient,
+            [Frozen] Mock<IApprenticeshipProgrammeProvider> apprenticeshipProgrammeProvider,
             DisplayVacancyViewModelMapper mapper)
         {
-            var vacancy = GetVacancySectionOneComplete(recruitVacancyClient);
+            var vacancy = GetVacancySectionOneComplete(apprenticeshipProgrammeProvider);
             vacancy.StartDate = DateTime.UtcNow.AddMonths(3);
             vacancy.ClosingDate = DateTime.UtcNow.AddMonths(2);
             var model = new VacancyPreviewViewModel();
@@ -68,10 +70,10 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.ViewModels.Preview
         
         [Test, MoqAutoData]
         public async Task Then_The_Section_Is_Set_To_In_Progress_When_Dates_Duration_Set(
-            Mock<IRecruitVacancyClient> recruitVacancyClient,
+            [Frozen] Mock<IApprenticeshipProgrammeProvider> apprenticeshipProgrammeProvider,
             DisplayVacancyViewModelMapper mapper)
         {
-            var vacancy = GetVacancySectionOneComplete(recruitVacancyClient);
+            var vacancy = GetVacancySectionOneComplete(apprenticeshipProgrammeProvider);
             vacancy.StartDate = DateTime.UtcNow.AddMonths(3);
             vacancy.ClosingDate = DateTime.UtcNow.AddMonths(2);
             
@@ -93,10 +95,10 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.ViewModels.Preview
         [Test, MoqAutoData]
         public async Task Then_The_Section_Is_Set_To_In_Progress_When_Dates_Duration_Wage_Set(
             Wage wage,
-            Mock<IRecruitVacancyClient> recruitVacancyClient,
+            [Frozen] Mock<IApprenticeshipProgrammeProvider> apprenticeshipProgrammeProvider,
             DisplayVacancyViewModelMapper mapper)
         {
-            var vacancy = GetVacancySectionOneComplete(recruitVacancyClient);
+            var vacancy = GetVacancySectionOneComplete(apprenticeshipProgrammeProvider);
             vacancy.StartDate = DateTime.UtcNow.AddMonths(3);
             vacancy.ClosingDate = DateTime.UtcNow.AddMonths(2);
             vacancy.Wage = wage; 
@@ -112,10 +114,10 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.ViewModels.Preview
         [Test, MoqAutoData]
         public async Task Then_The_Section_Is_Set_To_In_Progress_When_Dates_Duration_Wage_Number_Of_Positions_Set(
             Wage wage,
-            Mock<IRecruitVacancyClient> recruitVacancyClient,
+            [Frozen] Mock<IApprenticeshipProgrammeProvider> apprenticeshipProgrammeProvider,
             DisplayVacancyViewModelMapper mapper)
         {
-            var vacancy = GetVacancySectionOneComplete(recruitVacancyClient);
+            var vacancy = GetVacancySectionOneComplete(apprenticeshipProgrammeProvider);
             vacancy.StartDate = DateTime.UtcNow.AddMonths(3);
             vacancy.ClosingDate = DateTime.UtcNow.AddMonths(2);
             vacancy.Wage = wage; 
@@ -133,10 +135,10 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.ViewModels.Preview
             int? numberOfPositions,
             Wage wage,
             Address address,
-            Mock<IRecruitVacancyClient> recruitVacancyClient,
+            [Frozen] Mock<IApprenticeshipProgrammeProvider> apprenticeshipProgrammeProvider,
             DisplayVacancyViewModelMapper mapper)
         {
-            var vacancy = GetVacancySectionOneComplete(recruitVacancyClient);
+            var vacancy = GetVacancySectionOneComplete(apprenticeshipProgrammeProvider);
             vacancy.StartDate = DateTime.UtcNow.AddMonths(3);
             vacancy.ClosingDate = DateTime.UtcNow.AddMonths(2);
             vacancy.Wage = wage;
@@ -151,19 +153,20 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.ViewModels.Preview
             model.TaskListSectionTwoState.Should().Be(VacancyTaskListSectionState.Completed);
         }
 
-        private Vacancy GetVacancySectionOneComplete(Mock<IRecruitVacancyClient> recruitVacancyClient)
+        private Vacancy GetVacancySectionOneComplete(Mock<IApprenticeshipProgrammeProvider> apprenticeshipProgrammeProvider)
         {
             var fixture = new Fixture();
-            var programmeId = fixture.Create<string>();
-            var programme = fixture.Create<ApprenticeshipProgramme>();
-            recruitVacancyClient.Setup(x => x.GetApprenticeshipProgrammeAsync(programmeId)).ReturnsAsync(programme);
+            var programmeId = fixture.Create<int>();
+            var standard = fixture.Create<ApprenticeshipStandard>();
+            apprenticeshipProgrammeProvider.Setup(x => x.GetApprenticeshipStandardVacancyPreviewData(programmeId))
+                .ReturnsAsync(standard);
             
             return new Vacancy
             {
                 Id = Guid.NewGuid(),
                 TrainingProvider = fixture.Create<TrainingProvider>(),
                 Title = fixture.Create<string>(),
-                ProgrammeId = programmeId,
+                ProgrammeId = programmeId.ToString(),
                 Description = fixture.Create<string>(),
                 TrainingDescription = fixture.Create<string>(),
                 ShortDescription = fixture.Create<string>(),

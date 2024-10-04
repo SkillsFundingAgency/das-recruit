@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Threading.Tasks;
+using AutoFixture.NUnit3;
 using Esfa.Recruit.Employer.Web.Mappings;
 using Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview;
+using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Moq;
 using NUnit.Framework;
 using SFA.DAS.Testing.AutoFixture;
 
@@ -14,9 +17,11 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.VacancyPreview
     {
         [Test, MoqAutoData]
         public async Task And_Section_One_Not_Complete_Then_Not_Started(
+            ApprenticeshipStandard standard,
+            [Frozen] Mock<IApprenticeshipProgrammeProvider> apprenticeshipProgrammeProvider,
             DisplayVacancyViewModelMapper mapper)
         {
-            var vacancy = CreateCompletedSectionOneVacancy();
+            var vacancy = CreateCompletedSectionOneVacancy(apprenticeshipProgrammeProvider, standard);
             vacancy.OutcomeDescription = null;
             vacancy.Id = Guid.NewGuid();
             var model = new VacancyPreviewViewModel();
@@ -27,9 +32,12 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.VacancyPreview
         }
 
         [Test, MoqAutoData]
-        public async Task And_Section_One_Completed_And_Important_Dates_Not_Entered_Then_Not_Started(DisplayVacancyViewModelMapper mapper)
+        public async Task And_Section_One_Completed_And_Important_Dates_Not_Entered_Then_Not_Started(
+            ApprenticeshipStandard standard,
+            [Frozen] Mock<IApprenticeshipProgrammeProvider> apprenticeshipProgrammeProvider,
+            DisplayVacancyViewModelMapper mapper)
         {
-            var vacancy = CreateCompletedSectionOneVacancy();
+            var vacancy = CreateCompletedSectionOneVacancy(apprenticeshipProgrammeProvider, standard);
             vacancy.Id = Guid.NewGuid();
             var model = new VacancyPreviewViewModel();
             await mapper.MapFromVacancyAsync(model, vacancy);
@@ -41,9 +49,11 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.VacancyPreview
         [Test, MoqAutoData]
         public async Task And_Has_Important_Dates_Then_In_Progress(
             DateTime closingDate,
+            ApprenticeshipStandard standard,
+            [Frozen] Mock<IApprenticeshipProgrammeProvider> apprenticeshipProgrammeProvider,
             DisplayVacancyViewModelMapper mapper)
         {
-            var vacancy = CreateCompletedSectionOneVacancy();
+            var vacancy = CreateCompletedSectionOneVacancy(apprenticeshipProgrammeProvider, standard);
             vacancy.Id = Guid.NewGuid();
             vacancy.ClosingDate = closingDate;
             vacancy.StartDate = closingDate.AddMonths(1);
@@ -59,9 +69,11 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.VacancyPreview
         public async Task And_Has_Wage_Then_In_Progress(
             DateTime closingDate,
             Wage wage,
+            ApprenticeshipStandard standard,
+            [Frozen] Mock<IApprenticeshipProgrammeProvider> apprenticeshipProgrammeProvider,
             DisplayVacancyViewModelMapper mapper)
         {
-            var vacancy = CreateCompletedSectionOneVacancy();
+            var vacancy = CreateCompletedSectionOneVacancy(apprenticeshipProgrammeProvider, standard);
             vacancy.Id = Guid.NewGuid();
             vacancy.Wage = wage;
             vacancy.ClosingDate = closingDate;
@@ -78,9 +90,11 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.VacancyPreview
         public async Task And_Has_Duration_Then_In_Progress(
             Wage wage,
             DateTime closingDate,
+            ApprenticeshipStandard standard,
+            [Frozen] Mock<IApprenticeshipProgrammeProvider> apprenticeshipProgrammeProvider,
             DisplayVacancyViewModelMapper mapper)
         {
-            var vacancy = CreateCompletedSectionOneVacancy();
+            var vacancy = CreateCompletedSectionOneVacancy(apprenticeshipProgrammeProvider, standard);
             vacancy.Id = Guid.NewGuid();
             vacancy.Wage = wage;
             vacancy.ClosingDate = closingDate;
@@ -98,9 +112,11 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.VacancyPreview
             Wage wage,
             DateTime closingDate,
             int numberOfPositions,
+            ApprenticeshipStandard standard,
+            [Frozen] Mock<IApprenticeshipProgrammeProvider> apprenticeshipProgrammeProvider,
             DisplayVacancyViewModelMapper mapper)
         {
-            var vacancy = CreateCompletedSectionOneVacancy();
+            var vacancy = CreateCompletedSectionOneVacancy(apprenticeshipProgrammeProvider, standard);
             vacancy.Id = Guid.NewGuid();
             vacancy.Wage = wage;
             vacancy.ClosingDate = closingDate;
@@ -119,9 +135,11 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.VacancyPreview
             Wage wage,
             DateTime closingDate,
             Address employerLocation,
+            ApprenticeshipStandard standard,
+            [Frozen] Mock<IApprenticeshipProgrammeProvider> apprenticeshipProgrammeProvider,
             DisplayVacancyViewModelMapper mapper)
         {
-            var vacancy = CreateCompletedSectionOneVacancy();
+            var vacancy = CreateCompletedSectionOneVacancy(apprenticeshipProgrammeProvider, standard);
             vacancy.Id = Guid.NewGuid();
             vacancy.Wage = wage;
             vacancy.ClosingDate = closingDate;
@@ -141,9 +159,11 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.VacancyPreview
             DateTime closingDate,
             int numberOfPositions,
             Address employerLocation,
+            ApprenticeshipStandard standard,
+            [Frozen] Mock<IApprenticeshipProgrammeProvider> apprenticeshipProgrammeProvider,
             DisplayVacancyViewModelMapper mapper)
         {
-            var vacancy = CreateCompletedSectionOneVacancy();
+            var vacancy = CreateCompletedSectionOneVacancy(apprenticeshipProgrammeProvider, standard);
             vacancy.Id = Guid.NewGuid();
             vacancy.Wage = wage;
             vacancy.ClosingDate = closingDate;
@@ -159,14 +179,17 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.VacancyPreview
             model.TaskListSectionTwoState.Should().Be(VacancyTaskListSectionState.Completed);
         }
 
-        private Vacancy CreateCompletedSectionOneVacancy()
+        private Vacancy CreateCompletedSectionOneVacancy(Mock<IApprenticeshipProgrammeProvider> apprenticeshipProgrammeProvider, ApprenticeshipStandard standard)
         {
+            var standardId = 10;
+            apprenticeshipProgrammeProvider.Setup(x => x.GetApprenticeshipStandardVacancyPreviewData(standardId))
+                .ReturnsAsync(standard);
             return new Vacancy
             {
                 Id = new Guid(),
                 EmployerAccountId = "employerAccountId",
                 Title = "title",
-                ProgrammeId = "programmeId",
+                ProgrammeId = standardId.ToString(),
                 Description = "description",
                 TrainingDescription = "trainingDescription",
                 ShortDescription = "shortDescription",

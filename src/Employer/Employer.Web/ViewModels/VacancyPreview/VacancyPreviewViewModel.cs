@@ -131,7 +131,6 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview
                 }.Count(s => s == VacancyPreviewSectionState.Incomplete || s == VacancyPreviewSectionState.InvalidIncomplete);
 
         public string IncompleteRequiredSectionText => "section".ToQuantity(IncompleteRequiredSectionCount, ShowQuantityAs.None);
-        public ApprenticeshipLevel ApprenticeshipLevel { get; set; }
 
         public IList<string> OrderedFieldNames => new List<string>
         {
@@ -198,7 +197,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview
             
             viewModel.FutureProspectsSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.OutcomeDescription }, true, modelState,vm => vm.OutcomeDescription);
             viewModel.SkillsSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.Skills }, true, modelState,vm => vm.Skills);
-            viewModel.QualificationsSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.Qualifications }, true, modelState,vm => vm.Qualifications);
+            viewModel.QualificationsSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.Qualifications }, false, modelState,vm => vm.Qualifications, vm=>vm.QualificationsDesired);
             viewModel.HasOptedToAddQualificationsSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.HasOptedToAddQualifications }, true, modelState,vm => vm.HasOptedToAddQualifications);
             viewModel.ThingsToConsiderSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.ThingsToConsider }, true, modelState,vm => vm.ThingsToConsider);
             viewModel.EmployerNameSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.EmployerName }, true, modelState,vm => vm.EmployerName);
