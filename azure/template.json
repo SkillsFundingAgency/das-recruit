@@ -67,12 +67,6 @@
     "providerKeyvaultCertificateName": {
       "type": "string"
     },
-    "traineeshipCustomHostname": {
-      "type": "string"
-    },
-    "traineeshipKeyvaultCertificateName": {
-      "type": "string"
-    },
     "cosmosDbSubnetResourceIdList": {
       "type": "array",
       "defaultValue": []
@@ -173,7 +167,6 @@
     "webJobAppServicePlanName": "[concat(variables('resourceNamePrefix'),'-webjob-asp')]",
     "employerRecruitAppServiceName": "[concat(variables('resourceNamePrefix'), '-as')]",
     "providerRecruitAppServiceName": "[concat(variables('resourceNamePrefix'), '-pr-as')]",
-    "traineeshipProviderAppServiceName": "[concat(variables('resourceNamePrefix'), '-trpr-as')]",
     "qaAppServiceName": "[concat(variables('resourceNamePrefix'), '-qa-as')]",
     "webjobAppServiceName": "[concat(variables('resourceNamePrefix'), '-webjob-as')]",
     "storageAccountName": "[toLower(concat('das', parameters('resourceEnvironmentName'), parameters('serviceName'), 'str'))]",
@@ -181,7 +174,6 @@
     "apiConfigNames": "SFA.DAS.Recruit.Api,SFA.DAS.Encoding",
     "providerWebConfigNames": "SFA.DAS.Recruit.Provider,SFA.DAS.Provider.DfeSignIn,SFA.DAS.Encoding",
     "employerWebConfigNames": "SFA.DAS.Recruit.Employer,SFA.DAS.Employer.GovSignIn,SFA.DAS.Encoding",
-    "traineeshipWebConfigNames": "SFA.DAS.Recruit.Traineeship.Provider,SFA.DAS.Provider.DfeSignIn",
     "qaConfigNames": "SFA.DAS.Recruit.QA,SFA.DAS.Provider.DfeSignIn,SFA.DAS.Encoding",
     "jobsConfigNames": "SFA.DAS.Recruit.Jobs,SFA.DAS.Encoding"
   },
@@ -265,33 +257,6 @@
           },
           "attachedService": {
             "value": "[variables('providerRecruitAppServiceName')]"
-          },
-          "logAnalyticsWorkspaceId": {
-            "value": "[resourceId(parameters('logAnalyticsSubscriptionId'),parameters('sharedManagementResourceGroup'),'Microsoft.OperationalInsights/workspaces',parameters('logAnalyticsWorkspaceName'))]"
-          }
-        }
-      },
-      "dependsOn": [
-        "[variables('resourceGroupName')]"
-      ]
-    },
-    {
-      "apiVersion": "2020-10-01",
-      "name": "[concat('traineeship-recruit-app-insights-', parameters('utcValue'))]",
-      "type": "Microsoft.Resources/deployments",
-      "resourceGroup": "[variables('resourceGroupName')]",
-      "properties": {
-        "mode": "Incremental",
-        "templateLink": {
-          "uri": "[concat(variables('deploymentUrlBase'),'application-insights.json')]",
-          "contentVersion": "1.0.0.0"
-        },
-        "parameters": {
-          "appInsightsName": {
-            "value": "[variables('traineeshipProviderAppServiceName')]"
-          },
-          "attachedService": {
-            "value": "[variables('traineeshipProviderAppServiceName')]"
           },
           "logAnalyticsWorkspaceId": {
             "value": "[resourceId(parameters('logAnalyticsSubscriptionId'),parameters('sharedManagementResourceGroup'),'Microsoft.OperationalInsights/workspaces',parameters('logAnalyticsWorkspaceName'))]"
@@ -767,101 +732,6 @@
       }
     },
     {
-      "condition": "[greater(length(parameters('traineeshipKeyvaultCertificateName')), 0)]",
-      "apiVersion": "2020-10-01",
-      "name": "[concat('traineeship-recruit-app-service-certificate-', parameters('utcValue'))]",
-      "resourceGroup": "[parameters('sharedEnvResourceGroup')]",
-      "type": "Microsoft.Resources/deployments",
-      "properties": {
-        "mode": "Incremental",
-        "templateLink": {
-          "uri": "[concat(variables('deploymentUrlBase'),'app-service-certificate.json')]",
-          "contentVersion": "1.0.0.0"
-        },
-        "parameters": {
-          "keyVaultCertificateName": {
-            "value": "[parameters('traineeshipKeyvaultCertificateName')]"
-          },
-          "keyVaultName": {
-            "value": "[parameters('sharedKeyvaultName')]"
-          },
-          "keyVaultResourceGroup": {
-            "value": "[parameters('sharedManagementResourceGroup')]"
-          }
-        }
-      }
-    },
-    {
-      "apiVersion": "2020-10-01",
-      "name": "[concat('traineeship-recruit-app-service-', parameters('utcValue'))]",
-      "type": "Microsoft.Resources/deployments",
-      "resourceGroup": "[variables('resourceGroupName')]",
-      "properties": {
-        "mode": "Incremental",
-        "templateLink": {
-          "uri": "[concat(variables('deploymentUrlBase'),'app-service-v2.json')]",
-          "contentVersion": "1.0.0.0"
-        },
-        "parameters": {
-          "appServiceName": {
-            "value": "[variables('traineeshipProviderAppServiceName')]"
-          },
-          "appServicePlanName": {
-            "value": "[parameters('sharedFrontEndAppServicePlanName')]"
-          },
-          "appServicePlanResourceGroup": {
-            "value": "[parameters('sharedEnvResourceGroup')]"
-          },
-          "subnetResourceId": {
-            "value": "[parameters('sharedFrontEndSubnetResourceId')]"
-          },
-          "appServiceAppSettings": {
-            "value": {
-              "array": [
-                {
-                  "name": "ConfigurationStorageConnectionString",
-                  "value": "[parameters('configurationStorageConnectionString')]"
-                },
-                {
-                  "name": "APPLICATIONINSIGHTS_CONNECTION_STRING",
-                  "value": "[reference(concat('traineeship-recruit-app-insights-', parameters('utcValue'))).outputs.ConnectionString.value]"
-                },
-                {
-                  "name": "Environment",
-                  "value": "[toUpper(parameters('environmentName'))]"
-                },
-                {
-                  "name": "LoggingRedisConnectionString",
-                  "value": "[parameters('loggingRedisConnectionString')]"
-                },
-                {
-                  "name": "Cdn:Url",
-                  "value": "[parameters('cdnUrl')]"
-                },
-                {
-                  "name": "ConfigNames",
-                  "value": "[variables('traineeshipWebConfigNames')]"
-                },
-                {
-                  "name": "ResourceEnvironmentName",
-                  "value": "[toUpper(parameters('resourceEnvironmentName'))]"
-                }
-              ]
-            }
-          },
-          "customHostName": {
-            "value": "[parameters('traineeshipCustomHostname')]"
-          },
-          "certificateThumbprint": {
-            "value": "[if(greater(length(parameters('traineeshipCustomHostname')), 0), reference(concat('traineeship-recruit-app-service-certificate-', parameters('utcValue')), '2018-11-01').outputs.certificateThumbprint.value, '')]"
-          },
-          "ipSecurityRestrictions": {
-            "value": "[parameters('frontEndAccessRestrictions')]"
-          }
-        }
-      }
-    },
-    {
       "apiVersion": "2020-10-01",
       "name": "[concat('storage-account-', parameters('utcValue'))]",
       "type": "Microsoft.Resources/deployments",
@@ -1221,10 +1091,6 @@
     "ProviderAppServiceName": {
       "type": "string",
       "value": "[variables('providerRecruitAppServiceName')]"
-    },
-    "TraineeshipProviderAppServiceName": {
-      "type": "string",
-      "value": "[variables('traineeshipProviderAppServiceName')]"
     },
     "QAAppServiceName": {
       "type": "string",
