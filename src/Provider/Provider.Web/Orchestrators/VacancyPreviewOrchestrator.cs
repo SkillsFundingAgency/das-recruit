@@ -66,13 +66,8 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
 
         public async Task<VacancyPreviewViewModel> GetVacancyPreviewViewModelAsync(VacancyRouteModel vrm)
         {
-            var vacancyTask = _utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.Vacancy_Preview_Get);
-            var programmesTask = _vacancyClient.GetActiveApprenticeshipProgrammesAsync();
-           
-            await Task.WhenAll(vacancyTask, programmesTask);
-
-            var vacancy = vacancyTask.Result;
-            var programme = programmesTask.Result.SingleOrDefault(p => p.Id == vacancy.ProgrammeId);
+            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.Vacancy_Preview_Get);
+            
             var hasProviderReviewPermission = await _providerRelationshipsService.HasProviderGotEmployersPermissionAsync(vrm.Ukprn, vacancy.EmployerAccountId, vacancy.AccountLegalEntityPublicHashedId, OperationType.RecruitmentRequiresReview);
 
             var vm = new VacancyPreviewViewModel(_feature.IsFeatureEnabled(FeatureNames.FaaV2Improvements));
@@ -84,9 +79,6 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             vm.SoftValidationErrors = GetSoftValidationErrors(vacancy);
             vm.RequiresEmployerReview = hasProviderReviewPermission;
             vm.WageType = vacancy.Wage?.WageType;
-
-            if (programme != null) vm.ApprenticeshipLevel = programme.ApprenticeshipLevel;
-            
             vm.Ukprn = vrm.Ukprn;
             vm.VacancyId = vrm.VacancyId;
 

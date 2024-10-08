@@ -34,8 +34,6 @@ namespace Esfa.Recruit.Employer.Web
 
             if (env.IsDevelopment())
             {
-                var configuration = (TelemetryConfiguration)app.ApplicationServices.GetService(typeof(TelemetryConfiguration));
-                configuration.DisableTelemetry = true;
                 app.UseDeveloperExceptionPage();
             }
             else
@@ -226,7 +224,7 @@ namespace Esfa.Recruit.Employer.Web
             destinations.Add("https://oidc.integration.account.gov.uk");
             destinations.Add("https://oidc.account.gov.uk");
             destinations.Add("".GetSignedOutRedirectUrl(configuration["ResourceEnvironmentName"]));
-            var stubSignInRedirectUrl = RedirectExtension.GetStubSignInRedirectUrl(configuration["ResourceEnvironmentName"]);
+            var stubSignInRedirectUrl = RedirectExtension.GetStubSignInRedirectUrl("",configuration["ResourceEnvironmentName"]);
             if (!string.IsNullOrEmpty(stubSignInRedirectUrl))
             {
                 destinations.Add(stubSignInRedirectUrl);    

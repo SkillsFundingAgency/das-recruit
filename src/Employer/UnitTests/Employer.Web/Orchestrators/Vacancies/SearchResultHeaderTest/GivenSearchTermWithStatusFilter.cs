@@ -14,7 +14,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Vacancies.S
         public async Task WhenThereAreNoVacancies()
         {
             var expectedMessage = "0 live adverts with 'nurse'";
-            var sut = GetSut(new List<VacancySummary>(), FilteringOptions.Draft, "nurse");
+            var sut = GetSut(new List<VacancySummary>(), FilteringOptions.Draft, "nurse", 0);
             var vm = await sut.GetVacanciesViewModelAsync(EmployerAccountId, "Live", 1, User, "nurse");
             vm.ResultsHeading.Should().Be(expectedMessage);
         }
@@ -23,7 +23,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Vacancies.S
         public async Task WhenThereIsOneVacancy()
         {
             var expectedMessage = "1 live advert with 'nurse'";
-            var sut = GetSut(GenerateVacancySummaries(1, "nurse", string.Empty, VacancyStatus.Live),FilteringOptions.Live, "nurse");
+            var sut = GetSut(GenerateVacancySummaries(1, "nurse", string.Empty, VacancyStatus.Live),FilteringOptions.Live, "nurse", 1);
             var vm = await sut.GetVacanciesViewModelAsync(EmployerAccountId, "Live", 1, User, "nurse");
             vm.ResultsHeading.Should().Be(expectedMessage);
         }
@@ -32,7 +32,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Vacancies.S
         public async Task WhenThereIsMoreThanOneVacancy()
         {
             var expectedMessage = "2 live adverts with 'nurse'";
-            var sut = GetSut(GenerateVacancySummaries(2, "nurse", string.Empty, VacancyStatus.Live), FilteringOptions.Live, "nurse");
+            var sut = GetSut(GenerateVacancySummaries(2, "nurse", string.Empty, VacancyStatus.Live), FilteringOptions.Live, "nurse", 2);
             var vm = await sut.GetVacanciesViewModelAsync(EmployerAccountId, "Live", 1, User, "nurse");
             vm.ResultsHeading.Should().Be(expectedMessage);
         }
@@ -49,7 +49,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Vacancies.S
         public async Task WhenThereIsMoreThanOneVacancy_WithFilters(string expectedMessage, string filter,string searchTerm,int count,VacancyStatus status)
         {
             Enum.TryParse<FilteringOptions>(filter, out var filterOption);
-            var sut = GetSut(GenerateVacancySummaries(count, searchTerm, string.Empty,status),filterOption,  searchTerm);
+            var sut = GetSut(GenerateVacancySummaries(count, searchTerm, string.Empty,status),filterOption,  searchTerm, count);
             var vm = await sut.GetVacanciesViewModelAsync(EmployerAccountId, filter, 1, User, searchTerm);
             vm.ResultsHeading.Should().Be(expectedMessage);
         }
