@@ -51,7 +51,7 @@ namespace Esfa.Recruit.Employer.Web.Mappings
                 programme = await _apprenticeshipProgrammeProvider.GetApprenticeshipStandardVacancyPreviewData(standardId);    
             }
 
-            var hasOptedToAddQualifications = false;
+            bool? hasOptedToAddQualifications = null;
             if (vacancy.HasOptedToAddQualifications == null)
             {
                 if (vacancy.Qualifications != null && vacancy.Qualifications.Count != 0)
@@ -100,7 +100,7 @@ namespace Esfa.Recruit.Employer.Web.Mappings
             vm.ProviderReviewFieldIndicators = vacancy.ProviderReviewFieldIndicators;
             vm.Qualifications = vacancy.Qualifications?.Where(c=>c.Weighting == QualificationWeighting.Essential).SortQualifications(allQualifications).AsText(_feature.IsFeatureEnabled(FeatureNames.FaaV2Improvements));
             vm.QualificationsDesired = vacancy.Qualifications?.Where(c=>c.Weighting == QualificationWeighting.Desired).SortQualifications(allQualifications).AsText(_feature.IsFeatureEnabled(FeatureNames.FaaV2Improvements));
-            vm.HasOptedToAddQualifications = !_feature.IsFeatureEnabled(FeatureNames.FaaV2Improvements) || hasOptedToAddQualifications;
+            vm.HasOptedToAddQualifications = hasOptedToAddQualifications;
             vm.ShortDescription = vacancy.ShortDescription;
             vm.Skills = vacancy.Skills ?? Enumerable.Empty<string>();
             vm.ThingsToConsider = vacancy.ThingsToConsider;
