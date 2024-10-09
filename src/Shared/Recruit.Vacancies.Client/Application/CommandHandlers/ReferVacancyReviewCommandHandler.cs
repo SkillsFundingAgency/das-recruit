@@ -1,4 +1,6 @@
-﻿using System.Threading;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.Commands;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
@@ -57,6 +59,21 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
                 automatedQaOutcomeIndicator.IsReferred = message.SelectedAutomatedQaRuleOutcomeIds
                     .Contains(automatedQaOutcomeIndicator.RuleOutcomeId);
             }
+
+            var fields = new List<string>();
+            var referredOutcomes = review.AutomatedQaOutcomeIndicators
+                .Where(i => !i.IsReferred)
+                .Select(i => i.RuleOutcomeId)
+                .ToList();
+            foreach (var ruleOutcome in review.AutomatedQaOutcome.RuleOutcomes)
+            {
+                fields.AddRange(ruleOutcome.Details
+                    .Where(d => referredOutcomes.Contains(d.Id))
+                    .Select(d => d.Target).ToList());
+            }
+            
+                
+            review.DismissedAutomatedQaOutcomeIndicators = fields.Distinct().ToList();
 
             Validate(review);
 
