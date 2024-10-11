@@ -6,12 +6,12 @@ info:
 paths:
   /employers/{employerId}/candidates:
     get:
-      summary: the search endpoint for returning candidates
+      summary: Returns candidates for the employer (associated via the employers vacancies)
       parameters:
         - name: employerId
           in: path
           required: true
-          description: The employer id to return
+          description: The employer id to search candidates within
           schema:
             type : string
         - name: searchTerm
@@ -22,9 +22,36 @@ paths:
         - name: status
           in: query
           required: true
-          description: The status to filter on
+          description: The status of related vacancy to filter on, multiple can be included ?status[]=Successful&status[]=Interviewing
           schema:
-            $ref: "#/components/schemas/candidateStatus"
+            type: array
+            items:
+              $ref: "#/components/schemas/candidateStatus"
+        - name: withinWeeks 
+          in: query
+          description: Limit returned candidates to those associated with vacancies within the specified weeks
+          schema:
+            type: integer
+            default: 4
+            minimum: 1
+            maximum: 50
+        - name: standardLarsCode
+          in: query
+          description: The lars code of the standard (as used by recruit)
+          schema:
+            type: integer
+        - name: includeRelatedStandards
+          in: query
+          description: If true, will also include vacancies for standard which have the same parent route as the specified standardLarsCode.
+          schema:
+            type: boolean
+            default: false
+        - name: includePrevLinked
+          in: query
+          description: If true, will also include vacancies for standard which have the same parent route as the specified standardLarsCode.
+          schema:
+            type: boolean
+            default: false
         - name: page
           in: query
           description: The page to return
@@ -76,7 +103,7 @@ paths:
           $ref: '#/components/responses/unauthorized'
         '404':
           $ref: '#/components/responses/notFound'
-    
+
 components:
   responses:
     searchResult:
@@ -165,6 +192,18 @@ components:
         - total
         - pageSize  
         - totalPages  
+
+    candidateStatusRequest:
+      type: object
+      properties:
+        status:
+          $ref:  "#/components/schemas/candidateStatus"
+        commitmentId: 
+          type: integer
+          minimum: 1
+      required:
+        - status
+        - commitmentId
     
     sortColumns:
       type: string
@@ -178,6 +217,7 @@ components:
     candidateStatus:
       type: string
       enum:
+        - Successful Commitment Linked
         - Successful
         - Reviewed by you
         - Interviewing
