@@ -13,7 +13,7 @@ namespace Esfa.Recruit.UnitTests.Provider.Web.Orchestrators.Vacancies.SearchResu
         public async Task WhenThereAreNoVacancies()
         {
             var expectedMessage = "0 live vacancies with 'nurse'";
-            var sut = GetSut(new List<VacancySummary>(), FilteringOptions.Draft, "nurse");
+            var sut = GetSut(new List<VacancySummary>(), FilteringOptions.Draft, "nurse", 0);
             var vm = await sut.GetVacanciesViewModelAsync(User, "Live", 1, "nurse");
             vm.ResultsHeading.Should().Be(expectedMessage);
         }
@@ -22,7 +22,7 @@ namespace Esfa.Recruit.UnitTests.Provider.Web.Orchestrators.Vacancies.SearchResu
         public async Task WhenThereIsOneVacancy()
         {
             var expectedMessage = "1 live vacancy with 'nurse'";
-            var sut = GetSut(GenerateVacancySummaries(1, "nurse", string.Empty,VacancyStatus.Live), FilteringOptions.Live, "nurse");
+            var sut = GetSut(GenerateVacancySummaries(1, "nurse", string.Empty,VacancyStatus.Live), FilteringOptions.Live, "nurse", 1);
             var vm = await sut.GetVacanciesViewModelAsync(User, "Live", 1, "nurse");
             vm.ResultsHeading.Should().Be(expectedMessage);
         }
@@ -31,7 +31,7 @@ namespace Esfa.Recruit.UnitTests.Provider.Web.Orchestrators.Vacancies.SearchResu
         public async Task WhenThereIsMoreThanOneVacancy()
         {
             var expectedMessage = "2 live vacancies with 'nurse'";
-            var sut = GetSut(GenerateVacancySummaries(2, "nurse", string.Empty,VacancyStatus.Live), FilteringOptions.Live, "nurse");
+            var sut = GetSut(GenerateVacancySummaries(2, "nurse", string.Empty,VacancyStatus.Live), FilteringOptions.Live, "nurse", 2);
             var vm = await sut.GetVacanciesViewModelAsync(User, "Live", 1, "nurse");
             vm.ResultsHeading.Should().Be(expectedMessage);
         }
@@ -48,7 +48,7 @@ namespace Esfa.Recruit.UnitTests.Provider.Web.Orchestrators.Vacancies.SearchResu
         [InlineData("2 vacancies with employer-reviewed applications with 'nurse'", FilteringOptions.EmployerReviewedApplications, "nurse", 2, VacancyStatus.Live)]
         public async Task WhenThereIsMoreThanOneVacancy_WithFilters(string expectedMessage, FilteringOptions filter, string searchTerm, int count, VacancyStatus status)
         {
-            var sut = GetSut(GenerateVacancySummaries(count, searchTerm, searchTerm, status), filter, searchTerm);
+            var sut = GetSut(GenerateVacancySummaries(count, searchTerm, searchTerm, status), filter, searchTerm, count);
             var vm = await sut.GetVacanciesViewModelAsync(User, filter.ToString(), 1, searchTerm);
             vm.ResultsHeading.Should().Be(expectedMessage);
         }
