@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -250,8 +251,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                     BuildSecondaryBsonDocumentFilter(filteringOptions, searchTerm)
                 }
             };
-
-            var employerReviewMatch = ownerType == OwnerType.Employer ? 
+            var employerReviewMatch = (filteringOptions != FilteringOptions.NewSharedApplications && filteringOptions != FilteringOptions.AllSharedApplications )?
                 new BsonDocument
                 {
                     {
@@ -266,7 +266,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                     }
                 };
 
-            var aggPipeline = VacancySummaryAggQueryBuilder.GetAggregateQueryPipelineDocumentCount(match,secondaryMath, employerReviewMatch);
+            var aggPipeline = VacancySummaryAggQueryBuilder.GetAggregateQueryPipelineDocumentCount(match,secondaryMath, string.IsNullOrEmpty(employerAccountId) ? null: employerReviewMatch);
 
             return await RunAggPipelineCountQuery(aggPipeline);
         }
@@ -352,32 +352,43 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
         private static BsonDocument BuildSecondaryBsonDocumentFilter(FilteringOptions? filteringOptions, string searchTerm)
         {
             var document = new BsonDocument();
-
+            
             if (filteringOptions.HasValue)
             {
+                var bsonArray = new BsonArray();
                 switch (filteringOptions)
                 {
                     case FilteringOptions.NewApplications:
-                        document.Add("noOfNewApplications", new BsonDocument {{"$gt", 0}});
+                        bsonArray.Add(ApplicationReviewStatus.New.ToString());
                         break;
                     case FilteringOptions.AllApplications:
-                        document.Add("noOfApplications", new BsonDocument {{"$gt", 0}});
+                        bsonArray.Add(ApplicationReviewStatus.New.ToString());
+                        bsonArray.Add(ApplicationReviewStatus.Unsuccessful.ToString());
+                        bsonArray.Add(ApplicationReviewStatus.Successful.ToString());
                         break;
                     case FilteringOptions.NewSharedApplications:
-                        document.Add("noOfSharedApplications", new BsonDocument { { "$gt", 0 } });
+                        bsonArray.Add(ApplicationReviewStatus.Shared.ToString());
                         break;
                     case FilteringOptions.AllSharedApplications:
-                        document.Add("noOfAllSharedApplications", new BsonDocument { { "$gt", 0 } });
+                        document.Add("$dateSharedWithEmployer", new BsonDocument { { "$gt", "1900-01-01T01:00:00.389Z" } });
                         break;
                     case FilteringOptions.EmployerReviewedApplications:
-                        document.Add("noOfEmployerReviewedApplications", new BsonDocument { { "$gt", 0 } });
+                        bsonArray.Add(ApplicationReviewStatus.EmployerUnsuccessful.ToString());
+                        bsonArray.Add(ApplicationReviewStatus.EmployerInterviewing.ToString());
                         break;
                     case FilteringOptions.ClosingSoonWithNoApplications:
-                        document.Add("noOfApplications", 0);
+                        document.Add("candidateApplicationReview",  BsonNull.Value );  
                         break;
                 }
-            }
 
+                if (bsonArray.Count > 0)
+                {
+                    document.Add("candidateApplicationReview.status", new BsonDocument { { "$in", bsonArray } });    
+                    document.Add("candidateApplicationReview.isWithdrawn", new BsonDocument { { "$in", new BsonArray([false, BsonNull.Value]) } });    
+                }
+                
+            }
+            
             if (!string.IsNullOrEmpty(searchTerm))
             {
                 var bsonArray = new BsonArray
@@ -470,7 +481,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                     case FilteringOptions.ClosingSoonWithNoApplications:
                         document.Add("status", VacancyStatus.Live.ToString());
                         document.Add("closingDate", new BsonDocument {{"$lte",BsonDateTime.Create(DateTime.UtcNow.AddDays(ClosingSoonDays))}});
-                        document.Add("applicationMethod", vacancyType == VacancyType.Apprenticeship ? ApplicationMethod.ThroughFindAnApprenticeship:ApplicationMethod.ThroughFindATraineeship);
+                        document.Add("applicationMethod", vacancyType == VacancyType.Apprenticeship ? ApplicationMethod.ThroughFindAnApprenticeship.ToString():ApplicationMethod.ThroughFindATraineeship.ToString());
                         break;
                     case FilteringOptions.Transferred:
                         document.Add("transferInfo.transferredDate", new BsonDocument {{"$nin", new BsonArray {BsonNull.Value}}});
