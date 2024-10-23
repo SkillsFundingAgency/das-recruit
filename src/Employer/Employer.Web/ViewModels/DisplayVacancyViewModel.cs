@@ -38,7 +38,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels
         public string PostedDate { get; internal set; }
         public string ProviderName { get; internal set; }
         public List<ProviderReviewFieldIndicator> ProviderReviewFieldIndicators { get; internal set; }
-        public IEnumerable<string> Qualifications { get; internal set; }
+        public List<string>? Qualifications { get; internal set; }
         public string ShortDescription { get; internal set; }
         public IEnumerable<string> Skills { get; internal set; }
         public string ThingsToConsider { get; internal set; }
@@ -147,7 +147,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels
         
         public EmployerNameOption? EmployerNameOption { get; set; }
         public bool? HasOptedToAddQualifications { get; set; }
-        public IEnumerable<string> QualificationsDesired { get; set; }
+        public List<string>? QualificationsDesired { get; set; }
         public string StandardPageUrl { get; set; }
         public string OverviewOfRole { get; set; }
         public ApprenticeshipLevel? ApprenticeshipLevel { get; set; }
