@@ -82,6 +82,35 @@ paths:
         '200':
           $ref: '#/components/responses/searchResult'            
   
+  /employers/{employerId}/candidates/{candidateId}/commitment/{commitmentId}:
+    patch:
+      summary: Sets a commitment id for a specific candidate
+      parameters:
+        - name: commitmentId
+          in: path
+          required: true
+          description: The commitment id to set
+          schema:
+            type : string
+        - name: candidateId
+          in: path
+          required: true
+          description: The candidate id to filter on
+          schema:
+            type : string
+        - name: employerId
+          in: path
+          required: true
+          description: The employer id to filter on
+          schema:
+            type : string
+      responses: 
+        '200':
+          $ref: '#/components/responses/candidateResult'
+        '401':
+          $ref: '#/components/responses/unauthorized'
+        '404':
+          $ref: '#/components/responses/notFound'
   /employers/{employerId}/candidates/{candidateId}:
     get:
       summary: Returns a candidate by their unique id
@@ -99,19 +128,37 @@ paths:
           schema:
             type : string
       responses: 
+        '200':
+          $ref: '#/components/responses/candidateResult' 
         '401':
           $ref: '#/components/responses/unauthorized'
         '404':
           $ref: '#/components/responses/notFound'
 
 components:
+  headers:
+    location:
+      schema:
+        type: string
+        format: url
   responses:
     searchResult:
-      description: The search results response to the consumer
+      description: The search r§esults response to the consumer
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/searchResponse'
+    
+    candidateResult:
+      description: The search results response to the consumer
+      headers:
+        schema:
+          description: the absolute URL of the resource
+          $ref: '#/components/headers/location'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/candidateResponse'
       
     notFound:
       description: The specified resource was not found
