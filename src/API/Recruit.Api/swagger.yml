@@ -4,6 +4,20 @@ info:
   title: RAA API for searching candidates
   description: ''
 paths:
+  /employers/{employerId}/vacancies:
+    get:
+      summary: Returns a vacancy list for this employer
+      parameters:
+        - name: employerId
+          in: path
+          required: true
+          description: The employer id to search vacancies within
+          schema:
+            type : string
+      responses:
+        '200':
+          $ref: '#/components/responses/vacancySearchResult'  
+
   /employers/{employerId}/candidates:
     get:
       summary: Returns candidates for the employer (associated via the employers vacancies)
@@ -142,8 +156,15 @@ components:
         type: string
         format: url
   responses:
+    vacancySearchResult:
+      description: The search results response to the consumer
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/vacancySearchResponse'
+    
     searchResult:
-      description: The search r§esults response to the consumer
+      description: The search results response to the consumer
       content:
         application/json:
           schema:
@@ -186,6 +207,16 @@ components:
         - code
         - message
 
+    vacancySearchResponse:
+      type: object
+      properties:
+        vacancies:
+          type: array
+          items:
+            $ref:  "#/components/schemas/vacancyResponse"
+      required:
+        - vacancies
+    
     searchResponse:
       type: object
       properties:
@@ -199,6 +230,14 @@ components:
         - pageInfo
         - candidates
 
+    vacancyResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        
     candidateResponse:
       type: object
       properties:
