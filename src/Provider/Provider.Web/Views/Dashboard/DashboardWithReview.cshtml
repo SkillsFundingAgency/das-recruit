@@ -1,4 +1,4 @@
-﻿@using Esfa.Recruit.Provider.Web.RouteModel
+@using Esfa.Recruit.Provider.Web.RouteModel
 
 @model Esfa.Recruit.Provider.Web.ViewModels.Dashboard.DashboardViewModel
 
@@ -190,14 +190,12 @@
             </h3>
             <p class="govuk-body">Create a report about applicants or vacancies</p>
         </div>
-        <esfaFeatureEnabled name="@FeatureNames.SetNotificationPreferences">
             <div class="govuk-grid-column-one-third">
                 <h3 class="govuk-heading-s govuk-!-margin-bottom-2">
                     <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.ManageNotifications_Get" asp-route-ukprn="@Model.Ukprn" >Manage your recruitment emails</a>
                 </h3>
                 <p class="govuk-body">Set up and manage the emails you’re sent about your vacancies and applications</p>
             </div>
-        </esfaFeatureEnabled>
         <div class="govuk-grid-column-one-third">
             <h3 class="govuk-heading-s govuk-!-margin-bottom-2">
                 <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.Dashboard_ProviderRecruitmentApi" asp-route-ukprn="@Model.Ukprn" >Recruitment APIs</a>
