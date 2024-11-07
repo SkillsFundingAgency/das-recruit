@@ -370,7 +370,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                         bsonArray.Add(ApplicationReviewStatus.Shared.ToString());
                         break;
                     case FilteringOptions.AllSharedApplications:
-                        document.Add("$dateSharedWithEmployer", new BsonDocument { { "$gt", "1900-01-01T01:00:00.389Z" } });
+                        document.Add("candidateApplicationReview.dateSharedWithEmployer", new BsonDocument { { "$gt", "1900-01-01T01:00:00.389Z" } });
                         break;
                     case FilteringOptions.EmployerReviewedApplications:
                         bsonArray.Add(ApplicationReviewStatus.EmployerUnsuccessful.ToString());
