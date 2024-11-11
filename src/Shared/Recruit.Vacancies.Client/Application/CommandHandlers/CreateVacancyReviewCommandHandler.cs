@@ -71,7 +71,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 
             var updatedFields = GetUpdatedFields(vacancy, previousReviews);
 
-            var review = BuildNewReview(vacancy, previousReviews.Count, slaDeadline, updatedFields);
+            var review = BuildNewReview(vacancy, previousReviews.Count, slaDeadline, updatedFields, previousReviews.OrderByDescending(c=>c.SubmissionCount).FirstOrDefault());
 
             await _vacancyReviewRepository.CreateAsync(review);
 
@@ -83,7 +83,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             return Unit.Value;
         }
 
-        private VacancyReview BuildNewReview(Vacancy vacancy, int previousReviewCount, DateTime slaDeadline, List<string> updatedFieldIdentifiers)
+        private VacancyReview BuildNewReview(Vacancy vacancy, int previousReviewCount, DateTime slaDeadline, List<string> updatedFieldIdentifiers, VacancyReview previousReview)
         {
             var review = new VacancyReview
             {
@@ -95,7 +95,8 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
                 SubmissionCount = previousReviewCount + 1,
                 SlaDeadline = slaDeadline,
                 VacancySnapshot = vacancy,
-                UpdatedFieldIdentifiers = updatedFieldIdentifiers
+                UpdatedFieldIdentifiers = updatedFieldIdentifiers,
+                DismissedAutomatedQaOutcomeIndicators = previousReview?.DismissedAutomatedQaOutcomeIndicators.Except(updatedFieldIdentifiers).ToList()
             };
 
             return review;

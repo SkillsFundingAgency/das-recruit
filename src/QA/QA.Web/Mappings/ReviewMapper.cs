@@ -453,7 +453,7 @@ namespace Esfa.Recruit.Qa.Web.Mappings
                 {
                     OutcomeId = d.Id.ToString(),
                     FieldId = d.Target,
-                    Checked = true,
+                    Checked = !review.DismissedAutomatedQaOutcomeIndicators?.Contains(d.Target.ToString()) ?? true,
                     Text = _ruleTemplateRunner.ToText(ruleOutcome.RuleId, d.Data, FieldDisplayNameResolver.Resolve(d.Target))
                 }));
             }
