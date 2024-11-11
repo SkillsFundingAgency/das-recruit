@@ -56,20 +56,27 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 
             await _applicationReviewRepository.UpdateApplicationReviewsAsync(applicationReviewIds, user, _timeProvider.Now, status, candidateFeedback);
 
-            var vacancy = await _vacancyRepository.GetVacancyAsync(vacancyApplications.FirstOrDefault(x => x.VacancyReference != null)!.VacancyReference.Value);
-            foreach (var applicationReview in vacancyApplications.Where(x=>x.ApplicationId != null))
+            if (status == ApplicationReviewStatus.Unsuccessful)
             {
-                await _outerApiClient.Post(new PostApplicationStatusRequest(applicationReview.CandidateId,
-                    applicationReview.ApplicationId!.Value, new PostApplicationStatus
-                    {
-                        VacancyReference = applicationReview.VacancyReference!.Value,
-                        Status = status.ToString(),
-                        CandidateFeedback = candidateFeedback,
-                        VacancyTitle = vacancy.Title,
-                        VacancyEmployerName = vacancy.EmployerName,
-                        VacancyCity = vacancy.EmployerLocation.AddressLine4 ?? vacancy.EmployerLocation.AddressLine3 ?? vacancy.EmployerLocation.AddressLine2 ?? vacancy.EmployerLocation.AddressLine1 ?? "Unknown",
-                        VacancyPostcode = vacancy.EmployerLocation.Postcode
-                    }));
+                var vacancy = await _vacancyRepository.GetVacancyAsync(
+                    vacancyApplications.FirstOrDefault(x => x.VacancyReference != null)!.VacancyReference.Value);
+                foreach (var applicationReview in vacancyApplications.Where(x => x.ApplicationId != null))
+                {
+                    await _outerApiClient.Post(new PostApplicationStatusRequest(applicationReview.CandidateId,
+                        applicationReview.ApplicationId!.Value, new PostApplicationStatus
+                        {
+                            VacancyReference = applicationReview.VacancyReference!.Value,
+                            Status = status.ToString(),
+                            CandidateFeedback = candidateFeedback,
+                            VacancyTitle = vacancy.Title,
+                            VacancyEmployerName = vacancy.EmployerName,
+                            VacancyCity = vacancy.EmployerLocation.AddressLine4 ??
+                                          vacancy.EmployerLocation.AddressLine3 ??
+                                          vacancy.EmployerLocation.AddressLine2 ??
+                                          vacancy.EmployerLocation.AddressLine1 ?? "Unknown",
+                            VacancyPostcode = vacancy.EmployerLocation.Postcode
+                        }));
+                }
             }
         }
     }

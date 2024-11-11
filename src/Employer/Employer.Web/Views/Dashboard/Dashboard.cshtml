@@ -1,4 +1,4 @@
-﻿@using Esfa.Recruit.Vacancies.Client.Domain.Entities
+@using Esfa.Recruit.Vacancies.Client.Domain.Entities
 @using Esfa.Recruit.Employer.Web.RouteModel
 
 @model Esfa.Recruit.Employer.Web.ViewModels.Dashboard.DashboardViewModel
@@ -213,24 +213,19 @@
             <p class="govuk-body">Give training providers permission to add apprentice records, recruit apprentices and create job adverts on your behalf.</p>
         </div>
 
-        <esfaFeatureEnabled name="@FeatureNames.SetNotificationPreferences">
-            <div class="govuk-grid-column-one-third">
-                <h3 class="govuk-heading-s">
+        <div class="govuk-grid-column-one-third">
+            <h3 class="govuk-heading-s">
+                <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.ManageNotifications_Get" asp-route-employerAccountId="@Model.EmployerAccountId">Manage your emails</a>
+            </h3>
+            <p class="govuk-body">Set up and manage the emails you receive about your adverts and applications.</p>
+        </div>
 
-                    <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.ManageNotifications_Get" asp-route-employerAccountId="@Model.EmployerAccountId">Manage your emails</a>
-                </h3>
-                <p class="govuk-body">Set up and manage the emails you receive about your adverts and applications.</p>
-            </div>
-        </esfaFeatureEnabled>
-        <esfaFeatureEnabled name="@FeatureNames.ShowRecruitmentApiLink">
-            <div class="govuk-grid-column-one-third">
-                <h3 class="govuk-heading-s">
+        <div class="govuk-grid-column-one-third">
+            <h3 class="govuk-heading-s">
 
-                    <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.EmployerRecruitmentApi" asp-route-employerAccountId="@Model.EmployerAccountId">Recruitment APIs</a>
-                </h3>
-                <p class="govuk-body">Integrate our APIs to create adverts using your own systems and display adverts on your websites.</p>
-            </div>
-        </esfaFeatureEnabled>
-
+                <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.EmployerRecruitmentApi" asp-route-employerAccountId="@Model.EmployerAccountId">Recruitment APIs</a>
+            </h3>
+            <p class="govuk-body">Integrate our APIs to create adverts using your own systems and display adverts on your websites.</p>
+        </div>
     </div>
 </div>
