@@ -41,6 +41,19 @@ paths:
             type: array
             items:
               $ref: "#/components/schemas/candidateStatus"
+        - name: candidateIdsToFilter
+          in: query
+          required: true
+          description: The candidate ids we don't want returned
+          schema:
+            type: array
+            items:
+              type: string
+        - name: vacancyId 
+          in: query
+          description: Limit returned candidates to those associated with a vacancy
+          schema:
+            type: string            
         - name: withinWeeks 
           in: query
           description: Limit returned candidates to those associated with vacancies within the specified weeks
@@ -254,6 +267,9 @@ components:
           format: date
         vacancyName:
           type: string
+        vacancyClosedDate:
+          type: string
+          format: date
         status:
           $ref:  "#/components/schemas/candidateStatus"
 
