@@ -26,6 +26,7 @@ using Esfa.Recruit.Client.Application.Communications;
 using Esfa.Recruit.Vacancies.Client.Application.Communications.EntityDataItemProviderPlugins;
 using System.Collections.Generic;
 using System.Data;
+using Azure.Monitor.OpenTelemetry.AspNetCore;
 using SFA.DAS.Encoding;
 using Esfa.Recruit.Vacancies.Client.Application.Communications.ParticipantResolverPlugins;
 using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
@@ -117,6 +118,18 @@ namespace Esfa.Recruit.Vacancies.Jobs
             services.AddSingleton<IFeature, Feature>();
         }
 
+        public static void AddOpenTelemetryRegistration(this IServiceCollection services, string appInsightsConnectionString)
+        {
+            if (!string.IsNullOrEmpty(appInsightsConnectionString))
+            {
+                // This service will collect and send telemetry data to Azure Monitor.
+                services.AddOpenTelemetry().UseAzureMonitor(options =>
+                {
+                    options.ConnectionString = appInsightsConnectionString;
+                });
+            }
+        }
+        
         private static void RegisterCommunicationsService(IServiceCollection services, IConfiguration configuration)
         {
             // Relies on services.AddRecruitStorageClient(configuration); being called first
