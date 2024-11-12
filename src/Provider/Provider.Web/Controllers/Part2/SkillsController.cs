@@ -60,22 +60,16 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part2
                 return RedirectToRoute(RouteNames.Skills_Get, new {vrm.Ukprn, vrm.VacancyId});
             }
 
-            if (_feature.IsFeatureEnabled(FeatureNames.ProviderTaskList))
+            if (!vm.IsTaskListCompleted)
             {
-                if (!vm.IsTaskListCompleted)
+                if (_serviceParameters.VacancyType == VacancyType.Apprenticeship)
                 {
-                    if (_serviceParameters.VacancyType == VacancyType.Apprenticeship)
-                    {
-                        return RedirectToRoute(RouteNames.Qualifications_Get, new {vrm.Ukprn, vrm.VacancyId});    
-                    }
-                    
-                    return RedirectToRoute(RouteNames.FutureProspects_Get, new {vrm.Ukprn, vrm.VacancyId});
+                    return RedirectToRoute(RouteNames.Qualifications_Get, new {vrm.Ukprn, vrm.VacancyId});    
                 }
-                return RedirectToRoute(RouteNames.ProviderCheckYourAnswersGet, new {vrm.Ukprn, vrm.VacancyId});
                 
+                return RedirectToRoute(RouteNames.FutureProspects_Get, new {vrm.Ukprn, vrm.VacancyId});
             }
-
-            return RedirectToRoute(RouteNames.Vacancy_Preview_Get, new {vrm.Ukprn, vrm.VacancyId});
+            return RedirectToRoute(RouteNames.ProviderCheckYourAnswersGet, new {vrm.Ukprn, vrm.VacancyId});
         }
     }
 }

@@ -43,15 +43,10 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
 
             if (vm.HasOnlyOneOrganisation)
             {
-                if (_feature.IsFeatureEnabled(FeatureNames.EmployerTaskList))
-                {
-                    info = vm.VacancyEmployerInfoModel;
-                    await _orchestrator.SetAccountLegalEntityPublicId(vrm,info, User.ToVacancyUser());
-                    
-                    return  RedirectToRoute(RouteNames.Training_Get, new { Wizard = wizard, vrm.VacancyId, vrm.EmployerAccountId  });
-                }
+                info = vm.VacancyEmployerInfoModel;
+                await _orchestrator.SetAccountLegalEntityPublicId(vrm,info, User.ToVacancyUser());
                 
-                return RedirectToRoute(RouteNames.EmployerName_Get, new {Wizard = wizard, vrm.VacancyId, vrm.EmployerAccountId});
+                return  RedirectToRoute(RouteNames.Training_Get, new { Wizard = wizard, vrm.VacancyId, vrm.EmployerAccountId  });
             }
 
             vm.Pager.OtherRouteValues.Add(nameof(wizard), wizard);

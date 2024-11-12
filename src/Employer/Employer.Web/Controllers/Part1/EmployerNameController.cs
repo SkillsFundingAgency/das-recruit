@@ -35,11 +35,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
             //this could happen if the user navigates straight to employer-name end point
             //by passing employer or location end point
             
-            if (employerInfoModel == null && !_feature.IsFeatureEnabled(FeatureNames.EmployerTaskList)) 
-                return RedirectToRoute(RouteNames.Employer_Get, new {vrm.VacancyId, vrm.EmployerAccountId});
-            
             var vm = await _orchestrator.GetEmployerNameViewModelAsync(vrm, employerInfoModel);
-
             if (vm == null)
             {
                 return RedirectToRoute(RouteNames.Employer_Get, new {vrm.VacancyId, vrm.EmployerAccountId});
