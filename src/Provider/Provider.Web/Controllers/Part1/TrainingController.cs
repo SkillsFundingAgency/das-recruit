@@ -19,13 +19,11 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
     public class TrainingController : Controller
     {
         private readonly TrainingOrchestrator _orchestrator;
-        private readonly IFeature _feature;
         private const string InvalidTraining = "Select a training course";
 
-        public TrainingController(TrainingOrchestrator orchestrator, IFeature feature)
+        public TrainingController(TrainingOrchestrator orchestrator)
         {
             _orchestrator = orchestrator;
-            _feature = feature;
         }
 
         [HttpGet("training", Name = RouteNames.Training_Get)]

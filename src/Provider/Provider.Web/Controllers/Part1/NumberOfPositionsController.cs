@@ -17,13 +17,10 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
     public class NumberOfPositionsController : Controller
     {
         private readonly NumberOfPositionsOrchestrator _orchestrator;
-        private readonly IFeature _feature;
-        
 
-        public NumberOfPositionsController(NumberOfPositionsOrchestrator orchestrator, IFeature feature)
+        public NumberOfPositionsController(NumberOfPositionsOrchestrator orchestrator)
         {
             _orchestrator = orchestrator;
-            _feature = feature;
         }
 
         [HttpGet("number-of-positions", Name = RouteNames.NumberOfPositions_Get)]

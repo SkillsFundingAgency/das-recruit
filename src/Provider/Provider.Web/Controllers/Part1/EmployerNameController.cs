@@ -20,13 +20,11 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
     public class EmployerNameController : EmployerControllerBase
     {
         private EmployerNameOrchestrator _orchestrator;
-        private readonly IFeature _feature;
 
         public EmployerNameController(EmployerNameOrchestrator orchestrator,
-            IWebHostEnvironment hostingEnvironment, IFeature feature) : base(hostingEnvironment)
+            IWebHostEnvironment hostingEnvironment) : base(hostingEnvironment)
         {
             _orchestrator = orchestrator;
-            _feature = feature;
         } 
 
         [HttpGet("employer-name", Name = RouteNames.EmployerName_Get)]

@@ -16,12 +16,10 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
     public class EmployerController : Controller
     {
         private readonly EmployerOrchestrator _orchestrator;
-        private readonly IFeature _feature;
 
-        public EmployerController(EmployerOrchestrator orchestrator, IFeature feature)
+        public EmployerController(EmployerOrchestrator orchestrator)
         {
             _orchestrator = orchestrator;
-            _feature = feature;
         }
 
         [HttpGet("employer", Name = RouteNames.Employer_Get)]

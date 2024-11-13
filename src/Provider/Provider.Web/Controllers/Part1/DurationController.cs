@@ -19,13 +19,11 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
     public class DurationController : Controller
     {
         private readonly DurationOrchestrator _orchestrator;
-        private readonly IFeature _feature;
         private readonly ServiceParameters _serviceParameters;
 
-        public DurationController(DurationOrchestrator orchestrator, IFeature feature, ServiceParameters serviceParameters)
+        public DurationController(DurationOrchestrator orchestrator, ServiceParameters serviceParameters)
         {
             _orchestrator = orchestrator;
-            _feature = feature;
             _serviceParameters = serviceParameters;
         }
         
