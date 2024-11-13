@@ -17,12 +17,10 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part2
     public class ProviderContactDetailsController : Controller
     {
         private readonly ProviderContactDetailsOrchestrator _orchestrator;
-        private readonly IFeature _feature;
 
-        public ProviderContactDetailsController(ProviderContactDetailsOrchestrator orchestrator, IFeature feature)
+        public ProviderContactDetailsController(ProviderContactDetailsOrchestrator orchestrator)
         {
             _orchestrator = orchestrator;
-            _feature = feature;
         }
 
         [HttpGet("provider-contact-details", Name = RouteNames.ProviderContactDetails_Get)]

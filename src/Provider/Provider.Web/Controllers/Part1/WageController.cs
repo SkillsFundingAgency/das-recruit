@@ -20,12 +20,10 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
     public class WageController : Controller
     {
         private readonly IWageOrchestrator _orchestrator;
-        private readonly IFeature _feature;
 
-        public WageController(IWageOrchestrator orchestrator, IFeature feature)
+        public WageController(IWageOrchestrator orchestrator)
         {
             _orchestrator = orchestrator;
-            _feature = feature;
         }
 
         [HttpGet("wage", Name = RouteNames.Wage_Get)]

@@ -19,13 +19,11 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part2
     public class SkillsController : Controller
     {
         private readonly SkillsOrchestrator _orchestrator;
-        private readonly IFeature _feature;
         private readonly ServiceParameters _serviceParameters;
 
-        public SkillsController(SkillsOrchestrator orchestrator, IFeature feature, ServiceParameters serviceParameters)
+        public SkillsController(SkillsOrchestrator orchestrator, ServiceParameters serviceParameters)
         {
             _orchestrator = orchestrator;
-            _feature = feature;
             _serviceParameters = serviceParameters;
         }
 

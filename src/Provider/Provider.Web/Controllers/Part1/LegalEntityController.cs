@@ -21,18 +21,15 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
     public class LegalEntityController : EmployerControllerBase
     {
         private readonly LegalEntityOrchestrator _orchestrator;
-        private readonly IFeature _feature;
         private readonly ServiceParameters _serviceParameters;
 
         public LegalEntityController(
             LegalEntityOrchestrator orchestrator, 
             IWebHostEnvironment hostingEnvironment, 
-            IFeature feature,
             ServiceParameters serviceParameters)
             : base(hostingEnvironment)
         {
             _orchestrator = orchestrator;
-            _feature = feature;
             _serviceParameters = serviceParameters;
         }
 

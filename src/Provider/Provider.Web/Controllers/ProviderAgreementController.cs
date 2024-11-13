@@ -12,12 +12,10 @@ namespace Esfa.Recruit.Provider.Web.Controllers
     public class ProviderAgreementController : Controller
     {
         private readonly ProviderAgreementOrchestrator _orchestrator;
-        private readonly IFeature _feature;
 
-        public ProviderAgreementController(ProviderAgreementOrchestrator orchestrator, IFeature feature)
+        public ProviderAgreementController(ProviderAgreementOrchestrator orchestrator)
         {
             _orchestrator = orchestrator;
-            _feature = feature;
         }
 
         [HttpGet("provider-agreement", Name = RouteNames.ProviderAgreement_HardStop_Get)]

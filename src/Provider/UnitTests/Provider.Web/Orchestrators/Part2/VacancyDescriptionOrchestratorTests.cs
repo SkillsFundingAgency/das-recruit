@@ -88,7 +88,6 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part2
             {
                 MockClient = new Mock<IProviderVacancyClient>();
                 MockRecruitVacancyClient = new Mock<IRecruitVacancyClient>();
-                MockFeature = new Mock<IFeature>();
 
                 User = VacancyOrchestratorTestData.GetVacancyUser();
                 Vacancy = VacancyOrchestratorTestData.GetPart1CompleteVacancy();
@@ -128,7 +127,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part2
 
                 Sut = new VacancyDescriptionOrchestrator(MockRecruitVacancyClient.Object,
                     Mock.Of<ILogger<VacancyDescriptionOrchestrator>>(), Mock.Of<IReviewSummaryService>(),
-                    new Utility(MockRecruitVacancyClient.Object), MockFeature.Object, new ServiceParameters(VacancyType.Apprenticeship.ToString()));
+                    new Utility(MockRecruitVacancyClient.Object), new ServiceParameters(VacancyType.Apprenticeship.ToString()));
             }
 
             public async Task PostVacancyDescriptionEditModelAsync(VacancyDescriptionEditModel model)
@@ -164,7 +163,6 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part2
 
             public Mock<IProviderVacancyClient> MockClient { get; set; }
             public Mock<IRecruitVacancyClient> MockRecruitVacancyClient { get; set; }
-            public Mock<IFeature> MockFeature { get; set; }
         }
     }
 }

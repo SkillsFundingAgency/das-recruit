@@ -22,20 +22,17 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part2
         private readonly IRecruitVacancyClient _vacancyClient;
         private readonly IReviewSummaryService _reviewSummaryService;
         private readonly IUtility _utility;
-        private readonly IFeature _feature;
         private readonly ServiceParameters _serviceParameters;
 
         public VacancyDescriptionOrchestrator(IRecruitVacancyClient vacancyClient,
             ILogger<VacancyDescriptionOrchestrator> logger, 
             IReviewSummaryService reviewSummaryService,
             IUtility utility, 
-            IFeature feature,
             ServiceParameters serviceParameters) : base(logger)
         {
             _vacancyClient = vacancyClient;
             _reviewSummaryService = reviewSummaryService;
             _utility = utility;
-            _feature = feature;
             _serviceParameters = serviceParameters;
             ValidationRules = _serviceParameters.VacancyType == VacancyType.Apprenticeship 
                 ? VacancyRuleSet.Description | VacancyRuleSet.TrainingDescription

@@ -15,12 +15,10 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part2
     public class ApplicationProcessController : Controller
     {
         private readonly ApplicationProcessOrchestrator _orchestrator;
-        private readonly IFeature _feature;
 
-        public ApplicationProcessController(ApplicationProcessOrchestrator orchestrator, IFeature feature)
+        public ApplicationProcessController(ApplicationProcessOrchestrator orchestrator)
         {
             _orchestrator = orchestrator;
-            _feature = feature;
         }
 
         [HttpGet("application-process", Name = RouteNames.ApplicationProcess_Get)]

@@ -17,12 +17,10 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part2
     public class VacancyDescriptionController : Controller
     {
         private readonly VacancyDescriptionOrchestrator _orchestrator;
-        private readonly IFeature _feature;
 
-        public VacancyDescriptionController(VacancyDescriptionOrchestrator orchestrator, IFeature feature)
+        public VacancyDescriptionController(VacancyDescriptionOrchestrator orchestrator)
         {
             _orchestrator = orchestrator;
-            _feature = feature;
         }
 
         [HttpGet("vacancy-description", Name = RouteNames.VacancyDescription_Index_Get)]

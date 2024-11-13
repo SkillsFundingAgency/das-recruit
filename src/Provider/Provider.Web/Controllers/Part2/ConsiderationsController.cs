@@ -17,12 +17,10 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part2
     public class ConsiderationsController : Controller
     {
         private readonly ConsiderationsOrchestrator _orchestrator;
-        private readonly IFeature _feature;
 
-        public ConsiderationsController(ConsiderationsOrchestrator orchestrator, IFeature feature)
+        public ConsiderationsController(ConsiderationsOrchestrator orchestrator)
         {
             _orchestrator = orchestrator;
-            _feature = feature;
         }
 
         [HttpGet("considerations", Name = RouteNames.Considerations_Get)]
