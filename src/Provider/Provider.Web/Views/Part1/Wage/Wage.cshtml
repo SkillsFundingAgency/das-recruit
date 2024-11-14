@@ -1,7 +1,6 @@
 @using Esfa.Recruit.Shared.Web.Mappers
-@using Microsoft.Extensions.Options
+
 @model Esfa.Recruit.Provider.Web.ViewModels.Part1.Wage.WageViewModel
-@inject IOptions<ExternalLinksConfiguration> externalLinks
 
 @{
     ViewBag.GaData.Vpv = "/recruitment/provider/page-create-vacancy-pay";
@@ -47,15 +46,13 @@
                                 Displayed as a yearly wage of @Model.ApprenticeshipMinimumWageYearly
                             </p>
                         </div>
-                        <esfaFeatureEnabled name="@FeatureNames.CompetitiveSalary">
-                            <div class="govuk-radios__item">
-                                <input asp-for="WageType" value="@WageType.CompetitiveSalary" type="radio" class="govuk-radios__input" id="wage-type-set-as-competitive" data-aria-controls="wage-type-set-as-competitive-panel">
-                                <label for="wage-type-set-as-competitive" class="govuk-label govuk-radios__label">Set as competitive</label>
-                                <p class="govuk-body govuk-hint govuk-radios__hint">
-                                    Not providing a salary may limit applications for this apprenticeship
-                                </p>
-                            </div>
-                        </esfaFeatureEnabled>
+                        <div class="govuk-radios__item">
+                            <input asp-for="WageType" value="@WageType.CompetitiveSalary" type="radio" class="govuk-radios__input" id="wage-type-set-as-competitive" data-aria-controls="wage-type-set-as-competitive-panel">
+                            <label for="wage-type-set-as-competitive" class="govuk-label govuk-radios__label">Set as competitive</label>
+                            <p class="govuk-body govuk-hint govuk-radios__hint">
+                                Not providing a salary may limit applications for this apprenticeship
+                            </p>
+                        </div>
                     </div>
                 </fieldset>
             </div>

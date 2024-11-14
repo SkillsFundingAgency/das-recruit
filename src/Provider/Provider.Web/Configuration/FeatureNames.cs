@@ -6,7 +6,6 @@ namespace Esfa.Recruit.Provider.Web.Configuration
         // Feature toggle name constants will go here.
         public const string ProviderTaskList = nameof(ProviderTaskList);
         public const string ShareApplicationsFeature = nameof(ShareApplicationsFeature);
-        public const string CompetitiveSalary = nameof(CompetitiveSalary);
         public const string MultipleApplicationsManagement = nameof(MultipleApplicationsManagement);
         public const string FaaV2Improvements = nameof(FaaV2Improvements);
     }
