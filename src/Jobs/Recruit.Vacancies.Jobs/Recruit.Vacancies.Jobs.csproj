@@ -18,13 +18,13 @@
     <PackageReference Include="Microsoft.Azure.WebJobs.Extensions" Version="3.0.2" />
     <PackageReference Include="Microsoft.Azure.WebJobs.Extensions.Storage" Version="3.0.6" />
     <PackageReference Include="Microsoft.Azure.WebJobs.Logging.ApplicationInsights" Version="3.0.41" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.1" />
     
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="8.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Configuration" Version="8.0.0" />
-    <PackageReference Include="NLog" Version="5.2.8" />
-    <PackageReference Include="NLog.Extensions.Logging" Version="5.3.8" />
+    <PackageReference Include="NLog" Version="5.3.4" />
+    <PackageReference Include="NLog.Extensions.Logging" Version="5.3.14" />
     <PackageReference Include="SFA.DAS.Configuration" Version="3.0.84" />
     <PackageReference Include="SFA.DAS.Configuration.AzureTableStorage" Version="3.0.84" />
     <PackageReference Include="SFA.DAS.Encoding" Version="1.1.76" />
@@ -32,13 +32,13 @@
     <PackageReference Include="SFA.DAS.NLog.Targets.Redis" Version="1.2.1" />
     <PackageReference Include="SFA.DAS.Notifications.Messages" Version="3.0.10" />
     <PackageReference Include="SFA.DAS.ProviderRelationships.Messages" Version="4.0.19" />
-    <PackageReference Include="System.Data.SqlClient" Version="4.8.6" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.9.0" />
     <PackageReference Include="SFA.DAS.NServiceBus" Version="17.0.49" />
     <PackageReference Include="SFA.DAS.EmployerAccounts.Messages" Version="1.6.3163" />
     <PackageReference Include="System.Formats.Asn1" Version="8.0.1" />
     <PackageReference Include="System.Net.Security" Version="4.3.2" />
     <PackageReference Include="System.Security.Cryptography.Xml" Version="8.0.1" />
-    <PackageReference Include="System.Text.Json" Version="8.0.4" />
+    <PackageReference Include="System.Text.Json" Version="8.0.5" />
     <PackageReference Include="System.Text.RegularExpressions" Version="4.3.1" />
 
     <ProjectReference Include="..\..\Communication\Communication.Core\Communication.Core.csproj" />
