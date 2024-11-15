@@ -29,14 +29,12 @@ namespace Esfa.Recruit.Qa.Web.Mappings
         private readonly Lazy<IList<string>> _qualifications;
         private readonly IRuleMessageTemplateRunner _ruleTemplateRunner;
         private readonly IReviewSummaryService _reviewSummaryService;
-        private readonly IFeature _feature;
 
         public ReviewMapper(ILogger<ReviewMapper> logger,
                     IQaVacancyClient vacancyClient,
                     IGeocodeImageService mapService,
                     IRuleMessageTemplateRunner ruleTemplateRunner,
-                    IReviewSummaryService reviewSummaryService,
-                    IFeature feature)
+                    IReviewSummaryService reviewSummaryService)
         {
             _logger = logger;
             _vacancyClient = vacancyClient;
@@ -44,7 +42,6 @@ namespace Esfa.Recruit.Qa.Web.Mappings
             _qualifications = new Lazy<IList<string>>(() => _vacancyClient.GetCandidateQualificationsAsync().Result.QualificationTypes);
             _ruleTemplateRunner = ruleTemplateRunner;
             _reviewSummaryService = reviewSummaryService;
-            _feature = feature;
         }
 
         private static readonly Dictionary<string, IEnumerable<string>> ReviewFields = new Dictionary<string, IEnumerable<string>>

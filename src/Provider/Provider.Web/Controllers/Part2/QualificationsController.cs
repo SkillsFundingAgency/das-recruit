@@ -7,7 +7,6 @@ using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Provider.Web.ViewModels.Part2.Qualifications;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Shared.Web.ViewModels.Qualifications;
-using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -19,12 +18,10 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part2
     {
         private const string QualificationDeletedTempDataKey = "QualificationDeletedTempDataKey";
         private readonly QualificationsOrchestrator _orchestrator;
-        private readonly IFeature _feature;
 
-        public QualificationsController(QualificationsOrchestrator orchestrator, IFeature feature)
+        public QualificationsController(QualificationsOrchestrator orchestrator)
         {
             _orchestrator = orchestrator;
-            _feature = feature;
         }
 
         [HttpGet("qualifications", Name = RouteNames.Qualifications_Get)]
