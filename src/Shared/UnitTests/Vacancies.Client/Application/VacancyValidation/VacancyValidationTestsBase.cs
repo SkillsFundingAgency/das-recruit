@@ -55,7 +55,7 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation
                 var fluentValidator = new FluentVacancyValidator(TimeProvider, MockMinimumWageService.Object, 
                     MockApprenticeshipProgrammeProvider.Object, MockQualificationsProvider.Object, SanitizerService, 
                     MockTrainingProviderSummaryProvider.Object, MockBlockedOrganisationRepo.Object,
-                    MockProfanityListProvider, MockProviderRelationshipsService.Object,Feature.Object, ServiceParameters);
+                    MockProfanityListProvider, MockProviderRelationshipsService.Object, ServiceParameters);
                 return new EntityValidator<Vacancy, VacancyRuleSet>(fluentValidator);
             }
         }

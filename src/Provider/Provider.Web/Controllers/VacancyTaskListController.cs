@@ -5,7 +5,6 @@ using Esfa.Recruit.Provider.Web.Configuration.Routing;
 using Esfa.Recruit.Provider.Web.Orchestrators;
 using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Vacancies.Client.Application.Configuration;
-using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -20,14 +19,12 @@ namespace Esfa.Recruit.Provider.Web.Controllers
         private readonly VacancyTaskListOrchestrator _orchestrator;
         private readonly ServiceParameters _serviceParameters;
         private readonly IConfiguration _configuration;
-        private readonly bool _isFaaV2Enabled;
 
-        public VacancyTaskListController (VacancyTaskListOrchestrator orchestrator, ServiceParameters serviceParameters, IConfiguration configuration, IFeature feature)
+        public VacancyTaskListController (VacancyTaskListOrchestrator orchestrator, ServiceParameters serviceParameters, IConfiguration configuration)
         {
             _orchestrator = orchestrator;
             _serviceParameters = serviceParameters;
             _configuration = configuration;
-            _isFaaV2Enabled = feature.IsFeatureEnabled(FeatureNames.FaaV2Improvements);
         }
         
         [HttpGet("create/start", Name=RouteNames.CreateVacancyStart)]
@@ -50,7 +47,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
             }
             
             var viewModel = await _orchestrator.GetCreateVacancyTaskListModel(vrm, employerAccountId);
-            viewModel.SetSectionStates(viewModel, ModelState, _isFaaV2Enabled);
+            viewModel.SetSectionStates(viewModel, ModelState);
             
             return View("ProviderTaskList", viewModel);
         }
@@ -65,7 +62,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
             }
             
             var viewModel = await _orchestrator.GetVacancyTaskListModel(vrm); 
-            viewModel.SetSectionStates(viewModel, ModelState, _isFaaV2Enabled);
+            viewModel.SetSectionStates(viewModel, ModelState);
 
             if (viewModel.Status == VacancyStatus.Rejected || viewModel.Status == VacancyStatus.Referred)
             {

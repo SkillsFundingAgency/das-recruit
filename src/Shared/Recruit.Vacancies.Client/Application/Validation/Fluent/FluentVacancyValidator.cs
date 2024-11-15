@@ -1,13 +1,10 @@
 using System;
-using System.Text.RegularExpressions;
 using Esfa.Recruit.Vacancies.Client.Application.Configuration;
-using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Application.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomValidators.VacancyValidators;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.Extensions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelationship;
 using FluentValidation;
 
@@ -24,7 +21,6 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
         private readonly IBlockedOrganisationQuery _blockedOrganisationRepo;
         private readonly IProfanityListProvider _profanityListProvider;
         private readonly IProviderRelationshipsService _providerRelationshipService;
-        private readonly IFeature _feature;
         private readonly ServiceParameters _serviceParameters;
 
         public FluentVacancyValidator(
@@ -37,7 +33,6 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
             IBlockedOrganisationQuery blockedOrganisationRepo,
             IProfanityListProvider profanityListProvider,
             IProviderRelationshipsService providerRelationshipService,
-            IFeature feature,
             ServiceParameters serviceParameters)
         {
             _timeProvider = timeProvider;
@@ -49,11 +44,9 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
             _blockedOrganisationRepo = blockedOrganisationRepo;
             _profanityListProvider = profanityListProvider;
             _providerRelationshipService = providerRelationshipService;
-            _feature = feature;
             _serviceParameters = serviceParameters;
 
             SingleFieldValidations();
-
             CrossFieldValidations();
         }
 
@@ -134,14 +127,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                 ValidateAdditionalQuestions();
             }
 
-            if (_feature.IsFeatureEnabled("FaaV2Improvements"))
-            {
-                ValidateHowTheApprenticeWillTrain();
-            }
-            else
-            {
-                ValidateTrainingDescription();    
-            }
+            ValidateHowTheApprenticeWillTrain();
             
             ValidateOutcomeDescription();
             ValidateApplicationMethod();
@@ -691,15 +677,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
 
         private void ValidateQualifications()
         {
-            if (!_feature.IsFeatureEnabled("FaaV2Improvements"))
-            {
-                ValidateListOfQualifications();
-            }
-            else
-            {
-                When(c => c.HasOptedToAddQualifications is true, ValidateListOfQualifications);    
-            }
-            
+            When(c => c.HasOptedToAddQualifications is true, ValidateListOfQualifications);    
         }
 
         private void ValidateListOfQualifications()
@@ -713,16 +691,15 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
             RuleForEach(x => x.Qualifications)
                 .NotEmpty()
                 .SetValidator(new VacancyQualificationsValidator((long)VacancyRuleSet.Qualifications,
-                    _qualificationsProvider, _profanityListProvider, _feature))
+                    _qualificationsProvider, _profanityListProvider))
                 .RunCondition(VacancyRuleSet.Qualifications)
                 .WithState(_ => VacancyRuleSet.Qualifications);
         }
 
         private void ValidateDescription()
         {
-            var isFaaV2Enabled = _feature.IsFeatureEnabled("FaaV2Improvements");
-            var messageText = isFaaV2Enabled ? "will do at work" : "will be doing";
-            
+            const string messageText = "will do at work";
+
             RuleFor(x => x.Description)
                 .NotEmpty()
                     .WithMessage($"Enter what the {ApplicantContext} {messageText}")
@@ -783,36 +760,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
             });
 
         }
-
-        private void ValidateTrainingDescription()
-        {
-            RuleFor(x => x.TrainingDescription)
-                .NotEmpty()
-                    .WithMessage(IsApprenticeshipVacancy
-                                            ? "Enter the training the apprentice will take and the qualification the apprentice will get"
-                                            : "Enter what training you will give the trainee")
-                    .WithErrorCode("54")
-                .WithState(_ => VacancyRuleSet.TrainingDescription)
-                .MaximumLength(4000)
-                    .WithMessage(IsApprenticeshipVacancy
-                    ? "Training and qualifications the apprentice will get must not exceed {MaxLength} characters"
-                    : "Training provided must not exceed {MaxLength} characters")
-                    .WithErrorCode("7")
-                .WithState(_ => VacancyRuleSet.TrainingDescription)
-                .ValidHtmlCharacters(_htmlSanitizerService)
-                    .WithMessage(IsApprenticeshipVacancy
-                    ? "Training and qualifications the apprentice will get contains some invalid characters"
-                    : "Training provided contains some invalid characters")
-                    .WithErrorCode("6")
-                .WithState(_ => VacancyRuleSet.TrainingDescription)
-                .ProfanityCheck(_profanityListProvider)
-                .WithMessage(IsApprenticeshipVacancy
-                    ? "Training and qualifications the apprentice will get must not contain a banned word or phrase"
-                    : "Training provided must not contain a banned word or phrase")
-                .WithErrorCode("610")
-                .WithState(_ => VacancyRuleSet.TrainingDescription)
-                .RunCondition(VacancyRuleSet.TrainingDescription);
-        }
+        
         private void ValidateHowTheApprenticeWillTrain()
         {
             When(x => !string.IsNullOrEmpty(x.TrainingDescription), () =>

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Qa.Web.ViewModels;
-using Esfa.Recruit.Shared.Web.Configuration;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Shared.Web.Helpers;
 using Esfa.Recruit.Shared.Web.Mappers;
@@ -291,7 +290,7 @@ namespace Esfa.Recruit.Qa.Web.Mappings
                 vm.ProviderContactEmail = vacancy.ProviderContact?.Email;
                 vm.ProviderContactTelephone= vacancy.ProviderContact?.Phone;
                 vm.ProviderName = vacancy.TrainingProvider.Name;
-                vm.Qualifications = vacancy.Qualifications.SortQualifications(_qualifications.Value).AsText(_feature.IsFeatureEnabled("FaaV2Improvements"));
+                vm.Qualifications = vacancy.Qualifications.SortQualifications(_qualifications.Value).AsText();
                 vm.ShortDescription = vacancy.ShortDescription;
                 vm.Skills = vacancy.Skills ?? Enumerable.Empty<string>();
                 vm.OwnerType = vacancy.OwnerType;

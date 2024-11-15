@@ -43,7 +43,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Mappings
                     }
                 );
 
-            var sut = new ReviewFieldIndicatorMapper(new RuleMessageTemplateRunner(), Mock.Of<IFeature>());
+            var sut = new ReviewFieldIndicatorMapper(new RuleMessageTemplateRunner());
 
             var review = new VacancyReview
             {
@@ -118,7 +118,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Mappings
                     }
                 );
 
-            var sut = new ReviewFieldIndicatorMapper(new RuleMessageTemplateRunner(), Mock.Of<IFeature>());
+            var sut = new ReviewFieldIndicatorMapper(new RuleMessageTemplateRunner());
 
             var review = new VacancyReview
             {

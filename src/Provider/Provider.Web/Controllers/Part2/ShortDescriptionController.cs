@@ -48,18 +48,9 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part2
                 return View(vm);
             }
 
-            
-            if (!vm.IsTaskListCompleted)
-            {
-                if (_feature.IsFeatureEnabled(FeatureNames.FaaV2Improvements))
-                {
-                    return RedirectToRoute(RouteNames.VacancyWorkDescription_Index_Get, new { m.Ukprn, m.VacancyId });
-                }
-                return RedirectToRoute(RouteNames.VacancyDescription_Index_Get, new {m.Ukprn, m.VacancyId});
-            }
-            return RedirectToRoute(RouteNames.ProviderCheckYourAnswersGet, new {m.Ukprn, m.VacancyId});
-            
-        
+            return vm.IsTaskListCompleted
+                ? RedirectToRoute(RouteNames.ProviderCheckYourAnswersGet, new { m.Ukprn, m.VacancyId })
+                : RedirectToRoute(RouteNames.VacancyWorkDescription_Index_Get, new { m.Ukprn, m.VacancyId });
         }
     }
 }

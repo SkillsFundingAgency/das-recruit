@@ -15,12 +15,6 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview
 {
     public class VacancyPreviewViewModel : DisplayVacancyViewModel 
     {
-        private readonly bool _isFaaV2Enabled;
-
-        public VacancyPreviewViewModel(bool IsFaaV2Enabled = false)
-        {
-            _isFaaV2Enabled = IsFaaV2Enabled;
-        }
         public VacancyPreviewSectionState ApplicationInstructionsSectionState { get; internal set; }
         public VacancyPreviewSectionState ApplicationMethodSectionState { get; internal set; }
         public VacancyPreviewSectionState ApplicationUrlSectionState { get; internal set; }
@@ -190,7 +184,7 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview
             nameof(TrainingTitle)
         };
         
-        public void SetSectionStates(VacancyPreviewViewModel viewModel, ModelStateDictionary modelState, bool isFaaV2Enabled = false)
+        public void SetSectionStates(VacancyPreviewViewModel viewModel, ModelStateDictionary modelState)
         {
             viewModel.TitleSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.Title }, true, modelState, vm => vm.Title);
             viewModel.ShortDescriptionSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.ShortDescription }, true, modelState, vm => vm.ShortDescription);
@@ -212,9 +206,7 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview
             }
             else
             {
-                viewModel.DescriptionsSectionState = isFaaV2Enabled ? 
-                    GetSectionState(viewModel, new[] { FieldIdentifiers.VacancyDescription }, true, modelState,vm => vm.VacancyDescription) 
-                    : GetSectionState(viewModel, new[] { FieldIdentifiers.VacancyDescription, FieldIdentifiers.TrainingDescription }, true, modelState,vm => vm.VacancyDescription, vm => vm.TrainingDescription);    
+                viewModel.DescriptionsSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.VacancyDescription }, true, modelState,vm => vm.VacancyDescription); 
             }
             
             viewModel.VacancyDescriptionSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.VacancyDescription }, true, modelState, vm => vm.VacancyDescription);
@@ -322,11 +314,6 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview
         
         private bool CheckQualificationSectionStatus()
         {
-            if (!_isFaaV2Enabled)
-            {
-                return QualificationsSectionState == VacancyPreviewSectionState.Valid;
-            }
-
             return (HasOptedToAddQualifications is false || (HasOptedToAddQualifications is true 
                                                              && QualificationsSectionState == VacancyPreviewSectionState.Valid));
         }

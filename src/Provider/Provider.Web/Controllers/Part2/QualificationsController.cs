@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Esfa.Recruit.Provider.Web.Configuration;
 using Esfa.Recruit.Provider.Web.Configuration.Routing;
 using Esfa.Recruit.Provider.Web.Extensions;
@@ -32,12 +31,6 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part2
         public async Task<IActionResult> Qualifications(VacancyRouteModel vrm)
         {
             var vm = await _orchestrator.GetQualificationsViewModelAsync(vrm);
-
-            if (!_feature.IsFeatureEnabled(FeatureNames.FaaV2Improvements) && vm.Qualifications.Any() == false)
-            {
-                TempData.Remove(QualificationDeletedTempDataKey);
-                return RedirectToRoute(RouteNames.Qualification_Add_Get, new {vrm.VacancyId, vrm.Ukprn});
-            }
 
             if (TempData[QualificationDeletedTempDataKey] != null)
                 vm.InfoMessage = "Successfully removed qualification";

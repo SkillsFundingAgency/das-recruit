@@ -136,15 +136,13 @@
                                                       asp-items="@Model.FieldIdentifiers"></esfa-review-checkbox>
                             </div>
                         </li>
-                        <esfaFeatureEnabled name="FaaV2Improvements">
-                            <li>
-                                <h3 class="govuk-heading-s">Company benefits (optional)</h3>
-                                <textarea class="govuk-textarea govuk-js-character-count" asp-for="CompanyBenefitsInformation" rows="5" data-val-length-max="250"></textarea>
-                                <esfa-review-checkbox asp-for="SelectedFieldIdentifiers"
-                                                      asp-value="@FieldIdentifiers.CompanyBenefitsInformation"
-                                                      asp-items="@Model.FieldIdentifiers"></esfa-review-checkbox>
-                            </li>
-                        </esfaFeatureEnabled>
+                        <li>
+                            <h3 class="govuk-heading-s">Company benefits (optional)</h3>
+                            <textarea class="govuk-textarea govuk-js-character-count" asp-for="CompanyBenefitsInformation" rows="5" data-val-length-max="250"></textarea>
+                            <esfa-review-checkbox asp-for="SelectedFieldIdentifiers"
+                                                  asp-value="@FieldIdentifiers.CompanyBenefitsInformation"
+                                                  asp-items="@Model.FieldIdentifiers"></esfa-review-checkbox>
+                        </li>
                         <li>
                             <div class="@Model.WorkingWeekClass" id="@FieldIdentifiers.WorkingWeek" data-module="govuk-character-count" data-maxlength="250">
                                 <h3 class="govuk-heading-s">Working week</h3>
@@ -201,55 +199,33 @@
                     </ul>
                 </div>
                 <div class="govuk-grid-column-two-thirds vacancy-descriptions">
-                    <esfaFeatureDisabled name="FaaV2Improvements">
-                        <div class="@Model.VacancyDescriptionClass">
+                    <div class="@Model.VacancyDescriptionClass">
 
-                            <h3 class="govuk-heading-s">What will the apprentice be doing?</h3>
-                            <textarea asp-for="VacancyDescription" class="govuk-textarea html-editor" rows="5" data-val-length-max="4000"></textarea>
+                        <h3 class="govuk-heading-s">What will the apprentice do at work?</h3>
+                        <textarea asp-for="VacancyDescription" class="govuk-textarea html-editor" rows="5" data-val-length-max="4000"></textarea>
+                        
+                        <esfa-review-checkbox asp-for="SelectedFieldIdentifiers"
+                                              asp-value="@FieldIdentifiers.VacancyDescription"
+                                              asp-items="@Model.FieldIdentifiers"></esfa-review-checkbox>
+                    </div>
+                    <div class="@Model.TrainingDescriptionClass">
+
+                        <h3 class="govuk-heading-s">The apprentices training schedule (optional)</h3>
+                        <textarea asp-for="TrainingDescription" class="govuk-textarea html-editor" rows="5" data-val-length-max="4000"></textarea>
                             
-                            <esfa-review-checkbox asp-for="SelectedFieldIdentifiers"
-                                                  asp-value="@FieldIdentifiers.VacancyDescription"
-                                                  asp-items="@Model.FieldIdentifiers"></esfa-review-checkbox>
-                        </div>
-                        <div class="@Model.TrainingDescriptionClass">
+                        <esfa-review-checkbox asp-for="SelectedFieldIdentifiers"
+                                              asp-value="@FieldIdentifiers.TrainingDescription"
+                                              asp-items="@Model.FieldIdentifiers"></esfa-review-checkbox>
+                    </div>
+                    <div class="@Model.AdditionalTrainingDescription">
 
-                            <h3 class="govuk-heading-s">What training will the apprentice take and what qualification will the apprentice get at the end?</h3>
-                            <textarea asp-for="TrainingDescription" class="govuk-textarea html-editor" rows="5" data-val-length-max="4000"></textarea>
-                                
-                            <esfa-review-checkbox asp-for="SelectedFieldIdentifiers"
-                                                  asp-value="@FieldIdentifiers.TrainingDescription"
-                                                  asp-items="@Model.FieldIdentifiers"></esfa-review-checkbox>
-                        </div>
-                    </esfaFeatureDisabled>
-                    <esfaFeatureEnabled name="FaaV2Improvements">
-                        <div class="@Model.VacancyDescriptionClass">
-
-                            <h3 class="govuk-heading-s">What will the apprentice do at work?</h3>
-                            <textarea asp-for="VacancyDescription" class="govuk-textarea html-editor" rows="5" data-val-length-max="4000"></textarea>
+                        <h3 class="govuk-heading-s">Additional training information (optional)</h3>
+                        <textarea asp-for="AdditionalTrainingDescription" class="govuk-textarea html-editor" rows="5" data-val-length-max="4000"></textarea>
                             
-                            <esfa-review-checkbox asp-for="SelectedFieldIdentifiers"
-                                                  asp-value="@FieldIdentifiers.VacancyDescription"
-                                                  asp-items="@Model.FieldIdentifiers"></esfa-review-checkbox>
-                        </div>
-                        <div class="@Model.TrainingDescriptionClass">
-
-                            <h3 class="govuk-heading-s">The apprentices training schedule (optional)</h3>
-                            <textarea asp-for="TrainingDescription" class="govuk-textarea html-editor" rows="5" data-val-length-max="4000"></textarea>
-                                
-                            <esfa-review-checkbox asp-for="SelectedFieldIdentifiers"
-                                                  asp-value="@FieldIdentifiers.TrainingDescription"
-                                                  asp-items="@Model.FieldIdentifiers"></esfa-review-checkbox>
-                        </div>
-                        <div class="@Model.AdditionalTrainingDescription">
-
-                            <h3 class="govuk-heading-s">Additional training information (optional)</h3>
-                            <textarea asp-for="AdditionalTrainingDescription" class="govuk-textarea html-editor" rows="5" data-val-length-max="4000"></textarea>
-                                
-                            <esfa-review-checkbox asp-for="SelectedFieldIdentifiers"
-                                                  asp-value="@FieldIdentifiers.AdditionalTrainingDescription"
-                                                  asp-items="@Model.FieldIdentifiers"></esfa-review-checkbox>
-                        </div>
-                    </esfaFeatureEnabled>
+                        <esfa-review-checkbox asp-for="SelectedFieldIdentifiers"
+                                              asp-value="@FieldIdentifiers.AdditionalTrainingDescription"
+                                              asp-items="@Model.FieldIdentifiers"></esfa-review-checkbox>
+                    </div>
                     <div class="@Model.OutcomeDescriptionClass">
 
                         <h3 class="govuk-heading-s">What is the expected career progression after this apprenticeship?</h3>

@@ -10,7 +10,6 @@ using Esfa.Recruit.Employer.Web.Orchestrators;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview;
 using Esfa.Recruit.Shared.Web.Services;
-using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
@@ -60,7 +59,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators
             externalLinksConfiguration.Object.Value.FindAnApprenticeshipUrl = findAnApprenticeshipUrl;
             var expectedViewModel = new VacancyPreviewViewModel();
             var mapper = new DisplayVacancyViewModelMapper(Mock.Of<IGeocodeImageService>(),
-                externalLinksConfiguration.Object, recruitVacancyClient.Object, outerApiClient.Object, Mock.Of<IFeature>());
+                externalLinksConfiguration.Object, recruitVacancyClient.Object, outerApiClient.Object);
             await mapper.MapFromVacancyAsync(expectedViewModel, vacancy);
             expectedViewModel.VacancyId = routeModel.VacancyId;
             expectedViewModel.EmployerAccountId = routeModel.EmployerAccountId;

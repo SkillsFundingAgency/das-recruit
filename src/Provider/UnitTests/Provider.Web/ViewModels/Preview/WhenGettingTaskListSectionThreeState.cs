@@ -3,14 +3,10 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoFixture;
 using AutoFixture.NUnit3;
-using Esfa.Recruit.Provider.Web.Configuration;
 using Esfa.Recruit.Provider.Web.Mappings;
 using Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview;
-using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.ApprenticeshipProgrammes;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Moq;
@@ -100,16 +96,14 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.ViewModels.Preview
             List<string> skills,
             List<Qualification> qualifications,
             [Frozen] Mock<IApprenticeshipProgrammeProvider> apprenticeshipProgrammeProvider,
-            [Frozen] Mock<IFeature> feature,
             DisplayVacancyViewModelMapper mapper)
         {
-            feature.Setup(x => x.IsFeatureEnabled(FeatureNames.FaaV2Improvements)).Returns(true);
             var vacancy = GetVacancySectionOneAndTwoComplete(apprenticeshipProgrammeProvider);
             vacancy.Skills = skills;
             vacancy.Qualifications = null;
             vacancy.OutcomeDescription = outcomeDescription;
             vacancy.HasOptedToAddQualifications = false;
-            var model = new VacancyPreviewViewModel(true);
+            var model = new VacancyPreviewViewModel();
             
             await mapper.MapFromVacancyAsync(model, vacancy);
             model.SetSectionStates(model, new ModelStateDictionary());
