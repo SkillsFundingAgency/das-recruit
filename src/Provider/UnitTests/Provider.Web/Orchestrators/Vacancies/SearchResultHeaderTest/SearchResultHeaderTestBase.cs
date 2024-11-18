@@ -38,7 +38,7 @@ namespace Esfa.Recruit.UnitTests.Provider.Web.Orchestrators.Vacancies.SearchResu
                 clientMock.Object,
                 RecruitVacancyClientMock.Object,
                 ProviderAlertsViewModelFactoryMock.Object,
-                ProviderRelationshipsServiceMock.Object, new ServiceParameters(VacancyType.Apprenticeship.ToString()));
+                ProviderRelationshipsServiceMock.Object, new ServiceParameters());
         }
 
         protected IEnumerable<VacancySummary> GenerateVacancySummaries(int count, string legalEntityName, string term, VacancyStatus status)

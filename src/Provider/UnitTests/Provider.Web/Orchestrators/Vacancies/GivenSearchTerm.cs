@@ -66,7 +66,7 @@ namespace Esfa.Recruit.UnitTests.Provider.Web.Orchestrators.Vacancies
                 providerClientMock.Object,
                 Mock.Of<IRecruitVacancyClient>(),
                Mock.Of<IProviderAlertsViewModelFactory>(),
-                Mock.Of<IProviderRelationshipsService>(), new ServiceParameters(VacancyType.Apprenticeship.ToString()));
+                Mock.Of<IProviderRelationshipsService>(), new ServiceParameters());
         }
 
     }

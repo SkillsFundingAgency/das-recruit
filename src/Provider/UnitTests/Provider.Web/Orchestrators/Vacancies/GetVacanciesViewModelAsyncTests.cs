@@ -78,7 +78,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Vacancies
                 _recruitVacancyClientMock.Object,
                 _providerAlertsViewModelFactoryMock.Object,
                 _providerRelationshipsServiceMock.Object,
-                new ServiceParameters(VacancyType.Apprenticeship.ToString()));
+                new ServiceParameters());
 
             var vm = await orch.GetVacanciesViewModelAsync(_user, "Submitted", 1, string.Empty);
 
@@ -117,7 +117,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Vacancies
                 _recruitVacancyClientMock.Object,
                 _providerAlertsViewModelFactoryMock.Object,
                 _providerRelationshipsServiceMock.Object,
-                new ServiceParameters(VacancyType.Apprenticeship.ToString()));
+                new ServiceParameters());
 
             var vm = await orch.GetVacanciesViewModelAsync(_user, "Submitted", 2, string.Empty);
 

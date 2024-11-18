@@ -29,7 +29,6 @@ namespace Esfa.Recruit.Provider.UnitTests.Employer.Web.Orchestrators.Dashboard
 
         [Theory]
         [InlineData(VacancyType.Apprenticeship)]
-        [InlineData(VacancyType.Traineeship)]
         public async Task WhenHasVacancies_ShouldReturnViewModelAsync(VacancyType vacancyType)
         {
             var fixture = new Fixture();
@@ -46,7 +45,6 @@ namespace Esfa.Recruit.Provider.UnitTests.Employer.Web.Orchestrators.Dashboard
 
         [Theory]
         [InlineData(VacancyType.Apprenticeship)]
-        [InlineData(VacancyType.Traineeship)]
         public async Task WhenHasNoVacancies_ShouldReturnViewModelAsync(VacancyType vacancyType)
         {
             var orch = GetSut(new ProviderDashboardSummary(), vacancyType);
@@ -62,29 +60,18 @@ namespace Esfa.Recruit.Provider.UnitTests.Employer.Web.Orchestrators.Dashboard
 
         [Theory]
         [InlineData(VacancyType.Apprenticeship)]
-        [InlineData(VacancyType.Traineeship)]
         public async Task Then_Checks_For_CorrectPermission_BasedOn_Vacancy_Type(VacancyType vacancyType)
         {
             var orch = GetSut(new ProviderDashboardSummary(), vacancyType);
 
             var actual = await orch.GetDashboardViewModelAsync(_user);
 
-            if (vacancyType == VacancyType.Apprenticeship)
-            {
-                _permissionServiceMock.Verify(x=>x.CheckProviderHasPermissions(Ukprn, OperationType.RecruitmentRequiresReview));
-                actual.HasEmployerReviewPermission.Should().BeTrue();
-            }
-            if (vacancyType == VacancyType.Traineeship)
-            {
-                actual.HasEmployerReviewPermission.Should().BeFalse();
-            }
-            
-        
+            _permissionServiceMock.Verify(x => x.CheckProviderHasPermissions(Ukprn, OperationType.RecruitmentRequiresReview));
+            actual.HasEmployerReviewPermission.Should().BeTrue();
         }
 
         [Theory]
         [InlineData(VacancyType.Apprenticeship)]
-        [InlineData(VacancyType.Traineeship)]
         public async Task Then_Upserts_Provider_User(VacancyType vacancyType)
         {
             var orch = GetSut(new ProviderDashboardSummary(), vacancyType);
@@ -99,7 +86,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Employer.Web.Orchestrators.Dashboard
             var timeProviderMock = new Mock<ITimeProvider>();
             timeProviderMock.Setup(t => t.Today).Returns(_today);
 
-            var serviceParameters = new ServiceParameters(vacancyType.ToString());
+            var serviceParameters = new ServiceParameters();
 
             var vacancyClientMock = new Mock<IProviderVacancyClient>();
             vacancyClientMock.Setup(c => c.GetDashboardSummary(Ukprn, vacancyType))

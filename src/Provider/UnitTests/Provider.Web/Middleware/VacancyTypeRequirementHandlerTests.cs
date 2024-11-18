@@ -16,9 +16,9 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Middleware
         [Fact]
         public async Task WhenCallingHandle_AndVacancyTypeMatches_ThenHasSucceededIsTrue()
         {
-            var requirement = new VacancyTypeRequirement(VacancyType.Traineeship);
+            var requirement = new VacancyTypeRequirement(VacancyType.Apprenticeship);
             var context = new AuthorizationHandlerContext(new[] {requirement}, new ClaimsPrincipal(Mock.Of<IIdentity>()), null);
-            var serviceParameters = new ServiceParameters(VacancyType.Traineeship.ToString());
+            var serviceParameters = new ServiceParameters();
             var handler = new VacancyTypeRequirementHandler(serviceParameters);
 
             await handler.HandleAsync(context);
@@ -31,7 +31,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Middleware
         {
             var requirement = new VacancyTypeRequirement(VacancyType.Traineeship);
             var context = new AuthorizationHandlerContext(new[] {requirement}, new ClaimsPrincipal(Mock.Of<IIdentity>()), null);
-            var serviceParameters = new ServiceParameters(VacancyType.Apprenticeship.ToString());
+            var serviceParameters = new ServiceParameters();
             var handler = new VacancyTypeRequirementHandler(serviceParameters);
 
             await handler.HandleAsync(context);
