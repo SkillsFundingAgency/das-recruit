@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Esfa.Recruit.Provider.Web.Orchestrators;
 using Esfa.Recruit.Provider.Web.Services;
-using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections;
@@ -65,20 +64,19 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Vacancies
             }
 
             var providerClientMock = new Mock<IProviderVacancyClient>();
-            providerClientMock.Setup(c => c.GetDashboardAsync(_user.Ukprn.Value, VacancyType.Apprenticeship, 1, FilteringOptions.Submitted, string.Empty))
+            providerClientMock.Setup(c => c.GetDashboardAsync(_user.Ukprn.Value, 1, FilteringOptions.Submitted, string.Empty))
                 .Returns(Task.FromResult(new ProviderDashboard {
                     Vacancies = vacancies
                 }));
 
-            providerClientMock.Setup(x => x.GetVacancyCount(_user.Ukprn.Value, VacancyType.Apprenticeship, FilteringOptions.Submitted, string.Empty))
+            providerClientMock.Setup(x => x.GetVacancyCount(_user.Ukprn.Value, FilteringOptions.Submitted, string.Empty))
                 .ReturnsAsync(totalVacancies);
 
             var orch = new VacanciesOrchestrator(
                 providerClientMock.Object,
                 _recruitVacancyClientMock.Object,
                 _providerAlertsViewModelFactoryMock.Object,
-                _providerRelationshipsServiceMock.Object,
-                new ServiceParameters());
+                _providerRelationshipsServiceMock.Object);
 
             var vm = await orch.GetVacanciesViewModelAsync(_user, "Submitted", 1, string.Empty);
 
@@ -105,19 +103,18 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Vacancies
             }
 
             var providerClientMock = new Mock<IProviderVacancyClient>();
-            providerClientMock.Setup(c => c.GetDashboardAsync(_user.Ukprn.Value,VacancyType.Apprenticeship, 2, FilteringOptions.Submitted, string.Empty))
+            providerClientMock.Setup(c => c.GetDashboardAsync(_user.Ukprn.Value, 2, FilteringOptions.Submitted, string.Empty))
                 .Returns(Task.FromResult(new ProviderDashboard {
                     Vacancies = vacancies
                 }));
-            providerClientMock.Setup(c => c.GetVacancyCount(_user.Ukprn.Value,VacancyType.Apprenticeship, FilteringOptions.Submitted, string.Empty))
+            providerClientMock.Setup(c => c.GetVacancyCount(_user.Ukprn.Value, FilteringOptions.Submitted, string.Empty))
                 .ReturnsAsync(25);
 
             var orch = new VacanciesOrchestrator(
                 providerClientMock.Object,
                 _recruitVacancyClientMock.Object,
                 _providerAlertsViewModelFactoryMock.Object,
-                _providerRelationshipsServiceMock.Object,
-                new ServiceParameters());
+                _providerRelationshipsServiceMock.Object);
 
             var vm = await orch.GetVacanciesViewModelAsync(_user, "Submitted", 2, string.Empty);
 

@@ -10,7 +10,6 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.EditVacancyDates
         public string ClosingMonth { get; set; }
         public string ClosingYear { get; set; }
         public string Title { get; set; }
-        public string RouteName { get; set; }
         public VacancyType VacancyType { get; set; }
         public string ClosingDate
         {

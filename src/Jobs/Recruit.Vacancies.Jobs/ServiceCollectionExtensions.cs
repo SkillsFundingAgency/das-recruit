@@ -110,10 +110,8 @@ namespace Esfa.Recruit.Vacancies.Jobs
 
             RegisterCommunicationsService(services, configuration);
             RegisterDasEncodingService(services, configuration);
-            
-            var serviceParameters = new ServiceParameters("Apprenticeships");
-            
-            services.AddSingleton(serviceParameters);
+
+            services.AddSingleton(new ServiceParameters());
 
             services.AddSingleton<IFeature, Feature>();
         }

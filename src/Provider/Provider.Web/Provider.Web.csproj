@@ -48,4 +48,8 @@
       <CopyToPublishDirectory>Never</CopyToPublishDirectory>
     </Content>
   </ItemGroup>
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="Views\Part1\TraineeshipSector\TraineeshipSector.cshtml" />
+    <_ContentIncludedByDefault Remove="Views\Part2\WorkExperience\WorkExperience.cshtml" />
+  </ItemGroup>
 </Project>

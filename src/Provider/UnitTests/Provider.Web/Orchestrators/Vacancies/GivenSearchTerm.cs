@@ -3,7 +3,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Provider.Web.Orchestrators;
 using Esfa.Recruit.Provider.Web.Services;
-using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
@@ -58,7 +57,7 @@ namespace Esfa.Recruit.UnitTests.Provider.Web.Orchestrators.Vacancies
         {
             var providerClientMock = new Mock<IProviderVacancyClient>();
             
-            providerClientMock.Setup(c => c.GetDashboardAsync(_user.Ukprn.Value, VacancyType.Apprenticeship,page, status, searchTerm))
+            providerClientMock.Setup(c => c.GetDashboardAsync(_user.Ukprn.Value,page, status, searchTerm))
                 .ReturnsAsync(new ProviderDashboard {
                     Vacancies = _testVacancies
                 });
@@ -66,7 +65,7 @@ namespace Esfa.Recruit.UnitTests.Provider.Web.Orchestrators.Vacancies
                 providerClientMock.Object,
                 Mock.Of<IRecruitVacancyClient>(),
                Mock.Of<IProviderAlertsViewModelFactory>(),
-                Mock.Of<IProviderRelationshipsService>(), new ServiceParameters());
+                Mock.Of<IProviderRelationshipsService>());
         }
 
     }

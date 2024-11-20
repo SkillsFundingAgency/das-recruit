@@ -98,29 +98,6 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part2
 
             _fixture.VerifyProviderReviewFieldIndicators(setFieldIndicators, unsetFieldIndicators);
         }
-        
-        [Fact]
-        public async Task When_Traineeship_Then_Ignores_VacancyDescription_And_OutcomeDescription()
-        {
-            _fixture
-                .WithTaskListSet(false)
-                .WithVacancyType(VacancyType.Traineeship)
-                .WithTrainingDescription("hello")
-                .Setup();
-            
-            var vacancyDescriptionEditModel = new VacancyDescriptionEditModel
-            {
-                Ukprn = _fixture.Vacancy.TrainingProvider.Ukprn.Value,
-                VacancyId = _fixture.Vacancy.Id,
-                TrainingDescription = "new value"
-            };
-            
-            await _fixture.PostVacancyDescriptionEditModelAsync(vacancyDescriptionEditModel);
-
-            _fixture.VerifyProviderReviewFieldIndicators(
-                new [] { FieldIdentifiers.TrainingDescription },
-                new []{ FieldIdentifiers.VacancyDescription, FieldIdentifiers.OutcomeDescription});
-        }
 
         [Fact]
         public async Task When_TaskList_Not_Enabled_Then_Sets_Review_Field_For_OutcomeDescription()

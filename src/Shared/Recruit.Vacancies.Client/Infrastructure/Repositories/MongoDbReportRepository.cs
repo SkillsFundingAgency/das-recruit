@@ -39,11 +39,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
                 new Context(nameof(UpdateAsync)));
         }
 
-        public async Task<List<T>> GetReportsForProviderAsync<T>(long ukprn, VacancyType vacancyType)
+        public async Task<List<T>> GetReportsForProviderAsync<T>(long ukprn)
         {
             var builder = Builders<T>.Filter;
             var filter = builder.Eq(OwnerTypeFieldName, ReportOwnerType.Provider.ToString()) &
-                         builder.Eq(ParametersVacancyTypeFieldName, vacancyType.ToString()) &
+                         builder.Eq(ParametersVacancyTypeFieldName, VacancyType.Apprenticeship.ToString()) &
                          builder.Eq(OwnerUkprnFieldName, ukprn);
 
             var collection = GetCollection<T>();

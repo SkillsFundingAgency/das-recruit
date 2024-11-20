@@ -10,18 +10,14 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation.
     public class DurationValidationTests : VacancyValidationTestsBase
     {
         [Theory]
-        [InlineData(DurationUnit.Month, 12,  "Apprenticeship", "30")]
-        [InlineData(DurationUnit.Year, 1,  "Apprenticeship", "30")]
-        [InlineData(DurationUnit.Week, 52,  "Apprenticeship", "30")]
-        [InlineData(DurationUnit.Month, 13,  "Apprenticeship", "30")]
-        [InlineData(DurationUnit.Month, 12,  "Apprenticeship")]
-        [InlineData(DurationUnit.Week, 6,  "Traineeship")]
-        [InlineData(DurationUnit.Week, 52, "Traineeship")]
-        [InlineData(DurationUnit.Month, 12, "Traineeship")]
-        [InlineData(DurationUnit.Month, 2, "Traineeship")]
-        public void NoErrorsWhenDurationFieldsAreValid(DurationUnit unitValue, int durationValue, string serviceType, string weeklyHoursText = null)
+        [InlineData(DurationUnit.Month, 12, "30")]
+        [InlineData(DurationUnit.Year, 1,   "30")]
+        [InlineData(DurationUnit.Week, 52,  "30")]
+        [InlineData(DurationUnit.Month, 13, "30")]
+        [InlineData(DurationUnit.Month, 12)]
+        public void NoErrorsWhenDurationFieldsAreValid(DurationUnit unitValue, int durationValue, string weeklyHoursText = null)
         {
-            ServiceParameters = new ServiceParameters(serviceType);
+            ServiceParameters = new ServiceParameters();
             decimal? weeklyHours = decimal.TryParse(weeklyHoursText, out decimal parsed) ? parsed : (decimal?)null;
             var vacancy = new Vacancy
             {
@@ -39,12 +35,10 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation.
             result.Errors.Should().HaveCount(0);
         }
 
-        [Theory]
-        [InlineData("Apprenticeship")]
-        [InlineData("Traineeship")]
-        public void DurationUnitMustHaveAValue(string serviceType)
+        [Fact]
+        public void DurationUnitMustHaveAValue()
         {
-            ServiceParameters = new ServiceParameters(serviceType);
+            ServiceParameters = new ServiceParameters();
             var vacancy = new Vacancy
             {
                 Wage = new Wage
@@ -63,12 +57,10 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation.
             result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.Duration);
         }
 
-        [Theory]
-        [InlineData("Apprenticeship")]
-        [InlineData("Traineeship")]
-        public void DurationUnitMustHaveAValidValue(string serviceType)
+        [Fact]
+        public void DurationUnitMustHaveAValidValue()
         {
-            ServiceParameters = new ServiceParameters(serviceType);
+            ServiceParameters = new ServiceParameters();
             var vacancy = new Vacancy
             {
                 Wage = new Wage
@@ -87,12 +79,10 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation.
             result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.Duration);
         }
 
-        [Theory]
-        [InlineData("Apprenticeship")]
-        [InlineData("Traineeship")]
-        public void DurationMustHaveAValue(string serviceType)
+        [Fact]
+        public void DurationMustHaveAValue()
         {
-            ServiceParameters = new ServiceParameters(serviceType);
+            ServiceParameters = new ServiceParameters();
             var vacancy = new Vacancy 
             {
                 Wage = new Wage
@@ -115,7 +105,7 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation.
         [InlineData(DurationUnit.Month, 11)]
         public void ApprenticeshipDurationMustBeAtLeast12Months(DurationUnit unitValue, int durationValue)
         {
-            ServiceParameters = new ServiceParameters("Apprenticeship");
+            ServiceParameters = new ServiceParameters();
             var vacancy = new Vacancy
             {
                 Wage = new Wage
@@ -147,7 +137,7 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation.
         [InlineData(DurationUnit.Year, 1, "9", true)]
         public void AnyApprenticeshipDurationMonthsMustHave30WeeklyHours(DurationUnit unitValue, int durationValue, string weeklyHoursText, bool hasErrors)
         {
-            ServiceParameters = new ServiceParameters("Apprenticeship");
+            ServiceParameters = new ServiceParameters();
             decimal? weeklyHours = decimal.TryParse(weeklyHoursText, out decimal parsed) ? parsed : (decimal?)null;
             var vacancy = new Vacancy
             {
@@ -177,32 +167,6 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation.
                     .Be($"Duration of apprenticeship must be {expectedNumberOfMonths} months based on the number of hours per week entered");
             }
             
-        }
-
-        [Theory]
-        [InlineData(DurationUnit.Month, 1)]
-        [InlineData(DurationUnit.Week, 5)]
-        [InlineData(DurationUnit.Month, 13)]
-        [InlineData(DurationUnit.Week, 53)]
-        public void TraineeshipDurationMustBeAtLeast6WeeksAndNoLongerThan12Months(DurationUnit unitValue, int durationValue)
-        {
-            ServiceParameters = new ServiceParameters("Traineeship");
-            var vacancy = new Vacancy
-            {
-                Wage = new Wage
-                {
-                    DurationUnit = unitValue,
-                    Duration = durationValue
-                }
-            };
-
-            var result = Validator.Validate(vacancy, VacancyRuleSet.Duration);
-
-            result.HasErrors.Should().BeTrue();
-            result.Errors.Should().HaveCount(1);
-            result.Errors[0].PropertyName.Should().Be($"{nameof(vacancy.Wage)}.{nameof(vacancy.Wage.Duration)}");
-            result.Errors[0].ErrorCode.Should().Be("36");
-            result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.Duration);
         }
     }
 }

@@ -25,18 +25,5 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Middleware
 
             context.HasSucceeded.Should().BeTrue();
         }
-        
-        [Fact]
-        public async Task WhenCallingHandle_AndVacancyTypeNotMatching_ThenHasSucceededIsFalse()
-        {
-            var requirement = new VacancyTypeRequirement(VacancyType.Traineeship);
-            var context = new AuthorizationHandlerContext(new[] {requirement}, new ClaimsPrincipal(Mock.Of<IIdentity>()), null);
-            var serviceParameters = new ServiceParameters();
-            var handler = new VacancyTypeRequirementHandler(serviceParameters);
-
-            await handler.HandleAsync(context);
-
-            context.HasSucceeded.Should().BeFalse();
-        }
     }
 }

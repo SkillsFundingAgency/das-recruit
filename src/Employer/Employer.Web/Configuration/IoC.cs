@@ -38,7 +38,7 @@ namespace Esfa.Recruit.Employer.Web.Configuration
         {
             services.AddRecruitStorageClient(configuration);
 
-            services.AddSingleton(new ServiceParameters(VacancyType.Apprenticeship.ToString()));
+            services.AddSingleton(new ServiceParameters());
             
             //Configuration
             services.Configure<ApplicationInsightsConfiguration>(configuration.GetSection("ApplicationInsights"));

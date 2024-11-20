@@ -186,7 +186,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Vacancies
             
             var recruitClientMock = new Mock<IRecruitVacancyClient>();
             recruitClientMock.Setup(c => c.GetUsersDetailsAsync(It.IsAny<string>())).ReturnsAsync(new User());
-            clientMock.Setup(x => x.GetVacancyCount(EmployerAccountId, VacancyType.Apprenticeship, status, string.Empty))
+            clientMock.Setup(x => x.GetVacancyCount(EmployerAccountId, status, string.Empty))
                 .ReturnsAsync(totalVacancies);
             
             var alertsFactoryMock = new Mock<IEmployerAlertsViewModelFactory>();

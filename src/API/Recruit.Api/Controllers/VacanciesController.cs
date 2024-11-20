@@ -62,39 +62,5 @@ namespace SFA.DAS.Recruit.Api.Controllers
             return GetApiResponse(resp);
         }
 
-        [HttpPost]
-        [Route("createtraineeship/{id}")]
-        public async Task<IActionResult> CreateTraineeship([FromRoute] Guid id, CreateTraineeshipVacancyRequest request, [FromQuery] string userEmail = null, [FromQuery] long? ukprn = null)
-        {
-            var resp = await _mediator.Send(new CreateTraineeshipVacancyCommand
-            {
-                Vacancy = request.MapFromCreateTraineeshipVacancyRequest(id),
-                VacancyUserDetails = new VacancyUser
-                {
-                    Email = userEmail,
-                    Ukprn = ukprn
-                }
-            });
-
-            return GetApiResponse(resp);
-        }
-
-        [HttpPost]
-        [Route("{id}/ValidateTraineeship")]
-        public async Task<IActionResult> ValidateTraineeship([FromRoute] Guid id, CreateTraineeshipVacancyRequest request, [FromQuery] string userEmail = null, [FromQuery] long? ukprn = null)
-        {
-            var resp = await _mediator.Send(new CreateTraineeshipVacancyCommand
-            {
-                Vacancy = request.MapFromCreateTraineeshipVacancyRequest(id),
-                VacancyUserDetails = new VacancyUser
-                {
-                    Email = userEmail,
-                    Ukprn = ukprn
-                },
-                ValidateOnly = true
-            });
-
-            return GetApiResponse(resp);
-        }
     }
 }
