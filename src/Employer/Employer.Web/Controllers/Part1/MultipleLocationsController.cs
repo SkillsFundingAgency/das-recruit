@@ -21,6 +21,7 @@ public class MultipleLocationsController(
         return View(viewModel);
     }
 
+    [FeatureGate(FeatureNames.MultipleLocations)]
     [HttpPost("location-availability", Name = RouteNames.MultipleLocations_Post)]
     public async Task<IActionResult> LocationAvailability(LocationAvailabilityEditModel model, [FromQuery] bool wizard)
     {
