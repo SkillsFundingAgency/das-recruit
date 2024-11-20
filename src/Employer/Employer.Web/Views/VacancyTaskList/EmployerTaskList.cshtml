@@ -253,18 +253,36 @@
                         }
                     </li>
                     <li class="das-task-list__item">
-                        @if (Model.NumberOfPositionsSectionState == VacancyPreviewSectionState.Incomplete)
-                        {
-                            <span class="das-task-list__task-name">
-                                Address
-                            </span>    
-                        }
-                        else
-                        {
-                            <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.Location_Get" asp-all-route-data="@Model.RouteDictionary">
-                                Address
-                            </a>
-                        }
+
+                        <esfaFeatureEnabled name="@FeatureNames.MultipleLocations">
+                            @if (Model.NumberOfPositionsSectionState == VacancyPreviewSectionState.Incomplete)
+                            {
+                                <span class="das-task-list__task-name">
+                                    Locations
+                                </span>
+                            }
+                            else
+                            {
+                                <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.MultipleLocations_Get" asp-all-route-data="@Model.RouteDictionary">
+                                    Locations
+                                </a>
+                            }                        
+                        </esfaFeatureEnabled>
+
+                        <esfaFeatureDisabled name="@FeatureNames.MultipleLocations">
+                            @if (Model.NumberOfPositionsSectionState == VacancyPreviewSectionState.Incomplete)
+                            {
+                                <span class="das-task-list__task-name">
+                                    Address
+                                </span>
+                            }
+                            else
+                            {
+                                <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.Location_Get" asp-all-route-data="@Model.RouteDictionary">
+                                    Address
+                                </a>
+                            }
+                        </esfaFeatureDisabled>
                     </li>
                 </ul>
             </li>
