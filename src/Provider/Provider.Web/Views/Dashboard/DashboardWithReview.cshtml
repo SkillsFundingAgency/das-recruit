@@ -148,21 +148,19 @@
         </div>
     </div>
     <div class="govuk-grid-row app-card__row">
-        <esfaFeatureEnabled name="@FeatureNames.ShareApplicationsFeature">
-            <div class="govuk-grid-column-one-third">
-                <div class="app-card">
-                    <div class="app-card__content">
-                        <h3 class="govuk-heading-m app-card__heading">
-                            <span class="app-card__stat">@Model.NumberOfEmployerReviewedApplications</span>
-                            <a asp-route="@RouteNames.Vacancies_Get" asp-route-ukprn="@Model.Ukprn" asp-route-filter="@FilteringOptions.EmployerReviewedApplications" class="govuk-link  govuk-link--no-visited-state">
-                                @Model.ApplicationTextEmployerReviewedApplication
-                            </a>
-                        </h3>
-                        <p class="govuk-body app-card__description">Vacancies with applications that have been reviewed by an employer.</p>
-                    </div>
+        <div class="govuk-grid-column-one-third">
+            <div class="app-card">
+                <div class="app-card__content">
+                    <h3 class="govuk-heading-m app-card__heading">
+                        <span class="app-card__stat">@Model.NumberOfEmployerReviewedApplications</span>
+                        <a asp-route="@RouteNames.Vacancies_Get" asp-route-ukprn="@Model.Ukprn" asp-route-filter="@FilteringOptions.EmployerReviewedApplications" class="govuk-link  govuk-link--no-visited-state">
+                            @Model.ApplicationTextEmployerReviewedApplication
+                        </a>
+                    </h3>
+                    <p class="govuk-body app-card__description">Vacancies with applications that have been reviewed by an employer.</p>
                 </div>
             </div>
-        </esfaFeatureEnabled>
+        </div>
         <div class="govuk-grid-column-one-third">
             <div class="app-card">
                 <div class="app-card__content">
