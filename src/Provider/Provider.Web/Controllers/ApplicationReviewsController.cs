@@ -14,7 +14,6 @@ using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyApplications;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Routing;
 using Microsoft.FeatureManagement.Mvc;
 
 namespace Esfa.Recruit.Provider.Web.Controllers
@@ -113,7 +112,6 @@ namespace Esfa.Recruit.Provider.Web.Controllers
         }
 
         [HttpGet("", Name = RouteNames.ApplicationReviewsToShare_Get)]
-        [FeatureGate(FeatureNames.ShareApplicationsFeature)]
         public async Task<IActionResult> ApplicationReviewsToShare(VacancyRouteModel rm, [FromQuery] string sortColumn, [FromQuery] string sortOrder)
         {
             Enum.TryParse<SortOrder>(sortOrder, out var outputSortOrder);
@@ -126,7 +124,6 @@ namespace Esfa.Recruit.Provider.Web.Controllers
 
         [HttpPost("", Name = RouteNames.ApplicationReviewsToShare_Post)]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-        [FeatureGate(FeatureNames.ShareApplicationsFeature)]
         public async Task<IActionResult> ApplicationReviewsToShare(ApplicationReviewsToShareRouteModel rm, [FromQuery] string sortColumn, [FromQuery] string sortOrder)
         {
             Enum.TryParse<SortOrder>(sortOrder, out var outputSortOrder);
@@ -142,7 +139,6 @@ namespace Esfa.Recruit.Provider.Web.Controllers
         }
 
         [HttpGet("share", Name = RouteNames.ApplicationReviewsToShareConfirmation_Get)]
-        [FeatureGate(FeatureNames.ShareApplicationsFeature)]
         public async Task<IActionResult> ApplicationReviewsToShareConfirmation(ShareApplicationReviewsRequest request)
         {
             var shareApplicationsConfirmationViewModel = await _orchestrator.GetApplicationReviewsToShareConfirmationViewModel(request);
@@ -151,7 +147,6 @@ namespace Esfa.Recruit.Provider.Web.Controllers
 
         [HttpPost("share", Name = RouteNames.ApplicationReviewsToShareConfirmation_Post)]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-        [FeatureGate(FeatureNames.ShareApplicationsFeature)]
         public async Task<IActionResult> ApplicationReviewsToShareConfirmation(ShareApplicationReviewsPostRequest request)
         {
             if (request.ShareApplicationsConfirmed)

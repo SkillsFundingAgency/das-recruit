@@ -117,11 +117,9 @@
             </h2>
         </div>
         <div asp-show="@(Model.IsApplyThroughFaaVacancy || Model.IsApplyThroughFatVacancy)">
-            <esfaFeatureEnabled name="@FeatureNames.ShareApplicationsFeature">
-                <p class="govuk-body" asp-show="@Model.CanShowShareMultipleApplicationsLink">
-                    <a asp-route="@RouteNames.ApplicationReviewsToShare_Get" asp-all-route-data="@Model.RouteDictionary" class="govuk-link govuk-!-margin-top-2 govuk-!-margin-bottom-4">Share multiple applications with employer</a>
-                </p>
-            </esfaFeatureEnabled>
+            <p class="govuk-body" asp-show="@Model.CanShowShareMultipleApplicationsLink">
+                <a asp-route="@RouteNames.ApplicationReviewsToShare_Get" asp-all-route-data="@Model.RouteDictionary" class="govuk-link govuk-!-margin-top-2 govuk-!-margin-bottom-4">Share multiple applications with employer</a>
+            </p>
             <p class="govuk-body" asp-show="@Model.CanShowMultipleApplicationsUnsuccessfulLink">
                 <a asp-route="@RouteNames.ApplicationReviewsToUnsuccessful_Get" asp-all-route-data="@Model.RouteDictionary" class="govuk-link govuk-!-margin-top-2 govuk-!-margin-bottom-4">Make multiple applications unsuccessful</a>
             </p>
