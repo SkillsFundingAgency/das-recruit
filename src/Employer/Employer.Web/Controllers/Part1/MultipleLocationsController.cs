@@ -33,7 +33,7 @@ public class MultipleLocationsController(
             : RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet, new {model.VacancyId, model.EmployerAccountId});
     } 
 
-    public async Task<LocationAvailabilityViewModel> GetLocationAvailabilityViewModel(VacancyRouteModel vacancyRouteModel, string wizard)
+    private async Task<LocationAvailabilityViewModel> GetLocationAvailabilityViewModel(VacancyRouteModel vacancyRouteModel, string wizard)
     {
         var vacancy = await utility.GetAuthorisedVacancyForEditAsync(vacancyRouteModel, RouteNames.Location_Get);
         var viewModel = new LocationAvailabilityViewModel
@@ -48,5 +48,4 @@ public class MultipleLocationsController(
 
         return viewModel;
     }
-    
 }
