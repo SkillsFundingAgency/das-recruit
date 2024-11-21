@@ -48,6 +48,9 @@
         public const string Location_Get = "Location_Get";
         public const string Location_Post = "Location_Post";
         public const string Location_Cancel = "Location_Cancel";
+        
+        public const string MultipleLocations_Get = "Multiple_Locations_Get";
+        public const string MultipleLocations_Post = "Multiple_Locations_Post";
 
         public const string CreateVacancy_Get = "CreateVacancy_Get";
         public const string CreateVacancy_Post = "CreateVacancy_Post";

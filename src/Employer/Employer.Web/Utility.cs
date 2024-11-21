@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Exceptions;
 using Esfa.Recruit.Employer.Web.Models;
@@ -210,10 +209,12 @@ namespace Esfa.Recruit.Employer.Web
                 RouteNames.LegalEntityAgreement_SoftStop_Get,
                 RouteNames.Location_Get, 
                 RouteNames.Location_Post,
+                RouteNames.MultipleLocations_Get,
+                RouteNames.MultipleLocations_Post,
                 RouteNames.EmployerName_Post, 
                 RouteNames.EmployerName_Get, 
                 RouteNames.Employer_Post, 
-                RouteNames.Employer_Get
+                RouteNames.Employer_Get,
             });
 
             if (string.IsNullOrWhiteSpace(vacancy.LegalEntityName) 

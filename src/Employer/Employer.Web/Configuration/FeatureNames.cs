@@ -6,5 +6,6 @@ namespace Esfa.Recruit.Employer.Web.Configuration
         public const string MultipleApplicationsManagement = nameof(MultipleApplicationsManagement);
         public const string CompetitiveSalary = nameof(CompetitiveSalary);
         public const string FaaV2Improvements = nameof(FaaV2Improvements);
+        public const string MultipleLocations = nameof(MultipleLocations);
     }
 }
