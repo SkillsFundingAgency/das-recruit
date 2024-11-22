@@ -18,13 +18,10 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
     public class EmployerNameController : EmployerControllerBase
     {
         private EmployerNameOrchestrator _orchestrator;
-        private readonly IFeature _feature;
 
-        public EmployerNameController(EmployerNameOrchestrator orchestrator,
-            IWebHostEnvironment hostingEnvironment, IFeature feature) : base(hostingEnvironment)
+        public EmployerNameController(EmployerNameOrchestrator orchestrator, IWebHostEnvironment hostingEnvironment) : base(hostingEnvironment)
         {
             _orchestrator = orchestrator;
-            _feature = feature;
         }
 
         [HttpGet("employer-name", Name = RouteNames.EmployerName_Get)]
@@ -35,11 +32,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
             //this could happen if the user navigates straight to employer-name end point
             //by passing employer or location end point
             
-            if (employerInfoModel == null && !_feature.IsFeatureEnabled(FeatureNames.EmployerTaskList)) 
-                return RedirectToRoute(RouteNames.Employer_Get, new {vrm.VacancyId, vrm.EmployerAccountId});
-            
             var vm = await _orchestrator.GetEmployerNameViewModelAsync(vrm, employerInfoModel);
-
             if (vm == null)
             {
                 return RedirectToRoute(RouteNames.Employer_Get, new {vrm.VacancyId, vrm.EmployerAccountId});
