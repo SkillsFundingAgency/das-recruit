@@ -19,13 +19,11 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
     public class TrainingController : Controller
     {
         private readonly TrainingOrchestrator _orchestrator;
-        private readonly IFeature _feature;
         private const string InvalidTraining = "Select a training course";
 
-        public TrainingController(TrainingOrchestrator orchestrator, IFeature feature)
+        public TrainingController(TrainingOrchestrator orchestrator)
         {
             _orchestrator = orchestrator;
-            _feature = feature;
         }
 
         [HttpGet("training", Name = RouteNames.Training_Get)]
@@ -116,12 +114,8 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
             }
 
             return wizard
-                ? _feature.IsFeatureEnabled(FeatureNames.ProviderTaskList) 
-                    ? RedirectToRoute(RouteNames.ShortDescription_Get, new {m.VacancyId, m.Ukprn}) 
-                    : RedirectToRoute(RouteNames.NumberOfPositions_Get,new {m.VacancyId, m.Ukprn})
-                : _feature.IsFeatureEnabled(FeatureNames.ProviderTaskList) 
-                    ? RedirectToRoute(RouteNames.ProviderCheckYourAnswersGet, new {m.VacancyId, m.Ukprn}) 
-                    : RedirectToRoute(RouteNames.Vacancy_Preview_Get, new {m.VacancyId, m.Ukprn});
+                ? RedirectToRoute(RouteNames.ShortDescription_Get, new { m.VacancyId, m.Ukprn })
+                : RedirectToRoute(RouteNames.ProviderCheckYourAnswersGet, new { m.VacancyId, m.Ukprn });
         }
 
         private async Task<IActionResult> ProgrammeNotFound(TrainingEditModel m, bool wizard)

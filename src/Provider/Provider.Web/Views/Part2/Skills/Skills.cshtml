@@ -7,9 +7,7 @@
 }
 
 @section BackLink {
-    <esfaFeatureEnabled name="@FeatureNames.ProviderTaskList">
-        <a asp-route="@RouteNames.ProviderTaskListGet" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Back</a>
-    </esfaFeatureEnabled>
+    <a asp-route="@RouteNames.ProviderTaskListGet" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Back</a>
 }
 
 <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState}' />
@@ -74,11 +72,6 @@
 
     <div class="govuk-button-group">
         <button type="submit" esfa-automation="btn-continue" class="govuk-button save-button">Save and continue</button>
-        <esfaFeatureEnabled name="@FeatureNames.ProviderTaskList">
-            <a asp-route="@RouteNames.Dashboard_Get" asp-all-route-data="@Model.RouteDictionary" asp-fragment="reqAndProspects" esfa-automation="link-cancel" class="govuk-link govuk-link--no-visited-state">Cancel</a>
-        </esfaFeatureEnabled>
-        <esfaFeatureDisabled name="@FeatureNames.ProviderTaskList">
-            <a asp-route="@RouteNames.Vacancy_Preview_Get" asp-all-route-data="@Model.RouteDictionary" asp-fragment="reqAndProspects" esfa-automation="link-cancel" class="govuk-link govuk-link--no-visited-state">Cancel</a>    
-        </esfaFeatureDisabled>
+        <a asp-route="@RouteNames.Dashboard_Get" asp-all-route-data="@Model.RouteDictionary" asp-fragment="reqAndProspects" esfa-automation="link-cancel" class="govuk-link govuk-link--no-visited-state">Cancel</a>
     </div>
 </form>
