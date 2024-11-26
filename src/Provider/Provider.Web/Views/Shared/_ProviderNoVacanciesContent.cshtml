@@ -38,12 +38,6 @@
         </div>
     
 
-        <esfaFeatureEnabled name="@FeatureNames.ProviderTaskList">
-            <a asp-route="@RouteNames.LegalEntityEmployer_Get"  asp-all-route-data="@Model.RouteDictionary" role="button" class="govuk-button govuk-button--start" esfa-automation="create-vacancy">Start now</a>    
-        </esfaFeatureEnabled>
-        <esfaFeatureDisabled name="@FeatureNames.ProviderTaskList">
-            <a asp-route="@RouteNames.LegalEntityEmployer_Get"  asp-all-route-data="@Model.RouteDictionary" role="button" class="govuk-button govuk-button--start" esfa-automation="create-vacancy">Create vacancy</a>
-        </esfaFeatureDisabled>
-        
+        <a asp-route="@RouteNames.LegalEntityEmployer_Get"  asp-all-route-data="@Model.RouteDictionary" role="button" class="govuk-button govuk-button--start" esfa-automation="create-vacancy">Start now</a>    
     </div>
 </div>

@@ -22,12 +22,7 @@
             <h1 class="govuk-heading-xl">Recruitment</h1>
         </div>
         <div class="govuk-grid-column-one-half ">
-            <esfaFeatureEnabled name="@FeatureNames.ProviderTaskList">
-                <a asp-route="@RouteNames.CreateVacancyStart"  asp-route-ukprn="@Model.Ukprn" class="govuk-button das-float-right govuk-!-margin-top-2 govuk-!-margin-bottom-4" esfa-automation="create-vacancy">Create vacancy</a>
-            </esfaFeatureEnabled>
-            <esfaFeatureDisabled name="@FeatureNames.ProviderTaskList">
-                <a asp-route="@RouteNames.Employer_Get" asp-route-ukprn="@Model.Ukprn"  class="govuk-button das-float-right govuk-!-margin-top-2 govuk-!-margin-bottom-4" esfa-automation="create-vacancy">Create vacancy</a>    
-            </esfaFeatureDisabled>
+            <a asp-route="@RouteNames.CreateVacancyStart"  asp-route-ukprn="@Model.Ukprn" class="govuk-button das-float-right govuk-!-margin-top-2 govuk-!-margin-bottom-4" esfa-automation="create-vacancy">Create vacancy</a>
         </div>
     </div>
     
