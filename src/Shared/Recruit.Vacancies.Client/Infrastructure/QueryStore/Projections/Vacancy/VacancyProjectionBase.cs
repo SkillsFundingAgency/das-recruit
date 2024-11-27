@@ -46,8 +46,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Va
         public int? EducationLevelNumber { get; set; }
         public string AccountPublicHashedId { get; set; }
         public string AccountLegalEntityPublicHashedId { get; set; }
-        public int? RouteId { get; set; }
-        public string WorkExperience { get; set; }
         public VacancyType? VacancyType { get; set; }
         public string AdditionalQuestion1 { get; set; }
         public string AdditionalQuestion2 { get; set; }

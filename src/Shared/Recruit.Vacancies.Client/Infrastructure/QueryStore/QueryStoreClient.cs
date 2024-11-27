@@ -35,22 +35,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
             return _queryStore.GetAsync<EmployerDashboard>(QueryViewType.EmployerDashboard.TypeName, key);
         }
 
-        public Task<ProviderDashboard> GetProviderDashboardAsync(long ukprn, VacancyType vacancyType)
+        public Task<ProviderDashboard> GetProviderDashboardAsync(long ukprn)
         {
-            var key = string.Empty;
-            var typeName = string.Empty;
-
-            if (vacancyType == VacancyType.Apprenticeship)
-            {
-                key = QueryViewType.ProviderDashboard.GetIdValue(ukprn);
-                typeName = QueryViewType.ProviderDashboard.TypeName;
-            }
-            else if (vacancyType == VacancyType.Traineeship)
-            {
-                key = QueryViewType.ProviderTraineeshipDashboard.GetIdValue(ukprn);
-                typeName = QueryViewType.ProviderDashboard.TypeName;
-            }
-
+            var key = QueryViewType.ProviderDashboard.GetIdValue(ukprn);
+            var typeName = QueryViewType.ProviderDashboard.TypeName;
+        
             return _queryStore.GetAsync<ProviderDashboard>(typeName, key);
         }
 
@@ -86,11 +75,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
             return _queryStore.UpsertAsync(dashboardItem);
         }
 
-        public Task UpdateProviderDashboardAsync(long ukprn, IEnumerable<VacancySummary> vacancySummaries, IEnumerable<ProviderDashboardTransferredVacancy> transferredVacancies, VacancyType vacancyType)
+        public Task UpdateProviderDashboardAsync(long ukprn, IEnumerable<VacancySummary> vacancySummaries, IEnumerable<ProviderDashboardTransferredVacancy> transferredVacancies)
         {
             var dashboardItem = new ProviderDashboard
             {
-                Id = vacancyType == VacancyType.Apprenticeship ? QueryViewType.ProviderDashboard.GetIdValue(ukprn) :  QueryViewType.ProviderTraineeshipDashboard.GetIdValue(ukprn),
+                Id = QueryViewType.ProviderDashboard.GetIdValue(ukprn),
                 Vacancies = vacancySummaries,
                 TransferredVacancies = transferredVacancies,
                 LastUpdated = _timeProvider.Now

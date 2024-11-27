@@ -26,7 +26,6 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers.Part1
         private WageController _controller;
         private Fixture _fixture;
         private long _ukprn;
-        private Mock<IFeature> _feature;
 
         [SetUp]
         public void Setup()
@@ -37,14 +36,12 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers.Part1
 
             _ukprn = 10000234;
 
-            _feature = new Mock<IFeature>();
-
             var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
             {
                 new Claim(ProviderRecruitClaims.IdamsUserUkprnClaimsTypeIdentifier,_ukprn.ToString())
             }));
 
-            _controller = new WageController(_orchestrator.Object, _feature.Object);
+            _controller = new WageController(_orchestrator.Object);
 
             _controller.ControllerContext = new ControllerContext
             {
@@ -56,9 +53,6 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers.Part1
         public async Task POST_AdditionalInformation_ValidModel_SuccessfulRedirect(WageExtraInformationViewModel viewModel)
         {
             var orchestratorResponse = new OrchestratorResponse(true);
-
-            _feature.Setup(x => x.IsFeatureEnabled(It.IsAny<string>()))
-                .Returns(true);
 
             _orchestrator.Setup(orchestrator => orchestrator.PostExtraInformationEditModelAsync(It.IsAny<WageExtraInformationViewModel>(), It.IsAny<VacancyUser>()))
                 .ReturnsAsync(orchestratorResponse);
@@ -144,8 +138,6 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers.Part1
         [Test, MoqAutoData]
         public async Task POST_Wage_FixedWage_RedirectsToCustomWage(WageViewModel viewModel)
         {
-            _feature.Setup(feat => feat.IsFeatureEnabled("ProviderTaskList"))
-                 .Returns(true);
             _orchestrator.Setup(orchestrator => orchestrator.GetWageViewModelAsync(It.IsAny<VacancyRouteModel>()))
                 .ReturnsAsync(viewModel);
             var wageEditModel = new WageEditModel { WageType = WageType.FixedWage };
@@ -159,8 +151,6 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers.Part1
         [Test, MoqAutoData]
         public async Task POST_Wage_CompetitiveSalary_RedirectsToSetCompetitivePayRate(WageViewModel viewModel)
         {
-            _feature.Setup(feat => feat.IsFeatureEnabled("ProviderTaskList"))
-                .Returns(true);
             _orchestrator.Setup(orchestrator => orchestrator.GetWageViewModelAsync(It.IsAny<VacancyRouteModel>()))
                 .ReturnsAsync(viewModel);
             var wageEditModel = new WageEditModel { WageType = WageType.CompetitiveSalary };
@@ -176,8 +166,6 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers.Part1
             var orchestratorResponse = new OrchestratorResponse(true);
             _orchestrator.Setup(orchestrator => orchestrator.GetWageViewModelAsync(It.IsAny<VacancyRouteModel>()))
                 .ReturnsAsync(viewModel);
-            _feature.Setup(feat => feat.IsFeatureEnabled("ProviderTaskList"))
-                .Returns(true);
             _orchestrator.Setup(orchestrator => orchestrator.PostWageEditModelAsync(It.IsAny<WageEditModel>(), It.IsAny<VacancyUser>()))
                 .ReturnsAsync(orchestratorResponse);
             var wageEditModel = new WageEditModel { WageType = WageType.NationalMinimumWage };
@@ -192,8 +180,6 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers.Part1
         {
             _orchestrator.Setup(orchestrator => orchestrator.GetWageViewModelAsync(It.IsAny<VacancyRouteModel>()))
                 .ReturnsAsync(viewModel);
-            _feature.Setup(feat => feat.IsFeatureEnabled("ProviderTaskList"))
-                .Returns(true);
             var orchestratorResponse = new OrchestratorResponse(true);
             _orchestrator.Setup(orchestrator => orchestrator.PostWageEditModelAsync(It.IsAny<WageEditModel>(), It.IsAny<VacancyUser>()))
                 .ReturnsAsync(orchestratorResponse);
@@ -218,7 +204,6 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers.Part1
             result.Should().NotBeNull();
             result!.Model.Should().Be(viewModel);
         }
-
 
         [Test, MoqAutoData]
         public async Task GET_AdditionalInformation_ReturnsViewModel(WageExtraInformationViewModel viewModel, VacancyRouteModel vacancyRouteModel)

@@ -24,7 +24,6 @@ using Esfa.Recruit.Provider.Web.Services;
 using Esfa.Recruit.Provider.Web.TagHelpers;
 using Esfa.Recruit.Provider.Web.ViewModels.ApplicationReviews;
 using Esfa.Recruit.Shared.Web.Orchestrators;
-using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Esfa.Recruit.Provider.Web.ViewModels.Validations.Fluent;
 using Esfa.Recruit.Provider.Web.RouteModel;
@@ -36,7 +35,7 @@ namespace Esfa.Recruit.Provider.Web.Configuration
     {
         public static void AddIoC(this IServiceCollection services, IConfiguration configuration)
         {
-            var serviceParameters = new ServiceParameters(configuration[$"RecruitConfiguration:{nameof(VacancyType)}"]);
+            var serviceParameters = new ServiceParameters();
 
             services.AddSingleton(serviceParameters);
 
@@ -144,8 +143,6 @@ namespace Esfa.Recruit.Provider.Web.Configuration
             services.AddTransient<DurationOrchestrator>();
             services.AddTransient<VacancyTaskListOrchestrator>();
             services.AddTransient<FutureProspectsOrchestrator>();
-            services.AddTransient<WorkExperienceOrchestrator>();
-            services.AddTransient<TraineeSectorOrchestrator>();
             services.AddTransient<IAdditionalQuestionsOrchestrator, AdditionalQuestionsOrchestrator>();
             services.AddTransient<VacancyWorkDescriptionOrchestrator>();
             services.AddTransient<VacancyHowWillTheApprenticeTrainOrchestrator>();

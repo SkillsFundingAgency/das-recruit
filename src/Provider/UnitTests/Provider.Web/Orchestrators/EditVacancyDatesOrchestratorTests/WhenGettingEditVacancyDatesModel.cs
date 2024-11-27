@@ -38,7 +38,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.EditVacancy
         }
         
         [Test, MoqAutoData]
-        public async Task Then_If_Apprenticeship_Sets_ProgrammeName_And_Not_Route(
+        public async Task Then_If_Apprenticeship_Sets_ProgrammeName(
             Vacancy vacancy,
             VacancyRouteModel vacancyRouteModel,
             List<IApprenticeshipProgramme> programmes,
@@ -59,34 +59,6 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.EditVacancy
 
             actual.Data.VacancyType.Should().Be(vacancy.VacancyType);
             actual.Data.ProgrammeName.Should().Be(programmes.FirstOrDefault().Title);
-            actual.Data.RouteName.Should().BeNullOrEmpty();
-            actual.Data.Title.Should().Be(vacancy.Title);
-
-        }
-        
-        [Test, MoqAutoData]
-        public async Task Then_If_Traineeship_Sets_Route_And_Not_ProgrammeName(
-            Vacancy vacancy,
-            VacancyRouteModel vacancyRouteModel,
-            List<IApprenticeshipRoute> routes,
-            [Frozen] Mock<IRecruitVacancyClient> vacancyClient,
-            [Frozen] Mock<IUtility> utility,
-            EditVacancyDatesOrchestrator orchestrator)
-        {
-            vacancy.Status = VacancyStatus.Live;
-            vacancy.IsDeleted = false;
-            vacancy.VacancyType = VacancyType.Traineeship;
-            vacancy.RouteId = routes.FirstOrDefault().Id;
-            vacancyClient.Setup(x => x.GetVacancyAsync(vacancyRouteModel.VacancyId.GetValueOrDefault()))
-                .ReturnsAsync(vacancy);
-            vacancyClient.Setup(x => x.GetApprenticeshipRoutes()).ReturnsAsync(routes);
-
-            var actual = await orchestrator.GetEditVacancyDatesViewModelAsync(vacancyRouteModel,
-                DateTime.UtcNow.AddMonths(1), DateTime.UtcNow.AddMonths(2));
-
-            actual.Data.VacancyType.Should().Be(vacancy.VacancyType);
-            actual.Data.ProgrammeName.Should().BeNullOrEmpty();
-            actual.Data.RouteName.Should().Be(routes.FirstOrDefault().Route);
             actual.Data.Title.Should().Be(vacancy.Title);
         }
     }

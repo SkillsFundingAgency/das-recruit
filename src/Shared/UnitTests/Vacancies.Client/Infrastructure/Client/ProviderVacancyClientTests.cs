@@ -22,17 +22,16 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
             DateTime toDate,
             VacancyUser user,
             string reportName,
-            VacancyType vacancyType,
             [Frozen] Mock<IMessaging> messaging,
             VacancyClient client)
         {
-            await client.CreateProviderApplicationsReportAsync(ukprn, fromDate, toDate, user, reportName, vacancyType);
+            await client.CreateProviderApplicationsReportAsync(ukprn, fromDate, toDate, user, reportName);
 
             messaging.Verify(x => x.SendCommandAsync(It.Is<CreateReportCommand>(c =>
                 c.ReportId != Guid.Empty &&
                 c.Owner.Ukprn.Equals(ukprn) &&
                 c.Owner.OwnerType.Equals(ReportOwnerType.Provider) &&
-                c.Parameters["VacancyType"].Equals(vacancyType.ToString()) &&
+                c.Parameters["VacancyType"].Equals(VacancyType.Apprenticeship.ToString()) &&
                 c.Parameters["Ukprn"].Equals(ukprn)
                 )));
         }

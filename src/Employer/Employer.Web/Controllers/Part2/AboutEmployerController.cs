@@ -14,12 +14,10 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part2
     public class AboutEmployerController : Controller
     {
         private readonly AboutEmployerOrchestrator _orchestrator;
-        private readonly IFeature _feature;
 
-        public AboutEmployerController(AboutEmployerOrchestrator orchestrator, IFeature feature)
+        public AboutEmployerController(AboutEmployerOrchestrator orchestrator)
         {
             _orchestrator = orchestrator;
-            _feature = feature;
         }
 
         [HttpGet("about-employer", Name = RouteNames.AboutEmployer_Get)]

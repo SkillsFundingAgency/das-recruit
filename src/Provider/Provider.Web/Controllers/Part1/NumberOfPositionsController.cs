@@ -34,7 +34,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
                 response.AddErrorsToModelState(ModelState);
             }
 
-            if(!ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 var vm = await orchestrator.GetNumberOfPositionsViewModelFromEditModelAsync(model);
                 vm.PageInfo.SetWizard(wizard);
@@ -52,10 +52,6 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
 
                 return RedirectToRoute(RouteNames.ProviderCheckYourAnswersGet, new {model.Ukprn, model.VacancyId});
             }
-
-            return wizard
-                ? RedirectToRoute(RouteNames.LegalEntity_Get, new {vacancyId = response.Data, model.Ukprn})
-                : RedirectToRoute(RouteNames.Vacancy_Preview_Get, new {model.Ukprn, model.VacancyId});
         }    
     }
 }
