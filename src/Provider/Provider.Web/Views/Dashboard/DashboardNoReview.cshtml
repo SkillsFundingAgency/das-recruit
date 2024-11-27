@@ -11,26 +11,6 @@
 }
 
 
-    <div asp-show="@(_serviceParameters.VacancyType is VacancyType.Traineeship)" class="govuk-notification-banner govuk-notification-banner--information" role="alert" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
-        <div class="govuk-notification-banner__header">
-            <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
-                Important
-            </h2>
-        </div>
-        <div class="govuk-notification-banner__content">
-            <h3>
-                Find a traineeship will now close on 31 December 2023.
-            </h3>
-            <p>
-                After this date, you will not be able to advertise your traineeship courses on GOV.UK.
-            </p>
-            <p>
-                Read <a href="https://www.gov.uk/guidance/traineeship-information-for-training-providers" target="_blank" rel="noreferrer">traineeship information for training providers</a> and learn more about how traineeships are changing.
-            </p>
-        </div>
-    </div>
-
-
 <partial asp-hide="@Model.HasAnyVacancies" name="_ProviderNoVacanciesContent" model="@vacancyRouteModel" />
 
 <div asp-show="@Model.HasAnyVacancies">
@@ -39,15 +19,7 @@
 
     <div class="govuk-grid-row" asp-show="@Model.HasAnyVacancies">
         <div class="govuk-grid-column-one-half">
-            @if (_serviceParameters.VacancyType == VacancyType.Apprenticeship)
-            {
-                <h1 class="govuk-heading-xl">Recruitment</h1>
-            }
-            else
-            {
-                <h1 class="govuk-heading-xl">Your traineeship vacancies </h1>
-            }
-            
+            <h1 class="govuk-heading-xl">Recruitment</h1>
         </div>
         <div class="govuk-grid-column-one-half ">
             <a asp-route="@RouteNames.CreateVacancyStart"  asp-route-ukprn="@Model.Ukprn" class="govuk-button das-float-right govuk-!-margin-top-2 govuk-!-margin-bottom-4" esfa-automation="create-vacancy">Create vacancy</a>
@@ -125,16 +97,7 @@
                             @FilteringOptions.Live @Model.VacancyTextLive
                         </a>
                     </h3>
-                    @if (_serviceParameters.VacancyType == VacancyType.Apprenticeship)
-                    {
                         <p class="govuk-body app-card__description">Vacancies on Find an apprenticeship service.</p>
-
-                    }
-                    else
-                    {
-                        <p class="govuk-body app-card__description">Vacancies on Find a traineeship.</p>
-        
-                    }
                     <ul class="govuk-list app-card__tasks" asp-show="@(Model.ShowNoOfVacanciesClosingSoon || Model.ShowNoOfVacanciesClosingSoonWithNoApplications)">
                         <li asp-show="@Model.ShowNoOfVacanciesClosingSoon">
                             <a class="govuk-link  govuk-link--no-visited-state" asp-route="@RouteNames.Vacancies_Get" asp-route-ukprn="@Model.Ukprn"  asp-route-filter="@FilteringOptions.ClosingSoon">@Model.NoOfVacanciesClosingSoon live @Model.VacancyTextClosingSoon closing soon</a>
@@ -157,16 +120,7 @@
                             New @Model.ApplicationTextLive
                         </a>
                     </h3>
-                    @if (_serviceParameters.VacancyType == VacancyType.Apprenticeship)
-                    {
-                        <p class="govuk-body app-card__description">Applications from Find an apprenticeship service.</p>
-
-                    }
-                    else
-                    {
-                        <p class="govuk-body app-card__description">Applications from Find a traineeship. </p>
-        
-                    }
+                    <p class="govuk-body app-card__description">Applications from Find an apprenticeship service.</p>
                     <ul class="govuk-list app-card__tasks" asp-show="@Model.ShowAllApplications">
                         <li>
                             <a class="govuk-link ga-track-anchor-click" asp-route="@RouteNames.Vacancies_Get" asp-route-ukprn="@Model.Ukprn"  asp-route-filter="@FilteringOptions.AllApplications" data-ga-event-category="link - click">
@@ -186,16 +140,7 @@
                             @FilteringOptions.Closed @Model.VacancyTextClosed
                         </a>
                     </h3>
-                    @if (_serviceParameters.VacancyType == VacancyType.Apprenticeship)
-                    {
                         <p class="govuk-body app-card__description">Vacancies that have passed the closing date. You can clone these vacancies to republish them.</p>
-
-                    }
-                    else
-                    {
-                        <p class="govuk-body app-card__description">Vacancies that have passed the closing date.</p>
-        
-                    }
                 </div>
             </div>
         </div>
@@ -222,14 +167,12 @@
             <p class="govuk-body">Set up and manage the emails you’re sent about your vacancies and applications</p>
         </div>
 
-        @if (_serviceParameters.VacancyType == VacancyType.Apprenticeship)
-        {
-            <div class="govuk-grid-column-one-third">
-                <h3 class="govuk-heading-s govuk-!-margin-bottom-2">
-                    <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.Dashboard_ProviderRecruitmentApi" asp-route-ukprn="@Model.Ukprn" >Recruitment APIs</a>
-                </h3>
-                <p class="govuk-body">Integrate our APIs to create vacancies using your own systems and display adverts on multiple sites.</p>
-            </div>
-        }
+        <div class="govuk-grid-column-one-third">
+            <h3 class="govuk-heading-s govuk-!-margin-bottom-2">
+                <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.Dashboard_ProviderRecruitmentApi" asp-route-ukprn="@Model.Ukprn" >Recruitment APIs</a>
+            </h3>
+            <p class="govuk-body">Integrate our APIs to create vacancies using your own systems and display adverts on multiple sites.</p>
+        </div>
+    
     </div>
 </div>

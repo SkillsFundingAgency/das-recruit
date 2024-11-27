@@ -32,7 +32,6 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
             int closingSoonNoApplications,
             int rejectedCount,
             string employerAccountId,
-            VacancyType vacancyType,
             [Frozen] Mock<IVacancySummariesProvider> vacanciesSummaryProvider,
             VacancyClient vacancyClient)
         {
@@ -63,7 +62,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
                 new VacancyStatusDashboard { Status = VacancyStatus.Live,ClosingSoon = false, StatusCount = liveCount},
                 new VacancyStatusDashboard { Status = VacancyStatus.Live,ClosingSoon = true, StatusCount = closingSoon},
             };
-            vacanciesSummaryProvider.Setup(x => x.GetEmployerOwnedVacancyDashboardByEmployerAccountIdAsync(employerAccountId, vacancyType)).ReturnsAsync(new VacancyDashboard
+            vacanciesSummaryProvider.Setup(x => x.GetEmployerOwnedVacancyDashboardByEmployerAccountIdAsync(employerAccountId)).ReturnsAsync(new VacancyDashboard
             {
                 VacancyApplicationsDashboard = vacancyApplicationsDashboard,
                 VacancyStatusDashboard = vacancyDashboards,
@@ -97,7 +96,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
             [Frozen] Mock<IVacancySummariesProvider> vacanciesSummaryProvider,
             VacancyClient vacancyClient)
         {
-            vacanciesSummaryProvider.Setup(x => x.GetEmployerOwnedVacancyDashboardByEmployerAccountIdAsync(employerAccountId, vacancyType)).ReturnsAsync(new VacancyDashboard
+            vacanciesSummaryProvider.Setup(x => x.GetEmployerOwnedVacancyDashboardByEmployerAccountIdAsync(employerAccountId)).ReturnsAsync(new VacancyDashboard
             {
                 VacancyApplicationsDashboard = new List<VacancyApplicationsDashboard>(),
                 VacancyStatusDashboard = new List<VacancyStatusDashboard>(),
@@ -120,7 +119,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
             [Frozen] Mock<IVacancySummariesProvider> vacanciesSummaryProvider,
             VacancyClient vacancyClient)
         {
-            vacanciesSummaryProvider.Setup(x => x.GetEmployerOwnedVacancyDashboardByEmployerAccountIdAsync(employerAccountId, vacancyType)).ReturnsAsync(new VacancyDashboard
+            vacanciesSummaryProvider.Setup(x => x.GetEmployerOwnedVacancyDashboardByEmployerAccountIdAsync(employerAccountId)).ReturnsAsync(new VacancyDashboard
             {
                 VacancyApplicationsDashboard = new List<VacancyApplicationsDashboard>(),
                 VacancyStatusDashboard = new List<VacancyStatusDashboard>(),

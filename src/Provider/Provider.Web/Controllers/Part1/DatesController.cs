@@ -59,10 +59,8 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
             }
 
             return wizard
-                ? _serviceParameters.VacancyType == VacancyType.Traineeship 
-                    ? RedirectToRoute(RouteNames.WorkExperience_Get, new {m.Ukprn, m.VacancyId})
-                    : RedirectToRoute(RouteNames.Duration_Get, new {m.Ukprn, m.VacancyId})
-                : RedirectToRoute(RouteNames.ProviderCheckYourAnswersGet, new {m.Ukprn, m.VacancyId});
+                ? RedirectToRoute(RouteNames.Duration_Get, new { m.Ukprn, m.VacancyId })
+                : RedirectToRoute(RouteNames.ProviderCheckYourAnswersGet, new { m.Ukprn, m.VacancyId });
         }
         
         private void AddSoftValidationErrorsToModelState(DatesViewModel viewModel)

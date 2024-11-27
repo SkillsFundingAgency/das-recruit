@@ -22,7 +22,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
         Task<IEnumerable<EmployerInfo>> GetProviderEmployerVacancyDatasAsync(long ukprn, IList<string> employerAccountIds);
         Task<VacancyApplications> GetVacancyApplicationsAsync(string vacancyReference);
         Task<QaDashboard> GetQaDashboardAsync();
-        Task<ProviderDashboard> GetProviderDashboardAsync(long ukprn, VacancyType vacancyType);
+        Task<ProviderDashboard> GetProviderDashboardAsync(long ukprn);
         Task<VacancyAnalyticsSummary> GetVacancyAnalyticsSummaryAsync(long vacancyReference);
         Task<BlockedProviderOrganisations> GetBlockedProvidersAsync();
         Task<IEnumerable<LiveVacancy>> GetLiveExpiredVacancies(DateTime closingDate);

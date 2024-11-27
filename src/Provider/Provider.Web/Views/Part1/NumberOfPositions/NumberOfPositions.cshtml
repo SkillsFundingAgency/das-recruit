@@ -7,14 +7,7 @@
 }
 
 @section BackLink {
-    @if (_serviceParameters.VacancyType == VacancyType.Apprenticeship)
-    {
-        <a asp-route="@RouteNames.Wage_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Back</a>
-    }
-    @if (_serviceParameters.VacancyType == VacancyType.Traineeship)
-    {
-        <a asp-route="@RouteNames.Duration_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Back</a>
-    }
+    <a asp-route="@RouteNames.Wage_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Back</a>
 }
 
 <div class="govuk-grid-row">

@@ -57,14 +57,9 @@
 
             <div esfa-validation-marker-for="StartDate" class="govuk-form-group">
                 <fieldset class="govuk-fieldset">
-                    @if (_serviceParameters.VacancyType == VacancyType.Apprenticeship)
-                    {
-                        <legend class="govuk-fieldset__legend govuk-!-font-weight-bold">Apprenticeship start date<span class="govuk-visually-hidden"> (in numeric format DD MM YYYY)</span></legend>
-                    }
-                    @if (_serviceParameters.VacancyType == VacancyType.Traineeship)
-                    {
-                        <legend class="govuk-fieldset__legend govuk-!-font-weight-bold">Traineeship start date<span class="govuk-visually-hidden"> (in numeric format DD MM YYYY)</span></legend>
-                    }
+                
+                    <legend class="govuk-fieldset__legend govuk-!-font-weight-bold">Apprenticeship start date<span class="govuk-visually-hidden"> (in numeric format DD MM YYYY)</span></legend>
+                
                     <span esfa-validation-message-for="StartDate" class="govuk-error-message"></span>
 
                     <p asp-show="@Model.CanShowTrainingHint" class="govuk-hint">

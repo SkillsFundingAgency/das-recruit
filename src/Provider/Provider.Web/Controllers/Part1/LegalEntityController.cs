@@ -60,9 +60,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
                 };
                 await _orchestrator.SetAccountLegalEntityPublicId(vrm,model, User.ToVacancyUser());
 
-                return RedirectToRoute(_serviceParameters.VacancyType == VacancyType.Traineeship 
-                    ? RouteNames.TraineeSector_Get 
-                    : RouteNames.Training_Get, new {Wizard = wizard, vrm.Ukprn, vrm.VacancyId});
+                return RedirectToRoute(RouteNames.Training_Get, new {Wizard = wizard, vrm.Ukprn, vrm.VacancyId});
             }
 
             vm.Pager.OtherRouteValues.Add(nameof(wizard), wizard);
@@ -108,9 +106,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
 
             if (!vm.IsTaskListCompleted)
             {
-                return RedirectToRoute(_serviceParameters.VacancyType == VacancyType.Traineeship 
-                    ? RouteNames.TraineeSector_Get 
-                    : RouteNames.Training_Get, new {Wizard = wizard, m.Ukprn, m.VacancyId});
+                return RedirectToRoute(RouteNames.Training_Get, new { Wizard = wizard, m.Ukprn, m.VacancyId });
             }
             return RedirectToRoute(RouteNames.ProviderCheckYourAnswersGet, new {m.Ukprn, m.VacancyId});
         }

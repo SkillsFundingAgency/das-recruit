@@ -130,7 +130,7 @@ namespace Esfa.Recruit.Qa.Web
                 return svc.GetAsync<QaRecruitSystemConfiguration>("QaRecruitSystem").Result;
             });
 
-            services.AddSingleton(new ServiceParameters("Apprenticeship"));
+            services.AddSingleton(new ServiceParameters());
             
             services.Configure<RazorViewEngineOptions>(o =>
             {

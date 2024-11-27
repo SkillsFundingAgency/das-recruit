@@ -75,7 +75,6 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
                 CurrentYear = _timeProvider.Now.Year,
 
                 ProgrammeName = vacancy.VacancyType.GetValueOrDefault() == VacancyType.Apprenticeship ? programmes.First(p => p.Id == vacancy.ProgrammeId).Title : "",
-                RouteName = vacancy.VacancyType.GetValueOrDefault() == VacancyType.Traineeship ? routes.First(r => r.Id == vacancy.RouteId).Route : "",
                 VacancyType = vacancy.VacancyType.GetValueOrDefault(),
                 Title = vacancy.Title
             };

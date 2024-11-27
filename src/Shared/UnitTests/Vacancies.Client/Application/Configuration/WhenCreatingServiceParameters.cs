@@ -8,11 +8,10 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.C
     public class WhenCreatingServiceParameters
     {
         [TestCase("apprenticeship", VacancyType.Apprenticeship)]
-        [TestCase("traineeship", VacancyType.Traineeship)]
         [TestCase("degree", VacancyType.Apprenticeship)]
         public void Then_Correctly_Assigned_To_Recruit_Type(string recruitType, VacancyType expectedType)
         {
-            var actual = new ServiceParameters(recruitType);
+            var actual = new ServiceParameters();
 
             actual.VacancyType.Should().Be(expectedType);
         }

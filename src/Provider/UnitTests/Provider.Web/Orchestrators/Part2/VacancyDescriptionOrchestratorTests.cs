@@ -52,11 +52,11 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part2
 
             _fixture.VerifyUpdateDraftVacancyAsyncIsCalled();
         }
-        
+
         [Theory]
-        [InlineData("has a new value", "has a value", new string[] { FieldIdentifiers.VacancyDescription }, new string[] { FieldIdentifiers.TrainingDescription})]
-        [InlineData("has a value", "has a new value", new string[] { FieldIdentifiers.TrainingDescription }, new string[] { FieldIdentifiers.VacancyDescription})]
-        [InlineData("has a new value", "has a new value", new string[] { FieldIdentifiers.VacancyDescription, FieldIdentifiers.TrainingDescription}, new string[] { })]
+        [InlineData("has a new value", "has a value", new string[] { FieldIdentifiers.VacancyDescription }, new string[] { FieldIdentifiers.TrainingDescription })]
+        [InlineData("has a value", "has a new value", new string[] { FieldIdentifiers.TrainingDescription }, new string[] { FieldIdentifiers.VacancyDescription })]
+        [InlineData("has a new value", "has a new value", new string[] { FieldIdentifiers.VacancyDescription, FieldIdentifiers.TrainingDescription }, new string[] { })]
         public async Task WhenDescriptionIsUpdated_ShouldFlagFieldIndicators(string description, string trainingDescription, string[] setFieldIndicators, string[] unsetFieldIndicators)
         {
             _fixture
@@ -76,13 +76,13 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part2
 
             _fixture.VerifyProviderReviewFieldIndicators(setFieldIndicators, unsetFieldIndicators);
         }
-        
+
         public class VacancyDescriptionOrchestratorTestsFixture
         {
             private VacancyRuleSet ValidationRules;
             public VacancyUser User { get; }
             public Vacancy Vacancy { get; }
-            public VacancyDescriptionOrchestrator Sut {get; private set;}
+            public VacancyDescriptionOrchestrator Sut { get; private set; }
 
             public VacancyDescriptionOrchestratorTestsFixture()
             {
@@ -99,13 +99,13 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part2
                 Vacancy.Description = description;
                 return this;
             }
-            
+
             public VacancyDescriptionOrchestratorTestsFixture WithTrainingDescription(string trainingDescription)
             {
                 Vacancy.TrainingDescription = trainingDescription;
                 return this;
             }
-            
+
             public VacancyDescriptionOrchestratorTestsFixture WithOutcomeDescription(string outcomeDescription)
             {
                 Vacancy.OutcomeDescription = outcomeDescription;
@@ -117,7 +117,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part2
                 Vacancy.VacancyType = vacancyType;
                 return this;
             }
-            
+
             public void Setup()
             {
                 MockRecruitVacancyClient.Setup(x => x.GetVacancyAsync(Vacancy.Id)).ReturnsAsync(Vacancy);
@@ -127,7 +127,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part2
 
                 Sut = new VacancyDescriptionOrchestrator(MockRecruitVacancyClient.Object,
                     Mock.Of<ILogger<VacancyDescriptionOrchestrator>>(), Mock.Of<IReviewSummaryService>(),
-                    new Utility(MockRecruitVacancyClient.Object), new ServiceParameters(VacancyType.Apprenticeship.ToString()));
+                    new Utility(MockRecruitVacancyClient.Object), new ServiceParameters());
             }
 
             public async Task PostVacancyDescriptionEditModelAsync(VacancyDescriptionEditModel model)
