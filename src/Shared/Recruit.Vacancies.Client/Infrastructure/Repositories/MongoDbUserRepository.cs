@@ -29,6 +29,18 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
             return result;
         }
         
+        public async Task<User> GetByDfEUserId(string dfEUserId)
+        {
+            var filter = Builders<User>.Filter.Eq(v => v.DfEUserId, dfEUserId);
+
+            var collection = GetCollection<User>();
+            var result = await RetryPolicy.Execute(_ => 
+                    collection.Find(filter)
+                        .SingleOrDefaultAsync(),
+                new Context(nameof(GetAsync)));
+            return result;
+        }
+        
         public Task UpsertUserAsync(User user)
         {
             var filter = Builders<User>.Filter.Eq(v => v.Id, user.Id);

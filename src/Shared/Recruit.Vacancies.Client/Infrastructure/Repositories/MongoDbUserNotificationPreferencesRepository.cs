@@ -28,11 +28,38 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
             return result;
         }
 
-        public Task UpsertAsync(UserNotificationPreferences preferences)
+        public async Task<UserNotificationPreferences> GetByDfeUserId(string dfeUserId)
         {
-            var filter = Builders<UserNotificationPreferences>.Filter.Eq(v => v.Id, preferences.Id);
+            var filter = Builders<UserNotificationPreferences>.Filter.Eq(v => v.DfeUserId, dfeUserId);
+
             var collection = GetCollection<UserNotificationPreferences>();
-            return RetryPolicy.Execute(_ => 
+            var result = await RetryPolicy.Execute(_ => 
+                    collection.Find(filter)
+                        .SingleOrDefaultAsync(),
+                new Context(nameof(GetAsync)));
+            return result;
+        }
+
+        public async Task UpsertAsync(UserNotificationPreferences preferences)
+        {
+            var isDfeSignInUserWithPreferencesSaved = false;
+
+            if (!string.IsNullOrEmpty(preferences.DfeUserId))
+            {
+                var dfepreferences = await GetByDfeUserId(preferences.DfeUserId);
+                if (dfepreferences != null)
+                {
+                    isDfeSignInUserWithPreferencesSaved = true;
+                }
+            }
+            
+            var filter = !isDfeSignInUserWithPreferencesSaved
+                ? Builders<UserNotificationPreferences>.Filter.Eq(v => v.Id, preferences.Id)
+                : Builders<UserNotificationPreferences>.Filter.Eq(v => v.DfeUserId, preferences.DfeUserId);
+            
+            var collection = GetCollection<UserNotificationPreferences>();
+            
+            await RetryPolicy.Execute(_ => 
                 collection.ReplaceOneAsync(filter, preferences, new ReplaceOptions { IsUpsert = true }),
                 new Context(nameof(UpsertAsync)));
         }
