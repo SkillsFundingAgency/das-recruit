@@ -1,18 +1,19 @@
 ﻿using System.Threading.Tasks;
-using Esfa.Recruit.Employer.Web.Configuration;
-using Esfa.Recruit.Employer.Web.Configuration.Routing;
-using Esfa.Recruit.Employer.Web.RouteModel;
-using Esfa.Recruit.Employer.Web.ViewModels.Part1.MultipleLocations;
+using Esfa.Recruit.Provider.Web.Configuration;
+using Esfa.Recruit.Provider.Web.Configuration.Routing;
+using Esfa.Recruit.Provider.Web.RouteModel;
+using Esfa.Recruit.Provider.Web.ViewModels.Part1.MultipleLocations;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.FeatureManagement.Mvc;
 
-namespace Esfa.Recruit.Employer.Web.Controllers.Part1;
+namespace Esfa.Recruit.Provider.Web.Controllers.Part1;
 
 [Route(RoutePaths.AccountVacancyRoutePath)]
 public class MultipleLocationsController(
-    IUtility utility) : Controller
+    IWebHostEnvironment hostingEnvironment,
+    IUtility utility) : EmployerControllerBase(hostingEnvironment)
 {
-    
     [FeatureGate(FeatureNames.MultipleLocations)]
     [HttpGet("location-availability", Name = RouteNames.MultipleLocations_Get)]
     public async Task<IActionResult> LocationAvailability(VacancyRouteModel vacancyRouteModel, [FromQuery] string wizard = "true")
@@ -28,9 +29,7 @@ public class MultipleLocationsController(
         // TODO: validate the model
         // TODO: save the selection
         
-        return wizard 
-            ? RedirectToRoute(RouteNames.EmployerTaskListGet, new {model.VacancyId, model.EmployerAccountId, wizard}) 
-            : RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet, new {model.VacancyId, model.EmployerAccountId});
+        return RedirectToRoute(RouteNames.ProviderTaskListGet, new { Wizard = wizard, model.Ukprn, model.VacancyId });
     } 
 
     private async Task<LocationAvailabilityViewModel> GetLocationAvailabilityViewModel(VacancyRouteModel vacancyRouteModel, string wizard)
@@ -39,13 +38,13 @@ public class MultipleLocationsController(
         var viewModel = new LocationAvailabilityViewModel
         {
             ApprenticeshipTitle = vacancy.Title,
-            EmployerAccountId = vacancyRouteModel.EmployerAccountId,
+            Ukprn = vacancyRouteModel.Ukprn,
             PageInfo = utility.GetPartOnePageInfo(vacancy),
             SelectedAvailability = vacancy.EmployerLocation is not null ? AvailableWhere.OneLocation : null,
             VacancyId = vacancyRouteModel.VacancyId,
         };
         viewModel.PageInfo.SetWizard(wizard);
-
+        
         return viewModel;
     }
 }
