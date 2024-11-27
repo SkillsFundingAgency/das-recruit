@@ -44,7 +44,6 @@ namespace Esfa.Recruit.Qa.Web.ViewModels
         public string TrainingTitle { get; internal set; }
         public string TrainingType { get; internal set; }
         public string TrainingLevel { get; internal set; }
-        public string TraineeRoute { get; internal set; }
         public string ExpectedDuration { get; internal set; }
         public string WageInfo { get; internal set; }
         public string MapUrl { get; internal set; }
@@ -111,7 +110,6 @@ namespace Esfa.Recruit.Qa.Web.ViewModels
         public string TrainingDescriptionClass => GetFieldIdentifierCssClass(FieldIdentifier.TrainingDescription);
         public string AdditionalTrainingDescriptionClass => GetFieldIdentifierCssClass(FieldIdentifier.AdditionalTrainingDescription);
         public string TrainingLevelClass => GetFieldIdentifierCssClass(FieldIdentifier.TrainingLevel);
-        public string TraineeRouteClass => GetFieldIdentifierCssClass(FieldIdentifier.TraineeRoute);
         public string VacancyDescriptionClass => GetFieldIdentifierCssClass(FieldIdentifier.VacancyDescription);
         public string WageClass => GetFieldIdentifierCssClass(FieldIdentifier.Wage);
         public string WorkingWeekClass => GetFieldIdentifierCssClass(FieldIdentifier.WorkingWeek);
@@ -125,7 +123,6 @@ namespace Esfa.Recruit.Qa.Web.ViewModels
         }
         public ApprenticeshipLevel Level { get; set; }
         public string AccountLegalEntityPublicHashedId { get; set; }
-        public string WorkExperienceClass => GetFieldIdentifierCssClass(FieldIdentifier.WorkExperience);
         public VacancyType? VacancyType { get; set; }
     }
 }

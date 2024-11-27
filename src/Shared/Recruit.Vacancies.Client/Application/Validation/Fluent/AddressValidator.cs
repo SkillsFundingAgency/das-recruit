@@ -5,11 +5,11 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
 {
     internal class AddressValidator : AbstractValidator<Address> 
     {
-        internal AddressValidator(long ruleId, bool isApprenticeshipVacancy)
+        internal AddressValidator(long ruleId)
         {
             RuleFor(x => x.AddressLine1)
                 .NotEmpty()
-                    .WithMessage(isApprenticeshipVacancy ? "Enter the address where the apprentice will work" : "Enter the address where the trainee will be on placement")
+                    .WithMessage("Enter the address where the apprentice will work")
                     .WithErrorCode("5")
                 .WithState(_=>ruleId)
                 .ValidFreeTextCharacters()

@@ -38,9 +38,6 @@ namespace Esfa.Recruit.Vacancies.Jobs.Triggers.QueueTriggers
             {
                 await _client.UpdateApprenticeshipProgrammesAsync();
                 _logger.LogInformation("Finished populating standards and frameworks into reference data store.");
-
-                await _client.UpdateApprenticeshipRouteAsync();
-                _logger.LogInformation("Finished populating routes into reference data store.");
             }
             catch (Exception ex)
             {

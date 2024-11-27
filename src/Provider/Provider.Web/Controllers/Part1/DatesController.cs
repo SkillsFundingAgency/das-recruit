@@ -21,16 +21,13 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
     public class DatesController : Controller
     {
         private readonly DatesOrchestrator _orchestrator;
-        private readonly IFeature _feature;
         private readonly ServiceParameters _serviceParameters;
 
         public DatesController(
             DatesOrchestrator orchestrator, 
-            IFeature feature,
             ServiceParameters serviceParameters)
         {
             _orchestrator = orchestrator;
-            _feature = feature;
             _serviceParameters = serviceParameters;
         }
 
@@ -62,12 +59,8 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
             }
 
             return wizard
-                ? _serviceParameters.VacancyType == VacancyType.Traineeship 
-                    ? RedirectToRoute(RouteNames.WorkExperience_Get, new {m.Ukprn, m.VacancyId})
-                    : RedirectToRoute(RouteNames.Duration_Get, new {m.Ukprn, m.VacancyId})
-                : _feature.IsFeatureEnabled(FeatureNames.ProviderTaskList) 
-                    ? RedirectToRoute(RouteNames.ProviderCheckYourAnswersGet, new {m.Ukprn, m.VacancyId}) 
-                    : RedirectToRoute(RouteNames.Vacancy_Preview_Get, new {m.Ukprn, m.VacancyId});
+                ? RedirectToRoute(RouteNames.Duration_Get, new { m.Ukprn, m.VacancyId })
+                : RedirectToRoute(RouteNames.ProviderCheckYourAnswersGet, new { m.Ukprn, m.VacancyId });
         }
         
         private void AddSoftValidationErrorsToModelState(DatesViewModel viewModel)

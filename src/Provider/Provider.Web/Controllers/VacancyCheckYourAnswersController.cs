@@ -37,15 +37,6 @@ namespace Esfa.Recruit.Provider.Web.Controllers
         [HttpGet("{vacancyId:guid}/check-your-answers", Name = RouteNames.ProviderCheckYourAnswersGet)]
         public async Task<IActionResult> CheckYourAnswers(VacancyRouteModel vrm)
         {
-            if (_serviceParameters.VacancyType == VacancyType.Traineeship 
-                && DateTime.TryParse(_configuration["TraineeshipCutOffDate"], out var traineeshipCutOffDate))
-            {
-                if (traineeshipCutOffDate != DateTime.MinValue && traineeshipCutOffDate < DateTime.UtcNow)
-                {
-                    return RedirectPermanent($"{_configuration["ProviderSharedUIConfiguration:DashboardUrl"]}account");
-                }
-            }
-            
             var viewModel = await _orchestrator.GetVacancyTaskListModel(vrm); 
             viewModel.CanHideValidationSummary = true;
             AddSoftValidationErrorsToModelState(viewModel);

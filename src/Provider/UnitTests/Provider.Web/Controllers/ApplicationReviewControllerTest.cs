@@ -50,7 +50,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
             }));
             var httpContext = new DefaultHttpContext();
             var tempData = new TempDataDictionary(httpContext, Mock.Of<ITempDataProvider>());
-            _controller = new ApplicationReviewController(_orchestrator.Object, new ServiceParameters("Apprenticeships"), Mock.Of<IConfiguration>())
+            _controller = new ApplicationReviewController(_orchestrator.Object, new ServiceParameters(), Mock.Of<IConfiguration>())
             {
                 TempData = tempData
             };

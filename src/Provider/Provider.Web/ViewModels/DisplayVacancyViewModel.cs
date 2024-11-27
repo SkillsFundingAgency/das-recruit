@@ -65,7 +65,6 @@ namespace Esfa.Recruit.Provider.Web.ViewModels
         public string AccountLegalEntityPublicHashedId { get; internal set; }
         public int RouteId { get; set; }
         public string RouteTitle { get; set; }
-        public string WorkExperience { get; set; }
         private string _additionalQuestion1;
         public string AdditionalQuestion1 
         { 

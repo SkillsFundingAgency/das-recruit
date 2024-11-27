@@ -47,7 +47,6 @@ namespace Esfa.Recruit.Provider.Web.Mappings
                 programme = await _apprenticeshipProgrammeProvider.GetApprenticeshipStandardVacancyPreviewData(standardId);    
             }
             
-            var route = vacancy.VacancyType.GetValueOrDefault() == VacancyType.Traineeship ? await _vacancyClient.GetRoute(vacancy.RouteId) : null;
             var employer = await _client.GetProviderEmployerVacancyDataAsync(vacancy.TrainingProvider.Ukprn.Value, vacancy.EmployerAccountId);
             
             bool? hasOptedToAddQualifications = null;
@@ -146,14 +145,6 @@ namespace Esfa.Recruit.Provider.Web.Mappings
                 vm.WageText = vacancy.StartDate.HasValue ? vacancy.Wage.ToText(vacancy.StartDate) : null;
                 vm.WorkingWeekDescription = vacancy.Wage.WorkingWeekDescription;
             }
-
-            if (route != null)
-            {
-                vm.RouteId = route.Id;
-                vm.RouteTitle = route.Route;
-            }
-
-            vm.WorkExperience = vacancy.WorkExperience;
 
             vm.VacancyType = vacancy.VacancyType;
         }

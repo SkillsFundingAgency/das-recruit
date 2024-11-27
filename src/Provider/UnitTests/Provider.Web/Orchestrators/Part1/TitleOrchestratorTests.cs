@@ -78,7 +78,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part1
                 MockRecruitVacancyClient.Setup(x => x.UpdateEmployerProfileAsync(It.IsAny<EmployerProfile>(), User));
 
                 Sut = new TitleOrchestrator(MockClient.Object, MockRecruitVacancyClient.Object, Mock.Of<ILogger<TitleOrchestrator>>(), 
-                    Mock.Of<IReviewSummaryService>(), new Utility(MockRecruitVacancyClient.Object), new ServiceParameters(VacancyType.Apprenticeship.ToString()));
+                    Mock.Of<IReviewSummaryService>(), new Utility(MockRecruitVacancyClient.Object), new ServiceParameters());
             }
 
             public async Task PostTitleEditModelAsync(TitleEditModel model)
