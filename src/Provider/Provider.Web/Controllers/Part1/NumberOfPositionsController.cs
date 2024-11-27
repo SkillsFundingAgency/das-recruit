@@ -41,17 +41,11 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
                 return View(vm);
             }
             
-            if (feature.IsFeatureEnabled(FeatureNames.ProviderTaskList))
-            {
-                if (wizard)
-                {
-                    return feature.IsFeatureEnabled(FeatureNames.MultipleLocations)
-                        ? RedirectToRoute(RouteNames.MultipleLocations_Get, new { Wizard = wizard, model.Ukprn, model.VacancyId })
-                        : RedirectToRoute(RouteNames.Location_Get, new { Wizard = wizard, model.Ukprn, model.VacancyId });
-                }
-
-                return RedirectToRoute(RouteNames.ProviderCheckYourAnswersGet, new {model.Ukprn, model.VacancyId});
-            }
+            return wizard
+                ? feature.IsFeatureEnabled(FeatureNames.MultipleLocations)
+                    ? RedirectToRoute(RouteNames.MultipleLocations_Get, new { Wizard = wizard, model.Ukprn, model.VacancyId })
+                    : RedirectToRoute(RouteNames.Location_Get, new { Wizard = wizard, model.Ukprn, model.VacancyId })
+                : RedirectToRoute(RouteNames.ProviderCheckYourAnswersGet, new {model.Ukprn, model.VacancyId});
         }    
     }
 }
