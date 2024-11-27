@@ -27,8 +27,7 @@ namespace Esfa.Recruit.Provider.Web.Services
             if (user?.Ukprn == null)
                 throw new ArgumentNullException(nameof(user));
 
-            var vacancies = await _providerVacancyClient.GetDashboardAsync(user.Ukprn.Value,
-                _serviceParameters.VacancyType.GetValueOrDefault(), 1, FilteringOptions.Closed, null);
+            var vacancies = await _providerVacancyClient.GetDashboardAsync(user.Ukprn.Value, 1, FilteringOptions.Closed, null);
             
             var transferredVacanciesAlert = _alertViewModelService.GetProviderTransferredVacanciesAlert(
                 vacancies.TransferredVacancies,

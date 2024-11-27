@@ -1,7 +1,6 @@
 using System;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using AutoFixture.NUnit3;
 using Esfa.Recruit.Provider.Web.Configuration;
 using Esfa.Recruit.Provider.Web.Configuration.Routing;
 using Esfa.Recruit.Provider.Web.Controllers.Part1;
@@ -33,7 +32,7 @@ public class TitleControllerTests
         orchestrator
             .Setup(o => o.PostTitleEditModelAsync(vacancyRouteModel, titleEditModel, It.IsAny<VacancyUser>(), vacancyRouteModel.Ukprn))
             .ReturnsAsync(new OrchestratorResponse<Guid>(Guid.NewGuid()){Success = true});
-        var controller = new TitleController(orchestrator.Object, Mock.Of<IProviderVacancyClient>(), new ServiceParameters("Apprenticeship"));
+        var controller = new TitleController(orchestrator.Object, Mock.Of<IProviderVacancyClient>(), new ServiceParameters());
         var user = new ClaimsPrincipal(new ClaimsIdentity(
             new []
             {
@@ -61,7 +60,7 @@ public class TitleControllerTests
         orchestrator
             .Setup(o => o.PostTitleEditModelAsync(vacancyRouteModel, titleEditModel, It.IsAny<VacancyUser>(), vacancyRouteModel.Ukprn))
             .ReturnsAsync(new OrchestratorResponse<Guid>(Guid.NewGuid()){Success = true});
-        var controller = new TitleController(orchestrator.Object, Mock.Of<IProviderVacancyClient>(), new ServiceParameters("Traineeship"));
+        var controller = new TitleController(orchestrator.Object, Mock.Of<IProviderVacancyClient>(), new ServiceParameters());
         var user = new ClaimsPrincipal(new ClaimsIdentity(
             new []
             {
@@ -77,6 +76,6 @@ public class TitleControllerTests
         var response = await controller.Title(vacancyRouteModel, titleEditModel, true) as RedirectToRouteResult;
 
         response.Should().NotBeNull();
-        response!.RouteName.Should().Be(RouteNames.TraineeSector_Get);
+        response!.RouteName.Should().Be(RouteNames.Training_Get);
     }
 }

@@ -47,16 +47,16 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Queries
             {
                 Vacancies = vacancySummariesEmployer
             });
-            _employerVacancyClient.Setup(x => x.GetVacancyCount(ValidEmployerAccountId, VacancyType.Apprenticeship, FilteringOptions.All, null))
+            _employerVacancyClient.Setup(x => x.GetVacancyCount(ValidEmployerAccountId, FilteringOptions.All, null))
                 .ReturnsAsync(EmployerVacancyCount);
 
             _providerVacancyClient.Setup(
-                x => x.GetDashboardAsync(ValidUkprn, VacancyType.Apprenticeship, 1, FilteringOptions.All, null)).ReturnsAsync(
+                x => x.GetDashboardAsync(ValidUkprn, 1, FilteringOptions.All, null)).ReturnsAsync(
                 new Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Provider.ProviderDashboard
                 {
                     Vacancies = vacancySummariesProvider
                 });
-            _providerVacancyClient.Setup(x => x.GetVacancyCount(ValidUkprn, VacancyType.Apprenticeship, FilteringOptions.All, null))
+            _providerVacancyClient.Setup(x => x.GetVacancyCount(ValidUkprn, FilteringOptions.All, null))
                 .ReturnsAsync(ProviderVacancyCount);
 
             _sut = new GetVacanciesQueryHandler(Mock.Of<ILogger<GetVacanciesQueryHandler>>(), mockVacancySummaryMapper.Object, _providerVacancyClient.Object, _employerVacancyClient.Object);
@@ -88,7 +88,7 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Queries
             
             _employerVacancyClient.Verify(qsr => qsr.GetDashboardAsync(ValidEmployerAccountId, 1, FilteringOptions.All, null), Times.Once);
             _providerVacancyClient.Verify(
-                qsr => qsr.GetDashboardAsync(It.IsAny<long>(), It.IsAny<VacancyType>(), It.IsAny<int>(),
+                qsr => qsr.GetDashboardAsync(It.IsAny<long>(), It.IsAny<int>(),
                     It.IsAny<FilteringOptions>(), It.IsAny<string>()), Times.Never);
         }
 
@@ -133,7 +133,7 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Queries
             await _sut.Handle(query, CancellationToken.None);
             
             _employerVacancyClient.Verify(qsr => qsr.GetDashboardAsync(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<FilteringOptions>(), It.IsAny<string>()), Times.Never);
-            _providerVacancyClient.Verify(qsr => qsr.GetDashboardAsync(ValidUkprn, VacancyType.Apprenticeship, 1, FilteringOptions.All, null), Times.Once);
+            _providerVacancyClient.Verify(qsr => qsr.GetDashboardAsync(ValidUkprn, 1, FilteringOptions.All, null), Times.Once);
         }
     }
 }

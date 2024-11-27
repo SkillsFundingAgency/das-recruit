@@ -34,7 +34,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             var filteringOption = SanitizeFilter(filter);
             var vacanciesTask = _vacancyClient.GetDashboardAsync(employerAccountId, page, filteringOption, searchTerm);
             var userDetailsTask = _client.GetUsersDetailsAsync(user.UserId);
-            var employerVacancyCountTask = _vacancyClient.GetVacancyCount(employerAccountId, VacancyType.Apprenticeship, filteringOption, searchTerm);
+            var employerVacancyCountTask = _vacancyClient.GetVacancyCount(employerAccountId, filteringOption, searchTerm);
 
             await Task.WhenAll(vacanciesTask, userDetailsTask, employerVacancyCountTask);
 

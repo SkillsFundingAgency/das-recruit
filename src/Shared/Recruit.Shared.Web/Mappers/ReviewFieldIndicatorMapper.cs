@@ -76,9 +76,7 @@ namespace Esfa.Recruit.Shared.Web.Mappers
             { FieldIdentifiers.EmployerContact, "Contact details requires edit" },
             { FieldIdentifiers.EmployerAddress, "Work experience address requires edit" },
             { FieldIdentifiers.Provider, "Training provider requires edit" },
-            { FieldIdentifiers.ProviderContact, "Contact details requires edit" },
-            { FieldIdentifiers.WorkExperience, "Work experience provided requires edit" },
-            { FieldIdentifiers.TraineeRoute, "Traineeship sector requires edit" }
+            { FieldIdentifiers.ProviderContact, "Contact details requires edit" }
         };
 
         public IEnumerable<ReviewFieldIndicatorViewModel> MapFromFieldIndicators(ReviewFieldMappingLookupsForPage pageMappings, VacancyReview review)

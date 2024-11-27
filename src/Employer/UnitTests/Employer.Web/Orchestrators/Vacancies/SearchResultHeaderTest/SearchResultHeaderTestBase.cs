@@ -30,7 +30,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Vacancies.S
                 .ReturnsAsync(new EmployerDashboard {
                     Vacancies = vacancySummaries
                 });
-            clientMock.Setup(c => c.GetVacancyCount(EmployerAccountId, VacancyType.Apprenticeship, status, searchTerm))
+            clientMock.Setup(c => c.GetVacancyCount(EmployerAccountId, status, searchTerm))
                 .ReturnsAsync(vacancyCount);
             return new VacanciesOrchestrator(
                 clientMock.Object,
