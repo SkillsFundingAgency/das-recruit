@@ -229,7 +229,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.VacancyPreview
             var model = new VacancyPreviewViewModel();
             await mapper.MapFromVacancyAsync(model, vacancy);
             
-            model.SetSectionStates(model, new ModelStateDictionary(), true);
+            model.SetSectionStates(model, new ModelStateDictionary());
 
             model.TaskListSectionOneState.Should().Be(VacancyTaskListSectionState.Completed);
         }

@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
-using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Mappings;
 using Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview;
 using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
@@ -73,25 +72,6 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.VacancyPreview
         }
         
         [Test, MoqAutoData]
-        public async Task Then_If_There_Are_Skills_And_Qualifications_Added_Section_Set_To_Complete_When_faav2_Disabled(
-            ApprenticeshipStandard standard,
-            [Frozen] Mock<IApprenticeshipProgrammeProvider> apprenticeshipProgrammeProvider,
-            List<string> skills,
-            List<Qualification> qualifications,
-            DisplayVacancyViewModelMapper mapper)
-        {
-            var vacancy = CreateCompletedSectionOneAndSectionTwoVacancy(apprenticeshipProgrammeProvider, standard);
-            vacancy.Skills = skills;
-            vacancy.Qualifications = qualifications;
-            vacancy.HasOptedToAddQualifications = null;
-            var model = new VacancyPreviewViewModel(false);
-            
-            await mapper.MapFromVacancyAsync(model, vacancy);
-            model.SetSectionStates(model, new ModelStateDictionary());
-
-            model.TaskListSectionThreeState.Should().Be(VacancyTaskListSectionState.InProgress);
-        }
-        [Test, MoqAutoData]
         public async Task Then_If_There_Are_Skills_And_Qualifications_Added_Section_Set_To_Complete(
             ApprenticeshipStandard standard,
             [Frozen] Mock<IApprenticeshipProgrammeProvider> apprenticeshipProgrammeProvider,
@@ -103,7 +83,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.VacancyPreview
             vacancy.Skills = skills;
             vacancy.Qualifications = qualifications;
             vacancy.HasOptedToAddQualifications = true;
-            var model = new VacancyPreviewViewModel(true);
+            var model = new VacancyPreviewViewModel();
             
             await mapper.MapFromVacancyAsync(model, vacancy);
             model.SetSectionStates(model, new ModelStateDictionary());
@@ -125,7 +105,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.VacancyPreview
             vacancy.Qualifications = qualifications;
             vacancy.OutcomeDescription = outcomeDescription;
             vacancy.HasOptedToAddQualifications = true;
-            var model = new VacancyPreviewViewModel(true);
+            var model = new VacancyPreviewViewModel();
             
             await mapper.MapFromVacancyAsync(model, vacancy);
             model.SetSectionStates(model, new ModelStateDictionary());
@@ -143,13 +123,12 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.VacancyPreview
             [Frozen] Mock<IFeature> feature,
             DisplayVacancyViewModelMapper mapper)
         {
-            feature.Setup(x => x.IsFeatureEnabled(FeatureNames.FaaV2Improvements)).Returns(true);
             var vacancy = CreateCompletedSectionOneAndSectionTwoVacancy(apprenticeshipProgrammeProvider, standard);
             vacancy.Skills = skills;
             vacancy.Qualifications = null;
             vacancy.OutcomeDescription = outcomeDescription;
             vacancy.HasOptedToAddQualifications = false;
-            var model = new VacancyPreviewViewModel(true);
+            var model = new VacancyPreviewViewModel();
             
             await mapper.MapFromVacancyAsync(model, vacancy);
             model.SetSectionStates(model, new ModelStateDictionary());

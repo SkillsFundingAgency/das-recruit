@@ -10,7 +10,6 @@ using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
-using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -20,12 +19,11 @@ namespace Esfa.Recruit.Provider.Web.Controllers
     public class VacancyPreviewController : Controller
     {
         private readonly VacancyPreviewOrchestrator _orchestrator;
-        private readonly bool _isFaaV2Enabled;
 
-        public VacancyPreviewController(VacancyPreviewOrchestrator orchestrator, IFeature feature)
+
+        public VacancyPreviewController(VacancyPreviewOrchestrator orchestrator)
         {
             _orchestrator = orchestrator;
-            _isFaaV2Enabled = feature.IsFeatureEnabled(FeatureNames.FaaV2Improvements);
         }
 
         [HttpGet("preview", Name = RouteNames.Vacancy_Preview_Get)]
@@ -37,7 +35,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
                 viewModel.InfoMessage = TempData[TempDataKeys.VacancyPreviewInfoMessage].ToString();
 
             AddSoftValidationErrorsToModelState(viewModel);
-            viewModel.SetSectionStates(viewModel, ModelState, _isFaaV2Enabled);
+            viewModel.SetSectionStates(viewModel, ModelState);
 
             viewModel.CanHideValidationSummary = true;
 
@@ -78,7 +76,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
             var viewModel = await _orchestrator.GetVacancyPreviewViewModelAsync(m);
 
             viewModel.SoftValidationErrors = null;
-            viewModel.SetSectionStates(viewModel, ModelState, _isFaaV2Enabled);
+            viewModel.SetSectionStates(viewModel, ModelState);
 
             return View(ViewNames.VacancyPreview, viewModel);
         }
@@ -92,7 +90,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
                 viewModel.InfoMessage = TempData[TempDataKeys.VacancyPreviewInfoMessage].ToString();
 
             AddSoftValidationErrorsToModelState(viewModel);
-            viewModel.SetSectionStates(viewModel, ModelState, _isFaaV2Enabled);
+            viewModel.SetSectionStates(viewModel, ModelState);
 
             viewModel.CanHideValidationSummary = true;
 
