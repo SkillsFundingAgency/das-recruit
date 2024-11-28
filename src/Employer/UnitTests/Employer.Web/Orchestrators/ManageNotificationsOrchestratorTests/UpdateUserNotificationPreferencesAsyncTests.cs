@@ -23,7 +23,7 @@ namespace UnitTests.Employer.Web.Orchestrators.ManageNotificationsOrchestratorTe
         public async Task GiveAllTheTypesAreUnselectedAndPersistedPreferencesAreEmpty_ThenReturnValidationError()
         {
             var emptyPreferences = new UserNotificationPreferences() { NotificationTypes = NotificationTypes.None };
-            _recruitVacancyClientMock.Setup(c => c.GetUserNotificationPreferencesAsync(It.IsAny<string>())).ReturnsAsync(emptyPreferences);
+            _recruitVacancyClientMock.Setup(c => c.GetUserNotificationPreferencesAsync(It.IsAny<string>(),It.IsAny<string>())).ReturnsAsync(emptyPreferences);
             var sut = GetSut();
             var result =await sut.UpdateUserNotificationPreferencesAsync(new ManageNotificationsEditModel(), new VacancyUser());
             result.Errors.HasErrors.Should().BeTrue();
