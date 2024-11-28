@@ -15,7 +15,7 @@ using FluentAssertions;
 using Moq;
 using Xunit;
 
-namespace Esfa.Recruit.Provider.UnitTests.Employer.Web.Orchestrators.Dashboard
+namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Dashboard
 {
     public class GetDashboardViewModelAsyncTests
     {
@@ -23,7 +23,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Employer.Web.Orchestrators.Dashboard
         private const string UserId = "user id";
 
         private readonly DateTime _today = DateTime.Parse("2019-09-18");
-        private readonly VacancyUser _user = new VacancyUser {UserId = UserId,  Ukprn = Ukprn };
+        private readonly VacancyUser _user = new() {UserId = UserId,  Ukprn = Ukprn };
         private Mock<IProviderRelationshipsService> _permissionServiceMock;
         private Mock<IRecruitVacancyClient> _clientMock;
 
@@ -113,7 +113,8 @@ namespace Esfa.Recruit.Provider.UnitTests.Employer.Web.Orchestrators.Dashboard
             var userDetails = new User();
 
             _clientMock = new Mock<IRecruitVacancyClient>();
-            _clientMock.Setup(c => c.GetUsersDetailsAsync(UserId))
+            
+            _clientMock.Setup(c => c.GetUsersDetailsByDfEUserId(It.IsAny<string>()))
                 .ReturnsAsync(userDetails);
 
             var alertsViewModel = new AlertsViewModel(null, null, Ukprn);

@@ -29,21 +29,30 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
         }
         public async Task<ManageNotificationsViewModel> GetManageNotificationsViewModelAsync(VacancyUser vacancyUser)
         {
-            var preferences = await _recruitVacancyClient.GetUserNotificationPreferencesAsync(vacancyUser.UserId);
+            var preferences = await _recruitVacancyClient.GetUserNotificationPreferencesByDfEUserIdAsync(vacancyUser.UserId, vacancyUser.DfEUserId);
 
+            if (string.IsNullOrEmpty(preferences.DfeUserId))
+            {
+                preferences.DfeUserId = vacancyUser.DfEUserId;
+                await _recruitVacancyClient.UpdateUserNotificationPreferencesAsync(preferences);
+            }
+            
             return GetViewModelFromDomainModel(preferences);
         }
 
         public async Task<OrchestratorResponse> UpdateUserNotificationPreferencesAsync(ManageNotificationsEditModel editModel, VacancyUser vacancyUser)
         {
-            var persistedPreferences = await _recruitVacancyClient.GetUserNotificationPreferencesAsync(vacancyUser.UserId);
+            var persistedPreferences =
+                await _recruitVacancyClient.GetUserNotificationPreferencesByDfEUserIdAsync(vacancyUser.UserId,
+                    vacancyUser.DfEUserId)
+                ?? await _recruitVacancyClient.GetUserNotificationPreferencesAsync(vacancyUser.UserId);
 
             if (persistedPreferences.NotificationTypes == NotificationTypes.None && editModel.HasAnySubscription == false)
             {
                 return new OrchestratorResponse(_notificationTypeIsRequiredForTheFirstTime);
             }
 
-            var preferences = GetDomainModel(editModel, vacancyUser.UserId);
+            var preferences = GetDomainModel(editModel, vacancyUser.UserId, vacancyUser.DfEUserId);
 
             return await ValidateAndExecute(
                 preferences,
@@ -71,9 +80,9 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             };
         }
 
-        private UserNotificationPreferences GetDomainModel(ManageNotificationsEditModel sourceModel, string idamsUserId)
+        private UserNotificationPreferences GetDomainModel(ManageNotificationsEditModel sourceModel, string idamsUserId, string dfeUserId)
         {            
-            var targetModel = new UserNotificationPreferences() { Id = idamsUserId };
+            var targetModel = new UserNotificationPreferences() { Id = idamsUserId, DfeUserId = dfeUserId};
             if (!sourceModel.HasAnySubscription) return targetModel;
 
             targetModel.NotificationFrequency = sourceModel.IsApplicationSubmittedSelected ? sourceModel.NotificationFrequency : null;

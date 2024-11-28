@@ -1,13 +1,10 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Esfa.Recruit.Provider.Web.Services;
 using Esfa.Recruit.Provider.Web.ViewModels.Dashboard;
 using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Models;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelationship;
 
 namespace Esfa.Recruit.Provider.Web.Orchestrators
@@ -39,16 +36,18 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             await _client.UserSignedInAsync(user, UserType.Provider);
             var serviceParametersVacancyType = _serviceParameters.VacancyType.GetValueOrDefault();
             var dashboardTask = _vacancyClient.GetDashboardSummary(user.Ukprn.Value, serviceParametersVacancyType);
-            var userDetailsTask = _client.GetUsersDetailsAsync(user.UserId);
+            var usersDetailsByDfEUserIdTask = _client.GetUsersDetailsByDfEUserId(user.DfEUserId);
+            
             var providerTask = serviceParametersVacancyType == VacancyType.Apprenticeship 
                 ? _providerRelationshipsService.CheckProviderHasPermissions(user.Ukprn.Value, OperationType.RecruitmentRequiresReview)
                 : Task.FromResult(false);
 
-            await Task.WhenAll(dashboardTask, userDetailsTask, providerTask);
+            await Task.WhenAll(dashboardTask, providerTask, usersDetailsByDfEUserIdTask);
 
+            
             var dashboard = dashboardTask.Result;
-            var userDetails = userDetailsTask.Result;
             var providerPermissions = providerTask.Result;
+            var userDetails = usersDetailsByDfEUserIdTask.Result;
 
             var alerts = await _providerAlertsViewModelFactory.Create(userDetails);
             
