@@ -28,7 +28,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.C
             [Frozen] Mock<IVacancyRepository> vacancyRepository)
         {
             //Arrange
-            var serviceParameters = new ServiceParameters("Apprenticeship");
+            var serviceParameters = new ServiceParameters();
             timeProvider.Setup(x => x.Now).Returns(createdDate);
             var handler = new CreateProviderOwnedVacancyCommandHandler(
                 Mock.Of<ILogger<CreateProviderOwnedVacancyCommandHandler>>(), 
@@ -64,39 +64,6 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.C
             messaging.Verify(x=>x.PublishEvent(
                 It.Is<VacancyCreatedEvent>(c=>c.VacancyId.Equals(command.VacancyId))));
             
-        }
-
-        [Test, MoqAutoData]
-        public async Task Then_If_Traineeship_Type_Vacancy_ApplicationMethod_Set(
-            DateTime createdDate,
-            CreateProviderOwnedVacancyCommand command,
-            [Frozen] Mock<ITimeProvider> timeProvider,
-            [Frozen] Mock<IMessaging> messaging,
-            [Frozen] Mock<IVacancyRepository> vacancyRepository)
-        {
-            //Arrange
-            var serviceParameters = new ServiceParameters("Traineeship");
-            timeProvider.Setup(x => x.Now).Returns(createdDate);
-            var handler = new CreateProviderOwnedVacancyCommandHandler(
-                Mock.Of<ILogger<CreateProviderOwnedVacancyCommandHandler>>(), 
-                vacancyRepository.Object, 
-                messaging.Object, 
-                timeProvider.Object, 
-                serviceParameters);
-            
-            //Act
-            await handler.Handle(command, CancellationToken.None);
-            
-            //Assert
-            vacancyRepository.Verify(x=>x.CreateAsync(
-                It.Is<Vacancy>(
-                    c=>
-                        c.Id.Equals(command.VacancyId)
-                        && c.VacancyType.Equals(VacancyType.Traineeship)
-                        && c.ApplicationMethod.Equals(ApplicationMethod.ThroughFindATraineeship)
-                )), Times.Once);
-            messaging.Verify(x=>x.PublishEvent(
-                It.Is<VacancyCreatedEvent>(c=>c.VacancyId.Equals(command.VacancyId))));
         }
     }
 }

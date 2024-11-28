@@ -1,7 +1,6 @@
 ﻿using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
-using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Extensions;
 using Esfa.Recruit.Employer.Web.Orchestrators.Part2;
 using Esfa.Recruit.Employer.Web.RouteModel;
@@ -44,14 +43,10 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part2
             {
                 return View(vm);
             }
-            
-            //if isFaaV2ImprovementsEnabled - need to redirect to new page.
-            
-            if (vm.IsTaskListCompleted)
-            {
-                return RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet, new {m.VacancyId, m.EmployerAccountId});
-            }
-            return RedirectToRoute(RouteNames.EmployerTaskListGet, new {m.VacancyId, m.EmployerAccountId});
+
+            return vm.IsTaskListCompleted
+                ? RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet, new { m.VacancyId, m.EmployerAccountId })
+                : RedirectToRoute(RouteNames.EmployerTaskListGet, new { m.VacancyId, m.EmployerAccountId });
         }
     }
 }

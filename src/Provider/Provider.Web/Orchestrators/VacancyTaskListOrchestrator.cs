@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Esfa.Recruit.Provider.Web.Configuration;
 using Esfa.Recruit.Provider.Web.Configuration.Routing;
 using Esfa.Recruit.Provider.Web.Mappings;
 using Esfa.Recruit.Provider.Web.Models;
@@ -11,7 +10,6 @@ using Esfa.Recruit.Shared.Web.Orchestrators;
 using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Commands;
 using Esfa.Recruit.Vacancies.Client.Application.Configuration;
-using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
@@ -39,12 +37,11 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
         private readonly ITrainingProviderAgreementService _trainingProviderAgreementService;
         private readonly IMessaging _messaging;
         private readonly ServiceParameters _serviceParameters;
-        private readonly IFeature _feature;
 
         public VacancyTaskListOrchestrator(ILogger<VacancyTaskListOrchestrator> logger, DisplayVacancyViewModelMapper vacancyDisplayMapper,
             IUtility utility, IProviderVacancyClient providerVacancyClient, 
             IRecruitVacancyClient vacancyClient, IReviewSummaryService reviewSummaryService, IProviderRelationshipsService providerRelationshipsService, 
-            ILegalEntityAgreementService legalEntityAgreementService, ITrainingProviderAgreementService trainingProviderAgreementService, IMessaging messaging, ServiceParameters serviceParameters, IFeature feature) : base(logger)
+            ILegalEntityAgreementService legalEntityAgreementService, ITrainingProviderAgreementService trainingProviderAgreementService, IMessaging messaging, ServiceParameters serviceParameters) : base(logger)
         {
             _vacancyDisplayMapper = vacancyDisplayMapper;
             _utility = utility;
@@ -56,7 +53,6 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             _trainingProviderAgreementService = trainingProviderAgreementService;
             _messaging = messaging;
             _serviceParameters = serviceParameters;
-            _feature = feature;
         }
 
         public async Task<VacancyPreviewViewModel> GetVacancyTaskListModel(VacancyRouteModel routeModel)
@@ -73,7 +69,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             var vacancy = vacancyTask.Result;
             var hasProviderReviewPermission = await _providerRelationshipsService.HasProviderGotEmployersPermissionAsync(routeModel.Ukprn, vacancy.EmployerAccountId, vacancy.AccountLegalEntityPublicHashedId, OperationType.RecruitmentRequiresReview);
             
-            var vm = new VacancyPreviewViewModel(_feature.IsFeatureEnabled(FeatureNames.FaaV2Improvements));
+            var vm = new VacancyPreviewViewModel();
             await _vacancyDisplayMapper.MapFromVacancyAsync(vm, vacancy);
 
             vm.HasWage = vacancy.Wage != null;
@@ -101,7 +97,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
                     employerAccountId);
             var editVacancyInfo = await _providerVacancyClient.GetProviderEditVacancyInfoAsync(vrm.Ukprn);
 
-            var createVacancyTaskListModel = new VacancyPreviewViewModel(_feature.IsFeatureEnabled(FeatureNames.FaaV2Improvements))
+            var createVacancyTaskListModel = new VacancyPreviewViewModel
             {
                 AccountCount = editVacancyInfo.Employers.Count(),
                 AccountLegalEntityCount = employerInfo.LegalEntities.Count,

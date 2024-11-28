@@ -23,6 +23,5 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         Task RefreshEmployerProfiles(string employerAccountId, IEnumerable<string> accountLegalEntityPublicHashedIds);
         Task UpdateUserAccountAsync(string idamsUserId);
         Task UpdateProviders();
-        Task UpdateApprenticeshipRouteAsync();
     }
 }

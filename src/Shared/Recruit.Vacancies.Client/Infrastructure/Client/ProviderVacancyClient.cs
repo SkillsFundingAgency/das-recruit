@@ -56,15 +56,15 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             await AssignVacancyNumber(id);
         }
 
-        public async Task<long> GetVacancyCount(long ukprn, VacancyType vacancyType, FilteringOptions? filteringOptions, string searchTerm)
+        public async Task<long> GetVacancyCount(long ukprn, FilteringOptions? filteringOptions, string searchTerm)
         {
-            return await _vacancySummariesQuery.VacancyCount(ukprn, string.Empty, vacancyType, filteringOptions, searchTerm, OwnerType.Provider);
+            return await _vacancySummariesQuery.VacancyCount(ukprn, string.Empty, filteringOptions, searchTerm, OwnerType.Provider);
         }
 
-        public async Task<ProviderDashboardSummary> GetDashboardSummary(long ukprn, VacancyType vacancyType)
+        public async Task<ProviderDashboardSummary> GetDashboardSummary(long ukprn)
         {
-            var dashboardTask = _vacancySummariesQuery.GetProviderOwnedVacancyDashboardByUkprnAsync(ukprn, vacancyType);
-            var transferredVacanciesTask = _vacancySummariesQuery.GetTransferredFromProviderAsync(ukprn, vacancyType);
+            var dashboardTask = _vacancySummariesQuery.GetProviderOwnedVacancyDashboardByUkprnAsync(ukprn);
+            var transferredVacanciesTask = _vacancySummariesQuery.GetTransferredFromProviderAsync(ukprn);
 
             await Task.WhenAll(dashboardTask, transferredVacanciesTask);
 
@@ -100,15 +100,15 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             };
         }
 
-        public async Task<ProviderDashboard> GetDashboardAsync(long ukprn, VacancyType vacancyType,int page, FilteringOptions? status = null, string searchTerm = null)
+        public async Task<ProviderDashboard> GetDashboardAsync(long ukprn,int page, FilteringOptions? status = null, string searchTerm = null)
         {
-            var vacancySummariesTasks = _vacancySummariesQuery.GetProviderOwnedVacancySummariesByUkprnAsync(ukprn, vacancyType, page, status, searchTerm);
-            var transferredVacanciesTasks = _vacancySummariesQuery.GetTransferredFromProviderAsync(ukprn, vacancyType);
+            var vacancySummariesTasks = _vacancySummariesQuery.GetProviderOwnedVacancySummariesByUkprnAsync(ukprn, page, status, searchTerm);
+            var transferredVacanciesTasks = _vacancySummariesQuery.GetTransferredFromProviderAsync(ukprn);
 
             await Task.WhenAll(vacancySummariesTasks, transferredVacanciesTasks);
 
             var vacancySummaries = vacancySummariesTasks.Result
-                .Where(c=>vacancyType == VacancyType.Traineeship ? c.IsTraineeship : !c.IsTraineeship).ToList();
+                .Where(c=> !c.IsTraineeship).ToList();
             var transferredVacancies = transferredVacanciesTasks.Result.Select(t =>
                 new ProviderDashboardTransferredVacancy
                 {
@@ -124,7 +124,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 
             return new ProviderDashboard
             {
-                Id = vacancyType == VacancyType.Apprenticeship ? QueryViewType.ProviderDashboard.GetIdValue(ukprn) :  QueryViewType.ProviderTraineeshipDashboard.GetIdValue(ukprn),
+                Id = QueryViewType.ProviderDashboard.GetIdValue(ukprn),
                 Vacancies = vacancySummaries,
                 TransferredVacancies = transferredVacancies,
                 LastUpdated = _timeProvider.Now
@@ -153,7 +153,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return _messaging.SendCommandAsync(command);
         }
 
-        public async Task<Guid> CreateProviderApplicationsReportAsync(long ukprn, DateTime fromDate, DateTime toDate, VacancyUser user, string reportName, VacancyType vacancyType)
+        public async Task<Guid> CreateProviderApplicationsReportAsync(long ukprn, DateTime fromDate, DateTime toDate, VacancyUser user, string reportName)
         {
             var reportId = Guid.NewGuid();
 
@@ -171,7 +171,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
                     { ReportParameterName.Ukprn, ukprn},
                     { ReportParameterName.FromDate, fromDate},
                     { ReportParameterName.ToDate, toDate},
-                    { ReportParameterName.VacancyType, vacancyType.ToString()}
+                    { ReportParameterName.VacancyType, VacancyType.Apprenticeship.ToString()}
                 },
                 user,
                 reportName)
@@ -180,9 +180,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return reportId;
         }
 
-        public Task<List<ReportSummary>> GetReportsForProviderAsync(long ukprn, VacancyType vacancyType)
+        public Task<List<ReportSummary>> GetReportsForProviderAsync(long ukprn)
         {
-            return _reportRepository.GetReportsForProviderAsync<ReportSummary>(ukprn, vacancyType);
+            return _reportRepository.GetReportsForProviderAsync<ReportSummary>(ukprn);
         }
 
         public Task<Report> GetReportAsync(Guid reportId)

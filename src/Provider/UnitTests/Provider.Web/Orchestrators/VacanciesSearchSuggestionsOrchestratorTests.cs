@@ -33,11 +33,8 @@ namespace Esfa.Recruit.UnitTests.Provider.Web.Orchestrators
 
         [Theory]
         [InlineData(VacancyType.Apprenticeship, "x", true)]
-        [InlineData(VacancyType.Traineeship, "x", true)]
         [InlineData(VacancyType.Apprenticeship, "xx", true)]
-        [InlineData(VacancyType.Traineeship, "xx", true)]
         [InlineData(VacancyType.Apprenticeship, "xxx", false)]
-        [InlineData(VacancyType.Traineeship, "xxx", false)]
         public async Task When_The_Search_Term_Is_Less_Than_The_Minimum_Search_Threshold_Then_Empty_List_Returned(VacancyType vacancyType, string searchTerm, bool shouldBeEmptyList)
         {
             var orch = GetSut(_testVacancies, vacancyType, searchTerm);
@@ -47,7 +44,6 @@ namespace Esfa.Recruit.UnitTests.Provider.Web.Orchestrators
 
         [Theory]
         [InlineData(VacancyType.Apprenticeship)]
-        [InlineData(VacancyType.Traineeship)]
         public async Task WhenTermMatchesMoreThan50Title_ThenLegalEntityNameWillBeFilteredOut(VacancyType vacancyType)
         {
             var LegalEntityName = "20th Century Fox";
@@ -61,13 +57,13 @@ namespace Esfa.Recruit.UnitTests.Provider.Web.Orchestrators
 
         private VacanciesSearchSuggestionsOrchestrator GetSut(IEnumerable<VacancySummary> vacancies, VacancyType vacancyType, string searchTerm)
         {
-            var serviceParameters = new ServiceParameters(vacancyType.ToString());
+            var serviceParameters = new ServiceParameters();
             var dashboard = new ProviderDashboard()
             {
                 Vacancies = vacancies
             };
             
-            _mockClient.Setup(c => c.GetDashboardAsync(Ukprn, vacancyType, 1, null,searchTerm)).ReturnsAsync(dashboard);
+            _mockClient.Setup(c => c.GetDashboardAsync(Ukprn, 1, null,searchTerm)).ReturnsAsync(dashboard);
             return new VacanciesSearchSuggestionsOrchestrator(_mockClient.Object, serviceParameters);
         }
 

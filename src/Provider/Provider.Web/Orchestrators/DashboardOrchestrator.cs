@@ -1,4 +1,4 @@
-﻿using System.Threading.Tasks;
+using System.Threading.Tasks;
 using Esfa.Recruit.Provider.Web.Services;
 using Esfa.Recruit.Provider.Web.ViewModels.Dashboard;
 using Esfa.Recruit.Vacancies.Client.Application.Configuration;
@@ -34,13 +34,9 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
         public virtual async Task<DashboardViewModel> GetDashboardViewModelAsync(VacancyUser user)
         {
             await _client.UserSignedInAsync(user, UserType.Provider);
-            var serviceParametersVacancyType = _serviceParameters.VacancyType.GetValueOrDefault();
-            var dashboardTask = _vacancyClient.GetDashboardSummary(user.Ukprn.Value, serviceParametersVacancyType);
+            var dashboardTask = _vacancyClient.GetDashboardSummary(user.Ukprn.Value);
+            var providerTask = _providerRelationshipsService.CheckProviderHasPermissions(user.Ukprn.Value, OperationType.RecruitmentRequiresReview);
             var usersDetailsByDfEUserIdTask = _client.GetUsersDetailsByDfEUserId(user.DfEUserId);
-            
-            var providerTask = serviceParametersVacancyType == VacancyType.Apprenticeship 
-                ? _providerRelationshipsService.CheckProviderHasPermissions(user.Ukprn.Value, OperationType.RecruitmentRequiresReview)
-                : Task.FromResult(false);
 
             await Task.WhenAll(dashboardTask, providerTask, usersDetailsByDfEUserIdTask);
 

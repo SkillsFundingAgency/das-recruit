@@ -9,9 +9,6 @@
         public static string HasContributorWithApprovalOrAbovePermission => "HasContributorWithApprovalOrAbovePermission";
 
         public static string HasAccountOwnerPermission => "HasAccountOwnerPermission";
-
-        public static string IsTraineeshipWeb => nameof(IsTraineeshipWeb);
-        
         public static string IsApprenticeshipWeb => nameof(IsApprenticeshipWeb);
     }
 }

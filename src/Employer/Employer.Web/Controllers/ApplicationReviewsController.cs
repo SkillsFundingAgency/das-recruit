@@ -26,7 +26,6 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             _orchestrator = orchestrator;
         }
 
-        [FeatureGate(FeatureNames.MultipleApplicationsManagement)]
         [HttpGet("unsuccessful", Name = RouteNames.ApplicationReviewsToUnsuccessful_Get)]
         public async Task<IActionResult> ApplicationReviewsToUnsuccessful(VacancyRouteModel rm, [FromQuery] string sortColumn, [FromQuery] string sortOrder)
         {
@@ -44,7 +43,6 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             return View(viewModel);
         }
 
-        [FeatureGate(FeatureNames.MultipleApplicationsManagement)]
         [HttpPost("unsuccessful", Name = RouteNames.ApplicationReviewsToUnsuccessful_Post)]
         public async Task<IActionResult> ApplicationReviewsToUnsuccessfulAsync(ApplicationReviewsToUnsuccessfulRouteModel rm)
         {
@@ -57,7 +55,6 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             return RedirectToAction(nameof(ApplicationReviewsFeedback), new { rm.ApplicationsToUnsuccessful, rm.EmployerAccountId, rm.VacancyId });
         }
 
-        [FeatureGate(FeatureNames.MultipleApplicationsManagement)]
         [HttpGet("unsuccessful-feedback", Name = RouteNames.ApplicationReviewsToUnsuccessfulFeedback_Get)]
         public IActionResult ApplicationReviewsFeedback(ApplicationReviewsToUnsuccessfulRouteModel request)
         {
@@ -66,7 +63,6 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             return View(viewModel);
         }
 
-        [FeatureGate(FeatureNames.MultipleApplicationsManagement)]
         [HttpPost("unsuccessful-feedback", Name = RouteNames.ApplicationReviewsToUnsuccessfulFeedback_Post)]
         public IActionResult ApplicationReviewsFeedback(ApplicationReviewsFeedbackViewModel request)
         {
@@ -86,7 +82,6 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             });
         }
 
-        [FeatureGate(FeatureNames.MultipleApplicationsManagement)]
         [HttpGet("unsuccessful-confirmation", Name = RouteNames.ApplicationReviewsToUnsuccessfulConfirmation_Get)]
         public async Task<IActionResult> ApplicationReviewsToUnsuccessfulConfirmation(ApplicationReviewsToUnsuccessfulRouteModel rm)
         {
@@ -96,7 +91,6 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         }
 
         [HttpPost("unsuccessful-confirmation", Name = RouteNames.ApplicationReviewsToUnsuccessfulConfirmation_Post)]
-        [FeatureGate(FeatureNames.MultipleApplicationsManagement)]
         public async Task<IActionResult> ApplicationReviewsToUnsuccessfulConfirmation(ApplicationReviewsToUnsuccessfulConfirmationViewModel rm)
         {
             if (!ModelState.IsValid)

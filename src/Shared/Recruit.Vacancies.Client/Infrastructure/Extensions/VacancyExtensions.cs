@@ -66,8 +66,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Extensions
             projectedVacancy.AccountPublicHashedId = vacancy.EmployerAccountId;
             projectedVacancy.AccountLegalEntityPublicHashedId = vacancy.AccountLegalEntityPublicHashedId;
             
-            projectedVacancy.RouteId = vacancy.RouteId;
-            projectedVacancy.WorkExperience = vacancy.WorkExperience;
             projectedVacancy.VacancyType = vacancy.VacancyType.GetValueOrDefault();
 
             projectedVacancy.AdditionalQuestion1 = vacancy.AdditionalQuestion1;

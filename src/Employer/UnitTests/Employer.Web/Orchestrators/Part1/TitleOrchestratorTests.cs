@@ -103,7 +103,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part1
 
             public void VerifyVacancyTotalRetrieved(string employerAccountId)
             {
-                MockClient.Verify(x=>x.GetVacancyCount(employerAccountId, VacancyType.Apprenticeship, null, null), Times.Once);   
+                MockClient.Verify(x=>x.GetVacancyCount(employerAccountId, null, null), Times.Once);   
             }
 
             public Mock<IEmployerVacancyClient> MockClient { get; set; }

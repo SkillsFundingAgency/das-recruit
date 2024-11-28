@@ -91,7 +91,7 @@ namespace Esfa.Recruit.Provider.Web
             services.AddControllersWithViews().AddRazorRuntimeCompilation();
     #endif
 
-            var serviceParameters = new ServiceParameters(_configuration[$"RecruitConfiguration:{nameof(VacancyType)}"]);
+            var serviceParameters = new ServiceParameters();
             bool useDfESignIn = _configuration["UseDfESignIn"] != null && _configuration["UseDfESignIn"].Equals("true", StringComparison.CurrentCultureIgnoreCase);
             if (useDfESignIn)
             {

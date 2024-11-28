@@ -9,7 +9,6 @@ using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels.Preview;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Shared.Web.ViewModels;
-using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -20,12 +19,10 @@ namespace Esfa.Recruit.Employer.Web.Controllers
     public class VacancyCheckYourAnswersController : Controller
     {
         private readonly VacancyTaskListOrchestrator _orchestrator;
-        private readonly bool _isFaaV2Enabled;
 
-        public VacancyCheckYourAnswersController (VacancyTaskListOrchestrator orchestrator, IFeature feature)
+        public VacancyCheckYourAnswersController (VacancyTaskListOrchestrator orchestrator)
         {
             _orchestrator = orchestrator;
-            _isFaaV2Enabled = feature.IsFeatureEnabled(FeatureNames.FaaV2Improvements);
         }
         
         [HttpGet("check-answers", Name = RouteNames.EmployerCheckYourAnswersGet)]
@@ -34,7 +31,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         {
             var viewModel = await _orchestrator.GetVacancyTaskListModel(vrm); 
             viewModel.CanHideValidationSummary = true;
-            viewModel.SetSectionStates(viewModel, ModelState,_isFaaV2Enabled);
+            viewModel.SetSectionStates(viewModel, ModelState);
             
             if (TempData.ContainsKey(TempDataKeys.VacancyClonedInfoMessage))
                 viewModel.VacancyClonedInfoMessage = TempData[TempDataKeys.VacancyClonedInfoMessage].ToString();
@@ -71,7 +68,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             viewModel.SoftValidationErrors = null;
             viewModel.SubmitToEsfa = m.SubmitToEsfa;
             viewModel.RejectedReason = m.RejectedReason;
-            viewModel.SetSectionStates(viewModel, ModelState, _isFaaV2Enabled);
+            viewModel.SetSectionStates(viewModel, ModelState);
             viewModel.ValidationErrors = new ValidationSummaryViewModel
                 {ModelState = ModelState, OrderedFieldNames = viewModel.OrderedFieldNames};
             return View(viewModel);
@@ -100,7 +97,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
 
             var viewModel = await _orchestrator.GetVacancyTaskListModel(m);
             viewModel.SoftValidationErrors = null;
-            viewModel.SetSectionStates(viewModel, ModelState, _isFaaV2Enabled);
+            viewModel.SetSectionStates(viewModel, ModelState);
             viewModel.ValidationErrors = new ValidationSummaryViewModel
                 {ModelState = ModelState, OrderedFieldNames = viewModel.OrderedFieldNames};
             return View(viewModel);

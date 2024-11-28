@@ -23,13 +23,10 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation.
         }
         
         [Theory]
-        [InlineData(null,true, "will do at work")]
-        [InlineData(null,false,"will be doing")]
-        [InlineData("",true,"will do at work")]
-        [InlineData("",false,"will be doing")]
-        public void DescriptionMustNotBeEmpty(string description,bool featureEnabled, string errorMessage)
+        [InlineData(null, "will do at work")]
+        [InlineData("", "will do at work")]
+        public void DescriptionMustNotBeEmpty(string description, string errorMessage)
         {
-            Feature.Setup(x => x.IsFeatureEnabled("FaaV2Improvements")).Returns(featureEnabled);
             var vacancy = new Vacancy 
             {
                 Description = description

@@ -75,36 +75,6 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Controllers
         }
 
         [Test, MoqAutoData]
-        public async Task CreateTraineeeshipVacancy_Then_The_Request_Is_Sent_To_Mediator_Command(
-            Guid id,
-            long vacancyRef,
-            string userEmail,
-            long ukprn,
-            CreateTraineeshipVacancyRequest request,
-            CreateTraineeshipVacancyCommandResponse response,
-            [Frozen] Mock<IMediator> mediator,
-            [Greedy] VacanciesController controller)
-        {
-            response.ResultCode = ResponseCode.Created;
-            response.Data = vacancyRef;
-            mediator.Setup(x => x.Send(It.Is<CreateTraineeshipVacancyCommand>(c =>
-                    c.Vacancy.Title.Equals(request.Title)
-                    && c.Vacancy.Id.Equals(id)
-                    && c.VacancyUserDetails.Email.Equals(userEmail)
-                    && c.VacancyUserDetails.Ukprn.Equals(ukprn)
-                    && !c.ValidateOnly
-                    ), CancellationToken.None)).ReturnsAsync(response);
-
-            var actual = await controller.CreateTraineeship(id, request, userEmail, ukprn) as CreatedResult;
-
-            Assert.That(actual, Is.Not.Null);
-            actual.StatusCode.Should().Be((int)HttpStatusCode.Created);
-            var actualResult = actual.Value as long?;
-            Assert.That(actualResult, Is.Not.Null);
-            actualResult.Value.Should().Be((long)response.Data);
-        }
-
-        [Test, MoqAutoData]
         public async Task ValidateVacancy_Then_The_Request_Is_Sent_To_Mediator_Command(
             Guid id,
             long vacancyRef,
@@ -134,37 +104,5 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Controllers
             Assert.That(actualResult, Is.Not.Null);
             actualResult.Value.Should().Be((long)response.Data);
         }
-
-        [Test, MoqAutoData]
-        public async Task ValidateTraineeeshipVacancy_Then_The_Request_Is_Sent_To_Mediator_Command(
-            Guid id,
-            long vacancyRef,
-            string userEmail,
-            long ukprn,
-            CreateTraineeshipVacancyRequest request,
-            CreateTraineeshipVacancyCommandResponse response,
-            [Frozen] Mock<IMediator> mediator,
-            [Greedy] VacanciesController controller)
-        {
-            response.ResultCode = ResponseCode.Created;
-            response.Data = vacancyRef;
-            mediator.Setup(x => x.Send(It.Is<CreateTraineeshipVacancyCommand>(c =>
-                    c.Vacancy.Title.Equals(request.Title)
-                    && c.Vacancy.Id.Equals(id)
-                    && c.VacancyUserDetails.Email.Equals(userEmail)
-                    && c.VacancyUserDetails.Ukprn.Equals(ukprn)
-                    && c.ValidateOnly
-                ), CancellationToken.None))
-                .ReturnsAsync(response);
-
-            var actual = await controller.ValidateTraineeship(id, request, userEmail, ukprn) as CreatedResult;
-
-            Assert.That(actual, Is.Not.Null);
-            actual.StatusCode.Should().Be((int)HttpStatusCode.Created);
-            var actualResult = actual.Value as long?;
-            Assert.That(actualResult, Is.Not.Null);
-            actualResult.Value.Should().Be((long)response.Data);
-        }
-
     }
 }

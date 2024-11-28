@@ -31,15 +31,6 @@ namespace Esfa.Recruit.Provider.Web.Controllers
         [HttpGet("manage", Name = RouteNames.VacancyManage_Get)]
         public async Task<IActionResult> ManageVacancy(VacancyRouteModel vrm, [FromQuery] string sortColumn, [FromQuery] string sortOrder)
         {
-            if (_serviceParameters.VacancyType == VacancyType.Traineeship 
-                && DateTime.TryParse(_configuration["TraineeshipCutOffDate"], out var traineeshipCutOffDate))
-            {
-                if (traineeshipCutOffDate != DateTime.MinValue && traineeshipCutOffDate < DateTime.UtcNow)
-                {
-                    return RedirectPermanent($"{_configuration["ProviderSharedUIConfiguration:DashboardUrl"]}account");
-                }
-            }
-            
             Enum.TryParse<SortOrder>(sortOrder, out var outputSortOrder);
             Enum.TryParse<SortColumn>(sortColumn, out var outputSortColumn);
 

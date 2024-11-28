@@ -53,13 +53,7 @@
         </p>
 
         <p class="govuk-body">
-            <esfaFeatureDisabled name="@FeatureNames.ProviderTaskList">
-                <a class="govuk-link" asp-route="@RouteNames.Employer_Get" asp-route-ukprn="@Model.Ukprn">Create another vacancy</a>    
-            </esfaFeatureDisabled>
-            <esfaFeatureEnabled name="@FeatureNames.ProviderTaskList">
-                <a class="govuk-link" asp-route="@RouteNames.CreateVacancyStart" asp-route-ukprn="@Model.Ukprn">Create another vacancy</a>
-            </esfaFeatureEnabled>
-            
+            <a class="govuk-link" asp-route="@RouteNames.CreateVacancyStart" asp-route-ukprn="@Model.Ukprn">Create another vacancy</a>
         </p>
     </div>
 </div>

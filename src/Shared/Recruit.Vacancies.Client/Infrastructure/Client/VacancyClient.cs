@@ -214,7 +214,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         
         public async Task<EmployerDashboardSummary> GetDashboardSummary(string employerAccountId)
         {
-            var dashboardValue = await  _vacancySummariesQuery.GetEmployerOwnedVacancyDashboardByEmployerAccountIdAsync(employerAccountId, VacancyType.Apprenticeship);
+            var dashboardValue = await  _vacancySummariesQuery.GetEmployerOwnedVacancyDashboardByEmployerAccountIdAsync(employerAccountId);
             
             var dashboard = dashboardValue.VacancyStatusDashboard;
             var dashboardApplications = dashboardValue.VacancyApplicationsDashboard;
@@ -244,7 +244,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         {
             var vacancySummaries =
                 await _vacancySummariesQuery.GetEmployerOwnedVacancySummariesByEmployerAccountId(employerAccountId,
-                    VacancyType.Apprenticeship, page, status, searchTerm);
+                     page, status, searchTerm);
             return new EmployerDashboard
             {
                 Id = QueryViewType.EmployerDashboard.GetIdValue(employerAccountId),
@@ -420,13 +420,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         public Task UpdateApprenticeshipProgrammesAsync()
         {
             var command = new UpdateApprenticeshipProgrammesCommand();
-
-            return _messaging.SendCommandAsync(command);
-        }
-
-        public Task UpdateApprenticeshipRouteAsync()
-        {
-            var command = new UpdateApprenticeshipRouteCommand();
 
             return _messaging.SendCommandAsync(command);
         }
@@ -620,10 +613,10 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return EntityValidationResult.FromFluentValidationResult(fluentResult);
         }
         
-        public async Task<long> GetVacancyCount(string employerAccountId, VacancyType vacancyType, FilteringOptions? filteringOptions, string searchTerm)
+        public async Task<long> GetVacancyCount(string employerAccountId, FilteringOptions? filteringOptions, string searchTerm)
         {
             var ownerType = (filteringOptions == FilteringOptions.NewSharedApplications || filteringOptions == FilteringOptions.AllSharedApplications) ? OwnerType.Provider : OwnerType.Employer;
-            return await _vacancySummariesQuery.VacancyCount(null, employerAccountId, vacancyType, filteringOptions, searchTerm, ownerType);
+            return await _vacancySummariesQuery.VacancyCount(null, employerAccountId, filteringOptions, searchTerm, ownerType);
         }
     }
 }
