@@ -8,12 +8,6 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation.
 
 public class HowWillTheApprenticeTrainTests : VacancyValidationTestsBase
 {
-    [SetUp]
-    public void Arrange()
-    {
-        Feature.Setup(c => c.IsFeatureEnabled("FaaV2Improvements")).Returns(true);
-    }
-    
     [Test]
     public void NoErrorsWhenDescriptionFieldIsValid()
     {
