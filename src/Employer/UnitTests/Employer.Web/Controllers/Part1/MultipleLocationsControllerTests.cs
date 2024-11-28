@@ -61,4 +61,20 @@ public class MultipleLocationsControllerTests
         result.Should().NotBeNull();
         result!.RouteName.Should().Be(RouteNames.EmployerCheckYourAnswersGet);
     }
+    
+    [Test, MoqAutoData]
+    public async Task When_Posting_LocationsAvailability_With_Invalid_state_Then_You_Are_Redirected_To_LocationAvailability(
+        LocationAvailabilityEditModel locationAvailabilityEditModel,
+        [Greedy] MultipleLocationsController sut)
+    {
+        // arrange
+        sut.ModelState.AddModelError(string.Empty, string.Empty);
+        
+        // act
+        var result = (await sut.LocationAvailability(locationAvailabilityEditModel) as ViewResult)?.Model as LocationAvailabilityViewModel;
+        
+        // assert
+        result.Should().NotBeNull();
+        result.Should().BeEquivalentTo(locationAvailabilityEditModel);
+    }
 }
