@@ -46,26 +46,33 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 
             var now = _timeProvider.Now;
 
-            var userEntity = await _userRepository.GetAsync(user.UserId) ?? new User
+            var existingUser = userType == UserType.Provider
+                ? (await _userRepository.GetByDfEUserId(user.DfEUserId) ?? await _userRepository.GetAsync(user.UserId))
+                : await _userRepository.GetAsync(user.UserId);
+            
+            var userEntity = existingUser ?? new User
             {
                 Id = Guid.NewGuid(),
                 IdamsUserId = user.UserId,
                 UserType = userType,
-                CreatedDate = now
+                CreatedDate = now,
+                DfEUserId = user.DfEUserId
             };
 
-            var userNotificationPreferences = await _userNotificationPreferencesRepository.GetAsync(userEntity.IdamsUserId) ?? new UserNotificationPreferences
+            var userNotificationPreferences = await _userNotificationPreferencesRepository.GetAsync(userEntity.IdamsUserId) ?? await _userNotificationPreferencesRepository.GetByDfeUserId(userEntity.DfEUserId) ?? new UserNotificationPreferences
             {
                 Id = userEntity.IdamsUserId,
                 NotificationTypes = userEntity.UserType == UserType.Provider
                     ? NotificationTypes.VacancyRejectedByEmployer
                     : NotificationTypes.VacancySentForReview,
-                NotificationScope = NotificationScope.OrganisationVacancies
+                NotificationScope = NotificationScope.OrganisationVacancies,
+                DfeUserId = userEntity.DfEUserId
             };
 
             userEntity.Name = user.Name;
             userEntity.LastSignedInDate = now;
             userEntity.Email = user.Email;
+            userEntity.DfEUserId = userType == UserType.Provider && userEntity.DfEUserId == null ? user.DfEUserId : null;
 
             if (userType == UserType.Provider)
                 userEntity.Ukprn = user.Ukprn;
