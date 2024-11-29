@@ -15,7 +15,7 @@ public class MultipleLocationsController(
     
     [FeatureGate(FeatureNames.MultipleLocations)]
     [HttpGet("location-availability", Name = RouteNames.MultipleLocations_Get)]
-    public async Task<IActionResult> LocationAvailability(VacancyRouteModel vacancyRouteModel, [FromQuery] string wizard = "true")
+    public async Task<IActionResult> LocationAvailability(VacancyRouteModel vacancyRouteModel, [FromQuery] bool wizard = true)
     {
         var viewModel = await GetLocationAvailabilityViewModel(vacancyRouteModel, wizard);
         return View(viewModel);
@@ -25,15 +25,18 @@ public class MultipleLocationsController(
     [HttpPost("location-availability", Name = RouteNames.MultipleLocations_Post)]
     public async Task<IActionResult> LocationAvailability(LocationAvailabilityEditModel model, [FromQuery] bool wizard)
     {
-        // TODO: validate the model
-        // TODO: save the selection
-        
+        if (!ModelState.IsValid)
+        {
+            var viewModel = await GetLocationAvailabilityViewModel(model, wizard);
+            return View(viewModel);
+        }
+
         return wizard 
             ? RedirectToRoute(RouteNames.EmployerTaskListGet, new {model.VacancyId, model.EmployerAccountId, wizard}) 
             : RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet, new {model.VacancyId, model.EmployerAccountId});
     } 
 
-    private async Task<LocationAvailabilityViewModel> GetLocationAvailabilityViewModel(VacancyRouteModel vacancyRouteModel, string wizard)
+    private async Task<LocationAvailabilityViewModel> GetLocationAvailabilityViewModel(VacancyRouteModel vacancyRouteModel, bool wizard)
     {
         var vacancy = await utility.GetAuthorisedVacancyForEditAsync(vacancyRouteModel, RouteNames.Location_Get);
         var viewModel = new LocationAvailabilityViewModel
