@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
@@ -53,39 +52,11 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Rules.Engine
             return this;
         }
 
-        public RuleOutcomeDetailsBuilder Add(RuleOutcome outcome)
-        {
-            return Add(new[] {outcome});
-        }
-
         public RuleOutcome ComputeSum(string narrative = null)
         {
             EnsureThereAreOutcomes();
 
             return new RuleOutcome(_ruleId, _totalScore, narrative ?? _narrative.ToString(), _target, _details);
-        }
-
-        public RuleOutcome ComputeMean(string narrative = null)
-        {
-            EnsureThereAreOutcomes();
-
-            var meanScore = _totalScore / _outcomeCount;
-
-            return new RuleOutcome(_ruleId, meanScore, narrative ?? _narrative.ToString(), _target, _details);
-        }
-
-        public RuleOutcome ComputeMax(string narrative = null)
-        {
-            EnsureThereAreOutcomes();
-
-            var maxScore = _details.Max(d => d.Score);
-
-            return new RuleOutcome(_ruleId, maxScore, narrative ?? _narrative.ToString(), _target, _details);
-        }
-
-        public RuleOutcome CreateOutcome(int score, string narrative = null)
-        {
-            return new RuleOutcome(_ruleId, score, narrative ?? _narrative.ToString(), _target, _details);
         }
 
         private void EnsureThereAreOutcomes()

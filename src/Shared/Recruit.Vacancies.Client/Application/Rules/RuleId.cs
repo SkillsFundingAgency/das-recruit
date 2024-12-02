@@ -4,7 +4,6 @@
     {
         ProfanityChecks,
         BannedPhraseChecks,
-        TitlePopularity,
         VacancyAnonymous
     }
 }

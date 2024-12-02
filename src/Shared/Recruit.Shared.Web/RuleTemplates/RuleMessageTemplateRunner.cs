@@ -17,8 +17,6 @@ namespace Esfa.Recruit.Shared.Web.RuleTemplates
                     return BannedPhraseMessageTemplate.ToText(JsonConvert.DeserializeObject<BannedPhrasesData>(data), fieldName);
                 case RuleId.VacancyAnonymous:
                     return VacancyAnonymousMessageTemplate.ToText();
-                case RuleId.TitlePopularity:
-                    return VacancyTitlePopularityRuleMessageTemplate.ToText(JsonConvert.DeserializeObject<TitlePopularityData>(data), fieldName);
                 default:
                     throw new Exception($"Cannot resolve ruleId: {ruleId} to a rule message template formatter.");
             }
