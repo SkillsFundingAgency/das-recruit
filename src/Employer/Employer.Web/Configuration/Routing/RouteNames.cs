@@ -49,8 +49,20 @@
         public const string Location_Post = "Location_Post";
         public const string Location_Cancel = "Location_Cancel";
         
-        public const string MultipleLocations_Get = "Multiple_Locations_Get";
-        public const string MultipleLocations_Post = "Multiple_Locations_Post";
+        public const string MultipleLocations_Get = nameof(MultipleLocations_Get);
+        public const string MultipleLocations_Post = nameof(MultipleLocations_Post);
+        
+        public const string AddLocation_Get = nameof(AddLocation_Get);
+        public const string AddLocation_Post = nameof(AddLocation_Post);
+
+        public const string AddMoreThanOneLocation_Get = nameof(AddMoreThanOneLocation_Get);
+        public const string AddMoreThanOneLocation_Post = nameof(AddMoreThanOneLocation_Post);
+        
+        public const string AddOneLocation_Get = nameof(AddOneLocation_Get);
+        public const string AddOneLocation_Post = nameof(AddOneLocation_Post);
+        
+        public const string SelectAnAddress_Get = nameof(SelectAnAddress_Get);
+        public const string SelectAnAddress_Post = nameof(SelectAnAddress_Post);
 
         public const string CreateVacancy_Get = "CreateVacancy_Get";
         public const string CreateVacancy_Post = "CreateVacancy_Post";
