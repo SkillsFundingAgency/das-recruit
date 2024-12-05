@@ -253,13 +253,45 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                 .WithState(_ => VacancyRuleSet.EmployerNameOption)
                 .RunCondition(VacancyRuleSet.EmployerNameOption);
 
-            RuleFor(x => x.EmployerLocation)
-                .NotNull()
+            When(v => v.EmployerLocationOption is null, () =>
+            {
+                RuleFor(x => x.EmployerLocation)
+                    .NotNull()
                     .WithMessage("You must provide an employer location")
                     .WithErrorCode("98")
                     .WithState(_ => VacancyRuleSet.EmployerAddress)
-                .SetValidator(new AddressValidator((long)VacancyRuleSet.EmployerAddress))
-                .RunCondition(VacancyRuleSet.EmployerAddress);
+                    .SetValidator(new AddressValidator((long)VacancyRuleSet.EmployerAddress))
+                    .RunCondition(VacancyRuleSet.EmployerAddress);
+            });
+
+            // TODO: this will be required for the other validation scenarios
+            // When(v => v.EmployerLocationOption == AvailableWhere.OneLocation, () =>
+            // {
+            //     RuleFor(x => x.EmployerLocations)
+            //         .NotNull()
+            //         .Must(x => x.Count == 1)
+            //         .WithMessage("Select a location")
+            //         .WithState(_ => VacancyRuleSet.EmployerAddress)
+            //         .RunCondition(VacancyRuleSet.EmployerAddress);
+            //     
+            //     RuleForEach(x => x.EmployerLocations)
+            //         .SetValidator(new AddressValidator((long)VacancyRuleSet.EmployerAddress))
+            //         .RunCondition(VacancyRuleSet.EmployerAddress);
+            // });
+            
+            When(v => v.EmployerLocationOption == AvailableWhere.MultipleLocations, () =>
+            {
+                RuleFor(x => x.EmployerLocations)
+                    .NotNull()
+                    .Must(x => x.Count is >=2 and <=10)
+                    .WithMessage("Select between 2 and 10 locations")
+                    .WithState(_ => VacancyRuleSet.EmployerAddress)
+                    .RunCondition(VacancyRuleSet.EmployerAddress);
+                
+                RuleForEach(x => x.EmployerLocations)
+                    .SetValidator(new AddressValidator((long)VacancyRuleSet.EmployerAddress))
+                    .RunCondition(VacancyRuleSet.EmployerAddress);
+            });
         }
 
         private void ValidateNumberOfPositions()

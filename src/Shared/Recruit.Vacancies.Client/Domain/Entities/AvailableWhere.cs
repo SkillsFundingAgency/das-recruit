@@ -1,4 +1,4 @@
-﻿namespace Esfa.Recruit.Provider.Web.ViewModels.Part1.MultipleLocations;
+﻿namespace Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
 public enum AvailableWhere
 {

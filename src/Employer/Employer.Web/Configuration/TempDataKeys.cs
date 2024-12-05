@@ -14,6 +14,7 @@
         public const string ReferredFromMa = "ReferredFromMa";
         public const string ReferredUkprn = "ReferredUkprn_";
         public const string ReferredProgrammeId = "ReferredProgrammeId_";
+        public const string SelectedLocations = nameof(SelectedLocations);
         public const string VacancyPreviewInfoMessage = "VacancyPreviewInfoMessage";
     }
 }
