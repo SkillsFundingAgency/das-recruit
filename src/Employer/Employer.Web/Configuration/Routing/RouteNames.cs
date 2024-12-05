@@ -52,11 +52,15 @@
         public const string MultipleLocations_Get = nameof(MultipleLocations_Get);
         public const string MultipleLocations_Post = nameof(MultipleLocations_Post);
         
+        public const string MultipleLocationsConfirm_Get = nameof(MultipleLocationsConfirm_Get);
+        public const string MultipleLocationsConfirm_Post = nameof(MultipleLocationsConfirm_Post);
+        
         public const string AddLocation_Get = nameof(AddLocation_Get);
         public const string AddLocation_Post = nameof(AddLocation_Post);
 
         public const string AddMoreThanOneLocation_Get = nameof(AddMoreThanOneLocation_Get);
         public const string AddMoreThanOneLocation_Post = nameof(AddMoreThanOneLocation_Post);
+        public const string AddNewLocationJourney_Post = nameof(AddNewLocationJourney_Post);
         
         public const string AddOneLocation_Get = nameof(AddOneLocation_Get);
         public const string AddOneLocation_Post = nameof(AddOneLocation_Post);
