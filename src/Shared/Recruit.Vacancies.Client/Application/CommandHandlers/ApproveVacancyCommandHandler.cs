@@ -53,7 +53,9 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 
             var vacancyApprovedEvent = new VacancyApprovedEvent
             {
-                VacancyReference = vacancy.VacancyReference.Value,
+                AccountLegalEntityPublicHashedId = vacancy.AccountLegalEntityPublicHashedId,
+                Ukprn = vacancy.TrainingProvider.Ukprn!.Value,
+                VacancyReference = vacancy.VacancyReference!.Value,
                 VacancyId = vacancy.Id
             };
             await Task.WhenAll(_messaging.PublishEvent(vacancyApprovedEvent), _messageSession.Publish(vacancyApprovedEvent));
