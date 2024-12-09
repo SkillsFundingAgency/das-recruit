@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
@@ -24,7 +24,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
             var collection = GetCollection<User>();
             var result = await RetryPolicy.Execute(_ => 
                 collection.Find(filter)
-                .SingleOrDefaultAsync(),
+                .FirstOrDefaultAsync(),
                 new Context(nameof(GetAsync)));
             return result;
         }
