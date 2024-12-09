@@ -34,7 +34,10 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         Task UpdateEmployerProfileAsync(EmployerProfile employerProfile, VacancyUser user);
         Task<VacancyAnalyticsSummary> GetVacancyAnalyticsSummaryAsync(long vacancyReference);
         Task<User> GetUsersDetailsAsync(string userId);
-        Task<UserNotificationPreferences> GetUserNotificationPreferencesAsync(string vacancyUserId);
+        Task UpsertUserDetails(User user);
+        Task<UserNotificationPreferences> GetUserNotificationPreferencesAsync(string vacancyUserId, string dfeUserId = null);
+
+        Task<UserNotificationPreferences> GetUserNotificationPreferencesByDfEUserIdAsync(string idamsUserId, string dfeUserId = null);
         Task UpdateUserNotificationPreferencesAsync(UserNotificationPreferences preferences);
         EntityValidationResult ValidateUserNotificationPreferences(UserNotificationPreferences preferences);
         Task<GetUserAccountsResponse> GetEmployerIdentifiersAsync(string userId, string email);
@@ -44,5 +47,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         Task<IEnumerable<IApprenticeshipRoute>> GetApprenticeshipRoutes();
         Task SetApplicationReviewsShared(IEnumerable<VacancyApplication> applicationReviewIds, VacancyUser user);
         Task SetApplicationReviewsToUnsuccessful(IEnumerable<VacancyApplication> applicationReviewsToUnsuccessful, string candidateFeedback, VacancyUser user);
+        Task <User> GetUsersDetailsByDfEUserId(string dfeUserId);
     }
 }

@@ -17,7 +17,7 @@ namespace Esfa.Recruit.UnitTests.Proivder.Web.Orchestrators.ManageNotificationsO
         [Fact]
         public async Task WhenUserPreferencesAreNotSet()
         {
-            _recruitVacancyClientMock.Setup(c => c.GetUserNotificationPreferencesAsync(It.IsAny<string>())).ReturnsAsync(new UserNotificationPreferences());
+            _recruitVacancyClientMock.Setup(c => c.GetUserNotificationPreferencesByDfEUserIdAsync(It.IsAny<string>(),It.IsAny<string>())).ReturnsAsync(new UserNotificationPreferences());
             var sut = GetSut();
             var result = await sut.GetManageNotificationsViewModelAsync(new VacancyUser());
             result.IsApplicationSubmittedSelected.Should().BeFalse();
@@ -43,7 +43,7 @@ namespace Esfa.Recruit.UnitTests.Proivder.Web.Orchestrators.ManageNotificationsO
             bool expectedIsVacancyClosingSoonSelected, bool expectedIsVacancyRejectedSelected, bool expectedIsVacancyRejectedByEmployerSelected)
         {
             _recruitVacancyClientMock
-                .Setup(c => c.GetUserNotificationPreferencesAsync(It.IsAny<string>()))
+                .Setup(c => c.GetUserNotificationPreferencesByDfEUserIdAsync(It.IsAny<string>(),It.IsAny<string>()))
                 .ReturnsAsync(new UserNotificationPreferences { NotificationTypes = notificationTypes });
             var sut = GetSut();
             var result = await sut.GetManageNotificationsViewModelAsync(new VacancyUser());
