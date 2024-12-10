@@ -1,0 +1,48 @@
+﻿@model Esfa.Recruit.Employer.Web.ViewModels.Part1.MultipleLocations.AddMoreThanOneLocationViewModel
+
+@{ 
+    ViewBag.Title = "Add more than one location";
+    ViewBag.ZenDeskLabel = "recruit-where-will-the-apprentice-work";
+}
+
+@section BackLink {
+    <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.MultipleLocations_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Back</a>
+    <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.EmployerCheckYourAnswersGet" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Back</a>
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <partial name="@PartialNames.ValidationSummary" model=@(new ValidationSummaryViewModel { ModelState = ViewData.ModelState }) />
+        <form asp-route="@RouteNames.AddMoreThanOneLocation_Post" asp-all-route-data="@Model.RouteDictionary" asp-route-wizard="@Model.PageInfo.IsWizard">
+            <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">
+                <span class="govuk-caption-l">@Model.ApprenticeshipTitle</span>
+                Add more than 1 location
+            </h1>
+            <p class="govuk-body govuk-!-padding-bottom-5">We’ll show your advert when someone searches for an apprenticeship in any of these locations.</p>
+            <div class="govuk-form-group">
+                <fieldset class="govuk-fieldset">
+                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                        <h2 class="govuk-fieldset__heading govuk-heading-l">
+                            Add locations
+                        </h2>
+                    </legend>
+                    <p class="govuk-body govuk-hint">
+                        Select up to 10 locations
+                    </p>
+                    <partial asp-show="Model.AvailableLocations is { Count: <= 10 }" name="_AddressesView" model="Model" />
+                    <partial asp-show="Model.AvailableLocations is { Count: > 10 }" name="_GroupedAddressesView" model="Model" />
+                </fieldset>
+            </div>
+
+            <div class="govuk-body">
+                <button asp-controller="MultipleLocations" asp-action="AddALocation" asp-all-route-data="@Model.RouteDictionary" type="submit" class="govuk-button govuk-button--secondary">Add a new location</button>
+            </div>
+            
+            <div class="govuk-button-group">
+                <button type="submit" class="govuk-button save-button" esfa-automation="continue-button">@Model.PageInfo.SubmitButtonText</button>
+                <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Dashboard_Get" asp-route-employerAccountId="@Model.EmployerAccountId" class="govuk-link govuk-link--no-visited-state">Cancel</a>
+                <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.EmployerCheckYourAnswersGet" asp-all-route-data="@Model.RouteDictionary" class="govuk-link govuk-link--no-visited-state">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
