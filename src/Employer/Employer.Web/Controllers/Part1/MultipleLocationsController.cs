@@ -10,7 +10,9 @@ using Esfa.Recruit.Employer.Web.Orchestrators.Part1;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.MultipleLocations;
 using Esfa.Recruit.Shared.Web.Extensions;
+using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.FeatureManagement.Mvc;
 
@@ -122,11 +124,6 @@ public class MultipleLocationsController : Controller
         [FromQuery] bool wizard)
     {
         var vacancy = await utility.GetAuthorisedVacancyForEditAsync(vacancyRouteModel, RouteNames.MultipleLocations_Get);
-        if (vacancy.EmployerLocations.Count is < 2 or > 10) // TODO: convert to constants
-        {
-            return RedirectToRoute(RouteNames.MultipleLocations_Get, new { vacancyRouteModel.VacancyId, vacancyRouteModel.EmployerAccountId, wizard });
-        }
-        
         var viewModel = new ConfirmLocationsViewModel
         {
             ApprenticeshipTitle = vacancy.Title,
