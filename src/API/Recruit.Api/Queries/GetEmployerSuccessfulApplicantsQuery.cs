@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,14 +8,16 @@ using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using MediatR;
 using SFA.DAS.Recruit.Api.Helpers;
-using SFA.DAS.Recruit.Api.Mappers;
 using SFA.DAS.Recruit.Api.Models;
 using SFA.DAS.Recruit.Api.Services;
 using ApplicationReviewStatus = SFA.DAS.Recruit.Api.Services.ApplicationReviewStatus;
 
 namespace SFA.DAS.Recruit.Api.Queries;
 
-public record GetEmployerSuccessfulApplicantsQuery(string EmployerAccountId) : IRequest<GetEmployerSuccessfulApplicantsQueryResponse>;
+public record GetEmployerSuccessfulApplicantsQuery(string EmployerAccountId) : IRequest<GetEmployerSuccessfulApplicantsQueryResponse>
+{
+    public string EmployerAccountId { get; set; } = EmployerAccountId;
+}
 
 public class GetEmployerSuccessfulApplicantsQueryResponse : ResponseBase;
 
@@ -41,21 +42,25 @@ public class GetEmployerSuccessfulApplicantsQueryHandler(
         }
 
         var vacancies = await vacancyQuery.GetVacanciesByEmployerAccountAsync<VacancyIdentifier>(request.EmployerAccountId);
-
-        var successfulApplications = await GetSuccessfulApplications(vacancies);
+        
+        var successfulApplications = await GetSuccessfulApplications(vacancies.ToList());
 
         return new GetEmployerSuccessfulApplicantsQueryResponse
         {
             ResultCode = ResponseCode.Success,
-            Data = successfulApplications.Select(ApplicantSummaryMapper.MapFromVacancyApplication)
-                .OrderBy(x=> x.LastName)
-                .ThenBy(x=> x.FirstName)
+            Data =  successfulApplications?.OrderBy(x => x.LastName)
+                .ThenBy(x => x.FirstName)
         };
     }
 
-    private async Task<ConcurrentBag<VacancyApplication>> GetSuccessfulApplications(IEnumerable<VacancyIdentifier> vacancies)
+    private async Task<List<SuccessfulApplicant>> GetSuccessfulApplications(List<VacancyIdentifier> vacancies)
     {
-        var successfulApplications = new ConcurrentBag<VacancyApplication>();
+        if (vacancies.Count == 0)
+        {
+            return null;
+        }
+
+        var successfulApplications = new ConcurrentBag<SuccessfulApplicant>();
         var options = new ParallelOptions { MaxDegreeOfParallelism = MaxDegreeOfParallelism };
 
         await Parallel.ForEachAsync(vacancies, options, async (vacancy, _) =>
@@ -68,12 +73,24 @@ public class GetEmployerSuccessfulApplicantsQueryHandler(
 
                 foreach (var application in filteredApplications)
                 {
-                    successfulApplications.Add(application);
+                    successfulApplications.Add(CreateResponseItem(application, vacancy));
                 }
             }
         });
 
-        return successfulApplications;
+        return successfulApplications.ToList();
+    }
+
+    private static SuccessfulApplicant CreateResponseItem(VacancyApplication application, VacancyIdentifier vacancy)
+    {
+        return new SuccessfulApplicant
+        {
+            ApplicantId = application.CandidateId,
+            FirstName = application.FirstName,
+            LastName = application.LastName,
+            DateOfBirth = application.DateOfBirth,
+            VacancyReference = vacancy.VacancyReference,
+        };
     }
 
     private static List<VacancyApplication> FilterSuccessfulApplicants(VacancyApplications vacancyApplications)
