@@ -5,7 +5,7 @@ namespace SFA.DAS.Recruit.Api.Models
     public abstract class ResponseBase
     {
         public ResponseCode ResultCode { get; set; }
-        public List<object> ValidationErrors { get; set; } = new List<object>();
+        public List<object> ValidationErrors { get; set; } = [];
         public object Data { get; set; }
     }
 

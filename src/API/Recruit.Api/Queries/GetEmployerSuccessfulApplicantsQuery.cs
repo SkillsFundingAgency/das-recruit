@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -24,55 +25,61 @@ public class GetEmployerSuccessfulApplicantsQueryHandler(
     IQueryStoreReader queryStoreReader)
     : IRequestHandler<GetEmployerSuccessfulApplicantsQuery, GetEmployerSuccessfulApplicantsQueryResponse>
 {
+    private const int MaxDegreeOfParallelism = 10;
+
     public async Task<GetEmployerSuccessfulApplicantsQueryResponse> Handle(GetEmployerSuccessfulApplicantsQuery request, CancellationToken cancellationToken)
     {
         var validationErrors = ValidateRequest(request);
 
         if (validationErrors.Count != 0)
         {
-            return new GetEmployerSuccessfulApplicantsQueryResponse { ResultCode = ResponseCode.InvalidRequest, ValidationErrors = validationErrors.Cast<object>().ToList() };
-        }
-
-        List<Task<VacancyApplications>> applicationsTasks = [];
-        
-        try
-        {
-            var vacancies = await vacancyQuery.GetVacanciesByEmployerAccountAsync<Vacancy>(request.EmployerAccountId);
-            
-            foreach (var vacancy in vacancies)
+            return new GetEmployerSuccessfulApplicantsQueryResponse
             {
-                applicationsTasks.Add(queryStoreReader.GetVacancyApplicationsAsync(vacancy.VacancyReference.ToString()));
-            }
-
-            await Task.WhenAll(applicationsTasks);
-            
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            throw;
+                ResultCode = ResponseCode.InvalidRequest,
+                ValidationErrors = validationErrors.Cast<object>().ToList()
+            };
         }
 
-        // get the employer vacancies
-        
-        var successfulApplications = new List<VacancyApplication>();
+        var vacancies = await vacancyQuery.GetVacanciesByEmployerAccountAsync<VacancyIdentifier>(request.EmployerAccountId);
 
-        foreach (var task in applicationsTasks)
-        {
-            successfulApplications.AddRange(FilterSuccessfulApplicants(task.Result));
-        }
+        var successfulApplications = await GetSuccessfulApplications(vacancies);
 
         return new GetEmployerSuccessfulApplicantsQueryResponse
         {
             ResultCode = ResponseCode.Success,
             Data = successfulApplications.Select(ApplicantSummaryMapper.MapFromVacancyApplication)
+                .OrderBy(x=> x.LastName)
+                .ThenBy(x=> x.FirstName)
         };
+    }
+
+    private async Task<ConcurrentBag<VacancyApplication>> GetSuccessfulApplications(IEnumerable<VacancyIdentifier> vacancies)
+    {
+        var successfulApplications = new ConcurrentBag<VacancyApplication>();
+        var options = new ParallelOptions { MaxDegreeOfParallelism = MaxDegreeOfParallelism };
+
+        await Parallel.ForEachAsync(vacancies, options, async (vacancy, _) =>
+        {
+            var response = await queryStoreReader.GetVacancyApplicationsAsync(vacancy.VacancyReference.ToString());
+
+            if (response != null && response.Applications.Count > 0)
+            {
+                var filteredApplications = FilterSuccessfulApplicants(response);
+
+                foreach (var application in filteredApplications)
+                {
+                    successfulApplications.Add(application);
+                }
+            }
+        });
+
+        return successfulApplications;
     }
 
     private static List<VacancyApplication> FilterSuccessfulApplicants(VacancyApplications vacancyApplications)
     {
         return vacancyApplications.Applications
-            .Where(app => app.Status.ToString().Equals(ApplicationReviewStatus.Successful.ToString(), StringComparison.InvariantCultureIgnoreCase))
+            .Where(app => app.Status.Equals(ApplicationReviewStatus.Successful))
             .ToList();
     }
 
