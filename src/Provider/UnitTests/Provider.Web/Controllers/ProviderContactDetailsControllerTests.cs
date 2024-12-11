@@ -31,7 +31,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
             {
                 Errors = new List<EntityValidationError>()
             });
-            var controller = new ProviderContactDetailsController(orchestrator, Mock.Of<IFeature>());
+            var controller = new ProviderContactDetailsController(orchestrator);
             var user = new ClaimsPrincipal(new ClaimsIdentity(
                 new []
                 {
@@ -66,7 +66,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
             {
                 Errors = new List<EntityValidationError>()
             });
-            var controller = new ProviderContactDetailsController(orchestrator, Mock.Of<IFeature>());
+            var controller = new ProviderContactDetailsController(orchestrator);
             var user = new ClaimsPrincipal(new ClaimsIdentity(
                 new []
                 {

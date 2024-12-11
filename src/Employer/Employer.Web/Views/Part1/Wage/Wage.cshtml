@@ -1,8 +1,6 @@
-﻿@using Esfa.Recruit.Shared.Web.Mappers
-@using Esfa.Recruit.Vacancies.Client.Domain.Entities
-@using Microsoft.Extensions.Options
+﻿@using Esfa.Recruit.Vacancies.Client.Domain.Entities
+
 @model Esfa.Recruit.Employer.Web.ViewModels.Part1.Wage.WageViewModel
-@inject IOptions<ExternalLinksConfiguration> externalLinks
 @{
     ViewBag.Vpv = "/recruitment/employer/page-part1-wage";
     ViewBag.Title = "Pay rate";
@@ -53,7 +51,6 @@
                                 Displayed as a yearly wage of @Model.ApprenticeshipMinimumWageYearly
                             </p>
                         </div>
-                        <esfaFeatureEnabled name="@FeatureNames.CompetitiveSalary">
                         <div class="govuk-radios__item">
                             <input asp-for="WageType" value="@WageType.CompetitiveSalary" type="radio" class="govuk-radios__input" id="wage-type-set-as-competitive" data-aria-controls="wage-type-set-as-competitive-panel">
                             <label for="wage-type-set-as-competitive" class="govuk-label govuk-radios__label">Set as competitive</label>
@@ -61,7 +58,6 @@
                                 Not providing a salary may limit applications for this apprenticeship
                             </p>
                         </div>
-                        </esfaFeatureEnabled>
                     </div>
                 </fieldset>
             </div>

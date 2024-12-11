@@ -1,4 +1,4 @@
-﻿@using Esfa.Recruit.Provider.Web.RouteModel
+@using Esfa.Recruit.Provider.Web.RouteModel
 
 @model Esfa.Recruit.Provider.Web.ViewModels.Dashboard.DashboardViewModel
 
@@ -21,12 +21,7 @@
             <h1 class="govuk-heading-xl">Recruitment</h1>
         </div>
         <div class="govuk-grid-column-one-half ">
-            <esfaFeatureEnabled name="@FeatureNames.ProviderTaskList">
-                <a asp-route="@RouteNames.CreateVacancyStart" asp-route-ukprn="@Model.Ukprn"  class="govuk-button das-float-right govuk-!-margin-top-2 govuk-!-margin-bottom-4" esfa-automation="create-vacancy">Create vacancy</a>
-            </esfaFeatureEnabled>
-            <esfaFeatureDisabled name="@FeatureNames.ProviderTaskList">
-                <a asp-route="@RouteNames.Employer_Get" asp-route-ukprn="@Model.Ukprn"  class="govuk-button das-float-right govuk-!-margin-top-2 govuk-!-margin-bottom-4" esfa-automation="create-vacancy">Create vacancy</a>    
-            </esfaFeatureDisabled>
+            <a asp-route="@RouteNames.CreateVacancyStart" asp-route-ukprn="@Model.Ukprn"  class="govuk-button das-float-right govuk-!-margin-top-2 govuk-!-margin-bottom-4" esfa-automation="create-vacancy">Create vacancy</a>
         </div>
     </div>
      <div class="govuk-grid-row">
@@ -148,21 +143,19 @@
         </div>
     </div>
     <div class="govuk-grid-row app-card__row">
-        <esfaFeatureEnabled name="@FeatureNames.ShareApplicationsFeature">
-            <div class="govuk-grid-column-one-third">
-                <div class="app-card">
-                    <div class="app-card__content">
-                        <h3 class="govuk-heading-m app-card__heading">
-                            <span class="app-card__stat">@Model.NumberOfEmployerReviewedApplications</span>
-                            <a asp-route="@RouteNames.Vacancies_Get" asp-route-ukprn="@Model.Ukprn" asp-route-filter="@FilteringOptions.EmployerReviewedApplications" class="govuk-link  govuk-link--no-visited-state">
-                                @Model.ApplicationTextEmployerReviewedApplication
-                            </a>
-                        </h3>
-                        <p class="govuk-body app-card__description">Vacancies with applications that have been reviewed by an employer.</p>
-                    </div>
+        <div class="govuk-grid-column-one-third">
+            <div class="app-card">
+                <div class="app-card__content">
+                    <h3 class="govuk-heading-m app-card__heading">
+                        <span class="app-card__stat">@Model.NumberOfEmployerReviewedApplications</span>
+                        <a asp-route="@RouteNames.Vacancies_Get" asp-route-ukprn="@Model.Ukprn" asp-route-filter="@FilteringOptions.EmployerReviewedApplications" class="govuk-link  govuk-link--no-visited-state">
+                            @Model.ApplicationTextEmployerReviewedApplication
+                        </a>
+                    </h3>
+                    <p class="govuk-body app-card__description">Vacancies with applications that have been reviewed by an employer.</p>
                 </div>
             </div>
-        </esfaFeatureEnabled>
+        </div>
         <div class="govuk-grid-column-one-third">
             <div class="app-card">
                 <div class="app-card__content">
@@ -190,21 +183,17 @@
             </h3>
             <p class="govuk-body">Create a report about applicants or vacancies</p>
         </div>
-        <esfaFeatureEnabled name="@FeatureNames.SetNotificationPreferences">
             <div class="govuk-grid-column-one-third">
                 <h3 class="govuk-heading-s govuk-!-margin-bottom-2">
                     <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.ManageNotifications_Get" asp-route-ukprn="@Model.Ukprn" >Manage your recruitment emails</a>
                 </h3>
                 <p class="govuk-body">Set up and manage the emails you’re sent about your vacancies and applications</p>
             </div>
-        </esfaFeatureEnabled>
-        <esfaFeatureEnabled name="@FeatureNames.ShowRecruitmentApiLink">
-            <div class="govuk-grid-column-one-third">
-                <h3 class="govuk-heading-s govuk-!-margin-bottom-2">
-                    <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.Dashboard_ProviderRecruitmentApi" asp-route-ukprn="@Model.Ukprn" >Recruitment APIs</a>
-                </h3>
-                <p class="govuk-body">Integrate our APIs to create vacancies using your own systems and display adverts on multiple sites.</p>
-            </div>
-        </esfaFeatureEnabled>
+        <div class="govuk-grid-column-one-third">
+            <h3 class="govuk-heading-s govuk-!-margin-bottom-2">
+                <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.Dashboard_ProviderRecruitmentApi" asp-route-ukprn="@Model.Ukprn" >Recruitment APIs</a>
+            </h3>
+            <p class="govuk-body">Integrate our APIs to create vacancies using your own systems and display adverts on multiple sites.</p>
+        </div>
     </div>
 </div>

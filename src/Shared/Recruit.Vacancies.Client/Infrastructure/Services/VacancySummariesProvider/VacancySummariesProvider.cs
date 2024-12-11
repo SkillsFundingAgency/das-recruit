@@ -31,23 +31,19 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
             _vacancyTaskListStatusService = vacancyTaskListStatusService;
         }
        
-        public async Task<VacancyDashboard> GetProviderOwnedVacancyDashboardByUkprnAsync(long ukprn, VacancyType vacancyType)
+        public async Task<VacancyDashboard> GetProviderOwnedVacancyDashboardByUkprnAsync(long ukprn)
         {
             var bsonArray = new BsonArray
             {
-                vacancyType.ToString()
+                VacancyType.Apprenticeship.ToString(),
+                BsonNull.Value
             };
-            
-            if (vacancyType == VacancyType.Apprenticeship)
-            {
-                bsonArray.Add(BsonNull.Value);
-            }
-            
+
             var match = new BsonDocument
             {
                 {
                     "$match",
-                    BuildBsonDocumentFilterValues(ukprn, null, null, bsonArray, null)
+                    BuildBsonDocumentFilterValues(ukprn, null, null, bsonArray)
                 }
             };
             var builder = new VacancySummaryAggQueryBuilder();
@@ -67,23 +63,19 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                 VacanciesClosingSoonWithNoApplications = closingSoonDashboardValuesTask.Result.FirstOrDefault(c => c.ClosingSoon)?.StatusCount ?? 0
             };
         }
-        public async Task<VacancyDashboard> GetEmployerOwnedVacancyDashboardByEmployerAccountIdAsync(string employerAccountId, VacancyType vacancyType)
+        public async Task<VacancyDashboard> GetEmployerOwnedVacancyDashboardByEmployerAccountIdAsync(string employerAccountId)
         {
             var bsonArray = new BsonArray
             {
-                vacancyType.ToString()
+                VacancyType.Apprenticeship.ToString(),
+                BsonNull.Value
             };
-            
-            if (vacancyType == VacancyType.Apprenticeship)
-            {
-                bsonArray.Add(BsonNull.Value);
-            }
             
             var match = new BsonDocument
             {
                 {
                     "$match",
-                    BuildBsonDocumentFilterValues(null, employerAccountId, null, bsonArray, null)
+                    BuildBsonDocumentFilterValues(null, employerAccountId, null, bsonArray)
                 }
             };
             var employerReviewMatch = new BsonDocument
@@ -121,23 +113,19 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
             };
         }
         
-        public async Task<IList<VacancySummary>> GetProviderOwnedVacancySummariesByUkprnAsync(long ukprn, VacancyType vacancyType, int page, FilteringOptions? status, string searchTerm)
+        public async Task<IList<VacancySummary>> GetProviderOwnedVacancySummariesByUkprnAsync(long ukprn, int page, FilteringOptions? status, string searchTerm)
         {
             var bsonArray = new BsonArray
             {
-                vacancyType.ToString()
+                VacancyType.Apprenticeship.ToString(),
+                BsonNull.Value
             };
             
-            if (vacancyType == VacancyType.Apprenticeship)
-            {
-                bsonArray.Add(BsonNull.Value);
-            }
-
             var match = new BsonDocument
             {
                 {
                     "$match",
-                    BuildBsonDocumentFilterValues(ukprn,string.Empty, status, bsonArray, vacancyType)
+                    BuildBsonDocumentFilterValues(ukprn,string.Empty, status, bsonArray)
                 }
             };
             var secondaryMath = new BsonDocument
@@ -153,24 +141,21 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
             return await RunAggPipelineQuery(aggPipeline);
         }
 
-        public async Task<IList<VacancySummary>> GetEmployerOwnedVacancySummariesByEmployerAccountId(string employerAccountId, VacancyType vacancyType, int page,
+        public async Task<IList<VacancySummary>> GetEmployerOwnedVacancySummariesByEmployerAccountId(string employerAccountId, int page,
             FilteringOptions? status, string searchTerm)
         {
             var bsonArray = new BsonArray
             {
-                vacancyType.ToString()
+                VacancyType.Apprenticeship.ToString(),
+                BsonNull.Value
             };
             
-            if (vacancyType == VacancyType.Apprenticeship)
-            {
-                bsonArray.Add(BsonNull.Value);
-            }
 
             var match = new BsonDocument
             {
                 {
                     "$match",
-                    BuildBsonDocumentFilterValues(null,employerAccountId, status, bsonArray, vacancyType)
+                    BuildBsonDocumentFilterValues(null,employerAccountId, status, bsonArray)
                 }
             };
             var employerReviewMatch = (status != FilteringOptions.NewSharedApplications && status != FilteringOptions.AllSharedApplications )?
@@ -200,20 +185,13 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
             return await RunAggPipelineQuery(aggPipeline);
         }
 
-        public async Task<IList<TransferInfo>> GetTransferredFromProviderAsync(long ukprn, VacancyType vacancyType)
+        public async Task<IList<TransferInfo>> GetTransferredFromProviderAsync(long ukprn)
         {
             var builder = Builders<VacancyTransferInfo>.Filter;
             var filter = builder.Eq(TransferInfoUkprn, ukprn) &
                          builder.Eq(TransferInfoReason, TransferReason.EmployerRevokedPermission.ToString()) &
                          builder.In("VacancyType",new []{"Apprenticeship", null});
 
-            if (vacancyType == VacancyType.Traineeship)
-            {
-                filter = builder.Eq(TransferInfoUkprn, ukprn) &
-                        builder.Eq(TransferInfoReason, TransferReason.EmployerRevokedPermission.ToString()) &
-                        builder.Eq("VacancyType", "Traineeship" );
-            }
-            
             var collection = GetCollection<VacancyTransferInfo>();
 
             var result = await RetryPolicy.Execute(_ =>
@@ -225,23 +203,20 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
             return result.Select(v => v.TransferInfo).ToList();
         }
 
-        public async Task<long> VacancyCount(long? ukprn, string employerAccountId, VacancyType vacancyType, FilteringOptions? filteringOptions, string searchTerm, OwnerType ownerType)
+        public async Task<long> VacancyCount(long? ukprn, string employerAccountId, FilteringOptions? filteringOptions, string searchTerm, OwnerType ownerType)
         {
             var bsonArray = new BsonArray
             {
-                vacancyType.ToString()
+                VacancyType.Apprenticeship.ToString(),
+                BsonNull.Value
             };
             
-            if (vacancyType == VacancyType.Apprenticeship)
-            {
-                bsonArray.Add(BsonNull.Value);
-            }
 
             var match = new BsonDocument
             {
                 {
                     "$match",
-                    BuildBsonDocumentFilterValues(ukprn, employerAccountId, filteringOptions, bsonArray, vacancyType)
+                    BuildBsonDocumentFilterValues(ukprn, employerAccountId, filteringOptions, bsonArray)
                 }
             };
             var secondaryMath = new BsonDocument
@@ -370,7 +345,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                         bsonArray.Add(ApplicationReviewStatus.Shared.ToString());
                         break;
                     case FilteringOptions.AllSharedApplications:
-                        document.Add("$dateSharedWithEmployer", new BsonDocument { { "$gt", "1900-01-01T01:00:00.389Z" } });
+                        document.Add("candidateApplicationReview.dateSharedWithEmployer", new BsonDocument { { "$gt", "1900-01-01T01:00:00.389Z" } });
                         break;
                     case FilteringOptions.EmployerReviewedApplications:
                         bsonArray.Add(ApplicationReviewStatus.EmployerUnsuccessful.ToString());
@@ -437,7 +412,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
             return document;
         }
 
-        private static BsonDocument BuildBsonDocumentFilterValues(long? ukprn, string employerAccountId, FilteringOptions? status, BsonArray bsonArray, VacancyType? vacancyType)
+        private static BsonDocument BuildBsonDocumentFilterValues(long? ukprn, string employerAccountId, FilteringOptions? status, BsonArray bsonArray)
         {
             var document = new BsonDocument
             {
@@ -481,7 +456,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                     case FilteringOptions.ClosingSoonWithNoApplications:
                         document.Add("status", VacancyStatus.Live.ToString());
                         document.Add("closingDate", new BsonDocument {{"$lte",BsonDateTime.Create(DateTime.UtcNow.AddDays(ClosingSoonDays))}});
-                        document.Add("applicationMethod", vacancyType == VacancyType.Apprenticeship ? ApplicationMethod.ThroughFindAnApprenticeship.ToString():ApplicationMethod.ThroughFindATraineeship.ToString());
+                        document.Add("applicationMethod", ApplicationMethod.ThroughFindAnApprenticeship.ToString());
                         break;
                     case FilteringOptions.Transferred:
                         document.Add("transferInfo.transferredDate", new BsonDocument {{"$nin", new BsonArray {BsonNull.Value}}});

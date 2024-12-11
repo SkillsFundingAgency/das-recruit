@@ -238,7 +238,7 @@
             </section>
             <section class="faa-vacancy__section" id="requirements">
                 <h2 class="govuk-heading-m">Requirements</h2>
-                @if (Model.Qualifications.Any())
+                @if (Model.Qualifications is { Count: > 0 })
                 {
                     <h3 class="govuk-heading-s">Essential qualifications</h3>
                     <ul class="govuk-list govuk-list--bullet">
@@ -248,15 +248,15 @@
                         }
                     </ul>
                 }
-                @if (Model.QualificationsDesired.Any())
+                @if (Model.QualificationsDesired is { Count: > 0 })
                 {
-                <h3 class="govuk-heading-s">Desired qualifications</h3>
-                <ul class="govuk-list govuk-list--bullet">
-                    @foreach (var qualification in Model.QualificationsDesired)
-                    {
-                    <li>@qualification</li>
-                    }
-                </ul>
+                    <h3 class="govuk-heading-s">Desired qualifications</h3>
+                    <ul class="govuk-list govuk-list--bullet">
+                        @foreach (var qualification in Model.QualificationsDesired)
+                        {
+                        <li>@qualification</li>
+                        }
+                    </ul>
                 }
                 <p class="govuk-body">
                     Let the company know about other relevant qualifications and industry experience you have. They can

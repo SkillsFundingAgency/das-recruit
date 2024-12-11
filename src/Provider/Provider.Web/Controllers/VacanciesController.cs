@@ -32,15 +32,6 @@ namespace Esfa.Recruit.Provider.Web.Controllers
         [HttpGet("", Name = RouteNames.Vacancies_Get)]
         public async Task<IActionResult> Vacancies([FromQuery] string filter, [FromQuery] int page = 1, [FromQuery] string searchTerm = "")
         {
-            if (_serviceParameters.VacancyType == VacancyType.Traineeship 
-                && DateTime.TryParse(_configuration["TraineeshipCutOffDate"], out var traineeshipCutOffDate))
-            {
-                if (traineeshipCutOffDate != DateTime.MinValue && traineeshipCutOffDate < DateTime.UtcNow)
-                {
-                    return RedirectPermanent($"{_configuration["ProviderSharedUIConfiguration:DashboardUrl"]}account");
-                }
-            }
-            
             if (string.IsNullOrWhiteSpace(filter) && string.IsNullOrWhiteSpace(searchTerm))
                 TryGetFiltersFromCookie(out filter, out searchTerm);
             

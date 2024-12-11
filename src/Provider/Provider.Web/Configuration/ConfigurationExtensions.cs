@@ -79,11 +79,6 @@ namespace Esfa.Recruit.Provider.Web.Configuration
                     policy.Requirements.Add(new TrainingProviderAllRolesRequirement());
                 });
                 
-                options.AddPolicy(PolicyNames.IsTraineeshipWeb, policy =>
-                {
-                    policy.Requirements.Add(new VacancyTypeRequirement(VacancyType.Traineeship));
-                });
-                
                 options.AddPolicy(PolicyNames.IsApprenticeshipWeb, policy =>
                 {
                     policy.Requirements.Add(new VacancyTypeRequirement(VacancyType.Apprenticeship));

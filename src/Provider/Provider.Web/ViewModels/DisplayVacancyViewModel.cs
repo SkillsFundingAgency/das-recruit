@@ -40,9 +40,9 @@ namespace Esfa.Recruit.Provider.Web.ViewModels
         public string ProviderContactEmail { get; internal set; }
         public string ProviderContactTelephone { get; internal set; }
         public string ProviderName { get; internal set; }
-        public IEnumerable<string> Qualifications { get; internal set; }
+        public List<string>? Qualifications { get; internal set; }
         public bool? HasOptedToAddQualifications { get; internal set; }
-        public IEnumerable<string> QualificationsDesired { get; set; }
+        public List<string>? QualificationsDesired { get; set; }
         public string ShortDescription { get; internal set; }
         public IEnumerable<string> Skills { get; internal set; }
         public string ThingsToConsider { get; internal set; }
@@ -65,7 +65,6 @@ namespace Esfa.Recruit.Provider.Web.ViewModels
         public string AccountLegalEntityPublicHashedId { get; internal set; }
         public int RouteId { get; set; }
         public string RouteTitle { get; set; }
-        public string WorkExperience { get; set; }
         private string _additionalQuestion1;
         public string AdditionalQuestion1 
         { 

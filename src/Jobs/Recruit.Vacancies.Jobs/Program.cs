@@ -12,7 +12,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using NLog.Extensions.Logging;
 using SFA.DAS.Configuration.AzureTableStorage;
 
 namespace Esfa.Recruit.Vacancies.Jobs
@@ -39,10 +38,6 @@ namespace Esfa.Recruit.Vacancies.Jobs
             {
                 logger?.LogCritical(ex, "The Job has met with a horrible end!!");
                 throw;
-            }
-            finally
-            {
-                NLog.LogManager.Shutdown();
             }
         }
 
@@ -86,13 +81,7 @@ namespace Esfa.Recruit.Vacancies.Jobs
                         b.SetMinimumLevel(LogLevel.Trace);
                         b.AddDebug();
                         b.AddConsole();
-                        b.AddNLog();
                         b.ConfigureRecruitLogging();
-                        string instrumentationKey = context.Configuration["APPINSIGHTS_INSTRUMENTATIONKEY"];
-                        if (!string.IsNullOrEmpty(instrumentationKey))
-                        {
-                            b.AddApplicationInsights(o => o.InstrumentationKey = instrumentationKey);
-                        }
                     })
                     .ConfigureServices((context, services) =>
                     {
@@ -112,6 +101,11 @@ namespace Esfa.Recruit.Vacancies.Jobs
 
                         services.AddDasNServiceBus(context.Configuration);
                         services.AddApplicationInsightsTelemetryWorkerService(context.Configuration);
+                        string instrumentationKey = context.Configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"];
+                        if (!string.IsNullOrEmpty(instrumentationKey))
+                        {
+                            services.AddOpenTelemetryRegistration(instrumentationKey);
+                        }
                     })
                     .UseConsoleLifetime();
         }

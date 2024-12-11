@@ -22,7 +22,7 @@ public class QualificationExtensions
             OtherQualificationName = otherQualificationName
         };
 
-        var actual = new List<Qualification> { qualification }.AsText(true);
+        var actual = new List<Qualification> { qualification }.AsText();
 
         actual.First().Should()
             .Be(
@@ -39,26 +39,7 @@ public class QualificationExtensions
             QualificationType = "A Level"
         };
 
-        var actual = new List<Qualification> { qualification }.AsText(true);
-
-        actual.First().Should()
-            .Be(
-                $"{qualification.QualificationType} {qualification.Subject} (Grade {qualification.Grade}) {qualification.Weighting.GetDisplayName().ToLower()}");
-    }
-    
-    [Test, AutoData]
-    public void Then_Qualifications_For_Non_FaaV2_Are_Mapped(string grade, int level, string subject, string otherQualificationName)
-    {
-        var qualification = new Qualification
-        {
-            Grade = grade,
-            Level = level,
-            Subject = subject,
-            QualificationType = "Other",
-            OtherQualificationName = otherQualificationName
-        };
-
-        var actual = new List<Qualification> { qualification }.AsText(false);
+        var actual = new List<Qualification> { qualification }.AsText();
 
         actual.First().Should()
             .Be(

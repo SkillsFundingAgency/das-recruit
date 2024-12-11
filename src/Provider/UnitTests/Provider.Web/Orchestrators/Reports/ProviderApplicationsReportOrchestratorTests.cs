@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using Esfa.Recruit.Provider.Web.Orchestrators.Reports;
 using Esfa.Recruit.Provider.Web.ViewModels.Reports;
 using Esfa.Recruit.Provider.Web.ViewModels.Reports.ProviderApplicationsReport;
-using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
@@ -48,7 +47,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Reports
                 fromDateUtc,
                 toDateUtc.AddDays(1).AddTicks(-1), 
                 user,
-                expectedReportName, VacancyType.Traineeship), 
+                expectedReportName), 
                 Times.Once);
         }
 
@@ -88,7 +87,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Reports
                     fromDateUtc,
                     toDateUtc.AddDays(1).AddTicks(-1),
                     user,
-                    expectedReportName, VacancyType.Traineeship),
+                    expectedReportName),
                 Times.Once);
         }
         
@@ -100,7 +99,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Reports
             timeProvider.Setup(t => t.Today).Returns(today);
             timeProvider.Setup(t => t.NextDay).Returns(today.AddDays(1));
 
-            return new ProviderApplicationsReportOrchestrator(client, timeProvider.Object, new ServiceParameters("Traineeship"));
+            return new ProviderApplicationsReportOrchestrator(client, timeProvider.Object);
         }
     }
 }

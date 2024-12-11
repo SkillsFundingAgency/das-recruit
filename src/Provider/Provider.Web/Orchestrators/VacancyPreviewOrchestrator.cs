@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Esfa.Recruit.Provider.Web.Configuration;
 using Esfa.Recruit.Provider.Web.Configuration.Routing;
 using Esfa.Recruit.Provider.Web.Mappings;
 using Esfa.Recruit.Provider.Web.Models;
@@ -11,7 +10,6 @@ using Esfa.Recruit.Shared.Web.Orchestrators;
 using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Commands;
 using Esfa.Recruit.Vacancies.Client.Application.Configuration;
-using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
@@ -38,7 +36,6 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
         private readonly IMessaging _messaging;
         private readonly IUtility _utility;
         private readonly ServiceParameters _serviceParameters;
-        private readonly IFeature _feature;
 
         public VacancyPreviewOrchestrator(IRecruitVacancyClient vacancyClient,
             ILogger<VacancyPreviewOrchestrator> logger,
@@ -49,8 +46,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             ITrainingProviderAgreementService trainingProviderAgreementService,
             IMessaging messaging,
             IUtility utility,
-            ServiceParameters serviceParameters,
-            IFeature feature) : base(logger)
+            ServiceParameters serviceParameters) : base(logger)
         {
             _vacancyClient = vacancyClient;
             _vacancyDisplayMapper = vacancyDisplayMapper;
@@ -61,7 +57,6 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             _messaging = messaging;
             _utility = utility;
             _serviceParameters = serviceParameters;
-            _feature = feature;
         }
 
         public async Task<VacancyPreviewViewModel> GetVacancyPreviewViewModelAsync(VacancyRouteModel vrm)
@@ -70,7 +65,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             
             var hasProviderReviewPermission = await _providerRelationshipsService.HasProviderGotEmployersPermissionAsync(vrm.Ukprn, vacancy.EmployerAccountId, vacancy.AccountLegalEntityPublicHashedId, OperationType.RecruitmentRequiresReview);
 
-            var vm = new VacancyPreviewViewModel(_feature.IsFeatureEnabled(FeatureNames.FaaV2Improvements));
+            var vm = new VacancyPreviewViewModel();
             await _vacancyDisplayMapper.MapFromVacancyAsync(vm, vacancy);
             
             vm.HasWage = vacancy.Wage != null;
