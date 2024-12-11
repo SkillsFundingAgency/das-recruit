@@ -145,6 +145,8 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.UtilityTests
         [InlineData(RouteNames.ApplicationProcess_Get, false, true)]
         [InlineData(RouteNames.AdditionalQuestions_Get, false, true)]
         [InlineData(RouteNames.AdditionalQuestions_Post, false, true)]
+        [InlineData(RouteNames.MultipleLocations_Get, false, true)]
+        [InlineData(RouteNames.MultipleLocations_Post, false, true)]
         [InlineData("any other route", true)]
         public void ShouldRedirectEmployer(string route, bool shouldRedirect, bool enableTaskList = false)
         {
@@ -178,6 +180,8 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.UtilityTests
         [InlineData(RouteNames.EmployerName_Post, false)]
         [InlineData(RouteNames.Location_Get, false)]
         [InlineData(RouteNames.Location_Post, false)]
+        [InlineData(RouteNames.MultipleLocations_Get, false)]
+        [InlineData(RouteNames.MultipleLocations_Post, false)]
         [InlineData(RouteNames.LegalEntityAgreement_SoftStop_Get, false)]
         [InlineData("any other route", true)]
         public void ShouldRedirectToDates(string route, bool shouldRedirect)
@@ -215,6 +219,8 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.UtilityTests
         [InlineData(RouteNames.EmployerName_Post, false)]
         [InlineData(RouteNames.Location_Get, false)]
         [InlineData(RouteNames.Location_Post, false)]
+        [InlineData(RouteNames.MultipleLocations_Get, false)]
+        [InlineData(RouteNames.MultipleLocations_Post, false)]
         [InlineData(RouteNames.LegalEntityAgreement_SoftStop_Get, false)]
         [InlineData(RouteNames.Duration_Get, false)]
         [InlineData(RouteNames.Duration_Post, false)]
@@ -255,6 +261,8 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.UtilityTests
         [InlineData(RouteNames.EmployerName_Post, false)]
         [InlineData(RouteNames.Location_Get, false)]
         [InlineData(RouteNames.Location_Post, false)]
+        [InlineData(RouteNames.MultipleLocations_Get, false)]
+        [InlineData(RouteNames.MultipleLocations_Post, false)]
         [InlineData(RouteNames.LegalEntityAgreement_SoftStop_Get, false)]
         [InlineData(RouteNames.Duration_Get, false)]
         [InlineData(RouteNames.Duration_Post, false)]
