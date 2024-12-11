@@ -1,0 +1,66 @@
+﻿@using Esfa.Recruit.Shared.Web.TagHelpers
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+
+@model Esfa.Recruit.Provider.Web.ViewModels.Part1.MultipleLocations.LocationAvailabilityViewModel
+
+@{
+    ViewBag.Title = "Where is this apprenticeship available?";
+    ViewBag.ZenDeskLabel = "recruit-where-will-the-apprentice-work";
+}
+
+@section BackLink {
+    <a asp-route="@RouteNames.NumberOfPositions_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Back</a>
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <partial name="@PartialNames.ValidationSummary" model=@(new ValidationSummaryViewModel { ModelState = ViewData.ModelState }) />
+        <form asp-route="@RouteNames.MultipleLocations_Post" asp-all-route-data="@Model.RouteDictionary" asp-route-wizard="@Model.PageInfo.IsWizard">
+            <div class="govuk-form-group">
+                <fieldset class="govuk-fieldset">
+                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
+                        <h1 class="govuk-fieldset__heading govuk-heading-xl">
+                            <span class="govuk-caption-l">@Model.ApprenticeshipTitle</span>
+                            Where is this apprenticeship available?
+                        </h1>
+                    </legend>
+                    <div class="govuk-radios govuk-radios--conditional" data-module="radios" esfa-validation-marker-for="SelectedAvailability">
+                        <span esfa-validation-message-for="SelectedAvailability" class="govuk-error-message"></span>
+                        <div class="govuk-radios">
+
+                            <div class="govuk-radios__item">
+                                <input asp-for="SelectedAvailability" value="@AvailableWhere.OneLocation.ToString()" id="OneLocation" class="govuk-radios__input" type="radio">
+                                <label for="OneLocation" class="govuk-label govuk-radios__label">
+                                    One location
+                                </label>
+                            </div>
+                            <div class="govuk-radios__item">
+                                <input asp-for="SelectedAvailability" value="@AvailableWhere.MultipleLocations.ToString()" id="MoreThanOneLocation" class="govuk-radios__input" type="radio">
+                                <label for="OneLocation" class="govuk-label govuk-radios__label">
+                                    More than one location
+                                </label>
+                                <p class="govuk-body govuk-hint govuk-radios__hint">
+                                    Add up to 10 locations
+                                </p>
+                            </div>
+                            <div class="govuk-radios__divider">or</div>
+                            <div class="govuk-radios__item">
+                                <input asp-for="SelectedAvailability" value="@AvailableWhere.AcrossEngland.ToString()" id="AcrossEngland" class="govuk-radios__input" type="radio">
+                                <label for="OneLocation" class="govuk-label govuk-radios__label">
+                                    Across all of England
+                                </label>
+                                <p class="govuk-body govuk-hint govuk-radios__hint">
+                                    Your apprenticeship will display as a national advert
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+            <div class="govuk-button-group">
+                <button type="submit" class="govuk-button save-button" esfa-automation="continue-button">@Model.PageInfo.SubmitButtonText</button>
+                <a asp-route="@RouteNames.Dashboard_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-cancel" class="govuk-link">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>

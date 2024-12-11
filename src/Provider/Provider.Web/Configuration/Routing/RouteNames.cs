@@ -150,5 +150,8 @@
         
         public const string VacancyHowTheApprenticeWillTrain_Index_Get = "VacancyHowTheApprenticeWillTrain_Index_Post";
         public const string VacancyHowTheApprenticeWillTrain_Index_Post = "VacancyHowTheApprenticeWillTrain_Index_Post";
+        
+        public const string MultipleLocations_Get = nameof(MultipleLocations_Get);
+        public const string MultipleLocations_Post = nameof(MultipleLocations_Post);
     }
 }
