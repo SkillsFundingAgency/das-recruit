@@ -588,3 +588,10 @@ span.govuk-error-message:empty {
   margin-left: -25px;
   padding-right: 5px;
 }
+
+.raa-summary-box
+{
+  background-color:#f4f4f4;
+  padding:20px;
+  margin-bottom:30px;
+}
