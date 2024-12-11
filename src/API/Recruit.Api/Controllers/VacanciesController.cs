@@ -8,59 +8,51 @@ using SFA.DAS.Recruit.Api.Mappers;
 using SFA.DAS.Recruit.Api.Models;
 using SFA.DAS.Recruit.Api.Queries;
 
-namespace SFA.DAS.Recruit.Api.Controllers
+namespace SFA.DAS.Recruit.Api.Controllers;
+
+[Route("api/[controller]")]
+public class VacanciesController(IMediator mediator) : ApiControllerBase
 {
-    [Route("api/[controller]")]
-    public class VacanciesController : ApiControllerBase
+    // GET api/vacancies
+    [HttpGet]
+    public async Task<IActionResult> Get([FromQuery] string employerAccountId, ulong? ukprn, uint pageSize = 25, uint pageNo = 1)
     {
-        private readonly IMediator _mediator;
-        public VacanciesController(IMediator mediator)
-        {
-            _mediator = mediator;
-        }
+        var resp = await mediator.Send(new GetVacanciesQuery(employerAccountId.Trim().ToUpper(), (long?)ukprn, (int)pageSize, (int)pageNo));
+        return GetApiResponse(resp);
+    }
 
-        // GET api/vacancies
-        [HttpGet]
-        public async Task<IActionResult> Get([FromQuery] string employerAccountId, ulong? ukprn, uint pageSize = 25, uint pageNo = 1)
+    [HttpPost]
+    [Route("{id}")]
+    public async Task<IActionResult> Create([FromRoute] Guid id, CreateVacancyRequest request, [FromQuery] string userEmail = null, [FromQuery] long? ukprn = null)
+    {
+        var resp = await mediator.Send(new CreateVacancyCommand
         {
-            var resp = await _mediator.Send(new GetVacanciesQuery(employerAccountId.Trim().ToUpper(), (long?)ukprn, (int)pageSize, (int)pageNo));
-            return GetApiResponse(resp);
-        }
-
-        [HttpPost]
-        [Route("{id}")]
-        public async Task<IActionResult> Create([FromRoute] Guid id, CreateVacancyRequest request, [FromQuery] string userEmail = null, [FromQuery] long? ukprn = null)
-        {
-            var resp = await _mediator.Send(new CreateVacancyCommand
+            Vacancy = request.MapFromCreateVacancyRequest(id),
+            VacancyUserDetails = new VacancyUser
             {
-                Vacancy = request.MapFromCreateVacancyRequest(id),
-                VacancyUserDetails = new VacancyUser
-                {
-                    Email = userEmail,
-                    Ukprn = ukprn
-                }
-            });
+                Email = userEmail,
+                Ukprn = ukprn
+            }
+        });
 
-            return GetApiResponse(resp);
-        }
+        return GetApiResponse(resp);
+    }
 
-        [HttpPost]
-        [Route("{id}/validate")]
-        public async Task<IActionResult> Validate([FromRoute] Guid id, CreateVacancyRequest request, [FromQuery] string userEmail = null, [FromQuery] long? ukprn = null)
+    [HttpPost]
+    [Route("{id}/validate")]
+    public async Task<IActionResult> Validate([FromRoute] Guid id, CreateVacancyRequest request, [FromQuery] string userEmail = null, [FromQuery] long? ukprn = null)
+    {
+        var resp = await mediator.Send(new CreateVacancyCommand
         {
-            var resp = await _mediator.Send(new CreateVacancyCommand
+            Vacancy = request.MapFromCreateVacancyRequest(id),
+            VacancyUserDetails = new VacancyUser
             {
-                Vacancy = request.MapFromCreateVacancyRequest(id),
-                VacancyUserDetails = new VacancyUser
-                {
-                    Email = userEmail,
-                    Ukprn = ukprn
-                },
-                ValidateOnly = true
-            });
+                Email = userEmail,
+                Ukprn = ukprn
+            },
+            ValidateOnly = true
+        });
 
-            return GetApiResponse(resp);
-        }
-
+        return GetApiResponse(resp);
     }
 }

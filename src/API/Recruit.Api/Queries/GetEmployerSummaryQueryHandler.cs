@@ -10,54 +10,47 @@ using SFA.DAS.Recruit.Api.Mappers;
 using SFA.DAS.Recruit.Api.Models;
 using SFA.DAS.Recruit.Api.Services;
 
-namespace SFA.DAS.Recruit.Api.Queries
+namespace SFA.DAS.Recruit.Api.Queries;
+
+public class GetEmployerSummaryQueryHandler(IQueryStoreReader queryStoreReader, ILogger<GetApplicantsQueryHandler> logger)
+    : IRequestHandler<GetEmployerSummaryQuery, GetEmployerSummaryResponse>
 {
-    public class GetEmployerSummaryQueryHandler : IRequestHandler<GetEmployerSummaryQuery, GetEmployerSummaryResponse>
+    private readonly ILogger<GetApplicantsQueryHandler> _logger = logger;
+
+    public async Task<GetEmployerSummaryResponse> Handle(GetEmployerSummaryQuery request, CancellationToken cancellationToken)
     {
-        private readonly ILogger<GetApplicantsQueryHandler> _logger;
-        private readonly IQueryStoreReader _queryStoreReader;
+        var validationErrors = ValidateRequest(request);
 
-        public GetEmployerSummaryQueryHandler(IQueryStoreReader queryStoreReader, ILogger<GetApplicantsQueryHandler> logger)
+        if (validationErrors.Count != 0)
         {
-            _logger = logger;
-            _queryStoreReader = queryStoreReader;
+            return new GetEmployerSummaryResponse { ResultCode = ResponseCode.InvalidRequest, ValidationErrors = validationErrors.Cast<object>().ToList() };
         }
 
-        public async Task<GetEmployerSummaryResponse> Handle(GetEmployerSummaryQuery request, CancellationToken cancellationToken)
+        var dashboard = await queryStoreReader.GetEmployerDashboardAsync(request.EmployerAccountId);
+
+        if (dashboard == null)
         {
-            var validationErrors = ValidateRequest(request);
-
-            if (validationErrors.Any())
-            {
-                return new GetEmployerSummaryResponse { ResultCode = ResponseCode.InvalidRequest, ValidationErrors = validationErrors.Cast<object>().ToList() };
-            }
-
-            var dashboard = await _queryStoreReader.GetEmployerDashboardAsync(request.EmployerAccountId);
-
-            if (dashboard == null)
-            {
-                return new GetEmployerSummaryResponse { ResultCode = ResponseCode.NotFound };
-            }
-
-            return new GetEmployerSummaryResponse
-            {
-                ResultCode = ResponseCode.Success,
-                Data = EmployerAccountSummaryMapper.MapFromEmployerDashboard(dashboard, request.EmployerAccountId)
-            };
+            return new GetEmployerSummaryResponse { ResultCode = ResponseCode.NotFound };
         }
 
-        private List<string> ValidateRequest(GetEmployerSummaryQuery request)
+        return new GetEmployerSummaryResponse
         {
-            const string employerAccountIdFieldName = nameof(request.EmployerAccountId);
-            const string employerAccountIdRegex = @"^[A-Z0-9]{6}$";
-            var validationErrors = new List<string>();
+            ResultCode = ResponseCode.Success,
+            Data = EmployerAccountSummaryMapper.MapFromEmployerDashboard(dashboard, request.EmployerAccountId)
+        };
+    }
 
-            if (string.IsNullOrEmpty(request.EmployerAccountId) || Regex.IsMatch(request.EmployerAccountId, employerAccountIdRegex) == false)
-            {
-                validationErrors.Add($"Invalid {FieldNameHelper.ToCamelCasePropertyName(employerAccountIdFieldName)}");
-            }
+    private static List<string> ValidateRequest(GetEmployerSummaryQuery request)
+    {
+        const string employerAccountIdFieldName = nameof(request.EmployerAccountId);
+        const string employerAccountIdRegex = @"^[A-Z0-9]{6}$";
+        var validationErrors = new List<string>();
 
-            return validationErrors;
+        if (string.IsNullOrEmpty(request.EmployerAccountId) || Regex.IsMatch(request.EmployerAccountId, employerAccountIdRegex) == false)
+        {
+            validationErrors.Add($"Invalid {FieldNameHelper.ToCamelCasePropertyName(employerAccountIdFieldName)}");
         }
+
+        return validationErrors;
     }
 }

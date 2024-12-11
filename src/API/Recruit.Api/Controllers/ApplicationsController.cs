@@ -27,6 +27,7 @@ public class ApplicationsController : ApiControllerBase
     {
         Enum.TryParse<ApplicationReviewDisabilityStatus>(candidateApplication.DisabilityConfidenceStatus,
             out var disabilityConfidentStatus);
+        
         var application = new Application
         {
             Email = candidateApplication.Email,
@@ -56,6 +57,7 @@ public class ApplicationsController : ApiControllerBase
                 FromDate = c.FromDate,
                 ToDate = c.ToDate ?? DateTime.MinValue
             }).ToList(),
+            
             Jobs = candidateApplication.Jobs.Select(c=> new ApplicationJob
             {
                 Description = c.Description,
@@ -64,6 +66,7 @@ public class ApplicationsController : ApiControllerBase
                 FromDate = c.FromDate,
                 ToDate = c.ToDate ?? DateTime.MinValue
             }).ToList(),
+            
             Qualifications = candidateApplication.Qualifications.Select(c=> new ApplicationQualification
             {
                 Grade = c.Grade,
@@ -73,22 +76,26 @@ public class ApplicationsController : ApiControllerBase
                 QualificationType = c.QualificationType,
                 AdditionalInformation = c.AdditionalInformation
             }).ToList(),
+            
             VacancyReference = Convert.ToInt64(candidateApplication.VacancyReference),
             TrainingCourses = candidateApplication.TrainingCourses.Select(c=> new ApplicationTrainingCourse
             {
                 Title = c.Title,
                 ToDate = c.ToDate
             }).ToList(),
+            
             Support = candidateApplication.Support,
             DisabilityStatus = disabilityConfidentStatus,
             IsFaaV2Application = true,
             BirthDate = candidateApplication.DateOfBirth
         };
+        
         await _messaging.PublishEvent(new ApplicationSubmittedEvent
         {
             Application = application,
             
         });
+        
         return Created();
     }
 
