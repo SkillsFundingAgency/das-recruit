@@ -104,7 +104,7 @@ public class WhenGettingEmployerSuccessfulApplicants
     }
 
     [Test, MoqAutoData]
-    public async Task Then_No_Applicants_Are_Returned_When_There_Are_No_Successful_Candidates(
+    public async Task Then_Only_Successful_Applicants_Are_Returned(
         GetEmployerSuccessfulApplicantsQuery request,
         List<VacancyIdentifier> vacancies,
         [Frozen] Mock<IVacancyQuery> mockVacancyQuery,
@@ -115,13 +115,15 @@ public class WhenGettingEmployerSuccessfulApplicants
 
         var applications = new VacancyApplications();
 
+        var successfulApplicantDateOfBirth = DateTime.Today.AddDays(-20);
+
         foreach (var vacancy in vacancies)
         {
             applications.Applications =
             [
                 new() { CandidateId = Guid.NewGuid(), FirstName = "AAA", LastName = "AAA3", DateOfBirth = DateTime.Today, Status = ApplicationReviewStatus.New },
                 new() { CandidateId = Guid.NewGuid(), FirstName = "AAA1", LastName = "AAA4", DateOfBirth = DateTime.Today, Status = ApplicationReviewStatus.Unsuccessful },
-                new() { CandidateId = Guid.NewGuid(), FirstName = "AAA2", LastName = "AAA5", DateOfBirth = DateTime.Today, Status = ApplicationReviewStatus.Unsuccessful },
+                new() { CandidateId = Guid.NewGuid(), FirstName = "Successful", LastName = "Applicant", DateOfBirth = successfulApplicantDateOfBirth, Status = ApplicationReviewStatus.Successful },
             ];
         }
 
@@ -136,7 +138,15 @@ public class WhenGettingEmployerSuccessfulApplicants
 
         var result = await sut.Handle(request, CancellationToken.None);
         result.ResultCode.Should().Be(ResponseCode.Success);
-        result.Data.As<IOrderedEnumerable<SuccessfulApplicant>>().Count().Should().Be(0);
+        var actualResult = result.Data.As<IOrderedEnumerable<SuccessfulApplicant>>();
+        actualResult.Count().Should().Be(3);
+
+        foreach (var applicant in actualResult)
+        {
+            applicant.FirstName.Should().Be("Successful");
+            applicant.LastName.Should().Be("Applicant");
+            applicant.DateOfBirth.Should().Be(successfulApplicantDateOfBirth);
+        }
 
         mockVacancyQuery.Verify(x => x.GetVacanciesByEmployerAccountAsync<VacancyIdentifier>(request.EmployerAccountId), Times.Once);
         mockQueryStoreReader.Verify(x => x.GetVacancyApplicationsAsync(It.IsAny<string>()), Times.Exactly(vacancies.Count));
@@ -172,7 +182,7 @@ public class WhenGettingEmployerSuccessfulApplicants
 
         var result = await sut.Handle(request, CancellationToken.None);
         result.ResultCode.Should().Be(ResponseCode.Success);
-        
+
         var responseItem = result.Data.As<IOrderedEnumerable<SuccessfulApplicant>>().FirstOrDefault();
         responseItem.Should().NotBeNull();
 
