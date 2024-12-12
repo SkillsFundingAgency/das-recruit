@@ -139,7 +139,7 @@ public class WhenGettingEmployerSuccessfulApplicants
         var result = await sut.Handle(request, CancellationToken.None);
         result.ResultCode.Should().Be(ResponseCode.Success);
         var actualResult = result.Data.As<IOrderedEnumerable<SuccessfulApplicant>>();
-        actualResult.Count().Should().Be(3);
+        actualResult.Count().Should().Be(vacancies.Count);
 
         foreach (var applicant in actualResult)
         {
