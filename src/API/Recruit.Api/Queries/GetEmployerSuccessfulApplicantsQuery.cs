@@ -42,13 +42,13 @@ public class GetEmployerSuccessfulApplicantsQueryHandler(
         }
 
         var vacancies = await vacancyQuery.GetVacanciesByEmployerAccountAsync<VacancyIdentifier>(request.EmployerAccountId);
-        
+
         var successfulApplications = await GetSuccessfulApplications(vacancies.ToList());
 
         return new GetEmployerSuccessfulApplicantsQueryResponse
         {
             ResultCode = ResponseCode.Success,
-            Data =  successfulApplications?.OrderBy(x => x.LastName)
+            Data = successfulApplications?.OrderBy(x => x.LastName)
                 .ThenBy(x => x.FirstName)
         };
     }
@@ -85,7 +85,7 @@ public class GetEmployerSuccessfulApplicantsQueryHandler(
     {
         return new SuccessfulApplicant
         {
-            ApplicantId = application.CandidateId,
+            CandidateId = application.CandidateId,
             FirstName = application.FirstName,
             LastName = application.LastName,
             DateOfBirth = application.DateOfBirth,
@@ -102,13 +102,12 @@ public class GetEmployerSuccessfulApplicantsQueryHandler(
 
     private static List<string> ValidateRequest(GetEmployerSuccessfulApplicantsQuery request)
     {
-        const string employerAccountIdFieldName = nameof(request.EmployerAccountId);
         const string employerAccountIdRegex = "^[A-Z0-9]{6}$";
         var validationErrors = new List<string>();
 
         if (string.IsNullOrEmpty(request.EmployerAccountId) || !Regex.IsMatch(request.EmployerAccountId, employerAccountIdRegex))
         {
-            validationErrors.Add($"Invalid {FieldNameHelper.ToCamelCasePropertyName(employerAccountIdFieldName)}");
+            validationErrors.Add($"Invalid {nameof(request.EmployerAccountId)}");
         }
 
         return validationErrors;

@@ -27,8 +27,10 @@ public class WhenGettingEmployerSuccessfulApplicants
         Mock<IVacancyQuery> mockVacancyQuery,
         GetEmployerSuccessfulApplicantsQueryHandler sut)
     {
-        var result = await sut.Handle(new GetEmployerSuccessfulApplicantsQuery("11111"), CancellationToken.None);
+        var request = new GetEmployerSuccessfulApplicantsQuery("11111");
+        var result = await sut.Handle(request, CancellationToken.None);
         result.ResultCode.Should().Be(ResponseCode.InvalidRequest);
+        result.ValidationErrors.First().Should().Be($"Invalid {nameof(request.EmployerAccountId)}");
 
         mockVacancyQuery.Verify(x => x.GetVacanciesByEmployerAccountAsync<VacancyIdentifier>(It.IsAny<string>()), Times.Never);
     }
@@ -38,8 +40,10 @@ public class WhenGettingEmployerSuccessfulApplicants
         Mock<IVacancyQuery> mockVacancyQuery,
         GetEmployerSuccessfulApplicantsQueryHandler sut)
     {
-        var result = await sut.Handle(new GetEmployerSuccessfulApplicantsQuery(string.Empty), CancellationToken.None);
+        var request = new GetEmployerSuccessfulApplicantsQuery(string.Empty);
+        var result = await sut.Handle(request, CancellationToken.None);
         result.ResultCode.Should().Be(ResponseCode.InvalidRequest);
+        result.ValidationErrors.First().Should().Be($"Invalid {nameof(request.EmployerAccountId)}");
 
         mockVacancyQuery.Verify(x => x.GetVacanciesByEmployerAccountAsync<VacancyIdentifier>(It.IsAny<string>()), Times.Never);
     }
@@ -59,6 +63,7 @@ public class WhenGettingEmployerSuccessfulApplicants
 
         var result = await sut.Handle(request, CancellationToken.None);
         result.ResultCode.Should().Be(ResponseCode.Success);
+        result.ValidationErrors.Should().BeEmpty();
         result.Data.Should().BeNull();
 
         mockVacancyQuery.Verify(x => x.GetVacanciesByEmployerAccountAsync<VacancyIdentifier>(request.EmployerAccountId), Times.Once);
@@ -97,6 +102,7 @@ public class WhenGettingEmployerSuccessfulApplicants
 
         var result = await sut.Handle(request, CancellationToken.None);
         result.ResultCode.Should().Be(ResponseCode.Success);
+        result.ValidationErrors.Should().BeEmpty();
         result.Data.As<IOrderedEnumerable<SuccessfulApplicant>>().Count().Should().Be(applications.Applications.Count * vacancies.Count);
 
         mockVacancyQuery.Verify(x => x.GetVacanciesByEmployerAccountAsync<VacancyIdentifier>(request.EmployerAccountId), Times.Once);
@@ -138,6 +144,8 @@ public class WhenGettingEmployerSuccessfulApplicants
 
         var result = await sut.Handle(request, CancellationToken.None);
         result.ResultCode.Should().Be(ResponseCode.Success);
+        result.ValidationErrors.Should().BeEmpty();
+        
         var actualResult = result.Data.As<IOrderedEnumerable<SuccessfulApplicant>>();
         actualResult.Count().Should().Be(vacancies.Count);
 
@@ -182,11 +190,12 @@ public class WhenGettingEmployerSuccessfulApplicants
 
         var result = await sut.Handle(request, CancellationToken.None);
         result.ResultCode.Should().Be(ResponseCode.Success);
+        result.ValidationErrors.Should().BeEmpty();
 
         var responseItem = result.Data.As<IOrderedEnumerable<SuccessfulApplicant>>().FirstOrDefault();
         responseItem.Should().NotBeNull();
 
-        responseItem.ApplicantId.Should().Be(applications.Applications.First().CandidateId.ToString());
+        responseItem.CandidateId.Should().Be(applications.Applications.First().CandidateId.ToString());
         responseItem.FirstName.Should().Be(applications.Applications.First().FirstName);
         responseItem.LastName.Should().Be(applications.Applications.First().LastName);
         responseItem.DateOfBirth.Should().Be(applications.Applications.First().DateOfBirth);
