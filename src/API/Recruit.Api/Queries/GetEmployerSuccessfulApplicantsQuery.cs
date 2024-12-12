@@ -73,7 +73,7 @@ public class GetEmployerSuccessfulApplicantsQueryHandler(
 
                 foreach (var application in filteredApplications)
                 {
-                    successfulApplications.Add(CreateResponseItem(application, vacancy));
+                    successfulApplications.Add(CreateSuccessfulApplicant(application, vacancy));
                 }
             }
         });
@@ -81,7 +81,7 @@ public class GetEmployerSuccessfulApplicantsQueryHandler(
         return successfulApplications.ToList();
     }
 
-    private static SuccessfulApplicant CreateResponseItem(VacancyApplication application, VacancyIdentifier vacancy)
+    private static SuccessfulApplicant CreateSuccessfulApplicant(VacancyApplication application, VacancyIdentifier vacancy)
     {
         return new SuccessfulApplicant
         {
