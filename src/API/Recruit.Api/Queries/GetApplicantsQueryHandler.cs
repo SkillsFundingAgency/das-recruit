@@ -10,84 +10,77 @@ using SFA.DAS.Recruit.Api.Mappers;
 using SFA.DAS.Recruit.Api.Models;
 using SFA.DAS.Recruit.Api.Services;
 
-namespace SFA.DAS.Recruit.Api.Queries
+namespace SFA.DAS.Recruit.Api.Queries;
+
+public class GetApplicantsQueryHandler(ILogger<GetApplicantsQueryHandler> logger, IQueryStoreReader queryStoreReader)
+    : IRequestHandler<GetApplicantsQuery, GetApplicantsResponse>
 {
-    public class GetApplicantsQueryHandler : IRequestHandler<GetApplicantsQuery, GetApplicantsResponse>
+    private readonly ILogger<GetApplicantsQueryHandler> _logger = logger;
+    private const long ValidMinimumRecruitVacancyReferenceNumber = 1000000000;
+
+    private IEnumerable<string> _validFilters = [nameof(ApplicationReviewStatus.Successful), nameof(ApplicationReviewStatus.Unsuccessful)];
+
+    public async Task<GetApplicantsResponse> Handle(GetApplicantsQuery request, CancellationToken cancellationToken)
     {
-        private readonly ILogger<GetApplicantsQueryHandler> _logger;
-        private readonly IQueryStoreReader _queryStoreReader;
-        private const long ValidMinimumRecruitVacancyReferenceNumber = 1000000000;
+        var validationErrors = ValidateRequest(request);
 
-        private IEnumerable<string> _validFilters = new string[] { nameof(ApplicationReviewStatus.Successful), nameof(ApplicationReviewStatus.Unsuccessful) };
-
-        public GetApplicantsQueryHandler(ILogger<GetApplicantsQueryHandler> logger, IQueryStoreReader queryStoreReader)
+        if (validationErrors.Count != 0)
         {
-            _logger = logger;
-            _queryStoreReader = queryStoreReader;
+            return new GetApplicantsResponse { ResultCode = ResponseCode.InvalidRequest, ValidationErrors = validationErrors.Cast<object>().ToList() };
         }
 
-        public async Task<GetApplicantsResponse> Handle(GetApplicantsQuery request, CancellationToken cancellationToken)
+        var vacancyApplications = await queryStoreReader.GetVacancyApplicationsAsync(request.VacancyReference.ToString());
+
+        if (vacancyApplications == null || vacancyApplications.Applications.Any() == false)
         {
-            var validationErrors = ValidateRequest(request);
-
-            if (validationErrors.Any())
-            {
-                return new GetApplicantsResponse { ResultCode = ResponseCode.InvalidRequest, ValidationErrors = validationErrors.Cast<object>().ToList() };
-            }
-
-            var vacancyApplications = await _queryStoreReader.GetVacancyApplicationsAsync(request.VacancyReference.ToString());
-
-            if (vacancyApplications == null || vacancyApplications.Applications.Any() == false)
-            {
-                return new GetApplicantsResponse { ResultCode = ResponseCode.NotFound };
-            }
-
-            var applicants = FilterApplicants(request.ApplicantApplicationOutcomeFilter, vacancyApplications);
-
-            if (applicants.Any() == false)
-            {
-                return new GetApplicantsResponse { ResultCode = ResponseCode.NotFound };
-            }
-
-            return new GetApplicantsResponse
-            {
-                ResultCode = ResponseCode.Success,
-                Data = applicants.Select(ApplicantSummaryMapper.MapFromVacancyApplication)
-            };
+            return new GetApplicantsResponse { ResultCode = ResponseCode.NotFound };
         }
 
-        private List<VacancyApplication> FilterApplicants(string applicantApplicationOutcomeFilter, VacancyApplications vacancyApplications)
+        var applicants = FilterApplicants(request.ApplicantApplicationOutcomeFilter, vacancyApplications);
+
+        if (applicants.Count != 0 == false)
         {
-            var applicants = vacancyApplications.Applications;
-
-            if (string.IsNullOrEmpty(applicantApplicationOutcomeFilter) == false)
-            {
-                applicants = applicants
-                            .Where(app => app.Status.ToString().Equals(applicantApplicationOutcomeFilter, StringComparison.InvariantCultureIgnoreCase))
-                            .ToList();
-            }
-
-            return applicants;
+            return new GetApplicantsResponse { ResultCode = ResponseCode.NotFound };
         }
 
-        private List<string> ValidateRequest(GetApplicantsQuery request)
+        return new GetApplicantsResponse
         {
-            const string vacancyReferenceFieldName = nameof(request.VacancyReference);
-            const string applicantApplicationOutcomeFilterFieldName = nameof(request.ApplicantApplicationOutcomeFilter);
-            var validationErrors = new List<string>();
+            ResultCode = ResponseCode.Success,
+            Data = applicants.Select(ApplicantSummaryMapper.MapFromVacancyApplication)
+        };
+    }
 
-            if (request.VacancyReference < ValidMinimumRecruitVacancyReferenceNumber)
-            {
-                validationErrors.Add($"Invalid {FieldNameHelper.ToCamelCasePropertyName(vacancyReferenceFieldName)}");
-            }
+    private static List<VacancyApplication> FilterApplicants(string applicantApplicationOutcomeFilter, VacancyApplications vacancyApplications)
+    {
+        var applicants = vacancyApplications.Applications;
 
-            if (!string.IsNullOrEmpty(request.ApplicantApplicationOutcomeFilter)
-                && _validFilters.All(filter => filter.Equals(request.ApplicantApplicationOutcomeFilter, StringComparison.InvariantCultureIgnoreCase) == false))
-            {
-                validationErrors.Add($"Invalid {FieldNameHelper.ToCamelCasePropertyName(applicantApplicationOutcomeFilterFieldName)}");
-            }
-
-            return validationErrors;
+        if (string.IsNullOrEmpty(applicantApplicationOutcomeFilter) == false)
+        {
+            applicants = applicants
+                .Where(app => app.Status.ToString().Equals(applicantApplicationOutcomeFilter, StringComparison.InvariantCultureIgnoreCase))
+                .ToList();
         }
+
+        return applicants;
+    }
+
+    private List<string> ValidateRequest(GetApplicantsQuery request)
+    {
+        const string vacancyReferenceFieldName = nameof(request.VacancyReference);
+        const string applicantApplicationOutcomeFilterFieldName = nameof(request.ApplicantApplicationOutcomeFilter);
+        var validationErrors = new List<string>();
+
+        if (request.VacancyReference < ValidMinimumRecruitVacancyReferenceNumber)
+        {
+            validationErrors.Add($"Invalid {FieldNameHelper.ToCamelCasePropertyName(vacancyReferenceFieldName)}");
+        }
+
+        if (!string.IsNullOrEmpty(request.ApplicantApplicationOutcomeFilter)
+            && _validFilters.All(filter => filter.Equals(request.ApplicantApplicationOutcomeFilter, StringComparison.InvariantCultureIgnoreCase) == false))
+        {
+            validationErrors.Add($"Invalid {FieldNameHelper.ToCamelCasePropertyName(applicantApplicationOutcomeFilterFieldName)}");
+        }
+
+        return validationErrors;
     }
 }
