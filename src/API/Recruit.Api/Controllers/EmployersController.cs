@@ -10,7 +10,7 @@ public class EmployersController(IMediator mediator) : ApiControllerBase
 {
     // GET api/employers/?employerAccountId
     [HttpGet("{employerAccountId:minlength(6)}")]
-    public async Task<IActionResult> Get([FromRoute]string employerAccountId)
+    public async Task<IActionResult> Get([FromRoute] string employerAccountId)
     {
         var resp = await mediator.Send(new GetEmployerSummaryQuery(employerAccountId.Trim().ToUpper()));
         return GetApiResponse(resp);
