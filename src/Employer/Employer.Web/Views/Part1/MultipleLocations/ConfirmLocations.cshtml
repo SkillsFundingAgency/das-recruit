@@ -23,15 +23,16 @@
             </h1>
 
             <div class="govuk-body raa-summary-box">
-                @{
-                    var index = 1;
-                    foreach (var address in Model.Locations)
-                    {
-                        <address value=@address anonymised="false" class="govuk-!-margin-bottom-3" />
-                        <hr asp-show="index++ < Model.Locations.Count" class="govuk-section-break govuk-section-break--s govuk-section-break--visible govuk-!-margin-bottom-3" />
+                <div class="govuk-!-margin-bottom-4">
+                    @{
+                        var index = 1;
+                        foreach (var address in Model.Locations)
+                        {
+                            <address value=@address anonymised="false" class="govuk-!-margin-bottom-3" />
+                            <hr asp-show="index++ < Model.Locations.Count" class="govuk-section-break govuk-section-break--s govuk-section-break--visible govuk-!-margin-bottom-3" />
+                        }
                     }
-                }
-
+                </div>
                 <a asp-route="@RouteNames.AddMoreThanOneLocation_Get" asp-all-route-data="@Model.RouteDictionary" asp-route-wizard="@Model.PageInfo.IsWizard" class="govuk-link govuk-link--no-visited-state">Change locations</a>
             </div>
 
