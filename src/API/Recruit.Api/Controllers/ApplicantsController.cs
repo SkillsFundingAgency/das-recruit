@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.Recruit.Api.Queries;
@@ -10,9 +11,16 @@ public class ApplicantsController(IMediator mediator) : ApiControllerBase
 {
     // GET api/vacancies/{vacancyReference}/applicants?outcome
     [HttpGet]
-    public async Task<IActionResult> Get([FromRoute]ulong vacancyReference, [FromQuery]string outcome)
+    public async Task<IActionResult> Get([FromRoute] ulong vacancyReference, [FromQuery] string outcome)
     {
         var resp = await mediator.Send(new GetApplicantsQuery((long)vacancyReference, outcome?.Trim()));
         return GetApiResponse(resp);
+    }
+
+    [HttpGet("{candidateId:Guid}")]
+    public async Task<IActionResult> GetApplicant([FromRoute] long vacancyReference, [FromRoute] Guid candidateId)
+    {
+        var response = await mediator.Send(new GetApplicationReviewQuery(vacancyReference, candidateId));
+        return GetApiResponse(response);
     }
 }
