@@ -39,9 +39,13 @@ namespace Esfa.Recruit.Shared.Web.Extensions
                 .GroupBy(x => x.Key)
                 .OrderBy(x => x.Key);
 
-            string Selector(Address address) => !string.IsNullOrEmpty(address.AddressLine4) ? address.AddressLine4 :
-                !string.IsNullOrEmpty(address.AddressLine3) ? address.AddressLine3 :
-                !string.IsNullOrEmpty(address.AddressLine2) ? address.AddressLine2 : address.AddressLine1;
+            string Selector(Address address) => new[]
+                {
+                    address.AddressLine4,
+                    address.AddressLine3,
+                    address.AddressLine2,
+                    address.AddressLine1,
+                }.First(x => !string.IsNullOrEmpty(x));
         }
     }
 }
