@@ -10,7 +10,7 @@ namespace Esfa.Recruit.Shared.Web.TagHelpers;
 [HtmlTargetElement("address", TagStructure = TagStructure.NormalOrSelfClosing)]
 public class AddressTagHelper: TagHelper
 {
-    public const string TagName = "div";
+    public const string TagName = "p";
     public bool Anonymised { get; set; } = false;
     public Address Value { get; set; }
     public string Class { get; set; }

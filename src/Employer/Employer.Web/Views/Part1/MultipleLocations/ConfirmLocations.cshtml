@@ -28,7 +28,7 @@
                         var index = 1;
                         foreach (var address in Model.Locations)
                         {
-                            <address value=@address anonymised="false" class="govuk-!-margin-bottom-3" />
+                            <address value=@address anonymised="false" />
                             <hr asp-show="index++ < Model.Locations.Count" class="govuk-section-break govuk-section-break--s govuk-section-break--visible govuk-!-margin-bottom-3" />
                         }
                     }

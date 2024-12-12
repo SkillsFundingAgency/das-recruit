@@ -42,11 +42,11 @@ public class AddressTagHelperTests
         _tagHelperOutput.AsString().Should().BeEmpty();
     }
     
-    [TestCase("address1", "address2", "address3", "address4", "postcode", "<div>address1<br>address2<br>address3<br>address4<br>postcode</div>")]
-    [TestCase("address1", null, "address3", "address4", "postcode", "<div>address1<br>address3<br>address4<br>postcode</div>")]
-    [TestCase("address1", "address2", null, "address4", "postcode", "<div>address1<br>address2<br>address4<br>postcode</div>")]
-    [TestCase("address1", "address2", "address3", null, "postcode", "<div>address1<br>address2<br>address3<br>postcode</div>")]
-    [TestCase("address1", null, null, null, "postcode", "<div>address1<br>postcode</div>")]
+    [TestCase("address1", "address2", "address3", "address4", "postcode", "<p>address1<br>address2<br>address3<br>address4<br>postcode</p>")]
+    [TestCase("address1", null, "address3", "address4", "postcode", "<p>address1<br>address3<br>address4<br>postcode</p>")]
+    [TestCase("address1", "address2", null, "address4", "postcode", "<p>address1<br>address2<br>address4<br>postcode</p>")]
+    [TestCase("address1", "address2", "address3", null, "postcode", "<p>address1<br>address2<br>address3<br>postcode</p>")]
+    [TestCase("address1", null, null, null, "postcode", "<p>address1<br>postcode</p>")]
     public async Task Output_Is_Suppressed_When_Address_Is_Null(string address1, string address2, string address3, string address4, string postcode, string output)
     {
         // arrange
@@ -83,6 +83,6 @@ public class AddressTagHelperTests
         await sut.ProcessAsync(_tagHelperContext, _tagHelperOutput);
 
         // assert
-        _tagHelperOutput.AsString().Should().Be("<div class=\"class1 class2\">address1<br>postcode</div>");
+        _tagHelperOutput.AsString().Should().Be("<p class=\"class1 class2\">address1<br>postcode</p>");
     }
 }
