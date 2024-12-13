@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
@@ -17,13 +18,13 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
         }
 
         public async Task<UserNotificationPreferences> GetAsync(string idamsUserId)
-        {
+        {   
             var filter = Builders<UserNotificationPreferences>.Filter.Eq(v => v.Id, idamsUserId);
 
             var collection = GetCollection<UserNotificationPreferences>();
             var result = await RetryPolicy.Execute(_ => 
                 collection.Find(filter)
-                .SingleOrDefaultAsync(),
+                .FirstOrDefaultAsync(),
                 new Context(nameof(GetAsync)));
             return result;
         }
