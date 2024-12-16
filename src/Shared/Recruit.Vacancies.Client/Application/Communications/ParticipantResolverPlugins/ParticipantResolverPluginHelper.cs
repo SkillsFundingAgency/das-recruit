@@ -15,7 +15,8 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Communications.ParticipantRe
                     email: u.Email,
                     name: u.Name,
                     userType: CommunicationConstants.UserType,
-                    participation: u.IdamsUserId == primaryUserIdamsId ? UserParticipation.PrimaryUser : UserParticipation.SecondaryUser
+                    participation: u.IdamsUserId == primaryUserIdamsId ? UserParticipation.PrimaryUser : UserParticipation.SecondaryUser,
+                    dfEUserId: u.DfEUserId
                 )
             );
         }
