@@ -1,5 +1,5 @@
-﻿using Esfa.Recruit.Employer.Web.Domain;
-using Esfa.Recruit.Employer.Web.RouteModel;
+﻿using Esfa.Recruit.Employer.Web.RouteModel;
+using Esfa.Recruit.Shared.Web.Domain;
 using Esfa.Recruit.Shared.Web.ViewModels;
 
 namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.AddLocation;

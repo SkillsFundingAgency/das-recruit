@@ -4,11 +4,11 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
-using Esfa.Recruit.Employer.Web.Domain;
 using Esfa.Recruit.Employer.Web.Extensions;
 using Esfa.Recruit.Employer.Web.Orchestrators.Part1;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.MultipleLocations;
+using Esfa.Recruit.Shared.Web.Domain;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
@@ -82,6 +82,12 @@ public class MultipleLocationsController : Controller
         {
             viewModel.SelectedLocations = JsonSerializer.Deserialize<List<string>>(value);
         }
+
+        if (TempData[TempDataKeys.AddedLocation] is string newlyAddedLocation)
+        {
+            viewModel.SelectedLocations.Add(newlyAddedLocation);
+            viewModel.BannerAddress = newlyAddedLocation;
+        }
         
         return View(viewModel);
     }
@@ -110,6 +116,7 @@ public class MultipleLocationsController : Controller
     [HttpPost("addlocation", Name = RouteNames.AddNewLocationJourney_Post)]
     public IActionResult AddALocation(AddMoreThanOneLocationEditModel editModel, [FromQuery] bool wizard)
     {
+        TempData.Remove(TempDataKeys.Postcode);
         TempData[TempDataKeys.SelectedLocations] = JsonSerializer.Serialize(editModel.SelectedLocations);
         return RedirectToRoute(RouteNames.AddLocation_Get, new { editModel.VacancyId, editModel.EmployerAccountId, wizard, origin = MultipleLocationsJourneyOrigin.Many } );
     }
