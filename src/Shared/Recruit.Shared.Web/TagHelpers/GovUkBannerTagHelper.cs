@@ -16,9 +16,9 @@ public enum BannerStyle
 [OutputElementHint("div")]
 public class GovUkBannerTagHelper: TagHelper
 {
-    internal const string TagName = "govuk-banner";
+    public const string TagName = "govuk-banner";
     public string Title { get; set; }
-    public BannerStyle Type { get; set; }
+    public BannerStyle? Type { get; set; }
 
     public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
     {
@@ -34,7 +34,11 @@ public class GovUkBannerTagHelper: TagHelper
                     Title ??= "Success";
                     break;
                 }
-            default: throw new NotImplementedException();
+            default:
+                {
+                    output.SuppressOutput();
+                    return;
+                }
         }
 
         output.Content.AppendHtml(RenderHeader(Title));
