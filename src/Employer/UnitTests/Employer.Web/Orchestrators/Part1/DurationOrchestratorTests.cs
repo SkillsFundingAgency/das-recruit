@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using System.Threading.Tasks;
 using Esfa.Recruit.Employer.UnitTests.Employer.Web.HardMocks;
 using Esfa.Recruit.Employer.Web;
 using Esfa.Recruit.Employer.Web.Orchestrators.Part1;
@@ -9,10 +8,7 @@ using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
-using FluentAssertions;
 using Microsoft.Extensions.Logging;
-using Moq;
-using Xunit;
 
 namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part1
 {
@@ -20,18 +16,18 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part1
     {
         private DurationOrchestratorTestsFixture _fixture;
 
-        public DurationOrchestratorTests()
+        [SetUp]
+        public void Setup()
         {
             _fixture = new DurationOrchestratorTestsFixture();
         }
 
-        [Theory]
-        [InlineData(24, DurationUnit.Month, 37.0, "this is a value", new string[] { }, new string[] { FieldIdentifiers.ExpectedDuration, FieldIdentifiers.WorkingWeek })]
-        [InlineData(12, DurationUnit.Month, 37.0, "this is a value", new string[] { FieldIdentifiers.ExpectedDuration }, new string[] { FieldIdentifiers.WorkingWeek })]
-        [InlineData(24, DurationUnit.Year, 37.0, "this is a value", new string[] { FieldIdentifiers.ExpectedDuration }, new string[] { FieldIdentifiers.WorkingWeek })]
-        [InlineData(24, DurationUnit.Month, 35.0, "this is a value", new string[] { FieldIdentifiers.WorkingWeek }, new string[] { FieldIdentifiers.ExpectedDuration })]
-        [InlineData(24, DurationUnit.Month, 37.0, "this is a new value", new string[] { FieldIdentifiers.WorkingWeek }, new string[] { FieldIdentifiers.ExpectedDuration })]
-        [InlineData(1, DurationUnit.Year, 35.0, "this is a new value", new string[] { FieldIdentifiers.ExpectedDuration, FieldIdentifiers.WorkingWeek }, new string[] { })]
+        [TestCase(24, DurationUnit.Month, 37.0, "this is a value", new string[] { }, new string[] { FieldIdentifiers.ExpectedDuration, FieldIdentifiers.WorkingWeek })]
+        [TestCase(12, DurationUnit.Month, 37.0, "this is a value", new string[] { FieldIdentifiers.ExpectedDuration }, new string[] { FieldIdentifiers.WorkingWeek })]
+        [TestCase(24, DurationUnit.Year, 37.0, "this is a value", new string[] { FieldIdentifiers.ExpectedDuration }, new string[] { FieldIdentifiers.WorkingWeek })]
+        [TestCase(24, DurationUnit.Month, 35.0, "this is a value", new string[] { FieldIdentifiers.WorkingWeek }, new string[] { FieldIdentifiers.ExpectedDuration })]
+        [TestCase(24, DurationUnit.Month, 37.0, "this is a new value", new string[] { FieldIdentifiers.WorkingWeek }, new string[] { FieldIdentifiers.ExpectedDuration })]
+        [TestCase(1, DurationUnit.Year, 35.0, "this is a new value", new string[] { FieldIdentifiers.ExpectedDuration, FieldIdentifiers.WorkingWeek }, new string[] { })]
         public async Task WhenUpdated_ShouldFlagFieldIndicators(int duration, DurationUnit durationUnit, decimal weeklyHours, string workingWeekDescription, string[] setFieldIdentifers, string [] unsetFieldIdentifiers)
         {
             _fixture

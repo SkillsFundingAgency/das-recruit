@@ -11,7 +11,6 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
-using NUnit.Framework;
 
 namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Controllers.Part1;
 

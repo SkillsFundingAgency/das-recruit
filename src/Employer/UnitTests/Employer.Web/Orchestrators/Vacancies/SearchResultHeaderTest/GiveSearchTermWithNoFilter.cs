@@ -1,15 +1,12 @@
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections;
-using FluentAssertions;
-using Xunit;
 
 namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Vacancies.SearchResultHeaderTest
 {
     public class GiveSearchTermWithNoFilter : SearchResultHeaderTestBase
     {
-        [Fact]
+        [Test]
         public async Task WhenThereAreNoVacancies()
         {
             var expectedMessage = "0 adverts with 'nurse'";
@@ -18,7 +15,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Vacancies.S
             vm.ResultsHeading.Should().Be(expectedMessage);
         }
 
-        [Fact]
+        [Test]
         public async Task WhenThereIsOneVacancy()
         {
             var expectedMessage = "1 advert with 'nurse'";
@@ -27,7 +24,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Vacancies.S
             vm.ResultsHeading.Should().Be(expectedMessage);
         }
 
-        [Fact]
+        [Test]
         public async Task WhenThereIsMoreThanOneVacancy()
         {
             var expectedMessage = "2 adverts with 'nurse'";
