@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
@@ -105,7 +106,7 @@ public class GetEmployerSuccessfulApplicantsQueryHandler(
         const string employerAccountIdRegex = "^[A-Z0-9]{6}$";
         var validationErrors = new List<string>();
 
-        if (string.IsNullOrEmpty(request.EmployerAccountId) || !Regex.IsMatch(request.EmployerAccountId, employerAccountIdRegex))
+        if (string.IsNullOrEmpty(request.EmployerAccountId) || !Regex.IsMatch(request.EmployerAccountId, employerAccountIdRegex,  RegexOptions.None, TimeSpan.FromMilliseconds(100)))
         {
             validationErrors.Add($"Invalid {nameof(request.EmployerAccountId)}");
         }
