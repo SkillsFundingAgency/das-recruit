@@ -1,10 +1,10 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
-using Microsoft.Extensions.Logging;
 using SFA.DAS.Recruit.Api.Helpers;
 using SFA.DAS.Recruit.Api.Mappers;
 using SFA.DAS.Recruit.Api.Models;
@@ -12,11 +12,9 @@ using SFA.DAS.Recruit.Api.Services;
 
 namespace SFA.DAS.Recruit.Api.Queries;
 
-public class GetEmployerSummaryQueryHandler(IQueryStoreReader queryStoreReader, ILogger<GetApplicantsQueryHandler> logger)
+public class GetEmployerSummaryQueryHandler(IQueryStoreReader queryStoreReader)
     : IRequestHandler<GetEmployerSummaryQuery, GetEmployerSummaryResponse>
 {
-    private readonly ILogger<GetApplicantsQueryHandler> _logger = logger;
-
     public async Task<GetEmployerSummaryResponse> Handle(GetEmployerSummaryQuery request, CancellationToken cancellationToken)
     {
         var validationErrors = ValidateRequest(request);
@@ -46,7 +44,7 @@ public class GetEmployerSummaryQueryHandler(IQueryStoreReader queryStoreReader, 
         const string employerAccountIdRegex = @"^[A-Z0-9]{6}$";
         var validationErrors = new List<string>();
 
-        if (string.IsNullOrEmpty(request.EmployerAccountId) || Regex.IsMatch(request.EmployerAccountId, employerAccountIdRegex) == false)
+        if (string.IsNullOrEmpty(request.EmployerAccountId) || !Regex.IsMatch(request.EmployerAccountId, employerAccountIdRegex, RegexOptions.None, TimeSpan.FromMilliseconds(100)))
         {
             validationErrors.Add($"Invalid {FieldNameHelper.ToCamelCasePropertyName(employerAccountIdFieldName)}");
         }

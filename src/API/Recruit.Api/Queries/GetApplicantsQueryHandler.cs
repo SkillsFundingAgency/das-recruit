@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
-using Microsoft.Extensions.Logging;
 using SFA.DAS.Recruit.Api.Helpers;
 using SFA.DAS.Recruit.Api.Mappers;
 using SFA.DAS.Recruit.Api.Models;
@@ -12,13 +11,11 @@ using SFA.DAS.Recruit.Api.Services;
 
 namespace SFA.DAS.Recruit.Api.Queries;
 
-public class GetApplicantsQueryHandler(ILogger<GetApplicantsQueryHandler> logger, IQueryStoreReader queryStoreReader)
-    : IRequestHandler<GetApplicantsQuery, GetApplicantsResponse>
+public class GetApplicantsQueryHandler(IQueryStoreReader queryStoreReader) : IRequestHandler<GetApplicantsQuery, GetApplicantsResponse>
 {
-    private readonly ILogger<GetApplicantsQueryHandler> _logger = logger;
     private const long ValidMinimumRecruitVacancyReferenceNumber = 1000000000;
 
-    private IEnumerable<string> _validFilters = [nameof(ApplicationReviewStatus.Successful), nameof(ApplicationReviewStatus.Unsuccessful)];
+    private readonly IEnumerable<string> _validFilters = [nameof(ApplicationReviewStatus.Successful), nameof(ApplicationReviewStatus.Unsuccessful)];
 
     public async Task<GetApplicantsResponse> Handle(GetApplicantsQuery request, CancellationToken cancellationToken)
     {
@@ -31,7 +28,7 @@ public class GetApplicantsQueryHandler(ILogger<GetApplicantsQueryHandler> logger
 
         var vacancyApplications = await queryStoreReader.GetVacancyApplicationsAsync(request.VacancyReference.ToString());
 
-        if (vacancyApplications == null || vacancyApplications.Applications.Any() == false)
+        if (vacancyApplications == null || vacancyApplications.Applications.Count == 0)
         {
             return new GetApplicantsResponse { ResultCode = ResponseCode.NotFound };
         }
@@ -68,6 +65,7 @@ public class GetApplicantsQueryHandler(ILogger<GetApplicantsQueryHandler> logger
     {
         const string vacancyReferenceFieldName = nameof(request.VacancyReference);
         const string applicantApplicationOutcomeFilterFieldName = nameof(request.ApplicantApplicationOutcomeFilter);
+        
         var validationErrors = new List<string>();
 
         if (request.VacancyReference < ValidMinimumRecruitVacancyReferenceNumber)
@@ -76,7 +74,7 @@ public class GetApplicantsQueryHandler(ILogger<GetApplicantsQueryHandler> logger
         }
 
         if (!string.IsNullOrEmpty(request.ApplicantApplicationOutcomeFilter)
-            && _validFilters.All(filter => filter.Equals(request.ApplicantApplicationOutcomeFilter, StringComparison.InvariantCultureIgnoreCase) == false))
+            && _validFilters.All(filter => !filter.Equals(request.ApplicantApplicationOutcomeFilter, StringComparison.InvariantCultureIgnoreCase)))
         {
             validationErrors.Add($"Invalid {FieldNameHelper.ToCamelCasePropertyName(applicantApplicationOutcomeFilterFieldName)}");
         }
