@@ -219,4 +219,53 @@ public class MultipleLocationsControllerTests
         result.Should().NotBeNull();
         result!.RouteName.Should().Be(RouteNames.AddLocation_Get);
     }
+    
+    [Test, MoqAutoData]
+    public async Task When_Getting_ConfirmLocations_Then_The_View_Is_Returned(
+        Vacancy vacancy,
+        Mock<IUtility> utility,
+        [Greedy] MultipleLocationsController sut)
+    {
+        // arrange
+        var vacancyRouteModel = new VacancyRouteModel
+        {
+            VacancyId = vacancy.Id,
+            EmployerAccountId = vacancy.EmployerAccountId,
+        };
+        utility.Setup(x => x.GetAuthorisedVacancyForEditAsync(It.IsAny<VacancyRouteModel>(), It.IsAny<string>())).ReturnsAsync(vacancy);
+        
+        // act
+        var result = (await sut.ConfirmLocations(utility.Object, vacancyRouteModel, true) as ViewResult)?.Model as ConfirmLocationsViewModel;
+
+        // assert
+        result.Should().NotBeNull();
+        result!.VacancyId.Should().Be(vacancy.Id);
+        result.ApprenticeshipTitle.Should().Be(vacancy.Title);
+        result.EmployerAccountId.Should().BeEquivalentTo(vacancy.EmployerAccountId);
+        result.Locations.Should().BeEquivalentTo(vacancy.EmployerLocations);
+    }
+    
+    [Test]
+    [InlineAutoData(true, RouteNames.EmployerTaskListGet)]
+    [InlineAutoData(false, RouteNames.EmployerCheckYourAnswersGet)]
+    public void When_Posting_ConfirmLocations_Then_A_Redirect_Result_Is_Returned(
+        bool wizard,
+        string expectedRedirectRoute,
+        Vacancy vacancy,
+        [Greedy] MultipleLocationsController sut)
+    {
+        // arrange
+        var vacancyRouteModel = new VacancyRouteModel
+        {
+            VacancyId = vacancy.Id,
+            EmployerAccountId = vacancy.EmployerAccountId,
+        };
+        
+        // act
+        var result = sut.ConfirmLocations(vacancyRouteModel, wizard) as RedirectToRouteResult;
+
+        // assert
+        result.Should().NotBeNull();
+        result!.RouteName.Should().Be(expectedRedirectRoute);
+    }
 }

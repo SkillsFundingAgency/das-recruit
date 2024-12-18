@@ -1,0 +1,46 @@
+﻿@using Esfa.Recruit.Employer.Web.ViewModels.Part1.MultipleLocations
+@using Esfa.Recruit.Shared.Web.TagHelpers
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+
+@model ConfirmLocationsViewModel
+
+@{ 
+    ViewBag.Title = "Confirm locations";
+    ViewBag.ZenDeskLabel = "recruit-where-will-the-apprentice-work";
+}
+
+@section BackLink {
+    <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.AddMoreThanOneLocation_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Back</a>
+    <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.EmployerCheckYourAnswersGet" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Back</a>
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <form asp-route="@RouteNames.Considerations_Post" asp-all-route-data="@Model.RouteDictionary" asp-route-wizard="@Model.PageInfo.IsWizard">
+            <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">
+                <span class="govuk-caption-l">@Model.ApprenticeshipTitle</span>
+                Confirm locations
+            </h1>
+
+            <div class="govuk-body raa-addresses-summary-box">
+                <div class="govuk-!-margin-bottom-4">
+                    @{
+                        var index = 1;
+                        foreach (var address in Model.Locations)
+                        {
+                            <address value=@address anonymised="false" />
+                            <hr asp-show="index++ < Model.Locations.Count" class="govuk-section-break govuk-section-break--s govuk-section-break--visible govuk-!-margin-bottom-3" />
+                        }
+                    }
+                </div>
+                <a asp-route="@RouteNames.AddMoreThanOneLocation_Get" asp-all-route-data="@Model.RouteDictionary" asp-route-wizard="@Model.PageInfo.IsWizard" class="govuk-link govuk-link--no-visited-state">Change locations</a>
+            </div>
+
+            <div class="govuk-button-group">
+                <button type="submit" class="govuk-button save-button" esfa-automation="continue-button">@Model.PageInfo.SubmitButtonText</button>
+                <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Dashboard_Get" asp-route-employerAccountId="@Model.EmployerAccountId" class="govuk-link govuk-link--no-visited-state">Cancel</a>
+                <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.EmployerCheckYourAnswersGet" asp-all-route-data="@Model.RouteDictionary" class="govuk-link govuk-link--no-visited-state">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
