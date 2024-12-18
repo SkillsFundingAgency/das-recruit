@@ -10,7 +10,9 @@ using Esfa.Recruit.Employer.Web.Orchestrators.Part1;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.MultipleLocations;
 using Esfa.Recruit.Shared.Web.Extensions;
+using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.FeatureManagement.Mvc;
 
@@ -60,7 +62,7 @@ public class MultipleLocationsController : Controller
             ApprenticeshipTitle = vacancy.Title,
             EmployerAccountId = vacancyRouteModel.EmployerAccountId,
             PageInfo = utility.GetPartOnePageInfo(vacancy),
-            SelectedAvailability = availableWhere ?? (vacancy.EmployerLocation is not null ? AvailableWhere.OneLocation : null),
+            SelectedAvailability = availableWhere ?? vacancy.EmployerLocationOption ?? (vacancy.EmployerLocation is not null ? AvailableWhere.OneLocation : null),
             VacancyId = vacancyRouteModel.VacancyId,
         };
         viewModel.PageInfo.SetWizard(wizard);
@@ -107,10 +109,40 @@ public class MultipleLocationsController : Controller
     }
     
     [FeatureGate(FeatureNames.MultipleLocations)]
-    [HttpPost("addlocation", Name = RouteNames.AddNewLocationJourney_Post)]
+    [HttpPost("addnewlocation", Name = RouteNames.AddNewLocationJourney_Post)]
     public IActionResult AddALocation(AddMoreThanOneLocationEditModel editModel, [FromQuery] bool wizard)
     {
         TempData[TempDataKeys.SelectedLocations] = JsonSerializer.Serialize(editModel.SelectedLocations);
         return RedirectToRoute(RouteNames.AddLocation_Get, new { editModel.VacancyId, editModel.EmployerAccountId, wizard, origin = MultipleLocationsJourneyOrigin.Many } );
+    }
+
+    [FeatureGate(FeatureNames.MultipleLocations)]
+    [HttpGet("confirm-locations", Name = RouteNames.MultipleLocationsConfirm_Get)]
+    public async Task<IActionResult> ConfirmLocations(
+        [FromServices] IUtility utility,
+        VacancyRouteModel vacancyRouteModel,
+        [FromQuery] bool wizard)
+    {
+        var vacancy = await utility.GetAuthorisedVacancyForEditAsync(vacancyRouteModel, RouteNames.MultipleLocations_Get);
+        var viewModel = new ConfirmLocationsViewModel
+        {
+            ApprenticeshipTitle = vacancy.Title,
+            EmployerAccountId = vacancyRouteModel.EmployerAccountId,
+            PageInfo = utility.GetPartOnePageInfo(vacancy),
+            Locations = vacancy.EmployerLocations,
+            VacancyId = vacancyRouteModel.VacancyId,
+        };
+        viewModel.PageInfo.SetWizard(wizard);
+
+        return View(viewModel);
+    }
+
+    [FeatureGate(FeatureNames.MultipleLocations)]
+    [HttpPost("confirm-locations", Name = RouteNames.MultipleLocationsConfirm_Post)]
+    public IActionResult ConfirmLocations(VacancyRouteModel vacancyRouteModel, [FromQuery] bool wizard)
+    {
+        return wizard
+            ? RedirectToRoute(RouteNames.EmployerTaskListGet, new {vacancyRouteModel.VacancyId, vacancyRouteModel.EmployerAccountId, wizard}) 
+            : RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet, new {vacancyRouteModel.VacancyId, vacancyRouteModel.EmployerAccountId});
     }
 }

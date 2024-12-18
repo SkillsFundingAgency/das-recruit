@@ -72,11 +72,14 @@ public class MultipleLocationsOrchestrator(
         var vacancy = await utility.GetAuthorisedVacancyForEditAsync(editModel, RouteNames.AddMoreThanOneLocation_Post);
         var employerProfile = await recruitVacancyClient.GetEmployerProfileAsync(vacancy.EmployerAccountId, vacancy.AccountLegalEntityPublicHashedId);
         var allLocations = await GetAllAvailableLocationsAsync(employerProfile);
-        
-        var selectedLocations = allLocations.Where(x => editModel.SelectedLocations.Contains(x.ToAddressString())).ToList();
-        vacancy.EmployerLocation = null; // EmployerLocations is now the preferred field
+
+        // This maintains the order in which the user viewed the addresses when selected
+        vacancy.EmployerLocations = editModel.SelectedLocations
+            .Select(x => allLocations.FirstOrDefault(l => l.ToAddressString() == x))
+            .Where(x => x is not null)
+            .ToList();
         vacancy.EmployerLocationOption = AvailableWhere.MultipleLocations;
-        vacancy.EmployerLocations = selectedLocations;
+        vacancy.EmployerLocation = null; // EmployerLocations is now the preferred field
         
         return await ValidateAndExecute(
             vacancy,

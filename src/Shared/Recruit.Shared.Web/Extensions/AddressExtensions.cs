@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Projections = Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections;
@@ -29,6 +30,22 @@ namespace Esfa.Recruit.Shared.Web.Extensions
                 AddressLine4 = address.AddressLine4,
                 Postcode = address.Postcode
             };
+        }
+
+        public static IOrderedEnumerable<IGrouping<string, KeyValuePair<string, Address>>> GroupByLastFilledAddressLine(this List<Address> addresses)
+        {
+            return addresses?
+                .Select(x => new KeyValuePair<string, Address>(Selector(x), x))
+                .GroupBy(x => x.Key)
+                .OrderBy(x => x.Key);
+
+            string Selector(Address address) => new[]
+                {
+                    address.AddressLine4,
+                    address.AddressLine3,
+                    address.AddressLine2,
+                    address.AddressLine1,
+                }.First(x => !string.IsNullOrEmpty(x));
         }
     }
 }
