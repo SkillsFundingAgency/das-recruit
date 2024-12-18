@@ -37,31 +37,4 @@ public class ApplicantsControllerTests
         var result = await _sut.Get(10000001, " successful ");
         _queryPassed.ApplicantApplicationOutcomeFilter.Contains(" ").Should().BeFalse();
     }
-
-    [Test, MoqAutoData]
-    public async Task When_Getting_Application_Review_Then_Query_Is_Created_And_Data_Is_Returned(
-        long vacancyReference,
-        Guid candidateId,
-        GetApplicationReviewResponse response,
-        ApplicationReviewResponse applicationReview,
-        [Frozen] Mock<IMediator> mockMediator,
-        [Greedy] ApplicantsController sut
-    )
-    {
-        response.ResultCode = ResponseCode.Success;
-        response.Data = applicationReview;
-
-        mockMediator.Setup(x => x.Send(
-                It.Is<GetApplicationReviewQuery>(q => q.VacancyReference == vacancyReference && q.CandidateId == candidateId),
-                It.IsAny<CancellationToken>()))
-            .ReturnsAsync(response);
-
-        var result = await sut.GetApplicant(vacancyReference, candidateId) as OkObjectResult;
-
-        result.Should().NotBeNull();
-        result.StatusCode.Should().Be((int)HttpStatusCode.OK);
-
-        var actual = result.Value as ApplicationReviewResponse;
-        actual.Should().BeEquivalentTo(applicationReview);
-    }
 }

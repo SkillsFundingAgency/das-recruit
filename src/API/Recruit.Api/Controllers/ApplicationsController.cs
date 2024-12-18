@@ -4,22 +4,17 @@ using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Events;
 using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.Recruit.Api.Models;
+using SFA.DAS.Recruit.Api.Queries;
 using ApplicationQualification = Esfa.Recruit.Vacancies.Client.Domain.Entities.ApplicationQualification;
 
 namespace SFA.DAS.Recruit.Api.Controllers;
 
 [Route("api/[controller]")]
-public class ApplicationsController : ApiControllerBase
+public class ApplicationsController(IMessaging messaging, IMediator mediator) : ApiControllerBase
 {
-    private readonly IMessaging _messaging;
-
-    public ApplicationsController(IMessaging messaging)
-    {
-        _messaging = messaging;
-    }
-    
     // GET api/applications/{candidateId}
     [HttpPost]
     [Route("{candidateId}")]
@@ -90,7 +85,7 @@ public class ApplicationsController : ApiControllerBase
             BirthDate = candidateApplication.DateOfBirth
         };
         
-        await _messaging.PublishEvent(new ApplicationSubmittedEvent
+        await messaging.PublishEvent(new ApplicationSubmittedEvent
         {
             Application = application,
             
@@ -103,11 +98,18 @@ public class ApplicationsController : ApiControllerBase
     [Route("{candidateId}/withdraw/{vacancyRef}")]
     public async Task<IActionResult> Withdraw([FromRoute] Guid candidateId, [FromRoute] long vacancyRef)
     {
-        await _messaging.PublishEvent(new ApplicationWithdrawnEvent
+        await messaging.PublishEvent(new ApplicationWithdrawnEvent
         {
             CandidateId = candidateId,
             VacancyReference = vacancyRef
         });
         return Created();
+    }
+    
+    [HttpGet("{candidateId:Guid}/application/{applicationReviewId:guid}")]
+    public async Task<IActionResult> GetApplicationReview([FromRoute] Guid candidateId, [FromRoute] Guid applicationReviewId)
+    {
+        var response = await mediator.Send(new GetApplicationReviewQuery(candidateId, applicationReviewId));
+        return GetApiResponse(response);
     }
 }

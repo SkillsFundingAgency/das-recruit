@@ -10,6 +10,7 @@ public class GetApplicationReviewResponse : ResponseBase
 
 public record ApplicationReviewResponse
 {
+    public Guid ApplicationReviewId { get; set; }
     public Guid CandidateId { get; set; }
     public long VacancyReference { get; set; }
     public string AddressLine1 { get; set; }

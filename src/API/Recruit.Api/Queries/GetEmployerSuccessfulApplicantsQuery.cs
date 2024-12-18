@@ -86,6 +86,7 @@ public class GetEmployerSuccessfulApplicantsQueryHandler(
     {
         return new SuccessfulApplicant
         {
+            ApplicationReviewId = application.ApplicationReviewId,
             CandidateId = application.CandidateId,
             FirstName = application.FirstName,
             LastName = application.LastName,

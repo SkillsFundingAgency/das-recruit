@@ -1,5 +1,7 @@
 using System;
 using System.Linq;
+using System.Net;
+using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
@@ -12,6 +14,7 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.Recruit.Api.Controllers;
 using SFA.DAS.Recruit.Api.Models;
+using SFA.DAS.Recruit.Api.Queries;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.Recruit.Api.UnitTests.Controllers;
@@ -77,5 +80,32 @@ public class ApplicationsControllerTests
         messaging.Verify(x => x.PublishEvent(It.Is<ApplicationWithdrawnEvent>(c =>
             c.VacancyReference == vacancyRef
             && c.CandidateId == candidateId)), Times.Once);
+    }
+    
+    [Test, MoqAutoData]
+    public async Task When_Getting_Application_Review_Then_Query_Is_Created_And_Data_Is_Returned(
+        Guid applicationId,
+        Guid candidateId,
+        GetApplicationReviewResponse response,
+        ApplicationReviewResponse applicationReview,
+        [Frozen] Mock<IMediator> mockMediator,
+        [Greedy] ApplicationsController sut
+    )
+    {
+        response.ResultCode = ResponseCode.Success;
+        response.Data = applicationReview;
+
+        mockMediator.Setup(x => x.Send(
+                It.Is<GetApplicationReviewQuery>(q => q.ApplicationReviewId == applicationId && q.CandidateId == candidateId),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(response);
+
+        var result = await sut.GetApplicationReview(candidateId, applicationId) as OkObjectResult;
+
+        result.Should().NotBeNull();
+        result.StatusCode.Should().Be((int)HttpStatusCode.OK);
+
+        var actual = result.Value as ApplicationReviewResponse;
+        actual.Should().BeEquivalentTo(applicationReview);
     }
 }

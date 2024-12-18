@@ -5,14 +5,14 @@ using System.Threading;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using MediatR;
-using SFA.DAS.Recruit.Api.Helpers;
+
 using SFA.DAS.Recruit.Api.Models;
 
 namespace SFA.DAS.Recruit.Api.Queries;
 
-public record GetApplicationReviewQuery(long VacancyReference, Guid CandidateId) : IRequest<GetApplicationReviewResponse>
+public record GetApplicationReviewQuery(Guid CandidateId, Guid ApplicationReviewId) : IRequest<GetApplicationReviewResponse>
 {
-    public long VacancyReference { get; set; } = VacancyReference;
+    public Guid ApplicationReviewId { get; set; } = ApplicationReviewId;
     public Guid CandidateId { get; set; } = CandidateId;
 }
 
@@ -31,7 +31,7 @@ public class GetApplicationReviewQueryHandler(IApplicationReviewRepository appli
             };
         }
 
-        var applicationReview = await applicationReviewRepository.GetAsync(request.VacancyReference, request.CandidateId);
+        var applicationReview = await applicationReviewRepository.GetAsync(request.ApplicationReviewId);
 
         if (applicationReview == null)
         {
@@ -41,11 +41,17 @@ public class GetApplicationReviewQueryHandler(IApplicationReviewRepository appli
             };
         }
 
+        if (applicationReview.CandidateId != request.CandidateId)
+        {
+            throw new Exception("The candidateId in the request does not match the candidateId in the applicationReview.");
+        }
+
         return new GetApplicationReviewResponse
         {
             ResultCode = ResponseCode.Success,
             Data = new ApplicationReviewResponse
             {
+                ApplicationReviewId = applicationReview.Id,
                 ApplicationDate = applicationReview.Application.ApplicationDate,
                 VacancyReference = applicationReview.VacancyReference,
                 CandidateId = applicationReview.CandidateId,
@@ -69,15 +75,15 @@ public class GetApplicationReviewQueryHandler(IApplicationReviewRepository appli
     private static List<string> ValidateRequest(GetApplicationReviewQuery request)
     {
         var validationErrors = new List<string>();
-
-        if (request.VacancyReference == 0)
-        {
-            validationErrors.Add($"Invalid {nameof(request.VacancyReference)}");
-        }
-
+        
         if (request.CandidateId == Guid.Empty)
         {
             validationErrors.Add($"Invalid {nameof(request.CandidateId)}");
+        }
+
+        if (request.ApplicationReviewId == Guid.Empty)
+        {
+            validationErrors.Add($"Invalid {nameof(request.ApplicationReviewId)}");
         }
 
         return validationErrors;

@@ -17,17 +17,17 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Queries;
 public class GetApplicationReviewQueryHandlerTests
 {
     [Test, MoqAutoData]
-    public async Task Then_If_VacancyReference_Is_Default_Then_Return_Invalid_Request(
+    public async Task Then_If_ApplicationReviewId_Is_Default_Then_Return_Invalid_Request(
         Mock<IApplicationReviewRepository> applicationReviewRepo,
         GetApplicationReviewQueryHandler sut
     )
     {
-        var request = new GetApplicationReviewQuery(0, Guid.NewGuid());
+        var request = new GetApplicationReviewQuery(Guid.NewGuid(), Guid.Empty);
 
         var result = await sut.Handle(request, CancellationToken.None);
         result.ResultCode.Should().Be(ResponseCode.InvalidRequest);
 
-        result.ValidationErrors.First().Should().Be($"Invalid {nameof(request.VacancyReference)}");
+        result.ValidationErrors.First().Should().Be($"Invalid {nameof(request.ApplicationReviewId)}");
 
         applicationReviewRepo.Verify(x => x.GetAsync(It.IsAny<long>(), It.IsAny<Guid>()), Times.Never);
     }
@@ -38,7 +38,7 @@ public class GetApplicationReviewQueryHandlerTests
         GetApplicationReviewQueryHandler sut
     )
     {
-        var request = new GetApplicationReviewQuery(1, Guid.Empty);
+        var request = new GetApplicationReviewQuery( Guid.Empty, Guid.NewGuid());
 
         var result = await sut.Handle(request, CancellationToken.None);
         result.ResultCode.Should().Be(ResponseCode.InvalidRequest);
@@ -55,14 +55,14 @@ public class GetApplicationReviewQueryHandlerTests
         GetApplicationReviewQueryHandler sut
     )
     {
-        applicationReviewRepo.Setup(x => x.GetAsync(request.VacancyReference, request.CandidateId)).ReturnsAsync(() => null);
+        applicationReviewRepo.Setup(x => x.GetAsync(request.ApplicationReviewId)).ReturnsAsync(() => null);
             
         var result = await sut.Handle(request, CancellationToken.None);
         result.ResultCode.Should().Be(ResponseCode.NotFound);
 
         result.ValidationErrors.Should().BeEmpty();
 
-        applicationReviewRepo.Verify(x => x.GetAsync(request.VacancyReference, request.CandidateId), Times.Once);
+        applicationReviewRepo.Verify(x => x.GetAsync(request.ApplicationReviewId), Times.Once);
     }
     
     [Test, MoqAutoData]
@@ -73,7 +73,9 @@ public class GetApplicationReviewQueryHandlerTests
         GetApplicationReviewQueryHandler sut
     )
     {
-        applicationReviewRepo.Setup(x => x.GetAsync(request.VacancyReference, request.CandidateId)).ReturnsAsync(applicationReview);
+        applicationReview.CandidateId = request.CandidateId;
+        
+        applicationReviewRepo.Setup(x => x.GetAsync(request.ApplicationReviewId)).ReturnsAsync(applicationReview);
             
         var result = await sut.Handle(request, CancellationToken.None);
         result.ResultCode.Should().Be(ResponseCode.Success);
@@ -82,7 +84,8 @@ public class GetApplicationReviewQueryHandlerTests
 
         var actualResult = result.Data as ApplicationReviewResponse;
         actualResult.Should().NotBeNull();
-        
+
+        actualResult.ApplicationReviewId.Should().Be(applicationReview.Id);
         actualResult.ApplicationDate.Should().Be(applicationReview.Application.ApplicationDate);
         actualResult.VacancyReference.Should().Be(applicationReview.VacancyReference);
         actualResult.CandidateId.Should().Be(applicationReview.CandidateId);
@@ -100,6 +103,20 @@ public class GetApplicationReviewQueryHandlerTests
         actualResult.AddressLine4.Should().Be(applicationReview.Application.AddressLine4);
         actualResult.Postcode.Should().Be(applicationReview.Application.Postcode);
         
-        applicationReviewRepo.Verify(x => x.GetAsync(request.VacancyReference, request.CandidateId), Times.Once);
+        applicationReviewRepo.Verify(x => x.GetAsync(request.ApplicationReviewId), Times.Once);
+    }
+    
+    [Test, MoqAutoData]
+    public async Task Then_When_ApplicationReview_CandidateId_Does_Not_Match_Request_CandidateId_Then_Throws_Exception(
+        GetApplicationReviewQuery request,
+        ApplicationReview applicationReview,
+        [Frozen] Mock<IApplicationReviewRepository> applicationReviewRepo,
+        GetApplicationReviewQueryHandler sut
+    )
+    {
+        applicationReviewRepo.Setup(x => x.GetAsync(request.ApplicationReviewId)).ReturnsAsync(applicationReview);
+            
+        var action = () => sut.Handle(request, CancellationToken.None);
+        await action.Should().ThrowAsync<Exception>();
     }
 }
