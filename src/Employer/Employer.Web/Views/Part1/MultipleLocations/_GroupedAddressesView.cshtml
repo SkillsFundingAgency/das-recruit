@@ -1,24 +1,10 @@
-﻿@using Esfa.Recruit.Vacancies.Client.Domain.Entities
-
-@model Esfa.Recruit.Employer.Web.ViewModels.Part1.MultipleLocations.AddMoreThanOneLocationViewModel
-
-@{
-    string Selector(Address address) => !string.IsNullOrEmpty(address.AddressLine4) ? address.AddressLine4 :
-        !string.IsNullOrEmpty(address.AddressLine3) ? address.AddressLine3 :
-        !string.IsNullOrEmpty(address.AddressLine2) ? address.AddressLine2 : address.AddressLine1;
-
-    var groupedLocations = Model.AvailableLocations
-        .Select(x => new KeyValuePair<string, Address>(Selector(x), x))
-        .GroupBy(x => x.Key)
-        .ToArray();
-
-    Array.Sort(groupedLocations, (l, r) => string.Compare(l.Key, r.Key, StringComparison.Ordinal));
-}
+﻿@model Esfa.Recruit.Employer.Web.ViewModels.Part1.MultipleLocations.AddMoreThanOneLocationViewModel
 
 <div class="govuk-checkboxes govuk-checkboxes--conditional" data-module="checkboxes" esfa-validation-marker-for="SelectedLocations">
     <span esfa-validation-message-for="SelectedLocations" class="govuk-error-message"></span>
     <div class="govuk-checkboxes">
         @{
+            var groupedLocations = Model.AvailableLocations.GroupByLastFilledAddressLine();
             var index = 0;
             foreach (var group in groupedLocations)
             {

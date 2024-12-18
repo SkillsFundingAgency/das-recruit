@@ -79,7 +79,9 @@ namespace Esfa.Recruit.Employer.Web.Mappings
             vm.EmployerDescription = await _vacancyClient.GetEmployerDescriptionAsync(vacancy);
             vm.EmployerName = await _vacancyClient.GetEmployerNameAsync(vacancy);
             vm.EmployerWebsiteUrl = vacancy.EmployerWebsiteUrl;
-            vm.EmployerAddressElements = Enumerable.Empty<string>();
+            vm.EmployerAddressElements = [];
+            vm.AvailableLocations = [];
+            vm.AvailableWhere = vacancy.EmployerLocationOption;
             vm.FindAnApprenticeshipUrl = _externalLinksConfiguration.FindAnApprenticeshipUrl;
             vm.IsAnonymous = vacancy.IsAnonymous;
             vm.NumberOfPositions = vacancy.NumberOfPositions?.ToString();
@@ -105,7 +107,6 @@ namespace Esfa.Recruit.Employer.Web.Mappings
                                         ? $"VAC{vacancy.VacancyReference.ToString()}"
                                         : string.Empty;
             vm.IsDisabilityConfident = vacancy.IsDisabilityConfident;
-
             vm.TransferredProviderName = vacancy.TransferInfo?.ProviderName;
             vm.TransferredOnDate = vacancy.TransferInfo?.TransferredDate.AsGdsDate();
             vm.EmployerNameOption = vacancy.EmployerNameOption;
@@ -119,6 +120,12 @@ namespace Esfa.Recruit.Employer.Web.Mappings
                     vm.MapUrl = MapImageHelper.GetEmployerLocationMapUrl(vacancy, _mapService, MapImageWidth, MapImageHeight);
 
                 vm.EmployerAddressElements = vacancy.EmployerAddressForDisplay();
+            }
+
+            if (vacancy.EmployerLocations is { Count: > 0 })
+            {
+                // TODO: what do we do with the map url here?
+                vm.AvailableLocations = vacancy.EmployerAddressesForDisplay();
             }
 
             if (vacancy.ProgrammeId != null && programme != null)

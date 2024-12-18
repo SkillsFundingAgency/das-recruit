@@ -9,6 +9,7 @@
         public const string EmployerContact = "EmployerContact";
         public const string EmployerName = "EmployerName";
         public const string DisabilityConfident = "DisabilityConfident";
+        public const string EmployerAddresses = "EmployerAddresses";
         public const string EmployerAddress = "EmployerAddress";
         public const string EmployerAddress1 = "EmployerAddress1";
         public const string EmployerAddress2 = "EmployerAddress2";
