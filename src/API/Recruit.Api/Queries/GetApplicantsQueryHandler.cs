@@ -35,7 +35,7 @@ public class GetApplicantsQueryHandler(IQueryStoreReader queryStoreReader) : IRe
 
         var applicants = FilterApplicants(request.ApplicantApplicationOutcomeFilter, vacancyApplications);
 
-        if (applicants.Count != 0 == false)
+        if (applicants.Count == 0)
         {
             return new GetApplicantsResponse { ResultCode = ResponseCode.NotFound };
         }
@@ -51,7 +51,7 @@ public class GetApplicantsQueryHandler(IQueryStoreReader queryStoreReader) : IRe
     {
         var applicants = vacancyApplications.Applications;
 
-        if (string.IsNullOrEmpty(applicantApplicationOutcomeFilter) == false)
+        if (!string.IsNullOrEmpty(applicantApplicationOutcomeFilter))
         {
             applicants = applicants
                 .Where(app => app.Status.ToString().Equals(applicantApplicationOutcomeFilter, StringComparison.InvariantCultureIgnoreCase))
