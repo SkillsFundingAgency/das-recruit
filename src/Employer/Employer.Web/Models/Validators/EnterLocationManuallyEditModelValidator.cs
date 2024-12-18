@@ -7,7 +7,7 @@ namespace Esfa.Recruit.Employer.Web.Models.Validators;
 
 public class EnterLocationManuallyEditModelValidator : AbstractValidator<EnterLocationManuallyEditModel>
 {
-    private const int MaxLineLength = 120;
+    private const int MaxLineLength = 100;
     private const int MaxPostcodeLength = 8;
     
     public EnterLocationManuallyEditModelValidator(IProfanityListProvider profanityListProvider)
