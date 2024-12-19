@@ -218,6 +218,8 @@ namespace Esfa.Recruit.Employer.Web
                 RouteNames.AddLocation_Post,
                 RouteNames.SelectAnAddress_Get,
                 RouteNames.SelectAnAddress_Post,
+                RouteNames.EnterAddressManually_Get,
+                RouteNames.EnterAddressManually_Post,
                 
                 RouteNames.EmployerName_Post, 
                 RouteNames.EmployerName_Get, 

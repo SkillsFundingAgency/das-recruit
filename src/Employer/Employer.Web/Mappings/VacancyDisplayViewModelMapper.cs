@@ -124,7 +124,6 @@ namespace Esfa.Recruit.Employer.Web.Mappings
 
             if (vacancy.EmployerLocations is { Count: > 0 })
             {
-                // TODO: what do we do with the map url here?
                 vm.AvailableLocations = vacancy.EmployerAddressesForDisplay();
             }
 

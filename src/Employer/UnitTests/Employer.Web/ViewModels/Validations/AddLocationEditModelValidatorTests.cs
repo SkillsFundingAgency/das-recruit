@@ -1,6 +1,5 @@
 ﻿using Esfa.Recruit.Employer.Web.Models.AddLocation;
 using Esfa.Recruit.Employer.Web.ViewModels.Validations;
-using NUnit.Framework;
 
 namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.Validations;
 

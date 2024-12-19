@@ -1,12 +1,10 @@
 ﻿using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using FluentAssertions;
-using Xunit;
 
 namespace Esfa.Recruit.Employer.UnitTests.Core.Entities
 {
     public class VacancyExtensionsTest
     {
-        [Fact]
+        [Test]
         public void ShouldBeAbleToSubmitIfStatusIsDraft()
         {
             var vacancy = new Vacancy
@@ -17,7 +15,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Core.Entities
             vacancy.CanSubmit.Should().BeTrue();
         }
 
-        [Fact]
+        [Test]
         public void ShouldNotBeAbleToSubmitIfStatusIsNotDraft()
         {
             var vacancy = new Vacancy
