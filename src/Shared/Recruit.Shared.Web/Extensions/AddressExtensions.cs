@@ -47,5 +47,17 @@ namespace Esfa.Recruit.Shared.Web.Extensions
                     address.AddressLine1,
                 }.First(x => !string.IsNullOrEmpty(x));
         }
+        
+        public static Address ToDomain(this GetAddressesListItem addressItem)
+        {
+            return new Address
+            {
+                AddressLine1 = addressItem?.AddressLine1,
+                AddressLine2 = addressItem?.AddressLine2AndLine3,
+                AddressLine3 = addressItem?.PostTown,
+                AddressLine4 = addressItem?.County,
+                Postcode = addressItem?.Postcode
+            };
+        }
     }
 }

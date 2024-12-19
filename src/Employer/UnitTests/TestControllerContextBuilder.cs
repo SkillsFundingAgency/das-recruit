@@ -3,17 +3,24 @@ using System.Security.Claims;
 using Esfa.Recruit.Employer.Web.Configuration;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 
 namespace Esfa.Recruit.Employer.UnitTests;
 
-public class TestControllerContextBuilder(ControllerContext controllerContext)
+public class TestControllerContextBuilder(Controller controller)
 {
     public TestUserClaimBuilder WithUser(Guid userId)
     {
-        controllerContext.HttpContext.User = new ClaimsPrincipal();
-        var builder = new TestUserClaimBuilder(controllerContext.HttpContext.User);
+        controller.ControllerContext.HttpContext.User = new ClaimsPrincipal();
+        var builder = new TestUserClaimBuilder(controller.ControllerContext.HttpContext.User);
         builder.WithClaim(EmployerRecruitClaims.IdamsUserIdClaimTypeIdentifier, userId.ToString());
         return builder;
+    }
+
+    public TestControllerContextBuilder WithTempData()
+    {
+        controller.TempData = new TempDataDictionary(controller.HttpContext, Mock.Of<ITempDataProvider>());
+        return this;
     }
 }
 
@@ -47,6 +54,6 @@ public static class ControllerExtensions
             HttpContext = new DefaultHttpContext()
         };
         
-        return new TestControllerContextBuilder(controller.ControllerContext);
+        return new TestControllerContextBuilder(controller);
     }
 }

@@ -207,12 +207,18 @@ namespace Esfa.Recruit.Employer.Web
                 RouteNames.AddExtraInformation_Post,
 
                 RouteNames.LegalEntityAgreement_SoftStop_Get,
+                
                 RouteNames.Location_Get, 
                 RouteNames.Location_Post,
                 RouteNames.MultipleLocations_Get,
                 RouteNames.MultipleLocations_Post,
                 RouteNames.AddMoreThanOneLocation_Get,
                 RouteNames.AddMoreThanOneLocation_Post,
+                RouteNames.AddLocation_Get,
+                RouteNames.AddLocation_Post,
+                RouteNames.SelectAnAddress_Get,
+                RouteNames.SelectAnAddress_Post,
+                
                 RouteNames.EmployerName_Post, 
                 RouteNames.EmployerName_Get, 
                 RouteNames.Employer_Post, 
