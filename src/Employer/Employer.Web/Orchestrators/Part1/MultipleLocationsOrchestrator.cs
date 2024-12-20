@@ -62,8 +62,14 @@ public class MultipleLocationsOrchestrator(
     {
         var employerData = await employerVacancyClient.GetEditVacancyInfoAsync(employerProfile.EmployerAccountId);
         var legalEntity = employerData.LegalEntities.First(l => l.AccountLegalEntityPublicHashedId == employerProfile.AccountLegalEntityPublicHashedId);
-        var locations = new List<Address> { legalEntity.Address.ConvertToDomainAddress() };
-        locations.AddRange(employerProfile.OtherLocations);
+        var locations = new List<Address>();
+
+        var legalAddress = legalEntity.Address.ConvertToDomainAddress();
+        if (legalAddress.IsEmpty() is false)
+        {
+            locations.Add(legalAddress);
+        };
+        locations.AddRange(employerProfile.OtherLocations.Where(x => !x.IsEmpty()));
         return locations;
     }
 
