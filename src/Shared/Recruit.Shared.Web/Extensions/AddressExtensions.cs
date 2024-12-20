@@ -31,11 +31,24 @@ namespace Esfa.Recruit.Shared.Web.Extensions
                 Postcode = address.Postcode
             };
         }
+        
+        public static bool IsEmpty(this Address address)
+        {
+            return new[]
+            {
+                address.AddressLine1,
+                address.AddressLine2,
+                address.AddressLine3,
+                address.AddressLine4,
+                address.Postcode
+            }.All(x => string.IsNullOrEmpty(x?.Trim()));
+        }
 
         public static IOrderedEnumerable<IGrouping<string, KeyValuePair<string, Address>>> GroupByLastFilledAddressLine(this List<Address> addresses)
         {
             return addresses?
                 .Select(x => new KeyValuePair<string, Address>(Selector(x), x))
+                .Where(x => !string.IsNullOrEmpty(x.Key))
                 .GroupBy(x => x.Key)
                 .OrderBy(x => x.Key);
 
@@ -45,7 +58,7 @@ namespace Esfa.Recruit.Shared.Web.Extensions
                     address.AddressLine3,
                     address.AddressLine2,
                     address.AddressLine1,
-                }.First(x => !string.IsNullOrEmpty(x));
+                }.FirstOrDefault(x => !string.IsNullOrEmpty(x?.Trim()));
         }
         
         public static Address ToDomain(this GetAddressesListItem addressItem)

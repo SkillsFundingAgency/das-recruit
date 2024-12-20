@@ -1,4 +1,6 @@
-﻿namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.AddLocation;
+﻿using System.Collections.Generic;
+
+namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.AddLocation;
 
 public class EnterLocationManuallyViewModel : AddLocationJourneyViewModel
 {
@@ -8,4 +10,11 @@ public class EnterLocationManuallyViewModel : AddLocationJourneyViewModel
     public string City { get; init; }
     public string County { get; init; }
     public string Postcode { get; init; }
+    
+    public IList<string> OrderedFieldNames => new List<string>
+    {
+        nameof(AddressLine1),
+        nameof(City),
+        nameof(Postcode)
+    };
 }

@@ -199,12 +199,17 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview
             // that used the previous single location selection page.
             if (isMultipleLocationsEnabled && viewModel.AvailableWhere.HasValue)
             {
-                viewModel.EmployerAddressSectionState = GetSectionState(viewModel, [FieldIdentifiers.EmployerAddresses], true, modelState, vm => vm.AvailableLocations);
+                viewModel.EmployerAddressSectionState = viewModel.AvailableWhere switch
+                {
+                    Recruit.Vacancies.Client.Domain.Entities.AvailableWhere.AcrossEngland => GetSectionState(viewModel, [FieldIdentifiers.EmployerAddresses], true, modelState, vm => vm.LocationInformation),
+                    _ => GetSectionState(viewModel, [FieldIdentifiers.EmployerAddresses], true, modelState, vm => vm.AvailableLocations),
+                };
             }
             else
             {
                 viewModel.EmployerAddressSectionState = GetSectionState(viewModel, [FieldIdentifiers.EmployerAddress], true, modelState, vm => vm.EmployerAddressElements);
             }
+            
             viewModel.ApplicationInstructionsSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.ApplicationInstructions }, true, modelState,vm => vm.ApplicationInstructions);
             viewModel.ApplicationMethodSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.ApplicationMethod }, true, modelState,vm => vm.ApplicationMethod);
             viewModel.ApplicationUrlSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.ApplicationUrl }, true, modelState,vm => vm.ApplicationUrl);
