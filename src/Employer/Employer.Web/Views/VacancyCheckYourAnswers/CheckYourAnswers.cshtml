@@ -384,7 +384,8 @@
                         {
                             AvailableWhere.OneLocation => "At one location",
                             AvailableWhere.MultipleLocations => "At more than one location",
-                            _ => "Across all of England"
+                            AvailableWhere.AcrossEngland => "Across all of England",
+                            _ => "At one location"
                         })
                     </dd>
                     <dd class="app-summary-list__actions">
@@ -406,7 +407,6 @@
                         </dt>
                         <dd class="app-summary-list__value">
                             
-                            
                             @switch (Model.AvailableWhere)
                             {
                                 case AvailableWhere.OneLocation:
@@ -424,9 +424,8 @@
                                     </ul>
                                     break;
                                 }
-                                default:
-                                {
-                                    // TODO: add additional information about where the apprentice will work
+                                default: {
+                                    @Model.LocationInformation
                                     break;
                                 }
                             }

@@ -28,7 +28,7 @@
             <li>provides live-in accommodation</li>
         </ul>
 
-        <form asp-route="@RouteNames.RecruitNationally_Post" asp-all-route-data="@Model.RouteDictionary">
+        <form asp-route="@RouteNames.RecruitNationally_Post" asp-all-route-data="@Model.RouteDictionary" asp-route-wizard="@Model.PageInfo.IsWizard">
             <div class="govuk-character-count" data-module="govuk-character-count" data-maxlength="500">
                 <div esfa-validation-marker-for="AdditionalInformation" class="govuk-form-group">
                     <h2 class="govuk-heading-m">
