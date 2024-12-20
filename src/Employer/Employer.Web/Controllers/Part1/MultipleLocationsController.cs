@@ -45,7 +45,7 @@ public class MultipleLocationsController : Controller
             {
                 AvailableWhere.OneLocation => throw new NotImplementedException(),
                 AvailableWhere.MultipleLocations => RedirectToRoute(RouteNames.AddMoreThanOneLocation_Get, new { model.VacancyId, model.EmployerAccountId, wizard }), 
-                AvailableWhere.AcrossEngland => throw new NotImplementedException(),
+                AvailableWhere.AcrossEngland => RedirectToRoute(RouteNames.RecruitNationally_Get, new { model.VacancyId, model.EmployerAccountId, wizard }),
                 _ => throw new NotImplementedException(),
             };
         }

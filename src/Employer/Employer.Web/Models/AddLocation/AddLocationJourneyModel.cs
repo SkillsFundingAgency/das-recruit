@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Esfa.Recruit.Employer.Web.Models.AddLocation;
 
-public class AddLocationModel : VacancyRouteModel
+public class AddLocationJourneyModel : VacancyRouteModel
 {
     [FromQuery] public MultipleLocationsJourneyOrigin Origin { get; set; }
     [FromQuery] public bool Wizard { get; set; } = true;

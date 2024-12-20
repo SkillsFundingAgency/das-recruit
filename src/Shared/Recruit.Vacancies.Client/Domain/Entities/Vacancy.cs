@@ -44,6 +44,7 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
         public Address EmployerLocation { get; set; }
         public List<Address> EmployerLocations { get; set; }
         public AvailableWhere? EmployerLocationOption { get; set; }
+        public string? EmployerLocationInformation { get; set; }
         public string EmployerName { get; set; }
         public EmployerNameOption? EmployerNameOption { get; set; }
         public List<EmployerReviewFieldIndicator> EmployerReviewFieldIndicators { get; set; }
