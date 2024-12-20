@@ -1,13 +1,10 @@
-using System;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using FluentAssertions;
-using Xunit;
 
 namespace Esfa.Recruit.UnitTests.Employer.Web.Orchestrators.CloneVacancyOrchestratorTest
 {
     public class IsNewDatesRequiredTests : CloneVacancyOrchestratorTestBase
     {
-        [Fact]
+        [Test]
         public void WhenStatusIsLiveAndDatesAreInFuture_ThenReturnFalse()
         {
             var sut = GetSut(SourceVacancy);
@@ -15,7 +12,7 @@ namespace Esfa.Recruit.UnitTests.Employer.Web.Orchestrators.CloneVacancyOrchestr
             sut.IsNewDatesRequired(vacancy).Should().BeFalse();
         }
 
-        [Fact]
+        [Test]
         public void WhenStatusIsLiveAndDatesAreInPast_ThenReturnTrue()
         {
             var sut = GetSut(SourceVacancy);

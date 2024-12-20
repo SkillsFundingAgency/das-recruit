@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using System.Threading.Tasks;
 using Esfa.Recruit.Employer.UnitTests.Employer.Web.HardMocks;
 using Esfa.Recruit.Employer.Web;
 using Esfa.Recruit.Employer.Web.Orchestrators.Part2;
@@ -9,10 +8,7 @@ using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
-using FluentAssertions;
 using Microsoft.Extensions.Logging;
-using Moq;
-using Xunit;
 
 namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part2
 {
@@ -20,12 +16,13 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part2
     {
         private ConsiderationsOrchestratorTestsFixture _fixture;
 
-        public ConsiderationsOrchestratorTests()
+        [SetUp]
+        public void Setup()
         {
             _fixture = new ConsiderationsOrchestratorTestsFixture();
         }
 
-        [Fact]
+        [Test]
         public async Task WhenUpdated__ShouldCallUpdateDraftVacancy()
         {
             _fixture
@@ -44,7 +41,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part2
             _fixture.VerifyUpdateDraftVacancyAsyncIsCalled();
         }
 
-        [Fact]
+        [Test]
         public async Task WhenThingsToConsiderIsUpdated_ShouldFlagThingsToConsiderFieldIndicator()
         {
             _fixture

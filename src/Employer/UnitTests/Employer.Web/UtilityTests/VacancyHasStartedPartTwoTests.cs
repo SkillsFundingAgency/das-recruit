@@ -2,9 +2,6 @@
 using Esfa.Recruit.Employer.Web;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
-using FluentAssertions;
-using Moq;
-using Xunit;
 
 namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.UtilityTests
 {
@@ -15,7 +12,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.UtilityTests
         {
             _utility = new Utility(Mock.Of<IRecruitVacancyClient>());
         }
-        [Fact]
+        [Test]
         public void ShouldReturnTrueIfAnyPartTwoFieldsAreCompleted()
         {
             
@@ -32,7 +29,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.UtilityTests
             _utility.VacancyHasStartedPartTwo(new Vacancy { Description = "some value" }).Should().BeTrue();
         }
 
-        [Fact]
+        [Test]
         public void ShouldReturnFalseIfPartTwoNotStarted()
         {
             _utility.VacancyHasStartedPartTwo(new Vacancy()).Should().BeFalse();

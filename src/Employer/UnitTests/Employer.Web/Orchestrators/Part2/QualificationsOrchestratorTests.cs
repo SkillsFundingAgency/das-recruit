@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Esfa.Recruit.Employer.UnitTests.Employer.Web.HardMocks;
 using Esfa.Recruit.Employer.Web;
 using Esfa.Recruit.Employer.Web.Orchestrators.Part2;
@@ -12,17 +11,14 @@ using Esfa.Recruit.Shared.Web.ViewModels.Qualifications;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
-using FluentAssertions;
 using Microsoft.Extensions.Logging;
-using Moq;
 using Newtonsoft.Json;
-using Xunit;
 
 namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part2
 {
     public class QualificationsOrchestratorTests
     {
-        [Fact]
+        [Test]
         public async Task WhenQualificationIsAdded_ShouldAddQualificationToDraftVacancy()
         {
             var fixture = new QualificationsOrchestratorTestsFixture();
@@ -49,7 +45,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part2
             fixture.VerifyAddQualificationToDraftVacancy(2, qualification);
         }
 
-        [Fact]
+        [Test]
         public async Task WhenQualificationIsAdded_ShouldCallUpdateDraftVacancyAsync()
         {
             var fixture = new QualificationsOrchestratorTestsFixture();
@@ -76,7 +72,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part2
             fixture.VerifyUpdateDraftVacancyAsyncIsCalled();
         }
 
-        [Fact]
+        [Test]
         public async Task WhenQualificationIsAdded_ShouldFlagQualificationsFieldIndicator()
         {
             var fixture = new QualificationsOrchestratorTestsFixture();
@@ -103,7 +99,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part2
             fixture.VerifyEmployerReviewFieldIndicators(FieldIdentifiers.Qualifications, true);
         }
 
-        [Fact]
+        [Test]
         public async Task WhenQualificationIsUpdated_ShouldUpdateQualificationForDraftVacancy()
         {
             var fixture = new QualificationsOrchestratorTestsFixture();
@@ -133,7 +129,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part2
             fixture.VerifyUpdateQualificationForDraftVacancy(qualification);
         }
 
-        [Fact]
+        [Test]
         public async Task WhenQualificationIsUpdated_ShouldCallUpdateDraftVacancyAsync()
         {
             var fixture = new QualificationsOrchestratorTestsFixture();
@@ -163,7 +159,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part2
             fixture.VerifyUpdateDraftVacancyAsyncIsCalled();
         }
 
-        [Fact]
+        [Test]
         public async Task WhenQualificationIsUpdated_ShouldFlagQualificationsFieldIndicator()
         {
             var fixture = new QualificationsOrchestratorTestsFixture();
@@ -193,7 +189,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part2
             fixture.VerifyEmployerReviewFieldIndicators(FieldIdentifiers.Qualifications, true);
         }
 
-        [Fact]
+        [Test]
         public async Task WhenQualificationIsDeleted_ShouldRemoveQualificationFromDraftVacancy()
         {
             var fixture = new QualificationsOrchestratorTestsFixture();
@@ -222,7 +218,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part2
             fixture.VerifyRemoveQualificationFromDraftVacancy(qualification);
         }
 
-        [Fact]
+        [Test]
         public async Task WhenQualificationIsDeleted_ShouldCallUpdateDraftVacancyAsync()
         {
             var fixture = new QualificationsOrchestratorTestsFixture();
@@ -243,7 +239,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part2
             fixture.VerifyUpdateDraftVacancyAsyncIsCalled();
         }
 
-        [Fact]
+        [Test]
         public async Task WhenQualificationIsDeleted_ShouldFlagQualificationsFieldIndicator()
         {
             var fixture = new QualificationsOrchestratorTestsFixture();
@@ -264,12 +260,11 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part2
             fixture.VerifyEmployerReviewFieldIndicators(FieldIdentifiers.Qualifications, true);
         }
 
-        [Theory]
-        [InlineData(0,"GCSE",null)]
-        [InlineData(1,"A Level",null)]
-        [InlineData(2,"BTEC",null)]
-        [InlineData(3,"Other","AS Level or equivalent")]
-        [InlineData(4,"Other","NVQ")]
+        [TestCase(0,"GCSE",null)]
+        [TestCase(1,"A Level",null)]
+        [TestCase(2,"BTEC",null)]
+        [TestCase(3,"Other","AS Level or equivalent")]
+        [TestCase(4,"Other","NVQ")]
         public async Task WhenCallingGetQualificationViewModelForEditAsync_ThenMappedForV2(int index, string expectedQualificationName, string? expectedOtherQualificationName)
         {
             var fixture = new QualificationsOrchestratorTestsFixture();

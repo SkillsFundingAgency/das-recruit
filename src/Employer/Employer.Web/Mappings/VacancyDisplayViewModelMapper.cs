@@ -82,6 +82,7 @@ namespace Esfa.Recruit.Employer.Web.Mappings
             vm.EmployerAddressElements = [];
             vm.AvailableLocations = [];
             vm.AvailableWhere = vacancy.EmployerLocationOption;
+            vm.LocationInformation = vacancy.EmployerLocationInformation;
             vm.FindAnApprenticeshipUrl = _externalLinksConfiguration.FindAnApprenticeshipUrl;
             vm.IsAnonymous = vacancy.IsAnonymous;
             vm.NumberOfPositions = vacancy.NumberOfPositions?.ToString();
@@ -124,7 +125,6 @@ namespace Esfa.Recruit.Employer.Web.Mappings
 
             if (vacancy.EmployerLocations is { Count: > 0 })
             {
-                // TODO: what do we do with the map url here?
                 vm.AvailableLocations = vacancy.EmployerAddressesForDisplay();
             }
 
