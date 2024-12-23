@@ -1,22 +1,16 @@
-﻿using System;
-using Esfa.Recruit.Employer.Web;
-using Esfa.Recruit.Employer.Web.Configuration;
+﻿using Esfa.Recruit.Employer.Web;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Exceptions;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
-using FluentAssertions;
-using Moq;
-using Xunit;
 
 namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.UtilityTests
 {
     public class CheckRouteIsValidForVacancyTests
     {
-        [Theory]
-        [InlineData(RouteNames.Title_Get, false)]
-        [InlineData(RouteNames.Title_Post, false)]
-        [InlineData("any other route", true)]
+        [TestCase(RouteNames.Title_Get, false)]
+        [TestCase(RouteNames.Title_Post, false)]
+        [TestCase("any other route", true)]
         public void ShouldRedirectToEmployerName(string route, bool shouldRedirect)
         {
             var vacancy = new Vacancy
@@ -28,17 +22,16 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.UtilityTests
             CheckRouteIsValidForVacancyTest(vacancy, route, shouldRedirect, RouteNames.EmployerName_Get);
         }
 
-        [Theory]
-        [InlineData(RouteNames.Title_Get, false)]
-        [InlineData(RouteNames.Title_Post, false)]
-        [InlineData(RouteNames.Training_Get, false)]
-        [InlineData(RouteNames.Training_Post, false)]
-        [InlineData(RouteNames.Training_Confirm_Get, false)]
-        [InlineData(RouteNames.Training_Confirm_Post, false)]
-        [InlineData(RouteNames.Training_First_Time_Get, false)]
-        [InlineData(RouteNames.Training_First_Time_Post, false)]
-        [InlineData(RouteNames.Training_Help_Get, false)]
-        [InlineData("any other route", true)]
+        [TestCase(RouteNames.Title_Get, false)]
+        [TestCase(RouteNames.Title_Post, false)]
+        [TestCase(RouteNames.Training_Get, false)]
+        [TestCase(RouteNames.Training_Post, false)]
+        [TestCase(RouteNames.Training_Confirm_Get, false)]
+        [TestCase(RouteNames.Training_Confirm_Post, false)]
+        [TestCase(RouteNames.Training_First_Time_Get, false)]
+        [TestCase(RouteNames.Training_First_Time_Post, false)]
+        [TestCase(RouteNames.Training_Help_Get, false)]
+        [TestCase("any other route", true)]
         public void ShouldRedirectToTraining(string route, bool shouldRedirect)
         {
             var vacancy = new Vacancy
@@ -51,23 +44,22 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.UtilityTests
             CheckRouteIsValidForVacancyTest(vacancy, route, shouldRedirect, RouteNames.Training_Get);
         }
 
-        [Theory]
-        [InlineData(RouteNames.Title_Get, false)]
-        [InlineData(RouteNames.Title_Post, false)]
-        [InlineData(RouteNames.Training_Get, false)]
-        [InlineData(RouteNames.Training_Post, false)]
-        [InlineData(RouteNames.Training_Confirm_Get, false)]
-        [InlineData(RouteNames.Training_Confirm_Post, false)]
-        [InlineData(RouteNames.Training_First_Time_Get, false)]
-        [InlineData(RouteNames.Training_First_Time_Post, false)]
-        [InlineData(RouteNames.Training_Help_Get, false)]
-        [InlineData(RouteNames.TrainingProvider_Select_Get, false)]
-        [InlineData(RouteNames.TrainingProvider_Select_Post, false)]
-        [InlineData(RouteNames.TrainingProvider_Confirm_Get, false)]
-        [InlineData(RouteNames.TrainingProvider_Confirm_Post, false)]
-        [InlineData(RouteNames.NumberOfPositions_Get, false)]
-        [InlineData(RouteNames.NumberOfPositions_Post, false)]
-        [InlineData("any other route", true)]
+        [TestCase(RouteNames.Title_Get, false)]
+        [TestCase(RouteNames.Title_Post, false)]
+        [TestCase(RouteNames.Training_Get, false)]
+        [TestCase(RouteNames.Training_Post, false)]
+        [TestCase(RouteNames.Training_Confirm_Get, false)]
+        [TestCase(RouteNames.Training_Confirm_Post, false)]
+        [TestCase(RouteNames.Training_First_Time_Get, false)]
+        [TestCase(RouteNames.Training_First_Time_Post, false)]
+        [TestCase(RouteNames.Training_Help_Get, false)]
+        [TestCase(RouteNames.TrainingProvider_Select_Get, false)]
+        [TestCase(RouteNames.TrainingProvider_Select_Post, false)]
+        [TestCase(RouteNames.TrainingProvider_Confirm_Get, false)]
+        [TestCase(RouteNames.TrainingProvider_Confirm_Post, false)]
+        [TestCase(RouteNames.NumberOfPositions_Get, false)]
+        [TestCase(RouteNames.NumberOfPositions_Post, false)]
+        [TestCase("any other route", true)]
         public void And_No_NumberOfPositions_ShouldRedirectToEmployer(string route, bool shouldRedirect)
         {
             var vacancy = new Vacancy
@@ -83,23 +75,22 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.UtilityTests
             CheckRouteIsValidForVacancyTest(vacancy, route, shouldRedirect, RouteNames.Employer_Get);
         }
 
-        [Theory]
-        [InlineData(RouteNames.Title_Get, false)]
-        [InlineData(RouteNames.Title_Post, false)]
-        [InlineData(RouteNames.Training_Get, false)]
-        [InlineData(RouteNames.Training_Post, false)]
-        [InlineData(RouteNames.Training_Confirm_Get, false)]
-        [InlineData(RouteNames.Training_Confirm_Post, false)]
-        [InlineData(RouteNames.Training_First_Time_Get, false)]
-        [InlineData(RouteNames.Training_First_Time_Post, false)]
-        [InlineData(RouteNames.Training_Help_Get, false)]
-        [InlineData(RouteNames.NumberOfPositions_Get, false)]
-        [InlineData(RouteNames.NumberOfPositions_Post, false)]
-        [InlineData(RouteNames.Employer_Get, false)]
-        [InlineData(RouteNames.Employer_Post, false)]
-        [InlineData(RouteNames.SetCompetitivePayRate_Get, false)]
-        [InlineData(RouteNames.SetCompetitivePayRate_Post, false)]
-        [InlineData("any other route", true)]
+        [TestCase(RouteNames.Title_Get, false)]
+        [TestCase(RouteNames.Title_Post, false)]
+        [TestCase(RouteNames.Training_Get, false)]
+        [TestCase(RouteNames.Training_Post, false)]
+        [TestCase(RouteNames.Training_Confirm_Get, false)]
+        [TestCase(RouteNames.Training_Confirm_Post, false)]
+        [TestCase(RouteNames.Training_First_Time_Get, false)]
+        [TestCase(RouteNames.Training_First_Time_Post, false)]
+        [TestCase(RouteNames.Training_Help_Get, false)]
+        [TestCase(RouteNames.NumberOfPositions_Get, false)]
+        [TestCase(RouteNames.NumberOfPositions_Post, false)]
+        [TestCase(RouteNames.Employer_Get, false)]
+        [TestCase(RouteNames.Employer_Post, false)]
+        [TestCase(RouteNames.SetCompetitivePayRate_Get, false)]
+        [TestCase(RouteNames.SetCompetitivePayRate_Post, false)]
+        [TestCase("any other route", true)]
         public void And_Has_NumberOfPositions_ShouldRedirectToEmployer(string route, bool shouldRedirect)
         {
             var vacancy = new Vacancy
@@ -114,40 +105,39 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.UtilityTests
             CheckRouteIsValidForVacancyTest(vacancy, route, shouldRedirect, RouteNames.Employer_Get);
         }
 
-        [Theory]
-        [InlineData(RouteNames.ShortDescription_Get, false, true)]
-        [InlineData(RouteNames.ShortDescription_Post, false, true)]
-        [InlineData(RouteNames.VacancyDescription_Index_Get, false, true)]
-        [InlineData(RouteNames.VacancyDescription_Index_Post, false, true)]
-        [InlineData(RouteNames.Dates_Post, false, true)]
-        [InlineData(RouteNames.Dates_Get, false, true)]
-        [InlineData(RouteNames.Duration_Post, false, true)]
-        [InlineData(RouteNames.Duration_Get, false, true)]
-        [InlineData(RouteNames.Wage_Post, false, true)]
-        [InlineData(RouteNames.Wage_Get, false, true)]
-        [InlineData(RouteNames.Skills_Post, false, true)]
-        [InlineData(RouteNames.Skills_Get, false, true)]
-        [InlineData(RouteNames.Qualification_Add_Post, false, true)]
-        [InlineData(RouteNames.Qualification_Delete_Post, false, true)]
-        [InlineData(RouteNames.Qualification_Edit_Post, false, true)]
-        [InlineData(RouteNames.Qualification_Edit_Get, false, true)]
-        [InlineData(RouteNames.Qualification_Add_Get, false, true)]
-        [InlineData(RouteNames.Qualifications_Get, false, true)]
-        [InlineData(RouteNames.Considerations_Post, false, true)]
-        [InlineData(RouteNames.Considerations_Get, false, true)]
-        [InlineData(RouteNames.EmployerName_Post, false, true)]
-        [InlineData(RouteNames.EmployerName_Get, false, true)]
-        [InlineData(RouteNames.AboutEmployer_Post, false, true)]
-        [InlineData(RouteNames.AboutEmployer_Get, false, true)]
-        [InlineData(RouteNames.EmployerContactDetails_Post, false, true)]
-        [InlineData(RouteNames.EmployerContactDetails_Get, false, true)]
-        [InlineData(RouteNames.ApplicationProcess_Post, false, true)]
-        [InlineData(RouteNames.ApplicationProcess_Get, false, true)]
-        [InlineData(RouteNames.AdditionalQuestions_Get, false, true)]
-        [InlineData(RouteNames.AdditionalQuestions_Post, false, true)]
-        [InlineData(RouteNames.MultipleLocations_Get, false, true)]
-        [InlineData(RouteNames.MultipleLocations_Post, false, true)]
-        [InlineData("any other route", true)]
+        [TestCase(RouteNames.ShortDescription_Get, false, true)]
+        [TestCase(RouteNames.ShortDescription_Post, false, true)]
+        [TestCase(RouteNames.VacancyDescription_Index_Get, false, true)]
+        [TestCase(RouteNames.VacancyDescription_Index_Post, false, true)]
+        [TestCase(RouteNames.Dates_Post, false, true)]
+        [TestCase(RouteNames.Dates_Get, false, true)]
+        [TestCase(RouteNames.Duration_Post, false, true)]
+        [TestCase(RouteNames.Duration_Get, false, true)]
+        [TestCase(RouteNames.Wage_Post, false, true)]
+        [TestCase(RouteNames.Wage_Get, false, true)]
+        [TestCase(RouteNames.Skills_Post, false, true)]
+        [TestCase(RouteNames.Skills_Get, false, true)]
+        [TestCase(RouteNames.Qualification_Add_Post, false, true)]
+        [TestCase(RouteNames.Qualification_Delete_Post, false, true)]
+        [TestCase(RouteNames.Qualification_Edit_Post, false, true)]
+        [TestCase(RouteNames.Qualification_Edit_Get, false, true)]
+        [TestCase(RouteNames.Qualification_Add_Get, false, true)]
+        [TestCase(RouteNames.Qualifications_Get, false, true)]
+        [TestCase(RouteNames.Considerations_Post, false, true)]
+        [TestCase(RouteNames.Considerations_Get, false, true)]
+        [TestCase(RouteNames.EmployerName_Post, false, true)]
+        [TestCase(RouteNames.EmployerName_Get, false, true)]
+        [TestCase(RouteNames.AboutEmployer_Post, false, true)]
+        [TestCase(RouteNames.AboutEmployer_Get, false, true)]
+        [TestCase(RouteNames.EmployerContactDetails_Post, false, true)]
+        [TestCase(RouteNames.EmployerContactDetails_Get, false, true)]
+        [TestCase(RouteNames.ApplicationProcess_Post, false, true)]
+        [TestCase(RouteNames.ApplicationProcess_Get, false, true)]
+        [TestCase(RouteNames.AdditionalQuestions_Get, false, true)]
+        [TestCase(RouteNames.AdditionalQuestions_Post, false, true)]
+        [TestCase(RouteNames.MultipleLocations_Get, false, true)]
+        [TestCase(RouteNames.MultipleLocations_Post, false, true)]
+        [TestCase("any other route", true)]
         public void ShouldRedirectEmployer(string route, bool shouldRedirect, bool enableTaskList = false)
         {
             var vacancy = new Vacancy {
@@ -162,28 +152,27 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.UtilityTests
             CheckRouteIsValidForVacancyTest(vacancy, route, shouldRedirect, RouteNames.Employer_Get, enableTaskList);
         }
 
-        [Theory]
-        [InlineData(RouteNames.Title_Get, false)]
-        [InlineData(RouteNames.Title_Post, false)]
-        [InlineData(RouteNames.Training_Get, false)]
-        [InlineData(RouteNames.Training_Post, false)]
-        [InlineData(RouteNames.Training_Confirm_Get, false)]
-        [InlineData(RouteNames.Training_Confirm_Post, false)]
-        [InlineData(RouteNames.Training_First_Time_Get, false)]
-        [InlineData(RouteNames.Training_First_Time_Post, false)]
-        [InlineData(RouteNames.Training_Help_Get, false)]
-        [InlineData(RouteNames.NumberOfPositions_Get, false)]
-        [InlineData(RouteNames.NumberOfPositions_Post, false)]
-        [InlineData(RouteNames.Employer_Get, false)]
-        [InlineData(RouteNames.Employer_Post, false)]
-        [InlineData(RouteNames.EmployerName_Get, false)]
-        [InlineData(RouteNames.EmployerName_Post, false)]
-        [InlineData(RouteNames.Location_Get, false)]
-        [InlineData(RouteNames.Location_Post, false)]
-        [InlineData(RouteNames.MultipleLocations_Get, false)]
-        [InlineData(RouteNames.MultipleLocations_Post, false)]
-        [InlineData(RouteNames.LegalEntityAgreement_SoftStop_Get, false)]
-        [InlineData("any other route", true)]
+        [TestCase(RouteNames.Title_Get, false)]
+        [TestCase(RouteNames.Title_Post, false)]
+        [TestCase(RouteNames.Training_Get, false)]
+        [TestCase(RouteNames.Training_Post, false)]
+        [TestCase(RouteNames.Training_Confirm_Get, false)]
+        [TestCase(RouteNames.Training_Confirm_Post, false)]
+        [TestCase(RouteNames.Training_First_Time_Get, false)]
+        [TestCase(RouteNames.Training_First_Time_Post, false)]
+        [TestCase(RouteNames.Training_Help_Get, false)]
+        [TestCase(RouteNames.NumberOfPositions_Get, false)]
+        [TestCase(RouteNames.NumberOfPositions_Post, false)]
+        [TestCase(RouteNames.Employer_Get, false)]
+        [TestCase(RouteNames.Employer_Post, false)]
+        [TestCase(RouteNames.EmployerName_Get, false)]
+        [TestCase(RouteNames.EmployerName_Post, false)]
+        [TestCase(RouteNames.Location_Get, false)]
+        [TestCase(RouteNames.Location_Post, false)]
+        [TestCase(RouteNames.MultipleLocations_Get, false)]
+        [TestCase(RouteNames.MultipleLocations_Post, false)]
+        [TestCase(RouteNames.LegalEntityAgreement_SoftStop_Get, false)]
+        [TestCase("any other route", true)]
         public void ShouldRedirectToDates(string route, bool shouldRedirect)
         {
             var vacancy = new Vacancy
@@ -201,30 +190,29 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.UtilityTests
             CheckRouteIsValidForVacancyTest(vacancy, route, shouldRedirect, RouteNames.Dates_Get);
         }
 
-        [Theory]
-        [InlineData(RouteNames.Title_Get, false)]
-        [InlineData(RouteNames.Title_Post, false)]
-        [InlineData(RouteNames.Training_Get, false)]
-        [InlineData(RouteNames.Training_Post, false)]
-        [InlineData(RouteNames.Training_Confirm_Get, false)]
-        [InlineData(RouteNames.Training_Confirm_Post, false)]
-        [InlineData(RouteNames.Training_First_Time_Get, false)]
-        [InlineData(RouteNames.Training_First_Time_Post, false)]
-        [InlineData(RouteNames.Training_Help_Get, false)]
-        [InlineData(RouteNames.NumberOfPositions_Get, false)]
-        [InlineData(RouteNames.NumberOfPositions_Post, false)]
-        [InlineData(RouteNames.Employer_Get, false)]
-        [InlineData(RouteNames.Employer_Post, false)]
-        [InlineData(RouteNames.EmployerName_Get, false)]
-        [InlineData(RouteNames.EmployerName_Post, false)]
-        [InlineData(RouteNames.Location_Get, false)]
-        [InlineData(RouteNames.Location_Post, false)]
-        [InlineData(RouteNames.MultipleLocations_Get, false)]
-        [InlineData(RouteNames.MultipleLocations_Post, false)]
-        [InlineData(RouteNames.LegalEntityAgreement_SoftStop_Get, false)]
-        [InlineData(RouteNames.Duration_Get, false)]
-        [InlineData(RouteNames.Duration_Post, false)]
-        [InlineData("any other route", true)]
+        [TestCase(RouteNames.Title_Get, false)]
+        [TestCase(RouteNames.Title_Post, false)]
+        [TestCase(RouteNames.Training_Get, false)]
+        [TestCase(RouteNames.Training_Post, false)]
+        [TestCase(RouteNames.Training_Confirm_Get, false)]
+        [TestCase(RouteNames.Training_Confirm_Post, false)]
+        [TestCase(RouteNames.Training_First_Time_Get, false)]
+        [TestCase(RouteNames.Training_First_Time_Post, false)]
+        [TestCase(RouteNames.Training_Help_Get, false)]
+        [TestCase(RouteNames.NumberOfPositions_Get, false)]
+        [TestCase(RouteNames.NumberOfPositions_Post, false)]
+        [TestCase(RouteNames.Employer_Get, false)]
+        [TestCase(RouteNames.Employer_Post, false)]
+        [TestCase(RouteNames.EmployerName_Get, false)]
+        [TestCase(RouteNames.EmployerName_Post, false)]
+        [TestCase(RouteNames.Location_Get, false)]
+        [TestCase(RouteNames.Location_Post, false)]
+        [TestCase(RouteNames.MultipleLocations_Get, false)]
+        [TestCase(RouteNames.MultipleLocations_Post, false)]
+        [TestCase(RouteNames.LegalEntityAgreement_SoftStop_Get, false)]
+        [TestCase(RouteNames.Duration_Get, false)]
+        [TestCase(RouteNames.Duration_Post, false)]
+        [TestCase("any other route", true)]
         public void ShouldRedirectToDuration(string route, bool shouldRedirect)
         {
             var vacancy = new Vacancy
@@ -243,32 +231,31 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.UtilityTests
             CheckRouteIsValidForVacancyTest(vacancy, route, shouldRedirect, RouteNames.Duration_Get);
         }
 
-        [Theory]
-        [InlineData(RouteNames.Title_Get, false)]
-        [InlineData(RouteNames.Title_Post, false)]
-        [InlineData(RouteNames.Training_Get, false)]
-        [InlineData(RouteNames.Training_Post, false)]
-        [InlineData(RouteNames.Training_Confirm_Get, false)]
-        [InlineData(RouteNames.Training_Confirm_Post, false)]
-        [InlineData(RouteNames.Training_First_Time_Get, false)]
-        [InlineData(RouteNames.Training_First_Time_Post, false)]
-        [InlineData(RouteNames.Training_Help_Get, false)]
-        [InlineData(RouteNames.NumberOfPositions_Get, false)]
-        [InlineData(RouteNames.NumberOfPositions_Post, false)]
-        [InlineData(RouteNames.Employer_Get, false)]
-        [InlineData(RouteNames.Employer_Post, false)]
-        [InlineData(RouteNames.EmployerName_Get, false)]
-        [InlineData(RouteNames.EmployerName_Post, false)]
-        [InlineData(RouteNames.Location_Get, false)]
-        [InlineData(RouteNames.Location_Post, false)]
-        [InlineData(RouteNames.MultipleLocations_Get, false)]
-        [InlineData(RouteNames.MultipleLocations_Post, false)]
-        [InlineData(RouteNames.LegalEntityAgreement_SoftStop_Get, false)]
-        [InlineData(RouteNames.Duration_Get, false)]
-        [InlineData(RouteNames.Duration_Post, false)]
-        [InlineData(RouteNames.Wage_Get, false)]
-        [InlineData(RouteNames.Wage_Post, false)]
-        [InlineData("any other route", true)]
+        [TestCase(RouteNames.Title_Get, false)]
+        [TestCase(RouteNames.Title_Post, false)]
+        [TestCase(RouteNames.Training_Get, false)]
+        [TestCase(RouteNames.Training_Post, false)]
+        [TestCase(RouteNames.Training_Confirm_Get, false)]
+        [TestCase(RouteNames.Training_Confirm_Post, false)]
+        [TestCase(RouteNames.Training_First_Time_Get, false)]
+        [TestCase(RouteNames.Training_First_Time_Post, false)]
+        [TestCase(RouteNames.Training_Help_Get, false)]
+        [TestCase(RouteNames.NumberOfPositions_Get, false)]
+        [TestCase(RouteNames.NumberOfPositions_Post, false)]
+        [TestCase(RouteNames.Employer_Get, false)]
+        [TestCase(RouteNames.Employer_Post, false)]
+        [TestCase(RouteNames.EmployerName_Get, false)]
+        [TestCase(RouteNames.EmployerName_Post, false)]
+        [TestCase(RouteNames.Location_Get, false)]
+        [TestCase(RouteNames.Location_Post, false)]
+        [TestCase(RouteNames.MultipleLocations_Get, false)]
+        [TestCase(RouteNames.MultipleLocations_Post, false)]
+        [TestCase(RouteNames.LegalEntityAgreement_SoftStop_Get, false)]
+        [TestCase(RouteNames.Duration_Get, false)]
+        [TestCase(RouteNames.Duration_Post, false)]
+        [TestCase(RouteNames.Wage_Get, false)]
+        [TestCase(RouteNames.Wage_Post, false)]
+        [TestCase("any other route", true)]
         public void ShouldRedirectToWage(string route, bool shouldRedirect)
         {
             var vacancy = new Vacancy
@@ -288,8 +275,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.UtilityTests
             CheckRouteIsValidForVacancyTest(vacancy, route, shouldRedirect, RouteNames.Wage_Get);
         }
 
-        [Theory]
-        [InlineData("any other route", false)]
+        [TestCase("any other route", false)]
         public void ShouldNotRedirect(string route, bool shouldRedirect)
         {
             var vacancy = new Vacancy
@@ -313,7 +299,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.UtilityTests
             CheckRouteIsValidForVacancyTest(vacancy, route, shouldRedirect, null);
         }
 
-        [Fact]
+        [Test]
         public void ShouldRedirectToEmployerGet()
         {
             var vacancy = new Vacancy
@@ -331,7 +317,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.UtilityTests
             CheckRouteIsValidForVacancyTest(vacancy, RouteNames.Employer_Get, false, null);
         }
 
-        [Fact]
+        [Test]
         public void ShouldRedirectToEmployerNameGet()
         {
             var vacancy = new Vacancy
@@ -349,7 +335,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.UtilityTests
             CheckRouteIsValidForVacancyTest(vacancy, RouteNames.EmployerName_Get, false, null);
         }
 
-        [Fact]
+        [Test]
         public void ShouldRedirectToLocationGet()
         {
             var vacancy = new Vacancy
@@ -367,7 +353,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.UtilityTests
             CheckRouteIsValidForVacancyTest(vacancy, RouteNames.Location_Get, false, null);
         }
 
-        [Fact]
+        [Test]
         public void ShouldShowTaskList()
         {
             var vacancy = new Vacancy
@@ -379,7 +365,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.UtilityTests
             CheckRouteIsValidForVacancyTest(vacancy, RouteNames.EmployerTaskListGet, false, null, true);
         }
         
-        [Fact]
+        [Test]
         public void ShouldShowCheckYourAnswers()
         {
             var vacancy = new Vacancy

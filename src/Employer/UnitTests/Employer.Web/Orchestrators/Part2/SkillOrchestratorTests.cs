@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Esfa.Recruit.Employer.UnitTests.Employer.Web.HardMocks;
 using Esfa.Recruit.Employer.Web;
 using Esfa.Recruit.Employer.Web.Orchestrators.Part2;
@@ -11,16 +10,13 @@ using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
-using FluentAssertions;
 using Microsoft.Extensions.Logging;
-using Moq;
-using Xunit;
 
 namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part2
 {
     public class SkillOrchestratorTests
     {
-        [Fact]
+        [Test]
         public async Task WhenNoSkillsSaved_ShouldReturnListOfAllBasicSkillsUnchecked()
         {
             var fixture = new SkillsOrchestratorTestsFixture();
@@ -38,9 +34,8 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part2
             fixture.VerifyAllBasicSkillsAreUnchecked(skillsViewModel);
         }
 
-        [Theory]
-        [InlineData(new string[] { "Logical" }, 1)]
-        [InlineData(new string[] { "Logical", "Patience" }, 2)]
+        [TestCase(new string[] { "Logical" }, 1)]
+        [TestCase(new string[] { "Logical", "Patience" }, 2)]
         public async Task WhenBaseSkillSaved_ShouldReturnListOfAllBasicSkillsWithSkillsSelected(string[] selectedSkills, int selectedCount)
         {
             var fixture = new SkillsOrchestratorTestsFixture();
@@ -59,7 +54,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part2
             fixture.VerifySelectedSkillsCount(skillsViewModel, selectedCount);
         }
 
-        [Fact]
+        [Test]
         public async Task WhenCustomSkillHasBeenSaved_ShouldReturnCustomSkillsSelectedInLastItemInSecondColumn()
         {
             var fixture = new SkillsOrchestratorTestsFixture();
@@ -80,7 +75,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part2
             fixture.VerifyColumn2CheckboxesItemSelected(skillsViewModel, customSkill, 8);
         }
 
-        [Fact]
+        [Test]
         public async Task WhenMultipleCustomSkillsSaved_ShouldReturnTheCustomSkillsInAlternateColumnsStaringWithColumn2()
         {
             var fixture = new SkillsOrchestratorTestsFixture();
@@ -106,7 +101,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part2
             fixture.VerifyColumn2CheckboxesItemSelected(skillsViewModel, customSkill3, 9);
         }
 
-        [Fact]
+        [Test]
         public async Task WhenCustomDraftSkillHasBeenAdded_ShouldBeAddedToColumn2()
         {
             var fixture = new SkillsOrchestratorTestsFixture();
@@ -127,7 +122,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part2
             fixture.VerifyColumn2CheckboxesItemSelected(skillsViewModel, draftSkill, 8);
         }
 
-        [Fact]
+        [Test]
         public async Task WhenCustomeDraftSkillsAdded_ShouldBeAddedToAlternateColumnsStartingWithColumn2()
         {
             var fixture = new SkillsOrchestratorTestsFixture();
@@ -154,7 +149,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part2
             fixture.VerifyColumn2CheckboxesItemSelected(skillsViewModel, draftSkill3, 9);
         }
 
-        [Fact]
+        [Test]
         public async Task WhenCustomDraftSkillsAddedAndBaseSkillSelected_ShouldBeAddedToAlternateColumnsStartingWithColumn2()
         {
             var fixture = new SkillsOrchestratorTestsFixture();
@@ -181,7 +176,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part2
             fixture.VerifyColumn2CheckboxesItemSelected(skillsViewModel, draftSkill3, 9);
         }
         
-        [Fact]
+        [Test]
         public async Task WhenCustomDraftSkillsHaveBeenAdded_ShouldBeOrderedByTheirPrefix()
         {
             var fixture = new SkillsOrchestratorTestsFixture();
@@ -208,11 +203,10 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part2
             fixture.VerifyColumn2CheckboxesItemSelected(skillsViewModel, draftSkill3, 9);
         }
 
-        [Theory]
-        [InlineData(new string[] { }, new string[] { }, false)]
-        [InlineData(new string[] { }, new string[] { "Organisation skills" }, true)]
-        [InlineData(new string[] { "Organisation skills" }, new string[] { "Organisation skills" }, false)]
-        [InlineData(new string[] { "Organisation skills" }, new string[] { }, true)]
+        [TestCase(new string[] { }, new string[] { }, false)]
+        [TestCase(new string[] { }, new string[] { "Organisation skills" }, true)]
+        [TestCase(new string[] { "Organisation skills" }, new string[] { "Organisation skills" }, false)]
+        [TestCase(new string[] { "Organisation skills" }, new string[] { }, true)]
         public async Task WhenSkillsAreUpdated_ShouldFlagSkillsFieldIndicator(string[] currentlySelectedSkills, string[] newSelectedSkills, bool fieldIndicatorSet)
         {
             var fixture = new SkillsOrchestratorTestsFixture();
@@ -238,11 +232,10 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part2
             fixture.VerifyEmployerReviewFieldIndicators(FieldIdentifiers.Skills, fieldIndicatorSet);
         }
 
-        [Theory]
-        [InlineData(new string[] { }, new string[] { })]
-        [InlineData(new string[] { }, new string[] { "Organisation skills" })]
-        [InlineData(new string[] { "Organisation skills" }, new string[] { "Organisation skills" })]
-        [InlineData(new string[] { "Organisation skills" }, new string[] { })]
+        [TestCase(new string[] { }, new string[] { })]
+        [TestCase(new string[] { }, new string[] { "Organisation skills" })]
+        [TestCase(new string[] { "Organisation skills" }, new string[] { "Organisation skills" })]
+        [TestCase(new string[] { "Organisation skills" }, new string[] { })]
         public async Task WhenSkillsAreUpdated_ShouldCallUpdateDraftVacancyAsync(string[] currentlySelectedSkills, string[] newSelectedSkills)
         {
             var fixture = new SkillsOrchestratorTestsFixture();

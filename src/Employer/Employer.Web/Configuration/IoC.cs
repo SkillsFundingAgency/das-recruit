@@ -3,6 +3,7 @@ using Esfa.Recruit.Employer.Web.Filters;
 using Esfa.Recruit.Employer.Web.Interfaces;
 using Esfa.Recruit.Employer.Web.Mappings;
 using Esfa.Recruit.Employer.Web.Models.AddLocation;
+using Esfa.Recruit.Employer.Web.Models.Validators;
 using Esfa.Recruit.Employer.Web.Orchestrators;
 using Esfa.Recruit.Employer.Web.Orchestrators.Part1;
 using Esfa.Recruit.Employer.Web.Orchestrators.Part2;
@@ -92,6 +93,7 @@ namespace Esfa.Recruit.Employer.Web.Configuration
             services.AddSingleton<IValidator<ApplicationReviewsFeedbackViewModel>, ApplicationReviewsFeedbackModelValidator>();
             services.AddSingleton<IValidator<ApplicationReviewsToUnsuccessfulConfirmationViewModel>, ApplicationReviewsToUnsuccessfulConfirmationViewModelValidator>();
             services.AddSingleton<IValidator<AddLocationEditModel>, AddLocationEditModelValidator>();
+            services.AddSingleton<IValidator<EnterLocationManuallyEditModel>, EnterLocationManuallyEditModelValidator>();
         }
 
         private static void RegisterOrchestratorDeps(IServiceCollection services)

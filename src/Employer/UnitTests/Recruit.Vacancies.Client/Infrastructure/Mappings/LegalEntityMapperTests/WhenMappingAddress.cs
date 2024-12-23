@@ -1,12 +1,10 @@
 ﻿using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount;
-using FluentAssertions;
-using Xunit;
 
 namespace Esfa.Recruit.Employer.UnitTests.Recruit.Vacancies.Client.Infrastructure.Mappings
 {
     public class WhenMappingAddress
     {
-        [Fact]
+        [Test]
         public void ShouldMapFullFivePartAddress()
         {
             var inputAddr = "Valtech, 46 Colebrooke Row,Islington,London, N1 8AF";
@@ -20,7 +18,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Recruit.Vacancies.Client.Infrastructur
             actualAddr.Postcode.Should().Be("N1 8AF");
         }
 
-        [Fact]
+        [Test]
         public void ShouldMapFullThreePartAddress()
         {
             var inputAddr = "46 Colebrooke Row,London, N1 8AF";
@@ -35,7 +33,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Recruit.Vacancies.Client.Infrastructur
             actualAddr.Postcode.Should().Be("N1 8AF");
         }
 
-        [Fact]
+        [Test]
         public void ShouldMapOnlyPostcodeAddress()
         {
             var inputAddr = "N1 8AF";
@@ -49,7 +47,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Recruit.Vacancies.Client.Infrastructur
             actualAddr.Postcode.Should().Be("N1 8AF");
         }
 
-        [Fact]
+        [Test]
         public void ShouldMapOnlySinglePartNonPostcodeAddress()
         {
             var inputAddr = "46 Colebrooke Row";

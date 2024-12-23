@@ -2,7 +2,6 @@
 using Esfa.Recruit.Employer.Web.ViewModels.Validations;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using FluentValidation.TestHelper;
-using NUnit.Framework;
 
 namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.Validations;
 public class WageEditModelValidatorTests

@@ -1,5 +1,4 @@
-﻿using AutoFixture;
-using Employer.Web.Configuration;
+﻿using Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web;
 using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Mappings;
@@ -10,12 +9,8 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyApplications;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Moq;
-using NUnit.Framework;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 
 namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators

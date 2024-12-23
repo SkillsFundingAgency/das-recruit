@@ -10,7 +10,6 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
-using NUnit.Framework;
 
 namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Controllers.Part1;
 
@@ -22,7 +21,7 @@ public class AddLocationControllerTests
         [Greedy] AddLocationController sut)
     {
         // arrange
-        var addLocationModel = new AddLocationModel
+        var addLocationModel = new AddLocationJourneyModel()
         {
             VacancyId = vacancy.Id,
             EmployerAccountId = vacancy.EmployerAccountId,
@@ -44,7 +43,7 @@ public class AddLocationControllerTests
     }
 
     [Test, MoqAutoData]
-    public async Task When_Post_Is_Valid_Then_Redirect_To_Select_An_Address(
+    public async Task When_Posting_To_AddLocation_With_Valid_Request_Then_Redirect_To_Select_An_Address(
         AddLocationEditModel addLocationModel,
         GetAddressesListResponse getAddressesListResponse,
         [Frozen] Mock<IGetAddressesClient> getAddressesClient,
@@ -65,7 +64,7 @@ public class AddLocationControllerTests
     }
     
     [Test, MoqAutoData]
-    public async Task When_Post_Is_InValid_Then_Return_View(
+    public async Task When_Posting_To_AddLocation_With_Invalid_Request_Then_Return_View(
         AddLocationEditModel addLocationEditModel,
         [Frozen] Mock<IGetAddressesClient> getAddressesClient,
         [Frozen] Vacancy vacancy,
