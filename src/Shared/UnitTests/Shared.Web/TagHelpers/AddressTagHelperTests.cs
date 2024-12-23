@@ -97,21 +97,22 @@ public class AddressTagHelperTests
         _tagHelperOutput.AsString().Should().Be(output);
     }
     
-    [TestCase(true, "<p>address1, postcode</p>")]
-    [TestCase(false, "<span>address1, postcode</span>")]
-    public async Task Renders_Anonymised_Address(string address1, string address2, string address3, string address4, string postcode, string output)
+    [TestCase(true, "<span>SW1A</span>")]
+    [TestCase(false, "<p>SW1A</p>")]
+    public async Task Renders_Anonymised_Address(bool flat, string output)
     {
         // arrange
         var sut = new AddressTagHelper
         {
-            Flat = true,
+            Anonymised = true,
+            Flat = flat,
             Value = new Address
             {
-                AddressLine1 = address1,
-                AddressLine2 = address2,
-                AddressLine3 = address3,
-                AddressLine4 = address4,
-                Postcode = postcode
+                AddressLine1 = "address1",
+                AddressLine2 = "address2",
+                AddressLine3 = "address3",
+                AddressLine4 = "address4",
+                Postcode = "SW1A 2AA"
             }
         };
 
