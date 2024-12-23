@@ -292,6 +292,21 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                     .SetValidator(new AddressValidator((long)VacancyRuleSet.EmployerAddress))
                     .RunCondition(VacancyRuleSet.EmployerAddress);
             });
+
+            When(v => v.EmployerLocationOption == AvailableWhere.AcrossEngland, () =>
+            {
+                RuleFor(x => x.EmployerLocationInformation)
+                    .NotNull()
+                    .WithMessage("Add more information about where the apprentice will work")
+                    .WithState(_ => VacancyRuleSet.EmployerAddress)
+                    .MaximumLength(500)
+                    .WithMessage("Information about where the apprentice will work must be 500 characters or less")
+                    .WithState(_ => VacancyRuleSet.EmployerAddress)
+                    .ProfanityCheck(_profanityListProvider)
+                    .WithMessage($"Additional information must not contain a banned word or phrase")
+                    .WithState(_ => VacancyRuleSet.EmployerAddress)
+                    .RunCondition(VacancyRuleSet.EmployerAddress);
+            });
         }
 
         private void ValidateNumberOfPositions()
