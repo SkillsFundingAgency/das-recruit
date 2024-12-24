@@ -91,7 +91,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
         }
         
         #endregion
-        
+
         [FeatureGate(FeatureNames.MultipleLocations)]
         [HttpGet("add-one-location", Name = RouteNames.AddOneLocation_Get)]
         public async Task<IActionResult> AddOneLocation(
@@ -102,7 +102,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
         {
             var vacancy = await utility.GetAuthorisedVacancyForEditAsync(vacancyRouteModel, RouteNames.AddOneLocation_Get);
             var allLocations = await vacancyLocationService.GetVacancyLocations(vacancy);
-            var selectedLocation = vacancy.EmployerLocations is { Count: 1 } ? vacancy.EmployerLocations.First() : null;
+            var selectedLocation = vacancy.EmployerLocations is { Count: 1 } ? vacancy.EmployerLocations[0] : null;
 
             var viewModel = new AddOneLocationViewModel
             {
@@ -123,11 +123,6 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
             return View(viewModel);
         }
         
-        private static readonly Dictionary<string, string> ValidationFieldMappings = new()
-        {
-            { "EmployerLocations", "SelectedLocation" }
-        };
-
         [FeatureGate(FeatureNames.MultipleLocations)]
         [HttpPost("add-one-location", Name = RouteNames.AddOneLocation_Post)]
         public async Task<IActionResult> AddOneLocation(
@@ -152,11 +147,12 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
                     : RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet, new { model.VacancyId, model.EmployerAccountId });
             }
 
-            ModelState.AddValidationErrors(result.ValidationResult, ValidationFieldMappings);
+
+            ModelState.AddValidationErrors(result.ValidationResult, new Dictionary<string, string> { { "EmployerLocations", "SelectedLocation" } });
             var viewModel = new AddOneLocationViewModel
             {
                 ApprenticeshipTitle = vacancy.Title,
-                AvailableLocations = allLocations ?? [],
+                AvailableLocations = allLocations,
                 VacancyId = model.VacancyId,
                 EmployerAccountId = model.EmployerAccountId,
                 PageInfo = utility.GetPartOnePageInfo(vacancy),

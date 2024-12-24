@@ -6,9 +6,9 @@
     foreach (var group in groupedLocations)
     {
         <h3 class="govuk-heading-s govuk-!-padding-top-3">@group.Key</h3>
-        foreach (var location in group)
+        foreach (var location in group.Select(x => x.Value))
         {
-            var address = location.Value.ToAddressString();
+            var address = location.ToAddressString();
             var controlId = $"selectedLocation_{index++}";
             
             <div class="govuk-radios__item">
@@ -20,7 +20,7 @@
                     type="radio"
                     checked="@(Model.SelectedLocation == address)">
                 <label for="@controlId" class="govuk-label govuk-radios__label">
-                    <address value="@location.Value" flat="true" />
+                    <address value="@location" flat="true" />
                 </label>
             </div>
         }                                                  

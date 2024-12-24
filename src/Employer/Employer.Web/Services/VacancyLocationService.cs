@@ -12,7 +12,7 @@ namespace Esfa.Recruit.Employer.Web.Services;
 public interface IVacancyLocationService
 {
     public Task<List<Address>> GetVacancyLocations(Vacancy vacancy);
-    public Task<UpdateVacancyLocationsResult> UpdateDraftVacancyLocations(Vacancy vacancy, VacancyUser user, AvailableWhere availableWhere, List<Address> locations, string locationInformation = null);
+    public Task<UpdateVacancyLocationsResult> UpdateDraftVacancyLocations(Vacancy vacancy, VacancyUser user, AvailableWhere availableWhere, List<Address> locations = null, string locationInformation = null);
 }
 
 public record UpdateVacancyLocationsResult(EntityValidationResult ValidationResult);
@@ -29,10 +29,10 @@ public class VacancyLocationService(IRecruitVacancyClient recruitVacancyClient, 
         var locations = new List<Address>();
 
         var legalAddress = legalEntity.Address.ConvertToDomainAddress();
-        if (legalAddress.IsEmpty() is false)
+        if (!legalAddress.IsEmpty())
         {
             locations.Add(legalAddress);
-        };
+        }
         locations.AddRange(employerProfile.OtherLocations.Where(x => !x.IsEmpty()));
         return locations;
     }
