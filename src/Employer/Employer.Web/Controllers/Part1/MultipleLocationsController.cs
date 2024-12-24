@@ -1,18 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Extensions;
-using Esfa.Recruit.Employer.Web.Orchestrators.Part1;
 using Esfa.Recruit.Employer.Web.RouteModel;
+using Esfa.Recruit.Employer.Web.Services;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.MultipleLocations;
+using Esfa.Recruit.Shared.Web;
 using Esfa.Recruit.Shared.Web.Domain;
 using Esfa.Recruit.Shared.Web.Extensions;
-using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.FeatureManagement.Mvc;
 
@@ -43,7 +43,7 @@ public class MultipleLocationsController : Controller
         {
             return model.SelectedAvailability switch
             {
-                AvailableWhere.OneLocation => throw new NotImplementedException(),
+                AvailableWhere.OneLocation => RedirectToRoute(RouteNames.AddOneLocation_Get, new { model.VacancyId, model.EmployerAccountId, wizard }),
                 AvailableWhere.MultipleLocations => RedirectToRoute(RouteNames.AddMoreThanOneLocation_Get, new { model.VacancyId, model.EmployerAccountId, wizard }), 
                 AvailableWhere.AcrossEngland => RedirectToRoute(RouteNames.RecruitNationally_Get, new { model.VacancyId, model.EmployerAccountId, wizard }),
                 _ => throw new NotImplementedException(),
@@ -73,18 +73,32 @@ public class MultipleLocationsController : Controller
     [FeatureGate(FeatureNames.MultipleLocations)]
     [HttpGet("add-many-locations", Name = RouteNames.AddMoreThanOneLocation_Get)]
     public async Task<IActionResult> AddMoreThanOneLocation(
-        [FromServices] IMultipleLocationsOrchestrator orchestrator,
-        VacancyRouteModel vacancyRouteModel,
+        [FromServices] IVacancyLocationService vacancyLocationService,
+        [FromServices] IUtility utility,
+        VacancyRouteModel model,
         [FromQuery] bool wizard)
     {
-        var viewModel = await orchestrator.GetAddMoreThanOneLocationViewModelAsync(vacancyRouteModel, wizard);
+        var vacancy = await utility.GetAuthorisedVacancyForEditAsync(model, RouteNames.AddMoreThanOneLocation_Get);
+        var allLocations = await vacancyLocationService.GetVacancyLocations(vacancy);
 
-        // Override with stored values after a round trip through add new location
-        if (TempData[TempDataKeys.SelectedLocations] is string value)
+        var selectedLocations = vacancy.EmployerLocations switch
         {
-            viewModel.SelectedLocations = JsonSerializer.Deserialize<List<string>>(value);
-        }
-
+            _ when TempData[TempDataKeys.SelectedLocations] is string value => JsonSerializer.Deserialize<List<string>>(value),
+            { Count: >0 } => vacancy.EmployerLocations.Select(l => l.ToAddressString()).ToList(),
+            _ => []
+        };
+        
+        var viewModel = new AddMoreThanOneLocationViewModel
+        {
+            ApprenticeshipTitle = vacancy.Title,
+            AvailableLocations = allLocations ?? [],
+            VacancyId = model.VacancyId,
+            EmployerAccountId = model.EmployerAccountId,
+            PageInfo = utility.GetPartOnePageInfo(vacancy),
+            SelectedLocations = selectedLocations
+        };
+        viewModel.PageInfo.SetWizard(wizard);
+        
         if (TempData[TempDataKeys.AddedLocation] is string newlyAddedLocation)
         {
             viewModel.SelectedLocations.Add(newlyAddedLocation);
@@ -94,28 +108,52 @@ public class MultipleLocationsController : Controller
         return View(viewModel);
     }
     
+    private static readonly Dictionary<string, string> ValidationFieldMappings = new()
+    {
+        { "EmployerLocations", "SelectedLocations" }
+    };
+    
     [FeatureGate(FeatureNames.MultipleLocations)]
     [HttpPost("add-many-locations", Name = RouteNames.AddMoreThanOneLocation_Post)]
     public async Task<IActionResult> AddMoreThanOneLocation(
-        [FromServices] IMultipleLocationsOrchestrator orchestrator,
+        [FromServices] IVacancyLocationService vacancyLocationService,
+        [FromServices] IUtility utility,
         AddMoreThanOneLocationEditModel editModel,
         [FromQuery] bool wizard)
     {
-        var result = await orchestrator.PostAddMoreThanOneLocationViewModelAsync(editModel, User.ToVacancyUser());
+        var vacancy = await utility.GetAuthorisedVacancyForEditAsync(editModel, RouteNames.AddMoreThanOneLocation_Post);
+        var allLocations = await vacancyLocationService.GetVacancyLocations(vacancy);
+        var locations = editModel.SelectedLocations
+            .Select(x => allLocations.FirstOrDefault(l => l.ToAddressString() == x))
+            .Where(x => x is not null)
+            .ToList();
+        var result = await vacancyLocationService.UpdateDraftVacancyLocations(
+            vacancy,
+            User.ToVacancyUser(),
+            AvailableWhere.MultipleLocations,
+            locations);
 
-        if (result.Success)
+        if (result.ValidationResult is null)
         {
             return RedirectToRoute(RouteNames.MultipleLocationsConfirm_Get, new { editModel.VacancyId, editModel.EmployerAccountId, wizard } );
         }
+
+        ModelState.AddValidationErrors(result.ValidationResult, ValidationFieldMappings);
+        var viewModel = new AddMoreThanOneLocationViewModel
+        {
+            ApprenticeshipTitle = vacancy.Title,
+            AvailableLocations = allLocations ?? [],
+            VacancyId = editModel.VacancyId,
+            EmployerAccountId = editModel.EmployerAccountId,
+            PageInfo = utility.GetPartOnePageInfo(vacancy),
+            SelectedLocations = editModel.SelectedLocations
+        };
         
-        result.AddErrorsToModelState(ModelState);
-        var viewModel = await orchestrator.GetAddMoreThanOneLocationViewModelAsync(editModel, wizard);
-        viewModel.SelectedLocations = editModel.SelectedLocations;
         return View(viewModel);
     }
     
     [FeatureGate(FeatureNames.MultipleLocations)]
-    [HttpPost("addnewlocation", Name = RouteNames.AddNewLocationJourney_Post)]
+    [HttpPost("add-many-locations/add-new-location", Name = RouteNames.AddNewLocationJourney_Post)]
     public IActionResult AddALocation(AddMoreThanOneLocationEditModel editModel, [FromQuery] bool wizard)
     {
         TempData.Remove(TempDataKeys.Postcode);

@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using System.Text.Json;
 using Microsoft.AspNetCore.Mvc;
 using AutoFixture.NUnit3;
@@ -7,11 +6,9 @@ using Esfa.Recruit.Employer.Web;
 using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Controllers.Part1;
-using Esfa.Recruit.Employer.Web.Orchestrators.Part1;
 using Esfa.Recruit.Employer.Web.RouteModel;
+using Esfa.Recruit.Employer.Web.Services;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.MultipleLocations;
-using Esfa.Recruit.Shared.Web.Orchestrators;
-using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
@@ -89,31 +86,43 @@ public class MultipleLocationsControllerTests
 
     [Test, MoqAutoData]
     public async Task When_Getting_AddMoreThanOneLocation_Then_The_View_Is_Returned(
-        Mock<IMultipleLocationsOrchestrator> orchestrator,
-        AddMoreThanOneLocationViewModel viewModel,
+        Vacancy vacancy,
+        [Frozen] List<Address> locations,
+        Mock<IVacancyLocationService> vacancyLocationService,
+        Mock<IUtility> utility,
+        VacancyRouteModel model,
         [Greedy] MultipleLocationsController sut)
     {
         // arrange
         var httpContext = new DefaultHttpContext();
         var tempData = new TempDataDictionary(httpContext, Mock.Of<ITempDataProvider>());
         sut.TempData = tempData;
+        sut.AddControllerContext().WithUser(Guid.NewGuid());
 
-        orchestrator
-            .Setup(x => x.GetAddMoreThanOneLocationViewModelAsync(It.IsAny<VacancyRouteModel>(), It.Is<bool>(wizard => wizard == true)))
-            .ReturnsAsync(viewModel);
+        vacancy.EmployerAccountId = model.EmployerAccountId;
+        vacancy.Id = model.VacancyId;
+        utility.Setup(x => x.GetAuthorisedVacancyForEditAsync(It.IsAny<VacancyRouteModel>(), It.IsAny<string>())).ReturnsAsync(vacancy);
+        vacancyLocationService.Setup(x => x.GetVacancyLocations(It.Is<Vacancy>(v => v == vacancy))).ReturnsAsync(locations);
         
         // act
-        var result = (await sut.AddMoreThanOneLocation(orchestrator.Object, new VacancyRouteModel(), true) as ViewResult)?.Model as AddMoreThanOneLocationViewModel;
+        var result = (await sut.AddMoreThanOneLocation(vacancyLocationService.Object, utility.Object, model, true) as ViewResult)?.Model as AddMoreThanOneLocationViewModel;
 
         // assert
         result.Should().NotBeNull();
-        result.Should().Be(viewModel);
+        result!.ApprenticeshipTitle.Should().Be(vacancy.Title);
+        result.AvailableLocations.Should().BeEquivalentTo(locations);
+        result.EmployerAccountId.Should().Be(vacancy.EmployerAccountId);
+        result.VacancyId.Should().Be(vacancy.Id);
+        result.SelectedLocations.Should().BeEquivalentTo(vacancy.EmployerLocations, options => options.ExcludingMissingMembers());
     }
     
     [Test, MoqAutoData]
     public async Task When_Getting_AddMoreThanOneLocation_Having_Returned_From_The_Add_New_Location_Pathway_Then_The_Previously_Selected_Values_Are_Restored(
-        Mock<IMultipleLocationsOrchestrator> orchestrator,
-        AddMoreThanOneLocationViewModel viewModel,
+        Vacancy vacancy,
+        [Frozen] List<Address> locations,
+        Mock<IVacancyLocationService> vacancyLocationService,
+        Mock<IUtility> utility,
+        VacancyRouteModel model,
         [Greedy] MultipleLocationsController sut)
     {
         // arrange
@@ -123,63 +132,78 @@ public class MultipleLocationsControllerTests
             [TempDataKeys.SelectedLocations] = JsonSerializer.Serialize(selected)
         };
         sut.TempData = tempData;
+    
+        sut.AddControllerContext().WithUser(Guid.NewGuid());
 
-        orchestrator
-            .Setup(x => x.GetAddMoreThanOneLocationViewModelAsync(It.IsAny<VacancyRouteModel>(), It.Is<bool>(wizard => wizard == true)))
-            .ReturnsAsync(viewModel);
+        vacancy.EmployerAccountId = model.EmployerAccountId;
+        vacancy.Id = model.VacancyId;
+        utility.Setup(x => x.GetAuthorisedVacancyForEditAsync(It.IsAny<VacancyRouteModel>(), It.IsAny<string>())).ReturnsAsync(vacancy);
+        vacancyLocationService.Setup(x => x.GetVacancyLocations(It.Is<Vacancy>(v => v == vacancy))).ReturnsAsync(locations);
         
         // act
-        var result = (await sut.AddMoreThanOneLocation(orchestrator.Object, new VacancyRouteModel(), true) as ViewResult)?.Model as AddMoreThanOneLocationViewModel;
-
+        var result = (await sut.AddMoreThanOneLocation(vacancyLocationService.Object, utility.Object, model, true) as ViewResult)?.Model as AddMoreThanOneLocationViewModel;
+    
         // assert
         result.Should().NotBeNull();
         result!.SelectedLocations.Should().BeEquivalentTo(selected);
     }
-    
+
     [Test, MoqAutoData]
     public async Task When_Posting_AddMoreThanOneLocation_With_Invalid_state_Then_The_View_Is_Returned(
-        Mock<IMultipleLocationsOrchestrator> orchestrator,
-        AddMoreThanOneLocationEditModel editModel,
+        Vacancy vacancy,
+        [Frozen] List<Address> locations,
+        Mock<IVacancyLocationService> vacancyLocationService,
+        Mock<IUtility> utility,
+        AddMoreThanOneLocationEditModel model,
         [Greedy] MultipleLocationsController sut)
     {
         // arrange
-        var error = new EntityValidationError(1, "property-name", "error-message", "error-code");
-        var orchestratorResponse = new OrchestratorResponse(new EntityValidationResult { Errors = [error] });
+        var httpContext = new DefaultHttpContext();
+        var tempData = new TempDataDictionary(httpContext, Mock.Of<ITempDataProvider>());
+        sut.TempData = tempData;
         sut.AddControllerContext().WithUser(Guid.NewGuid());
-        orchestrator
-            .Setup(x => x.PostAddMoreThanOneLocationViewModelAsync(It.IsAny<AddMoreThanOneLocationEditModel>(), It.IsAny<VacancyUser>()))
-            .ReturnsAsync(orchestratorResponse);
-        
+
+        vacancy.EmployerAccountId = model.EmployerAccountId;
+        vacancy.Id = model.VacancyId;
+        utility.Setup(x => x.GetAuthorisedVacancyForEditAsync(It.IsAny<VacancyRouteModel>(), It.IsAny<string>())).ReturnsAsync(vacancy);
+        vacancyLocationService.Setup(x => x.GetVacancyLocations(It.Is<Vacancy>(v => v == vacancy))).ReturnsAsync(locations);
+
         // act
-        var result = await sut.AddMoreThanOneLocation(orchestrator.Object, editModel, true) as ViewResult;
-        
+        var result = (await sut.AddMoreThanOneLocation(vacancyLocationService.Object, utility.Object, model, true) as ViewResult)?.Model as AddMoreThanOneLocationViewModel;
+
         // assert
         result.Should().NotBeNull();
-        result!.Model.Should().NotBeNull();
-        result.Model.Should().BeOfType<AddMoreThanOneLocationViewModel>();
-        sut.ControllerContext.ModelState.Count.Should().Be(1);
-        sut.ControllerContext.ModelState.First().Key.Should().Be(error.PropertyName);
-        sut.ControllerContext.ModelState.First().Value.Errors.First().ErrorMessage.Should().Be(error.ErrorMessage);
+        result!.ApprenticeshipTitle.Should().Be(vacancy.Title);
+        result.AvailableLocations.Should().BeEquivalentTo(locations);
+        result.EmployerAccountId.Should().Be(vacancy.EmployerAccountId);
+        result.VacancyId.Should().Be(vacancy.Id);
+        result.SelectedLocations.Should().BeEquivalentTo(model.SelectedLocations);
     }
     
     [Test, MoqAutoData]
     public async Task When_Posting_AddMoreThanOneLocation_With_Valid_state_Then_You_Are_Redirected_To_Confirmation_Route(
-        Mock<IMultipleLocationsOrchestrator> orchestrator,
-        AddMoreThanOneLocationEditModel editModel,
+        Vacancy vacancy,
+        [Frozen] List<Address> locations,
+        Mock<IVacancyLocationService> vacancyLocationService,
+        Mock<IUtility> utility,
+        AddMoreThanOneLocationEditModel model,
         [Greedy] MultipleLocationsController sut)
     {
         // arrange
         sut.AddControllerContext().WithUser(Guid.NewGuid());
-        orchestrator
-            .Setup(x => x.PostAddMoreThanOneLocationViewModelAsync(It.IsAny<AddMoreThanOneLocationEditModel>(), It.IsAny<VacancyUser>()))
-            .ReturnsAsync(new OrchestratorResponse(false));
+        vacancy.EmployerAccountId = model.EmployerAccountId;
+        vacancy.Id = model.VacancyId;
+        utility.Setup(x => x.GetAuthorisedVacancyForEditAsync(It.IsAny<VacancyRouteModel>(), It.IsAny<string>())).ReturnsAsync(vacancy);
+        vacancyLocationService.Setup(x => x.GetVacancyLocations(It.Is<Vacancy>(v => v == vacancy))).ReturnsAsync(locations);
+        vacancyLocationService.Setup(x => x.UpdateDraftVacancyLocations(It.IsAny<Vacancy>(), It.IsAny<VacancyUser>(), It.IsAny<AvailableWhere>(), It.IsAny<List<Address>>(), null))
+            .ReturnsAsync(new UpdateVacancyLocationsResult(null));
         
         // act
-        var result = (await sut.AddMoreThanOneLocation(orchestrator.Object, editModel, true) as ViewResult)?.Model as AddMoreThanOneLocationViewModel;
+        var result = await sut.AddMoreThanOneLocation(vacancyLocationService.Object, utility.Object, model, true) as RedirectToRouteResult;
         
         // assert
         result.Should().NotBeNull();
-        result!.SelectedLocations.Should().BeEquivalentTo(editModel.SelectedLocations);
+        result!.RouteName.Should().Be(RouteNames.MultipleLocationsConfirm_Get);
     }
     
     [Test, MoqAutoData]

@@ -1,4 +1,4 @@
-﻿@model Esfa.Recruit.Employer.Web.ViewModels.Part1.MultipleLocations.AddMoreThanOneLocationViewModel
+﻿@model Esfa.Recruit.Employer.Web.ViewModels.Part1.Location.AddOneLocationViewModel
 
 @{
     var groupedLocations = Model.AvailableLocations.GroupByLastFilledAddressLine();
@@ -10,15 +10,16 @@
         {
             var address = location.Value.ToAddressString();
             var controlId = $"selectedLocation_{index++}";
-            <div class="govuk-checkboxes__item">
+            
+            <div class="govuk-radios__item">
                 <input
                     id="@controlId"
-                    class="govuk-checkboxes__input"
-                    name="@nameof(Model.SelectedLocations)"
+                    class="govuk-radios__input"
+                    name="@nameof(Model.SelectedLocation)"
                     value="@address"
-                    type="checkbox"
-                    checked="@(Model.SelectedLocations?.Contains(address) ?? false)">
-                <label for="@controlId" class="govuk-label govuk-checkboxes__label">
+                    type="radio"
+                    checked="@(Model.SelectedLocation == address)">
+                <label for="@controlId" class="govuk-label govuk-radios__label">
                     <address value="@location.Value" flat="true" />
                 </label>
             </div>

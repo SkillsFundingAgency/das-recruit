@@ -53,7 +53,7 @@ public class EnterLocationManuallyController(IUtility utility) : Controller
         TempData[TempDataKeys.AddedLocation] = newAddress.ToAddressString();
         TempData.Remove(TempDataKeys.Postcode);
         return model.Origin == MultipleLocationsJourneyOrigin.One
-            ? NotFound()
+            ? RedirectToRoute(RouteNames.AddOneLocation_Get, new { model.VacancyId, model.EmployerAccountId, model.Wizard })
             : RedirectToRoute(RouteNames.AddMoreThanOneLocation_Get, new { model.VacancyId, model.EmployerAccountId, model.Wizard });
     }
 
