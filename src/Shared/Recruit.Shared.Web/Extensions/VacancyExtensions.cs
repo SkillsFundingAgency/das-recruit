@@ -31,17 +31,5 @@ namespace Esfa.Recruit.Shared.Web.Extensions
                 ? [vacancy.EmployerLocation.PostcodeAsOutcode()]
                 : MapAddress(vacancy.EmployerLocation);
         }
-        
-        public static IEnumerable<IEnumerable<string>> EmployerAddressesForDisplay(this Vacancy vacancy)
-        {
-            if (vacancy.EmployerLocations is null)
-            {
-                return [];
-            }
-
-            return vacancy.IsAnonymous
-                ? vacancy.EmployerLocations.Select(address => new[] { address.PostcodeAsOutcode() })
-                : vacancy.EmployerLocations.Select(MapAddress);
-        }
     }
 }

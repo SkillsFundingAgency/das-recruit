@@ -80,7 +80,7 @@ namespace Esfa.Recruit.Employer.Web.Mappings
             vm.EmployerName = await _vacancyClient.GetEmployerNameAsync(vacancy);
             vm.EmployerWebsiteUrl = vacancy.EmployerWebsiteUrl;
             vm.EmployerAddressElements = [];
-            vm.AvailableLocations = [];
+            vm.AvailableLocations = vacancy.EmployerLocations ?? [];
             vm.AvailableWhere = vacancy.EmployerLocationOption;
             vm.LocationInformation = vacancy.EmployerLocationInformation;
             vm.FindAnApprenticeshipUrl = _externalLinksConfiguration.FindAnApprenticeshipUrl;
@@ -121,11 +121,6 @@ namespace Esfa.Recruit.Employer.Web.Mappings
                     vm.MapUrl = MapImageHelper.GetEmployerLocationMapUrl(vacancy, _mapService, MapImageWidth, MapImageHeight);
 
                 vm.EmployerAddressElements = vacancy.EmployerAddressForDisplay();
-            }
-
-            if (vacancy.EmployerLocations is { Count: > 0 })
-            {
-                vm.AvailableLocations = vacancy.EmployerAddressesForDisplay();
             }
 
             if (vacancy.ProgrammeId != null && programme != null)
