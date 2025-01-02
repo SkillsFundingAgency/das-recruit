@@ -214,6 +214,8 @@ namespace Esfa.Recruit.Employer.Web
                 RouteNames.MultipleLocations_Post,
                 RouteNames.AddMoreThanOneLocation_Get,
                 RouteNames.AddMoreThanOneLocation_Post,
+                RouteNames.AddOneLocation_Get,
+                RouteNames.AddOneLocation_Post,
                 RouteNames.AddLocation_Get,
                 RouteNames.AddLocation_Post,
                 RouteNames.SelectAnAddress_Get,

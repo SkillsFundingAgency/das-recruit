@@ -1,36 +1,33 @@
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Extensions;
 using Esfa.Recruit.Employer.Web.Orchestrators.Part1;
 using Esfa.Recruit.Employer.Web.RouteModel;
+using Esfa.Recruit.Employer.Web.Services;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.Location;
+using Esfa.Recruit.Shared.Web;
 using Esfa.Recruit.Shared.Web.Extensions;
-using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.FeatureManagement.Mvc;
 
 namespace Esfa.Recruit.Employer.Web.Controllers.Part1
 {
     [Route(RoutePaths.AccountVacancyRoutePath)]
-    public class LocationController : EmployerControllerBase
+    public class LocationController(IWebHostEnvironment hostingEnvironment) : EmployerControllerBase(hostingEnvironment)
     {
-        private readonly LocationOrchestrator _orchestrator;
-        private readonly IFeature _feature;
-
-        public LocationController(LocationOrchestrator orchestrator, IWebHostEnvironment hostingEnvironment, IFeature feature)
-            : base(hostingEnvironment)
-        {
-            _orchestrator = orchestrator;
-            _feature = feature;
-        }
-
+        #region When FeatureNames.MultipleLocations feature flag is removed, all this can be removed 
+        
         [HttpGet("location", Name = RouteNames.Location_Get)]
-        public async Task<IActionResult> Location(VacancyRouteModel vrm, [FromQuery] string wizard = "true")
+        public async Task<IActionResult> Location([FromServices] LocationOrchestrator orchestrator, VacancyRouteModel vrm, [FromQuery] string wizard = "true")
         {   
             var employerInfoModel = GetVacancyEmployerInfoCookie(vrm.VacancyId);
 
-            var vm = await _orchestrator.GetLocationViewModelAsync(vrm, employerInfoModel, User.ToVacancyUser());
+            var vm = await orchestrator.GetLocationViewModelAsync(vrm, employerInfoModel, User.ToVacancyUser());
 
             vm.PageInfo.SetWizard(wizard);
             
@@ -42,17 +39,17 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
             //either part 1 is not completed or part 1 is completed but part 2 has not started
             if (employerInfoModel == null && (!vm.PageInfo.HasCompletedPartOne || !vm.PageInfo.HasStartedPartTwo))
             {
-                employerInfoModel = await _orchestrator.GetVacancyEmployerInfoModelAsync(vrm);
+                employerInfoModel = await orchestrator.GetVacancyEmployerInfoModelAsync(vrm);
                 SetVacancyEmployerInfoCookie(employerInfoModel);
             }            
             return View(vm);
         }
 
         [HttpPost("location", Name = RouteNames.Location_Post)]
-        public async Task<IActionResult> Location(LocationEditModel model, [FromQuery] bool wizard)
+        public async Task<IActionResult> Location([FromServices] LocationOrchestrator orchestrator, LocationEditModel model, [FromQuery] bool wizard)
         {
             var employerInfoModel = GetVacancyEmployerInfoCookie(model.VacancyId);
-            var response = await _orchestrator.PostLocationEditModelAsync(model, employerInfoModel, User.ToVacancyUser());
+            var response = await orchestrator.PostLocationEditModelAsync(model, employerInfoModel, User.ToVacancyUser());
             
             if (!response.Success)
             {
@@ -61,7 +58,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
 
             if (!ModelState.IsValid)
             {
-                var vm = await _orchestrator.GetLocationViewModelAsync(model, employerInfoModel, User.ToVacancyUser());
+                var vm = await orchestrator.GetLocationViewModelAsync(model, employerInfoModel, User.ToVacancyUser());
                 vm.SelectedLocation = model.SelectedLocation;
                 vm.PageInfo.SetWizard(wizard);
                 vm.CanShowBackLink = employerInfoModel != null || vm.PageInfo.IsWizard;
@@ -87,10 +84,82 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
         }
 
         [HttpGet("location/GetAddresses")]
-        public async Task<IActionResult> GetAddresses([FromQuery] string searchTerm)
+        public async Task<IActionResult> GetAddresses([FromServices] LocationOrchestrator orchestrator, [FromQuery] string searchTerm)
         {
-            var result = await _orchestrator.GetAddresses(searchTerm);
+            var result = await orchestrator.GetAddresses(searchTerm);
             return Ok(result);
+        }
+        
+        #endregion
+
+        [FeatureGate(FeatureNames.MultipleLocations)]
+        [HttpGet("add-one-location", Name = RouteNames.AddOneLocation_Get)]
+        public async Task<IActionResult> AddOneLocation(
+            [FromServices] IVacancyLocationService vacancyLocationService,
+            [FromServices] IUtility utility,
+            VacancyRouteModel vacancyRouteModel,
+            [FromQuery] bool wizard)
+        {
+            var vacancy = await utility.GetAuthorisedVacancyForEditAsync(vacancyRouteModel, RouteNames.AddOneLocation_Get);
+            var allLocations = await vacancyLocationService.GetVacancyLocations(vacancy);
+            var selectedLocation = vacancy.EmployerLocations is { Count: 1 } ? vacancy.EmployerLocations[0] : null;
+
+            var viewModel = new AddOneLocationViewModel
+            {
+                ApprenticeshipTitle = vacancy.Title,
+                AvailableLocations = allLocations ?? [],
+                VacancyId = vacancyRouteModel.VacancyId,
+                EmployerAccountId = vacancyRouteModel.EmployerAccountId,
+                PageInfo = utility.GetPartOnePageInfo(vacancy),
+                SelectedLocation = selectedLocation?.ToAddressString(),
+            };
+            viewModel.PageInfo.SetWizard(wizard);
+            
+            if (TempData[TempDataKeys.AddedLocation] is string newlyAddedLocation)
+            {
+                viewModel.SelectedLocation = newlyAddedLocation;
+                viewModel.BannerAddress = newlyAddedLocation;
+            }
+            return View(viewModel);
+        }
+        
+        [FeatureGate(FeatureNames.MultipleLocations)]
+        [HttpPost("add-one-location", Name = RouteNames.AddOneLocation_Post)]
+        public async Task<IActionResult> AddOneLocation(
+            [FromServices] IVacancyLocationService vacancyLocationService,
+            [FromServices] IUtility utility,
+            AddOneLocationEditModel model,
+            [FromQuery] bool wizard)
+        {
+            var vacancy = await utility.GetAuthorisedVacancyForEditAsync(model, RouteNames.AddOneLocation_Post);
+            var allLocations = await vacancyLocationService.GetVacancyLocations(vacancy);
+            var location = allLocations.FirstOrDefault(x => x.ToAddressString() == model.SelectedLocation);
+            var result = await vacancyLocationService.UpdateDraftVacancyLocations(
+                vacancy,
+                User.ToVacancyUser(),
+                AvailableWhere.OneLocation,
+                location is null ? null : [location]);
+
+            if (result.ValidationResult is null)
+            {
+                return wizard
+                    ? RedirectToRoute(RouteNames.EmployerTaskListGet, new { model.VacancyId, model.EmployerAccountId, wizard })
+                    : RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet, new { model.VacancyId, model.EmployerAccountId });
+            }
+
+
+            ModelState.AddValidationErrors(result.ValidationResult, new Dictionary<string, string> { { "EmployerLocations", "SelectedLocation" } });
+            var viewModel = new AddOneLocationViewModel
+            {
+                ApprenticeshipTitle = vacancy.Title,
+                AvailableLocations = allLocations,
+                VacancyId = model.VacancyId,
+                EmployerAccountId = model.EmployerAccountId,
+                PageInfo = utility.GetPartOnePageInfo(vacancy),
+                SelectedLocation = model.SelectedLocation
+            };
+            viewModel.PageInfo.SetWizard(wizard);
+            return View(viewModel);
         }
     }
 }

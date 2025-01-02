@@ -264,20 +264,18 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                     .RunCondition(VacancyRuleSet.EmployerAddress);
             });
 
-            // TODO: this will be required for the other validation scenarios
-            // When(v => v.EmployerLocationOption == AvailableWhere.OneLocation, () =>
-            // {
-            //     RuleFor(x => x.EmployerLocations)
-            //         .NotNull()
-            //         .Must(x => x.Count == 1)
-            //         .WithMessage("Select a location")
-            //         .WithState(_ => VacancyRuleSet.EmployerAddress)
-            //         .RunCondition(VacancyRuleSet.EmployerAddress);
-            //     
-            //     RuleForEach(x => x.EmployerLocations)
-            //         .SetValidator(new AddressValidator((long)VacancyRuleSet.EmployerAddress))
-            //         .RunCondition(VacancyRuleSet.EmployerAddress);
-            // });
+            When(v => v.EmployerLocationOption == AvailableWhere.OneLocation, () =>
+            {
+                RuleFor(x => x.EmployerLocations)
+                    .Must(x => x is { Count: 1 })
+                    .WithMessage("Select a location")
+                    .WithState(_ => VacancyRuleSet.EmployerAddress)
+                    .RunCondition(VacancyRuleSet.EmployerAddress);
+                
+                RuleForEach(x => x.EmployerLocations)
+                    .SetValidator(new AddressValidator((long)VacancyRuleSet.EmployerAddress))
+                    .RunCondition(VacancyRuleSet.EmployerAddress);
+            });
             
             When(v => v.EmployerLocationOption == AvailableWhere.MultipleLocations, () =>
             {
