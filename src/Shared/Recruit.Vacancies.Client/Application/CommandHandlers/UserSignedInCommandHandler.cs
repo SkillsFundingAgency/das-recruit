@@ -47,7 +47,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             var now = _timeProvider.Now;
 
             var existingUser = userType == UserType.Provider
-                ? (await _userRepository.GetByDfEUserId(user.DfEUserId) ?? await _userRepository.GetAsync(user.UserId))
+                ? await _userRepository.GetByDfEUserId(user.DfEUserId) ?? await _userRepository.GetAsync(user.UserId)
                 : await _userRepository.GetAsync(user.UserId);
             
             var userEntity = existingUser ?? new User
@@ -59,7 +59,11 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
                 DfEUserId = user.DfEUserId
             };
 
-            var userNotificationPreferences = await _userNotificationPreferencesRepository.GetAsync(userEntity.IdamsUserId) ?? await _userNotificationPreferencesRepository.GetByDfeUserId(userEntity.DfEUserId) ?? new UserNotificationPreferences
+            var userNotificationPreferences = userType == UserType.Provider 
+                ? await _userNotificationPreferencesRepository.GetByDfeUserId(userEntity.DfEUserId) ?? await _userNotificationPreferencesRepository.GetAsync(userEntity.IdamsUserId)
+                : await _userNotificationPreferencesRepository.GetAsync(userEntity.IdamsUserId);
+
+            userNotificationPreferences ??= new UserNotificationPreferences
             {
                 Id = userEntity.IdamsUserId,
                 NotificationTypes = userEntity.UserType == UserType.Provider
@@ -67,8 +71,8 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
                     : NotificationTypes.VacancySentForReview,
                 NotificationScope = NotificationScope.OrganisationVacancies,
                 DfeUserId = userEntity.DfEUserId
-            };
-
+            };                                                        
+                                                                      
             userEntity.Name = user.Name;
             userEntity.LastSignedInDate = now;
             userEntity.Email = user.Email;

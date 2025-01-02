@@ -31,6 +31,10 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
 
         public async Task<UserNotificationPreferences> GetByDfeUserId(string dfeUserId)
         {
+            if (string.IsNullOrEmpty(dfeUserId))
+            {
+                return null;
+            }
             var filter = Builders<UserNotificationPreferences>.Filter.Eq(v => v.DfeUserId, dfeUserId);
 
             var collection = GetCollection<UserNotificationPreferences>();
