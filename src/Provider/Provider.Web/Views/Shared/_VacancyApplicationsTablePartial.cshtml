@@ -9,7 +9,7 @@
         @foreach (var application in Model.Applications)
         {
             <tr class="govuk-table__row" asp-show="@application.IsNotWithdrawn">
-                <td class="govuk-table__cell" data-label="Application ID"><a asp-route="@RouteNames.ApplicationReview_Get" asp-route-ukprn="@Model.Ukprn" asp-route-vacancyId="@Model.VacancyId" asp-route-applicationReviewId="@application.ApplicationReviewId" class="govuk-link">@application.GetFriendlyId()</a></td>
+                <td class="govuk-table__cell" data-label="Application ID"><a id="@($"application-id-{application.GetFriendlyId()}")" asp-route="@RouteNames.ApplicationReview_Get" asp-route-ukprn="@Model.Ukprn" asp-route-vacancyId="@Model.VacancyId" asp-route-applicationReviewId="@application.ApplicationReviewId" class="govuk-link">@application.GetFriendlyId()</a></td>
                 <td class="govuk-table__cell" data-label="Name">@application.CandidateName</td>
                 <td class="govuk-table__cell" data-label="Status"><strong class="@application.Status.GetCssClassForApplicationReviewStatus()">@application.Status.GetDisplayName(UserType.Provider)</strong></td>
                 <td class="govuk-table__cell" data-label="Date Applied">@application.SubmittedDate.AsGdsDate()</td>
