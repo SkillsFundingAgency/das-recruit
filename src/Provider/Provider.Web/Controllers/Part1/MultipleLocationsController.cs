@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Esfa.Recruit.Provider.Web.Configuration;
 using Esfa.Recruit.Provider.Web.Configuration.Routing;
 using Esfa.Recruit.Provider.Web.RouteModel;
@@ -17,35 +18,50 @@ public class MultipleLocationsController(
 {
     [FeatureGate(FeatureNames.MultipleLocations)]
     [HttpGet("location-availability", Name = RouteNames.MultipleLocations_Get)]
-    public async Task<IActionResult> LocationAvailability(VacancyRouteModel vacancyRouteModel, [FromQuery] string wizard = "true")
+    public async Task<IActionResult> LocationAvailability(
+        [FromServices] IUtility utility,
+        VacancyRouteModel vacancyRouteModel,
+        [FromQuery] bool wizard = true)
     {
-        var viewModel = await GetLocationAvailabilityViewModel(vacancyRouteModel, wizard);
+        var viewModel = await GetLocationAvailabilityViewModel(utility, vacancyRouteModel, null, wizard);
         return View(viewModel);
     }
 
     [FeatureGate(FeatureNames.MultipleLocations)]
     [HttpPost("location-availability", Name = RouteNames.MultipleLocations_Post)]
-    public async Task<IActionResult> LocationAvailability(LocationAvailabilityEditModel model, [FromQuery] bool wizard)
+    public async Task<IActionResult> LocationAvailability(
+        [FromServices] IUtility utility,
+        LocationAvailabilityEditModel model,
+        [FromQuery] bool wizard)
     {
-        // TODO: validate the model
-        // TODO: save the selection
-        
-        return RedirectToRoute(RouteNames.ProviderTaskListGet, new { Wizard = wizard, model.Ukprn, model.VacancyId });
-    } 
+        if (ModelState.IsValid)
+        {
+            return model.SelectedAvailability switch
+            {
+                AvailableWhere.OneLocation => RedirectToRoute(RouteNames.AddOneLocation_Get, new { model.VacancyId, model.Ukprn, wizard }),
+                AvailableWhere.MultipleLocations => RedirectToRoute(RouteNames.AddMoreThanOneLocation_Get, new { model.VacancyId, model.Ukprn, wizard }), 
+                AvailableWhere.AcrossEngland => RedirectToRoute(RouteNames.RecruitNationally_Get, new { model.VacancyId, model.Ukprn, wizard }),
+                _ => throw new NotImplementedException(),
+            };
+        }
 
-    private async Task<LocationAvailabilityViewModel> GetLocationAvailabilityViewModel(VacancyRouteModel vacancyRouteModel, string wizard)
+        var viewModel = await GetLocationAvailabilityViewModel(utility, model, model.SelectedAvailability, wizard);
+        return View(viewModel);
+    }
+    
+    private static async Task<LocationAvailabilityViewModel> GetLocationAvailabilityViewModel(IUtility utility, VacancyRouteModel vacancyRouteModel, AvailableWhere? availableWhere, bool wizard)
     {
-        var vacancy = await utility.GetAuthorisedVacancyForEditAsync(vacancyRouteModel, RouteNames.Location_Get);
+        var vacancy = await utility.GetAuthorisedVacancyForEditAsync(vacancyRouteModel, RouteNames.MultipleLocations_Get);
         var viewModel = new LocationAvailabilityViewModel
         {
             ApprenticeshipTitle = vacancy.Title,
             Ukprn = vacancyRouteModel.Ukprn,
             PageInfo = utility.GetPartOnePageInfo(vacancy),
-            SelectedAvailability = vacancy.EmployerLocation is not null ? AvailableWhere.OneLocation : null,
+            SelectedAvailability = availableWhere ?? vacancy.EmployerLocationOption ?? (vacancy.EmployerLocation is not null ? AvailableWhere.OneLocation : null),
             VacancyId = vacancyRouteModel.VacancyId,
         };
         viewModel.PageInfo.SetWizard(wizard);
-        
+
         return viewModel;
     }
 }

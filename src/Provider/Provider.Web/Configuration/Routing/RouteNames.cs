@@ -153,5 +153,14 @@
         
         public const string MultipleLocations_Get = nameof(MultipleLocations_Get);
         public const string MultipleLocations_Post = nameof(MultipleLocations_Post);
+        
+        public const string AddOneLocation_Get = nameof(AddOneLocation_Get);
+        public const string AddOneLocation_Post = nameof(AddOneLocation_Post);
+        
+        public const string AddMoreThanOneLocation_Get = nameof(AddMoreThanOneLocation_Get);
+        public const string AddMoreThanOneLocation_Post = nameof(AddMoreThanOneLocation_Post);
+        
+        public const string RecruitNationally_Get = nameof(RecruitNationally_Get);
+        public const string RecruitNationally_Post = nameof(RecruitNationally_Post);
     }
 }
