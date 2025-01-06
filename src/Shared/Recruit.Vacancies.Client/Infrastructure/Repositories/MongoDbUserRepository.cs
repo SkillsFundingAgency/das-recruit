@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
@@ -24,7 +24,19 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
             var collection = GetCollection<User>();
             var result = await RetryPolicy.Execute(_ => 
                 collection.Find(filter)
-                .SingleOrDefaultAsync(),
+                .FirstOrDefaultAsync(),
+                new Context(nameof(GetAsync)));
+            return result;
+        }
+        
+        public async Task<User> GetByDfEUserId(string dfEUserId)
+        {
+            var filter = Builders<User>.Filter.Eq(v => v.DfEUserId, dfEUserId);
+
+            var collection = GetCollection<User>();
+            var result = await RetryPolicy.Execute(_ => 
+                    collection.Find(filter)
+                        .SingleOrDefaultAsync(),
                 new Context(nameof(GetAsync)));
             return result;
         }

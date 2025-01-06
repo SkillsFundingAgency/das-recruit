@@ -545,16 +545,39 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return _userRepository.GetAsync(userId);
         }
 
+        public Task UpsertUserDetails(User user)
+        {
+            return _userRepository.UpsertUserAsync(user);
+        }
+        
+        public Task<User> GetUsersDetailsByDfEUserId(string dfeUserId)
+        {
+            return _userRepository.GetByDfEUserId(dfeUserId);
+        }
+
         public Task<VacancyAnalyticsSummary> GetVacancyAnalyticsSummaryAsync(long vacancyReference)
         {
             return _reader.GetVacancyAnalyticsSummaryAsync(vacancyReference);
         }
 
-        public async Task<UserNotificationPreferences> GetUserNotificationPreferencesAsync(string idamsUserId)
+        public async Task<UserNotificationPreferences> GetUserNotificationPreferencesAsync(string idamsUserId, string dfeUserId = null)
         {
             var preferences = await _userNotificationPreferencesRepository.GetAsync(idamsUserId);
 
-            return preferences ?? new UserNotificationPreferences() { Id = idamsUserId };
+            if (dfeUserId != null)
+            {
+                return preferences;
+            }
+            
+            return preferences ?? new UserNotificationPreferences { Id = idamsUserId};
+        }
+        
+        public async Task<UserNotificationPreferences> GetUserNotificationPreferencesByDfEUserIdAsync(string idamsUserId, string dfeUserId = null)
+        {
+            var preferences = await _userNotificationPreferencesRepository.GetByDfeUserId(dfeUserId) 
+                              ?? await GetUserNotificationPreferencesAsync(idamsUserId, dfeUserId);
+
+            return preferences ?? new UserNotificationPreferences() { Id = idamsUserId ,DfeUserId = dfeUserId};
         }
 
         public Task UpdateUserNotificationPreferencesAsync(UserNotificationPreferences preferences)
