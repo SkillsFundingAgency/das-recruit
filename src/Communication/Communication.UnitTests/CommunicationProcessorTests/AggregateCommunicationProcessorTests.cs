@@ -159,7 +159,7 @@ namespace Communication.UnitTests.CommunicationProcessorTests
             {
                 Id = Guid.NewGuid(),
                 RequestType = TestRequestType,
-                Recipient = new CommunicationUser("userId", "a@a.com", "a", TestUserType, UserParticipation.PrimaryUser),
+                Recipient = new CommunicationUser("userId", "a@a.com", "a", TestUserType, UserParticipation.PrimaryUser, Guid.NewGuid().ToString()),
                 ParticipantsResolverName = TestParticipantsResolverName,
                 Channel = DeliveryChannel.Email,
                 Frequency = DeliveryFrequency.Daily,

@@ -1,3 +1,4 @@
+using System;
 using Communication.Types;
 
 namespace Communication.UnitTests.CommunicationProcessorTests.CreateMessagesTest
@@ -6,7 +7,7 @@ namespace Communication.UnitTests.CommunicationProcessorTests.CreateMessagesTest
     {
         public static Participant OptedIn = new Participant()
         {
-            User = new CommunicationUser("userId", "email@email.com", nameof(OptedIn), "userType", UserParticipation.PrimaryUser),
+            User = new CommunicationUser("userId", "email@email.com", nameof(OptedIn), "userType", UserParticipation.PrimaryUser, Guid.NewGuid().ToString()),
             Preferences = new CommunicationUserPreference
             {
                 Channels = DeliveryChannelPreferences.EmailOnly,
@@ -16,25 +17,25 @@ namespace Communication.UnitTests.CommunicationProcessorTests.CreateMessagesTest
 
         public static Participant OptedOut = new Participant()
         {
-            User = new CommunicationUser("userId", "email@email.com", nameof(OptedOut), "userType", UserParticipation.PrimaryUser),
+            User = new CommunicationUser("userId", "email@email.com", nameof(OptedOut), "userType", UserParticipation.PrimaryUser, Guid.NewGuid().ToString()),
             Preferences = new CommunicationUserPreference { Channels = DeliveryChannelPreferences.None }
         };
 
         public static Participant PrimaryOptedOut = new Participant()
         {
-            User = new CommunicationUser("userId", "email@email.com", nameof(PrimaryOptedOut), "userType", UserParticipation.PrimaryUser),
+            User = new CommunicationUser("userId", "email@email.com", nameof(PrimaryOptedOut), "userType", UserParticipation.PrimaryUser, Guid.NewGuid().ToString()),
             Preferences = new CommunicationUserPreference { Channels = DeliveryChannelPreferences.None }
         };
 
         public static Participant SecondaryOptedOut = new Participant()
         {
-            User = new CommunicationUser("userId", "email@email.com", nameof(SecondaryOptedOut), "userType", UserParticipation.SecondaryUser),
+            User = new CommunicationUser("userId", "email@email.com", nameof(SecondaryOptedOut), "userType", UserParticipation.SecondaryUser, Guid.NewGuid().ToString()),
             Preferences = new CommunicationUserPreference { Channels = DeliveryChannelPreferences.None }
         };
 
         public static Participant SecondaryWithOrganisationScope = new Participant()
         {
-            User = new CommunicationUser("userId", "email@email.com", nameof(SecondaryWithOrganisationScope), "userType", UserParticipation.SecondaryUser),
+            User = new CommunicationUser("userId", "email@email.com", nameof(SecondaryWithOrganisationScope), "userType", UserParticipation.SecondaryUser, Guid.NewGuid().ToString()),
             Preferences = new CommunicationUserPreference
             {
                 Channels = DeliveryChannelPreferences.EmailOnly,
@@ -44,7 +45,7 @@ namespace Communication.UnitTests.CommunicationProcessorTests.CreateMessagesTest
 
         public static Participant SecondaryWithIndividualScope = new Participant()
         {
-            User = new CommunicationUser("userId", "email@email.com", nameof(SecondaryWithIndividualScope), "userType", UserParticipation.SecondaryUser),
+            User = new CommunicationUser("userId", "email@email.com", nameof(SecondaryWithIndividualScope), "userType", UserParticipation.SecondaryUser, Guid.NewGuid().ToString()),
             Preferences = new CommunicationUserPreference
             {
                 Channels = DeliveryChannelPreferences.EmailOnly,
@@ -54,7 +55,7 @@ namespace Communication.UnitTests.CommunicationProcessorTests.CreateMessagesTest
 
         public static Participant PrimaryWithIndividualScope = new Participant()
         {
-            User = new CommunicationUser("userId", "email@email.com", nameof(PrimaryWithIndividualScope), "userType", UserParticipation.PrimaryUser),
+            User = new CommunicationUser("userId", "email@email.com", nameof(PrimaryWithIndividualScope), "userType", UserParticipation.PrimaryUser, Guid.NewGuid().ToString()),
             Preferences = new CommunicationUserPreference
             {
                 Channels = DeliveryChannelPreferences.EmailOnly,
@@ -64,7 +65,7 @@ namespace Communication.UnitTests.CommunicationProcessorTests.CreateMessagesTest
 
         public static Participant PrimaryWithOrganisationalScope = new Participant()
         {
-            User = new CommunicationUser("userId", "email@email.com", nameof(PrimaryWithOrganisationalScope), "userType", UserParticipation.PrimaryUser),
+            User = new CommunicationUser("userId", "email@email.com", nameof(PrimaryWithOrganisationalScope), "userType", UserParticipation.PrimaryUser, Guid.NewGuid().ToString()),
             Preferences = new CommunicationUserPreference
             {
                 Channels = DeliveryChannelPreferences.EmailOnly,

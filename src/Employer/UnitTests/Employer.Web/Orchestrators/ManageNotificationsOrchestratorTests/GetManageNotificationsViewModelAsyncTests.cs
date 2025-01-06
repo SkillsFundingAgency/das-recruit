@@ -22,7 +22,7 @@ namespace Esfa.Recruit.UnitTests.Employer.Web.Orchestrators.ManageNotificationsO
         public async Task WhenUserPreferencesAreNotSet()
         {
             var employerAccountId = "ABC123";
-            _recruitVacancyClientMock.Setup(c => c.GetUserNotificationPreferencesAsync(It.IsAny<string>())).ReturnsAsync(new UserNotificationPreferences());
+            _recruitVacancyClientMock.Setup(c => c.GetUserNotificationPreferencesAsync(It.IsAny<string>(),It.IsAny<string>())).ReturnsAsync(new UserNotificationPreferences());
             var sut = GetSut();
             var result = await sut.GetManageNotificationsViewModelAsync(new VacancyUser(), employerAccountId);
 
@@ -40,7 +40,7 @@ namespace Esfa.Recruit.UnitTests.Employer.Web.Orchestrators.ManageNotificationsO
         public async Task WhenUserPreferencesAreNotSet_For_Non_Prod()
         {
             var employerAccountId = "ABC123";
-            _recruitVacancyClientMock.Setup(c => c.GetUserNotificationPreferencesAsync(It.IsAny<string>())).ReturnsAsync(new UserNotificationPreferences());
+            _recruitVacancyClientMock.Setup(c => c.GetUserNotificationPreferencesAsync(It.IsAny<string>(),It.IsAny<string>())).ReturnsAsync(new UserNotificationPreferences());
             var sut = GetSut(false);
             var result = await sut.GetManageNotificationsViewModelAsync(new VacancyUser(), employerAccountId);
 
@@ -63,7 +63,7 @@ namespace Esfa.Recruit.UnitTests.Employer.Web.Orchestrators.ManageNotificationsO
             bool expectedIsVacancyClosingSoonSelected, bool expectedIsVacancyRejectedSelected, bool expectIsVacancySentForReviewSelected)
         {
             _recruitVacancyClientMock
-                .Setup(c => c.GetUserNotificationPreferencesAsync(It.IsAny<string>()))
+                .Setup(c => c.GetUserNotificationPreferencesAsync(It.IsAny<string>(),It.IsAny<string>()))
                 .ReturnsAsync(new UserNotificationPreferences { NotificationTypes = notificationTypes });
             var sut = GetSut();
             var result = await sut.GetManageNotificationsViewModelAsync(new VacancyUser(), "ABC123");
