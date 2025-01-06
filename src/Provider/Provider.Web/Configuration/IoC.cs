@@ -76,8 +76,8 @@ namespace Esfa.Recruit.Provider.Web.Configuration
             services.AddTransient<ITrainingProviderAgreementService, TrainingProviderAgreementService>();
             services.AddTransient<IUtility, Utility>();
             services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
-
             services.AddTransient<IFieldReviewHelper, FieldReviewHelper>();
+            services.AddSingleton<IVacancyLocationService, VacancyLocationService>();
         }
 
         private static void RegisterFluentValidators(IServiceCollection services)

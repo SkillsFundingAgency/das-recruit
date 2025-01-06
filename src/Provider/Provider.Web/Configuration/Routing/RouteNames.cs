@@ -162,5 +162,8 @@
         
         public const string RecruitNationally_Get = nameof(RecruitNationally_Get);
         public const string RecruitNationally_Post = nameof(RecruitNationally_Post);
+        
+        public const string MultipleLocationsConfirm_Get = nameof(MultipleLocationsConfirm_Get);
+        public const string MultipleLocationsConfirm_Post = nameof(MultipleLocationsConfirm_Post);
     }
 }
