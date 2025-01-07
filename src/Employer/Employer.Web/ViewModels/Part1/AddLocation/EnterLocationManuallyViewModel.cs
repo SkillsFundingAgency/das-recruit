@@ -14,7 +14,9 @@ public class EnterLocationManuallyViewModel : AddLocationJourneyViewModel
     public IList<string> OrderedFieldNames => new List<string>
     {
         nameof(AddressLine1),
+        nameof(AddressLine2),
         nameof(City),
+        nameof(County),
         nameof(Postcode)
     };
 }
