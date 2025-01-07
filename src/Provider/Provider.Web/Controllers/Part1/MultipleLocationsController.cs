@@ -153,4 +153,33 @@ public class MultipleLocationsController(
         
         return View(viewModel);
     }
+    
+    
+    [FeatureGate(FeatureNames.MultipleLocations)]
+    [HttpGet("confirm-locations", Name = RouteNames.MultipleLocationsConfirm_Get)]
+    public async Task<IActionResult> ConfirmLocations(
+        [FromServices] IUtility utility,
+        VacancyRouteModel vacancyRouteModel,
+        [FromQuery] bool wizard)
+    {
+        var vacancy = await utility.GetAuthorisedVacancyForEditAsync(vacancyRouteModel, RouteNames.MultipleLocations_Get);
+        var viewModel = new ConfirmLocationsViewModel
+        {
+            ApprenticeshipTitle = vacancy.Title,
+            Ukprn = vacancyRouteModel.Ukprn,
+            PageInfo = utility.GetPartOnePageInfo(vacancy),
+            Locations = vacancy.EmployerLocations,
+            VacancyId = vacancyRouteModel.VacancyId,
+        };
+        viewModel.PageInfo.SetWizard(wizard);
+
+        return View(viewModel);
+    }
+
+    [FeatureGate(FeatureNames.MultipleLocations)]
+    [HttpPost("confirm-locations", Name = RouteNames.MultipleLocationsConfirm_Post)]
+    public IActionResult ConfirmLocations(VacancyRouteModel vacancyRouteModel, [FromQuery] bool wizard)
+    {
+        return RedirectToRoute(RouteNames.ProviderTaskListGet, new { vacancyRouteModel.VacancyId, vacancyRouteModel.Ukprn, wizard });
+    }
 }
