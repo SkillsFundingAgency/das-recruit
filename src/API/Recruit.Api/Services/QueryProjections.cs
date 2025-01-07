@@ -157,7 +157,8 @@ namespace SFA.DAS.Recruit.Api.Services
     {
         New,
         Successful,
-        Unsuccessful
+        Unsuccessful,
+        Interviewing
     }
 
     public enum ApplicationReviewDisabilityStatus
