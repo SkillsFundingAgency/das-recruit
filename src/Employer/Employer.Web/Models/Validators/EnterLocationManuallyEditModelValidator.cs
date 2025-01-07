@@ -17,16 +17,12 @@ public class EnterLocationManuallyEditModelValidator : AbstractValidator<EnterLo
             .WithMessage("Enter address line 1, typically the building and street")
             .ValidFreeTextCharacters()
             .WithMessage("Address line 1 must only include letters a to z, numbers 0 to 9, and special characters such as hyphens, spaces and apostrophes")
-            .ProfanityCheck(profanityListProvider)
-            .WithMessage("Address line 1 must not contain a banned word or phrase")
             .MaximumLength(MaxLineLength)
             .WithMessage("Address line 1 must be {MaxLength} characters or less");
         
         RuleFor(x => x.AddressLine2)
             .ValidFreeTextCharacters()
             .WithMessage("Address line 2 must only include letters a to z, numbers 0 to 9, and special characters such as hyphens, spaces and apostrophes")
-            .ProfanityCheck(profanityListProvider)
-            .WithMessage("Address line 2 must not contain a banned word or phrase")
             .MaximumLength(MaxLineLength)
             .WithMessage("Address line 2 must be {MaxLength} characters or less");
         
@@ -35,16 +31,12 @@ public class EnterLocationManuallyEditModelValidator : AbstractValidator<EnterLo
             .WithMessage("Enter town or city")
             .ValidFreeTextCharacters()
             .WithMessage("Town or city must only include letters a to z, numbers 0 to 9, and special characters such as hyphens, spaces and apostrophes")
-            .ProfanityCheck(profanityListProvider)
-            .WithMessage("Town or city must not contain a banned word or phrase")
             .MaximumLength(MaxLineLength)
             .WithMessage("Town or city must be {MaxLength} characters or less");
         
         RuleFor(x => x.County)
             .ValidFreeTextCharacters()
             .WithMessage("County must only include letters a to z, numbers 0 to 9, and special characters such as hyphens, spaces and apostrophes")
-            .ProfanityCheck(profanityListProvider)
-            .WithMessage("County must not contain a banned word or phrase")
             .MaximumLength(MaxLineLength)
             .WithMessage("County must be {MaxLength} characters or less");
         
