@@ -96,9 +96,15 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Application
             var vacancy = _fixture.Create<Vacancy>();
             var vacancyApplication1 = _fixture.Create<VacancyApplication>();
             var vacancyApplication2 = _fixture.Create<VacancyApplication>();
-            var vacancyApplications = new List<VacancyApplication> { };
-            vacancyApplications.Add(vacancyApplication1);
-            vacancyApplications.Add(vacancyApplication2);
+            var vacancyApplications = new List<VacancyApplication>
+            {
+                vacancyApplication1,
+                vacancyApplication2
+            };
+            foreach (var vacancyApplication in vacancyApplications)
+            {
+                vacancyApplication.IsWithdrawn = false;
+            }
 
             _vacancyClient.Setup(x => x.GetVacancyAsync(routeModel.VacancyId.GetValueOrDefault()))
                 .ReturnsAsync(vacancy);
@@ -111,6 +117,40 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Application
             // Assert
             Assert.That(viewModel.VacancyApplications, Is.Not.Empty);
             Assert.That(viewModel.VacancyApplications.Count(), Is.EqualTo(vacancyApplications.Count()));
+            Assert.That(viewModel.Ukprn, Is.EqualTo(routeModel.Ukprn));
+            Assert.That(viewModel.VacancyId, Is.EqualTo(vacancy.Id));
+            Assert.That(viewModel.VacancyReference, Is.EqualTo(vacancy.VacancyReference));
+        }
+
+        [Test]
+        public async Task GetApplicationReviewsToShareViewModelAsync_With_WithDrawn_Status_ReturnsViewModelWithCorrectData()
+        {
+            // Arrange
+            var routeModel = _fixture.Create<VacancyRouteModel>();
+            var vacancy = _fixture.Create<Vacancy>();
+            var vacancyApplication1 = _fixture.Create<VacancyApplication>();
+            var vacancyApplication2 = _fixture.Create<VacancyApplication>();
+            var vacancyApplications = new List<VacancyApplication>
+            {
+                vacancyApplication1,
+                vacancyApplication2
+            };
+            foreach (var vacancyApplication in vacancyApplications)
+            {
+                vacancyApplication.IsWithdrawn = true;
+            }
+
+            _vacancyClient.Setup(x => x.GetVacancyAsync(routeModel.VacancyId.GetValueOrDefault()))
+                .ReturnsAsync(vacancy);
+            _vacancyClient.Setup(x => x.GetVacancyApplicationsSortedAsync(vacancy.VacancyReference.Value, It.IsAny<SortColumn>(), It.IsAny<SortOrder>(), false))
+                .ReturnsAsync(vacancyApplications);
+
+            // Act
+            var viewModel = await _orchestrator.GetApplicationReviewsToShareViewModelAsync(routeModel, SortColumn.Name, SortOrder.Ascending);
+
+            // Assert
+            Assert.That(viewModel.VacancyApplications, Is.Not.Empty);
+            Assert.That(viewModel.VacancyApplications.Count(), Is.EqualTo(0));
             Assert.That(viewModel.Ukprn, Is.EqualTo(routeModel.Ukprn));
             Assert.That(viewModel.VacancyId, Is.EqualTo(vacancy.Id));
             Assert.That(viewModel.VacancyReference, Is.EqualTo(vacancy.VacancyReference));
