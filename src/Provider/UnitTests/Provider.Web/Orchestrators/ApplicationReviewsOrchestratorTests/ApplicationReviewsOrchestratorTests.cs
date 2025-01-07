@@ -43,12 +43,18 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Application
             var applicationReview1 = _fixture.Create<ApplicationReview>();
             var applicationReview2 = _fixture.Create<ApplicationReview>();
             var applicationReview3 = _fixture.Create<ApplicationReview>();
-            var applications = new List<ApplicationReview> { };
-            applications.Add(applicationReview1);
-            applications.Add(applicationReview2);
-            applications.Add(applicationReview3);
-            var sortColumn = SortColumn.DateApplied;
-            var sortOrder = SortOrder.Descending;
+            var applications = new List<ApplicationReview>
+            {
+                applicationReview1,
+                applicationReview2,
+                applicationReview3
+            };
+            foreach (var applicationReview in applications)
+            {
+                applicationReview.IsWithdrawn = false;
+            }
+            const SortColumn sortColumn = SortColumn.DateApplied;
+            const SortOrder sortOrder = SortOrder.Descending;
 
             _vacancyClient.Setup(x => x.GetVacancyAsync(routeModel.VacancyId.GetValueOrDefault()))
                 .ReturnsAsync(vacancy);
@@ -60,7 +66,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Application
 
             // Assert
             Assert.That(viewModel.VacancyApplications, Is.Not.Empty);
-            Assert.That(viewModel.VacancyApplications.Count(), Is.EqualTo(applications.Count()));
+            Assert.That(viewModel.VacancyApplications.Count, Is.EqualTo(applications.Count));
             Assert.That(viewModel.Ukprn, Is.EqualTo(routeModel.Ukprn));
             Assert.That(viewModel.VacancyId, Is.EqualTo(vacancy.Id));
             Assert.That(viewModel.VacancyApplications[0].SubmittedDate, Is.GreaterThan(viewModel.VacancyApplications[1].SubmittedDate));
@@ -116,7 +122,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Application
 
             // Assert
             Assert.That(viewModel.VacancyApplications, Is.Not.Empty);
-            Assert.That(viewModel.VacancyApplications.Count(), Is.EqualTo(vacancyApplications.Count()));
+            Assert.That(viewModel.VacancyApplications.Count, Is.EqualTo(vacancyApplications.Count));
             Assert.That(viewModel.Ukprn, Is.EqualTo(routeModel.Ukprn));
             Assert.That(viewModel.VacancyId, Is.EqualTo(vacancy.Id));
             Assert.That(viewModel.VacancyReference, Is.EqualTo(vacancy.VacancyReference));
@@ -149,8 +155,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Application
             var viewModel = await _orchestrator.GetApplicationReviewsToShareViewModelAsync(routeModel, SortColumn.Name, SortOrder.Ascending);
 
             // Assert
-            Assert.That(viewModel.VacancyApplications, Is.Not.Empty);
-            Assert.That(viewModel.VacancyApplications.Count(), Is.EqualTo(0));
+            Assert.That(viewModel.VacancyApplications.Count, Is.EqualTo(0));
             Assert.That(viewModel.Ukprn, Is.EqualTo(routeModel.Ukprn));
             Assert.That(viewModel.VacancyId, Is.EqualTo(vacancy.Id));
             Assert.That(viewModel.VacancyReference, Is.EqualTo(vacancy.VacancyReference));
