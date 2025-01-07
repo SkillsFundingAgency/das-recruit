@@ -65,10 +65,6 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
             var applicationReviews = CreateApplicationReviewsFixture(3);
             var sortOrder = SortOrder.Descending;
             var sortColumn = SortColumn.DateApplied;
-            foreach (var applicationReview in applicationReviews)
-            {
-                applicationReview.IsWithdrawn = false;
-            }
 
             _orchestrator.Setup(o =>
                     o.GetApplicationReviewsToUnsuccessfulViewModelAsync(It.Is<VacancyRouteModel>(y => y == routeModel), It.Is<SortColumn>(x => x.Equals(sortColumn)), It.Is<SortOrder>(x => x.Equals(sortOrder))))
@@ -125,16 +121,9 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
             var routeModel = _fixture.Create<VacancyRouteModel>();
             var vacancyApplication1 = _fixture.Create<VacancyApplication>();
             var vacancyApplication2 = _fixture.Create<VacancyApplication>();
-            var vacancyApplications = new List<VacancyApplication>
-            {
-                vacancyApplication1,
-                vacancyApplication2
-            };
-            foreach (var vacancyApplication in vacancyApplications)
-            {
-                vacancyApplication.IsWithdrawn = false;
-            }
-
+            var vacancyApplications = new List<VacancyApplication> { };
+            vacancyApplications.Add(vacancyApplication1);
+            vacancyApplications.Add(vacancyApplication2);
             _controller.TempData.Add(TempDataKeys.ApplicationReviewStatusInfoMessage, string.Format(InfoMessages.ApplicationReviewSuccessStatusHeader, "Jack Sparrow"));
             var sortOrder = SortOrder.Descending;
             var sortColumn = SortColumn.Name;
@@ -167,10 +156,6 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
             // Arrange
             var routeModel = _fixture.Create<VacancyRouteModel>();
             var applicationReviews = CreateApplicationReviewsFixture(3);
-            foreach (var applicationReview in applicationReviews)
-            {
-                applicationReview.IsWithdrawn = false;
-            }
 
             _orchestrator.Setup(o =>
                     o.GetApplicationReviewsToUnsuccessfulViewModelAsync(It.Is<VacancyRouteModel>(y => y == routeModel), It.Is<SortColumn>(x => x.Equals(SortColumn.Default)), It.Is<SortOrder>(x => x.Equals(SortOrder.Default))))
