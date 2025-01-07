@@ -10,6 +10,7 @@ using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Provider.Web.Services;
 using Esfa.Recruit.Provider.Web.ViewModels.Part1.MultipleLocations;
 using Esfa.Recruit.Shared.Web;
+using Esfa.Recruit.Shared.Web.Domain;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Microsoft.AspNetCore.Hosting;
@@ -154,6 +155,14 @@ public class MultipleLocationsController(
         return View(viewModel);
     }
     
+    [FeatureGate(FeatureNames.MultipleLocations)]
+    [HttpPost("add-many-locations/add-new-location", Name = RouteNames.AddNewLocationJourney_Post)]
+    public IActionResult AddALocation(AddMoreThanOneLocationEditModel editModel, [FromQuery] bool wizard)
+    {
+        TempData.Remove(TempDataKeys.Postcode);
+        TempData[TempDataKeys.SelectedLocations] = JsonSerializer.Serialize(editModel.SelectedLocations);
+        return RedirectToRoute(RouteNames.AddLocation_Get, new { editModel.VacancyId, editModel.Ukprn, wizard, origin = MultipleLocationsJourneyOrigin.Many } );
+    }
     
     [FeatureGate(FeatureNames.MultipleLocations)]
     [HttpGet("confirm-locations", Name = RouteNames.MultipleLocationsConfirm_Get)]

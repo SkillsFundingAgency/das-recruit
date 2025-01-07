@@ -1,17 +1,18 @@
 ﻿using System.Threading;
 using AutoFixture.NUnit3;
-using Esfa.Recruit.Employer.Web.Configuration.Routing;
-using Esfa.Recruit.Employer.Web.Controllers.Part1;
-using Esfa.Recruit.Employer.Web.Models.AddLocation;
-using Esfa.Recruit.Employer.Web.ViewModels.Part1.AddLocation;
+using Esfa.Recruit.Provider.Web.Configuration.Routing;
+using Esfa.Recruit.Provider.Web.Controllers.Part1;
+using Esfa.Recruit.Provider.Web.Models.AddLocation;
+using Esfa.Recruit.Provider.Web.ViewModels.Part1.AddLocation;
 using Esfa.Recruit.Shared.Web.Domain;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
+using NUnit.Framework;
 
-namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Controllers.Part1;
+namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers.Part1;
 
 public class AddLocationControllerTests
 {
@@ -24,7 +25,7 @@ public class AddLocationControllerTests
         var addLocationModel = new AddLocationJourneyModel()
         {
             VacancyId = vacancy.Id,
-            EmployerAccountId = vacancy.EmployerAccountId,
+            Ukprn = new Random().Next(),
             Origin = MultipleLocationsJourneyOrigin.Many,
             Wizard = true
         };
@@ -37,7 +38,7 @@ public class AddLocationControllerTests
         result.Should().NotBeNull();
         result!.VacancyId.Should().Be(vacancy.Id);
         result.ApprenticeshipTitle.Should().Be(vacancy.Title);
-        result.EmployerAccountId.Should().BeEquivalentTo(vacancy.EmployerAccountId);
+        result.Ukprn.Should().Be(addLocationModel.Ukprn);
         result.Origin.Should().Be(MultipleLocationsJourneyOrigin.Many);
         result.Postcode.Should().Be(null);
     }
@@ -85,7 +86,7 @@ public class AddLocationControllerTests
         result.Should().NotBeNull();
         result!.VacancyId.Should().Be(addLocationEditModel.VacancyId);
         result.ApprenticeshipTitle.Should().Be(vacancy.Title);
-        result.EmployerAccountId.Should().BeEquivalentTo(addLocationEditModel.EmployerAccountId);
+        result.Ukprn.Should().Be(addLocationEditModel.Ukprn);
         result.Origin.Should().Be(addLocationEditModel.Origin);
         result.Postcode.Should().Be(addLocationEditModel.Postcode);
     }

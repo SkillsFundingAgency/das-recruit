@@ -30,8 +30,8 @@ public class MultipleLocationsControllerTests
             VacancyId = vacancy.Id,
             Ukprn = new Random().Next(),
         };
-        utility.Setup(x => x.GetAuthorisedVacancyForEditAsync(It.IsAny<VacancyRouteModel>(), It.IsAny<string>())).ReturnsAsync(vacancy);
-        
+        utility.Setup(x => x.GetAuthorisedVacancyForEditAsync(vacancyRouteModel, It.IsAny<string>())).ReturnsAsync(vacancy);
+
         // act
         var result = (await sut.LocationAvailability(utility.Object, vacancyRouteModel) as ViewResult)?.Model as LocationAvailabilityViewModel;
         
@@ -74,9 +74,9 @@ public class MultipleLocationsControllerTests
             SelectedAvailability = AvailableWhere.MultipleLocations,
             VacancyId = vacancy.Id,
         };
-        utility.Setup(x => x.GetAuthorisedVacancyForEditAsync(It.IsAny<VacancyRouteModel>(), It.IsAny<string>())).ReturnsAsync(vacancy);
+        utility.Setup(x => x.GetAuthorisedVacancyForEditAsync(editModel, It.IsAny<string>())).ReturnsAsync(vacancy);
         sut.ModelState.AddModelError(string.Empty, string.Empty);
-        
+
         // act
         var result = (await sut.LocationAvailability(utility.Object, editModel, true) as ViewResult)?.Model as LocationAvailabilityViewModel;
         
@@ -101,8 +101,8 @@ public class MultipleLocationsControllerTests
         sut.AddControllerContext().WithUser(Guid.NewGuid());
 
         vacancy.Id = model.VacancyId!.Value;
-        utility.Setup(x => x.GetAuthorisedVacancyForEditAsync(It.IsAny<VacancyRouteModel>(), It.IsAny<string>())).ReturnsAsync(vacancy);
-        vacancyLocationService.Setup(x => x.GetVacancyLocations(It.Is<Vacancy>(v => v == vacancy))).ReturnsAsync(locations);
+        utility.Setup(x => x.GetAuthorisedVacancyForEditAsync(model, It.IsAny<string>())).ReturnsAsync(vacancy);
+        vacancyLocationService.Setup(x => x.GetVacancyLocations(vacancy)).ReturnsAsync(locations);
         
         // act
         var result = (await sut.AddMoreThanOneLocation(vacancyLocationService.Object, utility.Object, model, true) as ViewResult)?.Model as AddMoreThanOneLocationViewModel;
@@ -136,8 +136,8 @@ public class MultipleLocationsControllerTests
         sut.AddControllerContext().WithUser(Guid.NewGuid());
 
         vacancy.Id = model.VacancyId!.Value;
-        utility.Setup(x => x.GetAuthorisedVacancyForEditAsync(It.IsAny<VacancyRouteModel>(), It.IsAny<string>())).ReturnsAsync(vacancy);
-        vacancyLocationService.Setup(x => x.GetVacancyLocations(It.Is<Vacancy>(v => v == vacancy))).ReturnsAsync(locations);
+        utility.Setup(x => x.GetAuthorisedVacancyForEditAsync(model, It.IsAny<string>())).ReturnsAsync(vacancy);
+        vacancyLocationService.Setup(x => x.GetVacancyLocations(vacancy)).ReturnsAsync(locations);
         
         // act
         var result = (await sut.AddMoreThanOneLocation(vacancyLocationService.Object, utility.Object, model, true) as ViewResult)?.Model as AddMoreThanOneLocationViewModel;
@@ -166,8 +166,8 @@ public class MultipleLocationsControllerTests
         sut.TempData = tempData;
 
         vacancy.Id = model.VacancyId!.Value;
-        utility.Setup(x => x.GetAuthorisedVacancyForEditAsync(It.IsAny<VacancyRouteModel>(), It.IsAny<string>())).ReturnsAsync(vacancy);
-        vacancyLocationService.Setup(x => x.GetVacancyLocations(It.Is<Vacancy>(v => v == vacancy))).ReturnsAsync(locations);
+        utility.Setup(x => x.GetAuthorisedVacancyForEditAsync(model, It.IsAny<string>())).ReturnsAsync(vacancy);
+        vacancyLocationService.Setup(x => x.GetVacancyLocations(vacancy)).ReturnsAsync(locations);
 
         // act
         var result = (await sut.AddMoreThanOneLocation(vacancyLocationService.Object, utility.Object, model, true) as ViewResult)?.Model as AddMoreThanOneLocationViewModel;
@@ -191,14 +191,17 @@ public class MultipleLocationsControllerTests
         [Greedy] MultipleLocationsController sut)
     {
         // arrange
+        var userId = Guid.NewGuid();
         sut
             .AddControllerContext()
-            .WithUser(Guid.NewGuid())
+            .WithUser(userId)
             .WithClaim(ProviderRecruitClaims.IdamsUserUkprnClaimsTypeIdentifier, model.Ukprn.ToString());
         vacancy.Id = model.VacancyId!.Value;
-        utility.Setup(x => x.GetAuthorisedVacancyForEditAsync(It.IsAny<VacancyRouteModel>(), It.IsAny<string>())).ReturnsAsync(vacancy);
-        vacancyLocationService.Setup(x => x.GetVacancyLocations(It.Is<Vacancy>(v => v == vacancy))).ReturnsAsync(locations);
-        vacancyLocationService.Setup(x => x.UpdateDraftVacancyLocations(It.IsAny<Vacancy>(), It.IsAny<VacancyUser>(), It.IsAny<AvailableWhere>(), It.IsAny<List<Address>>(), null))
+        utility.Setup(x => x.GetAuthorisedVacancyForEditAsync(model, It.IsAny<string>())).ReturnsAsync(vacancy);
+        vacancyLocationService.Setup(x => x.GetVacancyLocations(vacancy)).ReturnsAsync(locations);
+        vacancyLocationService
+            .Setup(x => x.UpdateDraftVacancyLocations(vacancy, It.Is<VacancyUser>(u => u.UserId == userId.ToString()),
+                AvailableWhere.MultipleLocations, It.IsAny<List<Address>>(), null))
             .ReturnsAsync(new UpdateVacancyLocationsResult(null));
         
         // act
@@ -207,6 +210,43 @@ public class MultipleLocationsControllerTests
         // assert
         result.Should().NotBeNull();
         result!.RouteName.Should().Be(RouteNames.MultipleLocationsConfirm_Get);
+    }
+    
+    [Test, MoqAutoData]
+    public void When_Getting_AddALocation_The_Selected_Values_Are_Stored(
+        [Greedy] MultipleLocationsController sut)
+    {
+        // arrange
+        var selected = new List<string> { "1", "2", "3" };
+        string jsonSelected = JsonSerializer.Serialize(selected);
+        var tempData = new TempDataDictionary(new DefaultHttpContext(), Mock.Of<ITempDataProvider>());
+        sut.TempData = tempData;
+        var editModel = new AddMoreThanOneLocationEditModel { SelectedLocations = selected };
+        
+        // act
+        sut.AddALocation(editModel, true);
+
+        // assert
+        tempData.Keys.Should().Contain(TempDataKeys.SelectedLocations);
+        tempData.Values.Should().Contain(jsonSelected);
+    }
+    
+    [Test, MoqAutoData]
+    public void When_Getting_AddALocation_Result_Is_Redirection_To_The_Correct_Route(
+        [Greedy] MultipleLocationsController sut)
+    {
+        // arrange
+        var selected = new List<string> { "1", "2", "3" };
+        var tempData = new TempDataDictionary(new DefaultHttpContext(), Mock.Of<ITempDataProvider>());
+        sut.TempData = tempData;
+        var editModel = new AddMoreThanOneLocationEditModel { SelectedLocations = selected };
+        
+        // act
+        var result = sut.AddALocation(editModel, true) as RedirectToRouteResult;
+
+        // assert
+        result.Should().NotBeNull();
+        result!.RouteName.Should().Be(RouteNames.AddLocation_Get);
     }
     
     [Test, MoqAutoData]
@@ -221,8 +261,8 @@ public class MultipleLocationsControllerTests
             VacancyId = vacancy.Id,
             Ukprn = new Random().Next(),
         };
-        utility.Setup(x => x.GetAuthorisedVacancyForEditAsync(It.IsAny<VacancyRouteModel>(), It.IsAny<string>())).ReturnsAsync(vacancy);
-        
+        utility.Setup(x => x.GetAuthorisedVacancyForEditAsync(model, It.IsAny<string>())).ReturnsAsync(vacancy);
+
         // act
         var result = (await sut.ConfirmLocations(utility.Object, model, true) as ViewResult)?.Model as ConfirmLocationsViewModel;
 
