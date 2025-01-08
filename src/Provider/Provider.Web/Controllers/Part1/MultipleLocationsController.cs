@@ -82,7 +82,7 @@ public class MultipleLocationsController(
         [FromQuery] bool wizard)
     {
         var vacancy = await utility.GetAuthorisedVacancyForEditAsync(model, RouteNames.AddMoreThanOneLocation_Get);
-        var allLocations = await vacancyLocationService.GetVacancyLocations(vacancy);
+        var allLocations = await vacancyLocationService.GetVacancyLocations(vacancy, model.Ukprn);
         
         var selectedLocations = vacancy.EmployerLocations switch
         {
@@ -125,7 +125,7 @@ public class MultipleLocationsController(
         [FromQuery] bool wizard)
     {
         var vacancy = await utility.GetAuthorisedVacancyForEditAsync(editModel, RouteNames.AddMoreThanOneLocation_Post);
-        var allLocations = await vacancyLocationService.GetVacancyLocations(vacancy);
+        var allLocations = await vacancyLocationService.GetVacancyLocations(vacancy, editModel.Ukprn);
         var locations = editModel.SelectedLocations
             .Select(x => allLocations.FirstOrDefault(l => l.ToAddressString() == x))
             .Where(x => x is not null)

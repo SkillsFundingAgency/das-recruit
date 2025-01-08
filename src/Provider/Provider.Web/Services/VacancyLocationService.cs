@@ -11,25 +11,27 @@ namespace Esfa.Recruit.Provider.Web.Services;
 
 public interface IVacancyLocationService
 {
-    public Task<List<Address>> GetVacancyLocations(Vacancy vacancy);
+    public Task<List<Address>> GetVacancyLocations(Vacancy vacancy, long ukprn);
     public Task<UpdateVacancyLocationsResult> UpdateDraftVacancyLocations(Vacancy vacancy, VacancyUser user, AvailableWhere availableWhere, List<Address> locations = null, string locationInformation = null);
 }
 
 public record UpdateVacancyLocationsResult(EntityValidationResult ValidationResult);
 
-public class VacancyLocationService(IRecruitVacancyClient recruitVacancyClient, IEmployerVacancyClient employerVacancyClient): IVacancyLocationService
+public class VacancyLocationService(
+    IRecruitVacancyClient recruitVacancyClient,
+    IProviderVacancyClient providerVacancyClient): IVacancyLocationService
 {
-    public async Task<List<Address>> GetVacancyLocations(Vacancy vacancy)
+    public async Task<List<Address>> GetVacancyLocations(Vacancy vacancy, long ukprn)
     {
         ArgumentNullException.ThrowIfNull(vacancy);
         var employerProfile = await recruitVacancyClient.GetEmployerProfileAsync(vacancy.EmployerAccountId, vacancy.AccountLegalEntityPublicHashedId);
-
-        var employerData = await employerVacancyClient.GetEditVacancyInfoAsync(employerProfile.EmployerAccountId);
-        var legalEntity = employerData.LegalEntities.First(l => l.AccountLegalEntityPublicHashedId == employerProfile.AccountLegalEntityPublicHashedId);
+        var providerData = await providerVacancyClient.GetProviderEditVacancyInfoAsync(ukprn);
+        var employerInfo = providerData.Employers.Single(e => e.EmployerAccountId == vacancy.EmployerAccountId);
+        var legalEntity = employerInfo.LegalEntities.FirstOrDefault(l => l.AccountLegalEntityPublicHashedId == employerProfile.AccountLegalEntityPublicHashedId);
+        
         var locations = new List<Address>();
-
-        var legalAddress = legalEntity.Address.ConvertToDomainAddress();
-        if (!legalAddress.IsEmpty())
+        var legalAddress = legalEntity?.Address.ConvertToDomainAddress();
+        if (legalAddress is not null && !legalAddress.IsEmpty())
         {
             locations.Add(legalAddress);
         }

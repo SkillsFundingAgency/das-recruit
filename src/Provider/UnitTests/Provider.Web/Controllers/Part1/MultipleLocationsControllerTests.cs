@@ -102,7 +102,7 @@ public class MultipleLocationsControllerTests
 
         vacancy.Id = model.VacancyId!.Value;
         utility.Setup(x => x.GetAuthorisedVacancyForEditAsync(model, It.IsAny<string>())).ReturnsAsync(vacancy);
-        vacancyLocationService.Setup(x => x.GetVacancyLocations(vacancy)).ReturnsAsync(locations);
+        vacancyLocationService.Setup(x => x.GetVacancyLocations(vacancy, model.Ukprn)).ReturnsAsync(locations);
         
         // act
         var result = (await sut.AddMoreThanOneLocation(vacancyLocationService.Object, utility.Object, model, true) as ViewResult)?.Model as AddMoreThanOneLocationViewModel;
@@ -137,7 +137,7 @@ public class MultipleLocationsControllerTests
 
         vacancy.Id = model.VacancyId!.Value;
         utility.Setup(x => x.GetAuthorisedVacancyForEditAsync(model, It.IsAny<string>())).ReturnsAsync(vacancy);
-        vacancyLocationService.Setup(x => x.GetVacancyLocations(vacancy)).ReturnsAsync(locations);
+        vacancyLocationService.Setup(x => x.GetVacancyLocations(vacancy, model.Ukprn)).ReturnsAsync(locations);
         
         // act
         var result = (await sut.AddMoreThanOneLocation(vacancyLocationService.Object, utility.Object, model, true) as ViewResult)?.Model as AddMoreThanOneLocationViewModel;
@@ -167,7 +167,7 @@ public class MultipleLocationsControllerTests
 
         vacancy.Id = model.VacancyId!.Value;
         utility.Setup(x => x.GetAuthorisedVacancyForEditAsync(model, It.IsAny<string>())).ReturnsAsync(vacancy);
-        vacancyLocationService.Setup(x => x.GetVacancyLocations(vacancy)).ReturnsAsync(locations);
+        vacancyLocationService.Setup(x => x.GetVacancyLocations(vacancy, model.Ukprn)).ReturnsAsync(locations);
 
         // act
         var result = (await sut.AddMoreThanOneLocation(vacancyLocationService.Object, utility.Object, model, true) as ViewResult)?.Model as AddMoreThanOneLocationViewModel;
@@ -198,7 +198,7 @@ public class MultipleLocationsControllerTests
             .WithClaim(ProviderRecruitClaims.IdamsUserUkprnClaimsTypeIdentifier, model.Ukprn.ToString());
         vacancy.Id = model.VacancyId!.Value;
         utility.Setup(x => x.GetAuthorisedVacancyForEditAsync(model, It.IsAny<string>())).ReturnsAsync(vacancy);
-        vacancyLocationService.Setup(x => x.GetVacancyLocations(vacancy)).ReturnsAsync(locations);
+        vacancyLocationService.Setup(x => x.GetVacancyLocations(vacancy, model.Ukprn)).ReturnsAsync(locations);
         vacancyLocationService
             .Setup(x => x.UpdateDraftVacancyLocations(vacancy, It.Is<VacancyUser>(u => u.UserId == userId.ToString()),
                 AvailableWhere.MultipleLocations, It.IsAny<List<Address>>(), null))
