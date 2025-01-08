@@ -7,11 +7,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyApplications;
 using MediatR;
-using SFA.DAS.Recruit.Api.Helpers;
 using SFA.DAS.Recruit.Api.Models;
-using SFA.DAS.Recruit.Api.Services;
-using ApplicationReviewStatus = SFA.DAS.Recruit.Api.Services.ApplicationReviewStatus;
 
 namespace SFA.DAS.Recruit.Api.Queries;
 
@@ -24,7 +23,7 @@ public class GetEmployerSuccessfulApplicantsQueryResponse : ResponseBase;
 
 public class GetEmployerSuccessfulApplicantsQueryHandler(
     IVacancyQuery vacancyQuery,
-    IQueryStoreReader queryStoreReader)
+    IRecruitVacancyClient vacancyClient)
     : IRequestHandler<GetEmployerSuccessfulApplicantsQuery, GetEmployerSuccessfulApplicantsQueryResponse>
 {
     private const int MaxDegreeOfParallelism = 10;
@@ -66,9 +65,9 @@ public class GetEmployerSuccessfulApplicantsQueryHandler(
 
         await Parallel.ForEachAsync(vacancies, options, async (vacancy, _) =>
         {
-            var response = await queryStoreReader.GetVacancyApplicationsAsync(vacancy.VacancyReference.ToString());
+            var response = await vacancyClient.GetVacancyApplicationsAsync(vacancy.VacancyReference.Value);
 
-            if (response != null && response.Applications.Count > 0)
+            if (response != null && response.Count > 0)
             {
                 var filteredApplications = FilterSuccessfulApplicants(response);
 
@@ -90,14 +89,14 @@ public class GetEmployerSuccessfulApplicantsQueryHandler(
             CandidateId = application.CandidateId,
             FirstName = application.FirstName,
             LastName = application.LastName,
-            DateOfBirth = application.DateOfBirth,
+            DateOfBirth = application.DateOfBirth.GetValueOrDefault(),
             VacancyReference = vacancy.VacancyReference,
         };
     }
 
-    private static List<VacancyApplication> FilterSuccessfulApplicants(VacancyApplications vacancyApplications)
+    private static List<VacancyApplication> FilterSuccessfulApplicants(List<VacancyApplication> vacancyApplications)
     {
-        return vacancyApplications.Applications
+        return vacancyApplications
             .Where(app => app.Status.Equals(ApplicationReviewStatus.Successful))
             .ToList();
     }
