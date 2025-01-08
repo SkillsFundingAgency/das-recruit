@@ -164,7 +164,6 @@ public class MultipleLocationsControllerTests
         var httpContext = new DefaultHttpContext();
         var tempData = new TempDataDictionary(httpContext, Mock.Of<ITempDataProvider>());
         sut.TempData = tempData;
-        
 
         vacancy.Id = model.VacancyId!.Value;
         utility.Setup(x => x.GetAuthorisedVacancyForEditAsync(It.IsAny<VacancyRouteModel>(), It.IsAny<string>())).ReturnsAsync(vacancy);
@@ -208,5 +207,46 @@ public class MultipleLocationsControllerTests
         // assert
         result.Should().NotBeNull();
         result!.RouteName.Should().Be(RouteNames.MultipleLocationsConfirm_Get);
+    }
+    
+    [Test, MoqAutoData]
+    public async Task When_Getting_ConfirmLocations_Then_The_View_Is_Returned(
+        Vacancy vacancy,
+        Mock<IUtility> utility,
+        [Greedy] MultipleLocationsController sut)
+    {
+        // arrange
+        var model = new VacancyRouteModel
+        {
+            VacancyId = vacancy.Id,
+            Ukprn = new Random().Next(),
+        };
+        utility.Setup(x => x.GetAuthorisedVacancyForEditAsync(It.IsAny<VacancyRouteModel>(), It.IsAny<string>())).ReturnsAsync(vacancy);
+        
+        // act
+        var result = (await sut.ConfirmLocations(utility.Object, model, true) as ViewResult)?.Model as ConfirmLocationsViewModel;
+
+        // assert
+        result.Should().NotBeNull();
+        result!.VacancyId.Should().Be(vacancy.Id);
+        result.ApprenticeshipTitle.Should().Be(vacancy.Title);
+        result.Ukprn.Should().Be(model.Ukprn);
+        result.Locations.Should().BeEquivalentTo(vacancy.EmployerLocations);
+    }
+    
+    [Test, MoqAutoData]
+    public void When_Posting_ConfirmLocations_Then_A_Redirect_Result_Is_Returned(
+        bool wizard,
+        string expectedRedirectRoute,
+        Vacancy vacancy,
+        VacancyRouteModel model,
+        [Greedy] MultipleLocationsController sut)
+    {
+        // act
+        var result = sut.ConfirmLocations(model, wizard) as RedirectToRouteResult;
+
+        // assert
+        result.Should().NotBeNull();
+        result!.RouteName.Should().Be(RouteNames.ProviderTaskListGet);
     }
 }
