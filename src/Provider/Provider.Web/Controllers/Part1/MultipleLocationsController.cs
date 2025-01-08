@@ -1,9 +1,16 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Esfa.Recruit.Provider.Web.Configuration;
 using Esfa.Recruit.Provider.Web.Configuration.Routing;
+using Esfa.Recruit.Provider.Web.Extensions;
 using Esfa.Recruit.Provider.Web.RouteModel;
+using Esfa.Recruit.Provider.Web.Services;
 using Esfa.Recruit.Provider.Web.ViewModels.Part1.MultipleLocations;
+using Esfa.Recruit.Shared.Web;
+using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -63,5 +70,87 @@ public class MultipleLocationsController(
         viewModel.PageInfo.SetWizard(wizard);
 
         return viewModel;
+    }
+    
+    [FeatureGate(FeatureNames.MultipleLocations)]
+    [HttpGet("add-many-locations", Name = RouteNames.AddMoreThanOneLocation_Get)]
+    public async Task<IActionResult> AddMoreThanOneLocation(
+        [FromServices] IVacancyLocationService vacancyLocationService,
+        [FromServices] IUtility utility,
+        VacancyRouteModel model,
+        [FromQuery] bool wizard)
+    {
+        var vacancy = await utility.GetAuthorisedVacancyForEditAsync(model, RouteNames.AddMoreThanOneLocation_Get);
+        var allLocations = await vacancyLocationService.GetVacancyLocations(vacancy);
+        
+        var selectedLocations = vacancy.EmployerLocations switch
+        {
+            _ when TempData[TempDataKeys.SelectedLocations] is string value => JsonSerializer.Deserialize<List<string>>(value),
+            { Count: >0 } => vacancy.EmployerLocations.Select(l => l.ToAddressString()).ToList(),
+            _ => []
+        };
+        
+        var viewModel = new AddMoreThanOneLocationViewModel
+        {
+            ApprenticeshipTitle = vacancy.Title,
+            AvailableLocations = allLocations ?? [],
+            VacancyId = model.VacancyId,
+            Ukprn = model.Ukprn,
+            PageInfo = utility.GetPartOnePageInfo(vacancy),
+            SelectedLocations = selectedLocations
+        };
+        viewModel.PageInfo.SetWizard(wizard);
+        
+        if (TempData[TempDataKeys.AddedLocation] is string newlyAddedLocation)
+        {
+            viewModel.SelectedLocations.Add(newlyAddedLocation);
+            viewModel.BannerAddress = newlyAddedLocation;
+        }
+        
+        return View(viewModel);
+    }
+    
+    private static readonly Dictionary<string, string> ValidationFieldMappings = new()
+    {
+        { "EmployerLocations", "SelectedLocations" }
+    };
+    
+    [FeatureGate(FeatureNames.MultipleLocations)]
+    [HttpPost("add-many-locations", Name = RouteNames.AddMoreThanOneLocation_Post)]
+    public async Task<IActionResult> AddMoreThanOneLocation(
+        [FromServices] IVacancyLocationService vacancyLocationService,
+        [FromServices] IUtility utility,
+        AddMoreThanOneLocationEditModel editModel,
+        [FromQuery] bool wizard)
+    {
+        var vacancy = await utility.GetAuthorisedVacancyForEditAsync(editModel, RouteNames.AddMoreThanOneLocation_Post);
+        var allLocations = await vacancyLocationService.GetVacancyLocations(vacancy);
+        var locations = editModel.SelectedLocations
+            .Select(x => allLocations.FirstOrDefault(l => l.ToAddressString() == x))
+            .Where(x => x is not null)
+            .ToList();
+        var result = await vacancyLocationService.UpdateDraftVacancyLocations(
+            vacancy,
+            User.ToVacancyUser(),
+            AvailableWhere.MultipleLocations,
+            locations);
+
+        if (result.ValidationResult is null)
+        {
+            return RedirectToRoute(RouteNames.MultipleLocationsConfirm_Get, new { editModel.VacancyId, editModel.Ukprn, wizard } );
+        }
+
+        ModelState.AddValidationErrors(result.ValidationResult, ValidationFieldMappings);
+        var viewModel = new AddMoreThanOneLocationViewModel
+        {
+            ApprenticeshipTitle = vacancy.Title,
+            AvailableLocations = allLocations ?? [],
+            VacancyId = editModel.VacancyId,
+            Ukprn = editModel.Ukprn,
+            PageInfo = utility.GetPartOnePageInfo(vacancy),
+            SelectedLocations = editModel.SelectedLocations
+        };
+        
+        return View(viewModel);
     }
 }

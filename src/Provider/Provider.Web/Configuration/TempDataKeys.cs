@@ -17,5 +17,7 @@
         public const string SharedSingleApplicationsHeader = "SharedSingleApplicationsHeader_InfoMessage";
         public const string ApplicationsToUnsuccessfulHeader = "ApplicationsToUnsuccessfulHeader_InfoMessage";
         public const string ApplicationStatusChangedHeader = "ApplicationStatusChangedHeader_InfoMessage";
+        public const string SelectedLocations = nameof(SelectedLocations);
+        public const string AddedLocation = nameof(AddedLocation);
     }
 }
