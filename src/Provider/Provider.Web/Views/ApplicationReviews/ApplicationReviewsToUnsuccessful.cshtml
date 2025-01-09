@@ -73,8 +73,8 @@
                                                 </div>
 
                                             </td>
-                                            <td class="govuk-table__cell"><a asp-route="@RouteNames.ApplicationReview_Get" asp-route-ukprn="@Model.Ukprn" asp-route-vacancyId="@Model.VacancyId" asp-route-applicationReviewId="@vacancyApplication.ApplicationReviewId" class="govuk-link">@vacancyApplication.CandidateName</a></td>
-                                            <td class="govuk-table__cell">@vacancyApplication.GetFriendlyId()</td>
+                                            <td class="govuk-table__cell"><a asp-route="@RouteNames.ApplicationReview_Get" asp-route-ukprn="@Model.Ukprn" asp-route-vacancyId="@Model.VacancyId" asp-route-applicationReviewId="@vacancyApplication.ApplicationReviewId" class="govuk-link">@vacancyApplication.GetFriendlyId()</a></td>
+                                            <td class="govuk-table__cell">@vacancyApplication.CandidateName</td>
                                             <td class="govuk-table__cell"><strong class="@vacancyApplication.Status.GetCssClassForApplicationReviewStatus()">@vacancyApplication.Status.GetDisplayName(UserType.Provider)</strong></td>
                                             <td class="govuk-table__cell">@vacancyApplication.SubmittedDate.AsGdsDate()</td>
                                         </tr>
