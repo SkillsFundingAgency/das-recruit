@@ -98,7 +98,12 @@
                 <div class="app-summary-list__row">
                     <dt class="app-summary-list__key">Name of organisation</dt>
                     <dd class="app-summary-list__value">
-                        @Model.EmployerName
+                        <esfaFeatureEnabled name="@FeatureNames.MultipleLocations">
+                            @Model.OrganisationName
+                        </esfaFeatureEnabled>
+                        <esfaFeatureDisabled name="@FeatureNames.MultipleLocations">
+                            @Model.EmployerName
+                        </esfaFeatureDisabled>
                     </dd>
                     <dd class="app-summary-list__actions">
                         <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.Employer_Get"
