@@ -2,7 +2,6 @@ using System;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
-using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Mappings;
 using Esfa.Recruit.Employer.Web.Models;
@@ -16,7 +15,6 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Microsoft.Extensions.Logging;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Shared.Web.Models;
-using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 {
@@ -26,19 +24,17 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
         private readonly IRecruitVacancyClient _recruitVacancyClient;
         private readonly IReviewSummaryService _reviewSummaryService;
         private readonly IUtility _utility;
-        private readonly IFeature _feature;
 
         private Expression<Func<EmployerNameEditModel, object>> _vmPropertyToMapEmployerNameTo = null;
 
         public EmployerNameOrchestrator(IEmployerVacancyClient employerVacancyClient, IRecruitVacancyClient recruitVacancyClient, 
-            ILogger<EmployerNameOrchestrator> logger, IReviewSummaryService reviewSummaryService, IUtility utility, IFeature feature)
+            ILogger<EmployerNameOrchestrator> logger, IReviewSummaryService reviewSummaryService, IUtility utility)
             : base(logger) 
         {
             _employerVacancyClient = employerVacancyClient;
             _recruitVacancyClient = recruitVacancyClient;
             _reviewSummaryService = reviewSummaryService;
             _utility = utility;
-            _feature = feature;
         }
 
         public async Task<EmployerNameViewModel> GetEmployerNameViewModelAsync(VacancyRouteModel vrm, VacancyEmployerInfoModel employerInfoModel)
