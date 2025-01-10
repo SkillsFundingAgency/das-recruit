@@ -89,72 +89,24 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
         {
             var validationRules = VacancyRuleSet.EmployerNameOption;
             var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(model, RouteNames.EmployerName_Post);
+            vacancy.EmployerNameOption =  model.SelectedEmployerIdentityOption?.ConvertToDomainOption();
+
+            // temporarily set the employer name for validation
             EmployerProfile profile = null;
-
-            if (_feature.IsFeatureEnabled(FeatureNames.MultipleLocations))
+            if (model.SelectedEmployerIdentityOption == EmployerIdentityOption.NewTradingName)
             {
-                vacancy.EmployerNameOption =  model.SelectedEmployerIdentityOption?.ConvertToDomainOption();
-
-                switch (model.SelectedEmployerIdentityOption)
-                {
-                    case EmployerIdentityOption.Anonymous:
-                        {
-                            vacancy.EmployerName = model.AnonymousName;
-                            vacancy.AnonymousReason = model.AnonymousReason;
-                            _vmPropertyToMapEmployerNameTo = vm => vm.AnonymousName;
-                            break;
-                        }
-                    case EmployerIdentityOption.ExistingTradingName:
-                        {
-                            var employerProfile = await _recruitVacancyClient.GetEmployerProfileAsync(vacancy.EmployerAccountId, vacancy.AccountLegalEntityPublicHashedId);
-                            vacancy.EmployerName = employerProfile.TradingName;
-                            vacancy.AnonymousReason = null;
-                            _vmPropertyToMapEmployerNameTo = null;
-                            break;
-                        }
-                    case EmployerIdentityOption.NewTradingName:
-                        {
-                            validationRules = VacancyRuleSet.EmployerNameOption | VacancyRuleSet.TradingName;
-                            vacancy.EmployerName = model.NewTradingName;
-                            vacancy.AnonymousReason = null;
-                            _vmPropertyToMapEmployerNameTo = vm => vm.NewTradingName;
-                            profile = await _recruitVacancyClient.GetEmployerProfileAsync(vacancy.EmployerAccountId, vacancy.AccountLegalEntityPublicHashedId);
-                            break;
-                        }
-                    case EmployerIdentityOption.RegisteredName:
-                        {
-                            var legalEntities = await _employerVacancyClient.GetEmployerLegalEntitiesAsync(vacancy.EmployerAccountId);
-                            var legalEntity = legalEntities?.FirstOrDefault(x => x.AccountLegalEntityPublicHashedId == vacancy.AccountLegalEntityPublicHashedId);
-                            vacancy.EmployerName = legalEntity?.Name;
-                            vacancy.AnonymousReason = null;
-                            _vmPropertyToMapEmployerNameTo = null;
-                            break;
-                        }
-                }
+                validationRules = VacancyRuleSet.EmployerNameOption | VacancyRuleSet.TradingName;
+                vacancy.EmployerName = model.NewTradingName;
+                _vmPropertyToMapEmployerNameTo = vm => vm.NewTradingName;
+                profile = await _recruitVacancyClient.GetEmployerProfileAsync(vacancy.EmployerAccountId,
+                    vacancy.AccountLegalEntityPublicHashedId);
             }
-            else
+
+            if (model.SelectedEmployerIdentityOption == EmployerIdentityOption.Anonymous)
             {
-                vacancy.EmployerNameOption =  model.SelectedEmployerIdentityOption.HasValue 
-                    ? model.SelectedEmployerIdentityOption.Value.ConvertToDomainOption()
-                    : (EmployerNameOption?) null;
-
-                // temporarily set the employer name for validation
-                
-                if (model.SelectedEmployerIdentityOption == EmployerIdentityOption.NewTradingName)
-                {
-                    validationRules = VacancyRuleSet.EmployerNameOption | VacancyRuleSet.TradingName;
-                    vacancy.EmployerName = model.NewTradingName;
-                    _vmPropertyToMapEmployerNameTo = vm => vm.NewTradingName;
-                    profile = await _recruitVacancyClient.GetEmployerProfileAsync(vacancy.EmployerAccountId,
-                        vacancy.AccountLegalEntityPublicHashedId);
-                }
-
-                if (model.SelectedEmployerIdentityOption == EmployerIdentityOption.Anonymous)
-                {
-                    vacancy.EmployerName = model.AnonymousName;
-                    vacancy.AnonymousReason = model.AnonymousReason;
-                    _vmPropertyToMapEmployerNameTo = vm => vm.AnonymousName;
-                }
+                vacancy.EmployerName = model.AnonymousName;
+                vacancy.AnonymousReason = model.AnonymousReason;
+                _vmPropertyToMapEmployerNameTo = vm => vm.AnonymousName;
             }
             
             return await ValidateAndExecute(
