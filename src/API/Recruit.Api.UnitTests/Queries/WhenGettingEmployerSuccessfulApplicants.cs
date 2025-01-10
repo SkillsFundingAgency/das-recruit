@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using AutoFixture.NUnit3;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
@@ -13,7 +14,8 @@ using SFA.DAS.Recruit.Api.Models;
 using SFA.DAS.Recruit.Api.Queries;
 using SFA.DAS.Recruit.Api.Services;
 using SFA.DAS.Testing.AutoFixture;
-using ApplicationReviewStatus = SFA.DAS.Recruit.Api.Services.ApplicationReviewStatus;
+using ApplicationReviewStatus = Esfa.Recruit.Vacancies.Client.Domain.Entities.ApplicationReviewStatus;
+using VacancyApplication = Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyApplications.VacancyApplication;
 using VacancyStatus = Esfa.Recruit.Vacancies.Client.Domain.Entities.VacancyStatus;
 
 namespace SFA.DAS.Recruit.Api.UnitTests.Queries;
@@ -74,16 +76,16 @@ public class WhenGettingEmployerSuccessfulApplicants
         GetEmployerSuccessfulApplicantsQuery request,
         List<VacancyIdentifier> vacancies,
         [Frozen] Mock<IVacancyQuery> mockVacancyQuery,
-        [Frozen] Mock<IQueryStoreReader> mockQueryStoreReader,
+        [Frozen] Mock<IRecruitVacancyClient> mockVacancyClient,
         GetEmployerSuccessfulApplicantsQueryHandler sut)
     {
         request.EmployerAccountId = ValidEmployerAccountId;
 
-        var applications = new VacancyApplications();
+        var applications = new List<VacancyApplication>();
 
         foreach (var vacancy in vacancies)
         {
-            applications.Applications =
+            applications =
             [
                 new() { CandidateId = Guid.NewGuid(), FirstName = "AAA", LastName = "AAA3", DateOfBirth = DateTime.Today, Status = ApplicationReviewStatus.Successful },
                 new() { CandidateId = Guid.NewGuid(), FirstName = "AAA1", LastName = "AAA4", DateOfBirth = DateTime.Today, Status = ApplicationReviewStatus.Successful },
@@ -96,17 +98,17 @@ public class WhenGettingEmployerSuccessfulApplicants
 
         foreach (var vacancy in vacancies)
         {
-            mockQueryStoreReader.Setup(x => x.GetVacancyApplicationsAsync(vacancy.VacancyReference.ToString()))
+            mockVacancyClient.Setup(x => x.GetVacancyApplicationsAsync(vacancy.VacancyReference.Value, false))
                 .ReturnsAsync(applications);
         }
 
         var result = await sut.Handle(request, CancellationToken.None);
         result.ResultCode.Should().Be(ResponseCode.Success);
         result.ValidationErrors.Should().BeEmpty();
-        result.Data.As<IOrderedEnumerable<SuccessfulApplicant>>().Count().Should().Be(applications.Applications.Count * vacancies.Count);
+        result.Data.As<IOrderedEnumerable<SuccessfulApplicant>>().Count().Should().Be(applications.Count * vacancies.Count);
 
         mockVacancyQuery.Verify(x => x.GetVacanciesByEmployerAccountAsync<VacancyIdentifier>(request.EmployerAccountId), Times.Once);
-        mockQueryStoreReader.Verify(x => x.GetVacancyApplicationsAsync(It.IsAny<string>()), Times.Exactly(vacancies.Count));
+        mockVacancyClient.Verify(x => x.GetVacancyApplicationsAsync(It.IsAny<long>(), false), Times.Exactly(vacancies.Count));
     }
 
     [Test, MoqAutoData]
@@ -114,18 +116,18 @@ public class WhenGettingEmployerSuccessfulApplicants
         GetEmployerSuccessfulApplicantsQuery request,
         List<VacancyIdentifier> vacancies,
         [Frozen] Mock<IVacancyQuery> mockVacancyQuery,
-        [Frozen] Mock<IQueryStoreReader> mockQueryStoreReader,
+        [Frozen] Mock<IRecruitVacancyClient> mockVacancyClient,
         GetEmployerSuccessfulApplicantsQueryHandler sut)
     {
         request.EmployerAccountId = ValidEmployerAccountId;
 
-        var applications = new VacancyApplications();
+        var applications = new List<VacancyApplication>();
 
         var successfulApplicantDateOfBirth = DateTime.Today.AddDays(-20);
 
         foreach (var vacancy in vacancies)
         {
-            applications.Applications =
+            applications =
             [
                 new() { CandidateId = Guid.NewGuid(), FirstName = "AAA", LastName = "AAA3", DateOfBirth = DateTime.Today, Status = ApplicationReviewStatus.New },
                 new() { CandidateId = Guid.NewGuid(), FirstName = "AAA1", LastName = "AAA4", DateOfBirth = DateTime.Today, Status = ApplicationReviewStatus.Unsuccessful },
@@ -138,14 +140,14 @@ public class WhenGettingEmployerSuccessfulApplicants
 
         foreach (var vacancy in vacancies)
         {
-            mockQueryStoreReader.Setup(x => x.GetVacancyApplicationsAsync(vacancy.VacancyReference.ToString()))
+            mockVacancyClient.Setup(x => x.GetVacancyApplicationsAsync(vacancy.VacancyReference.Value, false))
                 .ReturnsAsync(applications);
         }
 
         var result = await sut.Handle(request, CancellationToken.None);
         result.ResultCode.Should().Be(ResponseCode.Success);
         result.ValidationErrors.Should().BeEmpty();
-        
+
         var actualResult = result.Data.As<IOrderedEnumerable<SuccessfulApplicant>>();
         actualResult.Count().Should().Be(vacancies.Count);
 
@@ -157,26 +159,23 @@ public class WhenGettingEmployerSuccessfulApplicants
         }
 
         mockVacancyQuery.Verify(x => x.GetVacanciesByEmployerAccountAsync<VacancyIdentifier>(request.EmployerAccountId), Times.Once);
-        mockQueryStoreReader.Verify(x => x.GetVacancyApplicationsAsync(It.IsAny<string>()), Times.Exactly(vacancies.Count));
+        mockVacancyClient.Verify(x => x.GetVacancyApplicationsAsync(It.IsAny<long>(), false), Times.Exactly(vacancies.Count));
     }
 
     [Test, MoqAutoData]
     public async Task Then_Applicants_Are_Mapped_Correctly(
         GetEmployerSuccessfulApplicantsQuery request,
         [Frozen] Mock<IVacancyQuery> mockVacancyQuery,
-        [Frozen] Mock<IQueryStoreReader> mockQueryStoreReader,
+        [Frozen] Mock<IRecruitVacancyClient> mockVacancyClient,
         GetEmployerSuccessfulApplicantsQueryHandler sut)
     {
         request.EmployerAccountId = ValidEmployerAccountId;
 
         List<VacancyIdentifier> vacancies = [new() { VacancyReference = 12323, Status = VacancyStatus.Approved, Id = Guid.NewGuid(), ClosingDate = DateTime.Today }];
 
-        var applications = new VacancyApplications
+        var applications = new List<VacancyApplication>
         {
-            Applications =
-            [
-                new() { CandidateId = Guid.NewGuid(), FirstName = "AAA", LastName = "AAA3", DateOfBirth = DateTime.Today, Status = ApplicationReviewStatus.Successful },
-            ]
+            new() { CandidateId = Guid.NewGuid(), FirstName = "AAA", LastName = "AAA3", DateOfBirth = DateTime.Today, Status = ApplicationReviewStatus.Successful },
         };
 
         mockVacancyQuery.Setup(x => x.GetVacanciesByEmployerAccountAsync<VacancyIdentifier>(request.EmployerAccountId))
@@ -184,7 +183,7 @@ public class WhenGettingEmployerSuccessfulApplicants
 
         foreach (var vacancy in vacancies)
         {
-            mockQueryStoreReader.Setup(x => x.GetVacancyApplicationsAsync(vacancy.VacancyReference.ToString()))
+            mockVacancyClient.Setup(x => x.GetVacancyApplicationsAsync(vacancy.VacancyReference.Value, false))
                 .ReturnsAsync(applications);
         }
 
@@ -195,10 +194,10 @@ public class WhenGettingEmployerSuccessfulApplicants
         var responseItem = result.Data.As<IOrderedEnumerable<SuccessfulApplicant>>().FirstOrDefault();
         responseItem.Should().NotBeNull();
 
-        responseItem.CandidateId.Should().Be(applications.Applications.First().CandidateId.ToString());
-        responseItem.FirstName.Should().Be(applications.Applications.First().FirstName);
-        responseItem.LastName.Should().Be(applications.Applications.First().LastName);
-        responseItem.DateOfBirth.Should().Be(applications.Applications.First().DateOfBirth);
+        responseItem.CandidateId.Should().Be(applications.First().CandidateId.ToString());
+        responseItem.FirstName.Should().Be(applications.First().FirstName);
+        responseItem.LastName.Should().Be(applications.First().LastName);
+        responseItem.DateOfBirth.Should().Be(applications.First().DateOfBirth);
         responseItem.VacancyReference.Should().Be(vacancies.First().VacancyReference);
     }
 }

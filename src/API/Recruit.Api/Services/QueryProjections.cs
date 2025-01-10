@@ -157,8 +157,7 @@ namespace SFA.DAS.Recruit.Api.Services
     {
         New,
         Successful,
-        Unsuccessful,
-        Interviewing
+        Unsuccessful
     }
 
     public enum ApplicationReviewDisabilityStatus
@@ -173,7 +172,7 @@ namespace SFA.DAS.Recruit.Api.Services
     {
         public Guid CandidateId { get; set; }
         public DateTime SubmittedDate { get; set; }
-        public ApplicationReviewStatus Status { get; set; }
+        public Esfa.Recruit.Vacancies.Client.Domain.Entities.ApplicationReviewStatus Status { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public DateTime DateOfBirth { get; set; }
