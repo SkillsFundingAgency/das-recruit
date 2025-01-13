@@ -3,6 +3,7 @@ using Esfa.Recruit.Provider.Web.Interfaces;
 using Esfa.Recruit.Provider.Web.Mappings;
 using Esfa.Recruit.Provider.Web.Models.AddLocation;
 using Esfa.Recruit.Provider.Web.Models.ApplicationReviews;
+using Esfa.Recruit.Provider.Web.Models.Validators;
 using Esfa.Recruit.Provider.Web.Orchestrators;
 using Esfa.Recruit.Shared.Web.Configuration;
 using Esfa.Recruit.Shared.Web.Mappers;
@@ -98,6 +99,7 @@ namespace Esfa.Recruit.Provider.Web.Configuration
             services.AddSingleton<IValidator<ProviderApplicationsReportCreateEditModel>, ProviderApplicationsReportCreateEditModelValidator>();
             services.AddSingleton<IValidator<ApplicationReviewsToShareRouteModel>, ApplicationReviewsToShareModelValidator>();
             services.AddSingleton<IValidator<AddLocationEditModel>, AddLocationEditModelValidator>();
+            services.AddSingleton<IValidator<EnterLocationManuallyEditModel>, EnterLocationManuallyEditModelValidator>();
         }
 
         private static void RegisterOrchestratorDeps(IServiceCollection services)
