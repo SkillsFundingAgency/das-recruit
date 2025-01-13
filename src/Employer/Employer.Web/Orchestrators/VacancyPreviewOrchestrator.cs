@@ -216,7 +216,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
                 ApprovedJobAdvert = vacancy.Status == VacancyStatus.Submitted,
                 RejectedJobAdvert = vacancy.Status == VacancyStatus.Rejected,
                 TrainingProviderName = vacancy.TrainingProvider.Name,
-                FindAnApprenticeshipUrl = _externalLinksConfiguration.FindAnApprenticeshipUrl
+                FindAnApprenticeshipUrl = _externalLinksConfiguration.FindAnApprenticeshipUrl,
+                EmployerAccountId = vacancy.EmployerAccountId
             };
 
             return vm;
