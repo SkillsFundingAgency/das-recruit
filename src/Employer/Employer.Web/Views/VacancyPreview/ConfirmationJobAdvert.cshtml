@@ -30,6 +30,6 @@
         <div asp-show="@Model.RejectedJobAdvert">
             <p class="govuk-body">This job advert has gone back to @Model.TrainingProviderName.</p>
         </div>
-        <p class="govuk-body">Go to <a asp-route="@RouteNames.Dashboard_Get" class="govuk-link govuk-link--no-visited-state">your apprenticeship adverts</a></p>
+        <p class="govuk-body">Go to <a asp-route="@RouteNames.Dashboard_Get" asp-route-employerAccountId="@Model.EmployerAccountId" class="govuk-link govuk-link--no-visited-state">your apprenticeship adverts</a></p>
     </div>
 </div>
