@@ -112,6 +112,28 @@ public class WhenGettingEmployerSuccessfulApplicants
     }
 
     [Test, MoqAutoData]
+    public async Task Then_Should_Handle_When_Vacancies_With_Missing_Reference(
+        GetEmployerSuccessfulApplicantsQuery request,
+        List<VacancyIdentifier> vacancies,
+        [Frozen] Mock<IVacancyQuery> mockVacancyQuery,
+        [Frozen] Mock<IRecruitVacancyClient> mockVacancyClient,
+        GetEmployerSuccessfulApplicantsQueryHandler sut)
+    {
+        request.EmployerAccountId = ValidEmployerAccountId;
+
+        var firstVacancy = vacancies.First();
+        firstVacancy.VacancyReference = null;
+        
+        mockVacancyQuery.Setup(x => x.GetVacanciesByEmployerAccountAsync<VacancyIdentifier>(request.EmployerAccountId))
+            .ReturnsAsync(vacancies);
+        
+        var action = async () => await sut.Handle(request, CancellationToken.None);
+        await action.Should().NotThrowAsync();
+
+        mockVacancyQuery.Verify(x => x.GetVacanciesByEmployerAccountAsync<VacancyIdentifier>(request.EmployerAccountId), Times.Once);
+    }
+
+    [Test, MoqAutoData]
     public async Task Then_Only_Successful_Applicants_Are_Returned(
         GetEmployerSuccessfulApplicantsQuery request,
         List<VacancyIdentifier> vacancies,

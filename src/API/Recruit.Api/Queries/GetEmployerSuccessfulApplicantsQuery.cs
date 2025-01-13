@@ -63,7 +63,9 @@ public class GetEmployerSuccessfulApplicantsQueryHandler(
         var successfulApplications = new ConcurrentBag<SuccessfulApplicant>();
         var options = new ParallelOptions { MaxDegreeOfParallelism = MaxDegreeOfParallelism };
 
-        await Parallel.ForEachAsync(vacancies, options, async (vacancy, _) =>
+        var vacanciesWithReferences = vacancies.Where(x => x.VacancyReference is not null);
+        
+        await Parallel.ForEachAsync(vacanciesWithReferences, options, async (vacancy, _) =>
         {
             var response = await vacancyClient.GetVacancyApplicationsAsync(vacancy.VacancyReference.Value);
 
@@ -106,7 +108,7 @@ public class GetEmployerSuccessfulApplicantsQueryHandler(
         const string employerAccountIdRegex = "^[A-Z0-9]{6}$";
         var validationErrors = new List<string>();
 
-        if (string.IsNullOrEmpty(request.EmployerAccountId) || !Regex.IsMatch(request.EmployerAccountId, employerAccountIdRegex,  RegexOptions.None, TimeSpan.FromMilliseconds(100)))
+        if (string.IsNullOrEmpty(request.EmployerAccountId) || !Regex.IsMatch(request.EmployerAccountId, employerAccountIdRegex, RegexOptions.None, TimeSpan.FromMilliseconds(100)))
         {
             validationErrors.Add($"Invalid {nameof(request.EmployerAccountId)}");
         }
