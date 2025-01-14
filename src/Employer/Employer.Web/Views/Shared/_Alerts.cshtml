@@ -16,3 +16,7 @@
 {
     <partial name="@PartialNames.BlockedProviderTransferredVacanciesAlert" for="BlockedProviderTransferredVacanciesAlert" />
 }
+@if (DateTime.UtcNow < new DateTime(2025, 02, 17))
+{
+    <partial name="_NationalApprenticeshipWeekBanner"/>
+}

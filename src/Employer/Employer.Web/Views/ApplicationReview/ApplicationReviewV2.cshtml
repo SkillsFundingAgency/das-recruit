@@ -7,7 +7,7 @@
 }
 
 @section BackLink {
-    <a asp-route="@RouteNames.VacancyManage_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Back</a>
+    <a asp-route="@RouteNames.VacancyManage_Get" asp-all-route-data="@Model.RouteDictionary" asp-route-vacancySharedByProvider="@Model.IsApplicationSharedByProvider" esfa-automation="link-back" class="govuk-back-link">Back</a>
 }
 
 <div class="govuk-grid-row">
@@ -280,9 +280,7 @@
                 <div class="govuk-form-group">
                     <fieldset class="govuk-fieldset">
                         <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
-                            <h2 class="govuk-fieldset__heading">
-                                What do you want to do with this application?
-                            </h2>
+                            <h2 class="govuk-fieldset__heading">Do you want to interview this applicant?</h2>
                         </legend>
                         <div id="sign-in-hint" class="govuk-hint" asp-show="@Model.IsApplicationShared">
                                                 Your response will be shared with your training provider.
