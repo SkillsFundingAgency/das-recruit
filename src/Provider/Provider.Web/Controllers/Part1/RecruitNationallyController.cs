@@ -1,18 +1,18 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Esfa.Recruit.Employer.Web.Configuration;
-using Esfa.Recruit.Employer.Web.Configuration.Routing;
-using Esfa.Recruit.Employer.Web.Extensions;
-using Esfa.Recruit.Employer.Web.Models.AddLocation;
-using Esfa.Recruit.Employer.Web.RouteModel;
-using Esfa.Recruit.Employer.Web.Services;
-using Esfa.Recruit.Employer.Web.ViewModels.Part1.RecruitNationally;
+using Esfa.Recruit.Provider.Web.Configuration;
+using Esfa.Recruit.Provider.Web.Configuration.Routing;
+using Esfa.Recruit.Provider.Web.Extensions;
+using Esfa.Recruit.Provider.Web.Models.AddLocation;
+using Esfa.Recruit.Provider.Web.RouteModel;
+using Esfa.Recruit.Provider.Web.Services;
+using Esfa.Recruit.Provider.Web.ViewModels.Part1.RecruitNationally;
 using Esfa.Recruit.Shared.Web;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.FeatureManagement.Mvc;
 
-namespace Esfa.Recruit.Employer.Web.Controllers.Part1;
+namespace Esfa.Recruit.Provider.Web.Controllers.Part1;
 
 [Route(RoutePaths.AccountVacancyRoutePath)]
 public class RecruitNationallyController: Controller
@@ -30,7 +30,7 @@ public class RecruitNationallyController: Controller
         var viewModel = new RecruitNationallyViewModel
         {
             ApprenticeshipTitle = vacancy.Title,
-            EmployerAccountId = model.EmployerAccountId,
+            Ukprn = model.Ukprn,
             AdditionalInformation = vacancy.EmployerLocationInformation,
             PageInfo = utility.GetPartOnePageInfo(vacancy),
             VacancyId = model.VacancyId,
@@ -58,16 +58,14 @@ public class RecruitNationallyController: Controller
 
         if (result.ValidationResult is null)
         {
-            return wizard
-                ? RedirectToRoute(RouteNames.EmployerTaskListGet, new {model.VacancyId, model.EmployerAccountId, wizard}) 
-                : RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet, new {model.VacancyId, model.EmployerAccountId});    
+            return RedirectToRoute(RouteNames.ProviderTaskListGet, new { Wizard = wizard, model.Ukprn, model.VacancyId });
         }
         
         ModelState.AddValidationErrors(result.ValidationResult, ValidationFieldMappings);
         var viewModel = new RecruitNationallyViewModel
         {
             ApprenticeshipTitle = vacancy.Title,
-            EmployerAccountId = model.EmployerAccountId,
+            Ukprn = model.Ukprn,
             AdditionalInformation = model.AdditionalInformation,
             PageInfo = utility.GetPartOnePageInfo(vacancy),
             VacancyId = model.VacancyId,
