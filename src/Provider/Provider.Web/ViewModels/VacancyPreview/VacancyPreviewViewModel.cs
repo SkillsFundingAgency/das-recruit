@@ -13,7 +13,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview
 {
-    public class VacancyPreviewViewModel : DisplayVacancyViewModel 
+    public class VacancyPreviewViewModel(bool isMultipleLocationsEnabled = false) : DisplayVacancyViewModel 
     {
         public VacancyPreviewSectionState ApplicationInstructionsSectionState { get; internal set; }
         public VacancyPreviewSectionState ApplicationMethodSectionState { get; internal set; }
@@ -208,7 +208,23 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview
             viewModel.EmployerNameSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.EmployerName }, true, modelState, vm => vm.EmployerName);
             viewModel.EmployerDescriptionSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.EmployerDescription }, true, modelState, vm => vm.EmployerDescription);
             viewModel.EmployerWebsiteUrlSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.EmployerWebsiteUrl }, true, modelState, vm => vm.EmployerWebsiteUrl);
-            viewModel.EmployerAddressSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.EmployerAddress }, true, modelState, vm => vm.EmployerAddressElements);
+            
+            // We're only validating against the multiple addresses field if the vacancy has gone through the
+            // new pipeline (indicated by AvailableWhere being set), otherwise it will be an existing record
+            // that used the previous single location selection page.
+            if (isMultipleLocationsEnabled && viewModel.AvailableWhere.HasValue)
+            {
+                viewModel.EmployerAddressSectionState = viewModel.AvailableWhere switch
+                {
+                    Recruit.Vacancies.Client.Domain.Entities.AvailableWhere.AcrossEngland => GetSectionState(viewModel, [FieldIdentifiers.EmployerAddresses], true, modelState, vm => vm.LocationInformation),
+                    _ => GetSectionState(viewModel, [FieldIdentifiers.EmployerAddresses], true, modelState, vm => vm.AvailableLocations),
+                };
+            }
+            else
+            {
+                viewModel.EmployerAddressSectionState = GetSectionState(viewModel, [FieldIdentifiers.EmployerAddress], true, modelState, vm => vm.EmployerAddressElements);
+            }
+            
             viewModel.ApplicationInstructionsSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.ApplicationInstructions }, true, modelState, vm => vm.ApplicationInstructions);
             viewModel.ApplicationMethodSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.ApplicationMethod }, true, modelState, vm => vm.ApplicationMethod);
             viewModel.ApplicationUrlSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.ApplicationUrl }, true, modelState, vm => vm.ApplicationUrl);

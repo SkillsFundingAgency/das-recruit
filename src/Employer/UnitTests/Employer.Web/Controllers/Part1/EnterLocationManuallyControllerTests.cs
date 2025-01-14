@@ -69,7 +69,7 @@ public class EnterLocationManuallyControllerTests
         };
         var validationResult = new ValidationResult([new ValidationFailure("Property name", "Error message")]);
         validator
-            .Setup(x => x.ValidateAsync(It.Is<EnterLocationManuallyEditModel>(m => m == model), It.IsAny<CancellationToken>()))
+            .Setup(x => x.ValidateAsync(model, It.IsAny<CancellationToken>()))
             .ReturnsAsync(validationResult);
         
         // act
@@ -105,7 +105,7 @@ public class EnterLocationManuallyControllerTests
         };
         var validationResult = new ValidationResult();
         validator
-            .Setup(x => x.ValidateAsync(It.Is<EnterLocationManuallyEditModel>(m => m == model), It.IsAny<CancellationToken>()))
+            .Setup(x => x.ValidateAsync(model, It.IsAny<CancellationToken>()))
             .ReturnsAsync(validationResult);
         
         // act
