@@ -1,11 +1,11 @@
+using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
-using SFA.DAS.Recruit.Api.Controllers;
-using Xunit;
-using Moq;
 using MediatR;
+using Moq;
+using SFA.DAS.Recruit.Api.Controllers;
 using SFA.DAS.Recruit.Api.Queries;
-using System.Threading;
+using Xunit;
 
 namespace SFA.DAS.Recruit.Api.UnitTests.Controllers
 {

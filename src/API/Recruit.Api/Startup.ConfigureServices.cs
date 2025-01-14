@@ -1,16 +1,15 @@
-using System;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
 using Azure.Monitor.OpenTelemetry.AspNetCore;
 using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
-using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Ioc;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using OpenTelemetry.Logs;
 using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.Api.Common.Infrastructure;
@@ -20,83 +19,88 @@ using SFA.DAS.Recruit.Api.Configuration;
 using SFA.DAS.Recruit.Api.Mappers;
 using SFA.DAS.Recruit.Api.Services;
 
-namespace SFA.DAS.Recruit.Api
+namespace SFA.DAS.Recruit.Api;
+
+public partial class Startup
 {
-    public partial class Startup
+    public void ConfigureServices(IServiceCollection services)
     {
-        // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices(IServiceCollection services)
+        services.AddOptions();
+        services.Configure<ConnectionStrings>(_configuration.GetSection("ConnectionStrings"));
+        services.Configure<RecruitConfiguration>(_configuration.GetSection("Recruit"));
+        services.Configure<AzureActiveDirectoryConfiguration>(_configuration.GetSection("AzureAd"));
+
+        services.AddLogging(builder =>
         {
-            services.AddOptions();
-            services.Configure<ConnectionStrings>(Configuration.GetSection("ConnectionStrings"));
-            services.Configure<RecruitConfiguration>(Configuration.GetSection("Recruit"));
-            services.Configure<AzureActiveDirectoryConfiguration>(Configuration.GetSection("AzureAd"));
+            builder.AddFilter<OpenTelemetryLoggerProvider>(string.Empty, LogLevel.Information);
+            builder.AddFilter<OpenTelemetryLoggerProvider>("Microsoft", LogLevel.Information);
+        });
 
-            services.AddScoped(_ => new ServiceParameters());
+        services.AddScoped(_ => new ServiceParameters());
 
+        var azureAdConfig = _configuration
+            .GetSection("AzureAd")
+            .Get<AzureActiveDirectoryConfiguration>();
 
-            var azureAdConfig = Configuration
-                .GetSection("AzureAd")
-                .Get<AzureActiveDirectoryConfiguration>();
-            
-            var policies = new Dictionary<string, string>
+        var policies = new Dictionary<string, string>
+        {
+            { PolicyNames.Default, "Default" },
+        };
+
+        services.AddAuthentication(azureAdConfig, policies);
+
+        services.AddMediatR(configuration => configuration.RegisterServicesFromAssembly(typeof(CreateVacancyCommand).Assembly));
+
+        services.AddSingleton<IVacancySummaryMapper, VacancySummaryMapper>();
+        services.AddSingleton<IQueryStoreReader, QueryStoreClient>();
+        services.AddSingleton<IFeature, Feature>();
+        RegisterDasEncodingService(services, _configuration);
+
+        services.AddRecruitStorageClient(_configuration);
+
+        MongoDbConventions.RegisterMongoConventions();
+
+        services.AddHealthChecks()
+            .AddMongoDb(_configuration.GetConnectionString("MongoDb"))
+            .AddApplicationInsightsPublisher();
+
+        services.AddApplicationInsightsTelemetry(_configuration);
+
+        if (!string.IsNullOrEmpty(_configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"]!))
+        {
+            // This service will collect and send telemetry data to Azure Monitor.
+            services.AddOpenTelemetry().UseAzureMonitor(options =>
             {
-                {PolicyNames.Default, "Default"},
-            };
-            services.AddAuthentication(azureAdConfig, policies);
-
-            services.AddMediatR(configuration => configuration.RegisterServicesFromAssembly(typeof(CreateVacancyCommand).Assembly));
-
-            services.AddSingleton<IVacancySummaryMapper, VacancySummaryMapper>();
-            services.AddSingleton<IQueryStoreReader, QueryStoreClient>();
-            services.AddSingleton<IFeature, Feature>();
-            RegisterDasEncodingService(services, Configuration);
-
-            services.AddRecruitStorageClient(Configuration);
-            
-            MongoDbConventions.RegisterMongoConventions();
-
-            services.AddHealthChecks()
-                    .AddMongoDb(Configuration.GetConnectionString("MongoDb"))
-                    .AddApplicationInsightsPublisher();
-
-            services.AddApplicationInsightsTelemetry(Configuration);
-            if (!string.IsNullOrEmpty(Configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"]!))
-            {
-                // This service will collect and send telemetry data to Azure Monitor.
-                services.AddOpenTelemetry().UseAzureMonitor(options =>
-                {
-                    options.ConnectionString = Configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"]!;
-                });
-            }
-
-            services
-                .AddMvc(o =>
-                {
-                    if (HostingEnvironment.IsDevelopment() == false)
-                    {
-                        o.Conventions.Add(new AuthorizeControllerModelConvention(new List<string>()));
-                    }
-                    o.Conventions.Add(new ApiExplorerGroupPerVersionConvention());
-                })
-                .AddJsonOptions(options =>
-                {
-                    options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
-                });
-            
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "RecruitAPI", Version = "v1" });
-                
+                options.ConnectionString = _configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"]!;
             });
         }
-        
-        private static void RegisterDasEncodingService(IServiceCollection services, IConfiguration configuration)
+
+        services
+            .AddMvc(o =>
+            {
+                if (!_hostingEnvironment.IsDevelopment())
+                {
+                    o.Conventions.Add(new AuthorizeControllerModelConvention(new List<string>()));
+                }
+
+                o.Conventions.Add(new ApiExplorerGroupPerVersionConvention());
+            })
+            .AddJsonOptions(options =>
+            {
+                options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
+            });
+
+        services.AddSwaggerGen(c =>
         {
-            var dasEncodingConfig = new EncodingConfig { Encodings = [] };
-            configuration.GetSection(nameof(dasEncodingConfig.Encodings)).Bind(dasEncodingConfig.Encodings);
-            services.AddSingleton(dasEncodingConfig);
-            services.AddSingleton<IEncodingService, EncodingService>();
-        }
+            c.SwaggerDoc("v1", new OpenApiInfo { Title = "RecruitAPI", Version = "v1" });
+        });
+    }
+
+    private static void RegisterDasEncodingService(IServiceCollection services, IConfiguration configuration)
+    {
+        var dasEncodingConfig = new EncodingConfig { Encodings = [] };
+        configuration.GetSection(nameof(dasEncodingConfig.Encodings)).Bind(dasEncodingConfig.Encodings);
+        services.AddSingleton(dasEncodingConfig);
+        services.AddSingleton<IEncodingService, EncodingService>();
     }
 }
