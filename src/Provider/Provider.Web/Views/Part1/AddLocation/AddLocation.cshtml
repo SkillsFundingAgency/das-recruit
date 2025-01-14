@@ -1,0 +1,50 @@
+﻿@using Esfa.Recruit.Shared.Web.Domain
+@using Esfa.Recruit.Shared.Web.TagHelpers
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+
+@model Esfa.Recruit.Provider.Web.ViewModels.Part1.AddLocation.AddLocationViewModel
+
+@{
+    ViewBag.Vpv = "/recruitment/provider/page-create-vacancy-location";
+    ViewBag.Title = "Add a new location";
+}
+
+@section BackLink {
+    <a asp-show="Model.Origin == MultipleLocationsJourneyOrigin.One" asp-route="@RouteNames.AddOneLocation_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Back</a>    
+    <a asp-show="Model.Origin == MultipleLocationsJourneyOrigin.Many" asp-route="@RouteNames.AddMoreThanOneLocation_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Back</a>    
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <partial name="@PartialNames.ValidationSummary" model=@(new ValidationSummaryViewModel { ModelState = ViewData.ModelState }) />
+        <form asp-route="@RouteNames.AddLocation_Post" asp-all-route-data="@Model.RouteDictionary" asp-route-wizard="@Model.PageInfo.IsWizard" asp-route-origin="@Model.Origin">
+
+            <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">
+                <span class="govuk-caption-l">@Model.ApprenticeshipTitle</span>
+                Add a new location
+            </h1>
+
+            <p class="govuk-body">Enter the postcode for this location.</p>
+            
+            <div class="govuk-form-group">
+                <div esfa-validation-marker-for="Postcode" class="govuk-form-group">
+                    <div esfa-validation-marker-for="Postcode" class="govuk-form-group address-item govuk-form-group">
+                        <label asp-for="Postcode" class="govuk-label">UK postcode</label>
+                        <div class="govuk-hint">
+                            For example SW1A 2AA
+                        </div>
+                        <span esfa-validation-message-for="Postcode" class="govuk-error-message"></span>
+                        <input asp-for="Postcode" class="govuk-input govuk-input--width-10" maxlength="8" />
+                    </div>
+                </div>
+                <p class="govuk-body govuk-!-padding-top-5">
+                    <a asp-route="@RouteNames.EnterAddressManually_Get" asp-all-route-data="@Model.RouteDictionary" asp-route-wizard="@Model.PageInfo.IsWizard" asp-route-origin="@Model.Origin" class="govuk-link govuk-link--no-visited-state">Enter address manually</a>
+                </p>
+            </div>
+            <div class="govuk-button-group">
+                <button type="submit" class="govuk-button save-button" esfa-automation="continue-button">Find address</button>
+                <a asp-route="@RouteNames.Dashboard_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-cancel" class="govuk-link govuk-link--no-visited-state">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>

@@ -23,13 +23,12 @@ public class VacancyLocationService(IRecruitVacancyClient recruitVacancyClient, 
     {
         ArgumentNullException.ThrowIfNull(vacancy);
         var employerProfile = await recruitVacancyClient.GetEmployerProfileAsync(vacancy.EmployerAccountId, vacancy.AccountLegalEntityPublicHashedId);
-        
         var employerData = await employerVacancyClient.GetEditVacancyInfoAsync(employerProfile.EmployerAccountId);
-        var legalEntity = employerData.LegalEntities.First(l => l.AccountLegalEntityPublicHashedId == employerProfile.AccountLegalEntityPublicHashedId);
-        var locations = new List<Address>();
+        var legalEntity = employerData.LegalEntities.FirstOrDefault(l => l.AccountLegalEntityPublicHashedId == employerProfile.AccountLegalEntityPublicHashedId);
 
-        var legalAddress = legalEntity.Address.ConvertToDomainAddress();
-        if (!legalAddress.IsEmpty())
+        var locations = new List<Address>();
+        var legalAddress = legalEntity?.Address.ConvertToDomainAddress();
+        if (legalAddress is not null && !legalAddress.IsEmpty())
         {
             locations.Add(legalAddress);
         }
