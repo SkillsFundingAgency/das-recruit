@@ -50,7 +50,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             {
                 VacancyId = vacancy.Id,
                 Ukprn = rm.Ukprn,
-                VacancyApplications = applicationReviews
+                VacancyApplications = applicationReviews.Where(fil => fil.IsNotWithdrawn).ToList()
             };
         }
 
@@ -65,7 +65,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
                 VacancyId = vacancy.Id,
                 Ukprn = rm.Ukprn,
                 VacancyReference = vacancy.VacancyReference.Value,
-                VacancyApplications = applicationReviews
+                VacancyApplications = applicationReviews.Where(fil => fil.IsNotWithdrawn).ToList()
             };
         }
 
