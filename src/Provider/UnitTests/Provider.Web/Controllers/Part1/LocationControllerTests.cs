@@ -1,21 +1,22 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using AutoFixture.NUnit3;
-using Esfa.Recruit.Employer.Web;
-using Esfa.Recruit.Employer.Web.Configuration;
-using Esfa.Recruit.Employer.Web.Configuration.Routing;
-using Esfa.Recruit.Employer.Web.Controllers.Part1;
-using Esfa.Recruit.Employer.Web.RouteModel;
-using Esfa.Recruit.Employer.Web.Services;
-using Esfa.Recruit.Employer.Web.ViewModels.Part1.Location;
+using Esfa.Recruit.Provider.Web;
+using Esfa.Recruit.Provider.Web.Configuration;
+using Esfa.Recruit.Provider.Web.Configuration.Routing;
+using Esfa.Recruit.Provider.Web.Controllers.Part1;
+using Esfa.Recruit.Provider.Web.RouteModel;
+using Esfa.Recruit.Provider.Web.Services;
+using Esfa.Recruit.Provider.Web.ViewModels.Part1.Location;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using NUnit.Framework;
 
-namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Controllers.Part1;
+namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers.Part1;
 
 public class LocationControllerTests
 {
@@ -38,9 +39,8 @@ public class LocationControllerTests
     {
         // arrange
         model.VacancyId = vacancy.Id;
-        model.EmployerAccountId = vacancy.EmployerAccountId;
         utility.Setup(x => x.GetAuthorisedVacancyForEditAsync(model, RouteNames.AddOneLocation_Get)).ReturnsAsync(vacancy);
-        _vacancyLocationService.Setup(x => x.GetVacancyLocations(vacancy)).ReturnsAsync(locations);
+        _vacancyLocationService.Setup(x => x.GetVacancyLocations(vacancy, model.Ukprn)).ReturnsAsync(locations);
         
         // act
         var result = (await _sut.AddOneLocation(_vacancyLocationService.Object, utility.Object, model, true) as ViewResult)?.Model as AddOneLocationViewModel;
@@ -49,7 +49,7 @@ public class LocationControllerTests
         result.Should().NotBeNull();
         result!.VacancyId.Should().Be(vacancy.Id);
         result.ApprenticeshipTitle.Should().Be(vacancy.Title);
-        result.EmployerAccountId.Should().BeEquivalentTo(vacancy.EmployerAccountId);
+        result.Ukprn.Should().Be(model.Ukprn);
         result.AvailableLocations.Should().BeEquivalentTo(locations);
     }
     
@@ -58,9 +58,8 @@ public class LocationControllerTests
     {
         // arrange
         model.VacancyId = vacancy.Id;
-        model.EmployerAccountId = vacancy.EmployerAccountId;
         utility.Setup(x => x.GetAuthorisedVacancyForEditAsync(model, RouteNames.AddOneLocation_Get)).ReturnsAsync(vacancy);
-        _vacancyLocationService.Setup(x => x.GetVacancyLocations(vacancy)).ReturnsAsync(locations);
+        _vacancyLocationService.Setup(x => x.GetVacancyLocations(vacancy, model.Ukprn)).ReturnsAsync(locations);
         
         const string newlyAddedAddress = "An Address";
         _sut.TempData[TempDataKeys.AddedLocation] = newlyAddedAddress;
@@ -79,9 +78,8 @@ public class LocationControllerTests
     {
         // arrange
         model.VacancyId = vacancy.Id;
-        model.EmployerAccountId = vacancy.EmployerAccountId;
         utility.Setup(x => x.GetAuthorisedVacancyForEditAsync(model, RouteNames.AddOneLocation_Get)).ReturnsAsync(vacancy);
-        _vacancyLocationService.Setup(x => x.GetVacancyLocations(vacancy)).ReturnsAsync(locations);
+        _vacancyLocationService.Setup(x => x.GetVacancyLocations(vacancy, model.Ukprn)).ReturnsAsync(locations);
         
         // act
         var result = (await _sut.AddOneLocation(_vacancyLocationService.Object, utility.Object, model, true) as ViewResult)?.Model as AddOneLocationViewModel;
@@ -102,9 +100,8 @@ public class LocationControllerTests
         // arrange
         vacancy.EmployerLocations = [address];
         model.VacancyId = vacancy.Id;
-        model.EmployerAccountId = vacancy.EmployerAccountId;
         utility.Setup(x => x.GetAuthorisedVacancyForEditAsync(model, RouteNames.AddOneLocation_Get)).ReturnsAsync(vacancy);
-        _vacancyLocationService.Setup(x => x.GetVacancyLocations(vacancy)).ReturnsAsync(locations);
+        _vacancyLocationService.Setup(x => x.GetVacancyLocations(vacancy, model.Ukprn)).ReturnsAsync(locations);
         
         // act
         var result = (await _sut.AddOneLocation(_vacancyLocationService.Object, utility.Object, model, true) as ViewResult)?.Model as AddOneLocationViewModel;
@@ -114,31 +111,36 @@ public class LocationControllerTests
         result!.SelectedLocation.Should().Be(address.ToAddressString());
     }
 
-    [Test]
-    [MoqInlineAutoData(true, RouteNames.EmployerTaskListGet)]
-    [MoqInlineAutoData(false, RouteNames.EmployerCheckYourAnswersGet)]
-    public async Task When_Posting_AddOneLocation_With_Valid_Model_Then_Redirected(bool wizard, string expectedRouteName,
-        [Frozen] Vacancy vacancy, [Frozen] Mock<IUtility> utility, [Frozen] List<Address> locations)
+    [Test, MoqAutoData]
+    public async Task When_Posting_AddOneLocation_With_Valid_Model_Then_Redirected(
+        [Frozen] Vacancy vacancy,
+        [Frozen] Mock<IUtility> utility,
+        [Frozen] List<Address> locations)
     {
         // arrange
         var model = new AddOneLocationEditModel
         {
             VacancyId = vacancy.Id,
-            EmployerAccountId = vacancy.EmployerAccountId,
+            Ukprn = new Random().Next(),
             SelectedLocation = locations.First().ToAddressString()
         };
         utility.Setup(x => x.GetAuthorisedVacancyForEditAsync(model, RouteNames.AddOneLocation_Post)).ReturnsAsync(vacancy);
-        _vacancyLocationService.Setup(x => x.GetVacancyLocations(vacancy)).ReturnsAsync(locations);
+        _vacancyLocationService.Setup(x => x.GetVacancyLocations(vacancy, model.Ukprn)).ReturnsAsync(locations);
         _vacancyLocationService
             .Setup(x => x.UpdateDraftVacancyLocations(vacancy, It.IsAny<VacancyUser>(), AvailableWhere.OneLocation, It.IsAny<List<Address>>(), null))
             .ReturnsAsync(new UpdateVacancyLocationsResult(null));
         
+        _sut.AddControllerContext()
+            .WithTempData()
+            .WithUser(Guid.NewGuid())
+            .WithClaim(ProviderRecruitClaims.IdamsUserUkprnClaimsTypeIdentifier, model.Ukprn.ToString());
+        
         // act
-        var result = await _sut.AddOneLocation(_vacancyLocationService.Object, utility.Object, model, wizard) as RedirectToRouteResult;
+        var result = await _sut.AddOneLocation(_vacancyLocationService.Object, utility.Object, model, true) as RedirectToRouteResult;
     
         // assert
         result.Should().NotBeNull();
-        result!.RouteName.Should().Be(expectedRouteName);
+        result!.RouteName.Should().Be(RouteNames.ProviderTaskListGet);
     }
     
     [Test, MoqAutoData]
@@ -148,14 +150,18 @@ public class LocationControllerTests
         var model = new AddOneLocationEditModel
         {
             VacancyId = vacancy.Id,
-            EmployerAccountId = vacancy.EmployerAccountId,
+            Ukprn = new Random().Next(),
             SelectedLocation = "invalid"
         };
         utility.Setup(x => x.GetAuthorisedVacancyForEditAsync(model, RouteNames.AddOneLocation_Post)).ReturnsAsync(vacancy);
-        _vacancyLocationService.Setup(x => x.GetVacancyLocations(vacancy)).ReturnsAsync(locations);
+        _vacancyLocationService.Setup(x => x.GetVacancyLocations(vacancy, model.Ukprn)).ReturnsAsync(locations);
         _vacancyLocationService
             .Setup(x => x.UpdateDraftVacancyLocations(vacancy, It.IsAny<VacancyUser>(), AvailableWhere.OneLocation, It.IsAny<List<Address>>(), null))
             .ReturnsAsync(new UpdateVacancyLocationsResult(new EntityValidationResult { Errors = [new EntityValidationError(1, "EmployerLocations", "error message", "code")] }));
+        _sut.AddControllerContext()
+            .WithTempData()
+            .WithUser(Guid.NewGuid())
+            .WithClaim(ProviderRecruitClaims.IdamsUserUkprnClaimsTypeIdentifier, model.Ukprn.ToString());
         
         // act
         var result = (await _sut.AddOneLocation(_vacancyLocationService.Object, utility.Object, model, true) as ViewResult)?.Model as AddOneLocationViewModel;
@@ -165,13 +171,12 @@ public class LocationControllerTests
         result.Should().NotBeNull();
         result!.VacancyId.Should().Be(vacancy.Id);
         result.ApprenticeshipTitle.Should().Be(vacancy.Title);
-        result.EmployerAccountId.Should().BeEquivalentTo(vacancy.EmployerAccountId);
+        result.Ukprn.Should().Be(model.Ukprn);
         result.AvailableLocations.Should().BeEquivalentTo(locations);
         result.SelectedLocation.Should().Be("invalid");
         _sut.ModelState.Values.Should().HaveCount(1);
         errorResult.Should().NotBeNull();
         errorResult.Errors.Should().HaveCount(1);
         errorResult.Errors.First().ErrorMessage.Should().Be("error message");
-
     }
 }
