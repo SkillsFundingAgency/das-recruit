@@ -32,7 +32,10 @@
             {
                 var location = Model.AvailableLocations.First();
                 var city = location.GetLastNonEmptyField();
-                return new HtmlString($"{city}, {location.Postcode}");
+                
+                return string.IsNullOrWhiteSpace(city)
+                    ? new HtmlString(location.Postcode)
+                    : new HtmlString($"{city} ({location.Postcode})");
             }
             case AvailableWhere.MultipleLocations:
             {
