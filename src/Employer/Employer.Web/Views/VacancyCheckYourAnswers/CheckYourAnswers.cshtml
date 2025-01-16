@@ -411,7 +411,6 @@
                             })
                         </dt>
                         <dd class="app-summary-list__value">
-                            
                             @switch (Model.AvailableWhere)
                             {
                                 case AvailableWhere.OneLocation:
@@ -421,12 +420,25 @@
                                 }
                                 case AvailableWhere.MultipleLocations:
                                 {
-                                    <ul class="govuk-list govuk-list--bullet">
-                                        @foreach (var address in Model.AvailableLocations)
-                                        {
-                                            <li><address value="@address" anonymised="@Model.IsAnonymous" flat="true"/></li>
-                                        }
-                                    </ul>
+                                    if (Model.IsAnonymous)
+                                    {
+                                        var groupedByOutcode = Model.AvailableLocations.GroupByPostcodeOutcode();
+                                        <ul class="govuk-list govuk-list--bullet">
+                                            @foreach (var group in groupedByOutcode)
+                                            {
+                                                <li>@group.Key</li>
+                                            }
+                                        </ul>
+                                    }
+                                    else
+                                    {
+                                        <ul class="govuk-list govuk-list--bullet">
+                                            @foreach (var address in Model.AvailableLocations)
+                                            {
+                                                <li><address value="@address" flat="true"/></li>
+                                            }
+                                        </ul>
+                                    }
                                     break;
                                 }
                                 default: {

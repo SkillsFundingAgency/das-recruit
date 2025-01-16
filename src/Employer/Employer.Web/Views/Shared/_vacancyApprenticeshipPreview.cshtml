@@ -204,14 +204,28 @@
                             <p class="govuk-body">
                                 This apprenticeship is available in these locations:
                             </p>
-                            <ul class="govuk-list govuk-list--bullet">
-                                @foreach (var location in Model.AvailableLocations)
-                                {
-                                    <li>
-                                        <address value="@location" anonymised="@Model.IsAnonymous" flat="true" />
-                                    </li>
-                                }
-                            </ul>
+
+                            if (Model.IsAnonymous)
+                            {
+                                var groupedByOutcode = Model.AvailableLocations.GroupByPostcodeOutcode();
+                                <ul class="govuk-list govuk-list--bullet">
+                                    @foreach (var group in groupedByOutcode)
+                                    {
+                                        <li>@group.Key</li>
+                                    }
+                                </ul>
+                            }
+                            else
+                            {
+                                <ul class="govuk-list govuk-list--bullet">
+                                    @foreach (var location in Model.AvailableLocations)
+                                    {
+                                        <li>
+                                            <address value="@location" anonymised="@Model.IsAnonymous" flat="true"/>
+                                        </li>
+                                    }
+                                </ul>
+                            }
                             
                             RenderMapSection();
                             break;

@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
 using Projections = Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections;
 
 namespace Esfa.Recruit.Shared.Web.Extensions
@@ -59,6 +60,15 @@ namespace Esfa.Recruit.Shared.Web.Extensions
         {
             return addresses?
                 .Select(x => new KeyValuePair<string, Address>(GetLastNonEmptyField(x), x))
+                .Where(x => !string.IsNullOrEmpty(x.Key))
+                .GroupBy(x => x.Key)
+                .OrderBy(x => x.Key);
+        }
+        
+        public static IOrderedEnumerable<IGrouping<string, KeyValuePair<string, Address>>> GroupByPostcodeOutcode(this List<Address> addresses)
+        {
+            return addresses?
+                .Select(x => new KeyValuePair<string, Address>(x.PostcodeAsOutcode(), x))
                 .Where(x => !string.IsNullOrEmpty(x.Key))
                 .GroupBy(x => x.Key)
                 .OrderBy(x => x.Key);
