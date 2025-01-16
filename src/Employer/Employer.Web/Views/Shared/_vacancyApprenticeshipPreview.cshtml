@@ -19,46 +19,6 @@
             </div>
         </details>
     }
-
-    IHtmlContent RenderLocationSubtitle()
-    {
-        switch (Model.AvailableWhere)
-        {
-            case AvailableWhere.AcrossEngland:
-            {
-                return new HtmlString("Recruiting nationally");
-            }
-            case AvailableWhere.OneLocation:
-            {
-                var location = Model.AvailableLocations.First();
-                var city = location.GetLastNonEmptyField();
-                
-                return string.IsNullOrWhiteSpace(city)
-                    ? new HtmlString(location.Postcode)
-                    : new HtmlString($"{city} ({location.Postcode})");
-            }
-            case AvailableWhere.MultipleLocations:
-            {
-                var groupedAddresses = Model.AvailableLocations.ToList().GroupByLastFilledAddressLine().ToList();
-                if (groupedAddresses is { Count: 1 })
-                {
-                    var groupCount = groupedAddresses[0].Count();
-                    if (groupCount > 1)
-                    {
-                        return new HtmlString($"{groupedAddresses[0].Key} ({groupCount} available locations)");
-                    }
-                }
-
-                var keys = groupedAddresses.Select(group => group.Key);
-                return new HtmlString(string.Join(", ", keys));
-            }
-            default:
-            {
-                // This is for existing data that uses the old fields
-                return new HtmlString($"{Model.EmployerAddressElements.SkipLast(1).LastOrDefault()}, {Model.EmployerAddressElements.LastOrDefault()}");
-            }
-        }
-    }
 }
 
 <div class="app-preview-wrap">
@@ -67,7 +27,7 @@
     <p class="govuk-body-l faa-vacancy__location">
         <esfaFeatureEnabled name="@FeatureNames.MultipleLocations">
             <span itemprop="jobLocation">
-                @RenderLocationSubtitle()
+                @Model.GetLocationDescription()
             </span>
         </esfaFeatureEnabled>
         <esfaFeatureDisabled name="@FeatureNames.MultipleLocations">
