@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using Esfa.Recruit.Employer.Web.RouteModel;
+using Esfa.Recruit.Shared.Web.Extensions;
+using AvailableWhereType = Esfa.Recruit.Vacancies.Client.Domain.Entities.AvailableWhere;
 
 namespace Esfa.Recruit.Employer.Web.ViewModels
 {
@@ -29,9 +31,9 @@ namespace Esfa.Recruit.Employer.Web.ViewModels
         public bool IsAnonymous { get; internal set; }
         public bool IsDisabilityConfident { get; internal set; }
         public Address Location { get; internal set; }
-        public IEnumerable<string> EmployerAddressElements { get; internal set; }
-        public AvailableWhere? AvailableWhere { get; internal set; }
-        public IEnumerable<Address> AvailableLocations { get; internal set; }
+        public IEnumerable<string> EmployerAddressElements { get; set; }
+        public AvailableWhereType? AvailableWhere { get; set; }
+        public IEnumerable<Address> AvailableLocations { get; set; }
         public string? LocationInformation { get; internal set; }
         public string MapUrl { get; internal set; }
         public string NumberOfPositions { get; internal set; }
@@ -165,6 +167,43 @@ namespace Esfa.Recruit.Employer.Web.ViewModels
                 return additionalQuestion.TrimEnd() + "?";
                 
             return additionalQuestion;
+        }
+
+        public string GetLocationDescription()
+        {
+            switch (AvailableWhere)
+            {
+                case AvailableWhereType.AcrossEngland:
+                    {
+                        return "Recruiting nationally";
+                    }
+                case AvailableWhereType.OneLocation:
+                    {
+                        var location = AvailableLocations.First();
+                        string city = location.GetLastNonEmptyField();
+                        return $"{city} ({location.Postcode})";
+                    }
+                case AvailableWhereType.MultipleLocations:
+                    {
+                        var groupedAddresses = AvailableLocations.ToList().GroupByLastFilledAddressLine().ToList();
+                        if (groupedAddresses is { Count: 1 })
+                        {
+                            int groupCount = groupedAddresses[0].Count();
+                            if (groupCount > 1)
+                            {
+                                return $"{groupedAddresses[0].Key} ({groupCount} available locations)";
+                            }
+                        }
+
+                        var keys = groupedAddresses.Select(group => group.Key);
+                        return string.Join(", ", keys);
+                    }
+                default:
+                    {
+                        // This is for existing data that uses the old fields
+                        return $"{EmployerAddressElements.SkipLast(1).LastOrDefault()} ({EmployerAddressElements.LastOrDefault()})";
+                    }
+            }
         }
     }
 }

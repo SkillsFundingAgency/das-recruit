@@ -43,22 +43,25 @@ namespace Esfa.Recruit.Shared.Web.Extensions
                 address.Postcode
             }.All(x => string.IsNullOrEmpty(x?.Trim()));
         }
+        
+        public static string GetLastNonEmptyField(this Address address)
+        {
+            return new[]
+            {
+                address.AddressLine4,
+                address.AddressLine3,
+                address.AddressLine2,
+                address.AddressLine1,
+            }.FirstOrDefault(x => !string.IsNullOrWhiteSpace(x));
+        }
 
         public static IOrderedEnumerable<IGrouping<string, KeyValuePair<string, Address>>> GroupByLastFilledAddressLine(this List<Address> addresses)
         {
             return addresses?
-                .Select(x => new KeyValuePair<string, Address>(Selector(x), x))
+                .Select(x => new KeyValuePair<string, Address>(GetLastNonEmptyField(x), x))
                 .Where(x => !string.IsNullOrEmpty(x.Key))
                 .GroupBy(x => x.Key)
                 .OrderBy(x => x.Key);
-
-            string Selector(Address address) => new[]
-                {
-                    address.AddressLine4,
-                    address.AddressLine3,
-                    address.AddressLine2,
-                    address.AddressLine1,
-                }.FirstOrDefault(x => !string.IsNullOrEmpty(x?.Trim()));
         }
         
         public static Address ToDomain(this GetAddressesListItem addressItem)

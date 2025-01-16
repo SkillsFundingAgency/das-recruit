@@ -2,7 +2,6 @@
 using System.Linq;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using FluentAssertions;
 using NUnit.Framework;
 
 namespace Esfa.Recruit.Vacancies.Client.UnitTests.Shared.Web.Extensions;
@@ -105,5 +104,23 @@ public class AddressExtensionsTests
         result.Skip(1).First().Should().HaveCount(1);
         result.Skip(2).First().Should().HaveCount(2);
         result.Last().Should().HaveCount(1);
+    }
+
+    private static readonly IEnumerable<object[]> CityTestCases =
+    [
+        [ new Address { AddressLine1 = "AddressLine1" }, "AddressLine1" ],
+        [ new Address { AddressLine1 = "AddressLine1", AddressLine2 = "AddressLine2" }, "AddressLine2" ],
+        [ new Address { AddressLine1 = "AddressLine1", AddressLine2 = "AddressLine2", AddressLine3 = "AddressLine3" }, "AddressLine3" ],
+        [ new Address { AddressLine1 = "AddressLine1", AddressLine2 = "AddressLine2", AddressLine3 = "AddressLine3", AddressLine4 = "AddressLine4" }, "AddressLine4" ],
+    ];
+        
+    [TestCaseSource(nameof(CityTestCases))]
+    public void City_Is_The_Last_Populated_Field(Address address, string expectedCity)
+    {
+        // act
+        string result = address.GetLastNonEmptyField();
+        
+        // assert
+        result.Should().Be(expectedCity);
     }
 }
