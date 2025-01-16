@@ -19,7 +19,7 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Infrastructure.ReferenceData.A
 public class WhenGettingAllApprenticeshipProgrammes
 {
     [Test, MoqAutoData]
-    public async Task Then_The_Courses_Are_Retrieved_From_The_Api_And_Cached(
+    public async Task Then_The_Courses_Are_Retrieved_From_The_Api_When_Not_Cached(
         GetTrainingProgrammesResponse apiResponse,
         [Frozen] Mock<ITimeProvider> mockTimeProvider,
         [Frozen] Mock<IOuterApiClient> outerApiClient)
