@@ -17,7 +17,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.StorageQueue
         public const string ApplicationWithdrawnQueueName = "application-withdrawn-queue";
         public const string CandidateDeleteQueueName = "candidate-delete-queue";
         public const string ReportQueueName = "report-queue";
-        public const string UpdateApprenticeProgrammesQueueName = "update-apprenticeship-programmes-queue";
         public const string UpdateQaDashboardQueueName = "update-qa-dashboard-queue";
         public const string DeleteReportsQueueName = "delete-reports-queue";
         public const string TransferVacanciesFromProviderQueueName = "transfer-vacancies-from-provider-queue";

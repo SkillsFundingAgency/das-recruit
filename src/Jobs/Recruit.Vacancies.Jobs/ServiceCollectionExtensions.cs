@@ -53,7 +53,6 @@ namespace Esfa.Recruit.Vacancies.Jobs
 
             // Add Jobs
             services.AddScoped<DomainEventsQueueTrigger>();
-            services.AddScoped<UpdateApprenticeshipProgrammesQueueTrigger>();
             services.AddScoped<VacancyStatusQueueTrigger>();
             services.AddScoped<GeneratePublishedVacanciesQueueTrigger>();
             services.AddScoped<UpdateBankHolidayQueueTrigger>();

@@ -9,7 +9,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
     {
         Task AssignVacancyNumber(Guid vacancyId);
         Task PatchTrainingProviderAsync(Guid vacancyId);
-        Task UpdateApprenticeshipProgrammesAsync();
         Task<IEnumerable<LegalEntity>> GetEmployerLegalEntitiesAsync(string employerAccountId);
         Task CreateVacancyReview(long vacancyReference);
         Task CloseExpiredVacancies();
