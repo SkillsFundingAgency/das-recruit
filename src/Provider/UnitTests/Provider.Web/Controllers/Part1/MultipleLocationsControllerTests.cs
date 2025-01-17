@@ -5,6 +5,7 @@ using Esfa.Recruit.Provider.Web;
 using Esfa.Recruit.Provider.Web.Configuration;
 using Esfa.Recruit.Provider.Web.Configuration.Routing;
 using Esfa.Recruit.Provider.Web.Controllers.Part1;
+using Esfa.Recruit.Provider.Web.Models.AddLocation;
 using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Provider.Web.Services;
 using Esfa.Recruit.Provider.Web.ViewModels.Part1.MultipleLocations;
@@ -274,19 +275,26 @@ public class MultipleLocationsControllerTests
         result.Locations.Should().BeEquivalentTo(vacancy.EmployerLocations);
     }
     
-    [Test, MoqAutoData]
-    public void When_Posting_ConfirmLocations_Then_A_Redirect_Result_Is_Returned(
-        bool wizard,
-        string expectedRedirectRoute,
+    [Test]
+    [MoqInlineAutoData(false, RouteNames.ProviderTaskListGet)]
+    [MoqInlineAutoData(true, RouteNames.ProviderCheckYourAnswersGet)]
+    public async Task When_Posting_ConfirmLocations_Then_A_Redirect_Result_Is_Returned(
+        bool isComplete,
+        string expectedRouteName,
         Vacancy vacancy,
-        VacancyRouteModel model,
+        ConfirmLocationsEditModel model,
+        [Frozen] Mock<IUtility> utility,
         [Greedy] MultipleLocationsController sut)
     {
+        // arrange
+        utility.Setup(x => x.GetAuthorisedVacancyForEditAsync(model, RouteNames.MultipleLocations_Get)).ReturnsAsync(vacancy);
+        utility.Setup(x => x.IsTaskListCompleted(vacancy)).Returns(isComplete);
+        
         // act
-        var result = sut.ConfirmLocations(model, wizard) as RedirectToRouteResult;
+        var result = await sut.ConfirmLocations(utility.Object, model) as RedirectToRouteResult;
 
         // assert
         result.Should().NotBeNull();
-        result!.RouteName.Should().Be(RouteNames.ProviderTaskListGet);
+        result!.RouteName.Should().Be(expectedRouteName);
     }
 }

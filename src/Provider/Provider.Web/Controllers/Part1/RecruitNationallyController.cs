@@ -58,7 +58,9 @@ public class RecruitNationallyController: Controller
 
         if (result.ValidationResult is null)
         {
-            return RedirectToRoute(RouteNames.ProviderTaskListGet, new { Wizard = wizard, model.Ukprn, model.VacancyId });
+            return utility.IsTaskListCompleted(vacancy)
+                ? RedirectToRoute(RouteNames.ProviderCheckYourAnswersGet, new { model.VacancyId, model.Ukprn, wizard })
+                : RedirectToRoute(RouteNames.ProviderTaskListGet, new { model.VacancyId, model.Ukprn, wizard });
         }
         
         ModelState.AddValidationErrors(result.ValidationResult, ValidationFieldMappings);

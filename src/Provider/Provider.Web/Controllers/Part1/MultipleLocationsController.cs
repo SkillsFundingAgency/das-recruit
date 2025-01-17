@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Esfa.Recruit.Provider.Web.Configuration;
 using Esfa.Recruit.Provider.Web.Configuration.Routing;
 using Esfa.Recruit.Provider.Web.Extensions;
+using Esfa.Recruit.Provider.Web.Models.AddLocation;
 using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Provider.Web.Services;
 using Esfa.Recruit.Provider.Web.ViewModels.Part1.MultipleLocations;
@@ -20,9 +21,7 @@ using Microsoft.FeatureManagement.Mvc;
 namespace Esfa.Recruit.Provider.Web.Controllers.Part1;
 
 [Route(RoutePaths.AccountVacancyRoutePath)]
-public class MultipleLocationsController(
-    IWebHostEnvironment hostingEnvironment,
-    IUtility utility) : EmployerControllerBase(hostingEnvironment)
+public class MultipleLocationsController(IWebHostEnvironment hostingEnvironment) : EmployerControllerBase(hostingEnvironment)
 {
     [FeatureGate(FeatureNames.MultipleLocations)]
     [HttpGet("location-availability", Name = RouteNames.MultipleLocations_Get)]
@@ -187,8 +186,11 @@ public class MultipleLocationsController(
 
     [FeatureGate(FeatureNames.MultipleLocations)]
     [HttpPost("confirm-locations", Name = RouteNames.MultipleLocationsConfirm_Post)]
-    public IActionResult ConfirmLocations(VacancyRouteModel vacancyRouteModel, [FromQuery] bool wizard)
+    public async Task<IActionResult> ConfirmLocations([FromServices] IUtility utility, ConfirmLocationsEditModel model)
     {
-        return RedirectToRoute(RouteNames.ProviderTaskListGet, new { vacancyRouteModel.VacancyId, vacancyRouteModel.Ukprn, wizard });
+        var vacancy = await utility.GetAuthorisedVacancyForEditAsync(model, RouteNames.MultipleLocations_Get);
+        return utility.IsTaskListCompleted(vacancy)
+            ? RedirectToRoute(RouteNames.ProviderCheckYourAnswersGet, new { model.VacancyId, model.Ukprn, model.Wizard })
+            : RedirectToRoute(RouteNames.ProviderTaskListGet, new { model.VacancyId, model.Ukprn, model.Wizard });
     }
 }
