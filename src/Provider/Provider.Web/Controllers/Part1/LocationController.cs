@@ -141,7 +141,9 @@ public class LocationController(IWebHostEnvironment hostingEnvironment) : Employ
 
         if (result.ValidationResult is null)
         {
-            return RedirectToRoute(RouteNames.ProviderTaskListGet, new { Wizard = wizard, model.Ukprn, model.VacancyId });
+            return utility.IsTaskListCompleted(vacancy)
+                ? RedirectToRoute(RouteNames.ProviderCheckYourAnswersGet, new { model.VacancyId, model.Ukprn, wizard })
+                : RedirectToRoute(RouteNames.ProviderTaskListGet, new { model.VacancyId, model.Ukprn, wizard });
         }
 
         ModelState.AddValidationErrors(result.ValidationResult, new Dictionary<string, string> { { "EmployerLocations", "SelectedLocation" } });

@@ -111,8 +111,12 @@ public class LocationControllerTests
         result!.SelectedLocation.Should().Be(address.ToAddressString());
     }
 
-    [Test, MoqAutoData]
+    [Test]
+    [MoqInlineAutoData(false, RouteNames.ProviderTaskListGet)]
+    [MoqInlineAutoData(true, RouteNames.ProviderCheckYourAnswersGet)]
     public async Task When_Posting_AddOneLocation_With_Valid_Model_Then_Redirected(
+        bool isComplete,
+        string expectedRouteName,
         [Frozen] Vacancy vacancy,
         [Frozen] Mock<IUtility> utility,
         [Frozen] List<Address> locations)
@@ -125,6 +129,7 @@ public class LocationControllerTests
             SelectedLocation = locations.First().ToAddressString()
         };
         utility.Setup(x => x.GetAuthorisedVacancyForEditAsync(model, RouteNames.AddOneLocation_Post)).ReturnsAsync(vacancy);
+        utility.Setup(x => x.IsTaskListCompleted(vacancy)).Returns(isComplete);
         _vacancyLocationService.Setup(x => x.GetVacancyLocations(vacancy, model.Ukprn)).ReturnsAsync(locations);
         _vacancyLocationService
             .Setup(x => x.UpdateDraftVacancyLocations(vacancy, It.IsAny<VacancyUser>(), AvailableWhere.OneLocation, It.IsAny<List<Address>>(), null))
@@ -140,7 +145,7 @@ public class LocationControllerTests
     
         // assert
         result.Should().NotBeNull();
-        result!.RouteName.Should().Be(RouteNames.ProviderTaskListGet);
+        result!.RouteName.Should().Be(expectedRouteName);
     }
     
     [Test, MoqAutoData]
