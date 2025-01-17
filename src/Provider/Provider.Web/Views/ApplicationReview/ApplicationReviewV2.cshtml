@@ -292,9 +292,16 @@
             </div>
 
             <div asp-hide="@Model.IsStatusEmployerUnsuccessful" esfa-validation-marker-for="Outcome" class="govuk-form-group">
+                <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                    <h3 class="govuk-fieldset__heading">Progress this application</h3>
+                </legend>
+                <h3 class="govuk-heading-s">Employer's response</h3>
+                <p class="govuk-body">The employer <span class="govuk-!-font-weight-bold">wants to interview</span> this applicant.</p>
+
                 <fieldset class="govuk-fieldset">
+                    
                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                        <h3 class="govuk-fieldset__heading">What do you want to do with this application?</h3>
+                        <h3 class="govuk-heading-m govuk-!-margin-top-6">What do you want to do with this application?</h3>
                     </legend>
                     <span esfa-validation-message-for="Outcome" class="govuk-error-message"></span>
                     <input type="hidden" asp-for="NavigateToFeedbackPage" value="true"/>
