@@ -1,15 +1,40 @@
 @using Esfa.Recruit.Shared.Web.TagHelpers
-@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using Esfa.Recruit.Vacancies.Client.Domain.Entities
+@using Microsoft.AspNetCore.Html
 @using WebEssentials.AspNetCore.CdnTagHelpers
 @model DisplayVacancyViewModel
+
+@functions {
+    void RenderMapSection()
+    {
+        <div class="govuk-!-margin-bottom-6"></div>
+        <details class="govuk-details govuk-!-margin-bottom-0">
+            <summary class="govuk-details__summary">
+                <span class="govuk-details__summary-text">
+                    Check your travel to work
+                </span>
+            </summary>
+            <div class="govuk-details__text">
+                Directions map will appear here
+            </div>
+        </details>
+    }
+}
 
 <div class="app-preview-wrap">
     <h1 id="previewTitle" class="govuk-heading-l faa-vacancy__title">@Model.Title</h1>
     <p class="govuk-body-l faa-vacancy__organisation">@Model.EmployerName</p>
     <p class="govuk-body-l faa-vacancy__location">
-        <span itemprop="jobLocation">
-            @Model.EmployerAddressElements.SkipLast(1).LastOrDefault(), @Model.EmployerAddressElements.LastOrDefault()
-        </span>
+        <esfaFeatureEnabled name="@FeatureNames.MultipleLocations">
+            <span itemprop="jobLocation">
+                @Model.GetLocationDescription()
+            </span>
+        </esfaFeatureEnabled>
+        <esfaFeatureDisabled name="@FeatureNames.MultipleLocations">
+            <span itemprop="jobLocation">
+                @Model.EmployerAddressElements.SkipLast(1).LastOrDefault(), @Model.EmployerAddressElements.LastOrDefault()
+            </span>    
+        </esfaFeatureDisabled>
     </p>
     <p class="govuk-body faa-vacancy__closing-date">Closes on @Model.ClosingDate</p>
     <p class="govuk-body govuk-!-font-size-16 das-!-color-dark-grey">Posted on @Model.PostedDate</p>
@@ -161,21 +186,65 @@
                 <h3 class="govuk-heading-s">What you’ll do at work</h3>
                 <p>@Html.Raw(Model.VacancyDescription)</p>
                 <h3 class="govuk-heading-s">Where you’ll work</h3>
-                @foreach (var addressLine in Model.EmployerAddressElements)
-                {
-                    <p class="govuk-body govuk-!-margin-bottom-0">@addressLine</p>
-                }
-                <div class="govuk-!-margin-bottom-6"></div>
-                <details class="govuk-details govuk-!-margin-bottom-0">
-                    <summary class="govuk-details__summary">
-                        <span class="govuk-details__summary-text">
-                            Check your travel to work
-                        </span>
-                    </summary>
-                    <div class="govuk-details__text">
-                        Directions map will appear here
-                    </div>
-                </details>
+                
+                <esfaFeatureEnabled name="@FeatureNames.MultipleLocations">
+                    @switch (Model.AvailableWhere)
+                    {
+                        case AvailableWhere.OneLocation:
+                        {
+                            <p class="govuk-body">
+                                <address value="@Model.AvailableLocations.First()" anonymised="@Model.IsAnonymous" flat="true" />
+                            </p>
+
+                            RenderMapSection();
+                            break;
+                    }
+                        case AvailableWhere.MultipleLocations:
+                        {
+                            <p class="govuk-body">
+                                This apprenticeship is available in these locations:
+                            </p>
+                            <ul class="govuk-list govuk-list--bullet">
+                                @foreach (var location in Model.AvailableLocations)
+                                {
+                                    <li>
+                                        <address value="@location" anonymised="@Model.IsAnonymous" flat="true" />
+                                    </li>
+                                }
+                            </ul>
+                            
+                            RenderMapSection();
+                            break;
+                        }
+                        case AvailableWhere.AcrossEngland:
+                        {
+                            <p class="govuk-body">
+                                @Model.LocationInformation
+                            </p>
+                            break;
+                        }
+                        default:
+                        {
+                            // This is for existing data that uses the old fields
+                            foreach (var addressLine in Model.EmployerAddressElements)
+                            {
+                                <p class="govuk-body govuk-!-margin-bottom-0">@addressLine</p>
+                            }
+
+                            RenderMapSection();
+                            break;
+                        }
+                    }
+                </esfaFeatureEnabled>
+                <esfaFeatureDisabled name="@FeatureNames.MultipleLocations">
+                    @foreach (var addressLine in Model.EmployerAddressElements)
+                    {
+                        <p class="govuk-body govuk-!-margin-bottom-0">@addressLine</p>
+                    }
+
+                    @{ RenderMapSection(); }
+                </esfaFeatureDisabled>
+                
             </section>
             <section class="faa-vacancy__section" id="training">
                 <h2 class="govuk-heading-m">Training</h2>

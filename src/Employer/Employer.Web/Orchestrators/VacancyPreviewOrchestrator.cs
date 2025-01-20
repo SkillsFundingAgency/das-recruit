@@ -12,6 +12,7 @@ using Esfa.Recruit.Shared.Web.Helpers;
 using Esfa.Recruit.Shared.Web.Orchestrators;
 using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Commands;
+using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
@@ -35,6 +36,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
         private readonly ILegalEntityAgreementService _legalEntityAgreementService;
         private readonly IMessaging _messaging;
         private readonly IUtility _utility;
+        private readonly IFeature _feature;
         private readonly ExternalLinksConfiguration _externalLinksConfiguration;
 
         public VacancyPreviewOrchestrator(
@@ -45,7 +47,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             ILegalEntityAgreementService legalEntityAgreementService,
             IMessaging messaging,
             IOptions<ExternalLinksConfiguration> externalLinksOptions,
-            IUtility utility) : base(logger)
+            IUtility utility,
+            IFeature feature) : base(logger)
         {
             _vacancyClient = vacancyClient;
             _vacancyDisplayMapper = vacancyDisplayMapper;
@@ -53,6 +56,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             _legalEntityAgreementService = legalEntityAgreementService;
             _messaging = messaging;
             _utility = utility;
+            _feature = feature;
             _externalLinksConfiguration = externalLinksOptions.Value;
         }
 
@@ -66,7 +70,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             var vacancy = vacancyTask.Result;
             var programme = programmesTask.Result.SingleOrDefault(p => p.Id == vacancy.ProgrammeId);
 
-            var vm = new VacancyPreviewViewModel();
+            var vm = new VacancyPreviewViewModel(_feature.IsFeatureEnabled(FeatureNames.MultipleLocations));
             await _vacancyDisplayMapper.MapFromVacancyAsync(vm, vacancy);
 
             vm.VacancyId = vacancy.Id;
