@@ -36,7 +36,7 @@
                             </div>
                             <div class="govuk-radios__item">
                                 <input asp-for="SelectedAvailability" value="@AvailableWhere.MultipleLocations.ToString()" id="MoreThanOneLocation" class="govuk-radios__input" type="radio">
-                                <label for="OneLocation" class="govuk-label govuk-radios__label">
+                                <label for="MoreThanOneLocation" class="govuk-label govuk-radios__label">
                                     More than one location
                                 </label>
                                 <p class="govuk-body govuk-hint govuk-radios__hint">
@@ -46,7 +46,7 @@
                             <div class="govuk-radios__divider">or</div>
                             <div class="govuk-radios__item">
                                 <input asp-for="SelectedAvailability" value="@AvailableWhere.AcrossEngland.ToString()" id="AcrossEngland" class="govuk-radios__input" type="radio">
-                                <label for="OneLocation" class="govuk-label govuk-radios__label">
+                                <label for="AcrossEngland" class="govuk-label govuk-radios__label">
                                     Across all of England
                                 </label>
                                 <p class="govuk-body govuk-hint govuk-radios__hint">
