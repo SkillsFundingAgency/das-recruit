@@ -1,10 +1,9 @@
 using System.Linq;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using FluentAssertions;
 using Xunit;
 
-namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation.SingleField
+namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.VacancyValidation.SingleField
 {
     public class EmployerNameTests : VacancyValidationTestsBase
     {
@@ -43,7 +42,7 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation.
         public void TradingName_ShouldValidateSpecialCharactersAndLength()
         {
             var vacancy = new Vacancy() {
-                EmployerName = "£$$%$%£$<>" + new string('a', 100),
+                EmployerName = "ï¿½$$%$%ï¿½$<>" + new string('a', 100),
                 EmployerNameOption = EmployerNameOption.TradingName
             };
 
@@ -77,7 +76,7 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation.
         public void Anonymous_ShouldValidateSpecialCharactersAndLength()
         {
             var vacancy = new Vacancy() {
-                EmployerName = "£$$%$%£$<>" + new string('a', 100),
+                EmployerName = "ï¿½$$%$%ï¿½$<>" + new string('a', 100),
                 EmployerNameOption = EmployerNameOption.Anonymous,
                 AnonymousReason = "a valid reason"
             };
