@@ -66,7 +66,9 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators
                                                     Mock.Of<ILogger<VacancyPreviewOrchestrator>>(), mapper,
                                                     mockReviewSummaryService.Object, legalEntityAgreement.Object,
                                                     mockmessaging.Object,
-                                                    Mock.Of<IOptions<ExternalLinksConfiguration>>(), utility);
+                                                    Mock.Of<IOptions<ExternalLinksConfiguration>>(),
+                                                    utility,
+                                                    Mock.Of<IFeature>());
 
 
             //Act
@@ -123,7 +125,9 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators
                                                     Mock.Of<ILogger<VacancyPreviewOrchestrator>>(), mapper,
                                                     mockReviewSummaryService.Object, legalEntityAgreement.Object,
                                                     mockmessaging.Object,
-                                                    Mock.Of<IOptions<ExternalLinksConfiguration>>(), utility);
+                                                    Mock.Of<IOptions<ExternalLinksConfiguration>>(),
+                                                    utility,
+                                                    Mock.Of<IFeature>());
 
             //Act
             var response = await sut.RejectJobAdvertAsync(rejectJobAdvertViewModel, user);
