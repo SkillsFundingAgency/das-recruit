@@ -1,0 +1,21 @@
+﻿@using Esfa.Recruit.Shared.Web.Mappers
+
+@model (ReviewViewModel ViewModel, bool ReadOnly)
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+        <div class="@Model.ViewModel.EmployerAddressClass" id="@FieldIdentifiers.EmployerAddress">
+            <h3 class="govuk-heading-s">Location</h3>
+            <ul class="govuk-list govuk-list--bullet">
+                @foreach (var location in Model.ViewModel.EmployerLocations)
+                {
+                    <li><address value="@location" anonymised="@Model.ViewModel.IsAnonymous" flat="true"></address></li>
+                }
+            </ul>
+            @if (!Model.ReadOnly)
+            {
+                <esfa-review-checkbox asp-for="@Model.ViewModel.SelectedFieldIdentifiers" asp-value="@FieldIdentifiers.EmployerAddress" asp-items="@Model.ViewModel.FieldIdentifiers"></esfa-review-checkbox>
+            }
+        </div>
+    </div>
+</div>
