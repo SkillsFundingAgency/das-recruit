@@ -6,7 +6,7 @@ namespace Esfa.Recruit.Shared.Web.Mappers
     public static class FieldDisplayNameResolver
     {
         private const string EmployerLocationAddress = "Employer location address";
-        private static readonly Dictionary<string, string> FieldNames = new Dictionary<string, string>
+        private static readonly Dictionary<string, string> FieldNames = new()
         {
             { FieldIdResolver.ToFieldId(v => v.VacancyReference), "Reference number" },
             { FieldIdResolver.ToFieldId(v => v.EmployerAccountId), "Employer Account Id" },
@@ -26,6 +26,7 @@ namespace Esfa.Recruit.Shared.Web.Mappers
             { FieldIdResolver.ToFieldId(v => v.EmployerLocation.AddressLine3), EmployerLocationAddress },
             { FieldIdResolver.ToFieldId(v => v.EmployerLocation.AddressLine4), EmployerLocationAddress },
             { FieldIdResolver.ToFieldId(v => v.EmployerLocation.Postcode), EmployerLocationAddress },
+            { FieldIdResolver.ToFieldId(v => v.EmployerLocationInformation), "Where is this apprenticeship available" },
             { FieldIdResolver.ToFieldId(v => v.EmployerName), "Employer name" },
             { FieldIdResolver.ToFieldId(v => v.EmployerWebsiteUrl), "Organisation website" },
             { FieldIdResolver.ToFieldId(v => v.NumberOfPositions), "Number of positions" },

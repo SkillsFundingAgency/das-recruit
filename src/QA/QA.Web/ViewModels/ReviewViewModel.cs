@@ -8,8 +8,7 @@ using FieldIdentifier = Esfa.Recruit.Shared.Web.Mappers.FieldIdentifiers;
 
 namespace Esfa.Recruit.Qa.Web.ViewModels
 {
-    public class 
-        ReviewViewModel : ReviewEditModel
+    public class ReviewViewModel : ReviewEditModel
     {
         private const string CssFieldChanged = "field-changed";
         
@@ -29,6 +28,9 @@ namespace Esfa.Recruit.Qa.Web.ViewModels
         public int AnonymousApprovedCount { get; internal set; }
         public string EmployerWebsiteUrl { get; internal set; }
         public IEnumerable<string> EmployerAddressElements { get; internal set; }
+        public List<Address> EmployerLocations { get; internal set; }
+        public AvailableWhere? EmployerLocationOption { get; internal set; }
+        public string EmployerLocationInformation { get; internal set; }
         public bool IsDisabilityConfident { get; set; }
         public string LegalEntityName { get; set; }
         public string NumberOfPositionsCaption { get; internal set; }
