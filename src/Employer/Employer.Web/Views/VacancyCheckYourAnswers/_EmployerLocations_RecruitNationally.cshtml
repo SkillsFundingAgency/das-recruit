@@ -5,10 +5,9 @@
 @model Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview.VacancyPreviewViewModel
 
 <div id="@FieldIdentifiers.EmployerAddress">
-    <div id="@FieldIdentifiers.EmployerLocationInformation">
+    <div id="@FieldIdentifiers.EmployerAddress">
         <field-review-message field-name="@FieldIdentifiers.EmployerAddress" model="@Model"></field-review-message>
-        <field-review-message field-name="@FieldIdentifiers.EmployerLocationInformation" model="@Model"></field-review-message>
-        <div field-review-marker="LocationInformation">
+        <div field-review-marker="AvailableLocations">
             <div class="app-summary-list__row app-summary-list__row--no-border">
                 <dt class="app-summary-list__key">Where is this apprenticeship available?</dt>
                 <dd class="app-summary-list__value">Across all of England</dd>
@@ -23,7 +22,7 @@
                 <dt class="app-summary-list__key">Add more information about where the apprentice will work</dt>
                 <dd class="app-summary-list__value">
                     @Model.LocationInformation
-                    <field-review-tag class="govuk-tag--orange" field-name="@FieldIdentifiers.EmployerLocationInformation" tag-name="strong" model="@Model"/>
+                    <field-review-tag class="govuk-tag--orange" field-name="@FieldIdentifiers.EmployerAddress" tag-name="strong" model="@Model"/>
                 </dd>
                 <dd class="app-summary-list__actions"></dd>
             </div>

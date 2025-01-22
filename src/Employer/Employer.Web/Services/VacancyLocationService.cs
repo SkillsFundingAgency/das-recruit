@@ -42,7 +42,6 @@ public class VacancyLocationService(IRecruitVacancyClient recruitVacancyClient, 
         ArgumentNullException.ThrowIfNull(vacancy);
         ArgumentNullException.ThrowIfNull(user);
         
-        reviewFieldIndicatorService.SetVacancyWithEmployerReviewFieldIndicators(vacancy.EmployerLocation, FieldIdResolver.ToFieldId(v => v.EmployerLocation.AddressLine1), vacancy, null);
         reviewFieldIndicatorService.SetVacancyWithEmployerReviewFieldIndicators(vacancy.EmployerLocations, FieldIdResolver.ToFieldId(v => v.EmployerLocations), vacancy, locations);
         reviewFieldIndicatorService.SetVacancyWithEmployerReviewFieldIndicators(vacancy.EmployerLocationInformation, FieldIdResolver.ToFieldId(v => v.EmployerLocationInformation), vacancy, locationInformation);
         
