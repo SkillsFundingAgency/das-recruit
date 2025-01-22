@@ -7,7 +7,8 @@
         <div class="@Model.EmployerAddressClass" id="@FieldIdentifiers.EmployerAddress">
             <h3 class="govuk-heading-s">Location</h3>
             <p class="govuk-body">Nationally</p>
-            <textarea class="govuk-textarea govuk-js-character-count" asp-for="@Model.EmployerLocationInformation" rows="5" data-val-length-max="500"></textarea>
+            @* <textarea class="govuk-textarea govuk-js-character-count" asp-for="@Model.EmployerLocationInformation" rows="5" data-val-length-max="500"></textarea> *@
+            <p class="govuk-body">@Model.EmployerLocationInformation</p>
             <esfa-review-checkbox asp-for="@Model.SelectedFieldIdentifiers" asp-value="@FieldIdentifiers.EmployerAddress" asp-items="@Model.FieldIdentifiers"></esfa-review-checkbox>
         </div>
     </div>
