@@ -70,7 +70,6 @@ public class MultipleLocationsController : Controller
             VacancyId = vacancyRouteModel.VacancyId,
         };
         viewModel.PageInfo.SetWizard(wizard);
-        
         if (vacancy.Status == VacancyStatus.Referred)
         {
             viewModel.Review = await reviewSummaryService.GetReviewSummaryViewModelAsync(vacancy.VacancyReference!.Value, ReviewFieldMappingLookups.GetWhereIsApprenticeshipAvailableFieldIndicators());
@@ -84,6 +83,7 @@ public class MultipleLocationsController : Controller
     public async Task<IActionResult> AddMoreThanOneLocation(
         [FromServices] IVacancyLocationService vacancyLocationService,
         [FromServices] IUtility utility,
+        [FromServices] IReviewSummaryService reviewSummaryService,
         VacancyRouteModel model,
         [FromQuery] bool wizard)
     {
@@ -107,7 +107,11 @@ public class MultipleLocationsController : Controller
             SelectedLocations = selectedLocations
         };
         viewModel.PageInfo.SetWizard(wizard);
-        
+        if (vacancy.Status == VacancyStatus.Referred)
+        {
+            viewModel.Review = await reviewSummaryService.GetReviewSummaryViewModelAsync(vacancy.VacancyReference!.Value, ReviewFieldMappingLookups.GetWhereIsApprenticeshipAvailableFieldIndicators());
+        }
+
         if (TempData[TempDataKeys.AddedLocation] is string newlyAddedLocation)
         {
             viewModel.SelectedLocations.Add(newlyAddedLocation);
@@ -127,6 +131,7 @@ public class MultipleLocationsController : Controller
     public async Task<IActionResult> AddMoreThanOneLocation(
         [FromServices] IVacancyLocationService vacancyLocationService,
         [FromServices] IUtility utility,
+        [FromServices] IReviewSummaryService reviewSummaryService,
         AddMoreThanOneLocationEditModel editModel,
         [FromQuery] bool wizard)
     {
@@ -157,6 +162,10 @@ public class MultipleLocationsController : Controller
             PageInfo = utility.GetPartOnePageInfo(vacancy),
             SelectedLocations = editModel.SelectedLocations
         };
+        if (vacancy.Status == VacancyStatus.Referred)
+        {
+            viewModel.Review = await reviewSummaryService.GetReviewSummaryViewModelAsync(vacancy.VacancyReference!.Value, ReviewFieldMappingLookups.GetWhereIsApprenticeshipAvailableFieldIndicators());
+        }
         
         return View(viewModel);
     }

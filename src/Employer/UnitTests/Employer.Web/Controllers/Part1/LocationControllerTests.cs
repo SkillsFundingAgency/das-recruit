@@ -55,7 +55,7 @@ public class LocationControllerTests
     }
     
     [Test, MoqAutoData]
-    public async Task When_Getting_LocationsAvailability_For_Referred_Vacancy_Then_The_Review_Is_Set(
+    public async Task When_Getting_AddOneLocation_For_Referred_Vacancy_Then_The_Review_Is_Set(
         [Frozen] Vacancy vacancy,
         [Frozen] Mock<IUtility> utility,
         [Frozen] Mock<IReviewSummaryService> reviewSummaryService,
