@@ -26,6 +26,7 @@ namespace Esfa.Recruit.Shared.Web.Mappers
             { FieldIdResolver.ToFieldId(v => v.EmployerLocation.AddressLine3), EmployerLocationAddress },
             { FieldIdResolver.ToFieldId(v => v.EmployerLocation.AddressLine4), EmployerLocationAddress },
             { FieldIdResolver.ToFieldId(v => v.EmployerLocation.Postcode), EmployerLocationAddress },
+            { FieldIdResolver.ToFieldId(v => v.EmployerLocations), "Where is this apprenticeship available" },
             { FieldIdResolver.ToFieldId(v => v.EmployerLocationInformation), "Where is this apprenticeship available" },
             { FieldIdResolver.ToFieldId(v => v.EmployerName), "Employer name" },
             { FieldIdResolver.ToFieldId(v => v.EmployerWebsiteUrl), "Organisation website" },
