@@ -6,12 +6,14 @@ using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Extensions;
+using Esfa.Recruit.Employer.Web.Mappings;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.Services;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.MultipleLocations;
 using Esfa.Recruit.Shared.Web;
 using Esfa.Recruit.Shared.Web.Domain;
 using Esfa.Recruit.Shared.Web.Extensions;
+using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.FeatureManagement.Mvc;
@@ -25,10 +27,11 @@ public class MultipleLocationsController : Controller
     [HttpGet("location-availability", Name = RouteNames.MultipleLocations_Get)]
     public async Task<IActionResult> LocationAvailability(
         [FromServices] IUtility utility,
+        [FromServices] IReviewSummaryService reviewSummaryService,
         VacancyRouteModel vacancyRouteModel,
         [FromQuery] bool wizard = true)
     {
-        var viewModel = await GetLocationAvailabilityViewModel(utility, vacancyRouteModel, null, wizard);
+        var viewModel = await GetLocationAvailabilityViewModel(utility, reviewSummaryService, vacancyRouteModel, null, wizard);
         return View(viewModel);
     }
 
@@ -36,6 +39,7 @@ public class MultipleLocationsController : Controller
     [HttpPost("location-availability", Name = RouteNames.MultipleLocations_Post)]
     public async Task<IActionResult> LocationAvailability(
         [FromServices] IUtility utility,
+        [FromServices] IReviewSummaryService reviewSummaryService,
         LocationAvailabilityEditModel model,
         [FromQuery] bool wizard)
     {
@@ -50,11 +54,11 @@ public class MultipleLocationsController : Controller
             };
         }
 
-        var viewModel = await GetLocationAvailabilityViewModel(utility, model, model.SelectedAvailability, wizard);
+        var viewModel = await GetLocationAvailabilityViewModel(utility, reviewSummaryService, model, model.SelectedAvailability, wizard);
         return View(viewModel);
     }
 
-    private static async Task<LocationAvailabilityViewModel> GetLocationAvailabilityViewModel(IUtility utility, VacancyRouteModel vacancyRouteModel, AvailableWhere? availableWhere, bool wizard)
+    private static async Task<LocationAvailabilityViewModel> GetLocationAvailabilityViewModel(IUtility utility, IReviewSummaryService reviewSummaryService, VacancyRouteModel vacancyRouteModel, AvailableWhere? availableWhere, bool wizard)
     {
         var vacancy = await utility.GetAuthorisedVacancyForEditAsync(vacancyRouteModel, RouteNames.MultipleLocations_Get);
         var viewModel = new LocationAvailabilityViewModel
@@ -66,6 +70,11 @@ public class MultipleLocationsController : Controller
             VacancyId = vacancyRouteModel.VacancyId,
         };
         viewModel.PageInfo.SetWizard(wizard);
+        
+        if (vacancy.Status == VacancyStatus.Referred)
+        {
+            viewModel.Review = await reviewSummaryService.GetReviewSummaryViewModelAsync(vacancy.VacancyReference!.Value, ReviewFieldMappingLookups.GetWhereIsApprenticeshipAvailableFieldIndicators());
+        }
 
         return viewModel;
     }
