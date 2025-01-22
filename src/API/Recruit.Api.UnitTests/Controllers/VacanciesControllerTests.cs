@@ -1,19 +1,19 @@
 using System;
 using System.Net;
-using System.Threading.Tasks;
-using FluentAssertions;
-using SFA.DAS.Recruit.Api.Controllers;
-using Xunit;
-using Moq;
-using MediatR;
-using SFA.DAS.Recruit.Api.Queries;
 using System.Threading;
+using System.Threading.Tasks;
 using AutoFixture.NUnit3;
+using FluentAssertions;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Moq;
 using NUnit.Framework;
 using SFA.DAS.Recruit.Api.Commands;
+using SFA.DAS.Recruit.Api.Controllers;
 using SFA.DAS.Recruit.Api.Models;
+using SFA.DAS.Recruit.Api.Queries;
 using SFA.DAS.Testing.AutoFixture;
+using Xunit;
 using Assert = NUnit.Framework.Assert;
 
 namespace SFA.DAS.Recruit.Api.UnitTests.Controllers
