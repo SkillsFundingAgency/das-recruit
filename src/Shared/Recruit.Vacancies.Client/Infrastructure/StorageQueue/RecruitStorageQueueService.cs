@@ -18,7 +18,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.StorageQueue
             { typeof(ReportQueueMessage), QueueNames.ReportQueueName },
             { typeof(TransferVacanciesFromProviderQueueMessage), QueueNames.TransferVacanciesFromProviderQueueName },
             { typeof(TransferVacancyToLegalEntityQueueMessage), QueueNames.TransferVacanciesToLegalEntityQueueName },
-            { typeof(UpdateApprenticeshipProgrammesQueueMessage), QueueNames.UpdateApprenticeProgrammesQueueName },
             { typeof(UpdateBankHolidaysQueueMessage), QueueNames.UpdateBankHolidaysQueueName },
             { typeof(UpdateQaDashboardQueueMessage), QueueNames.UpdateQaDashboardQueueName },
             { typeof(VacancyAnalyticsQueueMessage), QueueNames.GenerateVacancyAnalyticsQueueName },
