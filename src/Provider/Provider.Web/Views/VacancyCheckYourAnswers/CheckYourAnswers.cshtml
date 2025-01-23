@@ -346,92 +346,15 @@
             </div>
 
             <esfaFeatureEnabled name="@FeatureNames.MultipleLocations">
-                <div class="app-summary-list__row app-summary-list__row--no-border" field-review-marker="EmployerAddressElements">
-                    <dt class="app-summary-list__key" id="@FieldIdentifiers.EmployerAddress">Where is this apprenticeship available?</dt>
-                    <dd class="app-summary-list__value">
-                        @(Model.AvailableWhere switch
-                        {
-                            AvailableWhere.OneLocation => "At one location",
-                            AvailableWhere.MultipleLocations => "At more than one location",
-                            AvailableWhere.AcrossEngland => "Across all of England",
-                            _ => "At one location"
-                        })
-                    </dd>
-                    <dd class="app-summary-list__actions">
-                        <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.MultipleLocations_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="change-location">Change<span class="govuk-visually-hidden"> location</span></a>
-                    </dd>
-                </div>
-
-                @* This is a new record with multiple locations *@
-                <div asp-show="@(Model.AvailableWhere is not null)">
-                    <field-review-message field-name="@FieldIdentifiers.EmployerAddresses" model="@Model"></field-review-message>
-                    <div class="app-summary-list__row" field-review-marker="AvailableLocations">
-                        <dt class="app-summary-list__key" id="@FieldIdentifiers.EmployerAddresses">
-                            @(Model.AvailableWhere switch
-                            {
-                                AvailableWhere.OneLocation => "Location",
-                                AvailableWhere.MultipleLocations => "Locations",
-                                _ => "Add more information about where the apprentice will work"
-                            })
-                        </dt>
-                        <dd class="app-summary-list__value">
-
-                            @switch (Model.AvailableWhere)
-                            {
-                                case AvailableWhere.OneLocation:
-                                {
-                                    <address value="@Model.AvailableLocations.First()" anonymised="@Model.IsAnonymous" />
-                                    break;
-                                }
-                                case AvailableWhere.MultipleLocations:
-                                {
-                                    <ul class="govuk-list govuk-list--bullet">
-                                        @foreach (var address in Model.AvailableLocations)
-                                        {
-                                            <li><address value="@address" anonymised="@Model.IsAnonymous" flat="true"/></li>
-                                        }
-                                    </ul>
-                                    break;
-                                }
-                                default: {
-                                    @Model.LocationInformation
-                                    break;
-                                }
-                            }
-
-                            <field-review-tag class="govuk-tag--orange" field-name="@FieldIdentifiers.EmployerAddress" tag-name="strong" model="@Model" />
-                        </dd>
-                        <dd class="app-summary-list__actions"></dd>
-                    </div>
-                </div>
-
-                @* This is an existing record with only a single location *@
-                <div asp-show="@(Model.AvailableWhere is null)">
-                    <field-review-message field-name="@FieldIdentifiers.EmployerAddress" model="@Model"></field-review-message>
-                    <div class="app-summary-list__row" field-review-marker="EmployerAddressElements">
-                        <dt class="app-summary-list__key" id="@FieldIdentifiers.EmployerAddress">Location</dt>
-                        <dd class="app-summary-list__value">
-                            <p class="govuk-!-margin-bottom-0">
-                                @{
-                                    var elements = Model.EmployerAddressElements?.Where(s => !string.IsNullOrWhiteSpace(s)).Select(s => s.Trim())?.ToArray() ?? Array.Empty<string>();
-                                    var index = 0;
-                                    foreach (var element in elements)
-                                    {
-                                        @element
-                                        if (++index < elements.Length)
-                                        {
-                                            <br>
-                                        }
-                                    }
-                                }
-                            </p>
-                            <field-review-tag class="govuk-tag--orange" field-name="@FieldIdentifiers.EmployerAddress" tag-name="strong" model="@Model"/>
-                        </dd>
-                        <dd class="app-summary-list__actions"></dd>
-                    </div>
-                </div>
+                @switch (Model.AvailableWhere)
+                {
+                    case AvailableWhere.AcrossEngland: <partial name="_EmployerLocations_RecruitNationally" /> break;
+                    case AvailableWhere.MultipleLocations: <partial name="_EmployerLocations_Many" /> break;
+                    case AvailableWhere.OneLocation: <partial name="_EmployerLocations_One" /> break;
+                    default: <partial name="_EmployerLocations_DeprecatedOne" /> break;
+                }
             </esfaFeatureEnabled>
-
+                
             <esfaFeatureDisabled name="@FeatureNames.MultipleLocations">
                 <field-review-message field-name="@FieldIdentifiers.EmployerAddress" model="@Model"></field-review-message>
                 <div class="app-summary-list__row" field-review-marker="EmployerAddressElements">

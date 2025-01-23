@@ -80,6 +80,7 @@ namespace Esfa.Recruit.Provider.Web.Configuration
             services.AddTransient<IUtility, Utility>();
             services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
             services.AddTransient<IFieldReviewHelper, FieldReviewHelper>();
+            services.AddSingleton<IReviewFieldIndicatorService, ReviewFieldIndicatorService>();
             services.AddSingleton<IVacancyLocationService, VacancyLocationService>();
         }
 
