@@ -47,18 +47,18 @@ public class AnalyticsAggregatorTests
 
         queryStoreWriter.Verify(
             x => x.UpsertVacancyAnalyticSummaryV2Async(It.Is<VacancyAnalyticsSummaryV2>(c =>
-                c.VacancyAnalytics.First(a=>a.AnalyticsDate == new DateTime(2024, 11, 30)).ViewsCount == metricData.ViewsCount
-                && c.VacancyAnalytics.First(a=>a.AnalyticsDate == new DateTime(2024, 11, 30)).ApplicationStartedCount == metricData.ApplicationStartedCount
-                && c.VacancyAnalytics.First(a=>a.AnalyticsDate == new DateTime(2024, 11, 30)).ApplicationSubmittedCount == metricData.ApplicationSubmittedCount
-                && c.VacancyAnalytics.First(a=>a.AnalyticsDate == new DateTime(2024, 11, 30)).SearchResultsCount == metricData.SearchResultsCount)), Times.Once);
+                c.VacancyAnalytics.First(a => a.AnalyticsDate == new DateTime(2024, 11, 30)).ViewsCount == summary.ViewsCount
+                && c.VacancyAnalytics.First(a => a.AnalyticsDate == new DateTime(2024, 11, 30)).ApplicationStartedCount == summary.ApplicationStartedCount
+                && c.VacancyAnalytics.First(a => a.AnalyticsDate == new DateTime(2024, 11, 30)).ApplicationSubmittedCount == summary.ApplicationSubmittedCount
+                && c.VacancyAnalytics.First(a => a.AnalyticsDate == new DateTime(2024, 11, 30)).SearchResultsCount == summary.SearchResultsCount)), Times.Once);
 
         actual.VacancyReference.Should().Be(vacancyReference);
         actual.NoOfApprenticeshipSaved.Should().Be(0);
         actual.NoOfApprenticeshipSavedSearchAlerts.Should().Be(0);
-        actual.NoOfApprenticeshipSearches.Should().Be(metricData.SearchResultsCount);
-        actual.NoOfApprenticeshipApplicationsCreated.Should().Be(metricData.ApplicationStartedCount);
-        actual.NoOfApprenticeshipApplicationsSubmitted.Should().Be(metricData.ApplicationSubmittedCount);
-        actual.NoOfApprenticeshipDetailsViews.Should().Be(metricData.ViewsCount);
+        actual.NoOfApprenticeshipSearches.Should().Be(summary.SearchResultsCount);
+        actual.NoOfApprenticeshipApplicationsCreated.Should().Be(summary.ApplicationStartedCount);
+        actual.NoOfApprenticeshipApplicationsSubmitted.Should().Be(summary.ApplicationSubmittedCount);  
+        actual.NoOfApprenticeshipDetailsViews.Should().Be(summary.ViewsCount);
     }
      [Test, MoqAutoData]
     public async Task Then_The_Vacancy_Metrics_Are_Returned_And_New_Created_If_Not_Exists(
