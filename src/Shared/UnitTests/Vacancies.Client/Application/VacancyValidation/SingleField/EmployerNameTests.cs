@@ -42,7 +42,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
         public void TradingName_ShouldValidateSpecialCharactersAndLength()
         {
             var vacancy = new Vacancy() {
-                EmployerName = "�$$%$%�$<>" + new string('a', 100),
+                EmployerName = "£$$%$%£$<>" + new string('a', 100),
                 EmployerNameOption = EmployerNameOption.TradingName
             };
 
@@ -76,7 +76,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
         public void Anonymous_ShouldValidateSpecialCharactersAndLength()
         {
             var vacancy = new Vacancy() {
-                EmployerName = "�$$%$%�$<>" + new string('a', 100),
+                EmployerName = "£$$%$%£$<>" + new string('a', 100),
                 EmployerNameOption = EmployerNameOption.Anonymous,
                 AnonymousReason = "a valid reason"
             };
