@@ -8,9 +8,9 @@
             <h3 class="govuk-heading-s">Location</h3>
             <p class="govuk-body">This apprenticeship is available in these locations:</p>
             <ul class="govuk-list govuk-list--bullet">
-                @foreach (var location in Model.EmployerLocations)
+                @foreach (var location in Model.EmployerLocations.ToFlatList(Model.IsAnonymous))
                 {
-                    <li><address value="@location" anonymised="@Model.IsAnonymous" flat="true"></address></li>
+                    <li><span>@location</span></li>
                 }
             </ul>
             @if (!Model.ReadOnly)

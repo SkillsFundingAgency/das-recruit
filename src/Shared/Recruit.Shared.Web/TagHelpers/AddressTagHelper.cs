@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Text.Encodings.Web;
+using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
 using Microsoft.AspNetCore.Mvc.TagHelpers;
@@ -33,10 +34,10 @@ public class AddressTagHelper: TagHelper
 
     private static void Render(TagHelperOutput output, Address address, bool anonymised, bool flat)
     {
-        // outcode only
+        // city (outcode)
         if (anonymised)
         {
-            output.Content.AppendHtml(address.PostcodeAsOutcode());
+            output.Content.AppendHtml($"{address.GetLastNonEmptyField()} ({address.PostcodeAsOutcode()})");
             return;
         }
         
