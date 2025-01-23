@@ -12,9 +12,12 @@
                     <li>@addressLine</li>
                 }
             </ul>
-            <esfa-review-checkbox asp-for="SelectedFieldIdentifiers"
-                                  asp-value="@FieldIdentifiers.EmployerAddress"
-                                  asp-items="@Model.FieldIdentifiers"></esfa-review-checkbox>
+            @if (!Model.ReadOnly)
+            {
+                <esfa-review-checkbox asp-for="SelectedFieldIdentifiers"
+                                      asp-value="@FieldIdentifiers.EmployerAddress"
+                                      asp-items="@Model.FieldIdentifiers"></esfa-review-checkbox>
+            }
         </div>
     </div>
     <div class="govuk-grid-column-one-half">

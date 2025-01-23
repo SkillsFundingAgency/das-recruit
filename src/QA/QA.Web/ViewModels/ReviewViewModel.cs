@@ -126,5 +126,7 @@ namespace Esfa.Recruit.Qa.Web.ViewModels
         public ApprenticeshipLevel Level { get; set; }
         public string AccountLegalEntityPublicHashedId { get; set; }
         public VacancyType? VacancyType { get; set; }
+
+        public bool ReadOnly { get; set; } = false;
     }
 }

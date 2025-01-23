@@ -96,7 +96,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
                     CandidateId = applicationReview.CandidateId
                 });    
             }
-            
+            // TODO: FAI-2265
             await _outerApiClient.Post(new PostApplicationStatusRequest(applicationReview.Application.CandidateId,
                 applicationReview.Application.ApplicationId, new PostApplicationStatus
                 {
@@ -126,8 +126,6 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             var shouldMakeOthersUnsuccessful = false;
             if (status == ApplicationReviewStatus.Successful)
             {
-                
-
                 var successfulApplications = await _applicationReviewRepository.GetByStatusAsync(vacancyReference, ApplicationReviewStatus.Successful);
 
                 if (vacancy.NumberOfPositions <= successfulApplications.Count)
