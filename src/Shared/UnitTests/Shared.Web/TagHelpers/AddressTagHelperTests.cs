@@ -1,11 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Text.Encodings.Web;
-using System.Threading.Tasks;
 using Esfa.Recruit.Shared.Web.TagHelpers;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 using NUnit.Framework;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using FluentAssertions;
 
 namespace Esfa.Recruit.Vacancies.Client.UnitTests.Shared.Web.TagHelpers;
 
@@ -97,8 +95,8 @@ public class AddressTagHelperTests
         _tagHelperOutput.AsString().Should().Be(output);
     }
     
-    [TestCase(true, "<span>SW1A</span>")]
-    [TestCase(false, "<p>SW1A</p>")]
+    [TestCase(true, "<span>address4 (SW1A)</span>")]
+    [TestCase(false, "<p>address4 (SW1A)</p>")]
     public async Task Renders_Anonymised_Address(bool flat, string output)
     {
         // arrange

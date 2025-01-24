@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Text.Encodings.Web;
+using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
 using Microsoft.AspNetCore.Mvc.TagHelpers;
@@ -33,30 +34,22 @@ public class AddressTagHelper: TagHelper
 
     private static void Render(TagHelperOutput output, Address address, bool anonymised, bool flat)
     {
-        // outcode only
+        // city (outcode)
         if (anonymised)
         {
-            output.Content.AppendHtml(address.PostcodeAsOutcode());
+            output.Content.AppendHtml(address.ToSingleLineAnonymousAddress());
             return;
         }
         
-        string[] lines = new[]
-        {
-            address.AddressLine1,
-            address.AddressLine2,
-            address.AddressLine3,
-            address.AddressLine4,
-            address.Postcode
-        }.Where(x => !string.IsNullOrEmpty(x?.Trim())).ToArray();
-
         // single line
         if (flat)
         {
-            output.Content.AppendHtml(string.Join(", ", lines));
+            output.Content.AppendHtml(address.ToSingleLineFullAddress());
             return;
         }
         
         // multi line
+        string[] lines = address.GetPopulatedAddressLines().ToArray();
         int index = 0;
         foreach (string line in lines)
         {

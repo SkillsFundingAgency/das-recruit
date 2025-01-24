@@ -34,7 +34,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels
         public Address Location { get; internal set; }
         public IEnumerable<string> EmployerAddressElements { get; set; }
         public AvailableWhereType? AvailableWhere { get; set; }
-        public List<Address> AvailableLocations { get; set; }
+        public IEnumerable<Address> AvailableLocations { get; set; }
         public string? LocationInformation { get; internal set; }
         public string MapUrl { get; internal set; }
         public string NumberOfPositions { get; internal set; }
@@ -181,42 +181,29 @@ namespace Esfa.Recruit.Employer.Web.ViewModels
                 case AvailableWhereType.OneLocation:
                     {
                         var location = AvailableLocations.First();
-                        string city = location.GetLastNonEmptyField();
                         return IsAnonymous
-                            ? location.PostcodeAsOutcode()
-                            : $"{city} ({location.Postcode})";
+                            ? location.ToSingleLineAnonymousAddress()
+                            : location.ToSingleLineAbridgedAddress();
                     }
                 case AvailableWhereType.MultipleLocations:
                     {
-                        var locations = AvailableLocations.ToList();
-                        
-                        if (IsAnonymous)
+                        var groupedAddresses = AvailableLocations.ToList().GroupByLastFilledAddressLine().ToList();
+                        if (groupedAddresses is { Count: 1 })
                         {
-                            var outcodeGroups = locations.GroupByPostcodeOutcode().ToList();
-                            return string.Join(", ", outcodeGroups.Select(group => group.Key));
-                        }
-                        var groupedAddresses = locations.GroupByLastFilledAddressLine().ToList();
-                        if (groupedAddresses is { Count: >1 })
-                        {
-                            return string.Join(", ", groupedAddresses.Select(group => group.Key));
-                        }
-                        
-                        int groupCount = groupedAddresses[0].Count();
-                        if (groupCount > 1)
-                        {
-                            return IsAnonymous
-                                ? $"{groupedAddresses[0].FirstOrDefault().Value?.PostcodeAsOutcode()} ({groupCount} available locations)"
-                                : $"{groupedAddresses[0].Key} ({groupCount} available locations)";
+                            int groupCount = groupedAddresses[0].Count();
+                            if (groupCount > 1)
+                            {
+                                return $"{groupedAddresses[0].Key} ({groupCount} available locations)";
+                            }
                         }
 
-                        return string.Join(", ", groupedAddresses.Select(group => group.Key));
+                        var keys = groupedAddresses.Select(group => group.Key);
+                        return string.Join(", ", keys);
                     }
                 default:
                     {
                         // This is for existing data that uses the old fields
-                        return IsAnonymous
-                            ? EmployerAddressElements.LastOrDefault()
-                            : $"{EmployerAddressElements.SkipLast(1).LastOrDefault()} ({EmployerAddressElements.LastOrDefault()})";
+                        return $"{EmployerAddressElements.SkipLast(1).LastOrDefault()} ({EmployerAddressElements.LastOrDefault()})";
                     }
             }
         }
