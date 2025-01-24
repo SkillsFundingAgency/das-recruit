@@ -82,8 +82,14 @@ public class RecruitNationallyControllerTests
         result.AdditionalInformation.Should().BeNull();
     }
     
-    [Test, MoqAutoData]
-    public async Task When_Posting_Valid_Model_To_RecruitNationally_Then_RedirectToRoute_Is_Return([Frozen] Vacancy vacancy, Mock<IUtility> utility)
+    [Test]
+    [MoqInlineAutoData(false, RouteNames.ProviderTaskListGet)]
+    [MoqInlineAutoData(true, RouteNames.ProviderCheckYourAnswersGet)]
+    public async Task When_Posting_Valid_Model_To_RecruitNationally_Then_RedirectToRoute_Is_Return(
+        bool isComplete,
+        string expectedRouteName,
+        [Frozen] Vacancy vacancy,
+        [Frozen] Mock<IUtility> utility)
     {
         // arrange
         var model = new RecruitNationallyEditModel
@@ -92,11 +98,15 @@ public class RecruitNationallyControllerTests
             VacancyId = vacancy.Id,
             Ukprn = new Random().Next()
         };
+
         utility.Setup(x => x.GetAuthorisedVacancyForEditAsync(model, RouteNames.RecruitNationally_Post)).ReturnsAsync(vacancy);
+        utility.Setup(x => x.IsTaskListCompleted(vacancy)).Returns(isComplete);
+        
         _sut
             .AddControllerContext()
             .WithUser(Guid.NewGuid())
             .WithClaim(ProviderRecruitClaims.IdamsUserUkprnClaimsTypeIdentifier, model.Ukprn.ToString());
+        
         _vacancyLocationService
             .Setup(x => x.UpdateDraftVacancyLocations(vacancy, It.IsAny<VacancyUser>(), AvailableWhere.AcrossEngland, null, model.AdditionalInformation))
             .ReturnsAsync(new UpdateVacancyLocationsResult(null));
@@ -106,6 +116,6 @@ public class RecruitNationallyControllerTests
         
         // assert
         result.Should().NotBeNull();
-        result!.RouteName.Should().Be(RouteNames.ProviderTaskListGet);
+        result!.RouteName.Should().Be(expectedRouteName);
     }
 }
