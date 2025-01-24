@@ -417,13 +417,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return _messaging.SendCommandAsync(command);
         }
 
-        public Task UpdateApprenticeshipProgrammesAsync()
-        {
-            var command = new UpdateApprenticeshipProgrammesCommand();
-
-            return _messaging.SendCommandAsync(command);
-        }
-
         public Task UpdateProviders()
         {
             var command = new UpdateProvidersCommand();

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
@@ -64,7 +65,7 @@ namespace Esfa.Recruit.Shared.Web.Extensions
                 .GroupBy(x => x.Key)
                 .OrderBy(x => x.Key);
         }
-       
+        
         public static Address ToDomain(this GetAddressesListItem addressItem)
         {
             return addressItem is null
@@ -77,6 +78,15 @@ namespace Esfa.Recruit.Shared.Web.Extensions
                     AddressLine4 = addressItem.County,
                     Postcode = addressItem.Postcode
                 };
+        }
+        
+        public static List<string> ToFlatList(this List<Address> addresses, bool isAnonymous = false)
+        {
+            ArgumentNullException.ThrowIfNull(addresses);
+
+            return isAnonymous
+                ? addresses.Select(x => $"{x.GetLastNonEmptyField()} ({x.PostcodeAsOutcode()})").Distinct().ToList()
+                : addresses.Select(x => x.Flatten()).ToList();
         }
         
         public static string ToSingleLineFullAddress(this Address address)

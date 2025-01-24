@@ -1,4 +1,6 @@
 ﻿@using Esfa.Recruit.Employer.Web.ViewModels.Part1.MultipleLocations
+@using Esfa.Recruit.Employer.Web.ViewModels.Part1.RecruitNationally
+@using Esfa.Recruit.Shared.Web.Mappers
 @using Esfa.Recruit.Shared.Web.TagHelpers
 @using Esfa.Recruit.Vacancies.Client.Domain.Entities
 @using Microsoft.AspNetCore.Mvc.TagHelpers
@@ -19,8 +21,9 @@
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         <partial name="@PartialNames.ValidationSummary" model=@(new ValidationSummaryViewModel { ModelState = ViewData.ModelState }) />
+        <partial name="@PartialNames.ReviewSummary" for="Review"/>
         <form asp-route="@RouteNames.MultipleLocations_Post" asp-all-route-data="@Model.RouteDictionary" asp-route-wizard="@Model.PageInfo.IsWizard">
-            <div class="govuk-form-group">
+            <div class="govuk-form-group" id="@nameof(LocationAvailabilityViewModel.SelectedAvailability)">
                 <fieldset class="govuk-fieldset">
                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
                         <h1 class="govuk-fieldset__heading govuk-heading-xl">

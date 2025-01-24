@@ -79,6 +79,7 @@ namespace Esfa.Recruit.Employer.Web.Configuration
             services.AddTransient<IUtility, Utility>();
             services.AddTransient<IFieldReviewHelper, FieldReviewHelper>();
             services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
+            services.AddSingleton<IReviewFieldIndicatorService, ReviewFieldIndicatorService>();
             services.AddSingleton<IVacancyLocationService, VacancyLocationService>();
         }
 

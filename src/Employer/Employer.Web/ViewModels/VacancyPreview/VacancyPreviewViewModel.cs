@@ -201,8 +201,8 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview
             {
                 viewModel.EmployerAddressSectionState = viewModel.AvailableWhere switch
                 {
-                    Recruit.Vacancies.Client.Domain.Entities.AvailableWhere.AcrossEngland => GetSectionState(viewModel, [FieldIdentifiers.EmployerAddresses], true, modelState, vm => vm.LocationInformation),
-                    _ => GetSectionState(viewModel, [FieldIdentifiers.EmployerAddresses], true, modelState, vm => vm.AvailableLocations),
+                    Recruit.Vacancies.Client.Domain.Entities.AvailableWhere.AcrossEngland => GetSectionState(viewModel, [FieldIdentifiers.EmployerAddress], true, modelState, vm => vm.LocationInformation),
+                    _ => GetSectionState(viewModel, [FieldIdentifiers.EmployerAddress], true, modelState, vm => vm.AvailableLocations),
                 };
             }
             else
