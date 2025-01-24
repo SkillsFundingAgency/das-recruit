@@ -9,6 +9,7 @@ using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.Services;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.Location;
 using Esfa.Recruit.Shared.Web.Extensions;
+using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Microsoft.AspNetCore.Hosting;
@@ -43,7 +44,7 @@ public class LocationControllerTests
         _vacancyLocationService.Setup(x => x.GetVacancyLocations(vacancy)).ReturnsAsync(locations);
         
         // act
-        var result = (await _sut.AddOneLocation(_vacancyLocationService.Object, utility.Object, model, true) as ViewResult)?.Model as AddOneLocationViewModel;
+        var result = (await _sut.AddOneLocation(_vacancyLocationService.Object, utility.Object, Mock.Of<IReviewSummaryService>(), model, true) as ViewResult)?.Model as AddOneLocationViewModel;
 
         // assert
         result.Should().NotBeNull();
@@ -51,6 +52,28 @@ public class LocationControllerTests
         result.ApprenticeshipTitle.Should().Be(vacancy.Title);
         result.EmployerAccountId.Should().BeEquivalentTo(vacancy.EmployerAccountId);
         result.AvailableLocations.Should().BeEquivalentTo(locations);
+    }
+    
+    [Test, MoqAutoData]
+    public async Task When_Getting_AddOneLocation_For_Referred_Vacancy_Then_The_Review_Is_Set(
+        [Frozen] Vacancy vacancy,
+        [Frozen] Mock<IUtility> utility,
+        [Frozen] Mock<IReviewSummaryService> reviewSummaryService,
+        VacancyRouteModel model,
+        [Frozen] List<Address> locations)
+    {
+        // arrange
+        model.VacancyId = vacancy.Id;
+        model.EmployerAccountId = vacancy.EmployerAccountId;
+        utility.Setup(x => x.GetAuthorisedVacancyForEditAsync(model, RouteNames.AddOneLocation_Get)).ReturnsAsync(vacancy);
+        _vacancyLocationService.Setup(x => x.GetVacancyLocations(vacancy)).ReturnsAsync(locations);
+        
+        // act
+        var result = (await _sut.AddOneLocation(_vacancyLocationService.Object, utility.Object, reviewSummaryService.Object, model, true) as ViewResult)?.Model as AddOneLocationViewModel;
+
+        // assert
+        result.Should().NotBeNull();
+        result!.Review.Should().NotBeNull();
     }
     
     [Test, MoqAutoData]
@@ -66,7 +89,7 @@ public class LocationControllerTests
         _sut.TempData[TempDataKeys.AddedLocation] = newlyAddedAddress;
         
         // act
-        var result = (await _sut.AddOneLocation(_vacancyLocationService.Object, utility.Object, model, true) as ViewResult)?.Model as AddOneLocationViewModel;
+        var result = (await _sut.AddOneLocation(_vacancyLocationService.Object, utility.Object, Mock.Of<IReviewSummaryService>(), model, true) as ViewResult)?.Model as AddOneLocationViewModel;
 
         // assert
         result.Should().NotBeNull();
@@ -84,7 +107,7 @@ public class LocationControllerTests
         _vacancyLocationService.Setup(x => x.GetVacancyLocations(vacancy)).ReturnsAsync(locations);
         
         // act
-        var result = (await _sut.AddOneLocation(_vacancyLocationService.Object, utility.Object, model, true) as ViewResult)?.Model as AddOneLocationViewModel;
+        var result = (await _sut.AddOneLocation(_vacancyLocationService.Object, utility.Object, Mock.Of<IReviewSummaryService>(), model, true) as ViewResult)?.Model as AddOneLocationViewModel;
 
         // assert
         result.Should().NotBeNull();
@@ -107,7 +130,7 @@ public class LocationControllerTests
         _vacancyLocationService.Setup(x => x.GetVacancyLocations(vacancy)).ReturnsAsync(locations);
         
         // act
-        var result = (await _sut.AddOneLocation(_vacancyLocationService.Object, utility.Object, model, true) as ViewResult)?.Model as AddOneLocationViewModel;
+        var result = (await _sut.AddOneLocation(_vacancyLocationService.Object, utility.Object, Mock.Of<IReviewSummaryService>(), model, true) as ViewResult)?.Model as AddOneLocationViewModel;
 
         // assert
         result.Should().NotBeNull();
@@ -134,7 +157,7 @@ public class LocationControllerTests
             .ReturnsAsync(new UpdateVacancyLocationsResult(null));
         
         // act
-        var result = await _sut.AddOneLocation(_vacancyLocationService.Object, utility.Object, model, wizard) as RedirectToRouteResult;
+        var result = await _sut.AddOneLocation(_vacancyLocationService.Object, utility.Object, Mock.Of<IReviewSummaryService>(), model, wizard) as RedirectToRouteResult;
     
         // assert
         result.Should().NotBeNull();
@@ -158,7 +181,7 @@ public class LocationControllerTests
             .ReturnsAsync(new UpdateVacancyLocationsResult(new EntityValidationResult { Errors = [new EntityValidationError(1, "EmployerLocations", "error message", "code")] }));
         
         // act
-        var result = (await _sut.AddOneLocation(_vacancyLocationService.Object, utility.Object, model, true) as ViewResult)?.Model as AddOneLocationViewModel;
+        var result = (await _sut.AddOneLocation(_vacancyLocationService.Object, utility.Object, Mock.Of<IReviewSummaryService>(), model, true) as ViewResult)?.Model as AddOneLocationViewModel;
         var errorResult = _sut.ModelState.GetValueOrDefault("SelectedLocation");
     
         // assert

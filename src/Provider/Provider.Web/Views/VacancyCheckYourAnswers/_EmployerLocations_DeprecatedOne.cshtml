@@ -1,0 +1,20 @@
+﻿@using Esfa.Recruit.Provider.Web.TagHelpers
+@using Esfa.Recruit.Shared.Web.Mappers
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+
+@model Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview.VacancyPreviewViewModel
+
+@* This renders the view for pre-multiple locations feature created records *@
+<field-review-message field-name="@FieldIdentifiers.EmployerAddress" model="@Model"></field-review-message>
+<div class="app-summary-list__row" field-review-marker="EmployerAddressElements">
+    <dt class="app-summary-list__key" id="@FieldIdentifiers.EmployerAddress">Address</dt>
+    <dd class="app-summary-list__value">
+        @string.Join(", ", Model.EmployerAddressElements?.Where(s => !string.IsNullOrWhiteSpace(s)).Select(s => s.Trim()) ?? new string[0])
+        <field-review-tag class="govuk-tag--orange" field-name="@FieldIdentifiers.EmployerAddress" tag-name="strong" model="@Model" />
+    </dd>
+    <dd class="app-summary-list__actions">
+        <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.Location_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="change-location">
+            Change<span class="govuk-visually-hidden"> location</span>
+        </a>
+    </dd>
+</div>

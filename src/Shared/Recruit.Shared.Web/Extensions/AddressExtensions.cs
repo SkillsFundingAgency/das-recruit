@@ -1,6 +1,8 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
 using Projections = Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections;
 
 namespace Esfa.Recruit.Shared.Web.Extensions
@@ -76,6 +78,15 @@ namespace Esfa.Recruit.Shared.Web.Extensions
                     AddressLine4 = addressItem.County,
                     Postcode = addressItem.Postcode
                 };
+        }
+        
+        public static List<string> ToFlatList(this List<Address> addresses, bool isAnonymous = false)
+        {
+            ArgumentNullException.ThrowIfNull(addresses);
+
+            return isAnonymous
+                ? addresses.Select(x => $"{x.GetLastNonEmptyField()} ({x.PostcodeAsOutcode()})").Distinct().ToList()
+                : addresses.Select(x => x.Flatten()).ToList();
         }
     }
 }

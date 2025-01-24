@@ -3,11 +3,13 @@ using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Extensions;
+using Esfa.Recruit.Employer.Web.Mappings;
 using Esfa.Recruit.Employer.Web.Models.AddLocation;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.Services;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.RecruitNationally;
 using Esfa.Recruit.Shared.Web;
+using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.FeatureManagement.Mvc;
@@ -24,7 +26,7 @@ public class RecruitNationallyController: Controller
     
     [FeatureGate(FeatureNames.MultipleLocations)]
     [HttpGet("location-information", Name = RouteNames.RecruitNationally_Get)]
-    public async Task<IActionResult> RecruitNationally([FromServices] IUtility utility, VacancyRouteModel model, [FromQuery] bool wizard = true)
+    public async Task<IActionResult> RecruitNationally([FromServices] IUtility utility, [FromServices] IReviewSummaryService reviewSummaryService, VacancyRouteModel model, [FromQuery] bool wizard = true)
     {
         var vacancy = await utility.GetAuthorisedVacancyForEditAsync(model, RouteNames.RecruitNationally_Get);
         var viewModel = new RecruitNationallyViewModel
@@ -36,6 +38,10 @@ public class RecruitNationallyController: Controller
             VacancyId = model.VacancyId,
         };
         viewModel.PageInfo.SetWizard(wizard);
+        if (vacancy.Status == VacancyStatus.Referred)
+        {
+            viewModel.Review = await reviewSummaryService.GetReviewSummaryViewModelAsync(vacancy.VacancyReference!.Value, ReviewFieldMappingLookups.GetWhereIsApprenticeshipAvailableFieldIndicators());
+        }
 
         return View(viewModel);
     }
@@ -45,6 +51,7 @@ public class RecruitNationallyController: Controller
     public async Task<IActionResult> RecruitNationally(
         [FromServices] IVacancyLocationService vacancyLocationService,
         [FromServices] IUtility utility,
+        [FromServices] IReviewSummaryService reviewSummaryService,
         RecruitNationallyEditModel model,
         [FromQuery] bool wizard = true)
     {
@@ -73,6 +80,10 @@ public class RecruitNationallyController: Controller
             VacancyId = model.VacancyId,
         };
         viewModel.PageInfo.SetWizard(wizard);
+        if (vacancy.Status == VacancyStatus.Referred)
+        {
+            viewModel.Review = await reviewSummaryService.GetReviewSummaryViewModelAsync(vacancy.VacancyReference!.Value, ReviewFieldMappingLookups.GetWhereIsApprenticeshipAvailableFieldIndicators());
+        }
         
         return View(viewModel);
     }

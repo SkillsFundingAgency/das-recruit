@@ -1,4 +1,7 @@
-﻿@model Esfa.Recruit.Employer.Web.ViewModels.Part1.RecruitNationally.RecruitNationallyViewModel;
+﻿@using Esfa.Recruit.Employer.Web.ViewModels.Part1.MultipleLocations
+@using Esfa.Recruit.Shared.Web.TagHelpers
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model Esfa.Recruit.Employer.Web.ViewModels.Part1.RecruitNationally.RecruitNationallyViewModel;
 
 @{ 
     ViewBag.Vpv = "/recruitment/employer/page-part1-location";
@@ -13,7 +16,7 @@
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         <partial name="@PartialNames.ValidationSummary" model=@(new ValidationSummaryViewModel { ModelState = ViewData.ModelState }) />
-        
+        <partial name="@PartialNames.ReviewSummary" for="Review"/>
         <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">
             <span class="govuk-caption-l">@Model.ApprenticeshipTitle</span>
             Recruit across all of England
@@ -28,7 +31,7 @@
         </ul>
 
         <form asp-route="@RouteNames.RecruitNationally_Post" asp-all-route-data="@Model.RouteDictionary" asp-route-wizard="@Model.PageInfo.IsWizard">
-            <div class="govuk-character-count" data-module="govuk-character-count" data-maxlength="500">
+            <div class="govuk-character-count" data-module="govuk-character-count" data-maxlength="500" id="@nameof(LocationAvailabilityViewModel.SelectedAvailability)">
                 <div esfa-validation-marker-for="AdditionalInformation" class="govuk-form-group">
                     <h2 class="govuk-heading-m">
                         <label asp-for="AdditionalInformation">

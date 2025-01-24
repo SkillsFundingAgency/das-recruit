@@ -9,6 +9,7 @@ using Esfa.Recruit.Employer.Web.Controllers.Part1;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.Services;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.MultipleLocations;
+using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
@@ -32,7 +33,7 @@ public class MultipleLocationsControllerTests
         utility.Setup(x => x.GetAuthorisedVacancyForEditAsync(vacancyRouteModel, It.IsAny<string>())).ReturnsAsync(vacancy);
         
         // act
-        var result = (await sut.LocationAvailability(utility.Object, vacancyRouteModel) as ViewResult)?.Model as LocationAvailabilityViewModel;
+        var result = (await sut.LocationAvailability(utility.Object, Mock.Of<IReviewSummaryService>(), vacancyRouteModel) as ViewResult)?.Model as LocationAvailabilityViewModel;
         
         // assert
         result.Should().NotBeNull();
@@ -40,6 +41,30 @@ public class MultipleLocationsControllerTests
         result.ApprenticeshipTitle.Should().Be(vacancy.Title);
         result.EmployerAccountId.Should().BeEquivalentTo(vacancy.EmployerAccountId);
         result.SelectedAvailability.Should().Be(AvailableWhere.OneLocation);
+    }
+    
+    [Test, MoqAutoData]
+    public async Task When_Getting_LocationsAvailability_For_Referred_Vacancy_Then_The_Review_Is_Set(
+        Vacancy vacancy,
+        Mock<IUtility> utility,
+        Mock<IReviewSummaryService> reviewSummaryService,
+        [Greedy] MultipleLocationsController sut)
+    {
+        // arrange
+        vacancy.Status = VacancyStatus.Referred;
+        var vacancyRouteModel = new VacancyRouteModel
+        {
+            VacancyId = vacancy.Id,
+            EmployerAccountId = vacancy.EmployerAccountId,
+        };
+        utility.Setup(x => x.GetAuthorisedVacancyForEditAsync(vacancyRouteModel, It.IsAny<string>())).ReturnsAsync(vacancy);
+        
+        // act
+        var result = (await sut.LocationAvailability(utility.Object, reviewSummaryService.Object, vacancyRouteModel) as ViewResult)?.Model as LocationAvailabilityViewModel;
+        
+        // assert
+        result.Should().NotBeNull();
+        result!.Review.Should().NotBeNull();
     }
     
     [Test, MoqAutoData]
@@ -53,7 +78,7 @@ public class MultipleLocationsControllerTests
         };
         
         // act
-        var result = await sut.LocationAvailability(Mock.Of<IUtility>(), editModel, true) as RedirectToRouteResult;
+        var result = await sut.LocationAvailability(Mock.Of<IUtility>(), Mock.Of<IReviewSummaryService>(), editModel, true) as RedirectToRouteResult;
         
         // assert
         result.Should().NotBeNull();
@@ -63,7 +88,8 @@ public class MultipleLocationsControllerTests
     [Test, MoqAutoData]
     public async Task When_Posting_LocationsAvailability_With_Invalid_state_Then_You_Are_Redirected_To_LocationAvailability(
         Vacancy vacancy,
-        Mock<IUtility> utility,
+        [Frozen] Mock<IUtility> utility,
+        [Frozen] Mock<IReviewSummaryService> reviewSummaryService,
         [Greedy] MultipleLocationsController sut)
     {
         // arrange
@@ -77,7 +103,7 @@ public class MultipleLocationsControllerTests
         sut.ModelState.AddModelError(string.Empty, string.Empty);
         
         // act
-        var result = (await sut.LocationAvailability(utility.Object, editModel, true) as ViewResult)?.Model as LocationAvailabilityViewModel;
+        var result = (await sut.LocationAvailability(utility.Object, Mock.Of<IReviewSummaryService>(), editModel, true) as ViewResult)?.Model as LocationAvailabilityViewModel;
         
         // assert
         result.Should().NotBeNull();
@@ -105,7 +131,7 @@ public class MultipleLocationsControllerTests
         vacancyLocationService.Setup(x => x.GetVacancyLocations(vacancy)).ReturnsAsync(locations);
         
         // act
-        var result = (await sut.AddMoreThanOneLocation(vacancyLocationService.Object, utility.Object, model, true) as ViewResult)?.Model as AddMoreThanOneLocationViewModel;
+        var result = (await sut.AddMoreThanOneLocation(vacancyLocationService.Object, utility.Object, Mock.Of<IReviewSummaryService>(), model, true) as ViewResult)?.Model as AddMoreThanOneLocationViewModel;
 
         // assert
         result.Should().NotBeNull();
@@ -114,6 +140,36 @@ public class MultipleLocationsControllerTests
         result.EmployerAccountId.Should().Be(vacancy.EmployerAccountId);
         result.VacancyId.Should().Be(vacancy.Id);
         result.SelectedLocations.Should().BeEquivalentTo(vacancy.EmployerLocations, options => options.ExcludingMissingMembers());
+    }
+    
+    [Test, MoqAutoData]
+    public async Task When_Getting_AddMoreThanOneLocation_For_Referred_Vacancy_Then_The_Review_Is_Set(
+        Vacancy vacancy,
+        [Frozen] List<Address> locations,
+        Mock<IVacancyLocationService> vacancyLocationService,
+        Mock<IUtility> utility,
+        Mock<IReviewSummaryService> reviewSummaryService,
+        VacancyRouteModel model,
+        [Greedy] MultipleLocationsController sut)
+    {
+        // arrange
+        vacancy.Status = VacancyStatus.Referred;
+        var httpContext = new DefaultHttpContext();
+        var tempData = new TempDataDictionary(httpContext, Mock.Of<ITempDataProvider>());
+        sut.TempData = tempData;
+        sut.AddControllerContext().WithUser(Guid.NewGuid());
+
+        vacancy.EmployerAccountId = model.EmployerAccountId;
+        vacancy.Id = model.VacancyId;
+        utility.Setup(x => x.GetAuthorisedVacancyForEditAsync(model, It.IsAny<string>())).ReturnsAsync(vacancy);
+        vacancyLocationService.Setup(x => x.GetVacancyLocations(vacancy)).ReturnsAsync(locations);
+        
+        // act
+        var result = (await sut.AddMoreThanOneLocation(vacancyLocationService.Object, utility.Object, reviewSummaryService.Object, model, true) as ViewResult)?.Model as AddMoreThanOneLocationViewModel;
+
+        // assert
+        result.Should().NotBeNull();
+        result!.Review.Should().NotBeNull();
     }
     
     [Test, MoqAutoData]
@@ -141,7 +197,7 @@ public class MultipleLocationsControllerTests
         vacancyLocationService.Setup(x => x.GetVacancyLocations(vacancy)).ReturnsAsync(locations);
         
         // act
-        var result = (await sut.AddMoreThanOneLocation(vacancyLocationService.Object, utility.Object, model, true) as ViewResult)?.Model as AddMoreThanOneLocationViewModel;
+        var result = (await sut.AddMoreThanOneLocation(vacancyLocationService.Object, utility.Object, Mock.Of<IReviewSummaryService>(), model, true) as ViewResult)?.Model as AddMoreThanOneLocationViewModel;
     
         // assert
         result.Should().NotBeNull();
@@ -169,7 +225,7 @@ public class MultipleLocationsControllerTests
         vacancyLocationService.Setup(x => x.GetVacancyLocations(vacancy)).ReturnsAsync(locations);
 
         // act
-        var result = (await sut.AddMoreThanOneLocation(vacancyLocationService.Object, utility.Object, model, true) as ViewResult)?.Model as AddMoreThanOneLocationViewModel;
+        var result = (await sut.AddMoreThanOneLocation(vacancyLocationService.Object, utility.Object, Mock.Of<IReviewSummaryService>(), model, true) as ViewResult)?.Model as AddMoreThanOneLocationViewModel;
 
         // assert
         result.Should().NotBeNull();
@@ -202,7 +258,7 @@ public class MultipleLocationsControllerTests
             .ReturnsAsync(new UpdateVacancyLocationsResult(null));
         
         // act
-        var result = await sut.AddMoreThanOneLocation(vacancyLocationService.Object, utility.Object, model, true) as RedirectToRouteResult;
+        var result = await sut.AddMoreThanOneLocation(vacancyLocationService.Object, utility.Object, Mock.Of<IReviewSummaryService>(), model, true) as RedirectToRouteResult;
         
         // assert
         result.Should().NotBeNull();

@@ -4,12 +4,14 @@ using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Extensions;
+using Esfa.Recruit.Employer.Web.Mappings;
 using Esfa.Recruit.Employer.Web.Orchestrators.Part1;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.Services;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.Location;
 using Esfa.Recruit.Shared.Web;
 using Esfa.Recruit.Shared.Web.Extensions;
+using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -97,6 +99,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
         public async Task<IActionResult> AddOneLocation(
             [FromServices] IVacancyLocationService vacancyLocationService,
             [FromServices] IUtility utility,
+            [FromServices] IReviewSummaryService reviewSummaryService,
             VacancyRouteModel vacancyRouteModel,
             [FromQuery] bool wizard)
         {
@@ -114,6 +117,10 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
                 SelectedLocation = selectedLocation?.ToAddressString(),
             };
             viewModel.PageInfo.SetWizard(wizard);
+            if (vacancy.Status == VacancyStatus.Referred)
+            {
+                viewModel.Review = await reviewSummaryService.GetReviewSummaryViewModelAsync(vacancy.VacancyReference!.Value, ReviewFieldMappingLookups.GetWhereIsApprenticeshipAvailableFieldIndicators());
+            }
             
             if (TempData[TempDataKeys.AddedLocation] is string newlyAddedLocation)
             {
@@ -128,6 +135,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
         public async Task<IActionResult> AddOneLocation(
             [FromServices] IVacancyLocationService vacancyLocationService,
             [FromServices] IUtility utility,
+            [FromServices] IReviewSummaryService reviewSummaryService,
             AddOneLocationEditModel model,
             [FromQuery] bool wizard)
         {
@@ -147,7 +155,6 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
                     : RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet, new { model.VacancyId, model.EmployerAccountId });
             }
 
-
             ModelState.AddValidationErrors(result.ValidationResult, new Dictionary<string, string> { { "EmployerLocations", "SelectedLocation" } });
             var viewModel = new AddOneLocationViewModel
             {
@@ -159,6 +166,10 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
                 SelectedLocation = model.SelectedLocation
             };
             viewModel.PageInfo.SetWizard(wizard);
+            if (vacancy.Status == VacancyStatus.Referred)
+            {
+                viewModel.Review = await reviewSummaryService.GetReviewSummaryViewModelAsync(vacancy.VacancyReference!.Value, ReviewFieldMappingLookups.GetWhereIsApprenticeshipAvailableFieldIndicators());
+            }
             return View(viewModel);
         }
     }
