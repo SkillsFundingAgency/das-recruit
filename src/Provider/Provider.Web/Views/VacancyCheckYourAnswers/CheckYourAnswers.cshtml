@@ -375,7 +375,6 @@
                             })
                         </dt>
                         <dd class="app-summary-list__value">
-
                             @switch (Model.AvailableWhere)
                             {
                                 case AvailableWhere.OneLocation:
@@ -385,12 +384,7 @@
                                 }
                                 case AvailableWhere.MultipleLocations:
                                 {
-                                    <ul class="govuk-list govuk-list--bullet">
-                                        @foreach (var address in Model.AvailableLocations)
-                                        {
-                                            <li><address value="@address" anonymised="@Model.IsAnonymous" flat="true"/></li>
-                                        }
-                                    </ul>
+                                    <address-list class="govuk-list govuk-list--bullet" addresses="@Model.AvailableLocations" anonymised="@Model.IsAnonymous" />
                                     break;
                                 }
                                 default: {
@@ -398,7 +392,6 @@
                                     break;
                                 }
                             }
-
                             <field-review-tag class="govuk-tag--orange" field-name="@FieldIdentifiers.EmployerAddress" tag-name="strong" model="@Model" />
                         </dd>
                         <dd class="app-summary-list__actions"></dd>
