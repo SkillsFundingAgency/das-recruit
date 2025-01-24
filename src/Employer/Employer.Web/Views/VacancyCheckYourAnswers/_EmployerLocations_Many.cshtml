@@ -21,13 +21,8 @@
         <div class="app-summary-list__row">
             <dt class="app-summary-list__key">Locations</dt>
             <dd class="app-summary-list__value">
-                <ul class="govuk-list govuk-list--bullet">
-                    @foreach (var address in Model.AvailableLocations)
-                    {
-                        <li><address value="@address" anonymised="@Model.IsAnonymous" flat="true"/></li>
-                    }
-                </ul>
-                <field-review-tag class="govuk-tag--orange" field-name="@FieldIdentifiers.EmployerAddress" tag-name="strong" model="@Model" />
+                <address-list class="govuk-list govuk-list--bullet" addresses="@Model.AvailableLocations" anonymised="@Model.IsAnonymous" />
+                <field-review-tag class="govuk-tag--orange" field-name="@FieldIdentifiers.EmployerAddress" tag-name="strong" model="@Model"/>
             </dd>
             <dd class="app-summary-list__actions"></dd>
         </div>

@@ -80,15 +80,6 @@ namespace Esfa.Recruit.Shared.Web.Extensions
                 };
         }
         
-        public static List<string> ToFlatList(this List<Address> addresses, bool isAnonymous = false)
-        {
-            ArgumentNullException.ThrowIfNull(addresses);
-
-            return isAnonymous
-                ? addresses.Select(x => $"{x.GetLastNonEmptyField()} ({x.PostcodeAsOutcode()})").Distinct().ToList()
-                : addresses.Select(x => x.Flatten()).ToList();
-        }
-        
         public static string ToSingleLineFullAddress(this Address address)
         {
             string[] addressArray = [address.AddressLine1, address.AddressLine2, address.AddressLine3, address.AddressLine4, address.Postcode];
