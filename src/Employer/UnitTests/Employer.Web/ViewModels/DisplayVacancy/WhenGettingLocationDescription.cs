@@ -5,7 +5,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.DisplayVacancy
 public class WhenGettingLocationDescription
 {
     [TestCase(false, "SW1A 2AA", "CityName (SW1A 2AA)")]
-    [TestCase(true, "SW1A", "SW1A")]
+    [TestCase(true, "SW1A", "CityName (SW1A)")]
     public void Then_Existing_Data_Is_Formatted_Correctly(bool isAnonymous, string postcode, string expectedDescription)
     {
         // arrange
@@ -41,7 +41,7 @@ public class WhenGettingLocationDescription
     }
     
     [TestCase(false, "CityName (SW1A 2AA)")]
-    [TestCase(true, "SW1A")]
+    [TestCase(true, "CityName (SW1A)")]
     public void Then_One_Location_Is_Formatted_Correctly(bool isAnonymous, string expectedDescription)
     {
         // arrange
@@ -60,7 +60,7 @@ public class WhenGettingLocationDescription
     }
     
     [TestCase(false, "ACityName, BCityName, CityName")]
-    [TestCase(true, "EW1A, SW1A, SW1B, TW1A")]
+    [TestCase(true, "ACityName, BCityName, CityName")]
     public void Then_Many_Locations_In_Different_Cities_Is_Formatted_Correctly(bool isAnonymous, string expectedDescription)
     {
         // arrange
@@ -86,7 +86,7 @@ public class WhenGettingLocationDescription
     }
     
     [TestCase(false, "ACityName (3 available locations)")]
-    [TestCase(true, "SW1A, SW2A")]
+    [TestCase(true, "ACityName (3 available locations)")]
     public void Then_Many_Locations_In_Same_City_Is_Formatted_Correctly(bool isAnonymous, string expectedDescription)
     {
         // arrange
