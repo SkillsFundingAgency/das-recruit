@@ -30,7 +30,6 @@ namespace Esfa.Recruit.Qa.Web.ViewModels
         public IEnumerable<string> EmployerAddressElements { get; internal set; }
         public List<Address> EmployerLocations { get; internal set; }
         public AvailableWhere? EmployerLocationOption { get; internal set; }
-        public string EmployerLocationInformation { get; internal set; }
         public bool IsDisabilityConfident { get; set; }
         public string LegalEntityName { get; set; }
         public string NumberOfPositionsCaption { get; internal set; }
