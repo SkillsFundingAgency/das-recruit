@@ -8,5 +8,6 @@ public class LocationAvailabilityViewModel : VacancyRouteModel
 {
     public string ApprenticeshipTitle { get; init; }
     public PartOnePageInfoViewModel PageInfo { get; init; }
+    public ReviewSummaryViewModel Review { get; set; } = new ();
     public AvailableWhere? SelectedAvailability { get; init; }
 }

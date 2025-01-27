@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using System.Threading.Tasks;
 using Esfa.Recruit.Employer.UnitTests.Employer.Web.HardMocks;
 using Esfa.Recruit.Employer.Web;
 using Esfa.Recruit.Employer.Web.Orchestrators.Part1;
@@ -10,10 +9,7 @@ using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
-using FluentAssertions;
 using Microsoft.Extensions.Logging;
-using Moq;
-using Xunit;
 
 namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part1
 {
@@ -21,16 +17,16 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part1
     {
         private WageOrchestratorTestsFixture _fixture;
 
-        public WageOrchestratorTests()
+        [SetUp]
+        public void Setup()
         {
             _fixture = new WageOrchestratorTestsFixture();
         }
 
-        [Theory]
-        [InlineData(WageType.FixedWage, 10000, "this is a value", true)]
-        [InlineData(WageType.NationalMinimumWage, 10000, "this is a value", true)]
-        [InlineData(WageType.NationalMinimumWageForApprentices, 11000, "this is a value", true)]
-        [InlineData(WageType.CompetitiveSalary, 10000, "this is a new value", true)]
+        [TestCase(WageType.FixedWage, 10000, "this is a value", true)]
+        [TestCase(WageType.NationalMinimumWage, 10000, "this is a value", true)]
+        [TestCase(WageType.NationalMinimumWageForApprentices, 11000, "this is a value", true)]
+        [TestCase(WageType.CompetitiveSalary, 10000, "this is a new value", true)]
         public async Task WhenAdditionalInformationUpdated_ShouldFlagFieldIndicators(WageType wageType, decimal fixedWageYearlyAmmount, string wageAddtionalInformation, bool fieldIndicatorSet)
         {
             _fixture
@@ -52,11 +48,10 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part1
             _fixture.VerifyEmployerReviewFieldIndicators(FieldIdentifiers.Wage, fieldIndicatorSet);
         }
 
-        [Theory]
-        [InlineData(WageType.FixedWage, 10000, "this is a value", false)]
-        [InlineData(WageType.NationalMinimumWage, 10000, "this is a value", true)]
-        [InlineData(WageType.FixedWage, 11000, "this is a value", true)]
-        [InlineData(WageType.FixedWage, 10000, "this is a new value", true)]
+        [TestCase(WageType.FixedWage, 10000, "this is a value", false)]
+        [TestCase(WageType.NationalMinimumWage, 10000, "this is a value", true)]
+        [TestCase(WageType.FixedWage, 11000, "this is a value", true)]
+        [TestCase(WageType.FixedWage, 10000, "this is a new value", true)]
         public async Task WhenUpdated_ShouldFlagFieldIndicators(WageType wageType, decimal fixedWageYearlyAmmount, string wageAddtionalInformation, bool fieldIndicatorSet)
         {
             _fixture

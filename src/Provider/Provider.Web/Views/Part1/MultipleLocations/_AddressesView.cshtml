@@ -1,0 +1,22 @@
+﻿@model Esfa.Recruit.Provider.Web.ViewModels.Part1.MultipleLocations.AddMoreThanOneLocationViewModel
+
+@{
+    var index = 0;
+    foreach (var location in Model.AvailableLocations)
+    {
+        var address = location.ToAddressString();
+        var controlId = $"selectedLocation_{index++}";
+        <div class="govuk-checkboxes__item">
+            <input 
+                id="@controlId"
+                class="govuk-checkboxes__input"
+                name="@nameof(Model.SelectedLocations)"
+                value="@address"
+                type="checkbox"
+                checked="@(Model.SelectedLocations?.Contains(address) ?? false)">
+            <label for="@controlId" class="govuk-label govuk-checkboxes__label">
+                <address value="@location" flat="true" />
+            </label>
+        </div>
+    }
+}

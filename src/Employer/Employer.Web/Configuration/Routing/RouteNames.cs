@@ -67,6 +67,12 @@
         
         public const string SelectAnAddress_Get = nameof(SelectAnAddress_Get);
         public const string SelectAnAddress_Post = nameof(SelectAnAddress_Post);
+        
+        public const string EnterAddressManually_Get = nameof(EnterAddressManually_Get);
+        public const string EnterAddressManually_Post = nameof(EnterAddressManually_Post);
+        
+        public const string RecruitNationally_Get = nameof(RecruitNationally_Get);
+        public const string RecruitNationally_Post = nameof(RecruitNationally_Post);
 
         public const string CreateVacancy_Get = "CreateVacancy_Get";
         public const string CreateVacancy_Post = "CreateVacancy_Post";
