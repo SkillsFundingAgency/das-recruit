@@ -4,8 +4,10 @@ using Esfa.Recruit.Provider.Web.Configuration;
 using Esfa.Recruit.Provider.Web.Configuration.Routing;
 using Esfa.Recruit.Provider.Web.Controllers.Part1;
 using Esfa.Recruit.Provider.Web.Models.AddLocation;
+using Esfa.Recruit.Provider.Web.Services;
 using Esfa.Recruit.Provider.Web.ViewModels.Part1.AddLocation;
 using Esfa.Recruit.Shared.Web.Domain;
+using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Microsoft.AspNetCore.Mvc;
@@ -73,8 +75,9 @@ public class SelectLocationControllerTests
     [Test, MoqAutoData]
     public async Task When_Posting_SelectLocation_View_Without_Postcode_RedirectToRouteResult_Is_Returned(
         [Frozen] Vacancy vacancy,
-        [Frozen] IGetAddressesClient getAddressesClient,
-        [Frozen] IRecruitVacancyClient recruitVacancyClient,
+        IVacancyLocationService vacancyLocationService,
+        IGetAddressesClient getAddressesClient,
+        IRecruitVacancyClient recruitVacancyClient,
         [Greedy] SelectLocationController sut)
     {
         // arrange
@@ -88,7 +91,7 @@ public class SelectLocationControllerTests
         };
         
         // act
-        var result = await sut.SelectLocation(recruitVacancyClient, getAddressesClient, model) as RedirectToRouteResult;
+        var result = await sut.SelectLocation(vacancyLocationService, recruitVacancyClient, getAddressesClient, model) as RedirectToRouteResult;
         
         // assert
         result.Should().NotBeNull();
@@ -98,8 +101,9 @@ public class SelectLocationControllerTests
     [Test, MoqAutoData]
     public async Task When_Posting_SelectLocation_View_And_Address_Cannot_Be_Found_View_Is_Returned(
         [Frozen] Vacancy vacancy,
-        [Frozen] Mock<IGetAddressesClient> getAddressesClient,
-        [Frozen] IRecruitVacancyClient recruitVacancyClient,
+        IVacancyLocationService vacancyLocationService,
+        Mock<IGetAddressesClient> getAddressesClient,
+        IRecruitVacancyClient recruitVacancyClient,
         [Greedy] SelectLocationController sut)
     {
         // arrange
@@ -115,7 +119,7 @@ public class SelectLocationControllerTests
         getAddressesClient.Setup(x => x.GetAddresses(It.IsAny<string>())).ReturnsAsync((GetAddressesListResponse)null);
         
         // act
-        var result = (await sut.SelectLocation(recruitVacancyClient, getAddressesClient.Object, model) as ViewResult)?.Model as SelectLocationViewModel;
+        var result = (await sut.SelectLocation(vacancyLocationService, recruitVacancyClient, getAddressesClient.Object, model) as ViewResult)?.Model as SelectLocationViewModel;
         
         // assert
         result.Should().NotBeNull();
@@ -130,8 +134,9 @@ public class SelectLocationControllerTests
     public async Task When_Posting_SelectLocation_View_With_Valid_Selected_Address_Redirects_To_AddManyLocations_Route(
         [Frozen] GetAddressesListResponse getAddressesListResponse,
         [Frozen] Vacancy vacancy,
-        [Frozen] Mock<IGetAddressesClient> getAddressesClient,
-        [Frozen] Mock<IRecruitVacancyClient> recruitVacancyClient,
+        IVacancyLocationService vacancyLocationService,
+        Mock<IGetAddressesClient> getAddressesClient,
+        Mock<IRecruitVacancyClient> recruitVacancyClient,
         [Greedy] SelectLocationController sut)
     {
         // arrange
@@ -153,7 +158,7 @@ public class SelectLocationControllerTests
         
         
         // act
-        var result = (await sut.SelectLocation(recruitVacancyClient.Object, getAddressesClient.Object, model) as RedirectToRouteResult);
+        var result = (await sut.SelectLocation(vacancyLocationService, recruitVacancyClient.Object, getAddressesClient.Object, model) as RedirectToRouteResult);
         
         // assert
         result.Should().NotBeNull();
@@ -161,5 +166,46 @@ public class SelectLocationControllerTests
         sut.TempData.Keys.Should().NotContain(TempDataKeys.Postcode);
         (sut.TempData[TempDataKeys.AddedLocation] as string).Should().StartWith(model.SelectedLocation);
         recruitVacancyClient.Verify(x => x.UpdateEmployerProfileAsync(It.IsAny<EmployerProfile>(), It.IsAny<VacancyUser>()), Times.Once);
+    }
+    
+    [Test, MoqAutoData]
+    public async Task When_Posting_SelectLocation_View_With_Valid_Duplicate_Selected_Address_Redirects_To_AddManyLocations_Route(
+        [Frozen] GetAddressesListResponse getAddressesListResponse,
+        [Frozen] Vacancy vacancy,
+        Mock<IVacancyLocationService> vacancyLocationService,
+        Mock<IGetAddressesClient> getAddressesClient,
+        Mock<IRecruitVacancyClient> recruitVacancyClient,
+        [Greedy] SelectLocationController sut)
+    {
+        // arrange
+        int ukprn = new Random().Next();
+        sut
+            .AddControllerContext()
+            .WithTempData()
+            .WithUser(Guid.NewGuid())
+            .WithClaim(ProviderRecruitClaims.IdamsUserUkprnClaimsTypeIdentifier, ukprn.ToString());
+        sut.TempData.Add(TempDataKeys.Postcode, Postcode);
+        var firstAddress = getAddressesListResponse.Addresses.First();
+        firstAddress.Postcode = Postcode;
+        var model = new SelectLocationEditModel
+        {
+            Ukprn = ukprn,
+            Origin = MultipleLocationsJourneyOrigin.Many,
+            SelectedLocation = firstAddress.ToShortAddress(),
+            VacancyId = vacancy.Id,
+            Wizard = true
+        };
+        vacancyLocationService.Setup(x => x.GetVacancyLocations(vacancy, ukprn)).ReturnsAsync([firstAddress.ToDomain()]);
+        getAddressesClient.Setup(x => x.GetAddresses(firstAddress.Postcode)).ReturnsAsync(new GetAddressesListResponse { Addresses = [firstAddress] });
+        
+        // act
+        var result = (await sut.SelectLocation(vacancyLocationService.Object, recruitVacancyClient.Object, getAddressesClient.Object, model) as RedirectToRouteResult);
+        
+        // assert
+        result.Should().NotBeNull();
+        result!.RouteName.Should().Be(RouteNames.AddMoreThanOneLocation_Get);
+        sut.TempData.Keys.Should().NotContain(TempDataKeys.Postcode);
+        (sut.TempData[TempDataKeys.AddedLocation] as string).Should().StartWith(model.SelectedLocation);
+        recruitVacancyClient.Verify(x => x.UpdateEmployerProfileAsync(It.IsAny<EmployerProfile>(), It.IsAny<VacancyUser>()), Times.Never);
     }
 }
