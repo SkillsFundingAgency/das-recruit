@@ -80,13 +80,37 @@ namespace Esfa.Recruit.Shared.Web.Extensions
                 };
         }
         
-        public static List<string> ToFlatList(this List<Address> addresses, bool isAnonymous = false)
+        public static string ToSingleLineFullAddress(this Address address)
         {
-            ArgumentNullException.ThrowIfNull(addresses);
+            string[] addressArray = [address.AddressLine1, address.AddressLine2, address.AddressLine3, address.AddressLine4, address.Postcode];
+            return string.Join(", ", addressArray.Where(a => !string.IsNullOrWhiteSpace(a)).Select(a => a.Trim()));
+        }
+    
+        public static string ToSingleLineAbridgedAddress(this Address address)
+        {
+            return $"{address.GetLastNonEmptyField()} ({address.Postcode})";
+        }
+    
+        public static string ToSingleLineAnonymousAddress(this Address address)
+        {
+            return $"{address.GetLastNonEmptyField()} ({address.PostcodeAsOutcode()})";
+        }
+        
+        public static IEnumerable<Address> OrderByCity(this IEnumerable<Address> addresses)
+        {
+            return addresses.OrderBy(x => x.GetLastNonEmptyField());
+        }
 
-            return isAnonymous
-                ? addresses.Select(x => $"{x.GetLastNonEmptyField()} ({x.PostcodeAsOutcode()})").Distinct().ToList()
-                : addresses.Select(x => x.Flatten()).ToList();
+        public static IEnumerable<string> GetPopulatedAddressLines(this Address address)
+        {
+            return new[]
+            {
+                address.AddressLine1,
+                address.AddressLine2,
+                address.AddressLine3,
+                address.AddressLine4,
+                address.Postcode
+            }.Where(x => !string.IsNullOrEmpty(x?.Trim()));
         }
     }
 }

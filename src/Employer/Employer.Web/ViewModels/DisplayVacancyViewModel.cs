@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Shared.Web.Extensions;
+using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
 using AvailableWhereType = Esfa.Recruit.Vacancies.Client.Domain.Entities.AvailableWhere;
 
 namespace Esfa.Recruit.Employer.Web.ViewModels
@@ -28,7 +29,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels
         public string ExpectedDuration { get; internal set; }
         public string FindAnApprenticeshipUrl { get; internal set; }
         public string HoursPerWeek { get; internal set; }
-        public bool IsAnonymous { get; internal set; }
+        public bool IsAnonymous { get; set; }
         public bool IsDisabilityConfident { get; internal set; }
         public Address Location { get; internal set; }
         public IEnumerable<string> EmployerAddressElements { get; set; }
@@ -180,8 +181,9 @@ namespace Esfa.Recruit.Employer.Web.ViewModels
                 case AvailableWhereType.OneLocation:
                     {
                         var location = AvailableLocations.First();
-                        string city = location.GetLastNonEmptyField();
-                        return $"{city} ({location.Postcode})";
+                        return IsAnonymous
+                            ? location.ToSingleLineAnonymousAddress()
+                            : location.ToSingleLineAbridgedAddress();
                     }
                 case AvailableWhereType.MultipleLocations:
                     {

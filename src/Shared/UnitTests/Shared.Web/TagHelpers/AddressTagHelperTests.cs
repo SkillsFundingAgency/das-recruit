@@ -95,8 +95,8 @@ public class AddressTagHelperTests
         _tagHelperOutput.AsString().Should().Be(output);
     }
     
-    [TestCase(true, "<span>address3 (SW1A)</span>")]
-    [TestCase(false, "<p>address3 (SW1A)</p>")]
+    [TestCase(true, "<span>address4 (SW1A)</span>")]
+    [TestCase(false, "<p>address4 (SW1A)</p>")]
     public async Task Renders_Anonymised_Address(bool flat, string output)
     {
         // arrange
@@ -109,7 +109,7 @@ public class AddressTagHelperTests
                 AddressLine1 = "address1",
                 AddressLine2 = "address2",
                 AddressLine3 = "address3",
-                AddressLine4 = null,
+                AddressLine4 = "address4",
                 Postcode = "SW1A 2AA"
             }
         };

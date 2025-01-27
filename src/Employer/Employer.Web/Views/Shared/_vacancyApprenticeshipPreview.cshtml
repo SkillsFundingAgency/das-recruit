@@ -1,6 +1,5 @@
 @using Esfa.Recruit.Shared.Web.TagHelpers
 @using Esfa.Recruit.Vacancies.Client.Domain.Entities
-@using Microsoft.AspNetCore.Html
 @using WebEssentials.AspNetCore.CdnTagHelpers
 @model DisplayVacancyViewModel
 
@@ -204,15 +203,8 @@
                             <p class="govuk-body">
                                 This apprenticeship is available in these locations:
                             </p>
-                            <ul class="govuk-list govuk-list--bullet">
-                                @foreach (var location in Model.AvailableLocations)
-                                {
-                                    <li>
-                                        <address value="@location" anonymised="@Model.IsAnonymous" flat="true" />
-                                    </li>
-                                }
-                            </ul>
                             
+                            <address-list class="govuk-list govuk-list--bullet" addresses="@Model.AvailableLocations" anonymised="@Model.IsAnonymous" />
                             RenderMapSection();
                             break;
                         }

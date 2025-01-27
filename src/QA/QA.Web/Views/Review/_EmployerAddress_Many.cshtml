@@ -7,12 +7,7 @@
         <div class="@Model.EmployerAddressClass" id="@FieldIdentifiers.EmployerAddress">
             <h3 class="govuk-heading-s">Location</h3>
             <p class="govuk-body">This apprenticeship is available in these locations:</p>
-            <ul class="govuk-list govuk-list--bullet">
-                @foreach (var location in Model.EmployerLocations.ToFlatList(Model.IsAnonymous))
-                {
-                    <li><span>@location</span></li>
-                }
-            </ul>
+            <address-list class="govuk-list govuk-list--bullet" addresses="@Model.EmployerLocations" anonymised="@Model.IsAnonymous" />
             @if (!Model.ReadOnly)
             {
                 <esfa-review-checkbox asp-for="@Model.SelectedFieldIdentifiers" asp-value="@FieldIdentifiers.EmployerAddress" asp-items="@Model.FieldIdentifiers"></esfa-review-checkbox>
