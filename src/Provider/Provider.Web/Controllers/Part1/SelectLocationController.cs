@@ -1,9 +1,11 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Provider.Web.Configuration;
 using Esfa.Recruit.Provider.Web.Configuration.Routing;
 using Esfa.Recruit.Provider.Web.Extensions;
 using Esfa.Recruit.Provider.Web.Models.AddLocation;
+using Esfa.Recruit.Provider.Web.Services;
 using Esfa.Recruit.Provider.Web.ViewModels.Part1.AddLocation;
 using Esfa.Recruit.Shared.Web.Domain;
 using Esfa.Recruit.Shared.Web.Extensions;
@@ -33,7 +35,11 @@ public class SelectLocationController(IUtility utility) : Controller
     
     [FeatureGate(FeatureNames.MultipleLocations)]
     [HttpPost("select-location", Name = RouteNames.SelectAnAddress_Post)]
-    public async Task<IActionResult> SelectLocation([FromServices] IRecruitVacancyClient recruitVacancyClient, [FromServices] IGetAddressesClient getAddressesClient, SelectLocationEditModel model)
+    public async Task<IActionResult> SelectLocation(
+        [FromServices] IVacancyLocationService vacancyLocationService,
+        [FromServices] IRecruitVacancyClient recruitVacancyClient, 
+        [FromServices] IGetAddressesClient getAddressesClient, 
+        SelectLocationEditModel model)
     {
         string postcode = TempData.Peek(TempDataKeys.Postcode) as string;
         if (string.IsNullOrEmpty(postcode))
@@ -49,7 +55,7 @@ public class SelectLocationController(IUtility utility) : Controller
         }
         
         var vacancy = await utility.GetAuthorisedVacancyForEditAsync(model, RouteNames.SelectAnAddress_Post);
-        await SaveEmployerAddress(recruitVacancyClient, vacancy, addressToAdd);
+        await SaveEmployerAddress(vacancyLocationService, recruitVacancyClient, model.Ukprn, vacancy, addressToAdd);
         
         TempData[TempDataKeys.AddedLocation] = addressToAdd.ToAddressString();
         TempData.Remove(TempDataKeys.Postcode);
@@ -65,8 +71,16 @@ public class SelectLocationController(IUtility utility) : Controller
         return addressItem?.ToDomain();
     }
 
-    private async Task SaveEmployerAddress(IRecruitVacancyClient recruitVacancyClient, Vacancy vacancy, Address address)
+    private async Task SaveEmployerAddress(IVacancyLocationService vacancyLocationService, IRecruitVacancyClient recruitVacancyClient, long ukprn, Vacancy vacancy, Address address)
     {
+        var existingLocations = await vacancyLocationService.GetVacancyLocations(vacancy, ukprn);
+        string newAddressString = address.ToSingleLineFullAddress();
+        if (existingLocations.Any(x => x.ToSingleLineFullAddress().Equals(newAddressString, StringComparison.InvariantCultureIgnoreCase)))
+        {
+            // Don't add existing addresses
+            return;
+        }
+        
         var employerProfile = await recruitVacancyClient.GetEmployerProfileAsync(vacancy.EmployerAccountId, vacancy.AccountLegalEntityPublicHashedId);
         employerProfile.OtherLocations.Add(address);
         await recruitVacancyClient.UpdateEmployerProfileAsync(employerProfile, User.ToVacancyUser());
