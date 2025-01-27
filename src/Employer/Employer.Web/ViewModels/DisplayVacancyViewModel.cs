@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Shared.Web.Extensions;
-using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
 using AvailableWhereType = Esfa.Recruit.Vacancies.Client.Domain.Entities.AvailableWhere;
 
 namespace Esfa.Recruit.Employer.Web.ViewModels

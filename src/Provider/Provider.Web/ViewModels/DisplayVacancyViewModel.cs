@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Esfa.Recruit.Provider.Web.RouteModel;
+using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using AvailableWhereType = Esfa.Recruit.Vacancies.Client.Domain.Entities.AvailableWhere;
 
 namespace Esfa.Recruit.Provider.Web.ViewModels
 {
@@ -162,6 +164,44 @@ namespace Esfa.Recruit.Provider.Web.ViewModels
                 return additionalQuestion.TrimEnd() + "?";
                 
             return additionalQuestion;
+        }
+        
+        public string GetLocationDescription()
+        {
+            switch (AvailableWhere)
+            {
+                case AvailableWhereType.AcrossEngland:
+                    {
+                        return "Recruiting nationally";
+                    }
+                case AvailableWhereType.OneLocation:
+                    {
+                        var location = AvailableLocations.First();
+                        return IsAnonymous
+                            ? location.ToSingleLineAnonymousAddress()
+                            : location.ToSingleLineAbridgedAddress();
+                    }
+                case AvailableWhereType.MultipleLocations:
+                    {
+                        var groupedAddresses = AvailableLocations.ToList().GroupByLastFilledAddressLine().ToList();
+                        if (groupedAddresses is { Count: 1 })
+                        {
+                            int groupCount = groupedAddresses[0].Count();
+                            if (groupCount > 1)
+                            {
+                                return $"{groupedAddresses[0].Key} ({groupCount} available locations)";
+                            }
+                        }
+
+                        var keys = groupedAddresses.Select(group => group.Key);
+                        return string.Join(", ", keys);
+                    }
+                default:
+                    {
+                        // This is for existing data that uses the old fields
+                        return $"{EmployerAddressElements.SkipLast(1).LastOrDefault()} ({EmployerAddressElements.LastOrDefault()})";
+                    }
+            }
         }
     }
 }
