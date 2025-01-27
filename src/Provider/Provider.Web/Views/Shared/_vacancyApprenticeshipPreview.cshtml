@@ -217,10 +217,9 @@
                         default:
                         {
                             // This is for existing data that uses the old fields
-                            foreach (var addressLine in Model.EmployerAddressElements)
-                            {
-                                <p class="govuk-body govuk-!-margin-bottom-0">@addressLine</p>
-                            }
+                            <p class="govuk-body">
+                                @string.Join(", ", Model.EmployerAddressElements?.Where(s => !string.IsNullOrWhiteSpace(s)).Select(s => s.Trim()) ?? Array.Empty<string>())
+                            </p>
 
                             RenderMapSection();
                             break;
