@@ -320,7 +320,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                 new Context(nameof(RunAggPipelineQuery)));
 
             return vacancySummaries
-                    .Select(dto => VacancySummaryMapper.MapFromVacancySummaryAggQueryResponseDto(dto, _vacancyTaskListStatusService.IsTaskListCompleted(dto.Id)))
+                    .Select(VacancySummaryMapper.MapFromVacancySummaryAggQueryResponseDto)
                     .ToList();
         }
 
