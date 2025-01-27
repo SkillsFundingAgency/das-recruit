@@ -153,6 +153,7 @@
                         </td>
                         <td class="govuk-table__cell govuk-table__cell--numeric" data-label="Action">
                             <a id="manage-@vacancy.Id" asp-show="@vacancy.IsNotSubmittable" asp-route="@RouteNames.VacancyManage_Get" asp-route-ukprn="@Model.Ukprn" asp-route-vacancyId="@vacancy.Id" class="govuk-link">@GetLinkText(vacancy) <span class="govuk-visually-hidden">@vacancy.Title</span></a>
+                            <text>IsTaskListCompleted: @vacancy.IsTaskListCompleted</text>
                             @if (vacancy.Status is VacancyStatus.Referred or VacancyStatus.Rejected)
                             {
                                 <a id="task-list-@vacancy.Id" asp-show="@vacancy.IsSubmittable" asp-route="@RouteNames.ProviderCheckYourAnswersGet" asp-route-ukprn="@Model.Ukprn" asp-route-vacancyId="@vacancy.Id" class="govuk-link">@GetLinkText(vacancy) <span class="govuk-visually-hidden">@vacancy.Title</span></a> 
