@@ -4,12 +4,14 @@ using System.Threading.Tasks;
 using Esfa.Recruit.Provider.Web.Configuration;
 using Esfa.Recruit.Provider.Web.Configuration.Routing;
 using Esfa.Recruit.Provider.Web.Extensions;
+using Esfa.Recruit.Provider.Web.Mappings;
 using Esfa.Recruit.Provider.Web.Orchestrators.Part1;
 using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Provider.Web.Services;
 using Esfa.Recruit.Provider.Web.ViewModels.Part1.Location;
 using Esfa.Recruit.Shared.Web;
 using Esfa.Recruit.Shared.Web.Extensions;
+using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
@@ -96,6 +98,7 @@ public class LocationController(IWebHostEnvironment hostingEnvironment) : Employ
     public async Task<IActionResult> AddOneLocation(
         [FromServices] IVacancyLocationService vacancyLocationService,
         [FromServices] IUtility utility,
+        [FromServices] IReviewSummaryService reviewSummaryService,
         VacancyRouteModel vacancyRouteModel,
         [FromQuery] bool wizard)
     {
@@ -113,6 +116,10 @@ public class LocationController(IWebHostEnvironment hostingEnvironment) : Employ
             SelectedLocation = selectedLocation?.ToAddressString(),
         };
         viewModel.PageInfo.SetWizard(wizard);
+        if (vacancy.Status == VacancyStatus.Referred)
+        {
+            viewModel.Review = await reviewSummaryService.GetReviewSummaryViewModelAsync(vacancy.VacancyReference!.Value, ReviewFieldMappingLookups.GetWhereIsApprenticeshipAvailableFieldIndicators());
+        }
         
         if (TempData[TempDataKeys.AddedLocation] is string newlyAddedLocation)
         {
@@ -127,6 +134,7 @@ public class LocationController(IWebHostEnvironment hostingEnvironment) : Employ
     public async Task<IActionResult> AddOneLocation(
         [FromServices] IVacancyLocationService vacancyLocationService,
         [FromServices] IUtility utility,
+        [FromServices] IReviewSummaryService reviewSummaryService,
         AddOneLocationEditModel model,
         [FromQuery] bool wizard)
     {
@@ -157,6 +165,10 @@ public class LocationController(IWebHostEnvironment hostingEnvironment) : Employ
             SelectedLocation = model.SelectedLocation
         };
         viewModel.PageInfo.SetWizard(wizard);
+            if (vacancy.Status == VacancyStatus.Referred)
+            {
+                viewModel.Review = await reviewSummaryService.GetReviewSummaryViewModelAsync(vacancy.VacancyReference!.Value, ReviewFieldMappingLookups.GetWhereIsApprenticeshipAvailableFieldIndicators());
+            }
         return View(viewModel);
     }
 }

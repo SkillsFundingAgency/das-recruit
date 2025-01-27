@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Shared.Web.Extensions;
+using Esfa.Recruit.Vacancies.Client.Application.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
@@ -17,7 +18,7 @@ public interface IVacancyLocationService
 
 public record UpdateVacancyLocationsResult(EntityValidationResult ValidationResult);
 
-public class VacancyLocationService(IRecruitVacancyClient recruitVacancyClient, IEmployerVacancyClient employerVacancyClient): IVacancyLocationService
+public class VacancyLocationService(IRecruitVacancyClient recruitVacancyClient, IEmployerVacancyClient employerVacancyClient, IReviewFieldIndicatorService reviewFieldIndicatorService): IVacancyLocationService
 {
     public async Task<List<Address>> GetVacancyLocations(Vacancy vacancy)
     {
@@ -41,7 +42,10 @@ public class VacancyLocationService(IRecruitVacancyClient recruitVacancyClient, 
         ArgumentNullException.ThrowIfNull(vacancy);
         ArgumentNullException.ThrowIfNull(user);
         
-        vacancy.EmployerLocation = null; // null it for records created before this feature that are edited 
+        reviewFieldIndicatorService.SetVacancyWithEmployerReviewFieldIndicators(vacancy.EmployerLocations, FieldIdResolver.ToFieldId(v => v.EmployerLocations), vacancy, locations);
+        reviewFieldIndicatorService.SetVacancyWithEmployerReviewFieldIndicators(vacancy.EmployerLocationInformation, FieldIdResolver.ToFieldId(v => v.EmployerLocationInformation), vacancy, locationInformation);
+        
+        vacancy.EmployerLocation = null; // null it for records created before this feature that are edited
         vacancy.EmployerLocationOption = availableWhere;
         vacancy.EmployerLocations = locations;
         vacancy.EmployerLocationInformation = locationInformation;

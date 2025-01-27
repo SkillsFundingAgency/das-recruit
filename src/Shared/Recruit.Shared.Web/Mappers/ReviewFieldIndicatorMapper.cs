@@ -40,7 +40,7 @@ namespace Esfa.Recruit.Shared.Web.Mappers
             { FieldIdentifiers.DisabilityConfident, "Disability confident requires edit" },
             { FieldIdentifiers.EmployerWebsiteUrl, "Employer website requires edit" },
             { FieldIdentifiers.EmployerContact, "Contact details requires edit" },
-            { FieldIdentifiers.EmployerAddress, "Employer address requires edit" },
+            { FieldIdentifiers.EmployerAddress, "Where is this apprenticeship available requires edit" },
             { FieldIdentifiers.Provider, "Training provider requires edit" },
             { FieldIdentifiers.ProviderContact, "Contact details requires edit" },
             { FieldIdentifiers.Training, "Training requires edit" },
@@ -78,7 +78,6 @@ namespace Esfa.Recruit.Shared.Web.Mappers
 
         public IEnumerable<ReviewFieldIndicatorViewModel> MapFromFieldIndicators(ReviewFieldMappingLookupsForPage pageMappings, VacancyReview review)
         {
-            
             var manualQaFieldIdentifierNames = review.ManualQaFieldIndicators
                 ?.Where(r => r.IsChangeRequested)
                 .Select(r => r.FieldIdentifier)

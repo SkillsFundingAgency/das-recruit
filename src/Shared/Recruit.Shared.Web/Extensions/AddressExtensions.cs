@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
@@ -64,7 +65,7 @@ namespace Esfa.Recruit.Shared.Web.Extensions
                 .GroupBy(x => x.Key)
                 .OrderBy(x => x.Key);
         }
-       
+        
         public static Address ToDomain(this GetAddressesListItem addressItem)
         {
             return addressItem is null
