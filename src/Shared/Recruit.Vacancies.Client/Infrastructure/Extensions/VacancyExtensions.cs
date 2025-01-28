@@ -6,7 +6,6 @@ using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Vacancy;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.ApprenticeshipProgrammes;
-using SFA.DAS.VacancyServices.Wage;
 using Address = Esfa.Recruit.Vacancies.Client.Domain.Entities.Address;
 using ProjectionAddress = Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Vacancy.Address;
 using ProjectionQualification = Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Vacancy.Qualification;
@@ -15,7 +14,6 @@ using ProjectionWage = Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.P
 using Qualification = Esfa.Recruit.Vacancies.Client.Domain.Entities.Qualification;
 using TrainingProvider = Esfa.Recruit.Vacancies.Client.Domain.Entities.TrainingProvider;
 using Wage = Esfa.Recruit.Vacancies.Client.Domain.Entities.Wage;
-using WageType = Esfa.Recruit.Vacancies.Client.Domain.Entities.WageType;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Extensions
 {
@@ -42,6 +40,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Extensions
             projectedVacancy.ProviderContactPhone = vacancy.ProviderContact?.Phone;
             projectedVacancy.EmployerDescription = vacancy.EmployerDescription;
             projectedVacancy.EmployerLocation = vacancy.EmployerLocation.ToProjection(vacancy.IsAnonymous);
+            projectedVacancy.EmployerLocationOption = vacancy.EmployerLocationOption;
+            projectedVacancy.EmployerLocations = vacancy.EmployerLocations?.Select(x => x.ToProjection(vacancy.IsAnonymous)).ToList();
+            projectedVacancy.EmployerLocationInformation = vacancy.EmployerLocationInformation;
             projectedVacancy.EmployerName = vacancy.EmployerName;
             projectedVacancy.EmployerWebsiteUrl = vacancy.IsAnonymous ? null : vacancy.EmployerWebsiteUrl;
             projectedVacancy.IsAnonymous = vacancy.IsAnonymous;
@@ -76,25 +77,42 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Extensions
             return projectedVacancy;
         }
 
-        public static ProjectionAddress ToProjection(this Address address, bool isAnonymousVacancy)
+        private static ProjectionAddress ToProjection(this Address address, bool isAnonymousVacancy)
         {
-            if(isAnonymousVacancy)
-                return new ProjectionAddress {
-                    Postcode = address.PostcodeAsOutcode(),
+            if (!isAnonymousVacancy)
+            {
+                return new ProjectionAddress
+                {
+                    AddressLine1 = address.AddressLine1,
+                    AddressLine2 = address.AddressLine2,
+                    AddressLine3 = address.AddressLine3,
+                    AddressLine4 = address.AddressLine4,
+                    Postcode = address.Postcode,
                     Latitude = address.Latitude.GetValueOrDefault(),
                     Longitude = address.Longitude.GetValueOrDefault()
                 };
-
-            return new ProjectionAddress
-            {
-                AddressLine1 = address.AddressLine1,
-                AddressLine2 = address.AddressLine2,
-                AddressLine3 = address.AddressLine3,
-                AddressLine4 = address.AddressLine4,
-                Postcode = address.Postcode,
-                Latitude = address.Latitude.GetValueOrDefault(), 
+            }
+            
+            var projectionAddress = new ProjectionAddress {
+                Postcode = address.PostcodeAsOutcode(),
+                Latitude = address.Latitude.GetValueOrDefault(),
                 Longitude = address.Longitude.GetValueOrDefault()
             };
+
+            var lines = new List<Func<string>>
+            {
+                () => projectionAddress.AddressLine4 = address.AddressLine4,
+                () => projectionAddress.AddressLine3 = address.AddressLine3,
+                () => projectionAddress.AddressLine2 = address.AddressLine2,
+            };
+
+            int index = 0;
+            while (string.IsNullOrWhiteSpace(lines[index]()) && index < lines.Count)
+            {
+                index++;
+            }
+
+            return projectionAddress;
         }
 
         public static IEnumerable<ProjectionQualification> ToProjection(this List<Qualification> qualifications)
