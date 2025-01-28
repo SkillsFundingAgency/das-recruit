@@ -35,6 +35,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
         Task<long> GetTotalPositionsAvailableCount();
         Task<LiveVacancy> GetLiveVacancy(long vacancyReference);
         Task<LiveVacancy> GetLiveExpiredVacancy(long vacancyReference);
-        Task<VacancyAnalyticsSummaryV2> GetVacancyAnalyticsSummaryV2Async(long vacancyReference);
+        Task<VacancyAnalyticsSummaryV2> GetVacancyAnalyticsSummaryV2Async(string vacancyReference);
     }
 }

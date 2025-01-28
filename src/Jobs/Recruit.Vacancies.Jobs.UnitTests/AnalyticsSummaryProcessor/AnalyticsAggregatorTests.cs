@@ -31,15 +31,15 @@ public class AnalyticsAggregatorTests
         [Frozen] Mock<IOuterApiClient> apiClient,
         AnalyticsAggregator analyticsAggregator)
     {
-        metricData.VacancyReference = vacancyReference;
+        metricData.VacancyReference = vacancyReference.ToString();
         summary.AnalyticsDate = new DateTime(2024, 11, 30);
         dateTimeService.Setup(x => x.Now)
             .Returns(new DateTime(2024, 11, 30, 12, 00, 00));
         
-        queryStoreReader.Setup(x => x.GetVacancyAnalyticsSummaryV2Async(vacancyReference)).ReturnsAsync(
+        queryStoreReader.Setup(x => x.GetVacancyAnalyticsSummaryV2Async(vacancyReference.ToString())).ReturnsAsync(
             new VacancyAnalyticsSummaryV2
             {
-                VacancyReference = vacancyReference,
+                VacancyReference = vacancyReference.ToString(),
                 VacancyAnalytics = [summary]
             });
 
@@ -71,11 +71,11 @@ public class AnalyticsAggregatorTests
         [Frozen] Mock<IOuterApiClient> apiClient,
         AnalyticsAggregator analyticsAggregator)
     {
-        metricData.VacancyReference = vacancyReference;
+        metricData.VacancyReference = vacancyReference.ToString();
         summary.AnalyticsDate = new DateTime(2024, 11, 30);
         dateTimeService.Setup(x => x.Now)
             .Returns(new DateTime(2024, 11, 30, 12, 00, 00));
-        queryStoreReader.Setup(x => x.GetVacancyAnalyticsSummaryV2Async(vacancyReference)).ReturnsAsync((VacancyAnalyticsSummaryV2)null);
+        queryStoreReader.Setup(x => x.GetVacancyAnalyticsSummaryV2Async(vacancyReference.ToString())).ReturnsAsync((VacancyAnalyticsSummaryV2)null);
 
         var actual = await analyticsAggregator.GetVacancyAnalyticEventSummaryAsync(metricData);
 
@@ -120,16 +120,16 @@ public class AnalyticsAggregatorTests
         summary7.AnalyticsDate = new DateTime(2024, 11, 23);
         dateTimeService.Setup(x => x.Now)
             .Returns(new DateTime(2024, 11, 30, 12, 00, 00));
-        metricData.VacancyReference = vacancyReference;
+        metricData.VacancyReference = vacancyReference.ToString();
         metricData.ApplicationStartedCount = summary1.ApplicationStartedCount;
         metricData.ApplicationSubmittedCount = summary1.ApplicationSubmittedCount;
         metricData.ViewsCount = summary1.ViewsCount;
         metricData.SearchResultsCount = summary1.SearchResultsCount;
         List<VacancyAnalytics> vacancyAnalyticsList = [summary1, summary2, summary3, summary4, summary5, summary6, summary7];
-        queryStoreReader.Setup(x => x.GetVacancyAnalyticsSummaryV2Async(vacancyReference)).ReturnsAsync(
+        queryStoreReader.Setup(x => x.GetVacancyAnalyticsSummaryV2Async(vacancyReference.ToString())).ReturnsAsync(
             new VacancyAnalyticsSummaryV2
             {
-                VacancyReference = vacancyReference,
+                VacancyReference = vacancyReference.ToString(),
                 VacancyAnalytics = vacancyAnalyticsList
             });
 

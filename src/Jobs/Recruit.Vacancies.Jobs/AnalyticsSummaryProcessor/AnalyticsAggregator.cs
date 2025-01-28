@@ -66,7 +66,7 @@ public class AnalyticsAggregator(IOuterApiClient apiClient, ITimeProvider timePr
         
         return new VacancyAnalyticsSummary
         {
-            VacancyReference = vacancyAnalyticsV2QueueMessage.VacancyReference,
+            VacancyReference = Convert.ToInt32(vacancyAnalyticsV2QueueMessage.VacancyReference),
             NoOfApprenticeshipSearches = metrics.VacancyAnalytics.Sum(c=>c.SearchResultsCount),
             NoOfApprenticeshipSearchesSevenDaysAgo = sevenDaysAgoTotals.Sum(c=>c.SearchResultsCount),
             NoOfApprenticeshipSearchesSixDaysAgo = sixDaysAgoTotals.Sum(c=>c.SearchResultsCount),
