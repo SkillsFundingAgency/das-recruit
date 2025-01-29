@@ -5,7 +5,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
 {
     internal static class VacancySummaryMapper
     {
-        internal static VacancySummary MapFromVacancySummaryAggQueryResponseDto(VacancySummaryAggQueryResponseDto src)
+        public static VacancySummary MapFromVacancySummaryAggQueryResponseDto(VacancySummaryAggQueryResponseDto src)
         {
             var vacSummaryDetail = src.Id;
 
@@ -44,7 +44,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                 NoOfEmployerReviewedApplications = src.NoOfEmployerReviewedApplications,
                 IsTraineeship = vacSummaryDetail.IsTraineeship,
                 VacancyType = vacSummaryDetail.VacancyType,
-                IsTaskListCompleted = vacSummaryDetail.HasSubmittedAdditionalQuestions,
+                IsTaskListCompleted = vacSummaryDetail.OwnerType is OwnerType.Provider or OwnerType.Employer && vacSummaryDetail.HasSubmittedAdditionalQuestions,
                 HasChosenProviderContactDetails = vacSummaryDetail.HasChosenProviderContactDetails
             };
 
