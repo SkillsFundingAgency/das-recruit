@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Provider.Web.Models.ApplicationReviews;
 using Esfa.Recruit.Provider.Web.RouteModel;
@@ -14,8 +15,9 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
         Task<ApplicationReviewsToUnsuccessfulViewModel> GetApplicationReviewsToUnsuccessfulViewModelAsync(VacancyRouteModel rm, SortColumn sortColumn, SortOrder sortOrder);
         Task<ShareMultipleApplicationReviewsViewModel> GetApplicationReviewsToShareViewModelAsync(VacancyRouteModel rm, SortColumn sortColumn, SortOrder sortOrder);
         Task<ShareMultipleApplicationReviewsConfirmationViewModel> GetApplicationReviewsToShareConfirmationViewModel(ShareApplicationReviewsRequest request);
-        Task PostApplicationReviewsToSharedAsync(ShareApplicationReviewsPostRequest request, VacancyUser user);
         Task PostApplicationReviewsToUnsuccessfulAsync(ApplicationReviewsToUnsuccessfulConfirmationViewModel request, VacancyUser user);
+        Task PostApplicationReviewsStatus(ApplicationReviewsToUpdateStatusModel request, VacancyUser user, ApplicationReviewStatus? applicationReviewStatus, ApplicationReviewStatus? applicationReviewTemporaryStatus);
+        Task PostApplicationReviewPendingUnsuccessfulFeedback(ApplicationReviewStatusModel request, VacancyUser user, ApplicationReviewStatus applicationReviewStatus);
     }
 
     public class ApplicationReviewsOrchestrator : IApplicationReviewsOrchestrator
@@ -29,14 +31,16 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
 
         public async Task<ApplicationReviewsToUnsuccessfulConfirmationViewModel> GetApplicationReviewsToUnsuccessfulConfirmationViewModel(ApplicationReviewsToUnsuccessfulRouteModel request)
         {
-            var applicationsToUnsuccessful = await _vacancyClient.GetVacancyApplicationsForSelectedIdsAsync(request.ApplicationsToUnsuccessful);
-
+            var applicationsToUnsuccessful =
+                await _vacancyClient.GetVacancyApplicationsForReferenceAndStatus(request.VacancyId!.Value!,
+                    ApplicationReviewStatus.PendingToMakeUnsuccessful);
+            
             return new ApplicationReviewsToUnsuccessfulConfirmationViewModel
             {
                 VacancyId = request.VacancyId,
                 Ukprn = request.Ukprn,
                 ApplicationsToUnsuccessful= applicationsToUnsuccessful,
-                CandidateFeedback = request.CandidateFeedback
+                CandidateFeedback = applicationsToUnsuccessful.FirstOrDefault()!.CandidateFeedback
             };
         }
 
@@ -44,13 +48,22 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
         {
             var vacancy = await _vacancyClient.GetVacancyAsync(rm.VacancyId.GetValueOrDefault());
 
-            var applicationReviews = await _vacancyClient.GetVacancyApplicationsSortedAsync(vacancy.VacancyReference.Value, sortColumn, sortOrder);
+            var applicationReviews = await _vacancyClient.GetVacancyApplicationsSortedAsync(vacancy.VacancyReference!.Value, sortColumn, sortOrder);
+            var applicationsSelected =
+                await _vacancyClient.GetVacancyApplicationsForReferenceAndStatus(rm.VacancyId.GetValueOrDefault(),
+                    ApplicationReviewStatus.PendingToMakeUnsuccessful);
 
+            var vacancyApplications = applicationReviews.Where(fil => fil.IsNotWithdrawn).ToList();
+            foreach (var application in applicationsSelected)
+            {
+                vacancyApplications.FirstOrDefault(c => c.ApplicationId == application.ApplicationId)!.Selected = true;
+            }
+            
             return new ApplicationReviewsToUnsuccessfulViewModel
             {
                 VacancyId = vacancy.Id,
                 Ukprn = rm.Ukprn,
-                VacancyApplications = applicationReviews.Where(fil => fil.IsNotWithdrawn).ToList()
+                VacancyApplications = vacancyApplications
             };
         }
 
@@ -59,20 +72,35 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             var vacancy = await _vacancyClient.GetVacancyAsync(rm.VacancyId.GetValueOrDefault());
 
             var applicationReviews = await _vacancyClient.GetVacancyApplicationsSortedAsync(vacancy.VacancyReference.Value, sortColumn, sortOrder);
+            var applicationsSelected =
+                await _vacancyClient.GetVacancyApplicationsForReferenceAndStatus(rm.VacancyId.GetValueOrDefault(),
+                    ApplicationReviewStatus.PendingShared);
+            var vacancyApplications = applicationReviews.Where(fil => fil.IsNotWithdrawn).ToList();
+            foreach (var application in applicationsSelected)
+            {
+                if (vacancyApplications.FirstOrDefault(c => c.ApplicationId == application.ApplicationId) != null)
+                {
+                    vacancyApplications.FirstOrDefault(c => c.ApplicationId == application.ApplicationId)!.Selected = true;    
+                }
+            }
 
             return new ShareMultipleApplicationReviewsViewModel
             {
                 VacancyId = vacancy.Id,
                 Ukprn = rm.Ukprn,
                 VacancyReference = vacancy.VacancyReference.Value,
-                VacancyApplications = applicationReviews.Where(fil => fil.IsNotWithdrawn).ToList()
+                VacancyApplications = vacancyApplications
             };
         }
 
         public async Task<ShareMultipleApplicationReviewsConfirmationViewModel> GetApplicationReviewsToShareConfirmationViewModel(ShareApplicationReviewsRequest request)
         {
-            var applicationReviewsToShare = await _vacancyClient.GetVacancyApplicationsForSelectedIdsAsync(request.ApplicationsToShare);
+            //var applicationReviewsToShares = await _vacancyClient.GetVacancyApplicationsForSelectedIdsAsync(request.ApplicationsToShare);
 
+            var applicationReviewsToShare =
+                await _vacancyClient.GetVacancyApplicationsForReferenceAndStatus(request.VacancyId!.Value!,
+                    ApplicationReviewStatus.PendingShared);
+            
             return new ShareMultipleApplicationReviewsConfirmationViewModel
             {
                 VacancyId = request.VacancyId,
@@ -81,14 +109,20 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             };
         }
 
-        public async Task PostApplicationReviewsToSharedAsync(ShareApplicationReviewsPostRequest request, VacancyUser user)
+        public async Task PostApplicationReviewsStatus(ApplicationReviewsToUpdateStatusModel request, VacancyUser user, ApplicationReviewStatus? applicationReviewStatus, ApplicationReviewStatus? applicationReviewTemporaryStatus)
         {
-            await _vacancyClient.SetApplicationReviewsShared(request.ApplicationReviewsToShare, user);
+            var vacancy = await _vacancyClient.GetVacancyAsync(request.VacancyId);
+            await _vacancyClient.SetApplicationReviewsStatus(vacancy!.VacancyReference!.Value, request.ApplicationReviewIds, user, applicationReviewStatus, request.VacancyId,applicationReviewTemporaryStatus);
+        }
+
+        public async Task PostApplicationReviewPendingUnsuccessfulFeedback(ApplicationReviewStatusModel request, VacancyUser user, ApplicationReviewStatus applicationReviewStatus)
+        {
+            await _vacancyClient.SetApplicationReviewsPendingUnsuccessfulFeedback(user, applicationReviewStatus, request.VacancyId, request.CandidateFeedback);
         }
 
         public async Task PostApplicationReviewsToUnsuccessfulAsync(ApplicationReviewsToUnsuccessfulConfirmationViewModel request, VacancyUser user)
         {
-            await _vacancyClient.SetApplicationReviewsToUnsuccessful(request.ApplicationsToUnsuccessful, request.CandidateFeedback, user);
+            await _vacancyClient.SetApplicationReviewsToUnsuccessful(request.ApplicationsToUnsuccessful.Select(c=>c.ApplicationReviewId), request.CandidateFeedback, user, request.VacancyId!.Value!);
         }
     }
 }

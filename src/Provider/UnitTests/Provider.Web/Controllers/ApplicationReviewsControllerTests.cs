@@ -194,14 +194,13 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
             // Act
             var actionResult =await _controller.ApplicationReviewsToUnsuccessful(request, "Name", "Ascending");
 
-            var redirectResult = actionResult as RedirectToActionResult;
+            var redirectResult = actionResult as RedirectToRouteResult;
             // Assert
             Assert.That(actionResult, Is.Not.Null);
             Assert.That(redirectResult, Is.Not.Null);
-            Assert.That("ApplicationReviewsToUnsuccessfulFeedback", Is.EqualTo(redirectResult.ActionName));
+            Assert.That(RouteNames.ApplicationReviewsToUnsuccessfulFeedback_Get, Is.EqualTo(redirectResult.RouteName));
             Assert.That(_vacancyId, Is.EqualTo(redirectResult.RouteValues["VacancyId"]));
             Assert.That(_ukprn, Is.EqualTo(redirectResult.RouteValues["Ukprn"]));
-            Assert.That(applicationReviewIds, Is.EqualTo(redirectResult.RouteValues["ApplicationsToUnsuccessful"]));
         }
 
         [Test]
@@ -217,7 +216,6 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
             Assert.That(model, Is.Not.Null);
             Assert.That(routeModel.Ukprn, Is.EqualTo(model.Ukprn));
             Assert.That(routeModel.VacancyId, Is.EqualTo(model.VacancyId));
-            Assert.That(model.ApplicationsToUnsuccessful, Is.Not.Null);
         }
 
         [Test]
@@ -252,7 +250,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
         }
 
         [Test]
-        public void POST_ApplicationReviewsToUnsuccessfulFeedback_RedirectToConfirmation()
+        public async Task POST_ApplicationReviewsToUnsuccessfulFeedback_RedirectToConfirmation()
         {
             var request = _fixture
                 .Build<ApplicationReviewsToUnsuccessfulFeedbackViewModel>()
@@ -261,12 +259,12 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
                 .With(x => x.Ukprn, _ukprn)
                 .Create();
 
-            var result = _controller.ApplicationReviewsToUnsuccessfulFeedback(request) as RedirectToActionResult;
+            var result = await _controller.ApplicationReviewsToUnsuccessfulFeedback(request) as RedirectToRouteResult;
 
             Assert.That(result, Is.Not.Null);
-            Assert.That("ApplicationReviewsToUnsuccessfulConfirmation", Is.EqualTo(result.ActionName));
-            Assert.That(_ukprn, Is.EqualTo(result.RouteValues["Ukprn"]));
-            Assert.That(_vacancyId, Is.EqualTo(result.RouteValues["VacancyId"]));
+            Assert.That(RouteNames.ApplicationReviewsToUnsuccessfulConfirmation_Get, Is.EqualTo(result.RouteName));
+            Assert.That(_ukprn, Is.EqualTo(result!.RouteValues!["Ukprn"]));
+            Assert.That(_vacancyId, Is.EqualTo(result!.RouteValues!["VacancyId"]));
         }
 
         [Test]
@@ -440,7 +438,6 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
         public async Task POST_ApplicationReviewsToShare_RedirectsToAction()
         {
             // Arrange
-            var listOfApplicationReviews = new List<Guid>();
             var request = _fixture
              .Build<ApplicationReviewsToShareRouteModel>()
              .With(x => x.VacancyId, _vacancyId)
@@ -449,12 +446,12 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
 
             // Act
             var actionResult = await _controller.ApplicationReviewsToShare(request, "Name", "Ascending");
-            var redirectResult = actionResult as RedirectToActionResult;
+            var redirectResult = actionResult as RedirectToRouteResult;
 
             // Assert
             Assert.That(actionResult, Is.Not.Null);
             Assert.That(redirectResult, Is.Not.Null);
-            Assert.That("ApplicationReviewsToShareConfirmation", Is.EqualTo(redirectResult.ActionName));
+            Assert.That(RouteNames.ApplicationReviewsToShareConfirmation_Get, Is.EqualTo(redirectResult.RouteName));
             Assert.That(_vacancyId, Is.EqualTo(redirectResult.RouteValues["VacancyId"]));
             Assert.That(_ukprn, Is.EqualTo(redirectResult.RouteValues["Ukprn"]));
         }
@@ -508,10 +505,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
                 .With(x => x.ShareApplicationsConfirmed, shareApplicationsConfirmed)
                 .Create();
 
-            _orchestrator.Setup(o =>
-                    o.PostApplicationReviewsToSharedAsync(It.Is<ShareApplicationReviewsPostRequest>(y => y == request), It.IsAny<VacancyUser>()))
-                .Returns(Task.CompletedTask);
-
+           
             // Act
             var actionResult = await _controller.ApplicationReviewsToShareConfirmation(request);
             var redirectResult = actionResult as RedirectToRouteResult;
@@ -525,6 +519,9 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
             Assert.That(_controller.TempData.ContainsKey(TempDataKeys.SharedMultipleApplicationsHeader), Is.True);
             Assert.That(_controller.TempData.ContainsKey(TempDataKeys.SharedSingleApplicationsHeader), Is.False);
             Assert.That(InfoMessages.SharedMultipleApplicationsBannerHeader, Is.EqualTo(_controller.TempData[TempDataKeys.SharedMultipleApplicationsHeader]));
+            _orchestrator.Verify(o =>
+                o.PostApplicationReviewsStatus(It.Is<ApplicationReviewsToUpdateStatusModel>(y => y.VacancyId == request.VacancyId), It.IsAny<VacancyUser>(), ApplicationReviewStatus.Shared, null));
+
         }
 
         [Test]
@@ -543,9 +540,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
                 .With(x => x.ShareApplicationsConfirmed, shareApplicationsConfirmed)
                 .Create();
 
-            _orchestrator.Setup(o =>
-                    o.PostApplicationReviewsToSharedAsync(It.Is<ShareApplicationReviewsPostRequest>(y => y == request), It.IsAny<VacancyUser>()))
-                .Returns(Task.CompletedTask);
+            
 
             // Act
             var actionResult = await _controller.ApplicationReviewsToShareConfirmation(request);
@@ -560,6 +555,8 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
             Assert.That(_controller.TempData.ContainsKey(TempDataKeys.SharedSingleApplicationsHeader), Is.True);
             Assert.That(_controller.TempData.ContainsKey(TempDataKeys.SharedMultipleApplicationsHeader), Is.False);
             Assert.That(string.Format(InfoMessages.SharedSingleApplicationsBannerHeader, vacancyApplication1.CandidateName), Is.EqualTo(_controller.TempData[TempDataKeys.SharedSingleApplicationsHeader]));
+            _orchestrator.Verify(o =>
+                o.PostApplicationReviewsStatus(It.Is<ApplicationReviewsToUpdateStatusModel>(y => y.VacancyId == request.VacancyId), It.IsAny<VacancyUser>(), ApplicationReviewStatus.Shared, null));
         }
 
         [Test]
