@@ -61,6 +61,12 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
                 .Select(x => vacancy.GeocodeUsingOutcode ? x.PostcodeAsOutcode() : x.Postcode)
                 .Distinct()
                 .ToList();
+
+            if (postcodes.Count is 0)
+            {
+                logger.LogWarning("Geocode vacancyId:{vacancyId} - no locations to geocode", vacancy.Id);
+                return;
+            }
             
             logger.LogInformation("Geocode vacancyId:{vacancyId} - attempting to lookup geocode data for the following postcodes: {Postcodes}", vacancy.Id, string.Join(", ", postcodes));
             
@@ -105,8 +111,10 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
                 
                 location.Latitude = geocode.Latitude;
                 location.Longitude = geocode.Longitude;
+                
             });
             
+            vacancy.GeoCodeMethod = GeoCodeMethod.OuterApi;
             await repository.UpdateAsync(vacancy);
         }
 
