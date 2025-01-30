@@ -38,7 +38,10 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             var vacancyApplications = applicationReviews.Where(fil => fil.IsNotWithdrawn).ToList();
             foreach (var application in applicationsSelected)
             {
-                vacancyApplications.FirstOrDefault(c => c.ApplicationId == application.ApplicationId)!.Selected = true;
+                if (vacancyApplications.FirstOrDefault(c => c.ApplicationId == application.ApplicationId) != null)
+                {
+                    vacancyApplications.FirstOrDefault(c => c.ApplicationId == application.ApplicationId)!.Selected = true;    
+                }
             }
 
             return new ApplicationReviewsToUnsuccessfulViewModel
