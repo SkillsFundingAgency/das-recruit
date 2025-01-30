@@ -95,8 +95,6 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
 
         public async Task<ShareMultipleApplicationReviewsConfirmationViewModel> GetApplicationReviewsToShareConfirmationViewModel(ShareApplicationReviewsRequest request)
         {
-            //var applicationReviewsToShares = await _vacancyClient.GetVacancyApplicationsForSelectedIdsAsync(request.ApplicationsToShare);
-
             var applicationReviewsToShare =
                 await _vacancyClient.GetVacancyApplicationsForReferenceAndStatus(request.VacancyId!.Value!,
                     ApplicationReviewStatus.PendingShared);
