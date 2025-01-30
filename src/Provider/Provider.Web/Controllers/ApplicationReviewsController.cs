@@ -101,7 +101,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
                 User.ToVacancyUser(), 
                 ApplicationReviewStatus.PendingToMakeUnsuccessful
             );
-            //TODO review the setting of request.IsMultipleApplications
+            
             return RedirectToRoute(RouteNames.ApplicationReviewsToUnsuccessfulConfirmation_Get, new { request.IsMultipleApplications, request.Ukprn, request.VacancyId });
         }
 
