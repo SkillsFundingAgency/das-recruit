@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Esfa.Recruit.Provider.Web.Configuration.Routing;
 using Esfa.Recruit.Shared.Web.ViewModels;
 using Esfa.Recruit.Shared.Web.ViewModels.Skills;
 
@@ -35,5 +36,15 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.Part2.Skills
         
         public List<SkillViewModel> Column1Checkboxes { get; set; }
         public List<SkillViewModel> Column2Checkboxes { get; set; }
+
+        public string PageBackLink
+        {
+            get
+            {
+                return IsTaskListCompleted
+                    ? RouteNames.ProviderCheckYourAnswersGet
+                    : RouteNames.ProviderTaskListGet;
+            }
+        }
     }
 }

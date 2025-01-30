@@ -93,7 +93,8 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
                 Ukprn = vm.Ukprn,
                 CompanyBenefitsInformation = vm.CompanyBenefitsInformation,
                 Title = vm.Title,
-                Review = vm.Review
+                Review = vm.Review,
+                RouteToCheckYourAnswersPage = vm.RouteToCheckYourAnswersPage
             };
 
             return wageExtraInformationViewModel;
@@ -101,8 +102,6 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
 
         public async Task<CompetitiveWageViewModel> GetCompetitiveWageViewModelAsync(VacancyRouteModel vrm)
         {
-            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.SetCompetitivePayRate_Get);
-
             var vm = await GetWageViewModelAsync(vrm);
 
             var competitiveWageViewModel = new CompetitiveWageViewModel
@@ -189,7 +188,8 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
                 PageInfo = _utility.GetPartOnePageInfo(vacancy),
                 Ukprn = vrm.Ukprn,
                 VacancyId = vrm.VacancyId,
-                CompanyBenefitsInformation = vacancy.Wage?.CompanyBenefitsInformation
+                CompanyBenefitsInformation = vacancy.Wage?.CompanyBenefitsInformation,
+                RouteToCheckYourAnswersPage = _utility.IsTaskListCompleted(vacancy)
             };
 
             if (vacancy.Status == VacancyStatus.Referred)

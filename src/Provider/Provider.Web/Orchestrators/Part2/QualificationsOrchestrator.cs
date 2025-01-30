@@ -257,6 +257,8 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part2
                 vm.Qualifications.Add(q);
             }
 
+            vm.BackRoute = _utility.IsTaskListCompleted(vacancy) ? RouteNames.ProviderCheckYourAnswersGet : backRoute;
+
             return vm;
         }
 

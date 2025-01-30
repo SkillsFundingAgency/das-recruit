@@ -10,15 +10,22 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.Part1.Wage
         {
             get
             {
-                var routeMappings = new Dictionary<WageType, string>
+                if(RouteToCheckYourAnswersPage)
                 {
-                    { Recruit.Vacancies.Client.Domain.Entities.WageType.FixedWage, RouteNames.CustomWage_Get },
-                    { Recruit.Vacancies.Client.Domain.Entities.WageType.CompetitiveSalary, RouteNames.SetCompetitivePayRate_Get },
-                    { Recruit.Vacancies.Client.Domain.Entities.WageType.NationalMinimumWage, RouteNames.Wage_Get },
-                    { Recruit.Vacancies.Client.Domain.Entities.WageType.NationalMinimumWageForApprentices, RouteNames.Wage_Get },
-                };
+                    return PageBackLink;
+                }
+                else
+                {
+                    var routeMappings = new Dictionary<WageType, string>
+                    {
+                        { Recruit.Vacancies.Client.Domain.Entities.WageType.FixedWage, RouteNames.CustomWage_Get },
+                        { Recruit.Vacancies.Client.Domain.Entities.WageType.CompetitiveSalary, RouteNames.SetCompetitivePayRate_Get },
+                        { Recruit.Vacancies.Client.Domain.Entities.WageType.NationalMinimumWage, RouteNames.Wage_Get },
+                        { Recruit.Vacancies.Client.Domain.Entities.WageType.NationalMinimumWageForApprentices, RouteNames.Wage_Get },
+                    };
 
-                return routeMappings.TryGetValue(WageType ?? Recruit.Vacancies.Client.Domain.Entities.WageType.NationalMinimumWage, out var routeName) ? routeName : RouteNames.ProviderCheckYourAnswersGet;
+                    return routeMappings.TryGetValue(WageType ?? Recruit.Vacancies.Client.Domain.Entities.WageType.NationalMinimumWage, out var routeName) ? routeName : RouteNames.ProviderCheckYourAnswersGet;
+                }
             }
         }
 

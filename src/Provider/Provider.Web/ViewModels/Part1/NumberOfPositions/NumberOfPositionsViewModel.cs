@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Esfa.Recruit.Provider.Web.Configuration.Routing;
 using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Shared.Web.ViewModels;
 
@@ -14,5 +15,17 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.Part1.NumberOfPositions
         {
             nameof(NumberOfPositions)
         };
+
+        public string PageBackLink
+        {
+            get
+            {
+                return RouteToCheckYourAnswersPage
+                    ? RouteNames.ProviderCheckYourAnswersGet
+                    : RouteNames.Wage_Get;
+            }
+        }
+
+        public bool RouteToCheckYourAnswersPage { get; set; }
     }
 }

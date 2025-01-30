@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Esfa.Recruit.Provider.Web.Configuration.Routing;
 using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Shared.Web.ViewModels;
 using Esfa.Recruit.Shared.Web.ViewModels.Validations;
@@ -36,5 +37,17 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.Part1.Duration
         public PartOnePageInfoViewModel PageInfo { get; set; }
 
         public bool ShowTraining => string.IsNullOrWhiteSpace(TrainingTitle) == false && TrainingDurationMonths > 0;
+
+        public string PageBackLink
+        {
+            get
+            {
+                return RouteToCheckYourAnswersPage
+                    ? RouteNames.ProviderCheckYourAnswersGet
+                    : string.Empty;
+            }
+        }
+
+        public bool RouteToCheckYourAnswersPage { get; set; }
     }
 }
