@@ -120,7 +120,6 @@ namespace Esfa.Recruit.Provider.Web.Controllers
                 return View(request);
             }
 
-            //TODO FAI-2258 this needs updating - current should work with other changes
             if (request.ApplicationsToUnsuccessfulConfirmed == true)
             {
                 await _orchestrator.PostApplicationReviewsToUnsuccessfulAsync(request, User.ToVacancyUser());

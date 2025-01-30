@@ -69,7 +69,6 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 
         public async Task<ApplicationReviewsToUnsuccessfulConfirmationViewModel> GetApplicationReviewsToUnsuccessfulConfirmationViewModelAsync(ApplicationReviewsToUnsuccessfulRouteModel rm)
         {
-            //TODO FAI-2258 dont use this.
             var applicationsToUnsuccessful =
                 await _vacancyClient.GetVacancyApplicationsForReferenceAndStatus(rm.VacancyId,
                     ApplicationReviewStatus.PendingToMakeUnsuccessful);
@@ -95,7 +94,6 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
         
         public async Task PostApplicationReviewsToUnsuccessfulAsync(ApplicationReviewsToUnsuccessfulConfirmationViewModel request, VacancyUser user)
         {
-            //TODO FAI-2258 dont use this.
             await _vacancyClient.SetApplicationReviewsToUnsuccessful(request.VacancyApplicationsToUnsuccessful.Select(c=>c.ApplicationReviewId), request.CandidateFeedback, user, request.VacancyId);
         }
     }
