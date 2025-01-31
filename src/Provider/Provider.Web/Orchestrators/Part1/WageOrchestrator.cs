@@ -94,7 +94,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
                 CompanyBenefitsInformation = vm.CompanyBenefitsInformation,
                 Title = vm.Title,
                 Review = vm.Review,
-                RouteToCheckYourAnswersPage = vm.RouteToCheckYourAnswersPage
+                IsTaskListCompleted = vm.IsTaskListCompleted
             };
 
             return wageExtraInformationViewModel;
@@ -189,7 +189,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
                 Ukprn = vrm.Ukprn,
                 VacancyId = vrm.VacancyId,
                 CompanyBenefitsInformation = vacancy.Wage?.CompanyBenefitsInformation,
-                RouteToCheckYourAnswersPage = _utility.IsTaskListCompleted(vacancy)
+                IsTaskListCompleted = _utility.IsTaskListCompleted(vacancy)
             };
 
             if (vacancy.Status == VacancyStatus.Referred)

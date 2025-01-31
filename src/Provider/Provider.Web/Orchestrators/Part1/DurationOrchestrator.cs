@@ -48,7 +48,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
                 TrainingDurationMonths = training?.Duration ?? 0,
                 Ukprn = vrm.Ukprn,
                 VacancyId = vrm.VacancyId,
-                RouteToCheckYourAnswersPage = _utility.IsTaskListCompleted(vacancy)
+                IsTaskListCompleted = _utility.IsTaskListCompleted(vacancy)
             };
 
             if (vacancy.Status == VacancyStatus.Referred)

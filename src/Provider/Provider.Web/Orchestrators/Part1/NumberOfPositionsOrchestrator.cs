@@ -40,7 +40,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
                 NumberOfPositions = vacancy.NumberOfPositions?.ToString(),
                 PageInfo = _utility.GetPartOnePageInfo(vacancy),
                 Ukprn = vacancy.TrainingProvider.Ukprn.GetValueOrDefault(),
-                RouteToCheckYourAnswersPage = _utility.IsTaskListCompleted(vacancy)
+                IsTaskListCompleted = _utility.IsTaskListCompleted(vacancy)
             };
 
             if (vacancy.Status == VacancyStatus.Referred)

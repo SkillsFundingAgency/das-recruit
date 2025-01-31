@@ -44,12 +44,12 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.Part1.Wage
         {
             get
             {
-                return RouteToCheckYourAnswersPage
+                return IsTaskListCompleted
                     ? RouteNames.ProviderCheckYourAnswersGet
                     : @RouteNames.Duration_Get;
             }
         }
 
-        public bool RouteToCheckYourAnswersPage { get; set; }
+        public bool IsTaskListCompleted { get; set; }
     }
 }

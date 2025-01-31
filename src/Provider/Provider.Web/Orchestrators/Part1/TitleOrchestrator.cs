@@ -61,7 +61,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
                 PageInfo = _utility.GetPartOnePageInfo(vacancy),
                 Ukprn = ukprn,
                 EmployerAccountId = vacancy.EmployerAccountId,
-                RouteToCheckYourAnswersPage = _utility.IsTaskListCompleted(vacancy)
+                IsTaskListCompleted = _utility.IsTaskListCompleted(vacancy)
             };
 
             if (vacancy.Status == VacancyStatus.Referred)

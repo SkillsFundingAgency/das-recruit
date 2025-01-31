@@ -42,12 +42,12 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.Part1.Duration
         {
             get
             {
-                return RouteToCheckYourAnswersPage
+                return IsTaskListCompleted
                     ? RouteNames.ProviderCheckYourAnswersGet
                     : string.Empty;
             }
         }
 
-        public bool RouteToCheckYourAnswersPage { get; set; }
+        public bool IsTaskListCompleted { get; set; }
     }
 }

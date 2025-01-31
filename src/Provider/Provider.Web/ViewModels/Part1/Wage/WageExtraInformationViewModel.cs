@@ -10,7 +10,7 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.Part1.Wage
         {
             get
             {
-                if(RouteToCheckYourAnswersPage)
+                if(IsTaskListCompleted)
                 {
                     return PageBackLink;
                 }

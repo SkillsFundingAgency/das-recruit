@@ -74,12 +74,12 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.Part1.Dates
         {
             get
             {
-                return RouteToCheckYourAnswersPage
+                return IsTaskListCompleted
                     ? RouteNames.ProviderCheckYourAnswersGet
                     : RouteNames.ProviderTaskListGet;
             }
         }
 
-        public bool RouteToCheckYourAnswersPage { get; set; }
+        public bool IsTaskListCompleted { get; set; }
     }
 }

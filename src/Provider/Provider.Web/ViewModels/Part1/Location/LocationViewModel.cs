@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Esfa.Recruit.Provider.Web.Configuration.Routing;
 using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Shared.Web.ViewModels;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
@@ -39,5 +40,16 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.Part1.Location
             AddressLine4 = location.AddressLine4;
             Postcode = location.Postcode;
         }
+
+        public string PageBackLink
+        {
+            get
+            {
+                return IsTaskListCompleted
+                    ? RouteNames.ProviderTaskListGet
+                    : RouteNames.NumberOfPositions_Get;
+            }
+        }
+        public bool IsTaskListCompleted { get; set; }
     }
 }
