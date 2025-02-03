@@ -4,11 +4,11 @@ using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Extensions;
 using Esfa.Recruit.Employer.Web.Models.AddLocation;
+using Esfa.Recruit.Employer.Web.Services;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.AddLocation;
 using Esfa.Recruit.Shared.Web.Domain;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Mvc;
@@ -32,7 +32,7 @@ public class EnterLocationManuallyController(IUtility utility) : Controller
     [FeatureGate(FeatureNames.MultipleLocations)]
     [HttpPost("enter-location", Name = RouteNames.EnterAddressManually_Post)]
     public async Task<IActionResult> EnterLocationManually(
-        [FromServices] IRecruitVacancyClient recruitVacancyClient,
+        [FromServices] IVacancyLocationService vacancyLocationService,
         [FromServices] IValidator<EnterLocationManuallyEditModel> validator,
         EnterLocationManuallyEditModel model,
         CancellationToken cancellationToken = default)
@@ -48,20 +48,13 @@ public class EnterLocationManuallyController(IUtility utility) : Controller
         
         var newAddress = model.ToDomain();
         var vacancy = await utility.GetAuthorisedVacancyForEditAsync(model, RouteNames.SelectAnAddress_Post);
-        await SaveEmployerAddress(recruitVacancyClient, vacancy, newAddress);
+        await vacancyLocationService.SaveEmployerAddress(User.ToVacancyUser(), vacancy, newAddress);
         
         TempData[TempDataKeys.AddedLocation] = newAddress.ToAddressString();
         TempData.Remove(TempDataKeys.Postcode);
         return model.Origin == MultipleLocationsJourneyOrigin.One
             ? RedirectToRoute(RouteNames.AddOneLocation_Get, new { model.VacancyId, model.EmployerAccountId, model.Wizard })
             : RedirectToRoute(RouteNames.AddMoreThanOneLocation_Get, new { model.VacancyId, model.EmployerAccountId, model.Wizard });
-    }
-
-    private async Task SaveEmployerAddress(IRecruitVacancyClient recruitVacancyClient, Vacancy vacancy, Address address)
-    {
-        var employerProfile = await recruitVacancyClient.GetEmployerProfileAsync(vacancy.EmployerAccountId, vacancy.AccountLegalEntityPublicHashedId);
-        employerProfile.OtherLocations.Add(address);
-        await recruitVacancyClient.UpdateEmployerProfileAsync(employerProfile, User.ToVacancyUser());
     }
 
     private static async Task<EnterLocationManuallyViewModel> GetEnterLocationManuallyViewModel(IUtility utility, AddLocationJourneyModel model, string routeName, Address address, string returnRoute)

@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using AutoFixture.NUnit3;
 using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
@@ -77,7 +76,6 @@ public class SelectLocationControllerTests
         [Frozen] Vacancy vacancy,
         IVacancyLocationService vacancyLocationService,
         IGetAddressesClient getAddressesClient,
-        IRecruitVacancyClient recruitVacancyClient,
         [Greedy] SelectLocationController sut)
     {
         // arrange
@@ -91,7 +89,7 @@ public class SelectLocationControllerTests
         };
         
         // act
-        var result = await sut.SelectLocation(vacancyLocationService, recruitVacancyClient, getAddressesClient, model) as RedirectToRouteResult;
+        var result = await sut.SelectLocation(vacancyLocationService, getAddressesClient, model) as RedirectToRouteResult;
         
         // assert
         result.Should().NotBeNull();
@@ -103,7 +101,7 @@ public class SelectLocationControllerTests
         [Frozen] Vacancy vacancy,
         IVacancyLocationService vacancyLocationService,
         Mock<IGetAddressesClient> getAddressesClient,
-        IRecruitVacancyClient recruitVacancyClient,
+        
         [Greedy] SelectLocationController sut)
     {
         // arrange
@@ -119,7 +117,7 @@ public class SelectLocationControllerTests
         getAddressesClient.Setup(x => x.GetAddresses(It.IsAny<string>())).ReturnsAsync((GetAddressesListResponse)null);
         
         // act
-        var result = (await sut.SelectLocation(vacancyLocationService, recruitVacancyClient, getAddressesClient.Object, model) as ViewResult)?.Model as SelectLocationViewModel;
+        var result = (await sut.SelectLocation(vacancyLocationService, getAddressesClient.Object, model) as ViewResult)?.Model as SelectLocationViewModel;
         
         // assert
         result.Should().NotBeNull();
@@ -134,9 +132,8 @@ public class SelectLocationControllerTests
     public async Task When_Posting_SelectLocation_View_With_Valid_Selected_Address_Redirects_To_AddManyLocations_Route(
         [Frozen] GetAddressesListResponse getAddressesListResponse,
         [Frozen] Vacancy vacancy,
-        IVacancyLocationService vacancyLocationService,
+        Mock<IVacancyLocationService> vacancyLocationService,
         Mock<IGetAddressesClient> getAddressesClient,
-        Mock<IRecruitVacancyClient> recruitVacancyClient,
         [Greedy] SelectLocationController sut)
     {
         // arrange
@@ -152,14 +149,14 @@ public class SelectLocationControllerTests
         };
         
         // act
-        var result = (await sut.SelectLocation(vacancyLocationService, recruitVacancyClient.Object, getAddressesClient.Object, model) as RedirectToRouteResult);
+        var result = (await sut.SelectLocation(vacancyLocationService.Object, getAddressesClient.Object, model) as RedirectToRouteResult);
         
         // assert
         result.Should().NotBeNull();
         result!.RouteName.Should().Be(RouteNames.AddMoreThanOneLocation_Get);
         sut.TempData.Keys.Should().NotContain(TempDataKeys.Postcode);
         (sut.TempData[TempDataKeys.AddedLocation] as string).Should().StartWith(model.SelectedLocation);
-        recruitVacancyClient.Verify(x => x.UpdateEmployerProfileAsync(It.IsAny<EmployerProfile>(), It.IsAny<VacancyUser>()), Times.Once);
+        vacancyLocationService.Verify(x => x.SaveEmployerAddress(It.IsAny<VacancyUser>(), vacancy, It.IsAny<Address>()), Times.Once);
     }
     
     [Test, MoqAutoData]
@@ -168,11 +165,14 @@ public class SelectLocationControllerTests
         [Frozen] Vacancy vacancy,
         Mock<IVacancyLocationService> vacancyLocationService,
         Mock<IGetAddressesClient> getAddressesClient,
-        Mock<IRecruitVacancyClient> recruitVacancyClient,
         [Greedy] SelectLocationController sut)
     {
         // arrange
-        sut.AddControllerContext().WithTempData();
+        Guid userId = Guid.NewGuid();
+        sut
+            .AddControllerContext()
+            .WithTempData()
+            .WithUser(userId);
         sut.TempData.Add(TempDataKeys.Postcode, Postcode);
         var firstAddress = getAddressesListResponse.Addresses.First();
         var model = new SelectLocationEditModel
@@ -187,13 +187,18 @@ public class SelectLocationControllerTests
         getAddressesClient.Setup(x => x.GetAddresses(firstAddress.Postcode)).ReturnsAsync(new GetAddressesListResponse { Addresses = [firstAddress] });
         
         // act
-        var result = (await sut.SelectLocation(vacancyLocationService.Object, recruitVacancyClient.Object, getAddressesClient.Object, model) as RedirectToRouteResult);
+        var result = (await sut.SelectLocation(vacancyLocationService.Object, getAddressesClient.Object, model) as RedirectToRouteResult);
         
         // assert
         result.Should().NotBeNull();
         result!.RouteName.Should().Be(RouteNames.AddMoreThanOneLocation_Get);
         sut.TempData.Keys.Should().NotContain(TempDataKeys.Postcode);
         (sut.TempData[TempDataKeys.AddedLocation] as string).Should().StartWith(model.SelectedLocation);
-        recruitVacancyClient.Verify(x => x.UpdateEmployerProfileAsync(It.IsAny<EmployerProfile>(), It.IsAny<VacancyUser>()), Times.Never);
+        vacancyLocationService.Verify(x => x.SaveEmployerAddress(
+                It.Is<VacancyUser>(user => user.UserId == userId.ToString()),
+                vacancy,
+                It.Is<Address>(address => address.Postcode == firstAddress.Postcode)),
+            Times.Once
+        );
     }
 }

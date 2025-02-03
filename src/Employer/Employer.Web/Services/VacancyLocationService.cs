@@ -14,6 +14,7 @@ public interface IVacancyLocationService
 {
     public Task<List<Address>> GetVacancyLocations(Vacancy vacancy);
     public Task<UpdateVacancyLocationsResult> UpdateDraftVacancyLocations(Vacancy vacancy, VacancyUser user, AvailableWhere availableWhere, List<Address> locations = null, string locationInformation = null);
+    public Task SaveEmployerAddress(VacancyUser user, Vacancy vacancy, Address address);
 }
 
 public record UpdateVacancyLocationsResult(EntityValidationResult ValidationResult);
@@ -58,5 +59,20 @@ public class VacancyLocationService(IRecruitVacancyClient recruitVacancyClient, 
 
         await recruitVacancyClient.UpdateDraftVacancyAsync(vacancy, user);
         return new UpdateVacancyLocationsResult(null);
+    }
+
+    public async Task SaveEmployerAddress(VacancyUser user, Vacancy vacancy, Address address)
+    {
+        var existingLocations = await GetVacancyLocations(vacancy);
+        string newAddressString = address.ToSingleLineFullAddress();
+        if (existingLocations.Any(x => x.ToSingleLineFullAddress().Equals(newAddressString, StringComparison.InvariantCultureIgnoreCase)))
+        {
+            // Don't add existing addresses
+            return;
+        }
+        
+        var employerProfile = await recruitVacancyClient.GetEmployerProfileAsync(vacancy.EmployerAccountId, vacancy.AccountLegalEntityPublicHashedId);
+        employerProfile.OtherLocations.Add(address);
+        await recruitVacancyClient.UpdateEmployerProfileAsync(employerProfile, user);
     }
 }
