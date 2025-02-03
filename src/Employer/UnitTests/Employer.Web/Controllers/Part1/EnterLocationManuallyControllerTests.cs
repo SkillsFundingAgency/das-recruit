@@ -4,10 +4,10 @@ using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Controllers.Part1;
 using Esfa.Recruit.Employer.Web.Models.AddLocation;
+using Esfa.Recruit.Employer.Web.Services;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.AddLocation;
 using Esfa.Recruit.Shared.Web.Domain;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
@@ -48,8 +48,8 @@ public class EnterLocationManuallyControllerTests
     
     [Test, MoqAutoData]
     public async Task When_Posting_Invalid_Data_View_Is_Returned(
-        [Frozen] IRecruitVacancyClient recruitVacancyClient,
-        [Frozen] Mock<IValidator<EnterLocationManuallyEditModel>> validator,
+        IVacancyLocationService vacancyLocationService,
+        Mock<IValidator<EnterLocationManuallyEditModel>> validator,
         [Frozen] Vacancy vacancy,
         [Greedy] EnterLocationManuallyController sut)
     {
@@ -73,7 +73,7 @@ public class EnterLocationManuallyControllerTests
             .ReturnsAsync(validationResult);
         
         // act
-        var result = (await sut.EnterLocationManually(recruitVacancyClient, validator.Object, model) as ViewResult)?.Model as EnterLocationManuallyViewModel;
+        var result = (await sut.EnterLocationManually(vacancyLocationService, validator.Object, model) as ViewResult)?.Model as EnterLocationManuallyViewModel;
         
         // assert
         result.Should().NotBeNull().And.BeEquivalentTo(model);
@@ -84,8 +84,8 @@ public class EnterLocationManuallyControllerTests
     
     [Test, MoqAutoData]
     public async Task When_Posting_Valid_Data_Redirects_To_AddManyLocations_Route(
-        [Frozen] Mock<IRecruitVacancyClient> recruitVacancyClient,
-        [Frozen] Mock<IValidator<EnterLocationManuallyEditModel>> validator,
+        IVacancyLocationService vacancyLocationService,
+        Mock<IValidator<EnterLocationManuallyEditModel>> validator,
         [Frozen] Vacancy vacancy,
         [Greedy] EnterLocationManuallyController sut)
     {
@@ -109,11 +109,10 @@ public class EnterLocationManuallyControllerTests
             .ReturnsAsync(validationResult);
         
         // act
-        var result = await sut.EnterLocationManually(recruitVacancyClient.Object, validator.Object, model) as RedirectToRouteResult;
+        var result = await sut.EnterLocationManually(vacancyLocationService, validator.Object, model) as RedirectToRouteResult;
         
         // assert
         result.Should().NotBeNull();
         result!.RouteName.Should().Be(RouteNames.AddMoreThanOneLocation_Get);
-        recruitVacancyClient.Verify(x => x.UpdateEmployerProfileAsync(It.IsAny<EmployerProfile>(), It.IsAny<VacancyUser>()), Times.Once);
     }
 }

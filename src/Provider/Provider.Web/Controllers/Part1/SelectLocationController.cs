@@ -37,7 +37,6 @@ public class SelectLocationController(IUtility utility) : Controller
     [HttpPost("select-location", Name = RouteNames.SelectAnAddress_Post)]
     public async Task<IActionResult> SelectLocation(
         [FromServices] IVacancyLocationService vacancyLocationService,
-        [FromServices] IRecruitVacancyClient recruitVacancyClient, 
         [FromServices] IGetAddressesClient getAddressesClient, 
         SelectLocationEditModel model)
     {
@@ -55,7 +54,7 @@ public class SelectLocationController(IUtility utility) : Controller
         }
         
         var vacancy = await utility.GetAuthorisedVacancyForEditAsync(model, RouteNames.SelectAnAddress_Post);
-        await SaveEmployerAddress(vacancyLocationService, recruitVacancyClient, model.Ukprn, vacancy, addressToAdd);
+        await vacancyLocationService.SaveEmployerAddress(User.ToVacancyUser(), vacancy, model.Ukprn, addressToAdd);
         
         TempData[TempDataKeys.AddedLocation] = addressToAdd.ToAddressString();
         TempData.Remove(TempDataKeys.Postcode);
@@ -69,21 +68,6 @@ public class SelectLocationController(IUtility utility) : Controller
         var response = await getAddressesClient.GetAddresses(postcode);
         var addressItem = response?.Addresses.FirstOrDefault(x => x.ToShortAddress() == selectedLocation);
         return addressItem?.ToDomain();
-    }
-
-    private async Task SaveEmployerAddress(IVacancyLocationService vacancyLocationService, IRecruitVacancyClient recruitVacancyClient, long ukprn, Vacancy vacancy, Address address)
-    {
-        var existingLocations = await vacancyLocationService.GetVacancyLocations(vacancy, ukprn);
-        string newAddressString = address.ToSingleLineFullAddress();
-        if (existingLocations.Any(x => x.ToSingleLineFullAddress().Equals(newAddressString, StringComparison.InvariantCultureIgnoreCase)))
-        {
-            // Don't add existing addresses
-            return;
-        }
-        
-        var employerProfile = await recruitVacancyClient.GetEmployerProfileAsync(vacancy.EmployerAccountId, vacancy.AccountLegalEntityPublicHashedId);
-        employerProfile.OtherLocations.Add(address);
-        await recruitVacancyClient.UpdateEmployerProfileAsync(employerProfile, User.ToVacancyUser());
     }
 
     private static async Task<SelectLocationViewModel> GetSelectLocationViewModel(IGetAddressesClient getAddressesClient, IUtility utility, AddLocationJourneyModel model, string postcode, string routeName)
