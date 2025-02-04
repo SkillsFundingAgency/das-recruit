@@ -24,9 +24,9 @@ public class VacancyExtensionsTests
     [Test]
     public void ToVacancyProjectionBase_ShouldMapLiveVacancy()
     {
-            
         var v = new Fixture().Create<Vacancy>();
         v.EmployerNameOption = EmployerNameOption.TradingName;
+        v.EmployerLocations = null;
 
         var mockTimeProvider = new Mock<ITimeProvider>();
         mockTimeProvider.Setup(t => t.Now).Returns(_now);
@@ -40,14 +40,34 @@ public class VacancyExtensionsTests
         p.EmployerLocation.AddressLine3.Should().Be(v.EmployerLocation.AddressLine3);
         p.EmployerLocation.AddressLine4.Should().Be(v.EmployerLocation.AddressLine4);
         p.EmployerLocation.Postcode.Should().Be(v.EmployerLocation.Postcode);
-
         p.EmployerWebsiteUrl.Should().Be(v.EmployerWebsiteUrl);
+    }
+    
+    [Test, MoqAutoData]
+    public void ToVacancyProjectionBase_ShouldMapLiveMultipleLocationsVacancy(Vacancy vacancy, Mock<ITimeProvider> timeProvider)
+    {
+        // arrange
+        vacancy.EmployerNameOption = EmployerNameOption.TradingName;
+        vacancy.EmployerLocation = null;
+        vacancy.EmployerLocationInformation = null;
+        timeProvider.Setup(t => t.Now).Returns(_now);
+         
+        // act
+        var projectedVacancy = vacancy.ToVacancyProjectionBase<LiveVacancy>(_programme, () => DocumentId, timeProvider.Object);
+        
+        // assert
+        AssertCommonProperties(vacancy, projectedVacancy);
+        projectedVacancy.EmployerLocations.Should().AllSatisfy(x =>
+        {
+            var address = vacancy.EmployerLocations.Single(location => location.Postcode == x.Postcode);
+            x.Should().BeEquivalentTo(address, options => options.Excluding(o => o.HasGeocode));
+        });
+        projectedVacancy.EmployerWebsiteUrl.Should().Be(vacancy.EmployerWebsiteUrl);
     }
 
     [Test]
     public void ToVacancyProjectionBase_ShouldMapClosedVacancy()
     {
-
         var v = new Fixture().Create<Vacancy>();
         v.EmployerNameOption = EmployerNameOption.TradingName;
 
@@ -63,7 +83,8 @@ public class VacancyExtensionsTests
         p.EmployerLocation.AddressLine3.Should().Be(v.EmployerLocation.AddressLine3);
         p.EmployerLocation.AddressLine4.Should().Be(v.EmployerLocation.AddressLine4);
         p.EmployerLocation.Postcode.Should().Be(v.EmployerLocation.Postcode);
-
+        p.EmployerLocation.Latitude.Should().Be(v.EmployerLocation.Latitude);
+        p.EmployerLocation.Longitude.Should().Be(v.EmployerLocation.Longitude);
         p.EmployerWebsiteUrl.Should().Be(v.EmployerWebsiteUrl);
     }
 
@@ -100,7 +121,7 @@ public class VacancyExtensionsTests
             x.AddressLine4.Should().NotBeNull();
             x.Postcode.Should().Be("SW1A");
         });
-
+        
         p.EmployerWebsiteUrl.Should().BeNull();
     }
 
@@ -141,8 +162,6 @@ public class VacancyExtensionsTests
 
         p.EmployerLocationOption.Should().Be(v.EmployerLocationOption);
         p.EmployerLocationInformation.Should().Be(v.EmployerLocationInformation);
-        p.EmployerLocation.Latitude.Should().Be(v.EmployerLocation.Latitude);
-        p.EmployerLocation.Longitude.Should().Be(v.EmployerLocation.Longitude);
 
         p.AdditionalQuestion1.Should().Be(v.AdditionalQuestion1);
         p.AdditionalQuestion2.Should().Be(v.AdditionalQuestion2);
