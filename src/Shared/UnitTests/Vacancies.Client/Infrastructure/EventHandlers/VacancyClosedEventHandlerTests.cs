@@ -12,7 +12,6 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore;
 using Projections = Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Vacancy;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.ApprenticeshipProgrammes;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.FAA;
 using Microsoft.Extensions.Logging;
 using Moq;
 using Xunit;
@@ -28,26 +27,12 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
         private Mock<IVacancyRepository> _mockVacancyRepository;
         private Mock<IReferenceDataReader> _mockReferenceDataReader;
         private Mock<ITimeProvider> _mockTimeProvider;
-        private Mock<IFaaService> _mockFaaService;
         private Mock<ICommunicationQueueService> _mockCommunicationQueueService;
         private DateTime _currentTime;
         private VacancyClosedEvent _event;
         private Vacancy _vacancy;
         private ApprenticeshipProgrammes _apprenticeshipProgrammes;
         private readonly Mock<IQueryStoreReader> _mockQueryReader;
-
-
-        [Fact]
-        public async Task Handle_ShouldNotifyFAA()
-        {
-            await _handler.Handle(_event, CancellationToken.None);
-
-            _mockFaaService.Verify(x => x.PublishVacancyStatusSummaryAsync(
-                    It.Is<FaaVacancyStatusSummary>(p =>
-                        p.ClosingDate == _currentTime
-                        && p.LegacyVacancyId == _vacancy.VacancyReference
-                        && p.VacancyStatus == FaaVacancyStatuses.Expired)));
-        }
 
         [Fact]
         public async Task Handle_ShouldDeleteLiveVacancyFromQueryStoreThenRecreate()
@@ -166,8 +151,6 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
                 .Setup(x => x.GetReferenceData<ApprenticeshipProgrammes>())
                 .ReturnsAsync(_apprenticeshipProgrammes);
 
-            _mockFaaService = new Mock<IFaaService>();
-
             _mockTimeProvider = new Mock<ITimeProvider>();
             _mockTimeProvider
                 .Setup(x => x.Now)
@@ -183,7 +166,6 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
                 _mockVacancyRepository.Object,
                 _mockReferenceDataReader.Object,
                 _mockTimeProvider.Object,
-                _mockFaaService.Object,
                 _mockCommunicationQueueService.Object,
                 _mockQueryReader.Object);
         }
