@@ -39,7 +39,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Extensions
             projectedVacancy.ProviderContactName = vacancy.ProviderContact?.Name;
             projectedVacancy.ProviderContactPhone = vacancy.ProviderContact?.Phone;
             projectedVacancy.EmployerDescription = vacancy.EmployerDescription;
-            projectedVacancy.EmployerLocation = vacancy.EmployerLocation.ToProjection(vacancy.IsAnonymous);
+            projectedVacancy.EmployerLocation = vacancy.EmployerLocation?.ToProjection(vacancy.IsAnonymous);
             projectedVacancy.EmployerLocationOption = vacancy.EmployerLocationOption;
             projectedVacancy.EmployerLocations = vacancy.EmployerLocations?.Select(x => x.ToProjection(vacancy.IsAnonymous)).ToList();
             projectedVacancy.EmployerLocationInformation = vacancy.EmployerLocationInformation;
