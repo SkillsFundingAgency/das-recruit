@@ -19,11 +19,22 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
         ILogger<GeocodeVacancyCommandHandler> logger)
         : IRequestHandler<GeocodeVacancyCommand, Unit>
     {
-
         public async Task<Unit> Handle(GeocodeVacancyCommand message, CancellationToken cancellationToken)
         {
-            logger.LogInformation("Geocoding vacancy {vacancyId}.", message.VacancyId);
+            logger.LogInformation("Geocoding: vacancy {vacancyId}", message.VacancyId);
             var vacancy = await repository.GetVacancyAsync(message.VacancyId);
+
+            if (vacancy is null)
+            {
+                logger.LogWarning("Geocoding: vacancy {vacancyId} does not exist", message.VacancyId);
+                return Unit.Value;
+            }
+
+            if (vacancy.EmployerLocationOption is AvailableWhere.AcrossEngland)
+            {
+                logger.LogInformation("Geocoding: vacancy {vacancyId} is recruiting nationally, no need for geocoding", message.VacancyId);
+                return Unit.Value;
+            }
             
             // Handle existing data
             if (vacancy.EmployerLocation is not null)
@@ -32,13 +43,14 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
                 return Unit.Value;
             }
             
+            // Handle post multiple locations data
             if (vacancy.EmployerLocations is { Count: > 0 })
             {
                 await UpdateEmployerLocations(vacancy);
             }
             else
             {
-                logger.LogWarning("Geocode vacancyId:{vacancyId} does not have any locations to geocode", vacancy.Id);
+                logger.LogWarning("Geocode: vacancy {vacancyId} does not have any locations to geocode", vacancy.Id);
             }
 
             return Unit.Value;
@@ -46,72 +58,54 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 
         private async Task UpdateEmployerLocations(Vacancy vacancy)
         {
-            var locations = vacancy.EmployerLocations;
-
             // log empty postcodes
-            var noPostcodes = locations.Where(x => string.IsNullOrEmpty(x.Postcode)).ToList();
-            if (noPostcodes.Count is not 0)
+            var noPostcodes = vacancy.EmployerLocations.Where(x => string.IsNullOrWhiteSpace(x.Postcode)).ToList();
+            if (noPostcodes is { Count: > 0 })
             {
-                logger.LogWarning("Geocode vacancyId:{vacancyId} - {count} locations do not have postcodes to lookup", vacancy.Id, locations.Count);
+                logger.LogWarning("Geocode: vacancy {vacancyId} - {count} locations do not have postcodes to lookup", vacancy.Id, noPostcodes.Count);
             }
-
-            // get a distinct list of postcode to lookup
-            var postcodes = locations
+            
+            var locationsNeedingGeocoding = vacancy.EmployerLocations
+                .Where(x => !x.HasGeocode)
                 .Except(noPostcodes)
-                .Select(x => vacancy.GeocodeUsingOutcode ? x.PostcodeAsOutcode() : x.Postcode)
-                .Distinct()
                 .ToList();
-
-            if (postcodes.Count is 0)
+            
+            if (locationsNeedingGeocoding is { Count: 0 })
             {
-                logger.LogWarning("Geocode vacancyId:{vacancyId} - no locations to geocode", vacancy.Id);
+                logger.LogInformation("Geocode: vacancy {vacancyId} - no locations need geocoding", vacancy.Id);
                 return;
             }
-            
-            logger.LogInformation("Geocode vacancyId:{vacancyId} - attempting to lookup geocode data for the following postcodes: {Postcodes}", vacancy.Id, string.Join(", ", postcodes));
-            
+
             // setup a dictionary with the postcode mapped to the lookup task
-            var lookups = postcodes
-                .Select(x => new KeyValuePair<string, Task<Geocode>>(x, TryGeocode(vacancy.Id, x)))
-                .ToList();
+            var lookups = locationsNeedingGeocoding
+                .Select(x => vacancy.GeocodeUsingOutcode ? x.PostcodeAsOutcode() : x.Postcode)
+                .Distinct()
+                .ToDictionary(x => x, x => TryGeocode(vacancy.Id, x));
             
+            logger.LogInformation("Geocode: vacancy {vacancyId} - attempting to lookup geocode data for the following postcodes {postcodes}", vacancy.Id, string.Join(", ", lookups.Keys));
+            
+            // wait for all the lookups to complete
             await Task.WhenAll(lookups.Select(x => x.Value));
             
             // did any tasks fail to return a geocode?
-            if (lookups.Any(x => x.Value.Result is null))
+            var failedLookups = lookups.Where(x => x.Value.Result is null).Select(x => x.Key).ToList();
+            if (failedLookups is { Count: > 0 })
             {
-                var failedLookups = lookups.Where(x => x.Value.Result is null).Select(x => x.Key);
-                logger.LogWarning("Geocode vacancyId:{vacancyId} - failed to lookup geocode data for the following postcodes: {Postcodes}", vacancy.Id, string.Join(", ", failedLookups));
+                logger.LogWarning("Geocode: vacancy {vacancyId} - failed to lookup geocode data for the following postcodes {postcodes}", vacancy.Id, string.Join(", ", failedLookups));
             }
             
             // process the successful lookups
             var postcodeLookups = lookups.Where(x => x.Value.Result is not null).ToDictionary(x => x.Key, x => x.Value.Result);
-            locations.ForEach(location =>
+            locationsNeedingGeocoding.ForEach(location =>
             {
-                if (string.IsNullOrEmpty(location.Postcode))
-                {
-                    return;
-                }
-
                 string postcode = vacancy.GeocodeUsingOutcode ? location.PostcodeAsOutcode() : location.Postcode;
                 if (!postcodeLookups.TryGetValue(postcode, out var geocode))
                 {
                     return;
                 }
-
-                if (location.Latitude is not null && location.Longitude is not null)
-                {
-                    if (Math.Abs(location.Latitude.Value - geocode.Latitude) < 0.0001 &&
-                        Math.Abs(location.Longitude.Value - geocode.Longitude) < 0.0001)
-                    {
-                        logger.LogInformation("Geocode vacancyId:{vacancyId} - location geocode has not changed for postcode {Postcode} - {GeoCode}", vacancy.Id, postcode, geocode);
-                        return;
-                    }
-                }
                 
                 location.Latitude = geocode.Latitude;
                 location.Longitude = geocode.Longitude;
-                
             });
             
             vacancy.GeoCodeMethod = GeoCodeMethod.OuterApi;
@@ -126,7 +120,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "Geocode vacancyId:{vacancyId} - error thrown whilst geocoding postcode: {postcode}", vacancyId, postcode);
+                logger.LogError(ex, "Geocode: vacancy {vacancyId} - error thrown whilst geocoding postcode {postcode}", vacancyId, postcode);
             }
 
             return null;
@@ -134,14 +128,14 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 
         private async Task UpdateDeprecatedEmployerLocation(Vacancy vacancy)
         {
-            if (vacancy is null)
+            if (vacancy is null || vacancy.EmployerLocation?.HasGeocode is true)
             {
                 return;
             }
 
             if (string.IsNullOrEmpty(vacancy.EmployerLocation?.Postcode))
             {
-                logger.LogWarning("Geocode vacancyId:{vacancyId} cannot geocode as vacancy has no postcode", vacancy.Id);
+                logger.LogWarning("Geocode: vacancy {vacancyId} - cannot geocode as vacancy has no postcode", vacancy.Id);
                 return;
             }
 
