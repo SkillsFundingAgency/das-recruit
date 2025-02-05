@@ -12,7 +12,6 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.Extensions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Vacancy;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.ApprenticeshipProgrammes;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.FAA;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Communication.Types;
 using Esfa.Recruit.Vacancies.Client.Application.Communications;
@@ -27,21 +26,18 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
         private readonly IVacancyRepository _repository;
         private readonly IReferenceDataReader _referenceDataReader;
         private readonly ITimeProvider _timeProvider;
-        private readonly IFaaService _faaService;
         private readonly ICommunicationQueueService _communicationQueueService;
         private readonly IQueryStoreReader _queryStoreReader;
 
         public VacancyClosedEventHandler(
             ILogger<VacancyClosedEventHandler> logger, IQueryStoreWriter queryStore,
-            IVacancyRepository repository, IReferenceDataReader referenceDataReader, ITimeProvider timeProvider,
-            IFaaService faaService, ICommunicationQueueService communicationQueueService, IQueryStoreReader queryStoreReader)
+            IVacancyRepository repository, IReferenceDataReader referenceDataReader, ITimeProvider timeProvider, ICommunicationQueueService communicationQueueService, IQueryStoreReader queryStoreReader)
         {
             _logger = logger;
             _queryStore = queryStore;
             _repository = repository;
             _referenceDataReader = referenceDataReader;
             _timeProvider = timeProvider;
-            _faaService = faaService;
             _communicationQueueService = communicationQueueService;
             _queryStoreReader = queryStoreReader;
         }
@@ -50,15 +46,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
         {
             _logger.LogInformation("Deleting LiveVacancy {vacancyReference} from query store.",
                     notification.VacancyReference);
-            await NotifyFaaVacancyHasClosed(notification);
+            
             await _queryStore.DeleteLiveVacancyAsync(notification.VacancyReference);
             await CreateClosedVacancyProjection(notification.VacancyId);
-        }
-
-        private Task NotifyFaaVacancyHasClosed(VacancyClosedEvent notification)
-        {
-            var message = new FaaVacancyStatusSummary(notification.VacancyReference, FaaVacancyStatuses.Expired, _timeProvider.Now);
-            return _faaService.PublishVacancyStatusSummaryAsync(message);
         }
 
         private async Task CreateClosedVacancyProjection(Guid vacancyId)
