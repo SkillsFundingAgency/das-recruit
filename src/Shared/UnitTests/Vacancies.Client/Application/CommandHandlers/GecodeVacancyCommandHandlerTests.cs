@@ -114,7 +114,12 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.C
             vacancy.EmployerLocation = null;
             vacancy.EmployerNameOption = EmployerNameOption.RegisteredName;
             vacancyRepository.Setup(x => x.GetVacancyAsync(command.VacancyId)).ReturnsAsync(vacancy);
-            vacancy.EmployerLocations.ForEach(location => outerApiGeocodeService.Setup(x => x.Geocode(location.Postcode)).ReturnsAsync(apiResult));
+            vacancy.EmployerLocations.ForEach(location =>
+            {
+                location.Latitude = null;
+                location.Longitude = null;
+                outerApiGeocodeService.Setup(x => x.Geocode(location.Postcode)).ReturnsAsync(apiResult);
+            });
             
             // act
             await handler.Handle(command, CancellationToken.None);
@@ -144,7 +149,12 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.C
             vacancy.EmployerLocation = null;
             vacancy.EmployerNameOption = EmployerNameOption.Anonymous;
             vacancyRepository.Setup(x => x.GetVacancyAsync(command.VacancyId)).ReturnsAsync(vacancy);
-            vacancy.EmployerLocations.ForEach(location => outerApiGeocodeService.Setup(x => x.Geocode(location.PostcodeAsOutcode())).ReturnsAsync(apiResult));
+            vacancy.EmployerLocations.ForEach(location =>
+            {
+                location.Latitude = null;
+                location.Longitude = null;
+                outerApiGeocodeService.Setup(x => x.Geocode(location.PostcodeAsOutcode())).ReturnsAsync(apiResult);
+            });
             
             // act
             await handler.Handle(command, CancellationToken.None);
@@ -351,6 +361,84 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.C
                 x.Longitude.Should().BeNull();
             });
             vacancyRepository.Verify(x => x.UpdateAsync(vacancy), Times.Once);
+        }
+        
+        [Test, MoqAutoData]
+        public async Task Then_Locations_Already_Geocoded_Do_Not_Get_Geocoded(
+            GeocodeVacancyCommand command,
+            Vacancy vacancy,
+            Geocode apiResult,
+            [Frozen] Mock<IVacancyRepository> vacancyRepository,
+            [Frozen] Mock<IOuterApiGeocodeService> outerApiGeocodeService,
+            GeocodeVacancyCommandHandler handler)
+        {
+            // arrange
+            command.VacancyId = vacancy.Id;
+            vacancy.EmployerLocation = null;
+            vacancy.EmployerNameOption = EmployerNameOption.RegisteredName;
+            vacancy.EmployerLocations = [
+                new Address { AddressLine1 = "address line 1-1", Postcode = "SW1A 2AA", Latitude = apiResult.Latitude, Longitude = apiResult.Longitude },
+                new Address { AddressLine1 = "address line 1-2", Postcode = "SW2A 2AA" },
+            ];
+            
+            vacancyRepository.Setup(x => x.GetVacancyAsync(command.VacancyId)).ReturnsAsync(vacancy);
+            outerApiGeocodeService.Setup(x => x.Geocode("SW1A 2AA")).ReturnsAsync(apiResult);
+            outerApiGeocodeService.Setup(x => x.Geocode("SW2A 2AA")).ReturnsAsync(apiResult);
+            
+            // act
+            await handler.Handle(command, CancellationToken.None);
+            
+            // assert
+            outerApiGeocodeService.Verify(x => x.Geocode(It.IsAny<string>()), Times.Once);
+            vacancy.EmployerLocations.Where(x => !string.IsNullOrWhiteSpace(x.Postcode)).Should().AllSatisfy(x =>
+            {
+                x.Latitude.Should().Be(apiResult.Latitude);
+                x.Longitude.Should().Be(apiResult.Longitude);
+            });
+            
+            vacancyRepository.Verify(x => x.UpdateAsync(vacancy), Times.Once);
+        }
+        
+        [Test, MoqAutoData]
+        public async Task Then_National_Vacancies_Are_Not_Processed(
+            GeocodeVacancyCommand command,
+            Vacancy vacancy,
+            [Frozen] Mock<IVacancyRepository> vacancyRepository,
+            [Frozen] Mock<IOuterApiGeocodeService> outerApiGeocodeService,
+            GeocodeVacancyCommandHandler handler)
+        {
+            // arrange
+            command.VacancyId = vacancy.Id;
+            vacancy.EmployerLocationOption = AvailableWhere.AcrossEngland;
+            vacancy.EmployerLocation = null;
+            vacancy.EmployerLocations = null;
+            
+            vacancyRepository.Setup(x => x.GetVacancyAsync(command.VacancyId)).ReturnsAsync(vacancy);
+            
+            // act
+            await handler.Handle(command, CancellationToken.None);
+            
+            // assert
+            outerApiGeocodeService.Verify(x => x.Geocode(It.IsAny<string>()), Times.Never);
+            vacancyRepository.Verify(x => x.UpdateAsync(It.IsAny<Vacancy>()), Times.Never);
+        }
+        
+        [Test, MoqAutoData]
+        public async Task Then_Not_Found_Vacancy_Is_Not_Processed(
+            GeocodeVacancyCommand command,
+            [Frozen] Mock<IVacancyRepository> vacancyRepository,
+            [Frozen] Mock<IOuterApiGeocodeService> outerApiGeocodeService,
+            GeocodeVacancyCommandHandler handler)
+        {
+            // arrange
+            vacancyRepository.Setup(x => x.GetVacancyAsync(command.VacancyId)).ReturnsAsync((Vacancy)null);
+            
+            // act
+            await handler.Handle(command, CancellationToken.None);
+            
+            // assert
+            outerApiGeocodeService.Verify(x => x.Geocode(It.IsAny<string>()), Times.Never);
+            vacancyRepository.Verify(x => x.UpdateAsync(It.IsAny<Vacancy>()), Times.Never);
         }
     }
 }
