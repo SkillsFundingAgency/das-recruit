@@ -46,7 +46,7 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.Part1.Location
             get
             {
                 return IsTaskListCompleted
-                    ? RouteNames.ProviderTaskListGet
+                    ? RouteNames.ProviderCheckYourAnswersGet
                     : RouteNames.NumberOfPositions_Get;
             }
         }
