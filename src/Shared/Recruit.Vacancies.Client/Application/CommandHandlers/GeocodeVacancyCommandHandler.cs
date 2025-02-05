@@ -120,7 +120,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "Geocode vacancyId:{vacancyId} - error thrown whilst geocoding postcode: {postcode}", vacancyId, postcode);
+                logger.LogError(ex, "Geocode: vacancy {vacancyId} - error thrown whilst geocoding postcode {postcode}", vacancyId, postcode);
             }
 
             return null;
@@ -128,14 +128,14 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 
         private async Task UpdateDeprecatedEmployerLocation(Vacancy vacancy)
         {
-            if (vacancy is null)
+            if (vacancy is null || vacancy.EmployerLocation?.HasGeocode is true)
             {
                 return;
             }
 
             if (string.IsNullOrEmpty(vacancy.EmployerLocation?.Postcode))
             {
-                logger.LogWarning("Geocode vacancyId:{vacancyId} cannot geocode as vacancy has no postcode", vacancy.Id);
+                logger.LogWarning("Geocode: vacancy {vacancyId} - cannot geocode as vacancy has no postcode", vacancy.Id);
                 return;
             }
 

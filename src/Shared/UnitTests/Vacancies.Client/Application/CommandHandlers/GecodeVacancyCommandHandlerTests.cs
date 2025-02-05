@@ -14,6 +14,31 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.C
     public class GecodeVacancyCommandHandlerTests
     {
         [Test, MoqAutoData]
+        public async Task Then_Already_Geocoded_Vacancy_Location_Does_Not_Get_Geocoded(
+            GeocodeVacancyCommand command,
+            Vacancy vacancy,
+            Geocode apiResult,
+            [Frozen] Mock<IVacancyRepository> vacancyRepository,
+            [Frozen] Mock<IOuterApiGeocodeService> outerApiGeocodeService,
+            GeocodeVacancyCommandHandler handler)
+        {
+            // arrange
+            command.VacancyId = vacancy.Id;
+            vacancy.EmployerLocations = null;
+            vacancy.EmployerLocation.Postcode = "TE1 5ET";
+            vacancy.EmployerNameOption = EmployerNameOption.RegisteredName;
+            vacancyRepository.Setup(x => x.GetVacancyAsync(command.VacancyId)).ReturnsAsync(vacancy);
+            outerApiGeocodeService.Setup(x => x.Geocode(vacancy.EmployerLocation.Postcode)).ReturnsAsync(apiResult);
+            
+            // act
+            await handler.Handle(command, CancellationToken.None);
+            
+            // assert
+            outerApiGeocodeService.Verify(x => x.Geocode(It.IsAny<string>()), Times.Never);
+            vacancyRepository.Verify(x => x.UpdateAsync(It.IsAny<Vacancy>()), Times.Never);
+        }
+        
+        [Test, MoqAutoData]
         public async Task Then_The_Vacancy_Gets_Geocode_Data_From_Postcode_When_Not_Anon(
             GeocodeVacancyCommand command,
             Vacancy vacancy,
@@ -25,6 +50,8 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.C
             command.VacancyId = vacancy.Id;
             vacancy.EmployerLocations = null;
             vacancy.EmployerLocation.Postcode = "TE1 5ET";
+            vacancy.EmployerLocation.Latitude = null;
+            vacancy.EmployerLocation.Longitude = null;
             vacancy.EmployerNameOption = EmployerNameOption.RegisteredName;
             vacancyRepository.Setup(x => x.GetVacancyAsync(command.VacancyId)).ReturnsAsync(vacancy);
             outerApiGeocodeService.Setup(x => x.Geocode(vacancy.EmployerLocation.Postcode)).ReturnsAsync(apiResult);
@@ -51,6 +78,8 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.C
             vacancy.EmployerLocations = null;
             vacancy.EmployerNameOption = EmployerNameOption.Anonymous;
             vacancy.EmployerLocation.Postcode = "TE1 5ET";
+            vacancy.EmployerLocation.Latitude = null;
+            vacancy.EmployerLocation.Longitude = null;
             vacancyRepository.Setup(x => x.GetVacancyAsync(command.VacancyId)).ReturnsAsync(vacancy);
             outerApiGeocodeService.Setup(x => x.Geocode("TE1")).ReturnsAsync(apiResult);
             
