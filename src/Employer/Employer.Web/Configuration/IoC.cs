@@ -21,7 +21,6 @@ using Esfa.Recruit.Shared.Web.RuleTemplates;
 using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Shared.Web.ViewModels.Validations.Fluent;
 using Esfa.Recruit.Vacancies.Client.Application.Configuration;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.FAA;
 using Esfa.Recruit.Vacancies.Client.Ioc;
 using FluentValidation;
 using Microsoft.AspNetCore.Http;
@@ -46,7 +45,6 @@ namespace Esfa.Recruit.Employer.Web.Configuration
             services.AddSingleton<ManageApprenticeshipsLinkHelper>();
 
             services.Configure<GoogleAnalyticsConfiguration>(configuration.GetSection("GoogleAnalytics"));
-            services.Configure<FaaConfiguration>(configuration.GetSection("FaaConfiguration"));
             services.Configure<ZenDeskConfiguration>(configuration.GetSection("ZenDesk"));
 
             services.AddFeatureToggle();
