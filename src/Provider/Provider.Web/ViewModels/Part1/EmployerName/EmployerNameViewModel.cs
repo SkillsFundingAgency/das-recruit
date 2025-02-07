@@ -1,3 +1,4 @@
+using Esfa.Recruit.Provider.Web.Configuration.Routing;
 using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Shared.Web.Models;
 using Esfa.Recruit.Shared.Web.ViewModels;
@@ -21,5 +22,15 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.Part1.EmployerName
         public bool HasOnlyOneOrganisation { get; internal set; }
         public string Title { get; set; }
         public bool IsTaskListCompleted { get; set; }
+
+        public string PageBackLink
+        {
+            get
+            {
+                return IsTaskListCompleted
+                    ? RouteNames.ProviderCheckYourAnswersGet
+                    : RouteNames.ProviderTaskListGet;
+            }
+        }
     }
 }
