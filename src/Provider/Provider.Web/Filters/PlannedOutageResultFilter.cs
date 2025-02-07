@@ -18,7 +18,7 @@ namespace Esfa.Recruit.Provider.Web.Filters
         {
             if (context.HttpContext.Request.Cookies.ContainsKey(CookieNames.SeenOutageMessage) == false)
             {
-                if (string.IsNullOrEmpty(_systemConfig.PlannedOutageMessage) == false)
+                if (_systemConfig != null && string.IsNullOrEmpty(_systemConfig.PlannedOutageMessage) == false)
                 {
                     var ctrlr = (Controller)context.Controller;
                     ctrlr.ViewData.Add(ViewDataKeys.CanShowOutageMessage, true);
