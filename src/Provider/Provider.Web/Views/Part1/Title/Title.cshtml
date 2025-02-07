@@ -1,4 +1,3 @@
-@using Esfa.Recruit.Shared.Web.Mappers
 @model Esfa.Recruit.Provider.Web.ViewModels.Part1.Title.TitleViewModel
 
 @{
@@ -7,7 +6,7 @@
 }
 
 @section BackLink {
-    <a asp-route="@RouteNames.ProviderTaskListGet" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Back</a>
+    <a asp-route="@Model.PageBackLink" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Back</a>
 }
 
 <div class="govuk-grid-row">
