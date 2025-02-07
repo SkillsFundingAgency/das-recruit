@@ -278,6 +278,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                     'isApplicationWithdrawn': '$candidateApplicationReview.isWithdrawn',
                     'dateSharedWithEmployer': '$candidateApplicationReview.dateSharedWithEmployer',
                     'hasChosenProviderContactDetails' : 1,
+                    'hasSubmittedAdditionalQuestions' : 1,
                     'isTraineeship' :1
                 }
             },
@@ -311,6 +312,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                     'vacancyType': 1,
                     'dateSharedWithEmployer': 1,
                     'hasChosenProviderContactDetails' : 1,
+                    'hasSubmittedAdditionalQuestions' : 1,
                     'isTraineeship': {
                         '$cond': {
                             'if': {'$eq': [ '$vacancyType', 'Traineeship']},
@@ -355,6 +357,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                         }
                     },
                     'hasChosenProviderContactDetails' : 1,
+                    'hasSubmittedAdditionalQuestions' : 1,
                     'isNew': {
                         '$cond': {
                             'if': {'$eq': [ '$appStatus', 'New']},
@@ -433,7 +436,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                         'trainingProviderName': '$trainingProviderName',
                         'vacancyType': '$vacancyType',
                         'isTraineeship': '$isTraineeship',
-                        'hasChosenProviderContactDetails' : '$hasChosenProviderContactDetails'
+                        'hasChosenProviderContactDetails' : '$hasChosenProviderContactDetails',
+                        'hasSubmittedAdditionalQuestions' : '$hasSubmittedAdditionalQuestions'
                     },
                     'noOfNewApplications': {
                         '$sum': '$isNew'
