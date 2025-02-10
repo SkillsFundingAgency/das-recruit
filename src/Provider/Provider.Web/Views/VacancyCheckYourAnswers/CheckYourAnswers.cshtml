@@ -115,17 +115,6 @@
         </h1>
         <h2 class="govuk-heading-m">Vacancy summary</h2>
         <dl class="app-summary-list govuk-!-margin-bottom-9">
-            <field-review-message field-name="@FieldIdentifiers.Title" model="@Model"></field-review-message>
-            <div class="app-summary-list__row" field-review-marker="Title" >
-                <dt class="app-summary-list__key" id="@FieldIdentifiers.Title">Vacancy title</dt>
-                <dd class="app-summary-list__value">
-                    @Model.Title
-                    <review-field class="govuk-tag--purple" field-name="@FieldIdentifiers.Title" tag-name="strong" model="@Model"/>
-                </dd>
-                <dd class="app-summary-list__actions">
-                    <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.Title_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="change-title">Change<span class="govuk-visually-hidden"> vacancy title</span></a>
-                </dd>
-            </div>
             @if (Model.AccountLegalEntityCount + Model.AccountCount > 2 )
             {
                 <div class="app-summary-list__row">
@@ -140,6 +129,19 @@
                     </dd>
                 </div>
             }
+            
+            <field-review-message field-name="@FieldIdentifiers.Title" model="@Model"></field-review-message>
+            <div class="app-summary-list__row" field-review-marker="Title" >
+                <dt class="app-summary-list__key" id="@FieldIdentifiers.Title">Vacancy title</dt>
+                <dd class="app-summary-list__value">
+                    @Model.Title
+                    <review-field class="govuk-tag--purple" field-name="@FieldIdentifiers.Title" tag-name="strong" model="@Model"/>
+                </dd>
+                <dd class="app-summary-list__actions">
+                    <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.Title_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="change-title">Change<span class="govuk-visually-hidden"> vacancy title</span></a>
+                </dd>
+            </div>
+            
         
             <field-review-message field-name="@FieldIdentifiers.Training" model="@Model"></field-review-message>
             <field-review-message field-name="@FieldIdentifiers.TrainingLevel" model="@Model"></field-review-message>

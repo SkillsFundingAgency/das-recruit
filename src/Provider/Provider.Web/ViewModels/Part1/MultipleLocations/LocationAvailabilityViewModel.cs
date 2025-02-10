@@ -1,4 +1,5 @@
-﻿using Esfa.Recruit.Provider.Web.RouteModel;
+﻿using Esfa.Recruit.Provider.Web.Configuration.Routing;
+using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Shared.Web.ViewModels;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
@@ -11,4 +12,15 @@ public class LocationAvailabilityViewModel : VacancyRouteModel
     public PartOnePageInfoViewModel PageInfo { get; init; }
     public ReviewSummaryViewModel Review { get; set; } = new ();
     public AvailableWhere? SelectedAvailability { get; init; }
+    public string PageBackLink
+    {
+        get
+        {
+            return IsTaskListCompleted
+                ? RouteNames.ProviderCheckYourAnswersGet
+                : RouteNames.NumberOfPositions_Get;
+        }
+    }
+
+    public bool IsTaskListCompleted { get; set; }
 }

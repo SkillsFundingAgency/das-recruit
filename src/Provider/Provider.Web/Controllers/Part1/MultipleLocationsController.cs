@@ -70,6 +70,7 @@ public class MultipleLocationsController(IWebHostEnvironment hostingEnvironment)
             PageInfo = utility.GetPartOnePageInfo(vacancy),
             SelectedAvailability = availableWhere ?? vacancy.EmployerLocationOption ?? (vacancy.EmployerLocation is not null ? AvailableWhere.OneLocation : null),
             VacancyId = vacancyRouteModel.VacancyId,
+            IsTaskListCompleted = utility.IsTaskListCompleted(vacancy)
         };
         viewModel.PageInfo.SetWizard(wizard);
         if (vacancy.Status == VacancyStatus.Referred)

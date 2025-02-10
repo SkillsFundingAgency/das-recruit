@@ -20,10 +20,14 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers.Part1;
 
 public class MultipleLocationsControllerTests
 {
-    [Test, MoqAutoData]
+    [Test]
+    [MoqInlineAutoData(true, RouteNames.ProviderCheckYourAnswersGet)]
+    [MoqInlineAutoData(false, RouteNames.NumberOfPositions_Get)]
     public async Task When_Getting_LocationsAvailability_Then_ViewModel_Is_Returned(
-        Vacancy vacancy,
-        Mock<IUtility> utility,
+        bool isTaskListCompleted,
+        string expectedPageBackLink,
+        [Frozen] Vacancy vacancy,
+        [Frozen] Mock<IUtility> utility,
         [Greedy] MultipleLocationsController sut)
     {
         // arrange
@@ -33,7 +37,8 @@ public class MultipleLocationsControllerTests
             Ukprn = new Random().Next(),
         };
         utility.Setup(x => x.GetAuthorisedVacancyForEditAsync(vacancyRouteModel, It.IsAny<string>())).ReturnsAsync(vacancy);
-
+        utility.Setup(x => x.IsTaskListCompleted(vacancy)).Returns(isTaskListCompleted);
+        
         // act
         var result = (await sut.LocationAvailability(utility.Object, Mock.Of<IReviewSummaryService>(), vacancyRouteModel) as ViewResult)?.Model as LocationAvailabilityViewModel;
         
@@ -43,6 +48,8 @@ public class MultipleLocationsControllerTests
         result.ApprenticeshipTitle.Should().Be(vacancy.Title);
         result.Ukprn.Should().Be(vacancyRouteModel.Ukprn);
         result.SelectedAvailability.Should().Be(AvailableWhere.OneLocation);
+        result.IsTaskListCompleted.Should().Be(isTaskListCompleted);
+        result.PageBackLink.Should().Be(expectedPageBackLink);
     }
     
     [Test, MoqAutoData]
