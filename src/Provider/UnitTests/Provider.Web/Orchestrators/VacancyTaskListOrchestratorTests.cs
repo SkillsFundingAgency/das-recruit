@@ -71,8 +71,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators
             });
             externalLinksConfiguration.Object.Value.FindAnApprenticeshipUrl = findAnApprenticeshipUrl;
             var expectedViewModel = new VacancyPreviewViewModel();
-            var mapper = new DisplayVacancyViewModelMapper(Mock.Of<IGeocodeImageService>(),
-                externalLinksConfiguration.Object, recruitVacancyClient.Object, providerVacancyClient.Object, apprenticeshipProgrammeProvider.Object);
+            var mapper = new DisplayVacancyViewModelMapper(externalLinksConfiguration.Object, recruitVacancyClient.Object, providerVacancyClient.Object, apprenticeshipProgrammeProvider.Object);
 
             var viewModel = await orchestrator.GetVacancyTaskListModel(routeModel);
 

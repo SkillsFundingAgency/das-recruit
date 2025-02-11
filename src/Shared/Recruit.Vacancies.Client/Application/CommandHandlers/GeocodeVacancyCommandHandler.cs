@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using Esfa.Recruit.Vacancies.Client.Application.Commands;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
@@ -66,7 +65,6 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             }
             
             var locationsNeedingGeocoding = vacancy.EmployerLocations
-                .Where(x => !x.HasGeocode)
                 .Except(noPostcodes)
                 .ToList();
             
@@ -78,7 +76,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 
             // setup a dictionary with the postcode mapped to the lookup task
             var lookups = locationsNeedingGeocoding
-                .Select(x => vacancy.GeocodeUsingOutcode ? x.PostcodeAsOutcode() : x.Postcode)
+                .Select(x => vacancy.IsAnonymous ? x.PostcodeAsOutcode() : x.Postcode)
                 .Distinct()
                 .ToDictionary(x => x, x => TryGeocode(vacancy.Id, x));
             
@@ -128,11 +126,6 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
 
         private async Task UpdateDeprecatedEmployerLocation(Vacancy vacancy)
         {
-            if (vacancy is null || vacancy.EmployerLocation?.HasGeocode is true)
-            {
-                return;
-            }
-
             if (string.IsNullOrEmpty(vacancy.EmployerLocation?.Postcode))
             {
                 logger.LogWarning("Geocode: vacancy {vacancyId} - cannot geocode as vacancy has no postcode", vacancy.Id);

@@ -6,7 +6,6 @@ using Esfa.Recruit.Qa.Web.ViewModels;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Shared.Web.Helpers;
 using Esfa.Recruit.Shared.Web.Mappers;
-using Esfa.Recruit.Shared.Web.Orchestrators;
 using Esfa.Recruit.Shared.Web.RuleTemplates;
 using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Services;
@@ -20,24 +19,19 @@ namespace Esfa.Recruit.Qa.Web.Mappings
 {
     public class ReviewMapper
     {
-        private const int MapImageWidth = 465;
-        private const int MapImageHeight = 256;
         private readonly ILogger<ReviewMapper> _logger;
         private readonly IQaVacancyClient _vacancyClient;
-        private readonly IGeocodeImageService _mapService;
         private readonly Lazy<IList<string>> _qualifications;
         private readonly IRuleMessageTemplateRunner _ruleTemplateRunner;
         private readonly IReviewSummaryService _reviewSummaryService;
 
         public ReviewMapper(ILogger<ReviewMapper> logger,
                     IQaVacancyClient vacancyClient,
-                    IGeocodeImageService mapService,
                     IRuleMessageTemplateRunner ruleTemplateRunner,
                     IReviewSummaryService reviewSummaryService)
         {
             _logger = logger;
             _vacancyClient = vacancyClient;
-            _mapService = mapService;
             _qualifications = new Lazy<IList<string>>(() => _vacancyClient.GetCandidateQualificationsAsync().Result.QualificationTypes);
             _ruleTemplateRunner = ruleTemplateRunner;
             _reviewSummaryService = reviewSummaryService;
@@ -263,7 +257,6 @@ namespace Esfa.Recruit.Qa.Web.Mappings
                 vm.EmployerWebsiteUrl = vacancy.EmployerWebsiteUrl;
                 if (vacancy.EmployerLocation != null)
                 {
-                    vm.MapUrl = MapImageHelper.GetEmployerLocationMapUrl(vacancy, _mapService, MapImageWidth, MapImageHeight);
                     vm.EmployerAddressElements = vacancy.EmployerAddressForDisplay();
                 }
                 vm.EmployerLocationOption = vacancy.EmployerLocationOption;

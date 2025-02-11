@@ -115,7 +115,6 @@ namespace Esfa.Recruit.Qa.Web
             services.AddScoped<WithdrawVacancyOrchestrator>();
             services.AddTransient<UserAuthorizationService>();
 
-            services.AddTransient<IGeocodeImageService>(_ => new GoogleMapsGeocodeImageService(_configuration.GetValue<string>("RecruitConfiguration:GoogleMapsPrivateKey")));
             services.AddScoped<ReviewMapper>();
             services.AddTransient<IReviewSummaryService, ReviewSummaryService>();
             services.AddTransient<ReviewFieldIndicatorMapper>();

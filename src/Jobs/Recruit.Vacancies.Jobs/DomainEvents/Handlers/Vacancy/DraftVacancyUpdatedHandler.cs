@@ -29,8 +29,6 @@ namespace Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Vacancy
 
                 await _client.PatchTrainingProviderAsync(@event.VacancyId);
 
-                await _client.EnsureVacancyIsGeocodedAsync(@event.VacancyId);
-
                 _logger.LogInformation($"Finished Processing {nameof(DraftVacancyUpdatedEvent)} for vacancy: {{VacancyId}}", @event.VacancyId);
             }
             catch (Exception ex)

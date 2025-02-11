@@ -54,8 +54,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators
             recruitVacancyClient.Setup(x => x.GetEmployerNameAsync(vacancy)).ReturnsAsync(vacancy.EmployerName);
             externalLinksConfiguration.Object.Value.FindAnApprenticeshipUrl = findAnApprenticeshipUrl;
             var expectedViewModel = new VacancyPreviewViewModel();
-            var mapper = new DisplayVacancyViewModelMapper(Mock.Of<IGeocodeImageService>(),
-                externalLinksConfiguration.Object, recruitVacancyClient.Object, outerApiClient.Object, Mock.Of<IFeature>());
+            var mapper = new DisplayVacancyViewModelMapper(externalLinksConfiguration.Object, recruitVacancyClient.Object, outerApiClient.Object, Mock.Of<IFeature>());
             await mapper.MapFromVacancyAsync(expectedViewModel, vacancy);
             expectedViewModel.VacancyId = routeModel.VacancyId;
             expectedViewModel.EmployerAccountId = routeModel.EmployerAccountId;

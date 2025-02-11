@@ -459,12 +459,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             await _messaging.SendCommandAsync(command);
         }
 
-        public async Task EnsureVacancyIsGeocodedAsync(Guid vacancyId)
-        {
-            var command = new GeocodeVacancyCommand { VacancyId = vacancyId };
-            await _messaging.SendCommandAsync(command);
-        }
-
         public Task ReferVacancyAsync(long vacancyReference)
         {
             return _messaging.SendCommandAsync(new ReferVacancyCommand

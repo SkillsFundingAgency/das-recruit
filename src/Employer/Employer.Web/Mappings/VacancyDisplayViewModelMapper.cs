@@ -4,8 +4,6 @@ using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.ViewModels;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Shared.Web.Helpers;
-using Esfa.Recruit.Shared.Web.Orchestrators;
-using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
@@ -18,22 +16,17 @@ namespace Esfa.Recruit.Employer.Web.Mappings
 {
     public class DisplayVacancyViewModelMapper
     {
-        private const int MapImageWidth = 465;
-        private const int MapImageHeight = 256;
-        private readonly IGeocodeImageService _mapService;
         private readonly ExternalLinksConfiguration _externalLinksConfiguration;
         private readonly IRecruitVacancyClient _vacancyClient;
         private readonly IApprenticeshipProgrammeProvider _apprenticeshipProgrammeProvider;
         private readonly IFeature _feature;
 
         public DisplayVacancyViewModelMapper(
-                IGeocodeImageService mapService,
                 IOptions<ExternalLinksConfiguration> externalLinksOptions,
                 IRecruitVacancyClient vacancyClient,
                 IApprenticeshipProgrammeProvider apprenticeshipProgrammeProvider,
                 IFeature feature)
         {
-            _mapService = mapService;
             _externalLinksConfiguration = externalLinksOptions.Value;
             _vacancyClient = vacancyClient;
             _apprenticeshipProgrammeProvider = apprenticeshipProgrammeProvider;
@@ -125,9 +118,6 @@ namespace Esfa.Recruit.Employer.Web.Mappings
 
             if (vacancy.EmployerLocation != null)
             {
-                if (vacancy.EmployerLocation != null)
-                    vm.MapUrl = MapImageHelper.GetEmployerLocationMapUrl(vacancy, _mapService, MapImageWidth, MapImageHeight);
-
                 vm.EmployerAddressElements = vacancy.EmployerAddressForDisplay();
             }
 

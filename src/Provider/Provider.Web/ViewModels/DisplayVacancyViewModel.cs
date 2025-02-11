@@ -36,7 +36,6 @@ namespace Esfa.Recruit.Provider.Web.ViewModels
         public AvailableWhere? AvailableWhere { get; internal set; }
         public IEnumerable<Address> AvailableLocations { get; internal set; }
         public string? LocationInformation { get; internal set; }
-        public string MapUrl { get; internal set; }
         public string NumberOfPositions { get; internal set; }
         public string NumberOfPositionsCaption { get; internal set; }
         public string OutcomeDescription { get; internal set; }
@@ -107,7 +106,6 @@ namespace Esfa.Recruit.Provider.Web.ViewModels
         public bool HasTrainingLevel => !string.IsNullOrWhiteSpace(TrainingLevel);
 
         public bool HasNumberOfPositionsCaption => !string.IsNullOrWhiteSpace(NumberOfPositionsCaption);
-        public bool HasMapUrl => !string.IsNullOrEmpty(MapUrl);
 
         public bool HasVacancyDescription => !string.IsNullOrWhiteSpace(VacancyDescription);
 

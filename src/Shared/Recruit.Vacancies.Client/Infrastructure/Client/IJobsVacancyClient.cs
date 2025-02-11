@@ -12,7 +12,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         Task<IEnumerable<LegalEntity>> GetEmployerLegalEntitiesAsync(string employerAccountId);
         Task CreateVacancyReview(long vacancyReference);
         Task CloseExpiredVacancies();
-        Task EnsureVacancyIsGeocodedAsync(Guid vacancyId);
         Task UpdateBankHolidaysAsync();
         Task ReferVacancyAsync(long vacancyReference);
         Task CreateApplicationReviewAsync(Domain.Entities.Application application);

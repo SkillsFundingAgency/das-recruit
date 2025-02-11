@@ -14,7 +14,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.C
     public class GecodeVacancyCommandHandlerTests
     {
         [Test, MoqAutoData]
-        public async Task Then_Already_Geocoded_Vacancy_Location_Does_Not_Get_Geocoded(
+        public async Task Then_Already_Geocoded_Vacancy_Location_Does_Get_Geocoded(
             GeocodeVacancyCommand command,
             Vacancy vacancy,
             Geocode apiResult,
@@ -34,8 +34,8 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.C
             await handler.Handle(command, CancellationToken.None);
             
             // assert
-            outerApiGeocodeService.Verify(x => x.Geocode(It.IsAny<string>()), Times.Never);
-            vacancyRepository.Verify(x => x.UpdateAsync(It.IsAny<Vacancy>()), Times.Never);
+            outerApiGeocodeService.Verify(x => x.Geocode(It.IsAny<string>()), Times.Once);
+            vacancyRepository.Verify(x => x.UpdateAsync(It.IsAny<Vacancy>()), Times.Once);
         }
         
         [Test, MoqAutoData]
@@ -393,7 +393,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.C
         }
         
         [Test, MoqAutoData]
-        public async Task Then_Locations_Already_Geocoded_Do_Not_Get_Geocoded(
+        public async Task Then_Multiple_Locations_Already_Geocoded_Get_Geocoded(
             GeocodeVacancyCommand command,
             Vacancy vacancy,
             Geocode apiResult,
@@ -418,7 +418,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.C
             await handler.Handle(command, CancellationToken.None);
             
             // assert
-            outerApiGeocodeService.Verify(x => x.Geocode(It.IsAny<string>()), Times.Once);
+            outerApiGeocodeService.Verify(x => x.Geocode(It.IsAny<string>()), Times.Exactly(2));
             vacancy.EmployerLocations.Where(x => !string.IsNullOrWhiteSpace(x.Postcode)).Should().AllSatisfy(x =>
             {
                 x.Latitude.Should().Be(apiResult.Latitude);

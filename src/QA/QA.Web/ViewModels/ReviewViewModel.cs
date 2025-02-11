@@ -47,7 +47,6 @@ namespace Esfa.Recruit.Qa.Web.ViewModels
         public string TrainingLevel { get; internal set; }
         public string ExpectedDuration { get; internal set; }
         public string WageInfo { get; internal set; }
-        public string MapUrl { get; internal set; }
         public IEnumerable<string> Qualifications { get; internal set; }
         public IEnumerable<string> Skills { get; internal set; }
         public string WageText { get; internal set; }

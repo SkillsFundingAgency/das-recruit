@@ -53,9 +53,8 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators
             mockRecruitVacancyClient.Setup(x => x.GetEmployerNameAsync(vacancy)).ReturnsAsync("employer name");
             mockRecruitVacancyClient.Setup(c => c.Validate(vacancy, It.IsAny<VacancyRuleSet>())).Returns(new EntityValidationResult());
 
-            var geocodeImageService = new Mock<IGeocodeImageService>();
             var externalLinks = new Mock<IOptions<ExternalLinksConfiguration>>();
-            var mapper = new DisplayVacancyViewModelMapper(geocodeImageService.Object, externalLinks.Object, mockRecruitVacancyClient.Object, Mock.Of<IApprenticeshipProgrammeProvider>(), Mock.Of<IFeature>());
+            var mapper = new DisplayVacancyViewModelMapper(externalLinks.Object, mockRecruitVacancyClient.Object, Mock.Of<IApprenticeshipProgrammeProvider>(), Mock.Of<IFeature>());
 
             var legalEntityAgreement = new Mock<ILegalEntityAgreementService>();
             legalEntityAgreement.Setup(l => l.HasLegalEntityAgreementAsync(vacancy.EmployerAccountId, vacancy.AccountLegalEntityPublicHashedId))
@@ -115,9 +114,8 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators
             mockRecruitVacancyClient.Setup(x => x.GetEmployerNameAsync(vacancy)).ReturnsAsync("employer name");
             mockRecruitVacancyClient.Setup(c => c.Validate(vacancy, It.IsAny<VacancyRuleSet>())).Returns(new EntityValidationResult());
 
-            var geocodeImageService = new Mock<IGeocodeImageService>();
             var externalLinks = new Mock<IOptions<ExternalLinksConfiguration>>();
-            var mapper = new DisplayVacancyViewModelMapper(geocodeImageService.Object, externalLinks.Object, mockRecruitVacancyClient.Object, Mock.Of<IApprenticeshipProgrammeProvider>(), Mock.Of<IFeature>());
+            var mapper = new DisplayVacancyViewModelMapper(externalLinks.Object, mockRecruitVacancyClient.Object, Mock.Of<IApprenticeshipProgrammeProvider>(), Mock.Of<IFeature>());
             var legalEntityAgreement = new Mock<ILegalEntityAgreementService>();            
             var utility = new Utility(mockRecruitVacancyClient.Object);
             
