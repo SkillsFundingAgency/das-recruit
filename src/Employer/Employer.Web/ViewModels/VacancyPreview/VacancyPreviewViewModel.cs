@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Linq.Expressions;
 using Esfa.Recruit.Shared.Web.Extensions;
@@ -110,6 +111,10 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview
         {
             return Review.FieldIndicators.Any(f => f.ReviewFieldIdentifier == fieldIdentifier);
         }
+
+        [Required(ErrorMessage = "You must confirm that the information is correct before submitting.")]
+        [Range(typeof(bool), "true", "true", ErrorMessage = "You must confirm that the information is correct before submitting.")]
+        public bool HasUserConfirmation { get; set; }
 
         public int IncompleteRequiredSectionCount => new []
                 {

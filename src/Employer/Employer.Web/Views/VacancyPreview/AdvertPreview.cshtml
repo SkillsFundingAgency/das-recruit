@@ -27,9 +27,10 @@
       <div class="govuk-form-group">
           <fieldset class="govuk-fieldset">
               <div class="govuk-checkboxes">
+                  <span asp-validation-for="HasUserConfirmation" class="govuk-error-message"></span>
                   <div class="govuk-checkboxes__item">
-                      <input class="govuk-checkboxes__input" type="checkbox" value="false">
-                      <label class="govuk-label govuk-checkboxes__label">
+                      <input asp-for="HasUserConfirmation" class="govuk-checkboxes__input" type="checkbox" value="false">
+                      <label asp-for="HasUserConfirmation" class="govuk-label govuk-checkboxes__label">
                           To the best of my knowledge, all information I’ve provided is correct
                       </label>
                   </div>

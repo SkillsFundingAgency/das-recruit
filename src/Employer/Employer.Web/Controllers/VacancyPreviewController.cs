@@ -89,6 +89,16 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         [HttpPost("preview", Name = RouteNames.Preview_Submit_Post)]
         public async Task<IActionResult> Submit(SubmitEditModel m)
         {
+            if (!ModelState.IsValid)
+            {
+                // If the checkbox isn't checked, redisplay the form with errors
+                var viewModel1 = await _orchestrator.GetVacancyPreviewViewModelAsync(m);
+                viewModel1.SoftValidationErrors = null;
+                viewModel1.SetSectionStates(viewModel1, ModelState);
+
+                return View(ViewNames.VacancyPreview, viewModel1);
+            }
+
             var response = await _orchestrator.SubmitVacancyAsync(m, User.ToVacancyUser());
 
             if (!response.Success)
