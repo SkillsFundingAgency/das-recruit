@@ -9,20 +9,30 @@
   <a asp-route="@RouteNames.ProviderCheckYourAnswersGet" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Back to check your answers</a>
 }
 
-<h1 class="govuk-heading-xl">Preview your vacancy</h1>
+<div class="govuk-grid-column-two-thirds-from-desktop">
+    <h1 class="govuk-heading-xl">Preview your vacancy</h1>
+    <div class="govuk-inset-text">
+        Proofread your vacancy before submitting. We might reject your vacancy if it has spelling or formatting errors.
+    </div>
+</div>
+
 <partial name="_vacancyApprenticeshipPreview" model="@Model" />
 
 
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-two-thirds">
-    <h2 class="govuk-heading-m">Now submit your vacancy</h2>
-    <p class="govuk-body">By submitting this vacancy you are confirming that, to the best of your knowledge, the details you are providing are correct.</p>
-    <div class="govuk-warning-text">
-        <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
-        <strong class="govuk-warning-text__text">
-            <span class="govuk-warning-text__assistive">Warning</span>
-            Proofread your vacancy for spelling and formatting to avoid it being rejected by our QA team.
-        </strong>
+    <h2 class="govuk-heading-m">Submit your vacancy</h2>
+    <div class="govuk-form-group">
+        <fieldset class="govuk-fieldset">
+            <div class="govuk-checkboxes">
+                <div class="govuk-checkboxes__item">
+                    <input class="govuk-checkboxes__input" type="checkbox" value="false">
+                    <label class="govuk-label govuk-checkboxes__label">
+                        To the best of my knowledge, all information I’ve provided is correct
+                    </label>
+                </div>
+            </div>
+        </fieldset>
     </div>
     <form asp-route="@RouteNames.ProviderCheckYourAnswersPost" asp-all-route-data="@Model.RouteDictionary" method="post">
       <div class="govuk-button-group">
@@ -36,7 +46,7 @@
 <div asp-show="@Model.CanDelete" class="govuk-grid-row">
   <div class="govuk-grid-column-two-thirds">
     <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
-    <p class="govuk-heading-s">No longer need this vacancy?</p>
+    <p class="govuk-heading-s">Delete this vacancy</p>
     <a asp-show="@Model.CanDelete" asp-route="@RouteNames.DeleteVacancy_Get" asp-all-route-data="@Model.RouteDictionary" class="govuk-button govuk-button--warning" esfa-automation="delete-button">Delete vacancy</a>
   </div>
 </div>
