@@ -190,8 +190,7 @@ namespace Esfa.Recruit.Provider.Web
                 )
                 .ImageSources(s =>
                     s.Self()
-                        .CustomSources("https://maps.googleapis.com",
-                            "*.google-analytics.com",
+                        .CustomSources("*.google-analytics.com",
                             "*.googletagmanager.com/",
                             "https://ssl.gstatic.com",
                             "https://www.gstatic.com/",

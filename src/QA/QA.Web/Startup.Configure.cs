@@ -67,7 +67,6 @@ namespace Esfa.Recruit.Qa.Web
                 )
                 .ImageSources(s =>
                     s.Self()
-                    .CustomSources("https://maps.googleapis.com")
                 )
                 .ReportUris(r => r.Uris("/ContentPolicyReport/Report")));
 
