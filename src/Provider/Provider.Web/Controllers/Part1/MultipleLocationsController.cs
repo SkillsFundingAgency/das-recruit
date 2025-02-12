@@ -43,6 +43,7 @@ public class MultipleLocationsController(
             PageInfo = utility.GetPartOnePageInfo(vacancy),
             SelectedAvailability = vacancy.EmployerLocation is not null ? AvailableWhere.OneLocation : null,
             VacancyId = vacancyRouteModel.VacancyId,
+            IsTaskListCompleted = utility.IsTaskListCompleted(vacancy)
         };
         viewModel.PageInfo.SetWizard(wizard);
         

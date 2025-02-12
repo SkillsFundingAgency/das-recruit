@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Esfa.Recruit.Provider.Web.Configuration.Routing;
 using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Shared.Web.ViewModels;
 using Esfa.Recruit.Shared.Web.ViewModels.Validations;
@@ -69,5 +70,16 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.Part1.Dates
 
         public EntityValidationResult SoftValidationErrors { get; set; }
         public string Title { get; set; }
+        public string PageBackLink
+        {
+            get
+            {
+                return IsTaskListCompleted
+                    ? RouteNames.ProviderCheckYourAnswersGet
+                    : RouteNames.ProviderTaskListGet;
+            }
+        }
+
+        public bool IsTaskListCompleted { get; set; }
     }
 }
