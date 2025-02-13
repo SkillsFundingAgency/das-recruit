@@ -3,7 +3,7 @@
 @model ReviewViewModel
 
 <div class="govuk-grid-row">
-    <div class="govuk-grid-column-one-half">
+    <div class="govuk-grid-column-full">
         <div class="@Model.EmployerAddressClass" id="@FieldIdentifiers.EmployerAddress">
             <h3 class="govuk-heading-s">Location</h3>
             <ul class="govuk-list">
@@ -19,8 +19,5 @@
                                       asp-items="@Model.FieldIdentifiers"></esfa-review-checkbox>
             }
         </div>
-    </div>
-    <div class="govuk-grid-column-one-half">
-        <img id="static-map" src="@Model.MapUrl" alt="Location map" />
     </div>
 </div>
