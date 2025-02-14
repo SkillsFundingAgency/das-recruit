@@ -107,7 +107,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.AnalyticsSummaryProcessor
 
                         var summary = new VacancyAnalyticsSummary
                         {
-                            VacancyReference = reader.GetInt64(VacancyReferenceColumnIndex),
+                            VacancyReference = reader.GetInt32(VacancyReferenceColumnIndex),
 
                             NoOfApprenticeshipSearches = reader.GetInt32(NoOfApprenticeshipSearchesColumnIndex),
                             NoOfApprenticeshipSearchesSevenDaysAgo = reader.GetInt32(NoOfApprenticeshipSearchesSevenDaysAgoColumnIndex),

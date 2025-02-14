@@ -32,19 +32,19 @@ public class AnalyticsAggregator(IOuterApiClient apiClient, ITimeProvider timePr
             {
                 VacancyReference = vacancyAnalyticsV2QueueMessage.VacancyReference,
                 ViewType = nameof(VacancyAnalyticsSummaryV2),
-                VacancyAnalytics = new List<VacancyAnalytics>()
+                VacancyAnalytics = []
             };
         }
         if (metrics?.VacancyAnalytics?.FirstOrDefault(c=>c.AnalyticsDate == startDate)!= null)
         {
-            metrics.VacancyAnalytics.First(c=>c.AnalyticsDate == startDate).ApplicationStartedCount = vacancyAnalyticsV2QueueMessage.ApplicationStartedCount;
-            metrics.VacancyAnalytics.First(c=>c.AnalyticsDate == startDate).ViewsCount = vacancyAnalyticsV2QueueMessage.ViewsCount;
-            metrics.VacancyAnalytics.First(c=>c.AnalyticsDate == startDate).ApplicationSubmittedCount = vacancyAnalyticsV2QueueMessage.ApplicationSubmittedCount;
-            metrics.VacancyAnalytics.First(c=>c.AnalyticsDate == startDate).SearchResultsCount = vacancyAnalyticsV2QueueMessage.SearchResultsCount;
+            metrics.VacancyAnalytics.First(c=>c.AnalyticsDate == startDate).ApplicationStartedCount += vacancyAnalyticsV2QueueMessage.ApplicationStartedCount;
+            metrics.VacancyAnalytics.First(c=>c.AnalyticsDate == startDate).ViewsCount += vacancyAnalyticsV2QueueMessage.ViewsCount;
+            metrics.VacancyAnalytics.First(c=>c.AnalyticsDate == startDate).ApplicationSubmittedCount += vacancyAnalyticsV2QueueMessage.ApplicationSubmittedCount;
+            metrics.VacancyAnalytics.First(c=>c.AnalyticsDate == startDate).SearchResultsCount += vacancyAnalyticsV2QueueMessage.SearchResultsCount;
         }
         else
         {
-            metrics.VacancyAnalytics.Add(new VacancyAnalytics
+            metrics.VacancyAnalytics?.Add(new VacancyAnalytics
             {
                 AnalyticsDate = startDate,
                 ApplicationStartedCount = vacancyAnalyticsV2QueueMessage.ApplicationStartedCount,
@@ -66,7 +66,7 @@ public class AnalyticsAggregator(IOuterApiClient apiClient, ITimeProvider timePr
         
         return new VacancyAnalyticsSummary
         {
-            VacancyReference = vacancyAnalyticsV2QueueMessage.VacancyReference,
+            VacancyReference = Convert.ToInt32(vacancyAnalyticsV2QueueMessage.VacancyReference),
             NoOfApprenticeshipSearches = metrics.VacancyAnalytics.Sum(c=>c.SearchResultsCount),
             NoOfApprenticeshipSearchesSevenDaysAgo = sevenDaysAgoTotals.Sum(c=>c.SearchResultsCount),
             NoOfApprenticeshipSearchesSixDaysAgo = sixDaysAgoTotals.Sum(c=>c.SearchResultsCount),
