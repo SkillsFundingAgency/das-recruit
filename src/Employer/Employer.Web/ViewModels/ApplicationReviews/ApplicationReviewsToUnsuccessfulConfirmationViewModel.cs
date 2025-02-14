@@ -16,5 +16,6 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.ApplicationReviews
         public string ApplicationReviewsConfirmationHeaderDescription => IsMultipleApplications ? "You will make these applications unsuccessful:" : "You will make this application unsuccessful:";
         public string ApplicationsReviewsConfirmationNotificationMessage => IsMultipleApplications ? "These applicants will be notified with this message:" : "This applicant will be notified with this message:";
         public string ApplicationsReviewsConfirmationLegendMessage => IsMultipleApplications ? "Do you want to make these applications unsuccessful?" : "Do you want to make this application unsuccessful?";
+        public string CandidateFeedback { get; set; }
     }
 }

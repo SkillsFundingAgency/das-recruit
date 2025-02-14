@@ -34,7 +34,7 @@
 
         <form method="post" id="unsuccessfu_applications_actions_form" asp-route="@RouteNames.ApplicationReviewsToUnsuccessful_Post" asp-route-ukprn="@Model.Ukprn" asp-route-vacancyId="@Model.VacancyId">
             <div class="govuk-form-group" id="ApplicationsToUnsuccessful">
-                <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState}' />
+                <partial name="@PartialNames.ValidationSummary" model="@(new ValidationSummaryViewModel { ModelState = ViewData.ModelState})" />
                 <fieldset class="govuk-fieldset">
 
                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
@@ -65,7 +65,7 @@
 
                                                 <div class="govuk-checkboxes govuk-checkboxes--small" das-highlight-error-for="@vacancyApplication.ApplicationReviewId" error-class="govuk-form-group--error">
                                                     <div class="govuk-checkboxes__item">
-                                                        <input class="govuk-checkboxes__input" id="application_select_@vacancyApplication.ApplicationReviewId" error-class="govuk-input--error" name="ApplicationsToUnsuccessful" type="checkbox" value="@vacancyApplication.ApplicationReviewId">
+                                                        <input class="govuk-checkboxes__input" id="application_select_@vacancyApplication.ApplicationReviewId" error-class="govuk-input--error" name="ApplicationsToUnsuccessful" type="checkbox" value="@vacancyApplication.ApplicationReviewId" checked="@vacancyApplication.Selected">
                                                         <label class="govuk-label govuk-checkboxes__label" for="application_select_@vacancyApplication.ApplicationReviewId">
                                                             <span class="govuk-visually-hidden">@vacancyApplication.ApplicationReviewId</span>
                                                         </label>

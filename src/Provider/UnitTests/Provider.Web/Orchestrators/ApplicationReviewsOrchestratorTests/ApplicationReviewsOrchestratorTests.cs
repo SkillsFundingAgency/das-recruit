@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture;
+using AutoFixture.NUnit3;
 using Esfa.Recruit.Provider.Web.Controllers;
 using Esfa.Recruit.Provider.Web.Models.ApplicationReviews;
 using Esfa.Recruit.Provider.Web.Orchestrators;
@@ -60,6 +61,9 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Application
                 .ReturnsAsync(vacancy);
             _vacancyClient.Setup(x => x.GetVacancyApplicationsSortedAsync(vacancy.VacancyReference.Value, It.Is<SortColumn>(x => x.Equals(sortColumn)), It.Is<SortOrder>(x => x.Equals(sortOrder)), false))
                 .ReturnsAsync(applications.AsQueryable().Sort(sortColumn, sortOrder, false).Select(c => (VacancyApplication)c).ToList());
+            _vacancyClient
+                .Setup(x => x.GetVacancyApplicationsForReferenceAndStatus(routeModel.VacancyId.Value,
+                    ApplicationReviewStatus.PendingToMakeUnsuccessful)).ReturnsAsync(new List<VacancyApplication>());
 
             // Act
             var viewModel = await _orchestrator.GetApplicationReviewsToUnsuccessfulViewModelAsync(routeModel, sortColumn, sortOrder);
@@ -73,23 +77,23 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Application
             Assert.That(viewModel.VacancyApplications[1].SubmittedDate, Is.GreaterThan(viewModel.VacancyApplications[2].SubmittedDate));
         }
 
-        [Test]
-        public async Task GetApplicationReviewsToUnsuccessfulConfirmationViewModel_ReturnsViewModelWithCorrectData()
+        [Test, MoqAutoData]
+        public async Task GetApplicationReviewsToUnsuccessfulConfirmationViewModel_ReturnsViewModelWithCorrectData(
+            List<VacancyApplication> vacancyApplications,
+            ApplicationReviewsToUnsuccessfulRouteModel request,
+            [Frozen] Mock<IRecruitVacancyClient> vacancyClient,
+            ApplicationReviewsOrchestrator orchestrator)
         {
-            var request = _fixture.Create<ApplicationReviewsToUnsuccessfulRouteModel>();
-            var vacancyApplication1 = _fixture.Create<VacancyApplication>();
-            var vacancyApplication2 = _fixture.Create<VacancyApplication>();
-            var vacancyApplications = new List<VacancyApplication> { };
-            vacancyApplications.Add(vacancyApplication1);
-            vacancyApplications.Add(vacancyApplication2);
-
-            _vacancyClient.Setup(x => x.GetVacancyApplicationsForSelectedIdsAsync(request.ApplicationsToUnsuccessful))
+            vacancyClient.Setup(x => x.GetVacancyApplicationsForReferenceAndStatus(request.VacancyId.Value,
+                    ApplicationReviewStatus.PendingToMakeUnsuccessful))
                 .ReturnsAsync(vacancyApplications);
 
-            var viewModel = await _orchestrator.GetApplicationReviewsToUnsuccessfulConfirmationViewModel(request);
+            var viewModel = await orchestrator.GetApplicationReviewsToUnsuccessfulConfirmationViewModel(request);
 
+            viewModel.ApplicationsToUnsuccessful.Should().BeEquivalentTo(vacancyApplications);
+            viewModel.CandidateFeedback.Should().Be(vacancyApplications.First().CandidateFeedback);
             Assert.That(viewModel.ApplicationsToUnsuccessful, Is.Not.Empty);
-            Assert.That(viewModel.ApplicationsToUnsuccessful.Count(), Is.EqualTo(vacancyApplications.Count()));
+            Assert.That(viewModel.ApplicationsToUnsuccessful.Count(), Is.EqualTo(vacancyApplications.Count));
             Assert.That(viewModel.Ukprn, Is.EqualTo(request.Ukprn));
             Assert.That(viewModel.VacancyId, Is.EqualTo(request.VacancyId));
         }
@@ -116,6 +120,9 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Application
                 .ReturnsAsync(vacancy);
             _vacancyClient.Setup(x => x.GetVacancyApplicationsSortedAsync(vacancy.VacancyReference.Value, It.IsAny<SortColumn>(), It.IsAny<SortOrder>(), false))
                 .ReturnsAsync(vacancyApplications);
+            _vacancyClient
+                .Setup(x => x.GetVacancyApplicationsForReferenceAndStatus(routeModel.VacancyId.Value,
+                    ApplicationReviewStatus.PendingShared)).ReturnsAsync(vacancyApplications);
 
             // Act
             var viewModel = await _orchestrator.GetApplicationReviewsToShareViewModelAsync(routeModel, SortColumn.Name, SortOrder.Ascending);
@@ -150,6 +157,9 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Application
                 .ReturnsAsync(vacancy);
             _vacancyClient.Setup(x => x.GetVacancyApplicationsSortedAsync(vacancy.VacancyReference.Value, It.IsAny<SortColumn>(), It.IsAny<SortOrder>(), false))
                 .ReturnsAsync(vacancyApplications);
+            _vacancyClient
+                .Setup(x => x.GetVacancyApplicationsForReferenceAndStatus(routeModel.VacancyId.Value,
+                    ApplicationReviewStatus.PendingShared)).ReturnsAsync(vacancyApplications);
 
             // Act
             var viewModel = await _orchestrator.GetApplicationReviewsToShareViewModelAsync(routeModel, SortColumn.Name, SortOrder.Ascending);
@@ -172,7 +182,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Application
             vacancyApplications.Add(vacancyApplication1);
             vacancyApplications.Add(vacancyApplication2);
 
-            _vacancyClient.Setup(x => x.GetVacancyApplicationsForSelectedIdsAsync(request.ApplicationsToShare))
+            _vacancyClient.Setup(x => x.GetVacancyApplicationsForReferenceAndStatus(request.VacancyId!.Value,ApplicationReviewStatus.PendingShared))
                 .ReturnsAsync(vacancyApplications);
 
             // Act
