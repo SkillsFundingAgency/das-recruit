@@ -1,6 +1,4 @@
-using System;
 using System.Security.Claims;
-using System.Threading.Tasks;
 using AutoFixture.NUnit3;
 using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
@@ -10,13 +8,9 @@ using Esfa.Recruit.Employer.Web.ViewModels.DeleteVacancy;
 using Esfa.Recruit.Shared.Web.ViewModels;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
-using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using Moq;
-using NUnit.Framework;
-using SFA.DAS.Testing.AutoFixture;
 
 namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Controllers;
 

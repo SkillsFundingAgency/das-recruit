@@ -264,20 +264,18 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                     .RunCondition(VacancyRuleSet.EmployerAddress);
             });
 
-            // TODO: this will be required for the other validation scenarios
-            // When(v => v.EmployerLocationOption == AvailableWhere.OneLocation, () =>
-            // {
-            //     RuleFor(x => x.EmployerLocations)
-            //         .NotNull()
-            //         .Must(x => x.Count == 1)
-            //         .WithMessage("Select a location")
-            //         .WithState(_ => VacancyRuleSet.EmployerAddress)
-            //         .RunCondition(VacancyRuleSet.EmployerAddress);
-            //     
-            //     RuleForEach(x => x.EmployerLocations)
-            //         .SetValidator(new AddressValidator((long)VacancyRuleSet.EmployerAddress))
-            //         .RunCondition(VacancyRuleSet.EmployerAddress);
-            // });
+            When(v => v.EmployerLocationOption == AvailableWhere.OneLocation, () =>
+            {
+                RuleFor(x => x.EmployerLocations)
+                    .Must(x => x is { Count: 1 })
+                    .WithMessage("Select a location")
+                    .WithState(_ => VacancyRuleSet.EmployerAddress)
+                    .RunCondition(VacancyRuleSet.EmployerAddress);
+                
+                RuleForEach(x => x.EmployerLocations)
+                    .SetValidator(new AddressValidator((long)VacancyRuleSet.EmployerAddress))
+                    .RunCondition(VacancyRuleSet.EmployerAddress);
+            });
             
             When(v => v.EmployerLocationOption == AvailableWhere.MultipleLocations, () =>
             {
@@ -290,6 +288,21 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                 
                 RuleForEach(x => x.EmployerLocations)
                     .SetValidator(new AddressValidator((long)VacancyRuleSet.EmployerAddress))
+                    .RunCondition(VacancyRuleSet.EmployerAddress);
+            });
+
+            When(v => v.EmployerLocationOption == AvailableWhere.AcrossEngland, () =>
+            {
+                RuleFor(x => x.EmployerLocationInformation)
+                    .NotNull()
+                    .WithMessage("Add more information about where the apprentice will work")
+                    .WithState(_ => VacancyRuleSet.EmployerAddress)
+                    .MaximumLength(500)
+                    .WithMessage("Information about where the apprentice will work must be 500 characters or less")
+                    .WithState(_ => VacancyRuleSet.EmployerAddress)
+                    .ProfanityCheck(_profanityListProvider)
+                    .WithMessage($"Additional information must not contain a banned word or phrase")
+                    .WithState(_ => VacancyRuleSet.EmployerAddress)
                     .RunCondition(VacancyRuleSet.EmployerAddress);
             });
         }

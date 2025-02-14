@@ -10,6 +10,7 @@ public class LocationAvailabilityViewModel : VacancyRouteModel
     public string ApprenticeshipTitle { get; init; }
     public bool CanShowBackLink { get; internal set; }
     public PartOnePageInfoViewModel PageInfo { get; init; }
+    public ReviewSummaryViewModel Review { get; set; } = new ();
     public AvailableWhere? SelectedAvailability { get; init; }
     public string PageBackLink
     {

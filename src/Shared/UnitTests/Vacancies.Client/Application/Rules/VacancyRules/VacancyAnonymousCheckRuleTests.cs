@@ -1,8 +1,6 @@
-﻿using System.Threading.Tasks;
-using Esfa.Recruit.Vacancies.Client.Application.Rules;
+﻿using Esfa.Recruit.Vacancies.Client.Application.Rules;
 using Esfa.Recruit.Vacancies.Client.Application.Rules.VacancyRules;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using FluentAssertions;
 using Xunit;
 
 namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.Rules.VacancyRules

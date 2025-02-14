@@ -1,16 +1,12 @@
-using System;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
-using FluentAssertions;
-using Xunit;
 using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
-using System.Threading.Tasks;
 
 namespace Esfa.Recruit.UnitTests.Employer.Web.Orchestrators.CloneVacancyOrchestratorTest
 {
     public class GetCloneVacancyDatesQuestionViewModelAsyncTests : CloneVacancyOrchestratorTestBase
     {
-        [Fact]
+        [Test]
         public async Task WhenClosingDateIsInPast_ThenThrowInvalidStateException()
         {
             var vacancy = SourceVacancy;
@@ -18,11 +14,13 @@ namespace Esfa.Recruit.UnitTests.Employer.Web.Orchestrators.CloneVacancyOrchestr
             vacancy.ClosingDate = DateTime.UtcNow.AddDays(-1);
 
             var sut = GetSut(vacancy);
-
-            await Assert.ThrowsAsync<InvalidStateException>(() => sut.GetCloneVacancyDatesQuestionViewModelAsync(VRM));
+            
+            var act = () => sut.GetCloneVacancyDatesQuestionViewModelAsync(VRM);
+            
+            await act.Should().ThrowAsync<InvalidStateException>();
         }
 
-        [Fact]
+        [Test]
         public async Task ThenReturnsViewModelWithDates()
         {
             var vacancy = SourceVacancy;

@@ -1,0 +1,54 @@
+﻿@using Esfa.Recruit.Provider.Web.ViewModels.Part1.MultipleLocations
+@using Esfa.Recruit.Shared.Web.TagHelpers
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model Esfa.Recruit.Provider.Web.ViewModels.Part1.RecruitNationally.RecruitNationallyViewModel;
+
+@{ 
+    ViewBag.GaData.Vpv = "/recruitment/provider/page-create-vacancy-location";
+    ViewBag.Title = "Recruit across all of England";
+}
+
+@section BackLink {
+    <a asp-route="@RouteNames.MultipleLocations_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Back</a>
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <partial name="@PartialNames.ValidationSummary" model=@(new ValidationSummaryViewModel { ModelState = ViewData.ModelState }) />
+        <partial name="@PartialNames.ReviewSummary" for="Review"/>
+        
+        <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">
+            <span class="govuk-caption-l">@Model.ApprenticeshipTitle</span>
+            Recruit across all of England
+        </h1>
+        
+        <p class="govuk-body">Add more information to recruit nationally.</p>
+        <p class="govuk-body">Explain if your apprenticeship:</p>
+        <ul class="govuk-list govuk-list--bullet govuk-!-margin-bottom-5">
+            <li>is available in many locations across England</li>
+            <li>is remote working</li>
+            <li>provides live-in accommodation</li>
+        </ul>
+
+        <form asp-route="@RouteNames.RecruitNationally_Post" asp-all-route-data="@Model.RouteDictionary" asp-route-wizard="@Model.PageInfo.IsWizard">
+            <div class="govuk-character-count" data-module="govuk-character-count" data-maxlength="500" id="@nameof(LocationAvailabilityViewModel.SelectedAvailability)">
+                <div esfa-validation-marker-for="AdditionalInformation" class="govuk-form-group">
+                    <h2 class="govuk-heading-m">
+                        <label asp-for="AdditionalInformation">
+                            Add more information about where the apprentice will work
+                        </label>
+                    </h2>
+                    <span esfa-validation-message-for="AdditionalInformation" class="govuk-error-message"></span>
+                    <textarea class="govuk-textarea govuk-js-character-count" asp-for="AdditionalInformation" rows="5" aria-describedby="AdditionalInformation-info"></textarea>
+                </div>
+                <div id="AdditionalInformation-info" class="govuk-hint govuk-character-count__message" aria-live="polite">
+                    You can enter up to 500 characters
+                </div>
+            </div>
+            <div class="govuk-button-group">
+                <button type="submit" esfa-automation="btn-continue" class="govuk-button save-button">Save and continue</button>
+                <a asp-route="@RouteNames.Dashboard_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-cancel" class="govuk-link govuk-link--no-visited-state">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>

@@ -7,6 +7,7 @@ using Esfa.Recruit.Vacancies.Client.Application.Rules.BaseRules;
 using Esfa.Recruit.Vacancies.Client.Application.Rules.Engine;
 using Esfa.Recruit.Vacancies.Client.Application.Rules.Extensions;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.Rules.VacancyRules
 {
@@ -32,10 +33,18 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Rules.VacancyRules
             var outcomes = new List<RuleOutcome>();
             outcomes.AddRange(BannedPhraseCheck(() => subject.Title));
             outcomes.AddRange(BannedPhraseCheck(() => subject.ShortDescription));
-            outcomes.AddRange(BannedPhraseCheck(() => subject.EmployerLocation.AddressLine1));
-            outcomes.AddRange(BannedPhraseCheck(() => subject.EmployerLocation.AddressLine2));
-            outcomes.AddRange(BannedPhraseCheck(() => subject.EmployerLocation.AddressLine3));
-            outcomes.AddRange(BannedPhraseCheck(() => subject.EmployerLocation.AddressLine4));
+            if (subject.EmployerLocation is not null)
+            {
+                outcomes.AddRange(BannedPhraseCheck(() => subject.EmployerLocation.AddressLine1));
+                outcomes.AddRange(BannedPhraseCheck(() => subject.EmployerLocation.AddressLine2));
+                outcomes.AddRange(BannedPhraseCheck(() => subject.EmployerLocation.AddressLine3));
+                outcomes.AddRange(BannedPhraseCheck(() => subject.EmployerLocation.AddressLine4));
+            }
+            if (subject.EmployerLocations is { Count: > 0 })
+            {
+                outcomes.AddRange(BannedPhraseCheck(() => subject.EmployerLocations.Select(x => x.Flatten()).ToDelimitedString(", "), "EmployerLocations"));
+            }
+            outcomes.AddRange(BannedPhraseCheck(() => subject.EmployerLocationInformation));
             outcomes.AddRange(BannedPhraseCheck(() => subject.Wage.WorkingWeekDescription));
             outcomes.AddRange(BannedPhraseCheck(() => subject.Wage.WageAdditionalInformation));
             outcomes.AddRange(BannedPhraseCheck(() => subject.Description));

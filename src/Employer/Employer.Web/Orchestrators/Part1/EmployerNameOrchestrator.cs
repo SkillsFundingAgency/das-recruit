@@ -80,17 +80,12 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             return vm;
         }
 
-
         public async Task<OrchestratorResponse> PostEmployerNameEditModelAsync(
             EmployerNameEditModel model, VacancyUser user)
         {
             var validationRules = VacancyRuleSet.EmployerNameOption;
-
             var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(model, RouteNames.EmployerName_Post);
-            
-            vacancy.EmployerNameOption =  model.SelectedEmployerIdentityOption.HasValue 
-                ? model.SelectedEmployerIdentityOption.Value.ConvertToDomainOption()
-                : (EmployerNameOption?) null;
+            vacancy.EmployerNameOption =  model.SelectedEmployerIdentityOption?.ConvertToDomainOption();
 
             // temporarily set the employer name for validation
             EmployerProfile profile = null;
@@ -109,7 +104,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                 vacancy.AnonymousReason = model.AnonymousReason;
                 _vmPropertyToMapEmployerNameTo = vm => vm.AnonymousName;
             }
-
+            
             return await ValidateAndExecute(
                 vacancy, 
                 v => _recruitVacancyClient.Validate(v, validationRules),
@@ -131,12 +126,12 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
         protected override EntityToViewModelPropertyMappings<Vacancy, EmployerNameEditModel> DefineMappings()
         {
             var mappings = new EntityToViewModelPropertyMappings<Vacancy, EmployerNameEditModel>();
-
-            if(_vmPropertyToMapEmployerNameTo != null)
+            if (_vmPropertyToMapEmployerNameTo != null)
+            {
                 mappings.Add(v => v.EmployerName, _vmPropertyToMapEmployerNameTo);
+            }
 
             mappings.Add(v => v.EmployerNameOption, vm => vm.SelectedEmployerIdentityOption);
-
             return mappings;
         }
     }    

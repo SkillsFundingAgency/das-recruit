@@ -1,0 +1,62 @@
+﻿@using Esfa.Recruit.Shared.Web.TagHelpers
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+
+@model Esfa.Recruit.Employer.Web.ViewModels.Part1.AddLocation.SelectLocationViewModel
+
+@{
+    ViewBag.Vpv = "/recruitment/employer/page-part1-location";
+    ViewBag.Title = "Select an address";
+    ViewBag.ZenDeskLabel = "recruit-where-will-the-apprentice-work";
+
+    var countText = Model.Locations.Count() switch
+    {
+        0 => "No addresses found",
+        1 => "1 address found",
+        var count => $"{count} addresses found"
+    };
+}
+
+@section BackLink {
+    <a asp-route="@RouteNames.AddLocation_Get" asp-all-route-data="@Model.RouteDictionary" asp-route-wizard="@Model.PageInfo.IsWizard" asp-route-origin="@Model.Origin" esfa-automation="link-back" class="govuk-back-link">Back</a>
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <partial name="@PartialNames.ValidationSummary" model=@(new ValidationSummaryViewModel { ModelState = ViewData.ModelState }) />
+        <form asp-route="@RouteNames.SelectAnAddress_Post" asp-all-route-data="@Model.RouteDictionary" asp-route-wizard="@Model.PageInfo.IsWizard" asp-route-origin="@Model.Origin">
+
+            <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">
+                <span class="govuk-caption-l">@Model.ApprenticeshipTitle</span>
+                Select an address
+            </h1>
+            <h2 class="govuk-heading-m govuk-!-margin-bottom-1">Postcode</h2>
+            <p class="govuk-body">
+                <span class="govuk-!-font-weight-bold">@Model.Postcode</span>&nbsp;
+                <a asp-route="@RouteNames.AddLocation_Get" asp-all-route-data="@Model.RouteDictionary" asp-route-wizard="@Model.PageInfo.IsWizard" asp-route-origin="@Model.Origin" class="govuk-link govuk-link--no-visited-state">Change</a>
+            </p>
+
+            <div class="govuk-form-group">
+                <div esfa-validation-marker-for="SelectedLocation" class="govuk-form-group address-item">
+                    <label asp-show="true" asp-for="SelectedLocation" class="govuk-label">@countText</label>
+                    <span esfa-validation-message-for="SelectedLocation" class="govuk-error-message"></span>
+                    <select class="govuk-select" asp-for="SelectedLocation" name="SelectedLocation">
+                        <option value="">Select your address</option>
+                        @foreach (var location in Model.Locations)
+                        {
+                            <option value="@location">@location</option>
+                        }
+                    </select>
+                </div>
+                <p class="govuk-body govuk-!-padding-top-5">
+                    <a asp-route="@RouteNames.EnterAddressManually_Get" asp-all-route-data="@Model.RouteDictionary" asp-route-wizard="@Model.PageInfo.IsWizard" asp-route-origin="@Model.Origin" class="govuk-link govuk-link--no-visited-state">Enter address manually</a>
+                </p>
+            </div>
+            <div class="govuk-button-group">
+                <button type="submit" class="govuk-button save-button" esfa-automation="continue-button">Save and continue</button>
+                <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Dashboard_Get" asp-route-employerAccountId="@Model.EmployerAccountId" class="govuk-link govuk-link--no-visited-state">Cancel</a>
+                <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.EmployerCheckYourAnswersGet" asp-all-route-data="@Model.RouteDictionary" class="govuk-link govuk-link--no-visited-state">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+

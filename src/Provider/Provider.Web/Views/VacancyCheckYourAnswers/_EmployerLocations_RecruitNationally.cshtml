@@ -1,0 +1,31 @@
+﻿@using Esfa.Recruit.Provider.Web.TagHelpers
+@using Esfa.Recruit.Shared.Web.Mappers
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+
+@model Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview.VacancyPreviewViewModel
+
+<div id="@FieldIdentifiers.EmployerAddress">
+    <div id="@FieldIdentifiers.EmployerAddress">
+        <field-review-message field-name="@FieldIdentifiers.EmployerAddress" model="@Model"></field-review-message>
+        <div field-review-marker="AvailableLocations">
+            <div class="app-summary-list__row app-summary-list__row--no-border">
+                <dt class="app-summary-list__key">Where is this apprenticeship available?</dt>
+                <dd class="app-summary-list__value">Across all of England</dd>
+                <dd class="app-summary-list__actions">
+                    <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.MultipleLocations_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="change-location">
+                        Change<span class="govuk-visually-hidden"> location</span>
+                    </a>
+                </dd>
+            </div>
+
+            <div class="app-summary-list__row">
+                <dt class="app-summary-list__key">Add more information about where the apprentice will work</dt>
+                <dd class="app-summary-list__value">
+                    @Model.LocationInformation
+                    <field-review-tag class="govuk-tag--orange" field-name="@FieldIdentifiers.EmployerAddress" tag-name="strong" model="@Model"/>
+                </dd>
+                <dd class="app-summary-list__actions"></dd>
+            </div>
+        </div>
+    </div>
+</div>

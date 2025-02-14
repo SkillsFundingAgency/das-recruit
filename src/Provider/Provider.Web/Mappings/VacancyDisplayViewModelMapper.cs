@@ -78,7 +78,10 @@ namespace Esfa.Recruit.Provider.Web.Mappings
             vm.EmployerDescription = vacancy.EmployerDescription;
             vm.EmployerName = await _vacancyClient.GetEmployerNameAsync(vacancy);
             vm.EmployerWebsiteUrl = vacancy.EmployerWebsiteUrl;
-            vm.EmployerAddressElements = Enumerable.Empty<string>();
+            vm.EmployerAddressElements = [];
+            vm.AvailableLocations = vacancy.EmployerLocations ?? [];
+            vm.AvailableWhere = vacancy.EmployerLocationOption;
+            vm.LocationInformation = vacancy.EmployerLocationInformation;
             vm.EmployerRejectedReason = vacancy.EmployerRejectedReason;
             vm.EmployerReviewFieldIndicators = vacancy.EmployerReviewFieldIndicators;
             vm.FindAnApprenticeshipUrl = _externalLinksConfiguration.FindAnApprenticeshipUrl;

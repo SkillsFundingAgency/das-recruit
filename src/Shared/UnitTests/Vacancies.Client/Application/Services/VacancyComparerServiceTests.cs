@@ -1,31 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Esfa.Recruit.Vacancies.Client.Application.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Services.VacancyComparer;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using FluentAssertions;
-using Xunit;
+using NUnit.Framework;
 
-namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.Services
+namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.Services
 {
     public class VacancyComparerServiceTests
     {
-        public static class ComparisonDataSource
+        private static IEnumerable<object[]> TestCases => new List<object[]>
         {
-            public static IEnumerable<object[]> TestData => new List<object[]>
-            {
-                new object[] {CreateVacancy(), CreateEmptyVacancy(), false},
-                new object[] {CreateVacancy(), CreateChangedVacancy(), false},
-                new object[] {CreateVacancy(), CreateVacancy(), true}
-            };
-        }
-
-        [Theory]
-        [MemberData(nameof(ComparisonDataSource.TestData), MemberType = typeof(ComparisonDataSource))]
+            new object[] {CreateVacancy(), CreateEmptyVacancy(), false},
+            new object[] {CreateVacancy(), CreateChangedVacancy(), false},
+            new object[] {CreateVacancy(), CreateVacancy(), true}
+        };
+        
+        [TestCaseSource(nameof(TestCases))]
         public void ShouldCompare(Vacancy a, Vacancy b, bool expectedAreEqual)
         {
-
             var sut = new VacancyComparerService();
 
             var result = sut.Compare(a, b);
@@ -47,6 +40,8 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.Services
             result.Fields.Single(f => f.FieldName == FieldIdResolver.ToFieldId(v => v.EmployerLocation.AddressLine3)).AreEqual.Should().Be(expectedAreEqual);
             result.Fields.Single(f => f.FieldName == FieldIdResolver.ToFieldId(v => v.EmployerLocation.AddressLine4)).AreEqual.Should().Be(expectedAreEqual);
             result.Fields.Single(f => f.FieldName == FieldIdResolver.ToFieldId(v => v.EmployerLocation.Postcode)).AreEqual.Should().Be(expectedAreEqual);
+            result.Fields.Single(f => f.FieldName == FieldIdResolver.ToFieldId(v => v.EmployerLocations)).AreEqual.Should().Be(expectedAreEqual);
+            result.Fields.Single(f => f.FieldName == FieldIdResolver.ToFieldId(v => v.EmployerLocationInformation)).AreEqual.Should().Be(expectedAreEqual);
             result.Fields.Single(f => f.FieldName == FieldIdResolver.ToFieldId(v => v.EmployerName)).AreEqual.Should().Be(expectedAreEqual);
             result.Fields.Single(f => f.FieldName == FieldIdResolver.ToFieldId(v => v.EmployerWebsiteUrl)).AreEqual.Should().Be(expectedAreEqual);
             result.Fields.Single(f => f.FieldName == FieldIdResolver.ToFieldId(v => v.NumberOfPositions)).AreEqual.Should().Be(expectedAreEqual);
@@ -95,6 +90,15 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.Services
                     AddressLine4 = "address line 4",
                     Postcode = "post code"
                 },
+                EmployerLocations = [new Address
+                {
+                    AddressLine1 = "address line 1",
+                    AddressLine2 = "address line 2",
+                    AddressLine3 = "address line 3",
+                    AddressLine4 = "address line 4",
+                    Postcode = "post code"
+                }],
+                EmployerLocationInformation = "employer location information",
                 EmployerName = "employer name",
                 EmployerWebsiteUrl = "employer website",
                 NumberOfPositions = 5,
@@ -155,6 +159,15 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.Services
                     AddressLine4 = "address line 4 CHANGED",
                     Postcode = "post code CHANGED"
                 },
+                EmployerLocations = [new Address
+                {
+                    AddressLine1 = "address line 1 CHANGED",
+                    AddressLine2 = "address line 2 CHANGED",
+                    AddressLine3 = "address line 3 CHANGED",
+                    AddressLine4 = "address line 4 CHANGED",
+                    Postcode = "post code CHANGED"
+                }],
+                EmployerLocationInformation = "employer location information CHANGED",
                 EmployerName = "employer name CHANGED",
                 EmployerWebsiteUrl = "employer website CHANGED",
                 NumberOfPositions = 6,
@@ -202,6 +215,8 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.Services
                 EmployerContact = null,
                 EmployerDescription = null,
                 EmployerLocation = null,
+                EmployerLocations = null,
+                EmployerLocationInformation = null,
                 EmployerName = null,
                 EmployerWebsiteUrl = null,
                 NumberOfPositions = null,

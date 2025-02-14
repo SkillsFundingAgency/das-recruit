@@ -1,13 +1,8 @@
-﻿using System.Threading.Tasks;
-using AutoFixture;
-using Microsoft.AspNetCore.Mvc;
-using Moq;
-using NUnit.Framework;
+﻿using Microsoft.AspNetCore.Mvc;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyApplications;
 using System.Collections.Generic;
 using System.Linq;
-using System;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
@@ -17,12 +12,9 @@ using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.ViewModels.ApplicationReviews;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Shared.Web.ViewModels.Validations.Fluent;
-using FluentAssertions;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent;
-using FluentValidation;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
-using static Microsoft.ApplicationInsights.MetricDimensionNames.TelemetryContext;
 using Esfa.Recruit.Shared.Web.ViewModels;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Extensions;
 

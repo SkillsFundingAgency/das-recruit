@@ -1,7 +1,5 @@
-﻿using System;
-using System.Globalization;
+﻿using System.Globalization;
 using System.Linq;
-using System.Threading.Tasks;
 using Esfa.Recruit.Employer.UnitTests.Employer.Web.HardMocks;
 using Esfa.Recruit.Employer.Web;
 using Esfa.Recruit.Employer.Web.Orchestrators.Part1;
@@ -13,10 +11,7 @@ using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
-using FluentAssertions;
 using Microsoft.Extensions.Logging;
-using Moq;
-using Xunit;
 
 namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part1
 {
@@ -24,16 +19,16 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part1
     {
         private DatesOrchestratorTestsFixture _fixture;
 
-        public DatesOrchestratorTests()
+        [SetUp]
+        public void Setup()
         {
             _fixture = new DatesOrchestratorTestsFixture();
         }
 
-        [Theory]
-        [InlineData("31/12/2021", "01/01/2001", new string[] { FieldIdentifiers.ClosingDate }, new string[] { FieldIdentifiers.PossibleStartDate })]
-        [InlineData("01/01/2001", "31/12/2021", new string[] { FieldIdentifiers.PossibleStartDate }, new string[] { FieldIdentifiers.ClosingDate })]
-        [InlineData("01/01/2001", "01/01/2001", new string[] {  }, new string[] { FieldIdentifiers.ClosingDate, FieldIdentifiers.PossibleStartDate })]
-        [InlineData("31/12/2021", "31/12/2021", new string[] { FieldIdentifiers.ClosingDate, FieldIdentifiers.PossibleStartDate }, new string[] { })]
+        [TestCase("31/12/2021", "01/01/2001", new string[] { FieldIdentifiers.ClosingDate }, new string[] { FieldIdentifiers.PossibleStartDate })]
+        [TestCase("01/01/2001", "31/12/2021", new string[] { FieldIdentifiers.PossibleStartDate }, new string[] { FieldIdentifiers.ClosingDate })]
+        [TestCase("01/01/2001", "01/01/2001", new string[] {  }, new string[] { FieldIdentifiers.ClosingDate, FieldIdentifiers.PossibleStartDate })]
+        [TestCase("31/12/2021", "31/12/2021", new string[] { FieldIdentifiers.ClosingDate, FieldIdentifiers.PossibleStartDate }, new string[] { })]
         public async Task WhenUpdated_ShouldFlagFieldIndicators(string closingDate, string startDate, string[] setFieldIdentifers, string [] unsetFieldIdentifiers)
         {
             _fixture

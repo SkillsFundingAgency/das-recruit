@@ -1,7 +1,9 @@
 ﻿using Esfa.Recruit.Provider.Web.Filters;
 using Esfa.Recruit.Provider.Web.Interfaces;
 using Esfa.Recruit.Provider.Web.Mappings;
+using Esfa.Recruit.Provider.Web.Models.AddLocation;
 using Esfa.Recruit.Provider.Web.Models.ApplicationReviews;
+using Esfa.Recruit.Provider.Web.Models.Validators;
 using Esfa.Recruit.Provider.Web.Orchestrators;
 using Esfa.Recruit.Shared.Web.Configuration;
 using Esfa.Recruit.Shared.Web.Mappers;
@@ -27,6 +29,7 @@ using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Esfa.Recruit.Provider.Web.ViewModels.Validations.Fluent;
 using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Provider.Web.ViewModels.Part1.Wage;
+using Esfa.Recruit.Provider.Web.ViewModels.Validations;
 
 namespace Esfa.Recruit.Provider.Web.Configuration
 {
@@ -74,8 +77,9 @@ namespace Esfa.Recruit.Provider.Web.Configuration
             services.AddTransient<ITrainingProviderAgreementService, TrainingProviderAgreementService>();
             services.AddTransient<IUtility, Utility>();
             services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
-
             services.AddTransient<IFieldReviewHelper, FieldReviewHelper>();
+            services.AddSingleton<IReviewFieldIndicatorService, ReviewFieldIndicatorService>();
+            services.AddSingleton<IVacancyLocationService, VacancyLocationService>();
         }
 
         private static void RegisterFluentValidators(IServiceCollection services)
@@ -93,6 +97,8 @@ namespace Esfa.Recruit.Provider.Web.Configuration
             services.AddSingleton<IValidator<ApplicationReviewStatusConfirmationEditModel>, ApplicationReviewStatusConfirmationEditModelValidator>();
             services.AddSingleton<IValidator<ProviderApplicationsReportCreateEditModel>, ProviderApplicationsReportCreateEditModelValidator>();
             services.AddSingleton<IValidator<ApplicationReviewsToShareRouteModel>, ApplicationReviewsToShareModelValidator>();
+            services.AddSingleton<IValidator<AddLocationEditModel>, AddLocationEditModelValidator>();
+            services.AddSingleton<IValidator<EnterLocationManuallyEditModel>, EnterLocationManuallyEditModelValidator>();
         }
 
         private static void RegisterOrchestratorDeps(IServiceCollection services)

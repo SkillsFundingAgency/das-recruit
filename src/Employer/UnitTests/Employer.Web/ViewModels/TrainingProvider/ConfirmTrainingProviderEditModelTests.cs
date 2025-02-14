@@ -1,7 +1,4 @@
-﻿using FluentAssertions;
-using System;
-using Esfa.Recruit.Employer.Web.ViewModels.Part1.TrainingProvider;
-using Xunit;
+﻿using Esfa.Recruit.Employer.Web.ViewModels.Part1.TrainingProvider;
 
 namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.TrainingProvider
 {
@@ -9,9 +6,8 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.TrainingProvid
     {
         private readonly Guid _dummyVacancyGuid = Guid.NewGuid();
 
-        [Theory]
-        [InlineData(null)]
-        [InlineData("")]
+        [TestCase(null)]
+        [TestCase("")]
         public void ShouldErrorIfUkprnIsNotSpecified(string inputUkprn)
         {
             var vm = new ConfirmTrainingProviderEditModel
@@ -29,7 +25,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.TrainingProvid
             result.Errors[0].ErrorMessage.Should().Be("The UKPRN field is required");
         }
 
-        [Fact]
+        [Test]
         public void ShouldErrorIfUkprnIsInvalid()
         {
             var vm = new ConfirmTrainingProviderEditModel {
@@ -46,7 +42,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.TrainingProvid
             result.Errors[0].ErrorMessage.Should().Be("UKPRN is not recognised");
         }
 
-        [Fact]
+        [Test]
         public void ShouldBeValidIfUkprnSpecified()
         {
             var vm = new ConfirmTrainingProviderEditModel

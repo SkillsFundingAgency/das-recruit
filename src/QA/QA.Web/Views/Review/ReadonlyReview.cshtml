@@ -1,4 +1,9 @@
+@using Esfa.Recruit.Qa.Web.TagHelpers
 @using Esfa.Recruit.Shared.Web.Mappers
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using NWebsec.AspNetCore.Mvc.TagHelpers
+
+@using Esfa.Recruit.Vacancies.Client.Domain.Entities
 @model ReviewViewModel
 <div class="review-container">
 
@@ -206,22 +211,37 @@
         </div>
     </div>
 </div>
-<div class="govuk-grid-row">
-    <div class="govuk-grid-column-one-half">
-        <div id="@Anchors.EmployerAddress">
-            <h3 class="govuk-heading-s">Location</h3>
-            <ul class="govuk-list">
-                @foreach (var addrLine in Model.EmployerAddressElements)
-                {
-                    <li>@addrLine</li>
-                }
-            </ul>
+
+<esfaFeatureEnabled name="@RecruitFeatureNames.MultipleLocations">
+    @switch (Model.EmployerLocationOption)
+    {
+        case AvailableWhere.OneLocation: <partial name="_EmployerAddress_One"/> break;
+        case AvailableWhere.MultipleLocations: <partial name="_EmployerAddress_Many"/> break;
+        case AvailableWhere.AcrossEngland: <partial name="_EmployerAddress_RecruitNationally"/> break;
+        default: <partial name="_EmployerAddress_DeprecatedOne" model="Model"/> break;
+    }
+</esfaFeatureEnabled>
+
+<esfaFeatureDisabled name="@RecruitFeatureNames.MultipleLocations">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-one-half">
+            <div id="@Anchors.EmployerAddress">
+                <h3 class="govuk-heading-s">Location</h3>
+                <ul class="govuk-list">
+                    @foreach (var addrLine in Model.EmployerAddressElements)
+                    {
+                        <li>@addrLine</li>
+                    }
+                </ul>
+            </div>
+        </div>
+        <div class="govuk-grid-column-one-half">
+            <img id="static-map" src="@Model.MapUrl" alt="Location map"/>
         </div>
     </div>
-    <div class="govuk-grid-column-one-half">
-        <img id="static-map" src="@Model.MapUrl" alt="Location map"/>
-    </div>
-</div>
+</esfaFeatureDisabled>
+
+
 <div class="govuk-grid-row" id="@Anchors.RequirementsAndProspectsSection">
     <div class="govuk-grid-column-full">
         <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
