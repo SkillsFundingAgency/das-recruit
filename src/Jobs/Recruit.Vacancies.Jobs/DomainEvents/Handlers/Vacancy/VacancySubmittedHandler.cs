@@ -6,32 +6,26 @@ using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Vacancy
 {
-    public class VacancySubmittedHandler : DomainEventHandler, IDomainEventHandler<VacancySubmittedEvent>
+    public class VacancySubmittedHandler(ILogger<VacancySubmittedHandler> logger, IJobsVacancyClient client)
+        : DomainEventHandler(logger), IDomainEventHandler<VacancySubmittedEvent>
     {
-        private readonly ILogger<VacancySubmittedHandler> _logger;
-        private readonly IJobsVacancyClient _client;
-
-        public VacancySubmittedHandler(ILogger<VacancySubmittedHandler> logger, IJobsVacancyClient client) : base(logger)
-        {
-            _logger = logger;
-            _client = client;
-        }
-
+        private const string EventName = nameof(VacancySubmittedEvent);
+        
         public async Task HandleAsync(string eventPayload)
         {
-            var @event = DeserializeEvent<VacancySubmittedEvent>(eventPayload);
-            
+            var vacancySubmittedEvent = DeserializeEvent<VacancySubmittedEvent>(eventPayload);
             try
             {
-                _logger.LogInformation($"Processing {nameof(VacancySubmittedEvent)} for vacancy: {{VacancyId}}", @event.VacancyId);
+                logger.LogInformation("Processing {EventName} for vacancy: {VacancyId}", EventName, vacancySubmittedEvent.VacancyId);
                 
-                await _client.CreateVacancyReview(@event.VacancyReference);
+                await client.CreateVacancyReview(vacancySubmittedEvent.VacancyReference);
+                await client.EnsureVacancyIsGeocodedAsync(vacancySubmittedEvent.VacancyId);
                 
-                _logger.LogInformation($"Finished Processing {nameof(VacancySubmittedEvent)} for vacancy: {{VacancyId}}", @event.VacancyId);
+                logger.LogInformation("Finished Processing {EventName} for vacancy: {VacancyId}", EventName, vacancySubmittedEvent.VacancyId);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Unable to process {eventBody}", @event);
+                logger.LogError(ex, "Unable to process {eventBody}", vacancySubmittedEvent);
                 throw;
             }
         }

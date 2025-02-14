@@ -66,7 +66,6 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             }
             
             var locationsNeedingGeocoding = vacancy.EmployerLocations
-                .Where(x => !x.HasGeocode)
                 .Except(noPostcodes)
                 .ToList();
             
