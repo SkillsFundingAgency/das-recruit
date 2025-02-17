@@ -46,6 +46,14 @@ namespace Esfa.Recruit.Provider.Web.Controllers
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public async Task<IActionResult> Submit(SubmitEditModel m)
         {
+            if (!ModelState.IsValid)
+            {
+                var viewModel1 = await _orchestrator.GetVacancyPreviewViewModelAsync(m);
+                viewModel1.SoftValidationErrors = null;
+                viewModel1.SetSectionStates(viewModel1, ModelState);
+                return View("AdvertPreview", viewModel1);
+            }
+
             var response = await _orchestrator.SubmitVacancyAsync(m, User.ToVacancyUser());
 
             if (!response.Success)

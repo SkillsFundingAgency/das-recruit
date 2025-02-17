@@ -91,12 +91,10 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         {
             if (!ModelState.IsValid)
             {
-                // If the checkbox isn't checked, redisplay the form with errors
                 var viewModel1 = await _orchestrator.GetVacancyPreviewViewModelAsync(m);
                 viewModel1.SoftValidationErrors = null;
                 viewModel1.SetSectionStates(viewModel1, ModelState);
-
-                return View(ViewNames.VacancyPreview, viewModel1);
+                return View("AdvertPreview", viewModel1);
             }
 
             var response = await _orchestrator.SubmitVacancyAsync(m, User.ToVacancyUser());

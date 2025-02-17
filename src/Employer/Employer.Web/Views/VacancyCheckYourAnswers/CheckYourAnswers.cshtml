@@ -735,6 +735,7 @@
                     advert before submitting</a></p>
             <form asp-route="@RouteNames.EmployerCheckYourAnswersSubmitPost" asp-all-route-data="@Model.RouteDictionary"
                 class="form-inline">
+                <input asp-for="HasUserConfirmation" value="true" type="hidden" />
                 <input type="submit" value="@Model.SubmitButtonText" class="govuk-button"
                     esfa-automation="submit-button" />
             </form>

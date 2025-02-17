@@ -20,18 +20,18 @@
 <partial name="_vacancyApprenticeshipPreview" model="@Model" />    
 
 
-<form asp-route="@RouteNames.EmployerCheckYourAnswersSubmitPost" asp-all-route-data="@Model.RouteDictionary" method="post">
+<form asp-route="@RouteNames.Preview_Submit_Post" asp-all-route-data="@Model.RouteDictionary" method="post">
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
       <h2 class="govuk-heading-m">Submit your advert</h2>
-      <div class="govuk-form-group">
+      <div class="govuk-form-group @(ViewData.ModelState.ContainsKey("HasUserConfirmation") ? "govuk-form-group--error" : "")">
           <fieldset class="govuk-fieldset">
               <div class="govuk-checkboxes">
                   <span asp-validation-for="HasUserConfirmation" class="govuk-error-message"></span>
                   <div class="govuk-checkboxes__item">
-                      <input asp-for="HasUserConfirmation" class="govuk-checkboxes__input" type="checkbox" value="false">
+                      <input asp-for="HasUserConfirmation" class="govuk-checkboxes__input" type="checkbox">
                       <label asp-for="HasUserConfirmation" class="govuk-label govuk-checkboxes__label">
-                          To the best of my knowledge, all information I’ve provided is correct
+                          To the best of my knowledge, all information I've provided is correct
                       </label>
                   </div>
               </div>
