@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
 using Esfa.Recruit.Vacancies.Client.Application.Commands;
@@ -39,22 +40,26 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
         }
 
         [Test, MoqAutoData]
-        public async Task Then_The_Parameters_Are_Passed_To_The_ApplicationReviewsToUnsuccessful_Command_And_Handled([Frozen] Mock<IMessaging> messaging, VacancyClient client)
+        public async Task Then_The_Parameters_Are_Passed_To_The_ApplicationReviewsToUnsuccessful_Command_And_Handled(
+            Guid vacancyId,
+            [Frozen] Mock<IMessaging> messaging, 
+            VacancyClient client)
         {
             var applicationReviewsToUnsuccessful = new List<VacancyApplication>
             {
-                new VacancyApplication { ApplicationReviewId = Guid.NewGuid() },
-                new VacancyApplication { ApplicationReviewId = Guid.NewGuid() }
+                new() { ApplicationReviewId = Guid.NewGuid() },
+                new() { ApplicationReviewId = Guid.NewGuid() }
             };
 
             var candidateFeedback = "Some candidate feedback";
             var user = new VacancyUser();
 
-            await client.SetApplicationReviewsToUnsuccessful(applicationReviewsToUnsuccessful, candidateFeedback, user);
+            await client.SetApplicationReviewsToUnsuccessful(applicationReviewsToUnsuccessful.Select(c=>c.ApplicationReviewId), candidateFeedback, user, vacancyId);
 
             messaging.Verify(x => x.SendCommandAsync(It.Is<ApplicationReviewsUnsuccessfulCommand>(c =>
                 c.CandidateFeedback.Equals(candidateFeedback) &&
-                c.ApplicationReviews.Equals(applicationReviewsToUnsuccessful)
+                c.ApplicationReviews.Count().Equals(applicationReviewsToUnsuccessful.Select(x=>x.ApplicationReviewId).ToList().Count) &&
+                c.VacancyId.Equals(vacancyId)
             )));
 
         }

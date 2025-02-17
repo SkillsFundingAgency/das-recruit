@@ -347,6 +347,18 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
                 : applicationReviews.Select(c => (VacancyApplication)c).ToList();
         }
 
+        public async Task<List<VacancyApplication>> GetVacancyApplicationsForReferenceAndStatus(Guid vacancyId, ApplicationReviewStatus status)
+        {
+            var vacancy = await _repository.GetVacancyAsync(vacancyId);
+            
+            var applicationReviews =
+                await _applicationReviewRepository.GetAllForVacancyWithTemporaryStatus(vacancy.VacancyReference!.Value!, status);
+
+            return applicationReviews == null
+                ? new List<VacancyApplication>()
+                : applicationReviews.Select(c => (VacancyApplication)c).ToList();
+        }
+
         public Task<bool> SetApplicationReviewStatus(Guid applicationReviewId, ApplicationReviewStatus? outcome, string candidateFeedback, VacancyUser user)
         {
             var command = new ApplicationReviewStatusEditCommand
@@ -360,24 +372,43 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return _messaging.SendStatusCommandAsync(command);
         }
 
-        public Task SetApplicationReviewsShared(IEnumerable<VacancyApplication> applicationReviews, VacancyUser user)
+        public Task SetApplicationReviewsStatus(long vacancyReference, IEnumerable<Guid> applicationReviews, VacancyUser user, ApplicationReviewStatus? status, Guid vacancyId, ApplicationReviewStatus? applicationReviewTemporaryStatus)
         {
             var command = new ApplicationReviewsSharedCommand
             {
                 ApplicationReviews = applicationReviews,
-                User = user
+                User = user,
+                Status = status,
+                VacancyId = vacancyId,
+                TemporaryStatus = applicationReviewTemporaryStatus,
+                VacancyReference = vacancyReference
             };
 
             return _messaging.SendCommandAsync(command);
         }
 
-        public Task SetApplicationReviewsToUnsuccessful(IEnumerable<VacancyApplication> applicationReviewsToUnsuccessful, string candidateFeedback, VacancyUser user)
+        public Task SetApplicationReviewsPendingUnsuccessfulFeedback(VacancyUser user, ApplicationReviewStatus status, Guid vacancyId, string feedback)
         {
-            var command = new ApplicationReviewsUnsuccessfulCommand()
+            var command = new ApplicationReviewPendingUnsuccessfulFeedbackCommand
+            {
+                Feedback = feedback,
+                User = user,
+                Status = status,
+                VacancyId = vacancyId
+            };
+
+            return _messaging.SendCommandAsync(command);
+        }
+
+        public Task SetApplicationReviewsToUnsuccessful(IEnumerable<Guid> applicationReviewsToUnsuccessful, string candidateFeedback, VacancyUser user, Guid vacancyId)
+        {
+            var command = new ApplicationReviewsUnsuccessfulCommand
             {
                 ApplicationReviews = applicationReviewsToUnsuccessful,
                 CandidateFeedback = candidateFeedback,
-                User = user
+                User = user,
+                VacancyId = vacancyId,
+                Status = ApplicationReviewStatus.Unsuccessful
             };
 
             return _messaging.SendCommandAsync(command);

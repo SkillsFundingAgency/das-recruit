@@ -91,8 +91,8 @@
 
                     @for (var i = 0; i < Model.ApplicationReviewsToShare.Count(); i++)
                     {
-                            <div class="govuk-!-display-none">
-                            @Html.EditorFor(x => x.ApplicationReviewsToShare[i])
+                        <div class="govuk-!-display-none">
+                            <input type="hidden" asp-for="ApplicationReviewsToShare[i].ApplicationReviewId"/>
                         </div>
                     }
 

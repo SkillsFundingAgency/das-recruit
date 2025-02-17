@@ -280,7 +280,8 @@
                 <div class="govuk-form-group">
                     <fieldset class="govuk-fieldset">
                         <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
-                            <h2 class="govuk-fieldset__heading">Do you want to interview this applicant?</h2>
+                            <h2 asp-show="@Model.IsApplicationShared" class="govuk-fieldset__heading">Do you want to interview this applicant?</h2>
+                            <h2 asp-hide="@Model.IsApplicationShared" class="govuk-fieldset__heading">What do you want to do with this application?</h2>
                         </legend>
                         <div id="sign-in-hint" class="govuk-hint" asp-show="@Model.IsApplicationShared">
                                                 Your response will be shared with your training provider.

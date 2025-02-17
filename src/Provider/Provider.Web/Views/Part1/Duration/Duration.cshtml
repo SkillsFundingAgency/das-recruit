@@ -2,9 +2,13 @@
 @model Esfa.Recruit.Provider.Web.ViewModels.Part1.Duration.DurationViewModel
 
 @{
+
     ViewBag.GaData.Vpv = "/recruitment/provider/page-create-vacancy-duration";
     ViewBag.Title = $"Duration and {(_serviceParameters.VacancyType.GetValueOrDefault() == VacancyType.Apprenticeship ? "working" : "weekly")} hours";
-    var routeName = _serviceParameters.VacancyType.GetValueOrDefault() == VacancyType.Apprenticeship ? RouteNames.Dates_Get : RouteNames.WorkExperience_Get;
+
+    var routeName = string.IsNullOrEmpty(Model.PageBackLink)
+                    ? _serviceParameters.VacancyType.GetValueOrDefault() == VacancyType.Apprenticeship ? RouteNames.Dates_Get : RouteNames.WorkExperience_Get
+                    : Model.PageBackLink;
 }
 
 @section BackLink {

@@ -55,7 +55,8 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
                 Programmes = programmes.ToViewModel(),
                 PageInfo = _utility.GetPartOnePageInfo(vacancy),
                 HasMoreThanOneLegalEntity = employerInfo.LegalEntities.Count > 1,
-                Ukprn = vrm.Ukprn
+                Ukprn = vrm.Ukprn,
+                IsTaskListCompleted = _utility.IsTaskListCompleted(vacancy)
             };
 
             if (vacancy.Status == VacancyStatus.Referred)
