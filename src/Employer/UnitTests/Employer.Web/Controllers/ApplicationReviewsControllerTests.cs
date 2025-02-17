@@ -161,7 +161,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Controllers
             var listOfApplicationReviews = new List<Guid>();
             listOfApplicationReviews.Add(_applicationReviewId);
             var request = _fixture
-                .Build<ApplicationReviewsToUnsuccessfulRouteModel>()
+                .Build<ApplicationReviewsToUnsuccessfulViewModel>()
                 .With(x => x.VacancyId, _vacancyId)
                 .With(x => x.EmployerAccountId, _employerAccountId)
                 .With(x => x.ApplicationsToUnsuccessful, listOfApplicationReviews)
@@ -170,45 +170,45 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Controllers
                 .Create();
 
             // Act
-            var redirectResult = await _controller.ApplicationReviewsToUnsuccessfulAsync(request) as RedirectToActionResult;
+            var redirectResult = await _controller.ApplicationReviewsToUnsuccessfulAsync(request) as RedirectToRouteResult;
 
             // Assert
             Assert.That(redirectResult, Is.Not.Null);
-            Assert.That("ApplicationReviewsFeedback", Is.EqualTo(redirectResult.ActionName));
+            Assert.That(RouteNames.ApplicationReviewsToUnsuccessfulFeedback_Get, Is.EqualTo(redirectResult.RouteName));
             Assert.That(_vacancyId, Is.EqualTo(redirectResult.RouteValues["VacancyId"]));
             Assert.That(_employerAccountId, Is.EqualTo(redirectResult.RouteValues["EmployerAccountId"]));
         }
 
         [Test]
-        public void GET_ApplicationReviewsFeedback_ReturnsViewAndModelWithMultipleApplicationsText()
+        public async Task GET_ApplicationReviewsFeedback_ReturnsViewAndModelWithMultipleApplicationsText()
         {
             // Arrange
             var listOfApplicationReviews = new List<Guid>();
             listOfApplicationReviews.Add(_applicationReviewId);
             listOfApplicationReviews.Add(_applicationReviewIdTwo);
+            var applicationsToUnsuccessful = _fixture.CreateMany<VacancyApplication>().ToList();
             var routeModel = _fixture
                 .Build<ApplicationReviewsToUnsuccessfulRouteModel>()
                 .With(x => x.VacancyId, _vacancyId)
                 .With(x => x.EmployerAccountId, _employerAccountId)
-                .With(x => x.ApplicationsToUnsuccessful, listOfApplicationReviews)
                 .Create();
 
             _orchestrator.Setup(o =>
                     o.GetApplicationReviewsFeedbackViewModel(It.Is<ApplicationReviewsToUnsuccessfulRouteModel>(y => y == routeModel)))
-                .Returns(new ApplicationReviewsFeedbackViewModel
+                .ReturnsAsync(new ApplicationReviewsFeedbackViewModel
                 {
                     VacancyId = routeModel.VacancyId,
                     EmployerAccountId = routeModel.EmployerAccountId,
-                    ApplicationsToUnsuccessful = routeModel.ApplicationsToUnsuccessful
+                    ApplicationsToUnsuccessful = applicationsToUnsuccessful
                 });
 
             // Act
-            var result = _controller.ApplicationReviewsFeedback(routeModel) as ViewResult;
+            var result = await _controller.ApplicationReviewsFeedback(routeModel) as ViewResult;
 
             // Assert
             var actual = result.Model as ApplicationReviewsFeedbackViewModel;
             Assert.That(actual.ApplicationsToUnsuccessful, Is.Not.Empty);
-            Assert.That(actual.ApplicationsToUnsuccessful.Count(), Is.EqualTo(2));
+            Assert.That(actual.ApplicationsToUnsuccessful.Count(), Is.EqualTo(applicationsToUnsuccessful.Count));
             Assert.That(routeModel.VacancyId, Is.EqualTo(actual.VacancyId));
             Assert.That(routeModel.EmployerAccountId, Is.EqualTo(actual.EmployerAccountId));
             Assert.That("Give feedback to unsuccessful applicants", Is.EqualTo(actual.ApplicationsToUnsuccessfulFeedbackHeaderTitle));
@@ -216,46 +216,43 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Controllers
         }
 
         [Test]
-        public void GET_ApplicationReviewsFeedback_ReturnsViewAndModelWithSingleApplicationsText()
+        public async Task GET_ApplicationReviewsFeedback_ReturnsViewAndModelWithSingleApplicationsText()
         {
             // Arrange
-            var listOfApplicationReviews = new List<Guid>();
-            listOfApplicationReviews.Add(_applicationReviewId);
+            var applicationsToUnsuccessful = _fixture.Create<VacancyApplication>();
             var routeModel = _fixture
                 .Build<ApplicationReviewsToUnsuccessfulRouteModel>()
                 .With(x => x.VacancyId, _vacancyId)
                 .With(x => x.EmployerAccountId, _employerAccountId)
-                .With(x => x.ApplicationsToUnsuccessful, listOfApplicationReviews)
                 .Create();
 
             _orchestrator.Setup(o =>
                     o.GetApplicationReviewsFeedbackViewModel(It.Is<ApplicationReviewsToUnsuccessfulRouteModel>(y => y == routeModel)))
-                .Returns(new ApplicationReviewsFeedbackViewModel
+                .ReturnsAsync(new ApplicationReviewsFeedbackViewModel
                 {
                     VacancyId = routeModel.VacancyId,
                     EmployerAccountId = routeModel.EmployerAccountId,
-                    ApplicationsToUnsuccessful = routeModel.ApplicationsToUnsuccessful
+                    ApplicationsToUnsuccessful = [applicationsToUnsuccessful]
                 });
 
             // Act
-            var result = _controller.ApplicationReviewsFeedback(routeModel) as ViewResult;
+            var result = await _controller.ApplicationReviewsFeedback(routeModel) as ViewResult;
 
             // Assert
             var actual = result.Model as ApplicationReviewsFeedbackViewModel;
             Assert.That(actual.ApplicationsToUnsuccessful, Is.Not.Empty);
-            Assert.That(actual.ApplicationsToUnsuccessful.Count(), Is.EqualTo(1));
+            Assert.That(actual.ApplicationsToUnsuccessful.Count, Is.EqualTo(1));
             Assert.That(routeModel.VacancyId, Is.EqualTo(actual.VacancyId));
             Assert.That(routeModel.EmployerAccountId, Is.EqualTo(actual.EmployerAccountId));
             Assert.That("Give feedback to the unsuccessful applicant", Is.EqualTo(actual.ApplicationsToUnsuccessfulFeedbackHeaderTitle));
             Assert.That("Your feedback will be sent to the applicant you have selected as unsuccessful.", Is.EqualTo(actual.ApplicationsToUnsuccessfulFeedbackDescription));
         }
 
-        [Test]
-        public void POST_ApplicationReviewsFeedback_RedirectsToAction()
+        [Test, MoqAutoData]
+        public async Task POST_ApplicationReviewsFeedback_RedirectsToAction(
+            List<VacancyApplication> listOfApplicationReviews)
         {
             // Arrange
-            var listOfApplicationReviews = new List<Guid>();
-            listOfApplicationReviews.Add(_applicationReviewId);
             var request = _fixture
                 .Build<ApplicationReviewsFeedbackViewModel>()
                 .With(x => x.VacancyId, _vacancyId)
@@ -264,11 +261,11 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Controllers
                 .Create();
 
             // Act
-            var redirectResult = _controller.ApplicationReviewsFeedback(request) as RedirectToActionResult;
+            var redirectResult = await _controller.ApplicationReviewsFeedback(request) as RedirectToRouteResult;
 
             // Assert
             Assert.That(redirectResult, Is.Not.Null);
-            Assert.That("ApplicationReviewsToUnsuccessfulConfirmation", Is.EqualTo(redirectResult.ActionName));
+            Assert.That(RouteNames.ApplicationReviewsToUnsuccessfulConfirmation_Get, Is.EqualTo(redirectResult.RouteName));
             Assert.That(_vacancyId, Is.EqualTo(redirectResult.RouteValues["VacancyId"]));
             Assert.That(_employerAccountId, Is.EqualTo(redirectResult.RouteValues["EmployerAccountId"]));
         }
@@ -277,15 +274,13 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Controllers
         public void POST_ApplicationReviewsFeedback_NoCandidateFeedbackValidationError()
         {
             // Arrange
-            var listOfApplicationReviews = new List<Guid>();
-            listOfApplicationReviews.Add(_applicationReviewId);
             var request = _fixture
-                .Build<ApplicationReviewsToUnsuccessfulRouteModel>()
+                .Build<ApplicationReviewsFeedbackViewModel>()
                 .With(x => x.VacancyId, _vacancyId)
                 .With(x => x.EmployerAccountId, _employerAccountId)
-                .With(x => x.ApplicationsToUnsuccessful, listOfApplicationReviews)
                 .With(x => x.Outcome, ApplicationReviewStatus.Unsuccessful)
-                .With(x => x.CandidateFeedback, "")
+                .With(x=>x.CandidateFeedback, "")
+                .With(x=>x.ApplicationsToUnsuccessful, new List<VacancyApplication>{new VacancyApplication()})
                 .Create();
             var validator = new ApplicationReviewsFeedbackModelValidator(_mockProfanityListProvider.Object);
 
@@ -316,7 +311,6 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Controllers
                 .Build<ApplicationReviewsToUnsuccessfulRouteModel>()
                 .With(x => x.VacancyId, _vacancyId)
                 .With(x => x.EmployerAccountId, _employerAccountId)
-                .With(x => x.ApplicationsToUnsuccessful, listOfApplicationReviews)
                 .Create();
 
             _orchestrator.Setup(o =>
@@ -358,7 +352,6 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Controllers
                 .Build<ApplicationReviewsToUnsuccessfulRouteModel>()
                 .With(x => x.VacancyId, _vacancyId)
                 .With(x => x.EmployerAccountId, _employerAccountId)
-                .With(x => x.ApplicationsToUnsuccessful, listOfApplicationReviews)
                 .Create();
 
             _orchestrator.Setup(o =>

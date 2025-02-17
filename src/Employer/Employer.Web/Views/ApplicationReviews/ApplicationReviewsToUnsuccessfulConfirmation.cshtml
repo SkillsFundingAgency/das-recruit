@@ -42,10 +42,10 @@
                         <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
                             <h1 class="govuk-fieldset__heading">@Model.ApplicationsReviewsConfirmationLegendMessage</h1>
                         </legend>
-                        @for (var i = 0; i < Model.VacancyApplicationsToUnsuccessful.Count(); i++)
+                        @for (var i = 0; i < Model.VacancyApplicationsToUnsuccessful.Count; i++)
                         {
                             <div class="govuk-!-display-none">
-                                @Html.EditorFor(x => x.VacancyApplicationsToUnsuccessful[i])
+                                <input type="hidden" asp-for="VacancyApplicationsToUnsuccessful[i].ApplicationReviewId"/>
                             </div>
                         }
 

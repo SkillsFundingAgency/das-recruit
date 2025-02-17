@@ -13,25 +13,18 @@
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-        <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState}' />
+        <partial name="@PartialNames.ValidationSummary" model="@(new ValidationSummaryViewModel { ModelState = ViewData.ModelState})" />
         <div>
             <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">
-                @Model.ApplicationsToUnsuccessfulFeedbackHeaderTitle
+                @($"Give feedback to unsuccessful applicant{(Model.IsMultipleApplications ? "s." : ".")}")
             </h1>
         </div>
         <form asp-route="@RouteNames.ApplicationReviewsToUnsuccessfulFeedback_Post" asp-route-ukprn="@Model.Ukprn" asp-route-vacancyId="@Model.VacancyId">
 
-            @for (var i = 0; i < Model.ApplicationsToUnsuccessful.Count(); i++)
-            {
-                <div class="govuk-!-display-none">
-                    @Html.EditorFor(x => x.ApplicationsToUnsuccessful[i])
-                </div>
-            }
-
             <div esfa-validation-marker-for="CandidateFeedback" id="Multiple-unsuccessful-candidate-feedback" class="govuk-form-group">
                 <div class="govuk-character-count" id="provider-character-count" data-module="govuk-character-count" data-maxwords="200">
                     <span esfa-validation-message-for="CandidateFeedback" class="govuk-error-message"></span>
-                    <span class="govuk-hint">@Model.ApplicationsToUnsuccessfulFeedbackDescription</span>
+                    <span class="govuk-hint">@($"Your feedback will be sent to all applicant{(Model.IsMultipleApplications ? "s." : ".")} you have selected as unsuccessful.")</span>
                     <textarea asp-for="CandidateFeedback" class="govuk-textarea govuk-js-character-count" id="provider-multiple-candidate-feedback" name="CandidateFeedback" rows="6"></textarea>
                     <div id="provider-multiple-candidate-feedback-info" class="govuk-hint govuk-character-count__message">
                         You have 200 words remaining
