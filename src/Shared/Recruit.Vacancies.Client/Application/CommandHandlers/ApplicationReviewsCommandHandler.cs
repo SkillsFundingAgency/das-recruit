@@ -67,7 +67,7 @@ public class ApplicationReviewsCommandHandler :
             var applicationReviewsByReference =
                 await _applicationReviewRepository.GetForVacancyAsync<ApplicationReview>(vacancy.VacancyReference!.Value);
                 
-            foreach (var applicationReview in applicationReviewsByReference.Where(x => x.Application!.IsFaaV2Application && !x.IsWithdrawn))
+            foreach (var applicationReview in applicationReviewsByReference.Where(x => x.Application!.IsFaaV2Application && !x.IsWithdrawn && applicationReviews.Contains(x.Id)))
             {
                 await _outerApiClient.Post(new PostApplicationStatusRequest(applicationReview.CandidateId,
                     applicationReview.Application.ApplicationId, new PostApplicationStatus
@@ -82,7 +82,7 @@ public class ApplicationReviewsCommandHandler :
                                       vacancy.EmployerLocation.AddressLine2 ??
                                       vacancy.EmployerLocation.AddressLine1 ?? "Unknown",
                         VacancyPostcode = vacancy.EmployerLocation.Postcode
-                    }));
+                    }));    
             }
         }
     }
