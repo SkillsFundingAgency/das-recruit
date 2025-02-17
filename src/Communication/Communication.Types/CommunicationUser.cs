@@ -1,4 +1,6 @@
-﻿namespace Communication.Types
+﻿using MongoDB.Bson.Serialization.Attributes;
+
+namespace Communication.Types
 {
     /// <summary>
     /// an end user that may receive a communication message
@@ -14,14 +16,17 @@
         /// example values: VacancyServices.Recruit.Employer, VacancyServices.Faa.Candidates
         public string UserType { get; }
         public UserParticipation Participation { get; }
+        [BsonDefaultValue("")]
+        public string DfEUserId { get; }
 
-        public CommunicationUser(string userId, string email, string name, string userType, UserParticipation participation)
+        public CommunicationUser(string userId, string email, string name, string userType, UserParticipation participation, string dfEUserId)
         {
             UserId = userId;
             Email = email;
             Name = name;
             UserType = userType;
             Participation = participation;
+            DfEUserId = dfEUserId;
         }
     }
 }

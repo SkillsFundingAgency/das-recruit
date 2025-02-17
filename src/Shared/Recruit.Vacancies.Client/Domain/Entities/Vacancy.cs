@@ -42,6 +42,8 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
         public ContactDetail EmployerContact { get; set; }
         public string EmployerDescription { get; set; }
         public Address EmployerLocation { get; set; }
+        public List<Address> EmployerLocations { get; set; }
+        public AvailableWhere? EmployerLocationOption { get; set; }
         public string EmployerName { get; set; }
         public EmployerNameOption? EmployerNameOption { get; set; }
         public List<EmployerReviewFieldIndicator> EmployerReviewFieldIndicators { get; set; }
@@ -170,11 +172,6 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
         /// </summary>
         public VacancyType? VacancyType { get; set; }
 
-        /// <summary>
-        /// If traineeship vacancy then this must be populated
-        /// </summary>
-        public int? RouteId { get; set; }
-        public string WorkExperience { get; set; }
         public string AdditionalQuestion1 { get; set; }
         public string AdditionalQuestion2 { get; set; }
         public bool HasSubmittedAdditionalQuestions { get; set; }

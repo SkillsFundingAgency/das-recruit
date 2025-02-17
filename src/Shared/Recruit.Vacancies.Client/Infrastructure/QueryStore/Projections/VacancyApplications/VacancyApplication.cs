@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
 
@@ -46,7 +46,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Va
         public bool IsSharedApplication => DateSharedWithEmployer.HasValue;
         public string DateReviewedText => !string.IsNullOrEmpty(ReviewedDate.ToString()) ? ReviewedDate.AsGdsDate() : "Not reviewed";
         public bool? HasEverBeenEmployerInterviewing { get; set; }
-
+        public long? VacancyReference { get; set; }
+        public string CandidateFeedback { get; set; }
+        public Guid? ApplicationId { get; set; }
         public static implicit operator VacancyApplication(ApplicationReview applicationReview)
         {
             var projection = new VacancyApplication
@@ -60,17 +62,22 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Va
                 Selected = false,
                 DateSharedWithEmployer = applicationReview.DateSharedWithEmployer,
                 ReviewedDate = applicationReview.ReviewedDate,
-                HasEverBeenEmployerInterviewing = applicationReview.HasEverBeenEmployerInterviewing
+                HasEverBeenEmployerInterviewing = applicationReview.HasEverBeenEmployerInterviewing,
+                CandidateFeedback = applicationReview.CandidateFeedback
             };
 
             if (applicationReview.IsWithdrawn == false)
             {
-                projection.FirstName = applicationReview.Application.FirstName;
-                projection.LastName = applicationReview.Application.LastName;
-                projection.DateOfBirth = applicationReview.Application.BirthDate;
-                projection.DisabilityStatus = applicationReview.Application.DisabilityStatus ?? ApplicationReviewDisabilityStatus.Unknown;
+                projection.ApplicationId = applicationReview.Application?.ApplicationId;
+                projection.VacancyReference = applicationReview.Application?.VacancyReference;
+                projection.FirstName = applicationReview.Application?.FirstName;
+                projection.LastName = applicationReview.Application?.LastName;
+                projection.DateOfBirth = applicationReview.Application?.BirthDate;
+                projection.DisabilityStatus = applicationReview.Application?.DisabilityStatus ?? ApplicationReviewDisabilityStatus.Unknown;
             }
             return projection;
         }
+
+        
     }
 }

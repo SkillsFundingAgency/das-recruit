@@ -12,7 +12,6 @@ using Esfa.Recruit.Shared.Web.Helpers;
 using Esfa.Recruit.Shared.Web.Orchestrators;
 using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Commands;
-using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
@@ -36,7 +35,6 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
         private readonly ILegalEntityAgreementService _legalEntityAgreementService;
         private readonly IMessaging _messaging;
         private readonly IUtility _utility;
-        private readonly IFeature _feature;
         private readonly ExternalLinksConfiguration _externalLinksConfiguration;
 
         public VacancyPreviewOrchestrator(
@@ -47,7 +45,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             ILegalEntityAgreementService legalEntityAgreementService,
             IMessaging messaging,
             IOptions<ExternalLinksConfiguration> externalLinksOptions,
-            IUtility utility, IFeature feature) : base(logger)
+            IUtility utility) : base(logger)
         {
             _vacancyClient = vacancyClient;
             _vacancyDisplayMapper = vacancyDisplayMapper;
@@ -55,7 +53,6 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             _legalEntityAgreementService = legalEntityAgreementService;
             _messaging = messaging;
             _utility = utility;
-            _feature = feature;
             _externalLinksConfiguration = externalLinksOptions.Value;
         }
 
@@ -69,7 +66,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             var vacancy = vacancyTask.Result;
             var programme = programmesTask.Result.SingleOrDefault(p => p.Id == vacancy.ProgrammeId);
 
-            var vm = new VacancyPreviewViewModel(_feature.IsFeatureEnabled(FeatureNames.FaaV2Improvements));
+            var vm = new VacancyPreviewViewModel();
             await _vacancyDisplayMapper.MapFromVacancyAsync(vm, vacancy);
 
             vm.VacancyId = vacancy.Id;
@@ -219,7 +216,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
                 ApprovedJobAdvert = vacancy.Status == VacancyStatus.Submitted,
                 RejectedJobAdvert = vacancy.Status == VacancyStatus.Rejected,
                 TrainingProviderName = vacancy.TrainingProvider.Name,
-                FindAnApprenticeshipUrl = _externalLinksConfiguration.FindAnApprenticeshipUrl
+                FindAnApprenticeshipUrl = _externalLinksConfiguration.FindAnApprenticeshipUrl,
+                EmployerAccountId = vacancy.EmployerAccountId
             };
 
             return vm;

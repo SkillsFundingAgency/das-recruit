@@ -232,6 +232,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
         ]";
 
         private const string Pipeline = @"[
+            { '$sort' : { 'createdDate' : -1} },
             {
                 '$lookup': {
                     'from': 'applicationReviews',
@@ -239,13 +240,13 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                     'foreignField': 'vacancyReference',
                     'as': 'candidateApplicationReview'
                 }
-            },
+            },        
             {
                 '$unwind': {
                     'path': '$candidateApplicationReview',
                     'preserveNullAndEmptyArrays': true
                 }
-            },
+            },    
             {
                 '$project': {
                     'vacancyGuid': '$_id',
@@ -277,6 +278,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                     'isApplicationWithdrawn': '$candidateApplicationReview.isWithdrawn',
                     'dateSharedWithEmployer': '$candidateApplicationReview.dateSharedWithEmployer',
                     'hasChosenProviderContactDetails' : 1,
+                    'hasSubmittedAdditionalQuestions' : 1,
                     'isTraineeship' :1
                 }
             },
@@ -310,6 +312,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                     'vacancyType': 1,
                     'dateSharedWithEmployer': 1,
                     'hasChosenProviderContactDetails' : 1,
+                    'hasSubmittedAdditionalQuestions' : 1,
                     'isTraineeship': {
                         '$cond': {
                             'if': {'$eq': [ '$vacancyType', 'Traineeship']},
@@ -354,6 +357,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                         }
                     },
                     'hasChosenProviderContactDetails' : 1,
+                    'hasSubmittedAdditionalQuestions' : 1,
                     'isNew': {
                         '$cond': {
                             'if': {'$eq': [ '$appStatus', 'New']},
@@ -432,7 +436,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                         'trainingProviderName': '$trainingProviderName',
                         'vacancyType': '$vacancyType',
                         'isTraineeship': '$isTraineeship',
-                        'hasChosenProviderContactDetails' : '$hasChosenProviderContactDetails'
+                        'hasChosenProviderContactDetails' : '$hasChosenProviderContactDetails',
+                        'hasSubmittedAdditionalQuestions' : '$hasSubmittedAdditionalQuestions'
                     },
                     'noOfNewApplications': {
                         '$sum': '$isNew'
@@ -456,25 +461,64 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                          '$sum' :{'$add': ['$isNew','$isUnsuccessful','$isSuccessful'] }
                     }
                 }
-            },
-            { '$sort' : { '_id.createdDate' : -1} }
-            
+            }
         ]";
+        
+        
+        private const string PipelineForCount = @"[
+            {
+                '$lookup': {
+                    'from': 'applicationReviews',
+                    'localField': 'vacancyReference',
+                    'foreignField': 'vacancyReference',
+                    'as': 'candidateApplicationReview'
+                }
+            },        
+            {
+                '$unwind': {
+                    'path': '$candidateApplicationReview',
+                    'preserveNullAndEmptyArrays': true
+                }
+            },    
+            {
+                '$project': {
+                    'vacancyGuid': '$_id',
+                    'vacancyReference': 1
+                }
+            },
+            {
+                '$project': {
+                    'vacancyGuid': 1,
+                    'vacancyReference': 1
+                }
+            },
+            {
+                '$group': {
+                    '_id': {
+                        'vacancyGuid': '$vacancyGuid',
+                        'vacancyReference': '$vacancyReference'
+                }}
+            }
+        ]";
+
 
         public static BsonDocument[] GetAggregateQueryPipeline(BsonDocument vacanciesMatchClause, int pageNumber, BsonDocument secondaryMatch, BsonDocument employerReviewMatch = null)
         {
             var pipeline = BsonSerializer.Deserialize<BsonArray>(Pipeline);
-            if (secondaryMatch != null)
-            {
-                pipeline.Insert(pipeline.Count - 1, secondaryMatch);
-            }
-
-            pipeline.Insert(pipeline.Count, new BsonDocument { { "$skip", (pageNumber - 1) * 25 } });
-            pipeline.Insert(pipeline.Count, new BsonDocument { { "$limit", 25 } });
+            
             if (employerReviewMatch != null)
             {
-                pipeline.Insert(0, employerReviewMatch);
+                pipeline.Insert(3, employerReviewMatch);
+                
             }
+            if (secondaryMatch != null)
+            {
+                pipeline.Insert(3, secondaryMatch);
+            }
+            
+            pipeline.Insert(pipeline.Count, new BsonDocument { { "$skip", (pageNumber - 1) * 25 } });
+            pipeline.Insert(pipeline.Count, new BsonDocument { { "$limit", 25 } });
+            
             pipeline.Insert(0, vacanciesMatchClause);
 
             var pipelineDefinition = pipeline.Values.Select(p => p.ToBsonDocument()).ToArray();
@@ -482,15 +526,16 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
             return pipelineDefinition;
         }
 
-        public static BsonDocument[] GetAggregateQueryPipelineDocumentCount(BsonDocument vacanciesMatchClause, BsonDocument secondaryMatch, BsonDocument employerReviewMatch = null)
+        public static BsonDocument[] GetAggregateQueryPipelineDocumentCount(BsonDocument vacanciesMatchClause, BsonDocument secondaryMatch,BsonDocument employerReviewMatch = null)
         {
-            var pipeline = BsonSerializer.Deserialize<BsonArray>(Pipeline);
-            pipeline.Insert(pipeline.Count - 1, secondaryMatch);
-            pipeline.Insert(pipeline.Count, new BsonDocument { { "$count", "total" } });
+            var pipeline = BsonSerializer.Deserialize<BsonArray>(PipelineForCount);
+            pipeline.Insert(2, secondaryMatch);
             if (employerReviewMatch != null)
             {
-                pipeline.Insert(0, employerReviewMatch);
+                pipeline.Insert(2, employerReviewMatch);    
             }
+            pipeline.Insert(pipeline.Count, new BsonDocument { { "$count", "total" } });
+            
             pipeline.Insert(0, vacanciesMatchClause);
 
             var pipelineDefinition = pipeline.Values.Select(p => p.ToBsonDocument()).ToArray();

@@ -11,7 +11,7 @@
 
 <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState }' />
 
-@if (!Model.Qualifications.Any() && Model.IsFaaV2Enabled)
+@if (!Model.Qualifications.Any())
 {
     <partial name="_EmptyQualifications", model="Model" />
 }

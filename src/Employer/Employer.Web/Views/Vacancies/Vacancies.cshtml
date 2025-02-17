@@ -78,10 +78,8 @@
                         <option value="@FilteringOptions.ClosingSoonWithNoApplications">closing soon with no applications</option>
                         <option value="@FilteringOptions.ClosingSoon">closing soon</option>
                         <option value="@FilteringOptions.Transferred">transferred from provider</option>
-                        <esfaFeatureEnabled name="@FeatureNames.ShareApplicationsFeature">
-                            <option value="@FilteringOptions.NewSharedApplications">with new shared applications</option>
-                            <option value="@FilteringOptions.AllSharedApplications">with shared applications</option>
-                        </esfaFeatureEnabled>
+                        <option value="@FilteringOptions.NewSharedApplications">with new shared applications</option>
+                        <option value="@FilteringOptions.AllSharedApplications">with shared applications</option>
                     </optgroup>
                 </select>
                 <button type="submit" id="filter-submit" class="das-button-filter das-button-secondary govuk-button govuk-!-margin-top-3">Filter</button>
@@ -164,7 +162,11 @@
                             </td>
                             <td class="govuk-table__cell" data-label="Action">
                                 <a id="manage-@vacancy.Id" asp-show="@vacancy.IsNotSubmittable" asp-route="@RouteNames.VacancyManage_Get" asp-route-employerAccountId="@Model.EmployerAccountId" asp-route-vacancyId="@vacancy.Id" asp-route-vacancySharedByProvider=@vacancy.HasSharedApplications class="govuk-link">Manage</a>
-                                @if (vacancy.Status == VacancyStatus.Referred || vacancy.Status == VacancyStatus.Rejected || vacancy.Status == VacancyStatus.Review || vacancy.IsTaskListCompleted)
+                                @if (vacancy.Status == VacancyStatus.Referred || vacancy.Status == VacancyStatus.Rejected || vacancy.Status == VacancyStatus.Review)
+                                {
+                                    <a id="task-list-@vacancy.Id" asp-show="@vacancy.IsSubmittable" asp-route="@RouteNames.EmployerCheckYourAnswersGet" asp-route-employerAccountId="@Model.EmployerAccountId" asp-route-vacancyId="@vacancy.Id" class="govuk-link">@GetLinkText(vacancy)</a>
+                                }
+                                else if(vacancy.Status == VacancyStatus.Draft && vacancy.IsTaskListCompleted)
                                 {
                                     <a id="task-list-@vacancy.Id" asp-show="@vacancy.IsSubmittable" asp-route="@RouteNames.EmployerCheckYourAnswersGet" asp-route-employerAccountId="@Model.EmployerAccountId" asp-route-vacancyId="@vacancy.Id" class="govuk-link">@GetLinkText(vacancy)</a>
                                 }

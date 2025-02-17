@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using AutoFixture.NUnit3;
 using Esfa.Recruit.Employer.Web.Mappings;
 using Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview;
+using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.ApprenticeshipProgrammes;
@@ -168,23 +169,23 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.VacancyPreview
         public async Task Then_If_Has_Title_Training_Provider_ShortDescription_And_Descriptions_Then_Completed(
             string employerAccountId,
             string title,
-            string programmeId,
+            int programmeId,
             string description,
             string shortDescription,
             string trainingDescription,
             string accountLegalEntityPublicHashedId,
             Vacancies.Client.Domain.Entities.TrainingProvider provider,
-            ApprenticeshipProgramme programme,
-            [Frozen] Mock<IRecruitVacancyClient> recruitVacancyClient,
+            ApprenticeshipStandard programme,
+            [Frozen] Mock<IApprenticeshipProgrammeProvider> apprenticeshipProgrammeProvider,
             DisplayVacancyViewModelMapper mapper)
         {
-            recruitVacancyClient.Setup(x => x.GetApprenticeshipProgrammeAsync(programmeId)).ReturnsAsync(programme);
+            apprenticeshipProgrammeProvider.Setup(x => x.GetApprenticeshipStandardVacancyPreviewData(programmeId)).ReturnsAsync(programme);
             var vacancy = new Vacancy
             {
                 Id = Guid.NewGuid(),
                 EmployerAccountId = employerAccountId,
                 Title = title,
-                ProgrammeId = programmeId,
+                ProgrammeId = programmeId.ToString(),
                 Description = description,
                 TrainingDescription = trainingDescription,
                 ShortDescription = shortDescription,
@@ -203,23 +204,23 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.VacancyPreview
         public async Task Then_If_Has_Title_Training_Provider_ShortDescription_And_Description_Then_Completed_For_Faa_V2(
             string employerAccountId,
             string title,
-            string programmeId,
+            int programmeId,
             string description,
             string shortDescription,
             string trainingDescription,
             string accountLegalEntityPublicHashedId,
             Vacancies.Client.Domain.Entities.TrainingProvider provider,
-            ApprenticeshipProgramme programme,
-            [Frozen] Mock<IRecruitVacancyClient> recruitVacancyClient,
+            ApprenticeshipStandard programme,
+            [Frozen] Mock<IApprenticeshipProgrammeProvider> apprenticeshipProgrammeProvider,
             DisplayVacancyViewModelMapper mapper)
         {
-            recruitVacancyClient.Setup(x => x.GetApprenticeshipProgrammeAsync(programmeId)).ReturnsAsync(programme);
+            apprenticeshipProgrammeProvider.Setup(x => x.GetApprenticeshipStandardVacancyPreviewData(programmeId)).ReturnsAsync(programme);
             var vacancy = new Vacancy
             {
                 Id = Guid.NewGuid(),
                 EmployerAccountId = employerAccountId,
                 Title = title,
-                ProgrammeId = programmeId,
+                ProgrammeId = programmeId.ToString(),
                 Description = description,
                 ShortDescription = shortDescription,
                 TrainingProvider = provider,
@@ -228,7 +229,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.VacancyPreview
             var model = new VacancyPreviewViewModel();
             await mapper.MapFromVacancyAsync(model, vacancy);
             
-            model.SetSectionStates(model, new ModelStateDictionary(), true);
+            model.SetSectionStates(model, new ModelStateDictionary());
 
             model.TaskListSectionOneState.Should().Be(VacancyTaskListSectionState.Completed);
         }

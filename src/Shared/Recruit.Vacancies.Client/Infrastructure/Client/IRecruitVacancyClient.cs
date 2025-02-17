@@ -26,6 +26,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         Task<List<VacancyApplication>> GetVacancyApplicationsAsync(long vacancyReference, bool vacancySharedByProvider = false);
         Task<List<VacancyApplication>> GetVacancyApplicationsSortedAsync(long vacancyReference, SortColumn sortColumn, SortOrder sortOrder, bool vacancySharedByProvider = false);
         Task<List<VacancyApplication>> GetVacancyApplicationsForSelectedIdsAsync(List<Guid> applicationReviewIds);
+        Task<List<VacancyApplication>> GetVacancyApplicationsForReferenceAndStatus(Guid vacancyId, ApplicationReviewStatus status);
         Task UpdatePublishedVacancyAsync(Vacancy vacancy, VacancyUser user, LiveUpdateKind updateKind);
         Task<Guid> CloneVacancyAsync(Guid vacancyId, VacancyUser user, SourceOrigin sourceOrigin, DateTime startDate, DateTime closingDate);
         Task<string> GetEmployerNameAsync(Vacancy vacancy);
@@ -34,7 +35,10 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         Task UpdateEmployerProfileAsync(EmployerProfile employerProfile, VacancyUser user);
         Task<VacancyAnalyticsSummary> GetVacancyAnalyticsSummaryAsync(long vacancyReference);
         Task<User> GetUsersDetailsAsync(string userId);
-        Task<UserNotificationPreferences> GetUserNotificationPreferencesAsync(string vacancyUserId);
+        Task UpsertUserDetails(User user);
+        Task<UserNotificationPreferences> GetUserNotificationPreferencesAsync(string vacancyUserId, string dfeUserId = null);
+
+        Task<UserNotificationPreferences> GetUserNotificationPreferencesByDfEUserIdAsync(string idamsUserId, string dfeUserId = null);
         Task UpdateUserNotificationPreferencesAsync(UserNotificationPreferences preferences);
         EntityValidationResult ValidateUserNotificationPreferences(UserNotificationPreferences preferences);
         Task<GetUserAccountsResponse> GetEmployerIdentifiersAsync(string userId, string email);
@@ -42,7 +46,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         Task CloseVacancyAsync(Guid vacancyId, VacancyUser user, ClosureReason reason);
         Task<IApprenticeshipRoute> GetRoute(int? routeId);
         Task<IEnumerable<IApprenticeshipRoute>> GetApprenticeshipRoutes();
-        Task SetApplicationReviewsShared(IEnumerable<VacancyApplication> applicationReviewIds, VacancyUser user);
-        Task SetApplicationReviewsToUnsuccessful(IEnumerable<VacancyApplication> applicationReviewsToUnsuccessful, string candidateFeedback, VacancyUser user);
+        Task SetApplicationReviewsStatus(long vacancyReference, IEnumerable<Guid> applicationReviewIds, VacancyUser user, ApplicationReviewStatus? status, Guid vacancyId, ApplicationReviewStatus? applicationReviewTemporaryStatus);
+        Task SetApplicationReviewsPendingUnsuccessfulFeedback(VacancyUser user, ApplicationReviewStatus status, Guid vacancyId, string feedback);
+        Task SetApplicationReviewsToUnsuccessful(IEnumerable<Guid> applicationReviewsToUnsuccessful, string candidateFeedback, VacancyUser user, Guid vacancyId);
+        Task <User> GetUsersDetailsByDfEUserId(string dfeUserId);
     }
 }

@@ -47,7 +47,8 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
                 PageInfo = _utility.GetPartOnePageInfo(vacancy),
                 CurrentYear = _timeProvider.Now.Year,
                 Ukprn = vrm.Ukprn,
-                Title = vacancy.Title
+                Title = vacancy.Title,
+                IsTaskListCompleted = _utility.IsTaskListCompleted(vacancy)
             };
 
             if (vacancy.ClosingDate.HasValue)

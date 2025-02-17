@@ -8,7 +8,6 @@ using Esfa.Recruit.Shared.Web.Mappers;
 using Esfa.Recruit.Shared.Web.RuleTemplates;
 using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Configuration;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.FAA;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -24,7 +23,6 @@ using Esfa.Recruit.Provider.Web.Services;
 using Esfa.Recruit.Provider.Web.TagHelpers;
 using Esfa.Recruit.Provider.Web.ViewModels.ApplicationReviews;
 using Esfa.Recruit.Shared.Web.Orchestrators;
-using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Esfa.Recruit.Provider.Web.ViewModels.Validations.Fluent;
 using Esfa.Recruit.Provider.Web.RouteModel;
@@ -36,7 +34,7 @@ namespace Esfa.Recruit.Provider.Web.Configuration
     {
         public static void AddIoC(this IServiceCollection services, IConfiguration configuration)
         {
-            var serviceParameters = new ServiceParameters(configuration[$"RecruitConfiguration:{nameof(VacancyType)}"]);
+            var serviceParameters = new ServiceParameters();
 
             services.AddSingleton(serviceParameters);
 
@@ -47,7 +45,6 @@ namespace Esfa.Recruit.Provider.Web.Configuration
             services.Configure<ExternalLinksConfiguration>(configuration.GetSection("ExternalLinks"));
             services.Configure<AuthenticationConfiguration>(configuration.GetSection("Authentication"));
             services.Configure<GoogleAnalyticsConfiguration>(configuration.GetSection("GoogleAnalytics"));
-            services.Configure<FaaConfiguration>(configuration.GetSection("FaaConfiguration"));
             services.Configure<ZenDeskConfiguration>(configuration.GetSection("ZenDesk"));
             services.AddSingleton<ProviderApprenticeshipsLinkHelper>();
             services.AddFeatureToggle();
@@ -144,8 +141,6 @@ namespace Esfa.Recruit.Provider.Web.Configuration
             services.AddTransient<DurationOrchestrator>();
             services.AddTransient<VacancyTaskListOrchestrator>();
             services.AddTransient<FutureProspectsOrchestrator>();
-            services.AddTransient<WorkExperienceOrchestrator>();
-            services.AddTransient<TraineeSectorOrchestrator>();
             services.AddTransient<IAdditionalQuestionsOrchestrator, AdditionalQuestionsOrchestrator>();
             services.AddTransient<VacancyWorkDescriptionOrchestrator>();
             services.AddTransient<VacancyHowWillTheApprenticeTrainOrchestrator>();

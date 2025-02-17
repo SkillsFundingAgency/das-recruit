@@ -25,14 +25,12 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part2
         private readonly IRecruitVacancyClient _vacancyClient;
         private readonly IReviewSummaryService _reviewSummaryService;
         private readonly IUtility _utility;
-        private readonly IFeature _feature;
 
-        public QualificationsOrchestrator(IRecruitVacancyClient vacancyClient, ILogger<QualificationsOrchestrator> logger, IReviewSummaryService reviewSummaryService, IUtility utility, IFeature feature)
+        public QualificationsOrchestrator(IRecruitVacancyClient vacancyClient, ILogger<QualificationsOrchestrator> logger, IReviewSummaryService reviewSummaryService, IUtility utility)
             : base(logger)
         {
             _reviewSummaryService = reviewSummaryService;
             _utility = utility;
-            _feature = feature;
             _vacancyClient = vacancyClient;
         }
 
@@ -57,7 +55,6 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part2
                     Level = q.Level,
                     OtherQualificationName = q.OtherQualificationName
                 }).ToList(),
-                IsFaaV2Enabled = _feature.IsFeatureEnabled(FeatureNames.FaaV2Improvements)
             };
 
             if (vacancy.Status == VacancyStatus.Referred)
@@ -104,14 +101,14 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part2
 
             var qualificationToEdit = vacancy.Qualifications[index];
 
-            var qualificationNameType = _feature.IsFeatureEnabled(FeatureNames.FaaV2Improvements) ? MapToV2Qualification(qualificationToEdit.QualificationType) : qualificationToEdit.QualificationType;
+            var qualificationNameType = MapToV2Qualification(qualificationToEdit.QualificationType);
             vm.QualificationType = qualificationNameType;
             vm.Subject = qualificationToEdit.Subject;
             vm.Grade = qualificationToEdit.Grade;
             vm.Weighting = qualificationToEdit.Weighting;
             vm.EditIndex = index;
             vm.Level = qualificationToEdit.Level;
-            vm.OtherQualificationName = _feature.IsFeatureEnabled(FeatureNames.FaaV2Improvements) && qualificationNameType.Equals("Other") && string.IsNullOrEmpty(qualificationToEdit.OtherQualificationName)
+            vm.OtherQualificationName = qualificationNameType.Equals("Other") && string.IsNullOrEmpty(qualificationToEdit.OtherQualificationName)
                 ? qualificationToEdit.QualificationType : qualificationToEdit.OtherQualificationName;
             return vm;
         }
@@ -238,7 +235,6 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part2
                 QualificationTypes = allQualifications,
                 CancelRoute = cancelRoute,
                 BackRoute = backRoute,
-                IsFaaV2Enabled = _feature.IsFeatureEnabled(FeatureNames.FaaV2Improvements)
             };
             foreach (var qualification in allQualifications)
             {
@@ -248,21 +244,20 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part2
                     Data = ""
                 };
 
-                if (_feature.IsFeatureEnabled(FeatureNames.FaaV2Improvements))
+                if (qualification == "BTEC")
                 {
-                    if (qualification == "BTEC")
-                    {
-                        q.Data = "conditional-btec";
-                    }
+                    q.Data = "conditional-btec";
+                }
 
-                    if (qualification == "Other")
-                    {
-                        q.Data = "conditional-other";
-                    }
+                if (qualification == "Other")
+                {
+                    q.Data = "conditional-other";
                 }
 
                 vm.Qualifications.Add(q);
             }
+
+            vm.BackRoute = _utility.IsTaskListCompleted(vacancy) ? RouteNames.ProviderCheckYourAnswersGet : backRoute;
 
             return vm;
         }

@@ -6,7 +6,7 @@ using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Shared.Web.Helpers;
 using Esfa.Recruit.Shared.Web.Orchestrators;
 using Esfa.Recruit.Shared.Web.Services;
-using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
+using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
@@ -23,32 +23,49 @@ namespace Esfa.Recruit.Provider.Web.Mappings
         private readonly ExternalLinksConfiguration _externalLinksConfiguration;
         private readonly IRecruitVacancyClient _vacancyClient;
         private readonly IProviderVacancyClient _client;
-        private readonly IFeature _feature;
+        private readonly IApprenticeshipProgrammeProvider _apprenticeshipProgrammeProvider;
 
         public DisplayVacancyViewModelMapper(
                 IGeocodeImageService mapService,
                 IOptions<ExternalLinksConfiguration> externalLinksOptions,
                 IRecruitVacancyClient vacancyClient,
                 IProviderVacancyClient client,
-                IFeature feature)
+                IApprenticeshipProgrammeProvider apprenticeshipProgrammeProvider)
         {
             _mapService = mapService;
             _externalLinksConfiguration = externalLinksOptions.Value;
             _vacancyClient = vacancyClient;
             _client = client;
-            _feature = feature;
+            _apprenticeshipProgrammeProvider = apprenticeshipProgrammeProvider;
         }
 
         public async Task MapFromVacancyAsync(DisplayVacancyViewModel vm, Vacancy vacancy)
         {
-            var programme = vacancy.VacancyType.GetValueOrDefault() == VacancyType.Apprenticeship ? await _vacancyClient.GetApprenticeshipProgrammeAsync(vacancy.ProgrammeId) : null;
-            var route = vacancy.VacancyType.GetValueOrDefault() == VacancyType.Traineeship ? await _vacancyClient.GetRoute(vacancy.RouteId) : null;
+            ApprenticeshipStandard programme = null;
+            if (int.TryParse(vacancy.ProgrammeId, out var standardId))
+            {
+                programme = await _apprenticeshipProgrammeProvider.GetApprenticeshipStandardVacancyPreviewData(standardId);    
+            }
+            
             var employer = await _client.GetProviderEmployerVacancyDataAsync(vacancy.TrainingProvider.Ukprn.Value, vacancy.EmployerAccountId);
-
+            
+            bool? hasOptedToAddQualifications = null;
+            if (vacancy.HasOptedToAddQualifications == null)
+            {
+                if (vacancy.Qualifications != null && vacancy.Qualifications.Count != 0)
+                {
+                    hasOptedToAddQualifications = true;
+                }
+            }
+            else
+            {
+                hasOptedToAddQualifications = vacancy.HasOptedToAddQualifications.Value;
+            }
+            
             var allQualifications = await _vacancyClient.GetCandidateQualificationsAsync();
 
             vm.Status = vacancy.Status;
-            vm.AccountName = employer.Name;
+            vm.AccountName = employer?.Name;
             vm.ApplicationMethod = vacancy.ApplicationMethod;
             vm.ApplicationInstructions = vacancy.ApplicationInstructions;
             vm.ApplicationUrl = vacancy.ApplicationUrl;
@@ -77,8 +94,9 @@ namespace Esfa.Recruit.Provider.Web.Mappings
             vm.ProviderContactEmail = vacancy.ProviderContact?.Email;
             vm.ProviderContactTelephone = vacancy.ProviderContact?.Phone;
             vm.ProviderName = vacancy.TrainingProvider?.Name;
-            vm.Qualifications = vacancy.Qualifications.SortQualifications(allQualifications).AsText(_feature.IsFeatureEnabled(FeatureNames.FaaV2Improvements));
-            vm.HasOptedToAddQualifications = !_feature.IsFeatureEnabled(FeatureNames.FaaV2Improvements) ? true : vacancy.HasOptedToAddQualifications;
+            vm.Qualifications = vacancy.Qualifications?.Where(c=>c.Weighting == QualificationWeighting.Essential).SortQualifications(allQualifications).AsText().ToList();
+            vm.QualificationsDesired = vacancy.Qualifications?.Where(c=>c.Weighting == QualificationWeighting.Desired).SortQualifications(allQualifications).AsText().ToList();
+            vm.HasOptedToAddQualifications = hasOptedToAddQualifications;
             vm.ShortDescription = vacancy.ShortDescription;
             vm.Skills = vacancy.Skills ?? Enumerable.Empty<string>();
             vm.ThingsToConsider = vacancy.ThingsToConsider;
@@ -103,11 +121,16 @@ namespace Esfa.Recruit.Provider.Web.Mappings
                 vm.EmployerAddressElements = vacancy.EmployerAddressForDisplay();
             }
 
-            if (programme != null)
+            if (vacancy.ProgrammeId != null && programme != null)
             {
                 vm.TrainingTitle = programme.Title;
                 vm.TrainingType = programme.ApprenticeshipType.GetDisplayName();
                 vm.TrainingLevel = programme.ApprenticeshipLevel.GetDisplayName();
+                vm.CourseCoreDuties = programme.CoreDuties;
+                vm.CourseSkills = programme.Skills;
+                vm.StandardPageUrl = programme.StandardPageUrl;
+                vm.OverviewOfRole = programme.OverviewOfRole;
+                vm.ApprenticeshipLevel = programme.ApprenticeshipLevel;
             }
 
             if (vacancy.Wage != null)
@@ -115,21 +138,13 @@ namespace Esfa.Recruit.Provider.Web.Mappings
                 vm.ExpectedDuration = (vacancy.Wage.DurationUnit.HasValue && vacancy.Wage.Duration.HasValue)
                     ? vacancy.Wage.DurationUnit.Value.GetDisplayName().ToQuantity(vacancy.Wage.Duration.Value)
                     : null;
-                vm.HoursPerWeek = $"{vacancy.Wage.WeeklyHours:0.##} hours a week";
+                vm.HoursPerWeek = $"{vacancy.Wage.WeeklyHours:0.##}";
                 vm.WageInfo = vacancy.Wage.WageAdditionalInformation;
                 vm.CompanyBenefitsInformation = vacancy.Wage.CompanyBenefitsInformation;
                 vm.WageType = vacancy.Wage.WageType;
                 vm.WageText = vacancy.StartDate.HasValue ? vacancy.Wage.ToText(vacancy.StartDate) : null;
                 vm.WorkingWeekDescription = vacancy.Wage.WorkingWeekDescription;
             }
-
-            if (route != null)
-            {
-                vm.RouteId = route.Id;
-                vm.RouteTitle = route.Route;
-            }
-
-            vm.WorkExperience = vacancy.WorkExperience;
 
             vm.VacancyType = vacancy.VacancyType;
         }

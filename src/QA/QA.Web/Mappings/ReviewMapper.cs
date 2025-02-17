@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Qa.Web.ViewModels;
-using Esfa.Recruit.Shared.Web.Configuration;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Shared.Web.Helpers;
 using Esfa.Recruit.Shared.Web.Mappers;
@@ -30,14 +29,12 @@ namespace Esfa.Recruit.Qa.Web.Mappings
         private readonly Lazy<IList<string>> _qualifications;
         private readonly IRuleMessageTemplateRunner _ruleTemplateRunner;
         private readonly IReviewSummaryService _reviewSummaryService;
-        private readonly IFeature _feature;
 
         public ReviewMapper(ILogger<ReviewMapper> logger,
                     IQaVacancyClient vacancyClient,
                     IGeocodeImageService mapService,
                     IRuleMessageTemplateRunner ruleTemplateRunner,
-                    IReviewSummaryService reviewSummaryService,
-                    IFeature feature)
+                    IReviewSummaryService reviewSummaryService)
         {
             _logger = logger;
             _vacancyClient = vacancyClient;
@@ -45,7 +42,6 @@ namespace Esfa.Recruit.Qa.Web.Mappings
             _qualifications = new Lazy<IList<string>>(() => _vacancyClient.GetCandidateQualificationsAsync().Result.QualificationTypes);
             _ruleTemplateRunner = ruleTemplateRunner;
             _reviewSummaryService = reviewSummaryService;
-            _feature = feature;
         }
 
         private static readonly Dictionary<string, IEnumerable<string>> ReviewFields = new Dictionary<string, IEnumerable<string>>
@@ -176,11 +172,6 @@ namespace Esfa.Recruit.Qa.Web.Mappings
                         FieldIdentifier = FieldIdentifiers.TrainingDescription,
                         Text = "Training provided"
                     },
-                    new FieldIdentifierViewModel
-                    {
-                        FieldIdentifier = FieldIdentifiers.WorkExperience,
-                        Text = "Work experience provided"
-                    },
                     new FieldIdentifierViewModel { FieldIdentifier = FieldIdentifiers.WorkingWeek, Text = "Working week details" },
                     new FieldIdentifierViewModel
                         { FieldIdentifier = FieldIdentifiers.ExpectedDuration, Text = "Duration" },
@@ -208,8 +199,7 @@ namespace Esfa.Recruit.Qa.Web.Mappings
                     new FieldIdentifierViewModel
                         { FieldIdentifier = FieldIdentifiers.EmployerAddress, Text = "Work experience address" },
                     new FieldIdentifierViewModel { FieldIdentifier = FieldIdentifiers.Provider, Text = "Training provider" },
-                    new FieldIdentifierViewModel { FieldIdentifier = FieldIdentifiers.ProviderContact, Text = "Contact details" },
-                    new FieldIdentifierViewModel { FieldIdentifier = FieldIdentifiers.TraineeRoute, Text = "Traineeship sector" }
+                    new FieldIdentifierViewModel { FieldIdentifier = FieldIdentifiers.ProviderContact, Text = "Contact details" }
                 };
             }
         }
@@ -224,10 +214,6 @@ namespace Esfa.Recruit.Qa.Web.Mappings
                 ? _vacancyClient.GetApprenticeshipProgrammeAsync(vacancy.ProgrammeId)
                 : Task.FromResult((IApprenticeshipProgramme)null);
             
-            var routeTask = vacancy.VacancyType.GetValueOrDefault() == VacancyType.Traineeship 
-                ? _vacancyClient.GetRoute(vacancy.RouteId)
-                : Task.FromResult((IApprenticeshipRoute)null);
-
             var reviewHistoryTask = _vacancyClient.GetVacancyReviewHistoryAsync(review.VacancyReference);
 
             var approvedCountTask = _vacancyClient.GetApprovedCountAsync(vacancy.SubmittedByUser.UserId);
@@ -242,7 +228,6 @@ namespace Esfa.Recruit.Qa.Web.Mappings
             await Task.WhenAll(
                 currentVacancy,
                 programmeTask,
-                routeTask,
                 approvedCountTask,
                 approvedFirstTimeCountTask,
                 reviewHistoryTask,
@@ -250,7 +235,6 @@ namespace Esfa.Recruit.Qa.Web.Mappings
                 anonymousApprovedCountTask);
 
             var programme = programmeTask.Result;
-            var route = routeTask.Result;
             var currentVacancyResult = currentVacancy.Result;
             var historiesVm = GetReviewHistoriesViewModel(reviewHistoryTask.Result);
 
@@ -291,7 +275,7 @@ namespace Esfa.Recruit.Qa.Web.Mappings
                 vm.ProviderContactEmail = vacancy.ProviderContact?.Email;
                 vm.ProviderContactTelephone= vacancy.ProviderContact?.Phone;
                 vm.ProviderName = vacancy.TrainingProvider.Name;
-                vm.Qualifications = vacancy.Qualifications.SortQualifications(_qualifications.Value).AsText(_feature.IsFeatureEnabled("FaaV2Improvements"));
+                vm.Qualifications = vacancy.Qualifications.SortQualifications(_qualifications.Value).AsText();
                 vm.ShortDescription = vacancy.ShortDescription;
                 vm.Skills = vacancy.Skills ?? Enumerable.Empty<string>();
                 vm.OwnerType = vacancy.OwnerType;
@@ -309,8 +293,6 @@ namespace Esfa.Recruit.Qa.Web.Mappings
                     vm.Level = programme.ApprenticeshipLevel;
                 }
                 
-                vm.TraineeRoute = route?.Route;
-
                 if (vacancy.Wage != null)
                 {
                     vm.ExpectedDuration = (vacancy.Wage.DurationUnit.HasValue && vacancy.Wage.Duration.HasValue)
@@ -324,7 +306,6 @@ namespace Esfa.Recruit.Qa.Web.Mappings
                     vm.WorkingWeekDescription = vacancy.Wage.WorkingWeekDescription;
                     vm.CompanyBenefitsInformation = vacancy.Wage.CompanyBenefitsInformation;
                 }
-                vm.WorkExperience = vacancy.WorkExperience;
                 vm.VacancyType = vacancy.VacancyType;
                 
                 vm.SubmittedDate = vacancy.SubmittedDate.Value;
@@ -453,7 +434,7 @@ namespace Esfa.Recruit.Qa.Web.Mappings
                 {
                     OutcomeId = d.Id.ToString(),
                     FieldId = d.Target,
-                    Checked = true,
+                    Checked = !review.DismissedAutomatedQaOutcomeIndicators?.Contains(d.Target.ToString()) ?? true,
                     Text = _ruleTemplateRunner.ToText(ruleOutcome.RuleId, d.Data, FieldDisplayNameResolver.Resolve(d.Target))
                 }));
             }

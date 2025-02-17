@@ -22,7 +22,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
         Task<IEnumerable<EmployerInfo>> GetProviderEmployerVacancyDatasAsync(long ukprn, IList<string> employerAccountIds);
         Task<VacancyApplications> GetVacancyApplicationsAsync(string vacancyReference);
         Task<QaDashboard> GetQaDashboardAsync();
-        Task<ProviderDashboard> GetProviderDashboardAsync(long ukprn, VacancyType vacancyType);
+        Task<ProviderDashboard> GetProviderDashboardAsync(long ukprn);
         Task<VacancyAnalyticsSummary> GetVacancyAnalyticsSummaryAsync(long vacancyReference);
         Task<BlockedProviderOrganisations> GetBlockedProvidersAsync();
         Task<IEnumerable<LiveVacancy>> GetLiveExpiredVacancies(DateTime closingDate);
@@ -35,6 +35,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
         Task<long> GetTotalPositionsAvailableCount();
         Task<LiveVacancy> GetLiveVacancy(long vacancyReference);
         Task<LiveVacancy> GetLiveExpiredVacancy(long vacancyReference);
-        Task<VacancyAnalyticsSummaryV2> GetVacancyAnalyticsSummaryV2Async(long vacancyReference);
+        Task<VacancyAnalyticsSummaryV2> GetVacancyAnalyticsSummaryV2Async(string vacancyReference);
     }
 }

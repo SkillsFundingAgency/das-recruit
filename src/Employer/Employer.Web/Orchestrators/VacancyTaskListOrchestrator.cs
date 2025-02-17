@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Mappings;
 using Esfa.Recruit.Employer.Web.Models;
@@ -11,7 +10,6 @@ using Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview;
 using Esfa.Recruit.Shared.Web.Orchestrators;
 using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Commands;
-using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
@@ -31,13 +29,12 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
         private readonly IReviewSummaryService _reviewSummaryService;
         private readonly ILegalEntityAgreementService _legalEntityAgreementService;
         private readonly IMessaging _messaging;
-        private readonly IFeature _feature;
         private const VacancyRuleSet SoftValidationRules = VacancyRuleSet.MinimumWage | VacancyRuleSet.TrainingExpiryDate;
         private const VacancyRuleSet SubmitValidationRules = VacancyRuleSet.All;
 
         public VacancyTaskListOrchestrator(ILogger<VacancyTaskListOrchestrator> logger,IRecruitVacancyClient recruitVacancyClient, IUtility utility, 
             IEmployerVacancyClient employerVacancyClient,  DisplayVacancyViewModelMapper displayVacancyViewModelMapper,IReviewSummaryService reviewSummaryService, 
-            ILegalEntityAgreementService legalEntityAgreementService, IMessaging messaging, IFeature feature) : base(logger)
+            ILegalEntityAgreementService legalEntityAgreementService, IMessaging messaging) : base(logger)
         {
             _recruitVacancyClient = recruitVacancyClient;
             _utility = utility;
@@ -46,21 +43,18 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             _reviewSummaryService = reviewSummaryService;
             _legalEntityAgreementService = legalEntityAgreementService;
             _messaging = messaging;
-            _feature = feature;
         }
 
         public async Task<VacancyPreviewViewModel> GetVacancyTaskListModel(VacancyRouteModel vrm)
         {
             var vacancyTask = _utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.EmployerTaskListGet);
-            var programmesTask = _recruitVacancyClient.GetActiveApprenticeshipProgrammesAsync();
             var getEmployerDataTask = _employerVacancyClient.GetEditVacancyInfoAsync(vrm.EmployerAccountId);
 
-            await Task.WhenAll(vacancyTask, programmesTask, getEmployerDataTask);
+            await Task.WhenAll(vacancyTask, getEmployerDataTask);
 
             var vacancy = vacancyTask.Result;
-            var programme = programmesTask.Result.SingleOrDefault(p => p.Id == vacancy.ProgrammeId);
-
-            var vm = new VacancyPreviewViewModel(_feature.IsFeatureEnabled(FeatureNames.FaaV2Improvements));
+            
+            var vm = new VacancyPreviewViewModel();
             await _displayVacancyViewModelMapper.MapFromVacancyAsync(vm, vacancy);
 
             vm.RejectedReason = vacancy.EmployerRejectedReason;
@@ -72,10 +66,6 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             vm.VacancyId = vrm.VacancyId;
             vm.EmployerAccountId = vrm.EmployerAccountId;
             
-            if (programme != null)
-            {
-                vm.ApprenticeshipLevel = programme.ApprenticeshipLevel;
-            }
             if (vacancy.Status == VacancyStatus.Referred)
             {
                 vm.Review = await _reviewSummaryService.GetReviewSummaryViewModelAsync(vacancy.VacancyReference.Value, 
@@ -89,7 +79,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
         public async Task<VacancyPreviewViewModel> GetCreateVacancyTaskListModel(VacancyRouteModel vrm)
         {
             var getEmployerData = await _employerVacancyClient.GetEditVacancyInfoAsync(vrm.EmployerAccountId);
-            var vm = new VacancyPreviewViewModel(_feature.IsFeatureEnabled(FeatureNames.FaaV2Improvements))
+            var vm = new VacancyPreviewViewModel
             {
                 AccountLegalEntityCount = getEmployerData?.LegalEntities?.Count() ?? 0,
                 EmployerAccountId = vrm.EmployerAccountId

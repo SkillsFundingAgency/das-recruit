@@ -17,12 +17,10 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part2
     public class ProviderContactDetailsController : Controller
     {
         private readonly ProviderContactDetailsOrchestrator _orchestrator;
-        private readonly IFeature _feature;
 
-        public ProviderContactDetailsController(ProviderContactDetailsOrchestrator orchestrator, IFeature feature)
+        public ProviderContactDetailsController(ProviderContactDetailsOrchestrator orchestrator)
         {
             _orchestrator = orchestrator;
-            _feature = feature;
         }
 
         [HttpGet("provider-contact-details", Name = RouteNames.ProviderContactDetails_Get)]
@@ -71,17 +69,10 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part2
             {
                 return View(vm);
             }
-            
-            if (_feature.IsFeatureEnabled(FeatureNames.ProviderTaskList))
-            {
-                if (!vm.IsTaskListCompleted)
-                {
-                    return RedirectToRoute(RouteNames.ApplicationProcess_Get, new {m.VacancyId, m.Ukprn});
-                }
-                return RedirectToRoute(RouteNames.ProviderCheckYourAnswersGet, new {m.VacancyId, m.Ukprn});
-            }
 
-            return RedirectToRoute(RouteNames.Vacancy_Preview_Get, new {m.VacancyId, m.Ukprn});
+            return vm.IsTaskListCompleted
+                ? RedirectToRoute(RouteNames.ProviderCheckYourAnswersGet, new { m.VacancyId, m.Ukprn })
+                : RedirectToRoute(RouteNames.ApplicationProcess_Get, new { m.VacancyId, m.Ukprn });
         }
     }
 }

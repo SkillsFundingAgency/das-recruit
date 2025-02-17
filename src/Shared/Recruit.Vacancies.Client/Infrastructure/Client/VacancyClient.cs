@@ -214,7 +214,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         
         public async Task<EmployerDashboardSummary> GetDashboardSummary(string employerAccountId)
         {
-            var dashboardValue = await  _vacancySummariesQuery.GetEmployerOwnedVacancyDashboardByEmployerAccountIdAsync(employerAccountId, VacancyType.Apprenticeship);
+            var dashboardValue = await  _vacancySummariesQuery.GetEmployerOwnedVacancyDashboardByEmployerAccountIdAsync(employerAccountId);
             
             var dashboard = dashboardValue.VacancyStatusDashboard;
             var dashboardApplications = dashboardValue.VacancyApplicationsDashboard;
@@ -244,7 +244,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         {
             var vacancySummaries =
                 await _vacancySummariesQuery.GetEmployerOwnedVacancySummariesByEmployerAccountId(employerAccountId,
-                    VacancyType.Apprenticeship, page, status, searchTerm);
+                     page, status, searchTerm);
             return new EmployerDashboard
             {
                 Id = QueryViewType.EmployerDashboard.GetIdValue(employerAccountId),
@@ -347,6 +347,18 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
                 : applicationReviews.Select(c => (VacancyApplication)c).ToList();
         }
 
+        public async Task<List<VacancyApplication>> GetVacancyApplicationsForReferenceAndStatus(Guid vacancyId, ApplicationReviewStatus status)
+        {
+            var vacancy = await _repository.GetVacancyAsync(vacancyId);
+            
+            var applicationReviews =
+                await _applicationReviewRepository.GetAllForVacancyWithTemporaryStatus(vacancy.VacancyReference!.Value!, status);
+
+            return applicationReviews == null
+                ? new List<VacancyApplication>()
+                : applicationReviews.Select(c => (VacancyApplication)c).ToList();
+        }
+
         public Task<bool> SetApplicationReviewStatus(Guid applicationReviewId, ApplicationReviewStatus? outcome, string candidateFeedback, VacancyUser user)
         {
             var command = new ApplicationReviewStatusEditCommand
@@ -360,24 +372,43 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return _messaging.SendStatusCommandAsync(command);
         }
 
-        public Task SetApplicationReviewsShared(IEnumerable<VacancyApplication> applicationReviews, VacancyUser user)
+        public Task SetApplicationReviewsStatus(long vacancyReference, IEnumerable<Guid> applicationReviews, VacancyUser user, ApplicationReviewStatus? status, Guid vacancyId, ApplicationReviewStatus? applicationReviewTemporaryStatus)
         {
             var command = new ApplicationReviewsSharedCommand
             {
                 ApplicationReviews = applicationReviews,
-                User = user
+                User = user,
+                Status = status,
+                VacancyId = vacancyId,
+                TemporaryStatus = applicationReviewTemporaryStatus,
+                VacancyReference = vacancyReference
             };
 
             return _messaging.SendCommandAsync(command);
         }
 
-        public Task SetApplicationReviewsToUnsuccessful(IEnumerable<VacancyApplication> applicationReviewsToUnsuccessful, string candidateFeedback, VacancyUser user)
+        public Task SetApplicationReviewsPendingUnsuccessfulFeedback(VacancyUser user, ApplicationReviewStatus status, Guid vacancyId, string feedback)
         {
-            var command = new ApplicationReviewsUnsuccessfulCommand()
+            var command = new ApplicationReviewPendingUnsuccessfulFeedbackCommand
+            {
+                Feedback = feedback,
+                User = user,
+                Status = status,
+                VacancyId = vacancyId
+            };
+
+            return _messaging.SendCommandAsync(command);
+        }
+
+        public Task SetApplicationReviewsToUnsuccessful(IEnumerable<Guid> applicationReviewsToUnsuccessful, string candidateFeedback, VacancyUser user, Guid vacancyId)
+        {
+            var command = new ApplicationReviewsUnsuccessfulCommand
             {
                 ApplicationReviews = applicationReviewsToUnsuccessful,
                 CandidateFeedback = candidateFeedback,
-                User = user
+                User = user,
+                VacancyId = vacancyId,
+                Status = ApplicationReviewStatus.Unsuccessful
             };
 
             return _messaging.SendCommandAsync(command);
@@ -413,20 +444,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         public Task PatchTrainingProviderAsync(Guid vacancyId)
         {
             var command = new PatchVacancyTrainingProviderCommand(vacancyId);
-
-            return _messaging.SendCommandAsync(command);
-        }
-
-        public Task UpdateApprenticeshipProgrammesAsync()
-        {
-            var command = new UpdateApprenticeshipProgrammesCommand();
-
-            return _messaging.SendCommandAsync(command);
-        }
-
-        public Task UpdateApprenticeshipRouteAsync()
-        {
-            var command = new UpdateApprenticeshipRouteCommand();
 
             return _messaging.SendCommandAsync(command);
         }
@@ -552,16 +569,39 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return _userRepository.GetAsync(userId);
         }
 
+        public Task UpsertUserDetails(User user)
+        {
+            return _userRepository.UpsertUserAsync(user);
+        }
+        
+        public Task<User> GetUsersDetailsByDfEUserId(string dfeUserId)
+        {
+            return _userRepository.GetByDfEUserId(dfeUserId);
+        }
+
         public Task<VacancyAnalyticsSummary> GetVacancyAnalyticsSummaryAsync(long vacancyReference)
         {
             return _reader.GetVacancyAnalyticsSummaryAsync(vacancyReference);
         }
 
-        public async Task<UserNotificationPreferences> GetUserNotificationPreferencesAsync(string idamsUserId)
+        public async Task<UserNotificationPreferences> GetUserNotificationPreferencesAsync(string idamsUserId, string dfeUserId = null)
         {
             var preferences = await _userNotificationPreferencesRepository.GetAsync(idamsUserId);
 
-            return preferences ?? new UserNotificationPreferences() { Id = idamsUserId };
+            if (dfeUserId != null)
+            {
+                return preferences;
+            }
+            
+            return preferences ?? new UserNotificationPreferences { Id = idamsUserId};
+        }
+        
+        public async Task<UserNotificationPreferences> GetUserNotificationPreferencesByDfEUserIdAsync(string idamsUserId, string dfeUserId = null)
+        {
+            var preferences = await _userNotificationPreferencesRepository.GetByDfeUserId(dfeUserId) 
+                              ?? await GetUserNotificationPreferencesAsync(idamsUserId, dfeUserId);
+
+            return preferences ?? new UserNotificationPreferences() { Id = idamsUserId ,DfeUserId = dfeUserId};
         }
 
         public Task UpdateUserNotificationPreferencesAsync(UserNotificationPreferences preferences)
@@ -597,10 +637,10 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             return EntityValidationResult.FromFluentValidationResult(fluentResult);
         }
         
-        public async Task<long> GetVacancyCount(string employerAccountId, VacancyType vacancyType, FilteringOptions? filteringOptions, string searchTerm)
+        public async Task<long> GetVacancyCount(string employerAccountId, FilteringOptions? filteringOptions, string searchTerm)
         {
             var ownerType = (filteringOptions == FilteringOptions.NewSharedApplications || filteringOptions == FilteringOptions.AllSharedApplications) ? OwnerType.Provider : OwnerType.Employer;
-            return await _vacancySummariesQuery.VacancyCount(null, employerAccountId, vacancyType, filteringOptions, searchTerm, ownerType);
+            return await _vacancySummariesQuery.VacancyCount(null, employerAccountId, filteringOptions, searchTerm, ownerType);
         }
     }
 }

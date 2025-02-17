@@ -5,7 +5,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Responses;
 public class GetVacancyMetricResponse
 {
     [JsonProperty("vacancyReference")]
-    public int VacancyReference { get; set; }
+    public string VacancyReference { get; set; }
     [JsonProperty("viewsCount")]
     public int ViewsCount { get; set; }
 

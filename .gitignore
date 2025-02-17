@@ -304,3 +304,7 @@ src/**/**/appsettings.Development.json
 
 
 setup/containermongo/data/
+
+src/Jobs/.learningtransport/**/**/*.txt
+
+src/Jobs/.learningtransport/**/*.txt

@@ -40,8 +40,9 @@ namespace Esfa.Recruit.Provider.Web.ViewModels
         public string ProviderContactEmail { get; internal set; }
         public string ProviderContactTelephone { get; internal set; }
         public string ProviderName { get; internal set; }
-        public IEnumerable<string> Qualifications { get; internal set; }
+        public List<string>? Qualifications { get; internal set; }
         public bool? HasOptedToAddQualifications { get; internal set; }
+        public List<string>? QualificationsDesired { get; set; }
         public string ShortDescription { get; internal set; }
         public IEnumerable<string> Skills { get; internal set; }
         public string ThingsToConsider { get; internal set; }
@@ -49,6 +50,8 @@ namespace Esfa.Recruit.Provider.Web.ViewModels
         public string TrainingDescription { get; internal set; }
         public string AdditionalTrainingDescription { get; internal set; }
         public string TrainingTitle { get; internal set; }
+        public List<string> CourseCoreDuties { get; internal set; } = [];
+        public List<string> CourseSkills { get; internal set; } = [];
         public string TrainingType { get; internal set; }
         public string TrainingLevel { get; internal set; }
         public string VacancyDescription { get; internal set; }
@@ -62,7 +65,6 @@ namespace Esfa.Recruit.Provider.Web.ViewModels
         public string AccountLegalEntityPublicHashedId { get; internal set; }
         public int RouteId { get; set; }
         public string RouteTitle { get; set; }
-        public string WorkExperience { get; set; }
         private string _additionalQuestion1;
         public string AdditionalQuestion1 
         { 
@@ -144,8 +146,10 @@ namespace Esfa.Recruit.Provider.Web.ViewModels
         public bool HasSelectedLegalEntity => !string.IsNullOrEmpty(AccountLegalEntityPublicHashedId);
         public EmployerNameOption? EmployerNameOption { get; set; }
         public VacancyType? VacancyType { get; set; }
+        public string StandardPageUrl { get; set; }
+        public string OverviewOfRole { get; set; }
+        public ApprenticeshipLevel ApprenticeshipLevel { get; set; }
         
-
         private string BuildAdditionalQuestionText(string additionalQuestion)
         {
             if (string.IsNullOrWhiteSpace(additionalQuestion))

@@ -1,7 +1,6 @@
 using Communication.Types;
 using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.FAA;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories;
 using Esfa.Recruit.Vacancies.Client.Ioc;
 using Esfa.Recruit.Vacancies.Jobs.AnalyticsSummaryProcessor;
@@ -26,6 +25,7 @@ using Esfa.Recruit.Client.Application.Communications;
 using Esfa.Recruit.Vacancies.Client.Application.Communications.EntityDataItemProviderPlugins;
 using System.Collections.Generic;
 using System.Data;
+using Azure.Monitor.OpenTelemetry.AspNetCore;
 using SFA.DAS.Encoding;
 using Esfa.Recruit.Vacancies.Client.Application.Communications.ParticipantResolverPlugins;
 using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
@@ -52,7 +52,6 @@ namespace Esfa.Recruit.Vacancies.Jobs
 
             // Add Jobs
             services.AddScoped<DomainEventsQueueTrigger>();
-            services.AddScoped<UpdateApprenticeshipProgrammesQueueTrigger>();
             services.AddScoped<VacancyStatusQueueTrigger>();
             services.AddScoped<GeneratePublishedVacanciesQueueTrigger>();
             services.AddScoped<UpdateBankHolidayQueueTrigger>();
@@ -62,7 +61,6 @@ namespace Esfa.Recruit.Vacancies.Jobs
             services.AddScoped<TransferVacancyToLegalEntityQueueTrigger>();
             services.AddScoped<TransferVacanciesFromEmployerReviewToQAReviewQueueTrigger>();
             services.AddScoped<UpdateProvidersQueueTrigger>();
-            services.AddTransient<IFaaService, FaaService>();
 #if DEBUG
             services.AddScoped<SpikeQueueTrigger>();
 #endif
@@ -109,14 +107,24 @@ namespace Esfa.Recruit.Vacancies.Jobs
 
             RegisterCommunicationsService(services, configuration);
             RegisterDasEncodingService(services, configuration);
-            
-            var serviceParameters = new ServiceParameters("Apprenticeships");
-            
-            services.AddSingleton(serviceParameters);
+
+            services.AddSingleton(new ServiceParameters());
 
             services.AddSingleton<IFeature, Feature>();
         }
 
+        public static void AddOpenTelemetryRegistration(this IServiceCollection services, string appInsightsConnectionString)
+        {
+            if (!string.IsNullOrEmpty(appInsightsConnectionString))
+            {
+                // This service will collect and send telemetry data to Azure Monitor.
+                services.AddOpenTelemetry().UseAzureMonitor(options =>
+                {
+                    options.ConnectionString = appInsightsConnectionString;
+                });
+            }
+        }
+        
         private static void RegisterCommunicationsService(IServiceCollection services, IConfiguration configuration)
         {
             // Relies on services.AddRecruitStorageClient(configuration); being called first

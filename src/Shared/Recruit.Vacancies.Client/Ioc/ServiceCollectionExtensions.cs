@@ -38,7 +38,6 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.SequenceStore;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.FAA;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Geocode;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.PasAccount;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Projections;
@@ -110,7 +109,6 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
         {
             // Configuration
             services.AddSingleton(configuration);
-            services.Configure<FaaConfiguration>(configuration.GetSection("FaaConfiguration"));
             services.Configure<SlackConfiguration>(configuration.GetSection("Slack"));
             services.Configure<NextVacancyReviewServiceConfiguration>(o => o.VacancyReviewAssignationTimeoutMinutes = configuration.GetValue<int>("RecruitConfiguration:VacancyReviewAssignationTimeoutMinutes"));
             services.Configure<PasAccountApiConfiguration>(configuration.GetSection("PasAccountApiConfiguration"));
@@ -156,7 +154,6 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
             services.AddTransient<ISlackClient, SlackClient>();
             services.AddTransient<ITrainingProviderService, TrainingProviderService>();
             services.AddTransient<ITrainingProviderSummaryProvider, TrainingProviderSummaryProvider>();
-            services.AddTransient<IFaaService, FaaService>();
             services.AddTransient<IPasAccountProvider, PasAccountProvider>();
             services.AddHttpClient<IOuterApiClient, OuterApiClient>();
             services.AddTransient<IOuterApiGeocodeService, OuterApiGeocodeService>();
@@ -182,7 +179,6 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
             services.AddTransient<IVacancySummariesProvider, VacancySummariesProvider>();
 
             // Reference Data update services
-            services.AddTransient<IApprenticeshipProgrammesUpdateService, ApprenticeshipProgrammesUpdateService>();
             services.AddTransient<ITrainingProvidersUpdateService, TrainingProvidersUpdateService>();
             services.AddTransient<IBankHolidayUpdateService, BankHolidayUpdateService>();
             services.AddTransient<IBankHolidayProvider, BankHolidayProvider>();

@@ -10,7 +10,6 @@ using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Middleware;
 using Esfa.Recruit.Shared.Web.Extensions;
-using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
 using Microsoft.AspNetCore.Authorization;
 
 namespace Esfa.Recruit.Employer.Web.Controllers
@@ -20,12 +19,10 @@ namespace Esfa.Recruit.Employer.Web.Controllers
     public class VacancyPreviewController : Controller
     {
         private readonly VacancyPreviewOrchestrator _orchestrator;
-        private readonly bool _isFaaV2Enabled;
 
-        public VacancyPreviewController(VacancyPreviewOrchestrator orchestrator, IFeature feature)
+        public VacancyPreviewController(VacancyPreviewOrchestrator orchestrator)
         {
             _orchestrator = orchestrator;
-            _isFaaV2Enabled = feature.IsFeatureEnabled(FeatureNames.FaaV2Improvements);
         }
 
         [HttpGet("advert-preview", Name = RouteNames.VacancyAdvertPreview)]
@@ -33,7 +30,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         {
             var viewModel = await _orchestrator.GetVacancyPreviewViewModelAsync(vrm);
             AddSoftValidationErrorsToModelState(viewModel);
-            viewModel.SetSectionStates(viewModel, ModelState, _isFaaV2Enabled);
+            viewModel.SetSectionStates(viewModel, ModelState);
 
             viewModel.CanHideValidationSummary = true;
             viewModel.SubmitToEsfa = submitToEfsa;
@@ -49,7 +46,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         {
             var viewModel = await _orchestrator.GetVacancyPreviewViewModelAsync(vrm);
             AddSoftValidationErrorsToModelState(viewModel);
-            viewModel.SetSectionStates(viewModel, ModelState, _isFaaV2Enabled);
+            viewModel.SetSectionStates(viewModel, ModelState);
 
             viewModel.CanHideValidationSummary = true;
             viewModel.SubmitToEsfa = submitToEfsa;
@@ -84,7 +81,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             viewModel.SoftValidationErrors = null;
             viewModel.SubmitToEsfa = m.SubmitToEsfa;
             viewModel.RejectedReason = m.RejectedReason;
-            viewModel.SetSectionStates(viewModel, ModelState, _isFaaV2Enabled);
+            viewModel.SetSectionStates(viewModel, ModelState);
 
             return View(ViewNames.VacancyPreview, viewModel);
         }
@@ -112,7 +109,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
 
             var viewModel = await _orchestrator.GetVacancyPreviewViewModelAsync(m);
             viewModel.SoftValidationErrors = null;
-            viewModel.SetSectionStates(viewModel, ModelState, _isFaaV2Enabled);
+            viewModel.SetSectionStates(viewModel, ModelState);
 
             return RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet, new {m.VacancyId, m.EmployerAccountId});
         }

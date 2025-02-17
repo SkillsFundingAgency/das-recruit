@@ -1,5 +1,4 @@
-﻿@using Esfa.Recruit.Shared.Web.Mappers
-@model Esfa.Recruit.Provider.Web.ViewModels.Part1.Dates.DatesViewModel
+﻿@model Esfa.Recruit.Provider.Web.ViewModels.Part1.Dates.DatesViewModel
 @{
     var exampleClosingDate = DateTime.Now.AddMonths(2);
     var exampleStartingDate = exampleClosingDate.AddDays(14);
@@ -11,12 +10,7 @@
 }
 
 @section BackLink {
-    <esfaFeatureEnabled name="@FeatureNames.ProviderTaskList">
-        <a asp-route="@RouteNames.ProviderTaskListGet" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Back</a>
-    </esfaFeatureEnabled>
-    <esfaFeatureDisabled name="@FeatureNames.ProviderTaskList">
-        <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Location_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Back</a>
-    </esfaFeatureDisabled>
+    <a asp-route="@Model.PageBackLink" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Back</a>
 }
 
 <div class="govuk-grid-row">
@@ -62,14 +56,9 @@
 
             <div esfa-validation-marker-for="StartDate" class="govuk-form-group">
                 <fieldset class="govuk-fieldset">
-                    @if (_serviceParameters.VacancyType == VacancyType.Apprenticeship)
-                    {
-                        <legend class="govuk-fieldset__legend govuk-!-font-weight-bold">Apprenticeship start date<span class="govuk-visually-hidden"> (in numeric format DD MM YYYY)</span></legend>
-                    }
-                    @if (_serviceParameters.VacancyType == VacancyType.Traineeship)
-                    {
-                        <legend class="govuk-fieldset__legend govuk-!-font-weight-bold">Traineeship start date<span class="govuk-visually-hidden"> (in numeric format DD MM YYYY)</span></legend>
-                    }
+                
+                    <legend class="govuk-fieldset__legend govuk-!-font-weight-bold">Apprenticeship start date<span class="govuk-visually-hidden"> (in numeric format DD MM YYYY)</span></legend>
+                
                     <span esfa-validation-message-for="StartDate" class="govuk-error-message"></span>
 
                     <p asp-show="@Model.CanShowTrainingHint" class="govuk-hint">
@@ -102,32 +91,10 @@
                     </div>
                 </fieldset>
             </div>
-            <esfaFeatureDisabled name="@FeatureNames.ProviderTaskList">
-                <div class="govuk-form-group">
-                    <fieldset class="govuk-fieldset">
-                        <legend class="govuk-label govuk-!-font-weight-bold">Disability Confident (optional)</legend>
-                        <div class="govuk-checkboxes">
-                            <div class="govuk-checkboxes__item">
-                                <input asp-for="IsDisabilityConfident" class="govuk-checkboxes__input" type="checkbox" value="true">
-                                <label asp-for="IsDisabilityConfident" class="govuk-label govuk-checkboxes__label">This vacancy is <a href="https://www.gov.uk/government/collections/disability-confident-campaign" class="govuk-link" rel="noopener" target="_blank" title="Disability Confident employer scheme and guidance (opens in a new window)">Disability Confident</a>.</label>
-                            </div>
-                        </div>
-                    </fieldset>
-                </div>
-            </esfaFeatureDisabled>
 
             <div class="govuk-button-group">
-
                 <button type="submit" class="govuk-button save-button" esfa-automation="continue-button">@Model.PageInfo.SubmitButtonText</button>
-
-                <esfaFeatureEnabled name="@FeatureNames.ProviderTaskList">
-                    <a asp-route="@RouteNames.Dashboard_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-cancel" class="govuk-link govuk-link--no-visited-state">Cancel</a>
-                </esfaFeatureEnabled>
-                <esfaFeatureDisabled name="@FeatureNames.ProviderTaskList">
-                    <a asp-show="@Model.PageInfo.IsWizard" asp-all-route-data="@Model.RouteDictionary" asp-route="@RouteNames.Vacancies_Get" class="govuk-link govuk-link--no-visited-state">Cancel</a>
-                    <a asp-show="@Model.PageInfo.IsNotWizard" asp-all-route-data="@Model.RouteDictionary" asp-route="@RouteNames.Vacancy_Preview_Get" asp-fragment="@Anchors.ApprenticeshipSummarySection" class="govuk-link govuk-link--no-visited-state">Cancel</a>    
-                </esfaFeatureDisabled>
-
+                <a asp-route="@RouteNames.Dashboard_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-cancel" class="govuk-link govuk-link--no-visited-state">Cancel</a>
             </div>
             
         </form>

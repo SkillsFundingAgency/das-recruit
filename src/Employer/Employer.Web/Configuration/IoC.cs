@@ -10,6 +10,7 @@ using Esfa.Recruit.Employer.Web.Services;
 using Esfa.Recruit.Employer.Web.TagHelpers;
 using Esfa.Recruit.Employer.Web.ViewModels.ApplicationReview;
 using Esfa.Recruit.Employer.Web.ViewModels.ApplicationReviews;
+using Esfa.Recruit.Employer.Web.ViewModels.Part1.AddLocation;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.TrainingProvider;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.Wage;
 using Esfa.Recruit.Employer.Web.ViewModels.Validations;
@@ -20,8 +21,6 @@ using Esfa.Recruit.Shared.Web.RuleTemplates;
 using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Shared.Web.ViewModels.Validations.Fluent;
 using Esfa.Recruit.Vacancies.Client.Application.Configuration;
-using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.FAA;
 using Esfa.Recruit.Vacancies.Client.Ioc;
 using FluentValidation;
 using Microsoft.AspNetCore.Http;
@@ -38,7 +37,7 @@ namespace Esfa.Recruit.Employer.Web.Configuration
         {
             services.AddRecruitStorageClient(configuration);
 
-            services.AddSingleton(new ServiceParameters(VacancyType.Apprenticeship.ToString()));
+            services.AddSingleton(new ServiceParameters());
             
             //Configuration
             services.Configure<ApplicationInsightsConfiguration>(configuration.GetSection("ApplicationInsights"));
@@ -46,7 +45,6 @@ namespace Esfa.Recruit.Employer.Web.Configuration
             services.AddSingleton<ManageApprenticeshipsLinkHelper>();
 
             services.Configure<GoogleAnalyticsConfiguration>(configuration.GetSection("GoogleAnalytics"));
-            services.Configure<FaaConfiguration>(configuration.GetSection("FaaConfiguration"));
             services.Configure<ZenDeskConfiguration>(configuration.GetSection("ZenDesk"));
 
             services.AddFeatureToggle();
@@ -86,11 +84,12 @@ namespace Esfa.Recruit.Employer.Web.Configuration
             services.AddSingleton<IValidator<WageEditModel>, WageEditModelValidator>();
             services.AddSingleton<IValidator<CompetitiveWageEditModel>, CompetitiveWageEditModelValidator>();
             services.AddSingleton<IValidator<ApplicationReviewStatusConfirmationEditModel>, ApplicationReviewStatusConfirmationEditModelValidator>();
-            services.AddSingleton<IValidator<ApplicationReviewsToUnsuccessfulRouteModel>, ApplicationReviewsToUnsuccessfulRouteModelValidator>();
+            services.AddSingleton<IValidator<ApplicationReviewsToUnsuccessfulRequest>, ApplicationReviewsToUnsuccessfulRouteModelValidator>();
             services.AddSingleton<IValidator<SelectTrainingProviderEditModel>, SelectTrainingProviderEditModelValidator>();
             services.AddSingleton<IValidator<ConfirmTrainingProviderEditModel>, ConfirmTrainingProviderEditModelValidator>();
             services.AddSingleton<IValidator<ApplicationReviewsFeedbackViewModel>, ApplicationReviewsFeedbackModelValidator>();
             services.AddSingleton<IValidator<ApplicationReviewsToUnsuccessfulConfirmationViewModel>, ApplicationReviewsToUnsuccessfulConfirmationViewModelValidator>();
+            services.AddSingleton<IValidator<AddLocationEditModel>, AddLocationEditModelValidator>();
         }
 
         private static void RegisterOrchestratorDeps(IServiceCollection services)
@@ -137,6 +136,7 @@ namespace Esfa.Recruit.Employer.Web.Configuration
             services.AddTransient<VacancyTaskListOrchestrator>();
             services.AddTransient<IFutureProspectsOrchestrator, FutureProspectsOrchestrator>();
             services.AddTransient<IAdditionalQuestionsOrchestrator, AdditionalQuestionsOrchestrator>();
+            services.AddTransient<IMultipleLocationsOrchestrator, MultipleLocationsOrchestrator>();
         }
 
         private static void RegisterMapperDeps(IServiceCollection services)
