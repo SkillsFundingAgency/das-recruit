@@ -407,7 +407,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
                 ApplicationReviews = applicationReviewsToUnsuccessful,
                 CandidateFeedback = candidateFeedback,
                 User = user,
-                VacancyId = vacancyId
+                VacancyId = vacancyId,
+                Status = ApplicationReviewStatus.Unsuccessful
             };
 
             return _messaging.SendCommandAsync(command);

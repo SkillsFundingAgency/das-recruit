@@ -181,8 +181,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
                 {
                     VacancyId = request.VacancyId!.Value!,
                     ApplicationReviewIds = request.ApplicationReviewsToShare
-                        .Where(c=>c.Selected)
-                        .Select(c=>c.ApplicationId!.Value)
+                        .Select(c=>c.ApplicationReviewId)
                         .ToList()
                 }, User.ToVacancyUser(), ApplicationReviewStatus.Shared, null);
                 SetSharedApplicationsBannerMessageViaTempData(request.ApplicationReviewsToShare);
