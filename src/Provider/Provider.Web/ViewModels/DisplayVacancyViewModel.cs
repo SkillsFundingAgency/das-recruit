@@ -39,6 +39,7 @@ namespace Esfa.Recruit.Provider.Web.ViewModels
         public string MapUrl { get; internal set; }
         public string NumberOfPositions { get; internal set; }
         public string NumberOfPositionsCaption { get; internal set; }
+        public string OrganisationName { get; internal set; }
         public string OutcomeDescription { get; internal set; }
         public string PossibleStartDate { get; internal set; }
         public string ProviderContactName { get; internal set; }
