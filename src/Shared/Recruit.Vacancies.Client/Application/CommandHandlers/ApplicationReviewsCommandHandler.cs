@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -66,24 +67,25 @@ public class ApplicationReviewsCommandHandler :
             var vacancy = await _vacancyRepository.GetVacancyAsync(vacancyId);
             var applicationReviewsByReference =
                 await _applicationReviewRepository.GetForVacancyAsync<ApplicationReview>(vacancy.VacancyReference!.Value);
-                
-            foreach (var applicationReview in applicationReviewsByReference.Where(x => x.Application!.IsFaaV2Application && !x.IsWithdrawn))
-            {
-                await _outerApiClient.Post(new PostApplicationStatusRequest(applicationReview.CandidateId,
-                    applicationReview.Application.ApplicationId, new PostApplicationStatus
-                    {
-                        VacancyReference = applicationReview.VacancyReference,
-                        Status = status.ToString(),
-                        CandidateFeedback = candidateFeedback,
-                        VacancyTitle = vacancy.Title,
-                        VacancyEmployerName = vacancy.EmployerName,
-                        VacancyCity = vacancy.EmployerLocation.AddressLine4 ??
-                                      vacancy.EmployerLocation.AddressLine3 ??
-                                      vacancy.EmployerLocation.AddressLine2 ??
-                                      vacancy.EmployerLocation.AddressLine1 ?? "Unknown",
-                        VacancyPostcode = vacancy.EmployerLocation.Postcode
-                    }));
-            }
+            
+            await Parallel.ForEachAsync(applicationReviewsByReference.Where(x =>
+                x.Application!.IsFaaV2Application && !x.IsWithdrawn && applicationReviews.Contains(x.Id)).ToList(), new ParallelOptions() , async (applicationReview, token) => 
+                {
+                    await _outerApiClient.Post(new PostApplicationStatusRequest(applicationReview.CandidateId,
+                        applicationReview.Application.ApplicationId, new PostApplicationStatus
+                        {
+                            VacancyReference = applicationReview.VacancyReference,
+                            Status = status.ToString(),
+                            CandidateFeedback = candidateFeedback,
+                            VacancyTitle = vacancy.Title,
+                            VacancyEmployerName = vacancy.EmployerName,
+                            VacancyCity = vacancy.EmployerLocation.AddressLine4 ??
+                                          vacancy.EmployerLocation.AddressLine3 ??
+                                          vacancy.EmployerLocation.AddressLine2 ??
+                                          vacancy.EmployerLocation.AddressLine1 ?? "Unknown",
+                            VacancyPostcode = vacancy.EmployerLocation.Postcode
+                        }));   
+                });
         }
     }
 }

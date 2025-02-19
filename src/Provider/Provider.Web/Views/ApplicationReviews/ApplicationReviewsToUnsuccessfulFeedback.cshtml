@@ -16,7 +16,7 @@
         <partial name="@PartialNames.ValidationSummary" model="@(new ValidationSummaryViewModel { ModelState = ViewData.ModelState})" />
         <div>
             <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">
-                @($"Give feedback to unsuccessful applicant{(Model.IsMultipleApplications ? "s." : ".")}")
+                @($"Give feedback to the unsuccessful applicant{(Model.IsMultipleApplications ? "s." : ".")}")
             </h1>
         </div>
         <form asp-route="@RouteNames.ApplicationReviewsToUnsuccessfulFeedback_Post" asp-route-ukprn="@Model.Ukprn" asp-route-vacancyId="@Model.VacancyId">
