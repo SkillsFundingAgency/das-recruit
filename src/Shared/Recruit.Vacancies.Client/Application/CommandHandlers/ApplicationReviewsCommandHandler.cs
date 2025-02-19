@@ -7,6 +7,7 @@ using Esfa.Recruit.Vacancies.Client.Application.Commands;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
+using Esfa.Recruit.Vacancies.Client.Extensions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Requests;
 using MediatR;
@@ -77,11 +78,7 @@ public class ApplicationReviewsCommandHandler :
                         CandidateFeedback = candidateFeedback,
                         VacancyTitle = vacancy.Title,
                         VacancyEmployerName = vacancy.EmployerName,
-                        VacancyCity = vacancy.EmployerLocation.AddressLine4 ??
-                                      vacancy.EmployerLocation.AddressLine3 ??
-                                      vacancy.EmployerLocation.AddressLine2 ??
-                                      vacancy.EmployerLocation.AddressLine1 ?? "Unknown",
-                        VacancyPostcode = vacancy.EmployerLocation.Postcode
+                        VacancyLocation = vacancy.GetVacancyLocation()
                     }));
             }
         }
