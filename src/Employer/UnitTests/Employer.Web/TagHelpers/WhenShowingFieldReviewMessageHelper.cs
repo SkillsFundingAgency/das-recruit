@@ -22,8 +22,10 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.TagHelpers
         {
             fieldReviewMessageHelper.Model = new VacancyPreviewViewModel
             {
-                Review = new ReviewSummaryViewModel()
+                Review = new ReviewSummaryViewModel(),
+                HasUserConfirmation = true,
             };
+            fieldReviewMessageHelper.Model.HasUserConfirmation = true;
             var tagHelperOutput = new TagHelperOutput("", new TagHelperAttributeList(new List<TagHelperAttribute>()),
                 (b, encoder) => null);
             
@@ -41,7 +43,8 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.TagHelpers
         {
             fieldReviewMessageHelper.Model = new VacancyPreviewViewModel
             {
-                Review = model
+                Review = model,
+                HasUserConfirmation = true
             };
             fieldReviewMessageHelper.FieldName = model.FieldIndicators.FirstOrDefault().ReviewFieldIdentifier;
             var tagHelperOutput = new TagHelperOutput("", new TagHelperAttributeList(new List<TagHelperAttribute>()),
