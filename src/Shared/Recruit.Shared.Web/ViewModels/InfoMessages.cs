@@ -21,6 +21,7 @@ namespace Esfa.Recruit.Shared.Web.ViewModels
         public const string ApplicationReviewStatusHeader = "{0} application has been marked as {1}";
 
         public const string ApplicationReviewSuccessStatusHeader = "Applications made successful.";
+        public const string ApplicationReviewSingleSuccessStatusHeader = "Application made successful.";
 
         public const string ApplicationReviewSuccessStatusBannerMessage = "Now notify the other applicants they have been unsuccessful.";
 
@@ -38,7 +39,7 @@ namespace Esfa.Recruit.Shared.Web.ViewModels
 
         public const string SharedMultipleApplicationsBannerMessage = "These applications have been sent to the employer's apprenticeship service account.";
 
-        public const string SharedSingleApplicationsBannerHeader = "Applications shared with employer.";
+        public const string SharedSingleApplicationsBannerHeader = "Application shared with employer.";
 
         public const string ApplicationsToUnsuccessfulBannerHeader = "Multiple applications made unsuccessful.";
 

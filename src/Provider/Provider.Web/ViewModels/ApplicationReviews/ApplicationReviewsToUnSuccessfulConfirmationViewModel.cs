@@ -8,10 +8,6 @@ public class ApplicationReviewsToUnsuccessfulConfirmationViewModel : Application
 {
     public IList<VacancyApplication> ApplicationsToUnsuccessful { get; set; }
     public bool? ApplicationsToUnsuccessfulConfirmed { get; set; }
-    public bool IsMultipleApplications
-    {
-        get => ApplicationsToUnsuccessful != null && ApplicationsToUnsuccessful.Count > 1;
-    }
     public string ApplicationsToUnsuccessfulFeedbackHeaderTitle => IsMultipleApplications ? "Make multiple applications unsuccessful" : "Make application unsuccessful";
     public string ApplicationsToUnsuccessfulHeaderDescription =>
         IsMultipleApplications ? "You will make these applications unsuccessful:" : "You will make this application unsuccessful:";

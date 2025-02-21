@@ -291,7 +291,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
             Assert.That(_vacancyId, Is.EqualTo(redirectResult.RouteValues["VacancyId"]));
             Assert.That(_ukprn, Is.EqualTo(redirectResult.RouteValues["Ukprn"]));
             Assert.That(_controller.TempData.ContainsKey(TempDataKeys.ApplicationReviewSuccessStatusInfoMessage), Is.True);
-            Assert.That(string.Format(InfoMessages.ApplicationReviewSuccessStatusHeader, _candidateName), Is.EqualTo(_controller.TempData[TempDataKeys.ApplicationReviewSuccessStatusInfoMessage]));
+            Assert.That(string.Format(InfoMessages.ApplicationReviewSingleSuccessStatusHeader, _candidateName), Is.EqualTo(_controller.TempData[TempDataKeys.ApplicationReviewSuccessStatusInfoMessage]));
         }
 
         [Test]
@@ -320,7 +320,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
             Assert.That(_vacancyId, Is.EqualTo(redirectResult.RouteValues["VacancyId"]));
             Assert.That(_ukprn, Is.EqualTo(redirectResult.RouteValues["Ukprn"]));
             Assert.That(_controller.TempData.ContainsKey(TempDataKeys.ApplicationReviewUnsuccessStatusInfoMessage), Is.True);
-            Assert.That(string.Format(InfoMessages.ApplicationReviewUnsuccessStatusHeader, _candidateName), Is.EqualTo(_controller.TempData[TempDataKeys.ApplicationReviewUnsuccessStatusInfoMessage]));
+            Assert.That(string.Format(InfoMessages.ApplicationEmployerUnsuccessfulHeader, _candidateName), Is.EqualTo(_controller.TempData[TempDataKeys.ApplicationReviewUnsuccessStatusInfoMessage]));
         }
 
         [Test]
@@ -349,7 +349,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
             Assert.That(_vacancyId, Is.EqualTo(redirectResult.RouteValues["VacancyId"]));
             Assert.That(_ukprn, Is.EqualTo(redirectResult.RouteValues["Ukprn"]));
             Assert.That(_controller.TempData.ContainsKey(TempDataKeys.ApplicationReviewStatusInfoMessage), Is.True);
-            Assert.That(string.Format(InfoMessages.ApplicationReviewSuccessStatusHeader, _candidateName), Is.EqualTo(_controller.TempData[TempDataKeys.ApplicationReviewStatusInfoMessage]));
+            Assert.That(string.Format(InfoMessages.ApplicationReviewSingleSuccessStatusHeader, _candidateName), Is.EqualTo(_controller.TempData[TempDataKeys.ApplicationReviewStatusInfoMessage]));
         }
 
         [Test]

@@ -183,9 +183,6 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Controllers
         public async Task GET_ApplicationReviewsFeedback_ReturnsViewAndModelWithMultipleApplicationsText()
         {
             // Arrange
-            var listOfApplicationReviews = new List<Guid>();
-            listOfApplicationReviews.Add(_applicationReviewId);
-            listOfApplicationReviews.Add(_applicationReviewIdTwo);
             var applicationsToUnsuccessful = _fixture.CreateMany<VacancyApplication>().ToList();
             var routeModel = _fixture
                 .Build<ApplicationReviewsToUnsuccessfulRouteModel>()
@@ -199,7 +196,8 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Controllers
                 {
                     VacancyId = routeModel.VacancyId,
                     EmployerAccountId = routeModel.EmployerAccountId,
-                    ApplicationsToUnsuccessful = applicationsToUnsuccessful
+                    ApplicationsToUnsuccessful = applicationsToUnsuccessful,
+                    IsMultipleApplications = true,
                 });
 
             // Act
@@ -281,6 +279,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Controllers
                 .With(x => x.Outcome, ApplicationReviewStatus.Unsuccessful)
                 .With(x=>x.CandidateFeedback, "")
                 .With(x=>x.ApplicationsToUnsuccessful, new List<VacancyApplication>{new VacancyApplication()})
+                .With(x=>x.IsMultipleApplications, false)
                 .Create();
             var validator = new ApplicationReviewsFeedbackModelValidator(_mockProfanityListProvider.Object);
 
@@ -319,7 +318,8 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Controllers
                 {
                     VacancyId = routeModel.VacancyId,
                     EmployerAccountId = routeModel.EmployerAccountId,
-                    VacancyApplicationsToUnsuccessful = vacancyApplications
+                    VacancyApplicationsToUnsuccessful = vacancyApplications,
+                    IsMultipleApplications = true
                 });
 
             // Act
