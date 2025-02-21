@@ -36,6 +36,7 @@
 
         <form method="post" id="employer-applications-to-unsuccessful-confirm-form" asp-route="@RouteNames.ApplicationReviewsToUnsuccessfulConfirmation_Post" asp-all-route-data="@Model.RouteDictionary">
             @Html.HiddenFor(model => model.CandidateFeedback)
+            <input asp-for="IsMultipleApplications" type="hidden"/>
             <div esfa-validation-marker-for="ApplicationsUnsuccessfulConfirmed" class="govuk-form-group">
                 <div class="govuk-form-group" das-highlight-error-for="VacancyApplicationsToUnsuccessful" error-class="govuk-form-group--error" id="employer-applications-to-unsuccessful-confirm-group">
                     <fieldset class="govuk-fieldset">

@@ -126,8 +126,6 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
             var shouldMakeOthersUnsuccessful = false;
             if (status == ApplicationReviewStatus.Successful)
             {
-                
-
                 var successfulApplications = await _applicationReviewRepository.GetByStatusAsync(vacancyReference, ApplicationReviewStatus.Successful);
 
                 if (vacancy.NumberOfPositions <= successfulApplications.Count)
