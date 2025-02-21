@@ -299,6 +299,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
                 .With(x => x.Ukprn, _ukprn)
                 .With(x => x.ApplicationsToUnsuccessful, vacancyApplications)
                 .With(x => x.ApplicationsToUnsuccessfulConfirmed, applicationsToUnsuccessfulConfirmed)
+                .With(x => x.IsMultipleApplications, true)
                 .Create();
 
             _orchestrator.Setup(o =>
@@ -330,6 +331,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
                 .With(x => x.Ukprn, _ukprn)
                 .With(x => x.ApplicationsToUnsuccessful, vacancyApplications)
                 .With(x => x.ApplicationsToUnsuccessfulConfirmed, applicationsToUnsuccessfulConfirmed)
+                .With(x => x.IsMultipleApplications, false)
                 .Create();
 
             _orchestrator.Setup(o =>
@@ -503,6 +505,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
                 .With(x => x.Ukprn, _ukprn)
                 .With(x => x.ApplicationReviewsToShare, vacancyApplications)
                 .With(x => x.ShareApplicationsConfirmed, shareApplicationsConfirmed)
+                .With(x=>x.SharingMultipleApplications, true)
                 .Create();
 
            
@@ -538,6 +541,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
                 .With(x => x.Ukprn, _ukprn)
                 .With(x => x.ApplicationReviewsToShare, vacancyApplications)
                 .With(x => x.ShareApplicationsConfirmed, shareApplicationsConfirmed)
+                .With(x => x.SharingMultipleApplications, false)
                 .Create();
 
             

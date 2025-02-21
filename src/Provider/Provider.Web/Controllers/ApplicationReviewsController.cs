@@ -123,7 +123,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
             if (request.ApplicationsToUnsuccessfulConfirmed == true)
             {
                 await _orchestrator.PostApplicationReviewsToUnsuccessfulAsync(request, User.ToVacancyUser());
-                SetApplicationsToUnsuccessfulBannerMessageViaTempData(request.ApplicationsToUnsuccessful);
+                SetApplicationsToUnsuccessfulBannerMessageViaTempData(request.IsMultipleApplications);
                 return RedirectToRoute(RouteNames.VacancyManage_Get, new { request.Ukprn, request.VacancyId });
             }
 
@@ -184,33 +184,28 @@ namespace Esfa.Recruit.Provider.Web.Controllers
                         .Select(c=>c.ApplicationReviewId)
                         .ToList()
                 }, User.ToVacancyUser(), ApplicationReviewStatus.Shared, null);
-                SetSharedApplicationsBannerMessageViaTempData(request.ApplicationReviewsToShare);
+                SetSharedApplicationsBannerMessageViaTempData(request.SharingMultipleApplications);
                 return RedirectToRoute(RouteNames.VacancyManage_Get, new { request.Ukprn, request.VacancyId });
             }
 
             return RedirectToRoute(RouteNames.VacancyManage_Get, new { request.Ukprn, request.VacancyId });
         }
-        private void SetApplicationsToUnsuccessfulBannerMessageViaTempData(IList<VacancyApplication> applicationsToUnsuccessful)
+        private void SetApplicationsToUnsuccessfulBannerMessageViaTempData(bool applicationsToUnsuccessful)
         {
-            if (!applicationsToUnsuccessful.Any())
-                return;
-            if (applicationsToUnsuccessful.Count.Equals(1))
+            if (!applicationsToUnsuccessful)
             {
-                TempData.Add(TempDataKeys.ApplicationsToUnsuccessfulHeader, string.Format(InfoMessages.ApplicationReviewUnsuccessStatusHeader, applicationsToUnsuccessful[0].CandidateName));
+                TempData.Add(TempDataKeys.ApplicationsToUnsuccessfulHeader, string.Format(InfoMessages.ApplicationReviewUnsuccessStatusHeader));
                 return;
             }
 
             TempData.Add(TempDataKeys.ApplicationsToUnsuccessfulHeader, InfoMessages.ApplicationsToUnsuccessfulBannerHeader);
         }
 
-        private void SetSharedApplicationsBannerMessageViaTempData(List<VacancyApplication> sharedApplications)
+        private void SetSharedApplicationsBannerMessageViaTempData(bool sharedApplications)
         {
-            if (!sharedApplications.Any())
-                return;
-
-            if (sharedApplications.Count == 1)
+            if (!sharedApplications)
             {
-                TempData.Add(TempDataKeys.SharedSingleApplicationsHeader, string.Format(InfoMessages.SharedSingleApplicationsBannerHeader, sharedApplications.First().CandidateName));
+                TempData.Add(TempDataKeys.SharedSingleApplicationsHeader, string.Format(InfoMessages.SharedSingleApplicationsBannerHeader));
                 return;
             }
 

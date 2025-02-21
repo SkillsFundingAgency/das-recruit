@@ -289,6 +289,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Controllers
                 .With(x => x.Outcome, ApplicationReviewStatus.Unsuccessful)
                 .With(x=>x.CandidateFeedback, "")
                 .With(x=>x.ApplicationsToUnsuccessful, new List<VacancyApplication>{new VacancyApplication()})
+                .With(x=>x.IsMultipleApplications, false)
                 .Create();
             var validator = new ApplicationReviewsFeedbackModelValidator(_mockProfanityListProvider.Object);
 
@@ -327,7 +328,8 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Controllers
                 {
                     VacancyId = routeModel.VacancyId,
                     EmployerAccountId = routeModel.EmployerAccountId,
-                    VacancyApplicationsToUnsuccessful = vacancyApplications
+                    VacancyApplicationsToUnsuccessful = vacancyApplications,
+                    IsMultipleApplications = true
                 });
 
             // Act

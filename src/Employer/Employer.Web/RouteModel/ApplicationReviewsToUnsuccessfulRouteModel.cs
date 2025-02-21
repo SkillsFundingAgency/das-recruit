@@ -8,7 +8,7 @@ namespace Esfa.Recruit.Employer.Web.RouteModel;
 public class ApplicationReviewsToUnsuccessfulRouteModel : VacancyRouteModel
 {
     public ApplicationReviewStatus? Outcome { get; set; }
-    public virtual bool IsMultipleApplications { get; set; }
+    public bool IsMultipleApplications { get; set; }
     
     public SortColumn SortColumn { get; set; }
     public SortOrder SortOrder { get; set; }
