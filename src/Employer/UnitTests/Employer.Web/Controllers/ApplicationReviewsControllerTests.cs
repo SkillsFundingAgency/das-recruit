@@ -191,9 +191,6 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Controllers
         public async Task GET_ApplicationReviewsFeedback_ReturnsViewAndModelWithMultipleApplicationsText()
         {
             // Arrange
-            var listOfApplicationReviews = new List<Guid>();
-            listOfApplicationReviews.Add(_applicationReviewId);
-            listOfApplicationReviews.Add(_applicationReviewIdTwo);
             var applicationsToUnsuccessful = _fixture.CreateMany<VacancyApplication>().ToList();
             var routeModel = _fixture
                 .Build<ApplicationReviewsToUnsuccessfulRouteModel>()
@@ -207,7 +204,8 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Controllers
                 {
                     VacancyId = routeModel.VacancyId,
                     EmployerAccountId = routeModel.EmployerAccountId,
-                    ApplicationsToUnsuccessful = applicationsToUnsuccessful
+                    ApplicationsToUnsuccessful = applicationsToUnsuccessful,
+                    IsMultipleApplications = true,
                 });
 
             // Act
