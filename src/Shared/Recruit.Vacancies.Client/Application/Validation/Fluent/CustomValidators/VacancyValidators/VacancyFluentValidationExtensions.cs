@@ -5,6 +5,7 @@ using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
 using Esfa.Recruit.Vacancies.Client.Domain.Models;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.ApprenticeshipProgrammes;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelationship;
 using FluentValidation;
 using FluentValidation.Results;
@@ -111,10 +112,9 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomVali
             {
                 if (!vacancy.StartDate.HasValue)
                 {
-                    var message = $"The start date must have a value.";
-                    var failure = new ValidationFailure(string.Empty, message)
+                    var failure = new ValidationFailure(string.Empty, "The start date must have a value.")
                     {
-                        ErrorCode = ErrorCodes.TrainingExpiryDate,
+                        ErrorCode = ErrorCodes.TrainingExpiryDateMustExist,
                         CustomState = VacancyRuleSet.TrainingExpiryDate,
                         PropertyName = nameof(Vacancy.StartDate)
                     };
