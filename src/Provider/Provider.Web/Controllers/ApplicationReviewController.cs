@@ -145,17 +145,17 @@ namespace Esfa.Recruit.Provider.Web.Controllers
 
                 if (statusChangeInfo.ShouldMakeOthersUnsuccessful)
                 {
-                    TempData.Add(TempDataKeys.ApplicationReviewStatusInfoMessage, string.Format(InfoMessages.ApplicationReviewSuccessStatusHeader, statusChangeInfo.CandidateName));
+                    TempData.Add(TempDataKeys.ApplicationReviewStatusInfoMessage, string.Format(InfoMessages.ApplicationReviewSingleSuccessStatusHeader, statusChangeInfo.CandidateName));
                     return RedirectToRoute(RouteNames.ApplicationReviewsToUnsuccessful_Get, new { editModel.VacancyId, editModel.Ukprn });
                 }
 
                 switch (editModel.Outcome)
                 {
                     case ApplicationReviewStatus.Successful:
-                        TempData.Add(TempDataKeys.ApplicationReviewSuccessStatusInfoMessage, string.Format(InfoMessages.ApplicationReviewSuccessStatusHeader, statusChangeInfo.CandidateName));
+                        TempData.Add(TempDataKeys.ApplicationReviewSuccessStatusInfoMessage, string.Format(InfoMessages.ApplicationReviewSingleSuccessStatusHeader, statusChangeInfo.CandidateName));
                         break;
                     case ApplicationReviewStatus.Unsuccessful:
-                        TempData.Add(TempDataKeys.ApplicationReviewUnsuccessStatusInfoMessage, string.Format(InfoMessages.ApplicationReviewUnsuccessStatusHeader, statusChangeInfo.CandidateName));
+                        TempData.Add(TempDataKeys.ApplicationReviewUnsuccessStatusInfoMessage, string.Format(InfoMessages.ApplicationEmployerUnsuccessfulHeader, statusChangeInfo.CandidateName));
                         break;
                     default:
                         TempData.Add(TempDataKeys.ApplicationReviewStatusInfoMessage, string.Format(InfoMessages.ApplicationReviewStatusHeader, statusChangeInfo.CandidateName, editModel.Outcome.ToString().ToLower()));

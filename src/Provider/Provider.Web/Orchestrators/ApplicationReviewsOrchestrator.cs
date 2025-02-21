@@ -40,7 +40,8 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
                 VacancyId = request.VacancyId,
                 Ukprn = request.Ukprn,
                 ApplicationsToUnsuccessful= applicationsToUnsuccessful,
-                CandidateFeedback = applicationsToUnsuccessful.FirstOrDefault()!.CandidateFeedback
+                CandidateFeedback = applicationsToUnsuccessful.FirstOrDefault()!.CandidateFeedback,
+                IsMultipleApplications = applicationsToUnsuccessful.Count > 1,
             };
         }
 

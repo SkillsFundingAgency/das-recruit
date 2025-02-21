@@ -299,6 +299,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
                 .With(x => x.Ukprn, _ukprn)
                 .With(x => x.ApplicationsToUnsuccessful, vacancyApplications)
                 .With(x => x.ApplicationsToUnsuccessfulConfirmed, applicationsToUnsuccessfulConfirmed)
+                .With(x => x.IsMultipleApplications, true)
                 .Create();
 
             _orchestrator.Setup(o =>
@@ -330,6 +331,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
                 .With(x => x.Ukprn, _ukprn)
                 .With(x => x.ApplicationsToUnsuccessful, vacancyApplications)
                 .With(x => x.ApplicationsToUnsuccessfulConfirmed, applicationsToUnsuccessfulConfirmed)
+                .With(x => x.IsMultipleApplications, false)
                 .Create();
 
             _orchestrator.Setup(o =>
@@ -345,7 +347,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
             Assert.That(_vacancyId, Is.EqualTo(redirectResult.RouteValues["VacancyId"]));
             Assert.That(_ukprn, Is.EqualTo(redirectResult.RouteValues["Ukprn"]));
             Assert.That(_controller.TempData.ContainsKey(TempDataKeys.ApplicationsToUnsuccessfulHeader), Is.True);
-            Assert.That(string.Format(InfoMessages.ApplicationReviewUnsuccessStatusHeader,vacancyApplication1.CandidateName), Is.EqualTo(_controller.TempData[TempDataKeys.ApplicationsToUnsuccessfulHeader]));
+            Assert.That(string.Format(InfoMessages.ApplicationEmployerUnsuccessfulHeader), Is.EqualTo(_controller.TempData[TempDataKeys.ApplicationsToUnsuccessfulHeader]));
         }
 
         [Test]
@@ -503,6 +505,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
                 .With(x => x.Ukprn, _ukprn)
                 .With(x => x.ApplicationReviewsToShare, vacancyApplications)
                 .With(x => x.ShareApplicationsConfirmed, shareApplicationsConfirmed)
+                .With(x=>x.SharingMultipleApplications, true)
                 .Create();
 
            
@@ -538,6 +541,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
                 .With(x => x.Ukprn, _ukprn)
                 .With(x => x.ApplicationReviewsToShare, vacancyApplications)
                 .With(x => x.ShareApplicationsConfirmed, shareApplicationsConfirmed)
+                .With(x => x.SharingMultipleApplications, false)
                 .Create();
 
             

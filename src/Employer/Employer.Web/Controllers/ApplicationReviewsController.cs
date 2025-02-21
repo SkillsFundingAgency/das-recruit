@@ -132,8 +132,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
                 TempData.Add(TempDataKeys.ApplicationReviewsUnsuccessfulInfoMessage, InfoMsg.ApplicationsToUnsuccessfulBannerHeader);
                 return;
             }
-            TempData.Add(TempDataKeys.ApplicationReviewsUnsuccessfulInfoMessage, string.Format(InfoMsg.ApplicationReviewUnsuccessStatusHeader, model.VacancyApplicationsToUnsuccessful[0].CandidateName));
-            return;
+            TempData.Add(TempDataKeys.ApplicationReviewsUnsuccessfulInfoMessage, string.Format(InfoMsg.ApplicationReviewUnsuccessStatusHeader));
         }
     }
 }
