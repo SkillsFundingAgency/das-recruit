@@ -347,7 +347,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Controllers
             Assert.That(_vacancyId, Is.EqualTo(redirectResult.RouteValues["VacancyId"]));
             Assert.That(_ukprn, Is.EqualTo(redirectResult.RouteValues["Ukprn"]));
             Assert.That(_controller.TempData.ContainsKey(TempDataKeys.ApplicationsToUnsuccessfulHeader), Is.True);
-            Assert.That(string.Format(InfoMessages.ApplicationReviewUnsuccessStatusHeader,vacancyApplication1.CandidateName), Is.EqualTo(_controller.TempData[TempDataKeys.ApplicationsToUnsuccessfulHeader]));
+            Assert.That(string.Format(InfoMessages.ApplicationEmployerUnsuccessfulHeader), Is.EqualTo(_controller.TempData[TempDataKeys.ApplicationsToUnsuccessfulHeader]));
         }
 
         [Test]

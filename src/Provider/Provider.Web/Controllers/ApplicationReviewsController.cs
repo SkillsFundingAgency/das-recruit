@@ -190,20 +190,20 @@ namespace Esfa.Recruit.Provider.Web.Controllers
 
             return RedirectToRoute(RouteNames.VacancyManage_Get, new { request.Ukprn, request.VacancyId });
         }
-        private void SetApplicationsToUnsuccessfulBannerMessageViaTempData(bool applicationsToUnsuccessful)
+        private void SetApplicationsToUnsuccessfulBannerMessageViaTempData(bool isMultipleApplications)
         {
-            if (!applicationsToUnsuccessful)
+            if (!isMultipleApplications)
             {
-                TempData.Add(TempDataKeys.ApplicationsToUnsuccessfulHeader, string.Format(InfoMessages.ApplicationReviewUnsuccessStatusHeader));
+                TempData.Add(TempDataKeys.ApplicationsToUnsuccessfulHeader, string.Format(InfoMessages.ApplicationEmployerUnsuccessfulHeader));
                 return;
             }
 
             TempData.Add(TempDataKeys.ApplicationsToUnsuccessfulHeader, InfoMessages.ApplicationsToUnsuccessfulBannerHeader);
         }
 
-        private void SetSharedApplicationsBannerMessageViaTempData(bool sharedApplications)
+        private void SetSharedApplicationsBannerMessageViaTempData(bool isMultipleSharedApplications)
         {
-            if (!sharedApplications)
+            if (!isMultipleSharedApplications)
             {
                 TempData.Add(TempDataKeys.SharedSingleApplicationsHeader, string.Format(InfoMessages.SharedSingleApplicationsBannerHeader));
                 return;
