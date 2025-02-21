@@ -39,7 +39,7 @@ namespace Esfa.Recruit.Shared.Web.ViewModels
 
         public const string SharedMultipleApplicationsBannerMessage = "These applications have been sent to the employer's apprenticeship service account.";
 
-        public const string SharedSingleApplicationsBannerHeader = "Applications shared with employer.";
+        public const string SharedSingleApplicationsBannerHeader = "Application shared with employer.";
 
         public const string ApplicationsToUnsuccessfulBannerHeader = "Multiple applications made unsuccessful.";
 
