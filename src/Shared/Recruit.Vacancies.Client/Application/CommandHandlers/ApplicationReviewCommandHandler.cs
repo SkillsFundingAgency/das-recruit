@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.Commands;
@@ -7,6 +8,7 @@ using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Events;
 using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
+using Esfa.Recruit.Vacancies.Client.Extensions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Requests;
 using FluentValidation;
@@ -96,7 +98,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
                     CandidateId = applicationReview.CandidateId
                 });    
             }
-            // TODO: FAI-2265
+            
             await _outerApiClient.Post(new PostApplicationStatusRequest(applicationReview.Application.CandidateId,
                 applicationReview.Application.ApplicationId, new PostApplicationStatus
                 {
@@ -105,8 +107,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
                     CandidateFeedback = applicationReview.CandidateFeedback,
                     VacancyTitle = vacancy.Title,
                     VacancyEmployerName = vacancy.EmployerName,
-                    VacancyCity = vacancy.EmployerLocation.AddressLine4 ?? vacancy.EmployerLocation.AddressLine3 ?? vacancy.EmployerLocation.AddressLine2 ?? vacancy.EmployerLocation.AddressLine1 ?? "Unknown",
-                    VacancyPostcode = vacancy.EmployerLocation.Postcode
+                    VacancyLocation = vacancy.GetVacancyLocation()
                 }));
             
             return await CheckForPositionsFilledAsync(message.Outcome,vacancy, applicationReview.VacancyReference);
