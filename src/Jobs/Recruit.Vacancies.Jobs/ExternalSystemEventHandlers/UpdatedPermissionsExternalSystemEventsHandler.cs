@@ -21,7 +21,6 @@ namespace Esfa.Recruit.Vacancies.Jobs.ExternalSystemEventHandlers
     {
         private readonly ILogger<UpdatedPermissionsExternalSystemEventsHandler> _logger;
         private readonly IRecruitQueueService _recruitQueueService;
-        private readonly IEmployerAccountProvider _employerAccountProvider;
         private readonly IEncodingService _encoder;
         private readonly RecruitWebJobsSystemConfiguration _jobsConfig;
         private readonly IMessaging _messaging;
@@ -29,14 +28,12 @@ namespace Esfa.Recruit.Vacancies.Jobs.ExternalSystemEventHandlers
         private string ExternalSystemEventHandlerName => GetType().Name;
 
         public UpdatedPermissionsExternalSystemEventsHandler(ILogger<UpdatedPermissionsExternalSystemEventsHandler> logger, RecruitWebJobsSystemConfiguration jobsConfig,
-                                                IRecruitQueueService recruitQueueService,
-                                                IEmployerAccountProvider employerAccountProvider, IEncodingService encoder,
+                                                IRecruitQueueService recruitQueueService, IEncodingService encoder,
                                                 IMessaging messaging)
         {
             _logger = logger;
             _jobsConfig = jobsConfig;
             _recruitQueueService = recruitQueueService;
-            _employerAccountProvider = employerAccountProvider;
             _encoder = encoder;
             _messaging = messaging;
         }
@@ -56,25 +53,19 @@ namespace Esfa.Recruit.Vacancies.Jobs.ExternalSystemEventHandlers
                 _logger.LogInformation($"Not handling Provider {nameof(Operation.Recruitment)} Permission being revoked as it is a consequence of Provider being blocked by QA on Recruit.");
                 return;
             }
+            
+            var employerAccountId = _encoder.Encode(message.AccountId, EncodingType.AccountId);
+            var employerAccountLegalEntityId = _encoder.Encode(message.AccountLegalEntityId, EncodingType.PublicAccountLegalEntityId);
 
             if (message.GrantedOperations.Contains(Operation.Recruitment) == false)
             {
                 _logger.LogInformation($"Transferring vacancies from Provider {message.Ukprn} to Employer {message.AccountId}");
 
-                var employerAccountId = _encoder.Encode(message.AccountId, EncodingType.AccountId);
-
-                var legalEntity = await GetAssociatedLegalEntityAsync(message, employerAccountId);
-
-                if (legalEntity == null)
-                {
-                    throw new Exception($"Could not find matching Account Legal Entity Id {message.AccountLegalEntityId} for Employer Account {message.AccountId}");
-                }
-
                 await _recruitQueueService.AddMessageAsync(new TransferVacanciesFromProviderQueueMessage
                 {
                     Ukprn = message.Ukprn,
                     EmployerAccountId = employerAccountId,
-                    AccountLegalEntityPublicHashedId = legalEntity.AccountLegalEntityPublicHashedId,
+                    AccountLegalEntityPublicHashedId = employerAccountLegalEntityId,
                     UserRef = message.UserRef.Value,
                     UserEmailAddress = message.UserEmailAddress,
                     UserName = $"{message.UserFirstName} {message.UserLastName}",
@@ -85,19 +76,10 @@ namespace Esfa.Recruit.Vacancies.Jobs.ExternalSystemEventHandlers
             {
                 _logger.LogInformation($"Transferring vacancies from Employer Review to QA Review for Provider {message.Ukprn}");
 
-                var employerAccountId = _encoder.Encode(message.AccountId, EncodingType.AccountId);
-
-                var legalEntity = await GetAssociatedLegalEntityAsync(message, employerAccountId);
-
-                if (legalEntity == null)
-                {
-                    throw new Exception($"Could not find matching Account Legal Entity Id {message.AccountLegalEntityId} for Employer Account {message.AccountId}");
-                }
-
                 await _recruitQueueService.AddMessageAsync(new TransferVacanciesFromEmployerReviewToQAReviewQueueMessage
                 {
                     Ukprn = message.Ukprn,
-                    AccountLegalEntityPublicHashedId = legalEntity.AccountLegalEntityPublicHashedId,
+                    AccountLegalEntityPublicHashedId = employerAccountLegalEntityId,
                     UserRef = message.UserRef.Value,
                     UserEmailAddress = message.UserEmailAddress,
                     UserName = $"{message.UserFirstName} {message.UserLastName}"
@@ -105,13 +87,6 @@ namespace Esfa.Recruit.Vacancies.Jobs.ExternalSystemEventHandlers
             }
 
             await _messaging.SendCommandAsync(new SetupProviderCommand(message.Ukprn));
-        }
-
-        private async Task<LegalEntity> GetAssociatedLegalEntityAsync(UpdatedPermissionsEvent message, string employerAccountId)
-        {
-            var legalEntities = await _employerAccountProvider.GetLegalEntitiesConnectedToAccountAsync(employerAccountId);
-            var legalEntity = legalEntities.FirstOrDefault(le => le.AccountLegalEntityId == message.AccountLegalEntityId);
-            return legalEntity == null ? null : LegalEntityMapper.MapFromAccountApiLegalEntity(legalEntity);
         }
     }
 }
