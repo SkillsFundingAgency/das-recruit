@@ -1,20 +1,14 @@
 ﻿using System.Linq;
-using System.Threading.Tasks;
 using Esfa.Recruit.Employer.UnitTests.Employer.Web.HardMocks;
 using Esfa.Recruit.Employer.Web;
-using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Orchestrators.Part2;
 using Esfa.Recruit.Employer.Web.ViewModels.Part2.VacancyDescription;
 using Esfa.Recruit.Shared.Web.Mappers;
 using Esfa.Recruit.Shared.Web.Services;
-using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
-using FluentAssertions;
 using Microsoft.Extensions.Logging;
-using Moq;
-using Xunit;
 
 namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part2
 {
@@ -22,16 +16,16 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part2
     {
         private VacancyDescriptionOrchestratorTestsFixture _fixture;
 
-        public VacancyDescriptionOrchestratorTests()
+        [SetUp]
+        public void Setup()
         {
             _fixture = new VacancyDescriptionOrchestratorTestsFixture();
         }
 
-        [Theory]
-        [InlineData("has a new value", "has a value")]
-        [InlineData("has a value", "has a new value")]
-        [InlineData("has a value", "has a value")]
-        [InlineData("has a new value", "has a new value")]
+        [TestCase("has a new value", "has a value")]
+        [TestCase("has a value", "has a new value")]
+        [TestCase("has a value", "has a value")]
+        [TestCase("has a new value", "has a new value")]
         public async Task WhenUpdated__ShouldCallUpdateDraftVacancy(string description, string trainingDescription)
         {
             _fixture
@@ -52,10 +46,9 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part2
             _fixture.VerifyUpdateDraftVacancyAsyncIsCalled();
         }
 
-        [Theory]
-        [InlineData("has a new value", "has a value", new string[] { FieldIdentifiers.VacancyDescription }, new string[] { FieldIdentifiers.TrainingDescription })]
-        [InlineData("has a value", "has a new value", new string[] { FieldIdentifiers.TrainingDescription }, new string[] { FieldIdentifiers.VacancyDescription })]
-        [InlineData("has a new value", "has a new value", new string[] { FieldIdentifiers.VacancyDescription, FieldIdentifiers.TrainingDescription }, new string[] { })]
+        [TestCase("has a new value", "has a value", new string[] { FieldIdentifiers.VacancyDescription }, new string[] { FieldIdentifiers.TrainingDescription })]
+        [TestCase("has a value", "has a new value", new string[] { FieldIdentifiers.TrainingDescription }, new string[] { FieldIdentifiers.VacancyDescription })]
+        [TestCase("has a new value", "has a new value", new string[] { FieldIdentifiers.VacancyDescription, FieldIdentifiers.TrainingDescription }, new string[] { })]
         public async Task WhenShortDescriptionIsUpdated_ShouldFlagFieldIndicators(string description, string trainingDescription, string[] setFieldIndicators, string[] unsetFieldIndicators)
         {
             _fixture

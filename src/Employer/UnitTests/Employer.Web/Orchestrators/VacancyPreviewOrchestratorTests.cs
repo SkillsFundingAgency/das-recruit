@@ -1,5 +1,4 @@
-﻿using System;
-using Esfa.Recruit.Employer.Web.Configuration;
+﻿using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Mappings;
 using Esfa.Recruit.Employer.Web.Orchestrators;
 using Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview;
@@ -8,39 +7,24 @@ using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
-using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Moq;
-using Xunit;
-using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web;
+using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 
 namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators
 {
     public class VacancyPreviewOrchestratorTests
     {
-        private readonly Mock<IEmployerVacancyClient> _mockEmployerVacancyClient;
-        private readonly Mock<IRecruitVacancyClient> _mockRecruitVacancyClient;
-        private readonly Mock<IReviewSummaryService> _mockReviewSummaryService;
-        private readonly Mock<ILegalEntityAgreementService> _mockLegalEntityAgreementService;
-        private readonly Mock<IMessaging> _mockmessaging;
-
-        public VacancyPreviewOrchestratorTests()
-        {
-            _mockEmployerVacancyClient = new Mock<IEmployerVacancyClient>();
-            _mockRecruitVacancyClient = new Mock<IRecruitVacancyClient>();
-            _mockReviewSummaryService = new Mock<IReviewSummaryService>();
-            _mockLegalEntityAgreementService = new Mock<ILegalEntityAgreementService>();
-            _mockmessaging = new Mock<IMessaging>();
-        }
-
-        [Theory]
-        [InlineData(true, true)]
-        [InlineData(false, false)]         
+        [MoqInlineAutoData(true, true)]
+        [MoqInlineAutoData(false, false)]         
         public async Task ApproveJobAdvertAsync_ShouldNotSubmitWhenMissingAgreements(
-            bool hasLegalEntityAgreement, bool shouldBeSubmitted)
+            bool hasLegalEntityAgreement,
+            bool shouldBeSubmitted,
+            Mock<IRecruitVacancyClient> mockRecruitVacancyClient,
+            Mock<IReviewSummaryService> mockReviewSummaryService,
+            Mock<IMessaging> mockmessaging)
         {
             //Arrange            
             var user =  new VacancyUser {Email = "advert@advert.com", Name = "advertname",  UserId = "advertId" };
@@ -64,25 +48,27 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators
 
             var approveJobAdvertViewModel = new ApproveJobAdvertViewModel { ApproveJobAdvert = true, VacancyId = vacancy.Id, EmployerAccountId = "ABCDEF" };
 
-            _mockRecruitVacancyClient.Setup(x => x.GetVacancyAsync(vacancy.Id)).ReturnsAsync(vacancy);
-            _mockRecruitVacancyClient.Setup(x => x.GetEmployerDescriptionAsync(vacancy)).ReturnsAsync("employer description");
-            _mockRecruitVacancyClient.Setup(x => x.GetEmployerNameAsync(vacancy)).ReturnsAsync("employer name");
-            _mockRecruitVacancyClient.Setup(c => c.Validate(vacancy, It.IsAny<VacancyRuleSet>())).Returns(new EntityValidationResult());
+            mockRecruitVacancyClient.Setup(x => x.GetVacancyAsync(vacancy.Id)).ReturnsAsync(vacancy);
+            mockRecruitVacancyClient.Setup(x => x.GetEmployerDescriptionAsync(vacancy)).ReturnsAsync("employer description");
+            mockRecruitVacancyClient.Setup(x => x.GetEmployerNameAsync(vacancy)).ReturnsAsync("employer name");
+            mockRecruitVacancyClient.Setup(c => c.Validate(vacancy, It.IsAny<VacancyRuleSet>())).Returns(new EntityValidationResult());
 
             var geocodeImageService = new Mock<IGeocodeImageService>();
             var externalLinks = new Mock<IOptions<ExternalLinksConfiguration>>();
-            var mapper = new DisplayVacancyViewModelMapper(geocodeImageService.Object, externalLinks.Object, _mockRecruitVacancyClient.Object, Mock.Of<IApprenticeshipProgrammeProvider>());
+            var mapper = new DisplayVacancyViewModelMapper(geocodeImageService.Object, externalLinks.Object, mockRecruitVacancyClient.Object, Mock.Of<IApprenticeshipProgrammeProvider>(), Mock.Of<IFeature>());
 
             var legalEntityAgreement = new Mock<ILegalEntityAgreementService>();
             legalEntityAgreement.Setup(l => l.HasLegalEntityAgreementAsync(vacancy.EmployerAccountId, vacancy.AccountLegalEntityPublicHashedId))
                 .ReturnsAsync(hasLegalEntityAgreement);
-            var utility = new Utility(_mockRecruitVacancyClient.Object);
+            var utility = new Utility(mockRecruitVacancyClient.Object);
             
-            var sut = new VacancyPreviewOrchestrator(_mockRecruitVacancyClient.Object,
+            var sut = new VacancyPreviewOrchestrator(mockRecruitVacancyClient.Object,
                                                     Mock.Of<ILogger<VacancyPreviewOrchestrator>>(), mapper,
-                                                    _mockReviewSummaryService.Object, legalEntityAgreement.Object,
-                                                    _mockmessaging.Object,
-                                                    Mock.Of<IOptions<ExternalLinksConfiguration>>(), utility);
+                                                    mockReviewSummaryService.Object, legalEntityAgreement.Object,
+                                                    mockmessaging.Object,
+                                                    Mock.Of<IOptions<ExternalLinksConfiguration>>(),
+                                                    utility,
+                                                    Mock.Of<IFeature>());
 
 
             //Act
@@ -90,13 +76,16 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators
 
             //Assert           
             var submittedTimes = shouldBeSubmitted ? Times.Once() : Times.Never();
-            _mockmessaging.Verify(c => c.SendCommandAsync(It.IsAny<ICommand>()), submittedTimes);
+            mockmessaging.Verify(c => c.SendCommandAsync(It.IsAny<ICommand>()), submittedTimes);
             response.Data.IsSubmitted.Should().Be(shouldBeSubmitted);
             response.Data.HasLegalEntityAgreement.Should().Be(hasLegalEntityAgreement);
         }
 
-        [Fact]
-        public async Task RejectJobAdvertAsync_ShouldSendCommand()
+        [Test, MoqAutoData]
+        public async Task RejectJobAdvertAsync_ShouldSendCommand(
+            Mock<IRecruitVacancyClient> mockRecruitVacancyClient,
+            Mock<IReviewSummaryService> mockReviewSummaryService,
+            Mock<IMessaging> mockmessaging)
         {
             //Arrange            
             var user = new VacancyUser { Email = "advert@advert.com", Name = "advertname", UserId = "advertId" };
@@ -121,28 +110,30 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators
 
             var rejectJobAdvertViewModel = new RejectJobAdvertViewModel { RejectJobAdvert = true, VacancyId = vacancy.Id, EmployerAccountId = "ABCDEF" };
 
-            _mockRecruitVacancyClient.Setup(x => x.GetVacancyAsync(vacancy.Id)).ReturnsAsync(vacancy);
-            _mockRecruitVacancyClient.Setup(x => x.GetEmployerDescriptionAsync(vacancy)).ReturnsAsync("employer description");
-            _mockRecruitVacancyClient.Setup(x => x.GetEmployerNameAsync(vacancy)).ReturnsAsync("employer name");
-            _mockRecruitVacancyClient.Setup(c => c.Validate(vacancy, It.IsAny<VacancyRuleSet>())).Returns(new EntityValidationResult());
+            mockRecruitVacancyClient.Setup(x => x.GetVacancyAsync(vacancy.Id)).ReturnsAsync(vacancy);
+            mockRecruitVacancyClient.Setup(x => x.GetEmployerDescriptionAsync(vacancy)).ReturnsAsync("employer description");
+            mockRecruitVacancyClient.Setup(x => x.GetEmployerNameAsync(vacancy)).ReturnsAsync("employer name");
+            mockRecruitVacancyClient.Setup(c => c.Validate(vacancy, It.IsAny<VacancyRuleSet>())).Returns(new EntityValidationResult());
 
             var geocodeImageService = new Mock<IGeocodeImageService>();
             var externalLinks = new Mock<IOptions<ExternalLinksConfiguration>>();
-            var mapper = new DisplayVacancyViewModelMapper(geocodeImageService.Object, externalLinks.Object, _mockRecruitVacancyClient.Object,Mock.Of<IApprenticeshipProgrammeProvider>());
+            var mapper = new DisplayVacancyViewModelMapper(geocodeImageService.Object, externalLinks.Object, mockRecruitVacancyClient.Object, Mock.Of<IApprenticeshipProgrammeProvider>(), Mock.Of<IFeature>());
             var legalEntityAgreement = new Mock<ILegalEntityAgreementService>();            
-            var utility = new Utility(_mockRecruitVacancyClient.Object);
+            var utility = new Utility(mockRecruitVacancyClient.Object);
             
-            var sut = new VacancyPreviewOrchestrator(_mockRecruitVacancyClient.Object,
+            var sut = new VacancyPreviewOrchestrator(mockRecruitVacancyClient.Object,
                                                     Mock.Of<ILogger<VacancyPreviewOrchestrator>>(), mapper,
-                                                    _mockReviewSummaryService.Object, legalEntityAgreement.Object,
-                                                    _mockmessaging.Object,
-                                                    Mock.Of<IOptions<ExternalLinksConfiguration>>(), utility);
+                                                    mockReviewSummaryService.Object, legalEntityAgreement.Object,
+                                                    mockmessaging.Object,
+                                                    Mock.Of<IOptions<ExternalLinksConfiguration>>(),
+                                                    utility,
+                                                    Mock.Of<IFeature>());
 
             //Act
             var response = await sut.RejectJobAdvertAsync(rejectJobAdvertViewModel, user);
 
             //Assert           
-            _mockmessaging.Verify(c => c.SendCommandAsync(It.IsAny<ICommand>()), Times.Once());
+            mockmessaging.Verify(c => c.SendCommandAsync(It.IsAny<ICommand>()), Times.Once());
             response.Data.IsRejected.Should().Be(true);            
         }
     }

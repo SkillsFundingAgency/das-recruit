@@ -1,0 +1,61 @@
+﻿@using Esfa.Recruit.Shared.Web.TagHelpers
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+
+@model Esfa.Recruit.Employer.Web.ViewModels.Part1.AddLocation.EnterLocationManuallyViewModel
+
+@{
+    ViewBag.Vpv = "/recruitment/employer/page-part1-location";
+    ViewBag.Title = "Enter a new location";
+    ViewBag.ZenDeskLabel = "recruit-where-will-the-apprentice-work";
+}
+
+@section BackLink {
+    <a asp-route="@Model.ReturnRoute" asp-all-route-data="@Model.RouteDictionary" asp-route-wizard="@Model.PageInfo.IsWizard" asp-route-origin="@Model.Origin" esfa-automation="link-back" class="govuk-back-link">Back</a>
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <partial name="@PartialNames.ValidationSummary" model=@(new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }) />
+        <form asp-route="@RouteNames.EnterAddressManually_Post" asp-all-route-data="@Model.RouteDictionary" asp-route-wizard="@Model.PageInfo.IsWizard" asp-route-origin="@Model.Origin">
+            <fieldset class="govuk-fieldset">
+                <legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
+                    <h1 class="govuk-fieldset__heading govuk-!-margin-bottom-6">
+                        <span class="govuk-caption-l">@Model.ApprenticeshipTitle</span>
+                        Enter a new location
+                    </h1>
+                </legend>
+                <div esfa-validation-marker-for="AddressLine1" class="govuk-form-group">
+                    <label asp-for="AddressLine1" class="govuk-label">Address line 1</label>
+                    <span esfa-validation-message-for="AddressLine1" class="govuk-error-message"></span>
+                    <input asp-for="AddressLine1" class="govuk-input" type="text">
+                </div>
+                <div esfa-validation-marker-for="AddressLine2" class="govuk-form-group">
+                    <label asp-for="AddressLine2" class="govuk-label">Address line 2 (optional)</label>
+                    <span esfa-validation-message-for="AddressLine2" class="govuk-error-message"></span>
+                    <input asp-for="AddressLine2" class="govuk-input" type="text">
+                </div>
+                <div esfa-validation-marker-for="City" class="govuk-form-group">
+                    <label asp-for="City" class="govuk-label">Town or city</label>
+                    <span esfa-validation-message-for="City" class="govuk-error-message"></span>
+                    <input asp-for="City" class="govuk-input govuk-!-width-three-quarters" type="text">
+                </div>
+                <div esfa-validation-marker-for="County" class="govuk-form-group">
+                    <label asp-for="County" class="govuk-label">County (optional)</label>
+                    <span esfa-validation-message-for="County" class="govuk-error-message"></span>
+                    <input asp-for="County" class="govuk-input govuk-!-width-three-quarters" type="text">
+                </div>
+                <div esfa-validation-marker-for="Postcode" class="govuk-form-group">
+                    <label asp-for="Postcode" class="govuk-label">Postcode</label>
+                    <span esfa-validation-message-for="Postcode" class="govuk-error-message"></span>
+                    <input asp-for="Postcode" class="govuk-input govuk-input--width-10" type="text">
+                </div>
+            </fieldset>
+            <div class="govuk-button-group">
+                <button type="submit" class="govuk-button save-button" esfa-automation="continue-button">Save and continue</button>
+                <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Dashboard_Get" asp-route-employerAccountId="@Model.EmployerAccountId" class="govuk-link govuk-link--no-visited-state">Cancel</a>
+                <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.EmployerCheckYourAnswersGet" asp-all-route-data="@Model.RouteDictionary" class="govuk-link govuk-link--no-visited-state">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+

@@ -1,15 +1,11 @@
-using System;
-using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Orchestrators;
 using Esfa.Recruit.UnitTests.Employer.Web.Orchestrators.CloneVacancyOrchestratorTest;
-using FluentAssertions;
-using Xunit;
 
 namespace UnitTests.Employer.Web.Orchestrators.CloneVacancyOrchestratorTest
 {
     public class GetCloneVacancyWithNewDatesViewModelAsyncTests : CloneVacancyOrchestratorTestBase
     {
-        [Fact]
+        [Test]
         public async Task WhenDatesAreInPast_ThenModelShouldHaveEmptyDates()
         {
             var vacancy = SourceVacancy;
@@ -24,7 +20,7 @@ namespace UnitTests.Employer.Web.Orchestrators.CloneVacancyOrchestratorTest
             vm.ClosingDate.Should().BeNull();
         }
 
-        [Fact]
+        [Test]
         public async Task WhenDatesAreInFuture_ThenModelShouldBePopulatedWithDate()
         {
             var sut = GetSut(SourceVacancy);

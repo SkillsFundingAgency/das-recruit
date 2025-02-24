@@ -1,46 +1,27 @@
-﻿@using Esfa.Recruit.Vacancies.Client.Domain.Entities
-
-@model Esfa.Recruit.Employer.Web.ViewModels.Part1.MultipleLocations.AddMoreThanOneLocationViewModel
+﻿@model Esfa.Recruit.Employer.Web.ViewModels.Part1.MultipleLocations.AddMoreThanOneLocationViewModel
 
 @{
-    string Selector(Address address) => !string.IsNullOrEmpty(address.AddressLine4) ? address.AddressLine4 :
-        !string.IsNullOrEmpty(address.AddressLine3) ? address.AddressLine3 :
-        !string.IsNullOrEmpty(address.AddressLine2) ? address.AddressLine2 : address.AddressLine1;
-
-    var groupedLocations = Model.AvailableLocations
-        .Select(x => new KeyValuePair<string, Address>(Selector(x), x))
-        .GroupBy(x => x.Key)
-        .ToArray();
-
-    Array.Sort(groupedLocations, (l, r) => string.Compare(l.Key, r.Key, StringComparison.Ordinal));
+    var groupedLocations = Model.AvailableLocations.GroupByLastFilledAddressLine();
+    var index = 0;
+    foreach (var group in groupedLocations)
+    {
+        <h3 class="govuk-heading-s govuk-!-padding-top-3">@group.Key</h3>
+        foreach (var location in group.Select(x => x.Value))
+        {
+            var address = location.ToAddressString();
+            var controlId = $"selectedLocation_{index++}";
+            <div class="govuk-checkboxes__item">
+                <input
+                    id="@controlId"
+                    class="govuk-checkboxes__input"
+                    name="@nameof(Model.SelectedLocations)"
+                    value="@address"
+                    type="checkbox"
+                    checked="@(Model.SelectedLocations?.Contains(address) ?? false)">
+                <label for="@controlId" class="govuk-label govuk-checkboxes__label">
+                    <address value="@location" flat="true" />
+                </label>
+            </div>
+        }                                                  
+    }
 }
-
-<div class="govuk-checkboxes govuk-checkboxes--conditional" data-module="checkboxes" esfa-validation-marker-for="SelectedLocations">
-    <span esfa-validation-message-for="SelectedLocations" class="govuk-error-message"></span>
-    <div class="govuk-checkboxes">
-        @{
-            var index = 0;
-            foreach (var group in groupedLocations)
-            {
-                <h3 class="govuk-heading-s govuk-!-padding-top-3">@group.Key</h3>
-                foreach (var location in group)
-                {
-                    var address = location.Value.ToAddressString();
-                    var controlId = $"selectedLocation_{index++}";
-                    <div class="govuk-checkboxes__item">
-                        <input
-                            id="@controlId"
-                            class="govuk-checkboxes__input"
-                            name="@nameof(Model.SelectedLocations)"
-                            value="@address"
-                            type="checkbox"
-                            checked="@(Model.SelectedLocations?.Contains(address) ?? false ? "checked" : null)">
-                        <label for="@controlId" class="govuk-label govuk-checkboxes__label">
-                            @address
-                        </label>
-                    </div>
-                }                                                  
-            }
-        }
-    </div>
-</div>

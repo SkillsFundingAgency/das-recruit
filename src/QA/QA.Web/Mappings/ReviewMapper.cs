@@ -9,7 +9,6 @@ using Esfa.Recruit.Shared.Web.Mappers;
 using Esfa.Recruit.Shared.Web.Orchestrators;
 using Esfa.Recruit.Shared.Web.RuleTemplates;
 using Esfa.Recruit.Shared.Web.Services;
-using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
 using Esfa.Recruit.Vacancies.Client.Application.Services;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
@@ -78,6 +77,8 @@ namespace Esfa.Recruit.Qa.Web.Mappings
             { FieldIdResolver.ToFieldId(v => v.EmployerLocation.AddressLine3), new []{FieldIdentifiers.EmployerAddress} },
             { FieldIdResolver.ToFieldId(v => v.EmployerLocation.AddressLine4), new []{ FieldIdentifiers.EmployerAddress} },
             { FieldIdResolver.ToFieldId(v => v.EmployerLocation.Postcode), new[]{FieldIdentifiers.EmployerAddress}},
+            { FieldIdResolver.ToFieldId(v => v.EmployerLocations), new[]{FieldIdentifiers.EmployerAddress}},
+            { FieldIdResolver.ToFieldId(v => v.EmployerLocationInformation), new[]{FieldIdentifiers.EmployerAddress}},
             { FieldIdResolver.ToFieldId(v => v.EmployerContact.Name), new []{ FieldIdentifiers.EmployerContact }},
             { FieldIdResolver.ToFieldId(v => v.EmployerContact.Email), new []{FieldIdentifiers.EmployerContact} },
             { FieldIdResolver.ToFieldId(v => v.EmployerContact.Phone), new []{FieldIdentifiers.EmployerContact }},
@@ -265,6 +266,9 @@ namespace Esfa.Recruit.Qa.Web.Mappings
                     vm.MapUrl = MapImageHelper.GetEmployerLocationMapUrl(vacancy, _mapService, MapImageWidth, MapImageHeight);
                     vm.EmployerAddressElements = vacancy.EmployerAddressForDisplay();
                 }
+                vm.EmployerLocationOption = vacancy.EmployerLocationOption;
+                vm.EmployerLocationInformation = vacancy.EmployerLocationInformation;
+                vm.EmployerLocations = vacancy.EmployerLocations;
                 vm.LegalEntityName = vacancy.LegalEntityName;
                 vm.AccountLegalEntityPublicHashedId = vacancy.AccountLegalEntityPublicHashedId;
                 vm.IsDisabilityConfident = vacancy.IsDisabilityConfident;

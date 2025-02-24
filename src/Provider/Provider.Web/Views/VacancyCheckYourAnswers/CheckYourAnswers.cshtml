@@ -74,7 +74,12 @@
         </div>
         <div class="govuk-notification-banner__content">
             <p class="govuk-notification-banner__heading">
-                @Model.EmployerName has rejected this vacancy for the following reason.
+                <esfaFeatureEnabled name="@FeatureNames.MultipleLocations">
+                    @Model.OrganisationName has rejected this vacancy for the following reason.
+                </esfaFeatureEnabled>
+                <esfaFeatureDisabled name="@FeatureNames.MultipleLocations">
+                    @Model.EmployerName has rejected this vacancy for the following reason.
+                </esfaFeatureDisabled>
             </p>
             <p class="govuk-body">@Model.EmployerRejectedReason</p>
         </div>
@@ -122,7 +127,12 @@
                         Name of employer
                     </dt>
                     <dd class="app-summary-list__value">
-                        @Model.EmployerName
+                        <esfaFeatureEnabled name="@FeatureNames.MultipleLocations">
+                            @Model.OrganisationName
+                        </esfaFeatureEnabled>
+                        <esfaFeatureDisabled name="@FeatureNames.MultipleLocations">
+                            @Model.EmployerName
+                        </esfaFeatureDisabled>
                     </dd>
                     <dd class="app-summary-list__actions">
                         <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.ConfirmSelectedLegalEntityEmployer_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="change-legalentity">Change<span class="govuk-visually-hidden"> legal entity</span></a>
@@ -346,17 +356,35 @@
                     <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.NumberOfPositions_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="change-numberofpositions">Change<span class="govuk-visually-hidden"> number of positions</span></a>
                 </dd>
             </div>
-            <field-review-message field-name="@FieldIdentifiers.EmployerAddress" model="@Model"></field-review-message>
-            <div class="app-summary-list__row" field-review-marker="EmployerAddressElements">
-                <dt class="app-summary-list__key" id="@FieldIdentifiers.EmployerAddress">Address</dt>
-                <dd class="app-summary-list__value">
-                    @string.Join(", ", Model.EmployerAddressElements?.Where(s => !string.IsNullOrWhiteSpace(s)).Select(s => s.Trim()) ?? new string[0])
-                    <review-field class="govuk-tag--purple" field-name="@FieldIdentifiers.EmployerAddress" tag-name="strong" model="@Model"/>
-                </dd>
-                <dd class="app-summary-list__actions">
-                    <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.Location_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="change-location">Change<span class="govuk-visually-hidden"> location</span></a>
-                </dd>
-            </div>
+
+            <esfaFeatureEnabled name="@FeatureNames.MultipleLocations">
+                @switch (Model.AvailableWhere)
+                {
+                    case AvailableWhere.AcrossEngland: <partial name="_EmployerLocations_RecruitNationally" /> break;
+                    case AvailableWhere.MultipleLocations: <partial name="_EmployerLocations_Many" /> break;
+                    case AvailableWhere.OneLocation: <partial name="_EmployerLocations_One" /> break;
+                    default: <partial name="_EmployerLocations_DeprecatedOne" /> break;
+                }
+            </esfaFeatureEnabled>
+                
+            <esfaFeatureDisabled name="@FeatureNames.MultipleLocations">
+                <field-review-message field-name="@FieldIdentifiers.EmployerAddress" model="@Model"></field-review-message>
+                <div class="app-summary-list__row" field-review-marker="EmployerAddressElements">
+                    <dt class="app-summary-list__key" id="@FieldIdentifiers.EmployerAddress">Address</dt>
+                    <dd class="app-summary-list__value">
+                        @string.Join(", ", Model.EmployerAddressElements?.Where(s => !string.IsNullOrWhiteSpace(s)).Select(s
+                            => s.Trim()) ?? new string[0])
+                        <field-review-tag class="govuk-tag--orange" field-name="@FieldIdentifiers.EmployerAddress"
+                                          tag-name="strong" model="@Model" />
+                    </dd>
+                    <dd class="app-summary-list__actions">
+                        <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.Location_Get"
+                           asp-all-route-data="@Model.RouteDictionary" esfa-automation="change-location">Change<span
+                                class="govuk-visually-hidden"> location</span></a>
+
+                    </dd>
+                </div>
+            </esfaFeatureDisabled>
         </dl>
         <h2 class="govuk-heading-m">Requirements and prospects</h2>
         <dl class="app-summary-list govuk-!-margin-bottom-9">

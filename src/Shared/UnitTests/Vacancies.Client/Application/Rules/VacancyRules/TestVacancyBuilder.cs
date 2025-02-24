@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
-namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.Rules.VacancyRules
+namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.Rules.VacancyRules
 {
     internal static class TestVacancyBuilder
     {

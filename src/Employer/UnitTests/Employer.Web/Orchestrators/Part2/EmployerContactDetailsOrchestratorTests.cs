@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using System.Threading.Tasks;
 using Esfa.Recruit.Employer.UnitTests.Employer.Web.HardMocks;
 using Esfa.Recruit.Employer.Web;
 using Esfa.Recruit.Employer.Web.Orchestrators.Part2;
@@ -9,10 +8,7 @@ using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
-using FluentAssertions;
 using Microsoft.Extensions.Logging;
-using Moq;
-using Xunit;
 
 namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part2
 {
@@ -20,16 +16,16 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part2
     {
         private EmployerContactDetailsOrchestratorTestsFixture _fixture;
 
-        public EmployerContactDetailsOrchestratorTests()
+        [SetUp]
+        public void Setup()
         {
             _fixture = new EmployerContactDetailsOrchestratorTestsFixture();
         }
 
-        [Theory]
-        [InlineData("has a new value", "has a value", "has a value")]
-        [InlineData("has a value", "has a new value", "has a value")]
-        [InlineData("has a value", "has a value", "has a new value")]
-        [InlineData("has a new value", "has a new value", "has a new value")]
+        [TestCase("has a new value", "has a value", "has a value")]
+        [TestCase("has a value", "has a new value", "has a value")]
+        [TestCase("has a value", "has a value", "has a new value")]
+        [TestCase("has a new value", "has a new value", "has a new value")]
         public async Task WhenEmployerContactNameIsUpdated__ShouldCallUpdateDraftVacancy(string employerContactName, string employerContactEmail, string employerContactPhone)
         {
             _fixture
@@ -52,11 +48,10 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part2
             _fixture.VerifyUpdateDraftVacancyAsyncIsCalled();
         }
 
-        [Theory]
-        [InlineData("has a new value", "has a value", "has a value")]
-        [InlineData("has a value", "has a new value", "has a value")]
-        [InlineData("has a value", "has a value", "has a new value")]
-        [InlineData("has a new value", "has a new value", "has a new value")]
+        [TestCase("has a new value", "has a value", "has a value")]
+        [TestCase("has a value", "has a new value", "has a value")]
+        [TestCase("has a value", "has a value", "has a new value")]
+        [TestCase("has a new value", "has a new value", "has a new value")]
         public async Task WhenEmployerContactNameIsUpdated_ShouldFlagEmployerContactFieldIndicator(string employerContactName, string employerContactEmail, string employerContactPhone)
         {
             _fixture

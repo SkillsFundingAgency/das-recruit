@@ -1,34 +1,38 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Application.Rules;
 using Esfa.Recruit.Vacancies.Client.Application.Rules.BaseRules;
 using Esfa.Recruit.Vacancies.Client.Application.Rules.VacancyRules;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using Xunit;
+using NUnit.Framework;
 
-namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.Rules.VacancyRules
+namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.Rules.VacancyRules
 {
+    public class TestProfanityListProvider : IProfanityListProvider
+    {
+        public Task<IEnumerable<string>> GetProfanityListAsync()
+        {
+            return Task.FromResult<IEnumerable<string>>(["bother", "dang", "balderdash", "drat"]) ;
+        }
+    }
+    
     public class VacancyProfanityChecksRuleTests
     {
-        [Fact]
+        [Test]
         public void WhenCreated_ItShouldReturnBasicInformationAboutTheRule()
         {
             var rule = new VacancyProfanityChecksRule(new TestProfanityListProvider());
-
-            Assert.Equal(RuleId.ProfanityChecks, rule.RuleId);
+            rule.RuleId.Should().Be(RuleId.ProfanityChecks);
         }
 
-        [Theory]
-        [InlineData("nothing", 0)]
-        [InlineData("bother-bother, bother!", 3)]
-        [InlineData("bother dang", 2)]
-        [InlineData("drat", 1)]
-        [InlineData("hydrate", 0)]
-        [InlineData("dangleberry", 0)]
-        [InlineData("bother", 100, 100)]
-        [InlineData("bother dang", 100, 100)]
+        [TestCase("nothing", 0)]
+        [TestCase("bother-bother, bother!", 3)]
+        [TestCase("bother dang", 2)]
+        [TestCase("drat", 1)]
+        [TestCase("hydrate", 0)]
+        [TestCase("dangleberry", 0)]
+        [TestCase("bother", 100, 100)]
+        [TestCase("bother dang", 100, 100)]
         public async Task WhenInvoked_ItShouldReturnTheExpectedScore(string phrase, int expectedScore, decimal weighting = 1.0m)
         {
             var rule = new VacancyProfanityChecksRule(new TestProfanityListProvider(), ConsolidationOption.ConsolidateByField, weighting);
@@ -36,14 +40,14 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.Rules.VacancyRules
 
             var outcome = await rule.EvaluateAsync(entity);
 
-            Assert.Equal(expectedScore, outcome.Score);
+            outcome.Score.Should().Be(expectedScore);
         }
 
-        [Fact]
+        [Test]
         public async Task WhenInvoked_ItShouldReturnAnOverallUnconsolidatedNarrative()
         {
             var rule = new VacancyProfanityChecksRule(new TestProfanityListProvider());
-            var skills = new[] { "Juggling", "Running", "dang" };
+            string[] skills = ["Juggling", "Running", "dang"];
             var qualifications = new List<Qualification> { new Qualification{Grade = "dang grade", Subject = "subject"} };
             var entity = TestVacancyBuilder.Create()
                 .SetTitle("bother-bother, bother!")
@@ -53,18 +57,18 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.Rules.VacancyRules
 
             var outcome = await rule.EvaluateAsync(entity);
 
-            Assert.Contains("Profanity 'bother' found 3 times in 'Title'", outcome.Narrative);
-            Assert.Contains("Profanity 'dang' found in 'Description'", outcome.Narrative);
-            Assert.Contains("Profanity 'balderdash' found in 'Description'", outcome.Narrative);
-            Assert.Contains("Profanity 'dang' found in 'Skills'", outcome.Narrative);
-            Assert.Contains("Profanity 'dang' found in 'Qualifications'", outcome.Narrative);
+            outcome.Narrative.Should().Contain("Profanity 'bother' found 3 times in 'Title'");
+            outcome.Narrative.Should().Contain("Profanity 'dang' found in 'Description'");
+            outcome.Narrative.Should().Contain("Profanity 'balderdash' found in 'Description'");
+            outcome.Narrative.Should().Contain("Profanity 'dang' found in 'Skills'");
+            outcome.Narrative.Should().Contain("Profanity 'dang' found in 'Qualifications'");
         }
 
-        [Fact]
+        [Test]
         public async Task WhenInvoked_ItShouldReturnAnOverallConsolidatedNarrative()
         {
             var rule = new VacancyProfanityChecksRule(new TestProfanityListProvider(), ConsolidationOption.ConsolidateByField);
-            var skills = new[] { "Juggling", "Running", "dang" };
+            string[] skills = ["Juggling", "Running", "dang"];
             var entity = TestVacancyBuilder.Create()
                 .SetTitle("bother-bother, bother!")
                 .SetDescription("dang it and balderdash!!")
@@ -72,16 +76,16 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.Rules.VacancyRules
 
             var outcome = await rule.EvaluateAsync(entity);
 
-            Assert.Contains("3 profanities 'bother' found in 'Title'", outcome.Narrative);
-            Assert.Contains("2 profanities 'dang,balderdash' found in 'Description'", outcome.Narrative);
-            Assert.Contains("1 profanities 'dang' found in 'Skills'", outcome.Narrative);
+            outcome.Narrative.Should().Contain("3 profanities 'bother' found in 'Title'");
+            outcome.Narrative.Should().Contain("2 profanities 'dang,balderdash' found in 'Description'");
+            outcome.Narrative.Should().Contain("1 profanities 'dang' found in 'Skills'");
         }
 
-        [Fact]
+        [Test]
         public async Task WhenInvoked_ItShouldIncludeDetailsOfEachFieldOutcome()
         {
             var rule = new VacancyProfanityChecksRule(new TestProfanityListProvider());
-            var skills = new[] { "Juggling", "Running", "dang" };
+            string[] skills = ["Juggling", "Running", "dang"];
             var entity = TestVacancyBuilder.Create()
                 .SetTitle("bother-bother, bother!")
                 .SetDescription("dang it and balderdash!!")
@@ -89,23 +93,77 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.Rules.VacancyRules
 
             var outcome = await rule.EvaluateAsync(entity);
 
-            Assert.True(outcome.HasDetails);
-            Assert.Equal(19, outcome.Details.Count());
-
-            Assert.All(outcome.Details, a =>
+            outcome.HasDetails.Should().BeTrue();
+            outcome.Details.Should().HaveCount(20);
+            outcome.Details.Should().AllSatisfy(x =>
             {
-                Assert.NotEmpty(a.Target);
-                Assert.NotEmpty(a.Narrative);
-                Assert.Equal(RuleId.ProfanityChecks, a.RuleId);
+                x.Target.Should().NotBeNullOrEmpty();
+                x.Narrative.Should().NotBeNullOrEmpty();
+                x.RuleId.Should().Be(RuleId.ProfanityChecks);
             });
         }
-    }
 
-    public class TestProfanityListProvider : IProfanityListProvider
-    {
-        public Task<IEnumerable<string>> GetProfanityListAsync()
+        [Test]
+        public async Task Profanities_Are_Detected_In_The_EmployerLocationInformation_Field()
         {
-            return Task.FromResult<IEnumerable<string>>(new[] { "bother", "dang", "balderdash", "drat" }) ;
+            // arrange
+            var rule = new VacancyProfanityChecksRule(new TestProfanityListProvider());
+            var vacancy = new Vacancy
+            {
+                EmployerLocationInformation = "some text with bother in it",
+                Wage = new Wage()
+            };
+            
+            // act
+            var outcome = await rule.EvaluateAsync(vacancy);
+            
+            // assert
+            outcome.HasDetails.Should().BeTrue();
+            outcome.Score.Should().Be(100);
+            outcome.Narrative.Should().Contain("Profanity 'bother' found in 'EmployerLocationInformation'");
+        }
+        
+        [Test]
+        public async Task Profanities_Are_Detected_In_The_EmployerLocation_Field()
+        {
+            // arrange
+            var rule = new VacancyProfanityChecksRule(new TestProfanityListProvider());
+            var vacancy = new Vacancy
+            {
+                EmployerLocation = new Address { AddressLine1 = "Address line 1", AddressLine2 = "Bother", AddressLine3 = "Address line 3" },
+                Wage = new Wage()
+            };
+            
+            // act
+            var outcome = await rule.EvaluateAsync(vacancy);
+            
+            // assert
+            outcome.HasDetails.Should().BeTrue();
+            outcome.Score.Should().Be(100);
+            outcome.Narrative.Should().Contain("Profanity 'bother' found in 'EmployerLocation.AddressLine2'");
+        }
+        
+        [Test]
+        public async Task Profanities_Are_Detected_In_The_EmployerLocations_Field()
+        {
+            // arrange
+            var rule = new VacancyProfanityChecksRule(new TestProfanityListProvider());
+            var vacancy = new Vacancy
+            {
+                EmployerLocations = [
+                    new Address { AddressLine1 = "Address line 1", AddressLine2 = "Address line 2", AddressLine3 = "Address line 3" },
+                    new Address { AddressLine1 = "Address line 1", AddressLine2 = "Bother", AddressLine3 = "Address line 3" },
+                ],
+                Wage = new Wage()
+            };
+            
+            // act
+            var outcome = await rule.EvaluateAsync(vacancy);
+            
+            // assert
+            outcome.HasDetails.Should().BeTrue();
+            outcome.Score.Should().Be(100);
+            outcome.Narrative.Should().Contain("Profanity 'bother' found in 'EmployerLocations'");
         }
     }
 }
