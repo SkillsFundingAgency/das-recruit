@@ -29,6 +29,8 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Services.VacancyComparer
                 CompareValue(a, b, v => v.EmployerLocation?.AddressLine3, FieldIdResolver.ToFieldId(v => v.EmployerLocation.AddressLine3)),
                 CompareValue(a, b, v => v.EmployerLocation?.AddressLine4, FieldIdResolver.ToFieldId(v => v.EmployerLocation.AddressLine4)),
                 CompareValue(a, b, v => v.EmployerLocation?.Postcode, FieldIdResolver.ToFieldId(v => v.EmployerLocation.Postcode)),
+                CompareList(a, b, v => v.EmployerLocations,  FieldIdResolver.ToFieldId(v => v.EmployerLocations)),
+                CompareValue(a, b, v => v.EmployerLocationInformation,  FieldIdResolver.ToFieldId(v => v.EmployerLocationInformation)),
                 CompareValue(a, b, v => v.EmployerName, FieldIdResolver.ToFieldId(v => v.EmployerName)),
                 CompareValue(a, b, v => v.EmployerWebsiteUrl, FieldIdResolver.ToFieldId(v => v.EmployerWebsiteUrl)),
                 CompareValue(a, b, v => v.NumberOfPositions, FieldIdResolver.ToFieldId(v => v.NumberOfPositions)),
@@ -64,17 +66,17 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Services.VacancyComparer
             var aValue = valueFunc(a);
             var bValue = valueFunc(b);
 
-            var areEqual = EqualityComparer<P>.Default.Equals(aValue, bValue);
+            bool areEqual = EqualityComparer<P>.Default.Equals(aValue, bValue);
             
             return new VacancyComparerField(fieldName, areEqual);
         }
         
         private static VacancyComparerField CompareList<T, P>(T a, T b, Func<T, IEnumerable<P>> valueFunc, string fieldName)
         {
-            var aValue = valueFunc(a) ?? Enumerable.Empty<P>();
-            var bValue = valueFunc(b) ?? Enumerable.Empty<P>();
+            var aValue = valueFunc(a) ?? [];
+            var bValue = valueFunc(b) ?? [];
 
-            var areEqual = aValue.SequenceEqual(bValue);
+            bool areEqual = aValue.SequenceEqual(bValue);
 
             return new VacancyComparerField(fieldName, areEqual);
         }

@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using System.Threading.Tasks;
 using Esfa.Recruit.Employer.UnitTests.Employer.Web.HardMocks;
 using Esfa.Recruit.Employer.Web;
 using Esfa.Recruit.Employer.Web.Models;
@@ -12,10 +11,7 @@ using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
-using FluentAssertions;
 using Microsoft.Extensions.Logging;
-using Moq;
-using Xunit;
 using Address = Esfa.Recruit.Vacancies.Client.Domain.Entities.Address;
 
 namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part1
@@ -24,19 +20,19 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part1
     {
         private LocationOrchestratorTestsFixture _fixture;
 
-        public LocationOrchestratorTests()
+        [SetUp]
+        public void Setup()
         {
             _fixture = new LocationOrchestratorTestsFixture();
         }
 
-        [Theory]
-        [InlineData("this is a value", "this is a value", "this is a value", "this is a value", "this is a value", false)]
-        [InlineData("this is a new value", "this is a value", "this is a value", "this is a value", "this is a value", true)]
-        [InlineData("this is a value", "this is a new value", "this is a value", "this is a value", "this is a value", true)]
-        [InlineData("this is a value", "this is a value", "this is a new value", "this is a value", "this is a value", true)]
-        [InlineData("this is a value", "this is a value", "this is a value", "this is a new value", "this is a value", true)]
-        [InlineData("this is a value", "this is a value", "this is a value", "this is a value", "this is a new value", true)]
-        [InlineData("this is a new value", "this is a new value", "this is a new value", "this is a new value", "this is a new value", true)]
+        [TestCase("this is a value", "this is a value", "this is a value", "this is a value", "this is a value", false)]
+        [TestCase("this is a new value", "this is a value", "this is a value", "this is a value", "this is a value", true)]
+        [TestCase("this is a value", "this is a new value", "this is a value", "this is a value", "this is a value", true)]
+        [TestCase("this is a value", "this is a value", "this is a new value", "this is a value", "this is a value", true)]
+        [TestCase("this is a value", "this is a value", "this is a value", "this is a new value", "this is a value", true)]
+        [TestCase("this is a value", "this is a value", "this is a value", "this is a value", "this is a new value", true)]
+        [TestCase("this is a new value", "this is a new value", "this is a new value", "this is a new value", "this is a new value", true)]
         public async Task WhenAddressUpdated_ShouldFlagFieldIndicators(string addressLine1, string addressLine2, string addressLine3, string addressLine4, string postcode, bool fieldIndicatorSet)
         {
             _fixture
@@ -64,7 +60,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part1
             _fixture.VerifyEmployerReviewFieldIndicators(FieldIdentifiers.EmployerAddress, fieldIndicatorSet);
         }
 
-        [Fact]
+        [Test]
         public async Task WhenEmployerLegalEntityUpdated_ShouldFlagEmployerNameFieldIndicator()
         {
             _fixture
@@ -87,12 +83,11 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part1
             _fixture.VerifyEmployerReviewFieldIndicators(FieldIdentifiers.EmployerName, true);
         }
 
-        [Theory]
-        [InlineData(EmployerNameOption.RegisteredName, EmployerIdentityOption.ExistingTradingName, null, true)]
-        [InlineData(EmployerNameOption.RegisteredName, EmployerIdentityOption.NewTradingName, "this is a new value", true)]
-        [InlineData(EmployerNameOption.TradingName, EmployerIdentityOption.NewTradingName, "this is a new value", true)]
-        [InlineData(EmployerNameOption.TradingName, EmployerIdentityOption.ExistingTradingName, null, false)]
-        [InlineData(EmployerNameOption.RegisteredName, EmployerIdentityOption.RegisteredName, null, false)]
+        [TestCase(EmployerNameOption.RegisteredName, EmployerIdentityOption.ExistingTradingName, null, true)]
+        [TestCase(EmployerNameOption.RegisteredName, EmployerIdentityOption.NewTradingName, "this is a new value", true)]
+        [TestCase(EmployerNameOption.TradingName, EmployerIdentityOption.NewTradingName, "this is a new value", true)]
+        [TestCase(EmployerNameOption.TradingName, EmployerIdentityOption.ExistingTradingName, null, false)]
+        [TestCase(EmployerNameOption.RegisteredName, EmployerIdentityOption.RegisteredName, null, false)]
         public async Task WhenEmployerNameOptionUpdated_ShouldFlagEmployerNameFieldIndicator(EmployerNameOption employerNameOption, EmployerIdentityOption employerIdentityOption, string newTradingName, bool shouldFlagIndicator)
         {
             _fixture
@@ -119,7 +114,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part1
             _fixture.VerifyEmployerReviewFieldIndicators(FieldIdentifiers.EmployerName, shouldFlagIndicator);
         }
 
-        [Fact]
+        [Test]
         public async Task WhenGettingAddress_ForNewVaccancy()
         {
             _fixture.Setup();
@@ -128,7 +123,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part1
         }
 
 
-        [Fact]
+        [Test]
         public async Task WhenGettingAddress_GetAdderssesClientIsCalled()
         {
             _fixture.Setup();
@@ -264,8 +259,8 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part1
 
             internal void VerifyAddresses(GetAddressesListResponse addresses)
             {
-                Assert.Equal(2, addresses.Addresses.Count());
-                Assert.Equal(AddressesListResponse, addresses);
+                addresses.Addresses.Should().HaveCount(2);
+                addresses.Should().BeEquivalentTo(AddressesListResponse);
             }
 
             public Mock<IEmployerVacancyClient> MockClient { get; set; }

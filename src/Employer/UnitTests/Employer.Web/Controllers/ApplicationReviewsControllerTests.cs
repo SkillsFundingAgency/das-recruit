@@ -1,13 +1,8 @@
-﻿using System.Threading.Tasks;
-using AutoFixture;
-using Microsoft.AspNetCore.Mvc;
-using Moq;
-using NUnit.Framework;
+﻿using Microsoft.AspNetCore.Mvc;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyApplications;
 using System.Collections.Generic;
 using System.Linq;
-using System;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
@@ -17,12 +12,9 @@ using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.ViewModels.ApplicationReviews;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Shared.Web.ViewModels.Validations.Fluent;
-using FluentAssertions;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent;
-using FluentValidation;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
-using static Microsoft.ApplicationInsights.MetricDimensionNames.TelemetryContext;
 using Esfa.Recruit.Shared.Web.ViewModels;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Extensions;
 
@@ -191,9 +183,6 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Controllers
         public async Task GET_ApplicationReviewsFeedback_ReturnsViewAndModelWithMultipleApplicationsText()
         {
             // Arrange
-            var listOfApplicationReviews = new List<Guid>();
-            listOfApplicationReviews.Add(_applicationReviewId);
-            listOfApplicationReviews.Add(_applicationReviewIdTwo);
             var applicationsToUnsuccessful = _fixture.CreateMany<VacancyApplication>().ToList();
             var routeModel = _fixture
                 .Build<ApplicationReviewsToUnsuccessfulRouteModel>()
@@ -207,7 +196,8 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Controllers
                 {
                     VacancyId = routeModel.VacancyId,
                     EmployerAccountId = routeModel.EmployerAccountId,
-                    ApplicationsToUnsuccessful = applicationsToUnsuccessful
+                    ApplicationsToUnsuccessful = applicationsToUnsuccessful,
+                    IsMultipleApplications = true,
                 });
 
             // Act
@@ -219,7 +209,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Controllers
             Assert.That(actual.ApplicationsToUnsuccessful.Count(), Is.EqualTo(applicationsToUnsuccessful.Count));
             Assert.That(routeModel.VacancyId, Is.EqualTo(actual.VacancyId));
             Assert.That(routeModel.EmployerAccountId, Is.EqualTo(actual.EmployerAccountId));
-            Assert.That("Give feedback to unsuccessful applicants", Is.EqualTo(actual.ApplicationsToUnsuccessfulFeedbackHeaderTitle));
+            Assert.That("Give feedback to the unsuccessful applicants", Is.EqualTo(actual.ApplicationsToUnsuccessfulFeedbackHeaderTitle));
             Assert.That("Your feedback will be sent to all applicants you have selected as unsuccessful.", Is.EqualTo(actual.ApplicationsToUnsuccessfulFeedbackDescription)); 
         }
 
@@ -289,6 +279,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Controllers
                 .With(x => x.Outcome, ApplicationReviewStatus.Unsuccessful)
                 .With(x=>x.CandidateFeedback, "")
                 .With(x=>x.ApplicationsToUnsuccessful, new List<VacancyApplication>{new VacancyApplication()})
+                .With(x=>x.IsMultipleApplications, false)
                 .Create();
             var validator = new ApplicationReviewsFeedbackModelValidator(_mockProfanityListProvider.Object);
 
@@ -327,7 +318,8 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Controllers
                 {
                     VacancyId = routeModel.VacancyId,
                     EmployerAccountId = routeModel.EmployerAccountId,
-                    VacancyApplicationsToUnsuccessful = vacancyApplications
+                    VacancyApplicationsToUnsuccessful = vacancyApplications,
+                    IsMultipleApplications = true
                 });
 
             // Act

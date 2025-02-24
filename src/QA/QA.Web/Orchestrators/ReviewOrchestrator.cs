@@ -94,6 +94,7 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
                 throw new NotFoundException($"Unable to find review with id: {reviewId}");
 
             var vm = await _mapper.Map(review);
+            vm.ReadOnly = true;
 
             if (!string.IsNullOrEmpty(vm?.EmployerWebsiteUrl) && !vm.EmployerWebsiteUrl.StartsWith("http", true, null))
             {
@@ -247,6 +248,16 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
                     AfterEdit = m.CompanyBenefitsInformation
                 });
                 vacancy.Wage.CompanyBenefitsInformation = m.CompanyBenefitsInformation;
+            }
+            if (review.VacancySnapshot.EmployerLocationInformation != m.EmployerLocationInformation)
+            {
+                manualQaFieldEditIndicator.Add(new ManualQaFieldEditIndicator
+                {
+                    FieldIdentifier = nameof(m.EmployerLocationInformation),
+                    BeforeEdit = review.VacancySnapshot.EmployerLocationInformation,
+                    AfterEdit = m.EmployerLocationInformation
+                });
+                vacancy.EmployerLocationInformation = m.EmployerLocationInformation;
             }
 
             return manualQaFieldEditIndicator;

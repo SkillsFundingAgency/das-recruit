@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using System.Threading.Tasks;
 using Esfa.Recruit.Employer.UnitTests.Employer.Web.HardMocks;
 using Esfa.Recruit.Employer.Web;
 using Esfa.Recruit.Employer.Web.Configuration;
@@ -10,11 +9,8 @@ using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
-using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Moq;
-using Xunit;
 
 namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part2
 {
@@ -22,12 +18,13 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part2
     {
         private ApplicationProcessOrchestratorTestsFixture _fixture;
 
-        public ApplicationProcessOrchestratorTests()
+        [SetUp]
+        public void Setup()
         {
             _fixture = new ApplicationProcessOrchestratorTestsFixture();
         }
 
-        [Fact]
+        [Test]
         public async Task WhenApplicationMethodIsThroughFaaVacancy_ShouldCallUpdateDraftVacancy()
         {
             _fixture
@@ -49,7 +46,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part2
             _fixture.VerifyUpdateDraftVacancyAsyncIsCalled();
         }
 
-        [Fact]
+        [Test]
         public async Task WhenApplicationMethodIsThroughFaaVacancy_ShouldOverwriteApplicationUrlAsNull()
         {
             _fixture
@@ -72,7 +69,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part2
             _fixture.VerifyOverwriteApplicationUrlAsNull();
         }
 
-        [Fact]
+        [Test]
         public async Task WhenApplicationMethodIsThroughFaaVacancy_ShouldOverwriteApplicationInstructionsAsNull()
         {
             _fixture
@@ -95,7 +92,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part2
             _fixture.VerifyOverwriteApplicationInstructionsAsNull();
         }
 
-        [Fact]
+        [Test]
         public async Task WhenApplicationMethodIsThroughFaaVacancy_ShouldFlagAllApplicationFieldIndicators()
         {
             _fixture
@@ -120,7 +117,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part2
             _fixture.VerifyEmployerReviewFieldIndicators(FieldIdentifiers.ApplicationUrl, true);
         }
 
-        [Fact]
+        [Test]
         public async Task WhenApplicationInstructionsIsUpdated_ShouldFlagApplicationInstructionsFieldIndicator()
         {
             _fixture
@@ -145,7 +142,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part2
             _fixture.VerifyEmployerReviewFieldIndicators(FieldIdentifiers.ApplicationUrl, false);
         }
 
-        [Fact]
+        [Test]
         public async Task WhenApplicationUrlIsUpdated_ShouldFlagApplicationInstructionsFieldIndicator()
         {
             _fixture

@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using System.Threading.Tasks;
 using Esfa.Recruit.Employer.UnitTests.Employer.Web.HardMocks;
 using Esfa.Recruit.Employer.Web;
 using Esfa.Recruit.Employer.Web.Orchestrators.Part2;
@@ -9,10 +8,7 @@ using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
-using FluentAssertions;
 using Microsoft.Extensions.Logging;
-using Moq;
-using Xunit;
 
 namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part2
 {
@@ -20,17 +16,17 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part2
     {
         private AboutEmployerOrchestratorTestsFixture _fixture;
 
-        public AboutEmployerOrchestratorTests()
+        [SetUp]
+        public void Setup()
         {
             _fixture = new AboutEmployerOrchestratorTestsFixture();
         }
 
-        [Theory]
-        [InlineData("has a new value", "has a value", false, new string[] { FieldIdentifiers.EmployerDescription }, new string[] { FieldIdentifiers.EmployerWebsiteUrl, FieldIdentifiers.DisabilityConfident})]
-        [InlineData("has a value", "has a new value", false, new string[] { FieldIdentifiers.EmployerWebsiteUrl }, new string[] { FieldIdentifiers.EmployerDescription, FieldIdentifiers.DisabilityConfident })]
-        [InlineData("has a value", "has a value", true, new string[] { FieldIdentifiers.DisabilityConfident }, new string[] { FieldIdentifiers.EmployerDescription, FieldIdentifiers.EmployerWebsiteUrl })]
-        [InlineData("has a value", "has a value", false, new string[] {  }, new string[] { FieldIdentifiers.EmployerDescription, FieldIdentifiers.EmployerWebsiteUrl, FieldIdentifiers.DisabilityConfident })]
-        [InlineData("has a new value", "has a new value", true, new string[] { FieldIdentifiers.EmployerDescription, FieldIdentifiers.EmployerWebsiteUrl, FieldIdentifiers.DisabilityConfident }, new string[] {  })]
+        [TestCase("has a new value", "has a value", false, new string[] { FieldIdentifiers.EmployerDescription }, new string[] { FieldIdentifiers.EmployerWebsiteUrl, FieldIdentifiers.DisabilityConfident})]
+        [TestCase("has a value", "has a new value", false, new string[] { FieldIdentifiers.EmployerWebsiteUrl }, new string[] { FieldIdentifiers.EmployerDescription, FieldIdentifiers.DisabilityConfident })]
+        [TestCase("has a value", "has a value", true, new string[] { FieldIdentifiers.DisabilityConfident }, new string[] { FieldIdentifiers.EmployerDescription, FieldIdentifiers.EmployerWebsiteUrl })]
+        [TestCase("has a value", "has a value", false, new string[] {  }, new string[] { FieldIdentifiers.EmployerDescription, FieldIdentifiers.EmployerWebsiteUrl, FieldIdentifiers.DisabilityConfident })]
+        [TestCase("has a new value", "has a new value", true, new string[] { FieldIdentifiers.EmployerDescription, FieldIdentifiers.EmployerWebsiteUrl, FieldIdentifiers.DisabilityConfident }, new string[] {  })]
         public async Task WhenUpdated_ShouldFlagFieldIndicators(string employerDescription, string employerWebSiteUrl, bool isDisabilityConfident, string[] setFieldIdentifers, string [] unsetFieldIdentifiers)
         {
             _fixture

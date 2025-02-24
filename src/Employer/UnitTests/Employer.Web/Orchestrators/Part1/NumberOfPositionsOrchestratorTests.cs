@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using System.Threading.Tasks;
 using Esfa.Recruit.Employer.UnitTests.Employer.Web.HardMocks;
 using Esfa.Recruit.Employer.Web;
 using Esfa.Recruit.Employer.Web.Orchestrators.Part1;
@@ -9,10 +8,7 @@ using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
-using FluentAssertions;
 using Microsoft.Extensions.Logging;
-using Moq;
-using Xunit;
 
 namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part1
 {
@@ -25,9 +21,8 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part1
             _fixture = new NumberofPositionsOrchestratorTestsFixture();
         }
 
-        [Theory]
-        [InlineData(1, false)]
-        [InlineData(2, true)]
+        [TestCase(1, false)]
+        [TestCase(2, true)]
         public async Task WhenUpdated_ShouldFlagFieldIndicators(int numberOfPositions, bool fieldIndicatorSet)
         {
             _fixture
