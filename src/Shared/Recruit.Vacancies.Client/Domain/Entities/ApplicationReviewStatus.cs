@@ -9,6 +9,8 @@
         InReview,
         Interviewing,
         EmployerInterviewing,
-        EmployerUnsuccessful
+        EmployerUnsuccessful,
+        PendingShared,
+        PendingToMakeUnsuccessful
     }
 }

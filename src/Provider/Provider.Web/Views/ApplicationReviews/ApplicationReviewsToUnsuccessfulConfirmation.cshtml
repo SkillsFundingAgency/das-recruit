@@ -36,6 +36,7 @@
 
         <form method="post" id="provider-applications-to-unsuccessful-confirm-form" asp-route="@RouteNames.ApplicationReviewsToUnsuccessfulConfirmation_Post" asp-route-ukprn="@Model.Ukprn" asp-route-vacancyId="@Model.VacancyId">
             @Html.HiddenFor(model => model.CandidateFeedback)
+            <input asp-for="IsMultipleApplications" type="hidden"/>
             <div esfa-validation-marker-for="ApplicationsToUnsuccessfulConfirmed" class="govuk-form-group">
                 <div class="govuk-form-group" das-highlight-error-for="ApplicationsToUnsuccessful" error-class="govuk-form-group--error" id="provider-applications-to-unsuccessful-confirm-form">
                     <fieldset class="govuk-fieldset">
@@ -49,7 +50,7 @@
                         @for (var i = 0; i < Model.ApplicationsToUnsuccessful.Count(); i++)
                         {
                             <div class="govuk-!-display-none">
-                                @Html.EditorFor(x => x.ApplicationsToUnsuccessful[i])
+                                <input type="hidden" asp-for="ApplicationsToUnsuccessful[i].ApplicationReviewId"/>
                             </div>
                         }
                         <span esfa-validation-message-for="ApplicationsToUnsuccessfulConfirmed" class="govuk-error-message"></span>

@@ -47,7 +47,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Va
         public string DateReviewedText => !string.IsNullOrEmpty(ReviewedDate.ToString()) ? ReviewedDate.AsGdsDate() : "Not reviewed";
         public bool? HasEverBeenEmployerInterviewing { get; set; }
         public long? VacancyReference { get; set; }
-
+        public string CandidateFeedback { get; set; }
         public Guid? ApplicationId { get; set; }
         public static implicit operator VacancyApplication(ApplicationReview applicationReview)
         {
@@ -62,7 +62,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Va
                 Selected = false,
                 DateSharedWithEmployer = applicationReview.DateSharedWithEmployer,
                 ReviewedDate = applicationReview.ReviewedDate,
-                HasEverBeenEmployerInterviewing = applicationReview.HasEverBeenEmployerInterviewing
+                HasEverBeenEmployerInterviewing = applicationReview.HasEverBeenEmployerInterviewing,
+                CandidateFeedback = applicationReview.CandidateFeedback
             };
 
             if (applicationReview.IsWithdrawn == false)
@@ -76,5 +77,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Va
             }
             return projection;
         }
+
+        
     }
 }
