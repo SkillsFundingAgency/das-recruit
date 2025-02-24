@@ -1,0 +1,61 @@
+﻿@using Esfa.Recruit.Provider.Web.ViewModels.Part1.MultipleLocations
+@using Esfa.Recruit.Shared.Web.Domain
+@using Esfa.Recruit.Shared.Web.TagHelpers
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+
+@model Esfa.Recruit.Provider.Web.ViewModels.Part1.Location.AddOneLocationViewModel
+
+@{
+    ViewBag.GaData.Vpv = "/recruitment/provider/page-create-vacancy-location";
+    ViewBag.Title = "Add a location";
+}
+
+@section BackLink {
+    <a asp-route="@RouteNames.MultipleLocations_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Back</a>
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+        <govuk-banner asp-show="@Model.BannerAddress is not null" type="@BannerStyle.Success">
+            <h3 class="govuk-notification-banner__heading">
+                @Model.BannerAddress added.
+            </h3>
+        </govuk-banner>
+        
+        <partial name="@PartialNames.ValidationSummary" model=@(new ValidationSummaryViewModel { ModelState = ViewData.ModelState })/>
+        <partial name="@PartialNames.ReviewSummary" for="Review"/>
+        <form asp-route="@RouteNames.AddOneLocation_Post" asp-all-route-data="@Model.RouteDictionary" asp-route-wizard="@Model.PageInfo.IsWizard">
+
+            <div class="govuk-form-group" id="@nameof(LocationAvailabilityViewModel.SelectedAvailability)">
+                <fieldset class="govuk-fieldset">
+                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
+                        <h1 class="govuk-fieldset__heading govuk-heading-xl">
+                            <span class="govuk-caption-l">@Model.ApprenticeshipTitle</span>
+                            Add a location
+                        </h1>
+                    </legend>
+                    <p class="govuk-body govuk-hint">
+                        Select one location
+                    </p>
+                    <div class="govuk-radios govuk-radios--conditional" data-module="radios" esfa-validation-marker-for="SelectedLocation">
+                        <span esfa-validation-message-for="SelectedLocation" class="govuk-error-message"></span>
+                        <div class="govuk-radios">
+                            <partial asp-show="Model.AvailableLocations is { Count: <= 10 }" name="_AddressesView" model="Model"/>
+                            <partial asp-show="Model.AvailableLocations is { Count: > 10 }" name="_GroupedAddressesView" model="Model"/>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+            
+            <div class="govuk-body">
+                <a asp-route="@RouteNames.AddLocation_Get" asp-all-route-data="@Model.RouteDictionary" asp-route-wizard="@Model.PageInfo.IsWizard" asp-route-origin="@MultipleLocationsJourneyOrigin.One" class="govuk-button govuk-button--secondary">Add a new location</a>
+            </div>
+
+            <div class="govuk-button-group">
+                <button type="submit" class="govuk-button save-button" esfa-automation="continue-button">@Model.PageInfo.SubmitButtonText</button>
+                <a asp-route="@RouteNames.Dashboard_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-cancel" class="govuk-link govuk-link--no-visited-state">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>

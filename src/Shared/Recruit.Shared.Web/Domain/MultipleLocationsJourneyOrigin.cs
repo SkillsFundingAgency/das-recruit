@@ -1,4 +1,4 @@
-﻿namespace Esfa.Recruit.Employer.Web.Domain;
+﻿namespace Esfa.Recruit.Shared.Web.Domain;
 
 public enum MultipleLocationsJourneyOrigin
 {
