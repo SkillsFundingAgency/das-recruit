@@ -111,10 +111,9 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomVali
             {
                 if (!vacancy.StartDate.HasValue)
                 {
-                    var message = $"The start date must have a value.";
-                    var failure = new ValidationFailure(string.Empty, message)
+                    var failure = new ValidationFailure(string.Empty, "The start date must have a value.")
                     {
-                        ErrorCode = ErrorCodes.TrainingExpiryDate,
+                        ErrorCode = ErrorCodes.TrainingExpiryDateMustExist,
                         CustomState = VacancyRuleSet.TrainingExpiryDate,
                         PropertyName = nameof(Vacancy.StartDate)
                     };
