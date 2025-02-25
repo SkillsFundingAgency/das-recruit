@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
+using AutoFixture;
+using AutoFixture.DataAnnotations;
 using AutoFixture.NUnit3;
 using Esfa.Recruit.Employer.Web.TagHelpers;
 using Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview;
@@ -17,18 +19,16 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.TagHelpers
     {
         [Test, MoqAutoData]
         public void Then_If_There_Are_No_Errors_Then_No_Message_Created(
-            [Frozen] Mock<TagHelperContext> context, 
+            [Frozen] Mock<TagHelperContext> context,
             FieldReviewMessageHelper fieldReviewMessageHelper)
         {
             fieldReviewMessageHelper.Model = new VacancyPreviewViewModel
             {
-                Review = new ReviewSummaryViewModel(),
-                HasUserConfirmation = true,
+                Review = new ReviewSummaryViewModel()
             };
-            fieldReviewMessageHelper.Model.HasUserConfirmation = true;
             var tagHelperOutput = new TagHelperOutput("", new TagHelperAttributeList(new List<TagHelperAttribute>()),
                 (b, encoder) => null);
-            
+
             fieldReviewMessageHelper.Process(context.Object, tagHelperOutput);
 
             tagHelperOutput.Content.IsModified.Should().BeFalse();

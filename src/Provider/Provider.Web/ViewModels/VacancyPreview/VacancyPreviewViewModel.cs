@@ -146,8 +146,7 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview
             return Review.FieldIndicators.Any(f => f.ReviewFieldIdentifier == fieldIdentifier);
         }
 
-        [Required(ErrorMessage = "You must confirm that the information is correct before submitting.")]
-        [Range(typeof(bool), "true", "true", ErrorMessage = "You must confirm that the information is correct before submitting.")]
+        [MustBeTrue(ErrorMessage = "You must confirm that the information is correct before submitting.")]
         public bool HasUserConfirmation { get; set; }
 
         public IList<string> OrderedFieldNames => new List<string>
@@ -454,6 +453,18 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview
         NotStarted,
         InProgress,
         Completed
+    }
+
+    public class MustBeTrueAttribute : ValidationAttribute
+    {
+        public override bool IsValid(object value)
+        {
+            if (value is bool boolValue)
+            {
+                return boolValue;
+            }
+            return false;
+        }
     }
 }
 
