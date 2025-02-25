@@ -1,22 +1,15 @@
-﻿using System;
-using System.Security.Claims;
+﻿using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
-using NUnit.Framework;
-using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Controllers.Part1;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using Moq;
 using Esfa.Recruit.Employer.Web.Orchestrators.Part1;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.Wage;
 using Esfa.Recruit.Shared.Web.Orchestrators;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
-using FluentAssertions;
 using Microsoft.AspNetCore.Http;
-using SFA.DAS.Testing.AutoFixture;
-using AutoFixture;
 
 namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Controllers.Part1
 {

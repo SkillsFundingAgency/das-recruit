@@ -63,7 +63,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
                 VacancyId = rm.VacancyId,
                 EmployerAccountId = rm.EmployerAccountId,
                 ApplicationsToUnsuccessful = applicationsToUnsuccessful,
-                Outcome = ApplicationReviewStatus.Unsuccessful
+                Outcome = ApplicationReviewStatus.Unsuccessful,
+                IsMultipleApplications = applicationsToUnsuccessful.Count > 1
             };
         }
 
@@ -78,7 +79,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
                 VacancyId = rm.VacancyId,
                 EmployerAccountId = rm.EmployerAccountId,
                 VacancyApplicationsToUnsuccessful = applicationsToUnsuccessful,
-                CandidateFeedback = applicationsToUnsuccessful.FirstOrDefault()!.CandidateFeedback
+                CandidateFeedback = applicationsToUnsuccessful.FirstOrDefault()!.CandidateFeedback,
+                IsMultipleApplications = applicationsToUnsuccessful.Count > 1
             };
         }
         public async Task PostApplicationReviewsStatus(ApplicationReviewsToUpdateStatusModel request, VacancyUser user, ApplicationReviewStatus? applicationReviewStatus, ApplicationReviewStatus? applicationReviewTemporaryStatus)

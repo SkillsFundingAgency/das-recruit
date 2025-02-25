@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Employer.Web.Configuration;
 using Esfa.Recruit.Employer.UnitTests.Employer.Web.HardMocks;
 using Esfa.Recruit.Employer.Web;
@@ -17,18 +15,14 @@ using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider;
-using FluentAssertions;
 using Microsoft.Extensions.Logging;
-using Moq;
-using Xunit;
 
 namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part1
 {
     public class TrainingProviderOrchestratorTests
     {        
-        [Theory]
-        [InlineData("This search won't match a single provider")]
-        [InlineData("88888")] // will match multiple providers
+        [TestCase("This search won't match a single provider")]
+        [TestCase("88888")] // will match multiple providers
         public async Task PostSelectTrainingProviderAsync_TrainingProviderSearch_WhenNoSingleProviderFoundShouldNotReturnFoundProvider(string trainingProviderSearch)
         {
             var fixture = new TrainingProviderOrchestratorTestsFixture();
@@ -57,7 +51,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part1
             fixture.VerifyNotFoundTrainingProviderUkprn(result);
         }
 
-        [Fact]
+        [Test]
         public async Task PostSelectTrainingProviderAsync_TrainingProviderSearch_WhenSingleProviderFoundShouldReturnFoundProvider()
         {
             var fixture = new TrainingProviderOrchestratorTestsFixture();
@@ -86,7 +80,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part1
             fixture.VerifyFoundTrainingProviderUkprn(result, fixture.TrainingProviderOne.Ukprn.Value);
         }
 
-        [Fact]
+        [Test]
         public async Task PostSelectTrainingProviderAsync_UKPRN_WhenSingleProviderFoundShouldReturnFoundProvider()
         {
             var fixture = new TrainingProviderOrchestratorTestsFixture();
@@ -115,9 +109,8 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part1
             fixture.VerifyFoundTrainingProviderUkprn(result, fixture.TrainingProviderOne.Ukprn.Value);
         }
 
-        [Theory]
-        [InlineData(88888888)]
-        [InlineData(88888889)]
+        [TestCase(88888888)]
+        [TestCase(88888889)]
         public async Task PostConfirmEditModelAsync_ShouldFlagProviderFieldIndicator(long ukprn)
         {
             var fixture = new TrainingProviderOrchestratorTestsFixture();
@@ -145,7 +138,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part1
             fixture.VerifyEmployerReviewFieldIndicators(FieldIdentifiers.Provider, true);
         }
 
-        [Fact]
+        [Test]
         public async Task Then_The_Static_Provider_Is_Returned_For_The_Configured_EmployerAccountId()
         {
             var fixture = new TrainingProviderOrchestratorTestsFixture();
@@ -174,7 +167,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part1
             result.Data.FoundTrainingProviderUkprn.Should().Be(EsfaTestTrainingProvider.Ukprn);
         }
 
-        [Fact]
+        [Test]
         public async Task Then_The_Static_Provider_Is_Not_Returned_For_Non_Configured_EmployerAccountId()
         {
             var fixture = new TrainingProviderOrchestratorTestsFixture();

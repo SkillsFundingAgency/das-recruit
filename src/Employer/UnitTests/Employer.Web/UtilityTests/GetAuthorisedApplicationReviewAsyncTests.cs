@@ -1,13 +1,8 @@
-﻿using System;
-using System.Threading.Tasks;
-using Esfa.Recruit.Employer.Web;
+﻿using Esfa.Recruit.Employer.Web;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
-using FluentAssertions;
-using Moq;
-using Xunit;
 
 namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.UtilityTests
 {
@@ -41,7 +36,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.UtilityTests
             _utility = new Utility(_mockVacancyClient.Object);
         }
 
-        [Fact]
+        [Test]
         public async Task GetAuthorisedApplicationReviewAsync_ShouldAllowForAssociatedEmployerAccountId()
         {
             const string requestedEmployerAccountId = "EMPLOYER ACCOUNT ID";
@@ -57,7 +52,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.UtilityTests
             applicationReview.Should().NotBeNull();
         }
 
-        [Fact]
+        [Test]
         public async Task GetAuthorisedApplicationReviewAsync_ShouldNotAllowForUnassociatedEmployerAccountId()
         {
             const string requestedEmployerAccountId = "WRONG EMPLOYER ACCOUNT ID";
@@ -71,11 +66,13 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.UtilityTests
 
             Func<Task<ApplicationReview>> act = () => _utility.GetAuthorisedApplicationReviewAsync(rm);
 
-                var ex = await Assert.ThrowsAsync<AuthorisationException>(act);
-                ex.Message.Should().Be($"The employer account '{requestedEmployerAccountId}' " +
-                                              $"cannot access employer account '{ApplicationReviewEmployerAccountId}' " +
-                                              $"application '{rm.ApplicationReviewId}' for " +
-                                              $"vacancy '{_vacancyId}'.");
+            var ex = await act.Should()
+                .ThrowAsync<AuthorisationException>()
+                .WithMessage(
+                    $"The employer account '{requestedEmployerAccountId}' " +
+                    $"cannot access employer account '{ApplicationReviewEmployerAccountId}' " +
+                    $"application '{rm.ApplicationReviewId}' for " +
+                    $"vacancy '{_vacancyId}'.");
         }
     }
 }

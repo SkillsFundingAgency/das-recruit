@@ -1,29 +1,25 @@
 ﻿using System.Collections.Generic;
-using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.ViewModels.ApplicationReview;
 using Esfa.Recruit.Shared.Web.ViewModels.Validations.Fluent;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using FluentAssertions;
-using Moq;
-using Xunit;
 
 namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.ApplicationReview
 {
     public class ApplicationReviewEditModelTests
     {
-        protected readonly Mock<IProfanityListProvider> _mockProfanityListProvider;
+        private Mock<IProfanityListProvider> _mockProfanityListProvider;
 
-        public ApplicationReviewEditModelTests()
+        [SetUp]
+        public void Setup()
         {
             _mockProfanityListProvider = new Mock<IProfanityListProvider>();
-
             _mockProfanityListProvider.Setup(x => x.GetProfanityListAsync()).Returns(GetProfanityListAsync());
         }
 
 
-        [Fact]
+        [Test]
         public void ShouldRequireOutcome()
         {
             var m = new ApplicationReviewEditModel
@@ -40,22 +36,15 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.ApplicationRev
             result.Errors[0].ErrorMessage.Should().Be(ApplicationReviewValidator.OutcomeRequired);
         }
 
-        public class ShouldRequireCandidateFeedbackIfUnsuccessfulTestData : TheoryData<string, string>
-        {
-            public ShouldRequireCandidateFeedbackIfUnsuccessfulTestData()
-            {
-                var candidateFeedbackTooLong =
-                    new string('a', ApplicationReviewValidator.CandidateFeedbackMaxLength + 1);
+        private static IEnumerable<object[]> _testCases = [
+            [null, ApplicationReviewValidator.CandidateFeedbackRequired], 
+            ["", ApplicationReviewValidator.CandidateFeedbackRequired],
+            [">", ApplicationReviewValidator.CandidateFeedbackFreeTextCharacters],
+            [null, ApplicationReviewValidator.CandidateFeedbackRequired],
+            [new string('a', ApplicationReviewValidator.CandidateFeedbackMaxLength + 1), string.Format(ApplicationReviewValidator.CandidateFeedbackLength, ApplicationReviewValidator.CandidateFeedbackMaxLength)] 
+        ];
 
-                Add(null, ApplicationReviewValidator.CandidateFeedbackRequired);
-                Add("", ApplicationReviewValidator.CandidateFeedbackRequired);
-                Add(">", ApplicationReviewValidator.CandidateFeedbackFreeTextCharacters);
-                Add(candidateFeedbackTooLong, string.Format(ApplicationReviewValidator.CandidateFeedbackLength, ApplicationReviewValidator.CandidateFeedbackMaxLength));
-            }
-        }
-
-        [Theory]
-        [ClassData(typeof(ShouldRequireCandidateFeedbackIfUnsuccessfulTestData))]
+        [TestCaseSource(nameof(_testCases))]
         public void ShouldRequireCandidateFeedbackIfUnsuccessful(string candidateFeedback, string expectedErrorMessage)
         {
             var m = new ApplicationReviewEditModel
@@ -73,9 +62,8 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.ApplicationRev
             result.Errors[0].ErrorMessage.Should().Be(expectedErrorMessage);
         }
 
-        [Theory]
-        [InlineData(ApplicationReviewStatus.Successful, null)]
-        [InlineData(ApplicationReviewStatus.Unsuccessful, "Some candidate feedback")]        
+        [TestCase(ApplicationReviewStatus.Successful, null)]
+        [TestCase(ApplicationReviewStatus.Unsuccessful, "Some candidate feedback")]        
         public void ShouldBeValid(ApplicationReviewStatus outcome, string feedback)
         {
             var m = new ApplicationReviewEditModel
@@ -90,9 +78,8 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.ApplicationRev
 
             result.IsValid.Should().BeTrue();
         }
-
         
-        [Fact]
+        [Test]
         public void ShouldBeInvalid()
         {
             var m = new ApplicationReviewEditModel {
@@ -107,11 +94,10 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.ApplicationRev
             result.IsValid.Should().BeFalse();
         }
 
-        [Theory]
-        [InlineData(ApplicationReviewStatus.Unsuccessful, "Some candidate feedback bother")]
-        [InlineData(ApplicationReviewStatus.Unsuccessful, "dang Some candidate feedback")]
-        [InlineData(ApplicationReviewStatus.Unsuccessful, "Some candidate balderdash bother")]
-        [InlineData(ApplicationReviewStatus.Unsuccessful, "Some drat feedback bother")]
+        [TestCase(ApplicationReviewStatus.Unsuccessful, "Some candidate feedback bother")]
+        [TestCase(ApplicationReviewStatus.Unsuccessful, "dang Some candidate feedback")]
+        [TestCase(ApplicationReviewStatus.Unsuccessful, "Some candidate balderdash bother")]
+        [TestCase(ApplicationReviewStatus.Unsuccessful, "Some drat feedback bother")]
         public void ShouldBeInvalid_ForProfanityWordsInFeedback(ApplicationReviewStatus outcome, string feedback)
         {
             var m = new ApplicationReviewEditModel
