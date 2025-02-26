@@ -3,18 +3,14 @@ using System.Linq;
 using Esfa.Recruit.Employer.Web.Mappings;
 using Esfa.Recruit.Shared.Web.Mappers;
 using Esfa.Recruit.Shared.Web.RuleTemplates;
-using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
 using Esfa.Recruit.Vacancies.Client.Application.Rules;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using FluentAssertions;
-using Moq;
-using Xunit;
 
 namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Mappings
 {
     public class ReviewFieldIndicatorMapperTests
     {
-        [Fact]
+        [Test]
         public void ShouldMapApprenticeship()
         {
             var shortDescriptionProfanityCheckRuleOutcome =

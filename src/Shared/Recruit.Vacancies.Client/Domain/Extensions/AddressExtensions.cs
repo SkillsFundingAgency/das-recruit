@@ -1,4 +1,6 @@
-﻿using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+﻿using System.Linq;
+using Esfa.Recruit.Vacancies.Client.Application.Rules.Extensions;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
 namespace Esfa.Recruit.Vacancies.Client.Domain.Extensions
 {
@@ -17,6 +19,18 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Extensions
             }
 
             return postcode.Substring(0, postcode.Length - IncodeLength);
+        }
+
+        public static string Flatten(this Address address)
+        {
+            return new[]
+            {
+                address.AddressLine1,
+                address.AddressLine2,
+                address.AddressLine3,
+                address.AddressLine4,
+                address.Postcode
+            }.Where(x => !string.IsNullOrWhiteSpace(x)).ToDelimitedString(", ");
         }
     }
 }

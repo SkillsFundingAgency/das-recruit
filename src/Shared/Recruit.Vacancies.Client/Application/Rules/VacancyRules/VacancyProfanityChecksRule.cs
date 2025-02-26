@@ -6,6 +6,7 @@ using Esfa.Recruit.Vacancies.Client.Application.Rules.BaseRules;
 using Esfa.Recruit.Vacancies.Client.Application.Rules.Engine;
 using Esfa.Recruit.Vacancies.Client.Application.Rules.Extensions;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.Rules.VacancyRules
 {
@@ -27,13 +28,20 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Rules.VacancyRules
             ProfanityList = await _profanityListProvider.GetProfanityListAsync();
 
             var outcomes = new List<RuleOutcome>();
-
             outcomes.AddRange(ProfanityCheckAsync(() => subject.Title));
             outcomes.AddRange(ProfanityCheckAsync(() => subject.ShortDescription));
-            outcomes.AddRange(ProfanityCheckAsync(() => subject.EmployerLocation.AddressLine1));
-            outcomes.AddRange(ProfanityCheckAsync(() => subject.EmployerLocation.AddressLine2));
-            outcomes.AddRange(ProfanityCheckAsync(() => subject.EmployerLocation.AddressLine3));
-            outcomes.AddRange(ProfanityCheckAsync(() => subject.EmployerLocation.AddressLine4));
+            if (subject.EmployerLocation is not null)
+            {
+                outcomes.AddRange(ProfanityCheckAsync(() => subject.EmployerLocation.AddressLine1));
+                outcomes.AddRange(ProfanityCheckAsync(() => subject.EmployerLocation.AddressLine2));
+                outcomes.AddRange(ProfanityCheckAsync(() => subject.EmployerLocation.AddressLine3));
+                outcomes.AddRange(ProfanityCheckAsync(() => subject.EmployerLocation.AddressLine4));
+            }
+            if (subject.EmployerLocations is { Count: > 0 })
+            {
+                outcomes.AddRange(ProfanityCheckAsync(() => subject.EmployerLocations.Select(x => x.Flatten()).ToDelimitedString(", "), "EmployerLocations"));
+            }
+            outcomes.AddRange(ProfanityCheckAsync(() => subject.EmployerLocationInformation));
             outcomes.AddRange(ProfanityCheckAsync(() => subject.Wage.WorkingWeekDescription));
             outcomes.AddRange(ProfanityCheckAsync(() => subject.Wage.WageAdditionalInformation));
             outcomes.AddRange(ProfanityCheckAsync(() => subject.Description));

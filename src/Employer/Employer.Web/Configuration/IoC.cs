@@ -2,6 +2,8 @@
 using Esfa.Recruit.Employer.Web.Filters;
 using Esfa.Recruit.Employer.Web.Interfaces;
 using Esfa.Recruit.Employer.Web.Mappings;
+using Esfa.Recruit.Employer.Web.Models.AddLocation;
+using Esfa.Recruit.Employer.Web.Models.Validators;
 using Esfa.Recruit.Employer.Web.Orchestrators;
 using Esfa.Recruit.Employer.Web.Orchestrators.Part1;
 using Esfa.Recruit.Employer.Web.Orchestrators.Part2;
@@ -10,7 +12,6 @@ using Esfa.Recruit.Employer.Web.Services;
 using Esfa.Recruit.Employer.Web.TagHelpers;
 using Esfa.Recruit.Employer.Web.ViewModels.ApplicationReview;
 using Esfa.Recruit.Employer.Web.ViewModels.ApplicationReviews;
-using Esfa.Recruit.Employer.Web.ViewModels.Part1.AddLocation;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.TrainingProvider;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.Wage;
 using Esfa.Recruit.Employer.Web.ViewModels.Validations;
@@ -76,6 +77,8 @@ namespace Esfa.Recruit.Employer.Web.Configuration
             services.AddTransient<IUtility, Utility>();
             services.AddTransient<IFieldReviewHelper, FieldReviewHelper>();
             services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
+            services.AddSingleton<IReviewFieldIndicatorService, ReviewFieldIndicatorService>();
+            services.AddSingleton<IVacancyLocationService, VacancyLocationService>();
         }
 
         private static void RegisterFluentValidators(IServiceCollection services)
@@ -90,6 +93,7 @@ namespace Esfa.Recruit.Employer.Web.Configuration
             services.AddSingleton<IValidator<ApplicationReviewsFeedbackViewModel>, ApplicationReviewsFeedbackModelValidator>();
             services.AddSingleton<IValidator<ApplicationReviewsToUnsuccessfulConfirmationViewModel>, ApplicationReviewsToUnsuccessfulConfirmationViewModelValidator>();
             services.AddSingleton<IValidator<AddLocationEditModel>, AddLocationEditModelValidator>();
+            services.AddSingleton<IValidator<EnterLocationManuallyEditModel>, EnterLocationManuallyEditModelValidator>();
         }
 
         private static void RegisterOrchestratorDeps(IServiceCollection services)
@@ -136,7 +140,6 @@ namespace Esfa.Recruit.Employer.Web.Configuration
             services.AddTransient<VacancyTaskListOrchestrator>();
             services.AddTransient<IFutureProspectsOrchestrator, FutureProspectsOrchestrator>();
             services.AddTransient<IAdditionalQuestionsOrchestrator, AdditionalQuestionsOrchestrator>();
-            services.AddTransient<IMultipleLocationsOrchestrator, MultipleLocationsOrchestrator>();
         }
 
         private static void RegisterMapperDeps(IServiceCollection services)

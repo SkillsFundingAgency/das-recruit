@@ -8,5 +8,7 @@ public class AddMoreThanOneLocationViewModel : AddMoreThanOneLocationEditModel
 {
     public string ApprenticeshipTitle { get; init; }
     public List<Address> AvailableLocations { get; set; } = [];
+    public string BannerAddress { get; set; }
     public PartOnePageInfoViewModel PageInfo { get; init; }
+    public ReviewSummaryViewModel Review { get; set; } = new ();
 }

@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using System.Threading.Tasks;
 using Esfa.Recruit.Employer.UnitTests.Employer.Web.HardMocks;
 using Esfa.Recruit.Employer.Web;
 using Esfa.Recruit.Employer.Web.Orchestrators.Part1;
@@ -10,10 +9,7 @@ using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
-using FluentAssertions;
 using Microsoft.Extensions.Logging;
-using Moq;
-using Xunit;
 
 namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part1
 {
@@ -21,14 +17,15 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part1
     {
         private CustomWageOrchestratorTestsFixture _fixture;
 
-        public CustomWageOrchestratorTests()
+        [SetUp]
+        public void Setup()
         {
             _fixture = new CustomWageOrchestratorTestsFixture();
         }
 
-        [Theory]
-        [InlineData(11000, true)]
-        [InlineData(10000, false)]
+
+        [TestCase(11000, true)]
+        [TestCase(10000, false)]
         public async Task WhenUpdated_ShouldFlagFieldIndicators(decimal fixedWageYearlyAmount, bool fieldIndicatorSet)
         {
             _fixture

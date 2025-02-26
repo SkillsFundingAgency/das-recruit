@@ -1,17 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.Duration;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using FluentAssertions;
-using Xunit;
 using ErrMsg = Esfa.Recruit.Shared.Web.ViewModels.ValidationMessages.DurationValidationMessages;
 
 namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.Part1.Duration
 {
     public class DurationEditModelTests
     {
-        [Fact]
+        [Test]
         public void Duration_ShouldErrorIfInvalid()
         {
             var m = GetDurationEditModel();
@@ -27,7 +24,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.ViewModels.Part1.Duration
             result[0].ErrorMessage.Should().Be(ErrMsg.TypeOfInteger.Duration);
         }
 
-        [Fact]
+        [Test]
         public void WeeklyHours_ShouldErrorIfInvalid()
         {
             var m = GetDurationEditModel();

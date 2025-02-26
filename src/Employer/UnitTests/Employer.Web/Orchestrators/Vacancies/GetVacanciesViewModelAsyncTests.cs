@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Orchestrators;
 using Esfa.Recruit.Employer.Web.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
@@ -9,9 +7,6 @@ using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Employer;
-using FluentAssertions;
-using Moq;
-using Xunit;
 
 namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Vacancies
 {
@@ -19,7 +14,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Vacancies
     {
         const string EmployerAccountId = "ABCDE";
 
-        [Fact]
+        [Test]
         public async Task WhenHaveOver25Vacancies_ShouldShowPager()
         {
             var vacancies = new List<VacancySummary>();
@@ -46,7 +41,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Vacancies
             vm.Vacancies[1].Title.Should().Be("27");
         }
 
-        [Fact]
+        [Test]
         public async Task WhenHave25OrUnderVacancies_ShouldNotShowPager()
         {
             var vacancies = new List<VacancySummary>();
@@ -69,7 +64,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Vacancies
             vm.Vacancies.Count.Should().Be(25);
         }
 
-        [Fact]
+        [Test]
         public async Task WhenFilterOptionsNewSharedApplications_ShouldHaveHasSharedApplicationsTrueForAllVacanciesAndShowSharedApplicationsCounts()
         {
             var filterOption = FilteringOptions.NewSharedApplications;
@@ -98,7 +93,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Vacancies
             vm.ShowNewApplicationCounts.Should().BeFalse();
         }
 
-        [Fact]
+        [Test]
         public async Task WhenFilterOptionsAllApplications_ShouldHaveHasNew_Closed_ApplicationsAndShowApplicationsCounts()
         {
             const FilteringOptions filterOption = FilteringOptions.AllApplications;
@@ -143,7 +138,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Vacancies
             vm.ShowNewApplicationCounts.Should().BeTrue();
         }
 
-        [Fact]
+        [Test]
         public async Task WhenFilterOptionsNewApplications_ShouldHaveNoSharedApplicationsAndSharedApplicationCountsNotToShow()
         {
             var filterOption = FilteringOptions.NewApplications;
