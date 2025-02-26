@@ -1,9 +1,9 @@
 using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
 using FluentAssertions;
 using SFA.DAS.Recruit.Api.Controllers;
-using Xunit;
 using Moq;
 using MediatR;
 using SFA.DAS.Recruit.Api.Queries;
@@ -103,6 +103,36 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Controllers
             var actualResult = actual.Value as long?;
             Assert.That(actualResult, Is.Not.Null);
             actualResult.Value.Should().Be((long)response.Data);
+        }
+
+        [Test]
+        [MoqInlineAutoData("EmployerLocation", "Address")]
+        [MoqInlineAutoData("EmployerLocations", "Addresses")]
+        public async Task Create_Maps_Error_Fields(
+            string fieldName,
+            string expectedFieldName,
+            Guid id,
+            long vacancyRef,
+            string userEmail,
+            long ukprn,
+            CreateVacancyRequest request,
+            CreateVacancyCommandResponse response,
+            [Frozen] Mock<IMediator> mediator,
+            [Greedy] VacanciesController controller)
+        {
+            // arrange
+            mediator.Setup(x => x.Send(It.IsAny<CreateVacancyCommand>(), CancellationToken.None)).ReturnsAsync(response);
+            response.ResultCode = ResponseCode.InvalidRequest;
+            response.ValidationErrors = [new DetailedValidationError { Field = fieldName, Message = "Validation message" }];
+            var expected = new { Errors = new List<object> { new DetailedValidationError { Field = expectedFieldName, Message = "Validation message" } } };
+            
+            // act
+            var actual = await controller.Create(id, request, userEmail, ukprn) as BadRequestObjectResult;
+            
+            // assert
+            actual.Should().NotBeNull();
+            actual!.Value.Should().NotBeNull();
+            actual.Value.Should().BeEquivalentTo(expected);
         }
     }
 }
