@@ -3,6 +3,7 @@ using System.Linq;
 using System.Reflection;
 using System.Security.Authentication;
 using System.Threading.Tasks;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Exceptions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -36,6 +37,38 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo
 
             if(missingCollections.Any())
                 throw new InfrastructureException($"Expected that collection(s): '{string.Join(", ", missingCollections)}' would already be created.");
+        }
+
+        public void CreateIndexes()
+        {
+            var db = GetMongoDatabase();
+            db.GetCollection<Vacancy>(MongoDbCollectionNames.Vacancies).Indexes.CreateMany(new []
+                {
+                    new CreateIndexModel<Vacancy>(
+                        Builders<Vacancy>.IndexKeys
+                            .Ascending(d => d.TrainingProvider.Ukprn)
+                            .Ascending(d => d.OwnerType)
+                            .Ascending(d => d.Status)
+                            .Ascending(d => d.IsDeleted)
+                        ),
+                    new CreateIndexModel<Vacancy>(
+                        Builders<Vacancy>.IndexKeys
+                            .Ascending(d => d.EmployerAccountId)
+                            .Ascending(d => d.OwnerType)
+                            .Ascending(d => d.Status)
+                            .Ascending(d => d.IsDeleted)
+                    ),
+                    new CreateIndexModel<Vacancy>(
+                        Builders<Vacancy>.IndexKeys
+                            .Descending(d => d.CreatedDate)
+                    )
+                });
+            db.GetCollection<ApplicationReview>(MongoDbCollectionNames.ApplicationReviews).Indexes.CreateMany(new []
+            {
+                new CreateIndexModel<ApplicationReview>(Builders<ApplicationReview>.IndexKeys.Ascending(d => d.VacancyReference)),
+                new CreateIndexModel<ApplicationReview>(Builders<ApplicationReview>.IndexKeys.Ascending(d => d.Status))
+            });
+            
         }
 
         private List<string> GetExpectedCollectionNames()
