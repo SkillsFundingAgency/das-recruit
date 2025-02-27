@@ -2,11 +2,12 @@ using System;
 
 namespace SFA.DAS.Recruit.Api.Models;
 
-public class ApplicantSummary
+public record SuccessfulApplicant
 {
-    public Guid ApplicantId { get; set; }
+    public long? VacancyReference { get; set; }
+    public Guid ApplicationReviewId { get; set; }
     public string FirstName { get; set; }
     public string LastName { get; set; }
     public DateTime DateOfBirth { get; set; }
-    public string ApplicationStatus { get; set; }
+    public Guid CandidateId { get; set; }
 }
