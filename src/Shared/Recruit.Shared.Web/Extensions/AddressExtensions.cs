@@ -62,7 +62,7 @@ namespace Esfa.Recruit.Shared.Web.Extensions
             return addresses?
                 .Select(x => new KeyValuePair<string, Address>(GetLastNonEmptyField(x), x))
                 .Where(x => !string.IsNullOrEmpty(x.Key))
-                .GroupBy(x => x.Key)
+                .GroupBy(x => x.Key, StringComparer.InvariantCultureIgnoreCase)
                 .OrderBy(x => x.Key);
         }
         
