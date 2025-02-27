@@ -177,7 +177,7 @@
                                 Responsibilities
                             </dt>
                             <dd class="govuk-summary-list__value">
-                                <p>@job.Description</p>
+                                <p class="faa-user-content">@job.Description</p>
                             </dd>
                         </div>
                         <!-- List item -->
@@ -217,7 +217,7 @@
                                 Responsibilities
                             </dt>
                             <dd class="govuk-summary-list__value">
-                                <p>@workExperience.Description</p>
+                                <p class="faa-user-content">@workExperience.Description</p>
                             </dd>
                         </div>
                         <!-- List item -->
@@ -238,18 +238,18 @@
 
         <h2 class="govuk-heading-m">Application questions</h2>
         <h3 class="govuk-heading-s govuk-!-margin-bottom-2">What are your skills and strengths?</h3>
-        <p>@Model.Strengths</p>
+        <p class="faa-user-content">@Model.Strengths</p>
         <h3 class="govuk-heading-s govuk-!-margin-bottom-2">What interests you about this apprenticeship?</h3>
-        <p>@Model.WhatIsYourInterest</p>
+        <p class="faa-user-content">@Model.WhatIsYourInterest</p>
         @if (!string.IsNullOrEmpty(Model.AdditionalQuestion1))
         {
             <h3 class="govuk-heading-s govuk-!-margin-bottom-2">@Model.AdditionalQuestion1</h3>
-            <p>@Model.AdditionalAnswer1</p>    
+            <p class="faa-user-content">@Model.AdditionalAnswer1</p>
         }
         @if (!string.IsNullOrEmpty(Model.AdditionalQuestion2))
         {
             <h3 class="govuk-heading-s govuk-!-margin-bottom-2">@Model.AdditionalQuestion2</h3>
-            <p>@Model.AdditionalAnswer2</p>    
+            <p class="faa-user-content">@Model.AdditionalAnswer2</p>
         }
 
         <hr class="govuk-section-break govuk-section-break--visible govuk-section-break--xl" />
