@@ -44,11 +44,24 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo
             var db = GetMongoDatabase();
             db.GetCollection<Vacancy>(MongoDbCollectionNames.Vacancies).Indexes.CreateMany(new []
                 {
-                    new CreateIndexModel<Vacancy>(Builders<Vacancy>.IndexKeys.Ascending(d => d.TrainingProvider.Ukprn)),
-                    new CreateIndexModel<Vacancy>(Builders<Vacancy>.IndexKeys.Ascending(d => d.EmployerAccountId)),
-                    new CreateIndexModel<Vacancy>(Builders<Vacancy>.IndexKeys.Ascending(d => d.OwnerType)),
-                    new CreateIndexModel<Vacancy>(Builders<Vacancy>.IndexKeys.Ascending(d => d.Status)),
-                    new CreateIndexModel<Vacancy>(Builders<Vacancy>.IndexKeys.Ascending(d => d.IsDeleted)),
+                    new CreateIndexModel<Vacancy>(
+                        Builders<Vacancy>.IndexKeys
+                            .Ascending(d => d.TrainingProvider.Ukprn)
+                            .Ascending(d => d.OwnerType)
+                            .Ascending(d => d.Status)
+                            .Ascending(d => d.IsDeleted)
+                        ),
+                    new CreateIndexModel<Vacancy>(
+                        Builders<Vacancy>.IndexKeys
+                            .Ascending(d => d.EmployerAccountId)
+                            .Ascending(d => d.OwnerType)
+                            .Ascending(d => d.Status)
+                            .Ascending(d => d.IsDeleted)
+                    ),
+                    new CreateIndexModel<Vacancy>(
+                        Builders<Vacancy>.IndexKeys
+                            .Descending(d => d.CreatedDate)
+                    )
                 });
             db.GetCollection<ApplicationReview>(MongoDbCollectionNames.ApplicationReviews).Indexes.CreateMany(new []
             {
