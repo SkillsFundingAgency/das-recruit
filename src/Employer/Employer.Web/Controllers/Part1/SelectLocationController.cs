@@ -22,6 +22,7 @@ public class SelectLocationController(IUtility utility) : Controller
     [HttpGet("select-location", Name = RouteNames.SelectAnAddress_Get)]
     public async Task<IActionResult> SelectLocation([FromServices] IGetAddressesClient getAddressesClient, AddLocationJourneyModel model)
     {
+        ModelState.ThrowIfBindingErrors();
         TempData[TempDataKeys.AddLocationReturnPath] = RouteNames.SelectAnAddress_Get;
         string postcode = TempData.Peek(TempDataKeys.Postcode) as string;
         if (string.IsNullOrEmpty(postcode))
