@@ -9,8 +9,11 @@
   <a asp-route="@RouteNames.ProviderCheckYourAnswersGet" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Back to check your answers</a>
 }
 
+<partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState}' />
+
+<h1 class="govuk-heading-xl">Preview your vacancy</h1>
+
 <div class="govuk-grid-column-two-thirds-from-desktop">
-    <h1 class="govuk-heading-xl">Preview your vacancy</h1>
     <div class="govuk-inset-text">
         Proofread your vacancy before submitting. We might reject your vacancy if it has spelling or formatting errors.
     </div>
@@ -25,6 +28,7 @@
         <div class="govuk-form-group @(ViewData.ModelState.ContainsKey("HasUserConfirmation") ? "govuk-form-group--error" : "")">
         <fieldset class="govuk-fieldset">
             <div class="govuk-checkboxes">
+                <span asp-validation-for="HasUserConfirmation" class="govuk-error-message"></span>
                 <div class="govuk-checkboxes__item">
                     <input asp-for="HasUserConfirmation" class="govuk-checkboxes__input" type="checkbox">
                     <label asp-for="HasUserConfirmation" class="govuk-label govuk-checkboxes__label">

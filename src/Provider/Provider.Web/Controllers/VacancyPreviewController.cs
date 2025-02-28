@@ -42,16 +42,17 @@ namespace Esfa.Recruit.Provider.Web.Controllers
             return View(viewModel);
         }
 
-        [HttpPost("preview", Name = RouteNames.Preview_Submit_Post)]
+        [HttpPost("advert-preview", Name = RouteNames.Preview_Submit_Post)]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public async Task<IActionResult> Submit(SubmitEditModel m)
         {
+            var viewModel = await _orchestrator.GetVacancyPreviewViewModelAsync(m);
+
             if (!ModelState.IsValid)
             {
-                var viewModel1 = await _orchestrator.GetVacancyPreviewViewModelAsync(m);
-                viewModel1.SoftValidationErrors = null;
-                viewModel1.SetSectionStates(viewModel1, ModelState);
-                return View("AdvertPreview", viewModel1);
+                viewModel.SoftValidationErrors = null;
+                viewModel.SetSectionStates(viewModel, ModelState);
+                return View("AdvertPreview", viewModel);
             }
 
             var response = await _orchestrator.SubmitVacancyAsync(m, User.ToVacancyUser());
@@ -80,8 +81,6 @@ namespace Esfa.Recruit.Provider.Web.Controllers
 
             if(response.Errors.Errors.Any(e => e.ErrorCode == ErrorCodes.TrainingProviderMustHaveEmployerPermission))
                 throw new MissingPermissionsException(string.Format(RecruitWebExceptionMessages.ProviderMissingPermission, m.Ukprn));
-
-            var viewModel = await _orchestrator.GetVacancyPreviewViewModelAsync(m);
 
             viewModel.SoftValidationErrors = null;
             viewModel.SetSectionStates(viewModel, ModelState);
