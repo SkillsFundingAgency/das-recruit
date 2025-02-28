@@ -595,3 +595,7 @@ span.govuk-error-message:empty {
   padding:20px;
   margin-bottom:30px;
 }
+
+.faa-user-content {
+    white-space: pre-line;
+}
