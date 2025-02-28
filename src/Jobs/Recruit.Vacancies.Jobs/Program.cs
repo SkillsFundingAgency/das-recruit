@@ -116,6 +116,7 @@ namespace Esfa.Recruit.Vacancies.Jobs
             {
                 var collectionChecker = (MongoDbCollectionChecker)serviceProvider.GetService(typeof(MongoDbCollectionChecker));
                 collectionChecker.EnsureCollectionsExist();
+                collectionChecker.CreateIndexes();
                 var storageTableChecker = (QueryStoreTableChecker)serviceProvider.GetService(typeof(QueryStoreTableChecker));
                 storageTableChecker.EnsureQueryStoreTableExist();
             }
