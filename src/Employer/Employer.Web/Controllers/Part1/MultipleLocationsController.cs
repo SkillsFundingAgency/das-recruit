@@ -31,6 +31,7 @@ public class MultipleLocationsController : Controller
         VacancyRouteModel vacancyRouteModel,
         [FromQuery] bool wizard = true)
     {
+        ModelState.ThrowIfBindingErrors();
         var viewModel = await GetLocationAvailabilityViewModel(utility, reviewSummaryService, vacancyRouteModel, null, wizard);
         return View(viewModel);
     }
@@ -87,6 +88,7 @@ public class MultipleLocationsController : Controller
         VacancyRouteModel model,
         [FromQuery] bool wizard)
     {
+        ModelState.ThrowIfBindingErrors();
         var vacancy = await utility.GetAuthorisedVacancyForEditAsync(model, RouteNames.AddMoreThanOneLocation_Get);
         var allLocations = await vacancyLocationService.GetVacancyLocations(vacancy);
 
@@ -186,6 +188,7 @@ public class MultipleLocationsController : Controller
         VacancyRouteModel vacancyRouteModel,
         [FromQuery] bool wizard)
     {
+        ModelState.ThrowIfBindingErrors();
         var vacancy = await utility.GetAuthorisedVacancyForEditAsync(vacancyRouteModel, RouteNames.MultipleLocations_Get);
         var viewModel = new ConfirmLocationsViewModel
         {
