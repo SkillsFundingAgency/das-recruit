@@ -1,37 +1,74 @@
 ﻿@using Microsoft.Extensions.Options
 @model Esfa.Recruit.Employer.Web.RouteModel.VacancyRouteModel
-@inject IOptions<ExternalLinksConfiguration> _externalLinks
+@inject IOptions<ExternalLinksConfiguration> ExternalLinks
+@inject SFA.DAS.Employer.Shared.UI.UrlBuilder LinkGenerator
+
 @{
     ViewBag.ZenDeskLabel = "recruit-recruitment";
 }
 
-
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         <h1 class="govuk-heading-xl">Create an advert</h1>
-        <p class="govuk-body-l">
-            Recruit an apprentice by creating an advert to post on
-            <a href="@_externalLinks.Value.FindAnApprenticeshipUrl" class="govuk-link govuk-link--no-visited-state" target="_blank">Find an apprenticeship (opens in a new tab)</a>.
+        <p class="govuk-body">
+            Advertise an apprenticeship on
+            <a href="@ExternalLinks.Value.FindAnApprenticeshipUrl" class="govuk-link govuk-link--no-visited-state" target="_blank">Find an apprenticeship (opens in a new tab)</a>.
         </p>
-        <h2 class="govuk-heading-m">Before you start:</h2>
-        <p class="govuk-body">Before you create an advert, you'll need to know:</p>
+        <p class="govuk-body">
+            You can accept applications through our service or add a link to your own website.
+        </p>
+
+        <p class="govuk-inset-text">
+            You can only use this service to advertise apprenticeships in England. There’s different services for
+            <a href="@ExternalLinks.Value.FindAnApprenticeshipScotlandUrl" class="govuk-link" target="_blank">Scotland</a>,
+            <a href="@ExternalLinks.Value.FindAnApprenticeshipWalesUrl" class="govuk-link" target="_blank">Wales</a> and
+            <a href="@ExternalLinks.Value.FindAnApprenticeshipNorthernIrelandUrl" class="govuk-link" target="_blank">Northern Ireland</a>.
+        </p>
+        
+        <h2 class="govuk-heading-m">Before you start</h2>
+        
+        <p class="govuk-body">To create an advert, you’ll need to know:</p>
         <ul class="govuk-list govuk-list--bullet">
             <li>
-                the name of the apprenticeship training course and training provider - if you haven’t found training yet, use <a href="@_externalLinks.Value.FindApprenticeshipTrainingUrl" class="govuk-link govuk-link--no-visited-state" target="_blank">Find apprenticeship training for your apprentice (opens in new tab)</a>
+                the training course and provider (if you have not found training yet, you can
+                <a href="@ExternalLinks.Value.FindApprenticeshipTrainingUrl" class="govuk-link">find apprenticeship training</a>)
             </li>
-            <li>
-                the duration of the apprenticeship
-            </li>
-            <li>
-                the number of hours spent working and training
-            </li>
-            <li>
-                how much your apprentice will be paid
-            </li>
+            <li>the pay </li>
+            <li>how long the apprenticeship will be </li>
+            <li>the work and training hours</li>
         </ul>
-        <div class="govuk-inset-text">You can use our <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.EmployerRecruitmentApi" asp-route-employerAccountId="@Model.EmployerAccountId" target="_blank">recruitment Application Programming Interfaces (APIs)</a> to create adverts using your existing systems or display adverts from Find an apprenticeship on your websites.</div>
-
-        <a asp-route="@RouteNames.EmployerTaskListCreateGet" asp-route-employerAccountId="@Model.EmployerAccountId" role="button" class="govuk-button govuk-button--start" esfa-automation="create-vacancy">Start now</a>
         
+        <p class="govuk-body">
+            If you do not pay the apprenticeship levy, you should
+            
+            @* // TODO: comment in once the package has been upgraded *@
+            @* <a href="@LinkGenerator.ReservationsLink("Dashboard", Model.EmployerAccountId)" class="govuk-link">reserve funding for the apprenticeship</a> *@
+            before creating an advert.
+        </p>
+
+        <a asp-route="@RouteNames.EmployerTaskListCreateGet" asp-route-employerAccountId="@Model.EmployerAccountId" role="button" class="govuk-button govuk-button--start govuk-!-margin-bottom-8 govuk-!-margin-top-2" esfa-automation="create-vacancy">
+            Start now
+            <svg class="govuk-button__start-icon" xmlns="http://www.w3.org/2000/svg" width="17.5" height="19" viewBox="0 0 33 40" aria-hidden="true" focusable="false">
+                <path fill="currentColor" d="M0 0h13l20 20-20 20H0l20-20z"></path>
+            </svg>
+        </a>
+
+        <h2 class="govuk-heading-m govuk-!-padding-bottom-5">Other ways to create adverts for Find an apprenticeship</h2>
+
+        <h3 class="govuk-heading-s govuk-!-margin-bottom-2">Work with a training provider</h3>
+        <p class="govuk-body">
+            You can give permission to your training provider to make adverts for you. You’ll be able to review adverts your provider makes before they go live.
+        </p>
+        <p class="govuk-body govuk-!-padding-bottom-3">
+            <a asp-route="@RouteNames.YourTrainingProviderPermission" asp-route-employerAccountId="@Model.EmployerAccountId" class="govuk-link">Manage training provider permissions</a>
+        </p>
+        
+        <h3 class="govuk-heading-s govuk-!-margin-bottom-2">Use the recruitment APIs</h3>
+        <p class="govuk-body">
+            If you have technical knowledge, you can use your own system to submit adverts to Find on apprenticeship.
+        </p>
+        <p class="govuk-body">
+            <a asp-route="@RouteNames.EmployerRecruitmentApi" asp-route-employerAccountId="@Model.EmployerAccountId" class="govuk-link">Get started with the recruitment APIs</a>
+        </p>
     </div>
 </div>

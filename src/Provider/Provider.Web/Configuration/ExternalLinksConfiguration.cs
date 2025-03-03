@@ -8,5 +8,8 @@ namespace Esfa.Recruit.Provider.Web.Configuration
         public string ProviderRecruitmentApiUrl { get; set; }
         public string SignProviderAgreementUrl { get; set; }
         public string FindATraineeshipUrl { get; set; }
+        public string FindAnApprenticeshipScotlandUrl { get; set; }
+        public string FindAnApprenticeshipWalesUrl { get; set; }
+        public string FindAnApprenticeshipNorthernIrelandUrl { get; set; }
     }
 }

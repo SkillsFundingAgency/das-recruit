@@ -8,6 +8,7 @@
     var accounts = JsonConvert.DeserializeObject<Dictionary<string, EmployerIdentifier>>(
         User.Claims.FirstOrDefault(c => c.Type.Equals(EmployerRecruitClaims.AccountsClaimsTypeIdentifier))?.Value)
         .Select(c => c.Value)
+        .OrderBy(x => x.EmployerName)
         .ToList();
 }
 
