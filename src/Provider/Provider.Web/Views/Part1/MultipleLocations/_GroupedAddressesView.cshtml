@@ -6,22 +6,32 @@
     foreach (var group in groupedLocations)
     {
         <h3 class="govuk-heading-s govuk-!-padding-top-3">@group.Key</h3>
-        foreach (var location in group.Select(x => x.Value))
-        {
-            var address = location.ToAddressString();
-            var controlId = $"selectedLocation_{index++}";
-            <div class="govuk-checkboxes__item">
-                <input
-                    id="@controlId"
-                    class="govuk-checkboxes__input"
-                    name="@nameof(Model.SelectedLocations)"
-                    value="@address"
-                    type="checkbox"
-                    checked="@(Model.SelectedLocations?.Contains(address) ?? false)">
-                <label for="@controlId" class="govuk-label govuk-checkboxes__label">
-                    <address value="@location" flat="true" />
-                </label>
+        <details class="govuk-details">
+            <summary class="govuk-details__summary">
+                <span class="govuk-details__summary-text">
+                    @group.Key locations (@group.Count().ToString())
+                </span>
+            </summary>
+            <div class="govuk-details__text">
+                Select locations that apply in this city<br /><br />
+                @foreach (var location in group.Select(x => x.Value))
+                {
+                    var address = location.ToAddressString();
+                    var controlId = $"selectedLocation_{index++}";
+                    <div class="govuk-checkboxes__item">
+                        <input
+                            id="@controlId"
+                            class="govuk-checkboxes__input"
+                            name="@nameof(Model.SelectedLocations)"
+                            value="@address"
+                            type="checkbox"
+                            checked="@(Model.SelectedLocations?.Contains(address) ?? false)">
+                        <label for="@controlId" class="govuk-label govuk-checkboxes__label">
+                            <address value="@location" flat="true" />
+                        </label>
+                    </div>
+                }   
             </div>
-        }                                                  
+        </details>
     }
 }
