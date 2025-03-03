@@ -13,7 +13,9 @@
                 </span>
             </summary>
             <div class="govuk-details__text">
-                Select locations that apply in this city<br /><br />
+                <legend class="govuk-fieldset__legend">
+                    Select locations that apply in this city
+                </legend>
                 @foreach (var location in group.Select(x => x.Value))
                 {
                     var address = location.ToAddressString();
