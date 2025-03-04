@@ -329,6 +329,11 @@
           },
           "logAnalyticsWorkspaceResourceGroupName": {
             "value": "[parameters('sharedManagementResourceGroup')]"
+          },
+          "capabilities": {
+            "value": [
+              { "name": "EnableUniqueCompoundNestedDocs" }
+            ]
           }
         }
       },
