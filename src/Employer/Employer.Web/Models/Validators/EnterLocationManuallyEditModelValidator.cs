@@ -1,5 +1,4 @@
 ﻿using Esfa.Recruit.Employer.Web.Models.AddLocation;
-using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent;
 using FluentValidation;
 
@@ -10,7 +9,7 @@ public class EnterLocationManuallyEditModelValidator : AbstractValidator<EnterLo
     private const int MaxLineLength = 100;
     private const int MaxPostcodeLength = 8;
     
-    public EnterLocationManuallyEditModelValidator(IProfanityListProvider profanityListProvider)
+    public EnterLocationManuallyEditModelValidator()
     {
         RuleFor(x => x.AddressLine1)
             .NotNull()

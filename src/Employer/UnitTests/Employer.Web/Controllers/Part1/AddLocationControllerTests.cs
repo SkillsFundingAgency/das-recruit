@@ -52,7 +52,7 @@ public class AddLocationControllerTests
         [Greedy] AddLocationController sut)
     {
         // arrange
-        locationsService.Setup(x => x.IsPostcodeEnglish(addLocationModel.Postcode)).ReturnsAsync(true);
+        locationsService.Setup(x => x.IsPostcodeInEnglandAsync(addLocationModel.Postcode)).ReturnsAsync(true);
         getAddressesClient.Setup(x => x.GetAddresses(It.IsAny<string>())).ReturnsAsync(getAddressesListResponse);
         sut.AddControllerContext().WithTempData();
         
@@ -75,7 +75,7 @@ public class AddLocationControllerTests
         // arrange
         addLocationEditModel.Origin = MultipleLocationsJourneyOrigin.Many;
         getAddressesClient.Setup(x => x.GetAddresses(It.IsAny<string>())).ReturnsAsync((GetAddressesListResponse)null);
-        locationsService.Setup(x => x.IsPostcodeEnglish(addLocationEditModel.Postcode)).ReturnsAsync(false);
+        locationsService.Setup(x => x.IsPostcodeInEnglandAsync(addLocationEditModel.Postcode)).ReturnsAsync(false);
         
         // act
         var result = (await sut.AddLocation(locationsService.Object, getAddressesClient.Object, addLocationEditModel) as ViewResult)?.Model as AddLocationViewModel;
