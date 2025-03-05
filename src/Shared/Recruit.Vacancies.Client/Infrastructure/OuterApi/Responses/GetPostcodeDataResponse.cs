@@ -1,3 +1,3 @@
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Responses;
 
-public record GetPostcodeInfoResponse(string Name, string Country);
+public record GetPostcodeDataResponse(string Name, string Country);

@@ -29,7 +29,7 @@
     <PackageReference Include="NWebsec.AspNetCore.Mvc.TagHelpers" Version="3.0.0" />
     <PackageReference Include="SFA.DAS.Configuration.AzureTableStorage" Version="17.1.113" />
     <PackageReference Include="SFA.DAS.Employer.Shared.UI" Version="17.1.133" />
-    <PackageReference Include="SFA.DAS.GovUK.Auth" Version="17.1.130" />
+    <PackageReference Include="SFA.DAS.GovUK.Auth" Version="17.1.119" />
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.22.0" />
     <PackageReference Include="StackExchange.Redis" Version="2.8.16" />
     <PackageReference Include="System.Formats.Asn1" Version="8.0.1" />

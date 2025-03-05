@@ -18,4 +18,20 @@ public static class ModelStateDictionaryExtensions
             modelState.AddModelError(propertyName, error.ErrorMessage);
         }
     }
+    
+    public static void AddValidationErrors(this ModelStateDictionary modelState, EntityValidationResult validationResult, Dictionary<string, Tuple<string, string>> validationMappings = null)
+    {
+        ArgumentNullException.ThrowIfNull(modelState);
+        ArgumentNullException.ThrowIfNull(validationResult);
+
+        foreach (var error in validationResult.Errors)
+        {
+            Tuple<string, string> mapping = null; 
+            if (!validationMappings?.TryGetValue(error.PropertyName, out mapping) ?? false)
+            {
+                validationMappings.TryGetValue(error.ErrorCode, out mapping);
+            }
+            modelState.AddModelError(mapping?.Item1 ?? error.PropertyName, mapping?.Item2 ?? error.ErrorMessage);
+        }
+    }
 }
