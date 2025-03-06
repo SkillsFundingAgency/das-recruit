@@ -160,7 +160,7 @@ public class MultipleLocationsController : Controller
             return RedirectToRoute(RouteNames.MultipleLocationsConfirm_Get, new { editModel.VacancyId, editModel.EmployerAccountId, wizard } );
         }
 
-        ModelState.AddValidationErrors(result.ValidationResult, ValidationMappings);
+        ModelState.AddValidationErrorsWithMappings(result.ValidationResult, ValidationMappings);
         var viewModel = new AddMoreThanOneLocationViewModel
         {
             ApprenticeshipTitle = vacancy.Title,

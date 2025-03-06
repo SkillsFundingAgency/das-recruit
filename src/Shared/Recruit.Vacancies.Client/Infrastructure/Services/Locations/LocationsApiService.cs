@@ -20,7 +20,8 @@ public class LocationsService(ILocationsClient locationsClient) : ILocationsServ
         return result switch
         {
             null => null,
-            { Country: "England" } => true,
+            { Result: null } => null,
+            { Result.Country: "England" } => true,
             _ => false
         };
     }

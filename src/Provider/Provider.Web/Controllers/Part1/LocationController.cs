@@ -154,7 +154,7 @@ public class LocationController(IWebHostEnvironment hostingEnvironment) : Employ
                 : RedirectToRoute(RouteNames.ProviderTaskListGet, new { model.VacancyId, model.Ukprn, wizard });
         }
 
-        ModelState.AddValidationErrors(result.ValidationResult, new Dictionary<string, string> { { "EmployerLocations", "SelectedLocation" } });
+        ModelState.AddValidationErrorsWithFieldMappings(result.ValidationResult, new Dictionary<string, string> { { "EmployerLocations", "SelectedLocation" } });
         var viewModel = new AddOneLocationViewModel
         {
             ApprenticeshipTitle = vacancy.Title,

@@ -155,7 +155,7 @@ public class MultipleLocationsController(IWebHostEnvironment hostingEnvironment)
             return RedirectToRoute(RouteNames.MultipleLocationsConfirm_Get, new { editModel.VacancyId, editModel.Ukprn, wizard } );
         }
 
-        ModelState.AddValidationErrors(result.ValidationResult, ValidationFieldMappings);
+        ModelState.AddValidationErrorsWithFieldMappings(result.ValidationResult, ValidationFieldMappings);
         var viewModel = new AddMoreThanOneLocationViewModel
         {
             ApprenticeshipTitle = vacancy.Title,

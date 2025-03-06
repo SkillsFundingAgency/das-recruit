@@ -169,7 +169,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
                     : RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet, new { model.VacancyId, model.EmployerAccountId });
             }
 
-            ModelState.AddValidationErrors(result.ValidationResult, ValidationMappings);
+            ModelState.AddValidationErrorsWithMappings(result.ValidationResult, ValidationMappings);
             var viewModel = new AddOneLocationViewModel
             {
                 ApprenticeshipTitle = vacancy.Title,
