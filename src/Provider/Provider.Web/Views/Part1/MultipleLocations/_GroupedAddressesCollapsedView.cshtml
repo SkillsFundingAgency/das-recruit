@@ -5,8 +5,11 @@
     var index = 0;
     foreach (var group in groupedLocations)
     {
+        // Check if any location in the group is already selected.
+        var isGroupExpanded = group.Any(loc => Model.SelectedLocations?.Contains(loc.Value.ToAddressString()) ?? false);
+
         <h3 class="govuk-heading-s govuk-!-padding-top-3">@group.Key</h3>
-        <details class="govuk-details">
+        <details class="govuk-details" @(isGroupExpanded ? "open" : "")>
             <summary class="govuk-details__summary">
                 <span class="govuk-details__summary-text">
                     @group.Key locations (@group.Count().ToString())
