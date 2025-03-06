@@ -48,7 +48,7 @@
                         <div class="govuk-checkboxes">
                             <partial asp-show="Model.AvailableLocations is { Count: <= 10 }" name="_AddressesView" model="Model"/>
                             <partial asp-show="Model.GroupedLocations.Count() >1 & Model.GroupedLocations.Any(x => x.Count() >10)" name="_GroupedAddressesCollapsedView" model="Model" />
-                            <partial asp-show="Model.AvailableLocations is { Count: > 10 }" name="_GroupedAddressesView" model="Model"/>
+                            <partial asp-show="Model.AvailableLocations is { Count: > 10 } & !Model.GroupedLocations.Any(x => x.Count() >10)" name="_GroupedAddressesView" model="Model" />
                         </div>
                     </div>
                 </fieldset>
