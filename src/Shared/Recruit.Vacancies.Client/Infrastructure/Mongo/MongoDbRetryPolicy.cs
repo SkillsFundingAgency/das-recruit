@@ -10,7 +10,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo
     {
         public static RetryPolicy GetRetryPolicy(ILogger logger)
         {
-            return AddWaitAndRetry(Policy.Handle<MongoException>(), logger);
+            var policyBuilder = Policy.Handle<MongoException>();
+            policyBuilder.Or<MongoCommandException>();
+            return AddWaitAndRetry(policyBuilder, logger);
         }
 
         public static RetryPolicy GetConnectionRetryPolicy(ILogger logger)
