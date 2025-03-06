@@ -11,7 +11,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo
         public static RetryPolicy GetRetryPolicy(ILogger logger)
         {
             var policyBuilder = Policy.Handle<MongoException>();
-            policyBuilder.Or<MongoCommandException>();
+            policyBuilder.Or<MongoCommandException>(ex => ex.Code is 16500 or 16501); //429 cosmos
             return AddWaitAndRetry(policyBuilder, logger);
         }
 
