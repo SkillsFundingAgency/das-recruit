@@ -150,7 +150,7 @@ namespace Esfa.Recruit.Qa.Web
                 var serviceProvider = services.BuildServiceProvider();
                 var collectionChecker = (MongoDbCollectionChecker)serviceProvider.GetService(typeof(MongoDbCollectionChecker));
                 collectionChecker?.EnsureCollectionsExist();
-                collectionChecker?.CreateIndexes();
+                collectionChecker?.CreateIndexes().Wait();
                 var storageTableChecker = (QueryStoreTableChecker)serviceProvider.GetService(typeof(QueryStoreTableChecker));
                 storageTableChecker?.EnsureQueryStoreTableExist();
             }

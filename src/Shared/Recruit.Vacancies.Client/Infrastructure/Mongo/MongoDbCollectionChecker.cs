@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Security.Authentication;
@@ -39,10 +40,10 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo
                 throw new InfrastructureException($"Expected that collection(s): '{string.Join(", ", missingCollections)}' would already be created.");
         }
 
-        public void CreateIndexes()
+        public async Task CreateIndexes()
         {
             var db = GetMongoDatabase();
-            db.GetCollection<Vacancy>(MongoDbCollectionNames.Vacancies).Indexes.CreateMany(new []
+            await db.GetCollection<Vacancy>(MongoDbCollectionNames.Vacancies).Indexes.CreateManyAsync(new []
                 {
                     new CreateIndexModel<Vacancy>(
                         Builders<Vacancy>.IndexKeys
@@ -62,11 +63,17 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo
                         Builders<Vacancy>.IndexKeys
                             .Descending(d => d.CreatedDate)
                     )
-                });
-            db.GetCollection<ApplicationReview>(MongoDbCollectionNames.ApplicationReviews).Indexes.CreateMany(new []
+                }, new CreateManyIndexesOptions
+            {
+                MaxTime = TimeSpan.FromHours(1)
+            });
+            await db.GetCollection<ApplicationReview>(MongoDbCollectionNames.ApplicationReviews).Indexes.CreateManyAsync(new []
             {
                 new CreateIndexModel<ApplicationReview>(Builders<ApplicationReview>.IndexKeys.Ascending(d => d.VacancyReference)),
                 new CreateIndexModel<ApplicationReview>(Builders<ApplicationReview>.IndexKeys.Ascending(d => d.Status))
+            }, new CreateManyIndexesOptions
+            {
+                MaxTime = TimeSpan.FromHours(1)
             });
             
         }
