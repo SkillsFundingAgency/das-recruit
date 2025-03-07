@@ -26,14 +26,8 @@ public class MultipleLocationsController : Controller
 {
     private static readonly Dictionary<string, Tuple<string, string>> ValidationMappings = new()
     {
-        {
-            "EmployerLocations",
-            Tuple.Create<string, string>("SelectedLocations", null)
-        },
-        {
-            VacancyValidationErrorCodes.AddressCountryNotInEngland,
-            Tuple.Create("SelectedLocations", "Location must be in England. Your apprenticeship must be in England to advertise it on this service")
-        },
+        { "EmployerLocations", Tuple.Create<string, string>("SelectedLocations", null) },
+        { VacancyValidationErrorCodes.AddressCountryNotInEngland, Tuple.Create("SelectedLocations", "All locations must be in England. Your apprenticeship must be in England to advertise it on this service") },
     };
     
     [FeatureGate(FeatureNames.MultipleLocations)]

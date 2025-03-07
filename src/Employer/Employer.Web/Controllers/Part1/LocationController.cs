@@ -26,14 +26,8 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
     {
         private static readonly Dictionary<string, Tuple<string, string>> ValidationMappings = new()
         {
-            {
-                "EmployerLocations",
-                Tuple.Create<string, string>("SelectedLocation", null)
-            },
-            {
-                VacancyValidationErrorCodes.AddressCountryNotInEngland,
-                Tuple.Create("SelectedLocation", "Location must be in England. Your apprenticeship must be in England to advertise it on this service")
-            },
+            { "EmployerLocations", Tuple.Create<string, string>("SelectedLocation", null) },
+            { VacancyValidationErrorCodes.AddressCountryNotInEngland, Tuple.Create("SelectedLocation", "Location must be in England. Your apprenticeship must be in England to advertise it on this service") },
         };
         
         #region When FeatureNames.MultipleLocations feature flag is removed, all this can be removed 

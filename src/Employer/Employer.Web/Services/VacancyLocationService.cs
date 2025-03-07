@@ -82,13 +82,17 @@ public class VacancyLocationService(
             return;
         }
         
-        var addressesToQuery = locations.Where(x => x.Country is null).Select(x => x.Postcode).ToList();
+        var addressesToQuery = locations
+            .Where(x => x.Country is null)
+            .Select(x => x.Postcode)
+            .Distinct()
+            .ToList();
         var results = await locationsService.GetBulkPostcodeDataAsync(addressesToQuery);
-
+ 
         bool isDirty = false;
         locations.ForEach(x =>
         {
-            if (x.Country is null && results.TryGetValue(x.Postcode, out var postcodeData))
+            if (x.Country is null && results.TryGetValue(x.Postcode, out var postcodeData) && postcodeData is not null)
             {
                 x.Country = postcodeData.Country;
                 isDirty = true;
@@ -97,7 +101,6 @@ public class VacancyLocationService(
         
         if (isDirty)
         {
-            // TODO: we should save these addresses to the profile here
             await PatchExistingEmployerAddresses(user, vacancy, locations);
         }
     }

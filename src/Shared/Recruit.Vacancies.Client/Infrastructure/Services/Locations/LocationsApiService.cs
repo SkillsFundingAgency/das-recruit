@@ -29,6 +29,6 @@ public class LocationsService(ILocationsClient locationsClient) : ILocationsServ
     public async Task<Dictionary<string, PostcodeData>> GetBulkPostcodeDataAsync(List<string> postcodes)
     {
         var response = await locationsClient.GetBulkPostcodeData(postcodes);
-        return response?.ToDictionary(x => x.Query, x => x.Result) ?? new Dictionary<string, PostcodeData>();
+        return response?.Distinct().ToDictionary(x => x.Query, x => x.Result) ?? new Dictionary<string, PostcodeData>();
     }
 }
