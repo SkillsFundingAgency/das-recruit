@@ -2,6 +2,7 @@
 using MongoDB.Driver;
 using Polly;
 using Polly.Retry;
+using Polly.Contrib.WaitAndRetry;
 using System;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo
@@ -11,8 +12,15 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo
         public static RetryPolicy GetRetryPolicy(ILogger logger)
         {
             var policyBuilder = Policy.Handle<MongoException>();
-            policyBuilder.Or<MongoCommandException>(ex => ex.Code is 16500 or 16501); //429 cosmos
-            return AddWaitAndRetry(policyBuilder, logger);
+            policyBuilder.Or<MongoCommandException>(ex => ex.Code is 16500 or 16501)
+                .WaitAndRetryAsync(
+                Backoff.DecorrelatedJitterBackoffV2(TimeSpan.FromMilliseconds(100), 5), 
+                (_, timeSpan, retryCount, _) =>
+                {
+                    logger.LogWarning($"Throttled (429). Retrying {retryCount} in {timeSpan.TotalMilliseconds}ms...");
+                });
+            var addWaitAndRetry = AddWaitAndRetry(policyBuilder, logger);
+            return addWaitAndRetry;
         }
 
         public static RetryPolicy GetConnectionRetryPolicy(ILogger logger)
