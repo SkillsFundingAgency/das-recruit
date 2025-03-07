@@ -4,6 +4,7 @@ using Polly;
 using Polly.Retry;
 using Polly.Contrib.WaitAndRetry;
 using System;
+using Polly.Wrap;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo
 {
@@ -11,16 +12,27 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo
     {
         public static RetryPolicy GetRetryPolicy(ILogger logger)
         {
-            var policyBuilder = Policy.Handle<MongoException>();
-            policyBuilder.Or<MongoCommandException>(ex => ex.Code is 16500 or 16501)
-                .WaitAndRetryAsync(
+            var policyBuilderJittered = 
+                Policy
+                    .Handle<MongoCommandException>()
+                    .WaitAndRetry(
                 Backoff.DecorrelatedJitterBackoffV2(TimeSpan.FromMilliseconds(100), 5), 
-                (_, timeSpan, retryCount, _) =>
-                {
-                    logger.LogWarning($"Throttled (429). Retrying {retryCount} in {timeSpan.TotalMilliseconds}ms...");
-                });
-            var addWaitAndRetry = AddWaitAndRetry(policyBuilder, logger);
-            return addWaitAndRetry;
+                        (_, timeSpan, retryCount, _) =>
+                                {
+                                    logger.LogWarning($"Throttled (429). Retrying {retryCount} in {timeSpan.TotalMilliseconds}ms...");
+                                });
+             var policyMongo = Policy.Handle<MongoException>().WaitAndRetry(new[]
+                    {
+                        TimeSpan.FromSeconds(1),
+                        TimeSpan.FromSeconds(2),
+                        TimeSpan.FromSeconds(4)
+                    }, (exception, timeSpan, retryCount, context) =>
+                    {
+                        logger.LogWarning($"Error executing Mongo Command for method {context.OperationKey} Reason: {exception.Message}. Retrying in {timeSpan.Seconds} secs...attempt: {retryCount}");
+                    });
+            //var addWaitAndRetry = AddWaitAndRetry(policyBuilder, logger);
+            //addWaitAndRetry.
+            return policyBuilderJittered;
         }
 
         public static RetryPolicy GetConnectionRetryPolicy(ILogger logger)
