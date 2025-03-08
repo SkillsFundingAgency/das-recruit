@@ -16,7 +16,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo
                 Policy
                     .Handle<MongoCommandException>()
                     .WaitAndRetryAsync(
-                Backoff.DecorrelatedJitterBackoffV2(TimeSpan.FromMilliseconds(100), 5), 
+                Backoff.DecorrelatedJitterBackoffV2(TimeSpan.FromMilliseconds(500), 10), 
                         (_, timeSpan, retryCount, context) =>
                                 {
                                     logger.LogWarning($"Throttled (429) {context.OperationKey}. Retrying {retryCount} in {timeSpan.TotalMilliseconds}ms...");
