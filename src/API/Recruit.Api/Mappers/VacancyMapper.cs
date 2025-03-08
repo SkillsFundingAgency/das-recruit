@@ -16,23 +16,32 @@ namespace SFA.DAS.Recruit.Api.Mappers
         {
             return new Vacancy
             {
-                EmployerLocation = new Address
-                {
-                    AddressLine1 = request.Address.AddressLine1,
-                    AddressLine2 = request.Address.AddressLine2,
-                    AddressLine3 = request.Address.AddressLine3,
-                    AddressLine4 = request.Address.AddressLine4,
-                    Postcode = request.Address.Postcode
-                },
-                Id = id,
-                Description = request.Description,
-                Title = request.Title,
-                EmployerName = request.EmployerName,
-                LegalEntityName = request.LegalEntityName,
-                ApplicationMethod = (ApplicationMethod?)request.ApplicationMethod,
+                AccountLegalEntityPublicHashedId = request.AccountLegalEntityPublicHashedId,
+                AdditionalQuestion1 = request.AdditionalQuestion1,
+                AdditionalQuestion2 = request.AdditionalQuestion2,
+                AdditionalTrainingDescription = request.AdditionalTrainingDescription,
+                AnonymousReason = request.AnonymousReason,
                 ApplicationInstructions = request.ApplicationInstructions,
+                ApplicationMethod = (ApplicationMethod?)request.ApplicationMethod,
                 ApplicationUrl = request.ApplicationUrl,
+                ClosingDate = request.ClosingDate,
+                CreatedByUser = request.User,
+                Description = request.Description,
+                DisabilityConfident = (DisabilityConfident)request.DisabilityConfident,
+                EmployerAccountId = request.EmployerAccountId,
+                EmployerDescription = request.EmployerDescription,
+                EmployerLocation = MapAddress(request.Address),
+                EmployerLocationInformation = request.EmployerLocationInformation,
+                EmployerLocationOption = request.EmployerLocationOption,
+                EmployerLocations = request.Addresses?.Select(MapAddress).ToList(),
+                EmployerName = request.EmployerName,
+                EmployerNameOption = (EmployerNameOption?)request.EmployerNameOption,
+                Id = id,
+                LegalEntityName = request.LegalEntityName,
+                NumberOfPositions = request.NumberOfPositions,
+                OutcomeDescription = request.OutcomeDescription,
                 OwnerType = (OwnerType)request.AccountType,
+                ProgrammeId = request.ProgrammeId,
                 Qualifications = request.Qualifications
                     .Select(c =>
                         new Qualification
@@ -45,6 +54,12 @@ namespace SFA.DAS.Recruit.Api.Mappers
                             OtherQualificationName = c.OtherQualificationName
                         })
                     .ToList(),
+                ShortDescription = request.ShortDescription,
+                Skills = request.Skills,
+                StartDate = request.StartDate,
+                ThingsToConsider = request.ThingsToConsider,
+                Title = request.Title,
+                TrainingDescription = request.TrainingDescription,
                 Wage = new Wage
                 {
                     WageType = (WageType)request.Wage.WageType,
@@ -56,26 +71,21 @@ namespace SFA.DAS.Recruit.Api.Mappers
                     FixedWageYearlyAmount = request.Wage.FixedWageYearlyAmount,
                     CompanyBenefitsInformation = request.Wage.CompanyBenefitsInformation
                 },
-                ShortDescription = request.ShortDescription,
-                NumberOfPositions = request.NumberOfPositions,
-                OutcomeDescription = request.OutcomeDescription,
-                EmployerAccountId = request.EmployerAccountId,
-                AccountLegalEntityPublicHashedId = request.AccountLegalEntityPublicHashedId,
-                ClosingDate = request.ClosingDate,
-                StartDate = request.StartDate,
-                ProgrammeId = request.ProgrammeId,
-                EmployerNameOption = (EmployerNameOption?)request.EmployerNameOption,
-                AnonymousReason = request.AnonymousReason,
-                EmployerDescription = request.EmployerDescription,
-                TrainingDescription = request.TrainingDescription,
-                AdditionalTrainingDescription = request.AdditionalTrainingDescription,
-                Skills = request.Skills,
-                DisabilityConfident = (DisabilityConfident)request.DisabilityConfident,
-                ThingsToConsider = request.ThingsToConsider,
-                CreatedByUser = request.User,
-                AdditionalQuestion1 = request.AdditionalQuestion1,
-                AdditionalQuestion2 = request.AdditionalQuestion2
             };
+        }
+
+        private static Address MapAddress(CreateVacancyAddress source)
+        {
+            return source is null
+                ? null
+                : new Address
+                    {
+                        AddressLine1 = source.AddressLine1,
+                        AddressLine2 = source.AddressLine2,
+                        AddressLine3 = source.AddressLine3,
+                        AddressLine4 = source.AddressLine4,
+                        Postcode = source.Postcode
+                    };
         }
     }
 }
