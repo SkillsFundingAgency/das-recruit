@@ -62,6 +62,16 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo
                     new CreateIndexModel<Vacancy>(
                         Builders<Vacancy>.IndexKeys
                             .Descending(d => d.CreatedDate)
+                    ),
+                    new CreateIndexModel<Vacancy>(
+                        Builders<Vacancy>.IndexKeys
+                            .Descending(d => d.CreatedDate)
+                            .Ascending(d => d.EmployerAccountId)
+                    ),
+                    new CreateIndexModel<Vacancy>(
+                        Builders<Vacancy>.IndexKeys
+                            .Descending(d => d.CreatedDate)
+                            .Ascending(d => d.TrainingProvider.Ukprn)
                     )
                 }, new CreateManyIndexesOptions
             {
