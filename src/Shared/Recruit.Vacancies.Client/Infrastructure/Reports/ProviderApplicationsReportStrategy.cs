@@ -138,7 +138,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Reports
 
             var bson = MongoDB.Bson.Serialization.BsonSerializer.Deserialize<BsonDocument[]>(queryJson);
 
-            var results = await RetryPolicy.Execute(_ =>
+            var results = await RetryPolicy.ExecuteAsync(_ =>
                     collection.Aggregate<BsonDocument>(bson).ToListAsync(),
             new Context(nameof(GetProviderApplicationsAsync)));
 

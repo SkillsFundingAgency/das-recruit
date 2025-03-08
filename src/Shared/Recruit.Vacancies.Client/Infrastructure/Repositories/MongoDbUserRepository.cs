@@ -22,7 +22,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
             var filter = Builders<User>.Filter.Eq(v => v.IdamsUserId, idamsUserId);
 
             var collection = GetCollection<User>();
-            var result = await RetryPolicy.Execute(_ => 
+            var result = await RetryPolicy.ExecuteAsync(_ => 
                 collection.Find(filter)
                 .FirstOrDefaultAsync(),
                 new Context(nameof(GetAsync)));
@@ -34,7 +34,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
             var filter = Builders<User>.Filter.Eq(v => v.DfEUserId, dfEUserId);
 
             var collection = GetCollection<User>();
-            var result = await RetryPolicy.Execute(_ => 
+            var result = await RetryPolicy.ExecuteAsync(_ => 
                     collection.Find(filter)
                         .SingleOrDefaultAsync(),
                 new Context(nameof(GetAsync)));
@@ -45,7 +45,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
         {
             var filter = Builders<User>.Filter.Eq(v => v.Id, user.Id);
             var collection = GetCollection<User>();
-            return RetryPolicy.Execute(_ => 
+            return RetryPolicy.ExecuteAsync(_ => 
                 collection.ReplaceOneAsync(filter, user, new ReplaceOptions { IsUpsert = true }),
                 new Context(nameof(UpsertUserAsync)));
         }
@@ -54,7 +54,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
         {
             var filter = Builders<User>.Filter.AnyEq(u => u.EmployerAccountIds, accountId);
             var collection = GetCollection<User>();
-            return RetryPolicy.Execute(_ => 
+            return RetryPolicy.ExecuteAsync(_ => 
                 collection.Find(filter).ToListAsync(),
                 new Context(nameof(GetEmployerUsersAsync)));
         }
@@ -63,7 +63,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
         {
             var filter = Builders<User>.Filter.Eq(u => u.Ukprn, ukprn);
             var collection = GetCollection<User>();
-            return RetryPolicy.Execute(_ => 
+            return RetryPolicy.ExecuteAsync(_ => 
                 collection.Find(filter).ToListAsync(),
                 new Context(nameof(GetProviderUsersAsync)));
         }
