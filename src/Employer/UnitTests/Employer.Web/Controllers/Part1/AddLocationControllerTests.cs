@@ -1,5 +1,4 @@
-﻿using System.Threading;
-using AutoFixture.NUnit3;
+﻿using AutoFixture.NUnit3;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Controllers.Part1;
 using Esfa.Recruit.Employer.Web.Models.AddLocation;
@@ -8,8 +7,6 @@ using Esfa.Recruit.Shared.Web.Domain;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Locations;
-using FluentValidation;
-using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Controllers.Part1;

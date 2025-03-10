@@ -10,7 +10,7 @@ public class EnterLocationManuallyEditModelValidator : AbstractValidator<EnterLo
     private const int MaxLineLength = 100;
     private const int MaxPostcodeLength = 8;
     
-    public EnterLocationManuallyEditModelValidator(IProfanityListProvider profanityListProvider)
+    public EnterLocationManuallyEditModelValidator()
     {
         RuleFor(x => x.AddressLine1)
             .NotNull()

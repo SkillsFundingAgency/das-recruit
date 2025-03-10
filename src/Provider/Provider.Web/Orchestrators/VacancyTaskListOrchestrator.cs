@@ -13,70 +13,52 @@ using Esfa.Recruit.Vacancies.Client.Application.Commands;
 using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
+using Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
 using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
 using Esfa.Recruit.Vacancies.Client.Domain.Models;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Locations;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelationship;
 using Microsoft.Extensions.Logging;
 using ErrorMessages = Esfa.Recruit.Shared.Web.ViewModels.ErrorMessages;
 
 namespace Esfa.Recruit.Provider.Web.Orchestrators
 {
-    public class VacancyTaskListOrchestrator : EntityValidatingOrchestrator<Vacancy, VacancyPreviewViewModel>
+    public class VacancyTaskListOrchestrator(
+        ILogger<VacancyTaskListOrchestrator> logger,
+        DisplayVacancyViewModelMapper vacancyDisplayMapper,
+        IUtility utility,
+        IProviderVacancyClient providerVacancyClient,
+        IRecruitVacancyClient vacancyClient,
+        IReviewSummaryService reviewSummaryService,
+        IProviderRelationshipsService providerRelationshipsService,
+        ILegalEntityAgreementService legalEntityAgreementService,
+        ITrainingProviderAgreementService trainingProviderAgreementService,
+        IMessaging messaging,
+        ServiceParameters serviceParameters,
+        ILocationsService locationsService,
+        IFeature feature)
+        : EntityValidatingOrchestrator<Vacancy, VacancyPreviewViewModel>(logger)
     {
         private const VacancyRuleSet SubmitValidationRules = VacancyRuleSet.All;
         private const VacancyRuleSet SoftValidationRules = VacancyRuleSet.MinimumWage | VacancyRuleSet.TrainingExpiryDate;
-        
-        private readonly DisplayVacancyViewModelMapper _vacancyDisplayMapper;
-        private readonly IUtility _utility;
-        private readonly IProviderVacancyClient _providerVacancyClient;
-        private readonly IRecruitVacancyClient _vacancyClient;
-        private readonly IReviewSummaryService _reviewSummaryService;
-        private readonly IProviderRelationshipsService _providerRelationshipsService;
-        private readonly ILegalEntityAgreementService _legalEntityAgreementService;
-        private readonly ITrainingProviderAgreementService _trainingProviderAgreementService;
-        private readonly IMessaging _messaging;
-        private readonly ServiceParameters _serviceParameters;
-        private readonly IFeature _feature;
-
-        public VacancyTaskListOrchestrator(ILogger<VacancyTaskListOrchestrator> logger, DisplayVacancyViewModelMapper vacancyDisplayMapper,
-            IUtility utility, IProviderVacancyClient providerVacancyClient, 
-            IRecruitVacancyClient vacancyClient, IReviewSummaryService reviewSummaryService, IProviderRelationshipsService providerRelationshipsService, 
-            ILegalEntityAgreementService legalEntityAgreementService,
-            ITrainingProviderAgreementService trainingProviderAgreementService,
-            IMessaging messaging,
-            ServiceParameters serviceParameters,
-            IFeature feature) : base(logger)
-        {
-            _vacancyDisplayMapper = vacancyDisplayMapper;
-            _utility = utility;
-            _providerVacancyClient = providerVacancyClient;
-            _vacancyClient = vacancyClient;
-            _reviewSummaryService = reviewSummaryService;
-            _providerRelationshipsService = providerRelationshipsService;
-            _legalEntityAgreementService = legalEntityAgreementService;
-            _trainingProviderAgreementService = trainingProviderAgreementService;
-            _messaging = messaging;
-            _serviceParameters = serviceParameters;
-            _feature = feature;
-        }
 
         public async Task<VacancyPreviewViewModel> GetVacancyTaskListModel(VacancyRouteModel routeModel)
         {
-            var vacancyTask = _utility.GetAuthorisedVacancyForEditAsync(routeModel, RouteNames.ProviderTaskListGet);
+            var vacancyTask = utility.GetAuthorisedVacancyForEditAsync(routeModel, RouteNames.ProviderTaskListGet);
             
-            var editVacancyInfoTask = _providerVacancyClient.GetProviderEditVacancyInfoAsync(routeModel.Ukprn);
+            var editVacancyInfoTask = providerVacancyClient.GetProviderEditVacancyInfoAsync(routeModel.Ukprn);
             await Task.WhenAll(vacancyTask, editVacancyInfoTask);
 
-            var employerInfo = await _providerVacancyClient.GetProviderEmployerVacancyDataAsync(routeModel.Ukprn, vacancyTask.Result.EmployerAccountId);
+            var employerInfo = await providerVacancyClient.GetProviderEmployerVacancyDataAsync(routeModel.Ukprn, vacancyTask.Result.EmployerAccountId);
             
             var vacancy = vacancyTask.Result;
-            var hasProviderReviewPermission = await _providerRelationshipsService.HasProviderGotEmployersPermissionAsync(routeModel.Ukprn, vacancy.EmployerAccountId, vacancy.AccountLegalEntityPublicHashedId, OperationType.RecruitmentRequiresReview);
+            var hasProviderReviewPermission = await providerRelationshipsService.HasProviderGotEmployersPermissionAsync(routeModel.Ukprn, vacancy.EmployerAccountId, vacancy.AccountLegalEntityPublicHashedId, OperationType.RecruitmentRequiresReview);
             
-            var vm = new VacancyPreviewViewModel(_feature.IsFeatureEnabled(FeatureNames.MultipleLocations));
-            await _vacancyDisplayMapper.MapFromVacancyAsync(vm, vacancy);
+            var vm = new VacancyPreviewViewModel(feature.IsFeatureEnabled(FeatureNames.MultipleLocations));
+            await vacancyDisplayMapper.MapFromVacancyAsync(vm, vacancy);
 
             vm.HasWage = vacancy.Wage != null;
             vm.CanShowReference = vacancy.Status != VacancyStatus.Draft;
@@ -88,7 +70,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             
             if (vacancy.Status == VacancyStatus.Referred)
             {
-                vm.Review = await _reviewSummaryService.GetReviewSummaryViewModelAsync(vacancy.VacancyReference.Value, ReviewFieldMappingLookups.GetPreviewReviewFieldIndicators());
+                vm.Review = await reviewSummaryService.GetReviewSummaryViewModelAsync(vacancy.VacancyReference.Value, ReviewFieldMappingLookups.GetPreviewReviewFieldIndicators());
             }
 
             vm.AccountLegalEntityCount = employerInfo?.LegalEntities.Count ?? 0;
@@ -99,9 +81,9 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
         public async Task<VacancyPreviewViewModel> GetCreateVacancyTaskListModel(VacancyRouteModel vrm, string employerAccountId)
         {
             var employerInfo =
-                await _providerVacancyClient.GetProviderEmployerVacancyDataAsync(vrm.Ukprn,
+                await providerVacancyClient.GetProviderEmployerVacancyDataAsync(vrm.Ukprn,
                     employerAccountId);
-            var editVacancyInfo = await _providerVacancyClient.GetProviderEditVacancyInfoAsync(vrm.Ukprn);
+            var editVacancyInfo = await providerVacancyClient.GetProviderEditVacancyInfoAsync(vrm.Ukprn);
 
             var createVacancyTaskListModel = new VacancyPreviewViewModel
             {
@@ -116,12 +98,14 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
         
         public async Task<OrchestratorResponse<SubmitVacancyResponse>> SubmitVacancyAsync(SubmitEditModel m, VacancyUser user)
         {
-            var vacancy = await _utility.GetAuthorisedVacancyAsync(m, RouteNames.Preview_Submit_Post);
+            var vacancy = await utility.GetAuthorisedVacancyAsync(m, RouteNames.Preview_Submit_Post);
             
             if (!vacancy.CanSubmit)
                 throw new InvalidStateException(string.Format(ErrorMessages.VacancyNotAvailableForEditing, vacancy.Title));
             
-            vacancy.EmployerName = await _vacancyClient.GetEmployerNameAsync(vacancy);
+            vacancy.EmployerName = await vacancyClient.GetEmployerNameAsync(vacancy);
+            
+            await UpdateAddressCountriesAsync(vacancy, user);
 
             return await ValidateAndExecute(
                 vacancy,
@@ -132,12 +116,12 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
         
         private async Task<SubmitVacancyResponse> SubmitActionAsync(Vacancy vacancy, VacancyUser user)
         {
-            var hasLegalEntityAgreementTask = _legalEntityAgreementService.HasLegalEntityAgreementAsync(vacancy.EmployerAccountId, vacancy.AccountLegalEntityPublicHashedId);
-            var hasProviderAgreementTask = _trainingProviderAgreementService.HasAgreementAsync(vacancy.TrainingProvider.Ukprn.Value);
+            var hasLegalEntityAgreementTask = legalEntityAgreementService.HasLegalEntityAgreementAsync(vacancy.EmployerAccountId, vacancy.AccountLegalEntityPublicHashedId);
+            var hasProviderAgreementTask = trainingProviderAgreementService.HasAgreementAsync(vacancy.TrainingProvider.Ukprn.Value);
 
             await Task.WhenAll(hasLegalEntityAgreementTask, hasProviderAgreementTask);
 
-            var hasProviderReviewPermission = await _providerRelationshipsService.HasProviderGotEmployersPermissionAsync(vacancy.TrainingProvider.Ukprn.Value, vacancy.EmployerAccountId, vacancy.AccountLegalEntityPublicHashedId, OperationType.RecruitmentRequiresReview);
+            var hasProviderReviewPermission = await providerRelationshipsService.HasProviderGotEmployersPermissionAsync(vacancy.TrainingProvider.Ukprn.Value, vacancy.EmployerAccountId, vacancy.AccountLegalEntityPublicHashedId, OperationType.RecruitmentRequiresReview);
 
             var response = new SubmitVacancyResponse
             {
@@ -148,16 +132,16 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
 
             if (response.HasLegalEntityAgreement && response.HasProviderAgreement)
             {
-                if (hasProviderReviewPermission && _serviceParameters.VacancyType.GetValueOrDefault() == VacancyType.Apprenticeship)
+                if (hasProviderReviewPermission && serviceParameters.VacancyType.GetValueOrDefault() == VacancyType.Apprenticeship)
                 {
                     var command = new ReviewVacancyCommand(vacancy.Id, user, OwnerType.Provider);
-                    await _messaging.SendCommandAsync(command);
+                    await messaging.SendCommandAsync(command);
                     response.IsSentForReview = true;
                 }
                 else
                 {
                     var command = new SubmitVacancyCommand(vacancy.Id, user, OwnerType.Provider);
-                    await _messaging.SendCommandAsync(command);
+                    await messaging.SendCommandAsync(command);
                     response.IsSubmitted = true;
                 }
             }
@@ -174,18 +158,36 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
         
         private EntityValidationResult ValidateVacancy(Vacancy vacancy, VacancyRuleSet rules)
         {
-            var result = _vacancyClient.Validate(vacancy, rules);
-            FlattenErrors(result.Errors);
+            var result = vacancyClient.Validate(vacancy, rules);
+            result.Errors = FlattenErrors(result.Errors, vacancy);
             return result;
         }
         
-        private void FlattenErrors(IList<EntityValidationError> errors)
+        private static List<EntityValidationError> FlattenErrors(IList<EntityValidationError> errors, Vacancy vacancy)
         {
             //Flatten Qualification errors to its ViewModel parent instead. 'Qualifications[1].Grade' becomes 'Qualifications'
             foreach (var error in errors.Where(e => e.PropertyName.StartsWith(nameof(Vacancy.Qualifications))))
             {
                 error.PropertyName = nameof(VacancyPreviewViewModel.Qualifications);
             }
+
+            //Flatten EmployerLocations errors, e.g. 'EmployerLocations[0].Country' becomes 'EmployerLocations.Country'
+            var addressErrors = errors.Where(e => e.PropertyName.StartsWith("EmployerLocations[")).ToList();
+            foreach (var error in addressErrors)
+            {
+                string[] tokens = error.PropertyName.Split('.');
+                error.PropertyName = $"EmployerLocations.{tokens.LastOrDefault()}";
+            }
+
+            if (vacancy.EmployerLocationOption == AvailableWhere.MultipleLocations)
+            {
+                errors.Where(x => x.PropertyName == "EmployerLocations.Country").ToList().ForEach(x =>
+                {
+                    x.ErrorCode = $"Multiple-{VacancyValidationErrorCodes.AddressCountryNotInEngland}";
+                });
+            }
+
+            return errors.DistinctBy(x => $"{x.PropertyName}: {x.ErrorMessage}").ToList();
         }
         
         
@@ -234,6 +236,45 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             mappings.Add(e => e.AdditionalQuestion2, vm => vm.AdditionalQuestion2);
 
             return mappings;
+        }
+        
+        private async Task UpdateAddressCountriesAsync(Vacancy vacancy, VacancyUser user)
+        {
+            var locations = new List<Address>();
+            switch (vacancy.EmployerLocationOption)
+            {
+                case AvailableWhere.AcrossEngland:
+                    return;
+                case AvailableWhere.OneLocation:
+                case AvailableWhere.MultipleLocations:
+                    locations.AddRange(vacancy.EmployerLocations);
+                    break;
+                default:
+                    locations.Add(vacancy.EmployerLocation);
+                    break;
+            }
+        
+            var addressesToQuery = locations
+                .Where(x => x.Country is null)
+                .Select(x => x.Postcode)
+                .Distinct()
+                .ToList();
+            var results = await locationsService.GetBulkPostcodeDataAsync(addressesToQuery);
+        
+            bool isDirty = false;
+            locations.ForEach(x =>
+            {
+                if (x.Country is null && results.TryGetValue(x.Postcode, out var postcodeData))
+                {
+                    x.Country = postcodeData.Country;
+                    isDirty = true;
+                }
+            });
+        
+            if (isDirty)
+            {
+                await vacancyClient.UpdateDraftVacancyAsync(vacancy, user);
+            }
         }
     }
 }
