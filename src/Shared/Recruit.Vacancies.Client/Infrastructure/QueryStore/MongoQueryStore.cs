@@ -30,7 +30,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
             var filter = filterBuilder.Eq(d => d.ViewType, typeName)
                         & filterBuilder.Eq(d => d.Id, key);
 
-            return RetryPolicy.Execute(_ =>
+            return RetryPolicy.ExecuteAsync(_ =>
                 collection.DeleteOneAsync(filter),
                 new Context(nameof(IQueryStore.DeleteAsync)));
         }
@@ -44,7 +44,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
 
             var collection = GetCollection<T>();
 
-            var result = await RetryPolicy.Execute(_ =>
+            var result = await RetryPolicy.ExecuteAsync(_ =>
                 collection.DeleteManyAsync(filter),
                 new Context(nameof(IQueryStore.DeleteManyLessThanAsync)));
 
@@ -59,7 +59,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
 
             var collection = GetCollection<T>();
 
-            var result = await RetryPolicy.Execute(_ =>
+            var result = await RetryPolicy.ExecuteAsync(_ =>
                 collection.DeleteManyAsync(filter),
                 new Context(nameof(IQueryStore.DeleteManyLessThanAsync)));
 
@@ -74,7 +74,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
 
             var collection = GetCollection<LiveVacancy>();
             
-            var result = await RetryPolicy.Execute(_ =>
+            var result = await RetryPolicy.ExecuteAsync(_ =>
                     collection.Find(filter).Project<LiveVacancy>(GetProjection<LiveVacancy>()).ToListAsync(),
                 new Context(nameof(GetAllLiveExpired)));
 
@@ -89,7 +89,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
                         & filterBuilder.Eq(d => d.Id, key);
 
             var collection = GetCollection<T>();
-            var result = await RetryPolicy.Execute(_ =>
+            var result = await RetryPolicy.ExecuteAsync(_ =>
                 collection.Find(filter).FirstOrDefaultAsync(),
                 new Context(nameof(IQueryStore.GetAsync)));
 
@@ -103,7 +103,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
             var filter = filterBuilder.Eq(d => d.Id, key);
 
             var collection = GetCollection<T>();
-            var result = await RetryPolicy.Execute(_ =>
+            var result = await RetryPolicy.ExecuteAsync(_ =>
                 collection.Find(filter).FirstOrDefaultAsync(),
                 new Context(nameof(IQueryStore.GetAsync)));
 
@@ -119,7 +119,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
             var filter = filterBuilder.Eq(d => d.ViewType, item.ViewType)
                         & filterBuilder.Eq(d => d.Id, item.Id);
 
-            return RetryPolicy.Execute(_ =>
+            return RetryPolicy.ExecuteAsync(_ =>
                 collection.ReplaceOneAsync(filter, item, new ReplaceOptions { IsUpsert = true }),
                 new Context(nameof(IQueryStore.UpsertAsync)));
         }
@@ -133,7 +133,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
 
             var collection = GetCollection<T>();
 
-            return await RetryPolicy.Execute(_ =>
+            return await RetryPolicy.ExecuteAsync(_ =>
                 collection.Find(filter).ToListAsync(),
                 new Context(nameof(IQueryStore.UpsertAsync)));
         }
@@ -148,7 +148,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
 
             var collection = GetCollection<T>();
 
-            var result = await RetryPolicy.Execute(_ =>
+            var result = await RetryPolicy.ExecuteAsync(_ =>
                 collection.DeleteManyAsync(filter),
                 new Context(nameof(IQueryStore.UpsertAsync)));
 
@@ -166,7 +166,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
 
             var collection = GetCollection<LiveVacancy>();
 
-            var result = await RetryPolicy.Execute(_ =>
+            var result = await RetryPolicy.ExecuteAsync(_ =>
                     collection.Find(filter).Sort(sort).Skip(vacanciesToSkip).Limit(vacanciesToGet).Project<LiveVacancy>(GetProjection<LiveVacancy>()).ToListAsync(),
                 new Context(nameof(GetAllLiveVacancies)));
 
@@ -185,7 +185,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
 
             var collection = GetCollection<LiveVacancy>();
 
-            var result = await RetryPolicy.Execute(_ =>
+            var result = await RetryPolicy.ExecuteAsync(_ =>
                     collection.Find(filter).Sort(sort).Skip(vacanciesToSkip).Limit(vacanciesToGet).Project<LiveVacancy>(GetProjection<LiveVacancy>()).ToListAsync(),
                 new Context(nameof(GetAllLiveVacancies)));
 
@@ -203,7 +203,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
 
             var collection = GetCollection<ClosedVacancy>();
 
-            var result = await RetryPolicy.Execute(_ =>
+            var result = await RetryPolicy.ExecuteAsync(_ =>
                     collection.Find(filter).Sort(sort).Project<ClosedVacancy>(GetProjection<ClosedVacancy>()).ToListAsync(),
                 new Context(nameof(GetAllLiveVacancies)));
 
@@ -217,7 +217,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
 
             var collection = GetCollection<LiveVacancy>();
 
-            var result = await RetryPolicy.Execute(_ =>
+            var result = await RetryPolicy.ExecuteAsync(_ =>
                     collection.CountDocumentsAsync(filter),
                 new Context(nameof(GetAllLiveVacancies)));
 
@@ -239,7 +239,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
 
             var collection = GetCollection<LiveVacancy>();
 
-            var result = await RetryPolicy.Execute(_ =>
+            var result = await RetryPolicy.ExecuteAsync(_ =>
                     collection.CountDocumentsAsync(filter),
                 new Context(nameof(GetAllLiveVacancies)));
 
@@ -254,7 +254,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
 
             var collection = GetCollection<LiveVacancy>();
 
-            var result = await RetryPolicy.Execute(_ =>
+            var result = await RetryPolicy.ExecuteAsync(_ =>
                     collection.Find(filter).Project<LiveVacancy>(GetProjection<LiveVacancy>()).SingleOrDefaultAsync(),
                 new Context(nameof(GetLiveVacancy)));
 
@@ -269,7 +269,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
 
             var collection = GetCollection<LiveVacancy>();
 
-            var result = await RetryPolicy.Execute(_ =>
+            var result = await RetryPolicy.ExecuteAsync(_ =>
                     collection.Find(filter).Project<LiveVacancy>(GetProjection<LiveVacancy>()).SingleOrDefaultAsync(),
                 new Context(nameof(GetLiveVacancy)));
 

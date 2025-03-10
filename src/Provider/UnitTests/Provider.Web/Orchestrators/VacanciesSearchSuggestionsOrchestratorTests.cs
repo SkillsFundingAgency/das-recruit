@@ -34,7 +34,10 @@ namespace Esfa.Recruit.UnitTests.Provider.Web.Orchestrators
         [Theory]
         [InlineData(VacancyType.Apprenticeship, "x", true)]
         [InlineData(VacancyType.Apprenticeship, "xx", true)]
-        [InlineData(VacancyType.Apprenticeship, "xxx", false)]
+        [InlineData(VacancyType.Apprenticeship, "xxx", true)]
+        [InlineData(VacancyType.Apprenticeship, "xxxx", true)]
+        [InlineData(VacancyType.Apprenticeship, "xxxxx", false)]
+        [InlineData(VacancyType.Apprenticeship, "xxxxxx", false)]
         public async Task When_The_Search_Term_Is_Less_Than_The_Minimum_Search_Threshold_Then_Empty_List_Returned(VacancyType vacancyType, string searchTerm, bool shouldBeEmptyList)
         {
             var orch = GetSut(_testVacancies, vacancyType, searchTerm);
@@ -47,7 +50,7 @@ namespace Esfa.Recruit.UnitTests.Provider.Web.Orchestrators
         public async Task WhenTermMatchesMoreThan50Title_ThenLegalEntityNameWillBeFilteredOut(VacancyType vacancyType)
         {
             var LegalEntityName = "20th Century Fox";
-            var searchTerm = "fox";
+            var searchTerm = "century";
             var orch = GetSut(GenerateVacancySummaries(100, LegalEntityName, searchTerm), vacancyType, searchTerm);
             var result = await orch.GetSearchSuggestionsAsync(searchTerm, Ukprn);
             result.Count().Should().Be(VacanciesSearchSuggestionsOrchestrator.MaxRowsInResult);

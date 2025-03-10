@@ -20,7 +20,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo
 
         protected ILogger Logger { get; }
 
-        protected RetryPolicy RetryPolicy { get; set; }
+        protected AsyncRetryPolicy RetryPolicy { get; set; }
 
         protected MongoDbCollectionBase(ILoggerFactory loggerFactory, string dbName, string collectionName, IOptions<MongoDbConnectionDetails> config)
         {
