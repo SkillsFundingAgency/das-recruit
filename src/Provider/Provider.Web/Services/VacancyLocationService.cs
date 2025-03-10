@@ -108,7 +108,6 @@ public class VacancyLocationService(
 
     private async Task PatchExistingEmployerAddresses(VacancyUser user, Vacancy vacancy, List<Address> addresses)
     {
-        // TODO: need to fetch using ukprn here
         var employerProfile = await recruitVacancyClient.GetEmployerProfileAsync(vacancy.EmployerAccountId, vacancy.AccountLegalEntityPublicHashedId);
         var existingLocations = employerProfile.OtherLocations;
 
