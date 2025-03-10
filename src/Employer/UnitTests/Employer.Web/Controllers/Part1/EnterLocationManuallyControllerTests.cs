@@ -60,8 +60,8 @@ public class EnterLocationManuallyControllerTests
             EmployerAccountId = vacancy.EmployerAccountId,
             Origin = MultipleLocationsJourneyOrigin.Many,
             Wizard = true,
-            AddressLine1 = "AddressLine1",
-            AddressLine2 = "AddressLine2",
+            AddressLine1 = "Address Line 1",
+            AddressLine2 = "Address Line 2",
             City = "City",
             Postcode = Postcode
         };
@@ -93,8 +93,8 @@ public class EnterLocationManuallyControllerTests
             EmployerAccountId = vacancy.EmployerAccountId,
             Origin = MultipleLocationsJourneyOrigin.Many,
             Wizard = true,
-            AddressLine1 = "AddressLine1",
-            AddressLine2 = "AddressLine2",
+            AddressLine1 = "Address Line 1",
+            AddressLine2 = "Address Line 2",
             City = "City",
             Postcode = Postcode
         };

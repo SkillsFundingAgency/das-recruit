@@ -13,7 +13,7 @@ public class EnterLocationManuallyEditModelValidator : AbstractValidator<EnterLo
     public EnterLocationManuallyEditModelValidator()
     {
         RuleFor(x => x.AddressLine1)
-            .NotNull()
+            .NotEmpty()
             .WithMessage("Enter address line 1, typically the building and street")
             .ValidFreeTextCharacters()
             .WithMessage("Address line 1 must only include letters a to z, numbers 0 to 9, and special characters such as hyphens, spaces and apostrophes")
@@ -27,7 +27,7 @@ public class EnterLocationManuallyEditModelValidator : AbstractValidator<EnterLo
             .WithMessage("Address line 2 must be {MaxLength} characters or less");
         
         RuleFor(x => x.City)
-            .NotNull()
+            .NotEmpty()
             .WithMessage("Enter town or city")
             .ValidFreeTextCharacters()
             .WithMessage("Town or city must only include letters a to z, numbers 0 to 9, and special characters such as hyphens, spaces and apostrophes")
@@ -41,7 +41,7 @@ public class EnterLocationManuallyEditModelValidator : AbstractValidator<EnterLo
             .WithMessage("County must be {MaxLength} characters or less");
         
         RuleFor(x => x.Postcode)
-            .NotNull()
+            .NotEmpty()
             .WithMessage("Enter postcode")
             .MaximumLength(MaxPostcodeLength)
             .WithMessage("Postcode is too long. Enter a UK postcode in the format ‘SW10 1AA’")
