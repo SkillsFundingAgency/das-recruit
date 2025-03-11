@@ -20,7 +20,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
         public async Task CreateAsync(EmployerProfile profile)
         {
             var collection = GetCollection<EmployerProfile>();
-            await RetryPolicy.Execute(_ => 
+            await RetryPolicy.ExecuteAsync(_ => 
                 collection.InsertOneAsync(profile),
                 new Context(nameof(CreateAsync)));
         }
@@ -32,7 +32,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
 
             var collection = GetCollection<EmployerProfile>();
 
-            var result = await RetryPolicy.Execute(_ => 
+            var result = await RetryPolicy.ExecuteAsync(_ => 
                 collection.Find(filter).SingleOrDefaultAsync(),
                 new Context(nameof(GetAsync)));
             
@@ -45,7 +45,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
 
             var collection = GetCollection<EmployerProfile>();
 
-            var result = await RetryPolicy.Execute(_ => 
+            var result = await RetryPolicy.ExecuteAsync(_ => 
                 collection.Find(filter).ToListAsync(),
                 new Context(nameof(GetEmployerProfilesForEmployerAsync)));
     
@@ -60,7 +60,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
 
             var collection = GetCollection<EmployerProfile>();
 
-            return RetryPolicy.Execute(_ => 
+            return RetryPolicy.ExecuteAsync(_ => 
                 collection.ReplaceOneAsync(filter, profile),
                 new Context(nameof(UpdateAsync)));
         }

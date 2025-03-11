@@ -62,6 +62,16 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo
                     new CreateIndexModel<Vacancy>(
                         Builders<Vacancy>.IndexKeys
                             .Descending(d => d.CreatedDate)
+                    ),
+                    new CreateIndexModel<Vacancy>(
+                        Builders<Vacancy>.IndexKeys
+                            .Descending(d => d.CreatedDate)
+                            .Ascending(d => d.EmployerAccountId)
+                    ),
+                    new CreateIndexModel<Vacancy>(
+                        Builders<Vacancy>.IndexKeys
+                            .Descending(d => d.CreatedDate)
+                            .Ascending(d => d.TrainingProvider.Ukprn)
                     )
                 }, new CreateManyIndexesOptions
             {
@@ -98,7 +108,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo
         {
             var db = GetMongoDatabase();
 
-            var collections = await MongoDbRetryPolicy.GetRetryPolicy(logger).Execute(context =>
+            var collections = await MongoDbRetryPolicy.GetRetryPolicy(logger).ExecuteAsync(context =>
                     db.ListCollectionNames().ToListAsync()
                 , new Context(nameof(GetMongoCollectionsAsync)));
 
