@@ -1,13 +1,16 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
 namespace SFA.DAS.Recruit.Api.Extensions
 {
     public static class StringExtensions
     {
+        private static readonly TimeSpan RegexTimeout = TimeSpan.FromSeconds(3);
+        
         public static string RegexReplaceWithGroups(this string input, string pattern, string replacement)
         {
-            var match = Regex.Match(input, pattern, RegexOptions.IgnoreCase);
+            var match = Regex.Match(input, pattern, RegexOptions.IgnoreCase, RegexTimeout);
             if (!match.Success)
             {
                 return input;

@@ -131,11 +131,6 @@ public class MultipleLocationsController(IWebHostEnvironment hostingEnvironment)
         return View(viewModel);
     }
     
-    private static readonly Dictionary<string, string> ValidationFieldMappings = new()
-    {
-        { "EmployerLocations", "SelectedLocations" }
-    };
-    
     [FeatureGate(FeatureNames.MultipleLocations)]
     [HttpPost("add-many-locations", Name = RouteNames.AddMoreThanOneLocation_Post)]
     public async Task<IActionResult> AddMoreThanOneLocation(

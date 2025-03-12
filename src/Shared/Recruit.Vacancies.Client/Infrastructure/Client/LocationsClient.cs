@@ -32,7 +32,7 @@ public class LocationsClient(IOuterApiClient outerApiClient, ILogger<LocationsSe
 
     public async Task<GetBulkPostcodeDataResponse> GetBulkPostcodeData(List<string> postcodes)
     {
-        ArgumentNullException.ThrowIfNull(postcodes, nameof(postcodes));
+        ArgumentNullException.ThrowIfNull(postcodes);
         try
         {
             return await outerApiClient.Post<GetBulkPostcodeDataResponse>(new GetBulkPostcodeDataRequest(postcodes));
