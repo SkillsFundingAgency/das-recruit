@@ -1,20 +1,18 @@
 using AutoFixture;
-using FluentAssertions;
 using Microsoft.Extensions.Options;
 using SFA.DAS.Recruit.Api.Configuration;
 using SFA.DAS.Recruit.Api.Mappers;
-using SFA.DAS.Recruit.Api.Services;
-using Xunit;
 
 namespace SFA.DAS.Recruit.Api.UnitTests.Mappers
 {
     public class VacancySummaryMapperTests
     {
         private const string ValidEmployerAccountId = "MYJR4X";
-        private readonly VacancySummaryMapper _sut;
-        private readonly Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancySummary _vacancySummaryProjection;
+        private VacancySummaryMapper _sut;
+        private Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancySummary _vacancySummaryProjection;
 
-        public VacancySummaryMapperTests()
+        [SetUp]
+        public void Setup()
         {
             var vacancySummaryFixture = new Fixture();
             _vacancySummaryProjection = vacancySummaryFixture
@@ -31,7 +29,7 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Mappers
             _sut = new VacancySummaryMapper(Options.Create(config));
         }
 
-        [Fact]
+        [Test]
         public void GivenEmployerVacancies_ShouldSetRaaManageVacancyUrlToEmployerManageVacancyUrl()
         {
 
@@ -40,7 +38,7 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Mappers
             vacancySummary.RaaManageVacancyUrl.StartsWith("https://employer-recruit/accounts").Should().BeTrue();
         }
 
-        [Fact]
+        [Test]
         public void GivenProviderVacancies_ShouldSetRaaManageVacancyUrlToProviderManageVacancyUrl()
         {
             var vacancySummary = _sut.MapFromVacancySummaryProjection(_vacancySummaryProjection, isForProviderOwnedVacancies: true);
@@ -48,7 +46,7 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Mappers
             vacancySummary.RaaManageVacancyUrl.StartsWith("https://provider-recruit/").Should().BeTrue();
         }
 
-        [Fact]
+        [Test]
         public void GivenAEmployerVacancy_ShouldSetEmployerAccountAndVacancyIdInRaaManageVacancyUrl()
         {
             var vacancySummary = _sut.MapFromVacancySummaryProjection(_vacancySummaryProjection, isForProviderOwnedVacancies: false);
@@ -56,7 +54,7 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Mappers
             vacancySummary.RaaManageVacancyUrl.EndsWith(expectedEnd).Should().BeTrue();
         }
 
-        [Fact]
+        [Test]
         public void GivenAProviderVacancy_ShouldSetUkprnAndVacancyIdInRaaManageVacancyUrl()
         {
             var vacancySummary = _sut.MapFromVacancySummaryProjection(_vacancySummaryProjection, isForProviderOwnedVacancies: true);
@@ -64,7 +62,7 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Mappers
             vacancySummary.RaaManageVacancyUrl.EndsWith(expectedEnd).Should().BeTrue();
         }
 
-        [Fact]
+        [Test]
         public void GivenAVacancy_ShouldSetFaaDetailUrlWithVacancyReference()
         {
             var vacancySummary = _sut.MapFromVacancySummaryProjection(_vacancySummaryProjection, isForProviderOwnedVacancies: true);

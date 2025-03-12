@@ -39,6 +39,7 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.SequenceStore;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Geocode;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Locations;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.PasAccount;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Projections;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelationship;
@@ -158,6 +159,7 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
             services.AddHttpClient<IOuterApiClient, OuterApiClient>();
             services.AddTransient<IOuterApiGeocodeService, OuterApiGeocodeService>();
             services.AddSingleton<IVacancyTaskListStatusService, VacancyTaskListStatusService>();
+            services.AddTransient<ILocationsService, LocationsService>();
 
             // Projection services
             services.AddTransient<IQaDashboardProjectionService, QaDashboardProjectionService>();
@@ -280,7 +282,8 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
                 .AddTransient<IQaVacancyClient, QaVacancyClient>()
                 .AddTransient<IJobsVacancyClient, VacancyClient>()
                 .AddTransient<IGetAddressesClient, OuterApiGetAddressesClient>()
-                .AddTransient<IGetProviderStatusClient, OuterApiGetProviderStatusClient>();
+                .AddTransient<IGetProviderStatusClient, OuterApiGetProviderStatusClient>()
+                .AddTransient<ILocationsClient, LocationsClient>();
         }
 
 

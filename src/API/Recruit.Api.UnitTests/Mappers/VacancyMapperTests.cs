@@ -2,8 +2,6 @@ using System;
 using System.Linq;
 using AutoFixture.NUnit3;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using FluentAssertions;
-using NUnit.Framework;
 using SFA.DAS.Recruit.Api.Mappers;
 using SFA.DAS.Recruit.Api.Models;
 using DurationUnit = SFA.DAS.Recruit.Api.Models.DurationUnit;

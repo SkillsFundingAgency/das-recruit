@@ -1,16 +1,15 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Extensions;
 using Esfa.Recruit.Employer.Web.Models.AddLocation;
 using Esfa.Recruit.Employer.Web.Services;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.AddLocation;
+using Esfa.Recruit.Employer.Web.ViewModels.Validations;
 using Esfa.Recruit.Shared.Web.Domain;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using FluentValidation;
-using FluentValidation.AspNetCore;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Locations;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.FeatureManagement.Mvc;
 
@@ -32,15 +31,21 @@ public class EnterLocationManuallyController(IUtility utility) : Controller
     [FeatureGate(FeatureNames.MultipleLocations)]
     [HttpPost("enter-location", Name = RouteNames.EnterAddressManually_Post)]
     public async Task<IActionResult> EnterLocationManually(
+        [FromServices] ILocationsService locationsService,
         [FromServices] IVacancyLocationService vacancyLocationService,
-        [FromServices] IValidator<EnterLocationManuallyEditModel> validator,
-        EnterLocationManuallyEditModel model,
-        CancellationToken cancellationToken = default)
+        EnterLocationManuallyEditModel model)
     {
-        var validationResult = await validator.ValidateAsync(model, cancellationToken);
-        if (!validationResult.IsValid)
+        if (!ModelState.IsValid)
         {
-            validationResult.AddToModelState(ModelState);
+            string returnRoute = TempData.Peek(TempDataKeys.AddLocationReturnPath) as string;
+            var viewModel = await GetEnterLocationManuallyViewModel(utility, model, RouteNames.EnterAddressManually_Get, model.ToDomain(), returnRoute);
+            return View(viewModel);
+        }
+
+        bool? isPostcodeEnglish = await locationsService.IsPostcodeInEnglandAsync(model.Postcode);
+        if (isPostcodeEnglish is false)
+        {
+            ModelState.AddModelError(nameof(AddLocationEditModel.Postcode), AddLocationEditModelValidator.MustBeEnglishPostcode);
             string returnRoute = TempData.Peek(TempDataKeys.AddLocationReturnPath) as string;
             var viewModel = await GetEnterLocationManuallyViewModel(utility, model, RouteNames.EnterAddressManually_Get, model.ToDomain(), returnRoute);
             return View(viewModel);
