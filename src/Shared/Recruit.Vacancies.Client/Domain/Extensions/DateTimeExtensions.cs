@@ -69,5 +69,10 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Extensions
             var ukTimezone = TZConvert.GetTimeZoneInfo("GMT Standard Time");
             return TimeZoneInfo.ConvertTime(datetime, ukTimezone);
         }
+
+        public static string ToFullDateTimeString(this DateTime datetime)
+        {
+            return datetime.ToString("dddd d MMMM yyy");
+        }
     }
 }

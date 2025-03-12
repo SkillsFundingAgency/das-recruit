@@ -98,7 +98,7 @@ namespace Esfa.Recruit.Employer.Web.Mappings
                 vm.OrganisationName = vacancy.LegalEntityName;
             }
             vm.OutcomeDescription = vacancy.OutcomeDescription;
-            vm.PossibleStartDate = vacancy.StartDate?.AsGdsDate();
+            vm.PossibleStartDate = vacancy.StartDate?.ToFullDateTimeString();
             vm.PostedDate = vacancy.CreatedDate?.AsGdsDate();
             vm.ProviderName = vacancy.TrainingProvider?.Name;
             vm.ProviderReviewFieldIndicators = vacancy.ProviderReviewFieldIndicators;
