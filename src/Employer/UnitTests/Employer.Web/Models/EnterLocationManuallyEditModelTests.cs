@@ -13,7 +13,6 @@ public class EnterLocationManuallyEditModelTests
             AddressLine1 = "1 somewhere road",
             AddressLine2 = "  ",
             City = "   nowhereton  ",
-            County = null,
             Postcode = "ab1a 1aa",
         };
         

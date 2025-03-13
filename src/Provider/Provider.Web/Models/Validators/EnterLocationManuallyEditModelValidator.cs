@@ -1,5 +1,4 @@
 ﻿using Esfa.Recruit.Provider.Web.Models.AddLocation;
-using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent;
 using FluentValidation;
 
@@ -10,7 +9,7 @@ public class EnterLocationManuallyEditModelValidator : AbstractValidator<EnterLo
     private const int MaxLineLength = 100;
     private const int MaxPostcodeLength = 8;
     
-    public EnterLocationManuallyEditModelValidator(IProfanityListProvider profanityListProvider)
+    public EnterLocationManuallyEditModelValidator()
     {
         RuleFor(x => x.AddressLine1)
             .NotEmpty()
@@ -33,12 +32,6 @@ public class EnterLocationManuallyEditModelValidator : AbstractValidator<EnterLo
             .WithMessage("Town or city must only include letters a to z, numbers 0 to 9, and special characters such as hyphens, spaces and apostrophes")
             .MaximumLength(MaxLineLength)
             .WithMessage("Town or city must be {MaxLength} characters or less");
-        
-        RuleFor(x => x.County)
-            .ValidFreeTextCharacters()
-            .WithMessage("County must only include letters a to z, numbers 0 to 9, and special characters such as hyphens, spaces and apostrophes")
-            .MaximumLength(MaxLineLength)
-            .WithMessage("County must be {MaxLength} characters or less");
         
         RuleFor(x => x.Postcode)
             .NotEmpty()
