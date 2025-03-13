@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.IO;
 using Esfa.Recruit.Provider.Web.AppStart;
 using Esfa.Recruit.Provider.Web.Configuration;
@@ -126,6 +127,11 @@ namespace Esfa.Recruit.Provider.Web
                 var serviceProvider = services.BuildServiceProvider();
                 var collectionChecker = (MongoDbCollectionChecker)serviceProvider.GetService(typeof(MongoDbCollectionChecker));
                 collectionChecker?.EnsureCollectionsExist();
+                var timer = Stopwatch.StartNew();
+                _logger.LogInformation("Creating indexes");
+                collectionChecker?.CreateIndexes().Wait();
+                timer.Stop();
+                _logger.LogInformation($"Finished creating indexes took:{timer.Elapsed.TotalSeconds}");
                 var storageTableChecker = (QueryStoreTableChecker)serviceProvider.GetService(typeof(QueryStoreTableChecker));
                 storageTableChecker?.EnsureQueryStoreTableExist();
             }
