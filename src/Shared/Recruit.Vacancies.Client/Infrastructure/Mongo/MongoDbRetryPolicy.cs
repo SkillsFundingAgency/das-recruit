@@ -2,27 +2,41 @@
 using MongoDB.Driver;
 using Polly;
 using Polly.Retry;
+using Polly.Contrib.WaitAndRetry;
 using System;
+using Polly.Wrap;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo
 {
     public static class MongoDbRetryPolicy
     {
-        public static RetryPolicy GetRetryPolicy(ILogger logger)
+        public static AsyncRetryPolicy GetRetryPolicy(ILogger logger)
         {
-            return AddWaitAndRetry(Policy.Handle<MongoException>(), logger);
+            var policyBuilderJittered = 
+                Policy
+                    .Handle<MongoCommandException>()
+                        .Or<MongoWriteException>()
+                        .Or<MongoBulkWriteException>()
+                    .WaitAndRetryAsync(
+                Backoff.DecorrelatedJitterBackoffV2(TimeSpan.FromMilliseconds(200), 10), 
+                        (_, timeSpan, retryCount, context) =>
+                                {
+                                    logger.LogWarning($"Throttled (429) {context.OperationKey}. Retrying {retryCount} in {timeSpan.TotalMilliseconds}ms...");
+                                });
+            
+            return policyBuilderJittered;
         }
 
-        public static RetryPolicy GetConnectionRetryPolicy(ILogger logger)
+        public static AsyncRetryPolicy GetConnectionRetryPolicy(ILogger logger)
         {
             return AddWaitAndRetry(Policy.Handle<MongoConnectionClosedException>(), logger);
 
         }
 
-        private static RetryPolicy AddWaitAndRetry(PolicyBuilder policyBuilder, ILogger logger)
+        private static AsyncRetryPolicy AddWaitAndRetry(PolicyBuilder policyBuilder, ILogger logger)
         {
             return policyBuilder
-                .WaitAndRetry(new[]
+                .WaitAndRetryAsync(new[]
                 {
                     TimeSpan.FromSeconds(1),
                     TimeSpan.FromSeconds(2),
