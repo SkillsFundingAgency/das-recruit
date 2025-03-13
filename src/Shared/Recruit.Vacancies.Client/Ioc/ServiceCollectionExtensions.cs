@@ -47,7 +47,6 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProviderSumm
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummariesProvider;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Slack;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.StorageQueue;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.TableStore;
 using FluentValidation;
 using MediatR;
 using Microsoft.Extensions.Configuration;
@@ -72,7 +71,7 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
             RegisterClients(services);
             RegisterServiceDeps(services, configuration);
             RegisterAccountApiClientDeps(services);
-            RegisterTableStorageProviderDeps(services, configuration);
+            RegisterMongoQueryStores(services, configuration);
             RegisterRepositories(services, configuration);
             RegisterOutOfProcessEventDelegatorDeps(services, configuration);
             RegisterQueueStorageServices(services, configuration);
@@ -235,23 +234,10 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
             services.AddTransient<ICommunicationQueueService>(_ => new CommunicationStorageQueueService(communicationStorageConnectionString));
         }
 
-        private static void RegisterTableStorageProviderDeps(IServiceCollection services, IConfiguration configuration)
+        private static void RegisterMongoQueryStores(IServiceCollection services, IConfiguration configuration)
         {
-            var storageConnectionString = configuration.GetConnectionString("TableStorage");
-            var useTableStorageQueryStore = configuration.GetValue<bool>("RecruitConfiguration:UseTableStorageQueryStore");
-            services.AddTransient<QueryStoreTableChecker>();
-            services.Configure<TableStorageConnectionsDetails>(options =>
-            {
-                options.ConnectionString = storageConnectionString;
-            });
-
-            if (useTableStorageQueryStore)
-                services.AddTransient<IQueryStore, TableStorageQueryStore>();
-            else
-            {
-                services.AddTransient<IQueryStore, MongoQueryStore>();
-                services.AddTransient<IQueryStoreHouseKeepingService, MongoQueryStore>();
-            }
+            services.AddTransient<IQueryStore, MongoQueryStore>();
+            services.AddTransient<IQueryStoreHouseKeepingService, MongoQueryStore>();
         }
 
         private static void AddValidation(IServiceCollection services)
