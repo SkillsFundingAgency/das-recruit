@@ -146,8 +146,9 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.ApplicationReview
                         Subject = x.Subject.Contains('|') ? x.Subject.Split('|')[1] : x.Subject,
                         Grade = x.Grade,
                         AdditionalInformation = x.AdditionalInformation,
-                        IsPredicted = x.IsPredicted
-                    }).ToList()
+                        IsPredicted = x.IsPredicted,
+                        QualificationOrder = x.QualificationOrder
+                    }).OrderBy(ord => ord.QualificationOrder).ToList()
             };
 
             return result;
