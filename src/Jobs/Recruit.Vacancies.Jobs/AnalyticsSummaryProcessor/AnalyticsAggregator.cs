@@ -23,14 +23,16 @@ public class AnalyticsAggregator(IOuterApiClient apiClient, ITimeProvider timePr
     {
         var endDate = timeProvider.Now;
         var startDate = new DateTime(endDate.Year, endDate.Month, endDate.Day);
-        
+        var vacancyRef =vacancyAnalyticsV2QueueMessage.VacancyReference.Contains('-') ?
+            vacancyAnalyticsV2QueueMessage.VacancyReference[
+                ..vacancyAnalyticsV2QueueMessage.VacancyReference.IndexOf('-')] : vacancyAnalyticsV2QueueMessage.VacancyReference;
 
-        var metrics = await queryStoreReader.GetVacancyAnalyticsSummaryV2Async(vacancyAnalyticsV2QueueMessage.VacancyReference);
+        var metrics = await queryStoreReader.GetVacancyAnalyticsSummaryV2Async(vacancyRef);
         if (metrics == null)
         {
             metrics = new VacancyAnalyticsSummaryV2
             {
-                VacancyReference = vacancyAnalyticsV2QueueMessage.VacancyReference,
+                VacancyReference = vacancyRef,
                 ViewType = nameof(VacancyAnalyticsSummaryV2),
                 VacancyAnalytics = []
             };
@@ -66,7 +68,7 @@ public class AnalyticsAggregator(IOuterApiClient apiClient, ITimeProvider timePr
         
         return new VacancyAnalyticsSummary
         {
-            VacancyReference = Convert.ToInt32(vacancyAnalyticsV2QueueMessage.VacancyReference),
+            VacancyReference = Convert.ToInt32(vacancyRef),
             NoOfApprenticeshipSearches = metrics.VacancyAnalytics.Sum(c=>c.SearchResultsCount),
             NoOfApprenticeshipSearchesSevenDaysAgo = sevenDaysAgoTotals.Sum(c=>c.SearchResultsCount),
             NoOfApprenticeshipSearchesSixDaysAgo = sixDaysAgoTotals.Sum(c=>c.SearchResultsCount),
