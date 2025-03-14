@@ -102,6 +102,7 @@ public class LocationController(IWebHostEnvironment hostingEnvironment) : Employ
         VacancyRouteModel vacancyRouteModel,
         [FromQuery] bool wizard)
     {
+        ModelState.ThrowIfBindingErrors();
         var vacancy = await utility.GetAuthorisedVacancyForEditAsync(vacancyRouteModel, RouteNames.AddOneLocation_Get);
         var allLocations = await vacancyLocationService.GetVacancyLocations(vacancy, vacancyRouteModel.Ukprn);
         var selectedLocation = vacancy.EmployerLocations is { Count: 1 } ? vacancy.EmployerLocations[0] : null;
