@@ -7,7 +7,6 @@ using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.TableStore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.Extensions.Configuration;
@@ -132,8 +131,6 @@ namespace Esfa.Recruit.Provider.Web
                 collectionChecker?.CreateIndexes().Wait();
                 timer.Stop();
                 _logger.LogInformation($"Finished creating indexes took:{timer.Elapsed.TotalSeconds}");
-                var storageTableChecker = (QueryStoreTableChecker)serviceProvider.GetService(typeof(QueryStoreTableChecker));
-                storageTableChecker?.EnsureQueryStoreTableExist();
             }
             catch (Exception ex)
             {
