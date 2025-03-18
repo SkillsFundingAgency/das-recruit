@@ -5,7 +5,7 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Extensions
 {
     public static class DateTimeExtensions
     {
-        private const string DisplayDateFormat = "dd MMM yyyy";
+        private const string DisplayDateFormat = "d MMM yyyy";
         private const string TimeDisplayFormat = "h.mm";
         private const string DateTimeDisplayFormat = DisplayDateFormat + " " + TimeDisplayFormat;
 
