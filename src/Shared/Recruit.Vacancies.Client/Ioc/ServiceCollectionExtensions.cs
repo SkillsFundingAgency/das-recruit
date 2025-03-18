@@ -45,7 +45,6 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelationship
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProviderSummaryProvider;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummariesProvider;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.Slack;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.StorageQueue;
 using FluentValidation;
 using MediatR;
@@ -108,7 +107,6 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
         {
             // Configuration
             services.AddSingleton(configuration);
-            services.Configure<SlackConfiguration>(configuration.GetSection("Slack"));
             services.Configure<NextVacancyReviewServiceConfiguration>(o => o.VacancyReviewAssignationTimeoutMinutes = configuration.GetValue<int>("RecruitConfiguration:VacancyReviewAssignationTimeoutMinutes"));
             services.Configure<PasAccountApiConfiguration>(configuration.GetSection("PasAccountApiConfiguration"));
             services.Configure<OuterApiConfiguration>(configuration.GetSection("OuterApiConfiguration"));
@@ -119,8 +117,6 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
             // Application Service
             services.AddTransient<IGenerateVacancyNumbers, MongoSequenceStore>();
             services.AddTransient<ISlaService, SlaService>();
-            services.AddTransient<INotifyVacancyReviewUpdates, SlackNotifyVacancyReviewUpdates>();
-            services.AddTransient<INotifyVacancyUpdates, SlackNotifyVacancyUpdates>();
             services.AddTransient<IVacancyService, VacancyService>();
             services.AddTransient<IVacancyTransferService, VacancyTransferService>();
             services.AddTransient<IVacancyReviewTransferService, VacancyReviewTransferService>();
@@ -150,7 +146,6 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
 
             // Infrastructure Services
             services.AddTransient<IEmployerAccountProvider, EmployerAccountProvider>();
-            services.AddTransient<ISlackClient, SlackClient>();
             services.AddTransient<ITrainingProviderService, TrainingProviderService>();
             services.AddTransient<ITrainingProviderSummaryProvider, TrainingProviderSummaryProvider>();
             services.AddTransient<IPasAccountProvider, PasAccountProvider>();
