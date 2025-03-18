@@ -80,7 +80,10 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo
             await db.GetCollection<ApplicationReview>(MongoDbCollectionNames.ApplicationReviews).Indexes.CreateManyAsync(new []
             {
                 new CreateIndexModel<ApplicationReview>(Builders<ApplicationReview>.IndexKeys.Ascending(d => d.VacancyReference)),
-                new CreateIndexModel<ApplicationReview>(Builders<ApplicationReview>.IndexKeys.Ascending(d => d.Status))
+                new CreateIndexModel<ApplicationReview>(Builders<ApplicationReview>.IndexKeys.Ascending(d => d.VacancyReference).Ascending(d=>d.IsWithdrawn)),
+                new CreateIndexModel<ApplicationReview>(Builders<ApplicationReview>.IndexKeys.Ascending(d => d.Status)),
+                new CreateIndexModel<ApplicationReview>(Builders<ApplicationReview>.IndexKeys.Ascending(d => d.IsWithdrawn)),
+                new CreateIndexModel<ApplicationReview>(Builders<ApplicationReview>.IndexKeys.Ascending(d => d.IsWithdrawn).Ascending(d=>d.Status))
             }, new CreateManyIndexesOptions
             {
                 MaxTime = TimeSpan.FromHours(1)

@@ -7,6 +7,7 @@ using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Provider.Web.ViewModels.Part1.AddLocation;
 using Esfa.Recruit.Provider.Web.ViewModels.Validations;
 using Esfa.Recruit.Shared.Web.Domain;
+using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Locations;
 using Microsoft.AspNetCore.Mvc;
@@ -21,6 +22,7 @@ public class AddLocationController(IUtility utility) : Controller
     [HttpGet("add-location", Name = RouteNames.AddLocation_Get)]
     public async Task<IActionResult> AddLocation(AddLocationJourneyModel model)
     {
+        ModelState.ThrowIfBindingErrors();
         TempData[TempDataKeys.AddLocationReturnPath] = RouteNames.AddLocation_Get;
         string postcode = TempData[TempDataKeys.Postcode] as string;
         var viewModel = await GetAddLocationViewModel(utility, model, postcode, model.Origin, model.Wizard);

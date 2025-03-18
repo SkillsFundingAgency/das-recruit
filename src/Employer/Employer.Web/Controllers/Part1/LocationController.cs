@@ -111,6 +111,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
             VacancyRouteModel vacancyRouteModel,
             [FromQuery] bool wizard)
         {
+            ModelState.ThrowIfBindingErrors();
             var vacancy = await utility.GetAuthorisedVacancyForEditAsync(vacancyRouteModel, RouteNames.AddOneLocation_Get);
             var allLocations = await vacancyLocationService.GetVacancyLocations(vacancy);
             var selectedLocation = vacancy.EmployerLocations is { Count: 1 } ? vacancy.EmployerLocations[0] : null;
