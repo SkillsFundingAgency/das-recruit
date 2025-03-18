@@ -253,7 +253,9 @@
                     interview?
                 </dt>
                 <dd class="govuk-summary-list__value">
-                    @(!string.IsNullOrEmpty(Model.Support) ? Model.Support : "No, I don't need support or I'll discuss it if I get an interview")
+                    <p class="faa-user-content">
+                        @(!string.IsNullOrEmpty(Model.Support) ? Model.Support : "No, I don't need support or I'll discuss it if I get an interview")
+                    </p>
                 </dd>
             </div>
         </dl>
