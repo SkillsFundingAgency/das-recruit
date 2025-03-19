@@ -8,7 +8,6 @@ public class EnterLocationManuallyEditModel: AddLocationJourneyModel
     public string AddressLine1 { get; init; }
     public string AddressLine2 { get; init; }
     public string City { get; init; }
-    public string County { get; init; }
     public string Postcode { get; init; }
 
     public Address ToDomain()
@@ -18,7 +17,6 @@ public class EnterLocationManuallyEditModel: AddLocationJourneyModel
             AddressLine1 = AddressLine1?.Humanize(LetterCasing.Title),
             AddressLine2 = AddressLine2?.Humanize(LetterCasing.Title),
             AddressLine3 = City?.Humanize(LetterCasing.Title),
-            AddressLine4 = County?.Humanize(LetterCasing.Title),
             Postcode = Postcode?.ToUpper()
         };
     }
