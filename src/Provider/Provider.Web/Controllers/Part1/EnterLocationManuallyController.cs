@@ -23,6 +23,7 @@ public class EnterLocationManuallyController(IUtility utility) : Controller
     [HttpGet("enter-location", Name = RouteNames.EnterAddressManually_Get)]
     public async Task<IActionResult> EnterLocationManually(AddLocationJourneyModel model)
     {
+        ModelState.ThrowIfBindingErrors();
         string returnRoute = TempData.Peek(TempDataKeys.AddLocationReturnPath) as string;
         string postcode = TempData.Peek(TempDataKeys.Postcode) as string;
         var viewModel = await GetEnterLocationManuallyViewModel(utility, model, RouteNames.EnterAddressManually_Get, new Address { Postcode = postcode }, returnRoute);
@@ -74,7 +75,6 @@ public class EnterLocationManuallyController(IUtility utility) : Controller
             AddressLine1 = address.AddressLine1,
             AddressLine2 = address.AddressLine2,
             City = address.AddressLine3,
-            County = address.AddressLine4,
             Postcode = address.Postcode,
         };
         viewModel.PageInfo.SetWizard(model.Wizard);

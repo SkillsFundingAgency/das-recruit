@@ -20,7 +20,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
 
         public async Task<IEnumerable<string>> GetSearchSuggestionsAsync(string searchTerm, string employerAccountId)
         {
-            if (searchTerm == null || searchTerm.Trim().Length < 3) return Enumerable.Empty<string>();
+            if (searchTerm == null || searchTerm.Trim().Length < 5) return Enumerable.Empty<string>();
 
             var vacancies = (await GetVacanciesAsync(employerAccountId, searchTerm)).ToList();
 

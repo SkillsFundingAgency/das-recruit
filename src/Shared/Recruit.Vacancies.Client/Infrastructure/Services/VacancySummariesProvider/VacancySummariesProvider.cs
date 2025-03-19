@@ -46,10 +46,17 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                     BuildBsonDocumentFilterValues(ukprn, null, null, bsonArray)
                 }
             };
+            var applicationsMatch  = new BsonDocument
+            {
+                {
+                    "$match",
+                    BuildBsonDocumentFilterValues(ukprn, null, FilteringOptions.Dashboard, bsonArray)
+                }
+            }; 
             var builder = new VacancySummaryAggQueryBuilder();
             var aggPipelines = builder.GetAggregateQueryPipelineDashboard(match);
-            var applicationAggPipeline = builder.GetAggregateQueryPipelineDashboardApplications(match);
-            var closingSoonAggPipeline = builder.GetAggregateQueryPipelineVacanciesClosingSoonDashboard(match);
+            var applicationAggPipeline = builder.GetAggregateQueryPipelineDashboardApplications(applicationsMatch);
+            var closingSoonAggPipeline = builder.GetAggregateQueryPipelineVacanciesClosingSoonDashboard(applicationsMatch);
             var dashboardValuesTask =  RunDashboardAggPipelineQuery(aggPipelines);
             var applicationDashboardValuesTask = RunApplicationsDashboardAggPipelineQuery(applicationAggPipeline);
             var closingSoonDashboardValuesTask = RunApplicationsDashboardAggPipelineQuery(closingSoonAggPipeline);
@@ -92,11 +99,18 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                     BuildSharedApplicationsVacanciesMatch()
                 }
             };
+            var applicationsMatch  = new BsonDocument
+            {
+                {
+                    "$match",
+                    BuildBsonDocumentFilterValues(null, employerAccountId, FilteringOptions.Dashboard, bsonArray)
+                }
+            }; 
             var builder = new VacancySummaryAggQueryBuilder();
             var aggPipelines = builder.GetAggregateQueryPipelineDashboard(match,employerReviewMatch);
-            var applicationAggPipeline = builder.GetAggregateQueryPipelineDashboardApplications(match, employerReviewMatch);
+            var applicationAggPipeline = builder.GetAggregateQueryPipelineDashboardApplications(applicationsMatch, employerReviewMatch);
             var sharedApplicationAggPipeline = builder.GetAggregateQueryPipelineDashboardApplications(match, liveVacanciesMatch);
-            var closingSoonAggPipeline = builder.GetAggregateQueryPipelineVacanciesClosingSoonDashboard(match, employerReviewMatch);
+            var closingSoonAggPipeline = builder.GetAggregateQueryPipelineVacanciesClosingSoonDashboard(applicationsMatch, employerReviewMatch);
             
             var dashboardValuesTask = RunDashboardAggPipelineQuery(aggPipelines);
             var applicationDashboardValuesTask = RunApplicationsDashboardAggPipelineQuery(applicationAggPipeline);
@@ -194,7 +208,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
 
             var collection = GetCollection<VacancyTransferInfo>();
 
-            var result = await RetryPolicy.Execute(_ =>
+            var result = await RetryPolicy.ExecuteAsync(_ =>
                     collection.Find(filter)
                         .Project<VacancyTransferInfo>(GetProjection<VacancyTransferInfo>())
                         .ToListAsync(),
@@ -251,7 +265,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
             var db = GetDatabase();
             var collection = db.GetCollection<BsonDocument>(MongoDbCollectionNames.Vacancies);
             
-            var vacancyDashboard = await RetryPolicy.Execute(async context =>
+            var vacancyDashboard = await RetryPolicy.ExecuteAsync(async context =>
                 {
                     var aggResults = await collection.AggregateAsync<VacancyDashboardAggQueryResponseDto>(pipeline);
                     return await aggResults.ToListAsync();
@@ -267,7 +281,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
             var db = GetDatabase();
             var collection = db.GetCollection<BsonDocument>(MongoDbCollectionNames.Vacancies);
             
-            var vacancyDashboard = await RetryPolicy.Execute(async context =>
+            var vacancyDashboard = await RetryPolicy.ExecuteAsync(async context =>
                 {
                     var aggResults = await collection.AggregateAsync<VacancyApplicationsDashboardResponseDto>(pipeline);
                     return await aggResults.ToListAsync();
@@ -283,7 +297,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
             var db = GetDatabase();
             var collection = db.GetCollection<BsonDocument>(MongoDbCollectionNames.Vacancies);
 
-            var vacancyDashboard = await RetryPolicy.Execute(async context =>
+            var vacancyDashboard = await RetryPolicy.ExecuteAsync(async context =>
             {
                 var aggResults = await collection.AggregateAsync<VacancySharedApplicationsDashboardResponseDto>(pipeline);
                 return await aggResults.ToListAsync();
@@ -298,7 +312,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
             var db = GetDatabase();
             var collection = db.GetCollection<BsonDocument>(MongoDbCollectionNames.Vacancies);
             
-            var vacancySummaries = await RetryPolicy.Execute(async context =>
+            var vacancySummaries = await RetryPolicy.ExecuteAsync(async context =>
                 {
                     var aggResults = await collection.AggregateAsync<CountResponseDto>(pipeline);
                     return await aggResults.FirstOrDefaultAsync();
@@ -312,7 +326,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
             var db = GetDatabase();
             var collection = db.GetCollection<BsonDocument>(MongoDbCollectionNames.Vacancies);
             
-            var vacancySummaries = await RetryPolicy.Execute(async context =>
+            var vacancySummaries = await RetryPolicy.ExecuteAsync(async context =>
                 {
                     var aggResults = await collection.AggregateAsync<VacancySummaryAggQueryResponseDto>(pipeline);
                     return await aggResults.ToListAsync();
@@ -470,6 +484,13 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                         };
                         document.Add("status", new BsonDocument{{"$in", vacancyStatuses }});
                         document.Add("ownerType", "Provider");
+                        break;
+                    case FilteringOptions.Dashboard:
+                        document.Add("status", new BsonDocument{{"$in", new BsonArray
+                        {
+                            VacancyStatus.Live.ToString(),
+                            VacancyStatus.Closed.ToString()
+                        } }});
                         break;
                 }
                 

@@ -1,9 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Threading.Tasks;
-using Azure.Storage.Queues;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.TableStore;
 using Esfa.Recruit.Vacancies.Client.Ioc;
 using Esfa.Recruit.Vacancies.Jobs.NServiceBus;
 using Microsoft.Azure.WebJobs.Host;
@@ -116,9 +114,7 @@ namespace Esfa.Recruit.Vacancies.Jobs
             {
                 var collectionChecker = (MongoDbCollectionChecker)serviceProvider.GetService(typeof(MongoDbCollectionChecker));
                 collectionChecker.EnsureCollectionsExist();
-                collectionChecker.CreateIndexes();
-                var storageTableChecker = (QueryStoreTableChecker)serviceProvider.GetService(typeof(QueryStoreTableChecker));
-                storageTableChecker.EnsureQueryStoreTableExist();
+                collectionChecker.CreateIndexes().Wait();
             }
             catch (Exception ex)
             {
