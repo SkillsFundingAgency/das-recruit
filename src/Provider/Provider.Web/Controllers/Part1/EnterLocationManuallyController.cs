@@ -80,7 +80,6 @@ public class EnterLocationManuallyController(IUtility utility) : Controller
             AddressLine1 = address.AddressLine1,
             AddressLine2 = address.AddressLine2,
             City = address.AddressLine3,
-            County = address.AddressLine4,
             Postcode = address.Postcode,
         };
         viewModel.PageInfo.SetWizard(model.Wizard);
