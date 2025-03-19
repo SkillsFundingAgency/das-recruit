@@ -8,5 +8,6 @@
         public bool IsPredicted { get; set; }
         public int Year { get; set; }
         public string AdditionalInformation { get; set; }
+        public short? QualificationOrder { get; set; }
     }
 }
