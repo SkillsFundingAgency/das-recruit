@@ -10,59 +10,42 @@ using Esfa.Recruit.Vacancies.Jobs.Configuration;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
 
-namespace Esfa.Recruit.Vacancies.Jobs.Triggers.QueueTriggers
+namespace Esfa.Recruit.Vacancies.Jobs.Triggers.QueueTriggers;
+
+public class GenerateAllVacancyAnalyticsQueueTrigger(
+    ILogger<GenerateAllVacancyAnalyticsQueueTrigger> logger,
+    RecruitWebJobsSystemConfiguration jobsConfig,
+    IRecruitQueueService queue,
+    IVacancyQuery vacancyQuery)
 {
-    public class GenerateAllVacancyAnalyticsQueueTrigger
+    private const string JobName = nameof(GenerateAllVacancyAnalyticsQueueTrigger);
+
+    public async Task GenerateAllVacancyAnalyticsAsync([QueueTrigger(QueueNames.GenerateAllVacancyAnalyticsSummariesQueueName, Connection = "QueueStorage")] string message, TextWriter log)
     {
-        private readonly ILogger<GenerateVacancyAnalyticsSummaryQueueTrigger> _logger;
-        private readonly RecruitWebJobsSystemConfiguration _jobsConfig;
-        private readonly IRecruitQueueService _queue;
-        private readonly IVacancyQuery _vacancyQuery;
-
-        private string JobName => GetType().Name;
-
-        public GenerateAllVacancyAnalyticsQueueTrigger(ILogger<GenerateVacancyAnalyticsSummaryQueueTrigger> logger, RecruitWebJobsSystemConfiguration jobsConfig,
-            IRecruitQueueService queue, IVacancyQuery vacancyQuery)
+        if (jobsConfig.DisabledJobs.Contains(JobName))
         {
-            _logger = logger;
-            _jobsConfig = jobsConfig;
-            _queue = queue;
-            _vacancyQuery = vacancyQuery;
+            logger.LogDebug("{JobName} is disabled, skipping ...", JobName);
+            return;
         }
-
-        public async Task GenerateAllVacancyAnalyticsAsync([QueueTrigger(QueueNames.GenerateAllVacancyAnalyticsSummariesQueueName, Connection = "QueueStorage")] string message, TextWriter log)
+            
+        try
         {
-            if (_jobsConfig.DisabledJobs.Contains(JobName))
+            logger.LogInformation("Starting {JobName}", JobName);
+            var allVacancyReferences = await vacancyQuery.GetAllVacancyReferencesAsync();
+
+            logger.LogInformation("Adding analytics generation messages for {allVacancyReferencesCount} vacancies", allVacancyReferences.Count());
+            foreach (long vacancyReference in allVacancyReferences)
             {
-                _logger.LogDebug($"{JobName} is disabled, skipping ...");
-                return;
+                var queueMessage = new VacancyAnalyticsQueueMessage { VacancyReference = vacancyReference };
+                await queue.AddMessageAsync(queueMessage);
             }
 
-            try
-            {
-                _logger.LogInformation($"Starting {this.GetType().Name}");
-
-                var allVacancyReferences = await _vacancyQuery.GetAllVacancyReferencesAsync();
-
-                _logger.LogInformation($"Adding analytics generation messages for {allVacancyReferences.Count()} vacancies");
-
-                foreach (var vacancyReference in allVacancyReferences)
-                {
-                    var queueMessage = new VacancyAnalyticsQueueMessage
-                    {
-                        VacancyReference = vacancyReference
-                    };
-
-                    await _queue.AddMessageAsync(queueMessage);
-                }
-
-                _logger.LogInformation($"Finished {this.GetType().Name}");
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Unable to add analytics generation messages");
-                throw;
-            }
+            logger.LogInformation("Finished {JobName}", JobName);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Unable to add analytics generation messages");
+            throw;
         }
     }
 }
