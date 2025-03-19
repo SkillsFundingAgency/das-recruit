@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Linq.Expressions;
 using Esfa.Recruit.Shared.Web.Extensions;
@@ -144,6 +145,8 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview
         {
             return Review.FieldIndicators.Any(f => f.ReviewFieldIdentifier == fieldIdentifier);
         }
+
+        public bool HasUserConfirmation { get; set; }
 
         public IList<string> OrderedFieldNames => new List<string>
         {

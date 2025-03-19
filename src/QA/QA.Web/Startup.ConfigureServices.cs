@@ -16,7 +16,6 @@ using Esfa.Recruit.Shared.Web.RuleTemplates;
 using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.TableStore;
 using Esfa.Recruit.Vacancies.Client.Ioc;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -48,7 +47,7 @@ namespace Esfa.Recruit.Qa.Web
                 .AddConfiguration(configuration)
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddEnvironmentVariables();
-                
+
 #if DEBUG
             configBuilder
                 .AddJsonFile("appsettings.json", optional:true)
@@ -150,9 +149,7 @@ namespace Esfa.Recruit.Qa.Web
                 var serviceProvider = services.BuildServiceProvider();
                 var collectionChecker = (MongoDbCollectionChecker)serviceProvider.GetService(typeof(MongoDbCollectionChecker));
                 collectionChecker?.EnsureCollectionsExist();
-                collectionChecker?.CreateIndexes();
-                var storageTableChecker = (QueryStoreTableChecker)serviceProvider.GetService(typeof(QueryStoreTableChecker));
-                storageTableChecker?.EnsureQueryStoreTableExist();
+                collectionChecker?.CreateIndexes().Wait();
             }
             catch (Exception ex)
             {

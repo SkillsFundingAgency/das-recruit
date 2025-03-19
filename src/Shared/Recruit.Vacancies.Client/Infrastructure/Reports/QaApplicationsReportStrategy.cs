@@ -178,7 +178,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Reports
             queryBson.Insert(queryBson.Count, new BsonDocument {{"$limit",500}});
             var pipelineDefinition = queryBson.Values.Select(p => p.ToBsonDocument()).ToArray();
             List<BsonDocument> currentResults =
-                await RetryPolicy.Execute(_ =>
+                await RetryPolicy.ExecuteAsync(_ =>
                         _collection.Aggregate<BsonDocument>(pipelineDefinition).ToListAsync(),
                     new Context(nameof(GetApplicationReviewsAsync)));
             await ProcessResultsAsync(currentResults);
