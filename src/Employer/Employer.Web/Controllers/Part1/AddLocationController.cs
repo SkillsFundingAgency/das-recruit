@@ -38,7 +38,7 @@ public class AddLocationController(IUtility utility) : Controller
         if (ModelState.IsValid)
         {
             bool? isPostcodeEnglish = await locationsService.IsPostcodeInEnglandAsync(model.Postcode);
-            if (isPostcodeEnglish is true)
+            if (isPostcodeEnglish is not false)
             {
                 var response = await getAddressesClient.GetAddresses(model.Postcode);
                 if (response is not null)
