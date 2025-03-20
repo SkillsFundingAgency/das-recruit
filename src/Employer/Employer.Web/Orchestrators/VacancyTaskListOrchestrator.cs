@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -13,10 +14,12 @@ using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Commands;
 using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
+using Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
 using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Locations;
 using Microsoft.Extensions.Logging;
 using ErrMsg = Esfa.Recruit.Shared.Web.ViewModels.ErrorMessages;
 
@@ -31,6 +34,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
         IReviewSummaryService reviewSummaryService,
         ILegalEntityAgreementService legalEntityAgreementService,
         IMessaging messaging,
+        ILocationsService locationsService,
         IFeature feature) : EntityValidatingOrchestrator<Vacancy, VacancyPreviewViewModel>(logger)
     {
         private const VacancyRuleSet SoftValidationRules = VacancyRuleSet.MinimumWage | VacancyRuleSet.TrainingExpiryDate;
@@ -107,19 +111,37 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
         private EntityValidationResult ValidateVacancy(Vacancy vacancy, VacancyRuleSet rules)
         {
             var result = recruitVacancyClient.Validate(vacancy, rules);
-            FlattenErrors(result.Errors);
+            result.Errors = FlattenErrors(result.Errors, vacancy);
             return result;
         }
         
-        private void FlattenErrors(IList<EntityValidationError> errors)
+        private static List<EntityValidationError> FlattenErrors(IList<EntityValidationError> errors, Vacancy vacancy)
         {
             //Flatten Qualification errors to its ViewModel parent instead. 'Qualifications[1].Grade' becomes 'Qualifications'
             foreach (var error in errors.Where(e => e.PropertyName.StartsWith(nameof(Vacancy.Qualifications))))
             {
                 error.PropertyName = nameof(VacancyPreviewViewModel.Qualifications);
             }
+            
+            //Flatten EmployerLocations errors, e.g. 'EmployerLocations[0].Country' becomes 'EmployerLocations.Country'
+            var addressErrors = errors.Where(e => e.PropertyName.StartsWith("EmployerLocations[")).ToList();
+            foreach (var error in addressErrors)
+            {
+                string[] tokens = error.PropertyName.Split('.');
+                error.PropertyName = $"EmployerLocations.{tokens.LastOrDefault()}";
+            }
+            
+            if (vacancy.EmployerLocationOption == AvailableWhere.MultipleLocations)
+            {
+                errors.Where(x => x.PropertyName == "EmployerLocations.Country").ToList().ForEach(x =>
+                {
+                    x.ErrorCode = $"Multiple-{VacancyValidationErrorCodes.AddressCountryNotInEngland}";
+                });
+            }
+
+            return errors.DistinctBy(x => $"{x.PropertyName}: {x.ErrorMessage}").ToList();
         }
-        
+
         private async Task<SubmitVacancyResponse> SubmitActionAsync(Vacancy vacancy, VacancyUser user)
         {
             var response = new SubmitVacancyResponse
@@ -174,17 +196,15 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             {
                 mappings.Add(e => e.EmployerLocations, vm => vm.AvailableLocations);
             }
-            else
-            {
-                mappings.Add(e => e.EmployerLocation, vm => vm.EmployerAddressElements);
-                mappings.Add(e => e.EmployerLocation.AddressLine1, vm => vm.EmployerAddressElements);
-                mappings.Add(e => e.EmployerLocation.AddressLine2, vm => vm.EmployerAddressElements);
-                mappings.Add(e => e.EmployerLocation.AddressLine3, vm => vm.EmployerAddressElements);
-                mappings.Add(e => e.EmployerLocation.AddressLine4, vm => vm.EmployerAddressElements);
-                mappings.Add(e => e.EmployerLocation.Postcode, vm => vm.EmployerAddressElements);
-                mappings.Add(e => e.EmployerLocation.Latitude, vm => vm.EmployerAddressElements);
-                mappings.Add(e => e.EmployerLocation.Longitude, vm => vm.EmployerAddressElements);
-            }
+            
+            mappings.Add(e => e.EmployerLocation, vm => vm.EmployerAddressElements);
+            mappings.Add(e => e.EmployerLocation.AddressLine1, vm => vm.EmployerAddressElements);
+            mappings.Add(e => e.EmployerLocation.AddressLine2, vm => vm.EmployerAddressElements);
+            mappings.Add(e => e.EmployerLocation.AddressLine3, vm => vm.EmployerAddressElements);
+            mappings.Add(e => e.EmployerLocation.AddressLine4, vm => vm.EmployerAddressElements);
+            mappings.Add(e => e.EmployerLocation.Postcode, vm => vm.EmployerAddressElements);
+            mappings.Add(e => e.EmployerLocation.Latitude, vm => vm.EmployerAddressElements);
+            mappings.Add(e => e.EmployerLocation.Longitude, vm => vm.EmployerAddressElements);
             
             mappings.Add(e => e.ApplicationInstructions, vm => vm.ApplicationInstructions);
             mappings.Add(e => e.ApplicationUrl, vm => vm.ApplicationUrl);
@@ -203,6 +223,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             if (!vacancy.CanSubmit)
                 throw new InvalidStateException(string.Format(ErrMsg.VacancyNotAvailableForEditing, vacancy.Title));
 
+            await UpdateAddressCountriesAsync(vacancy, user);
+            
             var employerDescriptionTask = recruitVacancyClient.GetEmployerDescriptionAsync(vacancy);
             var employerNameTask = recruitVacancyClient.GetEmployerNameAsync(vacancy);
             
@@ -216,6 +238,45 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
                 v => ValidateVacancy(v, SubmitValidationRules),
                 v => SubmitActionAsync(v, user)
             );
-        } 
+        }
+        
+        private async Task UpdateAddressCountriesAsync(Vacancy vacancy, VacancyUser user)
+        {
+            var locations = new List<Address>();
+            switch (vacancy.EmployerLocationOption)
+            {
+                case AvailableWhere.AcrossEngland:
+                    return;
+                case AvailableWhere.OneLocation:
+                case AvailableWhere.MultipleLocations:
+                    locations.AddRange(vacancy.EmployerLocations);
+                    break;
+                default:
+                    locations.Add(vacancy.EmployerLocation);
+                    break;
+            }
+            
+            var addressesToQuery = locations
+                .Where(x => x.Country is null)
+                .Select(x => x.Postcode)
+                .Distinct()
+                .ToList();
+            var results = await locationsService.GetBulkPostcodeDataAsync(addressesToQuery);
+
+            bool isDirty = false;
+            locations.ForEach(x =>
+            {
+                if (x.Country is null && results.TryGetValue(x.Postcode, out var postcodeData))
+                {
+                    x.Country = postcodeData.Country;
+                    isDirty = true;
+                }
+            });
+
+            if (isDirty)
+            {
+                await recruitVacancyClient.UpdateDraftVacancyAsync(vacancy, user);
+            }
+        }
     }
 }

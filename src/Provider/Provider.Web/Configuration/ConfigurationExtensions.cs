@@ -102,9 +102,6 @@ namespace Esfa.Recruit.Provider.Web.Configuration
             });
             services.Configure<CookieTempDataProviderOptions>(options => options.Cookie.Name = CookieNames.RecruitTempData);
             services.AddSingleton<ITempDataProvider, CookieTempDataProvider>();
-
-            bool useDfESignIn = configuration.GetSection("UseDfESignIn").Get<bool>();
-
             services.AddMvc(opts =>
                 {
                     opts.EnableEndpointRouting = false;
@@ -128,7 +125,6 @@ namespace Esfa.Recruit.Provider.Web.Configuration
             ).AddNewtonsoftJson()
             .EnableCookieBanner()
             .EnableGoogleAnalytics()
-            .SetDfESignInConfiguration(useDfESignIn)
             .SetDefaultNavigationSection(NavigationSection.Recruit);
             services.AddFluentValidationAutoValidation();
             services.AddFeatureManagement(configuration.GetSection("Features"));

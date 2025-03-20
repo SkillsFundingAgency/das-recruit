@@ -1,11 +1,8 @@
 ﻿using AutoFixture.NUnit3;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Vacancy;
-using FluentAssertions;
 using FluentAssertions.Execution;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Moq;
-using NUnit.Framework;
 using SFA.DAS.Recruit.Api.Controllers;
 using SFA.DAS.Recruit.Api.Queries;
 using SFA.DAS.Testing.AutoFixture;

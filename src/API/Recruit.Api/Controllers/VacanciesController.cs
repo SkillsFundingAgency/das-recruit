@@ -6,6 +6,7 @@ using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.Recruit.Api.Commands;
+using SFA.DAS.Recruit.Api.Extensions;
 using SFA.DAS.Recruit.Api.Mappers;
 using SFA.DAS.Recruit.Api.Models;
 using SFA.DAS.Recruit.Api.Queries;
@@ -15,10 +16,15 @@ namespace SFA.DAS.Recruit.Api.Controllers;
 [Route("api/[controller]")]
 public class VacanciesController(IMediator mediator) : ApiControllerBase
 {
-    private static readonly Dictionary<string, string> FieldMappings = new()
+    private static readonly Dictionary<string, string> SimpleFieldMappings = new()
     {
         { "EmployerLocation", "Address" },
         { "EmployerLocations", "Addresses" },
+    };
+    
+    private static readonly Dictionary<string, string> ComplexFieldMappings = new()
+    {
+        { @"EmployerLocations\[(?<1>\d)\].Country", "Addresses[{0}].Country" }
     };
 
     private static void MapValidationErrorsToModel(CreateVacancyCommandResponse response)
@@ -31,10 +37,29 @@ public class VacanciesController(IMediator mediator) : ApiControllerBase
         // We need to map internal vacancy properties to the model we accept.
         foreach (var validationError in response.ValidationErrors.OfType<DetailedValidationError>())
         {
-            if (FieldMappings.TryGetValue(validationError.Field, out string fieldMapping))
+            if (!PerformSimpleMapping(validationError))
             {
-                validationError.Field = fieldMapping;
+                PerformComplexMapping(validationError);
             }
+        }
+    }
+
+    private static bool PerformSimpleMapping(DetailedValidationError validationError)
+    {
+        bool result = SimpleFieldMappings.TryGetValue(validationError.Field, out string fieldMapping);
+        if (result)
+        {
+            validationError.Field = fieldMapping;
+        }
+
+        return result;
+    }
+
+    private static void PerformComplexMapping(DetailedValidationError validationError)
+    {
+        foreach (var fieldMapping in ComplexFieldMappings)
+        {
+            validationError.Field = validationError.Field.RegexReplaceWithGroups(fieldMapping.Key, fieldMapping.Value);
         }
     }
 

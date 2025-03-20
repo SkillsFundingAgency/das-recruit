@@ -60,7 +60,7 @@ public class VacancyExtensionsTests
         projectedVacancy.EmployerLocations.Should().AllSatisfy(x =>
         {
             var address = vacancy.EmployerLocations.Single(location => location.Postcode == x.Postcode);
-            x.Should().BeEquivalentTo(address, options => options.Excluding(o => o.HasGeocode));
+            x.Should().BeEquivalentTo(address, options => options.ExcludingMissingMembers());
         });
         projectedVacancy.EmployerWebsiteUrl.Should().Be(vacancy.EmployerWebsiteUrl);
     }
