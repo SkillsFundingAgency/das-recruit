@@ -54,9 +54,6 @@ namespace Esfa.Recruit.Vacancies.Jobs
             services.AddScoped<TransferVacancyToLegalEntityQueueTrigger>();
             services.AddScoped<TransferVacanciesFromEmployerReviewToQAReviewQueueTrigger>();
             services.AddScoped<UpdateProvidersQueueTrigger>();
-#if DEBUG
-            services.AddScoped<SpikeQueueTrigger>();
-#endif
 
             services.AddScoped<TransferVacanciesFromEmployerReviewToQAReviewJob>();
             services.AddScoped<TransferVacanciesFromProviderJob>();
