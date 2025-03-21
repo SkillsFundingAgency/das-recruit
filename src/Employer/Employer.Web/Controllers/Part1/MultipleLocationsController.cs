@@ -91,6 +91,7 @@ public class MultipleLocationsController : Controller
         ModelState.ThrowIfBindingErrors();
         var vacancy = await utility.GetAuthorisedVacancyForEditAsync(model, RouteNames.AddMoreThanOneLocation_Get);
         var allLocations = await vacancyLocationService.GetVacancyLocations(vacancy);
+        var groupedLocations = allLocations.GroupByLastFilledAddressLine();
 
         var selectedLocations = vacancy.EmployerLocations switch
         {
@@ -103,6 +104,7 @@ public class MultipleLocationsController : Controller
         {
             ApprenticeshipTitle = vacancy.Title,
             AvailableLocations = allLocations ?? [],
+            GroupedLocations = groupedLocations,
             VacancyId = model.VacancyId,
             EmployerAccountId = model.EmployerAccountId,
             PageInfo = utility.GetPartOnePageInfo(vacancy),
@@ -139,6 +141,7 @@ public class MultipleLocationsController : Controller
     {
         var vacancy = await utility.GetAuthorisedVacancyForEditAsync(editModel, RouteNames.AddMoreThanOneLocation_Post);
         var allLocations = await vacancyLocationService.GetVacancyLocations(vacancy);
+        var groupedLocations = allLocations.GroupByLastFilledAddressLine();
         var locations = editModel.SelectedLocations
             .Select(x => allLocations.FirstOrDefault(l => l.ToAddressString() == x))
             .Where(x => x is not null)
@@ -159,6 +162,7 @@ public class MultipleLocationsController : Controller
         {
             ApprenticeshipTitle = vacancy.Title,
             AvailableLocations = allLocations ?? [],
+            GroupedLocations = groupedLocations,
             VacancyId = editModel.VacancyId,
             EmployerAccountId = editModel.EmployerAccountId,
             PageInfo = utility.GetPartOnePageInfo(vacancy),
