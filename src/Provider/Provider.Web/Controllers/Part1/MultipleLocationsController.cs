@@ -101,7 +101,8 @@ public class MultipleLocationsController(IWebHostEnvironment hostingEnvironment)
         ModelState.ThrowIfBindingErrors();
         var vacancy = await utility.GetAuthorisedVacancyForEditAsync(model, RouteNames.AddMoreThanOneLocation_Get);
         var allLocations = await vacancyLocationService.GetVacancyLocations(vacancy, model.Ukprn);
-        
+        var groupedLocations = allLocations.GroupByLastFilledAddressLine();
+
         var selectedLocations = vacancy.EmployerLocations switch
         {
             _ when TempData[TempDataKeys.SelectedLocations] is string value => JsonSerializer.Deserialize<List<string>>(value),
@@ -113,6 +114,7 @@ public class MultipleLocationsController(IWebHostEnvironment hostingEnvironment)
         {
             ApprenticeshipTitle = vacancy.Title,
             AvailableLocations = allLocations ?? [],
+            GroupedLocations = groupedLocations,
             VacancyId = model.VacancyId,
             Ukprn = model.Ukprn,
             PageInfo = utility.GetPartOnePageInfo(vacancy),
@@ -144,6 +146,7 @@ public class MultipleLocationsController(IWebHostEnvironment hostingEnvironment)
     {
         var vacancy = await utility.GetAuthorisedVacancyForEditAsync(editModel, RouteNames.AddMoreThanOneLocation_Post);
         var allLocations = await vacancyLocationService.GetVacancyLocations(vacancy, editModel.Ukprn);
+        var groupedLocations = allLocations.GroupByLastFilledAddressLine();
         var locations = editModel.SelectedLocations
             .Select(x => allLocations.FirstOrDefault(l => l.ToAddressString() == x))
             .Where(x => x is not null)
@@ -164,6 +167,7 @@ public class MultipleLocationsController(IWebHostEnvironment hostingEnvironment)
         {
             ApprenticeshipTitle = vacancy.Title,
             AvailableLocations = allLocations ?? [],
+            GroupedLocations = groupedLocations,
             VacancyId = editModel.VacancyId,
             Ukprn = editModel.Ukprn,
             PageInfo = utility.GetPartOnePageInfo(vacancy),
