@@ -13,7 +13,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
             var actual = new GetTrainingProgrammesRequest();
             
             //Assert
-            actual.GetUrl.Should().Be("trainingprogrammes");
+            actual.GetUrl.Should().Be("trainingprogrammes?includeFoundationApprenticeships=False");
         }
     }
 }

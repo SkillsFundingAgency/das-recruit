@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using AutoFixture.NUnit3;
 using Esfa.Recruit.UnitTests.TestHelpers;
 using Esfa.Recruit.Vacancies.Client.Application.Cache;
+using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Requests;
@@ -28,7 +29,7 @@ public class WhenGettingAllApprenticeshipProgrammes
             .Setup(x => x.Get<GetTrainingProgrammesResponse>(It.IsAny<GetTrainingProgrammesRequest>()))
             .ReturnsAsync(apiResponse);
         var cache = new TestCache();
-        var provider = new ApprenticeshipProgrammeProvider(cache, mockTimeProvider.Object, outerApiClient.Object);
+        var provider = new ApprenticeshipProgrammeProvider(cache, mockTimeProvider.Object, outerApiClient.Object, Mock.Of<IFeature>());
         
         var actual = await provider.GetApprenticeshipProgrammesAsync(true);
 

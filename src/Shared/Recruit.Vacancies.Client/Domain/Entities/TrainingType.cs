@@ -4,5 +4,6 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
     {
         Standard = 0,
         Framework = 1,
+        Foundation = 2,
     }
 }
