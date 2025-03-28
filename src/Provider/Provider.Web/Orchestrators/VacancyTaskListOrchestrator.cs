@@ -264,7 +264,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             bool isDirty = false;
             locations.ForEach(x =>
             {
-                if (x.Country is null && results.TryGetValue(x.Postcode, out var postcodeData))
+                if (x.Country is null && results.TryGetValue(x.Postcode, out var postcodeData) && postcodeData is not null)
                 {
                     x.Country = postcodeData.Country;
                     isDirty = true;
