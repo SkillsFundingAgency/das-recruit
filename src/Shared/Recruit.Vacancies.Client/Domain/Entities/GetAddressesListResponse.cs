@@ -17,6 +17,7 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
         public string PostTown { get; set; }
         public string County { get; set; }
         public string Postcode { get; set; }
+        public string Country { get; set; }
         public double? Longitude { get; set; }
         public double? Latitude { get; set; }
         public double? Match { get; set; }

@@ -1,6 +1,4 @@
 ﻿using AutoFixture.NUnit3;
-using Moq;
-using NUnit.Framework;
 using SFA.DAS.Recruit.Api.Models;
 using SFA.DAS.Recruit.Api.Queries;
 using SFA.DAS.Testing.AutoFixture;
@@ -9,9 +7,7 @@ using System.Threading.Tasks;
 using System.Threading;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Vacancy;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore;
-using FluentAssertions;
 using FluentAssertions.Execution;
-using AutoFixture;
 using System.Linq;
 using SFA.DAS.Recruit.Api.Helpers;
 
