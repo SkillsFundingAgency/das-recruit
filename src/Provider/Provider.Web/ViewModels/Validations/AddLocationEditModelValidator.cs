@@ -9,6 +9,7 @@ public class AddLocationEditModelValidator : AbstractValidator<AddLocationEditMo
     public const string NotNullErrorMessage = "Enter a postcode to find the address or select ‘Enter address manually’";
     public const string MaxLengthErrorMessage = "Enter a postcode to find the address or select ‘Enter address manually’";
     public const string InvalidPostcodeErrorMessage = "Enter a recognised postcode or select ‘Enter address manually’";
+    public const string MustBeEnglishPostcode = "Postcode must be in England. Your apprenticeship must be in England to advertise it on this service";
     
     public AddLocationEditModelValidator()
     {

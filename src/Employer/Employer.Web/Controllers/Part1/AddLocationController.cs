@@ -1,5 +1,4 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Models.AddLocation;
@@ -9,7 +8,7 @@ using Esfa.Recruit.Employer.Web.ViewModels.Validations;
 using Esfa.Recruit.Shared.Web.Domain;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
-using FluentValidation;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Locations;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.FeatureManagement.Mvc;
 
@@ -32,26 +31,28 @@ public class AddLocationController(IUtility utility) : Controller
     [FeatureGate(FeatureNames.MultipleLocations)]
     [HttpPost("add-location", Name = RouteNames.AddLocation_Post)]
     public async Task<IActionResult> AddLocation(
-        [FromServices] IValidator<AddLocationEditModel> validator, 
+        [FromServices] ILocationsService locationsService,
         [FromServices] IGetAddressesClient getAddressesClient,
-        AddLocationEditModel model,
-        CancellationToken cancellationToken = default)
+        AddLocationEditModel model)
     {
-        var validationResult = await validator.ValidateAsync(model, cancellationToken);
-        if (validationResult.IsValid)
+        if (ModelState.IsValid)
         {
-            var response = await getAddressesClient.GetAddresses(model.Postcode);
-            if (response is not null)
+            bool? isPostcodeEnglish = await locationsService.IsPostcodeInEnglandAsync(model.Postcode);
+            if (isPostcodeEnglish is not false)
             {
-                TempData[TempDataKeys.Postcode] = model.Postcode.ToUpperInvariant();
-                return RedirectToRoute(RouteNames.SelectAnAddress_Get, new { model.VacancyId, model.EmployerAccountId, model.Wizard, model.Origin });
-            }
+                var response = await getAddressesClient.GetAddresses(model.Postcode);
+                if (response is not null)
+                {
+                    TempData[TempDataKeys.Postcode] = model.Postcode.ToUpperInvariant();
+                    return RedirectToRoute(RouteNames.SelectAnAddress_Get, new { model.VacancyId, model.EmployerAccountId, model.Wizard, model.Origin });
+                }
             
-            ModelState.AddModelError(nameof(AddLocationEditModel.Postcode), AddLocationEditModelValidator.InvalidPostcodeErrorMessage);
-        }
-        else
-        {
-            ModelState.AddModelError(nameof(AddLocationEditModel.Postcode), validationResult.ToString());
+                ModelState.AddModelError(nameof(AddLocationEditModel.Postcode), AddLocationEditModelValidator.InvalidPostcodeErrorMessage);
+            }
+            else
+            {
+                ModelState.AddModelError(nameof(AddLocationEditModel.Postcode), AddLocationEditModelValidator.MustBeEnglishPostcode);    
+            }
         }
         
         var viewModel = await GetAddLocationViewModel(utility, model, model.Postcode, model.Origin, model.Wizard);

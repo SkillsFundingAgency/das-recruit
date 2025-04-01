@@ -76,7 +76,8 @@ namespace Esfa.Recruit.Shared.Web.Extensions
                     AddressLine2 = addressItem.AddressLine2AndLine3,
                     AddressLine3 = addressItem.PostTown,
                     AddressLine4 = addressItem.County,
-                    Postcode = addressItem.Postcode
+                    Postcode = addressItem.Postcode,
+                    Country = addressItem.Country,
                 };
         }
         
