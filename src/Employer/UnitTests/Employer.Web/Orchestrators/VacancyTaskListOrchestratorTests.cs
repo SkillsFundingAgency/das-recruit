@@ -7,6 +7,7 @@ using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Mappings;
 using Esfa.Recruit.Employer.Web.Orchestrators;
 using Esfa.Recruit.Employer.Web.RouteModel;
+using Esfa.Recruit.Employer.Web.ViewModels.Preview;
 using Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview;
 using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
@@ -14,7 +15,9 @@ using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Locations;
 using Microsoft.Extensions.Options;
+using Address = Esfa.Recruit.Vacancies.Client.Domain.Entities.Address;
 
 namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators
 {
@@ -128,6 +131,52 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators
             var viewModel = await orchestrator.GetCreateVacancyTaskListModel(routeModel);
 
             viewModel.AccountLegalEntityCount.Should().Be(0);
+        }
+
+        [Test, MoqAutoData]
+        public async Task SubmitVacancyAsync_Updates_Vacancy_Addresses(
+            Address address1,
+            Address address2,
+            Address address3,
+            Vacancy vacancy,
+            VacancyUser user,
+            [Frozen] Mock<IRecruitVacancyClient> recruitVacancyClient,
+            [Frozen] Mock<IUtility> utility,
+            [Frozen] Mock<ILocationsService> locationsService,
+            [Greedy] VacancyTaskListOrchestrator sut
+            )
+        {
+            // arrange
+            var submitEditModel = new SubmitEditModel();
+            
+            address1.Country = null;
+            address2.Country = null;
+            address3.Country = null;
+            
+            vacancy.EmployerLocations = [address1, address2, address3];
+            vacancy.EmployerLocationOption = AvailableWhere.MultipleLocations;
+            vacancy.Status = VacancyStatus.Draft;
+            vacancy.IsDeleted = false;
+
+            var postcodeLookupResults = new Dictionary<string, PostcodeData>
+            {
+                { address1.Postcode, new PostcodeData(address1.Postcode, "England", 1, 1) },
+                { address2.Postcode, null },
+                { address3.Postcode, new PostcodeData(address1.Postcode, "Northern Ireland", 2, 2) },
+            };
+            
+            utility.Setup(x => x.GetAuthorisedVacancyAsync(submitEditModel, It.IsAny<string>())).ReturnsAsync(vacancy);
+            locationsService.Setup(x => x.GetBulkPostcodeDataAsync(It.IsAny<List<string>>())).ReturnsAsync(postcodeLookupResults);
+            
+            // arrange
+            await sut.SubmitVacancyAsync(submitEditModel, user);
+            
+            // assert
+            recruitVacancyClient.Verify(x => x.UpdateDraftVacancyAsync(vacancy, user), Times.Once);
+            
+            vacancy.EmployerLocations[0].Country.Should().Be("England");
+            vacancy.EmployerLocations[1].Country.Should().Be(null);
+            vacancy.EmployerLocations[2].Country.Should().Be("Northern Ireland");
         }
     }
 }

@@ -15,6 +15,7 @@ using Esfa.Recruit.Shared.Web;
 using Esfa.Recruit.Shared.Web.Domain;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Shared.Web.Services;
+using Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -25,6 +26,12 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1;
 [Route(RoutePaths.AccountVacancyRoutePath)]
 public class MultipleLocationsController(IWebHostEnvironment hostingEnvironment) : EmployerControllerBase(hostingEnvironment)
 {
+    private static readonly Dictionary<string, Tuple<string, string>> ValidationMappings = new()
+    {
+        { "EmployerLocations", Tuple.Create<string, string>("SelectedLocations", null) },
+        { VacancyValidationErrorCodes.AddressCountryNotInEngland, Tuple.Create("SelectedLocations", "All locations must be in England. Your apprenticeship must be in England to advertise it on this service") },
+    };
+    
     [FeatureGate(FeatureNames.MultipleLocations)]
     [HttpGet("location-availability", Name = RouteNames.MultipleLocations_Get)]
     public async Task<IActionResult> LocationAvailability(
@@ -128,11 +135,6 @@ public class MultipleLocationsController(IWebHostEnvironment hostingEnvironment)
         return View(viewModel);
     }
     
-    private static readonly Dictionary<string, string> ValidationFieldMappings = new()
-    {
-        { "EmployerLocations", "SelectedLocations" }
-    };
-    
     [FeatureGate(FeatureNames.MultipleLocations)]
     [HttpPost("add-many-locations", Name = RouteNames.AddMoreThanOneLocation_Post)]
     public async Task<IActionResult> AddMoreThanOneLocation(
@@ -160,7 +162,7 @@ public class MultipleLocationsController(IWebHostEnvironment hostingEnvironment)
             return RedirectToRoute(RouteNames.MultipleLocationsConfirm_Get, new { editModel.VacancyId, editModel.Ukprn, wizard } );
         }
 
-        ModelState.AddValidationErrors(result.ValidationResult, ValidationFieldMappings);
+        ModelState.AddValidationErrorsWithMappings(result.ValidationResult, ValidationMappings);
         var viewModel = new AddMoreThanOneLocationViewModel
         {
             ApprenticeshipTitle = vacancy.Title,

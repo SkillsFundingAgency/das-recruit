@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
@@ -7,8 +9,9 @@ using Esfa.Recruit.Employer.Web.Middleware;
 using Esfa.Recruit.Employer.Web.Orchestrators;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels.Preview;
-using Esfa.Recruit.Shared.Web.Extensions;
+using Esfa.Recruit.Shared.Web;
 using Esfa.Recruit.Shared.Web.ViewModels;
+using Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,20 +19,19 @@ namespace Esfa.Recruit.Employer.Web.Controllers
 {
     [Route(RoutePaths.AccountVacancyRoutePath)]
     [Authorize(Policy = nameof(PolicyNames.HasEmployerOwnerOrTransactorAccount))]
-    public class VacancyCheckYourAnswersController : Controller
+    public class VacancyCheckYourAnswersController(VacancyTaskListOrchestrator orchestrator) : Controller
     {
-        private readonly VacancyTaskListOrchestrator _orchestrator;
-
-        public VacancyCheckYourAnswersController (VacancyTaskListOrchestrator orchestrator)
+        private static readonly Dictionary<string, Tuple<string, string>> ValidationMappings = new()
         {
-            _orchestrator = orchestrator;
-        }
-        
+            { "EmployerLocations", Tuple.Create<string, string>("EmployerAddress", null) },
+            { VacancyValidationErrorCodes.AddressCountryNotInEngland, Tuple.Create("EmployerAddress", "Location must be in England. Your apprenticeship must be in England to advertise it on this service") },
+            { $"Multiple-{VacancyValidationErrorCodes.AddressCountryNotInEngland}", Tuple.Create("EmployerAddress", "All locations must be in England. Your apprenticeship must be in England to advertise it on this service") },
+        };
+
         [HttpGet("check-answers", Name = RouteNames.EmployerCheckYourAnswersGet)]
-        
         public async Task<IActionResult> CheckYourAnswers(VacancyRouteModel vrm)
         {
-            var viewModel = await _orchestrator.GetVacancyTaskListModel(vrm); 
+            var viewModel = await orchestrator.GetVacancyTaskListModel(vrm); 
             viewModel.CanHideValidationSummary = true;
             viewModel.SetSectionStates(viewModel, ModelState);
             
@@ -39,7 +41,6 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             return View(viewModel);
         }
         
-        
         [HttpPost("check-answers-review", Name = RouteNames.EmployerCheckYourAnswersPost)]
         public async Task<IActionResult> CheckYourAnswers(SubmitReviewModel m)
         {
@@ -47,11 +48,11 @@ namespace Esfa.Recruit.Employer.Web.Controllers
             {
                 if(m.SubmitToEsfa.Value)
                 {
-                    await _orchestrator.ClearRejectedVacancyReason(m, User.ToVacancyUser());
+                    await orchestrator.ClearRejectedVacancyReason(m, User.ToVacancyUser());
                 }
                 else
                 {
-                    await _orchestrator.UpdateRejectedVacancyReason(m, User.ToVacancyUser());
+                    await orchestrator.UpdateRejectedVacancyReason(m, User.ToVacancyUser());
                 }
 
                 return RedirectToRoute(m.SubmitToEsfa.GetValueOrDefault()
@@ -60,7 +61,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
                     new {m.VacancyId, m.EmployerAccountId});
             }
 
-            var viewModel = await _orchestrator.GetVacancyTaskListModel(new VacancyRouteModel
+            var viewModel = await orchestrator.GetVacancyTaskListModel(new VacancyRouteModel
             {
                 VacancyId = m.VacancyId,
                 EmployerAccountId = m.EmployerAccountId
@@ -77,11 +78,11 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         [HttpPost("check-answers", Name = RouteNames.EmployerCheckYourAnswersSubmitPost)]
         public async Task<IActionResult> CheckYourAnswers(SubmitEditModel m)
         {
-            var response = await _orchestrator.SubmitVacancyAsync(m, User.ToVacancyUser());
+            var response = await orchestrator.SubmitVacancyAsync(m, User.ToVacancyUser());
 
             if (!response.Success)
             {
-                response.AddErrorsToModelState(ModelState);
+                ModelState.AddValidationErrorsWithMappings(response.Errors, ValidationMappings);
             }
 
             if (ModelState.IsValid)
@@ -95,7 +96,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers
                 throw new Exception("Unknown submit state");
             }
 
-            var viewModel = await _orchestrator.GetVacancyTaskListModel(m);
+            var viewModel = await orchestrator.GetVacancyTaskListModel(m);
             viewModel.SoftValidationErrors = null;
             viewModel.SetSectionStates(viewModel, ModelState);
             viewModel.ValidationErrors = new ValidationSummaryViewModel

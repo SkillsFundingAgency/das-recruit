@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -12,6 +13,7 @@ using Esfa.Recruit.Provider.Web.ViewModels.Part1.Location;
 using Esfa.Recruit.Shared.Web;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Shared.Web.Services;
+using Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
@@ -24,6 +26,12 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1;
 [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
 public class LocationController(IWebHostEnvironment hostingEnvironment) : EmployerControllerBase(hostingEnvironment)
 {
+    private static readonly Dictionary<string, Tuple<string, string>> ValidationMappings = new()
+    {
+        { "EmployerLocations", Tuple.Create<string, string>("SelectedLocation", null) },
+        { VacancyValidationErrorCodes.AddressCountryNotInEngland, Tuple.Create("SelectedLocation", "Location must be in England. Your apprenticeship must be in England to advertise it on this service") },
+    };
+    
     #region When FeatureNames.MultipleLocations feature flag is removed, all this can be removed
 
     [HttpGet("location", Name = RouteNames.Location_Get)]
@@ -155,7 +163,7 @@ public class LocationController(IWebHostEnvironment hostingEnvironment) : Employ
                 : RedirectToRoute(RouteNames.ProviderTaskListGet, new { model.VacancyId, model.Ukprn, wizard });
         }
 
-        ModelState.AddValidationErrors(result.ValidationResult, new Dictionary<string, string> { { "EmployerLocations", "SelectedLocation" } });
+        ModelState.AddValidationErrorsWithMappings(result.ValidationResult, ValidationMappings);
         var viewModel = new AddOneLocationViewModel
         {
             ApprenticeshipTitle = vacancy.Title,

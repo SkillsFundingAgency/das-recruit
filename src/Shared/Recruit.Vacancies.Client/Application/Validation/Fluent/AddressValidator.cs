@@ -61,6 +61,13 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                     .WithMessage("'{PropertyName}' is not in a valid format")
                     .WithErrorCode("9")
                 .WithState(_=>ruleId);
-		}
+
+            RuleFor(x => x.Country)
+                // null here means we can't determine country from the postcode - could be new, so don't fail
+                .Must(x => x is null or "England")
+                .WithMessage("Country must be England")
+                .WithErrorCode(VacancyValidationErrorCodes.AddressCountryNotInEngland)
+                .WithState(_ => ruleId);
+        }
 	}
 }

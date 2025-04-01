@@ -1,38 +1,35 @@
 using System.Threading;
 using System.Threading.Tasks;
-using FluentAssertions;
 using Microsoft.Extensions.Logging;
-using Moq;
 using SFA.DAS.Recruit.Api.Models;
 using SFA.DAS.Recruit.Api.Queries;
 using SFA.DAS.Recruit.Api.Services;
-using Xunit;
 
 namespace SFA.DAS.Recruit.Api.UnitTests.Queries
 {
     public class GetProviderOrganisationStatusQueryHandlerTests
     {
-        private const long ValidUkprn = 10000020;
         private const long BlockedUkprn = 11110000;
-        private readonly Mock<IQueryStoreReader> _mockQueryStoreReader;
-        private readonly GetProviderOrganisationStatusQueryHandler _sut;
+        private Mock<IQueryStoreReader> _mockQueryStoreReader;
+        private GetProviderOrganisationStatusQueryHandler _sut;
 
-        public GetProviderOrganisationStatusQueryHandlerTests()
+        [SetUp]
+        public void Setup()
         {
             _mockQueryStoreReader = new Mock<IQueryStoreReader>();
             _mockQueryStoreReader.Setup(qsr => qsr.GetBlockedProviders())
-                                .ReturnsAsync(new BlockedProviderOrganisations
-                                {
-                                    Id = $"{nameof(BlockedProviderOrganisations)}",
-                                    Data = new []
-                                    {
-                                        new BlockedOrganisationSummary { BlockedOrganisationId = BlockedUkprn.ToString() }
-                                    }
-                                });
+                .ReturnsAsync(new BlockedProviderOrganisations
+                {
+                    Id = $"{nameof(BlockedProviderOrganisations)}",
+                    Data = new []
+                    {
+                        new BlockedOrganisationSummary { BlockedOrganisationId = BlockedUkprn.ToString() }
+                    }
+                });
             _sut = new GetProviderOrganisationStatusQueryHandler(Mock.Of<ILogger<GetProviderOrganisationStatusQueryHandler>>(), _mockQueryStoreReader.Object);
         }
 
-        [Fact]
+        [Test]
         public async Task GivenRequestWithBlockedProviderUkprn_ShouldReturnBlockedStatus()
         {
             var query = new GetProviderOrganisationStatusQuery(BlockedUkprn);
@@ -41,7 +38,7 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Queries
             result.Data.As<OrganisationStatus>().Status.Should().Be("Blocked");
         }
 
-        [Fact]
+        [Test]
         public async Task GivenRequestWithUnblockedProviderUkprn_ShouldReturnUnblockedStatus()
         {
             var query = new GetProviderOrganisationStatusQuery(11111111);

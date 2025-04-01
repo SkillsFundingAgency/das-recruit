@@ -2,15 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
-using FluentAssertions;
 using SFA.DAS.Recruit.Api.Controllers;
-using Moq;
 using MediatR;
 using SFA.DAS.Recruit.Api.Queries;
 using System.Threading;
 using AutoFixture.NUnit3;
 using Microsoft.AspNetCore.Mvc;
-using NUnit.Framework;
 using SFA.DAS.Recruit.Api.Commands;
 using SFA.DAS.Recruit.Api.Models;
 using SFA.DAS.Testing.AutoFixture;
@@ -108,6 +105,8 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Controllers
         [Test]
         [MoqInlineAutoData("EmployerLocation", "Address")]
         [MoqInlineAutoData("EmployerLocations", "Addresses")]
+        [MoqInlineAutoData("EmployerLocations[0].Country", "Addresses[0].Country")]
+        [MoqInlineAutoData("EmployerLocations[3].Country", "Addresses[3].Country")]
         public async Task Create_Maps_Error_Fields(
             string fieldName,
             string expectedFieldName,

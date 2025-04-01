@@ -72,7 +72,7 @@ public class RecruitNationallyController: Controller
                 : RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet, new {model.VacancyId, model.EmployerAccountId});    
         }
         
-        ModelState.AddValidationErrors(result.ValidationResult, ValidationFieldMappings);
+        ModelState.AddValidationErrorsWithFieldMappings(result.ValidationResult, ValidationFieldMappings);
         var viewModel = new RecruitNationallyViewModel
         {
             ApprenticeshipTitle = vacancy.Title,
