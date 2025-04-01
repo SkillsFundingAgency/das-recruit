@@ -7,6 +7,7 @@ using Esfa.Recruit.Vacancies.Client.Application.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Locations;
 
 namespace Esfa.Recruit.Employer.Web.Services;
 
@@ -19,7 +20,11 @@ public interface IVacancyLocationService
 
 public record UpdateVacancyLocationsResult(EntityValidationResult ValidationResult);
 
-public class VacancyLocationService(IRecruitVacancyClient recruitVacancyClient, IEmployerVacancyClient employerVacancyClient, IReviewFieldIndicatorService reviewFieldIndicatorService): IVacancyLocationService
+public class VacancyLocationService(
+    IRecruitVacancyClient recruitVacancyClient,
+    IEmployerVacancyClient employerVacancyClient,
+    IReviewFieldIndicatorService reviewFieldIndicatorService,
+    ILocationsService locationsService): IVacancyLocationService
 {
     public async Task<List<Address>> GetVacancyLocations(Vacancy vacancy)
     {
@@ -45,6 +50,8 @@ public class VacancyLocationService(IRecruitVacancyClient recruitVacancyClient, 
         
         reviewFieldIndicatorService.SetVacancyWithEmployerReviewFieldIndicators(vacancy.EmployerLocations, FieldIdResolver.ToFieldId(v => v.EmployerLocations), vacancy, locations);
         reviewFieldIndicatorService.SetVacancyWithEmployerReviewFieldIndicators(vacancy.EmployerLocationInformation, FieldIdResolver.ToFieldId(v => v.EmployerLocationInformation), vacancy, locationInformation);
+
+        await UpdateAddressCountriesAsync(locations, user, vacancy);
         
         vacancy.EmployerLocation = null; // null it for records created before this feature that are edited
         vacancy.EmployerLocationOption = availableWhere;
@@ -59,6 +66,66 @@ public class VacancyLocationService(IRecruitVacancyClient recruitVacancyClient, 
 
         await recruitVacancyClient.UpdateDraftVacancyAsync(vacancy, user);
         return new UpdateVacancyLocationsResult(null);
+    }
+    
+    private async Task UpdateAddressCountriesAsync(List<Address> locations, VacancyUser user, Vacancy vacancy)
+    {
+        if (locations is null || locations.Count == 0)
+        {
+            return;
+        }
+        
+        var nonEnglishAddresses = locations.Where(x => x.Country is not ("England" or null)).ToArray();
+        if (nonEnglishAddresses.Length is not 0)
+        {
+            // fail fast since we know this will fail validation anyway
+            return;
+        }
+        
+        var addressesToQuery = locations
+            .Where(x => x.Country is null)
+            .Select(x => x.Postcode)
+            .Distinct()
+            .ToList();
+        var results = await locationsService.GetBulkPostcodeDataAsync(addressesToQuery);
+ 
+        bool isDirty = false;
+        locations.ForEach(x =>
+        {
+            if (x.Country is null && results.TryGetValue(x.Postcode, out var postcodeData) && postcodeData is not null)
+            {
+                x.Country = postcodeData.Country;
+                isDirty = true;
+            }
+        });
+        
+        if (isDirty)
+        {
+            await PatchExistingEmployerAddresses(user, vacancy, locations);
+        }
+    }
+    
+    private async Task PatchExistingEmployerAddresses(VacancyUser user, Vacancy vacancy, List<Address> addresses)
+    {
+        var employerProfile = await recruitVacancyClient.GetEmployerProfileAsync(vacancy.EmployerAccountId, vacancy.AccountLegalEntityPublicHashedId);
+        var existingLocations = employerProfile.OtherLocations;
+        
+        foreach (var address in addresses)
+        {
+            string newAddressString = address.ToSingleLineFullAddress();
+            var existingLocation = existingLocations.FirstOrDefault(x => x.ToSingleLineFullAddress().Equals(newAddressString, StringComparison.InvariantCultureIgnoreCase));
+            if (existingLocation is null)
+            {
+                // will hit this when:
+                //   - it's the legal entity address
+                //   - unknown postcode 
+                continue;
+            }
+
+            existingLocation.Country = address.Country;
+        }
+        
+        await recruitVacancyClient.UpdateEmployerProfileAsync(employerProfile, user);
     }
 
     public async Task SaveEmployerAddress(VacancyUser user, Vacancy vacancy, Address address)

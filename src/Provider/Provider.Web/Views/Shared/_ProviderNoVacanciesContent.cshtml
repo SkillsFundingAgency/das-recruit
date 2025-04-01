@@ -1,43 +1,56 @@
 ﻿@using Microsoft.Extensions.Options
 @model Esfa.Recruit.Provider.Web.RouteModel.VacancyRouteModel
-@inject IOptions<ExternalLinksConfiguration> _externalLinks
-
-@{ 
-    ViewBag.ZenDeskLabel = "recruit-recruitment"; 
-    ViewBag.Title = "Create a vacancy";
-}
+@inject IOptions<ExternalLinksConfiguration> ExternalLinks
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         <h1 class="govuk-heading-xl">Create a vacancy</h1>
-        
-        <p class="govuk-body-l">
-            Recruit an apprentice by creating a vacancy on
-            <a href="@_externalLinks.Value.FindAnApprenticeshipUrl" class="govuk-link govuk-link--no-visited-state" target="_blank">Find an apprenticeship (opens in a new tab)</a>.
-        </p>
-        <h2 class="govuk-heading-m">Before you start</h2>
-        <p class="govuk-body">Before you create a vacancy, you'll need to know:</p>
-        <ul class="govuk-list govuk-list--bullet">
-            <li>
-                the name of the employer
-            </li>
-            <li>
-                the name of the apprenticeship training course
-            </li>
-            <li>
-                the duration of the apprenticeship
-            </li>
-            <li>
-                the number of hours spent working and training
-            </li>
-            <li>
-                how much your apprentice will be paid
-            </li>
-        </ul>
-        <div class="govuk-inset-text"> You can use our <a asp-route="@RouteNames.Dashboard_ProviderRecruitmentApi" asp-route-ukprn="@Model.Ukprn" class="govuk-link" target="_blank">recruitment Application Programming Interfaces (APIs) (opens in a new tab)</a> to create vacancies using your existing systems or display vacancies from Find an apprenticeship on your website.
-        </div>
-    
 
-        <a asp-route="@RouteNames.LegalEntityEmployer_Get"  asp-all-route-data="@Model.RouteDictionary" role="button" class="govuk-button govuk-button--start" esfa-automation="create-vacancy">Start now</a>    
+        <p class="govuk-body">
+            Advertise an apprenticeship on
+            <a href="@ExternalLinks.Value.FindAnApprenticeshipUrl" class="govuk-link govuk-link--no-visited-state" target="_blank">Find an apprenticeship (opens in a new tab)</a>.
+        </p>
+        <p class="govuk-body">
+            You can accept applications through our service or add a link to a different website.
+        </p>
+
+        <p class="govuk-inset-text">
+            You can only use this service to advertise apprenticeships in England. There are different services for
+            <a href="https://www.apprenticeships.scot/for-employers/" class="govuk-link" target="_blank">Scotland</a>,
+            <a href="https://www.gov.wales/recruit-apprentice-guidance-employers/how" class="govuk-link" target="_blank">Wales</a> and
+            <a href="https://www.nibusinessinfo.co.uk/content/advertise-apprenticeship-opportunities-jobapplyni" class="govuk-link" target="_blank">Northern Ireland</a>.
+        </p>
+
+        <h2 class="govuk-heading-m">Before you start</h2>
+
+        <p class="govuk-body">Before creating a vacancy, you’ll need to know:</p>
+        <ul class="govuk-list govuk-list--bullet">
+            <li>the employer</li>
+            <li>the training course</li>
+            <li>the pay</li>
+            <li>how long the apprenticeship will be</li>
+            <li>the work and training hours</li>
+        </ul>
+        
+        <p class="govuk-body">
+            If you’re working with an employer who does not pay the apprenticeship levy, you should
+            <a asp-external-subdomain="securefunding" asp-external-action="manage" asp-external-controller="reservations" asp-external-id="@Model.Ukprn" class="govuk-link">reserve funding for the apprenticeship</a>
+            before creating a vacancy.
+        </p>
+
+        <a asp-route="@RouteNames.LegalEntityEmployer_Get" asp-all-route-data="@Model.RouteDictionary" role="button" class="govuk-button govuk-button--start govuk-!-margin-bottom-8 govuk-!-margin-top-2" esfa-automation="create-vacancy">
+            Start now
+            <svg class="govuk-button__start-icon" xmlns="http://www.w3.org/2000/svg" width="17.5" height="19" viewBox="0 0 33 40" aria-hidden="true" focusable="false">
+                <path fill="currentColor" d="M0 0h13l20 20-20 20H0l20-20z"></path>
+            </svg>
+        </a>
+
+        <h3 class="govuk-heading-s govuk-!-margin-bottom-2">Submit vacancy using our recruitment APIs</h3>
+        <p class="govuk-body">
+            If you have technical knowledge, you can use your own system to submit vacancies to Find on apprenticeship.
+        </p>
+        <p class="govuk-body">
+            <a asp-route="@RouteNames.Dashboard_ProviderRecruitmentApi" asp-route-ukprn="@Model.Ukprn" class="govuk-link">Get started with the recruitment APIs</a>
+        </p>
     </div>
 </div>

@@ -11,6 +11,7 @@ using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
 using Esfa.Recruit.Vacancies.Client.Domain.Models;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Locations;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelationship;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider;
 using MediatR;
@@ -20,45 +21,23 @@ using EmployerNameOption = Esfa.Recruit.Vacancies.Client.Domain.Entities.Employe
 
 namespace SFA.DAS.Recruit.Api.Commands
 {
-    public class CreateVacancyCommandHandler : IRequestHandler<CreateVacancyCommand, CreateVacancyCommandResponse>
+    public class CreateVacancyCommandHandler(
+        IRecruitVacancyClient recruitVacancyClient,
+        IEmployerVacancyClient employerVacancyClient,
+        IVacancyRepository vacancyRepository,
+        IMessaging messaging,
+        ITimeProvider timeProvider,
+        ITrainingProviderService trainingProviderService,
+        ITrainingProviderSummaryProvider trainingProviderSummaryProvider,
+        IProviderVacancyClient providerVacancyClient,
+        IProviderRelationshipsService providerRelationshipsService,
+        ILocationsService locationsService,
+        ILogger<CreateVacancyCommandHandler> logger)
+        : IRequestHandler<CreateVacancyCommand, CreateVacancyCommandResponse>
     {
-        private readonly IRecruitVacancyClient _recruitVacancyClient;
-        private readonly IEmployerVacancyClient _employerVacancyClient;
-        private readonly IVacancyRepository _vacancyRepository;
-        private readonly IMessaging _messaging;
-        private readonly ITimeProvider _timeProvider;
-        private readonly ITrainingProviderService _trainingProviderService;
-        private readonly ITrainingProviderSummaryProvider _trainingProviderSummaryProvider;
-        private readonly IProviderVacancyClient _providerVacancyClient;
-        private readonly IProviderRelationshipsService _providerRelationshipsService;
-        private readonly ILogger<CreateVacancyCommandHandler> _logger;
-
-        public CreateVacancyCommandHandler (
-            IRecruitVacancyClient recruitVacancyClient, 
-            IEmployerVacancyClient employerVacancyClient, 
-            IVacancyRepository vacancyRepository, 
-            IMessaging messaging,
-            ITimeProvider timeProvider,
-            ITrainingProviderService trainingProviderService,
-            ITrainingProviderSummaryProvider trainingProviderSummaryProvider,
-            IProviderVacancyClient providerVacancyClient,
-            IProviderRelationshipsService providerRelationshipsService,
-            ILogger<CreateVacancyCommandHandler> logger)
-        {
-            _recruitVacancyClient = recruitVacancyClient;
-            _employerVacancyClient = employerVacancyClient;
-            _vacancyRepository = vacancyRepository;
-            _messaging = messaging;
-            _timeProvider = timeProvider;
-            _trainingProviderService = trainingProviderService;
-            _trainingProviderSummaryProvider = trainingProviderSummaryProvider;
-            _providerVacancyClient = providerVacancyClient;
-            _providerRelationshipsService = providerRelationshipsService;
-            _logger = logger;
-        }
         public async Task<CreateVacancyCommandResponse> Handle(CreateVacancyCommand request, CancellationToken cancellationToken)
         {
-            var trainingProvider = await _trainingProviderService.GetProviderAsync(request.VacancyUserDetails.Ukprn.Value);
+            var trainingProvider = await trainingProviderService.GetProviderAsync(request.VacancyUserDetails.Ukprn.Value);
 
             if (trainingProvider == null)
             {
@@ -67,7 +46,7 @@ namespace SFA.DAS.Recruit.Api.Commands
                     ResultCode = ResponseCode.InvalidRequest,
                     ValidationErrors = new List<DetailedValidationError>
                     {
-                        new DetailedValidationError
+                        new()
                         {
                             Field = nameof(request.VacancyUserDetails.Ukprn), Message = "Training Provider UKPRN not valid"
                         }
@@ -77,7 +56,7 @@ namespace SFA.DAS.Recruit.Api.Commands
 
             // additional check to validate the given Training Provider is a Main or Employer Profile with Status not equal to "Not Currently Starting New Apprentices".
             bool isValidTrainingProviderProfile =
-                await _trainingProviderSummaryProvider.IsTrainingProviderMainOrEmployerProfile(request.VacancyUserDetails.Ukprn.Value);
+                await trainingProviderSummaryProvider.IsTrainingProviderMainOrEmployerProfile(request.VacancyUserDetails.Ukprn.Value);
 
             if (!isValidTrainingProviderProfile)
             {
@@ -86,7 +65,7 @@ namespace SFA.DAS.Recruit.Api.Commands
                     ResultCode = ResponseCode.InvalidRequest,
                     ValidationErrors = new List<DetailedValidationError>
                     {
-                        new DetailedValidationError
+                        new ()
                         {
                             Field = nameof(request.VacancyUserDetails.Ukprn), Message = "UKPRN of a training provider must be registered to deliver apprenticeship training"
                         }
@@ -96,7 +75,9 @@ namespace SFA.DAS.Recruit.Api.Commands
 
             request.Vacancy.TrainingProvider = trainingProvider;
 
-            var result = _recruitVacancyClient.Validate(request.Vacancy, VacancyRuleSet.All);
+            await LookupAddressesByPostcodeAsync(request.Vacancy);
+
+            var result = recruitVacancyClient.Validate(request.Vacancy, VacancyRuleSet.All);
 
             if (result.HasErrors)
             {
@@ -105,7 +86,8 @@ namespace SFA.DAS.Recruit.Api.Commands
                     ResultCode = ResponseCode.InvalidRequest,
                     ValidationErrors = result.Errors.Select(error => new DetailedValidationError
                     {
-                        Field = error.PropertyName, Message = error.ErrorMessage
+                        Field = error.PropertyName,
+                        Message = error.ErrorMessage,
                     }).Cast<object>().ToList()
                 };
             }
@@ -125,7 +107,7 @@ namespace SFA.DAS.Recruit.Api.Commands
             }
             catch (Exception e)
             {
-                _logger.LogError(e,"Error creating vacancy");
+                logger.LogError(e,"Error creating vacancy");
                 return new CreateVacancyCommandResponse
                 {
                     ResultCode = ResponseCode.InvalidRequest,
@@ -140,7 +122,7 @@ namespace SFA.DAS.Recruit.Api.Commands
 
             var newVacancy = await MapDraftVacancyValues(request, request.Vacancy, requiresEmployerApproval);
 
-            await _vacancyRepository.UpdateAsync(newVacancy);
+            await vacancyRepository.UpdateAsync(newVacancy);
 
             await PublishVacancyEvent(requiresEmployerApproval, newVacancy);
             
@@ -151,19 +133,50 @@ namespace SFA.DAS.Recruit.Api.Commands
             };
         }
 
-        //
+        private async Task LookupAddressesByPostcodeAsync(Vacancy vacancy)
+        {
+            var locations = new List<Address>();
+            switch (vacancy.EmployerLocationOption)
+            {
+                case AvailableWhere.AcrossEngland:
+                    return;
+                case AvailableWhere.OneLocation:
+                case AvailableWhere.MultipleLocations:
+                    locations.AddRange(vacancy.EmployerLocations);
+                    break;
+                default:
+                    locations.Add(vacancy.EmployerLocation);
+                    break;
+            }
+            
+            var addressesToQuery = locations
+                .Where(x => x.Country is null)
+                .Select(x => x.Postcode)
+                .Distinct()
+                .ToList();
+            var results = await locationsService.GetBulkPostcodeDataAsync(addressesToQuery);
+
+            locations.ForEach(x =>
+            {
+                if (x.Country is null && results.TryGetValue(x.Postcode, out var postcodeData))
+                {
+                    x.Country = postcodeData.Country;
+                }
+            });
+        }
+
         private async Task CreateVacancy(CreateVacancyCommand request, TrainingProvider trainingProvider)
         {
             if (request.Vacancy.OwnerType == OwnerType.Employer)
             {
                 request.VacancyUserDetails.Ukprn = null;
-                await _employerVacancyClient.CreateEmployerApiVacancy(request.Vacancy.Id, request.Vacancy.Title,
+                await employerVacancyClient.CreateEmployerApiVacancy(request.Vacancy.Id, request.Vacancy.Title,
                     request.Vacancy.EmployerAccountId,
                     request.VacancyUserDetails, trainingProvider, request.Vacancy.ProgrammeId);
             }
             else
             {
-                await _providerVacancyClient.CreateProviderApiVacancy(request.Vacancy.Id, request.Vacancy.Title,
+                await providerVacancyClient.CreateProviderApiVacancy(request.Vacancy.Id, request.Vacancy.Title,
                     request.Vacancy.EmployerAccountId,
                     request.VacancyUserDetails);
             }
@@ -174,7 +187,7 @@ namespace SFA.DAS.Recruit.Api.Commands
             if (request.Vacancy.OwnerType == OwnerType.Provider)
             {
                 return
-                    await _providerRelationshipsService.HasProviderGotEmployersPermissionAsync(
+                    await providerRelationshipsService.HasProviderGotEmployersPermissionAsync(
                         request.Vacancy.TrainingProvider.Ukprn.Value, request.Vacancy.EmployerAccountId,
                         request.Vacancy.AccountLegalEntityPublicHashedId, OperationType.RecruitmentRequiresReview );
             }
@@ -183,7 +196,7 @@ namespace SFA.DAS.Recruit.Api.Commands
 
         private async Task<Vacancy> MapDraftVacancyValues(CreateVacancyCommand request, Vacancy draftVacancyFromRequest, bool requiresEmployerReview)
         {
-            var newVacancy = await _recruitVacancyClient.GetVacancyAsync(draftVacancyFromRequest.Id);
+            var newVacancy = await recruitVacancyClient.GetVacancyAsync(draftVacancyFromRequest.Id);
 
             draftVacancyFromRequest.VacancyReference = newVacancy.VacancyReference;
             draftVacancyFromRequest.TrainingProvider = request.Vacancy.TrainingProvider;
@@ -193,15 +206,15 @@ namespace SFA.DAS.Recruit.Api.Commands
             draftVacancyFromRequest.SourceOrigin = newVacancy.SourceOrigin;
             draftVacancyFromRequest.SourceType = newVacancy.SourceType;
 
-            var now = _timeProvider.Now;
+            var now = timeProvider.Now;
 
             if (draftVacancyFromRequest.EmployerNameOption == EmployerNameOption.TradingName)
             {
-                var employerProfile = await _recruitVacancyClient.GetEmployerProfileAsync(
+                var employerProfile = await recruitVacancyClient.GetEmployerProfileAsync(
                     draftVacancyFromRequest.EmployerAccountId,
                     draftVacancyFromRequest.AccountLegalEntityPublicHashedId);
                 employerProfile.TradingName = draftVacancyFromRequest.EmployerName;
-                await _recruitVacancyClient.UpdateEmployerProfileAsync(employerProfile, draftVacancyFromRequest.CreatedByUser);
+                await recruitVacancyClient.UpdateEmployerProfileAsync(employerProfile, draftVacancyFromRequest.CreatedByUser);
             }
             
             if (requiresEmployerReview)
@@ -230,7 +243,7 @@ namespace SFA.DAS.Recruit.Api.Commands
         {
             if (requiresEmployerApproval)
             {
-                await _messaging.PublishEvent(new VacancyReviewedEvent
+                await messaging.PublishEvent(new VacancyReviewedEvent
                 {
                     EmployerAccountId = newVacancy.EmployerAccountId,
                     VacancyId = newVacancy.Id,
@@ -240,7 +253,7 @@ namespace SFA.DAS.Recruit.Api.Commands
             }
             else
             {
-                await _messaging.PublishEvent(new VacancySubmittedEvent
+                await messaging.PublishEvent(new VacancySubmittedEvent
                 {
                     EmployerAccountId = newVacancy.EmployerAccountId,
                     VacancyId = newVacancy.Id,
