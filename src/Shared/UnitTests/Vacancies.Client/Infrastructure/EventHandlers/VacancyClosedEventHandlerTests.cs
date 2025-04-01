@@ -25,13 +25,13 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
         private Mock<ILogger<VacancyClosedEventHandler>> _mockLogger;
         private Mock<IQueryStoreWriter> _mockQueryStore;
         private Mock<IVacancyRepository> _mockVacancyRepository;
-        private Mock<IReferenceDataReader> _mockReferenceDataReader;
+        private Mock<IApprenticeshipProgrammeProvider> _mockReferenceDataReader;
         private Mock<ITimeProvider> _mockTimeProvider;
         private Mock<ICommunicationQueueService> _mockCommunicationQueueService;
         private DateTime _currentTime;
         private VacancyClosedEvent _event;
         private Vacancy _vacancy;
-        private ApprenticeshipProgrammes _apprenticeshipProgrammes;
+        private ApprenticeshipProgramme _apprenticeshipProgramme;
         private readonly Mock<IQueryStoreReader> _mockQueryReader;
 
         [Fact]
@@ -128,15 +128,11 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
                 VacancyId = _vacancy.Id,
                 VacancyReference = _vacancy.VacancyReference.Value
             };
-            _apprenticeshipProgrammes = new ApprenticeshipProgrammes
-            {
-                Data = new List<ApprenticeshipProgramme>
-                {
+            _apprenticeshipProgramme = 
+                
                     new ApprenticeshipProgramme {
                         Id = _vacancy.ProgrammeId
-                    }
-                }
-            };
+                    };
 
             _mockLogger = new Mock<ILogger<VacancyClosedEventHandler>>();
             _mockQueryStore = new Mock<IQueryStoreWriter>();
@@ -146,10 +142,10 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
                 .Setup(x => x.GetVacancyAsync(_vacancy.Id))
                 .ReturnsAsync(_vacancy);
 
-            _mockReferenceDataReader = new Mock<IReferenceDataReader>();
+            _mockReferenceDataReader = new Mock<IApprenticeshipProgrammeProvider>();
             _mockReferenceDataReader
-                .Setup(x => x.GetReferenceData<ApprenticeshipProgrammes>())
-                .ReturnsAsync(_apprenticeshipProgrammes);
+                .Setup(x => x.GetApprenticeshipProgrammeAsync(_vacancy.ProgrammeId))
+                .ReturnsAsync(_apprenticeshipProgramme);
 
             _mockTimeProvider = new Mock<ITimeProvider>();
             _mockTimeProvider
