@@ -24,7 +24,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Reports
         private const string ApplicationMethod = "_applicationMethod_";
 
         private const string ColumnProgramme = "Programme";
-        private const string ColumnRoute = "RouteId";
         private const string ColumnApplicationLastUpdatedDate = "Application_LastUpdatedDate";
         private const string ColumnApplicationDate = "Application_Date";
         private const string ColumnNumberOfDaysAppAtThisStatus = "Number_Of_Days_App_At_This_Status";
@@ -32,7 +31,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Reports
         private const string ColumnFramework = "Framework";
         private const string ColumnFrameworkStatus = "Framework_Status";
         private const string ColumnStandard = "Standard";
-        private const string ColumnRouteName = "Route";
         private const string ColumnStandardStatus = "Standard_Status";
         private const string ColumnCandidateId = "Candidate_Id";
         private const string ColumnApplicantId = "Applicant_Id";
@@ -148,8 +146,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Reports
 
             var headers = new List<KeyValuePair<string, string>>
             {
-                new KeyValuePair<string, string>("Date", _timeProvider.Now.ToUkTime().ToString("dd/MM/yyyy HH:mm:ss")),
-                new KeyValuePair<string, string>("Total_Number_Of_Applications", results.Count.ToString())
+                new("Date", _timeProvider.Now.ToUkTime().ToString("dd/MM/yyyy HH:mm:ss")),
+                new("Total_Number_Of_Applications", results.Count.ToString())
             };
             return new ReportStrategyResult(headers, data,"");
         }
