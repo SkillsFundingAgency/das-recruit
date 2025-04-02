@@ -16,36 +16,23 @@ using Microsoft.Extensions.Options;
 
 namespace Esfa.Recruit.Employer.Web.Mappings
 {
-    public class DisplayVacancyViewModelMapper
+    public class DisplayVacancyViewModelMapper(
+        IGeocodeImageService mapService,
+        IOptions<ExternalLinksConfiguration> externalLinksOptions,
+        IRecruitVacancyClient vacancyClient,
+        IApprenticeshipProgrammeProvider apprenticeshipProgrammeProvider,
+        IFeature feature)
     {
         private const int MapImageWidth = 465;
         private const int MapImageHeight = 256;
-        private readonly IGeocodeImageService _mapService;
-        private readonly ExternalLinksConfiguration _externalLinksConfiguration;
-        private readonly IRecruitVacancyClient _vacancyClient;
-        private readonly IApprenticeshipProgrammeProvider _apprenticeshipProgrammeProvider;
-        private readonly IFeature _feature;
-
-        public DisplayVacancyViewModelMapper(
-                IGeocodeImageService mapService,
-                IOptions<ExternalLinksConfiguration> externalLinksOptions,
-                IRecruitVacancyClient vacancyClient,
-                IApprenticeshipProgrammeProvider apprenticeshipProgrammeProvider,
-                IFeature feature)
-        {
-            _mapService = mapService;
-            _externalLinksConfiguration = externalLinksOptions.Value;
-            _vacancyClient = vacancyClient;
-            _apprenticeshipProgrammeProvider = apprenticeshipProgrammeProvider;
-            _feature = feature;
-        }
+        private readonly ExternalLinksConfiguration _externalLinksConfiguration = externalLinksOptions.Value;
 
         public async Task MapFromVacancyAsync(DisplayVacancyViewModel vm, Vacancy vacancy)
         {
             ApprenticeshipStandard programme = null;
             if (int.TryParse(vacancy.ProgrammeId, out var standardId))
             {
-                programme = await _apprenticeshipProgrammeProvider.GetApprenticeshipStandardVacancyPreviewData(standardId);    
+                programme = await apprenticeshipProgrammeProvider.GetApprenticeshipStandardVacancyPreviewData(standardId);    
             }
 
             bool? hasOptedToAddQualifications = null;
@@ -62,7 +49,7 @@ namespace Esfa.Recruit.Employer.Web.Mappings
             }
             
 
-            var allQualifications = await _vacancyClient.GetCandidateQualificationsAsync();
+            var allQualifications = await vacancyClient.GetCandidateQualificationsAsync();
 
             vm.VacancyId = vacancy.Id;
             vm.EmployerAccountId = vacancy.EmployerAccountId;
@@ -80,8 +67,8 @@ namespace Esfa.Recruit.Employer.Web.Mappings
             vm.EmployerContactName = vacancy.EmployerContact?.Name;
             vm.EmployerContactEmail = vacancy.EmployerContact?.Email;
             vm.EmployerContactTelephone = vacancy.EmployerContact?.Phone;
-            vm.EmployerDescription = await _vacancyClient.GetEmployerDescriptionAsync(vacancy);
-            vm.EmployerName = await _vacancyClient.GetEmployerNameAsync(vacancy);
+            vm.EmployerDescription = await vacancyClient.GetEmployerDescriptionAsync(vacancy);
+            vm.EmployerName = await vacancyClient.GetEmployerNameAsync(vacancy);
             vm.EmployerWebsiteUrl = vacancy.EmployerWebsiteUrl;
             vm.EmployerAddressElements = [];
             vm.AvailableLocations = vacancy.EmployerLocations ?? [];
@@ -93,7 +80,7 @@ namespace Esfa.Recruit.Employer.Web.Mappings
             vm.NumberOfPositionsCaption = vacancy.NumberOfPositions.HasValue
                 ? $"{"position".ToQuantity(vacancy.NumberOfPositions.Value)} available"
                 : null;
-            if (_feature.IsFeatureEnabled(FeatureNames.MultipleLocations))
+            if (feature.IsFeatureEnabled(FeatureNames.MultipleLocations))
             {
                 vm.OrganisationName = vacancy.LegalEntityName;
             }
@@ -127,7 +114,7 @@ namespace Esfa.Recruit.Employer.Web.Mappings
             if (vacancy.EmployerLocation != null)
             {
                 if (vacancy.EmployerLocation != null)
-                    vm.MapUrl = MapImageHelper.GetEmployerLocationMapUrl(vacancy, _mapService, MapImageWidth, MapImageHeight);
+                    vm.MapUrl = MapImageHelper.GetEmployerLocationMapUrl(vacancy, mapService, MapImageWidth, MapImageHeight);
 
                 vm.EmployerAddressElements = vacancy.EmployerAddressForDisplay();
             }
