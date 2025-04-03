@@ -165,7 +165,6 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
             // Reference Data Providers
             services.AddTransient<IMinimumWageProvider, NationalMinimumWageProvider>();
             services.AddTransient<IApprenticeshipProgrammeProvider, ApprenticeshipProgrammeProvider>();
-            services.AddTransient<IApprenticeshipRouteProvider, ApprenticeshipRouteProvider>();
             services.AddTransient<IQualificationsProvider, QualificationsProvider>();
             services.AddTransient<ICandidateSkillsProvider, CandidateSkillsProvider>();
             services.AddTransient<IProfanityListProvider, ProfanityListProvider>();

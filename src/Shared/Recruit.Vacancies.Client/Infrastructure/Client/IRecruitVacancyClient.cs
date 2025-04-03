@@ -44,8 +44,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         Task<GetUserAccountsResponse> GetEmployerIdentifiersAsync(string userId, string email);
         EntityValidationResult ValidateQualification(Qualification qualification);
         Task CloseVacancyAsync(Guid vacancyId, VacancyUser user, ClosureReason reason);
-        Task<IApprenticeshipRoute> GetRoute(int? routeId);
-        Task<IEnumerable<IApprenticeshipRoute>> GetApprenticeshipRoutes();
         Task SetApplicationReviewsStatus(long vacancyReference, IEnumerable<Guid> applicationReviewIds, VacancyUser user, ApplicationReviewStatus? status, Guid vacancyId, ApplicationReviewStatus? applicationReviewTemporaryStatus);
         Task SetApplicationReviewsPendingUnsuccessfulFeedback(VacancyUser user, ApplicationReviewStatus status, Guid vacancyId, string feedback);
         Task SetApplicationReviewsToUnsuccessful(IEnumerable<Guid> applicationReviewsToUnsuccessful, string candidateFeedback, VacancyUser user, Guid vacancyId);

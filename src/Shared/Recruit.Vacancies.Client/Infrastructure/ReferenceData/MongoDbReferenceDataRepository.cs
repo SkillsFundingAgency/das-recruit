@@ -70,11 +70,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData
         {
             return new Dictionary<Type, string> 
             {
-                { typeof(CandidateSkills), "CandidateSkills" },
                 { typeof(Holidays.BankHolidays), "BankHolidays" },
-                { typeof(Quals.Qualifications), "QualificationTypes" },
-                { typeof(Programmes.ApprenticeshipProgrammes), "ApprenticeshipProgrammes" },
-                { typeof(Programmes.ApprenticeshipRoutes), "ApprenticeshipRoutes" },
                 { typeof(Profanities.ProfanityList), "Profanities" },
                 { typeof(BannedPhrases.BannedPhraseList), "BannedPhrases" },
                 { typeof(TrainingProviders.TrainingProviders), "Providers" }

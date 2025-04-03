@@ -24,19 +24,19 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
         private readonly ILogger<VacancyClosedEventHandler> _logger;
         private readonly IQueryStoreWriter _queryStore;
         private readonly IVacancyRepository _repository;
-        private readonly IReferenceDataReader _referenceDataReader;
+        private readonly IApprenticeshipProgrammeProvider _apprenticeshipProgrammeProvider;
         private readonly ITimeProvider _timeProvider;
         private readonly ICommunicationQueueService _communicationQueueService;
         private readonly IQueryStoreReader _queryStoreReader;
 
         public VacancyClosedEventHandler(
             ILogger<VacancyClosedEventHandler> logger, IQueryStoreWriter queryStore,
-            IVacancyRepository repository, IReferenceDataReader referenceDataReader, ITimeProvider timeProvider, ICommunicationQueueService communicationQueueService, IQueryStoreReader queryStoreReader)
+            IVacancyRepository repository, IApprenticeshipProgrammeProvider apprenticeshipProgrammeProvider, ITimeProvider timeProvider, ICommunicationQueueService communicationQueueService, IQueryStoreReader queryStoreReader)
         {
             _logger = logger;
             _queryStore = queryStore;
             _repository = repository;
-            _referenceDataReader = referenceDataReader;
+            _apprenticeshipProgrammeProvider = apprenticeshipProgrammeProvider;
             _timeProvider = timeProvider;
             _communicationQueueService = communicationQueueService;
             _queryStoreReader = queryStoreReader;
@@ -53,11 +53,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
 
         private async Task CreateClosedVacancyProjection(Guid vacancyId)
         {
-            var vacancyTask = _repository.GetVacancyAsync(vacancyId);
-            var programmeTask = _referenceDataReader.GetReferenceData<ApprenticeshipProgrammes>();
-
-            await Task.WhenAll(vacancyTask, programmeTask);
-            var vacancy = vacancyTask.Result;
+            var vacancy = await _repository.GetVacancyAsync(vacancyId);
             
             var queryResult = await _queryStoreReader.GetClosedVacancy(vacancy.VacancyReference.Value);
 
@@ -67,9 +63,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
                 return;
             }
             
-            var programme = vacancy.VacancyType.GetValueOrDefault() == VacancyType.Apprenticeship ? programmeTask.Result.Data.FirstOrDefault(p => p.Id == vacancy.ProgrammeId) : null;
+            var programme = vacancy.VacancyType.GetValueOrDefault() == VacancyType.Apprenticeship ?  await _apprenticeshipProgrammeProvider.GetApprenticeshipProgrammeAsync(vacancy.ProgrammeId) : null;
 
-            await _queryStore.UpdateClosedVacancyAsync(vacancy.ToVacancyProjectionBase<ClosedVacancy>(programme, () => QueryViewType.ClosedVacancy.GetIdValue(vacancy.VacancyReference.ToString()), _timeProvider));
+            await _queryStore.UpdateClosedVacancyAsync(vacancy.ToVacancyProjectionBase<ClosedVacancy>((ApprenticeshipProgramme)programme, () => QueryViewType.ClosedVacancy.GetIdValue(vacancy.VacancyReference.ToString()), _timeProvider));
 
             if (vacancy.ClosureReason == ClosureReason.WithdrawnByQa)
             {

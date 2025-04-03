@@ -48,7 +48,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         private readonly IUserNotificationPreferencesRepository _userNotificationPreferencesRepository;
         private readonly AbstractValidator<UserNotificationPreferences> _userNotificationPreferencesValidator;
         private readonly AbstractValidator<Qualification> _qualificationValidator;
-        private readonly IApprenticeshipRouteProvider _apprenticeshipRouteProvider;
         private readonly IVacancySummariesProvider _vacancySummariesQuery;
         private readonly ITimeProvider _timeProvider;
 
@@ -74,7 +73,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             IUserNotificationPreferencesRepository userNotificationPreferencesRepository,
             AbstractValidator<UserNotificationPreferences> userNotificationPreferencesValidator,
             AbstractValidator<Qualification> qualificationValidator,
-            IApprenticeshipRouteProvider apprenticeshipRouteProvider, 
             IVacancySummariesProvider vacancySummariesQuery, 
             ITimeProvider timeProvider)
         {
@@ -99,7 +97,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             _userNotificationPreferencesRepository = userNotificationPreferencesRepository;
             _userNotificationPreferencesValidator = userNotificationPreferencesValidator;
             _qualificationValidator = qualificationValidator;
-            _apprenticeshipRouteProvider = apprenticeshipRouteProvider;
             _vacancySummariesQuery = vacancySummariesQuery;
             _timeProvider = timeProvider;
         }
@@ -283,11 +280,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         public Task<IEnumerable<IApprenticeshipProgramme>> GetActiveApprenticeshipProgrammesAsync()
         {
             return _apprenticeshipProgrammesProvider.GetApprenticeshipProgrammesAsync();
-        }
-
-        public Task<IEnumerable<IApprenticeshipRoute>> GetApprenticeshipRoutes()
-        {
-            return _apprenticeshipRouteProvider.GetApprenticeshipRoutesAsync();
         }
 
         public Task<IApprenticeshipProgramme> GetApprenticeshipProgrammeAsync(string programmeId)
@@ -476,11 +468,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         public Task CloseVacancyAsync(Guid vacancyId, VacancyUser user, ClosureReason reason)
         {
             return _messaging.SendCommandAsync(new CloseVacancyCommand(vacancyId, user, reason));
-        }
-
-        public Task<IApprenticeshipRoute> GetRoute(int? routeId)
-        {
-            return _apprenticeshipRouteProvider.GetApprenticeshipRouteAsync(routeId.GetValueOrDefault());
         }
 
         public async Task CloseExpiredVacancies()
