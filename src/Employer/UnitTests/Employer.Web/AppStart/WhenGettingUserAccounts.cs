@@ -1,16 +1,7 @@
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
 using AutoFixture.NUnit3;
 using Esfa.Recruit.Employer.Web.AppStart;
-using Esfa.Recruit.Employer.Web.Configuration;
-using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Responses;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.OpenIdConnect;
-using Microsoft.AspNetCore.Http;
-using Newtonsoft.Json;
 
 namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.AppStart;
 
