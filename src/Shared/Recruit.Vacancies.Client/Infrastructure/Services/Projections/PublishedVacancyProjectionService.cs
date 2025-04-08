@@ -20,20 +20,20 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Projections
         private readonly ILogger<PublishedVacancyProjectionService> _logger;
         private readonly IQueryStoreWriter _queryStoreWriter;
         private readonly IVacancyQuery _vacancyQuery;
-        private readonly IReferenceDataReader _referenceDataReader;
+        private readonly IApprenticeshipProgrammeProvider _apprenticeshipProgrammeProvider;
         private readonly ITimeProvider _timeProvider;
 
         public PublishedVacancyProjectionService(
                                     ILogger<PublishedVacancyProjectionService> logger, 
                                     IQueryStoreWriter queryStoreWriter, 
                                     IVacancyQuery vacancyQuery,
-                                    IReferenceDataReader referenceDataReader,
+                                    IApprenticeshipProgrammeProvider apprenticeshipProgrammeProvider,
                                     ITimeProvider timeProvider)
         {
             _logger = logger;
             _queryStoreWriter = queryStoreWriter;
             _vacancyQuery = vacancyQuery;
-            _referenceDataReader = referenceDataReader;
+            _apprenticeshipProgrammeProvider = apprenticeshipProgrammeProvider;
             _timeProvider = timeProvider;
         }
 
@@ -41,13 +41,13 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Projections
         {            
             var liveVacancyIdsTask = _vacancyQuery.GetVacanciesByStatusAsync<VacancyIdentifier>(VacancyStatus.Live);
             var closedVacancyIdsTask = _vacancyQuery.GetVacanciesByStatusAsync<VacancyIdentifier>(VacancyStatus.Closed);
-            var programmesTask = _referenceDataReader.GetReferenceData<ApprenticeshipProgrammes>();
+            var programmesTask = _apprenticeshipProgrammeProvider.GetApprenticeshipProgrammesAsync();
 
             await Task.WhenAll(liveVacancyIdsTask, programmesTask, closedVacancyIdsTask);
 
             var liveVacancyIds = liveVacancyIdsTask.Result.Select(v => v.Id).ToList();
             var closedVacancyIds = closedVacancyIdsTask.Result.Select(v => v.Id).ToList();
-            var programmes = programmesTask.Result.Data;
+            var programmes = programmesTask.Result.Select(c=>(ApprenticeshipProgramme)c).ToList();
             
             var regenerateLiveVacanciesViewsTask = RegenerateLiveVacancies(liveVacancyIds, programmes);
             var regenerateClosedVacanciesViewsTask = RegenerateClosedVacancies(closedVacancyIds, programmes);

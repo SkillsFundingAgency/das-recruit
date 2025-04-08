@@ -24,7 +24,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Reports
         private const string ApplicationMethod = "_applicationMethod_";
 
         private const string ColumnProgramme = "Programme";
-        private const string ColumnRoute = "RouteId";
         private const string ColumnApplicationLastUpdatedDate = "Application_LastUpdatedDate";
         private const string ColumnApplicationDate = "Application_Date";
         private const string ColumnNumberOfDaysAppAtThisStatus = "Number_Of_Days_App_At_This_Status";
@@ -32,7 +31,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Reports
         private const string ColumnFramework = "Framework";
         private const string ColumnFrameworkStatus = "Framework_Status";
         private const string ColumnStandard = "Standard";
-        private const string ColumnRouteName = "Route";
         private const string ColumnStandardStatus = "Standard_Status";
         private const string ColumnCandidateId = "Candidate_Id";
         private const string ColumnApplicantId = "Applicant_Id";
@@ -40,7 +38,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Reports
         private readonly IApprenticeshipProgrammeProvider _programmeProvider;
         private readonly ITimeProvider _timeProvider;
         private readonly ILogger<ProviderApplicationsReportStrategy> _logger;
-        private readonly IApprenticeshipRouteProvider _apprenticeshipRouteProvider;
 
         private const string QueryFormat = @"[
             { $match: {'trainingProvider.ukprn' : _ukprn_, 'ownerType' : 'Provider', 'isDeleted' : false, 'applicationMethod' : '_applicationMethod_', 'status' : {$in : ['Live','Closed']}, 'vacancyType' : {_vacancytype_ : ['Traineeship']}}},
@@ -79,14 +76,12 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Reports
             IOptions<MongoDbConnectionDetails> details,
             IApprenticeshipProgrammeProvider programmeProvider,
             ITimeProvider timeProvider,
-            ILogger<ProviderApplicationsReportStrategy> logger,
-            IApprenticeshipRouteProvider apprenticeshipRouteProvider) 
+            ILogger<ProviderApplicationsReportStrategy> logger) 
             : base(loggerFactory, MongoDbNames.RecruitDb, MongoDbCollectionNames.Vacancies, details)
         {
             _programmeProvider = programmeProvider;
             _timeProvider = timeProvider;
             _logger = logger;
-            _apprenticeshipRouteProvider = apprenticeshipRouteProvider;
         }
 
         public Task<ReportStrategyResult> GetReportDataAsync(Dictionary<string,object> parameters)
@@ -151,8 +146,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Reports
 
             var headers = new List<KeyValuePair<string, string>>
             {
-                new KeyValuePair<string, string>("Date", _timeProvider.Now.ToUkTime().ToString("dd/MM/yyyy HH:mm:ss")),
-                new KeyValuePair<string, string>("Total_Number_Of_Applications", results.Count.ToString())
+                new("Date", _timeProvider.Now.ToUkTime().ToString("dd/MM/yyyy HH:mm:ss")),
+                new("Total_Number_Of_Applications", results.Count.ToString())
             };
             return new ReportStrategyResult(headers, data,"");
         }
@@ -165,10 +160,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Reports
                 {
                     await SetProgrammeAsync(result);
                 }
-                else
-                {
-                    await SetRoute(result);
-                }
                 
                 SetNumberOfDaysAtThisStatus(result);
                 SetVacancyReference(result);
@@ -176,21 +167,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Reports
             }
         }
 
-        private async Task SetRoute(BsonDocument result)
-        {
-            var routeId = result[ColumnRoute].AsString;
-            var routeName = "";
-            if (!string.IsNullOrEmpty(routeId) && int.TryParse(routeId, out var routeIdResult))
-            {
-                var route = await _apprenticeshipRouteProvider.GetApprenticeshipRouteAsync(routeIdResult);
-                routeName = route?.Route;
-            }
-            
-            result.InsertAt(result.IndexOfName(ColumnRoute),
-                new BsonElement(ColumnRouteName, (BsonValue)routeName ?? BsonNull.Value));    
-            
-            result.Remove(ColumnRoute);
-        }
         private async Task SetProgrammeAsync(BsonDocument result)
         {    
             var programmeId = result[ColumnProgramme].AsString;
