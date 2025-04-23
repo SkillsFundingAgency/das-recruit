@@ -1,6 +1,8 @@
-﻿using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Responses;
+﻿using System;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Responses;
 using System.Collections.Generic;
 using System.Linq;
+using SFA.DAS.GovUK.Auth.Employer;
 
 namespace Esfa.Recruit.Employer.Web.Models
 {
@@ -30,7 +32,13 @@ namespace Esfa.Recruit.Employer.Web.Models
                 FirstName = source.FirstName,
                 LastName = source.LastName,
                 EmployerUserId = source.EmployerUserId,
-                EmployerAccounts = source.UserAccounts.Select(c => (EmployerUserAccountItem)c).ToList(),
+                EmployerAccounts = source.UserAccounts != null ? source.UserAccounts.Select(c => new EmployerUserAccountItem
+                {
+                    Role = c.Role,
+                    AccountId = c.AccountId,
+                    EmployerName = c.EmployerName,
+                    ApprenticeshipEmployerType = Enum.Parse<ApprenticeshipEmployerType>(c.ApprenticeshipEmployerType)
+                }).ToList() : [],
             };
         }
     }

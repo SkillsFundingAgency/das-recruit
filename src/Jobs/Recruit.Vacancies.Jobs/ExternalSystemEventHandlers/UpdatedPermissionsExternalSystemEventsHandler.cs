@@ -8,7 +8,6 @@ using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount;
-using Esfa.Recruit.Vacancies.Jobs.Configuration;
 using Microsoft.Extensions.Logging;
 using NServiceBus;
 using SFA.DAS.Encoding;
@@ -23,18 +22,16 @@ namespace Esfa.Recruit.Vacancies.Jobs.ExternalSystemEventHandlers
         private readonly IRecruitQueueService _recruitQueueService;
         private readonly IEmployerAccountProvider _employerAccountProvider;
         private readonly IEncodingService _encoder;
-        private readonly RecruitWebJobsSystemConfiguration _jobsConfig;
         private readonly IMessaging _messaging;
         
         private string ExternalSystemEventHandlerName => GetType().Name;
 
-        public UpdatedPermissionsExternalSystemEventsHandler(ILogger<UpdatedPermissionsExternalSystemEventsHandler> logger, RecruitWebJobsSystemConfiguration jobsConfig,
+        public UpdatedPermissionsExternalSystemEventsHandler(ILogger<UpdatedPermissionsExternalSystemEventsHandler> logger,
                                                 IRecruitQueueService recruitQueueService,
                                                 IEmployerAccountProvider employerAccountProvider, IEncodingService encoder,
                                                 IMessaging messaging)
         {
             _logger = logger;
-            _jobsConfig = jobsConfig;
             _recruitQueueService = recruitQueueService;
             _employerAccountProvider = employerAccountProvider;
             _encoder = encoder;
@@ -43,12 +40,6 @@ namespace Esfa.Recruit.Vacancies.Jobs.ExternalSystemEventHandlers
 
         public async Task Handle(UpdatedPermissionsEvent message, IMessageHandlerContext context)
         {
-            if (_jobsConfig.DisabledJobs.Contains(ExternalSystemEventHandlerName))
-            {
-                _logger.LogDebug($"{ExternalSystemEventHandlerName} is disabled, skipping ...");
-                return;
-            }
-
             _logger.LogInformation($"Attempting to process {nameof(UpdatedPermissionsEvent)} : {{@eventMessage}}", message);
 
             if (message.UserRef.HasValue == false)
