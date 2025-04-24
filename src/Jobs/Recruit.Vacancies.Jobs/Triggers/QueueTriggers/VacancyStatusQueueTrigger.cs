@@ -23,12 +23,6 @@ namespace Esfa.Recruit.Vacancies.Jobs.Triggers.QueueTriggers
 
         public async Task VacancyStatusAsync([QueueTrigger(QueueNames.VacancyStatusQueueName, Connection = "QueueStorage")] string message, TextWriter log)
         {
-            // if (_jobsConfig.DisabledJobs.Contains(JobName))
-            // {
-            //     _logger.LogDebug($"{JobName} is disabled, skipping ...");
-            //     return;
-            // }
-
             _logger.LogInformation("Starting vacancy status checking.");
 
             try
