@@ -100,8 +100,8 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
         }
 
         [Theory]
-        [InlineData(DurationUnit.Month, 11)]
-        public void ApprenticeshipDurationMustBeAtLeast12Months(DurationUnit unitValue, int durationValue)
+        [InlineData(DurationUnit.Month, 7)]
+        public void ApprenticeshipDurationMustBeAtLeast8Months(DurationUnit unitValue, int durationValue)
         {
             ServiceParameters = new ServiceParameters();
             var vacancy = new Vacancy
@@ -123,12 +123,12 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
         }
         
         [Theory]
-        [InlineData(DurationUnit.Month, 12, "29", true)]
-        [InlineData(DurationUnit.Month, 12, "30", false)]
+        [InlineData(DurationUnit.Month, 8, "29", true)]
+        [InlineData(DurationUnit.Month, 8, "30", false)]
         [InlineData(DurationUnit.Year, 1, "29", true)]
-        [InlineData(DurationUnit.Month, 12, "19", true)]
-        [InlineData(DurationUnit.Month, 13, "19", true)]
-        [InlineData(DurationUnit.Month, 15, "19", true)]
+        [InlineData(DurationUnit.Month, 8, "19", true)]
+        [InlineData(DurationUnit.Month, 9, "19", true)]
+        [InlineData(DurationUnit.Month, 11, "19", true)]
         [InlineData(DurationUnit.Month, 15, "24", false)]
         [InlineData(DurationUnit.Year, 2, "14", true)]
         [InlineData(DurationUnit.Year, 2, "29", false)]
@@ -146,7 +146,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
                     Duration = durationValue
                 }
             };
-            int expectedNumberOfMonths = (int) Math.Ceiling(30 / vacancy.Wage.WeeklyHours.GetValueOrDefault() * 12);
+            int expectedNumberOfMonths = (int) Math.Ceiling(30 / vacancy.Wage.WeeklyHours.GetValueOrDefault() * 8);
 
             var result = Validator.Validate(vacancy, VacancyRuleSet.Duration);
 
