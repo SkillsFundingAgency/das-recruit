@@ -12,7 +12,6 @@ namespace Esfa.Recruit.Vacancies.Jobs.Triggers.QueueTriggers {
         private readonly ILogger<UpdateUserAccountQueueTrigger> _logger;
         private readonly IJobsVacancyClient _client;
 
-        private string JobName => GetType().Name;
         public UpdateUserAccountQueueTrigger (
             ILogger<UpdateUserAccountQueueTrigger> logger,
             IJobsVacancyClient client) 

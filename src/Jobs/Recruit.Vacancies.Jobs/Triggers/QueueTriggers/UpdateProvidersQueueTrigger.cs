@@ -13,8 +13,6 @@ namespace Esfa.Recruit.Vacancies.Jobs.Triggers.QueueTriggers
         private readonly ILogger<UpdateProvidersQueueTrigger> _logger;
         private readonly IJobsVacancyClient _client;
 
-        private string JobName => GetType().Name;
-
         public UpdateProvidersQueueTrigger(ILogger<UpdateProvidersQueueTrigger> logger, IJobsVacancyClient client)
         {
             _logger = logger;

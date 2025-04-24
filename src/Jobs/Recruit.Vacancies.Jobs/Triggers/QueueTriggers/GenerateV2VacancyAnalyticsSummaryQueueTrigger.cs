@@ -1,5 +1,4 @@
 using System;
-using System.IO;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.Queues.Messages;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore;
@@ -16,8 +15,6 @@ public class GenerateV2VacancyAnalyticsSummaryQueueTrigger
     private readonly ILogger<GenerateV2VacancyAnalyticsSummaryQueueTrigger> _logger;
     private readonly IAnalyticsAggregator _analyticsAggregator;
     private readonly IQueryStoreWriter _qsWriter;
-        
-    private string JobName => GetType().Name;
 
     public GenerateV2VacancyAnalyticsSummaryQueueTrigger(ILogger<GenerateV2VacancyAnalyticsSummaryQueueTrigger> logger,
         IQueryStoreWriter qsWriter,IAnalyticsAggregator analyticsAggregator)
@@ -28,7 +25,7 @@ public class GenerateV2VacancyAnalyticsSummaryQueueTrigger
     }
 
     public async Task GenerateVacancyAnalyticsSummaryAsync([QueueTrigger(QueueNames.GenerateV2VacancyAnalyticsQueueName, Connection = "QueueStorage")]
-        string message, TextWriter log)
+        string message)
     {
         var eventItem = JsonConvert.DeserializeObject<VacancyAnalyticsV2QueueMessage>(message);
 

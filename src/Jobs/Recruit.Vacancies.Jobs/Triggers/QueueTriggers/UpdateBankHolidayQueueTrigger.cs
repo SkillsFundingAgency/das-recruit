@@ -12,8 +12,6 @@ namespace Esfa.Recruit.Vacancies.Jobs.Triggers.QueueTriggers
         private readonly ILogger<UpdateBankHolidayQueueTrigger> _logger;
         private readonly IJobsVacancyClient _client;
 
-        private string JobName => GetType().Name;
-
         public UpdateBankHolidayQueueTrigger(ILogger<UpdateBankHolidayQueueTrigger> logger, IJobsVacancyClient client)
         {
             _logger = logger;

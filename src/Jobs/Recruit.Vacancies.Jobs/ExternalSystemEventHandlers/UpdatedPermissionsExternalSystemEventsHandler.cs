@@ -23,8 +23,6 @@ namespace Esfa.Recruit.Vacancies.Jobs.ExternalSystemEventHandlers
         private readonly IEmployerAccountProvider _employerAccountProvider;
         private readonly IEncodingService _encoder;
         private readonly IMessaging _messaging;
-        
-        private string ExternalSystemEventHandlerName => GetType().Name;
 
         public UpdatedPermissionsExternalSystemEventsHandler(ILogger<UpdatedPermissionsExternalSystemEventsHandler> logger,
                                                 IRecruitQueueService recruitQueueService,

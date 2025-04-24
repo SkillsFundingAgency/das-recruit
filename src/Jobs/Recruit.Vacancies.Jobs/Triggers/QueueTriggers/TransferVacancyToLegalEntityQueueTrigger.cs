@@ -15,8 +15,6 @@ namespace Esfa.Recruit.Vacancies.Jobs.Triggers.QueueTriggers
         private readonly ILogger<TransferVacancyToLegalEntityQueueTrigger> _logger;
         private readonly TransferVacancyToLegalEntityJob _runner;
 
-        private string TriggerName => GetType().Name;
-
         public TransferVacancyToLegalEntityQueueTrigger(ILogger<TransferVacancyToLegalEntityQueueTrigger> logger, TransferVacancyToLegalEntityJob runner)
         {
             _logger = logger;

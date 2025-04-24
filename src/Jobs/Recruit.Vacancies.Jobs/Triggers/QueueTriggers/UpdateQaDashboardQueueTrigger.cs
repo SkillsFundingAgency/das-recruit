@@ -12,8 +12,6 @@ namespace Esfa.Recruit.Vacancies.Jobs.Triggers.QueueTriggers
         private readonly ILogger<UpdateQaDashboardQueueTrigger> _logger;
         private readonly IQaDashboardProjectionService _projectionService;
 
-        private string JobName => GetType().Name;
-
         public UpdateQaDashboardQueueTrigger(ILogger<UpdateQaDashboardQueueTrigger> logger, IQaDashboardProjectionService projectionService)
         {
             _logger = logger;
