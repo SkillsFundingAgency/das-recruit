@@ -159,7 +159,8 @@
             <div class="app-summary-list__row" field-review-marker="TrainingTitle">
                 <dt class="app-summary-list__key" id="@FieldIdentifiers.Training">Training course</dt>
                 <dd id="TrainingLevel" class="app-summary-list__value">
-                    @Model.TrainingTitle
+                    <p>@Model.TrainingTitle</p>
+                    <govuk-tag-foundation asp-show="@(Model.VacancyType is VacancyType.Foundation)"/>
                     <review-field class="govuk-tag--purple" field-name="@FieldIdentifiers.Training" tag-name="strong" model="@Model"/>
                 </dd>
                 <dd class="app-summary-list__actions">
@@ -388,48 +389,52 @@
         </dl>
         <h2 class="govuk-heading-m">Requirements and prospects</h2>
         <dl class="app-summary-list govuk-!-margin-bottom-9">
-            <field-review-message field-name="@FieldIdentifiers.Skills" model="@Model"></field-review-message>
-            <div class="app-summary-list__row" field-review-marker="Skills">
-                <dt class="app-summary-list__key" id="@FieldIdentifiers.Skills">Skills</dt>
-                <dd class="app-summary-list__value">
-                    <ul class="govuk-list govuk-list--bullet">
-                        @foreach (var skill in Model.Skills)
-                        {
-                            <li>@skill</li>
-                        }
-                    </ul>
-                    <review-field class="govuk-tag--purple" field-name="@FieldIdentifiers.Skills" tag-name="strong" model="@Model"/>
-                </dd>
-                <dd class="app-summary-list__actions">
-                    <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.Skills_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="change-skills">Change<span class="govuk-visually-hidden"> skills</span></a>
-                </dd>
-            </div>
             
-        
-            <field-review-message field-name="@FieldIdentifiers.Qualifications" model="@Model"></field-review-message>
-            <div class="app-summary-list__row" field-review-marker="Qualifications">
-                <dt class="app-summary-list__key" id="@FieldIdentifiers.Qualifications">Qualifications required</dt>
-                <dd class="app-summary-list__value">
-                    @if (Model.HasOptedToAddQualifications is false)
-                    {
-                        @:You don’t need any qualifications to apply for this apprenticeship.
-                    }
-                    else
-                    {
+            @if (Model.VacancyType is not VacancyType.Foundation)
+            {
+
+                <field-review-message field-name="@FieldIdentifiers.Skills" model="@Model"></field-review-message>
+                <div class="app-summary-list__row" field-review-marker="Skills">
+                    <dt class="app-summary-list__key" id="@FieldIdentifiers.Skills">Skills</dt>
+                    <dd class="app-summary-list__value">
                         <ul class="govuk-list govuk-list--bullet">
-                            @foreach (var qual in Model.Qualifications)
+                            @foreach (var skill in Model.Skills)
                             {
-                                <li>@qual</li>
+                                <li>@skill</li>
                             }
                         </ul>
-                    }
-                    <review-field class="govuk-tag--purple" field-name="@FieldIdentifiers.Qualifications" tag-name="strong" model="@Model"/>
-                </dd>
-                <dd class="app-summary-list__actions">
-                    <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.Qualifications_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="change-qualifications">Change<span class="govuk-visually-hidden"> qualifications</span></a>
-                </dd>
-            </div>
-            
+                        <review-field class="govuk-tag--purple" field-name="@FieldIdentifiers.Skills" tag-name="strong" model="@Model"/>
+                    </dd>
+                    <dd class="app-summary-list__actions">
+                        <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.Skills_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="change-skills">Change<span class="govuk-visually-hidden"> skills</span></a>
+                    </dd>
+                </div>
+
+
+                <field-review-message field-name="@FieldIdentifiers.Qualifications" model="@Model"></field-review-message>
+                <div class="app-summary-list__row" field-review-marker="Qualifications">
+                    <dt class="app-summary-list__key" id="@FieldIdentifiers.Qualifications">Qualifications required</dt>
+                    <dd class="app-summary-list__value">
+                        @if (Model.HasOptedToAddQualifications is false)
+                        {
+                            @:You don’t need any qualifications to apply for this apprenticeship.
+                        }
+                        else
+                        {
+                            <ul class="govuk-list govuk-list--bullet">
+                                @foreach (var qual in Model.Qualifications)
+                                {
+                                    <li>@qual</li>
+                                }
+                            </ul>
+                        }
+                        <review-field class="govuk-tag--purple" field-name="@FieldIdentifiers.Qualifications" tag-name="strong" model="@Model"/>
+                    </dd>
+                    <dd class="app-summary-list__actions">
+                        <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.Qualifications_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="change-qualifications">Change<span class="govuk-visually-hidden"> qualifications</span></a>
+                    </dd>
+                </div>
+            }
 
             <field-review-message field-name="OutcomeDescription" model="@Model"></field-review-message>
             <div class="app-summary-list__row" field-review-marker="OutcomeDescription">
@@ -454,7 +459,7 @@
                     }
                     else
                     {
-                        @Model.ThingsToConsider    
+                        @Model.ThingsToConsider
                     }
                     <review-field class="govuk-tag--purple" field-name="@FieldIdentifiers.ThingsToConsider" tag-name="strong" model="@Model"/>
 

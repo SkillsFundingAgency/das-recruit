@@ -121,17 +121,14 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
         public async Task<IActionResult> ConfirmTraining(ConfirmTrainingEditModel m, [FromQuery] bool wizard)
         {
             var user = User.ToVacancyUser();
-
             var programme = await _orchestrator.GetProgrammeAsync(m.ProgrammeId);
-
             if(programme == null)
             {
                 ModelState.AddModelError(nameof(TrainingEditModel.SelectedProgrammeId), InvalidTraining);
             }
             else
             {
-                var response = await _orchestrator.PostConfirmTrainingEditModelAsync(m, programme, user);
-
+                var response = await _orchestrator.PostConfirmTrainingEditModelAsync(m, user);
                 if (!response.Success)
                 {
                     response.AddErrorsToModelState(ModelState);

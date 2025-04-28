@@ -112,14 +112,9 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             };
         }
 
-        public async Task<OrchestratorResponse> PostConfirmTrainingEditModelAsync(ConfirmTrainingEditModel m, IApprenticeshipProgramme programme, VacancyUser user)
+        public async Task<OrchestratorResponse> PostConfirmTrainingEditModelAsync(ConfirmTrainingEditModel m, VacancyUser user)
         {
             var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(m, RouteNames.Training_Confirm_Post);
-            vacancy.VacancyType = programme.ApprenticeshipType switch {
-                //TrainingType.Standard => VacancyType.Apprenticeship,
-                TrainingType.Foundation => VacancyType.Foundation,
-                _ => null
-            };
             
             SetVacancyWithEmployerReviewFieldIndicators(
                 vacancy.ProgrammeId,

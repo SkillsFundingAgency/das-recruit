@@ -143,6 +143,10 @@ namespace Esfa.Recruit.Provider.Web.Mappings
                 vm.StandardPageUrl = programme.StandardPageUrl;
                 vm.OverviewOfRole = programme.OverviewOfRole;
                 vm.ApprenticeshipLevel = programme.ApprenticeshipLevel;
+                vm.VacancyType = programme.ApprenticeshipType switch {
+                    TrainingType.Foundation => VacancyType.Foundation,
+                    _ => VacancyType.Apprenticeship
+                };
             }
 
             if (vacancy.Wage != null)
@@ -157,8 +161,6 @@ namespace Esfa.Recruit.Provider.Web.Mappings
                 vm.WageText = vacancy.StartDate.HasValue ? vacancy.Wage.ToText(vacancy.StartDate) : null;
                 vm.WorkingWeekDescription = vacancy.Wage.WorkingWeekDescription;
             }
-
-            vm.VacancyType = vacancy.VacancyType;
         }
     }
 }

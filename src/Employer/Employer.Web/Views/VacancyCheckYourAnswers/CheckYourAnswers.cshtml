@@ -117,7 +117,7 @@
                 <dt class="app-summary-list__key" id="@FieldIdentifiers.Training">Training course</dt>
                 <dd id="TrainingLevel" class="app-summary-list__value">
                     <p>@Model.TrainingTitle</p>
-                    <govuk-tag-foundation />
+                    <govuk-tag-foundation asp-show="@(Model.VacancyType is VacancyType.Foundation)"/>
                     <field-review-tag class="govuk-tag--orange" field-name="@FieldIdentifiers.Training" tag-name="strong" model="@Model" />
                 </dd>
                 <dd class="app-summary-list__actions">
@@ -412,12 +412,7 @@
             
         </dl>
         
-        <esfaFeatureEnabled name="@FeatureNames.FoundationApprenticeships">
-            <h2 class="govuk-heading-m">Requirements and prospects </h2>
-        </esfaFeatureEnabled>
-        <esfaFeatureDisabled name="@FeatureNames.FoundationApprenticeships">
-            <h2 class="govuk-heading-m">Skills and qualifications</h2>
-        </esfaFeatureDisabled>
+        <h2 class="govuk-heading-m">Requirements and prospects </h2>
         <dl class="app-summary-list govuk-!-margin-bottom-9">
 
             @if (Model.VacancyType is not VacancyType.Foundation)

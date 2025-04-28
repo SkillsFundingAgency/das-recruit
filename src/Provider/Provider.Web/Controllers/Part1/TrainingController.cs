@@ -88,9 +88,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
         public async Task<IActionResult> ConfirmTraining(ConfirmTrainingEditModel m, [FromQuery] bool wizard)
         {
             var user = User.ToVacancyUser();
-
             var programme = await _orchestrator.GetProgrammeAsync(m.ProgrammeId);
-
             if (programme == null)
             {
                 ModelState.AddModelError(nameof(TrainingEditModel.SelectedProgrammeId), InvalidTraining);
@@ -98,7 +96,6 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
             else
             {
                 var response = await _orchestrator.PostConfirmTrainingEditModelAsync(m, user);
-
                 if (!response.Success)
                 {
                     response.AddErrorsToModelState(ModelState);

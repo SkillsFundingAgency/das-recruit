@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using System.Threading.Tasks;
 using Esfa.Recruit.Provider.UnitTests.Provider.Web.HardMocks;
 using Esfa.Recruit.Provider.Web;
 using Esfa.Recruit.Provider.Web.Orchestrators.Part1;
@@ -9,9 +8,7 @@ using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
-using FluentAssertions;
 using Microsoft.Extensions.Logging;
-using Moq;
 using Xunit;
 
 namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part1

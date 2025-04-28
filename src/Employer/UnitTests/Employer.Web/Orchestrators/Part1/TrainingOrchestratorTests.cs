@@ -93,12 +93,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part1
 
             public async Task PostConfirmTrainingEditModelAsync(ConfirmTrainingEditModel model)
             {
-                var programme = new ApprenticeshipProgramme
-                {
-                    Id = model.ProgrammeId,
-                    ApprenticeshipType = TrainingType.Standard
-                };
-                await Sut.PostConfirmTrainingEditModelAsync(model, programme, User);
+                await Sut.PostConfirmTrainingEditModelAsync(model, User);
             }
 
             public void VerifyEmployerReviewFieldIndicators(string fieldIdentifier, bool value)
