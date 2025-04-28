@@ -6,7 +6,7 @@
     ViewBag.Title = "title";
     Layout = "_Layout";
     var accounts = JsonConvert.DeserializeObject<Dictionary<string, EmployerUserAccountItem>>(
-        User.Claims.FirstOrDefault(c => c.Type.Equals(EmployerRecruitClaims.AccountsClaimsTypeIdentifier))?.Value)
+            User.Claims.FirstOrDefault(c => c.Type.Equals(EmployerRecruitClaims.AccountsClaimsTypeIdentifier))?.Value)
         .Select(c => c.Value)
         .OrderBy(x => x.EmployerName)
         .ToList();
