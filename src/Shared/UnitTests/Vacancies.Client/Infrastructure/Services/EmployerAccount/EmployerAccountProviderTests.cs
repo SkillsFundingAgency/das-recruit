@@ -1,0 +1,39 @@
+﻿using System.Collections.Generic;
+using AutoFixture.NUnit3;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Requests;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Responses;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount;
+using NUnit.Framework;
+using SFA.DAS.Encoding;
+
+namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructure.Services.EmployerAccount
+{
+    [TestFixture]
+    public class EmployerAccountProviderTests
+    {
+        [Test, MoqAutoData]
+        public async Task GetEmployerDashboardApplicationReviewStats_Should_Return_As_Expected(
+            string hashedAccountId,
+            long accountId,
+            List<long> vacancyReferences,
+            GetApplicationReviewsCountApiResponse response,
+            [Frozen] Mock<IEncodingService> encodingService,
+            [Frozen] Mock<IOuterApiClient> outerApiClient,
+            [Greedy] EmployerAccountProvider employerAccountProvider)
+        {
+            encodingService.Setup(x => x.Decode(hashedAccountId, EncodingType.AccountId))
+                .Returns(accountId);
+
+            var expectedGetUrl = new GetEmployerApplicationReviewsCountApiRequest(accountId, vacancyReferences);
+            outerApiClient.Setup(x => x.Post<GetApplicationReviewsCountApiResponse>(
+                    It.Is<GetEmployerApplicationReviewsCountApiRequest>(r => r.PostUrl == expectedGetUrl.PostUrl)))
+                .ReturnsAsync(response);
+
+            var result = await employerAccountProvider.GetEmployerDashboardApplicationReviewStats(hashedAccountId, vacancyReferences);
+
+
+            result.ApplicationReviewStatsList.Should().BeEquivalentTo(response.ApplicationReviewStatsList);
+        }
+    }
+}

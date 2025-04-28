@@ -1,12 +1,15 @@
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Configuration;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MongoDB.Bson;
@@ -17,18 +20,23 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
 {
     internal sealed class VacancySummariesProvider : MongoDbCollectionBase, IVacancySummariesProvider
     {
-        private readonly IVacancyTaskListStatusService _vacancyTaskListStatusService;
+        private readonly ITrainingProviderService _trainingProviderService;
+        private readonly IEmployerAccountProvider _employerAccountProvider;
         private const string TransferInfoUkprn = "transferInfo.ukprn";
         private const string TransferInfoReason = "transferInfo.reason";
         private const int ClosingSoonDays = 5;
+        private readonly bool _isMongoMigrationFeatureEnabled = false;
 
         public VacancySummariesProvider(
-            ILoggerFactory loggerFactory, 
-            IOptions<MongoDbConnectionDetails> details, 
-            IVacancyTaskListStatusService vacancyTaskListStatusService)
+            ILoggerFactory loggerFactory,
+            IOptions<MongoDbConnectionDetails> details,
+            IFeature feature,
+            ITrainingProviderService trainingProviderService, IEmployerAccountProvider employerAccountProvider)
             : base(loggerFactory, MongoDbNames.RecruitDb, MongoDbCollectionNames.Vacancies, details)
         {
-            _vacancyTaskListStatusService = vacancyTaskListStatusService;
+            _trainingProviderService = trainingProviderService;
+            _employerAccountProvider = employerAccountProvider;
+            _isMongoMigrationFeatureEnabled = feature.IsFeatureEnabled(FeatureNames.MongoMigration);
         }
        
         public async Task<VacancyDashboard> GetProviderOwnedVacancyDashboardByUkprnAsync(long ukprn)
@@ -152,7 +160,36 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
             
             var aggPipeline = VacancySummaryAggQueryBuilder.GetAggregateQueryPipeline(match, page,secondaryMath);
 
-            return await RunAggPipelineQuery(aggPipeline);
+            var pipelineResult = await RunAggPipelineQuery(aggPipeline);
+
+            if (!_isMongoMigrationFeatureEnabled)
+                return pipelineResult;
+
+            // If the Mongo migration feature is enabled, retrieve the application review stats
+            var vacancyReferences = pipelineResult
+                .Where(x => x.VacancyReference.HasValue)
+                .Select(x => x.VacancyReference.Value)
+                .ToList();
+
+            var dashboardStats = await _trainingProviderService.GetProviderDashboardApplicationReviewStats(ukprn, vacancyReferences);
+
+            var applicationReviewStatsLookup = dashboardStats.ApplicationReviewStatsList
+                .ToDictionary(x => x.VacancyReference);
+
+            foreach (var vacancySummary in pipelineResult)
+            {
+                if (!vacancySummary.VacancyReference.HasValue ||
+                    !applicationReviewStatsLookup.TryGetValue(vacancySummary.VacancyReference.Value,
+                        out var applicationReview)) continue;
+
+                vacancySummary.NoOfSuccessfulApplications = applicationReview.SuccessfulApplications;
+                vacancySummary.NoOfUnsuccessfulApplications = applicationReview.UnsuccessfulApplications;
+                vacancySummary.NoOfNewApplications = applicationReview.NewApplications;
+                vacancySummary.NoOfSharedApplications = applicationReview.SharedApplications;
+                vacancySummary.NoOfEmployerReviewedApplications = 0; //TODO: Future story will cover this property 
+            }
+
+            return pipelineResult;
         }
 
         public async Task<IList<VacancySummary>> GetEmployerOwnedVacancySummariesByEmployerAccountId(string employerAccountId, int page,
@@ -196,7 +233,36 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
             
             var aggPipeline = VacancySummaryAggQueryBuilder.GetAggregateQueryPipeline(match, page,secondaryMath, employerReviewMatch);
 
-            return await RunAggPipelineQuery(aggPipeline);
+            var pipelineResult = await RunAggPipelineQuery(aggPipeline);
+
+            if (!_isMongoMigrationFeatureEnabled)
+                return pipelineResult;
+
+            // If the Mongo migration feature is enabled, retrieve the application review stats
+            var vacancyReferences = pipelineResult
+                .Where(x => x.VacancyReference.HasValue)
+                .Select(x => x.VacancyReference.Value)
+                .ToList();
+
+            var dashboardStats = await _employerAccountProvider.GetEmployerDashboardApplicationReviewStats(employerAccountId, vacancyReferences);
+
+            var applicationReviewStatsLookup = dashboardStats.ApplicationReviewStatsList
+                .ToDictionary(x => x.VacancyReference);
+
+            foreach (var vacancySummary in pipelineResult)
+            {
+                if (!vacancySummary.VacancyReference.HasValue ||
+                    !applicationReviewStatsLookup.TryGetValue(vacancySummary.VacancyReference.Value,
+                        out var applicationReview)) continue;
+
+                vacancySummary.NoOfSuccessfulApplications = applicationReview.SuccessfulApplications;
+                vacancySummary.NoOfUnsuccessfulApplications = applicationReview.UnsuccessfulApplications;
+                vacancySummary.NoOfNewApplications = applicationReview.NewApplications;
+                vacancySummary.NoOfSharedApplications = applicationReview.SharedApplications;
+                vacancySummary.NoOfEmployerReviewedApplications = 0; //TODO: Future story will cover this property 
+            }
+
+            return pipelineResult;
         }
 
         public async Task<IList<TransferInfo>> GetTransferredFromProviderAsync(long ukprn)
@@ -256,6 +322,14 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                 };
 
             var aggPipeline = VacancySummaryAggQueryBuilder.GetAggregateQueryPipelineDocumentCount(match,secondaryMath, string.IsNullOrEmpty(employerAccountId) ? null: employerReviewMatch);
+
+            if (_isMongoMigrationFeatureEnabled)
+            {
+                var collectionList = aggPipeline.ToList();
+                collectionList.RemoveAll(stage => stage.GetElement(0).Name == "$lookup"
+                                                  && stage["$lookup"]["from"] == "applicationReviews");
+                aggPipeline = collectionList.ToArray();
+            }
 
             return await RunAggPipelineCountQuery(aggPipeline);
         }
@@ -325,6 +399,14 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
         {
             var db = GetDatabase();
             var collection = db.GetCollection<BsonDocument>(MongoDbCollectionNames.Vacancies);
+
+            if (_isMongoMigrationFeatureEnabled)
+            {
+                var collectionList = pipeline.ToList();
+                collectionList.RemoveAll(stage => stage.GetElement(0).Name == "$lookup"
+                                                  && stage["$lookup"]["from"] == "applicationReviews");
+                pipeline = collectionList.ToArray();
+            }
             
             var vacancySummaries = await RetryPolicy.ExecuteAsync(async context =>
                 {
