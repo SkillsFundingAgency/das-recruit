@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Mappings;
@@ -48,7 +49,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                 PageInfo = _utility.GetPartOnePageInfo(vacancy),
                 TrainingTitle = training?.Title,
                 TrainingDurationMonths = training?.Duration ?? 0,
-                MinimumApprenticeshipLength = _feature.IsFeatureEnabled("FoundationApprenticeships") ? 8 : 12
+                MinimumApprenticeshipLength = _feature.IsFeatureEnabled("FoundationApprenticeships") 
+                                              || DateTime.UtcNow >= new DateTime(2025,8,1) ? 8 : 12
             };
 
             if (vacancy.Status == VacancyStatus.Referred)

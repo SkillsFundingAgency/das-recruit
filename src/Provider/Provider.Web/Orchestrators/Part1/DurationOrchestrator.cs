@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using Esfa.Recruit.Provider.Web.Configuration.Routing;
 using Esfa.Recruit.Provider.Web.Mappings;
@@ -52,7 +53,8 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
                 Ukprn = vrm.Ukprn,
                 VacancyId = vrm.VacancyId,
                 IsTaskListCompleted = _utility.IsTaskListCompleted(vacancy),
-                MinimumApprenticeshipLength = _feature.IsFeatureEnabled("FoundationApprenticeships") ? 8 : 12 
+                MinimumApprenticeshipLength = _feature.IsFeatureEnabled("FoundationApprenticeships") 
+                                              || DateTime.UtcNow >= new DateTime(2025,8,1) ? 8 : 12 
             };
 
             if (vacancy.Status == VacancyStatus.Referred)
