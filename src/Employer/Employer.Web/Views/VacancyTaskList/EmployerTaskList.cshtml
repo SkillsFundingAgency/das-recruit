@@ -1,4 +1,5 @@
 @using Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview
+@using Esfa.Recruit.Shared.Web.ViewModels.TaskList
 @using Esfa.Recruit.Vacancies.Client.Domain.Entities
 @model Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview.VacancyPreviewViewModel
 
@@ -9,33 +10,14 @@
 }
 
 <div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">  
+    <div class="govuk-grid-column-two-thirds">
         <h1 class="govuk-heading-xl">
             Create an apprenticeship advert
         </h1>
         <ol class="das-task-list">
             <li>
-                <h2 class="das-task-list__section">
-                    <span class="das-task-list__section-number">1. </span> 
-                    <span class="das-task-list__section-heading">Advert summary</span>
-                    <span class="das-task-list__section-status">
-                        @if(Model.TaskListSectionOneState == VacancyTaskListSectionState.InProgress)
-                        {
-                            <strong class="govuk-tag govuk-tag--blue das-task-list__section-tag">In progress</strong>
-                        }
-                        else if (Model.TaskListSectionOneState == VacancyTaskListSectionState.Completed)
-                        {
-                            <strong class="govuk-tag das-task-list__section-tag">Completed</strong>    
-                        }
-                        else
-                        {
-                            <strong class="govuk-tag govuk-tag--grey das-task-list__section-tag">Not started</strong>
-                        }
-                        
-                    </span>
-                </h2>
+                <partial name="_TaskListHeader" model="@(new TaskListHeaderViewModel(1, "Advert summary", Model.TaskListSectionOneState))" />
                 <ul class="das-task-list__items">
-                    
                     <li class="das-task-list__item">
                         <span>
                             @if (Model.TaskListSectionOneState == VacancyTaskListSectionState.NotStarted)
@@ -54,432 +36,105 @@
                     </li>
                     @if (Model.AccountLegalEntityCount > 1)
                     {
-                        <li class="das-task-list__item">
-                            @if (Model.TitleSectionState == VacancyPreviewSectionState.Incomplete)
-                            {
-                                <span class="das-task-list__task-name">
-                                    Name of organisation
-                                </span>    
-                            }
-                            else
-                            {
-                                <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.Employer_Get" asp-all-route-data="@Model.RouteDictionary">
-                                    Name of organisation
-                                </a>    
-                            }
-                        </li>    
+                        <partial name="_TaskListItem" model="@(new TaskListItemViewModel(Model.TitleSectionState != VacancyPreviewSectionState.Incomplete,
+                                            "Name of organisation", RouteNames.Employer_Get, Model.RouteDictionary))"/>
                     }
-                    <li class="das-task-list__item">
-                        @if (!Model.HasSelectedLegalEntity)
-                        {
-                            <span class="das-task-list__task-name">
-                                Training course
-                            </span>
-                        }
-                        else
-                        {
-                            <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.Training_Get" asp-all-route-data="@Model.RouteDictionary">
-                                Training course
-                            </a>
-                        }
-                    </li>
-                    <li class="das-task-list__item">
-                        @if (Model.TrainingSectionState == VacancyPreviewSectionState.Incomplete)
-                        {
-                            <span>
-                                Training provider
-                            </span>
-                        }
-                        else
-                        {
-                            <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.TrainingProvider_Select_Get" asp-all-route-data="@Model.RouteDictionary">
-                                Training provider
-                            </a>
-                        }
-                    </li>
-                    <li class="das-task-list__item">
-                        @if (Model.ProviderSectionState == VacancyPreviewSectionState.Incomplete)
-                        {
-                            <span>
-                                Summary of the apprenticeship
-                            </span>
-                        }
-                        else
-                        {
-                            <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.ShortDescription_Get" asp-all-route-data="@Model.RouteDictionary">
-                                Summary of the apprenticeship
-                            </a>
-                        }
-                    </li>
-                    
-                    <li class="das-task-list__item">
-                    @if (Model.ShortDescriptionSectionState == VacancyPreviewSectionState.Incomplete)
-                    {
-                        <span>
-                            What the apprentice will do at work
-                        </span>
-                    }
-                    else
-                    {
-                        <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.VacancyWorkDescription_Index_Get" asp-all-route-data="@Model.RouteDictionary">
-                            What the apprentice will do at work
-                        </a>
-                    }
-                    </li>
-                    <li class="das-task-list__item">
-                    @if (Model.DescriptionsSectionState == VacancyPreviewSectionState.Incomplete)
-                    {
-                        <span>
-                            How the apprentice will train
-                        </span>
-                    }
-                    else
-                    {
-                        <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.VacancyHowTheApprenticeWillTrain_Index_Get" asp-all-route-data="@Model.RouteDictionary">
-                            How the apprentice will train
-                        </a>
-                    }
-                    </li>
+                    <partial name="_TaskListItem" model="@(new TaskListItemViewModel(Model.HasSelectedLegalEntity, "Training course", RouteNames.Training_Get, Model.RouteDictionary))"/>
+                    <partial name="_TaskListItem" model="@(new TaskListItemViewModel(Model.TrainingSectionState != VacancyPreviewSectionState.Incomplete,
+                                        "Training provider", RouteNames.TrainingProvider_Select_Get, Model.RouteDictionary))"/>
+                    <partial name="_TaskListItem" model="@(new TaskListItemViewModel(Model.ProviderSectionState != VacancyPreviewSectionState.Incomplete,
+                                        "Summary of the apprenticeship", RouteNames.ShortDescription_Get, Model.RouteDictionary))"/>
+                    <partial name="_TaskListItem" model="@(new TaskListItemViewModel(Model.ShortDescriptionSectionState != VacancyPreviewSectionState.Incomplete,
+                                        "What the apprentice will do at work", RouteNames.VacancyWorkDescription_Index_Get, Model.RouteDictionary))"/>
+                    <partial name="_TaskListItem" model="@(new TaskListItemViewModel(Model.DescriptionsSectionState != VacancyPreviewSectionState.Incomplete,
+                                        "How the apprentice will train", RouteNames.VacancyHowTheApprenticeWillTrain_Index_Get, Model.RouteDictionary))"/>
                 </ul>
             </li>
             <li>
-                <h2 class="das-task-list__section">
-                    <span class="das-task-list__section-number">2. </span> 
-                    <span class="das-task-list__section-heading">Employment details</span>
-                    <span class="das-task-list__section-status">
-                        @if(Model.TaskListSectionTwoState == VacancyTaskListSectionState.InProgress)
-                        {
-                            <strong class="govuk-tag govuk-tag--blue das-task-list__section-tag">In progress</strong>
-                        }
-                        else if (Model.TaskListSectionTwoState == VacancyTaskListSectionState.Completed)
-                        {
-                            <strong class="govuk-tag das-task-list__section-tag">Completed</strong>    
-                        }
-                        else
-                        {
-                            <strong class="govuk-tag govuk-tag--grey das-task-list__section-tag">Not started</strong>
-                        }
-                    </span>
-                </h2>
+                <partial name="_TaskListHeader" model="@(new TaskListHeaderViewModel(2, "Employment details", Model.TaskListSectionTwoState))" />
                 <ul class="das-task-list__items">
-                    <li class="das-task-list__item">
-                        @if (Model.TaskListSectionOneState != VacancyTaskListSectionState.Completed)
-                        {
-                            <span class="das-task-list__task-name">
-                                Closing and start dates
-                            </span>    
-                        }
-                        else
-                        {
-                            <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.Dates_Get" asp-all-route-data="@Model.RouteDictionary">
-                                Closing and start dates
-                            </a>
-                        }
-                    </li>
-                    <li class="das-task-list__item">
-                        @if (Model.ClosingDateSectionState == VacancyPreviewSectionState.Incomplete || Model.PossibleStartDateSectionState == VacancyPreviewSectionState.Incomplete)
-                        {
-                            <span class="das-task-list__task-name">
-                                Duration and working hours
-                            </span>    
-                        }
-                        else
-                        {
-                            <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.Duration_Get" asp-all-route-data="@Model.RouteDictionary">
-                                Duration and working hours
-                            </a>
-                        }
-                    </li>
-                    <li class="das-task-list__item">
-                        @if (Model.ExpectedDurationSectionState == VacancyPreviewSectionState.Incomplete)
-                        {
-                            <span class="das-task-list__task-name">
-                                Pay rate and benefits
-                            </span>
-                        }
-                        else
-                        {
-                            <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.Wage_Get" asp-all-route-data="@Model.RouteDictionary">
-                                Pay rate and benefits
-                            </a>
-                        }
-                    </li>
-                    <li class="das-task-list__item">
-                        @if (Model.WageTextSectionState == VacancyPreviewSectionState.Incomplete)
-                        {
-                            <span class="das-task-list__task-name">
-                                Number of positions
-                            </span>    
-                        }
-                        else
-                        {
-                            <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.NumberOfPositions_Get" asp-all-route-data="@Model.RouteDictionary">
-                                Number of positions
-                            </a>
-                        }
-                    </li>
-                    <li class="das-task-list__item">
-
-                        <esfaFeatureEnabled name="@FeatureNames.MultipleLocations">
-                            @if (Model.NumberOfPositionsSectionState == VacancyPreviewSectionState.Incomplete)
-                            {
-                                <span class="das-task-list__task-name">
-                                    Locations
-                                </span>
-                            }
-                            else
-                            {
-                                <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.MultipleLocations_Get" asp-all-route-data="@Model.RouteDictionary">
-                                    Locations
-                                </a>
-                            }                        
-                        </esfaFeatureEnabled>
-
-                        <esfaFeatureDisabled name="@FeatureNames.MultipleLocations">
-                            @if (Model.NumberOfPositionsSectionState == VacancyPreviewSectionState.Incomplete)
-                            {
-                                <span class="das-task-list__task-name">
-                                    Address
-                                </span>
-                            }
-                            else
-                            {
-                                <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.Location_Get" asp-all-route-data="@Model.RouteDictionary">
-                                    Address
-                                </a>
-                            }
-                        </esfaFeatureDisabled>
-                    </li>
+                    <partial name="_TaskListItem" model="@(new TaskListItemViewModel(Model.TaskListSectionOneState == VacancyTaskListSectionState.Completed,
+                                                             "Closing and start dates", RouteNames.Dates_Get, Model.RouteDictionary))"/>
+                    <partial name="_TaskListItem" model="@(new TaskListItemViewModel(!(Model.ClosingDateSectionState == VacancyPreviewSectionState.Incomplete || Model.PossibleStartDateSectionState == VacancyPreviewSectionState.Incomplete),
+                                                             "Duration and working hours", RouteNames.Duration_Get, Model.RouteDictionary))"/>
+                    <partial name="_TaskListItem" model="@(new TaskListItemViewModel(Model.ExpectedDurationSectionState != VacancyPreviewSectionState.Incomplete,
+                                                             "Pay rate and benefits", RouteNames.Wage_Get, Model.RouteDictionary))"/>
+                    <partial name="_TaskListItem" model="@(new TaskListItemViewModel(Model.WageTextSectionState != VacancyPreviewSectionState.Incomplete,
+                                                             "Number of positions", RouteNames.NumberOfPositions_Get, Model.RouteDictionary))"/>
+                    <esfaFeatureEnabled name="@FeatureNames.MultipleLocations">
+                        <partial name="_TaskListItem" model="@(new TaskListItemViewModel(Model.NumberOfPositionsSectionState != VacancyPreviewSectionState.Incomplete,
+                                                                 "Locations", RouteNames.MultipleLocations_Get, Model.RouteDictionary))"/>
+                    </esfaFeatureEnabled>
+                    <esfaFeatureDisabled name="@FeatureNames.MultipleLocations">
+                        <partial name="_TaskListItem" model="@(new TaskListItemViewModel(Model.NumberOfPositionsSectionState != VacancyPreviewSectionState.Incomplete,
+                                                                 "Address", RouteNames.Location_Get, Model.RouteDictionary))"/>
+                    </esfaFeatureDisabled>
                 </ul>
             </li>
             <li>
-                <h2 class="das-task-list__section">
-                    <span class="das-task-list__section-number">3. </span> 
-                    <span class="das-task-list__section-heading">Requirements and prospects</span>
-                    <span class="das-task-list__section-status">
-                        @if(Model.TaskListSectionThreeState == VacancyTaskListSectionState.InProgress)
-                        {
-                            <strong class="govuk-tag govuk-tag--blue das-task-list__section-tag">In progress</strong>
-                        }
-                        else if (Model.TaskListSectionThreeState == VacancyTaskListSectionState.Completed)
-                        {
-                            <strong class="govuk-tag das-task-list__section-tag">Completed</strong>    
-                        }
-                        else
-                        {
-                            <strong class="govuk-tag govuk-tag--grey das-task-list__section-tag">Not started</strong>
-                        }
-                        
-                    </span>
-                </h2>
+                <partial name="_TaskListHeader" model="@(new TaskListHeaderViewModel(3, "Requirements and prospects", Model.TaskListSectionThreeState))" />
                 <ul class="das-task-list__items">
-                    <li class="das-task-list__item">
-                        @if (Model.EmployerAddressSectionState == VacancyPreviewSectionState.Incomplete)
-                        {
-                            <span>
-                                Skills
-                            </span>
-                        }
-                        else
-                        {
-                            <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.Skills_Get" asp-all-route-data="@Model.RouteDictionary">
-                                Skills
-                            </a>
-                        }
-                    </li>
-                    <li class="das-task-list__item">
-                        @if (Model.SkillsSectionState == VacancyPreviewSectionState.Incomplete)
-                        {
-                            <span>
-                                Qualifications
-                            </span>
-                        }
-                        else
-                        {
-                            <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.Qualifications_Get" asp-all-route-data="@Model.RouteDictionary">
-                                Qualifications
-                            </a>
-                        }
-                    </li>
-                    <li class="das-task-list__item">
-                        @if (Model.HasOptedToAddQualifications is null || Model.HasOptedToAddQualifications is true && Model.QualificationsSectionState == VacancyPreviewSectionState.Incomplete)
-                        {
-                            <span>
-                                Future prospects
-                            </span>
-                        }
-                        else
-                        {
-                            <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.FutureProspects_Get" asp-all-route-data="@Model.RouteDictionary">
-                                Future prospects
-                            </a>
-                        }
-                    </li>
-                    <li class="das-task-list__item">
-                        @if (Model.FutureProspectsSectionState == VacancyPreviewSectionState.Incomplete)
-                        {
-                            <span>
-                                Other things to consider
-                            </span>
-                        }
-                        else
-                        {
-                            <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.Considerations_Get" asp-all-route-data="@Model.RouteDictionary">
-                                Other things to consider
-                            </a>
-                        }
-                    </li>
+                    @if (Model.VacancyType is VacancyType.Foundation)
+                    {
+                        <p class="govuk-body govuk-hint">Foundation apprenticeships do not require the applicants to
+                            have specific skills or qualifications before applying.</p>
+                        <partial name="_TaskListItem" model="@(new DisabledTaskListItemViewModel("Skills (not required)"))"/>
+                        <partial name="_TaskListItem" model="@(new DisabledTaskListItemViewModel("Qualifications (not required)"))"/>
+                        <partial name="_TaskListItem" model="@(new TaskListItemViewModel(Model.EmployerAddressSectionState != VacancyPreviewSectionState.Incomplete,
+                                                                 "Future prospects", RouteNames.FutureProspects_Get, Model.RouteDictionary))"/>
+                    }
+                    else
+                    {
+                        <partial name="_TaskListItem" model="@(new TaskListItemViewModel(Model.EmployerAddressSectionState != VacancyPreviewSectionState.Incomplete,
+                                                                 "Skills", RouteNames.Skills_Get, Model.RouteDictionary))"/>
+                        <partial name="_TaskListItem" model="@(new TaskListItemViewModel(Model.SkillsSectionState != VacancyPreviewSectionState.Incomplete,
+                                                                 "Qualifications", RouteNames.Qualifications_Get, Model.RouteDictionary))"/>
+                        <partial name="_TaskListItem" model="@(new TaskListItemViewModel(!(Model.HasOptedToAddQualifications is null || Model.HasOptedToAddQualifications is true && Model.QualificationsSectionState == VacancyPreviewSectionState.Incomplete),
+                                                                 "Future prospects", RouteNames.FutureProspects_Get, Model.RouteDictionary))"/>
+                    }
+
+                    <partial name="_TaskListItem" model="@(new TaskListItemViewModel(Model.FutureProspectsSectionState != VacancyPreviewSectionState.Incomplete,
+                                                             "Other things to consider", RouteNames.Considerations_Get, Model.RouteDictionary))"/>
                 </ul>
             </li>
-        <li>
-            <h2 class="das-task-list__section">
-                <span class="das-task-list__section-number">4. </span> 
-                <span class="das-task-list__section-heading">About the employer</span>
-                <span class="das-task-list__section-status">
-                    @if(Model.TaskListSectionFourState == VacancyTaskListSectionState.InProgress)
-                    {
-                        <strong class="govuk-tag govuk-tag--blue das-task-list__section-tag">In progress</strong>
-                    }
-                    else if (Model.TaskListSectionFourState == VacancyTaskListSectionState.Completed)
-                    {
-                        <strong class="govuk-tag das-task-list__section-tag">Completed</strong>    
-                    }
-                    else
-                    {
-                        <strong class="govuk-tag govuk-tag--grey das-task-list__section-tag">Not started</strong>
-                    }
-                </span>
-            </h2>
-            <ul class="das-task-list__items">
-                <li class="das-task-list__item">
-                    @if (Model.TaskListSectionThreeState == VacancyTaskListSectionState.Completed)
-                    {
-                        <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.EmployerName_Get" asp-all-route-data="@Model.RouteDictionary">
-                            Name of employer on advert
-                        </a>    
-                    }
-                    else
-                    {
-                        <span>
-                            Name of employer on advert
-                        </span> 
-                    }
-                </li>
-                <li class="das-task-list__item">
-                    @if (!Model.HasSelectedEmployerNameOption)
-                    {
-                        <span class="das-task-list__task-name">
-                            Employer information
-                        </span>    
-                    }
-                    else
-                    {
-                        <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.AboutEmployer_Get" asp-all-route-data="@Model.RouteDictionary">
-                            Employer information
-                        </a>    
-                    }
-                </li>
-                <li class="das-task-list__item">
-                    @if (!Model.HasSelectedEmployerNameOption)
-                    {
-                        <span class="das-task-list__task-name">
-                            Contact details
-                        </span>    
-                    }
-                    else
-                    {
-                        <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.EmployerContactDetails_Get" asp-all-route-data="@Model.RouteDictionary">
-                            Contact details
-                        </a>    
-                    }
-                </li>
-                <li class="das-task-list__item">
-                    @if (Model.HasSelectedEmployerNameOption && !Model.EmployerDescriptionRequiresEdit && Model.TaskListSectionThreeState == VacancyTaskListSectionState.Completed)
-                    {
-                        <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.ApplicationProcess_Get" asp-all-route-data="@Model.RouteDictionary">
-                            Website for applications
-                        </a>    
-                               
-                    }
-                    else
-                    {
-                        <span class="das-task-list__task-name">
-                            Website for applications
-                        </span> 
-                    }
-                </li>
-            </ul>
-        </li>
-        
-        <li>
-            <h2 class="das-task-list__section">
-                <span class="das-task-list__section-number">5. </span> 
-                <span class="das-task-list__section-heading">Application</span>
-                <span class="das-task-list__section-status">
-                        @if (Model.TaskListSectionFiveState == VacancyTaskListSectionState.Completed)
-                        {
-                            <strong class="govuk-tag das-task-list__section-tag">Completed</strong>    
-                        }
-                        else
-                        {
-                            <strong class="govuk-tag govuk-tag--grey das-task-list__section-tag">Not started</strong>
-                        }
-                    </span>
-            </h2>
-            <ul class="das-task-list__items">
-                <li class="das-task-list__item">
-                    @if (Model.TaskListSectionFourState == VacancyTaskListSectionState.Completed)
-                    {
-                        <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.AdditionalQuestions_Get" asp-all-route-data="@Model.RouteDictionary">
-                                Questions for applicants
-                        </a>   
-                    }
-                    else
-                    {
-                        <span>
-                                Questions for applicants
-                        </span>    
-                    }
-                        
-                </li>
-            </ul>
-        </li>
-        
-        <li>
-                <h2 class="das-task-list__section">
-                    <span class="das-task-list__section-number">6. </span> 
-                    <span class="das-task-list__section-heading">Check and submit your advert</span>
-                    <span class="das-task-list__section-status">
-                        @if(Model.TaskListSectionFiveState == VacancyTaskListSectionState.Completed)
-                        {
-                            <strong class="govuk-tag govuk-tag--blue das-task-list__section-tag">In progress</strong>
-                        }
-                        else if (Model.Status == VacancyStatus.Submitted)
-                        {
-                            <strong class="govuk-tag das-task-list__section-tag">Completed</strong>    
-                        }
-                        else
-                        {
-                            <strong class="govuk-tag govuk-tag--grey das-task-list__section-tag">Not started</strong>
-                        }
-                    </span>
-                </h2>
+            <li>
+                <partial name="_TaskListHeader" model="@(new TaskListHeaderViewModel(4, "About the employer", Model.TaskListSectionFourState))" />
                 <ul class="das-task-list__items">
-                    <li class="das-task-list__item">
-                        @if (Model.TaskListSectionFiveState == VacancyTaskListSectionState.Completed)
-                        {
-                            <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.EmployerCheckYourAnswersGet" asp-all-route-data="@Model.RouteDictionary">
-                                Check your answers and submit your advert
-                            </a>   
-                        }
-                        else
-                        {
-                            <span>
-                                Check your answers and submit your advert
-                            </span>    
-                        }
-                        
-                    </li>
+                    <partial name="_TaskListItem" model="@(new TaskListItemViewModel(Model.TaskListSectionThreeState == VacancyTaskListSectionState.Completed,
+                                                             "Name of employer on advert", RouteNames.EmployerName_Get, Model.RouteDictionary))"/>
+                    <partial name="_TaskListItem" model="@(new TaskListItemViewModel(Model.HasSelectedEmployerNameOption,
+                                                             "Employer information", RouteNames.AboutEmployer_Get, Model.RouteDictionary))"/>
+                    <partial name="_TaskListItem" model="@(new TaskListItemViewModel(Model.HasSelectedEmployerNameOption,
+                                                             "Contact details", RouteNames.EmployerContactDetails_Get, Model.RouteDictionary))"/>
+                    <partial name="_TaskListItem" model="@(new TaskListItemViewModel(Model.HasSelectedEmployerNameOption && !Model.EmployerDescriptionRequiresEdit && Model.TaskListSectionThreeState == VacancyTaskListSectionState.Completed,
+                                                             "Website for applications", RouteNames.ApplicationProcess_Get, Model.RouteDictionary))"/>
+                </ul>
+            </li>
+            <li>
+                @{
+                    var sectionFourState = Model.TaskListSectionFiveState == VacancyTaskListSectionState.Completed
+                        ? VacancyTaskListSectionState.Completed
+                        : VacancyTaskListSectionState.NotStarted;
+                }
+                <partial name="_TaskListHeader" model="@(new TaskListHeaderViewModel(5, "Application", sectionFourState))" />
+                <ul class="das-task-list__items">
+                    <partial name="_TaskListItem" model="@(new TaskListItemViewModel(Model.TaskListSectionFourState == VacancyTaskListSectionState.Completed,
+                                        "Questions for applicants", RouteNames.AdditionalQuestions_Get, Model.RouteDictionary))"/>
+                </ul>
+            </li>
+            <li>
+                @{
+                    var sectionFiveState = Model.TaskListSectionFiveState switch
+                    {
+                        VacancyTaskListSectionState.Completed => VacancyTaskListSectionState.InProgress,
+                        _ when Model.Status == VacancyStatus.Submitted => VacancyTaskListSectionState.Completed,
+                        _ => VacancyTaskListSectionState.NotStarted
+                    };
+                }
+                <partial name="_TaskListHeader" model="@(new TaskListHeaderViewModel(6, "Check and submit your advert", sectionFiveState))" />
+                <ul class="das-task-list__items">
+                    <partial name="_TaskListItem" model="@(new TaskListItemViewModel(Model.TaskListSectionFiveState == VacancyTaskListSectionState.Completed,
+                                        "Check your answers and submit your advert", RouteNames.EmployerCheckYourAnswersGet, Model.RouteDictionary))"/>
                 </ul>
             </li>
         </ol>

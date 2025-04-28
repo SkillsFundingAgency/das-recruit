@@ -9,6 +9,7 @@ using Esfa.Recruit.Employer.Web.ViewModels.Part1.NumberOfPositions;
 using Microsoft.AspNetCore.Mvc;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
+using FeatureNames = Esfa.Recruit.Employer.Web.Configuration.FeatureNames;
 
 namespace Esfa.Recruit.Employer.Web.Controllers.Part1
 {

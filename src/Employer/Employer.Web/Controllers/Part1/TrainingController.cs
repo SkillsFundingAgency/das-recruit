@@ -8,7 +8,6 @@ using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.Training;
 using Microsoft.AspNetCore.Mvc;
 using Esfa.Recruit.Shared.Web.Extensions;
-using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
 
 namespace Esfa.Recruit.Employer.Web.Controllers.Part1
 {
@@ -131,7 +130,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
             }
             else
             {
-                var response = await _orchestrator.PostConfirmTrainingEditModelAsync(m, user);
+                var response = await _orchestrator.PostConfirmTrainingEditModelAsync(m, programme, user);
 
                 if (!response.Success)
                 {

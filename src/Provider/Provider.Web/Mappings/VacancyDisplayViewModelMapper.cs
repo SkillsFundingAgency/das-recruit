@@ -13,6 +13,7 @@ using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Humanizer;
 using Microsoft.Extensions.Options;
+using FeatureNames = Esfa.Recruit.Provider.Web.Configuration.FeatureNames;
 
 namespace Esfa.Recruit.Provider.Web.Mappings
 {

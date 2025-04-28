@@ -13,6 +13,7 @@ using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Humanizer;
 using Microsoft.Extensions.Options;
+using FeatureNames = Esfa.Recruit.Employer.Web.Configuration.FeatureNames;
 
 namespace Esfa.Recruit.Employer.Web.Mappings
 {
@@ -110,7 +111,8 @@ namespace Esfa.Recruit.Employer.Web.Mappings
             vm.AdditionalQuestion1 = vacancy.AdditionalQuestion1;
             vm.AdditionalQuestion2 = vacancy.AdditionalQuestion2;
             vm.HasSubmittedAdditionalQuestions = vacancy.HasSubmittedAdditionalQuestions;
-
+            vm.VacancyType = vacancy.VacancyType;
+            
             if (vacancy.EmployerLocation != null)
             {
                 if (vacancy.EmployerLocation != null)

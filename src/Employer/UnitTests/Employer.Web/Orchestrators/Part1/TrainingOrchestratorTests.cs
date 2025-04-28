@@ -10,6 +10,7 @@ using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.ApprenticeshipProgrammes;
 using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part1
@@ -92,13 +93,17 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part1
 
             public async Task PostConfirmTrainingEditModelAsync(ConfirmTrainingEditModel model)
             {
-                await Sut.PostConfirmTrainingEditModelAsync(model, User);
+                var programme = new ApprenticeshipProgramme
+                {
+                    Id = model.ProgrammeId,
+                    ApprenticeshipType = TrainingType.Standard
+                };
+                await Sut.PostConfirmTrainingEditModelAsync(model, programme, User);
             }
 
             public void VerifyEmployerReviewFieldIndicators(string fieldIdentifier, bool value)
             {
-                Vacancy.EmployerReviewFieldIndicators
-                    .Where(p => p.FieldIdentifier == fieldIdentifier).Single()
+                Vacancy.EmployerReviewFieldIndicators.Single(p => p.FieldIdentifier == fieldIdentifier)
                     .Should().NotBeNull().And
                     .Match<EmployerReviewFieldIndicator>((x) => x.IsChangeRequested == value);
             }

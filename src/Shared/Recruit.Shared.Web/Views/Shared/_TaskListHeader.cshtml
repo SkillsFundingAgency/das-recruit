@@ -1,0 +1,23 @@
+﻿@using Esfa.Recruit.Shared.Web.ViewModels.TaskList
+@model Esfa.Recruit.Shared.Web.ViewModels.TaskList.TaskListHeaderViewModel
+
+<h2 class="das-task-list__section">
+    <span class="das-task-list__section-number">@($"{Model.SectionNumber.ToString()}. ")</span>
+    <span class="das-task-list__section-heading">@Model.SectionTitle</span>
+    <span class="das-task-list__section-status">
+        @{
+            switch (Model.SectionState)
+            {
+                case VacancyTaskListSectionState.InProgress:
+                    <strong class="govuk-tag das-task-list__section-tag govuk-tag--blue">In progress</strong>
+                    break;
+                case VacancyTaskListSectionState.Completed:
+                    <strong class="govuk-tag das-task-list__section-tag">Completed</strong>
+                    break;
+                default:
+                    <strong class="govuk-tag das-task-list__section-tag govuk-tag--grey">In progress</strong>
+                    break;
+            }
+        }
+    </span>
+</h2>

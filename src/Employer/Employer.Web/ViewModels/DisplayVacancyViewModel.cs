@@ -64,6 +64,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels
         public string VacancyClonedInfoMessage { get; internal set; }
         public string VacancyDescription { get; internal set; }
         public string VacancyReferenceNumber { get; internal set; }
+        public VacancyType? VacancyType { get; internal set; }
         public string WageInfo { get; internal set; }
         public string WageText { get; internal set; }
         public string WorkingWeekDescription { get; internal set; }

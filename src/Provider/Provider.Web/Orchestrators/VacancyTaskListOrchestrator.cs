@@ -23,6 +23,7 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Locations;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelationship;
 using Microsoft.Extensions.Logging;
 using ErrorMessages = Esfa.Recruit.Shared.Web.ViewModels.ErrorMessages;
+using FeatureNames = Esfa.Recruit.Provider.Web.Configuration.FeatureNames;
 
 namespace Esfa.Recruit.Provider.Web.Orchestrators
 {

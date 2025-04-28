@@ -1,0 +1,18 @@
+﻿@model Esfa.Recruit.Shared.Web.ViewModels.TaskList.TaskListItemViewModel
+
+<li class="das-task-list__item">
+    @if (Model.Disabled)
+    {
+        <span class="govuk-hint">@Model.Text</span>
+    }
+    else if (Model.Complete)
+    {
+        <a class="govuk-link govuk-link--no-visited-state" asp-route="@Model.Route" asp-all-route-data="@Model.RouteValues">
+            @Model.Text
+        </a>
+    }
+    else
+    {
+        <span>@Model.Text</span>
+    }
+</li>
