@@ -1,5 +1,5 @@
 using System;
-using Esfa.Recruit.Vacancies.Client.Application.Configuration;
+using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Application.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomValidators.VacancyValidators;
@@ -21,7 +21,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
         private readonly IBlockedOrganisationQuery _blockedOrganisationRepo;
         private readonly IProfanityListProvider _profanityListProvider;
         private readonly IProviderRelationshipsService _providerRelationshipService;
-        private readonly ServiceParameters _serviceParameters;
+        private readonly IFeature _feature;
 
         public FluentVacancyValidator(
             ITimeProvider timeProvider,
@@ -33,7 +33,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
             IBlockedOrganisationQuery blockedOrganisationRepo,
             IProfanityListProvider profanityListProvider,
             IProviderRelationshipsService providerRelationshipService,
-            ServiceParameters serviceParameters)
+            IFeature feature)
         {
             _timeProvider = timeProvider;
             _minimumWageService = minimumWageService;
@@ -44,8 +44,8 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
             _blockedOrganisationRepo = blockedOrganisationRepo;
             _profanityListProvider = profanityListProvider;
             _providerRelationshipService = providerRelationshipService;
-            _serviceParameters = serviceParameters;
-
+            _feature = feature;
+            
             SingleFieldValidations();
             CrossFieldValidations();
         }
@@ -398,7 +398,8 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                     .WithState(_ => VacancyRuleSet.Duration)
                     .RunCondition(VacancyRuleSet.Duration);
 
-                var minimumVacancyDurationInMonths = 8;
+                var minimumVacancyDurationInMonths = _feature.IsFeatureEnabled("FoundationApprenticeships") 
+                                                     || DateTime.UtcNow >= new DateTime(2025,8,1) ? 8 : 12;
                 RuleFor(x => x.Wage.Duration)
                     .Cascade(CascadeMode.Stop)
                     .NotEmpty()

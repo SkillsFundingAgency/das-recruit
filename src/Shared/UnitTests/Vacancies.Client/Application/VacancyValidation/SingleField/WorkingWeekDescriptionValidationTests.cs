@@ -10,7 +10,6 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
         [Fact]
         public void NoErrorsWhenWorkingWeekDescriptionValueIsValid()
         {
-            ServiceParameters = new ServiceParameters();
             var vacancy = new Vacancy
             {
                 Wage = new Wage
@@ -30,7 +29,6 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
         [InlineData("")]
         public void WorkingWeekDescriptionMustHaveAValue(string descriptionValue)
         {
-            ServiceParameters = new ServiceParameters();
             var vacancy = new Vacancy
             {
                 Wage = new Wage
@@ -53,7 +51,6 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
         [InlineData( ">")]
         public void WorkingWeekDescriptionMustContainValidCharacters(string invalidCharacter)
         {
-            ServiceParameters = new ServiceParameters();
             var vacancy = new Vacancy
             {
                 Wage = new Wage
@@ -74,7 +71,6 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
         [Fact]
         public void WorkingWeekDescriptionMustBeLessThan250Characters()
         {
-            ServiceParameters = new ServiceParameters();
             var vacancy = new Vacancy
             {
                 Wage = new Wage
@@ -99,7 +95,6 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
         [InlineData( "some text balderdash")]
         public void WorkingWeekDescription_ShouldFailIfContainsWordsFromTheProfanityList(string freeText)
         {
-            ServiceParameters = new ServiceParameters();
             var vacancy = new Vacancy
             {
                 Wage = new Wage
@@ -121,7 +116,6 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
         [InlineData( "some textbalderdash")]
         public void WorkingWeekDescription_ShouldFail_Not_IfContainsWordsFromTheProfanityList(string freeText)
         {
-            ServiceParameters = new ServiceParameters();
             var vacancy = new Vacancy
             {
                 Wage = new Wage

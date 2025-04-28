@@ -15,7 +15,6 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
         [InlineData(DurationUnit.Month, 12)]
         public void NoErrorsWhenDurationFieldsAreValid(DurationUnit unitValue, int durationValue, string weeklyHoursText = null)
         {
-            ServiceParameters = new ServiceParameters();
             decimal? weeklyHours = decimal.TryParse(weeklyHoursText, out decimal parsed) ? parsed : (decimal?)null;
             var vacancy = new Vacancy
             {
@@ -36,7 +35,6 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
         [Fact]
         public void DurationUnitMustHaveAValue()
         {
-            ServiceParameters = new ServiceParameters();
             var vacancy = new Vacancy
             {
                 Wage = new Wage
@@ -58,7 +56,6 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
         [Fact]
         public void DurationUnitMustHaveAValidValue()
         {
-            ServiceParameters = new ServiceParameters();
             var vacancy = new Vacancy
             {
                 Wage = new Wage
@@ -80,7 +77,6 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
         [Fact]
         public void DurationMustHaveAValue()
         {
-            ServiceParameters = new ServiceParameters();
             var vacancy = new Vacancy 
             {
                 Wage = new Wage
@@ -103,7 +99,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
         [InlineData(DurationUnit.Month, 7)]
         public void ApprenticeshipDurationMustBeAtLeast8Months(DurationUnit unitValue, int durationValue)
         {
-            ServiceParameters = new ServiceParameters();
+            Feature.Setup(x=>x.IsFeatureEnabled("FoundationApprenticeships")).Returns(true);
             var vacancy = new Vacancy
             {
                 Wage = new Wage
@@ -135,7 +131,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
         [InlineData(DurationUnit.Year, 1, "9", true)]
         public void AnyApprenticeshipDurationMonthsMustHave30WeeklyHours(DurationUnit unitValue, int durationValue, string weeklyHoursText, bool hasErrors)
         {
-            ServiceParameters = new ServiceParameters();
+            Feature.Setup(x=>x.IsFeatureEnabled("FoundationApprenticeships")).Returns(true);
             decimal? weeklyHours = decimal.TryParse(weeklyHoursText, out decimal parsed) ? parsed : (decimal?)null;
             var vacancy = new Vacancy
             {

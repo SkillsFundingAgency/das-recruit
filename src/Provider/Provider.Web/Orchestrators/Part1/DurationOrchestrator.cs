@@ -10,6 +10,7 @@ using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Microsoft.Extensions.Logging;
 using Esfa.Recruit.Shared.Web.Extensions;
+using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
 using Esfa.Recruit.Vacancies.Client.Application.Services;
 
 namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
@@ -20,14 +21,16 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
         private readonly IRecruitVacancyClient _vacancyClient;
         private readonly IReviewSummaryService _reviewSummaryService;
         private readonly IUtility _utility;
+        private readonly IFeature _feature;
 
         public DurationOrchestrator(IRecruitVacancyClient vacancyClient, 
-            ILogger<DurationOrchestrator> logger, IReviewSummaryService reviewSummaryService, IUtility utility) 
+            ILogger<DurationOrchestrator> logger, IReviewSummaryService reviewSummaryService, IUtility utility, IFeature feature) 
             : base(logger)
         {
             _vacancyClient = vacancyClient;
             _reviewSummaryService = reviewSummaryService;
             _utility = utility;
+            _feature = feature;
         }
 
         public async Task<DurationViewModel> GetDurationViewModelAsync(VacancyRouteModel vrm)
@@ -48,7 +51,8 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
                 TrainingDurationMonths = training?.Duration ?? 0,
                 Ukprn = vrm.Ukprn,
                 VacancyId = vrm.VacancyId,
-                IsTaskListCompleted = _utility.IsTaskListCompleted(vacancy)
+                IsTaskListCompleted = _utility.IsTaskListCompleted(vacancy),
+                MinimumApprenticeshipLength = _feature.IsFeatureEnabled("FoundationApprenticeships") ? 8 : 12 
             };
 
             if (vacancy.Status == VacancyStatus.Referred)

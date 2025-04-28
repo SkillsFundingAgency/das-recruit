@@ -34,5 +34,6 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.Duration
         public PartOnePageInfoViewModel PageInfo { get; set; }
 
         public bool ShowTraining => string.IsNullOrWhiteSpace(TrainingTitle) == false && TrainingDurationMonths > 0;
+        public int MinimumApprenticeshipLength { get; set; }
     }
 }

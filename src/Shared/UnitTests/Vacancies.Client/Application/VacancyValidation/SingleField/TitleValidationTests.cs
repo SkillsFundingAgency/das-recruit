@@ -19,7 +19,6 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
         [MemberData(nameof(ValidTitles))]
         public void NoErrorsWhenTitleFieldIsValidForApprenticeship(string validTitle)
         {
-            ServiceParameters = new ServiceParameters();
             var vacancy = new Vacancy 
             {
                 Title = validTitle
@@ -37,7 +36,6 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
         [InlineData("")]
         public void TitleMustHaveAValue(string titleValue)
         {
-            ServiceParameters = new ServiceParameters();
             var vacancy = new Vacancy 
             {
                 Title = titleValue
@@ -61,7 +59,6 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
         [InlineData("junior apprenticeship in sorcery")]
         public void NoErrorsWhenTitleContainsTheWordApprenticeOrApprenticeship(string testValue)
         {
-            ServiceParameters = new ServiceParameters();
             var vacancy = new Vacancy
             {
                 Title = testValue
@@ -81,7 +78,6 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
         [InlineData("junior apprenteeship in sorcery")]
         public void TitleMustContainTheWordApprenticeOrApprenticeship(string testValue)
         {
-            ServiceParameters = new ServiceParameters();
             var vacancy = new Vacancy
             {
                 Title = testValue
@@ -99,7 +95,6 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
         [Fact]
         public void TitleBeLongerThan100Characters()
         {
-            ServiceParameters = new ServiceParameters();
             var vacancy = new Vacancy 
             {
                 Title = $"apprentice {new string('a', 101)}"
@@ -119,7 +114,6 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
         [InlineData("apprentice>" )]
         public void TitleMustContainValidCharacters(string testValue)
         {
-            ServiceParameters = new ServiceParameters();
             var vacancy = new Vacancy 
             {
                 Title = testValue
@@ -141,7 +135,6 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
         [InlineData("some text balderdash apprentice")]
         public void Title_ShouldFailIfContainsWordsFromTheProfanityList(string freeText)
         {
-            ServiceParameters = new ServiceParameters();
             var vacancy = new Vacancy()
             {
                 Title = freeText
@@ -161,7 +154,6 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
         [InlineData("some textbalderdash apprentice")]
         public void Title_Should_Not_Fail_IfWordContainsWordsFromTheProfanityList(string freeText)
         {
-            ServiceParameters = new ServiceParameters();
             var vacancy = new Vacancy()
             {
                 Title = freeText

@@ -6,6 +6,7 @@ using Esfa.Recruit.Employer.Web.ViewModels.Part1.Duration;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Shared.Web.Orchestrators;
 using Esfa.Recruit.Shared.Web.Services;
+using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
 using Esfa.Recruit.Vacancies.Client.Application.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
@@ -20,12 +21,14 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
         private readonly IRecruitVacancyClient _vacancyClient;
         private readonly IReviewSummaryService _reviewSummaryService;
         private readonly IUtility _utility;
+        private readonly IFeature _feature;
 
-        public DurationOrchestrator(IEmployerVacancyClient client, IRecruitVacancyClient vacancyClient, ILogger<DurationOrchestrator> logger, IReviewSummaryService reviewSummaryService, IUtility utility) : base(logger)
+        public DurationOrchestrator(IEmployerVacancyClient client, IRecruitVacancyClient vacancyClient, ILogger<DurationOrchestrator> logger, IReviewSummaryService reviewSummaryService, IUtility utility, IFeature feature) : base(logger)
         {
             _vacancyClient = vacancyClient;
             _reviewSummaryService = reviewSummaryService;
             _utility = utility;
+            _feature = feature;
         }
 
         public async Task<DurationViewModel> GetDurationViewModelAsync(VacancyRouteModel vrm)
@@ -44,7 +47,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                 WeeklyHours = $"{vacancy.Wage?.WeeklyHours:0.##}",
                 PageInfo = _utility.GetPartOnePageInfo(vacancy),
                 TrainingTitle = training?.Title,
-                TrainingDurationMonths = training?.Duration ?? 0
+                TrainingDurationMonths = training?.Duration ?? 0,
+                MinimumApprenticeshipLength = _feature.IsFeatureEnabled("FoundationApprenticeships") ? 8 : 12
             };
 
             if (vacancy.Status == VacancyStatus.Referred)
