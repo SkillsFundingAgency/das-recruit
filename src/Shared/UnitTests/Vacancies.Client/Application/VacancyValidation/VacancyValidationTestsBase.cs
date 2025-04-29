@@ -24,9 +24,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
         protected readonly Mock<IBlockedOrganisationQuery> MockBlockedOrganisationRepo;
         protected readonly TestProfanityListProvider MockProfanityListProvider;
         protected readonly Mock<IProviderRelationshipsService> MockProviderRelationshipsService;
-        protected ServiceParameters ServiceParameters;
         protected ITimeProvider TimeProvider;
-        protected readonly Mock<IFeature> Feature;
 
         protected VacancyValidationTestsBase()
         {
@@ -40,12 +38,8 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
             MockBlockedOrganisationRepo = new Mock<IBlockedOrganisationQuery>();
             MockProfanityListProvider = new TestProfanityListProvider();
             MockProviderRelationshipsService = new Mock<IProviderRelationshipsService>();
-            ServiceParameters = new ServiceParameters();
             TimeProvider = new CurrentUtcTimeProvider();
-            Feature = new Mock<IFeature>();
         }
-
-        
 
         protected IEntityValidator<Vacancy, VacancyRuleSet> Validator
         {
@@ -54,7 +48,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
                 var fluentValidator = new FluentVacancyValidator(TimeProvider, MockMinimumWageService.Object, 
                     MockApprenticeshipProgrammeProvider.Object, MockQualificationsProvider.Object, SanitizerService, 
                     MockTrainingProviderSummaryProvider.Object, MockBlockedOrganisationRepo.Object,
-                    MockProfanityListProvider, MockProviderRelationshipsService.Object, ServiceParameters);
+                    MockProfanityListProvider, MockProviderRelationshipsService.Object);
                 return new EntityValidator<Vacancy, VacancyRuleSet>(fluentValidator);
             }
         }

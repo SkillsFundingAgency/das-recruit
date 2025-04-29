@@ -1,8 +1,7 @@
 using System.Collections.Generic;
-using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using Xunit;
+using NUnit.Framework;
 
 namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.VacancyValidation.SingleField
 {
@@ -15,11 +14,9 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
                 new object[] { "apprentice" }
             };
 
-        [Theory]
-        [MemberData(nameof(ValidTitles))]
+        [TestCaseSource(nameof(ValidTitles))]
         public void NoErrorsWhenTitleFieldIsValidForApprenticeship(string validTitle)
         {
-            ServiceParameters = new ServiceParameters();
             var vacancy = new Vacancy 
             {
                 Title = validTitle
@@ -32,12 +29,10 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
         }
         
 
-        [Theory]
-        [InlineData(null)]
-        [InlineData("")]
+        [TestCase(null)]
+        [TestCase("")]
         public void TitleMustHaveAValue(string titleValue)
         {
-            ServiceParameters = new ServiceParameters();
             var vacancy = new Vacancy 
             {
                 Title = titleValue
@@ -52,16 +47,14 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
             result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.Title);
         }
 
-        [Theory]
-        [InlineData("Apprentice mage")]
-        [InlineData("Apprenticeship in sorcery")]
-        [InlineData("Mage apprentice")]
-        [InlineData("Witchcraft apprenticeship")]
-        [InlineData("junior apprentice mage")]
-        [InlineData("junior apprenticeship in sorcery")]
+        [TestCase("Apprentice mage")]
+        [TestCase("Apprenticeship in sorcery")]
+        [TestCase("Mage apprentice")]
+        [TestCase("Witchcraft apprenticeship")]
+        [TestCase("junior apprentice mage")]
+        [TestCase("junior apprenticeship in sorcery")]
         public void NoErrorsWhenTitleContainsTheWordApprenticeOrApprenticeship(string testValue)
         {
-            ServiceParameters = new ServiceParameters();
             var vacancy = new Vacancy
             {
                 Title = testValue
@@ -72,16 +65,14 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
             result.HasErrors.Should().BeFalse();
         }
         
-        [Theory]
-        [InlineData("mage")]
-        [InlineData("Apprenticeshipin sorcery")]
-        [InlineData("Mage apprenticesip")]
-        [InlineData("Witchcraft aprentice")]
-        [InlineData("aprentice mage")]
-        [InlineData("junior apprenteeship in sorcery")]
+        [TestCase("mage")]
+        [TestCase("Apprenticeshipin sorcery")]
+        [TestCase("Mage apprenticesip")]
+        [TestCase("Witchcraft aprentice")]
+        [TestCase("aprentice mage")]
+        [TestCase("junior apprenteeship in sorcery")]
         public void TitleMustContainTheWordApprenticeOrApprenticeship(string testValue)
         {
-            ServiceParameters = new ServiceParameters();
             var vacancy = new Vacancy
             {
                 Title = testValue
@@ -96,10 +87,9 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
             result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.Title);
         }
         
-        [Fact]
+        [Test]
         public void TitleBeLongerThan100Characters()
         {
-            ServiceParameters = new ServiceParameters();
             var vacancy = new Vacancy 
             {
                 Title = $"apprentice {new string('a', 101)}"
@@ -114,12 +104,10 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
             result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.Title);
         }
 
-        [Theory]
-        [InlineData("apprentice<")]
-        [InlineData("apprentice>" )]
+        [TestCase("apprentice<")]
+        [TestCase("apprentice>" )]
         public void TitleMustContainValidCharacters(string testValue)
         {
-            ServiceParameters = new ServiceParameters();
             var vacancy = new Vacancy 
             {
                 Title = testValue
@@ -134,14 +122,12 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
             result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.Title);
         }
 
-        [Theory]
-        [InlineData("some text bother apprentice")]
-        [InlineData("some text dang apprentice")]
-        [InlineData("some text drat apprentice")]
-        [InlineData("some text balderdash apprentice")]
+        [TestCase("some text bother apprentice")]
+        [TestCase("some text dang apprentice")]
+        [TestCase("some text drat apprentice")]
+        [TestCase("some text balderdash apprentice")]
         public void Title_ShouldFailIfContainsWordsFromTheProfanityList(string freeText)
         {
-            ServiceParameters = new ServiceParameters();
             var vacancy = new Vacancy()
             {
                 Title = freeText
@@ -154,14 +140,12 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
             result.Errors[0].ErrorCode.Should().Be("601");
         }
 
-        [Theory]
-        [InlineData("some textbother apprentice")]
-        [InlineData("some textdang apprentice")]
-        [InlineData("some textdrat apprentice")]
-        [InlineData("some textbalderdash apprentice")]
+        [TestCase("some textbother apprentice")]
+        [TestCase("some textdang apprentice")]
+        [TestCase("some textdrat apprentice")]
+        [TestCase("some textbalderdash apprentice")]
         public void Title_Should_Not_Fail_IfWordContainsWordsFromTheProfanityList(string freeText)
         {
-            ServiceParameters = new ServiceParameters();
             var vacancy = new Vacancy()
             {
                 Title = freeText
