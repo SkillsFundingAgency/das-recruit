@@ -93,7 +93,8 @@ namespace SFA.DAS.Recruit.Api.Models
     {
         FixedWage,
         NationalMinimumWageForApprentices,
-        NationalMinimumWage,        
+        NationalMinimumWage,       
+        CompetitiveSalary,
         Unspecified
     }
     
