@@ -135,6 +135,7 @@
                                         <span class="tag tag-transferred">Transferred</span>
                                     </div>
                                 </div>
+                                <govuk-tag-foundation asp-show="@(vacancy.ApprenticeshipType == ApprenticeshipTypes.Foundation)" class="govuk-!-margin-top-2 govuk-!-margin-bottom-1 app-tag"/>
                             </td>
                             <td class="govuk-table__cell" data-label="Advert ref no">
                                 <span asp-show="@vacancy.HasVacancyReference"><span>VAC</span>@vacancy.VacancyReference</span>
