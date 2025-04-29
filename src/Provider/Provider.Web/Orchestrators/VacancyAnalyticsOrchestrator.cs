@@ -18,12 +18,10 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
     public class VacancyAnalyticsOrchestrator : IVacancyAnalyticsOrchestrator
     {
         private readonly IRecruitVacancyClient _client;
-        private readonly ProviderRecruitSystemConfiguration _systemConfig;
 
-        public VacancyAnalyticsOrchestrator(IRecruitVacancyClient client, ProviderRecruitSystemConfiguration systemConfig)
+        public VacancyAnalyticsOrchestrator(IRecruitVacancyClient client)
         {
             _client = client;
-            _systemConfig = systemConfig;
         }
 
         public async Task<VacancyAnalyticsViewModel> GetVacancyAnalytics(VacancyRouteModel routeModel)
@@ -34,7 +32,6 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             var analyticsSummary = vacancyAnalyticsTask ?? new VacancyAnalyticsSummary();
             viewModel.AnalyticsSummary = VacancyAnalyticsSummaryMapper.MapToVacancyAnalyticsSummaryViewModel(analyticsSummary, vacancy.LiveDate.GetValueOrDefault());
 
-            viewModel.AnalyticsAvailableAfterApprovalDate = _systemConfig.ShowAnalyticsForVacanciesApprovedAfterDate.AsGdsDate();
             viewModel.IsApplyThroughFaaVacancy = vacancy.ApplicationMethod == ApplicationMethod.ThroughFindAnApprenticeship;
             viewModel.VacancyReference = vacancy.VacancyReference.Value;
             viewModel.VacancyId = routeModel.VacancyId;

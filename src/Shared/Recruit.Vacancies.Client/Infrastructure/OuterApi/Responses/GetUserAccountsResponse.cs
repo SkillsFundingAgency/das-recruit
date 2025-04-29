@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using Newtonsoft.Json;
-using SFA.DAS.Common.Domain.Types;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Responses
 {
@@ -27,6 +26,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Responses
         [JsonProperty("role")]
         public string Role { get; set; }
         [JsonProperty("apprenticeshipEmployerType")]
-        public ApprenticeshipEmployerType ApprenticeshipEmployerType { get; set; }
+        public string ApprenticeshipEmployerType { get; set; }
     }
 }
