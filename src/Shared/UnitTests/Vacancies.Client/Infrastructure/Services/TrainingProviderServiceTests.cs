@@ -1,16 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using AutoFixture.NUnit3;
 using Esfa.Recruit.Vacancies.Client.Application.Cache;
 using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Requests;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Responses;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.TrainingProviders;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider;
-using FluentAssertions;
 using Microsoft.Extensions.Logging;
-using Moq;
+using NUnit.Framework;
 using Xunit;
 
 namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructure.Services
@@ -83,6 +83,24 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
             provider.Address.AddressLine3.Should().Be("address line 3");
             provider.Address.AddressLine4.Should().Be("address line 4");
             provider.Address.Postcode.Should().Be("post code");
+        }
+
+        [Test, MoqAutoData]
+        public async Task GetProviderDashboardApplicationReviewStats_Should_Return_As_Expected(
+            long ukprn,
+            List<long> vacancyReferences,
+            GetApplicationReviewsCountApiResponse response,
+            [Frozen] Mock<IOuterApiClient> outerApiClient,
+            [Greedy] TrainingProviderService trainingProviderService)
+        {
+            var expectedGetUrl = new GetProviderApplicationReviewsCountApiRequest(ukprn, vacancyReferences);
+            outerApiClient.Setup(x => x.Post<GetApplicationReviewsCountApiResponse>(
+                It.Is<GetProviderApplicationReviewsCountApiRequest>(r => r.PostUrl == expectedGetUrl.PostUrl)))
+                .ReturnsAsync(response);
+
+            var result = await trainingProviderService.GetProviderDashboardApplicationReviewStats(ukprn, vacancyReferences);
+
+            result.ApplicationReviewStatsList.Should().BeEquivalentTo(response.ApplicationReviewStatsList);
         }
     }
 }
