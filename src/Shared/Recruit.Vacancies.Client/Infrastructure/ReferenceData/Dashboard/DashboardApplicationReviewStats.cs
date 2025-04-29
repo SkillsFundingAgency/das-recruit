@@ -26,6 +26,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Dashboard
             public int SharedApplications { get; set; }
             public int SuccessfulApplications { get; set; }
             public int UnsuccessfulApplications { get; set; }
+            public int EmployerReviewedApplications { get; set; }
 
             public static implicit operator ApplicationReviewStats(GetApplicationReviewsCountApiResponse.ApplicationReviewStats source)
             {
@@ -38,7 +39,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Dashboard
                     NewApplications = source.NewApplications,
                     SharedApplications = source.SharedApplications,
                     SuccessfulApplications = source.SuccessfulApplications,
-                    UnsuccessfulApplications = source.UnsuccessfulApplications
+                    UnsuccessfulApplications = source.UnsuccessfulApplications,
+                    EmployerReviewedApplications = source.EmployerReviewedApplications
                 };
             }
         }
