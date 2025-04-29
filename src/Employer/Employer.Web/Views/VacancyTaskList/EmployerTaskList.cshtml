@@ -74,7 +74,7 @@
             <li>
                 <partial name="_TaskListHeader" model="@(new TaskListHeaderViewModel(3, "Requirements and prospects", Model.TaskListSectionThreeState))" />
                 <ul class="das-task-list__items">
-                    @if (Model.VacancyType is VacancyType.Foundation)
+                    @if (Model.ApprenticeshipType is ApprenticeshipTypes.Foundation)
                     {
                         <p class="govuk-body govuk-hint">Foundation apprenticeships do not require the applicants to
                             have specific skills or qualifications before applying.</p>

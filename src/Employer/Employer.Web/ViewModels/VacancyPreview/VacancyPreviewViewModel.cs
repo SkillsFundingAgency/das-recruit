@@ -8,6 +8,7 @@ using Esfa.Recruit.Shared.Web.Mappers;
 using Esfa.Recruit.Shared.Web.ViewModels;
 using Esfa.Recruit.Shared.Web.ViewModels.TaskList;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Humanizer;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
@@ -275,7 +276,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview
                 return VacancyTaskListSectionState.NotStarted;
             }
             
-            if (VacancyType is Esfa.Recruit.Vacancies.Client.Domain.Entities.VacancyType.Foundation)
+            if (ApprenticeshipType is ApprenticeshipTypes.Foundation)
             {
                 if (TaskListSectionTwoState == VacancyTaskListSectionState.Completed && FutureProspectsSectionState == VacancyPreviewSectionState.Incomplete)
                 {

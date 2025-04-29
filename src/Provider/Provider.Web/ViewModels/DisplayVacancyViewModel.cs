@@ -151,10 +151,10 @@ namespace Esfa.Recruit.Provider.Web.ViewModels
         public bool IsNotDisabilityConfident => !IsDisabilityConfident;
         public bool HasSelectedLegalEntity => !string.IsNullOrEmpty(AccountLegalEntityPublicHashedId);
         public EmployerNameOption? EmployerNameOption { get; set; }
-        public VacancyType? VacancyType { get; set; }
         public string StandardPageUrl { get; set; }
         public string OverviewOfRole { get; set; }
         public ApprenticeshipLevel ApprenticeshipLevel { get; set; }
+        public ApprenticeshipTypes ApprenticeshipType { get; set; }
         
         private string BuildAdditionalQuestionText(string additionalQuestion)
         {

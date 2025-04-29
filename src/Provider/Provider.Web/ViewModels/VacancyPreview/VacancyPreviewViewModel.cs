@@ -107,7 +107,7 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview
 
         public ValidationSummaryViewModel ValidationErrors { get; set; } = new ValidationSummaryViewModel(); 
         
-        public string SubmitButtonText => RequiresEmployerReview && VacancyType.GetValueOrDefault() == Vacancies.Client.Domain.Entities.VacancyType.Apprenticeship
+        public string SubmitButtonText => RequiresEmployerReview && ApprenticeshipType == ApprenticeshipTypes.Standard
             ? Status == VacancyStatus.Rejected
                 ? "Resubmit vacancy to employer"
                 : "Send to employer"
@@ -303,7 +303,7 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview
                 return VacancyTaskListSectionState.NotStarted;
             }
 
-            if (VacancyType is Esfa.Recruit.Vacancies.Client.Domain.Entities.VacancyType.Foundation)
+            if (ApprenticeshipType is ApprenticeshipTypes.Foundation)
             {
                 if (TaskListSectionTwoState == VacancyTaskListSectionState.Completed && FutureProspectsSectionState == VacancyPreviewSectionState.Incomplete)
                 {

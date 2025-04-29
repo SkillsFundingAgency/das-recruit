@@ -8,6 +8,7 @@ using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.ApprenticeshipProgrammes;
 using Microsoft.Extensions.Logging;
 using Xunit;
 
@@ -81,7 +82,12 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part1
 
             public async Task PostConfirmTrainingEditModelAsync(ConfirmTrainingEditModel model)
             {
-                await Sut.PostConfirmTrainingEditModelAsync(model, User);
+                var programme = new ApprenticeshipProgramme()
+                {
+                    Id = model.ProgrammeId,
+                    ApprenticeshipType = TrainingType.Standard
+                };
+                await Sut.PostConfirmTrainingEditModelAsync(model, programme, User);
             }
 
             public void VerifyProviderReviewFieldIndicators(string fieldIdentifier, bool value)

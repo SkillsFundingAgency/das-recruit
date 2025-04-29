@@ -128,7 +128,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
             }
             else
             {
-                var response = await _orchestrator.PostConfirmTrainingEditModelAsync(m, user);
+                var response = await _orchestrator.PostConfirmTrainingEditModelAsync(m, programme, user);
                 if (!response.Success)
                 {
                     response.AddErrorsToModelState(ModelState);

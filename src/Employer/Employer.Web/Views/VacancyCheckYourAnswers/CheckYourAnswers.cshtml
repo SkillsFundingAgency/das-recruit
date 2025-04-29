@@ -117,7 +117,7 @@
                 <dt class="app-summary-list__key" id="@FieldIdentifiers.Training">Training course</dt>
                 <dd id="TrainingLevel" class="app-summary-list__value">
                     <p>@Model.TrainingTitle</p>
-                    <govuk-tag-foundation asp-show="@(Model.VacancyType is VacancyType.Foundation)"/>
+                    <govuk-tag-foundation asp-show="@(Model.ApprenticeshipType is ApprenticeshipTypes.Foundation)"/>
                     <field-review-tag class="govuk-tag--orange" field-name="@FieldIdentifiers.Training" tag-name="strong" model="@Model" />
                 </dd>
                 <dd class="app-summary-list__actions">
@@ -216,7 +216,7 @@
             </div>
             <field-review-message field-name="@FieldIdentifiers.AdditionalTrainingDescription"
                 model="@Model"></field-review-message>
-            <div class="app-summary-list__row app-summary-list__row--no-border"
+            <div class="app-summary-list__row"
                 field-review-marker="AdditionalTrainingDescription">
                 <dt class="app-summary-list__key" id="@FieldIdentifiers.AdditionalTrainingDescription">Additional
                     training information (optional)</dt>
@@ -415,7 +415,7 @@
         <h2 class="govuk-heading-m">Requirements and prospects </h2>
         <dl class="app-summary-list govuk-!-margin-bottom-9">
 
-            @if (Model.VacancyType is not VacancyType.Foundation)
+            @if (Model.ApprenticeshipType is not ApprenticeshipTypes.Foundation)
             {
                 <field-review-message field-name="@FieldIdentifiers.Skills" model="@Model"></field-review-message>
                 <div class="app-summary-list__row" field-review-marker="Skills">

@@ -64,7 +64,6 @@ namespace Esfa.Recruit.Employer.Web.ViewModels
         public string VacancyClonedInfoMessage { get; internal set; }
         public string VacancyDescription { get; internal set; }
         public string VacancyReferenceNumber { get; internal set; }
-        public VacancyType? VacancyType { get; internal set; }
         public string WageInfo { get; internal set; }
         public string WageText { get; internal set; }
         public string WorkingWeekDescription { get; internal set; }
@@ -72,6 +71,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels
         public WageType? WageType { get; internal set; }
         public bool HasCompetitiveSalaryType => WageType.HasValue && WageType.Value == Recruit.Vacancies.Client.Domain.Entities.WageType.CompetitiveSalary;
         public string AccountLegalEntityPublicHashedId { get ; set ; }
+        public ApprenticeshipTypes ApprenticeshipType { get; set; }
 
         private string _additionalQuestion1;
         public string AdditionalQuestion1 

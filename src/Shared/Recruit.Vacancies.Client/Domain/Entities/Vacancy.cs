@@ -61,6 +61,13 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
         public bool? HasOptedToAddQualifications { get; set; }
         public List<Qualification> Qualifications { get; set; }
 
+        private ApprenticeshipTypes? _apprenticeshipType;
+        public ApprenticeshipTypes? ApprenticeshipType
+        {
+            get => _apprenticeshipType ?? ApprenticeshipTypes.Standard;
+            set => _apprenticeshipType = value;
+        }
+
         public string ShortDescription  
         {
             get
