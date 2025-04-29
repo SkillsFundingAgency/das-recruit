@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using AutoFixture.NUnit3;
 using Esfa.Recruit.Employer.UnitTests.Employer.Web.HardMocks;
 using Esfa.Recruit.Employer.Web;
 using Esfa.Recruit.Employer.Web.Orchestrators.Part1;
@@ -11,6 +12,7 @@ using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.ApprenticeshipProgrammes;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part1
@@ -28,6 +30,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part1
         [TestCase("this is a new value", true)]
         public async Task WhenUpdated_ShouldFlagFieldIndicators(string programmeId, bool fieldIndicatorSet)
         {
+            // arrange
             _fixture
                 .WithProgrammeId("this is a value")
                 .Setup();
@@ -38,11 +41,44 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part1
                 VacancyId = _fixture.Vacancy.Id,
                 ProgrammeId = programmeId
             };
+            
+            var programme = new ApprenticeshipProgramme()
+            {
+                Id = programmeId,
+                ApprenticeshipType = TrainingType.Standard
+            };
 
-            await _fixture.PostConfirmTrainingEditModelAsync(confirmTrainingEditModel);
+            // act
+            await _fixture.PostConfirmTrainingEditModelAsync(confirmTrainingEditModel, programme);
 
+            // assert
             _fixture.VerifyEmployerReviewFieldIndicators(FieldIdentifiers.TrainingLevel, fieldIndicatorSet);
             _fixture.VerifyEmployerReviewFieldIndicators(FieldIdentifiers.Training, fieldIndicatorSet);
+        }
+
+        [Test, MoqAutoData]
+        public async Task When_Updated_ApprenticeshipType_Is_Set_To_Foundation(
+            string programmeId,
+            ConfirmTrainingEditModel model,
+            VacancyUser user,
+            Vacancy vacancy,
+            [Frozen] Mock<IUtility> utility,
+            [Greedy] TrainingOrchestrator sut)
+        {
+            // arrange
+            vacancy.ApprenticeshipType = null;
+            utility.Setup(x => x.GetAuthorisedVacancyForEditAsync(model, It.IsAny<string>())).ReturnsAsync(vacancy);
+            var programme = new ApprenticeshipProgramme()
+            {
+                Id = programmeId,
+                ApprenticeshipType = TrainingType.Foundation
+            };
+
+            // act
+            await sut.PostConfirmTrainingEditModelAsync(model, programme, user);
+
+            // assert
+            vacancy.ApprenticeshipType.Should().Be(ApprenticeshipTypes.Foundation);
         }
 
         public class TrainingOrchestratorTestsFixture
@@ -91,13 +127,8 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part1
                     Mock.Of<IReviewSummaryService>(), utility, MockEmployerVacancyClient.Object);
             }
 
-            public async Task PostConfirmTrainingEditModelAsync(ConfirmTrainingEditModel model)
+            public async Task PostConfirmTrainingEditModelAsync(ConfirmTrainingEditModel model, ApprenticeshipProgramme programme)
             {
-                var programme = new ApprenticeshipProgramme()
-                {
-                    Id = model.ProgrammeId,
-                    ApprenticeshipType = TrainingType.Standard
-                };
                 await Sut.PostConfirmTrainingEditModelAsync(model, programme, User);
             }
 
