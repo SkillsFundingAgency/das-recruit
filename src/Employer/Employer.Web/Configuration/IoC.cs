@@ -62,8 +62,6 @@ namespace Esfa.Recruit.Employer.Web.Configuration
             RegisterMapperDeps(services);
 
             RegisterFilterDeps(services);
-
-            RegisterDynamicConfigurationDeps(services);
         }
 
         private static void RegisterServiceDeps(IServiceCollection services, IConfiguration configuration)
@@ -152,18 +150,9 @@ namespace Esfa.Recruit.Employer.Web.Configuration
 
         private static void RegisterFilterDeps(IServiceCollection services)
         {
-            services.AddScoped<PlannedOutageResultFilter>();
             services.AddScoped<GoogleAnalyticsFilter>();
             services.AddScoped<ZendeskApiFilter>();
         }
 
-        private static void RegisterDynamicConfigurationDeps(IServiceCollection services)
-        {
-            services.AddSingleton(x => 
-            {
-                var svc = x.GetService<IConfigurationReader>();
-                return svc.GetAsync<EmployerRecruitSystemConfiguration>("EmployerRecruitSystem").Result;
-            });
-        }
     }
 }
