@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Responses;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Dashboard;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider
 {
@@ -23,7 +22,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider
         /// <param name="ukprn"></param>
         /// <param name="vacancyReferences"></param>
         /// <returns></returns>
-        Task<DashboardApplicationReviewStats> GetProviderDashboardApplicationReviewStats(long ukprn,
+        Task<List<ApplicationReviewStats>> GetProviderDashboardApplicationReviewStats(long ukprn,
             List<long> vacancyReferences);
     }
 }

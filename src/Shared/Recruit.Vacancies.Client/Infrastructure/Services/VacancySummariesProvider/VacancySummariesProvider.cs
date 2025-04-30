@@ -173,7 +173,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
 
             var dashboardStats = await _trainingProviderService.GetProviderDashboardApplicationReviewStats(ukprn, vacancyReferences);
 
-            var applicationReviewStatsLookup = dashboardStats.ApplicationReviewStatsList
+            var applicationReviewStatsLookup = dashboardStats
                 .ToDictionary(x => x.VacancyReference);
 
             foreach (var vacancySummary in pipelineResult)
@@ -246,7 +246,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
 
             var dashboardStats = await _employerAccountProvider.GetEmployerDashboardApplicationReviewStats(employerAccountId, vacancyReferences);
 
-            var applicationReviewStatsLookup = dashboardStats.ApplicationReviewStatsList
+            var applicationReviewStatsLookup = dashboardStats
                 .ToDictionary(x => x.VacancyReference);
 
             foreach (var vacancySummary in pipelineResult)

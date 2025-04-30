@@ -89,18 +89,18 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
         public async Task GetProviderDashboardApplicationReviewStats_Should_Return_As_Expected(
             long ukprn,
             List<long> vacancyReferences,
-            GetApplicationReviewsCountApiResponse response,
+            List<ApplicationReviewStats> response,
             [Frozen] Mock<IOuterApiClient> outerApiClient,
             [Greedy] TrainingProviderService trainingProviderService)
         {
             var expectedGetUrl = new GetProviderApplicationReviewsCountApiRequest(ukprn, vacancyReferences);
-            outerApiClient.Setup(x => x.Post<GetApplicationReviewsCountApiResponse>(
+            outerApiClient.Setup(x => x.Post<List<ApplicationReviewStats>>(
                 It.Is<GetProviderApplicationReviewsCountApiRequest>(r => r.PostUrl == expectedGetUrl.PostUrl)))
                 .ReturnsAsync(response);
 
             var result = await trainingProviderService.GetProviderDashboardApplicationReviewStats(ukprn, vacancyReferences);
 
-            result.ApplicationReviewStatsList.Should().BeEquivalentTo(response.ApplicationReviewStatsList);
+            result.Should().BeEquivalentTo(response);
         }
     }
 }

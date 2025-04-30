@@ -6,7 +6,6 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Requests;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Responses;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Dashboard;
 using Microsoft.Extensions.Logging;
 using Polly;
 using SFA.DAS.Encoding;
@@ -83,7 +82,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount
             }
         }
 
-        public async Task<DashboardApplicationReviewStats> GetEmployerDashboardApplicationReviewStats(string hashedAccountId, List<long> vacancyReferences)
+        public async Task<List<ApplicationReviewStats>> GetEmployerDashboardApplicationReviewStats(string hashedAccountId, List<long> vacancyReferences)
         {
             try
             {
@@ -92,7 +91,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount
                 long accountId = encodingService.Decode(hashedAccountId, EncodingType.AccountId);
                 var retryPolicy = PollyRetryPolicy.GetPolicy();
 
-                return await retryPolicy.Execute(_ => outerApiClient.Post<GetApplicationReviewsCountApiResponse>(
+                return await retryPolicy.Execute(_ => outerApiClient.Post<List<ApplicationReviewStats>>(
                         new GetEmployerApplicationReviewsCountApiRequest(accountId,
                             vacancyReferences)),
                     new Dictionary<string, object>

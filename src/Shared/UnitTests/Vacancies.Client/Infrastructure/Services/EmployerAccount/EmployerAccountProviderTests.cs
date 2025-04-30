@@ -17,7 +17,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
             string hashedAccountId,
             long accountId,
             List<long> vacancyReferences,
-            GetApplicationReviewsCountApiResponse response,
+            List<ApplicationReviewStats> response,
             [Frozen] Mock<IEncodingService> encodingService,
             [Frozen] Mock<IOuterApiClient> outerApiClient,
             [Greedy] EmployerAccountProvider employerAccountProvider)
@@ -26,14 +26,14 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
                 .Returns(accountId);
 
             var expectedGetUrl = new GetEmployerApplicationReviewsCountApiRequest(accountId, vacancyReferences);
-            outerApiClient.Setup(x => x.Post<GetApplicationReviewsCountApiResponse>(
+            outerApiClient.Setup(x => x.Post<List<ApplicationReviewStats>>(
                     It.Is<GetEmployerApplicationReviewsCountApiRequest>(r => r.PostUrl == expectedGetUrl.PostUrl)))
                 .ReturnsAsync(response);
 
             var result = await employerAccountProvider.GetEmployerDashboardApplicationReviewStats(hashedAccountId, vacancyReferences);
 
 
-            result.ApplicationReviewStatsList.Should().BeEquivalentTo(response.ApplicationReviewStatsList);
+            result.Should().BeEquivalentTo(response);
         }
     }
 }

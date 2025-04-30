@@ -9,7 +9,6 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Requests;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Responses;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.Dashboard;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.TrainingProviders;
 using Microsoft.Extensions.Logging;
 using Polly;
@@ -60,13 +59,13 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider
             return result;
         }
 
-        public async Task<DashboardApplicationReviewStats> GetProviderDashboardApplicationReviewStats(long ukprn, List<long> vacancyReferences)
+        public async Task<List<ApplicationReviewStats>> GetProviderDashboardApplicationReviewStats(long ukprn, List<long> vacancyReferences)
         {
             logger.LogTrace("Getting Provider Application Review Stats from Outer Api");
 
             var retryPolicy = PollyRetryPolicy.GetPolicy();
 
-            return await retryPolicy.Execute(_ => outerApiClient.Post<GetApplicationReviewsCountApiResponse>(
+            return await retryPolicy.Execute(_ => outerApiClient.Post<List<ApplicationReviewStats>>(
                     new GetProviderApplicationReviewsCountApiRequest(ukprn,
                         vacancyReferences)),
                 new Dictionary<string, object>
