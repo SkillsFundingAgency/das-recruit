@@ -24,5 +24,12 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider
         /// <returns></returns>
         Task<List<ApplicationReviewStats>> GetProviderDashboardApplicationReviewStats(long ukprn,
             List<long> vacancyReferences);
+        
+        /// <summary>
+        /// Contract to get the dashboard stats from outer api by given ukprn number.
+        /// </summary>
+        /// <param name="ukprn"></param>
+        /// <returns></returns>
+        Task<GetDashboardCountApiResponse> GetProviderDashboardStats(long ukprn);
     }
 }

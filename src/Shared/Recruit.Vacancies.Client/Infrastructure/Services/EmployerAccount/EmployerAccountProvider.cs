@@ -7,7 +7,6 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Requests;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Responses;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
 using Microsoft.Extensions.Logging;
-using Polly;
 using SFA.DAS.Encoding;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount
@@ -106,6 +105,23 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount
                 logger.LogError(ex, "Failed to retrieve account information for account Id: {hashedAccountId}", hashedAccountId);
                 throw;
             }
+        }
+
+        public async Task<GetDashboardCountApiResponse> GetEmployerDashboardStats(string hashedAccountId)
+        {
+            logger.LogTrace("Getting Employer Dashboard Stats from Outer Api");
+
+            long accountId = encodingService.Decode(hashedAccountId, EncodingType.AccountId);
+            var retryPolicy = PollyRetryPolicy.GetPolicy();
+
+            return await retryPolicy.Execute(_ => outerApiClient.Get<GetDashboardCountApiResponse>(
+                    new GetEmployerDashboardCountApiRequest(accountId)),
+                new Dictionary<string, object>
+                {
+                    {
+                        "apiCall", "Providers"
+                    }
+                });
         }
     }
 }

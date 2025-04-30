@@ -76,6 +76,22 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider
                 });
         }
 
+        public async Task<GetDashboardCountApiResponse> GetProviderDashboardStats(long ukprn)
+        {
+            logger.LogTrace("Getting Provider Dashboard Stats from Outer Api");
+
+            var retryPolicy = PollyRetryPolicy.GetPolicy();
+
+            return await retryPolicy.Execute(_ => outerApiClient.Get<GetDashboardCountApiResponse>(
+                    new GetProviderDashboardCountApiRequest(ukprn)),
+                new Dictionary<string, object>
+                {
+                    {
+                        "apiCall", "Providers"
+                    }
+                });
+        }
+
         private Task<TrainingProviders> GetProviders()
         {
             return cache.CacheAsideAsync(

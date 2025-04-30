@@ -32,7 +32,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
                 legalEntityName
             );
 
-            await _messaging.SendCommandAsync(command);
+            await messaging.SendCommandAsync(command);
 
             return vacancyId;
         }
@@ -51,22 +51,23 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
                 null
             );
 
-            await _messaging.SendCommandAsync(command);
+            await messaging.SendCommandAsync(command);
 
             await AssignVacancyNumber(id);
         }
 
         public async Task<long> GetVacancyCount(long ukprn, FilteringOptions? filteringOptions, string searchTerm)
         {
-            return await _vacancySummariesQuery.VacancyCount(ukprn, string.Empty, filteringOptions, searchTerm, OwnerType.Provider);
+            return await vacancySummariesQuery.VacancyCount(ukprn, string.Empty, filteringOptions, searchTerm, OwnerType.Provider);
         }
 
         public async Task<ProviderDashboardSummary> GetDashboardSummary(long ukprn)
         {
-            var dashboardTask = _vacancySummariesQuery.GetProviderOwnedVacancyDashboardByUkprnAsync(ukprn);
-            var transferredVacanciesTask = _vacancySummariesQuery.GetTransferredFromProviderAsync(ukprn);
+            var dashboardTask = vacancySummariesQuery.GetProviderOwnedVacancyDashboardByUkprnAsync(ukprn);
+            var transferredVacanciesTask = vacancySummariesQuery.GetTransferredFromProviderAsync(ukprn);
+            var dashboardStatsTask = trainingProviderService.GetProviderDashboardStats(ukprn);
 
-            await Task.WhenAll(dashboardTask, transferredVacanciesTask);
+            await Task.WhenAll(dashboardTask, transferredVacanciesTask, dashboardStatsTask);
 
             var dashboardValue = dashboardTask.Result;
             var transferredVacancies = transferredVacanciesTask.Result.Select(t =>
@@ -76,6 +77,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
                     TransferredDate = t.TransferredDate,
                     Reason = t.Reason
                 });
+            var dashboardStats = dashboardStatsTask.Result;
 
             var dashboard = dashboardValue.VacancyStatusDashboard;
             var dashboardApplications = dashboardValue.VacancyApplicationsDashboard;
@@ -88,8 +90,12 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
                 Referred = (dashboard.SingleOrDefault(c => c.Status == VacancyStatus.Referred)?.StatusCount ?? 0) + (dashboard.SingleOrDefault(c => c.Status == VacancyStatus.Rejected)?.StatusCount ?? 0),
                 Live = dashboard.Where(c => c.Status == VacancyStatus.Live).Sum(c => c.StatusCount),
                 Submitted = dashboard.SingleOrDefault(c => c.Status == VacancyStatus.Submitted)?.StatusCount ?? 0,
-                NumberOfNewApplications = dashboardApplications.Where(c => c.Status == VacancyStatus.Live || c.Status == VacancyStatus.Closed).Sum(x => x.NoOfNewApplications),
-                NumberOfEmployerReviewedApplications = dashboardApplications.Where(c => c.Status == VacancyStatus.Live || c.Status == VacancyStatus.Closed).Sum(x => x.NumberOfEmployerReviewedApplications),
+                NumberOfNewApplications = _isMongoMigrationFeatureEnabled 
+                    ? dashboardStats.NewApplicationsCount 
+                    : dashboardApplications.Where(c => c.Status is VacancyStatus.Live or VacancyStatus.Closed).Sum(x => x.NoOfNewApplications),
+                NumberOfEmployerReviewedApplications = _isMongoMigrationFeatureEnabled
+                    ? dashboardStats.EmployerReviewedApplicationsCount
+                    : dashboardApplications.Where(c => c.Status is VacancyStatus.Live or VacancyStatus.Closed).Sum(x => x.NumberOfEmployerReviewedApplications),
                 NumberOfSuccessfulApplications = dashboardApplications.Where(c => c.Status == VacancyStatus.Live && !c.ClosingSoon).Sum(x => x.NoOfSuccessfulApplications)
                                                  + dashboardApplications.Where(c => c.Status == VacancyStatus.Closed && !c.ClosingSoon).Sum(x => x.NoOfSuccessfulApplications),
                 NumberOfUnsuccessfulApplications = dashboardApplications.Where(c => c.Status == VacancyStatus.Live && !c.ClosingSoon).Sum(x => x.NoOfUnsuccessfulApplications)
@@ -102,8 +108,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 
         public async Task<ProviderDashboard> GetDashboardAsync(long ukprn,int page, FilteringOptions? status = null, string searchTerm = null)
         {
-            var vacancySummariesTasks = _vacancySummariesQuery.GetProviderOwnedVacancySummariesByUkprnAsync(ukprn, page, status, searchTerm);
-            var transferredVacanciesTasks = _vacancySummariesQuery.GetTransferredFromProviderAsync(ukprn);
+            var vacancySummariesTasks = vacancySummariesQuery.GetProviderOwnedVacancySummariesByUkprnAsync(ukprn, page, status, searchTerm);
+            var transferredVacanciesTasks = vacancySummariesQuery.GetTransferredFromProviderAsync(ukprn);
 
             await Task.WhenAll(vacancySummariesTasks, transferredVacanciesTasks);
 
@@ -127,30 +133,30 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
                 Id = QueryViewType.ProviderDashboard.GetIdValue(ukprn),
                 Vacancies = vacancySummaries,
                 TransferredVacancies = transferredVacancies,
-                LastUpdated = _timeProvider.Now
+                LastUpdated = timeProvider.Now
             };
         }
 
         public Task<ProviderEditVacancyInfo> GetProviderEditVacancyInfoAsync(long ukprn)
         {
-            return _reader.GetProviderVacancyDataAsync(ukprn);
+            return reader.GetProviderVacancyDataAsync(ukprn);
         }
 
         public Task<EmployerInfo> GetProviderEmployerVacancyDataAsync(long ukprn, string employerAccountId)
         {
-            return _reader.GetProviderEmployerVacancyDataAsync(ukprn, employerAccountId);
+            return reader.GetProviderEmployerVacancyDataAsync(ukprn, employerAccountId);
         }
 
         public Task<IEnumerable<EmployerInfo>> GetProviderEmployerVacancyDatasAsync(long ukprn, IList<string> employerAccountIds)
         {
-            return _reader.GetProviderEmployerVacancyDatasAsync(ukprn, employerAccountIds);
+            return reader.GetProviderEmployerVacancyDatasAsync(ukprn, employerAccountIds);
         }
 
         public Task SetupProviderAsync(long ukprn)
         {
             var command = new SetupProviderCommand(ukprn);
 
-            return _messaging.SendCommandAsync(command);
+            return messaging.SendCommandAsync(command);
         }
 
         public async Task<Guid> CreateProviderApplicationsReportAsync(long ukprn, DateTime fromDate, DateTime toDate, VacancyUser user, string reportName)
@@ -163,7 +169,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
                 Ukprn = ukprn
             };
 
-            await _messaging.SendCommandAsync(new CreateReportCommand(
+            await messaging.SendCommandAsync(new CreateReportCommand(
                 reportId,
                 owner,
                 ReportType.ProviderApplications,
@@ -182,33 +188,33 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 
         public Task<List<ReportSummary>> GetReportsForProviderAsync(long ukprn)
         {
-            return _reportRepository.GetReportsForProviderAsync<ReportSummary>(ukprn);
+            return reportRepository.GetReportsForProviderAsync<ReportSummary>(ukprn);
         }
 
         public Task<Report> GetReportAsync(Guid reportId)
         {
-            return _reportRepository.GetReportAsync(reportId);
+            return reportRepository.GetReportAsync(reportId);
         }
 
         public async Task WriteReportAsCsv(Stream stream, Report report)
         {
-            await _reportService.WriteReportAsCsv(stream, report);
+            await reportService.WriteReportAsCsv(stream, report);
         }
 
         public Task IncrementReportDownloadCountAsync(Guid reportId)
         {
-            return _reportRepository.IncrementReportDownloadCountAsync(reportId);
+            return reportRepository.IncrementReportDownloadCountAsync(reportId);
         }
 
         private async Task UpdateWithTrainingProgrammeInfo(VacancySummary summary)
         {
             if (summary.ProgrammeId != null)
             {
-                var programme = await _apprenticeshipProgrammesProvider.GetApprenticeshipProgrammeAsync(summary.ProgrammeId);
+                var programme = await apprenticeshipProgrammesProvider.GetApprenticeshipProgrammeAsync(summary.ProgrammeId);
 
                 if (programme == null)
                 {
-                    _logger.LogWarning($"No training programme found for ProgrammeId: {summary.ProgrammeId}");
+                    logger.LogWarning($"No training programme found for ProgrammeId: {summary.ProgrammeId}");
                 }
                 else
                 {

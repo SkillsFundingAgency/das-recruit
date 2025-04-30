@@ -102,5 +102,22 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
 
             result.Should().BeEquivalentTo(response);
         }
+
+        [Test, MoqAutoData]
+        public async Task GetProviderDashboardStats_Should_Return_As_Expected(
+            long ukprn,
+            GetDashboardCountApiResponse response,
+            [Frozen] Mock<IOuterApiClient> outerApiClient,
+            [Greedy] TrainingProviderService trainingProviderService)
+        {
+            var expectedGetUrl = new GetProviderDashboardCountApiRequest(ukprn);
+            outerApiClient.Setup(x => x.Get< GetDashboardCountApiResponse> (
+                    It.Is<GetProviderDashboardCountApiRequest>(r => r.GetUrl == expectedGetUrl.GetUrl)))
+                .ReturnsAsync(response);
+
+            var result = await trainingProviderService.GetProviderDashboardStats(ukprn);
+
+            result.Should().BeEquivalentTo(response);
+        }
     }
 }
