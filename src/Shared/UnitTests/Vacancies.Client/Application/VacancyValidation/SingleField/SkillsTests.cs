@@ -1,13 +1,13 @@
 ﻿using System.Collections.Generic;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using Xunit;
+using NUnit.Framework;
 
 namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.VacancyValidation.SingleField
 {
     public class SkillsTests : VacancyValidationTestsBase
     {
-        [Fact]
+        [Test]
         public void NoErrorsWhenSkillsAreValid()
         {
             var vacancy = new Vacancy
@@ -31,8 +31,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
                 new object[] {new List<string>()},
             };
 
-        [Theory]
-        [MemberData(nameof(NullOrZeroSkillCollection))]
+        [TestCaseSource(nameof(NullOrZeroSkillCollection))]
         public void SkillsCollectionMustNotBeNullOrHaveZeroCount(List<string> skills)
         {
             var vacancy = new Vacancy
@@ -56,8 +55,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
                 new object[] {new List<string>{string.Empty}},
             };
 
-        [Theory]
-        [MemberData(nameof(NullOrZeroSkill))]
+        [TestCaseSource(nameof(NullOrZeroSkill))]
         public void SkillMustNotBeEmpty(List<string> skills)
         {
             var vacancy = new Vacancy
@@ -74,7 +72,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
             result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.Skills);
         }
 
-        [Fact]
+        [Test]
         public void SkillsMustNotContainInvalidCharacters()
         {
             var vacancy = new Vacancy
@@ -94,7 +92,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
             result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.Skills);
         }
 
-        [Fact]
+        [Test]
         public void SkillsMustNotBeGreaterThanMaxLength()
         {
             var vacancy = new Vacancy
@@ -114,11 +112,10 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
             result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.Skills);
         }
 
-        [Theory]
-        [InlineData("some text bother")]
-        [InlineData("some text dang")]
-        [InlineData("some text drat")]
-        [InlineData("some text balderdash")]
+        [TestCase("some text bother")]
+        [TestCase("some text dang")]
+        [TestCase("some text drat")]
+        [TestCase("some text balderdash")]
         public void OutcomeDescription_ShouldFailIfContainsWordsFromTheProfanityList(string freeText)
         {
             var vacancy = new Vacancy()
@@ -136,11 +133,10 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
             result.Errors[0].ErrorCode.Should().Be("608");
         }
 
-        [Theory]
-        [InlineData("some textbother")]
-        [InlineData("some textdang")]
-        [InlineData("some textdrat")]
-        [InlineData("some textbalderdash")]
+        [TestCase("some textbother")]
+        [TestCase("some textdang")]
+        [TestCase("some textdrat")]
+        [TestCase("some textbalderdash")]
         public void OutcomeDescription_Should_Not_FailIfContainsWordsFromTheProfanityList(string freeText)
         {
             var vacancy = new Vacancy()
@@ -149,6 +145,19 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
                 {
                     freeText
                 }
+            };
+
+            var result = Validator.Validate(vacancy, VacancyRuleSet.Skills);
+            result.HasErrors.Should().BeFalse();
+        }
+
+        [Test]
+        public void Skills_Are_Not_Required_For_Foundation_Apprenticeships()
+        {
+            var vacancy = new Vacancy
+            {
+                ApprenticeshipType = ApprenticeshipTypes.Foundation,
+                Skills = null
             };
 
             var result = Validator.Validate(vacancy, VacancyRuleSet.Skills);
