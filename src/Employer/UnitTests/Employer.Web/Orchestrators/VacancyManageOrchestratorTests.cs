@@ -22,7 +22,6 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators
         private VacancyManageOrchestrator _orchestrator;
         private Mock<IRecruitVacancyClient> _vacancyClient;
         private Mock<IUtility> _utility;
-        private Mock<EmployerRecruitSystemConfiguration> _systemConfig;
         private Mock<ILogger<VacancyManageOrchestrator>> _logger;
         private Mock<IGeocodeImageService> _geocodeImageService;
         private Mock<IOptions<ExternalLinksConfiguration>> _externalLinksConfig;
@@ -35,12 +34,11 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators
             _fixture = new Fixture();
             _vacancyClient = new Mock<IRecruitVacancyClient>();
             _utility = new Mock<IUtility>();
-            _systemConfig = new Mock<EmployerRecruitSystemConfiguration>();
             _logger = new Mock<ILogger<VacancyManageOrchestrator>>();
             _geocodeImageService = new Mock<IGeocodeImageService>();
             _externalLinksConfig = new Mock<IOptions<ExternalLinksConfiguration>>();
             _vacancyDisplayMapper = new DisplayVacancyViewModelMapper(_geocodeImageService.Object, _externalLinksConfig.Object, _vacancyClient.Object, Mock.Of<IApprenticeshipProgrammeProvider>(), Mock.Of<IFeature>());
-            _orchestrator = new VacancyManageOrchestrator(_logger.Object, _vacancyDisplayMapper, _vacancyClient.Object, _systemConfig.Object, _utility.Object);
+            _orchestrator = new VacancyManageOrchestrator(_logger.Object, _vacancyDisplayMapper, _vacancyClient.Object, _utility.Object);
             _vacancyId = Guid.NewGuid();
         }
 

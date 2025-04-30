@@ -8,7 +8,6 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.VacancyAnalytics
         public long VacancyReference { get; internal set; }
         public VacancyAnalyticsSummaryViewModel AnalyticsSummary { get; internal set; }
         public bool HasAnalytics => AnalyticsSummary != null;
-        public string AnalyticsAvailableAfterApprovalDate { get; internal set; }
         public bool IsApplyThroughFaaVacancy { get; internal set; }
         public bool IsApplyThroughExternalApplicationSiteVacancy => !IsApplyThroughFaaVacancy;
     }

@@ -1,21 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Esfa.Recruit.Provider.Web.Configuration;
 using Esfa.Recruit.Provider.Web.Mappings;
 using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Provider.Web.ViewModels.VacancyManage;
 using Esfa.Recruit.Provider.Web.ViewModels.VacancyView;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Shared.Web.Helpers;
-using Esfa.Recruit.Shared.Web.Mappers;
 using Esfa.Recruit.Shared.Web.Orchestrators;
-using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyAnalytics;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyApplications;
 using Microsoft.Extensions.Logging;
 
@@ -26,16 +22,12 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
         private const VacancyRuleSet ValdationRules = VacancyRuleSet.ClosingDate | VacancyRuleSet.StartDate | VacancyRuleSet.TrainingProgramme | VacancyRuleSet.StartDateEndDate | VacancyRuleSet.TrainingExpiryDate | VacancyRuleSet.MinimumWage;
         private readonly DisplayVacancyViewModelMapper _vacancyDisplayMapper;
         private readonly IRecruitVacancyClient _client;
-        private readonly IFeature _featureToggle;
-        private readonly ProviderRecruitSystemConfiguration _systemConfig;
         private readonly IUtility _utility;
 
-        public VacancyManageOrchestrator(ILogger<VacancyManageOrchestrator> logger, DisplayVacancyViewModelMapper vacancyDisplayMapper, IRecruitVacancyClient client, IFeature featureToggle, ProviderRecruitSystemConfiguration systemConfig, IUtility utility) : base(logger)
+        public VacancyManageOrchestrator(ILogger<VacancyManageOrchestrator> logger, DisplayVacancyViewModelMapper vacancyDisplayMapper, IRecruitVacancyClient client, IUtility utility) : base(logger)
         {
             _vacancyDisplayMapper = vacancyDisplayMapper;
             _client = client;
-            _featureToggle = featureToggle;
-            _systemConfig = systemConfig;
             _utility = utility;
         }
 

@@ -10,7 +10,6 @@ using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Responses;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount;
-using Esfa.Recruit.Vacancies.Jobs.Configuration;
 using Esfa.Recruit.Vacancies.Jobs.ExternalSystemEventHandlers;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
@@ -37,7 +36,6 @@ namespace Recruit.Vacancies.Jobs.UnitTests.ExternalSystemEventHandlers
         private const int NoOfDummyLegalEntitiesToCreate = 10;
         private readonly Fixture _autoFixture = new Fixture();
         private readonly IEnumerable<AccountLegalEntity> _dummyLegalEntities;
-        private readonly RecruitWebJobsSystemConfiguration _jobsConfig;
         private readonly Mock<IRecruitQueueService> _mockRecruitQueueService;
         private readonly Mock<IEmployerAccountProvider> _mockEmployerAccountProvider;
         private readonly Mock<IEncodingService> _mockEncoder;
@@ -47,28 +45,14 @@ namespace Recruit.Vacancies.Jobs.UnitTests.ExternalSystemEventHandlers
         public UpdatedPermissionsExternalSystemEventHandlerTests()
         {
             _dummyLegalEntities = _autoFixture.CreateMany<AccountLegalEntity>(NoOfDummyLegalEntitiesToCreate);
-            _jobsConfig = new RecruitWebJobsSystemConfiguration { DisabledJobs = new List<string>() };
             _mockRecruitQueueService = new Mock<IRecruitQueueService>();
             _mockEmployerAccountProvider = new Mock<IEmployerAccountProvider>();
             _mockEncoder = new Mock<IEncodingService>();
             _mockMessaging = new Mock<IMessaging>();
 
-            _sut = new UpdatedPermissionsExternalSystemEventsHandler(Mock.Of<ILogger<UpdatedPermissionsExternalSystemEventsHandler>>(), _jobsConfig,
+            _sut = new UpdatedPermissionsExternalSystemEventsHandler(Mock.Of<ILogger<UpdatedPermissionsExternalSystemEventsHandler>>(),
                                                         _mockRecruitQueueService.Object, _mockEmployerAccountProvider.Object,
                                                         _mockEncoder.Object, _mockMessaging.Object);
-        }
-
-        [Fact]
-        public async Task GivenJobsConfigWithEventHandlerJobDisabled_ThenVerifyNoDependenciesAreCalled()
-        {
-            _jobsConfig.DisabledJobs.Add(nameof(UpdatedPermissionsExternalSystemEventsHandler));
-
-            await _sut.Handle(_autoFixture.Create<UpdatedPermissionsEvent>(), null);
-
-            _mockRecruitQueueService.VerifyNoOtherCalls();
-            _mockMessaging.VerifyNoOtherCalls();
-            _mockEmployerAccountProvider.VerifyNoOtherCalls();
-            _mockEncoder.VerifyNoOtherCalls();
         }
 
         [Fact]
