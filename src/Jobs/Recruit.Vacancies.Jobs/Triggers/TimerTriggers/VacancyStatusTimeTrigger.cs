@@ -21,7 +21,7 @@ namespace Esfa.Recruit.Vacancies.Jobs.Triggers.TimerTriggers
             _timeProvider = timeProvider;
         }
 
-        public Task VacancyStatusAsync([TimerTrigger(Schedules.ThreeAmDaily)] TimerInfo timerInfo, TextWriter log)
+        public Task VacancyStatusAsync([TimerTrigger(Schedules.TwoAmDaily)] TimerInfo timerInfo, TextWriter log)
         {
             _logger.LogInformation($"Timer trigger {this.GetType().Name} fired");
 

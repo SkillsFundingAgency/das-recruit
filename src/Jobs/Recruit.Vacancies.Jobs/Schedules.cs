@@ -5,7 +5,7 @@
         internal const string EightAmWeeklySunday = "0 8 * * SUN";
         internal const string MidnightDaily = "0 0 * * *";
         internal const string FourAmDaily = "0 0 4 * * *";
-        internal const string ThreeAmDaily = "0 0 3 * * *";
+        internal const string TwoAmDaily = "0 0 2 * * *";
         internal const string EightAmDaily = "0 0 8 * * *";
         internal const string EveryFiveMinutes = "*/5 * * * *";
         internal const string EveryFifteenMinutes = "*/15 * * * *";
