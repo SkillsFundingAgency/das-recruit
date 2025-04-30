@@ -26,7 +26,7 @@
                     <span class="govuk-visually-hidden"> (enter a numeric value and then select Month(s) or Year(s) in the next field)</span>
                 </label>
                 <div class="govuk-hint">
-                    The apprenticeship must last for at least 8 months.
+                    The apprenticeship must last for at least @Model.MinimumApprenticeshipLength months.
                 </div>
                 <div asp-show="@Model.ShowTraining" class="govuk-hint">
                     For @Model.TrainingTitle, typical length is @Model.TrainingDurationMonths months.
