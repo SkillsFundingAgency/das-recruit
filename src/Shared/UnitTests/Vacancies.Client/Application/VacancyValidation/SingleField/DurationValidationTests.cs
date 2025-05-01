@@ -96,7 +96,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
         }
 
         [Theory]
-        [InlineData(DurationUnit.Month, 7)]
+        [InlineData(DurationUnit.Month, 8)]
         public void ApprenticeshipDurationMustBeAtLeast8Months(DurationUnit unitValue, int durationValue)
         {
             Feature.Setup(x=>x.IsFeatureEnabled("FoundationApprenticeships")).Returns(true);
@@ -135,6 +135,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
             decimal? weeklyHours = decimal.TryParse(weeklyHoursText, out decimal parsed) ? parsed : (decimal?)null;
             var vacancy = new Vacancy
             {
+                StartDate = new DateTime(2025,08,01),
                 Wage = new Wage
                 {
                     WeeklyHours = weeklyHours,

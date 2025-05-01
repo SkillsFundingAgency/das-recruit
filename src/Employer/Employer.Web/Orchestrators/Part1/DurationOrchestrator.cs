@@ -49,8 +49,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                 PageInfo = _utility.GetPartOnePageInfo(vacancy),
                 TrainingTitle = training?.Title,
                 TrainingDurationMonths = training?.Duration ?? 0,
-                MinimumApprenticeshipLength = _feature.IsFeatureEnabled("FoundationApprenticeships") 
-                                              || DateTime.UtcNow >= new DateTime(2025,8,1) ? 8 : 12
+                MinimumApprenticeshipLength = vacancy.StartDate >= new DateTime(2025,8,1) ? 8 : 12
             };
 
             if (vacancy.Status == VacancyStatus.Referred)
