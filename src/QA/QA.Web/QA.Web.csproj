@@ -36,9 +36,32 @@
       <CopyToPublishDirectory>Never</CopyToPublishDirectory>
     </Content>
     <None Update="localhost.pfx" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="wwwroot\IMPORTANT.md" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Shared\Recruit.Vacancies.Client\Recruit.Vacancies.Client.csproj" />
     <ProjectReference Include="..\..\Shared\Recruit.Shared.Web\Recruit.Shared.Web.csproj" />
   </ItemGroup>
+  
+  <Target Name="NpmInstall" Inputs="package.json" Outputs="node_modules/.install-stamp">
+    <Exec Command="npm ci" Condition="'$(RestorePackagesWithLockFile)' == 'true'" />
+    <Exec Command="npm install" Condition="'$(RestorePackagesWithLockFile)' != 'true'" />
+    <Touch Files="node_modules/.install-stamp" AlwaysCreate="true" />
+  </Target>
+
+  <ItemGroup>
+    <JqueryFiles Include="node_modules\jquery\dist\jquery.js;node_modules\jquery\dist\jquery.min.js;node_modules\jquery\dist\jquery.min.map"/>
+    <TinyMceFiles Include="node_modules\tinymce\**\*.*"/>
+    <GovUkFolders Include="node_modules\govuk-frontend\dist\govuk\assets\**\*.*" />
+    <GovUkCssFiles Include="node_modules\govuk-frontend\dist\govuk\govuk-frontend.min.css;node_modules\govuk-frontend\dist\govuk\govuk-frontend.min.css.map" />
+    <GovUkJsFiles Include="node_modules\govuk-frontend\dist\govuk\govuk-frontend.min.js;node_modules\govuk-frontend\dist\govuk\govuk-frontend.min.js.map" />
+  </ItemGroup>
+
+  <Target Name="CopyWWWRootFiles" DependsOnTargets="NpmInstall" BeforeTargets="BeforeBuild">
+    <Copy SourceFiles="@(JqueryFiles)" DestinationFolder=".\wwwroot\js" />
+    <Copy SourceFiles="@(TinyMceFiles)" DestinationFolder=".\wwwroot\lib\tinymce\%(RecursiveDir)" />
+    <Copy SourceFiles="@(GovUkFolders)" DestinationFolder=".\wwwroot\assets\%(RecursiveDir)" />
+    <Copy SourceFiles="@(GovUkCssFiles)" DestinationFolder=".\wwwroot\css" />
+    <Copy SourceFiles="@(GovUkJsFiles)" DestinationFolder=".\wwwroot\js" />
+  </Target>
 </Project>
