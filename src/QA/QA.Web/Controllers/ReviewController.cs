@@ -37,7 +37,7 @@ namespace Esfa.Recruit.Qa.Web.Controllers
         {
             if (ModelState.IsValid == false)
             {
-                if (model.SelectedAutomatedQaResults.Any() || model.SelectedFieldIdentifiers.Any() || model.IsRefer)
+                if (model.IsRefer)
                 {
                     var vm = await _orchestrator.GetReviewViewModelAsync(model, User.GetVacancyUser());
                     return View("Review", vm);    

@@ -259,6 +259,16 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
                 });
                 vacancy.EmployerLocationInformation = m.EmployerLocationInformation;
             }
+            if (review.VacancySnapshot.ThingsToConsider != m.ThingsToConsider)
+            {
+                manualQaFieldEditIndicator.Add(new ManualQaFieldEditIndicator
+                {
+                    FieldIdentifier = nameof(m.ThingsToConsider),
+                    BeforeEdit = review.VacancySnapshot.ThingsToConsider,
+                    AfterEdit = m.ThingsToConsider
+                });
+                vacancy.ThingsToConsider = m.ThingsToConsider;
+            }
 
             return manualQaFieldEditIndicator;
         }

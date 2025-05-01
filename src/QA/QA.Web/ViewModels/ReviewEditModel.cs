@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Esfa.Recruit.Qa.Web.ViewModels
@@ -11,13 +10,13 @@ namespace Esfa.Recruit.Qa.Web.ViewModels
         [FromRoute]
         public Guid ReviewId {get;set;}
 
-        public List<string> SelectedFieldIdentifiers { get; set; } = new List<string>();
-        public List<string> SelectedAutomatedQaResults { get; set; } = new List<string>();
+        public List<string> SelectedFieldIdentifiers { get; set; } = [];
+        public List<string> SelectedAutomatedQaResults { get; set; } = [];
 
         [Required(ErrorMessage = "Please add a comment")]
         public string ReviewerComment { get; set; }
 
-        public bool IsRefer => SelectedFieldIdentifiers.Any() || SelectedAutomatedQaResults.Any();
+        public bool IsRefer => SelectedFieldIdentifiers is { Count: > 0 } || SelectedAutomatedQaResults is { Count: > 0 };
         
         public string ShortDescription { get; set; }
         public string WorkingWeekDescription { get; set; }
@@ -27,5 +26,6 @@ namespace Esfa.Recruit.Qa.Web.ViewModels
         public string AdditionalTrainingDescription { get; set; }
         public string OutcomeDescription { get; set; }
         public string EmployerLocationInformation { get; set; }
+        public string ThingsToConsider { get; set; }
     }
 }

@@ -37,6 +37,8 @@
     </Content>
     <None Update="localhost.pfx" CopyToOutputDirectory="PreserveNewest" />
     <None Include="wwwroot\IMPORTANT.md" />
+    <Content Remove="node_modules\**" />
+    <None Remove="node_modules\**" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Shared\Recruit.Vacancies.Client\Recruit.Vacancies.Client.csproj" />

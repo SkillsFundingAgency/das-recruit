@@ -83,6 +83,9 @@
                     <span class="govuk-caption-xl">@Model.EmployerName</span>
                 </h2>
             </div>
+            <div class="govuk-grid-column-one-third">
+                <govuk-tag-foundation asp-show="@(Model.ApprenticeshipType == ApprenticeshipTypes.Foundation)" class="float-right"/>
+            </div>
         </div>
         <div class="govuk-grid-row">
             <div class="govuk-grid-column-two-thirds">
@@ -237,12 +240,12 @@
         </div>
         <div class="govuk-grid-row">
             <div class="govuk-grid-column-full">
-                <h2 class="govuk-heading-l">Requirements and prospects</h2>
+                <h2 class="govuk-heading-l">Requirements</h2>
             </div>
         </div>
         
         <div class="govuk-grid-row">
-            <div class="govuk-grid-column-one-half">
+            <div class="govuk-grid-column-one-half" asp-hide="@(Model.ApprenticeshipType is ApprenticeshipTypes.Foundation)">
                 <div class="@Model.SkillsClass" id="@FieldIdentifiers.Skills">
                     <h3 class="govuk-heading-s">Desired skills and personal qualities</h3>
                     <p class="govuk-body">@string.Join(", ", Model.Skills)</p>
@@ -251,19 +254,45 @@
                                           asp-items="@Model.FieldIdentifiers"></esfa-review-checkbox>
                 </div>
             </div>
-            <div class="govuk-grid-column-one-half">
+            <div class="govuk-grid-column-one-half" asp-hide="@(Model.ApprenticeshipType is ApprenticeshipTypes.Foundation && string.IsNullOrWhiteSpace(Model.ThingsToConsider))">
                 <div class="@Model.ThingsToConsiderClass" id="@FieldIdentifiers.ThingsToConsider">
                     <h3 class="govuk-heading-s">Things to consider (optional)</h3>
 
-                    <p class="govuk-body">@Model.ThingsToConsider</p>
+                    @* <p class="govuk-body">@Model.ThingsToConsider</p> *@
+                    @* <p class="govuk-body">@Model.ThingsToConsider</p> *@
+                    @* <p class="govuk-body">@Model.ThingsToConsider</p> *@
+                    @* <p class="govuk-body">@Model.ThingsToConsider</p> *@
+                    @* <p class="govuk-body">@Model.ThingsToConsider</p> *@
+                    @* <p class="govuk-body">@Model.ThingsToConsider</p> *@
+                    @* <p class="govuk-body">@Model.ThingsToConsider</p> *@
+                    @* <p class="govuk-body">@Model.ThingsToConsider</p> *@
+                    @* <p class="govuk-body">@Model.ThingsToConsider</p> *@
+                    @* <p class="govuk-body">@Model.ThingsToConsider</p> *@
+                    @* <p class="govuk-body">@Model.ThingsToConsider</p> *@
+                    @* <p class="govuk-body">@Model.ThingsToConsider</p> *@@* <p class="govuk-body">@Model.ThingsToConsider</p> *@
+                    @* <p class="govuk-body">@Model.ThingsToConsider</p> *@
+                    @* <p class="govuk-body">@Model.ThingsToConsider</p> *@
+                    @* <p class="govuk-body">@Model.ThingsToConsider</p> *@
+                    @* <p class="govuk-body">@Model.ThingsToConsider</p> *@
+                    @* <p class="govuk-body">@Model.ThingsToConsider</p> *@
+                    @* <p class="govuk-body">@Model.ThingsToConsider</p> *@
+                    @* <p class="govuk-body">@Model.ThingsToConsider</p> *@
+                    @* <p class="govuk-body">@Model.ThingsToConsider</p> *@
+                    @* <p class="govuk-body">@Model.ThingsToConsider</p> *@
+                    @* <p class="govuk-body">@Model.ThingsToConsider</p> *@
+                    @* <p class="govuk-body">@Model.ThingsToConsider</p> *@
+                    <textarea class="govuk-textarea govuk-js-character-count" asp-for="ThingsToConsider" rows="5" data-val-length-max="250"></textarea>
 
                     <esfa-review-checkbox asp-for="SelectedFieldIdentifiers"
                                           asp-value="@FieldIdentifiers.ThingsToConsider"
                                           asp-items="@Model.FieldIdentifiers"></esfa-review-checkbox>
                 </div>
             </div>
+            <div class="govuk-grid-column-two-thirds" asp-show="@(Model.ApprenticeshipType is ApprenticeshipTypes.Foundation && string.IsNullOrWhiteSpace(Model.ThingsToConsider))">
+                <p class="govuk-body">You do not need any specific qualifications to apply for a foundation apprenticeship.</p>
+            </div>
         </div>
-        <div class="govuk-grid-row">
+        <div class="govuk-grid-row" asp-hide="@(Model.ApprenticeshipType is ApprenticeshipTypes.Foundation)">
             <div class="govuk-grid-column-full">
                 <div class="@Model.QualificationsClass" id="@FieldIdentifiers.Qualifications">
                     <h3 class="govuk-heading-s">Qualifications</h3>
@@ -421,7 +450,7 @@
             <div class="govuk-grid-column-one-third">
                 
                     <div class="@Model.TrainingClass" id="@FieldIdentifiers.Training">
-                        <h3 class="govuk-heading-s">@Model.TrainingType</h3>
+                        <h3 class="govuk-heading-s">Training course</h3>
                         <p class="govuk-body">
                             @Model.TrainingTitle<br />
                             @Model.EducationLevelName
@@ -538,7 +567,7 @@
 
 @section FooterJS
     {
-    <script src="/lib/tinymce-4.9.2/tinymce.min.js"></script>
+    <script src="/lib/tinymce/tinymce.min.js"></script>
     <script nws-csp-add-nonce="true">
         initializeHtmlEditors();
     </script>
