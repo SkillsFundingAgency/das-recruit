@@ -24,6 +24,7 @@ namespace Esfa.Recruit.Shared.Web.ViewModels
         public int NoOfSharedApplications { get; set; }
         public int NoOfAllSharedApplications { get; set; }
         public int NoOfEmployerReviewedApplications { get; set; }
+        public ApprenticeshipTypes ApprenticeshipType { get; set; }
 
         public bool HasVacancyReference => VacancyReference.HasValue;
         public bool HasNoVacancyReference => !HasVacancyReference;

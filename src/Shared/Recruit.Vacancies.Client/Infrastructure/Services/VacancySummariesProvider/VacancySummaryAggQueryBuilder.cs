@@ -275,7 +275,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                     'dateSharedWithEmployer': '$candidateApplicationReview.dateSharedWithEmployer',
                     'hasChosenProviderContactDetails' : 1,
                     'hasSubmittedAdditionalQuestions' : 1,
-                    'isTraineeship' :1
+                    'isTraineeship' :1,
+                    'apprenticeshipType': 1
                 }
             },
             {
@@ -315,7 +316,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                             'then': true,
                             'else': false
                         }
-                    }
+                    },
+                    'apprenticeshipType': 1
                 }
             },
             {
@@ -345,6 +347,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                     'transferInfoReason': 1,
                     'trainingProviderName': 1,
                     'vacancyType': 1,
+                    'apprenticeshipType': 1,
                     'isTraineeship': {
                         '$cond': {
                             'if': {'$eq': [ '$vacancyType', 'Traineeship']},
@@ -434,6 +437,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                         'isTraineeship': '$isTraineeship',
                         'hasChosenProviderContactDetails' : '$hasChosenProviderContactDetails',
                         'hasSubmittedAdditionalQuestions' : '$hasSubmittedAdditionalQuestions'
+                        'apprenticeshipType' : '$apprenticeshipType'
                     },
                     'noOfNewApplications': {
                         '$sum': '$isNew'
