@@ -49,8 +49,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
                 TrainingDurationMonths = training?.Duration ?? 0,
                 Ukprn = vrm.Ukprn,
                 VacancyId = vrm.VacancyId,
-                IsTaskListCompleted = _utility.IsTaskListCompleted(vacancy),
-                MinimumApprenticeshipLength = vacancy.StartDate >= new DateTime(2025,8,1) ? 8 : 12
+                IsTaskListCompleted = _utility.IsTaskListCompleted(vacancy)
             };
 
             if (vacancy.Status == VacancyStatus.Referred)
