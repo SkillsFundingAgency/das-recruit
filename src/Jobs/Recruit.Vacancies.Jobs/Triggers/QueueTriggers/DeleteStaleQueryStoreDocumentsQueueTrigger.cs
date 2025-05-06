@@ -10,7 +10,6 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Employ
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Provider;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Vacancy;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.StorageQueue;
-using Esfa.Recruit.Vacancies.Jobs.Configuration;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
@@ -20,7 +19,6 @@ namespace Esfa.Recruit.Vacancies.Jobs.Triggers.QueueTriggers
     public class DeleteStaleQueryStoreDocumentsQueueTrigger
     {
         private readonly ILogger<DeleteStaleQueryStoreDocumentsQueueTrigger> _logger;
-        private readonly RecruitWebJobsSystemConfiguration _jobsConfig;
         private readonly ITimeProvider _timeProvider;
         private readonly IQueryStoreHouseKeepingService _queryStoreHouseKeepingService;
         private string JobName => GetType().Name;
@@ -28,12 +26,10 @@ namespace Esfa.Recruit.Vacancies.Jobs.Triggers.QueueTriggers
         private const int DefaultStaleByDays = 90;
 
         public DeleteStaleQueryStoreDocumentsQueueTrigger(ILogger<DeleteStaleQueryStoreDocumentsQueueTrigger> logger, 
-            RecruitWebJobsSystemConfiguration jobsConfig,
             ITimeProvider timeProvider,
             IQueryStoreHouseKeepingService queryStoreHouseKeepingService)
         {
             _logger = logger;
-            _jobsConfig = jobsConfig;
             _timeProvider = timeProvider;
             _queryStoreHouseKeepingService = queryStoreHouseKeepingService;
         }
@@ -42,17 +38,12 @@ namespace Esfa.Recruit.Vacancies.Jobs.Triggers.QueueTriggers
         {
             try
             {
-                if (_jobsConfig.DisabledJobs.Contains(JobName))
-                {
-                    _logger.LogDebug($"{JobName} is disabled, skipping ...");
-                    return;
-                }
 
                 var payload = JsonConvert.DeserializeObject<DeleteStaleQueryStoreDocumentsQueueMessage>(message);
 
                 var targetDate = payload?.CreatedByScheduleDate ?? _timeProvider.Today;
 
-                var documentsStaleByDate = targetDate.AddDays((_jobsConfig.QueryStoreDocumentsStaleByDays ?? DefaultStaleByDays) * -1);
+                var documentsStaleByDate = targetDate.AddDays((DefaultStaleByDays) * -1);
                 
                 _logger.LogInformation($"Begining to delete query store stale documents that have not been updated since {documentsStaleByDate.ToShortDateString()}");
 

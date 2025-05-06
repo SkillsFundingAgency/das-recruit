@@ -62,7 +62,7 @@ namespace SFA.DAS.Recruit.Api.Mappers
                 TrainingDescription = request.TrainingDescription,
                 Wage = new Wage
                 {
-                    WageType = (WageType)request.Wage.WageType,
+                    WageType = Enum.Parse<WageType>(request.Wage.WageType.ToString()),
                     WorkingWeekDescription = request.Wage.WorkingWeekDescription,
                     WeeklyHours = request.Wage.WeeklyHours,
                     Duration = request.Wage.Duration,
