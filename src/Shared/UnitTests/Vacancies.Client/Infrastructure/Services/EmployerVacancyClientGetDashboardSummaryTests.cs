@@ -37,6 +37,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
             int rejectedCount,
             string employerAccountId,
             [Frozen] Mock<IVacancySummariesProvider> vacanciesSummaryProvider,
+            [Frozen] Mock<IFeature> feature,
             VacancyClient vacancyClient)
         {
             var vacancyApplicationsDashboard = new List<VacancyApplicationsDashboard>
@@ -73,6 +74,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
                 VacanciesClosingSoonWithNoApplications = closingSoonNoApplications,
                 VacancySharedApplicationsDashboard = vacancySharedApplicationsDashboard
             });
+            feature.Setup(x => x.IsFeatureEnabled(FeatureNames.MongoMigration)).Returns(false);
             
             var actual = await vacancyClient.GetDashboardSummary(employerAccountId);
 
@@ -98,6 +100,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
             string employerAccountId,
             VacancyType vacancyType,
             [Frozen] Mock<IVacancySummariesProvider> vacanciesSummaryProvider,
+            [Frozen] Mock<IFeature> feature,
             VacancyClient vacancyClient)
         {
             vacanciesSummaryProvider.Setup(x => x.GetEmployerOwnedVacancyDashboardByEmployerAccountIdAsync(employerAccountId)).ReturnsAsync(new VacancyDashboard
@@ -106,6 +109,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
                 VacancyStatusDashboard = new List<VacancyStatusDashboard>(),
                 VacancySharedApplicationsDashboard = new List<VacancySharedApplicationsDashboard>()
             });
+            feature.Setup(x => x.IsFeatureEnabled(FeatureNames.MongoMigration)).Returns(false);
             
             var actual = await vacancyClient.GetDashboardSummary(employerAccountId);
             
@@ -121,6 +125,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
             string employerAccountId,
             VacancyType vacancyType,
             [Frozen] Mock<IVacancySummariesProvider> vacanciesSummaryProvider,
+            [Frozen] Mock<IFeature> feature,
             VacancyClient vacancyClient)
         {
             vacanciesSummaryProvider.Setup(x => x.GetEmployerOwnedVacancyDashboardByEmployerAccountIdAsync(employerAccountId)).ReturnsAsync(new VacancyDashboard
@@ -129,6 +134,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
                 VacancyStatusDashboard = new List<VacancyStatusDashboard>(),
                 VacancySharedApplicationsDashboard = new List<VacancySharedApplicationsDashboard>()
             });
+            feature.Setup(x => x.IsFeatureEnabled(FeatureNames.MongoMigration)).Returns(false);
             
             var actual = await vacancyClient.GetDashboardSummary(employerAccountId);
             

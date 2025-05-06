@@ -90,10 +90,10 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
                 Referred = (dashboard.SingleOrDefault(c => c.Status == VacancyStatus.Referred)?.StatusCount ?? 0) + (dashboard.SingleOrDefault(c => c.Status == VacancyStatus.Rejected)?.StatusCount ?? 0),
                 Live = dashboard.Where(c => c.Status == VacancyStatus.Live).Sum(c => c.StatusCount),
                 Submitted = dashboard.SingleOrDefault(c => c.Status == VacancyStatus.Submitted)?.StatusCount ?? 0,
-                NumberOfNewApplications = _isMongoMigrationFeatureEnabled 
+                NumberOfNewApplications = IsMongoMigrationFeatureEnabled 
                     ? dashboardStats.NewApplicationsCount 
                     : dashboardApplications.Where(c => c.Status is VacancyStatus.Live or VacancyStatus.Closed).Sum(x => x.NoOfNewApplications),
-                NumberOfEmployerReviewedApplications = _isMongoMigrationFeatureEnabled
+                NumberOfEmployerReviewedApplications = IsMongoMigrationFeatureEnabled
                     ? dashboardStats.EmployerReviewedApplicationsCount
                     : dashboardApplications.Where(c => c.Status is VacancyStatus.Live or VacancyStatus.Closed).Sum(x => x.NumberOfEmployerReviewedApplications),
                 NumberOfSuccessfulApplications = dashboardApplications.Where(c => c.Status == VacancyStatus.Live && !c.ClosingSoon).Sum(x => x.NoOfSuccessfulApplications)

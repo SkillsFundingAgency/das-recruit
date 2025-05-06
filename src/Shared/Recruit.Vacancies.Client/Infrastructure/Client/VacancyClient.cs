@@ -56,7 +56,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         IFeature feature)
         : IRecruitVacancyClient, IEmployerVacancyClient, IJobsVacancyClient
     {
-        private readonly bool _isMongoMigrationFeatureEnabled = feature.IsFeatureEnabled(FeatureNames.MongoMigration);
+        private bool IsMongoMigrationFeatureEnabled => feature.IsFeatureEnabled(FeatureNames.MongoMigration);
 
         public Task UpdateDraftVacancyAsync(Vacancy vacancy, VacancyUser user)
         {
@@ -179,13 +179,13 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
             {
                 Closed = dashboard.FirstOrDefault(c=>c.Status == VacancyStatus.Closed)?.StatusCount ?? 0,
                 Draft = dashboard.SingleOrDefault(c=>c.Status == VacancyStatus.Draft)?.StatusCount ?? 0,
-                Review = _isMongoMigrationFeatureEnabled 
+                Review = IsMongoMigrationFeatureEnabled 
                     ? dashboardStats.EmployerReviewedApplicationsCount 
                     : dashboard.SingleOrDefault(c=>c.Status == VacancyStatus.Review)?.StatusCount ?? 0,
                 Referred = (dashboard.SingleOrDefault(c=>c.Status == VacancyStatus.Referred)?.StatusCount ?? 0) + (dashboard.SingleOrDefault(c=>c.Status == VacancyStatus.Rejected)?.StatusCount ?? 0),
                 Live = dashboard.Where(c=>c.Status == VacancyStatus.Live).Sum(c=>c.StatusCount),
                 Submitted = dashboard.SingleOrDefault(c=>c.Status == VacancyStatus.Submitted)?.StatusCount ?? 0,
-                NumberOfNewApplications = _isMongoMigrationFeatureEnabled 
+                NumberOfNewApplications = IsMongoMigrationFeatureEnabled 
                     ? dashboardStats.NewApplicationsCount 
                     : dashboardApplications.Where(c=>c.Status == VacancyStatus.Live || c.Status == VacancyStatus.Closed).Sum(x=>x.NoOfNewApplications),
                 NumberOfSuccessfulApplications = dashboardApplications.Where(c=>c.Status == VacancyStatus.Live).Sum(x=>x.NoOfSuccessfulApplications) 

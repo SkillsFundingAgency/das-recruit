@@ -38,6 +38,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
             int closingSoonNoApplications,
             int rejectedCount,
             long ukprn,
+            [Frozen] Mock<IFeature> feature, 
             [Frozen] Mock<IVacancySummariesProvider> vacanciesSummaryProvider,
             VacancyClient vacancyClient)
         {
@@ -62,8 +63,8 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
                 new VacancyStatusDashboard { Status = VacancyStatus.Live,ClosingSoon = false, StatusCount = liveCount},
                 new VacancyStatusDashboard { Status = VacancyStatus.Live,ClosingSoon = true, StatusCount = closingSoon}
             };
-            
-            
+
+            feature.Setup(x => x.IsFeatureEnabled(FeatureNames.MongoMigration)).Returns(false);
             vacanciesSummaryProvider.Setup(x => x.GetProviderOwnedVacancyDashboardByUkprnAsync(ukprn)).ReturnsAsync(new VacancyDashboard
             {
                 VacancyApplicationsDashboard = vacancyApplicationsDashboard,
@@ -95,8 +96,10 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
         public async Task Then_Model_Values_Set_For_No_Vacancies(
             long ukprn,
             [Frozen] Mock<IVacancySummariesProvider> vacanciesSummaryProvider,
+            [Frozen] Mock<IFeature> feature,
             VacancyClient vacancyClient)
         {
+            feature.Setup(x => x.IsFeatureEnabled(FeatureNames.MongoMigration)).Returns(false);
             vacanciesSummaryProvider.Setup(x => x.GetProviderOwnedVacancyDashboardByUkprnAsync(ukprn)).ReturnsAsync(new VacancyDashboard
             {
                 VacancyApplicationsDashboard = new List<VacancyApplicationsDashboard>(),
@@ -116,8 +119,10 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
         public async Task Then_Model_Values_Set_For_One_Vacancies(
             long ukprn,
             [Frozen] Mock<IVacancySummariesProvider> vacanciesSummaryProvider,
+            [Frozen] Mock<IFeature> feature,
             VacancyClient vacancyClient)
         {
+            feature.Setup(x => x.IsFeatureEnabled(FeatureNames.MongoMigration)).Returns(false);
             vacanciesSummaryProvider.Setup(x => x.GetProviderOwnedVacancyDashboardByUkprnAsync(ukprn)).ReturnsAsync(new VacancyDashboard
             {
                 VacancyApplicationsDashboard = new List<VacancyApplicationsDashboard>(),
@@ -219,7 +224,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
             actual.Referred.Should().Be(referredCount + rejectedCount);
             actual.Live.Should().Be(liveCount + closingSoon);
             actual.NumberOfNewApplications.Should().Be(numberOfNewApplications);
-            actual.NumberOfEmployerReviewedApplications.Should().Be(numberOfEmployerReviewedApplications);
+            actual.NumberOfEmployerReviewedApplications.Should().Be(reviewCount);
             actual.NumberOfUnsuccessfulApplications.Should().Be(numberOfUnsuccessfulApplications * 2 + closedUnsuccessfulApplications * 2);
             actual.NumberOfSuccessfulApplications.Should().Be(numberOfSuccessfulApplications * 2 + closedSuccessfulApplications * 2);
             actual.NumberClosingSoon.Should().Be(closingSoon);
