@@ -158,7 +158,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                 }
             };
             
-            var aggPipeline = VacancySummaryAggQueryBuilder.GetAggregateQueryPipeline(match, page,secondaryMath);
+            var aggPipeline = VacancySummaryAggQueryBuilder.GetAggregateQueryPipeline(match, page,secondaryMath,_isMongoMigrationFeatureEnabled);
 
             var pipelineResult = await RunAggPipelineQuery(aggPipeline);
 
@@ -173,7 +173,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
 
             var dashboardStats = await _trainingProviderService.GetProviderDashboardApplicationReviewStats(ukprn, vacancyReferences);
 
-            var applicationReviewStatsLookup = dashboardStats
+            var applicationReviewStatsLookup = dashboardStats.ApplicationReviewStatsList
                 .ToDictionary(x => x.VacancyReference);
 
             foreach (var vacancySummary in pipelineResult)
@@ -231,7 +231,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                 }
             };
             
-            var aggPipeline = VacancySummaryAggQueryBuilder.GetAggregateQueryPipeline(match, page,secondaryMath, employerReviewMatch);
+            var aggPipeline = VacancySummaryAggQueryBuilder.GetAggregateQueryPipeline(match, page,secondaryMath,_isMongoMigrationFeatureEnabled, employerReviewMatch);
 
             var pipelineResult = await RunAggPipelineQuery(aggPipeline);
 

@@ -59,13 +59,13 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider
             return result;
         }
 
-        public async Task<List<ApplicationReviewStats>> GetProviderDashboardApplicationReviewStats(long ukprn, List<long> vacancyReferences)
+        public async Task<GetApplicationReviewStatsResponse> GetProviderDashboardApplicationReviewStats(long ukprn, List<long> vacancyReferences)
         {
             logger.LogTrace("Getting Provider Application Review Stats from Outer Api");
 
             var retryPolicy = PollyRetryPolicy.GetPolicy();
 
-            return await retryPolicy.Execute(_ => outerApiClient.Post<List<ApplicationReviewStats>>(
+            return await retryPolicy.Execute(_ => outerApiClient.Post<GetApplicationReviewStatsResponse>(
                     new GetProviderApplicationReviewsCountApiRequest(ukprn,
                         vacancyReferences)),
                 new Dictionary<string, object>

@@ -22,7 +22,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider
         /// <param name="ukprn"></param>
         /// <param name="vacancyReferences"></param>
         /// <returns></returns>
-        Task<List<ApplicationReviewStats>> GetProviderDashboardApplicationReviewStats(long ukprn,
+        Task<GetApplicationReviewStatsResponse> GetProviderDashboardApplicationReviewStats(long ukprn,
             List<long> vacancyReferences);
         
         /// <summary>
