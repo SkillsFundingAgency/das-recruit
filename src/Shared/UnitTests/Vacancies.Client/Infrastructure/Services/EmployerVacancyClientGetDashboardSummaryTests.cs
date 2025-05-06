@@ -67,7 +67,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
                 new VacancyStatusDashboard { Status = VacancyStatus.Live,ClosingSoon = false, StatusCount = liveCount},
                 new VacancyStatusDashboard { Status = VacancyStatus.Live,ClosingSoon = true, StatusCount = closingSoon},
             };
-            vacanciesSummaryProvider.Setup(x => x.GetEmployerOwnedVacancyDashboardByEmployerAccountIdAsync(employerAccountId)).ReturnsAsync(new VacancyDashboard
+            vacanciesSummaryProvider.Setup(x => x.GetEmployerOwnedVacancyDashboardByEmployerAccountIdAsync(employerAccountId, false)).ReturnsAsync(new VacancyDashboard
             {
                 VacancyApplicationsDashboard = vacancyApplicationsDashboard,
                 VacancyStatusDashboard = vacancyDashboards,
@@ -103,7 +103,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
             [Frozen] Mock<IFeature> feature,
             VacancyClient vacancyClient)
         {
-            vacanciesSummaryProvider.Setup(x => x.GetEmployerOwnedVacancyDashboardByEmployerAccountIdAsync(employerAccountId)).ReturnsAsync(new VacancyDashboard
+            vacanciesSummaryProvider.Setup(x => x.GetEmployerOwnedVacancyDashboardByEmployerAccountIdAsync(employerAccountId, false)).ReturnsAsync(new VacancyDashboard
             {
                 VacancyApplicationsDashboard = new List<VacancyApplicationsDashboard>(),
                 VacancyStatusDashboard = new List<VacancyStatusDashboard>(),
@@ -128,7 +128,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
             [Frozen] Mock<IFeature> feature,
             VacancyClient vacancyClient)
         {
-            vacanciesSummaryProvider.Setup(x => x.GetEmployerOwnedVacancyDashboardByEmployerAccountIdAsync(employerAccountId)).ReturnsAsync(new VacancyDashboard
+            vacanciesSummaryProvider.Setup(x => x.GetEmployerOwnedVacancyDashboardByEmployerAccountIdAsync(employerAccountId, false)).ReturnsAsync(new VacancyDashboard
             {
                 VacancyApplicationsDashboard = new List<VacancyApplicationsDashboard>(),
                 VacancyStatusDashboard = new List<VacancyStatusDashboard>(),
@@ -198,7 +198,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
                 new() { Status = VacancyStatus.Live,ClosingSoon = false, StatusCount = liveCount},
                 new() { Status = VacancyStatus.Live,ClosingSoon = true, StatusCount = closingSoon},
             };
-            vacanciesSummaryProvider.Setup(x => x.GetEmployerOwnedVacancyDashboardByEmployerAccountIdAsync(employerAccountId)).ReturnsAsync(new VacancyDashboard
+            vacanciesSummaryProvider.Setup(x => x.GetEmployerOwnedVacancyDashboardByEmployerAccountIdAsync(employerAccountId, true)).ReturnsAsync(new VacancyDashboard
             {
                 VacancyApplicationsDashboard = vacancyApplicationsDashboard,
                 VacancyStatusDashboard = vacancyDashboards,

@@ -63,7 +63,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 
         public async Task<ProviderDashboardSummary> GetDashboardSummary(long ukprn)
         {
-            var dashboardTask = vacancySummariesQuery.GetProviderOwnedVacancyDashboardByUkprnAsync(ukprn);
+            var dashboardTask = vacancySummariesQuery.GetProviderOwnedVacancyDashboardByUkprnAsync(ukprn, IsMongoMigrationFeatureEnabled);
             var transferredVacanciesTask = vacancySummariesQuery.GetTransferredFromProviderAsync(ukprn);
             var dashboardStatsTask = trainingProviderService.GetProviderDashboardStats(ukprn);
 

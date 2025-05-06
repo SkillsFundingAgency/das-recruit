@@ -39,7 +39,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
             _isMongoMigrationFeatureEnabled = feature.IsFeatureEnabled(FeatureNames.MongoMigration);
         }
        
-        public async Task<VacancyDashboard> GetProviderOwnedVacancyDashboardByUkprnAsync(long ukprn)
+        public async Task<VacancyDashboard> GetProviderOwnedVacancyDashboardByUkprnAsync(long ukprn,bool ignoreGetApplicationReview)
         {
             var bsonArray = new BsonArray
             {
@@ -66,7 +66,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
             var applicationAggPipeline = builder.GetAggregateQueryPipelineDashboardApplications(applicationsMatch);
             var closingSoonAggPipeline = builder.GetAggregateQueryPipelineVacanciesClosingSoonDashboard(applicationsMatch);
             var dashboardValuesTask =  RunDashboardAggPipelineQuery(aggPipelines);
-            var applicationDashboardValuesTask = RunApplicationsDashboardAggPipelineQuery(applicationAggPipeline);
+            var applicationDashboardValuesTask =  ignoreGetApplicationReview ? Task.FromResult(new List<VacancyApplicationsDashboard>()) : RunApplicationsDashboardAggPipelineQuery(applicationAggPipeline);
             var closingSoonDashboardValuesTask = RunApplicationsDashboardAggPipelineQuery(closingSoonAggPipeline);
 
             await Task.WhenAll(dashboardValuesTask, applicationDashboardValuesTask, closingSoonDashboardValuesTask);
@@ -78,7 +78,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                 VacanciesClosingSoonWithNoApplications = closingSoonDashboardValuesTask.Result.FirstOrDefault(c => c.ClosingSoon)?.StatusCount ?? 0
             };
         }
-        public async Task<VacancyDashboard> GetEmployerOwnedVacancyDashboardByEmployerAccountIdAsync(string employerAccountId)
+        public async Task<VacancyDashboard> GetEmployerOwnedVacancyDashboardByEmployerAccountIdAsync(string employerAccountId, bool ignoreGetApplicationReview)
         {
             var bsonArray = new BsonArray
             {
@@ -121,16 +121,16 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
             var closingSoonAggPipeline = builder.GetAggregateQueryPipelineVacanciesClosingSoonDashboard(applicationsMatch, employerReviewMatch);
             
             var dashboardValuesTask = RunDashboardAggPipelineQuery(aggPipelines);
-            var applicationDashboardValuesTask = RunApplicationsDashboardAggPipelineQuery(applicationAggPipeline);
-            var sharedApplicationDashboardValuesTask = RunSharedApplicationsDashboardAggPipelineQuery(sharedApplicationAggPipeline);
+            var applicationDashboardValuesTask = ignoreGetApplicationReview ? Task.FromResult(new List<VacancyApplicationsDashboard>()) : RunApplicationsDashboardAggPipelineQuery(applicationAggPipeline);
+            var sharedApplicationDashboardValuesTask = ignoreGetApplicationReview ? Task.FromResult(new List<VacancySharedApplicationsDashboard>()) : RunSharedApplicationsDashboardAggPipelineQuery(sharedApplicationAggPipeline);
             var closingSoonDashboardValuesTask = RunApplicationsDashboardAggPipelineQuery(closingSoonAggPipeline);
             
             await Task.WhenAll(dashboardValuesTask, applicationDashboardValuesTask, sharedApplicationDashboardValuesTask, closingSoonDashboardValuesTask);
             return new VacancyDashboard
             {
                 VacancyStatusDashboard = dashboardValuesTask.Result,
-                VacancyApplicationsDashboard = applicationDashboardValuesTask.Result,
-                VacancySharedApplicationsDashboard = sharedApplicationDashboardValuesTask.Result,
+                VacancyApplicationsDashboard =ignoreGetApplicationReview ? [] : applicationDashboardValuesTask.Result,
+                VacancySharedApplicationsDashboard = ignoreGetApplicationReview ? [] : sharedApplicationDashboardValuesTask.Result,
                 VacanciesClosingSoonWithNoApplications = closingSoonDashboardValuesTask.Result.FirstOrDefault()?.StatusCount ?? 0
             };
         }

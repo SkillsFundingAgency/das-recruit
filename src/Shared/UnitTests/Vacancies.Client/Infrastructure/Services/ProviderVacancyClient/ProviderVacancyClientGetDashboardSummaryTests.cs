@@ -65,7 +65,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
             };
 
             feature.Setup(x => x.IsFeatureEnabled(FeatureNames.MongoMigration)).Returns(false);
-            vacanciesSummaryProvider.Setup(x => x.GetProviderOwnedVacancyDashboardByUkprnAsync(ukprn)).ReturnsAsync(new VacancyDashboard
+            vacanciesSummaryProvider.Setup(x => x.GetProviderOwnedVacancyDashboardByUkprnAsync(ukprn, false)).ReturnsAsync(new VacancyDashboard
             {
                 VacancyApplicationsDashboard = vacancyApplicationsDashboard,
                 VacancyStatusDashboard = vacancyDashboards,
@@ -100,7 +100,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
             VacancyClient vacancyClient)
         {
             feature.Setup(x => x.IsFeatureEnabled(FeatureNames.MongoMigration)).Returns(false);
-            vacanciesSummaryProvider.Setup(x => x.GetProviderOwnedVacancyDashboardByUkprnAsync(ukprn)).ReturnsAsync(new VacancyDashboard
+            vacanciesSummaryProvider.Setup(x => x.GetProviderOwnedVacancyDashboardByUkprnAsync(ukprn, false)).ReturnsAsync(new VacancyDashboard
             {
                 VacancyApplicationsDashboard = new List<VacancyApplicationsDashboard>(),
                 VacancyStatusDashboard = new List<VacancyStatusDashboard>()
@@ -123,7 +123,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
             VacancyClient vacancyClient)
         {
             feature.Setup(x => x.IsFeatureEnabled(FeatureNames.MongoMigration)).Returns(false);
-            vacanciesSummaryProvider.Setup(x => x.GetProviderOwnedVacancyDashboardByUkprnAsync(ukprn)).ReturnsAsync(new VacancyDashboard
+            vacanciesSummaryProvider.Setup(x => x.GetProviderOwnedVacancyDashboardByUkprnAsync(ukprn, false)).ReturnsAsync(new VacancyDashboard
             {
                 VacancyApplicationsDashboard = new List<VacancyApplicationsDashboard>(),
                 VacancyStatusDashboard = new List<VacancyStatusDashboard>()
@@ -206,7 +206,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
             };
 
 
-            vacanciesSummaryProvider.Setup(x => x.GetProviderOwnedVacancyDashboardByUkprnAsync(ukprn)).ReturnsAsync(new VacancyDashboard
+            vacanciesSummaryProvider.Setup(x => x.GetProviderOwnedVacancyDashboardByUkprnAsync(ukprn, true)).ReturnsAsync(new VacancyDashboard
             {
                 VacancyApplicationsDashboard = vacancyApplicationsDashboard,
                 VacancyStatusDashboard = vacancyDashboards,

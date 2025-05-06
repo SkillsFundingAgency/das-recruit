@@ -168,7 +168,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         
         public async Task<EmployerDashboardSummary> GetDashboardSummary(string employerAccountId)
         {
-            var dashboardValue = await  vacancySummariesQuery.GetEmployerOwnedVacancyDashboardByEmployerAccountIdAsync(employerAccountId);
+            var dashboardValue = await  vacancySummariesQuery.GetEmployerOwnedVacancyDashboardByEmployerAccountIdAsync(employerAccountId, IsMongoMigrationFeatureEnabled);
             var dashboardStats = await employerAccountProvider.GetEmployerDashboardStats(employerAccountId);
             
             var dashboard = dashboardValue.VacancyStatusDashboard;
