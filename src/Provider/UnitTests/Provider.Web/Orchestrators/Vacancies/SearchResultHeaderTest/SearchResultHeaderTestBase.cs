@@ -67,18 +67,6 @@ namespace Esfa.Recruit.UnitTests.Provider.Web.Orchestrators.Vacancies.SearchResu
                 Ukprn = 12345678,
                 UserId = userId.ToString()
             };
-            UserDetails = new User
-            {
-                Email = User.Email,
-                Name = User.Name,
-                Ukprn = User.Ukprn,
-                Id = userId
-            };
-
-            RecruitVacancyClientMock = new Mock<IRecruitVacancyClient>();
-            RecruitVacancyClientMock
-                .Setup(x => x.GetUsersDetailsAsync(User.UserId))
-                .ReturnsAsync(UserDetails);
 
             ProviderAlertsViewModelFactoryMock = new Mock<IProviderAlertsViewModelFactory>();
             ProviderRelationshipsServiceMock = new Mock<IProviderRelationshipsService>();
