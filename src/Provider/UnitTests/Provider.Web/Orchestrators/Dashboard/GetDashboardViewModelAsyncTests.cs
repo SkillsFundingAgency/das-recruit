@@ -27,9 +27,8 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Dashboard
         private Mock<IProviderRelationshipsService> _permissionServiceMock;
         private Mock<IRecruitVacancyClient> _clientMock;
 
-        [Theory]
-        [InlineData(VacancyType.Apprenticeship)]
-        public async Task WhenHasVacancies_ShouldReturnViewModelAsync(VacancyType vacancyType)
+        [Fact]
+        public async Task WhenHasVacancies_ShouldReturnViewModelAsync()
         {
             var fixture = new Fixture();
             var dashboardProjection = fixture.Create<ProviderDashboardSummary>();
@@ -43,9 +42,8 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Dashboard
             actualDashboard.Ukprn.Should().Be(Ukprn);
         }
 
-        [Theory]
-        [InlineData(VacancyType.Apprenticeship)]
-        public async Task WhenHasNoVacancies_ShouldReturnViewModelAsync(VacancyType vacancyType)
+        [Fact]
+        public async Task WhenHasNoVacancies_ShouldReturnViewModelAsync()
         {
             var orch = GetSut(new ProviderDashboardSummary());
 
@@ -58,9 +56,8 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Dashboard
             actualDashboard.Ukprn.Should().Be(Ukprn);
         }
 
-        [Theory]
-        [InlineData(VacancyType.Apprenticeship)]
-        public async Task Then_Checks_For_CorrectPermission_BasedOn_Vacancy_Type(VacancyType vacancyType)
+        [Fact]
+        public async Task Then_Checks_For_CorrectPermission_BasedOn_Vacancy_Type()
         {
             var orch = GetSut(new ProviderDashboardSummary());
 

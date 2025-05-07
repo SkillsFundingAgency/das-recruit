@@ -155,8 +155,6 @@ namespace Esfa.Recruit.Provider.Web.Mappings
                 vm.WageText = vacancy.StartDate.HasValue ? vacancy.Wage.ToText(vacancy.StartDate) : null;
                 vm.WorkingWeekDescription = vacancy.Wage.WorkingWeekDescription;
             }
-
-            vm.VacancyType = vacancy.VacancyType;
         }
     }
 }

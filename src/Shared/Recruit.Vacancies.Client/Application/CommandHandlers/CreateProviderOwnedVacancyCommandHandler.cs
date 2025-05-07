@@ -54,7 +54,6 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
                 LastUpdatedByUser = message.User,
                 IsDeleted = false,
                 Title = message.Title,
-                VacancyType = VacancyType.Apprenticeship,
                 ApplicationMethod = null
             };
 

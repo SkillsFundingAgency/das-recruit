@@ -54,7 +54,6 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.C
                         && c.LastUpdatedByUser.Equals(command.User)
                         && !c.IsDeleted
                         && c.Title.Equals(command.Title)
-                        && c.VacancyType.Equals(VacancyType.Apprenticeship)
                         && c.ApplicationMethod == null
                         && c.AccountLegalEntityPublicHashedId.Equals(command.AccountLegalEntityPublicHashedId)
                         && c.LegalEntityName.Equals(command.LegalEntityName)

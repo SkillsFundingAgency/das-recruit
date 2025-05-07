@@ -111,12 +111,6 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part2
                 return this;
             }
 
-            public VacancyDescriptionOrchestratorTestsFixture WithVacancyType(VacancyType vacancyType)
-            {
-                Vacancy.VacancyType = vacancyType;
-                return this;
-            }
-
             public void Setup()
             {
                 MockRecruitVacancyClient.Setup(x => x.GetVacancyAsync(Vacancy.Id)).ReturnsAsync(Vacancy);
