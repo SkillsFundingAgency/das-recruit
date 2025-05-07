@@ -10,7 +10,6 @@ using Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview;
 using Esfa.Recruit.Shared.Web.Orchestrators;
 using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Commands;
-using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent;
@@ -37,7 +36,6 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
         ILegalEntityAgreementService legalEntityAgreementService,
         ITrainingProviderAgreementService trainingProviderAgreementService,
         IMessaging messaging,
-        ServiceParameters serviceParameters,
         ILocationsService locationsService,
         IFeature feature)
         : EntityValidatingOrchestrator<Vacancy, VacancyPreviewViewModel>(logger)
@@ -132,7 +130,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
 
             if (response.HasLegalEntityAgreement && response.HasProviderAgreement)
             {
-                if (hasProviderReviewPermission && serviceParameters.VacancyType.GetValueOrDefault() == VacancyType.Apprenticeship)
+                if (hasProviderReviewPermission)
                 {
                     var command = new ReviewVacancyCommand(vacancy.Id, user, OwnerType.Provider);
                     await messaging.SendCommandAsync(command);

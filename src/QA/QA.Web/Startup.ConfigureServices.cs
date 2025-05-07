@@ -119,8 +119,6 @@ namespace Esfa.Recruit.Qa.Web
             services.AddTransient<ReviewFieldIndicatorMapper>();
 
             services.AddScoped<IRuleMessageTemplateRunner, RuleMessageTemplateRunner>();
-
-            services.AddSingleton(new ServiceParameters());
             
             services.Configure<RazorViewEngineOptions>(o =>
             {

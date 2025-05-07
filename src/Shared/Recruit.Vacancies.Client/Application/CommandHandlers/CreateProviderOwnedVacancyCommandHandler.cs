@@ -18,20 +18,17 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
         private readonly IVacancyRepository _repository;
         private readonly IMessaging _messaging;
         private readonly ITimeProvider _timeProvider;
-        private readonly ServiceParameters _serviceParameters;
 
         public CreateProviderOwnedVacancyCommandHandler(
             ILogger<CreateProviderOwnedVacancyCommandHandler> logger,
             IVacancyRepository repository, 
             IMessaging messaging, 
-            ITimeProvider timeProvider,
-            ServiceParameters serviceParameters)
+            ITimeProvider timeProvider)
         {
             _logger = logger;
             _repository = repository;
             _messaging = messaging;
             _timeProvider = timeProvider;
-            _serviceParameters = serviceParameters;
         }
 
         public async Task<Unit> Handle(CreateProviderOwnedVacancyCommand message, CancellationToken cancellationToken)
@@ -57,7 +54,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
                 LastUpdatedByUser = message.User,
                 IsDeleted = false,
                 Title = message.Title,
-                VacancyType = _serviceParameters.VacancyType,
+                VacancyType = VacancyType.Apprenticeship,
                 ApplicationMethod = null
             };
 

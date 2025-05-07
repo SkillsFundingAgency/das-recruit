@@ -28,14 +28,12 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.C
             [Frozen] Mock<IVacancyRepository> vacancyRepository)
         {
             //Arrange
-            var serviceParameters = new ServiceParameters();
             timeProvider.Setup(x => x.Now).Returns(createdDate);
             var handler = new CreateProviderOwnedVacancyCommandHandler(
                 Mock.Of<ILogger<CreateProviderOwnedVacancyCommandHandler>>(), 
                 vacancyRepository.Object, 
                 messaging.Object, 
-                timeProvider.Object, 
-                serviceParameters);
+                timeProvider.Object);
             
             //Act
             await handler.Handle(command, CancellationToken.None);

@@ -60,14 +60,13 @@ namespace Esfa.Recruit.UnitTests.Provider.Web.Orchestrators
 
         private VacanciesSearchSuggestionsOrchestrator GetSut(IEnumerable<VacancySummary> vacancies, VacancyType vacancyType, string searchTerm)
         {
-            var serviceParameters = new ServiceParameters();
             var dashboard = new ProviderDashboard()
             {
                 Vacancies = vacancies
             };
             
             _mockClient.Setup(c => c.GetDashboardAsync(Ukprn, 1, null,searchTerm)).ReturnsAsync(dashboard);
-            return new VacanciesSearchSuggestionsOrchestrator(_mockClient.Object, serviceParameters);
+            return new VacanciesSearchSuggestionsOrchestrator(_mockClient.Object);
         }
 
         private IEnumerable<VacancySummary> GenerateVacancySummaries(int count, string legalEntityName, string term)
