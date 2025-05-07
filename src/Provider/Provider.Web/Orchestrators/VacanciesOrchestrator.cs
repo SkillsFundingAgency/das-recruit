@@ -42,7 +42,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
         {
             var filteringOption = SanitizeFilter(filter);
             var getDashboardTask = _providerVacancyClient.GetDashboardAsync(user.Ukprn.Value, page, filteringOption, searchTerm);
-            var getUserDetailsTask = _recruitVacancyClient.GetUsersDetailsAsync(user.UserId);
+            var getUserDetailsTask = _recruitVacancyClient.GetUsersDetailsByDfEUserId(user.DfEUserId) ?? _recruitVacancyClient.GetUsersDetailsAsync(user.UserId);
             var providerTask = _providerRelationshipsService.CheckProviderHasPermissions(user.Ukprn.Value, OperationType.RecruitmentRequiresReview);
             var providerVacancyCountTask = _providerVacancyClient.GetVacancyCount(user.Ukprn.Value, filteringOption, searchTerm);
 
