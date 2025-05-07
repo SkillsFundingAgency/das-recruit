@@ -36,7 +36,6 @@ namespace Esfa.Recruit.Qa.Web
         private readonly AuthorizationConfiguration _authorizationConfig;
         private readonly ExternalLinksConfiguration _externalLinks;
         private readonly DfEOidcConfiguration _dfEOidcConfig;
-        private readonly bool _isDfESignInAllowed = false;
         private readonly ILoggerFactory _loggerFactory;
         private readonly ILogger<Startup> _logger;
 
@@ -69,7 +68,6 @@ namespace Esfa.Recruit.Qa.Web
             _authorizationConfig = _configuration.GetSection("Authorization").Get<AuthorizationConfiguration>();
             _externalLinks = _configuration.GetSection("ExternalLinks").Get<ExternalLinksConfiguration>();
             _dfEOidcConfig = _configuration.GetSection("DfEOidcConfiguration").Get<DfEOidcConfiguration>(); // read the configuration from SFA.DAS.Provider.DfeSignIn
-            _isDfESignInAllowed = _configuration.GetValue<bool>("UseDfESignIn"); // read the UseDfESignIn property from SFA.DAS.Recruit.QA configuration.
             _loggerFactory = loggerFactory;
             _logger = logger;
         }
@@ -99,7 +97,7 @@ namespace Esfa.Recruit.Qa.Web
                 }
             );
 
-            services.AddAuthenticationService(_authenticationConfig, _configuration);
+            services.AddAuthenticationService(_configuration);
             services.AddAuthorizationService(_legacyAuthorizationConfig, _authorizationConfig);
 
             services.AddRecruitStorageClient(_configuration);
