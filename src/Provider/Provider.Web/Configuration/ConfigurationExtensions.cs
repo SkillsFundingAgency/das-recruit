@@ -21,8 +21,6 @@ namespace Esfa.Recruit.Provider.Web.Configuration
 {
     public static class ConfigurationExtensions
     {
-        private const int SessionTimeoutMinutes = 30;
-
         public static void AddAuthorizationService(this IServiceCollection services)
         {
             var ukPrnClaimName = ProviderRecruitClaims.DfEUkprnClaimsTypeIdentifier;
