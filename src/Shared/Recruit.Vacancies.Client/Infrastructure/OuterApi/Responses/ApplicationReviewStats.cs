@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Responses
 {
@@ -15,6 +16,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Responses
 
     public record GetApplicationReviewStatsResponse
     {
-        public  List<ApplicationReviewStats> ApplicationReviewStatsList { get; set; }
+        [JsonProperty("applicationReviewStatsList")]
+        public List<ApplicationReviewStats> ApplicationReviewStatsList { get; set; }
     }
 }

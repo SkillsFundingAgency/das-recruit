@@ -158,7 +158,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                 }
             };
             
-            var aggPipeline = VacancySummaryAggQueryBuilder.GetAggregateQueryPipeline(match, page,secondaryMath,_isMongoMigrationFeatureEnabled);
+            var aggPipeline = VacancySummaryAggQueryBuilder.GetAggregateQueryPipeline(match, page,secondaryMath, _isMongoMigrationFeatureEnabled);
 
             var pipelineResult = await RunAggPipelineQuery(aggPipeline);
 
