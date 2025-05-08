@@ -25,6 +25,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
         protected readonly TestProfanityListProvider MockProfanityListProvider;
         protected readonly Mock<IProviderRelationshipsService> MockProviderRelationshipsService;
         protected ITimeProvider TimeProvider;
+        protected readonly Mock<IFeature> Feature;
 
         protected VacancyValidationTestsBase()
         {
@@ -39,6 +40,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
             MockProfanityListProvider = new TestProfanityListProvider();
             MockProviderRelationshipsService = new Mock<IProviderRelationshipsService>();
             TimeProvider = new CurrentUtcTimeProvider();
+            Feature = new Mock<IFeature>();
         }
 
         protected IEntityValidator<Vacancy, VacancyRuleSet> Validator
