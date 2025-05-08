@@ -129,6 +129,7 @@
                     <tr class="govuk-table__row">
                         <td class="govuk-table__cell" data-label="Vacancy title">
                             <div>@vacancy.Title</div>
+                            <govuk-tag-foundation asp-show="@(vacancy.ApprenticeshipType == ApprenticeshipTypes.Foundation)" class="govuk-!-margin-top-2 govuk-!-margin-bottom-1 app-tag"/>
                         </td>
                         <td class="govuk-table__cell" data-label="Employer">
                             <span>@vacancy.EmployerName</span>

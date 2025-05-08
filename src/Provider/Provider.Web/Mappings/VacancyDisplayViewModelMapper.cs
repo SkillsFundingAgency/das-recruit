@@ -13,6 +13,7 @@ using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Humanizer;
 using Microsoft.Extensions.Options;
+using FeatureNames = Esfa.Recruit.Provider.Web.Configuration.FeatureNames;
 
 namespace Esfa.Recruit.Provider.Web.Mappings
 {
@@ -124,6 +125,7 @@ namespace Esfa.Recruit.Provider.Web.Mappings
             vm.AdditionalQuestion1 = vacancy.AdditionalQuestion1;
             vm.AdditionalQuestion2 = vacancy.AdditionalQuestion2;
             vm.HasSubmittedAdditionalQuestions = vacancy.HasSubmittedAdditionalQuestions;
+            vm.ApprenticeshipType = vacancy.ApprenticeshipType ?? ApprenticeshipTypes.Standard;
 
             if (vacancy.EmployerLocation != null)
             {
@@ -156,8 +158,6 @@ namespace Esfa.Recruit.Provider.Web.Mappings
                 vm.WageText = vacancy.StartDate.HasValue ? vacancy.Wage.ToText(vacancy.StartDate) : null;
                 vm.WorkingWeekDescription = vacancy.Wage.WorkingWeekDescription;
             }
-
-            vm.VacancyType = vacancy.VacancyType;
         }
     }
 }

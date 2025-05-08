@@ -1,4 +1,5 @@
 ﻿using Esfa.Recruit.Shared.Web.ViewModels;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections;
 
 namespace Esfa.Recruit.Shared.Web.Mappers
@@ -28,7 +29,8 @@ namespace Esfa.Recruit.Shared.Web.Mappers
                 TrainingTitle = vacancySummary.TrainingTitle,
                 TrainingType = vacancySummary.TrainingType,
                 IsTransferred = vacancySummary.TransferInfoTransferredDate.HasValue,
-                IsTaskListCompleted = vacancySummary.IsTaskListCompleted
+                IsTaskListCompleted = vacancySummary.IsTaskListCompleted,
+                ApprenticeshipType = vacancySummary.ApprenticeshipType ?? ApprenticeshipTypes.Standard,
             };
 
             return summaryViewModel;

@@ -1,5 +1,4 @@
 using System;
-using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Application.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomValidators.VacancyValidators;
@@ -21,7 +20,6 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
         private readonly IBlockedOrganisationQuery _blockedOrganisationRepo;
         private readonly IProfanityListProvider _profanityListProvider;
         private readonly IProviderRelationshipsService _providerRelationshipService;
-        private readonly IFeature _feature;
 
         public FluentVacancyValidator(
             ITimeProvider timeProvider,
@@ -32,8 +30,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
             ITrainingProviderSummaryProvider trainingProviderSummaryProvider,
             IBlockedOrganisationQuery blockedOrganisationRepo,
             IProfanityListProvider profanityListProvider,
-            IProviderRelationshipsService providerRelationshipService,
-            IFeature feature)
+            IProviderRelationshipsService providerRelationshipService)
         {
             _timeProvider = timeProvider;
             _minimumWageService = minimumWageService;
@@ -44,8 +41,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
             _blockedOrganisationRepo = blockedOrganisationRepo;
             _profanityListProvider = profanityListProvider;
             _providerRelationshipService = providerRelationshipService;
-            _feature = feature;
-            
+
             SingleFieldValidations();
             CrossFieldValidations();
         }
@@ -68,32 +64,22 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
 
         private void SingleFieldValidations()
         {
-        
             ValidateApprenticeshipTitle();
             ValidateApprenticeshipDuration();
-            
             ValidateOrganisation();
             ValidateNumberOfPositions();
             ValidateShortDescription();
             ValidateClosingDate();
             ValidateStartDate();
-
             ValidateTrainingProgramme();
-            
             ValidateWorkingWeek();
             ValidateWeeklyHours();
             ValidateWage();
-
             ValidateSkills();
-
-        
             ValidateQualifications();
             ValidateDescription();
             ValidateAdditionalQuestions();
-            
-
             ValidateHowTheApprenticeWillTrain();
-            
             ValidateOutcomeDescription();
             ValidateApplicationMethod();
             ValidateEmployerContactDetails();
@@ -113,9 +99,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
         private void ValidateApprenticeshipTitle()
         {
             RuleFor(x => x.Title)
-
                 .Cascade(CascadeMode.Stop)
-
                    .NotEmpty()
                        .WithMessage("Enter a title for this apprenticeship")
                        .WithErrorCode("1")
@@ -132,32 +116,6 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                        .WithMessage("Enter a title which includes the word 'apprentice' or 'apprenticeship'")
                        .WithErrorCode("200")
                        .WithState(_ => VacancyRuleSet.Title)
-                .ProfanityCheck(_profanityListProvider)
-                .WithMessage("Title must not contain a banned word or phrase.")
-                .WithErrorCode("601")
-                .WithState(_ => VacancyRuleSet.Title)
-                .RunCondition(VacancyRuleSet.Title);
-        }
-        private void ValidateTraineeshipTitle()
-        {
-            RuleFor(x => x.Title)
-                .Cascade(CascadeMode.Stop)
-                .NotEmpty()
-                .WithMessage("Enter a title for this traineeship")
-                .WithErrorCode("1")
-                .WithState(_ => VacancyRuleSet.Title)
-                .MaximumLength(100)
-                .WithMessage("Title must not exceed {MaxLength} characters")
-                .WithErrorCode("2")
-                .WithState(_ => VacancyRuleSet.Title)
-                .ValidFreeTextCharacters()
-                .WithMessage("Title contains some invalid characters")
-                .WithErrorCode("3")
-                .WithState(_ => VacancyRuleSet.Title)
-                .Matches(ValidationConstants.ContainsTraineeOrTraineeshipRegex)
-                .WithMessage("Enter a title which includes the word 'trainee' or 'traineeship'")
-                .WithErrorCode("200")
-                .WithState(_ => VacancyRuleSet.Title)
                 .ProfanityCheck(_profanityListProvider)
                 .WithMessage("Title must not contain a banned word or phrase.")
                 .WithErrorCode("601")
@@ -200,7 +158,6 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                     .WithErrorCode("602")
                     .WithState(_ => VacancyRuleSet.TradingName)
                     .RunCondition(VacancyRuleSet.TradingName)
-
             );
 
             When(v => v.EmployerNameOption == EmployerNameOption.Anonymous, () =>
@@ -343,7 +300,6 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                 .WithState(_ => VacancyRuleSet.ShortDescription)
                 .RunCondition(VacancyRuleSet.ShortDescription);
         }
-
 
         private void ValidateClosingDate()
         {
@@ -491,7 +447,6 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
             });
         }
 
-
         private void ValidateWeeklyHours()
         {
             When(x => x.Wage != null, () =>
@@ -570,41 +525,45 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
 
         private void ValidateSkills()
         {
-            RuleFor(x => x.Skills)
-                .Must(s => s != null && s.Count > 0)
+            When(x => x.ApprenticeshipType is ApprenticeshipTypes.Standard or null, () =>
+            {
+                RuleFor(x => x.Skills)
+                    .Must(s => s is { Count: > 0 })
                     .WithMessage("Select the skills and personal qualities you'd like the applicant to have")
                     .WithErrorCode("51")
-                .WithState(_ => VacancyRuleSet.Skills)
-                .RunCondition(VacancyRuleSet.Skills);
+                    .WithState(_ => VacancyRuleSet.Skills)
+                    .RunCondition(VacancyRuleSet.Skills);
 
-            RuleForEach(x => x.Skills)
-                .NotEmpty()
+                RuleForEach(x => x.Skills)
+                    .NotEmpty()
                     .WithMessage("You must include a skill or quality")
                     .WithErrorCode("99")
-                .WithState(_ => VacancyRuleSet.Skills)
-                .ValidFreeTextCharacters()
+                    .WithState(_ => VacancyRuleSet.Skills)
+                    .ValidFreeTextCharacters()
                     .WithMessage("Skill contains some invalid characters")
                     .WithErrorCode("6")
-                .WithState(_ => VacancyRuleSet.Skills)
-                .MaximumLength(30)
+                    .WithState(_ => VacancyRuleSet.Skills)
+                    .MaximumLength(30)
                     .WithMessage("Skill or quality must not exceed {MaxLength} characters")
                     .WithErrorCode("7")
-                .WithState(_ => VacancyRuleSet.Skills)
-                .ProfanityCheck(_profanityListProvider)
-                .WithMessage("Skill or quality must not contain a banned word or phrase.")
-                .WithErrorCode("608")
-                .WithState(_ => VacancyRuleSet.Skills);
+                    .WithState(_ => VacancyRuleSet.Skills)
+                    .ProfanityCheck(_profanityListProvider)
+                    .WithMessage("Skill or quality must not contain a banned word or phrase.")
+                    .WithErrorCode("608")
+                    .WithState(_ => VacancyRuleSet.Skills);
+            });
         }
 
         private void ValidateQualifications()
         {
-            When(c => c.HasOptedToAddQualifications is true, ValidateListOfQualifications);    
+            When(x => x.ApprenticeshipType is ApprenticeshipTypes.Standard or null
+                      && x.HasOptedToAddQualifications is true, ValidateListOfQualifications);
         }
 
         private void ValidateListOfQualifications()
         {
             RuleFor(x => x.Qualifications)
-                .Must(q => q != null && q.Count > 0)
+                .Must(q => q is { Count: > 0 })
                 .WithMessage("You must add a qualification")
                 .WithErrorCode("52")
                 .WithState(_ => VacancyRuleSet.Qualifications)

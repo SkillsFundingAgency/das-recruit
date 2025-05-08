@@ -43,8 +43,6 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
             Feature = new Mock<IFeature>();
         }
 
-        
-
         protected IEntityValidator<Vacancy, VacancyRuleSet> Validator
         {
             get
@@ -52,7 +50,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
                 var fluentValidator = new FluentVacancyValidator(TimeProvider, MockMinimumWageService.Object, 
                     MockApprenticeshipProgrammeProvider.Object, MockQualificationsProvider.Object, SanitizerService, 
                     MockTrainingProviderSummaryProvider.Object, MockBlockedOrganisationRepo.Object,
-                    MockProfanityListProvider, MockProviderRelationshipsService.Object, Feature.Object);
+                    MockProfanityListProvider, MockProviderRelationshipsService.Object);
                 return new EntityValidator<Vacancy, VacancyRuleSet>(fluentValidator);
             }
         }

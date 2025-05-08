@@ -49,5 +49,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
         public bool? HasChosenProviderContactDetails { get; set; }
         public bool HasSubmittedAdditionalQuestions { get; set; }
         public OwnerType OwnerType { get; set; }
+        public ApprenticeshipTypes? ApprenticeshipType { get; set; }
     }
 }

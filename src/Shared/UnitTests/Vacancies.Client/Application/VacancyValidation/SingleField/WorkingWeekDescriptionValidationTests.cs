@@ -1,13 +1,12 @@
-using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using Xunit;
+using NUnit.Framework;
 
 namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.VacancyValidation.SingleField
 {
     public class WorkingWeekDescriptionValidationTests : VacancyValidationTestsBase
     {
-        [Fact]
+        [Test]
         public void NoErrorsWhenWorkingWeekDescriptionValueIsValid()
         {
             var vacancy = new Vacancy
@@ -24,9 +23,8 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
             result.Errors.Should().HaveCount(0);
         }
 
-        [Theory]
-        [InlineData( null)]
-        [InlineData("")]
+        [TestCase( null)]
+        [TestCase("")]
         public void WorkingWeekDescriptionMustHaveAValue(string descriptionValue)
         {
             var vacancy = new Vacancy
@@ -46,9 +44,8 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
             result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.WorkingWeekDescription);
         }
 
-        [Theory]
-        [InlineData( "<")]
-        [InlineData( ">")]
+        [TestCase( "<")]
+        [TestCase( ">")]
         public void WorkingWeekDescriptionMustContainValidCharacters(string invalidCharacter)
         {
             var vacancy = new Vacancy
@@ -68,7 +65,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
             result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.WorkingWeekDescription);
         }
 
-        [Fact]
+        [Test]
         public void WorkingWeekDescriptionMustBeLessThan250Characters()
         {
             var vacancy = new Vacancy
@@ -88,11 +85,10 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
             result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.WorkingWeekDescription);
         }
 
-        [Theory]
-        [InlineData("some text bother")]
-        [InlineData( "some text dang")]
-        [InlineData( "some text drat")]
-        [InlineData( "some text balderdash")]
+        [TestCase("some text bother")]
+        [TestCase( "some text dang")]
+        [TestCase( "some text drat")]
+        [TestCase( "some text balderdash")]
         public void WorkingWeekDescription_ShouldFailIfContainsWordsFromTheProfanityList(string freeText)
         {
             var vacancy = new Vacancy
@@ -109,11 +105,10 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.V
             result.Errors[0].ErrorCode.Should().Be("606");
         }
 
-        [Theory]
-        [InlineData("some textbother")]
-        [InlineData( "some textdang")]
-        [InlineData( "some textdrat")]
-        [InlineData( "some textbalderdash")]
+        [TestCase("some textbother")]
+        [TestCase( "some textdang")]
+        [TestCase( "some textdrat")]
+        [TestCase( "some textbalderdash")]
         public void WorkingWeekDescription_ShouldFail_Not_IfContainsWordsFromTheProfanityList(string freeText)
         {
             var vacancy = new Vacancy
