@@ -12,9 +12,6 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Vacanc
 using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
 using Esfa.Recruit.Shared.Web.Orchestrators;
 using Esfa.Recruit.Shared.Web.Extensions;
-using Esfa.Recruit.Shared.Web.Mappers;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyAnalytics;
-using Employer.Web.Configuration;
 using Esfa.Recruit.Shared.Web.Helpers;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators
@@ -62,6 +59,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             viewModel.CanShowDeleteLink = vacancy.CanDelete;
             viewModel.IsClosedBlockedByQa = vacancy.Status == VacancyStatus.Closed && vacancy.ClosureReason == ClosureReason.BlockedByQa;
             viewModel.CanClone = vacancy.CanClone;
+            viewModel.ApprenticeshipType = vacancy.GetApprenticeshipType();
 
             if (vacancy.Status == VacancyStatus.Closed && vacancy.ClosureReason == ClosureReason.WithdrawnByQa)
             {

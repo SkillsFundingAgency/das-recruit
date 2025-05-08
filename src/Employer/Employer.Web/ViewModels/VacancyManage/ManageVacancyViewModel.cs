@@ -1,6 +1,5 @@
 using System.Linq;
 using Esfa.Recruit.Employer.Web.RouteModel;
-using Esfa.Recruit.Shared.Web.ViewModels;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
 namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyManage
@@ -46,5 +45,6 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyManage
         public string ViewBagTitle => ShowEmployerApplications ? "Manage Advert" : "Shared applications";
         public string ApplicationReviewsUnsuccessfulBannerHeader { get; internal set; }
         public bool CanShowApplicationsUnsuccessfulBanner => !string.IsNullOrEmpty(ApplicationReviewsUnsuccessfulBannerHeader);
+        public ApprenticeshipTypes ApprenticeshipType { get; internal set; }
     }
 }

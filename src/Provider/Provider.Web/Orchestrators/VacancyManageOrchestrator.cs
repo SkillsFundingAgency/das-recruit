@@ -49,7 +49,8 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
                 Status = vacancy.Status,
                 VacancyReference = vacancy.VacancyReference.Value.ToString(),
                 Ukprn = vacancyRouteModel.Ukprn,
-                VacancyId = vacancyRouteModel.VacancyId
+                VacancyId = vacancyRouteModel.VacancyId,
+                ApprenticeshipType = vacancy.GetApprenticeshipType(),
             };
 
             viewModel.ClosingDate = viewModel.Status == VacancyStatus.Closed ? vacancy.ClosedDate?.AsGdsDate() : vacancy.ClosingDate?.AsGdsDate();
@@ -62,7 +63,6 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             viewModel.CanShowCloneVacancyLink = vacancy.CanClone;
             viewModel.CanShowDeleteVacancyLink = vacancy.CanDelete;
             viewModel.EmployerName = vacancy.EmployerName;
-            
 
             if (vacancy.Status == VacancyStatus.Closed && vacancy.ClosureReason == ClosureReason.WithdrawnByQa)
             {
