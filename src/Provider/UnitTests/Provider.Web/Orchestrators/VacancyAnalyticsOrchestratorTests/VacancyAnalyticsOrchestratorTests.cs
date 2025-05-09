@@ -16,7 +16,6 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.VacancyAnal
     {
         private Fixture _fixture;
         private Mock<IRecruitVacancyClient> _vacancyClient;
-        private Mock<ProviderRecruitSystemConfiguration> _systemConfig;
         private IVacancyAnalyticsOrchestrator _orchestrator;
         private Guid _vacancyId;
         private long _ukprn;
@@ -26,8 +25,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.VacancyAnal
         {
             _fixture = new Fixture();
             _vacancyClient = new Mock<IRecruitVacancyClient>();
-            _systemConfig = new Mock<ProviderRecruitSystemConfiguration>();
-            _orchestrator = new VacancyAnalyticsOrchestrator(_vacancyClient.Object, _systemConfig.Object);
+            _orchestrator = new VacancyAnalyticsOrchestrator(_vacancyClient.Object);
             _vacancyId = Guid.NewGuid();
             _ukprn = 10000034;
         }

@@ -7,7 +7,6 @@ using Esfa.Recruit.Qa.Web.Orchestrators;
 using Esfa.Recruit.Qa.Web.Orchestrators.Reports;
 using Esfa.Recruit.Qa.Web.Security;
 using Esfa.Recruit.QA.Web.Configuration;
-using Esfa.Recruit.QA.Web.Filters;
 using Esfa.Recruit.QA.Web.Orchestrators;
 using Esfa.Recruit.Shared.Web.Configuration;
 using Esfa.Recruit.Shared.Web.Extensions;
@@ -120,14 +119,6 @@ namespace Esfa.Recruit.Qa.Web
             services.AddTransient<ReviewFieldIndicatorMapper>();
 
             services.AddScoped<IRuleMessageTemplateRunner, RuleMessageTemplateRunner>();
-
-            services.AddScoped<PlannedOutageResultFilter>();
-
-            services.AddSingleton(x =>
-            {
-                var svc = x.GetService<IConfigurationReader>();
-                return svc.GetAsync<QaRecruitSystemConfiguration>("QaRecruitSystem").Result;
-            });
 
             services.AddSingleton(new ServiceParameters());
             

@@ -5,6 +5,7 @@ using Esfa.Recruit.Employer.Web.Orchestrators.Part1;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.Duration;
 using Esfa.Recruit.Shared.Web.Mappers;
 using Esfa.Recruit.Shared.Web.Services;
+using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
@@ -44,7 +45,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part1
                 Duration = duration.ToString(),
                 DurationUnit = durationUnit,
                 WeeklyHours = weeklyHours.ToString(),
-                WorkingWeekDescription = workingWeekDescription
+                WorkingWeekDescription = workingWeekDescription,
             };
 
             await _fixture.PostDurationEditModelAsync(durationEditModel);
@@ -101,7 +102,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part1
                 var utility = new Utility(MockRecruitVacancyClient.Object);
                 
                 Sut = new DurationOrchestrator(MockClient.Object, MockRecruitVacancyClient.Object, Mock.Of<ILogger<DurationOrchestrator>>(), 
-                    Mock.Of<IReviewSummaryService>(), utility);
+                    Mock.Of<IReviewSummaryService>(), utility, Mock.Of<IFeature>());
             }
 
             public async Task PostDurationEditModelAsync(DurationEditModel model)

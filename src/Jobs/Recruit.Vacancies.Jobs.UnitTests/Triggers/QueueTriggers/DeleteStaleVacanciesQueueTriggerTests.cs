@@ -8,7 +8,6 @@ using Esfa.Recruit.Vacancies.Client.Application.Queues.Messages;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
-using Esfa.Recruit.Vacancies.Jobs.Configuration;
 using Esfa.Recruit.Vacancies.Jobs.Triggers.QueueTriggers;
 using Microsoft.Extensions.Logging;
 using Moq;
@@ -20,13 +19,12 @@ namespace Esfa.Recruit.Vacancies.Jobs.UnitTests.Triggers.QueueTriggers
     public class DeleteStaleVacanciesQueueTriggerTests
     {
         private readonly Mock<ILogger<DeleteStaleVacanciesQueueTrigger>> _mockLogger = new Mock<ILogger<DeleteStaleVacanciesQueueTrigger>>(); 
-        private readonly RecruitWebJobsSystemConfiguration _config = new RecruitWebJobsSystemConfiguration(); 
         private readonly Mock<ITimeProvider> _mockTimeProvider = new Mock<ITimeProvider>();
         private readonly Mock<IVacancyQuery> _mockQuery = new Mock<IVacancyQuery>();
         private readonly Mock<IMessaging> _mockMessaging = new Mock<IMessaging>();
         private readonly DeleteStaleVacanciesQueueMessage _message = new DeleteStaleVacanciesQueueMessage();
         private string GetMessage() => JsonConvert.SerializeObject(_message);
-        private DeleteStaleVacanciesQueueTrigger GetSut() => new DeleteStaleVacanciesQueueTrigger(_mockLogger.Object, _config, _mockTimeProvider.Object, _mockQuery.Object, _mockMessaging.Object);
+        private DeleteStaleVacanciesQueueTrigger GetSut() => new DeleteStaleVacanciesQueueTrigger(_mockLogger.Object, _mockTimeProvider.Object, _mockQuery.Object, _mockMessaging.Object);
         
         [Fact]
         public async Task WhenConfigIsNotPopulated_ThenUseDefaultStaleByDays()
@@ -46,12 +44,10 @@ namespace Esfa.Recruit.Vacancies.Jobs.UnitTests.Triggers.QueueTriggers
         [Fact]
         public async Task WhenStaleByDaysAreDefinedInTheConfig_ThenUseConfigStaleByDays()
         {
-            _config.DraftVacanciesStaleByDays = 20;
-            _config.ReferredVacanciesStaleByDays = 10;
             var executionDate = new DateTime(2019, 10, 8);
             _mockTimeProvider.Setup(t => t.Today).Returns(executionDate);
-            var expectedDraftStaleByDate = executionDate.AddDays(_config.DraftVacanciesStaleByDays.Value * -1);
-            var expectedReferredStaleByDate = executionDate.AddDays(_config.ReferredVacanciesStaleByDays.Value * -1);
+            var expectedDraftStaleByDate = executionDate.AddDays(180 * -1);
+            var expectedReferredStaleByDate = executionDate.AddDays(90 * -1);
 
             var sut = GetSut();
             await sut.DeleteStaleVacanciesAsync(GetMessage(), null);

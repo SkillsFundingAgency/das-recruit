@@ -89,16 +89,33 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
         public async Task GetProviderDashboardApplicationReviewStats_Should_Return_As_Expected(
             long ukprn,
             List<long> vacancyReferences,
-            List<ApplicationReviewStats> response,
+            GetApplicationReviewStatsResponse response,
             [Frozen] Mock<IOuterApiClient> outerApiClient,
             [Greedy] TrainingProviderService trainingProviderService)
         {
             var expectedGetUrl = new GetProviderApplicationReviewsCountApiRequest(ukprn, vacancyReferences);
-            outerApiClient.Setup(x => x.Post<List<ApplicationReviewStats>>(
+            outerApiClient.Setup(x => x.Post<GetApplicationReviewStatsResponse>(
                 It.Is<GetProviderApplicationReviewsCountApiRequest>(r => r.PostUrl == expectedGetUrl.PostUrl)))
                 .ReturnsAsync(response);
 
             var result = await trainingProviderService.GetProviderDashboardApplicationReviewStats(ukprn, vacancyReferences);
+
+            result.Should().BeEquivalentTo(response);
+        }
+
+        [Test, MoqAutoData]
+        public async Task GetProviderDashboardStats_Should_Return_As_Expected(
+            long ukprn,
+            GetDashboardCountApiResponse response,
+            [Frozen] Mock<IOuterApiClient> outerApiClient,
+            [Greedy] TrainingProviderService trainingProviderService)
+        {
+            var expectedGetUrl = new GetProviderDashboardCountApiRequest(ukprn);
+            outerApiClient.Setup(x => x.Get< GetDashboardCountApiResponse> (
+                    It.Is<GetProviderDashboardCountApiRequest>(r => r.GetUrl == expectedGetUrl.GetUrl)))
+                .ReturnsAsync(response);
+
+            var result = await trainingProviderService.GetProviderDashboardStats(ukprn);
 
             result.Should().BeEquivalentTo(response);
         }

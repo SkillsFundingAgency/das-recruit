@@ -49,5 +49,6 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.Part1.Duration
         }
 
         public bool IsTaskListCompleted { get; set; }
+        public bool FoundationApprenticeships { get; set; }
     }
 }

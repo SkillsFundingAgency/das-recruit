@@ -15,16 +15,17 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using SFA.DAS.GovUK.Auth.Employer;
 
 namespace Esfa.Recruit.Employer.Web.Middleware;
 
 public class EmployerAccountAuthorizationHandler : IEmployerAccountAuthorizationHandler
 {
     private readonly IHttpContextAccessor _httpContextAccessor;
-    private readonly IEmployerAccountProvider _accountsService;
+    private readonly IGovAuthEmployerAccountService _accountsService;
     private readonly ILogger<EmployerAccountAuthorizationHandler> _logger;
 
-    public EmployerAccountAuthorizationHandler(IHttpContextAccessor httpContextAccessor, IEmployerAccountProvider accountsService, ILogger<EmployerAccountAuthorizationHandler> logger)
+    public EmployerAccountAuthorizationHandler(IHttpContextAccessor httpContextAccessor, IGovAuthEmployerAccountService accountsService, ILogger<EmployerAccountAuthorizationHandler> logger)
     {
         _httpContextAccessor = httpContextAccessor;
         _accountsService = accountsService;
@@ -75,9 +76,9 @@ public class EmployerAccountAuthorizationHandler : IEmployerAccountAuthorization
 
             var userId = userClaim.Value;
 
-            var result = _accountsService.GetEmployerIdentifiersAsync(userId, email).Result;
+            var result = _accountsService.GetUserAccounts(userId, email).Result;
             
-            var accountsAsJson = JsonConvert.SerializeObject(result.UserAccounts.ToDictionary(k => k.AccountId));
+            var accountsAsJson = JsonConvert.SerializeObject(result.EmployerAccounts.ToDictionary(k => k.AccountId));
             var associatedAccountsClaim = new Claim(EmployerRecruitClaims.AccountsClaimsTypeIdentifier, accountsAsJson, JsonClaimValueTypes.Json);
             
             var updatedEmployerAccounts = JsonConvert.DeserializeObject<Dictionary<string, EmployerUserAccountItem>>(associatedAccountsClaim.Value);

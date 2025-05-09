@@ -15,6 +15,7 @@ using Microsoft.Extensions.Configuration;
 using Moq;
 using Newtonsoft.Json;
 using NUnit.Framework;
+using SFA.DAS.GovUK.Auth.Employer;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Middleware;
@@ -36,7 +37,7 @@ public class EmployerAccountAuthorizationHandlerTests
         EmployerUserRole minimumRole,
         bool accessResult,
         string roleOnClaims,
-        EmployerIdentifier employerIdentifier,
+        EmployerUserAccountItem employerIdentifier,
         EmployerAccountOwnerOrTransactorRequirement ownerRequirement,
         [Frozen] Mock<IHttpContextAccessor> httpContextAccessor,
         EmployerAccountAuthorizationHandler authorizationHandler)
@@ -44,7 +45,7 @@ public class EmployerAccountAuthorizationHandlerTests
         //Arrange
         employerIdentifier.Role = roleOnClaims;
         employerIdentifier.AccountId = employerIdentifier.AccountId.ToUpper();
-        var employerAccounts = new Dictionary<string, EmployerIdentifier>{{employerIdentifier.AccountId, employerIdentifier}};
+        var employerAccounts = new Dictionary<string, EmployerUserAccountItem>{{employerIdentifier.AccountId, employerIdentifier}};
         var claim = new Claim(EmployerRecruitClaims.AccountsClaimsTypeIdentifier, JsonConvert.SerializeObject(employerAccounts));
         var claimsPrinciple = new ClaimsPrincipal(new[] {new ClaimsIdentity(new[] {claim})});
         var context = new AuthorizationHandlerContext(new [] {ownerRequirement}, claimsPrinciple, null);
@@ -62,7 +63,7 @@ public class EmployerAccountAuthorizationHandlerTests
     [Test, MoqAutoData]
     public async Task Then_Returns_False_If_Employer_Is_Not_Authorized(
         string accountId,
-        EmployerIdentifier employerIdentifier,
+        EmployerUserAccountItem employerIdentifier,
         EmployerAccountOwnerOrTransactorRequirement ownerRequirement,
         [Frozen] Mock<IHttpContextAccessor> httpContextAccessor,
         EmployerAccountAuthorizationHandler authorizationHandler)
@@ -70,7 +71,7 @@ public class EmployerAccountAuthorizationHandlerTests
         //Arrange
         employerIdentifier.Role = "Owner";
         employerIdentifier.AccountId = employerIdentifier.AccountId.ToUpper();
-        var employerAccounts = new Dictionary<string, EmployerIdentifier>{{employerIdentifier.AccountId, employerIdentifier}};
+        var employerAccounts = new Dictionary<string, EmployerUserAccountItem>{{employerIdentifier.AccountId, employerIdentifier}};
         var claim = new Claim(EmployerRecruitClaims.AccountsClaimsTypeIdentifier, JsonConvert.SerializeObject(employerAccounts));
         var claimsPrinciple = new ClaimsPrincipal(new[] {new ClaimsIdentity(new[] {claim})});
         var context = new AuthorizationHandlerContext(new[] {ownerRequirement}, claimsPrinciple, null);
@@ -91,23 +92,23 @@ public class EmployerAccountAuthorizationHandlerTests
         string accountId,
         string userId,
         string email,
-        EmployerIdentifier employerIdentifier,
+        EmployerUserAccountItem employerIdentifier,
         EmployerAccountOwnerOrTransactorRequirement ownerRequirement,
         [Frozen] Mock<IHttpContextAccessor> httpContextAccessor,
-        [Frozen] Mock<IEmployerAccountProvider> employerAccountService,
+        [Frozen] Mock<IGovAuthEmployerAccountService> employerAccountService,
         EmployerAccountAuthorizationHandler authorizationHandler)
     {
         //Arrange
         employerIdentifier.AccountId = accountId.ToUpper();
         employerIdentifier.Role = "Owner";
-        employerAccountService.Setup(x => x.GetEmployerIdentifiersAsync(userId, email))
-            .ReturnsAsync(new GetUserAccountsResponse
+        employerAccountService.Setup(x => x.GetUserAccounts(userId, email))
+            .ReturnsAsync(new EmployerUserAccounts
             {
-                UserAccounts = new List<EmployerIdentifier>{ employerIdentifier }
+                EmployerAccounts = new List<EmployerUserAccountItem>{ employerIdentifier }
             });
         
         var userClaim = new Claim(ClaimTypes.NameIdentifier, userId);
-        var employerAccounts = new Dictionary<string, EmployerIdentifier>{{employerIdentifier.AccountId, employerIdentifier}};
+        var employerAccounts = new Dictionary<string, EmployerUserAccountItem>{{employerIdentifier.AccountId, employerIdentifier}};
         var employerAccountClaim = new Claim(EmployerRecruitClaims.AccountsClaimsTypeIdentifier, JsonConvert.SerializeObject(employerAccounts));
         var claimsPrinciple = new ClaimsPrincipal(new[] {new ClaimsIdentity(new[] {employerAccountClaim, userClaim, new Claim(ClaimTypes.Email, email)})});
         var context = new AuthorizationHandlerContext(new[] {ownerRequirement}, claimsPrinciple, null);
@@ -128,24 +129,24 @@ public class EmployerAccountAuthorizationHandlerTests
     public async Task Then_If_Not_In_Context_Claims_EmployerAccountService_Checked_And_False_Returned_If_Not_Exists(
         string accountId,
         string userId,
-        EmployerIdentifier employerIdentifier,
+        EmployerUserAccountItem employerIdentifier,
         EmployerAccountOwnerOrTransactorRequirement ownerRequirement,
         [Frozen] Mock<IHttpContextAccessor> httpContextAccessor,
-        [Frozen] Mock<IEmployerAccountProvider> employerAccountService,
+        [Frozen] Mock<IGovAuthEmployerAccountService> employerAccountService,
         [Frozen] Mock<IConfiguration> configuration,
         EmployerAccountAuthorizationHandler authorizationHandler)
     {
         //Arrange
         employerIdentifier.AccountId = employerIdentifier.AccountId.ToUpper();
         employerIdentifier.Role = "Owner";
-        employerAccountService.Setup(x => x.GetEmployerIdentifiersAsync(userId,""))
-            .ReturnsAsync(new GetUserAccountsResponse
+        employerAccountService.Setup(x => x.GetUserAccounts(userId,""))
+            .ReturnsAsync(new EmployerUserAccounts()
             {
-                UserAccounts = new List<EmployerIdentifier>{ employerIdentifier }
+                EmployerAccounts = new List<EmployerUserAccountItem>{ employerIdentifier }
             });
         
         var userClaim = new Claim(EmployerRecruitClaims.IdamsUserIdClaimTypeIdentifier, userId);
-        var employerAccounts = new Dictionary<string, EmployerIdentifier>{{employerIdentifier.AccountId, employerIdentifier}};
+        var employerAccounts = new Dictionary<string, EmployerUserAccountItem>{{employerIdentifier.AccountId, employerIdentifier}};
         var employerAccountClaim = new Claim(EmployerRecruitClaims.AccountsClaimsTypeIdentifier, JsonConvert.SerializeObject(employerAccounts));
         var claimsPrinciple = new ClaimsPrincipal(new[] {new ClaimsIdentity(new[] {employerAccountClaim, userClaim})});
         var context = new AuthorizationHandlerContext(new[] {ownerRequirement}, claimsPrinciple, null);
@@ -163,7 +164,7 @@ public class EmployerAccountAuthorizationHandlerTests
     
     [Test, MoqAutoData]
     public async Task Then_Returns_False_If_AccountId_Not_In_Url(
-        EmployerIdentifier employerIdentifier,
+        EmployerUserAccountItem employerIdentifier,
         EmployerAccountOwnerOrTransactorRequirement ownerRequirement,
         [Frozen] Mock<IHttpContextAccessor> httpContextAccessor,
         EmployerAccountAuthorizationHandler authorizationHandler)
@@ -171,7 +172,7 @@ public class EmployerAccountAuthorizationHandlerTests
         //Arrange
         employerIdentifier.Role = "Owner";
         employerIdentifier.AccountId = employerIdentifier.AccountId.ToUpper();
-        var employerAccounts = new Dictionary<string, EmployerIdentifier>{{employerIdentifier.AccountId, employerIdentifier}};
+        var employerAccounts = new Dictionary<string, EmployerUserAccountItem>{{employerIdentifier.AccountId, employerIdentifier}};
         var claim = new Claim(EmployerRecruitClaims.AccountsClaimsTypeIdentifier, JsonConvert.SerializeObject(employerAccounts));
         var claimsPrinciple = new ClaimsPrincipal(new[] {new ClaimsIdentity(new[] {claim})});
         var context = new AuthorizationHandlerContext(new[] {ownerRequirement}, claimsPrinciple, null);
@@ -189,7 +190,7 @@ public class EmployerAccountAuthorizationHandlerTests
 
     [Test, MoqAutoData]
     public async Task Then_Returns_False_If_No_Matching_AccountIdentifier_Claim_Found(
-        EmployerIdentifier employerIdentifier,
+        EmployerUserAccountItem employerIdentifier,
         EmployerAccountOwnerOrTransactorRequirement ownerRequirement,
         [Frozen] Mock<IHttpContextAccessor> httpContextAccessor,
         EmployerAccountAuthorizationHandler authorizationHandler)
@@ -197,7 +198,7 @@ public class EmployerAccountAuthorizationHandlerTests
         //Arrange
         employerIdentifier.Role = "Viewer-Owner-Transactor";
         employerIdentifier.AccountId = employerIdentifier.AccountId.ToUpper();
-        var employerAccounts = new Dictionary<string, EmployerIdentifier>{{employerIdentifier.AccountId, employerIdentifier}};
+        var employerAccounts = new Dictionary<string, EmployerUserAccountItem>{{employerIdentifier.AccountId, employerIdentifier}};
         var claim = new Claim("SomeOtherClaim", JsonConvert.SerializeObject(employerAccounts));
         var claimsPrinciple = new ClaimsPrincipal(new[] {new ClaimsIdentity(new[] {claim})});
         var context = new AuthorizationHandlerContext(new[] {ownerRequirement}, claimsPrinciple, null);
@@ -215,7 +216,7 @@ public class EmployerAccountAuthorizationHandlerTests
     
     [Test, MoqAutoData]
     public async Task Then_Returns_False_If_No_Matching_NameIdentifier_Claim_Found_For_GovSignIn(
-        EmployerIdentifier employerIdentifier,
+        EmployerUserAccountItem employerIdentifier,
         EmployerAccountOwnerOrTransactorRequirement ownerRequirement,
         [Frozen] Mock<IHttpContextAccessor> httpContextAccessor,
         EmployerAccountAuthorizationHandler authorizationHandler)
@@ -223,7 +224,7 @@ public class EmployerAccountAuthorizationHandlerTests
         //Arrange
         employerIdentifier.Role = "Viewer-Owner-Transactor";
         employerIdentifier.AccountId = employerIdentifier.AccountId.ToUpper();
-        var employerAccounts = new Dictionary<string, EmployerIdentifier>{{employerIdentifier.AccountId, employerIdentifier}};
+        var employerAccounts = new Dictionary<string, EmployerUserAccountItem>{{employerIdentifier.AccountId, employerIdentifier}};
         var claim = new Claim("SomeOtherClaim", JsonConvert.SerializeObject(employerAccounts));
         var claimsPrinciple = new ClaimsPrincipal(new[] {new ClaimsIdentity(new[] {claim})});
         var context = new AuthorizationHandlerContext(new[] {ownerRequirement}, claimsPrinciple, null);
@@ -241,7 +242,7 @@ public class EmployerAccountAuthorizationHandlerTests
 
     [Test, MoqAutoData]
     public async Task Then_Returns_False_If_The_Claim_Cannot_Be_Deserialized(
-        EmployerIdentifier employerIdentifier,
+        EmployerUserAccountItem employerIdentifier,
         EmployerAccountOwnerOrTransactorRequirement ownerRequirement,
         [Frozen] Mock<IHttpContextAccessor> httpContextAccessor,
         EmployerAccountAuthorizationHandler authorizationHandler)

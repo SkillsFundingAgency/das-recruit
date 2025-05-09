@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.StorageQueue;
-using Esfa.Recruit.Vacancies.Jobs.Configuration;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
 
@@ -15,19 +14,16 @@ namespace Esfa.Recruit.Vacancies.Jobs.Triggers.QueueTriggers
         private const int DeleteReportAfterTimeSpanDays = 7;
 
         private readonly ILogger<DeleteReportsQueueTrigger> _logger;
-        private readonly RecruitWebJobsSystemConfiguration _jobsConfig;
         private readonly ITimeProvider _timeProvider;
         private readonly IReportRepository _reportRepository;
 
         private string JobName => GetType().Name;
 
         public DeleteReportsQueueTrigger(ILogger<DeleteReportsQueueTrigger> logger, 
-            RecruitWebJobsSystemConfiguration jobsConfig,
             ITimeProvider timeProvider,
             IReportRepository reportRepository)
         {
             _logger = logger;
-            _jobsConfig = jobsConfig;
             _timeProvider = timeProvider;
             _reportRepository = reportRepository;
         }
@@ -36,12 +32,6 @@ namespace Esfa.Recruit.Vacancies.Jobs.Triggers.QueueTriggers
         {
             try
             {
-                if (_jobsConfig.DisabledJobs.Contains(JobName))
-                {
-                    _logger.LogDebug($"{JobName} is disabled, skipping ...");
-                    return;
-                }
-
                 var deleteReportsCreatedBeforeDate = _timeProvider.Today.AddDays(DeleteReportAfterTimeSpanDays * -1);
 
                 var deletedCount = await _reportRepository.DeleteReportsCreatedBeforeAsync(deleteReportsCreatedBeforeDate);

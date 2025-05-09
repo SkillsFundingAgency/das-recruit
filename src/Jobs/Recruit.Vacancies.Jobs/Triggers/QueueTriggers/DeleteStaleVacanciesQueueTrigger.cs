@@ -10,7 +10,6 @@ using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.StorageQueue;
-using Esfa.Recruit.Vacancies.Jobs.Configuration;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
@@ -22,7 +21,6 @@ namespace Esfa.Recruit.Vacancies.Jobs.Triggers.QueueTriggers
         public const int DefaultDraftStaleByDays = 180;
         public const int DefaultReferredStaleByDays = 90;
         private readonly ILogger<DeleteStaleVacanciesQueueTrigger> _logger;
-        private readonly RecruitWebJobsSystemConfiguration _jobsConfig;
         private readonly ITimeProvider _timeProvider;
         private readonly IVacancyQuery _vacancyQuery;
         private readonly IMessaging _messaging;
@@ -30,13 +28,11 @@ namespace Esfa.Recruit.Vacancies.Jobs.Triggers.QueueTriggers
         private string JobName => GetType().Name;
 
         public DeleteStaleVacanciesQueueTrigger(ILogger<DeleteStaleVacanciesQueueTrigger> logger, 
-            RecruitWebJobsSystemConfiguration jobsConfig,
             ITimeProvider timeProvider,
             IVacancyQuery vacancyQuery,
             IMessaging messaging)
         {
             _logger = logger;
-            _jobsConfig = jobsConfig;
             _timeProvider = timeProvider;
             _vacancyQuery = vacancyQuery;
             _messaging = messaging;
@@ -46,20 +42,14 @@ namespace Esfa.Recruit.Vacancies.Jobs.Triggers.QueueTriggers
         {
             try
             {
-                if (_jobsConfig.DisabledJobs.Contains(JobName))
-                {
-                    _logger.LogDebug($"{JobName} is disabled, skipping ...");
-                    return;
-                }
-
                 var payload = JsonConvert.DeserializeObject<DeleteStaleVacanciesQueueMessage>(message);
 
                 var targetDate = payload?.CreatedByScheduleDate ?? _timeProvider.Today;
 
                 _logger.LogInformation($"Begining to delete vacancies that have not been updated since {targetDate.ToShortDateString()}");
 
-                var draftStaleByDate = targetDate.AddDays((_jobsConfig.DraftVacanciesStaleByDays ?? DefaultDraftStaleByDays) * -1);
-                var referredStaleByDate = targetDate.AddDays((_jobsConfig.ReferredVacanciesStaleByDays ?? DefaultReferredStaleByDays) * -1);
+                var draftStaleByDate = targetDate.AddDays((DefaultDraftStaleByDays) * -1);
+                var referredStaleByDate = targetDate.AddDays((DefaultReferredStaleByDays) * -1);
 
                 var staleDraftVacanciesTask = _vacancyQuery.GetDraftVacanciesCreatedBeforeAsync<VacancyIdentifier>(draftStaleByDate);
                 var staleReferredVacanciesTask = _vacancyQuery.GetReferredVacanciesSubmittedBeforeAsync<VacancyIdentifier>(referredStaleByDate);

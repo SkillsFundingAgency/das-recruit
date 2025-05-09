@@ -62,8 +62,6 @@ namespace Esfa.Recruit.Provider.Web.Configuration
 
             RegisterFilterDeps(services);
 
-            RegisterDynamicConfigurationDeps(services);
-
             RegisterFluentValidators(services);
         }
 
@@ -161,18 +159,8 @@ namespace Esfa.Recruit.Provider.Web.Configuration
 
         private static void RegisterFilterDeps(IServiceCollection services)
         {
-            services.AddScoped<PlannedOutageResultFilter>();
             services.AddScoped<GoogleAnalyticsFilter>();
             services.AddScoped<ZendeskApiFilter>();
-        }
-
-        private static void RegisterDynamicConfigurationDeps(IServiceCollection services)
-        {
-            services.AddSingleton(x =>
-            {
-                var svc = x.GetService<IConfigurationReader>();
-                return svc.GetAsync<ProviderRecruitSystemConfiguration>("ProviderRecruitSystem").Result;
-            });
         }
     }
 }

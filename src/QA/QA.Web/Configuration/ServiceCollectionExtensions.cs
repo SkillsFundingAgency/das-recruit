@@ -2,7 +2,6 @@ using System;
 using System.Linq;
 using Esfa.Recruit.Qa.Web.Configuration.Routing;
 using Esfa.Recruit.Qa.Web.Security;
-using Esfa.Recruit.QA.Web.Filters;
 using Esfa.Recruit.Shared.Web.Extensions;
 using FluentValidation;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -125,7 +124,6 @@ namespace Esfa.Recruit.Qa.Web.Configuration
                             .Add(MediaTypeHeaderValue.Parse("application/csp-report"));
                     }
 
-                    options.Filters.AddService<PlannedOutageResultFilter>();
                 }).AddNewtonsoftJson();
             services.AddValidatorsFromAssemblyContaining<Startup>();
         }
