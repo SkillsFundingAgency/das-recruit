@@ -81,7 +81,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount
             }
         }
 
-        public async Task<List<ApplicationReviewStats>> GetEmployerDashboardApplicationReviewStats(string hashedAccountId, List<long> vacancyReferences)
+        public async Task<GetApplicationReviewStatsResponse> GetEmployerDashboardApplicationReviewStats(string hashedAccountId, List<long> vacancyReferences)
         {
             try
             {
@@ -90,7 +90,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount
                 long accountId = encodingService.Decode(hashedAccountId, EncodingType.AccountId);
                 var retryPolicy = PollyRetryPolicy.GetPolicy();
 
-                return await retryPolicy.Execute(_ => outerApiClient.Post<List<ApplicationReviewStats>>(
+                return await retryPolicy.Execute(_ => outerApiClient.Post<GetApplicationReviewStatsResponse>(
                         new GetEmployerApplicationReviewsCountApiRequest(accountId,
                             vacancyReferences)),
                     new Dictionary<string, object>
