@@ -40,7 +40,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Reports
         private readonly ILogger<ProviderApplicationsReportStrategy> _logger;
 
         private const string QueryFormat = @"[
-            { $match: {'trainingProvider.ukprn' : _ukprn_, 'ownerType' : 'Provider', 'isDeleted' : false, 'applicationMethod' : '_applicationMethod_', 'status' : {$in : ['Live','Closed']}, 'vacancyType' : {_vacancytype_ : ['Traineeship']}}},
+            { $match: {'trainingProvider.ukprn' : _ukprn_, 'ownerType' : 'Provider', 'isDeleted' : false, 'applicationMethod' : '_applicationMethod_', 'status' : {$in : ['Live','Closed']}, 'vacancyType' : {'$in' : ['Apprenticeship', null] }}},
             { $lookup: { from: 'applicationReviews', localField: 'vacancyReference', foreignField: 'vacancyReference', as: 'ar'}},
             { $unwind: '$ar'},
             { $match: {'ar.submittedDate' : { $gte: ISODate('_fromDate_'), $lte: ISODate('_toDate_')}, 'ar.isWithdrawn' : false}},
@@ -89,9 +89,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Reports
             var ukprn = long.Parse(parameters[ReportParameterName.Ukprn].ToString());
             var fromDate = (DateTime) parameters[ReportParameterName.FromDate];
             var toDate = (DateTime)parameters[ReportParameterName.ToDate];
-            Enum.TryParse<VacancyType>((string) parameters[ReportParameterName.VacancyType], true, out var vacancyType);
 
-            return GetProviderApplicationsAsync(ukprn, fromDate, toDate, vacancyType);
+            return GetProviderApplicationsAsync(ukprn, fromDate, toDate);
         }
 
         public ReportDataType ResolveFormat(string fieldName)
@@ -112,24 +111,15 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Reports
             throw new NotImplementedException();
         }
 
-        private async Task<ReportStrategyResult> GetProviderApplicationsAsync(long ukprn, DateTime fromDate, DateTime toDate, VacancyType vacancyType)
+        private async Task<ReportStrategyResult> GetProviderApplicationsAsync(long ukprn, DateTime fromDate, DateTime toDate)
         {
             var collection = GetCollection<BsonDocument>();
-
-            var vacancyQuery = "$in";
-            var applicationMethod = "ThroughFindATraineeship";
-            if (vacancyType == Domain.Entities.VacancyType.Apprenticeship)
-            {
-                vacancyQuery = "$nin";
-                applicationMethod = "ThroughFindAnApprenticeship";
-            }
 
             var queryJson = QueryFormat
                 .Replace(QueryUkprn, ukprn.ToString())
                 .Replace(QueryFromDate, fromDate.ToString("o"))
                 .Replace(QueryToDate , toDate.ToString("o"))
-                .Replace(VacancyType, vacancyQuery)
-                .Replace(ApplicationMethod, applicationMethod);
+                .Replace(ApplicationMethod, "ThroughFindAnApprenticeship");
 
             var bson = MongoDB.Bson.Serialization.BsonSerializer.Deserialize<BsonDocument[]>(queryJson);
 
@@ -137,7 +127,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Reports
                     collection.Aggregate<BsonDocument>(bson).ToListAsync(),
             new Context(nameof(GetProviderApplicationsAsync)));
 
-            await ProcessResultsAsync(results, vacancyType);
+            await ProcessResultsAsync(results);
 
             _logger.LogInformation($"Report parameters ukprn:{ukprn} fromDate:{fromDate} toDate:{toDate} returned {results.Count} results");
 
@@ -152,14 +142,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Reports
             return new ReportStrategyResult(headers, data,"");
         }
 
-        private async Task ProcessResultsAsync(List<BsonDocument> results, VacancyType vacancyType)
+        private async Task ProcessResultsAsync(List<BsonDocument> results)
         {
             foreach (var result in results)
             {
-                if (vacancyType == Domain.Entities.VacancyType.Apprenticeship)
-                {
-                    await SetProgrammeAsync(result);
-                }
+                await SetProgrammeAsync(result);
                 
                 SetNumberOfDaysAtThisStatus(result);
                 SetVacancyReference(result);

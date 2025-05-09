@@ -15,7 +15,6 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
 {    
     [Route(RoutePaths.AccountVacancyRoutePath)]
     [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
-    [Authorize(Policy = nameof(PolicyNames.IsApprenticeshipWeb))]
     public class TrainingController : Controller
     {
         private readonly TrainingOrchestrator _orchestrator;

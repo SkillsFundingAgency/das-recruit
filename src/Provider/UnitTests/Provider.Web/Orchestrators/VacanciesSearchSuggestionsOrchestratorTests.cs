@@ -32,42 +32,40 @@ namespace Esfa.Recruit.UnitTests.Provider.Web.Orchestrators
         };
 
         [Theory]
-        [InlineData(VacancyType.Apprenticeship, "x", true)]
-        [InlineData(VacancyType.Apprenticeship, "xx", true)]
-        [InlineData(VacancyType.Apprenticeship, "xxx", true)]
-        [InlineData(VacancyType.Apprenticeship, "xxxx", true)]
-        [InlineData(VacancyType.Apprenticeship, "xxxxx", false)]
-        [InlineData(VacancyType.Apprenticeship, "xxxxxx", false)]
-        public async Task When_The_Search_Term_Is_Less_Than_The_Minimum_Search_Threshold_Then_Empty_List_Returned(VacancyType vacancyType, string searchTerm, bool shouldBeEmptyList)
+        [InlineData( "x", true)]
+        [InlineData( "xx", true)]
+        [InlineData( "xxx", true)]
+        [InlineData( "xxxx", true)]
+        [InlineData( "xxxxx", false)]
+        [InlineData( "xxxxxx", false)]
+        public async Task When_The_Search_Term_Is_Less_Than_The_Minimum_Search_Threshold_Then_Empty_List_Returned(string searchTerm, bool shouldBeEmptyList)
         {
-            var orch = GetSut(_testVacancies, vacancyType, searchTerm);
+            var orch = GetSut(_testVacancies, searchTerm);
             var result = await orch.GetSearchSuggestionsAsync(searchTerm, Ukprn); 
             result.Any().Should().Be(!shouldBeEmptyList);
         }
 
-        [Theory]
-        [InlineData(VacancyType.Apprenticeship)]
-        public async Task WhenTermMatchesMoreThan50Title_ThenLegalEntityNameWillBeFilteredOut(VacancyType vacancyType)
+        [Fact]
+        public async Task WhenTermMatchesMoreThan50Title_ThenLegalEntityNameWillBeFilteredOut()
         {
             var LegalEntityName = "20th Century Fox";
             var searchTerm = "century";
-            var orch = GetSut(GenerateVacancySummaries(100, LegalEntityName, searchTerm), vacancyType, searchTerm);
+            var orch = GetSut(GenerateVacancySummaries(100, LegalEntityName, searchTerm), searchTerm);
             var result = await orch.GetSearchSuggestionsAsync(searchTerm, Ukprn);
             result.Count().Should().Be(VacanciesSearchSuggestionsOrchestrator.MaxRowsInResult);
             result.Any(s => s.Equals(LegalEntityName)).Should().BeFalse();
         }
 
 
-        private VacanciesSearchSuggestionsOrchestrator GetSut(IEnumerable<VacancySummary> vacancies, VacancyType vacancyType, string searchTerm)
+        private VacanciesSearchSuggestionsOrchestrator GetSut(IEnumerable<VacancySummary> vacancies, string searchTerm)
         {
-            var serviceParameters = new ServiceParameters();
             var dashboard = new ProviderDashboard()
             {
                 Vacancies = vacancies
             };
             
             _mockClient.Setup(c => c.GetDashboardAsync(Ukprn, 1, null,searchTerm)).ReturnsAsync(dashboard);
-            return new VacanciesSearchSuggestionsOrchestrator(_mockClient.Object, serviceParameters);
+            return new VacanciesSearchSuggestionsOrchestrator(_mockClient.Object);
         }
 
         private IEnumerable<VacancySummary> GenerateVacancySummaries(int count, string legalEntityName, string term)

@@ -35,7 +35,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
         {
             var bsonArray = new BsonArray
             {
-                VacancyType.Apprenticeship.ToString(),
+                "Apprenticeship",
                 BsonNull.Value
             };
 
@@ -74,7 +74,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
         {
             var bsonArray = new BsonArray
             {
-                VacancyType.Apprenticeship.ToString(),
+                "Apprenticeship",
                 BsonNull.Value
             };
             
@@ -131,7 +131,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
         {
             var bsonArray = new BsonArray
             {
-                VacancyType.Apprenticeship.ToString(),
+                "Apprenticeship",
                 BsonNull.Value
             };
             
@@ -160,7 +160,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
         {
             var bsonArray = new BsonArray
             {
-                VacancyType.Apprenticeship.ToString(),
+                "Apprenticeship",
                 BsonNull.Value
             };
             
@@ -221,7 +221,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
         {
             var bsonArray = new BsonArray
             {
-                VacancyType.Apprenticeship.ToString(),
+                "Apprenticeship",
                 BsonNull.Value
             };
             

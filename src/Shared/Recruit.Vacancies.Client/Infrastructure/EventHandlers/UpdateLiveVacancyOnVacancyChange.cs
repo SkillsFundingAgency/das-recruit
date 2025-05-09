@@ -54,7 +54,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
 
             var vacancy = await _repository.GetVacancyAsync(notification.VacancyId);
             
-            var programme = vacancy.VacancyType.GetValueOrDefault() == VacancyType.Apprenticeship ? await _apprenticeshipProgrammeProvider.GetApprenticeshipProgrammeAsync(vacancy.ProgrammeId) : null;
+            var programme = await _apprenticeshipProgrammeProvider.GetApprenticeshipProgrammeAsync(vacancy.ProgrammeId);
 
             var liveVacancy = vacancy.ToVacancyProjectionBase<LiveVacancy>((ApprenticeshipProgramme)programme, () => QueryViewType.LiveVacancy.GetIdValue(vacancy.VacancyReference.ToString()), _timeProvider);
             _logger.LogInformation("Updating LiveVacancy in query store for vacancy {vacancyId} reference {vacancyReference}.", liveVacancy.VacancyId, liveVacancy.VacancyReference);

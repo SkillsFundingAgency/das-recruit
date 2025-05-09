@@ -44,31 +44,28 @@
                             </div>
                         </div>
                         <br>
-                        @if (Model.VacancyType == VacancyType.Apprenticeship)
-                        {
-                            <details class="govuk-details govuk-!-margin-bottom-0">
-                                <summary class="govuk-details__summary">
-                                    <span class="govuk-details__summary-text">
-                                        Information about extending closing dates
-                                    </span>
-                                </summary>
-                                <div class="govuk-details__text">
-                                    <p>Before you extend the closing date remember that:</p>
-                                    <ul class="list list-bullet">
-                                        <li>the apprenticeship training you chose may no longer be available</li>
-                                        <li>the fixed wage may no longer be valid, depending on National Minimum Wage changes</li>
-                                    </ul>
-                                    <p>To change the apprenticeship training or wage on the vacancy, you will need to create a new vacancy</p>
-                                </div>
-                            </details>
-                        }
                         
+                        <details class="govuk-details govuk-!-margin-bottom-0">
+                            <summary class="govuk-details__summary">
+                                <span class="govuk-details__summary-text">
+                                    Information about extending closing dates
+                                </span>
+                            </summary>
+                            <div class="govuk-details__text">
+                                <p>Before you extend the closing date remember that:</p>
+                                <ul class="list list-bullet">
+                                    <li>the apprenticeship training you chose may no longer be available</li>
+                                    <li>the fixed wage may no longer be valid, depending on National Minimum Wage changes</li>
+                                </ul>
+                                <p>To change the apprenticeship training or wage on the vacancy, you will need to create a new vacancy</p>
+                            </div>
+                        </details>
                     </fieldset>
                 </div>
                 <div esfa-validation-marker-for="StartDate" class="govuk-form-group">
                     <fieldset class="govuk-fieldset" aria-describedby="closing-hint" role="group">
                         <label class="govuk-label govuk-!-font-weight-bold" for="shortDescription">
-                            @(Model.VacancyType == VacancyType.Apprenticeship ? "Apprenticeship" : "Traineeship") start date
+                            Apprenticeship start date
                         </label>
                         <span class="govuk-hint">For example, @exampleStartingDate.AsInputHintDisplayDate()</span>
                         <span esfa-validation-message-for="StartDate" class="govuk-error-message"></span>

@@ -12,12 +12,4 @@
 
 <h1 class="govuk-heading-l">View your vacancy</h1>
 
-@if (_serviceParameters.VacancyType.GetValueOrDefault() == VacancyType.Apprenticeship)
-{
-    <partial name="_vacancyApprenticeshipPreview" model="@Model" />    
-}
-else
-{
-    <partial name="_vacancyTraineeshipPreview" model="@Model" />
-}
-
+<partial name="_vacancyApprenticeshipPreview" model="@Model" />    

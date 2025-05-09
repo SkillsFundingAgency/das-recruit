@@ -7,6 +7,5 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.Reports.ReportConfirmation
         public string FromDate { get; set; }
         public string ToDate { get; set; }
         public long Ukprn { get; set; }
-        public VacancyType VacancyType { get; set; }
     }
 }

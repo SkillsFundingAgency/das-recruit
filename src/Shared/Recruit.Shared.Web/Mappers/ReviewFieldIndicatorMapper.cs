@@ -51,31 +51,7 @@ namespace Esfa.Recruit.Shared.Web.Mappers
             { FieldIdentifiers.AdditionalQuestion2, "Additional question 2 requires edit" },
         };
         
-        private IDictionary<string, string> ManualQaMessagesForTraineeship => new Dictionary<string, string> 
-        {
-            { FieldIdentifiers.Title, "Vacancy title requires edit" },
-            { FieldIdentifiers.ShortDescription, "Summary of traineeship requires edit" },
-            { FieldIdentifiers.ClosingDate, "Application closing date requires edit" },
-            { FieldIdentifiers.Wage, "Annual wage requires edit" },
-            { FieldIdentifiers.WorkingWeek, "Working week requires edit" },
-            { FieldIdentifiers.ExpectedDuration, "Expected duration requires edit" },
-            { FieldIdentifiers.PossibleStartDate, "Start date requires edit" },
-            { FieldIdentifiers.NumberOfPositions, "Number of positions requires edit" },
-            { FieldIdentifiers.VacancyDescription, "What will the apprentice be doing requires edit" },
-            { FieldIdentifiers.TrainingDescription, "Training provided requires edit" },
-            { FieldIdentifiers.OutcomeDescription, "Future prospects requires edit" },
-            { FieldIdentifiers.Skills, "Skills requires edit" },
-            { FieldIdentifiers.ThingsToConsider, "Other things to consider requires edit" },
-            { FieldIdentifiers.EmployerDescription, "Employer information requires edit" },
-            { FieldIdentifiers.EmployerName, "Employer name requires edit" },
-            { FieldIdentifiers.DisabilityConfident, "Disability confident employer requires edit" },
-            { FieldIdentifiers.EmployerWebsiteUrl, "Employer website requires edit" },
-            { FieldIdentifiers.EmployerContact, "Contact details requires edit" },
-            { FieldIdentifiers.EmployerAddress, "Work experience address requires edit" },
-            { FieldIdentifiers.Provider, "Training provider requires edit" },
-            { FieldIdentifiers.ProviderContact, "Contact details requires edit" }
-        };
-
+        
         public IEnumerable<ReviewFieldIndicatorViewModel> MapFromFieldIndicators(ReviewFieldMappingLookupsForPage pageMappings, VacancyReview review)
         {
             var manualQaFieldIdentifierNames = review.ManualQaFieldIndicators
@@ -105,9 +81,7 @@ namespace Esfa.Recruit.Shared.Web.Mappers
             {
                 if (manualQaFieldIdentifierNames.Contains(indicator.Key))
                 {
-                    indicator.Value.ManualQaText = review.VacancySnapshot.VacancyType.GetValueOrDefault() == VacancyType.Apprenticeship 
-                        ? ManualQaMessagesForApprenticeship[indicator.Key] 
-                        : ManualQaMessagesForTraineeship[indicator.Key];
+                    indicator.Value.ManualQaText = ManualQaMessagesForApprenticeship[indicator.Key];
                 }
 
                 var autoQaOutcomes = autoQaReferredOutcomes.Where(x => pageMappings.VacancyPropertyMappingsLookup.TryGetValue(x.Target, out var value) && value.Contains(indicator.Key))

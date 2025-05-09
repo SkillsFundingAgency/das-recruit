@@ -32,7 +32,7 @@ public class TitleControllerTests
         orchestrator
             .Setup(o => o.PostTitleEditModelAsync(vacancyRouteModel, titleEditModel, It.IsAny<VacancyUser>(), vacancyRouteModel.Ukprn))
             .ReturnsAsync(new OrchestratorResponse<Guid>(Guid.NewGuid()){Success = true});
-        var controller = new TitleController(orchestrator.Object, Mock.Of<IProviderVacancyClient>(), new ServiceParameters());
+        var controller = new TitleController(orchestrator.Object, Mock.Of<IProviderVacancyClient>());
         var user = new ClaimsPrincipal(new ClaimsIdentity(
             new []
             {
@@ -60,7 +60,7 @@ public class TitleControllerTests
         orchestrator
             .Setup(o => o.PostTitleEditModelAsync(vacancyRouteModel, titleEditModel, It.IsAny<VacancyUser>(), vacancyRouteModel.Ukprn))
             .ReturnsAsync(new OrchestratorResponse<Guid>(Guid.NewGuid()){Success = true});
-        var controller = new TitleController(orchestrator.Object, Mock.Of<IProviderVacancyClient>(), new ServiceParameters());
+        var controller = new TitleController(orchestrator.Object, Mock.Of<IProviderVacancyClient>());
         var user = new ClaimsPrincipal(new ClaimsIdentity(
             new []
             {

@@ -34,7 +34,6 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
                 c.ReportId != Guid.Empty &&
                 c.Owner.Ukprn.Equals(ukprn) &&
                 c.Owner.OwnerType.Equals(ReportOwnerType.Provider) &&
-                c.Parameters["VacancyType"].Equals(VacancyType.Apprenticeship.ToString()) &&
                 c.Parameters["Ukprn"].Equals(ukprn)
                 )));
         }

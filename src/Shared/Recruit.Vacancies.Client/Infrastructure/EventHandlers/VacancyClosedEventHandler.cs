@@ -63,7 +63,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
                 return;
             }
             
-            var programme = vacancy.VacancyType.GetValueOrDefault() == VacancyType.Apprenticeship ?  await _apprenticeshipProgrammeProvider.GetApprenticeshipProgrammeAsync(vacancy.ProgrammeId) : null;
+            var programme = await _apprenticeshipProgrammeProvider.GetApprenticeshipProgrammeAsync(vacancy.ProgrammeId);
 
             await _queryStore.UpdateClosedVacancyAsync(vacancy.ToVacancyProjectionBase<ClosedVacancy>((ApprenticeshipProgramme)programme, () => QueryViewType.ClosedVacancy.GetIdValue(vacancy.VacancyReference.ToString()), _timeProvider));
 

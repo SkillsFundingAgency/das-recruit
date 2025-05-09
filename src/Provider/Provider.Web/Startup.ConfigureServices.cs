@@ -55,7 +55,6 @@ namespace Esfa.Recruit.Provider.Web
             _authConfig = _configuration.GetSection("Authentication").Get<AuthenticationConfiguration>();
             
             _dfEOidcConfig = _configuration.GetSection("DfEOidcConfiguration").Get<DfEOidcConfiguration>(); // read the configuration from SFA.DAS.Provider.DfeSignIn
-            _isDfESignInAllowed = _configuration.GetValue<bool>("UseDfeSignIn"); // read the UseDfeSignIn property from SFA.DAS.Recruit.QA configuration.
             _loggerFactory = loggerFactory;
             _logger = logger;
         }
@@ -91,29 +90,17 @@ namespace Esfa.Recruit.Provider.Web
             services.AddControllersWithViews().AddRazorRuntimeCompilation();
     #endif
 
-            var serviceParameters = new ServiceParameters();
-            bool useDfESignIn = _configuration["UseDfESignIn"] != null && _configuration["UseDfESignIn"].Equals("true", StringComparison.CurrentCultureIgnoreCase);
-            if (useDfESignIn)
-            {
-                var providerType = ClientName.TraineeshipRoatp;
-                if (serviceParameters.VacancyType == VacancyType.Apprenticeship)
-                {
-                    providerType = ClientName.ProviderRoatp;
-                }
-                services.AddAndConfigureDfESignInAuthentication(
-                    _configuration,
-                    "SFA.DAS.ProviderApprenticeshipService",
-                    typeof(CustomServiceRole),
-                    providerType,
-                    "/signout",
-                    "");    
-            }
-            else
-            {
-                services.AddAuthenticationService(_authConfig);    
-            }
             
-            services.AddAuthorizationService(useDfESignIn);
+            services.AddAndConfigureDfESignInAuthentication(
+                _configuration,
+                "SFA.DAS.ProviderApprenticeshipService",
+                typeof(CustomServiceRole),
+                ClientName.ProviderRoatp,
+                "/signout",
+                "");    
+        
+            
+            services.AddAuthorizationService();
             services.AddDasEncoding(_configuration);
 
             CheckInfrastructure(services);

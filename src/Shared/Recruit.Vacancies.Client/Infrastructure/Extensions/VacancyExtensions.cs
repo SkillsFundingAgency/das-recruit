@@ -52,7 +52,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Extensions
             projectedVacancy.ProgrammeId = vacancy.ProgrammeId;
             projectedVacancy.ProgrammeLevel = programme?.ApprenticeshipLevel.ToString();
             projectedVacancy.ProgrammeType = programme?.ApprenticeshipType.ToString();
-            projectedVacancy.Qualifications = vacancy.VacancyType.GetValueOrDefault() == VacancyType.Apprenticeship ? vacancy.Qualifications.ToProjection() : new List<ProjectionQualification>();
+            projectedVacancy.Qualifications = vacancy.Qualifications.ToProjection();
             projectedVacancy.ShortDescription = vacancy.ShortDescription;
             projectedVacancy.Skills = vacancy.Skills;
             projectedVacancy.StartDate = vacancy.StartDate.GetValueOrDefault();
@@ -67,8 +67,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Extensions
             projectedVacancy.AccountPublicHashedId = vacancy.EmployerAccountId;
             projectedVacancy.AccountLegalEntityPublicHashedId = vacancy.AccountLegalEntityPublicHashedId;
             
-            projectedVacancy.VacancyType = vacancy.VacancyType.GetValueOrDefault();
-
             projectedVacancy.AdditionalQuestion1 = vacancy.AdditionalQuestion1;
             projectedVacancy.AdditionalQuestion2 = vacancy.AdditionalQuestion2;
 

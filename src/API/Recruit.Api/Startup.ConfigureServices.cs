@@ -32,9 +32,6 @@ namespace SFA.DAS.Recruit.Api
             services.Configure<RecruitConfiguration>(Configuration.GetSection("Recruit"));
             services.Configure<AzureActiveDirectoryConfiguration>(Configuration.GetSection("AzureAd"));
 
-            services.AddScoped(_ => new ServiceParameters());
-
-
             var azureAdConfig = Configuration
                 .GetSection("AzureAd")
                 .Get<AzureActiveDirectoryConfiguration>();

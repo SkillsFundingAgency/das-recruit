@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections;
@@ -14,12 +13,10 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
         public const int MaxRowsInResult = 50;
 
         private readonly IProviderVacancyClient _providerVacancyClient;
-        private readonly ServiceParameters _serviceParameters;
 
-        public VacanciesSearchSuggestionsOrchestrator(IProviderVacancyClient providerVacancyClient, ServiceParameters serviceParameters)
+        public VacanciesSearchSuggestionsOrchestrator(IProviderVacancyClient providerVacancyClient)
         {
             _providerVacancyClient = providerVacancyClient;
-            _serviceParameters = serviceParameters;
         }
 
         public async Task<IEnumerable<string>> GetSearchSuggestionsAsync(string searchTerm, long ukprn)

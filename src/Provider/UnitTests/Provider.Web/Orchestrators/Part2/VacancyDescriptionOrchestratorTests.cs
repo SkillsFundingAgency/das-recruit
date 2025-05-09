@@ -7,7 +7,6 @@ using Esfa.Recruit.Provider.Web.Orchestrators.Part2;
 using Esfa.Recruit.Provider.Web.ViewModels.Part2.VacancyDescription;
 using Esfa.Recruit.Shared.Web.Mappers;
 using Esfa.Recruit.Shared.Web.Services;
-using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
@@ -112,12 +111,6 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part2
                 return this;
             }
 
-            public VacancyDescriptionOrchestratorTestsFixture WithVacancyType(VacancyType vacancyType)
-            {
-                Vacancy.VacancyType = vacancyType;
-                return this;
-            }
-
             public void Setup()
             {
                 MockRecruitVacancyClient.Setup(x => x.GetVacancyAsync(Vacancy.Id)).ReturnsAsync(Vacancy);
@@ -127,7 +120,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part2
 
                 Sut = new VacancyDescriptionOrchestrator(MockRecruitVacancyClient.Object,
                     Mock.Of<ILogger<VacancyDescriptionOrchestrator>>(), Mock.Of<IReviewSummaryService>(),
-                    new Utility(MockRecruitVacancyClient.Object), new ServiceParameters());
+                    new Utility(MockRecruitVacancyClient.Object));
             }
 
             public async Task PostVacancyDescriptionEditModelAsync(VacancyDescriptionEditModel model)

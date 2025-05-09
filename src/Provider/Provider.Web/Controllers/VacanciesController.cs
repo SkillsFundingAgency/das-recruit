@@ -4,11 +4,9 @@ using Esfa.Recruit.Provider.Web.Configuration;
 using Esfa.Recruit.Provider.Web.Configuration.Routing;
 using Esfa.Recruit.Provider.Web.Extensions;
 using Esfa.Recruit.Provider.Web.Orchestrators;
-using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 
 namespace Esfa.Recruit.Provider.Web.Controllers
@@ -18,15 +16,11 @@ namespace Esfa.Recruit.Provider.Web.Controllers
     {
         private readonly VacanciesOrchestrator _orchestrator;
         private readonly IWebHostEnvironment _hostingEnvironment;
-        private readonly ServiceParameters _serviceParameters;
-        private readonly IConfiguration _configuration;
 
-        public VacanciesController(VacanciesOrchestrator orchestrator, IWebHostEnvironment hostingEnvironment, ServiceParameters serviceParameters, IConfiguration configuration)
+        public VacanciesController(VacanciesOrchestrator orchestrator, IWebHostEnvironment hostingEnvironment)
         {
             _orchestrator = orchestrator;
             _hostingEnvironment = hostingEnvironment;
-            _serviceParameters = serviceParameters;
-            _configuration = configuration;
         }
 
         [HttpGet("", Name = RouteNames.Vacancies_Get)]
