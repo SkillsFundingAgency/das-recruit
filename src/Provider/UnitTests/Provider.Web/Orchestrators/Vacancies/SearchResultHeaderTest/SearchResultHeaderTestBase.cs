@@ -65,7 +65,8 @@ namespace Esfa.Recruit.UnitTests.Provider.Web.Orchestrators.Vacancies.SearchResu
                 Email = "me@home.com",
                 Name = "Keith Chegwin",
                 Ukprn = 12345678,
-                UserId = userId.ToString()
+                UserId = userId.ToString(),
+                DfEUserId = Guid.NewGuid().ToString(),
             };
             UserDetails = new User
             {
@@ -77,8 +78,9 @@ namespace Esfa.Recruit.UnitTests.Provider.Web.Orchestrators.Vacancies.SearchResu
 
             RecruitVacancyClientMock = new Mock<IRecruitVacancyClient>();
             RecruitVacancyClientMock
-                .Setup(x => x.GetUsersDetailsAsync(User.UserId))
+                .Setup(x => x.GetUsersDetailsByDfEUserId(User.DfEUserId))
                 .ReturnsAsync(UserDetails);
+
 
             ProviderAlertsViewModelFactoryMock = new Mock<IProviderAlertsViewModelFactory>();
             ProviderRelationshipsServiceMock = new Mock<IProviderRelationshipsService>();
