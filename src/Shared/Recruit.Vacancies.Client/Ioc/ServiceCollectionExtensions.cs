@@ -2,7 +2,6 @@
 using Esfa.Recruit.Vacancies.Client.Application.Aspects;
 using Esfa.Recruit.Vacancies.Client.Application.Cache;
 using Esfa.Recruit.Vacancies.Client.Application.CommandHandlers;
-using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Application.Events;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Application.Queues;
@@ -18,7 +17,6 @@ using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.Configuration;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.EventStore;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.HttpRequestHandlers;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Messaging;
@@ -66,8 +64,7 @@ namespace Esfa.Recruit.Vacancies.Client.Ioc
             services
                 .AddHttpClient()
                 .Configure<AccountApiConfiguration>(configuration.GetSection("AccountApiConfiguration"))
-                .AddMemoryCache()
-                .AddTransient<IConfigurationReader, ConfigurationReader>();
+                .AddMemoryCache();
             RegisterClients(services);
             RegisterServiceDeps(services, configuration);
             RegisterAccountApiClientDeps(services);

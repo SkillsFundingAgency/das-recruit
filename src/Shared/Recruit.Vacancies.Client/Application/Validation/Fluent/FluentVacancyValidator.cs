@@ -1,5 +1,5 @@
 using System;
-using Esfa.Recruit.Vacancies.Client.Application.Configuration;
+using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Application.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomValidators.VacancyValidators;
@@ -21,7 +21,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
         private readonly IBlockedOrganisationQuery _blockedOrganisationRepo;
         private readonly IProfanityListProvider _profanityListProvider;
         private readonly IProviderRelationshipsService _providerRelationshipService;
-        private readonly ServiceParameters _serviceParameters;
+        private readonly IFeature _feature;
 
         public FluentVacancyValidator(
             ITimeProvider timeProvider,
@@ -33,7 +33,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
             IBlockedOrganisationQuery blockedOrganisationRepo,
             IProfanityListProvider profanityListProvider,
             IProviderRelationshipsService providerRelationshipService,
-            ServiceParameters serviceParameters)
+            IFeature feature)
         {
             _timeProvider = timeProvider;
             _minimumWageService = minimumWageService;
@@ -44,8 +44,8 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
             _blockedOrganisationRepo = blockedOrganisationRepo;
             _profanityListProvider = profanityListProvider;
             _providerRelationshipService = providerRelationshipService;
-            _serviceParameters = serviceParameters;
-
+            _feature = feature;
+            
             SingleFieldValidations();
             CrossFieldValidations();
         }
@@ -398,122 +398,73 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                     .WithState(_ => VacancyRuleSet.Duration)
                     .RunCondition(VacancyRuleSet.Duration);
 
-                RuleFor(x => x.Wage.Duration)
-                    .Cascade(CascadeMode.Stop)
-                    .NotEmpty()
-                    .WithMessage($"Enter how long the whole {VacancyContext} is, including work and training")
-                    .WithErrorCode("34")
-                    .WithState(_ => VacancyRuleSet.Duration)
-                    .GreaterThan(0)
-                    .WithMessage($"Enter how long the whole {VacancyContext} is, including work and training")
-                    .WithErrorCode("34")
-                    .WithState(_ => VacancyRuleSet.Duration)
-                    .Must((vacancy, value) =>
-                    {
-                        if (vacancy.Wage.DurationUnit == DurationUnit.Month && value < 12)
-                        {
-                            return false;
-                        }
-
-                        return true;
-                    })
-                    .WithMessage("Expected duration must be at least 12 months")
-                    .WithErrorCode("36")
-                    .WithState(_ => VacancyRuleSet.Duration)
-                    .Must((vacancy, value) =>
-                    {
-                        if ((vacancy.Wage.DurationUnit == DurationUnit.Month && value >= 12
-                             || vacancy.Wage.DurationUnit == DurationUnit.Year && value >= 1)
-                            && vacancy.Wage.WeeklyHours.HasValue
-                            && vacancy.Wage.WeeklyHours < 30m)
-                        {
-
-                            var numberOfMonths = (int)Math.Ceiling(30 / vacancy.Wage.WeeklyHours.GetValueOrDefault() * 12);
-
-                            if (vacancy.Wage.DurationUnit == DurationUnit.Year)
-                            {
-                                value *= 12;
-                            }
-
-                            if (numberOfMonths > value)
-                            {
-                                return false;
-                            }
-                        }
-
-                        return true;
-                    })
-                    .WithMessage((vacancy, value) =>
-                    {
-                        int numberOfMonths = (int)Math.Ceiling(30 / vacancy.Wage.WeeklyHours.GetValueOrDefault() * 12);
-                        return $"Duration of apprenticeship must be {numberOfMonths} months based on the number of hours per week entered";
-                    })
-                    .WithErrorCode("36")
-                    .WithState(_ => VacancyRuleSet.Duration)
-                    .RunCondition(VacancyRuleSet.Duration);
+                When(x => x.StartDate >= new DateTime(2025, 8, 1), () =>
+                {
+                    VacancyDurationCondition(8);
+                }).Otherwise(() =>
+                {
+                    VacancyDurationCondition(12);
+                });
             });
         }
 
-        private void ValidateTraineeshipDuration()
+        private void VacancyDurationCondition(int minimumVacancyDurationInMonths)
         {
-            When(x => x.Wage != null, () =>
-            {
-                RuleFor(x => x.Wage.DurationUnit)
-                    .NotEmpty()
-                    .WithMessage($"Enter {VacancyContext} duration")
-                    .WithErrorCode("34")
-                    .WithState(_ => VacancyRuleSet.Duration)
-                    .IsInEnum()
-                    .WithMessage($"Enter {VacancyContext} duration")
-                    .WithErrorCode("34")
-                    .WithState(_ => VacancyRuleSet.Duration)
-                    .RunCondition(VacancyRuleSet.Duration);
-
-                RuleFor(x => x.Wage.Duration)
-                    .Cascade(CascadeMode.Stop)
-                    .NotEmpty()
-                    .WithMessage($"Enter {VacancyContext} duration")
-                    .WithErrorCode("34")
-                    .WithState(_ => VacancyRuleSet.Duration)
-                    .GreaterThan(0)
-                    .WithMessage($"Enter {VacancyContext} duration")
-                    .WithErrorCode("34")
-                    .WithState(_ => VacancyRuleSet.Duration)
-                    .Must((vacancy, value) =>
+            RuleFor(x => x.Wage.Duration)
+                .Cascade(CascadeMode.Stop)
+                .NotEmpty()
+                .WithMessage($"Enter how long the whole {VacancyContext} is, including work and training")
+                .WithErrorCode("34")
+                .WithState(_ => VacancyRuleSet.Duration)
+                .GreaterThan(0)
+                .WithMessage($"Enter how long the whole {VacancyContext} is, including work and training")
+                .WithErrorCode("34")
+                .WithState(_ => VacancyRuleSet.Duration)
+                .Must((vacancy, value) =>
+                {
+                    if (vacancy.Wage.DurationUnit == DurationUnit.Month && value < minimumVacancyDurationInMonths)
                     {
-                        if (vacancy.Wage.DurationUnit == DurationUnit.Week && value < 6)
-                        {
-                            return false;
-                        }
+                        return false;
+                    }
 
-                        if (vacancy.Wage.DurationUnit == DurationUnit.Month && value <= 1)
-                        {
-                            return false;
-                        }
-                        return true;
-                    })
-                    .WithMessage("Expected duration must be at least 6 weeks")
-                    .WithErrorCode("36")
-                    .WithState(_ => VacancyRuleSet.Duration)
-                    .Must((vacancy, value) =>
+                    return true;
+                })
+                .WithMessage($"Expected duration must be at least {minimumVacancyDurationInMonths} months")
+                .WithErrorCode("36")
+                .WithState(_ => VacancyRuleSet.Duration)
+                .Must((vacancy, value) =>
+                {
+                    if ((vacancy.Wage.DurationUnit == DurationUnit.Month && value >= minimumVacancyDurationInMonths
+                         || vacancy.Wage.DurationUnit == DurationUnit.Year && value >= 1)
+                        && vacancy.Wage.WeeklyHours.HasValue
+                        && vacancy.Wage.WeeklyHours < 30m)
                     {
-                        if (vacancy.Wage.DurationUnit == DurationUnit.Month && value > 12)
+
+                        var numberOfMonths = (int)Math.Ceiling(30 / vacancy.Wage.WeeklyHours.GetValueOrDefault() * minimumVacancyDurationInMonths);
+
+                        if (vacancy.Wage.DurationUnit == DurationUnit.Year)
                         {
-                            return false;
-                        }
-                        if (vacancy.Wage.DurationUnit == DurationUnit.Week && value > 52)
-                        {
-                            return false;
+                            value *= minimumVacancyDurationInMonths;
                         }
 
-                        return true;
-                    })
-                    .WithMessage("Expected duration must be 12 months or under")
-                    .WithErrorCode("36")
-                    .WithState(_ => VacancyRuleSet.Duration)
-                    .RunCondition(VacancyRuleSet.Duration);
-            });
+                        if (numberOfMonths > value)
+                        {
+                            return false;
+                        }
+                    }
+
+                    return true;
+                })
+                .WithMessage((vacancy, value) =>
+                {
+                    int numberOfMonths = (int)Math.Ceiling(30 / vacancy.Wage.WeeklyHours.GetValueOrDefault() * minimumVacancyDurationInMonths);
+                    return $"Duration of apprenticeship must be {numberOfMonths} months based on the number of hours per week entered";
+                })
+                .WithErrorCode("36")
+                .WithState(_ => VacancyRuleSet.Duration)
+                .RunCondition(VacancyRuleSet.Duration);
         }
+
         private void ValidateWorkingWeek()
         {
             When(x => x.Wage != null, () =>

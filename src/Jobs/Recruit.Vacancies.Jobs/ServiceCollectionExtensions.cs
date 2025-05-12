@@ -5,7 +5,6 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories;
 using Esfa.Recruit.Vacancies.Client.Ioc;
 using Esfa.Recruit.Vacancies.Jobs.AnalyticsSummaryProcessor;
 using Esfa.Recruit.Vacancies.Jobs.Communication;
-using Esfa.Recruit.Vacancies.Jobs.Configuration;
 using Esfa.Recruit.Vacancies.Jobs.DomainEvents;
 using Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Application;
 using Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Candidate;
@@ -37,12 +36,6 @@ namespace Esfa.Recruit.Vacancies.Jobs
         public static void ConfigureJobServices(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddRecruitStorageClient(configuration);
-
-            services.AddSingleton(x =>
-            {
-                var svc = x.GetService<IConfigurationReader>();
-                return svc.GetAsync<RecruitWebJobsSystemConfiguration>("RecruitWebJobsSystem").Result;
-            });
 
             // Add Jobs
             services.AddScoped<DomainEventsQueueTrigger>();

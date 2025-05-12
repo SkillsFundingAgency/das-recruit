@@ -93,8 +93,9 @@ namespace SFA.DAS.Recruit.Api.Models
     {
         FixedWage,
         NationalMinimumWageForApprentices,
-        NationalMinimumWage,        
-        Unspecified
+        NationalMinimumWage,   
+        Unspecified,
+        CompetitiveSalary,
     }
     
     public enum DurationUnit

@@ -25,5 +25,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Responses
         public string EmployerName { get; set; }
         [JsonProperty("role")]
         public string Role { get; set; }
+        [JsonProperty("apprenticeshipEmployerType")]
+        public string ApprenticeshipEmployerType { get; set; }
     }
 }
