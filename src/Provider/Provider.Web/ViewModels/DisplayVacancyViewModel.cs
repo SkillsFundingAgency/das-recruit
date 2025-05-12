@@ -153,6 +153,7 @@ namespace Esfa.Recruit.Provider.Web.ViewModels
         public string StandardPageUrl { get; set; }
         public string OverviewOfRole { get; set; }
         public ApprenticeshipLevel ApprenticeshipLevel { get; set; }
+        public ApprenticeshipTypes ApprenticeshipType { get; set; }
         
         private string BuildAdditionalQuestionText(string additionalQuestion)
         {

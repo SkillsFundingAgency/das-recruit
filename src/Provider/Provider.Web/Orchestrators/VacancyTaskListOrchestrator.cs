@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Esfa.Recruit.Provider.Web.Configuration;
 using Esfa.Recruit.Provider.Web.Configuration.Routing;
 using Esfa.Recruit.Provider.Web.Mappings;
 using Esfa.Recruit.Provider.Web.Models;
@@ -22,6 +21,7 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Locations;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelationship;
 using Microsoft.Extensions.Logging;
 using ErrorMessages = Esfa.Recruit.Shared.Web.ViewModels.ErrorMessages;
+using FeatureNames = Esfa.Recruit.Provider.Web.Configuration.FeatureNames;
 
 namespace Esfa.Recruit.Provider.Web.Orchestrators
 {

@@ -21,6 +21,7 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using ErrMsg = Esfa.Recruit.Shared.Web.ViewModels.ErrorMessages;
+using FeatureNames = Esfa.Recruit.Employer.Web.Configuration.FeatureNames;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators
 {

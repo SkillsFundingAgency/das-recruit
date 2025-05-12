@@ -44,7 +44,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                 NoOfEmployerReviewedApplications = src.NoOfEmployerReviewedApplications,
                 IsTraineeship = vacSummaryDetail.IsTraineeship,
                 IsTaskListCompleted = vacSummaryDetail.OwnerType is OwnerType.Provider or OwnerType.Employer && vacSummaryDetail.HasSubmittedAdditionalQuestions,
-                HasChosenProviderContactDetails = vacSummaryDetail.HasChosenProviderContactDetails
+                HasChosenProviderContactDetails = vacSummaryDetail.HasChosenProviderContactDetails,
+                ApprenticeshipType = vacSummaryDetail.ApprenticeshipType,
             };
 
             return vacancySummary;

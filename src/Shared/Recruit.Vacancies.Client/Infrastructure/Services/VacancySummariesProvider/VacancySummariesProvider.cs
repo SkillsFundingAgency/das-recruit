@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections;
@@ -15,22 +15,19 @@ using Polly;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummariesProvider
 {
-    internal sealed class VacancySummariesProvider : MongoDbCollectionBase, IVacancySummariesProvider
+    internal sealed class VacancySummariesProvider(
+        ILoggerFactory loggerFactory,
+        IOptions<MongoDbConnectionDetails> details,
+        IVacancyTaskListStatusService vacancyTaskListStatusService,
+        IFeature features)
+        : MongoDbCollectionBase(loggerFactory, MongoDbNames.RecruitDb, MongoDbCollectionNames.Vacancies, details),
+            IVacancySummariesProvider
     {
-        private readonly IVacancyTaskListStatusService _vacancyTaskListStatusService;
+        private readonly IVacancyTaskListStatusService _vacancyTaskListStatusService = vacancyTaskListStatusService;
         private const string TransferInfoUkprn = "transferInfo.ukprn";
         private const string TransferInfoReason = "transferInfo.reason";
         private const int ClosingSoonDays = 5;
 
-        public VacancySummariesProvider(
-            ILoggerFactory loggerFactory, 
-            IOptions<MongoDbConnectionDetails> details, 
-            IVacancyTaskListStatusService vacancyTaskListStatusService)
-            : base(loggerFactory, MongoDbNames.RecruitDb, MongoDbCollectionNames.Vacancies, details)
-        {
-            _vacancyTaskListStatusService = vacancyTaskListStatusService;
-        }
-       
         public async Task<VacancyDashboard> GetProviderOwnedVacancyDashboardByUkprnAsync(long ukprn)
         {
             var bsonArray = new BsonArray
@@ -164,6 +161,10 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                 BsonNull.Value
             };
             
+            if (features.IsFeatureEnabled(FeatureNames.FoundationApprenticeships))
+            {
+                bsonArray.Add(VacancyType.Foundation.ToString());
+            }
 
             var match = new BsonDocument
             {
