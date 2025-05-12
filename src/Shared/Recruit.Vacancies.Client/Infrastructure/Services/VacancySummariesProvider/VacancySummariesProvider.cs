@@ -161,11 +161,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                 BsonNull.Value
             };
             
-            if (features.IsFeatureEnabled(FeatureNames.FoundationApprenticeships))
-            {
-                bsonArray.Add(VacancyType.Foundation.ToString());
-            }
-
             var match = new BsonDocument
             {
                 {
