@@ -1,10 +1,12 @@
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using MongoDB.Bson;
 using MongoDB.Driver;
 using Polly;
 
@@ -19,11 +21,12 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
 
         public async Task<User> GetAsync(string idamsUserId)
         {
-            var filter = Builders<User>.Filter.Eq(v => v.IdamsUserId, idamsUserId);
+            var filter = Builders<User>.Filter.Regex(v => v.IdamsUserId, 
+                new BsonRegularExpression(Regex.Escape(idamsUserId.ToLower()),"i" ));
 
             var collection = GetCollection<User>();
             var result = await RetryPolicy.ExecuteAsync(_ => 
-                collection.Find(filter)
+                collection.Find(filter, new FindOptions{})
                 .FirstOrDefaultAsync(),
                 new Context(nameof(GetAsync)));
             return result;

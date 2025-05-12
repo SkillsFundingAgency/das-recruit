@@ -84,6 +84,11 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
                 {
                     userEntity.DfEUserId = user.DfEUserId;    
                 }
+
+                if (string.IsNullOrEmpty(userNotificationPreferences.DfeUserId))
+                {
+                    userNotificationPreferences.DfeUserId = user.DfEUserId;
+                }
             }
 
             await _userRepository.UpsertUserAsync(userEntity);
