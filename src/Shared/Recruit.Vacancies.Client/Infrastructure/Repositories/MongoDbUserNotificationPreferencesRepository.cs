@@ -1,10 +1,12 @@
 using System;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using MongoDB.Bson;
 using MongoDB.Driver;
 using Polly;
 
@@ -19,7 +21,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
 
         public async Task<UserNotificationPreferences> GetAsync(string idamsUserId)
         {   
-            var filter = Builders<UserNotificationPreferences>.Filter.Eq(v => v.Id, idamsUserId);
+            var filter = Builders<UserNotificationPreferences>.Filter.Regex(v => v.Id, 
+                new BsonRegularExpression(Regex.Escape(idamsUserId.ToLower()),"i" ));
 
             var collection = GetCollection<UserNotificationPreferences>();
             var result = await RetryPolicy.ExecuteAsync(_ => 
@@ -59,7 +62,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
             }
             
             var filter = !isDfeSignInUserWithPreferencesSaved
-                ? Builders<UserNotificationPreferences>.Filter.Eq(v => v.Id, preferences.Id)
+                ? Builders<UserNotificationPreferences>.Filter.Regex(v => v.Id, new BsonRegularExpression(Regex.Escape(preferences.Id.ToLower()),"i" ))
                 : Builders<UserNotificationPreferences>.Filter.Eq(v => v.DfeUserId, preferences.DfeUserId);
             
             var collection = GetCollection<UserNotificationPreferences>();
