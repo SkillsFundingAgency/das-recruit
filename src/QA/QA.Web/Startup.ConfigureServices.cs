@@ -7,7 +7,6 @@ using Esfa.Recruit.Qa.Web.Orchestrators;
 using Esfa.Recruit.Qa.Web.Orchestrators.Reports;
 using Esfa.Recruit.Qa.Web.Security;
 using Esfa.Recruit.QA.Web.Configuration;
-using Esfa.Recruit.QA.Web.Filters;
 using Esfa.Recruit.QA.Web.Orchestrators;
 using Esfa.Recruit.Shared.Web.Configuration;
 using Esfa.Recruit.Shared.Web.Extensions;
@@ -16,7 +15,6 @@ using Esfa.Recruit.Shared.Web.RuleTemplates;
 using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.TableStore;
 using Esfa.Recruit.Vacancies.Client.Ioc;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -48,7 +46,7 @@ namespace Esfa.Recruit.Qa.Web
                 .AddConfiguration(configuration)
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddEnvironmentVariables();
-                
+
 #if DEBUG
             configBuilder
                 .AddJsonFile("appsettings.json", optional:true)
@@ -122,14 +120,6 @@ namespace Esfa.Recruit.Qa.Web
 
             services.AddScoped<IRuleMessageTemplateRunner, RuleMessageTemplateRunner>();
 
-            services.AddScoped<PlannedOutageResultFilter>();
-
-            services.AddSingleton(x =>
-            {
-                var svc = x.GetService<IConfigurationReader>();
-                return svc.GetAsync<QaRecruitSystemConfiguration>("QaRecruitSystem").Result;
-            });
-
             services.AddSingleton(new ServiceParameters());
             
             services.Configure<RazorViewEngineOptions>(o =>
@@ -150,8 +140,7 @@ namespace Esfa.Recruit.Qa.Web
                 var serviceProvider = services.BuildServiceProvider();
                 var collectionChecker = (MongoDbCollectionChecker)serviceProvider.GetService(typeof(MongoDbCollectionChecker));
                 collectionChecker?.EnsureCollectionsExist();
-                var storageTableChecker = (QueryStoreTableChecker)serviceProvider.GetService(typeof(QueryStoreTableChecker));
-                storageTableChecker?.EnsureQueryStoreTableExist();
+                collectionChecker?.CreateIndexes().Wait();
             }
             catch (Exception ex)
             {

@@ -31,7 +31,7 @@
                 <span class="govuk-caption-l">@Model.ApprenticeshipTitle</span>
                 Add more than one location
             </h1>
-            <p class="govuk-body govuk-!-padding-bottom-5">We’ll show your advert when someone searches for an apprenticeship in any of these locations.</p>
+            <p class="govuk-body govuk-!-padding-bottom-5">We’ll show your vacancy when someone searches for an apprenticeship in any of these locations.</p>
             <div class="govuk-form-group" id="@nameof(LocationAvailabilityViewModel.SelectedAvailability)">
                 <fieldset class="govuk-fieldset">
                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
@@ -45,8 +45,9 @@
                     <div class="govuk-checkboxes govuk-checkboxes--conditional" data-module="checkboxes" esfa-validation-marker-for="SelectedLocations">
                         <span esfa-validation-message-for="SelectedLocations" class="govuk-error-message"></span>
                         <div class="govuk-checkboxes">
-                            <partial asp-show="Model.AvailableLocations is { Count: <= 10 }" name="_AddressesView" model="Model"/>
-                            <partial asp-show="Model.AvailableLocations is { Count: > 10 }" name="_GroupedAddressesView" model="Model"/>
+                            <partial asp-show="Model.AvailableLocations is { Count: <= 10 }" name="_AddressesView" model="Model" />
+                            <partial asp-show="Model.GroupedLocations.Count() >1 & Model.GroupedLocations.Any(x => x.Count() >10)" name="_GroupedAddressesCollapsedView" model="Model" />
+                            <partial asp-show="Model.AvailableLocations is { Count: > 10 } & (Model.GroupedLocations.Count() == 1 | !Model.GroupedLocations.Any(x => x.Count() >10))" name="_GroupedAddressesView" model="Model" />
                         </div>
                     </div>
                 </fieldset>

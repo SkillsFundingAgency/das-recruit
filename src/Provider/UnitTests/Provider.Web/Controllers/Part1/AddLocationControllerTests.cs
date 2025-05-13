@@ -1,5 +1,4 @@
-﻿using System.Threading;
-using AutoFixture.NUnit3;
+﻿using AutoFixture.NUnit3;
 using Esfa.Recruit.Provider.Web.Configuration.Routing;
 using Esfa.Recruit.Provider.Web.Controllers.Part1;
 using Esfa.Recruit.Provider.Web.Models.AddLocation;
@@ -7,7 +6,7 @@ using Esfa.Recruit.Provider.Web.ViewModels.Part1.AddLocation;
 using Esfa.Recruit.Shared.Web.Domain;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
-using FluentValidation;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Locations;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
 using NUnit.Framework;
@@ -48,16 +47,16 @@ public class AddLocationControllerTests
         AddLocationEditModel addLocationModel,
         GetAddressesListResponse getAddressesListResponse,
         [Frozen] Mock<IGetAddressesClient> getAddressesClient,
-        [Frozen] Mock<IValidator<AddLocationEditModel>> validator,
+        [Frozen] Mock<ILocationsService> locationsService,
         [Greedy] AddLocationController sut)
     {
         // arrange
-        validator.Setup(x => x.ValidateAsync(addLocationModel, CancellationToken.None)).ReturnsAsync(new ValidationResult());
+        locationsService.Setup(x => x.IsPostcodeInEnglandAsync(addLocationModel.Postcode)).ReturnsAsync(true);
         getAddressesClient.Setup(x => x.GetAddresses(It.IsAny<string>())).ReturnsAsync(getAddressesListResponse);
         sut.AddControllerContext().WithTempData();
         
         // act
-        var result = await sut.AddLocation(validator.Object, getAddressesClient.Object, addLocationModel) as RedirectToRouteResult;
+        var result = await sut.AddLocation(locationsService.Object, getAddressesClient.Object, addLocationModel) as RedirectToRouteResult;
         
         // assert
         result.Should().NotBeNull();
@@ -69,18 +68,18 @@ public class AddLocationControllerTests
         AddLocationEditModel addLocationEditModel,
         [Frozen] Mock<IGetAddressesClient> getAddressesClient,
         [Frozen] Vacancy vacancy,
-        [Frozen] Mock<IValidator<AddLocationEditModel>> validator,
+        [Frozen] Mock<ILocationsService> locationsService,
         [Greedy] AddLocationController sut)
     {
         // arrange
         addLocationEditModel.Origin = MultipleLocationsJourneyOrigin.Many;
         var validationResult = new ValidationResult();
         validationResult.Errors.Add(new ValidationFailure("Postcode", "Is invalid"));
-        validator.Setup(x => x.Validate(addLocationEditModel)).Returns(validationResult);
         getAddressesClient.Setup(x => x.GetAddresses(It.IsAny<string>())).ReturnsAsync((GetAddressesListResponse)null);
+        locationsService.Setup(x => x.IsPostcodeInEnglandAsync(addLocationEditModel.Postcode)).ReturnsAsync(false);
         
         // act
-        var result = (await sut.AddLocation(validator.Object, getAddressesClient.Object, addLocationEditModel) as ViewResult)?.Model as AddLocationViewModel;
+        var result = (await sut.AddLocation(locationsService.Object, getAddressesClient.Object, addLocationEditModel) as ViewResult)?.Model as AddLocationViewModel;
         
         // assert
         result.Should().NotBeNull();

@@ -105,6 +105,28 @@ public class AddressExtensionsTests
         result.Skip(2).First().Should().HaveCount(2);
         result.Last().Should().HaveCount(1);
     }
+    
+    [Test]
+    public void Addresses_Should_Be_Grouped_Ignoring_Case()
+    {
+        // arrange
+        var sut = new List<Address>
+        {
+            new() { AddressLine1 = "1 Somewhere", AddressLine3 = "London"},
+            new() { AddressLine1 = "2 Somewhere", AddressLine3 = "london"},
+            new() { AddressLine1 = "3 Somewhere", AddressLine3 = "place NAME"},
+            new() { AddressLine1 = "4 Somewhere", AddressLine3 = "Place NaMe"},
+            new() { AddressLine1 = "5 Somewhere", AddressLine3 = "PLACE name"},
+        };
+        
+        // act
+        var result = sut.GroupByLastFilledAddressLine().ToArray().ToArray();
+
+        // assert
+        result.Should().HaveCount(2);
+        result.First().Should().HaveCount(2);
+        result.Last().Should().HaveCount(3);
+    }
 
     private static readonly IEnumerable<object[]> CityTestCases =
     [

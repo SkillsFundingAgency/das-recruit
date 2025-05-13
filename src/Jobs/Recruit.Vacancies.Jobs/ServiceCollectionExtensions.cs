@@ -5,7 +5,6 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories;
 using Esfa.Recruit.Vacancies.Client.Ioc;
 using Esfa.Recruit.Vacancies.Jobs.AnalyticsSummaryProcessor;
 using Esfa.Recruit.Vacancies.Jobs.Communication;
-using Esfa.Recruit.Vacancies.Jobs.Configuration;
 using Esfa.Recruit.Vacancies.Jobs.DomainEvents;
 using Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Application;
 using Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Candidate;
@@ -17,14 +16,12 @@ using Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.LiveVacancy;
 using Esfa.Recruit.Vacancies.Jobs.Triggers.QueueTriggers;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using Communication.Core;
 using Communication.Types.Interfaces;
 using Esfa.Recruit.Vacancies.Client.Application.Communications;
 using Esfa.Recruit.Client.Application.Communications;
 using Esfa.Recruit.Vacancies.Client.Application.Communications.EntityDataItemProviderPlugins;
 using System.Collections.Generic;
-using System.Data;
 using Azure.Monitor.OpenTelemetry.AspNetCore;
 using SFA.DAS.Encoding;
 using Esfa.Recruit.Vacancies.Client.Application.Communications.ParticipantResolverPlugins;
@@ -38,17 +35,7 @@ namespace Esfa.Recruit.Vacancies.Jobs
     {
         public static void ConfigureJobServices(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddDatabaseRegistration(configuration["Environment"], configuration.GetConnectionString("VacancyAnalyticEventsSqlDbConnectionString"));
-
-            services.AddScoped(x => new AnalyticsEventStore(x.GetService<ILogger<AnalyticsEventStore>>(), x.GetService<IDbConnection>()));
-
             services.AddRecruitStorageClient(configuration);
-
-            services.AddSingleton<RecruitWebJobsSystemConfiguration>(x =>
-            {
-                var svc = x.GetService<IConfigurationReader>();
-                return svc.GetAsync<RecruitWebJobsSystemConfiguration>("RecruitWebJobsSystem").Result;
-            });
 
             // Add Jobs
             services.AddScoped<DomainEventsQueueTrigger>();
@@ -56,14 +43,10 @@ namespace Esfa.Recruit.Vacancies.Jobs
             services.AddScoped<GeneratePublishedVacanciesQueueTrigger>();
             services.AddScoped<UpdateBankHolidayQueueTrigger>();
             services.AddScoped<UpdateQaDashboardQueueTrigger>();
-            services.AddScoped<GenerateVacancyAnalyticsSummaryQueueTrigger>();
             services.AddScoped<TransferVacanciesFromProviderQueueTrigger>();
             services.AddScoped<TransferVacancyToLegalEntityQueueTrigger>();
             services.AddScoped<TransferVacanciesFromEmployerReviewToQAReviewQueueTrigger>();
             services.AddScoped<UpdateProvidersQueueTrigger>();
-#if DEBUG
-            services.AddScoped<SpikeQueueTrigger>();
-#endif
 
             services.AddScoped<TransferVacanciesFromEmployerReviewToQAReviewJob>();
             services.AddScoped<TransferVacanciesFromProviderJob>();
@@ -162,7 +145,7 @@ namespace Esfa.Recruit.Vacancies.Jobs
         {
             var dasEncodingConfig = new EncodingConfig { Encodings = new List<Encoding>() };
             configuration.GetSection(nameof(dasEncodingConfig.Encodings)).Bind(dasEncodingConfig.Encodings);
-            services.AddSingleton<EncodingConfig>(dasEncodingConfig);
+            services.AddSingleton(dasEncodingConfig);
             services.AddSingleton<IEncodingService, EncodingService>();
         }
     }

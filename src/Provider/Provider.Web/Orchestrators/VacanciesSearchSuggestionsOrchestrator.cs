@@ -24,7 +24,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
 
         public async Task<IEnumerable<string>> GetSearchSuggestionsAsync(string searchTerm, long ukprn)
         {
-            if (searchTerm == null || searchTerm.Trim().Length < 3)
+            if (searchTerm == null || searchTerm.Trim().Length < 5)
             {
                 return Enumerable.Empty<string>();
             }

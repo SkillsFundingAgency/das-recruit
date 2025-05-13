@@ -71,7 +71,8 @@ public class ApplicationsController : ApiControllerBase
                 Year = 0,
                 IsPredicted = c.IsPredicted ?? false,
                 QualificationType = c.QualificationType,
-                AdditionalInformation = c.AdditionalInformation
+                AdditionalInformation = c.AdditionalInformation,
+                QualificationOrder = c.QualificationOrder,
             }).ToList(),
             VacancyReference = Convert.ToInt64(candidateApplication.VacancyReference),
             TrainingCourses = candidateApplication.TrainingCourses.Select(c=> new ApplicationTrainingCourse

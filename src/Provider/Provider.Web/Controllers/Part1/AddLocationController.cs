@@ -7,8 +7,9 @@ using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Provider.Web.ViewModels.Part1.AddLocation;
 using Esfa.Recruit.Provider.Web.ViewModels.Validations;
 using Esfa.Recruit.Shared.Web.Domain;
+using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
-using FluentValidation;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Locations;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.FeatureManagement.Mvc;
 
@@ -21,6 +22,7 @@ public class AddLocationController(IUtility utility) : Controller
     [HttpGet("add-location", Name = RouteNames.AddLocation_Get)]
     public async Task<IActionResult> AddLocation(AddLocationJourneyModel model)
     {
+        ModelState.ThrowIfBindingErrors();
         TempData[TempDataKeys.AddLocationReturnPath] = RouteNames.AddLocation_Get;
         string postcode = TempData[TempDataKeys.Postcode] as string;
         var viewModel = await GetAddLocationViewModel(utility, model, postcode, model.Origin, model.Wizard);
@@ -30,26 +32,28 @@ public class AddLocationController(IUtility utility) : Controller
     [FeatureGate(FeatureNames.MultipleLocations)]
     [HttpPost("add-location", Name = RouteNames.AddLocation_Post)]
     public async Task<IActionResult> AddLocation(
-        [FromServices] IValidator<AddLocationEditModel> validator, 
+        [FromServices] ILocationsService locationsService,
         [FromServices] IGetAddressesClient getAddressesClient,
-        AddLocationEditModel model,
-        CancellationToken cancellationToken = default)
+        AddLocationEditModel model)
     {
-        var validationResult = await validator.ValidateAsync(model, cancellationToken);
-        if (validationResult.IsValid)
+        if (ModelState.IsValid)
         {
-            var response = await getAddressesClient.GetAddresses(model.Postcode);
-            if (response is not null)
+            bool? isPostcodeEnglish = await locationsService.IsPostcodeInEnglandAsync(model.Postcode);
+            if (isPostcodeEnglish is true)
             {
-                TempData[TempDataKeys.Postcode] = model.Postcode.ToUpperInvariant();
-                return RedirectToRoute(RouteNames.SelectAnAddress_Get, new { model.VacancyId, model.Ukprn, model.Wizard, model.Origin });
+                var response = await getAddressesClient.GetAddresses(model.Postcode);
+                if (response is not null)
+                {
+                    TempData[TempDataKeys.Postcode] = model.Postcode.ToUpperInvariant();
+                    return RedirectToRoute(RouteNames.SelectAnAddress_Get, new { model.VacancyId, model.Ukprn, model.Wizard, model.Origin });
+                }
+
+                ModelState.AddModelError(nameof(AddLocationEditModel.Postcode), AddLocationEditModelValidator.InvalidPostcodeErrorMessage);
             }
-            
-            ModelState.AddModelError(nameof(AddLocationEditModel.Postcode), AddLocationEditModelValidator.InvalidPostcodeErrorMessage);
-        }
-        else
-        {
-            ModelState.AddModelError(nameof(AddLocationEditModel.Postcode), validationResult.ToString());
+            else
+            {
+                ModelState.AddModelError(nameof(AddLocationEditModel.Postcode), AddLocationEditModelValidator.MustBeEnglishPostcode);    
+            }
         }
         
         var viewModel = await GetAddLocationViewModel(utility, model, model.Postcode, model.Origin, model.Wizard);

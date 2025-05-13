@@ -57,7 +57,6 @@ namespace Esfa.Recruit.Provider.Web
 
             //Registered before static files to always set header
             app.UseXContentTypeOptions();
-            app.UseReferrerPolicy(opts => opts.NoReferrer());
             app.UseXXssProtection(opts => opts.EnabledWithBlockMode());
 
             app.UseAuthentication();

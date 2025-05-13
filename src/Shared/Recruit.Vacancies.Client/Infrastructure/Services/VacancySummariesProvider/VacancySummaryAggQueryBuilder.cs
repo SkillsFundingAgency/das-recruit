@@ -17,12 +17,13 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                     'as': 'candidateApplicationReview'
                 }
             },
+            { '$match' : { 'candidateApplicationReview.isWithdrawn' : { '$ne' : true } } },
             {
                 '$unwind': {
                     'path': '$candidateApplicationReview',
                     'preserveNullAndEmptyArrays': true
                 }
-            },
+            },            
             {
                 '$project': {
                     'status': 1,
@@ -49,11 +50,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                         }
                     }
                 }
-            },
-            { 
-                '$match' : { 
-                    'appStatus':{ $ne: 'withdrawn'} 
-                            }
             },
             {
                 '$project': {

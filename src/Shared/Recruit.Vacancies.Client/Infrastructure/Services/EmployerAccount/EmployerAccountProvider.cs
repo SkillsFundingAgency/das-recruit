@@ -71,21 +71,5 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount
                 throw;
             }
         }
-
-        public async Task<string> GetEmployerAccountPublicHashedIdAsync(string hashedAccountId)
-        {
-            try
-            {
-                long accountId = _encodingService.Decode(hashedAccountId, EncodingType.AccountId);
-                var account = await _outerApiClient.Get<GetAccountResponse>(new GetAccountRequest(accountId));
-                
-                return account.HashedAccountId;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, $"Failed to retrieve account information for account Id: {hashedAccountId}");
-                throw;
-            }
-        }
     }
 }

@@ -17,6 +17,7 @@
             Confirm apprenticeship training
         </h1>
         <div class="das-highlight">
+            <govuk-tag-foundation asp-show="@Model.IsFoundation" class="govuk-!-margin-bottom-2"/>
             <h2 class="govuk-heading-m">
                 @Model.TrainingTitle
                 <span class="govuk-caption-m">
@@ -41,7 +42,7 @@
             </div>
 
             <p class="govuk-body govuk-!-margin-bottom-0">
-                <a asp-route="@RouteNames.Training_Get"  asp-route-ukprn="@Model.Ukprn" asp-route-vacancyId="@Model.VacancyId" asp-route-wizard="@Model.PageInfo.IsWizard" asp-route-programmeid="@Model.ProgrammeId" class="govuk-link">Change apprenticeship training</a>
+                <a asp-route="@RouteNames.Training_Get" asp-route-ukprn="@Model.Ukprn" asp-route-vacancyId="@Model.VacancyId" asp-route-wizard="@Model.PageInfo.IsWizard" asp-route-programmeid="@Model.ProgrammeId" class="govuk-link">Change apprenticeship training</a>
             </p>
         </div>
         <form asp-route="@RouteNames.Training_Confirm_Post" asp-route-ukprn="@Model.Ukprn" asp-route-vacancyId="@Model.VacancyId" asp-route-wizard="@Model.PageInfo.IsWizard" novalidate>

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Linq.Expressions;
 using Esfa.Recruit.Shared.Web.Extensions;
@@ -111,6 +112,8 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview
             return Review.FieldIndicators.Any(f => f.ReviewFieldIdentifier == fieldIdentifier);
         }
 
+        public bool HasUserConfirmation { get; set; }
+
         public int IncompleteRequiredSectionCount => new []
                 {
                     ShortDescriptionSectionState,
@@ -186,7 +189,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview
             viewModel.DescriptionsSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.VacancyDescription }, true, modelState,vm => vm.VacancyDescription); 
             viewModel.FutureProspectsSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.OutcomeDescription }, true, modelState,vm => vm.OutcomeDescription);
             viewModel.SkillsSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.Skills }, true, modelState,vm => vm.Skills);
-            viewModel.QualificationsSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.Qualifications }, false, modelState,vm => vm.Qualifications, vm=>vm.QualificationsDesired);
+            viewModel.QualificationsSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.Qualifications }, false, modelState,vm => vm.Qualifications);
             viewModel.HasOptedToAddQualificationsSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.HasOptedToAddQualifications }, true, modelState,vm => vm.HasOptedToAddQualifications);
             viewModel.ThingsToConsiderSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.ThingsToConsider }, true, modelState,vm => vm.ThingsToConsider);
             viewModel.EmployerNameSectionState = GetSectionState(viewModel, new[] { FieldIdentifiers.EmployerName }, true, modelState,vm => vm.EmployerName);
@@ -444,7 +447,5 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview
         InProgress,
         Completed
     }
-    
-    
 }
 

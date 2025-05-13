@@ -62,7 +62,7 @@ namespace Esfa.Recruit.Shared.Web.Extensions
             return addresses?
                 .Select(x => new KeyValuePair<string, Address>(GetLastNonEmptyField(x), x))
                 .Where(x => !string.IsNullOrEmpty(x.Key))
-                .GroupBy(x => x.Key)
+                .GroupBy(x => x.Key, StringComparer.InvariantCultureIgnoreCase)
                 .OrderBy(x => x.Key);
         }
         
@@ -76,7 +76,8 @@ namespace Esfa.Recruit.Shared.Web.Extensions
                     AddressLine2 = addressItem.AddressLine2AndLine3,
                     AddressLine3 = addressItem.PostTown,
                     AddressLine4 = addressItem.County,
-                    Postcode = addressItem.Postcode
+                    Postcode = addressItem.Postcode,
+                    Country = addressItem.Country,
                 };
         }
         

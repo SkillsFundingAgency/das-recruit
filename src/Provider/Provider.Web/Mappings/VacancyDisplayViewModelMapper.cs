@@ -100,7 +100,7 @@ namespace Esfa.Recruit.Provider.Web.Mappings
                 vm.OrganisationName = vacancy.LegalEntityName;
             }
             vm.OutcomeDescription = vacancy.OutcomeDescription;
-            vm.PossibleStartDate = vacancy.StartDate?.AsGdsDate();
+            vm.PossibleStartDate = vacancy.StartDate?.ToFullDateTimeString();
             vm.ProviderContactName = vacancy.ProviderContact?.Name;
             vm.ProviderContactEmail = vacancy.ProviderContact?.Email;
             vm.ProviderContactTelephone = vacancy.ProviderContact?.Phone;

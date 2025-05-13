@@ -9,6 +9,7 @@ using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Provider.Web.Services;
 using Esfa.Recruit.Provider.Web.ViewModels.Part1.RecruitNationally;
 using Esfa.Recruit.Shared.Web;
+using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
@@ -28,6 +29,7 @@ public class RecruitNationallyController: Controller
     [HttpGet("location-information", Name = RouteNames.RecruitNationally_Get)]
     public async Task<IActionResult> RecruitNationally([FromServices] IUtility utility, [FromServices] IReviewSummaryService reviewSummaryService, VacancyRouteModel model, [FromQuery] bool wizard = true)
     {
+        ModelState.ThrowIfBindingErrors();
         var vacancy = await utility.GetAuthorisedVacancyForEditAsync(model, RouteNames.RecruitNationally_Get);
         var viewModel = new RecruitNationallyViewModel
         {
@@ -70,7 +72,7 @@ public class RecruitNationallyController: Controller
                 : RedirectToRoute(RouteNames.ProviderTaskListGet, new { model.VacancyId, model.Ukprn, wizard });
         }
         
-        ModelState.AddValidationErrors(result.ValidationResult, ValidationFieldMappings);
+        ModelState.AddValidationErrorsWithFieldMappings(result.ValidationResult, ValidationFieldMappings);
         var viewModel = new RecruitNationallyViewModel
         {
             ApprenticeshipTitle = vacancy.Title,

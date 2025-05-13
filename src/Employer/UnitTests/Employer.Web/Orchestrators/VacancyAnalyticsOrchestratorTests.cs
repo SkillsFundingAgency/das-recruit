@@ -13,7 +13,6 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators
         private Fixture _fixture;
         private Mock<IRecruitVacancyClient> _vacancyClient;
         private Mock<IUtility> _utility;
-        private Mock<EmployerRecruitSystemConfiguration> _systemConfig;    
         private IVacancyAnalyticsOrchestrator _orchestrator;
         private Guid _vacancyId;
 
@@ -23,8 +22,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators
             _fixture = new Fixture();
             _vacancyClient = new Mock<IRecruitVacancyClient>();
             _utility = new Mock<IUtility>();
-            _systemConfig = new Mock<EmployerRecruitSystemConfiguration>();
-            _orchestrator = new VacancyAnalyticsOrchestrator(_vacancyClient.Object, _systemConfig.Object, _utility.Object);
+            _orchestrator = new VacancyAnalyticsOrchestrator(_vacancyClient.Object, _utility.Object);
             _vacancyId = Guid.NewGuid();
         }
 

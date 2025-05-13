@@ -33,7 +33,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
         public Task CreateAsync(ApplicationReview review)
         {
             var collection = GetCollection<ApplicationReview>();
-            return RetryPolicy.Execute(_ =>
+            return RetryPolicy.ExecuteAsync(_ =>
                 collection.InsertOneAsync(review),
                 new Context(nameof(CreateAsync)));
         }
@@ -43,7 +43,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
             var filter = Builders<ApplicationReview>.Filter.Eq(r => r.Id, applicationReviewId);
             var collection = GetCollection<ApplicationReview>();
 
-            var result = await RetryPolicy.Execute(_ =>
+            var result = await RetryPolicy.ExecuteAsync(_ =>
                 collection.Find(filter).SingleOrDefaultAsync(),
                 new Context(nameof(GetAsync)));
 
@@ -58,7 +58,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
 
             var collection = GetCollection<ApplicationReview>();
 
-            var result = await RetryPolicy.Execute(_ =>
+            var result = await RetryPolicy.ExecuteAsync(_ =>
               collection.Find(filter)
               .Project<ApplicationReview>(GetProjection<ApplicationReview>())
               .ToListAsync(),
@@ -72,7 +72,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
             var filter = Builders<T>.Filter.In(Id, applicationReviewIds);
             var collection = GetCollection<T>();
 
-            var result = await RetryPolicy.Execute(_ =>
+            var result = await RetryPolicy.ExecuteAsync(_ =>
                 collection.Find(filter)
                 .Project<T>(GetProjection<T>())
                 .ToListAsync(),
@@ -89,7 +89,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
             
             var collection = GetCollection<ApplicationReview>();
 
-            var result = await RetryPolicy.Execute(_ =>
+            var result = await RetryPolicy.ExecuteAsync(_ =>
                     collection.Find(filter)
                         .Project<ApplicationReview>(GetProjection<ApplicationReview>())
                         .ToListAsync(),
@@ -106,7 +106,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
 
             var collection = GetCollection<ApplicationReview>();
 
-            var result = await RetryPolicy.Execute(_ =>
+            var result = await RetryPolicy.ExecuteAsync(_ =>
                 collection.Find(filter).SingleOrDefaultAsync(),
                 new Context(nameof(GetAsync)));
 
@@ -118,7 +118,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
             var filter = Builders<ApplicationReview>.Filter.Eq(r => r.Id, applicationReview.Id);
             var collection = GetCollection<ApplicationReview>();
 
-            return RetryPolicy.Execute(_ =>
+            return RetryPolicy.ExecuteAsync(_ =>
                 collection.ReplaceOneAsync(filter, applicationReview),
                 new Context(nameof(UpdateAsync)));
         }
@@ -157,7 +157,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
                 updateDef = updateDef.Set(appRev => appRev.TemporaryReviewStatus, temporaryReviewStatus);
             }
 
-            return await RetryPolicy.Execute(_ =>
+            return await RetryPolicy.ExecuteAsync(_ =>
                 collection.UpdateManyAsync(filter, updateDef),
             new Context(nameof(UpdateApplicationReviewsAsync)));
         }
@@ -174,7 +174,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
                 .Set(appRev => appRev.StatusUpdatedBy, user)
                 .Set(appRev => appRev.StatusUpdatedDate, updatedDate);
             
-            return await RetryPolicy.Execute(_ =>
+            return await RetryPolicy.ExecuteAsync(_ =>
                     collection.UpdateManyAsync(filter, updateDef),
                 new Context(nameof(UpdateApplicationReviewsPendingUnsuccessfulFeedback)));
         }
@@ -191,7 +191,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
                 .Set(appRev => appRev.StatusUpdatedBy, user)
                 .Set(appRev => appRev.StatusUpdatedDate, updatedDate);
             
-            return await RetryPolicy.Execute(_ =>
+            return await RetryPolicy.ExecuteAsync(_ =>
                     collection.UpdateManyAsync(filter, updateDef),
                 new Context(nameof(UpdateApplicationReviewsPendingUnsuccessfulFeedback)));
         }
@@ -201,7 +201,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
             var filter = Builders<T>.Filter.Eq(VacancyReference, vacancyReference);
             var collection = GetCollection<T>();
 
-            var result = await RetryPolicy.Execute(_ =>
+            var result = await RetryPolicy.ExecuteAsync(_ =>
                 collection.Find(filter)
                 .Project<T>(GetProjection<T>())
                 .ToListAsync(),
@@ -215,7 +215,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
             var filter = Builders<ApplicationReview>.Filter.Eq(VacancyReference, vacancyReference);
             var collection = GetCollection<ApplicationReview>();
 
-            var result = await RetryPolicy.Execute(_ =>
+            var result = await RetryPolicy.ExecuteAsync(_ =>
                 collection.Find(filter)
                 .Project<ApplicationReview>(GetProjection<ApplicationReview>())
                 .ToListAsync(),
@@ -233,7 +233,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
             var filter = filterBuilder.Eq(VacancyReference, vacancyReference) & filterBuilder.Ne(appRev => appRev.DateSharedWithEmployer, null);
             var collection = GetCollection<ApplicationReview>();
 
-            var result = await RetryPolicy.Execute(_ =>
+            var result = await RetryPolicy.ExecuteAsync(_ =>
                 collection.Find(filter)
                 .Project<ApplicationReview>(GetProjection<ApplicationReview>())
                 .ToListAsync(),
@@ -248,7 +248,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
             var filter = filterBuilder.Eq(VacancyReference, vacancyReference) & filterBuilder.Ne(appRev => appRev.DateSharedWithEmployer, null);
             var collection = GetCollection<ApplicationReview>();
 
-            var result = await RetryPolicy.Execute(_ =>
+            var result = await RetryPolicy.ExecuteAsync(_ =>
                 collection.Find(filter)
                 .Project<ApplicationReview>(GetProjection<ApplicationReview>())
                 .ToListAsync(),
@@ -265,7 +265,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
             var filter = Builders<ApplicationReview>.Filter.Eq(CandidateId, candidateId);
             var collection = GetCollection<ApplicationReview>();
 
-            var result = await RetryPolicy.Execute(_ =>
+            var result = await RetryPolicy.ExecuteAsync(_ =>
                 collection.Find(filter).ToListAsync(),
                 new Context(nameof(GetForCandidateAsync)));
 
@@ -277,7 +277,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
             var filter = Builders<ApplicationReview>.Filter.Eq(Id, applicationReviewId);
             var collection = GetCollection<ApplicationReview>();
 
-            return RetryPolicy.Execute(_ =>
+            return RetryPolicy.ExecuteAsync(_ =>
                 collection.DeleteOneAsync(filter),
                 new Context(nameof(HardDelete)));
         }
@@ -288,7 +288,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
 
             var collection = GetCollection<ApplicationReview>();
 
-            var result = await RetryPolicy.Execute(async _ =>
+            var result = await RetryPolicy.ExecuteAsync(async _ =>
                                                         {
                                                             var pipeline = GetDistinctVacancyReferencesPipeline();
                                                             var aggResults = await collection.AggregateAsync<WrappedVacancyReference>(pipeline);
