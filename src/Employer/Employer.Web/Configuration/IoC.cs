@@ -16,6 +16,7 @@ using Esfa.Recruit.Employer.Web.ViewModels.Part1.TrainingProvider;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.Wage;
 using Esfa.Recruit.Employer.Web.ViewModels.Validations;
 using Esfa.Recruit.Shared.Web.Configuration;
+using Esfa.Recruit.Shared.Web.Domain;
 using Esfa.Recruit.Shared.Web.Mappers;
 using Esfa.Recruit.Shared.Web.Orchestrators;
 using Esfa.Recruit.Shared.Web.RuleTemplates;
@@ -66,6 +67,7 @@ namespace Esfa.Recruit.Employer.Web.Configuration
 
         private static void RegisterServiceDeps(IServiceCollection services, IConfiguration configuration)
         {
+            services.AddTransient<ITaskListValidator, TaskListValidator>();
             services.AddSingleton(new RecruitConfiguration(configuration.GetValue<string>("RecruitConfiguration:EmployerAccountId")));
             services.AddTransient<IGeocodeImageService>(_ => new GoogleMapsGeocodeImageService(configuration.GetValue<string>("RecruitConfiguration:GoogleMapsPrivateKey")));
             services.AddTransient<IReviewSummaryService, ReviewSummaryService>();

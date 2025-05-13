@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
@@ -15,149 +16,184 @@ using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Microsoft.Extensions.Logging;
 
-namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
+namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1;
+
+public class TrainingOrchestrator(
+    IEmployerVacancyClient client,
+    IRecruitVacancyClient vacancyClient,
+    ILogger<TrainingOrchestrator> logger,
+    IReviewSummaryService reviewSummaryService,
+    IUtility utility,
+    IEmployerVacancyClient employerVacancyClient)
+    : VacancyValidatingOrchestrator<TrainingEditModel>(logger)
 {
-    public class TrainingOrchestrator : VacancyValidatingOrchestrator<TrainingEditModel>
+    private const VacancyRuleSet ValidationRules = VacancyRuleSet.TrainingProgramme;
+    private const string InvalidTraining = "Select the training the apprentice will take";
+
+    public async Task<TrainingViewModel> GetTrainingViewModelAsync(VacancyRouteModel vrm, VacancyUser user)
     {
-        private const VacancyRuleSet ValidationRules = VacancyRuleSet.TrainingProgramme;
-        private readonly IEmployerVacancyClient _client;
-        private readonly IRecruitVacancyClient _vacancyClient;
-        private readonly IReviewSummaryService _reviewSummaryService;
-        private readonly IUtility _utility;
-        private readonly IEmployerVacancyClient _employerVacancyClient;
+        var vacancyTask = utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.Training_Get);
+        var programmesTask = vacancyClient.GetActiveApprenticeshipProgrammesAsync();
+        var isUsersFirstVacancyTask = IsUsersFirstVacancy(user.UserId);
+        var getEmployerDataTask = employerVacancyClient.GetEditVacancyInfoAsync(vrm.EmployerAccountId);
 
-        public TrainingOrchestrator(IEmployerVacancyClient client, IRecruitVacancyClient vacancyClient, ILogger<TrainingOrchestrator> logger, IReviewSummaryService reviewSummaryService, IUtility utility, IEmployerVacancyClient employerVacancyClient) : base(logger)
+        await Task.WhenAll(vacancyTask, programmesTask, isUsersFirstVacancyTask, getEmployerDataTask);
+
+        var vacancy = vacancyTask.Result;
+        var programmes = programmesTask.Result;
+
+        var vm = new TrainingViewModel
         {
-            _client = client;
-            _vacancyClient = vacancyClient;
-            _reviewSummaryService = reviewSummaryService;
-            _utility = utility;
-            _employerVacancyClient = employerVacancyClient;
+            VacancyId = vacancy.Id,
+            EmployerAccountId = vrm.EmployerAccountId,
+            SelectedProgrammeId = vacancy.ProgrammeId,
+            Programmes = programmes.ToViewModel(),
+            IsUsersFirstVacancy = isUsersFirstVacancyTask.Result && vacancy.TrainingProvider == null,
+            PageInfo = utility.GetPartOnePageInfo(vacancy),
+            HasMoreThanOneLegalEntity = getEmployerDataTask.Result.LegalEntities.Count() > 1
+        };
+
+        if (vacancy.Status == VacancyStatus.Referred)
+        {
+            vm.Review = await reviewSummaryService.GetReviewSummaryViewModelAsync(vacancy.VacancyReference.Value,
+                ReviewFieldMappingLookups.GetTrainingReviewFieldIndicators());
         }
-        
-        public async Task<TrainingViewModel> GetTrainingViewModelAsync(VacancyRouteModel vrm, VacancyUser user)
+
+        return vm;
+    }
+
+    public async Task<TrainingViewModel> GetTrainingViewModelAsync(TrainingEditModel m, VacancyUser user)
+    {
+        var vm = await GetTrainingViewModelAsync((VacancyRouteModel)m, user);
+
+        vm.SelectedProgrammeId = m.SelectedProgrammeId;
+
+        return vm;
+    }
+
+    public async Task<TrainingFirstVacancyViewModel> GetTrainingFirstVacancyViewModelAsync(VacancyRouteModel vrm)
+    {
+        var vacancy = await utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.Training_First_Time_Get);
+
+        return new TrainingFirstVacancyViewModel();
+    }
+
+    public async Task<ConfirmTrainingViewModel> GetConfirmTrainingViewModelAsync(VacancyRouteModel vrm, string programmeId)
+    {
+        var vacancyTask = utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.Training_Confirm_Get);
+        var programmesTask = vacancyClient.GetActiveApprenticeshipProgrammesAsync();
+
+        await Task.WhenAll(vacancyTask, programmesTask);
+        var vacancy = vacancyTask.Result;
+        var programmes = programmesTask.Result.ToList();
+
+        var programme = programmes.SingleOrDefault(p => p.Id == programmeId);
+        if (programme == null)
+            return null;
+
+        var result = new ConfirmTrainingViewModel
         {
-            var vacancyTask = _utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.Training_Get);
-            var programmesTask = _vacancyClient.GetActiveApprenticeshipProgrammesAsync();
-            var isUsersFirstVacancyTask = IsUsersFirstVacancy(user.UserId);
-            var getEmployerDataTask = _employerVacancyClient.GetEditVacancyInfoAsync(vrm.EmployerAccountId);
+            VacancyId = vrm.VacancyId,
+            EmployerAccountId = vrm.EmployerAccountId,
+            ProgrammeId = programme.Id,
+            ApprenticeshipLevel = programme.ApprenticeshipLevel,
+            TrainingTitle = programme.Title,
+            DurationMonths = programme.Duration,
+            ProgrammeType = programme.ApprenticeshipType.GetDisplayName(),
+            PageInfo = utility.GetPartOnePageInfo(vacancyTask.Result),
+            TrainingEffectiveToDate = programme.EffectiveTo?.AsGdsDate(),
+            EducationLevelName = EducationLevelNumberHelper.GetTableFormatEducationLevelNameOrDefault(programme.EducationLevelNumber, programme.ApprenticeshipLevel),
+            IsFoundation = programme.ApprenticeshipType == TrainingType.Foundation,
+            IsChangingApprenticeshipType = IsChangingApprenticeshipType(programmes, vacancy, programme),
+            IsTaskListCompleted = await utility.IsTaskListCompletedAsync(vacancy),
+        };
 
-            await Task.WhenAll(vacancyTask, programmesTask, isUsersFirstVacancyTask, getEmployerDataTask);
+        return result;
+    }
 
-            var vacancy = vacancyTask.Result;
-            var programmes = programmesTask.Result;
-
-            var vm = new TrainingViewModel
+    public async Task<OrchestratorResponse> PostConfirmTrainingEditModelAsync(ConfirmTrainingEditModel m, VacancyUser user)
+    {
+        var programmes = (await vacancyClient.GetActiveApprenticeshipProgrammesAsync()).ToList();
+        var programme = programmes.SingleOrDefault(p => p.Id == m.ProgrammeId);
+        if (programme == null)
+        {
+            return new OrchestratorResponse(new EntityValidationResult
             {
-                VacancyId = vacancy.Id,
-                EmployerAccountId = vrm.EmployerAccountId,
-                SelectedProgrammeId = vacancy.ProgrammeId,
-                Programmes = programmes.ToViewModel(),
-                IsUsersFirstVacancy = isUsersFirstVacancyTask.Result && vacancy.TrainingProvider == null,
-                PageInfo = _utility.GetPartOnePageInfo(vacancy),
-                HasMoreThanOneLegalEntity = getEmployerDataTask.Result.LegalEntities.Count() > 1
-            };
-
-            if (vacancy.Status == VacancyStatus.Referred)
-            {
-                vm.Review = await _reviewSummaryService.GetReviewSummaryViewModelAsync(vacancy.VacancyReference.Value,
-                    ReviewFieldMappingLookups.GetTrainingReviewFieldIndicators());
-            }
-
-            return vm;
+                Errors = [new EntityValidationError(0, nameof(TrainingEditModel.SelectedProgrammeId), InvalidTraining, string.Empty)]
+            });
         }
-
-        public async Task<TrainingViewModel> GetTrainingViewModelAsync(TrainingEditModel m, VacancyUser user)
-        {
-            var vm = await GetTrainingViewModelAsync((VacancyRouteModel)m, user);
-
-            vm.SelectedProgrammeId = m.SelectedProgrammeId;
-
-            return vm;
-        }
-
-        public async Task<TrainingFirstVacancyViewModel> GetTrainingFirstVacancyViewModelAsync(VacancyRouteModel vrm)
-        {
-            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.Training_First_Time_Get);
-
-            return new TrainingFirstVacancyViewModel();
-        }
-
-        public async Task<ConfirmTrainingViewModel> GetConfirmTrainingViewModelAsync(VacancyRouteModel vrm, string programmeId)
-        {
-            var vacancyTask = _utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.Training_Confirm_Get);
-            var programmesTask = _vacancyClient.GetActiveApprenticeshipProgrammesAsync();
-
-            await Task.WhenAll(vacancyTask, programmesTask);
-
-            var programme = programmesTask.Result.SingleOrDefault(p => p.Id == programmeId);
-
-            if (programme == null)
-                return null;
-
-            return new ConfirmTrainingViewModel
-            {
-                VacancyId = vrm.VacancyId,
-                EmployerAccountId = vrm.EmployerAccountId,
-                ProgrammeId = programme.Id,
-                ApprenticeshipLevel = programme.ApprenticeshipLevel,
-                TrainingTitle = programme.Title,
-                DurationMonths = programme.Duration,
-                ProgrammeType = programme.ApprenticeshipType.GetDisplayName(),
-                PageInfo = _utility.GetPartOnePageInfo(vacancyTask.Result),
-                TrainingEffectiveToDate = programme.EffectiveTo?.AsGdsDate(),
-                EducationLevelName =
-                    EducationLevelNumberHelper.GetTableFormatEducationLevelNameOrDefault(programme.EducationLevelNumber, programme.ApprenticeshipLevel),
-                IsFoundation = programme.ApprenticeshipType == TrainingType.Foundation,
-            };
-        }
-
-        public async Task<OrchestratorResponse> PostConfirmTrainingEditModelAsync(ConfirmTrainingEditModel m,
-            IApprenticeshipProgramme programme, VacancyUser user)
-        {
-            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(m, RouteNames.Training_Confirm_Post);
-            vacancy.ApprenticeshipType = programme.ApprenticeshipType switch {
-                TrainingType.Foundation => ApprenticeshipTypes.Foundation,
-                _ => null
-            };
             
-            SetVacancyWithEmployerReviewFieldIndicators(
-                vacancy.ProgrammeId,
-                FieldIdResolver.ToFieldId(v => v.ProgrammeId),
-                vacancy,
-                (v) =>
-                {
-                    return v.ProgrammeId = m.ProgrammeId;
-                });
+        var vacancy = await utility.GetAuthorisedVacancyForEditAsync(m, RouteNames.Training_Confirm_Post);
+        vacancy.ApprenticeshipType = programme.ApprenticeshipType switch {
+            TrainingType.Foundation => ApprenticeshipTypes.Foundation,
+            _ => null
+        };
 
-            return await ValidateAndExecute(
-                vacancy, 
-                v => _vacancyClient.Validate(v, ValidationRules),
-                v => _vacancyClient.UpdateDraftVacancyAsync(vacancy, user)
-            );
-        }
-
-        public async Task<IApprenticeshipProgramme> GetProgrammeAsync(string programmeId)
+        if (IsChangingApprenticeshipType(programmes, vacancy, programme))
         {
-            var programmes = await _vacancyClient.GetActiveApprenticeshipProgrammesAsync();
-
-            return programmes.SingleOrDefault(p => p.Id == programmeId);
+            ProcessApprenticeshipTypeChanges(vacancy, programme);
+                
         }
+            
+        SetVacancyWithEmployerReviewFieldIndicators(
+            vacancy.ProgrammeId,
+            FieldIdResolver.ToFieldId(v => v.ProgrammeId),
+            vacancy,
+            (v) =>
+            {
+                return v.ProgrammeId = m.ProgrammeId;
+            });
 
-        private async Task<bool> IsUsersFirstVacancy(string userId)
+        return await ValidateAndExecute(
+            vacancy, 
+            v => vacancyClient.Validate(v, ValidationRules),
+            v => vacancyClient.UpdateDraftVacancyAsync(vacancy, user)
+        );
+    }
+
+    private static void ProcessApprenticeshipTypeChanges(Vacancy vacancy, IApprenticeshipProgramme programme)
+    {
+        switch (programme.ApprenticeshipType)
         {
-            var userVacancies = await _client.GetVacancyCountForUserAsync(userId);
-
-            return userVacancies <= 1;
+            case TrainingType.Foundation:
+                vacancy.Skills = null;
+                vacancy.Qualifications = null;
+                break;
         }
+    }
 
-        protected override EntityToViewModelPropertyMappings<Vacancy, TrainingEditModel> DefineMappings()
+    private static bool IsChangingApprenticeshipType(
+        IEnumerable<IApprenticeshipProgramme> programmes,
+        Vacancy vacancy,
+        IApprenticeshipProgramme newProgramme)
+    {
+        if (string.IsNullOrWhiteSpace(vacancy.ProgrammeId))
         {
-            var mappings = new EntityToViewModelPropertyMappings<Vacancy, TrainingEditModel>();
-
-            mappings.Add(e => e.ProgrammeId, vm => vm.SelectedProgrammeId);
-
-            return mappings;
+            return false;
         }
+
+        var currentProgramme = programmes.SingleOrDefault(p => p.Id == vacancy.ProgrammeId);
+        return currentProgramme?.ApprenticeshipType != newProgramme.ApprenticeshipType;
+    }
+
+    public async Task<IApprenticeshipProgramme> GetProgrammeAsync(string programmeId)
+    {
+        var programmes = await vacancyClient.GetActiveApprenticeshipProgrammesAsync();
+        return programmes.SingleOrDefault(p => p.Id == programmeId);
+    }
+
+    private async Task<bool> IsUsersFirstVacancy(string userId)
+    {
+        int userVacancies = await client.GetVacancyCountForUserAsync(userId);
+        return userVacancies <= 1;
+    }
+
+    protected override EntityToViewModelPropertyMappings<Vacancy, TrainingEditModel> DefineMappings()
+    {
+        var mappings = new EntityToViewModelPropertyMappings<Vacancy, TrainingEditModel>();
+
+        mappings.Add(e => e.ProgrammeId, vm => vm.SelectedProgrammeId);
+
+        return mappings;
     }
 }
