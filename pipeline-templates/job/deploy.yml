@@ -93,6 +93,7 @@ jobs:
             ServiceConnection: ${{ parameters.ServiceConnection }}
             AppServiceName: $(JobsAppServiceName)
             DeploymentPackagePath: $(Pipeline.Workspace)/Recruit/Recruit.Vacancies.Jobs.Zip
+            ResourceGroupName: $(ResourceGroupName)
             VirtualApplication: 'Recruit.Vacancies.Jobs'
 
 - deployment: DeployApi
