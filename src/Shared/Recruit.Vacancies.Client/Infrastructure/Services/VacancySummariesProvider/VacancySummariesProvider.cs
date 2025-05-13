@@ -18,12 +18,10 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
     internal sealed class VacancySummariesProvider(
         ILoggerFactory loggerFactory,
         IOptions<MongoDbConnectionDetails> details,
-        IVacancyTaskListStatusService vacancyTaskListStatusService,
         IFeature features)
         : MongoDbCollectionBase(loggerFactory, MongoDbNames.RecruitDb, MongoDbCollectionNames.Vacancies, details),
             IVacancySummariesProvider
     {
-        private readonly IVacancyTaskListStatusService _vacancyTaskListStatusService = vacancyTaskListStatusService;
         private const string TransferInfoUkprn = "transferInfo.ukprn";
         private const string TransferInfoReason = "transferInfo.reason";
         private const int ClosingSoonDays = 5;

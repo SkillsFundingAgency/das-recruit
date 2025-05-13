@@ -6,8 +6,10 @@ using Esfa.Recruit.Employer.Web.Extensions;
 using Esfa.Recruit.Employer.Web.Orchestrators.Part1;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.Training;
+using Esfa.Recruit.Shared.Web.Domain;
 using Microsoft.AspNetCore.Mvc;
 using Esfa.Recruit.Shared.Web.Extensions;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 
 namespace Esfa.Recruit.Employer.Web.Controllers.Part1;
 
@@ -112,7 +114,10 @@ public class TrainingController(TrainingOrchestrator orchestrator) : Controller
     }
 
     [HttpPost("training-confirm", Name = RouteNames.Training_Confirm_Post)]
-    public async Task<IActionResult> ConfirmTraining([FromServices] IUtility utility, ConfirmTrainingEditModel m, [FromQuery] bool wizard)
+    public async Task<IActionResult> ConfirmTraining(
+        [FromServices] IRecruitVacancyClient vacancyClient,
+        [FromServices] ITaskListValidator taskListValidator,
+        ConfirmTrainingEditModel m, [FromQuery] bool wizard)
     {
         var user = User.ToVacancyUser();
         var response = await orchestrator.PostConfirmTrainingEditModelAsync(m, user);
@@ -127,9 +132,10 @@ public class TrainingController(TrainingOrchestrator orchestrator) : Controller
             vm.PageInfo.SetWizard(wizard);
             return View("training", vm);
         }
-            
-        bool isComplete = await utility.IsTaskListCompletedAsync(m.VacancyId);
-        return isComplete
+
+        var vacancy = await vacancyClient.GetVacancyAsync(m.VacancyId);
+        bool isTaskListCompleted = await taskListValidator.IsCompleteAsync(vacancy);
+        return isTaskListCompleted
             ? RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet, new { m.VacancyId, m.EmployerAccountId })
             : RedirectToRoute(RouteNames.TrainingProvider_Select_Get, new { m.VacancyId, m.EmployerAccountId });
     }

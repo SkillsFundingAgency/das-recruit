@@ -17,6 +17,6 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.Training
         public string EducationLevelName { get; set; }
         public bool IsFoundation { get; set; }
         public bool IsChangingApprenticeshipType { get; set; }
-        public bool IsTaskListCompleted { get; set; }
+        public bool WillTaskListBeCompleted { get; set; }
     }
 }

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -15,6 +16,7 @@ using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 
 namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1;
 
@@ -104,11 +106,24 @@ public class TrainingOrchestrator(
             TrainingEffectiveToDate = programme.EffectiveTo?.AsGdsDate(),
             EducationLevelName = EducationLevelNumberHelper.GetTableFormatEducationLevelNameOrDefault(programme.EducationLevelNumber, programme.ApprenticeshipLevel),
             IsFoundation = programme.ApprenticeshipType == TrainingType.Foundation,
-            IsChangingApprenticeshipType = IsChangingApprenticeshipType(programmes, vacancy, programme),
-            IsTaskListCompleted = await utility.IsTaskListCompletedAsync(vacancy),
+            IsChangingApprenticeshipType = vacancy.IsChangingApprenticeshipType(programmes, programme),
+            WillTaskListBeCompleted = utility.IsTaskListCompleted(VacancyWithProposedChanges(vacancy, programme)),
         };
 
         return result;
+    }
+
+    private static Vacancy VacancyWithProposedChanges(Vacancy vacancy, IApprenticeshipProgramme programme)
+    {
+        // we need to set the vacancy up as if it had the proposed changes so that the tasklist validator can work correctly
+        // clone the vacancy to make sure nothing else gets affected
+        var clone = JsonConvert.DeserializeObject<Vacancy>(JsonConvert.SerializeObject(vacancy));
+        clone.ApprenticeshipType = programme.ApprenticeshipType switch
+        {
+            TrainingType.Foundation => ApprenticeshipTypes.Foundation,
+            _ => null
+        };
+        return clone;
     }
 
     public async Task<OrchestratorResponse> PostConfirmTrainingEditModelAsync(ConfirmTrainingEditModel m, VacancyUser user)
@@ -129,10 +144,9 @@ public class TrainingOrchestrator(
             _ => null
         };
 
-        if (IsChangingApprenticeshipType(programmes, vacancy, programme))
+        if (vacancy.IsChangingApprenticeshipType(programmes, programme))
         {
             ProcessApprenticeshipTypeChanges(vacancy, programme);
-                
         }
             
         SetVacancyWithEmployerReviewFieldIndicators(
@@ -158,22 +172,9 @@ public class TrainingOrchestrator(
             case TrainingType.Foundation:
                 vacancy.Skills = null;
                 vacancy.Qualifications = null;
+                vacancy.HasOptedToAddQualifications = null;
                 break;
         }
-    }
-
-    private static bool IsChangingApprenticeshipType(
-        IEnumerable<IApprenticeshipProgramme> programmes,
-        Vacancy vacancy,
-        IApprenticeshipProgramme newProgramme)
-    {
-        if (string.IsNullOrWhiteSpace(vacancy.ProgrammeId))
-        {
-            return false;
-        }
-
-        var currentProgramme = programmes.SingleOrDefault(p => p.Id == vacancy.ProgrammeId);
-        return currentProgramme?.ApprenticeshipType != newProgramme.ApprenticeshipType;
     }
 
     public async Task<IApprenticeshipProgramme> GetProgrammeAsync(string programmeId)

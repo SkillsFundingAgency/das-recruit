@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
@@ -31,5 +32,23 @@ namespace Esfa.Recruit.Shared.Web.Extensions
                 ? [vacancy.EmployerLocation.PostcodeAsOutcode()]
                 : MapAddress(vacancy.EmployerLocation);
         }
+        
+        public static bool IsChangingApprenticeshipType(this Vacancy vacancy,
+            IEnumerable<IApprenticeshipProgramme> programmes,
+            IApprenticeshipProgramme newProgramme)
+        {
+            ArgumentNullException.ThrowIfNull(vacancy);
+            ArgumentNullException.ThrowIfNull(programmes);
+            ArgumentNullException.ThrowIfNull(newProgramme);
+            
+            if (string.IsNullOrWhiteSpace(vacancy.ProgrammeId))
+            {
+                return false;
+            }
+
+            var currentProgramme = programmes.SingleOrDefault(p => p.Id == vacancy.ProgrammeId);
+            return currentProgramme?.ApprenticeshipType != newProgramme.ApprenticeshipType;
+        }
+        
     }
 }

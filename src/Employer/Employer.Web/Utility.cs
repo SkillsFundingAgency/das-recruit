@@ -20,12 +20,10 @@ public interface IUtility
     PartOnePageInfoViewModel GetPartOnePageInfo(Vacancy vacancy);
     Task<ApplicationReview> GetAuthorisedApplicationReviewAsync(ApplicationReviewRouteModel rm, bool vacancySharedByProvider = false);
     Task UpdateEmployerProfile(VacancyEmployerInfoModel employerInfoModel, EmployerProfile employerProfile, Address address, VacancyUser user);
-    Task<bool> IsTaskListCompletedAsync(Guid vacancyId);
-    Task<bool> IsTaskListCompletedAsync(Vacancy vacancy);
     bool IsTaskListCompleted(Vacancy vacancy);
 }
     
-public class Utility(IRecruitVacancyClient vacancyClient, ITaskListValidator validator) : IUtility
+public class Utility(IRecruitVacancyClient vacancyClient, ITaskListValidator taskListValidator) : IUtility
 {
     public async Task<Vacancy> GetAuthorisedVacancyForEditAsync(VacancyRouteModel vrm, string routeName)
     {
@@ -128,20 +126,9 @@ public class Utility(IRecruitVacancyClient vacancyClient, ITaskListValidator val
         }
     }
 
-    public async Task<bool> IsTaskListCompletedAsync(Guid vacancyId)
-    {
-        var vacancy = await vacancyClient.GetVacancyAsync(vacancyId);
-        return await IsTaskListCompletedAsync(vacancy);
-    }
-        
-    public async Task<bool> IsTaskListCompletedAsync(Vacancy vacancy)
-    {
-        return vacancy is not null && await validator.IsCompleteAsync(vacancy);
-    }
-        
-    [Obsolete("Use IsTaskListCompletedAsync instead")]
+    [Obsolete("Use an instance of ITaskListValidator instead")]
     public bool IsTaskListCompleted(Vacancy vacancy)
     {
-        return IsTaskListCompletedAsync(vacancy).Result;
+        return vacancy is not null && taskListValidator.IsCompleteAsync(vacancy).Result;
     }
 }

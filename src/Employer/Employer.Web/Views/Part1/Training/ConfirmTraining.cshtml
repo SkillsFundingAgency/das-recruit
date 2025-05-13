@@ -1,5 +1,5 @@
-﻿@using Esfa.Recruit.Shared.Web.Mappers
-@model Esfa.Recruit.Employer.Web.ViewModels.Part1.Training.ConfirmTrainingViewModel
+﻿@model Esfa.Recruit.Employer.Web.ViewModels.Part1.Training.ConfirmTrainingViewModel
+
 @{ 
     ViewBag.Vpv = "/recruitment/employer/page-part1-confirm-training";
     ViewBag.Title = "Confirm apprenticeship training";
@@ -42,18 +42,18 @@
         
         <div asp-show="@(Model.IsChangingApprenticeshipType && Model.IsFoundation)" class="govuk-inset-text">
             <p class="govuk-body">This will change the course from an <strong>apprenticeship standard</strong> to a <strong>foundation apprenticeship</strong>.</p>
-            <p class="govuk-body">We’ll remove this vacancy’s skills and qualifications requirements. Applicants do not need specific skills or qualifications to apply for a foundation apprenticeship.</p>
+            <p class="govuk-body">We’ll remove this advert’s skills and qualifications requirements. Applicants do not need specific skills or qualifications to apply for a foundation apprenticeship.</p>
             <p class="govuk-body">You should also review the other sections of your vacancy.</p>
         </div>
 
         <form asp-route="@RouteNames.Training_Confirm_Post" asp-all-route-data="@Model.RouteDictionary" asp-route-wizard="@Model.PageInfo.IsWizard" novalidate>
             <div class="govuk-button-group">
                 <input asp-for="ProgrammeId" type="hidden" />
-                <input asp-show="@(!Model.IsTaskListCompleted)" type="submit" value="Confirm and continue" esfa-automation="btn-continue" class="govuk-button" />
-                <input asp-show="@Model.IsTaskListCompleted" type="submit" value="Confirm and preview" esfa-automation="btn-continue" class="govuk-button" />
+                <input asp-show="@(!Model.WillTaskListBeCompleted)" type="submit" value="Confirm and continue" esfa-automation="btn-continue" class="govuk-button" />
+                <input asp-show="@Model.WillTaskListBeCompleted" type="submit" value="Confirm and preview" esfa-automation="btn-continue" class="govuk-button" />
 
-                <a asp-show="@(!Model.IsTaskListCompleted)" asp-route="@RouteNames.Dashboard_Get" asp-route-employerAccountId="@Model.EmployerAccountId" class="govuk-link govuk-link--no-visited-state" esfa-automation="cancel-link">Cancel</a>
-                <a asp-show="@Model.IsTaskListCompleted" asp-route="@RouteNames.EmployerCheckYourAnswersGet" asp-all-route-data="@Model.RouteDictionary" class="govuk-link govuk-link--no-visited-state" esfa-automation="cancel-link">Cancel</a>
+                <a asp-show="@(!Model.WillTaskListBeCompleted)" asp-route="@RouteNames.Dashboard_Get" asp-route-employerAccountId="@Model.EmployerAccountId" class="govuk-link govuk-link--no-visited-state" esfa-automation="cancel-link">Cancel</a>
+                <a asp-show="@Model.WillTaskListBeCompleted" asp-route="@RouteNames.EmployerCheckYourAnswersGet" asp-all-route-data="@Model.RouteDictionary" class="govuk-link govuk-link--no-visited-state" esfa-automation="cancel-link">Cancel</a>
             </div>
         </form>
     </div>

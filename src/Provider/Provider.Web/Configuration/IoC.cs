@@ -30,6 +30,7 @@ using Esfa.Recruit.Provider.Web.ViewModels.Validations.Fluent;
 using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Provider.Web.ViewModels.Part1.Wage;
 using Esfa.Recruit.Provider.Web.ViewModels.Validations;
+using Esfa.Recruit.Shared.Web.Domain;
 
 namespace Esfa.Recruit.Provider.Web.Configuration
 {
@@ -67,6 +68,7 @@ namespace Esfa.Recruit.Provider.Web.Configuration
 
         private static void RegisterServiceDeps(IServiceCollection services, IConfiguration configuration)
         {
+            services.AddTransient<ITaskListValidator, TaskListValidator>();
             services.AddTransient<IGeocodeImageService>(_ => new GoogleMapsGeocodeImageService(configuration.GetValue<string>("RecruitConfiguration:GoogleMapsPrivateKey")));
             services.AddTransient<IReviewSummaryService, ReviewSummaryService>();
             services.AddTransient<ILegalEntityAgreementService, LegalEntityAgreementService>();
