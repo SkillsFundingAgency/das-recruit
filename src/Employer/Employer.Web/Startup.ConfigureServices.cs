@@ -13,6 +13,8 @@ using Microsoft.Extensions.Logging;
 using SFA.DAS.Configuration.AzureTableStorage;
 using SFA.DAS.Employer.Shared.UI;
 using SFA.DAS.GovUK.Auth.AppStart;
+using SFA.DAS.GovUK.Auth.Employer;
+using SFA.DAS.GovUK.Auth.Models;
 using SFA.DAS.GovUK.Auth.Services;
 
 namespace Esfa.Recruit.Employer.Web
@@ -80,14 +82,15 @@ namespace Esfa.Recruit.Employer.Web
             services.AddControllersWithViews().AddRazorRuntimeCompilation();
 #endif
             
-            services.AddTransient<ICustomClaims, EmployerAccountPostAuthenticationClaimsHandler>();
-            services.AddAndConfigureGovUkAuthentication(Configuration, typeof(EmployerAccountPostAuthenticationClaimsHandler), "", "/services/SignIn-Stub");
+            services.AddAndConfigureGovUkAuthentication(Configuration, new AuthRedirects
+            {
+                SignedOutRedirectUrl = "",
+                LocalStubLoginPath = "/services/SignIn-Stub" 
+            },null, typeof(UserAccountService));
 
             services.AddAuthorizationService();
             services.AddMaMenuConfiguration(RouteNames.Logout_Get, Configuration["ResourceEnvironmentName"]);
         
-
-
             services.AddDataProtection(Configuration, HostingEnvironment, applicationName: "das-employer");
             services.AddDasEncoding(Configuration);
 
