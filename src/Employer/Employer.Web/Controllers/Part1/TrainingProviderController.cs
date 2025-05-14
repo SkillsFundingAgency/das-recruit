@@ -105,7 +105,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
                 if (response.Success)
                 {
                     var vacancy = await vacancyClient.GetVacancyAsync(m.VacancyId);
-                    bool isTaskListCompleted = await taskListValidator.IsCompleteAsync(vacancy);
+                    bool isTaskListCompleted = await taskListValidator.IsCompleteAsync(vacancy, EmployerTaskListSectionFlags.All);
                     return GetRedirectToNextPage(!isTaskListCompleted, m);
                 }
                 

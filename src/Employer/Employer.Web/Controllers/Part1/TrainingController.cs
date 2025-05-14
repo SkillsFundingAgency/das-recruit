@@ -134,7 +134,7 @@ public class TrainingController(TrainingOrchestrator orchestrator) : Controller
         }
 
         var vacancy = await vacancyClient.GetVacancyAsync(m.VacancyId);
-        bool isTaskListCompleted = await taskListValidator.IsCompleteAsync(vacancy);
+        bool isTaskListCompleted = await taskListValidator.IsCompleteAsync(vacancy, EmployerTaskListSectionFlags.All);
         return isTaskListCompleted
             ? RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet, new { m.VacancyId, m.EmployerAccountId })
             : RedirectToRoute(RouteNames.TrainingProvider_Select_Get, new { m.VacancyId, m.EmployerAccountId });

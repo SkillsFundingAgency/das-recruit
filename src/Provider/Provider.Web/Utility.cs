@@ -134,6 +134,6 @@ public class Utility(IRecruitVacancyClient vacancyClient, ITaskListValidator tas
     [Obsolete("Use an instance of ITaskListValidator instead")]
     public bool IsTaskListCompleted(Vacancy vacancy)
     {
-        return vacancy is not null && taskListValidator.IsCompleteAsync(vacancy).Result;
+        return vacancy is not null && taskListValidator.IsCompleteAsync(vacancy, ProviderTaskListSectionFlags.All).Result;
     }
 }

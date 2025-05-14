@@ -109,7 +109,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 
             var vacancy = vacancyTask.Result;
             var provider = providerTask.Result;
-            
+
             return new ConfirmTrainingProviderViewModel
             {
                 EmployerAccountId = vrm.EmployerAccountId,
@@ -119,7 +119,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                 ProviderName = provider.Name,
                 ProviderAddress = provider.Address.ToAddressString(),
                 PageInfo = utility.GetPartOnePageInfo(vacancy),
-                WillTaskListBeCompleted = await taskListValidator.IsCompleteAsync(VacancyWithProposedChanges(vacancy, provider))
+                WillTaskListBeCompleted = await taskListValidator.IsCompleteAsync(VacancyWithProposedChanges(vacancy, provider), EmployerTaskListSectionFlags.All)
             };
         }
         

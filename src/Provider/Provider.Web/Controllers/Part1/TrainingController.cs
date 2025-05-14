@@ -106,7 +106,7 @@ public class TrainingController : Controller
         }
 
         var vacancy = await vacancyClient.GetVacancyAsync(m.VacancyId!.Value);
-        bool isTaskListComplete = await taskListValidator.IsCompleteAsync(vacancy);
+        bool isTaskListComplete = await taskListValidator.IsCompleteAsync(vacancy, ProviderTaskListSectionFlags.All);
         //bool isSectionComplete = await taskListValidator.IsSectionCompleteAsync(vacancy, TaskListSectionFlags.One);
 
         return isTaskListComplete switch
