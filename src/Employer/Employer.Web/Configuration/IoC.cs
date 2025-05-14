@@ -38,8 +38,6 @@ namespace Esfa.Recruit.Employer.Web.Configuration
         public static void AddIoC(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddRecruitStorageClient(configuration);
-
-            services.AddSingleton(new ServiceParameters());
             
             //Configuration
             services.Configure<ApplicationInsightsConfiguration>(configuration.GetSection("ApplicationInsights"));

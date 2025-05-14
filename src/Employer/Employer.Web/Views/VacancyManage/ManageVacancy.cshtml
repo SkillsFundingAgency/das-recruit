@@ -1,6 +1,4 @@
-﻿@using Microsoft.Extensions.Options
-@using Microsoft.AspNetCore.Mvc.TagHelpers
-@using Esfa.Recruit.Shared.Web.TagHelpers
+﻿@using Esfa.Recruit.Vacancies.Client.Domain.Entities
 @model Esfa.Recruit.Employer.Web.ViewModels.VacancyManage.ManageVacancyViewModel
 @{
     ViewBag.Vpv = "/recruitment/employer/page-manage-vacancy";
@@ -74,8 +72,13 @@
         <h1 class="govuk-heading-xl govuk-!-margin-top-6 govuk-!-margin-bottom-6" id="vacancy-header">
             Manage Advert
         </h1>
+        <govuk-tag-foundation asp-show="@Model.ApprenticeshipType.IsFoundation()" class="govuk-!-margin-bottom-4"/>
         <h1 class="govuk-heading-l">@Model.Title</h1>
         <p class="govuk-body-l">Advert reference: VAC@(Model.VacancyReference)</p>
+        
+        <p asp-show="@(Model.Status == VacancyStatus.Submitted)" class="govuk-body">
+            This advert has been sent to us for review. We’ll tell you within 1 working day if you need to make any edits to this advert.
+        </p>
 
         <p asp-show="@Model.IsTransferred" class="govuk-inset-text">
             This advert was created by

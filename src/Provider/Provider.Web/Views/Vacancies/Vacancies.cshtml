@@ -64,7 +64,7 @@
                         <option value="@FilteringOptions.All">all vacancies</option>
                         <option value="@FilteringOptions.Live">live vacancies</option>
                         <option value="@FilteringOptions.Referred">rejected vacancies</option>
-                        @if (Model.HasEmployerReviewPermission && _serviceParameters.VacancyType.GetValueOrDefault() == VacancyType.Apprenticeship)
+                        @if (Model.HasEmployerReviewPermission)
                         {
                             <option value="@FilteringOptions.Review">pending employer review</option>   
                         }

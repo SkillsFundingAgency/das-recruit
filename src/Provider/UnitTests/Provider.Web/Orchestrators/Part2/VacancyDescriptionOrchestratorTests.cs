@@ -6,7 +6,6 @@ using Esfa.Recruit.Provider.Web.ViewModels.Part2.VacancyDescription;
 using Esfa.Recruit.Shared.Web.Domain;
 using Esfa.Recruit.Shared.Web.Mappers;
 using Esfa.Recruit.Shared.Web.Services;
-using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
@@ -107,22 +106,16 @@ public class VacancyDescriptionOrchestratorTests
             return this;
         }
 
-        public VacancyDescriptionOrchestratorTestsFixture WithVacancyType(VacancyType vacancyType)
-        {
-            Vacancy.VacancyType = vacancyType;
-            return this;
-        }
-
-        public void Setup()
-        {
-            MockRecruitVacancyClient.Setup(x => x.GetVacancyAsync(Vacancy.Id)).ReturnsAsync(Vacancy);
-            MockRecruitVacancyClient.Setup(x => x.Validate(Vacancy, ValidationRules)).Returns(new EntityValidationResult());
-            MockRecruitVacancyClient.Setup(x => x.UpdateDraftVacancyAsync(It.IsAny<Vacancy>(), User));
-            MockRecruitVacancyClient.Setup(x => x.UpdateEmployerProfileAsync(It.IsAny<EmployerProfile>(), User));
+            public void Setup()
+            {
+                MockRecruitVacancyClient.Setup(x => x.GetVacancyAsync(Vacancy.Id)).ReturnsAsync(Vacancy);
+                MockRecruitVacancyClient.Setup(x => x.Validate(Vacancy, ValidationRules)).Returns(new EntityValidationResult());
+                MockRecruitVacancyClient.Setup(x => x.UpdateDraftVacancyAsync(It.IsAny<Vacancy>(), User));
+                MockRecruitVacancyClient.Setup(x => x.UpdateEmployerProfileAsync(It.IsAny<EmployerProfile>(), User));
 
             Sut = new VacancyDescriptionOrchestrator(MockRecruitVacancyClient.Object,
                 Mock.Of<ILogger<VacancyDescriptionOrchestrator>>(), Mock.Of<IReviewSummaryService>(),
-                new Utility(MockRecruitVacancyClient.Object, Mock.Of<ITaskListValidator>()), new ServiceParameters());
+                new Utility(MockRecruitVacancyClient.Object, Mock.Of<ITaskListValidator>()));
         }
 
         public async Task PostVacancyDescriptionEditModelAsync(VacancyDescriptionEditModel model)

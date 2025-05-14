@@ -32,6 +32,11 @@ namespace Esfa.Recruit.Shared.Web.Extensions
                 ? [vacancy.EmployerLocation.PostcodeAsOutcode()]
                 : MapAddress(vacancy.EmployerLocation);
         }
+
+        public static ApprenticeshipTypes GetApprenticeshipType(this Vacancy vacancy)
+        {
+            return vacancy.ApprenticeshipType ?? ApprenticeshipTypes.Standard;
+        }
         
         public static bool IsChangingApprenticeshipType(this Vacancy vacancy,
             IEnumerable<IApprenticeshipProgramme> programmes,

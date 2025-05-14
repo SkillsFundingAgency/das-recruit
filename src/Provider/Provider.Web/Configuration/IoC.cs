@@ -38,10 +38,6 @@ namespace Esfa.Recruit.Provider.Web.Configuration
     {
         public static void AddIoC(this IServiceCollection services, IConfiguration configuration)
         {
-            var serviceParameters = new ServiceParameters();
-
-            services.AddSingleton(serviceParameters);
-
             services.AddRecruitStorageClient(configuration);
 
             //Configuration
