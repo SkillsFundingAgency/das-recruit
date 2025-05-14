@@ -1,17 +1,12 @@
-using System;
-using System.Threading.Tasks;
-using AutoFixture.NUnit3;
 using Esfa.Recruit.Provider.Web.Mappings;
 using Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview;
+using Esfa.Recruit.Shared.Web.ViewModels.TaskList;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.ApprenticeshipProgrammes;
-using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Moq;
 using NUnit.Framework;
-using SFA.DAS.Testing.AutoFixture;
 
 namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.ViewModels.Preview
 {

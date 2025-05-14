@@ -35,7 +35,7 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
 
             var vacancy = await _vacancyClient.GetVacancyAsync(review.VacancyReference);
                 
-            var manualQaFieldIndicators = _mapper.GetManualQaFieldIndicators(m, review.VacancySnapshot.VacancyType.GetValueOrDefault());
+            var manualQaFieldIndicators = _mapper.GetManualQaFieldIndicators(m);
             var selectedAutomatedQaRuleOutcomeIds = m.SelectedAutomatedQaResults.Select(Guid.Parse).ToList();
 
             if (m.IsRefer)

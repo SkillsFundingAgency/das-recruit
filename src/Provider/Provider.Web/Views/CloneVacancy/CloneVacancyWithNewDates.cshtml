@@ -45,15 +45,7 @@
             <div esfa-validation-marker-for="StartDate" class="govuk-form-group">
                 <fieldset class="govuk-fieldset">
                     <span esfa-validation-message-for="StartDate" class="govuk-error-message"></span>
-                    @if (_serviceParameters.VacancyType == VacancyType.Apprenticeship)
-                    {
-                        <legend class="govuk-fieldset__legend govuk-!-font-weight-bold">When is the apprentice expected to start?</legend>
-                    }
-                    else
-                    {
-                        <legend class="govuk-fieldset__legend govuk-!-font-weight-bold">When is the trainee expected to start?</legend>
-                    }
-                    
+                    <legend class="govuk-fieldset__legend govuk-!-font-weight-bold">When is the apprentice expected to start?</legend>
                     <span id="start-hint" class="govuk-hint">
                         For example, @exampleStartingDate.AsInputHintDisplayDate()
                     </span>

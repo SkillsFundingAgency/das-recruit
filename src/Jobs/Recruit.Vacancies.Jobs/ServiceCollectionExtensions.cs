@@ -91,8 +91,6 @@ namespace Esfa.Recruit.Vacancies.Jobs
             RegisterCommunicationsService(services, configuration);
             RegisterDasEncodingService(services, configuration);
 
-            services.AddSingleton(new ServiceParameters());
-
             services.AddSingleton<IFeature, Feature>();
         }
 

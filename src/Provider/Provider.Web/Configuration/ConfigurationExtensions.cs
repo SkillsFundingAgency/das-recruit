@@ -1,12 +1,7 @@
-using System;
 using System.Linq;
-using Esfa.Recruit.Provider.Web.Configuration.Routing;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Provider.Web.Filters;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using FluentValidation.AspNetCore;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication.WsFederation;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Authorization;
@@ -17,9 +12,6 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Net.Http.Headers;
 using Microsoft.AspNetCore.Authorization;
 using Esfa.Recruit.Provider.Web.Middleware;
-using System.Threading.Tasks;
-using Esfa.Recruit.Provider.Web.Extensions;
-using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Microsoft.Extensions.Configuration;
 using SFA.DAS.Provider.Shared.UI;
 using SFA.DAS.Provider.Shared.UI.Startup;
@@ -29,17 +21,10 @@ namespace Esfa.Recruit.Provider.Web.Configuration
 {
     public static class ConfigurationExtensions
     {
-        private const int SessionTimeoutMinutes = 30;
-
-        public static void AddAuthorizationService(this IServiceCollection services, bool useDfESignIn)
+        public static void AddAuthorizationService(this IServiceCollection services)
         {
-            var ukPrnClaimName = useDfESignIn
-                ? ProviderRecruitClaims.DfEUkprnClaimsTypeIdentifier
-                : ProviderRecruitClaims.IdamsUserUkprnClaimsTypeIdentifier;
-            
-            var serviceClaimName = useDfESignIn
-                ? ProviderRecruitClaims.DfEUserServiceTypeClaimTypeIdentifier
-                : ProviderRecruitClaims.IdamsUserServiceTypeClaimTypeIdentifier;
+            var ukPrnClaimName = ProviderRecruitClaims.DfEUkprnClaimsTypeIdentifier;
+            var serviceClaimName = ProviderRecruitClaims.DfEUserServiceTypeClaimTypeIdentifier;
             
             services.AddAuthorization(options =>
             {
@@ -78,16 +63,10 @@ namespace Esfa.Recruit.Provider.Web.Configuration
                     policy.Requirements.Add(new MinimumServiceClaimRequirement(ServiceClaim.DAA));
                     policy.Requirements.Add(new TrainingProviderAllRolesRequirement());
                 });
-                
-                options.AddPolicy(PolicyNames.IsApprenticeshipWeb, policy =>
-                {
-                    policy.Requirements.Add(new VacancyTypeRequirement(VacancyType.Apprenticeship));
-                });
             });
 
             services.AddTransient<IAuthorizationHandler, ProviderAccountHandler>();
             services.AddTransient<IAuthorizationHandler, MinimumServiceClaimRequirementHandler>();
-            services.AddTransient<IAuthorizationHandler, VacancyTypeRequirementHandler>();
             services.AddSingleton<ITrainingProviderAuthorizationHandler, TrainingProviderAuthorizationHandler>();
             services.AddSingleton<IAuthorizationHandler, TrainingProviderAllRolesAuthorizationHandler>();
         }
@@ -127,48 +106,6 @@ namespace Esfa.Recruit.Provider.Web.Configuration
             .SetDefaultNavigationSection(NavigationSection.Recruit);
             services.AddFluentValidationAutoValidation();
             services.AddFeatureManagement(configuration.GetSection("Features"));
-        }
-
-        public static void AddAuthenticationService(this IServiceCollection services, AuthenticationConfiguration authConfig)
-        {
-            services.AddAuthentication(sharedOptions =>
-            {
-                sharedOptions.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                sharedOptions.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                sharedOptions.DefaultChallengeScheme = WsFederationDefaults.AuthenticationScheme;
-                sharedOptions.DefaultSignOutScheme = WsFederationDefaults.AuthenticationScheme;
-            })
-            .AddWsFederation(options =>
-            {
-                options.Wtrealm = authConfig.WtRealm;
-                options.MetadataAddress = authConfig.MetaDataAddress;
-                options.UseTokenLifetime = false;
-                
-            })
-            .AddCookie(options =>
-            {
-                options.Cookie.Name = CookieNames.RecruitData;
-                options.Cookie.SecurePolicy = Microsoft.AspNetCore.Http.CookieSecurePolicy.Always;
-                options.CookieManager = new ChunkingCookieManager() { ChunkSize = 3000 };
-                options.AccessDeniedPath = RoutePaths.AccessDeniedPath;
-                options.SlidingExpiration = true;
-                options.ExpireTimeSpan = TimeSpan.FromMinutes(SessionTimeoutMinutes);
-            });
-            services
-                .AddOptions<WsFederationOptions>(WsFederationDefaults.AuthenticationScheme)
-                .Configure<IRecruitVacancyClient>((options, recruitVacancyClient) =>
-                {
-                    options.Events.OnSecurityTokenValidated = async (ctx) =>
-                    {
-                        await HandleUserSignedIn(ctx, recruitVacancyClient);
-                    };
-                });
-        }
-
-        private static async Task HandleUserSignedIn(SecurityTokenValidatedContext ctx, IRecruitVacancyClient vacancyClient)
-        {
-            var user = ctx.Principal.ToVacancyUser();           
-            await vacancyClient.UserSignedInAsync(user, UserType.Provider);
         }
     }
 }
