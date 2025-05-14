@@ -170,8 +170,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
                 new Dictionary<string, object> {
                     { ReportParameterName.Ukprn, ukprn},
                     { ReportParameterName.FromDate, fromDate},
-                    { ReportParameterName.ToDate, toDate},
-                    { ReportParameterName.VacancyType, VacancyType.Apprenticeship.ToString()}
+                    { ReportParameterName.ToDate, toDate}
                 },
                 user,
                 reportName)

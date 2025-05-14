@@ -12,6 +12,7 @@ using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
+using FeatureNames = Esfa.Recruit.Employer.Web.Configuration.FeatureNames;
 
 namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Part1
 {
