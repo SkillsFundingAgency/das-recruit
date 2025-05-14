@@ -4,10 +4,8 @@ using Esfa.Recruit.Provider.Web.Configuration;
 using Esfa.Recruit.Provider.Web.Configuration.Routing;
 using Esfa.Recruit.Provider.Web.Orchestrators;
 using Esfa.Recruit.Provider.Web.RouteModel;
-using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
 using InfoMsg = Esfa.Recruit.Shared.Web.ViewModels.InfoMessages;
 
 namespace Esfa.Recruit.Provider.Web.Controllers
@@ -17,15 +15,11 @@ namespace Esfa.Recruit.Provider.Web.Controllers
     {
         private readonly VacancyManageOrchestrator _orchestrator;
         private readonly IUtility _utility;
-        private readonly ServiceParameters _serviceParameters;
-        private readonly IConfiguration _configuration;
 
-        public VacancyManageController(VacancyManageOrchestrator orchestrator, IUtility utility, ServiceParameters serviceParameters, IConfiguration configuration)
+        public VacancyManageController(VacancyManageOrchestrator orchestrator, IUtility utility)
         {
             _orchestrator = orchestrator;
             _utility = utility;
-            _serviceParameters = serviceParameters;
-            _configuration = configuration;
         }
 
         [HttpGet("manage", Name = RouteNames.VacancyManage_Get)]

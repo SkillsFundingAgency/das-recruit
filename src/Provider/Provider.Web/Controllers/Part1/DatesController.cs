@@ -7,7 +7,6 @@ using Esfa.Recruit.Provider.Web.Orchestrators.Part1;
 using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Provider.Web.ViewModels.Part1.Dates;
 using Esfa.Recruit.Shared.Web.Extensions;
-using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
@@ -21,14 +20,10 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
     public class DatesController : Controller
     {
         private readonly DatesOrchestrator _orchestrator;
-        private readonly ServiceParameters _serviceParameters;
 
-        public DatesController(
-            DatesOrchestrator orchestrator, 
-            ServiceParameters serviceParameters)
+        public DatesController(DatesOrchestrator orchestrator)
         {
             _orchestrator = orchestrator;
-            _serviceParameters = serviceParameters;
         }
 
         [HttpGet("dates", Name = RouteNames.Dates_Get)]

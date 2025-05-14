@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Linq.Expressions;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Shared.Web.Mappers;
 using Esfa.Recruit.Shared.Web.ViewModels;
+using Esfa.Recruit.Shared.Web.ViewModels.TaskList;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Humanizer;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
@@ -273,7 +274,19 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview
             if (TaskListSectionTwoState != VacancyTaskListSectionState.Completed)
             {
                 return VacancyTaskListSectionState.NotStarted;
-            } 
+            }
+            
+            if (ApprenticeshipType is ApprenticeshipTypes.Foundation)
+            {
+                if (TaskListSectionTwoState == VacancyTaskListSectionState.Completed && FutureProspectsSectionState == VacancyPreviewSectionState.Incomplete)
+                {
+                    return VacancyTaskListSectionState.NotStarted;
+                }
+
+                return FutureProspectsSectionState == VacancyPreviewSectionState.Valid 
+                    ? VacancyTaskListSectionState.Completed
+                    : VacancyTaskListSectionState.InProgress;
+            }
 
             if (TaskListSectionTwoState == VacancyTaskListSectionState.Completed 
                 && SkillsSectionState == VacancyPreviewSectionState.Incomplete)
@@ -422,7 +435,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview
             return requiresAll;
         }
 
-        private bool IsSectionForReview(VacancyPreviewViewModel vm, IEnumerable<string> reviewFieldIndicators)
+        private static bool IsSectionForReview(VacancyPreviewViewModel vm, IEnumerable<string> reviewFieldIndicators)
         {
             return reviewFieldIndicators != null && reviewFieldIndicators.Any(reviewFieldIndicator =>
                        vm.Review.FieldIndicators.Select(r => r.ReviewFieldIdentifier)
@@ -439,13 +452,6 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview
         Invalid,
         InvalidIncomplete,
         Review
-    }
-
-    public enum VacancyTaskListSectionState
-    {
-        NotStarted,
-        InProgress,
-        Completed
     }
 }
 

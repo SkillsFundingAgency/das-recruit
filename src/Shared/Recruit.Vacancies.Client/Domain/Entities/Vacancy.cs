@@ -61,6 +61,13 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
         public bool? HasOptedToAddQualifications { get; set; }
         public List<Qualification> Qualifications { get; set; }
 
+        private ApprenticeshipTypes? _apprenticeshipType;
+        public ApprenticeshipTypes? ApprenticeshipType
+        {
+            get => _apprenticeshipType ?? ApprenticeshipTypes.Standard;
+            set => _apprenticeshipType = value;
+        }
+
         public string ShortDescription  
         {
             get
@@ -168,11 +175,6 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
         /// </summary>
         public bool GeocodeUsingOutcode => IsAnonymous;
         
-        /// <summary>
-        /// Type of Vacancy being created, either Apprenticeship or Traineeship. Set by application startup.
-        /// </summary>
-        public VacancyType? VacancyType { get; set; }
-
         public string AdditionalQuestion1 { get; set; }
         public string AdditionalQuestion2 { get; set; }
         public bool HasSubmittedAdditionalQuestions { get; set; }
