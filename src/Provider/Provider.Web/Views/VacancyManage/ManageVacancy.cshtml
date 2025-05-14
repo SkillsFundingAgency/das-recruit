@@ -3,7 +3,6 @@
 @{
     ViewBag.GaData.Vpv = "/recruitment/provider/page-manage-vacancy";
     ViewBag.Title = "Manage vacancy";
-    var isApprenticeshipVacancyType = _serviceParameters.VacancyType.GetValueOrDefault() == VacancyType.Apprenticeship;
 }
 
 @section BackLink {
@@ -38,9 +37,19 @@
         <h1 class="govuk-heading-xl govuk-!-margin-top-6 govuk-!-margin-bottom-6" id="vacancy-header">
             Manage vacancy
         </h1>
+        <govuk-tag-foundation asp-show="@Model.ApprenticeshipType.IsFoundation()" class="govuk-!-margin-bottom-4"/>
         <span class="govuk-caption-l">@Model.EmployerName</span>
         <h1 class="govuk-heading-l">@Model.Title</h1>
         <p class="govuk-body-l">Vacancy reference: VAC@(Model.VacancyReference)</p>
+        
+        <p asp-show="@Model.Status == VacancyStatus.Submitted" class="govuk-body">
+            This vacancy has been sent to us for review. We’ll tell you within 1 working day if you need to make any edits to this vacancy.
+        </p>
+        
+        <p asp-show="@Model.Status == VacancyStatus.Review" class="govuk-body">
+            This vacancy needs to be approved by the employer. If the employer approves the vacancy, it will be sent to DfE for review.
+        </p>
+        
         <p asp-show="@Model.IsWithdrawn" class="govuk-inset-text">
             This vacancy has issues and was closed on @Model.WithdrawnDate.
         </p>
@@ -56,7 +65,7 @@
                 <h3 class="govuk-notification-banner__heading">
                     @Model.VacancyClosedInfoMessage
                 </h3>
-                <p class="govuk-body">The vacancy will be unpublished from @(isApprenticeshipVacancyType ? "Find an apprenticeship" : "Find a traineeship") within the next hour.</p>
+                <p class="govuk-body">The vacancy will be unpublished from Find an apprenticeship within the next hour.</p>
             </div>
         </div>
     </div>
@@ -132,5 +141,5 @@
 </div>
 <div asp-show="@(Model.IsApplyThroughFaaVacancy || Model.IsApplyThroughFatVacancy)">
     <partial asp-show="@Model.HasApplications" name="@PartialNames.VacancyApplicationsTable" for="Applications" />
-    <p asp-show="@Model.HasNoApplications" class="govuk-body govuk-!-margin-bottom-0">Candidate applications for this @(isApprenticeshipVacancyType ? "apprenticeship" : "traineeship") will appear here.</p>
+    <p asp-show="@Model.HasNoApplications" class="govuk-body govuk-!-margin-bottom-0">Candidate applications for this apprenticeship will appear here.</p>
 </div>

@@ -53,7 +53,6 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
             result.NoOfAllSharedApplications.Should().Be(v.NoOfAllSharedApplications);
             result.NoOfEmployerReviewedApplications.Should().Be(v.NoOfEmployerReviewedApplications);
             result.IsTraineeship.Should().Be(v.Id.IsTraineeship);
-            result.VacancyType.Should().Be(v.Id.VacancyType);
             result.IsTaskListCompleted.Should().BeTrue();
             result.HasChosenProviderContactDetails.Should().Be(v.Id.HasChosenProviderContactDetails);
         }
@@ -103,7 +102,6 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
             result.NoOfAllSharedApplications.Should().Be(v.NoOfAllSharedApplications);
             result.NoOfEmployerReviewedApplications.Should().Be(v.NoOfEmployerReviewedApplications);
             result.IsTraineeship.Should().Be(v.Id.IsTraineeship);
-            result.VacancyType.Should().Be(v.Id.VacancyType);
             result.IsTaskListCompleted.Should().BeFalse();
             result.HasChosenProviderContactDetails.Should().Be(v.Id.HasChosenProviderContactDetails);
         }

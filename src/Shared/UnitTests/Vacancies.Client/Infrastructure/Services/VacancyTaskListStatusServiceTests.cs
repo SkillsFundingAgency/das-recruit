@@ -15,7 +15,6 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
         public void When_Employer_Has_Submitted_Additional_Questions_Then_TaskList_Completed(VacancyTaskListStatusService service, Mock<ITaskListVacancy> vacancy)
         {
             vacancy.Object.OwnerType = OwnerType.Employer;
-            vacancy.Object.VacancyType = VacancyType.Apprenticeship;
             vacancy.Object.HasSubmittedAdditionalQuestions = true;
 
             bool result = service.IsTaskListCompleted(vacancy.Object);
@@ -27,7 +26,6 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
         public void When_Employer_And_No_AdditionalQuestions_Then_TaskList_Not_Completed(VacancyTaskListStatusService service, Mock<ITaskListVacancy> vacancy)
         {
             vacancy.Object.OwnerType = OwnerType.Employer;
-            vacancy.Object.VacancyType = VacancyType.Apprenticeship;
             vacancy.Object.HasSubmittedAdditionalQuestions = false;
 
             bool result = service.IsTaskListCompleted(vacancy.Object);
@@ -39,7 +37,6 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
         public void When_Null_VacancyType_And_Employer_OwnerType_And_Has_AdditionalQuestions_Then_TaskList_Completed(VacancyTaskListStatusService service, Mock<ITaskListVacancy> vacancy)
         {
             vacancy.Object.OwnerType = OwnerType.Employer;
-            vacancy.Object.VacancyType = null;
             vacancy.Object.HasSubmittedAdditionalQuestions = true;
 
             bool result = service.IsTaskListCompleted(vacancy.Object);
@@ -51,7 +48,6 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
         public void When_Provider_And_Apprenticeship_And_HasSubmittedAdditionalQuestions_True_Then_TaskList_Completed(VacancyTaskListStatusService service, Mock<ITaskListVacancy> vacancy)
         {
             vacancy.Object.OwnerType = OwnerType.Provider;
-            vacancy.Object.VacancyType = VacancyType.Apprenticeship;
             vacancy.Object.HasSubmittedAdditionalQuestions = true;
             
             bool result = service.IsTaskListCompleted(vacancy.Object);
@@ -63,7 +59,6 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
         public void When_Provider_And_Apprenticeship_And_HasSubmittedAdditionalQuestions_False_Then_TaskList_Not_Completed(VacancyTaskListStatusService service, Mock<ITaskListVacancy> vacancy)
         {
             vacancy.Object.OwnerType = OwnerType.Provider;
-            vacancy.Object.VacancyType = VacancyType.Apprenticeship;
             vacancy.Object.HasSubmittedAdditionalQuestions = false;
             
             bool result = service.IsTaskListCompleted(vacancy.Object);
@@ -75,7 +70,6 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
         public void When_Null_VacancyType_And_Provider_Ownertype_And_HasSubmittedAdditionalQuestions_True_Then_TaskList_Completed(VacancyTaskListStatusService service, Mock<ITaskListVacancy> vacancy)
         {
             vacancy.Object.OwnerType = OwnerType.Provider;
-            vacancy.Object.VacancyType = null;
             vacancy.Object.HasSubmittedAdditionalQuestions = true;
             
             bool result = service.IsTaskListCompleted(vacancy.Object);

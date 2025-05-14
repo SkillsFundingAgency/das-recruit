@@ -20,7 +20,6 @@ namespace Esfa.Recruit.Provider.Web
     public partial class Startup
     {
         private readonly DfEOidcConfiguration _dfEOidcConfig;
-        private readonly bool _isDfESignInAllowed;
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IOptions<ExternalLinksConfiguration> externalLinks, IHostApplicationLifetime applicationLifetime, ILogger<Startup> logger, IConfiguration config)

@@ -45,7 +45,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
         public TransferReason? TransferInfoReason { get; set; }
         public string TrainingProviderName { get; set; }
         public bool IsTraineeship { get; set; }
-        public VacancyType? VacancyType { get; set; }
         public bool? HasChosenProviderContactDetails { get; set; }
         public bool HasSubmittedAdditionalQuestions { get; set; }
         public OwnerType OwnerType { get; set; }

@@ -1,7 +1,6 @@
 using System.Threading.Tasks;
 using Esfa.Recruit.Provider.Web.Services;
 using Esfa.Recruit.Provider.Web.ViewModels.Dashboard;
-using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Models;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
@@ -15,20 +14,17 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
         private readonly IRecruitVacancyClient _client;
         private readonly IProviderAlertsViewModelFactory _providerAlertsViewModelFactory;
         private readonly IProviderRelationshipsService _providerRelationshipsService;
-        private readonly ServiceParameters _serviceParameters;
 
         public DashboardOrchestrator(
             IProviderVacancyClient vacancyClient,
             IRecruitVacancyClient client,
             IProviderAlertsViewModelFactory providerAlertsViewModelFactory,
-            IProviderRelationshipsService providerRelationshipsService,
-            ServiceParameters serviceParameters)
+            IProviderRelationshipsService providerRelationshipsService)
         {
             _vacancyClient = vacancyClient;
             _client = client;
             _providerAlertsViewModelFactory = providerAlertsViewModelFactory;
             _providerRelationshipsService = providerRelationshipsService;
-            _serviceParameters = serviceParameters;
         }
 
         public virtual async Task<DashboardViewModel> GetDashboardViewModelAsync(VacancyUser user)
