@@ -76,6 +76,7 @@ jobs:
     name: DAS - Continuous Deployment Agents
   variables:
     JobsAppServiceName: $[ dependencies.DeployInfrastructure.outputs['DeployInfrastructure.ArmOutputs${{ parameters.Environment }}.JobsAppServiceName'] ]
+    ResourceGroupName: $[ dependencies.DeployInfrastructure.outputs['DeployInfrastructure.ArmOutputs${{ parameters.Environment }}.ResourceGroupName'] ]
   environment: ${{ parameters.Environment }}
   strategy:
     runOnce:
@@ -93,6 +94,7 @@ jobs:
             ServiceConnection: ${{ parameters.ServiceConnection }}
             AppServiceName: $(JobsAppServiceName)
             DeploymentPackagePath: $(Pipeline.Workspace)/Recruit/Recruit.Vacancies.Jobs.Zip
+            ResourceGroupName: $(ResourceGroupName)
             VirtualApplication: 'Recruit.Vacancies.Jobs'
 
 - deployment: DeployApi
