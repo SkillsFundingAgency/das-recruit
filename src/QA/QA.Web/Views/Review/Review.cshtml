@@ -473,6 +473,53 @@
         </div>
     </div>
     }
+    <esfaFeatureEnabled name="@RecruitFeatureNames.FoundationApprenticeships">
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-full">
+                <h2 class="govuk-heading-l">Website for applications</h2>
+            </div>
+        
+            <div>
+                @if (Model.ApplicationMethod == ApplicationMethod.ThroughFindAnApprenticeship)
+                {
+                    <div class="govuk-grid-column-two-thirds">
+                        <p class="govuk-body">
+                            Applicants will apply through Find an apprenticeship.
+                        </p>
+                    </div>
+                }
+                else
+                {
+                
+                    <div class="govuk-grid-column-two-thirds">
+                        <p class="govuk-body">
+                            Applicants will apply through an external website.
+                        </p>
+                    </div>
+                    <div class="@Model.ApplicationUrl" id="@FieldIdentifiers.ApplicationUrl">
+                        <h3 class="govuk-heading-s">Application website</h3>
+                        <p class="govuk-body">
+                            @Model.ApplicationUrl
+                        </p>
+                        <esfa-review-checkbox asp-for="SelectedFieldIdentifiers"
+                                              asp-value="@FieldIdentifiers.ApplicationUrl"
+                                              asp-items="@Model.FieldIdentifiers"></esfa-review-checkbox>
+                    </div>
+                    <div class="@Model.ApplicationInstructions" id="@FieldIdentifiers.ApplicationInstructions">
+                        <h3 class="govuk-heading-s">Company’s application instructions</h3>
+                        <textarea asp-for="ApplicationInstructions" class="govuk-textarea" rows="5" data-val-length-max="200"></textarea>
+                        <esfa-review-checkbox asp-for="SelectedFieldIdentifiers"
+                                              asp-value="@FieldIdentifiers.ApplicationInstructions"
+                                              asp-items="@Model.FieldIdentifiers"></esfa-review-checkbox>
+                    </div>
+                    
+                }
+                <div class="govuk-grid-column-full">
+                    <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+                </div>
+            </div>
+        </div>
+    </esfaFeatureEnabled>
 
     <partial name="_ReviewHistories" for="ReviewHistories" />
     
