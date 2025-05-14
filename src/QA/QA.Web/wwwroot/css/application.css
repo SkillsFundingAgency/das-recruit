@@ -478,3 +478,11 @@ mce-tinymce {
 .app-preserve-line-breaks {
     white-space: pre-line;
 }
+
+.sign-out {
+    padding-left: 0 !important;
+}
+
+.float-right {
+    float: right;
+}

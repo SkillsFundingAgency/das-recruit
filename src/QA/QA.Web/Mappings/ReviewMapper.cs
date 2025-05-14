@@ -195,6 +195,7 @@ namespace Esfa.Recruit.Qa.Web.Mappings
             vm.Review = reviewSummaryTask.Result;
             try
             {
+                vm.ApprenticeshipType = vacancy.ApprenticeshipType ?? ApprenticeshipTypes.Standard;
                 vm.SubmittedByName = vacancy.SubmittedByUser.Name;
                 vm.SubmittedByEmail = vacancy.SubmittedByUser.Email;
                 vm.ApplicationInstructions = vacancy.ApplicationInstructions;
