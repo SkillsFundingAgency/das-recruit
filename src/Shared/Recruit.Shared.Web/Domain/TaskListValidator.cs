@@ -196,6 +196,7 @@ public class TaskListValidator : AbstractValidator<Vacancy>, ITaskListValidator
         When(x => x.ApprenticeshipType is not ApprenticeshipTypes.Foundation, () =>
         {
             RuleFor(x => x.Skills).Must(x => x is { Count: >0 }).RunCondition(TaskListItemFlags.Skills);
+            RuleFor(x => x.HasOptedToAddQualifications).NotNull().RunCondition(TaskListItemFlags.Qualifications);
         });
         When(x => x.HasOptedToAddQualifications ?? false, () =>
         {

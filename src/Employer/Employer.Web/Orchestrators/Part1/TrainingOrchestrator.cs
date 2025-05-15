@@ -93,7 +93,7 @@ public class TrainingOrchestrator(
         if (programme == null)
             return null;
 
-        var result = new ConfirmTrainingViewModel
+        return new ConfirmTrainingViewModel
         {
             VacancyId = vrm.VacancyId,
             EmployerAccountId = vrm.EmployerAccountId,
@@ -109,8 +109,6 @@ public class TrainingOrchestrator(
             IsChangingApprenticeshipType = vacancy.IsChangingApprenticeshipType(programmes, programme),
             WillTaskListBeCompleted = utility.IsTaskListCompleted(VacancyWithProposedChanges(vacancy, programme)),
         };
-
-        return result;
     }
 
     private static Vacancy VacancyWithProposedChanges(Vacancy vacancy, IApprenticeshipProgramme programme)

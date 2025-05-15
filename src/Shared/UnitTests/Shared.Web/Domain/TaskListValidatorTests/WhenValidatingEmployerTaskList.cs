@@ -147,6 +147,7 @@ public class WhenValidatingEmployerTaskList
         {
             new object[] { (Vacancy v) => { v.Skills = null; } },
             new object[] { (Vacancy v) => { v.Skills = []; } },
+            new object[] { (Vacancy v) => { v.HasOptedToAddQualifications = null; } },
             new object[] {
                 (Vacancy v) =>
                 {
@@ -239,6 +240,7 @@ public class WhenValidatingEmployerTaskList
         vacancy.OwnerType = OwnerType.Employer;
         vacancy.Skills = null;
         vacancy.Qualifications = null;
+        vacancy.HasOptedToAddQualifications = null;
         
         var sut = new TaskListValidator();
         
@@ -311,6 +313,6 @@ public class WhenValidatingEmployerTaskList
     
         // assert
         results.Should().HaveCount(BitOperations.PopCount((ulong)EmployerTaskListSectionFlags.All));
-        results.Count(x => x.Value is false).Should().Be(17);
+        results.Count(x => x.Value is false).Should().Be(18);
     }
 }
