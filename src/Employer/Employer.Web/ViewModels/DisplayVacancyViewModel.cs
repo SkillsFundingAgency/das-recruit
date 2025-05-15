@@ -71,6 +71,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels
         public WageType? WageType { get; internal set; }
         public bool HasCompetitiveSalaryType => WageType.HasValue && WageType.Value == Recruit.Vacancies.Client.Domain.Entities.WageType.CompetitiveSalary;
         public string AccountLegalEntityPublicHashedId { get ; set ; }
+        public ApprenticeshipTypes ApprenticeshipType { get; set; }
 
         private string _additionalQuestion1;
         public string AdditionalQuestion1 

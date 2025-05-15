@@ -15,10 +15,17 @@ using Microsoft.Extensions.Options;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using Polly;
+using FeatureNames = Esfa.Recruit.Vacancies.Client.Infrastructure.Configuration.FeatureNames;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummariesProvider
 {
-    internal sealed class VacancySummariesProvider : MongoDbCollectionBase, IVacancySummariesProvider
+    internal sealed class VacancySummariesProvider(
+        ILoggerFactory loggerFactory,
+        IOptions<MongoDbConnectionDetails> details,
+        IVacancyTaskListStatusService vacancyTaskListStatusService,
+        IFeature features)
+        : MongoDbCollectionBase(loggerFactory, MongoDbNames.RecruitDb, MongoDbCollectionNames.Vacancies, details),
+            IVacancySummariesProvider
     {
         private readonly ITrainingProviderService _trainingProviderService;
         private readonly IEmployerAccountProvider _employerAccountProvider;
@@ -31,8 +38,10 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
             ILoggerFactory loggerFactory,
             IOptions<MongoDbConnectionDetails> details,
             IFeature feature,
-            ITrainingProviderService trainingProviderService, IEmployerAccountProvider employerAccountProvider)
-            : base(loggerFactory, MongoDbNames.RecruitDb, MongoDbCollectionNames.Vacancies, details)
+            ITrainingProviderService trainingProviderService,
+            IEmployerAccountProvider employerAccountProvider,
+            IVacancyTaskListStatusService vacancyTaskListStatusService)
+            : this(loggerFactory, details, vacancyTaskListStatusService, feature)
         {
             _trainingProviderService = trainingProviderService;
             _employerAccountProvider = employerAccountProvider;
@@ -43,7 +52,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
         {
             var bsonArray = new BsonArray
             {
-                VacancyType.Apprenticeship.ToString(),
+                "Apprenticeship",
                 BsonNull.Value
             };
 
@@ -82,7 +91,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
         {
             var bsonArray = new BsonArray
             {
-                VacancyType.Apprenticeship.ToString(),
+                "Apprenticeship",
                 BsonNull.Value
             };
             
@@ -139,7 +148,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
         {
             var bsonArray = new BsonArray
             {
-                VacancyType.Apprenticeship.ToString(),
+                "Apprenticeship",
                 BsonNull.Value
             };
             
@@ -197,11 +206,10 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
         {
             var bsonArray = new BsonArray
             {
-                VacancyType.Apprenticeship.ToString(),
+                "Apprenticeship",
                 BsonNull.Value
             };
             
-
             var match = new BsonDocument
             {
                 {
@@ -287,7 +295,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
         {
             var bsonArray = new BsonArray
             {
-                VacancyType.Apprenticeship.ToString(),
+                "Apprenticeship",
                 BsonNull.Value
             };
             

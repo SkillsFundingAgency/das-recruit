@@ -2,7 +2,6 @@
 @{
     ViewBag.GaData.Vpv = "/recruitment/provider/page-application-status-confirmation";
     ViewBag.Title = "Review Application Confirmation";
-    var vacancyType = _serviceParameters.VacancyType.GetValueOrDefault() == VacancyType.Apprenticeship ? "apprenticeship" : "traineeship";
 }
 
 @section BackLink {
@@ -17,7 +16,7 @@
                 Are you sure you want to make @Model.Name's application successful?
             </h1>
             <p>
-                This will notify @Model.Name that they have been offered this @vacancyType.
+                This will notify @Model.Name that they have been offered this apprenticeship.
             </p>
         </div>
         <div asp-show="@Model.ShowStatusUnsuccessful">
@@ -25,7 +24,7 @@
                 Are you sure you want to make @Model.Name's application unsuccessful?
             </h1>
             <p>
-                This will notify @Model.Name that they won't be offered the @vacancyType.
+                This will notify @Model.Name that they won't be offered the apprenticeship.
             </p>
             <h2 class="govuk-heading-s">Your message to the applicant</h2>
             <div class="govuk-details__text govuk-!-margin-bottom-6">

@@ -98,7 +98,6 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
         [Test, MoqAutoData]
         public async Task Then_Model_Values_Set_For_No_Vacancies(
             string employerAccountId,
-            VacancyType vacancyType,
             [Frozen] Mock<IVacancySummariesProvider> vacanciesSummaryProvider,
             [Frozen] Mock<IFeature> feature,
             VacancyClient vacancyClient)
@@ -123,7 +122,6 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
         [Test, MoqAutoData]
         public async Task Then_Model_Values_Set_For_One_Vacancies(
             string employerAccountId,
-            VacancyType vacancyType,
             [Frozen] Mock<IVacancySummariesProvider> vacanciesSummaryProvider,
             [Frozen] Mock<IFeature> feature,
             VacancyClient vacancyClient)

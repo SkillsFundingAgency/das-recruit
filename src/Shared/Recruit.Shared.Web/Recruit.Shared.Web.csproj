@@ -26,7 +26,4 @@
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="FeatureToggle\" />
-  </ItemGroup>
 </Project>

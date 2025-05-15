@@ -14,6 +14,7 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Configuration;
 using Humanizer;
 using Microsoft.Extensions.Options;
+using FeatureNames = Esfa.Recruit.Vacancies.Client.Infrastructure.Configuration.FeatureNames;
 
 namespace Esfa.Recruit.Provider.Web.Mappings
 {
@@ -90,7 +91,6 @@ namespace Esfa.Recruit.Provider.Web.Mappings
             vm.EmployerRejectedReason = vacancy.EmployerRejectedReason;
             vm.EmployerReviewFieldIndicators = vacancy.EmployerReviewFieldIndicators;
             vm.FindAnApprenticeshipUrl = _externalLinksConfiguration.FindAnApprenticeshipUrl;
-            vm.FindATraineeshipUrl = _externalLinksConfiguration.FindATraineeshipUrl;
             vm.IsAnonymous = vacancy.IsAnonymous;
             vm.NumberOfPositions = vacancy.NumberOfPositions?.ToString();
             vm.NumberOfPositionsCaption = vacancy.NumberOfPositions.HasValue
@@ -125,6 +125,7 @@ namespace Esfa.Recruit.Provider.Web.Mappings
             vm.AdditionalQuestion1 = vacancy.AdditionalQuestion1;
             vm.AdditionalQuestion2 = vacancy.AdditionalQuestion2;
             vm.HasSubmittedAdditionalQuestions = vacancy.HasSubmittedAdditionalQuestions;
+            vm.ApprenticeshipType = vacancy.GetApprenticeshipType();
 
             if (vacancy.EmployerLocation != null)
             {
@@ -157,8 +158,6 @@ namespace Esfa.Recruit.Provider.Web.Mappings
                 vm.WageText = vacancy.StartDate.HasValue ? vacancy.Wage.ToText(vacancy.StartDate) : null;
                 vm.WorkingWeekDescription = vacancy.Wage.WorkingWeekDescription;
             }
-
-            vm.VacancyType = vacancy.VacancyType;
         }
     }
 }
