@@ -23,7 +23,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation
             {
                 foreach (var fluentError in fluentResult.Errors)
                 {
-                    result.Errors.Add(new EntityValidationError(long.Parse(fluentError.ErrorCode), fluentError.PropertyName, fluentError.ErrorMessage, fluentError.ErrorCode));
+                    result.Errors.Add(new EntityValidationError(long.TryParse(fluentError.ErrorCode, out var parsed) ? parsed : 0, fluentError.PropertyName, fluentError.ErrorMessage, fluentError.ErrorCode));
                 }
             }
 

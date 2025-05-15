@@ -5,6 +5,7 @@ using Esfa.Recruit.Employer.Web.Interfaces;
 using Esfa.Recruit.Employer.Web.Mappings;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels.Part2.AdditionalQuestions;
+using Esfa.Recruit.Employer.Web.ViewModels.Validations;
 using Esfa.Recruit.Shared.Web.Orchestrators;
 using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Services;
@@ -46,7 +47,9 @@ public class AdditionalQuestionsOrchestrator : VacancyValidatingOrchestrator<Add
             EmployerAccountId = vacancy.EmployerAccountId,
             AdditionalQuestion1 = vacancy.AdditionalQuestion1,
             AdditionalQuestion2 = vacancy.AdditionalQuestion2,
-            FindAnApprenticeshipUrl = _options.Value.FindAnApprenticeshipUrl
+            FindAnApprenticeshipUrl = _options.Value.FindAnApprenticeshipUrl,
+            ApprenticeshipType = (ApprenticeshipTypes)vacancy.ApprenticeshipType,
+            QuestionCount = (ApprenticeshipTypes)vacancy.ApprenticeshipType == ApprenticeshipTypes.Foundation ? 3 : 4 
         };
             
         if (vacancy.Status == VacancyStatus.Referred)
@@ -65,7 +68,19 @@ public class AdditionalQuestionsOrchestrator : VacancyValidatingOrchestrator<Add
         var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(editModel, RouteNames.AdditionalQuestions_Post);
         
         vacancy.HasSubmittedAdditionalQuestions = true;
-            
+
+        editModel.QuestionCount = (ApprenticeshipTypes)vacancy.ApprenticeshipType == ApprenticeshipTypes.Foundation ? 3 : 4;
+
+        var validator = new AdditionalQuestionsEditModelValidator(editModel.QuestionCount);
+        var fluentValidationResult = validator.Validate(editModel);
+
+        var validation = EntityValidationResult.FromFluentValidationResult(fluentValidationResult);
+
+        if (validation.HasErrors)
+        {
+            return new OrchestratorResponse(validation);
+        }
+
         SetVacancyWithEmployerReviewFieldIndicators(
             vacancy.AdditionalQuestion1,
             FieldIdResolver.ToFieldId(v => v.AdditionalQuestion1),
