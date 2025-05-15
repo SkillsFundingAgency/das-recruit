@@ -15,6 +15,7 @@ using FluentAssertions;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Testing.AutoFixture;
+using FeatureNames = Esfa.Recruit.Vacancies.Client.Infrastructure.Configuration.FeatureNames;
 
 namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructure.Services.ProviderVacancyClient
 {
