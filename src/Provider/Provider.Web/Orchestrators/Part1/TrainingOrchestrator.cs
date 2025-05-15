@@ -17,31 +17,26 @@ using Esfa.Recruit.Vacancies.Client.Application.Services;
 
 namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1 
 {
-    public class TrainingOrchestrator : VacancyValidatingOrchestrator<TrainingEditModel>
+    public class TrainingOrchestrator(
+        IRecruitVacancyClient vacancyClient,
+        IProviderVacancyClient providerVacancyClient,
+        ILogger<TrainingOrchestrator> logger,
+        IReviewSummaryService reviewSummaryService,
+        IUtility utility)
+        : VacancyValidatingOrchestrator<TrainingEditModel>(logger)
     {
         private const VacancyRuleSet ValidationRules = VacancyRuleSet.TrainingProgramme;
-        private readonly IRecruitVacancyClient _vacancyClient;
-        private readonly IProviderVacancyClient _providerVacancyClient;
-        private readonly IReviewSummaryService _reviewSummaryService;
-        private readonly IUtility _utility;
-
-        public TrainingOrchestrator(IRecruitVacancyClient vacancyClient, IProviderVacancyClient providerVacancyClient, ILogger<TrainingOrchestrator> logger, IReviewSummaryService reviewSummaryService, IUtility utility) : base(logger)
-        {
-            _vacancyClient = vacancyClient;
-            _providerVacancyClient = providerVacancyClient;
-            _reviewSummaryService = reviewSummaryService;
-            _utility = utility;
-        }
+        private const string InvalidTraining = "Select a training course";
 
         public async Task<TrainingViewModel> GetTrainingViewModelAsync(VacancyRouteModel vrm, VacancyUser user)
         {
-            var vacancyTask = _utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.Training_Get);
-            var programmesTask = _vacancyClient.GetActiveApprenticeshipProgrammesAsync();
+            var vacancyTask = utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.Training_Get);
+            var programmesTask = vacancyClient.GetActiveApprenticeshipProgrammesAsync();
 
             await Task.WhenAll(vacancyTask, programmesTask);
 
             var employerInfo =
-                await _providerVacancyClient.GetProviderEmployerVacancyDataAsync(vrm.Ukprn,
+                await providerVacancyClient.GetProviderEmployerVacancyDataAsync(vrm.Ukprn,
                     vacancyTask.Result.EmployerAccountId);
 
             var vacancy = vacancyTask.Result;
@@ -53,15 +48,15 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
                 VacancyId = vacancy.Id,
                 SelectedProgrammeId = vacancy.ProgrammeId,
                 Programmes = programmes.ToViewModel(),
-                PageInfo = _utility.GetPartOnePageInfo(vacancy),
+                PageInfo = utility.GetPartOnePageInfo(vacancy),
                 HasMoreThanOneLegalEntity = employerInfo.LegalEntities.Count > 1,
                 Ukprn = vrm.Ukprn,
-                IsTaskListCompleted = _utility.IsTaskListCompleted(vacancy)
+                IsTaskListCompleted = utility.IsTaskListCompleted(vacancy)
             };
 
             if (vacancy.Status == VacancyStatus.Referred)
             {
-                vm.Review = await _reviewSummaryService.GetReviewSummaryViewModelAsync(vacancy.VacancyReference.Value,
+                vm.Review = await reviewSummaryService.GetReviewSummaryViewModelAsync(vacancy.VacancyReference.Value,
                     ReviewFieldMappingLookups.GetTrainingReviewFieldIndicators());
             }
 
@@ -79,13 +74,14 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
 
         public async Task<ConfirmTrainingViewModel> GetConfirmTrainingViewModelAsync(VacancyRouteModel vrm, string programmeId)
         {
-            var vacancyTask = _utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.Training_Confirm_Get);
-            var programmesTask = _vacancyClient.GetActiveApprenticeshipProgrammesAsync();
+            var vacancyTask = utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.Training_Confirm_Get);
+            var programmesTask = vacancyClient.GetActiveApprenticeshipProgrammesAsync();
 
             await Task.WhenAll(vacancyTask, programmesTask);
+            var vacancy = vacancyTask.Result;
+            var programmes = programmesTask.Result.ToList();
 
-            var programme = programmesTask.Result.SingleOrDefault(p => p.Id == programmeId);
-
+            var programme = programmes.SingleOrDefault(p => p.Id == programmeId);
             if (programme == null)
                 return null;
 
@@ -97,24 +93,38 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
                 TrainingTitle = programme.Title,
                 DurationMonths = programme.Duration,
                 ProgrammeType = programme.ApprenticeshipType.GetDisplayName(),
-                PageInfo = _utility.GetPartOnePageInfo(vacancyTask.Result),
+                PageInfo = utility.GetPartOnePageInfo(vacancyTask.Result),
                 TrainingEffectiveToDate = programme.EffectiveTo?.AsGdsDate(),
-                EducationLevelName = 
-                    EducationLevelNumberHelper.GetEducationLevelNameOrDefault(programme.EducationLevelNumber, programme.ApprenticeshipLevel),
+                EducationLevelName = EducationLevelNumberHelper.GetEducationLevelNameOrDefault(programme.EducationLevelNumber, programme.ApprenticeshipLevel),
                 IsFoundation = programme.ApprenticeshipType == TrainingType.Foundation,
+                IsChangingApprenticeshipType = vacancy.IsChangingApprenticeshipType(programmes, programme),
                 Ukprn = vrm.Ukprn,
                 VacancyId = vrm.VacancyId
             };
         }
 
-        public async Task<OrchestratorResponse> PostConfirmTrainingEditModelAsync(ConfirmTrainingEditModel m,
-            IApprenticeshipProgramme programme, VacancyUser user)
+        public async Task<OrchestratorResponse> PostConfirmTrainingEditModelAsync(ConfirmTrainingEditModel m, VacancyUser user)
         {
-            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(m, RouteNames.Training_Confirm_Post);
+            var programmes = (await vacancyClient.GetActiveApprenticeshipProgrammesAsync()).ToList();
+            var programme = programmes.SingleOrDefault(p => p.Id == m.ProgrammeId);
+            if (programme == null)
+            {
+                return new OrchestratorResponse(new EntityValidationResult
+                {
+                    Errors = [new EntityValidationError(0, nameof(TrainingEditModel.SelectedProgrammeId), InvalidTraining, string.Empty)]
+                });
+            }
+            
+            var vacancy = await utility.GetAuthorisedVacancyForEditAsync(m, RouteNames.Training_Confirm_Post);
             vacancy.ApprenticeshipType = programme.ApprenticeshipType switch {
                 TrainingType.Foundation => ApprenticeshipTypes.Foundation,
                 _ => null
             };
+            
+            if (vacancy.IsChangingApprenticeshipType(programmes, programme))
+            {
+                ProcessApprenticeshipTypeChanges(vacancy, programme);
+            }
 
             SetVacancyWithProviderReviewFieldIndicators(
                 vacancy.ProgrammeId,
@@ -127,14 +137,26 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
 
             return await ValidateAndExecute(
                 vacancy,
-                v => _vacancyClient.Validate(v, ValidationRules),
-                v => _vacancyClient.UpdateDraftVacancyAsync(vacancy, user)
+                v => vacancyClient.Validate(v, ValidationRules),
+                v => vacancyClient.UpdateDraftVacancyAsync(vacancy, user)
             );
+        }
+        
+        private static void ProcessApprenticeshipTypeChanges(Vacancy vacancy, IApprenticeshipProgramme programme)
+        {
+            switch (programme.ApprenticeshipType)
+            {
+                case TrainingType.Foundation:
+                    vacancy.Skills = null;
+                    vacancy.Qualifications = null;
+                    vacancy.HasOptedToAddQualifications = null;
+                    break;
+            }
         }
 
         public async Task<IApprenticeshipProgramme> GetProgrammeAsync(string programmeId)
         {
-            var programmes = await _vacancyClient.GetActiveApprenticeshipProgrammesAsync();
+            var programmes = await vacancyClient.GetActiveApprenticeshipProgrammesAsync();
 
             return programmes.SingleOrDefault(p => p.Id == programmeId);
         }
