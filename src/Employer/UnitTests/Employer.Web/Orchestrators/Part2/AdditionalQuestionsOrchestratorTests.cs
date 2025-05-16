@@ -120,6 +120,7 @@ public class AdditionalQuestionsOrchestratorTests
             AdditionalQuestionsEditModel editModel,
             VacancyUser vacancyUser,
             Vacancy vacancy,
+            EntityValidationResult validationResultWithErrors,
             AdditionalQuestionsViewModel viewModel,
             [Frozen] Mock<IUtility> mockUtility,
             [Frozen] Mock<IRecruitVacancyClient> mockRecruitVacancyClient,
@@ -129,16 +130,14 @@ public class AdditionalQuestionsOrchestratorTests
             mockUtility
                 .Setup(utility => utility.GetAuthorisedVacancyForEditAsync(editModel, RouteNames.AdditionalQuestions_Post))
                 .ReturnsAsync(vacancy);
+            mockRecruitVacancyClient
+                .Setup(client => client.Validate(vacancy, VacancyRuleSet.AdditionalQuestion1 | VacancyRuleSet.AdditionalQuestion2))
+                .Returns(validationResultWithErrors);
 
             var response = await orchestrator.PostEditModel(editModel, vacancyUser);
 
             response.Success.Should().BeFalse();
-            response.Errors.Errors
-                .Should()
-                .Contain(e => e.PropertyName == "AdditionalQuestion1");
-            response.Errors.Errors
-                .Should()
-                .Contain(e => e.PropertyName == "AdditionalQuestion2");
+            mockRecruitVacancyClient.Verify(client => client.Validate(vacancy, VacancyRuleSet.AdditionalQuestion1 | VacancyRuleSet.AdditionalQuestion2), Times.Once);
             mockRecruitVacancyClient.Verify(client => client.UpdateDraftVacancyAsync(vacancy, vacancyUser), Times.Never);
         }
 }

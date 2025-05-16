@@ -72,16 +72,6 @@ public class AdditionalQuestionsOrchestrator : VacancyValidatingOrchestrator<Add
 
         editModel.QuestionCount = (ApprenticeshipTypes)vacancy.ApprenticeshipType == ApprenticeshipTypes.Foundation ? 3 : 4;
 
-        var validator = new AdditionalQuestionsEditModelValidator(editModel.QuestionCount);
-        var fluentValidationResult = validator.Validate(editModel);
-
-        var validation = EntityValidationResult.FromFluentValidationResult(fluentValidationResult);
-
-        if (validation.HasErrors)
-        {
-            return new OrchestratorResponse(validation);
-        }
-
         SetVacancyWithEmployerReviewFieldIndicators(
             vacancy.AdditionalQuestion1,
             FieldIdResolver.ToFieldId(v => v.AdditionalQuestion1),
