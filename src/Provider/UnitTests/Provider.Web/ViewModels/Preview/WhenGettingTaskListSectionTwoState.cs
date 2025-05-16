@@ -162,8 +162,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.ViewModels.Preview
                 Description = fixture.Create<string>(),
                 TrainingDescription = fixture.Create<string>(),
                 ShortDescription = fixture.Create<string>(),
-                AccountLegalEntityPublicHashedId = fixture.Create<string>(),
-                VacancyType = VacancyType.Apprenticeship
+                AccountLegalEntityPublicHashedId = fixture.Create<string>()
             };
         }
     }

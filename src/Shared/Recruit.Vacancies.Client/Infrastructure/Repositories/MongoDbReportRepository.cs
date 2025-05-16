@@ -43,7 +43,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
         {
             var builder = Builders<T>.Filter;
             var filter = builder.Eq(OwnerTypeFieldName, ReportOwnerType.Provider.ToString()) &
-                         builder.Eq(ParametersVacancyTypeFieldName, VacancyType.Apprenticeship.ToString()) &
+                         builder.Eq(ParametersVacancyTypeFieldName, "Apprenticeship") &
                          builder.Eq(OwnerUkprnFieldName, ukprn);
 
             var collection = GetCollection<T>();

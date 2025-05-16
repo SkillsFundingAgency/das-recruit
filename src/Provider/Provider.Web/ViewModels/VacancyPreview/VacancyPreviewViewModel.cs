@@ -107,7 +107,7 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview
 
         public ValidationSummaryViewModel ValidationErrors { get; set; } = new ValidationSummaryViewModel(); 
         
-        public string SubmitButtonText => RequiresEmployerReview && ApprenticeshipType == ApprenticeshipTypes.Standard
+        public string SubmitButtonText => RequiresEmployerReview
             ? Status == VacancyStatus.Rejected
                 ? "Resubmit vacancy to employer"
                 : "Send to employer"

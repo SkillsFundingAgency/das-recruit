@@ -11,9 +11,10 @@ using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Configuration;
 using Humanizer;
 using Microsoft.Extensions.Options;
-using FeatureNames = Esfa.Recruit.Provider.Web.Configuration.FeatureNames;
+using FeatureNames = Esfa.Recruit.Vacancies.Client.Infrastructure.Configuration.FeatureNames;
 
 namespace Esfa.Recruit.Provider.Web.Mappings
 {
@@ -90,7 +91,6 @@ namespace Esfa.Recruit.Provider.Web.Mappings
             vm.EmployerRejectedReason = vacancy.EmployerRejectedReason;
             vm.EmployerReviewFieldIndicators = vacancy.EmployerReviewFieldIndicators;
             vm.FindAnApprenticeshipUrl = _externalLinksConfiguration.FindAnApprenticeshipUrl;
-            vm.FindATraineeshipUrl = _externalLinksConfiguration.FindATraineeshipUrl;
             vm.IsAnonymous = vacancy.IsAnonymous;
             vm.NumberOfPositions = vacancy.NumberOfPositions?.ToString();
             vm.NumberOfPositionsCaption = vacancy.NumberOfPositions.HasValue

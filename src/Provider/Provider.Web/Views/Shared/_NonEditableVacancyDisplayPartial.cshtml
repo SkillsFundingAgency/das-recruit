@@ -11,15 +11,7 @@
 </div>
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
-        @if (_serviceParameters.VacancyType == VacancyType.Apprenticeship)
-        {
-            <h2 class="govuk-heading-l">Apprenticeship summary</h2>
-        }
-        else
-        {
-            <h2 class="govuk-heading-l">Traineeship summary</h2>
-        }
-
+        <h2 class="govuk-heading-l">Apprenticeship summary</h2>
     </div>
 </div>
 <div class="govuk-grid-row">
@@ -34,10 +26,7 @@
             <li>
                 <h3 class="govuk-heading-s">Working week</h3>
                 <p class="govuk-body">@Model.WorkingWeekDescription</p>
-             @if (_serviceParameters.VacancyType == VacancyType.Apprenticeship)
-             {
                 <p class="govuk-body">Total hours per week: @Model.HoursPerWeek</p>
-             }
             </li>
             <li>
                 <h3 class="govuk-heading-s">Expected apprenticeship duration</h3>
@@ -64,19 +53,15 @@
             </li>
         </ul>
     </div>
-    @if (_serviceParameters.VacancyType == VacancyType.Apprenticeship)
-    {
-        <div class="govuk-grid-column-two-thirds vacancy-descriptions" id="vacancyDescription">
-            <h3 class="govuk-heading-s">What will the apprentice be doing?</h3>
-            <div class="govuk-body">@Html.Raw(Model.VacancyDescription)</div>
-            <h3 class="govuk-heading-s">What training will the apprentice take and what qualification will the apprentice get at the end?</h3>
-            <div class="govuk-body">@Html.Raw(Model.TrainingDescription)</div>
-            <h3 class="govuk-heading-s">What is the expected career progression after this apprenticeship?</h3>
-            <div class="govuk-body">@Html.Raw(Model.OutcomeDescription)</div>
-        </div>
-    }
-
-
+    <div class="govuk-grid-column-two-thirds vacancy-descriptions" id="vacancyDescription">
+        <h3 class="govuk-heading-s">What will the apprentice be doing?</h3>
+        <div class="govuk-body">@Html.Raw(Model.VacancyDescription)</div>
+        <h3 class="govuk-heading-s">What training will the apprentice take and what qualification will the apprentice get at the end?</h3>
+        <div class="govuk-body">@Html.Raw(Model.TrainingDescription)</div>
+        <h3 class="govuk-heading-s">What is the expected career progression after this apprenticeship?</h3>
+        <div class="govuk-body">@Html.Raw(Model.OutcomeDescription)</div>
+    </div>
+    
 </div>
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">

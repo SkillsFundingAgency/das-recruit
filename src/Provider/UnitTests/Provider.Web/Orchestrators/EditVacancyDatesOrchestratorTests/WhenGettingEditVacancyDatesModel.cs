@@ -29,7 +29,6 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.EditVacancy
         {
             vacancy.Status = VacancyStatus.Submitted;
             vacancy.IsDeleted = false;
-            vacancy.VacancyType = VacancyType.Apprenticeship;
             vacancyClient.Setup(x => x.GetVacancyAsync(vacancyRouteModel.VacancyId.GetValueOrDefault()))
                 .ReturnsAsync(vacancy);
             
@@ -48,7 +47,6 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.EditVacancy
         {
             vacancy.Status = VacancyStatus.Live;
             vacancy.IsDeleted = false;
-            vacancy.VacancyType = VacancyType.Apprenticeship;
             vacancy.ProgrammeId = programmes.FirstOrDefault().Id;
             vacancyClient.Setup(x => x.GetVacancyAsync(vacancyRouteModel.VacancyId.GetValueOrDefault()))
                 .ReturnsAsync(vacancy);
@@ -57,7 +55,6 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.EditVacancy
             var actual = await orchestrator.GetEditVacancyDatesViewModelAsync(vacancyRouteModel,
                 DateTime.UtcNow.AddMonths(1), DateTime.UtcNow.AddMonths(2));
 
-            actual.Data.VacancyType.Should().Be(vacancy.VacancyType);
             actual.Data.ProgrammeName.Should().Be(programmes.FirstOrDefault().Title);
             actual.Data.Title.Should().Be(vacancy.Title);
         }
