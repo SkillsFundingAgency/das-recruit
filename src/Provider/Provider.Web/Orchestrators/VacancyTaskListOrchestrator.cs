@@ -67,7 +67,9 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             vm.Ukprn = routeModel.Ukprn;
             vm.VacancyId = routeModel.VacancyId;
             vm.RequiresEmployerReview = hasProviderReviewPermission;
-            
+            vm.ApprenticeshipType = (ApprenticeshipTypes)vacancy.ApprenticeshipType;
+            vm.AdditionalQuestionCount = vm.ApprenticeshipType == ApprenticeshipTypes.Foundation ? 3 : 4;
+
             if (vacancy.Status == VacancyStatus.Referred)
             {
                 vm.Review = await reviewSummaryService.GetReviewSummaryViewModelAsync(vacancy.VacancyReference.Value, ReviewFieldMappingLookups.GetPreviewReviewFieldIndicators());

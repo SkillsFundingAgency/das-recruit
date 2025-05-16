@@ -97,6 +97,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators
                 .Excluding(c=>c.Qualifications)
                 .Excluding(c=>c.QualificationsDesired)
                 .Excluding(c=>c.HasOptedToAddQualifications)
+                .Excluding(c=>c.AdditionalQuestionCount)
             );
             viewModel.ApprenticeshipLevel.Should().Be(standard.ApprenticeshipLevel);
             viewModel.HasSelectedEmployerNameOption.Should().BeTrue();

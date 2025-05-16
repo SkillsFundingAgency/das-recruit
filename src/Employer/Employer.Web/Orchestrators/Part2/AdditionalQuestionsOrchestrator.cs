@@ -44,6 +44,7 @@ public class AdditionalQuestionsOrchestrator : VacancyValidatingOrchestrator<Add
         var viewModel = new AdditionalQuestionsViewModel
         {
             VacancyId = vacancy.Id,
+            VacancyTitle = vacancy.Title,
             EmployerAccountId = vacancy.EmployerAccountId,
             AdditionalQuestion1 = vacancy.AdditionalQuestion1,
             AdditionalQuestion2 = vacancy.AdditionalQuestion2,
