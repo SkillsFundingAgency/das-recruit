@@ -18,8 +18,8 @@ public enum TaskListItemFlags: ulong
     
     // Section One
     NameOfEmployer = 1UL, // Provider only
-    Title = NameOfEmployer << 1,
-    OrganisationName = Title << 1, // Employer only
+    AdvertTitle = NameOfEmployer << 1,
+    OrganisationName = AdvertTitle << 1, // Employer only
     TrainingCourse = OrganisationName << 1,
     TrainingProvider = TrainingCourse << 1, // Employer only
     SummaryDescription = TrainingProvider << 1,
@@ -58,7 +58,7 @@ public enum TaskListItemFlags: ulong
 [Flags]
 public enum EmployerTaskListSectionFlags: ulong
 {
-    One = TaskListItemFlags.Title 
+    One = TaskListItemFlags.AdvertTitle 
           | TaskListItemFlags.OrganisationName
           | TaskListItemFlags.TrainingCourse
           | TaskListItemFlags.TrainingProvider
@@ -89,7 +89,7 @@ public enum EmployerTaskListSectionFlags: ulong
 public enum ProviderTaskListSectionFlags: ulong
 {
     One = TaskListItemFlags.NameOfEmployer
-          | TaskListItemFlags.Title
+          | TaskListItemFlags.AdvertTitle
           | TaskListItemFlags.TrainingCourse
           | TaskListItemFlags.SummaryDescription
           | TaskListItemFlags.WhatWillTheyDoAtWork
@@ -140,7 +140,7 @@ public class TaskListValidator : AbstractValidator<Vacancy>, ITaskListValidator
         // ========================
         // Section One
         // ========================
-        RuleFor(x => x.Title).NotEmpty().RunCondition(TaskListItemFlags.Title);
+        RuleFor(x => x.Title).NotEmpty().RunCondition(TaskListItemFlags.AdvertTitle);
         RuleFor(x => x.ProgrammeId).NotEmpty().RunCondition(TaskListItemFlags.TrainingCourse);
         RuleFor(x => x.ShortDescription).NotEmpty().RunCondition(TaskListItemFlags.SummaryDescription);
         RuleFor(x => x.Description).NotEmpty().RunCondition(TaskListItemFlags.WhatWillTheyDoAtWork);
