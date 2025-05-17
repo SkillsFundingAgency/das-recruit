@@ -53,6 +53,7 @@ namespace UnitTests.Qa.Web.Orchestrators.Review
                 && c.Wage.CompanyBenefitsInformation == editModel.CompanyBenefitsInformation
                 && c.ShortDescription == editModel.ShortDescription
                 && c.Description == editModel.VacancyDescription
+                && c.ApplicationInstructions == editModel.ApplicationInstructions
                 ), user), Times.Once);
         }
         
@@ -95,6 +96,7 @@ namespace UnitTests.Qa.Web.Orchestrators.Review
                 && c.ManualQaFieldEditIndicators.SingleOrDefault(x=>x.FieldIdentifier.Equals(nameof(editModel.VacancyDescription))) != null
                 && c.ManualQaFieldEditIndicators.SingleOrDefault(x=>x.FieldIdentifier.Equals(nameof(editModel.WorkingWeekDescription))) != null
                 && c.ManualQaFieldEditIndicators.SingleOrDefault(x=>x.FieldIdentifier.Equals(nameof(editModel.CompanyBenefitsInformation))) != null
+                && c.ManualQaFieldEditIndicators.SingleOrDefault(x=>x.FieldIdentifier.Equals(nameof(editModel.ApplicationInstructions))) != null
                 )), Times.Once);
             
         }
