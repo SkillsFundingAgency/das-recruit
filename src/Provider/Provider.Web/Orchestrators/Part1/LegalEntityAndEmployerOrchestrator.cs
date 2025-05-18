@@ -54,16 +54,31 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
 
             if (feature.IsFeatureEnabled(FeatureNames.MongoMigration))
             {
+                // Only include employer accounts where the provider has recruitment permission
+                var filteredEmployerAccountIds = new List<string>();
+                foreach (var employer in editVacancyInfo.Employers)
+                {
+                    // Check if provider has permission for at least one legal entity under this employer
+                    var hasPermission = await providerRelationshipsService.HasProviderGotEmployersPermissionAsync(
+                        vrm.Ukprn,
+                        employer.EmployerAccountId,
+                        null, // TODO: Need to obtain the legal entity public hashed id.
+                        OperationType.Recruitment);
+                    if (hasPermission)
+                    {
+                        filteredEmployerAccountIds.Add(employer.EmployerAccountId);
+                    }
+                }
+
                 var sortColumn = sortByType switch
                 {
                     SortByType.LegalEntityName => "PublicHashedId",
                     _ => "Name"
                 };
-                var isAscending = sortOrder == SortOrder.Ascending;
 
-                var employerAccountIds = editVacancyInfo.Employers.Select(info => info.EmployerAccountId).ToList();
+                var isAscending = sortOrder == SortOrder.Ascending;
                 var accountLegal = await employerAccountProvider.GetAllLegalEntitiesConnectedToAccountAsync(
-                    employerAccountIds,
+                    filteredEmployerAccountIds,
                     searchTerm,
                     setPage,
                     MaxLegalEntitiesPerPage,
