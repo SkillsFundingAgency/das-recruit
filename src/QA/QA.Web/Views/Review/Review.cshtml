@@ -474,7 +474,7 @@
     </div>
     }
     <esfaFeatureEnabled name="@RecruitFeatureNames.FoundationApprenticeships">
-        <div class="govuk-grid-row">
+        <div class="govuk-grid-row"  id="@FieldIdentifiers.ApplicationMethod">
             <div class="govuk-grid-column-full">
                 <h2 class="govuk-heading-l">Website for applications</h2>
             </div>
@@ -483,7 +483,7 @@
             
                 @if (Model.ApplicationMethod == ApplicationMethod.ThroughFindAnApprenticeship)
                 {
-                    <div class="govuk-grid-column-one-third">        
+                    <div class="govuk-grid-column-full">        
                         <p class="govuk-body">
                             Applicants will apply through Find an apprenticeship.
                         </p>
@@ -497,16 +497,18 @@
                             Applicants will apply through an external website.
                         </p>
                     
-                        <div class="@Model.ApplicationUrl" id="@FieldIdentifiers.ApplicationUrl">
+                        <div class="@Model.ApplicationUrlClass" id="@FieldIdentifiers.ApplicationUrl">
                             <h3 class="govuk-heading-s">Application website</h3>
                             <p class="govuk-body">
-                                @Model.ApplicationUrl
+                                <a href="@Model.ApplicationUrl" class="govuk-link govuk-link--no-visited-state das-breakable" target="_blank" rel="noopener noreferrer">
+                                    @Model.ApplicationUrl
+                                </a>
                             </p>
                             <esfa-review-checkbox asp-for="SelectedFieldIdentifiers"
                                                   asp-value="@FieldIdentifiers.ApplicationUrl"
                                                   asp-items="@Model.FieldIdentifiers"></esfa-review-checkbox>
                         </div>
-                        <div class="@Model.ApplicationInstructions" id="@FieldIdentifiers.ApplicationInstructions">
+                        <div class="@Model.ApplicationInstructionsClass" id="@FieldIdentifiers.ApplicationInstructions">
                             <h3 class="govuk-heading-s">Company’s application instructions</h3>
                             <textarea asp-for="ApplicationInstructions" class="govuk-textarea" rows="5" data-val-length-max="200"></textarea>
                             <esfa-review-checkbox asp-for="SelectedFieldIdentifiers"
