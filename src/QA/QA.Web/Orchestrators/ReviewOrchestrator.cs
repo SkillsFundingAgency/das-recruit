@@ -83,6 +83,11 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
                 vm.EmployerWebsiteUrl = "https://" + $"{vm.EmployerWebsiteUrl}";
             }
 
+            if (!string.IsNullOrEmpty(vm?.ApplicationUrl) && !vm.ApplicationUrl.StartsWith("http", true, null))
+            {
+                vm.ApplicationUrl = "https://" + $"{vm.ApplicationUrl}";
+            }
+            
             return vm;
         }
 
