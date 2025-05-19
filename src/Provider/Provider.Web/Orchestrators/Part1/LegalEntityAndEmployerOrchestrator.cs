@@ -55,30 +55,24 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
             if (feature.IsFeatureEnabled(FeatureNames.MongoMigration))
             {
                 // Only include employer accounts where the provider has recruitment permission
-                var filteredEmployerAccountIds = new List<string>();
-                foreach (var employer in editVacancyInfo.Employers)
-                {
-                    // Check if provider has permission for at least one legal entity under this employer
-                    var hasPermission = await providerRelationshipsService.HasProviderGotEmployersPermissionAsync(
-                        vrm.Ukprn,
-                        employer.EmployerAccountId,
-                        null, // TODO: Need to obtain the legal entity public hashed id.
-                        OperationType.Recruitment);
-                    if (hasPermission)
-                    {
-                        filteredEmployerAccountIds.Add(employer.EmployerAccountId);
-                    }
-                }
+                var allLegalEntities = await providerRelationshipsService.GetLegalEntitiesForProviderAsync(
+                    vrm.Ukprn, OperationType.Recruitment);
+                var legalEntities = allLegalEntities.ToList();
 
                 var sortColumn = sortByType switch
                 {
-                    SortByType.LegalEntityName => "PublicHashedId",
-                    _ => "Name"
+                    SortByType.EmployerName => "Name",
+                    _ => "PublicHashedId"
                 };
-
                 var isAscending = sortOrder == SortOrder.Ascending;
+
+                var employerAccountIds = legalEntities
+                    .Select(x => x.EmployerAccountId)
+                    .Distinct()
+                    .ToList();
+
                 var accountLegal = await employerAccountProvider.GetAllLegalEntitiesConnectedToAccountAsync(
-                    filteredEmployerAccountIds,
+                    employerAccountIds,
                     searchTerm,
                     setPage,
                     MaxLegalEntitiesPerPage,
@@ -87,7 +81,11 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
 
                 vm = new LegalEntityAndEmployerViewModel
                 {
-                    Employers = editVacancyInfo.Employers.Select(e => new EmployerViewModel { Id = e.EmployerAccountId, Name = e.Name }),
+                    Employers = editVacancyInfo.Employers.Select(e => new EmployerViewModel
+                    {
+                        Id = e.EmployerAccountId,
+                        Name = e.Name
+                    }),
                     Organisations = accountLegal.LegalEntities.Select(x => new OrganisationsViewModel
                     {
                         AccountLegalEntityName = x.Name,
@@ -95,7 +93,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
                         Id = x.AccountLegalEntityPublicHashedId,
                         EmployerAccountId = x.DasAccountId
                     }),
-                    TotalNumberOfLegalEntities = MaxLegalEntitiesPerPage,
+                    TotalNumberOfLegalEntities = legalEntities.Count,
                     SearchTerm = searchTerm,
                     VacancyId = vrm.VacancyId,
                     SortByNameType = sortByType,

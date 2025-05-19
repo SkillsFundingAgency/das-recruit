@@ -1,21 +1,18 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using AutoFixture.NUnit3;
 using Esfa.Recruit.Provider.Web.Exceptions;
 using Esfa.Recruit.Provider.Web.Orchestrators.Part1;
 using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Provider.Web.ViewModels.Part1.LegalEntityAndEmployer;
 using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Vacancies.Client.Domain.Models;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Responses;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.EditVacancyInfo;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount;
-using FluentAssertions;
-using Moq;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelationship;
 using NUnit.Framework;
-using SFA.DAS.Testing.AutoFixture;
 
 namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part1.LegalEntityAndEmployer
 {
@@ -62,7 +59,9 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part1.Legal
         public async Task Then_Feature_Enabled_Then_There_Are_Permissions_Then_The_ViewModel_Is_Returned(
             VacancyRouteModel vacancyRouteModel,
             GetAllAccountLegalEntitiesApiResponse response,
+            IEnumerable<EmployerInfo> mockEmployerInfos,
             [Frozen] Mock<IEmployerAccountProvider> employerAccountProvider,
+            [Frozen] Mock<IProviderRelationshipsService> providerRelationshipService,
             [Frozen] Mock<IFeature> feature,
             LegalEntityAndEmployerOrchestrator orchestrator)
         {
@@ -75,6 +74,10 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part1.Legal
                     It.IsAny<string>(),
                     It.IsAny<bool>()))
                 .ReturnsAsync(response);
+
+            providerRelationshipService
+                .Setup(x => x.GetLegalEntitiesForProviderAsync(vacancyRouteModel.Ukprn, OperationType.Recruitment))
+                .ReturnsAsync(mockEmployerInfos);
 
             var actual = await orchestrator.GetLegalEntityAndEmployerViewModelAsync(vacancyRouteModel,
                 "", 1);
