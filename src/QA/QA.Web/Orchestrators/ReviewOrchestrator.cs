@@ -83,6 +83,11 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
                 vm.EmployerWebsiteUrl = "https://" + $"{vm.EmployerWebsiteUrl}";
             }
 
+            if (!string.IsNullOrEmpty(vm?.ApplicationUrl) && !vm.ApplicationUrl.StartsWith("http", true, null))
+            {
+                vm.ApplicationUrl = "https://" + $"{vm.ApplicationUrl}";
+            }
+            
             return vm;
         }
 
@@ -258,6 +263,17 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
                     AfterEdit = m.EmployerLocationInformation
                 });
                 vacancy.EmployerLocationInformation = m.EmployerLocationInformation;
+            }
+
+            if (review.VacancySnapshot.ApplicationInstructions != m.ApplicationInstructions)
+            {
+                manualQaFieldEditIndicator.Add(new ManualQaFieldEditIndicator
+                {
+                    FieldIdentifier = nameof(m.ApplicationInstructions),
+                    BeforeEdit = review.VacancySnapshot.ApplicationInstructions,
+                    AfterEdit = m.ApplicationInstructions
+                });
+                vacancy.ApplicationInstructions = m.ApplicationInstructions;
             }
 
             return manualQaFieldEditIndicator;
