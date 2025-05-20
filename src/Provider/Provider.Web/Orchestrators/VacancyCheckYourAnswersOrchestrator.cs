@@ -21,7 +21,6 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.Locations;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelationship;
 using Microsoft.Extensions.Logging;
 using ErrorMessages = Esfa.Recruit.Shared.Web.ViewModels.ErrorMessages;
-using FeatureNames = Esfa.Recruit.Provider.Web.Configuration.FeatureNames;
 
 namespace Esfa.Recruit.Provider.Web.Orchestrators
 {
@@ -36,8 +35,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
         ILegalEntityAgreementService legalEntityAgreementService,
         ITrainingProviderAgreementService trainingProviderAgreementService,
         IMessaging messaging,
-        ILocationsService locationsService,
-        IFeature feature)
+        ILocationsService locationsService)
         : EntityValidatingOrchestrator<Vacancy, VacancyPreviewViewModel>(logger)
     {
         private const VacancyRuleSet SubmitValidationRules = VacancyRuleSet.All;
@@ -55,7 +53,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             var vacancy = vacancyTask.Result;
             var hasProviderReviewPermission = await providerRelationshipsService.HasProviderGotEmployersPermissionAsync(routeModel.Ukprn, vacancy.EmployerAccountId, vacancy.AccountLegalEntityPublicHashedId, OperationType.RecruitmentRequiresReview);
             
-            var vm = new VacancyPreviewViewModel(feature.IsFeatureEnabled(FeatureNames.MultipleLocations));
+            var vm = new VacancyPreviewViewModel();
             await vacancyDisplayMapper.MapFromVacancyAsync(vm, vacancy);
 
             vm.HasWage = vacancy.Wage != null;

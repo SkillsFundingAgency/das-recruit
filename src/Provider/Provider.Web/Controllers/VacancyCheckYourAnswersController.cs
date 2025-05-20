@@ -35,7 +35,6 @@ public class VacancyCheckYourAnswersController(VacancyCheckYourAnswersOrchestrat
         var viewModel = await orchestrator.GetVacancyTaskListModel(vrm); 
         viewModel.CanHideValidationSummary = true;
         AddSoftValidationErrorsToModelState(viewModel);
-        viewModel.SetSectionStates(viewModel, ModelState);
             
         if (TempData.ContainsKey(TempDataKeys.VacancyPreviewInfoMessage))
             viewModel.VacancyClonedInfoMessage = TempData[TempDataKeys.VacancyPreviewInfoMessage].ToString();
@@ -76,7 +75,6 @@ public class VacancyCheckYourAnswersController(VacancyCheckYourAnswersOrchestrat
         var viewModel = await orchestrator.GetVacancyTaskListModel(m);
 
         viewModel.SoftValidationErrors = null;
-        viewModel.SetSectionStates(viewModel, ModelState);
         viewModel.ValidationErrors = new ValidationSummaryViewModel
             {ModelState = ModelState, OrderedFieldNames = viewModel.OrderedFieldNames};
             

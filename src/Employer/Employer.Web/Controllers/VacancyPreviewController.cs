@@ -38,20 +38,6 @@ public class VacancyPreviewController : Controller
 
         return View(viewModel);
     }
-        
-    [HttpGet("preview", Name = RouteNames.Vacancy_Preview_Get)]
-    public async Task<IActionResult> VacancyPreview(VacancyRouteModel vrm, bool? submitToEfsa = null)
-    {
-        var viewModel = await _orchestrator.GetVacancyPreviewViewModelAsync(vrm);
-        AddSoftValidationErrorsToModelState(viewModel);
-        viewModel.CanHideValidationSummary = true;
-        viewModel.SubmitToEsfa = submitToEfsa;
-
-        if (TempData.ContainsKey(TempDataKeys.VacancyClonedInfoMessage))
-            viewModel.VacancyClonedInfoMessage = TempData[TempDataKeys.VacancyClonedInfoMessage].ToString();
-
-        return View(viewModel);
-    }
 
     [HttpPost("review", Name = RouteNames.Preview_Review_Post)]
     public async Task<IActionResult> Review(SubmitReviewModel m)
