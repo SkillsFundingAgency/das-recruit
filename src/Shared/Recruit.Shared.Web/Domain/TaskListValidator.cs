@@ -157,7 +157,6 @@ public class TaskListValidator : AbstractValidator<Vacancy>, ITaskListValidator
         // Provider only
         RuleFor(x => x.EmployerAccountId).NotEmpty().RunCondition(TaskListItemFlags.NameOfEmployer);
         RuleFor(x => x.AccountLegalEntityPublicHashedId).NotEmpty().RunCondition(TaskListItemFlags.NameOfEmployer);
-        RuleFor(x => x.LegalEntityName).NotEmpty().RunCondition(TaskListItemFlags.NameOfEmployer);
         
         // ========================
         // Section Two

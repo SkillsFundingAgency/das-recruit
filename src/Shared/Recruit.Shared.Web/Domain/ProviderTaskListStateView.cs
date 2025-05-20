@@ -5,9 +5,9 @@ using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
 namespace Esfa.Recruit.Shared.Web.Domain;
 
-public sealed class EmployerTaskListStateView: TaskListStateViewBase
+public sealed class ProviderTaskListStateView : TaskListStateViewBase
 {
-    private EmployerTaskListStateView()
+    private ProviderTaskListStateView()
     {
         SectionOneState = VacancyTaskListSectionState.NotStarted;
         SectionTwoState = VacancyTaskListSectionState.NotStarted;
@@ -22,12 +22,12 @@ public sealed class EmployerTaskListStateView: TaskListStateViewBase
         };
     }
 
-    public static EmployerTaskListStateView CreateEmpty()
+    public static ProviderTaskListStateView CreateEmpty()
     {
-        return new EmployerTaskListStateView();
+        return new ProviderTaskListStateView();
     }
 
-    public EmployerTaskListStateView(Dictionary<TaskListItemFlags, bool> completeStates, Vacancy vacancy)
+    public ProviderTaskListStateView(Dictionary<TaskListItemFlags, bool> completeStates, Vacancy vacancy)
     {
         ArgumentNullException.ThrowIfNull(completeStates);
         ArgumentNullException.ThrowIfNull(vacancy);
@@ -35,26 +35,26 @@ public sealed class EmployerTaskListStateView: TaskListStateViewBase
         CompleteStates = completeStates;
         var apprenticeshipType = vacancy.ApprenticeshipType.GetValueOrDefault();
 
-        SectionOneState = GetSectionState(EmployerTaskListSectionFlags.One, TaskListItemFlags.AdvertTitle);
-        SectionTwoState = GetSectionState(EmployerTaskListSectionFlags.Two, TaskListItemFlags.ClosingAndStartDates);
+        SectionOneState = GetSectionState(ProviderTaskListSectionFlags.One, TaskListItemFlags.NameOfEmployer);
+        SectionTwoState = GetSectionState(ProviderTaskListSectionFlags.Two, TaskListItemFlags.ClosingAndStartDates);
         SectionThreeState = vacancy.ApprenticeshipType.GetValueOrDefault() switch
         {
-            ApprenticeshipTypes.Foundation => GetSectionState(EmployerTaskListSectionFlags.Three, TaskListItemFlags.FutureProspects),
-            _ => GetSectionState(EmployerTaskListSectionFlags.Three, TaskListItemFlags.Skills | TaskListItemFlags.FutureProspects),
+            ApprenticeshipTypes.Foundation => GetSectionState(ProviderTaskListSectionFlags.Three, TaskListItemFlags.FutureProspects),
+            _ => GetSectionState(ProviderTaskListSectionFlags.Three, TaskListItemFlags.Skills | TaskListItemFlags.FutureProspects),
         };
-        SectionFourState = GetSectionState(EmployerTaskListSectionFlags.Four, TaskListItemFlags.NameOfEmployerOnAdvert);
-        SectionFiveState = GetSectionState(EmployerTaskListSectionFlags.Five, TaskListItemFlags.AdditionalQuestions);
+        SectionFourState = GetSectionState(ProviderTaskListSectionFlags.Four, TaskListItemFlags.NameOfEmployerOnAdvert);
+        SectionFiveState = GetSectionState(ProviderTaskListSectionFlags.Five, TaskListItemFlags.AdditionalQuestions);
         SectionSixState = vacancy.Status == VacancyStatus.Submitted
             ? VacancyTaskListSectionState.Completed
-            : AllFlagsCompleted((TaskListItemFlags)EmployerTaskListSectionFlags.All)
+            : AllFlagsCompleted((TaskListItemFlags)ProviderTaskListSectionFlags.All)
                 ? VacancyTaskListSectionState.InProgress
                 : VacancyTaskListSectionState.NotStarted;
         
         // Section One
-        NameOfOrganisationEditable = CompleteStates[TaskListItemFlags.AdvertTitle];
-        TrainingCourseEditable = CompleteStates[TaskListItemFlags.OrganisationName];
-        TrainingProviderEditable = CompleteStates[TaskListItemFlags.TrainingCourse];
-        ApprenticeshipSummaryEditable = CompleteStates[TaskListItemFlags.TrainingProvider];
+        NameOfEmployerEditable = true;
+        VacancyTitleEditable = CompleteStates[TaskListItemFlags.NameOfEmployer];
+        TrainingCourseEditable = CompleteStates[TaskListItemFlags.AdvertTitle];
+        ApprenticeshipSummaryEditable = CompleteStates[TaskListItemFlags.TrainingCourse];
         WhatWillTheyDoAtWorkEditable = CompleteStates[TaskListItemFlags.SummaryDescription];
         HowWillTheyTrainEditable = CompleteStates[TaskListItemFlags.WhatWillTheyDoAtWork];
         
@@ -81,7 +81,7 @@ public sealed class EmployerTaskListStateView: TaskListStateViewBase
         OtherThingsToConsiderEditable = CompleteStates[TaskListItemFlags.FutureProspects];
         
         // Section Four
-        NameOfEmployerOnAdvertEditable = CompleteStates[TaskListItemFlags.NameOfEmployerOnAdvert] || SectionThreeState == VacancyTaskListSectionState.Completed;
+        NameOfEmployerOnVacancyEditable = CompleteStates[TaskListItemFlags.NameOfEmployerOnAdvert] || SectionThreeState == VacancyTaskListSectionState.Completed;
         EmployerInformationEditable = CompleteStates[TaskListItemFlags.NameOfEmployerOnAdvert];
         ContactDetailsEditable = CompleteStates[TaskListItemFlags.EmployerInformation];
         WebsiteForApplicationsEditable = CompleteStates[TaskListItemFlags.EmployerInformation];
@@ -93,7 +93,7 @@ public sealed class EmployerTaskListStateView: TaskListStateViewBase
         CheckYourAnswersEditable = SectionSixState != VacancyTaskListSectionState.NotStarted;
     }
 
-    private VacancyTaskListSectionState GetSectionState(EmployerTaskListSectionFlags sectionFlags, TaskListItemFlags anyItemFlag)
+    private VacancyTaskListSectionState GetSectionState(ProviderTaskListSectionFlags sectionFlags, TaskListItemFlags anyItemFlag)
     {
         if (AllFlagsCompleted((TaskListItemFlags)sectionFlags))
         {
@@ -113,9 +113,9 @@ public sealed class EmployerTaskListStateView: TaskListStateViewBase
     public VacancyTaskListSectionState SectionSixState { get; }
 
     // Section One
-    public bool NameOfOrganisationEditable { get; }
+    public bool NameOfEmployerEditable { get; }
+    public bool VacancyTitleEditable { get; }
     public bool TrainingCourseEditable { get; }
-    public bool TrainingProviderEditable { get; }
     public bool ApprenticeshipSummaryEditable { get; }
     public bool WhatWillTheyDoAtWorkEditable { get; }
     public bool HowWillTheyTrainEditable { get; }
@@ -134,7 +134,7 @@ public sealed class EmployerTaskListStateView: TaskListStateViewBase
     public bool OtherThingsToConsiderEditable { get; }
 
     // Section Four
-    public bool NameOfEmployerOnAdvertEditable { get; }
+    public bool NameOfEmployerOnVacancyEditable { get; }
     public bool EmployerInformationEditable { get; }
     public bool ContactDetailsEditable { get; }
     public bool WebsiteForApplicationsEditable { get; }

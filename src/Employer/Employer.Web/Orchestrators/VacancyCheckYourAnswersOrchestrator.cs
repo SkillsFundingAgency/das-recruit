@@ -48,7 +48,7 @@ public class VacancyCheckYourAnswersOrchestrator(
 
         var vacancy = vacancyTask.Result;
             
-        var vm = new VacancyPreviewViewModel(feature.IsFeatureEnabled(FeatureNames.MultipleLocations));
+        var vm = new VacancyPreviewViewModel();
         await displayVacancyViewModelMapper.MapFromVacancyAsync(vm, vacancy);
 
         vm.RejectedReason = vacancy.EmployerRejectedReason;

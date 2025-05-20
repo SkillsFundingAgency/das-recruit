@@ -50,7 +50,6 @@ public class WhenValidatingProviderTaskLlist
             new object[] { (Vacancy v) => { v.ShortDescription = string.Empty; } },
             new object[] { (Vacancy v) => { v.Description = null; } },
             new object[] { (Vacancy v) => { v.EmployerAccountId = null; } },
-            new object[] { (Vacancy v) => { v.LegalEntityName = null; } },
         };
     
     [TestCaseSource(nameof(SectionOneTestCases))]

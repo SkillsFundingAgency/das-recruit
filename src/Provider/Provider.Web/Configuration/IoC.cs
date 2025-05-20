@@ -142,6 +142,7 @@ namespace Esfa.Recruit.Provider.Web.Configuration
             services.AddTransient<ProviderAgreementOrchestrator>();
             services.AddTransient<DurationOrchestrator>();
             services.AddTransient<VacancyTaskListOrchestrator>();
+            services.AddTransient<VacancyCheckYourAnswersOrchestrator>();
             services.AddTransient<FutureProspectsOrchestrator>();
             services.AddTransient<IAdditionalQuestionsOrchestrator, AdditionalQuestionsOrchestrator>();
             services.AddTransient<VacancyWorkDescriptionOrchestrator>();
