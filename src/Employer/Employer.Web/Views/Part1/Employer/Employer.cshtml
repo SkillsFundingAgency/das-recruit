@@ -13,13 +13,13 @@
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-
-
         <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }' />
-
         <partial name="@PartialNames.ReviewSummary" for="Review" />
 
-        <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">Which organisation is this advert for?</h1>
+        <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">
+            <span class="govuk-caption-l">@Model.VacancyTitle</span>
+            Which organisation is this advert for?
+        </h1>
 
         <form asp-show="@Model.CanShowSearchPanel" method="GET" asp-route="@RouteNames.Employer_Get" asp-all-route-data="@Model.RouteDictionary" asp-route-wizard="@Model.PageInfo.IsWizard">
             <div class="govuk-form-group">

@@ -10,7 +10,10 @@
 
         <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState }' />
 
-        <h1 class="govuk-heading-xl">Have you already found apprenticeship training?</h1>
+        <h1 class="govuk-heading-xl">
+            <span class="govuk-caption-l">@Model.VacancyTitle</span>
+            Have you already found apprenticeship training?
+        </h1>
         <p class="govuk-body">If you’re looking to take on apprentices, you’ll need to provide training through a registered provider. If you haven't found training yet, we can help you to find it.</p>
         <form asp-route="@RouteNames.Training_First_Time_Post" asp-all-route-data="@Model.RouteDictionary" novalidate>
             <fieldset class="govuk-fieldset">

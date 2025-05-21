@@ -17,7 +17,10 @@
 
         <partial name="@PartialNames.ReviewSummary" for="Review"/>
 
-        <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">Duration and working hours</h1>
+        <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">
+            <span class="govuk-caption-l">@Model.VacancyTitle</span>
+            Duration and working hours
+        </h1>
 
         <form asp-route="@RouteNames.Duration_Post"  asp-all-route-data="@Model.RouteDictionary" asp-route-wizard="@Model.PageInfo.IsWizard" novalidate>
             <div esfa-validation-marker-for="Duration" class="govuk-form-group">

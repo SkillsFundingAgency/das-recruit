@@ -55,7 +55,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                 Programmes = programmes.ToViewModel(),
                 IsUsersFirstVacancy = isUsersFirstVacancyTask.Result && vacancy.TrainingProvider == null,
                 PageInfo = _utility.GetPartOnePageInfo(vacancy),
-                HasMoreThanOneLegalEntity = getEmployerDataTask.Result.LegalEntities.Count() > 1
+                HasMoreThanOneLegalEntity = getEmployerDataTask.Result.LegalEntities.Count() > 1,
+                VacancyTitle = vacancy.Title,
             };
 
             if (vacancy.Status == VacancyStatus.Referred)
@@ -79,8 +80,10 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
         public async Task<TrainingFirstVacancyViewModel> GetTrainingFirstVacancyViewModelAsync(VacancyRouteModel vrm)
         {
             var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.Training_First_Time_Get);
-
-            return new TrainingFirstVacancyViewModel();
+            return new TrainingFirstVacancyViewModel
+            {
+                VacancyTitle = vacancy.Title,
+            };
         }
 
         public async Task<ConfirmTrainingViewModel> GetConfirmTrainingViewModelAsync(VacancyRouteModel vrm, string programmeId)
@@ -91,6 +94,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
             await Task.WhenAll(vacancyTask, programmesTask);
 
             var programme = programmesTask.Result.SingleOrDefault(p => p.Id == programmeId);
+            var vacancy = vacancyTask.Result;
 
             if (programme == null)
                 return null;
@@ -104,11 +108,12 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                 TrainingTitle = programme.Title,
                 DurationMonths = programme.Duration,
                 ProgrammeType = programme.ApprenticeshipType.GetDisplayName(),
-                PageInfo = _utility.GetPartOnePageInfo(vacancyTask.Result),
+                PageInfo = _utility.GetPartOnePageInfo(vacancy),
                 TrainingEffectiveToDate = programme.EffectiveTo?.AsGdsDate(),
                 EducationLevelName =
                     EducationLevelNumberHelper.GetTableFormatEducationLevelNameOrDefault(programme.EducationLevelNumber, programme.ApprenticeshipLevel),
                 IsFoundation = programme.ApprenticeshipType == TrainingType.Foundation,
+                VacancyTitle = vacancy.Title,
             };
         }
 

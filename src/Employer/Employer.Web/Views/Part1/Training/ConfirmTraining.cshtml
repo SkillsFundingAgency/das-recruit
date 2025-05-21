@@ -1,5 +1,5 @@
-﻿@using Esfa.Recruit.Shared.Web.Mappers
-@model Esfa.Recruit.Employer.Web.ViewModels.Part1.Training.ConfirmTrainingViewModel
+﻿@model Esfa.Recruit.Employer.Web.ViewModels.Part1.Training.ConfirmTrainingViewModel
+
 @{ 
     ViewBag.Vpv = "/recruitment/employer/page-part1-confirm-training";
     ViewBag.Title = "Confirm apprenticeship training";
@@ -12,7 +12,10 @@
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-        <h1 class="govuk-heading-xl">Confirm apprenticeship training course</h1>
+        <h1 class="govuk-heading-xl">
+            <span class="govuk-caption-l">@Model.VacancyTitle</span>
+            Confirm apprenticeship training course
+        </h1>
         <div class="das-highlight">
             <govuk-tag-foundation asp-show="@Model.IsFoundation" class="govuk-!-margin-bottom-2"/>
             <h2 class="govuk-heading-m">

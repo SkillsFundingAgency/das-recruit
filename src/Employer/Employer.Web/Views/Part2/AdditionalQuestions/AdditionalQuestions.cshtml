@@ -5,7 +5,6 @@
     ViewBag.ZenDeskLabel = "recruit-additional-questions";
 }
 
-
 @section BackLink {
     <a asp-show="@(!Model.IsTaskListCompleted)" asp-route="@RouteNames.EmployerTaskListGet" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Back</a>
     <a asp-show="@Model.IsTaskListCompleted" asp-route="@RouteNames.EmployerCheckYourAnswersGet" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Back</a>
@@ -17,6 +16,7 @@
         <partial name="@PartialNames.ReviewSummary" for="Review" />
         
         <h1 class="govuk-heading-xl">
+            <span class="govuk-caption-l">@Model.VacancyTitle</span>
             Do you have any questions you would like to ask applicants? (optional)
         </h1>
         <p class="govuk-body">Applicants will answer these questions if they apply through <a href="@Model.FindAnApprenticeshipUrl" class="govuk-body govuk-link" rel="noopener" target="_blank">Find an apprenticeship (opens in a new tab)</a>.</p>
