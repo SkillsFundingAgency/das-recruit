@@ -16,5 +16,6 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.Training
         public bool ShowTrainingEffectiveToDate => string.IsNullOrWhiteSpace(TrainingEffectiveToDate) == false;
         public string EducationLevelName { get; set; }
         public bool IsFoundation { get; set; }
+        public string VacancyTitle { get; init; }
     }
 }

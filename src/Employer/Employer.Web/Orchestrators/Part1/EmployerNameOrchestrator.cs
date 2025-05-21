@@ -36,9 +36,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
         public async Task<EmployerNameViewModel> GetEmployerNameViewModelAsync(VacancyRouteModel vrm, VacancyEmployerInfoModel employerInfoModel)
         {
             var vacancy = await utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.Employer_Get);
-
             var accountLegalEntityPublicHashedId = employerInfoModel?.AccountLegalEntityPublicHashedId ?? vacancy.AccountLegalEntityPublicHashedId;
-
             if (string.IsNullOrEmpty(accountLegalEntityPublicHashedId))
             {
                 return null;
@@ -64,7 +62,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                 NewTradingName = employerInfoModel?.NewTradingName,
                 AnonymousName = employerInfoModel?.AnonymousName ,
                 AnonymousReason = employerInfoModel?.AnonymousReason ?? vacancy?.AnonymousReason,
-                TaskListCompleted = utility.IsTaskListCompleted(vacancy)
+                TaskListCompleted = utility.IsTaskListCompleted(vacancy),
+                VacancyTitle = vacancy!.Title,
             };
 
             if (vacancy.Status == VacancyStatus.Referred)

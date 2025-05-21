@@ -46,7 +46,8 @@ public class AdditionalQuestionsOrchestrator : VacancyValidatingOrchestrator<Add
             Ukprn = routeModel.Ukprn,
             AdditionalQuestion1 = vacancy.AdditionalQuestion1,
             AdditionalQuestion2 = vacancy.AdditionalQuestion2,
-            FindAnApprenticeshipUrl = _options.Value.FindAnApprenticeshipUrl
+            FindAnApprenticeshipUrl = _options.Value.FindAnApprenticeshipUrl,
+            VacancyTitle = vacancy.Title,
         };
             
         if (vacancy.Status == VacancyStatus.Referred)

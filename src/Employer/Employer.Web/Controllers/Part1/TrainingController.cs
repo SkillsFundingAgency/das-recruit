@@ -38,16 +38,16 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
             var userHasFoundTraining = string.IsNullOrEmpty(hasTraining) == false || 
                                        clearTraining || 
                                        string.IsNullOrEmpty(vm.SelectedProgrammeId) == false;
-
+            
             if (vm.IsUsersFirstVacancy &&
                 userHasFoundTraining == false)
                 return RedirectToRoute(RouteNames.Training_First_Time_Get, new {vrm.VacancyId, vrm.EmployerAccountId});
-
+            
             if (clearTraining)
                 vm.SelectedProgrammeId = "";
-
+            
             vm.PageInfo.SetWizard(wizard);
-
+            
             return View(vm);
         }
 
@@ -76,7 +76,6 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
         public async Task<IActionResult> TrainingFirstVacancy(VacancyRouteModel vrm)
         {
             var vm = await _orchestrator.GetTrainingFirstVacancyViewModelAsync(vrm);
-
             return View(vm);
         }
 

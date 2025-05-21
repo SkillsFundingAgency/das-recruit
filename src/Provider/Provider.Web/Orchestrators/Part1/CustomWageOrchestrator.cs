@@ -45,7 +45,6 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
         public async Task<CustomWageViewModel> GetCustomWageViewModelAsync(VacancyRouteModel vrm)
         {
             var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.Wage_Get);
-
             var wagePeriod = _minimumWageProvider.GetWagePeriod(vacancy.StartDate.Value);
 
             var vm = new CustomWageViewModel
@@ -61,7 +60,8 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
                 ApprenticeshipMinimumWageYearly = GetMinimumWageYearlyText(SFA.DAS.VacancyServices.Wage.WageType.ApprenticeshipMinimum, vacancy.Wage?.WeeklyHours, vacancy.StartDate.Value),
                 WeeklyHours = vacancy.Wage.WeeklyHours.Value,
                 Ukprn = vrm.Ukprn,
-                PageInfo = _utility.GetPartOnePageInfo(vacancy)
+                PageInfo = _utility.GetPartOnePageInfo(vacancy),
+                VacancyTitle = vacancy.Title,
             };
 
             if (vacancy.Status == VacancyStatus.Referred)
