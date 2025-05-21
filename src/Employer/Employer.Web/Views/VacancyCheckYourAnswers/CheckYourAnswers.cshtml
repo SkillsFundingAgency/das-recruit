@@ -617,13 +617,11 @@
 
                 </dd>
             </div>
-            <field-review-message field-name="@FieldIdentifiers.ApplicationMethod"
-                model="@Model"></field-review-message>
+            <field-review-message field-name="@FieldIdentifiers.ApplicationMethod" model="@Model"></field-review-message>
             <field-review-message field-name="@FieldIdentifiers.ApplicationUrl" model="@Model"></field-review-message>
-            <div class="app-summary-list__row @(Model.HasApplicationInstructions ? "app-summary-list__row--no-border" : "")"
-                field-review-marker="ApplicationMethod" field-review-marker="ApplicationUrl">
+            <div class="app-summary-list__row @(Model.HasApplicationInstructions ? "app-summary-list__row--no-border" : "")" field-review-marker="ApplicationUrl">
                 <dt class="app-summary-list__key" id="@FieldIdentifiers.ApplicationMethod">Application website</dt>
-                <dd class="app-summary-list__value">
+                <dd class="app-summary-list__value" id="@FieldIdentifiers.ApplicationUrl">
                     @if (Model.ApplicationMethod == ApplicationMethod.ThroughExternalApplicationSite)
                     {
                         <span class="das-breakable">@Model.ApplicationUrl</span>
