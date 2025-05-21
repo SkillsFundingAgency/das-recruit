@@ -58,5 +58,45 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
 
             result.Should().BeEquivalentTo(response);
         }
+
+        [Test, MoqAutoData]
+        public async Task GetAllLegalEntitiesConnectedToAccountAsync_Should_Return_As_Expected(
+            long accountId,
+            List<string> hashedAccountIds,
+            string searchTerm,
+            int pageNumber,
+            int pageSize,
+            string sortColumn,
+            bool isAscending,
+            GetAllAccountLegalEntitiesApiResponse response,
+            [Frozen] Mock<IEncodingService> encodingService,
+            [Frozen] Mock<IOuterApiClient> outerApiClient,
+            [Greedy] EmployerAccountProvider employerAccountProvider)
+        {
+            var accountIds = new List<long>();
+            foreach (var hashedAccountId in hashedAccountIds)
+            {
+                accountIds.Add(accountId);
+                encodingService.Setup(x => x.Decode(hashedAccountId, EncodingType.AccountId))
+                    .Returns(accountId);
+            }
+
+            var expectedGetUrl = new GetAllAccountLegalEntitiesApiRequest(new GetAllAccountLegalEntitiesApiRequest.GetAllAccountLegalEntitiesApiRequestData
+            {
+                AccountIds = accountIds,
+                SearchTerm = searchTerm,
+                PageNumber = pageNumber,
+                PageSize = pageSize,
+                SortColumn = sortColumn,
+                IsAscending = isAscending
+            });
+            outerApiClient.Setup(x => x.Post<GetAllAccountLegalEntitiesApiResponse>(
+                    It.Is<GetAllAccountLegalEntitiesApiRequest>(r => r.PostUrl == expectedGetUrl.PostUrl)))
+                .ReturnsAsync(response);
+            var result = await employerAccountProvider.GetAllLegalEntitiesConnectedToAccountAsync(hashedAccountIds,
+                searchTerm, pageNumber, pageSize, sortColumn, isAscending);
+            
+            result.Should().BeEquivalentTo(response);
+        }
     }
 }
