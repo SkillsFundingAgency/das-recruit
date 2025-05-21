@@ -59,7 +59,9 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators
             vm.SoftValidationErrors = GetSoftValidationErrors(vacancy);
             vm.VacancyId = vrm.VacancyId;
             vm.EmployerAccountId = vrm.EmployerAccountId;
-            
+            vm.ApprenticeshipType = (ApprenticeshipTypes)vacancy.ApprenticeshipType;
+            vm.AdditionalQuestionCount = vm.ApprenticeshipType == ApprenticeshipTypes.Foundation ? 3 : 4;
+
             if (vacancy.Status == VacancyStatus.Referred)
             {
                 vm.Review = await reviewSummaryService.GetReviewSummaryViewModelAsync(vacancy.VacancyReference.Value, 
