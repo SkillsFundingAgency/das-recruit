@@ -49,8 +49,8 @@ public class AdditionalQuestionsOrchestrator : VacancyValidatingOrchestrator<Add
             AdditionalQuestion1 = vacancy.AdditionalQuestion1,
             AdditionalQuestion2 = vacancy.AdditionalQuestion2,
             FindAnApprenticeshipUrl = _options.Value.FindAnApprenticeshipUrl,
-            ApprenticeshipType = (ApprenticeshipTypes)vacancy.ApprenticeshipType,
-            QuestionCount = (ApprenticeshipTypes)vacancy.ApprenticeshipType == ApprenticeshipTypes.Foundation ? 3 : 4 
+            ApprenticeshipType = vacancy.ApprenticeshipType.GetValueOrDefault(),
+            QuestionCount = vacancy.ApprenticeshipType.GetValueOrDefault() == ApprenticeshipTypes.Foundation ? 3 : 4 
         };
             
         if (vacancy.Status == VacancyStatus.Referred)

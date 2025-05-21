@@ -605,11 +605,10 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
             When(x => !string.IsNullOrEmpty(x.AdditionalQuestion1), () =>
             {
                 RuleFor(x => x.AdditionalQuestion1)
-                    .Cascade(CascadeMode.Continue)
                     .MaximumLength(250)
                         .WithMessage(x =>
                         {
-                            var questionCount = x.ApprenticeshipType == ApprenticeshipTypes.Foundation ? 3 : 4;
+                            var questionCount = x.ApprenticeshipType.GetValueOrDefault() == ApprenticeshipTypes.Foundation ? 3 : 4;
                             return $"Question {questionCount - 1} must not exceed 250 characters.";
                         })
                         .WithErrorCode("321")
@@ -621,7 +620,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                     .Must(s => !string.IsNullOrEmpty(s) && s.Contains('?'))
                         .WithMessage(x =>
                         {
-                            var questionCount = x.ApprenticeshipType == ApprenticeshipTypes.Foundation ? 3 : 4;
+                            var questionCount = x.ApprenticeshipType.GetValueOrDefault() == ApprenticeshipTypes.Foundation ? 3 : 4;
                             return $"Question {questionCount - 1} must include a question mark (‘?’).";
                         })
                         .WithErrorCode("340")
@@ -633,11 +632,10 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
             When(x => !string.IsNullOrEmpty(x.AdditionalQuestion2), () =>
             {
                 RuleFor(x => x.AdditionalQuestion2)
-                    .Cascade(CascadeMode.Continue)
                     .MaximumLength(250)
                         .WithMessage(x =>
                         {
-                            var questionCount = x.ApprenticeshipType == ApprenticeshipTypes.Foundation ? 3 : 4;
+                            var questionCount = x.ApprenticeshipType.GetValueOrDefault() == ApprenticeshipTypes.Foundation ? 3 : 4;
                             return $"Question {questionCount} must not exceed 250 characters.";
                         })
                         .WithErrorCode("331")
@@ -649,7 +647,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                     .Must(s => !string.IsNullOrEmpty(s) && s.Contains('?'))
                         .WithMessage(x =>
                         {
-                            var questionCount = x.ApprenticeshipType == ApprenticeshipTypes.Foundation ? 3 : 4;
+                            var questionCount = x.ApprenticeshipType.GetValueOrDefault() == ApprenticeshipTypes.Foundation ? 3 : 4;
                             return $"Question {questionCount} must include a question mark (‘?’).";
                         })
                         .WithErrorCode("340")
