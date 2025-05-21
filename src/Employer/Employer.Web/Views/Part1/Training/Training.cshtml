@@ -25,10 +25,7 @@
     <div class="govuk-grid-column-two-thirds">
         <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }' />
         <partial name="@PartialNames.ReviewSummary" for="Review" />
-        <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">
-            <span class="govuk-caption-l">@Model.VacancyTitle</span>
-            What training course will the apprentice take?
-        </h1>
+        <vacancy-heading vacancy-title="@Model.VacancyTitle" heading="What training course will the apprentice take?" class="govuk-!-margin-bottom-6" />
         <form asp-route="@RouteNames.Training_Post" asp-all-route-data="@Model.RouteDictionary" asp-route-wizard="@Model.PageInfo.IsWizard" novalidate>
             <p class="govuk-body">
                 If you have not found training for this apprenticeship, you can ​use the

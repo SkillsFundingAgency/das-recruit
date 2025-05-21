@@ -12,10 +12,7 @@
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-        <h1 class="govuk-heading-xl">
-            <span class="govuk-caption-l">@Model.VacancyTitle</span>
-            Confirm apprenticeship training course
-        </h1>
+        <vacancy-heading vacancy-title="@Model.VacancyTitle" heading="Confirm apprenticeship training course" />
         <div class="das-highlight">
             <govuk-tag-foundation asp-show="@Model.IsFoundation" class="govuk-!-margin-bottom-2"/>
             <h2 class="govuk-heading-m">
@@ -45,9 +42,9 @@
 
         <form asp-route="@RouteNames.Training_Confirm_Post" asp-all-route-data="@Model.RouteDictionary" asp-route-wizard="@Model.PageInfo.IsWizard" novalidate>
             <div class="govuk-button-group">
-                <input asp-for="ProgrammeId" type="hidden" />
-                <input asp-show="@Model.PageInfo.IsWizard" type="submit" value="Confirm and continue" esfa-automation="btn-continue" class="govuk-button" />
-                <input asp-show="@Model.PageInfo.IsNotWizard" type="submit" value="Confirm and preview" esfa-automation="btn-continue" class="govuk-button" />
+                <input asp-for="ProgrammeId" type="hidden"/>
+                <input asp-show="@Model.PageInfo.IsWizard" type="submit" value="Confirm and continue" esfa-automation="btn-continue" class="govuk-button"/>
+                <input asp-show="@Model.PageInfo.IsNotWizard" type="submit" value="Confirm and preview" esfa-automation="btn-continue" class="govuk-button"/>
 
                 <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Dashboard_Get" asp-route-employerAccountId="@Model.EmployerAccountId" class="govuk-link govuk-link--no-visited-state" esfa-automation="cancel-link">Cancel</a>
                 <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.EmployerCheckYourAnswersGet" asp-all-route-data="@Model.RouteDictionary" class="govuk-link govuk-link--no-visited-state" esfa-automation="cancel-link">Cancel</a>

@@ -14,14 +14,10 @@
     <div class="govuk-grid-column-two-thirds">
         <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState }' />
         <partial name="@PartialNames.ReviewSummary" for="Review" />
+        <vacancy-heading vacancy-title="@Model.VacancyTitle" heading="Do you have any questions you would like to ask applicants? (optional)" />
         
-        <h1 class="govuk-heading-xl">
-            <span class="govuk-caption-l">@Model.VacancyTitle</span>
-            Do you have any questions you would like to ask applicants? (optional)
-        </h1>
         <p class="govuk-body">Applicants will answer these questions if they apply through <a href="@Model.FindAnApprenticeshipUrl" class="govuk-body govuk-link" rel="noopener" target="_blank">Find an apprenticeship (opens in a new tab)</a>.</p>
         <p class="govuk-body">For example, 'How will you travel to this apprenticeship?'</p>
-
 
         <form asp-route="@RouteNames.AdditionalQuestions_Post" asp-all-route-data="@Model.RouteDictionary">
             <div esfa-validation-marker-for="AdditionalQuestion1" class="govuk-form-group">
