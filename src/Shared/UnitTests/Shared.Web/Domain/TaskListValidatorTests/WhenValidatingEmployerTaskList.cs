@@ -278,7 +278,7 @@ public class WhenValidatingEmployerTaskList
     }
     
     [Test]
-    [MoqInlineAutoData(TaskListItemFlags.Title)]
+    [MoqInlineAutoData(TaskListItemFlags.AdvertTitle)]
     [MoqInlineAutoData(TaskListItemFlags.FutureProspects)]
     [MoqInlineAutoData(TaskListItemFlags.Skills | TaskListItemFlags.Qualifications)]
     public async Task GetItemStatesAsync_Returns_Flag_Specific_Results(TaskListItemFlags flags, Vacancy vacancy)

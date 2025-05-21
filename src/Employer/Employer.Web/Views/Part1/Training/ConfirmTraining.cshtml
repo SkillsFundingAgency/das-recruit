@@ -43,7 +43,13 @@
         <div asp-show="@(Model.IsChangingApprenticeshipType && Model.IsFoundation)" class="govuk-inset-text">
             <p class="govuk-body">This will change the course from an <strong>apprenticeship standard</strong> to a <strong>foundation apprenticeship</strong>.</p>
             <p class="govuk-body">We’ll remove this advert’s skills and qualifications requirements. Applicants do not need specific skills or qualifications to apply for a foundation apprenticeship.</p>
-            <p class="govuk-body">You should also review the other sections of your vacancy.</p>
+            <p class="govuk-body">You should also review the other sections of your advert.</p>
+        </div>
+        
+        <div asp-show="@(Model.IsChangingApprenticeshipType && !Model.IsFoundation)" class="govuk-inset-text">
+            <p class="govuk-body">This will change the course from an <strong>foundation apprenticeship</strong> to an <strong>apprenticeship standard</strong>.</p>
+            <p class="govuk-body">You'll need to review this advert’s requirements. This is because standards can have different entry requirements for applicants.</p>
+            <p class="govuk-body">You should also review the other sections of your advert.</p>
         </div>
 
         <form asp-route="@RouteNames.Training_Confirm_Post" asp-all-route-data="@Model.RouteDictionary" asp-route-wizard="@Model.PageInfo.IsWizard" novalidate>
