@@ -68,8 +68,7 @@ public class VacancyPreviewOrchestratorTests
             mockReviewSummaryService.Object, legalEntityAgreement.Object,
             mockmessaging.Object,
             Mock.Of<IOptions<ExternalLinksConfiguration>>(),
-            utility,
-            Mock.Of<IFeature>());
+            utility);
 
 
         //Act
@@ -127,8 +126,7 @@ public class VacancyPreviewOrchestratorTests
             mockReviewSummaryService.Object, legalEntityAgreement.Object,
             mockmessaging.Object,
             Mock.Of<IOptions<ExternalLinksConfiguration>>(),
-            utility,
-            Mock.Of<IFeature>());
+            utility);
 
         //Act
         var response = await sut.RejectJobAdvertAsync(rejectJobAdvertViewModel, user);
