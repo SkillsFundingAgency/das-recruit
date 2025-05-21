@@ -11,30 +11,23 @@ using SFA.DAS.Encoding;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount
 {
-    public class EmployerAccountProvider : IEmployerAccountProvider
+    public class EmployerAccountProvider(
+        ILogger<EmployerAccountProvider> logger,
+        IOuterApiClient outerApiClient,
+        IEncodingService encodingService)
+        : IEmployerAccountProvider
     {
-        private readonly ILogger<EmployerAccountProvider> _logger;
-        private readonly IOuterApiClient _outerApiClient;
-        private readonly IEncodingService _encodingService;
-
-        public EmployerAccountProvider(ILogger<EmployerAccountProvider> logger, IOuterApiClient outerApiClient, IEncodingService encodingService)
-        {
-            _logger = logger;
-            _outerApiClient = outerApiClient;
-            _encodingService = encodingService;
-        }
-
         public async Task<GetUserAccountsResponse> GetEmployerIdentifiersAsync(string userId, string email)
         {
             try
             {
-                var response = await _outerApiClient.Get<GetUserAccountsResponse>(new GetUserAccountsRequest(userId, email));
+                var response = await outerApiClient.Get<GetUserAccountsResponse>(new GetUserAccountsRequest(userId, email));
                 
                 return response;
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"Failed to retrieve account information for user Id: {userId}");
+                logger.LogError(ex, $"Failed to retrieve account information for user Id: {userId}");
                 throw;
             }
         }
@@ -49,7 +42,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"Failed to retrieve account information for account Id: {hashedAccountId}");
+                logger.LogError(ex, $"Failed to retrieve account information for account Id: {hashedAccountId}");
                 throw;
             }
         }
@@ -58,18 +51,77 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount
         {
             try
             {
-                var accountId = _encodingService.Decode(hashedAccountId, EncodingType.AccountId);
+                var accountId = encodingService.Decode(hashedAccountId, EncodingType.AccountId);
                 var legalEntities =
-                    await _outerApiClient.Get<GetAccountLegalEntitiesResponse>(
+                    await outerApiClient.Get<GetAccountLegalEntitiesResponse>(
                         new GetAccountLegalEntitiesRequest(accountId));
                 
                 return legalEntities.AccountLegalEntities;
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"Failed to retrieve account information for account Id: {hashedAccountId}");
+                logger.LogError(ex, $"Failed to retrieve account information for account Id: {hashedAccountId}");
                 throw;
             }
+        }
+
+        public async Task<string> GetEmployerAccountPublicHashedIdAsync(string hashedAccountId)
+        {
+            try
+            {
+                long accountId = encodingService.Decode(hashedAccountId, EncodingType.AccountId);
+                var account = await outerApiClient.Get<GetAccountResponse>(new GetAccountRequest(accountId));
+                
+                return account.HashedAccountId;
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, $"Failed to retrieve account information for account Id: {hashedAccountId}");
+                throw;
+            }
+        }
+
+        public async Task<GetApplicationReviewStatsResponse> GetEmployerDashboardApplicationReviewStats(string hashedAccountId, List<long> vacancyReferences)
+        {
+            try
+            {
+                logger.LogTrace("Getting Employer Application Review Stats from Outer Api");
+
+                long accountId = encodingService.Decode(hashedAccountId, EncodingType.AccountId);
+                var retryPolicy = PollyRetryPolicy.GetPolicy();
+
+                return await retryPolicy.Execute(_ => outerApiClient.Post<GetApplicationReviewStatsResponse>(
+                        new GetEmployerApplicationReviewsCountApiRequest(accountId,
+                            vacancyReferences)),
+                    new Dictionary<string, object>
+                    {
+                        {
+                            "apiCall", "Providers"
+                        }
+                    });
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Failed to retrieve account information for account Id: {hashedAccountId}", hashedAccountId);
+                throw;
+            }
+        }
+
+        public async Task<GetDashboardCountApiResponse> GetEmployerDashboardStats(string hashedAccountId)
+        {
+            logger.LogTrace("Getting Employer Dashboard Stats from Outer Api");
+
+            long accountId = encodingService.Decode(hashedAccountId, EncodingType.AccountId);
+            var retryPolicy = PollyRetryPolicy.GetPolicy();
+
+            return await retryPolicy.Execute(_ => outerApiClient.Get<GetDashboardCountApiResponse>(
+                    new GetEmployerDashboardCountApiRequest(accountId)),
+                new Dictionary<string, object>
+                {
+                    {
+                        "apiCall", "Providers"
+                    }
+                });
         }
     }
 }
