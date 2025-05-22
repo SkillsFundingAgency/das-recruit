@@ -27,5 +27,6 @@ namespace Esfa.Recruit.Qa.Web.ViewModels
         public string OutcomeDescription { get; set; }
         public string EmployerLocationInformation { get; set; }
         public string ThingsToConsider { get; set; }
+        public string ApplicationInstructions { get; set; }
     }
 }
