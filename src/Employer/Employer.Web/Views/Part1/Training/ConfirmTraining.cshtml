@@ -55,9 +55,7 @@
         <form asp-route="@RouteNames.Training_Confirm_Post" asp-all-route-data="@Model.RouteDictionary" asp-route-wizard="@Model.PageInfo.IsWizard" novalidate>
             <div class="govuk-button-group">
                 <input asp-for="ProgrammeId" type="hidden" />
-                <input asp-show="@(!Model.WillTaskListBeCompleted)" type="submit" value="Confirm and continue" esfa-automation="btn-continue" class="govuk-button" />
-                <input asp-show="@Model.WillTaskListBeCompleted" type="submit" value="Confirm and preview" esfa-automation="btn-continue" class="govuk-button" />
-
+                <input type="submit" value="Save and continue" esfa-automation="btn-continue" class="govuk-button" />
                 <a asp-show="@(!Model.WillTaskListBeCompleted)" asp-route="@RouteNames.Dashboard_Get" asp-route-employerAccountId="@Model.EmployerAccountId" class="govuk-link govuk-link--no-visited-state" esfa-automation="cancel-link">Cancel</a>
                 <a asp-show="@Model.WillTaskListBeCompleted" asp-route="@RouteNames.EmployerCheckYourAnswersGet" asp-all-route-data="@Model.RouteDictionary" class="govuk-link govuk-link--no-visited-state" esfa-automation="cancel-link">Cancel</a>
             </div>
