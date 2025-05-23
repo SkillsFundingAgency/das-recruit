@@ -71,6 +71,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Extensions
             projectedVacancy.AdditionalQuestion2 = vacancy.AdditionalQuestion2;
 
             projectedVacancy.AdditionalTrainingDescription = vacancy.AdditionalTrainingDescription;
+            projectedVacancy.ApprenticeshipType = vacancy.ApprenticeshipType ?? ApprenticeshipTypes.Standard;
             
             return projectedVacancy;
         }
