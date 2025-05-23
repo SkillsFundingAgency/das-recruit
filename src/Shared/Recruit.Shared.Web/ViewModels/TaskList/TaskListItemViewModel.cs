@@ -3,7 +3,7 @@
 namespace Esfa.Recruit.Shared.Web.ViewModels.TaskList;
 
 public record TaskListItemViewModel(
-    bool Complete,
+    bool Editable,
     string Text,
     string Route,
     Dictionary<string, string> RouteValues,

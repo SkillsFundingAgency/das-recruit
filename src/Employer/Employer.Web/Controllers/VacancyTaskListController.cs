@@ -30,8 +30,6 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         public async Task<IActionResult> CreateEmployerTaskList(VacancyRouteModel vrm)
         {
             var viewModel = await _orchestrator.GetCreateVacancyTaskListModel(vrm);
-            viewModel.SetSectionStates(viewModel, ModelState);
-            
             return View("EmployerTaskList", viewModel);
         }
 
@@ -39,17 +37,9 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         public async Task<IActionResult> EmployerTaskList(VacancyRouteModel vrm)
         {
             var viewModel = await _orchestrator.GetVacancyTaskListModel(vrm); 
-            
-            viewModel.SetSectionStates(viewModel, ModelState);
-
-            if (viewModel.Status == VacancyStatus.Rejected
-                || viewModel.Status == VacancyStatus.Referred
-                || viewModel.Status == VacancyStatus.Review)
-            {
-                return RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet, vrm);
-            }
-            
-            return View(viewModel);
+            return viewModel.Status is VacancyStatus.Rejected or VacancyStatus.Referred or VacancyStatus.Review
+                ? RedirectToRoute(RouteNames.EmployerCheckYourAnswersGet, vrm)
+                : View(viewModel);
         }
     }
 }
