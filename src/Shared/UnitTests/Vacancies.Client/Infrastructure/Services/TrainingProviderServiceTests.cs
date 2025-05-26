@@ -119,5 +119,27 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
 
             result.Should().BeEquivalentTo(response);
         }
+
+        [Test, MoqAutoData]
+        public async Task GetAllApplications_Should_Return_As_Expected(
+            List<Guid> applicationIds,
+            GetAllApplicationsResponse response,
+            [Frozen] Mock<IOuterApiClient> outerApiClient,
+            [Greedy] TrainingProviderService trainingProviderService)
+        {
+            var expectedPostUrl = new GetAllApplicationsByIdApiRequest(new GetAllApplicationsByIdApiRequestData
+            {
+                ApplicationIds = applicationIds,
+                IncludeDetails = false
+            });
+
+            outerApiClient.Setup(x => x.Post<GetAllApplicationsResponse>(
+                    It.Is<GetAllApplicationsByIdApiRequest>(r => r.PostUrl == expectedPostUrl.PostUrl)))
+                .ReturnsAsync(response);
+
+            var result = await trainingProviderService.GetAllApplications(applicationIds);
+
+            result.Should().BeEquivalentTo(response);
+        }
     }
 }

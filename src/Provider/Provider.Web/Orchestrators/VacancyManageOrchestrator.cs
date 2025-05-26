@@ -70,7 +70,14 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             }
 
             var vacancyApplications = await _client.GetVacancyApplicationsSortedAsync(vacancy.VacancyReference.Value, sortColumn, sortOrder);
-            var applications = vacancyApplications ?? new List<VacancyApplication>();
+            var applications = vacancyApplications ?? [];
+
+            foreach (var application in applications)
+            {
+                application.CandidateAppliedLocations = application
+                    .Addresses
+                    .GetCities();
+            }
 
             viewModel.Applications = new VacancyApplicationsViewModel
             {
