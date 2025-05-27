@@ -21,17 +21,17 @@
         </h1>
         <p class="govuk-body">Find an apprenticeship includes set questions that applicants will need to answer. You can add extra questions if you need to ask more.</p>
 
-        @if (Model.ApprenticeshipType == ApprenticeshipTypes.Standard)
+        <div>
+            <p class="govuk-body govuk-!-font-weight-bold govuk-!-margin-bottom-0">Question 1</p>
+            <p class="govuk-body">@(Model.ApprenticeshipType.IsFoundation() ? "What interests you about this apprenticeship?" : "What are your skills and strengths?")</p>
+        </div>
+        @if (!Model.ApprenticeshipType.IsFoundation())
         {
             <div>
-                <p class="govuk-body govuk-!-font-weight-bold govuk-!-margin-bottom-0">Question 1</p>
-                <p class="govuk-body">What are your skills and strengths?</p>
+                <p class="govuk-body govuk-!-font-weight-bold govuk-!-margin-bottom-0">Question 2</p>
+                <p class="govuk-body">What interests you about this apprenticeship?</p>
             </div>
         }
-        <div>
-            <p class="govuk-body govuk-!-font-weight-bold govuk-!-margin-bottom-0">Question 2</p>
-            <p class="govuk-body">What interests you about this apprenticeship?</p>
-        </div>
 
         <form asp-route="@RouteNames.AdditionalQuestions_Post" asp-all-route-data="@Model.RouteDictionary">
             <div esfa-validation-marker-for="AdditionalQuestion1" class="govuk-form-group">
