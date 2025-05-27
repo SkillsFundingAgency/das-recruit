@@ -44,9 +44,8 @@ public class WhenGettingSectionThreeState
         {
             new object[] { ApprenticeshipTypes.Standard, (ProviderTaskListStateView v) => v.SkillsEditable, (TaskListItemFlags)ProviderTaskListSectionFlags.Two },
             new object[] { ApprenticeshipTypes.Standard, (ProviderTaskListStateView v) => v.QualificationsEditable, TaskListItemFlags.Skills },
-            new object[] { ApprenticeshipTypes.Standard, (ProviderTaskListStateView v) => v.FutureProspectsEditable, TaskListItemFlags.Qualifications },
+            new object[] { ApprenticeshipTypes.Standard, (ProviderTaskListStateView v) => v.FutureProspectsEditable, TaskListItemFlags.Qualifications | TaskListItemFlags.FutureProspects },
             new object[] { ApprenticeshipTypes.Standard, (ProviderTaskListStateView v) => v.OtherThingsToConsiderEditable, TaskListItemFlags.FutureProspects },
-            
             new object[] { ApprenticeshipTypes.Foundation, (ProviderTaskListStateView v) => v.FutureProspectsEditable, (TaskListItemFlags)ProviderTaskListSectionFlags.Two },
             new object[] { ApprenticeshipTypes.Foundation, (ProviderTaskListStateView v) => v.OtherThingsToConsiderEditable, TaskListItemFlags.FutureProspects },
         };

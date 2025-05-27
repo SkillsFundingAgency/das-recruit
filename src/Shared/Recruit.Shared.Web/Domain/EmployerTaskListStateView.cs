@@ -76,7 +76,7 @@ public sealed class EmployerTaskListStateView: TaskListStateViewBase
         {
             SkillsEditable = SectionTwoState == VacancyTaskListSectionState.Completed;
             QualificationsEditable = CompleteStates[TaskListItemFlags.Skills];
-            FutureProspectsEditable = CompleteStates[TaskListItemFlags.Qualifications];
+            FutureProspectsEditable = CompleteStates[TaskListItemFlags.FutureProspects] || CompleteStates[TaskListItemFlags.Qualifications];
         }
         OtherThingsToConsiderEditable = CompleteStates[TaskListItemFlags.FutureProspects];
         
