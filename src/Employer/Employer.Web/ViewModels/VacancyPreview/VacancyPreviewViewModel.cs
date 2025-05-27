@@ -115,6 +115,8 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview
 
         public bool HasUserConfirmation { get; set; }
 
+        public int AdditionalQuestionCount { get; set; }
+
         public int IncompleteRequiredSectionCount => new []
                 {
                     ShortDescriptionSectionState,

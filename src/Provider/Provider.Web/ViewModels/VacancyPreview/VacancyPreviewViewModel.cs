@@ -148,6 +148,8 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview
 
         public bool HasUserConfirmation { get; set; }
 
+        public int AdditionalQuestionCount { get; set; }
+
         public IList<string> OrderedFieldNames => new List<string>
         {
             nameof(ShortDescription),

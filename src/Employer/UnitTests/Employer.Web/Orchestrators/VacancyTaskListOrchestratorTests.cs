@@ -80,6 +80,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators
                 .Excluding(c=>c.HasSelectedEmployerNameOption)
                 .Excluding(c=>c.HasSoftValidationErrors)
                 .Excluding(c=>c.Qualifications)
+                .Excluding(c=>c.AdditionalQuestionCount)
             );
             viewModel.ApprenticeshipLevel.Should().Be(standard.ApprenticeshipLevel);
             viewModel.AccountLegalEntityCount.Should().Be(legalEntities.Count);
