@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
 
@@ -50,8 +49,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Va
         public long? VacancyReference { get; set; }
         public string CandidateFeedback { get; set; }
         public Guid? ApplicationId { get; set; }
-
-        public List<Address> Addresses { get; set; } = [];
         public string CandidateAppliedLocations { get; set; }
         
 

@@ -10,6 +10,7 @@ using Esfa.Recruit.Vacancies.Client.Application.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Services.Reports;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
 using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Responses;
@@ -311,7 +312,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
                         })
                         .ToList();
 
-                    vacancyApplication.Addresses = addresses;
+                    vacancyApplication.CandidateAppliedLocations = addresses.GetCities();
                 }
 
                 return vacancyApplications;

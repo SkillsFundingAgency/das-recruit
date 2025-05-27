@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using Esfa.Recruit.Provider.Web.Mappings;
 using Esfa.Recruit.Provider.Web.RouteModel;
@@ -12,7 +11,6 @@ using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.VacancyApplications;
 using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Provider.Web.Orchestrators
@@ -71,13 +69,6 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
 
             var vacancyApplications = await _client.GetVacancyApplicationsSortedAsync(vacancy.VacancyReference.Value, sortColumn, sortOrder);
             var applications = vacancyApplications ?? [];
-
-            foreach (var application in applications)
-            {
-                application.CandidateAppliedLocations = application
-                    .Addresses
-                    .GetCities();
-            }
 
             viewModel.Applications = new VacancyApplicationsViewModel
             {

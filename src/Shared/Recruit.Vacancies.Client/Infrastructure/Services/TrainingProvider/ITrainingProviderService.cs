@@ -33,6 +33,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider
         /// <returns></returns>
         Task<GetDashboardCountApiResponse> GetProviderDashboardStats(long ukprn);
 
+        /// <summary>
+        /// Contract to get all applications for the given application ids.
+        /// </summary>
+        /// <param name="applicationIds"></param>
+        /// <returns></returns>
         Task<GetAllApplicationsResponse> GetAllApplications(List<Guid> applicationIds);
     }
 }
