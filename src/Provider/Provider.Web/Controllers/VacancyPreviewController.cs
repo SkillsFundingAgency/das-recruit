@@ -26,22 +26,6 @@ namespace Esfa.Recruit.Provider.Web.Controllers
             _orchestrator = orchestrator;
         }
 
-        [HttpGet("preview", Name = RouteNames.Vacancy_Preview_Get)]
-        public async Task<IActionResult> VacancyPreview(VacancyRouteModel vrm)
-        {
-            var viewModel = await _orchestrator.GetVacancyPreviewViewModelAsync(vrm);
-
-            if (TempData.ContainsKey(TempDataKeys.VacancyPreviewInfoMessage))
-                viewModel.InfoMessage = TempData[TempDataKeys.VacancyPreviewInfoMessage].ToString();
-
-            AddSoftValidationErrorsToModelState(viewModel);
-            viewModel.SetSectionStates(viewModel, ModelState);
-
-            viewModel.CanHideValidationSummary = true;
-
-            return View(viewModel);
-        }
-
         [HttpPost("advert-preview", Name = RouteNames.Preview_Submit_Post)]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public async Task<IActionResult> Submit(SubmitEditModel m)
@@ -51,7 +35,6 @@ namespace Esfa.Recruit.Provider.Web.Controllers
             if (!ModelState.IsValid)
             {
                 viewModel.SoftValidationErrors = null;
-                viewModel.SetSectionStates(viewModel, ModelState);
                 return View("AdvertPreview", viewModel);
             }
 
@@ -83,8 +66,6 @@ namespace Esfa.Recruit.Provider.Web.Controllers
                 throw new MissingPermissionsException(string.Format(RecruitWebExceptionMessages.ProviderMissingPermission, m.Ukprn));
 
             viewModel.SoftValidationErrors = null;
-            viewModel.SetSectionStates(viewModel, ModelState);
-
             return View(ViewNames.VacancyPreview, viewModel);
         }
         
@@ -97,10 +78,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
                 viewModel.InfoMessage = TempData[TempDataKeys.VacancyPreviewInfoMessage].ToString();
 
             AddSoftValidationErrorsToModelState(viewModel);
-            viewModel.SetSectionStates(viewModel, ModelState);
-
             viewModel.CanHideValidationSummary = true;
-
             return View(ViewNames.AdvertPreview , viewModel);
         }
 
