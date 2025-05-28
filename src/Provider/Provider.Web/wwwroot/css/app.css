@@ -675,3 +675,7 @@ span.govuk-error-message:empty {
 .faa-user-content {
     white-space: pre-line;
 }
+
+.das-inset-text-pink {
+  border-left: 10px solid rgb(248.7,225.15,235.95) !important;
+}

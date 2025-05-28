@@ -30,8 +30,6 @@ namespace Esfa.Recruit.Provider.Web.Controllers
         public async Task<IActionResult> CreateProviderTaskList(VacancyRouteModel vrm, [FromQuery] string employerAccountId)
         {
             var viewModel = await _orchestrator.GetCreateVacancyTaskListModel(vrm, employerAccountId);
-            viewModel.SetSectionStates(viewModel, ModelState);
-            
             return View("ProviderTaskList", viewModel);
         }
         
@@ -40,8 +38,6 @@ namespace Esfa.Recruit.Provider.Web.Controllers
         public async Task<IActionResult> ProviderTaskList(VacancyRouteModel vrm)
         {
             var viewModel = await _orchestrator.GetVacancyTaskListModel(vrm); 
-            viewModel.SetSectionStates(viewModel, ModelState);
-
             if (viewModel.Status == VacancyStatus.Rejected || viewModel.Status == VacancyStatus.Referred)
             {
                 return RedirectToRoute(RouteNames.ProviderCheckYourAnswersGet, new {vrm.Ukprn, vrm.VacancyId});
