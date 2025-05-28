@@ -52,6 +52,12 @@
             <p class="govuk-body">You should also review the other sections of your vacancy.</p>
         </div>
         
+        <div asp-show="@(Model.IsChangingApprenticeshipType && !Model.IsFoundation)" class="govuk-inset-text">
+            <p class="govuk-body">This will change the course from a <strong>foundation apprenticeship</strong> to an <strong>apprenticeship standard</strong>.</p>
+            <p class="govuk-body">You'll need to review this vacancy’s requirements. This is because standards can have different entry requirements for applicants.</p>
+            <p class="govuk-body">You should also review the other sections of your vacancy.</p>
+        </div>
+        
         <form asp-route="@RouteNames.Training_Confirm_Post" asp-route-ukprn="@Model.Ukprn" asp-route-vacancyId="@Model.VacancyId" asp-route-wizard="@Model.PageInfo.IsWizard" novalidate>
             <div class="govuk-button-group">
                 <input asp-for="ProgrammeId" type="hidden" />
