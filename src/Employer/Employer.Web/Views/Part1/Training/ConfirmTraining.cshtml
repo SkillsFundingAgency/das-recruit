@@ -39,15 +39,25 @@
                 <a asp-route="@RouteNames.Training_Get" asp-all-route-data="@Model.RouteDictionary" asp-route-wizard="@Model.PageInfo.IsWizard" asp-route-programmeid="@Model.ProgrammeId" class="govuk-link">Change apprenticeship training</a>
             </p>
         </div>
+        
+        <div asp-show="@(Model.IsChangingApprenticeshipType && Model.IsFoundation)" class="govuk-inset-text">
+            <p class="govuk-body">This will change the course from an <strong>apprenticeship standard</strong> to a <strong>foundation apprenticeship</strong>.</p>
+            <p class="govuk-body">We’ll remove this advert’s skills and qualifications requirements. Applicants do not need specific skills or qualifications to apply for a foundation apprenticeship.</p>
+            <p class="govuk-body">You should also review the other sections of your advert.</p>
+        </div>
+        
+        <div asp-show="@(Model.IsChangingApprenticeshipType && !Model.IsFoundation)" class="govuk-inset-text">
+            <p class="govuk-body">This will change the course from a <strong>foundation apprenticeship</strong> to an <strong>apprenticeship standard</strong>.</p>
+            <p class="govuk-body">You'll need to review this advert’s requirements. This is because standards can have different entry requirements for applicants.</p>
+            <p class="govuk-body">You should also review the other sections of your advert.</p>
+        </div>
 
         <form asp-route="@RouteNames.Training_Confirm_Post" asp-all-route-data="@Model.RouteDictionary" asp-route-wizard="@Model.PageInfo.IsWizard" novalidate>
             <div class="govuk-button-group">
-                <input asp-for="ProgrammeId" type="hidden"/>
-                <input asp-show="@Model.PageInfo.IsWizard" type="submit" value="Confirm and continue" esfa-automation="btn-continue" class="govuk-button"/>
-                <input asp-show="@Model.PageInfo.IsNotWizard" type="submit" value="Confirm and preview" esfa-automation="btn-continue" class="govuk-button"/>
-
-                <a asp-show="@Model.PageInfo.IsWizard" asp-route="@RouteNames.Dashboard_Get" asp-route-employerAccountId="@Model.EmployerAccountId" class="govuk-link govuk-link--no-visited-state" esfa-automation="cancel-link">Cancel</a>
-                <a asp-show="@Model.PageInfo.IsNotWizard" asp-route="@RouteNames.EmployerCheckYourAnswersGet" asp-all-route-data="@Model.RouteDictionary" class="govuk-link govuk-link--no-visited-state" esfa-automation="cancel-link">Cancel</a>
+                <input asp-for="ProgrammeId" type="hidden" />
+                <input type="submit" value="Save and continue" esfa-automation="btn-continue" class="govuk-button" />
+                <a asp-show="@(!Model.WillTaskListBeCompleted)" asp-route="@RouteNames.Dashboard_Get" asp-route-employerAccountId="@Model.EmployerAccountId" class="govuk-link govuk-link--no-visited-state" esfa-automation="cancel-link">Cancel</a>
+                <a asp-show="@Model.WillTaskListBeCompleted" asp-route="@RouteNames.EmployerCheckYourAnswersGet" asp-all-route-data="@Model.RouteDictionary" class="govuk-link govuk-link--no-visited-state" esfa-automation="cancel-link">Cancel</a>
             </div>
         </form>
     </div>

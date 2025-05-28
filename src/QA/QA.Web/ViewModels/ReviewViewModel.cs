@@ -40,7 +40,6 @@ namespace Esfa.Recruit.Qa.Web.ViewModels
         public string ProviderContactEmail { get; internal set; }
         public string ProviderContactTelephone { get; internal set; }
         public string ProviderName { get; internal set; }
-        public string ThingsToConsider { get; internal set; }
         public string VacancyReferenceNumber { get; internal set; }
         public string TrainingTitle { get; internal set; }
         public string TrainingType { get; internal set; }
@@ -67,6 +66,7 @@ namespace Esfa.Recruit.Qa.Web.ViewModels
         public string AdditionalQuestion1 { get; internal set; }
         public string AdditionalQuestion2 { get; internal set; }
         public bool HasAdditionalQuestions { get; internal set; }
+        public ApprenticeshipTypes? ApprenticeshipType { get; internal set; }
 
         public bool IsAnonymous => EmployerNameOption == EmployerNameOption.Anonymous;
         public bool IsApproved => ManualOutcome.GetValueOrDefault() == ManualQaOutcome.Approved;
