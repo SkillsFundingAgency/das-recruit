@@ -4,6 +4,13 @@
     {
         New,
         Successful,
-        Unsuccessful
+        Unsuccessful,
+        Shared,
+        InReview,
+        Interviewing,
+        EmployerInterviewing,
+        EmployerUnsuccessful,
+        PendingShared,
+        PendingToMakeUnsuccessful
     }
 }

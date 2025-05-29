@@ -77,6 +77,45 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.C
 
             _mockUserRepository.Verify(u => u.UpsertUserAsync(It.Is<User>(c=> c.Ukprn == vacancyUser.Ukprn)));
         }
+        
+        [Fact]
+        public async Task GivenProviderUser_ShouldGetByDfESignIn()
+        {
+            var userType= UserType.Provider;
+            var userId = _fixture.Create<Guid>().ToString();
+            var vacancyUser = _fixture.Create<VacancyUser>();
+            var user = _fixture.Build<User>().With(u => u.UserType, userType).With(c=>c.DfEUserId, vacancyUser.DfEUserId).Create();
+            var preference = _fixture.Build<UserNotificationPreferences>().With(p => p.Id, userId).Create();
+            
+            _fixture.Register(() => new UserSignedInCommand(vacancyUser, userType));
+            var command = _fixture.Create<UserSignedInCommand>();
+
+            var sut = GetSut(user, preference, true);
+            await sut.Handle(command, new CancellationToken());
+
+            _mockUserRepository.Verify(x=>x.GetByDfEUserId(command.User.DfEUserId), Times.Once);
+            _mockUserRepository.Verify(u => u.UpsertUserAsync(It.Is<User>(c=> c.Ukprn == vacancyUser.Ukprn)));
+        }
+        
+        [Fact]
+        public async Task GivenProviderUser_NoDfESignInId_ShouldUpsertDfESignInIdToUser()
+        {
+            var userType= UserType.Provider;
+            var userId = _fixture.Create<Guid>().ToString();
+            var vacancyUser = _fixture.Create<VacancyUser>();
+            var user = _fixture.Build<User>().With(u => u.UserType, userType).With(c=>c.DfEUserId, (string)null).Create();
+            var preference = _fixture.Build<UserNotificationPreferences>().With(p => p.Id, userId).Create();
+            
+            _fixture.Register(() => new UserSignedInCommand(vacancyUser, userType));
+            var command = _fixture.Create<UserSignedInCommand>();
+
+            var sut = GetSut(user, preference);
+            await sut.Handle(command, new CancellationToken());
+
+            _mockUserRepository.Verify(x=>x.GetByDfEUserId(command.User.DfEUserId), Times.Once);
+            _mockUserRepository.Verify(x=>x.GetAsync(command.User.UserId), Times.Once);
+            _mockUserRepository.Verify(u => u.UpsertUserAsync(It.Is<User>(c=> c.Ukprn == vacancyUser.Ukprn && c.DfEUserId == command.User.DfEUserId)));
+        }
 
         [Fact]
         public async Task GivenEmployerUser_ShouldAssignUkprn()
@@ -95,10 +134,21 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.C
             _mockUserRepository.Verify(u => u.UpsertUserAsync(It.Is<User>(c=> c.Ukprn == null)));
         }
 
-        private UserSignedInCommandHandler GetSut(User user, UserNotificationPreferences preference)
+        private UserSignedInCommandHandler GetSut(User user, UserNotificationPreferences preference, bool dfeUser = false)
         {
-            _mockUserRepository.Setup(u => u.GetAsync(It.IsAny<string>())).ReturnsAsync(user);
-            _mockUserNotificationPreferencesRepository.Setup(u => u.GetAsync(It.IsAny<string>())).ReturnsAsync(preference);
+            if (dfeUser)
+            {
+                _mockUserRepository.Setup(u => u.GetByDfEUserId(user.DfEUserId)).ReturnsAsync(user);
+                _mockUserRepository.Setup(u => u.GetAsync(It.IsAny<string>())).ReturnsAsync((User)null);    
+            }
+            else
+            {
+                _mockUserRepository.Setup(u => u.GetAsync(It.IsAny<string>())).ReturnsAsync(user);
+                _mockUserRepository.Setup(u => u.GetByDfEUserId(It.IsAny<string>())).ReturnsAsync((User)null);
+            }
+            
+            _mockUserNotificationPreferencesRepository.Setup(u => u.GetAsync(user.DfEUserId)).ReturnsAsync(preference);
+            _mockUserNotificationPreferencesRepository.Setup(u => u.GetAsync(user.IdamsUserId)).ReturnsAsync(preference);
 
             return new UserSignedInCommandHandler (
                 Mock.Of<ILogger<UserSignedInCommandHandler>>(),

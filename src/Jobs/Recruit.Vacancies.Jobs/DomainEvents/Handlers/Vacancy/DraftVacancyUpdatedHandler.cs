@@ -6,36 +6,26 @@ using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Vacancy
 {
-    public class DraftVacancyUpdatedHandler : DomainEventHandler,  IDomainEventHandler<DraftVacancyUpdatedEvent>
+    public class DraftVacancyUpdatedHandler(ILogger<DraftVacancyUpdatedHandler> logger, IJobsVacancyClient client)
+        : DomainEventHandler(logger), IDomainEventHandler<DraftVacancyUpdatedEvent>
     {
-        private readonly ILogger<DraftVacancyUpdatedHandler> _logger;
-        private readonly IJobsVacancyClient _client;
-
-        public DraftVacancyUpdatedHandler(ILogger<DraftVacancyUpdatedHandler> logger, IJobsVacancyClient client) : base(logger)
-        {
-            _logger = logger;
-            _client = client;
-        }
-
+        private const string EventName = nameof(DraftVacancyUpdatedEvent);
+        
         public async Task HandleAsync(string eventPayload)
         {
-            var @event = DeserializeEvent<DraftVacancyUpdatedEvent>(eventPayload);
-
+            var draftVacancyUpdatedEvent = DeserializeEvent<DraftVacancyUpdatedEvent>(eventPayload);
             try
             {
-                _logger.LogInformation($"Processing {nameof(DraftVacancyUpdatedEvent)} for vacancy: {{VacancyId}}", @event.VacancyId);
+                logger.LogInformation("Processing {EventName} for vacancy: {VacancyId}", EventName, draftVacancyUpdatedEvent.VacancyId);
 
-                await _client.AssignVacancyNumber(@event.VacancyId);
+                await client.AssignVacancyNumber(draftVacancyUpdatedEvent.VacancyId);
+                await client.PatchTrainingProviderAsync(draftVacancyUpdatedEvent.VacancyId);
 
-                await _client.PatchTrainingProviderAsync(@event.VacancyId);
-
-                await _client.EnsureVacancyIsGeocodedAsync(@event.VacancyId);
-
-                _logger.LogInformation($"Finished Processing {nameof(DraftVacancyUpdatedEvent)} for vacancy: {{VacancyId}}", @event.VacancyId);
+                logger.LogInformation("Finished Processing {EventName} for vacancy: {VacancyId}", EventName, draftVacancyUpdatedEvent.VacancyId);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Unable to process {eventBody}", @event);
+                logger.LogError(ex, "Unable to process {eventBody}", draftVacancyUpdatedEvent);
                 throw;
             }
         }

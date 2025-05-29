@@ -1,0 +1,48 @@
+﻿@using Esfa.Recruit.Employer.Web.ViewModels.Part2.Qualifications
+@using Esfa.Recruit.Shared.Web.Mappers
+@using Esfa.Recruit.Vacancies.Client.Domain.Entities
+@model Esfa.Recruit.Employer.Web.ViewModels.Part2.Qualifications.QualificationsViewModel
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <span class="govuk-caption-xl">@Model.Title</span>
+        <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">Qualifications</h1>
+        <p class="govuk-body">Add the qualifications an applicant will need to begin this apprenticeship.</p>
+        <p class="govuk-body">You can add:</p>
+        <ul class="govuk-list govuk-list--bullet">
+            <li>essential qualifications</li>
+            <li>desirable qualifications</li>
+        </ul>
+        <p class="govuk-body">You can create an advert with no qualification requirements. You can take on an apprentice who doesn't have any previous qualifications.</p>
+        <form method="post">
+            @Html.HiddenFor(x => x.IsTaskListCompleted)
+            <div esfa-validation-marker-for="AddQualificationRequirement" class="govuk-form-group govuk-!-margin-top-6">
+                <fieldset class="govuk-fieldset">
+                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                        Do you want to add any qualification requirements?
+                    </legend>
+                    <span esfa-validation-message-for="AddQualificationRequirement" class="govuk-error-message"></span>
+                    <div class="govuk-radios" data-module="govuk-radios">
+                        <div class="govuk-radios__item">
+                            <input class="govuk-radios__input" id="AddQualificationRequirement" name="AddQualificationRequirement" type="radio" value="true" asp-for="AddQualificationRequirement">
+                            <label class="govuk-label govuk-radios__label" for="AddQualificationRequirement">
+                                Yes
+                            </label>
+                        </div>
+                        <div class="govuk-radios__item">
+                            <input class="govuk-radios__input" id="qualificationRequirements-no" name="AddQualificationRequirement" type="radio" value="false" asp-for="AddQualificationRequirement">
+                            <label class="govuk-label govuk-radios__label" for="qualificationRequirements-no">
+                                No
+                            </label>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+            <div class="govuk-button-group">
+                <button class="govuk-button save-button" type="submit" data-automation="btn-continue">Save and continue</button>
+                <a asp-show="@(!Model.IsTaskListCompleted)" asp-route="@RouteNames.Dashboard_Get" asp-route-employerAccountId="@Model.EmployerAccountId" class="govuk-link govuk-link--no-visited-state">Cancel</a>
+                <a asp-show="@Model.IsTaskListCompleted" asp-route="@RouteNames.EmployerCheckYourAnswersGet" asp-all-route-data="@Model.RouteDictionary" esfa-automation="cancel" class="govuk-link govuk-link--no-visited-state">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>

@@ -4,11 +4,9 @@ using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
 namespace Esfa.Recruit.Provider.Web.ViewModels.ApplicationReview
 {
-    public class ApplicationReviewStatusConfirmationEditModel : ApplicationReviewRouteModel, IApplicationStatusConfirmationEditViewModel
+    public class ApplicationReviewStatusConfirmationEditModel : ApplicationReviewStatusChangeModel, IApplicationStatusConfirmationEditViewModel
     {
         public bool? NotifyCandidate { get; set; }
-        public bool CanNotifyCandidate => NotifyCandidate.HasValue && NotifyCandidate.Value;
-        public ApplicationReviewStatus? Outcome { get; set; }
-        public string CandidateFeedback { get; set; }        
+        public bool CanNotifyCandidate => NotifyCandidate.HasValue && NotifyCandidate.Value;    
     }
 }

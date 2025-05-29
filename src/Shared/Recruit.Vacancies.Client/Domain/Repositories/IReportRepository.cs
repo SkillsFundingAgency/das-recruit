@@ -9,7 +9,7 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Repositories
     {
         Task CreateAsync(Report report);
         Task UpdateAsync(Report report);
-        Task<List<T>> GetReportsForProviderAsync<T>(long ukprn, VacancyType vacancyType);
+        Task<List<T>> GetReportsForProviderAsync<T>(long ukprn);
         Task<Report> GetReportAsync(Guid reportId);
         Task<int> DeleteReportsCreatedBeforeAsync(DateTime requestedOn);
         Task IncrementReportDownloadCountAsync(Guid reportId);

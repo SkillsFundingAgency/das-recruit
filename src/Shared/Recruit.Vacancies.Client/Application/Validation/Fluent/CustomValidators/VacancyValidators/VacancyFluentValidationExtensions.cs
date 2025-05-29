@@ -111,10 +111,9 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomVali
             {
                 if (!vacancy.StartDate.HasValue)
                 {
-                    var message = $"The start date must have a value.";
-                    var failure = new ValidationFailure(string.Empty, message)
+                    var failure = new ValidationFailure(string.Empty, "The start date must have a value.")
                     {
-                        ErrorCode = ErrorCodes.TrainingExpiryDate,
+                        ErrorCode = ErrorCodes.TrainingExpiryDateMustExist,
                         CustomState = VacancyRuleSet.TrainingExpiryDate,
                         PropertyName = nameof(Vacancy.StartDate)
                     };
@@ -156,6 +155,24 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomVali
                 var failure = new ValidationFailure(nameof(Vacancy.TrainingProvider), "The UKPRN is not valid or the associated provider is not active")
                 {
                     ErrorCode = ErrorCodes.TrainingProviderMustExist,
+                    CustomState = VacancyRuleSet.TrainingProvider
+                };
+                context.AddFailure(failure);
+            });
+        }
+
+        internal static IRuleBuilderInitial<TrainingProvider, TrainingProvider> TrainingProviderMustBeMainOrEmployerProfile(this IRuleBuilder<TrainingProvider, TrainingProvider> ruleBuilder, ITrainingProviderSummaryProvider trainingProviderSummaryProvider)
+        {
+            return (IRuleBuilderInitial<TrainingProvider, TrainingProvider>)ruleBuilder.CustomAsync(async (trainingProvider, context, _) =>
+            {
+                if (trainingProvider.Ukprn.HasValue && await trainingProviderSummaryProvider.IsTrainingProviderMainOrEmployerProfile(trainingProvider.Ukprn.Value))
+                {
+                    return;
+                }
+
+                var failure = new ValidationFailure(nameof(Vacancy.TrainingProvider), "UKPRN of a training provider must be registered to deliver apprenticeship training")
+                {
+                    ErrorCode = ErrorCodes.TrainingProviderMustBeMainOrEmployerProfile,
                     CustomState = VacancyRuleSet.TrainingProvider
                 };
                 context.AddFailure(failure);

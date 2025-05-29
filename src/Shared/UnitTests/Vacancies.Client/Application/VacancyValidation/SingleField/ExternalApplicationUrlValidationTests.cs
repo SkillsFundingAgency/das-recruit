@@ -1,9 +1,8 @@
 ﻿using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using FluentAssertions;
 using Xunit;
 
-namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation.SingleField
+namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.VacancyValidation.SingleField
 {
     public class ExternalApplicationUrlValidationTests : VacancyValidationTestsBase
     {
@@ -48,12 +47,12 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation.
         }
 
         [Fact]
-        public void ExternalApplicationUrlMustBe200CharactersOrLess()
+        public void ExternalApplicationUrlMustBe2000CharactersOrLess()
         {
             var vacancy = new Vacancy
             {
                 ApplicationMethod = ApplicationMethod.ThroughExternalApplicationSite,
-                ApplicationUrl = "http://www.applyhere.com".PadRight(201, 'w')
+                ApplicationUrl = "http://www.applyhere.com".PadRight(2001, 'w')
             };
 
             var result = Validator.Validate(vacancy, VacancyRuleSet.ApplicationMethod);

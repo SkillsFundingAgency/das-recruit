@@ -9,16 +9,16 @@
         <div class="info-summary">
             <h1 class="govuk-heading-m govuk-!-margin-top-0">You cannot submit this advert yet</h1>
             <p class="govuk-body">
-                You can submit this advert once your organisation has accepted an
-                <a asp-route="@RouteNames.Dashboard_AccountsAgreements" asp-route-employerAccountId="@Model.EmployerAccountId" >employer agreement</a>
-                with the Department for Education (DfE).
+                You can submit this advert once your organisation has accepted an employer agreement with the Department for Education (DfE).                               
             </p>
             <p class="govuk-body">
                 Your advert has been saved as a draft. Once the agreement is accepted, you’ll be able to submit your advert for review.
             </p>
         </div>
-
-        <a asp-route="@RouteNames.Dashboard_Get" asp-route-employerAccountId="@Model.EmployerAccountId" class="govuk-button">Return to dashboard</a>
+        <div class="govuk-button-group">
+            <a asp-route="@RouteNames.Dashboard_AccountsAgreements" asp-route-employerAccountId="@Model.EmployerAccountId" class="govuk-button">View agreement</a>
+            <a asp-route="@RouteNames.Dashboard_Get" asp-route-employerAccountId="@Model.EmployerAccountId" class="govuk-button govuk-button--secondary">Return to dashboard</a>
+         </div>
     </div>
 
 </div>

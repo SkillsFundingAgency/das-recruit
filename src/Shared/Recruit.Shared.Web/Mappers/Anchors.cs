@@ -25,8 +25,10 @@
         public const string NumberOfPositions = "NumberOfPositions";
         public const string VacancyDescription = "VacancyDescription";
         public const string TrainingDescription = "TrainingDescription";
+        public const string AdditionalTrainingDescription = "AdditionalrainingDescription";
         public const string OutcomeDescription = "OutcomeDescription";
         public const string Skills = "Skills";
+        public const string HasOptedToAddQualifications = "HasOptedToAddQualifications";
         public const string Qualifications = "Qualifications";
         public const string ThingsToConsider = "ThingsToConsider";
         public const string EmployerDescription = "EmployerDescription";
@@ -41,13 +43,13 @@
         public const string ApplicationMethod = "ApplicationMethod";
         public const string ApplicationUrl = "ApplicationUrl";
         public const string ApplicationInstructions = "ApplicationInstructions";
-        public const string WorkExperience = "WorkExperience";
-        public const string TraineeSector = "TraineeSector";
         public const string AdditionalQuestion1 = nameof(AdditionalQuestion1);
         public const string AdditionalQuestion2 = nameof(AdditionalQuestion2);
 
         //Wage
         public const string WageTypeHeading = "WageTypeHeading";
+        public const string WageAdditionalInformation = "WageAdditionalInformation";
+        public const string CompanyBenefitsInformation = "CompanyBenefitsInformation";
 
         //Skills
         public const string SkillsHeading = "SkillsHeading";

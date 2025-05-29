@@ -35,7 +35,7 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
 
             var vacancy = await _vacancyClient.GetVacancyAsync(review.VacancyReference);
                 
-            var manualQaFieldIndicators = _mapper.GetManualQaFieldIndicators(m, review.VacancySnapshot.VacancyType.GetValueOrDefault());
+            var manualQaFieldIndicators = _mapper.GetManualQaFieldIndicators(m);
             var selectedAutomatedQaRuleOutcomeIds = m.SelectedAutomatedQaResults.Select(Guid.Parse).ToList();
 
             if (m.IsRefer)
@@ -83,6 +83,11 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
                 vm.EmployerWebsiteUrl = "https://" + $"{vm.EmployerWebsiteUrl}";
             }
 
+            if (!string.IsNullOrEmpty(vm?.ApplicationUrl) && !vm.ApplicationUrl.StartsWith("http", true, null))
+            {
+                vm.ApplicationUrl = "https://" + $"{vm.ApplicationUrl}";
+            }
+            
             return vm;
         }
 
@@ -94,6 +99,7 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
                 throw new NotFoundException($"Unable to find review with id: {reviewId}");
 
             var vm = await _mapper.Map(review);
+            vm.ReadOnly = true;
 
             if (!string.IsNullOrEmpty(vm?.EmployerWebsiteUrl) && !vm.EmployerWebsiteUrl.StartsWith("http", true, null))
             {
@@ -157,9 +163,14 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
         {
             var review = await _vacancyClient.GetVacancyReviewAsync(reviewId);
 
+            if (review == null)
+            {
+                return null;
+            }
+
             return new UnassignReviewViewModel()
             {
-                AdvisorName = review.ReviewedByUser.Name,
+                AdvisorName = review.ReviewedByUser?.Name,
                 Title = review.Title
             };
         }
@@ -193,6 +204,16 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
                 });
                 vacancy.TrainingDescription = m.TrainingDescription;
             }
+            if (review.VacancySnapshot.AdditionalTrainingDescription != m.AdditionalTrainingDescription)
+            {
+                manualQaFieldEditIndicator.Add(new ManualQaFieldEditIndicator
+                {
+                    FieldIdentifier = nameof(m.AdditionalTrainingDescription),
+                    BeforeEdit = review.VacancySnapshot.AdditionalTrainingDescription,
+                    AfterEdit = m.AdditionalTrainingDescription
+                });
+                vacancy.AdditionalTrainingDescription = m.AdditionalTrainingDescription;
+            }
             if (review.VacancySnapshot.ShortDescription != m.ShortDescription)
             {
                 manualQaFieldEditIndicator.Add(new ManualQaFieldEditIndicator
@@ -223,16 +244,46 @@ namespace Esfa.Recruit.Qa.Web.Orchestrators
                 });
                 vacancy.Wage.WorkingWeekDescription = m.WorkingWeekDescription;
             }
-
-            if (review.VacancySnapshot.WorkExperience != m.WorkExperience)
+            if (review.VacancySnapshot.Wage.CompanyBenefitsInformation != m.CompanyBenefitsInformation)
             {
                 manualQaFieldEditIndicator.Add(new ManualQaFieldEditIndicator
                 {
-                    FieldIdentifier = nameof(m.WorkExperience),
-                    BeforeEdit = review.VacancySnapshot.WorkExperience,
-                    AfterEdit = m.WorkExperience
+                    FieldIdentifier = nameof(m.CompanyBenefitsInformation),
+                    BeforeEdit = review.VacancySnapshot.Wage.CompanyBenefitsInformation,
+                    AfterEdit = m.CompanyBenefitsInformation
                 });
-                vacancy.WorkExperience = m.WorkExperience;
+                vacancy.Wage.CompanyBenefitsInformation = m.CompanyBenefitsInformation;
+            }
+            if (review.VacancySnapshot.EmployerLocationInformation != m.EmployerLocationInformation)
+            {
+                manualQaFieldEditIndicator.Add(new ManualQaFieldEditIndicator
+                {
+                    FieldIdentifier = nameof(m.EmployerLocationInformation),
+                    BeforeEdit = review.VacancySnapshot.EmployerLocationInformation,
+                    AfterEdit = m.EmployerLocationInformation
+                });
+                vacancy.EmployerLocationInformation = m.EmployerLocationInformation;
+            }
+            if (review.VacancySnapshot.ThingsToConsider != m.ThingsToConsider)
+            {
+                manualQaFieldEditIndicator.Add(new ManualQaFieldEditIndicator
+                {
+                    FieldIdentifier = nameof(m.ThingsToConsider),
+                    BeforeEdit = review.VacancySnapshot.ThingsToConsider,
+                    AfterEdit = m.ThingsToConsider
+                });
+                vacancy.ThingsToConsider = m.ThingsToConsider;
+            }
+
+            if (review.VacancySnapshot.ApplicationInstructions != m.ApplicationInstructions)
+            {
+                manualQaFieldEditIndicator.Add(new ManualQaFieldEditIndicator
+                {
+                    FieldIdentifier = nameof(m.ApplicationInstructions),
+                    BeforeEdit = review.VacancySnapshot.ApplicationInstructions,
+                    AfterEdit = m.ApplicationInstructions
+                });
+                vacancy.ApplicationInstructions = m.ApplicationInstructions;
             }
 
             return manualQaFieldEditIndicator;

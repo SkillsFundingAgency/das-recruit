@@ -89,12 +89,8 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
             EmployerNameEditModel model, VacancyUser user)
         {
             var validationRules = VacancyRuleSet.EmployerNameOption;
-
             var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(model, RouteNames.EmployerName_Post);
-            
-            vacancy.EmployerNameOption =  model.SelectedEmployerIdentityOption.HasValue 
-                ? model.SelectedEmployerIdentityOption.Value.ConvertToDomainOption()
-                : (EmployerNameOption?) null;
+            vacancy.EmployerNameOption =  model.SelectedEmployerIdentityOption?.ConvertToDomainOption();
 
             // temporarily set the employer name for validation
             EmployerProfile profile = null;

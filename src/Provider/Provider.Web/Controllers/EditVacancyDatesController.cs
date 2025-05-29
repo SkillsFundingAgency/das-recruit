@@ -4,7 +4,6 @@ using Esfa.Recruit.Provider.Web.Orchestrators;
 using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Provider.Web.ViewModels.EditVacancyDates;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Hosting;
 using Esfa.Recruit.Provider.Web.Configuration;
 using Esfa.Recruit.Provider.Web.Extensions;
 using Esfa.Recruit.Shared.Web.Extensions;
@@ -18,12 +17,10 @@ namespace Esfa.Recruit.Provider.Web.Controllers
     public class EditVacancyDatesController : Controller
     {
         private readonly EditVacancyDatesOrchestrator _orchestrator;
-        private readonly IWebHostEnvironment _hostingEnvironment;
 
-        public EditVacancyDatesController(EditVacancyDatesOrchestrator orchestrator, IWebHostEnvironment hostingEnvironment)
+        public EditVacancyDatesController(EditVacancyDatesOrchestrator orchestrator)
         {
             _orchestrator = orchestrator;
-            _hostingEnvironment = hostingEnvironment;
         }
 
         [HttpGet("edit-dates", Name = RouteNames.VacancyEditDates_Get)]

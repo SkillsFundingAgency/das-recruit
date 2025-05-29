@@ -1,38 +1,39 @@
-using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
-using FluentAssertions;
-using Xunit;
 
-namespace Esfa.Recruit.UnitTests.Employer.Web.Orchestrators.CloneVacancyOrchestratorTest
+namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.CloneVacancyOrchestratorTest;
+
+public class GetCloneableAuthorisedVacancyAsyncTests : CloneVacancyOrchestratorTestBase
 {
-	public class GetCloneableAuthorisedVacancyAsyncTests : CloneVacancyOrchestratorTestBase
+    [Test]
+    public async Task WhenRouteHasInvalidEmployerAccountId_ShouldThrowAuthorizationException()
     {
-        [Fact]
-        public async Task WhenRouteHasInvalidEmployerAccountId_ShouldThrowAuthorizationException()
-        {
-            var sut = GetSut(SourceVacancy);
-            await Assert.ThrowsAsync<AuthorisationException>(()  => sut.GetCloneableAuthorisedVacancyAsync(new VacancyRouteModel{ EmployerAccountId = "1234" }));
-        }
+        var sut = GetSut(SourceVacancy);
 
-        [Theory]
-        [InlineData(VacancyStatus.Referred)]
-        [InlineData(VacancyStatus.Draft)]
-        public async Task WhenVacancyInInvalidState_ShouldThrowInvalidStateException(VacancyStatus status)
-        {
-            var vacancy = SourceVacancy;
-            vacancy.Status = status;
-            var sut = GetSut(vacancy);
-            await Assert.ThrowsAsync<InvalidStateException>(() => sut.GetCloneableAuthorisedVacancyAsync(VRM));
-        }
+        var act = () => sut.GetCloneableAuthorisedVacancyAsync(new VacancyRouteModel { EmployerAccountId = "1234" });
 
-        [Fact]
-        public async Task WhenValidState_ShouldReturnVacancy()
-        {
-            var sut = GetSut(SourceVacancy);
-            var vacancy = await sut.GetCloneableAuthorisedVacancyAsync(VRM);
-            vacancy.Id.Should().Be(SourceVacancyId);
-        }
+        await act.Should().ThrowAsync<AuthorisationException>();
+    }
+
+    [TestCase(VacancyStatus.Referred)]
+    [TestCase(VacancyStatus.Draft)]
+    public async Task WhenVacancyInInvalidState_ShouldThrowInvalidStateException(VacancyStatus status)
+    {
+        var vacancy = SourceVacancy;
+        vacancy.Status = status;
+        var sut = GetSut(vacancy);
+            
+        var act = () => sut.GetCloneableAuthorisedVacancyAsync(VRM);
+            
+        await act.Should().ThrowAsync<InvalidStateException>();
+    }
+
+    [Test]
+    public async Task WhenValidState_ShouldReturnVacancy()
+    {
+        var sut = GetSut(SourceVacancy);
+        var vacancy = await sut.GetCloneableAuthorisedVacancyAsync(VRM);
+        vacancy.Id.Should().Be(SourceVacancyId);
     }
 }

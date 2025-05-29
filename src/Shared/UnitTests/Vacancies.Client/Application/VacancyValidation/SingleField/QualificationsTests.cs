@@ -1,11 +1,9 @@
 ﻿using System.Collections.Generic;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using FluentAssertions;
-using Moq;
 using Xunit;
 
-namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation.SingleField
+namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.VacancyValidation.SingleField
 {
     public class QualificationsTests : VacancyValidationTestsBase
     {
@@ -23,7 +21,22 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation.
             result.HasErrors.Should().BeFalse();
             result.Errors.Should().HaveCount(0);
         }
+        
+        [Fact]
+        public void HasNoErrorWhenOptedNotToAddQualifications()
+        {
+            var vacancy = new Vacancy
+            {
+                Qualifications = null,
+                HasOptedToAddQualifications = false
+            };
 
+            var result = Validator.Validate(vacancy, VacancyRuleSet.Qualifications);
+
+            result.HasErrors.Should().BeFalse();
+            result.Errors.Should().HaveCount(0);
+        }
+        
         public static IEnumerable<object[]> NullOrZeroQualificationCollection =>
             new List<object[]>
             {
@@ -37,7 +50,8 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation.
         {
             var vacancy = new Vacancy
             {
-                Qualifications = qualifications
+                Qualifications = qualifications,
+                HasOptedToAddQualifications = true
             };
 
             var result = Validator.Validate(vacancy, VacancyRuleSet.Qualifications);
@@ -161,7 +175,8 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation.
 
             return new Vacancy
             {
-                Qualifications = new List<Qualification> { qualification }
+                Qualifications = new List<Qualification> { qualification },
+                HasOptedToAddQualifications = true
             };
         }
         

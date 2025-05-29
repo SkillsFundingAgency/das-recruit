@@ -5,7 +5,6 @@
     ViewBag.ZenDeskLabel = "recruit-additional-questions";
 }
 
-
 @section BackLink {
     <a asp-show="@(!Model.IsTaskListCompleted)" asp-route="@RouteNames.EmployerTaskListGet" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Back</a>
     <a asp-show="@Model.IsTaskListCompleted" asp-route="@RouteNames.EmployerCheckYourAnswersGet" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Back</a>
@@ -15,13 +14,10 @@
     <div class="govuk-grid-column-two-thirds">
         <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState }' />
         <partial name="@PartialNames.ReviewSummary" for="Review" />
+        <vacancy-heading vacancy-title="@Model.VacancyTitle" heading="Do you have any questions you would like to ask applicants? (optional)" />
         
-        <h1 class="govuk-heading-xl">
-            Do you have any questions you would like to ask applicants? (optional)
-        </h1>
         <p class="govuk-body">Applicants will answer these questions if they apply through <a href="@Model.FindAnApprenticeshipUrl" class="govuk-body govuk-link" rel="noopener" target="_blank">Find an apprenticeship (opens in a new tab)</a>.</p>
-        <p class="govuk-body">For example, why do you want to work for this company? What interests you about this role?</p>
-
+        <p class="govuk-body">For example, 'How will you travel to this apprenticeship?'</p>
 
         <form asp-route="@RouteNames.AdditionalQuestions_Post" asp-all-route-data="@Model.RouteDictionary">
             <div esfa-validation-marker-for="AdditionalQuestion1" class="govuk-form-group">

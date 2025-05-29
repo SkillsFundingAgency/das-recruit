@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using Esfa.Recruit.Provider.Web.Configuration.Routing;
 using Esfa.Recruit.Provider.Web.Mappings;
@@ -47,7 +48,8 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
                 TrainingTitle = training?.Title,
                 TrainingDurationMonths = training?.Duration ?? 0,
                 Ukprn = vrm.Ukprn,
-                VacancyId = vrm.VacancyId
+                VacancyId = vrm.VacancyId,
+                IsTaskListCompleted = _utility.IsTaskListCompleted(vacancy)
             };
 
             if (vacancy.Status == VacancyStatus.Referred)

@@ -7,9 +7,7 @@
 }
 
 @section BackLink {
-    <esfaFeatureEnabled name="@FeatureNames.ProviderTaskList">
-        <a asp-route="@RouteNames.ProviderTaskListGet" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Back</a>
-    </esfaFeatureEnabled>
+    <a asp-route="@Model.PageBackLink" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Back</a>
 }
 
 <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState}' />
@@ -20,15 +18,7 @@
     <fieldset class="govuk-fieldset">
         <legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
             <h1 class="govuk-fieldset__heading">
-                @if (_serviceParameters.VacancyType == VacancyType.Apprenticeship)
-                {
-                    @:What skills and personal qualities do applicants need to have?    
-                }
-                else
-                {
-                    @:What skills and personal qualities would you like applicants to have?
-                }
-                
+                What skills and personal qualities do applicants need to have?
             </h1>
         </legend>
         <p class="govuk-hint govuk-!-margin-top-5">Select all that apply or add your own</p>
@@ -74,11 +64,6 @@
 
     <div class="govuk-button-group">
         <button type="submit" esfa-automation="btn-continue" class="govuk-button save-button">Save and continue</button>
-        <esfaFeatureEnabled name="@FeatureNames.ProviderTaskList">
-            <a asp-route="@RouteNames.Dashboard_Get" asp-all-route-data="@Model.RouteDictionary" asp-fragment="reqAndProspects" esfa-automation="link-cancel" class="govuk-link govuk-link--no-visited-state">Cancel</a>
-        </esfaFeatureEnabled>
-        <esfaFeatureDisabled name="@FeatureNames.ProviderTaskList">
-            <a asp-route="@RouteNames.Vacancy_Preview_Get" asp-all-route-data="@Model.RouteDictionary" asp-fragment="reqAndProspects" esfa-automation="link-cancel" class="govuk-link govuk-link--no-visited-state">Cancel</a>    
-        </esfaFeatureDisabled>
+        <a asp-route="@RouteNames.Dashboard_Get" asp-all-route-data="@Model.RouteDictionary" asp-fragment="reqAndProspects" esfa-automation="link-cancel" class="govuk-link govuk-link--no-visited-state">Cancel</a>
     </div>
 </form>

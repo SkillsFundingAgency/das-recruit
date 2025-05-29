@@ -6,5 +6,9 @@
         {
             return value.Replace(".00", "");
         }
+        public static string AsPerYear(this string value)
+        {
+            return $"{value} a year";
+        }
     }
 }

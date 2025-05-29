@@ -5,13 +5,18 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Extensions
 {
     public static class DateTimeExtensions
     {
-        private const string DisplayDateFormat = "dd MMM yyyy";
+        private const string DisplayDateFormat = "d MMM yyyy";
         private const string TimeDisplayFormat = "h.mm";
         private const string DateTimeDisplayFormat = DisplayDateFormat + " " + TimeDisplayFormat;
 
         public static string AsGdsDate(this DateTime date)
         {
             return date.ToString(DisplayDateFormat);
+        }
+
+        public static string AsGdsDate(this DateTime? date)
+        {
+            return date?.ToString(DisplayDateFormat);
         }
 
         public static string AsGdsDateTime(this DateTime date)
@@ -34,9 +39,10 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Extensions
             return date.Year == DateTime.MinValue.Year ? "Current" : date.ToString("MMM yyyy");
         }
 
-        public static string ToMonthNameYearString(this DateTime date)
+        public static string ToMonthNameYearString(this DateTime date, bool isToDate)
         {
-            return date.Year == DateTime.MinValue.Year ? "Current" : date.ToString("MMMM yyyy");
+            var separator = isToDate ? "to " : "";
+            return date.Year == DateTime.MinValue.Year ? "Onwards" : $"{separator}{date:MMMM yyyy}";
         }
 
         public static string ToDayMonthYearString(this DateTime date)
@@ -62,6 +68,11 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Extensions
         {
             var ukTimezone = TZConvert.GetTimeZoneInfo("GMT Standard Time");
             return TimeZoneInfo.ConvertTime(datetime, ukTimezone);
+        }
+
+        public static string ToFullDateTimeString(this DateTime datetime)
+        {
+            return datetime.ToString("dddd d MMMM yyy");
         }
     }
 }

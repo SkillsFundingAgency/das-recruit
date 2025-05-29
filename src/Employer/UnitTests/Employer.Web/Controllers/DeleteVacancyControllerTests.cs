@@ -1,6 +1,4 @@
-using System;
 using System.Security.Claims;
-using System.Threading.Tasks;
 using AutoFixture.NUnit3;
 using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
@@ -10,13 +8,9 @@ using Esfa.Recruit.Employer.Web.ViewModels.DeleteVacancy;
 using Esfa.Recruit.Shared.Web.ViewModels;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
-using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using Moq;
-using NUnit.Framework;
-using SFA.DAS.Testing.AutoFixture;
 
 namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Controllers;
 
@@ -57,9 +51,9 @@ public class DeleteVacancyControllerTests
 
         var actual = await controller.Delete(model) as RedirectToRouteResult;
 
-        Assert.IsNotNull(actual);
+        Assert.That(actual, Is.Not.Null);
         actual.RouteName.Should().Be(RouteNames.Vacancies_Get);
-        Assert.IsTrue(controller.TempData.ContainsKey(TempDataKeys.DashboardInfoMessage));
-        Assert.AreEqual(string.Format(InfoMessages.AdvertDeleted, vacancy.VacancyReference, vacancy.Title), controller.TempData[TempDataKeys.DashboardInfoMessage]);
+        Assert.That(controller.TempData.ContainsKey(TempDataKeys.DashboardInfoMessage), Is.True);
+        Assert.That(string.Format(InfoMessages.AdvertDeleted, vacancy.VacancyReference, vacancy.Title), Is.EqualTo(controller.TempData[TempDataKeys.DashboardInfoMessage]));
     }
 }

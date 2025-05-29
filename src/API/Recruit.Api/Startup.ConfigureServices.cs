@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
-using Esfa.Recruit.Vacancies.Client.Application.Commands;
+using Azure.Monitor.OpenTelemetry.AspNetCore;
 using Esfa.Recruit.Vacancies.Client.Application.Configuration;
+using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Ioc;
-using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -14,6 +14,8 @@ using Microsoft.OpenApi.Models;
 using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.Api.Common.Infrastructure;
+using SFA.DAS.Encoding;
+using SFA.DAS.Recruit.Api.Commands;
 using SFA.DAS.Recruit.Api.Configuration;
 using SFA.DAS.Recruit.Api.Mappers;
 using SFA.DAS.Recruit.Api.Services;
@@ -30,19 +32,6 @@ namespace SFA.DAS.Recruit.Api
             services.Configure<RecruitConfiguration>(Configuration.GetSection("Recruit"));
             services.Configure<AzureActiveDirectoryConfiguration>(Configuration.GetSection("AzureAd"));
 
-            services.AddScoped(provider => {
-                var httpContext = provider.GetRequiredService<IHttpContextAccessor>().HttpContext;
-
-                if (httpContext.Request.RouteValues["Controller"].ToString()!.Equals("Vacancies", StringComparison.CurrentCultureIgnoreCase)
-                   && (httpContext.Request.RouteValues["Action"].ToString()!.Equals("CreateTraineeship", StringComparison.CurrentCultureIgnoreCase)
-                   || httpContext.Request.RouteValues["Action"].ToString()!.Equals("ValidateTraineeship", StringComparison.CurrentCultureIgnoreCase)))
-                {
-                    return new ServiceParameters(VacancyType.Traineeship.ToString());
-                }
-                return new ServiceParameters(VacancyType.Apprenticeship.ToString());
-            });
-
-
             var azureAdConfig = Configuration
                 .GetSection("AzureAd")
                 .Get<AzureActiveDirectoryConfiguration>();
@@ -53,10 +42,12 @@ namespace SFA.DAS.Recruit.Api
             };
             services.AddAuthentication(azureAdConfig, policies);
 
-            services.AddMediatR(typeof(Startup).Assembly, typeof(CreateApplicationReviewCommand).Assembly);
+            services.AddMediatR(configuration => configuration.RegisterServicesFromAssembly(typeof(CreateVacancyCommand).Assembly));
 
             services.AddSingleton<IVacancySummaryMapper, VacancySummaryMapper>();
             services.AddSingleton<IQueryStoreReader, QueryStoreClient>();
+            services.AddSingleton<IFeature, Feature>();
+            RegisterDasEncodingService(services, Configuration);
 
             services.AddRecruitStorageClient(Configuration);
             
@@ -66,7 +57,15 @@ namespace SFA.DAS.Recruit.Api
                     .AddMongoDb(Configuration.GetConnectionString("MongoDb"))
                     .AddApplicationInsightsPublisher();
 
-            services.AddApplicationInsightsTelemetry();
+            services.AddApplicationInsightsTelemetry(Configuration);
+            if (!string.IsNullOrEmpty(Configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"]!))
+            {
+                // This service will collect and send telemetry data to Azure Monitor.
+                services.AddOpenTelemetry().UseAzureMonitor(options =>
+                {
+                    options.ConnectionString = Configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"]!;
+                });
+            }
 
             services
                 .AddMvc(o =>
@@ -87,6 +86,14 @@ namespace SFA.DAS.Recruit.Api
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "RecruitAPI", Version = "v1" });
                 
             });
+        }
+        
+        private static void RegisterDasEncodingService(IServiceCollection services, IConfiguration configuration)
+        {
+            var dasEncodingConfig = new EncodingConfig { Encodings = [] };
+            configuration.GetSection(nameof(dasEncodingConfig.Encodings)).Bind(dasEncodingConfig.Encodings);
+            services.AddSingleton(dasEncodingConfig);
+            services.AddSingleton<IEncodingService, EncodingService>();
         }
     }
 }

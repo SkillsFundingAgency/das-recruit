@@ -19,6 +19,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Communications
         {
             public const string Vacancy = nameof(Vacancy);
             public const string ApprenticeshipServiceUrl = nameof(ApprenticeshipServiceUrl);
+            public const string ApprenticeshipServiceUnsubscribeUrl = nameof(ApprenticeshipServiceUnsubscribeUrl);
             public const string Provider = nameof(Provider);
             public const string Employer = nameof(Employer);
             public const string ApprenticeshipServiceConfig = nameof(ApprenticeshipServiceConfig);
@@ -55,6 +56,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Communications
             public static class ApprenticeshipService
             {
                 public const string ApprenticeshipServiceUrl = "apprenticeship-service-url";
+                public const string ApprenticeshipServiceUnsubscribeUrl = "apprenticeship-service-unsubscribe-url";
                 public const string HelpdeskPhoneNumber = "helpdesk-number";
             }
 

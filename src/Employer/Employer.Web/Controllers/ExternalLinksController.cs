@@ -2,19 +2,16 @@
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
 using System.Net;
 
 namespace Esfa.Recruit.Employer.Web.Controllers
 {
     public class ExternalLinksController : Controller
     {
-        private readonly AuthenticationConfiguration _authConfig;
         private readonly ManageApprenticeshipsLinkHelper _linkHelper;
 
-        public ExternalLinksController(IOptions<AuthenticationConfiguration> authConfig, ManageApprenticeshipsLinkHelper linkHelper)
+        public ExternalLinksController(ManageApprenticeshipsLinkHelper linkHelper)
         {
-            _authConfig = authConfig.Value;
             _linkHelper = linkHelper;
         }
 
@@ -22,22 +19,6 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         public IActionResult AccountHome(string employerAccountId)
         {
             var url = string.Format(_linkHelper.AccountHome, employerAccountId);
-            return Redirect(url);
-        }
-
-        [HttpGet(RoutePaths.Services + "/change-email", Name = RouteNames.Dashboard_ChangeEmail)]
-        public IActionResult ChangeEmailAddress(string returnUrl)
-        {
-            var encodedReturnUrl = WebUtility.UrlEncode($"{Request.GetRequestUrlRoot()}{returnUrl}");
-            var url = string.Format(_linkHelper.ChangeEmail, _authConfig.ClientId, encodedReturnUrl);
-            return Redirect(url);
-        }
-
-        [HttpGet(RoutePaths.Services + "/change-password", Name = RouteNames.Dashboard_ChangePassword)]
-        public IActionResult ChangePassword(string returnUrl)
-        {
-            var encodedReturnUrl = WebUtility.UrlEncode($"{Request.GetRequestUrlRoot()}{returnUrl}");            
-            var url = string.Format(_linkHelper.ChangePassword, _authConfig.ClientId, encodedReturnUrl);
             return Redirect(url);
         }
 

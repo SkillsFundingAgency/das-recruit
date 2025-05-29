@@ -76,7 +76,8 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
                     ? vacancy.IsAnonymous
                     : employerInfoModel.EmployerIdentityOption == EmployerIdentityOption.Anonymous,
                 VacancyId = vrm.VacancyId,
-                Ukprn = vrm.Ukprn
+                Ukprn = vrm.Ukprn,
+                IsTaskListCompleted = _utility.IsTaskListCompleted(vacancy)
             };
 
             var employerProfile =

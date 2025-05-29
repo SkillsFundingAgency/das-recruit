@@ -1,41 +1,38 @@
-using System;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
-using FluentAssertions;
-using Xunit;
 using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
-using System.Threading.Tasks;
 
-namespace Esfa.Recruit.UnitTests.Employer.Web.Orchestrators.CloneVacancyOrchestratorTest
+namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.CloneVacancyOrchestratorTest;
+
+public class GetCloneVacancyDatesQuestionViewModelAsyncTests : CloneVacancyOrchestratorTestBase
 {
-    public class GetCloneVacancyDatesQuestionViewModelAsyncTests : CloneVacancyOrchestratorTestBase
+    [Test]
+    public async Task WhenClosingDateIsInPast_ThenThrowInvalidStateException()
     {
-        [Fact]
-        public async Task WhenClosingDateIsInPast_ThenThrowInvalidStateException()
-        {
-            var vacancy = SourceVacancy;
-            vacancy.Status = VacancyStatus.Live;
-            vacancy.ClosingDate = DateTime.UtcNow.AddDays(-1);
+        var vacancy = SourceVacancy;
+        vacancy.Status = VacancyStatus.Live;
+        vacancy.ClosingDate = DateTime.UtcNow.AddDays(-1);
 
-            var sut = GetSut(vacancy);
+        var sut = GetSut(vacancy);
+            
+        var act = () => sut.GetCloneVacancyDatesQuestionViewModelAsync(VRM);
+            
+        await act.Should().ThrowAsync<InvalidStateException>();
+    }
 
-            await Assert.ThrowsAsync<InvalidStateException>(() => sut.GetCloneVacancyDatesQuestionViewModelAsync(VRM));
-        }
+    [Test]
+    public async Task ThenReturnsViewModelWithDates()
+    {
+        var vacancy = SourceVacancy;
+        vacancy.Status = VacancyStatus.Live;
+        var expectedStartDate = SourceStartDate.AsGdsDate();
+        var expectedClosingDate = SourceClosingDate.AsGdsDate();
 
-        [Fact]
-        public async Task ThenReturnsViewModelWithDates()
-        {
-            var vacancy = SourceVacancy;
-            vacancy.Status = VacancyStatus.Live;
-            var expectedStartDate = SourceStartDate.AsGdsDate();
-            var expectedClosingDate = SourceClosingDate.AsGdsDate();
+        var sut = GetSut(vacancy);
 
-            var sut = GetSut(vacancy);
+        var vm = await sut.GetCloneVacancyDatesQuestionViewModelAsync(VRM);
 
-            var vm = await sut.GetCloneVacancyDatesQuestionViewModelAsync(VRM);
-
-            vm.StartDate.Should().Be(expectedStartDate);
-            vm.ClosingDate.Should().Be(expectedClosingDate);
-        }
+        vm.StartDate.Should().Be(expectedStartDate);
+        vm.ClosingDate.Should().Be(expectedClosingDate);
     }
 }

@@ -78,6 +78,31 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.Communications
             pref.Frequency.Should().Be(DeliveryFrequency.Immediate);
             pref.Scope.Should().Be(Communication.Types.NotificationScope.Organisation);
         }
+        
+        [Fact]
+        public async Task WhenRequestTypeIsVacancyRejected_ForDfESignInUSer_ShouldReturnRespectivePreferences()
+        {
+            var userPref = _fixture
+                .Build<UserNotificationPreferences>()
+                .With(p => p.NotificationTypes, NotificationTypes.VacancyRejected)
+                .With(p => p.NotificationScope, Esfa.Recruit.Vacancies.Client.Domain.Entities.NotificationScope.OrganisationVacancies)
+                .Create();
+            var user = _fixture.Create<CommunicationUser>();
+            _repositoryMock
+                .Setup(u => u.GetAsync(It.IsAny<string>()))
+                .ReturnsAsync((UserNotificationPreferences)null);
+            _repositoryMock
+                .Setup(u => u.GetByDfeUserId(user.DfEUserId))
+                .ReturnsAsync(userPref);
+
+            var sut = GetSut();
+
+            var pref = await sut.GetUserPreferenceAsync(RequestType.VacancyRejected, user);
+
+            pref.Channels.Should().Be(DeliveryChannelPreferences.EmailOnly);
+            pref.Frequency.Should().Be(DeliveryFrequency.Immediate);
+            pref.Scope.Should().Be(Communication.Types.NotificationScope.Organisation);
+        }
 
         [Fact]
         public async Task WhenRequestTypeIsVacancyRejectedByEmployer_ShouldReturnRespectivePreferences()

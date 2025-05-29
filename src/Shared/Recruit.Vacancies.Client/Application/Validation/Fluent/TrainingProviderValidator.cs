@@ -1,4 +1,5 @@
-﻿using Esfa.Recruit.Vacancies.Client.Application.Providers;
+﻿
+using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomValidators.VacancyValidators;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
@@ -26,7 +27,8 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
             {
                 RuleFor(tp => tp)
                     .TrainingProviderMustExistInRoatp(trainingProviderSummaryProvider)
-                    .TrainingProviderMustNotBeBlocked(blockedOrganisationRepo);
+                    .TrainingProviderMustNotBeBlocked(blockedOrganisationRepo)
+                    .TrainingProviderMustBeMainOrEmployerProfile(trainingProviderSummaryProvider);
             });
         }
     }

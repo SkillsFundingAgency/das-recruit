@@ -5,11 +5,11 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
 {
     internal class AddressValidator : AbstractValidator<Address> 
     {
-        internal AddressValidator(long ruleId, bool isApprenticeshipVacancy)
+        internal AddressValidator(long ruleId)
         {
             RuleFor(x => x.AddressLine1)
                 .NotEmpty()
-                    .WithMessage(isApprenticeshipVacancy ? "Enter the address where the apprentice will work" : "Enter the address where the trainee will be on placement")
+                    .WithMessage("Enter the address where the apprentice will work")
                     .WithErrorCode("5")
                 .WithState(_=>ruleId)
                 .ValidFreeTextCharacters()
@@ -61,6 +61,13 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                     .WithMessage("'{PropertyName}' is not in a valid format")
                     .WithErrorCode("9")
                 .WithState(_=>ruleId);
-		}
+
+            RuleFor(x => x.Country)
+                // null here means we can't determine country from the postcode - could be new, so don't fail
+                .Must(x => x is null or "England")
+                .WithMessage("Country must be England")
+                .WithErrorCode(VacancyValidationErrorCodes.AddressCountryNotInEngland)
+                .WithState(_ => ruleId);
+        }
 	}
 }

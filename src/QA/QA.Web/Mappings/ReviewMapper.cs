@@ -77,6 +77,8 @@ namespace Esfa.Recruit.Qa.Web.Mappings
             { FieldIdResolver.ToFieldId(v => v.EmployerLocation.AddressLine3), new []{FieldIdentifiers.EmployerAddress} },
             { FieldIdResolver.ToFieldId(v => v.EmployerLocation.AddressLine4), new []{ FieldIdentifiers.EmployerAddress} },
             { FieldIdResolver.ToFieldId(v => v.EmployerLocation.Postcode), new[]{FieldIdentifiers.EmployerAddress}},
+            { FieldIdResolver.ToFieldId(v => v.EmployerLocations), new[]{FieldIdentifiers.EmployerAddress}},
+            { FieldIdResolver.ToFieldId(v => v.EmployerLocationInformation), new[]{FieldIdentifiers.EmployerAddress}},
             { FieldIdResolver.ToFieldId(v => v.EmployerContact.Name), new []{ FieldIdentifiers.EmployerContact }},
             { FieldIdResolver.ToFieldId(v => v.EmployerContact.Email), new []{FieldIdentifiers.EmployerContact} },
             { FieldIdResolver.ToFieldId(v => v.EmployerContact.Phone), new []{FieldIdentifiers.EmployerContact }},
@@ -91,116 +93,70 @@ namespace Esfa.Recruit.Qa.Web.Mappings
             { FieldIdResolver.ToFieldId(v => v.AdditionalQuestion2), new []{FieldIdentifiers.AdditionalQuestion2} }
         };
 
-        private static List<FieldIdentifierViewModel> GetFieldIndicators(VacancyType vacancyType)
+        private static List<FieldIdentifierViewModel> GetFieldIndicators()
         {
-            if (vacancyType == VacancyType.Apprenticeship)
+        
+            return new List<FieldIdentifierViewModel>
             {
-                return new List<FieldIdentifierViewModel>
+                //These need to be in display order
+                new FieldIdentifierViewModel { FieldIdentifier = FieldIdentifiers.Title, Text = "Title" },
+                new FieldIdentifierViewModel { FieldIdentifier = FieldIdentifiers.ShortDescription, Text = "Brief overview" },
+                new FieldIdentifierViewModel { FieldIdentifier = FieldIdentifiers.ClosingDate, Text = "Closing date" },
+                new FieldIdentifierViewModel { FieldIdentifier = FieldIdentifiers.WorkingWeek, Text = "Working week" },
+                new FieldIdentifierViewModel { FieldIdentifier = FieldIdentifiers.Wage, Text = "Annual wage" },
+                new FieldIdentifierViewModel { FieldIdentifier = FieldIdentifiers.CompanyBenefitsInformation, Text = "Company Benefits" },
+                new FieldIdentifierViewModel
+                    { FieldIdentifier = FieldIdentifiers.ExpectedDuration, Text = "Expected duration" },
+                new FieldIdentifierViewModel
+                    { FieldIdentifier = FieldIdentifiers.PossibleStartDate, Text = "Possible start" },
+                new FieldIdentifierViewModel
+                    { FieldIdentifier = FieldIdentifiers.TrainingLevel, Text = "Apprenticeship level" },
+                new FieldIdentifierViewModel { FieldIdentifier = FieldIdentifiers.NumberOfPositions, Text = "Positions" },
+                new FieldIdentifierViewModel
+                    { FieldIdentifier = FieldIdentifiers.VacancyDescription, Text = "What will the apprentice be doing?" },
+                new FieldIdentifierViewModel
                 {
-                    //These need to be in display order
-                    new FieldIdentifierViewModel { FieldIdentifier = FieldIdentifiers.Title, Text = "Title" },
-                    new FieldIdentifierViewModel { FieldIdentifier = FieldIdentifiers.ShortDescription, Text = "Brief overview" },
-                    new FieldIdentifierViewModel { FieldIdentifier = FieldIdentifiers.ClosingDate, Text = "Closing date" },
-                    new FieldIdentifierViewModel { FieldIdentifier = FieldIdentifiers.WorkingWeek, Text = "Working week" },
-                    new FieldIdentifierViewModel { FieldIdentifier = FieldIdentifiers.Wage, Text = "Annual wage" },
-                    new FieldIdentifierViewModel
-                        { FieldIdentifier = FieldIdentifiers.ExpectedDuration, Text = "Expected duration" },
-                    new FieldIdentifierViewModel
-                        { FieldIdentifier = FieldIdentifiers.PossibleStartDate, Text = "Possible start" },
-                    new FieldIdentifierViewModel
-                        { FieldIdentifier = FieldIdentifiers.TrainingLevel, Text = "Apprenticeship level" },
-                    new FieldIdentifierViewModel { FieldIdentifier = FieldIdentifiers.NumberOfPositions, Text = "Positions" },
-                    new FieldIdentifierViewModel
-                        { FieldIdentifier = FieldIdentifiers.VacancyDescription, Text = "What will the apprentice be doing?" },
-                    new FieldIdentifierViewModel
-                    {
-                        FieldIdentifier = FieldIdentifiers.TrainingDescription,
-                        Text = "What training will the apprentice take and what qualification will the apprentice get at the end?"
-                    },
-                    new FieldIdentifierViewModel
-                    {
-                        FieldIdentifier = FieldIdentifiers.OutcomeDescription,
-                        Text = "What is the expected career progression after this apprenticeship?"
-                    },
-                    new FieldIdentifierViewModel { FieldIdentifier = FieldIdentifiers.Skills, Text = "Skills" },
-                    new FieldIdentifierViewModel { FieldIdentifier = FieldIdentifiers.Qualifications, Text = "Qualifications" },
-                    new FieldIdentifierViewModel
-                        { FieldIdentifier = FieldIdentifiers.ThingsToConsider, Text = "Things to consider" },
-                    new FieldIdentifierViewModel
-                        { FieldIdentifier = FieldIdentifiers.EmployerDescription, Text = "Employer description" },
-                    new FieldIdentifierViewModel { FieldIdentifier = FieldIdentifiers.EmployerName, Text = "Employer name" },
-                    new FieldIdentifierViewModel
-                        { FieldIdentifier = FieldIdentifiers.DisabilityConfident, Text = "Disability confident" },
-                    new FieldIdentifierViewModel
-                        { FieldIdentifier = FieldIdentifiers.EmployerWebsiteUrl, Text = "Employer website" },
-                    new FieldIdentifierViewModel { FieldIdentifier = FieldIdentifiers.EmployerContact, Text = "Contact details" },
-                    new FieldIdentifierViewModel
-                        { FieldIdentifier = FieldIdentifiers.EmployerAddress, Text = "Employer address" },
-                    new FieldIdentifierViewModel { FieldIdentifier = FieldIdentifiers.Provider, Text = "Training provider" },
-                    new FieldIdentifierViewModel { FieldIdentifier = FieldIdentifiers.ProviderContact, Text = "Contact details" },
-                    new FieldIdentifierViewModel { FieldIdentifier = FieldIdentifiers.Training, Text = "Training" },
-                    new FieldIdentifierViewModel
-                        { FieldIdentifier = FieldIdentifiers.ApplicationMethod, Text = "Application method" },
-                    new FieldIdentifierViewModel
-                        { FieldIdentifier = FieldIdentifiers.ApplicationUrl, Text = "Apply now web address" },
-                    new FieldIdentifierViewModel
-                        { FieldIdentifier = FieldIdentifiers.ApplicationInstructions, Text = "Application process" },
-                    new FieldIdentifierViewModel
-                        { FieldIdentifier = FieldIdentifiers.AdditionalQuestion1, Text = "Additional Question 1" },
-                    new FieldIdentifierViewModel
-                        { FieldIdentifier = FieldIdentifiers.AdditionalQuestion2, Text = "Additional Question 2" }
-                };
-            }
-            else
-            {
-                return new List<FieldIdentifierViewModel>
+                    FieldIdentifier = FieldIdentifiers.TrainingDescription,
+                    Text = "What training will the apprentice take and what qualification will the apprentice get at the end?"
+                },
+                new FieldIdentifierViewModel
                 {
-                    //These need to be in display order
-                    new FieldIdentifierViewModel { FieldIdentifier = FieldIdentifiers.Title, Text = "Vacancy title" },
-                    new FieldIdentifierViewModel { FieldIdentifier = FieldIdentifiers.ShortDescription, Text = "Summary of the traineeship" },
-                    new FieldIdentifierViewModel { FieldIdentifier = FieldIdentifiers.ClosingDate, Text = "Closing date" },
-                    // summary section
-                    new FieldIdentifierViewModel
-                    {
-                        FieldIdentifier = FieldIdentifiers.TrainingDescription,
-                        Text = "Training provided"
-                    },
-                    new FieldIdentifierViewModel
-                    {
-                        FieldIdentifier = FieldIdentifiers.WorkExperience,
-                        Text = "Work experience provided"
-                    },
-                    new FieldIdentifierViewModel { FieldIdentifier = FieldIdentifiers.WorkingWeek, Text = "Working week details" },
-                    new FieldIdentifierViewModel
-                        { FieldIdentifier = FieldIdentifiers.ExpectedDuration, Text = "Duration" },
-                    new FieldIdentifierViewModel
-                        { FieldIdentifier = FieldIdentifiers.PossibleStartDate, Text = "Traineeship start date" },
-                    new FieldIdentifierViewModel { FieldIdentifier = FieldIdentifiers.NumberOfPositions, Text = "Number of positions" },
-                    // requirements and prospects section
-                    new FieldIdentifierViewModel { FieldIdentifier = FieldIdentifiers.Skills, Text = "Skills" },
-                    new FieldIdentifierViewModel
-                    {
-                        FieldIdentifier = FieldIdentifiers.OutcomeDescription,
-                        Text = "Future prospects"
-                    },
-                    new FieldIdentifierViewModel
-                        { FieldIdentifier = FieldIdentifiers.ThingsToConsider, Text = "Other things to consider" },
-                    // about the employer
-                    new FieldIdentifierViewModel
-                        { FieldIdentifier = FieldIdentifiers.EmployerDescription, Text = "Employer information" },
-                    new FieldIdentifierViewModel { FieldIdentifier = FieldIdentifiers.EmployerName, Text = "Employer name" },
-                    new FieldIdentifierViewModel
-                        { FieldIdentifier = FieldIdentifiers.DisabilityConfident, Text = "Disability Confident employer?" },
-                    new FieldIdentifierViewModel
-                        { FieldIdentifier = FieldIdentifiers.EmployerWebsiteUrl, Text = "Organisation website" },
-                    new FieldIdentifierViewModel { FieldIdentifier = FieldIdentifiers.EmployerContact, Text = "Contact details" },
-                    new FieldIdentifierViewModel
-                        { FieldIdentifier = FieldIdentifiers.EmployerAddress, Text = "Work experience address" },
-                    new FieldIdentifierViewModel { FieldIdentifier = FieldIdentifiers.Provider, Text = "Training provider" },
-                    new FieldIdentifierViewModel { FieldIdentifier = FieldIdentifiers.ProviderContact, Text = "Contact details" },
-                    new FieldIdentifierViewModel { FieldIdentifier = FieldIdentifiers.TraineeRoute, Text = "Traineeship sector" }
-                };
-            }
+                    FieldIdentifier = FieldIdentifiers.AdditionalTrainingDescription,
+                    Text = "Additional training information (optional)"
+                },
+                new FieldIdentifierViewModel
+                {
+                    FieldIdentifier = FieldIdentifiers.OutcomeDescription,
+                    Text = "What is the expected career progression after this apprenticeship?"
+                },
+                new FieldIdentifierViewModel { FieldIdentifier = FieldIdentifiers.Skills, Text = "Skills" },
+                new FieldIdentifierViewModel { FieldIdentifier = FieldIdentifiers.Qualifications, Text = "Qualifications" },
+                new FieldIdentifierViewModel
+                    { FieldIdentifier = FieldIdentifiers.ThingsToConsider, Text = "Things to consider" },
+                new FieldIdentifierViewModel
+                    { FieldIdentifier = FieldIdentifiers.EmployerDescription, Text = "Employer description" },
+                new FieldIdentifierViewModel { FieldIdentifier = FieldIdentifiers.EmployerName, Text = "Employer name" },
+                new FieldIdentifierViewModel
+                    { FieldIdentifier = FieldIdentifiers.DisabilityConfident, Text = "Disability confident" },
+                new FieldIdentifierViewModel
+                    { FieldIdentifier = FieldIdentifiers.EmployerWebsiteUrl, Text = "Employer website" },
+                new FieldIdentifierViewModel { FieldIdentifier = FieldIdentifiers.EmployerContact, Text = "Contact details" },
+                new FieldIdentifierViewModel
+                    { FieldIdentifier = FieldIdentifiers.EmployerAddress, Text = "Employer address" },
+                new FieldIdentifierViewModel { FieldIdentifier = FieldIdentifiers.Provider, Text = "Training provider" },
+                new FieldIdentifierViewModel { FieldIdentifier = FieldIdentifiers.ProviderContact, Text = "Contact details" },
+                new FieldIdentifierViewModel { FieldIdentifier = FieldIdentifiers.Training, Text = "Training" },
+                new FieldIdentifierViewModel
+                    { FieldIdentifier = FieldIdentifiers.ApplicationMethod, Text = "Application method" },
+                new FieldIdentifierViewModel
+                    { FieldIdentifier = FieldIdentifiers.ApplicationUrl, Text = "Apply now web address" },
+                new FieldIdentifierViewModel
+                    { FieldIdentifier = FieldIdentifiers.ApplicationInstructions, Text = "Application process" },
+                new FieldIdentifierViewModel
+                    { FieldIdentifier = FieldIdentifiers.AdditionalQuestion1, Text = "Additional Question 1" },
+                new FieldIdentifierViewModel
+                    { FieldIdentifier = FieldIdentifiers.AdditionalQuestion2, Text = "Additional Question 2" }
+            };
         }
 
         public async Task<ReviewViewModel> Map(VacancyReview review)
@@ -209,14 +165,8 @@ namespace Esfa.Recruit.Qa.Web.Mappings
 
             var currentVacancy = _vacancyClient.GetVacancyAsync(review.VacancyReference);
 
-            var programmeTask = vacancy.VacancyType.GetValueOrDefault() == VacancyType.Apprenticeship 
-                ? _vacancyClient.GetApprenticeshipProgrammeAsync(vacancy.ProgrammeId)
-                : Task.FromResult((IApprenticeshipProgramme)null);
+            var programmeTask = _vacancyClient.GetApprenticeshipProgrammeAsync(vacancy.ProgrammeId);
             
-            var routeTask = vacancy.VacancyType.GetValueOrDefault() == VacancyType.Traineeship 
-                ? _vacancyClient.GetRoute(vacancy.RouteId)
-                : Task.FromResult((IApprenticeshipRoute)null);
-
             var reviewHistoryTask = _vacancyClient.GetVacancyReviewHistoryAsync(review.VacancyReference);
 
             var approvedCountTask = _vacancyClient.GetApprovedCountAsync(vacancy.SubmittedByUser.UserId);
@@ -231,7 +181,6 @@ namespace Esfa.Recruit.Qa.Web.Mappings
             await Task.WhenAll(
                 currentVacancy,
                 programmeTask,
-                routeTask,
                 approvedCountTask,
                 approvedFirstTimeCountTask,
                 reviewHistoryTask,
@@ -239,7 +188,6 @@ namespace Esfa.Recruit.Qa.Web.Mappings
                 anonymousApprovedCountTask);
 
             var programme = programmeTask.Result;
-            var route = routeTask.Result;
             var currentVacancyResult = currentVacancy.Result;
             var historiesVm = GetReviewHistoriesViewModel(reviewHistoryTask.Result);
 
@@ -247,15 +195,14 @@ namespace Esfa.Recruit.Qa.Web.Mappings
             vm.Review = reviewSummaryTask.Result;
             try
             {
+                vm.ApprenticeshipType = vacancy.ApprenticeshipType ?? ApprenticeshipTypes.Standard;
                 vm.SubmittedByName = vacancy.SubmittedByUser.Name;
                 vm.SubmittedByEmail = vacancy.SubmittedByUser.Email;
                 vm.ApplicationInstructions = vacancy.ApplicationInstructions;
                 vm.ApplicationMethod = vacancy.ApplicationMethod.Value;
                 vm.ApplicationUrl = vacancy.ApplicationUrl;
                 vm.ClosingDate = vacancy.ClosingDate?.AsGdsDate();
-                vm.EducationLevelName = vacancy.VacancyType == VacancyType.Apprenticeship 
-                    ? EducationLevelNumberHelper.GetEducationLevelNameOrDefault(programme.EducationLevelNumber, programme.ApprenticeshipLevel) 
-                    : "";
+                vm.EducationLevelName =programme!=null ? EducationLevelNumberHelper.GetEducationLevelNameOrDefault(programme.EducationLevelNumber, programme.ApprenticeshipLevel) : "";
                 vm.EmployerContactName = vacancy.EmployerContact?.Name;
                 vm.EmployerContactEmail = vacancy.EmployerContact?.Email;
                 vm.EmployerContactTelephone = vacancy.EmployerContact?.Phone;
@@ -270,6 +217,9 @@ namespace Esfa.Recruit.Qa.Web.Mappings
                     vm.MapUrl = MapImageHelper.GetEmployerLocationMapUrl(vacancy, _mapService, MapImageWidth, MapImageHeight);
                     vm.EmployerAddressElements = vacancy.EmployerAddressForDisplay();
                 }
+                vm.EmployerLocationOption = vacancy.EmployerLocationOption;
+                vm.EmployerLocationInformation = vacancy.EmployerLocationInformation;
+                vm.EmployerLocations = vacancy.EmployerLocations;
                 vm.LegalEntityName = vacancy.LegalEntityName;
                 vm.AccountLegalEntityPublicHashedId = vacancy.AccountLegalEntityPublicHashedId;
                 vm.IsDisabilityConfident = vacancy.IsDisabilityConfident;
@@ -287,6 +237,7 @@ namespace Esfa.Recruit.Qa.Web.Mappings
                 vm.ThingsToConsider = vacancy.ThingsToConsider;
                 vm.Title = vacancy.Title;
                 vm.TrainingDescription = vacancy.TrainingDescription;
+                vm.AdditionalTrainingDescription = vacancy.AdditionalTrainingDescription;
                 vm.VacancyDescription = vacancy.Description;
                 vm.VacancyReferenceNumber = $"VAC{vacancy.VacancyReference}";
                 if (programme != null)
@@ -297,8 +248,6 @@ namespace Esfa.Recruit.Qa.Web.Mappings
                     vm.Level = programme.ApprenticeshipLevel;
                 }
                 
-                vm.TraineeRoute = route?.Route;
-
                 if (vacancy.Wage != null)
                 {
                     vm.ExpectedDuration = (vacancy.Wage.DurationUnit.HasValue && vacancy.Wage.Duration.HasValue)
@@ -310,9 +259,8 @@ namespace Esfa.Recruit.Qa.Web.Mappings
                         ? vacancy.Wage.ToText(vacancy.StartDate)
                         : null;
                     vm.WorkingWeekDescription = vacancy.Wage.WorkingWeekDescription;
+                    vm.CompanyBenefitsInformation = vacancy.Wage.CompanyBenefitsInformation;
                 }
-                vm.WorkExperience = vacancy.WorkExperience;
-                vm.VacancyType = vacancy.VacancyType;
                 
                 vm.SubmittedDate = vacancy.SubmittedDate.Value;
                 vm.VacancyReviewsApprovedCount = approvedCountTask.Result;
@@ -366,7 +314,7 @@ namespace Esfa.Recruit.Qa.Web.Mappings
 
         private async Task<IEnumerable<FieldIdentifierViewModel>> GetFieldIdentifiersViewModel(VacancyReview currentReview)
         {
-            var vm = GetFieldIndicators(currentReview.VacancySnapshot.VacancyType.GetValueOrDefault());
+            var vm = GetFieldIndicators();
 
             if (currentReview.SubmissionCount <= 1)
                 return vm;
@@ -396,9 +344,9 @@ namespace Esfa.Recruit.Qa.Web.Mappings
             return vm;
         }
 
-        public List<ManualQaFieldIndicator> GetManualQaFieldIndicators(ReviewEditModel m, VacancyType vacancyType)
+        public List<ManualQaFieldIndicator> GetManualQaFieldIndicators(ReviewEditModel m)
         {
-            return GetFieldIndicators(vacancyType).Select(f => new ManualQaFieldIndicator
+            return GetFieldIndicators().Select(f => new ManualQaFieldIndicator
             {
                 FieldIdentifier = f.FieldIdentifier,
                 IsChangeRequested = m.SelectedFieldIdentifiers.Contains(f.FieldIdentifier)
@@ -440,7 +388,7 @@ namespace Esfa.Recruit.Qa.Web.Mappings
                 {
                     OutcomeId = d.Id.ToString(),
                     FieldId = d.Target,
-                    Checked = true,
+                    Checked = !review.DismissedAutomatedQaOutcomeIndicators?.Contains(d.Target.ToString()) ?? true,
                     Text = _ruleTemplateRunner.ToText(ruleOutcome.RuleId, d.Data, FieldDisplayNameResolver.Resolve(d.Target))
                 }));
             }

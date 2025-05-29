@@ -8,19 +8,12 @@ using Microsoft.AspNetCore.Mvc;
 namespace Esfa.Recruit.Provider.Web.Controllers
 {
     [Route(RoutePaths.AccountRoutePath)]
-    public class DashboardController : Controller
+    public class DashboardController(DashboardOrchestrator orchestrator) : Controller
     {
-        private readonly DashboardOrchestrator _orchestrator;
-
-        public DashboardController(DashboardOrchestrator orchestrator)
-        {
-            _orchestrator = orchestrator;
-        }
-
         [HttpGet("", Name = RouteNames.Dashboard_Get)]
         public async Task<IActionResult> Dashboard()
         {
-            var vm = await _orchestrator.GetDashboardViewModelAsync(User.ToVacancyUser());
+            var vm = await orchestrator.GetDashboardViewModelAsync(User.ToVacancyUser());
             return View(vm.HasEmployerReviewPermission ? ViewNames.DashboardWithReview : ViewNames.DashboardNoReview, vm);
         }
     }

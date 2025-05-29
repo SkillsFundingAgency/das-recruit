@@ -16,7 +16,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
     public interface IQueryStoreWriter
     {
         Task UpdateEmployerDashboardAsync(string employerAccountId, IEnumerable<VacancySummary> vacancySummaries);
-        Task UpdateProviderDashboardAsync(long ukprn, IEnumerable<VacancySummary> vacancySummaries, IEnumerable<ProviderDashboardTransferredVacancy> transferredVacancies, VacancyType vacancyType);
+        Task UpdateProviderDashboardAsync(long ukprn, IEnumerable<VacancySummary> vacancySummaries, IEnumerable<ProviderDashboardTransferredVacancy> transferredVacancies);
         Task UpdateEmployerVacancyDataAsync(string employerAccountId, IEnumerable<LegalEntity> legalEntities);
         Task UpdateProviderVacancyDataAsync(long ukprn, IEnumerable<EmployerInfo> employers, bool hasAgreement);
         Task UpdateLiveVacancyAsync(LiveVacancy vacancy);
@@ -31,5 +31,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
         Task UpsertVacancyAnalyticSummaryAsync(VacancyAnalyticsSummary summary);
         Task UpdateBlockedProviders(IEnumerable<BlockedOrganisationSummary> blockedProviders);
         Task UpdateBlockedEmployers(IEnumerable<BlockedOrganisationSummary> blockedEmployers);
+        Task UpsertVacancyAnalyticSummaryV2Async(VacancyAnalyticsSummaryV2 summary);
     }
 }

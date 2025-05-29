@@ -8,7 +8,7 @@ using Esfa.Recruit.Employer.Web.ViewModels.Part1.Employer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Hosting;
 using Esfa.Recruit.Employer.Web.ViewModels;
-using Esfa.Recruit.Shared.Web.FeatureToggle;
+using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
 
 namespace Esfa.Recruit.Employer.Web.Controllers.Part1
 {
@@ -16,13 +16,11 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
     public class EmployerController : EmployerControllerBase
     {
         private readonly EmployerOrchestrator _orchestrator;
-        private readonly IFeature _feature;
 
-        public EmployerController(EmployerOrchestrator orchestrator, IWebHostEnvironment hostingEnvironment, IFeature feature)
+        public EmployerController(EmployerOrchestrator orchestrator, IWebHostEnvironment hostingEnvironment)
             : base(hostingEnvironment)
         {
             _orchestrator = orchestrator;
-            _feature = feature;
         }
 
         [HttpGet("employer", Name = RouteNames.Employer_Get)]
@@ -43,15 +41,10 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
 
             if (vm.HasOnlyOneOrganisation)
             {
-                if (_feature.IsFeatureEnabled(FeatureNames.EmployerTaskList))
-                {
-                    info = vm.VacancyEmployerInfoModel;
-                    await _orchestrator.SetAccountLegalEntityPublicId(vrm,info, User.ToVacancyUser());
-                    
-                    return  RedirectToRoute(RouteNames.Training_Get, new { Wizard = wizard, vrm.VacancyId, vrm.EmployerAccountId  });
-                }
+                info = vm.VacancyEmployerInfoModel;
+                await _orchestrator.SetAccountLegalEntityPublicId(vrm,info, User.ToVacancyUser());
                 
-                return RedirectToRoute(RouteNames.EmployerName_Get, new {Wizard = wizard, vrm.VacancyId, vrm.EmployerAccountId});
+                return  RedirectToRoute(RouteNames.Training_Get, new { Wizard = wizard, vrm.VacancyId, vrm.EmployerAccountId  });
             }
 
             vm.Pager.OtherRouteValues.Add(nameof(wizard), wizard);

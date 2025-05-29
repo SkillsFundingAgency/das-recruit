@@ -9,7 +9,6 @@ using Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview;
 using Esfa.Recruit.Shared.Web.Orchestrators;
 using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Commands;
-using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Exceptions;
@@ -35,7 +34,6 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
         private readonly ITrainingProviderAgreementService _trainingProviderAgreementService;
         private readonly IMessaging _messaging;
         private readonly IUtility _utility;
-        private readonly ServiceParameters _serviceParameters;
 
         public VacancyPreviewOrchestrator(IRecruitVacancyClient vacancyClient,
             ILogger<VacancyPreviewOrchestrator> logger,
@@ -45,8 +43,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             ILegalEntityAgreementService legalEntityAgreementService,
             ITrainingProviderAgreementService trainingProviderAgreementService,
             IMessaging messaging,
-            IUtility utility,
-            ServiceParameters serviceParameters) : base(logger)
+            IUtility utility) : base(logger)
         {
             _vacancyClient = vacancyClient;
             _vacancyDisplayMapper = vacancyDisplayMapper;
@@ -56,18 +53,12 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             _trainingProviderAgreementService = trainingProviderAgreementService;
             _messaging = messaging;
             _utility = utility;
-            _serviceParameters = serviceParameters;
         }
 
         public async Task<VacancyPreviewViewModel> GetVacancyPreviewViewModelAsync(VacancyRouteModel vrm)
         {
-            var vacancyTask = _utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.Vacancy_Preview_Get);
-            var programmesTask = _vacancyClient.GetActiveApprenticeshipProgrammesAsync();
-           
-            await Task.WhenAll(vacancyTask, programmesTask);
-
-            var vacancy = vacancyTask.Result;
-            var programme = programmesTask.Result.SingleOrDefault(p => p.Id == vacancy.ProgrammeId);
+            var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.Vacancy_Preview_Get);
+            
             var hasProviderReviewPermission = await _providerRelationshipsService.HasProviderGotEmployersPermissionAsync(vrm.Ukprn, vacancy.EmployerAccountId, vacancy.AccountLegalEntityPublicHashedId, OperationType.RecruitmentRequiresReview);
 
             var vm = new VacancyPreviewViewModel();
@@ -78,9 +69,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             vm.CanShowDraftHeader = vacancy.Status == VacancyStatus.Draft;
             vm.SoftValidationErrors = GetSoftValidationErrors(vacancy);
             vm.RequiresEmployerReview = hasProviderReviewPermission;
-
-            if (programme != null) vm.ApprenticeshipLevel = programme.ApprenticeshipLevel;
-            
+            vm.WageType = vacancy.Wage?.WageType;
             vm.Ukprn = vrm.Ukprn;
             vm.VacancyId = vrm.VacancyId;
 
@@ -133,7 +122,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
 
             if (response.HasLegalEntityAgreement && response.HasProviderAgreement)
             {
-                if (hasProviderReviewPermission && _serviceParameters.VacancyType.GetValueOrDefault() == VacancyType.Apprenticeship)
+                if (hasProviderReviewPermission)
                 {
                     var command = new ReviewVacancyCommand(vacancy.Id, user, OwnerType.Provider);
                     await _messaging.SendCommandAsync(command);
@@ -184,6 +173,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
             mappings.Add(e => e.NumberOfPositions, vm => vm.NumberOfPositions);
             mappings.Add(e => e.Description, vm => vm.VacancyDescription);
             mappings.Add(e => e.TrainingDescription, vm => vm.TrainingDescription);
+            mappings.Add(e => e.AdditionalTrainingDescription, vm => vm.AdditionalTrainingDescription);
             mappings.Add(e => e.OutcomeDescription, vm => vm.OutcomeDescription);
             mappings.Add(e => e.Skills, vm => vm.Skills);
             mappings.Add(e => e.Qualifications, vm => vm.Qualifications);

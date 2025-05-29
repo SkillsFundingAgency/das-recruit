@@ -13,5 +13,6 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.Part1.Wage
         public string FixedWageYearlyAmount { get; set; }
 
         public string WageAdditionalInformation { get; set; }
+        public string CompanyBenefitsInformation { get; set; }
     }
 }

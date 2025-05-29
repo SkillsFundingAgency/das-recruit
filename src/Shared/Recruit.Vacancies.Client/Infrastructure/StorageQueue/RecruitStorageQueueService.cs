@@ -18,17 +18,17 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.StorageQueue
             { typeof(ReportQueueMessage), QueueNames.ReportQueueName },
             { typeof(TransferVacanciesFromProviderQueueMessage), QueueNames.TransferVacanciesFromProviderQueueName },
             { typeof(TransferVacancyToLegalEntityQueueMessage), QueueNames.TransferVacanciesToLegalEntityQueueName },
-            { typeof(UpdateApprenticeshipProgrammesQueueMessage), QueueNames.UpdateApprenticeProgrammesQueueName },
             { typeof(UpdateBankHolidaysQueueMessage), QueueNames.UpdateBankHolidaysQueueName },
             { typeof(UpdateQaDashboardQueueMessage), QueueNames.UpdateQaDashboardQueueName },
             { typeof(VacancyAnalyticsQueueMessage), QueueNames.GenerateVacancyAnalyticsQueueName },
             { typeof(VacancyStatusQueueMessage), QueueNames.VacancyStatusQueueName },
             { typeof(UpdateEmployerUserAccountQueueMessage), QueueNames.UpdateEmployerUserAccountQueueName },
             { typeof(DeleteStaleQueryStoreDocumentsQueueMessage), QueueNames.DeleteStaleQueryStoreDocumentsQueueName },
-            { typeof(DataMigrationQueueMessage), QueueNames.DataMigrationQueueName },
             { typeof(CommunicationsHouseKeepingQueueMessage), QueueNames.CommunicationsHouseKeepingQueueName},
             { typeof(UpdateProvidersQueueMessage), QueueNames.UpdateProvidersQueueName},
-            { typeof(TransferVacanciesFromEmployerReviewToQAReviewQueueMessage), QueueNames.TransferVacanciesFromEmployerReviewToQAReviewQueueName }
+            { typeof(UpdateProviderInfoQueueMessage), QueueNames.UpdateProviderInfoQueueName},
+            { typeof(TransferVacanciesFromEmployerReviewToQAReviewQueueMessage), QueueNames.TransferVacanciesFromEmployerReviewToQAReviewQueueName },
+            { typeof(VacancyAnalyticsV2QueueMessage), QueueNames.GenerateV2VacancyAnalyticsQueueName }
         };
 
         protected override string ConnectionString { get; }

@@ -1,6 +1,4 @@
 using System;
-using System.Text.RegularExpressions;
-using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Application.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent.CustomValidators.VacancyValidators;
@@ -22,7 +20,6 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
         private readonly IBlockedOrganisationQuery _blockedOrganisationRepo;
         private readonly IProfanityListProvider _profanityListProvider;
         private readonly IProviderRelationshipsService _providerRelationshipService;
-        private readonly ServiceParameters _serviceParameters;
 
         public FluentVacancyValidator(
             ITimeProvider timeProvider,
@@ -33,8 +30,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
             ITrainingProviderSummaryProvider trainingProviderSummaryProvider,
             IBlockedOrganisationQuery blockedOrganisationRepo,
             IProfanityListProvider profanityListProvider,
-            IProviderRelationshipsService providerRelationshipService,
-            ServiceParameters serviceParameters)
+            IProviderRelationshipsService providerRelationshipService)
         {
             _timeProvider = timeProvider;
             _minimumWageService = minimumWageService;
@@ -45,28 +41,16 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
             _blockedOrganisationRepo = blockedOrganisationRepo;
             _profanityListProvider = profanityListProvider;
             _providerRelationshipService = providerRelationshipService;
-            _serviceParameters = serviceParameters;
 
             SingleFieldValidations();
-
             CrossFieldValidations();
-        }
-
-        private bool IsApprenticeshipVacancy
-        {
-            get
-            {
-                return _serviceParameters.VacancyType == VacancyType.Apprenticeship;
-            }
         }
 
         private string VacancyContext
         {
             get
             {
-                return IsApprenticeshipVacancy
-                    ? "apprenticeship"
-                    : "traineeship";
+                return "apprenticeship";
             }
         }
 
@@ -74,62 +58,28 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
         {
             get
             {
-                return IsApprenticeshipVacancy 
-                    ? "apprentice" 
-                    : "trainee";
+                return "apprentice";
             }
         }
 
         private void SingleFieldValidations()
         {
-            if (IsApprenticeshipVacancy)
-            {
-                ValidateApprenticeshipTitle();
-                ValidateApprenticeshipDuration();
-            }
-            else
-            {
-                ValidateTraineeshipTitle();
-                ValidateTraineeshipDuration();
-            }
-            
+            ValidateApprenticeshipTitle();
+            ValidateApprenticeshipDuration();
             ValidateOrganisation();
             ValidateNumberOfPositions();
             ValidateShortDescription();
             ValidateClosingDate();
             ValidateStartDate();
-            
-
-            if (IsApprenticeshipVacancy)
-            {
-                ValidateTrainingProgramme();
-            }
-            else
-            {
-                ValidateRoute();
-            }
-
-            if (IsApprenticeshipVacancy)
-            {
-                ValidateWorkingWeek();
-                ValidateWeeklyHours();
-                ValidateWage();
-            }
-            else
-            {
-                ValidateTraineeshipWorkingWeek();
-            }
-
+            ValidateTrainingProgramme();
+            ValidateWorkingWeek();
+            ValidateWeeklyHours();
+            ValidateWage();
             ValidateSkills();
-
-            if (IsApprenticeshipVacancy)
-            {
-                ValidateQualifications();
-                ValidateDescription();
-                ValidateAdditionalQuestions();
-            }
-
-            ValidateTrainingDescription();
+            ValidateQualifications();
+            ValidateDescription();
+            ValidateAdditionalQuestions();
+            ValidateHowTheApprenticeWillTrain();
             ValidateOutcomeDescription();
             ValidateApplicationMethod();
             ValidateEmployerContactDetails();
@@ -137,13 +87,8 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
             ValidateThingsToConsider();
             ValidateEmployerInformation();
             ValidateTrainingProvider();
-
-            if (!IsApprenticeshipVacancy)
-            {
-                ValidateWorkExperience();
-            }
         }
-        
+
         private void CrossFieldValidations()
         {
             ValidateStartDateClosingDate();
@@ -154,55 +99,27 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
         private void ValidateApprenticeshipTitle()
         {
             RuleFor(x => x.Title)
-                
                 .Cascade(CascadeMode.Stop)
-                
                    .NotEmpty()
                        .WithMessage("Enter a title for this apprenticeship")
                        .WithErrorCode("1")
-                       .WithState( _ => VacancyRuleSet.Title)    
+                       .WithState(_ => VacancyRuleSet.Title)
                    .MaximumLength(100)
                        .WithMessage("Title must not exceed {MaxLength} characters")
                        .WithErrorCode("2")
-                       .WithState( _ => VacancyRuleSet.Title)
+                       .WithState(_ => VacancyRuleSet.Title)
                    .ValidFreeTextCharacters()
                        .WithMessage("Title contains some invalid characters")
                        .WithErrorCode("3")
-                       .WithState( _ => VacancyRuleSet.Title)
+                       .WithState(_ => VacancyRuleSet.Title)
                    .Matches(ValidationConstants.ContainsApprenticeOrApprenticeshipRegex)
                        .WithMessage("Enter a title which includes the word 'apprentice' or 'apprenticeship'")
                        .WithErrorCode("200")
-                       .WithState( _ => VacancyRuleSet.Title)
+                       .WithState(_ => VacancyRuleSet.Title)
                 .ProfanityCheck(_profanityListProvider)
                 .WithMessage("Title must not contain a banned word or phrase.")
                 .WithErrorCode("601")
-                .WithState( _ => VacancyRuleSet.Title)
-                .RunCondition(VacancyRuleSet.Title);
-        }
-        private void ValidateTraineeshipTitle()
-        {
-            RuleFor(x => x.Title)
-                .Cascade(CascadeMode.Stop)
-                .NotEmpty()
-                .WithMessage("Enter a title for this traineeship")
-                .WithErrorCode("1")
-                .WithState( _ => VacancyRuleSet.Title)
-                .MaximumLength(100)
-                .WithMessage("Title must not exceed {MaxLength} characters")
-                .WithErrorCode("2")
-                .WithState( _ => VacancyRuleSet.Title)
-                .ValidFreeTextCharacters()
-                .WithMessage("Title contains some invalid characters")
-                .WithErrorCode("3")
-                .WithState( _ => VacancyRuleSet.Title)
-                .Matches(ValidationConstants.ContainsTraineeOrTraineeshipRegex)
-                .WithMessage("Enter a title which includes the word 'trainee' or 'traineeship'")
-                .WithErrorCode("200")
-                .WithState( _ => VacancyRuleSet.Title)
-                .ProfanityCheck(_profanityListProvider)
-                .WithMessage("Title must not contain a banned word or phrase.")
-                .WithErrorCode("601")
-                .WithState( _ => VacancyRuleSet.Title)
+                .WithState(_ => VacancyRuleSet.Title)
                 .RunCondition(VacancyRuleSet.Title);
         }
 
@@ -212,14 +129,14 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                 .NotEmpty()
                     .WithMessage((vacancy, value) => $"Select the employer name you want on your {(vacancy.OwnerType == OwnerType.Employer ? "advert" : "vacancy")}")
                     .WithErrorCode("4")
-                    .WithState( _ => VacancyRuleSet.EmployerName)
+                    .WithState(_ => VacancyRuleSet.EmployerName)
                 .RunCondition(VacancyRuleSet.EmployerName);
 
             RuleFor(x => x.LegalEntityName)
                 .NotEmpty()
                 .WithMessage("You must select one organisation")
                 .WithErrorCode("400")
-                .WithState( _ => VacancyRuleSet.LegalEntityName)
+                .WithState(_ => VacancyRuleSet.LegalEntityName)
                 .RunCondition(VacancyRuleSet.LegalEntityName);
 
             When(v => v.EmployerNameOption == EmployerNameOption.TradingName, () =>
@@ -227,21 +144,20 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                     .NotEmpty()
                         .WithMessage("Enter the trading name")
                         .WithErrorCode("401")
-                        .WithState( _ => VacancyRuleSet.TradingName)
+                        .WithState(_ => VacancyRuleSet.TradingName)
                     .MaximumLength(100)
                         .WithMessage("The trading name must not exceed {MaxLength} characters")
                         .WithErrorCode("402")
-                        .WithState(_=>VacancyRuleSet.TradingName)
+                        .WithState(_ => VacancyRuleSet.TradingName)
                     .ValidFreeTextCharacters()
                         .WithMessage("The trading name contains some invalid characters")
                         .WithErrorCode("403")
-                        .WithState(_=>VacancyRuleSet.TradingName)
+                        .WithState(_ => VacancyRuleSet.TradingName)
                     .ProfanityCheck(_profanityListProvider)
                     .WithMessage("Trading name must not contain a banned word or phrase.")
                     .WithErrorCode("602")
-                    .WithState(_=>VacancyRuleSet.TradingName)
+                    .WithState(_ => VacancyRuleSet.TradingName)
                     .RunCondition(VacancyRuleSet.TradingName)
-                    
             );
 
             When(v => v.EmployerNameOption == EmployerNameOption.Anonymous, () =>
@@ -249,19 +165,19 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                     .NotEmpty()
                     .WithMessage("Enter a brief description of what the employer does")
                     .WithErrorCode("405")
-                    .WithState(_=>VacancyRuleSet.EmployerNameOption)
+                    .WithState(_ => VacancyRuleSet.EmployerNameOption)
                     .MaximumLength(100)
                     .WithMessage("The description must not be more than {MaxLength} characters")
                     .WithErrorCode("406")
-                    .WithState(_=>VacancyRuleSet.EmployerNameOption)
+                    .WithState(_ => VacancyRuleSet.EmployerNameOption)
                     .ValidFreeTextCharacters()
                     .WithMessage("The description contains some invalid characters")
                     .WithErrorCode("407")
-                    .WithState(_=>VacancyRuleSet.EmployerNameOption)
+                    .WithState(_ => VacancyRuleSet.EmployerNameOption)
                     .ProfanityCheck(_profanityListProvider)
                     .WithMessage("Description must not contain a banned word or phrase.")
                     .WithErrorCode("603")
-                    .WithState(_=>VacancyRuleSet.EmployerNameOption)
+                    .WithState(_ => VacancyRuleSet.EmployerNameOption)
                     .RunCondition(VacancyRuleSet.EmployerNameOption)
             );
 
@@ -270,37 +186,82 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                     .NotEmpty()
                     .WithMessage((vacancy, value) => $"Enter why you want your {(vacancy.OwnerType == OwnerType.Employer ? "advert" : "vacancy")} to be anonymous")
                     .WithErrorCode("408")
-                    .WithState(_=>VacancyRuleSet.EmployerNameOption)
+                    .WithState(_ => VacancyRuleSet.EmployerNameOption)
                     .MaximumLength(200)
                     .WithMessage("The reason must not be more than {MaxLength} characters")
                     .WithErrorCode("409")
-                    .WithState(_=>VacancyRuleSet.EmployerNameOption)
+                    .WithState(_ => VacancyRuleSet.EmployerNameOption)
                     .ValidFreeTextCharacters()
                     .WithMessage("The reason contains some invalid characters")
                     .WithErrorCode("410")
-                    .WithState(_=>VacancyRuleSet.EmployerNameOption)
+                    .WithState(_ => VacancyRuleSet.EmployerNameOption)
                     .ProfanityCheck(_profanityListProvider)
                     .WithMessage("Reason must not contain a banned word or phrase.")
                     .WithErrorCode("604")
-                    .WithState(_=>VacancyRuleSet.EmployerNameOption)
+                    .WithState(_ => VacancyRuleSet.EmployerNameOption)
                     .RunCondition(VacancyRuleSet.EmployerNameOption)
-                    
+
             );
 
             RuleFor(x => x.EmployerNameOption)
                 .NotEmpty()
                     .WithMessage((vacancy, value) => $"Select the employer name you want on your {(vacancy.OwnerType == OwnerType.Employer ? "advert" : "vacancy")}")
                     .WithErrorCode("404")
-                .WithState(_=>VacancyRuleSet.EmployerNameOption)
+                .WithState(_ => VacancyRuleSet.EmployerNameOption)
                 .RunCondition(VacancyRuleSet.EmployerNameOption);
 
-            RuleFor(x => x.EmployerLocation)
-                .NotNull()
+            When(v => v.EmployerLocationOption is null, () =>
+            {
+                RuleFor(x => x.EmployerLocation)
+                    .NotNull()
                     .WithMessage("You must provide an employer location")
                     .WithErrorCode("98")
-                    .WithState(_=>VacancyRuleSet.EmployerAddress)
-                .SetValidator(new AddressValidator((long)VacancyRuleSet.EmployerAddress, IsApprenticeshipVacancy))
-                .RunCondition(VacancyRuleSet.EmployerAddress);
+                    .WithState(_ => VacancyRuleSet.EmployerAddress)
+                    .SetValidator(new AddressValidator((long)VacancyRuleSet.EmployerAddress))
+                    .RunCondition(VacancyRuleSet.EmployerAddress);
+            });
+
+            When(v => v.EmployerLocationOption == AvailableWhere.OneLocation, () =>
+            {
+                RuleFor(x => x.EmployerLocations)
+                    .Must(x => x is { Count: 1 })
+                    .WithMessage("Select a location")
+                    .WithState(_ => VacancyRuleSet.EmployerAddress)
+                    .RunCondition(VacancyRuleSet.EmployerAddress);
+                
+                RuleForEach(x => x.EmployerLocations)
+                    .SetValidator(new AddressValidator((long)VacancyRuleSet.EmployerAddress))
+                    .RunCondition(VacancyRuleSet.EmployerAddress);
+            });
+            
+            When(v => v.EmployerLocationOption == AvailableWhere.MultipleLocations, () =>
+            {
+                RuleFor(x => x.EmployerLocations)
+                    .NotNull()
+                    .Must(x => x.Count is >=2 and <=10)
+                    .WithMessage("Select between 2 and 10 locations")
+                    .WithState(_ => VacancyRuleSet.EmployerAddress)
+                    .RunCondition(VacancyRuleSet.EmployerAddress);
+                
+                RuleForEach(x => x.EmployerLocations)
+                    .SetValidator(new AddressValidator((long)VacancyRuleSet.EmployerAddress))
+                    .RunCondition(VacancyRuleSet.EmployerAddress);
+            });
+
+            When(v => v.EmployerLocationOption == AvailableWhere.AcrossEngland, () =>
+            {
+                RuleFor(x => x.EmployerLocationInformation)
+                    .NotNull()
+                    .WithMessage("Add more information about where the apprentice will work")
+                    .WithState(_ => VacancyRuleSet.EmployerAddress)
+                    .MaximumLength(500)
+                    .WithMessage("Information about where the apprentice will work must be 500 characters or less")
+                    .WithState(_ => VacancyRuleSet.EmployerAddress)
+                    .ProfanityCheck(_profanityListProvider)
+                    .WithMessage($"Additional information must not contain a banned word or phrase")
+                    .WithState(_ => VacancyRuleSet.EmployerAddress)
+                    .RunCondition(VacancyRuleSet.EmployerAddress);
+            });
         }
 
         private void ValidateNumberOfPositions()
@@ -309,7 +270,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                 .Must(x => x.HasValue && x.Value > 0)
                     .WithMessage($"Enter the number of positions for this {VacancyContext}")
                     .WithErrorCode("10")
-                    .WithState(_=>VacancyRuleSet.NumberOfPositions)
+                    .WithState(_ => VacancyRuleSet.NumberOfPositions)
                 .RunCondition(VacancyRuleSet.NumberOfPositions);
         }
 
@@ -320,26 +281,25 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                 .NotEmpty()
                 .WithMessage($"Enter a short description of the {VacancyContext}")
                     .WithErrorCode("12")
-                .WithState(_=>VacancyRuleSet.ShortDescription)
+                .WithState(_ => VacancyRuleSet.ShortDescription)
                 .MaximumLength(350)
                     .WithMessage($"Summary of the {VacancyContext} must not exceed {{MaxLength}} characters")
                     .WithErrorCode("13")
-                .WithState(_=>VacancyRuleSet.ShortDescription)
+                .WithState(_ => VacancyRuleSet.ShortDescription)
                 .MinimumLength(50)
                     .WithMessage($"Summary of the {VacancyContext} must be at least {{MinLength}} characters")
                     .WithErrorCode("14")
-                .WithState(_=>VacancyRuleSet.ShortDescription)
+                .WithState(_ => VacancyRuleSet.ShortDescription)
                 .ValidFreeTextCharacters()
                     .WithMessage($"Short description of the {VacancyContext} contains some invalid characters")
                     .WithErrorCode("15")
-                .WithState(_=>VacancyRuleSet.ShortDescription)
+                .WithState(_ => VacancyRuleSet.ShortDescription)
                 .ProfanityCheck(_profanityListProvider)
                 .WithMessage($"Short description of the {VacancyContext} must not contain a banned word or phrase.")
                 .WithErrorCode("605")
-                .WithState(_=>VacancyRuleSet.ShortDescription)
+                .WithState(_ => VacancyRuleSet.ShortDescription)
                 .RunCondition(VacancyRuleSet.ShortDescription);
         }
-
 
         private void ValidateClosingDate()
         {
@@ -347,11 +307,11 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                 .NotNull()
                     .WithMessage("Enter an application closing date")
                     .WithErrorCode("16")
-                .WithState(_=>VacancyRuleSet.ClosingDate)
+                .WithState(_ => VacancyRuleSet.ClosingDate)
                 .GreaterThan(v => _timeProvider.Now.Date.AddDays(14).AddTicks(-1))
                     .WithMessage("Closing date should be at least 14 days in the future.")
                     .WithErrorCode("18")
-                .WithState(_=>VacancyRuleSet.ClosingDate)
+                .WithState(_ => VacancyRuleSet.ClosingDate)
                 .RunCondition(VacancyRuleSet.ClosingDate);
         }
 
@@ -361,32 +321,22 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                 .NotNull()
                 .WithMessage($"Enter when you expect the {ApplicantContext} to start")
                     .WithErrorCode("20")
-                    .WithState(_=>VacancyRuleSet.StartDate)
+                    .WithState(_ => VacancyRuleSet.StartDate)
                 .GreaterThan(v => v.ClosingDate)
                 .WithMessage("Start date cannot be before the closing date. We advise using a date more than 14 days from now.")
                     .WithErrorCode("22")
-                    .WithState(_=>VacancyRuleSet.StartDate)
+                    .WithState(_ => VacancyRuleSet.StartDate)
                 .RunCondition(VacancyRuleSet.StartDate);
         }
-        
+
         private void ValidateTrainingProgramme()
         {
             RuleFor(x => x.ProgrammeId)
                 .NotEmpty()
                     .WithMessage($"You must select {VacancyContext} training")
                     .WithErrorCode("25")
-                    .WithState(_=>VacancyRuleSet.TrainingProgramme)
+                    .WithState(_ => VacancyRuleSet.TrainingProgramme)
                 .RunCondition(VacancyRuleSet.TrainingProgramme);
-        }
-
-        private void ValidateRoute()
-        {
-            RuleFor(x => x.RouteId)
-                .NotEmpty()
-                .WithMessage($"You must select trainee sector")
-                .WithErrorCode("25")
-                .WithState(_ => VacancyRuleSet.RouteId)
-                .RunCondition(VacancyRuleSet.RouteId);
         }
 
         private void ValidateApprenticeshipDuration()
@@ -404,122 +354,73 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                     .WithState(_ => VacancyRuleSet.Duration)
                     .RunCondition(VacancyRuleSet.Duration);
 
-                RuleFor(x => x.Wage.Duration)
-                    .Cascade(CascadeMode.Stop)
-                    .NotEmpty()
-                    .WithMessage($"Enter how long the whole {VacancyContext} is, including work and training")
-                    .WithErrorCode("34")
-                    .WithState(_ => VacancyRuleSet.Duration)
-                    .GreaterThan(0)
-                    .WithMessage($"Enter how long the whole {VacancyContext} is, including work and training")
-                    .WithErrorCode("34")
-                    .WithState(_ => VacancyRuleSet.Duration)
-                    .Must((vacancy, value) =>
-                    {
-                        if (vacancy.Wage.DurationUnit == DurationUnit.Month && value < 12)
-                        {
-                            return false;
-                        }
-
-                        return true;
-                    })
-                    .WithMessage("Expected duration must be at least 12 months")
-                    .WithErrorCode("36")
-                    .WithState(_ => VacancyRuleSet.Duration)
-                    .Must((vacancy, value) =>
-                    {
-                        if (( vacancy.Wage.DurationUnit == DurationUnit.Month && value >= 12 
-                             || vacancy.Wage.DurationUnit == DurationUnit.Year && value >= 1)
-                            && vacancy.Wage.WeeklyHours.HasValue
-                            && vacancy.Wage.WeeklyHours < 30m)
-                        {
-
-                            var numberOfMonths = (int) Math.Ceiling(30 / vacancy.Wage.WeeklyHours.GetValueOrDefault() * 12);
-
-                            if (vacancy.Wage.DurationUnit == DurationUnit.Year)
-                            {
-                                value *= 12;
-                            }
-                            
-                            if (numberOfMonths > value)
-                            {
-                                return false;    
-                            }
-                        }
-
-                        return true;
-                    })
-                    .WithMessage((vacancy, value) =>
-                    {
-                        int numberOfMonths = (int)Math.Ceiling(30 / vacancy.Wage.WeeklyHours.GetValueOrDefault() * 12);
-                        return $"Duration of apprenticeship must be {numberOfMonths} months based on the number of hours per week entered";
-                    })
-                    .WithErrorCode("36")
-                    .WithState(_ => VacancyRuleSet.Duration)
-                    .RunCondition(VacancyRuleSet.Duration);
+                When(x => x.StartDate >= new DateTime(2025, 8, 1), () =>
+                {
+                    VacancyDurationCondition(8);
+                }).Otherwise(() =>
+                {
+                    VacancyDurationCondition(12);
+                });
             });
         }
 
-        private void ValidateTraineeshipDuration()
+        private void VacancyDurationCondition(int minimumVacancyDurationInMonths)
         {
-            When(x => x.Wage != null, () =>
-            {
-                RuleFor(x => x.Wage.DurationUnit)
-                    .NotEmpty()
-                    .WithMessage($"Enter {VacancyContext} duration")
-                    .WithErrorCode("34")
-                    .WithState(_ => VacancyRuleSet.Duration)
-                    .IsInEnum()
-                    .WithMessage($"Enter {VacancyContext} duration")
-                    .WithErrorCode("34")
-                    .WithState(_ => VacancyRuleSet.Duration)
-                    .RunCondition(VacancyRuleSet.Duration);
-
-                RuleFor(x => x.Wage.Duration)
-                    .Cascade(CascadeMode.Stop)
-                    .NotEmpty()
-                    .WithMessage($"Enter {VacancyContext} duration")
-                    .WithErrorCode("34")
-                    .WithState(_ => VacancyRuleSet.Duration)
-                    .GreaterThan(0)
-                    .WithMessage($"Enter {VacancyContext} duration")
-                    .WithErrorCode("34")
-                    .WithState(_ => VacancyRuleSet.Duration)
-                    .Must((vacancy, value) =>
+            RuleFor(x => x.Wage.Duration)
+                .Cascade(CascadeMode.Stop)
+                .NotEmpty()
+                .WithMessage($"Enter how long the whole {VacancyContext} is, including work and training")
+                .WithErrorCode("34")
+                .WithState(_ => VacancyRuleSet.Duration)
+                .GreaterThan(0)
+                .WithMessage($"Enter how long the whole {VacancyContext} is, including work and training")
+                .WithErrorCode("34")
+                .WithState(_ => VacancyRuleSet.Duration)
+                .Must((vacancy, value) =>
+                {
+                    if (vacancy.Wage.DurationUnit == DurationUnit.Month && value < minimumVacancyDurationInMonths)
                     {
-                        if (vacancy.Wage.DurationUnit == DurationUnit.Week && value < 6)
-                        {
-                            return false;
-                        }
+                        return false;
+                    }
 
-                        if (vacancy.Wage.DurationUnit == DurationUnit.Month && value <= 1)
-                        {
-                            return false;
-                        }
-                        return true;
-                    })
-                    .WithMessage("Expected duration must be at least 6 weeks")
-                    .WithErrorCode("36")
-                    .WithState(_ => VacancyRuleSet.Duration)
-                    .Must((vacancy, value) =>
+                    return true;
+                })
+                .WithMessage($"Expected duration must be at least {minimumVacancyDurationInMonths} months")
+                .WithErrorCode("36")
+                .WithState(_ => VacancyRuleSet.Duration)
+                .Must((vacancy, value) =>
+                {
+                    if ((vacancy.Wage.DurationUnit == DurationUnit.Month && value >= minimumVacancyDurationInMonths
+                         || vacancy.Wage.DurationUnit == DurationUnit.Year && value >= 1)
+                        && vacancy.Wage.WeeklyHours.HasValue
+                        && vacancy.Wage.WeeklyHours < 30m)
                     {
-                        if (vacancy.Wage.DurationUnit == DurationUnit.Month && value > 12)
+
+                        var numberOfMonths = (int)Math.Ceiling(30 / vacancy.Wage.WeeklyHours.GetValueOrDefault() * minimumVacancyDurationInMonths);
+
+                        if (vacancy.Wage.DurationUnit == DurationUnit.Year)
                         {
-                            return false;
-                        }
-                        if (vacancy.Wage.DurationUnit == DurationUnit.Week && value > 52)
-                        {
-                            return false;
+                            value *= minimumVacancyDurationInMonths;
                         }
 
-                        return true;
-                    })
-                    .WithMessage("Expected duration must be 12 months or under")
-                    .WithErrorCode("36")
-                    .WithState(_ => VacancyRuleSet.Duration)
-                    .RunCondition(VacancyRuleSet.Duration);
-            });
+                        if (numberOfMonths > value)
+                        {
+                            return false;
+                        }
+                    }
+
+                    return true;
+                })
+                .WithMessage((vacancy, value) =>
+                {
+                    int numberOfMonths = (int)Math.Ceiling(30 / vacancy.Wage.WeeklyHours.GetValueOrDefault() * minimumVacancyDurationInMonths);
+                    return $"Duration of apprenticeship must be {numberOfMonths} months based on the number of hours per week entered";
+                })
+                .WithErrorCode("36")
+                .WithState(_ => VacancyRuleSet.Duration)
+                .RunCondition(VacancyRuleSet.Duration);
         }
+
         private void ValidateWorkingWeek()
         {
             When(x => x.Wage != null, () =>
@@ -540,32 +441,6 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                     .WithState(_ => VacancyRuleSet.WorkingWeekDescription)
                     .ProfanityCheck(_profanityListProvider)
                     .WithMessage("Working week details must not contain a banned word or phrase.")
-                    .WithErrorCode("606")
-                    .WithState(_ => VacancyRuleSet.WorkingWeekDescription)
-                    .RunCondition(VacancyRuleSet.WorkingWeekDescription);
-            });
-        }
-
-        private void ValidateTraineeshipWorkingWeek()
-        {
-            When(x => x.Wage != null, () =>
-            {
-                RuleFor(x => x.Wage.WorkingWeekDescription)
-                    .Cascade(CascadeMode.Stop)
-                    .NotEmpty()
-                        .WithMessage("Enter weekly hours on the traineeship")
-                        .WithErrorCode("37")
-                    .WithState(_ => VacancyRuleSet.WorkingWeekDescription)
-                    .ValidFreeTextCharacters()
-                        .WithMessage("Weekly hours on the traineeship contain some invalid characters")
-                        .WithErrorCode("38")
-                    .WithState(_ => VacancyRuleSet.WorkingWeekDescription)
-                    .MaximumLength(250)
-                        .WithMessage("Weekly hours on the traineeship must not exceed {MaxLength} characters")
-                        .WithErrorCode("39")
-                    .WithState(_ => VacancyRuleSet.WorkingWeekDescription)
-                    .ProfanityCheck(_profanityListProvider)
-                    .WithMessage("Weekly hours on the traineeship must not contain a banned word or phrase")
                     .WithErrorCode("606")
                     .WithState(_ => VacancyRuleSet.WorkingWeekDescription)
                     .RunCondition(VacancyRuleSet.WorkingWeekDescription);
@@ -617,55 +492,80 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
 
                 RuleFor(x => x.Wage.WageAdditionalInformation)
                     .MaximumLength(250)
-                        .WithMessage("Extra information about pay must not exceed {MaxLength} characters")
+                        .WithMessage("Information about pay must be {MaxLength} characters or less")
                         .WithErrorCode("44")
                     .WithState(_ => VacancyRuleSet.Wage)
                     .ValidFreeTextCharacters()
-                        .WithMessage("Additional pay information contains some invalid characters")
+                        .WithMessage("Information about pay contains some invalid characters")
                         .WithErrorCode("45")
                     .WithState(_ => VacancyRuleSet.Wage)
                     .ProfanityCheck(_profanityListProvider)
-                    .WithMessage("Additional pay information must not contain a banned word or phrase.")
+                    .WithMessage("Information about pay must not contain a banned word or phrase")
                     .WithErrorCode("607")
                     .WithState(_ => VacancyRuleSet.Wage)
                     .RunCondition(VacancyRuleSet.Wage);
+               
+                RuleFor(x => x.Wage.CompanyBenefitsInformation)
+                    .MaximumLength(250)
+                    .WithMessage("Company benefits must be {MaxLength} characters or less")
+                    .WithErrorCode("44")
+                    .WithState(_ => VacancyRuleSet.Wage)
+                    .ValidFreeTextCharacters()
+                    .WithMessage("Company benefits contains some invalid characters")
+                    .WithErrorCode("45")
+                    .WithState(_ => VacancyRuleSet.Wage)
+                    .ProfanityCheck(_profanityListProvider)
+                    .WithMessage("Company benefits must not contain a banned word or phrase")
+                    .WithErrorCode("607")
+                    .WithState(_ => VacancyRuleSet.Wage)
+                    .RunCondition(VacancyRuleSet.Wage);
+                
             });
         }
 
         private void ValidateSkills()
         {
-            RuleFor(x => x.Skills)
-                .Must(s => s != null && s.Count > 0)
+            When(x => x.ApprenticeshipType is ApprenticeshipTypes.Standard or null, () =>
+            {
+                RuleFor(x => x.Skills)
+                    .Must(s => s is { Count: > 0 })
                     .WithMessage("Select the skills and personal qualities you'd like the applicant to have")
                     .WithErrorCode("51")
-                .WithState(_ => VacancyRuleSet.Skills)
-                .RunCondition(VacancyRuleSet.Skills);
+                    .WithState(_ => VacancyRuleSet.Skills)
+                    .RunCondition(VacancyRuleSet.Skills);
 
-            RuleForEach(x => x.Skills)
-                .NotEmpty()
+                RuleForEach(x => x.Skills)
+                    .NotEmpty()
                     .WithMessage("You must include a skill or quality")
                     .WithErrorCode("99")
-                .WithState(_ => VacancyRuleSet.Skills)
-                .ValidFreeTextCharacters()
+                    .WithState(_ => VacancyRuleSet.Skills)
+                    .ValidFreeTextCharacters()
                     .WithMessage("Skill contains some invalid characters")
                     .WithErrorCode("6")
-                .WithState(_ => VacancyRuleSet.Skills)
-                .MaximumLength(30)
+                    .WithState(_ => VacancyRuleSet.Skills)
+                    .MaximumLength(30)
                     .WithMessage("Skill or quality must not exceed {MaxLength} characters")
                     .WithErrorCode("7")
-                .WithState(_ => VacancyRuleSet.Skills)
-                .ProfanityCheck(_profanityListProvider)
-                .WithMessage("Skill or quality must not contain a banned word or phrase.")
-                .WithErrorCode("608")
-                .WithState(_ => VacancyRuleSet.Skills);
+                    .WithState(_ => VacancyRuleSet.Skills)
+                    .ProfanityCheck(_profanityListProvider)
+                    .WithMessage("Skill or quality must not contain a banned word or phrase.")
+                    .WithErrorCode("608")
+                    .WithState(_ => VacancyRuleSet.Skills);
+            });
         }
 
         private void ValidateQualifications()
         {
+            When(x => x.ApprenticeshipType is ApprenticeshipTypes.Standard or null
+                      && x.HasOptedToAddQualifications is true, ValidateListOfQualifications);
+        }
+
+        private void ValidateListOfQualifications()
+        {
             RuleFor(x => x.Qualifications)
-                .Must(q => q != null && q.Count > 0)
-                    .WithMessage("You must add a qualification")
-                    .WithErrorCode("52")
+                .Must(q => q is { Count: > 0 })
+                .WithMessage("You must add a qualification")
+                .WithErrorCode("52")
                 .WithState(_ => VacancyRuleSet.Qualifications)
                 .RunCondition(VacancyRuleSet.Qualifications);
             RuleForEach(x => x.Qualifications)
@@ -678,21 +578,23 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
 
         private void ValidateDescription()
         {
+            const string messageText = "will do at work";
+
             RuleFor(x => x.Description)
                 .NotEmpty()
-                    .WithMessage($"Enter what the {ApplicantContext} will be doing")
+                    .WithMessage($"Enter what the {ApplicantContext} {messageText}")
                     .WithErrorCode("53")
                 .WithState(_ => VacancyRuleSet.Description)
                 .MaximumLength(4000)
-                    .WithMessage($"What the {ApplicantContext} will be doing must not exceed {{MaxLength}} characters")
+                    .WithMessage($"What the {ApplicantContext} {messageText} must not exceed {{MaxLength}} characters")
                     .WithErrorCode("7")
                 .WithState(_ => VacancyRuleSet.Description)
                 .ValidHtmlCharacters(_htmlSanitizerService)
-                    .WithMessage($"What the {ApplicantContext} will be doing contains some invalid characters")
+                    .WithMessage($"What the {ApplicantContext} {messageText} contains some invalid characters")
                     .WithErrorCode("6")
                 .WithState(_ => VacancyRuleSet.Description)
                 .ProfanityCheck(_profanityListProvider)
-                .WithMessage($"What the {ApplicantContext} will be doing must not contain a banned word or phrase.")
+                .WithMessage($"What the {ApplicantContext} {messageText} must not contain a banned word or phrase")
                 .WithErrorCode("609")
                 .WithState(_ => VacancyRuleSet.Description)
                 .RunCondition(VacancyRuleSet.Description);
@@ -700,7 +602,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
 
         private void ValidateAdditionalQuestions()
         {
-            When(x=>!string.IsNullOrEmpty(x.AdditionalQuestion1), () =>
+            When(x => !string.IsNullOrEmpty(x.AdditionalQuestion1), () =>
             {
                 RuleFor(x => x.AdditionalQuestion1)
                     .MaximumLength(250)
@@ -738,35 +640,45 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
             });
 
         }
-
-        private void ValidateTrainingDescription()
+        
+        private void ValidateHowTheApprenticeWillTrain()
         {
-            RuleFor(x => x.TrainingDescription)
-                .NotEmpty()
-                    .WithMessage(IsApprenticeshipVacancy
-                                            ? "Enter the training the apprentice will take and the qualification the apprentice will get"
-                                            : "Enter what training you will give the trainee" )
-                    .WithErrorCode("54")
-                .WithState(_ => VacancyRuleSet.TrainingDescription)
-                .MaximumLength(4000)
-                    .WithMessage(IsApprenticeshipVacancy
-                    ? "Training and qualifications the apprentice will get must not exceed {MaxLength} characters"
-                    : "Training provided must not exceed {MaxLength} characters")
-                    .WithErrorCode("7")
-                .WithState(_ => VacancyRuleSet.TrainingDescription)
-                .ValidHtmlCharacters(_htmlSanitizerService)
-                    .WithMessage(IsApprenticeshipVacancy
-                    ? "Training and qualifications the apprentice will get contains some invalid characters"
-                    : "Training provided contains some invalid characters")
-                    .WithErrorCode("6")
-                .WithState(_ => VacancyRuleSet.TrainingDescription)
-                .ProfanityCheck(_profanityListProvider)
-                .WithMessage(IsApprenticeshipVacancy
-                    ? "Training and qualifications the apprentice will get must not contain a banned word or phrase"
-                    : "Training provided must not contain a banned word or phrase")
-                .WithErrorCode("610")
-                .WithState(_ => VacancyRuleSet.TrainingDescription)
-                .RunCondition(VacancyRuleSet.TrainingDescription);
+            When(x => !string.IsNullOrEmpty(x.TrainingDescription), () =>
+            {
+                RuleFor(x => x.TrainingDescription)
+                    .MaximumLength(4000)
+                    .WithMessage("The apprentice’s training schedule must not exceed 4000 characters")
+                    .WithErrorCode("321")
+                    .WithState(_ => VacancyRuleSet.TrainingDescription)
+                    .ProfanityCheck(_profanityListProvider)
+                    .WithMessage("The apprentice’s training schedule must not contain a restricted word")
+                    .WithErrorCode("322")
+                    .WithState(_ => VacancyRuleSet.TrainingDescription)
+                    .ValidHtmlCharacters(_htmlSanitizerService)
+                    .WithMessage("The apprentice’s training schedule contains some invalid characters")
+                    .WithErrorCode("346")
+                    .WithState(_ => VacancyRuleSet.TrainingDescription)
+                    .RunCondition(VacancyRuleSet.TrainingDescription);
+            });
+
+
+            When(x => !string.IsNullOrEmpty(x.AdditionalTrainingDescription), () =>
+            {
+                RuleFor(x => x.AdditionalTrainingDescription)
+                    .MaximumLength(4000)
+                    .WithMessage("Any additional training information must not exceed 4000 characters")
+                    .WithErrorCode("341")
+                    .WithState(_ => VacancyRuleSet.AdditionalTrainingDescription)
+                    .ProfanityCheck(_profanityListProvider)
+                    .WithMessage("Any additional training information must not contain a restricted word")
+                    .WithErrorCode("342")
+                    .WithState(_ => VacancyRuleSet.AdditionalTrainingDescription)
+                    .ValidHtmlCharacters(_htmlSanitizerService)
+                    .WithMessage("Any additional training information contains some invalid characters")
+                    .WithErrorCode("344")
+                    .WithState(_ => VacancyRuleSet.AdditionalTrainingDescription)
+                    .RunCondition(VacancyRuleSet.AdditionalTrainingDescription);
+            });
         }
 
         private void ValidateOutcomeDescription()
@@ -808,14 +720,14 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
             {
                 RuleFor(x => x.ApplicationUrl)
                     .Empty()
-                        .WithMessage($"Application url must be empty when apply through {(IsApprenticeshipVacancy? "Find an apprenticeship" :"Find a traineeship")} service option is specified")
+                        .WithMessage($"Application url must be empty when apply through Find an apprenticeship service option is specified")
                         .WithErrorCode("86")
                     .WithState(_ => VacancyRuleSet.ApplicationMethod)
                     .RunCondition(VacancyRuleSet.ApplicationMethod);
 
                 RuleFor(x => x.ApplicationInstructions)
                     .Empty()
-                        .WithMessage($"Application process must be empty when apply through {(IsApprenticeshipVacancy? "Find an apprenticeship" :"Find a traineeship")} service option is specified")
+                        .WithMessage($"Application process must be empty when apply through Find an apprenticeship service option is specified")
                         .WithErrorCode("89")
                     .WithState(_ => VacancyRuleSet.ApplicationMethod)
                     .RunCondition(VacancyRuleSet.ApplicationMethod);
@@ -835,7 +747,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                     .WithMessage("Enter a link where candidates can apply")
                     .WithErrorCode("85")
                 .WithState(_ => VacancyRuleSet.ApplicationMethod)
-                .MaximumLength(200)
+                .MaximumLength(2000)
                     .WithMessage("The website address must not exceed {MaxLength} characters")
                     .WithErrorCode("84")
                 .WithState(_ => VacancyRuleSet.ApplicationMethod)
@@ -869,7 +781,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
             When(x => x.EmployerContact != null, () =>
             {
                 RuleFor(x => x.EmployerContact)
-                    .SetValidator(new ContactDetailValidator((long)VacancyRuleSet.EmployerContactDetails,_profanityListProvider))
+                    .SetValidator(new ContactDetailValidator((long)VacancyRuleSet.EmployerContactDetails, _profanityListProvider))
                 .RunCondition(VacancyRuleSet.EmployerContactDetails);
             });
         }
@@ -879,7 +791,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
             When(x => x.ProviderContact != null, () =>
             {
                 RuleFor(x => x.ProviderContact)
-                .SetValidator(new ContactDetailValidator((long)VacancyRuleSet.ProviderContactDetails,_profanityListProvider))
+                .SetValidator(new ContactDetailValidator((long)VacancyRuleSet.ProviderContactDetails, _profanityListProvider))
                 .RunCondition(VacancyRuleSet.ProviderContactDetails);
             });
         }
@@ -900,28 +812,6 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                 .WithErrorCode("613")
                 .WithState(_ => VacancyRuleSet.ThingsToConsider)
                 .RunCondition(VacancyRuleSet.ThingsToConsider);
-        }
-
-        private void ValidateWorkExperience()
-        {
-            RuleFor(x => x.WorkExperience)
-                .NotEmpty()
-                    .WithMessage("What work experience will the employer give the trainee?")
-                    .WithErrorCode("83")
-                .WithState(_ => VacancyRuleSet.WorkExperience)
-                .MaximumLength(4000)
-                    .WithMessage("What work experience will the employer give the trainee must not exceed {MaxLength} characters")
-                    .WithErrorCode("81")
-                .WithState(_ => VacancyRuleSet.WorkExperience)
-                .ValidHtmlCharacters(_htmlSanitizerService)
-                    .WithMessage("What work experience will the employer give the trainee contains some invalid characters")
-                    .WithErrorCode("82")
-                .WithState(_ => VacancyRuleSet.WorkExperience)
-                .ProfanityCheck(_profanityListProvider)
-                    .WithMessage("What work experience will the employer give the trainee must not contain a banned word or phrase.")
-                    .WithErrorCode("615")
-                .WithState(_ => VacancyRuleSet.WorkExperience)
-                .RunCondition(VacancyRuleSet.WorkExperience);
         }
 
         private void ValidateEmployerInformation()

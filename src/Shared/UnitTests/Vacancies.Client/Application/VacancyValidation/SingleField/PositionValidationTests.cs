@@ -1,10 +1,8 @@
-using System;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
-using FluentAssertions;
 using Xunit;
 
-namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation.SingleField
+namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.VacancyValidation.SingleField
 {
     public class PositionValidationTests : VacancyValidationTestsBase
     {
@@ -59,6 +57,20 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation.
             result.Errors[0].PropertyName.Should().Be(nameof(vacancy.ShortDescription));
             result.Errors[0].ErrorCode.Should().Be("12");
             result.Errors[0].RuleId.Should().Be((long)VacancyRuleSet.ShortDescription);
+        }
+
+        [Fact]
+        public void NoErrorsWhenShortDescriptionAreValid()
+        {
+            var vacancy = new Vacancy
+            {
+                ShortDescription = new String('a', 350)
+            };
+
+            var result = Validator.Validate(vacancy, VacancyRuleSet.ShortDescription);
+
+            result.HasErrors.Should().BeFalse();
+            result.Errors.Should().HaveCount(0);
         }
 
         [Fact]

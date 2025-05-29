@@ -1,4 +1,9 @@
+@using Esfa.Recruit.Qa.Web.TagHelpers
 @using Esfa.Recruit.Shared.Web.Mappers
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using NWebsec.AspNetCore.Mvc.TagHelpers
+
+@using Esfa.Recruit.Vacancies.Client.Domain.Entities
 @model ReviewViewModel
 <div class="review-container">
 
@@ -107,12 +112,16 @@
     </div>
     <div class="govuk-grid-column-two-thirds vacancy-descriptions">
         <div id="@Anchors.VacancyDescription">
-            <h3 class="govuk-heading-s">What will the apprentice be doing?</h3>
+            <h3 class="govuk-heading-s">What will the apprentice do at work?</h3>
             <div class="govuk-body">@Html.Raw(Model.VacancyDescription)</div>
         </div>
         <div id="@Anchors.TrainingDescription">
-            <h3 class="govuk-heading-s">What training will the apprentice take and what qualification will the apprentice get at the end?</h3>
+            <h3 class="govuk-heading-s">The apprentice's training schedule (optional)</h3>
             <div class="govuk-body">@Html.Raw(Model.TrainingDescription)</div>
+        </div>
+        <div id="@Anchors.AdditionalTrainingDescription">
+            <h3 class="govuk-heading-s">Additional training information (optional)</h3>
+            <div class="govuk-body">@Html.Raw(Model.AdditionalTrainingDescription)</div>
         </div>
         <div id="@Anchors.OutcomeDescription">
             <h3 class="govuk-heading-s">What is the expected career progression after this apprenticeship?</h3>
@@ -202,22 +211,37 @@
         </div>
     </div>
 </div>
-<div class="govuk-grid-row">
-    <div class="govuk-grid-column-one-half">
-        <div id="@Anchors.EmployerAddress">
-            <h3 class="govuk-heading-s">Location</h3>
-            <ul class="govuk-list">
-                @foreach (var addrLine in Model.EmployerAddressElements)
-                {
-                    <li>@addrLine</li>
-                }
-            </ul>
+
+<esfaFeatureEnabled name="@RecruitFeatureNames.MultipleLocations">
+    @switch (Model.EmployerLocationOption)
+    {
+        case AvailableWhere.OneLocation: <partial name="_EmployerAddress_One"/> break;
+        case AvailableWhere.MultipleLocations: <partial name="_EmployerAddress_Many"/> break;
+        case AvailableWhere.AcrossEngland: <partial name="_EmployerAddress_RecruitNationally"/> break;
+        default: <partial name="_EmployerAddress_DeprecatedOne" model="Model"/> break;
+    }
+</esfaFeatureEnabled>
+
+<esfaFeatureDisabled name="@RecruitFeatureNames.MultipleLocations">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-one-half">
+            <div id="@Anchors.EmployerAddress">
+                <h3 class="govuk-heading-s">Location</h3>
+                <ul class="govuk-list">
+                    @foreach (var addrLine in Model.EmployerAddressElements)
+                    {
+                        <li>@addrLine</li>
+                    }
+                </ul>
+            </div>
+        </div>
+        <div class="govuk-grid-column-one-half">
+            <img id="static-map" src="@Model.MapUrl" alt="Location map"/>
         </div>
     </div>
-    <div class="govuk-grid-column-one-half">
-        <img id="static-map" src="@Model.MapUrl" alt="Location map"/>
-    </div>
-</div>
+</esfaFeatureDisabled>
+
+
 <div class="govuk-grid-row" id="@Anchors.RequirementsAndProspectsSection">
     <div class="govuk-grid-column-full">
         <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
@@ -265,18 +289,22 @@
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-full" id="@Anchors.ApplicationMethod">
         <p class="govuk-body" asp-show="@Model.HasSpecifiedThroughFaaApplicationMethod">
-            Candidates will apply through the Find an apprenticeship service
+            Applicants will apply through Find an apprenticeship.
         </p>
         <p class="govuk-body" asp-show="@Model.HasSpecifiedThroughExternalApplicationSiteMethod">
-            Candidates will apply through the employer's website
+            Applicants will apply through an external website.
         </p>
 
         <div asp-show="@Model.HasApplicationUrl" id="@Anchors.ApplicationUrl">
-            <h2 class="govuk-heading-s">Employer's application website</h2>
-            <a href="@Model.ApplicationUrl" class="govuk-link govuk-link--no-visited-state" target="_blank" rel="noopener noreferrer">@Model.ApplicationUrl</a>
+            <h3 class="govuk-heading-s">Application website</h3>
+            <p class="govuk-body">
+                <a href="@Model.ApplicationUrl" class="govuk-link govuk-link--no-visited-state das-breakable" target="_blank" rel="noopener noreferrer">
+                    @Model.ApplicationUrl
+                </a>
+            </p>
         </div>
         <div asp-show="@Model.HasApplicationInstructions" id="@Anchors.ApplicationInstructions">
-            <h2 class="govuk-heading-s">Employer's application instructions (optional)</h2>
+            <h3 class="govuk-heading-s">Company’s application instructions (optional)</h3>
             <p class="govuk-body">@Model.ApplicationInstructions</p>
         </div>
     </div>

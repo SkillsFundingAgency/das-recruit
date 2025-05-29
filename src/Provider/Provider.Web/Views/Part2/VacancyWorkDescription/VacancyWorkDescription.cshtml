@@ -1,0 +1,49 @@
+﻿@model Esfa.Recruit.Provider.Web.ViewModels.Part2.VacancyWorkDescription.VacancyWorkDescriptionModel
+@{ 
+    ViewBag.Vpv = "/recruitment/employer/page-part2-vacancy-what-will-they-do-at-work";
+    ViewBag.Title = "What will the apprentice do at work?";
+    ViewBag.ZenDeskLabel = "recruit-description-of-the-apprenticeship";
+}
+
+@section BackLink
+{
+    <a asp-show="@(!Model.IsTaskListCompleted)" asp-route="@RouteNames.ShortDescription_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Back</a>
+    <a asp-show="@Model.IsTaskListCompleted" asp-route="@RouteNames.ProviderCheckYourAnswersGet" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Back</a>
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        
+        <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }' />
+        <partial name="@PartialNames.ReviewSummary" for="Review" />
+
+        <h1 class="govuk-heading-xl">
+            <span class="govuk-caption-l">@Model.Title</span>
+            What will the apprentice do at work?
+        </h1>
+
+        <form asp-route="@RouteNames.VacancyWorkDescription_Index_Post" asp-all-route-data="@Model.RouteDictionary">
+
+            <div esfa-validation-marker-for="VacancyDescription" class="govuk-form-group">
+                <label asp-for="VacancyDescription" class="govuk-label govuk-!-margin-bottom-5">List the tasks an apprentice will do on a normal day while working.</label>
+                <div class="govuk-hint">You must write your answer as bullet points. Include at least three bullet points </div>
+                <span esfa-validation-message-for="VacancyDescription" class="govuk-error-message"></span>
+                <textarea asp-for="VacancyDescription" class="govuk-textarea html-editor" rows="5" maxlength="4000" ></textarea>
+            </div>
+            
+            <div class="govuk-button-group">
+                <input type="submit" value="Save and continue" esfa-automation="btn-continue" class="govuk-button save-button" />
+                <a asp-show="@(!Model.IsTaskListCompleted)" asp-route="@RouteNames.Dashboard_Get" asp-route-ukprn="@Model.Ukprn" class="govuk-link govuk-link--no-visited-state">Cancel</a>
+                <a asp-show="@Model.IsTaskListCompleted" asp-route="@RouteNames.ProviderCheckYourAnswersGet" asp-all-route-data="@Model.RouteDictionary" esfa-automation="cancel" class="govuk-link govuk-link--no-visited-state">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section FooterJS 
+{
+    <script src="/lib/tinymce-4.9.2/tinymce.min.js" no-cdn></script>
+    <script nws-csp-add-nonce="true">
+        initializeHtmlEditors();
+    </script>
+}

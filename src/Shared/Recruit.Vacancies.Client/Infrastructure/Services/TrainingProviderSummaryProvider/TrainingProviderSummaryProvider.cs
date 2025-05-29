@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Vacancies.Client.Domain.Models;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProviderSummaryProvider
@@ -45,6 +46,23 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider
             };
         }
 
-        
+        /// <summary>
+        /// Method to check if the given ukprn number is a valid training provider with Main or Employer Profile with Status not equal to "Not Currently Starting New Apprentices".
+        /// </summary>
+        /// <param name="ukprn">ukprn number.</param>
+        /// <returns>boolean.</returns>
+        public async Task<bool> IsTrainingProviderMainOrEmployerProfile(long ukprn)
+        {
+            if (ukprn == EsfaTestTrainingProvider.Ukprn)
+                return true;
+            
+            var provider = await _trainingProviderService.GetProviderDetails(ukprn);
+
+            // logic to filter only Training provider with Main & Employer Profiles and Status Id not equal to "Not Currently Starting New Apprentices"
+            return provider != null &&
+                   (provider.ProviderTypeId.Equals((short) ProviderTypeIdentifier.MainProvider) ||
+                    provider.ProviderTypeId.Equals((short) ProviderTypeIdentifier.EmployerProvider)) &&
+                   !provider.StatusId.Equals((short) ProviderStatusType.ActiveButNotTakingOnApprentices);
+        }
     }
 }

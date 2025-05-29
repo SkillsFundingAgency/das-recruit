@@ -1,8 +1,5 @@
 using System.Threading.Tasks;
-using FluentAssertions;
 using SFA.DAS.Recruit.Api.Controllers;
-using Xunit;
-using Moq;
 using MediatR;
 using SFA.DAS.Recruit.Api.Queries;
 using System.Threading;
@@ -24,7 +21,7 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Controllers
             _sut = new ApplicantsController(_mockMediator.Object);
         }
 
-        [Fact]
+        [Test]
         public async Task GetCall_EnsuresApplicantApplicationOutcomeFilterPassedToMediatorIsTrimmed()
         {
             var result = await _sut.Get(10000001, " successful ");

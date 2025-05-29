@@ -1,12 +1,10 @@
 using Communication.Types;
 using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.FAA;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories;
 using Esfa.Recruit.Vacancies.Client.Ioc;
 using Esfa.Recruit.Vacancies.Jobs.AnalyticsSummaryProcessor;
 using Esfa.Recruit.Vacancies.Jobs.Communication;
-using Esfa.Recruit.Vacancies.Jobs.Configuration;
 using Esfa.Recruit.Vacancies.Jobs.DomainEvents;
 using Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Application;
 using Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Candidate;
@@ -14,23 +12,20 @@ using Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Employer;
 using Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Provider;
 using Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.Vacancy;
 using Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.VacancyReview;
+using Esfa.Recruit.Vacancies.Jobs.DomainEvents.Handlers.LiveVacancy;
 using Esfa.Recruit.Vacancies.Jobs.Triggers.QueueTriggers;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using SFA.DAS.Http;
-using SFA.DAS.Http.TokenGenerators;
-using SFA.DAS.Notifications.Api.Client;
-using SFA.DAS.Notifications.Api.Client.Configuration;
 using Communication.Core;
 using Communication.Types.Interfaces;
 using Esfa.Recruit.Vacancies.Client.Application.Communications;
 using Esfa.Recruit.Client.Application.Communications;
 using Esfa.Recruit.Vacancies.Client.Application.Communications.EntityDataItemProviderPlugins;
 using System.Collections.Generic;
-using System.Data;
+using Azure.Monitor.OpenTelemetry.AspNetCore;
 using SFA.DAS.Encoding;
 using Esfa.Recruit.Vacancies.Client.Application.Communications.ParticipantResolverPlugins;
+using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
 using Recruit.Vacancies.Client.Application.Communications.CompositeDataItemProviderPlugins;
 using Esfa.Recruit.Vacancies.Jobs.Jobs;
 
@@ -40,39 +35,27 @@ namespace Esfa.Recruit.Vacancies.Jobs
     {
         public static void ConfigureJobServices(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddDatabaseRegistration(configuration["Environment"], configuration.GetConnectionString("VacancyAnalyticEventsSqlDbConnectionString"));
-
-            services.AddScoped(x => new AnalyticsEventStore(x.GetService<ILogger<AnalyticsEventStore>>(), x.GetService<IDbConnection>()));
-
             services.AddRecruitStorageClient(configuration);
-
-            services.AddSingleton<RecruitWebJobsSystemConfiguration>(x =>
-            {
-                var svc = x.GetService<IConfigurationReader>();
-                return svc.GetAsync<RecruitWebJobsSystemConfiguration>("RecruitWebJobsSystem").Result;
-            });
 
             // Add Jobs
             services.AddScoped<DomainEventsQueueTrigger>();
-            services.AddScoped<UpdateApprenticeshipProgrammesQueueTrigger>();
             services.AddScoped<VacancyStatusQueueTrigger>();
             services.AddScoped<GeneratePublishedVacanciesQueueTrigger>();
             services.AddScoped<UpdateBankHolidayQueueTrigger>();
             services.AddScoped<UpdateQaDashboardQueueTrigger>();
-            services.AddScoped<GenerateVacancyAnalyticsSummaryQueueTrigger>();
             services.AddScoped<TransferVacanciesFromProviderQueueTrigger>();
             services.AddScoped<TransferVacancyToLegalEntityQueueTrigger>();
             services.AddScoped<TransferVacanciesFromEmployerReviewToQAReviewQueueTrigger>();
             services.AddScoped<UpdateProvidersQueueTrigger>();
-            services.AddTransient<IFaaService, FaaService>();
-#if DEBUG
-            services.AddScoped<SpikeQueueTrigger>();
-#endif
 
             services.AddScoped<TransferVacanciesFromEmployerReviewToQAReviewJob>();
             services.AddScoped<TransferVacanciesFromProviderJob>();
             services.AddScoped<TransferVacancyToLegalEntityJob>();
 
+            services.AddScoped<INotificationService, NotificationService>();
+
+            services.AddScoped<IAnalyticsAggregator, AnalyticsAggregator>();
+            
             // Domain Event Queue Handlers
 
             // Vacancy
@@ -82,6 +65,8 @@ namespace Esfa.Recruit.Vacancies.Jobs
             services.AddScoped<IDomainEventHandler<IEvent>, VacancySubmittedHandler>();
             services.AddScoped<IDomainEventHandler<IEvent>, VacancyRejectedHandler>();
             services.AddScoped<IDomainEventHandler<IEvent>, ProviderBlockedOnVacancyDomainEventHandler>();
+            services.AddScoped<IDomainEventHandler<IEvent>, LiveVacancyChangedDateHandler>();
+            services.AddScoped<IDomainEventHandler<IEvent>, LiveVacancyWithdrawnHandler>();
 
             // VacancyReview
             services.AddScoped<IDomainEventHandler<IEvent>, VacancyReviewApprovedHandler>();
@@ -104,14 +89,23 @@ namespace Esfa.Recruit.Vacancies.Jobs
             services.AddScoped<IDomainEventHandler<IEvent>, DeleteCandidateHandler>();
 
             RegisterCommunicationsService(services, configuration);
-            RegisterDasNotifications(services, configuration);
             RegisterDasEncodingService(services, configuration);
-            
-            var serviceParameters = new ServiceParameters("Apprenticeships");
-            
-            services.AddSingleton(serviceParameters);
+
+            services.AddSingleton<IFeature, Feature>();
         }
 
+        public static void AddOpenTelemetryRegistration(this IServiceCollection services, string appInsightsConnectionString)
+        {
+            if (!string.IsNullOrEmpty(appInsightsConnectionString))
+            {
+                // This service will collect and send telemetry data to Azure Monitor.
+                services.AddOpenTelemetry().UseAzureMonitor(options =>
+                {
+                    options.ConnectionString = appInsightsConnectionString;
+                });
+            }
+        }
+        
         private static void RegisterCommunicationsService(IServiceCollection services, IConfiguration configuration)
         {
             // Relies on services.AddRecruitStorageClient(configuration); being called first
@@ -119,7 +113,7 @@ namespace Esfa.Recruit.Vacancies.Jobs
 
             services.AddScoped<CommunicationRequestQueueTrigger>();
 
-            var communicationStorageConnString = configuration.GetConnectionString("CommunicationsStorage");
+            string communicationStorageConnString = configuration.GetConnectionString("CommunicationsStorage");
             services.AddSingleton<IDispatchQueuePublisher>(_ => new DispatchQueuePublisher(communicationStorageConnString));
             services.AddSingleton<IAggregateCommunicationComposeQueuePublisher>(_ => new AggregateCommunicationComposeQueuePublisher(communicationStorageConnString));
             services.AddScoped<CommunicationMessageDispatcherQueueTrigger>();
@@ -135,6 +129,7 @@ namespace Esfa.Recruit.Vacancies.Jobs
             services.AddTransient<IUserPreferencesProvider, UserPreferencesProviderPlugin>();
             services.AddTransient<ITemplateIdProvider, TemplateIdProviderPlugin>();
             services.AddTransient<IEntityDataItemProvider, VacancyDataEntityPlugin>();
+            services.AddTransient<IEntityDataItemProvider, ApprenticeshipServiceUnsubscribeDataEntityPlugIn>();
             services.AddTransient<IEntityDataItemProvider, ApprenticeshipServiceUrlDataEntityPlugin>();
             services.AddTransient<IEntityDataItemProvider, ApprenticeshipServiceConfigDataEntityPlugin>();
             services.AddTransient<IEntityDataItemProvider, ProviderDataEntityPlugin>();
@@ -144,26 +139,11 @@ namespace Esfa.Recruit.Vacancies.Jobs
             services.Configure<CommunicationsConfiguration>(configuration.GetSection("CommunicationsConfiguration"));
         }
 
-        private static void RegisterDasNotifications(IServiceCollection services, IConfiguration configuration)
-        {
-            var notificationsConfig = new NotificationsApiClientConfiguration();
-            configuration.GetSection(nameof(NotificationsApiClientConfiguration)).Bind(notificationsConfig);
-
-            var jwtToken = new JwtBearerTokenGenerator(notificationsConfig);
-
-            var httpClient = new HttpClientBuilder()
-                .WithBearerAuthorisationHeader(jwtToken)
-                .WithDefaultHeaders()
-                .Build();
-
-            services.AddTransient<INotificationsApi>(sp => new NotificationsApi(httpClient, notificationsConfig));
-        }
-
         private static void RegisterDasEncodingService(IServiceCollection services, IConfiguration configuration)
         {
             var dasEncodingConfig = new EncodingConfig { Encodings = new List<Encoding>() };
             configuration.GetSection(nameof(dasEncodingConfig.Encodings)).Bind(dasEncodingConfig.Encodings);
-            services.AddSingleton<EncodingConfig>(dasEncodingConfig);
+            services.AddSingleton(dasEncodingConfig);
             services.AddSingleton<IEncodingService, EncodingService>();
         }
     }

@@ -1,6 +1,8 @@
-﻿namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview
+﻿using Esfa.Recruit.Employer.Web.RouteModel;
+
+namespace Esfa.Recruit.Employer.Web.ViewModels.VacancyPreview
 {
-    public class JobAdvertConfirmationViewModel
+    public class JobAdvertConfirmationViewModel : VacancyRouteModel
     {
         public string Title { get; set; }
         public string VacancyReference { get; set; }

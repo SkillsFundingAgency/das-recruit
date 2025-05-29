@@ -17,13 +17,12 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
         Task<EmployerEditVacancyInfo> GetEditVacancyInfoAsync(string employerAccountId);
         Task<IEnumerable<LegalEntity>> GetEmployerLegalEntitiesAsync(string employerAccountId);
         Task SetupEmployerAsync(string employerAccountId);
-        Task SetApplicationReviewSuccessful(Guid applicationReviewId, VacancyUser user);
-        Task SetApplicationReviewUnsuccessful(Guid applicationReviewId, string candidateFeedback, VacancyUser user);        
+        Task<bool> SetApplicationReviewStatus(Guid applicationReviewId, ApplicationReviewStatus? outcome, string candidateFeedback, VacancyUser user);
         Task<int> GetVacancyCountForUserAsync(string userId);
         EntityValidationResult ValidateQualification(Qualification qualification);
 
         Task CreateEmployerApiVacancy(Guid id, string title, string employerAccountId, VacancyUser user, TrainingProvider provider, string programmeId);
-        Task<long> GetVacancyCount(string employerAccountId, VacancyType vacancyType, FilteringOptions? filteringOptions, string searchTerm);
+        Task<long> GetVacancyCount(string employerAccountId, FilteringOptions? filteringOptions, string searchTerm);
         Task<EmployerDashboardSummary> GetDashboardSummary(string employerAccountId);
     }
 }

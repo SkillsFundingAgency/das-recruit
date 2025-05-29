@@ -9,11 +9,9 @@ using Esfa.Recruit.Provider.Web.RouteModel;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Esfa.Recruit.Provider.Web.ViewModels;
-using Esfa.Recruit.Vacancies.Client.Application.Configuration;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Esfa.Recruit.Provider.Web.ViewModels.Part1.LegalEntityAndEmployer;
-using StructureMap.Query;
 
 namespace Esfa.Recruit.Provider.Web.Controllers.Part1
 {
@@ -22,16 +20,13 @@ namespace Esfa.Recruit.Provider.Web.Controllers.Part1
     public class LegalEntityAndEmployerController : EmployerControllerBase
     {
         private readonly LegalEntityAndEmployerOrchestrator _orchestrator;
-        private readonly ServiceParameters _serviceParameters;
 
         public LegalEntityAndEmployerController(
             LegalEntityAndEmployerOrchestrator orchestrator, 
-            IWebHostEnvironment hostingEnvironment,
-            ServiceParameters serviceParameters)
+            IWebHostEnvironment hostingEnvironment)
             : base(hostingEnvironment)
         {
             _orchestrator = orchestrator;
-            _serviceParameters = serviceParameters;
         }
 
         [HttpGet("employer-legal-entity", Name = RouteNames.LegalEntityEmployer_Get)]

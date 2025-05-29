@@ -54,12 +54,10 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
         {
             var vacancyTask = GetVacancyAsync(vrm);
             var programmesTask = _vacancyClient.GetActiveApprenticeshipProgrammesAsync();
-            var routesTask = _vacancyClient.GetApprenticeshipRoutes();
             
-            await Task.WhenAll(vacancyTask, programmesTask, routesTask);
+            await Task.WhenAll(vacancyTask, programmesTask);
 
             var vacancy = vacancyTask.Result;
-            var routes = routesTask.Result;
             var programmes = programmesTask.Result;
 
             var vm = new EditVacancyDatesViewModel
@@ -74,9 +72,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators
 
                 CurrentYear = _timeProvider.Now.Year,
 
-                ProgrammeName = vacancy.VacancyType.GetValueOrDefault() == VacancyType.Apprenticeship ? programmes.First(p => p.Id == vacancy.ProgrammeId).Title : "",
-                RouteName = vacancy.VacancyType.GetValueOrDefault() == VacancyType.Traineeship ? routes.First(r => r.Id == vacancy.RouteId).Route : "",
-                VacancyType = vacancy.VacancyType.GetValueOrDefault(),
+                ProgrammeName = programmes.First(p => p.Id == vacancy.ProgrammeId).Title,
                 Title = vacancy.Title
             };
 

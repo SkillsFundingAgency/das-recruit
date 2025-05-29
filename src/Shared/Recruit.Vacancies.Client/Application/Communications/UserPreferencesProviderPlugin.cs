@@ -23,7 +23,8 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Communications
         {
             var userPref = new CommunicationUserPreference() { Channels = DeliveryChannelPreferences.None };
 
-            var userPreference = await _repository.GetAsync(user.UserId);
+            var userPreference = await _repository.GetByDfeUserId(user.DfEUserId) 
+                                 ?? await _repository.GetAsync(user.UserId);
 
             switch (requestType)
             {

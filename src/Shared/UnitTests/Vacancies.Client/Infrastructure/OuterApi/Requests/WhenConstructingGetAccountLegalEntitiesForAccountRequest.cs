@@ -8,7 +8,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
     public class WhenConstructingGetAccountLegalEntitiesForAccountRequest
     {
         [Test, AutoData]
-        public void Then_It_Is_Correctly_Constructed(string accountId)
+        public void Then_It_Is_Correctly_Constructed(long accountId)
         {
             //Arrange
             var actual = new GetAccountLegalEntitiesRequest(accountId);

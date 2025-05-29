@@ -76,7 +76,15 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Communications.ParticipantRe
 
         private async Task<bool> IsUserStillAssociatedToCommunicationMessageVacancyAsync(CommunicationMessage msg)
         {
-            var user = await _userRepository.GetAsync(msg.Recipient.UserId);
+            User user = null;
+            
+            if (!string.IsNullOrEmpty(msg.Recipient.DfEUserId))
+            {
+                user = await _userRepository.GetByDfEUserId(msg.Recipient.DfEUserId);
+            }
+
+            user ??= await _userRepository.GetAsync(msg.Recipient.UserId);
+            
 
             if (user == null)
             {
@@ -107,7 +115,8 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Communications.ParticipantRe
 
             if (isUserStillAssociatedToVacancy == false) return false;
 
-            var userPreference = await _userPreferenceRepository.GetAsync(user.IdamsUserId);
+            var userPreference = await _userPreferenceRepository.GetByDfeUserId(user.DfEUserId) 
+                                 ?? await _userPreferenceRepository.GetAsync(user.IdamsUserId);
 
             if (Enum.TryParse<NotificationTypes>(msg.RequestType, out var reqNotificationType))
             {

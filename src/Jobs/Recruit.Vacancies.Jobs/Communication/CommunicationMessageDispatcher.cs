@@ -7,28 +7,26 @@ using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Microsoft.Extensions.Logging;
 using Polly;
 using Polly.Retry;
-using SFA.DAS.Notifications.Api.Client;
-using SFA.DAS.Notifications.Api.Types;
+using SFA.DAS.Notifications.Messages.Commands;
 
 namespace Esfa.Recruit.Vacancies.Jobs.Communication
 {
     public sealed class CommunicationMessageDispatcher
     {
-        private const string NotifySystemId = "VacancyServicesCommunications";
         private const string UserNameTokenKey = "user-name";
 
         private readonly ILogger<CommunicationMessageDispatcher> _logger;
         private readonly ICommunicationRepository _repository;
-        private readonly INotificationsApi _dasNotifyClient;
+        private readonly INotificationService _notificationService;
         private readonly ITimeProvider _timeProvider;
         private readonly RetryPolicy _retryPolicy;
 
         public CommunicationMessageDispatcher(ILogger<CommunicationMessageDispatcher> logger, ICommunicationRepository repository,
-                                            INotificationsApi dasNotifyClient, ITimeProvider timeProvider)
+                                            INotificationService notificationService, ITimeProvider timeProvider)
         {
             _logger = logger;
             _repository = repository;
-            _dasNotifyClient = dasNotifyClient;
+            _notificationService = notificationService;
             _timeProvider = timeProvider;
             _retryPolicy = GetRetryPolicy();
         }
@@ -76,20 +74,12 @@ namespace Esfa.Recruit.Vacancies.Jobs.Communication
         {
             _logger.LogInformation($"Trying to send message of type {request.RequestType} to {request.Recipient.UserId}");
 
-            var email = new Email
-            {
-                TemplateId = request.TemplateId,
-                RecipientsAddress = request.Recipient.Email,
-                Tokens = request.DataItems.ToDictionary(x => x.Key, x => x.Value),
-                SystemId = NotifySystemId, // any value is acceptable
-                // following are overwritten in the service but required to be populated
-                ReplyToAddress = "ThisWillBeReplacedBy@notify.com",
-                Subject = "This will be replaced by the template on Gov Notify"
-            };
+            var readOnlyDictionary = request.DataItems.ToDictionary(x => x.Key, x => x.Value);
+            readOnlyDictionary.Add(UserNameTokenKey, request.Recipient.Name);
+            
+            var email = new SendEmailCommand(request.TemplateId, request.Recipient.Email, readOnlyDictionary);
 
-            email.Tokens.Add(UserNameTokenKey, request.Recipient.Name);
-
-            await _retryPolicy.Execute(context => _dasNotifyClient.SendEmail(email),
+            await _retryPolicy.Execute(context => _notificationService.Send(email),
                                             new Context(nameof(SendEmail)));
             _logger.LogInformation($"Successfully sent message of type {request.RequestType} to {request.Recipient.UserId}");
         }

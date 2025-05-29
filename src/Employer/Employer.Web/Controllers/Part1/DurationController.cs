@@ -7,7 +7,7 @@ using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.Duration;
 using Microsoft.AspNetCore.Mvc;
 using Esfa.Recruit.Shared.Web.Extensions;
-using Esfa.Recruit.Shared.Web.FeatureToggle;
+using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
 
 namespace Esfa.Recruit.Employer.Web.Controllers.Part1
 {
@@ -15,12 +15,10 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
     public class DurationController : Controller
     {
         private readonly DurationOrchestrator _orchestrator;
-        private readonly IFeature _feature;
 
-        public DurationController(DurationOrchestrator orchestrator, IFeature feature)
+        public DurationController(DurationOrchestrator orchestrator)
         {
             _orchestrator = orchestrator;
-            _feature = feature;
         }
         
         [HttpGet("duration", Name = RouteNames.Duration_Get)]

@@ -7,9 +7,11 @@ using Esfa.Recruit.Employer.Web.Extensions;
 using Esfa.Recruit.Employer.Web.Orchestrators.Part1;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels.Part1.TrainingProvider;
-using Esfa.Recruit.Shared.Web.FeatureToggle;
+using Esfa.Recruit.Shared.Web.Domain;
 using Esfa.Recruit.Shared.Web.Orchestrators;
+using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
@@ -20,8 +22,7 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
     {
         private readonly TrainingProviderOrchestrator _orchestrator;
         private readonly IFeature _feature;
-        private const string InvalidUkprnMessageFormat = "The UKPRN {0} is not valid or the associated provider is not active";
-        private const string InvalidSearchTerm = "Please enter a training provider name or UKPRN";
+        private const string InvalidSearchTerm = "Enter the name or UKPRN of a training provider who is registered to deliver apprenticeship training";
 
         public TrainingProviderController(TrainingProviderOrchestrator orchestrator, IFeature feature)
         {
@@ -92,14 +93,21 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
         }
 
         [HttpPost("confirm-training-provider", Name = RouteNames.TrainingProvider_Confirm_Post)]
-        public async Task<IActionResult> ConfirmTrainingProvider(ConfirmTrainingProviderEditModel m, [FromQuery] bool wizard)
+        public async Task<IActionResult> ConfirmTrainingProvider(
+            [FromServices] IRecruitVacancyClient vacancyClient,
+            [FromServices] ITaskListValidator taskListValidator,
+            ConfirmTrainingProviderEditModel m,
+            [FromQuery] bool wizard)
         {
             if (ModelState.IsValid)
             {
                 var response = await _orchestrator.PostConfirmEditModelAsync(m, User.ToVacancyUser());
-
-                if(response.Success)
-                    return GetRedirectToNextPage(wizard, m);
+                if (response.Success)
+                {
+                    var vacancy = await vacancyClient.GetVacancyAsync(m.VacancyId);
+                    bool isTaskListCompleted = await taskListValidator.IsCompleteAsync(vacancy, EmployerTaskListSectionFlags.All);
+                    return GetRedirectToNextPage(!isTaskListCompleted, m);
+                }
                 
                 AddTrainingProviderErrorsToModelState(TrainingProviderSelectionType.Ukprn, m.Ukprn, response, ModelState);
             }
@@ -129,11 +137,11 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
                 {
                     if (providerNotFoundErrorCodes.Contains(error.ErrorCode))
                     {
-                        AddProviderNotFoundErrorToModelState(selectionType, ukprn);
+                        AddProviderNotFoundErrorToModelState();
                         continue;
                     }
                     
-                    if (error.ErrorCode == ErrorCodes.TrainingProviderMustNotBeBlocked)
+                    if (error.ErrorCode is ErrorCodes.TrainingProviderMustNotBeBlocked)
                     {
                         AddProviderBlockedErrorToModelState(selectionType, error);
                         continue;
@@ -144,16 +152,9 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part1
             }
         }
 
-        private void AddProviderNotFoundErrorToModelState(TrainingProviderSelectionType selectionType, string searchedUkprn)
+        private void AddProviderNotFoundErrorToModelState()
         {
-            if (selectionType == TrainingProviderSelectionType.Ukprn)
-            {
-                ModelState.AddModelError(nameof(SelectTrainingProviderEditModel.Ukprn), string.Format(InvalidUkprnMessageFormat, searchedUkprn));
-            }
-            else
-            {
-                ModelState.AddModelError(nameof(SelectTrainingProviderEditModel.TrainingProviderSearch), InvalidSearchTerm);
-            }
+            ModelState.AddModelError(nameof(SelectTrainingProviderEditModel.TrainingProviderSearch), InvalidSearchTerm);
         }
 
         private void AddProviderBlockedErrorToModelState(TrainingProviderSelectionType selectionType, EntityValidationError error)

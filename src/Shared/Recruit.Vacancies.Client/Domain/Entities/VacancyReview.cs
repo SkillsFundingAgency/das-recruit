@@ -66,5 +66,7 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
 
         public IEnumerable<ManualQaFieldEditIndicator> ManualQaFieldEditIndicators { get; set; } =
             new List<ManualQaFieldEditIndicator>();
+        
+        public List<string> DismissedAutomatedQaOutcomeIndicators { get; set; }
     }
 }

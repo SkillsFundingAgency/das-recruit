@@ -27,7 +27,7 @@ namespace Esfa.Recruit.Provider.Web.Filters
                     var user = controller.User.ToVacancyUser();
                     controller.ViewBag.GaData = new GaData
                     {
-                        UserId = user.UserId,
+                        UserId = user.DfEUserId,
                         UkPrn = user.Ukprn.HasValue ? user.Ukprn.Value.ToString() : string.Empty
                     };
                 }

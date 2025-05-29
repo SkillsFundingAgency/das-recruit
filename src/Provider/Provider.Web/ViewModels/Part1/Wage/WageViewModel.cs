@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Esfa.Recruit.Provider.Web.Configuration.Routing;
 using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Shared.Web.ViewModels;
 using Esfa.Recruit.Shared.Web.ViewModels.Validations;
@@ -24,6 +25,8 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.Part1.Wage
         public string ApprenticeshipMinimumWageHourly { get; set; }
         public string ApprenticeshipMinimumWageYearly { get; set; }
         public decimal WeeklyHours { get; set; }
+        
+        public string CompanyBenefitsInformation { get; set; }
 
         public ReviewSummaryViewModel Review { get; set; } = new ReviewSummaryViewModel();
         
@@ -31,9 +34,22 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.Part1.Wage
         {
             nameof(WageType),
             nameof(FixedWageYearlyAmount),
-            nameof(WageAdditionalInformation)
+            nameof(WageAdditionalInformation),
+            nameof(CompanyBenefitsInformation)
         };
 
         public PartOnePageInfoViewModel PageInfo { get; set; }
+
+        public string PageBackLink
+        {
+            get
+            {
+                return IsTaskListCompleted
+                    ? RouteNames.ProviderCheckYourAnswersGet
+                    : @RouteNames.Duration_Get;
+            }
+        }
+
+        public bool IsTaskListCompleted { get; set; }
     }
 }

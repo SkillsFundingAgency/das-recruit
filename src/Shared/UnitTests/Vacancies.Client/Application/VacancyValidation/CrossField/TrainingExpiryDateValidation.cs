@@ -1,13 +1,11 @@
-using System;
 using System.Collections.Generic;
+using Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation.CrossField;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
-using FluentAssertions;
-using Moq;
 using Xunit;
 
-namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation.CrossField
+namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.VacancyValidation.CrossField
 {
     public class TrainingExpiryDateValidation : VacancyValidationTestsBase
     {

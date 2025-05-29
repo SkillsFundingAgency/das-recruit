@@ -22,7 +22,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
             [Frozen] Mock<IQueryStore> queryStore,
             QueryStoreClient client)
         {
-            await client.UpdateProviderDashboardAsync(ukprn, vacancySummaries, providerDashboardTransferredVacancies, VacancyType.Apprenticeship);
+            await client.UpdateProviderDashboardAsync(ukprn, vacancySummaries, providerDashboardTransferredVacancies);
 
             queryStore
                 .Verify(x =>
@@ -33,24 +33,5 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
                     )), Times.Once);
         }
         
-        [Test, MoqAutoData]
-        public async Task Then_If_Traineeship_Then_Updates_Provider_Trainee_Dashboard(
-            long ukprn,
-            ProviderDashboard providerDashboard,
-            List<VacancySummary> vacancySummaries,
-            List<ProviderDashboardTransferredVacancy> providerDashboardTransferredVacancies,
-            [Frozen] Mock<IQueryStore> queryStore,
-            QueryStoreClient client)
-        {
-            await client.UpdateProviderDashboardAsync(ukprn, vacancySummaries, providerDashboardTransferredVacancies, VacancyType.Traineeship);
-
-            queryStore
-                .Verify(x =>
-                    x.UpsertAsync(It.Is<ProviderDashboard>(c =>
-                        c.Id.Equals(QueryViewType.ProviderTraineeshipDashboard.GetIdValue(ukprn))
-                        && c.Vacancies.Equals(vacancySummaries)
-                        && c.TransferredVacancies.Equals(providerDashboardTransferredVacancies)
-                    )), Times.Once);
-        }
     }
 }

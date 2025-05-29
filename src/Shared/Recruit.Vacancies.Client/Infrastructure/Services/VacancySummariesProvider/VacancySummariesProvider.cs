@@ -1,59 +1,78 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using Polly;
+using FeatureNames = Esfa.Recruit.Vacancies.Client.Infrastructure.Configuration.FeatureNames;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummariesProvider
 {
-    internal sealed class VacancySummariesProvider : MongoDbCollectionBase, IVacancySummariesProvider
+    internal sealed class VacancySummariesProvider(
+        ILoggerFactory loggerFactory,
+        IOptions<MongoDbConnectionDetails> details,
+        IFeature features)
+        : MongoDbCollectionBase(loggerFactory, MongoDbNames.RecruitDb, MongoDbCollectionNames.Vacancies, details),
+            IVacancySummariesProvider
     {
-        private readonly IVacancyTaskListStatusService _vacancyTaskListStatusService;
+        private readonly ITrainingProviderService _trainingProviderService;
+        private readonly IEmployerAccountProvider _employerAccountProvider;
         private const string TransferInfoUkprn = "transferInfo.ukprn";
         private const string TransferInfoReason = "transferInfo.reason";
         private const int ClosingSoonDays = 5;
+        private readonly bool _isMongoMigrationFeatureEnabled = false;
 
         public VacancySummariesProvider(
-            ILoggerFactory loggerFactory, 
-            IOptions<MongoDbConnectionDetails> details, 
-            IVacancyTaskListStatusService vacancyTaskListStatusService)
-            : base(loggerFactory, MongoDbNames.RecruitDb, MongoDbCollectionNames.Vacancies, details)
+            ILoggerFactory loggerFactory,
+            IOptions<MongoDbConnectionDetails> details,
+            IFeature feature,
+            ITrainingProviderService trainingProviderService,
+            IEmployerAccountProvider employerAccountProvider)
+            : this(loggerFactory, details, feature)
         {
-            _vacancyTaskListStatusService = vacancyTaskListStatusService;
+            _trainingProviderService = trainingProviderService;
+            _employerAccountProvider = employerAccountProvider;
+            _isMongoMigrationFeatureEnabled = feature.IsFeatureEnabled(FeatureNames.MongoMigration);
         }
        
-        public async Task<VacancyDashboard> GetProviderOwnedVacancyDashboardByUkprnAsync(long ukprn, VacancyType vacancyType)
+        public async Task<VacancyDashboard> GetProviderOwnedVacancyDashboardByUkprnAsync(long ukprn,bool ignoreGetApplicationReview)
         {
             var bsonArray = new BsonArray
             {
-                vacancyType.ToString()
+                "Apprenticeship",
+                BsonNull.Value
             };
-            
-            if (vacancyType == VacancyType.Apprenticeship)
-            {
-                bsonArray.Add(BsonNull.Value);
-            }
-            
+
             var match = new BsonDocument
             {
                 {
                     "$match",
-                    BuildBsonDocumentFilterValues(ukprn, null, null, bsonArray, null)
+                    BuildBsonDocumentFilterValues(ukprn, null, null, bsonArray)
                 }
             };
+            var applicationsMatch  = new BsonDocument
+            {
+                {
+                    "$match",
+                    BuildBsonDocumentFilterValues(ukprn, null, FilteringOptions.Dashboard, bsonArray)
+                }
+            }; 
             var builder = new VacancySummaryAggQueryBuilder();
             var aggPipelines = builder.GetAggregateQueryPipelineDashboard(match);
-            var applicationAggPipeline = builder.GetAggregateQueryPipelineDashboardApplications(match);
-            var closingSoonAggPipeline = builder.GetAggregateQueryPipelineVacanciesClosingSoonDashboard(match);
+            var applicationAggPipeline = builder.GetAggregateQueryPipelineDashboardApplications(applicationsMatch);
+            var closingSoonAggPipeline = builder.GetAggregateQueryPipelineVacanciesClosingSoonDashboard(applicationsMatch);
             var dashboardValuesTask =  RunDashboardAggPipelineQuery(aggPipelines);
-            var applicationDashboardValuesTask = RunApplicationsDashboardAggPipelineQuery(applicationAggPipeline);
+            var applicationDashboardValuesTask =  ignoreGetApplicationReview ? Task.FromResult(new List<VacancyApplicationsDashboard>()) : RunApplicationsDashboardAggPipelineQuery(applicationAggPipeline);
             var closingSoonDashboardValuesTask = RunApplicationsDashboardAggPipelineQuery(closingSoonAggPipeline);
 
             await Task.WhenAll(dashboardValuesTask, applicationDashboardValuesTask, closingSoonDashboardValuesTask);
@@ -62,26 +81,22 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
             {
                 VacancyStatusDashboard = dashboardValuesTask.Result,
                 VacancyApplicationsDashboard = applicationDashboardValuesTask.Result,
-                VacanciesClosingSoonWithNoApplications = closingSoonDashboardValuesTask.Result.FirstOrDefault()?.StatusCount ?? 0
+                VacanciesClosingSoonWithNoApplications = closingSoonDashboardValuesTask.Result.FirstOrDefault(c => c.ClosingSoon)?.StatusCount ?? 0
             };
         }
-        public async Task<VacancyDashboard> GetEmployerOwnedVacancyDashboardByEmployerAccountIdAsync(string employerAccountId, VacancyType vacancyType)
+        public async Task<VacancyDashboard> GetEmployerOwnedVacancyDashboardByEmployerAccountIdAsync(string employerAccountId, bool ignoreGetApplicationReview)
         {
             var bsonArray = new BsonArray
             {
-                vacancyType.ToString()
+                "Apprenticeship",
+                BsonNull.Value
             };
-            
-            if (vacancyType == VacancyType.Apprenticeship)
-            {
-                bsonArray.Add(BsonNull.Value);
-            }
             
             var match = new BsonDocument
             {
                 {
                     "$match",
-                    BuildBsonDocumentFilterValues(null, employerAccountId, null, bsonArray, null)
+                    BuildBsonDocumentFilterValues(null, employerAccountId, null, bsonArray)
                 }
             };
             var employerReviewMatch = new BsonDocument
@@ -91,41 +106,54 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                     BuildEmployerReviewMatch()
                 }
             };
+            var liveVacanciesMatch = new BsonDocument
+            {
+                {
+                    "$match",
+                    BuildSharedApplicationsVacanciesMatch()
+                }
+            };
+            var applicationsMatch  = new BsonDocument
+            {
+                {
+                    "$match",
+                    BuildBsonDocumentFilterValues(null, employerAccountId, FilteringOptions.Dashboard, bsonArray)
+                }
+            }; 
             var builder = new VacancySummaryAggQueryBuilder();
             var aggPipelines = builder.GetAggregateQueryPipelineDashboard(match,employerReviewMatch);
-            var applicationAggPipeline = builder.GetAggregateQueryPipelineDashboardApplications(match, employerReviewMatch);
-            var closingSoonAggPipeline = builder.GetAggregateQueryPipelineVacanciesClosingSoonDashboard(match, employerReviewMatch);
+            var applicationAggPipeline = builder.GetAggregateQueryPipelineDashboardApplications(applicationsMatch, employerReviewMatch);
+            var sharedApplicationAggPipeline = builder.GetAggregateQueryPipelineDashboardApplications(match, liveVacanciesMatch);
+            var closingSoonAggPipeline = builder.GetAggregateQueryPipelineVacanciesClosingSoonDashboard(applicationsMatch, employerReviewMatch);
             
             var dashboardValuesTask = RunDashboardAggPipelineQuery(aggPipelines);
-            var applicationDashboardValuesTask = RunApplicationsDashboardAggPipelineQuery(applicationAggPipeline);
+            var applicationDashboardValuesTask = ignoreGetApplicationReview ? Task.FromResult(new List<VacancyApplicationsDashboard>()) : RunApplicationsDashboardAggPipelineQuery(applicationAggPipeline);
+            var sharedApplicationDashboardValuesTask = ignoreGetApplicationReview ? Task.FromResult(new List<VacancySharedApplicationsDashboard>()) : RunSharedApplicationsDashboardAggPipelineQuery(sharedApplicationAggPipeline);
             var closingSoonDashboardValuesTask = RunApplicationsDashboardAggPipelineQuery(closingSoonAggPipeline);
             
-            await Task.WhenAll(dashboardValuesTask, applicationDashboardValuesTask, closingSoonDashboardValuesTask);
+            await Task.WhenAll(dashboardValuesTask, applicationDashboardValuesTask, sharedApplicationDashboardValuesTask, closingSoonDashboardValuesTask);
             return new VacancyDashboard
             {
                 VacancyStatusDashboard = dashboardValuesTask.Result,
-                VacancyApplicationsDashboard = applicationDashboardValuesTask.Result,
+                VacancyApplicationsDashboard =ignoreGetApplicationReview ? [] : applicationDashboardValuesTask.Result,
+                VacancySharedApplicationsDashboard = ignoreGetApplicationReview ? [] : sharedApplicationDashboardValuesTask.Result,
                 VacanciesClosingSoonWithNoApplications = closingSoonDashboardValuesTask.Result.FirstOrDefault()?.StatusCount ?? 0
             };
         }
         
-        public async Task<IList<VacancySummary>> GetProviderOwnedVacancySummariesByUkprnAsync(long ukprn, VacancyType vacancyType, int page, FilteringOptions? status, string searchTerm)
+        public async Task<IList<VacancySummary>> GetProviderOwnedVacancySummariesByUkprnAsync(long ukprn, int page, FilteringOptions? status, string searchTerm)
         {
             var bsonArray = new BsonArray
             {
-                vacancyType.ToString()
+                "Apprenticeship",
+                BsonNull.Value
             };
             
-            if (vacancyType == VacancyType.Apprenticeship)
-            {
-                bsonArray.Add(BsonNull.Value);
-            }
-
             var match = new BsonDocument
             {
                 {
                     "$match",
-                    BuildBsonDocumentFilterValues(ukprn,string.Empty, status, bsonArray, vacancyType)
+                    BuildBsonDocumentFilterValues(ukprn,string.Empty, status, bsonArray)
                 }
             };
             var secondaryMath = new BsonDocument
@@ -136,38 +164,70 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                 }
             };
             
-            var aggPipeline = VacancySummaryAggQueryBuilder.GetAggregateQueryPipeline(match, page,secondaryMath);
+            var aggPipeline = VacancySummaryAggQueryBuilder.GetAggregateQueryPipeline(match, page,secondaryMath, _isMongoMigrationFeatureEnabled);
 
-            return await RunAggPipelineQuery(aggPipeline);
+            var pipelineResult = await RunAggPipelineQuery(aggPipeline);
+
+            if (!_isMongoMigrationFeatureEnabled)
+                return pipelineResult;
+
+            // If the Mongo migration feature is enabled, retrieve the application review stats
+            var vacancyReferences = pipelineResult
+                .Where(x => x.VacancyReference.HasValue)
+                .Select(x => x.VacancyReference.Value)
+                .ToList();
+
+            var dashboardStats = await _trainingProviderService.GetProviderDashboardApplicationReviewStats(ukprn, vacancyReferences);
+
+            var applicationReviewStatsLookup = dashboardStats.ApplicationReviewStatsList
+                .ToDictionary(x => x.VacancyReference);
+
+            foreach (var vacancySummary in pipelineResult)
+            {
+                if (!vacancySummary.VacancyReference.HasValue ||
+                    !applicationReviewStatsLookup.TryGetValue(vacancySummary.VacancyReference.Value,
+                        out var applicationReview)) continue;
+
+                vacancySummary.NoOfSuccessfulApplications = applicationReview.SuccessfulApplications;
+                vacancySummary.NoOfUnsuccessfulApplications = applicationReview.UnsuccessfulApplications;
+                vacancySummary.NoOfNewApplications = applicationReview.NewApplications;
+                vacancySummary.NoOfSharedApplications = applicationReview.SharedApplications;
+                vacancySummary.NoOfEmployerReviewedApplications = applicationReview.EmployerReviewedApplications;
+            }
+
+            return pipelineResult;
         }
 
-        public async Task<IList<VacancySummary>> GetEmployerOwnedVacancySummariesByEmployerAccountId(string employerAccountId, VacancyType vacancyType, int page,
+        public async Task<IList<VacancySummary>> GetEmployerOwnedVacancySummariesByEmployerAccountId(string employerAccountId, int page,
             FilteringOptions? status, string searchTerm)
         {
             var bsonArray = new BsonArray
             {
-                vacancyType.ToString()
+                "Apprenticeship",
+                BsonNull.Value
             };
             
-            if (vacancyType == VacancyType.Apprenticeship)
-            {
-                bsonArray.Add(BsonNull.Value);
-            }
-
             var match = new BsonDocument
             {
                 {
                     "$match",
-                    BuildBsonDocumentFilterValues(null,employerAccountId, status, bsonArray, vacancyType)
+                    BuildBsonDocumentFilterValues(null,employerAccountId, status, bsonArray)
                 }
             };
-            var employerReviewMatch = new BsonDocument
-            {
+            var employerReviewMatch = (status != FilteringOptions.NewSharedApplications && status != FilteringOptions.AllSharedApplications )?
+                new BsonDocument
                 {
-                    "$match",
-                    BuildEmployerReviewMatch()
-                }
-            };
+                    {
+                        "$match",
+                        BuildEmployerReviewMatch()
+                    }
+                } : new BsonDocument
+                {
+                    {
+                        "$match",
+                        BuildSharedApplicationsVacanciesMatch()
+                    }
+                };
             var secondaryMath = new BsonDocument
             {
                 {
@@ -176,28 +236,50 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                 }
             };
             
-            var aggPipeline = VacancySummaryAggQueryBuilder.GetAggregateQueryPipeline(match, page,secondaryMath, employerReviewMatch);
+            var aggPipeline = VacancySummaryAggQueryBuilder.GetAggregateQueryPipeline(match, page,secondaryMath,_isMongoMigrationFeatureEnabled, employerReviewMatch);
 
-            return await RunAggPipelineQuery(aggPipeline);
+            var pipelineResult = await RunAggPipelineQuery(aggPipeline);
+
+            if (!_isMongoMigrationFeatureEnabled)
+                return pipelineResult;
+
+            // If the Mongo migration feature is enabled, retrieve the application review stats
+            var vacancyReferences = pipelineResult
+                .Where(x => x.VacancyReference.HasValue)
+                .Select(x => x.VacancyReference.Value)
+                .ToList();
+
+            var dashboardStats = await _employerAccountProvider.GetEmployerDashboardApplicationReviewStats(employerAccountId, vacancyReferences);
+
+            var applicationReviewStatsLookup = dashboardStats.ApplicationReviewStatsList
+                .ToDictionary(x => x.VacancyReference);
+
+            foreach (var vacancySummary in pipelineResult)
+            {
+                if (!vacancySummary.VacancyReference.HasValue ||
+                    !applicationReviewStatsLookup.TryGetValue(vacancySummary.VacancyReference.Value,
+                        out var applicationReview)) continue;
+
+                vacancySummary.NoOfSuccessfulApplications = applicationReview.SuccessfulApplications;
+                vacancySummary.NoOfUnsuccessfulApplications = applicationReview.UnsuccessfulApplications;
+                vacancySummary.NoOfNewApplications = applicationReview.NewApplications;
+                vacancySummary.NoOfSharedApplications = applicationReview.SharedApplications;
+                vacancySummary.NoOfEmployerReviewedApplications = applicationReview.EmployerReviewedApplications;
+            }
+
+            return pipelineResult;
         }
 
-        public async Task<IList<TransferInfo>> GetTransferredFromProviderAsync(long ukprn, VacancyType vacancyType)
+        public async Task<IList<TransferInfo>> GetTransferredFromProviderAsync(long ukprn)
         {
             var builder = Builders<VacancyTransferInfo>.Filter;
             var filter = builder.Eq(TransferInfoUkprn, ukprn) &
                          builder.Eq(TransferInfoReason, TransferReason.EmployerRevokedPermission.ToString()) &
                          builder.In("VacancyType",new []{"Apprenticeship", null});
 
-            if (vacancyType == VacancyType.Traineeship)
-            {
-                filter = builder.Eq(TransferInfoUkprn, ukprn) &
-                        builder.Eq(TransferInfoReason, TransferReason.EmployerRevokedPermission.ToString()) &
-                        builder.Eq("VacancyType", "Traineeship" );
-            }
-            
             var collection = GetCollection<VacancyTransferInfo>();
 
-            var result = await RetryPolicy.Execute(_ =>
+            var result = await RetryPolicy.ExecuteAsync(_ =>
                     collection.Find(filter)
                         .Project<VacancyTransferInfo>(GetProjection<VacancyTransferInfo>())
                         .ToListAsync(),
@@ -206,23 +288,20 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
             return result.Select(v => v.TransferInfo).ToList();
         }
 
-        public async Task<long> VacancyCount(long? ukprn, string employerAccountId, VacancyType vacancyType, FilteringOptions? filteringOptions, string searchTerm, OwnerType ownerType)
+        public async Task<long> VacancyCount(long? ukprn, string employerAccountId, FilteringOptions? filteringOptions, string searchTerm, OwnerType ownerType)
         {
             var bsonArray = new BsonArray
             {
-                vacancyType.ToString()
+                "Apprenticeship",
+                BsonNull.Value
             };
             
-            if (vacancyType == VacancyType.Apprenticeship)
-            {
-                bsonArray.Add(BsonNull.Value);
-            }
 
             var match = new BsonDocument
             {
                 {
                     "$match",
-                    BuildBsonDocumentFilterValues(ukprn, employerAccountId, filteringOptions, bsonArray, vacancyType)
+                    BuildBsonDocumentFilterValues(ukprn, employerAccountId, filteringOptions, bsonArray)
                 }
             };
             var secondaryMath = new BsonDocument
@@ -232,17 +311,30 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                     BuildSecondaryBsonDocumentFilter(filteringOptions, searchTerm)
                 }
             };
-
-            var employerReviewMatch = ownerType == OwnerType.Employer ? 
+            var employerReviewMatch = (filteringOptions != FilteringOptions.NewSharedApplications && filteringOptions != FilteringOptions.AllSharedApplications )?
                 new BsonDocument
                 {
                     {
                         "$match",
                         BuildEmployerReviewMatch()
                     }
-                } : null;
-            
-            var aggPipeline = VacancySummaryAggQueryBuilder.GetAggregateQueryPipelineDocumentCount(match,secondaryMath, employerReviewMatch);
+                } : new BsonDocument
+                {
+                    {
+                        "$match",
+                        BuildSharedApplicationsVacanciesMatch()
+                    }
+                };
+
+            var aggPipeline = VacancySummaryAggQueryBuilder.GetAggregateQueryPipelineDocumentCount(match,secondaryMath, string.IsNullOrEmpty(employerAccountId) ? null: employerReviewMatch);
+
+            if (_isMongoMigrationFeatureEnabled)
+            {
+                var collectionList = aggPipeline.ToList();
+                collectionList.RemoveAll(stage => stage.GetElement(0).Name == "$lookup"
+                                                  && stage["$lookup"]["from"] == "applicationReviews");
+                aggPipeline = collectionList.ToArray();
+            }
 
             return await RunAggPipelineCountQuery(aggPipeline);
         }
@@ -252,7 +344,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
             var db = GetDatabase();
             var collection = db.GetCollection<BsonDocument>(MongoDbCollectionNames.Vacancies);
             
-            var vacancyDashboard = await RetryPolicy.Execute(async context =>
+            var vacancyDashboard = await RetryPolicy.ExecuteAsync(async context =>
                 {
                     var aggResults = await collection.AggregateAsync<VacancyDashboardAggQueryResponseDto>(pipeline);
                     return await aggResults.ToListAsync();
@@ -268,7 +360,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
             var db = GetDatabase();
             var collection = db.GetCollection<BsonDocument>(MongoDbCollectionNames.Vacancies);
             
-            var vacancyDashboard = await RetryPolicy.Execute(async context =>
+            var vacancyDashboard = await RetryPolicy.ExecuteAsync(async context =>
                 {
                     var aggResults = await collection.AggregateAsync<VacancyApplicationsDashboardResponseDto>(pipeline);
                     return await aggResults.ToListAsync();
@@ -278,12 +370,28 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
             return vacancyDashboard.Select(VacancyDashboardApplicationsMapper.MapFromVacancyApplicationsDashboardResponseDto).ToList();
         }
 
+        private async Task<List<VacancySharedApplicationsDashboard>> RunSharedApplicationsDashboardAggPipelineQuery(
+           BsonDocument[] pipeline)
+        {
+            var db = GetDatabase();
+            var collection = db.GetCollection<BsonDocument>(MongoDbCollectionNames.Vacancies);
+
+            var vacancyDashboard = await RetryPolicy.ExecuteAsync(async context =>
+            {
+                var aggResults = await collection.AggregateAsync<VacancySharedApplicationsDashboardResponseDto>(pipeline);
+                return await aggResults.ToListAsync();
+            },
+                new Context(nameof(RunSharedApplicationsDashboardAggPipelineQuery)));
+
+            return vacancyDashboard.Select(VacancyDashboardSharedApplicationsMapper.MapFromVacancySharedApplicationsDashboardResponseDto).ToList();
+        }
+
         private async Task<long> RunAggPipelineCountQuery(BsonDocument[] pipeline)
         {
             var db = GetDatabase();
             var collection = db.GetCollection<BsonDocument>(MongoDbCollectionNames.Vacancies);
             
-            var vacancySummaries = await RetryPolicy.Execute(async context =>
+            var vacancySummaries = await RetryPolicy.ExecuteAsync(async context =>
                 {
                     var aggResults = await collection.AggregateAsync<CountResponseDto>(pipeline);
                     return await aggResults.FirstOrDefaultAsync();
@@ -296,8 +404,16 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
         {
             var db = GetDatabase();
             var collection = db.GetCollection<BsonDocument>(MongoDbCollectionNames.Vacancies);
+
+            if (_isMongoMigrationFeatureEnabled)
+            {
+                var collectionList = pipeline.ToList();
+                collectionList.RemoveAll(stage => stage.GetElement(0).Name == "$lookup"
+                                                  && stage["$lookup"]["from"] == "applicationReviews");
+                pipeline = collectionList.ToArray();
+            }
             
-            var vacancySummaries = await RetryPolicy.Execute(async context =>
+            var vacancySummaries = await RetryPolicy.ExecuteAsync(async context =>
                 {
                     var aggResults = await collection.AggregateAsync<VacancySummaryAggQueryResponseDto>(pipeline);
                     return await aggResults.ToListAsync();
@@ -305,35 +421,67 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                 new Context(nameof(RunAggPipelineQuery)));
 
             return vacancySummaries
-                    .Select(dto => VacancySummaryMapper.MapFromVacancySummaryAggQueryResponseDto(dto, _vacancyTaskListStatusService.IsTaskListCompleted(dto.Id)))
+                    .Select(VacancySummaryMapper.MapFromVacancySummaryAggQueryResponseDto)
                     .ToList();
         }
 
         private static BsonDocument BuildSecondaryBsonDocumentFilter(FilteringOptions? filteringOptions, string searchTerm)
         {
             var document = new BsonDocument();
-
+            
             if (filteringOptions.HasValue)
             {
+                var bsonArray = new BsonArray();
                 switch (filteringOptions)
                 {
                     case FilteringOptions.NewApplications:
-                        document.Add("noOfNewApplications", new BsonDocument {{"$gt", 0}});
+                        bsonArray.Add(ApplicationReviewStatus.New.ToString());
                         break;
                     case FilteringOptions.AllApplications:
-                        document.Add("noOfApplications", new BsonDocument {{"$gt", 0}});
+                        bsonArray.Add(ApplicationReviewStatus.New.ToString());
+                        bsonArray.Add(ApplicationReviewStatus.Unsuccessful.ToString());
+                        bsonArray.Add(ApplicationReviewStatus.Successful.ToString());
+                        break;
+                    case FilteringOptions.NewSharedApplications:
+                        bsonArray.Add(ApplicationReviewStatus.Shared.ToString());
+                        break;
+                    case FilteringOptions.AllSharedApplications:
+                        document.Add("candidateApplicationReview.dateSharedWithEmployer", new BsonDocument { { "$gt", "1900-01-01T01:00:00.389Z" } });
+                        break;
+                    case FilteringOptions.EmployerReviewedApplications:
+                        bsonArray.Add(ApplicationReviewStatus.EmployerUnsuccessful.ToString());
+                        bsonArray.Add(ApplicationReviewStatus.EmployerInterviewing.ToString());
                         break;
                     case FilteringOptions.ClosingSoonWithNoApplications:
-                        document.Add("noOfApplications", 0);
+                        document.Add("candidateApplicationReview",  BsonNull.Value );  
                         break;
                 }
-            }
 
+                if (bsonArray.Count > 0)
+                {
+                    document.Add("candidateApplicationReview.status", new BsonDocument { { "$in", bsonArray } });    
+                    document.Add("candidateApplicationReview.isWithdrawn", new BsonDocument { { "$in", new BsonArray([false, BsonNull.Value]) } });    
+                }
+                
+            }
+            
             if (!string.IsNullOrEmpty(searchTerm))
             {
-                document.Add("_id.searchField", new BsonRegularExpression($"/{searchTerm.ToLower()}/"));
+                var bsonArray = new BsonArray
+                {
+                    new BsonDocument{{"title",new BsonRegularExpression(Regex.Escape(searchTerm.ToLower()),"i" )}},
+                    new BsonDocument{{"legalEntityName",new BsonRegularExpression(Regex.Escape(searchTerm.ToLower()),"i" )}}
+                };
+                if (long.TryParse(searchTerm.Replace("vac","", StringComparison.CurrentCultureIgnoreCase), out var vacancyRef))
+                {
+                    bsonArray.Add(new BsonDocument{{"vacancyReference",vacancyRef}});
+                }
+                document.AddRange( new BsonDocument
+                {
+                    {"$or", bsonArray}
+                });
             }
-
+            
             return document;
         }
 
@@ -350,8 +498,22 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
             
             return document;
         }
-        
-        private static BsonDocument BuildBsonDocumentFilterValues(long? ukprn, string employerAccountId, FilteringOptions? status, BsonArray bsonArray, VacancyType? vacancyType)
+
+        private static BsonDocument BuildSharedApplicationsVacanciesMatch()
+        {
+            var document = new BsonDocument
+            {
+                {"$and", new BsonArray
+                {
+                    new BsonDocument{{"ownerType","Provider"}},
+                    new BsonDocument{{"$or", new BsonArray{ new BsonDocument{{"status", "Live"}}, new BsonDocument{{"status","Closed"}} }} }
+                }}
+            };
+
+            return document;
+        }
+
+        private static BsonDocument BuildBsonDocumentFilterValues(long? ukprn, string employerAccountId, FilteringOptions? status, BsonArray bsonArray)
         {
             var document = new BsonDocument
             {
@@ -395,10 +557,27 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                     case FilteringOptions.ClosingSoonWithNoApplications:
                         document.Add("status", VacancyStatus.Live.ToString());
                         document.Add("closingDate", new BsonDocument {{"$lte",BsonDateTime.Create(DateTime.UtcNow.AddDays(ClosingSoonDays))}});
-                        document.Add("applicationMethod", vacancyType == VacancyType.Apprenticeship ? ApplicationMethod.ThroughFindAnApprenticeship:ApplicationMethod.ThroughFindATraineeship);
+                        document.Add("applicationMethod", ApplicationMethod.ThroughFindAnApprenticeship.ToString());
                         break;
                     case FilteringOptions.Transferred:
                         document.Add("transferInfo.transferredDate", new BsonDocument {{"$nin", new BsonArray {BsonNull.Value}}});
+                        break;
+                    case FilteringOptions.NewSharedApplications:
+                    case FilteringOptions.AllSharedApplications:
+                        var vacancyStatuses = new BsonArray
+                        {
+                            VacancyStatus.Live.ToString(),
+                            VacancyStatus.Closed.ToString()
+                        };
+                        document.Add("status", new BsonDocument{{"$in", vacancyStatuses }});
+                        document.Add("ownerType", "Provider");
+                        break;
+                    case FilteringOptions.Dashboard:
+                        document.Add("status", new BsonDocument{{"$in", new BsonArray
+                        {
+                            VacancyStatus.Live.ToString(),
+                            VacancyStatus.Closed.ToString()
+                        } }});
                         break;
                 }
                 

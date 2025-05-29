@@ -10,8 +10,6 @@ using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
-using Esfa.Recruit.Vacancies.Client.Application.Configuration;
-using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -21,34 +19,25 @@ namespace Esfa.Recruit.Provider.Web.Controllers
     public class VacancyPreviewController : Controller
     {
         private readonly VacancyPreviewOrchestrator _orchestrator;
-        private readonly ServiceParameters _serviceParameters;
 
-        public VacancyPreviewController(VacancyPreviewOrchestrator orchestrator, ServiceParameters serviceParameters)
+
+        public VacancyPreviewController(VacancyPreviewOrchestrator orchestrator)
         {
             _orchestrator = orchestrator;
-            _serviceParameters = serviceParameters;
         }
 
-        [HttpGet("preview", Name = RouteNames.Vacancy_Preview_Get)]
-        public async Task<IActionResult> VacancyPreview(VacancyRouteModel vrm)
-        {
-            var viewModel = await _orchestrator.GetVacancyPreviewViewModelAsync(vrm);
-
-            if (TempData.ContainsKey(TempDataKeys.VacancyPreviewInfoMessage))
-                viewModel.InfoMessage = TempData[TempDataKeys.VacancyPreviewInfoMessage].ToString();
-
-            AddSoftValidationErrorsToModelState(viewModel);
-            viewModel.SetSectionStates(viewModel, ModelState);
-
-            viewModel.CanHideValidationSummary = true;
-
-            return View(viewModel);
-        }
-
-        [HttpPost("preview", Name = RouteNames.Preview_Submit_Post)]
+        [HttpPost("advert-preview", Name = RouteNames.Preview_Submit_Post)]
         [Authorize(Policy = nameof(PolicyNames.HasContributorOrAbovePermission))]
         public async Task<IActionResult> Submit(SubmitEditModel m)
         {
+            var viewModel = await _orchestrator.GetVacancyPreviewViewModelAsync(m);
+
+            if (!ModelState.IsValid)
+            {
+                viewModel.SoftValidationErrors = null;
+                return View("AdvertPreview", viewModel);
+            }
+
             var response = await _orchestrator.SubmitVacancyAsync(m, User.ToVacancyUser());
 
             if (!response.Success)
@@ -76,11 +65,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
             if(response.Errors.Errors.Any(e => e.ErrorCode == ErrorCodes.TrainingProviderMustHaveEmployerPermission))
                 throw new MissingPermissionsException(string.Format(RecruitWebExceptionMessages.ProviderMissingPermission, m.Ukprn));
 
-            var viewModel = await _orchestrator.GetVacancyPreviewViewModelAsync(m);
-
             viewModel.SoftValidationErrors = null;
-            viewModel.SetSectionStates(viewModel, ModelState);
-
             return View(ViewNames.VacancyPreview, viewModel);
         }
         
@@ -93,12 +78,8 @@ namespace Esfa.Recruit.Provider.Web.Controllers
                 viewModel.InfoMessage = TempData[TempDataKeys.VacancyPreviewInfoMessage].ToString();
 
             AddSoftValidationErrorsToModelState(viewModel);
-            viewModel.SetSectionStates(viewModel, ModelState);
-
             viewModel.CanHideValidationSummary = true;
-
-            var isApprenticeship = _serviceParameters.VacancyType.GetValueOrDefault() == VacancyType.Apprenticeship;
-            return View(isApprenticeship ? ViewNames.AdvertPreview : ViewNames.AdvertPreviewTraineeship, viewModel);
+            return View(ViewNames.AdvertPreview , viewModel);
         }
 
         private void AddSoftValidationErrorsToModelState(VacancyPreviewViewModel viewModel)

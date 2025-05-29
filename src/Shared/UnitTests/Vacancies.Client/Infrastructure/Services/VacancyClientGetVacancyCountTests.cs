@@ -17,14 +17,13 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
             long ukprn,
             long vacancyCount,
             string searchTerm,
-            VacancyType vacancyType,
             FilteringOptions? filteringOptions,
             [Frozen] Mock<IVacancySummariesProvider> vacanciesSummaryProvider,
             VacancyClient vacancyClient)
         {
-            vacanciesSummaryProvider.Setup(x => x.VacancyCount(ukprn, string.Empty, vacancyType, filteringOptions, searchTerm, OwnerType.Provider)).ReturnsAsync(vacancyCount);
+            vacanciesSummaryProvider.Setup(x => x.VacancyCount(ukprn, string.Empty, filteringOptions, searchTerm, OwnerType.Provider)).ReturnsAsync(vacancyCount);
 
-            var actual = await vacancyClient.GetVacancyCount(ukprn,  vacancyType, filteringOptions, searchTerm);
+            var actual = await vacancyClient.GetVacancyCount(ukprn, filteringOptions, searchTerm);
 
             actual.Should().Be(vacancyCount);
         }
@@ -34,14 +33,13 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
             long vacancyCount,
             string searchTerm,
             string employerAccountId,
-            VacancyType vacancyType,
             FilteringOptions? filteringOptions,
             [Frozen] Mock<IVacancySummariesProvider> vacanciesSummaryProvider,
             VacancyClient vacancyClient)
         {
-            vacanciesSummaryProvider.Setup(x => x.VacancyCount(null, employerAccountId, vacancyType, filteringOptions, searchTerm, OwnerType.Employer)).ReturnsAsync(vacancyCount);
+            vacanciesSummaryProvider.Setup(x => x.VacancyCount(null, employerAccountId, filteringOptions, searchTerm, OwnerType.Employer)).ReturnsAsync(vacancyCount);
 
-            var actual = await vacancyClient.GetVacancyCount(employerAccountId,  vacancyType, filteringOptions, searchTerm);
+            var actual = await vacancyClient.GetVacancyCount(employerAccountId, filteringOptions, searchTerm);
 
             actual.Should().Be(vacancyCount);
         }

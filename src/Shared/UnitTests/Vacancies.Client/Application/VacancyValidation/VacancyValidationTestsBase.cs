@@ -1,18 +1,18 @@
-﻿using Esfa.Recruit.UnitTests.Vacancies.Client.Application.Rules.VacancyRules;
-using Esfa.Recruit.Vacancies.Client.Application.Configuration;
+﻿using Esfa.Recruit.Vacancies.Client.Application.Configuration;
+using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
 using Esfa.Recruit.Vacancies.Client.Application.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.Services;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.ApprenticeshipProgrammes;
+using Esfa.Recruit.Vacancies.Client.Infrastructure.Services;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.ProviderRelationship;
+using Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.Rules.VacancyRules;
 using Microsoft.Extensions.Logging;
-using Moq;
 
-namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation
+namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Application.VacancyValidation
 {
     public abstract class VacancyValidationTestsBase
     {
@@ -24,9 +24,8 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation
         protected readonly Mock<IBlockedOrganisationQuery> MockBlockedOrganisationRepo;
         protected readonly TestProfanityListProvider MockProfanityListProvider;
         protected readonly Mock<IProviderRelationshipsService> MockProviderRelationshipsService;
-        protected ServiceParameters ServiceParameters;
         protected ITimeProvider TimeProvider;
-
+        protected readonly Mock<IFeature> Feature;
 
         protected VacancyValidationTestsBase()
         {
@@ -40,8 +39,8 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation
             MockBlockedOrganisationRepo = new Mock<IBlockedOrganisationQuery>();
             MockProfanityListProvider = new TestProfanityListProvider();
             MockProviderRelationshipsService = new Mock<IProviderRelationshipsService>();
-            ServiceParameters = new ServiceParameters("Apprenticeship");
             TimeProvider = new CurrentUtcTimeProvider();
+            Feature = new Mock<IFeature>();
         }
 
         protected IEntityValidator<Vacancy, VacancyRuleSet> Validator
@@ -51,7 +50,7 @@ namespace Esfa.Recruit.UnitTests.Vacancies.Client.Application.VacancyValidation
                 var fluentValidator = new FluentVacancyValidator(TimeProvider, MockMinimumWageService.Object, 
                     MockApprenticeshipProgrammeProvider.Object, MockQualificationsProvider.Object, SanitizerService, 
                     MockTrainingProviderSummaryProvider.Object, MockBlockedOrganisationRepo.Object,
-                    MockProfanityListProvider, MockProviderRelationshipsService.Object, ServiceParameters);
+                    MockProfanityListProvider, MockProviderRelationshipsService.Object);
                 return new EntityValidator<Vacancy, VacancyRuleSet>(fluentValidator);
             }
         }

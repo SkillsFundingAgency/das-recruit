@@ -4,6 +4,7 @@
     {
         FixedWage,
         NationalMinimumWageForApprentices,
-        NationalMinimumWage
+        NationalMinimumWage,
+        CompetitiveSalary
     }
 }

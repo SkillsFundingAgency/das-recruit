@@ -1,13 +1,15 @@
 ﻿using Esfa.Recruit.Provider.Web.Filters;
 using Esfa.Recruit.Provider.Web.Interfaces;
 using Esfa.Recruit.Provider.Web.Mappings;
+using Esfa.Recruit.Provider.Web.Models.AddLocation;
+using Esfa.Recruit.Provider.Web.Models.ApplicationReviews;
+using Esfa.Recruit.Provider.Web.Models.Validators;
 using Esfa.Recruit.Provider.Web.Orchestrators;
 using Esfa.Recruit.Shared.Web.Configuration;
 using Esfa.Recruit.Shared.Web.Mappers;
 using Esfa.Recruit.Shared.Web.RuleTemplates;
 using Esfa.Recruit.Shared.Web.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Configuration;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.FAA;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -21,8 +23,14 @@ using Esfa.Recruit.Vacancies.Client.Ioc;
 using FluentValidation;
 using Esfa.Recruit.Provider.Web.Services;
 using Esfa.Recruit.Provider.Web.TagHelpers;
+using Esfa.Recruit.Provider.Web.ViewModels.ApplicationReviews;
 using Esfa.Recruit.Shared.Web.Orchestrators;
-using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Esfa.Recruit.Provider.Web.ViewModels.Validations.Fluent;
+using Esfa.Recruit.Provider.Web.RouteModel;
+using Esfa.Recruit.Provider.Web.ViewModels.Part1.Wage;
+using Esfa.Recruit.Provider.Web.ViewModels.Validations;
+using Esfa.Recruit.Shared.Web.Domain;
 
 namespace Esfa.Recruit.Provider.Web.Configuration
 {
@@ -30,10 +38,6 @@ namespace Esfa.Recruit.Provider.Web.Configuration
     {
         public static void AddIoC(this IServiceCollection services, IConfiguration configuration)
         {
-            var serviceParameters = new ServiceParameters(configuration[$"RecruitConfiguration:{nameof(VacancyType)}"]);
-            
-            services.AddSingleton(serviceParameters);
-            
             services.AddRecruitStorageClient(configuration);
 
             //Configuration
@@ -41,7 +45,6 @@ namespace Esfa.Recruit.Provider.Web.Configuration
             services.Configure<ExternalLinksConfiguration>(configuration.GetSection("ExternalLinks"));
             services.Configure<AuthenticationConfiguration>(configuration.GetSection("Authentication"));
             services.Configure<GoogleAnalyticsConfiguration>(configuration.GetSection("GoogleAnalytics"));
-            services.Configure<FaaConfiguration>(configuration.GetSection("FaaConfiguration"));
             services.Configure<ZenDeskConfiguration>(configuration.GetSection("ZenDesk"));
             services.AddSingleton<ProviderApprenticeshipsLinkHelper>();
             services.AddFeatureToggle();
@@ -56,13 +59,12 @@ namespace Esfa.Recruit.Provider.Web.Configuration
 
             RegisterFilterDeps(services);
 
-            RegisterDynamicConfigurationDeps(services);
-
             RegisterFluentValidators(services);
         }
 
         private static void RegisterServiceDeps(IServiceCollection services, IConfiguration configuration)
         {
+            services.AddTransient<ITaskListValidator, TaskListValidator>();
             services.AddTransient<IGeocodeImageService>(_ => new GoogleMapsGeocodeImageService(configuration.GetValue<string>("RecruitConfiguration:GoogleMapsPrivateKey")));
             services.AddTransient<IReviewSummaryService, ReviewSummaryService>();
             services.AddTransient<ILegalEntityAgreementService, LegalEntityAgreementService>();
@@ -70,15 +72,29 @@ namespace Esfa.Recruit.Provider.Web.Configuration
             services.AddTransient<IProviderAlertsViewModelFactory, ProviderAlertsViewModelFactory>();
             services.AddTransient<ITrainingProviderAgreementService, TrainingProviderAgreementService>();
             services.AddTransient<IUtility, Utility>();
-
+            services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
             services.AddTransient<IFieldReviewHelper, FieldReviewHelper>();
+            services.AddSingleton<IReviewFieldIndicatorService, ReviewFieldIndicatorService>();
+            services.AddSingleton<IVacancyLocationService, VacancyLocationService>();
         }
 
         private static void RegisterFluentValidators(IServiceCollection services)
         {
+            services.AddSingleton<IValidator<CompetitiveWageEditModel>, CompetitiveWageEditModelValidator>();
             services.AddSingleton<IValidator<ApplicationReviewEditModel>, ApplicationReviewEditModelValidator>();
+
+            services.AddSingleton<IValidator<WageEditModel>, WageEditModelValidator>();
+
+            services.AddSingleton<IValidator<ApplicationReviewFeedbackViewModel>, ApplicationReviewFeedbackModelValidator>();
+            services.AddSingleton<IValidator<ApplicationReviewsToUnsuccessfulFeedbackViewModel>, ApplicationReviewsFeedbackModelValidator>();
+            services.AddSingleton<IValidator<ApplicationReviewsToUnsuccessfulRequest>, ApplicationReviewsToUnsuccessfulModelValidator>();
+            services.AddSingleton<IValidator<ApplicationReviewsToUnsuccessfulConfirmationViewModel>, ApplicationReviewsToUnsuccessfulConfirmationModelValidator>();
+
             services.AddSingleton<IValidator<ApplicationReviewStatusConfirmationEditModel>, ApplicationReviewStatusConfirmationEditModelValidator>();
             services.AddSingleton<IValidator<ProviderApplicationsReportCreateEditModel>, ProviderApplicationsReportCreateEditModelValidator>();
+            services.AddSingleton<IValidator<ApplicationReviewsToShareRouteModel>, ApplicationReviewsToShareModelValidator>();
+            services.AddSingleton<IValidator<AddLocationEditModel>, AddLocationEditModelValidator>();
+            services.AddSingleton<IValidator<EnterLocationManuallyEditModel>, EnterLocationManuallyEditModelValidator>();
         }
 
         private static void RegisterOrchestratorDeps(IServiceCollection services)
@@ -103,13 +119,16 @@ namespace Esfa.Recruit.Provider.Web.Configuration
             services.AddTransient<NumberOfPositionsOrchestrator>();
             services.AddTransient<TrainingOrchestrator>();
             services.AddTransient<VacancyDescriptionOrchestrator>();
+            services.AddTransient<IVacancyAnalyticsOrchestrator, VacancyAnalyticsOrchestrator>();
             services.AddTransient<VacancyManageOrchestrator>();
             services.AddTransient<VacancyPreviewOrchestrator>();
             services.AddTransient<VacancyViewOrchestrator>();
-            services.AddTransient<WageOrchestrator>();
+            services.AddTransient<IWageOrchestrator, WageOrchestrator>();
+            services.AddTransient<ICustomWageOrchestrator,CustomWageOrchestrator>();
             services.AddTransient<CloseVacancyOrchestrator>();
             services.AddTransient<EditVacancyDatesOrchestrator>();
-            services.AddTransient<ApplicationReviewOrchestrator>();
+            services.AddTransient<IApplicationReviewOrchestrator, ApplicationReviewOrchestrator>();
+            services.AddTransient<IApplicationReviewsOrchestrator, ApplicationReviewsOrchestrator>();
             services.AddTransient<CloneVacancyOrchestrator>();
             services.AddTransient<DeleteVacancyOrchestrator>();
             services.AddTransient<ReportDashboardOrchestrator>();
@@ -123,10 +142,11 @@ namespace Esfa.Recruit.Provider.Web.Configuration
             services.AddTransient<ProviderAgreementOrchestrator>();
             services.AddTransient<DurationOrchestrator>();
             services.AddTransient<VacancyTaskListOrchestrator>();
+            services.AddTransient<VacancyCheckYourAnswersOrchestrator>();
             services.AddTransient<FutureProspectsOrchestrator>();
-            services.AddTransient<WorkExperienceOrchestrator>();
-            services.AddTransient<TraineeSectorOrchestrator>();
             services.AddTransient<IAdditionalQuestionsOrchestrator, AdditionalQuestionsOrchestrator>();
+            services.AddTransient<VacancyWorkDescriptionOrchestrator>();
+            services.AddTransient<VacancyHowWillTheApprenticeTrainOrchestrator>();
         }
 
         private static void RegisterMapperDeps(IServiceCollection services)
@@ -138,18 +158,8 @@ namespace Esfa.Recruit.Provider.Web.Configuration
 
         private static void RegisterFilterDeps(IServiceCollection services)
         {
-            services.AddScoped<PlannedOutageResultFilter>();
             services.AddScoped<GoogleAnalyticsFilter>();
             services.AddScoped<ZendeskApiFilter>();
-        }
-
-        private static void RegisterDynamicConfigurationDeps(IServiceCollection services)
-        {
-            services.AddSingleton(x =>
-            {
-                var svc = x.GetService<IConfigurationReader>();
-                return svc.GetAsync<ProviderRecruitSystemConfiguration>("ProviderRecruitSystem").Result;
-            });
         }
     }
 }

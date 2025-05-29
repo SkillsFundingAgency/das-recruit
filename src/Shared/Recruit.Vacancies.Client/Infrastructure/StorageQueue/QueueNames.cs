@@ -12,11 +12,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.StorageQueue
         public const string GenerateAllVacancyApplicationsQueueName = "generate-all-vacancy-applications-queue";
         public const string GeneratePublishedVacanciesQueueName = "generate-published-vacancies-queue";
         public const string GenerateVacancyAnalyticsQueueName = "generate-vacancy-analytics-summary";
+        public const string GenerateV2VacancyAnalyticsQueueName = "generate-vacancy-analytics-summary-v2";
         public const string ApplicationSubmittedQueueName = "application-submitted-queue";
         public const string ApplicationWithdrawnQueueName = "application-withdrawn-queue";
         public const string CandidateDeleteQueueName = "candidate-delete-queue";
         public const string ReportQueueName = "report-queue";
-        public const string UpdateApprenticeProgrammesQueueName = "update-apprenticeship-programmes-queue";
         public const string UpdateQaDashboardQueueName = "update-qa-dashboard-queue";
         public const string DeleteReportsQueueName = "delete-reports-queue";
         public const string TransferVacanciesFromProviderQueueName = "transfer-vacancies-from-provider-queue";
@@ -31,5 +31,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.StorageQueue
         public const string DataMigrationQueueName = "data-migration";
         public const string CommunicationsHouseKeepingQueueName = "communications-house-keeping-queue";
         public const string UpdateProvidersQueueName = "update-providers-queue";
+        public const string UpdateProviderInfoQueueName = "update-provider-info-queue";
     }
 }

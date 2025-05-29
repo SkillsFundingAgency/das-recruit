@@ -22,10 +22,19 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
         Task<IEnumerable<EmployerInfo>> GetProviderEmployerVacancyDatasAsync(long ukprn, IList<string> employerAccountIds);
         Task<VacancyApplications> GetVacancyApplicationsAsync(string vacancyReference);
         Task<QaDashboard> GetQaDashboardAsync();
-        Task<ProviderDashboard> GetProviderDashboardAsync(long ukprn, VacancyType vacancyType);
+        Task<ProviderDashboard> GetProviderDashboardAsync(long ukprn);
         Task<VacancyAnalyticsSummary> GetVacancyAnalyticsSummaryAsync(long vacancyReference);
         Task<BlockedProviderOrganisations> GetBlockedProvidersAsync();
         Task<IEnumerable<LiveVacancy>> GetLiveExpiredVacancies(DateTime closingDate);
         Task<ClosedVacancy> GetClosedVacancy(long vacancyReference);
+        Task<IEnumerable<ClosedVacancy>> GetClosedVacancies(IList<long> vacancyReferences);
+        Task<IEnumerable<LiveVacancy>> GetAllLiveVacancies(int vacanciesToSkip, int vacanciesToGet);
+        Task<IEnumerable<LiveVacancy>> GetAllLiveVacanciesOnClosingDate(int vacanciesToSkip, int vacanciesToGet, DateTime closingDate);
+        Task<long> GetAllLiveVacanciesCount();
+        Task<long> GetAllLiveVacanciesOnClosingDateCount(DateTime closingDate);
+        Task<long> GetTotalPositionsAvailableCount();
+        Task<LiveVacancy> GetLiveVacancy(long vacancyReference);
+        Task<LiveVacancy> GetLiveExpiredVacancy(long vacancyReference);
+        Task<VacancyAnalyticsSummaryV2> GetVacancyAnalyticsSummaryV2Async(string vacancyReference);
     }
 }

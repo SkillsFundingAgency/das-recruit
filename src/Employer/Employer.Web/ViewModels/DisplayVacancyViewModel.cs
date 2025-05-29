@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using Esfa.Recruit.Employer.Web.RouteModel;
+using Esfa.Recruit.Shared.Web.Extensions;
+using AvailableWhereType = Esfa.Recruit.Vacancies.Client.Domain.Entities.AvailableWhere;
 
 namespace Esfa.Recruit.Employer.Web.ViewModels
 {
@@ -26,25 +28,35 @@ namespace Esfa.Recruit.Employer.Web.ViewModels
         public string ExpectedDuration { get; internal set; }
         public string FindAnApprenticeshipUrl { get; internal set; }
         public string HoursPerWeek { get; internal set; }
-        public bool IsAnonymous { get; internal set; }
+        public bool IsAnonymous { get; set; }
         public bool IsDisabilityConfident { get; internal set; }
         public Address Location { get; internal set; }
-        public IEnumerable<string> EmployerAddressElements { get; internal set; }
+        public IEnumerable<string> EmployerAddressElements { get; set; }
+        public AvailableWhereType? AvailableWhere { get; set; }
+        public IEnumerable<Address> AvailableLocations { get; set; }
+        public string? LocationInformation { get; internal set; }
         public string MapUrl { get; internal set; }
         public string NumberOfPositions { get; internal set; }
         public string NumberOfPositionsCaption { get; internal set; }
+        public string OrganisationName { get; internal set; }
         public string OutcomeDescription { get; internal set; }
         public string PossibleStartDate { get; internal set; } 
         public string PostedDate { get; internal set; }
         public string ProviderName { get; internal set; }
         public List<ProviderReviewFieldIndicator> ProviderReviewFieldIndicators { get; internal set; }
-        public IEnumerable<string> Qualifications { get; internal set; }
+        public List<string>? Qualifications { get; internal set; }
+        public bool? HasOptedToAddQualifications { get; set; }
+        public List<string>? QualificationsEssential{ get; set; }
+        public List<string>? QualificationsDesired { get; set; }
         public string ShortDescription { get; internal set; }
         public IEnumerable<string> Skills { get; internal set; }
         public string ThingsToConsider { get; internal set; }
         public string Title { get; internal set; }
         public string TrainingDescription { get; internal set; }
+        public string AdditionalTrainingDescription { get; internal set; }
         public string TrainingTitle { get; internal set; }
+        public List<string> CourseCoreDuties { get; internal set; } = [];
+        public List<string> CourseSkills { get; internal set; } = [];
         public string TrainingType { get; internal set; }
         public string TrainingLevel { get; internal set; }
         public string TransferredProviderName { get; internal set; }
@@ -55,7 +67,11 @@ namespace Esfa.Recruit.Employer.Web.ViewModels
         public string WageInfo { get; internal set; }
         public string WageText { get; internal set; }
         public string WorkingWeekDescription { get; internal set; }
+        public string CompanyBenefitsInformation { get; internal set; }
+        public WageType? WageType { get; internal set; }
+        public bool HasCompetitiveSalaryType => WageType.HasValue && WageType.Value == Recruit.Vacancies.Client.Domain.Entities.WageType.CompetitiveSalary;
         public string AccountLegalEntityPublicHashedId { get ; set ; }
+        public ApprenticeshipTypes ApprenticeshipType { get; set; }
 
         private string _additionalQuestion1;
         public string AdditionalQuestion1 
@@ -107,7 +123,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels
 
         public bool HasSkills => Skills != null && Skills.Any();
 
-        public bool HasQualifications => Qualifications != null && Qualifications.Any();
+        public bool HasQualifications => HasOptedToAddQualifications is false || (Qualifications != null && Qualifications.Any());
 
         public bool HasThingsToConsider => !string.IsNullOrWhiteSpace(ThingsToConsider);
 
@@ -140,6 +156,9 @@ namespace Esfa.Recruit.Employer.Web.ViewModels
         public bool HasSelectedLegalEntity => !string.IsNullOrEmpty(AccountLegalEntityPublicHashedId);
         
         public EmployerNameOption? EmployerNameOption { get; set; }
+        public string StandardPageUrl { get; set; }
+        public string OverviewOfRole { get; set; }
+        public ApprenticeshipLevel? ApprenticeshipLevel { get; set; }
 
         private string BuildAdditionalQuestionText(string additionalQuestion)
         {
@@ -150,6 +169,44 @@ namespace Esfa.Recruit.Employer.Web.ViewModels
                 return additionalQuestion.TrimEnd() + "?";
                 
             return additionalQuestion;
+        }
+
+        public string GetLocationDescription()
+        {
+            switch (AvailableWhere)
+            {
+                case AvailableWhereType.AcrossEngland:
+                    {
+                        return "Recruiting nationally";
+                    }
+                case AvailableWhereType.OneLocation:
+                    {
+                        var location = AvailableLocations.First();
+                        return IsAnonymous
+                            ? location.ToSingleLineAnonymousAddress()
+                            : location.ToSingleLineAbridgedAddress();
+                    }
+                case AvailableWhereType.MultipleLocations:
+                    {
+                        var groupedAddresses = AvailableLocations.ToList().GroupByLastFilledAddressLine().ToList();
+                        if (groupedAddresses is { Count: 1 })
+                        {
+                            int groupCount = groupedAddresses[0].Count();
+                            if (groupCount > 1)
+                            {
+                                return $"{groupedAddresses[0].Key} ({groupCount} available locations)";
+                            }
+                        }
+
+                        var keys = groupedAddresses.Select(group => group.Key);
+                        return string.Join(", ", keys);
+                    }
+                default:
+                    {
+                        // This is for existing data that uses the old fields
+                        return $"{EmployerAddressElements.SkipLast(1).LastOrDefault()} ({EmployerAddressElements.LastOrDefault()})";
+                    }
+            }
         }
     }
 }

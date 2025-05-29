@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using AngleSharp;
 using AngleSharp.Dom;
-using Ganss.XSS;
+using Ganss.Xss;
 using Microsoft.Extensions.Logging;
 
 namespace Esfa.Recruit.Vacancies.Client.Application.Services

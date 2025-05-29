@@ -1,12 +1,7 @@
-using System;
 using System.Linq;
-using Esfa.Recruit.Provider.Web.Configuration.Routing;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Provider.Web.Filters;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using FluentValidation.AspNetCore;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication.WsFederation;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Authorization;
@@ -17,71 +12,66 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Net.Http.Headers;
 using Microsoft.AspNetCore.Authorization;
 using Esfa.Recruit.Provider.Web.Middleware;
-using System.Threading.Tasks;
-using Esfa.Recruit.Provider.Web.Extensions;
-using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Microsoft.Extensions.Configuration;
 using SFA.DAS.Provider.Shared.UI;
 using SFA.DAS.Provider.Shared.UI.Startup;
+using Microsoft.FeatureManagement;
 
 namespace Esfa.Recruit.Provider.Web.Configuration
 {
     public static class ConfigurationExtensions
     {
-        private const int SessionTimeoutMinutes = 30;
-
         public static void AddAuthorizationService(this IServiceCollection services)
         {
+            var ukPrnClaimName = ProviderRecruitClaims.DfEUkprnClaimsTypeIdentifier;
+            var serviceClaimName = ProviderRecruitClaims.DfEUserServiceTypeClaimTypeIdentifier;
+            
             services.AddAuthorization(options =>
             {
                 options.AddPolicy(PolicyNames.ProviderPolicyName, policy =>
                 {
                     policy.RequireAuthenticatedUser();
-                    policy.RequireClaim(ProviderRecruitClaims.IdamsUserUkprnClaimsTypeIdentifier);
-                    policy.RequireClaim(ProviderRecruitClaims.IdamsUserServiceTypeClaimTypeIdentifier);
+                    policy.RequireClaim(ukPrnClaimName);
+                    policy.RequireClaim(serviceClaimName);
                     policy.Requirements.Add(new ProviderAccountRequirement());
+                    policy.Requirements.Add(new TrainingProviderAllRolesRequirement());
                 });
 
                 options.AddPolicy(PolicyNames.HasContributorOrAbovePermission, policy =>
                 {
                     policy.RequireAuthenticatedUser();
-                    policy.RequireClaim(ProviderRecruitClaims.IdamsUserUkprnClaimsTypeIdentifier);
-                    policy.RequireClaim(ProviderRecruitClaims.IdamsUserServiceTypeClaimTypeIdentifier);
+                    policy.RequireClaim(ukPrnClaimName);
+                    policy.RequireClaim(serviceClaimName);
                     policy.Requirements.Add(new MinimumServiceClaimRequirement(ServiceClaim.DAC));
+                    policy.Requirements.Add(new TrainingProviderAllRolesRequirement());
                 });
 
                 options.AddPolicy(PolicyNames.HasContributorWithApprovalOrAbovePermission, policy =>
                 {
                     policy.RequireAuthenticatedUser();
-                    policy.RequireClaim(ProviderRecruitClaims.IdamsUserUkprnClaimsTypeIdentifier);
-                    policy.RequireClaim(ProviderRecruitClaims.IdamsUserServiceTypeClaimTypeIdentifier);
+                    policy.RequireClaim(ukPrnClaimName);
+                    policy.RequireClaim(serviceClaimName);
                     policy.Requirements.Add(new MinimumServiceClaimRequirement(ServiceClaim.DAB));
+                    policy.Requirements.Add(new TrainingProviderAllRolesRequirement());
                 });
 
                 options.AddPolicy(PolicyNames.HasAccountOwnerPermission, policy =>
                 {
                     policy.RequireAuthenticatedUser();
-                    policy.RequireClaim(ProviderRecruitClaims.IdamsUserUkprnClaimsTypeIdentifier);
-                    policy.RequireClaim(ProviderRecruitClaims.IdamsUserServiceTypeClaimTypeIdentifier);
+                    policy.RequireClaim(ukPrnClaimName);
+                    policy.RequireClaim(serviceClaimName);
                     policy.Requirements.Add(new MinimumServiceClaimRequirement(ServiceClaim.DAA));
-                });
-                
-                options.AddPolicy(PolicyNames.IsTraineeshipWeb, policy =>
-                {
-                    policy.Requirements.Add(new VacancyTypeRequirement(VacancyType.Traineeship));
-                });
-                
-                options.AddPolicy(PolicyNames.IsApprenticeshipWeb, policy =>
-                {
-                    policy.Requirements.Add(new VacancyTypeRequirement(VacancyType.Apprenticeship));
+                    policy.Requirements.Add(new TrainingProviderAllRolesRequirement());
                 });
             });
 
             services.AddTransient<IAuthorizationHandler, ProviderAccountHandler>();
             services.AddTransient<IAuthorizationHandler, MinimumServiceClaimRequirementHandler>();
-            services.AddTransient<IAuthorizationHandler, VacancyTypeRequirementHandler>();
+            services.AddSingleton<ITrainingProviderAuthorizationHandler, TrainingProviderAuthorizationHandler>();
+            services.AddSingleton<IAuthorizationHandler, TrainingProviderAllRolesAuthorizationHandler>();
         }
 
-        public static void AddMvcService(this IServiceCollection services, IWebHostEnvironment hostingEnvironment, ILoggerFactory loggerFactory)
+        public static void AddMvcService(this IServiceCollection services, IWebHostEnvironment hostingEnvironment, ILoggerFactory loggerFactory, IConfiguration configuration)
         {
             services.AddAntiforgery(options =>
             {
@@ -91,7 +81,6 @@ namespace Esfa.Recruit.Provider.Web.Configuration
             });
             services.Configure<CookieTempDataProviderOptions>(options => options.Cookie.Name = CookieNames.RecruitTempData);
             services.AddSingleton<ITempDataProvider, CookieTempDataProvider>();
-
             services.AddMvc(opts =>
                 {
                     opts.EnableEndpointRouting = false;
@@ -106,7 +95,6 @@ namespace Esfa.Recruit.Provider.Web.Configuration
 
                     opts.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
 
-                    opts.Filters.AddService<PlannedOutageResultFilter>();
                     opts.Filters.AddService<GoogleAnalyticsFilter>();
                     opts.Filters.AddService<ZendeskApiFilter>();
 
@@ -115,51 +103,9 @@ namespace Esfa.Recruit.Provider.Web.Configuration
             ).AddNewtonsoftJson()
             .EnableCookieBanner()
             .EnableGoogleAnalytics()
-            .EnableCsp()
             .SetDefaultNavigationSection(NavigationSection.Recruit);
             services.AddFluentValidationAutoValidation();
-        }
-
-        public static void AddAuthenticationService(this IServiceCollection services, AuthenticationConfiguration authConfig)
-        {
-            services.AddAuthentication(sharedOptions =>
-            {
-                sharedOptions.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                sharedOptions.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                sharedOptions.DefaultChallengeScheme = WsFederationDefaults.AuthenticationScheme;
-                sharedOptions.DefaultSignOutScheme = WsFederationDefaults.AuthenticationScheme;
-            })
-            .AddWsFederation(options =>
-            {
-                options.Wtrealm = authConfig.WtRealm;
-                options.MetadataAddress = authConfig.MetaDataAddress;
-                options.UseTokenLifetime = false;
-                
-            })
-            .AddCookie(options =>
-            {
-                options.Cookie.Name = CookieNames.RecruitData;
-                options.Cookie.SecurePolicy = Microsoft.AspNetCore.Http.CookieSecurePolicy.Always;
-                options.CookieManager = new ChunkingCookieManager() { ChunkSize = 3000 };
-                options.AccessDeniedPath = RoutePaths.AccessDeniedPath;
-                options.SlidingExpiration = true;
-                options.ExpireTimeSpan = TimeSpan.FromMinutes(SessionTimeoutMinutes);
-            });
-            services
-                .AddOptions<WsFederationOptions>(WsFederationDefaults.AuthenticationScheme)
-                .Configure<IRecruitVacancyClient>((options, recruitVacancyClient) =>
-                {
-                    options.Events.OnSecurityTokenValidated = async (ctx) =>
-                    {
-                        await HandleUserSignedIn(ctx, recruitVacancyClient);
-                    };
-                });
-        }
-
-        private static async Task HandleUserSignedIn(SecurityTokenValidatedContext ctx, IRecruitVacancyClient vacancyClient)
-        {
-            var user = ctx.Principal.ToVacancyUser();           
-            await vacancyClient.UserSignedInAsync(user, UserType.Provider);
+            services.AddFeatureManagement(configuration.GetSection("Features"));
         }
     }
 }

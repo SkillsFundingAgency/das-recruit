@@ -47,8 +47,6 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
 
         public async Task<TitleViewModel> GetTitleViewModelAsync(VacancyRouteModel vrm)
         {
-            var vacancyCount = await _client.GetVacancyCount(vrm.EmployerAccountId, VacancyType.Apprenticeship, null, null);
-            
             var vacancy = await _utility.GetAuthorisedVacancyForEditAsync(vrm, RouteNames.Title_Get);
             var vm = new TitleViewModel
             {
@@ -56,7 +54,6 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                 EmployerAccountId = vrm.EmployerAccountId,
                 Title = vacancy.Title,
                 PageInfo = _utility.GetPartOnePageInfo(vacancy),
-                HasCloneableVacancies = vacancyCount > 0
             };
             
             if (vacancy.Status == VacancyStatus.Referred)

@@ -18,7 +18,8 @@ namespace Esfa.Recruit.Provider.Web.Extensions
         public static bool HasPermission(this ClaimsPrincipal user, ServiceClaim minimumRequiredClaim)
         {
             var serviceClaims = user
-                .FindAll(c => c.Type == ProviderRecruitClaims.IdamsUserServiceTypeClaimTypeIdentifier)
+                .FindAll(c => c.Type == ProviderRecruitClaims.IdamsUserServiceTypeClaimTypeIdentifier 
+                              || c.Type == ProviderRecruitClaims.DfEUserServiceTypeClaimTypeIdentifier)
                 .Select(c => c.Value)
                 .ToList();
 

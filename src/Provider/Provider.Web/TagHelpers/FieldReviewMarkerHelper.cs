@@ -59,6 +59,7 @@ namespace Esfa.Recruit.Provider.Web.TagHelpers
                     { "HoursPerWeek", "WorkingWeek" },
                     { "WageText", "Wage" },
                     { "EmployerAddressElements", "EmployerAddress" },
+                    { "AvailableLocations", "EmployerAddress" },
                     { "IsDisabilityConfident", "DisabilityConfident" },
                     { "TrainingTitle", "Training" },
                     { "ProviderContactName", "ProviderContact" },

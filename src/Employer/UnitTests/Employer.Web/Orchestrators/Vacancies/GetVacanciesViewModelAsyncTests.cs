@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Esfa.Recruit.Employer.Web.Orchestrators;
 using Esfa.Recruit.Employer.Web.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Providers;
@@ -9,9 +7,6 @@ using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Client;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Employer;
-using FluentAssertions;
-using Moq;
-using Xunit;
 
 namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Vacancies
 {
@@ -19,7 +14,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Vacancies
     {
         const string EmployerAccountId = "ABCDE";
 
-        [Fact]
+        [Test]
         public async Task WhenHaveOver25Vacancies_ShouldShowPager()
         {
             var vacancies = new List<VacancySummary>();
@@ -46,7 +41,7 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Vacancies
             vm.Vacancies[1].Title.Should().Be("27");
         }
 
-        [Fact]
+        [Test]
         public async Task WhenHave25OrUnderVacancies_ShouldNotShowPager()
         {
             var vacancies = new List<VacancySummary>();
@@ -69,6 +64,109 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Vacancies
             vm.Vacancies.Count.Should().Be(25);
         }
 
+        [Test]
+        public async Task WhenFilterOptionsNewSharedApplications_ShouldHaveHasSharedApplicationsTrueForAllVacanciesAndShowSharedApplicationsCounts()
+        {
+            var filterOption = FilteringOptions.NewSharedApplications;
+            var vacancies = new List<VacancySummary>();
+            for (var i = 1; i <= 3; i++)
+            {
+                vacancies.Add(new VacancySummary
+                {
+                    Title = i.ToString(),
+                    Status = VacancyStatus.Live,
+                    EmployerAccountId = EmployerAccountId,
+                    NoOfAllSharedApplications = 1,
+                    NoOfSharedApplications = 1
+                });
+            }
+
+            var orch = GetOrchestrator(vacancies, 1, filterOption, string.Empty, 3);
+
+            var vm = await orch.GetVacanciesViewModelAsync(EmployerAccountId, "NewSharedApplications", 1, new VacancyUser(), string.Empty);
+
+            vm.Vacancies.Count.Should().Be(3);
+            vm.Vacancies.All(x => x.HasSharedApplications).Should().BeTrue();
+            vm.Vacancies.All(x => x.Status == VacancyStatus.Live || x.Status == VacancyStatus.Closed).Should().BeTrue();
+            vm.Filter.Should().Be(filterOption);
+            vm.ShowSharedApplicationCounts.Should().BeTrue();
+            vm.ShowNewApplicationCounts.Should().BeFalse();
+        }
+
+        [Test]
+        public async Task WhenFilterOptionsAllApplications_ShouldHaveHasNew_Closed_ApplicationsAndShowApplicationsCounts()
+        {
+            const FilteringOptions filterOption = FilteringOptions.AllApplications;
+            var vacancies = new List<VacancySummary>();
+            for (int i = 1; i <= 3; i++)
+            {
+                vacancies.Add(new VacancySummary
+                {
+                    Title = i.ToString(),
+                    Status = VacancyStatus.Live,
+                    EmployerAccountId = EmployerAccountId,
+                    NoOfAllSharedApplications = 1,
+                    NoOfSharedApplications = 1
+                });
+                vacancies.Add(new VacancySummary
+                {
+                    Title = i.ToString(),
+                    Status = VacancyStatus.Closed,
+                    EmployerAccountId = EmployerAccountId,
+                    NoOfAllSharedApplications = 1,
+                    NoOfSharedApplications = 1
+                });
+                vacancies.Add(new VacancySummary
+                {
+                    Title = i.ToString(),
+                    Status = VacancyStatus.Submitted,
+                    EmployerAccountId = EmployerAccountId,
+                    NoOfAllSharedApplications = 1,
+                    NoOfSharedApplications = 1
+                });
+            }
+
+            var orchestrator = GetOrchestrator(vacancies, 1, filterOption, string.Empty, 3);
+
+            var vm = await orchestrator.GetVacanciesViewModelAsync(EmployerAccountId, "AllApplications", 1, new VacancyUser(), string.Empty);
+
+            vm.Vacancies.Count.Should().Be(9);
+            vm.Vacancies.All(x => x.HasNewApplications).Should().BeFalse();
+            vm.Vacancies.All(x => x.Status is VacancyStatus.Live or VacancyStatus.Closed or VacancyStatus.Submitted).Should().BeTrue();
+            vm.Filter.Should().Be(filterOption);
+            vm.ShowSharedApplicationCounts.Should().BeFalse();
+            vm.ShowNewApplicationCounts.Should().BeTrue();
+        }
+
+        [Test]
+        public async Task WhenFilterOptionsNewApplications_ShouldHaveNoSharedApplicationsAndSharedApplicationCountsNotToShow()
+        {
+            var filterOption = FilteringOptions.NewApplications;
+            var vacancies = new List<VacancySummary>();
+            for (var i = 1; i <= 3; i++)
+            {
+                vacancies.Add(new VacancySummary
+                {
+                    Title = i.ToString(),
+                    Status = VacancyStatus.Live,
+                    EmployerAccountId = EmployerAccountId,
+                    NoOfNewApplications = 5,
+                    NoOfAllSharedApplications = 0,
+                    NoOfSharedApplications = 0
+                });
+            }
+
+            var orch = GetOrchestrator(vacancies, 1, filterOption, string.Empty, 3);
+
+            var vm = await orch.GetVacanciesViewModelAsync(EmployerAccountId, "NewApplications", 1, new VacancyUser(), string.Empty);
+
+            vm.Vacancies.Count.Should().Be(3);
+            vm.Vacancies.All(x => x.HasSharedApplications).Should().BeFalse();
+            vm.Vacancies.All(x => x.Status == VacancyStatus.Live || x.Status == VacancyStatus.Closed).Should().BeTrue();
+            vm.Filter.Should().Be(filterOption);
+            vm.ShowSharedApplicationCounts.Should().BeFalse();
+            vm.ShowNewApplicationCounts.Should().BeTrue();
+        }
 
         private VacanciesOrchestrator GetOrchestrator(List<VacancySummary> vacancies, int page, FilteringOptions status, string searchTerm, int totalVacancies )
         {
@@ -76,14 +174,14 @@ namespace Esfa.Recruit.Employer.UnitTests.Employer.Web.Orchestrators.Vacancies
 
             var clientMock = new Mock<IEmployerVacancyClient>();
             clientMock.Setup(c => c.GetDashboardAsync(EmployerAccountId,page, status, searchTerm))
-                .Returns(Task.FromResult(new EmployerDashboard
+                .ReturnsAsync(new EmployerDashboard
                 {
                     Vacancies = vacancies
-                }));
+                });
             
             var recruitClientMock = new Mock<IRecruitVacancyClient>();
             recruitClientMock.Setup(c => c.GetUsersDetailsAsync(It.IsAny<string>())).ReturnsAsync(new User());
-            clientMock.Setup(x => x.GetVacancyCount(EmployerAccountId, VacancyType.Apprenticeship, FilteringOptions.Submitted, string.Empty))
+            clientMock.Setup(x => x.GetVacancyCount(EmployerAccountId, status, string.Empty))
                 .ReturnsAsync(totalVacancies);
             
             var alertsFactoryMock = new Mock<IEmployerAlertsViewModelFactory>();

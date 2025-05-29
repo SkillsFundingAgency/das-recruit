@@ -6,7 +6,7 @@ using Esfa.Recruit.Employer.Web.Extensions;
 using Esfa.Recruit.Employer.Web.Orchestrators.Part2;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Shared.Web.Extensions;
-using Esfa.Recruit.Shared.Web.FeatureToggle;
+using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
 
 namespace Esfa.Recruit.Employer.Web.Controllers.Part2
 {
@@ -14,12 +14,10 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part2
     public class AboutEmployerController : Controller
     {
         private readonly AboutEmployerOrchestrator _orchestrator;
-        private readonly IFeature _feature;
 
-        public AboutEmployerController(AboutEmployerOrchestrator orchestrator, IFeature feature)
+        public AboutEmployerController(AboutEmployerOrchestrator orchestrator)
         {
             _orchestrator = orchestrator;
-            _feature = feature;
         }
 
         [HttpGet("about-employer", Name = RouteNames.AboutEmployer_Get)]

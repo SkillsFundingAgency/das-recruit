@@ -4,9 +4,8 @@ using Esfa.Recruit.Shared.Web.ViewModels.ApplicationReview;
 
 namespace Esfa.Recruit.Provider.Web.ViewModels.ApplicationReview
 {
-    public class ApplicationReviewEditModel : ApplicationReviewRouteModel, IApplicationReviewEditModel
+    public class ApplicationReviewEditModel : ApplicationReviewStatusChangeModel
     {
-        public ApplicationReviewStatus? Outcome { get; set; }
-        public string CandidateFeedback { get; set; }
+
     }
 }

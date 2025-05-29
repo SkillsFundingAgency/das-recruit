@@ -2,22 +2,11 @@
 
 @{
     ViewBag.GaData.Vpv = "/recruitment/provider/page-vacancy-short-description";
-    ViewBag.Title = _serviceParameters.VacancyType==VacancyType.Traineeship 
-        ? "Summary of the traineeship" 
-        : "Summary of the apprenticeship";
+    ViewBag.Title = "Summary of the apprenticeship";
 }
 
 @section BackLink {
-    <esfaFeatureEnabled name="@FeatureNames.ProviderTaskList">
-        @if (_serviceParameters.VacancyType == VacancyType.Traineeship)
-        {
-            <a asp-route="@RouteNames.TraineeSector_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Back</a>
-        }
-        else
-        {
-            <a asp-route="@RouteNames.Training_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Back</a>            
-        }
-    </esfaFeatureEnabled>
+    <a asp-route="@Model.PageBackLink" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-back" class="govuk-back-link">Back</a>
 }
 
 <div class="govuk-grid-row">
@@ -25,22 +14,12 @@
 
         <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }'/>
         <partial name="@PartialNames.ReviewSummary" for="Review"/>
-        @if (_serviceParameters.VacancyType == VacancyType.Traineeship)
-        {
-            <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">
-                <span class="govuk-caption-xl">@Model.Title</span>
-                Summary of the traineeship
-            </h1>
-            <p class="govuk-body">Write a few sentences about the vacancy to attract applicants. This is an important part of what applicants will see when looking through a list of vacancies, so make it stand out.</p>
-        }
-        else
-        {
-            <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">
-                <span class="govuk-caption-xl">@Model.Title</span>
-                Summary of the apprenticeship
-            </h1>
-            <p class="govuk-body">Write a few sentences about the apprenticeship to attract applicants. This information will appear under your vacancy title when applicants look through a list of vacancies, so make it stand out.</p>
-        }
+    
+        <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">
+            <span class="govuk-caption-xl">@Model.Title</span>
+            Summary of the apprenticeship
+        </h1>
+        <p class="govuk-body">Write a few sentences about the apprenticeship to attract applicants. This information will appear under your vacancy title when applicants look through a list of vacancies, so make it stand out.</p>
         <p class="govuk-body">This could be:</p>
         <ul class="govuk-list govuk-list--bullet">
             <li>what you are offering</li>
@@ -66,14 +45,8 @@
             </div>
 
             <div class="govuk-button-group">
-                <esfaFeatureEnabled name="@FeatureNames.ProviderTaskList">
-                    <button type="submit" esfa-automation="btn-continue" class="govuk-button save-button">Save and continue</button>
-                    <a asp-route="@RouteNames.Dashboard_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-cancel" class="govuk-link govuk-link--no-visited-state">Cancel</a>
-                </esfaFeatureEnabled>
-                <esfaFeatureDisabled name="@FeatureNames.ProviderTaskList">
-                    <button type="submit" esfa-automation="btn-continue" class="govuk-button save-button">Save and preview</button>
-                    <a asp-route="@RouteNames.Vacancy_Preview_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-cancel" class="govuk-link govuk-link--no-visited-state">Cancel</a>
-                </esfaFeatureDisabled>
+                <button type="submit" esfa-automation="btn-continue" class="govuk-button save-button">Save and continue</button>
+                <a asp-route="@RouteNames.Dashboard_Get" asp-all-route-data="@Model.RouteDictionary" esfa-automation="link-cancel" class="govuk-link govuk-link--no-visited-state">Cancel</a>
             </div>
 
         </form>

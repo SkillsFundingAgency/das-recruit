@@ -3,6 +3,7 @@ using System.Linq;
 using Esfa.Recruit.Provider.Web.Models;
 using Esfa.Recruit.Provider.Web.RouteModel;
 using Esfa.Recruit.Shared.Web.ViewModels;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 
 namespace Esfa.Recruit.Provider.Web.ViewModels.Part1.LegalEntityAndEmployer
 {
@@ -68,11 +69,5 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.Part1.LegalEntityAndEmployer
     {
         EmployerName,
         LegalEntityName
-    }
-
-    public enum SortOrder
-    {
-        Ascending,
-        Descending
     }
 }

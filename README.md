@@ -34,7 +34,7 @@ The default development environment uses docker containers to host it's dependen
 * MongoDb
 * Azurite (Cross platform Azure Storage Emulator)
 
-On first setup run the following command from _**/setup/containers/**_ to create the docker container images:
+On first setup run the following command from _**/setup/containermongo/**_ to create the docker container images:
 
 `docker-compose build`
 
@@ -46,6 +46,13 @@ You can view the state of the running containers using:
 
 `docker ps -a`
 
+This creates the mongo database with the following admin credentials:
+
+* User : **user**
+* Password : **pass**
+
+
+There is then a script file _**/setup/Scripts/RecruitData.js**_ which contains the necessary steps for creating the database. Each statement block should be ran separately
 
 ### Running
 
@@ -99,7 +106,7 @@ Application logs are logged to [Elasticsearch](https://www.elastic.co/products/e
 
 #### Database
 
-* If using MongoDb container, connect to Recruit database in a terminal using `mongo recruit --authenticationDatabase admin -u dbadmin -p changeme`
+* If using MongoDb container, connect to Recruit database in a terminal using `mongo recruit --authenticationDatabase admin -u user -p pass`
 * If using Azure Cosmos Emulator, connect to Recruit database in a terminal using `mongo --authenticationDatabase admin --host localhost --port 10255 -u localhost -p C2y6yDjf5/R+ob0N8A7Cgv30VRDJIWEHLM+4QDU5DE2nQ9nDuVTqobD4b8mGGyPMbIZnqyMsEcaGQy67XIw/Jw== --ssl`
 
 ## License

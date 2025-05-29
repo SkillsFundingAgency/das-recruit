@@ -24,7 +24,8 @@ namespace Esfa.Recruit.Provider.Web.Middleware
         private readonly IProviderVacancyClient _client;
         private readonly IBlockedOrganisationQuery _blockedOrganisationsRepo;
         private readonly ITempDataProvider _tempDataProvider;
-        private readonly Predicate<Claim> _ukprnClaimFinderPredicate = c => c.Type.Equals(ProviderRecruitClaims.IdamsUserUkprnClaimsTypeIdentifier);
+        private readonly Predicate<Claim> _ukprnClaimFinderPredicate = c => c.Type.Equals(ProviderRecruitClaims.IdamsUserUkprnClaimsTypeIdentifier) 
+                                                                            || c.Type.Equals(ProviderRecruitClaims.DfEUkprnClaimsTypeIdentifier);
         private readonly IDictionary<string, object> _dict = new Dictionary<string, object>();
         private readonly ITrainingProviderSummaryProvider _trainingProviderSummaryProvider;
 
@@ -88,7 +89,8 @@ namespace Esfa.Recruit.Provider.Web.Middleware
 
         private bool HasServiceAuthorization(AuthorizationHandlerContext context)
         {
-            Predicate<Claim> serviceClaimFinderPredicate = c => c.Type.Equals(ProviderRecruitClaims.IdamsUserServiceTypeClaimTypeIdentifier);
+            Predicate<Claim> serviceClaimFinderPredicate = c => c.Type.Equals(ProviderRecruitClaims.IdamsUserServiceTypeClaimTypeIdentifier) 
+                                                                || c.Type.Equals(ProviderRecruitClaims.DfEUserServiceTypeClaimTypeIdentifier);
 
             if (context.User.HasClaim(serviceClaimFinderPredicate))
             {

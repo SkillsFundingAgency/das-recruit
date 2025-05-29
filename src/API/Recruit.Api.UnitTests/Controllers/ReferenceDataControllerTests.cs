@@ -2,11 +2,8 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
-using FluentAssertions;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Moq;
-using NUnit.Framework;
 using SFA.DAS.Recruit.Api.Controllers;
 using SFA.DAS.Recruit.Api.Queries;
 using SFA.DAS.Testing.AutoFixture;
@@ -30,7 +27,7 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Controllers
             
             var actual = await controller.GetCandidateSkills() as OkObjectResult;
 
-            Assert.IsNotNull(actual);
+            Assert.That(actual, Is.Not.Null);
             var actualResult = actual.Value as List<string>;
             actualResult.Should().BeEquivalentTo(items);
         }
@@ -49,7 +46,7 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Controllers
 
             var actual = await controller.GetCandidateQualifications() as OkObjectResult;
 
-            Assert.IsNotNull(actual);
+            Assert.That(actual, Is.Not.Null);
             var actualResult = actual.Value as List<string>;
             actualResult.Should().BeEquivalentTo(items);
         }

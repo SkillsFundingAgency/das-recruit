@@ -22,9 +22,13 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount
         internal static Address MapFromAddressLine(string address)
         {
             const string splitChar = ",";
-            var hasPostcode = ValidationConstants.PostcodeRegex.IsMatch(address);
 
-            if (!string.IsNullOrWhiteSpace(address) && address.Contains(splitChar) && hasPostcode)
+            if (string.IsNullOrWhiteSpace(address))
+            {
+                return new Address();
+            }
+            
+            if (!string.IsNullOrWhiteSpace(address) && address.Contains(splitChar) && ValidationConstants.PostcodeRegex.IsMatch(address))
             {
                 var addressParts = address.Split(new[] { splitChar }, StringSplitOptions.RemoveEmptyEntries)
                                             .Select(s => s.Trim());
@@ -44,12 +48,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.EmployerAccount
                 return legalEntityAddress;
             }
 
-            if (hasPostcode)
-            {
-                return new Address { Postcode = address };
-            }
-
-            return new Address { AddressLine1 = address };
+            return ValidationConstants.PostcodeRegex.IsMatch(address) ? new Address { Postcode = address } : new Address { AddressLine1 = address };
         }
     }
 }

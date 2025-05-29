@@ -1,12 +1,10 @@
 using System.Threading.Tasks;
-using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Configuration.Routing;
 using Esfa.Recruit.Employer.Web.Extensions;
 using Esfa.Recruit.Employer.Web.Orchestrators.Part2;
 using Esfa.Recruit.Employer.Web.RouteModel;
 using Esfa.Recruit.Employer.Web.ViewModels.Part2.ShortDescription;
 using Esfa.Recruit.Shared.Web.Extensions;
-using Esfa.Recruit.Shared.Web.FeatureToggle;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Esfa.Recruit.Employer.Web.Controllers.Part2
@@ -15,12 +13,10 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part2
     public class ShortDescriptionController : Controller
     {
         private readonly ShortDescriptionOrchestrator _orchestrator;
-        private readonly IFeature _feature;
 
-        public ShortDescriptionController(ShortDescriptionOrchestrator orchestrator, IFeature feature)
+        public ShortDescriptionController(ShortDescriptionOrchestrator orchestrator)
         {
             _orchestrator = orchestrator;
-            _feature = feature;
         }
         
         [HttpGet("description", Name = RouteNames.ShortDescription_Get)]
@@ -45,10 +41,10 @@ namespace Esfa.Recruit.Employer.Web.Controllers.Part2
             {
                 return View(vm);
             }
-            
+
             return RedirectToRoute(vm.IsTaskListCompleted 
                 ? RouteNames.EmployerCheckYourAnswersGet 
-                : RouteNames.VacancyDescription_Index_Get, 
+                : RouteNames.VacancyWorkDescription_Index_Get, 
                 new {m.VacancyId, m.EmployerAccountId});
         }
     }

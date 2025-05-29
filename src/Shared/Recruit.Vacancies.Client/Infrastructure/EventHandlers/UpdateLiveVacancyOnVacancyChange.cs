@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Application.Commands;
@@ -10,7 +11,6 @@ using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Extensions;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Vacancy;
-using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.ApprenticeshipProgrammes;
 using MediatR;
 using Microsoft.Extensions.Logging;
@@ -22,18 +22,18 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
         private readonly IVacancyRepository _repository;
         private readonly ILogger<UpdateLiveVacancyOnVacancyChange> _logger;
         private readonly IMessaging _messaging;
-        private readonly IReferenceDataReader _referenceDataReader;
+        private readonly IApprenticeshipProgrammeProvider _apprenticeshipProgrammeProvider;
         private readonly IQueryStoreWriter _queryStoreWriter;
         private readonly ITimeProvider _timeProvider;
 
         public UpdateLiveVacancyOnVacancyChange(IQueryStoreWriter queryStoreWriter, ILogger<UpdateLiveVacancyOnVacancyChange> logger, 
-            IVacancyRepository repository, IMessaging messaging, IReferenceDataReader referenceDataReader, ITimeProvider timeProvider)
+            IVacancyRepository repository, IMessaging messaging, IApprenticeshipProgrammeProvider apprenticeshipProgrammeProvider, ITimeProvider timeProvider)
         {
             _queryStoreWriter = queryStoreWriter;
             _logger = logger;
             _repository = repository;
             _messaging = messaging;
-            _referenceDataReader = referenceDataReader;
+            _apprenticeshipProgrammeProvider = apprenticeshipProgrammeProvider;
             _timeProvider = timeProvider;
         }
         
@@ -50,16 +50,24 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.EventHandlers
 
         public async Task Handle(VacancyPublishedEvent notification, CancellationToken cancellationToken)
         {
-            var vacancyTask = _repository.GetVacancyAsync(notification.VacancyId);
-            var programmeTask = _referenceDataReader.GetReferenceData<ApprenticeshipProgrammes>();
+            _logger.LogInformation("Handling VacancyPublishedEvent vacancy {vacancyId}.", notification.VacancyId);
 
-            await Task.WhenAll(vacancyTask, programmeTask);
+            var vacancy = await _repository.GetVacancyAsync(notification.VacancyId);
+            
+            var programme = await _apprenticeshipProgrammeProvider.GetApprenticeshipProgrammeAsync(vacancy.ProgrammeId);
 
-            var vacancy = vacancyTask.Result;
-            var programme = vacancy.VacancyType.GetValueOrDefault() == VacancyType.Apprenticeship ? programmeTask.Result.Data.Single(p => p.Id == vacancy.ProgrammeId) : null;
+            var liveVacancy = vacancy.ToVacancyProjectionBase<LiveVacancy>((ApprenticeshipProgramme)programme, () => QueryViewType.LiveVacancy.GetIdValue(vacancy.VacancyReference.ToString()), _timeProvider);
+            _logger.LogInformation("Updating LiveVacancy in query store for vacancy {vacancyId} reference {vacancyReference}.", liveVacancy.VacancyId, liveVacancy.VacancyReference);
 
-            var liveVacancy = vacancy.ToVacancyProjectionBase<LiveVacancy>(programme, () => QueryViewType.LiveVacancy.GetIdValue(vacancy.VacancyReference.ToString()), _timeProvider);
-            await _queryStoreWriter.UpdateLiveVacancyAsync(liveVacancy);
+            try
+            {
+                await _queryStoreWriter.UpdateLiveVacancyAsync(liveVacancy);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error handling VacancyPublishedEvent vacancy {vacancyId}.", notification.VacancyId);
+                throw;
+            }
         }
     }
 }

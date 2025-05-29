@@ -9,13 +9,16 @@ using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Esfa.Recruit.Employer.Web.Configuration;
 using Esfa.Recruit.Employer.Web.Extensions;
-using Esfa.Recruit.Shared.Web.FeatureToggle;
+using Esfa.Recruit.Employer.Web.Middleware;
+using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using InfoMsg = Esfa.Recruit.Shared.Web.ViewModels.InfoMessages;
 
 namespace Esfa.Recruit.Employer.Web.Controllers
 {
     [Route(RoutePaths.AccountVacancyRoutePath)]
+    [Authorize(Policy = nameof(PolicyNames.HasEmployerOwnerOrTransactorAccount))]
     public class VacancyManageController : Controller
     {
         private readonly VacancyManageOrchestrator _orchestrator;
@@ -32,24 +35,38 @@ namespace Esfa.Recruit.Employer.Web.Controllers
         }
 
         [HttpGet("manage", Name = RouteNames.VacancyManage_Get)]
-        public async Task<IActionResult> ManageVacancy(VacancyRouteModel vrm)
+        public async Task<IActionResult> ManageVacancy(ManageVacancyRouteModel vrm, [FromQuery] string sortColumn, [FromQuery] string sortOrder, [FromQuery] bool vacancySharedByProvider)
         {
             EnsureProposedChangesCookiesAreCleared(vrm.VacancyId);
 
-            var vacancy = await _orchestrator.GetVacancy(vrm);
+            Enum.TryParse<SortOrder>(sortOrder, out var outputSortOrder);
+            Enum.TryParse<SortColumn>(sortColumn, out var outputSortColumn);
+
+            var vacancy = await _orchestrator.GetVacancy(vrm, vacancySharedByProvider);
 
             if (vacancy.CanEmployerEdit)
             {
                 return HandleRedirectOfEditableVacancy(vacancy);
             }
 
-            var viewModel = await _orchestrator.GetManageVacancyViewModel(vacancy);
+            var viewModel = await _orchestrator.GetManageVacancyViewModel(vacancy, outputSortColumn, outputSortOrder, vacancySharedByProvider);
 
             if (TempData.ContainsKey(TempDataKeys.VacancyClosedMessage))
                 viewModel.VacancyClosedInfoMessage = TempData[TempDataKeys.VacancyClosedMessage].ToString();
 
             if (TempData.ContainsKey(TempDataKeys.ApplicationReviewStatusInfoMessage))
-                viewModel.ApplicationReviewStatusHeaderInfoMessage = TempData[TempDataKeys.ApplicationReviewStatusInfoMessage].ToString();
+                viewModel.EmployerReviewedApplicationHeaderMessage = TempData[TempDataKeys.ApplicationReviewStatusInfoMessage].ToString();
+            
+            if (TempData.ContainsKey(TempDataKeys.ApplicationReviewedInfoMessage))
+                viewModel.EmployerReviewedApplicationBodyMessage = TempData[TempDataKeys.ApplicationReviewedInfoMessage].ToString();
+
+            if (TempData.ContainsKey(TempDataKeys.ApplicationReviewStatusChangeInfoMessage))
+                viewModel.ApplicationStatusChangeHeaderMessage = TempData[TempDataKeys.ApplicationReviewStatusChangeInfoMessage].ToString();
+
+            if (TempData.ContainsKey(TempDataKeys.ApplicationReviewsUnsuccessfulInfoMessage))
+            {
+                viewModel.ApplicationReviewsUnsuccessfulBannerHeader = TempData[TempDataKeys.ApplicationReviewsUnsuccessfulInfoMessage].ToString();
+            }
 
             return View(viewModel);
         }

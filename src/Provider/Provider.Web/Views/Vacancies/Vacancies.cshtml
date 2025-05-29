@@ -47,15 +47,10 @@
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-one-half">
-        <h1 class="govuk-heading-xl">Your vacancies</h1>
+        <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">Your vacancies</h1>
     </div>
     <div class="govuk-grid-column-one-half">
-        <esfaFeatureEnabled name="@FeatureNames.ProviderTaskList">
-            <a asp-route="@RouteNames.CreateVacancyStart" asp-route-ukprn="@Model.Ukprn" class="govuk-button das-float-right govuk-!-margin-bottom-6" esfa-automation="create-vacancy">Create a vacancy</a>
-        </esfaFeatureEnabled>
-        <esfaFeatureDisabled name="@FeatureNames.ProviderTaskList">
-            <a asp-route="@RouteNames.LegalEntityEmployer_Get" asp-route-ukprn="@Model.Ukprn" class="govuk-button das-float-right govuk-!-margin-bottom-6" esfa-automation="create-vacancy">Create a vacancy</a>    
-        </esfaFeatureDisabled>
+        <a asp-route="@RouteNames.CreateVacancyStart" asp-route-ukprn="@Model.Ukprn" class="govuk-button das-float-right govuk-!-margin-bottom-6" esfa-automation="create-vacancy">Create a vacancy</a>
     </div>
 </div>
 
@@ -69,7 +64,7 @@
                         <option value="@FilteringOptions.All">all vacancies</option>
                         <option value="@FilteringOptions.Live">live vacancies</option>
                         <option value="@FilteringOptions.Referred">rejected vacancies</option>
-                        @if (Model.HasEmployerReviewPermission && _serviceParameters.VacancyType.GetValueOrDefault() == VacancyType.Apprenticeship)
+                        @if (Model.HasEmployerReviewPermission)
                         {
                             <option value="@FilteringOptions.Review">pending employer review</option>   
                         }
@@ -82,6 +77,7 @@
                         <option value="@FilteringOptions.AllApplications">with applications</option>
                         <option value="@FilteringOptions.ClosingSoonWithNoApplications">closing soon with no applications</option>
                         <option value="@FilteringOptions.ClosingSoon">closing soon</option>
+                        <option value="@FilteringOptions.EmployerReviewedApplications">with employer-reviewed applications</option>
                     </optgroup>
                 </select>
                 <button type="submit" id="filter-submit" class="das-button-filter das-button-secondary govuk-button govuk-!-margin-top-3">Filter</button>
@@ -133,6 +129,7 @@
                     <tr class="govuk-table__row">
                         <td class="govuk-table__cell" data-label="Vacancy title">
                             <div>@vacancy.Title</div>
+                            <govuk-tag-foundation asp-show="@(vacancy.ApprenticeshipType == ApprenticeshipTypes.Foundation)" class="govuk-!-margin-top-2 govuk-!-margin-bottom-1 app-tag"/>
                         </td>
                         <td class="govuk-table__cell" data-label="Employer">
                             <span>@vacancy.EmployerName</span>
@@ -141,9 +138,14 @@
                             <span asp-show="@vacancy.HasVacancyReference"><span>VAC</span>@vacancy.VacancyReference</span>
                         </td>
                         <td asp-show="@vacancy.CanShowVacancyApplicationsCount" class="govuk-table__cell" data-label="Applications">
-                            <span asp-show="@vacancy.HasNoApplications">0</span>
-                            <span asp-show="@vacancy.HasApplications">@vacancy.NoOfApplications</span>
-                            <span asp-show="@vacancy.HasNewApplications" class="govuk-!-font-weight-bold"> (@vacancy.NoOfNewApplications new)</span>
+                            <div asp-show="@Model.ShowNewApplicationCounts">
+                                <span asp-show="@vacancy.HasNoApplications">0</span>
+                                <span asp-show="@vacancy.HasApplications">@vacancy.NoOfApplications</span>
+                                <span asp-show="@vacancy.HasNewApplications" class="govuk-!-font-weight-bold">(@vacancy.NoOfNewApplications new)</span>
+                            </div>
+                            <div asp-show="@Model.ShowEmployerReviewedApplicationCounts">
+                                <span asp-show="@vacancy.HasEmployerReviewedApplications">@vacancy.NoOfEmployerReviewedApplications reviewed</span>
+                            </div>
                         </td>
                         <td asp-hide="@vacancy.CanShowVacancyApplicationsCount" class="govuk-table__cell" data-label="Applications">-</td>
                         <td class="govuk-table__cell" data-label="Closing date"><span>@vacancy.ClosingDate?.AsGdsDate()</span></td>
@@ -152,19 +154,18 @@
                         </td>
                         <td class="govuk-table__cell govuk-table__cell--numeric" data-label="Action">
                             <a id="manage-@vacancy.Id" asp-show="@vacancy.IsNotSubmittable" asp-route="@RouteNames.VacancyManage_Get" asp-route-ukprn="@Model.Ukprn" asp-route-vacancyId="@vacancy.Id" class="govuk-link">@GetLinkText(vacancy) <span class="govuk-visually-hidden">@vacancy.Title</span></a>
-                            <esfaFeatureDisabled name="@FeatureNames.ProviderTaskList">
-                                <a id="preview-@vacancy.Id" asp-show="@vacancy.IsSubmittable" asp-route="@RouteNames.DisplayVacancy_Get" asp-route-ukprn="@Model.Ukprn" asp-route-vacancyId="@vacancy.Id" class="govuk-link">@GetLinkText(vacancy) <span class="govuk-visually-hidden">@vacancy.Title</span></a>
-                            </esfaFeatureDisabled>
-                            <esfaFeatureEnabled name="@FeatureNames.ProviderTaskList">
-                                @if (vacancy.Status == VacancyStatus.Referred || vacancy.Status == VacancyStatus.Rejected || vacancy.IsTaskListCompleted)
-                                {
-                                    <a id="task-list-@vacancy.Id" asp-show="@vacancy.IsSubmittable" asp-route="@RouteNames.ProviderCheckYourAnswersGet" asp-route-ukprn="@Model.Ukprn" asp-route-vacancyId="@vacancy.Id" class="govuk-link">@GetLinkText(vacancy) <span class="govuk-visually-hidden">@vacancy.Title</span></a> 
-                                }
-                                else
-                                {
-                                    <a id="task-list-@vacancy.Id" asp-show="@vacancy.IsSubmittable" asp-route="@RouteNames.ProviderTaskListGet" asp-route-ukprn="@Model.Ukprn" asp-route-vacancyId="@vacancy.Id" class="govuk-link">@GetLinkText(vacancy) <span class="govuk-visually-hidden">@vacancy.Title</span></a>
-                                }
-                            </esfaFeatureEnabled>
+                            @if (vacancy.Status is VacancyStatus.Referred or VacancyStatus.Rejected)
+                            {
+                                <a id="task-list-@vacancy.Id" asp-show="@vacancy.IsSubmittable" asp-route="@RouteNames.ProviderCheckYourAnswersGet" asp-route-ukprn="@Model.Ukprn" asp-route-vacancyId="@vacancy.Id" class="govuk-link">@GetLinkText(vacancy) <span class="govuk-visually-hidden">@vacancy.Title</span></a> 
+                            }
+                            else if(vacancy.Status == VacancyStatus.Draft && vacancy.IsTaskListCompleted)
+                            {
+                                <a id="task-list-@vacancy.Id" asp-show="@vacancy.IsSubmittable" asp-route="@RouteNames.ProviderCheckYourAnswersGet" asp-route-ukprn="@Model.Ukprn" asp-route-vacancyId="@vacancy.Id" class="govuk-link">@GetLinkText(vacancy) <span class="govuk-visually-hidden">@vacancy.Title</span></a> 
+                            }
+                            else
+                            {
+                                <a id="task-list-@vacancy.Id" asp-show="@vacancy.IsSubmittable" asp-route="@RouteNames.ProviderTaskListGet" asp-route-ukprn="@Model.Ukprn" asp-route-vacancyId="@vacancy.Id" class="govuk-link">@GetLinkText(vacancy) <span class="govuk-visually-hidden">@vacancy.Title</span></a>
+                            }
                         </td>
                     </tr>
                     }

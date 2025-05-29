@@ -14,6 +14,10 @@
         AllApplications,
         ClosingSoon,
         ClosingSoonWithNoApplications,
-        Transferred
+        Transferred,
+        EmployerReviewedApplications,
+        NewSharedApplications,
+        AllSharedApplications,
+        Dashboard
     }
 }

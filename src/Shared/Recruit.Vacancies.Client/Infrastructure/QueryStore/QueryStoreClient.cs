@@ -35,22 +35,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
             return _queryStore.GetAsync<EmployerDashboard>(QueryViewType.EmployerDashboard.TypeName, key);
         }
 
-        public Task<ProviderDashboard> GetProviderDashboardAsync(long ukprn, VacancyType vacancyType)
+        public Task<ProviderDashboard> GetProviderDashboardAsync(long ukprn)
         {
-            var key = string.Empty;
-            var typeName = string.Empty;
-
-            if (vacancyType == VacancyType.Apprenticeship)
-            {
-                key = QueryViewType.ProviderDashboard.GetIdValue(ukprn);
-                typeName = QueryViewType.ProviderDashboard.TypeName;
-            }
-            else if (vacancyType == VacancyType.Traineeship)
-            {
-                key = QueryViewType.ProviderTraineeshipDashboard.GetIdValue(ukprn);
-                typeName = QueryViewType.ProviderDashboard.TypeName;
-            }
-
+            var key = QueryViewType.ProviderDashboard.GetIdValue(ukprn);
+            var typeName = QueryViewType.ProviderDashboard.TypeName;
+        
             return _queryStore.GetAsync<ProviderDashboard>(typeName, key);
         }
 
@@ -61,6 +50,12 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
             return _queryStore.GetAsync<VacancyAnalyticsSummary>(QueryViewType.VacancyAnalyticsSummary.TypeName, key);
         }
 
+        public Task<VacancyAnalyticsSummaryV2> GetVacancyAnalyticsSummaryV2Async(string vacancyReference)
+        {
+            var key = QueryViewType.VacancyAnalyticsSummaryV2.GetIdValue(vacancyReference);
+
+            return _queryStore.GetAsync<VacancyAnalyticsSummaryV2>(QueryViewType.VacancyAnalyticsSummaryV2.TypeName, key);
+        }
         public Task<BlockedProviderOrganisations> GetBlockedProviders()
         {
             var key = QueryViewType.BlockedProviderOrganisations.GetIdValue();
@@ -80,11 +75,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
             return _queryStore.UpsertAsync(dashboardItem);
         }
 
-        public Task UpdateProviderDashboardAsync(long ukprn, IEnumerable<VacancySummary> vacancySummaries, IEnumerable<ProviderDashboardTransferredVacancy> transferredVacancies, VacancyType vacancyType)
+        public Task UpdateProviderDashboardAsync(long ukprn, IEnumerable<VacancySummary> vacancySummaries, IEnumerable<ProviderDashboardTransferredVacancy> transferredVacancies)
         {
             var dashboardItem = new ProviderDashboard
             {
-                Id = vacancyType == VacancyType.Apprenticeship ? QueryViewType.ProviderDashboard.GetIdValue(ukprn) :  QueryViewType.ProviderTraineeshipDashboard.GetIdValue(ukprn),
+                Id = QueryViewType.ProviderDashboard.GetIdValue(ukprn),
                 Vacancies = vacancySummaries,
                 TransferredVacancies = transferredVacancies,
                 LastUpdated = _timeProvider.Now
@@ -170,6 +165,11 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
             return _queryStore.GetAsync<ClosedVacancy>(QueryViewType.ClosedVacancy.TypeName, key);
         }
 
+        public async Task<IEnumerable<ClosedVacancy>> GetClosedVacancies(IList<long> vacancyReferences)
+        {
+            return await _queryStore.GetClosedVacancies(vacancyReferences);
+        }
+
         public Task<long> DeleteAllLiveVacancies()
         {
             return _queryStore.DeleteAllAsync<LiveVacancy>(QueryViewType.LiveVacancy.TypeName);
@@ -231,6 +231,14 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
 
             await _queryStore.UpsertAsync(summary);
         }
+        
+        public async Task UpsertVacancyAnalyticSummaryV2Async(VacancyAnalyticsSummaryV2 summary)
+        {
+            summary.Id = QueryViewType.VacancyAnalyticsSummaryV2.GetIdValue(summary.VacancyReference.ToString());
+            summary.LastUpdated = _timeProvider.Now;
+
+            await _queryStore.UpsertAsync(summary);
+        }
 
         private string GetLiveVacancyId(long vacancyReference)
         {
@@ -264,6 +272,40 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore
         public Task<BlockedProviderOrganisations> GetBlockedProvidersAsync()
         {
             return _queryStore.GetAsync<BlockedProviderOrganisations>(QueryViewType.BlockedProviderOrganisations.GetIdValue());
+        }
+
+        public Task<IEnumerable<LiveVacancy>> GetAllLiveVacancies(int vacanciesToSkip, int vacanciesToGet)
+        {
+            return _queryStore.GetAllLiveVacancies(vacanciesToSkip, vacanciesToGet);
+        }
+
+        public Task<IEnumerable<LiveVacancy>> GetAllLiveVacanciesOnClosingDate(int vacanciesToSkip, int vacanciesToGet, DateTime closingDate)
+        {
+            return _queryStore.GetAllLiveVacanciesOnClosingDate(vacanciesToSkip, vacanciesToGet, closingDate);
+        }
+
+        public Task<long> GetAllLiveVacanciesCount()
+        {
+            return _queryStore.GetAllLiveVacanciesCount();
+        }
+
+        public Task<long> GetTotalPositionsAvailableCount()
+        {
+            return _queryStore.GetTotalPositionsAvailableCount();
+        }
+
+        public Task<long> GetAllLiveVacanciesOnClosingDateCount(DateTime closingDate)
+        {
+            return _queryStore.GetAllLiveVacanciesOnClosingDateCount(closingDate);
+        }
+        public Task<LiveVacancy> GetLiveVacancy(long vacancyReference)
+        {
+            return _queryStore.GetLiveVacancy(vacancyReference);
+        }
+
+        public Task<LiveVacancy> GetLiveExpiredVacancy(long vacancyReference)
+        {
+            return _queryStore.GetLiveExpiredVacancy(vacancyReference);
         }
     }
 }

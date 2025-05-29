@@ -39,7 +39,10 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Extensions
             projectedVacancy.ProviderContactName = vacancy.ProviderContact?.Name;
             projectedVacancy.ProviderContactPhone = vacancy.ProviderContact?.Phone;
             projectedVacancy.EmployerDescription = vacancy.EmployerDescription;
-            projectedVacancy.EmployerLocation = vacancy.EmployerLocation.ToProjection(vacancy.IsAnonymous);
+            projectedVacancy.EmployerLocation = vacancy.EmployerLocation?.ToProjection(vacancy.IsAnonymous);
+            projectedVacancy.EmployerLocationOption = vacancy.EmployerLocationOption;
+            projectedVacancy.EmployerLocations = vacancy.EmployerLocations?.Select(x => x.ToProjection(vacancy.IsAnonymous)).ToList();
+            projectedVacancy.EmployerLocationInformation = vacancy.EmployerLocationInformation;
             projectedVacancy.EmployerName = vacancy.EmployerName;
             projectedVacancy.EmployerWebsiteUrl = vacancy.IsAnonymous ? null : vacancy.EmployerWebsiteUrl;
             projectedVacancy.IsAnonymous = vacancy.IsAnonymous;
@@ -49,7 +52,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Extensions
             projectedVacancy.ProgrammeId = vacancy.ProgrammeId;
             projectedVacancy.ProgrammeLevel = programme?.ApprenticeshipLevel.ToString();
             projectedVacancy.ProgrammeType = programme?.ApprenticeshipType.ToString();
-            projectedVacancy.Qualifications = vacancy.VacancyType.GetValueOrDefault() == VacancyType.Apprenticeship ? vacancy.Qualifications.ToProjection() : new List<ProjectionQualification>();
+            projectedVacancy.Qualifications = vacancy.Qualifications.ToProjection();
             projectedVacancy.ShortDescription = vacancy.ShortDescription;
             projectedVacancy.Skills = vacancy.Skills;
             projectedVacancy.StartDate = vacancy.StartDate.GetValueOrDefault();
@@ -64,39 +67,56 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Extensions
             projectedVacancy.AccountPublicHashedId = vacancy.EmployerAccountId;
             projectedVacancy.AccountLegalEntityPublicHashedId = vacancy.AccountLegalEntityPublicHashedId;
             
-            projectedVacancy.RouteId = vacancy.RouteId;
-            projectedVacancy.WorkExperience = vacancy.WorkExperience;
-            projectedVacancy.VacancyType = vacancy.VacancyType.GetValueOrDefault();
-
             projectedVacancy.AdditionalQuestion1 = vacancy.AdditionalQuestion1;
             projectedVacancy.AdditionalQuestion2 = vacancy.AdditionalQuestion2;
+
+            projectedVacancy.AdditionalTrainingDescription = vacancy.AdditionalTrainingDescription;
             
             return projectedVacancy;
         }
 
-        public static ProjectionAddress ToProjection(this Address address, bool isAnonymousVacancy)
+        private static ProjectionAddress ToProjection(this Address address, bool isAnonymousVacancy)
         {
-            if(isAnonymousVacancy)
-                return new ProjectionAddress {
-                    Postcode = address.PostcodeAsOutcode(),
+            if (!isAnonymousVacancy)
+            {
+                return new ProjectionAddress
+                {
+                    AddressLine1 = address.AddressLine1,
+                    AddressLine2 = address.AddressLine2,
+                    AddressLine3 = address.AddressLine3,
+                    AddressLine4 = address.AddressLine4,
+                    Postcode = address.Postcode,
                     Latitude = address.Latitude.GetValueOrDefault(),
                     Longitude = address.Longitude.GetValueOrDefault()
                 };
-
-            return new ProjectionAddress
-            {
-                AddressLine1 = address.AddressLine1,
-                AddressLine2 = address.AddressLine2,
-                AddressLine3 = address.AddressLine3,
-                AddressLine4 = address.AddressLine4,
-                Postcode = address.Postcode,
-                Latitude = address.Latitude.GetValueOrDefault(), 
+            }
+            
+            var projectionAddress = new ProjectionAddress {
+                Postcode = address.PostcodeAsOutcode(),
+                Latitude = address.Latitude.GetValueOrDefault(),
                 Longitude = address.Longitude.GetValueOrDefault()
             };
+
+            var lines = new List<Func<string>>
+            {
+                () => projectionAddress.AddressLine4 = address.AddressLine4,
+                () => projectionAddress.AddressLine3 = address.AddressLine3,
+                () => projectionAddress.AddressLine2 = address.AddressLine2,
+            };
+
+            int index = 0;
+            while (string.IsNullOrWhiteSpace(lines[index]()) && index < lines.Count)
+            {
+                index++;
+            }
+
+            return projectionAddress;
         }
 
         public static IEnumerable<ProjectionQualification> ToProjection(this List<Qualification> qualifications)
         {
+            if (qualifications == null) return [];
+
             return qualifications.Select(q => new ProjectionQualification
             {
                 QualificationType = q.QualificationType,
@@ -125,7 +145,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Extensions
                 WageAdditionalInformation = wage.WageAdditionalInformation,
                 WageType = wage.WageType?.ToString(),
                 WeeklyHours = wage.WeeklyHours ?? 0,
-                WorkingWeekDescription = wage.WorkingWeekDescription
+                WorkingWeekDescription = wage.WorkingWeekDescription,
+                CompanyBenefitsInformation = wage.CompanyBenefitsInformation
             };
         }
     }

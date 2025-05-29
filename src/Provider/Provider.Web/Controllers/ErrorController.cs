@@ -17,6 +17,7 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.Exceptions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
@@ -29,18 +30,21 @@ namespace Esfa.Recruit.Provider.Web.Controllers
         private readonly ExternalLinksConfiguration _externalLinks;
         private readonly IRecruitVacancyClient _vacancyClient;
         private readonly ITrainingProviderSummaryProvider _trainingProviderSummaryProvider;
+        private readonly IConfiguration _configuration;
 
-        public ErrorController(ILogger<ErrorController> logger, IOptions<ExternalLinksConfiguration> externalLinks, IRecruitVacancyClient vacancyClient, ITrainingProviderSummaryProvider trainingProviderSummaryProvider)
+        public ErrorController(ILogger<ErrorController> logger, IOptions<ExternalLinksConfiguration> externalLinks, IRecruitVacancyClient vacancyClient, ITrainingProviderSummaryProvider trainingProviderSummaryProvider, IConfiguration configuration)
         {
             _logger = logger;
             _externalLinks = externalLinks.Value;
             _vacancyClient = vacancyClient;
             _trainingProviderSummaryProvider = trainingProviderSummaryProvider;
+            _configuration = configuration;
         }
 
         [Route("error/{id?}")]
         public IActionResult Error(int id)
         {
+            
             ViewBag.IsErrorPage = true; // Used by layout to show/hide elements.
 
             switch (id)
@@ -143,7 +147,8 @@ namespace Esfa.Recruit.Provider.Web.Controllers
                 return ProviderAccessRevoked();
             }
 
-            var serviceClaims = User.FindAll(ProviderRecruitClaims.IdamsUserServiceTypeClaimTypeIdentifier);
+            var serviceClaims = User.FindAll(ProviderRecruitClaims.IdamsUserServiceTypeClaimTypeIdentifier).ToList();
+            serviceClaims.AddRange(User.FindAll(ProviderRecruitClaims.DfEUserServiceTypeClaimTypeIdentifier).ToList());
 
             if (!serviceClaims.Any(claim => claim.Value.IsServiceClaim()))
             {
@@ -151,7 +156,8 @@ namespace Esfa.Recruit.Provider.Web.Controllers
                 return Redirect(_externalLinks.ProviderApprenticeshipSiteUrl);
             }
 
-            var ukprnClaim = User.FindFirst(ProviderRecruitClaims.IdamsUserUkprnClaimsTypeIdentifier);
+            var ukprnClaim = User.FindFirst(ProviderRecruitClaims.IdamsUserUkprnClaimsTypeIdentifier)
+                             ?? User.FindFirst(ProviderRecruitClaims.DfEUkprnClaimsTypeIdentifier);
             if (!string.IsNullOrEmpty(ukprnClaim.Value))
             {
                 var ukprn = long.Parse(ukprnClaim.Value);
@@ -159,7 +165,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
                 try
                 {
                     var provider = _trainingProviderSummaryProvider.GetAsync(ukprn).Result;
-                    
+
                     ukprnIsNotListedInRoatp = provider == null;
                 }
                 catch (Exception)
@@ -175,7 +181,14 @@ namespace Esfa.Recruit.Provider.Web.Controllers
             }
 
             Response.StatusCode = (int)HttpStatusCode.Unauthorized;
-            return View(ViewNames.AccessDenied);
+
+            bool useDfESignIn = _configuration["UseDfESignIn"] != null && _configuration["UseDfESignIn"]
+                .Equals("true", StringComparison.CurrentCultureIgnoreCase);
+
+            return View(ViewNames.AccessDenied, new Error403ViewModel(_configuration["ResourceEnvironmentName"])
+            {
+                UseDfESignIn = useDfESignIn
+            });
         }
 
         private IActionResult ProviderAccessRevoked()
@@ -211,7 +224,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
 
         private void AddDashboardMessage(string message)
         {
-            if(TempData.ContainsKey(TempDataKeys.VacanciesErrorMessage))
+            if (TempData.ContainsKey(TempDataKeys.VacanciesErrorMessage))
                 _logger.LogError($"Dashboard message already set in {nameof(ErrorController)}. Existing message:{TempData[TempDataKeys.VacanciesErrorMessage]}. New message:{message}");
 
             TempData[TempDataKeys.VacanciesErrorMessage] = message;

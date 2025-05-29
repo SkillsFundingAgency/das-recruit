@@ -8,8 +8,7 @@ using FieldIdentifier = Esfa.Recruit.Shared.Web.Mappers.FieldIdentifiers;
 
 namespace Esfa.Recruit.Qa.Web.ViewModels
 {
-    public class 
-        ReviewViewModel : ReviewEditModel
+    public class ReviewViewModel : ReviewEditModel
     {
         private const string CssFieldChanged = "field-changed";
         
@@ -29,6 +28,8 @@ namespace Esfa.Recruit.Qa.Web.ViewModels
         public int AnonymousApprovedCount { get; internal set; }
         public string EmployerWebsiteUrl { get; internal set; }
         public IEnumerable<string> EmployerAddressElements { get; internal set; }
+        public List<Address> EmployerLocations { get; internal set; }
+        public AvailableWhere? EmployerLocationOption { get; internal set; }
         public bool IsDisabilityConfident { get; set; }
         public string LegalEntityName { get; set; }
         public string NumberOfPositionsCaption { get; internal set; }
@@ -39,12 +40,10 @@ namespace Esfa.Recruit.Qa.Web.ViewModels
         public string ProviderContactEmail { get; internal set; }
         public string ProviderContactTelephone { get; internal set; }
         public string ProviderName { get; internal set; }
-        public string ThingsToConsider { get; internal set; }
         public string VacancyReferenceNumber { get; internal set; }
         public string TrainingTitle { get; internal set; }
         public string TrainingType { get; internal set; }
         public string TrainingLevel { get; internal set; }
-        public string TraineeRoute { get; internal set; }
         public string ExpectedDuration { get; internal set; }
         public string WageInfo { get; internal set; }
         public string MapUrl { get; internal set; }
@@ -67,6 +66,7 @@ namespace Esfa.Recruit.Qa.Web.ViewModels
         public string AdditionalQuestion1 { get; internal set; }
         public string AdditionalQuestion2 { get; internal set; }
         public bool HasAdditionalQuestions { get; internal set; }
+        public ApprenticeshipTypes? ApprenticeshipType { get; internal set; }
 
         public bool IsAnonymous => EmployerNameOption == EmployerNameOption.Anonymous;
         public bool IsApproved => ManualOutcome.GetValueOrDefault() == ManualQaOutcome.Approved;
@@ -109,11 +109,12 @@ namespace Esfa.Recruit.Qa.Web.ViewModels
         public string TitleClass => GetFieldIdentifierCssClass(FieldIdentifier.Title);
         public string TrainingClass => GetFieldIdentifierCssClass(FieldIdentifier.Training);
         public string TrainingDescriptionClass => GetFieldIdentifierCssClass(FieldIdentifier.TrainingDescription);
+        public string AdditionalTrainingDescriptionClass => GetFieldIdentifierCssClass(FieldIdentifier.AdditionalTrainingDescription);
         public string TrainingLevelClass => GetFieldIdentifierCssClass(FieldIdentifier.TrainingLevel);
-        public string TraineeRouteClass => GetFieldIdentifierCssClass(FieldIdentifier.TraineeRoute);
         public string VacancyDescriptionClass => GetFieldIdentifierCssClass(FieldIdentifier.VacancyDescription);
         public string WageClass => GetFieldIdentifierCssClass(FieldIdentifier.Wage);
         public string WorkingWeekClass => GetFieldIdentifierCssClass(FieldIdentifier.WorkingWeek);
+        public string CompanyBenefitsInformationClass => GetFieldIdentifierCssClass(FieldIdentifier.CompanyBenefitsInformation);
         public bool HasAutomatedQaResults => AutomatedQaResults.Any();
         public string PageTitle { get; set; }        
         public bool IsVacancyDeleted { get; set; }
@@ -123,7 +124,7 @@ namespace Esfa.Recruit.Qa.Web.ViewModels
         }
         public ApprenticeshipLevel Level { get; set; }
         public string AccountLegalEntityPublicHashedId { get; set; }
-        public string WorkExperienceClass => GetFieldIdentifierCssClass(FieldIdentifier.WorkExperience);
-        public VacancyType? VacancyType { get; set; }
+                
+        public bool ReadOnly { get; set; } = false;
     }
 }

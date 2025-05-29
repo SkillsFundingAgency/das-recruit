@@ -6,6 +6,7 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
 {
     public class Vacancy : ITaskListVacancy
     {
+        private string _shortDescription;
         public Guid Id { get; set; }
         public string EmployerAccountId { get; set; }
         public long? VacancyReference { get; set; }
@@ -41,6 +42,9 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
         public ContactDetail EmployerContact { get; set; }
         public string EmployerDescription { get; set; }
         public Address EmployerLocation { get; set; }
+        public List<Address> EmployerLocations { get; set; }
+        public AvailableWhere? EmployerLocationOption { get; set; }
+        public string? EmployerLocationInformation { get; set; }
         public string EmployerName { get; set; }
         public EmployerNameOption? EmployerNameOption { get; set; }
         public List<EmployerReviewFieldIndicator> EmployerReviewFieldIndicators { get; set; }
@@ -54,13 +58,34 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
         public ContactDetail ProviderContact { get; set; }
         public List<ProviderReviewFieldIndicator> ProviderReviewFieldIndicators { get; set; }
         public string ProgrammeId { get; set; }
+        public bool? HasOptedToAddQualifications { get; set; }
         public List<Qualification> Qualifications { get; set; }
-        public string ShortDescription { get; set; }
+
+        private ApprenticeshipTypes? _apprenticeshipType;
+        public ApprenticeshipTypes? ApprenticeshipType
+        {
+            get => _apprenticeshipType ?? ApprenticeshipTypes.Standard;
+            set => _apprenticeshipType = value;
+        }
+
+        public string ShortDescription  
+        {
+            get
+            {
+                return _shortDescription;
+            }
+            set
+            {
+                if (value != null) _shortDescription = value.Replace(Environment.NewLine, " ");
+            }
+        }
+
         public List<string> Skills { get; set; }
         public DateTime? StartDate { get; set; }
         public string ThingsToConsider { get; set; }
         public string Title { get; set; }
         public string TrainingDescription { get; set; }
+        public string AdditionalTrainingDescription { get; set; }
         public TrainingProvider TrainingProvider { get; set; }
         public Wage Wage { get; set; }
         public ClosureReason? ClosureReason { get; set; }
@@ -150,16 +175,6 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Entities
         /// </summary>
         public bool GeocodeUsingOutcode => IsAnonymous;
         
-        /// <summary>
-        /// Type of Vacancy being created, either Apprenticeship or Traineeship. Set by application startup.
-        /// </summary>
-        public VacancyType? VacancyType { get; set; }
-
-        /// <summary>
-        /// If traineeship vacancy then this must be populated
-        /// </summary>
-        public int? RouteId { get; set; }
-        public string WorkExperience { get; set; }
         public string AdditionalQuestion1 { get; set; }
         public string AdditionalQuestion2 { get; set; }
         public bool HasSubmittedAdditionalQuestions { get; set; }

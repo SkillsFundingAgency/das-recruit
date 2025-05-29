@@ -8,7 +8,7 @@ namespace Esfa.Recruit.Qa.Web.Extensions
     {
         public static VacancyUser GetVacancyUser(this ClaimsPrincipal user)
         {
-            var userId = user.FindFirstValue(StaffIdamsClaims.IdamsUserIdClaimTypeIdentifier);
+            var userId = user.FindFirstValue(StaffIdamsClaims.IdamsUserIdClaimTypeIdentifier) ?? user.FindFirstValue(DfeSignInClaims.UserId);
             var name = user.FindFirstValue(StaffIdamsClaims.IdamsUserNameClaimTypeIdentifier);
 
             return new VacancyUser 

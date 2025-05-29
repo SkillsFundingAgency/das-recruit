@@ -20,5 +20,6 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.EmployerName
 
         public bool HasOnlyOneOrganisation { get; internal set; }
         public bool TaskListCompleted { get ; set ; }
+        public string VacancyTitle { get; init; }
     }
 }

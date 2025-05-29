@@ -1,10 +1,12 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using MongoDB.Bson;
 using MongoDB.Driver;
 using Polly;
 
@@ -19,12 +21,25 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
 
         public async Task<User> GetAsync(string idamsUserId)
         {
-            var filter = Builders<User>.Filter.Eq(v => v.IdamsUserId, idamsUserId);
+            var filter = Builders<User>.Filter.Regex(v => v.IdamsUserId, 
+                new BsonRegularExpression(Regex.Escape(idamsUserId.ToLower()),"i" ));
 
             var collection = GetCollection<User>();
-            var result = await RetryPolicy.Execute(_ => 
-                collection.Find(filter)
-                .SingleOrDefaultAsync(),
+            var result = await RetryPolicy.ExecuteAsync(_ => 
+                collection.Find(filter, new FindOptions{})
+                .FirstOrDefaultAsync(),
+                new Context(nameof(GetAsync)));
+            return result;
+        }
+        
+        public async Task<User> GetByDfEUserId(string dfEUserId)
+        {
+            var filter = Builders<User>.Filter.Eq(v => v.DfEUserId, dfEUserId);
+
+            var collection = GetCollection<User>();
+            var result = await RetryPolicy.ExecuteAsync(_ => 
+                    collection.Find(filter)
+                        .SingleOrDefaultAsync(),
                 new Context(nameof(GetAsync)));
             return result;
         }
@@ -33,7 +48,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
         {
             var filter = Builders<User>.Filter.Eq(v => v.Id, user.Id);
             var collection = GetCollection<User>();
-            return RetryPolicy.Execute(_ => 
+            return RetryPolicy.ExecuteAsync(_ => 
                 collection.ReplaceOneAsync(filter, user, new ReplaceOptions { IsUpsert = true }),
                 new Context(nameof(UpsertUserAsync)));
         }
@@ -42,7 +57,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
         {
             var filter = Builders<User>.Filter.AnyEq(u => u.EmployerAccountIds, accountId);
             var collection = GetCollection<User>();
-            return RetryPolicy.Execute(_ => 
+            return RetryPolicy.ExecuteAsync(_ => 
                 collection.Find(filter).ToListAsync(),
                 new Context(nameof(GetEmployerUsersAsync)));
         }
@@ -51,7 +66,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Repositories
         {
             var filter = Builders<User>.Filter.Eq(u => u.Ukprn, ukprn);
             var collection = GetCollection<User>();
-            return RetryPolicy.Execute(_ => 
+            return RetryPolicy.ExecuteAsync(_ => 
                 collection.Find(filter).ToListAsync(),
                 new Context(nameof(GetProviderUsersAsync)));
         }

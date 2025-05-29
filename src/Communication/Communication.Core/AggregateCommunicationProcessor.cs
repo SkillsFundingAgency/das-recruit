@@ -46,7 +46,7 @@ namespace Communication.Core
         {
             var templateMessage = GetTemplateMessageFromMessagesToBeAggregated(messages);
 
-            return new CommunicationUser(templateMessage.Recipient.UserId, templateMessage.Recipient.Email, templateMessage.Recipient.Name, templateMessage.Recipient.UserType, UserParticipation.PrimaryUser);
+            return new CommunicationUser(templateMessage.Recipient.UserId, templateMessage.Recipient.Email, templateMessage.Recipient.Name, templateMessage.Recipient.UserType, UserParticipation.PrimaryUser, templateMessage.Recipient.DfEUserId);
         }
 
         private CommunicationMessage GetTemplateMessageFromMessagesToBeAggregated(IEnumerable<CommunicationMessage> messages) => messages.First();
@@ -75,7 +75,7 @@ namespace Communication.Core
                 RequestDateTime = request.RequestDateTime,
                 ParticipantsResolverName = templateMessage.ParticipantsResolverName,
                 OriginatingServiceName = templateMessage.OriginatingServiceName,
-                Recipient = new CommunicationUser(templateMessage.Recipient.UserId, templateMessage.Recipient.Email, templateMessage.Recipient.Name, templateMessage.Recipient.UserType, UserParticipation.PrimaryUser),
+                Recipient = new CommunicationUser(templateMessage.Recipient.UserId, templateMessage.Recipient.Email, templateMessage.Recipient.Name, templateMessage.Recipient.UserType, UserParticipation.PrimaryUser, templateMessage.Recipient.DfEUserId),
                 RequestType = request.RequestType,
                 Channel = templateMessage.Channel,
                 Frequency = DeliveryFrequency.Immediate,

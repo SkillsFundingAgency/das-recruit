@@ -36,7 +36,13 @@ namespace Esfa.Recruit.Shared.Web.Extensions
                 return Enumerable.Empty<string>();
             }
             
-            return qualifications.Select(q => $"{q.QualificationType} {q.Subject} (Grade {q.Grade}) {q.Weighting.GetDisplayName().ToLower()}");
+            return qualifications.Select(q =>
+            {
+                var additionalText = !string.IsNullOrEmpty(q.OtherQualificationName) ? $" ({q.OtherQualificationName})" :"";
+                var levelText = q.Level.HasValue ? $" (Level {q.Level})":"";
+                string qualificationType = $"{q.QualificationType}{levelText}{additionalText} {q.Subject} (Grade {q.Grade}) {q.Weighting.GetDisplayName().ToLower()}";
+                return qualificationType;
+            });
         }
     }
 }

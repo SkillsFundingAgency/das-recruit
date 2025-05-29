@@ -15,5 +15,6 @@ namespace Esfa.Recruit.Provider.Web.ViewModels.Part2.Qualifications
 
         public bool HasInfo => string.IsNullOrWhiteSpace(InfoMessage) == false;
         public bool IsTaskListCompleted { get; set; }
+        public bool? AddQualificationRequirement { get; set; }
     }
 }

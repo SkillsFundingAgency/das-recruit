@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Esfa.Recruit.Provider.Web.Configuration.Routing;
@@ -9,6 +10,7 @@ using Esfa.Recruit.Provider.Web.ViewModels.CloneVacancy;
 using Esfa.Recruit.Provider.Web.Extensions;
 using Esfa.Recruit.Shared.Web.Extensions;
 using Esfa.Recruit.Shared.Web.ViewModels;
+using Esfa.Recruit.Vacancies.Client.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 
 namespace Esfa.Recruit.Provider.Web.Controllers
@@ -18,6 +20,7 @@ namespace Esfa.Recruit.Provider.Web.Controllers
     public class CloneVacancyController : Controller
     {
         private readonly CloneVacancyOrchestrator _orchestrator;
+
         public CloneVacancyController(CloneVacancyOrchestrator orchestrator)
         {
             _orchestrator = orchestrator;

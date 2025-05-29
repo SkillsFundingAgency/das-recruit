@@ -15,5 +15,6 @@
         public decimal? FixedWageYearlyAmount { get; set; }
 
         public string WageAdditionalInformation { get; set; }
+        public string CompanyBenefitsInformation { get; set; }
     }
 }
