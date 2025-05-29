@@ -24,7 +24,6 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummariesProv
 using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.Extensions.Logging;
-using FeatureNames = Esfa.Recruit.Vacancies.Client.Infrastructure.Configuration.FeatureNames;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 {
