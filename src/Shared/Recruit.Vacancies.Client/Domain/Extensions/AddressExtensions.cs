@@ -51,13 +51,6 @@ namespace Esfa.Recruit.Vacancies.Client.Domain.Extensions
             return lines.FirstOrDefault(x => !string.IsNullOrWhiteSpace(x))?.Trim();
         }
 
-        public static List<Address> OrderByCity(this List<Address> addresses)
-        {
-            return addresses
-                .OrderBy(a => a.GetCity())
-                .ToList();
-        }
-
         public static string GetCities(this IEnumerable<Address> addresses)
         {
             // Group by city

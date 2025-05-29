@@ -113,13 +113,5 @@ namespace Esfa.Recruit.Shared.Web.Extensions
                 address.Postcode
             }.Where(x => !string.IsNullOrEmpty(x?.Trim()));
         }
-
-       
-        public static List<Address> OrderByCity(this List<Address> addresses)
-        {
-            return addresses
-                .OrderBy(a => a.GetCity())
-                .ToList();
-        }
     }
 }
