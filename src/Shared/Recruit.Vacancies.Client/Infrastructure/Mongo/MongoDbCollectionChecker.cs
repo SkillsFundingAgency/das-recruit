@@ -83,7 +83,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Mongo
                 new CreateIndexModel<ApplicationReview>(Builders<ApplicationReview>.IndexKeys.Ascending(d => d.VacancyReference).Ascending(d=>d.IsWithdrawn)),
                 new CreateIndexModel<ApplicationReview>(Builders<ApplicationReview>.IndexKeys.Ascending(d => d.Status)),
                 new CreateIndexModel<ApplicationReview>(Builders<ApplicationReview>.IndexKeys.Ascending(d => d.IsWithdrawn)),
-                new CreateIndexModel<ApplicationReview>(Builders<ApplicationReview>.IndexKeys.Ascending(d => d.IsWithdrawn).Ascending(d=>d.Status))
+                new CreateIndexModel<ApplicationReview>(Builders<ApplicationReview>.IndexKeys.Ascending(d => d.IsWithdrawn).Ascending(d=>d.Status)),
+                new CreateIndexModel<ApplicationReview>(Builders<ApplicationReview>.IndexKeys.Ascending("migrationDate")),
+                new CreateIndexModel<ApplicationReview>(Builders<ApplicationReview>.IndexKeys.Ascending("migrationDate").Ascending("migrationFailed").Ascending("statusUpdatedDate"))
             }, new CreateManyIndexesOptions
             {
                 MaxTime = TimeSpan.FromHours(1)
