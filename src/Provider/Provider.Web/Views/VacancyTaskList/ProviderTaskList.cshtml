@@ -1,8 +1,7 @@
-@using Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview
 @using Esfa.Recruit.Shared.Web.ViewModels.TaskList
 @using Esfa.Recruit.Vacancies.Client.Application.FeatureToggle
 
-@model Esfa.Recruit.Provider.Web.ViewModels.VacancyPreview.VacancyPreviewViewModel
+@model VacancyTaskListViewModel
 
 @{
     ViewBag.GaData.Vpv = "/recruitment/provider/task-list";
@@ -20,117 +19,78 @@
         </h1>
         <ol class="das-task-list">
             <li>
-                <partial name="_TaskListHeader" model="@(new TaskListHeaderViewModel(1, "Vacancy summary", Model.TaskListSectionOneState))"/>
+                <partial name="_TaskListHeader" model="@(new TaskListHeaderViewModel(1, "Vacancy summary", Model.TaskListStates.SectionOneState))"/>
                 <ul class="das-task-list__items">
 
                     @if (Model.AccountLegalEntityCount + Model.AccountCount > 2)
                     {
                         <partial name="_TaskListItem" model="@(new TaskListItemViewModel(true, "Name of employer", RouteNames.ConfirmSelectedLegalEntityEmployer_Get, Model.RouteDictionary))"/>
                     }
-                    <partial name="_TaskListItem" model="@(new TaskListItemViewModel(true, "Vacancy title", RouteNames.Title_Get, Model.RouteDictionary))"/>
-                    <partial name="_TaskListItem" model="@(new TaskListItemViewModel(!(!Model.HasSelectedLegalEntity || string.IsNullOrEmpty(Model.Title)),
-                                                             "Training course", RouteNames.Training_Get, Model.RouteDictionary))"/>
-                    <partial name="_TaskListItem" model="@(new TaskListItemViewModel(Model.HasProgramme,
-                                                             "Summary of the apprenticeship", RouteNames.ShortDescription_Get, Model.RouteDictionary))"/>
-                    <partial name="_TaskListItem" model="@(new TaskListItemViewModel(Model.ShortDescriptionSectionState != VacancyPreviewSectionState.Incomplete,
-                                                             "What the apprentice will do at work", RouteNames.VacancyWorkDescription_Index_Get, Model.RouteDictionary))"/>
-                    <partial name="_TaskListItem" model="@(new TaskListItemViewModel(Model.DescriptionsSectionState != VacancyPreviewSectionState.Incomplete,
-                                                             "How the apprentice will train", RouteNames.VacancyHowTheApprenticeWillTrain_Index_Get, Model.RouteDictionary))"/>
+                    <partial name="_TaskListItem" model="@(new TaskListItemViewModel(Model.TaskListStates.VacancyTitleEditable, "Vacancy title", RouteNames.Title_Get, Model.RouteDictionary))"/>
+                    <partial name="_TaskListItem" model="@(new TaskListItemViewModel(Model.TaskListStates.TrainingCourseEditable, "Training course", RouteNames.Training_Get, Model.RouteDictionary))"/>
+                    <partial name="_TaskListItem" model="@(new TaskListItemViewModel(Model.TaskListStates.ApprenticeshipSummaryEditable, "Summary of the apprenticeship", RouteNames.ShortDescription_Get, Model.RouteDictionary))"/>
+                    <partial name="_TaskListItem" model="@(new TaskListItemViewModel(Model.TaskListStates.WhatWillTheyDoAtWorkEditable, "What the apprentice will do at work", RouteNames.VacancyWorkDescription_Index_Get, Model.RouteDictionary))"/>
+                    <partial name="_TaskListItem" model="@(new TaskListItemViewModel(Model.TaskListStates.HowWillTheyTrainEditable, "How the apprentice will train", RouteNames.VacancyHowTheApprenticeWillTrain_Index_Get, Model.RouteDictionary))"/>
                 </ul>
             </li>
             <li>
-                <partial name="_TaskListHeader" model="@(new TaskListHeaderViewModel(2, "Employment details", Model.TaskListSectionTwoState))"/>
+                <partial name="_TaskListHeader" model="@(new TaskListHeaderViewModel(2, "Employment details", Model.TaskListStates.SectionTwoState))"/>
                 <ul class="das-task-list__items">
-                    <partial name="_TaskListItem" model="@(new TaskListItemViewModel(Model.TaskListSectionOneState == VacancyTaskListSectionState.Completed,
-                                                             "Closing and start dates", RouteNames.Dates_Get, Model.RouteDictionary))"/>
-                    <partial name="_TaskListItem" model="@(new TaskListItemViewModel(!(Model.ClosingDateSectionState == VacancyPreviewSectionState.Incomplete || Model.PossibleStartDateSectionState == VacancyPreviewSectionState.Incomplete),
-                                                             "Duration and working hours", RouteNames.Duration_Get, Model.RouteDictionary))"/>
-                    <partial name="_TaskListItem" model="@(new TaskListItemViewModel(Model.ExpectedDurationSectionState != VacancyPreviewSectionState.Incomplete,
-                                                             "Pay rate and benefits", RouteNames.Wage_Get, Model.RouteDictionary))"/>
-                    <partial name="_TaskListItem" model="@(new TaskListItemViewModel(Model.WageTextSectionState != VacancyPreviewSectionState.Incomplete,
-                                                             "Number of positions", RouteNames.NumberOfPositions_Get, Model.RouteDictionary))"/>
+                    <partial name="_TaskListItem" model="@(new TaskListItemViewModel(Model.TaskListStates.ClosingAndStartDatesEditable, "Closing and start dates", RouteNames.Dates_Get, Model.RouteDictionary))"/>
+                    <partial name="_TaskListItem" model="@(new TaskListItemViewModel(Model.TaskListStates.DurationAndWorkingHoursEditable, "Duration and working hours", RouteNames.Duration_Get, Model.RouteDictionary))"/>
+                    <partial name="_TaskListItem" model="@(new TaskListItemViewModel(Model.TaskListStates.PayRateAndBenefitsEditable, "Pay rate and benefits", RouteNames.Wage_Get, Model.RouteDictionary))"/>
+                    <partial name="_TaskListItem" model="@(new TaskListItemViewModel(Model.TaskListStates.NumberOfPositionsEditable, "Number of positions", RouteNames.NumberOfPositions_Get, Model.RouteDictionary))"/>
                     <esfaFeatureEnabled name="@FeatureNames.MultipleLocations">
-                        <partial name="_TaskListItem" model="@(new TaskListItemViewModel(Model.NumberOfPositionsSectionState != VacancyPreviewSectionState.Incomplete,
-                                                                 "Locations", RouteNames.MultipleLocations_Get, Model.RouteDictionary))"/>
+                        <partial name="_TaskListItem" model="@(new TaskListItemViewModel(Model.TaskListStates.LocationsEditable, "Locations", RouteNames.MultipleLocations_Get, Model.RouteDictionary))"/>
                     </esfaFeatureEnabled>
                     <esfaFeatureDisabled name="@FeatureNames.MultipleLocations">
-                        <partial name="_TaskListItem" model="@(new TaskListItemViewModel(Model.NumberOfPositionsSectionState != VacancyPreviewSectionState.Incomplete,
-                                                                 "Address", RouteNames.Location_Get, Model.RouteDictionary))"/>
+                        <partial name="_TaskListItem" model="@(new TaskListItemViewModel(Model.TaskListStates.LocationsEditable, "Address", RouteNames.Location_Get, Model.RouteDictionary))"/>
                     </esfaFeatureDisabled>
                 </ul>
             </li>
             <li>
-                <partial name="_TaskListHeader" model="@(new TaskListHeaderViewModel(3, "Requirements and Prospects", Model.TaskListSectionThreeState))"/>
+                <partial name="_TaskListHeader" model="@(new TaskListHeaderViewModel(3, "Requirements and prospects", Model.TaskListStates.SectionThreeState))"/>
                 <ul class="das-task-list__items">
-
-                    @if (Model.ApprenticeshipType is ApprenticeshipTypes.Foundation)
-                    {
-                        <p class="govuk-body govuk-hint">Foundation apprenticeships do not require the applicants to
-                            have specific skills or qualifications before applying.</p>
-                        <partial name="_TaskListItem" model="@(new DisabledTaskListItemViewModel("Skills (not required)"))"/>
-                        <partial name="_TaskListItem" model="@(new DisabledTaskListItemViewModel("Qualifications (not required)"))"/>
-                        <partial name="_TaskListItem" model="@(new TaskListItemViewModel(Model.EmployerAddressSectionState != VacancyPreviewSectionState.Incomplete,
-                                                                 "Future prospects", RouteNames.FutureProspects_Get, Model.RouteDictionary))"/>
-                    }
-                    else
-                    {
-                        <partial name="_TaskListItem" model="@(new TaskListItemViewModel(Model.TaskListSectionTwoState == VacancyTaskListSectionState.Completed,
-                                                                 "Skills", RouteNames.Skills_Get, Model.RouteDictionary))"/>
-                        <partial name="_TaskListItem" model="@(new TaskListItemViewModel(Model.SkillsSectionState != VacancyPreviewSectionState.Incomplete,
-                                                                 "Qualifications", RouteNames.Qualifications_Get, Model.RouteDictionary))"/>
-                        <partial name="_TaskListItem" model="@(new TaskListItemViewModel(!(Model.HasOptedToAddQualifications is null || Model.HasOptedToAddQualifications is true && Model.QualificationsSectionState == VacancyPreviewSectionState.Incomplete),
-                                                                 "Future prospects", RouteNames.FutureProspects_Get, Model.RouteDictionary))"/>
-                    }
-
-                    <partial name="_TaskListItem" model="@(new TaskListItemViewModel(!string.IsNullOrEmpty(Model.OutcomeDescription),
-                                                             "Other things to consider", RouteNames.Considerations_Get, Model.RouteDictionary))"/>
+                    @* Foundation apprenticeship *@
+                    <p asp-show="@(Model.ApprenticeshipType is ApprenticeshipTypes.Foundation)" class="govuk-body govuk-hint">Foundation apprenticeships do not require the applicants to
+                        have specific skills or qualifications before applying.</p>
+                    <partial asp-show="@(Model.ApprenticeshipType is ApprenticeshipTypes.Foundation)" name="_TaskListItem" model="@(new DisabledTaskListItemViewModel("Skills (not required)"))"/>
+                    <partial asp-show="@(Model.ApprenticeshipType is ApprenticeshipTypes.Foundation)" name="_TaskListItem" model="@(new DisabledTaskListItemViewModel("Qualifications (not required)"))"/>
+                    @* ------------------------- *@
+                    
+                    @* Apprenticeship standard *@
+                    <partial asp-show="@(Model.ApprenticeshipType is not ApprenticeshipTypes.Foundation)" name="_TaskListItem" model="@(new TaskListItemViewModel(Model.TaskListStates.SkillsEditable, "Skills", RouteNames.Skills_Get, Model.RouteDictionary))"/>
+                    <partial asp-show="@(Model.ApprenticeshipType is not ApprenticeshipTypes.Foundation)" name="_TaskListItem" model="@(new TaskListItemViewModel(Model.TaskListStates.QualificationsEditable, "Qualifications", RouteNames.Qualifications_Get, Model.RouteDictionary))"/>
+                    @* ----------------------- *@
+                    
+                    <partial name="_TaskListItem" model="@(new TaskListItemViewModel(Model.TaskListStates.FutureProspectsEditable, "Future prospects", RouteNames.FutureProspects_Get, Model.RouteDictionary))"/>
+                    <partial name="_TaskListItem" model="@(new TaskListItemViewModel(Model.TaskListStates.OtherThingsToConsiderEditable, "Other things to consider", RouteNames.Considerations_Get, Model.RouteDictionary))"/>
                 </ul>
             </li>
             <li>
-                <partial name="_TaskListHeader" model="@(new TaskListHeaderViewModel(4, "About the employer", Model.TaskListSectionFourState))"/>
+                <partial name="_TaskListHeader" model="@(new TaskListHeaderViewModel(4, "About the employer", Model.TaskListStates.SectionFourState))"/>
                 <ul class="das-task-list__items">
-                    <partial name="_TaskListItem" model="@(new TaskListItemViewModel(Model.TaskListSectionThreeState == VacancyTaskListSectionState.Completed,
-                                                             "Name of employer on vacancy", RouteNames.EmployerName_Get, Model.RouteDictionary))"/>
-                    <partial name="_TaskListItem" model="@(new TaskListItemViewModel(Model.HasSelectedEmployerNameOption,
-                                                             "Employer information", RouteNames.AboutEmployer_Get, Model.RouteDictionary))"/>
-                    <partial name="_TaskListItem" model="@(new TaskListItemViewModel(Model.HasEmployerDescription,
-                                                             "Contact details", RouteNames.ProviderContactDetails_Get, Model.RouteDictionary))"/>
-                    <partial name="_TaskListItem" model="@(new TaskListItemViewModel(Model.HasSelectedEmployerNameOption && Model.HasEmployerDescription && Model.TaskListSectionThreeState == VacancyTaskListSectionState.Completed,
-                                                             "Application website", RouteNames.ApplicationProcess_Get, Model.RouteDictionary))"/>
+                    <partial name="_TaskListItem" model="@(new TaskListItemViewModel(Model.TaskListStates.NameOfEmployerOnVacancyEditable, "Name of employer on vacancy", RouteNames.EmployerName_Get, Model.RouteDictionary))"/>
+                    <partial name="_TaskListItem" model="@(new TaskListItemViewModel(Model.TaskListStates.EmployerInformationEditable, "Employer information", RouteNames.AboutEmployer_Get, Model.RouteDictionary))"/>
+                    <partial name="_TaskListItem" model="@(new TaskListItemViewModel(Model.TaskListStates.ContactDetailsEditable, "Contact details", RouteNames.ProviderContactDetails_Get, Model.RouteDictionary))"/>
+                    <partial name="_TaskListItem" model="@(new TaskListItemViewModel(Model.TaskListStates.WebsiteForApplicationsEditable, "Application website", RouteNames.ApplicationProcess_Get, Model.RouteDictionary))"/>
                 </ul>
             </li>
             <li>
-                @{
-                    var sectionFourState = Model.TaskListSectionFiveState == VacancyTaskListSectionState.Completed
-                        ? VacancyTaskListSectionState.Completed
-                        : VacancyTaskListSectionState.NotStarted;
-                }
-                <partial name="_TaskListHeader" model="@(new TaskListHeaderViewModel(5, "Application", sectionFourState))"/>
+                <partial name="_TaskListHeader" model="@(new TaskListHeaderViewModel(5, "Application", Model.TaskListStates.SectionFiveState))"/>
                 <ul class="das-task-list__items">
-                    <partial name="_TaskListItem" model="@(new TaskListItemViewModel(Model.TaskListSectionFourState == VacancyTaskListSectionState.Completed,
-                                                             "Questions for applicants", RouteNames.AdditionalQuestions_Get, Model.RouteDictionary))"/>
+                    <partial name="_TaskListItem" model="@(new TaskListItemViewModel(Model.TaskListStates.AdditionalQuestionsEditable, "Questions for applicants", RouteNames.AdditionalQuestions_Get, Model.RouteDictionary))"/>
                 </ul>
             </li>
             <li>
-                @{
-                    var sectionFiveState = Model.TaskListSectionFiveState switch
-                    {
-                        VacancyTaskListSectionState.Completed => VacancyTaskListSectionState.InProgress,
-                        _ when Model.Status is VacancyStatus.Submitted => VacancyTaskListSectionState.Completed,
-                        _ => VacancyTaskListSectionState.NotStarted
-                    };
-                }
-                <partial name="_TaskListHeader" model="@(new TaskListHeaderViewModel(6, "Check and submit your vacancy", sectionFiveState))"/>
+                <partial name="_TaskListHeader" model="@(new TaskListHeaderViewModel(6, "Check and submit your vacancy", Model.TaskListStates.SectionSixState))"/>
                 <ul class="das-task-list__items">
-                    <partial name="_TaskListItem" model="@(new TaskListItemViewModel(Model.TaskListSectionFiveState == VacancyTaskListSectionState.Completed,
-                                                             "Check your answers and submit your vacancy", RouteNames.ProviderCheckYourAnswersGet, Model.RouteDictionary))"/>
+                    <partial name="_TaskListItem" model="@(new TaskListItemViewModel(Model.TaskListStates.CheckYourAnswersEditable, "Check your answers and submit your vacancy", RouteNames.ProviderCheckYourAnswersGet, Model.RouteDictionary))"/>
                 </ul>
             </li>
 
         </ol>
-
         <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
-
         <p class="govuk-heading-s">No longer need this vacancy?</p>
         <a asp-route="@RouteNames.DeleteVacancy_Get" asp-all-route-data="@Model.RouteDictionary"
            class="govuk-button govuk-button--warning" esfa-automation="delete-button">Delete vacancy</a>

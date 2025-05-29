@@ -289,20 +289,22 @@
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-full" id="@Anchors.ApplicationMethod">
         <p class="govuk-body" asp-show="@Model.HasSpecifiedThroughFaaApplicationMethod">
-            Candidates will apply through the Find an apprenticeship service
+            Applicants will apply through Find an apprenticeship.
         </p>
         <p class="govuk-body" asp-show="@Model.HasSpecifiedThroughExternalApplicationSiteMethod">
-            Candidates will apply through the employer's website
+            Applicants will apply through an external website.
         </p>
 
         <div asp-show="@Model.HasApplicationUrl" id="@Anchors.ApplicationUrl">
-            <h2 class="govuk-heading-s">Employer's application website</h2>
-            <a href="@Model.ApplicationUrl" class="govuk-link govuk-link--no-visited-state das-breakable" target="_blank" rel="noopener noreferrer">
-                @Model.ApplicationUrl
-            </a>
+            <h3 class="govuk-heading-s">Application website</h3>
+            <p class="govuk-body">
+                <a href="@Model.ApplicationUrl" class="govuk-link govuk-link--no-visited-state das-breakable" target="_blank" rel="noopener noreferrer">
+                    @Model.ApplicationUrl
+                </a>
+            </p>
         </div>
         <div asp-show="@Model.HasApplicationInstructions" id="@Anchors.ApplicationInstructions">
-            <h2 class="govuk-heading-s">Employer's application instructions (optional)</h2>
+            <h3 class="govuk-heading-s">Company’s application instructions (optional)</h3>
             <p class="govuk-body">@Model.ApplicationInstructions</p>
         </div>
     </div>
