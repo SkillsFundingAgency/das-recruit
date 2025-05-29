@@ -92,6 +92,26 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider
                 });
         }
 
+        public async Task<GetAllApplicationsResponse> GetAllApplications(List<Guid> applicationIds)
+        {
+            logger.LogTrace("Getting All Applications from Outer Api");
+
+            var retryPolicy = PollyRetryPolicy.GetPolicy();
+
+            return await retryPolicy.Execute(_ => outerApiClient.Post<GetAllApplicationsResponse>(
+                    new GetAllApplicationsByIdApiRequest(new GetAllApplicationsByIdApiRequestData
+                    {
+                        ApplicationIds = applicationIds,
+                        IncludeDetails = false
+                    })),
+                new Dictionary<string, object>
+                {
+                    {
+                        "apiCall", "Applications"
+                    }
+                });
+        }
+
         private Task<TrainingProviders> GetProviders()
         {
             return cache.CacheAsideAsync(
