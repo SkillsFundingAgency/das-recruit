@@ -119,7 +119,7 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                 WeeklyHours = vacancy.Wage.WeeklyHours.Value,
                 PageInfo = _utility.GetPartOnePageInfo(vacancy),
                 Title = vacancy.Title,
-                CompanyBenefitsInformation = vacancy.Wage?.CompanyBenefitsInformation
+                CompanyBenefitsInformation = vacancy.Wage?.CompanyBenefitsInformation,
             };
 
             if (vacancy.Status == VacancyStatus.Referred)
@@ -214,7 +214,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                 WeeklyHours = vm.WeeklyHours,
                 PageInfo = vm.PageInfo,
                 Review = vm.Review,
-                IsSalaryAboveNationalMinimumWage = (vm.WageType == WageType.CompetitiveSalary) ? true : null
+                IsSalaryAboveNationalMinimumWage = (vm.WageType == WageType.CompetitiveSalary) ? true : null,
+                Title = vacancy.Title
             };
 
             return competitiveWageViewModel;
