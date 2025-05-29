@@ -1,5 +1,3 @@
-@using Esfa.Recruit.Shared.Web.Mappers
-
 @model Esfa.Recruit.Provider.Web.ViewModels.Part1.Wage.WageViewModel
 
 @{
@@ -16,9 +14,7 @@
         
         <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }' />
         <partial name="@PartialNames.ReviewSummary" for="Review" />
-        <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">
-            How much will the apprentice be paid?
-        </h1>
+        <vacancy-heading vacancy-title="@Model.Title" heading="How much will the apprentice be paid?" class="govuk-!-margin-bottom-6"/>
         <form asp-route="@RouteNames.Wage_Post" asp-route-vacancyId="@Model.VacancyId" asp-route-ukprn="@Model.Ukprn" asp-route-wizard="@Model.PageInfo.IsWizard" novalidate>
 
             <div esfa-validation-marker-for="WageType" class="govuk-form-group">
