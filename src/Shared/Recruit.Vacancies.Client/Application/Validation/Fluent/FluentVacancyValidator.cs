@@ -602,7 +602,8 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
 
         private void ValidateAdditionalQuestions()
         {
-            When(x => !string.IsNullOrEmpty(x.AdditionalQuestion1), () =>
+            When(x => !string.IsNullOrEmpty(x.AdditionalQuestion1) &&
+                x.ApplicationMethod != ApplicationMethod.ThroughExternalApplicationSite, () =>
             {
                 RuleFor(x => x.AdditionalQuestion1)
                     .MaximumLength(250)
@@ -626,10 +627,11 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                         .WithErrorCode("340")
                         .WithState(_ => VacancyRuleSet.AdditionalQuestion1)
                         .RunCondition(VacancyRuleSet.AdditionalQuestion1);
+
             });
 
-
-            When(x => !string.IsNullOrEmpty(x.AdditionalQuestion2), () =>
+            When(x => !string.IsNullOrEmpty(x.AdditionalQuestion2) &&
+                x.ApplicationMethod != ApplicationMethod.ThroughExternalApplicationSite, () =>
             {
                 RuleFor(x => x.AdditionalQuestion2)
                     .MaximumLength(250)
@@ -655,6 +657,20 @@ namespace Esfa.Recruit.Vacancies.Client.Application.Validation.Fluent
                         .RunCondition(VacancyRuleSet.AdditionalQuestion2);
             });
 
+            When(x => x.ApplicationMethod == ApplicationMethod.ThroughExternalApplicationSite, () =>
+            {
+                RuleFor(x => x.AdditionalQuestion1)
+                    .Empty()
+                        .WithMessage("Additional questions must be empty when applications are managed through another website.")
+                        .WithErrorCode("116")
+                        .WithState(_ => VacancyRuleSet.AdditionalQuestion1);
+
+                RuleFor(x => x.AdditionalQuestion2)
+                    .Empty()
+                        .WithMessage("Additional questions must be empty when applications are managed through another website.")
+                        .WithErrorCode("117")
+                        .WithState(_ => VacancyRuleSet.AdditionalQuestion2);
+            });
         }
         
         private void ValidateHowTheApprenticeWillTrain()
