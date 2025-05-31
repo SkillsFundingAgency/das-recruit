@@ -52,5 +52,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Va
         public string AdditionalQuestion1 { get; set; }
         public string AdditionalQuestion2 { get; set; }
         public string AdditionalTrainingDescription { get; set; }
+        public ApprenticeshipTypes ApprenticeshipType { get; set; }
     }
 }
