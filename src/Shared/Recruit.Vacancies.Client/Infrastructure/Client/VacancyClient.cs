@@ -294,6 +294,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
                     if (application?.EmploymentLocation?.Addresses == null) continue;
 
                     var addresses = application.EmploymentLocation?.Addresses
+                        .Where(x => x.IsSelected)
                         .Select(x =>
                         {
                             Address employmentAddress;
@@ -306,6 +307,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
                             catch (JsonException)
                             {
                                 employmentAddress = null;
+                                logger.LogWarning("Failed to deserialize address for vacancy application {ApplicationId}", vacancyApplication.ApplicationId);
+                                logger.LogWarning("Failed to deserialize address:{Address}", x.FullAddress);
                             }
 
                             return employmentAddress;

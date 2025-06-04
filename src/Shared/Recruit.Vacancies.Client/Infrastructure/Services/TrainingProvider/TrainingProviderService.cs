@@ -101,8 +101,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider
             return await retryPolicy.Execute(_ => outerApiClient.Post<GetAllApplicationsResponse>(
                     new GetAllApplicationsByIdApiRequest(new GetAllApplicationsByIdApiRequestData
                     {
-                        ApplicationIds = applicationIds,
-                        IncludeDetails = false
+                        ApplicationIds = applicationIds
                     })),
                 new Dictionary<string, object>
                 {

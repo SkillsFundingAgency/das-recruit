@@ -19,6 +19,6 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Requests
     public class GetAllApplicationsByIdApiRequestData
     {
         public required List<Guid> ApplicationIds { get; init; } = [];
-        public bool IncludeDetails { get; set; } = false;
+        public bool IncludeDetails => false;
     }
 }
