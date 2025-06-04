@@ -17,12 +17,14 @@
                     <td class="govuk-table__cell" data-label="Name">@application.CandidateName</td>
                     <td class="govuk-table__cell" data-label="Status"><strong class="@application.Status.GetCssClassForApplicationReviewStatusForEmployer()">@application.Status.GetDisplayName(Model.UserType)</strong></td>
                     <td class="govuk-table__cell" data-label="Date applied">@application.SubmittedDate.AsGdsDate()</td>
+                    <td class="govuk-table__cell" data-label="Locations">@application.CandidateAppliedLocations</td>
                 </tr>
                 <tr class="govuk-table__row" asp-show="@application.IsWithdrawn">
                     <td class="govuk-table__cell" data-label="Application ID">@application.GetFriendlyId()</td>
                     <td class="govuk-table__cell" data-label="Name">Application withdrawn by candidate</td>
                     <td class="govuk-table__cell" data-label="Status"><strong class="@application.Status.GetCssClassForApplicationReviewStatusForEmployer()">Withdrawn</strong></td>
                     <td class="govuk-table__cell" data-label="Date applied">@application.SubmittedDate.AsGdsDate()</td>
+                    <td class="govuk-table__cell" data-label="Locations">@application.CandidateAppliedLocations</td>
                 </tr>
             }
         </tbody>
