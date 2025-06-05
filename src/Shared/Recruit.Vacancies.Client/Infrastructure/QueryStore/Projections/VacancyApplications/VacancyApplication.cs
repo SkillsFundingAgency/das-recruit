@@ -50,7 +50,8 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.QueryStore.Projections.Va
         public string CandidateFeedback { get; set; }
         public Guid? ApplicationId { get; set; }
         public string CandidateAppliedLocations { get; set; }
-        
+        public bool CanShowCandidateAppliedLocations => !string.IsNullOrEmpty(CandidateAppliedLocations);
+
 
         public static implicit operator VacancyApplication(ApplicationReview applicationReview)
         {
