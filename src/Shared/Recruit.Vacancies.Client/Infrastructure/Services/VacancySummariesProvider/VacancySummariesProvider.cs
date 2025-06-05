@@ -84,8 +84,10 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
 
             var dashboardStats = await _trainingProviderService.GetProviderDashboardApplicationReviewStats(ukprn, vacancyReferences);
 
-            var applicationReviewStatsLookup = dashboardStats.ApplicationReviewStatsList
-                .ToDictionary(x => x.VacancyReference);
+            var applicationReviewStatsLookup = dashboardStats
+                .ApplicationReviewStatsList
+                .GroupBy(x => x.VacancyReference)
+                .ToDictionary(g => g.Key, g => g.First());
 
             int closingSoonCount = closingSoonDashboardValuesTask.Result.Count(vacancySummary =>
                 applicationReviewStatsLookup.TryGetValue(vacancySummary.VacancyReference, out var applicationReview) &&
@@ -156,8 +158,10 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
 
             var dashboardStats = await _employerAccountProvider.GetEmployerDashboardApplicationReviewStats(employerAccountId, vacancyReferences);
 
-            var applicationReviewStatsLookup = dashboardStats.ApplicationReviewStatsList
-                .ToDictionary(x => x.VacancyReference);
+            var applicationReviewStatsLookup = dashboardStats
+                .ApplicationReviewStatsList
+                .GroupBy(x => x.VacancyReference)
+                .ToDictionary(g => g.Key, g => g.First());
 
             int closingSoonCount = closingSoonDashboardValuesTask.Result.Count(vacancySummary =>
                 applicationReviewStatsLookup.TryGetValue(vacancySummary.VacancyReference, out var applicationReview) &&
