@@ -25,7 +25,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part1.Legal
             [Frozen] Mock<IFeature> feature,
             LegalEntityAndEmployerOrchestrator orchestrator)
         {
-            feature.Setup(x => x.IsFeatureEnabled(FeatureNames.MongoMigration)).Returns(false);
+            feature.Setup(x => x.IsFeatureEnabled(FeatureNames.MongoMigrationEmployerProfiles)).Returns(false);
             providerVacancyClient.Setup(x => x.GetProviderEditVacancyInfoAsync(vacancyRouteModel.Ukprn))
                 .ReturnsAsync((ProviderEditVacancyInfo)null);
 
@@ -43,7 +43,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part1.Legal
             [Frozen] Mock<IFeature> feature,
             LegalEntityAndEmployerOrchestrator orchestrator)
         {
-            feature.Setup(x => x.IsFeatureEnabled(FeatureNames.MongoMigration)).Returns(false);
+            feature.Setup(x => x.IsFeatureEnabled(FeatureNames.MongoMigrationEmployerProfiles)).Returns(false);
             providerVacancyClient.Setup(x => x.GetProviderEditVacancyInfoAsync(vacancyRouteModel.Ukprn))
                 .ReturnsAsync(providerEditVacancyInfo);
 
@@ -65,7 +65,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part1.Legal
             [Frozen] Mock<IFeature> feature,
             LegalEntityAndEmployerOrchestrator orchestrator)
         {
-            feature.Setup(x => x.IsFeatureEnabled(FeatureNames.MongoMigration)).Returns(true);
+            feature.Setup(x => x.IsFeatureEnabled(FeatureNames.MongoMigrationEmployerProfiles)).Returns(true);
 
             employerAccountProvider.Setup(x => x.GetAllLegalEntitiesConnectedToAccountAsync(It.IsAny<List<string>>(),
                     It.IsAny<string>(),
@@ -96,7 +96,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part1.Legal
                 [Frozen] Mock<IFeature> feature,
                 LegalEntityAndEmployerOrchestrator orchestrator)
         {
-            feature.Setup(x => x.IsFeatureEnabled(FeatureNames.MongoMigration)).Returns(false);
+            feature.Setup(x => x.IsFeatureEnabled(FeatureNames.MongoMigrationEmployerProfiles)).Returns(false);
             providerVacancyClient.Setup(x => x.GetProviderEditVacancyInfoAsync(vacancyRouteModel.Ukprn))
                 .ReturnsAsync(providerEditVacancyInfo);
 
@@ -115,7 +115,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part1.Legal
             [Frozen] Mock<IFeature> feature,
             LegalEntityAndEmployerOrchestrator orchestrator)
         {
-            feature.Setup(x => x.IsFeatureEnabled(FeatureNames.MongoMigration)).Returns(false);
+            feature.Setup(x => x.IsFeatureEnabled(FeatureNames.MongoMigrationEmployerProfiles)).Returns(false);
             providerVacancyClient.Setup(x => x.GetProviderEditVacancyInfoAsync(vacancyRouteModel.Ukprn))
                 .ReturnsAsync(providerEditVacancyInfo);
 
@@ -134,7 +134,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part1.Legal
             [Frozen] Mock<IFeature> feature,
             LegalEntityAndEmployerOrchestrator orchestrator)
         {
-            feature.Setup(x => x.IsFeatureEnabled(FeatureNames.MongoMigration)).Returns(false);
+            feature.Setup(x => x.IsFeatureEnabled(FeatureNames.MongoMigrationEmployerProfiles)).Returns(false);
             providerVacancyClient.Setup(x => x.GetProviderEditVacancyInfoAsync(vacancyRouteModel.Ukprn))
                 .ReturnsAsync(providerEditVacancyInfo);
 
@@ -155,7 +155,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part1.Legal
             [Frozen] Mock<IFeature> feature,
             LegalEntityAndEmployerOrchestrator orchestrator)
         {
-            feature.Setup(x => x.IsFeatureEnabled(FeatureNames.MongoMigration)).Returns(false);
+            feature.Setup(x => x.IsFeatureEnabled(FeatureNames.MongoMigrationEmployerProfiles)).Returns(false);
             providerVacancyClient.Setup(x => x.GetProviderEditVacancyInfoAsync(vacancyRouteModel.Ukprn))
                 .ReturnsAsync(providerEditVacancyInfo);
 
@@ -178,7 +178,7 @@ namespace Esfa.Recruit.Provider.UnitTests.Provider.Web.Orchestrators.Part1.Legal
             [Frozen] Mock<IFeature> feature,
             LegalEntityAndEmployerOrchestrator orchestrator)
         {
-            feature.Setup(x => x.IsFeatureEnabled(FeatureNames.MongoMigration)).Returns(false);
+            feature.Setup(x => x.IsFeatureEnabled(FeatureNames.MongoMigrationEmployerProfiles)).Returns(false);
             employerInfo.Add(new EmployerInfo
             {
                 Name = "ESFA  LTD",

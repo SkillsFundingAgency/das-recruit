@@ -52,7 +52,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
                 ? requestedPageNo.Value > 0
                     ? requestedPageNo.Value : 1 : 1;
 
-            if (feature.IsFeatureEnabled(FeatureNames.MongoMigration))
+            if (feature.IsFeatureEnabled(FeatureNames.MongoMigrationEmployerProfiles))
             {
                 // Only include employer accounts where the provider has recruitment permission
                 var allLegalEntities = await providerRelationshipsService.GetLegalEntitiesForProviderAsync(
@@ -105,7 +105,7 @@ namespace Esfa.Recruit.Provider.Web.Orchestrators.Part1
             }
             else
             {
-                //#TODO: Remove this when the feature MongoMigration goes LIVE
+                //#TODO: Remove this when the code block once MongoMigrationEmployerProfiles goes LIVE
                 var accountLegalEntities = await providerVacancyClient.GetProviderEmployerVacancyDatasAsync(vrm.Ukprn, editVacancyInfo.Employers.Select(info => info.EmployerAccountId).ToList());
                 vm = new LegalEntityAndEmployerViewModel
                 {
