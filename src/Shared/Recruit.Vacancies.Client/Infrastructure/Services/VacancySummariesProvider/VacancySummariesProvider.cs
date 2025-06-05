@@ -14,7 +14,6 @@ using Microsoft.Extensions.Options;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using Polly;
-using FeatureNames = Esfa.Recruit.Vacancies.Client.Infrastructure.Configuration.FeatureNames;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummariesProvider
 {
