@@ -131,6 +131,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
             {
                 '$group': {
                     '_id': {
+                        'vacancyReference': '$vacancyReference',
                         'status':'$status',
                         'isTraineeship' : '$isTraineeship',
                         'closingSoon' : '$closingSoon'    
@@ -155,6 +156,118 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
                     },
                     'statusCount' : { '$sum' : 1 }
                     
+                }
+            }
+        ]";
+
+        private readonly string _dashboardPipelineNoApplicationReview = @"[
+            {
+                '$project': {
+                    'status': 1,
+                    'vacancyType': 1,
+                    'vacancyReference': 1,
+                    'dateSharedWithEmployer': 1,
+                    'closingSoon' : {
+                        '$cond': {
+                            'if': {'$lte':[
+                                '$closingDate',ISODate('" +
+                                                                        DateTime.UtcNow.AddDays(5).ToString("o",
+                                                                            CultureInfo.InvariantCulture) + @"')
+                            ]},
+                                
+                            'then': {
+                                '$cond':{
+                                    'if': {'$eq': [ '$status', 'Live']},
+                                        'then': true,
+                                        'else': false
+                                }
+                            },
+                            'else': false
+                        }
+                    },
+                    'isTraineeship': {
+                        '$cond': {
+                            'if': {'$eq': [ '$vacancyType', 'Traineeship']},
+                            'then': true,
+                            'else': false
+                        }
+                    },
+                    'isNew': {
+                        '$cond': {
+                            'if': {'$eq': [ '$appStatus', 'New']},
+                            'then': 1,
+                            'else': 0
+                        }
+                    },
+                    'isSuccessful': {
+                        '$cond': {
+                            'if': {'$eq': [ '$appStatus', 'Successful']},
+                            'then': 1,
+                            'else': 0
+                        }
+                    },
+                    'isEmployerReviewed': {
+                        '$cond': {
+                            'if': {
+                                '$or': [
+                                    { '$eq': ['$appStatus', 'EmployerInterviewing'] },
+                                    { '$eq': ['$appStatus', 'EmployerUnsuccessful'] }
+                                ]
+                            },
+                            'then': 1,
+                            'else': 0
+                        }
+                    },
+                    'isUnsuccessful': {
+                        '$cond': {
+                            'if': {'$eq': [ '$appStatus', 'Unsuccessful']},
+                            'then': 1,
+                            'else': 0
+                        }
+                    },
+                    'isShared': {
+                        '$cond': {
+                            'if': {'$eq': [ '$appStatus', 'Shared']},
+                            'then': 1,
+                            'else': 0
+                        }
+                    },
+                    'isSharedWithEmployer': {
+                        '$cond': {
+                            'if': {'$gte': [ '$dateSharedWithEmployer', '1900-01-01T01:00:00.389Z'] },
+                            'then': 1,
+                            'else': 0
+                        }
+                    }
+                }
+            },
+            {
+                '$group': {
+                    '_id': {
+                        'vacancyReference': '$vacancyReference',
+                        'status':'$status',
+                        'isTraineeship' : '$isTraineeship',
+                        'closingSoon' : '$closingSoon'    
+                    },
+                    'noOfNewApplications': {
+                        '$sum': '$isNew'
+                    },
+                    'noOfSuccessfulApplications': {
+                        '$sum': '$isSuccessful'
+                    },
+                    'noOfEmployerReviewedApplications': {
+                        '$sum': '$isEmployerReviewed'
+                    },
+                    'noOfUnsuccessfulApplications': {
+                        '$sum': '$isUnsuccessful'
+                    },
+                    'noOfSharedApplications': {
+                        '$sum': '$isShared'
+                    },
+                    'noOfAllSharedApplications': {
+                        '$sum': '$isSharedWithEmployer'
+                    },
+                    'statusCount' : { '$sum' : 1 }                    
                 }
             }
         ]";
@@ -714,9 +827,9 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
         ]";
 
 
-        public static BsonDocument[] GetAggregateQueryPipeline(BsonDocument vacanciesMatchClause, int pageNumber, BsonDocument secondaryMatch,bool mongoMigrationEnabled, BsonDocument employerReviewMatch = null)
+        public static BsonDocument[] GetAggregateQueryPipeline(BsonDocument vacanciesMatchClause, int pageNumber, BsonDocument secondaryMatch, bool mongoMigrationEnabled, BsonDocument employerReviewMatch = null)
         {
-            var pipeline =mongoMigrationEnabled ? BsonSerializer.Deserialize<BsonArray>(PipelineNoApplicationReview) : BsonSerializer.Deserialize<BsonArray>(Pipeline);
+            var pipeline = mongoMigrationEnabled ? BsonSerializer.Deserialize<BsonArray>(PipelineNoApplicationReview) : BsonSerializer.Deserialize<BsonArray>(Pipeline);
 
             int index = mongoMigrationEnabled ? 1: 3;
             if (employerReviewMatch != null)
@@ -783,20 +896,28 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
         }
 
         public BsonDocument[] GetAggregateQueryPipelineVacanciesClosingSoonDashboard(BsonDocument vacanciesMatchClause,
+            bool mongoMigrationEnabled,
             BsonDocument employerReviewMatch = null)
         {
-            var pipeline = BsonSerializer.Deserialize<BsonArray>(DashboardApplicationsPipeline);
-            var insertLine = 3;
+            var pipeline = mongoMigrationEnabled 
+                ? BsonSerializer.Deserialize<BsonArray>(_dashboardPipelineNoApplicationReview) 
+                : BsonSerializer.Deserialize<BsonArray>(DashboardApplicationsPipeline);
+
+            int insertLine = 3;
             if (employerReviewMatch != null)
             {
                 pipeline.Insert(0, employerReviewMatch);
                 insertLine++;
             }
+
             pipeline.Insert(0, vacanciesMatchClause);
 
-            var matchPipeline = BsonSerializer.Deserialize<BsonDocument>(DashboardNoApplicationCountMatchClause);
+            if (!mongoMigrationEnabled)
+            {
+                var matchPipeline = BsonSerializer.Deserialize<BsonDocument>(DashboardNoApplicationCountMatchClause);
 
-            pipeline.Insert(insertLine, matchPipeline);
+                pipeline.Insert(insertLine, matchPipeline);
+            }
 
             var pipelineDefinition = pipeline.Values.Select(p => p.ToBsonDocument()).ToArray();
 
