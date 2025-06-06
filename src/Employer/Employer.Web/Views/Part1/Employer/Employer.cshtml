@@ -13,14 +13,9 @@
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-
-
         <partial name="@PartialNames.ValidationSummary" model='new ValidationSummaryViewModel { ModelState = ViewData.ModelState, OrderedFieldNames = Model.OrderedFieldNames }' />
-
         <partial name="@PartialNames.ReviewSummary" for="Review" />
-
-        <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">Which organisation is this advert for?</h1>
-
+        <vacancy-heading vacancy-title="@Model.VacancyTitle" heading="Which organisation is this advert for?" class="govuk-!-margin-bottom-6" />
         <form asp-show="@Model.CanShowSearchPanel" method="GET" asp-route="@RouteNames.Employer_Get" asp-all-route-data="@Model.RouteDictionary" asp-route-wizard="@Model.PageInfo.IsWizard">
             <div class="govuk-form-group">
                 <label class="govuk-label" asp-for="SearchTerm">

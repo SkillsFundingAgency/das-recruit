@@ -10,6 +10,7 @@ using Esfa.Recruit.Vacancies.Client.Application.Services;
 using Esfa.Recruit.Vacancies.Client.Application.Services.Reports;
 using Esfa.Recruit.Vacancies.Client.Application.Validation;
 using Esfa.Recruit.Vacancies.Client.Domain.Entities;
+using Esfa.Recruit.Vacancies.Client.Domain.Extensions;
 using Esfa.Recruit.Vacancies.Client.Domain.Messaging;
 using Esfa.Recruit.Vacancies.Client.Domain.Repositories;
 using Esfa.Recruit.Vacancies.Client.Infrastructure.OuterApi.Responses;
@@ -24,7 +25,8 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummariesProv
 using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.Extensions.Logging;
-using FeatureNames = Esfa.Recruit.Vacancies.Client.Infrastructure.Configuration.FeatureNames;
+using Newtonsoft.Json;
+using Address = Esfa.Recruit.Vacancies.Client.Domain.Entities.Address;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 {
@@ -275,9 +277,50 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
                 ? await applicationReviewRepository.GetForSharedVacancySortedAsync(vacancyReference, sortColumn, sortOrder)
                 : await applicationReviewRepository.GetForVacancySortedAsync(vacancyReference, sortColumn, sortOrder);
 
-            return applicationReviews == null
-                ? new List<VacancyApplication>()
-                : applicationReviews.Select(c => (VacancyApplication)c).ToList();
+            var vacancyApplications = applicationReviews.Select(c => (VacancyApplication)c).ToList();
+
+            if (vacancyApplications is {Count: > 0})
+            {
+                var applicationsResponse =
+                    await trainingProviderService.GetAllApplications(applicationReviews
+                        .Select(x => x.Application.ApplicationId).ToList());
+
+                foreach (var vacancyApplication in vacancyApplications)
+                {
+                    var application = applicationsResponse.Applications
+                        .FirstOrDefault(x => x.Id == vacancyApplication.ApplicationId);
+
+                    if (application?.EmploymentLocation?.Addresses == null) continue;
+
+                    var addresses = application.EmploymentLocation?.Addresses
+                        .Where(x => x.IsSelected)
+                        .Select(x =>
+                        {
+                            Address employmentAddress;
+                            try
+                            {
+                                employmentAddress = !string.IsNullOrWhiteSpace(x.FullAddress)
+                                    ? JsonConvert.DeserializeObject<Address>(x.FullAddress)
+                                    : null;
+                            }
+                            catch (JsonException)
+                            {
+                                employmentAddress = null;
+                                logger.LogWarning("Failed to deserialize address for vacancy application {ApplicationId}", vacancyApplication.ApplicationId);
+                                logger.LogWarning("Failed to deserialize address:{Address}", x.FullAddress);
+                            }
+
+                            return employmentAddress;
+                        })
+                        .ToList();
+
+                    vacancyApplication.CandidateAppliedLocations = addresses.GetCities();
+                }
+
+                return vacancyApplications;
+            }
+
+            return [];
         }
 
         public async Task<List<VacancyApplication>> GetVacancyApplicationsAsync(long vacancyReference, bool vacancySharedByProvider = false)

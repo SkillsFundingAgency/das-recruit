@@ -1,7 +1,5 @@
 ﻿@using Microsoft.Extensions.Options
-@using Esfa.Recruit.Shared.Web.Mappers
-@using Esfa.Recruit.Shared.Web.TagHelpers
-@using Microsoft.AspNetCore.Mvc.TagHelpers
+
 @model Esfa.Recruit.Provider.Web.ViewModels.Part1.CustomWage.CustomWageViewModel
 @inject IOptions<ExternalLinksConfiguration> externalLinks
 @{ 
@@ -26,6 +24,7 @@
                 <fieldset class="govuk-fieldset">
                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
                         <h1 class="govuk-fieldset__heading">
+                            <span class="govuk-caption-l">@Model.VacancyTitle</span>
                             Set wage yourself
                         </h1>
                     </legend>

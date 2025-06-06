@@ -11,13 +11,13 @@ using Esfa.Recruit.Vacancies.Client.Infrastructure.ReferenceData.TrainingProvide
 using Esfa.Recruit.Vacancies.Client.Infrastructure.Services.TrainingProvider;
 using Microsoft.Extensions.Logging;
 using NUnit.Framework;
-using Xunit;
 
 namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructure.Services
 {
+    [TestFixture]
     public class TrainingProviderServiceTests
     {
-        [Fact]
+        [Test]
         public async Task GetProviderAsync_ShouldReturnEsfaTestTrainingProvider()
         {
             var loggerMock = new Mock<ILogger<TrainingProviderService>>();
@@ -37,7 +37,7 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
             referenceDataReader.Verify(p => p.GetReferenceData<TrainingProviders>(), Times.Never);
         }
 
-        [Fact]
+        [Test]
         public async Task GetProviderAsync_ShouldAttemptToFindTrainingProvider()
         {
             const long ukprn = 88888888;
@@ -116,6 +116,27 @@ namespace Esfa.Recruit.Vacancies.Client.UnitTests.Vacancies.Client.Infrastructur
                 .ReturnsAsync(response);
 
             var result = await trainingProviderService.GetProviderDashboardStats(ukprn);
+
+            result.Should().BeEquivalentTo(response);
+        }
+
+        [Test, MoqAutoData]
+        public async Task GetAllApplications_Should_Return_As_Expected(
+            List<Guid> applicationIds,
+            GetAllApplicationsResponse response,
+            [Frozen] Mock<IOuterApiClient> outerApiClient,
+            [Greedy] TrainingProviderService trainingProviderService)
+        {
+            var expectedPostUrl = new GetAllApplicationsByIdApiRequest(new GetAllApplicationsByIdApiRequestData
+            {
+                ApplicationIds = applicationIds
+            });
+
+            outerApiClient.Setup(x => x.Post<GetAllApplicationsResponse>(
+                    It.Is<GetAllApplicationsByIdApiRequest>(r => r.PostUrl == expectedPostUrl.PostUrl)))
+                .ReturnsAsync(response);
+
+            var result = await trainingProviderService.GetAllApplications(applicationIds);
 
             result.Should().BeEquivalentTo(response);
         }

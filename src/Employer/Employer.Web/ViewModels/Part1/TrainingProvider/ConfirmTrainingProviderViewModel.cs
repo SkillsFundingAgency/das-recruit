@@ -11,5 +11,6 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.TrainingProvider
         public string ProviderAddress { get; set; }
         public long Ukprn { get; set; }
         public PartOnePageInfoViewModel PageInfo { get; set; }
+        public bool WillTaskListBeCompleted { get; set; }
     }
 }

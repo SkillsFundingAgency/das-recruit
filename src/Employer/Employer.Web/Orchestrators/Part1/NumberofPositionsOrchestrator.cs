@@ -38,7 +38,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                 VacancyId = vacancy.Id,
                 EmployerAccountId = vrm.EmployerAccountId,
                 NumberOfPositions = vacancy.NumberOfPositions?.ToString(),
-                PageInfo = _utility.GetPartOnePageInfo(vacancy)
+                PageInfo = _utility.GetPartOnePageInfo(vacancy),
+                VacancyTitle = vacancy.Title,
             };
 
             if (vacancy.Status == VacancyStatus.Referred)

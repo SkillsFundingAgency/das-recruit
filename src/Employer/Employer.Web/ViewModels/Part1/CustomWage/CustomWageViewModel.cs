@@ -30,5 +30,6 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.CustomWage
         };
 
         public PartOnePageInfoViewModel PageInfo { get; set; }
+        public string VacancyTitle { get; init; }
     }
 }

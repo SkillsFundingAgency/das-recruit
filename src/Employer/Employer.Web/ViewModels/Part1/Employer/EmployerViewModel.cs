@@ -44,6 +44,7 @@ namespace Esfa.Recruit.Employer.Web.ViewModels.Part1.Employer
                             && Organisations.Any(org => org.Id == SelectedOrganisationId);
 
         public bool CanOutputHiddenSelectedOrganisationIdField => !string.IsNullOrEmpty(SelectedOrganisationId) && IsSelectedOrganisationInPagedOrganisations == false;
+        public string VacancyTitle { get; init; }
     }
 
     public class OrganisationViewModel

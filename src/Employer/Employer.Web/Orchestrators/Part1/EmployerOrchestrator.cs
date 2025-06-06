@@ -72,7 +72,8 @@ namespace Esfa.Recruit.Employer.Web.Orchestrators.Part1
                 TotalNumberOfLegalEntities = legalEntities.Count(),
                 PageInfo = _utility.GetPartOnePageInfo(vacancy),
                 SearchTerm = searchTerm,
-                SelectedOrganisationId = vacancy.AccountLegalEntityPublicHashedId
+                SelectedOrganisationId = vacancy.AccountLegalEntityPublicHashedId,
+                VacancyTitle = vacancy.Title,
             };
 
 
