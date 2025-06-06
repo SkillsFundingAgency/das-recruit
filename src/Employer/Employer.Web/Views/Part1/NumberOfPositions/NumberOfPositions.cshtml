@@ -1,5 +1,4 @@
-﻿@using Esfa.Recruit.Shared.Web.Mappers
-@model Esfa.Recruit.Employer.Web.ViewModels.Part1.NumberOfPositions.NumberOfPositionsViewModel
+﻿@model Esfa.Recruit.Employer.Web.ViewModels.Part1.NumberOfPositions.NumberOfPositionsViewModel
 @{ 
     ViewBag.Vpv = "/recruitment/employer/page-part1-number-of-positions";
     ViewBag.Title = "How many positions are there for this apprenticeship?";
@@ -18,7 +17,8 @@
         <form asp-route="@RouteNames.NumberOfPositions_Post" asp-all-route-data="@Model.RouteDictionary" asp-route-wizard="@Model.PageInfo.IsWizard" novalidate>
             <div esfa-validation-marker-for="NumberOfPositions" class="govuk-form-group">
                 <h1 class="govuk-label-wrapper">
-                    <label class="govuk-label govuk-label--xl"  asp-for="NumberOfPositions">
+                    <span class="govuk-caption-l">@Model.VacancyTitle</span>
+                    <label class="govuk-label govuk-label--xl" asp-for="NumberOfPositions">
                         How many positions are there for this apprenticeship?
                     </label>
                 </h1>

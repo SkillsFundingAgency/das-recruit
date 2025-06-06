@@ -10,4 +10,5 @@ public class AdditionalQuestionsViewModel : VacancyRouteModel
     public ReviewSummaryViewModel Review { get; set; } = new();
     public bool IsTaskListCompleted { get ; set ; }
     public string? FindAnApprenticeshipUrl { get; set; }
+    public string VacancyTitle { get; init; }
 }
