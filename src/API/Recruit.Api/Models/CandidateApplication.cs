@@ -33,6 +33,7 @@ public class CandidateApplication
     public AdditionalQuestion? AdditionalQuestion2 { get; set; }
     public string WhatIsYourInterest { get; set; }
     public DateTime DateOfBirth { get; set; }
+    public DateTime? MigrationDate { get; set; }
 }
 
 public class ApplicationQualification

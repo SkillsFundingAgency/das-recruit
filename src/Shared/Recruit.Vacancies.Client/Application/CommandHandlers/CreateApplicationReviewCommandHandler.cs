@@ -52,7 +52,7 @@ namespace Esfa.Recruit.Vacancies.Client.Application.CommandHandlers
                 CreatedDate = _timeProvider.Now,                
                 Status = ApplicationReviewStatus.New,
                 SubmittedDate = message.Application.ApplicationDate,
-                MigrationDate = _timeProvider.Now
+                MigrationDate = message.Application.MigrationDate
             };
 
             await _applicationReviewRepository.CreateAsync(review);
