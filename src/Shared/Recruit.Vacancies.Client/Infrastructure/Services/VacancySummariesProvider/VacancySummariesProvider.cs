@@ -20,7 +20,7 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
     internal sealed class VacancySummariesProvider(
         ILoggerFactory loggerFactory,
         IOptions<MongoDbConnectionDetails> details,
-        IFeature features)
+        IFeature feature)
         : MongoDbCollectionBase(loggerFactory, MongoDbNames.RecruitDb, MongoDbCollectionNames.Vacancies, details),
             IVacancySummariesProvider
     {
@@ -77,28 +77,47 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
             await Task.WhenAll(dashboardValuesTask, applicationDashboardValuesTask, closingSoonDashboardValuesTask);
 
             // If the Mongo migration feature is enabled, retrieve the application review stats
-            var vacancyReferences = closingSoonDashboardValuesTask.Result
+            var closingSoonDashboardValues = await closingSoonDashboardValuesTask;
+            if (closingSoonDashboardValues == null || closingSoonDashboardValues.Count == 0)
+            {
+                return new VacancyDashboard
+                {
+                    VacancyStatusDashboard = await dashboardValuesTask,
+                    VacancyApplicationsDashboard = ignoreGetApplicationReview ? [] : await applicationDashboardValuesTask,
+                    VacanciesClosingSoonWithNoApplications = 0
+                };
+            }
+
+            var vacancyReferences = closingSoonDashboardValues
                 .Select(x => x.VacancyReference)
+                .Distinct()
                 .ToList();
 
-            var dashboardStats = await _trainingProviderService.GetProviderDashboardApplicationReviewStats(ukprn, vacancyReferences);
+            // Retrieve application review stats for vacancies closing soon
+            var dashboardStats = await _trainingProviderService.GetProviderDashboardApplicationReviewStats(
+                ukprn,
+                vacancyReferences
+            );
 
-            var applicationReviewStatsLookup = dashboardStats
-                .ApplicationReviewStatsList
+            // Create a lookup with safe handling for duplicate keys
+            var applicationReviewStatsLookup = dashboardStats.ApplicationReviewStatsList
                 .GroupBy(x => x.VacancyReference)
                 .ToDictionary(g => g.Key, g => g.First());
 
-            int closingSoonCount = closingSoonDashboardValuesTask.Result.Count(vacancySummary =>
-                applicationReviewStatsLookup.TryGetValue(vacancySummary.VacancyReference, out var applicationReview) &&
-                applicationReview.HasNoApplications);
+            // Count vacancies with no applications
+            int closingSoonCount = closingSoonDashboardValues.Count(vacancySummary =>
+                applicationReviewStatsLookup.TryGetValue(vacancySummary.VacancyReference, out var stats) &&
+                stats.HasNoApplications
+            );
 
+            // Return the final dashboard view model
             return new VacancyDashboard
             {
-                VacancyStatusDashboard = dashboardValuesTask.Result,
-                VacancyApplicationsDashboard = applicationDashboardValuesTask.Result,
+                VacancyStatusDashboard = await dashboardValuesTask,
+                VacancyApplicationsDashboard = await applicationDashboardValuesTask,
                 VacanciesClosingSoonWithNoApplications = ignoreGetApplicationReview
-                    ? closingSoonCount 
-                    : closingSoonDashboardValuesTask.Result.FirstOrDefault(c => c.ClosingSoon)?.StatusCount ?? 0
+                    ? closingSoonCount
+                    : closingSoonDashboardValues.FirstOrDefault(c => c.ClosingSoon)?.StatusCount ?? 0
             };
         }
         public async Task<VacancyDashboard> GetEmployerOwnedVacancyDashboardByEmployerAccountIdAsync(string employerAccountId, bool ignoreGetApplicationReview)
@@ -151,8 +170,21 @@ namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Services.VacancySummaries
             await Task.WhenAll(dashboardValuesTask, applicationDashboardValuesTask, sharedApplicationDashboardValuesTask, closingSoonDashboardValuesTask);
 
             // If the Mongo migration feature is enabled, retrieve the application review stats
-            var vacancyReferences = closingSoonDashboardValuesTask.Result
+            var closingSoonDashboardValues = closingSoonDashboardValuesTask.Result;
+            if (closingSoonDashboardValues == null || closingSoonDashboardValues.Count == 0)
+            {
+                return new VacancyDashboard
+                {
+                    VacancyStatusDashboard = dashboardValuesTask.Result,
+                    VacancySharedApplicationsDashboard = ignoreGetApplicationReview ? [] : sharedApplicationDashboardValuesTask.Result,
+                    VacancyApplicationsDashboard = ignoreGetApplicationReview ? [] : applicationDashboardValuesTask.Result,
+                    VacanciesClosingSoonWithNoApplications = 0
+                };
+            }
+
+            var vacancyReferences = closingSoonDashboardValues
                 .Select(x => x.VacancyReference)
+                .Distinct()
                 .ToList();
 
             var dashboardStats = await _employerAccountProvider.GetEmployerDashboardApplicationReviewStats(employerAccountId, vacancyReferences);
