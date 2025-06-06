@@ -27,7 +27,6 @@ using FluentValidation.Results;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Address = Esfa.Recruit.Vacancies.Client.Domain.Entities.Address;
-using FeatureNames = Esfa.Recruit.Vacancies.Client.Infrastructure.Configuration.FeatureNames;
 
 namespace Esfa.Recruit.Vacancies.Client.Infrastructure.Client
 {
